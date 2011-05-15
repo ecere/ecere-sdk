@@ -1,0 +1,43 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "Controls",
+   "Description" : "",
+   "License" : "",
+   "Options" : {
+      "Warnings" : "All",
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "Optimization" : "Speed",
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "Controls",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "TargetDirectory" : "Debug",
+            "ObjectsDirectory" : "Debug"
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "TargetDirectory" : "MemoryGuard",
+            "ObjectsDirectory" : "MemoryGuard",
+            "Console" : true
+         }
+      }
+   ],
+   "Files" : [
+      "controls.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

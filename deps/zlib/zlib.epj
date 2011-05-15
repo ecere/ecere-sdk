@@ -1,0 +1,62 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "libz",
+   "Options" : {
+      "Debug" : false,
+      "Optimization" : "None",
+      "TargetType" : "StaticLibrary",
+      "TargetFileName" : "z",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)"
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Warnings" : "All",
+            "Debug" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "headers",
+         "Files" : [
+            "./crc32.h",
+            "./deflate.h",
+            "./inffast.h",
+            "./inffixed.h",
+            "./inflate.h",
+            "./inftrees.h",
+            "./trees.h",
+            "./zconf.h",
+            "./zconf.in.h",
+            "./zlib.h",
+            "./zutil.h"
+         ]
+      },
+      "adler32.c",
+      "compress.c",
+      "crc32.c",
+      "deflate.c",
+      "gzio.c",
+      "infback.c",
+      "inffast.c",
+      "inflate.c",
+      "inftrees.c",
+      "trees.c",
+      "uncompr.c",
+      "zutil.c"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

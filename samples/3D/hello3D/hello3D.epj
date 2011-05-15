@@ -1,0 +1,38 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "hello3D",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "hello3D",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "hello3D.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

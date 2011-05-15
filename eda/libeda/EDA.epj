@@ -1,0 +1,119 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "EDA",
+   "Options" : {
+      "Warnings" : "All",
+      "DefaultNameSpace" : "eda",
+      "TargetType" : "SharedLibrary",
+      "TargetFileName" : "EDA",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "LibraryDirs" : [
+               "../../obj/$(PLATFORM)/bin",
+               "../../obj/$(PLATFORM)/lib"
+            ],
+            "PostbuildCommands" : [
+               "$(call cpq,$(TARGET),../../$(SODESTDIR))"
+            ]
+         }
+      },
+      {
+         "Name" : "Static",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "EDAStatic",
+            "Libraries" : [
+
+            ]
+         }
+      },
+      {
+         "Name" : "StaticDebug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC",
+               "_DEBUG"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "EDAStatic",
+            "Libraries" : [
+
+            ]
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "src",
+         "Files" : [
+            {
+               "Folder" : "drivers",
+               "Files" : [
+                  "src/EDB.ec",
+                  "src/MemoryEDB.ec"
+               ]
+            },
+            {
+               "Folder" : "gui",
+               "Files" : [
+                  {
+                     "Folder" : "controls",
+                     "Files" : [
+                        "FieldBox.ec"
+                     ]
+                  },
+                  "TableEditor.ec"
+               ]
+            },
+            "EDA.ec",
+            "ers.ec",
+            "gui.ec",
+            "idList.ec"
+         ]
+      },
+      "todo.txt"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

@@ -1,0 +1,54 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "EcereAudio",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "SharedLibrary",
+      "TargetFileName" : "EcereAudio",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Platforms" : [
+      {
+         "Name" : "Win32",
+         "Options" : {
+            "Libraries" : [
+               "winmm",
+               "dsound",
+               "dxguid",
+               "uuid"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "alsa.ec",
+      "audio.ec",
+      "dsound.ec",
+      "mixer.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

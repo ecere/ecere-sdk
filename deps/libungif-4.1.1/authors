@@ -1,0 +1,22 @@
+Michael Brown <michael_brown_uk@hotmail.com>
+        callbacks to write data via user defined function
+
+Gershon Elber
+	original giflib code
+
+Marc Ewing <marc@redhat.com>
+        spec file (for rpms) updates
+
+Toshio Kuratomi <toshio@tiki-lounge.com>
+        uncompressed gif writing code
+        autoconf/automake process
+        current maintainer
+
+Peter Mehlitz <peter@transvirtual.com>
+        callbacks to read data from arbitrary sources (like libjpeg/libpng)
+
+Dick Porter <dick@cymru.net>
+        int/pointer fixes for Alpha
+
+Eric Raymond <esr@snark.thyrsus.com>
+        long time maintainer of giflib code

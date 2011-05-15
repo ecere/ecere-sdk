@@ -1,0 +1,55 @@
+
+ECERE Project File
+
+Version 0.1a
+
+Target "eCom"
+
+   Configurations
+
+    + Debug
+
+         Compiler Options
+
+            Intermediate Directory = debug
+            Debug = True
+            Optimize = None
+            Profile = False
+            MemoryGuard = False
+            AllWarnings = True
+            Strict Name Spaces = False
+
+         Linker Options
+
+            Target Name = eCom
+            Target Type = Executable
+            Target Directory = debug
+            Console = False
+
+            Libraries = ecere
+
+    + Release
+
+         Compiler Options
+
+            Intermediate Directory = release
+            Debug = False
+            Optimize = Speed
+            Profile = False
+            MemoryGuard = False
+            AllWarnings = True
+            Strict Name Spaces = False
+
+         Linker Options
+
+            Target Name = eCom
+            Target Type = Executable
+            Target Directory = release
+            Console = False
+
+            Libraries = ecere
+
+   Files
+
+    - connection.ec
+    - mainPanel.ec

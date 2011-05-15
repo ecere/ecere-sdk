@@ -1,0 +1,36 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "HelloWorld",
+   "Options" : {
+      "Warnings" : "All",
+      "Debug" : true,
+      "Optimization" : "None",
+      "TargetType" : "Executable",
+      "TargetFileName" : "HelloWorld",
+      "Libraries" : [
+         "ecereCOM"
+      ],
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug"
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "MemoryGuard" : true,
+            "Libraries" : [
+               "ecere"
+            ]
+         }
+      }
+   ],
+   "Files" : [
+      "HelloWorld.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

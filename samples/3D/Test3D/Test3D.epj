@@ -1,0 +1,37 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "Test3D",
+   "Options" : {
+      "Warnings" : "All",
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "Test3D",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "Test3D.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

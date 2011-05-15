@@ -1,0 +1,91 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ecc",
+   "Options" : {
+      "TargetType" : "Executable",
+      "TargetFileName" : "ecc",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Libraries" : [
+               "ecere"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "Libraries" : [
+               "ecere"
+            ],
+            "LibraryDirs" : [
+               "../../obj/$(PLATFORM)/bin",
+               "../../obj/$(PLATFORM)/lib"
+            ],
+            "PostbuildCommands" : [
+               "$(call cpq,$(TARGET),../../obj/$(PLATFORM)/bin/)"
+            ]
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Libraries" : [
+               "ecere"
+            ]
+         }
+      },
+      {
+         "Name" : "Bootstrap",
+         "Options" : {
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "Libraries" : [
+               "ecereBootstrap",
+               "ecBootstrap"
+            ],
+            "LibraryDirs" : [
+               "../../ecere/obj/bootstrap.$(PLATFORM)",
+               "../libec/obj/bootstrap.$(PLATFORM)"
+            ]
+         },
+         "Platforms" : [
+            {
+               "Name" : "Linux",
+               "Options" : {
+                  "Libraries" : [
+                     "m",
+                     "dl"
+                  ]
+               }
+            }
+         ]
+      }
+   ],
+   "Files" : [
+      "ecc.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

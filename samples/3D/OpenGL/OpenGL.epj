@@ -1,0 +1,61 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "OpenGL",
+   "Options" : {
+      "TargetType" : "Executable",
+      "TargetFileName" : "OpenGL",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Platforms" : [
+      {
+         "Name" : "Win32",
+         "Options" : {
+            "Libraries" : [
+               "opengl32"
+            ]
+         }
+      },
+      {
+         "Name" : "Linux",
+         "Options" : {
+            "Libraries" : [
+               "GL"
+            ]
+         }
+      },
+      {
+         "Name" : "Apple",
+         "Options" : {
+            "Libraries" : [
+               "GL"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "glDemo.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

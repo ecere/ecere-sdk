@@ -1,0 +1,1697 @@
+namespace sys;
+
+default:
+#define uint _uint
+#define File _File
+#include <stdio.h>
+#include <stdarg.h>
+#include <stdlib.h>
+
+#define UNICODE
+
+#define IS_ALUNDER(ch) ((ch) == '_' || isalnum((ch)))
+
+#if defined(ECERE_BOOTSTRAP)
+#undef __WIN32__
+#undef __linux__
+#undef __APPLE__
+#undef __UNIX__
+#endif
+
+#ifndef ECERE_BOOTSTRAP
+#if defined(__GNUC__) || defined(__WATCOMC__) || defined(__WIN32__)
+#include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#endif
+
+#if defined(__unix__) || defined(__APPLE__)
+#include <utime.h>
+#endif
+
+#if defined(__WIN32__) || defined(__WATCOMC__)
+#include <direct.h>
+#else
+#include <dirent.h>
+#endif
+
+#if defined(__WIN32__)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <io.h>
+
+BOOL WINAPI GetVolumePathName(LPCTSTR lpszFileName,LPTSTR lpszVolumePathName,DWORD cchBufferLength);
+
+// Missing function...
+/*
+#ifndef WNetGetResourceInformation 
+DWORD APIENTRY WNetGetResourceInformationA(LPNETRESOURCE lpNetResource, LPVOID lpBuffer, LPDWORD lpcbBuffer, LPTSTR* lplpSystem);
+#ifdef UNICODE
+#define WNetGetResourceInformation  WNetGetResourceInformationW
+#else
+#define WNetGetResourceInformation  WNetGetResourceInformationA
+#endif
+#endif
+*/
+
+#else
+#include <unistd.h>
+#endif
+
+
+#include "zlib.h"
+
+#endif //#ifndef ECERE_BOOTSTRAP
+private:
+
+#undef uint
+#undef File
+
+import "System"
+
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NONET) && !defined(ECERE_BOOTSTRAP)
+import "HTTPFile"
+#endif
+
+import "dataTypes"
+
+// IMPLEMENTATION OF THESE IS IN _File.c
+default:
+
+uint FILE_GetSize(FILE * input);
+bool FILE_Lock(FILE * input, FILE * output, FileLock type, uint64 start, uint64 length, bool wait);
+void FILE_set_buffered(FILE * input, FILE * output, bool value);
+FileAttribs FILE_FileExists(char * fileName);
+bool FILE_FileGetSize(char * fileName, FileSize * size);
+bool FILE_FileGetStats(char * fileName, FileStats stats);
+void FILE_FileFixCase(char * file);
+void FILE_FileOpen(char * fileName, FileOpenMode mode, FILE ** input, FILE **output);
+
+private:
+
+FileSystem httpFileSystem;
+
+public class FileSize : uint
+{
+   // defaultAlignment = Right;
+   /*
+   void OnDisplay(Surface surface, int x, int y, int width, void * fieldData, int alignment, DataDisplayFlags displayFlags)
+   {
+      char string[16];
+      int len;
+      eUtils_PrintSize(string, *size, 2);
+      len = strlen(string);
+      surface.WriteTextDots(alignment, x, y, width, string, len);
+   }
+   */
+   int OnCompare(FileSize data2)
+   {
+      int result = 0;
+      if(&this && &data2)
+      {
+         if(this > data2)
+            result = 1;
+         else if(this < data2)
+            result = -1;
+      }
+      return result;
+   }
+
+   char * OnGetString(char * string, void * fieldData, bool * needClass)
+   {
+      PrintSize(string, this, 2);
+      return string;
+   }
+
+   bool OnGetDataFromString(char * string)
+   {
+      char * end;
+      double value = strtod(string, &end);
+      uint multiplier = 1;
+      if(strstr(end, "GB") || strstr(end, "gb")) multiplier = (uint)1024 * 1024 * 1024;
+      else if(strstr(end, "MB") || strstr(end, "mb")) multiplier = (uint)1024 * 1024;
+      else if(strstr(end, "KB") || strstr(end, "kb")) multiplier = 1024;
+
+      this = (uint)(multiplier * value);
+      return true;
+   }
+};
+
+class FileSystem
+{
+   virtual File ::Open(char * archive, char * name, FileOpenMode mode);
+
+   // Query on names
+   virtual FileAttribs ::Exists(char * archive, char * fileName);
+   virtual bool ::GetSize(char * archive, char * fileName, FileSize * size);
+   virtual bool ::Stats(char * archive, char * fileName, FileStats stats);
+   virtual void ::FixCase(char * archive, char * fileName);
+
+   // File Listing
+   virtual bool ::Find(FileDesc file, char * archive, char * name);
+   virtual bool ::FindNext(FileDesc file);
+   virtual void ::CloseDir(FileDesc file);
+
+   // Archive manipulation
+   virtual Archive ::OpenArchive(char * fileName, ArchiveOpenFlags create);
+   virtual bool ::QuerySize(char * fileName, FileSize * size);
+};
+
+public enum FileOpenMode { read = 1, write, append, readWrite, writeRead, appendRead };
+public enum FileSeekMode { start, current, end };
+
+#if !defined(ECERE_BOOTSTRAP)
+static FileDialog fileDialog { text = "Select File" };
+#endif
+
+public enum FileLock
+{
+   unlocked = 0,     // LOCK_UN  _SH_DENYNO
+   shared = 1,       // LOCK_SH  _SH_DENYWR
+   exclusive = 2     // LOCK_EX  _SH_DENYRW
+};
+
+public class File : IOChannel
+{
+   FILE * input, * output;
+
+   uint ReadData(byte * bytes, uint numBytes)
+   {
+      return Read(bytes, 1, numBytes);
+   }
+
+   uint WriteData(byte * bytes, uint numBytes)
+   {
+      return Write(bytes, 1, numBytes);
+   }
+
+   ~File()
+   {
+      if(output && output != input)
+      {
+         openCount--;
+         fclose(output);
+      }
+      if(input)
+      {
+         openCount--;
+         fclose(input);
+      }
+      input = null;
+      output = null;
+   }
+
+   bool OnGetDataFromString(char * string)
+   {
+      if(!string[0])
+      {
+         this = null;
+         return true;
+      }
+      else
+      {
+         File f = FileOpen(string, read);
+         if(f)
+         {
+            this = TempFile { };
+            while(!f.Eof())
+            {
+               byte buffer[4096];
+               uint read = f.Read(buffer, 1, sizeof(buffer));
+               Write(buffer, 1, read);
+            }
+            delete f;
+            return true;
+         }
+      }
+      return false;
+   }
+
+   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   {
+      if(this)
+      {
+         PrintSize(tempString, GetSize(), 2);
+         return tempString;
+      }
+      return null;
+   }
+
+#ifndef ECERE_BOOTSTRAP
+   Window OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)
+   {
+      Window editData = class::OnEdit(dataBox, obsolete, x + 24, y, w - 48, h, userData);
+      Button load
+      { 
+         dataBox, inactive = true, text = "Imp", hotKey = f2,
+         position = { Max(x + 24, x + w - 24), y }, size = { 24, h };
+
+         bool DataBox::NotifyClicked(Button button, int x, int y, Modifiers mods)
+         {
+            fileDialog.master = rootWindow;
+            fileDialog.filePath = "";
+            fileDialog.type = open;
+
+            if(fileDialog.Modal() == ok)
+            {
+               char * filePath = fileDialog.filePath;
+               File output = null;
+               if(output.OnGetDataFromString(filePath))
+               {
+                  SetData(output, false);
+                  Refresh();
+               }
+            }
+            return true;
+         }
+      };
+      Button save
+      { 
+         dataBox, inactive = true, text = "Exp", hotKey = f2,
+         position = { Max(x + 24, x + w - 48), y }, size = { 24, h };
+
+         bool DataBox::NotifyClicked(Button button, int x, int y, Modifiers mods)
+         {
+            fileDialog.master = rootWindow;
+            fileDialog.type = save;
+            fileDialog.filePath = "";
+            if(fileDialog.Modal() == ok)
+            {
+               char * filePath = fileDialog.filePath;
+               File f = FileOpen(filePath, write);
+               if(f)
+               {
+                  File input = *(void **)data;
+                  input.Seek(0, start);
+                  while(!input.Eof())
+                  {
+                     byte buffer[4096];
+                     uint read = input.Read(buffer, 1, sizeof(buffer));
+                     f.Write(buffer, 1, read);                     
+                  }
+                  delete f;
+               }               
+            }
+            return true;
+         }
+      };
+      load.Create();
+      save.Create();
+      return editData;
+   }
+#endif //#ifndef ECERE_BOOTSTRAP
+
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NOARCHIVE) && !defined(ECERE_BOOTSTRAP)
+   void OnSerialize(IOChannel channel)
+   {
+      uint size = this ? GetSize() : MAXDWORD;
+      if(this)
+      {
+         byte * uncompressed = new byte[size];
+         Seek(0, start);
+         if(uncompressed || !size)
+         {
+            uint count = Read(uncompressed, 1,  size);
+            if(count == size)
+            {
+               uint cSize = size + size / 1000 + 12;
+               byte * compressed = new byte[cSize];
+               if(compressed)
+               {
+                  compress2(compressed, &cSize, uncompressed, size, 9);
+
+                  size.OnSerialize(channel);
+                  cSize.OnSerialize(channel);
+                  channel.WriteData(compressed, cSize);
+
+                  delete compressed;
+               }
+            }
+            delete uncompressed;
+         }
+      }
+      else
+         size.OnSerialize(channel);
+
+      /*
+      byte data[4096];
+      uint c;
+      size.OnSerialize(channel);
+
+      // Will add position...
+      if(this)
+      {
+         Seek(0, start);
+         for(c = 0; c<size; c += sizeof(data))
+         {
+            uint count = Read(data, 1, sizeof(data));
+            buffer.WriteData(data, count);
+         }
+      }
+      */
+   }
+
+   void OnUnserialize(IOChannel channel)
+   {
+      uint size, cSize;
+
+      this = null;
+
+      size.OnUnserialize(channel);
+      if(size != MAXDWORD)
+      {
+         byte * compressed;
+         cSize.OnUnserialize(channel);
+
+         compressed = new byte[cSize];
+         if(compressed)
+         {
+            if(channel.ReadData(compressed, cSize) == cSize)
+            {
+               byte * uncompressed = new byte[size];
+               if(uncompressed || !size)
+               {
+                  this = TempFile { };
+                  uncompress(uncompressed, &size, compressed, cSize);
+                  Write(uncompressed, 1, size);
+                  Seek(0, start);
+
+                  delete uncompressed;
+               }
+            }
+            delete compressed;
+         }
+      }
+
+      /*
+      byte data[4096];
+      uint c;
+
+      size.OnUnserialize(channel);
+      if(size != MAXDWORD)
+      {
+         this = TempFile { };
+         for(c = 0; c<size; c += sizeof(data))
+         {
+            uint count = Min(size - c, sizeof(data));
+            channel.ReadData(data, count);
+            Write(data, 1, count);
+         }
+         Seek(0, start);
+      }
+      else
+         this = null;
+      */
+   }
+#endif
+
+public:
+
+   // Virtual Methods
+   virtual bool Seek(int pos, FileSeekMode mode)
+   {
+      uint fmode = SEEK_SET;
+      switch(mode)
+      {
+         case start: fmode = SEEK_SET; break;
+         case end: fmode = SEEK_END; break;
+         case current: fmode = SEEK_CUR; break;
+      }
+      return fseek(input ? input : output, pos, fmode) != EOF;
+   }
+
+   virtual uint Tell(void)
+   {
+      return input ? ftell(input) : ftell(output);
+   }
+
+   virtual int Read(void * buffer, uint size, uint count)
+   {
+      return input ? (int)fread(buffer, size, count, input) : 0;
+   }
+
+   virtual int Write(void * buffer, uint size, uint count)
+   {
+      return output ? (int)fwrite(buffer, size, count, output) : 0;
+   }
+
+   // UNICODE OR NOT?
+   virtual bool Getc(char * ch)
+   {
+      int ich = fgetc(input);
+      if(ich != EOF)
+      {
+         if(ch) *ch = (char)ich;
+         return true;
+      }
+      return false;
+   }
+
+   virtual bool Putc(char ch)
+   {
+      return (fputc((int)ch, output) == EOF) ? false : true;
+   }
+
+   virtual bool Puts(const char * string)
+   {
+      bool result = false;
+      if(output)
+      {
+         result = (fputs(string, output) == EOF) ? false : true;
+         // TODO: Check if any repercusions of commenting out fflush here
+         // This is what broke the debugger in 0.44d2 , it is required for outputting things to the DualPipe
+         // Added an explicit flush call in DualPipe::Puts
+         // fflush(output);
+      }
+      return result;
+   }
+
+   virtual bool Eof(void)
+   {
+      return input ? feof(input) : true;
+   }
+   
+   virtual bool Truncate(FileSize size)
+   {
+   #ifdef ECERE_BOOTSTRAP
+      fprintf(stderr, "WARNING:  File::Truncate unimplemented in ecereBootstrap.\n");
+      return false;
+   #else
+   #if defined(__WIN32__)
+      return output ? (_chsize(fileno(output), size) == 0) : false;
+   #else
+      return output ? (ftruncate(fileno(output), size) == 0) : false;
+   #endif   
+   #endif
+   }
+
+   virtual uint GetSize(void)
+   {
+      return FILE_GetSize(input);
+   }
+   
+   virtual void CloseInput(void)
+   {
+      if(input)
+      {
+         fclose(input);
+         if(output == input)
+            output = null;
+         input = null;
+      }
+   }
+
+   virtual void CloseOutput(void)
+   {
+      if(output)
+      {
+         fclose(output);
+         if(input == output)
+            input = null;
+         output = null;
+      }
+   }
+
+   virtual bool Lock(FileLock type, uint64 start, uint64 length, bool wait)
+   {
+      return FILE_Lock(input, output, type, start, length, wait);
+   }
+
+   virtual bool Unlock(uint64 start, uint64 length, bool wait)
+   {
+      return Lock(unlocked, start, length, wait);
+   }
+
+   // Normal Methods
+   int Printf(char * format, ...)
+   {
+      int result = 0;
+      char text[MAX_F_STRING];
+      va_list args;
+      va_start(args, format);
+      vsprintf(text, format, args);
+      if(Puts(text))
+         result = strlen(text);
+      va_end(args);
+      return result;
+   }
+
+   public void PrintLn(typed_object object, ...)
+   {
+      va_list args;
+      char buffer[4096];
+      va_start(args, object);
+      PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
+      Puts(buffer);
+      Putc('\n');
+      va_end(args);
+   }
+
+   public void Print(typed_object object, ...)
+   {
+      va_list args;
+      char buffer[4096];
+      va_start(args, object);
+      PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
+      Puts(buffer);
+      va_end(args);
+   }
+
+   bool Flush(void)
+   {
+      fflush(output);
+      return true;
+   }
+
+   bool GetLine(char *s, int max)
+   {
+      int c = 0;
+      bool result = true;
+      s[c]=0;
+
+      if(Eof())
+      {
+         result = false;
+      }
+      else
+      {
+         while(c<max-1)
+         {
+            char ch = 0;
+         
+            if(/*!Peek() || */ !Getc(&ch))
+            {
+               result = false;
+               break;
+            }
+            if(ch =='\n') 
+               break;
+            if(ch !='\r')
+               s[c++]=ch;
+         }
+      }
+      s[c]=0;
+      return result || c > 1;
+   }
+
+   // Strings and numbers separated by spaces, commas, tabs, or CR/LF, handling quotes
+   bool GetString(char * string, int max)
+   {
+      int c;
+      char ch;
+      bool quoted = false;
+      bool result = true;
+
+      *string = 0;
+      while(true)
+      {
+         if(!Getc(&ch))
+            result = false;
+         if( (ch!='\n') && (ch!='\r') && (ch!=' ') && (ch!=',') && (ch!='\t'))
+            break;
+         if(Eof()) break;
+      }
+      if(result)
+      {
+         for(c=0; c<max-1; c++)
+         {
+            if(!quoted && ((ch=='\n')||(ch=='\r')||(ch==' ')||(ch==',')||(ch=='\t')))
+            {
+               result = true;
+               break;
+            }
+            if(ch == '\"')
+            {
+               quoted ^= 1;
+               c--;
+            }
+            else
+               string[c]=ch;
+
+            if(!Getc(&ch)) 
+            {
+               c++;
+               result = false;
+               break;            
+            }
+         }
+         string[c]=0;
+      }
+      return result;
+   }
+
+   int GetValue(void)
+   {
+      char string[32];
+      GetString(string,sizeof(string));
+      return atoi(string);
+   }
+
+   unsigned int GetHexValue(void)
+   {
+      char string[32];
+      GetString(string, sizeof(string));
+      return strtoul(string, null, 16);
+   }
+
+   float GetFloat(void)
+   {
+      char string[32];
+      GetString(string, sizeof(string));
+      return (float)FloatFromString(string);
+   }
+
+   double GetDouble(void)
+   {
+      char string[32];
+      GetString(string, sizeof(string));
+      return FloatFromString(string);
+   }
+
+   property void * input { set { input = value; } get { return input; } }
+   property void * output { set { output = value; } get { return output; } }
+   property bool buffered
+   {
+      set
+      {
+         FILE_set_buffered(input, output, value);
+      }      
+   }
+   property bool eof { get { return Eof(); } }
+
+   int GetLineEx(char *s, int max, bool *hasNewLineChar)
+   {
+      int c = 0;
+      s[c] = '\0';
+
+      if(!Eof())
+      {
+         char ch = '\0';
+         while(c < max - 1)
+         {
+            if(/*!Peek() || */ !Getc(&ch))
+               break;
+            if(ch == '\n')
+               break;
+            if(ch != '\r')
+               s[c++] = ch;
+         }
+         if(hasNewLineChar)
+            *hasNewLineChar = (ch == '\n');
+      }
+      s[c] = '\0';
+      return c;
+   }
+
+   bool CopyTo(char * outputFileName)
+   {
+      bool result = false;
+      File f = FileOpen(outputFileName, write);
+      if(f)
+      {
+         byte buffer[65536];
+
+         result = true;
+         Seek(0, start);
+         while(!Eof())
+         {
+            uint count = Read(buffer, 1, sizeof(buffer));
+            if(count && !f.Write(buffer, 1, count))
+            {
+               result = false;
+               break;
+            }
+         }
+      }
+      Seek(0, start);
+      return result;
+   }
+}
+
+public class ConsoleFile : File
+{
+   input = stdin;
+   output = stdout;
+   ~ConsoleFile()
+   {
+      input = null;
+      output = null;
+   }
+};
+
+public class FileAttribs : bool
+{
+public:
+   bool isFile:1, isArchive:1, isHidden:1, isReadOnly:1, isSystem:1, isTemporary:1, isDirectory:1;
+   bool isDrive:1, isCDROM:1, isRemote:1, isRemovable:1, isServer:1, isShare:1;
+   // property bool { };
+};
+
+public struct FileStats
+{
+   FileAttribs attribs;
+   FileSize size;
+   SecSince1970 accessed;
+   SecSince1970 modified;
+   SecSince1970 created;
+};
+
+#if defined(__WIN32__)
+
+// --- FileName functions ---
+
+default TimeStamp Win32FileTimeToTimeStamp(FILETIME * fileTime)
+{
+   // TIME_ZONE_INFORMATION tz = { 0 };
+   SYSTEMTIME st, lt;
+   DateTime t;
+
+   FileTimeToSystemTime(fileTime, &lt);
+
+   /*
+   GetTimeZoneInformation(&tz);
+   tz.Bias = 0;
+   _TzSpecificLocalTimeToSystemTime(&tz, &lt, &st);
+   */
+   st = lt;
+
+   t.year = st.wYear;
+   t.month = (Month)(st.wMonth - 1);
+   t.day = st.wDay;
+   t.hour = st.wHour;
+   t.minute = st.wMinute;
+   t.second = st.wSecond;
+   return t;
+}
+
+default void TimeStampToWin32FileTime(TimeStamp t, FILETIME * fileTime)
+{
+   // TIME_ZONE_INFORMATION tz = { 0 };
+   SYSTEMTIME st, lt;
+   DateTime tm;
+   
+   tm = t;
+
+   st.wYear = (short)tm.year;
+   st.wMonth = (short)tm.month + 1;
+   st.wDay = (short)tm.day;
+   st.wHour = (short)tm.hour;
+   st.wMinute = (short)tm.minute;
+   st.wSecond = (short)tm.second;
+   st.wMilliseconds = 0;
+   st.wDayOfWeek = 0;
+
+   /*
+   GetTimeZoneInformation(&tz);
+   tz.Bias = 0;
+   SystemTimeToTzSpecificLocalTime(&tz, &st, &lt);
+   */
+
+   lt = st;
+   SystemTimeToFileTime(&lt, fileTime);
+}
+/*
+default TimeStamp Win32FileTimeToTimeStamp(FILETIME * fileTime);
+default void TimeStampToWin32FileTime(TimeStamp t, FILETIME * fileTime);
+*/
+default bool WinReviveNetworkResource(uint16 * _wfileName);
+
+#endif
+
+public FileAttribs FileExists(char * fileName)
+{
+   char archiveName[MAX_LOCATION], * archiveFile;
+#if !defined(ECERE_BOOTSTRAP)
+   if(SplitArchivePath(fileName, archiveName, &archiveFile))
+   {
+      return EARFileSystem::Exists(archiveName, archiveFile);
+   }
+   else if(strstr(fileName, "http://") == fileName)
+   {
+      return FileAttribs { isFile = true };
+   }
+   else
+#endif
+      return FILE_FileExists(fileName);
+}
+
+static int openCount;
+
+public File FileOpen(char * fileName, FileOpenMode mode)
+{
+   File result = null;
+   if(fileName)
+   {
+      char archiveName[MAX_LOCATION], * archiveFile;
+#if !defined(ECERE_BOOTSTRAP)
+      if(SplitArchivePath(fileName, archiveName, &archiveFile))
+      {
+         result = EARFileSystem::Open(archiveName, archiveFile, mode);
+      }
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NONET)
+      else if(strstr(fileName, "http://") == fileName)
+      {
+         result = FileOpenURL(fileName);
+      }
+#endif
+      else
+#endif
+      if(strstr(fileName, "File://") == fileName)
+      {
+         result = (File)strtoul(fileName+7, null, 16);
+         if(result)
+         {
+            if(result._class && eClass_IsDerived(result._class, class(File)))
+            {
+               if(!result._refCount) incref result;
+               incref result;
+               result.Seek(0, start);
+            }
+            else
+               result = null;
+         }
+      }
+      else
+      {
+         File file = File {};
+         if(file)
+         {
+            FILE_FileOpen(fileName, mode, &file.input, &file.output);
+
+            //file.mode = mode;
+            if(!file.input && !file.output);
+            else
+            {
+               openCount++;
+               result = file;
+               // TESTING ENABLING FILE BUFFERING BY DEFAULT... DOCUMENT ANY ISSUE
+               /*
+               if(file.input)
+                  setvbuf(file.input, null, _IONBF, 0);
+               else
+                  setvbuf(file.output, null, _IONBF, 0);
+               */
+            }
+            if(!result)
+            {
+               delete file;
+               /* TOFIX:
+               LogErrorCode((mode == Read || mode == ReadWrite) ? 
+                  ERR_FILE_NOT_FOUND : ERR_FILE_WRITE_FAILED, fileName);
+               */
+            }
+         }
+      }
+   }
+   return result;
+}
+
+public void FileFixCase(char * file)
+{
+   FILE_FileFixCase(file);
+}
+
+#if !defined(ECERE_BOOTSTRAP)
+public bool FileTruncate(char * fileName, FileSize size)
+{
+#if defined(__WIN32__)
+   uint16 * _wfileName = UTF8toUTF16(fileName, null);
+   int f = _wopen(_wfileName, _O_RDWR|_O_CREAT, _S_IREAD|_S_IWRITE);
+   bool result = false;
+   if(f != -1)
+   {
+      if(!_chsize(f, size))
+         result = true;
+      _close(f);
+   }
+   delete _wfileName;
+   return result;
+#else
+   return truncate(fileName, size) == 0;
+#endif
+}
+#endif
+
+public bool FileGetSize(char * fileName, FileSize * size)
+{
+   bool result = false;
+   if(size)
+   {
+      *size = 0;
+      if(fileName)
+      {
+#if !defined(ECERE_BOOTSTRAP)
+         char archiveName[MAX_LOCATION], * archiveFile;
+         if(SplitArchivePath(fileName, archiveName, &archiveFile))
+            return EARFileSystem::GetSize(archiveName, archiveFile, size);
+         else
+#endif
+            result = FILE_FileGetSize(fileName, size);
+      }
+   }
+   return result;
+}
+
+public bool FileGetStats(char * fileName, FileStats stats)
+{
+   bool result = false;
+   if(stats && fileName)
+   {
+#if !defined(ECERE_BOOTSTRAP)
+      char archiveName[MAX_LOCATION], * archiveFile;
+      if(SplitArchivePath(fileName, archiveName, &archiveFile))
+         result = EARFileSystem::Stats(archiveName, archiveFile, stats);
+      else
+#endif
+         return FILE_FileGetStats(fileName, stats);
+   }
+   return result;
+}
+
+#ifndef ECERE_BOOTSTRAP
+
+public bool FileSetAttribs(char * fileName, FileAttribs attribs)
+{
+#ifdef __WIN32__
+   uint winAttribs = 0;
+   uint16 * _wfileName = UTF8toUTF16(fileName, null);
+
+   if(attribs.isHidden)   winAttribs |= FILE_ATTRIBUTE_HIDDEN;
+   if(attribs.isReadOnly) winAttribs |= FILE_ATTRIBUTE_READONLY;
+
+   SetFileAttributes(_wfileName, winAttribs);
+   delete _wfileName;
+#endif
+   return true;
+}
+
+public bool FileSetTime(char * fileName, TimeStamp created, TimeStamp accessed, TimeStamp modified)
+{
+   bool result = false;
+   TimeStamp currentTime = time(null);
+   if(!created)  created = currentTime;
+   if(!accessed) accessed = currentTime;
+   if(!modified) modified = currentTime;
+   if(fileName)
+   {
+#ifdef __WIN32__
+      uint16 * _wfileName = UTF8toUTF16(fileName, null);
+      HANDLE hFile = CreateFile(_wfileName, GENERIC_WRITE|GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, null,
+         OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, null);
+      delete _wfileName;
+      if(hFile != INVALID_HANDLE_VALUE)
+      {
+         FILETIME c, a, m;
+      
+         TimeStampToWin32FileTime(created, &c);
+         TimeStampToWin32FileTime(accessed, &a);
+         TimeStampToWin32FileTime(modified, &m);
+
+         /*
+         {
+            uint cc,aa,mm;
+
+            cc = Win32FileTimeToTimeStamp(&c);
+            aa = Win32FileTimeToTimeStamp(&a);
+            mm = Win32FileTimeToTimeStamp(&m);
+         }
+         */
+                  
+         if(SetFileTime(hFile, &c, &a, &m))
+            result = true;
+
+         CloseHandle(hFile);
+      }
+#else
+      struct utimbuf t = { (int)accessed, (int)modified };
+      if(!utime(fileName, &t))
+         result = true;
+#endif
+   }
+   return result;
+}
+
+/****************************************************************************
+ Directory Listing
+****************************************************************************/
+// Directory Description for file listing
+private class Dir : struct
+{
+#if defined(__WIN32__)
+   HANDLE fHandle;
+
+   int resource;
+   NETRESOURCE * resources;
+   int numResources;
+
+   int workGroup;
+   NETRESOURCE * workGroups;
+   int numWorkGroups;
+#else
+   DIR * d;
+#endif
+   char name[MAX_LOCATION];
+};
+
+static FileDesc FileFind(char * path, char * extensions)
+{
+   FileDesc result = null;
+   FileDesc file;
+
+   if((file = FileDesc {}))
+   {
+      char archiveName[MAX_LOCATION], * archiveFile;
+      if(SplitArchivePath(path, archiveName, &archiveFile))
+      {
+         if(EARFileSystem::Find(file, archiveName, archiveFile))
+         {
+            file.system = class(EARFileSystem);
+            result = file;
+         }
+      }
+      else
+      {
+         Dir d;
+      
+         if((d = file.dir = Dir {}))
+         {
+#if defined(__WIN32__)
+            if(!strcmp(path, "/"))
+            {
+               int c;
+               d.fHandle = (void *)0xFFFFFFFF; //GetLogicalDrives();
+               for(c = 0; c<26; c++)
+                  if(((uint)d.fHandle) & (1<<c))
+                  {
+                     char volume[MAX_FILENAME] = "";
+                     uint16 _wvolume[MAX_FILENAME];
+                     int driveType;
+                     uint16 _wfilePath[4];
+
+                     strcpy(d.name, path);
+                     file.stats.attribs = FileAttribs { isDirectory = true, isDrive = true };
+                     _wfilePath[0] = file.path[0] = (char)('A' + c);
+                     _wfilePath[1] = file.path[1] = ':';
+                     _wfilePath[2] = file.path[2] = '\\';
+                     _wfilePath[3] = file.path[3] = '\0';
+                     file.stats.size = 0;
+                     file.stats.accessed = file.stats.created = file.stats.modified = 0;
+                     driveType = GetDriveType(_wfilePath);
+                     switch(driveType)
+                     {
+                        case DRIVE_REMOVABLE: file.stats.attribs.isRemovable = true; break;
+                        case DRIVE_REMOTE:    file.stats.attribs.isRemote = true; break;
+                        case DRIVE_CDROM:     file.stats.attribs.isCDROM = true; break;
+                     }
+                     *((uint *)&d.fHandle) ^= (1<<c);
+                     if(driveType == DRIVE_NO_ROOT_DIR) continue;
+                  
+                     if(driveType != DRIVE_REMOVABLE && driveType != DRIVE_REMOTE && 
+                        GetVolumeInformation(_wfilePath, _wvolume, MAX_FILENAME - 1, null, null, null, null, 0))
+                     {
+                        file.path[2] = '\0';
+                        UTF16toUTF8Buffer(_wvolume, volume, MAX_FILENAME);
+                        sprintf(file.name, "%s [%s]", file.path, volume);
+                     }
+                     else
+                     {
+                        file.path[2] = '\0';
+                        strcpy(file.name, file.path);
+                     }
+                     result = file;
+                     break;
+                  }
+               d.resource = 0;
+            }
+            else if(path[0] != '\\' || path[1] != '\\' || strstr(path+2, "\\"))
+            {
+               WIN32_FIND_DATA winFile;
+               uint16 dir[MAX_PATH];
+
+               UTF8toUTF16Buffer(path, dir, MAX_LOCATION);
+               if(path[0]) wcscat(dir, L"\\");
+               wcscat(dir, L"*.*");
+
+               d.fHandle = FindFirstFile(dir, &winFile);
+               if(d.fHandle == INVALID_HANDLE_VALUE && WinReviveNetworkResource(dir))
+                  d.fHandle = FindFirstFile(dir, &winFile);
+               if(d.fHandle != INVALID_HANDLE_VALUE)
+               {
+                  UTF16toUTF8Buffer(winFile.cFileName, file.name, MAX_FILENAME);
+                  strcpy(file.path, path);
+                  PathCat(file.path, file.name);
+                  /*if(path[0])
+                     strcat(file.path, DIR_SEPS);
+                  strcat(file.path, file.name);*/
+                  // file.sizeHigh = winFile.nFileSizeHigh;
+                  file.stats.size = winFile.nFileSizeLow;
+
+                  file.stats.attribs = FileAttribs { };
+                  file.stats.attribs.isArchive   = (winFile.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE)   ? true : false;
+                  file.stats.attribs.isHidden    = (winFile.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)    ? true : false;
+                  file.stats.attribs.isReadOnly  = (winFile.dwFileAttributes & FILE_ATTRIBUTE_READONLY)  ? true : false;
+                  file.stats.attribs.isSystem    = (winFile.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)    ? true : false;
+                  file.stats.attribs.isTemporary = (winFile.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ? true : false;
+                  file.stats.attribs.isDirectory = (winFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? true : false;
+                  strcpy(d.name, path);
+
+                  file.stats.accessed = Win32FileTimeToTimeStamp(&winFile.ftLastAccessTime);
+                  file.stats.modified = Win32FileTimeToTimeStamp(&winFile.ftLastWriteTime);
+                  file.stats.created  = Win32FileTimeToTimeStamp(&winFile.ftCreationTime);
+                  result = file;
+               }
+            }
+            else
+            {
+               HANDLE handle = 0;
+               int count = 0xFFFFFFFF;
+               uint size = 512 * sizeof(NETRESOURCE);
+               NETRESOURCE * buffer = (NETRESOURCE *)new0 byte[size];
+               NETRESOURCE nr = {0};
+
+               d.fHandle = null;
+               nr.dwScope       = RESOURCE_GLOBALNET;
+               nr.dwType        = RESOURCETYPE_DISK;
+               nr.lpProvider = L"Microsoft Windows Network";
+
+               strcpy(d.name, path);
+               if(path[2])
+               {
+                  nr.lpRemoteName = UTF8toUTF16(path, null);
+
+                  // Server
+                  WNetOpenEnum(RESOURCE_GLOBALNET, RESOURCETYPE_DISK, 0, &nr, &handle);
+                  if(!handle)
+                  {
+                     WinReviveNetworkResource(nr.lpRemoteName);
+                     WNetOpenEnum(RESOURCE_GLOBALNET, RESOURCETYPE_DISK, 0, &nr, &handle);
+                  }
+
+                  if(handle)
+                  {
+                     while(true)
+                     {
+                        int returnCode = WNetEnumResource(handle, &count, buffer, &size);
+                        if(returnCode != ERROR_MORE_DATA)
+                           break;
+                        count = 0xFFFFFFFF;
+                        buffer = (NETRESOURCE *)renew0 buffer byte[size];
+                     }
+                     WNetCloseEnum(handle);
+                  }
+
+                  delete nr.lpRemoteName;
+                  if(count > 0)
+                  {
+                     file.stats.attribs = FileAttribs { isDirectory = true, isShare = true };
+                     file.stats.size = 0;
+                     file.stats.accessed = file.stats.created = file.stats.modified = 0;
+
+                     UTF16toUTF8Buffer(buffer->lpRemoteName, file.path, MAX_LOCATION);
+                     GetLastDirectory(file.path, file.name);
+
+                     result = file;
+                     d.resources = buffer;
+                     d.numResources = count;
+                     d.resource = 1;
+                  }
+                  else
+                     delete buffer;
+               }
+               else
+               {
+                  int c;
+                  nr.lpProvider = L"Microsoft Windows Network";
+
+                  // Entire Network
+                  WNetOpenEnum(RESOURCE_GLOBALNET, RESOURCETYPE_DISK, 0, &nr, &handle);
+                  while(true)
+                  {
+                     int returnCode = WNetEnumResource(handle, &count, buffer, &size);
+                     if(returnCode != ERROR_MORE_DATA)
+                        break;
+                     count = 0xFFFFFFFF;
+                     buffer = (NETRESOURCE *)renew0 buffer byte[size];
+                  }
+                  WNetCloseEnum(handle);
+
+                  for(c = 0; c<count; c++)
+                  {
+                     NETRESOURCE * resources;
+                     int countInGroup = 0xFFFFFFFF;
+
+                     size = 512 * sizeof(NETRESOURCE);
+                     resources = (NETRESOURCE *)new0 byte[size];
+                  
+                     // Entire Network
+                     WNetOpenEnum(RESOURCE_GLOBALNET, RESOURCETYPE_DISK, 0, &buffer[c], &handle);
+                     while(true)
+                     {
+                        int returnCode = WNetEnumResource(handle, &countInGroup, resources, &size);
+                        if(returnCode != ERROR_MORE_DATA)
+                           break;
+                        countInGroup = 0xFFFFFFFF;
+                        resources = (NETRESOURCE *)renew0 resources byte[size];
+                     }
+                     WNetCloseEnum(handle);
+
+                     if(countInGroup)
+                     {
+                        file.stats.attribs = FileAttribs { isDirectory = true, isServer = true };
+                        file.stats.size = 0;
+                        file.stats.accessed = file.stats.created = file.stats.modified = 0;
+
+                        UTF16toUTF8Buffer(resources->lpRemoteName, file.path, MAX_LOCATION);
+                        strlwr(file.path);
+                        file.path[2] = (char)toupper(file.path[2]);
+                        GetLastDirectory(file.path, file.name);
+
+                        result = file;
+
+                        d.resources = resources;
+                        d.numResources = countInGroup;
+                        d.resource = 1;
+
+                        d.workGroups = buffer;
+                        d.numWorkGroups = count;
+                        d.workGroup = c;
+                        break;
+                     }
+                     else
+                        delete resources;
+                  }
+                  if(c >= count && buffer) delete buffer;
+               }
+            }
+#else
+            struct dirent *de;
+            struct stat s;
+
+            d.d = opendir((path && path[0]) ? path : ".");
+            if(d.d && (de = readdir(d.d)))
+            {
+               if(path[0])
+               {
+                  strcpy(file.path, path);
+                  strcat(file.path, DIR_SEPS);
+               }
+               strcpy(file.name,de->d_name);
+               strcat(file.path, file.name);
+               stat(file.path, &s);
+               file.stats.attribs = (s.st_mode&S_IFDIR) ? FileAttribs { isDirectory = true } : FileAttribs { isFile = true };
+               file.stats.size = s.st_size;
+               file.stats.accessed = s.st_atime;
+               file.stats.modified = s.st_mtime;
+               file.stats.created = s.st_ctime;
+          
+               strcpy(d.name, path);
+
+               result = file;
+            }
+#endif
+         }
+
+         if(!result)
+            delete d;
+      }
+      if(!result)
+         delete file;
+   }
+   if(result)
+   {
+      while(result && !result.Validate(extensions))
+         result = result.FindNext(extensions);
+   }
+   return result;
+}
+
+private class FileDesc : struct
+{
+   FileStats stats;
+   char name[MAX_FILENAME];
+   char path[MAX_LOCATION];
+
+   subclass(FileSystem) system;
+   Dir dir;
+
+   bool Validate(char * extensions)
+   {
+      if(strcmp(name, "..") && strcmp(name, ".") && strcmp(name, ""))
+      {
+         if(extensions && !stats.attribs.isDirectory)
+         {
+            char extension[MAX_EXTENSION], compared[MAX_EXTENSION];
+            int c;
+
+            GetExtension(name, extension);
+            for(c = 0; extensions[c];)
+            {
+               int len = 0;
+               char ch;
+               for(;(ch = extensions[c]) && !IS_ALUNDER(ch); c++);
+               for(;(ch = extensions[c]) &&  IS_ALUNDER(ch); c++)
+                  compared[len++] = ch;
+               compared[len] = '\0';
+
+               if(!strcmpi(extension, compared))
+                  return true;
+            }
+         }
+         else
+            return true;
+      }
+      return false;
+   }
+
+   FileDesc FindNext(char * extensions)
+   {
+      FileDesc result = null;
+
+      Dir d = dir;
+
+      name[0] = '.';
+      name[1] = '\0';
+      while(!Validate(extensions))
+      {
+         result = null;
+
+         if(system)
+         {
+            if(system.FindNext(this))
+               result = this;
+            else
+               break;
+         }
+         else
+         {
+#if defined(__WIN32__)
+            if(!strcmp(d.name, "/"))
+            {
+               int c;
+               for(c = 0; c<26; c++)
+               {
+                  if(((uint)d.fHandle) & (1<<c))
+                  {
+                     char volume[MAX_FILENAME] = "";
+                     int driveType;
+                     uint16 _wpath[4];
+                     uint16 _wvolume[MAX_FILENAME];
+
+                     stats.attribs = FileAttribs { isDirectory = true, isDrive = true };
+                     stats.size = 0;
+                     stats.accessed = stats.created = stats.modified = 0;
+                     _wpath[0] = path[0] = (char)('A' + c);
+                     _wpath[1] = path[1] = ':';
+                     _wpath[2] = path[2] = '\\';
+                     _wpath[3] = path[3] = 0;
+                     driveType = GetDriveType(_wpath);
+                     *((uint *)&d.fHandle) ^= (1<<c);
+
+                     switch(driveType)
+                     {
+                        case DRIVE_REMOVABLE: stats.attribs.isRemovable = true; break;
+                        case DRIVE_REMOTE:    stats.attribs.isRemote = true;    break;
+                        case DRIVE_CDROM:     stats.attribs.isCDROM = true;     break;
+                     }
+                     if(driveType == DRIVE_NO_ROOT_DIR)
+                     {
+                        uint16 remoteName[1024];
+                        int status;
+                        int size = 1024;
+                        _wpath[2] = 0;
+
+                        status = WNetGetConnection(_wpath, remoteName, &size);
+                        if(status != ERROR_CONNECTION_UNAVAIL)
+                           continue;
+
+                        _wpath[2] = '\\';
+                        _wpath[3] = 0;
+                     }
+
+                     if(driveType != DRIVE_REMOVABLE && driveType != DRIVE_REMOTE && 
+                        GetVolumeInformation(_wpath, _wvolume, MAX_FILENAME - 1, null, null, null, null, 0))
+                     {
+                        UTF16toUTF8Buffer(_wvolume, volume, MAX_FILENAME);
+                        path[2] = '\0';
+                        sprintf(name, "%s [%s]", path, volume);
+                     }
+                     else
+                     {
+                        path[2] = '\0';
+                        strcpy(name, path);
+                     }
+                     result = this;
+                     break;
+                  }
+               }
+               break;
+            }
+            else if(d.name[0] != '\\' || d.name[1] != '\\' || strstr(d.name+2, "\\"))
+            {
+               WIN32_FIND_DATA winFile;
+               if(FindNextFile(d.fHandle, &winFile))
+               {
+                  UTF16toUTF8Buffer(winFile.cFileName, name, MAX_FILENAME);
+                  stats.attribs = FileAttribs { };
+                  stats.attribs.isArchive   = (winFile.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE)   ? true : false;
+                  stats.attribs.isHidden    = (winFile.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)    ? true : false;
+                  stats.attribs.isReadOnly  = (winFile.dwFileAttributes & FILE_ATTRIBUTE_READONLY)  ? true : false;
+                  stats.attribs.isSystem    = (winFile.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)    ? true : false;
+                  stats.attribs.isTemporary = (winFile.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ? true : false;
+                  stats.attribs.isDirectory = (winFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? true : false;
+                  stats.size = winFile.nFileSizeLow;
+
+                  stats.accessed = Win32FileTimeToTimeStamp(&winFile.ftLastAccessTime);
+                  stats.modified = Win32FileTimeToTimeStamp(&winFile.ftLastWriteTime);
+                  stats.created  = Win32FileTimeToTimeStamp(&winFile.ftCreationTime);
+
+                  strcpy(path, d.name);
+                  PathCat(path, name);
+                  /*if(d.name[0])
+                     strcat(path, DIR_SEPS);
+                  strcat(path, name);*/
+                  result = this;
+               }
+               else
+                  break;
+            }
+            else
+            {
+               if(d.name[2])
+               {
+                  if(d.resource < d.numResources)
+                  {
+                     stats.attribs = FileAttribs { isDirectory = true, isShare = true };
+                     stats.size = 0;
+                     stats.accessed = stats.created = stats.modified = 0;
+
+                     UTF16toUTF8Buffer(d.resources[d.resource].lpRemoteName, path, MAX_LOCATION);
+                     GetLastDirectory(path, name);
+
+                     result = this;
+
+                     d.resource++;
+                  }
+                  else
+                  {
+                     delete d.resources;
+                     break;
+                  }
+               }
+               else
+               {
+                  int c;
+                  for(c = d.workGroup; c<d.numWorkGroups; c++)
+                  {
+                     if(c != d.workGroup)
+                     {
+                        int countInGroup = 0xFFFFFFFF;
+                        HANDLE handle;
+                        NETRESOURCE * resources;
+                        uint size = 512 * sizeof(NETRESOURCE);
+
+                        resources = (NETRESOURCE *)new0 byte[size];
+                        // Entire Network
+                        WNetOpenEnum(RESOURCE_GLOBALNET, RESOURCETYPE_DISK, 0, &d.workGroups[c], &handle);
+                        while(true)
+                        {
+                           int returnCode = WNetEnumResource(handle, &countInGroup, resources, &size);
+                           if(returnCode != ERROR_MORE_DATA)
+                              break;
+                           countInGroup = 0xFFFFFFFF;
+                           resources = (NETRESOURCE *)renew0 resources byte[size];
+                           
+                        }
+                        WNetCloseEnum(handle);
+                        d.numResources = countInGroup;
+                        d.resources = resources;
+                        d.resource = 0;
+                     }
+
+                     if(d.resource < d.numResources)
+                     {
+                        stats.attribs = FileAttribs { isDirectory = true, isServer = true };
+                        stats.size = 0;
+                        stats.accessed = stats.created = stats.modified = 0;
+
+                        UTF16toUTF8Buffer(d.resources[d.resource].lpRemoteName, path, MAX_LOCATION);
+                        strlwr(path);
+                        path[2] = (char)toupper(path[2]);
+                        GetLastDirectory(path, name);
+
+                        result = this;
+
+                        d.resource++;
+                        break;
+                     }
+                     else
+                     {
+                        if(d.resources) 
+                           delete d.resources;
+                     }
+                  }
+                  d.workGroup = c;
+                  if(d.workGroup == d.numWorkGroups && d.resource == d.numResources)
+                  {
+                     delete d.workGroups;
+                     break;
+                  }
+               }
+            }
+#else
+            struct dirent *de;
+            struct stat s;
+
+            de = readdir(d.d);
+            if(de)
+            {
+               strcpy(name,de->d_name);
+               strcpy(path, d.name);
+               if(d.name[0] && d.name[0])
+                  strcat(path, DIR_SEPS);
+               strcat(path, name);
+               stat(path, &s);
+               stats.attribs = FileAttribs { };
+               if(s.st_mode & S_IFDIR) stats.attribs.isDirectory = true;
+               stats.size = s.st_size;
+               stats.accessed = s.st_atime;
+               stats.modified = s.st_mtime;
+               stats.created = s.st_ctime;
+               result = this;
+            }
+            else
+               break;
+#endif
+         }
+      }
+      if(!result)
+         CloseDir();
+      return result;
+   }
+
+   void CloseDir(void)
+   {
+      if(system)
+         system.CloseDir(this);
+      else
+      {
+         Dir d = dir;
+         if(d)
+         {
+#if defined(__WIN32__)
+            if(d.fHandle && strcmp(d.name, "/"))
+               FindClose(d.fHandle);
+#else
+            closedir(d.d);
+#endif
+            delete d;
+         }
+      }
+      delete this;
+   }
+}
+
+public struct FileListing
+{
+public:
+   char * directory;
+   char * extensions;
+
+   bool Find()
+   {
+      bool result = false;
+      if(desc)
+         desc = desc.FindNext(extensions);
+      else
+         desc = FileFind(directory, extensions);
+      if(desc)
+         return true;
+      return false;
+   }
+
+   void Stop()
+   {
+      if(desc)
+         desc.CloseDir();
+      desc = null;
+   }
+
+   property char * name { get { return (char *)(desc ? desc.name : null); } };
+   property char * path { get { return (char *)(desc ? desc.path : null); } };
+   property FileStats stats { get { value = desc ? desc.stats : FileStats { }; } };
+
+private:
+   FileDesc desc;
+};
+#endif
+
+public File CreateTemporaryFile(char * tempFileName, char * template)
+{
+#ifndef ECERE_BOOTSTRAP // quick fix for now
+   File f;
+#if defined(__unix__) || defined(__APPLE__)
+   char buffer[MAX_FILENAME];
+   int fd;
+   strcpy(buffer, "/tmp/");
+   strcat(buffer, template);
+   //strcpy(buffer, template);
+   strcat(buffer, "XXXXXX");
+   // mktemp(buffer);
+   fd = mkstemp(buffer);   
+   strcpy(tempFileName, buffer);
+   f = { };
+   f.output = f.input = fdopen(fd, "r+");
+#else
+   char tempPath[MAX_LOCATION];
+   GetTempPathA(MAX_LOCATION, tempPath);     // TODO: Patch this whole thing to support Unicode temp path
+   GetTempFileNameA(tempPath, template, 0, tempFileName);
+   f = FileOpen(tempFileName, readWrite);
+#endif   
+   return f;
+#endif
+}
+
+#undef DeleteFile
+
+public void CreateTemporaryDir(char * tempFileName, char * template)
+{
+#ifndef ECERE_BOOTSTRAP // quick fix for now
+#if defined(__unix__) || defined(__APPLE__)
+   char buffer[MAX_FILENAME];
+   strcpy(buffer, "/tmp/");
+   strcat(buffer, template);
+   //strcpy(buffer, template);
+   strcat(buffer, "XXXXXX");
+   // mkstemp(buffer);
+   mkdtemp(buffer);
+   strcpy(tempFileName, buffer);
+#else
+   char tempPath[MAX_LOCATION];
+   GetTempPathA(MAX_LOCATION, tempPath);     // TODO: Patch this whole thing to support Unicode temp path
+   GetTempFileNameA(tempPath, template, 0, tempFileName);
+   DeleteFile(tempFileName);
+   MakeDir(tempFileName);
+#endif
+#endif
+}

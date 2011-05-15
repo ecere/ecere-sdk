@@ -1,0 +1,52 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "WIA",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "WIA"
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "IncludeDirs" : [
+               "C:/Program Files (x86)/Ecere SDK/mingw/include",
+               "I:/Development/mssdk/include"
+            ],
+            "Libraries" : [
+               "ecere",
+               "ole32",
+               "uuid",
+               "wiaguid"
+            ],
+            "LibraryDirs" : [
+               "I:/Development/mssdk/lib"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "Libraries" : [
+               "ecere"
+            ]
+         }
+      }
+   ],
+   "Files" : [
+      "wiaTest.ec",
+      "../../../extras/wia.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

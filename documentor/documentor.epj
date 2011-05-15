@@ -1,0 +1,87 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "documentor",
+   "Options" : {
+      "TargetFileName" : "documentor",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Warnings" : "All",
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "LibraryDirs" : [
+               "../obj/$(PLATFORM)/bin",
+               "../obj/$(PLATFORM)/lib"
+            ],
+            "PostbuildCommands" : [
+               "$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)"
+            ]
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Console" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "extern",
+         "Files" : [
+            {
+               "Folder" : "htmlView",
+               "Files" : [
+                  "../extras/html/htmlParser.ec",
+                  "../extras/html/HTMLView.ec",
+                  "../extras/html/lines.ec",
+                  "../extras/html/tables.ec"
+               ]
+            },
+            {
+               "Folder" : "ide",
+               "Files" : [
+                  "../ide/src/IDESettings.ec",
+                  "../ide/src/OldIDESettings.ec"
+               ]
+            },
+            "../extras/gui/controls/PathBox.ec",
+            "../extras/gui/controls/StringsBox.ec"
+         ]
+      },
+      {
+         "Folder" : "src",
+         "Files" : [
+            "Documentor.ec",
+            "SettingsDialog.ec"
+         ]
+      }
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

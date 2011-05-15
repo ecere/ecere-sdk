@@ -1,0 +1,31 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "TransCube",
+   "Options" : {
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "Optimization" : "None",
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "TransCube",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true
+         }
+      }
+   ],
+   "Files" : [
+      "transCube.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

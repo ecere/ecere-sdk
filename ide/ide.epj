@@ -1,0 +1,343 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ide",
+   "Options" : {
+      "Warnings" : "All",
+      "PreprocessorDefinitions" : [
+         "GDB_DEBUG_GUI"
+      ],
+      "IncludeDirs" : [
+         "/usr/X11R6/include"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "ide",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)"
+   },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "X11"
+            ],
+            "LibraryDirs" : [
+               "/usr/X11R6/lib"
+            ]
+         }
+      },
+      {
+         "Name" : "apple",
+         "Options" : {
+            "Libraries" : [
+               "X11"
+            ],
+            "LibraryDirs" : [
+               "/usr/X11R6/lib"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG",
+               "SETTINGS_TEST"
+            ],
+            "Libraries" : [
+               "ecere"
+            ],
+            "Console" : true
+         },
+         "Platforms" : [
+            {
+               "Name" : "Win32",
+               "Options" : {
+                  "Libraries" : [
+                     "resources.o"
+                  ]
+               }
+            }
+         ]
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "Libraries" : [
+               "ecere"
+            ],
+            "LibraryDirs" : [
+               "../obj/$(PLATFORM)/bin",
+               "../obj/$(PLATFORM)/lib"
+            ],
+            "PostbuildCommands" : [
+               "$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)"
+            ]
+         },
+         "Platforms" : [
+            {
+               "Name" : "Win32",
+               "Options" : {
+                  "Libraries" : [
+                     "resources.o"
+                  ]
+               }
+            },
+            {
+               "Name" : "linux",
+               "Options" : {
+                  "Libraries" : [
+                     "X11"
+                  ]
+               }
+            },
+            {
+               "Name" : "apple",
+               "Options" : {
+                  "Libraries" : [
+                     "X11"
+                  ]
+               }
+            }
+         ]
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG",
+               "SETTINGS_TEST"
+            ],
+            "Libraries" : [
+               "ecere"
+            ],
+            "Console" : true
+         },
+         "Platforms" : [
+            {
+               "Name" : "Win32",
+               "Options" : {
+                  "Libraries" : [
+                     "resources.o"
+                  ]
+               }
+            }
+         ]
+      },
+      {
+         "Name" : "Profile",
+         "Options" : {
+            "Debug" : true,
+            "Profile" : true,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "Libraries" : [
+               "ecereStatic",
+               "ecStatic",
+               "jpeg",
+               "png",
+               "z",
+               "ungif",
+               "freetype",
+               "harfbuzz"
+            ],
+            "Console" : true
+         },
+         "Platforms" : [
+            {
+               "Name" : "Linux",
+               "Options" : {
+                  "Libraries" : [
+                     "X11",
+                     "GL",
+                     "ncurses",
+                     "pthread",
+                     "m",
+                     "Xrender",
+                     "fontconfig",
+                     "expat"
+                  ]
+               }
+            },
+            {
+               "Name" : "Win32",
+               "Options" : {
+                  "Libraries" : [
+                     "resources.o",
+                     "dxguid",
+                     "ddraw",
+                     "dinput",
+                     "winmm",
+                     "opengl32",
+                     "ws2_32",
+                     "kernel32",
+                     "user32",
+                     "gdi32",
+                     "mpr",
+                     "advapi32",
+                     "shell32",
+                     "winspool",
+                     "imm32"
+                  ]
+               }
+            }
+         ]
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "extern",
+         "Files" : [
+            "../extras/gui/controls/DirectoriesBox.ec",
+            "../extras/FileSystemIterator.ec",
+            "../extras/gui/controls/PathBox.ec",
+            "../extras/gui/controls/SelectorBar.ec",
+            "../extras/gui/controls/Stacker.ec",
+            "../extras/gui/controls/StringsBox.ec"
+         ]
+      },
+      {
+         "Folder" : "src",
+         "Files" : [
+            {
+               "Folder" : "dialogs",
+               "Files" : [
+                  "ActiveCompilerDialog.ec",
+                  "CompilersDetectionDialog.ec",
+                  "FindInFilesDialog.ec",
+                  "GlobalSettingsDialog.ec",
+                  "NewProjectDialog.ec",
+                  "NodeProperties.ec",
+                  "ProjectActiveConfig.ec",
+                  "WorkspaceSettings.ec",
+                  "ProjectTabSettings.ec"
+               ]
+            },
+            {
+               "Folder" : "project",
+               "Files" : [
+                  "Project.ec",
+                  "ProjectConfig.ec",
+                  "ProjectNode.ec",
+                  "ProjectView.ec",
+                  "Workspace.ec",
+                  {
+                     "FileName" : "vsSupport.ec",
+                     "Platforms" : [
+                        {
+                           "Name" : "linux",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        },
+                        {
+                           "Name" : "apple",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "designer",
+               "Files" : [
+                  "CodeEditor.ec",
+                  "CodeObject.ec",
+                  "Designer.ec",
+                  "findCtx.ec",
+                  "findExp.ec",
+                  "findParams.ec",
+                  "Sheet.ec",
+                  "ToolBox.ec"
+               ]
+            },
+            {
+               "Folder" : "debugger",
+               "Files" : [
+                  "debugFindCtx.ec",
+                  "Debugger.ec",
+                  "debugTools.ec",
+                  "GDBDialog.ec",
+                  "process.ec"
+               ]
+            },
+            {
+               "Folder" : "panels",
+               "Files" : [
+                  "BreakpointsView.ec",
+                  "CallStackView.ec",
+                  "OutputView.ec",
+                  "ThreadsView.ec",
+                  "WatchesView.ec"
+               ]
+            },
+            {
+               "Folder" : "documents",
+               "Files" : [
+                  "ModelView.ec",
+                  "PictureEdit.ec"
+               ]
+            },
+            "about.ec",
+            "ide.ec",
+            "IDESettings.ec",
+            "OldIDESettings.ec",
+            "ProjectSettings.ec"
+         ]
+      }
+   ],
+   "ResourcesPath" : "res",
+   "Resources" : [
+      {
+         "Folder" : "actions",
+         "Files" : [
+            "attach.png",
+            "delete.png",
+            "detach.png",
+            "docNew.png",
+            "editCopy.png",
+            "editDelete.png",
+            "delete2.png"
+         ]
+      },
+      {
+         "Folder" : "codeMarks",
+         "Files" : [
+            "breakpoint.png",
+            "breakpointDisabled.png",
+            "breakpointHalf.png",
+            "breakpointHalfDisabled.png",
+            "cursor.png",
+            "cursorError.png",
+            "topFrame.png",
+            "topFrameError.png",
+            "topFrameHalf.png",
+            "topFrameHalfError.png"
+         ]
+      },
+      {
+         "Folder" : "others",
+         "Files" : [
+            "mousePointer.png"
+         ]
+      },
+      "ecere.jpg",
+      "ecereBack.jpg",
+      "icon.png",
+      "../include.mk"
+   ]
+}

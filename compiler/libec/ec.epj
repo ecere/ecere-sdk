@@ -1,0 +1,134 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ec",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "SharedLibrary",
+      "TargetFileName" : "ec",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "YYTOKENTYPE",
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "YYTOKENTYPE",
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "Debug" : false,
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "YYTOKENTYPE"
+            ],
+            "LibraryDirs" : [
+               "../../obj/$(PLATFORM)/bin",
+               "../../obj/$(PLATFORM)/lib"
+            ],
+            "PostbuildCommands" : [
+               "$(call cpq,$(TARGET),../../$(SODESTDIR))"
+            ]
+         }
+      },
+      {
+         "Name" : "Static",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "YYTOKENTYPE"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecStatic",
+            "Libraries" : [
+
+            ]
+         }
+      },
+      {
+         "Name" : "Bootstrap",
+         "Options" : {
+            "Debug" : false,
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "YYTOKENTYPE",
+               "ECERE_STATIC"
+            ],
+            "IncludeDirs" : [
+               "../bootstrap/include"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecBootstrap",
+            "Libraries" : [
+
+            ]
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "src",
+         "Files" : [
+            "ast.ec",
+            "copy.ec",
+            "dbpass.ec",
+            "ecdefs.ec",
+            "expression.ec",
+            "firstPass.ec",
+            "freeAst.ec",
+            "grammar.ec",
+            "grammar.eh",
+            "lexer.ec",
+            "loadSymbols.ec",
+            "output.ec",
+            "pass0.ec",
+            "pass1.ec",
+            "pass15.ec",
+            "pass16.ec",
+            "pass2.ec",
+            "pass3.ec",
+            "shortcuts.ec",
+            "type.ec",
+            "grammar.y",
+            "expression.y",
+            "type.y",
+            "lexer.l"
+         ],
+         "Options" : {
+            "IncludeDirs" : [
+               "../bootstrap/include"
+            ]
+         }
+      },
+      "../bootstrap/bsl.c"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

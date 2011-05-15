@@ -1,0 +1,1394 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ecere",
+   "Description" : "The allmighty Ecere Runtime library.",
+   "License" : "Ecere SDK v0.44 Draft 1 - www.ecere.com
+
+The Ecere SDK is Free Open Source Software. It is provided with NO WARRANTY 
+expressed or implied to the extent permitted by law.
+
+Applications built with it can be distributed both commercially and non
+commercially, along with the supporting Ecere runtime library(ies):
+
+   * libecere.so / ecere.dll
+      - Core eC framework + GUI toolkit, 2D/3D graphics engine, networking
+   * libecereCOM.so / ecereCOM.dll
+      - Core eC framework only
+   * libEDA.so / EDA.dll
+      - Data Access System
+
+The Ecere SDK is distributed under a revised BSD license:
+
+================================================================================
+
+   Copyright (c) 1996-2008, Jerome Jacovella-St-Louis
+   Copyright (c) 2005-2008, Ecere Corporation
+
+   All rights reserved.
+
+   Redistribution and use in source and binary forms, with or without
+   modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+    * Neither the name of Ecere Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software 
+      without specific prior written permission.
+
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+   EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+   PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+===============================================================================
+
+This software makes use of other software components whose licenses may also 
+apply, which are found in their respective source directories (most under
+deps/). Among them: zlib, libpng, libjpeg, giflib, harfbuzz, freetype...
+
+The IDE also communicates with GCC for compiling (MinGW on Windows), GDB for 
+debugging, and UPX for optionally compressing executables. Each of these have 
+their own license which can be found in their respective documentation folder 
+if distributed along with the SDK (in the case of the Windows version) or
+from wherever you obtained them.",
+   "Options" : {
+      "Warnings" : "All",
+      "IncludeDirs" : [
+         "src/gfx/drivers/harfbuzz",
+         "/usr/X11R6/include",
+         "/usr/X11R6/include/freetype2"
+      ],
+      "DefaultNameSpace" : "ecere",
+      "TargetType" : "SharedLibrary",
+      "TargetFileName" : "ecere",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "Libraries" : [
+         "jpeg",
+         "png",
+         "z",
+         "freetype"
+      ]
+   },
+   "Platforms" : [
+      {
+         "Name" : "Linux",
+         "Options" : {
+            "IncludeDirs" : [
+               "/usr/include/freetype2",
+               "../deps/libungif-4.1.1/lib"
+            ],
+            "Libraries" : [
+               "ncurses",
+               "pthread",
+               "m",
+               "dl",
+               "fontconfig",
+               "ungif",
+               "X11",
+               "Xext",
+               "Xrender",
+               "GL"
+            ],
+            "LibraryDirs" : [
+               "../deps/libungif-4.1.1/obj/release.$(PLATFORM)",
+               "/usr/X11R6/lib"
+            ]
+         }
+      },
+      {
+         "Name" : "Win32",
+         "Options" : {
+            "IncludeDirs" : [
+               "../deps/DirectX-9.0/include",
+               "../deps/jpeg-6b",
+               "../deps/libpng-1.4.0",
+               "../deps/libungif-4.1.1/lib",
+               "../deps/zlib",
+               "../deps/freetype-2.3.5/include"
+            ],
+            "Libraries" : [
+               "dxguid",
+               "ddraw",
+               "dinput",
+               "winmm",
+               "opengl32",
+               "ws2_32",
+               "kernel32",
+               "user32",
+               "gdi32",
+               "mpr",
+               "advapi32",
+               "shell32",
+               "winspool",
+               "imm32",
+               "ungif"
+            ],
+            "LibraryDirs" : [
+               "../deps/zlib/obj/release.$(PLATFORM)",
+               "../deps/jpeg-6b/obj/release.$(PLATFORM)",
+               "../deps/libpng-1.4.0/obj/release.$(PLATFORM)",
+               "../deps/libungif-4.1.1/obj/release.$(PLATFORM)",
+               "../deps/freetype-2.3.5/obj/release.$(PLATFORM)"
+            ]
+         }
+      },
+      {
+         "Name" : "apple",
+         "Options" : {
+            "IncludeDirs" : [
+               "/usr/include/freetype2",
+               "/usr/X11R6/include/freetype2",
+               "/usr/X11R6/include",
+               "../deps/jpeg-6b",
+               "../deps/libpng-1.4.0",
+               "../deps/libungif-4.1.1/lib"
+            ],
+            "Libraries" : [
+               "curses",
+               "pthread",
+               "m",
+               "dl",
+               "fontconfig",
+               "ungif",
+               "X11",
+               "Xext",
+               "Xrender",
+               "GL"
+            ],
+            "LibraryDirs" : [
+               "/usr/X11R6/lib",
+               "../deps/jpeg-6b/obj/release.$(PLATFORM)",
+               "../deps/libpng-1.4.0/obj/release.$(PLATFORM)",
+               "../deps/libungif-4.1.1/obj/release.$(PLATFORM)"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG",
+               "BUILDING_ECERE_COM"
+            ]
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "BUILDING_ECERE_COM",
+               "_DEBUG",
+               "MEMINFO",
+               "REDZONE=32"
+            ]
+         }
+      },
+      {
+         "Name" : "MemoryGuardRelease",
+         "Options" : {
+            "Debug" : false,
+            "MemoryGuard" : true,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "BUILDING_ECERE_COM",
+               "MEMINFO",
+               "REDZONE=256"
+            ]
+         }
+      },
+      {
+         "Name" : "Profile",
+         "Options" : {
+            "Debug" : true,
+            "Profile" : true,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "BUILDING_ECERE_COM",
+               "ECERE_STATIC"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecereStatic"
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "Debug" : false,
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "BUILDING_ECERE_COM"
+            ],
+            "PostbuildCommands" : [
+               "$(call cpq,$(TARGET),../$(SODESTDIR))"
+            ]
+         }
+      },
+      {
+         "Name" : "Static",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Size",
+            "PreprocessorDefinitions" : [
+               "BUILDING_ECERE_COM",
+               "ECERE_STATIC"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecereStatic",
+            "Libraries" : [
+               "jpeg",
+               "png",
+               "z",
+               "freetype"
+            ],
+            "Compress" : true
+         }
+      },
+      {
+         "Name" : "Tight",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Size",
+            "PreprocessorDefinitions" : [
+               "BUILDING_ECERE_COM"
+            ],
+            "Compress" : true
+         }
+      },
+      {
+         "Name" : "PACS",
+         "Options" : {
+            "Optimization" : "Size",
+            "PreprocessorDefinitions" : [
+               "BUILDING_ECERE_COM",
+               "ECERE_STATIC",
+               "ECERE_NOBLENDING",
+               "ECERE_NO3D",
+               "ECERE_NODINPUT",
+               "ECERE_NOTRUETYPE"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecerePACS"
+         }
+      },
+      {
+         "Name" : "Bootstrap",
+         "Options" : {
+            "NoLineNumbers" : true,
+            "PreprocessorDefinitions" : [
+               "BUILDING_ECERE_COM",
+               "ECERE_STATIC",
+               "ECERE_BOOTSTRAP"
+            ],
+            "IncludeDirs" : [
+               "../compiler/bootstrap/include"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecereBootstrap",
+            "Libraries" : [
+
+            ]
+         }
+      },
+      {
+         "Name" : "Vanilla",
+         "Options" : {
+            "NoLineNumbers" : true,
+            "Optimization" : "Size",
+            "PreprocessorDefinitions" : [
+               "BUILDING_ECERE_COM",
+               "ECERE_STATIC",
+               "ECERE_VANILLA",
+               "NOBLENDING"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecereVanilla",
+            "PostbuildCommands" : [
+               "$(call cpq,$(TARGET),../obj/$(PLATFORM)/lib/)"
+            ]
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "src",
+         "Files" : [
+            {
+               "Folder" : "sys",
+               "Files" : [
+                  "Archive.ec",
+                  {
+                     "FileName" : "BufferedFile.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "Bootstrap",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           }
+                        }
+                     ]
+                  },
+                  "Date.ec",
+                  {
+                     "FileName" : "DualPipe.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "Bootstrap",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           }
+                        }
+                     ]
+                  },
+                  "EARArchive.ec",
+                  {
+                     "FileName" : "File.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "Bootstrap",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           }
+                        }
+                     ]
+                  },
+                  "FileMonitor.ec",
+                  "GlobalAppSettings.ec",
+                  "JSON.ec",
+                  "JSONGlobalSettings.ec",
+                  {
+                     "FileName" : "memory.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "Bootstrap",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           }
+                        }
+                     ]
+                  },
+                  {
+                     "FileName" : "Mutex.ec",
+                     "Options" : {
+                        "PreprocessorDefinitions" : [
+                           "ECERE_COM_MODULE"
+                        ]
+                     },
+                     "Configurations" : [
+                        {
+                           "Name" : "MemoryGuard",
+                           "Options" : {
+                              "MemoryGuard" : false
+                           }
+                        },
+                        {
+                           "Name" : "MemoryGuardRelease",
+                           "Options" : {
+                              "MemoryGuard" : false
+                           }
+                        }
+                     ]
+                  },
+                  "Semaphore.ec",
+                  {
+                     "FileName" : "System.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "Bootstrap",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           }
+                        }
+                     ]
+                  },
+                  {
+                     "FileName" : "TempFile.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "Bootstrap",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           }
+                        }
+                     ]
+                  },
+                  {
+                     "FileName" : "Thread.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "MemoryGuard",
+                           "Options" : {
+                              "MemoryGuard" : false
+                           }
+                        },
+                        {
+                           "Name" : "MemoryGuardRelease",
+                           "Options" : {
+                              "MemoryGuard" : false
+                           }
+                        }
+                     ]
+                  },
+                  "Time.ec",
+                  "unicode.ec",
+                  "units.ec",
+                  {
+                     "FileName" : "File.c",
+                     "Configurations" : [
+                        {
+                           "Name" : "Bootstrap",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           }
+                        }
+                     ]
+                  },
+                  {
+                     "FileName" : "DualPipe.c",
+                     "Configurations" : [
+                        {
+                           "Name" : "Bootstrap",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           }
+                        }
+                     ]
+                  },
+                  {
+                     "FileName" : "System.c",
+                     "Configurations" : [
+                        {
+                           "Name" : "Bootstrap",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           }
+                        }
+                     ]
+                  }
+               ],
+               "Configurations" : [
+                  {
+                     "Name" : "Bootstrap",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  }
+               ]
+            },
+            {
+               "Folder" : "gfx",
+               "Files" : [
+                  {
+                     "Folder" : "3D",
+                     "Files" : [
+                        {
+                           "Folder" : "meshes",
+                           "Files" : [
+                              "Cube.ec",
+                              "SkyBox.ec",
+                              "Sphere.ec"
+                           ]
+                        },
+                        {
+                           "Folder" : "models",
+                           "Files" : [
+                              "Object3DSFormat.ec"
+                           ]
+                        },
+                        "Camera.ec",
+                        "Matrix.ec",
+                        "Mesh.ec",
+                        "Object.ec",
+                        "Plane.ec",
+                        "Quaternion.ec",
+                        "Vector3D.ec"
+                     ],
+                     "Configurations" : [
+                        {
+                           "Name" : "PACS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        },
+                        {
+                           "Name" : "Vanilla",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  },
+                  {
+                     "Folder" : "bitmaps",
+                     "Files" : [
+                        {
+                           "FileName" : "BMPFormat.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "GIFFormat.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "PACS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
+                        "JPEGFormat.ec",
+                        {
+                           "FileName" : "PCXFormat.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "PACS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
+                        "PNGFormat.ec",
+                        {
+                           "FileName" : "RGBFormat.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "PACS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
+                        }
+                     ],
+                     "Configurations" : [
+                        {
+                           "Name" : "Vanilla",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  },
+                  {
+                     "Folder" : "drivers",
+                     "Files" : [
+                        {
+                           "Folder" : "harfbuzz",
+                           "Files" : [
+                              "harfbuzz-arabic.c",
+                              "harfbuzz-buffer.c",
+                              "harfbuzz-buffer.h",
+                              "harfbuzz-external.h",
+                              "harfbuzz-gdef-private.h",
+                              "harfbuzz-gdef.c",
+                              "harfbuzz-gdef.h",
+                              "harfbuzz-global.c",
+                              "harfbuzz-global.h",
+                              "harfbuzz-gpos-private.h",
+                              "harfbuzz-gpos.c",
+                              "harfbuzz-gpos.h",
+                              "harfbuzz-gsub-private.h",
+                              "harfbuzz-gsub.c",
+                              "harfbuzz-gsub.h",
+                              "harfbuzz-hangul.c",
+                              "harfbuzz-hebrew.c",
+                              "harfbuzz-impl.h",
+                              "harfbuzz-indic.c",
+                              "harfbuzz-khmer.c",
+                              "harfbuzz-myanmar.c",
+                              "harfbuzz-open-private.h",
+                              "harfbuzz-open.c",
+                              "harfbuzz-open.h",
+                              "harfbuzz-shape.h",
+                              "harfbuzz-shaper-private.h",
+                              "harfbuzz-shaper.c",
+                              "harfbuzz-shaper.h",
+                              "harfbuzz-stream.c",
+                              "harfbuzz-stream.h",
+                              "harfbuzz-tibetan.c",
+                              "harfbuzz.h"
+                           ]
+                        },
+                        {
+                           "FileName" : "Direct3D8DisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              },
+                              {
+                                 "Name" : "apple",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "Direct3D9DisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              },
+                              {
+                                 "Name" : "apple",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "DirectDrawDisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              },
+                              {
+                                 "Name" : "apple",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "GDIDisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              },
+                              {
+                                 "Name" : "apple",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "PACS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "lfbBlit.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "PACS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "lfbConvert.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "PACS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "LFBDisplayDriver.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "PACS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "NCursesDisplayDriver.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "OpenGLDisplayDriver.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "Win32BitmapPrinterDisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              },
+                              {
+                                 "Name" : "apple",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "Win32ConsoleDisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              },
+                              {
+                                 "Name" : "apple",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "Win32PrinterDisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              },
+                              {
+                                 "Name" : "apple",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "XDisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "win32",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        }
+                     ],
+                     "Configurations" : [
+                        {
+                           "Name" : "PACS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  },
+                  "Bitmap.ec",
+                  "BitmapResource.ec",
+                  "Color.ec",
+                  "Display.ec",
+                  "DisplaySystem.ec",
+                  "FontResource.ec",
+                  "Resource.ec",
+                  "Surface.ec"
+               ],
+               "Configurations" : [
+                  {
+                     "Name" : "Bootstrap",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  }
+               ]
+            },
+            {
+               "Folder" : "gui",
+               "Files" : [
+                  {
+                     "Folder" : "controls",
+                     "Files" : [
+                        "Button.ec",
+                        "CalendarControl.ec",
+                        "DataBox.ec",
+                        "DropBox.ec",
+                        "EditBox.ec",
+                        "Label.ec",
+                        "ListBox.ec",
+                        "Menu.ec",
+                        "Picture.ec",
+                        "ProgressBar.ec",
+                        "ScrollBar.ec",
+                        "StatusBar.ec",
+                        {
+                           "FileName" : "TabControl.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "PaneSplitter.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        }
+                     ]
+                  },
+                  {
+                     "Folder" : "dialogs",
+                     "Files" : [
+                        "ColorPicker.ec",
+                        "FileDialog.ec",
+                        "FindDialog.ec",
+                        "GoToDialog.ec",
+                        "MessageBox.ec",
+                        "ReplaceDialog.ec",
+                        "WindowList.ec"
+                     ]
+                  },
+                  {
+                     "Folder" : "drivers",
+                     "Files" : [
+                        {
+                           "FileName" : "NCursesInterface.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "Win32Interface.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              },
+                              {
+                                 "Name" : "apple",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "PACS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "Win32ConsoleInterface.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              },
+                              {
+                                 "Name" : "apple",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "XInterface.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "win32",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        }
+                     ],
+                     "Configurations" : [
+                        {
+                           "Name" : "PACS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  },
+                  {
+                     "Folder" : "skins",
+                     "Files" : [
+                        {
+                           "FileName" : "TVisionSkin.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "PACS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              },
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
+                        "WindowsSkin.ec"
+                     ]
+                  },
+                  "Anchor.ec",
+                  "ClipBoard.ec",
+                  "Cursor.ec",
+                  {
+                     "FileName" : "Desktop3D.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "PACS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  },
+                  {
+                     "FileName" : "FormDesigner.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "PACS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  },
+                  "GuiApplication.ec",
+                  "Interface.ec",
+                  "Key.ec",
+                  "Skin.ec",
+                  "Timer.ec",
+                  "typeEdit.ec",
+                  "Window.ec"
+               ],
+               "Configurations" : [
+                  {
+                     "Name" : "Bootstrap",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  }
+               ]
+            },
+            {
+               "Folder" : "net",
+               "Files" : [
+                  {
+                     "FileName" : "dcom.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "PACS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  },
+                  "HTTPFile.ec",
+                  "network.ec",
+                  {
+                     "FileName" : "NetworkClientFile.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "PACS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  },
+                  "Service.ec",
+                  "Socket.ec"
+               ],
+               "Configurations" : [
+                  {
+                     "Name" : "Bootstrap",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  },
+                  {
+                     "Name" : "Vanilla",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  }
+               ]
+            },
+            {
+               "Folder" : "com",
+               "Files" : [
+                  {
+                     "Folder" : "containers",
+                     "Files" : [
+                        "Array.ec",
+                        "AVLTree.ec",
+                        "BuiltInContainer.ec",
+                        "Container.ec",
+                        "CustomAVLTree.ec",
+                        "LinkList.ec",
+                        "List.ec",
+                        "Map.ec"
+                     ]
+                  },
+                  {
+                     "FileName" : "BinaryTree.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "MemoryGuard",
+                           "Options" : {
+                              "MemoryGuard" : false
+                           }
+                        },
+                        {
+                           "Name" : "MemoryGuardRelease",
+                           "Options" : {
+                              "MemoryGuard" : false
+                           }
+                        }
+                     ]
+                  },
+                  {
+                     "FileName" : "BTNode.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "MemoryGuard",
+                           "Options" : {
+                              "MemoryGuard" : false
+                           }
+                        },
+                        {
+                           "Name" : "MemoryGuardRelease",
+                           "Options" : {
+                              "MemoryGuard" : false
+                           }
+                        }
+                     ]
+                  },
+                  "dataTypes.ec",
+                  {
+                     "FileName" : "instance.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "MemoryGuard",
+                           "Options" : {
+                              "MemoryGuard" : false
+                           }
+                        },
+                        {
+                           "Name" : "MemoryGuardRelease",
+                           "Options" : {
+                              "MemoryGuard" : false
+                           }
+                        }
+                     ]
+                  },
+                  "String.ec",
+                  "OldList.ec",
+                  "instance.c"
+               ],
+               "Options" : {
+                  "PreprocessorDefinitions" : [
+                     "ECERE_COM_MODULE"
+                  ]
+               }
+            }
+         ]
+      }
+   ],
+   "ResourcesPath" : "res",
+   "Resources" : [
+      {
+         "Folder" : "actions",
+         "Files" : [
+            "editFind.png",
+            "folderNew.png",
+            "goDown.png",
+            "goHome.png",
+            "goNext.png",
+            "goPrevious.png",
+            "goUp.png",
+            "listAdd.png",
+            "listRemove.png",
+            "viewRefresh.png",
+            "windowNew.png"
+         ]
+      },
+      {
+         "Folder" : "constructs",
+         "Files" : [
+            "class.png",
+            "data.png",
+            "dataPrivate.png",
+            "dataType.png",
+            "enum.png",
+            "enumValue.png",
+            "event.png",
+            "library.png",
+            "method.png",
+            "methodPrivate.png",
+            "namespace.png",
+            "property.png",
+            "propertyPrivate.png"
+         ]
+      },
+      {
+         "Folder" : "controls",
+         "Files" : [
+            "button.png",
+            "calendar.png",
+            "checkBox.png",
+            "dataBox.png",
+            "dropBox.png",
+            "editBox.png",
+            "groupBox.png",
+            "label.png",
+            "listBox.png",
+            "menu.png",
+            "optionBox.png",
+            "progressBar.png",
+            "scrollBarHorizontal.png",
+            "scrollBarVertical.png",
+            "statusBar.png"
+         ]
+      },
+      {
+         "Folder" : "cursors",
+         "Files" : [
+            "arrow.png",
+            "cross.png",
+            "iBeam.png",
+            "move.png",
+            "sizeEastWest.png",
+            "sizeNortEastSouthWest.png",
+            "sizeNorthSouth.png",
+            "sizeNortWestSouthEast.png"
+         ]
+      },
+      {
+         "Folder" : "devices",
+         "Files" : [
+            "computer.png",
+            "driveHardDisk.png",
+            "driveRemovableMedia.png",
+            "mediaFloppy.png",
+            "mediaOptical.png"
+         ]
+      },
+      {
+         "Folder" : "elements",
+         "Files" : [
+            "areaClose.png",
+            "areaMaximize.png",
+            "areaMinimize.png",
+            "areaRestore.png",
+            "arrowDown.png",
+            "arrowLeft.png",
+            "arrowRight.png",
+            "arrowUp.png",
+            "checkBoxChecked.png",
+            "checkBoxDisabled.png",
+            "checkBoxDisabledChecked.png",
+            "checkBox.png",
+            "optionBoxDisabled.png",
+            "optionBoxDisabledSelected.png",
+            "optionBoxDown.png",
+            "optionBoxSelectedDown.png",
+            "optionBoxSelectedUp.png",
+            "optionBoxUp.png",
+            "orderAscending.png",
+            "orderCategorized.png",
+            "orderDescending.png"
+         ]
+      },
+      {
+         "Folder" : "emblems",
+         "Files" : [
+            "unreadable.png"
+         ]
+      },
+      {
+         "Folder" : "mimeTypes",
+         "Files" : [
+            "file.png",
+            "image.png",
+            "package.png",
+            "packageOpticalDisc.png",
+            "packageSoftware.png",
+            "text.png",
+            "textCHeader.png",
+            "textCSource.png",
+            "textC++Header.png",
+            "textC++Source.png",
+            "textEcereHeader.png",
+            "textEcereProject.png",
+            "textEcereSource.png",
+            "textEcereWorkspace.png",
+            "textHyperTextMarkup.png",
+            "brokenFile.png"
+         ]
+      },
+      {
+         "Folder" : "places",
+         "Files" : [
+            "driveRemote.png",
+            "folder.png",
+            "folderRemote.png",
+            "networkServer.png",
+            "networkWorkgroup.png",
+            "brokenFolder.png"
+         ]
+      },
+      {
+         "Folder" : "status",
+         "Files" : [
+            "audioVolumeHigh.png",
+            "folderOpen.png"
+         ]
+      },
+      {
+         "Folder" : "unicode",
+         "Files" : [
+            "derivedGeneralCategoryStripped.txt"
+         ]
+      }
+   ]
+}

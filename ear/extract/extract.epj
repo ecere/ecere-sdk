@@ -1,0 +1,209 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "extract",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "extract",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "LibraryDirs" : [
+         "../../ecere/obj/vanilla.$(PLATFORM)",
+         "../../deps/zlib/obj/release.$(PLATFORM)"
+      ]
+   },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "LibraryDirs" : [
+               "/usr/X11R6/lib"
+            ]
+         }
+      },
+      {
+         "Name" : "apple",
+         "Options" : {
+            "LibraryDirs" : [
+               "/usr/X11R6/lib"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "Libraries" : [
+               "ecereVanilla",
+               "z"
+            ]
+         },
+         "Platforms" : [
+            {
+               "Name" : "Linux",
+               "Options" : {
+                  "Libraries" : [
+                     "fontconfig",
+                     "Xrender",
+                     "Xext",
+                     "ncurses",
+                     "m",
+                     "dl",
+                     "pthread",
+                     "X11"
+                  ]
+               }
+            },
+            {
+               "Name" : "Win32",
+               "Options" : {
+                  "Libraries" : [
+                     "mpr",
+                     "winmm",
+                     "imm32"
+                  ]
+               }
+            }
+         ]
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Optimization" : "None",
+            "Libraries" : [
+               "ecere"
+            ],
+            "Console" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "NoLineNumbers" : true,
+            "Optimization" : "Size",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "Libraries" : [
+               "ecereVanilla",
+               "z"
+            ],
+            "Compress" : true
+         },
+         "Platforms" : [
+            {
+               "Name" : "Linux",
+               "Options" : {
+                  "Libraries" : [
+                     "fontconfig",
+                     "freetype",
+                     "Xrender",
+                     "Xext",
+                     "ncurses",
+                     "m",
+                     "dl",
+                     "pthread",
+                     "X11"
+                  ]
+               }
+            },
+            {
+               "Name" : "Win32",
+               "Options" : {
+                  "Libraries" : [
+                     "mpr",
+                     "winmm",
+                     "imm32"
+                  ]
+               }
+            },
+            {
+               "Name" : "apple",
+               "Options" : {
+                  "Libraries" : [
+                     "fontconfig",
+                     "freetype",
+                     "Xrender",
+                     "Xext",
+                     "ncurses",
+                     "m",
+                     "dl",
+                     "pthread",
+                     "X11"
+                  ]
+               }
+            }
+         ]
+      }
+   ],
+   "Files" : [
+      "extract.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      {
+         "Folder" : "../../ecere/res/vanilla/ecere/ecere",
+         "Files" : [
+            {
+               "Folder" : "actions",
+               "Files" : [
+                  "folderNew.png",
+                  "goUp.png"
+               ]
+            },
+            {
+               "Folder" : "devices",
+               "Files" : [
+                  "computer.png",
+                  "driveHardDisk.png",
+                  "driveRemovableMedia.png",
+                  "mediaFloppy.png",
+                  "mediaOptical.png"
+               ]
+            },
+            {
+               "Folder" : "elements",
+               "Files" : [
+                  "areaClose.png",
+                  "areaMaximize.png",
+                  "areaMinimize.png",
+                  "areaRestore.png",
+                  "arrowDown.png",
+                  "arrowLeft.png",
+                  "arrowRight.png",
+                  "arrowUp.png",
+                  "optionBoxDisabledSelected.bmp",
+                  "optionBoxDown.bmp",
+                  "optionBoxSelected.bmp",
+                  "optionBoxSelectedDown.bmp",
+                  "optionBoxUp.bmp"
+               ]
+            },
+            {
+               "Folder" : "places",
+               "Files" : [
+                  "driveRemote.png",
+                  "folder.png",
+                  "folderRemote.png",
+                  "networkServer.png",
+                  "networkWorkgroup.png"
+               ]
+            },
+            {
+               "Folder" : "status",
+               "Files" : [
+                  "folderOpen.png"
+               ]
+            }
+         ]
+      }
+   ]
+}

@@ -1,0 +1,111 @@
+namespace gfx;
+
+import "Window"
+
+public class FontResource : Resource
+{
+public:
+   property char * faceName { set { delete faceName; faceName = CopyString(value); } get { return this ? faceName : null; } };
+   property float size { set { size = value; } get { return this ? size : 0; } };
+   property bool bold { set { flags.bold = value; } get { return this ? flags.bold : false; } };
+   property bool italic { set { flags.italic = value; } get { return this ? flags.italic : false; } };
+   property bool underline { set { flags.underline = value; } get { return this ? flags.underline : false; } };
+   property Font font { get { return this ? font : null; } };
+   property Window window { set { if(value) value.AddResource(this); } };
+
+private:
+   char * faceName;
+   Font font;
+   float size;
+   FontFlags flags;
+   DisplaySystem displaySystem;
+
+   void Load(FontResource copy, DisplaySystem displaySystem)
+   {
+      delete faceName;
+      faceName = CopyString(copy.faceName);
+      size = copy.size;
+      flags = copy.flags;
+      this.displaySystem = displaySystem;
+      if(faceName)
+         font = displaySystem.LoadFont(faceName, size, flags);
+   }
+
+   void Reference(FontResource reference)
+   {
+      font = reference.font;
+   }
+
+   void Dereference()
+   {
+      font = null;
+   }
+
+   ~FontResource()
+   {
+      if(font && displaySystem)
+         displaySystem.UnloadFont(font);
+      delete faceName;
+   }
+
+/*
+   Window OnEdit(Window window, Window master, int x, int y, int w, int h, void * userData)
+   {
+      Window editData = class::OnEdit(window, master, x + 24,y,w - 48,h, userData);
+      Button browse
+      {
+         window, master = editData, inactive = true, text = "...", hotKey = F2,
+         position = { Max(x + 24, x + w - 24), y }, size = { 24, h }
+      };
+      browse.Create();
+      return editData;
+   }
+
+   void OnDisplay(Surface surface, int x, int y, int width, void * fieldData, Alignment alignment, DataDisplayFlags flags)
+   {
+      char * string = this ? faceName : null;
+      Font font = this ? font : null;
+      if(!string) string = "(none)";
+      surface.WriteTextDots(alignment, x + 24, y + 1, width - 24, string, strlen(string));
+      surface.SetBackground(White);
+      surface.Area(x - 4, y, x + 20, y + 15);
+
+      surface.SetForeground(Black);
+      surface.Rectangle(x-1, y + 1, x + 18, y + 14);
+   }
+
+   int OnCompare(FontResource font2)
+   {
+      int result = 0;
+      if(this && font2)
+      {
+         char * string1 = faceName;
+         char * string2 = font2.faceName;
+         if(string1 && string2)
+            result = strcmpi(string1, string2);
+      }
+      return result;
+   }
+
+   char * OnGetString(char * string, void * fieldDat, bool * needClass)
+   {
+      if(this)
+      {
+         char * fileName = faceName;
+         if(fileName)
+            strcpy(string, fileName);
+         else
+            string[0] = '\0';
+         return string;
+      }
+      return null;
+   }
+
+   bool OnGetDataFromString(char * string)
+   {
+      this = (string && string[0]) ? FontResource { } : null;
+      if(this)
+         faceName = string;
+   }
+*/
+};

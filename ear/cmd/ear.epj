@@ -1,0 +1,47 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ear",
+   "Options" : {
+      "TargetType" : "Executable",
+      "TargetFileName" : "ear",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Warnings" : "All",
+            "Debug" : true,
+            "Optimization" : "None"
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "Debug" : false,
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "LibraryDirs" : [
+               "../../obj/$(PLATFORM)/bin",
+               "../../obj/$(PLATFORM)/lib"
+            ],
+            "PostbuildCommands" : [
+               "$(call cpq,$(TARGET),../../obj/$(PLATFORM)/bin/)"
+            ]
+         }
+      }
+   ],
+   "Files" : [
+      "ear.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "../extract/obj/release.$(PLATFORM)/extract$(E)"
+   ]
+}

@@ -1,0 +1,252 @@
+.PHONY: objdir targetdir
+
+# CONTENT
+
+MODULE = ecere
+
+OBJ = obj/bootstrap/
+
+RES = res/
+
+TARGET_TYPE = staticlib
+
+TARGET = $(OBJ)$(MODULE).main.c
+
+# CROSS-PLATFORM MAGIC
+
+include ../include.mk
+
+OBJECTS = $(OBJ)BufferedFile.o $(OBJ)DualPipe.o $(OBJ)File.o $(OBJ)memory.o \
+	$(OBJ)System.o $(OBJ)TempFile.o $(OBJ)_File.o $(OBJ)_DualPipe.o $(OBJ)_System.o $(OBJ)Array.o \
+	$(OBJ)AVLTree.o $(OBJ)BuiltInContainer.o $(OBJ)Container.o $(OBJ)CustomAVLTree.o \
+	$(OBJ)LinkList.o $(OBJ)List.o $(OBJ)Map.o $(OBJ)BinaryTree.o $(OBJ)BTNode.o $(OBJ)dataTypes.o \
+	$(OBJ)instance.o $(OBJ)String.o $(OBJ)OldList.o $(OBJ)_instance.o \
+	$(OBJ)$(MODULE).main$(O)
+
+COBJECTS = $(OBJ)BufferedFile.c $(OBJ)DualPipe.c $(OBJ)File.c $(OBJ)memory.c \
+	$(OBJ)System.c $(OBJ)TempFile.c $(OBJ)Array.c $(OBJ)AVLTree.c $(OBJ)BuiltInContainer.c \
+	$(OBJ)Container.c $(OBJ)CustomAVLTree.c $(OBJ)LinkList.c $(OBJ)List.c $(OBJ)Map.c \
+	$(OBJ)BinaryTree.c $(OBJ)BTNode.c $(OBJ)dataTypes.c $(OBJ)instance.c $(OBJ)String.c \
+	$(OBJ)OldList.c
+
+SYMBOLS = $(OBJ)BufferedFile.sym $(OBJ)DualPipe.sym $(OBJ)File.sym $(OBJ)memory.sym \
+	$(OBJ)System.sym $(OBJ)TempFile.sym $(OBJ)Array.sym $(OBJ)AVLTree.sym \
+	$(OBJ)BuiltInContainer.sym $(OBJ)Container.sym $(OBJ)CustomAVLTree.sym $(OBJ)LinkList.sym $(OBJ)List.sym \
+	$(OBJ)Map.sym $(OBJ)BinaryTree.sym $(OBJ)BTNode.sym $(OBJ)dataTypes.sym $(OBJ)instance.sym \
+	$(OBJ)String.sym $(OBJ)OldList.sym
+
+IMPORTS = $(OBJ)BufferedFile.imp $(OBJ)DualPipe.imp $(OBJ)File.imp $(OBJ)memory.imp \
+	$(OBJ)System.imp $(OBJ)TempFile.imp $(OBJ)Array.imp $(OBJ)AVLTree.imp \
+	$(OBJ)BuiltInContainer.imp $(OBJ)Container.imp $(OBJ)CustomAVLTree.imp $(OBJ)LinkList.imp $(OBJ)List.imp \
+	$(OBJ)Map.imp $(OBJ)BinaryTree.imp $(OBJ)BTNode.imp $(OBJ)dataTypes.imp $(OBJ)instance.imp \
+	$(OBJ)String.imp $(OBJ)OldList.imp
+
+SOURCES = src/sys/BufferedFile.ec src/sys/DualPipe.ec src/sys/File.ec src/sys/memory.ec \
+	src/sys/System.ec src/sys/TempFile.ec src/sys/_File.c src/sys/_DualPipe.c src/sys/_System.c \
+	src/com/containers/Array.ec src/com/containers/AVLTree.ec src/com/containers/BuiltInContainer.ec \
+	src/com/containers/Container.ec src/com/containers/CustomAVLTree.ec src/com/containers/LinkList.ec \
+	src/com/containers/List.ec src/com/containers/Map.ec src/com/BinaryTree.ec src/com/BTNode.ec \
+	src/com/dataTypes.ec src/com/instance.ec src/com/String.ec src/com/OldList.ec src/com/_instance.c
+
+# TOOLCHAIN
+
+CPP := cpp
+CC := gcc
+ECP := ecp
+ECC := ecc
+ECS := ecs
+EAR := ear
+LD := gcc
+AR := ar
+STRIP := strip
+UPX := upx
+
+# FLAGS
+
+CFLAGS = -fmessage-length=0 -m32 $(FVISIBILITY) $(FPIC) -w \
+	 -DBUILDING_ECERE_COM -DECERE_STATIC -DECERE_BOOTSTRAP \
+	 -Isrc/gfx/drivers/harfbuzz \
+	 -I../compiler/bootstrap/include
+
+CECFLAGS =
+
+ECFLAGS = -nolinenumbers -defaultns ecere
+
+LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+
+UPXFLAGS = -9
+
+# PLATFORM-SPECIFIC OPTIONS
+
+ifdef WINDOWS
+
+CFLAGS += \
+	 -I../deps/DirectX-9.0/include \
+	 -I../deps/jpeg-6b \
+	 -I../deps/libpng-1.4.0 \
+	 -I../deps/libungif-4.1.1/lib \
+	 -I../deps/zlib \
+	 -I../deps/freetype-2.3.5/include
+
+else
+ifdef LINUX
+
+CFLAGS += \
+	 -I/usr/include/freetype2 \
+	 -I../deps/libungif-4.1.1/lib
+
+endif
+endif
+
+# TARGETS
+
+all: objdir targetdir $(TARGET)
+
+objdir:
+	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
+
+$(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
+	$(ECS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/bootstrap -o $(OBJ)$(MODULE).main.ec
+
+$(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)
+
+$(TARGET): $(SOURCES) $(SYMBOLS) $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main.c
+
+# SYMBOL RULES
+
+$(OBJ)BufferedFile.sym: src/sys/BufferedFile.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/BufferedFile.ec -o $(OBJ)BufferedFile.sym
+
+$(OBJ)DualPipe.sym: src/sys/DualPipe.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/DualPipe.ec -o $(OBJ)DualPipe.sym
+
+$(OBJ)File.sym: src/sys/File.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/File.ec -o $(OBJ)File.sym
+
+$(OBJ)memory.sym: src/sys/memory.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/memory.ec -o $(OBJ)memory.sym
+
+$(OBJ)System.sym: src/sys/System.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/System.ec -o $(OBJ)System.sym
+
+$(OBJ)TempFile.sym: src/sys/TempFile.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/TempFile.ec -o $(OBJ)TempFile.sym
+
+$(OBJ)Array.sym: src/com/containers/Array.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/Array.ec -o $(OBJ)Array.sym
+
+$(OBJ)AVLTree.sym: src/com/containers/AVLTree.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.sym
+
+$(OBJ)BuiltInContainer.sym: src/com/containers/BuiltInContainer.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.sym
+
+$(OBJ)Container.sym: src/com/containers/Container.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/Container.ec -o $(OBJ)Container.sym
+
+$(OBJ)CustomAVLTree.sym: src/com/containers/CustomAVLTree.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.sym
+
+$(OBJ)LinkList.sym: src/com/containers/LinkList.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.sym
+
+$(OBJ)List.sym: src/com/containers/List.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/List.ec -o $(OBJ)List.sym
+
+$(OBJ)Map.sym: src/com/containers/Map.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/Map.ec -o $(OBJ)Map.sym
+
+$(OBJ)BinaryTree.sym: src/com/BinaryTree.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.sym
+
+$(OBJ)BTNode.sym: src/com/BTNode.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/BTNode.ec -o $(OBJ)BTNode.sym
+
+$(OBJ)dataTypes.sym: src/com/dataTypes.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/dataTypes.ec -o $(OBJ)dataTypes.sym
+
+$(OBJ)instance.sym: src/com/instance.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/instance.ec -o $(OBJ)instance.sym
+
+$(OBJ)String.sym: src/com/String.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/String.ec -o $(OBJ)String.sym
+
+$(OBJ)OldList.sym: src/com/OldList.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/OldList.ec -o $(OBJ)OldList.sym
+
+# C OBJECT RULES
+
+$(OBJ)BufferedFile.c: src/sys/BufferedFile.ec $(OBJ)BufferedFile.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/BufferedFile.ec -o $(OBJ)BufferedFile.c -symbols $(OBJ)
+
+$(OBJ)DualPipe.c: src/sys/DualPipe.ec $(OBJ)DualPipe.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/DualPipe.ec -o $(OBJ)DualPipe.c -symbols $(OBJ)
+
+$(OBJ)File.c: src/sys/File.ec $(OBJ)File.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/File.ec -o $(OBJ)File.c -symbols $(OBJ)
+
+$(OBJ)memory.c: src/sys/memory.ec $(OBJ)memory.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/memory.ec -o $(OBJ)memory.c -symbols $(OBJ)
+
+$(OBJ)System.c: src/sys/System.ec $(OBJ)System.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/System.ec -o $(OBJ)System.c -symbols $(OBJ)
+
+$(OBJ)TempFile.c: src/sys/TempFile.ec $(OBJ)TempFile.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/TempFile.ec -o $(OBJ)TempFile.c -symbols $(OBJ)
+
+$(OBJ)Array.c: src/com/containers/Array.ec $(OBJ)Array.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/Array.ec -o $(OBJ)Array.c -symbols $(OBJ)
+
+$(OBJ)AVLTree.c: src/com/containers/AVLTree.ec $(OBJ)AVLTree.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.c -symbols $(OBJ)
+
+$(OBJ)BuiltInContainer.c: src/com/containers/BuiltInContainer.ec $(OBJ)BuiltInContainer.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.c -symbols $(OBJ)
+
+$(OBJ)Container.c: src/com/containers/Container.ec $(OBJ)Container.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/Container.ec -o $(OBJ)Container.c -symbols $(OBJ)
+
+$(OBJ)CustomAVLTree.c: src/com/containers/CustomAVLTree.ec $(OBJ)CustomAVLTree.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.c -symbols $(OBJ)
+
+$(OBJ)LinkList.c: src/com/containers/LinkList.ec $(OBJ)LinkList.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.c -symbols $(OBJ)
+
+$(OBJ)List.c: src/com/containers/List.ec $(OBJ)List.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/List.ec -o $(OBJ)List.c -symbols $(OBJ)
+
+$(OBJ)Map.c: src/com/containers/Map.ec $(OBJ)Map.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/Map.ec -o $(OBJ)Map.c -symbols $(OBJ)
+
+$(OBJ)BinaryTree.c: src/com/BinaryTree.ec $(OBJ)BinaryTree.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.c -symbols $(OBJ)
+
+$(OBJ)BTNode.c: src/com/BTNode.ec $(OBJ)BTNode.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/BTNode.ec -o $(OBJ)BTNode.c -symbols $(OBJ)
+
+$(OBJ)dataTypes.c: src/com/dataTypes.ec $(OBJ)dataTypes.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/dataTypes.ec -o $(OBJ)dataTypes.c -symbols $(OBJ)
+
+$(OBJ)instance.c: src/com/instance.ec $(OBJ)instance.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/instance.ec -o $(OBJ)instance.c -symbols $(OBJ)
+
+$(OBJ)String.c: src/com/String.ec $(OBJ)String.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/String.ec -o $(OBJ)String.c -symbols $(OBJ)
+
+$(OBJ)OldList.c: src/com/OldList.ec $(OBJ)OldList.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/OldList.ec -o $(OBJ)OldList.c -symbols $(OBJ)
+
+update:
+	$(call cpq,$(COBJECTS) $(TARGET),../compiler/bootstrap/ecere/bootstrap)
+
+clean: objdir targetdir
+	$(call rmq,$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
+	$(call rmq,$(COBJECTS))
+	$(call rmq,$(IMPORTS))
+	$(call rmq,$(SYMBOLS))
+
+distclean: clean
+	$(call rmdirq,$(OBJ))
+

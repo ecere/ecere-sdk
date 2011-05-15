@@ -1,0 +1,114 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ecereCOM",
+   "Options" : {
+      "Warnings" : "All",
+      "PreprocessorDefinitions" : [
+         "ECERE_COM_MODULE",
+         "BUILDING_ECERE_COM"
+      ],
+      "DefaultNameSpace" : "ecere",
+      "TargetType" : "SharedLibrary",
+      "TargetFileName" : "ecereCOM",
+      "TargetDirectory" : "obj/$(MODULE).$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(MODULE).$(CONFIG).$(PLATFORM)"
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "Libraries" : [
+
+            ],
+            "PostbuildCommands" : [
+               "$(call cpq,$(TARGET),../$(SODESTDIR))"
+            ]
+         },
+         "Platforms" : [
+            {
+               "Name" : "Linux",
+               "Options" : {
+                  "Libraries" : [
+                     "dl",
+                     "m",
+                     "pthread"
+                  ]
+               }
+            }
+         ]
+      },
+      {
+         "Name" : "Static",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC",
+               "ECERE_COM_ONLY"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecereCOMStatic",
+            "TargetDirectory" : "ecereCOMStatic",
+            "ObjectsDirectory" : "ecereCOMStatic",
+            "Libraries" : [
+
+            ]
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "src",
+         "Files" : [
+            {
+               "Folder" : "sys",
+               "Files" : [
+                  "Mutex.ec"
+               ]
+            },
+            {
+               "Folder" : "com",
+               "Files" : [
+                  {
+                     "Folder" : "containers",
+                     "Files" : [
+                        "Array.ec",
+                        "AVLTree.ec",
+                        "BuiltInContainer.ec",
+                        "Container.ec",
+                        "CustomAVLTree.ec",
+                        "LinkList.ec",
+                        "List.ec",
+                        "Map.ec"
+                     ]
+                  },
+                  "BinaryTree.ec",
+                  "BTNode.ec",
+                  "dataTypes.ec",
+                  "instance.ec",
+                  "String.ec",
+                  "OldList.ec",
+                  "instance.c"
+               ]
+            }
+         ]
+      }
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

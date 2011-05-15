@@ -1,0 +1,114 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "HiraganaCube",
+   "Options" : {
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "HiraganaCube"
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Libraries" : [
+               "ecere"
+            ]
+         }
+      },
+      {
+         "Name" : "ReleaseTight",
+         "Options" : {
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "Libraries" : [
+               "ecere_tight",
+               "kernel32",
+               "gdi32",
+               "user32",
+               "opengl32",
+               "mpr",
+               "ws2_32",
+               "freetype",
+               "png",
+               "z",
+               "jpeg",
+               "ungif",
+               "dxguid",
+               "ddraw",
+               "winmm",
+               "dinput"
+            ],
+            "LibraryDirs" : [
+               "../../ecere/obj/tight"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Optimization" : "Speed",
+            "Libraries" : [
+               "ecere"
+            ]
+         }
+      },
+      {
+         "Name" : "DebugTight",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "Libraries" : [
+               "ecere_tight",
+               "opengl32",
+               "mpr",
+               "ws2_32",
+               "freetype",
+               "png",
+               "z",
+               "jpeg",
+               "ungif",
+               "dxguid",
+               "ddraw",
+               "winmm",
+               "dinput",
+               "gdi32",
+               "user32",
+               "kernel32"
+            ],
+            "LibraryDirs" : [
+               "../../ecere/obj/tight"
+            ],
+            "Console" : true
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Libraries" : [
+               "ecere"
+            ],
+            "Console" : true
+         }
+      }
+   ],
+   "Files" : [
+      "hiraganaCube.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

@@ -1,0 +1,32 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "test",
+   "Options" : {
+      "Warnings" : "All",
+      "Debug" : true,
+      "Optimization" : "None",
+      "PreprocessorDefinitions" : [
+         "_DEBUG"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "test",
+      "TargetDirectory" : "obj",
+      "ObjectsDirectory" : "obj",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug"
+      }
+   ],
+   "Files" : [
+      "stackerTest.ec",
+      "../../../extras/gui/controls/Stacker.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

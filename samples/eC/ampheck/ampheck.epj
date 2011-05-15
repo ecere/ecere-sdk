@@ -1,0 +1,45 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ampheck",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "TargetFileName" : "ampheck",
+            "TargetDirectory" : "debug",
+            "ObjectsDirectory" : "debug",
+            "Console" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "TargetFileName" : "ampChecks",
+            "TargetDirectory" : "release",
+            "ObjectsDirectory" : "release"
+         }
+      }
+   ],
+   "Files" : [
+      "main.ec",
+      "../../../extras/sha256.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

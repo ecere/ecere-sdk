@@ -1,0 +1,48 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "snow",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "snow",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : true,
+            "Profile" : false,
+            "Optimization" : "None"
+         }
+      },
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Console" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "FileName" : "snow.ec",
+         "Configurations" : [
+            {
+               "Name" : "Release",
+               "Options" : {
+                  "Debug" : false,
+                  "Optimization" : "Speed"
+               }
+            }
+         ]
+      }
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

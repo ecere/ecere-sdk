@@ -1,0 +1,60 @@
+
+ECERE Project File
+
+Version 0.1a
+
+Target "blank"
+
+Active Configuration = Debug
+
+   Configurations
+
+    + Debug
+
+         Compiler Options
+
+            Intermediate Directory = Debug
+            Debug = True
+            Optimize = None
+            Profile = False
+            MemoryGuard = False
+            AllWarnings = True
+            Modified = False
+            Strict Name Spaces = False
+
+         Linker Options
+
+            Target Name = blank
+            Target Type = Executable
+            Target Directory = Debug
+            Console = False
+            Modified = True
+
+            Libraries = ecere
+
+    + Release
+
+         Compiler Options
+
+            Intermediate Directory = Release
+            Debug = False
+            Optimize = Speed
+            Profile = False
+            MemoryGuard = False
+            AllWarnings = True
+            Modified = True
+            Strict Name Spaces = False
+
+         Linker Options
+
+            Target Name = blank
+            Target Type = Executable
+            Target Directory = Release
+            Console = False
+            Modified = True
+
+            Libraries = ecere
+
+   Files
+
+    - blank.ec

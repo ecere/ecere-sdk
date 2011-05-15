@@ -1,0 +1,32 @@
+
+ECERE Project File
+
+Version 0.1a
+
+Target "NetworkServer"
+
+   Configurations
+
+    + Default
+
+         Compiler Options
+
+            Intermediate Directory = obj
+            Debug = True
+            Optimize = None
+            Profile = False
+            MemoryGuard = False
+            AllWarnings = True
+            Strict Name Spaces = False
+
+         Linker Options
+
+            Target Name = Server
+            Target Type = Executable
+            Console = False
+
+            Libraries = ecere
+
+   Files
+
+    - server.ec

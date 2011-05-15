@@ -1,0 +1,39 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "VertexColorTest",
+   "Description" : "",
+   "License" : "",
+   "Options" : {
+      "Warnings" : "All",
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "VertexColorTest",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "VertexColorTest.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

@@ -1,0 +1,67 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "libpng",
+   "Options" : {
+      "IncludeDirs" : [
+         ".",
+         "../zlib"
+      ],
+      "TargetType" : "StaticLibrary",
+      "TargetFileName" : "png",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)"
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Warnings" : "All",
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "src",
+         "Files" : [
+            "./png.c",
+            "./pngerror.c",
+            "./pngget.c",
+            "./pngmem.c",
+            "./pngpread.c",
+            "./pngread.c",
+            "./pngrio.c",
+            "./pngrtran.c",
+            "./pngrutil.c",
+            "./pngset.c",
+            "./pngtrans.c",
+            "./pngwio.c",
+            "./pngwrite.c",
+            "./pngwtran.c",
+            "./pngwutil.c"
+         ]
+      },
+      {
+         "Folder" : "headers",
+         "Files" : [
+            "./png.h",
+            "./pngconf.h"
+         ]
+      }
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

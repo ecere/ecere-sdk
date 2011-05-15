@@ -1,0 +1,56 @@
+
+ECERE Project File
+
+Version 0.1a
+
+Target "NetworkClient"
+
+   Configurations
+
+    + Debug
+
+         Compiler Options
+
+            Intermediate Directory = Debug
+            Debug = True
+            Optimize = None
+            Profile = False
+            MemoryGuard = False
+            AllWarnings = True
+
+            Preprocessor Definitions = _DEBUG
+            Strict Name Spaces = False
+
+         Linker Options
+
+            Target Name = NetworkClient
+            Target Type = Executable
+            Target Directory = Debug
+            Console = False
+
+            Libraries = ecere
+
+    + Release
+
+         Compiler Options
+
+            Intermediate Directory = Release
+            Debug = False
+            Optimize = Speed
+            Profile = False
+            MemoryGuard = False
+            AllWarnings = True
+            Strict Name Spaces = False
+
+         Linker Options
+
+            Target Name = NetworkClient
+            Target Type = Executable
+            Target Directory = Release
+            Console = False
+
+            Libraries = ecere
+
+   Files
+
+    - client.ec

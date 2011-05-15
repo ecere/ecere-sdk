@@ -1,0 +1,28 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "balls",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "balls",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true
+         }
+      }
+   ],
+   "Files" : [
+      "balls.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

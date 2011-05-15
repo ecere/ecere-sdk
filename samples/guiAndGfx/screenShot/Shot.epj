@@ -1,0 +1,42 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "Shot",
+   "Options" : {
+      "Warnings" : "All",
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "Shot",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "shot.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

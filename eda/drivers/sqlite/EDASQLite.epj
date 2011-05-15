@@ -1,0 +1,79 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "EDASQLite",
+   "Options" : {
+      "Warnings" : "All",
+      "Optimization" : "None",
+      "TargetType" : "SharedLibrary",
+      "TargetFileName" : "EDASQLite",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "pthread",
+               "dl"
+            ]
+         }
+      },
+      {
+         "Name" : "apple",
+         "Options" : {
+            "Libraries" : [
+               "pthread",
+               "dl"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "NoLineNumbers" : true,
+            "LibraryDirs" : [
+               "../../../obj/$(PLATFORM)/bin",
+               "../../../obj/$(PLATFORM)/lib"
+            ],
+            "PostbuildCommands" : [
+               "$(call cpq,$(TARGET),../../../$(SODESTDIR))"
+            ]
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      }
+   ],
+   "Files" : [
+      "sqlite3.c",
+      "sqlite3.h",
+      "EDASQLite.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

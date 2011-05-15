@@ -1,0 +1,68 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "SkinProject",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "SkinProject",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Optimization" : "Speed"
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      }
+   ],
+   "Files" : [
+      "form1.ec",
+      "SimSkin.ec"
+   ],
+   "ResourcesPath" : "res",
+   "Resources" : [
+      "bottomBorder.png",
+      "bottomLeftBorder.png",
+      "bottomRightBorder.png",
+      "downLeft.png",
+      "downMiddle.png",
+      "downRight.png",
+      "leftBorder.png",
+      "NEWtopBorder.png",
+      "rightBorder.png",
+      "scrollDown.png",
+      "scrollUp.png",
+      "scrollVert.png",
+      "thumbDown.png",
+      "thumbUp.png",
+      "thumbVert.png",
+      "topBorder.png",
+      "topLeftBorder.png",
+      "topRightBorder.png",
+      "upLeft.png",
+      "upMiddle.png",
+      "upRight.png"
+   ]
+}

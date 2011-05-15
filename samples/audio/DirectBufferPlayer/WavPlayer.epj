@@ -1,0 +1,67 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "WavPlayer",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "WavPlayer",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Platforms" : [
+      {
+         "Name" : "Win32",
+         "Options" : {
+            "Libraries" : [
+               "winmm",
+               "dsound",
+               "dxguid",
+               "uuid"
+            ]
+         }
+      },
+      {
+         "Name" : "Linux",
+         "Options" : {
+            "Libraries" : [
+               "asound"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "audio",
+         "Files" : [
+            "../../../extras/audio/alsa.ec",
+            "../../../extras/audio/audio.ec",
+            "../../../extras/audio/dsound.ec"
+         ]
+      },
+      "wavPlayer.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

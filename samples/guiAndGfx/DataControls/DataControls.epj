@@ -1,0 +1,46 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "DataControls",
+   "Options" : {
+      "Warnings" : "All",
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "DataControls",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "TargetDirectory" : "Debug",
+            "ObjectsDirectory" : "Debug"
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "TargetDirectory" : "Release",
+            "ObjectsDirectory" : "Release"
+         }
+      }
+   ],
+   "Files" : [
+      "DataControls.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

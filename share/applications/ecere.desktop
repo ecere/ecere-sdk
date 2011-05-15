@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=
+Name=Ecere IDE
+Type=Application
+Comment=Ecere IDE
+Terminal=false
+Exec=ide
+#Path=$(HOME)
+Icon=ecere
+Categories=Development
+GenericName=Ecere IDE

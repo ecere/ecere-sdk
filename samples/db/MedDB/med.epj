@@ -1,0 +1,51 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "med",
+   "Options" : {
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "med",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Compress" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Console" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Optimization" : "Speed"
+         }
+      },
+      {
+         "Name" : "MemGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Console" : true
+         }
+      }
+   ],
+   "Files" : [
+      "med.ec",
+      "mainForm.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

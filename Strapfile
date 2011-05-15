@@ -1,0 +1,35 @@
+.PHONY: ecere ec precomp compiler symbolgen
+.SILENT:
+
+MAKE = make -f Makefile.bootstrap
+
+all: ecere ec precomp compiler symbolgen
+	@echo Bootstrapper ready.
+
+clean:
+	cd ecere && $(MAKE) clean
+	cd ec && $(MAKE) clean
+	cd precomp && $(MAKE) clean
+	cd compiler && $(MAKE) clean
+	cd symbolgen && $(MAKE) clean
+	@echo Done.
+
+ecere:
+	@echo Generating ecere bootstrapper...
+	cd ecere && $(MAKE) -j4
+	
+ec:
+	@echo Generating ec bootstrapper...
+	cd ec && $(MAKE) -j4
+
+precomp:
+	@echo Generating pre-compiler bootstrapper...
+	cd precomp && $(MAKE)
+
+compiler:
+	@echo Generating compiler bootstrapper...
+	cd compiler && $(MAKE)
+
+symbolgen:
+	@echo Generating symbol generater bootstrapper...
+	cd symbolgen && $(MAKE)

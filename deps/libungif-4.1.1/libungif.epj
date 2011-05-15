@@ -1,0 +1,50 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ungif",
+   "Options" : {
+      "Debug" : false,
+      "Optimization" : "None",
+      "TargetType" : "StaticLibrary",
+      "TargetFileName" : "ungif",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)"
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Warnings" : "All",
+            "Debug" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "lib",
+         "Files" : [
+            "dgif_lib.c",
+            "gif_err.c",
+            "gifalloc.c"
+         ]
+      },
+      {
+         "Folder" : "headers",
+         "Files" : [
+            "lib/getarg.h",
+            "lib/gif_lib.h",
+            "lib/gif_lib_private.h"
+         ]
+      }
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

@@ -1,0 +1,33 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "fliPlay",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "fliPlay",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Default",
+         "Options" : {
+            "Debug" : true,
+            "Profile" : false,
+            "Optimization" : "None",
+            "ObjectsDirectory" : "obj"
+         }
+      }
+   ],
+   "Files" : [
+      "FliPlayApp.ec",
+      "../../../extras/fli.ec",
+      "../../../extras/fliPlay.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

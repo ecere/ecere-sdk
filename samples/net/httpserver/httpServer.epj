@@ -1,0 +1,32 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "httpServer",
+   "Options" : {
+      "TargetFileName" : "httpServer",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      },
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true
+         }
+      }
+   ],
+   "Files" : [
+      "http.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

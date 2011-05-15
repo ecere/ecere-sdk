@@ -1,0 +1,47 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "LinkLabel",
+   "Options" : {
+      "Warnings" : "All",
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "LinkLabel",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false,
+      "Compress" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "TargetDirectory" : "debug",
+            "ObjectsDirectory" : "debug"
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "TargetDirectory" : "release",
+            "ObjectsDirectory" : "release"
+         }
+      }
+   ],
+   "Files" : [
+      "linkLabel.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

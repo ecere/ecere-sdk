@@ -1,0 +1,27 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "Animate3DS",
+   "Options" : {
+      "TargetFileName" : "Animate3DS",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true
+         }
+      }
+   ],
+   "Files" : [
+      "Animate3DS.ec"
+   ],
+   "ResourcesPath" : "res",
+   "Resources" : [
+      "desktop.3ds",
+      "floor.jpg",
+      "wall_80.jpg"
+   ]
+}

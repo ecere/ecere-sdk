@@ -1,0 +1,98 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "epj2make",
+   "Options" : {
+      "Warnings" : "All",
+      "PreprocessorDefinitions" : [
+         "MAKEFILE_GENERATOR"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "epj2make",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : true
+   },
+   "Platforms" : [
+      {
+         "Name" : "Linux",
+         "Options" : {
+            "PreprocessorDefinitions" : [
+
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         },
+         "Platforms" : [
+            {
+               "Name" : "Linux",
+               "Options" : {
+                  "PreprocessorDefinitions" : [
+
+                  ]
+               }
+            }
+         ]
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "Debug" : false,
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "LibraryDirs" : [
+               "../obj/$(PLATFORM)/bin",
+               "../obj/$(PLATFORM)/lib"
+            ],
+            "PostbuildCommands" : [
+               "$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)"
+            ]
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Optimization" : "None"
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "extern",
+         "Files" : [
+            {
+               "Folder" : "ide",
+               "Files" : [
+                  "../ide/src/project/Project.ec",
+                  "../ide/src/project/ProjectConfig.ec",
+                  "../ide/src/project/ProjectNode.ec",
+                  "../ide/src/IDESettings.ec",
+                  "../ide/src/OldIDESettings.ec"
+               ]
+            },
+            "../extras/gui/controls/PathBox.ec",
+            "../extras/gui/controls/StringsBox.ec"
+         ]
+      },
+      "epj2make.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "../include.mk"
+   ]
+}

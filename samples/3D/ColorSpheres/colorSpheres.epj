@@ -1,0 +1,117 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ColorSpheres",
+   "Options" : {
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "ColorSpheres"
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Libraries" : [
+               "ecere"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "Libraries" : [
+               "ecere_tight",
+               "kernel32",
+               "gdi32",
+               "user32",
+               "opengl32",
+               "mpr",
+               "ws2_32",
+               "freetype",
+               "png",
+               "z",
+               "jpeg",
+               "ungif",
+               "dxguid",
+               "ddraw",
+               "winmm",
+               "dinput"
+            ],
+            "LibraryDirs" : [
+               "/v3/tight/release"
+            ],
+            "Console" : false
+         }
+      },
+      {
+         "Name" : "ReleaseNormal",
+         "Options" : {
+            "Optimization" : "Speed",
+            "Libraries" : [
+               "ecere"
+            ],
+            "Console" : false
+         }
+      },
+      {
+         "Name" : "DebugTight",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "Libraries" : [
+               "ecere_tight",
+               "opengl32",
+               "mpr",
+               "ws2_32",
+               "freetype",
+               "png",
+               "z",
+               "jpeg",
+               "ungif",
+               "dxguid",
+               "ddraw",
+               "winmm",
+               "dinput",
+               "gdi32",
+               "user32",
+               "kernel32"
+            ],
+            "LibraryDirs" : [
+               "/v3/tight/debug"
+            ],
+            "Console" : true
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Libraries" : [
+               "ecere"
+            ],
+            "Console" : true
+         }
+      }
+   ],
+   "Files" : [
+      "colorSpheres.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

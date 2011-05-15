@@ -1,0 +1,83 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ecs",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "ecs",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Libraries" : [
+               "ecere"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "Debug" : false,
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "Libraries" : [
+               "ecere"
+            ],
+            "LibraryDirs" : [
+               "../../obj/$(PLATFORM)/bin",
+               "../../obj/$(PLATFORM)/lib"
+            ],
+            "PostbuildCommands" : [
+               "$(call cpq,$(TARGET),../../obj/$(PLATFORM)/bin/)"
+            ]
+         }
+      },
+      {
+         "Name" : "Bootstrap",
+         "Options" : {
+            "Debug" : false,
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "Libraries" : [
+               "ecBootstrap",
+               "ecereBootstrap"
+            ],
+            "LibraryDirs" : [
+               "../libec/obj/bootstrap.$(PLATFORM)",
+               "../../ecere/obj/bootstrap.$(PLATFORM)"
+            ]
+         },
+         "Platforms" : [
+            {
+               "Name" : "Linux",
+               "Options" : {
+                  "Libraries" : [
+                     "m",
+                     "dl"
+                  ]
+               }
+            }
+         ]
+      }
+   ],
+   "Files" : [
+      "ecs.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

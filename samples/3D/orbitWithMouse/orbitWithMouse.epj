@@ -1,0 +1,69 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "orbitWithMouse",
+   "Options" : {
+      "Warnings" : "All",
+      "Debug" : true,
+      "Optimization" : "None",
+      "TargetType" : "Executable",
+      "TargetFileName" : "orbitWithMouse",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Platforms" : [
+      {
+         "Name" : "win32",
+         "Options" : {
+            "Libraries" : [
+               "openGL32"
+            ]
+         }
+      },
+      {
+         "Name" : "Linux",
+         "Options" : {
+            "Libraries" : [
+               "GL"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug"
+      }
+   ],
+   "Files" : [
+      "orbitWithMouse.ec"
+   ],
+   "ResourcesPath" : "res",
+   "Resources" : [
+      {
+         "Folder" : "skycube/skycube",
+         "Files" : [
+            "res/skycube/bk.jpg",
+            "res/skycube/dn.jpg",
+            "res/skycube/fr.jpg",
+            "res/skycube/lf.jpg",
+            "res/skycube/rt.jpg",
+            "res/skycube/up.jpg"
+         ]
+      },
+      "background.jpg",
+      "shot1.jpg",
+      "shot2.jpg",
+      "shot3.jpg",
+      "shot4.jpg",
+      "slidehex-cinema_guide.png",
+      "slidehex-jukebox.png",
+      "slidehex-net_radio.png",
+      "slidehex-photo_album.png",
+      "slidehex-search_guide.png",
+      "slidehex-settings.png",
+      "slidehex-shopping.png",
+      "slidehex-transcode.png",
+      "slidehex-tv_guide.png",
+      "slidehex-website.png"
+   ]
+}

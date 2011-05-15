@@ -1,0 +1,49 @@
+
+ECERE Project File
+
+Version 0.1a
+
+Target "ePaint"
+
+   Configurations
+
+    + Debug
+
+         Compiler Options
+
+            Intermediate Directory = debug
+            Debug = True
+            Optimize = None
+            AllWarnings = True
+
+            Preprocessor Definitions = _DEBUG
+
+         Linker Options
+
+            Target Name = ePaint
+            Target Type = Executable
+            Target Directory = debug
+            Console = True
+
+            Libraries = ecere
+
+    + Release
+
+         Compiler Options
+
+            Intermediate Directory = release
+            Debug = False
+            Optimize = Speed
+            AllWarnings = True
+
+         Linker Options
+
+            Target Name = ePaint
+            Target Type = Executable
+            Target Directory = release
+
+            Libraries = ecere
+
+   Files
+
+    - floodFill.ec

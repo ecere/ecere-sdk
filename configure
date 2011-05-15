@@ -1,0 +1,13 @@
+echo "The Ecere cross-platform SDK is pre-configured. Just type:
+
+		mingw32-make; if you're on Microsoft® Windows™
+				(You need MinGW: http://www.mingw.org/)
+
+		make;   if you're on Apple® Mac™ OS X™
+				(Leopard™/Xcode™ recommended)
+
+or simply	make;  if you are on GNU/Linux™
+
+
+The SDK can probably be built on BSD and other Unixes with some additional
+jiggery-pokery."

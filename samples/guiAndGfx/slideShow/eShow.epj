@@ -1,0 +1,36 @@
+
+ECERE Project File
+
+Version 0.1a
+
+Target "eShow"
+
+Active Configuration = Default
+
+   Configurations
+
+    + Default
+
+         Compiler Options
+
+            Intermediate Directory = obj
+            Debug = True
+            Optimize = None
+            Profile = False
+            MemoryGuard = False
+            AllWarnings = True
+            Modified = False
+            Strict Name Spaces = False
+
+         Linker Options
+
+            Target Name = eShow
+            Target Type = Executable
+            Console = False
+            Modified = False
+
+            Libraries = ecere
+
+   Files
+
+    - eShow.ec

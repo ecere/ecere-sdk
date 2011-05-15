@@ -1,0 +1,98 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "EDASQLiteCipher",
+   "Options" : {
+      "Warnings" : "All",
+      "Optimization" : "None",
+      "PreprocessorDefinitions" : [
+         "SQLITE_HAS_CODEC"
+      ],
+      "TargetType" : "SharedLibrary",
+      "TargetFileName" : "EDASQLiteCipher",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "pthread",
+               "dl",
+               "libssl"
+            ]
+         }
+      },
+      {
+         "Name" : "apple",
+         "Options" : {
+            "Libraries" : [
+               "pthread",
+               "dl",
+               "libssl"
+            ]
+         }
+      },
+      {
+         "Name" : "win32",
+         "Options" : {
+            "Libraries" : [
+               "libeay32"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "NoLineNumbers" : true,
+            "LibraryDirs" : [
+               "../../../obj/$(PLATFORM)/bin",
+               "../../../obj/$(PLATFORM)/lib"
+            ],
+            "PostbuildCommands" : [
+               "$(call cpq,$(TARGET),../../../$(SODESTDIR))"
+            ]
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Static",
+         "Options" : {
+            "TargetType" : "StaticLibrary"
+         }
+      }
+   ],
+   "Files" : [
+      "sqlite3.c",
+      "sqlite3.h",
+      "EDASQLiteCipher.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

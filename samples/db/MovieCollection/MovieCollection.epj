@@ -1,0 +1,52 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "MovieCollection",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "MovieCollection",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Console" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Console" : true
+         }
+      }
+   ],
+   "Files" : [
+      "movieCollection.ec",
+      "movieSchema.ec",
+      "genericEditor.ec",
+      "allMoviesReport.ec",
+      "borrowerReport.ec",
+      "reports.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

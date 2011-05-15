@@ -1,0 +1,48 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "EDATest",
+   "Options" : {
+      "TargetType" : "Executable",
+      "TargetFileName" : "EDALibTest",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "DefaultNameSpace" : "eda"
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Optimization" : "Speed",
+            "DefaultNameSpace" : "eda"
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      }
+   ],
+   "Files" : [
+      "EDATest.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

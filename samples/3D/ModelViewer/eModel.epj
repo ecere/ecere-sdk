@@ -1,0 +1,37 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "eModel",
+   "Options" : {
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "eModel",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "eModel.ec",
+      "engineSettings.ec"
+   ],
+   "ResourcesPath" : "res",
+   "Resources" : [
+      "ecere.png",
+      "help.txt"
+   ]
+}

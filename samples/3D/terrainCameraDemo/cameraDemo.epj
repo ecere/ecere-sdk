@@ -1,0 +1,61 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "cameraDemo",
+   "Description" : "",
+   "License" : "",
+   "Options" : {
+      "Warnings" : "All",
+      "Debug" : true,
+      "Profile" : false,
+      "Optimization" : "None",
+      "IncludeDirs" : [
+         "..\\eModel"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "cameraDemo",
+      "TargetDirectory" : "",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Console" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "demo.ec",
+      "dted.ec",
+      "../ModelViewer/engineSettings.ec",
+      "terrain.ec",
+      "dna.ec"
+   ],
+   "ResourcesPath" : "res",
+   "Resources" : [
+      {
+         "Folder" : "./skycube",
+         "Files" : [
+            "res/skycube/up.pcx",
+            "res/skycube/rt.pcx",
+            "res/skycube/lf.pcx",
+            "res/skycube/fr.pcx",
+            "res/skycube/dn.pcx",
+            "res/skycube/bk.pcx"
+         ]
+      },
+      "dted.pcx",
+      "texture1.pcx",
+      "N19.DT1",
+      "../ModelViewer/res/ecere.png",
+      "cesna.3ds"
+   ]
+}
