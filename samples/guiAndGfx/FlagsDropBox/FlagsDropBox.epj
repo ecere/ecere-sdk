@@ -29,13 +29,13 @@
       }
    ],
    "Files" : [
-      "../../../extras/types/CountryCode.ec",
+      "/sdk/extras/types/CountryCode.ec",
       "flagsDropBox.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
       {
-         "Folder" : "../../../extras/res/types/types",
+         "Folder" : "/sdk/extras/res/types/types",
          "Files" : [
             {
                "Folder" : "countryCode",

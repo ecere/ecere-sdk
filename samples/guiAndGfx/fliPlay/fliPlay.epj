@@ -23,8 +23,8 @@
    ],
    "Files" : [
       "FliPlayApp.ec",
-      "../../../extras/fli.ec",
-      "../../../extras/fliPlay.ec"
+      "/sdk/extras/fli.ec",
+      "/sdk/extras/fliPlay.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [

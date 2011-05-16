@@ -53,9 +53,9 @@
       {
          "Folder" : "audio",
          "Files" : [
-            "../../../extras/audio/alsa.ec",
-            "../../../extras/audio/audio.ec",
-            "../../../extras/audio/dsound.ec"
+            "/sdk/extras/audio/alsa.ec",
+            "/sdk/extras/audio/audio.ec",
+            "/sdk/extras/audio/dsound.ec"
          ]
       },
       "wavPlayer.ec"

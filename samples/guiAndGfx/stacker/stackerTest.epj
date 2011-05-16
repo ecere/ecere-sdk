@@ -23,7 +23,7 @@
    ],
    "Files" : [
       "stackerTest.ec",
-      "../../../extras/gui/controls/Stacker.ec"
+      "/sdk/extras/gui/controls/Stacker.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
