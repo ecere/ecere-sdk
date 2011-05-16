@@ -36,7 +36,7 @@
    ],
    "Files" : [
       "main.ec",
-      "/sdk/extras/sha256.ec"
+      "../../../extras/sha256.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [

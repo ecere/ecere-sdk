@@ -30,7 +30,7 @@
    ],
    "Files" : [
       "xmlSample.ec",
-      "/sdk/extras/XMLParser.ec"
+      "../../../extras/XMLParser.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [

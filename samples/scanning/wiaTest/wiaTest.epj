@@ -43,7 +43,7 @@
    ],
    "Files" : [
       "wiaTest.ec",
-      "/sdk/extras/wia.ec"
+      "../../../extras/wia.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
