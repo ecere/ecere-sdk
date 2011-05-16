@@ -30,6 +30,7 @@ public:
    char fieldSeparator;
    char valueQuotes;
    int expectedFieldCount;
+   int newLineCharCount;
    uint lineNum;
    uint charNum;
    uint rowNum;
@@ -46,6 +47,7 @@ public:
       //bool isHeader = true;
       bool stop = false;
       //int rowCount = 0;
+      newLineCharCount = 0;
       rowNum = 1;
       lineNum = 1;
       charNum = 1;
@@ -148,6 +150,8 @@ public:
                         {
                            /*if(!isHeader) */stop = OnRow(userData, values);
                            //isHeader = false;
+                           lineNum += newLineCharCount;
+                           newLineCharCount = 0;
                            values.Free();
                            //rowCount++;
                            if(stop) break;
@@ -240,7 +244,7 @@ public:
                            PrintLn("bad data: new line char in field value!",
                                  " -> filePath=", filePath, " lineNum=", lineNum, " charNum=", charNum, " rowNum=", rowNum, " fieldNum=", fieldNum);
                         */
-                     lineNum++;
+                     newLineCharCount++;
                   }
                   //else if(ch == '\r')
                   //else if(!quoted && !curlyCount && (ch == '\n' || ch == fieldSeparator || ch == '\t'))
@@ -283,7 +287,7 @@ public:
                      }
                      else
                         PrintLn("ERROR");
-                     PrintLn("special: linen end span back seek!",
+                     PrintLn("double check: line end span back seek",
                               " -> filePath=", filePath, " lineNum=", lineNum, " charNum=", charNum, " rowNum=", rowNum, " fieldNum=", fieldNum);
                   }
                }
