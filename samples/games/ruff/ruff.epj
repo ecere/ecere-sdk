@@ -1,0 +1,38 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ruff",
+   "Options" : {
+      "TargetType" : "Executable",
+      "TargetFileName" : "ruff",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Default",
+         "Options" : {
+            "Debug" : true
+         }
+      }
+   ],
+   "Files" : [
+      "src/ai.ec",
+      "src/bet.ec",
+      "src/ruff.ec",
+      "src/scores.ec",
+      "src/server.ec",
+      "src/setup.ec",
+      "src/trump.ec"
+   ],
+   "ResourcesPath" : "res",
+   "Resources" : [
+      "cards.pcx",
+      "clubs.bmp",
+      "diamonds.bmp",
+      "ecereCard.bmp",
+      "hearts.bmp",
+      "spades.bmp"
+   ]
+}

@@ -1,0 +1,4 @@
+Left Button & Drag     Turn camera around object
+Right Button & Drag    Turn light around
+Keyboard + and -       Zoom in and out
+Mouse Wheel Up & Down  Zoom in and out

@@ -1,0 +1,52 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "scrabble",
+   "Options" : {
+      "Warnings" : "All",
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "scrabble",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : false,
+            "Optimization" : "None",
+            "Console" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "MemoryGuard" : false,
+            "Optimization" : "Speed",
+            "Console" : false
+         }
+      },
+      {
+         "Name" : "memoryguard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Optimization" : "None",
+            "Console" : true
+         }
+      }
+   ],
+   "Files" : [
+      "scrabble.ec",
+      "ScrabbleServer.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "dico.txt",
+      "english.txt"
+   ]
+}
