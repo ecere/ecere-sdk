@@ -316,9 +316,6 @@ public enum CountryCode
    //static const CountryCode ::first = AD;
    //static const CountryCode ::last = ZW;
 
-   property char * { get { char * s = OnGetString(null, null, null); return s; } }
-   property char * countryName { get { return countryNames[this]; } }
-
    char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       char * tmp = tempString ? tempString : new char[4];
@@ -337,6 +334,60 @@ public enum CountryCode
          surface.Blit(icon, x + (16 - icon.width) / 2,y+2,0,0, icon.width, icon.height);
       class::OnDisplay(surface, x + w, y, width - w, null, alignment, flags);
    }
+
+public:
+   property char * { get { char * s = OnGetString(null, null, null); return s; } }
+   property char * name { get { return countryNames[this]; } }
+};
+
+static String subdivisionCategoryNames[SubdivisionCategory] = 
+{
+   "(none)",
+   "Administration", "Metropolitan Administration",
+   "Area", "Council Area", "District Council Area", "Pakistan Administered Area",
+   "Administrative Atoll",
+   "Special Island Authority", "Unitary Authority",
+   "Canton",
+   "Capital",
+   "Chain Of Islands",
+   "City", "City Corporation", "City Of County Right", "Autonomous City", "Capital City",
+      "Capital Metropolitan City", "Metropolitan City", "Special City", "Special Administrative City",
+   "Overseas Territorial Collectivity",
+   "Commune",
+   "Autonomous Community", "Urban Community",
+   "Island Council", "Local Council", "TownCouncil",
+   "Country"/* ??? */,
+   "County", "Two Tier County",
+   "Department", "Metropolitan Department", "Overseas Region Department",
+   "Dependency", "Federal Dependency",
+   "District", "Autonomous District", "Capital District", "Federal District", "Metropolitan District",
+      "Special District",
+   "Division",
+   "Emirate",
+   "Entity",
+   "Governorates"/* with an s? */,
+   "Island", "Islands Group"/* with an s? */,
+   "Federal Land",
+   "London Borough",
+   "Municipality", "Special Municipality",
+   "Oblasts"/* with an s? */,
+   "Parish",
+   "Self Governed Part",
+   "Popularate",
+   "Prefecture", "Economic Prefecture",
+   "Principality",
+   "Province", "Autonomous Province", "Constitutional Province",
+   "Quarters"/* with an s? */,
+   "Rayon",
+   "Region", "Administrative Region", "Autonomous Region", "Development Region", "Geographical Region",
+      "Indigenous Region", "Metropolitan Region", "Special Administrative Region", "Special Region",
+   "Republic", "Autonomous Republic",
+   "Autonomous Sector",
+   "State",
+   "Territory", "Administrative Territory", "Federal Territory", "Federal Capital Territory",
+      "Outlying Territory", "Union Territory",
+   "Zone", "Special Zone",
+   "Territorial Unit", "Autonomous Territorial Unit"
 };
 
 public enum SubdivisionCategory
@@ -386,7 +437,10 @@ public enum SubdivisionCategory
    territory, administrativeTerritory, federalTerritory, federalCapitalTerritory,
       outlyingTerritory, unionTerritory,
    zone, specialZone,
-   territorialUnit, autonomousTerritorialUnit
+   territorialUnit, autonomousTerritorialUnit;
+
+public:
+   property char *  mame { get { return subdivisionCategoryNames[this]; } }
 };
 
 static String caSubdivisionNames[CASubdivisionCode] =
@@ -406,7 +460,7 @@ static String caSubdivisionNames[CASubdivisionCode] =
    "Nunavut",
    "Yukon"
 };
-static SubdivisionCategory caSubdivisionCategory[CASubdivisionCode] =
+static SubdivisionCategory caSubdivisionCategories[CASubdivisionCode] =
 {
    none, province, province, province, province, province, province, province, province, province, province, territory, territory, territory
 };
@@ -415,6 +469,7 @@ static CASubdivisionCode LastCASubdivisionCode = YT;
 public enum CASubdivisionCode
 {
    none, AB, BC, MB, NB, NL, NS, ON, PE, QC, SK, NT, NU, YT;
+
    char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       char * tmp = tempString ? tempString : new char[4];
@@ -423,10 +478,13 @@ public enum CASubdivisionCode
          ((char *(*)())(void *)class(CASubdivisionCode).base._vTbl[4])(class(CASubdivisionCode), &this, tmp, null, null); 
       return tmp;
    }
+
+public:
    property char * { get { char * s = OnGetString(null, null, null); return s; } }
    // ATTENTION: allocated memory must be freed by caller
    property char * completeCode { get { return PrintString(CountryCode::CA, "-", this); } }
-   property char * subdivisionName { get { return caSubdivisionNames[this]; } }
+   property char * name { get { return caSubdivisionNames[this]; } }
+   property SubdivisionCategory category { get { return caSubdivisionCategories[this]; } }
    // TODO: OnDisplay and flag resources
 };
 
@@ -491,7 +549,7 @@ static String usSubdivisionNames[USSubdivisionCode] =
    "West Virginia",
    "Wyoming"
 };
-static SubdivisionCategory usSubdivisionCategory[USSubdivisionCode] =
+static SubdivisionCategory usSubdivisionCategories[USSubdivisionCode] =
 {
    none,
    state, state, state, outlyingTerritory, state, state, state, state, district, state, state, state, outlyingTerritory, state, state, state,
@@ -508,6 +566,7 @@ public enum USSubdivisionCode
    IL, IN, KS, KY, LA, MA, MD, ME, MI, MN, MO, MP, MS, MT, NC, ND,
    NE, NH, NJ, NM, NV, NY, OH, OK, OR, PA, PR, RI, SC, SD, TN, TX,
    UM, UT, VA, VI, VT, WA, WI, WV, WY;
+
    char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       char * tmp = tempString ? tempString : new char[4];
@@ -516,10 +575,13 @@ public enum USSubdivisionCode
          ((char *(*)())(void *)class(USSubdivisionCode).base._vTbl[4])(class(USSubdivisionCode), &this, tmp, null, null); 
       return tmp;
    }
+
+public:
    property char * { get { char * s = OnGetString(null, null, null); return s; } }
    // ATTENTION: allocated memory must be freed by caller
    property char * completeCode { get { return PrintString(CountryCode::US, "-", this); } }
-   property char * subdivisionName { get { return usSubdivisionNames[this]; } }
+   property char * name { get { return usSubdivisionNames[this]; } }
+   property SubdivisionCategory category { get { return usSubdivisionCategories[this]; } }
    // TODO: OnDisplay and flag resources
 };
 
