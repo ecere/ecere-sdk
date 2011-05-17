@@ -2516,13 +2516,17 @@ void ProjectConfig::LegacyProjectConfigLoad(File f)
             TrimLSpaces(equal, equal);
             if(!strcmpi(subSection, "LibraryDirs"))
             {
-               if(!options.libraryDirs) options.libraryDirs = { };
-               options.libraryDirs.Add(CopyString(equal));
+               if(!options.libraryDirs)
+                  options.libraryDirs = { [ CopyString(equal) ] };
+               else
+                  options.libraryDirs.Add(CopyString(equal));
             }
             else if(!strcmpi(subSection, "IncludeDirs"))
             {
-               if(!options.includeDirs) options.includeDirs = { };
-               options.includeDirs.Add(CopyString(equal));
+               if(!options.includeDirs)
+                  options.includeDirs = { [ CopyString(equal) ] };
+               else
+                  options.includeDirs.Add(CopyString(equal));
             }
          }
          else if(buffer[0] == '+')
