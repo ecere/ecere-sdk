@@ -1,0 +1,31 @@
+
+ECERE Project File
+
+Version 0a
+
+Target "tongIts"
+
+   Compiler Options
+
+      Intermediate Directory = obj
+      Debug = True
+      Optimize = False
+      Profile = False
+      AllWarnings = False
+
+   Linker Options
+
+      Target Name = tongIts
+      Target Type = Executable
+      Console = False
+
+      Libraries = ecere
+
+   Files
+
+    - tongits.ec
+
+   Resources
+
+    = data/ecereCard.bmp
+    = data/cards.pcx

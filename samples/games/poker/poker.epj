@@ -1,0 +1,35 @@
+
+ECERE Project File
+
+Version 0a
+
+Target "poker"
+
+   Compiler Options
+
+      Intermediate Directory = obj
+      Debug = True
+      Optimize = False
+      Profile = False
+      AllWarnings = True
+
+   Linker Options
+
+      Target Name = poker
+      Target Type = Executable
+      Console = False
+
+      Libraries = ecere
+
+   Files
+
+    - bet.ec
+    - player.ec
+    - poker.ec
+    - pokerutils.ec
+    - widow.ec
+
+   Resources
+
+    = data/ecereCard.bmp
+    = data/cards.pcx
