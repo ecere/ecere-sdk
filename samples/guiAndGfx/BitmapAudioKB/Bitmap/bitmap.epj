@@ -1,0 +1,38 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "BitmapAudioKB",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "bitmap",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "bitmap.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "../res/castle.png"
+   ]
+}

@@ -46,7 +46,7 @@
    ],
    "ResourcesPath" : "",
    "Resources" : [
-      "dico.txt",
-      "english.txt"
+      "res/dico.txt",
+      "res/english.txt"
    ]
 }

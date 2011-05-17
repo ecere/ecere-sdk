@@ -1,0 +1,43 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "BitmapAudioKB",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "OnKeyHit",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "OnKeyHit.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "../res/archer.png",
+      "../res/castle.png",
+      "../res/dragon.png",
+      "../res/mage.png",
+      "../res/peasant.png"
+   ]
+}
