@@ -141,7 +141,7 @@ endif
 
 ifdef WINDOWS
 
-LIBS += $(OBJ)resources.o
+LIBS += obj/resources.o
 
 else
 ifdef LINUX
@@ -179,7 +179,7 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 
 $(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
 ifdef WINDOWS
-$(TARGET): | $(OBJ)resources.o
+$(TARGET): | obj/resources.o
 endif
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
@@ -190,8 +190,8 @@ endif
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
 
 ifdef WINDOWS
-$(OBJ)resources.o: src/icon2.ico src/resources.rc
-	windres src/resources.rc $(OBJ)resources.o
+obj/resources.o: src/icon2.ico src/resources.rc
+	windres src/resources.rc obj/resources.o
 endif
 
 # SYMBOL RULES

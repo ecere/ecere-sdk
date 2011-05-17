@@ -36,6 +36,14 @@
                "/usr/X11R6/lib"
             ]
          }
+      },
+      {
+         "Name" : "win32",
+         "Options" : {
+            "Libraries" : [
+               "obj/resources.o"
+            ]
+         }
       }
    ],
    "Configurations" : [
@@ -58,7 +66,7 @@
                "Name" : "Win32",
                "Options" : {
                   "Libraries" : [
-                     "resources.o"
+
                   ]
                }
             }
@@ -86,7 +94,7 @@
                "Name" : "Win32",
                "Options" : {
                   "Libraries" : [
-                     "resources.o"
+
                   ]
                }
             },
@@ -128,7 +136,7 @@
                "Name" : "Win32",
                "Options" : {
                   "Libraries" : [
-                     "resources.o"
+
                   ]
                }
             }
@@ -175,7 +183,6 @@
                "Name" : "Win32",
                "Options" : {
                   "Libraries" : [
-                     "resources.o",
                      "dxguid",
                      "ddraw",
                      "dinput",
