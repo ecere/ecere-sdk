@@ -174,7 +174,7 @@ class TongIts : Window
       int i;
       Bitmap ptrCardLoad {};
       ptrCardLoad.Load(":cards.pcx",null,null);
-      cardBack.LoadT(":ecereCard.bmp", null, displaySystem);
+      cardBack.LoadT(":ecereCard.png", null, displaySystem);
       
       for(i=0;i<52;i++)
       {

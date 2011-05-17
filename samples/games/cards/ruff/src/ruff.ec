@@ -941,7 +941,7 @@ class Ruff : Window
       if(ptrCardLoad.Load(":cards.pcx",null,null))
       {
          int i;
-         cardBack.LoadT(":ecereCard.bmp",null,displaySystem);      
+         cardBack.LoadT(":ecereCard.png",null,displaySystem);      
          for(i=0;i<52;i++)
          {
             bitmapCards[i] = Bitmap {};

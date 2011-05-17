@@ -1,99 +1,78 @@
-
-ECERE Project File
-
-Version 0.1a
-
-Target "bomb"
-
-   Configurations
-
-    + Debug
-
-         Compiler Options
-
-            Intermediate Directory = Debug
-            Debug = True
-            Optimize = None
-            Profile = False
-            MemoryGuard = False
-            AllWarnings = True
-            Strict Name Spaces = False
-
-         Linker Options
-
-            Target Name = bomb
-            Target Type = Executable
-            Target Directory = Debug
-            Console = False
-
-            Libraries = ecere
-
-    + MemoryGuard
-
-         Compiler Options
-
-            Intermediate Directory = MemoryGuard
-            Debug = True
-            Optimize = None
-            Profile = False
-            MemoryGuard = True
-            AllWarnings = True
-            Strict Name Spaces = False
-
-         Linker Options
-
-            Target Name = bomb
-            Target Type = Executable
-            Target Directory = MemoryGuard
-            Console = True
-
-            Libraries = ecere
-
-    + Release
-
-         Compiler Options
-
-            Intermediate Directory = Release
-            Debug = False
-            Optimize = Speed
-            Profile = False
-            MemoryGuard = False
-            AllWarnings = True
-            Strict Name Spaces = False
-
-         Linker Options
-
-            Target Name = bomb
-            Target Type = Executable
-            Target Directory = Release
-            Console = False
-
-            Libraries = ecere
-
-   Files
-
-    - bomb.ec
-
-   Resources
-
-    = data/map1.dat
-    = data/map10.dat
-    = data/map11.dat
-    = data/map2.dat
-    = data/map3.dat
-    = data/map4.dat
-    = data/map5.dat
-    = data/map6.dat
-    = data/map7.dat
-    = data/map8.dat
-    = data/map9.dat
-    = data/3.pcx
-    = data/block.pcx
-    = data/bomb.pcx
-    = data/deacbomb.pcx
-    = data/deadeac.pcx
-    = data/desactiv.pcx
-    = data/max3.pcx
-    = data/nothing.pcx
-    = data/password.pcx
-    = data/player.pcx
+{
+   "Version" : 0.2,
+   "ModuleName" : "bomb",
+   "Options" : {
+      "Warnings" : "All",
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : false,
+            "Optimization" : "None",
+            "TargetFileName" : "bomb",
+            "TargetDirectory" : "Debug",
+            "ObjectsDirectory" : "Debug",
+            "Console" : false
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Optimization" : "None",
+            "TargetFileName" : "bomb",
+            "TargetDirectory" : "MemoryGuard",
+            "ObjectsDirectory" : "MemoryGuard",
+            "Console" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "MemoryGuard" : false,
+            "Optimization" : "Speed",
+            "TargetFileName" : "bomb",
+            "TargetDirectory" : "Release",
+            "ObjectsDirectory" : "Release",
+            "Console" : false
+         }
+      }
+   ],
+   "Files" : [
+      "bomb.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "res/3.pcx",
+      "res/block.pcx",
+      "res/bomb.pcx",
+      "res/deacbomb.pcx",
+      "res/deadeac.pcx",
+      "res/desactiv.pcx",
+      "res/max3.pcx",
+      "res/nothing.pcx",
+      "res/password.pcx",
+      "res/player.pcx",
+      "res/map1.dat",
+      "res/map10.dat",
+      "res/map11.dat",
+      "res/map2.dat",
+      "res/map3.dat",
+      "res/map4.dat",
+      "res/map5.dat",
+      "res/map6.dat",
+      "res/map7.dat",
+      "res/map8.dat",
+      "res/map9.dat"
+   ]
+}

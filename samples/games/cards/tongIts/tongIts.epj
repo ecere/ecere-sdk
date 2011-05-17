@@ -1,0 +1,32 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "tongIts",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "tongIts",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Default",
+         "Options" : {
+            "Debug" : true,
+            "Profile" : false,
+            "Optimization" : "None",
+            "ObjectsDirectory" : "obj"
+         }
+      }
+   ],
+   "Files" : [
+      "tongits.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "../res/cards.pcx",
+      "../res/ecereCard.png"
+   ]
+}

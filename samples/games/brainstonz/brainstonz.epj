@@ -1,0 +1,44 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "brainstonz",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "brainstonz",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "brainstonz.ec",
+      "game.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "board.jpg",
+      "black.png",
+      "white.png",
+      "arrow.png",
+      "remove.png",
+      "smile.png"
+   ]
+}

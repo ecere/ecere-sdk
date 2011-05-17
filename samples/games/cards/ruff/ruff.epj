@@ -28,11 +28,11 @@
    ],
    "ResourcesPath" : "res",
    "Resources" : [
-      "cards.pcx",
-      "clubs.bmp",
-      "diamonds.bmp",
-      "ecereCard.bmp",
-      "hearts.bmp",
-      "spades.bmp"
+      "../res/cards.pcx",
+      "../res/clubs.bmp",
+      "../res/diamonds.bmp",
+      "../res/ecereCard.png",
+      "../res/hearts.bmp",
+      "../res/spades.bmp"
    ]
 }

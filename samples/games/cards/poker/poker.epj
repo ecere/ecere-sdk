@@ -1,0 +1,36 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "poker",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "poker",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Default",
+         "Options" : {
+            "Debug" : true,
+            "Profile" : false,
+            "Optimization" : "None",
+            "ObjectsDirectory" : "obj"
+         }
+      }
+   ],
+   "Files" : [
+      "bet.ec",
+      "player.ec",
+      "poker.ec",
+      "pokerutils.ec",
+      "widow.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "../res/cards.pcx",
+      "../res/ecereCard.png"
+   ]
+}
