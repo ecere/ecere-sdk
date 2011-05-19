@@ -62,7 +62,7 @@ endif
 
 ifdef WINDOWS
 
-LIBS += 
+LIBS += -Wl,--enable-stdcall-fixup
 
 else
 ifdef LINUX
