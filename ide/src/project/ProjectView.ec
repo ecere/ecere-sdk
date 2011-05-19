@@ -1247,7 +1247,7 @@ class ProjectView : Window
       {
          DirExpression targetDir = prj.targetDir;
 
-         if(buildType != run && prj == project)
+         if(buildType != run && prj == project && ide.debugger.isActiveForCurrentConfig)
             ide.debugger.Stop();
          
          // TODO: Disabled until problems fixed... is it fixed?

@@ -1545,7 +1545,7 @@ class IDE : Window
 
    bool DontTerminateDebugSession(char * title)
    {
-      if(debugger.isActive)
+      if(debugger.isActiveForCurrentConfig)
       {
          if(MessageBox { type = yesNo, master = ide, 
                            contents = "Do you want to terminate the debugging session in progress?", 
