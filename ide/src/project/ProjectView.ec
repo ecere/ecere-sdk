@@ -636,44 +636,9 @@ class ProjectView : Window
    void GoToError(const char * line)
    {
       char * colon;
-      char * parenthesisOpen;
-      char * parenthesisClose;
       
       while(isspace(*line)) line++;
       colon = strstr(line, ":");
-      parenthesisOpen = strstr(line, "(");
-      if(parenthesisOpen)
-      {
-         parenthesisClose = strstr(parenthesisOpen, ")");
-         if(parenthesisOpen && parenthesisClose)
-         {
-            int len = parenthesisOpen - line;
-            char * errorFilePath = new char[len+1];
-            int lineNumber = atoi(parenthesisOpen+1);
-            char filePath[MAX_LOCATION];
-            strncpy(errorFilePath, line, len);
-            errorFilePath[len] = '\0';
-            GetWorkingDir(filePath, sizeof(filePath));
-            strcpy(filePath, project.topNode.path);
-            MakeSlashPath(errorFilePath);
-            PathCatSlash(filePath, errorFilePath);
-            if(FileExists(filePath).isFile)
-            {
-               CodeEditor codeEditor;
-               codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal);
-               if(!codeEditor)
-                  PrintLn("Could not open ", filePath, " file."); // might want to add added project support here
-               if(codeEditor && lineNumber)
-               {
-                  EditBox editBox = codeEditor.editBox;
-                  editBox.GoToLineNum(lineNumber - 1);
-                  //editBox.GoToPosition(editBox.line, lineNumber - 1, col ? (col - 1) : 0);
-               }
-            }
-            delete errorFilePath;
-            return;
-         }
-      }
 
       {
          int lineNumber = 0;
@@ -701,7 +666,11 @@ class ProjectView : Window
          if(colon && lookForLineNumber)
          {
             char * comma;
-            if((colon+1)[0] == ' ')
+            // MSVS Errors
+            char * par = RSearchString(line, "(", colon - line, true, false);
+            if(par && strstr(par, ")"))
+               colon = par;
+            else if((colon+1)[0] == ' ')
             {
                // NOTE: This is the same thing as saying 'colon = line'
                for( ; colon != line; colon--)
@@ -725,7 +694,7 @@ class ProjectView : Window
             if(colon)
             {
                // Cut module name
-               strncpy(moduleName, line, colon - line);                  
+               strncpy(moduleName, line, colon - line);
                moduleName[colon - line] = '\0';
             }
             else
