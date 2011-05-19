@@ -593,16 +593,37 @@ public enum EditBoxFindResult { notFound, found, wrapped };
 
 static char * keyWords1[] =
 {
-   "return","break","continue","default","switch","case","if","else","for","while", "do","property","import","long","short",
-   "void", "char","int","float","double","unsigned","static", "extern", "struct", "union", "typedef","class","enum","virtual", 
-   "const", "private", "public", "protected", "sizeof", "delete", "new", "new0", "renew", "renew0", "define",
+   // C
+   "return","break","continue","default","switch","case","if","else","for","while", "do","long","short",
+   "void", "char","int","float","double","unsigned","static", "extern", "struct", "union", "typedef","enum",
+   "const",   "sizeof",
    "#include", "#define", "#pragma", "#if", "#else", "#elif", "#ifdef", "#ifndef", "#endif", "#undef", "#line",
-   "uint", "uint32", "uint16", "uint64", "bool", "byte", "int64", "get", "set", "true", "false", "null", "__attribute__", "__stdcall", "_stdcall", "remote", "this",
+   "__attribute__", "__stdcall", "_stdcall",
+   "__declspec", "goto",
+    "inline", "__inline__", "_inline", "__inline", "__typeof","__extension__",
+   "asm", "__asm", "_asm", "volatile", "#cpu", "__stdcall__",
+
+   // eC
+   "class", "private", "public",
+   "property","import",
+   "delete", "new", "new0", "renew", "renew0", "define",
+   "get", "set",
+   "remote",
+   "dllexport", "dllimport", "stdcall",
+   "subclass", "__on_register_module", "namespace", "using",
    "typed_object", "any_object", "incref", "register", "watch", "stopwatching", "firewatchers", "watchable", "class_designer",
    "class_fixed", "class_no_expansion", "isset", "class_default_property", "property_category", "class_data", "class_property",
-   "subclass", "__on_register_module", "namespace", "using", "__declspec", "dllexport", "dllimport", "stdcall", "goto", 
-   "dbtable", "dbindex", "database_open", "dbfield", "unichar", "inline", "__inline__", "_inline", "__inline", "__typeof","__extension__",
-   "asm", "__asm", "_asm", "volatile", "#cpu", "thisclass", "__stdcall__", "value",
+   "virtual", "thisclass","unichar", "dbtable", "dbindex", "database_open", "dbfield",
+
+   // Types
+   "uint", "uint32", "uint16", "uint64", "bool", "byte", "int64",
+
+   // Values
+   "this", "true", "false", "null", "value",
+
+
+   // C++
+   "protected",
    /* "defined" */
    null
 };
