@@ -18,8 +18,6 @@
             "MemoryGuard" : false,
             "Optimization" : "None",
             "TargetFileName" : "bomb",
-            "TargetDirectory" : "Debug",
-            "ObjectsDirectory" : "Debug",
             "Console" : false
          }
       },
@@ -30,8 +28,6 @@
             "MemoryGuard" : true,
             "Optimization" : "None",
             "TargetFileName" : "bomb",
-            "TargetDirectory" : "MemoryGuard",
-            "ObjectsDirectory" : "MemoryGuard",
             "Console" : true
          }
       },
@@ -42,8 +38,6 @@
             "MemoryGuard" : false,
             "Optimization" : "Speed",
             "TargetFileName" : "bomb",
-            "TargetDirectory" : "Release",
-            "ObjectsDirectory" : "Release",
             "Console" : false
          }
       }

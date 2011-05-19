@@ -21,9 +21,7 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ],
-            "TargetDirectory" : "Debug",
-            "ObjectsDirectory" : "Debug"
+            ]
          }
       },
       {
@@ -31,9 +29,7 @@
          "Options" : {
             "Debug" : false,
             "MemoryGuard" : false,
-            "Optimization" : "Speed",
-            "TargetDirectory" : "Release",
-            "ObjectsDirectory" : "Release"
+            "Optimization" : "Speed"
          }
       },
       {
@@ -44,9 +40,7 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ],
-            "TargetDirectory" : "memguard",
-            "ObjectsDirectory" : "memguard"
+            ]
          }
       }
    ],

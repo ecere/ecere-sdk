@@ -21,18 +21,14 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ],
-            "TargetDirectory" : "Debug",
-            "ObjectsDirectory" : "Debug"
+            ]
          }
       },
       {
          "Name" : "Release",
          "Options" : {
             "Debug" : false,
-            "Optimization" : "Speed",
-            "TargetDirectory" : "Release",
-            "ObjectsDirectory" : "Release"
+            "Optimization" : "Speed"
          }
       }
    ],

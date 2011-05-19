@@ -17,9 +17,7 @@
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ],
-            "TargetFileName" : "openrider",
-            "TargetDirectory" : "debug",
-            "ObjectsDirectory" : "debug"
+            "TargetFileName" : "openrider"
          }
       },
       {
@@ -27,9 +25,7 @@
          "Options" : {
             "Debug" : false,
             "Optimization" : "Speed",
-            "TargetFileName" : "openrider",
-            "TargetDirectory" : "release",
-            "ObjectsDirectory" : "release"
+            "TargetFileName" : "openrider"
          }
       }
    ],

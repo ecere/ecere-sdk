@@ -19,16 +19,12 @@
       {
          "Name" : "Debug",
          "Options" : {
-            "Debug" : true,
-            "TargetDirectory" : "Debug",
-            "ObjectsDirectory" : "Debug"
+            "Debug" : true
          }
       },
       {
          "Name" : "MemoryGuard",
          "Options" : {
-            "TargetDirectory" : "MemoryGuard",
-            "ObjectsDirectory" : "MemoryGuard",
             "Console" : true
          }
       }

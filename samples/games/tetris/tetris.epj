@@ -18,9 +18,7 @@
             "Debug" : true,
             "MemoryGuard" : false,
             "Optimization" : "None",
-            "TargetFileName" : "tetris",
-            "TargetDirectory" : "debug",
-            "ObjectsDirectory" : "debug"
+            "TargetFileName" : "tetris"
          }
       },
       {
@@ -29,9 +27,7 @@
             "Debug" : false,
             "MemoryGuard" : false,
             "Optimization" : "Speed",
-            "TargetFileName" : "tetris",
-            "TargetDirectory" : "release",
-            "ObjectsDirectory" : "release"
+            "TargetFileName" : "tetris"
          }
       },
       {
@@ -40,9 +36,7 @@
             "Debug" : true,
             "MemoryGuard" : true,
             "Optimization" : "None",
-            "TargetFileName" : "tetris",
-            "TargetDirectory" : "memguard",
-            "ObjectsDirectory" : "memguard"
+            "TargetFileName" : "tetris"
          }
       }
    ],

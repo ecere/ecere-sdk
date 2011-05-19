@@ -18,8 +18,6 @@
                "_DEBUG"
             ],
             "TargetFileName" : "ampheck",
-            "TargetDirectory" : "debug",
-            "ObjectsDirectory" : "debug",
             "Console" : true
          }
       },
@@ -28,9 +26,7 @@
          "Options" : {
             "Debug" : false,
             "Optimization" : "Speed",
-            "TargetFileName" : "ampChecks",
-            "TargetDirectory" : "release",
-            "ObjectsDirectory" : "release"
+            "TargetFileName" : "ampChecks"
          }
       }
    ],
