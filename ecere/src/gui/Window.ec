@@ -5169,7 +5169,7 @@ private:
       destroyed = true;
       if(hotKey)
       {
-         parent.hotKeys.Delete(hotKey);
+         master.hotKeys.Delete(hotKey);
          hotKey = null;
       }
 
@@ -5238,11 +5238,15 @@ private:
       // to create a window inside a rootwindow that's being destroyed)
       // DISABLED THIS BECAUSE OF CREATING WINDOW IN DESKTOP IN WINDOWED MODE
 
+      if(master && !master.destroyed /*&&
+         rootWindow && rootWindow.display && !rootWindow.destroyed*/)
+      {
+         if(master.defaultControl == this)
+            master.defaultControl = null;
+      }
       if(parent && !parent.destroyed /*&&
          rootWindow && rootWindow.display && !rootWindow.destroyed*/)
       {
-         if(parent.defaultControl == this)
-            parent.defaultControl = null;
          if((parent.activeChild == this /*|| parent.activeClient == this */|| guiApp.interimWindow == this))
          {
             if(order && prevOrder && prevOrder.data != this && active)
@@ -5890,10 +5894,10 @@ public:
          {
             if(setHotKey)
             {
-               parent.hotKeys.Add(hotKey = HotKeySlot { key = setHotKey, window = this });
+               master.hotKeys.Add(hotKey = HotKeySlot { key = setHotKey, window = this });
             }
-            if(style.isDefault && !parent.defaultControl)
-               parent.defaultControl = this;
+            if(style.isDefault && !master.defaultControl)
+               master.defaultControl = this;
 
             stateAnchor = normalAnchor = anchor;
             stateSizeAnchor = normalSizeAnchor = sizeAnchor;
@@ -7606,19 +7610,6 @@ public:
 
             //if(created)
             {
-               if(hotKey)
-               {
-                  if(parent)
-                     parent.hotKeys.Remove(hotKey);
-                  value.hotKeys.Add(hotKey);
-                  hotKey = null;
-               }
-               if(parent && parent.defaultControl == this)
-                  parent.defaultControl = null;
-
-               if(style.isDefault && !value.defaultControl)
-                  value.defaultControl = this;
-
                if(created)
                {
                   int x = position.x, y = position.y, w = size.w, h = size.h;
@@ -7785,7 +7776,23 @@ public:
             }
 
             if(value)
+            {
                value.slaves.Add(OldLink { data = this });
+
+               if(hotKey)
+               {
+                  if(master)
+                     master.hotKeys.Remove(hotKey);
+                  value.hotKeys.Add(hotKey);
+                  hotKey = null;
+               }
+               if(master && master.defaultControl == this)
+                  master.defaultControl = null;
+
+               if(style.isDefault && !value.defaultControl)
+                  value.defaultControl = this;
+
+            }
          }
          master = value;
       }
@@ -7822,7 +7829,7 @@ public:
             if(value)
             {
                if(!hotKey)
-                  parent.hotKeys.Add(hotKey = HotKeySlot { });
+                  master.hotKeys.Add(hotKey = HotKeySlot { });
                if(hotKey)
                {
                   hotKey.key = value;
@@ -7831,7 +7838,7 @@ public:
             }
             else if(hotKey)
             {
-               parent.hotKeys.Delete(hotKey);
+               master.hotKeys.Delete(hotKey);
                hotKey = null;
             }
          }
@@ -8086,18 +8093,20 @@ public:
       property_category "Behavior"
       set
       {
-         if(parent)
+         if(master)
          {
             if(value)
             {
                Window sibling;
-               for(sibling = parent.children.first; sibling; sibling = sibling.next)
+               /*for(sibling = parent.children.first; sibling; sibling = sibling.next)
                   if(sibling != this && sibling.style.isDefault)
-                     sibling.style.isDefault = false;
-               parent.defaultControl = this;
+                     sibling.style.isDefault = false;*/
+               if(master.defaultControl)
+                  master.defaultControl.style.isDefault = false;
+               master.defaultControl = this;
             }
-            else if(parent.defaultControl == this)
-               parent.defaultControl = null;
+            else if(master.defaultControl == this)
+               master.defaultControl = null;
 
             // Update(null);
          }
