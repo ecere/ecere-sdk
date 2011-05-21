@@ -544,6 +544,17 @@ class IDE : Window
          fileMenu, "Find In Files...", f, Key { f, ctrl = true , shift = true };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
+            findInFilesDialog.replaceMode = false;
+            findInFilesDialog.Show();
+            return true;
+         }
+      }
+      MenuItem replaceInFiles
+      {
+         fileMenu, "Replace In Files...", e, Key { r, ctrl = true , shift = true };
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            findInFilesDialog.replaceMode = true;
             findInFilesDialog.Show();
             return true;
          }

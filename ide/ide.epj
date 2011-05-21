@@ -208,6 +208,7 @@
          "Files" : [
             "../extras/gui/controls/DirectoriesBox.ec",
             "../extras/FileSystemIterator.ec",
+            "../extras/gui/layout.ec",
             "../extras/gui/controls/PathBox.ec",
             "../extras/gui/controls/SelectorBar.ec",
             "../extras/gui/controls/Stacker.ec",
