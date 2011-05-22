@@ -44,6 +44,114 @@ public:
 
    void Process(File f)
    {
+      bool quoted = false, status = true;
+      Array<String> values { };
+      int start = 0, end = 0;
+      int readCount = 0;
+      Array<char> buffer { minAllocSize = 4096 };
+
+      while(!f.Eof() && status)
+      {
+         int c, offset = 0;
+
+         if(start)
+         {
+            offset = readCount - start;
+            if(offset > buffer.minAllocSize / 2)
+               buffer.minAllocSize += 4096;
+            memmove(&buffer[0], &buffer[start], offset);
+            end -= start;
+            start = 0;
+         }
+
+         readCount = offset + f.Read(&buffer[offset], 1, buffer.minAllocSize - offset);
+         for(c = offset; c < readCount && status; c++)
+         {
+            char ch = buffer[c];
+            if(quoted)
+            {
+               if(ch == valueQuotes)
+               {
+                  quoted = false;
+                  end = c;
+               }
+            }
+            else
+            {
+               if(ch == valueQuotes)
+               {
+                  quoted = true;
+                  start = c + 1;
+               }
+               else if(ch == fieldSeparator || ch == '\n')
+               {
+                  int len = end-start;
+                  String value = new char[len+1];
+                  memcpy(value, &buffer[start], len);
+                  value[len] = 0;
+                  values.Add(value);
+                  start = end = 0;
+                  if(ch == '\n')
+                  {
+                     status = OnRow(userData, values);
+                     values.Free();
+                  }
+               }
+               else if(ch == '\r');
+               else
+               {
+                  if(!start)
+                     start = c;
+                  end = c;
+               }
+            }
+         }
+      }
+      if(end > start)
+      {
+         int len = end-start;
+         String value = new char[len+1];
+         memcpy(value, &buffer[start], len);
+         value[len] = 0;
+         values.Add(value);
+      }
+      if(values.count && status)
+         status = OnRow(userData, values);
+      values.Free();
+      delete values;
+   }
+
+   void PrintMessage(String message)
+   {
+      PrintLn(message, " -> filePath=", filePath, " lineNum=", lineNum, " charNum=", charNum, " rowNum=", rowNum, " fieldNum=", fieldNum);
+   }
+
+   virtual bool any_object::OnRow(Array<String> values);
+}
+
+#if 0
+class CommaSeparatedProcessor
+{
+public:
+   void * userData;
+   char * filePath;
+   char fieldSeparator;
+   char valueQuotes;
+   int expectedFieldCount;
+   int newLineCharCount;
+   uint lineNum;
+   uint charNum;
+   uint rowNum;
+   uint fieldNum;
+   bool checkNulls;
+   bool checkCurlies;
+   fieldSeparator = ',';
+   valueQuotes = '\"';
+   checkNulls = true;
+   checkCurlies = true;
+
+   void Process(File f)
+   {
       //bool isHeader = true;
       bool stop = false;
       //int rowCount = 0;
@@ -306,6 +414,7 @@ public:
 
    virtual bool any_object::OnRow(Array<String> values);
 }
+#endif
 
 class OtherCommaSeparatedProcessor
 {
@@ -443,7 +552,7 @@ class CSVFileImporter
 
       bool OnRow(Array<String> values)
       {
-         bool stop = false;
+         bool status = true;
          int c = 0;
          
          for(v : values)
@@ -490,9 +599,9 @@ class CSVFileImporter
             if(++c >= columnsCount) break;
          }
          rowCount++;
-         stop = OnRow();
+         status = OnRow();
          columns.Free();
-         return stop;
+         return status;
       }
    };
 
