@@ -76,6 +76,9 @@ extern int __ecereVMethodID_class_OnUnserialize;
 extern int __ecereVMethodID_class_OnCopy;
 public:
 
+// TOFIX: Declaration ordering
+dllexport void eSystem_Delete(void * memory);
+
 public class IOChannel
 {
 public:
