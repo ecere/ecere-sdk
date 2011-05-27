@@ -885,8 +885,8 @@ private:
                findCount += inLineFindCount;
             }
             // todo
-            else
-               f.Seek(-strlen(contentCriteria), current);
+            /*else
+               f.Seek(-strlen(contentCriteria), current);*/
          }
          delete f;
       }
@@ -970,8 +970,8 @@ private:
                break;
             }
             // todo
-            else
-               f.Seek(-strlen(contentCriteria), current);
+            /*else
+               f.Seek(-strlen(contentCriteria), current);*/
                
          }
          delete f;
