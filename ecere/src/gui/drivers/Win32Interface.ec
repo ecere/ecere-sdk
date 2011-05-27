@@ -495,7 +495,7 @@ class Win32Interface : Interface
                break;
             case WM_PAINT:
             {
-               if(!window.alphaBlend)
+               if(!window.alphaBlend || window.display.pixelFormat != pixelFormat888)
                {
                   PAINTSTRUCT ps;
 
@@ -1307,7 +1307,7 @@ class Win32Interface : Interface
    void SetRootWindowColor(Window window)
    {
       DWORD style = GetWindowLong(window.windowHandle, GWL_EXSTYLE);
-      if(window.alphaBlend)
+      if(window.alphaBlend && window.display.pixelFormat == pixelFormat888)
       {
          /*if(A(window.background) == 255)
          {
@@ -1701,6 +1701,20 @@ class Win32Interface : Interface
    {
       HICON icon = null;
       HICON oldIcon = (HICON)SendMessage(window.windowHandle, WM_GETICON, ICON_BIG, 0);
+
+      // WARNING -- putting this here as it is right after CreateRootWindow
+      // Take out Layered flag if we're not in 24 bit
+      {
+         if(window.alphaBlend && window.display.pixelFormat != pixelFormat888)
+         {
+#ifndef ECERE_NOBLENDING
+            DWORD style = GetWindowLong(window.windowHandle, GWL_EXSTYLE);
+            style &= ~WS_EX_LAYERED;
+            SetWindowLong(window.windowHandle, GWL_EXSTYLE, style);
+#endif
+         }
+      }
+
       if(oldIcon && oldIcon != (HICON)GetClassLong(window.windowHandle, GCL_HICON))
       {
          DestroyIcon(oldIcon);

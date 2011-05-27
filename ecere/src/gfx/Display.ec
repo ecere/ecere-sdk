@@ -1087,7 +1087,7 @@ public:
    property bool pickingPlanes { set { display3D.pickingPlanes = value; } };
 #endif
    property DisplayFlags flags { get { return displaySystem.flags; } }
-   property PixelFormat pixelFormat { get { return displaySystem.pixelFormat; } }
+   property PixelFormat pixelFormat { get { return /*alphaBlend ? pixelFormat888 : */displaySystem.pixelFormat; } }
    property bool alphaBlend { set { alphaBlend = value; } get { return alphaBlend; } };
    property bool useSharedMemory { set { useSharedMemory = value; } get { return useSharedMemory; } };
    property void * systemWindow { get { return window; } };

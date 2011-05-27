@@ -230,7 +230,7 @@ class GDIDisplayDriver : DisplayDriver
          if((gdiDisplay.logPalette = (LOGPALETTE *)new0 byte[sizeof(LOGPALETTE)+sizeof(PALETTEENTRY)*256]) &&
             ((subclass(DisplayDriver))class(LFBDisplayDriver)).CreateDisplay(display))
          {
-            gdiDisplay.bitmap.pixelFormat = display.displaySystem.pixelFormat;
+            gdiDisplay.bitmap.pixelFormat = /*display.alphaBlend ? pixelFormat888 : */display.displaySystem.pixelFormat;
             result = true;
          }
       }
@@ -262,7 +262,7 @@ class GDIDisplayDriver : DisplayDriver
             gdiDisplay.memDC = CreateCompatibleDC(hdc);
             SetMapMode(gdiDisplay.memDC, MM_TEXT);
 
-            gdiDisplay.bitmap.pixelFormat = display.displaySystem.pixelFormat;
+            gdiDisplay.bitmap.pixelFormat = /*display.alphaBlend ? pixelFormat888 : */display.displaySystem.pixelFormat;
 
             switch(GetColorDepthShifts(gdiDisplay.bitmap.pixelFormat))
             {
@@ -334,7 +334,7 @@ class GDIDisplayDriver : DisplayDriver
    void StartUpdate(Display display)
    {
       GDIDisplay gdiDisplay = display.driverData;
-      if(!display.alphaBlend)
+      if(!display.alphaBlend || display.pixelFormat != pixelFormat888)
       {
          GdiSetBatchLimit(1000);
          gdiDisplay.hdc = GetDC(display.window);
@@ -355,7 +355,7 @@ class GDIDisplayDriver : DisplayDriver
       box.right += 1;
       box.bottom += 1;
 
-      if(!display.alphaBlend)
+      if(!display.alphaBlend || display.pixelFormat != pixelFormat888)
       {
          // printf("Box: %d, %d, %d, %d\n", box.left, box.top, box.right, box.bottom);
          ScrollDC(gdiDisplay.hdc, -x, -y, (RECT *)&box, (RECT *)&box, gdiDisplay.rgn, null);
@@ -395,7 +395,7 @@ class GDIDisplayDriver : DisplayDriver
    {
       GDIDisplay gdiDisplay = display.driverData;
       int returnValue;
-      if(display.alphaBlend)
+      if(display.alphaBlend && display.pixelFormat == pixelFormat888)
       {
          HDC hdc = GetDC(0);
          POINT point = { gdiDisplay.offset.x, gdiDisplay.offset.y};
@@ -424,7 +424,7 @@ class GDIDisplayDriver : DisplayDriver
    {
       GDIDisplay gdiDisplay = display.driverData;
       DeleteObject(gdiDisplay.rgn);
-      if(!display.alphaBlend)
+      if(!display.alphaBlend || display.pixelFormat != pixelFormat888)
          ReleaseDC(display.window,gdiDisplay.hdc);
 
       // delete gdiDisplay.data;
@@ -647,7 +647,7 @@ class GDIDisplayDriver : DisplayDriver
    {
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).SetBackground(display, surface, color);
 
-      if(display && !display.alphaBlend)
+      if(display && (!display.alphaBlend || display.pixelFormat != pixelFormat888))
       { 
          GDISurface gdiSurface = surface.driverData;
          GDIDisplay gdiDisplay = display ? display.driverData : null;
@@ -886,7 +886,7 @@ class GDIDisplayDriver : DisplayDriver
    void TextFont(Display display, Surface surface, Font font)
    {
       GDIFont gdiFont = (GDIFont) font;
-      if(display.alphaBlend)
+      if(display.alphaBlend && display.pixelFormat == pixelFormat888)
       {
          if(!gdiFont.font)
          {
@@ -905,7 +905,7 @@ class GDIDisplayDriver : DisplayDriver
    void TextOpacity(Display display, Surface surface, bool opaque)
    {
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextOpacity(display, surface, opaque);
-      if(display && !display.alphaBlend)      
+      if(display && (!display.alphaBlend || display.pixelFormat != pixelFormat888))
       {
          GDISurface gdiSurface = surface.driverData;
          SetBkMode(gdiSurface.hdc, opaque ? OPAQUE : TRANSPARENT);
@@ -914,7 +914,7 @@ class GDIDisplayDriver : DisplayDriver
 
    void WriteText(Display display, Surface surface, int x, int y, char * text, int len)
    {
-      if(display.alphaBlend)
+      if(display.alphaBlend && display.pixelFormat == pixelFormat888)
       {
          GDIFont gdiFont = (GDIFont)surface.font;
          if(!gdiFont.font)
@@ -937,7 +937,7 @@ class GDIDisplayDriver : DisplayDriver
          uint16 * u16text = UTF8toUTF16Len(text, len, &wordCount);
 
          TextOut(gdiSurface.hdc, x + surface.offset.x, y + surface.offset.y, u16text, wordCount);
-         if(display.alphaBlend)
+         if(display.alphaBlend && display.pixelFormat == pixelFormat888)
          {
             int w, h;
             FontExtent(display.displaySystem, surface.font, text, len, &w, &h);
@@ -953,7 +953,7 @@ class GDIDisplayDriver : DisplayDriver
 
    void TextExtent(Display display, Surface surface, char * text, int len, int * width, int * height)
    {
-      if(display && display.alphaBlend)
+      if(display && display.alphaBlend && display.pixelFormat == pixelFormat888)
          ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, width, height);
       else
       {

@@ -1023,7 +1023,7 @@ public class LFBDisplayDriver : DisplayDriver
    {
       if(bitmap.pixelFormat != pixelFormatAlpha)
       {
-         if(!ConvertBitmap(displaySystem, bitmap, bitmap.alphaBlend ? pixelFormat888 : displaySystem.pixelFormat, null))
+         if(!ConvertBitmap(displaySystem, bitmap, /*bitmap.alphaBlend ? pixelFormat888 : */displaySystem.pixelFormat, null))
          {
             FreeBitmap(displaySystem, bitmap);
             return false;
@@ -2079,39 +2079,88 @@ public class LFBDisplayDriver : DisplayDriver
             int x, y;
             if(src.pixelFormat == pixelFormatAlpha)
             {
-               ColorAlpha * picture = ((ColorAlpha *)lfbSurface.bitmap.picture) + (lfbSurface.bitmap.stride * dy) + dx;
-               byte * source = ((byte *)src.picture) + (src.stride * sy) + sx;
-               ColorAlpha color = lfbSurface.writingText ? surface.foreground : surface.blitTint;
-               for(y = 0; y < h; y++)
+               if(lfbSurface.bitmap.pixelFormat == pixelFormat888)
                {
-                  for(x = 0; x < w; x++, picture++, source++)
+                  ColorAlpha * picture = ((ColorAlpha *)lfbSurface.bitmap.picture) + (lfbSurface.bitmap.stride * dy) + dx;
+                  byte * source = ((byte *)src.picture) + (src.stride * sy) + sx;
+                  ColorAlpha color = lfbSurface.writingText ? surface.foreground : surface.blitTint;
+                  for(y = 0; y < h; y++)
                   {
-                     int a = *source * color.a;
-                     ColorAlpha dest = *picture;
-                     int r = (a * color.color.r + ((255 * 255 - a) * dest.color.r)) / (255 * 255);
-                     int g = (a * color.color.g + ((255 * 255 - a) * dest.color.g)) / (255 * 255);
-                     int b = (a * color.color.b + ((255 * 255 - a) * dest.color.b)) / (255 * 255);
-                     if(r > 255) r = 255;
-                     if(g > 255) g = 255;
-                     if(b > 255) b = 255;
-                     picture->color = { (byte)r, (byte)g, (byte)b };
-                     if(alphaWrite == blend)
+                     for(x = 0; x < w; x++, picture++, source++)
                      {
-                        int ca = (a * 255 + (255 * 255 - a) * dest.a) / (255 * 255);
-                        if(ca > 255) ca = 255;
-                        picture->a = (byte)ca;
+                        int a = *source * color.a;
+                        ColorAlpha dest = *picture;
+                        int r = (a * color.color.r + ((255 * 255 - a) * dest.color.r)) / (255 * 255);
+                        int g = (a * color.color.g + ((255 * 255 - a) * dest.color.g)) / (255 * 255);
+                        int b = (a * color.color.b + ((255 * 255 - a) * dest.color.b)) / (255 * 255);
+                        if(r > 255) r = 255;
+                        if(g > 255) g = 255;
+                        if(b > 255) b = 255;
+                        picture->color = { (byte)r, (byte)g, (byte)b };
+                        if(alphaWrite == blend)
+                        {
+                           int ca = (a * 255 + (255 * 255 - a) * dest.a) / (255 * 255);
+                           if(ca > 255) ca = 255;
+                           picture->a = (byte)ca;
+                        }
+                        else if(alphaWrite)
+                           picture->a = (byte)(a / 255);
                      }
-                     else if(alphaWrite)
-                        picture->a = (byte)(a / 255);
+                     picture += lfbSurface.bitmap.stride - w;
+                     source += src.stride - w;
                   }
-                  picture += lfbSurface.bitmap.stride - w;
-                  source += src.stride - w;
+               }
+               else if(lfbSurface.bitmap.pixelFormat == pixelFormat555)
+               {
+                  Color555 * picture = ((Color555 *)lfbSurface.bitmap.picture) + (lfbSurface.bitmap.stride * dy) + dx;
+                  byte * source = ((byte *)src.picture) + (src.stride * sy) + sx;
+                  ColorAlpha color = lfbSurface.writingText ? surface.foreground : surface.blitTint;
+                  for(y = 0; y < h; y++)
+                  {
+                     for(x = 0; x < w; x++, picture++, source++)
+                     {
+                        int a = *source * color.a;
+                        Color dest = *picture;
+                        int r = (a * color.color.r + ((255 * 255 - a) * dest.r)) / (255 * 255);
+                        int g = (a * color.color.g + ((255 * 255 - a) * dest.g)) / (255 * 255);
+                        int b = (a * color.color.b + ((255 * 255 - a) * dest.b)) / (255 * 255);
+                        if(r > 255) r = 255;
+                        if(g > 255) g = 255;
+                        if(b > 255) b = 255;
+                        *picture = Color { (byte)r, (byte)g, (byte)b };
+                     }
+                     picture += lfbSurface.bitmap.stride - w;
+                     source += src.stride - w;
+                  }
+               }
+               else if(lfbSurface.bitmap.pixelFormat == pixelFormat565)
+               {
+                  Color565 * picture = ((Color565 *)lfbSurface.bitmap.picture) + (lfbSurface.bitmap.stride * dy) + dx;
+                  byte * source = ((byte *)src.picture) + (src.stride * sy) + sx;
+                  ColorAlpha color = lfbSurface.writingText ? surface.foreground : surface.blitTint;
+                  for(y = 0; y < h; y++)
+                  {
+                     for(x = 0; x < w; x++, picture++, source++)
+                     {
+                        int a = *source * color.a;
+                        Color dest = *picture;
+                        int r = (a * color.color.r + ((255 * 255 - a) * dest.r)) / (255 * 255);
+                        int g = (a * color.color.g + ((255 * 255 - a) * dest.g)) / (255 * 255);
+                        int b = (a * color.color.b + ((255 * 255 - a) * dest.b)) / (255 * 255);
+                        if(r > 255) r = 255;
+                        if(g > 255) g = 255;
+                        if(b > 255) b = 255;
+                        *picture = Color { (byte)r, (byte)g, (byte)b };
+                     }
+                     picture += lfbSurface.bitmap.stride - w;
+                     source += src.stride - w;
+                  }
                }
             }
             else
             {
                ColorAlpha * source = ((ColorAlpha *)src.picture) + (src.stride * sy) + sx;
-               if(lfbSurface.bitmap.pixelFormat == pixelFormat888)               
+               if(lfbSurface.bitmap.pixelFormat == pixelFormat888)
                {
                   ColorAlpha * picture = ((ColorAlpha *)lfbSurface.bitmap.picture) + (lfbSurface.bitmap.stride * dy) + dx;
                   for(y = 0; y < h; y++)
@@ -2168,11 +2217,11 @@ public class LFBDisplayDriver : DisplayDriver
                   {
                      for(x = 0; x < w; x++, picture++, source++)
                      {
-                        ColorAlpha src = *source;
+                        ColorAlpha psrc = *source;
                         Color555 dest = *picture;
-                        int r = src.a * src.color.r * 31 / 255 + ((255 - src.a) * dest.r);
-                        int g = src.a * src.color.g * 31 / 255 + ((255 - src.a) * dest.g);
-                        int b = src.a * src.color.b * 31 / 255 + ((255 - src.a) * dest.b);
+                        int r = psrc.a * psrc.color.r * 31 / 255 + ((255 - psrc.a) * dest.r);
+                        int g = psrc.a * psrc.color.g * 31 / 255 + ((255 - psrc.a) * dest.g);
+                        int b = psrc.a * psrc.color.b * 31 / 255 + ((255 - psrc.a) * dest.b);
                         if(r > 255 * 31) r = 255 * 31;
                         if(g > 255 * 31) g = 255 * 31;
                         if(b > 255 * 31) b = 255 * 31;
