@@ -929,7 +929,7 @@ private:
 
                for(; edit.Find(contentCriteria, contentWholeWord, contentMatchCase, true) == found; replaceCount++)
                {
-                  int lineNum = edit.lineNumber;
+                  int lineNum = edit.lineNumber + 1;
                   edit.PutS(contentReplace);
                   if(lineNum != lastLineNum)
                   {
@@ -962,7 +962,7 @@ private:
                {
                   if((f = FileOpen(filePath, write)))
                   {
-                     edit.Save(f, true);
+                     edit.Save(f, false);
                      delete f;
                   }
                }
