@@ -727,6 +727,44 @@ public:
       Seek(0, start);
       return result;
    }
+
+   virtual bool Open(char * fileName, FileOpenMode mode)
+   {
+      bool result = false;
+      if(this)
+      {
+         FILE_FileOpen(fileName, mode, &input, &output);
+
+         //file.mode = mode;
+         if(!input && !output);
+         else
+         {
+            openCount++;
+            result = true;
+            // TESTING ENABLING FILE BUFFERING BY DEFAULT... DOCUMENT ANY ISSUE
+            /*
+            if(file.input)
+               setvbuf(file.input, null, _IONBF, 0);
+            else
+               setvbuf(file.output, null, _IONBF, 0);
+            */
+         }
+         //if(!result)
+         {
+            /* TOFIX:
+            LogErrorCode((mode == Read || mode == ReadWrite) ? 
+               ERR_FILE_NOT_FOUND : ERR_FILE_WRITE_FAILED, fileName);
+            */
+         }
+      }
+      return result;
+   }
+
+   virtual void Close()
+   {
+      CloseOutput();
+      CloseInput();
+   }
 }
 
 public class ConsoleFile : File
@@ -877,30 +915,10 @@ public File FileOpen(char * fileName, FileOpenMode mode)
          File file = File {};
          if(file)
          {
-            FILE_FileOpen(fileName, mode, &file.input, &file.output);
-
-            //file.mode = mode;
-            if(!file.input && !file.output);
-            else
-            {
-               openCount++;
+            if(file.Open(fileName, mode))
                result = file;
-               // TESTING ENABLING FILE BUFFERING BY DEFAULT... DOCUMENT ANY ISSUE
-               /*
-               if(file.input)
-                  setvbuf(file.input, null, _IONBF, 0);
-               else
-                  setvbuf(file.output, null, _IONBF, 0);
-               */
-            }
-            if(!result)
-            {
+            else
                delete file;
-               /* TOFIX:
-               LogErrorCode((mode == Read || mode == ReadWrite) ? 
-                  ERR_FILE_NOT_FOUND : ERR_FILE_WRITE_FAILED, fileName);
-               */
-            }
          }
       }
    }
