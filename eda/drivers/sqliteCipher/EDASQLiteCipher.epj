@@ -58,8 +58,8 @@
       {
          "Name" : "Release",
          "Options" : {
-            "Warnings" : "None",
             "NoLineNumbers" : true,
+            "Optimization" : "Speed",
             "LibraryDirs" : [
                "../../../obj/$(PLATFORM)/bin",
                "../../../obj/$(PLATFORM)/lib"
@@ -78,18 +78,13 @@
                "_DEBUG"
             ]
          }
-      },
-      {
-         "Name" : "Static",
-         "Options" : {
-            "TargetType" : "StaticLibrary"
-         }
       }
    ],
    "Files" : [
       "sqlite3.c",
       "sqlite3.h",
-      "EDASQLiteCipher.ec"
+      "EDASQLiteCipher.ec",
+      "../sqlite/EDASQLiteCommon.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [

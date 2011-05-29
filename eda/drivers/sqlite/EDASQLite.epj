@@ -70,7 +70,8 @@
    "Files" : [
       "sqlite3.c",
       "sqlite3.h",
-      "EDASQLite.ec"
+      "EDASQLite.ec",
+      "EDASQLiteCommon.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
