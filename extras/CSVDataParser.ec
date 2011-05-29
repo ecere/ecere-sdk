@@ -1,5 +1,5 @@
 public import "ecere"
-public import "CSVFile"
+public import "CSVParser"
 
 import "timeTools"
 
@@ -23,7 +23,7 @@ public class Column : struct
    }
 }
 
-public class CSVFileValuesParser : public CSVFile
+public class CSVDataParser : public CSVParser
 {
 public:
    ColumnType * columnsTypes;
@@ -35,7 +35,7 @@ public:
    void Process()
    {
       rowCount = 0;
-      CSVFile::Process();
+      CSVParser::Process();
    }
 
    bool OnRowStrings(Array<String> strings)

@@ -2,7 +2,18 @@
 
 public import "ecere"
 
-public struct CSVFileParameters
+// to be moved in ecere?
+public class FileHandler
+{
+   public File file;
+
+   ~FileHandler()
+   {
+      delete file;
+   }
+}
+
+public struct CSVParserParameters
 {
    char fieldSeparator;
    char valueQuotes;
@@ -12,9 +23,9 @@ public struct CSVFileParameters
    //bool checkCurlies;
 };
 
-CSVFileParameters classicParameters = { ',', '\"', 0, false };
+CSVParserParameters classicParameters = { ',', '\"', 0, false };
 
-public struct CSVFileState
+public struct CSVParserState
 {
    uint lineNum;
    uint charNum;
@@ -22,11 +33,11 @@ public struct CSVFileState
    uint fieldNum;
 };
 
-public class CSVFile : public File
+public class CSVParser : public FileHandler
 {
 public:
-   CSVFileParameters options;
-   CSVFileState info;
+   CSVParserParameters options;
+   CSVParserState info;
 
    void PrintMessage(typed_object object, ...)
    {
@@ -62,7 +73,7 @@ public:
       info.rowNum = 0;
       info.fieldNum = 0;
 
-      while(!Eof() && status)
+      while(!file.Eof() && status)
       {
          int c, offset = 0;
 
@@ -76,7 +87,7 @@ public:
             start = 0;
          }
 
-         readCount = offset + Read(&buffer[offset], 1, buffer.minAllocSize - offset);
+         readCount = offset + file.Read(&buffer[offset], 1, buffer.minAllocSize - offset);
          for(c = offset; c < readCount && status; c++)
          {
             char ch = buffer[c];
