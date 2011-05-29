@@ -6,15 +6,23 @@ class LogBox : EditBox
 {
    bool moved, logging, tell;
 
+   void Logt(typed_object object, ...)
+   {
+      va_list args;
+      char buffer[4096];
+      va_start(args, object);
+      PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
+      va_end(args);
+      Log(buffer);
+   }
+
    void Logf(char * format, ...)
    {
-      char string[MAX_F_STRING*10];
-
       va_list args;
+      char string[MAX_F_STRING*10];
       va_start(args, format);
       vsprintf(string, format, args);
       va_end(args);
-
       Log(string);
    }
 
@@ -58,15 +66,23 @@ class LogBox : EditBox
       logging = false;
    }
 
+   void Tellt(typed_object object, ...)
+   {
+      va_list args;
+      char buffer[4096];
+      va_start(args, object);
+      PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
+      va_end(args);
+      Tell(buffer);
+   }
+
    void Tellf(char * format, ...)
    {
-      char string[MAX_F_STRING*10];
-
       va_list args;
+      char string[MAX_F_STRING*10];
       va_start(args, format);
       vsprintf(string, format, args);
       va_end(args);
-
       Tell(string);
    }
 
