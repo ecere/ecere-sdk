@@ -22,7 +22,7 @@
             "Libraries" : [
                "pthread",
                "dl",
-               "libssl"
+               "crypto"
             ]
          }
       },
@@ -32,7 +32,7 @@
             "Libraries" : [
                "pthread",
                "dl",
-               "libssl"
+               "crypto"
             ]
          }
       },

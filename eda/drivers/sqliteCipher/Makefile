@@ -99,12 +99,12 @@ LIBS += -llibeay32
 else
 ifdef LINUX
 
-LIBS += -lpthread -ldl -llibssl
+LIBS += -lpthread -ldl -lcrypto
 
 else
 ifdef OSX
 
-LIBS += -lpthread -ldl -llibssl
+LIBS += -lpthread -ldl -lcrypto
 
 endif
 endif
