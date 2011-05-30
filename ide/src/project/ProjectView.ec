@@ -822,7 +822,7 @@ class ProjectView : Window
 
    ~ProjectView()
    {
-      ide.debugger.Stop();
+      DebugStop();
       ide.DestroyTemporaryProjectDir();
       if(project)
       {
@@ -982,7 +982,7 @@ class ProjectView : Window
          if(node)
             prj = node.project;
       }
-      if(prj != project || !ide.DontTerminateDebugSession("Project Build"))
+      if(/*prj != project || */!prj.configIsInDebugSession || !ide.DontTerminateDebugSession("Project Build"))
          BuildInterrim(prj, build, false);
       return true;
    }
@@ -1247,8 +1247,8 @@ class ProjectView : Window
       {
          DirExpression targetDir = prj.targetDir;
 
-         if(buildType != run && prj == project && ide.debugger.isActiveForCurrentConfig)
-            ide.debugger.Stop();
+         if(buildType != run/* && prj == project*/ && prj.configIsInDebugSession)
+            DebugStop();
          
          // TODO: Disabled until problems fixed... is it fixed?
          if(buildType == rebuild || (prj.config && prj.config.compilingModified))

@@ -621,13 +621,8 @@ class Debugger
 
    // PUBLIC MEMBERS
 
-   property bool isActiveForCurrentConfig
-   {
-      get
-      {
-         return ide.project && ide.project.config == prjConfig && (state == running || state == stopped) ? true : false;
-      }
-   }
+   property bool isActive { get { return state == running || state == stopped; } }
+   property bool isPrepared  { get { return state == loaded || state == running || state == stopped; } }
 
    void Resume()
    {

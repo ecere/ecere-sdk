@@ -855,6 +855,26 @@ private:
    }
    //SetBool excludeFromBuild;
 
+   property bool configIsInActiveDebugSession
+   {
+      get
+      {
+#ifndef MAKEFILE_GENERATOR
+         return ide.project == this  && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isActive;
+#endif
+      }
+   }
+
+   property bool configIsInDebugSession
+   {
+      get
+      {
+#ifndef MAKEFILE_GENERATOR
+         return ide.project == this  && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isPrepared;
+#endif
+      }
+   }
+
    void SetPath(bool projectsDirs)
    {
 #ifndef MAKEFILE_GENERATOR
