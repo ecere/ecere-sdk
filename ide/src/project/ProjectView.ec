@@ -244,7 +244,7 @@ class ProjectView : Window
                      MenuDivider { popupContent };
                   }
                   MenuItem { popupContent, "New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
-                  MenuItem { popupContent, "Import Folder...", f, NotifySelect = ProjectImportFolder };
+                  MenuItem { popupContent, "Import Folder...", i, NotifySelect = ProjectImportFolder };
                   MenuItem { popupContent, "Add Files to Project...", f, NotifySelect = ProjectAddFiles };
                   MenuDivider { popupContent };
                   MenuItem { popupContent, "Add New Form...", o, NotifySelect = ProjectAddNewForm };
@@ -290,7 +290,7 @@ class ProjectView : Window
                   bool isInResources = node.isInResources;
 
                   MenuItem { popupContent, "New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
-                  MenuItem { popupContent, "Import Folder...", f, NotifySelect = ProjectImportFolder };
+                  MenuItem { popupContent, "Import Folder...", i, NotifySelect = ProjectImportFolder };
                   if(isInResources)
                   {
                      MenuItem { popupContent, "Add Resources to Folder...", f, NotifySelect = ResourcesAddFiles };
