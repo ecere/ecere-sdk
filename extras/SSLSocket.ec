@@ -1,13 +1,17 @@
-import "ecere"
-
+#define byte _byte
+#define int64 _int64
 #define uint _uint
 #define set _set
 #include <openssl/ssl.h>
 #if defined(__WIN32__)
 #include <openssl/applink.c>
 #endif
-#undef set
+#undef byte
+#undef int64
 #undef uint
+#undef set
+
+import "ecere"
 
 /*
 static char * pass = "password";
