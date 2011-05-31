@@ -46,59 +46,72 @@ enum NodeIcons
 
    NodeIcons ::SelectFileIcon(char * filePath)
    {
-      char extension[MAX_EXTENSION];
-      GetExtension(filePath, extension);
-      if(!strcmpi(extension, WorkspaceExtension))
-         return ewsFile;
-      else if(!strcmpi(extension, ProjectExtension))
-         return epjFile;
-      else if(!strcmpi(extension, "ec"))
-         return ecFile;
-      else if(!strcmpi(extension, "eh"))
-         return ehFile;
-      else if(!strcmpi(extension, "cpp") || !strcmpi(extension, "cc") ||
-            !strcmpi(extension, "cxx"))
-         return cppFile;
-      else if(!strcmpi(extension, "hpp") || !strcmpi(extension, "hh") ||
-            !strcmpi(extension, "hxx"))
-         return hppFile;
-      else if(!strcmpi(extension, "c"))
-         return cFile;
-      else if(!strcmpi(extension, "h"))
-         return hFile;
-      else if(!strcmpi(extension, "m"))
-         return mFile;
-      else if(!strcmpi(extension, "txt") || !strcmpi(extension, "text") ||
-            !strcmpi(extension, "nfo") || !strcmpi(extension, "info"))
-         return textFile;
-      else if(!strcmpi(extension, "htm") || !strcmpi(extension, "html") ||
-            !strcmpi(extension, "css") || !strcmpi(extension, "php") ||
-            !strcmpi(extension, "js"))
-         return webFile;
-      else if(!strcmpi(extension, "bmp") || !strcmpi(extension, "pcx") ||
-            !strcmpi(extension, "jpg") || !strcmpi(extension, "jpeg") ||
-            !strcmpi(extension, "gif") || !strcmpi(extension, "png") ||
-            !strcmpi(extension, "ico"))
-         return pictureFile;
-      else if(!strcmpi(extension, "wav") || !strcmpi(extension, "mp3") ||
-            !strcmpi(extension, "ogg") || !strcmpi(extension, "snd"))
-         return soundFile;
-      else if(!strcmpi(extension, "ear") || !strcmpi(extension, "7z") ||
-            !strcmpi(extension, "rar") || !strcmpi(extension, "zip") ||
-            !strcmpi(extension, "gz") || !strcmpi(extension, "bz2") ||
-            !strcmpi(extension, "tar") || !strcmpi(extension, "arj") ||
-            !strcmpi(extension, "lza") || !strcmpi(extension, "lzh") ||
-            !strcmpi(extension, "cpio") || !strcmpi(extension, "z"))
-         return archiveFile;
-      else if(!strcmpi(extension, "cab") || !strcmpi(extension, "deb") ||
-            !strcmpi(extension, "rpm"))
-         return packageFile;
-      else if(!strcmpi(extension, "iso") || !strcmpi(extension, "mds") ||
-            !strcmpi(extension, "cue") || !strcmpi(extension, "bin") ||
-            !strcmpi(extension, "ccd") || !strcmpi(extension, "bwt") ||
-            !strcmpi(extension, "cdi") || !strcmpi(extension, "nrg"))
-         return opticalMediaImageFile;
-      return genFile;
+      NodeIcons icon;
+      if(filePath && filePath[0])
+      {
+         char extension[MAX_EXTENSION];
+         GetExtension(filePath, extension);
+         if(strlen(extension))
+         {
+            if(!strcmpi(extension, WorkspaceExtension))
+               icon = ewsFile;
+            else if(!strcmpi(extension, ProjectExtension))
+               icon = epjFile;
+            else if(!strcmpi(extension, "ec"))
+               icon = ecFile;
+            else if(!strcmpi(extension, "eh"))
+               icon = ehFile;
+            else if(!strcmpi(extension, "cpp") || !strcmpi(extension, "cc") ||
+                  !strcmpi(extension, "cxx"))
+               icon = cppFile;
+            else if(!strcmpi(extension, "hpp") || !strcmpi(extension, "hh") ||
+                  !strcmpi(extension, "hxx"))
+               icon = hppFile;
+            else if(!strcmpi(extension, "c"))
+               icon = cFile;
+            else if(!strcmpi(extension, "h"))
+               icon = hFile;
+            else if(!strcmpi(extension, "m"))
+               icon = mFile;
+            else if(!strcmpi(extension, "txt") || !strcmpi(extension, "text") ||
+                  !strcmpi(extension, "nfo") || !strcmpi(extension, "info"))
+               icon = textFile;
+            else if(!strcmpi(extension, "htm") || !strcmpi(extension, "html") ||
+                  !strcmpi(extension, "css") || !strcmpi(extension, "php") ||
+                  !strcmpi(extension, "js"))
+               icon = webFile;
+            else if(!strcmpi(extension, "bmp") || !strcmpi(extension, "pcx") ||
+                  !strcmpi(extension, "jpg") || !strcmpi(extension, "jpeg") ||
+                  !strcmpi(extension, "gif") || !strcmpi(extension, "png") ||
+                  !strcmpi(extension, "ico"))
+               icon = pictureFile;
+            else if(!strcmpi(extension, "wav") || !strcmpi(extension, "mp3") ||
+                  !strcmpi(extension, "ogg") || !strcmpi(extension, "snd"))
+               icon = soundFile;
+            else if(!strcmpi(extension, "ear") || !strcmpi(extension, "7z") ||
+                  !strcmpi(extension, "rar") || !strcmpi(extension, "zip") ||
+                  !strcmpi(extension, "gz") || !strcmpi(extension, "bz2") ||
+                  !strcmpi(extension, "tar") || !strcmpi(extension, "arj") ||
+                  !strcmpi(extension, "lza") || !strcmpi(extension, "lzh") ||
+                  !strcmpi(extension, "cpio") || !strcmpi(extension, "z"))
+               icon = archiveFile;
+            else if(!strcmpi(extension, "cab") || !strcmpi(extension, "deb") ||
+                  !strcmpi(extension, "rpm"))
+               icon = packageFile;
+            else if(!strcmpi(extension, "iso") || !strcmpi(extension, "mds") ||
+                  !strcmpi(extension, "cue") || !strcmpi(extension, "bin") ||
+                  !strcmpi(extension, "ccd") || !strcmpi(extension, "bwt") ||
+                  !strcmpi(extension, "cdi") || !strcmpi(extension, "nrg"))
+               icon = opticalMediaImageFile;
+            else
+               icon = genFile;
+         }
+         else
+            icon = genFile;
+      }
+      else
+         icon = genFile; // tocheck: error icon?
+      return icon;
    }
 
    NodeIcons ::SelectNodeIcon(NodeTypes type)
@@ -857,9 +870,12 @@ private:
          }
          if(type != folder)
          {
-            StripLastDirectory(filePath, temp);
-            MakePathRelative(temp, project.topNode.path, temp);
-            node.path = CopyUnixPath(temp);
+            if(filePath)
+            {
+               StripLastDirectory(filePath, temp);
+               MakePathRelative(temp, project.topNode.path, temp);
+               node.path = CopyUnixPath(temp);
+            }
             node.nodeType = file;
          }
          else
