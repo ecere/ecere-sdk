@@ -373,6 +373,38 @@ public:
       }
    }
 
+   property ProjectNode root { get { ProjectNode n; for(n = this; n.parent; n = n.parent); return n; } }
+
+   char * GetFullFilePath(char * buffer)
+   {
+      if(buffer)
+      {
+         strcpy(buffer, root.path);
+         PathCatSlash(buffer, path);
+         PathCatSlash(buffer, name);
+      }
+      return buffer;
+   }
+
+   char * GetFileSysMatchingPath(char * buffer)
+   {
+      if(buffer)
+      {
+         ProjectNode n, root = this.root;
+         for(n = this; n && (n.type == folder || n.type == project); n = n.parent)
+         {
+            strcpy(buffer, root.path);
+            if(n != root)
+               PathCatSlash(buffer, n.path);
+            if(FileExists(buffer).isDirectory)
+               break;
+         }
+         if(!(n && (n.type == folder || n.type == project)))
+            buffer[0] = '\0';
+      }
+      return buffer;
+   }
+
    void CollectPerFileAndDirOptions(ProjectConfig projectConfig, Array<String> perFilePreprocessorDefs, Array<DirPath> perFileIncludeDirs)
    {
       ProjectNode node = null;

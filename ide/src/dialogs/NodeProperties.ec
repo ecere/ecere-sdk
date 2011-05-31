@@ -1,5 +1,7 @@
 import "ide"
 
+enum NodePropertiesMode { normal, newFile, newFolder };
+
 class NodeProperties : Window
 {
    tabCycle = true;
@@ -11,6 +13,7 @@ class NodeProperties : Window
    //size = { 280, 260 };
 
    ProjectNode node, topNode;
+   NodePropertiesMode mode;
 
    Label pathLabel { parent = this, position = { 10, 60 }, labeledWindow = path };
    EditBox path
@@ -50,6 +53,12 @@ class NodeProperties : Window
       }
       delete oldName;
       node.name = CopyString(filePath);
+      node.icon = NodeIcons::SelectFileIcon(filePath);
+      {
+         char * s;
+         text = (s = PrintString(node.name, " Properties"));
+         delete s;
+      }
       if(node.type == folder)
       {
          strcpy(filePath, (node.parent.type == project) ? "" : node.parent.path);
@@ -126,6 +135,11 @@ class NodeProperties : Window
             // folder:     - name               -
             // resources:  - name path          -
             
+            {
+               char * s;
+               text = (s = PrintString(node.name, " Properties"));
+               delete s;
+            }
             name.contents = node.name;
             {
                char temp[MAX_LOCATION];
@@ -155,24 +169,59 @@ class NodeProperties : Window
 
    bool OnKeyDown(Key key, unichar ch)
    {
-      if(key == escape || key == enter || key == keyPadEnter)
+      if(key == escape || (SmartKey)key == enter)
       {
+         StopEditing();
+         if((SmartKey)key == enter)
+         {
+            if(mode == newFile)
+            {
+               char filePath[MAX_LOCATION];
+               Window document;
+               node.GetFullFilePath(filePath);
+               if(FileExists(filePath))
+                  ide.projectView.OpenNode(node);
+               else
+               {
+                  document = (Window)NewCodeEditor(ide, normal, false);
+                  document.NotifySaved = ide.DocumentSaved;
+                  MakeSystemPath(filePath);
+                  document.fileName = filePath;
+               }
+            }
+            if(mode == newFile || mode == newFolder)
+            {
+               ide.projectView.modifiedDocument = true;
+               node.project.topNode.modified = true;
+               if(mode == newFile)
+                  node.project.ModifiedAllConfigs(true, false, true, true);
+            }
+         }
+         else if(mode == newFile || mode == newFolder)
+         {
+            ide.projectView.DeleteNode(node);
+            node = null;
+         }
          Destroy(0);
          return false;
       }
       return true;
    }
 
-   void OnDestroy()
+   bool OnClose(bool parentClosing)
    {
-      if(!node.name || strcmp(name.contents, node.name))
-         NameNotifyModified(name);
-      {
-         String s = CopyUnixPath(path.contents);
-         if(strcmp(s, node.path))
-            PathNotifyModified(path);
-         delete s;
-      }
+      StopEditing();
+      return true;
+   }
+
+   void StopEditing()
+   {
+      // tocheck: do we have a better way of doing this?
+      bool b;
+      name.OnActivate(false, null, &b, false);
+      path.OnActivate(false, null, &b, false);
+      if(absolutePath.visible)
+         absolutePath.OnActivate(false, null, &b, false);
    }
 
    void UpdateFileName()
@@ -198,9 +247,9 @@ class NodeProperties : Window
       if(absolutePath)
          absolutePath.modifiedDocument = false;
 
-      if(prj)
+      if(prj && mode == normal)
       {
-         master.modifiedDocument = true;
+         ide.projectView.modifiedDocument = true;
          prj.topNode.modified = true;
          ide.projectView.Update(null);
          prj.ModifiedAllConfigs(true, false, false, true);

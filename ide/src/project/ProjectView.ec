@@ -28,7 +28,7 @@ class ImportFolderFSI : NormalFileSystemIterator
    bool OnFile(char * filePath)
    {
       ProjectNode parentNode = stack.lastIterator.data;
-      projectView.AddFile(parentNode, filePath, parentNode.isInResources);
+      projectView.AddFile(parentNode, filePath, parentNode.isInResources, false);
       return true;
    }
 }
@@ -243,6 +243,7 @@ class ProjectView : Window
                      MenuItem { popupContent, "Regenerate Makefile", m, NotifySelect = ProjectRegenerate }.disabled = buildInProgress;
                      MenuDivider { popupContent };
                   }
+                  MenuItem { popupContent, "New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
                   MenuItem { popupContent, "New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
                   MenuItem { popupContent, "Import Folder...", i, NotifySelect = ProjectImportFolder };
                   MenuItem { popupContent, "Add Files to Project...", f, NotifySelect = ProjectAddFiles };
@@ -266,6 +267,7 @@ class ProjectView : Window
                }
                else if(node.type == resources)
                {
+                  MenuItem { popupContent, "New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
                   MenuItem { popupContent, "New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
                   MenuItem { popupContent, "Add Resources to Project...", f, NotifySelect = ResourcesAddFiles };
                   MenuItem { popupContent, "Browse Folder", w, NotifySelect = MenuBrowseFolder };
@@ -289,6 +291,7 @@ class ProjectView : Window
                {
                   bool isInResources = node.isInResources;
 
+                  MenuItem { popupContent, "New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
                   MenuItem { popupContent, "New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
                   MenuItem { popupContent, "Import Folder...", i, NotifySelect = ProjectImportFolder };
                   if(isInResources)
@@ -759,14 +762,7 @@ class ProjectView : Window
    bool OpenNode(ProjectNode node)
    {
       char filePath[MAX_LOCATION];
-      ProjectNode nodeRoot;
-
-      for(nodeRoot = node; nodeRoot.parent; nodeRoot = nodeRoot.parent) { }
-
-      strcpy(filePath, nodeRoot.path);
-      PathCat(filePath, node.path);
-      PathCat(filePath, node.name);
-      
+      node.GetFullFilePath(filePath);
       return ide.OpenFile(filePath, normal, true/*false Why was it opening hidden?*/, null, something, normal) ? true : false;
    }
 
@@ -1075,6 +1071,36 @@ class ProjectView : Window
       }
 
       ProjectPrepareMakefile(prj, force, true, true);
+      return true;
+   }
+
+   bool ProjectNewFile(MenuItem selection, Modifiers mods)
+   {
+      DataRow row = fileList.currentRow;
+      if(row)
+      {
+         char fileName[1024];
+         char filePath[MAX_LOCATION];
+         ProjectNode parentNode = (ProjectNode)row.tag;
+         ProjectNode n, fileNode;
+         parentNode.GetFileSysMatchingPath(filePath);
+         MakePathRelative(filePath, parentNode.project.topNode.path, filePath);
+         for(n = parentNode; n && n != parentNode.project.resNode; n = n.parent);
+         sprintf(fileName, "Untitled %d", documentID);
+         fileNode = AddFile(parentNode, fileName, (bool)n, true);
+         fileNode.path = CopyUnixPath(filePath);
+         if(fileNode)
+         {
+            NodeProperties nodeProperties
+            {
+               parent, this;
+               position = { position.x + 100, position.y + 100 };
+               mode = newFile;
+               node = fileNode;
+            };
+            nodeProperties.Create(); // not modal?
+         }
+      }
       return true;
    }
 
@@ -1510,8 +1536,11 @@ class ProjectView : Window
          if(folderNode)
          {
             NodeProperties nodeProperties;
-            modifiedDocument = true;
-            prj.topNode.modified = true;
+            if(!showProperties)
+            {
+               modifiedDocument = true;
+               prj.topNode.modified = true;
+            }
             Update(null);
             folderNode.row = parentNode.row.AddRowAfter(after ? after.row : null);
             folderNode.row.tag = (int)folderNode;
@@ -1523,8 +1552,8 @@ class ProjectView : Window
             {
                nodeProperties = NodeProperties
                {
-                  parent = parent, master = this, position = { position.x + 100, position.y + 100 };
-                  node = folderNode, text = "New Folder";
+                  parent, this, mode = newFolder, node = folderNode;
+                  position = { position.x + 100, position.y + 100 };
                };
                nodeProperties.Create();   // Modal?
             }
@@ -1581,7 +1610,7 @@ class ProjectView : Window
 
             if(addThisFile)
             {
-               /*addFailed = */if(!AddFile(parentNode, filePath, resources))//;
+               /*addFailed = */if(!AddFile(parentNode, filePath, resources, false))//;
                {
                   nameConflictFiles.Add(CopyString(filePath));
                   addFailed = true;
@@ -1619,7 +1648,7 @@ class ProjectView : Window
       }
    }
 
-   ProjectNode AddFile(ProjectNode parentNode, char * filePath, bool resources)
+   ProjectNode AddFile(ProjectNode parentNode, char * filePath, bool resources, bool isTemporary)
    {
       ProjectNode result = null;
       ProjectNode after = null;
@@ -1634,10 +1663,13 @@ class ProjectView : Window
 
       if(result)
       {
-         modifiedDocument = true;
-         parentNode.project.topNode.modified = true;
+         if(!isTemporary)
+         {
+            modifiedDocument = true;
+            parentNode.project.topNode.modified = true;
+            project.ModifiedAllConfigs(true, false, true, true);
+         }
          Update(null);
-         project.ModifiedAllConfigs(true, false, true, true);
          result.row = parentNode.row.AddRowAfter(after ? after.row : null);
          result.row.tag = (int)result;
          result.row.SetData(null, result);

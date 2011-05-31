@@ -453,7 +453,7 @@ class QuickProjectDialog : Window
                if(document.isDocument && document._class == class(CodeEditor) && document.created && fileName)
                {
                   CodeEditor codeEditor = (CodeEditor)document;
-                  ide.projectView.AddFile(project.topNode, fileName, false);
+                  ide.projectView.AddFile(project.topNode, fileName, false, false);
                   codeEditor.DebugMenusDisabled();
                }
             }
