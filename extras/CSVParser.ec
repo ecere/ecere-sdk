@@ -36,7 +36,7 @@ public struct CSVParserState
 public class CSVParser : public FileHandler
 {
 public:
-   CSVParserParameters options;
+   CSVParserParameters options { ',', '\"', 0, false };
    CSVParserState info;
 
    void PrintMessage(typed_object object, ...)
