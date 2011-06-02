@@ -186,6 +186,8 @@ public class GuiApplication : Application
 
       strcpy(appName, "ECERE Application");
 
+      processAll = true;
+
       // TODO:
       // customCursors.offset = OFFSET(Cursor, prev);
       windowTimers.offset = (uint)&((Timer)0).prev;
@@ -509,7 +511,8 @@ public class GuiApplication : Application
          initialized = true;
 
          fullScreenMode = true; // Needs to start at true for the desktop to resize
-         processAll = true;
+         // Set this to true earlier so we can override it!
+         //processAll = true;
 
          errorLevel = 2;
 
