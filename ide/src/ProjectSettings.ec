@@ -653,7 +653,7 @@ class OptionBox<class Z> : CommonControl
             }
          }
 
-         if(nodeConfig && ((mergeValues && !configReplaces) ? OptionCheck(nodeConfig.options) : OptionSet(nodeConfig.options)))
+         if(nodeConfig && nodeConfig.options && ((mergeValues && !configReplaces) ? OptionCheck(nodeConfig.options) : OptionSet(nodeConfig.options)))
          {
             LoadOption(nodeConfig.options);
             if(!setAttribs) { setAttribs = true; SetAttribs((node == currentNode && !platform) ? 1 : 2); }
