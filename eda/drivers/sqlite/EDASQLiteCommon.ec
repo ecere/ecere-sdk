@@ -817,7 +817,7 @@ class SQLiteRow : DriverRow
                case 2:
                {
                   int value;
-                  if(value < 0)
+                  if((int)data < 0)
                      value = (int)*(short *)data;
                   else
                      value = (int)*(uint16 *)data;
@@ -827,7 +827,7 @@ class SQLiteRow : DriverRow
                case 1:
                {
                   int value;
-                  if(value < 0)
+                  if((int)data < 0)
                      value = (int)*(char *)data;
                   else
                      value = (int)*(byte *)data;
@@ -847,7 +847,7 @@ class SQLiteRow : DriverRow
          }
          case SQLITE_TEXT:
          {
-            if(data)
+            if((char *)data)
                sqlite3_bind_text(findStatement, 1, (char *)data, strlen((char *)data), SQLITE_STATIC);
             else
                sqlite3_bind_text(findStatement, 1, null, 0, SQLITE_STATIC);
@@ -1191,7 +1191,7 @@ class SQLiteRow : DriverRow
                case 2:
                {
                   int value;
-                  if(value < 0)
+                  if((int)data < 0)
                      value = (int)*(short *)data;
                   else
                      value = (int)*(uint16 *)data;
@@ -1201,7 +1201,7 @@ class SQLiteRow : DriverRow
                case 1:
                {
                   int value;
-                  if(value < 0)
+                  if((int)data < 0)
                      value = (int)*(char *)data;
                   else
                      value = (int)*(byte *)data;
@@ -1221,7 +1221,8 @@ class SQLiteRow : DriverRow
          }
          case SQLITE_TEXT:
          {
-            if(data)
+            // TOFIX: Checking a not casted typed_object for null should generate a compiler error (crashes!)
+            if((char *)data)
                sqlite3_bind_text(updateStatement, 1, (char *)data, strlen((char *)data), SQLITE_STATIC);
             else
                sqlite3_bind_text(updateStatement, 1, null, 0, SQLITE_STATIC);
