@@ -1273,8 +1273,29 @@ class ProjectView : Window
       {
          DirExpression targetDir = prj.targetDir;
 
-         if(buildType != run/* && prj == project*/ && prj.configIsInDebugSession)
-            DebugStop();
+         // TOFIX: DebugStop is being abused and backfiring on us.
+         //        It's supposed to be the 'Debug/Stop' item, not unloading executable or anything else
+
+         //        configIsInDebugSession seems to be used for two OPPOSITE things:
+         //        If we're debugging another config, we need to unload the executable!
+         //        In building, we want to stop if we're debugging the 'same' executable
+         if(buildType != run) ///* && prj == project*/ && prj.configIsInDebugSession)
+         {
+            if(buildType == debug)
+            {
+               if(ide.debugger && ide.debugger.isPrepared)
+               {
+                  DebugStop();
+               }
+            }
+            else
+            {
+               if(ide.project == prj && ide.debugger && ide.debugger.prjConfig == prj.config && ide.debugger.isPrepared)
+               {
+                  DebugStop();
+               }
+            }
+         }
          
          // TODO: Disabled until problems fixed... is it fixed?
          if(buildType == rebuild || (prj.config && prj.config.compilingModified))

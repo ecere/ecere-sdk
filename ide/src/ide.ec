@@ -1462,6 +1462,7 @@ class IDE : Window
       projectRegenerateItem.disabled = !projectView;
       projectCompileItem.disabled = !projectView;
 
+      /*  What is this? This completely ignore the debugger's state!
       debugStartResumeItem.disabled = !projectView; // && project.targetType == executable);
       debugRestartItem.disabled = true;
       debugBreakItem.disabled = true;
@@ -1474,6 +1475,8 @@ class IDE : Window
       debugSkipStepOverItem.disabled = true;
       debugSkipStepOutItem.disabled = true;
       debugSkipRunToCursorItem.disabled = true;
+      */
+      DebugUpdateMenus(ide.debugger.state, false);
 
       viewProjectItem.disabled = !projectView;
    }
