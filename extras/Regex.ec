@@ -31,8 +31,7 @@ public:
          {
             if(value)
             {
-               if(regex)
-                  delete regex;
+               delete regex;
                regex = CopyString(value);
                Compile();
             }
@@ -175,6 +174,7 @@ private:
 
    void Free()
    {
+      delete matches;
       delete regex;
       regfree(&compiledRegex);
       valid = false;
