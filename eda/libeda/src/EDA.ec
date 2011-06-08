@@ -58,32 +58,36 @@ public:
 
 static subclass(DataSourceDriver) GetDataDriver(char * driverName)
 {
-   OldLink link;
-   for(link = class(DataSourceDriver).derivatives.first; link; link = link.next)
-   {
-      subclass(DataSourceDriver) dataDriver = link.data;
-      if(dataDriver.name && !strcmp(dataDriver.name, driverName))
-         return dataDriver;
-   }
-   
+   subclass(DataSourceDriver) driver = null;
+   driver = FindDataDriverDerivative(class(DataSourceDriver), driverName);
+   if(!driver)
    {
       Module module;
       char moduleName[MAX_LOCATION];
       sprintf(moduleName, "EDA%s", driverName);
       if(module = eModule_Load(__thisModule.application, moduleName, publicAccess))
-      {
-         //Class dsdClass = class(DataSourceDriver);
-         Class dsdClass = eSystem_FindClass(module /*__thisModule.application*/, "DataSourceDriver");
-         
-         for(link = dsdClass.derivatives.first; link; link = link.next)
-         {
-            subclass(DataSourceDriver) dataDriver = link.data;
-            if(dataDriver.name && !strcmp(dataDriver.name, driverName))
-               return dataDriver;
-         }
-      }
+         driver = FindDataDriverDerivative(eSystem_FindClass(module /*__thisModule.application*/, "DataSourceDriver"), driverName);
    }
-   return null;
+   return driver;
+}
+
+static subclass(DataSourceDriver) FindDataDriverDerivative(Class dataSourceDriverClass, char * driverName)
+{
+   OldLink link;
+   subclass(DataSourceDriver) derivative = null;
+   for(link = dataSourceDriverClass.derivatives.first; link; link = link.next)
+   {
+      subclass(DataSourceDriver) dataDriver = link.data;
+      Class driverClass = link.data;
+      if(dataDriver.name && !strcmp(dataDriver.name, driverName))
+      {
+         derivative = dataDriver;
+         break;
+      }
+      if(driverClass.derivatives.first && (derivative = FindDataDriverDerivative(driverClass, driverName)))
+         break;
+   }
+   return derivative;
 }
 
 public class DataSource

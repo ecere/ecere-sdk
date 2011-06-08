@@ -23,18 +23,18 @@ TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)EDASQLite$(SO)
 SONAME =
 endif
 
-OBJECTS = $(OBJ)sqlite3.o $(OBJ)EDASQLite.o $(OBJ)EDASQLiteCommon.o \
-	$(OBJ)$(MODULE).main$(O)
+OBJECTS = $(OBJ)sqlite3.o $(OBJ)EDASQLite.o $(OBJ)$(MODULE).main$(O)
 
-COBJECTS = $(OBJ)EDASQLite.c $(OBJ)EDASQLiteCommon.c
+COBJECTS = $(OBJ)EDASQLite.c
 
-SYMBOLS = $(OBJ)EDASQLite.sym $(OBJ)EDASQLiteCommon.sym
+SYMBOLS = $(OBJ)EDASQLite.sym
 
-IMPORTS = $(OBJ)EDASQLite.imp $(OBJ)EDASQLiteCommon.imp
+IMPORTS = $(OBJ)EDASQLite.imp
 
-SOURCES = sqlite3.c EDASQLite.ec EDASQLiteCommon.ec
+SOURCES = sqlite3.c EDASQLite.ec
 
 RESOURCES =
+
 
 # TOOLCHAIN
 export LD_LIBRARY_PATH = ../../../obj/$(PLATFORM)/lib/
@@ -113,16 +113,10 @@ endif
 $(OBJ)EDASQLite.sym: EDASQLite.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c EDASQLite.ec -o $(OBJ)EDASQLite.sym
 
-$(OBJ)EDASQLiteCommon.sym: EDASQLiteCommon.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c EDASQLiteCommon.ec -o $(OBJ)EDASQLiteCommon.sym
-
 # C OBJECT RULES
 
 $(OBJ)EDASQLite.c: EDASQLite.ec $(OBJ)EDASQLite.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c EDASQLite.ec -o $(OBJ)EDASQLite.c -symbols $(OBJ)
-
-$(OBJ)EDASQLiteCommon.c: EDASQLiteCommon.ec $(OBJ)EDASQLiteCommon.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c EDASQLiteCommon.ec -o $(OBJ)EDASQLiteCommon.c -symbols $(OBJ)
 
 # IMPLICIT OBJECT RULE
 

@@ -84,7 +84,7 @@
       "sqlite3.c",
       "sqlite3.h",
       "EDASQLiteCipher.ec",
-      "../sqlite/EDASQLiteCommon.ec"
+      "../sqlite/EDASQLite.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [

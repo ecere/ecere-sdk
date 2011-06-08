@@ -23,16 +23,16 @@ TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)EDASQLiteCipher$(SO)
 SONAME =
 endif
 
-OBJECTS = $(OBJ)sqlite3.o $(OBJ)EDASQLiteCipher.o $(OBJ)EDASQLiteCommon.o \
+OBJECTS = $(OBJ)sqlite3.o $(OBJ)EDASQLiteCipher.o $(OBJ)EDASQLite.o \
 	$(OBJ)$(MODULE).main$(O)
 
-COBJECTS = $(OBJ)EDASQLiteCipher.c $(OBJ)EDASQLiteCommon.c
+COBJECTS = $(OBJ)EDASQLiteCipher.c $(OBJ)EDASQLite.c
 
-SYMBOLS = $(OBJ)EDASQLiteCipher.sym $(OBJ)EDASQLiteCommon.sym
+SYMBOLS = $(OBJ)EDASQLiteCipher.sym $(OBJ)EDASQLite.sym
 
-IMPORTS = $(OBJ)EDASQLiteCipher.imp $(OBJ)EDASQLiteCommon.imp
+IMPORTS = $(OBJ)EDASQLiteCipher.imp $(OBJ)EDASQLite.imp
 
-SOURCES = sqlite3.c EDASQLiteCipher.ec ../sqlite/EDASQLiteCommon.ec
+SOURCES = sqlite3.c EDASQLiteCipher.ec ../sqlite/EDASQLite.ec
 
 RESOURCES =
 
@@ -138,16 +138,16 @@ endif
 $(OBJ)EDASQLiteCipher.sym: EDASQLiteCipher.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c EDASQLiteCipher.ec -o $(OBJ)EDASQLiteCipher.sym
 
-$(OBJ)EDASQLiteCommon.sym: ../sqlite/EDASQLiteCommon.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../sqlite/EDASQLiteCommon.ec -o $(OBJ)EDASQLiteCommon.sym
+$(OBJ)EDASQLite.sym: ../sqlite/EDASQLite.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../sqlite/EDASQLite.ec -o $(OBJ)EDASQLite.sym
 
 # C OBJECT RULES
 
 $(OBJ)EDASQLiteCipher.c: EDASQLiteCipher.ec $(OBJ)EDASQLiteCipher.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c EDASQLiteCipher.ec -o $(OBJ)EDASQLiteCipher.c -symbols $(OBJ)
 
-$(OBJ)EDASQLiteCommon.c: ../sqlite/EDASQLiteCommon.ec $(OBJ)EDASQLiteCommon.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../sqlite/EDASQLiteCommon.ec -o $(OBJ)EDASQLiteCommon.c -symbols $(OBJ)
+$(OBJ)EDASQLite.c: ../sqlite/EDASQLite.ec $(OBJ)EDASQLite.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../sqlite/EDASQLite.ec -o $(OBJ)EDASQLite.c -symbols $(OBJ)
 
 # IMPLICIT OBJECT RULE
 

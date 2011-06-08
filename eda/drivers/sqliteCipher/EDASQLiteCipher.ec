@@ -8,82 +8,11 @@ public import "EDA"
 
 #include "sqlite3.h"
 
-import "EDASQLiteCommon"
+import "EDASQLite.ec"
 
-static class SQLiteCipherDataSource : DataSourceDriver
+static class SQLiteCipherDataSource : SQLiteDataSource
 {
    class_property(name) = "SQLiteCipher";
-   String path;
-   OldList listDatabases;
-   uint databasesCount;
-
-   String BuildLocator(DataSource ds)
-   {
-      return CopyString(ds.host);
-   }
-
-   uint GetDatabasesCount()
-   {
-      return databasesCount;
-   }
-
-   ~SQLiteCipherDataSource()
-   {
-      delete path;
-   }
-
-   bool Connect(const String locator)
-   {
-      delete path;
-      path = CopyString(locator);
-      // TODO, use user name and password for local security?
-      // TODO, open ds in read or write mode
-      if(FileExists(path))
-      {
-         int n = 0;
-         FileListing listing { path, "sqlite" };
-         databasesCount = 0;
-         while(listing.Find())
-            databasesCount++;
-         return true;
-      }
-      return false;
-   }
-
-   bool RenameDatabase(const String name, const String rename)
-   {
-      if(name && rename && path && FileExists(path))
-      {
-         String path;
-         path = MakeDatabasePath(name);
-         if(FileExists(path))
-         {
-            bool renamed;
-            String repath;
-            repath = MakeDatabasePath(rename);
-            renamed = RenameFile(path, repath);
-            delete path;
-            delete repath;
-            return renamed;
-         }
-         delete path;
-      }
-      return false;
-   }
-
-   bool DeleteDatabase(const String name)
-   {
-      if(path && FileExists(path))
-      {
-         bool deleted;
-         String path = MakeDatabasePath(name);
-         deleted = DeleteFile(path);  // delete file seems to return true even if the file does not exist
-         databasesCount--;
-         delete path;
-         return deleted;
-      }
-      return false;
-   }
 
    String MakeDatabasePath(const String name)
    {
@@ -92,7 +21,7 @@ static class SQLiteCipherDataSource : DataSourceDriver
          char build[MAX_LOCATION];
          strcpy(build, path ? path : "");
          PathCat(build, name);
-         ChangeExtension(build, "sqlite", build);
+         ChangeExtension(build, "sqlcipher", build);
          return CopyString(build);
       }
       return null;
