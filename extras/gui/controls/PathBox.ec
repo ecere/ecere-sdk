@@ -295,6 +295,7 @@ public class DirPath : String
          {
             ListBox lb = (ListBox)((DataBox)parent).parent;
             property::path = browsedPath;
+            modifiedDocument = true;
             if(eClass_IsDerived(lb._class, class(ListBox)))
                lb.StopEditing(true);
          }
