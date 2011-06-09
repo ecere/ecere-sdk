@@ -746,9 +746,9 @@ private:
       get
       {
          // TODO: Support platform options
-         char * expression = localObjectsDirectory;
+         char * expression = localTargetDirectory;
          if(!expression)
-            expression = settingsObjectsDirectory;
+            expression = settingsTargetDirectory;
          return expression;
       }
    }
