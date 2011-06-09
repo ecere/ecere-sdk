@@ -259,13 +259,6 @@ class epj2makeApp : GuiApplication
                }
                else
                {
-                  IDESettingsContainer settingsContainer;
-                  settingsContainer = 
-                  {
-                     driver = "JSON";
-                     data = ideSettings;
-                     dataOwner = &ideSettings;
-                  };
                   settingsContainer.Load();
                   //incref ideSettings;
                   delete settingsContainer;
@@ -404,4 +397,3 @@ class epj2makeApp : GuiApplication
 #endif
    }
 }
-
