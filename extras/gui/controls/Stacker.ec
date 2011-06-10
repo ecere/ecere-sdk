@@ -225,7 +225,7 @@ private:
    {
       if(created)
       {
-         int y = 0;//gap
+         int y = gap;   // Why was gap taken out? Need a gap between the scroller and the first button.
          Array<Window> oldControls = controls;
          Array<Window> orderedControls;
          Window child;

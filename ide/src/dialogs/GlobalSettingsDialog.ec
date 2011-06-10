@@ -277,6 +277,7 @@ class CompilersTab : GlobalSettingsSubTab
 
       bool OnPostCreate()
       {
+         SelectorBar::OnPostCreate();
          if(((CompilersTab)parent).selectedButton)
          {
             ((CompilersTab)parent).selectedButton.Activate();
