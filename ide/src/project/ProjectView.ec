@@ -1855,7 +1855,7 @@ class ProjectView : Window
                DeleteNode(node);
                modifiedDocument = true;
                prj.topNode.modified = true;
-               //project.ModifiedAllConfigs(true, false, true, true);
+               prj.ModifiedAllConfigs(true, false, true, true);
             }
          }
          else if(node.type == project && node != project.topNode && !buildInProgress)
