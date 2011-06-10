@@ -523,6 +523,7 @@ class CompilerDirectoriesTab : CompilersSubTab
       for(c = 0; c < DirTypes::enumSize; c++)
       {
          delete dirs[c];
+         delete dirTypeTglBtn[c];
       }
    }
    CompilerDirectoriesTab()
