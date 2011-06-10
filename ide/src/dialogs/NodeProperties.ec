@@ -53,7 +53,8 @@ class NodeProperties : Window
       }
       delete oldName;
       node.name = CopyString(filePath);
-      node.icon = NodeIcons::SelectFileIcon(filePath);
+      if(node.type == file)
+         node.icon = NodeIcons::SelectFileIcon(filePath);
       {
          char * s;
          text = (s = PrintString(node.name, " Properties"));
