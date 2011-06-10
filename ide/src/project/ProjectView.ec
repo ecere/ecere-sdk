@@ -1852,10 +1852,11 @@ class ProjectView : Window
                   text = "Delete Folder", contents = message }.Modal() == yes)
             {
                Project prj = node.project;
+               if(node.containsFile)
+                  prj.ModifiedAllConfigs(true, false, true, true);
                DeleteNode(node);
                modifiedDocument = true;
                prj.topNode.modified = true;
-               prj.ModifiedAllConfigs(true, false, true, true);
             }
          }
          else if(node.type == project && node != project.topNode && !buildInProgress)

@@ -253,7 +253,8 @@ class NodeProperties : Window
          ide.projectView.modifiedDocument = true;
          prj.topNode.modified = true;
          ide.projectView.Update(null);
-         prj.ModifiedAllConfigs(true, false, false, true);
+         if(node.type == file)
+            prj.ModifiedAllConfigs(true, false, false, true);
       }
    }
 }

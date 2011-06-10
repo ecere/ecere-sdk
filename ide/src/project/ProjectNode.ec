@@ -375,6 +375,29 @@ public:
 
    property ProjectNode root { get { ProjectNode n; for(n = this; n.parent; n = n.parent); return n; } }
 
+   property bool containsFile
+   {
+      get
+      {
+         bool result;
+         if(files)
+         {
+            for(child : files)
+            {
+               if(child.type == file ||
+                     ((child.type == folder || child.type == folderOpen) && child.containsFile))
+               {
+                  result = true;
+                  break;
+               }
+            }
+         }
+         else
+            result = false;
+         return result;
+      }
+   }
+
    char * GetFullFilePath(char * buffer)
    {
       if(buffer)
