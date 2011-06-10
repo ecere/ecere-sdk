@@ -395,10 +395,11 @@ static class ReplaceTextAction : UndoAction
 
       editBox.DelCh(l1, y1, x1, l3, y3, x3, true);
 
+      editBox.PutS(oldString);
       if(addedSpaces || addedTabs)
          editBox.DelCh(l1, y1, x1 - (addedSpaces + addedTabs), l1, y1, x1, false);
 
-      editBox.PutS(oldString);
+      //editBox.PutS(oldString);
       if(!placeAfter)
       {
          editBox.GoToPosition(null, y1, x1);
@@ -2046,6 +2047,7 @@ private:
                start--;
          }
       }
+      oldCount1 = l1.count;
       buffer = l1.buffer;
       while(c1 < oldCount1)
       {
@@ -2054,6 +2056,7 @@ private:
          c1--;         
          extras++;
       }
+      oldCount2 = l2.count;
       buffer = l2.buffer;
       while(c2 < oldCount2)
       {
@@ -2075,8 +2078,8 @@ private:
          Record(action);
       }
 
-      oldCount1 = l1.count;
-      oldCount2 = l2.count;
+      //oldCount1 = l1.count;
+      //oldCount2 = l2.count;
 
       {
          BufferLocation before = { l1,y1,c1}, after = { l2,y2,c2 };
