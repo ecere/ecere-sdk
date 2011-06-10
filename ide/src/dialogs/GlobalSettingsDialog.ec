@@ -517,6 +517,14 @@ class CompilerDirectoriesTab : CompilersSubTab
    Button dirTypeTglBtn[DirTypes];
    DirectoriesBox dirs[DirTypes], currentDirs;
 
+   ~CompilerDirectoriesTab()
+   {
+      DirTypes c;
+      for(c = 0; c < DirTypes::enumSize; c++)
+      {
+         delete dirs[c];
+      }
+   }
    CompilerDirectoriesTab()
    {
       DirTypes c;
