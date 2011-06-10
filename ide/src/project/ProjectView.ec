@@ -1688,7 +1688,7 @@ class ProjectView : Window
          {
             modifiedDocument = true;
             parentNode.project.topNode.modified = true;
-            project.ModifiedAllConfigs(true, false, true, true);
+            parentNode.project.ModifiedAllConfigs(true, false, true, true);
          }
          Update(null);
          result.row = parentNode.row.AddRowAfter(after ? after.row : null);
