@@ -20,6 +20,7 @@ class NodeProperties : Window
    {
       this, textHorzScroll = true, position = { 10, 80 }, size = { 260 }, text = "Path";
       anchor = { left = 10, top = 80, right = 10 };
+      NotifyModified = PathNotifyModified;
    };
    
    Label absolutePathLabel { parent = this, position = { 10, 110 }, labeledWindow = absolutePath };
@@ -221,8 +222,6 @@ class NodeProperties : Window
       bool b;
       name.OnActivate(false, null, &b, false);
       path.OnActivate(false, null, &b, false);
-      if(absolutePath.visible)
-         absolutePath.OnActivate(false, null, &b, false);
    }
 
    void UpdateFileName()
