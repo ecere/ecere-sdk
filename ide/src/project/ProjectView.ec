@@ -1346,7 +1346,7 @@ class ProjectView : Window
          }
          buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
          ide.AdjustBuildMenus();
-         if(buildType == start || buildType == restart) ide.AdjustDebugMenus();
+         ide.AdjustDebugMenus();
 
          result = prj.Build(buildType == run, null);
 
@@ -1360,7 +1360,7 @@ class ProjectView : Window
          }
          buildInProgress = none;
          ide.AdjustBuildMenus();
-         if(buildType == start || buildType == restart) ide.AdjustDebugMenus();
+         ide.AdjustDebugMenus();
 
          ide.workspace.modified = true;
 

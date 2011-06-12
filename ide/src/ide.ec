@@ -1229,8 +1229,6 @@ class IDE : Window
             text = titleECEREIDE;
             
             AdjustMenus();
-
-            viewProjectItem.disabled = true;
          }
       };
       projectView.Create();
@@ -1379,16 +1377,11 @@ class IDE : Window
 
    void AdjustMenus()
    {
-      // TODO: still a bit more clearing thing up, having things where they belong etc...
-      //       remove duplication or superfluous action as much as possible...
-      //       here and in AdjustBuildMenus
-
-      bool unavailable = !projectView;
+      bool unavailable = !project;
 
       projectQuickItem.disabled           = !unavailable;
 
       projectAddItem.disabled             = unavailable;
-      projectCloseItem.disabled           = unavailable;
 
       activeCompilerItem.disabled         = unavailable;
       projectActiveConfigItem.disabled    = unavailable;
@@ -1396,28 +1389,21 @@ class IDE : Window
 
       projectBrowseFolderItem.disabled    = unavailable;
 
-      projectRunItem.disabled             = unavailable || !project || project.targetType != executable;
-      projectBuildItem.disabled           = unavailable;
-      projectLinkItem.disabled            = unavailable;
-      projectRebuildItem.disabled         = unavailable;
-      projectCleanItem.disabled           = unavailable;
-      projectRegenerateItem.disabled      = unavailable;
-      projectCompileItem.disabled         = unavailable;
-
-      AdjustDebugMenus();
-
       viewProjectItem.disabled            = unavailable;
+
+      AdjustBuildMenus();
+      AdjustDebugMenus();
    }
 
    void AdjustBuildMenus()
    {
-      bool unavailable = !projectView || !projectView.project || projectView.buildInProgress;
+      bool unavailable = !project || projectView.buildInProgress;
 
       projectNewItem.disabled          = unavailable;
       projectOpenItem.disabled         = unavailable;
       projectCloseItem.disabled        = unavailable;
 
-      projectRunItem.disabled          = unavailable;
+      projectRunItem.disabled          = unavailable || project.targetType != executable;
       projectBuildItem.disabled        = unavailable;
       projectLinkItem.disabled         = unavailable;
       projectRebuildItem.disabled      = unavailable;
@@ -1428,8 +1414,7 @@ class IDE : Window
 
    void AdjustDebugMenus()
    {
-      bool unavailable = !projectView || !projectView.project ||
-               projectView.project.targetType != executable ||
+      bool unavailable = !project || project.targetType != executable ||
                projectView.buildInProgress.actualBuild;
       bool active = ide.debugger.isActive;
       bool executing = ide.debugger.state == running;
