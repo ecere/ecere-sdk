@@ -550,6 +550,12 @@ class Debugger
    ProgramThread progThread { };
 #endif
 
+   void ChangeState(DebuggerState value)
+   {
+      state = value;
+      if(ide) ide.AdjustDebugMenus();
+   }
+
    void CleanUp()
    {
       // Stop(); // Don't need to call Stop here, because ~ProjectView() will call it explicitly.
@@ -583,7 +589,7 @@ class Debugger
       targetDir = null;
       targetFile = null;
       
-      state = none;
+      ChangeState(none);
       event = none;
       breakType = none;
 
@@ -635,7 +641,7 @@ class Debugger
       {
          if(targetProcessId)
          {
-            ide.DebugUpdateMenus(running, true);
+            //ide.AdjustDebugMenus();
             GdbDebugBreak(false);
          }
       }
@@ -660,16 +666,6 @@ class Debugger
       }
    }
 
-   property bool isInDebugMode
-   {
-      get
-      {
-         if(state == running || state == stopped)
-            return true;
-         return false;
-      }
-   }
-
    void Restart()
    {
       switch(state)
@@ -683,6 +679,10 @@ class Debugger
             break;
          case stopped:
             GdbAbortExec();
+         case none:
+         case terminated:
+            if(!GdbInit())
+               break;
          case loaded:
             GdbExecRun();
             break;
@@ -801,7 +801,7 @@ class Debugger
       bool returnedExitCode = false;
       char verboseExitCode[128];
       
-      state = loaded;
+      ChangeState(loaded); // this state change seems to be superfluous, might be in case of gdb crash
       targetProcessId = 0;
 
       if(code)
@@ -824,7 +824,7 @@ class Debugger
          }
       }
 
-      ide.DebugUpdateMenus(loaded, false);
+      //ide.AdjustDebugMenus();
 
 #if defined(__unix__)
       progThread.terminate = true;
@@ -1701,7 +1701,7 @@ class Debugger
 
          if(ide)
          {
-            ide.DebugUpdateMenus(running, true);
+            //ide.AdjustDebugMenus();
             ide.Update(null);
          }
          app.Unlock();
@@ -1709,9 +1709,9 @@ class Debugger
             serialSemaphore.Wait();
          else
          {
-            state = loaded;
+            ChangeState(loaded);
             targetProcessId = 0;
-            ide.DebugUpdateMenus(loaded, false);
+            //ide.AdjustDebugMenus();
          }
          app.Lock();
       }
@@ -1818,7 +1818,7 @@ class Debugger
 
       prjConfig = project.config;
 
-      state = loaded;
+      ChangeState(loaded);
       sentKill = false;
       sentBreakInsert = false;
       symbols = true;
@@ -1884,8 +1884,8 @@ class Debugger
 
             if(!GdbTargetSet())
             {
-               //state = terminated;
-               //ide.DebugUpdateMenus(loaded, false);
+               //ChangeState(terminated);
+               //ide.AdjustDebugMenus();
                result = false;
             }
 
@@ -1961,7 +1961,7 @@ class Debugger
          }
       }
       gdbTimer.Stop();
-      state = terminated;
+      ChangeState(terminated); // this state change seems to be superfluous, is it safety for something?
       prjConfig = null;
 
       if(ide.workspace)
@@ -1974,7 +1974,7 @@ class Debugger
       
       ide.outputView.debugBox.Logf("Debugging stopped\n");
       ClearBreakDisplay();
-      ide.DebugUpdateMenus(loaded, false);
+      //ide.AdjustDebugMenus();
       ide.Update(null);
 
 #if defined(__unix__)
@@ -2577,7 +2577,7 @@ class Debugger
                   // Why was SelectFrame missing here?
                   SelectFrame(activeFrameLevel);
                   GoToStackFrameLine(activeFrameLevel, true);
-                  ide.DebugUpdateMenus(stopped, false);
+                  //ide.AdjustDebugMenus();
                   ide.Activate();
                   ide.Update(null);
                }
@@ -2602,7 +2602,7 @@ class Debugger
                      // Why was SelectFrame missing here?
                      SelectFrame(activeFrameLevel);
                      GoToStackFrameLine(activeFrameLevel, true);
-                     ide.DebugUpdateMenus(stopped, false);
+                     //ide.AdjustDebugMenus();
                      ide.Activate();
                      ide.Update(null);
                      if(bp.type == BreakpointType::runToCursor)
@@ -2631,10 +2631,10 @@ class Debugger
    {
       if(state != terminated)
       {
-         state = terminated;
+         ChangeState(terminated);
          targetProcessId = 0;
          ClearBreakDisplay();
-         ide.DebugUpdateMenus(loaded, false);
+         //ide.AdjustDebugMenus();
 
          if(gdbHandle)
          {
@@ -2647,7 +2647,7 @@ class Debugger
             ide.outputView.debugBox.Logf("Debugging stopped\n");
             ide.Update(null);
          }
-         //state = terminated;
+         //ChangeState(terminated);
       }
    }
 
@@ -2715,7 +2715,7 @@ class Debugger
                   if(sentKill)
                   {
                      sentKill = false;
-                     state = loaded;
+                     ChangeState(loaded);
                      targetProcessId = 0;
                      if(outTokens.count > 1 && TokenizeListItem(outTokens[1], item))
                      {
@@ -2979,10 +2979,10 @@ class Debugger
             }
             else if(!strcmp(outTokens[0], "^exit"))
             {
-               state = terminated;
-               ide.DebugUpdateMenus(loaded, false);
+               ChangeState(terminated);
+               //ide.AdjustDebugMenus();
                // ide.outputView.debugBox.Logf("Exit\n");
-               ide.Update(null);
+               //ide.Update(null);
                gdbReady = true;
                serialSemaphore.Release();
             }
@@ -3022,29 +3022,29 @@ class Debugger
                      }
                      else if(!strcmp(item.value, "Cannot find bounds of current function"))
                      {
-                        state = stopped;
+                        ChangeState(stopped);
                         gdbHandle.Printf("-exec-continue\n");
                      }
                      else if(!strcmp(item.value, "ptrace: No such process."))
                      {
-                        state = loaded;
+                        ChangeState(loaded);
                         targetProcessId = 0;
-                        ide.DebugUpdateMenus(loaded, false);
+                        //ide.AdjustDebugMenus();
                      }
                      else if(!strcmp(item.value, "Function \\\"WinMain\\\" not defined."))
                      {
                      }
                      else if(!strcmp(item.value, "You can't do that without a process to debug."))
                      {
-                        state = loaded;
+                        ChangeState(loaded);
                         targetProcessId = 0;
-                        ide.DebugUpdateMenus(loaded, false);
+                        //ide.AdjustDebugMenus();
                      }
                      else if(strstr(item.value, "No such file or directory."))
                      {
-                        state = loaded;
+                        ChangeState(loaded);
                         targetProcessId = 0;
-                        ide.DebugUpdateMenus(loaded, false);
+                        //ide.AdjustDebugMenus();
                      }
                      else
                      {
@@ -3094,7 +3094,7 @@ class Debugger
                }
                else if(!strcmp(outTokens[0], "*stopped"))
                {
-                  state = stopped;
+                  ChangeState(stopped);
                   
                   if(outTokens.count > 1 && TokenizeListItem(outTokens[1], item))
                   {
@@ -3172,7 +3172,7 @@ class Debugger
                            }
 
                            event = stepEnd;
-                           ide.DebugUpdateMenus(stopped, false);
+                           //ide.AdjustDebugMenus();
                            ide.Update(null);
                         }
                         else if(!strcmp(reason, "function-finished"))
@@ -3204,7 +3204,7 @@ class Debugger
                            }
 
                            event = functionEnd;
-                           ide.DebugUpdateMenus(stopped, false);
+                           //ide.AdjustDebugMenus();
                            ide.Update(null);
                         }
                         else if(!strcmp(reason, "signal-received"))
@@ -3245,16 +3245,14 @@ class Debugger
                                  case stop:
                                     break;
                                  default:
-                                    ide.DebugUpdateMenus(stopped, false);
                                     event = breakEvent;
-                                    ide.Update(null);
+                                    //ide.AdjustDebugMenus(); ide.Update(null);
                               }
                            }
                            else
                            {
                               event = signal;
-                              ide.DebugUpdateMenus(stopped, false);
-                              ide.Update(null);
+                              //ide.AdjustDebugMenus(); ide.Update(null);
                            }
                         }
                         else if(!strcmp(reason, "watchpoint-trigger"))
@@ -3296,9 +3294,8 @@ class Debugger
 
                   if(targetProcessId)
                   {
-                     state = running;
-                     ide.DebugUpdateMenus(running, false);
-                     ide.Update(null);
+                     ChangeState(running);
+                     //ide.AdjustDebugMenus(); ide.Update(null);
                   }
                   else if(!oldProcessID)
                   {
@@ -3306,7 +3303,7 @@ class Debugger
                      // TO VERIFY: The rest of this block has not been thoroughly tested in this particular location
                      gdbHandle.Printf("-gdb-exit\n");
                      gdbTimer.Stop();
-                     state = terminated; //loaded;
+                     ChangeState(terminated); //loaded;
                      prjConfig = null;
 
                      if(ide.workspace)
@@ -3321,8 +3318,7 @@ class Debugger
                      
                      ide.outputView.debugBox.Logf("Debugging stopped\n");
                      ClearBreakDisplay();
-                     ide.DebugUpdateMenus(loaded, false);
-                     ide.Update(null);
+                     //ide.AdjustDebugMenus(); ide.Update(null);
 
                #if defined(__unix__)
                      if(FileExists(progFifoPath)) //fileCreated)

@@ -212,11 +212,14 @@ class IDE : Window
    hasHorzScroll = true;
    hasMenuBar = true;
    hasStatusBar = true;
-   state = maximized;
 #ifdef _DEBUG
    //stayOnTop = true;
+   size = { 800, 600 };
+   anchor = { top = 0, right = 0, bottom = 0 };
+#else
+   state = maximized;
+   anchor = { left = 0, top = 0, right = 0, bottom = 0 };
 #endif
-   anchor = Anchor { left = 0, top = 0, right = 0, bottom = 0 };
    menu = Menu {  };
 
    MenuItem * driverItems, * skinItems;
@@ -263,8 +266,8 @@ class IDE : Window
                if(!ide.findInFilesDialog || !ide.findInFilesDialog.SearchAbort())
                   ide.ShowCodeEditor(); 
                break;
-            case ctrlC:
-               ide.StopBuild(true);
+            case ctrlS:
+               ide.projectView.stopBuild = true;
                break;
             default:
             {
@@ -480,9 +483,6 @@ class IDE : Window
    ToolBox toolBox { parent = this };
    Sheet sheet { parent = this };
 
-   bool buildInProgress;
-   bool stopBuild;
-
    char * tmpPrjDir;
    property char * tmpPrjDir { set { delete tmpPrjDir; if(value) tmpPrjDir = CopyString(value); } get { return tmpPrjDir; } };
 
@@ -691,15 +691,18 @@ class IDE : Window
          {
             if(projectView)
             {
-               if(findInFilesDialog)
-                  findInFilesDialog.SearchStop();
-               projectView.visible = false;
-               if(projectView.Destroy(0))
-                  MenuWindowCloseAll(null, 0);
+               if(!ide.DontTerminateDebugSession("Project Close"))
                {
-                  char workingDir[MAX_LOCATION];
-                  GetWorkingDir(workingDir, MAX_LOCATION);
-                  findInFilesDialog.currentDirectory = workingDir;
+                  if(findInFilesDialog)
+                     findInFilesDialog.SearchStop();
+                  projectView.visible = false;
+                  if(projectView.Destroy(0))
+                     MenuWindowCloseAll(null, 0);
+                  {
+                     char workingDir[MAX_LOCATION];
+                     GetWorkingDir(workingDir, MAX_LOCATION);
+                     findInFilesDialog.currentDirectory = workingDir;
+                  }
                }
             }
             return true;
@@ -819,25 +822,16 @@ class IDE : Window
       {
          if(projectView)
          {
-            debugStartResumeItem.disabled = true;
+            debugStartResumeItem.disabled = true; // a very rare exception to calling AdjustDebugMenus
             if(!projectView.DebugStart())
-               debugStartResumeItem.disabled = false;
+               debugStartResumeItem.disabled = false; // same exception
          }
          return true;
       }
       bool MenuDebugResume(MenuItem selection, Modifiers mods)
       {
          if(projectView)
-         {
-            /*if(projectView.IsProjectModified())
-            {
-               debugStartResumeItem.disabled = true;
-               if(!projectView.DebugStart(null, null))
-                  debugStartResumeItem.disabled = false;
-            }
-            else*/
-               projectView.DebugResume();
-         }
+            projectView.DebugResume();
          return true;
       }
       MenuItem debugRestartItem
@@ -1234,7 +1228,7 @@ class IDE : Window
             projectView = null;
             text = titleECEREIDE;
             
-            UpdateDisabledMenus();
+            AdjustMenus();
 
             viewProjectItem.disabled = true;
          }
@@ -1247,28 +1241,7 @@ class IDE : Window
       projectView.project = project;
       SetText("%s - %s", project.topNode.name, titleECEREIDE);
 
-      UpdateDisabledMenus();
-      if(project.targetType == executable)
-         DebugUpdateMenus(loaded, false);
-      /*
-      projectCloseItem.disabled = false;
-      projectBuildItem.disabled = false;
-      projectRebuildItem.disabled = false;
-      projectRegenerateItem.disabled = false;
-      projectCompileItem.disabled = false;
-      projectLinkItem.disabled = false;
-      projectCleanItem.disabled = false;
-      viewProjectItem.disabled = false;
-      
-      if(project.config.targetType == executable)
-      {
-         projectRunItem.disabled = false;
-         debugStartResumeItem.disabled = false;
-         DebugUpdateMenus(loaded, false);
-      }
-      projectActiveConfigItem.disabled = false;
-      projectSettingsItem.disabled = false;
-      */
+      AdjustMenus();
 
       ide.breakpointsView.LoadFromWorkspace();
       ide.watchesView.LoadFromWorkspace();
@@ -1299,7 +1272,7 @@ class IDE : Window
       if(this)
       {
          Window child;
-         bool inDebugMode = debugger.isInDebugMode;
+         bool inDebugMode = debugger.isActive;
          bool callStackVisible = expand ? false : callStackView.visible;
          bool threadsVisible = expand ? false : threadsView.visible;
          bool watchesVisible = expand ? false : watchesView.visible;
@@ -1352,48 +1325,9 @@ class IDE : Window
       return false;
    }
 
-   void DisableBuildItems(bool disabled, bool debugStart)
-   {
-      if(projectView)
-      {
-         projectNewItem.disabled = disabled;
-         projectOpenItem.disabled = disabled;
-         projectCompileItem.disabled = disabled;
-         projectRebuildItem.disabled = disabled;
-         projectRegenerateItem.disabled = disabled;
-         projectLinkItem.disabled = disabled;
-         projectBuildItem.disabled = disabled;
-         projectCleanItem.disabled = disabled;
-         projectCloseItem.disabled = disabled;
-         projectRunItem.disabled = disabled;
-
-         debugStartResumeItem.disabled = debugStart;
-         if(disabled)
-         {
-            debugRestartItem.disabled = true;
-            debugBreakItem.disabled = true;
-            debugStopItem.disabled = true;
-         }
-         /*else if(!debugStart)
-         {
-            debugRestartItem.disabled = false;
-            debugBreakItem.disabled = false;
-            debugStopItem.disabled = false;
-         }*/
-
-         buildInProgress = disabled;
-         if(!disabled) stopBuild = false;
-      }
-   }
-
-   void StopBuild(bool state)
-   {
-      stopBuild = state;
-   }
-
    bool ShouldStopBuild()
    {
-      return stopBuild;  
+      return projectView.stopBuild;
    }
 
    void DocumentSaved(Window document, char * fileName)
@@ -1443,66 +1377,86 @@ class IDE : Window
       }
    }
 
-   void UpdateDisabledMenus()
+   void AdjustMenus()
    {
-      projectQuickItem.disabled = (bool)projectView;
-      projectAddItem.disabled = !projectView;
-      projectCloseItem.disabled = !projectView;
+      // TODO: still a bit more clearing thing up, having things where they belong etc...
+      //       remove duplication or superfluous action as much as possible...
+      //       here and in AdjustBuildMenus
 
-      activeCompilerItem.disabled = !projectView;
-      projectActiveConfigItem.disabled = !projectView;
-      projectSettingsItem.disabled = !projectView;
+      bool unavailable = !projectView;
 
-      projectBrowseFolderItem.disabled = !projectView;
-      projectRunItem.disabled = projectView && project.targetType != executable;
-      projectBuildItem.disabled = !projectView;
-      projectLinkItem.disabled = !projectView;
-      projectRebuildItem.disabled = !projectView;
-      projectCleanItem.disabled = !projectView;
-      projectRegenerateItem.disabled = !projectView;
-      projectCompileItem.disabled = !projectView;
+      projectQuickItem.disabled           = !unavailable;
 
-      /*  What is this? This completely ignore the debugger's state!
-      debugStartResumeItem.disabled = !projectView; // && project.targetType == executable);
-      debugRestartItem.disabled = true;
-      debugBreakItem.disabled = true;
-      debugStopItem.disabled = true;
+      projectAddItem.disabled             = unavailable;
+      projectCloseItem.disabled           = unavailable;
 
-      debugStepIntoItem.disabled = true;
-      debugStepOverItem.disabled = true;
-      debugStepOutItem.disabled = true;
-      debugRunToCursorItem.disabled = true;
-      debugSkipStepOverItem.disabled = true;
-      debugSkipStepOutItem.disabled = true;
-      debugSkipRunToCursorItem.disabled = true;
-      */
-      DebugUpdateMenus(ide.debugger.state, false);
+      activeCompilerItem.disabled         = unavailable;
+      projectActiveConfigItem.disabled    = unavailable;
+      projectSettingsItem.disabled        = unavailable;
 
-      viewProjectItem.disabled = !projectView;
+      projectBrowseFolderItem.disabled    = unavailable;
+
+      projectRunItem.disabled             = unavailable || !project || project.targetType != executable;
+      projectBuildItem.disabled           = unavailable;
+      projectLinkItem.disabled            = unavailable;
+      projectRebuildItem.disabled         = unavailable;
+      projectCleanItem.disabled           = unavailable;
+      projectRegenerateItem.disabled      = unavailable;
+      projectCompileItem.disabled         = unavailable;
+
+      AdjustDebugMenus();
+
+      viewProjectItem.disabled            = unavailable;
    }
-   
-   void DebugUpdateMenus(DebuggerState state, bool breaking)
-   {
-      debugStartResumeItem.text           = (state == loaded) ? "Start" : "Resume";
-      debugStartResumeItem.NotifySelect   = (state == loaded) ? MenuDebugStart : MenuDebugResume;
-      debugStartResumeItem.disabled       = (state == running);
-      debugBreakItem.disabled             = (state != running || breaking);
-      debugStopItem.disabled              = (state == loaded);
-      debugRestartItem.disabled           = (state == loaded);
 
-      debugStepIntoItem.disabled          = (state == running);
-      debugStepOverItem.disabled          = (state == running);
-      debugStepOutItem.disabled           = (state == running) || (state == loaded);
-      debugSkipStepOverItem.disabled      = (state == running);
-      debugSkipStepOutItem.disabled       = (state == running) || (state == loaded);
+   void AdjustBuildMenus()
+   {
+      bool unavailable = !projectView || !projectView.project || projectView.buildInProgress;
+
+      projectNewItem.disabled          = unavailable;
+      projectOpenItem.disabled         = unavailable;
+      projectCloseItem.disabled        = unavailable;
+
+      projectRunItem.disabled          = unavailable;
+      projectBuildItem.disabled        = unavailable;
+      projectLinkItem.disabled         = unavailable;
+      projectRebuildItem.disabled      = unavailable;
+      projectCleanItem.disabled        = unavailable;
+      projectRegenerateItem.disabled   = unavailable;
+      projectCompileItem.disabled      = unavailable;
+   }
+
+   void AdjustDebugMenus()
+   {
+      bool unavailable = !projectView || !projectView.project ||
+               projectView.project.targetType != executable ||
+               projectView.buildInProgress.actualBuild;
+      bool active = ide.debugger.isActive;
+      bool executing = ide.debugger.state == running;
+      //bool holding = ide.debugger.state == stopped;
+
+      debugStartResumeItem.disabled       = unavailable || executing;
+
+      debugStartResumeItem.text           = active ? "Resume" : "Start";
+      debugStartResumeItem.NotifySelect   = active ? MenuDebugResume : MenuDebugStart;
+
+      debugBreakItem.disabled             = unavailable || !executing;
+      debugStopItem.disabled              = unavailable || !active;
+      debugRestartItem.disabled           = unavailable || !active;
+
+      debugStepIntoItem.disabled          = unavailable || executing;
+      debugStepOverItem.disabled          = unavailable || executing;
+      debugStepOutItem.disabled           = unavailable || executing || !active;
+      debugSkipStepOverItem.disabled      = unavailable || executing;
+      debugSkipStepOutItem.disabled       = unavailable || executing || !active;
 
       if((Designer)GetActiveDesigner())
       {
          CodeEditor codeEditor = ((Designer)GetActiveDesigner()).codeEditor;
          if(codeEditor)
          {
-            codeEditor.debugRunToCursor.disabled      = (state == running);
-            codeEditor.debugSkipRunToCursor.disabled  = (state == running);
+            codeEditor.debugRunToCursor.disabled      = unavailable || executing;
+            codeEditor.debugSkipRunToCursor.disabled  = unavailable || executing;
          }
       }
    }
@@ -2189,7 +2143,7 @@ class IDE : Window
                   sprintf(name, "Compile %s", node.name);
                   projectCompileItem = 
                   {
-                     copyText = true, text = name, c, ctrlF7, disabled = buildInProgress;
+                     copyText = true, text = name, c, ctrlF7, disabled = projectView.buildInProgress;
 
                      bool NotifySelect(MenuItem selection, Modifiers mods)
                      {
@@ -2215,8 +2169,8 @@ class IDE : Window
 
    bool OnClose(bool parentClosing)
    {
-      //return !buildInProgress;
-      if(buildInProgress)
+      //return !projectView.buildInProgress;
+      if(projectView && projectView.buildInProgress)
          return false;
       if(DontTerminateDebugSession("Close IDE"))
          return false;

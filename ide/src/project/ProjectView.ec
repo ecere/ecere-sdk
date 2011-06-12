@@ -107,7 +107,14 @@ static char * iconNames[] =
 
 enum PrepareMakefileMethod { normal, force, forceExists };
 
-enum BuildType { build, rebuild, relink, run, debug };
+enum BuildType { build, rebuild, relink, run, start, restart };
+enum BuildState
+{
+   none, buildingMainProject, buildingSecondaryProject, compilingFile;
+
+   property bool { get { return this != none; } }
+   property bool actualBuild { get { return this == buildingMainProject || this == buildingSecondaryProject;  } }
+};
 
 class ProjectView : Window
 {
@@ -126,7 +133,7 @@ class ProjectView : Window
    saveDialog = projectFileDialog;
    
    DataRow resourceRow;
-   bool buildInProgress;
+   BuildState buildInProgress;
    BitmapResource icons[NodeIcons];
    Project project;
    Workspace workspace;
@@ -203,6 +210,8 @@ class ProjectView : Window
    bool drawingInProjectSettingsDialogHeader;
    ProjectSettings projectSettingsDialog;
 
+   bool stopBuild;
+
    ListBox fileList
    {
       multiSelect = true, fullRowSelect = false, hasVertScroll = true, hasHorzScroll = true;
@@ -229,6 +238,7 @@ class ProjectView : Window
             ProjectNode node = (ProjectNode)row.tag;
             if(node.type == NodeTypes::project || node.type == resources || node.type == file || node.type == folder)
             {
+               bool buildMenuUnavailable = buildInProgress;
                PopupMenu popupMenu;
                Menu popupContent { };
                
@@ -236,11 +246,11 @@ class ProjectView : Window
                {
                   //if(node == ((Project)workspace.projects.first).topNode)
                   {
-                     MenuItem { popupContent, "Build", b, NotifySelect = ProjectBuild }.disabled = buildInProgress;
-                     MenuItem { popupContent, "Relink", l, NotifySelect = ProjectLink }.disabled = buildInProgress;
-                     MenuItem { popupContent, "Rebuild", r, NotifySelect = ProjectRebuild }.disabled = buildInProgress;
-                     MenuItem { popupContent, "Clean", c, NotifySelect = ProjectClean }.disabled = buildInProgress;
-                     MenuItem { popupContent, "Regenerate Makefile", m, NotifySelect = ProjectRegenerate }.disabled = buildInProgress;
+                     MenuItem { popupContent, "Build", b, NotifySelect = ProjectBuild }.disabled = buildMenuUnavailable;
+                     MenuItem { popupContent, "Relink", l, NotifySelect = ProjectLink }.disabled = buildMenuUnavailable;
+                     MenuItem { popupContent, "Rebuild", r, NotifySelect = ProjectRebuild }.disabled = buildMenuUnavailable;
+                     MenuItem { popupContent, "Clean", c, NotifySelect = ProjectClean }.disabled = buildMenuUnavailable;
+                     MenuItem { popupContent, "Regenerate Makefile", m, NotifySelect = ProjectRegenerate }.disabled = buildMenuUnavailable;
                      MenuDivider { popupContent };
                   }
                   MenuItem { popupContent, "New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
@@ -253,7 +263,7 @@ class ProjectView : Window
                   MenuDivider { popupContent };
                   if(node != ((Project)workspace.projects.first).topNode)
                   {
-                     MenuItem { popupContent, "Remove project from workspace", r, NotifySelect = ProjectRemove }.disabled = buildInProgress;
+                     MenuItem { popupContent, "Remove project from workspace", r, NotifySelect = ProjectRemove }.disabled = buildMenuUnavailable;
                      MenuDivider { popupContent };
                   }
                   MenuItem { popupContent, "Active Configuration...", s, Key { f5, alt = true } , NotifySelect = MenuConfig };
@@ -278,7 +288,7 @@ class ProjectView : Window
                else if(node.type == file)
                {
                   MenuItem { popupContent, "Open", o, NotifySelect = FileOpenFile };
-                  MenuItem { popupContent, "Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile }.disabled = buildInProgress;
+                  MenuItem { popupContent, "Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile }.disabled = buildMenuUnavailable;
                   MenuDivider { popupContent };
                   MenuItem { popupContent, "Remove", r, NotifySelect = FileRemoveFile };
                   MenuDivider { popupContent };
@@ -404,7 +414,7 @@ class ProjectView : Window
                      }
                      prj.RotateActiveConfig(!key.shift);
                      if(prj == project)
-                        ide.UpdateDisabledMenus();
+                        ide.AdjustMenus();
                      return false;
                   }
                   break;
@@ -593,7 +603,7 @@ class ProjectView : Window
             DeleteFile(fileName);
       }
 
-      ide.StopBuild(false);
+      stopBuild = false;
 
       // Check if we have to save
       strcpy(fileName, prj.topNode.path);
@@ -614,7 +624,8 @@ class ProjectView : Window
       {
          if(!node.isExcluded)
          {
-            buildInProgress = true;
+            buildInProgress = compilingFile;
+            ide.AdjustBuildMenus();
 
             //ide.outputView.ShowClearSelectTab(build);
             // this stuff doesn't even appear
@@ -624,10 +635,9 @@ class ProjectView : Window
             else
                ide.outputView.buildBox.Logf("Compiling single file %s in project %s...\n", node.name, prj.name);
 
-            ide.DisableBuildItems(true, false);
             prj.Compile(node);
-            ide.DisableBuildItems(false, false);
-            buildInProgress = false;
+            buildInProgress = none;
+            ide.AdjustBuildMenus();
          }
          else
             ide.outputView.buildBox.Logf("File %s is excluded from current build configuration.\n", node.name);
@@ -979,16 +989,16 @@ class ProjectView : Window
             prj = node.project;
       }
       if(/*prj != project || */!prj.configIsInDebugSession || !ide.DontTerminateDebugSession("Project Build"))
-         BuildInterrim(prj, build, false);
+         BuildInterrim(prj, build);
       return true;
    }
 
-   bool BuildInterrim(Project prj, BuildType buildType, bool disableDebugStart)
+   bool BuildInterrim(Project prj, BuildType buildType)
    {
       if(ProjectPrepareForToolchain(prj, normal, true, true))
       {
          ide.outputView.buildBox.Logf("Building project %s using the %s configuration...\n", prj.name, prj.configName);
-         return Build(prj, buildType, disableDebugStart);
+         return Build(prj, buildType);
       }
       return false;
    }
@@ -1014,7 +1024,7 @@ class ProjectView : Window
          ide.outputView.buildBox.Logf("Relinking project %s using the %s configuration...\n", prj.name, prj.configName);
          if(prj.config)
             prj.config.linkingModified = true;
-         Build(prj, relink, false);
+         Build(prj, relink);
       }
       return true;
    }
@@ -1030,7 +1040,7 @@ class ProjectView : Window
             prj.config.compilingModified = true;
             prj.config.makingModified = true;
          }*/ // -- should this still be used depite the new solution of BuildType?
-         Build(prj, rebuild, false);
+         Build(prj, rebuild);
       }
       return true;
    }
@@ -1042,12 +1052,12 @@ class ProjectView : Window
       {
          ide.outputView.buildBox.Logf("Cleaning project %s using the %s configuration...\n", prj.name, prj.configName);
          
-         buildInProgress = true;
-         ide.DisableBuildItems(true, false);
+         buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
+         ide.AdjustBuildMenus();
 
          prj.Clean();
-         ide.DisableBuildItems(false, false);
-         buildInProgress = false;
+         buildInProgress = none;
+         ide.AdjustBuildMenus();
       }
       return true;
    }
@@ -1168,7 +1178,7 @@ class ProjectView : Window
    bool MenuConfig(MenuItem selection, Modifiers mods)
    {
       if(ProjectActiveConfig { parent = parent.parent, master = parent, project = project }.Modal() == ok)
-         ide.UpdateDisabledMenus();
+         ide.AdjustMenus();
       return true;
    }
 
@@ -1198,7 +1208,7 @@ class ProjectView : Window
       projectSettingsDialog.Modal();
 
       Update(null);
-      ide.UpdateDisabledMenus();
+      ide.AdjustMenus();
       return true;
    }
 
@@ -1251,12 +1261,12 @@ class ProjectView : Window
    }
    */
 
-   bool Build(Project prj, BuildType buildType, bool disableDebugStart)
+   bool Build(Project prj, BuildType buildType)
    {
       bool result = true;
       Window document;
 
-      ide.StopBuild(false);
+      stopBuild = false;
       for(document = master.firstChild; document; document = document.next)
       {
          if(document.modifiedDocument)
@@ -1281,7 +1291,7 @@ class ProjectView : Window
          //        In building, we want to stop if we're debugging the 'same' executable
          if(buildType != run) ///* && prj == project*/ && prj.configIsInDebugSession)
          {
-            if(buildType == debug)
+            if(buildType == start || buildType == restart)
             {
                if(ide.debugger && ide.debugger.isPrepared)
                {
@@ -1334,9 +1344,9 @@ class ProjectView : Window
                delete objDir;
             }
          }
-         buildInProgress = true;
-         //if(prj == project)    // Why did we put these here? There was nothing to prevent building an added project multiple times at once
-            ide.DisableBuildItems(true, true);
+         buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
+         ide.AdjustBuildMenus();
+         if(buildType == start || buildType == restart) ide.AdjustDebugMenus();
 
          result = prj.Build(buildType == run, null);
 
@@ -1348,9 +1358,9 @@ class ProjectView : Window
 
             prj.config.symbolGenModified = false;
          }
-         //if(prj == project)
-            ide.DisableBuildItems(false, disableDebugStart);
-         buildInProgress = false;
+         buildInProgress = none;
+         ide.AdjustBuildMenus();
+         if(buildType == start || buildType == restart) ide.AdjustDebugMenus();
 
          ide.workspace.modified = true;
 
@@ -1406,11 +1416,11 @@ class ProjectView : Window
       if(ide.workspace.commandLineArgs)
          //ide.debugger.GetCommandLineArgs(args);
          strcpy(args, ide.workspace.commandLineArgs);
-      if(ide.debugger.isInDebugMode)
+      if(ide.debugger.isActive)
          project.Run(args);
       /*else if(project.config.targetType == sharedLibrary || project.config.targetType == staticLibrary)
          MessageBox { type = ok, text = "Run", contents = "Shared and static libraries cannot be run like executables." }.Modal();*/
-      else if(BuildInterrim(project, run, false))
+      else if(BuildInterrim(project, run))
          project.Run(args);
       return true;
    }
@@ -1425,7 +1435,7 @@ class ProjectView : Window
       else if(project.debug ||
          MessageBox { type = okCancel, text = "Starting Debug", contents = "Attempting to debug non-debug configuration\nProceed anyways?" }.Modal() == ok)
       {
-         if(/*!IsProjectModified() ||*/ BuildInterrim(project, debug, true))
+         if(/*!IsProjectModified() ||*/ BuildInterrim(project, start))
          {
             CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
             if(compiler.type.isVC)
@@ -1461,7 +1471,7 @@ class ProjectView : Window
 
    bool DebugRestart()
    {
-      if(/*!IsProjectModified() ||*/ BuildInterrim(project, debug, true))
+      if(/*!IsProjectModified() ||*/ BuildInterrim(project, restart))
       {
          ide.debugger.Restart();
          return true;
@@ -1489,14 +1499,14 @@ class ProjectView : Window
 
    bool DebugStepInto()
    {
-      if((ide.debugger.isInDebugMode) || (!buildInProgress && BuildInterrim(project, debug, true)))
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start)))
          ide.debugger.StepInto();
       return true;
    }
 
    bool DebugStepOver(bool skip)
    {
-      if((ide.debugger.isInDebugMode) || (!buildInProgress && BuildInterrim(project, debug, true)))
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start)))
          ide.debugger.StepOver(skip);
       return true;
    }
