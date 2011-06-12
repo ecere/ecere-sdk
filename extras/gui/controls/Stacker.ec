@@ -177,7 +177,7 @@ private:
       Window::GetDecorationsSize(w, h);
       if(scrollable)
       {
-         if(direction == vertical) *h += 32; else *w += 32;
+         if(direction == vertical) *h += 36; else *w += 36;
       }
    }
 
@@ -186,7 +186,7 @@ private:
       Window::SetWindowArea(x, y, w, h, cw, ch);
       if(scrollable)
       {
-         if(direction == vertical) *y += 16; else *x += 16;
+         if(direction == vertical) *y += 18; else *x += 18;
       }
    }
 
@@ -225,7 +225,7 @@ private:
    {
       if(created)
       {
-         int y = gap;   // Why was gap taken out? Need a gap between the scroller and the first button.
+         int y = 0;
          Array<Window> oldControls = controls;
          Array<Window> orderedControls;
          Window child;
