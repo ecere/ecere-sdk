@@ -177,7 +177,7 @@ private:
       Window::GetDecorationsSize(w, h);
       if(scrollable)
       {
-         if(direction == vertical) *h += 36; else *w += 36;
+         if(direction == vertical) *h += left.size.w + right.size.w + 8; else *w += left.size.h + right.size.h + 8;
       }
    }
 
@@ -186,7 +186,7 @@ private:
       Window::SetWindowArea(x, y, w, h, cw, ch);
       if(scrollable)
       {
-         if(direction == vertical) *y += 18; else *x += 18;
+         if(direction == vertical) *y += left.size.w + 4; else *x += left.size.h + 4;
       }
    }
 
@@ -202,18 +202,18 @@ private:
       if(direction == vertical)
       {
          left.bitmap = { "<:ecere>elements/arrowTop.png" };
-         left.anchor = { top = 2 };
+         left.anchor = { top = 2, left = 2, right = 2 };
 
          right.bitmap = { "<:ecere>elements/arrowBottom.png" };
-         right.anchor = { bottom = 2 };
+         right.anchor = { bottom = 2, left = 2, right = 2 };
       }
       else
       {
          left.bitmap = { "<:ecere>elements/arrowLeft.png" };
-         left.anchor = { left = 2 };
+         left.anchor = { left = 2, top = 2, bottom = 2 };
 
          right.bitmap = { "<:ecere>elements/arrowRight.png" };
-         right.anchor = { right = 2 };
+         right.anchor = { right = 2, top = 2, bottom = 2 };
       }
       return true;
    }
