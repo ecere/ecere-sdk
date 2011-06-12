@@ -24,7 +24,7 @@ public class PaneSplitter : Window
 
    void OnResize(int width, int height)
    {
-      if(leftPane && rightPane)
+      if(leftPane || rightPane)
       {
          if(orientation == (ScrollDirection)-1) orientation = vertical;
          if(scale)
