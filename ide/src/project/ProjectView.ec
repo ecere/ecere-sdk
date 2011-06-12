@@ -113,7 +113,7 @@ enum BuildState
    none, buildingMainProject, buildingSecondaryProject, compilingFile;
 
    property bool { get { return this != none; } }
-   property bool actualBuild { get { return this == buildingMainProject || this == buildingSecondaryProject;  } }
+   //property bool actualBuild { get { return this == buildingMainProject || this == buildingSecondaryProject;  } }
 };
 
 class ProjectView : Window

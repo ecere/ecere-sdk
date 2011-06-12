@@ -1426,7 +1426,7 @@ class IDE : Window
    void AdjustDebugMenus()
    {
       bool unavailable = !project || project.targetType != executable ||
-               projectView.buildInProgress.actualBuild;
+               projectView.buildInProgress == buildingMainProject;
       bool active = ide.debugger.isActive;
       bool executing = ide.debugger.state == running;
       //bool holding = ide.debugger.state == stopped;
