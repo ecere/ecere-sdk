@@ -30,7 +30,8 @@ class GenericEditor : Window
          Clear();
 
          editor.table = value;
-         list.fldName = value.FindField("Name");
+         if(!list.fldName)
+            list.fldName = value.FindField("Name");
          list.table = value;
          for(f = value.firstField; f; f = f.next)
          {

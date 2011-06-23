@@ -611,6 +611,7 @@ public class EditFieldDropDataBox : FieldDropDataBox
    {
       row.Add();
       row.SetData(dropBox.nameField, entry);
+      return true;
    }
 }
 
@@ -699,12 +700,16 @@ public class ListSection : Group
    {
       if(listSection.fldId && listSection.fldName)
       {
+         bool stringName = !strcmp(listSection.fldName.type.dataTypeString, "char *");
          while(r.Next())
          {
             Id id = 0;
             String s = null;
             r.GetData(listSection.fldId, id);
-            r.GetData(listSection.fldName, s);
+            if(stringName)
+               r.GetData(listSection.fldName, s);
+            else
+               s = PrintString("Entry ", id);
             listSection.list.AddString(s).tag = id;
             delete s;
          }
@@ -744,8 +749,10 @@ public class ListSection : Group
                      id = curID;
                   else
                      r.SetData(fldId, id);
-               }               
-               r.SetData(fldName, "[New]");
+               }
+               if(!strcmp(fldName.type.dataTypeString, "char *"))
+                  r.SetData(fldName, "[New]");
+
                if(fldActive)
                   r.SetData(fldActive, active);
 
@@ -992,6 +999,7 @@ public:
    
    void EditSave()
    {
+      bool stringName = !strcmp(list.fldName.type.dataTypeString, "char *");
       OldLink link;
       String name = null;
 
@@ -1004,7 +1012,10 @@ public:
       // ADDED THIS HERE FOR SQLITE TO REFRESH
       editRow.Find(list.fldId, middle, nil, list.list.currentRow.tag);
 
-      editRow.GetData(list.fldName, name);
+      if(stringName)
+         editRow.GetData(list.fldName, name);
+      else
+         name = PrintString("Entry ", list.list.currentRow.tag);
 
       NotifyEditSave(master, this, name);
       delete name;

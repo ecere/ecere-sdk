@@ -1005,9 +1005,9 @@ static void OnSerialize(Class _class, void * data, IOChannel channel)
                      }
                      else
                      {
-                        if(!strcmp(memberType.name, "String"))
+                        if(!strcmp(memberType.name, "String") || memberType.type == normalClass || memberType.type == noHeadClass)
                         {
-                           memberType._vTbl[__ecereVMethodID_class_OnSerialize](memberType, *(String *)((byte *)data + member._class.offset + member.offset), channel);
+                           memberType._vTbl[__ecereVMethodID_class_OnSerialize](memberType, *(void **)((byte *)data + member._class.offset + member.offset), channel);
                         }
                         else
                            memberType._vTbl[__ecereVMethodID_class_OnSerialize](memberType, ((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset)), channel);
