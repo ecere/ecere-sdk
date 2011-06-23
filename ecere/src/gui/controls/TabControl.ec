@@ -588,7 +588,10 @@ public class TabControl : Window
       incref tab.button;
 
       if(created)
+      {
          tab.button.Create();
+         incref tab;
+      }
 
       numTabs++;
       if(!curTab)
@@ -607,6 +610,40 @@ public class TabControl : Window
          case left: tab.anchor = { left = 82, bottom = 2, right = 2, top = 2 }; break;
          case right: tab.anchor = { left = 2, bottom = 2, right = 82, top = 2 }; break;
       }
+   }
+
+   public void RemoveTab(Tab tab)
+   {
+      Window child;
+      Tab fallbackTab = null;
+      tab.parent = null;
+      for(child = tabButtons.children.first; child; child = child.next)
+      {
+         if(child._class == class(TabButton))
+         {
+            TabButton button = (TabButton)child;
+            if(button.id == (uint)tab)
+            {
+               if(button.created)
+                  button.Destroy(0);
+               break;
+            }
+            else
+               fallbackTab = button.tab;
+         }
+      }
+      if(curTab == tab)
+      {
+         if(!fallbackTab)
+            fallbackTab = tabButtons.children.first ? ((TabButton)tabButtons.children.first).tab : null;
+         if(fallbackTab)
+            fallbackTab.SelectTab();
+         /*curTab = fallbackTab;
+         curButton = curTab.button;
+         curButton.checked = true;
+         curTab.autoCreate = true;*/
+      }
+      numTabs--;
    }
 
    ~TabControl()
@@ -680,7 +717,10 @@ public class Tab : Window
    {
       set
       {
-         if(value) value.AddTab(this);
+         if(value)
+            value.AddTab(this);
+         else if(parent)
+            ((TabControl)parent).RemoveTab(this);
       }
       get { return (TabControl)parent; }
    }
