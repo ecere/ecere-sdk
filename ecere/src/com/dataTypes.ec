@@ -960,7 +960,7 @@ static void OnSerialize(Class _class, void * data, IOChannel channel)
    }
    else if(_class.type == normalClass || _class.type == noHeadClass || _class.type == structClass)
    {
-      if(data)
+      //if(data)
       {
          Class lastClass = null;
          while(lastClass != _class)
@@ -1007,10 +1007,10 @@ static void OnSerialize(Class _class, void * data, IOChannel channel)
                      {
                         if(!strcmp(memberType.name, "String") || memberType.type == normalClass || memberType.type == noHeadClass)
                         {
-                           memberType._vTbl[__ecereVMethodID_class_OnSerialize](memberType, *(void **)((byte *)data + member._class.offset + member.offset), channel);
+                           memberType._vTbl[__ecereVMethodID_class_OnSerialize](memberType, data ? (*(void **)((byte *)data + member._class.offset + member.offset)) : null, channel);
                         }
                         else
-                           memberType._vTbl[__ecereVMethodID_class_OnSerialize](memberType, ((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset)), channel);
+                           memberType._vTbl[__ecereVMethodID_class_OnSerialize](memberType, data ? (((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset))) : null, channel);
                      }
                   }
                   else
@@ -1020,7 +1020,7 @@ static void OnSerialize(Class _class, void * data, IOChannel channel)
                }
                else
                {
-                  DataMember_OnSerialize(member, (byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset), channel);
+                  DataMember_OnSerialize(member, data ? ((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset)) : null, channel);
                }
             }
          }

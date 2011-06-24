@@ -30,10 +30,10 @@ class GenericEditor : Window
          Clear();
 
          editor.table = value;
-         if(!list.fldName)
+         if(!list.fldName && value)
             list.fldName = value.FindField("Name");
          list.table = value;
-         for(f = value.firstField; f; f = f.next)
+         for(f = value ? value.firstField : null; f; f = f.next)
          {
             if(strcmpi(f.name, "ID"))
             {

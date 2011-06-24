@@ -394,6 +394,8 @@ public:
          answered = false;
          SendPacket(packet);
          delete packet;
+         thread.socket = this;
+         thread.connected = true;
          thread.Create();
          while(!answered && thread)
          {
