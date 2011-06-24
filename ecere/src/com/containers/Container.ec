@@ -278,7 +278,6 @@ public:
       channel.Get(count);
       for(c = 0; c < count; c++)
       {
-         // TODO: Fox 64 bit types support
          D data;
          Dclass._vTbl[__ecereVMethodID_class_OnUnserialize](Dclass, &data, channel);
          container.Add(data);
