@@ -17,16 +17,22 @@ public:
          if(table)
          {
             InitFieldsBoxes(); // IMPORTANT: table must be set *AFTER* all related FieldEditors have been initialized
-
-            /*FieldIndex indexedFields[1];
-            if(!idField) fldId = table.FindField(defaultIdField);
-            if(!fldName) fldName = table.FindField(defaultNameField);
-            if(!fldActive) fldActive = table.FindField(defaultActiveField);
-            indexedFields[0] = { fldId };
-            table.Index(1, indexedFields);*/
-            editRow.tbl = table;
-            Enumerate();
-            PrepareWordList(null);
+            {
+               Field fldId = idField, fldName = stringField, fldActive = null;
+               FieldIndex indexedFields[1];
+               if(!idField) fldId = table.FindField(defaultIdField);
+               if(!fldName) fldName = table.FindField(defaultNameField);
+               if(!fldActive) fldActive = table.FindField(defaultActiveField);
+               indexedFields[0] = { fldId };
+               table.Index(1, indexedFields);
+               editRow.tbl = table;
+               Enumerate();
+               {
+                  char name[MAX_FILENAME];
+                  sprintf(name, "%s.search", value.name);
+                  PrepareWordList(name);
+               }
+            }
          }
       }
    }
@@ -61,7 +67,11 @@ public:
       set
       {
          searchFields = value;
-         PrepareWordList(null);
+         {
+            char name[MAX_FILENAME];
+            sprintf(name, "%s.search", table.name);
+            PrepareWordList(name);
+         }
       }
    }
    Array<Field> searchFields;
@@ -90,6 +100,8 @@ public:
    String searchString;
 
    // Fields Editor
+   property Id selectedId { get { return selectedId; } }
+
    Array<FieldBox> fieldsBoxes { };
    
    public virtual void Window::OnStateChanged();
@@ -289,24 +301,29 @@ public:
             delete r;
          }
 
-         list.Sort(listSortField, listSortOrder);
-         list.currentRow.tag = id;
-         SelectListRow(list.currentRow);
+         if(list)
+         {
+            list.Sort(listSortField, listSortOrder);
+            list.currentRow.tag = id;
+            SelectListRow(list.currentRow);
+         }
          OnStateChanged(window);
       }
    }
 
    void Remove()
    {
-      if(list && list.currentRow)
+      if(editRow.sysID) //list && list.currentRow)
       {
          if(OnRemovalRequest())
          {
             editRow.Delete();
-            list.DeleteRow(list.currentRow);
+            if(list)
+               list.DeleteRow(list.currentRow);
             EditClear();
             //NotifyDeleted(master, this);
-            SelectListRow(list.currentRow);
+            if(list)
+               SelectListRow(list.currentRow);
             OnStateChanged(window);
          }
       }
@@ -356,6 +373,62 @@ public:
       return result;
    }
 
+   bool Select(Id id)
+   {
+      bool result;
+      if(idField && editRow.Find(idField, middle, nil, id))
+      {
+         //Id test = editRow.sysID;
+         selectedId = editRow.sysID;
+         EditLoad();
+         result = true;
+      }
+      else
+         result = false;
+      return result;
+   }
+
+   bool SelectNext()
+   {
+      bool result;
+      // How about confirmation / saving before changing the entry?
+      if(editRow.Next())
+      {
+         //Id test = editRow.sysID;
+         selectedId = editRow.sysID;
+         EditLoad();
+         result = true;
+      }
+      else
+      {
+         result = false;
+         // Wrap around after 2 Next if commented out (1st time could inform user of reaching the end)
+         // The first Next() bring the row to a null row (rowID = 0), a Next() on a rowID = 0 starts at first row
+         //editRow.Previous();
+      }
+      return result;
+   }
+   
+   bool SelectPrevious()
+   {
+      bool result;
+      if(editRow.Previous())
+      {
+         //Id test = editRow.sysID;
+         selectedId = editRow.sysID;
+         EditLoad();
+         result = true;
+      }
+      else
+      {
+         result = false;
+         // Wrap around after 2 Prev if commented out (1st time could inform user of reaching the end)
+         // The first Prev() bring the row to a null row (rowID = 0), a Prev() on a rowID = 0 starts at last row
+         //editRow.Next();
+      }
+      return result;
+   }
+   
    void SelectListRow(DataRow row)
    {
       // Time startTime = GetTime();
@@ -368,7 +441,7 @@ public:
             list.currentRow = row;
          if(idField && editRow.Find(idField, middle, nil, selectedId))
          {
-            Id test = editRow.sysID;
+            //Id test = editRow.sysID;
             listRow = row;
             //NotifySelectListRow(master, this, selectedId);
             EditLoad();
@@ -839,9 +912,9 @@ struct WordEntryBinaryTree : BinaryTree
       this.count = count;
       for(node = (WordEntry)root; node;)
       {
-         int c;
          if(node.words)
          {
+            int c;
             for(c = 0; c<node.words.count; c++)
                node.words.ids[c] = (Id)btnodes[node.words.ids[c] - 1];
          }
