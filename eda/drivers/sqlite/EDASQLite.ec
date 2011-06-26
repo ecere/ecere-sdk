@@ -718,6 +718,7 @@ class SQLiteTable : Table
       char command[1024];
       sqlite3_stmt * statement;
       sqlite3_stmt * sysIDStmt = null, * insertStmt = null, * deleteStmt = null, * selectRowIDsStmt = null, * setRowIDStmt = null;
+      sqlite3_stmt * prevStmt = null, * nextStmt = null, * lastStmt = null;
 
       if(specialStatement)
          strcpy(command, specialStatement);
@@ -732,7 +733,18 @@ class SQLiteTable : Table
          sqlite3_prepare_v2(db.db, command, -1, &insertStmt, null);
          sprintf(command, "DELETE FROM `%s` WHERE ROWID = ?;", name);
          sqlite3_prepare_v2(db.db, command, -1, &deleteStmt, null);
+
+         sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ROWID < ? ORDER BY ROWID DESC LIMIT 1;", name);
+         sqlite3_prepare_v2(db.db, command, -1, &prevStmt, null);
+
+         sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ROWID > ? ORDER BY ROWID LIMIT 1;", name);
+         sqlite3_prepare_v2(db.db, command, -1, &nextStmt, null);
+
+         sprintf(command, "SELECT MAX(ROWID), * FROM `%s`", name);
+         sqlite3_prepare_v2(db.db, command, -1, &lastStmt, null);
+
          /*sprintf(command, "UPDATE `%s` SET ? = ? WHERE ROWID = ?;", name);
+
          sqlite3_prepare_v2(db.db, command, -1, &updateStmt, null);*/
 
          if(!indexFields || (indexFieldsCount == 1 && indexFields[0].field == primaryKey && indexFields[0].order == ascending))
@@ -766,7 +778,8 @@ class SQLiteTable : Table
 
       return SQLiteRow
          { tbl = this, defaultStatement = statement, curStatement = statement, sysIDStatement = sysIDStmt, 
-           insertStatement = insertStmt, deleteStatement = deleteStmt, selectRowIDsStmt = selectRowIDsStmt, setRowIDStmt = setRowIDStmt };
+           insertStatement = insertStmt, deleteStatement = deleteStmt, selectRowIDsStmt = selectRowIDsStmt, setRowIDStmt = setRowIDStmt,
+           previousStatement = prevStmt, nextStatement = nextStmt, lastStatement = lastStmt };
    }
 
    ~SQLiteTable()
@@ -790,6 +803,9 @@ class SQLiteRow : DriverRow
    sqlite3_stmt * findMultipleStatement;
    sqlite3_stmt * selectRowIDsStmt;
    sqlite3_stmt * setRowIDStmt;
+   sqlite3_stmt * lastStatement;
+   sqlite3_stmt * previousStatement;
+   sqlite3_stmt * nextStatement;
 
    sqlite3_stmt * insertStatement;
    sqlite3_stmt * deleteStatement;
@@ -815,11 +831,15 @@ class SQLiteRow : DriverRow
       if(queryStatement)   sqlite3_finalize(queryStatement);
       if(selectRowIDsStmt) sqlite3_finalize(selectRowIDsStmt);
       if(setRowIDStmt)     sqlite3_finalize(setRowIDStmt);
+      if(previousStatement)sqlite3_finalize(previousStatement);
+      if(nextStatement)    sqlite3_finalize(nextStatement);
+      if(lastStatement)    sqlite3_finalize(lastStatement);
    }
 
    bool Select(MoveOptions move)
    {
       int result;
+      bool stepping = curStatement == previousStatement || curStatement == nextStatement || curStatement == lastStatement;
       if(!curStatement)
          curStatement = defaultStatement;
       switch(move)
@@ -835,27 +855,36 @@ class SQLiteRow : DriverRow
          }
          case last:
          {
-            sqlite3_stmt * statement;
-            char command[1024];
-            sprintf(command, "SELECT MAX(ROWID) FROM `%s`", tbl.name);
-            result = sqlite3_prepare_v2(tbl.db.db, command, -1, &statement, null);
-            result = sqlite3_step(statement);
-            rowID = sqlite3_column_int64(statement, 0);
-            sqlite3_finalize(statement);
-            break;
-         }
-         case middle:
-            break;
-         case next:
-         {
+            sqlite3_reset(curStatement);
+            curStatement = lastStatement;
             result = sqlite3_step(curStatement);
             done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
             if(done) { rowID = 0; sqlite3_reset(curStatement); return false; }
             rowID = sqlite3_column_int64(curStatement, 0);
             break;
          }
-         case previous:
+         case middle:
             break;
+         case next:
+            if(!stepping)
+            {
+               result = sqlite3_step(curStatement);
+               done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
+               if(done) { rowID = 0; sqlite3_reset(curStatement); return false; }
+               rowID = sqlite3_column_int64(curStatement, 0);
+               break;
+            }
+         case previous:
+         {
+            sqlite3_reset(curStatement);
+            curStatement = (move == previous) ? (rowID ? previousStatement : lastStatement) : (rowID ? nextStatement : defaultStatement);
+            sqlite3_bind_int64(curStatement, 1, (sqlite3_int64)rowID);
+            result = sqlite3_step(curStatement);
+            done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
+            if(done) { rowID = 0; sqlite3_reset(curStatement); return false; }
+            rowID = sqlite3_column_int64(curStatement, 0);
+            break;
+         }
          case nil:
             sqlite3_reset(curStatement);
             rowID = 0;
@@ -1405,7 +1434,7 @@ class SQLiteRow : DriverRow
       if(curStatement != queryStatement)
       {
          if(curStatement) sqlite3_reset(curStatement);
-         curStatement = queryStatement;         
+         curStatement = queryStatement;
       }
       sqlite3_reset(queryStatement);
       result = sqlite3_bind_int(queryStatement, paramID, value);
@@ -1418,7 +1447,7 @@ class SQLiteRow : DriverRow
       if(curStatement != queryStatement)
       {
          if(curStatement) sqlite3_reset(curStatement);
-         curStatement = queryStatement;         
+         curStatement = queryStatement;
       }
       sqlite3_reset(queryStatement);
       result = sqlite3_bind_int64(queryStatement, paramID, (sqlite_int64)value);
@@ -1431,7 +1460,7 @@ class SQLiteRow : DriverRow
       if(curStatement != queryStatement)
       {
          if(curStatement) sqlite3_reset(curStatement);
-         curStatement = queryStatement;         
+         curStatement = queryStatement;
       }
       sqlite3_reset(queryStatement);
       if(data)
@@ -1447,7 +1476,7 @@ class SQLiteRow : DriverRow
       if(curStatement != queryStatement)
       {
          if(curStatement) sqlite3_reset(curStatement);
-         curStatement = queryStatement;         
+         curStatement = queryStatement;
       }
       sqlite3_reset(queryStatement);
       {
