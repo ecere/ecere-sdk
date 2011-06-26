@@ -64,6 +64,7 @@ public:
    {
       bool quoted = false, status = true;
       Array<String> values { };
+      bool started = false;
       int start = 0, end = 0;
       int readCount = 0;
       Array<char> buffer { minAllocSize = 4096 };
@@ -77,7 +78,7 @@ public:
       {
          int c, offset = 0;
 
-         if(start)
+         if(started)
          {
             offset = readCount - start;
             if(offset > buffer.minAllocSize / 2)
@@ -105,17 +106,22 @@ public:
                {
                   quoted = true;
                   start = c + 1;
+                  started = true;
                }
                //else if(ch == options.fieldSeparator || ch == '\n')
                else if(ch == options.fieldSeparator ||
-                     (ch == '\n' && (!options.tolerateNewLineInValues || info.fieldNum == options.expectedFieldCount-1)))
+                     (ch == '\n' && (!options.tolerateNewLineInValues || info.fieldNum >= options.expectedFieldCount-1)))
                {
-                  int len = end-start;
-                  String value = new char[len+1];
-                  memcpy(value, &buffer[start], len);
-                  value[len] = 0;
-                  values.Add(value);
+                  if(values.count < options.expectedFieldCount)
+                  {
+                     int len = started ? (end-start+1) : 0;
+                     String value = new char[len+1];
+                     memcpy(value, &buffer[start], len);
+                     value[len] = 0;
+                     values.Add(value);
+                  }
                   start = end = 0;
+                  started = false;
                   info.fieldNum++;
                   if(ch == '\n')
                   {
@@ -130,8 +136,11 @@ public:
                else if(ch == '\r');
                else
                {
-                  if(!start)
+                  if(!started)
+                  {
                      start = c;
+                     started = true;
+                  }
                   end = c;
                }
             }
