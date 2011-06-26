@@ -258,13 +258,17 @@ public:
       channel.Unserialize(count);
       if(count != MAXDWORD)
       {
-         this = eInstance_New(_class); //IdList { };
+         IdList idList = eInstance_New(_class); //IdList { };
+         idList.count = count;
+         idList.ids = new Id[count];
          for(c = 0; c < count; c++)
          {
             Id id;
             channel.Unserialize(id);
-            Add(id);
+            //Add(id);
+            idList.ids[c] = id;
          }
+         this = idList;
       }
    }
 
