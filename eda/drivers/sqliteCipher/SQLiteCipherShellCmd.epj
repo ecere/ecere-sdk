@@ -1,0 +1,75 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "SQLiteCipherShellCmd",
+   "Options" : {
+      "Warnings" : "All",
+      "Optimization" : "None",
+      "PreprocessorDefinitions" : [
+         "SQLITE_HAS_CODEC"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "sqlcipher3",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "pthread",
+               "dl",
+               "crypto"
+            ]
+         }
+      },
+      {
+         "Name" : "apple",
+         "Options" : {
+            "Libraries" : [
+               "pthread",
+               "dl",
+               "crypto"
+            ]
+         }
+      },
+      {
+         "Name" : "win32",
+         "Options" : {
+            "Libraries" : [
+               "libeay32"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "../sqlite/shell.c",
+      "sqlite3.c",
+      "sqlite3.h"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

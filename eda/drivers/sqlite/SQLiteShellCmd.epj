@@ -1,0 +1,62 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "SQLiteShellCmd",
+   "Options" : {
+      "Warnings" : "All",
+      "Optimization" : "None",
+      "TargetType" : "Executable",
+      "TargetFileName" : "sqlite3",
+      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "pthread",
+               "dl"
+            ]
+         }
+      },
+      {
+         "Name" : "apple",
+         "Options" : {
+            "Libraries" : [
+               "pthread",
+               "dl"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "shell.c",
+      "sqlite3.c",
+      "sqlite3.h"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
