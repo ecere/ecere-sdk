@@ -1,4 +1,4 @@
-.PHONY: all objdir clean realclean distclean
+.PHONY: all objdir clean realclean distclean openssldebug
 
 # CONTENT
 
@@ -82,12 +82,6 @@ _SSL_INC_DIR = $(call fixspace,$(call shwspace,$(subst /bin,/include,$(_SSL_BIN)
 _SSL_LIB_DIR = $(call fixspace,$(call shwspace,$(subst /bin,/lib,$(_SSL_BIN))))
 _SSL_BIN_DIR = $(call fixspace,$(call shwspace,$(_SSL_BIN)))
 
-#	@$(call echo,OPENSSL_CONF $(OPENSSL_CONF))
-#	@$(call echo,_SSL_CONF $(_SSL_CONF))
-#	@$(call echo,_SSL_INC_DIR $(_SSL_INC_DIR))
-#	@$(call echo,_SSL_BIN_DIR $(_SSL_BIN_DIR))
-#	@$(call echo,_SSL_LIB_DIR $(_SSL_LIB_DIR))
-
 CFLAGS += \
 	 -I$(_SSL_INC_DIR)
 
@@ -161,6 +155,13 @@ $(OBJ)sqlite3.o: sqlite3.c
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
+
+openssldebug:
+	@$(call echo,OPENSSL_CONF $(OPENSSL_CONF))
+	@$(call echo,_SSL_CONF $(_SSL_CONF))
+	@$(call echo,_SSL_INC_DIR $(_SSL_INC_DIR))
+	@$(call echo,_SSL_BIN_DIR $(_SSL_BIN_DIR))
+	@$(call echo,_SSL_LIB_DIR $(_SSL_LIB_DIR))
 
 clean: objdir
 	$(call rmq,$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
