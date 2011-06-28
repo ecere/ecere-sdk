@@ -902,6 +902,7 @@ public class LFBDisplayDriver : DisplayDriver
                   src.picture = bitmap.picture;
                   src.palette = bitmap.palette;
                   src.stride = bitmap.stride;
+                  src.size = bitmap.size;
                   src.pixelFormat = bitmap.pixelFormat;
 
                   result = true;
