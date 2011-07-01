@@ -1408,10 +1408,13 @@ class IDE : Window
 
    void AdjustBuildMenus()
    {
-      bool unavailable = !project || projectView.buildInProgress;
+      bool unavailable = project && projectView.buildInProgress;
 
       projectNewItem.disabled          = unavailable;
       projectOpenItem.disabled         = unavailable;
+
+      unavailable = !project || projectView.buildInProgress;
+
       projectCloseItem.disabled        = unavailable;
 
       projectRunItem.disabled          = unavailable || project.targetType != executable;
