@@ -114,7 +114,7 @@ public:
                {
                   if(values.count < options.expectedFieldCount)
                   {
-                     int len = started ? (end-start+1) : 0;
+                     int len = started ? (end-start) : 0;
                      String value = new char[len+1];
                      memcpy(value, &buffer[start], len);
                      value[len] = 0;
@@ -141,7 +141,7 @@ public:
                      start = c;
                      started = true;
                   }
-                  end = c;
+                  end = c+1;
                }
             }
             //info.charNum++;
