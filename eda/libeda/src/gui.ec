@@ -67,7 +67,8 @@ public class CheckBool : bool
 
             bool DataBox::NotifyClicked(Button control, int x, int y, Modifiers mods)
             {
-               SetData((void *)control.checked, false);
+               bool checked = control.checked;
+               SetData(&checked, false);
                return true;
             }
          };
