@@ -50,11 +50,11 @@ Color codeEditorFG = ivory;
 SyntaxColorScheme colorScheme
 {
    keywordColors = [ skyBlue, skyBlue ];
-   commentColor = dimGray;
+   commentColor = Color { 125, 125, 125 };
    charLiteralColor = Color { 245, 50, 245 };
    stringLiteralColor = Color { 245, 50, 245 };
    preprocessorColor = { 120, 220, 140 };
-   numberColor = teal;
+   numberColor = Color {   0, 192, 192 };
 };
 // *********************
 
