@@ -2,27 +2,25 @@ import "ide"
 
 // *** Color Schemes ***
 
-//guiApp.currentSkin.selectionColor:  
+// *** The Old Color Scheme that was causing me auras and ophtalmic migraines -- Uncomment at your own risk! ***
 /*
 Color selectionColor = Color { 10, 36, 106 };
 Color selectionText = white;
 Color viewsBackground = white;
 Color viewsText = black;
-Color projectViewBackground = white;
-Color projectViewText = black;
 Color outputBackground = white;
 Color outputText = black;
-
+Color projectViewBackground = white;
+Color projectViewText = black;
 Color codeEditorBG = white;
 Color codeEditorFG = black;
 Color marginColor = Color {230, 230, 230};
-Color lineNumbersColor = Color {60, 60, 60};
 Color selectedMarginColor = Color {200, 200, 200};
+Color lineNumbersColor = Color {60, 60, 60};
 SyntaxColorScheme colorScheme
 {
-   keywordColors = { blue, blue };
+   keywordColors = [ blue, blue ];
    commentColor = dimGray;
-   keywordColor = blue;
    charLiteralColor = crimson;
    stringLiteralColor = crimson;
    preprocessorColor = green;
@@ -30,23 +28,20 @@ SyntaxColorScheme colorScheme
 };
 */
 
+// The new nice dark scheme -- so peaceful on my brain
 Color selectionColor = lightYellow;
 Color selectionText = Color { 30, 40, 50 };
-
 Color viewsBackground = Color { 30, 40, 50 };
 Color viewsText = lightGray;
-
 Color outputBackground = black;
 Color outputText = lime;
-
 Color projectViewBackground = Color { 30, 40, 50 };
 Color projectViewText = lightGray;
-
+Color codeEditorBG = black;
+Color codeEditorFG = ivory;
 Color marginColor = Color {24, 24, 24};
 Color selectedMarginColor = Color {64, 64, 64};
 Color lineNumbersColor = Color {160, 160, 160};
-Color codeEditorBG = black;
-Color codeEditorFG = ivory;
 SyntaxColorScheme colorScheme
 {
    keywordColors = [ skyBlue, skyBlue ];
@@ -56,6 +51,7 @@ SyntaxColorScheme colorScheme
    preprocessorColor = { 120, 220, 140 };
    numberColor = Color {   0, 192, 192 };
 };
+
 // *********************
 
 import "findCtx"
