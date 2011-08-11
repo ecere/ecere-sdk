@@ -20,8 +20,10 @@ import "Window"
 #define MENU_HEIGHT     25
 #define STATUS_HEIGHT   18
 
-/*
+#define GRADIENT_SMOOTHNESS 1.0f
+
 #define TEXT_COLOR   black
+/*
 
 #define GRADIENT_DIRECTION horizontal
 
@@ -32,28 +34,29 @@ static ColorKey gradient[] =
    { Color {   0,   0, 255}, 1.00f }
 };
 */
-/*
-#define GRADIENT_DIRECTION Vertical
+
+#define GRADIENT_DIRECTION vertical
 static ColorKey gradient[] =
 {
-   { Color {   0,   0, 255}, 0.00f },
-   { Color { 254, 254, 254}, 0.60f },
-   { Color { 128, 128, 255}, 1.00f }
+   { ColorAlpha { 255, { 180, 200, 220} }, 0.00f },
+   { ColorAlpha { 255, { 255, 255, 255} }, 0.60f },
+   { ColorAlpha { 255, { 128, 128, 130} }, 1.00f }
 };
 
 static ColorKey gradientInactive[] =
 {
-   { Color {   0,   0,  0},  0.00f },
-   { Color { 254, 254, 254}, 0.60f },
-   { Color { 128, 128, 128}, 1.00f }
+   { ColorAlpha { 255, { 160, 180, 200} },  0.00f },
+   { ColorAlpha { 255, { 220, 220, 220} }, 0.60f },
+   { ColorAlpha { 255, { 100, 100, 100} }, 1.00f }
 };
-*/
 
-#define GRADIENT_SMOOTHNESS 1.0f
+/*
 #define GRADIENT_DIRECTION horizontal
 #define TEXT_COLOR         white
-#define TEXT_INACTIVE      Color { 212,208,200 }
-
+*/
+//#define TEXT_INACTIVE      Color { 212,208,200 }
+#define TEXT_INACTIVE      Color { 40, 50, 60 }
+/*
 static ColorKey gradient[] =
 {
    { ColorAlpha { 255, Color {  10,   36, 106 } }, 0.00f },
@@ -64,7 +67,7 @@ static ColorKey gradientInactive[] =
    { ColorAlpha { 255, Color { 128, 128, 128 } }, 0.00f },
    { ColorAlpha { 255, Color { 192, 192, 192 } }, 1.00f }
 };
-
+*/
 char * cursorsBitmaps[] = 
 {
    "<:ecere>cursors/arrow.png",
@@ -102,6 +105,7 @@ class WindowsSkin : Skin
 {
    class_property(name) = "Windows";
    class_property(selectionColor) = Color { 10, 36, 106 };
+   class_property(selectionText)  = (Color)white;
    class_property(disabledFrontColor) = Color { 128,128,128 };
    class_property(disabledBackColor) = (Color)white;
 

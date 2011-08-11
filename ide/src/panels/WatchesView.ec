@@ -16,6 +16,9 @@ class WatchesView : Window
    {
       parent = this, hasHeader = true, hasVertScroll = true, alwaysEdit = true, collapseControl = true, resizable = true;
       anchor = Anchor { left = 0, right = 0, top = 0, bottom = 0 };
+      background = viewsBackground;
+      foreground = viewsText;
+      selectionColor = selectionColor, selectionText = selectionText;
 
       bool NotifyChanged(ListBox listBox, DataRow row)
       {

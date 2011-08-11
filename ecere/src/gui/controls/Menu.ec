@@ -3,6 +3,7 @@ namespace gui::controls;
 import "Window"
 
 private define SELECTION_COLOR = guiApp.currentSkin.selectionColor; //Color { 10, 36, 106 };
+private define SELECTION_TEXT = guiApp.currentSkin.selectionText; //Color { 10, 36, 106 };
 private define MENU_COLOR = activeBorder;
 
 class ItemPtr : struct
@@ -1026,7 +1027,7 @@ public class PopupMenu : Window
             if(item.placement) continue; //&& !ptr.inserted) continue;
             if(!isMenuBar && selected == ptr)
             {
-               surface.SetForeground(white);
+               surface.SetForeground(SELECTION_TEXT);
                if(guiApp.textMode)
                {
                   surface.TextOpacity(true);
@@ -1087,7 +1088,7 @@ public class PopupMenu : Window
                if(selected == ptr && guiApp.textMode)
                {
                   surface.SetBackground(SELECTION_COLOR);
-                  surface.SetForeground(white /*background*/);
+                  surface.SetForeground(SELECTION_TEXT /*background*/);
                   surface.TextOpacity(true);
                }
                if(guiApp.textMode)

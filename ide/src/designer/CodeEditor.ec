@@ -1,5 +1,63 @@
 import "ide"
 
+// *** Color Schemes ***
+
+//guiApp.currentSkin.selectionColor:  
+/*
+Color selectionColor = Color { 10, 36, 106 };
+Color selectionText = white;
+Color viewsBackground = white;
+Color viewsText = black;
+Color projectViewBackground = white;
+Color projectViewText = black;
+Color outputBackground = white;
+Color outputText = black;
+
+Color codeEditorBG = white;
+Color codeEditorFG = black;
+Color marginColor = Color {230, 230, 230};
+Color lineNumbersColor = Color {60, 60, 60};
+Color selectedMarginColor = Color {200, 200, 200};
+SyntaxColorScheme colorScheme
+{
+   keywordColors = { blue, blue };
+   commentColor = dimGray;
+   keywordColor = blue;
+   charLiteralColor = crimson;
+   stringLiteralColor = crimson;
+   preprocessorColor = green;
+   numberColor = teal;
+};
+*/
+
+Color selectionColor = lightYellow;
+Color selectionText = Color { 30, 40, 50 };
+
+Color viewsBackground = Color { 30, 40, 50 };
+Color viewsText = lightGray;
+
+Color outputBackground = black;
+Color outputText = lime;
+
+Color projectViewBackground = Color { 30, 40, 50 };
+Color projectViewText = lightGray;
+
+Color marginColor = Color {24, 24, 24};
+Color selectedMarginColor = Color {64, 64, 64};
+Color lineNumbersColor = Color {160, 160, 160};
+Color codeEditorBG = black;
+Color codeEditorFG = ivory;
+SyntaxColorScheme colorScheme
+{
+   keywordColors = [ skyBlue, skyBlue ];
+   commentColor = dimGray;
+   charLiteralColor = Color { 245, 50, 245 };
+   stringLiteralColor = Color { 245, 50, 245 };
+   preprocessorColor = { 120, 220, 140 };
+   numberColor = teal;
+};
+// *********************
+
 import "findCtx"
 import "findExp"
 import "findParams"
@@ -545,7 +603,7 @@ bool Code_IsFunctionEmpty(ClassFunction function, Method method, ObjectInfo obje
 
 class CodeEditor : Window
 {
-   background = { 224, 224, 224 };
+   background = marginColor;
    borderStyle = sizableDeep;
    hasMaximize = true;
    hasMinimize = true;
@@ -733,7 +791,9 @@ class CodeEditor : Window
       freeCaret = ideSettings.useFreeCaret, caretFollowsScrolling = ideSettings.caretFollowsScrolling, 
       tabKey = true, smartHome = true;
       tabSelection = true, maxLineSize = 65536, parent = this, hasHorzScroll = true, hasVertScroll = true;
-      background = white, foreground = black, font = font, borderStyle = none;
+      selectionColor = selectionColor, selectionText = selectionText,
+      background = codeEditorBG, foreground = codeEditorFG, syntaxColorScheme = colorScheme,
+      font = font, borderStyle = none;
       anchor = Anchor { left = 0, right = 0, top = 0, bottom = 0 };
 
       bool OnMouseOver(int x, int y, Modifiers mods)
@@ -2171,7 +2231,7 @@ class CodeEditor : Window
    void OnRedraw(Surface surface)
    {
       // Line Numbers
-      surface.SetBackground(Color{230, 230, 230});
+      surface.SetBackground(marginColor);
       surface.Area(0, 0, editBox.anchor.left.distance, clientSize.h - 1);
       if(ideSettings.showLineNumbers)
       {
@@ -2185,15 +2245,15 @@ class CodeEditor : Window
          surface.TextExtent(" ", 1, null, &spaceH);
          currentLineNumber = editBox.scroll.y / spaceH + 1;
 
-         surface.SetForeground(Color{60, 60, 60});
+         surface.SetForeground(lineNumbersColor);
          for(i = 0; i < editBox.clientSize.h - 4; i += spaceH)
          {
             // Highlight current line
             if(editBox.lineNumber == currentLineNumber - 1)
             {
-               surface.SetBackground(Color{200, 200, 200});
+               surface.SetBackground(selectedMarginColor);
                surface.Area(0, i, editBox.anchor.left.distance, i+spaceH-1);
-               surface.SetBackground(Color{230, 230, 230});
+               surface.SetBackground(marginColor);
             }
             sprintf(lineText,"%5u ", currentLineNumber % 100000);
             if(currentLineNumber <= editBox.numLines)
@@ -2340,7 +2400,7 @@ class CodeEditor : Window
    {
       CodeObjectType c;
       ProjectView projectView = ide.projectView;
-      
+
       /*if(fileName)
          designer.fileName = fileName;
       else

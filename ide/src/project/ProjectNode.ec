@@ -1031,9 +1031,9 @@ private:
             {
                surface.LineStipple(0x5555);
                if(displayFlags.selected)
-                  surface.SetForeground(0xFFFFFF80);
+                  surface.SetForeground(projectView.fileList.stippleColor);
                else
-                  surface.SetForeground(black);
+                  surface.SetForeground(projectView.fileList.foreground);
             }
             else
             {

@@ -200,7 +200,7 @@ public:
       }
       get { return style.showNone; }
    }
-   property Color selectionColor { set { selectionColor = value; } get { return selectionColor; } };
+   property Color selectionColor { set { selectionColor = value; } get { return selectionColor; } isset { return selectionColor ? true : false; } };
    property bool changeContents
    {
       set { style.changeContents = value; }
@@ -622,7 +622,7 @@ private:
          {
             if(style.activeColor)
             {
-               surface.SetBackground(selectionColor);
+               surface.SetBackground(selectionColor ? selectionColor : SELECTION_COLOR);
                if(!style.noHighlight || !currentRow)
                {
                   surface.Area(0,0, clientSize.w-1,clientSize.h-1);
@@ -632,7 +632,7 @@ private:
          if(!isEnabled)
             surface.SetForeground(Color { 85,85,85 } );
          else
-            surface.SetForeground((active && style.activeColor && !pulledWindow /*listBox.visible*/) ? white : foreground);
+            surface.SetForeground((active && style.activeColor && !pulledWindow /*listBox.visible*/) ? SELECTION_TEXT : foreground);
          surface.TextOpacity(true);
 
          if(currentRow)
@@ -913,5 +913,4 @@ private:
    Alignment alignment;
    DataRow noneRow;
    Color selectionColor;
-   selectionColor = SELECTION_COLOR;
 };

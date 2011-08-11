@@ -1,6 +1,7 @@
 #include <stdarg.h>
 
 import "ecere"
+import "CodeEditor"
 
 class CallStackView : Window
 {
@@ -26,6 +27,9 @@ class CallStackView : Window
       parent = this, freeCaret = true, autoEmpty = true, multiLine = true, readOnly = true;
       hasVertScroll = true, hasHorzScroll = true, borderStyle = none;
       anchor = Anchor { left = 20, top = 0, right = 0, bottom = 0 };
+      background = viewsBackground;
+      foreground = viewsText;
+      selectionColor = selectionColor, selectionText = selectionText;
 
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {

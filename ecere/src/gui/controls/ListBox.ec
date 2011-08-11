@@ -1002,7 +1002,9 @@ public:
    property DataRow firstRow { get { return this ? rows.first : null; } };
    property int rowCount { get { return rowCount; } };
    property DataField firstField { get { return this ? fields.first : null; } };
-   property Color selectionColor { set { selectionColor = value; } get { return selectionColor; } };
+   property Color selectionColor { set { selectionColor = value; } get { return selectionColor; } isset { return selectionColor ? true : false; } };
+   property Color selectionText  { set { selectionText = value; } get { return selectionText; } isset { return selectionText ? true : false; } };
+   property Color stippleColor { set { stippleColor = value; } get { return stippleColor; } };
    property bool expandOnAdd { set { style.expandOnAdd = value; } get { return style.expandOnAdd; } };
 
    // Notifications
@@ -2063,7 +2065,7 @@ private:
          }
       }
 
-      surface.SetForeground(black);
+      surface.foreground = this.foreground;
       surface.TextOpacity(false);
 
       // Draw the tree branches
@@ -2240,7 +2242,7 @@ private:
                if(!isActive && style.alwaysEdit)
                   background = activeBorder;
                else
-                  background = selectionColor;
+                  background = selectionColor ? selectionColor : SELECTION_COLOR;
                if(style.fullRowSelect)
                {
                   int offset = (style.alwaysEdit) ? 2 : 1;
@@ -2248,7 +2250,7 @@ private:
                   surface.Area(rowStart, y, clientSize.w, (y + rowHeight) - offset);
                }
                if(isActive || !(style.alwaysEdit))
-                  foreground = white;
+                  foreground = selectionText ? selectionText : SELECTION_TEXT;
             }
          }
 
@@ -2353,7 +2355,7 @@ private:
             surface.Clip(null);
             if(row.subRows.first && (row.parent || !(style.treeBranch) || (style.rootCollapse)))
             {
-               surface.SetForeground(black);
+               surface.SetForeground(this.foreground);
                surface.Rectangle(collapseRowStart + 3 + plusIndent, y + PLUSY, collapseRowStart + 11 + plusIndent, y + PLUSY + 8);
 
                surface.SetBackground(row.header ? (activeBorder) : (this.background /*white*/));
@@ -2374,12 +2376,12 @@ private:
             {
                surface.LineStipple(0x5555);
                if(dataDisplayFlags.selected)
-                  surface.SetForeground(0xFFFFFF80);
+                  surface.SetForeground(stippleColor);
                else
                   surface.SetForeground(this.foreground);
             }
             else
-               surface.SetForeground(selectionColor);
+               surface.SetForeground(selectionColor ? selectionColor : SELECTION_COLOR);
             surface.Rectangle(0, y, clientSize.w-1, (y + rowHeight) - 1);
             surface.LineStipple(0);
          }
@@ -4384,6 +4386,6 @@ private:
 
    // Only used for OnMouseMove so far, for avoiding problems with consequential mouse moves
    bool insideNotifySelect;
-   Color selectionColor;
-   selectionColor = SELECTION_COLOR;
+   Color selectionColor, selectionText, stippleColor;
+   stippleColor = 0xFFFFFF80;
 };

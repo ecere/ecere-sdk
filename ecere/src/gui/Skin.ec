@@ -10,6 +10,7 @@ public:
    class_data char * name;
    class_data bool textMode;
    class_data Color selectionColor;
+   class_data Color selectionText;
    class_data Color disabledBackColor;
    class_data Color disabledFrontColor;
 
@@ -32,6 +33,12 @@ public:
    {
       set { class_data(selectionColor) = value; }
       get { return class_data(selectionColor); }
+   }
+
+   class_property Color selectionText
+   {
+      set { class_data(selectionText) = value; }
+      get { return class_data(selectionText); }
    }
 
    class_property Color disabledFrontColor

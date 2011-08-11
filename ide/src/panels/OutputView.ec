@@ -1,6 +1,7 @@
 #include <stdarg.h>
 
 import "ecere"
+import "CodeEditor"
 
 enum OutputViewTab { build, debug, find
 #ifdef GDB_DEBUG_OUTPUT
@@ -118,6 +119,9 @@ class OutputView : Window
       readOnly = true, hasVertScroll = true, hasHorzScroll = true;
       anchor = Anchor { left = 0, right = 0, top = 23, bottom = 0 };
       font = { "Courier New", 10 };
+      background = outputBackground;
+      foreground = outputText;
+      selectionColor = selectionColor, selectionText = selectionText;
       
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
@@ -142,6 +146,9 @@ class OutputView : Window
       readOnly = true, hasVertScroll = true, hasHorzScroll = true, visible = false;
       anchor = Anchor { left = 0, right = 0, top = 23, bottom = 0 };
       font = { "Courier New", 10 };
+      background = outputBackground;
+      foreground = outputText;
+      selectionColor = selectionColor, selectionText = selectionText;
    };
    
    LogBox findBox
@@ -150,6 +157,9 @@ class OutputView : Window
       readOnly = true, hasVertScroll = true, hasHorzScroll = true, visible = false;
       anchor = Anchor { left = 0, right = 0, top = 23, bottom = 0 };
       font = { "Courier New", 10 };
+      background = outputBackground;
+      foreground = outputText;
+      selectionColor = selectionColor, selectionText = selectionText;
 
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {

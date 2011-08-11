@@ -451,6 +451,8 @@ class Sheet : Window
    {
       this, anchor = { left = 0, right = 0, top = 50, bottom = 25 };
       hasVertScroll = true, alwaysEdit = true, collapseControl = true, resizable = true;
+      background = viewsBackground;
+      foreground = viewsText;
 
       bool NotifySelect(ListBox control, DataRow row, Modifiers keyFlags)
       {
@@ -482,6 +484,8 @@ class Sheet : Window
    {
       this, anchor = { left = 0, right = 0, top = 50, bottom = 25 };
       hasVertScroll = true;
+      background = viewsBackground;
+      foreground = viewsText;
       // alwaysEdit = true;
       // resizable = true;
 

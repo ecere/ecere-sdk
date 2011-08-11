@@ -1,9 +1,32 @@
 namespace gui::controls;
 
+/*
+selectionForeground = white;
+disabled: defaultTextColor = Color { 85, 85, 85 };
+*/
+
 import "Window"
 import "ReplaceDialog"
 import "FindDialog"
 import "GoToDialog"
+import "Array"
+
+public class SyntaxColorScheme
+{
+public:
+   Color commentColor;
+   Color charLiteralColor;
+   Color stringLiteralColor;
+   Color preprocessorColor;
+   Color numberColor;
+   private Array<Color> keywordColors { };
+
+   public property Container<Color> keywordColors
+   {
+      set { keywordColors.Copy((void *)value); }
+      get { return keywordColors; }
+   }
+};
 
 #include <stdarg.h>
 
@@ -636,11 +659,6 @@ static char * keyWords2[] =
 
 static char ** keyWords[] = { keyWords1, keyWords2 };
 #define NUM_KEYWORD_GROUPS (sizeof(keyWords) / sizeof(char **))
-static Color colorGroups[] =
-{
-   Color { 0,0,255 },
-   Color { 0,0,255 }
-};
 //static int * keyLen[NUM_KEYWORD_GROUPS];
 static int keyLen[NUM_KEYWORD_GROUPS][sizeof(keyWords1)];
 
@@ -840,6 +858,9 @@ public:
       }
    }
    */
+   property Color selectionColor { set { selectionColor = value; } get { return selectionColor; } isset { return selectionColor ? true : false; } };
+   property Color selectionText  { set { selectionText = value; } get { return selectionText; } isset { return selectionText ? true : false; } };
+   property SyntaxColorScheme syntaxColorScheme { set { delete colorScheme; colorScheme = value; incref colorScheme; } }
 
    // selectionStart.line, selectionStart.column (With Set)
    // selection.line1, selection.line2, selection.column1, selection.column2  (Read only)
@@ -913,6 +934,8 @@ private:
    int caretX, caretY;
    UndoBuffer undoBuffer { data = this };
    int savedAction;
+   Color selectionColor, selectionText;
+   SyntaxColorScheme colorScheme { };
 
    menu = Menu { };
 
@@ -1127,6 +1150,13 @@ private:
                keyLen[g][c] = strlen(keyWords[g][c]);
             }
          }
+
+         colorScheme.commentColor = dimGray;
+         colorScheme.charLiteralColor = crimson;
+         colorScheme.stringLiteralColor = crimson;
+         colorScheme.preprocessorColor = green;
+         colorScheme.numberColor = teal;
+         colorScheme.keywordColors = [ blue, blue ];
       }
 
       FontExtent = Display::FontExtent;
@@ -1387,7 +1417,8 @@ private:
       int y = YOFFSET;
       bool selected = false, selection = true;
       int selX, editX;
-      Color selectionBackground = SELECTION_COLOR, selectionForeground = white;
+      Color selectionBackground = selectionColor ? selectionColor : SELECTION_COLOR;
+      Color selectionForeground = selectionText ? selectionText : SELECTION_TEXT;
       Color defaultTextColor = property::foreground;
       Color textColor;
       Box box;
@@ -1421,7 +1452,7 @@ private:
          Abs(selectionBackground.b - property::background.b) < 92)
       {
          selectionBackground = activeBorder;
-         selectionForeground = SELECTION_COLOR;
+         selectionForeground = selectionColor ? selectionColor : SELECTION_COLOR;
       }
 
       surface.TextFont(this.font);
@@ -1615,19 +1646,19 @@ private:
                      {
                         if(inSingleLineComment || inMultiLineComment)
                         {
-                           newTextColor = dimGray;
+                           newTextColor = colorScheme.commentColor;
                         }
                         else if(inQuotes)
                         {
-                           newTextColor = crimson;
+                           newTextColor = colorScheme.charLiteralColor;
                         }
                         else if(inString)
                         {
-                           newTextColor = crimson;
+                           newTextColor = colorScheme.stringLiteralColor;
                         }
                         else if(inPrep)
                         {
-                           newTextColor = green;
+                           newTextColor = colorScheme.preprocessorColor;
                         }
                         if(wordLen == 1 && word[0] == '/')
                         {
@@ -1636,12 +1667,12 @@ private:
                               if(word[1] == '/')
                               {
                                  inSingleLineComment = true;
-                                 newTextColor = dimGray;
+                                 newTextColor = colorScheme.commentColor;
                               }
                               else if(word[1] == '*')
                               {
                                  inMultiLineComment = true;
-                                 newTextColor = dimGray;
+                                 newTextColor = colorScheme.commentColor;
                               }
                            }
                            else if(backLastWasStar)
@@ -1661,7 +1692,7 @@ private:
                            else
                            {
                               inString = true;
-                              newTextColor = crimson;
+                              newTextColor = colorScheme.stringLiteralColor;
                            }
                         }
                         else if(!inSingleLineComment && !inMultiLineComment && !inString && wordLen == 1 && word[0] == '\'')
@@ -1671,7 +1702,7 @@ private:
                            else
                            {
                               inQuotes = true;
-                              newTextColor = crimson;
+                              newTextColor = colorScheme.charLiteralColor;
                            }
                         }
                         else if(wordLen == 1 && word[0] == '\\')
@@ -1682,7 +1713,7 @@ private:
                         else if(!inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && 
                            ( ( isdigit(word[0]) /*&& (!c || word[-1] == ' ' || word[-1] == '\t')*/ ) || (word[0] == '.' && isdigit(word[1]))))
                         {
-                           newTextColor = teal;
+                           newTextColor = colorScheme.numberColor;
                         }
                         else
                         {
@@ -1691,7 +1722,7 @@ private:
                               if(firstWord)
                               {
                                  inPrep = true;
-                                 newTextColor = green;
+                                 newTextColor = colorScheme.preprocessorColor; 
                               }
                            }
                            if(!inQuotes && !inString && !inMultiLineComment && !inSingleLineComment)
@@ -1704,7 +1735,7 @@ private:
                                  {
                                     if(len[ccc] == wordLen && !strncmp(keys[ccc], word, wordLen))
                                     {
-                                       newTextColor = colorGroups[g];
+                                       newTextColor = colorScheme.keywordColors[g];
                                        break;
                                     }
                                  }

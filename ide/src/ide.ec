@@ -212,7 +212,7 @@ class IDE : Window
    hasHorzScroll = true;
    hasMenuBar = true;
    hasStatusBar = true;
-#ifdef _DEBUG
+#if 0 //def _DEBUG
    //stayOnTop = true;
    size = { 800, 600 };
    anchor = { top = 0, right = 0, bottom = 0 };
@@ -2402,6 +2402,12 @@ class IDE : Window
    {
       // Graphics Driver Menu
       int c;
+
+      /*
+      app.currentSkin.selectionColor = selectionColor;
+      app.currentSkin.selectionText = selectionText;
+      */
+
 /*
       driverItems = new MenuItem[app.numDrivers];
       for(c = 0; c < app.numDrivers; c++)

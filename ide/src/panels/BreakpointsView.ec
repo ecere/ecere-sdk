@@ -20,6 +20,10 @@ class BreakpointsView : Window
       parent = this, resizable = true, hasHeader = true, alwaysEdit = true, collapseControl = true, size = { 206, 624 };
       anchor = Anchor { left = 0, top = 0, right = 0, bottom = 0 }; //visible = true
 
+      background = viewsBackground;
+      foreground = viewsText;
+      selectionColor = selectionColor, selectionText = selectionText;
+
       bool NotifyChanged(ListBox listBox, DataRow row)
       {
          if(listBox.currentField == locationField)

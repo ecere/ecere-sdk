@@ -1,6 +1,7 @@
 #include <stdarg.h>
 
 import "ecere"
+import "CodeEditor"
 
 class ThreadsView : Window
 {
@@ -49,6 +50,9 @@ class ThreadsView : Window
       parent = this, freeCaret = true, autoEmpty = true, multiLine = true, readOnly = true;
       hasVertScroll = true, hasHorzScroll = true, borderStyle = none;
       anchor = { left = 20, right = 0, top = 0, bottom = 0 };
+      background = viewsBackground;
+      foreground = viewsText;
+      selectionColor = selectionColor, selectionText = selectionText;
 
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
