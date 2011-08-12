@@ -747,12 +747,64 @@ $(OBJ)String.c: src/com/String.ec $(OBJ)String.sym | $(SYMBOLS)
 $(OBJ)OldList.c: src/com/OldList.ec $(OBJ)OldList.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/OldList.ec -o $(OBJ)OldList.c -symbols $(OBJ)
 
-# IMPLICIT OBJECT RULE
-
-$(OBJ)%$(O) : $(OBJ)%.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $< -o $@
-
 # OBJECT RULES
+
+$(OBJ)Archive.o: $(OBJ)Archive.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Archive.c -o $(OBJ)Archive.o
+
+$(OBJ)BufferedFile.o: $(OBJ)BufferedFile.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BufferedFile.c -o $(OBJ)BufferedFile.o
+
+$(OBJ)Date.o: $(OBJ)Date.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Date.c -o $(OBJ)Date.o
+
+$(OBJ)DualPipe.o: $(OBJ)DualPipe.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DualPipe.c -o $(OBJ)DualPipe.o
+
+$(OBJ)EARArchive.o: $(OBJ)EARArchive.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)EARArchive.c -o $(OBJ)EARArchive.o
+
+$(OBJ)File.o: $(OBJ)File.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)File.c -o $(OBJ)File.o
+
+$(OBJ)FileMonitor.o: $(OBJ)FileMonitor.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)FileMonitor.c -o $(OBJ)FileMonitor.o
+
+$(OBJ)GlobalAppSettings.o: $(OBJ)GlobalAppSettings.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)GlobalAppSettings.c -o $(OBJ)GlobalAppSettings.o
+
+$(OBJ)JSON.o: $(OBJ)JSON.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)JSON.c -o $(OBJ)JSON.o
+
+$(OBJ)JSONGlobalSettings.o: $(OBJ)JSONGlobalSettings.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)JSONGlobalSettings.c -o $(OBJ)JSONGlobalSettings.o
+
+$(OBJ)memory.o: $(OBJ)memory.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)memory.c -o $(OBJ)memory.o
+
+$(OBJ)Mutex.o: $(OBJ)Mutex.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)Mutex.c -o $(OBJ)Mutex.o
+
+$(OBJ)Semaphore.o: $(OBJ)Semaphore.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Semaphore.c -o $(OBJ)Semaphore.o
+
+$(OBJ)System.o: $(OBJ)System.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)System.c -o $(OBJ)System.o
+
+$(OBJ)TempFile.o: $(OBJ)TempFile.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)TempFile.c -o $(OBJ)TempFile.o
+
+$(OBJ)Thread.o: $(OBJ)Thread.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Thread.c -o $(OBJ)Thread.o
+
+$(OBJ)Time.o: $(OBJ)Time.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Time.c -o $(OBJ)Time.o
+
+$(OBJ)unicode.o: $(OBJ)unicode.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)unicode.c -o $(OBJ)unicode.o
+
+$(OBJ)units.o: $(OBJ)units.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)units.c -o $(OBJ)units.o
 
 $(OBJ)File.c.o: src/sys/File.c
 	$(CC) $(CFLAGS) -c src/sys/File.c -o $(OBJ)File.c.o
@@ -762,6 +814,9 @@ $(OBJ)DualPipe.c.o: src/sys/DualPipe.c
 
 $(OBJ)System.c.o: src/sys/System.c
 	$(CC) $(CFLAGS) -c src/sys/System.c -o $(OBJ)System.c.o
+
+$(OBJ)BMPFormat.o: $(OBJ)BMPFormat.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BMPFormat.c -o $(OBJ)BMPFormat.o
 
 $(OBJ)harfbuzz-arabic.o: src/gfx/drivers/harfbuzz/harfbuzz-arabic.c
 	$(CC) $(CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-arabic.c -o $(OBJ)harfbuzz-arabic.o
@@ -807,6 +862,189 @@ $(OBJ)harfbuzz-stream.o: src/gfx/drivers/harfbuzz/harfbuzz-stream.c
 
 $(OBJ)harfbuzz-tibetan.o: src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c
 	$(CC) $(CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c -o $(OBJ)harfbuzz-tibetan.o
+
+$(OBJ)GDIDisplayDriver.o: $(OBJ)GDIDisplayDriver.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)GDIDisplayDriver.c -o $(OBJ)GDIDisplayDriver.o
+
+$(OBJ)lfbBlit.o: $(OBJ)lfbBlit.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)lfbBlit.c -o $(OBJ)lfbBlit.o
+
+$(OBJ)lfbConvert.o: $(OBJ)lfbConvert.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)lfbConvert.c -o $(OBJ)lfbConvert.o
+
+$(OBJ)LFBDisplayDriver.o: $(OBJ)LFBDisplayDriver.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)LFBDisplayDriver.c -o $(OBJ)LFBDisplayDriver.o
+
+$(OBJ)XDisplayDriver.o: $(OBJ)XDisplayDriver.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)XDisplayDriver.c -o $(OBJ)XDisplayDriver.o
+
+$(OBJ)Bitmap.o: $(OBJ)Bitmap.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Bitmap.c -o $(OBJ)Bitmap.o
+
+$(OBJ)BitmapResource.o: $(OBJ)BitmapResource.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BitmapResource.c -o $(OBJ)BitmapResource.o
+
+$(OBJ)Color.o: $(OBJ)Color.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Color.c -o $(OBJ)Color.o
+
+$(OBJ)Display.o: $(OBJ)Display.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Display.c -o $(OBJ)Display.o
+
+$(OBJ)DisplaySystem.o: $(OBJ)DisplaySystem.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DisplaySystem.c -o $(OBJ)DisplaySystem.o
+
+$(OBJ)FontResource.o: $(OBJ)FontResource.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)FontResource.c -o $(OBJ)FontResource.o
+
+$(OBJ)Resource.o: $(OBJ)Resource.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Resource.c -o $(OBJ)Resource.o
+
+$(OBJ)Surface.o: $(OBJ)Surface.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Surface.c -o $(OBJ)Surface.o
+
+$(OBJ)Button.o: $(OBJ)Button.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Button.c -o $(OBJ)Button.o
+
+$(OBJ)CalendarControl.o: $(OBJ)CalendarControl.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CalendarControl.c -o $(OBJ)CalendarControl.o
+
+$(OBJ)DataBox.o: $(OBJ)DataBox.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DataBox.c -o $(OBJ)DataBox.o
+
+$(OBJ)DropBox.o: $(OBJ)DropBox.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DropBox.c -o $(OBJ)DropBox.o
+
+$(OBJ)EditBox.o: $(OBJ)EditBox.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)EditBox.c -o $(OBJ)EditBox.o
+
+$(OBJ)Label.o: $(OBJ)Label.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Label.c -o $(OBJ)Label.o
+
+$(OBJ)ListBox.o: $(OBJ)ListBox.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ListBox.c -o $(OBJ)ListBox.o
+
+$(OBJ)Menu.o: $(OBJ)Menu.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Menu.c -o $(OBJ)Menu.o
+
+$(OBJ)Picture.o: $(OBJ)Picture.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Picture.c -o $(OBJ)Picture.o
+
+$(OBJ)ProgressBar.o: $(OBJ)ProgressBar.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ProgressBar.c -o $(OBJ)ProgressBar.o
+
+$(OBJ)ScrollBar.o: $(OBJ)ScrollBar.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ScrollBar.c -o $(OBJ)ScrollBar.o
+
+$(OBJ)StatusBar.o: $(OBJ)StatusBar.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)StatusBar.c -o $(OBJ)StatusBar.o
+
+$(OBJ)ColorPicker.o: $(OBJ)ColorPicker.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ColorPicker.c -o $(OBJ)ColorPicker.o
+
+$(OBJ)FileDialog.o: $(OBJ)FileDialog.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)FileDialog.c -o $(OBJ)FileDialog.o
+
+$(OBJ)FindDialog.o: $(OBJ)FindDialog.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)FindDialog.c -o $(OBJ)FindDialog.o
+
+$(OBJ)GoToDialog.o: $(OBJ)GoToDialog.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)GoToDialog.c -o $(OBJ)GoToDialog.o
+
+$(OBJ)MessageBox.o: $(OBJ)MessageBox.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)MessageBox.c -o $(OBJ)MessageBox.o
+
+$(OBJ)ReplaceDialog.o: $(OBJ)ReplaceDialog.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ReplaceDialog.c -o $(OBJ)ReplaceDialog.o
+
+$(OBJ)WindowList.o: $(OBJ)WindowList.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)WindowList.c -o $(OBJ)WindowList.o
+
+$(OBJ)Win32Interface.o: $(OBJ)Win32Interface.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Win32Interface.c -o $(OBJ)Win32Interface.o
+
+$(OBJ)XInterface.o: $(OBJ)XInterface.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)XInterface.c -o $(OBJ)XInterface.o
+
+$(OBJ)WindowsSkin.o: $(OBJ)WindowsSkin.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)WindowsSkin.c -o $(OBJ)WindowsSkin.o
+
+$(OBJ)Anchor.o: $(OBJ)Anchor.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Anchor.c -o $(OBJ)Anchor.o
+
+$(OBJ)ClipBoard.o: $(OBJ)ClipBoard.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ClipBoard.c -o $(OBJ)ClipBoard.o
+
+$(OBJ)Cursor.o: $(OBJ)Cursor.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Cursor.c -o $(OBJ)Cursor.o
+
+$(OBJ)Desktop3D.o: $(OBJ)Desktop3D.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Desktop3D.c -o $(OBJ)Desktop3D.o
+
+$(OBJ)FormDesigner.o: $(OBJ)FormDesigner.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)FormDesigner.c -o $(OBJ)FormDesigner.o
+
+$(OBJ)GuiApplication.o: $(OBJ)GuiApplication.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)GuiApplication.c -o $(OBJ)GuiApplication.o
+
+$(OBJ)Interface.o: $(OBJ)Interface.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Interface.c -o $(OBJ)Interface.o
+
+$(OBJ)Key.o: $(OBJ)Key.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Key.c -o $(OBJ)Key.o
+
+$(OBJ)Skin.o: $(OBJ)Skin.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Skin.c -o $(OBJ)Skin.o
+
+$(OBJ)Timer.o: $(OBJ)Timer.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Timer.c -o $(OBJ)Timer.o
+
+$(OBJ)typeEdit.o: $(OBJ)typeEdit.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)typeEdit.c -o $(OBJ)typeEdit.o
+
+$(OBJ)Window.o: $(OBJ)Window.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Window.c -o $(OBJ)Window.o
+
+$(OBJ)Array.o: $(OBJ)Array.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)Array.c -o $(OBJ)Array.o
+
+$(OBJ)AVLTree.o: $(OBJ)AVLTree.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)AVLTree.c -o $(OBJ)AVLTree.o
+
+$(OBJ)BuiltInContainer.o: $(OBJ)BuiltInContainer.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)BuiltInContainer.c -o $(OBJ)BuiltInContainer.o
+
+$(OBJ)Container.o: $(OBJ)Container.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)Container.c -o $(OBJ)Container.o
+
+$(OBJ)CustomAVLTree.o: $(OBJ)CustomAVLTree.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)CustomAVLTree.c -o $(OBJ)CustomAVLTree.o
+
+$(OBJ)LinkList.o: $(OBJ)LinkList.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)LinkList.c -o $(OBJ)LinkList.o
+
+$(OBJ)List.o: $(OBJ)List.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)List.c -o $(OBJ)List.o
+
+$(OBJ)Map.o: $(OBJ)Map.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)Map.c -o $(OBJ)Map.o
+
+$(OBJ)BinaryTree.o: $(OBJ)BinaryTree.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)BinaryTree.c -o $(OBJ)BinaryTree.o
+
+$(OBJ)BTNode.o: $(OBJ)BTNode.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)BTNode.c -o $(OBJ)BTNode.o
+
+$(OBJ)dataTypes.o: $(OBJ)dataTypes.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)dataTypes.c -o $(OBJ)dataTypes.o
+
+$(OBJ)instance.o: $(OBJ)instance.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)instance.c -o $(OBJ)instance.o
+
+$(OBJ)String.o: $(OBJ)String.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)String.c -o $(OBJ)String.o
+
+$(OBJ)OldList.o: $(OBJ)OldList.c
+	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)OldList.c -o $(OBJ)OldList.o
 
 $(OBJ)instance.c.o: src/com/instance.c
 	$(CC) $(CFLAGS) -DECERE_COM_MODULE -c src/com/instance.c -o $(OBJ)instance.c.o
