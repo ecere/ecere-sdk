@@ -637,20 +637,6 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "Direct3D8DisplayDriver.ec",
-                           "Platforms" : [
-                              {
-                                 "Name" : "linux",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              },
-                              {
-                                 "Name" : "apple",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              }
-                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -662,20 +648,6 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "Direct3D9DisplayDriver.ec",
-                           "Platforms" : [
-                              {
-                                 "Name" : "linux",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              },
-                              {
-                                 "Name" : "apple",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              }
-                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -687,20 +659,6 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "DirectDrawDisplayDriver.ec",
-                           "Platforms" : [
-                              {
-                                 "Name" : "linux",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              },
-                              {
-                                 "Name" : "apple",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              }
-                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -712,20 +670,6 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "GDIDisplayDriver.ec",
-                           "Platforms" : [
-                              {
-                                 "Name" : "linux",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              },
-                              {
-                                 "Name" : "apple",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              }
-                           ],
                            "Configurations" : [
                               {
                                  "Name" : "PACS",
@@ -792,20 +736,6 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "Win32BitmapPrinterDisplayDriver.ec",
-                           "Platforms" : [
-                              {
-                                 "Name" : "linux",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              },
-                              {
-                                 "Name" : "apple",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              }
-                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -817,20 +747,6 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "Win32ConsoleDisplayDriver.ec",
-                           "Platforms" : [
-                              {
-                                 "Name" : "linux",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              },
-                              {
-                                 "Name" : "apple",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              }
-                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -842,20 +758,6 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "Win32PrinterDisplayDriver.ec",
-                           "Platforms" : [
-                              {
-                                 "Name" : "linux",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              },
-                              {
-                                 "Name" : "apple",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              }
-                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -865,17 +767,7 @@ from wherever you obtained them.",
                               }
                            ]
                         },
-                        {
-                           "FileName" : "XDisplayDriver.ec",
-                           "Platforms" : [
-                              {
-                                 "Name" : "win32",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              }
-                           ]
-                        }
+                        "XDisplayDriver.ec"
                      ],
                      "Configurations" : [
                         {
@@ -974,20 +866,6 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "Win32Interface.ec",
-                           "Platforms" : [
-                              {
-                                 "Name" : "linux",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              },
-                              {
-                                 "Name" : "apple",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              }
-                           ],
                            "Configurations" : [
                               {
                                  "Name" : "PACS",
@@ -999,20 +877,6 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "Win32ConsoleInterface.ec",
-                           "Platforms" : [
-                              {
-                                 "Name" : "linux",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              },
-                              {
-                                 "Name" : "apple",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              }
-                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -1022,17 +886,7 @@ from wherever you obtained them.",
                               }
                            ]
                         },
-                        {
-                           "FileName" : "XInterface.ec",
-                           "Platforms" : [
-                              {
-                                 "Name" : "win32",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              }
-                           ]
-                        }
+                        "XInterface.ec"
                      ],
                      "Configurations" : [
                         {
