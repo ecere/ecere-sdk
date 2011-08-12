@@ -440,7 +440,7 @@ public enum SubdivisionCategory
    territorialUnit, autonomousTerritorialUnit;
 
 public:
-   property char *  mame { get { return subdivisionCategoryNames[this]; } }
+   property char * name { get { return subdivisionCategoryNames[this]; } }
 };
 
 static String caSubdivisionNames[CASubdivisionCode] =
