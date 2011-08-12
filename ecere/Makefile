@@ -43,17 +43,18 @@ OBJECTS2 = $(OBJ)harfbuzz-myanmar.o $(OBJ)harfbuzz-open.o $(OBJ)harfbuzz-shaper.
 	$(OBJ)Display.o $(OBJ)DisplaySystem.o $(OBJ)FontResource.o $(OBJ)Resource.o $(OBJ)Surface.o \
 	$(OBJ)Button.o $(OBJ)CalendarControl.o $(OBJ)DataBox.o $(OBJ)DropBox.o $(OBJ)EditBox.o \
 	$(OBJ)Label.o $(OBJ)ListBox.o $(OBJ)Menu.o $(OBJ)Picture.o $(OBJ)ProgressBar.o \
-	$(OBJ)ScrollBar.o $(OBJ)StatusBar.o $(OBJ)TabControl.o $(OBJ)PaneSplitter.o $(OBJ)ColorPicker.o \
-	$(OBJ)FileDialog.o $(OBJ)FindDialog.o
-OBJECTS3 = $(OBJ)GoToDialog.o $(OBJ)MessageBox.o $(OBJ)ReplaceDialog.o $(OBJ)WindowList.o \
-	$(OBJ)NCursesInterface.o $(OBJ)Win32Interface.o $(OBJ)Win32ConsoleInterface.o $(OBJ)XInterface.o \
-	$(OBJ)TVisionSkin.o $(OBJ)WindowsSkin.o $(OBJ)Anchor.o $(OBJ)ClipBoard.o $(OBJ)Cursor.o \
-	$(OBJ)Desktop3D.o $(OBJ)FormDesigner.o $(OBJ)GuiApplication.o $(OBJ)Interface.o $(OBJ)Key.o \
-	$(OBJ)Skin.o $(OBJ)Timer.o $(OBJ)typeEdit.o $(OBJ)Window.o $(OBJ)dcom.o $(OBJ)HTTPFile.o \
-	$(OBJ)network.o $(OBJ)NetworkClientFile.o $(OBJ)Service.o $(OBJ)Socket.o $(OBJ)Array.o \
-	$(OBJ)AVLTree.o $(OBJ)BuiltInContainer.o $(OBJ)Container.o $(OBJ)CustomAVLTree.o \
-	$(OBJ)LinkList.o $(OBJ)List.o $(OBJ)Map.o $(OBJ)BinaryTree.o $(OBJ)BTNode.o $(OBJ)dataTypes.o \
-	$(OBJ)instance.o $(OBJ)String.o $(OBJ)OldList.o $(OBJ)instance.c.o $(OBJ)$(MODULE).main$(O)
+	$(OBJ)ScrollBar.o $(OBJ)StatusBar.o $(OBJ)TabControl.o $(OBJ)PaneSplitter.o $(OBJ)Stacker.o \
+	$(OBJ)ColorPicker.o $(OBJ)FileDialog.o
+OBJECTS3 = $(OBJ)FindDialog.o $(OBJ)GoToDialog.o $(OBJ)MessageBox.o $(OBJ)ReplaceDialog.o \
+	$(OBJ)WindowList.o $(OBJ)NCursesInterface.o $(OBJ)Win32Interface.o $(OBJ)Win32ConsoleInterface.o \
+	$(OBJ)XInterface.o $(OBJ)TVisionSkin.o $(OBJ)WindowsSkin.o $(OBJ)Anchor.o $(OBJ)ClipBoard.o \
+	$(OBJ)Cursor.o $(OBJ)Desktop3D.o $(OBJ)FormDesigner.o $(OBJ)GuiApplication.o \
+	$(OBJ)Interface.o $(OBJ)Key.o $(OBJ)Skin.o $(OBJ)Timer.o $(OBJ)typeEdit.o $(OBJ)Window.o \
+	$(OBJ)dcom.o $(OBJ)HTTPFile.o $(OBJ)network.o $(OBJ)NetworkClientFile.o $(OBJ)Service.o \
+	$(OBJ)Socket.o $(OBJ)Array.o $(OBJ)AVLTree.o $(OBJ)BuiltInContainer.o $(OBJ)Container.o \
+	$(OBJ)CustomAVLTree.o $(OBJ)LinkList.o $(OBJ)List.o $(OBJ)Map.o $(OBJ)BinaryTree.o $(OBJ)BTNode.o \
+	$(OBJ)dataTypes.o $(OBJ)instance.o $(OBJ)String.o $(OBJ)OldList.o $(OBJ)instance.c.o \
+	$(OBJ)$(MODULE).main$(O)
 
 COBJECTS = $(COBJECTS1) $(COBJECTS2) $(COBJECTS3)
 COBJECTS1 = $(OBJ)Archive.c $(OBJ)BufferedFile.c $(OBJ)Date.c $(OBJ)DualPipe.c \
@@ -72,16 +73,16 @@ COBJECTS2 = $(OBJ)Win32PrinterDisplayDriver.c $(OBJ)XDisplayDriver.c $(OBJ)Bitma
 	$(OBJ)Resource.c $(OBJ)Surface.c $(OBJ)Button.c $(OBJ)CalendarControl.c $(OBJ)DataBox.c \
 	$(OBJ)DropBox.c $(OBJ)EditBox.c $(OBJ)Label.c $(OBJ)ListBox.c $(OBJ)Menu.c $(OBJ)Picture.c \
 	$(OBJ)ProgressBar.c $(OBJ)ScrollBar.c $(OBJ)StatusBar.c $(OBJ)TabControl.c $(OBJ)PaneSplitter.c \
-	$(OBJ)ColorPicker.c $(OBJ)FileDialog.c $(OBJ)FindDialog.c $(OBJ)GoToDialog.c $(OBJ)MessageBox.c \
-	$(OBJ)ReplaceDialog.c $(OBJ)WindowList.c $(OBJ)NCursesInterface.c $(OBJ)Win32Interface.c \
-	$(OBJ)Win32ConsoleInterface.c $(OBJ)XInterface.c $(OBJ)TVisionSkin.c $(OBJ)WindowsSkin.c $(OBJ)Anchor.c \
-	$(OBJ)ClipBoard.c $(OBJ)Cursor.c $(OBJ)Desktop3D.c $(OBJ)FormDesigner.c $(OBJ)GuiApplication.c \
-	$(OBJ)Interface.c $(OBJ)Key.c $(OBJ)Skin.c
-COBJECTS3 = $(OBJ)Timer.c $(OBJ)typeEdit.c $(OBJ)Window.c $(OBJ)dcom.c $(OBJ)HTTPFile.c \
-	$(OBJ)network.c $(OBJ)NetworkClientFile.c $(OBJ)Service.c $(OBJ)Socket.c $(OBJ)Array.c \
-	$(OBJ)AVLTree.c $(OBJ)BuiltInContainer.c $(OBJ)Container.c $(OBJ)CustomAVLTree.c \
-	$(OBJ)LinkList.c $(OBJ)List.c $(OBJ)Map.c $(OBJ)BinaryTree.c $(OBJ)BTNode.c $(OBJ)dataTypes.c \
-	$(OBJ)instance.c $(OBJ)String.c $(OBJ)OldList.c
+	$(OBJ)Stacker.c $(OBJ)ColorPicker.c $(OBJ)FileDialog.c $(OBJ)FindDialog.c $(OBJ)GoToDialog.c \
+	$(OBJ)MessageBox.c $(OBJ)ReplaceDialog.c $(OBJ)WindowList.c $(OBJ)NCursesInterface.c \
+	$(OBJ)Win32Interface.c $(OBJ)Win32ConsoleInterface.c $(OBJ)XInterface.c $(OBJ)TVisionSkin.c \
+	$(OBJ)WindowsSkin.c $(OBJ)Anchor.c $(OBJ)ClipBoard.c $(OBJ)Cursor.c $(OBJ)Desktop3D.c \
+	$(OBJ)FormDesigner.c $(OBJ)GuiApplication.c $(OBJ)Interface.c $(OBJ)Key.c
+COBJECTS3 = $(OBJ)Skin.c $(OBJ)Timer.c $(OBJ)typeEdit.c $(OBJ)Window.c $(OBJ)dcom.c \
+	$(OBJ)HTTPFile.c $(OBJ)network.c $(OBJ)NetworkClientFile.c $(OBJ)Service.c $(OBJ)Socket.c \
+	$(OBJ)Array.c $(OBJ)AVLTree.c $(OBJ)BuiltInContainer.c $(OBJ)Container.c \
+	$(OBJ)CustomAVLTree.c $(OBJ)LinkList.c $(OBJ)List.c $(OBJ)Map.c $(OBJ)BinaryTree.c $(OBJ)BTNode.c \
+	$(OBJ)dataTypes.c $(OBJ)instance.c $(OBJ)String.c $(OBJ)OldList.c
 
 SYMBOLS = $(SYMBOLS1) $(SYMBOLS2) $(SYMBOLS3)
 SYMBOLS1 = $(OBJ)Archive.sym $(OBJ)BufferedFile.sym $(OBJ)Date.sym $(OBJ)DualPipe.sym \
@@ -101,14 +102,14 @@ SYMBOLS2 = $(OBJ)Win32BitmapPrinterDisplayDriver.sym \
 	$(OBJ)FontResource.sym $(OBJ)Resource.sym $(OBJ)Surface.sym $(OBJ)Button.sym \
 	$(OBJ)CalendarControl.sym $(OBJ)DataBox.sym $(OBJ)DropBox.sym $(OBJ)EditBox.sym $(OBJ)Label.sym \
 	$(OBJ)ListBox.sym $(OBJ)Menu.sym $(OBJ)Picture.sym $(OBJ)ProgressBar.sym $(OBJ)ScrollBar.sym \
-	$(OBJ)StatusBar.sym $(OBJ)TabControl.sym $(OBJ)PaneSplitter.sym $(OBJ)ColorPicker.sym \
-	$(OBJ)FileDialog.sym $(OBJ)FindDialog.sym $(OBJ)GoToDialog.sym $(OBJ)MessageBox.sym \
-	$(OBJ)ReplaceDialog.sym $(OBJ)WindowList.sym $(OBJ)NCursesInterface.sym $(OBJ)Win32Interface.sym \
-	$(OBJ)Win32ConsoleInterface.sym $(OBJ)XInterface.sym $(OBJ)TVisionSkin.sym $(OBJ)WindowsSkin.sym \
-	$(OBJ)Anchor.sym $(OBJ)ClipBoard.sym $(OBJ)Cursor.sym
-SYMBOLS3 = $(OBJ)Desktop3D.sym $(OBJ)FormDesigner.sym $(OBJ)GuiApplication.sym \
-	$(OBJ)Interface.sym $(OBJ)Key.sym $(OBJ)Skin.sym $(OBJ)Timer.sym $(OBJ)typeEdit.sym \
-	$(OBJ)Window.sym $(OBJ)dcom.sym $(OBJ)HTTPFile.sym $(OBJ)network.sym \
+	$(OBJ)StatusBar.sym $(OBJ)TabControl.sym $(OBJ)PaneSplitter.sym $(OBJ)Stacker.sym \
+	$(OBJ)ColorPicker.sym $(OBJ)FileDialog.sym $(OBJ)FindDialog.sym $(OBJ)GoToDialog.sym \
+	$(OBJ)MessageBox.sym $(OBJ)ReplaceDialog.sym $(OBJ)WindowList.sym $(OBJ)NCursesInterface.sym \
+	$(OBJ)Win32Interface.sym $(OBJ)Win32ConsoleInterface.sym $(OBJ)XInterface.sym $(OBJ)TVisionSkin.sym \
+	$(OBJ)WindowsSkin.sym $(OBJ)Anchor.sym $(OBJ)ClipBoard.sym
+SYMBOLS3 = $(OBJ)Cursor.sym $(OBJ)Desktop3D.sym $(OBJ)FormDesigner.sym \
+	$(OBJ)GuiApplication.sym $(OBJ)Interface.sym $(OBJ)Key.sym $(OBJ)Skin.sym $(OBJ)Timer.sym \
+	$(OBJ)typeEdit.sym $(OBJ)Window.sym $(OBJ)dcom.sym $(OBJ)HTTPFile.sym $(OBJ)network.sym \
 	$(OBJ)NetworkClientFile.sym $(OBJ)Service.sym $(OBJ)Socket.sym $(OBJ)Array.sym $(OBJ)AVLTree.sym \
 	$(OBJ)BuiltInContainer.sym $(OBJ)Container.sym $(OBJ)CustomAVLTree.sym $(OBJ)LinkList.sym $(OBJ)List.sym \
 	$(OBJ)Map.sym $(OBJ)BinaryTree.sym $(OBJ)BTNode.sym $(OBJ)dataTypes.sym $(OBJ)instance.sym \
@@ -132,14 +133,14 @@ IMPORTS2 = $(OBJ)Win32BitmapPrinterDisplayDriver.imp \
 	$(OBJ)FontResource.imp $(OBJ)Resource.imp $(OBJ)Surface.imp $(OBJ)Button.imp \
 	$(OBJ)CalendarControl.imp $(OBJ)DataBox.imp $(OBJ)DropBox.imp $(OBJ)EditBox.imp $(OBJ)Label.imp \
 	$(OBJ)ListBox.imp $(OBJ)Menu.imp $(OBJ)Picture.imp $(OBJ)ProgressBar.imp $(OBJ)ScrollBar.imp \
-	$(OBJ)StatusBar.imp $(OBJ)TabControl.imp $(OBJ)PaneSplitter.imp $(OBJ)ColorPicker.imp \
-	$(OBJ)FileDialog.imp $(OBJ)FindDialog.imp $(OBJ)GoToDialog.imp $(OBJ)MessageBox.imp \
-	$(OBJ)ReplaceDialog.imp $(OBJ)WindowList.imp $(OBJ)NCursesInterface.imp $(OBJ)Win32Interface.imp \
-	$(OBJ)Win32ConsoleInterface.imp $(OBJ)XInterface.imp $(OBJ)TVisionSkin.imp $(OBJ)WindowsSkin.imp \
-	$(OBJ)Anchor.imp $(OBJ)ClipBoard.imp $(OBJ)Cursor.imp
-IMPORTS3 = $(OBJ)Desktop3D.imp $(OBJ)FormDesigner.imp $(OBJ)GuiApplication.imp \
-	$(OBJ)Interface.imp $(OBJ)Key.imp $(OBJ)Skin.imp $(OBJ)Timer.imp $(OBJ)typeEdit.imp \
-	$(OBJ)Window.imp $(OBJ)dcom.imp $(OBJ)HTTPFile.imp $(OBJ)network.imp \
+	$(OBJ)StatusBar.imp $(OBJ)TabControl.imp $(OBJ)PaneSplitter.imp $(OBJ)Stacker.imp \
+	$(OBJ)ColorPicker.imp $(OBJ)FileDialog.imp $(OBJ)FindDialog.imp $(OBJ)GoToDialog.imp \
+	$(OBJ)MessageBox.imp $(OBJ)ReplaceDialog.imp $(OBJ)WindowList.imp $(OBJ)NCursesInterface.imp \
+	$(OBJ)Win32Interface.imp $(OBJ)Win32ConsoleInterface.imp $(OBJ)XInterface.imp $(OBJ)TVisionSkin.imp \
+	$(OBJ)WindowsSkin.imp $(OBJ)Anchor.imp $(OBJ)ClipBoard.imp
+IMPORTS3 = $(OBJ)Cursor.imp $(OBJ)Desktop3D.imp $(OBJ)FormDesigner.imp \
+	$(OBJ)GuiApplication.imp $(OBJ)Interface.imp $(OBJ)Key.imp $(OBJ)Skin.imp $(OBJ)Timer.imp \
+	$(OBJ)typeEdit.imp $(OBJ)Window.imp $(OBJ)dcom.imp $(OBJ)HTTPFile.imp $(OBJ)network.imp \
 	$(OBJ)NetworkClientFile.imp $(OBJ)Service.imp $(OBJ)Socket.imp $(OBJ)Array.imp $(OBJ)AVLTree.imp \
 	$(OBJ)BuiltInContainer.imp $(OBJ)Container.imp $(OBJ)CustomAVLTree.imp $(OBJ)LinkList.imp $(OBJ)List.imp \
 	$(OBJ)Map.imp $(OBJ)BinaryTree.imp $(OBJ)BTNode.imp $(OBJ)dataTypes.imp $(OBJ)instance.imp \
@@ -177,19 +178,20 @@ SOURCES2 = src/gfx/drivers/harfbuzz/harfbuzz-stream.c \
 	src/gui/controls/Label.ec src/gui/controls/ListBox.ec src/gui/controls/Menu.ec \
 	src/gui/controls/Picture.ec src/gui/controls/ProgressBar.ec src/gui/controls/ScrollBar.ec \
 	src/gui/controls/StatusBar.ec src/gui/controls/TabControl.ec src/gui/controls/PaneSplitter.ec \
-	src/gui/dialogs/ColorPicker.ec src/gui/dialogs/FileDialog.ec src/gui/dialogs/FindDialog.ec \
-	src/gui/dialogs/GoToDialog.ec src/gui/dialogs/MessageBox.ec src/gui/dialogs/ReplaceDialog.ec \
-	src/gui/dialogs/WindowList.ec
-SOURCES3 = src/gui/drivers/NCursesInterface.ec src/gui/drivers/Win32Interface.ec \
-	src/gui/drivers/Win32ConsoleInterface.ec src/gui/drivers/XInterface.ec src/gui/skins/TVisionSkin.ec \
-	src/gui/skins/WindowsSkin.ec src/gui/Anchor.ec src/gui/ClipBoard.ec src/gui/Cursor.ec src/gui/Desktop3D.ec \
-	src/gui/FormDesigner.ec src/gui/GuiApplication.ec src/gui/Interface.ec src/gui/Key.ec src/gui/Skin.ec \
-	src/gui/Timer.ec src/gui/typeEdit.ec src/gui/Window.ec src/net/dcom.ec src/net/HTTPFile.ec \
-	src/net/network.ec src/net/NetworkClientFile.ec src/net/Service.ec src/net/Socket.ec \
-	src/com/containers/Array.ec src/com/containers/AVLTree.ec src/com/containers/BuiltInContainer.ec \
-	src/com/containers/Container.ec src/com/containers/CustomAVLTree.ec src/com/containers/LinkList.ec \
-	src/com/containers/List.ec src/com/containers/Map.ec src/com/BinaryTree.ec src/com/BTNode.ec \
-	src/com/dataTypes.ec src/com/instance.ec src/com/String.ec src/com/OldList.ec src/com/instance.c
+	src/gui/controls/Stacker.ec src/gui/dialogs/ColorPicker.ec src/gui/dialogs/FileDialog.ec \
+	src/gui/dialogs/FindDialog.ec src/gui/dialogs/GoToDialog.ec src/gui/dialogs/MessageBox.ec \
+	src/gui/dialogs/ReplaceDialog.ec
+SOURCES3 = src/gui/dialogs/WindowList.ec src/gui/drivers/NCursesInterface.ec \
+	src/gui/drivers/Win32Interface.ec src/gui/drivers/Win32ConsoleInterface.ec src/gui/drivers/XInterface.ec \
+	src/gui/skins/TVisionSkin.ec src/gui/skins/WindowsSkin.ec src/gui/Anchor.ec src/gui/ClipBoard.ec \
+	src/gui/Cursor.ec src/gui/Desktop3D.ec src/gui/FormDesigner.ec src/gui/GuiApplication.ec \
+	src/gui/Interface.ec src/gui/Key.ec src/gui/Skin.ec src/gui/Timer.ec src/gui/typeEdit.ec \
+	src/gui/Window.ec src/net/dcom.ec src/net/HTTPFile.ec src/net/network.ec \
+	src/net/NetworkClientFile.ec src/net/Service.ec src/net/Socket.ec src/com/containers/Array.ec \
+	src/com/containers/AVLTree.ec src/com/containers/BuiltInContainer.ec src/com/containers/Container.ec \
+	src/com/containers/CustomAVLTree.ec src/com/containers/LinkList.ec src/com/containers/List.ec \
+	src/com/containers/Map.ec src/com/BinaryTree.ec src/com/BTNode.ec src/com/dataTypes.ec \
+	src/com/instance.ec src/com/String.ec src/com/OldList.ec src/com/instance.c
 
 RESOURCES = $(RESOURCES1) $(RESOURCES2) $(RESOURCES3)
 RESOURCES1 = $(RES)actions/editFind.png $(RES)actions/folderNew.png \
@@ -587,6 +589,9 @@ $(OBJ)TabControl.sym: src/gui/controls/TabControl.ec
 $(OBJ)PaneSplitter.sym: src/gui/controls/PaneSplitter.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/PaneSplitter.ec -o $(OBJ)PaneSplitter.sym
 
+$(OBJ)Stacker.sym: src/gui/controls/Stacker.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/Stacker.ec -o $(OBJ)Stacker.sym
+
 $(OBJ)ColorPicker.sym: src/gui/dialogs/ColorPicker.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/dialogs/ColorPicker.ec -o $(OBJ)ColorPicker.sym
 
@@ -936,6 +941,9 @@ $(OBJ)TabControl.c: src/gui/controls/TabControl.ec $(OBJ)TabControl.sym | $(SYMB
 
 $(OBJ)PaneSplitter.c: src/gui/controls/PaneSplitter.ec $(OBJ)PaneSplitter.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/PaneSplitter.ec -o $(OBJ)PaneSplitter.c -symbols $(OBJ)
+
+$(OBJ)Stacker.c: src/gui/controls/Stacker.ec $(OBJ)Stacker.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/Stacker.ec -o $(OBJ)Stacker.c -symbols $(OBJ)
 
 $(OBJ)ColorPicker.c: src/gui/dialogs/ColorPicker.ec $(OBJ)ColorPicker.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/ColorPicker.ec -o $(OBJ)ColorPicker.c -symbols $(OBJ)
@@ -1340,6 +1348,9 @@ $(OBJ)TabControl.o: $(OBJ)TabControl.c
 
 $(OBJ)PaneSplitter.o: $(OBJ)PaneSplitter.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)PaneSplitter.c -o $(OBJ)PaneSplitter.o
+
+$(OBJ)Stacker.o: $(OBJ)Stacker.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Stacker.c -o $(OBJ)Stacker.o
 
 $(OBJ)ColorPicker.o: $(OBJ)ColorPicker.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ColorPicker.c -o $(OBJ)ColorPicker.o

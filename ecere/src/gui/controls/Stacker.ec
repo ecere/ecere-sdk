@@ -123,6 +123,8 @@ public:
       get { return scrollable; }
    }
 
+   property Array<Window> controls { get { return controls; } };
+
 private:
    ScrollDirection direction;
    int gap;

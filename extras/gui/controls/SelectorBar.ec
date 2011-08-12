@@ -10,8 +10,6 @@ public import "ecere"
 #endif
 #endif
 
-import "Stacker"
-
 static void DrawStipple(Surface surface, Size clientSize)
 {
    int x1 = 0;

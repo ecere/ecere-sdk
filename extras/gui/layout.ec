@@ -4,8 +4,6 @@ public import static "ecere"
 public import "ecere"
 #endif
 
-import "Stacker"
-
 default:
 
 private:

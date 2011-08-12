@@ -1,5 +1,4 @@
 import "ecere"
-import "Stacker"
 
 class Form1 : Window
 {

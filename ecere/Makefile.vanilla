@@ -28,8 +28,8 @@ OBJECTS1 = $(OBJ)Archive.o $(OBJ)BufferedFile.o $(OBJ)Date.o $(OBJ)DualPipe.o \
 OBJECTS2 = $(OBJ)DisplaySystem.o $(OBJ)FontResource.o $(OBJ)Resource.o $(OBJ)Surface.o \
 	$(OBJ)Button.o $(OBJ)CalendarControl.o $(OBJ)DataBox.o $(OBJ)DropBox.o $(OBJ)EditBox.o \
 	$(OBJ)Label.o $(OBJ)ListBox.o $(OBJ)Menu.o $(OBJ)Picture.o $(OBJ)ProgressBar.o \
-	$(OBJ)ScrollBar.o $(OBJ)StatusBar.o $(OBJ)ColorPicker.o $(OBJ)FileDialog.o $(OBJ)FindDialog.o \
-	$(OBJ)GoToDialog.o $(OBJ)MessageBox.o $(OBJ)ReplaceDialog.o $(OBJ)WindowList.o \
+	$(OBJ)ScrollBar.o $(OBJ)StatusBar.o $(OBJ)Stacker.o $(OBJ)ColorPicker.o $(OBJ)FileDialog.o \
+	$(OBJ)FindDialog.o $(OBJ)GoToDialog.o $(OBJ)MessageBox.o $(OBJ)ReplaceDialog.o $(OBJ)WindowList.o \
 	$(OBJ)Win32Interface.o $(OBJ)XInterface.o $(OBJ)WindowsSkin.o $(OBJ)Anchor.o $(OBJ)ClipBoard.o \
 	$(OBJ)Cursor.o $(OBJ)Desktop3D.o $(OBJ)FormDesigner.o $(OBJ)GuiApplication.o \
 	$(OBJ)Interface.o $(OBJ)Key.o $(OBJ)Skin.o $(OBJ)Timer.o $(OBJ)typeEdit.o $(OBJ)Window.o \
@@ -48,8 +48,8 @@ COBJECTS1 = $(OBJ)Archive.c $(OBJ)BufferedFile.c $(OBJ)Date.c $(OBJ)DualPipe.c \
 	$(OBJ)DisplaySystem.c $(OBJ)FontResource.c $(OBJ)Resource.c $(OBJ)Surface.c $(OBJ)Button.c \
 	$(OBJ)CalendarControl.c $(OBJ)DataBox.c $(OBJ)DropBox.c $(OBJ)EditBox.c $(OBJ)Label.c $(OBJ)ListBox.c \
 	$(OBJ)Menu.c $(OBJ)Picture.c $(OBJ)ProgressBar.c $(OBJ)ScrollBar.c $(OBJ)StatusBar.c \
-	$(OBJ)ColorPicker.c $(OBJ)FileDialog.c $(OBJ)FindDialog.c $(OBJ)GoToDialog.c
-COBJECTS2 = $(OBJ)MessageBox.c $(OBJ)ReplaceDialog.c $(OBJ)WindowList.c \
+	$(OBJ)Stacker.c $(OBJ)ColorPicker.c $(OBJ)FileDialog.c $(OBJ)FindDialog.c
+COBJECTS2 = $(OBJ)GoToDialog.c $(OBJ)MessageBox.c $(OBJ)ReplaceDialog.c $(OBJ)WindowList.c \
 	$(OBJ)Win32Interface.c $(OBJ)XInterface.c $(OBJ)WindowsSkin.c $(OBJ)Anchor.c $(OBJ)ClipBoard.c \
 	$(OBJ)Cursor.c $(OBJ)Desktop3D.c $(OBJ)FormDesigner.c $(OBJ)GuiApplication.c \
 	$(OBJ)Interface.c $(OBJ)Key.c $(OBJ)Skin.c $(OBJ)Timer.c $(OBJ)typeEdit.c $(OBJ)Window.c \
@@ -68,7 +68,7 @@ SYMBOLS1 = $(OBJ)Archive.sym $(OBJ)BufferedFile.sym $(OBJ)Date.sym $(OBJ)DualPip
 	$(OBJ)DisplaySystem.sym $(OBJ)FontResource.sym $(OBJ)Resource.sym $(OBJ)Surface.sym $(OBJ)Button.sym \
 	$(OBJ)CalendarControl.sym $(OBJ)DataBox.sym $(OBJ)DropBox.sym $(OBJ)EditBox.sym $(OBJ)Label.sym \
 	$(OBJ)ListBox.sym $(OBJ)Menu.sym $(OBJ)Picture.sym $(OBJ)ProgressBar.sym $(OBJ)ScrollBar.sym \
-	$(OBJ)StatusBar.sym $(OBJ)ColorPicker.sym
+	$(OBJ)StatusBar.sym $(OBJ)Stacker.sym $(OBJ)ColorPicker.sym
 SYMBOLS2 = $(OBJ)FileDialog.sym $(OBJ)FindDialog.sym $(OBJ)GoToDialog.sym \
 	$(OBJ)MessageBox.sym $(OBJ)ReplaceDialog.sym $(OBJ)WindowList.sym $(OBJ)Win32Interface.sym \
 	$(OBJ)XInterface.sym $(OBJ)WindowsSkin.sym $(OBJ)Anchor.sym $(OBJ)ClipBoard.sym $(OBJ)Cursor.sym \
@@ -89,7 +89,7 @@ IMPORTS1 = $(OBJ)Archive.imp $(OBJ)BufferedFile.imp $(OBJ)Date.imp $(OBJ)DualPip
 	$(OBJ)DisplaySystem.imp $(OBJ)FontResource.imp $(OBJ)Resource.imp $(OBJ)Surface.imp $(OBJ)Button.imp \
 	$(OBJ)CalendarControl.imp $(OBJ)DataBox.imp $(OBJ)DropBox.imp $(OBJ)EditBox.imp $(OBJ)Label.imp \
 	$(OBJ)ListBox.imp $(OBJ)Menu.imp $(OBJ)Picture.imp $(OBJ)ProgressBar.imp $(OBJ)ScrollBar.imp \
-	$(OBJ)StatusBar.imp $(OBJ)ColorPicker.imp
+	$(OBJ)StatusBar.imp $(OBJ)Stacker.imp $(OBJ)ColorPicker.imp
 IMPORTS2 = $(OBJ)FileDialog.imp $(OBJ)FindDialog.imp $(OBJ)GoToDialog.imp \
 	$(OBJ)MessageBox.imp $(OBJ)ReplaceDialog.imp $(OBJ)WindowList.imp $(OBJ)Win32Interface.imp \
 	$(OBJ)XInterface.imp $(OBJ)WindowsSkin.imp $(OBJ)Anchor.imp $(OBJ)ClipBoard.imp $(OBJ)Cursor.imp \
@@ -121,13 +121,13 @@ SOURCES2 = src/gui/controls/Button.ec src/gui/controls/CalendarControl.ec \
 	src/gui/controls/DataBox.ec src/gui/controls/DropBox.ec src/gui/controls/EditBox.ec \
 	src/gui/controls/Label.ec src/gui/controls/ListBox.ec src/gui/controls/Menu.ec \
 	src/gui/controls/Picture.ec src/gui/controls/ProgressBar.ec src/gui/controls/ScrollBar.ec \
-	src/gui/controls/StatusBar.ec src/gui/dialogs/ColorPicker.ec src/gui/dialogs/FileDialog.ec \
-	src/gui/dialogs/FindDialog.ec src/gui/dialogs/GoToDialog.ec src/gui/dialogs/MessageBox.ec \
-	src/gui/dialogs/ReplaceDialog.ec src/gui/dialogs/WindowList.ec src/gui/drivers/Win32Interface.ec \
-	src/gui/drivers/XInterface.ec src/gui/skins/WindowsSkin.ec src/gui/Anchor.ec src/gui/ClipBoard.ec \
-	src/gui/Cursor.ec src/gui/Desktop3D.ec src/gui/FormDesigner.ec src/gui/GuiApplication.ec \
-	src/gui/Interface.ec src/gui/Key.ec src/gui/Skin.ec src/gui/Timer.ec src/gui/typeEdit.ec \
-	src/gui/Window.ec src/com/containers/Array.ec src/com/containers/AVLTree.ec \
+	src/gui/controls/StatusBar.ec src/gui/controls/Stacker.ec src/gui/dialogs/ColorPicker.ec \
+	src/gui/dialogs/FileDialog.ec src/gui/dialogs/FindDialog.ec src/gui/dialogs/GoToDialog.ec \
+	src/gui/dialogs/MessageBox.ec src/gui/dialogs/ReplaceDialog.ec src/gui/dialogs/WindowList.ec \
+	src/gui/drivers/Win32Interface.ec src/gui/drivers/XInterface.ec src/gui/skins/WindowsSkin.ec src/gui/Anchor.ec \
+	src/gui/ClipBoard.ec src/gui/Cursor.ec src/gui/Desktop3D.ec src/gui/FormDesigner.ec \
+	src/gui/GuiApplication.ec src/gui/Interface.ec src/gui/Key.ec src/gui/Skin.ec src/gui/Timer.ec \
+	src/gui/typeEdit.ec src/gui/Window.ec src/com/containers/Array.ec src/com/containers/AVLTree.ec \
 	src/com/containers/BuiltInContainer.ec src/com/containers/Container.ec src/com/containers/CustomAVLTree.ec \
 	src/com/containers/LinkList.ec src/com/containers/List.ec src/com/containers/Map.ec src/com/BinaryTree.ec \
 	src/com/BTNode.ec src/com/dataTypes.ec src/com/instance.ec src/com/String.ec src/com/OldList.ec \
@@ -394,6 +394,9 @@ $(OBJ)ScrollBar.sym: src/gui/controls/ScrollBar.ec
 $(OBJ)StatusBar.sym: src/gui/controls/StatusBar.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/StatusBar.ec -o $(OBJ)StatusBar.sym
 
+$(OBJ)Stacker.sym: src/gui/controls/Stacker.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/Stacker.ec -o $(OBJ)Stacker.sym
+
 $(OBJ)ColorPicker.sym: src/gui/dialogs/ColorPicker.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/dialogs/ColorPicker.ec -o $(OBJ)ColorPicker.sym
 
@@ -638,6 +641,9 @@ $(OBJ)ScrollBar.c: src/gui/controls/ScrollBar.ec $(OBJ)ScrollBar.sym | $(SYMBOLS
 
 $(OBJ)StatusBar.c: src/gui/controls/StatusBar.ec $(OBJ)StatusBar.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/StatusBar.ec -o $(OBJ)StatusBar.c -symbols $(OBJ)
+
+$(OBJ)Stacker.c: src/gui/controls/Stacker.ec $(OBJ)Stacker.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/Stacker.ec -o $(OBJ)Stacker.c -symbols $(OBJ)
 
 $(OBJ)ColorPicker.c: src/gui/dialogs/ColorPicker.ec $(OBJ)ColorPicker.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/ColorPicker.ec -o $(OBJ)ColorPicker.c -symbols $(OBJ)
@@ -937,6 +943,9 @@ $(OBJ)ScrollBar.o: $(OBJ)ScrollBar.c
 
 $(OBJ)StatusBar.o: $(OBJ)StatusBar.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)StatusBar.c -o $(OBJ)StatusBar.o
+
+$(OBJ)Stacker.o: $(OBJ)Stacker.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Stacker.c -o $(OBJ)Stacker.o
 
 $(OBJ)ColorPicker.o: $(OBJ)ColorPicker.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ColorPicker.c -o $(OBJ)ColorPicker.o
