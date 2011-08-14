@@ -1352,18 +1352,18 @@ class Win32Interface : Interface
          {
             exStyle |= WS_EX_APPWINDOW;
             parentWindow = null;
-            style |= WS_SYSMENU;
+            //style |= WS_SYSMENU;
          }
          else if(window.master.rootWindow && window.master.rootWindow != guiApp.desktop)
          {
             exStyle |= WS_EX_TOOLWINDOW;
             //exStyle |=  WS_EX_APPWINDOW;
-            style |= WS_SYSMENU;
+            //style |= WS_SYSMENU;
          }
          else
          {
             // exStyle |= WS_EX_APPWINDOW;
-            style |= WS_SYSMENU;
+            //style |= WS_SYSMENU;
          }
          /*else if(parentWindow)
             exStyle |= WS_EX_TOOLWINDOW;*/
@@ -1375,7 +1375,20 @@ class Win32Interface : Interface
          else
          {
             if(window.nativeDecorations)
-               style |= WS_OVERLAPPEDWINDOW;
+            {
+               BorderBits borderStyle = window.borderStyle; // FIXME!
+               style = WS_OVERLAPPED;
+               if(borderStyle.fixed)
+                  style |= WS_CAPTION;
+               if(window.hasClose)
+                  style |= WS_SYSMENU;
+               if(borderStyle.sizable)
+                  style |= WS_THICKFRAME;
+               if(window.hasMinimize)
+                  style |= WS_MINIMIZEBOX;
+               if(window.hasMaximize)
+                  style |= WS_MAXIMIZEBOX;
+            }
             windowHandle = CreateWindowEx(
                exStyle,
                className, text,
