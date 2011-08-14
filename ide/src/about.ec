@@ -6,7 +6,7 @@ import "ecere"
 
 class AboutIDE : Window
 {
-   //nativeDecorations = true;
+   nativeDecorations = true;
    text = "About the Ecere SDK";
    borderStyle = fixed;
    size = { 440, 240 };

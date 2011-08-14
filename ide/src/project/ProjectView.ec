@@ -1530,7 +1530,7 @@ class ProjectView : Window
          //bool isRes = toNode.isInResources;
          
          FileDialog fileDialog = importFileDialog;
-         fileDialog.parent = parent;
+         fileDialog.master = parent;
          if(fileDialog.Modal() == ok)
          {
             ImportFolderFSI fsi { projectView = this };
@@ -1604,7 +1604,8 @@ class ProjectView : Window
       FileDialog fileDialog = (!resources) ? this.fileDialog : resourceFileDialog;
       fileDialog.type = multiOpen;
       fileDialog.text = !resources ? "Add Files to Project" : "Add Resources to Project";
-      fileDialog.parent = parent;
+      fileDialog.master = parent;
+
       if(fileDialog.Modal() == ok)
       {
          int c;

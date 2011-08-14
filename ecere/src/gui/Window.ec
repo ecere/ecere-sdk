@@ -2436,7 +2436,7 @@ private:
 
    void _ShowDecorations(Box box, bool post)
    {
-      if(nativeDecorations) return;
+      if(rootWindow == this && nativeDecorations) return;
       if(visible && this != guiApp.desktop)
       {
          Surface surface = RedrawFull(box);
@@ -5540,7 +5540,7 @@ private:
       WindowState prevState = state;
 
       state = newState;
-      if(nativeDecorations)
+      if(rootWindow == this && nativeDecorations)
          return;
 
       if(prevState != newState)
@@ -9124,7 +9124,7 @@ public:
    property bool alphaBlend { get { return (bool)alphaBlend; } set { alphaBlend = value; } };
    property bool useSharedMemory { get { return (bool)useSharedMemory; } set { useSharedMemory = value; } };
    property CreationActivationOption creationActivation { get { return creationActivation; } set { creationActivation = value; } };
-   property bool nativeDecorations { get { return (bool)nativeDecorations; } set { nativeDecorations = value; } };
+   property bool nativeDecorations { get { return (bool)nativeDecorations && rootWindow == this; } set { nativeDecorations = value; } };
    property bool manageDisplay { get { return (bool)manageDisplay; } set { manageDisplay = value; } };
    
 private:
