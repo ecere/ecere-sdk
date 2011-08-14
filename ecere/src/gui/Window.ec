@@ -36,6 +36,9 @@ import "FileDialog"
 import "MessageBox"
 import "WindowList"
 
+// Had to define this here for native decorations support, because the menu bar is part of total decoration's size, but not part of the system decorations
+define skinMenuHeight = 25;
+
 default extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown;
 
 public enum DialogResult { cancel, yes, no, ok };
@@ -705,7 +708,7 @@ private:
       mox.top    -= clientStart.y;
       mox.right  -= clientStart.x;
       mox.bottom -= clientStart.y;
-      
+
       mox.Clip(clientArea);
       // mox.ClipOffset(against, scrolledPos.x, scrolledPos.y);
 
@@ -713,6 +716,11 @@ private:
       {
          int x = absPosition.x + clientStart.x;
          int y = absPosition.y + clientStart.y;
+         if(rootWindow.nativeDecorations)
+         {
+            x -= rootWindow.clientStart.x;
+            y -= rootWindow.clientStart.y - (rootWindow.hasMenuBar ? skinMenuHeight : 0);
+         }
          if(!guiApp.fullScreenMode || is3D)
          {
             x -= rootWindow.absPosition.x;
@@ -730,6 +738,7 @@ private:
                */
             }
          }
+
          surface = display.GetSurface(x, y, mox);
          /*if(surface)
          {
@@ -755,11 +764,15 @@ private:
       {
          int x = absPosition.x;
          int y = absPosition.y;
+         if(rootWindow.nativeDecorations)
+         {
+            x -= rootWindow.clientStart.x;
+            y -= rootWindow.clientStart.y - (rootWindow.hasMenuBar ? skinMenuHeight : 0);
+         }
          if(!guiApp.fullScreenMode || is3D)
          {
             x -= rootWindow.absPosition.x;
-            y -= rootWindow.absPosition.y; 
-
+            y -= rootWindow.absPosition.y;
             if(rootWindow.is3D)
             {
                x += rootWindow.parent.clientStart.x;
@@ -772,6 +785,7 @@ private:
                */
             }
          }
+
          surface = display.GetSurface(x, y, mox);
          /*if(surface)
          {
@@ -2567,7 +2581,13 @@ private:
    {
       bool opaque = IsOpaque();
       Window child;
-      int offsetX = absPosition.x - rootWindow.absPosition.x, offsetY = absPosition.y - rootWindow.absPosition.y; 
+      int offsetX = absPosition.x - rootWindow.absPosition.x, offsetY = absPosition.y - rootWindow.absPosition.y;
+      if(rootWindow.nativeDecorations)
+      {
+         offsetX -= rootWindow.clientStart.x;
+         offsetY -= rootWindow.clientStart.y - (rootWindow.hasMenuBar ? skinMenuHeight : 0);
+      }
+
 
       for(child = children.last; child; child = child.prev)
       {
@@ -2577,9 +2597,16 @@ private:
          {
             if(!opaque)
             {
-               int offsetX = child.absPosition.x - rootWindow.absPosition.x, offsetY = child.absPosition.y - rootWindow.absPosition.y; 
                // Adjust renderArea to the root window level
                Extent * renderArea = &rootWindow.tempExtents[1];
+
+               int offsetX = child.absPosition.x - rootWindow.absPosition.x, offsetY = child.absPosition.y - rootWindow.absPosition.y;
+               if(child.rootWindow.nativeDecorations)
+               {
+                  offsetX -= child.rootWindow.clientStart.x;
+                  offsetY -= child.rootWindow.clientStart.y - (child.rootWindow.hasMenuBar ? skinMenuHeight : 0);
+               }
+
                /*
                Extent childRenderArea;
                
@@ -2627,7 +2654,12 @@ private:
       bool opaque = IsOpaque();
       Extent * dirtyExtentWindow = &rootWindow.tempExtents[1];
       Window child;
-      int offsetX = absPosition.x - rootWindow.absPosition.x, offsetY = absPosition.y - rootWindow.absPosition.y; 
+      int offsetX = absPosition.x - rootWindow.absPosition.x, offsetY = absPosition.y - rootWindow.absPosition.y;
+      if(rootWindow.nativeDecorations)
+      {
+         offsetX -= rootWindow.clientStart.x;
+         offsetY -= rootWindow.clientStart.y - (rootWindow.hasMenuBar ? skinMenuHeight : 0);
+      }
 
 #if 0
       for(child = children.last; child; child = child.prev)
@@ -2640,7 +2672,7 @@ private:
          {
             if(!opaque)
             {
-               int offsetX = child.absPosition.x - rootWindow.absPosition.x, offsetY = child.absPosition.y - rootWindow.absPosition.y; 
+               int offsetX = child.absPosition.x - rootWindow.absPosition.x, offsetY = child.absPosition.y - rootWindow.absPosition.y;
                // Adjust renderArea to the root window level
                Extent renderArea;
                renderArea.Copy(child.dirtyArea);
@@ -2820,6 +2852,11 @@ private:
       Window child;
       Window rootWindow = this.rootWindow;
       int offsetX = absPosition.x - rootWindow.absPosition.x, offsetY = absPosition.y - rootWindow.absPosition.y;
+      if(rootWindow.nativeDecorations)
+      {
+         offsetX -= rootWindow.clientStart.x;
+         offsetY -= rootWindow.clientStart.y - (rootWindow.hasMenuBar ? skinMenuHeight : 0);
+      }
 
       if(rootWindow.fullRender)
       {
@@ -4499,10 +4536,15 @@ private:
 
       for(hotKey = hotKeys.first; hotKey; hotKey = hotKey.next)
          if((hotKey.key == key || (method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp && hotKey.key.code == key.code)) &&
-            !hotKey.window.disabled && !hotKey.window.style.hidden && (hotKey.window.style.nonClient || state != minimized))
+            !hotKey.window.disabled && (hotKey.window.style.nonClient || state != minimized))
          {
             Window hotKeyWindow = hotKey.window;
+            Window parent = hotKeyWindow.parent;
             Window prevActiveWindow = activeChild;
+
+            // Don't process non-visible buttons, but make an exception for the Alt-F4 with Native Decorations turned on
+            if(hotKeyWindow.style.hidden && (!hotKeyWindow.style.nonClient || !parent || !parent.nativeDecorations || hotKeyWindow != parent.sysButtons[2]))
+               continue;
 
             if(prevActiveWindow) incref prevActiveWindow;
             incref hotKeyWindow;
@@ -5495,6 +5537,9 @@ private:
       WindowState prevState = state;
 
       state = newState;
+      if(nativeDecorations)
+         return;
+
       if(prevState != newState)
          lastState = prevState;
       if(style.isActiveClient && !style.hidden && prevState == minimized)
@@ -5545,11 +5590,9 @@ private:
             break;
          }
       }
-
       // TOCHECK: Why was this here?
       //position.x = (tx > 0) ? tx & 0xFFFFF : tx;
       //position.y = (ty > 0) ? ty & 0xFFFFF : ty;
-
       ComputeAnchors(stateAnchor, stateSizeAnchor, &x, &y, &w, &h);
 
       Position(x, y, w, h, true, true, true, true, false, true);
@@ -6371,7 +6414,7 @@ public:
       
             SetStateEx(newState, activate);
 
-            if(rootWindow == this)
+            if(rootWindow == this && !rootWindow.nativeDecorations)
             {
                int x = position.x, y = position.y;
                /*if(style.interim)

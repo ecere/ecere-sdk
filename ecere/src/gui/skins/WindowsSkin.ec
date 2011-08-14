@@ -1,5 +1,10 @@
 namespace gui::skins;
 
+#define WIN32_LEAN_AND_MEAN
+#define Method _Method
+#include <windows.h>
+#undef Method
+
 import "Window"
 
 #define BORDER       4
@@ -17,7 +22,6 @@ import "Window"
 #define SB_WIDTH  16
 #define SB_HEIGHT 16
 
-#define MENU_HEIGHT     25
 #define STATUS_HEIGHT   18
 
 #define GRADIENT_SMOOTHNESS 1.0f
@@ -145,14 +149,32 @@ public class WindowsSkin_Window : Window
 
       if(hasMenuBar && state != minimized)
       {
-         *h += MENU_HEIGHT;
+         *h += skinMenuHeight;
       }
       if(statusBar && state != minimized)
       {
          *h += STATUS_HEIGHT;
       }
 
-      if(nativeDecorations) return;
+      if(nativeDecorations && rootWindow == this)
+      {
+#if defined(WIN32)
+         RECT rcClient, rcWindow;
+         GetClientRect(windowHandle, &rcClient);
+         GetWindowRect(windowHandle, &rcWindow);
+         if(state == maximized)
+         {
+            *w += (rcWindow.right  - rcWindow.left) - rcClient.right;
+            *h += (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
+         }
+         else
+         {
+            *w += (rcWindow.right - rcWindow.left) - rcClient.right;
+            *h += (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
+         }
+#endif
+         return;
+      }
       if((((BorderBits)borderStyle).deep || ((BorderBits)borderStyle).bevel) && state != minimized)
       {
          *w += 4;
@@ -182,7 +204,7 @@ public class WindowsSkin_Window : Window
    void SetWindowMinimum(MinMaxValue * mw, MinMaxValue * mh)
    {
       bool isNormal = (state == normal);
-      if(nativeDecorations) return;
+      if(nativeDecorations && rootWindow == this) return;
       if(((BorderBits)borderStyle).fixed && (state != maximized || !parent.menuBar))
       {
          *mw = MIN_WIDTH;
@@ -216,12 +238,23 @@ public class WindowsSkin_Window : Window
 
       if(hasMenuBar)
       {
-         *y += MENU_HEIGHT;
+         *y += skinMenuHeight;
       }
 
       GetDecorationsSize(&aw, &ah);
 
-      if(!nativeDecorations)
+      if(nativeDecorations && rootWindow == this)
+      {
+#if defined(WIN32)
+         RECT rcWindow;
+         POINT client00 = { 0, 0 };
+         ClientToScreen(windowHandle, &client00);
+         GetWindowRect(windowHandle, &rcWindow);
+         *x += client00.x - rcWindow.left;
+         *y += client00.y - rcWindow.top;
+#endif
+      }
+      else
       {
          // Compute client area start
          if(((BorderBits)borderStyle).deep || ((BorderBits)borderStyle).bevel)
@@ -266,7 +299,7 @@ public class WindowsSkin_Window : Window
       bool isNormal = (state == normal);
       int top = 0, border = 0, bottom = 0;
 
-      if(nativeDecorations) return;
+      if(nativeDecorations && rootWindow == this) return;
 
       if(state == minimized)
          top = border = bottom = DEAD_BORDER;
@@ -365,7 +398,7 @@ public class WindowsSkin_Window : Window
    {
       bool isNormal = (state == normal);
       bool result = false;
-      if(nativeDecorations) return false;
+      if(nativeDecorations && rootWindow == this) return false;
 
       if(((BorderBits)borderStyle).fixed && (state != maximized || !parent.menuBar))
       {
@@ -390,7 +423,7 @@ public class WindowsSkin_Window : Window
       bool result = false;
 
       *resizeX = *resizeY = *resizeEndX = *resizeEndY = false;
-      if(nativeDecorations) return false;
+      if(nativeDecorations && rootWindow == this) return false;
 
       if(((BorderBits)borderStyle).sizable && (state == normal))
       {
@@ -428,7 +461,7 @@ public class WindowsSkin_Window : Window
       int top = 0, border = 0;
       int insideBorder = 0;
 
-      if(!nativeDecorations) 
+      if(!nativeDecorations && rootWindow == this)
       {
          if(state == minimized)
             top = border = DEAD_BORDER;
@@ -466,7 +499,7 @@ public class WindowsSkin_Window : Window
             menuBar.visible = false;
          else
             menuBar.visible = true;
-         menuBar.Move(clientStart.x, clientStart.y - MENU_HEIGHT, size.w - insideBorder * 2, MENU_HEIGHT);
+         menuBar.Move(clientStart.x, clientStart.y - skinMenuHeight, size.w - insideBorder * 2, skinMenuHeight);
       }
       if(statusBar)
       {
@@ -475,11 +508,19 @@ public class WindowsSkin_Window : Window
          else
          {
             statusBar.visible = true;
-            statusBar.anchor = { left = clientStart.x, bottom = border };
-            statusBar.size.w = size.w - insideBorder * 2;
+            if(nativeDecorations && rootWindow == this)
+            {
+               statusBar.anchor = { left = clientStart.x, bottom = (int)(size.h - clientSize.h - clientStart.y - STATUS_HEIGHT ) };
+               statusBar.size.w = size.w - insideBorder * 2;
+            }
+            else
+            {
+               statusBar.anchor = { left = clientStart.x, bottom = border };
+               statusBar.size.w = size.w - insideBorder * 2;
+            }
          }
       }
-      if(!nativeDecorations)
+      if(!nativeDecorations && rootWindow == this)
       {
          if(sysButtons[0])
          {

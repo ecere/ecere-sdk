@@ -416,8 +416,6 @@ class Win32Interface : Interface
                   {
                      HWND foreground;
                      DWORD id;
-
-                     uint returnValue = (uint)DefWindowProc(windowHandle, msg, wParam, lParam);
                      uint windowLong;
                      foreground = GetForegroundWindow();
                      if(foreground == windowHandle && lParam)
@@ -434,7 +432,8 @@ class Win32Interface : Interface
 #endif
                      if(id != GetCurrentProcessId() || windowLong != (LPARAM)ApplicationWindow)
                         window.ExternalActivate(false, true, window, null);
-                     return returnValue;
+                     // DefWindowProc for WM_NCACTIVATE draws the decorations, make sure it's drawn in the right state
+                     return DefWindowProc(windowHandle, msg, window.active, lParam);
                   }
                }
                if(activateApp)
@@ -445,7 +444,7 @@ class Win32Interface : Interface
                   activateApp = false;
                 } 
 
-               return (uint)DefWindowProc(windowHandle, msg, wParam, lParam);
+               return (uint)DefWindowProc(windowHandle, msg, window ? window.active : wParam, lParam);
             }
             case WM_ACTIVATEAPP:
                if(!guiApp.IsModeSwitching())
@@ -722,6 +721,12 @@ class Win32Interface : Interface
                x += (short)LOWORD(lParam);
                y += (short)HIWORD(lParam);
 
+               if(window.nativeDecorations)
+               {
+                  x += window.clientStart.x;
+                  y += window.clientStart.y - (window.hasMenuBar ? skinMenuHeight : 0);
+               }
+
                if(::GetKeyState(VK_SHIFT) & 0x80000)   code.shift = true;
                if(::GetKeyState(VK_CONTROL) & 0x80000) code.ctrl = true;
                if(::GetKeyState(VK_MENU) & 0x80000)    code.alt = true;
@@ -796,10 +801,38 @@ class Win32Interface : Interface
                SetCursor((lastCursor == (SystemCursor)-1) ? null : systemCursors[lastCursor]);
                return 0;
             }
+            case WM_EXITMENULOOP:
+            case WM_EXITSIZEMOVE:
+               // We had some DirectInput stuff in here
+               break;
+            case WM_ENTERMENULOOP:
+            case WM_ENTERSIZEMOVE:
+               // We had some DirectInput stuff in here
+               break;
             case WM_CLOSE:
             {
                window.Destroy(0);
                return 0;
+            }
+            case WM_MOVE:
+            {
+               int x, y;
+               WINDOWPLACEMENT placement = { 0 };
+               RECT rcWindow;
+               placement.length = sizeof(WINDOWPLACEMENT);
+               GetWindowRect(windowHandle, &rcWindow);
+               GetWindowPlacement(windowHandle, &placement);
+               x = rcWindow.left;
+               y = rcWindow.top;
+               if((placement.showCmd == SW_SHOWMAXIMIZED || placement.showCmd == SW_MAXIMIZE) && window.state != maximized)
+                  window.state = maximized;
+               else if(placement.showCmd == SW_SHOWMINIMIZED && window.state != minimized)
+                  window.state = minimized;
+               else if(placement.showCmd == SW_SHOWNORMAL && window.state != normal && window.visible)
+                  window.state = normal;
+
+               window.ExternalPosition(x, y, rcWindow.right - rcWindow.left, rcWindow.bottom - rcWindow.top);
+               break;
             }
             case WM_SIZE:
             {
@@ -809,13 +842,25 @@ class Win32Interface : Interface
                   int h = HIWORD(lParam);
                   int x, y;
                   WINDOWPLACEMENT placement = { 0 };
+                  RECT rcWindow;
+                  GetWindowRect(windowHandle, &rcWindow);
+
                   placement.length = sizeof(WINDOWPLACEMENT);
 
                   GetWindowPlacement(windowHandle, &placement);
-                  x = placement.rcNormalPosition.left;
-                  y = placement.rcNormalPosition.top;
+                  if((placement.showCmd == SW_SHOWMAXIMIZED || placement.showCmd == SW_MAXIMIZE) && window.state != maximized)
+                     window.state = maximized;
+                  else if(placement.showCmd == SW_SHOWMINIMIZED && window.state != minimized)
+                     window.state = minimized;
+                  else if(placement.showCmd == SW_SHOWNORMAL && window.state != normal && window.visible)
+                     window.state = normal;
 
+                  x = rcWindow.left;
+                  y = rcWindow.top;
+                  w = rcWindow.right - rcWindow.left;
+                  h = rcWindow.bottom - rcWindow.top;
                   window.ExternalPosition(x, y, w, h);
+                  window.UpdateDisplay();
                }
                else
                   return (uint)DefWindowProc(windowHandle, msg, wParam, lParam);
@@ -1223,6 +1268,8 @@ class Win32Interface : Interface
          }
          /*else if(parentWindow)
             exStyle |= WS_EX_TOOLWINDOW;*/
+         /*if(window.interim)
+            parentWindow = window.master.rootWindow.windowHandle;*/
 
          if(window.windowHandle)
             windowHandle = window.windowHandle;
@@ -1295,7 +1342,8 @@ class Win32Interface : Interface
          flags &=~SWP_NOMOVE;
          flags |= SWP_NOSIZE;
       }*/
-      SetWindowPos(window.windowHandle, null, x, y, w, h, flags);
+      if(!window.nativeDecorations || window.state != maximized || !window.visible)
+         SetWindowPos(window.windowHandle, null, x, y, w, h, flags);
    }
 
    void OrderRootWindow(Window window, bool topMost)
@@ -1349,28 +1397,8 @@ class Win32Interface : Interface
          {
             case maximized:
             case normal:
-               /*SetWindowPos(window.windowHandle, null, 0,0,0,0, 
-                  SWP_SHOWWINDOW|SWP_NOSIZE|SWP_NOMOVE|SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOZORDER);*/
-               // ShowWindow(window.windowHandle, SW_SHOWNA);
-               ShowWindow(window.windowHandle, (window.creationActivation == activate && !guiApp.modeSwitching) ? SW_SHOWNORMAL : SW_SHOWNOACTIVATE);
-
-               if(window.nativeDecorations)
-               {
-                  int w, h;
-                  int x, y;
-                  RECT rect;
-                  WINDOWPLACEMENT placement = { 0 };
-                  placement.length = sizeof(WINDOWPLACEMENT);
-
-                  GetClientRect(window.windowHandle, &rect);
-                  GetWindowPlacement(window.windowHandle, &placement);
-                  x = placement.rcNormalPosition.left;
-                  y = placement.rcNormalPosition.top;
-                  w = rect.right+1;
-                  h = rect.bottom+1;
-
-                  window.ExternalPosition(x, y, w, h);
-               }
+               ShowWindow(window.windowHandle, (window.creationActivation == activate && !guiApp.modeSwitching) ? 
+                  ((window.nativeDecorations && state == maximized) ? SW_MAXIMIZE : SW_SHOWNORMAL) : SW_SHOWNOACTIVATE);
                break;
             case minimized:
                ShowWindow(window.windowHandle, SW_MINIMIZE);
@@ -1379,59 +1407,14 @@ class Win32Interface : Interface
       }
       else
       {
-         /*
-         SetWindowPos(window.windowHandle, null, 0,0,0,0, 
-            SWP_NOSIZE|SWP_NOMOVE|SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_HIDEWINDOW|SWP_NOZORDER);
-            */
          ShowWindow(window.windowHandle, SW_HIDE);
       }
    }
 
    void ActivateRootWindow(Window window)
    {
-      //MSG msg;
-      //HWND windowHandle = window.windowHandle;
-      //SetActiveWindow(topWindow);
-      //while(windowHandle != HWND_DESKTOP)
-     // {
-         // SetActiveWindow(windowHandle);
-         /*
-         SetWindowPos(window.windowHandle, window.style.stayOnTop ? HWND_TOPMOST : HWND_TOP, 
-            0,0,0,0,
-            SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
-         */
-         //SetFocus(windowHandle);
-
-         // windowHandle = GetParent(windowHandle);
-         /*
-         SetWindowPos(window.windowHandle, window.style.stayOnTop ? HWND_TOPMOST : HWND_TOP, 
-            0,0,0,0, SWP_NOCOPYBITS|SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);*/
-   //   }
-   //   if(!window.isForegroundWindow)
-           //SetActiveWindow(window.windowHandle);
-/*
-      HWND windowHandle = window.windowHandle;
-      while(windowHandle != HWND_DESKTOP)
-      {
-         SetActiveWindow(windowHandle);
-         windowHandle = GetParent(windowHandle);
-      }
-*/
-      //SetActiveWindow(window.windowHandle);
       if(!guiApp.modeSwitching)
          SetForegroundWindow(window.windowHandle);
-      // UpdateWindow(window.windowHandle);
-      /*
-      SetWindowPos(window.windowHandle, window.style.stayOnTop ? HWND_TOPMOST : HWND_TOP, 
-         0,0,0,0, SWP_NOCOPYBITS|SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW|SWP_NOACTIVATE);
-         */
-      /*
-      while(PeekMessage(&msg,window.windowHandle,WM_NCACTIVATE,WM_NCACTIVATE,PM_REMOVE))
-      {
-         TranslateMessage(&msg);
-         DispatchMessage(&msg);
-      }*/
-
    }
 
    void FlashRootWindow(Window window)
@@ -1755,7 +1738,7 @@ class Win32Interface : Interface
                      c++;
                      m++;
                   }
-                  and.picture[b++] = mask;
+                  picture[b++] = mask;
                }
                c = 0;
                while(c < size)

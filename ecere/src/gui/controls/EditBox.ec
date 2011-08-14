@@ -3013,7 +3013,9 @@ private:
    bool OnMiddleButtonDown(int x, int y, Modifiers mods)
    {
       if(style.readOnly) return true;
-      Paste();
+      // We really shouldn't be pasting here, Unix middle button paste is for the selection (not the clipboard), good for the terminal
+      // Middle button already serves as a dragger as well.
+      // Paste();
       return true;
    }
 
