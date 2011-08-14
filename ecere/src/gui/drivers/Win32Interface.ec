@@ -959,7 +959,7 @@ class Win32Interface : Interface
                   h = rcWindow.bottom - rcWindow.top;
 
                   AeroSnapPosition(window, x, y, w, h);
-                  window.UpdateDisplay();
+                  window.UpdateVisual(null);
                }
                else
                   return (uint)DefWindowProc(windowHandle, msg, wParam, lParam);
