@@ -110,7 +110,7 @@ static HCURSOR systemCursors[SystemCursor];
 static bool fullScreenMode;
 static int desktopX = 0, desktopY = 0, desktopW = 0, desktopH = 0;
 static DWORD hiResTimer;
-static HWND topWindow;
+// static HWND topWindow;
 
 static HWND startBar;
 
@@ -686,7 +686,16 @@ class Win32Interface : Interface
             */
             case WM_NCHITTEST:
                if(window.nativeDecorations)
-                  return (uint)DefWindowProc(windowHandle, msg, wParam, lParam);
+               {
+                  uint result = (uint)DefWindowProc(windowHandle, msg, wParam, lParam);
+                  // Reset the cursor on native decorations
+                  if(result != HTCLIENT && lastCursor != arrow)
+                  {
+                     SetCursor(systemCursors[arrow]);
+                     lastCursor = arrow;
+                  }
+                  return result;
+               }
                else
                // return HTCAPTION;
                   return HTCLIENT;
@@ -1552,7 +1561,7 @@ class Win32Interface : Interface
       bool result = false;
    	if(OpenClipboard(null))
    	{
-         if(clipBoard.handle = GetClipboardData(CF_UNICODETEXT))
+         if((clipBoard.handle = GetClipboardData(CF_UNICODETEXT)))
          {
             uint16 * u16text = GlobalLock(clipBoard.handle);
             if(u16text)
@@ -1709,14 +1718,10 @@ class Win32Interface : Interface
          if(bitmap.Load(resource.fileName, null, null))
          {
             Bitmap and { };
-            int y, x;
             PixelFormat format = window.display.pixelFormat;
-            //int bits = 8<<GetColorDepthShifts(format);
-            int bits;
+            int bits = GetDepthBits(format);
             bool blend;
             
-            bits = GetDepthBits(format);
-                        
             bitmap.Convert(null, pixelFormat888, null);
             and.Allocate(null, (bitmap.width+7/8), bitmap.height, 0, pixelFormat8, false);
 
