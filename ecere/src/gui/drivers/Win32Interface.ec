@@ -843,6 +843,51 @@ class Win32Interface : Interface
                window.ExternalPosition(x, y, rcWindow.right - rcWindow.left, rcWindow.bottom - rcWindow.top);
                break;
             }
+            case WM_SIZING:
+            {
+               RECT * rect = (RECT *)lParam;
+               MinMaxValue ew, eh;
+               int x, y, w, h;
+
+               window.GetDecorationsSize(&ew, &eh);
+
+               w = rect->right - rect->left;
+               h = rect->bottom - rect->top;
+
+               w -= ew;
+               h -= eh;
+
+               w = Max(w, 1);
+               h = Max(h, 1);
+
+               w = Max(w, window.minSize.w);
+               h = Max(h, window.minSize.h);
+               w = Min(w, window.maxSize.w);
+               h = Min(h, window.maxSize.h);
+
+               if(!window.OnResizing(&w, &h))
+               {
+                  w = window.clientSize.w;
+                  h = window.clientSize.h;
+               }
+
+               w = Max(w, window.skinMinSize.w);
+               h = Max(h, window.skinMinSize.h);
+
+               w += ew;
+               h += eh;
+
+               if(wParam == WMSZ_BOTTOMLEFT || wParam == WMSZ_LEFT || wParam == WMSZ_TOPLEFT)
+                  rect->left = rect->right - w;
+               else
+                  rect->right = rect->left + w;
+
+               if(wParam == WMSZ_TOPLEFT || wParam == WMSZ_TOP || wParam == WMSZ_TOPRIGHT)
+                  rect->top = rect->bottom - h;
+               else
+                  rect->bottom = rect->top + h;
+               break;
+            }
             case WM_SIZE:
             {
                if(window.nativeDecorations)
