@@ -1,9 +1,11 @@
 namespace gui::skins;
 
+#if defined(WIN32)
 #define WIN32_LEAN_AND_MEAN
 #define Method _Method
 #include <windows.h>
 #undef Method
+#endif
 
 import "Window"
 
