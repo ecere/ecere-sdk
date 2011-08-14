@@ -162,16 +162,10 @@ public class WindowsSkin_Window : Window
          RECT rcClient, rcWindow;
          GetClientRect(windowHandle, &rcClient);
          GetWindowRect(windowHandle, &rcWindow);
-         if(state == maximized)
-         {
-            *w += (rcWindow.right  - rcWindow.left) - rcClient.right;
-            *h += (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
-         }
-         else
-         {
-            *w += (rcWindow.right - rcWindow.left) - rcClient.right;
-            *h += (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
-         }
+         *w += (rcWindow.right - rcWindow.left) - rcClient.right;
+         *h += (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
+
+         // PrintLn(_class.name, " is at l = ", rcWindow.left, ", r = ", rcWindow.right);
 #endif
          return;
       }

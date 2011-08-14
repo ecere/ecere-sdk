@@ -164,6 +164,57 @@ static bool activateApp;
 
 static SystemCursor lastCursor = (SystemCursor)-1;
 
+void AeroSnapPosition(Window window, int x, int y, int w, int h)
+{
+   int oldX = window.absPosition.x;
+
+   // To prevent having a window < minClientSize with Aero Snap, because we don't receive a WM_SIZING!
+   // The sensible implementation of this is in WM_SIZING
+   {
+      int gw = w, gh = h;
+      MinMaxValue ew, eh;
+      window.GetDecorationsSize(&ew, &eh);
+
+      gw -= ew;
+      gh -= eh;
+
+      gw = Max(gw, 1);
+      gh = Max(gh, 1);
+
+      gw = Max(gw, window.minSize.w);
+      gh = Max(gh, window.minSize.h);
+      gw = Min(gw, window.maxSize.w);
+      gh = Min(gh, window.maxSize.h);
+
+      if(!window.OnResizing(&gw, &gh))
+      {
+         gw = window.clientSize.w;
+         gh = window.clientSize.h;
+      }
+
+      gw = Max(gw, window.skinMinSize.w);
+      gh = Max(gh, window.skinMinSize.h);
+
+      gw += ew;
+      gh += eh;
+
+      if(w != gw || h != gh)
+      {
+         bool move = false;
+         // Adjust x position if we resized from top or bottom left corner
+         if(x != oldX)
+         {
+            x += w - gw;
+            move = true;
+         }
+         w = gw;
+         h = gh;
+         guiApp.interfaceDriver.PositionRootWindow(window, x, y, w, h, move, true);
+      }
+   }
+   window.ExternalPosition(x, y, w, h);
+}
+
 class Win32Interface : Interface
 {
    class_property(name) = "Win32";
@@ -442,7 +493,7 @@ class Win32Interface : Interface
                      SetWindowPos(window.windowHandle, window.style.stayOnTop ? HWND_TOPMOST : HWND_TOP, 0,0,0,0,
                         SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOMOVE|SWP_NOSIZE); //|SWP_NOREDRAW); 
                   activateApp = false;
-                } 
+               }
 
                return (uint)DefWindowProc(windowHandle, msg, window ? window.active : wParam, lParam);
             }
@@ -825,7 +876,7 @@ class Win32Interface : Interface
             }
             case WM_MOVE:
             {
-               int x, y;
+               int x, y, w, h;
                WINDOWPLACEMENT placement = { 0 };
                RECT rcWindow;
                placement.length = sizeof(WINDOWPLACEMENT);
@@ -833,10 +884,14 @@ class Win32Interface : Interface
                GetWindowPlacement(windowHandle, &placement);
                x = rcWindow.left;
                y = rcWindow.top;
+               w = rcWindow.right - rcWindow.left;
+               h = rcWindow.bottom - rcWindow.top;
 
-               window.ExternalPosition(x, y, rcWindow.right - rcWindow.left, rcWindow.bottom - rcWindow.top);
+               AeroSnapPosition(window, x, y, w, h);
                break;
             }
+            /*case WM_MOVING:
+               break;*/
             case WM_SIZING:
             {
                RECT * rect = (RECT *)lParam;
@@ -902,7 +957,8 @@ class Win32Interface : Interface
                   y = rcWindow.top;
                   w = rcWindow.right - rcWindow.left;
                   h = rcWindow.bottom - rcWindow.top;
-                  window.ExternalPosition(x, y, w, h);
+
+                  AeroSnapPosition(window, x, y, w, h);
                   window.UpdateDisplay();
                }
                else
