@@ -4,6 +4,8 @@ import "ide"
 
 // *** The Old Color Scheme that was causing me auras and ophtalmic migraines -- Uncomment at your own risk! ***
 /*
+FontResource panelFont { "Courier New", 10 };
+FontResource codeFont { "Courier New", 10 };
 Color selectionColor = Color { 10, 36, 106 };
 Color selectionText = white;
 Color viewsBackground = white;
@@ -29,6 +31,12 @@ SyntaxColorScheme colorScheme
 */
 
 // The new nice dark scheme -- so peaceful on my brain
+FontResource panelFont { "Courier New", 10 };
+FontResource codeFont { "Courier New", 10 };
+/*
+FontResource panelFont { "Consolas", 10.5f };
+FontResource codeFont { "Consolas", 10.5f };
+*/
 Color selectionColor = lightYellow;
 Color selectionText = Color { 30, 40, 50 };
 Color viewsBackground = Color { 30, 40, 50 };
@@ -663,7 +671,7 @@ class CodeEditor : Window
    bool inUseDebug;
    OpenedFileInfo openedFileInfo;
 
-   FontResource font { "Courier New", 10 };
+   FontResource font { codeFont.faceName, codeFont.size };
    saveDialog = codeEditorFileDialog;
 
    Designer designer { codeEditor = this, visible = false, saveDialog = codeEditorFormFileDialog };

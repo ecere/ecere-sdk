@@ -241,8 +241,6 @@ class IDE : Window
    BitmapResource bmpTopFrameHalf      { ":codeMarks/topFrameHalf.png", window = this };
    BitmapResource bmpTopFrameHalfError { ":codeMarks/topFrameHalfError.png", window = this };
    
-   FontResource font { "Courier New", 10 };
-   
    Debugger debugger { };
 
    ProjectView projectView;
@@ -299,7 +297,7 @@ class IDE : Window
 
    CallStackView callStackView
    {
-      parent = this, font = font;
+      parent = this, font = { panelFont.faceName, panelFont.size };
 
       void OnGotoLine(char * line)
       {
@@ -438,7 +436,7 @@ class IDE : Window
    WatchesView watchesView { parent = this };
    ThreadsView threadsView
    {
-      parent = this, font = font;
+      parent = this, font = { panelFont.faceName, panelFont.size };
 
       bool OnKeyDown(Key key, unichar ch)
       {

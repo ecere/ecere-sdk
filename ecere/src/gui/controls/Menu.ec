@@ -4,7 +4,8 @@ import "Window"
 
 private define SELECTION_COLOR = guiApp.currentSkin.selectionColor; //Color { 10, 36, 106 };
 private define SELECTION_TEXT = guiApp.currentSkin.selectionText; //Color { 10, 36, 106 };
-private define MENU_COLOR = activeBorder;
+private define menuBarColor = Color { 211, 218, 237 };
+private define popupMenuColor = Color { 229,234,245 };
 
 class ItemPtr : struct
 {
@@ -605,7 +606,7 @@ private:
 
    Menu()
    {
-      color = MENU_COLOR;
+      color = popupMenuColor;
    }
 
    ~Menu()
@@ -1017,6 +1018,16 @@ public class PopupMenu : Window
       }
       else if(guiApp.textMode)
          bitmapOffset = 8;
+      else
+      {
+         // Shiny gradient for menu bar
+         ColorKey keys[2] = 
+         {
+            { white, 0 },
+            { popupMenuColor, 1 }
+         };
+         surface.Gradient(keys, sizeof(keys)/sizeof(ColorKey), 1, vertical, 0,0, clientSize.w-1, 7);
+      }
 
       if(menu)
       {
@@ -1514,7 +1525,7 @@ public class PopupMenu : Window
 
       totalHeight = 0;
 
-      background = menu ? menu.color : MENU_COLOR;
+      background = isMenuBar ? menuBarColor : (menu ? menu.color : popupMenuColor);
       FontExtent = Display::FontExtent;
       if(menu)
       {

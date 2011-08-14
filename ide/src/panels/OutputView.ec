@@ -118,7 +118,7 @@ class OutputView : Window
       parent = this, freeCaret = true, autoEmpty = true, multiLine = true;
       readOnly = true, hasVertScroll = true, hasHorzScroll = true;
       anchor = Anchor { left = 0, right = 0, top = 23, bottom = 0 };
-      font = { "Courier New", 10 };
+      font = { panelFont.faceName, panelFont.size };
       background = outputBackground;
       foreground = outputText;
       selectionColor = selectionColor, selectionText = selectionText;
@@ -145,7 +145,7 @@ class OutputView : Window
       parent = this, freeCaret = true, autoEmpty = true, multiLine = true;
       readOnly = true, hasVertScroll = true, hasHorzScroll = true, visible = false;
       anchor = Anchor { left = 0, right = 0, top = 23, bottom = 0 };
-      font = { "Courier New", 10 };
+      font = { panelFont.faceName, panelFont.size };
       background = outputBackground;
       foreground = outputText;
       selectionColor = selectionColor, selectionText = selectionText;
@@ -156,7 +156,7 @@ class OutputView : Window
       parent = this, freeCaret = true, autoEmpty = true, multiLine = true;
       readOnly = true, hasVertScroll = true, hasHorzScroll = true, visible = false;
       anchor = Anchor { left = 0, right = 0, top = 23, bottom = 0 };
-      font = { "Courier New", 10 };
+      font = { panelFont.faceName, panelFont.size };
       background = outputBackground;
       foreground = outputText;
       selectionColor = selectionColor, selectionText = selectionText;
@@ -184,7 +184,7 @@ class OutputView : Window
       parent = this, freeCaret = true, autoEmpty = true, multiLine = true;
       readOnly = true, hasVertScroll = true, hasHorzScroll = true, visible = false;
       anchor = Anchor { left = 0, right = 0, top = 23, bottom = 0 };
-      font = { "Courier New", 10 };
+      font = { panelFont.faceName, panelFont.size };
    };
 #endif
    

@@ -1,4 +1,5 @@
 import "ecere"
+import "CodeEditor"
 
 static uint TokenizeList(char * string, const uint maxTokens, const char seperator, char * tokens[])
 {
@@ -250,7 +251,7 @@ class GDBDialog : Window
       multiSelect = false, fullRowSelect = false, hasVertScroll = true, hasHorzScroll = true;
       borderStyle = deep, collapseControl = true, treeBranches = true;
       anchor = Anchor { left = 80, right = 8, top = 65, bottom = 100 };
-      font = { "Courier New", 10 };
+      font = { panelFont.faceName, panelFont.size };
    };
 
    Label outputLabel { this, position = { 8, 39 }, anchor = { left = 8, bottom = 73 }, labeledWindow = output };
@@ -258,7 +259,7 @@ class GDBDialog : Window
    {
       this, text = "Output:", multiLine = true, hasVertScroll = true, hasHorzScroll = true;
       size = { 328, 84 }, anchor = { left = 80, bottom = 8, right = 8 };
-      font = { "Courier New", 10 };
+      font = { panelFont.faceName, panelFont.size };
    };
 
    void UpdateOutput()
