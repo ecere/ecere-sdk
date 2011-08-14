@@ -833,12 +833,6 @@ class Win32Interface : Interface
                GetWindowPlacement(windowHandle, &placement);
                x = rcWindow.left;
                y = rcWindow.top;
-               if((placement.showCmd == SW_SHOWMAXIMIZED || placement.showCmd == SW_MAXIMIZE) && window.state != maximized)
-                  window.state = maximized;
-               else if(placement.showCmd == SW_SHOWMINIMIZED && window.state != minimized)
-                  window.state = minimized;
-               else if(placement.showCmd == SW_SHOWNORMAL && window.state != normal && window.visible)
-                  window.state = normal;
 
                window.ExternalPosition(x, y, rcWindow.right - rcWindow.left, rcWindow.bottom - rcWindow.top);
                break;
@@ -886,27 +880,22 @@ class Win32Interface : Interface
                   rect->top = rect->bottom - h;
                else
                   rect->bottom = rect->top + h;
-               break;
+
+               return 1;
             }
             case WM_SIZE:
             {
                if(window.nativeDecorations)
                {
-                  int w = LOWORD(lParam);
-                  int h = HIWORD(lParam);
-                  int x, y;
-                  WINDOWPLACEMENT placement = { 0 };
+                  int x, y, w, h;
                   RECT rcWindow;
                   GetWindowRect(windowHandle, &rcWindow);
 
-                  placement.length = sizeof(WINDOWPLACEMENT);
-
-                  GetWindowPlacement(windowHandle, &placement);
-                  if((placement.showCmd == SW_SHOWMAXIMIZED || placement.showCmd == SW_MAXIMIZE) && window.state != maximized)
+                  if(wParam == SIZE_MAXIMIZED && window.state != maximized)
                      window.state = maximized;
-                  else if(placement.showCmd == SW_SHOWMINIMIZED && window.state != minimized)
+                  else if(wParam == SIZE_MINIMIZED && window.state != minimized)
                      window.state = minimized;
-                  else if(placement.showCmd == SW_SHOWNORMAL && window.state != normal && window.visible)
+                  else if(wParam == SIZE_RESTORED && window.state != normal && window.visible)
                      window.state = normal;
 
                   x = rcWindow.left;

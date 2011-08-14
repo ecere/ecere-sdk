@@ -248,6 +248,9 @@ public class FileDialog : Window
    borderStyle = sizable;
    tabCycle = true;
    autoCreate = false;
+#ifdef __WIN32__
+   nativeDecorations = true;
+#endif
    minClientSize = { 500, 300 };
 
 public:
