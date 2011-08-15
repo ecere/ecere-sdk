@@ -457,7 +457,7 @@ public class WindowsSkin_Window : Window
       int top = 0, border = 0;
       int insideBorder = 0;
 
-      if(!nativeDecorations && rootWindow == this)
+      if(!nativeDecorations || rootWindow != this)
       {
          if(state == minimized)
             top = border = DEAD_BORDER;
@@ -516,7 +516,7 @@ public class WindowsSkin_Window : Window
             }
          }
       }
-      if(!nativeDecorations && rootWindow == this)
+      if(!nativeDecorations || rootWindow != this)
       {
          if(sysButtons[0])
          {
