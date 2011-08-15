@@ -133,7 +133,7 @@ private:
    bool reverse;
    RepButton left
    {
-      this, visible = false, bevelOver = true, nonClient = true, keyRepeat = true;
+      this, visible = false, bevelOver = true, nonClient = true, keyRepeat = true, opacity = 0;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -154,7 +154,7 @@ private:
    };
    RepButton right
    {
-      this, visible = false, bevelOver = true, nonClient = true, keyRepeat = true;
+      this, visible = false, bevelOver = true, nonClient = true, keyRepeat = true, opacity = 0;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {

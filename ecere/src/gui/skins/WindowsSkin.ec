@@ -44,16 +44,18 @@ static ColorKey gradient[] =
 #define GRADIENT_DIRECTION vertical
 static ColorKey gradient[] =
 {
-   { ColorAlpha { 255, { 180, 200, 220} }, 0.00f },
+   //{ ColorAlpha { 255, { 180, 200, 220} }, 0.00f },
+   { ColorAlpha { 255, menuBarColor }, 0.00f },
    { ColorAlpha { 255, { 255, 255, 255} }, 0.60f },
-   { ColorAlpha { 255, { 128, 128, 130} }, 1.00f }
+   { ColorAlpha { 255, { 158, 158, 160} }, 1.00f }
 };
 
 static ColorKey gradientInactive[] =
 {
-   { ColorAlpha { 255, { 160, 180, 200} },  0.00f },
+   //{ ColorAlpha { 255, { 160, 180, 200} },  0.00f },
+   { ColorAlpha { 255, popupMenuColor }, 0.00f },
    { ColorAlpha { 255, { 220, 220, 220} }, 0.60f },
-   { ColorAlpha { 255, { 100, 100, 100} }, 1.00f }
+   { ColorAlpha { 255, { 120, 120, 120} }, 1.00f }
 };
 
 /*
@@ -590,7 +592,7 @@ public class WindowsSkin_Button : Button
             state = disabled;
 
          // Background
-         if((bevel || bevelOver) /* && opacity && backColor*/)
+         if((bevel || bevelOver) && opacity && backColor)
          {
             if(!scaleBitmap || !buttonBitmap)
             {
