@@ -199,10 +199,7 @@ void DrawLineMarginIcon(Surface surface, BitmapResource resource, int line, int 
 
 class IDE : Window
 {
-#if defined(__WIN32__)
-   // Native decorations on Windows works pretty well now! Let's get them going good on X and make it the default there as well.
    nativeDecorations = true;
-#endif
    icon = { ":icon.png" };
    text = titleECEREIDE;
    background = Color { 85, 85, 85 };

@@ -1992,6 +1992,8 @@ class MainForm : Window
    hasMinimize = true;
    text = "API Documentation Browser";
 
+   nativeDecorations = true;
+
    BitmapResource icons[CodeObjectType];
 
    MainForm()
