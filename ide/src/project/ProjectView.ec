@@ -102,7 +102,8 @@ static char * iconNames[] =
    "<:ecere>status/audioVolumeHigh.png",           /*soundFile*/
    "<:ecere>mimeTypes/package.png",                /*archiveFile*/
    "<:ecere>mimeTypes/packageSoftware.png",        /*packageFile*/
-   "<:ecere>mimeTypes/packageOpticalDisc.png"      /*opticalMediaImageFile*/
+   "<:ecere>mimeTypes/packageOpticalDisc.png",     /*opticalMediaImageFile*/
+   "<:ecere>mimeTypes/file.png"                    /*mFile*/ //TODO: create icon for mfile
 };
 
 enum PrepareMakefileMethod { normal, force, forceExists };
