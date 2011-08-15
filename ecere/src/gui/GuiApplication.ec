@@ -378,8 +378,19 @@ public class GuiApplication : Application
 
       if((windowResized || windowMoved) && moveChildren)
       {
-         //Window child;
+         Window child;
          desktop.Position(x, y, w, h, true, true, true, true, false, false);
+
+         // Maximized native decorations windows suffer when we drag the dock around, so remaximize them
+         // It's a little jumpy, but oh well.
+         for(child = desktop.children.first; child; child = child.next)
+         {
+            if(child.nativeDecorations && child.rootWindow == child && child.state == maximized)
+            {
+               child.state = normal;
+               child.state = maximized;
+            }
+         }
          /*for(child = desktop.children.first; child; child = child.next)
          {
             if(!child.systemParent)

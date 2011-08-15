@@ -882,8 +882,9 @@ class Win32Interface : Interface
                placement.length = sizeof(WINDOWPLACEMENT);
                GetWindowRect(windowHandle, &rcWindow);
                GetWindowPlacement(windowHandle, &placement);
-               x = rcWindow.left;
-               y = rcWindow.top;
+
+               x = rcWindow.left - desktopX;
+               y = rcWindow.top  - desktopY;
                w = rcWindow.right - rcWindow.left;
                h = rcWindow.bottom - rcWindow.top;
 
@@ -953,8 +954,8 @@ class Win32Interface : Interface
                   else if(wParam == SIZE_RESTORED && window.state != normal && window.visible)
                      window.state = normal;
 
-                  x = rcWindow.left;
-                  y = rcWindow.top;
+                  x = rcWindow.left - desktopX;
+                  y = rcWindow.top  - desktopY;
                   w = rcWindow.right - rcWindow.left;
                   h = rcWindow.bottom - rcWindow.top;
 
