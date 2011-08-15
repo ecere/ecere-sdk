@@ -490,6 +490,11 @@ public class WindowsSkin_Window : Window
          if(((BorderBits)borderStyle).deep)
             insideBorder += 2;
       }
+      else
+      {
+         border = clientStart.x;
+         insideBorder = border;
+      }
 
       if(menuBar)
       {
@@ -596,11 +601,6 @@ public class WindowsSkin_Button : Button
          {
             if(!scaleBitmap || !buttonBitmap)
             {
-               /*
-               surface.SetBackground({(byte)(opacity * 255), backColor});
-               //surface.Area(1, 1,clientSize.w-3+offset,clientSize.h-3+offset);
-               surface.Area(0, 0,clientSize.w-1,clientSize.h-1);
-               */
                ColorKey keys[2] = { { silver, 0.0f }, { white, 1.0f } };
                surface.Gradient(keys, sizeof(keys) / sizeof(ColorKey), 1, vertical, 0, 0, clientSize.w-1, clientSize.h-1);
             }
@@ -741,7 +741,7 @@ public class WindowsSkin_Button : Button
             surface.TextExtent(text, strlen(text),&tw, &th);
 
             if((isRadio || isCheckbox) && !bevelOver)
-               WriteCaption(surface, /*clientSize.h +*/ CAPTION_DISTANCE + 3, 
+               WriteCaption(surface, CAPTION_DISTANCE + 3, // + clientSize.h,
                   (clientSize.h - th - 4)/2);
             else 
             {
@@ -783,7 +783,7 @@ public class WindowsSkin_Button : Button
          }
          if(!bevelOver && !isRemote)
          {
-            if(active/* && (text || !(buttonStyle.radio || buttonStyle.checkBox))*/)
+            if(active) // && (text || !(buttonStyle.radio || buttonStyle.checkBox)))
             {
                int x1,y1,x2,y2;
                surface.SetForeground(black);
@@ -791,7 +791,7 @@ public class WindowsSkin_Button : Button
 
                if((isRadio || isCheckbox) && text)
                {
-                  x1 = /*clientSize.h + */CAPTION_DISTANCE;
+                  x1 = CAPTION_DISTANCE;  // + clientSize.h;
                   y1 = 0;
                   x2 = clientSize.w-4;
                   y2 = clientSize.h-4;
