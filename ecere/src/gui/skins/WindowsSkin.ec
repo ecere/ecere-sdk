@@ -545,3 +545,277 @@ public class WindowsSkin_Window : Window
       }
    }
 }
+
+
+#define PUREVTBL(c)     ((int (**)())*(void **)((byte *)class(c).data + 4))
+#define CAPTION_DISTANCE   18
+
+default:
+static void Dummy()
+{
+   Window a;
+   a.OnApplyGraphics();
+   a.OnRedraw(null);
+}
+
+extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnApplyGraphics;
+extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw;
+private:
+
+public class WindowsSkin_Button : Button
+{
+   void OnRedraw(Surface surface)
+   {
+      if(isRadio)
+      {
+         PUREVTBL(Button)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw](this, surface);
+         return;
+      }
+      // if(bevel)
+      {
+         ButtonState state = this.buttonState;
+         Bitmap buttonBitmap = bitmap ? bitmap.bitmap : null;
+         char * text = this.text;
+         int offset = (state == down && this.offset) ? 1 : 0;
+         Color backColor = background;
+         int isDefault = this.isDefault;
+         Font font;
+
+         font = fontObject;
+
+         if(bevelOver && checked)
+            offset = 1;
+
+         if(!isEnabled)
+            state = disabled;
+
+         // Background
+         if((bevel || bevelOver) /* && opacity && backColor*/)
+         {
+            if(!scaleBitmap || !buttonBitmap)
+            {
+               /*
+               surface.SetBackground({(byte)(opacity * 255), backColor});
+               //surface.Area(1, 1,clientSize.w-3+offset,clientSize.h-3+offset);
+               surface.Area(0, 0,clientSize.w-1,clientSize.h-1);
+               */
+               ColorKey keys[2] = { { silver, 0.0f }, { white, 1.0f } };
+               surface.Gradient(keys, sizeof(keys) / sizeof(ColorKey), 1, vertical, 0, 0, clientSize.w-1, clientSize.h-1);
+            }
+         }
+
+         // Checkbox
+         if(isCheckbox && !buttonBitmap)
+         {
+            int height = 16;
+            int start = (clientSize.h - height) / 2;
+
+            if(!isEnabled)
+               // surface.SetBackground(activeBorder);
+               surface.SetBackground(gainsboro);
+            else if(active && !text)
+               surface.SetBackground((offset ? activeBorder : Color { 0,0,170 }));
+            else
+               surface.SetBackground((offset ? activeBorder : white));
+            surface.Area(2, start+2,height-3,start+height-3);
+
+            surface.SetForeground(Color { 85, 85, 85 });
+            surface.HLine(0, height - 2, start + 0);
+            surface.VLine(start+1, start+height - 2, 0);
+
+            surface.SetForeground(Color { 64,64,64 });
+            surface.HLine(1, height - 3, start + 1);
+            surface.VLine(start+2, start+height - 3, 1);
+
+            surface.SetForeground(Color { 212,208,200 });
+            surface.HLine(1, height - 2, start + height-2);
+            surface.VLine(start+1, start+height - 3, height-2);
+
+            surface.SetForeground(white);
+            surface.HLine(0, height - 1, start + height-1);
+            surface.VLine(start+0, start+height - 2, height-1);
+
+            if(checked)
+            {
+               if(active && !text)
+                  surface.SetForeground(white);
+               else if(!isEnabled)
+                  surface.SetForeground(Color { 85, 85, 85 });
+               else
+                  surface.SetForeground(black);
+               surface.DrawLine(4, start+8, 7,start+11);
+               surface.DrawLine(4, start+9, 7,start+12);
+               surface.DrawLine(7, start+11, 11,start+3);
+               surface.DrawLine(7, start+12, 11,start+4);
+            }
+         }
+
+         // Bitmaps
+         if(buttonBitmap)
+         {
+            surface.SetForeground(white);
+            if(isRadio || isCheckbox)
+            {
+               int x = 0, y = (clientSize.h-buttonBitmap.height)/2;
+               if(bevelOver && text)
+               {
+                  x = (CAPTION_DISTANCE-buttonBitmap.width)/2 + offset;
+                  y = (clientSize.h-buttonBitmap.height)/2 + offset;
+
+
+               }
+
+               // Radio Buttons and Checkboxes
+               surface.Blit(buttonBitmap,
+                  x, y,
+                  0,0,buttonBitmap.width,buttonBitmap.height);
+            }
+            else 
+            {
+               // Push Buttons
+               if(scaleBitmap)
+               {
+                  if(bevel || offset)
+                     surface.Stretch(buttonBitmap, 
+                        1 + offset, 1 + offset,0,0,
+                        clientSize.w-3,clientSize.h-3,buttonBitmap.width,buttonBitmap.height);
+                  else
+                     surface.Stretch(buttonBitmap, 0,0, 0,0,
+                        clientSize.w,clientSize.h,buttonBitmap.width,buttonBitmap.height);
+               }
+               else
+               {
+                  if(bevel || offset)
+                     surface.Blit(buttonBitmap,
+                        (clientSize.w-buttonBitmap.width) /2 + offset,
+                        (clientSize.h-buttonBitmap.height)/2 + offset,
+                        0,0,buttonBitmap.width,buttonBitmap.height);
+                  else
+                     surface.Blit(buttonBitmap,
+                        (clientSize.w-buttonBitmap.width)/2,
+                        (clientSize.h-buttonBitmap.height)/2,
+                        0,0,buttonBitmap.width,buttonBitmap.height);
+               }
+            }
+         }
+
+         // Shadows
+         if(bevel || (bevelOver && (state == down || state == over || checked)))
+         {
+            if(state == down || checked)
+            {
+               surface.SetForeground(Color { 85, 85, 85 });
+               surface.HLine(isDefault + 0, clientSize.w-2-isDefault, 0);
+               surface.VLine(isDefault + 1, clientSize.h-2-isDefault, 0);
+               surface.SetForeground(white);
+               surface.HLine(isDefault + 0, clientSize.w-1-isDefault, clientSize.h-1-isDefault);
+               surface.VLine(isDefault + 0, clientSize.h-2-isDefault, clientSize.w-1-isDefault);
+            }
+            else
+            {
+               surface.SetForeground(white);
+               surface.HLine(0 + isDefault, clientSize.w-2 - isDefault,  isDefault);
+               surface.VLine(1 + isDefault, clientSize.h-2 - isDefault,  isDefault);
+               surface.SetForeground(Color { 85, 85, 85 });
+               surface.HLine(1 + isDefault, clientSize.w-2 - isDefault, clientSize.h-2 - isDefault);
+               surface.VLine(1 + isDefault, clientSize.h-3 - isDefault, clientSize.w-2 - isDefault);
+
+               if(bevel)
+               {
+                  surface.SetForeground(black);
+                  surface.HLine( isDefault, clientSize.w-1 - isDefault, clientSize.h-1 - isDefault);
+                  surface.VLine( isDefault, clientSize.h-2 - isDefault, clientSize.w-1 - isDefault);
+               }
+            }
+         }
+
+         // Text
+         surface.TextOpacity(false);
+         surface.TextFont(font);
+         surface.SetForeground(foreground);
+         if(text)
+         {
+            int tw, th;
+            surface.TextExtent(text, strlen(text),&tw, &th);
+
+            if((isRadio || isCheckbox) && !bevelOver)
+               WriteCaption(surface, /*clientSize.h +*/ CAPTION_DISTANCE + 3, 
+                  (clientSize.h - th - 4)/2);
+            else 
+            {
+               int x, y = (clientSize.h - th - 1)/2 + offset;
+               
+               if(ellipsis)
+               {
+                  int width = clientSize.w - 2*6;
+                  int x = 6 + offset;
+
+                  surface.WriteTextDots(alignment, x, y, width, text, strlen(text));
+               }
+               else
+               {
+                  int width = clientSize.w - 2 * 6;
+                  x = 6 + offset;
+                  if(isCheckbox || ((isRadio || bevelOver) && buttonBitmap))
+                  {
+                     x += CAPTION_DISTANCE + 3;
+                  }
+
+                  if(tw < width)
+                  {
+                     if(alignment == right)
+                        x += width - tw - 1;
+                     else if(alignment == center)
+                        x += (width - tw) / 2;
+                  }
+                  WriteCaption(surface, x, y);
+               }
+            }
+         }
+
+         // Activation Highlight
+         if(isDefault)
+         {
+            surface.SetForeground(black);
+            surface.Rectangle(0,0,clientSize.w-1,clientSize.h-1);
+         }
+         if(!bevelOver && !isRemote)
+         {
+            if(active/* && (text || !(buttonStyle.radio || buttonStyle.checkBox))*/)
+            {
+               int x1,y1,x2,y2;
+               surface.SetForeground(black);
+               surface.LineStipple(0x5555);
+
+               if((isRadio || isCheckbox) && text)
+               {
+                  x1 = /*clientSize.h + */CAPTION_DISTANCE;
+                  y1 = 0;
+                  x2 = clientSize.w-4;
+                  y2 = clientSize.h-4;
+               }
+               else
+               {
+                  x1 = 3+offset;
+                  y1 = 3+offset;
+                  x2 = clientSize.w - 5+offset;
+                  y2 = clientSize.h - 5+offset;
+
+                  if(isRadio || isCheckbox)
+                  {
+                     x1-=3;
+                     y1-=3;
+                     x2+=1;
+                     y2+=1;
+                  }
+               }
+               if((x2 - x1) & 1) x2++;
+               if((y2 - y1) & 1) y2++;
+
+               surface.Rectangle(x1, y1, x2, y2);
+               surface.LineStipple(0);
+            }
+         }
+      }
+   }
+}

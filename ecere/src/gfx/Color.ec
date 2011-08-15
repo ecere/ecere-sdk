@@ -569,9 +569,11 @@ public enum DefinedColor : Color
    lightPink           = Color { 255, 182, 193 }
 };
 
+// TODO: We really should improve on this, only activeBorder has been used so far
 public enum SystemColor : Color
 {
-   activeBorder         = Color { 212, 208, 200 },
+   // activeBorder         = Color { 212, 208, 200 },
+   activeBorder         = Color { 229, 234, 245 },
    control              = Color { 212, 208, 200 },
    controlLight         = Color { 212, 208, 200 },
    inactiveBorder       = Color { 212, 208, 200 },
