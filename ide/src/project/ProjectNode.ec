@@ -846,25 +846,25 @@ private:
                   }
                }
             }
-         }
-         if(result.excluded)
-         {
-            SetBool opposite = result.excluded == true ? false : true;
-            Platform platform;
-            if(platforms)
+            if(result.excluded)
             {
-               for(p : platforms)
+               SetBool opposite = result.excluded == true ? false : true;
+               Platform platform;
+               if(platforms)
                {
-                  if(p.options.excludeFromBuild == opposite && (platform = p.name))
-                     result.platformSpecific[platform] = true;
+                  for(p : platforms)
+                  {
+                     if(p.options.excludeFromBuild == opposite && (platform = p.name))
+                        result.platformSpecific[platform] = true;
+                  }
                }
-            }
-            if(config && config.platforms)
-            {
-               for(p : config.platforms)
+               if(config && config.platforms)
                {
-                  if(p.options.excludeFromBuild == opposite && (platform = p.name))
-                     result.platformSpecific[platform] = true;
+                  for(p : config.platforms)
+                  {
+                     if(p.options.excludeFromBuild == opposite && (platform = p.name))
+                        result.platformSpecific[platform] = true;
+                  }
                }
             }
          }
