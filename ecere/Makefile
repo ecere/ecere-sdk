@@ -240,7 +240,7 @@ RESOURCES3 = $(RES)places/folder.png $(RES)places/folderRemote.png \
 # TOOLCHAIN
 export LD_LIBRARY_PATH=../obj/$(PLATFORM)/lib
 export DYLD_LIBRARY_PATH=../obj/$(PLATFORM)/lib
-CPP := $(CC) -E
+CPP := cpp
 CC := gcc
 ECP := $(call psep,../compiler/bootstrap/obj/bin.$(PLATFORM)/ecp$(E))
 ECC := $(call psep,../compiler/bootstrap/obj/bin.$(PLATFORM)/ecc$(E))
