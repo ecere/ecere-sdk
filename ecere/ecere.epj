@@ -633,10 +633,21 @@ from wherever you obtained them.",
                               "harfbuzz-stream.h",
                               "harfbuzz-tibetan.c",
                               "harfbuzz.h"
-                           ]
+                           ],
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           }
                         },
                         {
                            "FileName" : "Direct3D8DisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "win32",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -648,6 +659,14 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "Direct3D9DisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "win32",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -659,6 +678,14 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "DirectDrawDisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "win32",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -670,6 +697,14 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "GDIDisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "win32",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ],
                            "Configurations" : [
                               {
                                  "Name" : "PACS",
@@ -681,6 +716,9 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "lfbBlit.ec",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           },
                            "Configurations" : [
                               {
                                  "Name" : "PACS",
@@ -692,6 +730,9 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "lfbConvert.ec",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           },
                            "Configurations" : [
                               {
                                  "Name" : "PACS",
@@ -703,6 +744,9 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "LFBDisplayDriver.ec",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           },
                            "Configurations" : [
                               {
                                  "Name" : "PACS",
@@ -714,6 +758,9 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "NCursesDisplayDriver.ec",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           },
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -725,6 +772,9 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "OpenGLDisplayDriver.ec",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           },
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -736,6 +786,14 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "Win32BitmapPrinterDisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "win32",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -747,6 +805,14 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "Win32ConsoleDisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "win32",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -758,6 +824,14 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "Win32PrinterDisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "win32",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -767,8 +841,21 @@ from wherever you obtained them.",
                               }
                            ]
                         },
-                        "XDisplayDriver.ec"
+                        {
+                           "FileName" : "XDisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
+                        }
                      ],
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     },
                      "Configurations" : [
                         {
                            "Name" : "PACS",
@@ -856,6 +943,9 @@ from wherever you obtained them.",
                      "Files" : [
                         {
                            "FileName" : "NCursesInterface.ec",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           },
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -867,6 +957,14 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "Win32Interface.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "win32",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ],
                            "Configurations" : [
                               {
                                  "Name" : "PACS",
@@ -878,6 +976,14 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "Win32ConsoleInterface.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "win32",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
@@ -887,8 +993,27 @@ from wherever you obtained them.",
                               }
                            ]
                         },
-                        "XInterface.ec"
+                        {
+                           "FileName" : "XInterface.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              },
+                              {
+                                 "Name" : "apple",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
+                        }
                      ],
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     },
                      "Configurations" : [
                         {
                            "Name" : "PACS",
