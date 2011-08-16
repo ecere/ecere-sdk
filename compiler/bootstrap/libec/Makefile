@@ -28,19 +28,6 @@ SOURCES = bootstrap/ast.c bootstrap/copy.c bootstrap/dbpass.c bootstrap/ec.main.
 
 include ../../../include.mk
 
-# TOOLCHAIN
-
-CPP := cpp
-CC := gcc
-ECP := ecp
-ECC := ecc
-ECS := ecs
-EAR := ear
-LD := gcc
-AR := ar
-STRIP := strip
-UPX := upx
-
 # FLAGS
 
 CFLAGS = -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w \

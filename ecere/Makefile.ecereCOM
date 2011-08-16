@@ -53,16 +53,10 @@ RESOURCES =
 
 # TOOLCHAIN
 
-CPP := cpp
-CC := gcc
 ECP := $(call psep,../compiler/bootstrap/obj/bin.$(PLATFORM)/ecp$(E))
 ECC := $(call psep,../compiler/bootstrap/obj/bin.$(PLATFORM)/ecc$(E))
 ECS := $(call psep,../compiler/bootstrap/obj/bin.$(PLATFORM)/ecs$(E))
 EAR := $(call psep,../obj/$(PLATFORM)/bin/ear)
-LD := gcc
-AR := ar
-STRIP := strip
-UPX := upx
 
 # FLAGS
 

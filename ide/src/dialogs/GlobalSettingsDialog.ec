@@ -834,6 +834,62 @@ class CompilerOptionsTab : CompilersSubTab
       }
    };
 
+   Button ccacheEnabled
+   {
+      this, text = "Use ccache", hotKey = altC, position = { 8, 68 };
+      isCheckbox = true;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         CompilerConfig compiler = loadedCompiler;
+         if(compiler)
+         {
+            compiler.ccacheEnabled = button.checked;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   };
+
+   Button distccEnabled
+   {
+      this, text = "Use distcc", hotKey = altD, position = { 8, 96 };
+      isCheckbox = true;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         CompilerConfig compiler = loadedCompiler;
+         if(compiler)
+         {
+            distccHosts.disabled = !button.checked;
+            compiler.distccEnabled = button.checked;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   };
+
+   Label distccHostsLabel { this, position = { 8, 124 }, labeledWindow = distccHosts };
+   EditBox distccHosts
+   {
+      this, text = "distcc hosts", hotKey = altH;
+      position = { 88, 120 }, size = { 300 };
+
+      bool NotifyModified(EditBox editBox)
+      {
+         if(loadedCompiler)
+         {
+            CompilerConfig compiler = loadedCompiler;
+            compiler.distccHosts = editBox.contents;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   }
+
    CompilerOptionsTab()
    {
       Platform p;
@@ -855,6 +911,10 @@ class CompilerOptionsTab : CompilersSubTab
          targetPlatform.currentRow = targetPlatform.FindRow(compiler.targetPlatform);
          numJobs = compiler.numJobs;
          numJobsBox.Refresh();
+         ccacheEnabled.checked = compiler.ccacheEnabled;
+         distccEnabled.checked = compiler.distccEnabled;
+         distccHosts.disabled = !compiler.distccEnabled;
+         distccHosts.contents = compiler.distccHosts;
          
          labelTargetPlatform.disabled = disabled;
          targetPlatform.disabled = disabled;

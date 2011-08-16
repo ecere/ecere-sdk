@@ -73,6 +73,31 @@ else
 endif
 endif
 
+# SUPER TOOLS
+ifdef CCACHE
+   CCACHE_COMPILE := ccache
+ifdef DISTCC
+   DISTCC_COMPILE := distcc
+endif
+else
+ifdef DISTCC
+   DISTCC_COMPILE := distcc
+endif
+endif
+
+# TOOLCHAIN
+export CC      = $(CCACHE_COMPILE) $(DISTCC_COMPILE) gcc
+export CPP     = $(CCACHE_COMPILE) $(DISTCC_COMPILE) cpp
+export ECP     = ecp
+export ECC     = ecc
+export ECS     = ecs
+export EAR     = ear
+export AS      = as
+export LD      = ld
+export AR      = ar
+export STRIP   = strip
+UPX := upx
+
 # SHELL COMMANDS
 ifdef WINDOWS
    echo = $(if $(1),echo $(1))

@@ -2235,7 +2235,7 @@ class IDE : Window
             if(prj == workspace.projects.firstIterator.data) continue;
 
             targetDirExp = prj.targetDir;
-            
+
             /*if(prj.config.targetType == sharedLibrary && prj.config.debug)
                cfg = prj.config;
             else
@@ -2309,7 +2309,7 @@ class IDE : Window
          if(!found)
             newExePaths.Add(CopySystemPath(oldPaths[c]));
       }
-      
+
       len = 0;
       for(path : newExePaths)
          len += strlen(path) + 1;
@@ -2358,7 +2358,7 @@ class IDE : Window
             libPathExists[oldPaths[c]] = true;
          }
       }
-      
+
       len = 0;
       for(path : newLibPaths)
          len += strlen(path) + 1;
@@ -2383,6 +2383,10 @@ class IDE : Window
       delete newLibPaths;
       delete libPathExists;
 #endif
+
+      if(compiler.distccEnabled && compiler.distccHosts)
+         SetEnvironment("DISTCC_HOSTS", compiler.distccHosts);
+
       delete compiler;
    }
 

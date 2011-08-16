@@ -703,6 +703,14 @@ public:
       get { return execPrefixCommand; }
       isset { return execPrefixCommand && execPrefixCommand[0]; }
    }
+   bool ccacheEnabled;
+   bool distccEnabled;
+   property char * distccHosts
+   {
+      set { delete distccHosts; if(value && value[0]) distccHosts = CopyString(value); }
+      get { return distccHosts; }
+      isset { return distccHosts && distccHosts[0]; }
+   }
    Array<String> includeDirs { };
    Array<String> libraryDirs { };
    Array<String> executableDirs { };
@@ -719,6 +727,7 @@ private:
    char * cppCommand;
    char * ccCommand;
    char * execPrefixCommand;
+   char * distccHosts;
    /*union
    {
       struct { Array<String> includes, libraries, executables; };
@@ -736,6 +745,7 @@ private:
       delete ccCommand;
       delete makeCommand;
       delete execPrefixCommand;
+      delete distccHosts;
       if(includeDirs) { includeDirs.Free(); delete includeDirs; }
       if(libraryDirs) { libraryDirs.Free(); delete libraryDirs; }
       if(executableDirs) { executableDirs.Free(); delete executableDirs; }
@@ -756,7 +766,10 @@ private:
          earCommand,
          cppCommand,
          ccCommand,
-         execPrefixCommand
+         execPrefixCommand,
+         ccacheEnabled,
+         distccEnabled,
+         distccHosts
       };
       for(s : includeDirs) copy.includeDirs.Add(CopyString(s));
       for(s : libraryDirs) copy.libraryDirs.Add(CopyString(s));

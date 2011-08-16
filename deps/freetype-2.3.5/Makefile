@@ -45,15 +45,6 @@ RESOURCES =
 
 include ../../include.mk
 
-# TOOLCHAIN
-
-CPP := cpp
-CC := gcc
-LD := gcc
-AR := ar
-STRIP := strip
-UPX := upx
-
 # FLAGS
 
 # Warning: Compiling with -O2 gives 0 font height with MinGW!!

@@ -43,16 +43,10 @@ RESOURCES =
 # TOOLCHAIN
 export LD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
 export DYLD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
-CPP := cpp
-CC := gcc
 ECP := $(call psep,../../obj/$(PLATFORM)/bin/ecp)
 ECC := $(call psep,../../obj/$(PLATFORM)/bin/ecc)
 ECS := $(call psep,../../obj/$(PLATFORM)/bin/ecs)
 EAR := $(call psep,../../obj/$(PLATFORM)/bin/ear)
-LD := gcc
-AR := ar
-STRIP := strip
-UPX := upx
 
 # FLAGS
 

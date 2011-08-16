@@ -1092,8 +1092,18 @@ private:
       char ecsCommand[MAX_LOCATION];
       char earCommand[MAX_LOCATION];
 
-      sprintf(cppCommand, "%s ", compiler.cppCommand);
-      sprintf(ccCommand, "%s ", compiler.ccCommand);
+      char * cc = compiler.ccCommand;
+      char * cpp = compiler.cppCommand;
+      sprintf(cppCommand, "%s%s%s%s ",
+            compiler.ccacheEnabled ? "ccache " : "",
+            compiler.ccacheEnabled && !compiler.distccEnabled ? " " : "",
+            compiler.distccEnabled ? "distcc " : "",
+            compiler.cppCommand);
+      sprintf(ccCommand, "%s%s%s%s ",
+            compiler.ccacheEnabled ? "ccache " : "",
+            compiler.ccacheEnabled && !compiler.distccEnabled ? " " : "",
+            compiler.distccEnabled ? "distcc " : "",
+            compiler.ccCommand);
       sprintf(ecpCommand, "%s ", compiler.ecpCommand);
       sprintf(eccCommand, "%s ", compiler.eccCommand);
       sprintf(ecsCommand, "%s ", compiler.ecsCommand);
@@ -1452,7 +1462,10 @@ private:
       }
       else
       {
-         sprintf(command, "%s -j%d %s -C \"%s\" -f \"%s\"", compiler.makeCommand, numJobs, makeTarget, topNode.path, makeFilePath);
+         sprintf(command, "%s -j%d %s%s%s -C \"%s\" -f \"%s\"", compiler.makeCommand, numJobs,
+               compiler.ccacheEnabled ? "CCACHE=y " : "",
+               compiler.distccEnabled ? "DISTCC=y " : "",
+               makeTarget, topNode.path, makeFilePath);
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
             result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNode);
@@ -1696,7 +1709,7 @@ private:
          f.Printf("\n");
 
          f.Printf("OBJ = %s%s\n\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
-         
+
          f.Printf("RES = %s%s\n\n", resDirNoSpaces, resDirNoSpaces[0] ? "/" : "");
 
          if(targetType == executable)
@@ -1705,26 +1718,26 @@ private:
          f.Printf("TARGET = %s\n\n", targetNoSpaces);
 
          varStringLenDiffs["$(OBJ)"] = strlen(objDirNoSpaces) - 6;
-         
+
          topNode.GenMakefileGetNameCollisionInfo(namesInfo);
 
          numCObjects = topNode.GenMakefilePrintNode(f, this, objects, namesInfo, listItems);
          if(numCObjects)
             listItems.Add(CopyString("$(OBJ)$(MODULE).main$(O)"));
          objectsParts = OutputFileList(f, "OBJECTS", listItems, varStringLenDiffs);
-         
+
          topNode.GenMakefilePrintNode(f, this, cObjects, namesInfo, listItems);
          cobjectsParts = OutputFileList(f, "COBJECTS", listItems, varStringLenDiffs);
-         
+
          topNode.GenMakefilePrintNode(f, this, symbols, null, listItems);
          symbolsParts = OutputFileList(f, "SYMBOLS", listItems, varStringLenDiffs);
-         
+
          topNode.GenMakefilePrintNode(f, this, imports, null, listItems);
          importsParts = OutputFileList(f, "IMPORTS", listItems, varStringLenDiffs);
-         
+
          topNode.GenMakefilePrintNode(f, this, sources, null, listItems);
          OutputFileList(f, "SOURCES", listItems, varStringLenDiffs);
-         
+
          if(!noResources)
             resNode.GenMakefilePrintNode(f, this, resources, null, listItems);
          OutputFileList(f, "RESOURCES", listItems, varStringLenDiffs);
@@ -1750,24 +1763,38 @@ private:
             }
          }
 
-         f.Printf("# TOOLCHAIN\n\n");
-
-         //f.Printf("SHELL := %s\n", "ar"/*compiler.arCommand*/); // is this really needed?
-         f.Printf("CPP := %s\n", compiler.cppCommand);
-         f.Printf("CC := %s\n", compiler.ccCommand);
-         f.Printf("ECP := %s\n", compiler.ecpCommand);
-         f.Printf("ECC := %s\n", compiler.eccCommand);
-         f.Printf("ECS := %s%s%s\n", compiler.ecsCommand, 
-               crossCompiling ? " -t " : "", crossCompiling ? (char*)compiler.targetPlatform : "");
-         f.Printf("EAR := %s\n", compiler.earCommand);
-         f.Printf("LD := %s\n", compiler.ccCommand);
-         f.Printf("AR := %s\n", "ar"/*compiler.arCommand*/);
-         f.Printf("STRIP := %s\n", "strip"/*compiler.stripCommand*/);
-         f.Printf("UPX := %s\n", "upx"/*compiler.upxCommand*/);
          f.Printf("\n");
 
+         if(strcmpi(compiler.cppCommand, "cpp") ||
+               strcmpi(compiler.ccCommand,  "gcc") ||
+               strcmpi(compiler.ecpCommand, "ecp") ||
+               strcmpi(compiler.eccCommand, "ecc") ||
+               strcmpi(compiler.ecsCommand, "ecs") || crossCompiling ||
+               strcmpi(compiler.earCommand, "ear"))
+         {
+            f.Printf("# TOOLCHAIN\n\n");
+
+            //f.Printf("SHELL := %s\n", "ar"/*compiler.arCommand*/); // is this really needed?
+            if(strcmpi(compiler.cppCommand, "cpp"))
+               f.Printf("CPP := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.cppCommand);
+            if(strcmpi(compiler.ccCommand,  "gcc"))
+               f.Printf("CC := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.ccCommand);
+            if(strcmpi(compiler.ecpCommand, "ecp"))
+               f.Printf("ECP := %s\n", compiler.ecpCommand);
+            if(strcmpi(compiler.eccCommand, "ecc"))
+               f.Printf("ECC := %s\n", compiler.eccCommand);
+            if(strcmpi(compiler.ecsCommand, "ecs") || crossCompiling)
+            {
+               f.Printf("ECS := %s%s%s\n", compiler.ecsCommand,
+                     crossCompiling ? " -t " : "", crossCompiling ? (char*)compiler.targetPlatform : "");
+            }
+            if(strcmpi(compiler.earCommand, "ear"))
+               f.Printf("EAR := %s\n", compiler.earCommand);
+            f.Printf("\n");
+         }
+
          f.Printf("# FLAGS\n\n");
-         
+
          f.Printf("CFLAGS =");
          if(gccCompiler)
          {
@@ -1836,7 +1863,7 @@ private:
                f.Printf(" -defaultns %s", s);
          }
          f.Printf("\n\n");
-         
+
          if(targetType != staticLibrary)
          {
             f.Printf("OFLAGS = -m32"); // TARGET_TYPE is fixed in a Makefile, we don't want this. $(if TARGET_TYPE_STATIC_LIBRARY,,-m32)");
@@ -2139,7 +2166,7 @@ private:
          {
             int ifCount = 0;
             Platform platform;
-            
+
             //f.Printf("# PLATFORM-SPECIFIC POST-BUILD COMMANDS\n");
             for(platform = (Platform)1; platform < Platform::enumSize; platform++)
             {

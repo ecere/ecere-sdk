@@ -47,16 +47,10 @@ include ../../include.mk
 # TOOLCHAIN
 export LD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
 export DYLD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
-CPP := cpp
-CC := gcc
 ECP := $(call psep,../../compiler/bootstrap/obj/bin.$(PLATFORM)/ecp)
 ECC := $(call psep,../../compiler/bootstrap/obj/bin.$(PLATFORM)/ecc)
 ECS := $(call psep,../../compiler/bootstrap/obj/bin.$(PLATFORM)/ecs)
 EAR := $(call psep,../../obj/$(PLATFORM)/bin/ear)
-LD := gcc
-AR := ar
-STRIP := strip
-UPX := upx
 
 # FLAGS
 

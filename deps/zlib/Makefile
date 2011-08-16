@@ -32,15 +32,6 @@ RESOURCES =
 
 include ../../include.mk
 
-# TOOLCHAIN
-
-CPP := cpp
-CC := gcc
-LD := gcc
-AR := ar
-STRIP := strip
-UPX := upx
-
 # FLAGS
 
 CFLAGS = -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w

@@ -62,16 +62,9 @@ export LD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
 export DYLD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
 endif
 
-CPP := cpp
-CC := gcc
 ECP := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecp)
 ECC := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecc)
 ECS := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecs)
-EAR := ear
-LD := gcc
-AR := ar
-STRIP := strip
-UPX := upx
 
 # FLAGS
 

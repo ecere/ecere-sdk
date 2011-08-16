@@ -1,4 +1,4 @@
-.PHONY: all clean realclean distclean emptyoutput install uninstall outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make ide documentor eda prepcodeguard codeguard
+.PHONY: all clean realclean distclean emptyoutput install uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make ide documentor eda prepcodeguard codeguard
 .SILENT:
 
 include include.mk
@@ -563,3 +563,21 @@ ifdef WINDOWS
 	$(call rmdirq,"$(DESTDIR)/")
 endif
 	@$(call echo,The Ecere SDK has been uninstalled.)
+
+troubleshoot:
+	@$(call echo,Printing values of some variables.)
+	@$(call echo,CCACHE=$(CCACHE))
+	@$(call echo,CCACHE_COMPILE=$(CCACHE_COMPILE))
+	@$(call echo,CCACHE_PREFIX=$(CCACHE_PREFIX))
+	@$(call echo,DISTCC=$(DISTCC))
+	@$(call echo,CC=$(CC))
+	@$(call echo,CPP=$(CPP))
+	@$(call echo,ECP=$(ECP))
+	@$(call echo,ECC=$(ECC))
+	@$(call echo,ECS=$(ECS))
+	@$(call echo,EAR=$(EAR))
+	@$(call echo,AS=$(AS))
+	@$(call echo,LD=$(LD))
+	@$(call echo,AR=$(AR))
+	@$(call echo,STRIP=$(STRIP))
+	@$(call echo,UPX=$(UPX))
