@@ -38,6 +38,7 @@ import "WindowList"
 
 // Had to define this here for native decorations support, because the menu bar is part of total decoration's size, but not part of the system decorations
 define skinMenuHeight = 25;
+define statusBarHeight = 18;
 
 default extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown;
 
@@ -1690,10 +1691,21 @@ private:
                }
                if(windowMoved)
                   display.Position(absPosition.x, absPosition.y);
+                  //display.Position(absPosition.x + clientStart.x, absPosition.y + clientStart.y);
                if(windowResized)
                {
                   // result = realResized ? display.Resize(size.w, size.h) : true;
-                  result = manageDisplay ? display.Resize(size.w, size.h) : true;
+                  if(nativeDecorations)
+                  {
+                     int w = clientSize.w, h = clientSize.h;
+                     if(hasMenuBar) h += skinMenuHeight;
+                     if(hasStatusBar) h += statusBarHeight;
+                     if(sbv && sbv.visible) w += sbv.size.w;
+                     if(sbh && sbh.visible) h += sbh.size.h;
+                     result = manageDisplay ? display.Resize(w, h) : true;
+                  }
+                  else
+                     result = manageDisplay ? display.Resize(size.w, size.h) : true;
                   resized = true;
                   Update(null);
                }
@@ -4700,6 +4712,7 @@ private:
       bool result = false;
       bool success = false;
       Window child;
+      WindowState stateBackup = state;
 
       /*
       if(!rootWindow.created)
@@ -4976,6 +4989,10 @@ private:
          //guiApp.LogErrorCode(IERR_GRAPHICS_LOADING_FAILED, caption);
          guiApp.LogErrorCode(IERR_GRAPHICS_LOADING_FAILED, class.name);
       */
+
+      // Do this here to avoid problems on Windows
+      if(stateBackup == maximized)
+         property::state = maximized;
       return result;
    }
 

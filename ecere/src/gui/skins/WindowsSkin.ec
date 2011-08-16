@@ -24,7 +24,6 @@ import "Window"
 #define SB_WIDTH  16
 #define SB_HEIGHT 16
 
-#define STATUS_HEIGHT   18
 
 #define GRADIENT_SMOOTHNESS 1.0f
 
@@ -157,7 +156,7 @@ public class WindowsSkin_Window : Window
       }
       if(statusBar && state != minimized)
       {
-         *h += STATUS_HEIGHT;
+         *h += statusBarHeight;
       }
 
       if(nativeDecorations && rootWindow == this)
@@ -513,7 +512,7 @@ public class WindowsSkin_Window : Window
             statusBar.visible = true;
             if(nativeDecorations && rootWindow == this)
             {
-               statusBar.anchor = { left = clientStart.x, bottom = (int)(size.h - clientSize.h - clientStart.y - STATUS_HEIGHT ) };
+               statusBar.anchor = { left = clientStart.x, bottom = (int)(size.h - clientSize.h - clientStart.y - statusBarHeight ) };
                statusBar.size.w = size.w - insideBorder * 2;
             }
             else

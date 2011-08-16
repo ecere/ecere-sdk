@@ -1609,6 +1609,9 @@ class XInterface : Interface
                   XConfigureEvent * event = (XConfigureEvent *) thisEvent;
                   while(XCheckIfEvent(xGlobalDisplay, (XEvent *)thisEvent, (void *)ConfigureNotifyChecker, (void *)window.windowHandle));
                   //if(event->x - desktopX != window.position.x || event->y - desktopY != window.position.y || event->width != window.size.w || event->height != window.size.h)
+
+                  // TODO: Support _NET_REQUEST_FRAME_EXTENTS message / _NET_FRAME_EXTENTS property for decoration size awareness
+
                   window.ExternalPosition(event->x - desktopX, event->y - desktopY, event->width, event->height);
                   break;
                }

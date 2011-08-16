@@ -158,6 +158,8 @@ static bool EnumerateMonitors(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
    return monitor < 32;
 }
 
+static bool externalDisplayChange;
+
 static int taskBarState;
 static WINDOWPLACEMENT taskBarPlacement;
 static bool activateApp;
@@ -484,7 +486,7 @@ class Win32Interface : Interface
                      if(id != GetCurrentProcessId() || windowLong != (LPARAM)ApplicationWindow)
                         window.ExternalActivate(false, true, window, null);
                      // DefWindowProc for WM_NCACTIVATE draws the decorations, make sure it's drawn in the right state
-                     return DefWindowProc(windowHandle, msg, window.active, lParam);
+                     return (uint)DefWindowProc(windowHandle, msg, window.active, lParam);
                   }
                }
                if(activateApp)
@@ -594,6 +596,7 @@ class Win32Interface : Interface
                   lastBits = wParam;
                   lastRes = lParam;
                
+                  externalDisplayChange = true;
                   if(guiApp.desktop.DisplayModeChanged())
                   {
                      char caption[2048];
@@ -602,6 +605,7 @@ class Win32Interface : Interface
                      window.FigureCaption(caption);
                      SetRootWindowCaption(window, caption);
                   }
+                  externalDisplayChange = false;
                }
                break;
             }
@@ -1455,7 +1459,7 @@ class Win32Interface : Interface
          flags &=~SWP_NOMOVE;
          flags |= SWP_NOSIZE;
       }*/
-      if(!window.nativeDecorations || window.state != maximized || !window.visible)
+      if(!window.nativeDecorations || window.state != maximized || !window.visible || guiApp.modeSwitching)
          SetWindowPos(window.windowHandle, null, x, y, w, h, flags);
    }
 
@@ -1510,7 +1514,7 @@ class Win32Interface : Interface
          {
             case maximized:
             case normal:
-               ShowWindow(window.windowHandle, (window.creationActivation == activate && !guiApp.modeSwitching) ? 
+               ShowWindow(window.windowHandle, (window.creationActivation == activate && !externalDisplayChange) ? 
                   ((window.nativeDecorations && state == maximized) ? SW_MAXIMIZE : SW_SHOWNORMAL) : SW_SHOWNOACTIVATE);
                break;
             case minimized:
@@ -1526,7 +1530,7 @@ class Win32Interface : Interface
 
    void ActivateRootWindow(Window window)
    {
-      if(!guiApp.modeSwitching)
+      if(!externalDisplayChange)
          SetForegroundWindow(window.windowHandle);
    }
 
