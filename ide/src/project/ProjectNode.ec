@@ -162,6 +162,12 @@ class TwoStrings : struct
    }
 }
 
+class BuildExclusionInfo : struct
+{
+   SetBool excluded;
+   Map<Platform, bool> platformSpecific { };
+}
+
 class ProjectNode : ListItem
 {
 public:
@@ -718,76 +724,87 @@ private:
       }
    }
 
-   property TwoStrings platformSpecificExclusionFu
+   property TwoStrings platformSpecificFu
    {
       get
       {
-         // TODO: Proper folder exclusion fix: collect platform names across parents and then build exclusion expression
-         //       Find solution to excluding a drivers folder for all platforms and overriting that exclusion on children files/folders
-         TwoStrings result { };
-         int nestingCount = 0, c, len;
+         TwoStrings result { a = CopyString(""), b = CopyString("") };
+         BuildExclusionInfo exclusion = exclusionInfo;
+         char * exp, * var;
+         int len;
          Platform platform;
-         ProjectConfig config = property::config;
-         Map<String, bool> platformNames { };
-         if(platforms)
+         if(exclusion.platformSpecific.count > 1)
          {
-            for(p : platforms)
-               if(p.options.excludeFromBuild == true)
-                  platformNames[p.name] = true;
-         }
-         if(config && config.platforms)
-         {
-            for(p : config.platforms)
-               if(p.options.excludeFromBuild == true)
-                  platformNames[p.name] = true;
-         }
-         if(platformNames.count)
-         {
-            len = 0;
-            result.a = new char[1];
-            result.a[0] = '\0';
-            for(s : platformNames)
+            MapNode<Platform, bool> mn;
+
+            exp = result.a;
+            len = strlen(exp) + strlen("$(if $(or ");
+            exp = renew exp char[len+1];
+            strcat(exp, "$(if $(or ");
+            result.a = exp;
+
+            for(mn = exclusion.platformSpecific.root.minimum; mn; mn = mn.next)
             {
-               for(platform = (Platform)1; platform < Platform::enumSize; platform++)
-                  if(!strcmpi(&s, platform))
-                     break;
-               if(platform < Platform::enumSize)
+               if(mn.value)
                {
-                  const char * opening = "$(if $(";
-                  const char * close = "),,";
-                  char * t = PlatformToMakefileVariable(platform);
-                  nestingCount++;
-                  len += strlen(t) + strlen(opening) + strlen(close);
-                  result.a = renew result.a char[len + 1];
-                  strcat(result.a, opening);
-                  strcat(result.a, t);
-                  strcat(result.a, close);
+                  char * comma = mn.next ? "," : "";
+
+                  platform = mn.key;
+                  var = PlatformToMakefileVariable(platform);
+
+                  exp = result.a;
+                  len = strlen(exp) + strlen("$(") + strlen(var) + strlen(")") + strlen(comma);
+                  exp = renew exp char[len+1];
+                  strcat(exp, "$(");
+                  strcat(exp, var);
+                  strcat(exp, ")");
+                  strcat(exp, comma);
+                  result.a = exp;
                }
             }
-            result.b = new char[nestingCount + 1];
-            for(c = 0; c < nestingCount; c++)
-               result.b[c] = ')';
-            result.b[nestingCount] = '\0';
+
+            exp = result.a;
+            len = strlen(exp) + strlen("),");
+            exp = renew exp char[len+1];
+            strcat(exp, "),");
+            result.a = exp;
+
+            exp = exclusion.excluded == true ? result.b : result.a;
+            len = strlen(exp) + strlen(",");
+            exp = renew exp char[len+1];
+            strcat(exp, ",");
+            if(exclusion.excluded == true) result.b = exp; else result.a = exp;
+
+            exp = result.b;
+            len = strlen(exp) + strlen(")");
+            exp = renew exp char[len+1];
+            strcat(exp, ")");
+            result.b = exp;
          }
-         else
+         else if(exclusion.platformSpecific.count)
          {
-            result.a = CopyString("");
-            result.b = CopyString("");
-         }
-         delete platformNames;
-         if(parent)
-         {
-            TwoStrings parentResult = parent.platformSpecificExclusionFu;
-            if(parentResult.a && parentResult.a[0])
-            {
-               len = strlen(result.a) + strlen(parentResult.a);
-               result.a = renew result.a char[len + 1];
-               strcat(result.a, parentResult.a);
-               len = strlen(result.b) + strlen(parentResult.b);
-               result.b = renew result.b char[len + 1];
-               strcat(result.b, parentResult.b);
-            }
-            delete parentResult;
+            platform = exclusion.platformSpecific.root.minimum.key;
+            var = PlatformToMakefileVariable(platform);
+
+            exp = result.a;
+            len = strlen(exp) + strlen("$(if $(") + strlen(var) + strlen("),");
+            exp = renew exp char[len+1];
+            strcat(exp, "$(if $(");
+            strcat(exp, var);
+            strcat(exp, "),");
+            result.a = exp;
+
+            exp = exclusion.excluded == true ? result.b : result.a;
+            len = strlen(exp) + strlen(",");
+            exp = renew exp char[len+1];
+            strcat(exp, ",");
+            if(exclusion.excluded == true) result.b = exp; else result.a = exp;
+
+            exp = result.b;
+            len = strlen(exp) + strlen(")");
+            exp = renew exp char[len+1];
+            strcat(exp, ")");
+            result.b = exp;
          }
          return result;
       }
@@ -797,16 +814,61 @@ private:
    {
       get
       {
-         // THIS IS THE GENERIC (ALL PLATFORMS) EXCLUDED FROM BUILD
-         // TODO: We can also have platform specific exclusion...
+         return exclusionInfo.excluded == true && exclusionInfo.platformSpecific.count == 0;
+      }
+   }
+
+   property BuildExclusionInfo exclusionInfo
+   {
+      get
+      {
+         BuildExclusionInfo result { };
          ProjectConfig config = property::config;
          if(config && config.options && config.options.excludeFromBuild)
-            return config.options.excludeFromBuild == true;            
-         if(options && options.excludeFromBuild)
-            return options.excludeFromBuild == true;
-         if(parent)
-            return parent.isExcluded;
-         return false;
+            result.excluded = config.options.excludeFromBuild;
+         else if(options && options.excludeFromBuild)
+            result.excluded = options.excludeFromBuild;
+         else if(parent)
+         {
+            BuildExclusionInfo parentExclusion = parent.exclusionInfo;
+            if(parentExclusion.excluded)
+            {
+               result.excluded = parentExclusion.excluded;
+               if(parentExclusion.platformSpecific.count)
+               {
+                  MapNode<Platform, bool> mn;
+                  for(mn = parentExclusion.platformSpecific.root.minimum; mn; mn = mn.next)
+                  {
+                     if(mn.value)
+                     {
+                        result.platformSpecific[mn.key] = true;
+                     }
+                  }
+               }
+            }
+         }
+         if(result.excluded)
+         {
+            SetBool opposite = result.excluded == true ? false : true;
+            Platform platform;
+            if(platforms)
+            {
+               for(p : platforms)
+               {
+                  if(p.options.excludeFromBuild == opposite && (platform = p.name))
+                     result.platformSpecific[platform] = true;
+               }
+            }
+            if(config && config.platforms)
+            {
+               for(p : config.platforms)
+               {
+                  if(p.options.excludeFromBuild == opposite && (platform = p.name))
+                     result.platformSpecific[platform] = true;
+               }
+            }
+         }
+         return result;
       }
    }
 
@@ -1141,8 +1203,7 @@ private:
       if(type == file)
       {
          char s[2048];
-         // TOCHECK: Does this take care of parent folder platform specific exclusions?
-         TwoStrings ts = platformSpecificExclusionFu;
+         TwoStrings ts = platformSpecificFu;
          char moduleName[MAX_FILENAME];
          char extension[MAX_EXTENSION];
          GetExtension(name, extension);
@@ -1671,7 +1732,7 @@ private:
          for(c = 0; c < files.count; c++)
          {
             ProjectNode child = files[c];
-            TwoStrings ts = child.platformSpecificExclusionFu;
+            TwoStrings ts = child.platformSpecificFu;
             if(count > 0 && ts)
                prev = true;
             if(child.type == file && !child.isExcluded && !(count > 0 && ts))
