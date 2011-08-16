@@ -846,7 +846,6 @@ private:
                   }
                }
             }
-            if(result.excluded)
             {
                SetBool opposite = result.excluded == true ? false : true;
                Platform platform;
