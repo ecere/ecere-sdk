@@ -5143,7 +5143,7 @@ private:
       if(interimWindow && interimWindow.master)
          interimMaster = interimWindow.master.rootWindow;
 
-      if(active && state == minimized)
+      if(active && state == minimized) // && (!window.nativeDecorations || window.rootWindow != window)
          // SetState(normal, false, 0);
          SetState(lastState, false, 0);
 
@@ -5557,11 +5557,12 @@ private:
       WindowState prevState = state;
 
       state = newState;
-      if(rootWindow == this && nativeDecorations)
-         return;
 
       if(prevState != newState)
          lastState = prevState;
+
+      if(rootWindow == this && nativeDecorations)
+         return;
       if(style.isActiveClient && !style.hidden && prevState == minimized)
          parent.numIcons--;
 
