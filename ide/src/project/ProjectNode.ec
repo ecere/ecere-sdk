@@ -162,12 +162,6 @@ class TwoStrings : struct
    }
 }
 
-class BuildExclusionInfo : struct
-{
-   SetBool excluded;
-   Map<Platform, bool> platformSpecific { };
-}
-
 class ProjectNode : ListItem
 {
 public:
@@ -729,51 +723,82 @@ private:
       get
       {
          TwoStrings result { a = CopyString(""), b = CopyString("") };
-         BuildExclusionInfo exclusion = exclusionInfo;
+         // note: unknown platform is for common
+         Map<Platform, SetBool> exclusionInfo { };
+         MapNode<Platform, SetBool> mn;
          char * exp, * var;
          int len;
-         Platform platform;
-         if(exclusion.platformSpecific.count > 1)
+         SetBool common;
+
+         CollectExclusionInfo(exclusionInfo);
+         common = exclusionInfo[unknown];
          {
-            MapNode<Platform, bool> mn;
-
-            exp = result.a;
-            len = strlen(exp) + strlen("$(if $(or ");
-            exp = renew exp char[len+1];
-            strcat(exp, "$(if $(or ");
-            result.a = exp;
-
-            for(mn = exclusion.platformSpecific.root.minimum; mn; mn = mn.next)
+            Map<Platform, SetBool> cleaned { };
+            SetBool opposite = common == true ? false : true;
+            for(mn = exclusionInfo.root.minimum; mn; mn = mn.next)
             {
-               if(mn.value)
+               if(mn.key == unknown || mn.value == opposite)
+                 cleaned[mn.key] = mn.value;
+            }
+            delete exclusionInfo;
+            exclusionInfo = cleaned;
+         }
+
+         if(exclusionInfo.count > 1)
+         {
+            if(exclusionInfo.count > 2)
+            {
+               exp = result.a;
+               len = strlen(exp) + strlen("$(if $(or ");
+               exp = renew exp char[len+1];
+               strcat(exp, "$(if $(or ");
+               result.a = exp;
+
+               for(mn = exclusionInfo.root.minimum; mn; mn = mn.next)
                {
-                  char * comma = mn.next ? "," : "";
+                  if(mn.key != unknown)
+                  {
+                     char * comma = mn.next ? "," : "";
 
-                  platform = mn.key;
-                  var = PlatformToMakefileVariable(platform);
+                     var = PlatformToMakefileVariable(mn.key);
 
-                  exp = result.a;
-                  len = strlen(exp) + strlen("$(") + strlen(var) + strlen(")") + strlen(comma);
-                  exp = renew exp char[len+1];
-                  strcat(exp, "$(");
-                  strcat(exp, var);
-                  strcat(exp, ")");
-                  strcat(exp, comma);
-                  result.a = exp;
+                     exp = result.a;
+                     len = strlen(exp) + strlen("$(") + strlen(var) + strlen(")") + strlen(comma);
+                     exp = renew exp char[len+1];
+                     strcat(exp, "$(");
+                     strcat(exp, var);
+                     strcat(exp, ")");
+                     strcat(exp, comma);
+                     result.a = exp;
+                  }
                }
+
+               exp = result.a;
+               len = strlen(exp) + strlen("),");
+               exp = renew exp char[len+1];
+            }
+            else
+            {
+               if(exclusionInfo.root.minimum.key != unknown)
+                  var = PlatformToMakefileVariable(exclusionInfo.root.minimum.key);
+               else
+                  var = PlatformToMakefileVariable(exclusionInfo.root.minimum.next.key);
+
+               exp = result.a;
+               len = strlen(exp) + strlen("$(if $(") + strlen(var) + strlen("),");
+               exp = renew exp char[len+1];
+               strcat(exp, "$(if $(");
+               strcat(exp, var);
             }
 
-            exp = result.a;
-            len = strlen(exp) + strlen("),");
-            exp = renew exp char[len+1];
             strcat(exp, "),");
             result.a = exp;
 
-            exp = exclusion.excluded == true ? result.b : result.a;
+            exp = common == true ? result.b : result.a;
             len = strlen(exp) + strlen(",");
             exp = renew exp char[len+1];
             strcat(exp, ",");
-            if(exclusion.excluded == true) result.b = exp; else result.a = exp;
+            if(common == true) result.b = exp; else result.a = exp;
 
             exp = result.b;
             len = strlen(exp) + strlen(")");
@@ -781,31 +806,7 @@ private:
             strcat(exp, ")");
             result.b = exp;
          }
-         else if(exclusion.platformSpecific.count)
-         {
-            platform = exclusion.platformSpecific.root.minimum.key;
-            var = PlatformToMakefileVariable(platform);
-
-            exp = result.a;
-            len = strlen(exp) + strlen("$(if $(") + strlen(var) + strlen("),");
-            exp = renew exp char[len+1];
-            strcat(exp, "$(if $(");
-            strcat(exp, var);
-            strcat(exp, "),");
-            result.a = exp;
-
-            exp = exclusion.excluded == true ? result.b : result.a;
-            len = strlen(exp) + strlen(",");
-            exp = renew exp char[len+1];
-            strcat(exp, ",");
-            if(exclusion.excluded == true) result.b = exp; else result.a = exp;
-
-            exp = result.b;
-            len = strlen(exp) + strlen(")");
-            exp = renew exp char[len+1];
-            strcat(exp, ")");
-            result.b = exp;
-         }
+         
          return result;
       }
    }
@@ -814,60 +815,66 @@ private:
    {
       get
       {
-         return exclusionInfo.excluded == true && exclusionInfo.platformSpecific.count == 0;
+         bool result;
+         // note: unknown platform is for common
+         Map<Platform, SetBool> exclusionInfo { };
+         CollectExclusionInfo(exclusionInfo);
+         if(exclusionInfo.count == 0)
+            result = false;
+         else if(exclusionInfo.count == 1)
+            result = exclusionInfo.root.minimum.value == true;
+         else
+         {
+            SetBool check = exclusionInfo.root.minimum.value;
+            MapNode<Platform, SetBool> mn;
+            for(mn = exclusionInfo.root.minimum; mn; mn = mn.next)
+            {
+               if(check != mn.value)
+                  break;
+            }
+            if(!mn) // all are same
+               result = check == true;
+            else
+               result = false;
+         }
+         delete exclusionInfo;
+         return result;
+
       }
    }
 
-   property BuildExclusionInfo exclusionInfo
+   void CollectExclusionInfo(Map<Platform, SetBool> output)
    {
-      get
+      // note: unknown platform is for common
+      Platform platform;
+      ProjectConfig config = property::config;
+
+      if(parent)
+         parent.CollectExclusionInfo(output);
+      else
+         output[unknown] = unset;
+
+      if(options && options.excludeFromBuild)
+         output[unknown] = options.excludeFromBuild;
+      
+      if(config && config.options && config.options.excludeFromBuild)
+         output[unknown] = config.options.excludeFromBuild;
+
+      if(platforms)
       {
-         BuildExclusionInfo result { };
-         ProjectConfig config = property::config;
-         if(config && config.options && config.options.excludeFromBuild)
-            result.excluded = config.options.excludeFromBuild;
-         else if(options && options.excludeFromBuild)
-            result.excluded = options.excludeFromBuild;
-         else if(parent)
+         for(p : platforms)
          {
-            BuildExclusionInfo parentExclusion = parent.exclusionInfo;
-            if(parentExclusion.excluded)
-            {
-               result.excluded = parentExclusion.excluded;
-               if(parentExclusion.platformSpecific.count)
-               {
-                  MapNode<Platform, bool> mn;
-                  for(mn = parentExclusion.platformSpecific.root.minimum; mn; mn = mn.next)
-                  {
-                     if(mn.value)
-                     {
-                        result.platformSpecific[mn.key] = true;
-                     }
-                  }
-               }
-            }
-            {
-               SetBool opposite = result.excluded == true ? false : true;
-               Platform platform;
-               if(platforms)
-               {
-                  for(p : platforms)
-                  {
-                     if(p.options.excludeFromBuild == opposite && (platform = p.name))
-                        result.platformSpecific[platform] = true;
-                  }
-               }
-               if(config && config.platforms)
-               {
-                  for(p : config.platforms)
-                  {
-                     if(p.options.excludeFromBuild == opposite && (platform = p.name))
-                        result.platformSpecific[platform] = true;
-                  }
-               }
-            }
+            if(p.options.excludeFromBuild && (platform = p.name))
+               output[platform] = p.options.excludeFromBuild;
          }
-         return result;
+      }
+      if(config && config.platforms)
+      {
+         for(p : config.platforms)
+         {
+            if(p.options.excludeFromBuild && (platform = p.name))
+               output[platform] = p.options.excludeFromBuild;
+         }
       }
    }
 
