@@ -325,6 +325,22 @@ from wherever you obtained them.",
                "$(call cpq,$(TARGET),../obj/$(PLATFORM)/lib/)"
             ]
          }
+      },
+      {
+         "Name" : "WSMS",
+         "Options" : {
+            "Optimization" : "Size",
+            "PreprocessorDefinitions" : [
+               "BUILDING_ECERE_COM",
+               "ECERE_STATIC",
+               "ECERE_NOBLENDING",
+               "ECERE_NO3D",
+               "ECERE_NODINPUT",
+               "ECERE_NOTRUETYPE"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecereWSMS"
+         }
       }
    ],
    "Files" : [
@@ -533,6 +549,12 @@ from wherever you obtained them.",
                            "Options" : {
                               "ExcludeFromBuild" : true
                            }
+                        },
+                        {
+                           "Name" : "WSMS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
                         }
                      ]
                   },
@@ -558,10 +580,26 @@ from wherever you obtained them.",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "WSMS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               }
                            ]
                         },
-                        "JPEGFormat.ec",
+                        {
+                           "FileName" : "JPEGFormat.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "WSMS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
                         {
                            "FileName" : "PCXFormat.ec",
                            "Configurations" : [
@@ -573,7 +611,17 @@ from wherever you obtained them.",
                               }
                            ]
                         },
-                        "PNGFormat.ec",
+                        {
+                           "FileName" : "PNGFormat.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "WSMS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
                         {
                            "FileName" : "RGBFormat.ec",
                            "Configurations" : [
@@ -581,6 +629,12 @@ from wherever you obtained them.",
                                  "Name" : "PACS",
                                  "Options" : {
                                     "ExcludeFromBuild" : false
+                                 }
+                              },
+                              {
+                                 "Name" : "WSMS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
                                  }
                               }
                            ]
@@ -636,7 +690,15 @@ from wherever you obtained them.",
                            ],
                            "Options" : {
                               "ExcludeFromBuild" : false
-                           }
+                           },
+                           "Configurations" : [
+                              {
+                                 "Name" : "WSMS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
                         },
                         {
                            "FileName" : "Direct3D8DisplayDriver.ec",
@@ -654,6 +716,17 @@ from wherever you obtained them.",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -673,6 +746,17 @@ from wherever you obtained them.",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -692,6 +776,17 @@ from wherever you obtained them.",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -767,20 +862,39 @@ from wherever you obtained them.",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
                         {
                            "FileName" : "OpenGLDisplayDriver.ec",
-                           "Options" : {
-                              "ExcludeFromBuild" : false
-                           },
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -800,6 +914,17 @@ from wherever you obtained them.",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -819,6 +944,17 @@ from wherever you obtained them.",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -838,6 +974,17 @@ from wherever you obtained them.",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -850,12 +997,22 @@ from wherever you obtained them.",
                                     "ExcludeFromBuild" : false
                                  }
                               }
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              }
                            ]
                         }
                      ],
-                     "Options" : {
-                        "ExcludeFromBuild" : true
-                     },
                      "Configurations" : [
                         {
                            "Name" : "PACS",
