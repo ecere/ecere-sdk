@@ -712,13 +712,18 @@ from wherever you obtained them.",
                            ],
                            "Configurations" : [
                               {
-                                 "Name" : "Vanilla",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               },
                               {
-                                 "Name" : "WSMS",
+                                 "Name" : "Vanilla",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -742,13 +747,18 @@ from wherever you obtained them.",
                            ],
                            "Configurations" : [
                               {
-                                 "Name" : "Vanilla",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               },
                               {
-                                 "Name" : "WSMS",
+                                 "Name" : "Vanilla",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -772,13 +782,18 @@ from wherever you obtained them.",
                            ],
                            "Configurations" : [
                               {
-                                 "Name" : "Vanilla",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               },
                               {
-                                 "Name" : "WSMS",
+                                 "Name" : "Vanilla",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -853,16 +868,15 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "NCursesDisplayDriver.ec",
-                           "Options" : {
-                              "ExcludeFromBuild" : false
-                           },
-                           "Configurations" : [
+                           "Platforms" : [
                               {
-                                 "Name" : "Vanilla",
+                                 "Name" : "linux",
                                  "Options" : {
-                                    "ExcludeFromBuild" : true
+                                    "ExcludeFromBuild" : false
                                  }
-                              },
+                              }
+                           ],
+                           "Configurations" : [
                               {
                                  "Name" : "WSMS",
                                  "Platforms" : [
@@ -878,15 +892,28 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "OpenGLDisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "win32",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ],
                            "Configurations" : [
                               {
-                                 "Name" : "Vanilla",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               },
                               {
-                                 "Name" : "WSMS",
+                                 "Name" : "Vanilla",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -910,13 +937,18 @@ from wherever you obtained them.",
                            ],
                            "Configurations" : [
                               {
-                                 "Name" : "Vanilla",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               },
                               {
-                                 "Name" : "WSMS",
+                                 "Name" : "Vanilla",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -940,13 +972,18 @@ from wherever you obtained them.",
                            ],
                            "Configurations" : [
                               {
-                                 "Name" : "Vanilla",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               },
                               {
-                                 "Name" : "WSMS",
+                                 "Name" : "Vanilla",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -970,13 +1007,10 @@ from wherever you obtained them.",
                            ],
                            "Configurations" : [
                               {
-                                 "Name" : "Vanilla",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
+                                 "Name" : "WSMS"
                               },
                               {
-                                 "Name" : "WSMS",
+                                 "Name" : "Vanilla",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -1000,19 +1034,14 @@ from wherever you obtained them.",
                            ],
                            "Configurations" : [
                               {
-                                 "Name" : "WSMS",
-                                 "Platforms" : [
-                                    {
-                                       "Name" : "win32",
-                                       "Options" : {
-                                          "ExcludeFromBuild" : true
-                                       }
-                                    }
-                                 ]
+                                 "Name" : "WSMS"
                               }
                            ]
                         }
                      ],
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     },
                      "Configurations" : [
                         {
                            "Name" : "PACS",
@@ -1100,9 +1129,14 @@ from wherever you obtained them.",
                      "Files" : [
                         {
                            "FileName" : "NCursesInterface.ec",
-                           "Options" : {
-                              "ExcludeFromBuild" : false
-                           },
+                           "Platforms" : [
+                              {
+                                 "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ],
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
