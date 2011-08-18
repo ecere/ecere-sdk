@@ -5292,6 +5292,12 @@ private:
          // parent.childrenOrder.Remove(order);
       }
 
+      if(parent && style.isActiveClient && visible)
+      {
+         if(state == minimized) parent.numIcons--;
+         parent.numPositions--;
+      }
+
       // TESTING THIS HERE!
       created = false;
       visible = false;
@@ -5374,11 +5380,6 @@ private:
             parent.Update(null);
          }
 
-         if(style.isActiveClient && visible)
-         {
-            if(state == minimized) parent.numIcons--;
-            parent.numPositions--;
-         }
          // Why was this commented out?
          GetRidOfVirtualArea();
       }
@@ -8752,11 +8753,6 @@ public:
                order = null;
                */
                
-               if(style.isActiveClient && !value)
-               {
-                  if(state == minimized) parent.numIcons--;
-                  parent.numPositions--;
-               }
                SetVisibility(!parent.style.hidden && (style.hidden ? false : true));
             }
 

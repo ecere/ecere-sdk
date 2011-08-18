@@ -798,6 +798,7 @@ static void DrawGrid(Window window, Surface surface)
    int w = window.clientSize.w;
    int h = window.clientSize.h;
    Color background = window.background;
+   if(!surface) return;
 
    if(background.r > 128 || background.g > 128)
       surface.SetForeground(black);
