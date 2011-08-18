@@ -48,7 +48,6 @@ private:
 
       bool DataBox::NotifySelect(DropBox control, DataRow row, Modifiers mods)
       {
-         //SetData((void *)row.tag), mods.closingDropDown;
          SetData(row.GetData(null), mods.closingDropDown);
          return true;
       }

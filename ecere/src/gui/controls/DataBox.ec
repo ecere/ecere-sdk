@@ -27,7 +27,7 @@ public:
    bool readOnly;
    bool keepEditor;
 
-   virtual void SetData(void * newData, bool closingDropDown)
+   virtual void SetData(any_object newData, bool closingDropDown)
    {
       //type._vTbl[__ecereVMethodID_class_OnCopy](type, data, newData);
 

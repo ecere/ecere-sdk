@@ -1025,12 +1025,12 @@ class Sheet : Window
       // row.SetData(null, codeObject);  // Is this necessary?
    }
 
-   void DataBox::EditSetData(void * setValue, bool closingDropDown)
+   void DataBox::EditSetData(any_object setValue, bool closingDropDown)
    {
       ((Sheet)master.master).SetData(setValue, this);
    }
 
-   void SetData(void * setValue, DataBox dataBox)
+   void SetData(any_object setValue, DataBox dataBox)
    {
       //PropertyInfo propertyPtr = row.GetData(null);
       PropertyInfo propertyPtr = properties.GetData(null);
@@ -1058,7 +1058,7 @@ class Sheet : Window
                   data = new0 byte[dataType.structSize];
                   prop.Get(object, data);
                   // CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, &setValue, subDataType.size);
-                  CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, &setValue, subDataType.dataType.size);
+                  CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, setValue, subDataType.dataType.size);
                   prop.Set(object, data);
                }
                else if(dataType.type == normalClass || dataType.type == noHeadClass)
@@ -1074,7 +1074,7 @@ class Sheet : Window
                         DataValue value = { 0 };
                         value.ui = prop.Get(object);
                         value.ui &= ~ (uint)bitMember.mask;
-                        value.ui |= (uint)setValue << bitMember.pos;
+                        value.ui |= *(uint *)setValue << bitMember.pos;
                         prop.Set(object, value.ui);
                      }
                   }
@@ -1083,7 +1083,7 @@ class Sheet : Window
                      data = dataType.typeSize ? new0 byte[dataType.typeSize] : null;
                      prop.Get(object, data);
                      // CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, &setValue, subDataType.typeSize);
-                     CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, &setValue, subDataType.dataType.size);
+                     CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, setValue, subDataType.dataType.size);
                      // TODO: Support non 32 bit datatypes here
                      prop.Set(object, data);
                   }
@@ -1107,7 +1107,7 @@ class Sheet : Window
                {
                   data = new0 byte[dataType.structSize];
                   prop.Get(object, data);
-                  subProperty.Set(data, (uint)setValue);
+                  subProperty.Set(data, *(uint *)setValue);
                   prop.Set(object, data);
                }
                else if(dataType.type == normalClass || dataType.type == noHeadClass)
@@ -1463,6 +1463,7 @@ public:
             else
             {
                GetProperty(prop, object, &valueData);
+
                if(dataType.type == normalClass)
                   dataPtr = valueData.p;
                else
