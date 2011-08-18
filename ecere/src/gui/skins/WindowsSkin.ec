@@ -586,17 +586,28 @@ public class WindowsSkin_Button : Button
          Color backColor = background;
          int isDefault = this.isDefault;
          Font font;
+         int tw = 0, th = 0;
+         int bw = 0, bh = 0;
 
          font = fontObject;
+         surface.TextFont(font);
+         if(text)
+            surface.TextExtent(text, strlen(text),&tw, &th);
 
          if(bevelOver && checked)
             offset = 1;
 
          if(!isEnabled)
+         {
+            if(bitmaps[disabled]) buttonBitmap = bitmaps[disabled].bitmap;
             state = disabled;
+         }
+
+         if(buttonBitmap && buttonStyle.bevelOver && !buttonStyle.checkBox && !buttonStyle.radio && text)
+            isDefault = 0;
 
          // Background
-         if((bevel || bevelOver) && opacity && backColor)
+         if((bevel /*|| bevelOver*/) && opacity && backColor)
          {
             if(!scaleBitmap || !buttonBitmap)
             {
@@ -686,16 +697,37 @@ public class WindowsSkin_Button : Button
                }
                else
                {
-                  if(bevel || offset)
-                     surface.Blit(buttonBitmap,
-                        (clientSize.w-buttonBitmap.width) /2 + offset,
-                        (clientSize.h-buttonBitmap.height)/2 + offset,
-                        0,0,buttonBitmap.width,buttonBitmap.height);
+                  int x, y;
+                  bw = buttonBitmap.width;
+                  bh = buttonBitmap.height;
+
+                  if(bitmapAlignment == left || bitmapAlignment == right)
+                  {
+                     if(bitmapAlignment == left)
+                        x = 2;
+                     else
+                        x = clientSize.w-bw-2;
+                     y = (clientSize.h-bh)/2;
+                  }
+                  else if(bitmapAlignment == top || bitmapAlignment == bottom)
+                  {
+                     x = (clientSize.w-bw)/2;
+                     if(bitmapAlignment == top)
+                        y = 2;
+                     else
+                        y = clientSize.h-bh-2;
+                  }
                   else
-                     surface.Blit(buttonBitmap,
-                        (clientSize.w-buttonBitmap.width)/2,
-                        (clientSize.h-buttonBitmap.height)/2,
-                        0,0,buttonBitmap.width,buttonBitmap.height);
+                  {
+                     x = (clientSize.w-bw)/2;
+                     y = (clientSize.h-bh - (int)(buttonStyle.bevelOver && text) * th)/2;
+                  }
+                  if(buttonStyle.bevel || buttonStyle.offset)
+                  {
+                     x += offset;
+                     y += offset;
+                  }
+                  surface.Blit(buttonBitmap, x,y, 0,0, bw,bh);
                }
             }
          }
@@ -732,7 +764,6 @@ public class WindowsSkin_Button : Button
 
          // Text
          surface.TextOpacity(false);
-         surface.TextFont(font);
          surface.SetForeground(foreground);
          if(text)
          {
@@ -746,6 +777,18 @@ public class WindowsSkin_Button : Button
             {
                int x, y = (clientSize.h - th - 1)/2 + offset;
                
+               if(buttonStyle.bevelOver && buttonBitmap && !buttonStyle.checkBox && !buttonStyle.radio)
+               {
+                  if(bitmapAlignment == top)
+                     y = (clientSize.h - bh - 4 - th - 5)/2 + offset + bh + 4;
+                  else if(bitmapAlignment == bottom)
+                     y = (clientSize.h - bh - 4 - th - 5)/2 + offset;
+                  else//if(bitmapAlignment == left || bitmapAlignment == right)
+                     y = clientSize.h - th - 5 + offset;
+               }
+               else
+                  y = (clientSize.h - th - 1)/2 + offset;
+
                if(ellipsis)
                {
                   int width = clientSize.w - 2*6;
@@ -757,7 +800,13 @@ public class WindowsSkin_Button : Button
                {
                   int width = clientSize.w - 2 * 6;
                   x = 6 + offset;
-                  if(isCheckbox || ((isRadio || bevelOver) && buttonBitmap))
+                  if(bitmapAlignment == left || bitmapAlignment == right)
+                  {
+                     if(bitmapAlignment == left)
+                        x += bw + 4;
+                     width -= bw + 4;
+                  }
+                  if(isCheckbox || ((isRadio /*|| bevelOver*/) && buttonBitmap))
                   {
                      x += CAPTION_DISTANCE + 3;
                   }
