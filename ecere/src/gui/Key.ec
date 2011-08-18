@@ -255,7 +255,16 @@ public enum KeyCode : Key
    select            = enter
 };
 
-public class Modifiers { public bool shift:1, ctrl:1, alt:1, left:1, middle:1, right:1, isActivate:1, isSideEffect:1, closingDropDown:1; };
+public class Modifiers
+{
+   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   {
+      if(needClass) *needClass = false;
+      return 0;
+   };
+
+   public bool shift:1, ctrl:1, alt:1, left:1, middle:1, right:1, isActivate:1, isSideEffect:1, closingDropDown:1;
+};
 
 public enum PredefinedKey : Key
 {
