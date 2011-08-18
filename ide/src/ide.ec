@@ -517,7 +517,7 @@ class IDE : Window
                         gotWhatWeWant = true;
                   }
                   if(gotWhatWeWant ||
-                     MessageBox { type = yesNo, master = this, text = "Error opening file", 
+                     MessageBox { type = yesNo, /*master = this, */text = "Error opening file", 
                      contents = "Open a different file?" }.Modal() == no)
                   {
                      if(!projectView && gotWhatWeWant)
@@ -563,7 +563,7 @@ class IDE : Window
          fileMenu, "Global Settings...", g;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
-            globalSettingsDialog.master = this;
+            // globalSettingsDialog.master = this;
             if(ide.workspace && ide.workspace.compiler)
                globalSettingsDialog.workspaceActiveCompiler = ide.workspace.compiler;
             else if(ideSettings.defaultCompiler)
@@ -681,7 +681,7 @@ class IDE : Window
                {
                   if(OpenFile(ideProjectFileDialog.filePath, normal, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, add))
                      break;
-                  if(MessageBox { type = yesNo, master = this, text = "Error opening project file", 
+                  if(MessageBox { type = yesNo, /*master = this, */text = "Error opening project file", 
                         contents = "Add a different project?" }.Modal() == no)
                   {
                      break;
@@ -1138,7 +1138,7 @@ class IDE : Window
          helpMenu, "About...", a;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
-            AboutIDE { master = this }.Modal();
+            AboutIDE { /*master = this */}.Modal();
             return true;
          }
       }
@@ -1349,7 +1349,7 @@ class IDE : Window
       char temp[4096];
       sprintf(temp, "The document %s was modified by another application.\n"
             "Would you like to reload it and lose your changes?", this.fileName);
-      if(MessageBox { type = yesNo, master = this/*.parent*/,
+      if(MessageBox { type = yesNo/*, master = this*//*.parent*/,
             text = "Document has been modified", contents = temp }.Modal() == yes)
       {
          char * fileName = CopyString(this.fileName);
@@ -1501,7 +1501,7 @@ class IDE : Window
    {
       if(debugger.isActive)
       {
-         if(MessageBox { type = yesNo, master = ide, 
+         if(MessageBox { type = yesNo, /*master = ide, */
                            contents = "Do you want to terminate the debugging session in progress?", 
                            text = title }.Modal() == no)
             return true;
@@ -1689,7 +1689,7 @@ class IDE : Window
                }
                if(prj)
                {
-                  MessageBox { type = ok, parent = parent, master = this, text = "Same Project", 
+                  MessageBox { type = ok, parent = parent, /*master = this, */text = "Same Project", 
                         contents = "This project is already present in workspace." }.Modal();
                }
                else
@@ -2436,9 +2436,9 @@ class IDE : Window
          skinItems[c].id = c;
          skinItems[c].isRadio = true;         
       }
-*/
+*/    /*
       ideFileDialog.master = this;
-      ideProjectFileDialog.master = this;
+      ideProjectFileDialog.master = this;*/
 
       //SetDriverAndSkin();
       return true;

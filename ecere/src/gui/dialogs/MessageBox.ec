@@ -15,6 +15,7 @@ public class MessageBox : Window
    background = activeBorder;
    hasClose = true;
    tabCycle = true;
+   nativeDecorations = true;
 
 public:
    property MessageBoxType type { set { style = value; } };

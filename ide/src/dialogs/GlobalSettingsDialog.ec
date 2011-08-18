@@ -18,6 +18,7 @@ class GlobalSettingsDialog : Window
    borderStyle = sizable;
    text = "Global Settings";
    minClientSize = { 560, 420 };
+   nativeDecorations = true;
 
    IDESettings ideSettings;
    IDESettingsContainer settingsContainer;
