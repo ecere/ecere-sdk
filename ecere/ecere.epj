@@ -1205,9 +1205,14 @@ from wherever you obtained them.",
                            "Configurations" : [
                               {
                                  "Name" : "Vanilla",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1272,6 +1277,12 @@ from wherever you obtained them.",
                      "Configurations" : [
                         {
                            "Name" : "PACS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        },
+                        {
+                           "Name" : "Vanilla",
                            "Options" : {
                               "ExcludeFromBuild" : true
                            }

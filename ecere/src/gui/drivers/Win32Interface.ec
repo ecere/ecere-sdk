@@ -964,7 +964,8 @@ class Win32Interface : Interface
                   h = rcWindow.bottom - rcWindow.top;
 
                   AeroSnapPosition(window, x, y, w, h);
-                  window.UpdateVisual(null);
+                  if(!guiApp.modeSwitching)
+                     window.UpdateVisual(null);
                }
                else
                   return (uint)DefWindowProc(windowHandle, msg, wParam, lParam);

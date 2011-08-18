@@ -5683,7 +5683,7 @@ private:
       char caption[2048];
       for(child = children.first; child; child = child.next)
       {
-         if(child.cycle && !child.style.nonClient && child.style.isActiveClient)
+         if(child.cycle && !child.style.nonClient && child.style.isActiveClient && child.visible)
          {
             DataRow row = listBox.AddRow();
             row.tag = (int)child;
@@ -8650,6 +8650,12 @@ public:
             Window client = null;
 
             style.hidden = true;
+            if(style.isActiveClient)
+            {
+               parent.numPositions--;
+               if(state == minimized) parent.numIcons--;
+            }
+
             if(created)
             {
                OldLink prevOrder = null;
@@ -8670,12 +8676,6 @@ public:
                }
                if(style.modal && master && master.modalSlave == this)
                   master.modalSlave = null;
-
-               if(style.isActiveClient)
-               {
-                  parent.numPositions--;
-                  if(state == minimized) parent.numIcons--;
-               }
 
                if(order)
                {
@@ -8752,6 +8752,11 @@ public:
                order = null;
                */
                
+               if(style.isActiveClient && !value)
+               {
+                  if(state == minimized) parent.numIcons--;
+                  parent.numPositions--;
+               }
                SetVisibility(!parent.style.hidden && (style.hidden ? false : true));
             }
 
