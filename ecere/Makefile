@@ -38,7 +38,7 @@ OBJECTS2 = $(OBJ)harfbuzz-myanmar.o $(OBJ)harfbuzz-open.o $(OBJ)harfbuzz-shaper.
 	$(OBJ)harfbuzz-stream.o $(OBJ)harfbuzz-tibetan.o $(if $(WINDOWS),$(OBJ)Direct3D8DisplayDriver.o,) \
 	$(if $(WINDOWS),$(OBJ)Direct3D9DisplayDriver.o,) $(if $(WINDOWS),$(OBJ)DirectDrawDisplayDriver.o,) \
 	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.o,) $(OBJ)lfbBlit.o $(OBJ)lfbConvert.o $(OBJ)LFBDisplayDriver.o \
-	$(OBJ)NCursesDisplayDriver.o $(OBJ)OpenGLDisplayDriver.o \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.o,) $(OBJ)OpenGLDisplayDriver.o \
 	$(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.o,) $(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.o,) \
 	$(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.o,) $(if $(LINUX),$(OBJ)XDisplayDriver.o,) $(OBJ)Bitmap.o $(OBJ)BitmapResource.o \
 	$(OBJ)Color.o $(OBJ)Display.o $(OBJ)DisplaySystem.o $(OBJ)FontResource.o $(OBJ)Resource.o \
@@ -47,15 +47,17 @@ OBJECTS2 = $(OBJ)harfbuzz-myanmar.o $(OBJ)harfbuzz-open.o $(OBJ)harfbuzz-shaper.
 	$(OBJ)ScrollBar.o $(OBJ)StatusBar.o
 OBJECTS3 = $(OBJ)TabControl.o $(OBJ)PaneSplitter.o $(OBJ)Stacker.o $(OBJ)ColorPicker.o \
 	$(OBJ)FileDialog.o $(OBJ)FindDialog.o $(OBJ)GoToDialog.o $(OBJ)MessageBox.o $(OBJ)ReplaceDialog.o \
-	$(OBJ)WindowList.o $(OBJ)NCursesInterface.o $(if $(WINDOWS),$(OBJ)Win32Interface.o,) \
-	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.o,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.o,) $(OBJ)TVisionSkin.o \
-	$(OBJ)WindowsSkin.o $(OBJ)Anchor.o $(OBJ)ClipBoard.o $(OBJ)Cursor.o $(OBJ)Desktop3D.o \
-	$(OBJ)FormDesigner.o $(OBJ)GuiApplication.o $(OBJ)Interface.o $(OBJ)Key.o $(OBJ)Skin.o $(OBJ)Timer.o \
-	$(OBJ)typeEdit.o $(OBJ)Window.o $(OBJ)dcom.o $(OBJ)HTTPFile.o $(OBJ)network.o \
-	$(OBJ)NetworkClientFile.o $(OBJ)Service.o $(OBJ)Socket.o $(OBJ)Array.o $(OBJ)AVLTree.o \
-	$(OBJ)BuiltInContainer.o $(OBJ)Container.o $(OBJ)CustomAVLTree.o $(OBJ)LinkList.o $(OBJ)List.o \
-	$(OBJ)Map.o $(OBJ)BinaryTree.o $(OBJ)BTNode.o $(OBJ)dataTypes.o $(OBJ)instance.o
-OBJECTS4 = $(OBJ)String.o $(OBJ)OldList.o $(OBJ)instance.c.o $(OBJ)$(MODULE).main$(O)
+	$(OBJ)WindowList.o $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.o,) \
+	$(if $(WINDOWS),$(OBJ)Win32Interface.o,) $(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.o,) \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.o,) $(OBJ)TVisionSkin.o $(OBJ)WindowsSkin.o $(OBJ)Anchor.o $(OBJ)ClipBoard.o \
+	$(OBJ)Cursor.o $(OBJ)Desktop3D.o $(OBJ)FormDesigner.o $(OBJ)GuiApplication.o \
+	$(OBJ)Interface.o $(OBJ)Key.o $(OBJ)Skin.o $(OBJ)Timer.o $(OBJ)typeEdit.o $(OBJ)Window.o \
+	$(OBJ)dcom.o $(OBJ)HTTPFile.o $(OBJ)network.o $(OBJ)NetworkClientFile.o $(OBJ)Service.o \
+	$(OBJ)Socket.o $(OBJ)Array.o $(OBJ)AVLTree.o $(OBJ)BuiltInContainer.o $(OBJ)Container.o \
+	$(OBJ)CustomAVLTree.o $(OBJ)LinkList.o $(OBJ)List.o $(OBJ)Map.o $(OBJ)BinaryTree.o $(OBJ)BTNode.o \
+	$(OBJ)dataTypes.o
+OBJECTS4 = $(OBJ)instance.o $(OBJ)String.o $(OBJ)OldList.o $(OBJ)instance.c.o \
+	$(OBJ)$(MODULE).main$(O)
 
 COBJECTS = $(COBJECTS1) $(COBJECTS2) $(COBJECTS3)
 COBJECTS1 = $(OBJ)Archive.c $(OBJ)BufferedFile.c $(OBJ)Date.c $(OBJ)DualPipe.c \
@@ -67,7 +69,8 @@ COBJECTS1 = $(OBJ)Archive.c $(OBJ)BufferedFile.c $(OBJ)Date.c $(OBJ)DualPipe.c \
 	$(OBJ)GIFFormat.c $(OBJ)JPEGFormat.c $(OBJ)PCXFormat.c $(OBJ)PNGFormat.c $(OBJ)RGBFormat.c \
 	$(if $(WINDOWS),$(OBJ)Direct3D8DisplayDriver.c,) $(if $(WINDOWS),$(OBJ)Direct3D9DisplayDriver.c,) \
 	$(if $(WINDOWS),$(OBJ)DirectDrawDisplayDriver.c,) $(if $(WINDOWS),$(OBJ)GDIDisplayDriver.c,) $(OBJ)lfbBlit.c $(OBJ)lfbConvert.c \
-	$(OBJ)LFBDisplayDriver.c $(OBJ)NCursesDisplayDriver.c $(OBJ)OpenGLDisplayDriver.c
+	$(OBJ)LFBDisplayDriver.c $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.c,) \
+	$(OBJ)OpenGLDisplayDriver.c
 COBJECTS2 = $(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.c,) \
 	$(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.c,) $(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.c,) \
 	$(if $(LINUX),$(OBJ)XDisplayDriver.c,) $(OBJ)Bitmap.c $(OBJ)BitmapResource.c $(OBJ)Color.c $(OBJ)Display.c \
@@ -76,16 +79,15 @@ COBJECTS2 = $(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.c,) \
 	$(OBJ)Menu.c $(OBJ)Picture.c $(OBJ)ProgressBar.c $(OBJ)ScrollBar.c $(OBJ)StatusBar.c \
 	$(OBJ)TabControl.c $(OBJ)PaneSplitter.c $(OBJ)Stacker.c $(OBJ)ColorPicker.c $(OBJ)FileDialog.c \
 	$(OBJ)FindDialog.c $(OBJ)GoToDialog.c $(OBJ)MessageBox.c $(OBJ)ReplaceDialog.c $(OBJ)WindowList.c \
-	$(OBJ)NCursesInterface.c $(if $(WINDOWS),$(OBJ)Win32Interface.c,) \
-	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.c,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.c,) $(OBJ)TVisionSkin.c \
-	$(OBJ)WindowsSkin.c
-COBJECTS3 = $(OBJ)Anchor.c $(OBJ)ClipBoard.c $(OBJ)Cursor.c $(OBJ)Desktop3D.c \
-	$(OBJ)FormDesigner.c $(OBJ)GuiApplication.c $(OBJ)Interface.c $(OBJ)Key.c $(OBJ)Skin.c $(OBJ)Timer.c \
-	$(OBJ)typeEdit.c $(OBJ)Window.c $(OBJ)dcom.c $(OBJ)HTTPFile.c $(OBJ)network.c \
-	$(OBJ)NetworkClientFile.c $(OBJ)Service.c $(OBJ)Socket.c $(OBJ)Array.c $(OBJ)AVLTree.c \
-	$(OBJ)BuiltInContainer.c $(OBJ)Container.c $(OBJ)CustomAVLTree.c $(OBJ)LinkList.c $(OBJ)List.c \
-	$(OBJ)Map.c $(OBJ)BinaryTree.c $(OBJ)BTNode.c $(OBJ)dataTypes.c $(OBJ)instance.c \
-	$(OBJ)String.c $(OBJ)OldList.c
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.c,) $(if $(WINDOWS),$(OBJ)Win32Interface.c,) \
+	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.c,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.c,) $(OBJ)TVisionSkin.c
+COBJECTS3 = $(OBJ)WindowsSkin.c $(OBJ)Anchor.c $(OBJ)ClipBoard.c $(OBJ)Cursor.c \
+	$(OBJ)Desktop3D.c $(OBJ)FormDesigner.c $(OBJ)GuiApplication.c $(OBJ)Interface.c $(OBJ)Key.c \
+	$(OBJ)Skin.c $(OBJ)Timer.c $(OBJ)typeEdit.c $(OBJ)Window.c $(OBJ)dcom.c $(OBJ)HTTPFile.c \
+	$(OBJ)network.c $(OBJ)NetworkClientFile.c $(OBJ)Service.c $(OBJ)Socket.c $(OBJ)Array.c \
+	$(OBJ)AVLTree.c $(OBJ)BuiltInContainer.c $(OBJ)Container.c $(OBJ)CustomAVLTree.c \
+	$(OBJ)LinkList.c $(OBJ)List.c $(OBJ)Map.c $(OBJ)BinaryTree.c $(OBJ)BTNode.c $(OBJ)dataTypes.c \
+	$(OBJ)instance.c $(OBJ)String.c $(OBJ)OldList.c
 
 SYMBOLS = $(SYMBOLS1) $(SYMBOLS2) $(SYMBOLS3)
 SYMBOLS1 = $(OBJ)Archive.sym $(OBJ)BufferedFile.sym $(OBJ)Date.sym $(OBJ)DualPipe.sym \
@@ -99,26 +101,26 @@ SYMBOLS1 = $(OBJ)Archive.sym $(OBJ)BufferedFile.sym $(OBJ)Date.sym $(OBJ)DualPip
 	$(OBJ)RGBFormat.sym $(if $(WINDOWS),$(OBJ)Direct3D8DisplayDriver.sym,) \
 	$(if $(WINDOWS),$(OBJ)Direct3D9DisplayDriver.sym,) $(if $(WINDOWS),$(OBJ)DirectDrawDisplayDriver.sym,) \
 	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.sym,) $(OBJ)lfbBlit.sym $(OBJ)lfbConvert.sym $(OBJ)LFBDisplayDriver.sym
-SYMBOLS2 = $(OBJ)NCursesDisplayDriver.sym $(OBJ)OpenGLDisplayDriver.sym \
-	$(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.sym,) $(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.sym,) \
-	$(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.sym,) $(if $(LINUX),$(OBJ)XDisplayDriver.sym,) $(OBJ)Bitmap.sym \
-	$(OBJ)BitmapResource.sym $(OBJ)Color.sym $(OBJ)Display.sym $(OBJ)DisplaySystem.sym \
-	$(OBJ)FontResource.sym $(OBJ)Resource.sym $(OBJ)Surface.sym $(OBJ)Button.sym \
+SYMBOLS2 = $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.sym,) \
+	$(OBJ)OpenGLDisplayDriver.sym $(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.sym,) \
+	$(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.sym,) $(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.sym,) \
+	$(if $(LINUX),$(OBJ)XDisplayDriver.sym,) $(OBJ)Bitmap.sym $(OBJ)BitmapResource.sym $(OBJ)Color.sym $(OBJ)Display.sym \
+	$(OBJ)DisplaySystem.sym $(OBJ)FontResource.sym $(OBJ)Resource.sym $(OBJ)Surface.sym $(OBJ)Button.sym \
 	$(OBJ)CalendarControl.sym $(OBJ)DataBox.sym $(OBJ)DropBox.sym $(OBJ)EditBox.sym $(OBJ)Label.sym \
 	$(OBJ)ListBox.sym $(OBJ)Menu.sym $(OBJ)Picture.sym $(OBJ)ProgressBar.sym $(OBJ)ScrollBar.sym \
 	$(OBJ)StatusBar.sym $(OBJ)TabControl.sym $(OBJ)PaneSplitter.sym $(OBJ)Stacker.sym \
 	$(OBJ)ColorPicker.sym $(OBJ)FileDialog.sym $(OBJ)FindDialog.sym $(OBJ)GoToDialog.sym \
-	$(OBJ)MessageBox.sym $(OBJ)ReplaceDialog.sym $(OBJ)WindowList.sym $(OBJ)NCursesInterface.sym \
-	$(if $(WINDOWS),$(OBJ)Win32Interface.sym,)
-SYMBOLS3 = $(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.sym,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.sym,) $(OBJ)TVisionSkin.sym $(OBJ)WindowsSkin.sym $(OBJ)Anchor.sym \
-	$(OBJ)ClipBoard.sym $(OBJ)Cursor.sym $(OBJ)Desktop3D.sym $(OBJ)FormDesigner.sym \
-	$(OBJ)GuiApplication.sym $(OBJ)Interface.sym $(OBJ)Key.sym $(OBJ)Skin.sym $(OBJ)Timer.sym \
-	$(OBJ)typeEdit.sym $(OBJ)Window.sym $(OBJ)dcom.sym $(OBJ)HTTPFile.sym $(OBJ)network.sym \
-	$(OBJ)NetworkClientFile.sym $(OBJ)Service.sym $(OBJ)Socket.sym $(OBJ)Array.sym $(OBJ)AVLTree.sym \
-	$(OBJ)BuiltInContainer.sym $(OBJ)Container.sym $(OBJ)CustomAVLTree.sym $(OBJ)LinkList.sym $(OBJ)List.sym \
-	$(OBJ)Map.sym $(OBJ)BinaryTree.sym $(OBJ)BTNode.sym $(OBJ)dataTypes.sym $(OBJ)instance.sym \
-	$(OBJ)String.sym $(OBJ)OldList.sym
+	$(OBJ)MessageBox.sym $(OBJ)ReplaceDialog.sym $(OBJ)WindowList.sym \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.sym,)
+SYMBOLS3 = $(if $(WINDOWS),$(OBJ)Win32Interface.sym,) \
+	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.sym,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.sym,) $(OBJ)TVisionSkin.sym \
+	$(OBJ)WindowsSkin.sym $(OBJ)Anchor.sym $(OBJ)ClipBoard.sym $(OBJ)Cursor.sym $(OBJ)Desktop3D.sym \
+	$(OBJ)FormDesigner.sym $(OBJ)GuiApplication.sym $(OBJ)Interface.sym $(OBJ)Key.sym $(OBJ)Skin.sym \
+	$(OBJ)Timer.sym $(OBJ)typeEdit.sym $(OBJ)Window.sym $(OBJ)dcom.sym $(OBJ)HTTPFile.sym \
+	$(OBJ)network.sym $(OBJ)NetworkClientFile.sym $(OBJ)Service.sym $(OBJ)Socket.sym $(OBJ)Array.sym \
+	$(OBJ)AVLTree.sym $(OBJ)BuiltInContainer.sym $(OBJ)Container.sym $(OBJ)CustomAVLTree.sym \
+	$(OBJ)LinkList.sym $(OBJ)List.sym $(OBJ)Map.sym $(OBJ)BinaryTree.sym $(OBJ)BTNode.sym \
+	$(OBJ)dataTypes.sym $(OBJ)instance.sym $(OBJ)String.sym $(OBJ)OldList.sym
 
 IMPORTS = $(IMPORTS1) $(IMPORTS2) $(IMPORTS3)
 IMPORTS1 = $(OBJ)Archive.imp $(OBJ)BufferedFile.imp $(OBJ)Date.imp $(OBJ)DualPipe.imp \
@@ -132,26 +134,26 @@ IMPORTS1 = $(OBJ)Archive.imp $(OBJ)BufferedFile.imp $(OBJ)Date.imp $(OBJ)DualPip
 	$(OBJ)RGBFormat.imp $(if $(WINDOWS),$(OBJ)Direct3D8DisplayDriver.imp,) \
 	$(if $(WINDOWS),$(OBJ)Direct3D9DisplayDriver.imp,) $(if $(WINDOWS),$(OBJ)DirectDrawDisplayDriver.imp,) \
 	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.imp,) $(OBJ)lfbBlit.imp $(OBJ)lfbConvert.imp $(OBJ)LFBDisplayDriver.imp
-IMPORTS2 = $(OBJ)NCursesDisplayDriver.imp $(OBJ)OpenGLDisplayDriver.imp \
-	$(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.imp,) $(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.imp,) \
-	$(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.imp,) $(if $(LINUX),$(OBJ)XDisplayDriver.imp,) $(OBJ)Bitmap.imp \
-	$(OBJ)BitmapResource.imp $(OBJ)Color.imp $(OBJ)Display.imp $(OBJ)DisplaySystem.imp \
-	$(OBJ)FontResource.imp $(OBJ)Resource.imp $(OBJ)Surface.imp $(OBJ)Button.imp \
+IMPORTS2 = $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.imp,) \
+	$(OBJ)OpenGLDisplayDriver.imp $(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.imp,) \
+	$(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.imp,) $(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.imp,) \
+	$(if $(LINUX),$(OBJ)XDisplayDriver.imp,) $(OBJ)Bitmap.imp $(OBJ)BitmapResource.imp $(OBJ)Color.imp $(OBJ)Display.imp \
+	$(OBJ)DisplaySystem.imp $(OBJ)FontResource.imp $(OBJ)Resource.imp $(OBJ)Surface.imp $(OBJ)Button.imp \
 	$(OBJ)CalendarControl.imp $(OBJ)DataBox.imp $(OBJ)DropBox.imp $(OBJ)EditBox.imp $(OBJ)Label.imp \
 	$(OBJ)ListBox.imp $(OBJ)Menu.imp $(OBJ)Picture.imp $(OBJ)ProgressBar.imp $(OBJ)ScrollBar.imp \
 	$(OBJ)StatusBar.imp $(OBJ)TabControl.imp $(OBJ)PaneSplitter.imp $(OBJ)Stacker.imp \
 	$(OBJ)ColorPicker.imp $(OBJ)FileDialog.imp $(OBJ)FindDialog.imp $(OBJ)GoToDialog.imp \
-	$(OBJ)MessageBox.imp $(OBJ)ReplaceDialog.imp $(OBJ)WindowList.imp $(OBJ)NCursesInterface.imp \
-	$(if $(WINDOWS),$(OBJ)Win32Interface.imp,)
-IMPORTS3 = $(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.imp,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.imp,) $(OBJ)TVisionSkin.imp $(OBJ)WindowsSkin.imp $(OBJ)Anchor.imp \
-	$(OBJ)ClipBoard.imp $(OBJ)Cursor.imp $(OBJ)Desktop3D.imp $(OBJ)FormDesigner.imp \
-	$(OBJ)GuiApplication.imp $(OBJ)Interface.imp $(OBJ)Key.imp $(OBJ)Skin.imp $(OBJ)Timer.imp \
-	$(OBJ)typeEdit.imp $(OBJ)Window.imp $(OBJ)dcom.imp $(OBJ)HTTPFile.imp $(OBJ)network.imp \
-	$(OBJ)NetworkClientFile.imp $(OBJ)Service.imp $(OBJ)Socket.imp $(OBJ)Array.imp $(OBJ)AVLTree.imp \
-	$(OBJ)BuiltInContainer.imp $(OBJ)Container.imp $(OBJ)CustomAVLTree.imp $(OBJ)LinkList.imp $(OBJ)List.imp \
-	$(OBJ)Map.imp $(OBJ)BinaryTree.imp $(OBJ)BTNode.imp $(OBJ)dataTypes.imp $(OBJ)instance.imp \
-	$(OBJ)String.imp $(OBJ)OldList.imp
+	$(OBJ)MessageBox.imp $(OBJ)ReplaceDialog.imp $(OBJ)WindowList.imp \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.imp,)
+IMPORTS3 = $(if $(WINDOWS),$(OBJ)Win32Interface.imp,) \
+	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.imp,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.imp,) $(OBJ)TVisionSkin.imp \
+	$(OBJ)WindowsSkin.imp $(OBJ)Anchor.imp $(OBJ)ClipBoard.imp $(OBJ)Cursor.imp $(OBJ)Desktop3D.imp \
+	$(OBJ)FormDesigner.imp $(OBJ)GuiApplication.imp $(OBJ)Interface.imp $(OBJ)Key.imp $(OBJ)Skin.imp \
+	$(OBJ)Timer.imp $(OBJ)typeEdit.imp $(OBJ)Window.imp $(OBJ)dcom.imp $(OBJ)HTTPFile.imp \
+	$(OBJ)network.imp $(OBJ)NetworkClientFile.imp $(OBJ)Service.imp $(OBJ)Socket.imp $(OBJ)Array.imp \
+	$(OBJ)AVLTree.imp $(OBJ)BuiltInContainer.imp $(OBJ)Container.imp $(OBJ)CustomAVLTree.imp \
+	$(OBJ)LinkList.imp $(OBJ)List.imp $(OBJ)Map.imp $(OBJ)BinaryTree.imp $(OBJ)BTNode.imp \
+	$(OBJ)dataTypes.imp $(OBJ)instance.imp $(OBJ)String.imp $(OBJ)OldList.imp
 
 SOURCES = $(SOURCES1) $(SOURCES2) $(SOURCES3)
 SOURCES1 = src/sys/Archive.ec src/sys/BufferedFile.ec src/sys/Date.ec src/sys/DualPipe.ec \
@@ -175,7 +177,7 @@ SOURCES2 = src/gfx/drivers/harfbuzz/harfbuzz-stream.c \
 	src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c $(if $(WINDOWS),src/gfx/drivers/Direct3D8DisplayDriver.ec,) \
 	$(if $(WINDOWS),src/gfx/drivers/Direct3D9DisplayDriver.ec,) $(if $(WINDOWS),src/gfx/drivers/DirectDrawDisplayDriver.ec,) \
 	$(if $(WINDOWS),src/gfx/drivers/GDIDisplayDriver.ec,) src/gfx/drivers/lfbBlit.ec src/gfx/drivers/lfbConvert.ec \
-	src/gfx/drivers/LFBDisplayDriver.ec src/gfx/drivers/NCursesDisplayDriver.ec \
+	src/gfx/drivers/LFBDisplayDriver.ec $(if $(or $(LINUX),$(OSX)),src/gfx/drivers/NCursesDisplayDriver.ec,) \
 	src/gfx/drivers/OpenGLDisplayDriver.ec $(if $(WINDOWS),src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec,) \
 	$(if $(WINDOWS),src/gfx/drivers/Win32ConsoleDisplayDriver.ec,) $(if $(WINDOWS),src/gfx/drivers/Win32PrinterDisplayDriver.ec,) \
 	$(if $(LINUX),src/gfx/drivers/XDisplayDriver.ec,) src/gfx/Bitmap.ec src/gfx/BitmapResource.ec src/gfx/Color.ec \
@@ -185,15 +187,15 @@ SOURCES2 = src/gfx/drivers/harfbuzz/harfbuzz-stream.c \
 	src/gui/controls/Label.ec src/gui/controls/ListBox.ec src/gui/controls/Menu.ec \
 	src/gui/controls/Picture.ec src/gui/controls/ProgressBar.ec src/gui/controls/ScrollBar.ec \
 	src/gui/controls/StatusBar.ec src/gui/controls/TabControl.ec src/gui/controls/PaneSplitter.ec \
-	src/gui/controls/Stacker.ec src/gui/dialogs/ColorPicker.ec src/gui/dialogs/FileDialog.ec
-SOURCES3 = src/gui/dialogs/FindDialog.ec src/gui/dialogs/GoToDialog.ec \
-	src/gui/dialogs/MessageBox.ec src/gui/dialogs/ReplaceDialog.ec src/gui/dialogs/WindowList.ec \
-	src/gui/drivers/NCursesInterface.ec $(if $(WINDOWS),src/gui/drivers/Win32Interface.ec,) \
-	$(if $(WINDOWS),src/gui/drivers/Win32ConsoleInterface.ec,) $(if $(or $(LINUX),$(OSX)),src/gui/drivers/XInterface.ec,) \
-	src/gui/skins/TVisionSkin.ec src/gui/skins/WindowsSkin.ec src/gui/Anchor.ec src/gui/ClipBoard.ec \
-	src/gui/Cursor.ec src/gui/Desktop3D.ec src/gui/FormDesigner.ec src/gui/GuiApplication.ec \
-	src/gui/Interface.ec src/gui/Key.ec src/gui/Skin.ec src/gui/Timer.ec src/gui/typeEdit.ec \
-	src/gui/Window.ec src/net/dcom.ec src/net/HTTPFile.ec src/net/network.ec \
+	src/gui/controls/Stacker.ec src/gui/dialogs/ColorPicker.ec
+SOURCES3 = src/gui/dialogs/FileDialog.ec src/gui/dialogs/FindDialog.ec \
+	src/gui/dialogs/GoToDialog.ec src/gui/dialogs/MessageBox.ec src/gui/dialogs/ReplaceDialog.ec \
+	src/gui/dialogs/WindowList.ec $(if $(or $(LINUX),$(OSX)),src/gui/drivers/NCursesInterface.ec,) \
+	$(if $(WINDOWS),src/gui/drivers/Win32Interface.ec,) $(if $(WINDOWS),src/gui/drivers/Win32ConsoleInterface.ec,) \
+	$(if $(or $(LINUX),$(OSX)),src/gui/drivers/XInterface.ec,) src/gui/skins/TVisionSkin.ec src/gui/skins/WindowsSkin.ec src/gui/Anchor.ec \
+	src/gui/ClipBoard.ec src/gui/Cursor.ec src/gui/Desktop3D.ec src/gui/FormDesigner.ec \
+	src/gui/GuiApplication.ec src/gui/Interface.ec src/gui/Key.ec src/gui/Skin.ec src/gui/Timer.ec \
+	src/gui/typeEdit.ec src/gui/Window.ec src/net/dcom.ec src/net/HTTPFile.ec src/net/network.ec \
 	src/net/NetworkClientFile.ec src/net/Service.ec src/net/Socket.ec src/com/containers/Array.ec \
 	src/com/containers/AVLTree.ec src/com/containers/BuiltInContainer.ec src/com/containers/Container.ec \
 	src/com/containers/CustomAVLTree.ec src/com/containers/LinkList.ec src/com/containers/List.ec \

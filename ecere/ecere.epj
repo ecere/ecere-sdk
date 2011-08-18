@@ -732,6 +732,17 @@ from wherever you obtained them.",
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "PACS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -759,6 +770,17 @@ from wherever you obtained them.",
                               },
                               {
                                  "Name" : "Vanilla",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "PACS",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -802,6 +824,17 @@ from wherever you obtained them.",
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "PACS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -814,63 +847,37 @@ from wherever you obtained them.",
                                     "ExcludeFromBuild" : false
                                  }
                               }
-                           ],
-                           "Configurations" : [
-                              {
-                                 "Name" : "PACS",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : false
-                                 }
-                              }
                            ]
                         },
                         {
                            "FileName" : "lfbBlit.ec",
                            "Options" : {
                               "ExcludeFromBuild" : false
-                           },
-                           "Configurations" : [
-                              {
-                                 "Name" : "PACS",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : false
-                                 }
-                              }
-                           ]
+                           }
                         },
                         {
                            "FileName" : "lfbConvert.ec",
                            "Options" : {
                               "ExcludeFromBuild" : false
-                           },
-                           "Configurations" : [
-                              {
-                                 "Name" : "PACS",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : false
-                                 }
-                              }
-                           ]
+                           }
                         },
                         {
                            "FileName" : "LFBDisplayDriver.ec",
                            "Options" : {
                               "ExcludeFromBuild" : false
-                           },
-                           "Configurations" : [
-                              {
-                                 "Name" : "PACS",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : false
-                                 }
-                              }
-                           ]
+                           }
                         },
                         {
                            "FileName" : "NCursesDisplayDriver.ec",
                            "Platforms" : [
                               {
                                  "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              },
+                              {
+                                 "Name" : "apple",
                                  "Options" : {
                                     "ExcludeFromBuild" : false
                                  }
@@ -892,36 +899,27 @@ from wherever you obtained them.",
                         },
                         {
                            "FileName" : "OpenGLDisplayDriver.ec",
-                           "Platforms" : [
-                              {
-                                 "Name" : "win32",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : false
-                                 }
-                              }
-                           ],
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           },
                            "Configurations" : [
                               {
                                  "Name" : "WSMS",
-                                 "Platforms" : [
-                                    {
-                                       "Name" : "win32",
-                                       "Options" : {
-                                          "ExcludeFromBuild" : true
-                                       }
-                                    }
-                                 ]
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               },
                               {
                                  "Name" : "Vanilla",
-                                 "Platforms" : [
-                                    {
-                                       "Name" : "win32",
-                                       "Options" : {
-                                          "ExcludeFromBuild" : true
-                                       }
-                                    }
-                                 ]
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              },
+                              {
+                                 "Name" : "PACS",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               }
                            ]
                         },
@@ -949,6 +947,17 @@ from wherever you obtained them.",
                               },
                               {
                                  "Name" : "Vanilla",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "PACS",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -992,6 +1001,17 @@ from wherever you obtained them.",
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "PACS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1011,6 +1031,17 @@ from wherever you obtained them.",
                               },
                               {
                                  "Name" : "Vanilla",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "PACS",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -1132,6 +1163,12 @@ from wherever you obtained them.",
                            "Platforms" : [
                               {
                                  "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              },
+                              {
+                                 "Name" : "apple",
                                  "Options" : {
                                     "ExcludeFromBuild" : false
                                  }
