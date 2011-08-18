@@ -2,6 +2,11 @@ namespace gui::controls;
 
 import "Window"
 
+static define branchesColor = Color { 85, 85, 85 };
+static define headerCollapseForeground = Color { 135, 135, 135 };
+static define dataBoxBackground = Color { 67, 134, 198 };
+static define dataBoxForeground = lightYellow;
+
 #define SNAPDOWN(x, d) \
       if(Abs(x) % (d)) \
       { \
@@ -1940,6 +1945,8 @@ private:
                editData = DataBox
                {
                   this;
+                  background = dataBoxBackground;
+                  foreground = dataBoxForeground;
 
                   bool NotifyChanged(bool closingDropDown)
                   {
@@ -2073,7 +2080,7 @@ private:
       {
          int y = -scroll.y + ((style.header) ? rowHeight : 0);
          surface.LineStipple(0x5555);
-         surface.SetForeground(Color { 85, 85, 85 });
+         surface.SetForeground(branchesColor);
          for(row = rows.first; row; row = row.GetNextRow() )
          {
             int x = -scroll.x + EXTRA_SPACE / 2-1;
@@ -2233,7 +2240,7 @@ private:
             background = activeBorder;
             surface.SetBackground(activeBorder);
             surface.Area(rowStart, y, clientSize.w, (y + rowHeight) - 1);
-            foreground = Color { 85, 85, 85 };
+            foreground = branchesColor;
          }
          else if(dataDisplayFlags.selected)
          {
@@ -2251,6 +2258,8 @@ private:
                }
                if(isActive || !(style.alwaysEdit))
                   foreground = selectionText ? selectionText : SELECTION_TEXT;
+               else
+                  foreground = branchesColor;
             }
          }
 
@@ -2355,10 +2364,10 @@ private:
             surface.Clip(null);
             if(row.subRows.first && (row.parent || !(style.treeBranch) || (style.rootCollapse)))
             {
-               surface.SetForeground(this.foreground);
+               surface.SetForeground(row.header ? headerCollapseForeground : this.foreground);
                surface.Rectangle(collapseRowStart + 3 + plusIndent, y + PLUSY, collapseRowStart + 11 + plusIndent, y + PLUSY + 8);
 
-               surface.SetBackground(row.header ? (activeBorder) : (this.background /*white*/));
+               surface.SetBackground(row.header ? (activeBorder) : (this.background)); //white
                surface.Area(collapseRowStart + 4 + plusIndent, y + PLUSY + 1, collapseRowStart + 10 + plusIndent, y + PLUSY + 7);
 
                surface.HLine(collapseRowStart + 5 + plusIndent, collapseRowStart + 9 + plusIndent, y+PLUSY+4);
