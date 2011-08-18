@@ -611,17 +611,7 @@ from wherever you obtained them.",
                               }
                            ]
                         },
-                        {
-                           "FileName" : "PNGFormat.ec",
-                           "Configurations" : [
-                              {
-                                 "Name" : "WSMS",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              }
-                           ]
-                        },
+                        "PNGFormat.ec",
                         {
                            "FileName" : "RGBFormat.ec",
                            "Configurations" : [
