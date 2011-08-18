@@ -2396,7 +2396,7 @@ private:
                {
                   MenuItem item;
                   Window document = cycle.data;
-                  if(!document.style.nonClient && document.style.isActiveClient)
+                  if(!document.style.nonClient && document.style.isActiveClient && document.visible)
                   {
                      char name[2048], caption[2048];
                      document.FigureCaption(caption);
