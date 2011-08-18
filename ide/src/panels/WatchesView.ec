@@ -76,7 +76,7 @@ class WatchesView : Window
    DataField expressionField { "char *", true, width = 130, header = "Expression" };
    DataField typeField { "Type", false, width = 180, header = "Type" };
    //DataField addressField { "char *", true, width = 80, header = "Symbol Address" };
-   DataField valueField { class(WatchMultiLineString), true, width = 330, header = "Value" };
+   DataField valueField { class(WatchMultiLineString), true, width = 330, header = "Value", freeData = false };
 
    WatchesView()
    {
