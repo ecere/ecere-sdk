@@ -266,6 +266,7 @@ public struct Date
          editText = true;
          anchor = { 0, 0, 0, 0 };
          borderStyle = 0;
+         hotKey = f2;
       };
       
       if(day || year || month)

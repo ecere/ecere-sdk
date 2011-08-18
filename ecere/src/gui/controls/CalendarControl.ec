@@ -296,7 +296,13 @@ private:
          case down:
             if(dateBox.active)
             {
-               if(key == left) dateValue.day--;
+               if(shownMonth != dateValue.month || shownYear != dateValue.year)
+               {
+                  dateValue.month = shownMonth;
+                  dateValue.year = shownYear;
+                  dateValue.day = 1;
+               }
+               else if(key == left) dateValue.day--;
                else if(key == right) dateValue.day++;
                else if(key == up) dateValue.day-=7;
                else if(key == down) dateValue.day+=7;

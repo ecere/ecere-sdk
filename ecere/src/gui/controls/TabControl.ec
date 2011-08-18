@@ -736,27 +736,3 @@ public class Tab : Window
          button.text = text;
    };
 }
-
-public class SavingDataBox : DataBox
-{
-   borderStyle = deep;
-   bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
-   {
-      if(!active)
-      {
-         if(!SaveData())
-            Refresh();
-      }
-      return true;
-   }
-
-   bool OnKeyDown(Key key, unichar ch)
-   {
-      if((SmartKey)key == enter)
-      {
-         SaveData();
-         return true;
-      }
-      return DataBox::OnKeyDown(key, ch);
-   }
-}
