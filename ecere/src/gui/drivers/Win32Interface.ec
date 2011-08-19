@@ -640,7 +640,8 @@ class Win32Interface : Interface
                   ch = (msg == WM_CHAR || msg == WM_DEADCHAR) ? wParam : (unichar)charMsg.wParam;
                   if(msg == WM_SYSKEYDOWN && ch == 13)
                   {
-                     ShowWindow(window.windowHandle, SW_SHOWNORMAL);
+                     // TOCHECK: What is this for again? Fixing some obscure activation status?
+                     ShowWindow(window.windowHandle, window.state == maximized ? SW_MAXIMIZE : SW_SHOWNORMAL);
                      // window.ExternalActivate(true, true, window, null);
                   }
                   if(msg == WM_SYSKEYUP || msg == WM_KEYUP)

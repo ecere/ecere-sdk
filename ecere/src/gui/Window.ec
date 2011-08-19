@@ -4560,7 +4560,7 @@ private:
             Window prevActiveWindow = activeChild;
 
             // Don't process non-visible buttons, but make an exception for the Alt-F4 with Native Decorations turned on
-            if(hotKeyWindow.style.hidden && (!hotKeyWindow.style.nonClient || !parent || !parent.nativeDecorations || hotKeyWindow != parent.sysButtons[2]))
+            if(hotKeyWindow.style.hidden && (!hotKeyWindow.style.nonClient || !parent || !parent.nativeDecorations || (hotKeyWindow != parent.sysButtons[2] && hotKeyWindow != parent.sysButtons[1] )))
                continue;
 
             if(prevActiveWindow) incref prevActiveWindow;
@@ -5564,65 +5564,66 @@ private:
       if(prevState != newState)
          lastState = prevState;
 
-      if(rootWindow == this && nativeDecorations)
-         return;
-      if(style.isActiveClient && !style.hidden && prevState == minimized)
-         parent.numIcons--;
-
-      // This block used to be at the end of the function... moved it for flicker problem in X
-      // ------------------------------------------------------
-      switch(state)
+      if(rootWindow != this || !nativeDecorations)
       {
-         case normal:
-            stateAnchor = normalAnchor;
-            stateSizeAnchor = normalSizeAnchor;
-            break;
-         case maximized:
-            stateAnchor = Anchor { left = 0, top = 0, right = 0, bottom = 0 };
-            stateSizeAnchor = SizeAnchor {};
-            break;
-         case minimized:
+         if(style.isActiveClient && !style.hidden && prevState == minimized)
+            parent.numIcons--;
+
+         // This block used to be at the end of the function... moved it for flicker problem in X
+         // ------------------------------------------------------
+         switch(state)
          {
-            int maxIcons = parent.clientSize.w / MINIMIZED_WIDTH;
-            Window child;
-            int size = 256;
-            byte * idBuffer = new0 byte[size];
-            int c;
-            for(child = parent.children.first; child; child = child.next)
+            case normal:
+               stateAnchor = normalAnchor;
+               stateSizeAnchor = normalSizeAnchor;
+               break;
+            case maximized:
+               stateAnchor = Anchor { left = 0, top = 0, right = 0, bottom = 0 };
+               stateSizeAnchor = SizeAnchor {};
+               break;
+            case minimized:
             {
-               if(child != this && child.state == minimized)
+               int maxIcons = parent.clientSize.w / MINIMIZED_WIDTH;
+               Window child;
+               int size = 256;
+               byte * idBuffer = new0 byte[size];
+               int c;
+               for(child = parent.children.first; child; child = child.next)
                {
-                  if(child.iconID > size - 2)
+                  if(child != this && child.state == minimized)
                   {
-                     idBuffer = renew0 idBuffer byte[size*2];
-                     memset(idBuffer + size, 0, size);
-                     size *= 2;
+                     if(child.iconID > size - 2)
+                     {
+                        idBuffer = renew0 idBuffer byte[size*2];
+                        memset(idBuffer + size, 0, size);
+                        size *= 2;
+                     }
+                     idBuffer[child.iconID] = (byte)bool::true;
                   }
-                  idBuffer[child.iconID] = (byte)bool::true;
                }
+               for(c = 0; c<size; c++)
+                  if(!idBuffer[c])
+                     break;
+               iconID = c;
+               delete idBuffer;
+               if(style.isActiveClient && !style.hidden)
+                  parent.numIcons++;
+
+               stateAnchor = Anchor { left = (iconID % maxIcons) * MINIMIZED_WIDTH, bottom = (iconID / maxIcons) * (guiApp.textMode ? 16 : 24) };
+               stateSizeAnchor = SizeAnchor { size.w = MINIMIZED_WIDTH };
+               break;
             }
-            for(c = 0; c<size; c++)
-               if(!idBuffer[c])
-                  break;
-            iconID = c;
-            delete idBuffer;
-            if(style.isActiveClient && !style.hidden)
-               parent.numIcons++;
-
-            stateAnchor = Anchor { left = (iconID % maxIcons) * MINIMIZED_WIDTH, bottom = (iconID / maxIcons) * (guiApp.textMode ? 16 : 24) };
-            stateSizeAnchor = SizeAnchor { size.w = MINIMIZED_WIDTH };
-            break;
          }
+         // TOCHECK: Why was this here?
+         //position.x = (tx > 0) ? tx & 0xFFFFF : tx;
+         //position.y = (ty > 0) ? ty & 0xFFFFF : ty;
+         ComputeAnchors(stateAnchor, stateSizeAnchor, &x, &y, &w, &h);
+
+         Position(x, y, w, h, true, true, true, true, false, true);
+
+         if(!style.inactive && !style.interim && this == parent.activeClient)
+            parent.UpdateActiveDocument(null);
       }
-      // TOCHECK: Why was this here?
-      //position.x = (tx > 0) ? tx & 0xFFFFF : tx;
-      //position.y = (ty > 0) ? ty & 0xFFFFF : ty;
-      ComputeAnchors(stateAnchor, stateSizeAnchor, &x, &y, &w, &h);
-
-      Position(x, y, w, h, true, true, true, true, false, true);
-
-      if(!style.inactive && !style.interim && this == parent.activeClient)
-         parent.UpdateActiveDocument(null);
 
       CreateSystemChildren();
       // ------------------------------------------------------
