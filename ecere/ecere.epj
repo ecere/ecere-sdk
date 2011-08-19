@@ -1213,6 +1213,17 @@ from wherever you obtained them.",
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "WSMS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1283,6 +1294,12 @@ from wherever you obtained them.",
                         },
                         {
                            "Name" : "Vanilla",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        },
+                        {
+                           "Name" : "WSMS",
                            "Options" : {
                               "ExcludeFromBuild" : true
                            }
