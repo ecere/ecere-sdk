@@ -1425,7 +1425,7 @@ class ProjectView : Window
       if(ide.debugger.isActive)
          project.Run(args);
       /*else if(project.config.targetType == sharedLibrary || project.config.targetType == staticLibrary)
-         MessageBox { type = ok, text = "Run", contents = "Shared and static libraries cannot be run like executables." }.Modal();*/
+         MessageBox { master = ide, type = ok, text = "Run", contents = "Shared and static libraries cannot be run like executables." }.Modal();*/
       else if(BuildInterrim(project, run))
          project.Run(args);
       return true;
@@ -1435,11 +1435,11 @@ class ProjectView : Window
    {
       bool result = false;
       if(project.targetType == sharedLibrary || project.targetType == staticLibrary)
-         MessageBox { type = ok, text = "Run", contents = "Shared and static libraries cannot be run like executables." }.Modal();
+         MessageBox { master = ide, type = ok, text = "Run", contents = "Shared and static libraries cannot be run like executables." }.Modal();
       else if(project.compress)
-         MessageBox { text = "Starting Debug", contents = "Debugging compressed applications is not supported\n" }.Modal();
+         MessageBox { master = ide, text = "Starting Debug", contents = "Debugging compressed applications is not supported\n" }.Modal();
       else if(project.debug ||
-         MessageBox { type = okCancel, text = "Starting Debug", contents = "Attempting to debug non-debug configuration\nProceed anyways?" }.Modal() == ok)
+         MessageBox { master = ide, type = okCancel, text = "Starting Debug", contents = "Attempting to debug non-debug configuration\nProceed anyways?" }.Modal() == ok)
       {
          if(/*!IsProjectModified() ||*/ BuildInterrim(project, start))
          {
@@ -1628,7 +1628,7 @@ class ProjectView : Window
                addThisFile = false;
             else if(!exists)
             {
-               if(MessageBox { type = yesNo, parent = parent, master = this, text = filePath, 
+               if(MessageBox { master = ide, type = yesNo, text = filePath, 
                      contents = "File doesn't exist. Create?" }.Modal() == yes)
                {
                   File f = FileOpen(filePath, write);
@@ -1639,7 +1639,7 @@ class ProjectView : Window
                   }
                   else
                   {
-                     MessageBox { type = ok, parent = parent, master = this, text = filePath, 
+                     MessageBox { master = ide, type = ok, text = filePath, 
                            contents = "Couldn't create file."}.Modal();
                      addThisFile = false;
                   }
@@ -1677,7 +1677,7 @@ class ProjectView : Window
                strcat(message, s);
                strcat(message, "\n");
             }
-            MessageBox { type = ok, parent = parent, master = this, text = "Name Conflict", 
+            MessageBox { master = ide, type = ok, text = "Name Conflict", 
                   contents = message }.Modal();
             delete message;
          }
@@ -1865,8 +1865,7 @@ class ProjectView : Window
             char message[1024];
             sprintf(message, "Are you sure you want to remove the folder \"%s\"\n"
                   "and all of its contents from the project?", node.name);
-            if(MessageBox { type = yesNo, parent = parent, master = null, 
-                  text = "Delete Folder", contents = message }.Modal() == yes)
+            if(MessageBox { master = ide, type = yesNo, text = "Delete Folder", contents = message }.Modal() == yes)
             {
                Project prj = node.project;
                if(node.containsFile)
@@ -1889,8 +1888,7 @@ class ProjectView : Window
                }
             }
             sprintf(message, "Are you sure you want to remove the \"%s\" project\n" "from this workspace?", node.name);
-            if(MessageBox { type = yesNo, parent = parent, master = null, 
-                  text = "Remove Project", contents = message }.Modal() == yes)
+            if(MessageBox { master = ide, type = yesNo, text = "Remove Project", contents = message }.Modal() == yes)
             {
                // THIS GOES FIRST!
                DeleteNode(node);
