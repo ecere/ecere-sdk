@@ -428,14 +428,14 @@ private class ScrollFlags
    bool snapX:1, snapY:1, dontHide:1;   
 };
 
-public class BorderBits { public: bool contour:1, fixed:1, sizable:1, deep:1, bevel:1; };
+public class BorderBits { public: bool contour:1, fixed:1, sizable:1, deep:1, bevel:1, thin:1; };
 
 class WindowBits : BorderBits
 {
-   BorderBits borderBits:5:0;
-   bool hidden:1, isActiveClient:1, hasHorzScroll:1, hasVertScroll:1, stayOnTop:1, modal:1, unused1:1, isDefault:1, inactive:1, isRemote:1, drawBehind:1;
+   BorderBits borderBits:6:0;
+   bool hidden:1, isActiveClient:1, hasHorzScroll:1, hasVertScroll:1, stayOnTop:1, modal:1, isDefault:1, inactive:1, isRemote:1, drawBehind:1;
    bool interim:1, tabCycle:1, noCycle:1, dontScrollHorz:1, dontScrollVert:1, hasMaximize:1, hasMinimize:1, hasClose:1;
-   bool embedded:1, unused2:1, hasMenuBar:1, isDocument:1, showInTaskBar:1, hasStatusBar:1, nonClient:1, clickThrough:1;
+   bool embedded:1, hasMenuBar:1, isDocument:1, showInTaskBar:1, hasStatusBar:1, nonClient:1, clickThrough:1;
 };
 
 public enum BorderStyle : BorderBits
@@ -444,6 +444,8 @@ public enum BorderStyle : BorderBits
    contour      = BorderBits { contour = true },
    fixed        = BorderBits { fixed = true } | contour,
    sizable      = BorderBits { sizable = true } | fixed,
+   thin         = BorderBits { fixed = true, thin = true } | contour,
+   sizableThin  = BorderBits { sizable = true } | thin,
    deep         = BorderBits { deep = true },
    bevel        = BorderBits { bevel = true },
    sizableDeep  = sizable|deep,

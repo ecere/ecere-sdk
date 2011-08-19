@@ -1335,20 +1335,12 @@ class Win32Interface : Interface
          DWORD style = 0;
          DWORD exStyle = 0;
          HWND parentWindow = null; //HWND_DESKTOP; // we get different behaviors with desktop...
+         Window master = window.master, rootWindow = (master && master != guiApp.desktop) ? master.rootWindow : null;
          if(window.style.stayOnTop)
             exStyle |= WS_EX_TOPMOST;
 
-         // exStyle |= WS_EX_TOOLWINDOW;
-
-         if(window.master.rootWindow && window.master.rootWindow != guiApp.desktop && (window.style.modal || window.style.interim))
-         {
-            Window master = window.master;
-            Window rootWindow = window.master.rootWindow;
-
+         if(rootWindow && (window.style.modal || window.style.interim))
             parentWindow = rootWindow.is3D ? rootWindow.parent.windowHandle : rootWindow.windowHandle;
-
-            // parentWindow = window.master.rootWindow.is3D ? window.master.rootWindow.parent.windowHandle : window.master.rootWindow.windowHandle;
-         }
             
          if(window.alphaBlend)
          // if(window.background.a < 255) //&& window.style & ES_REDRAW) Not needed anymore?
@@ -1358,23 +1350,10 @@ class Win32Interface : Interface
          {
             exStyle |= WS_EX_APPWINDOW;
             parentWindow = null;
-            //style |= WS_SYSMENU;
          }
-         else if(window.master.rootWindow && window.master.rootWindow != guiApp.desktop)
-         {
+
+         if(window.style.thin)
             exStyle |= WS_EX_TOOLWINDOW;
-            //exStyle |=  WS_EX_APPWINDOW;
-            //style |= WS_SYSMENU;
-         }
-         else
-         {
-            // exStyle |= WS_EX_APPWINDOW;
-            //style |= WS_SYSMENU;
-         }
-         /*else if(parentWindow)
-            exStyle |= WS_EX_TOOLWINDOW;*/
-         /*if(window.interim)
-            parentWindow = window.master.rootWindow.windowHandle;*/
 
          if(window.windowHandle)
             windowHandle = window.windowHandle;
@@ -1401,7 +1380,6 @@ class Win32Interface : Interface
                style | (window.systemParent ? WS_CHILD : 
                (WS_POPUP | (window.style.hasMinimize ? WS_MINIMIZEBOX : 0))),
                   0,0,1,1, parentWindow, null, hInstance, null);
-               
    #if 0
             if(exStyle & WS_EX_LAYERED)
                SetLayeredWindowAttributes(windowHandle, 0, 255 /*A(window.background)*/, LWA_ALPHA);
@@ -1802,6 +1780,12 @@ class Win32Interface : Interface
    {
       HICON icon = null;
       HICON oldIcon = (HICON)SendMessage(window.windowHandle, WM_GETICON, ICON_BIG, 0);
+
+      // Dialogs Inherit master's icon if none set
+      Window master = window.master, rootWindow = (master && master != guiApp.desktop) ? master.rootWindow : null;
+
+      if(!resource && !window.style.showInTaskBar && window.hasClose && rootWindow && rootWindow.icon)
+         resource = rootWindow.icon;
 
       // WARNING -- putting this here as it is right after CreateRootWindow
       // Take out Layered flag if we're not in 24 bit
