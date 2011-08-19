@@ -6,11 +6,13 @@
 #define int64 _int64
 #define WIN32_LEAN_AND_MEAN
 #define MessageBox _MessageBox
+#define Array _Array
 
 #include <windows.h>
 
 #include <mmsystem.h>
 #include <dsound.h>
+#undef Array
 #undef MessageBox
 #undef byte
 #undef Method

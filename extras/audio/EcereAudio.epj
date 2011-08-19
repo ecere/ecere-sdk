@@ -37,7 +37,10 @@
          "Name" : "Release",
          "Options" : {
             "Debug" : false,
-            "Optimization" : "Speed"
+            "Optimization" : "Speed",
+            "IncludeDirs" : [
+               "../../deps/DirectX-9.0/include"
+            ]
          }
       }
    ],

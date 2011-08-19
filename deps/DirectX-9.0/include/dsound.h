@@ -234,7 +234,7 @@ typedef struct IDirectSoundCaptureFXNoiseSuppress8 *LPDIRECTSOUNDCAPTUREFXNOISES
 
 #ifndef __LPCGUID_DEFINED__
 #define __LPCGUID_DEFINED__
-typedef const GUID *LPCGUID;
+//typedef const GUID *LPCGUID;
 #endif // __LPCGUID_DEFINED__
 
 typedef LPDIRECTSOUND *LPLPDIRECTSOUND;
