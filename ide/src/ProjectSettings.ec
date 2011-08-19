@@ -178,7 +178,7 @@ class ProjectSettings : Window
          {
             DialogResult diagRes = MessageBox
             {
-               type = okCancel, master = rootWindow,
+               type = okCancel, master = ide,
                text = "Lose Changes?",
                contents = "Are you sure you wish to discard changes made to the build options?"
             }.Modal();
@@ -1726,7 +1726,7 @@ class BuildTab : Tab
       {
          DialogResult diagRes = MessageBox
          {
-            type = yesNoCancel, master = rootWindow,
+            type = yesNoCancel, master = ide,
             text = "Save changes to project settings?",
             contents = "Would you like to save changes made to the build options?"
          }.Modal();

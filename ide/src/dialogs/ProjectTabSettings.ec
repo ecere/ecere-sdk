@@ -66,7 +66,7 @@ class ProjectTab : Tab
       {
          DialogResult diagRes = MessageBox
          {
-            type = yesNoCancel, master = rootWindow,
+            type = yesNoCancel, master = ide,
             text = "Save changes to project options?",
             contents = "Would you like to save changes made to the project options?"
          }.Modal();

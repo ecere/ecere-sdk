@@ -5216,7 +5216,7 @@ private:
             /*
             if(destroyed)
             {
-               OldLink slave = master.slaves.FindVoid(this);
+               OldLink slave = master.slaves.FindLink(this);
                master.slaves.Delete(slave);
             }
             */
@@ -5915,7 +5915,8 @@ public:
          if(!master) master = parent;
 
          if(style.modal && master.modalSlave)
-            return false;
+            property::master = master.modalSlave;
+            //return false;
 
          if(parent)
             parent.children.Remove(this);
@@ -9121,7 +9122,7 @@ public:
    property int documentID { get { return documentID; } };
    property Window previous { get { return prev; } }
    property Window next { get { return next; } }
-   property Window nextSlave { get { OldLink link = master.slaves.FindLink(this); return (link && link.next) ? link.next.data : null; } }
+   property Window nextSlave { get { OldLink link = master ? master.slaves.FindLink(this) : null; return (link && link.next) ? link.next.data : null; } }
    property PopupMenu menuBar { get { return menuBar; } }
    property ScrollBar sbv { get { return sbv; } }
    property ScrollBar sbh { get { return sbh; } }

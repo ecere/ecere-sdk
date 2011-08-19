@@ -1782,10 +1782,18 @@ class Win32Interface : Interface
       HICON oldIcon = (HICON)SendMessage(window.windowHandle, WM_GETICON, ICON_BIG, 0);
 
       // Dialogs Inherit master's icon if none set
-      Window master = window.master, rootWindow = (master && master != guiApp.desktop) ? master.rootWindow : null;
-
-      if(!resource && !window.style.showInTaskBar && window.hasClose && rootWindow && rootWindow.icon)
-         resource = rootWindow.icon;
+      if(!window.style.showInTaskBar && window.hasClose)
+      {
+         Window master = window.master;
+         while(master && !resource)
+         {
+            Window rootWindow = (master && master != guiApp.desktop) ? master.rootWindow : null;
+            if(rootWindow && rootWindow.icon)
+               resource = rootWindow.icon;
+            else
+               master = master.master;
+         }
+      }
 
       // WARNING -- putting this here as it is right after CreateRootWindow
       // Take out Layered flag if we're not in 24 bit
