@@ -1346,7 +1346,8 @@ class Win32Interface : Interface
          // if(window.background.a < 255) //&& window.style & ES_REDRAW) Not needed anymore?
             exStyle |= WS_EX_LAYERED; // | WS_EX_TRANSPARENT;
 
-         if(window.style.showInTaskBar)
+         // Toolwindow will disappear if they don't have AppWindow set
+         if(window.style.showInTaskBar || (!parentWindow && window.style.thin))
          {
             exStyle |= WS_EX_APPWINDOW;
             parentWindow = null;
@@ -1493,7 +1494,7 @@ class Win32Interface : Interface
          {
             case maximized:
             case normal:
-               ShowWindow(window.windowHandle, (window.creationActivation == activate && !externalDisplayChange) ? 
+               ShowWindow(window.windowHandle, ((window.active || window.creationActivation == activate) && !externalDisplayChange) ? 
                   ((window.nativeDecorations && state == maximized) ? SW_MAXIMIZE : SW_SHOWNORMAL) : SW_SHOWNOACTIVATE);
                break;
             case minimized:

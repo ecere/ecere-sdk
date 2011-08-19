@@ -8651,6 +8651,7 @@ public:
       {
          if(this && !value && !style.hidden && parent)
          {
+            bool wasActiveChild = parent.activeChild == this;
             Window client = null;
 
             style.hidden = true;
@@ -8726,7 +8727,7 @@ public:
                   }
                }
 
-               if((parent.activeChild == this || guiApp.interimWindow == this) && true /*activate*/)
+               if((wasActiveChild /*parent.activeChild == this*/ || guiApp.interimWindow == this) && true /*activate*/)
                {
                   if(order && prevOrder && prevOrder.data != this)
                      ((Window)prevOrder.data).ActivateEx(true, false, false, true, null, null);
