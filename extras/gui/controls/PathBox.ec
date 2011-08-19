@@ -296,7 +296,11 @@ public class DirPath : String
             ListBox lb = (ListBox)((DataBox)parent).parent;
             property::path = browsedPath;
             if(eClass_IsDerived(lb._class, class(ListBox)))
+            {
+               // Ensure the DataBox is visible, For the ListBox to save (Popping up the FileDialog hides it)
+               parent.visible = true;
                lb.StopEditing(true);
+            }
          }
       };
       pathBox.path = this;
@@ -409,6 +413,8 @@ public class PathBox : CommonControl
             char * browsePath = CopyString(OnBrowse());
             char fileName[MAX_LOCATION];//, filePath[MAX_LOCATION];
 
+            incref this;
+
             GetLastDirectory(browsePath, fileName);
             StripLastDirectory(browsePath, browsePath);
 
@@ -439,6 +445,8 @@ public class PathBox : CommonControl
                OnPathBrowsed(browseDialog.filePath);
                NotifyModified(master, this);
             }
+
+            delete this;
          }
          return true;
       }
