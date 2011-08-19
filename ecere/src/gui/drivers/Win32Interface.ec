@@ -741,16 +741,7 @@ class Win32Interface : Interface
             */
             case WM_NCHITTEST:
                if(window.nativeDecorations)
-               {
-                  uint result = (uint)DefWindowProc(windowHandle, msg, wParam, lParam);
-                  // Reset the cursor on native decorations
-                  if(result != HTCLIENT && lastCursor != arrow)
-                  {
-                     SetCursor(systemCursors[arrow]);
-                     lastCursor = arrow;
-                  }
-                  return result;
-               }
+                  return (uint)DefWindowProc(windowHandle, msg, wParam, lParam);
                else
                // return HTCAPTION;
                   return HTCLIENT;
@@ -776,8 +767,8 @@ class Win32Interface : Interface
             case WM_NCRBUTTONDOWN:
             case WM_NCRBUTTONDBLCLK:
             case WM_NCMBUTTONDOWN:
-            case WM_NCMBUTTONDBLCLK:
-            case WM_NCMOUSEMOVE:*/
+            case WM_NCMBUTTONDBLCLK:*/
+            case WM_NCMOUSEMOVE:
             {
                Modifiers code = 0;
                bool consequential = false;
@@ -785,7 +776,7 @@ class Win32Interface : Interface
                x += (short)LOWORD(lParam);
                y += (short)HIWORD(lParam);
 
-               if(window.nativeDecorations)
+               if(window.nativeDecorations && msg != WM_NCMOUSEMOVE)
                {
                   x += window.clientStart.x;
                   y += window.clientStart.y - (window.hasMenuBar ? skinMenuHeight : 0);
@@ -809,7 +800,7 @@ class Win32Interface : Interface
                incref window;
                switch(msg)
                {
-                  //case WM_NCMOUSEMOVE:
+                  case WM_NCMOUSEMOVE:
                   case WM_MOUSEMOVE:
                      window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove, x,y,&code, consequential, false);
                      break;
@@ -852,6 +843,8 @@ class Win32Interface : Interface
                      break;
                }
                delete window;
+               if(msg == WM_NCMOUSEMOVE)
+                  return (uint)DefWindowProc(windowHandle, msg, wParam, lParam);
                break;
             }
             case WM_SETCURSOR:
