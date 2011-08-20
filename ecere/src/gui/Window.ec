@@ -3569,7 +3569,7 @@ private:
                   {
                      if(rootWindow != this)
                      {
-                        if(activateParent && !parent.active /*parent != parent.parent.activeChild*/)
+                        if(activateParent && parent && !parent.active /*parent != parent.parent.activeChild*/)
                            parent.ActivateEx(true, true, moveInactive, activateRoot, external, externalSwap);
                      }
                      else if(!guiApp.fullScreenMode)
@@ -3943,6 +3943,13 @@ private:
                   if((doActivation && (activateWindow.parent != guiApp.desktop || guiApp.fullScreen)) || 
                      (guiApp.interimWindow && !window.IsDescendantOf(guiApp.interimWindow)))
                   {
+                     // Let the OnLeftButtonDown do the activating instead
+                     if(method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick)
+                     {
+                        window = null;
+                        result = true;
+                     }
+                     else
                      //if(activate)
                      {
                         incref activateWindow;

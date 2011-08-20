@@ -812,7 +812,7 @@ class Win32Interface : Interface
                   //case WM_NCLBUTTONDOWN:
                   case WM_LBUTTONDOWN:
                      window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown,x,y,&code, false, 
-                                             (msg == WM_LBUTTONDBLCLK) ? false: true);
+                                             /*(msg == WM_LBUTTONDBLCLK) ? false: */true);
                      break;
                   //case WM_NCLBUTTONUP:
                   case WM_LBUTTONUP:      window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp, x,y,&code, false, false);break;

@@ -301,13 +301,28 @@ public struct Date
 
 class DateDropBox : DropBox
 {
+   bool dateModified;
+   void EditNotifyUpdate(EditBox editBox)
+   {
+      if(pullDown)
+         dateModified = true;
+   }
+
+   bool OnPostCreate()
+   {
+      editBox.NotifyUpdate = EditNotifyUpdate;
+      return true;
+   }
    bool OnKeyDown(Key key, unichar ch)
    {
-      if(pullDown && (SmartKey)key == enter)
+      SmartKey sKey = (SmartKey)key;
+      if(pullDown && sKey == enter)
       {
-         NotifyTextEntry(master, this, null, false);
+         // Because we can still edit the date text while the calendar is dropped, enter on the date box should validate it
+         NotifyTextEntry(master, this, contents /*null*/, true);//false);
          ((DataBox)master).SetData(&calendar.dateValue, false);
          ((DataBox)master).Refresh();
+         return false;
       }
       return DropBox::OnKeyDown(key, ch);
    }
@@ -316,11 +331,40 @@ class DateDropBox : DropBox
       master = this, autoCreate = false;
       interim = true;
 
+      bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
+      {
+         if(!active)
+         {
+            DateDropBox dropBox = (DateDropBox)master;
+            Destroy(0);
+            ((DataBox)dropBox.master).Refresh();
+            *goOnWithActivation = false;
+         }
+         return true;
+      }
+
       void NotifyChanged(bool close)
       {
          incref this;
-         NotifyTextEntry(master, this, null, false);
-         ((DataBox)master).SetData(&calendar.dateValue, false);
+         if(dateModified)
+         {
+            Date date = calendar.dateValue;
+            dateModified = false;
+            if(date.OnGetDataFromString(contents))
+            {
+               if(date.year || date.month || date.day)
+               {
+                  calendar.dateValue = date;
+                  calendar.shownMonth = date.month;
+                  calendar.shownYear = date.year;
+                  dateModified = true;
+               }
+            }
+         }
+         if(!dateModified)
+            NotifyTextEntry(master, this, null, false);
+         dateModified = false;
+         //((DataBox)master).SetData(&calendar.dateValue, false);
          if(close)
          {
             OnKeyDown(enter, 0);
@@ -333,6 +377,7 @@ class DateDropBox : DropBox
 
    Window OnDropDown()
    {
+      editBox.Activate();
       if(contents[0])
          NotifyTextEntry(master, this, contents, true);
       calendar.Create();
@@ -354,10 +399,10 @@ class DateDropBox : DropBox
       {
          if(date.OnGetDataFromString(string))
          {
-            // TESTING THIS COMMENTED OUT HERE:
-            /*if(date.year != calendar.dateValue.year ||
+            // TESTING THIS COMMENTED OUT HERE: (Not good -- was modifying on drop down!)
+            if(date.year != calendar.dateValue.year ||
                date.month != calendar.dateValue.month ||
-               date.day != calendar.dateValue.day)*/
+               date.day != calendar.dateValue.day)
                SetData(&date, false);
             if(date.year || date.month || date.day)
             {

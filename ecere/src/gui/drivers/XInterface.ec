@@ -1352,7 +1352,7 @@ class XInterface : Interface
                            break;
                         }
                      }
-                     window.MouseMessage(button, event->x_root, event->y_root, &keyFlags, false, doubleClick? false : true);
+                     window.MouseMessage(button, event->x_root, event->y_root, &keyFlags, false, /*doubleClick? false : */true);
                   }
                   //*if(xGlobalDisplay) XLockDisplay(xGlobalDisplay);
                   delete window;
