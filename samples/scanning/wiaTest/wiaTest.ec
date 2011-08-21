@@ -25,7 +25,7 @@ class ScanningTest : Window
       Bitmap bmp;
       if(scannedImage)
       {
-         char s[1024];
+         char s[20];
          sprintf(s, "File://%08X", scannedImage);
          imagePreview.image = { s };
       }
@@ -67,17 +67,32 @@ class ScanningTest : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         Bitmap scanned;
-         File f;
+         List<Bitmap> scanned;
          if(!scanner)
             scanner = GetScanner(true);
-         if(scanner && (scanned = scanner.GetBitmap(&f)))
+         if(scanner && (scanned = scanner.GetBitmaps()))
          {
             delete scannedBitmap;
-            delete scannedImage;
+            delete scannedImage; // Delete the previous image file if any
 
-            scannedImage = f;            
-            scannedBitmap = scanned;
+            for(i : scanned)
+            {
+               // Here 'i' is a Bitmap that we could just display ourselves, but we use a pseudo file so we can use the
+               // Picture control which works with a BitmapResource (which needs a file name)
+               char s[20];
+               scannedImage = TempFile { };
+               scannedBitmap = i;
+
+               sprintf(s, "File://%08X", scannedImage);  // 'File://' lets you use a File pointer as a file name
+               i.Save(s, "bmp", null);
+
+               // Take it out of the list because we free the other images (if any), but keep this one in 'scannedBitmap'
+               scanned.TakeOut(scannedBitmap);
+               // Just use 1 image
+               break;
+            }
+            scanned.Free();
+            delete scanned;
 
             SetImage();
          }
