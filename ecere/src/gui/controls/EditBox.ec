@@ -3061,7 +3061,8 @@ private:
 
       if(style.noSelect) return true;
 
-      if(!mods.isActivate)
+      // Should we have a separate 'selectOnActivate' style?
+      if(!mods.isActivate || (style.readOnly && style.multiLine))
       {
          Capture();
          mouseSelect = true;
