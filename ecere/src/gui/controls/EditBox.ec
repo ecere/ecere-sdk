@@ -5956,7 +5956,7 @@ public:
    }
 
    // FILE INTERFACE
-   void Save(File f, bool lf)
+   void Save(File f, bool cr)
    {
       EditLine line;
       savedAction = undoBuffer.curAction;
@@ -5966,7 +5966,7 @@ public:
          f.Write(line.buffer, line.count,1);
          if(line.next)
          {
-            if(lf) f.Putc('\r');
+            if(cr) f.Putc('\r');
             f.Putc('\n');
          }
       }

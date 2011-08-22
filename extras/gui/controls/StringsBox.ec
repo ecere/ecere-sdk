@@ -15,10 +15,13 @@ import "PathBox"
 public class NamedString : struct
 {
 public:
-   char * name;
-   char * string;
+   property String name { set { delete name; name = CopyString(value); } get { return name; } }
+   property String string { set { delete string; string = CopyString(value); } get { return string; } }
+private:
+   String name;
+   String string;
 
-   void OnFree()
+   ~NamedString()
    {
       delete name;
       delete string;
@@ -256,14 +259,13 @@ class NamedStringsBox : CommonControl
       {
          Array<NamedString> array { };
          DataRow row;
-         NamedString s;
          for(row = list.firstRow; row; row = row.next)
          {
-            //String string = row.string;
-            s.name = row.GetData(nameField);
-            s.string = row.GetData(stringField);
-            if(s.name && s.name[0] && s.string && s.string[0])
-               array.Add(s);
+            // NamedString is a class:struct, need to instantiate!!
+            String name = row.GetData(nameField);
+            String string = row.GetData(stringField);
+            if(name && name[0] && string && string[0])
+               array.Add({ name, string });
          }
          return array;
       }
@@ -368,10 +370,9 @@ class NamedStringsBox : CommonControl
 
       bool NotifyChanged(ListBox listBox, DataRow row)
       {
-         NamedString s;
-         s.name = row.GetData(nameField);
-         s.string = row.GetData(stringField);
-         if((s.name && s.name[0]) || (s.string && s.string[0]))
+         String name = row.GetData(nameField);
+         String string = row.GetData(stringField);
+         if((name && name[0]) || (string && string[0]))
          {
             if(listBox.currentRow == listBox.lastRow)
             {
@@ -382,7 +383,7 @@ class NamedStringsBox : CommonControl
                //row.SetData(stringField, null);
             }
          }
-         else if((!s.name || s.name[0]) && (!s.string || !s.string[0]) && listBox.currentRow != listBox.lastRow)
+         else if(listBox.currentRow != listBox.lastRow)
             listBox.DeleteRow(null);
          listBox.modifiedDocument = true;
          return true;

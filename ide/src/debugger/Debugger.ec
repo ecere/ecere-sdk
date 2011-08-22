@@ -1857,6 +1857,15 @@ class Debugger
       
       ide.SetPath(true);
 
+      // TODO: This pollutes the environment, but at least it works
+      // It shouldn't really affect the IDE as the PATH gets restored and other variables set for testing will unlikely cause problems
+      // What is the proper solution for this? DualPipeOpenEnv?
+      // gdb set environment commands don't seem to take effect
+      for(e : ide.workspace.environmentVars)
+      {
+         SetEnvironment(e.name, e.string);
+      }
+
       sprintf(command, "gdb -n -silent --interpreter=mi2"); //-async //\"%s\"
       gdbTimer.Start();
       gdbHandle = DualPipeOpen(PipeOpenMode { output = 1, error = 2, input = 1 }, command);
@@ -1929,6 +1938,12 @@ class Debugger
 #endif
 
                GdbCommand(false, "-gdb-set args %s", ide.workspace.commandLineArgs ? ide.workspace.commandLineArgs : "");
+               /*
+               for(e : ide.workspace.environmentVars)
+               {
+                  GdbCommand(false, "set environment %s=%s", e.name, e.string);
+               }
+               */
             }
          }
       }

@@ -248,7 +248,15 @@ public:
          if(commandLineArgs && commandLineArgs[0])
             file.Printf("\n      Command Line Arguments = %s\n", commandLineArgs);
 
+         if(environmentVars.count)
+         {
+            file.Printf("\n      Environment Variables\n\n");
+            for(v : environmentVars)
+               file.Printf("       ~ %s = %s\n", v.name, v.string);
+         }
+
          file.Printf("\n   Debugger Data\n");
+         // This really belonged in Execution Data...
          if(debugDir && debugDir[0])
             file.Printf("\n      Debug Working Directory = %s\n", debugDir);
          if(sourceDirs.count)
@@ -706,6 +714,18 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
                      bp.condition = wh;
                   }
                }
+               else if(!strcmpi(section, "Execution Data") && !strcmpi(subSection, "Environment Variables"))
+               {
+                  String value = strchr(equal, '=');
+                  if(value)
+                  {
+                     *value = 0;
+                     value++;
+                     TrimRSpaces(equal, equal);
+                     TrimLSpaces(value, value);
+                     workspace.environmentVars.Add({ equal, value });
+                  }
+               }
             }
             else if(buffer[0] == '*')
             {
@@ -894,6 +914,8 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
                strcpy(subSection, buffer);
             else if(!strcmpi(buffer, "Watches"))
                strcpy(subSection, buffer);
+            else if(!strcmpi(buffer, "Environment Variables"))
+               strcpy(subSection, buffer);
             else if(!strcmpi(buffer, "Opened Files"))
                strcpy(section, buffer);
             else if(!strcmpi(buffer, ""))      // | These two lines were commented out
@@ -927,6 +949,13 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
                      TrimLSpaces(equal, equal);
                      if(!strcmpi(buffer, "Command Line Arguments"))
                         workspace.commandLineArgs = equal;
+
+                     if(!strcmpi(buffer, "Environment Variables"))
+                     {
+                        delete workspace.environmentVars;
+                        workspace.environmentVars = { };
+                     }
+
                   }
                   else if(!strcmpi(section, "Debugger Data"))
                   {
