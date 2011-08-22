@@ -83,6 +83,7 @@ public struct AnchorValue
       {
          distance = 0;
          type = 0;
+         return true;
       }
       return false;
    }
