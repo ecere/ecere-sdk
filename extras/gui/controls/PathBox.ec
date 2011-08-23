@@ -9,6 +9,9 @@ public import "ecere"
 #endif
 #endif
 
+// We have this dependency because of important 'browsing' to keep track
+import "DirectoriesBox"
+
 void MakeSlashPath(char * p)
 {
    FileFixCase(p);
@@ -293,14 +296,10 @@ public class DirPath : String
 
          void OnPathBrowsed(char * browsedPath)
          {
-            ListBox lb = (ListBox)((DataBox)parent).parent;
+            DataBox dataBox = (DataBox)parent;
+            ListBox lb = eClass_IsDerived(dataBox.parent._class, class(ListBox)) ? (ListBox)dataBox.parent : null;
             property::path = browsedPath;
-            if(eClass_IsDerived(lb._class, class(ListBox)))
-            {
-               // Ensure the DataBox is visible, For the ListBox to save (Popping up the FileDialog hides it)
-               parent.visible = true;
-               lb.StopEditing(true);
-            }
+            if(lb) lb.StopEditing(true);
          }
       };
       pathBox.path = this;
@@ -398,6 +397,12 @@ public class PathBox : CommonControl
       }
    };
 
+   // For chaining popup-key event
+   bool OnKeyHit(Key key, unichar ch)
+   {
+      return editBox.OnKeyHit(key, ch);
+   }
+
    Button browse
    {
       this, size = { w = 26 }, anchor = { top = 0, right = 0, bottom = 0 };
@@ -412,6 +417,9 @@ public class PathBox : CommonControl
          {
             char * browsePath = CopyString(OnBrowse());
             char fileName[MAX_LOCATION];//, filePath[MAX_LOCATION];
+            DirectoriesBox dirBox = (DirectoriesBox)parent.parent;
+            if(dirBox) { dirBox = (DirectoriesBox)dirBox.parent; } // TOFIX: Precomp needs { }
+            if(!eClass_IsDerived(dirBox._class, class(DirectoriesBox))) dirBox = null;
 
             incref this;
 
@@ -439,12 +447,16 @@ public class PathBox : CommonControl
             browseDialog.currentDirectory = browsePath;
             delete browsePath;
             browseDialog.master = rootWindow;
+
+            // THIS PART WAS MISSING IN THE PathBox INTEGRATION AND WAS CRUCIAL
+            if(dirBox) dirBox.browsing = true;
             if(browseDialog.Modal())
             {
                modifiedDocument = true;
                OnPathBrowsed(browseDialog.filePath);
                NotifyModified(master, this);
             }
+            if(dirBox) dirBox.browsing = false;
 
             delete this;
          }

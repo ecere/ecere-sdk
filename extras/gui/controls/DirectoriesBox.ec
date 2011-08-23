@@ -74,6 +74,7 @@ public:
    // TOCHECK: Is this not working?! :S
    bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
    {
+      // Browsing was not being set, fixed by introducing dependency to this class to PathBox
       if(!active && !browsing)
       {
          list.StopEditing(true);
