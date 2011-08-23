@@ -45,6 +45,7 @@ class FormDesigner : ClassDesignerBase
    void ::CreateObject(DesignerBase designer, Window instance, ObjectInfo object, bool isClass, Window _class)
    {
       instance.object = object;
+      instance.formDesigner = true;
       LockControls(instance, instance);
       if(isClass)
       {

@@ -9157,7 +9157,7 @@ public:
    property bool alphaBlend { get { return (bool)alphaBlend; } set { alphaBlend = value; } };
    property bool useSharedMemory { get { return (bool)useSharedMemory; } set { useSharedMemory = value; } };
    property CreationActivationOption creationActivation { get { return creationActivation; } set { creationActivation = value; } };
-   property bool nativeDecorations { get { return (bool)nativeDecorations && rootWindow == this; } set { nativeDecorations = value; } };
+   property bool nativeDecorations { get { return (bool)nativeDecorations && (formDesigner || rootWindow == this); } set { nativeDecorations = value; } };
    property bool manageDisplay { get { return (bool)manageDisplay; } set { manageDisplay = value; } };
    
 private:
@@ -9313,6 +9313,7 @@ private:
       bool saving:1;
       bool nativeDecorations:1;
       bool manageDisplay:1;
+      bool formDesigner:1; // True if we this is running in the form editor
    }; 
 
    WindowController controller;
