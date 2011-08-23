@@ -8825,6 +8825,8 @@ public:
 
             firewatchers;
          }
+         else
+            style.hidden = !value;
       }
 
       get { return (style.hidden || !setVisible) ? false : true; }
