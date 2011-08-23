@@ -1058,7 +1058,7 @@ class Sheet : Window
                   data = new0 byte[dataType.structSize];
                   prop.Get(object, data);
                   // CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, &setValue, subDataType.size);
-                  CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, setValue, subDataType.dataType.size);
+                  CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, (void *)setValue, subDataType.dataType.size);
                   prop.Set(object, data);
                }
                else if(dataType.type == normalClass || dataType.type == noHeadClass)
@@ -1074,7 +1074,7 @@ class Sheet : Window
                         DataValue value = { 0 };
                         value.ui = prop.Get(object);
                         value.ui &= ~ (uint)bitMember.mask;
-                        value.ui |= *(uint *)setValue << bitMember.pos;
+                        value.ui |= *(uint32 *)setValue << bitMember.pos;
                         prop.Set(object, value.ui);
                      }
                   }
@@ -1083,7 +1083,7 @@ class Sheet : Window
                      data = dataType.typeSize ? new0 byte[dataType.typeSize] : null;
                      prop.Get(object, data);
                      // CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, &setValue, subDataType.typeSize);
-                     CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, setValue, subDataType.dataType.size);
+                     CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, (void *)setValue, subDataType.dataType.size);
                      // TODO: Support non 32 bit datatypes here
                      prop.Set(object, data);
                   }
@@ -1107,7 +1107,7 @@ class Sheet : Window
                {
                   data = new0 byte[dataType.structSize];
                   prop.Get(object, data);
-                  subProperty.Set(data, *(uint *)setValue);
+                  subProperty.Set(data, *(uint32 *)setValue);
                   prop.Set(object, data);
                }
                else if(dataType.type == normalClass || dataType.type == noHeadClass)
@@ -1115,14 +1115,14 @@ class Sheet : Window
                   Instance current = (Instance)prop.Get(object);
                   Instance propObject = eInstance_New(dataType);
                   CopyInstanceData(dataType, propObject, current);
-                  subProperty.Set(propObject, setValue);
+                  subProperty.Set(propObject, (uint32)setValue);
                   prop.Set(object, propObject);
                }
                else
                {
                   data = dataType.typeSize ? new0 byte[dataType.typeSize] : null;
                   prop.Get(object, data);
-                  subProperty.Set(data, setValue);
+                  subProperty.Set(data, (uint32)setValue);
                   // TODO: Support not 32 bit data types here
                   prop.Set(object, data);
                }
@@ -1133,7 +1133,7 @@ class Sheet : Window
          }
          else
          {
-            SetPropValue(prop, object, setValue);
+            SetPropValue(prop, object, (uint32)setValue);
          }      
          Code_FixProperty(propertyPtr.prop, object);
 
