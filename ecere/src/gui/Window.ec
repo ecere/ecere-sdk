@@ -4623,7 +4623,7 @@ private:
 
       // Setup relationship with outside world (bb root || !bb)
       if((!guiApp.fullScreenMode && parent == guiApp.desktop) || this == guiApp.desktop || 
-         (displayDriver && displayDriver != parent.displayDriver))
+         (!formDesigner && displayDriver && displayDriver != parent.displayDriver))
       {
          rootWindow = this;
          if(!tempExtents)
@@ -4655,9 +4655,9 @@ private:
       bool result = false;
       Window child;
 
-      if((!guiApp.fullScreenMode && parent == guiApp.desktop) || (guiApp.fullScreenMode && (this == guiApp.desktop || (displayDriver && displayDriver != parent.displayDriver))))
+      if((!guiApp.fullScreenMode && parent == guiApp.desktop) || (guiApp.fullScreenMode && (this == guiApp.desktop || (!formDesigner && displayDriver && displayDriver != parent.displayDriver))))
       {
-         subclass(DisplayDriver) dDriver = dispDriver ? dispDriver : GetDisplayDriver(guiApp.defaultDisplayDriver);
+         subclass(DisplayDriver) dDriver = (dispDriver && !formDesigner) ? dispDriver : GetDisplayDriver(guiApp.defaultDisplayDriver);
          DisplaySystem displaySystem = dDriver ? dDriver.displaySystem : null;
 
          windowHandle = dDriver.printer ? null : guiApp.interfaceDriver.CreateRootWindow(this);
