@@ -16,25 +16,24 @@ CONSOLE = -mconsole
 TARGET = obj/$(CONFIG).$(PLATFORM)/epj2make$(E)
 
 OBJECTS = $(OBJ)Project.o $(OBJ)ProjectConfig.o $(OBJ)ProjectNode.o $(OBJ)IDESettings.o \
-	$(OBJ)OldIDESettings.o $(OBJ)PathBox.o $(OBJ)StringsBox.o \
-	$(OBJ)epj2make.o $(OBJ)$(MODULE).main$(O)
+	$(OBJ)OldIDESettings.o $(OBJ)PathBox.o $(OBJ)StringsBox.o $(OBJ)DirectoriesBox.o $(OBJ)epj2make.o \
+	$(OBJ)$(MODULE).main$(O)
 
 COBJECTS = $(OBJ)Project.c $(OBJ)ProjectConfig.c $(OBJ)ProjectNode.c $(OBJ)IDESettings.c \
-	$(OBJ)OldIDESettings.c $(OBJ)PathBox.c $(OBJ)StringsBox.c \
-	$(OBJ)epj2make.c
+	$(OBJ)OldIDESettings.c $(OBJ)PathBox.c $(OBJ)StringsBox.c $(OBJ)DirectoriesBox.c $(OBJ)epj2make.c
 
 SYMBOLS = $(OBJ)Project.sym $(OBJ)ProjectConfig.sym $(OBJ)ProjectNode.sym \
-	$(OBJ)IDESettings.sym $(OBJ)OldIDESettings.sym $(OBJ)PathBox.sym \
-	$(OBJ)StringsBox.sym $(OBJ)epj2make.sym
+	$(OBJ)IDESettings.sym $(OBJ)OldIDESettings.sym $(OBJ)PathBox.sym $(OBJ)StringsBox.sym \
+	$(OBJ)DirectoriesBox.sym $(OBJ)epj2make.sym
 
 IMPORTS = $(OBJ)Project.imp $(OBJ)ProjectConfig.imp $(OBJ)ProjectNode.imp \
-	$(OBJ)IDESettings.imp $(OBJ)OldIDESettings.imp $(OBJ)PathBox.imp \
-	$(OBJ)StringsBox.imp $(OBJ)epj2make.imp
+	$(OBJ)IDESettings.imp $(OBJ)OldIDESettings.imp $(OBJ)PathBox.imp $(OBJ)StringsBox.imp \
+	$(OBJ)DirectoriesBox.imp $(OBJ)epj2make.imp
 
 SOURCES = ../ide/src/project/Project.ec ../ide/src/project/ProjectConfig.ec \
 	../ide/src/project/ProjectNode.ec ../ide/src/IDESettings.ec ../ide/src/OldIDESettings.ec \
 	../extras/gui/controls/PathBox.ec ../extras/gui/controls/StringsBox.ec \
-	epj2make.ec
+	../extras/gui/controls/DirectoriesBox.ec epj2make.ec
 
 RESOURCES = ../include.mk
 
@@ -121,6 +120,9 @@ $(OBJ)PathBox.sym: ../extras/gui/controls/PathBox.ec
 $(OBJ)StringsBox.sym: ../extras/gui/controls/StringsBox.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.sym
 
+$(OBJ)DirectoriesBox.sym: ../extras/gui/controls/DirectoriesBox.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/controls/DirectoriesBox.ec -o $(OBJ)DirectoriesBox.sym
+
 $(OBJ)epj2make.sym: epj2make.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c epj2make.ec -o $(OBJ)epj2make.sym
 
@@ -147,15 +149,40 @@ $(OBJ)PathBox.c: ../extras/gui/controls/PathBox.ec $(OBJ)PathBox.sym | $(SYMBOLS
 $(OBJ)StringsBox.c: ../extras/gui/controls/StringsBox.ec $(OBJ)StringsBox.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.c -symbols $(OBJ)
 
+$(OBJ)DirectoriesBox.c: ../extras/gui/controls/DirectoriesBox.ec $(OBJ)DirectoriesBox.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/DirectoriesBox.ec -o $(OBJ)DirectoriesBox.c -symbols $(OBJ)
+
 $(OBJ)epj2make.c: epj2make.ec $(OBJ)epj2make.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c epj2make.ec -o $(OBJ)epj2make.c -symbols $(OBJ)
 
-# IMPLICIT OBJECT RULE
-
-$(OBJ)%$(O) : $(OBJ)%.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $< -o $@
-
 # OBJECT RULES
+
+$(OBJ)Project.o: $(OBJ)Project.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Project.c -o $(OBJ)Project.o
+
+$(OBJ)ProjectConfig.o: $(OBJ)ProjectConfig.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ProjectConfig.c -o $(OBJ)ProjectConfig.o
+
+$(OBJ)ProjectNode.o: $(OBJ)ProjectNode.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ProjectNode.c -o $(OBJ)ProjectNode.o
+
+$(OBJ)IDESettings.o: $(OBJ)IDESettings.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)IDESettings.c -o $(OBJ)IDESettings.o
+
+$(OBJ)OldIDESettings.o: $(OBJ)OldIDESettings.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)OldIDESettings.c -o $(OBJ)OldIDESettings.o
+
+$(OBJ)PathBox.o: $(OBJ)PathBox.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)PathBox.c -o $(OBJ)PathBox.o
+
+$(OBJ)StringsBox.o: $(OBJ)StringsBox.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)StringsBox.c -o $(OBJ)StringsBox.o
+
+$(OBJ)DirectoriesBox.o: $(OBJ)DirectoriesBox.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DirectoriesBox.c -o $(OBJ)DirectoriesBox.o
+
+$(OBJ)epj2make.o: $(OBJ)epj2make.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)epj2make.c -o $(OBJ)epj2make.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)

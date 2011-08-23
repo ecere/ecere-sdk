@@ -16,25 +16,25 @@ CONSOLE = -mwindows
 TARGET = obj/$(CONFIG).$(PLATFORM)/documentor$(E)
 
 OBJECTS = $(OBJ)htmlParser.o $(OBJ)HTMLView.o $(OBJ)lines.o $(OBJ)tables.o \
-	$(OBJ)IDESettings.o $(OBJ)OldIDESettings.o $(OBJ)PathBox.o \
-	$(OBJ)StringsBox.o $(OBJ)Documentor.o $(OBJ)SettingsDialog.o $(OBJ)$(MODULE).main$(O)
+	$(OBJ)IDESettings.o $(OBJ)OldIDESettings.o $(OBJ)PathBox.o $(OBJ)StringsBox.o \
+	$(OBJ)DirectoriesBox.o $(OBJ)Documentor.o $(OBJ)SettingsDialog.o $(OBJ)$(MODULE).main$(O)
 
 COBJECTS = $(OBJ)htmlParser.c $(OBJ)HTMLView.c $(OBJ)lines.c $(OBJ)tables.c \
-	$(OBJ)IDESettings.c $(OBJ)OldIDESettings.c $(OBJ)PathBox.c \
-	$(OBJ)StringsBox.c $(OBJ)Documentor.c $(OBJ)SettingsDialog.c
+	$(OBJ)IDESettings.c $(OBJ)OldIDESettings.c $(OBJ)PathBox.c $(OBJ)StringsBox.c \
+	$(OBJ)DirectoriesBox.c $(OBJ)Documentor.c $(OBJ)SettingsDialog.c
 
 SYMBOLS = $(OBJ)htmlParser.sym $(OBJ)HTMLView.sym $(OBJ)lines.sym $(OBJ)tables.sym \
-	$(OBJ)IDESettings.sym $(OBJ)OldIDESettings.sym $(OBJ)PathBox.sym \
-	$(OBJ)StringsBox.sym $(OBJ)Documentor.sym $(OBJ)SettingsDialog.sym
+	$(OBJ)IDESettings.sym $(OBJ)OldIDESettings.sym $(OBJ)PathBox.sym $(OBJ)StringsBox.sym \
+	$(OBJ)DirectoriesBox.sym $(OBJ)Documentor.sym $(OBJ)SettingsDialog.sym
 
 IMPORTS = $(OBJ)htmlParser.imp $(OBJ)HTMLView.imp $(OBJ)lines.imp $(OBJ)tables.imp \
-	$(OBJ)IDESettings.imp $(OBJ)OldIDESettings.imp $(OBJ)PathBox.imp \
-	$(OBJ)StringsBox.imp $(OBJ)Documentor.imp $(OBJ)SettingsDialog.imp
+	$(OBJ)IDESettings.imp $(OBJ)OldIDESettings.imp $(OBJ)PathBox.imp $(OBJ)StringsBox.imp \
+	$(OBJ)DirectoriesBox.imp $(OBJ)Documentor.imp $(OBJ)SettingsDialog.imp
 
 SOURCES = ../extras/html/htmlParser.ec ../extras/html/HTMLView.ec \
 	../extras/html/lines.ec ../extras/html/tables.ec ../ide/src/IDESettings.ec \
-	../ide/src/OldIDESettings.ec ../extras/gui/controls/PathBox.ec \
-	../extras/gui/controls/StringsBox.ec src/Documentor.ec src/SettingsDialog.ec
+	../ide/src/OldIDESettings.ec ../extras/gui/controls/PathBox.ec ../extras/gui/controls/StringsBox.ec \
+	../extras/gui/controls/DirectoriesBox.ec src/Documentor.ec src/SettingsDialog.ec
 
 RESOURCES =
 
@@ -116,6 +116,9 @@ $(OBJ)PathBox.sym: ../extras/gui/controls/PathBox.ec
 $(OBJ)StringsBox.sym: ../extras/gui/controls/StringsBox.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.sym
 
+$(OBJ)DirectoriesBox.sym: ../extras/gui/controls/DirectoriesBox.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/controls/DirectoriesBox.ec -o $(OBJ)DirectoriesBox.sym
+
 $(OBJ)Documentor.sym: src/Documentor.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/Documentor.ec -o $(OBJ)Documentor.sym
 
@@ -148,18 +151,49 @@ $(OBJ)PathBox.c: ../extras/gui/controls/PathBox.ec $(OBJ)PathBox.sym | $(SYMBOLS
 $(OBJ)StringsBox.c: ../extras/gui/controls/StringsBox.ec $(OBJ)StringsBox.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.c -symbols $(OBJ)
 
+$(OBJ)DirectoriesBox.c: ../extras/gui/controls/DirectoriesBox.ec $(OBJ)DirectoriesBox.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/DirectoriesBox.ec -o $(OBJ)DirectoriesBox.c -symbols $(OBJ)
+
 $(OBJ)Documentor.c: src/Documentor.ec $(OBJ)Documentor.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/Documentor.ec -o $(OBJ)Documentor.c -symbols $(OBJ)
 
 $(OBJ)SettingsDialog.c: src/SettingsDialog.ec $(OBJ)SettingsDialog.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/SettingsDialog.ec -o $(OBJ)SettingsDialog.c -symbols $(OBJ)
 
-# IMPLICIT OBJECT RULE
-
-$(OBJ)%$(O) : $(OBJ)%.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $< -o $@
-
 # OBJECT RULES
+
+$(OBJ)htmlParser.o: $(OBJ)htmlParser.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)htmlParser.c -o $(OBJ)htmlParser.o
+
+$(OBJ)HTMLView.o: $(OBJ)HTMLView.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)HTMLView.c -o $(OBJ)HTMLView.o
+
+$(OBJ)lines.o: $(OBJ)lines.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)lines.c -o $(OBJ)lines.o
+
+$(OBJ)tables.o: $(OBJ)tables.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)tables.c -o $(OBJ)tables.o
+
+$(OBJ)IDESettings.o: $(OBJ)IDESettings.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)IDESettings.c -o $(OBJ)IDESettings.o
+
+$(OBJ)OldIDESettings.o: $(OBJ)OldIDESettings.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)OldIDESettings.c -o $(OBJ)OldIDESettings.o
+
+$(OBJ)PathBox.o: $(OBJ)PathBox.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)PathBox.c -o $(OBJ)PathBox.o
+
+$(OBJ)StringsBox.o: $(OBJ)StringsBox.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)StringsBox.c -o $(OBJ)StringsBox.o
+
+$(OBJ)DirectoriesBox.o: $(OBJ)DirectoriesBox.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DirectoriesBox.c -o $(OBJ)DirectoriesBox.o
+
+$(OBJ)Documentor.o: $(OBJ)Documentor.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Documentor.c -o $(OBJ)Documentor.o
+
+$(OBJ)SettingsDialog.o: $(OBJ)SettingsDialog.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)SettingsDialog.c -o $(OBJ)SettingsDialog.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
