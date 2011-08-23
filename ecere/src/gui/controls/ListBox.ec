@@ -3833,7 +3833,8 @@ private:
                return false;
             }
          }
-         return true;
+         // Prevent the double click from reactivating e.g. the project view
+         return false;//true;
       }
       return false;
    }

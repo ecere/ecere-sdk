@@ -3873,8 +3873,6 @@ private:
              method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonDown ||
              method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick))
          {
-            Window modalWindow = trueWindow.FindModal();
-            
             if(mods->alt && !mods->ctrl && !mods->shift)
             {
                Window moved = trueWindow;
