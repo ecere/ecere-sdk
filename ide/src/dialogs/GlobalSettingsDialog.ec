@@ -4,6 +4,7 @@ import "PathBox"
 import "SelectorBar"
 import "DirectoriesBox"
 import "CompilersDetectionDialog"
+import "ide"
 
 FileDialog settingsFileDialog { type = selectDir, text = "Select directory" };
 
@@ -45,7 +46,17 @@ class GlobalSettingsDialog : Window
       parent = this, hotKey = escape, text = "Cancel", id = DialogResult::cancel;
       position = { 290, 290 }, size = { 80 };
       anchor = { right = 8, bottom = 8 };
-      NotifyClicked = ButtonCloseDialog;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         if(!settingsModified || MessageBox {
+            type = okCancel, master = ide,
+            text = "Lose Changes?",
+            contents = "Are you sure you wish to discard changes?"
+             }.Modal() == ok)
+            Destroy(0);
+         return true;
+      }
    };
 
    Button ok
@@ -764,8 +775,10 @@ class CompilerEnvironmentTab : CompilersSubTab
       {
          CompilerConfig compiler = loadedCompiler;
          envVars.namedStrings = compiler.environmentVars;
-         modifiedDocument = true;
-         compilersTab.modifiedDocument = true;
+
+         // Was these meant to be false?
+         modifiedDocument = false;//true;
+         compilersTab.modifiedDocument = false;//true;
       }
    }
 }
