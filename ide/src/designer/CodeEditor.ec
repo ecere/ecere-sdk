@@ -4773,6 +4773,9 @@ class CodeEditor : Window
 
          ParseCode();
          delete text;
+
+         // TOFIX: Patch for a glitch where clicking at the end of the view seems one line off. No idea what could be going on?
+         editBox.OnVScroll(setRange, editBox.scroll.y, 0);
       }
 
       updatingCode--;
@@ -4782,7 +4785,6 @@ class CodeEditor : Window
       moveAttached = false;
       function = null;
       method = null;
-
    }
 
    int FindMethod(char * methodName /*Method method*/, ClassFunction*functionPtr, Location propLoc)
