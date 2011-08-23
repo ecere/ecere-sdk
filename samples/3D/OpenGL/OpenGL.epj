@@ -41,7 +41,8 @@
             "Debug" : true,
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "Console" : true
          }
       },
       {
@@ -52,7 +53,8 @@
       }
    ],
    "Files" : [
-      "glDemo.ec"
+      "glEcereCamera.ec",
+      "glSnippet.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [

@@ -1,16 +1,11 @@
 import "ecere"
 #include <GL/gl.h>
 
-GLDemo glDemo { };
-
-class GLDemoApp : GuiApplication
-{
-   driver = "OpenGL";
-}
-
 class GLDemo : Window
 {
-   text = "GL Demo";
+   displayDriver = "OpenGL";
+   nativeDecorations = true;
+   text = "GL+Ecere Camera Demo";
    background = black;
    hasClose = true;
    size = { 640, 480 };
@@ -156,3 +151,5 @@ class GLDemo : Window
       return true;
    }
 }
+
+GLDemo glDemo { anchor = { horz = 160, vert = 120 } };
