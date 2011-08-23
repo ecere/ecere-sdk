@@ -1048,6 +1048,7 @@ class WorkspaceOptionsTab : GlobalSettingsSubTab
    void OnDestroy()
    {
       defaultCompilerDropBox.Clear();
+      modifiedDocument = false;
    }
 }
 
