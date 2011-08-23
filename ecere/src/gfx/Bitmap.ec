@@ -239,6 +239,7 @@ static class QuantNode : struct
 
 public class Bitmap
 {
+   class_no_expansion
    ~Bitmap()
    {
       Free();

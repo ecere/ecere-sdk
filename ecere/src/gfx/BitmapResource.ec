@@ -103,7 +103,11 @@ public class BitmapResource : Resource
             {
                char * filePath = fileDialog.filePath;
                BitmapResource resource { fileName = filePath };
+
                master.SetData(resource, false);
+               // TOCHECK: Why do we need to Refresh here?
+               master.Refresh();
+
                // TODO: This is a Button? 
                // contents = filePath;
             }
