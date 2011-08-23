@@ -1403,7 +1403,11 @@ private:
                modulePath, moduleName, extension, moduleName);
             */
 
-            f.Printf("\t$(ECP) $(CECFLAGS)");
+            f.Printf("\t$(ECP)");
+            // Give priority to file flags
+            GenFileFlags(f, project);
+
+            f.Printf(" $(CECFLAGS)");
             if(ecflags)
             {
                if(memoryGuard)
@@ -1419,7 +1423,7 @@ private:
             else
                f.Printf(" $(ECFLAGS)");
             f.Printf(" $(CFLAGS)");
-            GenFileFlags(f, project);
+
             f.Printf(" -c %s%s.%s -o $(OBJ)%s.sym\n\n",
                modulePath, moduleName, extension, moduleName);
          }
@@ -1547,6 +1551,8 @@ private:
          */
 
             f.Printf("\t$(ECC)");
+            // Give priority to file flags
+            GenFileFlags(f, project);
             if(ecflags)
             {
                f.Printf("%s $(CECFLAGS)", noLineNumbers ? " -nolinenumbers" : "");
@@ -1563,7 +1569,7 @@ private:
             else
                f.Printf(" $(CECFLAGS) $(ECFLAGS)");
             f.Printf(" $(CFLAGS) $(FVISIBILITY)");
-            GenFileFlags(f, project);
+
             f.Printf(" -c %s%s.%s -o $(OBJ)%s.c -symbols $(OBJ)\n\n",
                modulePath, moduleName, extension, moduleName);
          }
@@ -1702,8 +1708,12 @@ private:
                }
 #endif
             }
-            f.Printf("\t$(CC) $(CFLAGS)");
+            f.Printf("\t$(CC) ");
+            // Give priority to file flags
             GenFileFlags(f, project);
+
+            f.Printf(" $(CFLAGS)");
+
             if(!strcmpi(extension, "ec"))
                f.Printf(" $(FVISIBILITY) -c $(OBJ)%s.c -o $(OBJ)%s.o\n\n", moduleName, moduleName);
             else
