@@ -110,6 +110,7 @@ public class BitmapResource : Resource
             return true;
          }
       };
+      editData.anchor.right = 24;
       browse.Create();
 
       return editData;
