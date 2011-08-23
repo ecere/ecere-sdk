@@ -513,6 +513,8 @@ public:
       char ext[MAX_EXTENSION];
       subclass(BitmapFormat) format;
       int typeToTry = -1;
+
+      if(!fileName) return false;
       if(!type) 
       {
          type = GetExtension(fileName, ext);

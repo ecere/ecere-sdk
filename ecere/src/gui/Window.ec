@@ -9146,7 +9146,7 @@ public:
       set
       {
          icon = value;
-         incref icon;
+         if(icon) incref icon;
          if(created)
             guiApp.interfaceDriver.SetIcon(this, value);
       }
