@@ -1,10 +1,12 @@
 {
    "Version" : 0.2,
-   "ModuleName" : "BitmapAudioKB",
+   "ModuleName" : "PlaySound",
+   "Description" : "",
+   "License" : "",
    "Options" : {
       "Warnings" : "All",
       "TargetType" : "Executable",
-      "TargetFileName" : "BitmapAudioKB",
+      "TargetFileName" : "PlaySound",
       "Libraries" : [
          "ecere"
       ]

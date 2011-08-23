@@ -18,12 +18,12 @@ static snd_mixer_t *mixer_handle;
 
 static double volume, balance;
 
-void AudioSetBalance(double percent)
+public void AudioSetBalance(double percent)
 {
    balance = percent;
 }
 
-bool AudioSetVolume(VolumeControl type, double percent)
+public bool AudioSetVolume(VolumeControl type, double percent)
 {
    bool result = false;
    if(type == application)
@@ -62,7 +62,7 @@ bool AudioSetVolume(VolumeControl type, double percent)
    return result;
 }
 
-bool AudioGetVolume(VolumeControl type, double * percent)
+public bool AudioGetVolume(VolumeControl type, double * percent)
 {
    bool result = false;
    if(type == application)
@@ -101,19 +101,19 @@ bool AudioGetVolume(VolumeControl type, double * percent)
    return result;
 }
 
-void OpenMixer()
+public void OpenMixer()
 {
    snd_mixer_open(&mixer_handle, 0);
    snd_mixer_attach(mixer_handle, "default");
 	snd_mixer_selem_register(mixer_handle, null, null);
 }
 
-void CloseMixer()
+public void CloseMixer()
 {
    snd_mixer_close(mixer_handle);
 }
 
-int OpenAudio(AudioSpec wanted, AudioSpec result)
+public int OpenAudio(AudioSpec wanted, AudioSpec result)
 {
    int err;
    unsigned int i;
@@ -145,7 +145,7 @@ int OpenAudio(AudioSpec wanted, AudioSpec result)
    return 1;
 }
 
-void PauseAudio(int value)
+public void PauseAudio(int value)
 {
    if(!value)
    {
@@ -153,7 +153,7 @@ void PauseAudio(int value)
    }
 }
 
-void CloseAudio()
+public void CloseAudio()
 {
    soundThread.done = true;
    soundThread.Wait();

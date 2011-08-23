@@ -21,7 +21,7 @@
 
 import "audio"
 
-void AudioSetBalance(double percent)
+public void AudioSetBalance(double percent)
 {
    if(streamingSound)
       streamingSound.balance = percent;
@@ -30,7 +30,7 @@ void AudioSetBalance(double percent)
 static HWAVEOUT hWaveOut;
 static HMIXEROBJ hmx;
 
-void OpenMixer()
+public void OpenMixer()
 {
    HMIXER        mixerHandle;
    WAVEFORMATEX  waveFormat = { 0 };
@@ -46,13 +46,13 @@ void OpenMixer()
    mixerOpen((HMIXER *)&hmx, (uint)hWaveOut, 0, 0, MIXER_OBJECTF_HWAVEOUT);
 }
 
-void CloseMixer()
+public void CloseMixer()
 {
    mixerClose((HMIXER)hmx);
    waveOutClose(hWaveOut);
 }
 
-bool AudioSetVolume(VolumeControl type, double percent)
+public bool AudioSetVolume(VolumeControl type, double percent)
 {
    bool result = false;
    if(type == application)
@@ -102,7 +102,7 @@ bool AudioSetVolume(VolumeControl type, double percent)
    return result;
 }
 
-bool AudioGetVolume(VolumeControl type, double * percent)
+public bool AudioGetVolume(VolumeControl type, double * percent)
 {
    bool result = false;
    if(type == application)
@@ -151,7 +151,7 @@ bool AudioGetVolume(VolumeControl type, double * percent)
    return result;
 }
 
-int OpenAudio(AudioSpec wanted, AudioSpec result)
+public int OpenAudio(AudioSpec wanted, AudioSpec result)
 {
    #define NUM_PLAY_NOTIFICATIONS  16
    uint nBlockAlign, dwNotifySize;
@@ -183,7 +183,7 @@ int OpenAudio(AudioSpec wanted, AudioSpec result)
    return 0;
 }
 
-void PauseAudio(int value)
+public void PauseAudio(int value)
 {
    if(!value)
    {
@@ -192,7 +192,7 @@ void PauseAudio(int value)
    }
 }
 
-void CloseAudio()
+public void CloseAudio()
 {
    if(dSoundThread)
    {

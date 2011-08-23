@@ -3,8 +3,8 @@ import "audio"
 
 #include <string.h>
 
-// define AUDIO_BUFFER_SIZE = 21024;
-define AUDIO_BUFFER_SIZE = 48000;
+// public define AUDIO_BUFFER_SIZE = 21024;
+public define AUDIO_BUFFER_SIZE = 48000;
 
 struct WAVEHDR
 {
