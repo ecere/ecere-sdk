@@ -470,7 +470,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
             {
                Property prop = (Property) member;
 
-               if(!prop.conversion && prop.Get && prop.Set)
+               if(!prop.conversion && prop.Get && prop.Set && (!prop.IsSet || prop.IsSet(data)))
                {
                   if(memberType.type != structClass && (memberType.type != normalClass || !strcmp(memberType.dataTypeString, "char *")) && memberType.type != bitClass && data)
                   {
@@ -492,7 +492,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                      else
                      {
                         value.i = prop.Get(data);
-                        if(value.i)
+                        if(value.i || prop.IsSet)
                         {
                            bool needClass = true;
                            char * result = (char *)memberType._vTbl[__ecereVMethodID_class_OnGetString](memberType, 
