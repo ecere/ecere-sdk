@@ -100,7 +100,8 @@ class FormDesigner : ClassDesignerBase
    void ::ListClasses(DesignerBase designer, Class _class)
    {
       OldLink link;
-      designer.AddToolBoxClass(_class);
+      if(eClass_GetProperty(_class, "icon"))
+         designer.AddToolBoxClass(_class);
       /*
       for(link = _class.derivatives.first; link; link = link.next)
          designer.AddToolBoxClass(link.data);
@@ -113,8 +114,16 @@ class FormDesigner : ClassDesignerBase
       Class commonControlClass = eSystem_FindClass(_class.module, "CommonControl");
       for(link = commonControlClass.derivatives.first; link; link = link.next)
       {
-         ListClasses(designer, link.data);
+         ListSubClasses(designer, link.data);
       }
+   }
+
+   void ::ListSubClasses(DesignerBase designer, Class c)
+   {
+      OldLink link;
+      ListClasses(designer, c);
+      for(link = c.derivatives.first; link; link = link.next)
+         ListSubClasses(designer, link.data);
    }
 
    void ::PrepareTestObject(DesignerBase designer, Window test)

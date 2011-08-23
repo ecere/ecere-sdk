@@ -17,8 +17,6 @@ private:
 
 public class DataBox : CommonControl
 {
-   class_property(icon) = "<:ecere>controls/dataBox.png";
-
 public:
    Class type;
    void * data;
@@ -158,6 +156,7 @@ private:
 
 public class SavingDataBox : DataBox
 {
+   class_property(icon) = "<:ecere>controls/dataBox.png";
    borderStyle = deep;
    bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
    {

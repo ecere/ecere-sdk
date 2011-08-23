@@ -2029,6 +2029,8 @@ static void FixDerivativesBase(Class base, Class mod)
             _class.startMemberID += mod.base.memberID;
          }
       }
+      // Moved this before to ensure CPValues have their data ready
+      FixDerivativesBase(_class, mod);
       {
          Class c;
          for(c = mod.base; c; c = c.base)
@@ -2040,8 +2042,6 @@ static void FixDerivativesBase(Class base, Class mod)
             }
          }
       }
-
-      FixDerivativesBase(_class, mod);
    }
    
    {
