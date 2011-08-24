@@ -160,7 +160,7 @@ public class SavingDataBox : DataBox
    borderStyle = deep;
    bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
    {
-      if(!active)
+      if(!active && !editor.modalSlave)
       {
          if(!SaveData())
             Refresh();
