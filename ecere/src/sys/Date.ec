@@ -394,15 +394,17 @@ class DateDropBox : DropBox
    {
       CalendarControl calendar = (CalendarControl)dropBox.calendar;
       Date date = calendar.dateValue;
+      Date * dataBoxDate = (Date *)data;
 
       if(save)
       {
          if(date.OnGetDataFromString(string))
          {
             // TESTING THIS COMMENTED OUT HERE: (Not good -- was modifying on drop down!)
-            if(date.year != calendar.dateValue.year ||
-               date.month != calendar.dateValue.month ||
-               date.day != calendar.dateValue.day)
+            // With it not commented out, a current date in a SavingDataBox always shows blank
+            if(date.year != calendar.dateValue.year || date.year != dataBoxDate->year ||
+               date.month != calendar.dateValue.month || date.month != dataBoxDate->month ||
+               date.day != calendar.dateValue.day || date.day != dataBoxDate->day)
                SetData(&date, false);
             if(date.year || date.month || date.day)
             {
