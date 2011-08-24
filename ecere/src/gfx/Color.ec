@@ -117,7 +117,11 @@ public:
       char tempString[1024] = "";
       bool needClass = false;
       // TODO: This isn't an ideal way of obtaining the clipped height, will fail on hidden areas
-      int yOffset = (1+surface.box.bottom - surface.box.top - 17)/2;
+      // This doesn't seem to help anymore?
+      // - Makes SavingDataBox draw at 2 different spots depending if active or not.
+      // - Color property in IDE is fine as well
+      // - How is it on Linux?
+      int yOffset = 0;//(1+surface.box.bottom - surface.box.top - 17)/2;
       char * string = OnGetString(tempString, null, &needClass);
       surface.WriteTextDots(alignment, x + 24, y + 1, width - 24, string, strlen(string));
 
