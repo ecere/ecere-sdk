@@ -172,7 +172,9 @@ public class SavingDataBox : DataBox
    {
       if((SmartKey)key == enter)
       {
-         SaveData();
+         if(!SaveData())
+            // Force Refresh on Enter if SaveData didn't do it
+            Refresh();
          return true;
       }
       return DataBox::OnKeyDown(key, ch);

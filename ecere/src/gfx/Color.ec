@@ -58,6 +58,8 @@ public:
          if(result) string = result;
       }
       colorDropBox.contents = string;
+      // This is to highlight text on DataBox::Refresh
+      colorDropBox.editBox.SelectAll();
       return colorDropBox;
    }
 

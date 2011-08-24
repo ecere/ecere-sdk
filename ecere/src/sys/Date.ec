@@ -513,7 +513,7 @@ class RepButton : Button
    {
       this, delay = 0.1;
       bool DelayExpired()
-      {                                                `
+      {
          NotifyClicked(master, this, 0, 0, 0);
          return true;
       }
