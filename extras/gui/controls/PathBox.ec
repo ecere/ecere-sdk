@@ -419,7 +419,7 @@ public class PathBox : CommonControl
             char fileName[MAX_LOCATION];//, filePath[MAX_LOCATION];
             DirectoriesBox dirBox = (DirectoriesBox)parent.parent;
             if(dirBox) { dirBox = (DirectoriesBox)dirBox.parent; } // TOFIX: Precomp needs { }
-            if(!eClass_IsDerived(dirBox._class, class(DirectoriesBox))) dirBox = null;
+            if(dirBox && !eClass_IsDerived(dirBox._class, class(DirectoriesBox))) dirBox = null;
 
             incref this;
 
@@ -564,7 +564,8 @@ public:
          char path[MAX_LOCATION];
          GetSystemPathBuffer(path, value);
          editBox.contents = path;
-         editBox.SelectAll();
+         if(active)
+            editBox.SelectAll();
          CheckFileExists();
       }
       get { return editBox.contents; }
