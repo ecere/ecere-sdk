@@ -10,8 +10,6 @@ public import "ecere"
 #endif
 #endif
 
-import "PathBox"
-
 public class NamedString : struct
 {
 public:

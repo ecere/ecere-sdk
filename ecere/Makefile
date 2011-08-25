@@ -45,19 +45,18 @@ OBJECTS2 = $(OBJ)harfbuzz-myanmar.o $(OBJ)harfbuzz-open.o $(OBJ)harfbuzz-shaper.
 	$(OBJ)Surface.o $(OBJ)Button.o $(OBJ)CalendarControl.o $(OBJ)DataBox.o $(OBJ)DropBox.o \
 	$(OBJ)EditBox.o $(OBJ)Label.o $(OBJ)ListBox.o $(OBJ)Menu.o $(OBJ)Picture.o $(OBJ)ProgressBar.o \
 	$(OBJ)ScrollBar.o $(OBJ)StatusBar.o
-OBJECTS3 = $(OBJ)TabControl.o $(OBJ)PaneSplitter.o $(OBJ)Stacker.o $(OBJ)ColorPicker.o \
-	$(OBJ)FileDialog.o $(OBJ)FindDialog.o $(OBJ)GoToDialog.o $(OBJ)MessageBox.o $(OBJ)ReplaceDialog.o \
-	$(OBJ)WindowList.o $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.o,) \
+OBJECTS3 = $(OBJ)TabControl.o $(OBJ)PaneSplitter.o $(OBJ)Stacker.o $(OBJ)PathBox.o \
+	$(OBJ)ColorPicker.o $(OBJ)FileDialog.o $(OBJ)FindDialog.o $(OBJ)GoToDialog.o $(OBJ)MessageBox.o \
+	$(OBJ)ReplaceDialog.o $(OBJ)WindowList.o $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.o,) \
 	$(if $(WINDOWS),$(OBJ)Win32Interface.o,) $(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.o,) \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.o,) $(OBJ)TVisionSkin.o $(OBJ)WindowsSkin.o $(OBJ)Anchor.o $(OBJ)ClipBoard.o \
 	$(OBJ)Cursor.o $(OBJ)Desktop3D.o $(OBJ)FormDesigner.o $(OBJ)GuiApplication.o \
 	$(OBJ)Interface.o $(OBJ)Key.o $(OBJ)Skin.o $(OBJ)Timer.o $(OBJ)typeEdit.o $(OBJ)Window.o \
 	$(OBJ)dcom.o $(OBJ)HTTPFile.o $(OBJ)network.o $(OBJ)NetworkClientFile.o $(OBJ)Service.o \
 	$(OBJ)Socket.o $(OBJ)Array.o $(OBJ)AVLTree.o $(OBJ)BuiltInContainer.o $(OBJ)Container.o \
-	$(OBJ)CustomAVLTree.o $(OBJ)LinkList.o $(OBJ)List.o $(OBJ)Map.o $(OBJ)BinaryTree.o $(OBJ)BTNode.o \
-	$(OBJ)dataTypes.o
-OBJECTS4 = $(OBJ)instance.o $(OBJ)String.o $(OBJ)OldList.o $(OBJ)instance.c.o \
-	$(OBJ)$(MODULE).main$(O)
+	$(OBJ)CustomAVLTree.o $(OBJ)LinkList.o $(OBJ)List.o $(OBJ)Map.o $(OBJ)BinaryTree.o $(OBJ)BTNode.o
+OBJECTS4 = $(OBJ)dataTypes.o $(OBJ)instance.o $(OBJ)String.o $(OBJ)OldList.o \
+	$(OBJ)instance.c.o $(OBJ)$(MODULE).main$(O)
 
 COBJECTS = $(COBJECTS1) $(COBJECTS2) $(COBJECTS3)
 COBJECTS1 = $(OBJ)Archive.c $(OBJ)BufferedFile.c $(OBJ)Date.c $(OBJ)DualPipe.c \
@@ -77,17 +76,18 @@ COBJECTS2 = $(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.c,) \
 	$(OBJ)DisplaySystem.c $(OBJ)FontResource.c $(OBJ)Resource.c $(OBJ)Surface.c $(OBJ)Button.c \
 	$(OBJ)CalendarControl.c $(OBJ)DataBox.c $(OBJ)DropBox.c $(OBJ)EditBox.c $(OBJ)Label.c $(OBJ)ListBox.c \
 	$(OBJ)Menu.c $(OBJ)Picture.c $(OBJ)ProgressBar.c $(OBJ)ScrollBar.c $(OBJ)StatusBar.c \
-	$(OBJ)TabControl.c $(OBJ)PaneSplitter.c $(OBJ)Stacker.c $(OBJ)ColorPicker.c $(OBJ)FileDialog.c \
-	$(OBJ)FindDialog.c $(OBJ)GoToDialog.c $(OBJ)MessageBox.c $(OBJ)ReplaceDialog.c $(OBJ)WindowList.c \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.c,) $(if $(WINDOWS),$(OBJ)Win32Interface.c,) \
-	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.c,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.c,) $(OBJ)TVisionSkin.c
-COBJECTS3 = $(OBJ)WindowsSkin.c $(OBJ)Anchor.c $(OBJ)ClipBoard.c $(OBJ)Cursor.c \
-	$(OBJ)Desktop3D.c $(OBJ)FormDesigner.c $(OBJ)GuiApplication.c $(OBJ)Interface.c $(OBJ)Key.c \
-	$(OBJ)Skin.c $(OBJ)Timer.c $(OBJ)typeEdit.c $(OBJ)Window.c $(OBJ)dcom.c $(OBJ)HTTPFile.c \
-	$(OBJ)network.c $(OBJ)NetworkClientFile.c $(OBJ)Service.c $(OBJ)Socket.c $(OBJ)Array.c \
-	$(OBJ)AVLTree.c $(OBJ)BuiltInContainer.c $(OBJ)Container.c $(OBJ)CustomAVLTree.c \
-	$(OBJ)LinkList.c $(OBJ)List.c $(OBJ)Map.c $(OBJ)BinaryTree.c $(OBJ)BTNode.c $(OBJ)dataTypes.c \
-	$(OBJ)instance.c $(OBJ)String.c $(OBJ)OldList.c
+	$(OBJ)TabControl.c $(OBJ)PaneSplitter.c $(OBJ)Stacker.c $(OBJ)PathBox.c $(OBJ)ColorPicker.c \
+	$(OBJ)FileDialog.c $(OBJ)FindDialog.c $(OBJ)GoToDialog.c $(OBJ)MessageBox.c $(OBJ)ReplaceDialog.c \
+	$(OBJ)WindowList.c $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.c,) \
+	$(if $(WINDOWS),$(OBJ)Win32Interface.c,) $(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.c,) \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.c,)
+COBJECTS3 = $(OBJ)TVisionSkin.c $(OBJ)WindowsSkin.c $(OBJ)Anchor.c $(OBJ)ClipBoard.c \
+	$(OBJ)Cursor.c $(OBJ)Desktop3D.c $(OBJ)FormDesigner.c $(OBJ)GuiApplication.c \
+	$(OBJ)Interface.c $(OBJ)Key.c $(OBJ)Skin.c $(OBJ)Timer.c $(OBJ)typeEdit.c $(OBJ)Window.c \
+	$(OBJ)dcom.c $(OBJ)HTTPFile.c $(OBJ)network.c $(OBJ)NetworkClientFile.c $(OBJ)Service.c \
+	$(OBJ)Socket.c $(OBJ)Array.c $(OBJ)AVLTree.c $(OBJ)BuiltInContainer.c $(OBJ)Container.c \
+	$(OBJ)CustomAVLTree.c $(OBJ)LinkList.c $(OBJ)List.c $(OBJ)Map.c $(OBJ)BinaryTree.c $(OBJ)BTNode.c \
+	$(OBJ)dataTypes.c $(OBJ)instance.c $(OBJ)String.c $(OBJ)OldList.c
 
 SYMBOLS = $(SYMBOLS1) $(SYMBOLS2) $(SYMBOLS3)
 SYMBOLS1 = $(OBJ)Archive.sym $(OBJ)BufferedFile.sym $(OBJ)Date.sym $(OBJ)DualPipe.sym \
@@ -109,18 +109,18 @@ SYMBOLS2 = $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.sym,) \
 	$(OBJ)CalendarControl.sym $(OBJ)DataBox.sym $(OBJ)DropBox.sym $(OBJ)EditBox.sym $(OBJ)Label.sym \
 	$(OBJ)ListBox.sym $(OBJ)Menu.sym $(OBJ)Picture.sym $(OBJ)ProgressBar.sym $(OBJ)ScrollBar.sym \
 	$(OBJ)StatusBar.sym $(OBJ)TabControl.sym $(OBJ)PaneSplitter.sym $(OBJ)Stacker.sym \
-	$(OBJ)ColorPicker.sym $(OBJ)FileDialog.sym $(OBJ)FindDialog.sym $(OBJ)GoToDialog.sym \
-	$(OBJ)MessageBox.sym $(OBJ)ReplaceDialog.sym $(OBJ)WindowList.sym \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.sym,)
-SYMBOLS3 = $(if $(WINDOWS),$(OBJ)Win32Interface.sym,) \
-	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.sym,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.sym,) $(OBJ)TVisionSkin.sym \
-	$(OBJ)WindowsSkin.sym $(OBJ)Anchor.sym $(OBJ)ClipBoard.sym $(OBJ)Cursor.sym $(OBJ)Desktop3D.sym \
-	$(OBJ)FormDesigner.sym $(OBJ)GuiApplication.sym $(OBJ)Interface.sym $(OBJ)Key.sym $(OBJ)Skin.sym \
-	$(OBJ)Timer.sym $(OBJ)typeEdit.sym $(OBJ)Window.sym $(OBJ)dcom.sym $(OBJ)HTTPFile.sym \
-	$(OBJ)network.sym $(OBJ)NetworkClientFile.sym $(OBJ)Service.sym $(OBJ)Socket.sym $(OBJ)Array.sym \
-	$(OBJ)AVLTree.sym $(OBJ)BuiltInContainer.sym $(OBJ)Container.sym $(OBJ)CustomAVLTree.sym \
-	$(OBJ)LinkList.sym $(OBJ)List.sym $(OBJ)Map.sym $(OBJ)BinaryTree.sym $(OBJ)BTNode.sym \
-	$(OBJ)dataTypes.sym $(OBJ)instance.sym $(OBJ)String.sym $(OBJ)OldList.sym
+	$(OBJ)PathBox.sym $(OBJ)ColorPicker.sym $(OBJ)FileDialog.sym $(OBJ)FindDialog.sym \
+	$(OBJ)GoToDialog.sym $(OBJ)MessageBox.sym $(OBJ)ReplaceDialog.sym $(OBJ)WindowList.sym
+SYMBOLS3 = $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.sym,) \
+	$(if $(WINDOWS),$(OBJ)Win32Interface.sym,) $(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.sym,) \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.sym,) $(OBJ)TVisionSkin.sym $(OBJ)WindowsSkin.sym $(OBJ)Anchor.sym \
+	$(OBJ)ClipBoard.sym $(OBJ)Cursor.sym $(OBJ)Desktop3D.sym $(OBJ)FormDesigner.sym \
+	$(OBJ)GuiApplication.sym $(OBJ)Interface.sym $(OBJ)Key.sym $(OBJ)Skin.sym $(OBJ)Timer.sym \
+	$(OBJ)typeEdit.sym $(OBJ)Window.sym $(OBJ)dcom.sym $(OBJ)HTTPFile.sym $(OBJ)network.sym \
+	$(OBJ)NetworkClientFile.sym $(OBJ)Service.sym $(OBJ)Socket.sym $(OBJ)Array.sym $(OBJ)AVLTree.sym \
+	$(OBJ)BuiltInContainer.sym $(OBJ)Container.sym $(OBJ)CustomAVLTree.sym $(OBJ)LinkList.sym $(OBJ)List.sym \
+	$(OBJ)Map.sym $(OBJ)BinaryTree.sym $(OBJ)BTNode.sym $(OBJ)dataTypes.sym $(OBJ)instance.sym \
+	$(OBJ)String.sym $(OBJ)OldList.sym
 
 IMPORTS = $(IMPORTS1) $(IMPORTS2) $(IMPORTS3)
 IMPORTS1 = $(OBJ)Archive.imp $(OBJ)BufferedFile.imp $(OBJ)Date.imp $(OBJ)DualPipe.imp \
@@ -142,18 +142,18 @@ IMPORTS2 = $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.imp,) \
 	$(OBJ)CalendarControl.imp $(OBJ)DataBox.imp $(OBJ)DropBox.imp $(OBJ)EditBox.imp $(OBJ)Label.imp \
 	$(OBJ)ListBox.imp $(OBJ)Menu.imp $(OBJ)Picture.imp $(OBJ)ProgressBar.imp $(OBJ)ScrollBar.imp \
 	$(OBJ)StatusBar.imp $(OBJ)TabControl.imp $(OBJ)PaneSplitter.imp $(OBJ)Stacker.imp \
-	$(OBJ)ColorPicker.imp $(OBJ)FileDialog.imp $(OBJ)FindDialog.imp $(OBJ)GoToDialog.imp \
-	$(OBJ)MessageBox.imp $(OBJ)ReplaceDialog.imp $(OBJ)WindowList.imp \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.imp,)
-IMPORTS3 = $(if $(WINDOWS),$(OBJ)Win32Interface.imp,) \
-	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.imp,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.imp,) $(OBJ)TVisionSkin.imp \
-	$(OBJ)WindowsSkin.imp $(OBJ)Anchor.imp $(OBJ)ClipBoard.imp $(OBJ)Cursor.imp $(OBJ)Desktop3D.imp \
-	$(OBJ)FormDesigner.imp $(OBJ)GuiApplication.imp $(OBJ)Interface.imp $(OBJ)Key.imp $(OBJ)Skin.imp \
-	$(OBJ)Timer.imp $(OBJ)typeEdit.imp $(OBJ)Window.imp $(OBJ)dcom.imp $(OBJ)HTTPFile.imp \
-	$(OBJ)network.imp $(OBJ)NetworkClientFile.imp $(OBJ)Service.imp $(OBJ)Socket.imp $(OBJ)Array.imp \
-	$(OBJ)AVLTree.imp $(OBJ)BuiltInContainer.imp $(OBJ)Container.imp $(OBJ)CustomAVLTree.imp \
-	$(OBJ)LinkList.imp $(OBJ)List.imp $(OBJ)Map.imp $(OBJ)BinaryTree.imp $(OBJ)BTNode.imp \
-	$(OBJ)dataTypes.imp $(OBJ)instance.imp $(OBJ)String.imp $(OBJ)OldList.imp
+	$(OBJ)PathBox.imp $(OBJ)ColorPicker.imp $(OBJ)FileDialog.imp $(OBJ)FindDialog.imp \
+	$(OBJ)GoToDialog.imp $(OBJ)MessageBox.imp $(OBJ)ReplaceDialog.imp $(OBJ)WindowList.imp
+IMPORTS3 = $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.imp,) \
+	$(if $(WINDOWS),$(OBJ)Win32Interface.imp,) $(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.imp,) \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.imp,) $(OBJ)TVisionSkin.imp $(OBJ)WindowsSkin.imp $(OBJ)Anchor.imp \
+	$(OBJ)ClipBoard.imp $(OBJ)Cursor.imp $(OBJ)Desktop3D.imp $(OBJ)FormDesigner.imp \
+	$(OBJ)GuiApplication.imp $(OBJ)Interface.imp $(OBJ)Key.imp $(OBJ)Skin.imp $(OBJ)Timer.imp \
+	$(OBJ)typeEdit.imp $(OBJ)Window.imp $(OBJ)dcom.imp $(OBJ)HTTPFile.imp $(OBJ)network.imp \
+	$(OBJ)NetworkClientFile.imp $(OBJ)Service.imp $(OBJ)Socket.imp $(OBJ)Array.imp $(OBJ)AVLTree.imp \
+	$(OBJ)BuiltInContainer.imp $(OBJ)Container.imp $(OBJ)CustomAVLTree.imp $(OBJ)LinkList.imp $(OBJ)List.imp \
+	$(OBJ)Map.imp $(OBJ)BinaryTree.imp $(OBJ)BTNode.imp $(OBJ)dataTypes.imp $(OBJ)instance.imp \
+	$(OBJ)String.imp $(OBJ)OldList.imp
 
 SOURCES = $(SOURCES1) $(SOURCES2) $(SOURCES3)
 SOURCES1 = src/sys/Archive.ec src/sys/BufferedFile.ec src/sys/Date.ec src/sys/DualPipe.ec \
@@ -187,15 +187,16 @@ SOURCES2 = src/gfx/drivers/harfbuzz/harfbuzz-stream.c \
 	src/gui/controls/Label.ec src/gui/controls/ListBox.ec src/gui/controls/Menu.ec \
 	src/gui/controls/Picture.ec src/gui/controls/ProgressBar.ec src/gui/controls/ScrollBar.ec \
 	src/gui/controls/StatusBar.ec src/gui/controls/TabControl.ec src/gui/controls/PaneSplitter.ec \
-	src/gui/controls/Stacker.ec src/gui/dialogs/ColorPicker.ec
-SOURCES3 = src/gui/dialogs/FileDialog.ec src/gui/dialogs/FindDialog.ec \
-	src/gui/dialogs/GoToDialog.ec src/gui/dialogs/MessageBox.ec src/gui/dialogs/ReplaceDialog.ec \
-	src/gui/dialogs/WindowList.ec $(if $(or $(LINUX),$(OSX)),src/gui/drivers/NCursesInterface.ec,) \
-	$(if $(WINDOWS),src/gui/drivers/Win32Interface.ec,) $(if $(WINDOWS),src/gui/drivers/Win32ConsoleInterface.ec,) \
-	$(if $(or $(LINUX),$(OSX)),src/gui/drivers/XInterface.ec,) src/gui/skins/TVisionSkin.ec src/gui/skins/WindowsSkin.ec src/gui/Anchor.ec \
-	src/gui/ClipBoard.ec src/gui/Cursor.ec src/gui/Desktop3D.ec src/gui/FormDesigner.ec \
-	src/gui/GuiApplication.ec src/gui/Interface.ec src/gui/Key.ec src/gui/Skin.ec src/gui/Timer.ec \
-	src/gui/typeEdit.ec src/gui/Window.ec src/net/dcom.ec src/net/HTTPFile.ec src/net/network.ec \
+	src/gui/controls/Stacker.ec src/gui/controls/PathBox.ec
+SOURCES3 = src/gui/dialogs/ColorPicker.ec src/gui/dialogs/FileDialog.ec \
+	src/gui/dialogs/FindDialog.ec src/gui/dialogs/GoToDialog.ec src/gui/dialogs/MessageBox.ec \
+	src/gui/dialogs/ReplaceDialog.ec src/gui/dialogs/WindowList.ec \
+	$(if $(or $(LINUX),$(OSX)),src/gui/drivers/NCursesInterface.ec,) $(if $(WINDOWS),src/gui/drivers/Win32Interface.ec,) \
+	$(if $(WINDOWS),src/gui/drivers/Win32ConsoleInterface.ec,) $(if $(or $(LINUX),$(OSX)),src/gui/drivers/XInterface.ec,) \
+	src/gui/skins/TVisionSkin.ec src/gui/skins/WindowsSkin.ec src/gui/Anchor.ec src/gui/ClipBoard.ec \
+	src/gui/Cursor.ec src/gui/Desktop3D.ec src/gui/FormDesigner.ec src/gui/GuiApplication.ec \
+	src/gui/Interface.ec src/gui/Key.ec src/gui/Skin.ec src/gui/Timer.ec src/gui/typeEdit.ec \
+	src/gui/Window.ec src/net/dcom.ec src/net/HTTPFile.ec src/net/network.ec \
 	src/net/NetworkClientFile.ec src/net/Service.ec src/net/Socket.ec src/com/containers/Array.ec \
 	src/com/containers/AVLTree.ec src/com/containers/BuiltInContainer.ec src/com/containers/Container.ec \
 	src/com/containers/CustomAVLTree.ec src/com/containers/LinkList.ec src/com/containers/List.ec \
@@ -339,7 +340,7 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)
 
-nores: $(SOURCES) | objdir $(SYMBOLS) $(OBJECTS)
+nores: $(SOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
 ifdef WINDOWS
@@ -413,7 +414,7 @@ $(OBJ)memory.sym: src/sys/memory.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/memory.ec -o $(OBJ)memory.sym
 
 $(OBJ)Mutex.sym: src/sys/Mutex.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/sys/Mutex.ec -o $(OBJ)Mutex.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/Mutex.ec -o $(OBJ)Mutex.sym
 
 $(OBJ)Semaphore.sym: src/sys/Semaphore.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/Semaphore.ec -o $(OBJ)Semaphore.sym
@@ -595,6 +596,9 @@ $(OBJ)PaneSplitter.sym: src/gui/controls/PaneSplitter.ec
 $(OBJ)Stacker.sym: src/gui/controls/Stacker.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/Stacker.ec -o $(OBJ)Stacker.sym
 
+$(OBJ)PathBox.sym: src/gui/controls/PathBox.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/PathBox.ec -o $(OBJ)PathBox.sym
+
 $(OBJ)ColorPicker.sym: src/gui/dialogs/ColorPicker.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/dialogs/ColorPicker.ec -o $(OBJ)ColorPicker.sym
 
@@ -689,46 +693,46 @@ $(OBJ)Socket.sym: src/net/Socket.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/net/Socket.ec -o $(OBJ)Socket.sym
 
 $(OBJ)Array.sym: src/com/containers/Array.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/Array.ec -o $(OBJ)Array.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/Array.ec -o $(OBJ)Array.sym
 
 $(OBJ)AVLTree.sym: src/com/containers/AVLTree.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.sym
 
 $(OBJ)BuiltInContainer.sym: src/com/containers/BuiltInContainer.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.sym
 
 $(OBJ)Container.sym: src/com/containers/Container.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/Container.ec -o $(OBJ)Container.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/Container.ec -o $(OBJ)Container.sym
 
 $(OBJ)CustomAVLTree.sym: src/com/containers/CustomAVLTree.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.sym
 
 $(OBJ)LinkList.sym: src/com/containers/LinkList.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.sym
 
 $(OBJ)List.sym: src/com/containers/List.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/List.ec -o $(OBJ)List.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/List.ec -o $(OBJ)List.sym
 
 $(OBJ)Map.sym: src/com/containers/Map.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/containers/Map.ec -o $(OBJ)Map.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/Map.ec -o $(OBJ)Map.sym
 
 $(OBJ)BinaryTree.sym: src/com/BinaryTree.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.sym
 
 $(OBJ)BTNode.sym: src/com/BTNode.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/BTNode.ec -o $(OBJ)BTNode.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/BTNode.ec -o $(OBJ)BTNode.sym
 
 $(OBJ)dataTypes.sym: src/com/dataTypes.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/dataTypes.ec -o $(OBJ)dataTypes.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/dataTypes.ec -o $(OBJ)dataTypes.sym
 
 $(OBJ)instance.sym: src/com/instance.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/instance.ec -o $(OBJ)instance.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/instance.ec -o $(OBJ)instance.sym
 
 $(OBJ)String.sym: src/com/String.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/String.ec -o $(OBJ)String.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/String.ec -o $(OBJ)String.sym
 
 $(OBJ)OldList.sym: src/com/OldList.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -DECERE_COM_MODULE -c src/com/OldList.ec -o $(OBJ)OldList.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/OldList.ec -o $(OBJ)OldList.sym
 
 # C OBJECT RULES
 
@@ -766,7 +770,7 @@ $(OBJ)memory.c: src/sys/memory.ec $(OBJ)memory.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/memory.ec -o $(OBJ)memory.c -symbols $(OBJ)
 
 $(OBJ)Mutex.c: src/sys/Mutex.ec $(OBJ)Mutex.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/sys/Mutex.ec -o $(OBJ)Mutex.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/Mutex.ec -o $(OBJ)Mutex.c -symbols $(OBJ)
 
 $(OBJ)Semaphore.c: src/sys/Semaphore.ec $(OBJ)Semaphore.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/Semaphore.ec -o $(OBJ)Semaphore.c -symbols $(OBJ)
@@ -948,6 +952,9 @@ $(OBJ)PaneSplitter.c: src/gui/controls/PaneSplitter.ec $(OBJ)PaneSplitter.sym | 
 $(OBJ)Stacker.c: src/gui/controls/Stacker.ec $(OBJ)Stacker.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/Stacker.ec -o $(OBJ)Stacker.c -symbols $(OBJ)
 
+$(OBJ)PathBox.c: src/gui/controls/PathBox.ec $(OBJ)PathBox.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/PathBox.ec -o $(OBJ)PathBox.c -symbols $(OBJ)
+
 $(OBJ)ColorPicker.c: src/gui/dialogs/ColorPicker.ec $(OBJ)ColorPicker.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/ColorPicker.ec -o $(OBJ)ColorPicker.c -symbols $(OBJ)
 
@@ -1042,46 +1049,46 @@ $(OBJ)Socket.c: src/net/Socket.ec $(OBJ)Socket.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/net/Socket.ec -o $(OBJ)Socket.c -symbols $(OBJ)
 
 $(OBJ)Array.c: src/com/containers/Array.ec $(OBJ)Array.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/containers/Array.ec -o $(OBJ)Array.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/Array.ec -o $(OBJ)Array.c -symbols $(OBJ)
 
 $(OBJ)AVLTree.c: src/com/containers/AVLTree.ec $(OBJ)AVLTree.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.c -symbols $(OBJ)
 
 $(OBJ)BuiltInContainer.c: src/com/containers/BuiltInContainer.ec $(OBJ)BuiltInContainer.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.c -symbols $(OBJ)
 
 $(OBJ)Container.c: src/com/containers/Container.ec $(OBJ)Container.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/containers/Container.ec -o $(OBJ)Container.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/Container.ec -o $(OBJ)Container.c -symbols $(OBJ)
 
 $(OBJ)CustomAVLTree.c: src/com/containers/CustomAVLTree.ec $(OBJ)CustomAVLTree.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.c -symbols $(OBJ)
 
 $(OBJ)LinkList.c: src/com/containers/LinkList.ec $(OBJ)LinkList.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.c -symbols $(OBJ)
 
 $(OBJ)List.c: src/com/containers/List.ec $(OBJ)List.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/containers/List.ec -o $(OBJ)List.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/List.ec -o $(OBJ)List.c -symbols $(OBJ)
 
 $(OBJ)Map.c: src/com/containers/Map.ec $(OBJ)Map.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/containers/Map.ec -o $(OBJ)Map.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/Map.ec -o $(OBJ)Map.c -symbols $(OBJ)
 
 $(OBJ)BinaryTree.c: src/com/BinaryTree.ec $(OBJ)BinaryTree.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.c -symbols $(OBJ)
 
 $(OBJ)BTNode.c: src/com/BTNode.ec $(OBJ)BTNode.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/BTNode.ec -o $(OBJ)BTNode.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/BTNode.ec -o $(OBJ)BTNode.c -symbols $(OBJ)
 
 $(OBJ)dataTypes.c: src/com/dataTypes.ec $(OBJ)dataTypes.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/dataTypes.ec -o $(OBJ)dataTypes.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/dataTypes.ec -o $(OBJ)dataTypes.c -symbols $(OBJ)
 
 $(OBJ)instance.c: src/com/instance.ec $(OBJ)instance.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/instance.ec -o $(OBJ)instance.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/instance.ec -o $(OBJ)instance.c -symbols $(OBJ)
 
 $(OBJ)String.c: src/com/String.ec $(OBJ)String.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/String.ec -o $(OBJ)String.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/String.ec -o $(OBJ)String.c -symbols $(OBJ)
 
 $(OBJ)OldList.c: src/com/OldList.ec $(OBJ)OldList.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -DECERE_COM_MODULE -c src/com/OldList.ec -o $(OBJ)OldList.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/OldList.ec -o $(OBJ)OldList.c -symbols $(OBJ)
 
 # OBJECT RULES
 
@@ -1119,7 +1126,7 @@ $(OBJ)memory.o: $(OBJ)memory.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)memory.c -o $(OBJ)memory.o
 
 $(OBJ)Mutex.o: $(OBJ)Mutex.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)Mutex.c -o $(OBJ)Mutex.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Mutex.c -o $(OBJ)Mutex.o
 
 $(OBJ)Semaphore.o: $(OBJ)Semaphore.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Semaphore.c -o $(OBJ)Semaphore.o
@@ -1355,6 +1362,9 @@ $(OBJ)PaneSplitter.o: $(OBJ)PaneSplitter.c
 $(OBJ)Stacker.o: $(OBJ)Stacker.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Stacker.c -o $(OBJ)Stacker.o
 
+$(OBJ)PathBox.o: $(OBJ)PathBox.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)PathBox.c -o $(OBJ)PathBox.o
+
 $(OBJ)ColorPicker.o: $(OBJ)ColorPicker.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ColorPicker.c -o $(OBJ)ColorPicker.o
 
@@ -1449,49 +1459,49 @@ $(OBJ)Socket.o: $(OBJ)Socket.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Socket.c -o $(OBJ)Socket.o
 
 $(OBJ)Array.o: $(OBJ)Array.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)Array.c -o $(OBJ)Array.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Array.c -o $(OBJ)Array.o
 
 $(OBJ)AVLTree.o: $(OBJ)AVLTree.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)AVLTree.c -o $(OBJ)AVLTree.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)AVLTree.c -o $(OBJ)AVLTree.o
 
 $(OBJ)BuiltInContainer.o: $(OBJ)BuiltInContainer.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)BuiltInContainer.c -o $(OBJ)BuiltInContainer.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BuiltInContainer.c -o $(OBJ)BuiltInContainer.o
 
 $(OBJ)Container.o: $(OBJ)Container.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)Container.c -o $(OBJ)Container.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Container.c -o $(OBJ)Container.o
 
 $(OBJ)CustomAVLTree.o: $(OBJ)CustomAVLTree.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)CustomAVLTree.c -o $(OBJ)CustomAVLTree.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CustomAVLTree.c -o $(OBJ)CustomAVLTree.o
 
 $(OBJ)LinkList.o: $(OBJ)LinkList.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)LinkList.c -o $(OBJ)LinkList.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)LinkList.c -o $(OBJ)LinkList.o
 
 $(OBJ)List.o: $(OBJ)List.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)List.c -o $(OBJ)List.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)List.c -o $(OBJ)List.o
 
 $(OBJ)Map.o: $(OBJ)Map.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)Map.c -o $(OBJ)Map.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Map.c -o $(OBJ)Map.o
 
 $(OBJ)BinaryTree.o: $(OBJ)BinaryTree.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)BinaryTree.c -o $(OBJ)BinaryTree.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BinaryTree.c -o $(OBJ)BinaryTree.o
 
 $(OBJ)BTNode.o: $(OBJ)BTNode.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)BTNode.c -o $(OBJ)BTNode.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BTNode.c -o $(OBJ)BTNode.o
 
 $(OBJ)dataTypes.o: $(OBJ)dataTypes.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)dataTypes.c -o $(OBJ)dataTypes.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)dataTypes.c -o $(OBJ)dataTypes.o
 
 $(OBJ)instance.o: $(OBJ)instance.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)instance.c -o $(OBJ)instance.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)instance.c -o $(OBJ)instance.o
 
 $(OBJ)String.o: $(OBJ)String.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)String.c -o $(OBJ)String.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)String.c -o $(OBJ)String.o
 
 $(OBJ)OldList.o: $(OBJ)OldList.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE $(FVISIBILITY) -c $(OBJ)OldList.c -o $(OBJ)OldList.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)OldList.c -o $(OBJ)OldList.o
 
 $(OBJ)instance.c.o: src/com/instance.c
-	$(CC) $(CFLAGS) -DECERE_COM_MODULE -c src/com/instance.c -o $(OBJ)instance.c.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) -c src/com/instance.c -o $(OBJ)instance.c.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)

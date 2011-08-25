@@ -15,8 +15,6 @@ import "ProjectConfig"
 import "ProjectNode"
 import "IDESettings"
 
-import "PathBox"
-
 default:
 
 static void DummyFunction()

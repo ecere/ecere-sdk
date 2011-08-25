@@ -1735,3 +1735,48 @@ public void CreateTemporaryDir(char * tempFileName, char * template)
 #endif
 #endif
 }
+
+public void MakeSlashPath(char * p)
+{
+   FileFixCase(p);
+#ifdef WIN32
+   ChangeCh(p, '\\', '/');
+#endif
+}
+
+public void MakeSystemPath(char * p)
+{
+   FileFixCase(p);
+}
+
+public char * CopySystemPath(char * p)
+{
+   char * d = CopyString(p);
+   if(d)
+      MakeSystemPath(d);
+   return d;
+}
+
+public char * CopyUnixPath(char * p)
+{
+   char * d = CopyString(p);
+   if(d)
+      MakeSlashPath(d);
+   return d;
+}
+
+public char * GetSystemPathBuffer(char * d, char * p)
+{
+   if(d != p)
+      strcpy(d, p ? p : "");
+   MakeSystemPath(d);
+   return d;
+}
+
+public char * GetSlashPathBuffer(char * d, char * p)
+{
+   if(d != p)
+      strcpy(d, p ? p : "");
+   MakeSlashPath(d);
+   return d;
+}

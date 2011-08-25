@@ -5,8 +5,6 @@ import "debugTools"
 
 //#define GDB_DEBUG_CONSOLE
 
-import "PathBox"
-
 extern char * strrchr(char * s, char c);
 
 #define uint _uint

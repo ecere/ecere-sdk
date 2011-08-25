@@ -1,5 +1,4 @@
 import "Project"
-import "DirectoriesBox"
 
 class WorkspaceTab : Tab
 {

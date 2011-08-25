@@ -1,7 +1,6 @@
 import "ide"
 import "WorkspaceSettings"
 import "ProjectTabSettings"
-import "DirectoriesBox"
 import "StringsBox"
 import "SelectorBar"
 

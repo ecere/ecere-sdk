@@ -1,8 +1,6 @@
 import "IDESettings"
 
-import "PathBox"
 import "SelectorBar"
-import "DirectoriesBox"
 import "CompilersDetectionDialog"
 import "ide"
 

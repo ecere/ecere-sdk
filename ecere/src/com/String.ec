@@ -181,6 +181,220 @@ public bool SplitArchivePath(char * fileName, char * archiveName, char ** archiv
    return false;
 }
 
+public char * PathCatSlash(char * string, char * addedPath)
+{
+   bool modified = false;
+   if(addedPath)
+   {
+      char fileName[MAX_LOCATION] = "", archiveName[MAX_LOCATION] = "", * file;
+      int c = 0;
+      bool isURL = false;
+      char * urlFileName;
+
+      if(SplitArchivePath(string, archiveName, &file))
+         strcpy(fileName, file);
+      else
+      {
+         strcpy(fileName, string);
+      }
+
+      if(strstr(string, "http://") == string)
+      {
+         char * slash = strstr(fileName + 7, "/");
+         isURL = true;
+         if(slash)
+            urlFileName = slash;
+         else
+            urlFileName = fileName + strlen(fileName);
+      }
+      if(strstr(addedPath, "http://") == addedPath)
+      {
+         strcpy(fileName, "http://");
+         isURL = true;
+         c = 7;
+      }
+      else if(GetRuntimePlatform() == win32)
+      {
+         if(addedPath[0] && addedPath[1] == ':' && addedPath[0] != '<')
+         {
+            fileName[0] = (char)toupper(addedPath[0]);
+            fileName[1] = ':';
+            fileName[2] = '\0';
+            c = 2;
+            modified = true;
+         }
+         else if(addedPath[0] == '\\' && addedPath[1] == '\\')
+         {
+            fileName[0] = fileName[1] = '\\';
+            fileName[2] = '\0';
+            c = 2;
+            modified = true;
+         }
+         // A drive needs to be selected
+         /* TOCHECK: Cutting this out, can't handle relative path
+         else if(fileName[0] == '/' && !archiveName[0] && strcmp(addedPath, "/"))
+            return null;
+         */
+      }
+
+      if(!modified && isURL && (addedPath[0] == '\\' || addedPath[0] == '/'))
+      {
+         urlFileName[0] = '/';
+         urlFileName[1] = '\0';
+      }
+      else if(!modified && (addedPath[0] == '\\' || addedPath[0] == '/'))
+      {
+         if(GetRuntimePlatform() == win32)
+         {
+            // Entire Computer
+            if(addedPath[0] == '/' && !addedPath[1])
+            {
+               fileName[0] = addedPath[0];
+               fileName[1] = '\0';
+               modified = true;
+            }
+            // Root of drive
+            else if(fileName[0] && fileName[1] == ':')
+            {
+               fileName[2] = '\0';
+               modified = true;
+            }
+            // Relative path root of drive
+            else
+            {
+               fileName[0] = '\\';
+               fileName[1] = '\0';
+               modified = true;
+            }
+         }
+         else
+         {
+            fileName[0] = '/';
+            fileName[1] = '\0';
+            modified = true;
+         }
+         c = 1;
+      }
+
+      for(; addedPath[c]; )
+      {
+         // DANGER OF OVERFLOW HERE
+         // char directory[MAX_FILENAME];
+         char directory[MAX_FILENAME * 16];
+         int len = 0;
+         char ch;
+         int count;
+      
+         for(;(ch = addedPath[c]) && (ch == '/' || ch == '\\'); c++);
+         for(;(ch = addedPath[c]) && (ch != '/' && ch != '\\'); c++)
+         {
+            if(isURL && ch == '?')
+            {
+               break;
+            }
+            if(len < MAX_FILENAME)
+               directory[len++] = ch;  
+         }
+         directory[len] = '\0';
+
+         // Trim rightmost spaces
+         for(count = len-1; count >= 0 && (directory[count] == ' ' || directory[count] == '\t'); count--)
+         {
+            directory[count] = '\0';
+            len--;
+         }
+
+         if(len > 0)
+         {
+            modified = true;
+            if(strstr(directory, "..") == directory && (!directory[2] || directory[2] == DIR_SEP || directory[2] == '/'))
+            {
+               int strLen = strlen(fileName) - 1;
+               if(strLen > -1)
+               {
+                  // Go back one directory
+                  for(;(ch = fileName[strLen]) && strLen > -1 && (ch == '/' || ch == '\\'); strLen--);
+                  for(;(ch = fileName[strLen]) && strLen > -1 && (ch != '/' && ch != '\\' && ch != ':'); strLen--);
+                  for(;(ch = fileName[strLen]) && strLen > -1 && (ch == '/' || ch == '\\'); strLen--);
+
+                  if(isURL)
+                  {
+                     strLen = Max(strLen, urlFileName - fileName);
+                  }
+                  if(!strcmp(fileName + strLen + 1, ".."))
+                  {
+                     strcat(fileName, "/" /*DIR_SEPS*/);
+                     strcat(fileName, "..");
+                  }
+                  else
+                  {
+                     if(GetRuntimePlatform() == win32)
+                     {
+                        if(!strLen && fileName[0] == '\\' && fileName[1] == '\\')
+                        {
+                           if(!fileName[2])
+                              return null;
+                           else
+                           {
+                              fileName[0] = '\\';
+                              fileName[1] = '\\';
+                              fileName[2] = '\0';
+                           }
+                        }
+                        else
+                           fileName[strLen+1] = '\0';
+                     }
+                     else
+                     {
+                        fileName[strLen+1] = '\0';
+                        if(strLen<0)
+                        {
+                           fileName[0] = '/';
+                           fileName[1] = '\0';
+                           strLen = 2;
+                        }
+                     }
+                  }
+               }
+               else
+               {
+                  strcpy(fileName, "..");
+               }
+            }
+            else if(strcmp(directory, "."))
+            {
+               int strLen = strlen(fileName);
+               bool notZeroLen = strLen > 0;
+               // if(strLen > 1 && (fileName[strLen-1] == '/' || fileName[strLen-1] == '\\'))
+               if(strLen > 0 && (fileName[strLen-1] == '/' || fileName[strLen-1] == '\\'))
+                  strLen--;
+               if(notZeroLen /*&& fileName[strLen-1] != ':' && fileName[strLen-1] != '>'*/)
+                  fileName[strLen++] = '/';
+
+               fileName[strLen] = '\0';
+
+               if(strLen + strlen(directory) > MAX_LOCATION - 3)
+                  return null;   // AN ERROR OCCURED!
+
+               strcat(fileName, directory);
+            }
+         }
+         if(isURL && ch == '/')
+            strcat(fileName, "/");
+         if(isURL && ch == '?')
+         {
+            strcat(fileName, addedPath+c);
+            break;
+         }
+      }
+      if(archiveName[0])
+         sprintf(string, "<%s>%s", archiveName, fileName);
+      else
+         strcpy(string, fileName);
+   }
+   return modified ? string : null;
+}
+
 public char * PathCat(char * string, char * addedPath)
 {
    bool modified = false;

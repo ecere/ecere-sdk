@@ -16,24 +16,20 @@ CONSOLE = -mconsole
 TARGET = obj/$(CONFIG).$(PLATFORM)/epj2make$(E)
 
 OBJECTS = $(OBJ)Project.o $(OBJ)ProjectConfig.o $(OBJ)ProjectNode.o $(OBJ)IDESettings.o \
-	$(OBJ)OldIDESettings.o $(OBJ)PathBox.o $(OBJ)StringsBox.o $(OBJ)DirectoriesBox.o $(OBJ)epj2make.o \
-	$(OBJ)$(MODULE).main$(O)
+	$(OBJ)OldIDESettings.o $(OBJ)StringsBox.o $(OBJ)epj2make.o $(OBJ)$(MODULE).main$(O)
 
 COBJECTS = $(OBJ)Project.c $(OBJ)ProjectConfig.c $(OBJ)ProjectNode.c $(OBJ)IDESettings.c \
-	$(OBJ)OldIDESettings.c $(OBJ)PathBox.c $(OBJ)StringsBox.c $(OBJ)DirectoriesBox.c $(OBJ)epj2make.c
+	$(OBJ)OldIDESettings.c $(OBJ)StringsBox.c $(OBJ)epj2make.c
 
 SYMBOLS = $(OBJ)Project.sym $(OBJ)ProjectConfig.sym $(OBJ)ProjectNode.sym \
-	$(OBJ)IDESettings.sym $(OBJ)OldIDESettings.sym $(OBJ)PathBox.sym $(OBJ)StringsBox.sym \
-	$(OBJ)DirectoriesBox.sym $(OBJ)epj2make.sym
+	$(OBJ)IDESettings.sym $(OBJ)OldIDESettings.sym $(OBJ)StringsBox.sym $(OBJ)epj2make.sym
 
 IMPORTS = $(OBJ)Project.imp $(OBJ)ProjectConfig.imp $(OBJ)ProjectNode.imp \
-	$(OBJ)IDESettings.imp $(OBJ)OldIDESettings.imp $(OBJ)PathBox.imp $(OBJ)StringsBox.imp \
-	$(OBJ)DirectoriesBox.imp $(OBJ)epj2make.imp
+	$(OBJ)IDESettings.imp $(OBJ)OldIDESettings.imp $(OBJ)StringsBox.imp $(OBJ)epj2make.imp
 
 SOURCES = ../ide/src/project/Project.ec ../ide/src/project/ProjectConfig.ec \
 	../ide/src/project/ProjectNode.ec ../ide/src/IDESettings.ec ../ide/src/OldIDESettings.ec \
-	../extras/gui/controls/PathBox.ec ../extras/gui/controls/StringsBox.ec \
-	../extras/gui/controls/DirectoriesBox.ec epj2make.ec
+	../extras/gui/controls/StringsBox.ec epj2make.ec
 
 RESOURCES = ../include.mk
 
@@ -91,7 +87,7 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)
 
-$(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
+$(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
 	$(EAR) awq $(TARGET) ../include.mk ""
@@ -114,14 +110,8 @@ $(OBJ)IDESettings.sym: ../ide/src/IDESettings.ec
 $(OBJ)OldIDESettings.sym: ../ide/src/OldIDESettings.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../ide/src/OldIDESettings.ec -o $(OBJ)OldIDESettings.sym
 
-$(OBJ)PathBox.sym: ../extras/gui/controls/PathBox.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/controls/PathBox.ec -o $(OBJ)PathBox.sym
-
 $(OBJ)StringsBox.sym: ../extras/gui/controls/StringsBox.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.sym
-
-$(OBJ)DirectoriesBox.sym: ../extras/gui/controls/DirectoriesBox.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/controls/DirectoriesBox.ec -o $(OBJ)DirectoriesBox.sym
 
 $(OBJ)epj2make.sym: epj2make.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c epj2make.ec -o $(OBJ)epj2make.sym
@@ -143,14 +133,8 @@ $(OBJ)IDESettings.c: ../ide/src/IDESettings.ec $(OBJ)IDESettings.sym | $(SYMBOLS
 $(OBJ)OldIDESettings.c: ../ide/src/OldIDESettings.ec $(OBJ)OldIDESettings.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../ide/src/OldIDESettings.ec -o $(OBJ)OldIDESettings.c -symbols $(OBJ)
 
-$(OBJ)PathBox.c: ../extras/gui/controls/PathBox.ec $(OBJ)PathBox.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/PathBox.ec -o $(OBJ)PathBox.c -symbols $(OBJ)
-
 $(OBJ)StringsBox.c: ../extras/gui/controls/StringsBox.ec $(OBJ)StringsBox.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.c -symbols $(OBJ)
-
-$(OBJ)DirectoriesBox.c: ../extras/gui/controls/DirectoriesBox.ec $(OBJ)DirectoriesBox.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/DirectoriesBox.ec -o $(OBJ)DirectoriesBox.c -symbols $(OBJ)
 
 $(OBJ)epj2make.c: epj2make.ec $(OBJ)epj2make.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c epj2make.ec -o $(OBJ)epj2make.c -symbols $(OBJ)
@@ -172,14 +156,8 @@ $(OBJ)IDESettings.o: $(OBJ)IDESettings.c
 $(OBJ)OldIDESettings.o: $(OBJ)OldIDESettings.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)OldIDESettings.c -o $(OBJ)OldIDESettings.o
 
-$(OBJ)PathBox.o: $(OBJ)PathBox.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)PathBox.c -o $(OBJ)PathBox.o
-
 $(OBJ)StringsBox.o: $(OBJ)StringsBox.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)StringsBox.c -o $(OBJ)StringsBox.o
-
-$(OBJ)DirectoriesBox.o: $(OBJ)DirectoriesBox.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DirectoriesBox.c -o $(OBJ)DirectoriesBox.o
 
 $(OBJ)epj2make.o: $(OBJ)epj2make.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)epj2make.c -o $(OBJ)epj2make.o

@@ -1708,7 +1708,7 @@ private:
                }
 #endif
             }
-            f.Printf("\t$(CC) ");
+            f.Printf("\t$(CC)");
             // Give priority to file flags
             GenFileFlags(f, project);
 

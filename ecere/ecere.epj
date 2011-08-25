@@ -1130,7 +1130,8 @@ from wherever you obtained them.",
                               }
                            ]
                         },
-                        "Stacker.ec"
+                        "Stacker.ec",
+                        "PathBox.ec"
                      ]
                   },
                   {
