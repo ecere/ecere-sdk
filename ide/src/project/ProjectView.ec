@@ -232,8 +232,8 @@ class ProjectView : Window
       
       bool NotifyDoubleClick(ListBox listBox, int x, int y, Modifiers mods)
       {
-         OpenSelectedNodes();
-         return true;
+         // Prevent the double click from reactivating the project view (returns false if we opened something)
+         return !OpenSelectedNodes();
       }
 
       bool NotifyRightClick(ListBox listBox, int x, int y, Modifiers mods)
@@ -1795,7 +1795,8 @@ class ProjectView : Window
       return codeEditor;   
    }
 
-   void OpenSelectedNodes()
+   // Returns true if we opened something
+   bool OpenSelectedNodes()
    {
       OldList selection;
       OldLink item;
@@ -1806,9 +1807,13 @@ class ProjectView : Window
          DataRow row = item.data;
          ProjectNode node = (ProjectNode)row.tag;
          if(node.type == file)
+         {
             OpenNode(node);
+            return true;
+         }
       }
       selection.Free(null);
+      return false;
    }
 
    void RemoveSelectedNodes()

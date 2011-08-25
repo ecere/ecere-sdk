@@ -3833,8 +3833,8 @@ private:
                return false;
             }
          }
-         // Prevent the double click from reactivating e.g. the project view
-         return false;//true;
+         // We need to return true here so that OnLeftButtonDown can popup the DataBox Editors
+         return true;
       }
       return false;
    }
