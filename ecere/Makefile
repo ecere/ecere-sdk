@@ -342,6 +342,7 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
+
 nores: $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
