@@ -16,7 +16,7 @@ public class FilePath : String
       PathBox pathBox
       {
          dataBox, borderStyle = 0, anchor = { 0, 0, 0, 0 },
-         typeExpected = file;
+         typeExpected = any;
          browseDialog = userData ? (FileDialog)userData : { type = open, text = "Select a file..." };
          path = this;
       };
@@ -107,12 +107,14 @@ public class PathBox : CommonControl
          return NotifyModified(master, this);
       }
 
+      /* F4? F4 is properties, f2 works already for this
       bool OnKeyDown(Key key, unichar ch)
       {
          if(key == f4)
             ((PathBox)parent).browse.NotifyClicked(parent, ((PathBox)parent).browse, 0, 0, (Modifiers)null);
          return EditBox::OnKeyDown(key, ch);
       }
+      */
    };
 
    // For chaining popup-key event
