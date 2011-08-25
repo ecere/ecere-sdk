@@ -239,17 +239,14 @@
                   "Workspace.ec",
                   {
                      "FileName" : "vsSupport.ec",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     },
                      "Platforms" : [
                         {
-                           "Name" : "linux",
+                           "Name" : "win32",
                            "Options" : {
-                              "ExcludeFromBuild" : true
-                           }
-                        },
-                        {
-                           "Name" : "apple",
-                           "Options" : {
-                              "ExcludeFromBuild" : true
+                              "ExcludeFromBuild" : false
                            }
                         }
                      ]

@@ -15,26 +15,24 @@ CONSOLE = -mwindows
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/ide$(E)
 
-OBJECTS = $(OBJECTS1) $(OBJECTS2)
-OBJECTS1 = $(OBJ)FileSystemIterator.o $(OBJ)layout.o $(OBJ)SelectorBar.o \
+OBJECTS = $(OBJ)FileSystemIterator.o $(OBJ)layout.o $(OBJ)SelectorBar.o \
 	$(OBJ)StringsBox.o $(OBJ)ActiveCompilerDialog.o $(OBJ)CompilersDetectionDialog.o \
 	$(OBJ)FindInFilesDialog.o $(OBJ)GlobalSettingsDialog.o $(OBJ)NewProjectDialog.o $(OBJ)NodeProperties.o \
 	$(OBJ)ProjectActiveConfig.o $(OBJ)WorkspaceSettings.o $(OBJ)ProjectTabSettings.o $(OBJ)Project.o \
 	$(OBJ)ProjectConfig.o $(OBJ)ProjectNode.o $(OBJ)ProjectView.o $(OBJ)Workspace.o \
-	$(if $(or $(LINUX),$(OSX)),,$(OBJ)vsSupport.o) $(OBJ)CodeEditor.o $(OBJ)CodeObject.o $(OBJ)Designer.o $(OBJ)findCtx.o \
+	$(if $(WINDOWS),$(OBJ)vsSupport.o,) $(OBJ)CodeEditor.o $(OBJ)CodeObject.o $(OBJ)Designer.o $(OBJ)findCtx.o \
 	$(OBJ)findExp.o $(OBJ)findParams.o $(OBJ)Sheet.o $(OBJ)ToolBox.o $(OBJ)debugFindCtx.o \
 	$(OBJ)Debugger.o $(OBJ)debugTools.o $(OBJ)GDBDialog.o $(OBJ)process.o $(OBJ)BreakpointsView.o \
 	$(OBJ)CallStackView.o $(OBJ)OutputView.o $(OBJ)ThreadsView.o $(OBJ)WatchesView.o $(OBJ)ModelView.o \
 	$(OBJ)PictureEdit.o $(OBJ)about.o $(OBJ)ide.o $(OBJ)IDESettings.o $(OBJ)OldIDESettings.o \
-	$(OBJ)ProjectSettings.o
-OBJECTS2 = $(OBJ)$(MODULE).main$(O)
+	$(OBJ)ProjectSettings.o $(OBJ)$(MODULE).main$(O)
 
 COBJECTS = $(OBJ)FileSystemIterator.c $(OBJ)layout.c $(OBJ)SelectorBar.c \
 	$(OBJ)StringsBox.c $(OBJ)ActiveCompilerDialog.c $(OBJ)CompilersDetectionDialog.c \
 	$(OBJ)FindInFilesDialog.c $(OBJ)GlobalSettingsDialog.c $(OBJ)NewProjectDialog.c $(OBJ)NodeProperties.c \
 	$(OBJ)ProjectActiveConfig.c $(OBJ)WorkspaceSettings.c $(OBJ)ProjectTabSettings.c $(OBJ)Project.c \
 	$(OBJ)ProjectConfig.c $(OBJ)ProjectNode.c $(OBJ)ProjectView.c $(OBJ)Workspace.c \
-	$(if $(or $(LINUX),$(OSX)),,$(OBJ)vsSupport.c) $(OBJ)CodeEditor.c $(OBJ)CodeObject.c $(OBJ)Designer.c $(OBJ)findCtx.c \
+	$(if $(WINDOWS),$(OBJ)vsSupport.c,) $(OBJ)CodeEditor.c $(OBJ)CodeObject.c $(OBJ)Designer.c $(OBJ)findCtx.c \
 	$(OBJ)findExp.c $(OBJ)findParams.c $(OBJ)Sheet.c $(OBJ)ToolBox.c $(OBJ)debugFindCtx.c \
 	$(OBJ)Debugger.c $(OBJ)debugTools.c $(OBJ)GDBDialog.c $(OBJ)process.c $(OBJ)BreakpointsView.c \
 	$(OBJ)CallStackView.c $(OBJ)OutputView.c $(OBJ)ThreadsView.c $(OBJ)WatchesView.c $(OBJ)ModelView.c \
@@ -47,7 +45,7 @@ SYMBOLS1 = $(OBJ)FileSystemIterator.sym $(OBJ)layout.sym $(OBJ)SelectorBar.sym \
 	$(OBJ)FindInFilesDialog.sym $(OBJ)GlobalSettingsDialog.sym $(OBJ)NewProjectDialog.sym \
 	$(OBJ)NodeProperties.sym $(OBJ)ProjectActiveConfig.sym $(OBJ)WorkspaceSettings.sym \
 	$(OBJ)ProjectTabSettings.sym $(OBJ)Project.sym $(OBJ)ProjectConfig.sym $(OBJ)ProjectNode.sym \
-	$(OBJ)ProjectView.sym $(OBJ)Workspace.sym $(if $(or $(LINUX),$(OSX)),,$(OBJ)vsSupport.sym) \
+	$(OBJ)ProjectView.sym $(OBJ)Workspace.sym $(if $(WINDOWS),$(OBJ)vsSupport.sym,) \
 	$(OBJ)CodeEditor.sym $(OBJ)CodeObject.sym $(OBJ)Designer.sym $(OBJ)findCtx.sym $(OBJ)findExp.sym \
 	$(OBJ)findParams.sym $(OBJ)Sheet.sym $(OBJ)ToolBox.sym $(OBJ)debugFindCtx.sym $(OBJ)Debugger.sym \
 	$(OBJ)debugTools.sym $(OBJ)GDBDialog.sym $(OBJ)process.sym $(OBJ)BreakpointsView.sym \
@@ -61,7 +59,7 @@ IMPORTS1 = $(OBJ)FileSystemIterator.imp $(OBJ)layout.imp $(OBJ)SelectorBar.imp \
 	$(OBJ)FindInFilesDialog.imp $(OBJ)GlobalSettingsDialog.imp $(OBJ)NewProjectDialog.imp \
 	$(OBJ)NodeProperties.imp $(OBJ)ProjectActiveConfig.imp $(OBJ)WorkspaceSettings.imp \
 	$(OBJ)ProjectTabSettings.imp $(OBJ)Project.imp $(OBJ)ProjectConfig.imp $(OBJ)ProjectNode.imp \
-	$(OBJ)ProjectView.imp $(OBJ)Workspace.imp $(if $(or $(LINUX),$(OSX)),,$(OBJ)vsSupport.imp) \
+	$(OBJ)ProjectView.imp $(OBJ)Workspace.imp $(if $(WINDOWS),$(OBJ)vsSupport.imp,) \
 	$(OBJ)CodeEditor.imp $(OBJ)CodeObject.imp $(OBJ)Designer.imp $(OBJ)findCtx.imp $(OBJ)findExp.imp \
 	$(OBJ)findParams.imp $(OBJ)Sheet.imp $(OBJ)ToolBox.imp $(OBJ)debugFindCtx.imp $(OBJ)Debugger.imp \
 	$(OBJ)debugTools.imp $(OBJ)GDBDialog.imp $(OBJ)process.imp $(OBJ)BreakpointsView.imp \
@@ -75,14 +73,14 @@ SOURCES = ../extras/FileSystemIterator.ec ../extras/gui/layout.ec \
 	src/dialogs/NewProjectDialog.ec src/dialogs/NodeProperties.ec src/dialogs/ProjectActiveConfig.ec \
 	src/dialogs/WorkspaceSettings.ec src/dialogs/ProjectTabSettings.ec src/project/Project.ec \
 	src/project/ProjectConfig.ec src/project/ProjectNode.ec src/project/ProjectView.ec \
-	src/project/Workspace.ec $(if $(or $(LINUX),$(OSX)),,src/project/vsSupport.ec) \
-	src/designer/CodeEditor.ec src/designer/CodeObject.ec src/designer/Designer.ec src/designer/findCtx.ec \
-	src/designer/findExp.ec src/designer/findParams.ec src/designer/Sheet.ec src/designer/ToolBox.ec \
-	src/debugger/debugFindCtx.ec src/debugger/Debugger.ec src/debugger/debugTools.ec src/debugger/GDBDialog.ec \
-	src/debugger/process.ec src/panels/BreakpointsView.ec src/panels/CallStackView.ec \
-	src/panels/OutputView.ec src/panels/ThreadsView.ec src/panels/WatchesView.ec \
-	src/documents/ModelView.ec src/documents/PictureEdit.ec src/about.ec src/ide.ec src/IDESettings.ec \
-	src/OldIDESettings.ec src/ProjectSettings.ec
+	src/project/Workspace.ec $(if $(WINDOWS),src/project/vsSupport.ec,) src/designer/CodeEditor.ec \
+	src/designer/CodeObject.ec src/designer/Designer.ec src/designer/findCtx.ec src/designer/findExp.ec \
+	src/designer/findParams.ec src/designer/Sheet.ec src/designer/ToolBox.ec src/debugger/debugFindCtx.ec \
+	src/debugger/Debugger.ec src/debugger/debugTools.ec src/debugger/GDBDialog.ec src/debugger/process.ec \
+	src/panels/BreakpointsView.ec src/panels/CallStackView.ec src/panels/OutputView.ec \
+	src/panels/ThreadsView.ec src/panels/WatchesView.ec src/documents/ModelView.ec \
+	src/documents/PictureEdit.ec src/about.ec src/ide.ec src/IDESettings.ec src/OldIDESettings.ec \
+	src/ProjectSettings.ec
 
 RESOURCES = $(RES)actions/attach.png $(RES)actions/delete.png $(RES)actions/detach.png \
 	$(RES)actions/docNew.png $(RES)actions/editCopy.png $(RES)actions/editDelete.png \
@@ -589,8 +587,7 @@ $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 
 clean: objdir
 	$(call rmq,$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
-	$(call rmq,$(OBJECTS1))
-	$(call rmq,$(OBJECTS2))
+	$(call rmq,$(OBJECTS))
 	$(call rmq,$(COBJECTS))
 	$(call rmq,$(IMPORTS1))
 	$(call rmq,$(IMPORTS2))
