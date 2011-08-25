@@ -163,9 +163,11 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)
 
-$(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
+$(SYMBOLS): | objdir
+$(OBJECTS): | objdir
+$(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 ifdef WINDOWS
-$(TARGET): | obj/resources.o
+$(TARGET): obj/resources.o
 endif
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
@@ -176,7 +178,7 @@ endif
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
 
 ifdef WINDOWS
-obj/resources.o: src/icon2.ico src/resources.rc
+obj/resources.o: src/icon2.ico src/resources.rc | objdir
 	windres src/resources.rc obj/resources.o
 endif
 

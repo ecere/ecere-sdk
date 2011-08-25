@@ -2113,9 +2113,18 @@ private:
                   " -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)\n\n");
          }
 
-         // Target
+         // *** Target ***
+
+         // This would not rebuild the target on updated objects
          // f.Printf("$(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)%s\n", sameObjTargetDirs ? "" : " targetdir");
+
+         // This should fix it for good!
+         f.Printf("$(SYMBOLS): | objdir\n");
+         f.Printf("$(OBJECTS): | objdir\n");
+
+         // This alone was breaking the tarball, object directory does not get created first (order-only rules happen last it seems!)
          f.Printf("$(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
+
          if(targetType == sharedLibrary || targetType == executable)
          {
             // f.Printf("\tinstall_name_tool $(TARGET) $(LP)$(MODULE)%s\n", targetType == sharedLibrary ? "$(SO)" : "$(A)");
