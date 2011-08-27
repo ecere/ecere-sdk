@@ -1629,7 +1629,9 @@ private:
          {
             if(!thisOnly)
             {
-               UpdateNonClient();
+               // Buttons bitmap resources crash if we do this while switching mode
+               if(!guiApp || !guiApp.modeSwitching)
+                  UpdateNonClient();
 
                // Process Anchored Children
                if(processAnchors)
@@ -4621,7 +4623,7 @@ private:
 
       // Setup relationship with outside world (bb root || !bb)
       if((!guiApp.fullScreenMode && parent == guiApp.desktop) || this == guiApp.desktop || 
-         (_displayDriver && displayDriver != parent.displayDriver))
+         (_displayDriver && dispDriver != parent.dispDriver))
       {
          rootWindow = this;
          if(!tempExtents)
@@ -4653,7 +4655,7 @@ private:
       bool result = false;
       Window child;
 
-      if((!guiApp.fullScreenMode && parent == guiApp.desktop) || (guiApp.fullScreenMode && (this == guiApp.desktop || (_displayDriver && displayDriver != parent.displayDriver))))
+      if((!guiApp.fullScreenMode && parent == guiApp.desktop) || (guiApp.fullScreenMode && (this == guiApp.desktop || (_displayDriver && dispDriver != parent.dispDriver))))
       {
          subclass(DisplayDriver) dDriver = (dispDriver && !formDesigner) ? dispDriver : GetDisplayDriver(guiApp.defaultDisplayDriver);
          DisplaySystem displaySystem = dDriver ? dDriver.displaySystem : null;
@@ -9316,7 +9318,7 @@ private:
 
    // Checks used internally for them not to take effect in FormDesigner
    property bool _isModal        { get { return !formDesigner ? style.modal : false; } }
-   property bool _displayDriver  { get { return !formDesigner ? displayDriver : null; } }
+   property subclass(DisplayDriver) _displayDriver  { get { return !formDesigner ? dispDriver : null; } }
 
    WindowController controller;
    public property WindowController controller { get { return controller; } set { delete controller; controller = value; if(controller) incref controller; } }
