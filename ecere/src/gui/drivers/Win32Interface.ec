@@ -1333,7 +1333,7 @@ class Win32Interface : Interface
          if(window.style.stayOnTop)
             exStyle |= WS_EX_TOPMOST;
 
-         if(rootWindow && (window.style.modal || window.style.interim))
+         if(rootWindow && (window._isModal || window.style.interim))
             parentWindow = rootWindow.is3D ? rootWindow.parent.windowHandle : rootWindow.windowHandle;
             
          if(window.alphaBlend)

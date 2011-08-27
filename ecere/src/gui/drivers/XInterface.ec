@@ -1928,7 +1928,7 @@ class XInterface : Interface
          {
             X11Window parentWindow = (uint)null;
 
-            if(window.master.rootWindow && window.master.rootWindow != guiApp.desktop && (window.style.modal || window.style.interim))
+            if(window.master.rootWindow && window.master.rootWindow != guiApp.desktop && (window._isModal || window.style.interim))
             {
                Window master = window.master;
                Window rootWindow = master.rootWindow;

@@ -3450,7 +3450,7 @@ private:
             if(activateParent && 
                (parent.activeChild != this || 
                (guiApp.interimWindow && !IsDescendantOf(guiApp.interimWindow))) &&
-               active && style.modal && 
+               active && _isModal &&
                parent != master && master)
                master.ActivateEx(true, true, false, activateRoot, external, externalSwap);
 
@@ -4621,7 +4621,7 @@ private:
 
       // Setup relationship with outside world (bb root || !bb)
       if((!guiApp.fullScreenMode && parent == guiApp.desktop) || this == guiApp.desktop || 
-         (!formDesigner && displayDriver && displayDriver != parent.displayDriver))
+         (_displayDriver && displayDriver != parent.displayDriver))
       {
          rootWindow = this;
          if(!tempExtents)
@@ -4653,7 +4653,7 @@ private:
       bool result = false;
       Window child;
 
-      if((!guiApp.fullScreenMode && parent == guiApp.desktop) || (guiApp.fullScreenMode && (this == guiApp.desktop || (!formDesigner && displayDriver && displayDriver != parent.displayDriver))))
+      if((!guiApp.fullScreenMode && parent == guiApp.desktop) || (guiApp.fullScreenMode && (this == guiApp.desktop || (_displayDriver && displayDriver != parent.displayDriver))))
       {
          subclass(DisplayDriver) dDriver = (dispDriver && !formDesigner) ? dispDriver : GetDisplayDriver(guiApp.defaultDisplayDriver);
          DisplaySystem displaySystem = dDriver ? dDriver.displaySystem : null;
@@ -5375,7 +5375,7 @@ private:
       }
 
       active = false;
-      if(style.modal && master && master.modalSlave == this)
+      if(_isModal && master && master.modalSlave == this)
          master.modalSlave = null;
 
       if(parent)
@@ -5920,7 +5920,7 @@ public:
             property::parent = guiApp.desktop;
          if(!master) master = parent;
 
-         if(style.modal && master.modalSlave)
+         if(_isModal && master.modalSlave)
             property::master = master.modalSlave;
             //return false;
 
@@ -5955,7 +5955,7 @@ public:
          if(!dispDriver)
             dispDriver = parent.dispDriver;
          destroyed = false;
-         if(style.modal)
+         if(_isModal)
             master.modalSlave = this;
 
          box = Box { MAXINT, MAXINT, MININT, MININT }; //-MAXINT, -MAXINT };
@@ -8685,7 +8685,7 @@ public:
                   }
                   parent.Update(box);
                }
-               if(style.modal && master && master.modalSlave == this)
+               if(_isModal && master && master.modalSlave == this)
                   master.modalSlave = null;
 
                if(order)
@@ -8777,7 +8777,7 @@ public:
                if(rootWindow == this)
                   guiApp.interfaceDriver.SetRootWindowState(this, state, true);
 
-               if(style.modal && master)
+               if(_isModal && master)
                   master.modalSlave = this;
 
                if(style.isActiveClient)
@@ -9313,6 +9313,10 @@ private:
       bool manageDisplay:1;
       bool formDesigner:1; // True if we this is running in the form editor
    }; 
+
+   // Checks used internally for them not to take effect in FormDesigner
+   property bool _isModal        { get { return !formDesigner ? style.modal : false; } }
+   property bool _displayDriver  { get { return !formDesigner ? displayDriver : null; } }
 
    WindowController controller;
    public property WindowController controller { get { return controller; } set { delete controller; controller = value; if(controller) incref controller; } }
