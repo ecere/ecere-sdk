@@ -1805,7 +1805,7 @@ class SymbolgenApp : Application
                                  potFile.Puts(msgstr); potFile.Puts("\n");
                                  potFile.Puts("\n");
                                  delete msgstr;
-                                 delete comment;
+                                 // delete comment;
                               }
                            }
                            delete f;

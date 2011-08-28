@@ -2422,7 +2422,6 @@ __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator,
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
 (__ecereNameSpace__ecere__com__eSystem_Delete(msgstr), msgstr = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete(comment), comment = 0);
 }
 }
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
