@@ -321,6 +321,8 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_SetData;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
 
+struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Class_char__PTR_;
+
 int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_AddObject;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_CreateNew;
@@ -460,6 +462,8 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecer
 struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
+
+int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Close;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput;
 
@@ -746,6 +750,7 @@ method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNam
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_SetData = method->vid;
 __ecereClass___ecereNameSpace__ecere__com__Class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Class");
+__ecereProp___ecereNameSpace__ecere__com__Class_char__PTR_ = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__Class, "char *", module);
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::ClassDesignerBase");
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "AddObject", module);
 if(method)
@@ -903,6 +908,9 @@ __ecereProp___ecereNameSpace__ecere__sys__BTNode_next = _property = __ecereNameS
 __ecereClass___ecereNameSpace__ecere__sys__BinaryTree = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::BinaryTree");
 __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__sys__BinaryTree, "first", module);
 __ecereClass___ecereNameSpace__ecere__sys__File = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::File");
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Close", module);
+if(method)
+__ecereVMethodID___ecereNameSpace__ecere__sys__File_Close = method->vid;
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "CloseInput", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput = method->vid;

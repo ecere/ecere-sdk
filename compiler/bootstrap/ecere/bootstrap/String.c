@@ -432,6 +432,208 @@ extern char *  strcat(char * , const char * );
 
 extern int sprintf(char * , char * , ...);
 
+char * __ecereNameSpace__ecere__sys__PathCatSlash(char * string, char * addedPath)
+{
+unsigned int modified = 0x0;
+
+if(addedPath)
+{
+char fileName[797] = "", archiveName[797] = "", * file;
+int c = 0;
+unsigned int isURL = 0x0;
+char * urlFileName;
+
+if(__ecereNameSpace__ecere__sys__SplitArchivePath(string, archiveName, &file))
+strcpy(fileName, file);
+else
+{
+strcpy(fileName, string);
+}
+if(strstr(string, "http://") == string)
+{
+char * slash = strstr(fileName + 7, "/");
+
+isURL = 0x1;
+if(slash)
+urlFileName = slash;
+else
+urlFileName = fileName + strlen(fileName);
+}
+if(strstr(addedPath, "http://") == addedPath)
+{
+strcpy(fileName, "http://");
+isURL = 0x1;
+c = 7;
+}
+else if(__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1)
+{
+if(addedPath[0] && addedPath[1] == ':' && addedPath[0] != '<')
+{
+fileName[0] = (char)toupper(addedPath[0]);
+fileName[1] = ':';
+fileName[2] = '\0';
+c = 2;
+modified = 0x1;
+}
+else if(addedPath[0] == '\\' && addedPath[1] == '\\')
+{
+fileName[0] = fileName[1] = '\\';
+fileName[2] = '\0';
+c = 2;
+modified = 0x1;
+}
+}
+if(!modified && isURL && (addedPath[0] == '\\' || addedPath[0] == '/'))
+{
+urlFileName[0] = '/';
+urlFileName[1] = '\0';
+}
+else if(!modified && (addedPath[0] == '\\' || addedPath[0] == '/'))
+{
+if(__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1)
+{
+if(addedPath[0] == '/' && !addedPath[1])
+{
+fileName[0] = addedPath[0];
+fileName[1] = '\0';
+modified = 0x1;
+}
+else if(fileName[0] && fileName[1] == ':')
+{
+fileName[2] = '\0';
+modified = 0x1;
+}
+else
+{
+fileName[0] = '\\';
+fileName[1] = '\0';
+modified = 0x1;
+}
+}
+else
+{
+fileName[0] = '/';
+fileName[1] = '\0';
+modified = 0x1;
+}
+c = 1;
+}
+for(; addedPath[c]; )
+{
+char directory[4384LL];
+int len = 0;
+char ch;
+int count;
+
+for(; (ch = addedPath[c]) && (ch == '/' || ch == '\\'); c++)
+;
+for(; (ch = addedPath[c]) && (ch != '/' && ch != '\\'); c++)
+{
+if(isURL && ch == '?')
+{
+break;
+}
+if(len < (274))
+directory[len++] = ch;
+}
+directory[len] = '\0';
+for(count = len - 1; count >= 0 && (directory[count] == ' ' || directory[count] == '\t'); count--)
+{
+directory[count] = '\0';
+len--;
+}
+if(len > 0)
+{
+modified = 0x1;
+if(strstr(directory, "..") == directory && (!directory[2] || directory[2] == ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? '\\' : '/') || directory[2] == '/'))
+{
+int strLen = strlen(fileName) - 1;
+
+if(strLen > -1)
+{
+for(; (ch = fileName[strLen]) && strLen > -1 && (ch == '/' || ch == '\\'); strLen--)
+;
+for(; (ch = fileName[strLen]) && strLen > -1 && (ch != '/' && ch != '\\' && ch != ':'); strLen--)
+;
+for(; (ch = fileName[strLen]) && strLen > -1 && (ch == '/' || ch == '\\'); strLen--)
+;
+if(isURL)
+{
+int __simpleStruct0;
+
+strLen = (__simpleStruct0 = urlFileName - fileName, (strLen > __simpleStruct0) ? strLen : __simpleStruct0);
+}
+if(!strcmp(fileName + strLen + 1, ".."))
+{
+strcat(fileName, "/");
+strcat(fileName, "..");
+}
+else
+{
+if(__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1)
+{
+if(!strLen && fileName[0] == '\\' && fileName[1] == '\\')
+{
+if(!fileName[2])
+return (((void *)0));
+else
+{
+fileName[0] = '\\';
+fileName[1] = '\\';
+fileName[2] = '\0';
+}
+}
+else
+fileName[strLen + 1] = '\0';
+}
+else
+{
+fileName[strLen + 1] = '\0';
+if(strLen < 0)
+{
+fileName[0] = '/';
+fileName[1] = '\0';
+strLen = 2;
+}
+}
+}
+}
+else
+{
+strcpy(fileName, "..");
+}
+}
+else if(strcmp(directory, "."))
+{
+int strLen = strlen(fileName);
+unsigned int notZeroLen = strLen > 0;
+
+if(strLen > 0 && (fileName[strLen - 1] == '/' || fileName[strLen - 1] == '\\'))
+strLen--;
+if(notZeroLen)
+fileName[strLen++] = '/';
+fileName[strLen] = '\0';
+if(strLen + strlen(directory) > (797) - 3)
+return (((void *)0));
+strcat(fileName, directory);
+}
+}
+if(isURL && ch == '/')
+strcat(fileName, "/");
+if(isURL && ch == '?')
+{
+strcat(fileName, addedPath + c);
+break;
+}
+}
+if(archiveName[0])
+sprintf(string, "<%s>%s", archiveName, fileName);
+else
+strcpy(string, fileName);
+}
+return modified ? string : (((void *)0));
+}
+
 char * __ecereNameSpace__ecere__sys__PathCat(char * string, char * addedPath)
 {
 unsigned int modified = 0x0;
@@ -1220,6 +1422,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::StripLastDir
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SplitDirectory", "char * ecere::sys::SplitDirectory(char * string, char * part, char * rest)", __ecereNameSpace__ecere__sys__SplitDirectory, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetLastDirectory", "char * ecere::sys::GetLastDirectory(char * string, char * output)", __ecereNameSpace__ecere__sys__GetLastDirectory, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SplitArchivePath", "bool ecere::sys::SplitArchivePath(char * fileName, char * archiveName, char * * archiveFile)", __ecereNameSpace__ecere__sys__SplitArchivePath, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PathCatSlash", "char * ecere::sys::PathCatSlash(char * string, char * addedPath)", __ecereNameSpace__ecere__sys__PathCatSlash, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PathCat", "char * ecere::sys::PathCat(char * string, char * addedPath)", __ecereNameSpace__ecere__sys__PathCat, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::MakePathRelative", "char * ecere::sys::MakePathRelative(char * path, char * to, char * destination)", __ecereNameSpace__ecere__sys__MakePathRelative, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::StripExtension", "bool ecere::sys::StripExtension(char * string)", __ecereNameSpace__ecere__sys__StripExtension, module, 4);

@@ -6966,7 +6966,12 @@ void ProcessExpressionType(Expression exp)
             exp.expType = ProcessTypeString("Module", true);
             break;
          }
-         else */if(strstr(id.string, "__ecereClass") == id.string)
+         else */if(strstr(id.string, "gettext") == id.string)
+         {
+            exp.expType = ProcessTypeString("char *(char *)", true);
+            break;
+         }
+         else if(strstr(id.string, "__ecereClass") == id.string)
          {
             exp.expType = ProcessTypeString("ecere::com::Class", true);
             break;

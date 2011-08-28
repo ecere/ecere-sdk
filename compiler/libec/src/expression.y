@@ -169,6 +169,7 @@ simple_primary_expression:
       { $$ = MkExpConstant(yytext); $$.loc = @$; }
 	| STRING_LITERAL
       { $$ = MkExpString(yytext); $$.loc = @$; }
+   | '$' string_literal     { $$ = MkExpIntlString($2); delete $2; $$.loc = @$; }
    | '(' ')'
       { Expression exp = MkExpDummy(); exp.loc.start = @1.end; exp.loc.end = @2.start; $$ = MkExpBrackets(MkListOne(exp)); $$.loc = @$; yyerror(); }
 

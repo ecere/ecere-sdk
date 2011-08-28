@@ -225,6 +225,21 @@ Expression MkExpString(char * string)
    return { type = stringExp, string = CopyString(string) };
 }
 
+Map<String, Location> intlStrings { };
+
+Expression MkExpIntlString(char * string)
+{
+   if(inCompiler)
+   {
+      MapIterator<String, Location> it { map = intlStrings };
+      if(!it.Index(string, false))
+      {
+         intlStrings[string] = yylloc;
+      }
+   }
+   return MkExpCall(QMkExpId("gettext"), MkListOne(MkExpString(string)));
+}
+
 Expression MkExpOp(Expression exp1, int op, Expression exp2)
 {
    Expression exp
@@ -2702,4 +2717,28 @@ Expression GetTemplateArgExpByName(char * paramName, Class curClass, TemplatePar
 Expression GetTemplateArgExp(TemplateParameter param, Class curClass, bool pointer)
 {
    return param.identifier ? GetTemplateArgExpByName(param.identifier.string, curClass, type) : null;
+}
+
+public void OutputIntlStrings()
+{
+   if(intlStrings.count)
+   {
+      char * srcFile = GetSourceFile();
+      char * objFile = GetOutputFile();
+      char potFile[MAX_LOCATION];
+      File f;
+      ChangeExtension(objFile, "bowl", potFile);
+      f = FileOpen(potFile, write);
+      if(f)
+      {
+         for(s : intlStrings)
+         {
+            f.Printf("# %s %d\n", srcFile, s.start.line);
+            f.Printf("msgid %s\n", &s);
+            f.Printf("msgstr %s\n\n", &s);
+         }
+         delete f;
+      }
+      intlStrings.Free();
+   }
 }

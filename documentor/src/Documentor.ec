@@ -27,19 +27,6 @@ static bool editing = true;
 
 enum CodeObjectType { typeClass, typeData, typeMethod, typeEvent, typeProperty, typeNameSpace, typeDataType, typeEnumValue, typeDataPrivate, typeMethodPrivate, typePropertyPrivate };
 
-
-static FileFilter fileFilters[] =
-{
-   { 
-      "eC Shared Library files (*.dll, *.so, *.dylib)",
-      "dll, so, dylib"
-   },
-   { 
-      "eC Symbol files (*.sym)",
-      "sym"
-   }
-};
-
 static char * iconNames[CodeObjectType] = 
 {
    "<:ecere>constructs/class.png",
@@ -565,7 +552,7 @@ static char * ReadDoc(Module module, DocumentationType type, void * object, Docu
          delete contents;      
    }
    if(editing && !contents)
-      contents = CopyString("[Add Text]");
+      contents = CopyString($"[Add Text]");
    return contents;
 }
 
@@ -593,17 +580,17 @@ class APIPageNameSpace : APIPage
          ns = ns->parent;
       }
       // Generate Class Page
-      f.Printf("<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
+      f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
       if(nsName[0])
       {
          f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", nsName );
          tag = (uint)nameSpace;
-         f.Printf("Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
+         f.Printf($"Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       }
       else
       {
          tag = (uint)((!module || !module.name || !strcmp(nsName, "ecere::com") ? null : module));
-         f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">Module %s</FONT><br>\n", (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
+         f.Printf($"<FONT FACE=\"Arial\" SIZE=\"6\">Module %s</FONT><br>\n", (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       }
 
       nsName[0] = 0;
@@ -617,14 +604,14 @@ class APIPageNameSpace : APIPage
          ns = ns->parent;
       }
       if(nsName[0]) 
-         f.Printf("Parent namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", nameSpace->parent, nsName);
+         f.Printf($"Parent namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", nameSpace->parent, nsName);
 
       f.Printf("<br>");
       {
          char * desc = ReadDoc(module, nameSpaceDoc, nameSpace, description, null);
          if(desc)
          {
-            f.Printf("<H3>Description</H3><br><br>\n");
+            f.Printf($"<H3>Description</H3><br><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -647,7 +634,7 @@ class APIPageNameSpace : APIPage
             char * desc = ReadDoc(module, nameSpaceDoc, ns, description, null);
             if(first)
             {
-               f.Printf("<H3>Sub Namespaces</H3><br><br>\n");
+               f.Printf($"<H3>Sub Namespaces</H3><br><br>\n");
                f.Printf("<TABLE >\n");
                first = false;
             }
@@ -685,7 +672,7 @@ class APIPageNameSpace : APIPage
 
                if(first)
                {
-                  f.Printf("<a name=Classes></a><H3>Classes</H3><br><br>\n");
+                  f.Printf($"<a name=Classes></a><H3>Classes</H3><br><br>\n");
                   f.Printf("<TABLE >\n");
                   first = false;
                }
@@ -760,7 +747,7 @@ class APIPageNameSpace : APIPage
             char * desc = ReadDoc(module, nameSpaceDoc, nameSpace, definition, def);
             if(first)
             {
-               f.Printf("<a name=Definitions></a><H3>Definitions</H3><br><br>\n");
+               f.Printf($"<a name=Definitions></a><H3>Definitions</H3><br><br>\n");
                f.Printf("<TABLE >\n");
                first = false;
             }
@@ -815,48 +802,48 @@ class APIPageClass : APIPage
          ns = ns->parent;
       }
       // Generate Class Page
-      f.Printf("<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
+      f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
       f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", name);
 
-      f.Printf("Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
+      f.Printf($"Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       if(nsName[0]) 
-         f.Printf("Namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", cl.nameSpace, nsName);
+         f.Printf($"Namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", cl.nameSpace, nsName);
 
       {
          char * classType = null;
          switch(cl.type)
          {
             case bitClass:
-               classType = "Bit Collection";
+               classType = $"Bit Collection";
                break;
             case enumClass:
-               classType = "Enumeration";
+               classType = $"Enumeration";
                break;
             case structClass:
-               classType = "Structure";
+               classType = $"Structure";
                break;
             case normalClass:
-               classType = "Class";
+               classType = $"Class";
                break;
             case noHeadClass:
-               classType = "Class (No header)";
+               classType = $"Class (No header)";
                break;
             case unitClass:
-               classType = "Unit";
+               classType = $"Unit";
                break;
             case systemClass:
-               classType = "Basic Data Type";
+               classType = $"Basic Data Type";
                break;
          }
-         f.Printf("Type: %s<br>\n", classType);
+         f.Printf($"Type: %s<br>\n", classType);
       }
       
       if(cl.type != systemClass && cl.base)
       {
-         f.Printf("Base Class: ");
+         f.Printf($"Base Class: ");
          if(!strcmp(cl.base.name, "struct") || !strcmp(cl.base.name, "class"))
          {
-            f.Printf(cl.type == bitClass ? cl.dataTypeString : "None");
+            f.Printf(cl.type == bitClass ? cl.dataTypeString : $"None");
          }
          else if(cl.type == enumClass && !strcmp(cl.base.name, "enum"))
             f.Printf("%s", cl.dataTypeString);
@@ -869,7 +856,7 @@ class APIPageClass : APIPage
          char * desc = ReadDoc(module, classDoc, cl, description, null);
          if(desc)
          {
-            f.Printf("<br><H3>Description</H3><br><br>\n");
+            f.Printf($"<br><H3>Description</H3><br><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -891,7 +878,7 @@ class APIPageClass : APIPage
          {
             NamedLink item;
                         
-            f.Printf("<a name=EnumerationValues></a><H3>Enumeration Values</H3><br><br>\n");
+            f.Printf($"<a name=EnumerationValues></a><H3>Enumeration Values</H3><br><br>\n");
             f.Printf("<TABLE >\n");
 
             for(item = enumeration.values.first; item; item = item.next)
@@ -958,7 +945,7 @@ class APIPageClass : APIPage
 
       if(cl.conversions.first)
       {
-         f.Printf("<a name=Conversions></a><H3>Conversions</H3><br><br>\n");
+         f.Printf($"<a name=Conversions></a><H3>Conversions</H3><br><br>\n");
          f.Printf("<TABLE >\n");
          for(prop = cl.conversions.first; prop; prop = prop.next)
          {
@@ -1009,7 +996,7 @@ class APIPageClass : APIPage
             {
                if(first)
                {
-                  f.Printf("<a name=Members></a><H3>Properties and Members</H3><br><br>\n");
+                  f.Printf($"<a name=Members></a><H3>Properties and Members</H3><br><br>\n");
                   f.Printf("<TABLE >\n");
                   first = false;
                }
@@ -1063,7 +1050,7 @@ class APIPageClass : APIPage
                char * desc = ReadDoc(module, methodDoc, method, description, null);
                if(first)
                {
-                  f.Printf("<a name=VirtualMethods></a><H3>Virtual Methods</H3><br><br>\n");
+                  f.Printf($"<a name=VirtualMethods></a><H3>Virtual Methods</H3><br><br>\n");
                   f.Printf("<TABLE >\n");
                   first = false;
                }
@@ -1101,7 +1088,7 @@ class APIPageClass : APIPage
                char * desc = ReadDoc(module, methodDoc, method, description, null);
                if(first)
                {
-                  f.Printf("<a name=Methods></a><H3>Non-Virtual Methods</H3><br><br>\n");
+                  f.Printf($"<a name=Methods></a><H3>Non-Virtual Methods</H3><br><br>\n");
                   f.Printf("<TABLE >\n");
                   first = false;
                }
@@ -1136,7 +1123,7 @@ class APIPageClass : APIPage
          char * usageDoc = ReadDoc(module, classDoc, cl, usage, null);
          if(usageDoc)
          {
-            f.Printf("<H3>Usage</H3><br>\n");
+            f.Printf($"<H3>Usage</H3><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1155,7 +1142,7 @@ class APIPageClass : APIPage
          char * exampleDoc = ReadDoc(module, classDoc, cl, example, null);
          if(exampleDoc)
          {
-            f.Printf("<H3>Example</H3><br>\n");
+            f.Printf($"<H3>Example</H3><br>\n");
             f.Printf("<FONT face=\"Courier New\">\n");
             f.Printf("<br><TABLE >\n");
             if(editing)
@@ -1179,7 +1166,7 @@ class APIPageClass : APIPage
 
          if(remarksDoc)
          {
-            f.Printf("<H3>Remarks</H3><br>\n");
+            f.Printf($"<H3>Remarks</H3><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1207,7 +1194,7 @@ class APIPageClass : APIPage
             {
                if(first)
                {
-                  f.Printf("<H3>Derived Classes</H3><br>\n");
+                  f.Printf($"<H3>Derived Classes</H3><br>\n");
                   f.Printf("<br>");
                   first = false;
                }
@@ -1223,7 +1210,7 @@ class APIPageClass : APIPage
          char * seeAlsoDoc = ReadDoc(module, classDoc, cl, seeAlso, null);
          if(seeAlsoDoc)
          {
-            f.Printf("<H3>See Also</H3><br>\n");
+            f.Printf($"<H3>See Also</H3><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1264,20 +1251,20 @@ class APIPageMethod : APIPage
          ns = ns->parent;
       }
 
-      f.Printf("<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
+      f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
       f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", name);
 
-      f.Printf("Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
+      f.Printf($"Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       if(nsName[0])
-         f.Printf("Namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", cl.nameSpace, nsName);
+         f.Printf($"Namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", cl.nameSpace, nsName);
       f.Printf("Class: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", cl, cl.name);
       if(method.dataType.staticMethod)
       {
-         f.Printf("this pointer class: None<br>\n");
+         f.Printf($"this pointer class: None<br>\n");
       }
       else if(method.dataType.thisClass && method.dataType.thisClass.registered && (method.dataType.thisClass.registered != method._class || method.type == virtualMethod))
       {
-         f.Printf("this pointer class: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", method.dataType.thisClass.registered, method.dataType.thisClass.registered.name);
+         f.Printf($"this pointer class: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", method.dataType.thisClass.registered, method.dataType.thisClass.registered.name);
       }
 
       // Generate Method Page
@@ -1291,7 +1278,7 @@ class APIPageMethod : APIPage
          char * desc = ReadDoc(module, methodDoc, method, description, null);
          if(desc)
          {
-            f.Printf("<br><br><H3>Description</H3><br><br>\n");
+            f.Printf($"<br><br><H3>Description</H3><br><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1309,7 +1296,7 @@ class APIPageMethod : APIPage
       f.Printf("<br><br>\n");
       if(method.dataType.params.first && ((Type)method.dataType.params.first).kind != voidType)
       {
-         f.Printf("<H3>Parameters</H3><br><br>\n");
+         f.Printf($"<H3>Parameters</H3><br><br>\n");
       }
       if((method.dataType.returnType && method.dataType.returnType.kind != voidType) ||
          (method.dataType.params.first && ((Type)method.dataType.params.first).kind != voidType))
@@ -1355,7 +1342,7 @@ class APIPageMethod : APIPage
             f.Printf("<TR><TD>&nbsp;</TD></TR>");
          }
          f.Printf("<TR>");
-         f.Printf("<TD valign=top height=22 nowrap=1><B>Return Value</B></TD>\n");
+         f.Printf($"<TD valign=top height=22 nowrap=1><B>Return Value</B></TD>\n");
          string[0] = 0;
          DocPrintType(method.dataType.returnType, string, false, false);
          f.Printf("<TD valign=top height=22>%s&nbsp;</TD>\n", string);
@@ -1385,7 +1372,7 @@ class APIPageMethod : APIPage
          char * usageDoc = ReadDoc(module, methodDoc, method, usage, null);
          if(usageDoc)
          {
-            f.Printf("<H3>Usage</H3><br>\n");
+            f.Printf($"<H3>Usage</H3><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1404,7 +1391,7 @@ class APIPageMethod : APIPage
          char * exampleDoc = ReadDoc(module, methodDoc, method, example, null);
          if(exampleDoc)
          {
-            f.Printf("<H3>Example</H3><br>\n");
+            f.Printf($"<H3>Example</H3><br>\n");
             f.Printf("<FONT face=\"Courier New\">\n");
             f.Printf("<br><TABLE >\n");
             if(editing)
@@ -1426,7 +1413,7 @@ class APIPageMethod : APIPage
          char * remarksDoc = ReadDoc(module, methodDoc, method, remarks, null);
          if(remarksDoc)
          {
-            f.Printf("<H3>Remarks</H3><br>\n");
+            f.Printf($"<H3>Remarks</H3><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1445,7 +1432,7 @@ class APIPageMethod : APIPage
          char * seeAlsoDoc = ReadDoc(module, methodDoc, method, seeAlso, null);
          if(seeAlsoDoc)
          {
-            f.Printf("<H3>See Also</H3><br>\n");
+            f.Printf($"<H3>See Also</H3><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1486,19 +1473,19 @@ class APIPageFunction : APIPage
          ns = ns->parent;
       }
 
-      f.Printf("<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
+      f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
       f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", name);
 
-      f.Printf("Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
+      f.Printf($"Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"), (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com") ? "ecereCOM" : module.name);
       if(nsName[0])
-         f.Printf("Namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", function.nameSpace, nsName);
+         f.Printf($"Namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", function.nameSpace, nsName);
 
       if(!function.dataType)
          function.dataType = ProcessTypeString(function.dataTypeString, false);
 
       if(function.dataType.thisClass && function.dataType.thisClass.registered)
       {
-         f.Printf("this pointer class: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", function.dataType.thisClass.registered, function.dataType.thisClass.registered.name);
+         f.Printf($"this pointer class: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", function.dataType.thisClass.registered, function.dataType.thisClass.registered.name);
       }
 
       // Generate Method Page
@@ -1512,7 +1499,7 @@ class APIPageFunction : APIPage
          char * desc = ReadDoc(module, functionDoc, function, description, null);
          if(desc)
          {
-            f.Printf("<br><br><H3>Description</H3><br><br>\n");
+            f.Printf($"<br><br><H3>Description</H3><br><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1529,7 +1516,7 @@ class APIPageFunction : APIPage
       f.Printf("<br><br>\n");
       if(function.dataType.params.first && ((Type)function.dataType.params.first).kind != voidType)
       {
-         f.Printf("<H3>Parameters</H3><br><br>\n");
+         f.Printf($"<H3>Parameters</H3><br><br>\n");
       }
       if((function.dataType.returnType && function.dataType.returnType.kind != voidType) ||
          (function.dataType.params.first && ((Type)function.dataType.params.first).kind != voidType))
@@ -1574,7 +1561,7 @@ class APIPageFunction : APIPage
             f.Printf("<TR><TD>&nbsp;</TD></TR>");
          }
          f.Printf("<TR>");
-         f.Printf("<TD valign=top height=22 nowrap=1><B>Return Value</B></TD>\n");
+         f.Printf($"<TD valign=top height=22 nowrap=1><B>Return Value</B></TD>\n");
          string[0] = 0;
          DocPrintType(function.dataType.returnType, string, false, false);
          f.Printf("<TD valign=top height=22>%s&nbsp;</TD>\n", string);
@@ -1604,7 +1591,7 @@ class APIPageFunction : APIPage
          char * usageDoc = ReadDoc(module, functionDoc, function, usage, null);
          if(usageDoc)
          {
-            f.Printf("<H3>Usage</H3><br>\n");
+            f.Printf($"<H3>Usage</H3><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1623,7 +1610,7 @@ class APIPageFunction : APIPage
          char * exampleDoc = ReadDoc(module, functionDoc, function, example, null);
          if(exampleDoc)
          {
-            f.Printf("<H3>Example</H3><br>\n");
+            f.Printf($"<H3>Example</H3><br>\n");
             f.Printf("<FONT face=\"Courier New\">\n");
             f.Printf("<br><TABLE >\n");
             if(editing)
@@ -1645,7 +1632,7 @@ class APIPageFunction : APIPage
          char * remarksDoc = ReadDoc(module, functionDoc, function, remarks, null);
          if(remarksDoc)
          {
-            f.Printf("<H3>Remarks</H3><br>\n");
+            f.Printf($"<H3>Remarks</H3><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1664,7 +1651,7 @@ class APIPageFunction : APIPage
          char * seeAlsoDoc = ReadDoc(module, functionDoc, function, seeAlso, null);
          if(seeAlsoDoc)
          {
-            f.Printf("<H3>See Also</H3><br>\n");
+            f.Printf($"<H3>See Also</H3><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1749,7 +1736,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
                cl = link.data;
                if(!cl.templateClass && (!module || cl.module == module || (!cl.module.name && !strcmp(module.name, "ecere"))))
                {
-                  if(!classesRow) { classesRow = row.AddRow(); classesRow.SetData(null, APIPage { "Classes", page = page }); classesRow.collapsed = true; classesRow.icon = mainForm.icons[typeClass]; classesRow.tag = 1; }
+                  if(!classesRow) { classesRow = row.AddRow(); classesRow.SetData(null, APIPage { $"Classes", page = page }); classesRow.collapsed = true; classesRow.icon = mainForm.icons[typeClass]; classesRow.tag = 1; }
                   AddClass(classesRow, module, cl, nsName, showPrivate);
                }
             }
@@ -1772,7 +1759,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
                {
                   char * name = ( name = RSearchString(fn.name, "::", strlen(fn.name), false, false), name ? name + 2 : fn.name);
                   DataRow fnRow;
-                  if(!functionsRow) { functionsRow = row.AddRow(); functionsRow.SetData(null, APIPage { "Functions", page = page }); functionsRow.collapsed = true; functionsRow.icon = mainForm.icons[typeMethod];  functionsRow.tag = 2; };
+                  if(!functionsRow) { functionsRow = row.AddRow(); functionsRow.SetData(null, APIPage { $"Functions", page = page }); functionsRow.collapsed = true; functionsRow.icon = mainForm.icons[typeMethod];  functionsRow.tag = 2; };
                   fnRow = functionsRow.AddRow(); fnRow.SetData(null, APIPageFunction { name, function = fn }); fnRow.icon = mainForm.icons[typeMethod]; fnRow.tag = (int)fn;
                }
             }            
@@ -1795,7 +1782,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
                {
                   char * name = ( name = RSearchString(def.name, "::", strlen(def.name), false, false), name ? name + 2 : def.name);
                   DataRow defRow;
-                  if(!definesRow) { definesRow = row.AddRow(); definesRow.SetData(null, APIPage { "Definitions", page = page }); definesRow.collapsed = true; definesRow.icon = mainForm.icons[typeData]; definesRow.tag = 3; };
+                  if(!definesRow) { definesRow = row.AddRow(); definesRow.SetData(null, APIPage { $"Definitions", page = page }); definesRow.collapsed = true; definesRow.icon = mainForm.icons[typeData]; definesRow.tag = 3; };
                   defRow = definesRow.AddRow(); defRow.SetData(null, APIPage { name, page = page }); defRow.icon = mainForm.icons[typeData]; defRow.tag = (int)def;
                }
             }            
@@ -1911,20 +1898,20 @@ static void AddClass(DataRow parentRow, Module module, Class cl, char * nsName, 
             {
                if(method.dataType.thisClass)
                {
-                  if(!eventsRow) { eventsRow = row.AddRow(); eventsRow.SetData(null, APIPage { "Events", page = page }); eventsRow.collapsed = true; eventsRow.icon = mainForm.icons[typeEvent];  eventsRow.tag = 4; }
+                  if(!eventsRow) { eventsRow = row.AddRow(); eventsRow.SetData(null, APIPage { $"Events", page = page }); eventsRow.collapsed = true; eventsRow.icon = mainForm.icons[typeEvent];  eventsRow.tag = 4; }
                   mRow = eventsRow.AddRow(); mRow.SetData(null, APIPageMethod { method.name, method = method }); mRow.icon = mainForm.icons[typeEvent];
                   mRow.tag = (int)method;
                }
                else
                {
-                  if(!virtualsRow) { virtualsRow = row.AddRow(); virtualsRow.SetData(null, APIPage { "Virtual Methods", page = page }); virtualsRow.collapsed = true; virtualsRow.icon = mainForm.icons[typeMethod]; virtualsRow.tag = 4; }
+                  if(!virtualsRow) { virtualsRow = row.AddRow(); virtualsRow.SetData(null, APIPage { $"Virtual Methods", page = page }); virtualsRow.collapsed = true; virtualsRow.icon = mainForm.icons[typeMethod]; virtualsRow.tag = 4; }
                   mRow = virtualsRow.AddRow(); mRow.SetData(null, APIPageMethod { method.name, method = method }); mRow.icon = mainForm.icons[typeMethod];
                   mRow.tag = (int)method;
                }
             }
             else
             {
-               if(!methodsRow) { methodsRow = row.AddRow(); methodsRow.SetData(null, APIPage { "Methods", page = page }); methodsRow.collapsed = true; methodsRow.icon = mainForm.icons[typeMethod]; methodsRow.tag = 5; }
+               if(!methodsRow) { methodsRow = row.AddRow(); methodsRow.SetData(null, APIPage { $"Methods", page = page }); methodsRow.collapsed = true; methodsRow.icon = mainForm.icons[typeMethod]; methodsRow.tag = 5; }
                mRow = methodsRow.AddRow(); mRow.SetData(null, APIPageMethod { method.name, method = method }); mRow.icon = mainForm.icons[typeMethod];
                mRow.tag = (int)method;
             }
@@ -1943,13 +1930,13 @@ static void AddClass(DataRow parentRow, Module module, Class cl, char * nsName, 
             if(prop.isProperty)
             {
                DataRow mRow;
-               if(!propertiesRow) { propertiesRow = row.AddRow(); propertiesRow.SetData(null, APIPage { "Properties", page = page }); propertiesRow.collapsed = true; propertiesRow.icon = mainForm.icons[typeProperty]; propertiesRow.tag = 6; }
+               if(!propertiesRow) { propertiesRow = row.AddRow(); propertiesRow.SetData(null, APIPage { $"Properties", page = page }); propertiesRow.collapsed = true; propertiesRow.icon = mainForm.icons[typeProperty]; propertiesRow.tag = 6; }
                mRow = propertiesRow.AddRow(); mRow.SetData(null, APIPage { prop.name, page }); mRow.icon = mainForm.icons[typeProperty];
                mRow.tag = (int)prop;
             }
             else
             {
-               if(!membersRow) { membersRow = row.AddRow(); membersRow.SetData(null, APIPage { "Data Members", page = page }); membersRow.collapsed = true; membersRow.icon = mainForm.icons[typeData]; membersRow.tag = 6; }
+               if(!membersRow) { membersRow = row.AddRow(); membersRow.SetData(null, APIPage { $"Data Members", page = page }); membersRow.collapsed = true; membersRow.icon = mainForm.icons[typeData]; membersRow.tag = 6; }
                AddDataMember(membersRow, page, (DataMember)prop);
             }
          }
@@ -1962,7 +1949,7 @@ static void AddClass(DataRow parentRow, Module module, Class cl, char * nsName, 
       {
          DataRow mRow;
          char * name;
-         if(!conversionsRow) { conversionsRow = row.AddRow(); conversionsRow.SetData(null, APIPage { "Conversions", page = page }); conversionsRow.collapsed = true; conversionsRow.icon = mainForm.icons[typeDataType]; conversionsRow.tag = 7; }
+         if(!conversionsRow) { conversionsRow = row.AddRow(); conversionsRow.SetData(null, APIPage { $"Conversions", page = page }); conversionsRow.collapsed = true; conversionsRow.icon = mainForm.icons[typeDataType]; conversionsRow.tag = 7; }
          name = RSearchString(prop.name, "::", strlen(prop.name), true, false);
          if(name) name += 2; else name = prop.name;
          mRow = conversionsRow.AddRow(); mRow.SetData(null, APIPage { name, page = page }); mRow.icon = mainForm.icons[typeDataType];
@@ -1976,7 +1963,7 @@ static void AddClass(DataRow parentRow, Module module, Class cl, char * nsName, 
       for(item = enumeration.values.first; item; item = item.next)
       {
          DataRow mRow;                                                                                                                                                                                      
-         if(!enumRow) { enumRow = row.AddRow(); enumRow.SetData(null, APIPage { "Enumeration Values", page = page }); enumRow.collapsed = true; enumRow.icon = mainForm.icons[typeEnumValue]; enumRow.tag = 8; }
+         if(!enumRow) { enumRow = row.AddRow(); enumRow.SetData(null, APIPage { $"Enumeration Values", page = page }); enumRow.collapsed = true; enumRow.icon = mainForm.icons[typeEnumValue]; enumRow.tag = 8; }
          mRow = enumRow.AddRow(); mRow.SetData(null, APIPage { item.name, page = page }); mRow.icon = mainForm.icons[typeEnumValue];         
          mRow.tag = (int)item;
       }
@@ -1990,9 +1977,7 @@ class MainForm : Window
    borderStyle = sizable;
    hasMaximize = true;
    hasMinimize = true;
-   text = "API Documentation Browser";
-
-   nativeDecorations = true;
+   text = $"API Documentation Browser";
 
    BitmapResource icons[CodeObjectType];
 
@@ -2008,14 +1993,20 @@ class MainForm : Window
 
    hasMenuBar = true;
    menu = Menu { };
-   Menu fileMenu { menu, "File", f };
+   Menu fileMenu { menu, $"File", f };
+   Array<FileFilter> fileFilters
+   { [
+      { $"eC Shared Library files (*.dll, *.so, *.dylib)", "dll, so, dylib" },
+      { $"eC Symbol files (*.sym)", "sym" }
+   ] };
+
    FileDialog fileDialog
    {
-      filters = fileFilters, sizeFilters = sizeof(fileFilters)
+      filters = fileFilters.array, sizeFilters = fileFilters.count * sizeof(FileFilter)
    };
    MenuItem fileOpenItem
    {
-      fileMenu, "Open...", o, ctrlO;
+      fileMenu, $"Open...", o, ctrlO;
 
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
@@ -2028,7 +2019,7 @@ class MainForm : Window
    };
    MenuItem fileSettingsItem
    {
-      fileMenu, "Settings...", s, ctrlS; // set the Settings item to the file menu with shortcut keys:s and ctrl+s
+      fileMenu, $"Settings...", s, ctrlS; // set the Settings item to the file menu with shortcut keys:s and ctrl+s
 
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
@@ -2036,7 +2027,7 @@ class MainForm : Window
       }
    };
    MenuDivider { fileMenu };
-   MenuItem fileExit { fileMenu, "Exit", x, altF4, NotifySelect = MenuFileExit };
+   MenuItem fileExit { fileMenu, $"Exit", x, altF4, NotifySelect = MenuFileExit };
 
    void OpenModule(char * filePath)
    {
@@ -2191,11 +2182,11 @@ class EditDialog : Window
    };
    Button saveChanges
    {
-      this, text = "Save Changes", anchor = { horz = 184, vert = 160 }
+      this, text = $"Save Changes", anchor = { horz = 184, vert = 160 }
    };
    Button cancel
    {
-      this, text = "Cancel", anchor = { horz = 254, vert = 160 }
+      this, text = $"Cancel", anchor = { horz = 254, vert = 160 }
    };
 }
 
@@ -2281,7 +2272,7 @@ class HelpView : HTMLView
                delete block;
             }
             textBlock = Block { type = TEXT, parent = parent, font = parent.font };
-            textBlock.text = CopyString("[Add Text]");
+            textBlock.text = CopyString($"[Add Text]");
             textBlock.textLen = strlen(textBlock.text);
             parent.subBlocks.Add(textBlock);
          }
@@ -2689,7 +2680,7 @@ class HelpView : HTMLView
          }
 
          textBlock = (Block)clickedLink.subBlocks.first;
-         if(!strcmp(textBlock.text, "[Add Text]"))
+         if(!strcmp(textBlock.text, $"[Add Text]"))
          {
             textBlock.text[0] = 0;
             textBlock.textLen = 0;               

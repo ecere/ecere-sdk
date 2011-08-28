@@ -1414,6 +1414,70 @@ void * __ecereTemp1;
 return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 3, ((struct Expression *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(string), ((struct Expression *)__ecereTemp1));
 }
 
+struct __ecereNameSpace__ecere__com__Instance * intlStrings;
+
+extern unsigned int inCompiler;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
+
+struct __ecereNameSpace__ecere__com__IteratorPointer;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__MapIterator;
+
+struct __ecereNameSpace__ecere__com__MapIterator
+{
+struct __ecereNameSpace__ecere__com__Instance * container;
+struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
+};
+
+struct Expression * MkExpCall(struct Expression * expression, struct __ecereNameSpace__ecere__sys__OldList * arguments);
+
+extern struct Expression * QMkExpId(char *  id);
+
+struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_map(struct __ecereNameSpace__ecere__com__MapIterator * this);
+
+void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(struct __ecereNameSpace__ecere__com__MapIterator * this, struct __ecereNameSpace__ecere__com__Instance * value);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 index, unsigned int create);
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Iterator;
+
+struct __ecereNameSpace__ecere__com__Iterator
+{
+struct __ecereNameSpace__ecere__com__Instance * container;
+struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
+};
+
+uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecereNameSpace__ecere__com__Iterator * this);
+
+void __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 value);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
+
+struct Expression * MkExpIntlString(char * string)
+{
+if(inCompiler)
+{
+struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, intlStrings), it);
+
+if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(string), 0x0))
+{
+__extension__ ({
+struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
+{
+intlStrings, 0
+};
+
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (uint64)(((uint64)(string))), 0x1);
+__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, &yylloc);
+});
+}
+}
+return MkExpCall(QMkExpId("gettext"), MkListOne(MkExpString(string)));
+}
+
 struct Expression * MkExpOp(struct Expression * exp1, int op, struct Expression * exp2)
 {
 struct Expression * exp = (exp = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), exp->type = 4, exp->op.op = op, exp->op.exp1 = exp1, exp->op.exp2 = exp2, exp);
@@ -4061,6 +4125,63 @@ struct Expression * GetTemplateArgExp(struct TemplateParameter * param, struct _
 return param->identifier ? GetTemplateArgExpByName(param->identifier->string, curClass, 0) : (((void *)0));
 }
 
+extern char *  GetSourceFile(void);
+
+extern char *  GetOutputFile(void);
+
+extern char *  __ecereNameSpace__ecere__sys__ChangeExtension(char *  string, char *  ext, char *  output);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(char *  fileName, int mode);
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
+
+struct __ecereNameSpace__ecere__com__CustomAVLTree
+{
+struct __ecereNameSpace__ecere__com__AVLNode * root;
+int count;
+};
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
+
+int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, char *  format, ...);
+
+uint64 __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(struct __ecereNameSpace__ecere__com__MapIterator * this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_key;
+
+extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
+
+void OutputIntlStrings()
+{
+if(((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)intlStrings + 12)))->count)
+{
+char * srcFile = GetSourceFile();
+char * objFile = GetOutputFile();
+char potFile[797];
+struct __ecereNameSpace__ecere__com__Instance * f;
+
+__ecereNameSpace__ecere__sys__ChangeExtension(objFile, "bowl", potFile);
+f = __ecereNameSpace__ecere__sys__FileOpen(potFile, 2);
+if(f)
+{
+{
+struct __ecereNameSpace__ecere__com__MapIterator s = (s.container = (void *)0, s.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&s, (intlStrings)), s);
+
+while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&s))
+{
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "# %s %d\n", srcFile, (*(struct Location *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&s)).start.line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgid %s\n", ((char *)(char *)(char *)__ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(&s)));
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgstr %s\n\n", ((char *)(char *)(char *)__ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(&s)));
+}
+}
+(__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
+}
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *))intlStrings->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(intlStrings);
+}
+}
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__GlobalFunction;
 
 struct __ecereNameSpace__ecere__com__GlobalFunction;
@@ -4095,6 +4216,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIdentifier", "Expre
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpDummy", "Expression MkExpDummy(void)", MkExpDummy, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpConstant", "Expression MkExpConstant(char * string)", MkExpConstant, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpString", "Expression MkExpString(char * string)", MkExpString, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIntlString", "Expression MkExpIntlString(char * string)", MkExpIntlString, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpOp", "Expression MkExpOp(Expression exp1, int op, Expression exp2)", MkExpOp, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpBrackets", "Expression MkExpBrackets(ecere::sys::OldList expressions)", MkExpBrackets, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIndex", "Expression MkExpIndex(Expression expression, ecere::sys::OldList index)", MkExpIndex, module, 2);
@@ -4229,10 +4351,24 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpDBTable", "Expressi
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpArray", "Expression MkExpArray(ecere::sys::OldList * expressions)", MkExpArray, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetTemplateArgExpByName", "Expression GetTemplateArgExpByName(char * paramName, ecere::com::Class curClass, ecere::com::TemplateParameterType tplType)", GetTemplateArgExpByName, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetTemplateArgExp", "Expression GetTemplateArgExp(TemplateParameter param, ecere::com::Class curClass, bool pointer)", GetTemplateArgExp, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputIntlStrings", "void OutputIntlStrings(void)", OutputIntlStrings, module, 1);
 }
 
 void __ecereUnregisterModule_ast(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 
+}
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__Location_;
+
+void __ecereCreateModuleInstances_ast()
+{
+intlStrings = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__Location_);
+__ecereNameSpace__ecere__com__eInstance_IncRef(intlStrings);
+}
+
+void __ecereDestroyModuleInstances_ast()
+{
+(__ecereNameSpace__ecere__com__eInstance_DecRef(intlStrings), intlStrings = 0);
 }
 

@@ -6,7 +6,8 @@
       "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "Libraries" : [
-         "ecere"
+         "ecere",
+         "intl"
       ]
    },
    "Configurations" : [

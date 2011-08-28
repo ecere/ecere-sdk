@@ -687,6 +687,12 @@ from wherever you obtained them.",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               }
                            ]
                         },
@@ -725,6 +731,17 @@ from wherever you obtained them.",
                               },
                               {
                                  "Name" : "PACS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "Bootstrap",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -779,6 +796,17 @@ from wherever you obtained them.",
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -825,6 +853,17 @@ from wherever you obtained them.",
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -837,25 +876,62 @@ from wherever you obtained them.",
                                     "ExcludeFromBuild" : false
                                  }
                               }
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              }
                            ]
                         },
                         {
                            "FileName" : "lfbBlit.ec",
                            "Options" : {
                               "ExcludeFromBuild" : false
-                           }
+                           },
+                           "Configurations" : [
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
                         },
                         {
                            "FileName" : "lfbConvert.ec",
                            "Options" : {
                               "ExcludeFromBuild" : false
-                           }
+                           },
+                           "Configurations" : [
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
                         },
                         {
                            "FileName" : "LFBDisplayDriver.ec",
                            "Options" : {
                               "ExcludeFromBuild" : false
-                           }
+                           },
+                           "Configurations" : [
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
                         },
                         {
                            "FileName" : "NCursesDisplayDriver.ec",
@@ -910,6 +986,12 @@ from wherever you obtained them.",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               }
                            ]
                         },
@@ -948,6 +1030,17 @@ from wherever you obtained them.",
                               },
                               {
                                  "Name" : "PACS",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "Bootstrap",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -1002,6 +1095,17 @@ from wherever you obtained them.",
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1040,6 +1144,17 @@ from wherever you obtained them.",
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1056,6 +1171,17 @@ from wherever you obtained them.",
                            "Configurations" : [
                               {
                                  "Name" : "WSMS"
+                              },
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         }
@@ -1171,6 +1297,17 @@ from wherever you obtained them.",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1190,6 +1327,17 @@ from wherever you obtained them.",
                                  "Options" : {
                                     "ExcludeFromBuild" : false
                                  }
+                              },
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1225,6 +1373,17 @@ from wherever you obtained them.",
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1242,6 +1401,19 @@ from wherever you obtained them.",
                                  "Options" : {
                                     "ExcludeFromBuild" : false
                                  }
+                              }
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         }

@@ -1398,6 +1398,7 @@ simple_primary_expression:
    | EXTENSION '(' type_name ')' '(' type_name ')' initializer     { $$ = MkExpExtensionInitializer($3, MkInitializerAssignment(MkExpExtensionInitializer($6, $8))); $$.loc = @$; }
 	| CONSTANT           { $$ = MkExpConstant(yytext); $$.loc = @$; }
 	| string_literal     { $$ = MkExpString($1); delete $1; $$.loc = @$; }
+   | '$' string_literal     { $$ = MkExpIntlString($2); delete $2; $$.loc = @$; }
    | '(' ')' { Expression exp = MkExpDummy(); exp.loc.start = @1.end; exp.loc.end = @2.start; $$ = MkExpBrackets(MkListOne(exp)); $$.loc = @$; yyerror(); }
    | NEWOP new_specifiers abstract_declarator_noarray '[' constant_expression ']' { $$ = MkExpNew(MkTypeName($2,$3), $5); $$.loc = @$; }
    | NEWOP new_specifiers abstract_declarator_noarray '[' constant_expression_error ']' { $$ = MkExpNew(MkTypeName($2,$3), $5); $$.loc = @$; }

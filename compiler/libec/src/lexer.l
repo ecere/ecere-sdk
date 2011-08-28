@@ -240,6 +240,7 @@ L?\"(\\.|[^\\"])*\"     { return(STRING_LITERAL); }
 "^"         { return('^'); }
 "|"         { return('|'); }
 "?"         { return('?'); }
+"$"         { return('$'); }
 
 <<EOF>> {
       if ( --include_stack_ptr < 0 )

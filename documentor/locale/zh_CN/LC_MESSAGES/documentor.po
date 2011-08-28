@@ -1,0 +1,218 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2011-08-28 16:17-0500\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"Language-Team: ec <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "<a name=Classes></a><H3>Classes</H3><br><br>\n"
+msgstr "<a name=Classes></a><H3>类</H3><br><br>\n"
+
+msgid "<a name=Conversions></a><H3>Conversions</H3><br><br>\n"
+msgstr "<a name=Conversions></a><H3>转换</H3><br><br>\n"
+
+msgid "<a name=Definitions></a><H3>Definitions</H3><br><br>\n"
+msgstr "<a name=Definitions></a><H3>定义</H3><br><br>\n"
+
+msgid "<a name=EnumerationValues></a><H3>Enumeration Values</H3><br><br>\n"
+msgstr "<a name=EnumerationValues></a><H3>枚举值</H3><br><br>\n"
+
+msgid "<a name=Members></a><H3>Properties and Members</H3><br><br>\n"
+msgstr "<a name=Members></a><H3>属性和成员</H3><br><br>\n"
+
+msgid "<a name=Methods></a><H3>Non-Virtual Methods</H3><br><br>\n"
+msgstr "<a name=Methods></a><H3>非虚方法</H3><br><br>\n"
+
+msgid "<a name=VirtualMethods></a><H3>Virtual Methods</H3><br><br>\n"
+msgstr "<a name=VirtualMethods></a><H3>虚方法</H3><br><br>\n"
+
+msgid "<br><br><H3>Description</H3><br><br>\n"
+msgstr "<br><br><H3>描述</H3><br><br>\n"
+
+msgid "<br><H3>Description</H3><br><br>\n"
+msgstr "<br><H3>描述</H3><br><br>\n"
+
+msgid "<FONT FACE=\"Arial\" SIZE=\"6\">Module %s</FONT><br>\n"
+msgstr "<FONT FACE=\"Arial\" SIZE=\"6\">模块%s</FONT><br>\n"
+
+msgid "<H3>Derived Classes</H3><br>\n"
+msgstr "<H3>派生类</H3><br>\n"
+
+msgid "<H3>Description</H3><br><br>\n"
+msgstr "<H3>描述</H3><br><br>\n"
+
+msgid "<H3>Example</H3><br>\n"
+msgstr "<H3>实例</H3><br>\n"
+
+msgid "<H3>Parameters</H3><br><br>\n"
+msgstr "<H3>参数</H3><br><br>\n"
+
+msgid "<H3>Remarks</H3><br>\n"
+msgstr "<H3>注意</H3><br>\n"
+
+msgid "<H3>See Also</H3><br>\n"
+msgstr "<H3>参见</H3><br>\n"
+
+msgid "<H3>Sub Namespaces</H3><br><br>\n"
+msgstr "<H3>子命名空间</H3><br><br>\n"
+
+msgid "<H3>Usage</H3><br>\n"
+msgstr "<H3>用法</H3><br>\n"
+
+msgid ""
+"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n"
+"<BODY><FONT SIZE=\"3\">\n"
+msgstr ""
+"<HTML><HEAD><TITLE>API参考手册</TITLE></HEAD>\n"
+"<BODY><FONT SIZE=\"3\">\n"
+
+msgid "<TD valign=top height=22 nowrap=1><B>Return Value</B></TD>\n"
+msgstr "<TD valign=top height=22 nowrap=1><B>返回值</B></TD>\n"
+
+msgid "[Add Text]"
+msgstr "[点击增加文本]"
+
+msgid "API Documentation Browser"
+msgstr "API文档浏览器"
+
+msgid "Base Class: "
+msgstr "基类: "
+
+msgid "Basic Data Type"
+msgstr "基本数据类型"
+
+msgid "Bit Collection"
+msgstr "位集合"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Class (No header)"
+msgstr "类(无头)"
+
+msgid "Class"
+msgstr "类"
+
+msgid "Classes"
+msgstr "类"
+
+msgid "Conversions"
+msgstr "转换"
+
+msgid "Data Members"
+msgstr "数据成员"
+
+msgid "Definitions"
+msgstr "定义"
+
+msgid "eC Shared Library files (*.dll, *.so, *.dylib)"
+msgstr "eC共享库文件(*.dll, *.so, *.dylib)"
+
+msgid "eC Symbol files (*.sym)"
+msgstr "eC符号文件(*.sym)"
+
+msgid "Enumeration Values"
+msgstr "枚举值"
+
+msgid "Enumeration"
+msgstr "枚举"
+
+msgid "Events"
+msgstr "事件"
+
+msgid "Exit"
+msgstr "退出(E)"
+
+msgid "File"
+msgstr "文件(F)"
+
+msgid "Functions"
+msgstr "函数"
+
+msgid "Methods"
+msgstr "方法"
+
+msgid "Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgstr "模块: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+
+msgid "Namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgstr "命名空间: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+
+msgid "None"
+msgstr ""
+
+msgid "Open..."
+msgstr "打开(O)"
+
+msgid "Parent namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgstr "父命名空间:<a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+
+msgid "Properties"
+msgstr "属性"
+
+msgid "Save Changes"
+msgstr "保存改变"
+
+msgid "Settings..."
+msgstr "设置(S)"
+
+msgid "Structure"
+msgstr "结构体"
+
+msgid "this pointer class: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgstr "指针类: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+
+msgid "this pointer class: None<br>\n"
+msgstr "指针类: None<br>\n"
+
+msgid "Type: %s<br>\n"
+msgstr "类型: %s<br>\n"
+
+msgid "Unit"
+msgstr "单元"
+
+msgid "Virtual Methods"
+msgstr "虚方法"
+
+msgid "Documentation Path:"
+msgstr "文档路径："
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Select a path"
+msgstr "选择路径"
+
+msgid "Settings"
+msgstr "设置"
+
+#~ msgid "<a name=Functions></a><H3>Functions</H3><br><br>\n"
+#~ msgstr "<a name=Functions></a><H3>函数</H3><br><br>\n"
+
+#~ msgid "<FONT face=\"Courier New\">\n"
+#~ msgstr "<FONT face=\"宋体\">\n"
+
+#~ msgid "VirtualMethods"
+#~ msgstr "虚方法"
+
+#~ msgid "Members"
+#~ msgstr "成员"
+
+#~ msgid "EnumerationValues"
+#~ msgstr "枚举值"
+
+#~ msgid "Documentor"
+#~ msgstr "文档"
+
+#~ msgid "Tahoma"
+#~ msgstr "宋体"

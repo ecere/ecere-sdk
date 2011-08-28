@@ -779,6 +779,8 @@ extern void FreeIncludeFiles(void);
 
 extern void FreeGlobalData(struct __ecereNameSpace__ecere__com__NameSpace * globalDataList);
 
+extern void OutputIntlStrings(void);
+
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
@@ -1149,6 +1151,7 @@ FreeGlobalData(&globalData);
 (__ecereNameSpace__ecere__com__eSystem_Delete(cppCommand), cppCommand = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(cppOptions), cppOptions = 0);
 SetSymbolsDir((((void *)0)));
+OutputIntlStrings();
 }
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);

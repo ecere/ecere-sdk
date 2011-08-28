@@ -583,6 +583,8 @@ class CompilerApp : Application
       */
       SetSymbolsDir(null); // Free symbols dir
 
+      OutputIntlStrings();
+
 #if defined(_DEBUG) && defined(__WIN32__)
       if(exitCode || GetNumWarnings())
          getch();

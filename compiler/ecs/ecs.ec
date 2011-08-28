@@ -6,6 +6,9 @@ import "ecere"
 import "ec"
 #endif
 
+static define localeDir = "locale";
+static bool i18n;
+
 static Platform targetPlatform;
 
 static bool isConsole;
@@ -261,6 +264,8 @@ static void WriteMain(char * fileName)
       ChangeCh(mainModuleName, '-', '_');
       ChangeCh(mainModuleName, ' ', '_');
 
+      if(i18n)
+         f.Puts("#include <libintl.h>\n\n");
       if(targetPlatform == win32 && !isConsole && !isStaticLibrary && !isDynamicLibrary)
       {
          //f.Puts("#include <windows.h>\n\n");
@@ -489,6 +494,13 @@ static void WriteMain(char * fileName)
          f.Puts("   __thisModule = __currentModule = module = __ecere_COM_Initialize(1, 0, null);\n\n");
       else
          f.Puts("   __thisModule = __currentModule = module = __ecere_COM_Initialize(1, _argc, (void *)_argv);\n\n");
+
+      if(i18n)
+      {
+         f.Printf("   bindtextdomain(\"%s\", \"%s\");\n", projectName, localeDir);
+         f.Printf("   textdomain(\"%s\");\n", projectName);
+         f.Printf("   bind_textdomain_codeset (\"%s\", \"utf-8\");\n", projectName);
+      }
 
       // First load all modules
       if(_imports.count)
@@ -1667,6 +1679,10 @@ class SymbolgenApp : Application
 
          //if(!strcmp(ext, "c"))
          {
+            File potFile = null;
+            Map<String, String> intlStrings { };
+            MapIterator<String, String> it { map = intlStrings };
+
             for(c = 1; c<argc; c++)
             {
                char * file = argv[c];
@@ -1684,6 +1700,7 @@ class SymbolgenApp : Application
                }
             }
 
+            // What is this supposed to do?
             for(c = 1; c<argc; c++)
             {
                char * file = argv[c];
@@ -1699,6 +1716,7 @@ class SymbolgenApp : Application
                char * file = argv[c];
                if(file[0] == '-')
                {
+                  // Don't even know what it does here?
                   if(!strcmp(file, "-c"))
                      c++;
                }
@@ -1747,6 +1765,53 @@ class SymbolgenApp : Application
                         module.globalInstance = LoadSymbols(file, normalImport, false);
                         CheckDataRedefinitions();
                      }
+
+                     // I18n code
+                     {
+                        File f;
+                        ChangeExtension(file, "bowl", fileName);
+                        f = FileOpen(fileName, read);
+                        if(f)
+                        {
+                           if(!potFile)
+                           {
+                              char potFileName[MAX_LOCATION];
+                              strcpy(potFileName, output);
+                              StripExtension(potFileName);
+                              ChangeExtension(potFileName, "pot", potFileName);
+                              potFile = FileOpen(potFileName, write);
+                           }
+                           potFile.Printf("# %s\n", moduleName);
+                           while(!f.Eof())
+                           {
+                              String comment = null, msgid = null, msgstr = null;
+                              int c;
+                              for(c = 0; c < 4; c++)
+                              {
+                                 static char line[65536];
+                                 if(f.GetLine(line, sizeof(line)))
+                                 {
+                                    if(c == 0) comment = CopyString(line);
+                                    else if(c == 1) msgid = CopyString(line);
+                                    else if(c == 2) msgstr = CopyString(line);
+                                 }
+                              }
+                              if(msgid && !it.Index(msgid, false))
+                              {
+                                 i18n = true;
+                                 intlStrings[msgid] = comment;
+                                 potFile.Puts(comment); potFile.Puts("\n");
+                                 potFile.Puts(msgid); potFile.Puts("\n");
+                                 potFile.Puts(msgstr); potFile.Puts("\n");
+                                 potFile.Puts("\n");
+                                 delete msgstr;
+                                 delete comment;
+                              }
+                           }
+                           delete f;
+                           potFile.Puts("\n");
+                        }
+                     }
                   }
                }
             }
@@ -1768,6 +1833,11 @@ class SymbolgenApp : Application
                thisAppClass = SearchAppClass_Module(privateModule);
             }
             WriteMain(output);
+
+            intlStrings.Free();
+            delete intlStrings;
+            if(potFile)
+               delete potFile;
          }
 
          FreeContext(theGlobalContext);

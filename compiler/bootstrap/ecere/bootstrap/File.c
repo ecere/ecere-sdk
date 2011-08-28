@@ -906,6 +906,18 @@ break;
 return result;
 }
 
+int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput;
+
+int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput;
+
+void __ecereMethod___ecereNameSpace__ecere__sys__File_Close(struct __ecereNameSpace__ecere__com__Instance * this)
+{
+struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
+
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput])(this);
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput])(this);
+}
+
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__ConsoleFile;
 
 unsigned int __ecereConstructor___ecereNameSpace__ecere__sys__ConsoleFile(struct __ecereNameSpace__ecere__com__Instance * this)
@@ -1032,6 +1044,57 @@ void __ecereNameSpace__ecere__sys__CreateTemporaryDir(char * tempFileName, char 
 {
 }
 
+extern void __ecereNameSpace__ecere__sys__ChangeCh(char *  string, char ch1, char ch2);
+
+void __ecereNameSpace__ecere__sys__MakeSlashPath(char * p)
+{
+__ecereNameSpace__ecere__sys__FileFixCase(p);
+__ecereNameSpace__ecere__sys__ChangeCh(p, '\\', '/');
+}
+
+void __ecereNameSpace__ecere__sys__MakeSystemPath(char * p)
+{
+__ecereNameSpace__ecere__sys__FileFixCase(p);
+}
+
+extern char *  __ecereNameSpace__ecere__sys__CopyString(char *  string);
+
+char * __ecereNameSpace__ecere__sys__CopySystemPath(char * p)
+{
+char * d = __ecereNameSpace__ecere__sys__CopyString(p);
+
+if(d)
+__ecereNameSpace__ecere__sys__MakeSystemPath(d);
+return d;
+}
+
+char * __ecereNameSpace__ecere__sys__CopyUnixPath(char * p)
+{
+char * d = __ecereNameSpace__ecere__sys__CopyString(p);
+
+if(d)
+__ecereNameSpace__ecere__sys__MakeSlashPath(d);
+return d;
+}
+
+extern char *  strcpy(char * , const char * );
+
+char * __ecereNameSpace__ecere__sys__GetSystemPathBuffer(char * d, char * p)
+{
+if(d != p)
+strcpy(d, p ? p : "");
+__ecereNameSpace__ecere__sys__MakeSystemPath(d);
+return d;
+}
+
+char * __ecereNameSpace__ecere__sys__GetSlashPathBuffer(char * d, char * p)
+{
+if(d != p)
+strcpy(d, p ? p : "");
+__ecereNameSpace__ecere__sys__MakeSlashPath(d);
+return d;
+}
+
 int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_Open;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_Exists;
@@ -1056,11 +1119,9 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Tell;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Truncate;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput;
-
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput;
-
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Unlock;
+
+int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Close;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
@@ -1188,6 +1249,7 @@ __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "CloseInput", "void
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "CloseOutput", "void CloseOutput(void)", __ecereMethod___ecereNameSpace__ecere__sys__File_CloseOutput, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Lock", "bool Lock(ecere::sys::FileLock type, uint64 start, uint64 length, bool wait)", __ecereMethod___ecereNameSpace__ecere__sys__File_Lock, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Unlock", "bool Unlock(uint64 start, uint64 length, bool wait)", __ecereMethod___ecereNameSpace__ecere__sys__File_Unlock, 1);
+__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Close", "void Close()", __ecereMethod___ecereNameSpace__ecere__sys__File_Close, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "CopyTo", "bool CopyTo(char * outputFileName)", __ecereMethod___ecereNameSpace__ecere__sys__File_CopyTo, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Flush", "bool Flush(void)", __ecereMethod___ecereNameSpace__ecere__sys__File_Flush, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetDouble", "double GetDouble(void)", __ecereMethod___ecereNameSpace__ecere__sys__File_GetDouble, 1);
@@ -1246,6 +1308,12 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FileGetSize"
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FileGetStats", "bool ecere::sys::FileGetStats(char * fileName, ecere::sys::FileStats stats)", __ecereNameSpace__ecere__sys__FileGetStats, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CreateTemporaryFile", "ecere::sys::File ecere::sys::CreateTemporaryFile(char * tempFileName, char * template)", __ecereNameSpace__ecere__sys__CreateTemporaryFile, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CreateTemporaryDir", "void ecere::sys::CreateTemporaryDir(char * tempFileName, char * template)", __ecereNameSpace__ecere__sys__CreateTemporaryDir, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::MakeSlashPath", "void ecere::sys::MakeSlashPath(char * p)", __ecereNameSpace__ecere__sys__MakeSlashPath, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::MakeSystemPath", "void ecere::sys::MakeSystemPath(char * p)", __ecereNameSpace__ecere__sys__MakeSystemPath, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopySystemPath", "char * ecere::sys::CopySystemPath(char * p)", __ecereNameSpace__ecere__sys__CopySystemPath, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopyUnixPath", "char * ecere::sys::CopyUnixPath(char * p)", __ecereNameSpace__ecere__sys__CopyUnixPath, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetSystemPathBuffer", "char * ecere::sys::GetSystemPathBuffer(char * d, char * p)", __ecereNameSpace__ecere__sys__GetSystemPathBuffer, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetSlashPathBuffer", "char * ecere::sys::GetSlashPathBuffer(char * d, char * p)", __ecereNameSpace__ecere__sys__GetSlashPathBuffer, module, 1);
 }
 
 void __ecereUnregisterModule_File(struct __ecereNameSpace__ecere__com__Instance * module)

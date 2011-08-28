@@ -292,6 +292,8 @@ extern int __ecereVMethodID_class_OnUnserialize;
 
 extern int __ecereVMethodID_class_OnCopy;
 
+void __ecereNameSpace__ecere__com__eSystem_Delete(void * memory);
+
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IOChannel;
 
 int __ecereVMethodID_class_OnSerialize;
@@ -772,7 +774,7 @@ if(member->isProperty)
 {
 struct __ecereNameSpace__ecere__com__Property * prop = (struct __ecereNameSpace__ecere__com__Property *)member;
 
-if(!prop->conversion && prop->Get && prop->Set)
+if(!prop->conversion && prop->Get && prop->Set && (!prop->IsSet || prop->IsSet(data)))
 {
 if(memberType->type != 1 && (memberType->type != 0 || !strcmp(memberType->dataTypeString, "char *")) && memberType->type != 2 && data)
 {
@@ -798,7 +800,7 @@ strcat(memberString, "f");
 else
 {
 value.i = prop->Get(data);
-if(value.i)
+if(value.i || prop->IsSet)
 {
 unsigned int needClass = 0x1;
 char * result = (char *)memberType->_vTbl[__ecereVMethodID_class_OnGetString](memberType, (memberType->type == 0) ? value.p : &value, memberString, (((void *)0)), &needClass);
@@ -1242,7 +1244,6 @@ dataType->_vTbl[__ecereVMethodID_class_OnSerialize](dataType, data, channel);
 }
 else if(_class->type == 0 || _class->type == 5 || _class->type == 1)
 {
-if(data)
 {
 struct __ecereNameSpace__ecere__com__Class * lastClass = (((void *)0));
 
@@ -1268,21 +1269,21 @@ if(member->isProperty)
 }
 else
 {
-if(!strcmp(memberType->name, "String"))
+if(!strcmp(memberType->name, "String") || memberType->type == 0 || memberType->type == 5)
 {
-memberType->_vTbl[__ecereVMethodID_class_OnSerialize](memberType, *(char **)((unsigned char *)data + member->_class->offset + member->offset), channel);
+memberType->_vTbl[__ecereVMethodID_class_OnSerialize](memberType, data ? (*(void **)((unsigned char *)data + member->_class->offset + member->offset)) : (((void *)0)), channel);
 }
 else
-memberType->_vTbl[__ecereVMethodID_class_OnSerialize](memberType, ((unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset)), channel);
-}
-}
-else
-{
+memberType->_vTbl[__ecereVMethodID_class_OnSerialize](memberType, data ? (((unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset))) : (((void *)0)), channel);
 }
 }
 else
 {
-__ecereNameSpace__ecere__com__DataMember_OnSerialize(member, (unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset), channel);
+}
+}
+else
+{
+__ecereNameSpace__ecere__com__DataMember_OnSerialize(member, data ? ((unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset)) : (((void *)0)), channel);
 }
 }
 }
@@ -2006,8 +2007,6 @@ static char * __ecereNameSpace__ecere__com__String_OnGetString(struct __ecereNam
 {
 return string;
 }
-
-extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
 
 static void __ecereNameSpace__ecere__com__String_OnFree(struct __ecereNameSpace__ecere__com__Class * _class, char * string)
 {
