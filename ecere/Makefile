@@ -274,6 +274,7 @@ endif
 ifdef WINDOWS
 
 CFLAGS += \
+	 -isystem ../deps/glext \
 	 -I../deps/DirectX-9.0/include \
 	 -I../deps/jpeg-6b \
 	 -I../deps/libpng-1.4.0 \
