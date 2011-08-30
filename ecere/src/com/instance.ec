@@ -7,7 +7,9 @@ import "dataTypes"
 
 #if defined(ECERE_BOOTSTRAP) || defined(ECERE_STATIC)
 #define dllexport
+#if !defined(ECERE_BOOTSTRAP)
 #define stdcall
+#endif
 #endif
 
 #if !defined(ECERE_BOOTSTRAP)

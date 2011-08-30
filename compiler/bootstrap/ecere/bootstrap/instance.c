@@ -22,9 +22,6 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
-
-#define stdcall __attribute__((__stdcall__))
-
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -346,9 +343,9 @@ void __ecereNameSpace__ecere__com__MemoryGuard_PopLoc()
 {
 }
 
-extern unsigned int stdcall __ecereDll_Load_ecere(struct __ecereNameSpace__ecere__com__Instance * module);
+extern unsigned int __attribute__((__stdcall__)) __ecereDll_Load_ecere(struct __ecereNameSpace__ecere__com__Instance * module);
 
-extern void stdcall __ecereDll_Unload_ecere(struct __ecereNameSpace__ecere__com__Instance * module);
+extern void __attribute__((__stdcall__)) __ecereDll_Unload_ecere(struct __ecereNameSpace__ecere__com__Instance * module);
 
 struct __ecereNameSpace__ecere__com__BTNamedLink
 {
@@ -4056,8 +4053,8 @@ return (((void *)0));
 static struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__Module_Load(struct __ecereNameSpace__ecere__com__Instance * fromModule, char * name, int importAccess, unsigned int ensureCOM)
 {
 void * __ecereTemp1;
-unsigned int (stdcall * Load)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
-void (stdcall * Unload)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
+unsigned int (__attribute__((__stdcall__)) * Load)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
+void (__attribute__((__stdcall__)) * Unload)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
 struct __ecereNameSpace__ecere__com__Instance * module;
 
 for(module = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)fromModule + 12)))->application + 296)))->allModules.first; module; module = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->next)
@@ -4321,7 +4318,7 @@ Unload(module);
 }
 else
 {
-unsigned int (stdcall * Unload)(struct __ecereNameSpace__ecere__com__Instance * module) = (void *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->Unload;
+unsigned int (__attribute__((__stdcall__)) * Unload)(struct __ecereNameSpace__ecere__com__Instance * module) = (void *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->Unload;
 
 Unload(module);
 }
