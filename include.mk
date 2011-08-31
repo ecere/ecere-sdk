@@ -34,10 +34,17 @@ fixspace = $(subst $(space),\$(space),$1)
 hidspace = $(subst $(space),^,$1)
 shwspace = $(subst ^,$(space),$1)
 ifdef WINDOWS
+ifndef MSYSCON
    fixps = $(subst \,/,$(1))
    psep = $(subst \\,/,$(subst /,\,$(1)))
    PS := $(strip \)
    SODESTDIR := obj/$(PLATFORM)/bin/
+else
+   fixps = $(1)
+   PS := $(strip /)
+   psep = $(1)
+   SODESTDIR := obj/$(PLATFORM)/bin/
+endif
 else
    fixps = $(1)
    PS := $(strip /)
@@ -100,12 +107,21 @@ UPX := upx
 
 # SHELL COMMANDS
 ifdef WINDOWS
+ifndef MSYSCON
    echo = $(if $(1),echo $(1))
    cpq = $(if $(1),@cmd /c for %%I in ($(call psep,$(1))) do @copy /y %%I $(call psep,$(2)) > nul 2>&1)
    rmq = $(if $(1),-@del /f /q $(call psep,$(1)) > nul 2>&1)
    rmrq = $(if $(1),-@rmdir /q /s $(call psep,$(1)) > nul 2>&1)
    mkdirq = $(if $(1),-@mkdir $(call psep,$(1)) > nul 2>&1)
    rmdirq = $(if $(1),-@rmdir /q $(call psep,$(1)) > nul 2>&1)
+else
+   echo = $(if $(1),echo "$(1)")
+   cpq = $(if $(1),@cp $(1) $(2))
+   rmq = $(if $(1),-@rm -f $(1))
+   rmrq = $(if $(1),-@rm -f -r $(1))
+   mkdirq = $(if $(1),-@mkdir -p $(1))
+   rmdirq = $(if $(1),-@rmdir $(1))
+endif
 else
 ifdef OSX
    echo = $(if $(1),echo "$(1)")
