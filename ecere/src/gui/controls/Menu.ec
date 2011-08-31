@@ -1694,9 +1694,10 @@ public class PopupMenu : Window
    {
       if(isMenuBar)
       {
-         // Had to boost this to 0.02 for Windows Basic / XP theme
+         Time t = GetTime(), u = unpressedTime;
+         // Had to boost this to 0.1 for Windows Basic / XP theme / Remote Desktop
          // Aero & Classic were fast enough for 0.01
-         if(GetTime() - unpressedTime < 0.02)
+         if(GetTime() - unpressedTime < 0.1)
             return true;
          if(INTERIM_MENU)
          {
