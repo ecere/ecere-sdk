@@ -1625,7 +1625,7 @@ public class PopupMenu : Window
                }
                *y = Max(*y, 0);
             }
-            *x = Min(*x, ((parent == guiApp.desktop) ? guiApp.virtualScreen.w : parent.clientSize.w) - w);
+            *x = Min(*x, ((parent == guiApp.desktop && guiApp.virtualScreen.w) ? guiApp.virtualScreen.w : parent.clientSize.w) - w);
          }
          else if(nonClient)
          {
