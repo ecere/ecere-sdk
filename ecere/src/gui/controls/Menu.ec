@@ -1659,7 +1659,7 @@ public class PopupMenu : Window
 
       ItemPtr selected = FindSelected(mx, my, &selectedX, &selectedY);
 
-      if((!mods.isSideEffect /*|| !selected*/) && (/*selected && */
+      if((!mods.isSideEffect || !this.selected) && (/*selected && */
          selected != this.selected && (!selected || !ITEM_DISABLED(selected.item)) && (selected || !keyboardFocus)))
       {
          if(!isMenuBar || pressed)
@@ -1856,9 +1856,8 @@ public class PopupMenu : Window
                PopupMenu master = (PopupMenu)this.master;
                if(eClass_IsDerived(master._class, _class) && master.isMenuBar) // && swap != master && swap && swap.master != master)
                {
-                  if(rootWindow != this)
                   {
-                     unpressedTime = GetTime();
+                     master.unpressedTime = GetTime();
                      master.pressed = false;
                      master.selected = null;
                      master.keyboardFocus = false;
@@ -1904,7 +1903,7 @@ public class PopupMenu : Window
          }
       }
       // With new activation code this is not required anymore (double effect if there)
-      else if(!firstSlave || firstSlave.rootWindow != firstSlave)
+      else
       {
          //if(!active)
          {
