@@ -1625,7 +1625,7 @@ public class PopupMenu : Window
                }
                *y = Max(*y, 0);
             }
-            *x = Min(*x, parent.clientSize.w - w);
+            *x = Min(*x, ((parent == guiApp.desktop) ? guiApp.virtualScreen.w : parent.clientSize.w) - w);
          }
          else if(nonClient)
          {
@@ -1856,14 +1856,17 @@ public class PopupMenu : Window
                PopupMenu master = (PopupMenu)this.master;
                if(eClass_IsDerived(master._class, _class) && master.isMenuBar) // && swap != master && swap && swap.master != master)
                {
-                  unpressedTime = GetTime();
-                  master.pressed = false;
-                  master.selected = null;
-                  master.keyboardFocus = false;
-                  // master.Update(null);
+                  if(rootWindow != this)
+                  {
+                     unpressedTime = GetTime();
+                     master.pressed = false;
+                     master.selected = null;
+                     master.keyboardFocus = false;
+                     // master.Update(null);
 
-                  // TOFIX: Redraw bug here without this...
-                  master.master.Update(null);
+                     // TOFIX: Redraw bug here without this...
+                     master.master.Update(null);
+                  }
                }
                Destroy(0);
             }
@@ -1900,7 +1903,8 @@ public class PopupMenu : Window
             return false;
          }
       }
-      else
+      // With new activation code this is not required anymore (double effect if there)
+      else if(!firstSlave || firstSlave.rootWindow != firstSlave)
       {
          //if(!active)
          {
