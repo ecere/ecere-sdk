@@ -99,13 +99,17 @@ endif
 
 endif
 
+OBJDIR := obj$(OBJALT)/
+OBJBINDIR := $(OBJDIR)$(PLATFORM)/bin/
+OBJLIBDIR := $(OBJDIR)$(PLATFORM)/lib/
+
 all: prepbinaries ide epj2make documentor eda codeguard
 	@$(call echo,The Ecere SDK is fully built.)
 
 outputdirs:
-	$(if $(wildcard obj/),,$(call mkdirq,obj/))
-	$(if $(wildcard obj/$(PLATFORM)/bin/),,$(call mkdirq,obj/$(PLATFORM)/bin/))
-	$(if $(wildcard obj/$(PLATFORM)/lib/),,$(call mkdirq,obj/$(PLATFORM)/lib/))
+	$(if $(wildcard $(OBJDIR)),,$(call mkdirq,$(OBJDIR)))
+	$(if $(wildcard $(OBJBINDIR)),,$(call mkdirq,$(OBJBINDIR)))
+	$(if $(wildcard $(OBJLIBDIR)),,$(call mkdirq,$(OBJLIBDIR)))
 
 bootstrap: outputdirs
 	cd compiler && $(MAKE) bootstrap
@@ -141,32 +145,32 @@ compiler: ecere ear
 prepbinaries: compiler ecerecom
 	@$(call echo,Enabling 2nd stage binaries...)
 ifdef WINDOWS
-	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SOV),obj/$(PLATFORM)/bin/)
-	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SOV),obj/$(PLATFORM)/bin/)
-	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SOV),obj/$(PLATFORM)/bin/)
+	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SOV),$(OBJBINDIR))
+	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SOV),$(OBJBINDIR))
+	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SOV),$(OBJBINDIR))
 endif
 ifdef LINUX
-	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SOV),obj/$(PLATFORM)/lib/)
-	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SOV),obj/$(PLATFORM)/lib/)
-	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SOV),obj/$(PLATFORM)/lib/)
-	ln -sf $(LP)ecere$(SOV) obj/$(PLATFORM)/lib/$(LP)ecere$(SO).0
-	ln -sf $(LP)ecereCOM$(SOV) obj/$(PLATFORM)/lib/$(LP)ecereCOM$(SO).0
-	ln -sf $(LP)ec$(SOV) obj/$(PLATFORM)/lib/$(LP)ec$(SO).0
-	ln -sf $(LP)ecere$(SOV) obj/$(PLATFORM)/lib/$(LP)ecere$(SO)
-	ln -sf $(LP)ecereCOM$(SOV) obj/$(PLATFORM)/lib/$(LP)ecereCOM$(SO)
-	ln -sf $(LP)ec$(SOV) obj/$(PLATFORM)/lib/$(LP)ec$(SO)
+	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SOV),$(OBJLIBDIR))
+	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SOV),$(OBJLIBDIR))
+	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SOV),$(OBJLIBDIR))
+	ln -sf $(LP)ecere$(SOV) $(OBJLIBDIR)$(LP)ecere$(SO).0
+	ln -sf $(LP)ecereCOM$(SOV) $(OBJLIBDIR)$(LP)ecereCOM$(SO).0
+	ln -sf $(LP)ec$(SOV) $(OBJLIBDIR)$(LP)ec$(SO).0
+	ln -sf $(LP)ecere$(SOV) $(OBJLIBDIR)$(LP)ecere$(SO)
+	ln -sf $(LP)ecereCOM$(SOV) $(OBJLIBDIR)$(LP)ecereCOM$(SO)
+	ln -sf $(LP)ec$(SOV) $(OBJLIBDIR)$(LP)ec$(SO)
 endif
 ifndef WINDOWS
 ifndef LINUX
-	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SO),obj/$(PLATFORM)/lib/)
-	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SO),obj/$(PLATFORM)/lib/)
-	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SO),obj/$(PLATFORM)/lib/)
+	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SO),$(OBJLIBDIR))
+	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SO),$(OBJLIBDIR))
+	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SO),$(OBJLIBDIR))
 endif
 endif
-	$(call cpq,ear/cmd/obj/release.$(PLATFORM)/ear$(E),obj/$(PLATFORM)/bin/)
-	$(call cpq,compiler/ecc/obj/release.$(PLATFORM)/ecc$(E),obj/$(PLATFORM)/bin/)
-	$(call cpq,compiler/ecp/obj/release.$(PLATFORM)/ecp$(E),obj/$(PLATFORM)/bin/)
-	$(call cpq,compiler/ecs/obj/release.$(PLATFORM)/ecs$(E),obj/$(PLATFORM)/bin/)
+	$(call cpq,ear/cmd/obj/release.$(PLATFORM)/ear$(E),$(OBJBINDIR))
+	$(call cpq,compiler/ecc/obj/release.$(PLATFORM)/ecc$(E),$(OBJBINDIR))
+	$(call cpq,compiler/ecp/obj/release.$(PLATFORM)/ecp$(E),$(OBJBINDIR))
+	$(call cpq,compiler/ecs/obj/release.$(PLATFORM)/ecs$(E),$(OBJBINDIR))
 
 epj2make: prepbinaries
 	@$(call echo,Building epj2make...)
@@ -189,18 +193,18 @@ endif
 prepcodeguard: eda
 ifdef CodeGuard
 ifdef WINDOWS
-	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SO),obj/$(PLATFORM)/bin/)
+	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SO),$(OBJBINDIR))
 endif
 
 ifdef LINUX
-	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SOV),obj/$(PLATFORM)/lib/)
-	ln -sf $(LP)EDA$(SOV) obj/$(PLATFORM)/lib/$(LP)EDA$(SO).0
-	ln -sf $(LP)EDA$(SOV) obj/$(PLATFORM)/lib/$(LP)EDA$(SO)
+	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SOV),$(OBJLIBDIR))
+	ln -sf $(LP)EDA$(SOV) $(OBJLIBDIR)$(LP)EDA$(SO).0
+	ln -sf $(LP)EDA$(SOV) $(OBJLIBDIR)$(LP)EDA$(SO)
 endif
 
 ifndef WINDOWS
 ifndef LINUX
-	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SO),obj/$(PLATFORM)/lib/)
+	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SO),$(OBJLIBDIR))
 endif
 endif
 endif
@@ -210,7 +214,7 @@ eda: prepbinaries
 	cd eda && $(MAKE)
 
 emptyoutput: outputdirs
-	$(call rmq,obj/$(PLATFORM)/lib/libecereVanilla$(A))
+	$(call rmq,$(OBJLIBDIR)libecereVanilla$(A))
 	$(call rmq,$(SODESTDIR)$(LP)ecere$(SO))
 	$(call rmq,$(SODESTDIR)$(LP)ecereCOM$(SO))
 	$(call rmq,$(SODESTDIR)$(LP)ec$(SO))
@@ -237,15 +241,15 @@ ifdef EDASQLiteCipher
 	$(call rmq,$(SODESTDIR)$(LP)EDASQLiteCipher$(SOV))
 endif
 endif	
-	$(call rmq,obj/$(PLATFORM)/bin/ear$(E))
-	$(call rmq,obj/$(PLATFORM)/bin/ecc$(E))
-	$(call rmq,obj/$(PLATFORM)/bin/ecp$(E))
-	$(call rmq,obj/$(PLATFORM)/bin/ecs$(E))
-	$(call rmq,obj/$(PLATFORM)/bin/epj2make$(E))
-	$(call rmq,obj/$(PLATFORM)/bin/ide$(E))
-	$(call rmq,obj/$(PLATFORM)/bin/documentor$(E))
+	$(call rmq,$(OBJBINDIR)ear$(E))
+	$(call rmq,$(OBJBINDIR)ecc$(E))
+	$(call rmq,$(OBJBINDIR)ecp$(E))
+	$(call rmq,$(OBJBINDIR)ecs$(E))
+	$(call rmq,$(OBJBINDIR)epj2make$(E))
+	$(call rmq,$(OBJBINDIR)ide$(E))
+	$(call rmq,$(OBJBINDIR)documentor$(E))
 ifdef EDASQLiteCipher
-	$(call rmq,obj/$(PLATFORM)/bin/CodeGuard$(E))
+	$(call rmq,$(OBJBINDIR)CodeGuard$(E))
 endif
 
 clean: emptyoutput
@@ -317,74 +321,74 @@ ifdef EDASQLiteCipher
 BINARIES += eda/drivers/sqliteCipher/obj/release.$(PLATFORM)/$(LP)EDASQLiteCipher$(SOV)
 endif
 
-# Making sure everything is in obj/$(PLATFORM)/bin/ and obj/$(PLATFORM)/lib/
-# Shared Libraries (in obj/$(PLATFORM)/bin/ on Windows and obj/$(PLATFORM)/lib/ otherwise)
+# Making sure everything is in $(OBJBINDIR) and $(OBJLIBDIR)
+# Shared Libraries (in $(OBJBINDIR) on Windows and $(OBJLIBDIR) otherwise)
 # Symlinks for libs on Linux
-# Binaries (always in obj/$(PLATFORM)/bin/) and Static Libraries (always in obj/$(PLATFORM)/lib/)
+# Binaries (always in $(OBJBINDIR)) and Static Libraries (always in $(OBJLIBDIR))
 prepinstall: $(DOC) $(BINARIES) outputdirs
 
 ifdef WINDOWS
-	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SO),obj/$(PLATFORM)/bin/)
-	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SO),obj/$(PLATFORM)/bin/)
-	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SO),obj/$(PLATFORM)/bin/)
-	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SO),obj/$(PLATFORM)/bin/)
-	$(call cpq,eda/drivers/sqlite/obj/release.$(PLATFORM)/$(LP)EDASQLite$(SO),obj/$(PLATFORM)/bin/)
+	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SO),$(OBJBINDIR))
+	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SO),$(OBJBINDIR))
+	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SO),$(OBJBINDIR))
+	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SO),$(OBJBINDIR))
+	$(call cpq,eda/drivers/sqlite/obj/release.$(PLATFORM)/$(LP)EDASQLite$(SO),$(OBJBINDIR))
 ifdef EDASQLiteCipher
-	$(call cpq,eda/drivers/sqliteCipher/obj/release.$(PLATFORM)/$(LP)EDASQLiteCipher$(SO),obj/$(PLATFORM)/bin/)
+	$(call cpq,eda/drivers/sqliteCipher/obj/release.$(PLATFORM)/$(LP)EDASQLiteCipher$(SO),$(OBJBINDIR))
 endif
 endif
 
 ifdef LINUX
-	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SOV),obj/$(PLATFORM)/lib/)
-	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SOV),obj/$(PLATFORM)/lib/)
-	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SOV),obj/$(PLATFORM)/lib/)
-	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SOV),obj/$(PLATFORM)/lib/)
-	$(call cpq,eda/drivers/sqlite/obj/release.$(PLATFORM)/$(LP)EDASQLite$(SOV),obj/$(PLATFORM)/lib/)
+	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SOV),$(OBJLIBDIR))
+	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SOV),$(OBJLIBDIR))
+	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SOV),$(OBJLIBDIR))
+	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SOV),$(OBJLIBDIR))
+	$(call cpq,eda/drivers/sqlite/obj/release.$(PLATFORM)/$(LP)EDASQLite$(SOV),$(OBJLIBDIR))
 ifdef EDASQLiteCipher
-	$(call cpq,eda/drivers/sqliteCipher/obj/release.$(PLATFORM)/$(LP)EDASQLiteCipher$(SOV),obj/$(PLATFORM)/lib/)
+	$(call cpq,eda/drivers/sqliteCipher/obj/release.$(PLATFORM)/$(LP)EDASQLiteCipher$(SOV),$(OBJLIBDIR))
 endif
-	ln -sf $(LP)ecere$(SOV) obj/$(PLATFORM)/lib/$(LP)ecere$(SO).0
-	ln -sf $(LP)ecereCOM$(SOV) obj/$(PLATFORM)/lib/$(LP)ecereCOM$(SO).0
-	ln -sf $(LP)ec$(SOV) obj/$(PLATFORM)/lib/$(LP)ec$(SO).0
-	ln -sf $(LP)EDA$(SOV) obj/$(PLATFORM)/lib/$(LP)EDA$(SO).0
-	ln -sf $(LP)EDASQLite$(SOV) obj/$(PLATFORM)/lib/$(LP)EDASQLite$(SO).0
+	ln -sf $(LP)ecere$(SOV) $(OBJLIBDIR)$(LP)ecere$(SO).0
+	ln -sf $(LP)ecereCOM$(SOV) $(OBJLIBDIR)$(LP)ecereCOM$(SO).0
+	ln -sf $(LP)ec$(SOV) $(OBJLIBDIR)$(LP)ec$(SO).0
+	ln -sf $(LP)EDA$(SOV) $(OBJLIBDIR)$(LP)EDA$(SO).0
+	ln -sf $(LP)EDASQLite$(SOV) $(OBJLIBDIR)$(LP)EDASQLite$(SO).0
 ifdef EDASQLiteCipher
-	ln -sf $(LP)EDASQLiteCipher$(SOV) obj/$(PLATFORM)/lib/$(LP)EDASQLiteCipher$(SO).0
+	ln -sf $(LP)EDASQLiteCipher$(SOV) $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO).0
 endif
-	ln -sf $(LP)ecere$(SOV) obj/$(PLATFORM)/lib/$(LP)ecere$(SO)
-	ln -sf $(LP)ecereCOM$(SOV) obj/$(PLATFORM)/lib/$(LP)ecereCOM$(SO)
-	ln -sf $(LP)ec$(SOV) obj/$(PLATFORM)/lib/$(LP)ec$(SO)
-	ln -sf $(LP)EDA$(SOV) obj/$(PLATFORM)/lib/$(LP)EDA$(SO)
-	ln -sf $(LP)EDASQLite$(SOV) obj/$(PLATFORM)/lib/$(LP)EDASQLite$(SO)
+	ln -sf $(LP)ecere$(SOV) $(OBJLIBDIR)$(LP)ecere$(SO)
+	ln -sf $(LP)ecereCOM$(SOV) $(OBJLIBDIR)$(LP)ecereCOM$(SO)
+	ln -sf $(LP)ec$(SOV) $(OBJLIBDIR)$(LP)ec$(SO)
+	ln -sf $(LP)EDA$(SOV) $(OBJLIBDIR)$(LP)EDA$(SO)
+	ln -sf $(LP)EDASQLite$(SOV) $(OBJLIBDIR)$(LP)EDASQLite$(SO)
 ifdef EDASQLiteCipher
-	ln -sf $(LP)EDASQLiteCipher$(SOV) obj/$(PLATFORM)/lib/$(LP)EDASQLiteCipher$(SO)
+	ln -sf $(LP)EDASQLiteCipher$(SOV) $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO)
 endif
 endif
 
 ifndef WINDOWS
 ifndef LINUX
-	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SO),obj/$(PLATFORM)/lib/)
-	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SO),obj/$(PLATFORM)/lib/)
-	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SO),obj/$(PLATFORM)/lib/)
-	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SO),obj/$(PLATFORM)/lib/)
-	$(call cpq,eda/drivers/sqlite/obj/release.$(PLATFORM)/$(LP)EDASQLite$(SO),obj/$(PLATFORM)/lib/)
+	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SO),$(OBJLIBDIR))
+	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SO),$(OBJLIBDIR))
+	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SO),$(OBJLIBDIR))
+	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SO),$(OBJLIBDIR))
+	$(call cpq,eda/drivers/sqlite/obj/release.$(PLATFORM)/$(LP)EDASQLite$(SO),$(OBJLIBDIR))
 ifdef EDASQLiteCipher
-	$(call cpq,eda/drivers/sqliteCipher/obj/release.$(PLATFORM)/$(LP)EDASQLiteCipher$(SO),obj/$(PLATFORM)/lib/)
+	$(call cpq,eda/drivers/sqliteCipher/obj/release.$(PLATFORM)/$(LP)EDASQLiteCipher$(SO),$(OBJLIBDIR))
 endif
 endif
 endif
 
-	$(call cpq,ide/obj/release.$(PLATFORM)/ide$(E),obj/$(PLATFORM)/bin/)
-	$(call cpq,ear/cmd/obj/release.$(PLATFORM)/ear$(E),obj/$(PLATFORM)/bin/)
-	$(call cpq,compiler/ecc/obj/release.$(PLATFORM)/ecc$(E),obj/$(PLATFORM)/bin/)
-	$(call cpq,compiler/ecp/obj/release.$(PLATFORM)/ecp$(E),obj/$(PLATFORM)/bin/)
-	$(call cpq,compiler/ecs/obj/release.$(PLATFORM)/ecs$(E),obj/$(PLATFORM)/bin/)
-	$(call cpq,epj2make/obj/release.$(PLATFORM)/epj2make$(E),obj/$(PLATFORM)/bin/)
-	$(call cpq,documentor/obj/release.$(PLATFORM)/documentor$(E),obj/$(PLATFORM)/bin/)
+	$(call cpq,ide/obj/release.$(PLATFORM)/ide$(E),$(OBJBINDIR))
+	$(call cpq,ear/cmd/obj/release.$(PLATFORM)/ear$(E),$(OBJBINDIR))
+	$(call cpq,compiler/ecc/obj/release.$(PLATFORM)/ecc$(E),$(OBJBINDIR))
+	$(call cpq,compiler/ecp/obj/release.$(PLATFORM)/ecp$(E),$(OBJBINDIR))
+	$(call cpq,compiler/ecs/obj/release.$(PLATFORM)/ecs$(E),$(OBJBINDIR))
+	$(call cpq,epj2make/obj/release.$(PLATFORM)/epj2make$(E),$(OBJBINDIR))
+	$(call cpq,documentor/obj/release.$(PLATFORM)/documentor$(E),$(OBJBINDIR))
 ifdef CodeGuard
-	$(call cpq,codeGuard/obj/release.$(PLATFORM)/CodeGuard$(E),obj/$(PLATFORM)/bin/)
+	$(call cpq,codeGuard/obj/release.$(PLATFORM)/CodeGuard$(E),$(OBJBINDIR))
 endif
-	$(call cpq,ecere/obj/vanilla.$(PLATFORM)/libecereVanilla$(A),obj/$(PLATFORM)/lib/)
+	$(call cpq,ecere/obj/vanilla.$(PLATFORM)/libecereVanilla$(A),$(OBJLIBDIR))
 
 #TODO: Samples?
 install: prepinstall actualinstall
@@ -398,25 +402,25 @@ ifdef WINDOWS
 	$(call mkdirq,"$(BINDIR)/")
 	$(call mkdirq,"$(SLIBDIR)/")
 	$(call mkdirq,"$(DOCDIR)/")
-	$(call cpq,obj/$(PLATFORM)/bin/$(LP)ecere$(SO),"$(LIBDIR)/")
-	$(call cpq,obj/$(PLATFORM)/bin/$(LP)ecereCOM$(SO),"$(LIBDIR)/")
-	$(call cpq,obj/$(PLATFORM)/bin/$(LP)ec$(SO),"$(LIBDIR)/")
-	$(call cpq,obj/$(PLATFORM)/bin/$(LP)EDA$(SO),"$(LIBDIR)/")
-	$(call cpq,obj/$(PLATFORM)/bin/$(LP)EDASQLite$(SO),"$(LIBDIR)/")
+	$(call cpq,$(OBJBINDIR)$(LP)ecere$(SO),"$(LIBDIR)/")
+	$(call cpq,$(OBJBINDIR)$(LP)ecereCOM$(SO),"$(LIBDIR)/")
+	$(call cpq,$(OBJBINDIR)$(LP)ec$(SO),"$(LIBDIR)/")
+	$(call cpq,$(OBJBINDIR)$(LP)EDA$(SO),"$(LIBDIR)/")
+	$(call cpq,$(OBJBINDIR)$(LP)EDASQLite$(SO),"$(LIBDIR)/")
 ifdef EDASQLiteCipher
-	$(call cpq,obj/$(PLATFORM)/bin/$(LP)EDASQLiteCipher$(SO),"$(LIBDIR)/")
+	$(call cpq,$(OBJBINDIR)$(LP)EDASQLiteCipher$(SO),"$(LIBDIR)/")
 endif
-	$(call cpq,obj/$(PLATFORM)/bin/ide$(E),"$(BINDIR)/")
-	$(call cpq,obj/$(PLATFORM)/bin/ear$(E),"$(BINDIR)/")
-	$(call cpq,obj/$(PLATFORM)/bin/ecc$(E),"$(BINDIR)/")
-	$(call cpq,obj/$(PLATFORM)/bin/ecp$(E),"$(BINDIR)/")
-	$(call cpq,obj/$(PLATFORM)/bin/ecs$(E),"$(BINDIR)/")
-	$(call cpq,obj/$(PLATFORM)/bin/epj2make$(E),"$(BINDIR)/")
-	$(call cpq,obj/$(PLATFORM)/bin/documentor$(E),"$(BINDIR)/")
+	$(call cpq,$(OBJBINDIR)ide$(E),"$(BINDIR)/")
+	$(call cpq,$(OBJBINDIR)ear$(E),"$(BINDIR)/")
+	$(call cpq,$(OBJBINDIR)ecc$(E),"$(BINDIR)/")
+	$(call cpq,$(OBJBINDIR)ecp$(E),"$(BINDIR)/")
+	$(call cpq,$(OBJBINDIR)ecs$(E),"$(BINDIR)/")
+	$(call cpq,$(OBJBINDIR)epj2make$(E),"$(BINDIR)/")
+	$(call cpq,$(OBJBINDIR)documentor$(E),"$(BINDIR)/")
 ifdef CodeGuard
-	$(call cpq,obj/$(PLATFORM)/bin/CodeGuard$(E),"$(BINDIR)/")
+	$(call cpq,$(OBJBINDIR)CodeGuard$(E),"$(BINDIR)/")
 endif
-	$(call cpq,obj/$(PLATFORM)/lib/libecereVanilla$(A),"$(SLIBDIR)/")
+	$(call cpq,$(OBJLIBDIR)libecereVanilla$(A),"$(SLIBDIR)/")
 	$(call cpq,doc/tao.pdf,"$(DOCDIR)/Ecere Tao of Programming [work in progress].pdf")
 	$(call cpq,doc/ecere.eCdoc,"$(DOCDIR)/")
 	$(call cpq,doc/ecereCOM.eCdoc,"$(DOCDIR)/")
@@ -424,25 +428,25 @@ endif
 endif
 
 ifdef OSX 
-	install obj/$(PLATFORM)/lib/$(LP)ecere$(SO) $(LIBDIR)/
-	install obj/$(PLATFORM)/lib/$(LP)ecereCOM$(SO) $(LIBDIR)/
-	install obj/$(PLATFORM)/lib/$(LP)ec$(SO) $(LIBDIR)/
-	install obj/$(PLATFORM)/lib/$(LP)EDA$(SO) $(LIBDIR)/
-	install obj/$(PLATFORM)/lib/$(LP)EDASQLite$(SO) $(LIBDIR)/
+	install $(OBJLIBDIR)$(LP)ecere$(SO) $(LIBDIR)/
+	install $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(LIBDIR)/
+	install $(OBJLIBDIR)$(LP)ec$(SO) $(LIBDIR)/
+	install $(OBJLIBDIR)$(LP)EDA$(SO) $(LIBDIR)/
+	install $(OBJLIBDIR)$(LP)EDASQLite$(SO) $(LIBDIR)/
 ifdef EDASQLiteCipher
-	install obj/$(PLATFORM)/lib/$(LP)EDASQLiteCipher$(SO) $(LIBDIR)/
+	install $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO) $(LIBDIR)/
 endif
-	install obj/$(PLATFORM)/bin/ide$(E) $(BINDIR)/
-	install obj/$(PLATFORM)/bin/ear$(E) $(BINDIR)/
-	install obj/$(PLATFORM)/bin/ecc$(E) $(BINDIR)/
-	install obj/$(PLATFORM)/bin/ecp$(E) $(BINDIR)/
-	install obj/$(PLATFORM)/bin/ecs$(E) $(BINDIR)/
-	install obj/$(PLATFORM)/bin/epj2make$(E) $(BINDIR)/
-	install obj/$(PLATFORM)/bin/documentor$(E) $(BINDIR)/
+	install $(OBJBINDIR)ide$(E) $(BINDIR)/
+	install $(OBJBINDIR)ear$(E) $(BINDIR)/
+	install $(OBJBINDIR)ecc$(E) $(BINDIR)/
+	install $(OBJBINDIR)ecp$(E) $(BINDIR)/
+	install $(OBJBINDIR)ecs$(E) $(BINDIR)/
+	install $(OBJBINDIR)epj2make$(E) $(BINDIR)/
+	install $(OBJBINDIR)documentor$(E) $(BINDIR)/
 ifdef CodeGuard
-	install obj/$(PLATFORM)/bin/CodeGuard$(E) $(BINDIR)/
+	install $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/
 endif
-	install obj/$(PLATFORM)/lib/libecereVanilla$(A) $(SLIBDIR)/
+	install $(OBJLIBDIR)libecereVanilla$(A) $(SLIBDIR)/
 	install -d $(DOCDIR)/
 	install doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf"
 	install doc/ecere.eCdoc $(DOCDIR)/
@@ -457,13 +461,13 @@ endif
 ifndef OSX
 ifndef WINDOWS
 ifdef LINUX
-	install -D obj/$(PLATFORM)/lib/$(LP)ecere$(SOV) $(LIBDIR)/$(LP)ecere$(SOV)
-	install -D obj/$(PLATFORM)/lib/$(LP)ecereCOM$(SOV) $(LIBDIR)/$(LP)ecereCOM$(SOV)
-	install -D obj/$(PLATFORM)/lib/$(LP)ec$(SOV) $(LIBDIR)/$(LP)ec$(SOV)
-	install -D obj/$(PLATFORM)/lib/$(LP)EDA$(SOV) $(LIBDIR)/$(LP)EDA$(SOV)
-	install -D obj/$(PLATFORM)/lib/$(LP)EDASQLite$(SOV) $(LIBDIR)/$(LP)EDASQLite$(SOV)
+	install -D $(OBJLIBDIR)$(LP)ecere$(SOV) $(LIBDIR)/$(LP)ecere$(SOV)
+	install -D $(OBJLIBDIR)$(LP)ecereCOM$(SOV) $(LIBDIR)/$(LP)ecereCOM$(SOV)
+	install -D $(OBJLIBDIR)$(LP)ec$(SOV) $(LIBDIR)/$(LP)ec$(SOV)
+	install -D $(OBJLIBDIR)$(LP)EDA$(SOV) $(LIBDIR)/$(LP)EDA$(SOV)
+	install -D $(OBJLIBDIR)$(LP)EDASQLite$(SOV) $(LIBDIR)/$(LP)EDASQLite$(SOV)
 ifdef EDASQLiteCipher
-	install -D obj/$(PLATFORM)/lib/$(LP)EDASQLiteCipher$(SOV) $(LIBDIR)/$(LP)EDASQLiteCipher$(SOV)
+	install -D $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SOV) $(LIBDIR)/$(LP)EDASQLiteCipher$(SOV)
 endif
 	ln -sf $(LP)ecere$(SOV) $(LIBDIR)/$(LP)ecere$(SO).0
 	ln -sf $(LP)ecereCOM$(SOV) $(LIBDIR)/$(LP)ecereCOM$(SO).0
@@ -484,26 +488,26 @@ endif
 	install -D share/pixmaps/ecere.png $(DESTDIR)$(prefix)/share/pixmaps/ecere.png
 	install -D share/applications/ecere.desktop $(DESTDIR)$(prefix)/share/applications/ecere.desktop
 else
-	install -D obj/$(PLATFORM)/lib/$(LP)ecere$(SO) $(LIBDIR)/$(LP)ecere$(SO)
-	install -D obj/$(PLATFORM)/lib/$(LP)ecereCOM$(SO) $(LIBDIR)/$(LP)ecereCOM$(SO)
-	install -D obj/$(PLATFORM)/lib/$(LP)ec$(SO) $(LIBDIR)/$(LP)ec$(SO)
-	install -D obj/$(PLATFORM)/lib/$(LP)EDA$(SO) $(LIBDIR)/$(LP)EDA$(SO)
-	install -D obj/$(PLATFORM)/lib/$(LP)EDASQLite$(SO) $(LIBDIR)/$(LP)EDASQLite$(SO)
+	install -D $(OBJLIBDIR)$(LP)ecere$(SO) $(LIBDIR)/$(LP)ecere$(SO)
+	install -D $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(LIBDIR)/$(LP)ecereCOM$(SO)
+	install -D $(OBJLIBDIR)$(LP)ec$(SO) $(LIBDIR)/$(LP)ec$(SO)
+	install -D $(OBJLIBDIR)$(LP)EDA$(SO) $(LIBDIR)/$(LP)EDA$(SO)
+	install -D $(OBJLIBDIR)$(LP)EDASQLite$(SO) $(LIBDIR)/$(LP)EDASQLite$(SO)
 ifdef EDASQLiteCipher
-	install -D obj/$(PLATFORM)/lib/$(LP)EDASQLiteCipher$(SO) $(LIBDIR)/$(LP)EDASQLiteCipher$(SO)
+	install -D $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO) $(LIBDIR)/$(LP)EDASQLiteCipher$(SO)
 endif
 endif
-	install -D obj/$(PLATFORM)/bin/ide$(E) $(BINDIR)/ide$(E)
-	install -D obj/$(PLATFORM)/bin/ear$(E) $(BINDIR)/ear$(E)
-	install -D obj/$(PLATFORM)/bin/ecc$(E) $(BINDIR)/ecc$(E)
-	install -D obj/$(PLATFORM)/bin/ecp$(E) $(BINDIR)/ecp$(E)
-	install -D obj/$(PLATFORM)/bin/ecs$(E) $(BINDIR)/ecs$(E)
-	install -D obj/$(PLATFORM)/bin/epj2make$(E) $(BINDIR)/epj2make$(E)
-	install -D obj/$(PLATFORM)/bin/documentor$(E) $(BINDIR)/documentor$(E)
+	install -D $(OBJBINDIR)ide$(E) $(BINDIR)/ide$(E)
+	install -D $(OBJBINDIR)ear$(E) $(BINDIR)/ear$(E)
+	install -D $(OBJBINDIR)ecc$(E) $(BINDIR)/ecc$(E)
+	install -D $(OBJBINDIR)ecp$(E) $(BINDIR)/ecp$(E)
+	install -D $(OBJBINDIR)ecs$(E) $(BINDIR)/ecs$(E)
+	install -D $(OBJBINDIR)epj2make$(E) $(BINDIR)/epj2make$(E)
+	install -D $(OBJBINDIR)documentor$(E) $(BINDIR)/documentor$(E)
 ifdef CodeGuard
-	install -D obj/$(PLATFORM)/bin/CodeGuard$(E) $(BINDIR)/CodeGuard$(E)
+	install -D $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/CodeGuard$(E)
 endif
-	install -D obj/$(PLATFORM)/lib/libecereVanilla$(A) $(SLIBDIR)/libecereVanilla$(A)
+	install -D $(OBJLIBDIR)libecereVanilla$(A) $(SLIBDIR)/libecereVanilla$(A)
 	install -D doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf"
 	install -D doc/ecere.eCdoc $(DOCDIR)/ecere.eCdoc
 	install -D doc/ecereCOM.eCdoc $(DOCDIR)/ecereCOM.eCdoc
