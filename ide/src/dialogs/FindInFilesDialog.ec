@@ -728,13 +728,14 @@ private:
                      break;
                   case file:
                   {   
-                     bool relative = false;
+                     bool relative = true;
                      char fileRelative[MAX_LOCATION];
                      char filePath[MAX_LOCATION];
                      strcpy(filePath, stack[1].path);
                      PathCat(filePath, stack[frame].path);
                      PathCat(filePath, stack[frame].name);
-                     relative = prj.GetRelativePath(filePath, fileRelative);
+                     strcpy(fileRelative, stack[frame].path);
+                     PathCat(fileRelative, stack[frame].name);
                      if(relative && mode == workspace && prj != ide.project)
                      {
                         char special[MAX_LOCATION];
