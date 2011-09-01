@@ -967,13 +967,73 @@ private:
       return result;
    }
 
+   ProjectNode FindSameNameConflict(char * name, bool includeResources, Map<Platform, SetBool> exclusionInfo)
+   {
+      ProjectNode result = null;
+      Map<Platform, SetBool> compareExclusion { };
+      SetBool common, commonComp;
+      SetBool actual, actualComp;
+      if(files)
+      {
+         for(child : files)
+         {
+            if(includeResources || child.type != resources)
+            {
+               if(child.type != folder && child.name && !strcmpi(child.name, name))
+               {
+                  child.CollectExclusionInfo(compareExclusion);
+                  common = exclusionInfo[unknown];
+                  commonComp = compareExclusion[unknown];
+                  if(exclusionInfo.count == 1 && compareExclusion.count == 1)
+                  {
+                     if(!(common == true || commonComp == true))
+                     {
+                        result = child;
+                        break;
+                     }
+                  }
+                  else
+                  {
+                     Platform platform;
+                     for(platform = (Platform)1; platform < Platform::enumSize; platform++)
+                     {
+                        actual = common;
+                        actualComp = commonComp;
+                        if(exclusionInfo[platform] != unset)
+                           actual = exclusionInfo[platform];
+                        if(compareExclusion[platform] != unset)
+                           actualComp = compareExclusion[platform];
+                        if(!(actual == true || actualComp == true))
+                        {
+                           result = child;
+                           break;
+                        }
+                     }
+                     if(result) break;
+                  }
+                  compareExclusion.Free();
+                  break;
+               }
+               result = child.FindSameNameConflict(name, includeResources, exclusionInfo);
+               if(result) break;
+            }
+         }
+         compareExclusion.Free();
+      }
+      delete compareExclusion;
+      return result;
+   }
+
    ProjectNode Add(Project project, char * filePath, ProjectNode after, NodeTypes type, NodeIcons icon, bool checkIfExists)
    {
       ProjectNode node = null;
       char temp[MAX_LOCATION];
+      Map<Platform, SetBool> exclusionInfo { };
 
       GetLastDirectory(filePath, temp);
-      if(!checkIfExists || !project.topNode.Find(temp, false))
+      //if(!checkIfExists || !project.topNode.Find(temp, false))
+      CollectExclusionInfo(exclusionInfo);
+      if(!checkIfExists || !project.topNode.FindSameNameConflict(temp, false, exclusionInfo))
       {
          // Do the check for folder in the same parent or resource files only here
          if(type == folder || !checkIfExists)
@@ -1009,6 +1069,7 @@ private:
          }
          files.Insert(after, node);
       }
+      delete exclusionInfo;
       return node;
    }
 
