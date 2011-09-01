@@ -1,4 +1,4 @@
-.PHONY: all clean realclean distclean emptyoutput install uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make ide documentor eda prepcodeguard codeguard
+.PHONY: all clean realclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make ide documentor eda prepcodeguard codeguard
 .SILENT:
 
 include include.mk
@@ -387,8 +387,13 @@ endif
 	$(call cpq,ecere/obj/vanilla.$(PLATFORM)/libecereVanilla$(A),obj/$(PLATFORM)/lib/)
 
 #TODO: Samples?
-install: prepinstall
+install: prepinstall actualinstall
+	@$(call echo,The Ecere SDK has been installed.)
 
+copyonlyinstall: actualinstall
+	@$(call echo,The Ecere SDK has been installed. copyonlyinstall.)
+
+actualinstall:
 ifdef WINDOWS
 	$(call mkdirq,"$(BINDIR)/")
 	$(call mkdirq,"$(SLIBDIR)/")
@@ -509,7 +514,6 @@ endif
 	cp -pRf extras/* $(EXTRASDIR)
 endif
 endif
-	@$(call echo,The Ecere SDK has been installed.)
 
 uninstall:
 	$(call rmq,"$(LIBDIR)/$(LP)ecere$(SO)")
