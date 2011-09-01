@@ -1,5 +1,5 @@
 
-# DETECTION
+# HOST PLATFORM DETECTION
 ifeq "$(OS)" "Windows_NT"
    WINDOWS = defined
 else
@@ -14,7 +14,7 @@ endif
 endif
 endif
 
-# PLATFORM
+# PLATFORM (TARGET)
 ifndef PLATFORM
 ifdef WINDOWS
    PLATFORM := win32
@@ -27,39 +27,35 @@ endif
 endif
 endif
 
-# TOOLS
-empty :=
-space := $(empty) $(empty)
-fixspace = $(subst $(space),\$(space),$1)
-hidspace = $(subst $(space),^,$1)
-shwspace = $(subst ^,$(space),$1)
+# MISC STRING TOOLS
+#empty :=
+#space := $(empty) $(empty)
+#fixspace = $(subst $(space),\$(space),$1)
+#hidspace = $(subst $(space),^,$1)
+#shwspace = $(subst ^,$(space),$1)
+
+# PATH SEPARATOR STRING TOOLS
 ifdef WINDOWS
 ifndef MSYSCON
+   WIN_PS_TOOLS := defined
+endif
+endif
+ifdef WIN_PS_TOOLS
    fixps = $(subst \,/,$(1))
    psep = $(subst \\,/,$(subst /,\,$(1)))
    PS := $(strip \)
-   SODESTDIR := obj/$(PLATFORM)/bin/
 else
    fixps = $(1)
    PS := $(strip /)
    psep = $(1)
-   SODESTDIR := obj/$(PLATFORM)/bin/
-endif
-else
-   fixps = $(1)
-   PS := $(strip /)
-   psep = $(1)
-   SODESTDIR := obj/$(PLATFORM)/lib/
 endif
 
-# EXTENSIONS
+# PREFIXES AND EXTENSIONS
 .SUFFIXES: .c .ec .sym .imp .o
 S := .sym
 I := .imp
 O := .o
 A := .a
-
-# PREFIXES AND POSTFIXES
 ifeq "$(PLATFORM)" "win32"
    E := .exe
 ifeq "$(TARGET_TYPE)" "staticlib"
@@ -108,6 +104,10 @@ UPX := upx
 # SHELL COMMANDS
 ifdef WINDOWS
 ifndef MSYSCON
+   WIN_SHELL_COMMANDS := defined
+endif
+endif
+ifdef WIN_SHELL_COMMANDS
    echo = $(if $(1),echo $(1))
    cpq = $(if $(1),@cmd /c for %%I in ($(call psep,$(1))) do @copy /y %%I $(call psep,$(2)) > nul 2>&1)
    rmq = $(if $(1),-@del /f /q $(call psep,$(1)) > nul 2>&1)
@@ -121,23 +121,6 @@ else
    rmrq = $(if $(1),-@rm -f -r $(1))
    mkdirq = $(if $(1),-@mkdir -p $(1))
    rmdirq = $(if $(1),-@rmdir $(1))
-endif
-else
-ifdef OSX
-   echo = $(if $(1),echo "$(1)")
-   cpq = $(if $(1),cp $(1) $(2))
-   rmq = $(if $(1),-rm -f $(1))
-   rmrq = $(if $(1),-rm -f -r $(1))
-   mkdirq = $(if $(1),-mkdir -p $(1))
-   rmdirq = $(if $(1),-rmdir $(1))
-else
-   echo = $(if $(1),echo "$(1)")
-   cpq = $(if $(1),@cp $(1) $(2))
-   rmq = $(if $(1),-@rm -f $(1))
-   rmrq = $(if $(1),-@rm -f -r $(1))
-   mkdirq = $(if $(1),-@mkdir -p $(1))
-   rmdirq = $(if $(1),-@rmdir $(1))
-endif
 endif
 
 # COMPILER OPTIONS
@@ -195,4 +178,9 @@ else
 endif
    LINKOPT :=
    STRIPOPT := -x
+endif
+ifdef WINDOWS
+   SODESTDIR := obj/$(PLATFORM)/bin/
+else
+   SODESTDIR := obj/$(PLATFORM)/lib/
 endif
