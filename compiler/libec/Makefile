@@ -98,7 +98,9 @@ all: objdir $(TARGET)
 objdir:
 ifneq "$(wildcard $(OBJ))" "$(OBJ)"
 	$(call mkdirq,$(OBJ))
+ifeq "$(wildcard precompiled)" "precompiled"
 	$(call cpq,$(PRECOMPILED_SOURCES),$(OBJ))
+endif
 endif
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
