@@ -1481,7 +1481,7 @@ class XInterface : Interface
                   XWindowData windowData;
                   activeWindow = (uint)window.windowHandle;
 
-                  if(window == window.parent.activeChild) break;
+                  if(window.parent && window == window.parent.activeChild) break;
                   incref window;
                   //if(window.creationActivation == activate)
                   {
