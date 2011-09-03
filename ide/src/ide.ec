@@ -1253,6 +1253,8 @@ class IDE : Window
       ide.breakpointsView.LoadFromWorkspace();
       ide.watchesView.LoadFromWorkspace();
 
+      findInFilesDialog.projectNodeField.userData = projectView;
+
       {
          char fileName[MAX_LOCATION];
          strcpy(fileName, project.topNode.path);

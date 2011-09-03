@@ -181,6 +181,7 @@ private:
    DataRow inWorkspaceRow;
    FindInFilesMode lastSelectionMode;
    Project lastSelectionProject;
+   ProjectNode lastSelectionProjectNode;
    bool replaceMode;
 
    FindInFilesDialog()
@@ -188,6 +189,7 @@ private:
       GetWorkingDir(currentDirectory, MAX_DIRECTORY);
       FileFixCase(currentDirectory);
       findWhere.path = currentDirectory;
+      findWherePrjNode.AddField(projectNodeField);
    }
 
    ~FindInFilesDialog()
@@ -230,17 +232,61 @@ private:
 
       bool NotifySelect(DropBox control, DataRow row, Modifiers mods)
       {
-         bool disabled = row != inDirectoryRow;
-         findWhere.disabled = disabled;
-         subDirs.disabled = disabled;
+         FindInFilesMode mode = this.mode;
+         bool inDir = mode == directory;
+         bool inWrk = mode == workspace;
+         bool inPrj = mode == project;
+         if(inPrj)
+            lfindWhere.labeledWindow = findWherePrjNode;
+         else
+            lfindWhere.labeledWindow = findWhere;
+         findWhere.visible = !inPrj;
+         findWhere.disabled = !inDir;
+         findWherePrjNode.visible = inPrj;
+         subDirs.disabled = inWrk;
+         llfindWhere.size = { llfindWhere.size.w, llfindWhere.size.h };
+
          if(row)
          {
+            Project prj;
             lastSelectionMode = mode;
-            lastSelectionProject = lastSelectionMode == project ? (Project)row.tag : null;
+            lastSelectionProject = prj = lastSelectionMode == project ? (Project)row.tag : null;
+            if(prj)
+            {
+               DataRow r = null;
+               ProjectNode node = prj.topNode;
+               findWherePrjNode.Clear();
+               ListProjectNodeFolders(node, null);
+
+               if(lastSelectionProjectNode && lastSelectionProjectNode.project == prj)
+                  node = lastSelectionProjectNode;
+
+               for(r = findWherePrjNode.firstRow; r; r = r.next)
+                  if((ProjectNode)r.tag == node)
+                     break;
+               if(r)
+                  findWherePrjNode.SelectRow(r);
+            }
          }
          return true;
       }
    };
+
+   void ListProjectNodeFolders(ProjectNode node, DataRow parentRow)
+   {
+      DataRow row;
+      if(parentRow)
+         row = findWherePrjNode/*parentRow*/.AddRow();
+      else
+         row = findWherePrjNode.AddRow();
+      row.tag = (int)node;
+      row.SetData(null, node);
+      if(node.files)
+      {
+         for(child : node.files; child.type == folder/* || child.type == file*//* || child.type == folderOpen*/)
+            ListProjectNodeFolders(child, row);
+      }
+   }
    
    Label lfindWhere { llfindWhere, this, size.w = 72, labeledWindow = findWhere };
    PathBox findWhere
@@ -248,6 +294,20 @@ private:
       llfindWhere, this, "Find where:", altH, size.h = 24, anchor.right = 0;
       typeExpected = directory, browseDialog = fileDialog;
    };
+   DropBox findWherePrjNode
+   {
+      llfindWhere, this, "Find where:", altH, size.h = 24, anchor.right = 0;
+      visible = false;
+      //collapseControl = true, treeBranches = true;
+
+      bool NotifySelect(DropBox control, DataRow row, Modifiers mods)
+      {
+         if(row)
+            lastSelectionProjectNode = (ProjectNode)row.tag;
+         return true;
+      }
+   };
+   DataField projectNodeField { dataType = "ProjectNode", freeData = false };
    
    Window spacerA { llsubDirs, this, size = { 72, 10 }, clickThrough = true, background = activeBorder, inactive = true };
    Button subDirs
@@ -412,10 +472,10 @@ private:
       }
 
       findIn.disabled = !withWorkspace;
-      disabled = findIn.currentRow != inDirectoryRow;
+      /*disabled = findIn.currentRow != inDirectoryRow;
 
       findWhere.disabled = disabled;
-      subDirs.disabled = disabled;
+      subDirs.disabled = disabled;*/
       
       findContent.Activate();
       return true;
@@ -426,6 +486,9 @@ private:
       char text[2048];
       
       searchThread.active = true;
+      searchThread.project = null;
+      searchThread.projectNode = null;
+      searchThread.subDirs = subDirs.checked;
 
       if(findIn.currentRow == inDirectoryRow)
       {
@@ -433,13 +496,16 @@ private:
          strcpy(searchThread.dir, findWhere.slashPath);
       }
       else if(findIn.currentRow == inWorkspaceRow)
+      {
          searchThread.mode = workspace;
+         searchThread.subDirs = true;
+      }
       else
       {
          searchThread.mode = project;
          searchThread.project = (Project)findIn.currentRow.tag;
+         searchThread.projectNode = (ProjectNode)(findWherePrjNode.currentRow ? findWherePrjNode.currentRow.tag : null);
       }
-      searchThread.subDirs = subDirs.checked;
       //searchThread.nameMatchCase = nameMatchCase.checked;
       //searchThread.nameWholeWord = nameWholeWord.checked;
       searchThread.contentMatchCase = contentMatchCase.checked;
@@ -522,6 +588,7 @@ public:
    FindInFilesDialog findDialog;
    FindInFilesMode mode;
    Project project;
+   ProjectNode projectNode;
    bool replaceMode;
 
    void Abort()
@@ -701,6 +768,7 @@ private:
       {
          int len;
          char path[MAX_LOCATION];
+         bool firtIteration = true;
          Project prj = project;
          ProjectNode stack[1024];
          Iterator<Project> it { ide.workspace.projects };
@@ -712,18 +780,19 @@ private:
                if(!it.Next()) break;
                prj = it.data;
             }
-            stack[1] = prj.topNode;
+            stack[1] = projectNode ? projectNode : prj.topNode;
 
             for(frame = 1; frame && !abort;)
             {
                switch(stack[frame].type)
                {
                   case project:
-                     if(stack[frame].files && stack[frame].files.count)
+                     if((subDirs || firtIteration) && stack[frame].files && stack[frame].files.count)
                      {
                         int lastFrame = frame;
                         frame++;
                         stack[frame] = stack[lastFrame].files.first;
+                        firtIteration = false;
                      }
                      break;
                   case file:
@@ -731,7 +800,7 @@ private:
                      bool relative = true;
                      char fileRelative[MAX_LOCATION];
                      char filePath[MAX_LOCATION];
-                     strcpy(filePath, stack[1].path);
+                     strcpy(filePath, prj.topNode.path);
                      PathCat(filePath, stack[frame].path);
                      PathCat(filePath, stack[frame].name);
                      strcpy(fileRelative, stack[frame].path);
@@ -782,11 +851,12 @@ private:
                      break;
                   }
                   case folder:
-                     if(stack[frame].files && stack[frame].files.count)
+                     if((subDirs || firtIteration) && stack[frame].files && stack[frame].files.count)
                      {
                         int lastFrame = frame;
                         frame++;
                         stack[frame] = stack[lastFrame].files.first;
+                        firtIteration = false;
                      }
                      else
                         stack[frame] = stack[frame].next;
@@ -798,7 +868,9 @@ private:
                while(frame && !stack[frame])
                {
                   frame--;
-                  if(frame)
+                  if(frame == 1 && projectNode && stack[frame] == projectNode)
+                     stack[frame] = null;
+                  else if(frame)
                      stack[frame] = stack[frame].next;
                }
             }
