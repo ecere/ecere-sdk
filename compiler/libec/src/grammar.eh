@@ -248,7 +248,7 @@
 
 
 #if ! defined (YYSTYPE) && ! defined (YYSTYPE_IS_DECLARED)
-#line 42 "grammar.y"
+#line 34 "grammar.y"
 typedef union YYSTYPE {
    SpecifierType specifierType;
    int i;

@@ -2742,3 +2742,13 @@ public void OutputIntlStrings()
       intlStrings.Free();
    }
 }
+
+default extern OldList * ast;
+default extern int yyparse ();
+
+public void SetAST(OldList * list) { ast = list; }
+public OldList * GetAST() { return ast; }
+public void ParseEc()
+{
+   yyparse();
+}

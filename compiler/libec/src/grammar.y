@@ -24,14 +24,6 @@ int defaultMemberAccess = -1;
 
 #define POP_DEFAULT_ACCESS    if(defaultMemberAccess > -1) defaultMemberAccess--;
 
-public void SetAST(OldList * list) { ast = list; }
-public OldList * GetAST() { return ast; }
-
-public void ParseEc()
-{
-   yyparse();
-}
-
 #define uint _uint
 default:
 
@@ -3310,7 +3302,7 @@ string_literal:
    { 
       int len1 = strlen($1);
       int len2 = strlen(yytext);
-      $$ = eSystem_New(len1-1 + len2-1 + 1);
+      $$ = new byte[len1-1 + len2-1 + 1];
       memcpy($$, $1, len1-1);
       memcpy($$ + len1-1, yytext+1, len2);
       delete $1;

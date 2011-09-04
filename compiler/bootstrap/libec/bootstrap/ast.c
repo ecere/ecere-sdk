@@ -4182,6 +4182,25 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgstr %s\n\n", ((ch
 }
 }
 
+extern struct __ecereNameSpace__ecere__sys__OldList * ast;
+
+extern int yyparse();
+
+void SetAST(struct __ecereNameSpace__ecere__sys__OldList * list)
+{
+ast = list;
+}
+
+struct __ecereNameSpace__ecere__sys__OldList * GetAST()
+{
+return ast;
+}
+
+void ParseEc()
+{
+yyparse();
+}
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__GlobalFunction;
 
 struct __ecereNameSpace__ecere__com__GlobalFunction;
@@ -4352,6 +4371,9 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpArray", "Expression
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetTemplateArgExpByName", "Expression GetTemplateArgExpByName(char * paramName, ecere::com::Class curClass, ecere::com::TemplateParameterType tplType)", GetTemplateArgExpByName, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetTemplateArgExp", "Expression GetTemplateArgExp(TemplateParameter param, ecere::com::Class curClass, bool pointer)", GetTemplateArgExp, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputIntlStrings", "void OutputIntlStrings(void)", OutputIntlStrings, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetAST", "void SetAST(ecere::sys::OldList * list)", SetAST, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetAST", "ecere::sys::OldList * GetAST(void)", GetAST, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ParseEc", "void ParseEc(void)", ParseEc, module, 1);
 }
 
 void __ecereUnregisterModule_ast(struct __ecereNameSpace__ecere__com__Instance * module)
