@@ -12,6 +12,9 @@ all: ecp ecc ecs
 libec:
 	@$(call echo,Building 2nd stage libec...)
 ifeq "$(wildcard libec/precompiled)" "libec/precompiled"
+ifneq "$(wildcard $(OBJ))" "$(OBJ)"
+	$(call mkdirq,$(OBJ))
+endif
 	$(call cpq,$(PRECOMPILED_SOURCES),$(OBJ))
 endif
 	cd libec && $(MAKE)
