@@ -50,8 +50,6 @@ SOURCES = src/ast.ec src/copy.ec src/dbpass.ec src/ecdefs.ec src/expression.ec \
 	src/pass0.ec src/pass1.ec src/pass15.ec src/pass16.ec src/pass2.ec src/pass3.ec \
 	src/shortcuts.ec src/type.ec
 
-PRECOMPILED_SOURCES = precompiled/expression.c precompiled/grammar.c precompiled/type.c
-
 RESOURCES =
 
 # TOOLCHAIN
@@ -98,9 +96,6 @@ all: objdir $(TARGET)
 objdir:
 ifneq "$(wildcard $(OBJ))" "$(OBJ)"
 	$(call mkdirq,$(OBJ))
-endif
-ifeq "$(wildcard precompiled)" "precompiled"
-	$(call cpq,$(PRECOMPILED_SOURCES),$(OBJ))
 endif
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)

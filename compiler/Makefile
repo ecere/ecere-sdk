@@ -1,12 +1,19 @@
 .PHONY: all bootstrap clean realclean distclean libec ecp ecc ecs
 .SILENT:
 
+CONFIG := release
+OBJ = obj/$(CONFIG).$(PLATFORM)/
+PRECOMPILED_SOURCES = precompiled/expression.c precompiled/grammar.c precompiled/type.c
+
 include ../include.mk
 
 all: ecp ecc ecs
 
 libec:
 	@$(call echo,Building 2nd stage libec...)
+ifeq "$(wildcard libec/precompiled)" "libec/precompiled"
+	cd libec && $(call cpq,$(PRECOMPILED_SOURCES),$(OBJ))
+endif
 	cd libec && $(MAKE)
 
 ecp: libec
