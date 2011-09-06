@@ -1372,9 +1372,7 @@ private:
             }
          }
          
-         continuedSingleLineComment = false;
-         if(line.count && line.text[line.count - 1] == '\\')
-            continuedSingleLineComment = true;
+         continuedSingleLineComment = inSingleLineComment && (line.count && line.text[line.count - 1] == '\\');
 
          style.inMultiLineComment = inMultiLineComment;
          style.inPrep = inPrep;
@@ -1883,9 +1881,7 @@ private:
          }
          */
          
-         continuedSingleLineComment = false;
-         if(line.count && line.text[line.count - 1] == '\\')
-            continuedSingleLineComment = true;
+         continuedSingleLineComment = inSingleLineComment && (line.count && line.text[line.count - 1] == '\\');
 
          y+=this.space.h;
          if(y > box.bottom) // >=clientSize.h) 
