@@ -1,0 +1,142 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "staticLink",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "staticLink",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "MemoryGuard" : true,
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed"
+         }
+      },
+      {
+         "Name" : "Static",
+         "Options" : {
+            "NoLineNumbers" : true,
+            "Optimization" : "Size",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "ObjectsDirectory" : "",
+            "Libraries" : [
+               "ecereVanilla"
+            ]
+         },
+         "Platforms" : [
+            {
+               "Name" : "win32",
+               "Options" : {
+                  "Libraries" : [
+                     "kernel32",
+                     "user32",
+                     "gdi32",
+                     "winmm",
+                     "mpr",
+                     "imm32",
+                     "z"
+                  ]
+               }
+            }
+         ]
+      }
+   ],
+   "Files" : [
+      "staticLink.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      {
+         "Folder" : "ecere",
+         "Files" : [
+            {
+               "Folder" : "actions",
+               "Files" : [
+                  "/sdk/ecere/res/vanilla/ecere/actions/folderNew.png",
+                  "/sdk/ecere/res/vanilla/ecere/actions/goUp.png"
+               ]
+            },
+            {
+               "Folder" : "devices",
+               "Files" : [
+                  "/sdk/ecere/res/vanilla/ecere/devices/computer.png",
+                  "/sdk/ecere/res/vanilla/ecere/devices/driveHardDisk.png",
+                  "/sdk/ecere/res/vanilla/ecere/devices/driveRemovableMedia.png",
+                  "/sdk/ecere/res/vanilla/ecere/devices/mediaFloppy.png",
+                  "/sdk/ecere/res/vanilla/ecere/devices/mediaOptical.png"
+               ]
+            },
+            {
+               "Folder" : "elements",
+               "Files" : [
+                  "/sdk/ecere/res/vanilla/ecere/elements/areaClose.png",
+                  "/sdk/ecere/res/vanilla/ecere/elements/areaMaximize.png",
+                  "/sdk/ecere/res/vanilla/ecere/elements/areaMinimize.png",
+                  "/sdk/ecere/res/vanilla/ecere/elements/areaRestore.png",
+                  "/sdk/ecere/res/vanilla/ecere/elements/arrowDown.png",
+                  "/sdk/ecere/res/vanilla/ecere/elements/arrowLeft.png",
+                  "/sdk/ecere/res/vanilla/ecere/elements/arrowRight.png",
+                  "/sdk/ecere/res/vanilla/ecere/elements/arrowUp.png",
+                  "/sdk/ecere/res/vanilla/ecere/elements/optionBoxDisabledSelected.png",
+                  "/sdk/ecere/res/vanilla/ecere/elements/optionBoxDown.png",
+                  "/sdk/ecere/res/vanilla/ecere/elements/optionBoxSelected.png",
+                  "/sdk/ecere/res/vanilla/ecere/elements/optionBoxSelectedDown.png",
+                  "/sdk/ecere/res/vanilla/ecere/elements/optionBoxUp.png"
+               ]
+            },
+            {
+               "Folder" : "mimeTypes",
+               "Files" : [
+                  "/sdk/ecere/res/vanilla/ecere/mimeTypes/file.png"
+               ]
+            },
+            {
+               "Folder" : "places",
+               "Files" : [
+                  "/sdk/ecere/res/vanilla/ecere/places/driveRemote.png",
+                  "/sdk/ecere/res/vanilla/ecere/places/folder.png",
+                  "/sdk/ecere/res/vanilla/ecere/places/folderRemote.png",
+                  "/sdk/ecere/res/vanilla/ecere/places/networkServer.png",
+                  "/sdk/ecere/res/vanilla/ecere/places/networkWorkgroup.png"
+               ]
+            },
+            {
+               "Folder" : "status",
+               "Files" : [
+                  "/sdk/ecere/res/vanilla/ecere/status/folderOpen.png"
+               ]
+            }
+         ],
+         "Options" : {
+            "ExcludeFromBuild" : true
+         },
+         "Configurations" : [
+            {
+               "Name" : "Static",
+               "Options" : {
+                  "ExcludeFromBuild" : false
+               }
+            }
+         ]
+      }
+   ]
+}
