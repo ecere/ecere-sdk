@@ -40,7 +40,8 @@
             "ObjectsDirectory" : "",
             "Libraries" : [
                "ecereVanilla"
-            ]
+            ],
+            "Compress" : true
          },
          "Platforms" : [
             {
@@ -54,6 +55,9 @@
                      "mpr",
                      "imm32",
                      "z"
+                  ],
+                  "LibraryDirs" : [
+                     "../../deps/zlib/obj/release.$(PLATFORM)"
                   ]
                }
             }
