@@ -33,9 +33,9 @@ RESOURCES = ../../ecere/res/vanilla/ecere/actions/folderNew.png \
 	../../ecere/res/vanilla/ecere/elements/areaMinimize.png ../../ecere/res/vanilla/ecere/elements/areaRestore.png \
 	../../ecere/res/vanilla/ecere/elements/arrowDown.png ../../ecere/res/vanilla/ecere/elements/arrowLeft.png \
 	../../ecere/res/vanilla/ecere/elements/arrowRight.png ../../ecere/res/vanilla/ecere/elements/arrowUp.png \
-	../../ecere/res/vanilla/ecere/elements/optionBoxDisabledSelected.bmp ../../ecere/res/vanilla/ecere/elements/optionBoxDown.bmp \
-	../../ecere/res/vanilla/ecere/elements/optionBoxSelected.bmp ../../ecere/res/vanilla/ecere/elements/optionBoxSelectedDown.bmp \
-	../../ecere/res/vanilla/ecere/elements/optionBoxUp.bmp ../../ecere/res/vanilla/ecere/places/driveRemote.png \
+	../../ecere/res/vanilla/ecere/elements/optionBoxDisabledSelected.png ../../ecere/res/vanilla/ecere/elements/optionBoxDown.png \
+	../../ecere/res/vanilla/ecere/elements/optionBoxSelected.png ../../ecere/res/vanilla/ecere/elements/optionBoxSelectedDown.png \
+	../../ecere/res/vanilla/ecere/elements/optionBoxUp.png ../../ecere/res/vanilla/ecere/places/driveRemote.png \
 	../../ecere/res/vanilla/ecere/places/folder.png ../../ecere/res/vanilla/ecere/places/folderRemote.png \
 	../../ecere/res/vanilla/ecere/places/networkServer.png ../../ecere/res/vanilla/ecere/places/networkWorkgroup.png \
 	../../ecere/res/vanilla/ecere/status/folderOpen.png
@@ -128,11 +128,10 @@ else
 endif
 	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/actions/folderNew.png ../../ecere/res/vanilla/ecere/actions/goUp.png "ecere/actions"
 	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/devices/computer.png ../../ecere/res/vanilla/ecere/devices/driveHardDisk.png ../../ecere/res/vanilla/ecere/devices/driveRemovableMedia.png ../../ecere/res/vanilla/ecere/devices/mediaFloppy.png ../../ecere/res/vanilla/ecere/devices/mediaOptical.png "ecere/devices"
-	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/elements/areaClose.png ../../ecere/res/vanilla/ecere/elements/areaMaximize.png ../../ecere/res/vanilla/ecere/elements/areaMinimize.png ../../ecere/res/vanilla/ecere/elements/areaRestore.png ../../ecere/res/vanilla/ecere/elements/arrowDown.png ../../ecere/res/vanilla/ecere/elements/arrowLeft.png ../../ecere/res/vanilla/ecere/elements/arrowRight.png ../../ecere/res/vanilla/ecere/elements/arrowUp.png ../../ecere/res/vanilla/ecere/elements/optionBoxDisabledSelected.bmp ../../ecere/res/vanilla/ecere/elements/optionBoxDown.bmp "ecere/elements"
-	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/elements/optionBoxSelected.bmp ../../ecere/res/vanilla/ecere/elements/optionBoxSelectedDown.bmp ../../ecere/res/vanilla/ecere/elements/optionBoxUp.bmp "ecere/elements"
+	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/elements/areaClose.png ../../ecere/res/vanilla/ecere/elements/areaMaximize.png ../../ecere/res/vanilla/ecere/elements/areaMinimize.png ../../ecere/res/vanilla/ecere/elements/areaRestore.png ../../ecere/res/vanilla/ecere/elements/arrowDown.png ../../ecere/res/vanilla/ecere/elements/arrowLeft.png ../../ecere/res/vanilla/ecere/elements/arrowRight.png ../../ecere/res/vanilla/ecere/elements/arrowUp.png ../../ecere/res/vanilla/ecere/elements/optionBoxDisabledSelected.png ../../ecere/res/vanilla/ecere/elements/optionBoxDown.png "ecere/elements"
+	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/elements/optionBoxSelected.png ../../ecere/res/vanilla/ecere/elements/optionBoxSelectedDown.png ../../ecere/res/vanilla/ecere/elements/optionBoxUp.png "ecere/elements"
 	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/places/driveRemote.png ../../ecere/res/vanilla/ecere/places/folder.png ../../ecere/res/vanilla/ecere/places/folderRemote.png ../../ecere/res/vanilla/ecere/places/networkServer.png ../../ecere/res/vanilla/ecere/places/networkWorkgroup.png "ecere/places"
 	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/status/folderOpen.png "ecere/status"
-
 
 # SYMBOL RULES
 
