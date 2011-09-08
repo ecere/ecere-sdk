@@ -708,20 +708,29 @@ public class TabControl : Window
 public class Tab : Window
 {
    TabButton button;
+   TabControl tabControl;
 
    //borderStyle = contour;
    //background = lightBlue;
    tabCycle = true;
 
+   watch(parent)
+   {
+      if(parent && eClass_IsDerived(parent._class, class(TabControl)))
+      {
+         tabControl = (TabControl)parent;
+         tabControl.AddTab(this);
+      }
+      else if(!parent && tabControl)
+      {
+         tabControl.RemoveTab(this);
+         tabControl = null;
+      }
+   };
+
    public property TabControl tabControl
    {
-      set
-      {
-         if(value)
-            value.AddTab(this);
-         else if(parent)
-            ((TabControl)parent).RemoveTab(this);
-      }
+      set { parent = value; }
       get { return (TabControl)parent; }
    }
 
