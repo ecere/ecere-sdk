@@ -1081,6 +1081,7 @@ private:
       int numErrors = 0, numWarnings = 0;
       bool loggedALine = false;
       CompilerConfig compiler = GetCompilerConfig();
+      char * configName = this.configName;
       int lenMakeCommand = strlen(compiler.makeCommand);
       
       char cppCommand[MAX_LOCATION];
