@@ -8825,7 +8825,7 @@ public:
 
             firewatchers;
          }
-         else
+         else if(this)
             style.hidden = !value;
       }
 
