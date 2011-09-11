@@ -4,9 +4,6 @@ public import static "ecere"
 public import "ecere"
 #endif
 
-default:
-private:
-
 static String countryNames[CountryCode] =
 {
    "(none)",
@@ -281,8 +278,6 @@ public class FlagCollection
    ~FlagCollection() { flags.Free(); }
 }
 
-static CountryCode FirstCountryCode = AD;
-static CountryCode LastCountryCode = ZW;
 public enum CountryCode
 {
    none,
@@ -318,12 +313,7 @@ public enum CountryCode
 
    char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
-      char * tmp = tempString ? tempString : new char[4];
-      tmp[0] = '\0';
-      if(this >= FirstCountryCode && this <= LastCountryCode)
-         // is this extern int __ecereVMethodID_class_OnGetString; ?
-         ((char *(*)())(void *)class(CountryCode).base._vTbl[4])(class(CountryCode), &this, tmp, null, null); 
-      return tmp;
+      return name;
    }
 
    void OnDisplay(Surface surface, int x, int y, int width, FlagCollection flagCollection, Alignment alignment, DataDisplayFlags flags)
@@ -472,11 +462,7 @@ public enum CASubdivisionCode
 
    char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
-      char * tmp = tempString ? tempString : new char[4];
-      tmp[0] = '\0';
-      if(this >= FirstCASubdivisionCode && this <= LastCASubdivisionCode)
-         ((char *(*)())(void *)class(CASubdivisionCode).base._vTbl[4])(class(CASubdivisionCode), &this, tmp, null, null); 
-      return tmp;
+      return name;
    }
 
 public:
@@ -569,11 +555,7 @@ public enum USSubdivisionCode
 
    char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
-      char * tmp = tempString ? tempString : new char[4];
-      tmp[0] = '\0';
-      if(this >= FirstUSSubdivisionCode && this <= LastUSSubdivisionCode)
-         ((char *(*)())(void *)class(USSubdivisionCode).base._vTbl[4])(class(USSubdivisionCode), &this, tmp, null, null); 
-      return tmp;
+      return name;
    }
 
 public:
