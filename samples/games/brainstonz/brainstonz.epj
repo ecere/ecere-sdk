@@ -34,11 +34,11 @@
    ],
    "ResourcesPath" : "",
    "Resources" : [
-      "board.jpg",
-      "black.png",
-      "white.png",
-      "arrow.png",
-      "remove.png",
-      "smile.png"
+      "res/arrow.png",
+      "res/black.png",
+      "res/board.jpg",
+      "res/remove.png",
+      "res/smile.png",
+      "res/white.png"
    ]
 }

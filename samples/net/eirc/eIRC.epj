@@ -1,59 +1,49 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "eIRC",
+   "Options" : {
+      "Warnings" : "All",
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : true,
+      "Compress" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "TargetFileName" : "eIRC",
+            "TargetDirectory" : "debug",
+            "ObjectsDirectory" : "debug"
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "TargetFileName" : "eIRC",
+            "TargetDirectory" : "release",
+            "ObjectsDirectory" : "release"
+         }
+      }
+   ],
+   "Files" : [
+      "console.ec",
+      "eIRC.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
 
-ECERE Project File
-
-Version 0.1a
-
-Target "eIRC"
-
-   Configurations
-
-    + Debug
-
-         Compiler Options
-
-            Intermediate Directory = debug
-            Debug = True
-            Optimize = None
-            Profile = False
-            MemoryGuard = False
-            AllWarnings = True
-
-            Preprocessor Definitions = _DEBUG
-            Strict Name Spaces = False
-
-         Linker Options
-
-            Target Name = eIRC
-            Target Type = Executable
-            Target Directory = debug
-            Console = False
-            Compress = False
-
-            Libraries = ecere
-
-    + Release
-
-         Compiler Options
-
-            Intermediate Directory = release
-            Debug = False
-            Optimize = Speed
-            Profile = False
-            MemoryGuard = False
-            AllWarnings = True
-            Strict Name Spaces = False
-
-         Linker Options
-
-            Target Name = eIRC
-            Target Type = Executable
-            Target Directory = release
-            Console = False
-            Compress = False
-
-            Libraries = ecere
-
-   Files
-
-    - console.ec
-    - eIRC.ec
+   ]
+}
