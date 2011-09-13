@@ -296,7 +296,7 @@ public:
    {
       set
       {
-         if(this)
+         if(this && (value != this))
          {
             DataRow search;
             DataRow after = value ? value.subRows.last : listBox.rows.last;

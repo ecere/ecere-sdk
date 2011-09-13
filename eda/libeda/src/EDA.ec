@@ -475,7 +475,7 @@ public:
          data = (int64)new0 byte[type.structSize];
       ((bool (*)())(void *)GetData)(this, fld, type, (type.type == structClass) ? (void *)data : &data);
 
-      if((type.type == systemClass || type.type == unitClass || type.type == bitClass)) // && type.typeSize > 4)
+      if((type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
          dr.SetData(df, (void *)&data);
       else
          dr.SetData(df, (void *)data);

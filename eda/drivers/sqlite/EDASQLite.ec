@@ -762,7 +762,7 @@ class SQLiteTable : Table
                strcat(order, "`");
                strcat(order, fIndex->field.name);
                strcat(order, "`");
-               if(fIndex->order == descending) strcat(command, " DESC");
+               if(fIndex->order == descending) strcat(order, " DESC");
                strcat(command, order);
             }
             strcat(command, ";");
