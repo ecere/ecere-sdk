@@ -80,7 +80,6 @@ enum SplinePart { splinePoint, splineA, splineB };
 public class FrameTrack : struct
 {
    FrameTrack prev, next;
-   bool loop;
    FrameTrackBits type;
    unsigned int numKeys;
    FrameKey * keys;
@@ -746,21 +745,19 @@ public:
       return null;
    }
 
-   void AddName(Object object, char * name)
+   bool AddName(Object object, char * name)
    {
-      // TODO: Watch Out For this
-      // Object object = children.FindName(name, false);
+      bool result;
       if(this)
       {
          char * newName = CopyString(name);
          object.name = newName;
-         if(object)
-            children.AddName(object);
-         else
-            children.Add(object);
-         object.parent = this;
+         result = children.AddName(object);
+         if(result)
+            object.parent = this;
          object.flags.transform = true;
       }
+      return result;
    }
 
    // TODO: Add support to Merge Vertex Colors mesh feature

@@ -92,7 +92,7 @@ typedef struct
    uint16 indices[3];
    uint16 oldIndices[3];
    uint smoothGroups;
-   byte done;
+   bool done:1;
 } Face;
 
 struct FileInfo
@@ -109,6 +109,22 @@ struct FileInfo
    Face * faces;
    char textureDirectory[MAX_DIRECTORY];
 };
+
+#define SWAP_WORD(word) (((unsigned short)(word) & 0x00ff) << 8) \
+                      | (((unsigned short)(word) & 0xff00) >> 8)
+
+#define SWAP_DWORD(dword) ((((unsigned int)(dword) & 0x000000ff) << 24) \
+                         | (((unsigned int)(dword) & 0x0000ff00) <<  8) \
+                         | (((unsigned int)(dword) & 0x00ff0000) >>  8) \
+                         | (((unsigned int)(dword) & 0xff000000) >> 24))
+
+#ifndef __BIG_ENDIAN__
+#define BIGENDSWAP_WORD(word)
+#define BIGENDSWAP_DWORD(dword)
+#else
+#define BIGENDSWAP_WORD(word)      (*(uint16 *)(&(word)))  = SWAP_WORD((*(uint16 *)(&(word))));
+#define BIGENDSWAP_DWORD(dword)    (*(uint *)(&(dword))) = SWAP_DWORD((*(uint *)(&(dword))));
+#endif
 
 // Zero Terminated String
 static int ReadASCIIZ(File f, char ** string)
@@ -131,6 +147,7 @@ static float ReadFloat(File f)
 {
    float floatValue;
    f.Read(&floatValue, sizeof(float), 1);
+   BIGENDSWAP_DWORD(floatValue);
    return floatValue;
 }
 
@@ -138,6 +155,7 @@ static uint16 ReadWORD(File f)
 {
    uint16 wordValue;
    f.Read(&wordValue, sizeof(uint16), 1);
+   BIGENDSWAP_WORD(floatValue);
    return wordValue;
 }
 
@@ -145,6 +163,7 @@ static uint ReadDWORD(File f)
 {
    uint dwordValue;
    f.Read(&dwordValue, sizeof(uint), 1);
+   BIGENDSWAP_DWORD(floatValue);
    return dwordValue;
 }
 
@@ -153,10 +172,8 @@ static bool ReadChunks(bool (* chunkParser)(FileInfo * info, void * data), FileI
 {
    for(;info->pos < info->end;)
    {
-      FileInfo childInfo;
+      FileInfo childInfo = *info;
       uint length;
-
-      childInfo = *info;
 
       childInfo.parent = info;
 
@@ -181,12 +198,9 @@ static bool ReadRGB(FileInfo * info, ColorRGB * rgb)
    if(info->chunkId == RGB_BYTE || info->chunkId == RGB_BYTE_GAMMA)
    {
       byte value;
-      info->f.Getc(&value);
-      rgb->r = value / 255.0f;
-      info->f.Getc(&value);
-      rgb->g = value / 255.0f;
-      info->f.Getc(&value);
-      rgb->b = value / 255.0f;
+      info->f.Getc(&value); rgb->r = value / 255.0f;
+      info->f.Getc(&value); rgb->g = value / 255.0f;
+      info->f.Getc(&value); rgb->b = value / 255.0f;
    }
    else if(info->chunkId == RGB_FLOAT || info->chunkId == RGB_FLOAT_GAMMA)
    {
@@ -228,7 +242,7 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
 {
    int c;
    Face * faces = info->faces;
-   int nFaces = info->nFaces;
+   //int nFaces = info->nFaces;
    int nVertices = mesh.nVertices;
    int index;
    int nNewVertices;
@@ -656,15 +670,12 @@ static bool ReadTriMesh(FileInfo * info, Object object)
          yAxis.Normalize(yAxis);
          zAxis.Normalize(zAxis);
 
-
          orth.CrossProduct(yAxis, zAxis);
          if((Abs(orth.x) > 0.00001 && Sgn(orth.x) != Sgn(xAxis.x)) || 
             (Abs(orth.y) > 0.00001 && Sgn(orth.y) != Sgn(xAxis.y)) || 
             (Abs(orth.z) > 0.00001 && Sgn(orth.z) != Sgn(xAxis.z)))
          {
-            // TODO: The ^= operator messes up the other flags
             object.flags.flipWindings ^= true;
-            // object.flags.flipWindings = !object.flags.flipWindings;
             xAxis = orth;
          }
 
@@ -674,7 +685,6 @@ static bool ReadTriMesh(FileInfo * info, Object object)
             (Abs(orth.z) > 0.00001 && Sgn(orth.z) != Sgn(yAxis.z)))
          {
             object.flags.flipWindings ^= true;
-            //object.flags.flipWindings = !object.flags.flipWindings;
             yAxis = orth;
          }
 
@@ -684,7 +694,6 @@ static bool ReadTriMesh(FileInfo * info, Object object)
             (Abs(orth.z) > 0.00001 && Sgn(orth.z) != Sgn(zAxis.z)))
          {
             object.flags.flipWindings ^= true;
-            // object.flags.flipWindings = !object.flags.flipWindings;
             zAxis = orth;
          }
 
@@ -740,7 +749,6 @@ static bool ReadTriMesh(FileInfo * info, Object object)
             mesh.vertices[c].y -= object.pivot.y;
             mesh.vertices[c].z -= object.pivot.z;
          }
-         
          break;
       }
    }
@@ -792,7 +800,6 @@ static bool ReadMap(FileInfo * info, Material mat)
          
          if(mat.baseMap)
          {
-            
             if(!mat.baseMap.displaySystem && info->parent->chunkId == MAT_MAPOPACITY && opacityMap)
             {
                unsigned int c;
@@ -1608,7 +1615,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
                object.name = block.dummyName;
                info->rootObject.children.AddName(object);
                object.transform.scaling = { 1, 1, 1 }; 
-               object.flags.camera = true;
+               object.flags.light = true;
             }
             else
             {
@@ -1621,7 +1628,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
                   object.flags = model.flags;
                   object.flags.ownMesh = false;
                   object.light = model.light;
-                  object.flags.camera = true;
+                  object.flags.light = true;
                   info->rootObject.children.AddName(object);
                }
                delete block.dummyName;
