@@ -3755,11 +3755,15 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                sourceExp.expType = null;
                ProcessExpressionType(sourceExp);
 
-               FreeType(sourceExp.expType);
-               sourceExp.expType = dest;
+               // In Debugger, this helps with addresses (e.g. null pointers) that end up casted to a void *: keeps a classType instead of a pointerType
+               if(!inCompiler)
+               {
+                  FreeType(sourceExp.expType);
+                  sourceExp.expType = dest;
+               }
 
                FreeType(source);
-               // FreeType(dest);
+               if(inCompiler) FreeType(dest);
 
                return true;
             }
