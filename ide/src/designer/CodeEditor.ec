@@ -3153,7 +3153,13 @@ class CodeEditor : Window
                                        
                                                                         if(propertyClass.type == structClass || propertyClass.type == normalClass || propertyClass.type == noHeadClass)
                                                                         {
-                                                                           Expression computed = CopyExpression(member.initializer.exp);
+                                                                           Expression computed;
+#ifdef _DEBUG
+                                                                           /*char debugExpString[4096];
+                                                                           debugExpString[0] = '\0';
+                                                                           PrintExpression(member.initializer.exp, debugExpString);*/
+#endif
+                                                                           computed = CopyExpression(member.initializer.exp);
                                                                            if(computed)
                                                                            {
                                                                               ComputeExpression(computed);

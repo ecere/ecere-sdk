@@ -563,7 +563,7 @@ public void PrePreProcessClassDefinitions()
          if(external.type == classExternal)
          {
             ClassDefinition _class = external._class;
-            if(_class.definitions && !_class.symbol.registered)
+            if(_class.definitions && (!_class.symbol.registered || !inCompiler))
             {
                ProcessClass(normalClass, _class.definitions, _class.symbol, _class.baseSpecs, null, _class.loc, ast, external.prev, null, _class.declMode);
                _class.symbol.isStatic = _class.declMode == staticAccess;

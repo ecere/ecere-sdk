@@ -188,7 +188,10 @@ void DebugComputeExpression(Expression exp)
                   */}
                }
                else
+               {
                   exp.type = evalError;
+                  exp.constant = PrintHexUInt(address);
+               }
                break;
             case shortType:
             case intType:
@@ -211,7 +214,10 @@ void DebugComputeExpression(Expression exp)
                   }
                }
                else
+               {
+                  exp.constant = CopyString("");
                   exp.type = evalError;
+               }
                break;
             case classType:
                if(isPointer)
@@ -252,11 +258,17 @@ void DebugComputeExpression(Expression exp)
                if(evaluation)
                   ;
                else
+               {
+                  exp.constant = CopyString("");
                   exp.type = evalError;
+               }
                break;
          }
          if(evalError != dummyExp)
+         {
             exp.type = evalError;
+            exp.constant = CopyString("");
+         }
          else
          {
             if(evaluation)
@@ -328,7 +340,10 @@ void DebugComputeExpression(Expression exp)
                   sprintf(temp, "%c%s", exp.op.op, exp.op.exp2.identifier.string);
                   evaluation = Debugger::EvaluateExpression(temp, &evalError);
                   if(evalError != dummyExp)
+                  {
                      exp.type = evalError;
+                     exp.constant = CopyString("");
+                  }
                   else if(evaluation)
                   {
                      expNew = ParseExpressionString(evaluation);
@@ -452,6 +467,7 @@ void DebugComputeExpression(Expression exp)
                         if(evalError != dummyExp)
                         {
                            exp1.type = evalError;
+                           exp.constant = CopyString("");
                            expError = exp1;
                         }
                         else
@@ -615,7 +631,10 @@ void DebugComputeExpression(Expression exp)
                   address += offset * size;
                   evaluation = Debugger::ReadMemory(address, size, format, &evalError);
                   if(evalError != dummyExp)
+                  {
                      exp.type = evalError;
+                     exp.constant = CopyString("");
+                  }
                   else if(evaluation)
                   {
                      expNew = ParseExpressionString(evaluation);
@@ -991,7 +1010,7 @@ void DebugComputeExpression(Expression exp)
                         uint address;
                         Expression prev = exp.prev, next = exp.next;
                         char format; 
-                        int size = ComputeTypeSize(member.dataType);
+                        int size;
                         Expression expNew;
                         TypeKind kind = dummyType;
                         Type dataType = member.dataType;
@@ -1002,6 +1021,8 @@ void DebugComputeExpression(Expression exp)
                         if(dataType.kind == classType && dataType._class.registered && 
                               (dataType._class.registered.type == enumClass || dataType._class.registered.type == bitClass || dataType._class.registered.type == unitClass))
                            dataType = dataType._class.registered.dataType;
+
+                        size = ComputeTypeSize(member.dataType);
 
                         format = GetGdbFormatChar(dataType);
                         //if(memberExp.address)

@@ -2283,7 +2283,8 @@ class Debugger
                      }
                      break;
                   case memoryErrorExp:
-                     sprintf(watchmsg, "Memory can't be read at %s", (exp.type == constantExp) ? exp.constant : null);
+                     // Need to ensure when set to memoryErrorExp, constant is set
+                     sprintf(watchmsg, "Memory can't be read at %s", /*(exp.type == constantExp) ? */exp.constant /*: null*/);
                      break;
                   case dereferenceErrorExp:
                      sprintf(watchmsg, "Dereference failure for \"%s\"", wh.expression);
@@ -2474,8 +2475,11 @@ class Debugger
                      else
                      {
                         char tempString[256];
-                        sprintf(watchmsg, "Evaluation failed for \"%s\" of type \"%s\"", wh.expression, 
-                              exp.type.OnGetString(tempString, null, null));
+                        if(exp.member.memberType == propertyMember)
+                           sprintf(watchmsg, "Missing property evaluation support for \"%s\"", wh.expression);
+                        else
+                           sprintf(watchmsg, "Evaluation failed for \"%s\" of type \"%s\"", wh.expression, 
+                                 exp.type.OnGetString(tempString, null, null));
                      }
                      break;
                }
@@ -2522,6 +2526,10 @@ class Debugger
    {
       eval.active = true;
       eval.error = none;
+#ifdef _DEBUG
+      if(!size)
+         printf("GdbReadMemoryString called with size = 0!\n");
+#endif
       GdbCommand(false, "-data-read-memory 0x%08x %c, %d, %d, %d", address, format, size, rows, cols);
       if(eval.active)
          ide.outputView.debugBox.Logf("Debugger Error: GdbReadMemoryString\n");
@@ -2533,6 +2541,10 @@ class Debugger
       eval.active = true;
       eval.error = none;
       GdbCommand(false, "-data-read-memory 0x%08x %c, 1, 1, %d", address, 'u', bytes);
+#ifdef _DEBUG
+      if(!bytes)
+         printf("GdbReadMemory called with bytes = 0!\n");
+#endif
       if(eval.active)
          ide.outputView.debugBox.Logf("Debugger Error: GdbReadMemory\n");
       else if(eval.result && strcmp(eval.result, "N/A"))

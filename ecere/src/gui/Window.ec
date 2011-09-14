@@ -219,7 +219,8 @@ public /*private */struct Extent : OldList //FastList
 
       // Clear();
       Empty();
-      FASTLIST_LOOP(source, extentBox)
+      //FASTLIST_LOOP(source, extentBox)
+      for(extentBox = (BoxItem)source.first; extentBox; extentBox = (BoxItem)extentBox.next)
          AddBox(extentBox.box);
    }
 
@@ -228,8 +229,10 @@ public /*private */struct Extent : OldList //FastList
       // Clip all boxes of extent against inside of the new box
       BoxItem extentBox, next;
 
-      FASTLIST_LOOPN(this, extentBox, next)
+      //FASTLIST_LOOPN(this, extentBox, next)   // Macros still mess up the parser!
+      for(extentBox = (BoxItem)this.first; extentBox; extentBox = next)
       {
+         next = (BoxItem)extentBox.next;
          if(box.left > extentBox.box.left) extentBox.box.left = box.left;
          if(box.top > extentBox.box.top) extentBox.box.top = box.top;
          if(box.right < extentBox.box.right) extentBox.box.right = box.right;
@@ -246,7 +249,7 @@ public /*private */struct Extent : OldList //FastList
       temp.Copy(this);
       Empty();
       
-      FASTLIST_LOOP(temp, extentBox)
+      for(extentBox = (BoxItem)temp.first; extentBox; extentBox = (BoxItem)extentBox.next)
       {
          if(extentBox.box.left < box.right && extentBox.box.right > box.left && 
             extentBox.box.top < box.bottom && extentBox.box.bottom > box.top)
@@ -312,7 +315,7 @@ public /*private */struct Extent : OldList //FastList
       BoxItem extentBox, next;
 
       // First pass: check if this box is not already covered by one of the extent's box
-      FASTLIST_LOOP(this, extentBox)
+      for(extentBox = (BoxItem)this.first; extentBox; extentBox = (BoxItem)extentBox.next)
       {
          if(extentBox.box.left <= box.left && extentBox.box.right >= box.right && 
             extentBox.box.top <= box.top && extentBox.box.bottom >= box.bottom)
@@ -323,8 +326,9 @@ public /*private */struct Extent : OldList //FastList
       }
         
       // Second pass: only keep boxes not completely covered in the new box
-      FASTLIST_LOOPN(this, extentBox, next)
+      for(extentBox = (BoxItem)this.first; extentBox; extentBox = next)
       {
+         next = (BoxItem)extentBox.next;
          if(extentBox.box.left >= box.left && extentBox.box.right <= box.right &&
             extentBox.box.top >= box.top && extentBox.box.bottom <= box.bottom)
             Delete(extentBox);
@@ -337,7 +341,7 @@ public /*private */struct Extent : OldList //FastList
       if(box.bottom >= box.top && box.right >= box.left)
       {
          // Optimization: if the resulting boxes touch, add them smarter
-         FASTLIST_LOOP(this, extentBox)
+         for(extentBox = (BoxItem)this.first; extentBox; extentBox = (BoxItem)extentBox.next)
          {
             if(box.top == extentBox.box.top && box.bottom == extentBox.box.bottom)
             {
@@ -377,7 +381,7 @@ public /*private */struct Extent : OldList //FastList
    {
       BoxItem extentBox;
 
-      FASTLIST_LOOP(b, extentBox)
+      for(extentBox = (BoxItem)b.first; extentBox; extentBox = (BoxItem)extentBox.next)
          UnionBox(extentBox.box, temp);
    }
 
@@ -388,7 +392,7 @@ public /*private */struct Extent : OldList //FastList
 
       Empty();
 
-      FASTLIST_LOOP(b, extentBox)
+      for(extentBox = (BoxItem)b.first; extentBox; extentBox = (BoxItem)extentBox.next)
       {
          temp2.Copy(temp);
          temp2.IntersectBox(extentBox.box);
@@ -401,14 +405,14 @@ public /*private */struct Extent : OldList //FastList
    void Exclusion(Extent b, Extent temp)
    {
       BoxItem extentBox;   
-      FASTLIST_LOOP(b, extentBox)
+      for(extentBox = (BoxItem)b.first; extentBox; extentBox = (BoxItem)extentBox.next)
          ExcludeBox(extentBox.box, temp);
    }
 
    void Offset(int x, int y)
    {
       BoxItem extentBox;
-      FASTLIST_LOOP(this, extentBox)
+      for(extentBox = (BoxItem)this.first; extentBox; extentBox = (BoxItem)extentBox.next)
       {
          extentBox.box.left += x;
          extentBox.box.top += y;
@@ -2809,7 +2813,7 @@ private:
                dirty->Empty();
 
                // Will need scrolledArea.x & scrolledArea.y to support multiple scrolls
-               FASTLIST_LOOP(scrollExtent, scrollBox)
+               for(scrollBox = (BoxItem)scrollExtent.first; scrollBox; scrollBox = (BoxItem)scrollBox.next)
                   display.Scroll(scrollBox.box, scrolledArea.x, scrolledArea.y, dirty);
 
                scrolledArea.x = 0;
@@ -2896,7 +2900,7 @@ private:
             printf("\n\nRendering %s (%x):\n------------------------------------------\n", _class.name, this);*/
 #endif
             
-         FASTLIST_LOOP(renderArea, extentBox)
+         for(extentBox = (BoxItem)renderArea.first; extentBox; extentBox = (BoxItem)extentBox.next)
          {
             Box box = extentBox.box;
 
@@ -2928,7 +2932,8 @@ private:
       {
          // TO DO: There's an issue about draw over children...
          // TO DO: Don't wanna go through this if method isn't used
-         FASTLIST_LOOP(/*renderArea */overRenderArea, extentBox)
+         for(extentBox = (BoxItem)overRenderArea.first; extentBox; extentBox = (BoxItem)extentBox.next)
+         //FASTLIST_LOOP(/*renderArea */overRenderArea, extentBox)
          {
             Box box = extentBox.box;
 
@@ -2999,7 +3004,8 @@ private:
             //printf("\n\nUpdate:\n------------------------------------------\n");
 #endif
             
-            FASTLIST_LOOP(updateExtent, extentBox)
+            //FASTLIST_LOOP(updateExtent, extentBox)
+            for(extentBox = (BoxItem)updateExtent.first; extentBox; extentBox = (BoxItem)extentBox.next)
             {
 #ifdef _DEBUG
                /*printf("Updating (%d, %d) - (%d, %d)\n", 
@@ -3073,8 +3079,9 @@ private:
             {
                BoxItem extentBox, next;
                BoxItem first = (BoxItem)ACCESS_ITEM(dirtyBack, dirtyBack.first);
-               FASTLIST_LOOPN(dirtyBack, extentBox, next)
+               for(extentBox = (BoxItem)dirtyBack.first; extentBox; extentBox = next)
                {
+                  next = (BoxItem)extentBox.next;
                   if(extentBox != first)
                   {
                      if(extentBox.box.left < first.box.left)

@@ -824,8 +824,13 @@ public void ImportModule(char * name, ImportType importType, AccessMode importAc
             {
                for(dir : sourceDirs)
                {
+                  char configDir[MAX_FILENAME];
                   strcpy(symFile, dir);
-                  PathCat(symFile, "Debug");
+                  // PathCat(symFile, "Debug");
+                  PathCat(symFile, "obj");
+                  sprintf(configDir, "debug.%s", (GetRuntimePlatform() == win32) ? "win32" : "linux");
+                  PathCat(symFile, configDir);
+
                   PathCat(symFile, name);
                   ChangeExtension(symFile, "sym", symFile);
                   if(FileExists(symFile))

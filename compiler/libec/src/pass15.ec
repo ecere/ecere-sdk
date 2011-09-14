@@ -461,6 +461,7 @@ void ComputeClassMembers(Class _class, bool isMember)
    {
       int c;
       int unionMemberOffset = 0;
+      int bitFields = 0;
 
       if(!member && _class.destructionWatchOffset)
          _class.memberOffset += sizeof(OldList);
@@ -516,7 +517,7 @@ void ComputeClassMembers(Class _class, bool isMember)
                else if(dataMember.type == normalMember && dataMember.dataType)
                {
                   int size;
-                  int alignment;
+                  int alignment = 0;
 
                   // Prevent infinite recursion
                   if(dataMember.dataType.kind != classType || 
@@ -524,8 +525,55 @@ void ComputeClassMembers(Class _class, bool isMember)
                      _class.type != structClass)))
                      ComputeTypeSize(dataMember.dataType);
 
-                  size = dataMember.dataType.size;
-                  alignment = dataMember.dataType.alignment;
+                  if(dataMember.dataType.bitFieldCount)
+                  {
+                     bitFields += dataMember.dataType.bitFieldCount;
+                     size = 0;
+                  }
+                  else
+                  {
+                     if(bitFields)
+                     {
+                        int size = (bitFields + 7) / 8;
+
+                        if(isMember)
+                        {
+                           // TESTING THIS PADDING CODE
+                           if(alignment)
+                           {
+                              member.structAlignment = Max(member.structAlignment, alignment);
+
+                              if(member.memberOffset % alignment)
+                                 member.memberOffset += alignment - (member.memberOffset % alignment);
+                           }
+
+                           dataMember.offset = member.memberOffset;
+                           if(member.type == unionMember)
+                              unionMemberOffset = Max(unionMemberOffset, dataMember.dataType.size);
+                           else
+                           {
+                              member.memberOffset += size;
+                           }
+                        }
+                        else
+                        {
+                           // TESTING THIS PADDING CODE
+                           if(alignment)
+                           {
+                              _class.structAlignment = Max(_class.structAlignment, alignment);
+
+                              if(_class.memberOffset % alignment)
+                                 _class.memberOffset += alignment - (_class.memberOffset % alignment);
+                           }
+
+                           dataMember.offset = _class.memberOffset;
+                           _class.memberOffset += size;
+                        }
+                        bitFields = 0;
+                     }
+                     size = dataMember.dataType.size;
+                     alignment = dataMember.dataType.alignment;
+                  }
 
 #ifdef _DEBUG
                   if(!size)
@@ -589,6 +637,43 @@ void ComputeClassMembers(Class _class, bool isMember)
                   }
                }
             }
+         }
+         if(bitFields)
+         {
+            int alignment = 0;
+            int size = (bitFields + 7) / 8;
+
+            if(isMember)
+            {
+               // TESTING THIS PADDING CODE
+               if(alignment)
+               {
+                  member.structAlignment = Max(member.structAlignment, alignment);
+
+                  if(member.memberOffset % alignment)
+                     member.memberOffset += alignment - (member.memberOffset % alignment);
+               }
+
+               if(member.type == unionMember)
+                  unionMemberOffset = Max(unionMemberOffset, dataMember.dataType.size);
+               else
+               {
+                  member.memberOffset += size;
+               }
+            }
+            else
+            {
+               // TESTING THIS PADDING CODE
+               if(alignment)
+               {
+                  _class.structAlignment = Max(_class.structAlignment, alignment);
+
+                  if(_class.memberOffset % alignment)
+                     _class.memberOffset += alignment - (_class.memberOffset % alignment);
+               }
+               _class.memberOffset += size;
+            }
+            bitFields = 0;
          }
       }
       if(member && member.type == unionMember)
@@ -3670,8 +3755,11 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                sourceExp.expType = null;
                ProcessExpressionType(sourceExp);
 
+               FreeType(sourceExp.expType);
+               sourceExp.expType = dest;
+
                FreeType(source);
-               FreeType(dest);
+               // FreeType(dest);
 
                return true;
             }

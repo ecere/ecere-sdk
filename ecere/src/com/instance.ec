@@ -1870,6 +1870,7 @@ static void FixDerivativesBase(Class base, Class mod)
       Class enumBase = null;
       char * dataTypeString = null;
       Class baseClass;
+      uint offsetBefore = _class.offset;
 
       int offsetClass, totalSizeClass;
 
@@ -2022,10 +2023,18 @@ static void FixDerivativesBase(Class base, Class mod)
                }
             }
          }
-         if(mod.base.memberID)
+         // if(mod.base.memberID)
          {
             for(member = _class.membersAndProperties.first; member; member = member.next)
+            {
+               int offsetDiff = _class.offset - offsetBefore;
+               if(!member.isProperty && offsetDiff > 0)
+               {
+                  member.offset += offsetDiff;
+                  member.memberOffset += offsetDiff;
+               }
                member.id += mod.base.memberID;
+            }
 
             _class.memberID += mod.base.memberID;
             _class.startMemberID += mod.base.memberID;
