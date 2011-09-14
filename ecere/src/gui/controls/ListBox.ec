@@ -738,7 +738,7 @@ private:
          {
             DataField field;
             for(field = listBox.fields.first; field && field.index != cellIndex; field = field.next);
-            if(field.dataType && _vTbl[__ecereVMethodID_class_OnFree])
+            if(field.dataType)
             {
                // TOCHECK: Is this check good? Will need incref/decref sometime?
                if(field.dataType.type == normalClass || field.dataType.type == noHeadClass)
