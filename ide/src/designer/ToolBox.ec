@@ -80,6 +80,8 @@ class ToolBox : Window
                   control.Destroy(0);
                }
             }
+            // TOFIX: It seems the virtual space does not get adjusted by only destroying the buttons?
+            scrollArea = { 0, 0 };
 
             //className = null;      // Had to drag twice on code...
             arrowControl.checked = true;

@@ -2066,7 +2066,7 @@ private:
          {
             int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ? 
                clientSize.w - field.x : (field.width + EXTRA_SPACE);
-            if(field.prev)
+            if(field.prev && y > 0)
                surface.VLine(0, y-1, x);
             x += width;
          }
