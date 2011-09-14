@@ -1194,6 +1194,7 @@ static FileDesc FileFind(char * path, char * extensions)
                   file.stats.attribs.isSystem    = (winFile.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)    ? true : false;
                   file.stats.attribs.isTemporary = (winFile.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ? true : false;
                   file.stats.attribs.isDirectory = (winFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? true : false;
+                  file.stats.attribs.isFile = !(winFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
                   strcpy(d.name, path);
 
                   file.stats.accessed = Win32FileTimeToTimeStamp(&winFile.ftLastAccessTime);
@@ -1500,6 +1501,7 @@ private class FileDesc : struct
                   stats.attribs.isSystem    = (winFile.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)    ? true : false;
                   stats.attribs.isTemporary = (winFile.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ? true : false;
                   stats.attribs.isDirectory = (winFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? true : false;
+                  stats.attribs.isFile      = !(winFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
                   stats.size = winFile.nFileSizeLow;
 
                   stats.accessed = Win32FileTimeToTimeStamp(&winFile.ftLastAccessTime);
@@ -1613,7 +1615,7 @@ private class FileDesc : struct
                strcat(path, name);
                stat(path, &s);
                stats.attribs = FileAttribs { };
-               if(s.st_mode & S_IFDIR) stats.attribs.isDirectory = true;
+               stats.attribs = (s.st_mode&S_IFDIR) ? FileAttribs { isDirectory = true } : FileAttribs { isFile = true };
                stats.size = s.st_size;
                stats.accessed = s.st_atime;
                stats.modified = s.st_mtime;

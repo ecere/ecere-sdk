@@ -1485,7 +1485,7 @@ class EARFileSystem : FileSystem
                   d.f.Read(entry, sizeof(EAREntry), 1);
                   d.f.Read(file.name, 1, entry.nameLen);
                   file.name[entry.nameLen] = '\0';
-                  file.stats.attribs = { isDirectory = (entry.type == ENTRY_FOLDER) };
+                  file.stats.attribs = { isDirectory = (entry.type == ENTRY_FOLDER), isFile = (entry.type != ENTRY_FOLDER) };
                   file.stats.accessed = file.stats.modified = (TimeStamp)entry.modified;
                   file.stats.created = (TimeStamp)entry.created;
                   file.stats.size = entry.size;
@@ -1519,7 +1519,7 @@ class EARFileSystem : FileSystem
          d.f.Read(entry, sizeof(EAREntry), 1);
          d.f.Read(file.name, 1, entry.nameLen);
          file.name[entry.nameLen] = '\0';
-         file.stats.attribs = FileAttribs { isDirectory = (entry.type == ENTRY_FOLDER) };
+         file.stats.attribs = FileAttribs { isDirectory = (entry.type == ENTRY_FOLDER), isFile = (entry.type != ENTRY_FOLDER) };
          file.stats.accessed = file.stats.modified = (TimeStamp)entry.modified;
          file.stats.created = (TimeStamp)entry.created;
          file.stats.size = entry.size;
