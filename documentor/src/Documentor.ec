@@ -1476,7 +1476,8 @@ class APIPageFunction : APIPage
       f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
       f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", name);
 
-      f.Printf($"Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"), (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com") ? "ecereCOM" : module.name);
+      f.Printf($"Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
+
       if(nsName[0])
          f.Printf($"Namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", function.nameSpace, nsName);
 

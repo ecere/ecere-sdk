@@ -115,7 +115,8 @@ from wherever you obtained them.",
                "../deps/libpng-1.4.0",
                "../deps/libungif-4.1.1/lib",
                "../deps/zlib",
-               "../deps/freetype-2.3.5/include"
+               "../deps/freetype-2.3.5/include",
+               "../deps/glext"
             ],
             "Libraries" : [
                "dxguid",
