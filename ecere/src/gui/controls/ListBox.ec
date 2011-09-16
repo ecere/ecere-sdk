@@ -112,8 +112,8 @@ public:
                }
                index++;
             }
-            return -1;
          }
+         return -1;
       }
    };
    property int sortOrder { get { return this ? sortOrder : 0; } };
@@ -1776,6 +1776,7 @@ private:
    void ClearEx()
    {
       DataRow row;
+      clickedRow = null;
       while((row = rows.first))
       {
          rows.Remove(row);
