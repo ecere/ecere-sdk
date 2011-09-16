@@ -678,7 +678,9 @@ void DebugComputeExpression(Expression exp)
          Type type; // = memberExp.expType;
          DebugComputeExpression(memberExp);
          type = memberExp.expType;
-         if(type)
+         if(ExpressionIsError(memberExp))
+            CarryExpressionError(exp, memberExp);
+         else if(type)
          {
             // _class = (memberID && memberID.classSym) ? memberID.classSym.registered : ((type.kind == classType && type._class) ? type._class.registered : null);
             Class _class = (exp.member.member && exp.member.member.classSym) ? exp.member.member.classSym.registered : (((type.kind == classType || type.kind == subClassType) && type._class) ? type._class.registered : null);
@@ -1020,7 +1022,13 @@ void DebugComputeExpression(Expression exp)
 
                         if(dataType.kind == classType && dataType._class.registered && 
                               (dataType._class.registered.type == enumClass || dataType._class.registered.type == bitClass || dataType._class.registered.type == unitClass))
+                        {
+                           if(dataType._class.registered.dataTypeString)
+                              dataType._class.registered.dataType = ProcessTypeString(dataType._class.registered.dataTypeString, false);
                            dataType = dataType._class.registered.dataType;
+                           if(!dataType)
+                              dataType = ProcessTypeString("int", false);
+                        }
 
                         size = ComputeTypeSize(member.dataType);
 
