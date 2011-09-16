@@ -1335,7 +1335,7 @@ static FileDesc FileFind(char * path, char * extensions)
                if(path[0])
                {
                   strcpy(file.path, path);
-                  if(path[1] || path[0] != DIR_SEP)
+                  if(path[1])
                      strcat(file.path, DIR_SEPS);
                }
                strcpy(file.name,de->d_name);
@@ -1611,8 +1611,7 @@ private class FileDesc : struct
             {
                strcpy(name,de->d_name);
                strcpy(path, d.name);
-               //if(d.name[0] && d.name[0]) // TOCHECK: what the heck is this?
-               if(path[1] || path[0] != DIR_SEP)
+               if(d.name[0] && d.name[1])
                   strcat(path, DIR_SEPS);
                strcat(path, name);
                stat(path, &s);
