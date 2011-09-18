@@ -505,8 +505,16 @@ struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ec
 {
 while(this)
 {
-int result = strcmp(key, (char *)this->key);
+int result;
 
+if(key && this->key)
+result = strcmp(key, (char *)this->key);
+else if(key && !this->key)
+result = 1;
+else if(!key && this->key)
+result = -1;
+else
+result = 0;
 if(result < 0)
 this = this->left;
 else if(result > 0)

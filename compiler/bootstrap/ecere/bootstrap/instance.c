@@ -1,6 +1,11 @@
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
+#ifdef _WIN32
+#define stdcall __attribute__((__stdcall__))
+#else
+#define stdcall
+#endif
 #elif defined(__TINYC__)
 #include <stdarg.h>
 #define __builtin_va_list va_list
@@ -10,6 +15,9 @@ typedef unsigned long long uint64;
 #define strcasecmp stricmp
 #define strncasecmp strnicmp
 #define __declspec(x) __attribute__((x))
+#define stdcall __attribute__((__stdcall__))
+#else
+#define stdcall
 #endif
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -343,9 +351,9 @@ void __ecereNameSpace__ecere__com__MemoryGuard_PopLoc()
 {
 }
 
-extern unsigned int __attribute__((__stdcall__)) __ecereDll_Load_ecere(struct __ecereNameSpace__ecere__com__Instance * module);
+extern unsigned int stdcall __ecereDll_Load_ecere(struct __ecereNameSpace__ecere__com__Instance * module);
 
-extern void __attribute__((__stdcall__)) __ecereDll_Unload_ecere(struct __ecereNameSpace__ecere__com__Instance * module);
+extern void stdcall __ecereDll_Unload_ecere(struct __ecereNameSpace__ecere__com__Instance * module);
 
 struct __ecereNameSpace__ecere__com__BTNamedLink
 {
@@ -1138,6 +1146,7 @@ int sizeClass = _class->sizeClass - _class->offsetClass;
 struct __ecereNameSpace__ecere__com__Class * enumBase = (((void *)0));
 char * dataTypeString = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * baseClass;
+unsigned int offsetBefore = _class->offset;
 int offsetClass, totalSizeClass;
 
 for(baseClass = base; baseClass->base; baseClass = baseClass->base)
@@ -1265,10 +1274,18 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->membersAndPr
 }
 }
 }
-if(mod->base->memberID)
 {
 for(member = _class->membersAndProperties.first; member; member = member->next)
+{
+int offsetDiff = _class->offset - offsetBefore;
+
+if(!member->isProperty && offsetDiff > 0)
+{
+member->offset += offsetDiff;
+member->memberOffset += offsetDiff;
+}
 member->id += mod->base->memberID;
+}
 _class->memberID += mod->base->memberID;
 _class->startMemberID += mod->base->memberID;
 }
@@ -4053,8 +4070,8 @@ return (((void *)0));
 static struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__Module_Load(struct __ecereNameSpace__ecere__com__Instance * fromModule, char * name, int importAccess, unsigned int ensureCOM)
 {
 void * __ecereTemp1;
-unsigned int (__attribute__((__stdcall__)) * Load)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
-void (__attribute__((__stdcall__)) * Unload)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
+unsigned int (stdcall * Load)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
+void (stdcall * Unload)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
 struct __ecereNameSpace__ecere__com__Instance * module;
 
 for(module = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)fromModule + 12)))->application + 296)))->allModules.first; module; module = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->next)
@@ -4318,7 +4335,7 @@ Unload(module);
 }
 else
 {
-unsigned int (__attribute__((__stdcall__)) * Unload)(struct __ecereNameSpace__ecere__com__Instance * module) = (void *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->Unload;
+unsigned int (stdcall * Unload)(struct __ecereNameSpace__ecere__com__Instance * module) = (void *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->Unload;
 
 Unload(module);
 }

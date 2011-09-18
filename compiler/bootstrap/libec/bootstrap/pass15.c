@@ -2060,6 +2060,7 @@ if(member || ((_class->type == 2 || _class->type == 0 || _class->type == 1 || _c
 {
 int c;
 int unionMemberOffset = 0;
+int bitFields = 0;
 
 if(!member && _class->destructionWatchOffset)
 _class->memberOffset += sizeof(struct __ecereNameSpace__ecere__sys__OldList);
@@ -2107,12 +2108,59 @@ bitMember->mask = mask << bitMember->pos;
 else if(dataMember->type == 0 && dataMember->dataType)
 {
 int size;
-int alignment;
+int alignment = 0;
 
 if(dataMember->dataType->kind != 8 || ((!dataMember->dataType->_class || !dataMember->dataType->_class->registered || dataMember->dataType->_class->registered != _class || _class->type != 1)))
 ComputeTypeSize(dataMember->dataType);
+if(dataMember->dataType->bitFieldCount)
+{
+bitFields += dataMember->dataType->bitFieldCount;
+size = 0;
+}
+else
+{
+if(bitFields)
+{
+int size = (bitFields + 7) / 8;
+
+if(isMember)
+{
+int __simpleStruct0;
+
+if(alignment)
+{
+int __simpleStruct0;
+
+member->structAlignment = (__simpleStruct0 = member->structAlignment, (__simpleStruct0 > alignment) ? __simpleStruct0 : alignment);
+if(member->memberOffset % alignment)
+member->memberOffset += alignment - (member->memberOffset % alignment);
+}
+dataMember->offset = member->memberOffset;
+if(member->type == 1)
+unionMemberOffset = (__simpleStruct0 = dataMember->dataType->size, (unionMemberOffset > __simpleStruct0) ? unionMemberOffset : __simpleStruct0);
+else
+{
+member->memberOffset += size;
+}
+}
+else
+{
+if(alignment)
+{
+int __simpleStruct0;
+
+_class->structAlignment = (__simpleStruct0 = _class->structAlignment, (__simpleStruct0 > alignment) ? __simpleStruct0 : alignment);
+if(_class->memberOffset % alignment)
+_class->memberOffset += alignment - (_class->memberOffset % alignment);
+}
+dataMember->offset = _class->memberOffset;
+_class->memberOffset += size;
+}
+bitFields = 0;
+}
 size = dataMember->dataType->size;
 alignment = dataMember->dataType->alignment;
+}
 if(isMember)
 {
 int __simpleStruct0;
@@ -2172,6 +2220,44 @@ _class->memberOffset += dataMember->memberOffset;
 }
 }
 }
+}
+if(bitFields)
+{
+int alignment = 0;
+int size = (bitFields + 7) / 8;
+
+if(isMember)
+{
+int __simpleStruct0;
+
+if(alignment)
+{
+int __simpleStruct0;
+
+member->structAlignment = (__simpleStruct0 = member->structAlignment, (__simpleStruct0 > alignment) ? __simpleStruct0 : alignment);
+if(member->memberOffset % alignment)
+member->memberOffset += alignment - (member->memberOffset % alignment);
+}
+if(member->type == 1)
+unionMemberOffset = (__simpleStruct0 = dataMember->dataType->size, (unionMemberOffset > __simpleStruct0) ? unionMemberOffset : __simpleStruct0);
+else
+{
+member->memberOffset += size;
+}
+}
+else
+{
+if(alignment)
+{
+int __simpleStruct0;
+
+_class->structAlignment = (__simpleStruct0 = _class->structAlignment, (__simpleStruct0 > alignment) ? __simpleStruct0 : alignment);
+if(_class->memberOffset % alignment)
+_class->memberOffset += alignment - (_class->memberOffset % alignment);
+}
+_class->memberOffset += size;
+}
+bitFields = 0;
 }
 }
 if(member && member->type == 1)
@@ -5027,7 +5113,13 @@ sourceExp->cast.exp = newExp;
 FreeType(sourceExp->expType);
 sourceExp->expType = (((void *)0));
 ProcessExpressionType(sourceExp);
+if(!inCompiler)
+{
+FreeType(sourceExp->expType);
+sourceExp->expType = dest;
+}
 FreeType(source);
+if(inCompiler)
 FreeType(dest);
 return 0x1;
 }

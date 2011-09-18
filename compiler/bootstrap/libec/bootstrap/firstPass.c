@@ -1577,7 +1577,7 @@ if(external->type == 2)
 {
 struct ClassDefinition * _class = external->_class;
 
-if(_class->definitions && !_class->symbol->registered)
+if(_class->definitions && (!_class->symbol->registered || !inCompiler))
 {
 ProcessClass(0, _class->definitions, _class->symbol, _class->baseSpecs, (((void *)0)), &_class->loc, ast, external->prev, (((void *)0)), _class->declMode);
 _class->symbol->isStatic = _class->declMode == 3;

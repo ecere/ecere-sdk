@@ -1609,6 +1609,10 @@ struct __ecereNameSpace__ecere__com__Instance * container;
 struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
 };
 
+extern int sprintf(char * , char * , ...);
+
+extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
+
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
@@ -1700,8 +1704,12 @@ struct __ecereNameSpace__ecere__com__Iterator dir =
 
 while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&dir))
 {
+char configDir[274];
+
 strcpy(symFile, __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&dir));
-__ecereNameSpace__ecere__sys__PathCat(symFile, "Debug");
+__ecereNameSpace__ecere__sys__PathCat(symFile, "obj");
+sprintf(configDir, "debug.%s", (__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "win32" : "linux");
+__ecereNameSpace__ecere__sys__PathCat(symFile, configDir);
 __ecereNameSpace__ecere__sys__PathCat(symFile, name);
 __ecereNameSpace__ecere__sys__ChangeExtension(symFile, "sym", symFile);
 if(__ecereNameSpace__ecere__sys__FileExists(symFile))
@@ -1722,8 +1730,6 @@ module->globalInstance = LoadSymbols(symFile, importType, loadDllOnly);
 }
 }
 }
-
-extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
 
 int FindIncludeFileID(char * includeFile)
 {
