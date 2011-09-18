@@ -1,19 +1,32 @@
-/*******************************************************************
+/*
+ * Copyright (C) 1998-2004  David Turner and Werner Lemberg
+ * Copyright (C) 2006  Behdad Esfahbod
  *
- *  Copyright 1996-2000 by
- *  David Turner, Robert Wilhelm, and Werner Lemberg.
+ * This is part of HarfBuzz, an OpenType Layout engine library.
  *
- *  Copyright 2006  Behdad Esfahbod
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, modify, and distribute this
+ * software and its documentation for any purpose, provided that the
+ * above copyright notice and the following two paragraphs appear in
+ * all copies of this software.
  *
- *  This is part of HarfBuzz, an OpenType Layout engine library.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
+ * IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
  *
- *  See the file name COPYING for licensing information.
- *
- ******************************************************************/
+ * THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+ */
+
 #ifndef HARFBUZZ_OPEN_H
 #define HARFBUZZ_OPEN_H
 
-#include <harfbuzz-global.h>
+#include "harfbuzz-global.h"
 
 HB_BEGIN_HEADER
 
@@ -23,6 +36,7 @@ HB_BEGIN_HEADER
 #define HB_DEFAULT_LANGUAGE              0xFFFF
 
 #define HB_MAX_NESTING_LEVEL             100
+
 
 /* Script list related structures */
 
@@ -226,18 +240,10 @@ struct  HB_ClassDefFormat2_
 typedef struct HB_ClassDefFormat2_  HB_ClassDefFormat2;
 
 
-/* The `Defined' field is not defined in the OpenType specification but
-   apparently needed for processing fonts like trado.ttf: This font
-   refers to a class which contains not a single element.  We map such
-   classes to class 0.                                                 */
-
 struct  HB_ClassDefinition_
 {
   HB_Bool    loaded;
 
-  HB_Bool*   Defined;                 /* array of Booleans.
-					 If Defined[n] is FALSE,
-					 class n contains no glyphs. */
   HB_UShort  ClassFormat;             /* 1 or 2                      */
 
   union

@@ -1,20 +1,36 @@
-/*******************************************************************
+/*
+ * Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies)
  *
- *  Copyright 2007  Trolltech ASA
+ * This is part of HarfBuzz, an OpenType Layout engine library.
  *
- *  This is part of HarfBuzz, an OpenType Layout engine library.
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, modify, and distribute this
+ * software and its documentation for any purpose, provided that the
+ * above copyright notice and the following two paragraphs appear in
+ * all copies of this software.
  *
- *  See the file name COPYING for licensing information.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
+ * IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
  *
- ******************************************************************/
+ * THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+ */
+
 #ifndef HARFBUZZ_SHAPER_H
 #define HARFBUZZ_SHAPER_H
 
-#include <harfbuzz-global.h>
-#include <harfbuzz-gdef.h>
-#include <harfbuzz-gpos.h>
-#include <harfbuzz-gsub.h>
-#include <harfbuzz-external.h>
+#include "harfbuzz-global.h"
+#include "harfbuzz-gdef.h"
+#include "harfbuzz-gpos.h"
+#include "harfbuzz-gsub.h"
+#include "harfbuzz-external.h"
+#include "harfbuzz-stream-private.h"
 
 HB_BEGIN_HEADER
 
@@ -46,6 +62,7 @@ typedef enum {
         HB_Script_Ogham,
         HB_Script_Runic,
         HB_Script_Khmer,
+        HB_Script_Nko,
         HB_Script_Inherited,
         HB_ScriptCount = HB_Script_Inherited
         /*
@@ -86,7 +103,6 @@ typedef enum {
         HB_Script_Cuneiform = Common,
         HB_Script_Phoenician = Common,
         HB_Script_PhagsPa = Common,
-        HB_Script_Nko = Common
         */
 } HB_Script;
 
@@ -107,15 +123,27 @@ typedef enum {
 
 
 typedef struct {
-    /*HB_LineBreakType*/ unsigned int lineBreakType  :2;
-    /*HB_Bool*/ unsigned int whiteSpace              :1;     /* A unicode whitespace character, except NBSP, ZWNBSP */
-    /*HB_Bool*/ unsigned int charStop                :1;     /* Valid cursor position (for left/right arrow) */
-    unsigned int unused                  :4;
+    /*HB_LineBreakType*/ unsigned lineBreakType  :2;
+    /*HB_Bool*/ unsigned whiteSpace              :1;     /* A unicode whitespace character, except NBSP, ZWNBSP */
+    /*HB_Bool*/ unsigned charStop                :1;     /* Valid cursor position (for left/right arrow) */
+    /*HB_Bool*/ unsigned wordBoundary            :1;
+    /*HB_Bool*/ unsigned sentenceBoundary        :1;
+    unsigned unused                  :2;
 } HB_CharAttributes;
 
 void HB_GetCharAttributes(const HB_UChar16 *string, hb_uint32 stringLength,
                           const HB_ScriptItem *items, hb_uint32 numItems,
                           HB_CharAttributes *attributes);
+
+/* requires HB_GetCharAttributes to be called before */
+void HB_GetWordBoundaries(const HB_UChar16 *string, hb_uint32 stringLength,
+                          const HB_ScriptItem *items, hb_uint32 numItems,
+                          HB_CharAttributes *attributes);
+
+/* requires HB_GetCharAttributes to be called before */
+void HB_GetSentenceBoundaries(const HB_UChar16 *string, hb_uint32 stringLength,
+                              const HB_ScriptItem *items, hb_uint32 numItems,
+                              HB_CharAttributes *attributes);
 
 
 typedef enum {
@@ -153,12 +181,12 @@ typedef enum {
  * it like that. If this is a problem please tell Trolltech :)
  */
 typedef struct {
-    unsigned short justification   :4;  /* Justification class */
-    unsigned short clusterStart    :1;  /* First glyph of representation of cluster */
-    unsigned short mark            :1;  /* needs to be positioned around base char */
-    unsigned short zeroWidth       :1;  /* ZWJ, ZWNJ etc, with no width */
-    unsigned short dontPrint       :1;
-    unsigned short combiningClass  :8;
+    unsigned justification   :4;  /* Justification class */
+    unsigned clusterStart    :1;  /* First glyph of representation of cluster */
+    unsigned mark            :1;  /* needs to be positioned around base char */
+    unsigned zeroWidth       :1;  /* ZWJ, ZWNJ etc, with no width */
+    unsigned dontPrint       :1;
+    unsigned combiningClass  :8;
 } HB_GlyphAttributes;
 
 typedef struct HB_FaceRec_ {
@@ -214,27 +242,30 @@ typedef struct HB_Font_ {
     void *userData;
 } HB_FontRec;
 
-typedef struct {
-    const HB_UChar16 *string;
-    hb_uint32 stringLength;
-    HB_ScriptItem item;
-    HB_Font font;
-    HB_Face face;
-    int shaperFlags; /* HB_ShaperFlags */
+typedef struct HB_ShaperItem_ HB_ShaperItem;
 
-    HB_Bool glyphIndicesPresent; /* set to true if the glyph indicies are already setup in the glyphs array */
-    hb_uint32 initialGlyphCount;
+struct HB_ShaperItem_ {
+    const HB_UChar16 *string;               /* input: the Unicode UTF16 text to be shaped */
+    hb_uint32 stringLength;                 /* input: the length of the input in 16-bit words */
+    HB_ScriptItem item;                     /* input: the current run to be shaped: a run of text all in the same script that is a substring of <string> */
+    HB_Font font;                           /* input: the font: scale, units and function pointers supplying glyph indices and metrics */
+    HB_Face face;                           /* input: the shaper state; current script, access to the OpenType tables , etc. */
+    int shaperFlags;                        /* input (unused) should be set to 0; intended to support flags defined in HB_ShaperFlag */
+    HB_Bool glyphIndicesPresent;            /* input: true if the <glyphs> array contains glyph indices ready to be shaped */
+    hb_uint32 initialGlyphCount;            /* input: if glyphIndicesPresent is true, the number of glyph indices in the <glyphs> array */
 
-    hb_uint32 num_glyphs; /* in: available glyphs out: glyphs used/needed */
-    HB_Glyph *glyphs; /* out parameter */
-    HB_GlyphAttributes *attributes; /* out */
-    HB_Fixed *advances; /* out */
-    HB_FixedPoint *offsets; /* out */
-    unsigned short *log_clusters; /* out */
+    hb_uint32 num_glyphs;                   /* input: capacity of output arrays <glyphs>, <attributes>, <advances>, <offsets>, and <log_clusters>; */
+                                            /* output: required capacity (may be larger than actual capacity) */
+
+    HB_Glyph *glyphs;                       /* output: <num_glyphs> indices of shaped glyphs */
+    HB_GlyphAttributes *attributes;         /* output: <num_glyphs> glyph attributes */
+    HB_Fixed *advances;                     /* output: <num_glyphs> advances */
+    HB_FixedPoint *offsets;                 /* output: <num_glyphs> offsets */
+    unsigned short *log_clusters;           /* output: for each output glyph, the index in the input of the start of its logical cluster */
 
     /* internal */
-    HB_Bool kerning_applied; /* out: kerning applied by shaper */
-} HB_ShaperItem;
+    HB_Bool kerning_applied;                /* output: true if kerning was applied by the shaper */
+};
 
 HB_Bool HB_ShapeItem(HB_ShaperItem *item);
 

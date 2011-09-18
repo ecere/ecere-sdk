@@ -1,19 +1,31 @@
-/*******************************************************************
+/*
+ * Copyright (C) 1998-2004  David Turner and Werner Lemberg
+ * Copyright (C) 2006  Behdad Esfahbod
  *
- *  Copyright 1996-2000 by
- *  David Turner, Robert Wilhelm, and Werner Lemberg.
+ * This is part of HarfBuzz, an OpenType Layout engine library.
  *
- *  Copyright 2006  Behdad Esfahbod
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, modify, and distribute this
+ * software and its documentation for any purpose, provided that the
+ * above copyright notice and the following two paragraphs appear in
+ * all copies of this software.
  *
- *  This is part of HarfBuzz, an OpenType Layout engine library.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
+ * IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
  *
- *  See the file name COPYING for licensing information.
- *
- ******************************************************************/
+ * THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+ */
+
 #include "harfbuzz-impl.h"
 #include "harfbuzz-gdef-private.h"
 #include "harfbuzz-open-private.h"
-#include "harfbuzz-stream.h"
 
 static HB_Error  Load_AttachList( HB_AttachList*  al,
 				  HB_Stream        stream );
@@ -27,94 +39,6 @@ static void  Free_NewGlyphClasses( HB_GDEFHeader*  gdef);
 
 
 
-/**********************
- * Extension Functions
- **********************/
-
-#if 0
-#define GDEF_ID  Build_Extension_ID( 'G', 'D', 'E', 'F' )
-
-
-static HB_Error  GDEF_Create( void*  ext,
-			      PFace  face )
-{
-  DEFINE_LOAD_LOCALS( face->stream );
-
-  HB_GDEFHeader*  gdef = (HB_GDEFHeader*)ext;
-  Long             table;
-
-
-  /* by convention */
-
-  if ( !gdef )
-    return HB_Err_Ok;
-
-  /* a null offset indicates that there is no GDEF table */
-
-  gdef->offset = 0;
-
-  /* we store the start offset and the size of the subtable */
-
-  table = HB_LookUp_Table( face, TTAG_GDEF );
-  if ( table < 0 )
-    return HB_Err_Ok;             /* The table is optional */
-
-  if ( FILE_Seek( face->dirTables[table].Offset ) ||
-       ACCESS_Frame( 4L ) )
-    return error;
-
-  gdef->offset  = FILE_Pos() - 4L;    /* undo ACCESS_Frame() */
-  gdef->Version = GET_ULong();
-
-  FORGET_Frame();
-
-  gdef->loaded = FALSE;
-
-  return HB_Err_Ok;
-}
-
-
-static HB_Error  GDEF_Destroy( void*  ext,
-			       PFace  face )
-{
-  HB_GDEFHeader*  gdef = (HB_GDEFHeader*)ext;
-
-
-  /* by convention */
-
-  if ( !gdef )
-    return HB_Err_Ok;
-
-  if ( gdef->loaded )
-  {
-    Free_LigCaretList( &gdef->LigCaretList );
-    Free_AttachList( &gdef->AttachList );
-    _HB_OPEN_Free_ClassDefinition( &gdef->GlyphClassDef );
-    _HB_OPEN_Free_ClassDefinition( &gdef->MarkAttachClassDef );
-
-    Free_NewGlyphClasses( gdef );
-  }
-
-  return HB_Err_Ok;
-}
-
-
-
-HB_Error  HB_Init_GDEF_Extension( HB_Engine  engine )
-{
-  PEngine_Instance  _engine = HANDLE_Engine( engine );
-
-
-  if ( !_engine )
-    return HB_Err_Invalid_Engine;
-
-  return  HB_Register_Extension( _engine,
-				 GDEF_ID,
-				 sizeof ( HB_GDEFHeader ),
-				 GDEF_Create,
-				 GDEF_Destroy );
-}
-#endif
 /* GDEF glyph classes */
 
 #define UNCLASSIFIED_GLYPH  0
@@ -135,7 +59,7 @@ HB_Error  HB_New_GDEF_Table( HB_GDEFHeader** retptr )
   HB_GDEFHeader*  gdef;
 
   if ( !retptr )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   if ( ALLOC( gdef, sizeof( *gdef ) ) )
     return error;
@@ -165,7 +89,10 @@ HB_Error  HB_Load_GDEF_Table( HB_Stream stream,
 
 
   if ( !retptr )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
+
+  if ( GOTO_Table( TTAG_GDEF ) )
+    return error;
 
   if (( error = HB_New_GDEF_Table ( &gdef ) ))
     return error;
@@ -521,7 +448,7 @@ static HB_Error  Load_CaretValue( HB_CaretValue*  cv,
     break;
 
   default:
-    return HB_Err_Invalid_GDEF_SubTable_Format;
+    return ERR(HB_Err_Invalid_SubTable_Format);
   }
 
   return HB_Err_Ok;
@@ -760,13 +687,13 @@ HB_Error  HB_GDEF_Get_Glyph_Property( HB_GDEFHeader*  gdef,
 				      HB_UShort        glyphID,
 				      HB_UShort*       property )
 {
-  HB_UShort class, index;
+  HB_UShort class = 0, index = 0; /* shut compiler up */
 
   HB_Error  error;
 
 
   if ( !gdef || !property )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   /* first, we check for mark attach classes */
 
@@ -794,6 +721,7 @@ HB_Error  HB_GDEF_Get_Glyph_Property( HB_GDEFHeader*  gdef,
 
   switch ( class )
   {
+  default:
   case UNCLASSIFIED_GLYPH:
     *property = 0;
     break;
@@ -834,7 +762,6 @@ static HB_Error  Make_ClassRange( HB_ClassDefinition*  cd,
   cdf2 = &cd->cd.cd2;
 
   if ( REALLOC_ARRAY( cdf2->ClassRangeRecord,
-		      cdf2->ClassRangeCount,
 		      cdf2->ClassRangeCount + 1 ,
 		      HB_ClassRangeRecord ) )
     return error;
@@ -847,8 +774,6 @@ static HB_Error  Make_ClassRange( HB_ClassDefinition*  cd,
   crr[index].Start = start;
   crr[index].End   = end;
   crr[index].Class = class;
-
-  cd->Defined[class] = TRUE;
 
   return HB_Err_Ok;
 }
@@ -871,18 +796,13 @@ HB_Error  HB_GDEF_Build_ClassDefinition( HB_GDEFHeader*  gdef,
 
 
   if ( !gdef || !glyph_array || !class_array )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   gcd = &gdef->GlyphClassDef;
 
   /* We build a format 2 table */
 
   gcd->ClassFormat = 2;
-
-  /* A GlyphClassDef table contains at most 5 different class values */
-
-  if ( ALLOC_ARRAY( gcd->Defined, 5, HB_Bool ) )
-    return error;
 
   gcd->cd.cd2.ClassRangeCount  = 0;
   gcd->cd.cd2.ClassRangeRecord = NULL;
@@ -893,13 +813,13 @@ HB_Error  HB_GDEF_Build_ClassDefinition( HB_GDEFHeader*  gdef,
 
   if ( curr_class >= 5 )
   {
-    error = HB_Err_Invalid_Argument;
+    error = ERR(HB_Err_Invalid_Argument);
     goto Fail4;
   }
 
   glyph_count--;
 
-  for ( n = 0; n <= glyph_count; n++ )
+  for ( n = 0; n < glyph_count + 1; n++ )
   {
     if ( curr_glyph == glyph_array[n] && curr_class == class_array[n] )
     {
@@ -914,7 +834,7 @@ HB_Error  HB_GDEF_Build_ClassDefinition( HB_GDEFHeader*  gdef,
       {
 	if ( curr_glyph == 0xFFFF )
 	{
-	  error = HB_Err_Invalid_Argument;
+	  error = ERR(HB_Err_Invalid_Argument);
 	  goto Fail3;
 	}
 	else
@@ -930,7 +850,7 @@ HB_Error  HB_GDEF_Build_ClassDefinition( HB_GDEFHeader*  gdef,
 
       if ( curr_glyph > glyph_array[n] )
       {
-	error = HB_Err_Invalid_Argument;
+	error = ERR(HB_Err_Invalid_Argument);
 	goto Fail3;
       }
 
@@ -940,7 +860,7 @@ HB_Error  HB_GDEF_Build_ClassDefinition( HB_GDEFHeader*  gdef,
 
       if ( curr_class >= 5 )
       {
-	error = HB_Err_Invalid_Argument;
+	error = ERR(HB_Err_Invalid_Argument);
 	goto Fail3;
       }
 
@@ -955,7 +875,7 @@ HB_Error  HB_GDEF_Build_ClassDefinition( HB_GDEFHeader*  gdef,
       {
 	if ( curr_glyph == 0xFFFF )
 	{
-	  error = HB_Err_Invalid_Argument;
+	  error = ERR(HB_Err_Invalid_Argument);
 	  goto Fail3;
 	}
 	else
@@ -1031,7 +951,6 @@ Fail3:
   FREE( gcd->cd.cd2.ClassRangeRecord );
 
 Fail4:
-  FREE( gcd->Defined );
   return error;
 }
 
@@ -1055,12 +974,13 @@ static void  Free_NewGlyphClasses( HB_GDEFHeader*  gdef )
 }
 
 
-HB_Error  _HB_GDEF_Add_Glyph_Property( HB_GDEFHeader*  gdef,
+HB_INTERNAL HB_Error
+_HB_GDEF_Add_Glyph_Property( HB_GDEFHeader* gdef,
 			      HB_UShort        glyphID,
 			      HB_UShort        property )
 {
   HB_Error               error;
-  HB_UShort              class, new_class, index;
+  HB_UShort              class, new_class, index = 0; /* shut compiler up */
   HB_UShort              byte, bits, mask;
   HB_UShort              array_index, glyph_index, count;
 
@@ -1100,7 +1020,7 @@ HB_Error  _HB_GDEF_Add_Glyph_Property( HB_GDEFHeader*  gdef,
     break;
 
   default:
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
   }
 
   count = gdef->GlyphClassDef.cd.cd2.ClassRangeCount;
@@ -1140,7 +1060,8 @@ HB_Error  _HB_GDEF_Add_Glyph_Property( HB_GDEFHeader*  gdef,
 }
 
 
-HB_Error  _HB_GDEF_Check_Property( HB_GDEFHeader*  gdef,
+HB_INTERNAL HB_Error
+_HB_GDEF_Check_Property( HB_GDEFHeader* gdef,
 			  HB_GlyphItem    gitem,
 			  HB_UShort        flags,
 			  HB_UShort*       property )
@@ -1195,10 +1116,11 @@ HB_Error  _HB_GDEF_Check_Property( HB_GDEFHeader*  gdef,
   return HB_Err_Ok;
 }
 
-HB_Error _HB_GDEF_LoadMarkAttachClassDef_From_LookupFlags( HB_GDEFHeader* gdef,
-							   HB_Stream      stream,
-							   HB_Lookup*     lo,
-							   HB_UShort      num_lookups)
+HB_INTERNAL HB_Error
+_HB_GDEF_LoadMarkAttachClassDef_From_LookupFlags( HB_GDEFHeader* gdef,
+						  HB_Stream      stream,
+						  HB_Lookup*     lo,
+						  HB_UShort      num_lookups)
 {
   HB_Error   error = HB_Err_Ok;
   HB_UShort  i;

@@ -1,16 +1,31 @@
-/*******************************************************************
+/*
+ * Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies)
  *
- *  Copyright 2007  Trolltech ASA
+ * This is part of HarfBuzz, an OpenType Layout engine library.
  *
- *  This is part of HarfBuzz, an OpenType Layout engine library.
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, modify, and distribute this
+ * software and its documentation for any purpose, provided that the
+ * above copyright notice and the following two paragraphs appear in
+ * all copies of this software.
  *
- *  See the file name COPYING for licensing information.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
+ * IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
  *
- ******************************************************************/
+ * THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+ */
+
 #ifndef HARFBUZZ_EXTERNAL_H
 #define HARFBUZZ_EXTERNAL_H
 
-#include <harfbuzz-global.h>
+#include "harfbuzz-global.h"
 
 HB_BEGIN_HEADER
 
@@ -77,11 +92,65 @@ typedef enum
     HB_Symbol_Other              /*   So */
 } HB_CharCategory;
 
+typedef enum
+{
+    HB_Grapheme_Other, 
+    HB_Grapheme_CR,
+    HB_Grapheme_LF,
+    HB_Grapheme_Control,
+    HB_Grapheme_Extend,
+    HB_Grapheme_L, 
+    HB_Grapheme_V, 
+    HB_Grapheme_T, 
+    HB_Grapheme_LV, 
+    HB_Grapheme_LVT
+} HB_GraphemeClass;
+
+
+typedef enum
+{
+    HB_Word_Other,
+    HB_Word_Format,
+    HB_Word_Katakana,
+    HB_Word_ALetter,
+    HB_Word_MidLetter,
+    HB_Word_MidNum,
+    HB_Word_Numeric,
+    HB_Word_ExtendNumLet
+} HB_WordClass;
+
+
+typedef enum
+{
+    HB_Sentence_Other,
+    HB_Sentence_Sep,
+    HB_Sentence_Format,
+    HB_Sentence_Sp,
+    HB_Sentence_Lower,
+    HB_Sentence_Upper,
+    HB_Sentence_OLetter,
+    HB_Sentence_Numeric,
+    HB_Sentence_ATerm,
+    HB_Sentence_STerm,
+    HB_Sentence_Close
+} HB_SentenceClass;
+
+HB_GraphemeClass HB_GetGraphemeClass(HB_UChar32 ch);
+HB_WordClass HB_GetWordClass(HB_UChar32 ch);
+HB_SentenceClass HB_GetSentenceClass(HB_UChar32 ch);
 HB_LineBreakClass HB_GetLineBreakClass(HB_UChar32 ch);
+
+void HB_GetGraphemeAndLineBreakClass(HB_UChar32 ch, HB_GraphemeClass *grapheme, HB_LineBreakClass *lineBreak);
 void HB_GetUnicodeCharProperties(HB_UChar32 ch, HB_CharCategory *category, int *combiningClass);
 HB_CharCategory HB_GetUnicodeCharCategory(HB_UChar32 ch);
 int HB_GetUnicodeCharCombiningClass(HB_UChar32 ch);
 HB_UChar16 HB_GetMirroredChar(HB_UChar16 ch);
+
+void *HB_Library_Resolve(const char *library, const char *symbol);
+
+void *HB_TextCodecForMib(int mib);
+char *HB_TextCodec_ConvertFromUnicode(void *codec, const HB_UChar16 *unicode, hb_uint32 length, hb_uint32 *outputLength);
+void HB_TextCodec_FreeResult(char *);
 
 HB_END_HEADER
 

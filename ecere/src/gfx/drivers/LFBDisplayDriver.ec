@@ -57,6 +57,11 @@ import "Direct3D9DisplayDriver"
 
 #if !defined(ECERE_NOTRUETYPE)
 
+#define MAX_FONT_LINK_ENTRIES   10
+
+static HB_Script theCurrentScript;
+static DisplaySystem theDisplaySystem;
+
 static unichar UTF16GetChar(uint16 *string, int * nw)
 {
    unichar ch;
@@ -75,7 +80,7 @@ static unichar UTF16GetChar(uint16 *string, int * nw)
 
 static HB_Bool hb_stringToGlyphs(HB_Font font, uint16 * string, uint length, HB_Glyph *glyphs, uint *numGlyphs, HB_Bool rightToLeft)
 {
-   FT_Face face = (FT_Face)font->userData;
+   FT_Face face = ((FontEntry)font->userData).face;
    int glyph_pos = 0;
    int c, nw;
 
@@ -93,14 +98,42 @@ static HB_Bool hb_stringToGlyphs(HB_Font font, uint16 * string, uint length, HB_
 
 static void hb_getAdvances(HB_Font font, const HB_Glyph * glyphs, uint numGlyphs, HB_Fixed *advances, int flags)
 {
+   FontEntry entry = font->userData;
+   Font glFont = entry.font;
    int c;
+   uint lastPack = 0;
+   GlyphPack pack = glFont.asciiPack;
+   int fontEntryNum;
+   for(fontEntryNum = 0; fontEntryNum < MAX_FONT_LINK_ENTRIES; fontEntryNum++)
+   {
+      if(glFont.fontEntries[fontEntryNum] == entry)
+         break;
+   }
+
    for(c = 0; c < numGlyphs; c++)
-      advances[c] = 0; // ### not tested right now
+   {
+      GlyphInfo * glyph;
+      uint glyphNo = glyphs[c] | 0x80000000 | (theCurrentScript << 24);
+      uint packNo = glyphNo & 0xFFFFFF80;
+      if(packNo != lastPack)
+      {
+         pack = (GlyphPack)glFont.glyphPacks.Find(packNo);
+         if(!pack)
+         {
+            glFont.glyphPacks.Add((pack = GlyphPack { key = packNo }));
+            pack.Render(glFont, fontEntryNum, theDisplaySystem);
+            pack.bitmap.alphaBlend = true;
+         }
+         lastPack = packNo;
+      }
+      glyph = &pack.glyphs[glyphNo & 0x7F];
+      advances[c] = glyph->ax;
+   }
 }
 
 static HB_Bool hb_canRender(HB_Font font, uint16 * string, uint length)
 {
-   FT_Face face = (FT_Face)font->userData;
+   FT_Face face = ((FontEntry)font->userData).face;
    int c, nw;
 
    for (c = 0; c < length; c += nw)
@@ -137,14 +170,14 @@ static HB_Error hb_getPointInOutline(HB_Font font, HB_Glyph glyph, int flags, hb
         return error;
 
     if (face->glyph->format != ft_glyph_format_outline)
-        return (HB_Error)HB_Err_Invalid_GPOS_SubTable;
+        return (HB_Error)HB_Err_Invalid_SubTable;
 
     *nPoints = face->glyph->outline.n_points;
     if (!(*nPoints))
         return HB_Err_Ok;
 
     if (point > *nPoints)
-        return (HB_Error)HB_Err_Invalid_GPOS_SubTable;
+        return (HB_Error)HB_Err_Invalid_SubTable;
 
     *xpos = face->glyph->outline.points[point].x;
     *ypos = face->glyph->outline.points[point].y;
@@ -152,15 +185,55 @@ static HB_Error hb_getPointInOutline(HB_Font font, HB_Glyph glyph, int flags, hb
     return HB_Err_Ok;
 }
 
-static void hb_getGlyphMetrics(HB_Font font, HB_Glyph glyph, HB_GlyphMetrics *metrics)
+static void hb_getGlyphMetrics(HB_Font font, HB_Glyph theGlyph, HB_GlyphMetrics *metrics)
 {
-    // ###
-    metrics->x = metrics->y = metrics->width = metrics->height = metrics->xOffset = metrics->yOffset = 0;
+   FontEntry entry = font->userData;
+   Font glFont = entry.font;
+   uint lastPack = 0;
+   GlyphPack pack = glFont.asciiPack;
+   int fontEntryNum;
+   for(fontEntryNum = 0; fontEntryNum < MAX_FONT_LINK_ENTRIES; fontEntryNum++)
+   {
+      if(glFont.fontEntries[fontEntryNum] == entry)
+         break;
+   }
+   {
+      GlyphInfo * glyph;
+      uint glyphNo = theGlyph | 0x80000000 | (theCurrentScript << 24);
+      uint packNo = glyphNo & 0xFFFFFF80;
+      if(packNo != lastPack)
+      {
+         pack = (GlyphPack)glFont.glyphPacks.Find(packNo);
+         if(!pack)
+         {
+            pack = { key = packNo };
+            glFont.glyphPacks.Add(pack);
+            pack.Render(glFont, fontEntryNum, theDisplaySystem);
+            pack.bitmap.alphaBlend = true;
+         }
+         lastPack = packNo;
+      }
+      glyph = &pack.glyphs[glyphNo & 0x7F];
+
+      metrics->x = glyph->ax;
+      metrics->y = 0;
+      metrics->width = glyph->w;
+      metrics->height = glyph->h;
+      metrics->xOffset = glyph->bx;
+      metrics->yOffset = glyph->by;
+   }
 }
 
 static HB_Fixed hb_getFontMetric(HB_Font font, HB_FontMetric metric)
 {
-    return 0; // ####
+   FontEntry entry = font->userData;
+   FT_Face face = entry.face;
+
+   // Note that we aren't scanning the VDMX table which we probably would in
+   // an ideal world.
+   if(metric == HB_FontAscent)
+      return face->ascender;
+   return 0;
 }
 
 static HB_FontClass hb_fontClass =
@@ -202,6 +275,8 @@ class FontEntry : BTNode
    
    //If we don't save the FT_Stream before sacrificing it to FreeType, the garbage collector (if one is used) will destroy it prematurely
    FT_Stream stream;
+   Font font;
+   float scale;
 
    ~FontEntry()
    {
@@ -222,6 +297,37 @@ class FontEntry : BTNode
       }
    }
 }
+
+static float FaceSetCharSize(FT_Face face, float size)
+{
+   float scale = 1;
+   if(FT_Set_Char_Size(face, (int)(size * 64), (int)(size * 64), 96, 96))
+   {
+      if(face->num_fixed_sizes)
+      {
+         int c;
+         int bestDiff = MAXINT, best = 0;
+         FT_Bitmap_Size * sizes = face->available_sizes;
+         int wishedHeight = (int)(size * 96 / 72);
+         for(c = 0; c < face->num_fixed_sizes; c++)
+         {
+            int diff = abs(sizes[c].height - wishedHeight);
+            if(diff < bestDiff)
+            {
+               best = c;
+               bestDiff = diff;
+            }
+         }
+         FT_Set_Pixel_Sizes(face, sizes[best].width, sizes[best].height);
+
+         if(!face->ascender)
+            face->ascender = sizes[best].height;
+         scale = (float)wishedHeight / sizes[best].height;
+      }
+   }
+   return scale;
+}
+
 #endif
 
 struct GlyphInfo
@@ -230,10 +336,10 @@ struct GlyphInfo
    int x, y;
    int w, h;
    int left, top;
+   int bx, by;
    int glyphNo;
+   float scale;
 };
-
-#define MAX_FONT_LINK_ENTRIES   10
 
 class GlyphPack : BTNode
 {
@@ -249,6 +355,7 @@ class GlyphPack : BTNode
       int width, height;
       FontEntry fontEntry = null;
       FT_Face faces[128];
+      float scales[128];
       bool isGlyph = key & 0x80000000;
       int curScript = (key & 0x7F000000) >> 24;
       unichar testChar = 0;
@@ -303,7 +410,15 @@ class GlyphPack : BTNode
                matrix.yy = (FT_Fixed)( 1.0 * 0x10000L );
                FT_Set_Transform(fontEntry.face, &matrix, &pen);
             }
-            FT_Set_Char_Size(fontEntry.face, (int)(font.size * 64), (int)(font.size * 64), 96, 96);
+            //FT_Set_Char_Size(fontEntry.face, (int)(font.size * 64), (int)(font.size * 64), 96, 96);
+            fontEntry.scale = FaceSetCharSize(fontEntry.face, font.size);
+            if(!c)
+            {
+               if(!fontEntry.face->units_per_EM)
+                  font.ascent = (int)((double)fontEntry.face->ascender);
+               else
+                  font.ascent = (int)((double)fontEntry.face->ascender * fontEntry.face->size->metrics.y_ppem / fontEntry.face->units_per_EM);
+            }
 
             fontEntry.hbFont.x_ppem  = fontEntry.face->size->metrics.x_ppem;
             fontEntry.hbFont.y_ppem  = fontEntry.face->size->metrics.y_ppem;
@@ -326,7 +441,6 @@ class GlyphPack : BTNode
                {
                   if(!FT_Load_Glyph(fontEntry.face, glyph, FT_LOAD_DEFAULT /*FT_LOAD_NO_HINTING*/) || entry == MAX_FONT_LINK_ENTRIES-1 || !font.fontEntries[entry+1])
                   {
-                     
                      //printf("%s: Accepted entry %d ", font.faceName, entry);
                      break;
                   }
@@ -346,9 +460,10 @@ class GlyphPack : BTNode
                }
             }
          }
+         scales[c] = fontEntry.scale;
          faces[c] = fontEntry.face;
-         maxWidth = Max(maxWidth, ((faces[c]->glyph->metrics.width + 64 + (64 - faces[c]->glyph->metrics.width & 0x3F)) >> 6));
-         maxHeight = Max(maxHeight, ((faces[c]->glyph->metrics.height + 64 + (64 - faces[c]->glyph->metrics.height & 0x3F)) >> 6));
+         maxWidth = Max(maxWidth, ((faces[c]->glyph->metrics.width + 64 + (64 - (faces[c]->glyph->metrics.width & 0x3F))) >> 6));
+         maxHeight = Max(maxHeight, ((faces[c]->glyph->metrics.height + 64 + (64 - (faces[c]->glyph->metrics.height & 0x3F))) >> 6));
          //maxHeight = Max(maxHeight, ((faces[c]->glyph->metrics.height) >> 6));
       }
       cellWidth = maxWidth;
@@ -374,8 +489,8 @@ class GlyphPack : BTNode
             GlyphInfo * glyph = &glyphs[c];
             FT_GlyphSlot slot = faces[c]->glyph;
             double em_size = 1.0 * faces[c]->units_per_EM;
-            double x_scale = faces[c]->size->metrics.x_ppem / em_size;
-            double y_scale = faces[c]->size->metrics.y_ppem / em_size;
+            //double x_scale = faces[c]->size->metrics.x_ppem / em_size;
+            double y_scale = em_size ? (faces[c]->size->metrics.y_ppem / em_size) : 1;
             double ascender = faces[c]->ascender * y_scale;
             int glyphNo = isGlyph ? ((key | c) & 0x00FFFFFF) : FT_Get_Char_Index(faces[c], key | c);
 
@@ -455,6 +570,9 @@ class GlyphPack : BTNode
             glyph->w = slot->bitmap.width;
             glyph->h = slot->bitmap.rows;
             glyph->glyphNo = glyphNo;
+            glyph->bx = faces[c]->glyph->metrics.horiBearingX;
+            glyph->by = faces[c]->glyph->metrics.horiBearingY;
+            glyph->scale = scales[c];
 
             glyph->ax = slot->advance.x;
             glyph->ay = slot->advance.y + (64 - slot->advance.y % 64);
@@ -465,7 +583,7 @@ class GlyphPack : BTNode
             char fileName[256];
             static int fid = 0;
             for(c = 0; c<256; c++)
-               bitmap.palette[c] = ColorAlpha { 255, { c,c,c } };
+               bitmap.palette[c] = ColorAlpha { 255, { (byte)c,(byte)c,(byte)c } };
             bitmap.pixelFormat = pixelFormat8;
             
             /*
@@ -499,34 +617,6 @@ class GlyphPack : BTNode
 }
 
 #if !defined(ECERE_NOTRUETYPE)
-default:
-HB_LineBreakClass HB_GetLineBreakClass(unichar ch)
-{
-   return 0; //(HB_LineBreakClass)QUnicodeTables::lineBreakClass(ch);
-}
-
-void HB_GetUnicodeCharProperties(unichar ch, HB_CharCategory *category, int *combiningClass)
-{
-   *category = GetCharCategory(ch); //(HB_CharCategory)QChar::category(ch);
-   *combiningClass = 0; //QChar::combiningClass(ch);
-}
-
-HB_CharCategory HB_GetUnicodeCharCategory(unichar ch)
-{
-  return GetCharCategory(ch);
-}
-
-int HB_GetUnicodeCharCombiningClass(unichar ch)
-{
-   return 0; // QChar::combiningClass(ch);
-}
-
-uint16 HB_GetMirroredChar(uint16 ch)
-{
-   return 0; //QChar::mirroredChar(ch);
-}
-private:
-
 static HB_ShaperItem shaper_item;
 
 static uint * shaping(FontEntry entry, uint16 * string, int len, HB_Script script, int *numGlyphs, bool * rightToLeft)
@@ -597,6 +687,8 @@ public class Font : struct
    int height;
    FontFlags flags;
    char faceName[512];
+   int ascent;
+   float scale;
 
    ~Font()
    {
@@ -714,18 +806,19 @@ struct FontData
 {
    char fileName[MAX_FILENAME];
    FontFlags flags;
+   bool forgive;
 };
 
 static int CALLBACK MyFontProc(ENUMLOGFONTEX * font, NEWTEXTMETRICEX *lpntme, int fontType, LPARAM lParam)
 {
-   if(fontType == TRUETYPE_FONTTYPE)
+   //if(fontType == TRUETYPE_FONTTYPE)
    {
       FontData * fontData = (FontData *) lParam;
       char * fileName = (char *)lParam;
       HKEY key;
       int weight = (fontData->flags.bold) ? FW_BOLD : FW_NORMAL;
       int italic = (fontData->flags.italic) ? 1 : 0;
-      if(weight == font->elfLogFont.lfWeight && italic == (font->elfLogFont.lfItalic != 0))
+      if((fontData->forgive || weight == font->elfLogFont.lfWeight) && italic == (font->elfLogFont.lfItalic != 0))
       {
          if(!RegOpenKeyEx(HKEY_LOCAL_MACHINE,"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts",0,KEY_READ,&key) ||
             !RegOpenKeyEx(HKEY_LOCAL_MACHINE,"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Fonts",0,KEY_READ,&key))
@@ -739,9 +832,9 @@ static int CALLBACK MyFontProc(ENUMLOGFONTEX * font, NEWTEXTMETRICEX *lpntme, in
                int size = 1024;
                int sizeFileName = 1024;
                char * occurence;
-               if(RegEnumValue(key, value++, entryName, &size, null, &type, fontFileName, &sizeFileName) != ERROR_SUCCESS)
+               if(RegEnumValue(key, value++, entryName, (PDWORD)&size, null, (PDWORD)&type, (LPBYTE)fontFileName, (PDWORD)&sizeFileName) != ERROR_SUCCESS)
                   break;
-               if((occurence = SearchString(entryName, 0, font->elfFullName, false, false)))
+               if((occurence = SearchString((char *)entryName, 0, (char *)font->elfFullName, false, false)))
                {
                   int c;
                   for(c = (int)(occurence - entryName) - 1; c >= 0; c--)
@@ -751,12 +844,15 @@ static int CALLBACK MyFontProc(ENUMLOGFONTEX * font, NEWTEXTMETRICEX *lpntme, in
                      else if(ch != ' ') break;
                   }
                   if(c >= 0) continue;
-                  for(c = (int)(occurence - entryName) + strlen(font->elfFullName); ; c++)
+                  for(c = (int)(occurence - entryName) + strlen((char *)font->elfFullName); ; c++)
                   {
                      char ch = entryName[c];
                      if(ch == 0 || ch == '&' || ch == '(') { c = -1; break; }
                      else if(ch != ' ') break;
                   }
+
+                  if(atoi(entryName + c))
+                     c = -1;
                   if(c >= 0) continue;
 
                   strcpy(fileName, fontFileName);
@@ -2734,6 +2830,11 @@ public class LFBDisplayDriver : DisplayDriver
                fontData.flags = flags;
                   
                EnumFontFamiliesEx(hdc, &logFont, (void *)MyFontProc, (DWORD)&fontData, 0);
+               if(!fontData.fileName[0] && flags.bold)
+               {
+                  fontData.forgive = true;
+                  EnumFontFamiliesEx(hdc, &logFont, (void *)MyFontProc, (DWORD)&fontData, 0);
+               }
                if(!fontData.fileName[0])
                {
                   // Fake italic
@@ -2829,10 +2930,11 @@ public class LFBDisplayDriver : DisplayDriver
             if(!RegOpenKeyEx(HKEY_LOCAL_MACHINE,"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\FontLink\\SystemLink",0,KEY_READ,&key) ||
                !RegOpenKeyEx(HKEY_LOCAL_MACHINE,"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\FontLink\\SystemLink",0,KEY_READ,&key))
             {  
-               int value = 0;
+               // int value = 0;
                uint32 type;
                int size = 1024;
-               RegQueryValueEx(key, faceName,null, &type, links, &size);
+               RegQueryValueEx(key, faceName, null, (LPDWORD)&type, (LPBYTE)links, (LPDWORD)&size);
+               memset(links + size, 0, 1024 - size);
                RegCloseKey(key);
             }
 #else
@@ -2907,7 +3009,7 @@ public class LFBDisplayDriver : DisplayDriver
                      {
                         fontEntry.hbFace = HB_NewFace(fontEntry.face, hb_getSFntTable);
                         fontEntry.hbFont.klass = &hb_fontClass;
-                        fontEntry.hbFont.userData = fontEntry.face;
+                        fontEntry.hbFont.userData = fontEntry; //.face;
 
                         numFonts++;
                         loadedFonts.Add(fontEntry);
@@ -3016,7 +3118,7 @@ public class LFBDisplayDriver : DisplayDriver
                      
                   }
                   linksPos += c;
-                  while(links[linksPos]) linksPos++;
+                  while(links[linksPos] && links[linksPos] != ',') linksPos++;
                   linksPos++;
                }
             }
@@ -3038,12 +3140,13 @@ public class LFBDisplayDriver : DisplayDriver
 
 #if !defined(ECERE_NOTRUETYPE)
    void ::ProcessString(Font font, DisplaySystem displaySystem, byte * text, int len, 
-                        void (* callback)(Surface surface, Display display, int * x, int y, GlyphInfo * glyph, Bitmap bitmap, bool rightToLeft),
+                        void (* callback)(Surface surface, Display display, int x, int y, GlyphInfo * glyph, Bitmap bitmap),
                         Surface surface, Display display, int * x, int y)
    {
       if(font && font.fontEntries && font.fontEntries[0])
       {
          int previousGlyph = 0;
+         FT_Face previousFace = 0;
          int c, nb, glyphIndex = 0;
          unichar lastPack = 0;
          GlyphPack pack = font.asciiPack;
@@ -3051,25 +3154,27 @@ public class LFBDisplayDriver : DisplayDriver
          uint * glyphs;
          int numGlyphs = 0;
          bool rightToLeft = false;
-         int rightToLeftOffset = 0;
          int fontEntryNum = 0;
-         bool foundArabic = false;
          int glyphScript = 0;
+         FontEntry curFontEntry;
          
+         theDisplaySystem = displaySystem;
          pack.bitmap.alphaBlend = true;
 
-         for(c = 0; c < len || glyphIndex < numGlyphs;)
+         for(c = 0; c < len || (numGlyphs && (rightToLeft ? (glyphIndex >= 0) : (glyphIndex < numGlyphs)));)
          {
             uint glyphNo;
             uint packNo;
-            if(glyphIndex < numGlyphs)
+            if(numGlyphs && (rightToLeft ? (glyphIndex >= 0) : (glyphIndex < numGlyphs)))
             {
-               glyphNo = glyphs[glyphIndex++] | 0x80000000 | (glyphScript << 24);
+               glyphNo = glyphs[glyphIndex] | 0x80000000 | (glyphScript << 24);
+               rightToLeft ? glyphIndex-- : glyphIndex++;
             }
             else
             {
                HB_Script curScript = HB_Script_Common;
                byte * scriptStart = text + c;
+               unichar nonASCIIch = 0;
                unichar ch;
                unichar ahead = 0;
                unichar testChar = 0;
@@ -3078,7 +3183,8 @@ public class LFBDisplayDriver : DisplayDriver
                while(true)
                {
                   HB_Script script = HB_Script_Common;
-                  ch = UTF8GetChar(text + c, &nb);
+                  ch = UTF8GetChar((char *)text + c, &nb);
+                  if(ch > 127) nonASCIIch = ch;
                   if(!nb) break;
                   if(ch == 32 && curScript)
                   {
@@ -3095,7 +3201,7 @@ public class LFBDisplayDriver : DisplayDriver
                         if(a < c + len)
                         {
                            int nb;
-                           unichar ahead = UTF8GetChar(text + a, &nb);
+                           unichar ahead = UTF8GetChar((char *)text + a, &nb);
                            if((ahead >= 0x590 && ahead <= 0x7C0) || (ahead >= 0xFB1D && ahead <= 0xFB4F) || (ahead >= 0xFB50 && ahead <= 0xFDFF))
                               script = curScript;                           
                         }
@@ -3131,7 +3237,7 @@ public class LFBDisplayDriver : DisplayDriver
                      script = HB_Script_Hangul;
                   else if(ch >= 0x1680 && ch <= 0x169F) script = HB_Script_Ogham;
                   else if(ch >= 0x16A0 && ch <= 0x16FF) script = HB_Script_Runic;
-                  else if(ch >= 0x1780 && ch <= 0x17FF || ch >= 0x19E0 && ch <= 0x19FF) script = HB_Script_Khmer;
+                  else if((ch >= 0x1780 && ch <= 0x17FF) || (ch >= 0x19E0 && ch <= 0x19FF)) script = HB_Script_Khmer;
                   else if(ch >= 0x3040 && ch <= 0x309F) script = 60;
                   else if(ch >= 0x3400 && ch <= 0x9FBF) script = 61;
                   //else if(ch >= 0x4E00 && ch <= 0x9FBF) script = 61;
@@ -3160,6 +3266,7 @@ public class LFBDisplayDriver : DisplayDriver
                {
                   rightToLeft = false;
                   glyphNo = ch;
+                  theCurrentScript = 0;
                }
                else
                {
@@ -3170,8 +3277,8 @@ public class LFBDisplayDriver : DisplayDriver
                      utf16 = renew utf16 uint16[max];
                      utf16BufferSize = max;
                   }
-                  wc = UTF8toUTF16BufferLen(scriptStart, utf16, max, len);
-                  glyphScript = curScript;
+                  wc = UTF8toUTF16BufferLen((char *)scriptStart, utf16, max, len);
+                  theCurrentScript = glyphScript = curScript;
                }
                switch(curScript)
                {
@@ -3180,6 +3287,9 @@ public class LFBDisplayDriver : DisplayDriver
                      break;
                   case HB_Script_Devanagari:    testChar = 0x905; testLang = "sa"; 
                      //printf("Devanagari ");
+                     break;
+                  case HB_Script_Hebrew:        testChar = 0x05EA /*'ת'*/; /*testLang = "he"; */
+                     //printf("Hebrew ");
                      break;
                   default:
                      testChar = ch;
@@ -3300,7 +3410,7 @@ public class LFBDisplayDriver : DisplayDriver
                            {
                               fontEntry.hbFace = HB_NewFace(fontEntry.face, hb_getSFntTable);            
                               fontEntry.hbFont.klass = &hb_fontClass;
-                              fontEntry.hbFont.userData = fontEntry.face;
+                              fontEntry.hbFont.userData = fontEntry; //.face;
 
                               numFonts++;
                               loadedFonts.Add(fontEntry);
@@ -3328,42 +3438,19 @@ public class LFBDisplayDriver : DisplayDriver
                if(curScript > HB_ScriptCount) curScript = HB_Script_Common;
                if(curScript != HB_Script_Common && curScript < HB_ScriptCount)
                {
-                  int c;
+                  font.fontEntries[fontEntryNum].font = font;
                   glyphs = shaping(font.fontEntries[fontEntryNum], utf16, wc, curScript, &numGlyphs, &rightToLeft);
                   if(!numGlyphs)
                      continue;
-                  if(rightToLeft /*&& surface*/)
-                  {
-                     int c;
-                     rightToLeftOffset = 0;
-                     for(c = 0; c<numGlyphs; c++)
-                     {
-                        GlyphInfo * glyph;
-                        glyphNo = glyphs[c] | 0x80000000 | (glyphScript << 24);
-                        packNo = glyphNo & 0xFFFFFF80;
-                        if(packNo != lastPack)
-                        {
-                           pack = (GlyphPack)font.glyphPacks.Find(packNo);
-                           if(!pack)
-                           {
-                              pack = GlyphPack { key = packNo };
-                              font.glyphPacks.Add(pack);
-                              pack.Render(font, fontEntryNum, displaySystem);
-                           }
-                           pack.bitmap.alphaBlend = true;
-                           lastPack = packNo;
-                        }
-                        glyph = &pack.glyphs[glyphNo & 0x7F];
 
-                        rightToLeftOffset += (int)glyph->ax - glyph->left;
-                     }
-                     *x += rightToLeftOffset;
-                  }
-
-                  glyphIndex = 0;
-                  glyphNo = glyphs[glyphIndex++] | 0x80000000 | (glyphScript << 24);
+                  glyphIndex = rightToLeft ? (numGlyphs - 1) : 0;
+                  glyphNo = glyphs[glyphIndex] | 0x80000000 | (glyphScript << 24);
+                  rightToLeft ? glyphIndex-- : glyphIndex++;
                }
             }
+
+            curFontEntry = font.fontEntries[fontEntryNum];
+
             packNo = glyphNo & 0xFFFFFF80;
 
             if(packNo != lastPack)
@@ -3385,22 +3472,32 @@ public class LFBDisplayDriver : DisplayDriver
             }
             if(pack)
             {
+               int index = rightToLeft ? (glyphIndex + 1) : (glyphIndex-1);
                GlyphInfo * glyph = &pack.glyphs[glyphNo & 0x7F];
 
-               /*if(previousGlyph)
+               int ax = (int)((numGlyphs ? shaper_item.advances[index] : glyph->ax) * glyph->scale);
+               int offset = numGlyphs ? shaper_item.offsets[index].x : 0;
+               int oy = 0;//numGlyphs ? shaper_item.offsets[index].y : 0;
+
+               ax += offset;
+
+               if(previousGlyph && curFontEntry.face == previousFace)
                {
-                  FT_Vector delta;
-                  FT_Get_Kerning(font.fontEntries[fontEntryNum].face, previousGlyph, glyph->glyphNo, FT_KERNING_UNFITTED, &delta );
-                  *x += delta.x;
+                  FT_Vector delta = { 0, 0 };
+                  FT_Get_Kerning(curFontEntry.face, previousGlyph, glyph->glyphNo, FT_KERNING_UNFITTED, &delta );
+                  if(delta.x < 0)  delta.x += (-delta.x) % 64;
+                  else if(delta.x) delta.x += 64 - (delta.x % 64);
+                  *x += delta.x * glyph->scale;
                }
-               previousGlyph = glyph->glyphNo;*/
-               callback(surface, display, x, y, glyph, pack.bitmap, rightToLeft);
+               previousGlyph = glyph->glyphNo;
+               previousFace = curFontEntry.face;
+
+               if(callback)
+                  callback(surface, display, ((*x) >> 6), y + (oy >> 6), glyph, pack.bitmap);
+               *x += ax;
             }
-            if(numGlyphs && glyphIndex == numGlyphs)
-            {
-               *x += rightToLeftOffset;
+            if(numGlyphs && (rightToLeft ? (glyphIndex < 0) : (glyphIndex == numGlyphs)))
                numGlyphs = 0;
-            }
          }
       }
       if(surface)
@@ -3410,17 +3507,6 @@ public class LFBDisplayDriver : DisplayDriver
       }
    }
 
-   void ::AddWidth(Surface surface, Display display, int * x, int y, GlyphInfo * glyph, Bitmap bitmap, bool rightToLeft)
-   {
-      if(rightToLeft)
-      {
-         *x -= (int)glyph->ax - glyph->left;
-      }
-      else
-      {
-         *x += glyph->ax;
-      }
-   }
 #endif
    void FontExtent(DisplaySystem displaySystem, Font font, byte * text, int len, int * width, int * height)
    {
@@ -3439,7 +3525,7 @@ public class LFBDisplayDriver : DisplayDriver
          {
             int w = 0;
 #if !defined(ECERE_NOTRUETYPE)
-            ProcessString(font, displaySystem, text, len, AddWidth, null, null, &w, 0);
+            ProcessString(font, displaySystem, text, len, null, null, null, &w, 0);
 #endif
             //*width = (w + 64 - w % 64) >> 6;
             *width = w >> 6;
@@ -3455,20 +3541,9 @@ public class LFBDisplayDriver : DisplayDriver
    }
 
 #if !defined(ECERE_NOTRUETYPE)
-   void ::OutputGlyph(Surface surface, Display display, int * x, int y, GlyphInfo * glyph, Bitmap bitmap, bool rightToLeft)
+   void ::OutputGlyph(Surface surface, Display display, int x, int y, GlyphInfo * glyph, Bitmap bitmap)
    {
-      LFBSurface lfbSurface = surface.driverData;
-      //lfbSurface.xOffset = (*x & 0x3F);
-      if(rightToLeft)
-      {
-         surface.driver.Blit(display, surface, bitmap, (*x >> 6) - glyph->w, y + glyph->top, glyph->x, glyph->y, glyph->w, glyph->h);
-         *x -= (int)glyph->ax - glyph->left;
-      }
-      else
-      {
-         surface.driver.Blit(display, surface, bitmap, (*x >> 6) + glyph->left, y + glyph->top, glyph->x, glyph->y, glyph->w, glyph->h);
-         *x += glyph->ax;
-      }
+      surface.driver.Blit(display, surface, bitmap, x + glyph->left, y + glyph->top, glyph->x, glyph->y, glyph->w, glyph->h);
    }
 #endif
 

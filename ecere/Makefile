@@ -31,32 +31,34 @@ OBJECTS1 = $(OBJ)Archive.o $(OBJ)BufferedFile.o $(OBJ)Date.o $(OBJ)DualPipe.o \
 	$(OBJ)System.c.o $(OBJ)Cube.o $(OBJ)SkyBox.o $(OBJ)Sphere.o $(OBJ)Object3DSFormat.o \
 	$(OBJ)Camera.o $(OBJ)Matrix.o $(OBJ)Mesh.o $(OBJ)Object.o $(OBJ)Plane.o $(OBJ)Quaternion.o \
 	$(OBJ)Vector3D.o $(OBJ)BMPFormat.o $(OBJ)GIFFormat.o $(OBJ)JPEGFormat.o $(OBJ)PCXFormat.o \
-	$(OBJ)PNGFormat.o $(OBJ)RGBFormat.o $(OBJ)harfbuzz-arabic.o $(OBJ)harfbuzz-buffer.o \
-	$(OBJ)harfbuzz-gdef.o $(OBJ)harfbuzz-global.o $(OBJ)harfbuzz-gpos.o $(OBJ)harfbuzz-gsub.o \
-	$(OBJ)harfbuzz-hangul.o $(OBJ)harfbuzz-hebrew.o $(OBJ)harfbuzz-indic.o $(OBJ)harfbuzz-khmer.o
-OBJECTS2 = $(OBJ)harfbuzz-myanmar.o $(OBJ)harfbuzz-open.o $(OBJ)harfbuzz-shaper.o \
-	$(OBJ)harfbuzz-stream.o $(OBJ)harfbuzz-tibetan.o $(if $(WINDOWS),$(OBJ)Direct3D8DisplayDriver.o,) \
-	$(if $(WINDOWS),$(OBJ)Direct3D9DisplayDriver.o,) $(if $(WINDOWS),$(OBJ)DirectDrawDisplayDriver.o,) \
-	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.o,) $(OBJ)lfbBlit.o $(OBJ)lfbConvert.o $(OBJ)LFBDisplayDriver.o \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.o,) $(OBJ)OpenGLDisplayDriver.o \
-	$(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.o,) $(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.o,) \
-	$(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.o,) $(if $(LINUX),$(OBJ)XDisplayDriver.o,) $(OBJ)Bitmap.o $(OBJ)BitmapResource.o \
-	$(OBJ)Color.o $(OBJ)Display.o $(OBJ)DisplaySystem.o $(OBJ)FontResource.o $(OBJ)Resource.o \
-	$(OBJ)Surface.o $(OBJ)Button.o $(OBJ)CalendarControl.o $(OBJ)DataBox.o $(OBJ)DropBox.o \
-	$(OBJ)EditBox.o $(OBJ)Label.o $(OBJ)ListBox.o $(OBJ)Menu.o $(OBJ)Picture.o $(OBJ)ProgressBar.o \
-	$(OBJ)ScrollBar.o $(OBJ)StatusBar.o
-OBJECTS3 = $(OBJ)TabControl.o $(OBJ)PaneSplitter.o $(OBJ)Stacker.o $(OBJ)PathBox.o \
-	$(OBJ)ColorPicker.o $(OBJ)FileDialog.o $(OBJ)FindDialog.o $(OBJ)GoToDialog.o $(OBJ)MessageBox.o \
-	$(OBJ)ReplaceDialog.o $(OBJ)WindowList.o $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.o,) \
-	$(if $(WINDOWS),$(OBJ)Win32Interface.o,) $(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.o,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.o,) $(OBJ)TVisionSkin.o $(OBJ)WindowsSkin.o $(OBJ)Anchor.o $(OBJ)ClipBoard.o \
-	$(OBJ)Cursor.o $(OBJ)Desktop3D.o $(OBJ)FormDesigner.o $(OBJ)GuiApplication.o \
-	$(OBJ)Interface.o $(OBJ)Key.o $(OBJ)Skin.o $(OBJ)Timer.o $(OBJ)typeEdit.o $(OBJ)Window.o \
-	$(OBJ)dcom.o $(OBJ)HTTPFile.o $(OBJ)network.o $(OBJ)NetworkClientFile.o $(OBJ)Service.o \
-	$(OBJ)Socket.o $(OBJ)Array.o $(OBJ)AVLTree.o $(OBJ)BuiltInContainer.o $(OBJ)Container.o \
-	$(OBJ)CustomAVLTree.o $(OBJ)LinkList.o $(OBJ)List.o $(OBJ)Map.o $(OBJ)BinaryTree.o $(OBJ)BTNode.o
-OBJECTS4 = $(OBJ)dataTypes.o $(OBJ)instance.o $(OBJ)String.o $(OBJ)OldList.o \
-	$(OBJ)instance.c.o $(OBJ)$(MODULE).main$(O)
+	$(OBJ)PNGFormat.o $(OBJ)RGBFormat.o $(OBJ)harfbuzz-freetype.o $(OBJ)harfbuzz-unicode-tables.o \
+	$(OBJ)harfbuzz-unicode.o $(OBJ)harfbuzz-arabic.o $(OBJ)harfbuzz-buffer.o $(OBJ)harfbuzz-gdef.o \
+	$(OBJ)harfbuzz-gpos.o $(OBJ)harfbuzz-gsub.o $(OBJ)harfbuzz-hangul.o
+OBJECTS2 = $(OBJ)harfbuzz-hebrew.o $(OBJ)harfbuzz-indic.o $(OBJ)harfbuzz-khmer.o \
+	$(OBJ)harfbuzz-myanmar.o $(OBJ)harfbuzz-open.o $(OBJ)harfbuzz-shaper.o $(OBJ)harfbuzz-stream.o \
+	$(OBJ)harfbuzz-tibetan.o $(OBJ)harfbuzz-impl.o $(OBJ)harfbuzz-thai.o \
+	$(if $(WINDOWS),$(OBJ)Direct3D8DisplayDriver.o,) $(if $(WINDOWS),$(OBJ)Direct3D9DisplayDriver.o,) \
+	$(if $(WINDOWS),$(OBJ)DirectDrawDisplayDriver.o,) $(if $(WINDOWS),$(OBJ)GDIDisplayDriver.o,) $(OBJ)lfbBlit.o $(OBJ)lfbConvert.o \
+	$(OBJ)LFBDisplayDriver.o $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.o,) \
+	$(OBJ)OpenGLDisplayDriver.o $(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.o,) \
+	$(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.o,) $(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.o,) \
+	$(if $(LINUX),$(OBJ)XDisplayDriver.o,) $(OBJ)Bitmap.o $(OBJ)BitmapResource.o $(OBJ)Color.o $(OBJ)Display.o \
+	$(OBJ)DisplaySystem.o $(OBJ)FontResource.o $(OBJ)Resource.o $(OBJ)Surface.o $(OBJ)Button.o \
+	$(OBJ)CalendarControl.o $(OBJ)DataBox.o $(OBJ)DropBox.o $(OBJ)EditBox.o $(OBJ)Label.o
+OBJECTS3 = $(OBJ)ListBox.o $(OBJ)Menu.o $(OBJ)Picture.o $(OBJ)ProgressBar.o \
+	$(OBJ)ScrollBar.o $(OBJ)StatusBar.o $(OBJ)TabControl.o $(OBJ)PaneSplitter.o $(OBJ)Stacker.o \
+	$(OBJ)PathBox.o $(OBJ)ColorPicker.o $(OBJ)FileDialog.o $(OBJ)FindDialog.o $(OBJ)GoToDialog.o \
+	$(OBJ)MessageBox.o $(OBJ)ReplaceDialog.o $(OBJ)WindowList.o \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.o,) $(if $(WINDOWS),$(OBJ)Win32Interface.o,) \
+	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.o,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.o,) $(OBJ)TVisionSkin.o \
+	$(OBJ)WindowsSkin.o $(OBJ)Anchor.o $(OBJ)ClipBoard.o $(OBJ)Cursor.o $(OBJ)Desktop3D.o \
+	$(OBJ)FormDesigner.o $(OBJ)GuiApplication.o $(OBJ)Interface.o $(OBJ)Key.o $(OBJ)Skin.o $(OBJ)Timer.o \
+	$(OBJ)typeEdit.o $(OBJ)Window.o $(OBJ)dcom.o $(OBJ)HTTPFile.o $(OBJ)network.o \
+	$(OBJ)NetworkClientFile.o $(OBJ)Service.o $(OBJ)Socket.o $(OBJ)Array.o $(OBJ)AVLTree.o \
+	$(OBJ)BuiltInContainer.o $(OBJ)Container.o
+OBJECTS4 = $(OBJ)CustomAVLTree.o $(OBJ)LinkList.o $(OBJ)List.o $(OBJ)Map.o \
+	$(OBJ)BinaryTree.o $(OBJ)BTNode.o $(OBJ)dataTypes.o $(OBJ)instance.o $(OBJ)String.o \
+	$(OBJ)OldList.o $(OBJ)instance.c.o $(OBJ)$(MODULE).main$(O)
 
 COBJECTS = $(COBJECTS1) $(COBJECTS2) $(COBJECTS3)
 COBJECTS1 = $(OBJ)Archive.c $(OBJ)BufferedFile.c $(OBJ)Date.c $(OBJ)DualPipe.c \
@@ -155,7 +157,7 @@ IMPORTS3 = $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.imp,) \
 	$(OBJ)Map.imp $(OBJ)BinaryTree.imp $(OBJ)BTNode.imp $(OBJ)dataTypes.imp $(OBJ)instance.imp \
 	$(OBJ)String.imp $(OBJ)OldList.imp
 
-SOURCES = $(SOURCES1) $(SOURCES2) $(SOURCES3)
+SOURCES = $(SOURCES1) $(SOURCES2) $(SOURCES3) $(SOURCES4)
 SOURCES1 = src/sys/Archive.ec src/sys/BufferedFile.ec src/sys/Date.ec src/sys/DualPipe.ec \
 	src/sys/EARArchive.ec src/sys/File.ec src/sys/FileMonitor.ec src/sys/GlobalAppSettings.ec \
 	src/sys/JSON.ec src/sys/JSONGlobalSettings.ec src/sys/memory.ec src/sys/Mutex.ec \
@@ -166,31 +168,32 @@ SOURCES1 = src/sys/Archive.ec src/sys/BufferedFile.ec src/sys/Date.ec src/sys/Du
 	src/gfx/3D/Object.ec src/gfx/3D/Plane.ec src/gfx/3D/Quaternion.ec src/gfx/3D/Vector3D.ec \
 	src/gfx/bitmaps/BMPFormat.ec src/gfx/bitmaps/GIFFormat.ec src/gfx/bitmaps/JPEGFormat.ec \
 	src/gfx/bitmaps/PCXFormat.ec src/gfx/bitmaps/PNGFormat.ec src/gfx/bitmaps/RGBFormat.ec \
-	src/gfx/drivers/harfbuzz/harfbuzz-arabic.c src/gfx/drivers/harfbuzz/harfbuzz-buffer.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-gdef.c src/gfx/drivers/harfbuzz/harfbuzz-global.c \
+	src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode-tables.c \
+	src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode.c src/gfx/drivers/harfbuzz/harfbuzz-arabic.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-buffer.c src/gfx/drivers/harfbuzz/harfbuzz-gdef.c \
 	src/gfx/drivers/harfbuzz/harfbuzz-gpos.c src/gfx/drivers/harfbuzz/harfbuzz-gsub.c \
 	src/gfx/drivers/harfbuzz/harfbuzz-hangul.c src/gfx/drivers/harfbuzz/harfbuzz-hebrew.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-indic.c src/gfx/drivers/harfbuzz/harfbuzz-khmer.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-myanmar.c src/gfx/drivers/harfbuzz/harfbuzz-open.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-shaper.c
-SOURCES2 = src/gfx/drivers/harfbuzz/harfbuzz-stream.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c $(if $(WINDOWS),src/gfx/drivers/Direct3D8DisplayDriver.ec,) \
-	$(if $(WINDOWS),src/gfx/drivers/Direct3D9DisplayDriver.ec,) $(if $(WINDOWS),src/gfx/drivers/DirectDrawDisplayDriver.ec,) \
-	$(if $(WINDOWS),src/gfx/drivers/GDIDisplayDriver.ec,) src/gfx/drivers/lfbBlit.ec src/gfx/drivers/lfbConvert.ec \
-	src/gfx/drivers/LFBDisplayDriver.ec $(if $(or $(LINUX),$(OSX)),src/gfx/drivers/NCursesDisplayDriver.ec,) \
-	src/gfx/drivers/OpenGLDisplayDriver.ec $(if $(WINDOWS),src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec,) \
-	$(if $(WINDOWS),src/gfx/drivers/Win32ConsoleDisplayDriver.ec,) $(if $(WINDOWS),src/gfx/drivers/Win32PrinterDisplayDriver.ec,) \
-	$(if $(LINUX),src/gfx/drivers/XDisplayDriver.ec,) src/gfx/Bitmap.ec src/gfx/BitmapResource.ec src/gfx/Color.ec \
-	src/gfx/Display.ec src/gfx/DisplaySystem.ec src/gfx/FontResource.ec src/gfx/Resource.ec \
-	src/gfx/Surface.ec src/gui/controls/Button.ec src/gui/controls/CalendarControl.ec \
-	src/gui/controls/DataBox.ec src/gui/controls/DropBox.ec src/gui/controls/EditBox.ec \
-	src/gui/controls/Label.ec src/gui/controls/ListBox.ec src/gui/controls/Menu.ec \
-	src/gui/controls/Picture.ec src/gui/controls/ProgressBar.ec src/gui/controls/ScrollBar.ec \
+	src/gfx/drivers/harfbuzz/harfbuzz-indic.c src/gfx/drivers/harfbuzz/harfbuzz-khmer.c
+SOURCES2 = src/gfx/drivers/harfbuzz/harfbuzz-myanmar.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-open.c src/gfx/drivers/harfbuzz/harfbuzz-shaper.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-stream.c src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-impl.c src/gfx/drivers/harfbuzz/harfbuzz-thai.c \
+	$(if $(WINDOWS),src/gfx/drivers/Direct3D8DisplayDriver.ec,) $(if $(WINDOWS),src/gfx/drivers/Direct3D9DisplayDriver.ec,) \
+	$(if $(WINDOWS),src/gfx/drivers/DirectDrawDisplayDriver.ec,) $(if $(WINDOWS),src/gfx/drivers/GDIDisplayDriver.ec,) \
+	src/gfx/drivers/lfbBlit.ec src/gfx/drivers/lfbConvert.ec src/gfx/drivers/LFBDisplayDriver.ec \
+	$(if $(or $(LINUX),$(OSX)),src/gfx/drivers/NCursesDisplayDriver.ec,) src/gfx/drivers/OpenGLDisplayDriver.ec \
+	$(if $(WINDOWS),src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec,) $(if $(WINDOWS),src/gfx/drivers/Win32ConsoleDisplayDriver.ec,) \
+	$(if $(WINDOWS),src/gfx/drivers/Win32PrinterDisplayDriver.ec,) $(if $(LINUX),src/gfx/drivers/XDisplayDriver.ec,) src/gfx/Bitmap.ec \
+	src/gfx/BitmapResource.ec src/gfx/Color.ec src/gfx/Display.ec src/gfx/DisplaySystem.ec \
+	src/gfx/FontResource.ec src/gfx/Resource.ec src/gfx/Surface.ec src/gui/controls/Button.ec \
+	src/gui/controls/CalendarControl.ec src/gui/controls/DataBox.ec src/gui/controls/DropBox.ec \
+	src/gui/controls/EditBox.ec src/gui/controls/Label.ec src/gui/controls/ListBox.ec \
+	src/gui/controls/Menu.ec src/gui/controls/Picture.ec
+SOURCES3 = src/gui/controls/ProgressBar.ec src/gui/controls/ScrollBar.ec \
 	src/gui/controls/StatusBar.ec src/gui/controls/TabControl.ec src/gui/controls/PaneSplitter.ec \
-	src/gui/controls/Stacker.ec src/gui/controls/PathBox.ec
-SOURCES3 = src/gui/dialogs/ColorPicker.ec src/gui/dialogs/FileDialog.ec \
-	src/gui/dialogs/FindDialog.ec src/gui/dialogs/GoToDialog.ec src/gui/dialogs/MessageBox.ec \
-	src/gui/dialogs/ReplaceDialog.ec src/gui/dialogs/WindowList.ec \
+	src/gui/controls/Stacker.ec src/gui/controls/PathBox.ec src/gui/dialogs/ColorPicker.ec \
+	src/gui/dialogs/FileDialog.ec src/gui/dialogs/FindDialog.ec src/gui/dialogs/GoToDialog.ec \
+	src/gui/dialogs/MessageBox.ec src/gui/dialogs/ReplaceDialog.ec src/gui/dialogs/WindowList.ec \
 	$(if $(or $(LINUX),$(OSX)),src/gui/drivers/NCursesInterface.ec,) $(if $(WINDOWS),src/gui/drivers/Win32Interface.ec,) \
 	$(if $(WINDOWS),src/gui/drivers/Win32ConsoleInterface.ec,) $(if $(or $(LINUX),$(OSX)),src/gui/drivers/XInterface.ec,) \
 	src/gui/skins/TVisionSkin.ec src/gui/skins/WindowsSkin.ec src/gui/Anchor.ec src/gui/ClipBoard.ec \
@@ -200,8 +203,8 @@ SOURCES3 = src/gui/dialogs/ColorPicker.ec src/gui/dialogs/FileDialog.ec \
 	src/net/NetworkClientFile.ec src/net/Service.ec src/net/Socket.ec src/com/containers/Array.ec \
 	src/com/containers/AVLTree.ec src/com/containers/BuiltInContainer.ec src/com/containers/Container.ec \
 	src/com/containers/CustomAVLTree.ec src/com/containers/LinkList.ec src/com/containers/List.ec \
-	src/com/containers/Map.ec src/com/BinaryTree.ec src/com/BTNode.ec src/com/dataTypes.ec \
-	src/com/instance.ec src/com/String.ec src/com/OldList.ec src/com/instance.c
+	src/com/containers/Map.ec src/com/BinaryTree.ec src/com/BTNode.ec src/com/dataTypes.ec
+SOURCES4 = src/com/instance.ec src/com/String.ec src/com/OldList.ec src/com/instance.c
 
 RESOURCES = $(RESOURCES1) $(RESOURCES2) $(RESOURCES3)
 RESOURCES1 = $(RES)actions/editFind.png $(RES)actions/folderNew.png \
@@ -280,14 +283,14 @@ CFLAGS += \
 	 -I../deps/libpng-1.4.0 \
 	 -I../deps/libungif-4.1.1/lib \
 	 -I../deps/zlib \
-	 -I../deps/freetype-2.3.5/include
+	 -I../deps/freetype-2.3.12/include
 
 OFLAGS += \
 	 -L../deps/zlib/obj/release.$(PLATFORM) \
 	 -L../deps/jpeg-6b/obj/release.$(PLATFORM) \
 	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM) \
 	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM) \
-	 -L../deps/freetype-2.3.5/obj/release.$(PLATFORM)
+	 -L../deps/freetype-2.3.12/obj/release.$(PLATFORM)
 
 LIBS += -ldxguid -lddraw -ldinput -lwinmm -lopengl32 -lws2_32 -lkernel32 -luser32 -lgdi32 -lmpr -ladvapi32 -lshell32 -lwinspool -limm32 -lungif
 
@@ -1213,6 +1216,15 @@ $(OBJ)PNGFormat.o: $(OBJ)PNGFormat.c
 $(OBJ)RGBFormat.o: $(OBJ)RGBFormat.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)RGBFormat.c -o $(OBJ)RGBFormat.o
 
+$(OBJ)harfbuzz-freetype.o: src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c
+	$(CC) $(CFLAGS) -c src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c -o $(OBJ)harfbuzz-freetype.o
+
+$(OBJ)harfbuzz-unicode-tables.o: src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode-tables.c
+	$(CC) $(CFLAGS) -c src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode-tables.c -o $(OBJ)harfbuzz-unicode-tables.o
+
+$(OBJ)harfbuzz-unicode.o: src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode.c
+	$(CC) $(CFLAGS) -c src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode.c -o $(OBJ)harfbuzz-unicode.o
+
 $(OBJ)harfbuzz-arabic.o: src/gfx/drivers/harfbuzz/harfbuzz-arabic.c
 	$(CC) $(CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-arabic.c -o $(OBJ)harfbuzz-arabic.o
 
@@ -1221,9 +1233,6 @@ $(OBJ)harfbuzz-buffer.o: src/gfx/drivers/harfbuzz/harfbuzz-buffer.c
 
 $(OBJ)harfbuzz-gdef.o: src/gfx/drivers/harfbuzz/harfbuzz-gdef.c
 	$(CC) $(CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-gdef.c -o $(OBJ)harfbuzz-gdef.o
-
-$(OBJ)harfbuzz-global.o: src/gfx/drivers/harfbuzz/harfbuzz-global.c
-	$(CC) $(CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-global.c -o $(OBJ)harfbuzz-global.o
 
 $(OBJ)harfbuzz-gpos.o: src/gfx/drivers/harfbuzz/harfbuzz-gpos.c
 	$(CC) $(CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-gpos.c -o $(OBJ)harfbuzz-gpos.o
@@ -1257,6 +1266,12 @@ $(OBJ)harfbuzz-stream.o: src/gfx/drivers/harfbuzz/harfbuzz-stream.c
 
 $(OBJ)harfbuzz-tibetan.o: src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c
 	$(CC) $(CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c -o $(OBJ)harfbuzz-tibetan.o
+
+$(OBJ)harfbuzz-impl.o: src/gfx/drivers/harfbuzz/harfbuzz-impl.c
+	$(CC) $(CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-impl.c -o $(OBJ)harfbuzz-impl.o
+
+$(OBJ)harfbuzz-thai.o: src/gfx/drivers/harfbuzz/harfbuzz-thai.c
+	$(CC) $(CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-thai.c -o $(OBJ)harfbuzz-thai.o
 
 $(OBJ)Direct3D8DisplayDriver.o: $(OBJ)Direct3D8DisplayDriver.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Direct3D8DisplayDriver.c -o $(OBJ)Direct3D8DisplayDriver.o

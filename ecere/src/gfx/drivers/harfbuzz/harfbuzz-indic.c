@@ -1,12 +1,26 @@
-/*******************************************************************
+/*
+ * Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies)
  *
- *  Copyright 2007  Trolltech ASA
+ * This is part of HarfBuzz, an OpenType Layout engine library.
  *
- *  This is part of HarfBuzz, an OpenType Layout engine library.
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, modify, and distribute this
+ * software and its documentation for any purpose, provided that the
+ * above copyright notice and the following two paragraphs appear in
+ * all copies of this software.
  *
- *  See the file name COPYING for licensing information.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
+ * IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
  *
- ******************************************************************/
+ * THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+ */
 
 #include "harfbuzz-shaper.h"
 #include "harfbuzz-shaper-private.h"
@@ -14,7 +28,13 @@
 #include <assert.h>
 #include <stdio.h>
 
+#if defined(_MSC_VER)
+#define inline _inline
+#endif
+
 #define FLAG(x) (1 << (x))
+
+typedef enum { false, true } bool;
 
 static HB_Bool isLetter(HB_UChar16 ucs)
 {
@@ -34,10 +54,7 @@ static HB_Bool isMark(HB_UChar16 ucs)
     return FLAG(HB_GetUnicodeCharCategory(ucs)) & test;
 }
 
-typedef enum { false, true } bool;
-
-typedef enum 
-{
+typedef enum {
     Invalid = 0x0,
     UnknownForm = Invalid,
     Consonant,
@@ -408,7 +425,7 @@ static const unsigned char indicForms[0xe00-0x900] = {
     Matra, Halant, Invalid, Invalid,
 
     Invalid, Invalid, Invalid, Invalid,
-    Invalid, Invalid, Invalid, LengthMark,
+    Invalid, Invalid, Invalid, Matra,
     Invalid, Invalid, Invalid, Invalid,
     Invalid, Invalid, Invalid, Invalid,
 
@@ -464,8 +481,7 @@ static const unsigned char indicForms[0xe00-0x900] = {
     Other, Other, Other, Other,
 };
 
-typedef enum 
-{
+typedef enum {
     None,
     Pre,
     Above,
@@ -556,7 +572,7 @@ static const unsigned char indicPosition[0xe00-0x900] = {
     None, None, None, None,
     None, None, None, None,
 
-    None, None, None, None,
+    Below, None, None, None,
     None, None, None, None,
     None, None, None, None,
     None, None, None, None,
@@ -936,8 +952,7 @@ const hb_uint8 scriptProperties[10] = {
     HasSplit
 };
 
-typedef struct 
-{
+typedef struct {
     Form form;
     Position position;
 } IndicOrdering;
@@ -1041,62 +1056,61 @@ static const IndicOrdering * const indic_order[] = {
 
 // vowel matras that have to be split into two parts.
 static const unsigned short split_matras[]  = {
-    //  matra, split1, split2
+    //  matra, split1, split2, split3
 
     // bengalis
-    0x9cb, 0x9c7, 0x9be,
-    0x9cc, 0x9c7, 0x9d7,
+    0x9cb, 0x9c7, 0x9be, 0x0,
+    0x9cc, 0x9c7, 0x9d7, 0x0,
     // oriya
-    0xb48, 0xb47, 0xb56,
-    0xb4b, 0xb47, 0xb3e,
-    0xb4c, 0xb47, 0xb57,
+    0xb48, 0xb47, 0xb56, 0x0,
+    0xb4b, 0xb47, 0xb3e, 0x0,
+    0xb4c, 0xb47, 0xb57, 0x0,
     // tamil
-    0xbca, 0xbc6, 0xbbe,
-    0xbcb, 0xbc7, 0xbbe,
-    0xbcc, 0xbc6, 0xbd7,
+    0xbca, 0xbc6, 0xbbe, 0x0,
+    0xbcb, 0xbc7, 0xbbe, 0x0,
+    0xbcc, 0xbc6, 0xbd7, 0x0,
     // telugu
-    0xc48, 0xc46, 0xc56,
+    0xc48, 0xc46, 0xc56, 0x0,
     // kannada
-    0xcc0, 0xcbf, 0xcd5,
-    0xcc7, 0xcc6, 0xcd5,
-    0xcc8, 0xcc6, 0xcd6,
-    0xcca, 0xcc6, 0xcc2,
-    0xccb, 0xcca, 0xcd5,
+    0xcc0, 0xcbf, 0xcd5, 0x0,
+    0xcc7, 0xcc6, 0xcd5, 0x0,
+    0xcc8, 0xcc6, 0xcd6, 0x0,
+    0xcca, 0xcc6, 0xcc2, 0x0,
+    0xccb, 0xcc6, 0xcc2, 0xcd5,
     // malayalam
-    0xd4a, 0xd46, 0xd3e,
-    0xd4b, 0xd47, 0xd3e,
-    0xd4c, 0xd46, 0xd57,
+    0xd4a, 0xd46, 0xd3e, 0x0,
+    0xd4b, 0xd47, 0xd3e, 0x0,
+    0xd4c, 0xd46, 0xd57, 0x0,
     // sinhala
-    0xdda, 0xdd9, 0xdca,
-    0xddc, 0xdd9, 0xdcf,
-    0xddd, 0xddc, 0xdca,
-    0xdde, 0xdd9, 0xddf,
+    0xdda, 0xdd9, 0xdca, 0x0,
+    0xddc, 0xdd9, 0xdcf, 0x0,
+    0xddd, 0xdd9, 0xdcf, 0xdca,
+    0xdde, 0xdd9, 0xddf, 0x0,
     0xffff
 };
 
-static inline void splitMatra(unsigned short *reordered, int matra, int * len, int * base)
+static inline void splitMatra(unsigned short *reordered, int matra, int * len)
 {
     unsigned short matra_uc = reordered[matra];
     //qDebug("matra=%d, reordered[matra]=%x", matra, reordered[matra]);
 
     const unsigned short *split = split_matras;
+    int added_chars;
+
     while (split[0] < matra_uc)
-        split += 3;
+        split += 4;
 
     assert(*split == matra_uc);
     ++split;
 
-    if (indic_position(*split) == Pre) {
-        reordered[matra] = split[1];
-        memmove(reordered + 1, reordered, (*len)*sizeof(unsigned short));
-        reordered[0] = split[0];
-        (*base)++;
-    } else {
-        memmove(reordered + matra + 1, reordered + matra, ((*len)-matra)*sizeof(unsigned short));
-        reordered[matra] = split[0];
-        reordered[matra+1] = split[1];
-    }
-    (*len)++;
+    added_chars = split[2] == 0x0 ? 1 : 2;
+
+    memmove(reordered + matra + added_chars, reordered + matra, (*len-matra)*sizeof(unsigned short));
+    reordered[matra] = split[0];
+    reordered[matra+1] = split[1];
+    if(added_chars == 2)
+        reordered[matra+2] = split[2];
+    *len += added_chars;
 }
 
 #ifndef NO_OPENTYPE
@@ -1121,12 +1135,23 @@ static const HB_OpenTypeFeature indic_features[] = {
 
 // #define INDIC_DEBUG
 #ifdef INDIC_DEBUG
-#define IDEBUG qDebug
+#define IDEBUG hb_debug
+#include <stdarg.h>
+
+static void hb_debug(const char *msg, ...)
+{
+    va_list ap;
+    va_start(ap, msg); // use variable arg list
+    vfprintf(stderr, msg, ap);
+    va_end(ap);
+    fprintf(stderr, "\n");
+}
+
 #else
 #define IDEBUG if(0) printf
 #endif
 
-#ifdef INDIC_DEBUG
+#if 0 //def INDIC_DEBUG
 static QString propertiesToString(int properties)
 {
     QString res;
@@ -1172,7 +1197,6 @@ static QString propertiesToString(int properties)
 static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool invalid)
 {
     HB_Script script = item->item.script;
-    assert(script >= HB_Script_Devanagari && script <= HB_Script_Sinhala);
     const unsigned short script_base = 0x0900 + 0x80*(script-HB_Script_Devanagari);
     const unsigned short ra = script_base + 0x30;
     const unsigned short halant = script_base + 0x4d;
@@ -1180,6 +1204,7 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
     bool control = false;
 
     int len = (int)item->item.length;
+    assert(script >= HB_Script_Devanagari && script <= HB_Script_Sinhala);
     IDEBUG(">>>>> indic shape: from=%d, len=%d invalid=%d", item->item.pos, item->item.length, invalid);
 
     if ((int)item->num_glyphs < len+4) {
@@ -1187,11 +1212,16 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
         return false;
     }
 
+    {
     HB_STACKARRAY(HB_UChar16, reordered, len + 4);
+    {
     HB_STACKARRAY(hb_uint8, position, len + 4);
-
+    {
     unsigned char properties = scriptProperties[script-HB_Script_Devanagari];
-
+    int i;
+    int base = 0;
+    int reph = -1;
+    int availableGlyphs;
     if (invalid) {
         *reordered = 0x25cc;
         memcpy(reordered+1, item->string + item->item.pos, len*sizeof(HB_UChar16));
@@ -1202,9 +1232,6 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
     if (reordered[len-1] == 0x200c) // zero width non joiner
         len--;
 
-    int i;
-    int base = 0;
-    int reph = -1;
 
 #ifdef INDIC_DEBUG
     IDEBUG("original:");
@@ -1216,6 +1243,9 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
     if (len != 1) {
         HB_UChar16 *uc = reordered;
         bool beginsWithRa = false;
+        int fixed;
+        const IndicOrdering *finalOrder;
+        int toMove = 0;
 
         // Rule 1: find base consonant
         //
@@ -1235,7 +1265,15 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
         //   farther than 3 consonants from the end of the syllable.
         // #### replace the HasReph property by testing if the feature exists in the font!
         if (form(*uc) == Consonant || (script == HB_Script_Bengali && form(*uc) == IndependentVowel)) {
-            beginsWithRa = (properties & HasReph) && ((len > 2) && *uc == ra && *(uc+1) == halant);
+            int lastConsonant = 0;
+            int matra = -1;
+            int skipped = 0;
+            Position pos;
+            Position matra_position = None;
+
+            if ((properties & HasReph) && (len > 2) &&
+                (*uc == ra || *uc == 0x9f0) && *(uc+1) == halant)
+                beginsWithRa = true;
 
             if (beginsWithRa && form(*(uc+2)) == Control)
                 beginsWithRa = false;
@@ -1243,8 +1281,6 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
             base = (beginsWithRa ? 2 : 0);
             IDEBUG("    length = %d, beginsWithRa = %d, base=%d", len, beginsWithRa, base);
 
-            int lastConsonant = 0;
-            int matra = -1;
             // we remember:
             // * the last consonant since we need it for rule 2
             // * the matras position for rule 3 and 4
@@ -1275,13 +1311,13 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
                         matra = i;
                 }
             }
-            int skipped = 0;
-            Position pos = Post;
+            pos = Post;
             for (i = len-1; i > base; i--) {
+                Position charPosition;
                 if (position[i] != Consonant && (position[i] != Control || script == HB_Script_Kannada))
                     continue;
 
-                Position charPosition = indic_position(uc[i]);
+                charPosition = indic_position(uc[i]);
                 if (pos == Post && charPosition == Post) {
                     pos = Post;
                 } else if ((pos == Post || pos == Below) && charPosition == Below) {
@@ -1331,7 +1367,7 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
             // * the base consonant (other scripts)
             // * the end of the syllable (Kannada)
 
-            Position matra_position = None;
+            
             if (matra > 0)
                 matra_position = indic_position(uc[matra]);
             IDEBUG("    matra at %d with form %d, base=%d", matra, matra_position, base);
@@ -1377,12 +1413,12 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
             //      to be at the beginning of the syllable, so we just move
             //      them there now.
             if (matra_position == Split) {
-                splitMatra(uc, matra, &len, &base);
+                splitMatra(uc, matra, &len);
                 // Handle three-part matras (0xccb in Kannada)
                 matra_position = indic_position(uc[matra]);
-                if (matra_position == Split)
-                    splitMatra(uc, matra, &len, &base);
-            } else if (matra_position == Pre) {
+            }
+
+            if (matra_position == Pre) {
                 unsigned short m = uc[matra];
                 while (matra--)
                     uc[matra+1] = uc[matra];
@@ -1416,7 +1452,7 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
         }
 
         // all reordering happens now to the chars after the base
-        int fixed = base+1;
+        fixed = base+1;
         if (fixed < len && uc[fixed] == nukta)
             fixed++;
         if (fixed < len && uc[fixed] == halant)
@@ -1430,11 +1466,11 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
 #endif
         // we continuosly position the matras and vowel marks and increase the fixed
         // until we reached the end.
-        const IndicOrdering *finalOrder = indic_order[script-HB_Script_Devanagari];
+        finalOrder = indic_order[script-HB_Script_Devanagari];
 
         IDEBUG("    reordering pass:");
         IDEBUG("        base=%d fixed=%d", base, fixed);
-        int toMove = 0;
+        
         while (finalOrder[toMove].form && fixed < len-1) {
             IDEBUG("        fixed = %d, toMove=%d, moving form %d with pos %d", fixed, toMove, finalOrder[toMove].form, finalOrder[toMove].position);
             for (i = fixed; i < len; i++) {
@@ -1445,11 +1481,11 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
                     // need to move this glyph
                     int to = fixed;
                     if (i < len-1 && position[i+1] == Inherit) {
-                        IDEBUG("         moving two chars from %d to %d", i, to);
                         unsigned short ch = uc[i];
                         unsigned short ch2 = uc[i+1];
                         unsigned char pos = position[i];
                         int j;
+                        IDEBUG("         moving two chars from %d to %d", i, to);
                         for (j = i+1; j > to+1; j--) {
                             uc[j] = uc[j-2];
                             position[j] = position[j-2];
@@ -1460,11 +1496,11 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
                         position[to+1] = pos;
                         fixed += 2;
                     } else {
-                        IDEBUG("         moving one char from %d to %d", i, to);
                         unsigned short ch = uc[i];
                         unsigned char pos = position[i];
                         int j;
-                        for (j = i; j > to; j--) {
+                        IDEBUG("         moving one char from %d to %d", i, to);
+                        for ( j = i; j > to; j--) {
                             uc[j] = uc[j-1];
                             position[j] = position[j-1];
                         }
@@ -1487,7 +1523,7 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
     }
 
 #ifndef NO_OPENTYPE
-    const int availableGlyphs = item->num_glyphs;
+    availableGlyphs = item->num_glyphs;
 #endif
     if (!item->font->klass->convertStringToGlyphIndices(item->font,
                                                         reordered, len,
@@ -1513,6 +1549,9 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
 
 #ifndef NO_OPENTYPE
     if (openType) {
+        int newLen = item->face->buffer->in_length;
+        HB_GlyphItem otl_glyphs = item->face->buffer->in_string;
+        HB_Bool positioned;
 
         // we need to keep track of where the base glyph is for some
         // scripts and use the cluster feature for this.  This
@@ -1520,7 +1559,9 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
         // the open type engine manually afterwards.  for indic this
         // is rather simple, as all chars just point to the first
         // glyph in the syllable.
+        {
         HB_STACKARRAY(unsigned short, clusters, len);
+        {
         HB_STACKARRAY(unsigned int, properties, len);
 
         for (i = 0; i < len; ++i)
@@ -1534,6 +1575,7 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
                               | PreSubstProperty
                               | BelowSubstProperty
                               | AboveSubstProperty
+                              | PostSubstProperty
                               | HalantProperty
                               | PositioningProperties);
 
@@ -1591,30 +1633,23 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
         // pres always applies
         // blws always applies
         // abvs always applies
-
-        // psts
-        // ### this looks slightly different from before, but I believe it's correct
-        if (reordered[len-1] != halant || base != len-2)
-            properties[base] &= ~PostSubstProperty;
-        for (i = base+1; i < len; ++i)
-            properties[i] &= ~PostSubstProperty;
-
+        // psts always applies
         // halant always applies
 
 #ifdef INDIC_DEBUG
-        {
-            IDEBUG("OT properties:");
-            for (int i = 0; i < len; ++i)
-                qDebug("    i: %s", ::propertiesToString(properties[i]).toLatin1().data());
-        }
+//        {
+//            IDEBUG("OT properties:");
+//            for (int i = 0; i < len; ++i)
+//                qDebug("    i: %s", ::propertiesToString(properties[i]).toLatin1().data());
+//        }
 #endif
 
         // initialize
         item->log_clusters = clusters;
         HB_OpenTypeShape(item, properties);
 
-        int newLen = item->face->buffer->in_length;
-        HB_GlyphItem otl_glyphs = item->face->buffer->in_string;
+        newLen = item->face->buffer->in_length;
+        otl_glyphs = item->face->buffer->in_string;
 
         // move the left matra back to its correct position in malayalam and tamil
         if ((script == HB_Script_Malayalam || script == HB_Script_Tamil) && (form(reordered[0]) == Matra)) {
@@ -1634,7 +1669,7 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
             }
         }
 
-        HB_Bool positioned = HB_OpenTypePosition(item, availableGlyphs, false);
+        positioned = HB_OpenTypePosition(item, availableGlyphs, false);
 
         HB_FREE_STACKARRAY(clusters);
         HB_FREE_STACKARRAY(properties);
@@ -1643,8 +1678,9 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
             goto error;
 
         if (control) {
-            IDEBUG("found a control char in the syllable");
             hb_uint32 i = 0, j = 0;
+            IDEBUG("found a control char in the syllable");
+            
             while (i < item->num_glyphs) {
                 if (form(reordered[otl_glyphs[i].cluster]) == Control) {
                     ++i;
@@ -1658,7 +1694,10 @@ static bool indic_shape_syllable(HB_Bool openType, HB_ShaperItem *item, bool inv
             }
             item->num_glyphs = j;
         }
-
+    }
+    }
+    } else {
+        HB_HeuristicPosition(item);
     }
 #endif // NO_OPENTYPE
     item->attributes[0].clusterStart = true;
@@ -1673,6 +1712,9 @@ error:
     HB_FREE_STACKARRAY(reordered);
     HB_FREE_STACKARRAY(position);
     return false;
+    }
+    }
+    }
 }
 
 /* syllables are of the form:
@@ -1685,12 +1727,14 @@ error:
 */
 static int indic_nextSyllableBoundary(HB_Script script, const HB_UChar16 *s, int start, int end, bool *invalid)
 {
-    *invalid = false;
-    IDEBUG("indic_nextSyllableBoundary: start=%d, end=%d", start, end);
     const HB_UChar16 *uc = s+start;
-
     int pos = 0;
     Form state = form(uc[pos]);
+
+    *invalid = false;
+
+    IDEBUG("indic_nextSyllableBoundary: start=%d, end=%d", start, end);
+    
     IDEBUG("state[%d]=%d (uc=%4x)", pos, state, uc[pos]);
     pos++;
 
@@ -1722,6 +1766,15 @@ static int indic_nextSyllableBoundary(HB_Script script, const HB_UChar16 *s, int
             if (script == HB_Script_Bengali && pos == 1 &&
                  (uc[0] == 0x0985 || uc[0] == 0x098f))
                 break;
+            // Sinhala uses the Halant as a component of certain matras. Allow these, but keep the state on Matra.
+            if (script == HB_Script_Sinhala && state == Matra) {
+                ++pos;
+                continue;
+            }
+            if (script == HB_Script_Malayalam && state == Matra && uc[pos-1] == 0x0d41) {
+                ++pos;
+                continue;
+            }
             goto finish;
         case Nukta:
             if (state == Consonant)
@@ -1732,12 +1785,16 @@ static int indic_nextSyllableBoundary(HB_Script script, const HB_UChar16 *s, int
                 break;
             // fall through
         case VowelMark:
-            if (state == Matra || state == IndependentVowel)
+            if (state == Matra || state == LengthMark || state == IndependentVowel)
                 break;
             // fall through
         case Matra:
             if (state == Consonant || state == Nukta)
                 break;
+            if (state == Matra) {
+                // ### needs proper testing for correct two/three part matras
+                break;
+            }
             // ### not sure if this is correct. If it is, does it apply only to Bengali or should
             // it work for all Indic languages?
             // the combination Independent_A + Vowel Sign AA is allowed.
@@ -1753,6 +1810,10 @@ static int indic_nextSyllableBoundary(HB_Script script, const HB_UChar16 *s, int
             goto finish;
 
         case LengthMark:
+            if (state == Matra) {
+                // ### needs proper testing for correct two/three part matras
+                break;
+            }
         case IndependentVowel:
         case Invalid:
         case Other:
@@ -1767,24 +1828,29 @@ static int indic_nextSyllableBoundary(HB_Script script, const HB_UChar16 *s, int
 
 HB_Bool HB_IndicShape(HB_ShaperItem *item)
 {
+    HB_Bool openType = false;
+    unsigned short *logClusters = item->log_clusters;
+    int sstart, end;
+    HB_ShaperItem syllable;
+    int first_glyph = 0;
+
     assert(item->item.script >= HB_Script_Devanagari && item->item.script <= HB_Script_Sinhala);
 
-    HB_Bool openType = false;
 #ifndef NO_OPENTYPE
     openType = HB_SelectScript(item, indic_features);
 #endif
-    unsigned short *logClusters = item->log_clusters;
 
-    HB_ShaperItem syllable = *item;
-    int first_glyph = 0;
+    syllable = *item;
 
-    int sstart = item->item.pos;
-    int end = sstart + item->item.length;
+    sstart = item->item.pos;
+    end = sstart + item->item.length;
     IDEBUG("indic_shape: from %d length %d", item->item.pos, item->item.length);
     while (sstart < end) {
         bool invalid;
         int send = indic_nextSyllableBoundary(item->item.script, item->string, sstart, end, &invalid);
+        hb_uint32 g;
         int i;
+
         IDEBUG("syllable from %d, length %d, invalid=%s", sstart, send-sstart,
                invalid ? "true" : "false");
         syllable.item.pos = sstart;
@@ -1801,9 +1867,11 @@ HB_Bool HB_IndicShape(HB_ShaperItem *item)
         }
         // fix logcluster array
         IDEBUG("syllable:");
-        for (i = first_glyph; i < first_glyph + syllable.num_glyphs; ++i)
-            IDEBUG("        %d -> glyph %x", i, item->glyphs[i]);
+        
+        for (g = first_glyph; g < first_glyph + syllable.num_glyphs; ++g)
+            IDEBUG("        %d -> glyph %x", g, item->glyphs[g]);
         IDEBUG("    logclusters:");
+        
         for (i = sstart; i < send; ++i) {
             IDEBUG("        %d -> glyph %d", i, first_glyph);
             logClusters[i-item->item.pos] = first_glyph;
@@ -1819,8 +1887,10 @@ void HB_IndicAttributes(HB_Script script, const HB_UChar16 *text, hb_uint32 from
 {
     int end = from + len;
     const HB_UChar16 *uc = text + from;
-    attributes += from;
     hb_uint32 i = 0;
+
+    attributes += from;
+    
     while (i < len) {
         bool invalid;
         hb_uint32 boundary = indic_nextSyllableBoundary(script, text, from+i, end, &invalid) - from;
@@ -1835,8 +1905,4 @@ void HB_IndicAttributes(HB_Script script, const HB_UChar16 *text, hb_uint32 from
         }
         assert(i == boundary);
     }
-
-
 }
-
-

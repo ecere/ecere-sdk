@@ -1,13 +1,30 @@
-/*******************************************************************
+/*
+ * Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies)
+ * Copyright (C) 2007  Red Hat, Inc.
  *
- *  Copyright 2005  David Turner, The FreeType Project (www.freetype.org)
- *  Copyright 2007  Trolltech ASA
+ * This is part of HarfBuzz, an OpenType Layout engine library.
  *
- *  This is part of HarfBuzz, an OpenType Layout engine library.
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, modify, and distribute this
+ * software and its documentation for any purpose, provided that the
+ * above copyright notice and the following two paragraphs appear in
+ * all copies of this software.
  *
- *  See the file name COPYING for licensing information.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
+ * IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
  *
- ******************************************************************/
+ * THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+ *
+ * Red Hat Author(s): Behdad Esfahbod
+ */
+
 #ifndef HARFBUZZ_GLOBAL_H
 #define HARFBUZZ_GLOBAL_H
 
@@ -26,6 +43,20 @@
 #endif
 
 HB_BEGIN_HEADER
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+#ifndef TRUE
+#define TRUE (!FALSE)
+#endif
+
+#define HB_MAKE_TAG( _x1, _x2, _x3, _x4 ) \
+          ( ( (HB_UInt)_x1 << 24 ) |     \
+            ( (HB_UInt)_x2 << 16 ) |     \
+            ( (HB_UInt)_x3 <<  8 ) |     \
+              (HB_UInt)_x4         )
 
 typedef char hb_int8;
 typedef unsigned char hb_uint8;
@@ -56,33 +87,24 @@ typedef hb_int32 HB_16Dot16; /* 16.16 */
 typedef void * HB_Pointer;
 typedef hb_uint32 HB_Tag;
 
-#ifndef FALSE
-#define FALSE 0
-#endif
-
-#ifndef TRUE
-#define TRUE (!FALSE)
-#endif
-
 typedef enum {
-    HB_Err_Ok = 0,
-    HB_Err_Invalid_Stream_Operation,
-    HB_Err_Invalid_Argument,
-    HB_Err_Out_Of_Memory,
-    HB_Err_Invalid_Face_Handle, 
-    HB_Err_Table_Missing,
-    HB_Err_Invalid_SubTable_Format  = 0x1000,
-    HB_Err_Invalid_SubTable         = 0x1001,
-    HB_Err_Not_Covered              = 0x1002,
-    HB_Err_Too_Many_Nested_Contexts = 0x1003,
-    HB_Err_No_MM_Interpreter        = 0x1004,
-    HB_Err_Empty_Script             = 0x1005,
-    HB_Err_Invalid_GSUB_SubTable_Format = 0x1010,
-    HB_Err_Invalid_GSUB_SubTable        = 0x1011,
-    HB_Err_Invalid_GPOS_SubTable_Format = 0x1020,
-    HB_Err_Invalid_GPOS_SubTable        = 0x1021,
-    HB_Err_Invalid_GDEF_SubTable_Format = 0x1030,
-    HB_Err_Invalid_GDEF_SubTable        = 0x1031
+  /* no error */
+  HB_Err_Ok                           = 0x0000,
+  HB_Err_Not_Covered                  = 0xFFFF,
+
+  /* _hb_err() is called whenever returning the following errors,
+   * and in a couple places for HB_Err_Not_Covered too. */
+
+  /* programmer error */
+  HB_Err_Invalid_Argument             = 0x1A66,
+
+  /* font error */
+  HB_Err_Invalid_SubTable_Format      = 0x157F,
+  HB_Err_Invalid_SubTable             = 0x1570,
+  HB_Err_Read_Error                   = 0x6EAD,
+
+  /* system error */
+  HB_Err_Out_Of_Memory                = 0xDEAD
 } HB_Error;
 
 typedef struct {
@@ -93,56 +115,6 @@ typedef struct {
 typedef struct HB_Font_ *HB_Font;
 typedef struct HB_StreamRec_ *HB_Stream;
 typedef struct HB_FaceRec_ *HB_Face;
-
-#define HB_IsHighSurrogate(ucs) \
-    (((ucs) & 0xfc00) == 0xd800)
-
-#define HB_IsLowSurrogate(ucs) \
-    (((ucs) & 0xfc00) == 0xdc00)
-
-#define HB_SurrogateToUcs4(high, low) \
-    (((HB_UChar32)(high))<<10) + (low) - 0x35fdc00;
-
-#define HB_MAKE_TAG( _x1, _x2, _x3, _x4 ) \
-          ( ( (HB_UInt)_x1 << 24 ) |     \
-            ( (HB_UInt)_x2 << 16 ) |     \
-            ( (HB_UInt)_x3 <<  8 ) |     \
-              (HB_UInt)_x4         )
-
-/* memory macros used by the OpenType parser */
-#define  ALLOC(_ptr,_size)   \
-           ( (_ptr) = _hb_alloc( _size, &error ), error != 0 )
-
-#define  REALLOC(_ptr,_oldsz,_newsz)  \
-           ( (_ptr) = _hb_realloc( (_ptr), (_oldsz), (_newsz), &error ), error != 0 )
-
-#define  FREE(_ptr)                    \
-  do {                                 \
-    if ( (_ptr) )                      \
-    {                                  \
-      _hb_free( _ptr );     \
-      _ptr = NULL;                     \
-    }                                  \
-  } while (0)
-
-#define  ALLOC_ARRAY(_ptr,_count,_type)   \
-           ALLOC(_ptr,(_count)*sizeof(_type))
-
-#define  REALLOC_ARRAY(_ptr,_oldcnt,_newcnt,_type) \
-           REALLOC(_ptr,(_oldcnt)*sizeof(_type),(_newcnt)*sizeof(_type))
-
-#define  MEM_Copy(dest,source,count)   memcpy( (char*)(dest), (const char*)(source), (size_t)(count) )
-
-
-HB_Pointer _hb_alloc( HB_UInt   size,
-                      HB_Error  *perror_ );
-
-HB_Pointer _hb_realloc( HB_Pointer  block,
-                        HB_UInt    old_size,
-                        HB_UInt    new_size,
-                        HB_Error   *perror_ );
-
-void _hb_free( HB_Pointer  block );
 
 HB_END_HEADER
 

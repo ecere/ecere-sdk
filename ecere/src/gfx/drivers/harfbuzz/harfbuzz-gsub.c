@@ -1,15 +1,31 @@
-/*******************************************************************
+/*
+ * Copyright (C) 1998-2004  David Turner and Werner Lemberg
+ * Copyright (C) 2006  Behdad Esfahbod
+ * Copyright (C) 2007  Red Hat, Inc.
  *
- *  Copyright 1996-2000 by
- *  David Turner, Robert Wilhelm, and Werner Lemberg.
+ * This is part of HarfBuzz, an OpenType Layout engine library.
  *
- *  Copyright 2006  Behdad Esfahbod
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, modify, and distribute this
+ * software and its documentation for any purpose, provided that the
+ * above copyright notice and the following two paragraphs appear in
+ * all copies of this software.
  *
- *  This is part of HarfBuzz, an OpenType Layout engine library.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
+ * IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
  *
- *  See the file name COPYING for licensing information.
+ * THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
  *
- ******************************************************************/
+ * Red Hat Author(s): Behdad Esfahbod
+ */
+
 #include "harfbuzz-impl.h"
 #include "harfbuzz-gsub-private.h"
 #include "harfbuzz-open-private.h"
@@ -40,7 +56,10 @@ HB_Error  HB_Load_GSUB_Table( HB_Stream stream,
   HB_GSUBHeader*  gsub;
 
   if ( !retptr )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
+
+  if ( GOTO_Table( TTAG_GSUB ) )
+    return error;
 
   base_offset = FILE_Pos();
 
@@ -94,15 +113,6 @@ HB_Error  HB_Load_GSUB_Table( HB_Stream stream,
 
   gsub->gdef = gdef;      /* can be NULL */
 
-  /* We now check the LookupFlags for values larger than 0xFF to find
-     out whether we need to load the `MarkAttachClassDef' field of the
-     GDEF table -- this hack is necessary for OpenType 1.2 tables since
-     the version field of the GDEF table hasn't been incremented.
-
-     For constructed GDEF tables, we only load it if
-     `MarkAttachClassDef_offset' is not zero (nevertheless, a build of
-     a constructed mark attach table is not supported currently).       */
-
   if ( ( error =  _HB_GDEF_LoadMarkAttachClassDef_From_LookupFlags( gdef, gdefStream,
 								     gsub->LookupList.Lookup,
 								     gsub->LookupList.LookupCount ) ) )
@@ -143,22 +153,6 @@ HB_Error   HB_Done_GSUB_Table( HB_GSUBHeader* gsub )
 /*****************************
  * SubTable related functions
  *****************************/
-
-static HB_Error  Lookup_DefaultSubst( HB_GSUBHeader*    gsub,
-				      HB_GSUB_SubTable* st,
-				      HB_Buffer         buffer,
-				      HB_UShort          flags,
-				      HB_UShort          context_length,
-				      int                nesting_level )
-{
-  HB_UNUSED(gsub);
-  HB_UNUSED(st);
-  HB_UNUSED(buffer);
-  HB_UNUSED(flags);
-  HB_UNUSED(context_length);
-  HB_UNUSED(nesting_level);
-  return HB_Err_Not_Covered;
-}
 
 
 /* LookupType 1 */
@@ -232,7 +226,7 @@ static HB_Error  Load_SingleSubst( HB_GSUB_SubTable* st,
     break;
 
   default:
-    return HB_Err_Invalid_GSUB_SubTable_Format;
+    return ERR(HB_Err_Invalid_SubTable_Format);
   }
 
   return HB_Err_Ok;
@@ -258,6 +252,9 @@ static void  Free_SingleSubst( HB_GSUB_SubTable* st )
   case 2:
     FREE( ss->ssf.ssf2.Substitute );
     break;
+
+  default:
+    break;
   }
 
   _HB_OPEN_Free_Coverage( &ss->Coverage );
@@ -278,7 +275,6 @@ static HB_Error  Lookup_SingleSubst( HB_GSUBHeader*   gsub,
 
   HB_UNUSED(nesting_level);
 
-
   if ( context_length != 0xFFFF && context_length < 1 )
     return HB_Err_Not_Covered;
 
@@ -292,21 +288,21 @@ static HB_Error  Lookup_SingleSubst( HB_GSUBHeader*   gsub,
   switch ( ss->SubstFormat )
   {
   case 1:
-	  value = ( IN_CURGLYPH() + ss->ssf.ssf1.DeltaGlyphID ) & 0xFFFF;
-    if ( ADD_Glyph( buffer, value, 0xFFFF, 0xFFFF ) )
+    value = ( IN_CURGLYPH() + ss->ssf.ssf1.DeltaGlyphID ) & 0xFFFF;
+    if ( REPLACE_Glyph( buffer, value, nesting_level ) )
       return error;
     break;
 
   case 2:
     if ( index >= ss->ssf.ssf2.GlyphCount )
-      return HB_Err_Invalid_GSUB_SubTable;
+      return ERR(HB_Err_Invalid_SubTable);
     value = ss->ssf.ssf2.Substitute[index];
-    if ( ADD_Glyph( buffer, value, 0xFFFF, 0xFFFF ) )
+    if ( REPLACE_Glyph( buffer, value, nesting_level ) )
       return error;
     break;
 
   default:
-    return HB_Err_Invalid_GSUB_SubTable;
+    return ERR(HB_Err_Invalid_SubTable);
   }
 
   if ( gdef && gdef->NewGlyphClasses )
@@ -496,7 +492,7 @@ static HB_Error  Lookup_MultipleSubst( HB_GSUBHeader*    gsub,
     return error;
 
   if ( index >= ms->SequenceCount )
-    return HB_Err_Invalid_GSUB_SubTable;
+    return ERR(HB_Err_Invalid_SubTable);
 
   count = ms->Sequence[index].GlyphCount;
   s     = ms->Sequence[index].Substitute;
@@ -676,7 +672,7 @@ static HB_Error  Lookup_AlternateSubst( HB_GSUBHeader*    gsub,
 					int                nesting_level )
 {
   HB_Error          error;
-  HB_UShort         index, alt_index, property;
+  HB_UShort         index, value, alt_index, property;
   HB_AlternateSubst* as = &st->alternate;
   HB_GDEFHeader*     gdef = gsub->gdef;
   HB_AlternateSet  aset;
@@ -704,16 +700,15 @@ static HB_Error  Lookup_AlternateSubst( HB_GSUBHeader*    gsub,
   else
     alt_index = 0;
 
-  if ( ADD_Glyph( buffer, aset.Alternate[alt_index],
-		  0xFFFF, 0xFFFF ) )
+  value = aset.Alternate[alt_index];
+  if ( REPLACE_Glyph( buffer, value, nesting_level ) )
     return error;
 
   if ( gdef && gdef->NewGlyphClasses )
   {
     /* we inherit the old glyph class to the substituted glyph */
 
-    error = _HB_GDEF_Add_Glyph_Property( gdef, aset.Alternate[alt_index],
-				property );
+    error = _HB_GDEF_Add_Glyph_Property( gdef, value, property );
     if ( error && error != HB_Err_Not_Covered )
       return error;
   }
@@ -975,7 +970,7 @@ static HB_Error  Lookup_LigatureSubst( HB_GSUBHeader*    gsub,
     return error;
 
   if ( index >= ls->LigatureSetCount )
-     return HB_Err_Invalid_GSUB_SubTable;
+     return ERR(HB_Err_Invalid_SubTable);
 
   lig = ls->LigatureSet[index].Ligature;
 
@@ -1035,7 +1030,7 @@ static HB_Error  Lookup_LigatureSubst( HB_GSUBHeader*    gsub,
       }
       else
       {
-	HB_UShort ligID = hb_buffer_allocate_ligid( buffer );
+	HB_UShort ligID = _hb_buffer_allocate_ligid( buffer );
 	if ( ADD_String( buffer, i, 1, &lig->LigGlyph,
 			0xFFFF, ligID ) )
 	  return error;
@@ -1043,9 +1038,8 @@ static HB_Error  Lookup_LigatureSubst( HB_GSUBHeader*    gsub,
     }
     else
     {
-      HB_UShort ligID = hb_buffer_allocate_ligid( buffer );
-      if ( ADD_Glyph( buffer, lig->LigGlyph,
-		      0xFFFF, ligID ) )
+      HB_UShort ligID = _hb_buffer_allocate_ligid( buffer );
+      if ( ADD_Glyph( buffer, lig->LigGlyph, 0xFFFF, ligID ) )
 	return error;
 
       /* Now we must do a second loop to copy the skipped glyphs to
@@ -1059,8 +1053,7 @@ static HB_Error  Lookup_LigatureSubst( HB_GSUBHeader*    gsub,
       {
 	while ( CHECK_Property( gdef, IN_CURITEM(),
 				flags, &property ) )
-	  if ( ADD_Glyph( buffer, IN_CURGLYPH(),
-			  i, ligID ) )
+	  if ( ADD_Glyph( buffer, IN_CURGLYPH(), i, ligID ) )
 	    return error;
 
 	(buffer->in_pos)++;
@@ -1111,10 +1104,7 @@ static HB_Error  Do_ContextSubst( HB_GSUBHeader*        gsub,
 
       if ( error == HB_Err_Not_Covered )
       {
-	/* XXX "can't happen" -- but don't count on it */
-
-	if ( ADD_Glyph( buffer, IN_CURGLYPH(),
-			0xFFFF, 0xFFFF ) )
+	if ( COPY_Glyph( buffer ) )
 	  return error;
 	i++;
       }
@@ -1125,8 +1115,7 @@ static HB_Error  Do_ContextSubst( HB_GSUBHeader*        gsub,
     {
       /* No substitution for this index */
 
-      if ( ADD_Glyph( buffer, IN_CURGLYPH(),
-		      0xFFFF, 0xFFFF ) )
+      if ( COPY_Glyph( buffer ) )
 	return error;
       i++;
     }
@@ -1396,7 +1385,6 @@ static HB_Error  Load_SubClassRule( HB_ContextSubstFormat2*  csf2,
 
   HB_UShort*              c;
   HB_SubstLookupRecord*  slr;
-  HB_Bool*                d;
 
 
   if ( ACCESS_Frame( 4L ) )
@@ -1418,20 +1406,12 @@ static HB_Error  Load_SubClassRule( HB_ContextSubstFormat2*  csf2,
     return error;
 
   c = scr->Class;
-  d = csf2->ClassDef.Defined;
 
   if ( ACCESS_Frame( count * 2L ) )
     goto Fail2;
 
   for ( n = 0; n < count; n++ )
-  {
     c[n] = GET_UShort();
-
-    /* We check whether the specific class is used at all.  If not,
-       class 0 is used instead.                                     */
-    if ( !d[c[n]] )
-      c[n] = 0;
-  }
 
   FORGET_Frame();
 
@@ -1797,17 +1777,10 @@ static HB_Error  Load_ContextSubst( HB_GSUB_SubTable* st,
 
   switch ( cs->SubstFormat )
   {
-  case 1:
-    return Load_ContextSubst1( &cs->csf.csf1, stream );
-
-  case 2:
-    return Load_ContextSubst2( &cs->csf.csf2, stream );
-
-  case 3:
-    return Load_ContextSubst3( &cs->csf.csf3, stream );
-
-  default:
-    return HB_Err_Invalid_GSUB_SubTable_Format;
+  case 1:  return Load_ContextSubst1( &cs->csf.csf1, stream );
+  case 2:  return Load_ContextSubst2( &cs->csf.csf2, stream );
+  case 3:  return Load_ContextSubst3( &cs->csf.csf3, stream );
+  default: return ERR(HB_Err_Invalid_SubTable_Format);
   }
 
   return HB_Err_Ok;               /* never reached */
@@ -1820,17 +1793,10 @@ static void  Free_ContextSubst( HB_GSUB_SubTable* st )
 
   switch ( cs->SubstFormat )
   {
-  case 1:
-    Free_ContextSubst1( &cs->csf.csf1 );
-    break;
-
-  case 2:
-    Free_ContextSubst2( &cs->csf.csf2 );
-    break;
-
-  case 3:
-    Free_ContextSubst3( &cs->csf.csf3 );
-    break;
+  case 1:  Free_ContextSubst1( &cs->csf.csf1 ); break;
+  case 2:  Free_ContextSubst2( &cs->csf.csf2 ); break;
+  case 3:  Free_ContextSubst3( &cs->csf.csf3 ); break;
+  default:						break;
   }
 }
 
@@ -1930,6 +1896,9 @@ static HB_Error  Lookup_ContextSubst2( HB_GSUBHeader*          gsub,
   if ( error )
     return error;
 
+  if (csf2->MaxContextLength < 1)
+    return HB_Err_Not_Covered;
+
   if ( ALLOC_ARRAY( classes, csf2->MaxContextLength, HB_UShort ) )
     return error;
 
@@ -1942,7 +1911,7 @@ static HB_Error  Lookup_ContextSubst2( HB_GSUBHeader*          gsub,
   scs = &csf2->SubClassSet[classes[0]];
   if ( !scs )
   {
-    error = HB_Err_Invalid_GSUB_SubTable;
+    error = ERR(HB_Err_Invalid_SubTable);
     goto End;
   }
 
@@ -2066,20 +2035,10 @@ static HB_Error  Lookup_ContextSubst( HB_GSUBHeader*    gsub,
 
   switch ( cs->SubstFormat )
   {
-  case 1:
-    return Lookup_ContextSubst1( gsub, &cs->csf.csf1, buffer,
-				 flags, context_length, nesting_level );
-
-  case 2:
-    return Lookup_ContextSubst2( gsub, &cs->csf.csf2, buffer,
-				 flags, context_length, nesting_level );
-
-  case 3:
-    return Lookup_ContextSubst3( gsub, &cs->csf.csf3, buffer,
-				 flags, context_length, nesting_level );
-
-  default:
-    return HB_Err_Invalid_GSUB_SubTable_Format;
+  case 1:  return Lookup_ContextSubst1( gsub, &cs->csf.csf1, buffer, flags, context_length, nesting_level );
+  case 2:  return Lookup_ContextSubst2( gsub, &cs->csf.csf2, buffer, flags, context_length, nesting_level );
+  case 3:  return Lookup_ContextSubst3( gsub, &cs->csf.csf3, buffer, flags, context_length, nesting_level );
+  default: return ERR(HB_Err_Invalid_SubTable_Format);
   }
 
   return HB_Err_Ok;               /* never reached */
@@ -2414,7 +2373,6 @@ static HB_Error  Load_ChainSubClassRule(
   HB_UShort*              i;
   HB_UShort*              l;
   HB_SubstLookupRecord*  slr;
-  HB_Bool*                d;
 
 
   if ( ACCESS_Frame( 2L ) )
@@ -2435,21 +2393,12 @@ static HB_Error  Load_ChainSubClassRule(
     return error;
 
   b = cscr->Backtrack;
-  d = ccsf2->BacktrackClassDef.Defined;
 
   if ( ACCESS_Frame( count * 2L ) )
     goto Fail4;
 
   for ( n = 0; n < count; n++ )
-  {
     b[n] = GET_UShort();
-
-    /* We check whether the specific class is used at all.  If not,
-       class 0 is used instead.                                     */
-
-    if ( !d[b[n]] )
-      b[n] = 0;
-  }
 
   FORGET_Frame();
 
@@ -2471,18 +2420,12 @@ static HB_Error  Load_ChainSubClassRule(
     goto Fail4;
 
   i = cscr->Input;
-  d = ccsf2->InputClassDef.Defined;
 
   if ( ACCESS_Frame( count * 2L ) )
     goto Fail3;
 
   for ( n = 0; n < count; n++ )
-  {
     i[n] = GET_UShort();
-
-    if ( !d[i[n]] )
-      i[n] = 0;
-  }
 
   FORGET_Frame();
 
@@ -2504,18 +2447,12 @@ static HB_Error  Load_ChainSubClassRule(
     goto Fail3;
 
   l = cscr->Lookahead;
-  d = ccsf2->LookaheadClassDef.Defined;
 
   if ( ACCESS_Frame( count * 2L ) )
     goto Fail2;
 
   for ( n = 0; n < count; n++ )
-  {
     l[n] = GET_UShort();
-
-    if ( !d[l[n]] )
-      l[n] = 0;
-  }
 
   FORGET_Frame();
 
@@ -2652,31 +2589,6 @@ static void  Free_ChainSubClassSet( HB_ChainSubClassSet*  cscs )
   }
 }
 
-static HB_Error GSUB_Load_EmptyOrClassDefinition( HB_ClassDefinition*  cd,
-					     HB_UShort             limit,
-					     HB_UInt              class_offset,
-					     HB_UInt              base_offset,
-					     HB_Stream             stream )
-{
-  HB_Error error;
-  HB_UInt               cur_offset;
-
-  cur_offset = FILE_Pos();
-
-  if ( class_offset )
-    {
-      if ( !FILE_Seek( class_offset + base_offset ) )
-	error = _HB_OPEN_Load_ClassDefinition( cd, limit, stream );
-    }
-  else
-     error = _HB_OPEN_Load_EmptyClassDefinition ( cd, stream );
-
-  if (error == HB_Err_Ok)
-    (void)FILE_Seek( cur_offset ); /* Changes error as a side-effect */
-
-  return error;
-}
-
 
 /* ChainContextSubstFormat2 */
 
@@ -2723,18 +2635,18 @@ static HB_Error  Load_ChainContextSubst2(
 
   FORGET_Frame();
 
-  if ( ( error = GSUB_Load_EmptyOrClassDefinition( &ccsf2->BacktrackClassDef, 65535,
-					      backtrack_offset, base_offset,
-					      stream ) ) != HB_Err_Ok )
+  if ( ( error = _HB_OPEN_Load_EmptyOrClassDefinition( &ccsf2->BacktrackClassDef, 65535,
+						       backtrack_offset, base_offset,
+						       stream ) ) != HB_Err_Ok )
       goto Fail5;
 
-  if ( ( error = GSUB_Load_EmptyOrClassDefinition( &ccsf2->InputClassDef, count,
-					      input_offset, base_offset,
-					      stream ) ) != HB_Err_Ok )
+  if ( ( error = _HB_OPEN_Load_EmptyOrClassDefinition( &ccsf2->InputClassDef, count,
+						       input_offset, base_offset,
+						       stream ) ) != HB_Err_Ok )
       goto Fail4;
-  if ( ( error = GSUB_Load_EmptyOrClassDefinition( &ccsf2->LookaheadClassDef, 65535,
-					      lookahead_offset, base_offset,
-					      stream ) ) != HB_Err_Ok )
+  if ( ( error = _HB_OPEN_Load_EmptyOrClassDefinition( &ccsf2->LookaheadClassDef, 65535,
+						       lookahead_offset, base_offset,
+						       stream ) ) != HB_Err_Ok )
     goto Fail3;
 
   ccsf2->ChainSubClassSet   = NULL;
@@ -3054,19 +2966,11 @@ static HB_Error  Load_ChainContextSubst( HB_GSUB_SubTable* st,
 
   FORGET_Frame();
 
-  switch ( ccs->SubstFormat )
-  {
-  case 1:
-    return Load_ChainContextSubst1( &ccs->ccsf.ccsf1, stream );
-
-  case 2:
-    return Load_ChainContextSubst2( &ccs->ccsf.ccsf2, stream );
-
-  case 3:
-    return Load_ChainContextSubst3( &ccs->ccsf.ccsf3, stream );
-
-  default:
-    return HB_Err_Invalid_GSUB_SubTable_Format;
+  switch ( ccs->SubstFormat ) {
+    case 1:  return Load_ChainContextSubst1( &ccs->ccsf.ccsf1, stream );
+    case 2:  return Load_ChainContextSubst2( &ccs->ccsf.ccsf2, stream );
+    case 3:  return Load_ChainContextSubst3( &ccs->ccsf.ccsf3, stream );
+    default: return ERR(HB_Err_Invalid_SubTable_Format);
   }
 
   return HB_Err_Ok;               /* never reached */
@@ -3077,19 +2981,11 @@ static void  Free_ChainContextSubst( HB_GSUB_SubTable* st )
 {
   HB_ChainContextSubst*  ccs = &st->chain;
 
-  switch ( ccs->SubstFormat )
-  {
-  case 1:
-    Free_ChainContextSubst1( &ccs->ccsf.ccsf1 );
-    break;
-
-  case 2:
-    Free_ChainContextSubst2( &ccs->ccsf.ccsf2 );
-    break;
-
-  case 3:
-    Free_ChainContextSubst3( &ccs->ccsf.ccsf3 );
-    break;
+  switch ( ccs->SubstFormat ) {
+    case 1:  Free_ChainContextSubst1( &ccs->ccsf.ccsf1 ); break;
+    case 2:  Free_ChainContextSubst2( &ccs->ccsf.ccsf2 ); break;
+    case 3:  Free_ChainContextSubst3( &ccs->ccsf.ccsf3 ); break;
+    default:							  break;
   }
 }
 
@@ -3266,6 +3162,9 @@ static HB_Error  Lookup_ChainContextSubst2( HB_GSUBHeader*               gsub,
     return error;
   known_backtrack_classes = 0;
 
+  if (ccsf2->MaxInputLength < 1)
+    return HB_Err_Not_Covered;
+
   if ( ALLOC_ARRAY( input_classes, ccsf2->MaxInputLength, HB_UShort ) )
     goto End3;
   known_input_classes = 1;
@@ -3282,7 +3181,7 @@ static HB_Error  Lookup_ChainContextSubst2( HB_GSUBHeader*               gsub,
   cscs = &ccsf2->ChainSubClassSet[input_classes[0]];
   if ( !cscs )
   {
-    error = HB_Err_Invalid_GSUB_SubTable;
+    error = ERR(HB_Err_Invalid_SubTable);
     goto End1;
   }
 
@@ -3539,28 +3438,12 @@ static HB_Error  Lookup_ChainContextSubst( HB_GSUBHeader*    gsub,
 {
   HB_ChainContextSubst*  ccs = &st->chain;
 
-  switch ( ccs->SubstFormat )
-  {
-  case 1:
-    return Lookup_ChainContextSubst1( gsub, &ccs->ccsf.ccsf1, buffer,
-				      flags, context_length,
-				      nesting_level );
-
-  case 2:
-    return Lookup_ChainContextSubst2( gsub, &ccs->ccsf.ccsf2, buffer,
-				      flags, context_length,
-				      nesting_level );
-
-  case 3:
-    return Lookup_ChainContextSubst3( gsub, &ccs->ccsf.ccsf3, buffer,
-				      flags, context_length,
-				      nesting_level );
-
-  default:
-    return HB_Err_Invalid_GSUB_SubTable_Format;
+  switch ( ccs->SubstFormat ) {
+    case 1:  return Lookup_ChainContextSubst1( gsub, &ccs->ccsf.ccsf1, buffer, flags, context_length, nesting_level );
+    case 2:  return Lookup_ChainContextSubst2( gsub, &ccs->ccsf.ccsf2, buffer, flags, context_length, nesting_level );
+    case 3:  return Lookup_ChainContextSubst3( gsub, &ccs->ccsf.ccsf3, buffer, flags, context_length, nesting_level );
+    default: return ERR(HB_Err_Invalid_SubTable_Format);
   }
-
-  return HB_Err_Ok;               /* never reached */
 }
 
 
@@ -3588,7 +3471,7 @@ static HB_Error  Load_ReverseChainContextSubst( HB_GSUB_SubTable* st,
   rccs->SubstFormat = GET_UShort();
 
   if ( rccs->SubstFormat != 1 )
-    return HB_Err_Invalid_GSUB_SubTable_Format;
+    return ERR(HB_Err_Invalid_SubTable_Format);
 
   FORGET_Frame();
 
@@ -3760,7 +3643,8 @@ static HB_Error  Lookup_ReverseChainContextSubst( HB_GSUBHeader*    gsub,
 						  HB_GSUB_SubTable* st,
 						  HB_Buffer         buffer,
 						  HB_UShort          flags,
-      /* note different signature here: */	  HB_UInt           string_index )
+						  HB_UShort         context_length,
+						  int               nesting_level )
 {
   HB_UShort        index, input_index, i, j, property;
   HB_UShort        bgc, lgc;
@@ -3771,9 +3655,12 @@ static HB_Error  Lookup_ReverseChainContextSubst( HB_GSUBHeader*    gsub,
   HB_Coverage*    lc;
   HB_GDEFHeader*  gdef;
 
+  if ( nesting_level != 1 || context_length != 0xFFFF )
+    return HB_Err_Not_Covered;
+
   gdef = gsub->gdef;
 
-  if ( CHECK_Property( gdef, IN_ITEM( string_index ), flags, &property ) )
+  if ( CHECK_Property( gdef, IN_CURITEM(), flags, &property ) )
     return error;
 
   bgc = rccs->BacktrackGlyphCount;
@@ -3781,7 +3668,7 @@ static HB_Error  Lookup_ReverseChainContextSubst( HB_GSUBHeader*    gsub,
 
   /* check whether context is too long; it is a first guess only */
 
-  if ( bgc > string_index || string_index + 1 + lgc > buffer->in_length )
+  if ( bgc > buffer->in_pos || buffer->in_pos + 1 + lgc > buffer->in_length )
     return HB_Err_Not_Covered;
 
   if ( bgc )
@@ -3791,7 +3678,7 @@ static HB_Error  Lookup_ReverseChainContextSubst( HB_GSUBHeader*    gsub,
 
     bc       = rccs->BacktrackCoverage;
 
-    for ( i = 0, j = string_index - 1; i < bgc; i++, j-- )
+    for ( i = 0, j = buffer->in_pos - 1; i < bgc; i++, j-- )
     {
       while ( CHECK_Property( gdef, IN_ITEM( j ), flags, &property ) )
       {
@@ -3809,20 +3696,15 @@ static HB_Error  Lookup_ReverseChainContextSubst( HB_GSUBHeader*    gsub,
     }
   }
 
-  j = string_index;
+  j = buffer->in_pos;
 
   error = _HB_OPEN_Coverage_Index( &rccs->Coverage, IN_GLYPH( j ), &input_index );
   if ( error )
       return error;
 
-  /* we are starting for lookahead glyphs right after the last context
-     glyph                                                             */
-
-  j += 1;
-
   lc       = rccs->LookaheadCoverage;
 
-  for ( i = 0; i < lgc; i++, j++ )
+  for ( i = 0, j = buffer->in_pos + 1; i < lgc; i++, j++ )
   {
     while ( CHECK_Property( gdef, IN_ITEM( j ), flags, &property ) )
     {
@@ -3839,7 +3721,8 @@ static HB_Error  Lookup_ReverseChainContextSubst( HB_GSUBHeader*    gsub,
       return error;
   }
 
-  IN_GLYPH( string_index ) = rccs->Substitute[input_index];
+  IN_CURGLYPH() = rccs->Substitute[input_index];
+  buffer->in_pos--; /* Reverse! */
 
   return error;
 }
@@ -3863,7 +3746,7 @@ HB_Error  HB_GSUB_Select_Script( HB_GSUBHeader*  gsub,
 
 
   if ( !gsub || !script_index )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   sl = &gsub->ScriptList;
   sr = sl->ScriptRecord;
@@ -3896,13 +3779,13 @@ HB_Error  HB_GSUB_Select_Language( HB_GSUBHeader*  gsub,
 
 
   if ( !gsub || !language_index || !req_feature_index )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   sl = &gsub->ScriptList;
   sr = sl->ScriptRecord;
 
   if ( script_index >= sl->ScriptCount )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   s   = &sr[script_index].Script;
   lsr = s->LangSysRecord;
@@ -3944,7 +3827,7 @@ HB_Error  HB_GSUB_Select_Feature( HB_GSUBHeader*  gsub,
 
 
   if ( !gsub || !feature_index )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   sl = &gsub->ScriptList;
   sr = sl->ScriptRecord;
@@ -3953,7 +3836,7 @@ HB_Error  HB_GSUB_Select_Feature( HB_GSUBHeader*  gsub,
   fr = fl->FeatureRecord;
 
   if ( script_index >= sl->ScriptCount )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   s   = &sr[script_index].Script;
   lsr = s->LangSysRecord;
@@ -3963,7 +3846,7 @@ HB_Error  HB_GSUB_Select_Feature( HB_GSUBHeader*  gsub,
   else
   {
     if ( language_index >= s->LangSysCount )
-      return HB_Err_Invalid_Argument;
+      return ERR(HB_Err_Invalid_Argument);
 
     ls = &lsr[language_index].LangSys;
   }
@@ -3973,7 +3856,7 @@ HB_Error  HB_GSUB_Select_Feature( HB_GSUBHeader*  gsub,
   for ( n = 0; n < ls->FeatureCount; n++ )
   {
     if ( fi[n] >= fl->FeatureCount )
-      return HB_Err_Invalid_GSUB_SubTable_Format;
+      return ERR(HB_Err_Invalid_SubTable_Format);
 
     if ( feature_tag == fr[fi[n]].FeatureTag )
     {
@@ -4002,8 +3885,7 @@ HB_Error  HB_GSUB_Query_Scripts( HB_GSUBHeader*  gsub,
 
 
   if ( !gsub || !script_tag_list )
-    return HB_Err_Invalid_Argument;
-
+    return ERR(HB_Err_Invalid_Argument);
 
   sl = &gsub->ScriptList;
   sr = sl->ScriptRecord;
@@ -4037,13 +3919,13 @@ HB_Error  HB_GSUB_Query_Languages( HB_GSUBHeader*  gsub,
 
 
   if ( !gsub || !language_tag_list )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   sl = &gsub->ScriptList;
   sr = sl->ScriptRecord;
 
   if ( script_index >= sl->ScriptCount )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   s   = &sr[script_index].Script;
   lsr = s->LangSysRecord;
@@ -4086,7 +3968,7 @@ HB_Error  HB_GSUB_Query_Features( HB_GSUBHeader*  gsub,
 
 
   if ( !gsub || !feature_tag_list )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   sl = &gsub->ScriptList;
   sr = sl->ScriptRecord;
@@ -4095,7 +3977,7 @@ HB_Error  HB_GSUB_Query_Features( HB_GSUBHeader*  gsub,
   fr = fl->FeatureRecord;
 
   if ( script_index >= sl->ScriptCount )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   s   = &sr[script_index].Script;
   lsr = s->LangSysRecord;
@@ -4105,7 +3987,7 @@ HB_Error  HB_GSUB_Query_Features( HB_GSUBHeader*  gsub,
   else
   {
     if ( language_index >= s->LangSysCount )
-      return HB_Err_Invalid_Argument;
+      return ERR(HB_Err_Invalid_Argument);
 
     ls = &lsr[language_index].LangSys;
   }
@@ -4120,7 +4002,7 @@ HB_Error  HB_GSUB_Query_Features( HB_GSUBHeader*  gsub,
     if ( fi[n] >= fl->FeatureCount )
     {
       FREE( ftl );
-      return HB_Err_Invalid_GSUB_SubTable_Format;
+      return ERR(HB_Err_Invalid_SubTable_Format);
     }
     ftl[n] = fr[fi[n]].FeatureTag;
   }
@@ -4131,28 +4013,6 @@ HB_Error  HB_GSUB_Query_Features( HB_GSUBHeader*  gsub,
   return HB_Err_Ok;
 }
 
-
-typedef HB_Error  (*Lookup_Subst_Func_Type)( HB_GSUBHeader*    gsub,
-					     HB_GSUB_SubTable* st,
-					     HB_Buffer         buffer,
-					     HB_UShort          flags,
-					     HB_UShort          context_length,
-					     int                nesting_level );
-static const Lookup_Subst_Func_Type Lookup_Subst_Call_Table[] = {
-  Lookup_DefaultSubst,
-  Lookup_SingleSubst,		/* HB_GSUB_LOOKUP_SINGLE        1 */
-  Lookup_MultipleSubst,		/* HB_GSUB_LOOKUP_MULTIPLE      2 */
-  Lookup_AlternateSubst,	/* HB_GSUB_LOOKUP_ALTERNATE     3 */
-  Lookup_LigatureSubst,		/* HB_GSUB_LOOKUP_LIGATURE      4 */
-  Lookup_ContextSubst,		/* HB_GSUB_LOOKUP_CONTEXT       5 */
-  Lookup_ChainContextSubst,	/* HB_GSUB_LOOKUP_CHAIN         6 */
-  Lookup_DefaultSubst		/* HB_GSUB_LOOKUP_EXTENSION     7 */
-};
-/* Note that the following lookup does not belong to the table above:
- * Lookup_ReverseChainContextSubst,	 HB_GSUB_LOOKUP_REVERSE_CHAIN 8
- * because it's invalid to happen where this table is used.  It's
- * signature is different too...
- */
 
 /* Do an individual subtable lookup.  Returns HB_Err_Ok if substitution
    has been done, or HB_Err_Not_Covered if not.                        */
@@ -4166,13 +4026,11 @@ static HB_Error  GSUB_Do_Glyph_Lookup( HB_GSUBHeader* gsub,
   HB_UShort              i, flags, lookup_count;
   HB_Lookup*             lo;
   int                    lookup_type;
-  Lookup_Subst_Func_Type Func;
-
 
   nesting_level++;
 
   if ( nesting_level > HB_MAX_NESTING_LEVEL )
-    return HB_Err_Too_Many_Nested_Contexts;
+    return ERR(HB_Err_Not_Covered); /* ERR() call intended */
 
   lookup_count = gsub->LookupList.LookupCount;
   if (lookup_index >= lookup_count)
@@ -4182,21 +4040,33 @@ static HB_Error  GSUB_Do_Glyph_Lookup( HB_GSUBHeader* gsub,
   flags = lo->LookupFlag;
   lookup_type = lo->LookupType;
 
-  if (lookup_type >= ARRAY_LEN (Lookup_Subst_Call_Table))
-    lookup_type = 0;
-  Func = Lookup_Subst_Call_Table[lookup_type];
-
   for ( i = 0; i < lo->SubTableCount; i++ )
   {
-    error = Func ( gsub,
-		   &lo->SubTable[i].st.gsub,
-		   buffer,
-		   flags, context_length,
-		   nesting_level );
+    HB_GSUB_SubTable *st = &lo->SubTable[i].st.gsub;
+
+    switch (lookup_type) {
+      case HB_GSUB_LOOKUP_SINGLE:
+	error = Lookup_SingleSubst		( gsub, st, buffer, flags, context_length, nesting_level ); break;
+      case HB_GSUB_LOOKUP_MULTIPLE:
+	error = Lookup_MultipleSubst		( gsub, st, buffer, flags, context_length, nesting_level ); break;
+      case HB_GSUB_LOOKUP_ALTERNATE:
+	error = Lookup_AlternateSubst		( gsub, st, buffer, flags, context_length, nesting_level ); break;
+      case HB_GSUB_LOOKUP_LIGATURE:
+	error = Lookup_LigatureSubst		( gsub, st, buffer, flags, context_length, nesting_level ); break;
+      case HB_GSUB_LOOKUP_CONTEXT:
+	error = Lookup_ContextSubst		( gsub, st, buffer, flags, context_length, nesting_level ); break;
+      case HB_GSUB_LOOKUP_CHAIN:
+	error = Lookup_ChainContextSubst	( gsub, st, buffer, flags, context_length, nesting_level ); break;
+    /*case HB_GSUB_LOOKUP_EXTENSION:
+	error = Lookup_ExtensionSubst		( gsub, st, buffer, flags, context_length, nesting_level ); break;*/
+      case HB_GSUB_LOOKUP_REVERSE_CHAIN:
+	error = Lookup_ReverseChainContextSubst	( gsub, st, buffer, flags, context_length, nesting_level ); break;
+      default:
+	error = HB_Err_Not_Covered;
+    };
 
     /* Check whether we have a successful substitution or an error other
        than HB_Err_Not_Covered                                          */
-
     if ( error != HB_Err_Not_Covered )
       return error;
   }
@@ -4205,73 +4075,40 @@ static HB_Error  GSUB_Do_Glyph_Lookup( HB_GSUBHeader* gsub,
 }
 
 
-static HB_Error  Load_DefaultSubst( HB_GSUB_SubTable* st,
-				    HB_Stream         stream )
+HB_INTERNAL HB_Error
+_HB_GSUB_Load_SubTable( HB_GSUB_SubTable* st,
+			HB_Stream         stream,
+			HB_UShort         lookup_type )
 {
-  HB_UNUSED(st);
-  HB_UNUSED(stream);
-
-  return HB_Err_Invalid_GSUB_SubTable_Format;
-}
-
-typedef HB_Error  (*Load_Subst_Func_Type)( HB_GSUB_SubTable* st,
-					   HB_Stream         stream );
-static const Load_Subst_Func_Type Load_Subst_Call_Table[] = {
-  Load_DefaultSubst,
-  Load_SingleSubst,		/* HB_GSUB_LOOKUP_SINGLE        1 */
-  Load_MultipleSubst,		/* HB_GSUB_LOOKUP_MULTIPLE      2 */
-  Load_AlternateSubst,		/* HB_GSUB_LOOKUP_ALTERNATE     3 */
-  Load_LigatureSubst,		/* HB_GSUB_LOOKUP_LIGATURE      4 */
-  Load_ContextSubst,		/* HB_GSUB_LOOKUP_CONTEXT       5 */
-  Load_ChainContextSubst,	/* HB_GSUB_LOOKUP_CHAIN         6 */
-  Load_DefaultSubst,		/* HB_GSUB_LOOKUP_EXTENSION     7 */
-  Load_ReverseChainContextSubst /* HB_GSUB_LOOKUP_REVERSE_CHAIN 8 */
-};
-
-HB_Error  _HB_GSUB_Load_SubTable( HB_GSUB_SubTable*  st,
-				  HB_Stream     stream,
-				  HB_UShort     lookup_type )
-{
-  Load_Subst_Func_Type Func;
-
-  if (lookup_type >= ARRAY_LEN (Load_Subst_Call_Table))
-    lookup_type = 0;
-
-  Func = Load_Subst_Call_Table[lookup_type];
-
-  return Func ( st, stream );
+  switch (lookup_type) {
+    case HB_GSUB_LOOKUP_SINGLE:		return Load_SingleSubst			( st, stream );
+    case HB_GSUB_LOOKUP_MULTIPLE:	return Load_MultipleSubst		( st, stream );
+    case HB_GSUB_LOOKUP_ALTERNATE:	return Load_AlternateSubst		( st, stream );
+    case HB_GSUB_LOOKUP_LIGATURE:	return Load_LigatureSubst		( st, stream );
+    case HB_GSUB_LOOKUP_CONTEXT:	return Load_ContextSubst		( st, stream );
+    case HB_GSUB_LOOKUP_CHAIN:		return Load_ChainContextSubst		( st, stream );
+  /*case HB_GSUB_LOOKUP_EXTENSION:	return Load_ExtensionSubst		( st, stream );*/
+    case HB_GSUB_LOOKUP_REVERSE_CHAIN:	return Load_ReverseChainContextSubst	( st, stream );
+    default:				return ERR(HB_Err_Invalid_SubTable_Format);
+  };
 }
 
 
-static void  Free_DefaultSubst( HB_GSUB_SubTable* st )
+HB_INTERNAL void
+_HB_GSUB_Free_SubTable( HB_GSUB_SubTable* st,
+			HB_UShort         lookup_type )
 {
-  HB_UNUSED(st);
-}
-
-typedef void  (*Free_Subst_Func_Type)( HB_GSUB_SubTable* st );
-static const Free_Subst_Func_Type Free_Subst_Call_Table[] = {
-  Free_DefaultSubst,
-  Free_SingleSubst,		/* HB_GSUB_LOOKUP_SINGLE        1 */
-  Free_MultipleSubst,		/* HB_GSUB_LOOKUP_MULTIPLE      2 */
-  Free_AlternateSubst,		/* HB_GSUB_LOOKUP_ALTERNATE     3 */
-  Free_LigatureSubst,		/* HB_GSUB_LOOKUP_LIGATURE      4 */
-  Free_ContextSubst,		/* HB_GSUB_LOOKUP_CONTEXT       5 */
-  Free_ChainContextSubst,	/* HB_GSUB_LOOKUP_CHAIN         6 */
-  Free_DefaultSubst,		/* HB_GSUB_LOOKUP_EXTENSION     7 */
-  Free_ReverseChainContextSubst /* HB_GSUB_LOOKUP_REVERSE_CHAIN 8 */
-};
-
-void  _HB_GSUB_Free_SubTable( HB_GSUB_SubTable*  st,
-			      HB_UShort     lookup_type )
-{
-  Free_Subst_Func_Type Func;
-
-  if (lookup_type >= ARRAY_LEN (Free_Subst_Call_Table))
-    lookup_type = 0;
-
-  Func = Free_Subst_Call_Table[lookup_type];
-
-  Func ( st );
+  switch ( lookup_type ) {
+    case HB_GSUB_LOOKUP_SINGLE:		Free_SingleSubst		( st ); return;
+    case HB_GSUB_LOOKUP_MULTIPLE:	Free_MultipleSubst		( st ); return;
+    case HB_GSUB_LOOKUP_ALTERNATE:	Free_AlternateSubst		( st ); return;
+    case HB_GSUB_LOOKUP_LIGATURE:	Free_LigatureSubst		( st ); return;
+    case HB_GSUB_LOOKUP_CONTEXT:	Free_ContextSubst		( st ); return;
+    case HB_GSUB_LOOKUP_CHAIN:		Free_ChainContextSubst		( st ); return;
+  /*case HB_GSUB_LOOKUP_EXTENSION:	Free_ExtensionSubst		( st ); return;*/
+    case HB_GSUB_LOOKUP_REVERSE_CHAIN:	Free_ReverseChainContextSubst	( st ); return;
+    default:									return;
+  };
 }
 
 
@@ -4285,17 +4122,29 @@ static HB_Error  GSUB_Do_String_Lookup( HB_GSUBHeader*   gsub,
   HB_Error  error, retError = HB_Err_Not_Covered;
 
   HB_UInt*  properties = gsub->LookupList.Properties;
+  int       lookup_type = gsub->LookupList.Lookup[lookup_index].LookupType;
 
-  int      nesting_level = 0;
+  const int       nesting_level = 0;
+  /* 0xFFFF indicates that we don't have a context length yet */
+  const HB_UShort context_length = 0xFFFF;
 
+  switch (lookup_type) {
 
+    case HB_GSUB_LOOKUP_SINGLE:
+    case HB_GSUB_LOOKUP_MULTIPLE:
+    case HB_GSUB_LOOKUP_ALTERNATE:
+    case HB_GSUB_LOOKUP_LIGATURE:
+    case HB_GSUB_LOOKUP_CONTEXT:
+    case HB_GSUB_LOOKUP_CHAIN:
+      /* in/out forward substitution (implemented lazy) */
+
+      _hb_buffer_clear_output ( buffer );
+      buffer->in_pos = 0;
   while ( buffer->in_pos < buffer->in_length )
   {
     if ( ~IN_PROPERTIES( buffer->in_pos ) & properties[lookup_index] )
     {
-      /* 0xFFFF indicates that we don't have a context length yet */
-      error = GSUB_Do_Glyph_Lookup( gsub, lookup_index, buffer,
-				    0xFFFF, nesting_level );
+	  error = GSUB_Do_Glyph_Lookup( gsub, lookup_index, buffer, context_length, nesting_level );
       if ( error )
       {
 	if ( error != HB_Err_Not_Covered )
@@ -4308,39 +4157,28 @@ static HB_Error  GSUB_Do_String_Lookup( HB_GSUBHeader*   gsub,
       error = HB_Err_Not_Covered;
 
     if ( error == HB_Err_Not_Covered )
-      if ( (error = hb_buffer_copy_output_glyph ( buffer ) ) )
+	  if ( COPY_Glyph ( buffer ) )
 	return error;
   }
+      /* we shouldn't swap if error occurred.
+       *
+       * also don't swap if nothing changed (ie HB_Err_Not_Covered).
+       * shouldn't matter in that case though.
+       */
+      if ( retError == HB_Err_Ok )
+	_hb_buffer_swap( buffer );
 
   return retError;
-}
 
+    case HB_GSUB_LOOKUP_REVERSE_CHAIN:
+      /* in-place backward substitution */
 
-static HB_Error  Apply_ReverseChainContextSubst( HB_GSUBHeader*   gsub,
-						 HB_UShort         lookup_index,
-						 HB_Buffer        buffer )
-{
-  HB_UInt*     properties =  gsub->LookupList.Properties;
-  HB_Error     error, retError = HB_Err_Not_Covered;
-  HB_UInt     subtable_Count, string_index;
-  HB_UShort    flags;
-  HB_Lookup*  lo;
-
-  if ( buffer->in_length == 0 )
-    return HB_Err_Not_Covered;
-
-  lo    = &gsub->LookupList.Lookup[lookup_index];
-  flags = lo->LookupFlag;
-
-  for ( subtable_Count = 0; subtable_Count < lo->SubTableCount; subtable_Count++ )
-  {
-    string_index  = buffer->in_length - 1;
+      buffer->in_pos = buffer->in_length - 1;
     do
     {
       if ( ~IN_PROPERTIES( buffer->in_pos ) & properties[lookup_index] )
 	{
-	  error = Lookup_ReverseChainContextSubst( gsub, &lo->SubTable[subtable_Count].st.gsub,
-						   buffer, flags, string_index );
+	  error = GSUB_Do_Glyph_Lookup( gsub, lookup_index, buffer, context_length, nesting_level );
 	  if ( error )
 	    {
 	      if ( error != HB_Err_Not_Covered )
@@ -4349,11 +4187,20 @@ static HB_Error  Apply_ReverseChainContextSubst( HB_GSUBHeader*   gsub,
 	  else
 	    retError = error;
 	}
-    }
-    while (string_index--);
-  }
+	else
+	  error = HB_Err_Not_Covered;
 
+	if ( error == HB_Err_Not_Covered )
+	  buffer->in_pos--;
+      }
+      while ((HB_Int) buffer->in_pos >= 0);
+
+      return retError;
+
+  /*case HB_GSUB_LOOKUP_EXTENSION:*/
+    default:
   return retError;
+  };
 }
 
 
@@ -4373,7 +4220,7 @@ HB_Error  HB_GSUB_Add_Feature( HB_GSUBHeader*  gsub,
   if ( !gsub ||
        feature_index >= gsub->FeatureList.FeatureCount ||
        gsub->FeatureList.ApplyCount == gsub->FeatureList.FeatureCount )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   gsub->FeatureList.ApplyOrder[gsub->FeatureList.ApplyCount++] = feature_index;
 
@@ -4403,7 +4250,7 @@ HB_Error  HB_GSUB_Clear_Features( HB_GSUBHeader*  gsub )
 
 
   if ( !gsub )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   gsub->FeatureList.ApplyCount = 0;
 
@@ -4422,7 +4269,7 @@ HB_Error  HB_GSUB_Register_Alternate_Function( HB_GSUBHeader*  gsub,
 					       void*            data )
 {
   if ( !gsub )
-    return HB_Err_Invalid_Argument;
+    return ERR(HB_Err_Invalid_Argument);
 
   gsub->altfunc = altfunc;
   gsub->data    = data;
@@ -4430,73 +4277,51 @@ HB_Error  HB_GSUB_Register_Alternate_Function( HB_GSUBHeader*  gsub,
   return HB_Err_Ok;
 }
 
-
-
+/* returns error if one happened, otherwise returns HB_Err_Not_Covered if no
+ * feature were applied, or HB_Err_Ok otherwise.
+ */
 HB_Error  HB_GSUB_Apply_String( HB_GSUBHeader*   gsub,
 				HB_Buffer        buffer )
 {
   HB_Error          error, retError = HB_Err_Not_Covered;
-  HB_UShort         i, j, lookup_count;
+  int               i, j, lookup_count, num_features;
 
   if ( !gsub ||
-       !buffer || buffer->in_length == 0 || buffer->in_pos >= buffer->in_length )
-    return HB_Err_Invalid_Argument;
+       !buffer)
+    return ERR(HB_Err_Invalid_Argument);
+
+  if ( buffer->in_length == 0 )
+    return retError;
 
   lookup_count = gsub->LookupList.LookupCount;
+  num_features = gsub->FeatureList.ApplyCount;
 
-  for ( i = 0; i < gsub->FeatureList.ApplyCount; i++)
+  for ( i = 0; i < num_features; i++)
   {
-    HB_UShort         feature_index;
-    HB_Feature       feature;
-
-    feature_index = gsub->FeatureList.ApplyOrder[i];
-    feature = gsub->FeatureList.FeatureRecord[feature_index].Feature;
+    HB_UShort  feature_index = gsub->FeatureList.ApplyOrder[i];
+    HB_Feature feature = gsub->FeatureList.FeatureRecord[feature_index].Feature;
 
     for ( j = 0; j < feature.LookupListCount; j++ )
     {
-      HB_UShort         lookup_index;
-      HB_Lookup*       lookup;
-      HB_Bool           need_swap;
-
-      lookup_index = feature.LookupListIndex[j];
+      HB_UShort         lookup_index = feature.LookupListIndex[j];
 
       /* Skip nonexistant lookups */
       if (lookup_index >= lookup_count)
        continue;
 
-      lookup = &gsub->LookupList.Lookup[lookup_index];
-
-      if ( lookup->LookupType == HB_GSUB_LOOKUP_REVERSE_CHAIN )
-      {
-	error = Apply_ReverseChainContextSubst( gsub, lookup_index, buffer);
-	need_swap = FALSE; /* We do ReverseChainContextSubst in-place */
-      }
-      else
-      {
 	error = GSUB_Do_String_Lookup( gsub, lookup_index, buffer );
-	need_swap = TRUE;
-      }
-
       if ( error )
       {
 	if ( error != HB_Err_Not_Covered )
-	  goto End;
+	  return error;
       }
       else
 	retError = error;
-
-      if ( need_swap )
-      {
-	error = hb_buffer_swap( buffer );
-	if ( error )
-	  goto End;
-      }
     }
   }
 
   error = retError;
 
-End:
   return error;
 }
 

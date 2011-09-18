@@ -16,21 +16,21 @@ endif
 endif
 
 clean:
-	cd freetype-2.3.5 && $(MAKE) clean
+	cd freetype-2.3.12 && $(MAKE) clean
 	cd libpng-1.4.0 && $(MAKE) clean
 	cd zlib && $(MAKE) clean
 	cd jpeg-6b && $(MAKE) clean
 	cd libungif-4.1.1 && $(MAKE) clean
 
 realclean:
-	cd freetype-2.3.5 && $(MAKE) realclean
+	cd freetype-2.3.12 && $(MAKE) realclean
 	cd libpng-1.4.0 && $(MAKE) realclean
 	cd zlib && $(MAKE) realclean
 	cd jpeg-6b && $(MAKE) realclean
 	cd libungif-4.1.1 && $(MAKE) realclean
 
 distclean:
-	cd freetype-2.3.5 && $(MAKE) distclean
+	cd freetype-2.3.12 && $(MAKE) distclean
 	cd libpng-1.4.0 && $(MAKE) distclean
 	cd zlib && $(MAKE) distclean
 	cd jpeg-6b && $(MAKE) distclean
@@ -38,7 +38,7 @@ distclean:
 
 freetype:
 	@$(call echo,Building FreeType...)
-	cd freetype-2.3.5 && $(MAKE)
+	cd freetype-2.3.12 && $(MAKE)
 	
 jpeg:
 	@$(call echo,Building libjpeg...)
