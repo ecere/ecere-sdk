@@ -3035,7 +3035,7 @@ public class LFBDisplayDriver : DisplayDriver
                         matrix.yy = (FT_Fixed)( 1.0 * 0x10000L );
                         FT_Set_Transform(fontEntry.face, &matrix, &pen );
                      }
-                     FT_Set_Char_Size( fontEntry.face, (int)(size * 64), (int)(size * 64), 96, 96);
+                     FaceSetCharSize(fontEntry.face, size);
                      font.height = ((fontEntry.face->size->metrics.height) >> 6); //* y_scale;
                      // printf("Font height is %d\n", font.height);
                      font.fakeItalic = fakeItalic;
@@ -3424,7 +3424,7 @@ public class LFBDisplayDriver : DisplayDriver
                      }
                      if(fontEntry)
                      {
-                        FT_Set_Char_Size( fontEntry.face, (int)(font.size * 64), (int)(font.size * 64), 96, 96);
+                        FaceSetCharSize(fontEntry.face, font.size);
 
                         font.fontEntries[fontEntryNum] = fontEntry;
                         fontEntry.used++;
