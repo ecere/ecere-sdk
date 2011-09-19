@@ -450,7 +450,8 @@ public:
 
    bool Synch(Row to) { return row && to && row._class == to.row._class ? row.Synch(to.row) : false; }
 
-   bool Add() { return row ? row.Add() : false; }
+   bool Add() { return row ? row.Add(0) : false; }
+   bool AddID(uint64 id) { return row ? row.Add(id) : false; }
    bool GetData(Field field, typed_object & data) { return (row && field) ? row.GetData(field, data) : false; }
    bool SetData(Field field, typed_object data) { return (row && field) ? row.SetData(field, data) : false; }
    bool Delete() { return row ? row.Delete() : false; }
@@ -497,7 +498,7 @@ public:
    virtual bool Find(Field fld, MoveOptions move, MatchOptions match, typed_object data);
    virtual bool FindMultiple(FieldFindData * findData, MoveOptions move, int numFields);
    virtual bool Synch(DriverRow to);
-   virtual bool Add();
+   virtual bool Add(uint64 id);
    virtual bool Delete();
 
    virtual bool GetData(Field fld, typed_object &data);

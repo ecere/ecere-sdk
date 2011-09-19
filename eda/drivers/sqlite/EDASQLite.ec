@@ -718,7 +718,7 @@ class SQLiteTable : Table
       char command[1024];
       sqlite3_stmt * statement;
       sqlite3_stmt * sysIDStmt = null, * insertStmt = null, * deleteStmt = null, * selectRowIDsStmt = null, * setRowIDStmt = null;
-      sqlite3_stmt * prevStmt = null, * nextStmt = null, * lastStmt = null;
+      sqlite3_stmt * prevStmt = null, * nextStmt = null, * lastStmt = null, * insertIDStmt = null;
 
       if(specialStatement)
          strcpy(command, specialStatement);
@@ -731,6 +731,10 @@ class SQLiteTable : Table
 
          sprintf(command, "INSERT INTO `%s` DEFAULT VALUES;", name);
          sqlite3_prepare_v2(db.db, command, -1, &insertStmt, null);
+
+         sprintf(command, "INSERT INTO `%s` (ROWID) VALUES(?);", name);
+         sqlite3_prepare_v2(db.db, command, -1, &insertIDStmt, null);
+
          sprintf(command, "DELETE FROM `%s` WHERE ROWID = ?;", name);
          sqlite3_prepare_v2(db.db, command, -1, &deleteStmt, null);
 
@@ -779,7 +783,7 @@ class SQLiteTable : Table
       return SQLiteRow
          { tbl = this, defaultStatement = statement, curStatement = statement, sysIDStatement = sysIDStmt, 
            insertStatement = insertStmt, deleteStatement = deleteStmt, selectRowIDsStmt = selectRowIDsStmt, setRowIDStmt = setRowIDStmt,
-           previousStatement = prevStmt, nextStatement = nextStmt, lastStatement = lastStmt };
+           previousStatement = prevStmt, nextStatement = nextStmt, lastStatement = lastStmt, insertIDStatement = insertIDStmt };
    }
 
    ~SQLiteTable()
@@ -810,6 +814,7 @@ class SQLiteRow : DriverRow
    sqlite3_stmt * insertStatement;
    sqlite3_stmt * deleteStatement;
    sqlite3_stmt * updateStatement;
+   sqlite3_stmt * insertIDStatement;
    bool done;
    done = true;
    int64 rowID;
@@ -834,6 +839,7 @@ class SQLiteRow : DriverRow
       if(previousStatement)sqlite3_finalize(previousStatement);
       if(nextStatement)    sqlite3_finalize(nextStatement);
       if(lastStatement)    sqlite3_finalize(lastStatement);
+      if(insertIDStatement)    sqlite3_finalize(insertIDStatement);
    }
 
    bool Select(MoveOptions move)
@@ -1160,13 +1166,19 @@ class SQLiteRow : DriverRow
       return true;
    }
 
-   bool Add()
+   bool Add(uint64 id)
    {
       int result;
       //char command[1024];
       //sprintf(command, "INSERT INTO `%s` DEFAULT VALUES;", tbl.name);
       //result = sqlite3_exec(tbl.db.db, command, null, null, null);
-      result = sqlite3_step(insertStatement);
+      if(id)
+      {
+         sqlite3_bind_int64(insertIDStatement, 1, (sqlite3_int64)id);
+         result = sqlite3_step(insertIDStatement);
+      }
+      else
+         result = sqlite3_step(insertStatement);
       if(result == SQLITE_DONE)     // if(result == SQLITE_OK)
       {
          rowID = sqlite3_last_insert_rowid(tbl.db.db);
@@ -1193,7 +1205,7 @@ class SQLiteRow : DriverRow
             result = sqlite3_step(setRowIDStmt);
             sqlite3_reset(setRowIDStmt);
          }
-         sqlite3_reset(insertStatement);
+         sqlite3_reset(id ? insertIDStatement : insertStatement);
          curStatement = sysIDStatement;
          sqlite3_reset(curStatement);
          return true;

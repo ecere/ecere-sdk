@@ -1647,7 +1647,7 @@ static class EDBRow : DriverRow
       return false;
    }
 
-   bool Add()
+   bool Add(uint64 id)
    {
       bool reused = tbl.deletedRowsCount != 0;
       EDBDatabase edb = tbl.db;
