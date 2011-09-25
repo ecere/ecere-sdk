@@ -9,6 +9,7 @@ public enum RenderAction { addPage, closePage, levelStart, levelFinish, groupSta
 
 static class PleaseWait : Window
 {
+   isModal = true;
    autoCreate = false;
    borderStyle = fixed;
    text = "Please wait while the report is being generated...";
@@ -121,6 +122,7 @@ public void ERSProgressAdvanceLevelCheck()
       ersNumRows++;
       ersNumRows = Min(ersNumRows, pleaseWait.progress.range);
       pleaseWait.progress.progress = ersNumRows;
+      ((GuiApplication)__thisModule.application).ProcessInput(true);
       pleaseWait.UpdateDisplay();
    }
 }
@@ -151,6 +153,7 @@ public:
          pleaseWait.Create();
          pleaseWait.progress.range = report.groupings._[0].row.tbl.rowsCount;
          pleaseWait.progress.progress = 0;
+         ((GuiApplication)__thisModule.application).ProcessInput(true);
          pleaseWait.UpdateDisplay();
       }
       for(pageNumber = 1; true; pageNumber++)
@@ -478,6 +481,7 @@ public class PrintedReport : ReportDestination
    void EndPage(Page page)
    {
       Update(null);
+      ((GuiApplication)__thisModule.application).ProcessInput(true);
       ((GuiApplication)__thisModule.application).UpdateDisplay();
       lastPage.Destroy(0);
    }
@@ -721,6 +725,7 @@ public:
             ersNumRows++;
             ersNumRows = Min(ersNumRows, pleaseWait.progress.range);
             pleaseWait.progress.progress = ersNumRows;
+            ((GuiApplication)__thisModule.application).ProcessInput(true);
             pleaseWait.UpdateDisplay();
          }
 

@@ -338,12 +338,18 @@ public:
                else
                   dr.SetData(df, (void *)data);
 
-               // Is this missing some frees here? strings?
+               // Is this missing some frees here? strings? Probably not: freeData = true?
                // type._vTbl[__ecereVMethodID_class_OnFree](type, data);
                if(type.type == structClass)
                {
                   void * dataPtr = (void *)data;
                   delete dataPtr;
+               }
+               else if(!strcmp(type.dataTypeString, "char *"))
+               {
+                  // Strings are handled as a special case in ListBox -- normalClass, but copied when freeData = true
+                  char * string = (char *)data;
+                  delete string;
                }
             }
             dr = dr.next;
@@ -484,6 +490,12 @@ public:
       {
          void * dataPtr = (void *)data;
          delete dataPtr;
+      }
+      else if(!strcmp(type.dataTypeString, "char *"))
+      {
+         // Strings are handled as a special case in ListBox -- normalClass, but copied when freeData = true
+         char * string = (char *)data;
+         delete string;
       }
    }
 

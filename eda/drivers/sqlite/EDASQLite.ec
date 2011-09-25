@@ -193,7 +193,7 @@ class SQLiteDataSource : DataSourceDriver
             sqlite3_exec(db, command, null, null, null);
 
             result = SQLiteDatabase { db = db };
-         }            
+         }
          delete path;
       }
       return result;
@@ -713,6 +713,34 @@ class SQLiteTable : Table
       return rowCount;
    }
 
+   // Returns true if not ordered by row ID
+   bool GetIndexOrder(char * fullOrder)
+   {
+      if(!indexFields || (indexFieldsCount == 1 && indexFields[0].field == primaryKey && indexFields[0].order == ascending))
+      {
+         strcpy(fullOrder, " ORDER BY ROWID");
+         return false;
+      }
+      else
+      {
+         int c;
+         strcpy(fullOrder, " ORDER BY ");
+         for(c = 0; c < indexFieldsCount; c++)
+         {
+            char order[1024];
+            FieldIndex * fIndex = &indexFields[c];
+            order[0] = 0;
+            if(c) strcat(order, ", ");
+            strcat(order, "`");
+            strcat(order, fIndex->field.name);
+            strcat(order, "`");
+            if(fIndex->order == descending) strcat(order, " DESC");
+            strcat(fullOrder, order);
+         }
+         return true;
+      }
+   }
+
    DriverRow CreateRow()
    {
       char command[1024];
@@ -724,6 +752,7 @@ class SQLiteTable : Table
          strcpy(command, specialStatement);
       else
       {
+         char order[1024];
          /*sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ? = ?;", name);
          sqlite3_prepare_v2(db.db, command, -1, &findStmt, null);*/
          sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ROWID = ?;", name);
@@ -751,26 +780,8 @@ class SQLiteTable : Table
 
          sqlite3_prepare_v2(db.db, command, -1, &updateStmt, null);*/
 
-         if(!indexFields || (indexFieldsCount == 1 && indexFields[0].field == primaryKey && indexFields[0].order == ascending))
-            sprintf(command, "SELECT ROWID, * FROM `%s`;", name);
-         else
-         {
-            int c;
-            sprintf(command, "SELECT ROWID, * FROM `%s` ORDER BY ", name);
-            for(c = 0; c < indexFieldsCount; c++)
-            {
-               char order[1024];
-               FieldIndex * fIndex = &indexFields[c];
-               order[0] = 0;
-               if(c) strcat(order, ", ");
-               strcat(order, "`");
-               strcat(order, fIndex->field.name);
-               strcat(order, "`");
-               if(fIndex->order == descending) strcat(order, " DESC");
-               strcat(command, order);
-            }
-            strcat(command, ";");
-         }
+         GetIndexOrder(order);
+         sprintf(command, "SELECT ROWID, * FROM `%s`%s;", name, order);
       }
       sqlite3_prepare_v2(db.db, command, -1, &statement, null);
 
@@ -934,40 +945,21 @@ class SQLiteRow : DriverRow
       return status;
    }
 
-   bool Find(Field fld, MoveOptions move, MatchOptions match, typed_object data)
+   void BindData(sqlite3_stmt * statement, int pos, SQLiteField fld, typed_object data, SerialBuffer * bufferOut)
    {
-      char command[1024];
-      int result;
-      SQLiteField sqlFld = (SQLiteField)fld;
-      Class dataType = sqlFld.type;
-
-      if(fld == tbl.primaryKey)
-      {
-         return GoToSysID(*(int *)data);
-      }
-      
-      if(curStatement)
-         sqlite3_reset(curStatement);
-      if(findStatement)
-         sqlite3_finalize(findStatement);
-
-      sprintf(command, "SELECT ROWID, * FROM `%s` WHERE `%s` = ?;", tbl.name, fld.name);
-      result = sqlite3_prepare_v2(tbl.db.db, command, -1, &findStatement, null);
-
-      // result = sqlite3_bind_text(findStatement, 1, fld.name, strlen(fld.name), SQLITE_STATIC);
-
-      curStatement = findStatement;
-      switch(sqlFld.sqliteType)
+      Class dataType = fld.type;
+      SerialBuffer buffer = null;
+      switch(fld.sqliteType)
       {
          case SQLITE_INTEGER: 
          {
             switch(dataType.typeSize)
             {
                case 8:
-                  sqlite3_bind_int64(findStatement, 1, (sqlite3_int64)*(int64 *)data);
+                  sqlite3_bind_int64(statement, pos, (sqlite3_int64)*(int64 *)data);
                   break;
                case 4:
-                  sqlite3_bind_int(findStatement, 1, *(int *)data);
+                  sqlite3_bind_int(statement, pos, *(int *)data);
                   break;
                case 2:
                {
@@ -976,7 +968,7 @@ class SQLiteRow : DriverRow
                      value = (int)*(short *)data;
                   else
                      value = (int)*(uint16 *)data;
-                  sqlite3_bind_int(findStatement, 1, value);
+                  sqlite3_bind_int(statement, pos, value);
                   break;
                }
                case 1:
@@ -986,7 +978,7 @@ class SQLiteRow : DriverRow
                      value = (int)*(char *)data;
                   else
                      value = (int)*(byte *)data;
-                  sqlite3_bind_int(findStatement, 1, value);
+                  sqlite3_bind_int(statement, pos, value);
                   break;
                }
             }
@@ -995,61 +987,177 @@ class SQLiteRow : DriverRow
          case SQLITE_FLOAT:
          {
             if(dataType.typeSize == 8)
-               sqlite3_bind_double(findStatement, 1, *(double *)data);
+               sqlite3_bind_double(statement, pos, *(double *)data);
             else
-               sqlite3_bind_double(findStatement, 1, (double)*(float *)data);
+               sqlite3_bind_double(statement, pos, (double)*(float *)data);
             break;
          }
          case SQLITE_TEXT:
          {
             if((char *)data)
-               sqlite3_bind_text(findStatement, 1, (char *)data, strlen((char *)data), SQLITE_STATIC);
+               sqlite3_bind_text(statement, pos, (char *)data, strlen((char *)data), SQLITE_TRANSIENT);
             else
-               sqlite3_bind_text(findStatement, 1, null, 0, SQLITE_STATIC);
+               sqlite3_bind_text(statement, pos, null, 0, SQLITE_TRANSIENT);
             break;
          }
          case SQLITE_BLOB:
          case SQLITE_NULL:
          {
-            SerialBuffer buffer { };
-
+            buffer = SerialBuffer { };
             dataType._vTbl[__ecereVMethodID_class_OnSerialize](dataType, data, buffer);
-            //sqlite3_bind_blob(findStatement, 1, buffer._buffer, buffer.count, SQLITE_STATIC);
-            sqlite3_bind_text(findStatement, 1, buffer._buffer, buffer.count, SQLITE_STATIC);
-            result = sqlite3_step(findStatement);
-
-            done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
-            if(done) { rowID = 0; sqlite3_reset(findStatement); delete buffer; return false; }
-
-            rowID = sqlite3_column_int64(findStatement, 0);
-
-            delete buffer;
-            return true;
+            sqlite3_bind_text(statement, pos, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
             break;
-         } 
+         }
       }
+      if(bufferOut)
+         *bufferOut = buffer;
+      else
+         delete buffer;
+   }
+
+   void AddCursorWhereClauses(char * command, MoveOptions move, bool useIndex)
+   {
+      if(move == next)
+      {
+         // Where clauses for index
+         if(useIndex)
+         {
+            int c;
+            bool gotPrimaryKey = false;
+
+            strcatf(command, " AND (");
+            for(c = 0; c < tbl.indexFieldsCount; c++)
+            {
+               char where[1024];
+               FieldIndex * fIndex = &tbl.indexFields[c];
+               where[0] = 0;
+
+               strcat(where, "`");
+               strcat(where, fIndex->field.name);
+               strcat(where, "` ");
+               strcat(where, fIndex->order == descending ? "<" : ">");
+               strcat(where, " ? OR (");
+               strcat(where, fIndex->field.name);
+               if(fIndex->field == tbl.primaryKey)
+                  gotPrimaryKey = true;
+               strcat(where, " = ? AND (");
+               strcat(command, where);
+            }
+            strcat(command, gotPrimaryKey ? "1)" : "ROWID > ?)");
+            for(; c > 0; c--)
+               strcat(command, "))");
+         }
+         else
+            strcatf(command, " AND ROWID > ?");
+      }
+   }
+
+   void BindCursorData(sqlite3_stmt * stmt, MoveOptions move, bool useIndex, int * bindId)
+   {
+      if(move == next)
+      {
+         // The binds for the Extra ordering Where clauses
+         if(useIndex)
+         {
+            int c;
+            for(c = 0; c < tbl.indexFieldsCount; c++)
+            {
+               FieldIndex * fIndex = &tbl.indexFields[c];
+               int64 data;
+               SQLiteField fld = (SQLiteField)fIndex->field;
+               Class type = fld.type;
+               void * dataPtr;
+               SerialBuffer buffer;
+
+               if(type.type == unitClass && !type.typeSize)
+               {
+                  Class dataType = eSystem_FindClass(type.module, type.dataTypeString);
+                  if(dataType)
+                     type = dataType;
+               }
+               if(type.type == structClass)
+               {
+                  data = (int64)new0 byte[type.structSize];
+                  dataPtr = (void *) data;
+               }
+               ((bool (*)())(void *)this.GetData)(this, fld, type, (type.type == structClass) ? (void *)data : &data);
+               if(type.type == normalClass || type.type == noHeadClass)
+                  dataPtr = (void *) data;
+               else
+                  dataPtr = &data;
+               ((void (*)())(void *)this.BindData)(this, stmt, (*bindId)++, fld, type, dataPtr, &buffer);
+               // Reuse the buffer for Blobs...
+               if(fld.sqliteType == SQLITE_BLOB || fld.sqliteType == SQLITE_NULL)
+               {
+                  sqlite3_bind_text(stmt, (*bindId)++, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
+                  delete buffer;
+               }
+               else
+                  ((void (*)())(void *)this.BindData)(this, stmt, (*bindId)++, fld, type, dataPtr, null);
+
+               type._vTbl[__ecereVMethodID_class_OnFree](type, dataPtr);
+            }
+         }
+
+         // Bind for the rowid
+         sqlite3_bind_int64(stmt, (*bindId)++, (sqlite3_int64)rowID);
+      }
+   }
+
+   bool Find(Field fld, MoveOptions move, MatchOptions match, typed_object data)
+   {
+      char order[1024], command[2048];
+      int result;
+      bool useIndex;
+      sqlite3_stmt * stmt = null;
+      int bindId = 1;
+
+      if(fld == tbl.primaryKey)
+      {
+         return GoToSysID(*(int *)data);
+      }
+
+      sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ", tbl.name);
+      strcatf(command, "`%s` = ?", fld.name);
+      useIndex = tbl.GetIndexOrder(order);
+      AddCursorWhereClauses(command, move, useIndex);
+      strcat(command, order);
+      strcat(command, ";");
+
+      result = sqlite3_prepare_v2(tbl.db.db, command, -1, &stmt, null);
+
+      BindData(stmt, bindId++, (SQLiteField)fld, data, null);
+      BindCursorData(stmt, move, useIndex, &bindId);
+
+      if(curStatement)
+         sqlite3_reset(curStatement);
+      if(findStatement)
+         sqlite3_finalize(findStatement);
+      curStatement = findStatement = stmt;
+
       result = sqlite3_step(findStatement);
 
       done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
-      if(done) { rowID = 0; sqlite3_reset(findStatement); return false; }
-
-      rowID = sqlite3_column_int64(findStatement, 0);
-      return true;
+      if(done)
+      {
+         rowID = 0;
+         sqlite3_reset(findStatement);
+      }
+      else
+         rowID = sqlite3_column_int64(findStatement, 0);
+      return !done;
    }
 
    bool FindMultiple(FieldFindData * findData, MoveOptions move, int numFields)
    {
       if(numFields)
       {
-         char command[4096];
+         char command[4096], order[1024];
          int result;
          int c;
-         Array<SerialBuffer> serialBuffers { };
-
-         if(curStatement)
-            sqlite3_reset(curStatement);
-         if(findMultipleStatement)
-            sqlite3_finalize(findMultipleStatement);
+         bool useIndex;
+         sqlite3_stmt * stmt = null;
+         int bindId = 1;
 
          sprintf(command, "SELECT ROWID, * FROM `%s` WHERE `", tbl.name);
          for(c = 0; c < numFields; c++)
@@ -1060,110 +1168,50 @@ class SQLiteRow : DriverRow
             strcat(command, fieldFind->field.name);
             strcat(command, "` = ?");
          }
+
+         useIndex = tbl.GetIndexOrder(order);
+         AddCursorWhereClauses(command, move, useIndex);
+         strcat(command, order);
          strcat(command, ";");
 
-         result = sqlite3_prepare_v2(tbl.db.db, command, -1, &findMultipleStatement, null);
-         curStatement = findMultipleStatement;
+         result = sqlite3_prepare_v2(tbl.db.db, command, -1, &stmt, null);
 
          for(c = 0; c < numFields; c++)
          {
             FieldFindData * fieldFind = &findData[c];
-            SQLiteField sqlFld = (SQLiteField)fieldFind->field;
+            SQLiteField sqlFld = (SQLiteField)findData->field;
             Class dataType = sqlFld.type;
-
-            switch(sqlFld.sqliteType)
-            {
-               case SQLITE_INTEGER: 
-               {
-                  switch(dataType.typeSize)
-                  {
-                     case 8:
-                        sqlite3_bind_int64(findMultipleStatement, 1 + c, (sqlite_int64)fieldFind->value.i64);
-                        break;
-                     case 4:
-                        sqlite3_bind_int(findMultipleStatement, 1 + c, fieldFind->value.i);
-                        break;
-                     case 2:
-                     {
-                        int value;
-                        if(value < 0)
-                           value = (int)fieldFind->value.s;
-                        else
-                           value = (int)fieldFind->value.us;
-                        sqlite3_bind_int(findMultipleStatement, 1 + c, value);
-                        break;
-                     }
-                     case 1:
-                     {
-                        int value;
-                        if(value < 0)
-                           value = (int)fieldFind->value.c;
-                        else
-                           value = (int)fieldFind->value.uc;
-                        sqlite3_bind_int(findMultipleStatement, 1 + c, value);
-                        break;
-                     }
-                  }
-                  break;
-               }
-               case SQLITE_FLOAT:
-               {
-                  if(dataType.typeSize == 8)
-                     sqlite3_bind_double(findMultipleStatement, 1 + c, fieldFind->value.d);
-                  else
-                     sqlite3_bind_double(findMultipleStatement, 1 + c, fieldFind->value.f);
-                  break;
-               }
-               case SQLITE_TEXT:
-               {
-                  if(fieldFind->value.p)
-                     sqlite3_bind_text(findMultipleStatement, 1 + c, (char *)fieldFind->value.p, strlen(fieldFind->value.p), SQLITE_STATIC);
-                  else
-                     sqlite3_bind_text(findMultipleStatement, 1 + c, null, 0, SQLITE_STATIC);
-                  break;
-               }
-               case SQLITE_BLOB:
-               case SQLITE_NULL:
-               {
-                  SerialBuffer buffer { };
-
-                  dataType._vTbl[__ecereVMethodID_class_OnSerialize](dataType, fieldFind->value.p, buffer);
-                  //sqlite3_bind_blob(findMultipleStatement, 1 + c, buffer._buffer, buffer.count, SQLITE_STATIC);
-                  sqlite3_bind_text(findMultipleStatement, 1 + c, buffer._buffer, buffer.count, SQLITE_STATIC);
-
-                  serialBuffers.Add(buffer);
-                  break;
-               } 
-            }
+            BindData(stmt, bindId++, sqlFld, (dataType.type == structClass || dataType.type == noHeadClass || dataType.type == normalClass) ? fieldFind->value.p : &fieldFind->value.i, null);
          }
+         BindCursorData(stmt, move, useIndex, &bindId);
+
+         if(curStatement)
+            sqlite3_reset(curStatement);
+         if(findMultipleStatement)
+            sqlite3_finalize(findMultipleStatement);
+
+         curStatement = findMultipleStatement = stmt;
 
          result = sqlite3_step(findMultipleStatement);
-
          done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
          if(done)
          {
             rowID = 0;
             sqlite3_reset(findMultipleStatement);
-
-            serialBuffers.Free();
-            delete serialBuffers;
-            return false;
          }
          else
-         {
             rowID = sqlite3_column_int64(findMultipleStatement, 0);
-
-            serialBuffers.Free();
-            delete serialBuffers;
-            return true;
-         }
+         return !done;
       }
       return false;
    }
 
    bool Synch(DriverRow to)
    {
-      return true;
+      SQLiteRow rowTo = (SQLiteRow)to;
+      if(tbl && rowTo.tbl && !strcmp(tbl.name, rowTo.tbl.name))
+         return GoToSysID((uint)rowTo.rowID);
+      return false;
    }
 
    bool Add(uint64 id)
@@ -1208,6 +1256,8 @@ class SQLiteRow : DriverRow
          sqlite3_reset(id ? insertIDStatement : insertStatement);
          curStatement = sysIDStatement;
          sqlite3_reset(curStatement);
+         sqlite3_bind_int64(sysIDStatement, 1, (sqlite3_int64)rowID);
+         result = sqlite3_step(curStatement);
          return true;
       }
       sqlite3_reset(insertStatement);
@@ -1232,6 +1282,8 @@ class SQLiteRow : DriverRow
       SQLiteField sqlFld = (SQLiteField)fld;
       int num = sqlFld.num + 1;
       Class dataType = sqlFld.type;
+
+
       switch(sqlFld.sqliteType)
       {
          case SQLITE_INTEGER: 
@@ -1310,7 +1362,7 @@ class SQLiteRow : DriverRow
             buffer._buffer = null;
             delete buffer;
             break;
-         } 
+         }
       }
       return true;
    }
@@ -1319,97 +1371,19 @@ class SQLiteRow : DriverRow
    {
       SQLiteField sqlFld = (SQLiteField)fld;
       int result;
-
       int num = sqlFld.num + 1;
-      Class dataType = sqlFld.type;
       char command[1024];
-      //sqlite3_stmt * setStatement;
 
       if(updateStatement)
          sqlite3_finalize(updateStatement);
-
-      // sprintf(command, "UPDATE `%s` SET `%s` = ? WHERE ROWID = %d;", tbl.name, sqlFld.name, rowID);
       sprintf(command, "UPDATE `%s` SET `%s` = ? WHERE ROWID = ?;", tbl.name, sqlFld.name);
-
       result = sqlite3_prepare_v2(tbl.db.db, command, -1, &updateStatement, null);
-
-      //sqlite3_bind_text(updateStatement, 1, sqlFld.name, strlen(sqlFld.name), SQLITE_STATIC);
-      //sqlite3_bind_int64(updateStatement, 3, (sqlite3_int64)rowID);
-
       sqlite3_bind_int64(updateStatement, 2, (sqlite3_int64)rowID);
-      switch(sqlFld.sqliteType)
-      {
-         case SQLITE_INTEGER: 
-         {
-            switch(dataType.typeSize)
-            {
-               case 8:
-                  sqlite3_bind_int64(updateStatement, 1, (sqlite3_int64)*(int64 *)data);
-                  break;
-               case 4:
-                  sqlite3_bind_int(updateStatement, 1, *(int *)data);
-                  break;
-               case 2:
-               {
-                  int value;
-                  if((int)data < 0)
-                     value = (int)*(short *)data;
-                  else
-                     value = (int)*(uint16 *)data;
-                  sqlite3_bind_int(updateStatement, 1, value);
-                  break;
-               }
-               case 1:
-               {
-                  int value;
-                  if((int)data < 0)
-                     value = (int)*(char *)data;
-                  else
-                     value = (int)*(byte *)data;
-                  sqlite3_bind_int(updateStatement, 1, value);
-                  break;
-               }
-            }
-            break;
-         }
-         case SQLITE_FLOAT:
-         {
-            if(dataType.typeSize == 8)
-               sqlite3_bind_double(updateStatement, 1, *(double *)data);
-            else
-               sqlite3_bind_double(updateStatement, 1, (double)*(float *)data);
-            break;
-         }
-         case SQLITE_TEXT:
-         {
-            // TOFIX: Checking a not casted typed_object for null should generate a compiler error (crashes!)
-            if((char *)data)
-               sqlite3_bind_text(updateStatement, 1, (char *)data, strlen((char *)data), SQLITE_STATIC);
-            else
-               sqlite3_bind_text(updateStatement, 1, null, 0, SQLITE_STATIC);
-            break;
-         }
-         case SQLITE_BLOB:
-         case SQLITE_NULL:
-         {
-            SerialBuffer buffer { };
-
-            dataType._vTbl[__ecereVMethodID_class_OnSerialize](dataType, data, buffer);
-            //sqlite3_bind_blob(updateStatement, 1, buffer._buffer, buffer.count, SQLITE_STATIC);
-            sqlite3_bind_text(updateStatement, 1, buffer._buffer, buffer.count, SQLITE_STATIC);
-            sqlite3_step(updateStatement);
-            sqlite3_reset(updateStatement);
-            delete buffer;
-            return true;
-            break;
-         }
-      }
+      BindData(updateStatement, 1, (SQLiteField)fld, data, null);
       result = sqlite3_step(updateStatement);
       sqlite3_reset(updateStatement);
       if(fld == tbl.primaryKey)
-      {
          rowID = *(uint *)data;
-      }
       return result == SQLITE_DONE;
    }
 
@@ -1418,7 +1392,7 @@ class SQLiteRow : DriverRow
       return (int)(uint)rowID;
    }
 
-   bool GoToSysID(int id)
+   bool GoToSysID(uint id)
    {
       //char command[1024];
       int result;
@@ -1476,9 +1450,9 @@ class SQLiteRow : DriverRow
       }
       sqlite3_reset(queryStatement);
       if(data)
-         result = sqlite3_bind_text(queryStatement, paramID, (char *)data, strlen((char *)data), SQLITE_STATIC);
+         result = sqlite3_bind_text(queryStatement, paramID, (char *)data, strlen((char *)data), SQLITE_TRANSIENT);
       else
-         result = sqlite3_bind_text(queryStatement, paramID, null, 0, SQLITE_STATIC);
+         result = sqlite3_bind_text(queryStatement, paramID, null, 0, SQLITE_TRANSIENT);
       return !result;
    }
 
