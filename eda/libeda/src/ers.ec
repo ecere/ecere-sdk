@@ -757,7 +757,7 @@ public:
          }
          if(activeOnly)
          {
-            bool active;
+            bool active = true;
             row.GetData(activeField, active);
             if(!active)
                result = false;
@@ -767,7 +767,7 @@ public:
             int f;
             for(f = 0; f < filters.size && result && filters._[f].field; f++)
             {
-               Id id;
+               Id id = 0;
                row.GetData(filters._[f].field, id);
                if(id != filters._[f].id)
                {
@@ -782,7 +782,10 @@ public:
          if(result)
          {
             if(field)
+            {
+               groupId = 0;
                row.GetData(field, groupId);
+            }
             delete reverseIdList;
             return true;
          }
