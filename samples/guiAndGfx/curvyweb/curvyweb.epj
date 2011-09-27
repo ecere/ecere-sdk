@@ -1,0 +1,43 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "bezier",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "TargetFileName" : "bezier",
+            "TargetDirectory" : "debug",
+            "ObjectsDirectory" : "debug"
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "TargetFileName" : "bezier",
+            "TargetDirectory" : "release",
+            "ObjectsDirectory" : "release"
+         }
+      }
+   ],
+   "Files" : [
+      "curvyweb.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
