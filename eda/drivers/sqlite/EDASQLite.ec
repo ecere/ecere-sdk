@@ -80,6 +80,8 @@ int CollationCompare(Class type, int count1, void * data1, int count2, void * da
       return type._vTbl[__ecereVMethodID_class_OnCompare](type, data1, data2);
 }
 
+public class SQLiteStaticLink { }   // Until .imp generation is fixed
+
 class SQLiteDataSource : DataSourceDriver
 {
    class_property(name) = "SQLite";
@@ -335,7 +337,7 @@ class SQLiteDatabase : Database
                            char dataType[256];
                            int d;
                            int start = c;
-                           int sqliteType;
+                           int sqliteType = SQLITE_BLOB;
                            Class type = class(int);
                            fieldName[0] = 0;
                            dataType[0] = 0;
@@ -388,7 +390,7 @@ class SQLiteDatabase : Database
                      char * typeName = sqlite3_column_text(statement, 1);
                      int length = sqlite3_column_int(statement, 2);
                      Class type = null;
-                     int sqliteType;
+                     int sqliteType = SQLITE_BLOB;
 
                      ((Class)(&type)).OnGetDataFromString(typeName);    // TODO: THIS REQUIRES A FIX SOMEWHERE ELSE
 

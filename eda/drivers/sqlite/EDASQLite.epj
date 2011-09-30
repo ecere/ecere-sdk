@@ -65,6 +65,18 @@
                "_DEBUG"
             ]
          }
+      },
+      {
+         "Name" : "Static",
+         "Options" : {
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "EDASQLiteStatic"
+         }
       }
    ],
    "Files" : [
