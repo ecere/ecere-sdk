@@ -1005,12 +1005,13 @@ public:
       OldLink link;
       String name = null;
 
+      editRow.tbl.db.Begin();
       for(link = editBoxes.first; link; link = link.next)
       {
          FieldDataBox dataBox = link.data;
          dataBox.Save();
       }
-
+      editRow.tbl.db.Commit();
       // ADDED THIS HERE FOR SQLITE TO REFRESH
       editRow.Find(list.fldId, middle, nil, list.list.currentRow.tag);
 
