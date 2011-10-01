@@ -117,19 +117,19 @@ public:
    }
    property Window leftPane
    {
-      set { leftPane = value; } get { return leftPane; }
+      set { leftPane = value; property::split = split; } get { return leftPane; }
    }
    property Window rightPane
    {
-      set { rightPane = value; } get { return rightPane; }
+      set { rightPane = value; property::split = split; } get { return rightPane; }
    }
    property Window topPane 
    {
-      set { leftPane = value; } get { return leftPane; }
+      set { leftPane = value; property::split = split; } get { return leftPane; }
    }
    property Window bottomPane
    {
-      set { rightPane = value; } get { return rightPane; }
+      set { rightPane = value; property::split = split; } get { return rightPane; }
    }
    property double scaleSplit
    {
