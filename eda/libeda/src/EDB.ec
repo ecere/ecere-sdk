@@ -723,6 +723,8 @@ static class EDBTable : Table
       fieldsTable.rowPositions = renew0 fieldsTable.rowPositions uint[fieldsTable.allocatedRowsCount];
 
       dbTable.fields.Add(field);
+
+      // Field num starts at index base 1 !
       field.num = dbTable.fields.count;
       field.Write();
       return field;
@@ -1045,14 +1047,19 @@ static class EDBRow : DriverRow
             tf.Write(offsets, sizeof(uint), numFields);
 
             size = f.GetSize();
-            if(field.num < oldNumFields)
+            // *** Fields are based at index 1, if we're writing the last field we need to set size to its offset
+            // because we will be rewriting over it. ***
+            if(field.num <= oldNumFields)
             {
+               // We will read right up to to the field we're writing to
+               // (Size will be from right after the offset table to that offset)
                int c;
                for(c = field.num - 1; c >= 0; c--)
                {
                   if(offsets[c])
                   {
-                     for(c++; c < oldNumFields; c++)  
+                     // *** I don't know why were incrementing c on init here, because the current field is the offset we want ***
+                     for(; c < oldNumFields; c++)
                         if(offsets[c])
                         {
                            size = offsets[c];
@@ -1062,6 +1069,8 @@ static class EDBRow : DriverRow
                   }
                }
             }
+
+            // Subtract the header (numFields + offsets table), that's where we're at right now
             size -= f.Tell();
 
             if(size)
@@ -1071,7 +1080,9 @@ static class EDBRow : DriverRow
                tf.Write(buffer, 1, size);               
             }
 
+            // Update the offset of the field we're writing to
             offsets[field.num-1] = tf.Tell();
+            // Serialize the data we're writing
             field.type._vTbl[__ecereVMethodID_class_OnSerialize](field.type, data, tf);
 
             if(field.num < numFields)
