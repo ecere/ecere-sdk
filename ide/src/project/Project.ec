@@ -986,7 +986,8 @@ private:
          ProjectConfig c = null;
          for(i : node.configurations; !strcmpi(i.name, cfg.name)) { c = i; break; }
 
-         if(c && cfg.options.console != c.options.console)
+         if(c && ((c.options && cfg.options && cfg.options.console != c.options.console) ||
+               (!c.options || !cfg.options)))
             cfg.symbolGenModified = true;
 
          cfg.makingModified = true;
