@@ -251,7 +251,7 @@ private:
          {
             for(child = firstChild; child; child = child.next)
             {
-               if(child.nonClient || !child.visible /*|| !child.created*/) continue;
+               if(child.nonClient/* || !child.visible*/ /*|| !child.created*/) continue;
                if(c == child)
                {
                   controls.Add(child);
@@ -262,7 +262,7 @@ private:
          }
          for(child = firstChild; child; child = child.next)
          {
-            if(child.nonClient || !child.visible /*|| !child.created*/) continue;
+            if(child.nonClient/* || !child.visible*/ /*|| !child.created*/) continue;
             if(!controls.Find(child))
             {
                controls.Add(child);
@@ -291,6 +291,7 @@ private:
 
             for(child : orderedControls)
             {
+               if(!child.visible) continue;
                if(direction == vertical)
                {
                   if(reverse)
@@ -382,6 +383,7 @@ private:
             y = 0;
             for(child : controlsDirA)
             {
+               if(!child.visible) continue;
                if(direction == vertical)
                {
                   if(reverse)
@@ -402,6 +404,7 @@ private:
             y = 0;
             for(child : controlsDirB)
             {
+               if(!child.visible) continue;
                if(direction == vertical)
                {
                   if(reverse)
