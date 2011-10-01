@@ -1875,7 +1875,8 @@ private:
 
             for(selRow = rows.first; selRow; selRow = selRow.GetNextRow())
                selRow.selectedFlag = unselected;
-            currentRow.selectedFlag = selected;
+            if(currentRow)
+               currentRow.selectedFlag = selected;
 
             clickedRow = row;
          }
