@@ -169,6 +169,7 @@ public class ToolButton/*<class TT>*/ : public Button
    size = Size { 24, 24 };
    //isRemote = true;
    borderStyle = none;
+   opacity = 0.0f;
 
 public:
    Window focusHolder;
