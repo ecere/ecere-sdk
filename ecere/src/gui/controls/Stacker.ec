@@ -424,10 +424,20 @@ private:
             }
             if(spring == previous && previousChild)
             {
-               if(reverse)
-                  previousChild.anchor.left = y;
+               if(direction == vertical)
+               {
+                  if(reverse)
+                     previousChild.anchor.top = y;
+                  else
+                     previousChild.anchor.bottom = y;
+               }
                else
-                  previousChild.anchor.right = y;
+               {
+                  if(reverse)
+                     previousChild.anchor.left = y;
+                  else
+                     previousChild.anchor.right = y;
+               }
             }
 
             controlsDirA.Free();
