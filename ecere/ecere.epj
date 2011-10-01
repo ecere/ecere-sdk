@@ -115,7 +115,7 @@ from wherever you obtained them.",
                "../deps/libpng-1.4.0",
                "../deps/libungif-4.1.1/lib",
                "../deps/zlib",
-               "../deps/freetype-2.3.5/include",
+               "../deps/freetype-2.3.12/include",
                "../deps/glext"
             ],
             "Libraries" : [
@@ -646,6 +646,25 @@ from wherever you obtained them.",
                         {
                            "Folder" : "harfbuzz",
                            "Files" : [
+                              {
+                                 "Folder" : "unicode",
+                                 "Files" : [
+                                    {
+                                       "Folder" : "tables",
+                                       "Files" : [
+                                          "category-properties.h",
+                                          "combining-properties.h",
+                                          "grapheme-break-properties.h",
+                                          "script-properties.h"
+                                       ]
+                                    },
+                                    "harfbuzz-freetype.h",
+                                    "harfbuzz-unicode.h",
+                                    "harfbuzz-freetype.c",
+                                    "harfbuzz-unicode-tables.c",
+                                    "harfbuzz-unicode.c"
+                                 ]
+                              },
                               "harfbuzz-arabic.c",
                               "harfbuzz-buffer.c",
                               "harfbuzz-buffer.h",
@@ -653,7 +672,6 @@ from wherever you obtained them.",
                               "harfbuzz-gdef-private.h",
                               "harfbuzz-gdef.c",
                               "harfbuzz-gdef.h",
-                              "harfbuzz-global.c",
                               "harfbuzz-global.h",
                               "harfbuzz-gpos-private.h",
                               "harfbuzz-gpos.c",
@@ -677,7 +695,12 @@ from wherever you obtained them.",
                               "harfbuzz-stream.c",
                               "harfbuzz-stream.h",
                               "harfbuzz-tibetan.c",
-                              "harfbuzz.h"
+                              "harfbuzz.h",
+                              "harfbuzz-impl.c",
+                              "harfbuzz-thai.c",
+                              "harfbuzz-buffer-private.h",
+                              "harfbuzz-dump.h",
+                              "harfbuzz-stream-private.h"
                            ],
                            "Options" : {
                               "ExcludeFromBuild" : false
@@ -694,6 +717,17 @@ from wherever you obtained them.",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "Vanilla",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },

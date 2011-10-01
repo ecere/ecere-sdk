@@ -1,24 +1,36 @@
-/* harfbuzz-buffer.h: Buffer of glyphs for substitution/positioning
+/*
+ * Copyright (C) 1998-2004  David Turner and Werner Lemberg
+ * Copyright (C) 2004,2007  Red Hat, Inc.
  *
- * Copyrigh 2004 Red Hat Software
+ * This is part of HarfBuzz, an OpenType Layout engine library.
  *
- * Portions Copyright 1996-2000 by
- * David Turner, Robert Wilhelm, and Werner Lemberg.
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, modify, and distribute this
+ * software and its documentation for any purpose, provided that the
+ * above copyright notice and the following two paragraphs appear in
+ * all copies of this software.
  *
- * This file is part of the FreeType project, and may only be used
- * modified and distributed under the terms of the FreeType project
- * license, LICENSE.TXT.  By continuing to use, modify, or distribute
- * this file you indicate that you have read the license and
- * understand and accept it fully.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
+ * IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
+ *
+ * THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+ *
+ * Red Hat Author(s): Owen Taylor, Behdad Esfahbod
  */
+
 #ifndef HARFBUZZ_BUFFER_H
 #define HARFBUZZ_BUFFER_H
 
-#include <harfbuzz-global.h>
+#include "harfbuzz-global.h"
 
 HB_BEGIN_HEADER
-
-#define HB_GLYPH_PROPERTIES_UNKNOWN 0xFFFF
 
 typedef struct HB_GlyphItemRec_ {
   HB_UInt     gindex;
@@ -30,10 +42,10 @@ typedef struct HB_GlyphItemRec_ {
 } HB_GlyphItemRec, *HB_GlyphItem;
 
 typedef struct HB_PositionRec_ {
-  HB_Fixed     x_pos;
-  HB_Fixed     y_pos;
-  HB_Fixed     x_advance;
-  HB_Fixed     y_advance;
+  HB_Fixed   x_pos;
+  HB_Fixed   y_pos;
+  HB_Fixed   x_advance;
+  HB_Fixed   y_advance;
   HB_UShort  back;            /* number of glyphs to go back
 				 for drawing current glyph   */
   HB_Bool    new_advance;     /* if set, the advance width values are
@@ -54,22 +66,21 @@ typedef struct HB_BufferRec_{
   HB_UInt    in_pos;
   HB_UInt    out_pos;
   
+  HB_Bool       separate_out;
   HB_GlyphItem  in_string;
   HB_GlyphItem  out_string;
+  HB_GlyphItem  alt_string;
   HB_Position   positions;
   HB_UShort      max_ligID;
 } HB_BufferRec, *HB_Buffer;
 
 HB_Error
-hb_buffer_new(HB_Buffer *buffer );
+hb_buffer_new( HB_Buffer *buffer );
 
-HB_Error
-hb_buffer_swap( HB_Buffer buffer );
-
-HB_Error
+void
 hb_buffer_free( HB_Buffer buffer );
 
-HB_Error
+void
 hb_buffer_clear( HB_Buffer buffer );
 
 HB_Error
@@ -77,26 +88,6 @@ hb_buffer_add_glyph( HB_Buffer buffer,
 		      HB_UInt    glyph_index,
 		      HB_UInt    properties,
 		      HB_UInt    cluster );
-
-HB_Error
-hb_buffer_add_output_glyphs( HB_Buffer buffer,
-			      HB_UShort  num_in,
-			      HB_UShort  num_out,
-			      HB_UShort *glyph_data,
-			      HB_UShort  component,
-			      HB_UShort  ligID );
-
-HB_Error
-hb_buffer_add_output_glyph ( HB_Buffer buffer,
-			      HB_UInt    glyph_index,
-			      HB_UShort  component,
-			      HB_UShort  ligID );
-
-HB_Error
-hb_buffer_copy_output_glyph ( HB_Buffer buffer );
-
-HB_UShort
-hb_buffer_allocate_ligid( HB_Buffer buffer );
 
 HB_END_HEADER
 

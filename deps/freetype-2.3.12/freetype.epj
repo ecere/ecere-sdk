@@ -1,0 +1,203 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "libfreetype",
+   "Options" : {
+      "Optimization" : "None",
+      "PreprocessorDefinitions" : [
+         "FT2_BUILD_LIBRARY",
+         "FT_OPTION_AUTOFIT2"
+      ],
+      "IncludeDirs" : [
+         "../zlib",
+         "include",
+         "include/freetype",
+         "include/freetype/internal"
+      ],
+      "TargetType" : "StaticLibrary",
+      "TargetFileName" : "freetype",
+      "TargetDirectory" : "",
+      "ObjectsDirectory" : ""
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Warnings" : "All",
+            "Debug" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Warnings" : "None",
+            "Optimization" : "None",
+            "TargetDirectory" : "obj"
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "src",
+         "Files" : [
+            {
+               "Folder" : "autofit",
+               "Files" : [
+                  "afglobal.c",
+                  "afindic.c",
+                  "autofit.c"
+               ]
+            },
+            {
+               "Folder" : "base",
+               "Files" : [
+                  "ftapi.c",
+                  "ftbase.c",
+                  "ftbbox.c",
+                  "ftbdf.c",
+                  "ftbitmap.c",
+                  "ftdebug.c",
+                  "ftgasp.c",
+                  "ftglyph.c",
+                  "ftgxval.c",
+                  "ftinit.c",
+                  "ftlcdfil.c",
+                  "ftmm.c",
+                  "ftotval.c",
+                  "ftpatent.c",
+                  "ftpfr.c",
+                  "ftstroke.c",
+                  "ftsynth.c",
+                  "ftsystem.c",
+                  "fttype1.c",
+                  "ftwinfnt.c",
+                  "ftxf86.c"
+               ]
+            },
+            {
+               "Folder" : "bdf",
+               "Files" : [
+                  "bdf.c"
+               ]
+            },
+            {
+               "Folder" : "cache",
+               "Files" : [
+                  "ftcache.c"
+               ]
+            },
+            {
+               "Folder" : "cff",
+               "Files" : [
+                  "cff.c"
+               ]
+            },
+            {
+               "Folder" : "cid",
+               "Files" : [
+                  "type1cid.c"
+               ]
+            },
+            {
+               "Folder" : "gxvalid",
+               "Files" : [
+                  "gxvalid.c"
+               ]
+            },
+            {
+               "Folder" : "gzip",
+               "Files" : [
+                  "ftgzip.c"
+               ]
+            },
+            {
+               "Folder" : "lzw",
+               "Files" : [
+                  "ftlzw.c"
+               ]
+            },
+            {
+               "Folder" : "otvalid",
+               "Files" : [
+                  "otvalid.c"
+               ]
+            },
+            {
+               "Folder" : "pcf",
+               "Files" : [
+                  "pcf.c"
+               ]
+            },
+            {
+               "Folder" : "pfr",
+               "Files" : [
+                  "pfr.c"
+               ]
+            },
+            {
+               "Folder" : "psaux",
+               "Files" : [
+                  "psaux.c"
+               ]
+            },
+            {
+               "Folder" : "pshinter",
+               "Files" : [
+                  "pshinter.c"
+               ]
+            },
+            {
+               "Folder" : "psnames",
+               "Files" : [
+                  "psnames.c"
+               ]
+            },
+            {
+               "Folder" : "raster",
+               "Files" : [
+                  "raster.c"
+               ]
+            },
+            {
+               "Folder" : "sfnt",
+               "Files" : [
+                  "sfnt.c"
+               ]
+            },
+            {
+               "Folder" : "smooth",
+               "Files" : [
+                  "smooth.c"
+               ]
+            },
+            {
+               "Folder" : "truetype",
+               "Files" : [
+                  "truetype.c"
+               ]
+            },
+            {
+               "Folder" : "type1c",
+               "Files" : [
+                  "src/type1/type1.c"
+               ]
+            },
+            {
+               "Folder" : "type42",
+               "Files" : [
+                  "type42.c"
+               ]
+            },
+            {
+               "Folder" : "winfonts",
+               "Files" : [
+                  "winfnt.c"
+               ]
+            }
+         ]
+      }
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

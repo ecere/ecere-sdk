@@ -692,8 +692,11 @@ public class FixedMultiLineString : String
          {
             memcpy(string + size, line.text, line.count);
             size += line.count;
-            string[size] = '\n';
-            size++;
+            if(line.next)
+            {
+               string[size] = '\n';
+               size++;
+            }
          }
          string[size] = '\0';
 
@@ -758,8 +761,11 @@ public class MultiLineString : String
          {
             memcpy(string + size, line.text, line.count);
             size += line.count;
-            string[size] = '\n';
-            size++;
+            if(line.next)
+            {
+               string[size] = '\n';
+               size++;
+            }
          }
          string[size] = '\0';
 

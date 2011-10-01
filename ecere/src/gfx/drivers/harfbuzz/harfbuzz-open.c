@@ -1,15 +1,28 @@
-/*******************************************************************
+/*
+ * Copyright (C) 1998-2004  David Turner and Werner Lemberg
+ * Copyright (C) 2006  Behdad Esfahbod
  *
- *  Copyright 1996-2000 by
- *  David Turner, Robert Wilhelm, and Werner Lemberg.
+ * This is part of HarfBuzz, an OpenType Layout engine library.
  *
- *  Copyright 2006  Behdad Esfahbod
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, modify, and distribute this
+ * software and its documentation for any purpose, provided that the
+ * above copyright notice and the following two paragraphs appear in
+ * all copies of this software.
  *
- *  This is part of HarfBuzz, an OpenType Layout engine library.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
+ * IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
  *
- *  See the file name COPYING for licensing information.
- *
- ******************************************************************/
+ * THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+ */
+
 #include "harfbuzz-impl.h"
 #include "harfbuzz-open-private.h"
 
@@ -116,7 +129,7 @@ static HB_Error  Load_Script( HB_ScriptTable*  s,
 
   if ( s->LangSysCount == 0 && s->DefaultLangSys.FeatureCount == 0 )
   {
-    error = HB_Err_Empty_Script;
+    error = HB_Err_Not_Covered;
     goto Fail2;
   }
 
@@ -184,7 +197,8 @@ static void  Free_Script( HB_ScriptTable*  s )
 
 /* ScriptList */
 
-HB_Error  _HB_OPEN_Load_ScriptList( HB_ScriptList*  sl,
+HB_INTERNAL HB_Error
+_HB_OPEN_Load_ScriptList( HB_ScriptList* sl,
 			   HB_Stream        stream )
 {
   HB_Error   error;
@@ -230,7 +244,7 @@ HB_Error  _HB_OPEN_Load_ScriptList( HB_ScriptList*  sl,
     error = Load_Script( &sr[sl->ScriptCount].Script, stream );
     if ( error == HB_Err_Ok )
       sl->ScriptCount += 1;
-    else if ( error != HB_Err_Empty_Script )
+    else if ( error != HB_Err_Not_Covered )
       goto Fail;
 
     (void)FILE_Seek( cur_offset );
@@ -242,7 +256,7 @@ HB_Error  _HB_OPEN_Load_ScriptList( HB_ScriptList*  sl,
 #if 0
   if ( sl->ScriptCount == 0 )
   {
-    error = HB_Err_Invalid_SubTable;
+    error = ERR(HB_Err_Invalid_SubTable);
     goto Fail;
   }
 #endif
@@ -258,7 +272,8 @@ Fail:
 }
 
 
-void  _HB_OPEN_Free_ScriptList( HB_ScriptList*  sl )
+HB_INTERNAL void
+_HB_OPEN_Free_ScriptList( HB_ScriptList* sl )
 {
   HB_UShort          n, count;
 
@@ -334,7 +349,8 @@ static void  Free_Feature( HB_Feature*  f )
 
 /* FeatureList */
 
-HB_Error  _HB_OPEN_Load_FeatureList( HB_FeatureList*  fl,
+HB_INTERNAL HB_Error
+_HB_OPEN_Load_FeatureList( HB_FeatureList* fl,
 			    HB_Stream         stream )
 {
   HB_Error   error;
@@ -397,7 +413,8 @@ Fail2:
 }
 
 
-void  _HB_OPEN_Free_FeatureList( HB_FeatureList*  fl)
+HB_INTERNAL void
+_HB_OPEN_Free_FeatureList( HB_FeatureList*  fl )
 {
   HB_UShort           n, count;
 
@@ -557,7 +574,8 @@ static void  Free_Lookup( HB_Lookup*   l,
 
 /* LookupList */
 
-HB_Error  _HB_OPEN_Load_LookupList( HB_LookupList*  ll,
+HB_INTERNAL HB_Error
+_HB_OPEN_Load_LookupList( HB_LookupList* ll,
 			   HB_Stream        stream,
 			   HB_Type         type )
 {
@@ -617,7 +635,8 @@ Fail2:
 }
 
 
-void  _HB_OPEN_Free_LookupList( HB_LookupList*  ll,
+HB_INTERNAL void
+_HB_OPEN_Free_LookupList( HB_LookupList* ll,
 		       HB_Type         type )
 {
   HB_UShort    n, count;
@@ -733,7 +752,7 @@ static HB_Error  Load_Coverage2( HB_CoverageFormat2*  cf2,
 	 ( rr[n].End - rr[n].Start + (long)rr[n].StartCoverageIndex ) >=
 	   0x10000L )
     {
-      error = HB_Err_Invalid_SubTable;
+      error = ERR(HB_Err_Invalid_SubTable);
       goto Fail;
     }
   }
@@ -754,7 +773,8 @@ static void  Free_Coverage2( HB_CoverageFormat2*  cf2 )
 }
 
 
-HB_Error  _HB_OPEN_Load_Coverage( HB_Coverage*  c,
+HB_INTERNAL HB_Error
+_HB_OPEN_Load_Coverage( HB_Coverage* c,
 			 HB_Stream      stream )
 {
   HB_Error   error;
@@ -768,31 +788,23 @@ HB_Error  _HB_OPEN_Load_Coverage( HB_Coverage*  c,
 
   switch ( c->CoverageFormat )
   {
-  case 1:
-    return Load_Coverage1( &c->cf.cf1, stream );
-
-  case 2:
-    return Load_Coverage2( &c->cf.cf2, stream );
-
-  default:
-    return HB_Err_Invalid_SubTable_Format;
+  case 1:  return Load_Coverage1( &c->cf.cf1, stream );
+  case 2:  return Load_Coverage2( &c->cf.cf2, stream );
+  default: return ERR(HB_Err_Invalid_SubTable_Format);
   }
 
   return HB_Err_Ok;               /* never reached */
 }
 
 
-void  _HB_OPEN_Free_Coverage( HB_Coverage*  c)
+HB_INTERNAL void
+_HB_OPEN_Free_Coverage( HB_Coverage* c )
 {
   switch ( c->CoverageFormat )
   {
-  case 1:
-    Free_Coverage1( &c->cf.cf1 );
-    break;
-
-  case 2:
-    Free_Coverage2( &c->cf.cf2 );
-    break;
+  case 1:  Free_Coverage1( &c->cf.cf1 ); break;
+  case 2:  Free_Coverage2( &c->cf.cf2 ); break;
+  default:					 break;
   }
 }
 
@@ -897,20 +909,16 @@ static HB_Error  Coverage_Index2( HB_CoverageFormat2*  cf2,
 }
 
 
-HB_Error  _HB_OPEN_Coverage_Index( HB_Coverage*  c,
+HB_INTERNAL HB_Error
+_HB_OPEN_Coverage_Index( HB_Coverage* c,
 			  HB_UShort      glyphID,
 			  HB_UShort*     index )
 {
   switch ( c->CoverageFormat )
   {
-  case 1:
-    return Coverage_Index1( &c->cf.cf1, glyphID, index );
-
-  case 2:
-    return Coverage_Index2( &c->cf.cf2, glyphID, index );
-
-  default:
-    return HB_Err_Invalid_SubTable_Format;
+  case 1:  return Coverage_Index1( &c->cf.cf1, glyphID, index );
+  case 2:  return Coverage_Index2( &c->cf.cf2, glyphID, index );
+  default: return ERR(HB_Err_Invalid_SubTable_Format);
   }
 
   return HB_Err_Ok;               /* never reached */
@@ -934,7 +942,6 @@ static HB_Error  Load_ClassDef1( HB_ClassDefinition*  cd,
   HB_UShort             n, count;
 
   HB_UShort*            cva;
-  HB_Bool*              d;
 
   HB_ClassDefFormat1*  cdf1;
 
@@ -952,14 +959,13 @@ static HB_Error  Load_ClassDef1( HB_ClassDefinition*  cd,
   /* sanity check; we are limited to 16bit integers */
 
   if ( cdf1->StartGlyph + (long)count >= 0x10000L )
-    return HB_Err_Invalid_SubTable;
+    return ERR(HB_Err_Invalid_SubTable);
 
   cdf1->ClassValueArray = NULL;
 
   if ( ALLOC_ARRAY( cdf1->ClassValueArray, count, HB_UShort ) )
     return error;
 
-  d   = cd->Defined;
   cva = cdf1->ClassValueArray;
 
   if ( ACCESS_Frame( count * 2L ) )
@@ -970,10 +976,9 @@ static HB_Error  Load_ClassDef1( HB_ClassDefinition*  cd,
     cva[n] = GET_UShort();
     if ( cva[n] >= limit )
     {
-      error = HB_Err_Invalid_SubTable;
+      error = ERR(HB_Err_Invalid_SubTable);
       goto Fail;
     }
-    d[cva[n]] = TRUE;
   }
 
   FORGET_Frame();
@@ -1004,7 +1009,6 @@ static HB_Error  Load_ClassDef2( HB_ClassDefinition*  cd,
   HB_UShort              n, count;
 
   HB_ClassRangeRecord*  crr;
-  HB_Bool*               d;
 
   HB_ClassDefFormat2*   cdf2;
 
@@ -1014,7 +1018,8 @@ static HB_Error  Load_ClassDef2( HB_ClassDefinition*  cd,
   if ( ACCESS_Frame( 2L ) )
     return error;
 
-  count = cdf2->ClassRangeCount = GET_UShort();
+  count = GET_UShort();
+  cdf2->ClassRangeCount = 0; /* zero for now.  we fill with the number of good entries later */
 
   FORGET_Frame();
 
@@ -1023,7 +1028,6 @@ static HB_Error  Load_ClassDef2( HB_ClassDefinition*  cd,
   if ( ALLOC_ARRAY( cdf2->ClassRangeRecord, count, HB_ClassRangeRecord ) )
     return error;
 
-  d   = cd->Defined;
   crr = cdf2->ClassRangeRecord;
 
   if ( ACCESS_Frame( count * 6L ) )
@@ -1040,13 +1044,18 @@ static HB_Error  Load_ClassDef2( HB_ClassDefinition*  cd,
     if ( crr[n].Start > crr[n].End ||
 	 crr[n].Class >= limit )
     {
-      error = HB_Err_Invalid_SubTable;
-      goto Fail;
+      /* XXX
+       * Corrupt entry.  Skip it.
+       * This is hit by Nafees Nastaliq font for example
+       */
+       n--;
+       count--;
     }
-    d[crr[n].Class] = TRUE;
   }
 
   FORGET_Frame();
+
+  cdf2->ClassRangeCount = count;
 
   return HB_Err_Ok;
 
@@ -1065,18 +1074,15 @@ static void  Free_ClassDef2( HB_ClassDefFormat2*  cdf2 )
 
 /* ClassDefinition */
 
-HB_Error  _HB_OPEN_Load_ClassDefinition( HB_ClassDefinition*  cd,
+HB_INTERNAL HB_Error
+_HB_OPEN_Load_ClassDefinition( HB_ClassDefinition* cd,
 				HB_UShort             limit,
 				HB_Stream             stream )
 {
   HB_Error   error;
 
-
-  if ( ALLOC_ARRAY( cd->Defined, limit, HB_Bool ) )
-    return error;
-
   if ( ACCESS_Frame( 2L ) )
-    goto Fail;
+    return error;
 
   cd->ClassFormat = GET_UShort();
 
@@ -1084,77 +1090,79 @@ HB_Error  _HB_OPEN_Load_ClassDefinition( HB_ClassDefinition*  cd,
 
   switch ( cd->ClassFormat )
   {
-  case 1:
-    error = Load_ClassDef1( cd, limit, stream );
-    break;
-
-  case 2:
-    error = Load_ClassDef2( cd, limit, stream );
-    break;
-
-  default:
-    error = HB_Err_Invalid_SubTable_Format;
-    break;
+  case 1:  error = Load_ClassDef1( cd, limit, stream ); break;
+  case 2:  error = Load_ClassDef2( cd, limit, stream ); break;
+  default: error = ERR(HB_Err_Invalid_SubTable_Format);	break;
   }
 
   if ( error )
-    goto Fail;
+    return error;
 
   cd->loaded = TRUE;
 
   return HB_Err_Ok;
-
-Fail:
-  FREE( cd->Defined );
-  return error;
 }
 
 
-HB_Error  _HB_OPEN_Load_EmptyClassDefinition( HB_ClassDefinition*  cd,
-                                              HB_Stream             stream )
+static HB_Error
+_HB_OPEN_Load_EmptyClassDefinition( HB_ClassDefinition*  cd )
 {
   HB_Error   error;
-  HB_UNUSED(stream);
-
-  if ( ALLOC_ARRAY( cd->Defined, 1, HB_Bool ) )
-    return error;
 
   cd->ClassFormat = 1; /* Meaningless */
-  cd->Defined[0] = FALSE;
 
   if ( ALLOC_ARRAY( cd->cd.cd1.ClassValueArray, 1, HB_UShort ) )
-    goto Fail;
+    return error;
+
+  cd->loaded = TRUE;
 
   return HB_Err_Ok;
+}
 
-Fail:
-  FREE( cd->Defined );
+HB_INTERNAL HB_Error
+_HB_OPEN_Load_EmptyOrClassDefinition( HB_ClassDefinition* cd,
+					       HB_UShort             limit,
+					       HB_UInt              class_offset,
+					       HB_UInt              base_offset,
+					       HB_Stream             stream )
+{
+  HB_Error error;
+  HB_UInt               cur_offset;
+
+  cur_offset = FILE_Pos();
+
+  if ( class_offset )
+    {
+      if ( !FILE_Seek( class_offset + base_offset ) )
+	error = _HB_OPEN_Load_ClassDefinition( cd, limit, stream );
+    }
+  else
+     error = _HB_OPEN_Load_EmptyClassDefinition ( cd );
+
+  if (error == HB_Err_Ok)
+    (void)FILE_Seek( cur_offset ); /* Changes error as a side-effect */
+
   return error;
 }
 
-void  _HB_OPEN_Free_ClassDefinition( HB_ClassDefinition*  cd )
+HB_INTERNAL void
+_HB_OPEN_Free_ClassDefinition( HB_ClassDefinition*  cd )
 {
   if ( !cd->loaded )
     return;
 
-  FREE( cd->Defined );
-
   switch ( cd->ClassFormat )
   {
-  case 1:
-    Free_ClassDef1( &cd->cd.cd1 );
-    break;
-
-  case 2:
-    Free_ClassDef2( &cd->cd.cd2 );
-    break;
+  case 1:  Free_ClassDef1( &cd->cd.cd1 ); break;
+  case 2:  Free_ClassDef2( &cd->cd.cd2 ); break;
+  default:				  break;
   }
 }
 
 
 static HB_Error  Get_Class1( HB_ClassDefFormat1*  cdf1,
 			     HB_UShort             glyphID,
-			     HB_UShort*            class,
+			     HB_UShort*            klass,
 			     HB_UShort*            index )
 {
   HB_UShort*  cva = cdf1->ClassValueArray;
@@ -1166,12 +1174,12 @@ static HB_Error  Get_Class1( HB_ClassDefFormat1*  cdf1,
   if ( glyphID >= cdf1->StartGlyph &&
        glyphID < cdf1->StartGlyph + cdf1->GlyphCount )
   {
-    *class = cva[glyphID - cdf1->StartGlyph];
+    *klass = cva[glyphID - cdf1->StartGlyph];
     return HB_Err_Ok;
   }
   else
   {
-    *class = 0;
+    *klass = 0;
     return HB_Err_Not_Covered;
   }
 }
@@ -1182,7 +1190,7 @@ static HB_Error  Get_Class1( HB_ClassDefFormat1*  cdf1,
 
 static HB_Error  Get_Class2( HB_ClassDefFormat2*  cdf2,
 			     HB_UShort             glyphID,
-			     HB_UShort*            class,
+			     HB_UShort*            klass,
 			     HB_UShort*            index )
 {
   HB_Error               error = HB_Err_Ok;
@@ -1195,7 +1203,7 @@ static HB_Error  Get_Class2( HB_ClassDefFormat2*  cdf2,
 
   if ( cdf2->ClassRangeCount == 0 )
     {
-      *class = 0;
+      *klass = 0;
       if ( index )
 	*index = 0;
       
@@ -1217,7 +1225,7 @@ static HB_Error  Get_Class2( HB_ClassDefFormat2*  cdf2,
 
     if ( glyphID >= crr[middle].Start && glyphID <= crr[middle].End )
     {
-      *class = crr[middle].Class;
+      *klass = crr[middle].Class;
       error  = HB_Err_Ok;
       break;
     }
@@ -1225,7 +1233,7 @@ static HB_Error  Get_Class2( HB_ClassDefFormat2*  cdf2,
     {
       if ( middle == min )
       {
-	*class = 0;
+	*klass = 0;
 	error  = HB_Err_Not_Covered;
 	break;
       }
@@ -1235,7 +1243,7 @@ static HB_Error  Get_Class2( HB_ClassDefFormat2*  cdf2,
     {
       if ( middle == max )
       {
-	*class = 0;
+	*klass = 0;
 	error  = HB_Err_Not_Covered;
 	break;
       }
@@ -1250,21 +1258,17 @@ static HB_Error  Get_Class2( HB_ClassDefFormat2*  cdf2,
 }
 
 
-HB_Error  _HB_OPEN_Get_Class( HB_ClassDefinition*  cd,
+HB_INTERNAL HB_Error
+_HB_OPEN_Get_Class( HB_ClassDefinition* cd,
 		     HB_UShort             glyphID,
-		     HB_UShort*            class,
+		    HB_UShort*          klass,
 		     HB_UShort*            index )
 {
   switch ( cd->ClassFormat )
   {
-  case 1:
-    return Get_Class1( &cd->cd.cd1, glyphID, class, index );
-
-  case 2:
-    return Get_Class2( &cd->cd.cd2, glyphID, class, index );
-
-  default:
-    return HB_Err_Invalid_SubTable_Format;
+  case 1:  return Get_Class1( &cd->cd.cd1, glyphID, klass, index );
+  case 2:  return Get_Class2( &cd->cd.cd2, glyphID, klass, index );
+  default: return ERR(HB_Err_Invalid_SubTable_Format);
   }
 
   return HB_Err_Ok;               /* never reached */
@@ -1277,7 +1281,8 @@ HB_Error  _HB_OPEN_Get_Class( HB_ClassDefinition*  cd,
  ***************************/
 
 
-HB_Error  _HB_OPEN_Load_Device( HB_Device*  d,
+HB_INTERNAL HB_Error
+_HB_OPEN_Load_Device( HB_Device* d,
 		       HB_Stream    stream )
 {
   HB_Error   error;
@@ -1296,11 +1301,18 @@ HB_Error  _HB_OPEN_Load_Device( HB_Device*  d,
 
   FORGET_Frame();
 
+  d->DeltaValue = NULL;
+
   if ( d->StartSize > d->EndSize ||
        d->DeltaFormat == 0 || d->DeltaFormat > 3 )
-    return HB_Err_Invalid_SubTable;
-
-  d->DeltaValue = NULL;
+    {
+      /* XXX
+       * I've seen fontforge generate DeltaFormat == 0.
+       * Just return Ok and let the NULL DeltaValue disable
+       * this table.
+       */
+      return HB_Err_Ok;
+    }
 
   count = ( ( d->EndSize - d->StartSize + 1 ) >>
 	      ( 4 - d->DeltaFormat ) ) + 1;
@@ -1325,7 +1337,8 @@ HB_Error  _HB_OPEN_Load_Device( HB_Device*  d,
 }
 
 
-void  _HB_OPEN_Free_Device( HB_Device*  d )
+HB_INTERNAL void
+_HB_OPEN_Free_Device( HB_Device* d )
 {
   FREE( d->DeltaValue );
 }
@@ -1366,7 +1379,8 @@ void  _HB_OPEN_Free_Device( HB_Device*  d )
 
      mask = 0x00FF                                    */
 
-HB_Error  _HB_OPEN_Get_Device( HB_Device*  d,
+HB_INTERNAL HB_Error
+_HB_OPEN_Get_Device( HB_Device* d,
 		      HB_UShort    size,
 		      HB_Short*    value )
 {

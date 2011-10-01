@@ -1,12 +1,26 @@
-/*******************************************************************
+/*
+ * Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies)
  *
- *  Copyright 2007  Trolltech ASA
+ * This is part of HarfBuzz, an OpenType Layout engine library.
  *
- *  This is part of HarfBuzz, an OpenType Layout engine library.
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, modify, and distribute this
+ * software and its documentation for any purpose, provided that the
+ * above copyright notice and the following two paragraphs appear in
+ * all copies of this software.
  *
- *  See the file name COPYING for licensing information.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
+ * IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
  *
- ******************************************************************/
+ * THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+ */
 
 #include "harfbuzz-shaper.h"
 #include "harfbuzz-shaper-private.h"
@@ -189,7 +203,7 @@ static int myanmar_nextSyllableBoundary(const HB_UChar16 *s, int start, int end,
         MymrCharClass charClass = getMyanmarCharClass(*uc);
         state = mymrStateTable[state][charClass & Mymr_CF_CLASS_MASK];
         if (pos == start)
-            *invalid = charClass & Mymr_CF_DOTTED_CIRCLE;
+            *invalid = (HB_Bool)(charClass & Mymr_CF_DOTTED_CIRCLE);
 
         MMDEBUG("state[%d]=%d class=%8x (uc=%4x)", pos - start, state, charClass, *uc);
 
@@ -440,6 +454,7 @@ static HB_Bool myanmar_shape_syllable(HB_Bool openType, HB_ShaperItem *item, HB_
 #endif
     {
 	MMDEBUG("Not using openType");
+        HB_HeuristicPosition(item);
     }
 
     item->attributes[0].clusterStart = TRUE;
@@ -503,13 +518,14 @@ void HB_MyanmarAttributes(HB_Script script, const HB_UChar16 *text, hb_uint32 fr
     int end = from + len;
     const HB_UChar16 *uc = text + from;
     hb_uint32 i = 0;
+    HB_UNUSED(script);
     attributes += from;
     while (i < len) {
 	HB_Bool invalid;
 	hb_uint32 boundary = myanmar_nextSyllableBoundary(text, from+i, end, &invalid) - from;
 
 	attributes[i].charStop = TRUE;
-        if (from || i)
+        if (i)
             attributes[i-1].lineBreakType = HB_Break;
 
 	if (boundary > len-1)

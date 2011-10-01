@@ -338,12 +338,18 @@ public:
                else
                   dr.SetData(df, (void *)data);
 
-               // Is this missing some frees here? strings?
+               // Is this missing some frees here? strings? Probably not: freeData = true?
                // type._vTbl[__ecereVMethodID_class_OnFree](type, data);
                if(type.type == structClass)
                {
                   void * dataPtr = (void *)data;
                   delete dataPtr;
+               }
+               else if(!strcmp(type.dataTypeString, "char *"))
+               {
+                  // Strings are handled as a special case in ListBox -- normalClass, but copied when freeData = true
+                  char * string = (char *)data;
+                  delete string;
                }
             }
             dr = dr.next;
@@ -450,7 +456,8 @@ public:
 
    bool Synch(Row to) { return row && to && row._class == to.row._class ? row.Synch(to.row) : false; }
 
-   bool Add() { return row ? row.Add() : false; }
+   bool Add() { return row ? row.Add(0) : false; }
+   bool AddID(uint64 id) { return row ? row.Add(id) : false; }
    bool GetData(Field field, typed_object & data) { return (row && field) ? row.GetData(field, data) : false; }
    bool SetData(Field field, typed_object data) { return (row && field) ? row.SetData(field, data) : false; }
    bool Delete() { return row ? row.Delete() : false; }
@@ -484,6 +491,12 @@ public:
          void * dataPtr = (void *)data;
          delete dataPtr;
       }
+      else if(!strcmp(type.dataTypeString, "char *"))
+      {
+         // Strings are handled as a special case in ListBox -- normalClass, but copied when freeData = true
+         char * string = (char *)data;
+         delete string;
+      }
    }
 
    property uint sysID { get { return row ? row.GetSysID() : 0; } set { if(row) row.GoToSysID(value); } }
@@ -497,7 +510,7 @@ public:
    virtual bool Find(Field fld, MoveOptions move, MatchOptions match, typed_object data);
    virtual bool FindMultiple(FieldFindData * findData, MoveOptions move, int numFields);
    virtual bool Synch(DriverRow to);
-   virtual bool Add();
+   virtual bool Add(uint64 id);
    virtual bool Delete();
 
    virtual bool GetData(Field fld, typed_object &data);

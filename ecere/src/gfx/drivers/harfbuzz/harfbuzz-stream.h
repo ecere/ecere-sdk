@@ -1,17 +1,32 @@
-/*******************************************************************
+/*
+ * Copyright (C) 2005  David Turner
+ * Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies)
  *
- *  Copyright 2005  David Turner, The FreeType Project (www.freetype.org)
- *  Copyright 2007  Trolltech ASA
+ * This is part of HarfBuzz, an OpenType Layout engine library.
  *
- *  This is part of HarfBuzz, an OpenType Layout engine library.
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, modify, and distribute this
+ * software and its documentation for any purpose, provided that the
+ * above copyright notice and the following two paragraphs appear in
+ * all copies of this software.
  *
- *  See the file name COPYING for licensing information.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
+ * IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
  *
- ******************************************************************/
+ * THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+ */
+
 #ifndef HARFBUZZ_STREAM_H
 #define HARFBUZZ_STREAM_H
 
-#include <harfbuzz-global.h>
+#include "harfbuzz-global.h"
 
 HB_BEGIN_HEADER
 
@@ -24,40 +39,6 @@ typedef struct HB_StreamRec_
     HB_Byte*       cursor;
 } HB_StreamRec;
 
-void HB_close_stream(HB_Stream stream);
-
-
-/* stream macros used by the OpenType parser */
-#define  FILE_Pos()      stream->pos
-#define  FILE_Seek(pos)  (error = (_hb_stream_seek( stream, pos )))
-#define  ACCESS_Frame(size)  (error = (_hb_stream_frame_enter( stream, size ))) != 0
-#define  FORGET_Frame()      _hb_stream_frame_exit( stream )
-
-#define  GET_Byte()      (*stream->cursor++)
-#define  GET_Short()     (stream->cursor += 2, (HB_Short)( \
-                              (*((stream->cursor)-2) << 8) |    \
-                               *((stream->cursor)-1)             \
-                              ))
-#define  GET_Long()      (stream->cursor += 4, (HB_Int)( \
-				(*((stream->cursor)-4) << 24) | \
-				(*((stream->cursor)-3) << 16) | \
-				(*((stream->cursor)-2) << 8) | \
-				 *((stream->cursor)-1) \
-			 ))
-
-
-#define  GET_Char()      ((HB_Char)GET_Byte())
-#define  GET_UShort()    ((HB_UShort)GET_Short())
-#define  GET_ULong()     ((HB_UInt)GET_Long())
-#define  GET_Tag4()      GET_ULong()
-
-HB_Int _hb_stream_pos( HB_Stream stream );
-
-HB_Error _hb_stream_seek( HB_Stream stream, HB_UInt pos );
-
-HB_Error _hb_stream_frame_enter( HB_Stream stream, HB_UInt size );
-
-void _hb_stream_frame_exit( HB_Stream  stream );
 
 HB_END_HEADER
 

@@ -1,12 +1,26 @@
-/*******************************************************************
+/*
+ * Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies)
  *
- *  Copyright 2007  Trolltech ASA
+ * This is part of HarfBuzz, an OpenType Layout engine library.
  *
- *  This is part of HarfBuzz, an OpenType Layout engine library.
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, modify, and distribute this
+ * software and its documentation for any purpose, provided that the
+ * above copyright notice and the following two paragraphs appear in
+ * all copies of this software.
  *
- *  See the file name COPYING for licensing information.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
+ * IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
  *
- ******************************************************************/
+ * THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+ */
 
 #include "harfbuzz-shaper.h"
 #include "harfbuzz-shaper-private.h"
@@ -472,6 +486,56 @@ static void getArabicProperties(const unsigned short *chars, int len, HB_ArabicP
     /*
      for (int i = 0; i < len; ++i)
          qDebug("arabic properties(%d): uc=%x shape=%d, justification=%d", i, chars[i], properties[i].shape, properties[i].justification);
+    */
+}
+
+static Joining getNkoJoining(unsigned short uc)
+{
+    if (uc < 0x7ca)
+        return JNone;
+    if (uc <= 0x7ea)
+        return JDual;
+    if (uc <= 0x7f3)
+        return JTransparent;
+    if (uc <= 0x7f9)
+        return JNone;
+    if (uc == 0x7fa)
+        return JCausing;
+    return JNone;
+}
+
+static void getNkoProperties(const unsigned short *chars, int len, HB_ArabicProperties *properties)
+{
+    int lastPos = 0;
+    int i = 0;
+
+    Joining j = getNkoJoining(chars[0]);
+    ArabicShape shape = joining_table[XIsolated][j].form2;
+    properties[0].justification = HB_NoJustification;
+
+    for (i = 1; i < len; ++i) {
+        properties[i].justification = (HB_GetUnicodeCharCategory(chars[i]) == HB_Separator_Space) ?
+                                      ArabicSpace : ArabicNone;
+
+        j = getNkoJoining(chars[i]);
+
+        if (j == JTransparent) {
+            properties[i].shape = XIsolated;
+            continue;
+        }
+
+        properties[lastPos].shape = joining_table[shape][j].form1;
+        shape = joining_table[shape][j].form2;
+
+
+        lastPos = i;
+    }
+    properties[lastPos].shape = joining_table[shape][JNone].form1;
+
+
+    /*
+     for (int i = 0; i < len; ++i)
+         qDebug("nko properties(%d): uc=%x shape=%d, justification=%d", i, chars[i], properties[i].shape, properties[i].justification);
     */
 }
 
@@ -995,10 +1059,13 @@ static HB_Bool arabicSyriacOpenTypeShape(HB_ShaperItem *item, HB_Bool *ot_ok)
         ++l;
         ++properties;
     }
-    if (f + l < item->stringLength) {
+    if (f + l + item->item.pos < item->stringLength) {
         ++l;
     }
-    getArabicProperties(uc+f, l, props);
+    if (item->item.script == HB_Script_Nko)
+        getNkoProperties(uc+f, l, props);
+    else
+        getArabicProperties(uc+f, l, props);
 
     for (i = 0; i < (int)item->num_glyphs; i++) {
         apply[i] = 0;
@@ -1037,7 +1104,8 @@ HB_Bool HB_ArabicShape(HB_ShaperItem *item)
     HB_Bool haveGlyphs;
     HB_STACKARRAY(HB_UChar16, shapedChars, item->item.length);
 
-    assert(item->item.script == HB_Script_Arabic || item->item.script == HB_Script_Syriac);
+    assert(item->item.script == HB_Script_Arabic || item->item.script == HB_Script_Syriac
+           || item->item.script == HB_Script_Nko);
 
 #ifndef NO_OPENTYPE
 
@@ -1051,7 +1119,7 @@ HB_Bool HB_ArabicShape(HB_ShaperItem *item)
     }
 #endif
 
-    if (item->item.script == HB_Script_Syriac)
+    if (item->item.script != HB_Script_Arabic)
         return HB_BasicShape(item);
 
     shapedString(item->string, item->stringLength, item->item.pos, item->item.length, shapedChars, &slen,

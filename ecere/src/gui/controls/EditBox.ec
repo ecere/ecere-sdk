@@ -5095,6 +5095,7 @@ public:
                {
                   if(!AddCh('\n'))
                   {
+                     count = 0;
                      ret = false;
                      break;
                   }
@@ -5119,7 +5120,7 @@ public:
          // FindMaxLine();
 
          // Add the line here
-         if(count)
+         if(ret && count)
             if(!AddToLine(line,count,false, addedSpaces ? null : &addedSpaces, addedTabs ? null : &addedTabs))
             {
                ret = false;

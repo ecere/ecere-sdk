@@ -1,0 +1,46 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ecas",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "TargetFileName" : "ecas",
+            "TargetDirectory" : "debug",
+            "ObjectsDirectory" : "debug",
+            "Console" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "TargetFileName" : "ecas",
+            "TargetDirectory" : "release",
+            "ObjectsDirectory" : "release"
+         }
+      }
+   ],
+   "Files" : [
+      "misc.ec",
+      "expression.ec",
+      "ecas.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

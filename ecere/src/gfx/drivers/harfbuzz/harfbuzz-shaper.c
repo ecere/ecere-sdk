@@ -1,20 +1,56 @@
-/*******************************************************************
+/*
+ * Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies)
  *
- *  Copyright 2007  Trolltech ASA
+ * This is part of HarfBuzz, an OpenType Layout engine library.
  *
- *  This is part of HarfBuzz, an OpenType Layout engine library.
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, modify, and distribute this
+ * software and its documentation for any purpose, provided that the
+ * above copyright notice and the following two paragraphs appear in
+ * all copies of this software.
  *
- *  See the file name COPYING for licensing information.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
+ * IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
  *
- ******************************************************************/
+ * THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+ */
+
+#if !defined(_MSC_VER)
+#define _inline inline
+#endif
 
 #include "harfbuzz-shaper.h"
 #include "harfbuzz-shaper-private.h"
 
-#include "harfbuzz-global.h"
-#include "harfbuzz-impl.h"
+#include "harfbuzz-stream-private.h"
 #include <assert.h>
 #include <stdio.h>
+
+/*
+HB_GraphemeClass HB_GetGraphemeClass(HB_UChar32 ch) { }
+HB_WordClass HB_GetWordClass(HB_UChar32 ch) { }
+HB_SentenceClass HB_GetSentenceClass(HB_UChar32 ch) { }
+//HB_LineBreakClass HB_GetLineBreakClass(HB_UChar32 ch) { }
+
+void HB_GetGraphemeAndLineBreakClass(HB_UChar32 ch, HB_GraphemeClass *grapheme, HB_LineBreakClass *lineBreak) { }
+//void HB_GetUnicodeCharProperties(HB_UChar32 ch, HB_CharCategory *category, int *combiningClass) { }
+//HB_CharCategory HB_GetUnicodeCharCategory(HB_UChar32 ch) { }
+//int HB_GetUnicodeCharCombiningClass(HB_UChar32 ch) { }
+//HB_UChar16 HB_GetMirroredChar(HB_UChar16 ch) { }
+
+void *HB_Library_Resolve(const char *library, const char *symbol) { }
+
+void *HB_TextCodecForMib(int mib) { }
+char *HB_TextCodec_ConvertFromUnicode(void *codec, const HB_UChar16 *unicode, hb_uint32 length, hb_uint32 *outputLength) { }
+void HB_TextCodec_FreeResult(char * r) { }
+*/
 
 typedef enum { false, true } bool;
 
@@ -102,35 +138,60 @@ static const hb_uint8 breakTable[HB_LineBreak_JT+1][HB_LineBreak_JT+1] =
 #undef CP
 #undef PB
 
-
+static const hb_uint8 graphemeTable[HB_Grapheme_LVT + 1][HB_Grapheme_LVT + 1] =
+{
+//      Other, CR,    LF,    Control,Extend,L,    V,     T,     LV,    LVT
+    { true , true , true , true , true , true , true , true , true , true  }, // Other, 
+    { true , true , true , true , true , true , true , true , true , true  }, // CR,
+    { true , false, true , true , true , true , true , true , true , true  }, // LF,
+    { true , true , true , true , true , true , true , true , true , true  }, // Control,
+    { false, true , true , true , false, false, false, false, false, false }, // Extend,
+    { true , true , true , true , true , false, true , true , true , true  }, // L, 
+    { true , true , true , true , true , false, false, true , false, true  }, // V, 
+    { true , true , true , true , true , true , false, false, false, false }, // T, 
+    { true , true , true , true , true , false, true , true , true , true  }, // LV, 
+    { true , true , true , true , true , false, true , true , true , true  }, // LVT
+};
+    
 static void calcLineBreaks(const HB_UChar16 *uc, hb_uint32 len, HB_CharAttributes *charAttributes)
 {
-    if (!len)
+    HB_LineBreakClass cls;
+    HB_GraphemeClass grapheme;
+    int lcls;
+    hb_uint32 i;
+
+	if (!len)
         return;
 
     // ##### can this fail if the first char is a surrogate?
-    int cls = HB_GetLineBreakClass(*uc);
+    HB_GetGraphemeAndLineBreakClass(*uc, &grapheme, &cls);
     // handle case where input starts with an LF
     if (cls == HB_LineBreak_LF)
         cls = HB_LineBreak_BK;
 
     charAttributes[0].whiteSpace = (cls == HB_LineBreak_SP || cls == HB_LineBreak_BK);
     charAttributes[0].charStop = true;
-
-    int lcls = cls;
-    hb_uint32 i;
+    
+    lcls = cls;
+    
     for (i = 1; i < len; ++i) {
+        HB_UChar32 code = uc[i];
+        HB_GraphemeClass ngrapheme;
+        HB_LineBreakClass ncls;
+        HB_LineBreakType lineBreakType;
+
         charAttributes[i].whiteSpace = false;
         charAttributes[i].charStop = true;
 
-        int ncls = HB_GetLineBreakClass(uc[i]);
+        HB_GetGraphemeAndLineBreakClass(code, &ngrapheme, &ncls);
+        charAttributes[i].charStop = graphemeTable[ngrapheme][grapheme];
         // handle surrogates
         if (ncls == HB_LineBreak_SG) {
             if (HB_IsHighSurrogate(uc[i]) && i < len - 1 && HB_IsLowSurrogate(uc[i+1])) {
                 continue;
             } else if (HB_IsLowSurrogate(uc[i]) && HB_IsHighSurrogate(uc[i-1])) {
-                HB_UChar32 code = HB_SurrogateToUcs4(uc[i-1], uc[i]);
-                ncls = HB_GetLineBreakClass(code);
+                code = HB_SurrogateToUcs4(uc[i-1], uc[i]);
+                HB_GetGraphemeAndLineBreakClass(code, &ngrapheme, &ncls);
                 charAttributes[i].charStop = false;
             } else {
                 ncls = HB_LineBreak_AL;
@@ -140,10 +201,8 @@ static void calcLineBreaks(const HB_UChar16 *uc, hb_uint32 len, HB_CharAttribute
         // set white space and char stop flag
         if (ncls >= HB_LineBreak_SP)
             charAttributes[i].whiteSpace = true;
-        if (ncls == HB_LineBreak_CM)
-            charAttributes[i].charStop = false;
 
-        HB_LineBreakType lineBreakType = HB_NoBreak;
+        lineBreakType = HB_NoBreak;
         if (cls >= HB_LineBreak_LF) {
             lineBreakType = HB_ForcedBreak;
         } else if(cls == HB_LineBreak_CR) {
@@ -163,12 +222,13 @@ static void calcLineBreaks(const HB_UChar16 *uc, hb_uint32 len, HB_CharAttribute
 
         {
             int tcls = ncls;
+            int brk;
             if (tcls >= HB_LineBreak_SA)
                 tcls = HB_LineBreak_ID;
             if (cls >= HB_LineBreak_SA)
                 cls = HB_LineBreak_ID;
 
-            int brk = breakTable[cls][tcls];
+            brk = breakTable[cls][tcls];
             switch (brk) {
             case DirectBreak:
                 lineBreakType = HB_Break;
@@ -200,6 +260,7 @@ static void calcLineBreaks(const HB_UChar16 *uc, hb_uint32 len, HB_CharAttribute
         cls = ncls;
     next_no_cls_update:
         lcls = ncls;
+        grapheme = ngrapheme;
         charAttributes[i-1].lineBreakType = lineBreakType;
     }
     charAttributes[len-1].lineBreakType = HB_ForcedBreak;
@@ -211,15 +272,21 @@ static void calcLineBreaks(const HB_UChar16 *uc, hb_uint32 len, HB_CharAttribute
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------
 
-static inline void positionCluster(HB_ShaperItem *item, int gfrom,  int glast)
+static _inline void positionCluster(HB_ShaperItem *item, int gfrom,  int glast)
 {
     int nmarks = glast - gfrom;
-    assert(nmarks > 0);
-
     HB_Glyph *glyphs = item->glyphs;
     HB_GlyphAttributes *attributes = item->attributes;
-
     HB_GlyphMetrics baseMetrics;
+    HB_Fixed size;
+    HB_Fixed offsetBase;
+    int i;
+    unsigned char lastCmb = 0;
+    HB_GlyphMetrics attachmentRect;
+    bool rightToLeft;
+
+    assert(nmarks > 0);
+
     item->font->klass->getGlyphMetrics(item->font, glyphs[gfrom], &baseMetrics);
 
     if (item->item.script == HB_Script_Hebrew
@@ -230,8 +297,8 @@ static inline void positionCluster(HB_ShaperItem *item, int gfrom,  int glast)
 //     qDebug("---> positionCluster: cluster from %d to %d", gfrom, glast);
 //     qDebug("baseInfo: %f/%f (%f/%f) off=%f/%f", baseInfo.x, baseInfo.y, baseInfo.width, baseInfo.height, baseInfo.xoff, baseInfo.yoff);
 
-    HB_Fixed size = item->font->klass->getFontMetric(item->font, HB_FontAscent) / 10;
-    HB_Fixed offsetBase = HB_FIXED_CONSTANT(1) + (size - HB_FIXED_CONSTANT(4)) / 4;
+    size = item->font->klass->getFontMetric(item->font, HB_FontAscent) / 10;
+    offsetBase = HB_FIXED_CONSTANT(1) + (size - HB_FIXED_CONSTANT(4)) / 4;
     if (size > HB_FIXED_CONSTANT(4))
         offsetBase += HB_FIXED_CONSTANT(4);
     else
@@ -239,23 +306,22 @@ static inline void positionCluster(HB_ShaperItem *item, int gfrom,  int glast)
     //qreal offsetBase = (size - 4) / 4 + qMin<qreal>(size, 4) + 1;
 //     qDebug("offset = %f", offsetBase);
 
-    bool rightToLeft = item->item.bidiLevel % 2;
+    rightToLeft = item->item.bidiLevel % 2;
 
-    int i;
-    unsigned char lastCmb = 0;
-    HB_GlyphMetrics attachmentRect;
     memset(&attachmentRect, 0, sizeof(attachmentRect));
 
     for(i = 1; i <= nmarks; i++) {
         HB_Glyph mark = glyphs[gfrom+i];
         HB_GlyphMetrics markMetrics;
-        item->font->klass->getGlyphMetrics(item->font, mark, &markMetrics);
         HB_FixedPoint p;
-        p.x = p.y = 0;
-//          qDebug("markInfo: %f/%f (%f/%f) off=%f/%f", markInfo.x, markInfo.y, markInfo.width, markInfo.height, markInfo.xoff, markInfo.yoff);
-
         HB_Fixed offset = offsetBase;
         unsigned char cmb = attributes[gfrom+i].combiningClass;
+        HB_GlyphMetrics unitedAttachmentRect;
+
+        item->font->klass->getGlyphMetrics(item->font, mark, &markMetrics);
+        
+        p.x = p.y = 0;
+//          qDebug("markInfo: %f/%f (%f/%f) off=%f/%f", markInfo.x, markInfo.y, markInfo.width, markInfo.height, markInfo.xoff, markInfo.yoff);
 
         // ### maybe the whole position determination should move down to heuristicSetGlyphAttributes. Would save some
         // bits  in the glyphAttributes structure.
@@ -358,7 +424,7 @@ static inline void positionCluster(HB_ShaperItem *item, int gfrom,  int glast)
         markMetrics.x += p.x;
         markMetrics.y += p.y;
 
-        HB_GlyphMetrics unitedAttachmentRect = attachmentRect;
+        unitedAttachmentRect = attachmentRect;
         unitedAttachmentRect.x = HB_MIN(attachmentRect.x, markMetrics.x);
         unitedAttachmentRect.y = HB_MIN(attachmentRect.y, markMetrics.y);
         unitedAttachmentRect.width = HB_MAX(attachmentRect.x + attachmentRect.width, markMetrics.x + markMetrics.width) - unitedAttachmentRect.x;
@@ -379,11 +445,14 @@ static inline void positionCluster(HB_ShaperItem *item, int gfrom,  int glast)
 
 void HB_HeuristicPosition(HB_ShaperItem *item)
 {
-    HB_GetGlyphAdvances(item);
-    HB_GlyphAttributes *attributes = item->attributes;
-
+    HB_GlyphAttributes *attributes;
     int cEnd = -1;
-    int i = item->num_glyphs;
+    int i;
+
+    HB_GetGlyphAdvances(item);
+    attributes = item->attributes;
+    i = item->num_glyphs;
+
     while (i--) {
         if (cEnd == -1 && attributes[i].mark) {
             cEnd = i;
@@ -401,17 +470,24 @@ void HB_HeuristicSetGlyphAttributes(HB_ShaperItem *item)
 {
     const HB_UChar16 *uc = item->string + item->item.pos;
     hb_uint32 length = item->item.length;
+    HB_GlyphAttributes *attributes;
+    unsigned short *logClusters;
+    hb_uint32 glyph_pos = 0;
+    hb_uint32 i;
+    int cStart = 0;
+    bool symbolFont;
+    int pos = 0;
+    HB_CharCategory lastCat;
+    int dummy;
 
     // ### zeroWidth and justification are missing here!!!!!
 
     assert(item->num_glyphs <= length);
 
 //     qDebug("QScriptEngine::heuristicSetGlyphAttributes, num_glyphs=%d", item->num_glyphs);
-    HB_GlyphAttributes *attributes = item->attributes;
-    unsigned short *logClusters = item->log_clusters;
+    attributes = item->attributes;
+    logClusters = item->log_clusters;
 
-    hb_uint32 glyph_pos = 0;
-    hb_uint32 i;
     for (i = 0; i < length; i++) {
         if (HB_IsHighSurrogate(uc[i]) && i < length - 1
             && HB_IsLowSurrogate(uc[i + 1])) {
@@ -425,18 +501,16 @@ void HB_HeuristicSetGlyphAttributes(HB_ShaperItem *item)
     assert(glyph_pos == item->num_glyphs);
 
     // first char in a run is never (treated as) a mark
-    int cStart = 0;
-    const bool symbolFont = item->face->isSymbolFont;
+    
+    symbolFont = item->face->isSymbolFont;
     attributes[0].mark = false;
     attributes[0].clusterStart = true;
     attributes[0].dontPrint = (!symbolFont && uc[0] == 0x00ad) || HB_IsControlChar(uc[0]);
 
-    int pos = 0;
-    HB_CharCategory lastCat;
-    int dummy;
     HB_GetUnicodeCharProperties(uc[0], &lastCat, &dummy);
-
     for (i = 1; i < length; ++i) {
+        HB_CharCategory cat;
+        int cmb;
         if (logClusters[i] == pos)
             // same glyph
             continue;
@@ -448,8 +522,6 @@ void HB_HeuristicSetGlyphAttributes(HB_ShaperItem *item)
         // hide soft-hyphens by default
         if ((!symbolFont && uc[i] == 0x00ad) || HB_IsControlChar(uc[i]))
             attributes[pos].dontPrint = true;
-        HB_CharCategory cat;
-        int cmb;
         HB_GetUnicodeCharProperties(uc[i], &cat, &cmb);
         if (cat != HB_Mark_NonSpacing) {
             attributes[pos].mark = false;
@@ -555,9 +627,6 @@ HB_Bool HB_BasicShape(HB_ShaperItem *shaper_item)
     return true;
 }
 
-//static const HB_AttributeFunction thai_attributes = 0;
-#define thai_attributes 0
-
 const HB_ScriptEngine HB_ScriptEngines[] = {
     // Common
     { HB_BasicShape, 0},
@@ -596,7 +665,7 @@ const HB_ScriptEngine HB_ScriptEngines[] = {
     // Sinhala
     { HB_IndicShape, HB_IndicAttributes },
     // Thai
-    { HB_BasicShape, thai_attributes },
+    { HB_BasicShape, HB_ThaiAttributes },
     // Lao
     { HB_BasicShape, 0 },
     // Tibetan
@@ -612,28 +681,172 @@ const HB_ScriptEngine HB_ScriptEngines[] = {
     // Runic
     { HB_BasicShape, 0 },
     // Khmer
-    { HB_KhmerShape, HB_KhmerAttributes }
+    { HB_KhmerShape, HB_KhmerAttributes },
+    // N'Ko
+    { HB_ArabicShape, 0}
 };
 
 void HB_GetCharAttributes(const HB_UChar16 *string, hb_uint32 stringLength,
                           const HB_ScriptItem *items, hb_uint32 numItems,
                           HB_CharAttributes *attributes)
 {
-   hb_uint32 i;
+    hb_uint32 i;
     calcLineBreaks(string, stringLength, attributes);
 
     for (i = 0; i < numItems; ++i) {
         HB_Script script = items[i].script;
+        HB_AttributeFunction attributeFunction;
         if (script == HB_Script_Inherited)
             script = HB_Script_Common;
-        HB_AttributeFunction attributeFunction = HB_ScriptEngines[script].charAttributes;
+        attributeFunction = HB_ScriptEngines[script].charAttributes;
         if (!attributeFunction)
             continue;
         attributeFunction(script, string, items[i].pos, items[i].length, attributes);
     }
 }
 
-static inline char *tag_to_string(HB_UInt tag)
+
+typedef enum { NoBreak = 0, Break = 1, Middle = 2 } BreakRule;
+
+static const hb_uint8 wordbreakTable[HB_Word_ExtendNumLet + 1][HB_Word_ExtendNumLet + 1] = {
+//        Other    Format   Katakana ALetter  MidLetter MidNum  Numeric  ExtendNumLet
+    {   Break,   Break,   Break,   Break,   Break,   Break,   Break,   Break }, // Other
+    {   Break,   Break,   Break,   Break,   Break,   Break,   Break,   Break }, // Format 
+    {   Break,   Break, NoBreak,   Break,   Break,   Break,   Break, NoBreak }, // Katakana
+    {   Break,   Break,   Break, NoBreak,  Middle,   Break, NoBreak, NoBreak }, // ALetter
+    {   Break,   Break,   Break,   Break,   Break,   Break,   Break,   Break }, // MidLetter
+    {   Break,   Break,   Break,   Break,   Break,   Break,   Break,   Break }, // MidNum
+    {   Break,   Break,   Break, NoBreak,   Break,  Middle, NoBreak, NoBreak }, // Numeric
+    {   Break,   Break, NoBreak, NoBreak,   Break,   Break, NoBreak, NoBreak }, // ExtendNumLet
+};
+
+void HB_GetWordBoundaries(const HB_UChar16 *string, hb_uint32 stringLength,
+                          const HB_ScriptItem * items, hb_uint32 numItems,
+                          HB_CharAttributes *attributes)
+{
+    unsigned int brk;
+    hb_uint32 i;
+    if (stringLength == 0)
+        return;
+    brk = HB_GetWordClass(string[0]);
+    
+    attributes[0].wordBoundary = true;
+    for (i = 1; i < stringLength; ++i) {
+        hb_uint32 nbrk;
+        BreakRule rule;
+
+        if (!attributes[i].charStop) {
+            attributes[i].wordBoundary = false;
+            continue;
+        }
+        nbrk = HB_GetWordClass(string[i]);
+        if (nbrk == HB_Word_Format) {
+            attributes[i].wordBoundary = (HB_GetSentenceClass(string[i-1]) == HB_Sentence_Sep);
+            continue;
+        }
+        rule = (BreakRule)wordbreakTable[brk][nbrk];
+        if (rule == Middle) {
+            hb_uint32 lookahead = i + 1;
+            rule = Break;
+            
+            while (lookahead < stringLength) {
+                hb_uint32 testbrk = HB_GetWordClass(string[lookahead]);
+                if (testbrk == HB_Word_Format && HB_GetSentenceClass(string[lookahead]) != HB_Sentence_Sep) {
+                    ++lookahead;
+                    continue;
+                }
+                if (testbrk == brk) {
+                    rule = NoBreak;
+                    while (i < lookahead)
+                        attributes[i++].wordBoundary = false;
+                    nbrk = testbrk;
+                }
+                break;
+            }
+        }
+        attributes[i].wordBoundary = (rule == Break);
+        brk = nbrk;
+    }
+}
+
+
+enum SentenceBreakStates {
+    SB_Initial,
+    SB_Upper,
+    SB_UpATerm, 
+    SB_ATerm,
+    SB_ATermC, 
+    SB_ACS, 
+    SB_STerm, 
+    SB_STermC, 
+    SB_SCS,
+    SB_BAfter, 
+    SB_Break,
+    SB_Look
+};
+
+static const hb_uint8 sentenceBreakTable[HB_Sentence_Close + 1][HB_Sentence_Close + 1] = {
+//        Other       Sep         Format      Sp          Lower       Upper       OLetter     Numeric     ATerm       STerm       Close
+      { SB_Initial, SB_BAfter , SB_Initial, SB_Initial, SB_Initial, SB_Upper  , SB_Initial, SB_Initial, SB_ATerm  , SB_STerm  , SB_Initial }, // SB_Initial,
+      { SB_Initial, SB_BAfter , SB_Upper  , SB_Initial, SB_Initial, SB_Upper  , SB_Initial, SB_Initial, SB_UpATerm, SB_STerm  , SB_Initial }, // SB_Upper
+      
+      { SB_Look   , SB_BAfter , SB_UpATerm, SB_ACS    , SB_Initial, SB_Upper  , SB_Break  , SB_Initial, SB_ATerm  , SB_STerm  , SB_ATermC  }, // SB_UpATerm
+      { SB_Look   , SB_BAfter , SB_ATerm  , SB_ACS    , SB_Initial, SB_Break  , SB_Break  , SB_Initial, SB_ATerm  , SB_STerm  , SB_ATermC  }, // SB_ATerm
+      { SB_Look   , SB_BAfter , SB_ATermC , SB_ACS    , SB_Initial, SB_Break  , SB_Break  , SB_Look   , SB_ATerm  , SB_STerm  , SB_ATermC  }, // SB_ATermC,
+      { SB_Look   , SB_BAfter , SB_ACS    , SB_ACS    , SB_Initial, SB_Break  , SB_Break  , SB_Look   , SB_ATerm  , SB_STerm  , SB_Look    }, // SB_ACS,
+      
+      { SB_Break  , SB_BAfter , SB_STerm  , SB_SCS    , SB_Break  , SB_Break  , SB_Break  , SB_Break  , SB_ATerm  , SB_STerm  , SB_STermC  }, // SB_STerm,
+      { SB_Break  , SB_BAfter , SB_STermC , SB_SCS    , SB_Break  , SB_Break  , SB_Break  , SB_Break  , SB_ATerm  , SB_STerm  , SB_STermC  }, // SB_STermC,
+      { SB_Break  , SB_BAfter , SB_SCS    , SB_SCS    , SB_Break  , SB_Break  , SB_Break  , SB_Break  , SB_ATerm  , SB_STerm  , SB_Break   }, // SB_SCS,
+      { SB_Break  , SB_Break  , SB_Break  , SB_Break  , SB_Break  , SB_Break  , SB_Break  , SB_Break  , SB_Break  , SB_Break  , SB_Break   }, // SB_BAfter,
+};
+
+void HB_GetSentenceBoundaries(const HB_UChar16 *string, hb_uint32 stringLength,
+                              const HB_ScriptItem * items, hb_uint32 numItems,
+                              HB_CharAttributes *attributes)
+{
+   hb_uint32 i;
+   hb_uint32 brk;
+    if (stringLength == 0)
+        return;
+    brk = sentenceBreakTable[SB_Initial][HB_GetSentenceClass(string[0])];
+    attributes[0].sentenceBoundary = true;
+    for (i = 1; i < stringLength; ++i) {
+        if (!attributes[i].charStop) {
+            attributes[i].sentenceBoundary = false;
+            continue;
+        }
+        brk = sentenceBreakTable[brk][HB_GetSentenceClass(string[i])];
+        if (brk == SB_Look) {
+            hb_uint32 lookahead = i + 1;
+            brk = SB_Break;
+            
+            while (lookahead < stringLength) {
+                hb_uint32 sbrk = HB_GetSentenceClass(string[lookahead]);
+                if (sbrk != HB_Sentence_Other && sbrk != HB_Sentence_Numeric && sbrk != HB_Sentence_Close) {
+                    break;
+                } else if (sbrk == HB_Sentence_Lower) {
+                    brk = SB_Initial;
+                    break;
+                }
+                ++lookahead;
+            }
+            if (brk == SB_Initial) {
+                while (i < lookahead)
+                    attributes[i++].sentenceBoundary = false;
+            }
+        }
+        if (brk == SB_Break) {
+            attributes[i].sentenceBoundary = true;
+            brk = sentenceBreakTable[SB_Initial][HB_GetSentenceClass(string[i])];
+        } else {
+            attributes[i].sentenceBoundary = false;
+        }
+    }
+}
+
+
+static _inline char *tag_to_string(HB_UInt tag)
 {
     static char string[5];
     string[0] = (tag >> 24)&0xff;
@@ -664,8 +877,7 @@ enum {
     RequiresGpos = 2
 };
 
-typedef struct
-{
+typedef struct {
     unsigned int tag;
     int flags;
 } OTScripts;
@@ -723,26 +935,31 @@ static const OTScripts ot_scripts [] = {
     // Runic
     { HB_MAKE_TAG('r', 'u', 'n', 'r'), 0 },
     // Khmer
-    { HB_MAKE_TAG('k', 'h', 'm', 'r'), 1 }
+    { HB_MAKE_TAG('k', 'h', 'm', 'r'), 1 },
+    // N'Ko
+    { HB_MAKE_TAG('n', 'k', 'o', ' '), 1 }
 };
 enum { NumOTScripts = sizeof(ot_scripts)/sizeof(OTScripts) };
 
 static HB_Bool checkScript(HB_Face face, int script)
 {
+   unsigned int tag;
+   int requirements;
     assert(script < HB_ScriptCount);
 
     if (!face->gsub && !face->gpos)
         return false;
 
-    unsigned int tag = ot_scripts[script].tag;
-    int requirements = ot_scripts[script].flags;
+    tag = ot_scripts[script].tag;
+    requirements = ot_scripts[script].flags;
 
     if (requirements & RequiresGsub) {
+        HB_UShort script_index;
+        HB_Error error;
         if (!face->gsub)
             return false;
 
-        HB_UShort script_index;
-        HB_Error error = HB_GSUB_Select_Script(face->gsub, tag, &script_index);
+        error = HB_GSUB_Select_Script(face->gsub, tag, &script_index);
         if (error) {
             DEBUG("could not select script %d in GSub table: %d", (int)script, error);
             error = HB_GSUB_Select_Script(face->gsub, HB_MAKE_TAG('D', 'F', 'L', 'T'), &script_index);
@@ -752,11 +969,12 @@ static HB_Bool checkScript(HB_Face face, int script)
     }
 
     if (requirements & RequiresGpos) {
+        HB_UShort script_index;
+        HB_Error error;
         if (!face->gpos)
             return false;
 
-        HB_UShort script_index;
-        HB_Error error = HB_GPOS_Select_Script(face->gpos, script, &script_index);
+        error = HB_GPOS_Select_Script(face->gpos, script, &script_index);
         if (error) {
             DEBUG("could not select script in gpos table: %d", error);
             error = HB_GPOS_Select_Script(face->gpos, HB_MAKE_TAG('D', 'F', 'L', 'T'), &script_index);
@@ -781,10 +999,16 @@ static HB_Stream getTableStream(void *font, HB_GetFontTableFunc tableFunc, HB_Ta
     if (error)
         return 0;
     stream = (HB_Stream)malloc(sizeof(HB_StreamRec));
+    if (!stream)
+        return 0;
     stream->base = (HB_Byte*)malloc(length);
+    if (!stream->base) {
+        free(stream);
+        return 0;
+    }
     error = tableFunc(font, tag, stream->base, &length);
     if (error) {
-        HB_close_stream(stream);
+        _hb_close_stream(stream);
         return 0;
     }
     stream->size = length;
@@ -796,7 +1020,13 @@ static HB_Stream getTableStream(void *font, HB_GetFontTableFunc tableFunc, HB_Ta
 HB_Face HB_NewFace(void *font, HB_GetFontTableFunc tableFunc)
 {
     HB_Face face = (HB_Face )malloc(sizeof(HB_FaceRec));
+    HB_Error error = HB_Err_Ok;
+    HB_Stream stream;
+    HB_Stream gdefStream;
     unsigned int i;
+
+    if (!face)
+        return 0;
 
     face->isSymbolFont = false;
     face->gdef = 0;
@@ -808,12 +1038,10 @@ HB_Face HB_NewFace(void *font, HB_GetFontTableFunc tableFunc)
     face->tmpAttributes = 0;
     face->tmpLogClusters = 0;
     face->glyphs_substituted = false;
-
-    HB_Error error;
-    HB_Stream stream;
-    HB_Stream gdefStream;
+    face->buffer = 0;
 
     gdefStream = getTableStream(font, tableFunc, TTAG_GDEF);
+    error = HB_Err_Not_Covered;
     if (!gdefStream || (error = HB_Load_GDEF_Table(gdefStream, &face->gdef))) {
         //DEBUG("error loading gdef table: %d", error);
         face->gdef = 0;
@@ -821,29 +1049,34 @@ HB_Face HB_NewFace(void *font, HB_GetFontTableFunc tableFunc)
 
     //DEBUG() << "trying to load gsub table";
     stream = getTableStream(font, tableFunc, TTAG_GSUB);
+    error = HB_Err_Not_Covered;
     if (!stream || (error = HB_Load_GSUB_Table(stream, &face->gsub, face->gdef, gdefStream))) {
         face->gsub = 0;
-        if (error != HB_Err_Table_Missing) {
+        if (error != HB_Err_Not_Covered) {
             //DEBUG("error loading gsub table: %d", error);
         } else {
             //DEBUG("face doesn't have a gsub table");
         }
     }
-    HB_close_stream(stream);
+    _hb_close_stream(stream);
 
     stream = getTableStream(font, tableFunc, TTAG_GPOS);
+    error = HB_Err_Not_Covered;
     if (!stream || (error = HB_Load_GPOS_Table(stream, &face->gpos, face->gdef, gdefStream))) {
         face->gpos = 0;
         DEBUG("error loading gpos table: %d", error);
     }
-    HB_close_stream(stream);
+    _hb_close_stream(stream);
 
-    HB_close_stream(gdefStream);
+    _hb_close_stream(gdefStream);
 
     for (i = 0; i < HB_ScriptCount; ++i)
         face->supported_scripts[i] = checkScript(face, i);
 
-    hb_buffer_new(&face->buffer);
+    if (hb_buffer_new(&face->buffer) != HB_Err_Ok) {
+        HB_FreeFace(face);
+        return 0;
+    }
 
     return face;
 }
@@ -870,11 +1103,13 @@ void HB_FreeFace(HB_Face face)
 HB_Bool HB_SelectScript(HB_ShaperItem *shaper_item, const HB_OpenTypeFeature *features)
 {
     HB_Script script = shaper_item->item.script;
+    HB_Face face;
+    unsigned int tag;
 
     if (!shaper_item->face->supported_scripts[script])
         return false;
 
-    HB_Face face = shaper_item->face;
+    face = shaper_item->face;
     if (face->current_script == script && face->current_flags == shaper_item->shaperFlags)
         return true;
 
@@ -883,7 +1118,7 @@ HB_Bool HB_SelectScript(HB_ShaperItem *shaper_item, const HB_OpenTypeFeature *fe
 
     assert(script < HB_ScriptCount);
     // find script in our list of supported scripts.
-    unsigned int tag = ot_scripts[script].tag;
+    tag = ot_scripts[script].tag;
 
     if (face->gsub && features) {
 #ifdef OT_DEBUG
@@ -897,9 +1132,12 @@ HB_Bool HB_SelectScript(HB_ShaperItem *shaper_item, const HB_OpenTypeFeature *fe
             }
         }
 #endif
-        HB_GSUB_Clear_Features(face->gsub);
         HB_UShort script_index;
-        HB_Error error = HB_GSUB_Select_Script(face->gsub, tag, &script_index);
+        HB_Error error;
+
+        HB_GSUB_Clear_Features(face->gsub);
+        
+        error = HB_GSUB_Select_Script(face->gsub, tag, &script_index);
         if (!error) {
             DEBUG("script %s has script index %d", tag_to_string(script), script_index);
             while (features->tag) {
@@ -918,9 +1156,12 @@ HB_Bool HB_SelectScript(HB_ShaperItem *shaper_item, const HB_OpenTypeFeature *fe
     face->has_opentype_kerning = false;
 
     if (face->gpos) {
-        HB_GPOS_Clear_Features(face->gpos);
         HB_UShort script_index;
-        HB_Error error = HB_GPOS_Select_Script(face->gpos, tag, &script_index);
+        HB_Error error;
+
+        HB_GPOS_Clear_Features(face->gpos);
+        
+        error = HB_GPOS_Select_Script(face->gpos, tag, &script_index);
         if (!error) {
 #ifdef OT_DEBUG
             {
@@ -963,15 +1204,26 @@ HB_Bool HB_SelectScript(HB_ShaperItem *shaper_item, const HB_OpenTypeFeature *fe
 
 HB_Bool HB_OpenTypeShape(HB_ShaperItem *item, const hb_uint32 *properties)
 {
-   int i;
+    HB_GlyphAttributes *tmpAttributes;
+    unsigned int *tmpLogClusters;
+    int i;
+
     HB_Face face = item->face;
 
     face->length = item->num_glyphs;
 
     hb_buffer_clear(face->buffer);
 
-    face->tmpAttributes = (HB_GlyphAttributes *) realloc(face->tmpAttributes, face->length*sizeof(HB_GlyphAttributes));
-    face->tmpLogClusters = (unsigned int *) realloc(face->tmpLogClusters, face->length*sizeof(unsigned int));
+    tmpAttributes = (HB_GlyphAttributes *) realloc(face->tmpAttributes, face->length*sizeof(HB_GlyphAttributes));
+    if (!tmpAttributes)
+        return false;
+    face->tmpAttributes = tmpAttributes;
+
+    tmpLogClusters = (unsigned int *) realloc(face->tmpLogClusters, face->length*sizeof(unsigned int));
+    if (!tmpLogClusters)
+        return false;
+    face->tmpLogClusters = tmpLogClusters;
+
     for (i = 0; i < face->length; ++i) {
         hb_buffer_add_glyph(face->buffer, item->glyphs[i], properties ? properties[i] : 0, i);
         face->tmpAttributes[i] = item->attributes[i];
@@ -1014,11 +1266,14 @@ HB_Bool HB_OpenTypeShape(HB_ShaperItem *item, const hb_uint32 *properties)
 HB_Bool HB_OpenTypePosition(HB_ShaperItem *item, int availableGlyphs, HB_Bool doLogClusters)
 {
     HB_Face face = item->face;
-    unsigned int i;
 
     bool glyphs_positioned = false;
+    unsigned int i;
+    HB_Glyph *glyphs = item->glyphs;
+    HB_GlyphAttributes *attributes = item->attributes;
     if (face->gpos) {
-        memset(face->buffer->positions, 0, face->buffer->in_length*sizeof(HB_PositionRec));
+        if (face->buffer->positions)
+            memset(face->buffer->positions, 0, face->buffer->in_length*sizeof(HB_PositionRec));
         // #### check that passing "false,false" is correct
         glyphs_positioned = HB_GPOS_Apply_String(item->font, face->gpos, face->current_flags, face->buffer, false, false) != HB_Err_Not_Covered;
     }
@@ -1034,9 +1289,10 @@ HB_Bool HB_OpenTypePosition(HB_ShaperItem *item, int availableGlyphs, HB_Bool do
         return false;
     }
 
-    HB_Glyph *glyphs = item->glyphs;
-    HB_GlyphAttributes *attributes = item->attributes;
+    glyphs = item->glyphs;
+    attributes = item->attributes;
 
+    
     for (i = 0; i < face->buffer->in_length; ++i) {
         glyphs[i] = face->buffer->in_string[i].gindex;
         attributes[i] = face->tmpAttributes[face->buffer->in_string[i].cluster];
@@ -1045,23 +1301,28 @@ HB_Bool HB_OpenTypePosition(HB_ShaperItem *item, int availableGlyphs, HB_Bool do
     }
     item->num_glyphs = face->buffer->in_length;
 
-    if (doLogClusters) {
+    if (doLogClusters && face->glyphs_substituted) {
         // we can't do this for indic, as we pass the stuf in syllables and it's easier to do it in the shaper.
         unsigned short *logClusters = item->log_clusters;
         int clusterStart = 0;
         int oldCi = 0;
+        // #### the reconstruction of the logclusters currently does not work if the original string
+        // contains surrogate pairs
+        unsigned int i;
         int j;
         for (i = 0; i < face->buffer->in_length; ++i) {
             int ci = face->buffer->in_string[i].cluster;
             //         DEBUG("   ci[%d] = %d mark=%d, cmb=%d, cs=%d",
             //                i, ci, glyphAttributes[i].mark, glyphAttributes[i].combiningClass, glyphAttributes[i].clusterStart);
             if (!attributes[i].mark && attributes[i].clusterStart && ci != oldCi) {
+                int j;
                 for (j = oldCi; j < ci; j++)
                     logClusters[j] = clusterStart;
                 clusterStart = i;
                 oldCi = ci;
             }
         }
+        
         for (j = oldCi; j < face->length; j++)
             logClusters[j] = clusterStart;
     }
@@ -1071,11 +1332,16 @@ HB_Bool HB_OpenTypePosition(HB_ShaperItem *item, int availableGlyphs, HB_Bool do
 
     // positioning code:
     if (glyphs_positioned) {
-        HB_GetGlyphAdvances(item);
-        HB_Position positions = face->buffer->positions;
-        HB_Fixed *advances = item->advances;
+       unsigned int i;
+       HB_Position positions;
+       HB_Fixed *advances;
+
+       HB_GetGlyphAdvances(item);
+        positions = face->buffer->positions;
+        advances = item->advances;
 
 //         DEBUG("positioned glyphs:");
+        
         for (i = 0; i < face->buffer->in_length; i++) {
 //             DEBUG("    %d:\t orig advance: (%d/%d)\tadv=(%d/%d)\tpos=(%d/%d)\tback=%d\tnew_advance=%d", i,
 //                    glyphs[i].advance.x.toInt(), glyphs[i].advance.y.toInt(),
@@ -1084,6 +1350,8 @@ HB_Bool HB_OpenTypePosition(HB_ShaperItem *item, int availableGlyphs, HB_Bool do
 //                    positions[i].back, positions[i].new_advance);
 
             HB_Fixed adjustment = (item->item.bidiLevel % 2) ? -positions[i].x_advance : positions[i].x_advance;
+            int back = 0;
+            HB_FixedPoint *offsets;
 
             if (!(face->current_flags & HB_ShaperFlag_UseDesignMetrics))
                 adjustment = HB_FIXED_ROUND(adjustment);
@@ -1094,8 +1362,7 @@ HB_Bool HB_OpenTypePosition(HB_ShaperItem *item, int availableGlyphs, HB_Bool do
                 advances[i] += adjustment;
             }
 
-            int back = 0;
-            HB_FixedPoint *offsets = item->offsets;
+            offsets = item->offsets;
             offsets[i].x = positions[i].x_pos;
             offsets[i].y = positions[i].y_pos;
             while (positions[i - back].back) {

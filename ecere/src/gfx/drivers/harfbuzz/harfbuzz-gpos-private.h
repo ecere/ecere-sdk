@@ -1,19 +1,33 @@
-/*******************************************************************
+/*
+ * Copyright (C) 1998-2004  David Turner and Werner Lemberg
+ * Copyright (C) 2006  Behdad Esfahbod
  *
- *  Copyright 1996-2000 by
- *  David Turner, Robert Wilhelm, and Werner Lemberg.
+ * This is part of HarfBuzz, an OpenType Layout engine library.
  *
- *  Copyright 2006  Behdad Esfahbod
+ * Permission is hereby granted, without written agreement and without
+ * license or royalty fees, to use, copy, modify, and distribute this
+ * software and its documentation for any purpose, provided that the
+ * above copyright notice and the following two paragraphs appear in
+ * all copies of this software.
  *
- *  This is part of HarfBuzz, an OpenType Layout engine library.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
+ * IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
  *
- *  See the file name COPYING for licensing information.
- *
- ******************************************************************/
+ * THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+ */
+
 #ifndef HARFBUZZ_GPOS_PRIVATE_H
 #define HARFBUZZ_GPOS_PRIVATE_H
 
-#include "harfbuzz-stream.h"
+#include "harfbuzz-impl.h"
+#include "harfbuzz-stream-private.h"
 #include "harfbuzz-gpos.h"
 
 HB_BEGIN_HEADER
@@ -655,6 +669,19 @@ struct  HB_ChainContextPos_
 typedef struct HB_ChainContextPos_  HB_ChainContextPos;
 
 
+#if 0
+/* LookupType 10 */
+struct HB_ExtensionPos_
+{
+  HB_UShort      PosFormat;           /* always 1 */
+  HB_UShort      LookuptType;         /* lookup-type of referenced subtable */
+  HB_GPOS_SubTable *subtable;         /* referenced subtable */
+};
+
+typedef struct HB_ExtensionPos_  HB_ExtensionPos;
+#endif
+
+
 union  HB_GPOS_SubTable_
 {
   HB_SinglePos        single;
@@ -671,11 +698,13 @@ typedef union HB_GPOS_SubTable_  HB_GPOS_SubTable;
 
 
 
-HB_Error  _HB_GPOS_Load_SubTable( HB_GPOS_SubTable*  st,
+HB_INTERNAL HB_Error
+_HB_GPOS_Load_SubTable( HB_GPOS_SubTable* st,
 				  HB_Stream     stream,
 				  HB_UShort     lookup_type );
 
-void  _HB_GPOS_Free_SubTable( HB_GPOS_SubTable*  st,
+HB_INTERNAL void
+_HB_GPOS_Free_SubTable( HB_GPOS_SubTable* st,
 			      HB_UShort     lookup_type );
 
 HB_END_HEADER

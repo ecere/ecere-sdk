@@ -778,7 +778,7 @@ static void ProcessDBTable(DBTableDef table)
 
                if(idClassDefs)
                {
-                  if(!nameField[0] && spec.type == nameSpecifier && !strcmp(spec.name, "String"))
+                  if(!nameField[0] && spec.type == nameSpecifier && (!strcmp(spec.name, "String") || !strcmp(spec.name, "eda::CIString")))
                   {
                      // strcpy(nameField, entry.name);
                      strcpy(nameField, entry.id.string);

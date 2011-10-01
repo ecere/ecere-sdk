@@ -723,6 +723,7 @@ public:
                break;
             }
          }
+         delete f;
       }
       Seek(0, start);
       return result;
