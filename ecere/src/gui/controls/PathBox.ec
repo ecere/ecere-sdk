@@ -64,6 +64,9 @@ public class PathBox : CommonControl
    borderStyle = deep;
    clientSize = { 64, 18 };
 
+   watch(background) { editBox.background = background; };
+   watch(foreground) { editBox.foreground = foreground; };
+
 #if defined(__WIN32__)
    PathBox()
    {
@@ -302,6 +305,9 @@ public:
    }
    property String slashPath  { get { return GetSlashPathBuffer (path, editBox.contents); } };
    property String systemPath { get { return GetSystemPathBuffer(path, editBox.contents); } };
+
+   property Color selectionColor { set { editBox.selectionColor = value; } get { return editBox.selectionColor; }/* isset { return selectionColor ? true : false; }*/ };
+   property Color selectionText  { set { editBox.selectionText = value; } get { return editBox.selectionText; }/* isset { return selectionText ? true : false; }*/ };
 
    virtual bool Window::NotifyModified(PathBox pathBox);
 }
