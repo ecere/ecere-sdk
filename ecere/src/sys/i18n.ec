@@ -1,6 +1,10 @@
 import "File"
 import "Map"
 
+#ifndef ECERE_BOOTSTRAP
+#define FileOpen FileOpenBuffered
+#endif
+
 Map<String, Map<String, String>> moduleMaps { };
 
 #define SWAP_DWORD(dword) ((((unsigned int)(dword) & 0x000000ff) << 24) \
@@ -41,16 +45,16 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
       sprintf(fileName, "<:%s>/locale/%s/LC_MESSAGES/%s.mo", module.name, locale, name);
    else
       sprintf(fileName, ":locale/%s/LC_MESSAGES/%s.mo", locale, name);
-   f = FileOpenBuffered(fileName, read);
+   f = FileOpen(fileName, read);
    if(!f)
    {
       sprintf(fileName, "locale/%s/LC_MESSAGES/%s.mo", locale, name);
-      f = FileOpenBuffered(fileName, read);
+      f = FileOpen(fileName, read);
    }
    if(!f)
    {
       sprintf(fileName, "/usr/share/locale/%s/LC_MESSAGES/%s.mo", locale, name);
-      f = FileOpenBuffered(fileName, read);
+      f = FileOpen(fileName, read);
    }
    if(f)
    {

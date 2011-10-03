@@ -429,6 +429,8 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecer
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Iterator;
 
+struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkElement;
@@ -436,6 +438,14 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecer
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ListItem;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__String_;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__Map_TPL_String__String___;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__MapIterator;
+
+struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Method;
 
@@ -559,6 +569,14 @@ void __ecereRegisterModule_TempFile(struct __ecereNameSpace__ecere__com__Instanc
 
 void __ecereUnregisterModule_TempFile(struct __ecereNameSpace__ecere__com__Instance * module);
 
+void __ecereRegisterModule_i18n(struct __ecereNameSpace__ecere__com__Instance * module);
+
+void __ecereUnregisterModule_i18n(struct __ecereNameSpace__ecere__com__Instance * module);
+
+void __ecereCreateModuleInstances_i18n();
+
+void __ecereDestroyModuleInstances_i18n();
+
 void __ecereRegisterModule_Array(struct __ecereNameSpace__ecere__com__Instance * module);
 
 void __ecereUnregisterModule_Array(struct __ecereNameSpace__ecere__com__Instance * module);
@@ -637,6 +655,7 @@ __ecereRegisterModule_File(module);
 __ecereRegisterModule_memory(module);
 __ecereRegisterModule_System(module);
 __ecereRegisterModule_TempFile(module);
+__ecereRegisterModule_i18n(module);
 __ecereRegisterModule_Array(module);
 __ecereRegisterModule_AVLTree(module);
 __ecereRegisterModule_BuiltInContainer(module);
@@ -891,10 +910,15 @@ if(method)
 __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData = method->vid;
 __ecereClass___ecereNameSpace__ecere__com__Instance = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Instance");
 __ecereClass___ecereNameSpace__ecere__com__Iterator = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Iterator");
+__ecereProp___ecereNameSpace__ecere__com__Iterator_data = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__Iterator, "data", module);
 __ecereClass___ecereNameSpace__ecere__com__IteratorPointer = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::IteratorPointer");
 __ecereClass___ecereNameSpace__ecere__com__LinkElement = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::LinkElement");
 __ecereClass___ecereNameSpace__ecere__com__LinkList = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::LinkList");
 __ecereClass___ecereNameSpace__ecere__com__ListItem = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::ListItem");
+__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__String_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<String, String>");
+__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__Map_TPL_String__String___ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<String, ecere::com::Map<String, String> >");
+__ecereClass___ecereNameSpace__ecere__com__MapIterator = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::MapIterator");
+__ecereProp___ecereNameSpace__ecere__com__MapIterator_map = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__MapIterator, "map", module);
 __ecereClass___ecereNameSpace__ecere__com__Method = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Method");
 __ecereClass___ecereNameSpace__ecere__com__Module = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Module");
 __ecereClass___ecereNameSpace__ecere__com__NameSpace = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::NameSpace");
@@ -998,6 +1022,7 @@ __ecereClass_uint64 = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "u
 }
 if(__currentModule == module)
 {
+__ecereCreateModuleInstances_i18n();
 }
 return 0x1;
 }
@@ -1006,6 +1031,7 @@ unsigned int __ecereDll_Unload_ecere(struct __ecereNameSpace__ecere__com__Instan
 {
 if(__currentModule == module)
 {
+__ecereDestroyModuleInstances_i18n();
 }
 __ecereUnregisterModule_BufferedFile(module);
 __ecereUnregisterModule_DualPipe(module);
@@ -1013,6 +1039,7 @@ __ecereUnregisterModule_File(module);
 __ecereUnregisterModule_memory(module);
 __ecereUnregisterModule_System(module);
 __ecereUnregisterModule_TempFile(module);
+__ecereUnregisterModule_i18n(module);
 __ecereUnregisterModule_Array(module);
 __ecereUnregisterModule_AVLTree(module);
 __ecereUnregisterModule_BuiltInContainer(module);

@@ -18,9 +18,9 @@ OBJECTS = $(OBJ)Array.o $(OBJ)AVLTree.o $(OBJ)BinaryTree.o $(OBJ)BTNode.o \
 	$(OBJ)dataTypes.o $(OBJ)DualPipe.o $(OBJ)ecere.main.o $(OBJ)File.o $(OBJ)instance.o \
 	$(OBJ)LinkList.o $(OBJ)List.o $(OBJ)Map.o $(OBJ)memory.o $(OBJ)OldList.o $(OBJ)String.o \
 	$(OBJ)System.o $(OBJ)TempFile.o $(OBJ)instance.c.o $(OBJ)DualPipe.c.o $(OBJ)File.c.o \
-	$(OBJ)System.c.o
+	$(OBJ)System.c.o $(OBJ)i18n.o
 
-SOURCES = bootstrap/Array.c bootstrap/AVLTree.c bootstrap/BinaryTree.c \
+SOURCES = bootstrap/Array.c bootstrap/AVLTree.c bootstrap/BinaryTree.c bootstrap/i18n.c \
 	bootstrap/BTNode.c bootstrap/BufferedFile.c bootstrap/BuiltInContainer.c bootstrap/Container.c \
 	bootstrap/CustomAVLTree.c bootstrap/dataTypes.c bootstrap/DualPipe.c bootstrap/ecere.main.c \
 	bootstrap/File.c bootstrap/instance.c bootstrap/LinkList.c bootstrap/List.c bootstrap/Map.c \
@@ -98,6 +98,9 @@ $(OBJ)File.o: bootstrap/File.c
 
 $(OBJ)instance.o: bootstrap/instance.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/instance.c -o $(OBJ)instance.o
+
+$(OBJ)i18n.o: bootstrap/i18n.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/i18n.c -o $(OBJ)i18n.o
 
 $(OBJ)LinkList.o: bootstrap/LinkList.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/LinkList.c -o $(OBJ)LinkList.o

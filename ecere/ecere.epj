@@ -140,7 +140,7 @@ from wherever you obtained them.",
                "../deps/jpeg-6b/obj/release.$(PLATFORM)",
                "../deps/libpng-1.4.0/obj/release.$(PLATFORM)",
                "../deps/libungif-4.1.1/obj/release.$(PLATFORM)",
-               "../deps/freetype-2.3.5/obj/release.$(PLATFORM)"
+               "../deps/freetype-2.3.12/obj/release.$(PLATFORM)"
             ]
          }
       },
@@ -500,7 +500,17 @@ from wherever you obtained them.",
                         }
                      ]
                   },
-                  "i18n.ec"
+                  {
+                     "FileName" : "i18n.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "Bootstrap",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           }
+                        }
+                     ]
+                  }
                ],
                "Configurations" : [
                   {
@@ -996,6 +1006,23 @@ from wherever you obtained them.",
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    },
+                                    {
+                                       "Name" : "apple",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1342,6 +1369,12 @@ from wherever you obtained them.",
                                        "Options" : {
                                           "ExcludeFromBuild" : true
                                        }
+                                    },
+                                    {
+                                       "Name" : "apple",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
                                     }
                                  ]
                               }
@@ -1445,6 +1478,12 @@ from wherever you obtained them.",
                                  "Platforms" : [
                                     {
                                        "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    },
+                                    {
+                                       "Name" : "apple",
                                        "Options" : {
                                           "ExcludeFromBuild" : true
                                        }
