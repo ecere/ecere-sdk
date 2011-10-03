@@ -6,8 +6,7 @@
       "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "Libraries" : [
-         "ecere",
-         "intl"
+         "ecere"
       ]
    },
    "Configurations" : [
@@ -19,7 +18,8 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "Console" : true
          }
       },
       {
@@ -82,6 +82,21 @@
    ],
    "ResourcesPath" : "",
    "Resources" : [
-
+      {
+         "Folder" : "locale",
+         "Files" : [
+            {
+               "Folder" : "zh_CN",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "documentor.mo"
+                     ]
+                  }
+               ]
+            }
+         ]
+      }
    ]
 }

@@ -264,8 +264,6 @@ static void WriteMain(char * fileName)
       ChangeCh(mainModuleName, '-', '_');
       ChangeCh(mainModuleName, ' ', '_');
 
-      if(i18n)
-         f.Puts("#include <libintl.h>\n\n");
       if(targetPlatform == win32 && !isConsole && !isStaticLibrary && !isDynamicLibrary)
       {
          //f.Puts("#include <windows.h>\n\n");
@@ -495,13 +493,6 @@ static void WriteMain(char * fileName)
       else
          f.Puts("   __thisModule = __currentModule = module = __ecere_COM_Initialize(1, _argc, (void *)_argv);\n\n");
 
-      if(i18n)
-      {
-         f.Printf("   bindtextdomain(\"%s\", \"%s\");\n", projectName, localeDir);
-         f.Printf("   textdomain(\"%s\");\n", projectName);
-         f.Printf("   bind_textdomain_codeset (\"%s\", \"utf-8\");\n", projectName);
-      }
-
       // First load all modules
       if(_imports.count)
       {
@@ -649,6 +640,9 @@ static void WriteMain(char * fileName)
          f.Puts("   }\n");
       }
 
+      if(i18n)
+         f.Printf("   LoadTranslatedStrings(module, \"%s\");\n", projectName);
+
       if(!isDynamicLibrary && thisAppClass)
       {
          f.Printf("   _class = eSystem_FindClass(__currentModule, \"%s\");\n", thisAppClass.name);
@@ -730,6 +724,8 @@ static void WriteMain(char * fileName)
 
          f.Printf("\n");
       }
+      if(i18n)
+         f.Printf("   UnloadTranslatedStrings(__currentModule);\n");
       if(isDynamicLibrary)
       {
          f.Puts("   }\n");

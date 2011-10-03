@@ -499,7 +499,8 @@ from wherever you obtained them.",
                            }
                         }
                      ]
-                  }
+                  },
+                  "i18n.ec"
                ],
                "Configurations" : [
                   {

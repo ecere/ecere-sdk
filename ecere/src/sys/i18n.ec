@@ -1,20 +1,14 @@
 import "File"
 import "Map"
 
-Map<String, Map<String, String>> domainMaps;
-Map<String, String> curDomainMap;
+Map<String, Map<String, String>> moduleMaps { };
 
 #define SWAP_DWORD(dword) ((((unsigned int)(dword) & 0x000000ff) << 24) \
                          | (((unsigned int)(dword) & 0x0000ff00) <<  8) \
                          | (((unsigned int)(dword) & 0x00ff0000) >>  8) \
                          | (((unsigned int)(dword) & 0xff000000) >> 24))
 
-public void bind_textdomain_codeset (char * domain, char * codeSet)
-{
-   // Always using UTF-8
-}
-
-public void bindtextdomain(char * domain, char * localeDir)
+public dllexport void LoadTranslatedStrings(Module module, char * name)
 {
    File f;
    char fileName[MAX_LOCATION];
@@ -43,12 +37,21 @@ public void bindtextdomain(char * domain, char * localeDir)
       locale = language;
    }
 
-   strcpy(fileName, localeDir);
-   PathCat(fileName, locale);
-   PathCat(fileName, "LC_MESSAGES");
-   PathCat(fileName, domain);
-   ChangeExtension(fileName, "mo", fileName);
+   if(module.name)
+      sprintf(fileName, "<:%s>/locale/%s/LC_MESSAGES/%s.mo", module.name, locale, name);
+   else
+      sprintf(fileName, ":locale/%s/LC_MESSAGES/%s.mo", locale, name);
    f = FileOpenBuffered(fileName, read);
+   if(!f)
+   {
+      sprintf(fileName, "locale/%s/LC_MESSAGES/%s.mo", locale, name);
+      f = FileOpenBuffered(fileName, read);
+   }
+   if(!f)
+   {
+      sprintf(fileName, "/usr/share/locale/%s/LC_MESSAGES/%s.mo", locale, name);
+      f = FileOpenBuffered(fileName, read);
+   }
    if(f)
    {
       uint magic = 0;
@@ -69,15 +72,15 @@ public void bindtextdomain(char * domain, char * localeDir)
          f.Read(&hashingSize, sizeof(uint), 1);    if(swap) SWAP_DWORD(hashingSize);
          f.Read(&hashingOffset, sizeof(uint), 1);  if(swap) SWAP_DWORD(hashingOffset);
          
-         if(!domainMaps)
-            domainMaps = { };
+         if(!moduleMaps)
+            moduleMaps = { };
          {
-            MapIterator<String, String> it { map = domainMaps };
-            if(it.Find(domain))
+            MapIterator<String, Map<String, String>> it { map = moduleMaps };
+            if(it.Index(module.name, false))
                delete it.data;
-            // TOFIX: delete domainMaps[domain];
+            // TOFIX: delete moduleMaps[module];
          }
-         domainMaps[domain] = textMap = { };
+         moduleMaps[module.name] = textMap = { };
          for(c = 0; c < numStrings; c++)
          {
             uint len = 0, offset = 0;
@@ -115,18 +118,18 @@ public void bindtextdomain(char * domain, char * localeDir)
    }
 }
 
-public void textdomain(char * domain)
+public dllexport void UnloadTranslatedStrings(Module module)
 {
-   curDomainMap = domainMaps[domain];
+   MapIterator<String, Map<String, String>> it { map = moduleMaps };
+   if(it.Index(module.name, false))
+   {
+      it.data.Free();
+      moduleMaps.Delete(it.pointer);
+   }
 }
 
-public char * gettext(char * string)
+public dllexport char * GetTranslatedString(Module module, char * string)
 {
-   return curDomainMap ? curDomainMap[string] : string;
-}
-
-public char * dgettext(char * domain, char * string)
-{
-   Map<String, String> textMap = domainMaps[domain];
+   Map<String, String> textMap = moduleMaps ? moduleMaps[module.name] : null;
    return textMap ? textMap[string] : string;
-}     
+}
