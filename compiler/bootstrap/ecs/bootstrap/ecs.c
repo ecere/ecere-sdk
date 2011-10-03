@@ -889,8 +889,6 @@ __ecereNameSpace__ecere__sys__StripExtension(projectName);
 __ecereNameSpace__ecere__sys__ChangeCh(mainModuleName, '.', '_');
 __ecereNameSpace__ecere__sys__ChangeCh(mainModuleName, '-', '_');
 __ecereNameSpace__ecere__sys__ChangeCh(mainModuleName, ' ', '_');
-if(i18n)
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "#include <libintl.h>\n\n");
 if(targetPlatform == 1 && !isConsole && !isStaticLibrary && !isDynamicLibrary)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "typedef void * HINSTANCE;\n");
@@ -1071,12 +1069,6 @@ else if(targetPlatform == 1 && !isConsole)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   __thisModule = __currentModule = module = __ecere_COM_Initialize(1, 0, null);\n\n");
 else
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   __thisModule = __currentModule = module = __ecere_COM_Initialize(1, _argc, (void *)_argv);\n\n");
-if(i18n)
-{
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   bindtextdomain(\"%s\", \"%s\");\n", projectName, ("locale"));
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   textdomain(\"%s\");\n", projectName);
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   bind_textdomain_codeset (\"%s\", \"utf-8\");\n", projectName);
-}
 if(_imports.count)
 {
 for(module = _imports.first; module; module = module->next)
@@ -1207,6 +1199,8 @@ if(isDynamicLibrary)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   }\n");
 }
+if(i18n)
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   LoadTranslatedStrings(module, \"%s\");\n", projectName);
 if(!isDynamicLibrary && thisAppClass)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   _class = eSystem_FindClass(__currentModule, \"%s\");\n", thisAppClass->name);
@@ -1277,6 +1271,8 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereDestroyMod
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 }
+if(i18n)
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   UnloadTranslatedStrings(__currentModule);\n");
 if(isDynamicLibrary)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   }\n");

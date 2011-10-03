@@ -901,6 +901,7 @@ result = 0x0;
 break;
 }
 }
+(__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(this, 0, 0);
 return result;

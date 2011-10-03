@@ -229,6 +229,7 @@ Map<String, Location> intlStrings { };
 
 Expression MkExpIntlString(char * string)
 {
+   OldList * list = MkList();
    if(inCompiler)
    {
       MapIterator<String, Location> it { map = intlStrings };
@@ -237,7 +238,9 @@ Expression MkExpIntlString(char * string)
          intlStrings[string] = yylloc;
       }
    }
-   return MkExpCall(QMkExpId("gettext"), MkListOne(MkExpString(string)));
+   ListAdd(list, QMkExpId("__thisModule"));
+   ListAdd(list, MkExpString(string));
+   return MkExpCall(QMkExpId("GetTranslatedString"), list);
 }
 
 Expression MkExpOp(Expression exp1, int op, Expression exp2)

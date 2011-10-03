@@ -3,7 +3,7 @@ import "Documentor"
 
 class SettingsDialog : Window
 {
-   text = "Settings";
+   text = $"Settings";
    background = activeBorder;
    borderStyle = fixed;
    hasMaximize = true;
@@ -13,7 +13,7 @@ class SettingsDialog : Window
    size = { 436, 120 };
    anchor = { horz = -83, vert = -104 };
    
-   Label docLabel { this, text = "Documentation Path:", anchor = { left = 16, top = 16 }, labeledWindow = pathEditBox };
+   Label docLabel { this, text = $"Documentation Path:", anchor = { left = 16, top = 16 }, labeledWindow = pathEditBox };
 
    Button browseBtn 
    { 
@@ -31,12 +31,12 @@ class SettingsDialog : Window
 
    FileDialog settingsFileDialog
    {
-      type = selectDir, text = "Select a path"; // set the file dialog box to choose a directory instead of a file.
+      type = selectDir, text = $"Select a path"; // set the file dialog box to choose a directory instead of a file.
    };
 
    Button saveBtn 
    { 
-      this, text = "Save", size = { 68, 21 }, position = { 224, 56 }, isDefault = true;
+      this, text = $"Save", size = { 68, 21 }, position = { 224, 56 }, isDefault = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -50,7 +50,7 @@ class SettingsDialog : Window
 
    Button cancelBtn 
    { 
-      this, text = "Cancel", size = { 68, 21 }, position = { 304, 56 }, hotKey = escape;
+      this, text = $"Cancel", size = { 68, 21 }, position = { 304, 56 }, hotKey = escape;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
