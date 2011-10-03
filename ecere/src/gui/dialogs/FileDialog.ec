@@ -242,7 +242,7 @@ public struct FileName
 
 public class FileDialog : Window
 {
-   text = "Select a file...";
+   text = $"Select a file...";
    background = activeBorder;
    hasClose = true;
    borderStyle = sizable;
@@ -274,7 +274,7 @@ public:
             open.visible = true;
             open.isDefault = true;
 
-            ok.text = "Select";
+            ok.text = $"Select";
             ok.id = DialogResult::ok;
             ok.hotKey = altS;
             ok.isDefault = false;
@@ -292,7 +292,7 @@ public:
             open.visible = false;
             open.isDefault = false;
 
-            ok.text = "OK";
+            ok.text = $"OK";
             ok.id = 0;
             ok.hotKey = 0;
             ok.isDefault = true;
@@ -307,7 +307,7 @@ public:
          fileNameLabel.anchor = { left = 8, bottom = 35 + rightOffset };
 
          listBox.multiSelect = value == multiOpen;
-         fileName.text = (value == selectDir) ? "Directory:" : "File Name:";
+         fileName.text = (value == selectDir) ? $"Directory:" : $"File Name:";
       }
    };
 
@@ -1062,7 +1062,7 @@ private:
                         }
                      }
                   }
-                  if(!exists || MessageBox { master = this, type = yesNo, text = "File Already Exists", contents = "Replace existing file?" }.Modal() == yes)
+                  if(!exists || MessageBox { master = this, type = yesNo, text = $"File Already Exists", contents = $"Replace existing file?" }.Modal() == yes)
                      result = false;
                }
                else if(exists || mayNotExist)
@@ -1075,7 +1075,7 @@ private:
                }
                // *** DIRECTORY SELECTION ONLY ****
                else if(isOK && style == selectDir &&
-                  MessageBox { this, type = yesNo, text = "Directory doesn't exist", contents = "Create directory?" }.Modal() == yes)
+                  MessageBox { this, type = yesNo, text = $"Directory doesn't exist", contents = $"Create directory?" }.Modal() == yes)
                {
                   if(MakeDir(filePath))
                      result = false;
@@ -1167,7 +1167,7 @@ private:
    // File Extension Filter
    DropBox filter
    {
-      this, text = "Filter:", anchor = { left = 96, right = 104, bottom = 16 }, hotKey = altR;
+      this, text = $"Filter:", anchor = { left = 96, right = 104, bottom = 16 }, hotKey = altR;
       
       bool NotifySelect(DropBox control, DataRow row, Modifiers mods)
       {
@@ -1185,7 +1185,7 @@ private:
    // File Types
    DropBox type
    {
-      this, text = "As Type:", visible = false, anchor = { left = 96, right = 104, bottom = 16 }, hotKey = altT;
+      this, text = $"As Type:", visible = false, anchor = { left = 96, right = 104, bottom = 16 }, hotKey = altT;
 
       bool NotifySelect(DropBox control, DataRow row, Modifiers mods)
       {
@@ -1223,7 +1223,7 @@ private:
    // Ok Button
    Button ok
    {
-      this, isDefault = true, text = "OK", anchor = { right = 10, bottom = 32 + 16 - 1 }, size = { 80 };
+      this, isDefault = true, text = $"OK", anchor = { right = 10, bottom = 32 + 16 - 1 }, size = { 80 };
 
       bool NotifyClicked(Button control, int x, int y, Modifiers mods)
       {
@@ -1253,14 +1253,14 @@ private:
    // Open Button (SelectDir only)
    Button open
    {
-      this, visible = false, text = "Open", hotKey = altO, anchor = { right = 100, bottom = 16 - 1 }, size = { 80 };
+      this, visible = false, text = $"Open", hotKey = altO, anchor = { right = 100, bottom = 16 - 1 }, size = { 80 };
       NotifyClicked = ok.NotifyClicked;
    };
 
    // Cancel Button
    Button cancel
    {
-      this, text = "Cancel", anchor = { right = 10, bottom = 16 - 1 }, size = { 80 }, hotKey = escape;
+      this, text = $"Cancel", anchor = { right = 10, bottom = 16 - 1 }, size = { 80 }, hotKey = escape;
       bool NotifyClicked(Button control, int x, int y, Modifiers mods)
       {
          Destroy(DialogResult::cancel);
@@ -1271,7 +1271,7 @@ private:
    // Look In Dropbox
    DropBox lookIn
    {
-      this, text = "Look in:", anchor = { left = 81, top = 8, right = 109 }, hotKey = altL, maxShown = 12;
+      this, text = $"Look in:", anchor = { left = 81, top = 8, right = 109 }, hotKey = altL, maxShown = 12;
 
       bool OnKeyHit(Key key, unichar ch)
       {
@@ -1406,9 +1406,9 @@ private:
       }
    };
 
-   DataField nameField { header = "Name", dataType = "FileName", width = 304, userData = this }; // editable = true
-   DataField typeField { header = "Type", dataType = /*"String"*/ "char *", width = 40 };
-   DataField sizeField { header = "Size", dataType = "FileSize", width = 96, alignment = right };
+   DataField nameField { header = $"Name", dataType = "FileName", width = 304, userData = this }; // editable = true
+   DataField typeField { header = $"Type", dataType = /*"String"*/ "char *", width = 40 };
+   DataField sizeField { header = $"Size", dataType = "FileSize", width = 96, alignment = right };
 
    // Go up button
    Button goUp
@@ -1445,7 +1445,7 @@ private:
    // File name editbox
    EditBox fileName
    {
-      this, text = "File Name:", anchor = { left = 96, bottom = 32 + 16, right = 104 }, size.h = 20, hotKey = altF;
+      this, text = $"File Name:", anchor = { left = 96, bottom = 32 + 16, right = 104 }, size.h = 20, hotKey = altF;
 
       bool NotifyActivate(Window control, bool active, Window previous)
       {
@@ -1546,25 +1546,25 @@ private:
                Destroy(DialogResult::ok);
             }
             else
-               MessageBox { master = this, parent = parent, type = ok, text = "Create Directory Error", contents = "Directory already exists." }.Modal();
+               MessageBox { master = this, parent = parent, type = ok, text = $"Create Directory Error", contents = $"Directory already exists." }.Modal();
          }
          else
-            MessageBox { master = this, parent = parent, type = ok, text = "Create Directory Error", contents = "Please enter a name." }.Modal();
+            MessageBox { master = this, parent = parent, type = ok, text = $"Create Directory Error", contents = $"Please enter a name." }.Modal();
          return true;
       }
    };
    
    Button cancel
    {
-      parent = this, position = { 140, 60 }, size = { 60 }, hotKey = escape, text = "Cancel";
+      parent = this, position = { 140, 60 }, size = { 60 }, hotKey = escape, text = $"Cancel";
       NotifyClicked = ButtonCloseDialog;
    };
 
    EditBox newDirectoryName
    {
       this, textHorzScroll = true, anchor = { left = 10, right = 10, top = 30 }, size = { 250 };
-      hotKey = altN, text = "Name";
-      contents = "New Directory";
+      hotKey = altN, text = $"Name";
+      contents = $"New Directory";
    };
    Label { this, position = { 10, 10 }, labeledWindow = newDirectoryName };
 
