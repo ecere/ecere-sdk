@@ -5,7 +5,7 @@ import "Map"
 #define FileOpen FileOpenBuffered
 #endif
 
-Map<String, Map<String, String>> moduleMaps { };
+static Map<String, Map<String, String>> moduleMaps { };
 
 #define SWAP_DWORD(dword) ((((unsigned int)(dword) & 0x000000ff) << 24) \
                          | (((unsigned int)(dword) & 0x0000ff00) <<  8) \

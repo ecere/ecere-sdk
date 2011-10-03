@@ -239,7 +239,7 @@ struct __ecereNameSpace__ecere__com__Method * method;
 };
 };
 
-struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__moduleMaps;
+static struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__moduleMaps;
 
 extern char *  __ecereNameSpace__ecere__sys__GetEnvironment(char *  envName, char *  envValue, int max);
 
