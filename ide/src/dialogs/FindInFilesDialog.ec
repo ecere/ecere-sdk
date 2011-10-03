@@ -57,7 +57,7 @@ public:
             }
          }
          if(!numFilters)
-            filterDrop.AddString("All files");
+            filterDrop.AddString($"All files");
 
          //if(fileFilter >= numFilters)
          //  fileFilter = 0;

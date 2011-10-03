@@ -18,46 +18,47 @@ OBJECTS1 = $(OBJ)Archive.o $(OBJ)BufferedFile.o $(OBJ)Date.o $(OBJ)DualPipe.o \
 	$(OBJ)EARArchive.o $(OBJ)File.o $(OBJ)FileMonitor.o $(OBJ)GlobalAppSettings.o $(OBJ)JSON.o \
 	$(OBJ)JSONGlobalSettings.o $(OBJ)memory.o $(OBJ)Mutex.o $(OBJ)Semaphore.o $(OBJ)System.o $(OBJ)TempFile.o \
 	$(OBJ)Thread.o $(OBJ)Time.o $(OBJ)unicode.o $(OBJ)units.o $(OBJ)File.c.o $(OBJ)DualPipe.c.o \
-	$(OBJ)System.c.o $(OBJ)BMPFormat.o $(if $(WINDOWS),,$(OBJ)harfbuzz-freetype.o) \
+	$(OBJ)System.c.o $(OBJ)i18n.o $(OBJ)BMPFormat.o $(if $(WINDOWS),,$(OBJ)harfbuzz-freetype.o) \
 	$(if $(WINDOWS),,$(OBJ)harfbuzz-unicode-tables.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-unicode.o) \
 	$(if $(WINDOWS),,$(OBJ)harfbuzz-arabic.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-buffer.o) \
 	$(if $(WINDOWS),,$(OBJ)harfbuzz-gdef.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-gpos.o) \
 	$(if $(WINDOWS),,$(OBJ)harfbuzz-gsub.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-hangul.o) \
 	$(if $(WINDOWS),,$(OBJ)harfbuzz-hebrew.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-indic.o) \
 	$(if $(WINDOWS),,$(OBJ)harfbuzz-khmer.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-myanmar.o) \
-	$(if $(WINDOWS),,$(OBJ)harfbuzz-open.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-shaper.o)
-OBJECTS2 = $(if $(WINDOWS),,$(OBJ)harfbuzz-stream.o) \
-	$(if $(WINDOWS),,$(OBJ)harfbuzz-tibetan.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-impl.o) \
-	$(if $(WINDOWS),,$(OBJ)harfbuzz-thai.o) $(if $(WINDOWS),$(OBJ)GDIDisplayDriver.o,) $(OBJ)lfbBlit.o $(OBJ)lfbConvert.o \
-	$(OBJ)LFBDisplayDriver.o $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.o,) \
-	$(if $(LINUX),$(OBJ)XDisplayDriver.o,) $(OBJ)Bitmap.o $(OBJ)BitmapResource.o $(OBJ)Color.o $(OBJ)Display.o \
-	$(OBJ)DisplaySystem.o $(OBJ)FontResource.o $(OBJ)Resource.o $(OBJ)Surface.o $(OBJ)Button.o \
-	$(OBJ)CalendarControl.o $(OBJ)DataBox.o $(OBJ)DropBox.o $(OBJ)EditBox.o $(OBJ)Label.o $(OBJ)ListBox.o \
-	$(OBJ)Menu.o $(OBJ)Picture.o $(OBJ)ProgressBar.o $(OBJ)ScrollBar.o $(OBJ)StatusBar.o \
-	$(OBJ)Stacker.o $(OBJ)PathBox.o $(OBJ)ColorPicker.o $(OBJ)FileDialog.o $(OBJ)FindDialog.o \
-	$(OBJ)GoToDialog.o $(OBJ)MessageBox.o $(OBJ)ReplaceDialog.o $(OBJ)WindowList.o \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.o,)
-OBJECTS3 = $(if $(WINDOWS),$(OBJ)Win32Interface.o,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.o,) $(OBJ)WindowsSkin.o $(OBJ)Anchor.o $(OBJ)ClipBoard.o $(OBJ)Cursor.o \
-	$(OBJ)FormDesigner.o $(OBJ)GuiApplication.o $(OBJ)Interface.o $(OBJ)Key.o $(OBJ)Skin.o $(OBJ)Timer.o \
-	$(OBJ)typeEdit.o $(OBJ)Window.o $(OBJ)Array.o $(OBJ)AVLTree.o $(OBJ)BuiltInContainer.o \
-	$(OBJ)Container.o $(OBJ)CustomAVLTree.o $(OBJ)LinkList.o $(OBJ)List.o $(OBJ)Map.o \
-	$(OBJ)BinaryTree.o $(OBJ)BTNode.o $(OBJ)dataTypes.o $(OBJ)instance.o $(OBJ)String.o \
-	$(OBJ)OldList.o $(OBJ)instance.c.o $(OBJ)$(MODULE).main$(O)
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-open.o)
+OBJECTS2 = $(if $(WINDOWS),,$(OBJ)harfbuzz-shaper.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-stream.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-tibetan.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-impl.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-thai.o) \
+	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.o,) $(OBJ)lfbBlit.o $(OBJ)lfbConvert.o $(OBJ)LFBDisplayDriver.o \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.o,) $(if $(LINUX),$(OBJ)XDisplayDriver.o,) $(OBJ)Bitmap.o $(OBJ)BitmapResource.o \
+	$(OBJ)Color.o $(OBJ)Display.o $(OBJ)DisplaySystem.o $(OBJ)FontResource.o $(OBJ)Resource.o \
+	$(OBJ)Surface.o $(OBJ)Button.o $(OBJ)CalendarControl.o $(OBJ)DataBox.o $(OBJ)DropBox.o \
+	$(OBJ)EditBox.o $(OBJ)Label.o $(OBJ)ListBox.o $(OBJ)Menu.o $(OBJ)Picture.o $(OBJ)ProgressBar.o \
+	$(OBJ)ScrollBar.o $(OBJ)StatusBar.o $(OBJ)Stacker.o $(OBJ)PathBox.o $(OBJ)ColorPicker.o \
+	$(OBJ)FileDialog.o $(OBJ)FindDialog.o $(OBJ)GoToDialog.o $(OBJ)MessageBox.o $(OBJ)ReplaceDialog.o \
+	$(OBJ)WindowList.o
+OBJECTS3 = $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.o,) \
+	$(if $(WINDOWS),$(OBJ)Win32Interface.o,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.o,) $(OBJ)WindowsSkin.o \
+	$(OBJ)Anchor.o $(OBJ)ClipBoard.o $(OBJ)Cursor.o $(OBJ)FormDesigner.o $(OBJ)GuiApplication.o \
+	$(OBJ)Interface.o $(OBJ)Key.o $(OBJ)Skin.o $(OBJ)Timer.o $(OBJ)typeEdit.o $(OBJ)Window.o \
+	$(OBJ)Array.o $(OBJ)AVLTree.o $(OBJ)BuiltInContainer.o $(OBJ)Container.o \
+	$(OBJ)CustomAVLTree.o $(OBJ)LinkList.o $(OBJ)List.o $(OBJ)Map.o $(OBJ)BinaryTree.o $(OBJ)BTNode.o \
+	$(OBJ)dataTypes.o $(OBJ)instance.o $(OBJ)String.o $(OBJ)OldList.o $(OBJ)instance.c.o \
+	$(OBJ)$(MODULE).main$(O)
 
 COBJECTS = $(COBJECTS1) $(COBJECTS2)
 COBJECTS1 = $(OBJ)Archive.c $(OBJ)BufferedFile.c $(OBJ)Date.c $(OBJ)DualPipe.c \
 	$(OBJ)EARArchive.c $(OBJ)File.c $(OBJ)FileMonitor.c $(OBJ)GlobalAppSettings.c $(OBJ)JSON.c \
 	$(OBJ)JSONGlobalSettings.c $(OBJ)memory.c $(OBJ)Mutex.c $(OBJ)Semaphore.c $(OBJ)System.c $(OBJ)TempFile.c \
-	$(OBJ)Thread.c $(OBJ)Time.c $(OBJ)unicode.c $(OBJ)units.c $(OBJ)BMPFormat.c \
+	$(OBJ)Thread.c $(OBJ)Time.c $(OBJ)unicode.c $(OBJ)units.c $(OBJ)i18n.c $(OBJ)BMPFormat.c \
 	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.c,) $(OBJ)lfbBlit.c $(OBJ)lfbConvert.c $(OBJ)LFBDisplayDriver.c \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.c,) $(if $(LINUX),$(OBJ)XDisplayDriver.c,) $(OBJ)Bitmap.c $(OBJ)BitmapResource.c \
 	$(OBJ)Color.c $(OBJ)Display.c $(OBJ)DisplaySystem.c $(OBJ)FontResource.c $(OBJ)Resource.c \
 	$(OBJ)Surface.c $(OBJ)Button.c $(OBJ)CalendarControl.c $(OBJ)DataBox.c $(OBJ)DropBox.c \
 	$(OBJ)EditBox.c $(OBJ)Label.c $(OBJ)ListBox.c $(OBJ)Menu.c $(OBJ)Picture.c $(OBJ)ProgressBar.c \
-	$(OBJ)ScrollBar.c $(OBJ)StatusBar.c $(OBJ)Stacker.c
-COBJECTS2 = $(OBJ)PathBox.c $(OBJ)ColorPicker.c $(OBJ)FileDialog.c $(OBJ)FindDialog.c \
-	$(OBJ)GoToDialog.c $(OBJ)MessageBox.c $(OBJ)ReplaceDialog.c $(OBJ)WindowList.c \
+	$(OBJ)ScrollBar.c $(OBJ)StatusBar.c
+COBJECTS2 = $(OBJ)Stacker.c $(OBJ)PathBox.c $(OBJ)ColorPicker.c $(OBJ)FileDialog.c \
+	$(OBJ)FindDialog.c $(OBJ)GoToDialog.c $(OBJ)MessageBox.c $(OBJ)ReplaceDialog.c $(OBJ)WindowList.c \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.c,) $(if $(WINDOWS),$(OBJ)Win32Interface.c,) \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.c,) $(OBJ)WindowsSkin.c $(OBJ)Anchor.c $(OBJ)ClipBoard.c $(OBJ)Cursor.c \
 	$(OBJ)FormDesigner.c $(OBJ)GuiApplication.c $(OBJ)Interface.c $(OBJ)Key.c $(OBJ)Skin.c $(OBJ)Timer.c \
@@ -71,46 +72,48 @@ SYMBOLS1 = $(OBJ)Archive.sym $(OBJ)BufferedFile.sym $(OBJ)Date.sym $(OBJ)DualPip
 	$(OBJ)EARArchive.sym $(OBJ)File.sym $(OBJ)FileMonitor.sym $(OBJ)GlobalAppSettings.sym \
 	$(OBJ)JSON.sym $(OBJ)JSONGlobalSettings.sym $(OBJ)memory.sym $(OBJ)Mutex.sym \
 	$(OBJ)Semaphore.sym $(OBJ)System.sym $(OBJ)TempFile.sym $(OBJ)Thread.sym $(OBJ)Time.sym \
-	$(OBJ)unicode.sym $(OBJ)units.sym $(OBJ)BMPFormat.sym \
+	$(OBJ)unicode.sym $(OBJ)units.sym $(OBJ)i18n.sym $(OBJ)BMPFormat.sym \
 	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.sym,) $(OBJ)lfbBlit.sym $(OBJ)lfbConvert.sym $(OBJ)LFBDisplayDriver.sym \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.sym,) $(if $(LINUX),$(OBJ)XDisplayDriver.sym,) $(OBJ)Bitmap.sym \
 	$(OBJ)BitmapResource.sym $(OBJ)Color.sym $(OBJ)Display.sym $(OBJ)DisplaySystem.sym \
 	$(OBJ)FontResource.sym $(OBJ)Resource.sym $(OBJ)Surface.sym $(OBJ)Button.sym \
 	$(OBJ)CalendarControl.sym $(OBJ)DataBox.sym $(OBJ)DropBox.sym $(OBJ)EditBox.sym $(OBJ)Label.sym \
-	$(OBJ)ListBox.sym $(OBJ)Menu.sym $(OBJ)Picture.sym $(OBJ)ProgressBar.sym
-SYMBOLS2 = $(OBJ)ScrollBar.sym $(OBJ)StatusBar.sym $(OBJ)Stacker.sym $(OBJ)PathBox.sym \
-	$(OBJ)ColorPicker.sym $(OBJ)FileDialog.sym $(OBJ)FindDialog.sym $(OBJ)GoToDialog.sym \
-	$(OBJ)MessageBox.sym $(OBJ)ReplaceDialog.sym $(OBJ)WindowList.sym \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.sym,) $(if $(WINDOWS),$(OBJ)Win32Interface.sym,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.sym,) $(OBJ)WindowsSkin.sym $(OBJ)Anchor.sym $(OBJ)ClipBoard.sym $(OBJ)Cursor.sym \
-	$(OBJ)FormDesigner.sym $(OBJ)GuiApplication.sym $(OBJ)Interface.sym $(OBJ)Key.sym $(OBJ)Skin.sym \
-	$(OBJ)Timer.sym $(OBJ)typeEdit.sym $(OBJ)Window.sym $(OBJ)Array.sym $(OBJ)AVLTree.sym \
-	$(OBJ)BuiltInContainer.sym $(OBJ)Container.sym $(OBJ)CustomAVLTree.sym $(OBJ)LinkList.sym $(OBJ)List.sym \
-	$(OBJ)Map.sym $(OBJ)BinaryTree.sym $(OBJ)BTNode.sym $(OBJ)dataTypes.sym $(OBJ)instance.sym \
-	$(OBJ)String.sym $(OBJ)OldList.sym
+	$(OBJ)ListBox.sym $(OBJ)Menu.sym $(OBJ)Picture.sym
+SYMBOLS2 = $(OBJ)ProgressBar.sym $(OBJ)ScrollBar.sym $(OBJ)StatusBar.sym \
+	$(OBJ)Stacker.sym $(OBJ)PathBox.sym $(OBJ)ColorPicker.sym $(OBJ)FileDialog.sym \
+	$(OBJ)FindDialog.sym $(OBJ)GoToDialog.sym $(OBJ)MessageBox.sym $(OBJ)ReplaceDialog.sym \
+	$(OBJ)WindowList.sym $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.sym,) \
+	$(if $(WINDOWS),$(OBJ)Win32Interface.sym,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.sym,) $(OBJ)WindowsSkin.sym \
+	$(OBJ)Anchor.sym $(OBJ)ClipBoard.sym $(OBJ)Cursor.sym $(OBJ)FormDesigner.sym \
+	$(OBJ)GuiApplication.sym $(OBJ)Interface.sym $(OBJ)Key.sym $(OBJ)Skin.sym $(OBJ)Timer.sym \
+	$(OBJ)typeEdit.sym $(OBJ)Window.sym $(OBJ)Array.sym $(OBJ)AVLTree.sym $(OBJ)BuiltInContainer.sym \
+	$(OBJ)Container.sym $(OBJ)CustomAVLTree.sym $(OBJ)LinkList.sym $(OBJ)List.sym $(OBJ)Map.sym \
+	$(OBJ)BinaryTree.sym $(OBJ)BTNode.sym $(OBJ)dataTypes.sym $(OBJ)instance.sym $(OBJ)String.sym \
+	$(OBJ)OldList.sym
 
 IMPORTS = $(IMPORTS1) $(IMPORTS2)
 IMPORTS1 = $(OBJ)Archive.imp $(OBJ)BufferedFile.imp $(OBJ)Date.imp $(OBJ)DualPipe.imp \
 	$(OBJ)EARArchive.imp $(OBJ)File.imp $(OBJ)FileMonitor.imp $(OBJ)GlobalAppSettings.imp \
 	$(OBJ)JSON.imp $(OBJ)JSONGlobalSettings.imp $(OBJ)memory.imp $(OBJ)Mutex.imp \
 	$(OBJ)Semaphore.imp $(OBJ)System.imp $(OBJ)TempFile.imp $(OBJ)Thread.imp $(OBJ)Time.imp \
-	$(OBJ)unicode.imp $(OBJ)units.imp $(OBJ)BMPFormat.imp \
+	$(OBJ)unicode.imp $(OBJ)units.imp $(OBJ)i18n.imp $(OBJ)BMPFormat.imp \
 	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.imp,) $(OBJ)lfbBlit.imp $(OBJ)lfbConvert.imp $(OBJ)LFBDisplayDriver.imp \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.imp,) $(if $(LINUX),$(OBJ)XDisplayDriver.imp,) $(OBJ)Bitmap.imp \
 	$(OBJ)BitmapResource.imp $(OBJ)Color.imp $(OBJ)Display.imp $(OBJ)DisplaySystem.imp \
 	$(OBJ)FontResource.imp $(OBJ)Resource.imp $(OBJ)Surface.imp $(OBJ)Button.imp \
 	$(OBJ)CalendarControl.imp $(OBJ)DataBox.imp $(OBJ)DropBox.imp $(OBJ)EditBox.imp $(OBJ)Label.imp \
-	$(OBJ)ListBox.imp $(OBJ)Menu.imp $(OBJ)Picture.imp $(OBJ)ProgressBar.imp
-IMPORTS2 = $(OBJ)ScrollBar.imp $(OBJ)StatusBar.imp $(OBJ)Stacker.imp $(OBJ)PathBox.imp \
-	$(OBJ)ColorPicker.imp $(OBJ)FileDialog.imp $(OBJ)FindDialog.imp $(OBJ)GoToDialog.imp \
-	$(OBJ)MessageBox.imp $(OBJ)ReplaceDialog.imp $(OBJ)WindowList.imp \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.imp,) $(if $(WINDOWS),$(OBJ)Win32Interface.imp,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.imp,) $(OBJ)WindowsSkin.imp $(OBJ)Anchor.imp $(OBJ)ClipBoard.imp $(OBJ)Cursor.imp \
-	$(OBJ)FormDesigner.imp $(OBJ)GuiApplication.imp $(OBJ)Interface.imp $(OBJ)Key.imp $(OBJ)Skin.imp \
-	$(OBJ)Timer.imp $(OBJ)typeEdit.imp $(OBJ)Window.imp $(OBJ)Array.imp $(OBJ)AVLTree.imp \
-	$(OBJ)BuiltInContainer.imp $(OBJ)Container.imp $(OBJ)CustomAVLTree.imp $(OBJ)LinkList.imp $(OBJ)List.imp \
-	$(OBJ)Map.imp $(OBJ)BinaryTree.imp $(OBJ)BTNode.imp $(OBJ)dataTypes.imp $(OBJ)instance.imp \
-	$(OBJ)String.imp $(OBJ)OldList.imp
+	$(OBJ)ListBox.imp $(OBJ)Menu.imp $(OBJ)Picture.imp
+IMPORTS2 = $(OBJ)ProgressBar.imp $(OBJ)ScrollBar.imp $(OBJ)StatusBar.imp \
+	$(OBJ)Stacker.imp $(OBJ)PathBox.imp $(OBJ)ColorPicker.imp $(OBJ)FileDialog.imp \
+	$(OBJ)FindDialog.imp $(OBJ)GoToDialog.imp $(OBJ)MessageBox.imp $(OBJ)ReplaceDialog.imp \
+	$(OBJ)WindowList.imp $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.imp,) \
+	$(if $(WINDOWS),$(OBJ)Win32Interface.imp,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.imp,) $(OBJ)WindowsSkin.imp \
+	$(OBJ)Anchor.imp $(OBJ)ClipBoard.imp $(OBJ)Cursor.imp $(OBJ)FormDesigner.imp \
+	$(OBJ)GuiApplication.imp $(OBJ)Interface.imp $(OBJ)Key.imp $(OBJ)Skin.imp $(OBJ)Timer.imp \
+	$(OBJ)typeEdit.imp $(OBJ)Window.imp $(OBJ)Array.imp $(OBJ)AVLTree.imp $(OBJ)BuiltInContainer.imp \
+	$(OBJ)Container.imp $(OBJ)CustomAVLTree.imp $(OBJ)LinkList.imp $(OBJ)List.imp $(OBJ)Map.imp \
+	$(OBJ)BinaryTree.imp $(OBJ)BTNode.imp $(OBJ)dataTypes.imp $(OBJ)instance.imp $(OBJ)String.imp \
+	$(OBJ)OldList.imp
 
 SOURCES = $(SOURCES1) $(SOURCES2) $(SOURCES3)
 SOURCES1 = src/sys/Archive.ec src/sys/BufferedFile.ec src/sys/Date.ec src/sys/DualPipe.ec \
@@ -118,14 +121,15 @@ SOURCES1 = src/sys/Archive.ec src/sys/BufferedFile.ec src/sys/Date.ec src/sys/Du
 	src/sys/JSON.ec src/sys/JSONGlobalSettings.ec src/sys/memory.ec src/sys/Mutex.ec \
 	src/sys/Semaphore.ec src/sys/System.ec src/sys/TempFile.ec src/sys/Thread.ec src/sys/Time.ec \
 	src/sys/unicode.ec src/sys/units.ec src/sys/File.c src/sys/DualPipe.c src/sys/System.c \
-	src/gfx/bitmaps/BMPFormat.ec $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode-tables.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-arabic.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-buffer.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-gdef.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-gpos.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-gsub.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-hangul.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-hebrew.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-indic.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-khmer.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-myanmar.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-open.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-shaper.c)
+	src/sys/i18n.ec src/gfx/bitmaps/BMPFormat.ec \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode-tables.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-arabic.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-buffer.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-gdef.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-gpos.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-gsub.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-hangul.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-hebrew.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-indic.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-khmer.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-myanmar.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-open.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-shaper.c)
 SOURCES2 = $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-stream.c) \
 	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-impl.c) \
 	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-thai.c) $(if $(WINDOWS),src/gfx/drivers/GDIDisplayDriver.ec,) \
@@ -333,6 +337,9 @@ $(OBJ)unicode.sym: src/sys/unicode.ec
 
 $(OBJ)units.sym: src/sys/units.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/units.ec -o $(OBJ)units.sym
+
+$(OBJ)i18n.sym: src/sys/i18n.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/i18n.ec -o $(OBJ)i18n.sym
 
 $(OBJ)BMPFormat.sym: src/gfx/bitmaps/BMPFormat.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/bitmaps/BMPFormat.ec -o $(OBJ)BMPFormat.sym
@@ -587,6 +594,9 @@ $(OBJ)unicode.c: src/sys/unicode.ec $(OBJ)unicode.sym | $(SYMBOLS)
 
 $(OBJ)units.c: src/sys/units.ec $(OBJ)units.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/units.ec -o $(OBJ)units.c -symbols $(OBJ)
+
+$(OBJ)i18n.c: src/sys/i18n.ec $(OBJ)i18n.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/i18n.ec -o $(OBJ)i18n.c -symbols $(OBJ)
 
 $(OBJ)BMPFormat.c: src/gfx/bitmaps/BMPFormat.ec $(OBJ)BMPFormat.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/bitmaps/BMPFormat.ec -o $(OBJ)BMPFormat.c -symbols $(OBJ)
@@ -850,6 +860,9 @@ $(OBJ)DualPipe.c.o: src/sys/DualPipe.c
 
 $(OBJ)System.c.o: src/sys/System.c
 	$(CC) $(CFLAGS) -c src/sys/System.c -o $(OBJ)System.c.o
+
+$(OBJ)i18n.o: $(OBJ)i18n.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)i18n.c -o $(OBJ)i18n.o
 
 $(OBJ)BMPFormat.o: $(OBJ)BMPFormat.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BMPFormat.c -o $(OBJ)BMPFormat.o

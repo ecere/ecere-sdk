@@ -60,7 +60,6 @@ import "Direct3D9DisplayDriver"
 #define MAX_FONT_LINK_ENTRIES   10
 
 static HB_Script theCurrentScript;
-static DisplaySystem theDisplaySystem;
 
 static unichar UTF16GetChar(uint16 *string, int * nw)
 {
@@ -121,7 +120,7 @@ static void hb_getAdvances(HB_Font font, const HB_Glyph * glyphs, uint numGlyphs
          if(!pack)
          {
             glFont.glyphPacks.Add((pack = GlyphPack { key = packNo }));
-            pack.Render(glFont, fontEntryNum, theDisplaySystem);
+            pack.Render(glFont, fontEntryNum, glFont.displaySystem);
             pack.bitmap.alphaBlend = true;
          }
          lastPack = packNo;
@@ -208,7 +207,7 @@ static void hb_getGlyphMetrics(HB_Font font, HB_Glyph theGlyph, HB_GlyphMetrics 
          {
             pack = { key = packNo };
             glFont.glyphPacks.Add(pack);
-            pack.Render(glFont, fontEntryNum, theDisplaySystem);
+            pack.Render(glFont, fontEntryNum, glFont.displaySystem);
             pack.bitmap.alphaBlend = true;
          }
          lastPack = packNo;
@@ -687,6 +686,7 @@ public class Font : struct
    int height;
    FontFlags flags;
    char faceName[512];
+   DisplaySystem displaySystem;
    int ascent;
    float scale;
 
@@ -2794,6 +2794,7 @@ public class LFBDisplayDriver : DisplayDriver
          strcpy(fileName, faceName);
          strcpy(font.faceName, faceName);
          font.flags = flags;
+         font.displaySystem = displaySystem;
 
          if(!FileExists(fileName))
          {
@@ -3158,7 +3159,6 @@ public class LFBDisplayDriver : DisplayDriver
          int glyphScript = 0;
          FontEntry curFontEntry;
          
-         theDisplaySystem = displaySystem;
          pack.bitmap.alphaBlend = true;
 
          for(c = 0; c < len || (numGlyphs && (rightToLeft ? (glyphIndex >= 0) : (glyphIndex < numGlyphs)));)

@@ -1,0 +1,204 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-08-21 13:45+0800\n"
+"PO-Revision-Date: 2011-08-29 19:24+0800\n"
+"Last-Translator: lq <asdf@12.123>\n"
+"Language-Team: ec <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\sdk\epj2make\epj2make.ec:2
+#: .\sdk\epj2make\epj2make.ec:4
+msgid "ecere"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:7
+msgid "Project"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:10
+#: .\sdk\epj2make\epj2make.ec:19
+msgid ";"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:12
+msgid ":"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:85
+msgid "make"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:92
+msgid "cpp"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:99
+msgid "cc"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:106
+msgid "ecp"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:113
+msgid "ecc"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:120
+msgid "ecs"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:127
+msgid "ear"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:134
+msgid "noglobalsettings"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:138
+msgid "noresources"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:142
+msgid "includemk"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:206
+#, c-format
+msgid "invalid option: %s\n"
+msgstr "非法选项：%s\n"
+
+#: .\sdk\epj2make\epj2make.ec:227
+#, c-format
+msgid "Syntax:\n"
+msgstr "语法:\n"
+
+#: .\sdk\epj2make\epj2make.ec:228
+#, c-format
+msgid "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
+msgstr "   epj2make [-t <目标平台>] [-c <配置>] [工具链] [目录] [选项] [-o <输出>] <输入>\n"
+
+#: .\sdk\epj2make\epj2make.ec:229
+#, c-format
+msgid "      toolchain:\n"
+msgstr "      工具链：\n"
+
+#: .\sdk\epj2make\epj2make.ec:230
+#, c-format
+msgid "         [-make <make tool>]\n"
+msgstr "         [-make <make工具>]\n"
+
+#: .\sdk\epj2make\epj2make.ec:231
+#, c-format
+msgid "         [-cpp <c preprocessor>]\n"
+msgstr "         [-cpp <c预处理器>]\n"
+
+#: .\sdk\epj2make\epj2make.ec:232
+#, c-format
+msgid "         [-cc <c compiler>]\n"
+msgstr "         [-cc <c编译器>]\n"
+
+#: .\sdk\epj2make\epj2make.ec:233
+#, c-format
+msgid "         [-ecp <eC preprocessor>]\n"
+msgstr "         [-ecp <eC预处理器r>]\n"
+
+#: .\sdk\epj2make\epj2make.ec:234
+#, c-format
+msgid "         [-ecc <eC compiler>]\n"
+msgstr "         [-ecc <eC编译器>]\n"
+
+#: .\sdk\epj2make\epj2make.ec:235
+#, c-format
+msgid "         [-ecs <eC symbol generator>]\n"
+msgstr "         [-ecs <eC符号生成器>]\n"
+
+#: .\sdk\epj2make\epj2make.ec:236
+#, c-format
+msgid "         [-ear <Ecere Archiver>]\n"
+msgstr "         [-ear <Ecere文档>]\n"
+
+#: .\sdk\epj2make\epj2make.ec:237
+#, c-format
+msgid "      directories:\n"
+msgstr "      目录：\n"
+
+#: .\sdk\epj2make\epj2make.ec:238
+#, c-format
+msgid "         [-i <include dir[;inc dir[...]]>]\n"
+msgstr "         [-i <包含目录[;包含目录[...]]>]\n"
+
+#: .\sdk\epj2make\epj2make.ec:239
+#, c-format
+msgid "         [-l <library dir[;lib dir[...]]>]\n"
+msgstr "         [-l <库目录[;库目录[...]]>]\n"
+
+#: .\sdk\epj2make\epj2make.ec:240
+#, c-format
+msgid "      options:\n"
+msgstr "      选项：\n"
+
+#: .\sdk\epj2make\epj2make.ec:241
+#, c-format
+msgid "         [-noglobalsettings]\n"
+msgstr "         [-noglobalsettings]\n"
+
+#: .\sdk\epj2make\epj2make.ec:242
+#, c-format
+msgid "         [-noresources]\n"
+msgstr "         [-noresources]\n"
+
+#: .\sdk\epj2make\epj2make.ec:243
+#, c-format
+msgid "         [-d <intermediate objects directory>]\n"
+msgstr "         [-d <中间目标目录>]\n"
+
+#: .\sdk\epj2make\epj2make.ec:244
+#, c-format
+msgid "         [-includemk <include.mk path>]\n"
+msgstr "         [-includemk <include.mk路径>]\n"
+
+#: .\sdk\epj2make\epj2make.ec:257
+#: .\sdk\epj2make\epj2make.ec:269
+msgid "Default"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:312
+#, c-format
+msgid "Error: Project configuration (%s) was not found.\n"
+msgstr "错误：项目配置(%s)没有找到.\n"
+
+#: .\sdk\epj2make\epj2make.ec:319
+msgid "Release"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:328
+#, c-format
+msgid "Notice: Project configuration (%s) will be used.\n"
+msgstr "注意：项目配置(%s)将被使用.\n"
+
+#: .\sdk\epj2make\epj2make.ec:359
+#, c-format
+msgid "%s\n"
+msgstr ""
+
+#: .\sdk\epj2make\epj2make.ec:370
+#, c-format
+msgid "Error: Unable to open project file (%s) due to unknown error.\n"
+msgstr "错误：未知错误导致无法打开项目文件(%s).\n"
+
+#: .\sdk\epj2make\epj2make.ec:374
+#, c-format
+msgid "Error: Input file (%s) does not exist.\n"
+msgstr "错误：输入文件(%s)不存在.\n"
+

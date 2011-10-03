@@ -1878,7 +1878,7 @@ struct Specifier * spec = entry->dataType->qualifiers ? (struct Specifier *)(*en
 sprintf(fieldID, "__ecereDBField_%s_%s", tableName, entry->id->string);
 if(idClassDefs)
 {
-if(!nameField[0] && spec->type == 1 && !strcmp(spec->name, "String"))
+if(!nameField[0] && spec->type == 1 && (!strcmp(spec->name, "String") || !strcmp(spec->name, "eda::CIString")))
 {
 strcpy(nameField, entry->id->string);
 }

@@ -1,8 +1,8 @@
 namespace gui::dialogs;
 
 #ifdef __WIN32__
-static char * rootName = "Entire Computer";
-static char * msNetwork = "Microsoft Windows Network";
+static define rootName = $"Entire Computer";
+static define msNetwork = $"Microsoft Windows Network";
 #endif
 
 import "Window"
@@ -348,7 +348,7 @@ public:
             }
          }
          if(!numFilters)
-            filter.AddString("All files");
+            filter.AddString($"All files");
 
          if(fileFilter >= numFilters) fileFilter = 0;
          filter.currentRow = filter.FindRow(fileFilter);
@@ -426,7 +426,7 @@ private:
       listBox.AddField(typeField);
       listBox.AddField(sizeField);
 
-      filter.currentRow = filter.AddString("All files");
+      filter.currentRow = filter.AddString($"All files");
 
       GetWorkingDir(currentDirectory, MAX_DIRECTORY);
       FileFixCase(currentDirectory);
@@ -883,7 +883,7 @@ private:
             
                if(!strcmp(wildcardPointer, "*") || strstr(wildcardPointer, "*.*"))
                {
-                  strcpy(name, "All Files");
+                  strcpy(name, $"All Files");
                   customFilter.extensions = null;
                }
                else

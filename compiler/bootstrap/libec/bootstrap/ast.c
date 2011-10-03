@@ -1430,9 +1430,9 @@ struct __ecereNameSpace__ecere__com__Instance * container;
 struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
 };
 
-struct Expression * MkExpCall(struct Expression * expression, struct __ecereNameSpace__ecere__sys__OldList * arguments);
-
 extern struct Expression * QMkExpId(char *  id);
+
+struct Expression * MkExpCall(struct Expression * expression, struct __ecereNameSpace__ecere__sys__OldList * arguments);
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_map(struct __ecereNameSpace__ecere__com__MapIterator * this);
 
@@ -1458,6 +1458,8 @@ extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameS
 
 struct Expression * MkExpIntlString(char * string)
 {
+struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
+
 if(inCompiler)
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, intlStrings), it);
@@ -1475,7 +1477,9 @@ __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator,
 });
 }
 }
-return MkExpCall(QMkExpId("gettext"), MkListOne(MkExpString(string)));
+ListAdd(list, QMkExpId("__thisModule"));
+ListAdd(list, MkExpString(string));
+return MkExpCall(QMkExpId("GetTranslatedString"), list);
 }
 
 struct Expression * MkExpOp(struct Expression * exp1, int op, struct Expression * exp2)

@@ -952,7 +952,8 @@ public class PopupMenu : Window
             }
             else
             {
-               FontExtent(display, fontObject, ITEM_TEXT(item), strlen(ITEM_TEXT(item)), &len, null);
+               char * text = ITEM_TEXT(item);
+               FontExtent(display, fontObject, text, text ? strlen(text) : 0, &len, null);
                if((mx >= x - 16 && mx < x + len + 16))
                {
                   if(!ITEM_DISABLED(item))

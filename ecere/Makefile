@@ -242,7 +242,8 @@ RESOURCES2 = $(RES)devices/driveRemovableMedia.png $(RES)devices/mediaFloppy.png
 	$(RES)mimeTypes/textHyperTextMarkup.png $(RES)mimeTypes/brokenFile.png $(RES)places/driveRemote.png
 RESOURCES3 = $(RES)places/folder.png $(RES)places/folderRemote.png \
 	$(RES)places/networkServer.png $(RES)places/networkWorkgroup.png $(RES)places/brokenFolder.png \
-	$(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png $(RES)unicode/derivedGeneralCategoryStripped.txt
+	$(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png $(RES)unicode/derivedGeneralCategoryStripped.txt \
+	locale/zh_CN/LC_MESSAGES/ecere.mo
 
 
 # TOOLCHAIN
@@ -381,6 +382,7 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(EAR) awq $(TARGET) $(RES)places/driveRemote.png $(RES)places/folder.png $(RES)places/folderRemote.png $(RES)places/networkServer.png $(RES)places/networkWorkgroup.png $(RES)places/brokenFolder.png "places"
 	$(EAR) awq $(TARGET) $(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png "status"
 	$(EAR) awq $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt "unicode"
+	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ecere.mo "locale/zh_CN/LC_MESSAGES"
 	$(call cpq,$(TARGET),../$(SODESTDIR))
 ifdef LINUX
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO).0

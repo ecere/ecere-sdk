@@ -1195,12 +1195,18 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 }
 }
+for(defModule = modules.first; defModule; defModule = defModule->next)
+if(defModule->globalInstance)
+{
+if(!strcmp(defModule->name, "i18n"))
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereCreateModuleInstances_i18n();\n");
+}
+if(i18n)
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      LoadTranslatedStrings(module, \"%s\");\n", projectName);
 if(isDynamicLibrary)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   }\n");
 }
-if(i18n)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   LoadTranslatedStrings(module, \"%s\");\n", projectName);
 if(!isDynamicLibrary && thisAppClass)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   _class = eSystem_FindClass(__currentModule, \"%s\");\n", thisAppClass->name);
@@ -1219,6 +1225,8 @@ if(defModule->globalInstance)
 {
 char moduleName[1024];
 
+if(!strcmp(defModule->name, "i18n"))
+continue;
 strcpy(moduleName, defModule->name);
 __ecereNameSpace__ecere__sys__ChangeCh(moduleName, ' ', '_');
 __ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
@@ -1256,6 +1264,9 @@ if(isDynamicLibrary)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   if(__currentModule == module)\n");
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   {\n");
 }
+{
+unsigned int destroyI18n = 0x0;
+
 if(modules.count)
 {
 for(defModule = modules.first; defModule; defModule = defModule->next)
@@ -1263,6 +1274,11 @@ if(defModule->globalInstance)
 {
 char moduleName[1024];
 
+if(!strcmp(defModule->name, "i18n"))
+{
+destroyI18n = 0x1;
+continue;
+}
 strcpy(moduleName, defModule->name);
 __ecereNameSpace__ecere__sys__ChangeCh(moduleName, ' ', '_');
 __ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
@@ -1273,6 +1289,9 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 }
 if(i18n)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   UnloadTranslatedStrings(__currentModule);\n");
+if(destroyI18n)
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereDestroyModuleInstances_i18n();\n");
+}
 if(isDynamicLibrary)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   }\n");

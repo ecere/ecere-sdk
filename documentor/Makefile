@@ -35,7 +35,7 @@ SOURCES = ../extras/html/htmlParser.ec ../extras/html/HTMLView.ec \
 	../extras/html/lines.ec ../extras/html/tables.ec ../ide/src/IDESettings.ec \
 	../ide/src/OldIDESettings.ec ../extras/gui/controls/StringsBox.ec src/Documentor.ec src/SettingsDialog.ec
 
-RESOURCES =
+RESOURCES = locale/zh_CN/LC_MESSAGES/documentor.mo
 
 # CROSS-PLATFORM MAGIC
 
@@ -89,6 +89,7 @@ $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
+	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/documentor.mo "locale/zh_CN/LC_MESSAGES"
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
 
 # SYMBOL RULES

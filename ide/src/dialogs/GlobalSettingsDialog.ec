@@ -4,9 +4,9 @@ import "SelectorBar"
 import "CompilersDetectionDialog"
 import "ide"
 
-FileDialog settingsFileDialog { type = selectDir, text = "Select directory" };
+FileDialog settingsFileDialog { type = selectDir, text = $"Select directory" };
 
-FileDialog toolchainFileDialog { type = open, text = "Open"; mayNotExist = true; };
+FileDialog toolchainFileDialog { type = open, text = $"Open"; mayNotExist = true; };
 
 class GlobalSettingsDialog : Window
 {
@@ -15,7 +15,7 @@ class GlobalSettingsDialog : Window
    background = activeBorder;
    hasClose = true;
    borderStyle = sizable;
-   text = "Global Settings";
+   text = $"Global Settings";
    minClientSize = { 560, 420 };
    nativeDecorations = true;
 
@@ -41,7 +41,7 @@ class GlobalSettingsDialog : Window
 
    Button cancel
    {
-      parent = this, hotKey = escape, text = "Cancel", id = DialogResult::cancel;
+      parent = this, hotKey = escape, text = $"Cancel", id = DialogResult::cancel;
       position = { 290, 290 }, size = { 80 };
       anchor = { right = 8, bottom = 8 };
 
@@ -49,8 +49,8 @@ class GlobalSettingsDialog : Window
       {
          if(!settingsModified || MessageBox {
             type = okCancel, master = ide,
-            text = "Lose Changes?",
-            contents = "Are you sure you wish to discard changes?"
+            text = $"Lose Changes?",
+            contents = $"Are you sure you wish to discard changes?"
              }.Modal() == ok)
             Destroy(0);
          return true;
@@ -59,7 +59,7 @@ class GlobalSettingsDialog : Window
 
    Button ok
    {
-      parent = this, isDefault = true, text = "OK";
+      parent = this, isDefault = true, text = $"OK";
       position = { 200, 290 }, size = { 90 };
       anchor = { right = 96, bottom = 8 };
 
@@ -212,23 +212,23 @@ class GlobalSettingsDialog : Window
 class EditorTab : GlobalSettingsSubTab
 {
    background = activeBorder;
-   text = "Editor";
+   text = $"Editor";
 
    Button useFreeCaret
    {
-      this, text = "Move code editor caret freely past end of line", position = { 16, 68 }, isCheckbox = true;
+      this, text = $"Move code editor caret freely past end of line", position = { 16, 68 }, isCheckbox = true;
       NotifyClicked = NotifyClickedModifiedDocument;
    };
 
    Button caretFollowsScrolling
    {
-      this, text = "Keep caret visible (move along) when scrolling", position = { 16, 88 }, isCheckbox = true;
+      this, text = $"Keep caret visible (move along) when scrolling", position = { 16, 88 }, isCheckbox = true;
       NotifyClicked = NotifyClickedModifiedDocument;
    };
 
    Button showLineNumbers
    {
-      this, text = "Show line numbers in code editor", position = { 16, 108 }, isCheckbox = true;
+      this, text = $"Show line numbers in code editor", position = { 16, 108 }, isCheckbox = true;
       NotifyClicked = NotifyClickedModifiedDocument;
    };
 
@@ -256,11 +256,11 @@ static void DrawStipple(Surface surface, Size clientSize)
 class CompilersTab : GlobalSettingsSubTab
 {
    background = activeBorder;
-   text = "Compilers";
+   text = $"Compilers";
 
    SelectorBar compilerSelector
    {
-      this, text = "Compiler Configurations:", anchor = { left = 148, top = 8, right = 99 }; size = { 0, 26 };
+      this, text = $"Compiler Configurations:", anchor = { left = 148, top = 8, right = 99 }; size = { 0, 26 };
       opacity = 0;
       direction = horizontal, scrollable = true;
 
@@ -428,8 +428,8 @@ class CompilersTab : GlobalSettingsSubTab
          if(activeCompiler)
          {
             CompilerConfig compilerToDelete = activeCompiler;
-            String title = PrintString("Delete ", compilerToDelete.name, " Compiler Configuration");
-            String msg = PrintString("Are you sure you wish to delete the ", compilerToDelete.name, " compiler configuration?");
+            String title = PrintString($"Delete ", compilerToDelete.name, $" Compiler Configuration");
+            String msg = PrintString($"Are you sure you wish to delete the ", compilerToDelete.name, $" compiler configuration?");
             if(MessageBox { type = okCancel, text = title, contents = msg }.Modal() == ok)
             {
                SelectorButton button = compilerSelector.FindButtonByID((int)compilerToDelete);
@@ -522,7 +522,7 @@ class CompilersTab : GlobalSettingsSubTab
 class CompilerDirectoriesTab : CompilersSubTab
 {
    background = activeBorder;
-   text = "Directories";
+   text = $"Directories";
 
    Button dirTypeTglBtn[DirTypes];
    DirectoriesBox dirs[DirTypes], currentDirs;
@@ -637,55 +637,55 @@ class CompilerDirectoriesTab : CompilersSubTab
 class CompilerToolchainTab : CompilersSubTab
 {
    background = activeBorder;
-   text = "Toolchain";
+   text = $"Toolchain";
 
    Label ecpLabel { this, position = { 8, 12 }, labeledWindow = ecp, tabCycle = false, inactive = true };
    PathBox ecp
    {
       this, anchor = { left = 120, top = 8, right = 8 };
-      text = "eC Precompiler", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"eC Precompiler", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label eccLabel { this, position = { 8, 38 }, labeledWindow = ecc, tabCycle = false, inactive = true };
    PathBox ecc
    {
       this, anchor = { left = 120, top = 34, right = 8 };
-      text = "eC Compiler", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"eC Compiler", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label ecsLabel { this, position = { 8, 64 }, labeledWindow = ecs, tabCycle = false, inactive = true };
    PathBox ecs
    {
       this, anchor = { left = 120, top = 60, right = 8 };
-      text = "eC Symbol Loader", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"eC Symbol Loader", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label earLabel { this, position = { 8, 90 }, labeledWindow = ear, tabCycle = false, inactive = true };
    PathBox ear
    {
       this, anchor = { left = 120, top = 86, right = 8 };
-      text = "Ecere Archiver", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"Ecere Archiver", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label cppLabel { this, position = { 8, 116 }, labeledWindow = cpp, tabCycle = false, inactive = true };
    PathBox cpp
    {
       this, anchor = { left = 120, top = 112, right = 8 };
-      text = "C Preprocessor", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"C Preprocessor", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label ccLabel { this, position = { 8, 142 }, labeledWindow = cc, tabCycle = false, inactive = true };
    PathBox cc
    {
       this, anchor = { left = 120, top = 138, right = 8 };
-      text = "C Compiler", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"C Compiler", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label makeLabel { this, position = { 8, 168 }, labeledWindow = make, tabCycle = false, inactive = true };
    PathBox make
    {
       this, anchor = { left = 120, top = 164, right = 8 };
-      text = "GNU Make", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"GNU Make", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label execPrefixLabel { this, position = { 8, 194 }, labeledWindow = execPrefix, tabCycle = false, inactive = true };
    PathBox execPrefix
    {
       this, anchor = { left = 120, top = 190, right = 8 };
-      text = "Execution Prefix", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"Execution Prefix", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
 
    bool NotifyModifiedDocument(PathBox pathBox)
@@ -747,13 +747,13 @@ class CompilerToolchainTab : CompilersSubTab
 class CompilerEnvironmentTab : CompilersSubTab
 {
    background = activeBorder;
-   text = "Environment";
+   text = $"Environment";
 
    Label labelEnvVars { envVars, labeledWindow = envVars, position = { 0, 6 }; };
    NamedStringsBox envVars
    {
       this, size = { 290, 22 }, anchor = { left = 8, top = 8, right = 8, bottom = 8 };
-      text = "Environment Variables", hotKey = altE; //, option = OPTION(postbuildCommands);
+      text = $"Environment Variables", hotKey = altE; //, option = OPTION(postbuildCommands);
 
       bool NotifyModified(NamedStringsBox stringsBox)
       {
@@ -784,13 +784,13 @@ class CompilerEnvironmentTab : CompilersSubTab
 class CompilerOptionsTab : CompilersSubTab
 {
    background = activeBorder;
-   text = "Options";
+   text = $"Options";
 
    Label labelTargetPlatform { this, position = { 8, 12 }, labeledWindow = targetPlatform };   // TOCHECK: nameless instances dissapear when selecting tabs?
    DropBox targetPlatform
    {
       this, position = { 110, 8 }, size = { 160 };
-      text = "Target Platform", hotKey = altT;
+      text = $"Target Platform", hotKey = altT;
       bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
       {
          CompilerConfig compiler = loadedCompiler;
@@ -808,7 +808,7 @@ class CompilerOptionsTab : CompilersSubTab
    Label numJobsLabel { this, position = { 8, 40 }, labeledWindow = numJobsBox };
    DataBox numJobsBox
    {
-      this, text = "Number of parallel build jobs", hotKey = altJ, borderStyle = deep;
+      this, text = $"Number of parallel build jobs", hotKey = altJ, borderStyle = deep;
       position = { 184, 36 }, size = { 80, 20 }, type = class(int), data = &numJobs;
 
       bool OnKeyDown(Key key, unichar ch)
@@ -847,7 +847,7 @@ class CompilerOptionsTab : CompilersSubTab
 
    Button ccacheEnabled
    {
-      this, text = "Use ccache", hotKey = altC, position = { 8, 68 };
+      this, text = $"Use ccache", hotKey = altC, position = { 8, 68 };
       isCheckbox = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -865,7 +865,7 @@ class CompilerOptionsTab : CompilersSubTab
 
    Button distccEnabled
    {
-      this, text = "Use distcc", hotKey = altD, position = { 8, 96 };
+      this, text = $"Use distcc", hotKey = altD, position = { 8, 96 };
       isCheckbox = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -885,7 +885,7 @@ class CompilerOptionsTab : CompilersSubTab
    Label distccHostsLabel { this, position = { 8, 124 }, labeledWindow = distccHosts };
    EditBox distccHosts
    {
-      this, text = "distcc hosts", hotKey = altH;
+      this, text = $"distcc hosts", hotKey = altH;
       position = { 88, 120 }, size = { 300 };
 
       bool NotifyModified(EditBox editBox)
@@ -961,13 +961,13 @@ class CompilersSubTab : Tab
 class ProjectOptionsTab : GlobalSettingsSubTab
 {
    background = activeBorder;
-   text = "Project";
+   text = $"Project";
 
    Label defaultTargetDirLabel { this, position = { 8, 34 }, labeledWindow = defaultTargetDir };
    PathBox defaultTargetDir
    {
       this, size = { 160, 21 }, position = { 8, 52 }, anchor = { left = 8, top = 52, right = 8 };
-      text = "Default Target Directory", hotKey = altT;
+      text = $"Default Target Directory", hotKey = altT;
 
       bool NotifyModified(PathBox editBox)
       {
@@ -980,7 +980,7 @@ class ProjectOptionsTab : GlobalSettingsSubTab
    PathBox defaultIntermediateObjDir
    {
       this, size = { 160, 21 }, position = { 8, 96 }, anchor = { left = 8, top = 96, right = 8 };
-      text = "Default Intermediate Objects Directory", hotKey = altI;
+      text = $"Default Intermediate Objects Directory", hotKey = altI;
 
       bool NotifyModified(PathBox editBox)
       {
@@ -1009,13 +1009,13 @@ class GlobalSettingsSubTab : Tab
 class WorkspaceOptionsTab : GlobalSettingsSubTab
 {
    background = activeBorder;
-   text = "Workspace";
+   text = $"Workspace";
 
    Label defaultCompilerLabel { this, position = { 8, 14 }, labeledWindow = defaultCompilerDropBox };
    DropBox defaultCompilerDropBox
    {
       this, position = { 140, 8 }, size = { 220 };
-      text = "Default Compiler", hotKey = altA;
+      text = $"Default Compiler", hotKey = altA;
 
       bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
       {

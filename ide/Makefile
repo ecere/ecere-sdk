@@ -88,7 +88,7 @@ RESOURCES = $(RES)actions/attach.png $(RES)actions/delete.png $(RES)actions/deta
 	$(RES)codeMarks/breakpointHalf.png $(RES)codeMarks/breakpointHalfDisabled.png $(RES)codeMarks/cursor.png \
 	$(RES)codeMarks/cursorError.png $(RES)codeMarks/topFrame.png $(RES)codeMarks/topFrameError.png \
 	$(RES)codeMarks/topFrameHalf.png $(RES)codeMarks/topFrameHalfError.png $(RES)others/mousePointer.png \
-	res/ecere.jpg res/ecereBack.jpg res/icon.png ../include.mk
+	locale/zh_CN/LC_MESSAGES/ide.mo res/ecere.jpg res/ecereBack.jpg res/icon.png ../include.mk
 
 # CROSS-PLATFORM MAGIC
 
@@ -175,6 +175,7 @@ endif
 	$(EAR) awq $(TARGET) $(RES)actions/attach.png $(RES)actions/delete.png $(RES)actions/detach.png $(RES)actions/docNew.png $(RES)actions/editCopy.png $(RES)actions/editDelete.png $(RES)actions/delete2.png "actions"
 	$(EAR) awq $(TARGET) $(RES)codeMarks/breakpoint.png $(RES)codeMarks/breakpointDisabled.png $(RES)codeMarks/breakpointHalf.png $(RES)codeMarks/breakpointHalfDisabled.png $(RES)codeMarks/cursor.png $(RES)codeMarks/cursorError.png $(RES)codeMarks/topFrame.png $(RES)codeMarks/topFrameError.png $(RES)codeMarks/topFrameHalf.png $(RES)codeMarks/topFrameHalfError.png "codeMarks"
 	$(EAR) awq $(TARGET) $(RES)others/mousePointer.png "others"
+	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ide.mo "locale/zh_CN/LC_MESSAGES"
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
 
 ifdef WINDOWS

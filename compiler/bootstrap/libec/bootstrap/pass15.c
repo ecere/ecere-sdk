@@ -11754,12 +11754,7 @@ if(id->_class && id->_class->name)
 {
 id->classSym = id->_class->symbol;
 }
-if(strstr(id->string, "gettext") == id->string)
-{
-exp->expType = ProcessTypeString("char *(char *)", 0x1);
-break;
-}
-else if(strstr(id->string, "__ecereClass") == id->string)
+if(strstr(id->string, "__ecereClass") == id->string)
 {
 exp->expType = ProcessTypeString("ecere::com::Class", 0x1);
 break;

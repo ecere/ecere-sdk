@@ -76,32 +76,20 @@ extern int __attribute__((__stdcall__)) __ecereDll_Load_ecere(struct __ecereName
 extern int __attribute__((__stdcall__)) __ecereDll_Unload_ecere(struct __ecereNameSpace__ecere__com__Instance * module);
 #endif
 
-static FileFilter fileFilters[] =
-{
-   { 
-      "C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)",
-      "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx"
-   },
-   {
-      "Header Files for C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)",
-      "eh, h, hpp, hh, hxx"
-   },
-   {
-      "C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)",
-      "ec, c, cpp, cc, cxx"
-   },
-   {
-      "Text files (*.txt)",
-      "txt"
-   },
-   { "All files", null }
-};
+static Array<FileFilter> fileFilters
+{ [
+   { $"C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)", "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx" },
+   { $"Header Files for C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)", "eh, h, hpp, hh, hxx" },
+   { $"C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)", "ec, c, cpp, cc, cxx" },
+   { $"Text files (*.txt)", "txt" },
+   { $"All files", null }
+] };
 
-static FileType fileTypes[] =
-{
-   { "eC Source Code", "ec", whenNoneGiven },
-   { "Text Files", "txt", never }
-};
+static Array<FileType> fileTypes
+{ [
+   { $"eC Source Code", "ec", whenNoneGiven },
+   { $"Text Files", "txt", never }
+] };
 
 static char * iconNames[] = 
 {
@@ -141,15 +129,16 @@ class EditFileDialog : FileDialog
 
 EditFileDialog codeEditorFileDialog
 {
-   type = multiOpen, text = "Open",
-   types = fileTypes, sizeTypes = sizeof(fileTypes);
-   filters = fileFilters, sizeFilters = sizeof(fileFilters)
+   type = multiOpen, text = $"Open",
+   types = fileTypes.array, sizeTypes = fileTypes.count * sizeof(FileType);
+   filters = fileFilters.array, sizeFilters = fileFilters.count * sizeof(FileFilter)
 };
 
 EditFileDialog codeEditorFormFileDialog
 {
-   type = open, text = "Open Project",
-   types = fileTypes, sizeTypes = sizeof(fileTypes), filters = fileFilters, sizeFilters = sizeof(fileFilters)
+   type = open, text = $"Open Project",
+   types = fileTypes.array, sizeTypes = fileTypes.count * sizeof(FileType),
+   filters = fileFilters.array, sizeFilters = fileFilters.count * sizeof(FileFilter)
 };
 
 define OpenBracket = '{';
@@ -685,7 +674,7 @@ class CodeEditor : Window
       // OnActivateClient is called after OnActivate
       if(!updatingCode)
       {
-         sprintf(temp, "Ln %d, Col %d", line, editBox.column + 1);
+         sprintf(temp, $"Ln %d, Col %d", line, editBox.column + 1);
          ide.pos.text = temp;
       }
       if(sheet.codeEditor != this) return;
@@ -722,7 +711,7 @@ class CodeEditor : Window
             //Update(null);
          }
 
-         sprintf(temp, "Ln %d, Col %d", line, editBox.column + 1);
+         sprintf(temp, $"Ln %d, Col %d", line, editBox.column + 1);
          ide.pos.text = temp;
 
          if(expectingMove)
@@ -1390,9 +1379,9 @@ class CodeEditor : Window
                if(!node)
                {
                   char * s;
-                  s = PrintString("The ", fileName, " file is not part of any project.\n", 
-                     "It can't be compiled.");
-                  MessageBox { type = ok, parent = ide, master = ide, text = "File not in project error", contents = s }.Modal();
+                  s = PrintString($"The ", fileName, $" file is not part of any project.\n", 
+                     $"It can't be compiled.");
+                  MessageBox { type = ok, parent = ide, master = ide, text = $"File not in project error", contents = s }.Modal();
                   delete s;
                   return false;
                }
@@ -1892,14 +1881,14 @@ class CodeEditor : Window
       }
    };
 
-   Menu fileMenu { menu, "File", f };  // MenuPlacement?
-   MenuItem { fileMenu, "Save", s, Key { s, ctrl = true }, NotifySelect = MenuFileSave };
-   MenuItem { fileMenu, "Save As...", a, NotifySelect = MenuFileSaveAs };
+   Menu fileMenu { menu, $"File", f };  // MenuPlacement?
+   MenuItem { fileMenu, $"Save", s, Key { s, ctrl = true }, NotifySelect = MenuFileSave };
+   MenuItem { fileMenu, $"Save As...", a, NotifySelect = MenuFileSaveAs };
 
-   Menu debugMenu { menu, "Debug", d };  // MenuPlacement?
+   Menu debugMenu { menu, $"Debug", d };  // MenuPlacement?
    MenuItem debugRunToCursor
    {
-      debugMenu, "Run To Cursor", c, Key { f10, ctrl = true };
+      debugMenu, $"Run To Cursor", c, Key { f10, ctrl = true };
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
          ProjectView projectView = ide.projectView;
@@ -1914,7 +1903,7 @@ class CodeEditor : Window
    };
    MenuItem debugSkipRunToCursor
    {
-      debugMenu, "Run To Cursor Skipping Breakpoints", u, Key { f10, ctrl = true, shift = true };
+      debugMenu, $"Run To Cursor Skipping Breakpoints", u, Key { f10, ctrl = true, shift = true };
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
          ProjectView projectView = ide.projectView;
@@ -1927,7 +1916,7 @@ class CodeEditor : Window
    MenuDivider { debugMenu };
    MenuItem debugToggleBreakpoint
    {
-      debugMenu, "Toggle Breakpoint", t, f9;
+      debugMenu, $"Toggle Breakpoint", t, f9;
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
          ProjectView projectView = ide.projectView;
@@ -2191,9 +2180,9 @@ class CodeEditor : Window
       {
          char message[2048];
 
-         sprintf(message, "The document %s was modified by another application.\n"
-            "Would you like to reload it and lose your changes?", fileName);
-         if(MessageBox { type = yesNo, master = /*parent = */parent, text = "Document has been modified",
+         sprintf(message, $"The document %s was modified by another application.\n"
+            $"Would you like to reload it and lose your changes?", fileName);
+         if(MessageBox { type = yesNo, master = /*parent = */parent, text = $"Document has been modified",
             contents = message }.Modal() == yes)
             reload = true;
       }
@@ -2413,7 +2402,7 @@ class CodeEditor : Window
       if(designer)
       {
          char title[1024];
-         sprintf(title, "Untitled %d", documentID);
+         sprintf(title, $"Untitled %d", documentID);
          // designer.fileName = CopyString(title);
          designer.fileName = title;
       }
@@ -5137,8 +5126,8 @@ class CodeEditor : Window
             if(!method || method.type != virtualMethod)
             {
                char title[1024];
-               sprintf(title, "Attach %s", function.declarator.symbol.string);
-               if(MessageBox { type = yesNo, master = parent, text = title, contents = "Method is unused. Move method inside instance?"}.Modal() == yes)
+               sprintf(title, $"Attach %s", function.declarator.symbol.string);
+               if(MessageBox { type = yesNo, master = parent, text = title, contents = $"Method is unused. Move method inside instance?"}.Modal() == yes)
                {
                   moveAttached = true;
                }
@@ -5178,9 +5167,9 @@ class CodeEditor : Window
             if(!method || method.type != virtualMethod)
             {
                char title[1024];
-               sprintf(title, "Attach %s", function.declarator.symbol.string);
+               sprintf(title, $"Attach %s", function.declarator.symbol.string);
                if(MessageBox { type = yesNo, master = parent, text = title, 
-                  contents = "Method is unused. Move method inside instance?" }.Modal() == yes)
+                  contents = $"Method is unused. Move method inside instance?" }.Modal() == yes)
                {
                   moveAttached = true;
                }
@@ -5205,16 +5194,16 @@ class CodeEditor : Window
          Window dialog
          {
             hasClose = true, borderStyle = sizable, minClientSize = { 300, 55 }, 
-            master = sheet, text = "Name detached method", background = activeBorder
+            master = sheet, text = $"Name detached method", background = activeBorder
          };
          Button cancelButton
          {
-            dialog, anchor = { horz = 45, top = 30 }, size = { 80 }, text = "Cancel", hotKey = escape,
+            dialog, anchor = { horz = 45, top = 30 }, size = { 80 }, text = $"Cancel", hotKey = escape,
             id = DialogResult::cancel, NotifyClicked = ButtonCloseDialog
          };
          Button okButton
          {
-            dialog, anchor = { horz = -45, top = 30 }, size = { 80 }, text = "OK", isDefault = true,
+            dialog, anchor = { horz = -45, top = 30 }, size = { 80 }, text = $"OK", isDefault = true,
             id = DialogResult::ok, NotifyClicked = ButtonCloseDialog
          };
          EditBox nameBox

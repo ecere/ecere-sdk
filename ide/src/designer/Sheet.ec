@@ -182,7 +182,7 @@ void GetProperty(Property prop, Instance object, DataValue value)
 #ifdef _DEBUG
          if(prop._class.module.application == __thisModule &&
             prop.dataTypeClass.module.application == ((Designer)GetActiveDesigner()).codeEditor.privateModule)
-            printf("Warning");
+            printf($"Warning");
 #endif
       }
 
@@ -270,7 +270,7 @@ void SetProperty(Property prop, Instance object, DataValue value)
 
 class Sheet : Window
 {
-   text = "Sheet";
+   text = $"Sheet";
    borderStyle = sizable;
    hasClose = true;
    //tabCycle = true;
@@ -387,14 +387,14 @@ class Sheet : Window
 
    Button propBtn
    {
-      this, inactive = true, text = "Properties", bevelOver = true, isRadio = true;
+      this, inactive = true, text = $"Properties", bevelOver = true, isRadio = true;
       size.h = 20;
       anchor = { left = 0, bottom = 3, right = 0.5 };
       bitmap = null;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         text = "Properties";
+         text = $"Properties";
          button.font = { "Tahoma", 8.25f, bold = true };
          methBtn.font = null;
 
@@ -415,7 +415,7 @@ class Sheet : Window
    Button methBtn
    {
       this, inactive = true, bevelOver = true;
-      text = "Methods";
+      text = $"Methods";
       isRadio = true;
       bitmap = null;
       size.h = 20;
@@ -423,7 +423,7 @@ class Sheet : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         text = "Methods";
+         text = $"Methods";
          button.font = { "Tahoma", 8.25f, bold = true };
          propBtn.font = null;
 
@@ -443,8 +443,8 @@ class Sheet : Window
 
    // Menu
    menu = Menu { };
-   MenuPlacement editMenu { menu, text = "Edit" };
-   Menu viewMenu { menu, text = "View" };
+   MenuPlacement editMenu { menu, text = $"Edit" };
+   Menu viewMenu { menu, text = $"View" };
 
    // Property Sheet
    ListBox properties
@@ -505,10 +505,10 @@ class Sheet : Window
          MenuItem item;
          if(object.overriden == 0)
          {
-            MenuItem { menu, "Override", o, enter, bold = true, NotifySelect = OverrideMethodSelected };
+            MenuItem { menu, $"Override", o, enter, bold = true, NotifySelect = OverrideMethodSelected };
             if(object.compatible.count)
             {
-               Menu attachMenu { menu, "Attach", a };
+               Menu attachMenu { menu, $"Attach", a };
                OldLink compatible;
                for(compatible = object.compatible.first; compatible; compatible = compatible.next)
                {
@@ -519,17 +519,17 @@ class Sheet : Window
          }
          else if(object.overriden == 1)
          {
-            MenuItem { menu, "Go to", g, enter, bold = true, NotifySelect = GotoMethodSelected };
-            MenuItem { menu, "Detach", d, d, NotifySelect = DetachMethodSelected };
-            MenuItem { menu, "Delete", del, del, NotifySelect = DeleteMethodSelected };
+            MenuItem { menu, $"Go to", g, enter, bold = true, NotifySelect = GotoMethodSelected };
+            MenuItem { menu, $"Detach", d, d, NotifySelect = DetachMethodSelected };
+            MenuItem { menu, $"Delete", del, del, NotifySelect = DeleteMethodSelected };
          }
          else if(object.overriden == 2)
          {
-            MenuItem { menu, "Go to", g, enter, bold = true, NotifySelect = GotoMethodSelected };
-            MenuItem { menu, "Detach", d, d, NotifySelect = DetachMethodSelected };
+            MenuItem { menu, $"Go to", g, enter, bold = true, NotifySelect = GotoMethodSelected };
+            MenuItem { menu, $"Detach", d, d, NotifySelect = DetachMethodSelected };
             if(object.compatible.count > 1)
             {
-               Menu attachMenu { menu, "Reattach", r };
+               Menu attachMenu { menu, $"Reattach", r };
                OldLink compatible;
                for(compatible = object.compatible.first; compatible; compatible = compatible.next)
                {
@@ -592,12 +592,12 @@ class Sheet : Window
    methBtn.font = { "Tahoma", 8.25, bold = true };
    methBtn.checked = true;
    properties.visible = false;
-   text = "Methods";
+   text = $"Methods";
 #else
    propBtn.font = { "Tahoma", 8.25f, bold = true };
    propBtn.checked = true;
    methods.visible = false;
-   text = "Properties";
+   text = $"Properties";
 #endif
 
    Button alphabetical
@@ -792,7 +792,7 @@ class Sheet : Window
                      {
                         DataRow row;
                         PropertyInfo info { prop, disabled, bold ? codeEditor.boldFont : codeEditor.normalFont };
-                        char * name = prop.category ? prop.category : "Misc";
+                        char * name = prop.category ? prop.category : $"Misc";
                         Category category = categories.FindName(name, false);
 
                         // Hide properties like this for now..
@@ -920,7 +920,7 @@ class Sheet : Window
                         if(_class.defaultProperty && !strcmp(prop.name, _class.defaultProperty))
                         {
                            DataRow row;
-                           char * name = prop.category ? prop.category : "Misc";
+                           char * name = prop.category ? prop.category : $"Misc";
                            Category category = categories.FindName(name, false);
                            row = category ? (categorized ? category.row.FindRow((int)prop) : properties.FindRow((int)prop)) : null;
                            properties.currentRow = row;
@@ -1261,11 +1261,11 @@ class Sheet : Window
                   if(confirmation)
                   {
                      char title[1024];
-                     sprintf(title, "Delete %s", codeObject.name);
+                     sprintf(title, $"Delete %s", codeObject.name);
                      if(MessageBox
                         {
                            master = parent, type = okCancel, text = title, 
-                           contents = "Method still contains code. Are you sure you want to delete it?"
+                           contents = $"Method still contains code. Are you sure you want to delete it?"
                         }.Modal() == ok)
                         confirmation = false;
                   }
@@ -1273,12 +1273,12 @@ class Sheet : Window
                   if(!confirmation && codeObject.function.attached.count)
                   {
                      char title[1024];
-                     sprintf(title, "Delete %s", codeObject.name);
+                     sprintf(title, $"Delete %s", codeObject.name);
                      confirmation = true;
                      if(MessageBox
                         {
                            master = parent, type = okCancel, text = title,
-                           contents = "Other methods are still attached to this method. Are you sure you want to delete it?"
+                           contents = $"Other methods are still attached to this method. Are you sure you want to delete it?"
                         }.Modal() == ok)
                         confirmation = false;
                   }
@@ -1627,8 +1627,8 @@ public:
       char * category2 = data2.prop ? data2.prop.category : data2.categoryName;
       int result;
 
-      if(!category1) category1 = "Misc";
-      if(!category2) category2 = "Misc";
+      if(!category1) category1 = $"Misc";
+      if(!category2) category2 = $"Misc";
       
       if(!prop)
       {

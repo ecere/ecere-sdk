@@ -1863,6 +1863,22 @@ from wherever you obtained them.",
          "Files" : [
             "derivedGeneralCategoryStripped.txt"
          ]
+      },
+      {
+         "Folder" : "locale",
+         "Files" : [
+            {
+               "Folder" : "zh_CN",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "locale/zh_CN/LC_MESSAGES/ecere.mo"
+                     ]
+                  }
+               ]
+            }
+         ]
       }
    ]
 }

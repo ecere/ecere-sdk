@@ -16,26 +16,23 @@ import "ecere"
 #define ID_IMAGE_MODE_INDEXED    10
 #define ID_IMAGE_MODE_RGB        11
 
-static FileFilter filters[] =
-{
-   {
-      "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)",
-      "jpg, jpeg, bmp, pcx, png, gif"
-   },
-   { "All files", null }
-};
+static Array<FileFilter> filters
+{ [
+   { $"Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)", "jpg, jpeg, bmp, pcx, png, gif" },
+   { $"All files", null }
+] };
 
-static FileType types[] =
-{
-   { "Based on extension", null,  never },
-   { "JPG Image",          "jpg", always },
-   { "BMP Image",          "bmp", always },
-   { "PCX Image",          "pcx", always },
-   { "PNG Image",          "png", always },
-   { "GIF Image",          "gif", always }
-};
+static Array<FileType> types
+{ [
+   { $"Based on extension", null,  never },
+   { $"JPG Image",          "jpg", always },
+   { $"BMP Image",          "bmp", always },
+   { $"PCX Image",          "pcx", always },
+   { $"PNG Image",          "png", always },
+   { $"GIF Image",          "gif", always }
+] };
 
-FileDialog pictureEditFileDialog { filters = filters, sizeFilters = sizeof(filters), types = types, sizeTypes = sizeof(types) };
+FileDialog pictureEditFileDialog { filters = filters.array, sizeFilters = filters.count * sizeof(FileFilter), types = types.array, sizeTypes = types.count * sizeof(FileType) };
 
 class PictureEdit : Window
 {

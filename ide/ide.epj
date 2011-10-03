@@ -336,6 +336,22 @@
             "mousePointer.png"
          ]
       },
+      {
+         "Folder" : "locale",
+         "Files" : [
+            {
+               "Folder" : "zh_CN",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "locale/zh_CN/LC_MESSAGES/ide.mo"
+                     ]
+                  }
+               ]
+            }
+         ]
+      },
       "ecere.jpg",
       "ecereBack.jpg",
       "icon.png",

@@ -678,7 +678,7 @@ static bool matchCase = false, wholeWord = false, searchUp = false;
 
 static GoToDialog goToDialog
 {
-   autoCreate = false, isModal = true, text = "Go To"
+   autoCreate = false, isModal = true, text = $"Go To"
 };
 
 public class EditBox : CommonControl
@@ -940,10 +940,10 @@ private:
    menu = Menu { };
 
    // Edit Menu
-   Menu editMenu { menu, "Edit", e };
+   Menu editMenu { menu, $"Edit", e };
    MenuItem itemEditCut
    {
-      editMenu, "Cut\tCtrl+X", t, disabled = true;
+      editMenu, $"Cut\tCtrl+X", t, disabled = true;
 
       bool NotifySelect(MenuItem item, Modifiers mods)
       {
@@ -954,7 +954,7 @@ private:
    };
    MenuItem itemEditCopy
    {
-      editMenu, "Copy\tCtrl+C", c, disabled = true;
+      editMenu, $"Copy\tCtrl+C", c, disabled = true;
 
       bool NotifySelect(MenuItem item, Modifiers mods)
       {
@@ -964,7 +964,7 @@ private:
    };
    MenuItem itemEditPaste
    {
-      editMenu, "Paste\tCtrl+V", p;
+      editMenu, $"Paste\tCtrl+V", p;
    
       bool NotifySelect(MenuItem item, Modifiers mods)
       {
@@ -975,7 +975,7 @@ private:
    };
    MenuItem itemEditDelete
    {
-      editMenu, "Delete\tDel", d, disabled = true;
+      editMenu, $"Delete\tDel", d, disabled = true;
 
       bool NotifySelect(MenuItem item, Modifiers mods)
       {
@@ -987,7 +987,7 @@ private:
    MenuDivider { editMenu };
    MenuItem itemEditSelectAll
    {
-      editMenu, "Select All\tCtrl+A", a;
+      editMenu, $"Select All\tCtrl+A", a;
 
       bool NotifySelect(MenuItem item, Modifiers mods)
       {
@@ -998,7 +998,7 @@ private:
    MenuDivider { editMenu };
    MenuItem itemEditUndo
    {
-      editMenu, "Undo\tCtrl+Z", u;
+      editMenu, $"Undo\tCtrl+Z", u;
       disabled = true;
 
       bool NotifySelect(MenuItem item, Modifiers mods)
@@ -1009,7 +1009,7 @@ private:
    };
    MenuItem itemEditRedo
    {
-      editMenu, "Redo\tCtrl+Y", o;
+      editMenu, $"Redo\tCtrl+Y", o;
       disabled = true;
 
       bool NotifySelect(MenuItem item, Modifiers mods)
@@ -1021,7 +1021,7 @@ private:
    MenuDivider { editMenu };
    MenuItem
    {
-      editMenu, "Find Previous\tShift-F3", e, shiftF3;
+      editMenu, $"Find Previous\tShift-F3", e, shiftF3;
 
       bool NotifySelect(MenuItem item, Modifiers mods)
       {
@@ -1034,7 +1034,7 @@ private:
    };
    MenuItem
    {
-      editMenu, "Find Next\tF3", n, f3;
+      editMenu, $"Find Next\tF3", n, f3;
 
       bool NotifySelect(MenuItem item, Modifiers mods)
       {
@@ -1047,7 +1047,7 @@ private:
    };
    MenuItem itemEditFind
    {
-      editMenu, "Find...\tCtrl+F", f, ctrlF;
+      editMenu, $"Find...\tCtrl+F", f, ctrlF;
 
       bool NotifySelect(MenuItem item, Modifiers mods)
       {
@@ -1074,7 +1074,7 @@ private:
    };
    MenuItem
    {
-      editMenu, "Replace...\tCtrl+R", r, ctrlR;
+      editMenu, $"Replace...\tCtrl+R", r, ctrlR;
 
       bool NotifySelect(MenuItem item, Modifiers mods)
       {
@@ -1108,7 +1108,7 @@ private:
    MenuDivider { editMenu };
    MenuItem
    {
-      editMenu, "Go To...\tCtrl+G", g, ctrlG;
+      editMenu, $"Go To...\tCtrl+G", g, ctrlG;
 
       bool NotifySelect(MenuItem item, Modifiers mods)
       {
@@ -1121,7 +1121,7 @@ private:
    MenuDivider { editMenu };
    MenuItem itemEditInsertTab
    {
-      editMenu, "Insert Tabs", i, checkable = true;
+      editMenu, $"Insert Tabs", i, checkable = true;
 
       bool NotifySelect(MenuItem item, Modifiers mods)
       {
@@ -3030,12 +3030,12 @@ private:
          PopupMenu popup;
          Menu contextMenu { };
 
-         MenuItem { contextMenu, "Cut\tCtrl+X", t, NotifySelect = itemEditCut.NotifySelect, disabled = !selection || style.readOnly };
-         MenuItem { contextMenu, "Copy\tCtrl+C", c, NotifySelect = itemEditCopy.NotifySelect, disabled = !selection };
-         MenuItem { contextMenu, "Paste\tCtrl+V", p, NotifySelect = itemEditPaste.NotifySelect, disabled = style.readOnly };
-         MenuItem { contextMenu, "Delete\tDel", d, NotifySelect = itemEditDelete.NotifySelect, disabled = !selection || style.readOnly };
+         MenuItem { contextMenu, $"Cut\tCtrl+X", t, NotifySelect = itemEditCut.NotifySelect, disabled = !selection || style.readOnly };
+         MenuItem { contextMenu, $"Copy\tCtrl+C", c, NotifySelect = itemEditCopy.NotifySelect, disabled = !selection };
+         MenuItem { contextMenu, $"Paste\tCtrl+V", p, NotifySelect = itemEditPaste.NotifySelect, disabled = style.readOnly };
+         MenuItem { contextMenu, $"Delete\tDel", d, NotifySelect = itemEditDelete.NotifySelect, disabled = !selection || style.readOnly };
          MenuDivider { contextMenu };
-         MenuItem { contextMenu, "Select All\tCtrl+A", a, NotifySelect = itemEditSelectAll.NotifySelect };
+         MenuItem { contextMenu, $"Select All\tCtrl+A", a, NotifySelect = itemEditSelectAll.NotifySelect };
 
          popup = PopupMenu { master = this, menu = contextMenu,
    /*

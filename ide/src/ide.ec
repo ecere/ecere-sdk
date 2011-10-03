@@ -55,95 +55,56 @@ define pathListSep = ":";
 enum OpenCreateIfFails { no, yes, something, whatever };
 enum OpenMethod { normal, add };
 
-static FileFilter fileFilters[] =
-{
-   { 
-      "C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)",
-      "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx"
-   },
-   {
-      "Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)",
-      "eh, h, hpp, hh, hxx"
-   },
-   {
-      "C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)",
-      "ec, c, cpp, cc, cxx"
-   },
-   {
-      "Text files (*.txt, *.text, *.nfo, *.info)",
-      "txt, text, nfo, info"
-   },
-   {
-      "Web files (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)",
-      "html, htm, xhtml, css, php, js, jsi, rb, xml"
-   },
-   {
-      "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)",
-      "jpg, jpeg, bmp, pcx, png, gif"
-   },
-   {
-      "3D Studio Model Files (*.3ds)",
-      "3ds"
-   },
-   { "All files", null }
-};
+static Array<FileFilter> fileFilters
+{ [
+   { $"C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)", "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx" },
+   { $"Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)", "eh, h, hpp, hh, hxx" },
+   { $"C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)", "ec, c, cpp, cc, cxx" },
+   { $"Text files (*.txt, *.text, *.nfo, *.info)", "txt, text, nfo, info" },
+   { $"Web files (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)", "html, htm, xhtml, css, php, js, jsi, rb, xml" },
+   { $"Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)", "jpg, jpeg, bmp, pcx, png, gif" },
+   { $"3D Studio Model Files (*.3ds)", "3ds" },
+   { $"All files", null }
+] };
 
-static FileType fileTypes[] =
-{
-   { "Based on extension", null },
-   { "Text",               "txt" },
-   { "Image",              "jpg" },
-   { "3D Studio Model",    "3ds" }
-};
+static Array<FileType> fileTypes
+{ [
+   { $"Based on extension", null },
+   { $"Text",               "txt" },
+   { $"Image",              "jpg" },
+   { $"3D Studio Model",    "3ds" }
+] };
 
-static FileFilter projectFilters[] =
-{
-   {
-      "Project Files (*.epj)",
-      ProjectExtension
-   }
-};
+static Array<FileFilter> projectFilters
+{ [
+   { $"Project Files (*.epj)", ProjectExtension }
+] };
 
-static FileType projectTypes[] =
-{
-   { "Project File", ProjectExtension },
-};
+static Array<FileType> projectTypes
+{ [
+   { $"Project File", ProjectExtension }
+] };
 
-static FileFilter findInFilesFileFilters[] =
-{
-   { 
-      "eC Files (*.ec, *.eh)",
-      "ec, eh"
-   },
-   { 
-      "C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)",
-      "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx"
-   },
-   {
-      "Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)",
-      "eh, h, hpp, hh, hxx"
-   },
-   {
-      "C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)",
-      "ec, c, cpp, cc, cxx"
-   },
-   {
-      "Text files (*.txt)",
-      "txt"
-   },
-   { "All files", null }
-};
+static Array<FileFilter> findInFilesFileFilters
+{ [
+   { $"eC Files (*.ec, *.eh)", "ec, eh" },
+   { $"C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)", "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx" },
+   { $"Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)", "eh, h, hpp, hh, hxx" },
+   { $"C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)", "ec, c, cpp, cc, cxx" },
+   { $"Text files (*.txt)", "txt" },
+   { $"All files", null }
+] };
 
 FileDialog ideFileDialog
 {
-   type = multiOpen, text = "Open";
-   types = fileTypes, sizeTypes = sizeof(fileTypes), filters = fileFilters, sizeFilters = sizeof(fileFilters);
+   type = multiOpen, text = $"Open";
+   types = fileTypes.array, sizeTypes = fileTypes.count * sizeof(FileType), filters = fileFilters.array, sizeFilters = fileFilters.count * sizeof(fileFilters);
 };
 
 FileDialog ideProjectFileDialog
 {
-   type = open, text = "Open Project";
-   types = projectTypes, sizeTypes = sizeof(projectTypes), filters = projectFilters, sizeFilters = sizeof(projectFilters);
+   type = open, text = $"Open Project";
+   types = projectTypes.array, sizeTypes = projectTypes.count * sizeof(FileType), filters = projectFilters.array, sizeFilters = projectFilters.count * sizeof(projectFilters);
 };
 
 GlobalSettingsDialog globalSettingsDialog
@@ -484,10 +445,10 @@ class IDE : Window
    char * tmpPrjDir;
    property char * tmpPrjDir { set { delete tmpPrjDir; if(value) tmpPrjDir = CopyString(value); } get { return tmpPrjDir; } };
 
-   Menu fileMenu { menu, "File", f };
+   Menu fileMenu { menu, $"File", f };
       MenuItem fileNewItem
       {
-         fileMenu, "New", n, ctrlN;
+         fileMenu, $"New", n, ctrlN;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             Window document = (Window)NewCodeEditor(this, normal, false);
@@ -497,7 +458,7 @@ class IDE : Window
       }
       MenuItem fileOpenItem
       {
-         fileMenu, "Open...", o, ctrlO;
+         fileMenu, $"Open...", o, ctrlO;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(!projectView && ideSettings.ideFileDialogLocation)
@@ -517,8 +478,8 @@ class IDE : Window
                         gotWhatWeWant = true;
                   }
                   if(gotWhatWeWant ||
-                     MessageBox { type = yesNo, master = this, text = "Error opening file", 
-                     contents = "Open a different file?" }.Modal() == no)
+                     MessageBox { type = yesNo, master = this, text = $"Error opening file", 
+                     contents = $"Open a different file?" }.Modal() == no)
                   {
                      if(!projectView && gotWhatWeWant)
                         ChangeFileDialogsDirectory(ideFileDialog.currentDirectory, true);
@@ -531,15 +492,15 @@ class IDE : Window
             return true;
          }
       }
-      MenuItem fileCloseItem { fileMenu, "Close", c, ctrlF4, NotifySelect = MenuFileClose };
+      MenuItem fileCloseItem { fileMenu, $"Close", c, ctrlF4, NotifySelect = MenuFileClose };
       MenuDivider { fileMenu };
-      MenuItem fileSaveItem { fileMenu, "Save", s, ctrlS };
-      MenuItem fileSaveAsItem { fileMenu, "Save As...", a };
-      MenuItem fileSaveAllItem { fileMenu, "Save All", l, NotifySelect = MenuFileSaveAll };
+      MenuItem fileSaveItem { fileMenu, $"Save", s, ctrlS };
+      MenuItem fileSaveAsItem { fileMenu, $"Save As...", a };
+      MenuItem fileSaveAllItem { fileMenu, $"Save All", l, NotifySelect = MenuFileSaveAll };
       MenuDivider { fileMenu };
       MenuItem findInFiles
       {
-         fileMenu, "Find In Files...", f, Key { f, ctrl = true , shift = true };
+         fileMenu, $"Find In Files...", f, Key { f, ctrl = true , shift = true };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             findInFilesDialog.replaceMode = false;
@@ -549,7 +510,7 @@ class IDE : Window
       }
       MenuItem replaceInFiles
       {
-         fileMenu, "Replace In Files...", e, Key { r, ctrl = true , shift = true };
+         fileMenu, $"Replace In Files...", e, Key { r, ctrl = true , shift = true };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             findInFilesDialog.replaceMode = true;
@@ -560,7 +521,7 @@ class IDE : Window
       MenuDivider { fileMenu };
       MenuItem globalSettingsItem
       {
-         fileMenu, "Global Settings...", g;
+         fileMenu, $"Global Settings...", g;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             globalSettingsDialog.master = this;
@@ -573,10 +534,10 @@ class IDE : Window
          }
       }
       MenuDivider { fileMenu };
-      Menu recentFiles { fileMenu, "Recent Files", r };
-      Menu recentProjects { fileMenu, "Recent Projects", p };
+      Menu recentFiles { fileMenu, $"Recent Files", r };
+      Menu recentProjects { fileMenu, $"Recent Projects", p };
       MenuDivider { fileMenu };
-      MenuItem exitItem { fileMenu, "Exit", x, altF4, NotifySelect = MenuFileExit };
+      MenuItem exitItem { fileMenu, $"Exit", x, altF4, NotifySelect = MenuFileExit };
 
       bool FileRecentFile(MenuItem selection, Modifiers mods)
       {
@@ -608,15 +569,15 @@ class IDE : Window
          return true;
       }
 
-   MenuPlacement editMenu { menu, "Edit", e };
+   MenuPlacement editMenu { menu, $"Edit", e };
    
-   Menu projectMenu { menu, "Project", p };
+   Menu projectMenu { menu, $"Project", p };
       MenuItem projectNewItem
       {
-         projectMenu, "New...", n, Key { n, true, true };
+         projectMenu, $"New...", n, Key { n, true, true };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
-            if(!DontTerminateDebugSession("New Project"))
+            if(!DontTerminateDebugSession($"New Project"))
                if(MenuWindowCloseAll(null, 0))
                {
                   NewProjectDialog newProjectDialog;
@@ -642,7 +603,7 @@ class IDE : Window
       }
       MenuItem projectOpenItem
       {
-         projectMenu, "Open...", o, Key { o, true, true };
+         projectMenu, $"Open...", o, Key { o, true, true };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(ideSettings.ideProjectFileDialogLocation)
@@ -658,7 +619,7 @@ class IDE : Window
       }
       MenuItem projectQuickItem
       {
-         projectMenu, "Quick...", q, f7;
+         projectMenu, $"Quick...", q, f7;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(!projectView)
@@ -668,7 +629,7 @@ class IDE : Window
       }
       MenuItem projectAddItem
       {
-         projectMenu, "Add project to workspace...", a, Key { a, true, true };
+         projectMenu, $"Add project to workspace...", a, Key { a, true, true };
          disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
@@ -681,8 +642,8 @@ class IDE : Window
                {
                   if(OpenFile(ideProjectFileDialog.filePath, normal, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, add))
                      break;
-                  if(MessageBox { type = yesNo, master = this, text = "Error opening project file", 
-                        contents = "Add a different project?" }.Modal() == no)
+                  if(MessageBox { type = yesNo, master = this, text = $"Error opening project file", 
+                        contents = $"Add a different project?" }.Modal() == no)
                   {
                      break;
                   }
@@ -695,12 +656,12 @@ class IDE : Window
       }
       MenuItem projectCloseItem
       {
-         projectMenu, "Close", c, disabled = true;
+         projectMenu, $"Close", c, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
             {
-               if(!ide.DontTerminateDebugSession("Project Close"))
+               if(!ide.DontTerminateDebugSession($"Project Close"))
                {
                   if(findInFilesDialog)
                      findInFilesDialog.SearchStop();
@@ -720,7 +681,7 @@ class IDE : Window
       MenuDivider { projectMenu };
       MenuItem activeCompilerItem
       {
-         projectMenu, "Active Compiler...", g, /*altF5, */disabled = true;
+         projectMenu, $"Active Compiler...", g, /*altF5, */disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             projectView.MenuCompiler(null, mods);
@@ -729,7 +690,7 @@ class IDE : Window
       }
       MenuItem projectActiveConfigItem
       {
-         projectMenu, "Active Configuration...", g, altF5, disabled = true;
+         projectMenu, $"Active Configuration...", g, altF5, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             projectView.MenuConfig(projectView.active ? selection : null, mods);
@@ -738,7 +699,7 @@ class IDE : Window
       }
       MenuItem projectSettingsItem
       {
-         projectMenu, "Settings...", s, altF7, disabled = true;
+         projectMenu, $"Settings...", s, altF7, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             projectView.MenuSettings(projectView.active ? selection : null, mods);
@@ -748,7 +709,7 @@ class IDE : Window
       MenuDivider { projectMenu };
       MenuItem projectBrowseFolderItem
       {
-         projectMenu, "Browse Project Folder", p, disabled = true;
+         projectMenu, $"Browse Project Folder", p, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -759,7 +720,7 @@ class IDE : Window
       MenuDivider { projectMenu };
       MenuItem projectRunItem
       {
-         projectMenu, "Run", r, ctrlF5, disabled = true;
+         projectMenu, $"Run", r, ctrlF5, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -769,7 +730,7 @@ class IDE : Window
       }
       MenuItem projectBuildItem
       {
-         projectMenu, "Build", b, f7, disabled = true;
+         projectMenu, $"Build", b, f7, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -779,7 +740,7 @@ class IDE : Window
       }
       MenuItem projectLinkItem
       {
-         projectMenu, "Relink", l, disabled = true;
+         projectMenu, $"Relink", l, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -789,7 +750,7 @@ class IDE : Window
       }
       MenuItem projectRebuildItem
       {
-         projectMenu, "Rebuild", d, shiftF7, disabled = true;
+         projectMenu, $"Rebuild", d, shiftF7, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -799,7 +760,7 @@ class IDE : Window
       }
       MenuItem projectCleanItem
       {
-         projectMenu, "Clean", e, disabled = true;
+         projectMenu, $"Clean", e, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -812,7 +773,7 @@ class IDE : Window
       }
       MenuItem projectRegenerateItem
       {
-         projectMenu, "Regenerate Makefile", m, disabled = true;
+         projectMenu, $"Regenerate Makefile", m, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -821,10 +782,10 @@ class IDE : Window
          }
       }
       MenuItem projectCompileItem;
-   Menu debugMenu { menu, "Debug", d };
+   Menu debugMenu { menu, $"Debug", d };
       MenuItem debugStartResumeItem
       {
-         debugMenu, "Start", s, f5, disabled = true;
+         debugMenu, $"Start", s, f5, disabled = true;
          NotifySelect = MenuDebugStart;
       }
       bool MenuDebugStart(MenuItem selection, Modifiers mods)
@@ -845,7 +806,7 @@ class IDE : Window
       }
       MenuItem debugRestartItem
       {
-         debugMenu, "Restart", r, Key { f5, ctrl = true, shift = true }, disabled = true;
+         debugMenu, $"Restart", r, Key { f5, ctrl = true, shift = true }, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -855,7 +816,7 @@ class IDE : Window
       }
       MenuItem debugBreakItem
       {
-         debugMenu, "Break", b, Key { pauseBreak, ctrl = true }, disabled = true;
+         debugMenu, $"Break", b, Key { pauseBreak, ctrl = true }, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -865,7 +826,7 @@ class IDE : Window
       }
       MenuItem debugStopItem
       {
-         debugMenu, "Stop", p, shiftF5, disabled = true;
+         debugMenu, $"Stop", p, shiftF5, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -876,7 +837,7 @@ class IDE : Window
       MenuDivider { debugMenu };
       MenuItem debugStepIntoItem
       {
-         debugMenu, "Step Into", i, f11, disabled = true;
+         debugMenu, $"Step Into", i, f11, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -886,7 +847,7 @@ class IDE : Window
       }
       MenuItem debugStepOverItem
       {
-         debugMenu, "Step Over", v, f10, disabled = true;
+         debugMenu, $"Step Over", v, f10, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -896,7 +857,7 @@ class IDE : Window
       }
       MenuItem debugStepOutItem
       {
-         debugMenu, "Step Out", o, shiftF11, disabled = true;
+         debugMenu, $"Step Out", o, shiftF11, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -904,10 +865,10 @@ class IDE : Window
             return true;
          }
       }
-      MenuPlacement debugRunToCursorItem { debugMenu, "Run To Cursor", c };
+      MenuPlacement debugRunToCursorItem { debugMenu, $"Run To Cursor", c };
       MenuItem debugSkipStepOverItem
       {
-         debugMenu, "Step Over Skipping Breakpoints", e, shiftF10, disabled = true;
+         debugMenu, $"Step Over Skipping Breakpoints", e, shiftF10, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -917,7 +878,7 @@ class IDE : Window
       }
       MenuItem debugSkipStepOutItem
       {
-         debugMenu, "Step Out Skipping Breakpoints", t, Key { f11, ctrl = true, shift = true }, disabled = true;
+         debugMenu, $"Step Out Skipping Breakpoints", t, Key { f11, ctrl = true, shift = true }, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -925,14 +886,14 @@ class IDE : Window
             return true;
          }
       }
-      MenuPlacement debugSkipRunToCursorItem { debugMenu, "Run To Cursor Skipping Breakpoints", u };
+      MenuPlacement debugSkipRunToCursorItem { debugMenu, $"Run To Cursor Skipping Breakpoints", u };
       //MenuDivider { debugMenu };
       //MenuPlacement debugToggleBreakpoint { debugMenu, "Toggle Breakpoint", t };
-   MenuPlacement imageMenu { menu, "Image", i };
-   Menu viewMenu { menu, "View", v };
+   MenuPlacement imageMenu { menu, $"Image", i };
+   Menu viewMenu { menu, $"View", v };
       MenuItem viewProjectItem
       {
-         viewMenu, "Project", j, alt0, disabled = true;
+         viewMenu, $"Project View", j, alt0, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -943,13 +904,13 @@ class IDE : Window
             return true;
          }
       }
-      MenuPlacement { viewMenu, "View Designer" };
-      MenuPlacement { viewMenu, "View Code" };
-      MenuPlacement { viewMenu, "View Properties" };
-      MenuPlacement { viewMenu, "View Methods" };
+      MenuPlacement { viewMenu, $"View Designer" };
+      MenuPlacement { viewMenu, $"View Code" };
+      MenuPlacement { viewMenu, $"View Properties" };
+      MenuPlacement { viewMenu, $"View Methods" };
       MenuItem viewDesignerItem
       {
-         viewMenu, "View Designer", d, f8;
+         viewMenu, $"View Designer", d, f8;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             Window client = activeClient;
@@ -966,7 +927,7 @@ class IDE : Window
       }
       MenuItem viewCodeItem
       {
-         viewMenu, "View Code", c, f8;
+         viewMenu, $"View Code", c, f8;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             Window client = activeClient;
@@ -982,7 +943,7 @@ class IDE : Window
       }
       MenuItem viewPropertiesItem
       {
-         viewMenu, "View Properties", p, f4;
+         viewMenu, $"View Properties", p, f4;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             sheet.visible = true;
@@ -993,7 +954,7 @@ class IDE : Window
       }
       MenuItem viewMethodsItem
       {
-         viewMenu, "View Methods", m, f4;
+         viewMenu, $"View Methods", m, f4;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             sheet.visible = true;
@@ -1004,7 +965,7 @@ class IDE : Window
       }
       MenuItem viewToolBoxItem
       {
-         viewMenu, "View Toolbox", x, f12;
+         viewMenu, $"View Toolbox", x, f12;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             toolBox.visible = true;
@@ -1014,7 +975,7 @@ class IDE : Window
       }
       MenuItem viewOutputItem
       {
-         viewMenu, "Output", o, alt2;
+         viewMenu, $"Output", o, alt2;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             outputView.Show();
@@ -1023,7 +984,7 @@ class IDE : Window
       }
       MenuItem viewWatchesItem
       {
-         viewMenu, "Watches", w, alt3;
+         viewMenu, $"Watches", w, alt3;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             watchesView.Show();
@@ -1032,7 +993,7 @@ class IDE : Window
       }
       MenuItem viewThreadsItem
       {
-         viewMenu, "Threads", t, alt4;
+         viewMenu, $"Threads", t, alt4;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             threadsView.Show();
@@ -1041,7 +1002,7 @@ class IDE : Window
       }
       MenuItem viewBreakpointsItem
       {
-         viewMenu, "Breakpoints", b, alt5;
+         viewMenu, $"Breakpoints", b, alt5;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             breakpointsView.Show();
@@ -1050,7 +1011,7 @@ class IDE : Window
       }
       MenuItem viewCallStackItem
       {
-         viewMenu, "Call Stack", s, alt7;
+         viewMenu, $"Call Stack", s, alt7;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             callStackView.Show();
@@ -1059,7 +1020,7 @@ class IDE : Window
       }
       MenuItem viewAllDebugViews
       {
-         viewMenu, "All Debug Views", a, alt9;
+         viewMenu, $"All Debug Views", a, alt9;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             outputView.Show();
@@ -1074,7 +1035,7 @@ class IDE : Window
       MenuDivider { viewMenu };
       MenuItem viewGDBItem
       {
-         viewMenu, "GDB Dialog", g, Key { f9, shift = true, ctrl = true };
+         viewMenu, $"GDB Dialog", g, Key { f9, shift = true, ctrl = true };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             gdbDialog.Show();
@@ -1085,7 +1046,7 @@ class IDE : Window
       MenuDivider { viewMenu };
       MenuItem viewColorPicker
       {
-         viewMenu, "Color Picker...", c, Key { c, ctrl = true , shift = true };
+         viewMenu, $"Color Picker...", c, Key { c, ctrl = true , shift = true };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             ColorPicker colorPicker { master = this, parent = this, stayOnTop = true };
@@ -1108,24 +1069,24 @@ class IDE : Window
          }
       };
       */
-      Menu driversMenu { viewMenu, "Graphics Driver", v };
+      Menu driversMenu { viewMenu, $"Graphics Driver", v };
       //Menu skinsMenu { viewMenu, "GUI Skins", k };
-   Menu windowMenu { menu, "Window", w };
-      MenuItem { windowMenu, "Close All", l, NotifySelect = MenuWindowCloseAll };
+   Menu windowMenu { menu, $"Window", w };
+      MenuItem { windowMenu, $"Close All", l, NotifySelect = MenuWindowCloseAll };
       MenuDivider { windowMenu };
-      MenuItem { windowMenu, "Next", n, f6, NotifySelect = MenuWindowNext };
-      MenuItem { windowMenu, "Previous", p, shiftF6, NotifySelect = MenuWindowPrevious };
+      MenuItem { windowMenu, $"Next", n, f6, NotifySelect = MenuWindowNext };
+      MenuItem { windowMenu, $"Previous", p, shiftF6, NotifySelect = MenuWindowPrevious };
       MenuDivider { windowMenu };
-      MenuItem { windowMenu, "Cascade", c, NotifySelect = MenuWindowCascade };
-      MenuItem { windowMenu, "Tile Horizontally", h, NotifySelect = MenuWindowTileHorz };
-      MenuItem { windowMenu, "Tile Vertically", v, NotifySelect = MenuWindowTileVert };
-      MenuItem { windowMenu, "Arrange Icons", a, NotifySelect = MenuWindowArrangeIcons };
+      MenuItem { windowMenu, $"Cascade", c, NotifySelect = MenuWindowCascade };
+      MenuItem { windowMenu, $"Tile Horizontally", h, NotifySelect = MenuWindowTileHorz };
+      MenuItem { windowMenu, $"Tile Vertically", v, NotifySelect = MenuWindowTileVert };
+      MenuItem { windowMenu, $"Arrange Icons", a, NotifySelect = MenuWindowArrangeIcons };
       MenuDivider { windowMenu };
-      MenuItem { windowMenu, "Windows...", w, NotifySelect = MenuWindowWindows };
-   Menu helpMenu { menu, "Help", h };
+      MenuItem { windowMenu, $"Windows...", w, NotifySelect = MenuWindowWindows };
+   Menu helpMenu { menu, $"Help", h };
       MenuItem
       {
-         helpMenu, "API Reference", r, f1;
+         helpMenu, $"API Reference", r, f1;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             Execute("documentor");
@@ -1135,7 +1096,7 @@ class IDE : Window
       MenuDivider { helpMenu };
       MenuItem
       {
-         helpMenu, "About...", a;
+         helpMenu, $"About...", a;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             AboutIDE { master = this }.Modal();
@@ -1166,7 +1127,7 @@ class IDE : Window
    FindInFilesDialog findInFilesDialog
    {
       master = this, parent = this;
-      filters = findInFilesFileFilters, sizeFilters = sizeof(findInFilesFileFilters);
+      filters = findInFilesFileFilters.array, sizeFilters = findInFilesFileFilters.count * sizeof(findInFilesFileFilters);
       filter = 1;
    };
 
@@ -1349,10 +1310,10 @@ class IDE : Window
    bool Window::OnFileModified(FileChange fileChange, char * param)
    {
       char temp[4096];
-      sprintf(temp, "The document %s was modified by another application.\n"
-            "Would you like to reload it and lose your changes?", this.fileName);
+      sprintf(temp, $"The document %s was modified by another application.\n"
+            $"Would you like to reload it and lose your changes?", this.fileName);
       if(MessageBox { type = yesNo, master = this/*.parent*/,
-            text = "Document has been modified", contents = temp }.Modal() == yes)
+            text = $"Document has been modified", contents = temp }.Modal() == yes)
       {
          char * fileName = CopyString(this.fileName);
          WindowState state = this.state;
@@ -1436,7 +1397,7 @@ class IDE : Window
 
       debugStartResumeItem.disabled       = unavailable || executing;
 
-      debugStartResumeItem.text           = active ? "Resume" : "Start";
+      debugStartResumeItem.text           = active ? $"Resume" : $"Start";
       debugStartResumeItem.NotifySelect   = active ? MenuDebugResume : MenuDebugStart;
 
       debugBreakItem.disabled             = unavailable || !executing;
@@ -1504,7 +1465,7 @@ class IDE : Window
       if(debugger.isActive)
       {
          if(MessageBox { type = yesNo, master = ide, 
-                           contents = "Do you want to terminate the debugging session in progress?", 
+                           contents = $"Do you want to terminate the debugging session in progress?", 
                            text = title }.Modal() == no)
             return true;
          /*
@@ -1560,7 +1521,7 @@ class IDE : Window
       {
          if(openMethod == normal)
          {
-            if(DontTerminateDebugSession("Open Project"))
+            if(DontTerminateDebugSession($"Open Project"))
                return null;
             isProject = true;
             if(MenuWindowCloseAll(null, 0))
@@ -1658,7 +1619,7 @@ class IDE : Window
                      }
                      else 
                      {
-                        if(MessageBox { type = yesNo, parent = this, text = "Error opening project", contents = "Open a different project?" }.Modal() == yes)
+                        if(MessageBox { type = yesNo, parent = this, text = $"Error opening project", contents = $"Open a different project?" }.Modal() == yes)
                         {
                            if(ideProjectFileDialog.Modal() == cancel)
                               return null;
@@ -1691,8 +1652,8 @@ class IDE : Window
                }
                if(prj)
                {
-                  MessageBox { type = ok, parent = parent, master = this, text = "Same Project", 
-                        contents = "This project is already present in workspace." }.Modal();
+                  MessageBox { type = ok, parent = parent, master = this, text = $"Same Project", 
+                        contents = $"This project is already present in workspace." }.Modal();
                }
                else
                {
@@ -1725,7 +1686,7 @@ class IDE : Window
                                        visible = visible, bitmapFile = filePath, OnClose = PictureEditOnClose/*why?--GenericDocumentOnClose*/;
                                     };
          if(!document)
-            MessageBox { type = ok, parent = this, text = filePath, contents = "File doesn't exist." }.Modal();
+            MessageBox { type = ok, parent = this, text = filePath, contents = $"File doesn't exist." }.Modal();
       }
 #ifndef NO3D
       else if(!strcmp(extension, "3ds"))
@@ -1737,7 +1698,7 @@ class IDE : Window
                                     };
 
          if(!document)
-            MessageBox { type = ok, parent = this, text = filePath, contents = "File doesn't exist." }.Modal();
+            MessageBox { type = ok, parent = this, text = filePath, contents = $"File doesn't exist." }.Modal();
       }
 #endif
       else if(!strcmp(extension, "txt") || !strcmp(extension, "text") ||
@@ -1785,7 +1746,7 @@ class IDE : Window
       if(!document && createIfFails != no)
       {
          if(createIfFails != yes && !needFileModified && 
-               MessageBox { type = yesNo, parent = this, text = filePath, contents = "File doesn't exist. Create?" }.Modal() == yes)
+               MessageBox { type = yesNo, parent = this, text = filePath, contents = $"File doesn't exist. Create?" }.Modal() == yes)
             createIfFails = yes;
          if(createIfFails == yes || createIfFails == whatever)
          {
@@ -2122,13 +2083,13 @@ class IDE : Window
 
             statusBar.AddField(pos);
 
-            caps = { width = 40, text = "CAPS", color = app.GetKeyState(capsState) ? black : Color { 128, 128, 128 } };
+            caps = { width = 40, text = $"CAPS", color = app.GetKeyState(capsState) ? black : Color { 128, 128, 128 } };
             statusBar.AddField(caps);
 
-            ovr = { width = 30, text = "OVR", color = editBox.overwrite ? black : Color { 128, 128, 128 } };
+            ovr = { width = 30, text = $"OVR", color = editBox.overwrite ? black : Color { 128, 128, 128 } };
             statusBar.AddField(ovr);
 
-            num = { width = 30, text = "NUM", color = app.GetKeyState(numState) ? black : Color { 128, 128, 128 } };
+            num = { width = 30, text = $"NUM", color = app.GetKeyState(numState) ? black : Color { 128, 128, 128 } };
             statusBar.AddField(num);
 
             //statusBar.text = "Ready";
@@ -2139,7 +2100,7 @@ class IDE : Window
                if(node)
                {
                   char name[1024];
-                  sprintf(name, "Compile %s", node.name);
+                  sprintf(name, $"Compile %s", node.name);
                   projectCompileItem = 
                   {
                      copyText = true, text = name, c, ctrlF7, disabled = projectView.buildInProgress;
@@ -2171,7 +2132,7 @@ class IDE : Window
       //return !projectView.buildInProgress;
       if(projectView && projectView.buildInProgress)
          return false;
-      if(DontTerminateDebugSession("Close IDE"))
+      if(DontTerminateDebugSession($"Close IDE"))
          return false;
       if(findInFilesDialog)
          findInFilesDialog.SearchStop();
@@ -2453,9 +2414,9 @@ class IDE : Window
    void UpdateRecentMenus()
    {
       int c;
-      Menu fileMenu = menu.FindMenu("File");
-      Menu recentFiles = fileMenu.FindMenu("Recent Files");
-      Menu recentProjects = fileMenu.FindMenu("Recent Projects");
+      Menu fileMenu = menu.FindMenu($"File");
+      Menu recentFiles = fileMenu.FindMenu($"Recent Files");
+      Menu recentProjects = fileMenu.FindMenu($"Recent Projects");
       char itemName[MAX_LOCATION + 4];
       MenuItem item;
 
@@ -2552,7 +2513,7 @@ IDE ide { };
 
 define app = ((IDEApp)__thisModule);
 #ifdef _DEBUG
-define titleECEREIDE = "ECERE IDE (Debug)";
+define titleECEREIDE = $"ECERE IDE (Debug)";
 #else
-define titleECEREIDE = "ECERE IDE";
+define titleECEREIDE = $"ECERE IDE";
 #endif

@@ -42,7 +42,7 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
    }
 
    if(module.name)
-      sprintf(fileName, "<:%s>/locale/%s/LC_MESSAGES/%s.mo", module.name, locale, name);
+      sprintf(fileName, "<:%s>locale/%s/LC_MESSAGES/%s.mo", module.name, locale, name);
    else
       sprintf(fileName, ":locale/%s/LC_MESSAGES/%s.mo", locale, name);
    f = FileOpen(fileName, read);
@@ -107,7 +107,14 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
             f.Read(translated, 1, len + 1);
 
             if(len)
-               textMap[original] = translated;
+            {
+               MapIterator<String, String> it { map = textMap };
+               // TOFIX: Memory leak if the add fails
+               if(it.Index(original, false))
+                  delete translated;
+               else
+                  textMap[original] = translated;
+            }
             else
                delete translated;
             delete original;
@@ -135,5 +142,6 @@ public dllexport void UnloadTranslatedStrings(Module module)
 public dllexport char * GetTranslatedString(Module module, char * string)
 {
    Map<String, String> textMap = moduleMaps ? moduleMaps[module.name] : null;
-   return textMap ? textMap[string] : string;
+   char * result = textMap ? textMap[string] : string;
+   return (result && result[0]) ? result : string;
 }

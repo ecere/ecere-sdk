@@ -10,7 +10,7 @@ class CallStackView : Window
    background = { 224, 224, 224 };
    hasClose = true;
    mergeMenus = false;
-   text = "Call Stack";
+   text = $"Call Stack";
    menu = Menu { };
    anchor = Anchor { left = 0, right = 0.2, top = 0 };
    size.h = 200;
@@ -20,7 +20,7 @@ class CallStackView : Window
    virtual void OnToggleBreakpoint();
 
    bool moved, logging;
-   FindDialog findDialog { master = this, editBox = editBox, isModal = true, autoCreate = false, text = "Find" };
+   FindDialog findDialog { master = this, editBox = editBox, isModal = true, autoCreate = false, text = $"Find" };
    
    EditBox editBox
    {
@@ -73,12 +73,12 @@ class CallStackView : Window
       }
    };
 
-   Menu editMenu { menu, "Edit", e };
+   Menu editMenu { menu, $"Edit", e };
    MenuItem item;
    
    MenuItem copyItem
    {
-      editMenu, "Copy", c, ctrlC;
+      editMenu, $"Copy", c, ctrlC;
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
          editBox.Copy();
@@ -86,9 +86,9 @@ class CallStackView : Window
       }
    };
    MenuDivider { editMenu };
-   MenuItem { editMenu, "Find Previous", e, Key { f3, shift = true }, NotifySelect = MenuEditFind, id = 0 };
-   MenuItem { editMenu, "Find Next", n, f3, NotifySelect = MenuEditFind, id = 1 };
-   MenuItem { editMenu, "Find", f, ctrlF, NotifySelect = MenuEditFind, id = 2 };
+   MenuItem { editMenu, $"Find Previous", e, Key { f3, shift = true }, NotifySelect = MenuEditFind, id = 0 };
+   MenuItem { editMenu, $"Find Next", n, f3, NotifySelect = MenuEditFind, id = 1 };
+   MenuItem { editMenu, $"Find", f, ctrlF, NotifySelect = MenuEditFind, id = 2 };
 
    bool MenuEditFind(MenuItem selection, Modifiers mods)
    {

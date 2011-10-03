@@ -33,55 +33,40 @@ class ImportFolderFSI : NormalFileSystemIterator
    }
 }
 
-static FileFilter fileFilters[] =
-{
-   { 
-      "EC/C/C++ Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)",
-      "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx"
-   },
-   {
-      "EC/C/C++ Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)",
-      "ec, eh, c, cpp, cc, cxx"
-   },
-   {
-      "Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)",
-      "eh, h, hpp, hh, hxx"
-   },
-   { "All files", null }
-};
+static Array<FileFilter> fileFilters
+{ [
+   { $"eC/C/C++ Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)", "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx" },
+   { $"eC/C/C++ Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)", "ec, eh, c, cpp, cc, cxx" },
+   { $"Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)", "eh, h, hpp, hh, hxx" },
+   { $"All files", null }
+] };
 
-static FileFilter resourceFilters[] =
-{
-   {
-      "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png,*.gif)",
-      "jpg, jpeg, bmp, pcx, png, gif"
-   },
-   {
-      "3D Studio Model Files (*.3ds)",
-      "3ds"
-   },
-   { "All files", null }
-};
+static Array<FileFilter> resourceFilters
+{ [
+   { $"Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png,*.gif)", "jpg, jpeg, bmp, pcx, png, gif" },
+   { $"3D Studio Model Files (*.3ds)", "3ds" },
+   { $"All files", null }
+] };
 
-static FileType fileTypes[] =
-{
-   { "Based on extension", null },
-   { "Text",               "txt" },
-   { "Image",              "jpg" },
-   { "3D Studio Model",    "3ds" }
-};
+static Array<FileType> fileTypes
+{ [
+   { $"Based on extension", null },
+   { $"Text",               "txt" },
+   { $"Image",              "jpg" },
+   { $"3D Studio Model",    "3ds" }
+] };
 
-static FileFilter projectFilters[] =
-{
-   { "Project Files (*.epj)", ProjectExtension },
-   { "Workspace Files (*.ews)", WorkspaceExtension }
-};
+static Array<FileFilter> projectFilters
+{ [
+   { $"Project Files (*.epj)", ProjectExtension },
+   { $"Workspace Files (*.ews)", WorkspaceExtension }
+] };
 
-static FileType projectTypes[] =
-{
-   { "ECERE Project", ProjectExtension },
-   { "ECERE Workspace", WorkspaceExtension }
-};
+static Array<FileType> projectTypes
+{ [
+   { $"Ecere IDE Project", ProjectExtension },
+   { $"Ecere IDE Workspace", WorkspaceExtension }
+] };
 
 static char * iconNames[] = 
 {
@@ -158,11 +143,11 @@ class ProjectView : Window
             resourceFileDialog.currentDirectory = workspace.workspaceDir;
             for(prj : workspace.projects)
                AddNode(prj.topNode, null);
-            ide.statusBar.text = "Generating Makefile & Dependencies...";
+            ide.statusBar.text = $"Generating Makefile & Dependencies...";
             app.UpdateDisplay();
             for(prj : workspace.projects)
                prj.ModifiedAllConfigs(true, false, false, false);
-            ide.statusBar.text = "Initializing Debugger"; app.UpdateDisplay();
+            ide.statusBar.text = $"Initializing Debugger"; app.UpdateDisplay();
             ide.statusBar.text = null;
             app.UpdateDisplay();
          }
@@ -252,85 +237,85 @@ class ProjectView : Window
                {
                   //if(node == ((Project)workspace.projects.first).topNode)
                   {
-                     MenuItem { popupContent, "Build", b, NotifySelect = ProjectBuild }.disabled = buildMenuUnavailable;
-                     MenuItem { popupContent, "Relink", l, NotifySelect = ProjectLink }.disabled = buildMenuUnavailable;
-                     MenuItem { popupContent, "Rebuild", r, NotifySelect = ProjectRebuild }.disabled = buildMenuUnavailable;
-                     MenuItem { popupContent, "Clean", c, NotifySelect = ProjectClean }.disabled = buildMenuUnavailable;
-                     MenuItem { popupContent, "Regenerate Makefile", m, NotifySelect = ProjectRegenerate }.disabled = buildMenuUnavailable;
+                     MenuItem { popupContent, $"Build", b, NotifySelect = ProjectBuild }.disabled = buildMenuUnavailable;
+                     MenuItem { popupContent, $"Relink", l, NotifySelect = ProjectLink }.disabled = buildMenuUnavailable;
+                     MenuItem { popupContent, $"Rebuild", r, NotifySelect = ProjectRebuild }.disabled = buildMenuUnavailable;
+                     MenuItem { popupContent, $"Clean", c, NotifySelect = ProjectClean }.disabled = buildMenuUnavailable;
+                     MenuItem { popupContent, $"Regenerate Makefile", m, NotifySelect = ProjectRegenerate }.disabled = buildMenuUnavailable;
                      MenuDivider { popupContent };
                   }
-                  MenuItem { popupContent, "New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
-                  MenuItem { popupContent, "New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
-                  MenuItem { popupContent, "Import Folder...", i, NotifySelect = ProjectImportFolder };
-                  MenuItem { popupContent, "Add Files to Project...", f, NotifySelect = ProjectAddFiles };
+                  MenuItem { popupContent, $"New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
+                  MenuItem { popupContent, $"New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
+                  MenuItem { popupContent, $"Import Folder...", i, NotifySelect = ProjectImportFolder };
+                  MenuItem { popupContent, $"Add Files to Project...", f, NotifySelect = ProjectAddFiles };
                   MenuDivider { popupContent };
-                  MenuItem { popupContent, "Add New Form...", o, NotifySelect = ProjectAddNewForm };
+                  MenuItem { popupContent, $"Add New Form...", o, NotifySelect = ProjectAddNewForm };
                   // MenuItem { popupContent, "Add New Behavior Graph...", g, NotifySelect = ProjectAddNewGraph };
                   MenuDivider { popupContent };
                   if(node != ((Project)workspace.projects.first).topNode)
                   {
-                     MenuItem { popupContent, "Remove project from workspace", r, NotifySelect = ProjectRemove }.disabled = buildMenuUnavailable;
+                     MenuItem { popupContent, $"Remove project from workspace", r, NotifySelect = ProjectRemove }.disabled = buildMenuUnavailable;
                      MenuDivider { popupContent };
                   }
-                  MenuItem { popupContent, "Active Configuration...", s, Key { f5, alt = true } , NotifySelect = MenuConfig };
-                  MenuItem { popupContent, "Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
+                  MenuItem { popupContent, $"Active Configuration...", s, Key { f5, alt = true } , NotifySelect = MenuConfig };
+                  MenuItem { popupContent, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
                   MenuDivider { popupContent };
-                  MenuItem { popupContent, "Browse Folder", w, NotifySelect = MenuBrowseFolder };
+                  MenuItem { popupContent, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
                   MenuDivider { popupContent };
-                  MenuItem { popupContent, "Save", v, Key { s, ctrl = true }, NotifySelect = ProjectSave }.disabled = !node.modified;
+                  MenuItem { popupContent, $"Save", v, Key { s, ctrl = true }, NotifySelect = ProjectSave }.disabled = !node.modified;
                   MenuDivider { popupContent };
-                  MenuItem { popupContent, "Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
+                  MenuItem { popupContent, $"Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
                }
                else if(node.type == resources)
                {
-                  MenuItem { popupContent, "New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
-                  MenuItem { popupContent, "New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
-                  MenuItem { popupContent, "Add Resources to Project...", f, NotifySelect = ResourcesAddFiles };
-                  MenuItem { popupContent, "Browse Folder", w, NotifySelect = MenuBrowseFolder };
+                  MenuItem { popupContent, $"New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
+                  MenuItem { popupContent, $"New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
+                  MenuItem { popupContent, $"Add Resources to Project...", f, NotifySelect = ResourcesAddFiles };
+                  MenuItem { popupContent, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
                   MenuDivider { popupContent };
-                  MenuItem { popupContent, "Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
-                  MenuItem { popupContent, "Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
+                  MenuItem { popupContent, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
+                  MenuItem { popupContent, $"Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
                }
                else if(node.type == file)
                {
-                  MenuItem { popupContent, "Open", o, NotifySelect = FileOpenFile };
-                  MenuItem { popupContent, "Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile }.disabled = buildMenuUnavailable;
+                  MenuItem { popupContent, $"Open", o, NotifySelect = FileOpenFile };
+                  MenuItem { popupContent, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile }.disabled = buildMenuUnavailable;
                   MenuDivider { popupContent };
-                  MenuItem { popupContent, "Remove", r, NotifySelect = FileRemoveFile };
+                  MenuItem { popupContent, $"Remove", r, NotifySelect = FileRemoveFile };
                   MenuDivider { popupContent };
-                  MenuItem { popupContent, "Browse Folder", w, NotifySelect = MenuBrowseFolder };
+                  MenuItem { popupContent, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
                   MenuDivider { popupContent };
-                  MenuItem { popupContent, "Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
-                  MenuItem { popupContent, "Properties..", p, Key { enter, alt = true }, NotifySelect = FileProperties };
+                  MenuItem { popupContent, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
+                  MenuItem { popupContent, $"Properties..", p, Key { enter, alt = true }, NotifySelect = FileProperties };
                }
                else if(node.type == folder)
                {
                   bool isInResources = node.isInResources;
 
-                  MenuItem { popupContent, "New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
-                  MenuItem { popupContent, "New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
-                  MenuItem { popupContent, "Import Folder...", i, NotifySelect = ProjectImportFolder };
+                  MenuItem { popupContent, $"New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
+                  MenuItem { popupContent, $"New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
+                  MenuItem { popupContent, $"Import Folder...", i, NotifySelect = ProjectImportFolder };
                   if(isInResources)
                   {
-                     MenuItem { popupContent, "Add Resources to Folder...", f, NotifySelect = ResourcesAddFiles };
+                     MenuItem { popupContent, $"Add Resources to Folder...", f, NotifySelect = ResourcesAddFiles };
                   }
                   else
                   {
-                     MenuItem { popupContent, "Add Files to Folder...", f, NotifySelect = ProjectAddFiles };
+                     MenuItem { popupContent, $"Add Files to Folder...", f, NotifySelect = ProjectAddFiles };
                   }
                   if(!isInResources)
                   {
                      MenuDivider { popupContent };
-                     MenuItem { popupContent, "Add New Form...", o, NotifySelect = ProjectAddNewForm };
-                     MenuItem { popupContent, "Add New Behavior Graph...", g, NotifySelect = ProjectAddNewGraph };
+                     MenuItem { popupContent, $"Add New Form...", o, NotifySelect = ProjectAddNewForm };
+                     MenuItem { popupContent, $"Add New Behavior Graph...", g, NotifySelect = ProjectAddNewGraph };
                   }
                   MenuDivider { popupContent };
-                  MenuItem { popupContent, "Remove", r, NotifySelect = FileRemoveFile };
+                  MenuItem { popupContent, $"Remove", r, NotifySelect = FileRemoveFile };
                   MenuDivider { popupContent };
-                  MenuItem { popupContent, "Browse Folder", w, NotifySelect = MenuBrowseFolder };
+                  MenuItem { popupContent, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
                   MenuDivider { popupContent };
-                  MenuItem { popupContent, "Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
-                  MenuItem { popupContent, "Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
+                  MenuItem { popupContent, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
+                  MenuItem { popupContent, $"Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
                }
 
                popupMenu = 
@@ -453,25 +438,25 @@ class ProjectView : Window
       }
    };
 
-   FileDialog importFileDialog { autoCreate = false, type = selectDir, text = "Import Folder" };
+   FileDialog importFileDialog { autoCreate = false, type = selectDir, text = $"Import Folder" };
    FileDialog projectFileDialog
    {
-      autoCreate = false, filters = projectFilters, sizeFilters = sizeof(projectFilters);
-      types = projectTypes, sizeTypes = sizeof(projectTypes);
+      autoCreate = false, filters = projectFilters.array, sizeFilters = projectFilters.count * sizeof(FileFilter);
+      types = projectTypes.array, sizeTypes = projectTypes.count * sizeof(FileType);
    };
    FileDialog fileDialog
    {
-      autoCreate = false, mayNotExist = true, filters = fileFilters, sizeFilters = sizeof(fileFilters);
-      types = fileTypes, sizeTypes = sizeof(fileTypes);
+      autoCreate = false, mayNotExist = true, filters = fileFilters.array, sizeFilters = fileFilters.count * sizeof(FileFilter);
+      types = fileTypes.array, sizeTypes = fileTypes.count * sizeof(FileType);
    };
    FileDialog resourceFileDialog
    {
-      autoCreate = false, mayNotExist = true, filters = resourceFilters, sizeFilters = sizeof(resourceFilters);
-      types = fileTypes, sizeTypes = sizeof(fileTypes);
+      autoCreate = false, mayNotExist = true, filters = resourceFilters.array, sizeFilters = resourceFilters.count * sizeof(FileFilter);
+      types = fileTypes.array, sizeTypes = fileTypes.count * sizeof(FileType);
    };
 
-   Menu fileMenu { menu, "File", f };
-   MenuItem { fileMenu, "Save", s, Key { s, ctrl = true }, NotifySelect = MenuFileSave };
+   Menu fileMenu { menu, $"File", f };
+   MenuItem { fileMenu, $"Save", s, Key { s, ctrl = true }, NotifySelect = MenuFileSave };
    // MenuItem { fileMenu, "Save As...", a, NotifySelect = MenuFileSaveAs };
 
    bool OnClose(bool parentClosing)
@@ -637,16 +622,16 @@ class ProjectView : Window
             // this stuff doesn't even appear
             //ide.outputView.buildBox.Logf("%s Compiler\n", compiler.name);
             if(prj.config)
-               ide.outputView.buildBox.Logf("Compiling single file %s in project %s using the %s configuration...\n", node.name, prj.name, prj.config.name);
+               ide.outputView.buildBox.Logf($"Compiling single file %s in project %s using the %s configuration...\n", node.name, prj.name, prj.config.name);
             else
-               ide.outputView.buildBox.Logf("Compiling single file %s in project %s...\n", node.name, prj.name);
+               ide.outputView.buildBox.Logf($"Compiling single file %s in project %s...\n", node.name, prj.name);
 
             prj.Compile(node);
             buildInProgress = none;
             ide.AdjustBuildMenus();
          }
          else
-            ide.outputView.buildBox.Logf("File %s is excluded from current build configuration.\n", node.name);
+            ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
       }
       delete objDir;
       delete compiler;
@@ -888,7 +873,7 @@ class ProjectView : Window
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       LogBox logBox = ide.outputView.buildBox;
       ShowOutputBuildLog(cleanLog);
-      logBox.Logf("%s Compiler\n", compiler ? compiler.name : "{problem with compiler selection}");
+      logBox.Logf("$%s Compiler\n", compiler ? compiler.name : "${problem with compiler selection}");
       delete compiler;
    }
 
@@ -949,26 +934,26 @@ class ProjectView : Window
       {
          char * reason;
          char * action;
-         ide.statusBar.text = "Generating Makefile & Dependencies..."; // Dependencies?
+         ide.statusBar.text = $"Generating Makefile & Dependencies..."; // Dependencies?
          app.UpdateDisplay();
          
          if((method == normal && !exists) || (method == force && !exists))
-            action = "Generating ";
+            action = $"Generating ";
          else if(method == force)
-            action = "Regenerating ";
+            action = $"Regenerating ";
          else if(method == normal || method == forceExists)
-            action = "Updating ";
+            action = $"Updating ";
          else
             action = "";
          if(!exists)
-            reason = "Makefile doesn't exist. ";
+            reason = $"Makefile doesn't exist. ";
          else if(project.topNode.modified)
-            reason = "Project has been modified. ";
+            reason = $"Project has been modified. ";
          else
             reason = "";
 
          //logBox.Logf("%s\n", makefileName);
-         logBox.Logf("%s - %s%smakefile for %s config...\n", makefileName, reason, action, project.configName);
+         logBox.Logf($"%s - %s%smakefile for %s config...\n", makefileName, reason, action, project.configName);
          project.GenerateMakefile(null, false, null);
 
          ide.statusBar.text = null;
@@ -994,7 +979,7 @@ class ProjectView : Window
          if(node)
             prj = node.project;
       }
-      if(/*prj != project || */!prj.configIsInDebugSession || !ide.DontTerminateDebugSession("Project Build"))
+      if(/*prj != project || */!prj.configIsInDebugSession || !ide.DontTerminateDebugSession($"Project Build"))
          BuildInterrim(prj, build);
       return true;
    }
@@ -1003,7 +988,7 @@ class ProjectView : Window
    {
       if(ProjectPrepareForToolchain(prj, normal, true, true))
       {
-         ide.outputView.buildBox.Logf("Building project %s using the %s configuration...\n", prj.name, prj.configName);
+         ide.outputView.buildBox.Logf($"Building project %s using the %s configuration...\n", prj.name, prj.configName);
          return Build(prj, buildType);
       }
       return false;
@@ -1040,7 +1025,7 @@ class ProjectView : Window
       Project prj = GetSelectedProject((bool)selection);
       if(ProjectPrepareForToolchain(prj, normal, true, true))
       {
-         ide.outputView.buildBox.Logf("Rebuilding project %s using the %s configuration...\n", prj.name, prj.configName);
+         ide.outputView.buildBox.Logf($"Rebuilding project %s using the %s configuration...\n", prj.name, prj.configName);
          /*if(prj.config)
          {
             prj.config.compilingModified = true;
@@ -1056,7 +1041,7 @@ class ProjectView : Window
       Project prj = GetSelectedProject((bool)selection);
       if(ProjectPrepareForToolchain(prj, normal, true, true))
       {
-         ide.outputView.buildBox.Logf("Cleaning project %s using the %s configuration...\n", prj.name, prj.configName);
+         ide.outputView.buildBox.Logf($"Cleaning project %s using the %s configuration...\n", prj.name, prj.configName);
          
          buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
          ide.AdjustBuildMenus();
@@ -1102,7 +1087,7 @@ class ProjectView : Window
          parentNode.GetFileSysMatchingPath(filePath);
          MakePathRelative(filePath, parentNode.project.topNode.path, filePath);
          for(n = parentNode; n && n != parentNode.project.resNode; n = n.parent);
-         sprintf(fileName, "Untitled %d", documentID);
+         sprintf(fileName, $"Untitled %d", documentID);
          fileNode = AddFile(parentNode, fileName, (bool)n, true);
          fileNode.path = CopyUnixPath(filePath);
          if(fileNode)
@@ -1435,11 +1420,11 @@ class ProjectView : Window
    {
       bool result = false;
       if(project.targetType == sharedLibrary || project.targetType == staticLibrary)
-         MessageBox { master = ide, type = ok, text = "Run", contents = "Shared and static libraries cannot be run like executables." }.Modal();
+         MessageBox { master = ide, type = ok, text = $"Run", contents = $"Shared and static libraries cannot be run like executables." }.Modal();
       else if(project.compress)
-         MessageBox { master = ide, text = "Starting Debug", contents = "Debugging compressed applications is not supported\n" }.Modal();
+         MessageBox { master = ide, text = $"Starting Debug", contents = $"Debugging compressed applications is not supported\n" }.Modal();
       else if(project.debug ||
-         MessageBox { master = ide, type = okCancel, text = "Starting Debug", contents = "Attempting to debug non-debug configuration\nProceed anyways?" }.Modal() == ok)
+         MessageBox { master = ide, type = okCancel, text = $"Starting Debug", contents = $"Attempting to debug non-debug configuration\nProceed anyways?" }.Modal() == ok)
       {
          if(/*!IsProjectModified() ||*/ BuildInterrim(project, start))
          {
@@ -1604,7 +1589,7 @@ class ProjectView : Window
    {
       FileDialog fileDialog = (!resources) ? this.fileDialog : resourceFileDialog;
       fileDialog.type = multiOpen;
-      fileDialog.text = !resources ? "Add Files to Project" : "Add Resources to Project";
+      fileDialog.text = !resources ? $"Add Files to Project" : $"Add Resources to Project";
       fileDialog.master = parent;
 
       if(fileDialog.Modal() == ok)
@@ -1629,7 +1614,7 @@ class ProjectView : Window
             else if(!exists)
             {
                if(MessageBox { master = ide, type = yesNo, text = filePath, 
-                     contents = "File doesn't exist. Create?" }.Modal() == yes)
+                     contents = $"File doesn't exist. Create?" }.Modal() == yes)
                {
                   File f = FileOpen(filePath, write);
                   if(f)
@@ -1640,7 +1625,7 @@ class ProjectView : Window
                   else
                   {
                      MessageBox { master = ide, type = ok, text = filePath, 
-                           contents = "Couldn't create file."}.Modal();
+                           contents = $"Couldn't create file."}.Modal();
                      addThisFile = false;
                   }
                }
@@ -1658,10 +1643,10 @@ class ProjectView : Window
          if(addFailed)
          {
             int len = 0;
-            char * part1 = "The following file";
-            char * opt1 = " was ";
-            char * opt2 = "s were ";
-            char * part2 = "not added because of identical file name conflict within the project.\n\n";
+            char * part1 = $"The following file";
+            char * opt1 = $" was ";
+            char * opt2 = $"s were ";
+            char * part2 = $"not added because of identical file name conflict within the project.\n\n";
             char * message;
             len += strlen(part1);
             len += strlen(part2);
@@ -1677,7 +1662,7 @@ class ProjectView : Window
                strcat(message, s);
                strcat(message, "\n");
             }
-            MessageBox { master = ide, type = ok, text = "Name Conflict", 
+            MessageBox { master = ide, type = ok, text = $"Name Conflict", 
                   contents = message }.Modal();
             delete message;
          }
@@ -1868,9 +1853,9 @@ class ProjectView : Window
          else if(node.type == folder)
          {
             char message[1024];
-            sprintf(message, "Are you sure you want to remove the folder \"%s\"\n"
+            sprintf(message, $"Are you sure you want to remove the folder \"%s\"\n"
                   "and all of its contents from the project?", node.name);
-            if(MessageBox { master = ide, type = yesNo, text = "Delete Folder", contents = message }.Modal() == yes)
+            if(MessageBox { master = ide, type = yesNo, text = $"Delete Folder", contents = message }.Modal() == yes)
             {
                Project prj = node.project;
                if(node.containsFile)
@@ -1892,8 +1877,8 @@ class ProjectView : Window
                   break;
                }
             }
-            sprintf(message, "Are you sure you want to remove the \"%s\" project\n" "from this workspace?", node.name);
-            if(MessageBox { master = ide, type = yesNo, text = "Remove Project", contents = message }.Modal() == yes)
+            sprintf(message, $"Are you sure you want to remove the \"%s\" project\n" "from this workspace?", node.name);
+            if(MessageBox { master = ide, type = yesNo, text = $"Remove Project", contents = message }.Modal() == yes)
             {
                // THIS GOES FIRST!
                DeleteNode(node);

@@ -1,0 +1,5714 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"Language-Team: ec <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\sdk\ecere\src\com\BinaryTree.ec:5
+msgid "BTNode"
+msgstr ""
+
+#: .\sdk\ecere\src\com\BinaryTree.ec:90
+#, c-format
+msgid "Removing node not in binary tree\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\BTNode.ec:3
+#: .\sdk\ecere\src\com\dataTypes.ec:7
+#: .\sdk\ecere\src\com\OldList.ec:3
+#: .\sdk\ecere\src\com\String.ec:20
+#: .\sdk\ecere\src\com\containers\BuiltInContainer.ec:3
+#: .\sdk\ecere\src\gfx\drivers\Direct3D8DisplayDriver.ec:3
+#: .\sdk\ecere\src\gfx\drivers\Direct3D9DisplayDriver.ec:3
+#: .\sdk\ecere\src\gfx\drivers\DirectDrawDisplayDriver.ec:3
+#: .\sdk\ecere\src\gfx\drivers\GDIDisplayDriver.ec:3
+#: .\sdk\ecere\src\gfx\drivers\lfbRGBLookup.ec:3
+#: .\sdk\ecere\src\gfx\drivers\NCursesDisplayDriver.ec:3
+#: .\sdk\ecere\src\gfx\drivers\Win32BitmapPrinterDisplayDriver.ec:3
+#: .\sdk\ecere\src\gfx\drivers\Win32ConsoleDisplayDriver.ec:3
+#: .\sdk\ecere\src\gfx\drivers\Win32PrinterDisplayDriver.ec:3
+#: .\sdk\ecere\src\gfx\drivers\XDisplayDriver.ec:3
+#: .\sdk\ecere\src\gui\drivers\NCursesInterface.ec:3
+#: .\sdk\ecere\src\gui\drivers\Win32ConsoleInterface.ec:3
+#: .\sdk\ecere\src\gui\drivers\Win32Interface.ec:3
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:3
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:806
+#: .\sdk\ecere\src\sys\Mutex.ec:13
+#: .\sdk\ecere\src\sys\Thread.ec:14
+#: .\sdk\ecere\src\sys\Time.ec:3
+#: .\sdk\ecere\src\sys\units.ec:3
+msgid "instance"
+msgstr ""
+
+#: .\sdk\ecere\src\com\BTNode.ec:490
+#: .\sdk\ecere\src\com\BTNode.ec:494
+#: .\sdk\ecere\src\com\BTNode.ec:498
+#, c-format
+msgid "%d "
+msgstr ""
+
+#: .\sdk\ecere\src\com\BTNode.ec:511
+#: .\sdk\ecere\src\com\BTNode.ec:534
+#: .\sdk\ecere\src\com\BTNode.ec:538
+#: .\sdk\ecere\src\com\BTNode.ec:543
+#: .\sdk\ecere\src\gfx\drivers\DirectDrawDisplayDriver.ec:742
+#: .\sdk\ecere\src\gfx\drivers\GDIDisplayDriver.ec:967
+#: .\sdk\ecere\src\gfx\drivers\Win32BitmapPrinterDisplayDriver.ec:844
+#: .\sdk\ecere\src\gfx\drivers\Win32PrinterDisplayDriver.ec:890
+#: .\sdk\ecere\src\gui\controls\Button.ec:660
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:2310
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:3326
+#: .\sdk\ecere\src\gui\controls\Label.ec:80
+#: .\sdk\ecere\src\gui\controls\Menu.ec:1007
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:727
+#: .\sdk\ecere\src\gui\dialogs\MessageBox.ec:158
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:218
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:304
+#: .\sdk\ecere\src\sys\Time.ec:690
+msgid " "
+msgstr ""
+
+#: .\sdk\ecere\src\com\BTNode.ec:513
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:561
+#: .\sdk\ecere\src\sys\JSON.ec:627
+#: .\sdk\ecere\src\sys\JSON.ec:909
+#: .\sdk\ecere\src\sys\System.ec:327
+msgid "\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\BTNode.ec:530
+#: .\sdk\ecere\src\com\dataTypes.ec:1153
+#: .\sdk\ecere\src\gui\Anchor.ec:29
+#: .\sdk\ecere\src\gui\Anchor.ec:138
+#: .\sdk\ecere\src\gui\controls\CalendarControl.ec:274
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:272
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:275
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:278
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:281
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:286
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:289
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:292
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:297
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:300
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:303
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:308
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:311
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:314
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:317
+#: .\sdk\ecere\src\gui\dialogs\GoToDialog.ec:14
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:553
+#: .\sdk\ecere\src\sys\units.ec:17
+#, c-format
+msgid "%d"
+msgstr ""
+
+#: .\sdk\ecere\src\com\BTNode.ec:567
+#: .\sdk\ecere\src\com\BTNode.ec:576
+#, c-format
+msgid "Parent not set properly at node %d\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\BTNode.ec:584
+#, c-format
+msgid "Depth value at node %d (%d) doesn't match depth property (%d)\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\BTNode.ec:591
+#, c-format
+msgid "Height difference is %d at node %d\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\BTNode.ec:598
+#, c-format
+msgid "Height difference %d doesnt match balance-factor of %d at node \n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\BTNode.ec:605
+#, c-format
+msgid "Node %d is *smaller* than left subtree %d\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\BTNode.ec:610
+#, c-format
+msgid "Node %d is *greater* than right subtree %d\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:25
+msgid "0x%I64XLL"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:25
+#, c-format
+msgid "0x%llXLL"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:26
+msgid "0x%I64X"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:26
+#, c-format
+msgid "0x%llX"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:27
+msgid "%I64dLL"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:27
+#, c-format
+msgid "%lldLL"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:28
+msgid "%I64d"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:28
+#, c-format
+msgid "%lld"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:29
+msgid "%I64u"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:29
+#, c-format
+msgid "%llu"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:248
+#: .\sdk\ecere\src\com\dataTypes.ec:467
+#: .\sdk\ecere\src\com\dataTypes.ec:849
+#: .\sdk\ecere\src\com\dataTypes.ec:930
+#: .\sdk\ecere\src\com\dataTypes.ec:1044
+#: .\sdk\ecere\src\com\dataTypes.ec:1324
+#: .\sdk\ecere\src\com\dataTypes.ec:1327
+#: .\sdk\ecere\src\com\instance.ec:2160
+#: .\sdk\ecere\src\com\instance.ec:2188
+#: .\sdk\ecere\src\com\instance.ec:5716
+#: .\sdk\ecere\src\com\instance.ec:5723
+#: .\sdk\ecere\src\com\instance.ec:5727
+#: .\sdk\ecere\src\com\instance.ec:5773
+#: .\sdk\ecere\src\com\instance.ec:5775
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:599
+#: .\sdk\ecere\src\sys\JSON.ec:217
+#: .\sdk\ecere\src\sys\JSON.ec:414
+#: .\sdk\ecere\src\sys\JSON.ec:464
+#: .\sdk\ecere\src\sys\JSON.ec:604
+#: .\sdk\ecere\src\sys\JSON.ec:650
+#: .\sdk\ecere\src\sys\JSON.ec:807
+#: .\sdk\ecere\src\sys\JSON.ec:871
+msgid "int"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:323
+#: .\sdk\ecere\src\com\dataTypes.ec:475
+#: .\sdk\ecere\src\com\dataTypes.ec:625
+#: .\sdk\ecere\src\com\dataTypes.ec:1757
+#: .\sdk\ecere\src\com\dataTypes.ec:1759
+#: .\sdk\ecere\src\com\dataTypes.ec:1771
+#: .\sdk\ecere\src\com\dataTypes.ec:1773
+#: .\sdk\ecere\src\com\instance.ec:5761
+#: .\sdk\ecere\src\com\instance.ec:5778
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:161
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1409
+#: .\sdk\ecere\src\sys\JSON.ec:59
+#: .\sdk\ecere\src\sys\JSON.ec:445
+#: .\sdk\ecere\src\sys\JSON.ec:668
+msgid "char *"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:333
+#: .\sdk\ecere\src\com\dataTypes.ec:478
+#: .\sdk\ecere\src\com\dataTypes.ec:1520
+#: .\sdk\ecere\src\com\dataTypes.ec:1523
+#: .\sdk\ecere\src\com\instance.ec:3322
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:599
+#: .\sdk\ecere\src\sys\JSON.ec:208
+#: .\sdk\ecere\src\sys\JSON.ec:405
+#: .\sdk\ecere\src\sys\JSON.ec:455
+#: .\sdk\ecere\src\sys\JSON.ec:537
+#: .\sdk\ecere\src\sys\JSON.ec:595
+#: .\sdk\ecere\src\sys\JSON.ec:644
+#: .\sdk\ecere\src\sys\JSON.ec:798
+#: .\sdk\ecere\src\sys\JSON.ec:862
+msgid "float"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:489
+msgid "f"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:530
+msgid "{ "
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:532
+#: .\sdk\ecere\src\com\dataTypes.ec:560
+msgid " }"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:558
+msgid " { "
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:618
+#: .\sdk\ecere\src\com\instance.ec:3471
+#: .\sdk\ecere\src\com\containers\Container.ec:231
+#: .\sdk\ecere\src\gui\Anchor.ec:176
+#: .\sdk\ecere\src\gui\Anchor.ec:183
+#: .\sdk\ecere\src\gui\Anchor.ec:188
+#: .\sdk\ecere\src\gui\Anchor.ec:192
+#: .\sdk\ecere\src\gui\Anchor.ec:199
+#: .\sdk\ecere\src\gui\Anchor.ec:204
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:909
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:910
+msgid ", "
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:619
+#: .\sdk\ecere\src\com\instance.ec:5744
+#: .\sdk\ecere\src\com\instance.ec:5776
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:620
+#: .\sdk\ecere\src\sys\JSON.ec:145
+#: .\sdk\ecere\src\sys\JSON.ec:711
+#: .\sdk\ecere\src\sys\JSON.ec:875
+msgid "bool"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:622
+#: .\sdk\ecere\src\com\instance.ec:3475
+msgid " = "
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:629
+#: .\sdk\ecere\src\com\dataTypes.ec:649
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:728
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:746
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:534
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:537
+#: .\sdk\ecere\src\sys\JSON.ec:670
+#: .\sdk\ecere\src\sys\JSON.ec:709
+#: .\sdk\ecere\src\sys\JSON.ec:729
+#: .\sdk\ecere\src\sys\JSON.ec:731
+#: .\sdk\ecere\src\sys\JSON.ec:767
+#: .\sdk\ecere\src\sys\JSON.ec:769
+#: .\sdk\ecere\src\sys\JSON.ec:831
+#: .\sdk\ecere\src\sys\JSON.ec:898
+msgid "\""
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:635
+#: .\sdk\ecere\src\sys\JSON.ec:685
+msgid "\\\""
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:640
+#: .\sdk\ecere\src\com\String.ec:62
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:540
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:734
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:762
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1070
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1071
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1300
+#: .\sdk\ecere\src\sys\JSON.ec:692
+msgid "\\\\"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1008
+#: .\sdk\ecere\src\com\dataTypes.ec:1771
+#: .\sdk\ecere\src\com\instance.ec:5
+#: .\sdk\ecere\src\sys\JSON.ec:59
+#: .\sdk\ecere\src\sys\JSON.ec:71
+#: .\sdk\ecere\src\sys\JSON.ec:668
+#: .\sdk\ecere\src\sys\JSON.ec:849
+msgid "String"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1188
+#: .\sdk\ecere\src\com\dataTypes.ec:1216
+#, c-format
+msgid "%u"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1230
+#, c-format
+msgid "'\\o'"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1231
+#, c-format
+msgid "'%c'"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1234
+#: .\sdk\ecere\src\gui\controls\CalendarControl.ec:242
+#, c-format
+msgid "%c"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1331
+#: .\sdk\ecere\src\com\dataTypes.ec:1359
+#: .\sdk\ecere\src\com\dataTypes.ec:1372
+#: .\sdk\ecere\src\com\dataTypes.ec:1430
+#: .\sdk\ecere\src\com\dataTypes.ec:1442
+#: .\sdk\ecere\src\com\dataTypes.ec:1526
+#: .\sdk\ecere\src\com\dataTypes.ec:1611
+#: .\sdk\ecere\src\com\dataTypes.ec:1762
+#: .\sdk\ecere\src\com\dataTypes.ec:1781
+msgid "OnCompare"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1332
+#: .\sdk\ecere\src\com\dataTypes.ec:1343
+#: .\sdk\ecere\src\com\dataTypes.ec:1360
+#: .\sdk\ecere\src\com\dataTypes.ec:1373
+#: .\sdk\ecere\src\com\dataTypes.ec:1420
+#: .\sdk\ecere\src\com\dataTypes.ec:1431
+#: .\sdk\ecere\src\com\dataTypes.ec:1443
+#: .\sdk\ecere\src\com\dataTypes.ec:1527
+#: .\sdk\ecere\src\com\dataTypes.ec:1612
+#: .\sdk\ecere\src\com\dataTypes.ec:1765
+#: .\sdk\ecere\src\com\dataTypes.ec:1784
+msgid "OnGetString"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1333
+#: .\sdk\ecere\src\com\dataTypes.ec:1361
+#: .\sdk\ecere\src\com\dataTypes.ec:1374
+#: .\sdk\ecere\src\com\dataTypes.ec:1432
+#: .\sdk\ecere\src\com\dataTypes.ec:1444
+#: .\sdk\ecere\src\com\dataTypes.ec:1528
+#: .\sdk\ecere\src\com\dataTypes.ec:1613
+#: .\sdk\ecere\src\com\dataTypes.ec:1766
+#: .\sdk\ecere\src\com\dataTypes.ec:1785
+msgid "OnGetDataFromString"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1334
+#: .\sdk\ecere\src\com\dataTypes.ec:1350
+#: .\sdk\ecere\src\com\dataTypes.ec:1362
+#: .\sdk\ecere\src\com\dataTypes.ec:1375
+#: .\sdk\ecere\src\com\dataTypes.ec:1385
+#: .\sdk\ecere\src\com\dataTypes.ec:1395
+#: .\sdk\ecere\src\com\dataTypes.ec:1421
+#: .\sdk\ecere\src\com\dataTypes.ec:1433
+#: .\sdk\ecere\src\com\dataTypes.ec:1445
+#: .\sdk\ecere\src\com\dataTypes.ec:1529
+#: .\sdk\ecere\src\com\dataTypes.ec:1614
+#: .\sdk\ecere\src\com\dataTypes.ec:1767
+#: .\sdk\ecere\src\com\dataTypes.ec:1787
+#: .\sdk\ecere\src\com\dataTypes.ec:1796
+msgid "OnSerialize"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1335
+#: .\sdk\ecere\src\com\dataTypes.ec:1351
+#: .\sdk\ecere\src\com\dataTypes.ec:1363
+#: .\sdk\ecere\src\com\dataTypes.ec:1376
+#: .\sdk\ecere\src\com\dataTypes.ec:1386
+#: .\sdk\ecere\src\com\dataTypes.ec:1396
+#: .\sdk\ecere\src\com\dataTypes.ec:1422
+#: .\sdk\ecere\src\com\dataTypes.ec:1434
+#: .\sdk\ecere\src\com\dataTypes.ec:1446
+#: .\sdk\ecere\src\com\dataTypes.ec:1530
+#: .\sdk\ecere\src\com\dataTypes.ec:1615
+#: .\sdk\ecere\src\com\dataTypes.ec:1768
+#: .\sdk\ecere\src\com\dataTypes.ec:1788
+#: .\sdk\ecere\src\com\dataTypes.ec:1797
+msgid "OnUnserialize"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1337
+#: .\sdk\ecere\src\com\dataTypes.ec:1342
+#: .\sdk\ecere\src\com\instance.ec:2150
+#: .\sdk\ecere\src\com\instance.ec:2202
+#: .\sdk\ecere\src\com\instance.ec:3314
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:620
+#: .\sdk\ecere\src\sys\JSON.ec:212
+#: .\sdk\ecere\src\sys\JSON.ec:409
+#: .\sdk\ecere\src\sys\JSON.ec:459
+#: .\sdk\ecere\src\sys\JSON.ec:544
+#: .\sdk\ecere\src\sys\JSON.ec:599
+#: .\sdk\ecere\src\sys\JSON.ec:646
+#: .\sdk\ecere\src\sys\JSON.ec:802
+#: .\sdk\ecere\src\sys\JSON.ec:866
+msgid "int64"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1353
+#: .\sdk\ecere\src\com\dataTypes.ec:1407
+#: .\sdk\ecere\src\com\instance.ec:2147
+#: .\sdk\ecere\src\com\instance.ec:2199
+#: .\sdk\ecere\src\com\instance.ec:3294
+#: .\sdk\ecere\src\com\instance.ec:5744
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:620
+#: .\sdk\ecere\src\sys\JSON.ec:218
+#: .\sdk\ecere\src\sys\JSON.ec:415
+#: .\sdk\ecere\src\sys\JSON.ec:465
+#: .\sdk\ecere\src\sys\JSON.ec:605
+#: .\sdk\ecere\src\sys\JSON.ec:652
+#: .\sdk\ecere\src\sys\JSON.ec:808
+#: .\sdk\ecere\src\sys\JSON.ec:872
+msgid "uint"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1356
+#: .\sdk\ecere\src\com\dataTypes.ec:1365
+#: .\sdk\ecere\src\com\dataTypes.ec:1368
+#: .\sdk\ecere\src\com\dataTypes.ec:1410
+#: .\sdk\ecere\src\com\instance.ec:2146
+#: .\sdk\ecere\src\com\instance.ec:2186
+#: .\sdk\ecere\src\com\instance.ec:2198
+#: .\sdk\ecere\src\sys\JSON.ec:218
+#: .\sdk\ecere\src\sys\JSON.ec:415
+#: .\sdk\ecere\src\sys\JSON.ec:465
+#: .\sdk\ecere\src\sys\JSON.ec:605
+#: .\sdk\ecere\src\sys\JSON.ec:652
+#: .\sdk\ecere\src\sys\JSON.ec:808
+#: .\sdk\ecere\src\sys\JSON.ec:872
+msgid "unsigned int"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1378
+#: .\sdk\ecere\src\com\instance.ec:2157
+#: .\sdk\ecere\src\com\instance.ec:2209
+#: .\sdk\ecere\src\com\instance.ec:3310
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:620
+#: .\sdk\ecere\src\sys\JSON.ec:223
+#: .\sdk\ecere\src\sys\JSON.ec:428
+#: .\sdk\ecere\src\sys\JSON.ec:470
+#: .\sdk\ecere\src\sys\JSON.ec:610
+#: .\sdk\ecere\src\sys\JSON.ec:656
+#: .\sdk\ecere\src\sys\JSON.ec:813
+#: .\sdk\ecere\src\sys\JSON.ec:880
+msgid "uint16"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1381
+#: .\sdk\ecere\src\com\instance.ec:2151
+#: .\sdk\ecere\src\com\instance.ec:2203
+#: .\sdk\ecere\src\sys\JSON.ec:223
+#: .\sdk\ecere\src\sys\JSON.ec:428
+#: .\sdk\ecere\src\sys\JSON.ec:470
+#: .\sdk\ecere\src\sys\JSON.ec:610
+#: .\sdk\ecere\src\sys\JSON.ec:656
+#: .\sdk\ecere\src\sys\JSON.ec:813
+#: .\sdk\ecere\src\sys\JSON.ec:880
+msgid "unsigned short"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1388
+#: .\sdk\ecere\src\com\dataTypes.ec:1391
+#: .\sdk\ecere\src\com\instance.ec:2152
+#: .\sdk\ecere\src\com\instance.ec:2204
+#: .\sdk\ecere\src\com\instance.ec:3306
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:598
+#: .\sdk\ecere\src\sys\JSON.ec:222
+#: .\sdk\ecere\src\sys\JSON.ec:427
+#: .\sdk\ecere\src\sys\JSON.ec:469
+#: .\sdk\ecere\src\sys\JSON.ec:609
+#: .\sdk\ecere\src\sys\JSON.ec:654
+#: .\sdk\ecere\src\sys\JSON.ec:812
+#: .\sdk\ecere\src\sys\JSON.ec:879
+msgid "short"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1407
+#: .\sdk\ecere\src\com\instance.ec:2156
+#: .\sdk\ecere\src\com\instance.ec:2208
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:620
+msgid "uint32"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1414
+#: .\sdk\ecere\src\com\dataTypes.ec:1417
+#: .\sdk\ecere\src\com\instance.ec:2149
+#: .\sdk\ecere\src\com\instance.ec:2201
+#: .\sdk\ecere\src\com\instance.ec:3318
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:620
+#: .\sdk\ecere\src\sys\JSON.ec:213
+#: .\sdk\ecere\src\sys\JSON.ec:410
+#: .\sdk\ecere\src\sys\JSON.ec:460
+#: .\sdk\ecere\src\sys\JSON.ec:549
+#: .\sdk\ecere\src\sys\JSON.ec:600
+#: .\sdk\ecere\src\sys\JSON.ec:648
+#: .\sdk\ecere\src\sys\JSON.ec:803
+#: .\sdk\ecere\src\sys\JSON.ec:867
+msgid "uint64"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1424
+#: .\sdk\ecere\src\com\instance.ec:2154
+#: .\sdk\ecere\src\com\instance.ec:2206
+#: .\sdk\ecere\src\com\instance.ec:3302
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:620
+#: .\sdk\ecere\src\sys\JSON.ec:229
+#: .\sdk\ecere\src\sys\JSON.ec:434
+#: .\sdk\ecere\src\sys\JSON.ec:476
+#: .\sdk\ecere\src\sys\JSON.ec:616
+#: .\sdk\ecere\src\sys\JSON.ec:660
+#: .\sdk\ecere\src\sys\JSON.ec:819
+#: .\sdk\ecere\src\sys\JSON.ec:886
+msgid "byte"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1427
+#: .\sdk\ecere\src\com\instance.ec:2153
+#: .\sdk\ecere\src\com\instance.ec:2205
+#: .\sdk\ecere\src\sys\JSON.ec:229
+#: .\sdk\ecere\src\sys\JSON.ec:434
+#: .\sdk\ecere\src\sys\JSON.ec:476
+#: .\sdk\ecere\src\sys\JSON.ec:616
+#: .\sdk\ecere\src\sys\JSON.ec:660
+#: .\sdk\ecere\src\sys\JSON.ec:819
+#: .\sdk\ecere\src\sys\JSON.ec:886
+msgid "unsigned char"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1436
+#: .\sdk\ecere\src\com\dataTypes.ec:1439
+#: .\sdk\ecere\src\com\instance.ec:2155
+#: .\sdk\ecere\src\com\instance.ec:2207
+#: .\sdk\ecere\src\com\instance.ec:3298
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:599
+#: .\sdk\ecere\src\sys\JSON.ec:228
+#: .\sdk\ecere\src\sys\JSON.ec:433
+#: .\sdk\ecere\src\sys\JSON.ec:475
+#: .\sdk\ecere\src\sys\JSON.ec:615
+#: .\sdk\ecere\src\sys\JSON.ec:658
+#: .\sdk\ecere\src\sys\JSON.ec:818
+#: .\sdk\ecere\src\sys\JSON.ec:885
+msgid "char"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1467
+#, c-format
+msgid "%%.%df"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1551
+#, c-format
+msgid "%.15g"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1553
+#, c-format
+msgid "%.13lf"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1605
+#: .\sdk\ecere\src\com\dataTypes.ec:1608
+#: .\sdk\ecere\src\com\instance.ec:3326
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:599
+#: .\sdk\ecere\src\sys\JSON.ec:204
+#: .\sdk\ecere\src\sys\JSON.ec:401
+#: .\sdk\ecere\src\sys\JSON.ec:451
+#: .\sdk\ecere\src\sys\JSON.ec:532
+#: .\sdk\ecere\src\sys\JSON.ec:591
+#: .\sdk\ecere\src\sys\JSON.ec:642
+#: .\sdk\ecere\src\sys\JSON.ec:794
+#: .\sdk\ecere\src\sys\JSON.ec:858
+msgid "double"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1763
+#: .\sdk\ecere\src\com\dataTypes.ec:1782
+msgid "OnCopy"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1764
+#: .\sdk\ecere\src\com\dataTypes.ec:1783
+msgid "OnFree"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1778
+#: .\sdk\ecere\src\com\instance.ec:2214
+#: .\sdk\ecere\src\com\instance.ec:5695
+#: .\sdk\ecere\src\gui\typeEdit.ec:208
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:608
+msgid "class"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1780
+#: .\sdk\ecere\src\gui\typeEdit.ec:209
+msgid "OnDisplay"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1780
+msgid "void typed_object::OnDisplay(Surface surface, int x, int y, int width, void * fieldData, Alignment alignment, DataDisplayFlags displayFlags)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1781
+msgid "int typed_object::OnCompare(any_object object)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1782
+msgid "void typed_object&::OnCopy(any_object newData)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1783
+msgid "void typed_object::OnFree(void)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1784
+msgid "char * typed_object::OnGetString(char * tempString, void * fieldData, bool * needClass)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1785
+msgid "bool typed_object&::OnGetDataFromString(char * string)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1786
+#: .\sdk\ecere\src\gui\typeEdit.ec:210
+msgid "OnEdit"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1786
+msgid "Window typed_object::OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1787
+msgid "void typed_object::OnSerialize(IOChannel channel)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1788
+msgid "void typed_object&::OnUnserialize(IOChannel channel)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1789
+#: .\sdk\ecere\src\gui\typeEdit.ec:211
+msgid "OnSaveEdit"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1789
+msgid "bool typed_object&::OnSaveEdit(Window window, void * object)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\dataTypes.ec:1794
+#: .\sdk\ecere\src\com\instance.ec:1883
+#: .\sdk\ecere\src\com\instance.ec:2159
+#: .\sdk\ecere\src\com\instance.ec:2169
+#: .\sdk\ecere\src\com\instance.ec:2211
+#: .\sdk\ecere\src\com\instance.ec:2230
+#: .\sdk\ecere\src\com\instance.ec:4058
+#: .\sdk\ecere\src\com\instance.ec:5722
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:599
+msgid "enum"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:3
+msgid "BinaryTree"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:4
+#: .\sdk\ecere\src\com\instance.ec:5755
+#: .\sdk\ecere\src\com\instance.ec:5756
+#: .\sdk\ecere\src\com\instance.ec:5757
+#: .\sdk\ecere\src\com\instance.ec:5758
+#: .\sdk\ecere\src\com\instance.ec:5777
+msgid "OldList"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:6
+#: .\sdk\ecere\src\sys\File.ec:77
+msgid "dataTypes"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:14
+#: .\sdk\ecere\src\gfx\DisplaySystem.ec:3
+#: .\sdk\ecere\src\sys\System.ec:57
+msgid "Mutex"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:25
+#: .\sdk\ecere\src\sys\System.ec:60
+msgid "Thread"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:618
+#, c-format
+msgid "Object of class %s\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:619
+#, c-format
+msgid "   Allocation Stack:\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:622
+#: .\sdk\ecere\src\com\instance.ec:629
+#: .\sdk\ecere\src\com\instance.ec:1356
+#: .\sdk\ecere\src\com\instance.ec:1411
+#: .\sdk\ecere\src\com\instance.ec:1484
+#: .\sdk\ecere\src\com\instance.ec:1572
+#: .\sdk\ecere\src\com\instance.ec:1649
+#: .\sdk\ecere\src\com\instance.ec:1660
+#, c-format
+msgid "      %s\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:626
+#, c-format
+msgid "   Free Location Stack:\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:1352
+#: .\sdk\ecere\src\com\instance.ec:1407
+#: .\sdk\ecere\src\com\instance.ec:1480
+#: .\sdk\ecere\src\com\instance.ec:1568
+#, c-format
+msgid "Memory allocation of %d bytes failed\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:1353
+#: .\sdk\ecere\src\com\instance.ec:1408
+#: .\sdk\ecere\src\com\instance.ec:1481
+#: .\sdk\ecere\src\com\instance.ec:1569
+#: .\sdk\ecere\src\com\instance.ec:1646
+#: .\sdk\ecere\src\com\instance.ec:1657
+#, c-format
+msgid "Current Stack:\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:1465
+#: .\sdk\ecere\src\com\instance.ec:1553
+#, c-format
+msgid "Reallocating Bad Memory\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:1470
+#: .\sdk\ecere\src\com\instance.ec:1558
+#, c-format
+msgid "Reallocating Freed Memory\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:1645
+#, c-format
+msgid "Freeing Bad Memory\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:1656
+#, c-format
+msgid "Freeing Already Freed Memory\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:1694
+#: .\sdk\ecere\src\com\instance.ec:1827
+#, c-format
+msgid "Buffer Underrun\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:1700
+#: .\sdk\ecere\src\com\instance.ec:1833
+#, c-format
+msgid "Buffer Overrun\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:1753
+#, c-format
+msgid "Memory Blocks Tree Integrity Failed\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:1756
+#, c-format
+msgid "Starting Memory Check\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:1774
+#, c-format
+msgid "Memory Leak\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:1816
+#, c-format
+msgid "Freed Memory Write\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:1843
+#, c-format
+msgid "%d Memory Leaks Detected (%d objects, %d bytes).\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:1846
+#, c-format
+msgid "Memory Check Completed.\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:2148
+#: .\sdk\ecere\src\com\instance.ec:2200
+#: .\sdk\ecere\src\sys\JSON.ec:213
+#: .\sdk\ecere\src\sys\JSON.ec:410
+#: .\sdk\ecere\src\sys\JSON.ec:460
+#: .\sdk\ecere\src\sys\JSON.ec:600
+#: .\sdk\ecere\src\sys\JSON.ec:648
+#: .\sdk\ecere\src\sys\JSON.ec:803
+#: .\sdk\ecere\src\sys\JSON.ec:867
+msgid "unsigned int64"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:2175
+#: .\sdk\ecere\src\com\instance.ec:2211
+#: .\sdk\ecere\src\com\instance.ec:5731
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:599
+msgid "struct"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:2182
+msgid "struct __ecereNameSpace__ecere__com__Instance"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:2184
+#: .\sdk\ecere\src\com\instance.ec:5762
+#: .\sdk\ecere\src\com\instance.ec:5763
+msgid "void *"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:2211
+#: .\sdk\ecere\src\com\instance.ec:2212
+#: .\sdk\ecere\src\com\instance.ec:5703
+msgid "ecere::com::Instance"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:2246
+#, c-format
+msgid "error: Redefinition of class %s\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:3404
+#, c-format
+msgid "%s<"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:3611
+#: .\sdk\ecere\src\com\instance.ec:3617
+#: .\sdk\ecere\src\com\instance.ec:5952
+msgid "::"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:3816
+#, c-format
+msgid "error"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:4212
+#: .\sdk\ecere\src\com\instance.ec:5754
+#: .\sdk\ecere\src\com\instance.ec:5894
+msgid "Application"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:4945
+#: .\sdk\ecere\src\com\instance.ec:4949
+#: .\sdk\ecere\src\com\instance.ec:4957
+#: .\sdk\ecere\src\com\instance.ec:4983
+#: .\sdk\ecere\src\com\instance.ec:4984
+#: .\sdk\ecere\src\com\instance.ec:4985
+msgid "ecereCOM"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:4945
+#: .\sdk\ecere\src\com\instance.ec:4949
+#: .\sdk\ecere\src\com\instance.ec:4981
+#: .\sdk\ecere\src\com\instance.ec:4983
+msgid "ecere"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:4968
+#: .\sdk\ecere\src\com\instance.ec:4998
+#: .\sdk\ecere\src\com\instance.ec:5053
+#: .\sdk\ecere\src\com\instance.ec:5759
+#: .\sdk\ecere\src\com\instance.ec:5760
+#: .\sdk\ecere\src\com\instance.ec:5771
+msgid "Module"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5714
+msgid "_vTbl"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5714
+msgid "int (**)()"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5715
+msgid "_class"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5715
+msgid "ecere::com::Class"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5716
+msgid "_refCount"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5723
+msgid "enumSize"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5745
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:623
+#: .\sdk\ecere\src\sys\JSON.ec:148
+#: .\sdk\ecere\src\sys\JSON.ec:155
+#: .\sdk\ecere\src\sys\JSON.ec:714
+#: .\sdk\ecere\src\sys\JSON.ec:721
+msgid "true"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5746
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:623
+#: .\sdk\ecere\src\sys\JSON.ec:147
+#: .\sdk\ecere\src\sys\JSON.ec:154
+#: .\sdk\ecere\src\sys\JSON.ec:716
+#: .\sdk\ecere\src\sys\JSON.ec:723
+msgid "false"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5749
+msgid "ecere::com::Module"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5750
+msgid "OnLoad"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5750
+msgid "bool()"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5751
+msgid "OnUnload"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5751
+#: .\sdk\ecere\src\com\instance.ec:5772
+msgid "void()"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5752
+msgid "Load"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5752
+msgid "Module(char * name, AccessMode importAccess)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5753
+#: .\sdk\ecere\src\com\instance.ec:5763
+msgid "Unload"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5753
+msgid "void(Module module)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5754
+msgid "application"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5755
+msgid "classes"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5756
+msgid "defines"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5757
+msgid "functions"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5758
+msgid "modules"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5759
+msgid "prev"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5760
+msgid "next"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5761
+msgid "name"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5762
+msgid "library"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5764
+msgid "importType"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5764
+msgid "ImportType"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5765
+msgid "privateNameSpace"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5765
+#: .\sdk\ecere\src\com\instance.ec:5766
+#: .\sdk\ecere\src\com\instance.ec:5779
+msgid "NameSpace"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5766
+msgid "publicNameSpace"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5771
+msgid "ecere::com::Application"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5772
+msgid "Main"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5773
+msgid "argc"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5774
+msgid "argv"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5774
+msgid "char **"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5775
+msgid "exitCode"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5776
+msgid "isGUIApp"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5777
+msgid "allModules"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5778
+msgid "parsedCommand"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5779
+msgid "systemNameSpace"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5787
+msgid "sin"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5787
+msgid "double sin(Angle number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5788
+msgid "sinh"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5788
+msgid "double sinh(Angle number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5789
+msgid "cosh"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5789
+msgid "double cosh(Angle number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5790
+msgid "tanh"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5790
+msgid "double tanh(Angle number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5791
+msgid "sqrt"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5791
+msgid "double sqrt(double number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5792
+msgid "cos"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5792
+msgid "double cos(Angle number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5793
+msgid "tan"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5793
+msgid "double tan(Angle number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5794
+msgid "atan2"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5794
+msgid "Angle atan2(double y, double x)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5795
+msgid "asin"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5795
+msgid "Angle asin(double number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5796
+msgid "acos"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5796
+msgid "Angle acos(double number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5797
+msgid "atan"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5797
+msgid "Angle atan(double number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5798
+msgid "pow"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5798
+msgid "double pow(double number, double number2)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5799
+msgid "fmod"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5799
+msgid "double fmod(double x, double y)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5800
+msgid "fabs"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5800
+msgid "double fabs(double number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5801
+msgid "log"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5801
+msgid "double log(double number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5802
+msgid "log10"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5802
+msgid "double log10(double number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5803
+msgid "ceil"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5803
+msgid "double ceil(double number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5804
+msgid "floor"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5804
+msgid "double floor(double number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5805
+msgid "exp"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5805
+msgid "double exp(double number)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5808
+msgid "qsort"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5808
+msgid "void qsort(void *, uint, uint, int (*)(void *, void *))"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5809
+msgid "strtod"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5809
+msgid "double strtod(char*, char**)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5810
+msgid "strtol"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5810
+msgid "int strtol(char*, char**, int base)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5811
+msgid "system"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5811
+msgid "int system(const char*)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5812
+msgid "atoi"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5812
+msgid "int atoi(const char*)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5813
+msgid "atof"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5813
+msgid "float atof(const char*)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5814
+msgid "tolower"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5814
+msgid "int tolower(int)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5815
+msgid "toupper"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5815
+msgid "int toupper(int)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5816
+msgid "isdigit"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5816
+msgid "bool isdigit(int)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5817
+msgid "memset"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5817
+msgid "void memset(void * area, byte value, uint count)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5818
+msgid "getenv"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5818
+msgid "char * getenv(const char * name)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5819
+msgid "rename"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5819
+msgid "int rename(const char *oldpath, const char *newpath)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5822
+msgid "strlen"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5822
+msgid "int strlen(const char *)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5823
+msgid "strcat"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5823
+msgid "char * strcat(char *, const char *)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5824
+msgid "strncat"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5824
+msgid "char * strncat(char *, const char *, int n)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5825
+msgid "strchr"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5825
+msgid "char * strchr(char *, int)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5826
+msgid "strstr"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5826
+msgid "char * strstr(char *, const char *)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5828
+msgid "fstrcmp"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5828
+msgid "(GetRuntimePlatform() == win32) ? strcmpi : strcmp"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5831
+msgid "strcmpi"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5831
+#: .\sdk\ecere\src\com\instance.ec:5833
+msgid "strcasecmp"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5832
+msgid "strnicmp"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5832
+#: .\sdk\ecere\src\com\instance.ec:5834
+msgid "strncasecmp"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5833
+msgid "int strcasecmp(const char *, const char *)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5834
+msgid "int strncasecmp(const char *, const char *, int n)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5844
+msgid "strcmp"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5844
+msgid "int strcmp(const char *, const char *)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5845
+msgid "strncmp"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5845
+msgid "int strncmp(const char *, const char *, int n)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5846
+msgid "strlwr"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5846
+msgid "char * strlwr(char *)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5847
+msgid "strupr"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5847
+msgid "char * strupr(char *)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5848
+msgid "strcpy"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5848
+msgid "char * strcpy(char *, const char *)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5849
+msgid "strncpy"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5849
+msgid "char * strncpy(char *, const char *, int n)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5850
+msgid "memcpy"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5850
+msgid "void * memcpy(void *, const void *, uint size)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5851
+msgid "memmove"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5851
+msgid "void * memmove(void *, const void *, uint size)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5854
+msgid "sprintf"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5854
+msgid "int sprintf(char *, char *, ...)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5855
+msgid "printf"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5855
+msgid "int printf(char *, ...)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5856
+msgid "vsprintf"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5856
+msgid "int vsprintf(char*, const char*, __builtin_va_list)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5857
+msgid "puts"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5857
+msgid "int puts(char *)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5858
+msgid "fputs"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5858
+msgid "int fputs(char *, void * stream)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5861
+msgid "isalnum"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5861
+msgid "int isalnum(int c)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5862
+msgid "isspace"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5862
+msgid "int isspace(int c)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5863
+msgid "isalpha"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5863
+msgid "int isalpha(int c)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5864
+msgid "islower"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5864
+msgid "int islower(int c)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5865
+msgid "isupper"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5865
+msgid "int isupper(int c)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5866
+msgid "isprint"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5866
+msgid "int isprint(int c)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5867
+msgid "strtoul"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:5867
+msgid "unsigned long strtoul(const char * nptr, char ** endptr, int base)"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:6037
+msgid "win32"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:6037
+msgid "linux"
+msgstr ""
+
+#: .\sdk\ecere\src\com\instance.ec:6037
+msgid "apple"
+msgstr ""
+
+#: .\sdk\ecere\src\com\OldList.ec:109
+#, c-format
+msgid "Adding item already in list\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\OldList.ec:113
+#, c-format
+msgid "Adding item with non-zero prev/next pointers\n"
+msgstr ""
+
+#: .\sdk\ecere\src\com\OldList.ec:149
+#, c-format
+msgid "Inserting item already in list\n"
+msgstr "插入项已存在\n"
+
+#: .\sdk\ecere\src\com\OldList.ec:199
+#, c-format
+msgid "Removing item not found in list\n"
+msgstr "删除项在列表中未找到\n"
+
+#: .\sdk\ecere\src\com\String.ec:27
+#: .\sdk\ecere\src\sys\EARArchive.ec:88
+#: .\sdk\ecere\src\sys\EARArchive.ec:100
+#: .\sdk\ecere\src\sys\EARArchive.ec:197
+#: .\sdk\ecere\src\sys\EARArchive.ec:377
+#: .\sdk\ecere\src\sys\EARArchive.ec:756
+#: .\sdk\ecere\src\sys\EARArchive.ec:842
+#: .\sdk\ecere\src\sys\EARArchive.ec:864
+#: .\sdk\ecere\src\sys\EARArchive.ec:915
+#: .\sdk\ecere\src\sys\File.ec:1167
+#: .\sdk\ecere\src\sys\File.ec:1173
+#: .\sdk\ecere\src\sys\File.ec:1490
+msgid "\\"
+msgstr ""
+
+#: .\sdk\ecere\src\com\String.ec:27
+#: .\sdk\ecere\src\com\String.ec:64
+#: .\sdk\ecere\src\com\String.ec:203
+#: .\sdk\ecere\src\com\String.ec:234
+#: .\sdk\ecere\src\com\String.ec:388
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:459
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:472
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:665
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:705
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:730
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:758
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1290
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1387
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1424
+#: .\sdk\ecere\src\net\HTTPFile.ec:277
+#: .\sdk\ecere\src\net\HTTPFile.ec:297
+#: .\sdk\ecere\src\sys\EARArchive.ec:88
+#: .\sdk\ecere\src\sys\EARArchive.ec:100
+#: .\sdk\ecere\src\sys\EARArchive.ec:197
+#: .\sdk\ecere\src\sys\EARArchive.ec:377
+#: .\sdk\ecere\src\sys\EARArchive.ec:756
+#: .\sdk\ecere\src\sys\EARArchive.ec:842
+#: .\sdk\ecere\src\sys\EARArchive.ec:864
+#: .\sdk\ecere\src\sys\EARArchive.ec:915
+#: .\sdk\ecere\src\sys\File.ec:1120
+#: .\sdk\ecere\src\sys\File.ec:1429
+#: .\sdk\ecere\src\sys\File.ec:1643
+msgid "/"
+msgstr ""
+
+#: .\sdk\ecere\src\com\String.ec:177
+#: .\sdk\ecere\src\sys\EARArchive.ec:1341
+msgid ":"
+msgstr ""
+
+#: .\sdk\ecere\src\com\String.ec:201
+#: .\sdk\ecere\src\com\String.ec:210
+#: .\sdk\ecere\src\com\String.ec:212
+#: .\sdk\ecere\src\net\HTTPFile.ec:271
+#: .\sdk\ecere\src\net\HTTPFile.ec:276
+#: .\sdk\ecere\src\net\HTTPFile.ec:295
+#: .\sdk\ecere\src\sys\File.ec:870
+#: .\sdk\ecere\src\sys\File.ec:893
+msgid "http://"
+msgstr ""
+
+#: .\sdk\ecere\src\com\String.ec:308
+#: .\sdk\ecere\src\com\String.ec:324
+#: .\sdk\ecere\src\com\String.ec:327
+#: .\sdk\ecere\src\com\String.ec:361
+#: .\sdk\ecere\src\com\String.ec:428
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:135
+#: .\sdk\ecere\src\sys\File.ec:1380
+msgid ".."
+msgstr ""
+
+#: .\sdk\ecere\src\com\String.ec:364
+#: .\sdk\ecere\src\com\String.ec:463
+#: .\sdk\ecere\src\gfx\Surface.ec:344
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:135
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:915
+#: .\sdk\ecere\src\sys\File.ec:1331
+#: .\sdk\ecere\src\sys\File.ec:1380
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:155
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:174
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:192
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:214
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:236
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:254
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:267
+msgid "."
+msgstr ""
+
+#: .\sdk\ecere\src\com\String.ec:396
+#: .\sdk\ecere\src\sys\EARArchive.ec:1476
+#, c-format
+msgid "<%s>%s"
+msgstr ""
+
+#: .\sdk\ecere\src\com\String.ec:474
+#: .\sdk\ecere\src\com\String.ec:500
+#, c-format
+msgid "%%.0%df"
+msgstr ""
+
+#: .\sdk\ecere\src\com\String.ec:478
+#: .\sdk\ecere\src\com\String.ec:509
+msgid " GB"
+msgstr ""
+
+#: .\sdk\ecere\src\com\String.ec:483
+#: .\sdk\ecere\src\com\String.ec:514
+msgid " MB"
+msgstr ""
+
+#: .\sdk\ecere\src\com\String.ec:488
+#: .\sdk\ecere\src\com\String.ec:519
+msgid " KB"
+msgstr ""
+
+#: .\sdk\ecere\src\com\String.ec:492
+#, c-format
+msgid "%d B"
+msgstr ""
+
+#: .\sdk\ecere\src\com\String.ec:504
+msgid " TB"
+msgstr ""
+
+#: .\sdk\ecere\src\com\String.ec:523
+#, c-format
+msgid "%.0f B"
+msgstr ""
+
+#: .\sdk\ecere\src\com\containers\Array.ec:3
+#: .\sdk\ecere\src\com\containers\BuiltInContainer.ec:4
+#: .\sdk\ecere\src\com\containers\CustomAVLTree.ec:3
+#: .\sdk\ecere\src\com\containers\LinkList.ec:3
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:10
+msgid "Container"
+msgstr ""
+
+#: .\sdk\ecere\src\com\containers\AVLTree.ec:3
+#: .\sdk\ecere\src\com\containers\Map.ec:3
+msgid "CustomAVLTree"
+msgstr ""
+
+#: .\sdk\ecere\src\com\containers\Container.ec:3
+msgid "BuiltInContainer"
+msgstr ""
+
+#: .\sdk\ecere\src\com\containers\List.ec:3
+msgid "LinkList"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Bitmap.ec:3
+#: .\sdk\ecere\src\gfx\DisplaySystem.ec:4
+#: .\sdk\ecere\src\gfx\Resource.ec:3
+#: .\sdk\ecere\src\gfx\Surface.ec:3
+#: .\sdk\ecere\src\gfx\3D\Camera.ec:3
+#: .\sdk\ecere\src\gfx\3D\Matrix.ec:3
+#: .\sdk\ecere\src\gfx\3D\Mesh.ec:3
+#: .\sdk\ecere\src\gfx\3D\Object.ec:3
+#: .\sdk\ecere\src\gfx\3D\Plane.ec:3
+#: .\sdk\ecere\src\gfx\3D\Quaternion.ec:3
+#: .\sdk\ecere\src\gfx\3D\Vector3D.ec:3
+#: .\sdk\ecere\src\gfx\3D\meshes\Cube.ec:11
+#: .\sdk\ecere\src\gfx\3D\meshes\SkyBox.ec:11
+#: .\sdk\ecere\src\gfx\3D\meshes\Sphere.ec:3
+#: .\sdk\ecere\src\gfx\bitmaps\BMPFormat.ec:3
+#: .\sdk\ecere\src\gfx\bitmaps\GIFFormat.ec:5
+#: .\sdk\ecere\src\gfx\bitmaps\JPEGFormat.ec:3
+#: .\sdk\ecere\src\gfx\bitmaps\PCXFormat.ec:3
+#: .\sdk\ecere\src\gfx\bitmaps\PNGFormat.ec:3
+#: .\sdk\ecere\src\gfx\bitmaps\RGBFormat.ec:3
+#: .\sdk\ecere\src\gfx\drivers\Direct3D8DisplayDriver.ec:31
+#: .\sdk\ecere\src\gfx\drivers\Direct3D9DisplayDriver.ec:30
+#: .\sdk\ecere\src\gfx\drivers\DirectDrawDisplayDriver.ec:32
+#: .\sdk\ecere\src\gfx\drivers\GDIDisplayDriver.ec:17
+#: .\sdk\ecere\src\gfx\drivers\lfbConvert.ec:3
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:36
+#: .\sdk\ecere\src\gfx\drivers\NCursesDisplayDriver.ec:13
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:67
+#: .\sdk\ecere\src\gfx\drivers\Win32BitmapPrinterDisplayDriver.ec:19
+#: .\sdk\ecere\src\gfx\drivers\Win32ConsoleDisplayDriver.ec:12
+#: .\sdk\ecere\src\gfx\drivers\Win32PrinterDisplayDriver.ec:17
+#: .\sdk\ecere\src\gfx\drivers\XDisplayDriver.ec:45
+#: .\sdk\ecere\src\gui\Desktop3D.ec:3
+#: .\sdk\ecere\src\gui\Window.ec:3
+#: .\sdk\ecere\src\gui\drivers\Win32ConsoleInterface.ec:14
+msgid "Display"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Bitmap.ec:22
+#: .\sdk\ecere\src\gfx\bitmaps\GIFFormat.ec:19
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:103
+msgid "gif"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Bitmap.ec:22
+#: .\sdk\ecere\src\gfx\BitmapResource.ec:14
+#: .\sdk\ecere\src\gfx\bitmaps\JPEGFormat.ec:183
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:102
+msgid "jpg"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Bitmap.ec:22
+#: .\sdk\ecere\src\gfx\bitmaps\PNGFormat.ec:53
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:103
+msgid "png"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Bitmap.ec:22
+#: .\sdk\ecere\src\gfx\bitmaps\BMPFormat.ec:269
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:101
+msgid "bmp"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Bitmap.ec:22
+#: .\sdk\ecere\src\gfx\3D\meshes\SkyBox.ec:100
+#: .\sdk\ecere\src\gfx\3D\meshes\SkyBox.ec:161
+#: .\sdk\ecere\src\gfx\bitmaps\PCXFormat.ec:30
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:477
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:101
+msgid "pcx"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Bitmap.ec:22
+#: .\sdk\ecere\src\gfx\bitmaps\BMPFormat.ec:270
+msgid "memorybmp"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\BitmapResource.ec:3
+#: .\sdk\ecere\src\gfx\FontResource.ec:3
+#: .\sdk\ecere\src\gui\Anchor.ec:3
+#: .\sdk\ecere\src\gui\ClipBoard.ec:3
+#: .\sdk\ecere\src\gui\Cursor.ec:3
+#: .\sdk\ecere\src\gui\FormDesigner.ec:3
+#: .\sdk\ecere\src\gui\GuiApplication.ec:74
+#: .\sdk\ecere\src\gui\Interface.ec:3
+#: .\sdk\ecere\src\gui\Key.ec:3
+#: .\sdk\ecere\src\gui\Skin.ec:3
+#: .\sdk\ecere\src\gui\Timer.ec:3
+#: .\sdk\ecere\src\gui\typeEdit.ec:3
+#: .\sdk\ecere\src\gui\Window.ec:2361
+#: .\sdk\ecere\src\gui\controls\Button.ec:3
+#: .\sdk\ecere\src\gui\controls\CalendarControl.ec:3
+#: .\sdk\ecere\src\gui\controls\DataBox.ec:3
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:3
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:3
+#: .\sdk\ecere\src\gui\controls\Label.ec:3
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:3
+#: .\sdk\ecere\src\gui\controls\Menu.ec:3
+#: .\sdk\ecere\src\gui\controls\PaneSplitter.ec:1
+#: .\sdk\ecere\src\gui\controls\Picture.ec:3
+#: .\sdk\ecere\src\gui\controls\ProgressBar.ec:3
+#: .\sdk\ecere\src\gui\controls\ScrollBar.ec:3
+#: .\sdk\ecere\src\gui\controls\StatusBar.ec:3
+#: .\sdk\ecere\src\gui\controls\TabControl.ec:3
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:3
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:8
+#: .\sdk\ecere\src\gui\dialogs\FindDialog.ec:3
+#: .\sdk\ecere\src\gui\dialogs\GoToDialog.ec:3
+#: .\sdk\ecere\src\gui\dialogs\MessageBox.ec:3
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:3
+#: .\sdk\ecere\src\gui\dialogs\WindowList.ec:3
+#: .\sdk\ecere\src\gui\drivers\Win32Interface.ec:85
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:2
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:3
+msgid "Window"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\BitmapResource.ec:8
+msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
+msgstr "图片文件(*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
+
+#: .\sdk\ecere\src\gfx\BitmapResource.ec:9
+msgid "jpg, jpeg, bmp, pcx, png, gif"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\BitmapResource.ec:14
+msgid "Image"
+msgstr "图片"
+
+#: .\sdk\ecere\src\gfx\BitmapResource.ec:17
+msgid "Select Image"
+msgstr "选择图片"
+
+#: .\sdk\ecere\src\gfx\BitmapResource.ec:95
+#: .\sdk\ecere\src\gfx\Surface.ec:359
+#: .\sdk\ecere\src\gfx\drivers\Win32BitmapPrinterDisplayDriver.ec:241
+#: .\sdk\ecere\src\gfx\drivers\Win32PrinterDisplayDriver.ec:241
+msgid "..."
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\BitmapResource.ec:132
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:646
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:2277
+msgid "(none)"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Color.ec:3
+#: .\sdk\ecere\src\gui\Window.ec:15
+msgid "ListBox"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Color.ec:4
+#: .\sdk\ecere\src\gui\Window.ec:16
+msgid "DropBox"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Color.ec:5
+msgid "ColorPicker"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Color.ec:83
+msgid "r = "
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Color.ec:91
+msgid ", g = "
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Color.ec:99
+msgid ", b = "
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Color.ec:604
+#: .\sdk\ecere\src\gfx\Color.ec:606
+msgid "ColorValue"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Color.ec:682
+msgid "Select Color"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Color.ec:690
+msgid "Custom"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Color.ec:727
+msgid "Defined"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Color.ec:747
+#: .\sdk\ecere\src\gfx\Display.ec:3
+#: .\sdk\ecere\src\sys\Archive.ec:3
+#: .\sdk\ecere\src\sys\BufferedFile.ec:3
+#: .\sdk\ecere\src\sys\Date.ec:3
+#: .\sdk\ecere\src\sys\DualPipe.ec:5
+#: .\sdk\ecere\src\sys\EARArchive.ec:7
+#: .\sdk\ecere\src\sys\File.ec:71
+#: .\sdk\ecere\src\sys\FileMonitor.ec:3
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:9
+#: .\sdk\ecere\src\sys\JSON.ec:3
+#: .\sdk\ecere\src\sys\memory.ec:3
+#: .\sdk\ecere\src\sys\Semaphore.ec:17
+#: .\sdk\ecere\src\sys\TempFile.ec:3
+#: .\sdk\ecere\src\sys\Time.ec:212
+msgid "System"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:5
+msgid "Color"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:6
+#: .\sdk\ecere\src\gfx\drivers\lfbBlit.ec:3
+msgid "Bitmap"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:7
+msgid "Surface"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:8
+msgid "DisplaySystem"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:9
+msgid "Resource"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:10
+msgid "FontResource"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:11
+msgid "BitmapResource"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:13
+msgid "LFBDisplayDriver"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:16
+msgid "Camera"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:17
+msgid "Plane"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:18
+msgid "Matrix"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:19
+msgid "Mesh"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:20
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:3
+msgid "Object"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:21
+msgid "Quaternion"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\Display.ec:22
+msgid "Vector3D"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\DisplaySystem.ec:81
+#: .\sdk\ecere\src\gfx\drivers\Win32BitmapPrinterDisplayDriver.ec:242
+#: .\sdk\ecere\src\gfx\drivers\Win32BitmapPrinterDisplayDriver.ec:243
+#: .\sdk\ecere\src\gfx\drivers\Win32BitmapPrinterDisplayDriver.ec:244
+#: .\sdk\ecere\src\gfx\drivers\Win32PrinterDisplayDriver.ec:242
+#: .\sdk\ecere\src\gfx\drivers\Win32PrinterDisplayDriver.ec:243
+#: .\sdk\ecere\src\gfx\drivers\Win32PrinterDisplayDriver.ec:244
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:540
+msgid ","
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\3D\meshes\Cube.ec:90
+#, c-format
+msgid "Cube Face %d"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\3D\meshes\SkyBox.ec:13
+msgid "up"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\3D\meshes\SkyBox.ec:13
+msgid "fr"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\3D\meshes\SkyBox.ec:13
+msgid "dn"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\3D\meshes\SkyBox.ec:13
+msgid "bk"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\3D\meshes\SkyBox.ec:13
+msgid "rt"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\3D\meshes\SkyBox.ec:13
+msgid "lf"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\3D\meshes\SkyBox.ec:95
+#, c-format
+msgid "SKYBOX %s"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\3D\meshes\SkyBox.ec:100
+#, c-format
+msgid "%s/%s.%s"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\3D\meshes\SkyBox.ec:100
+#: .\sdk\ecere\src\gfx\3D\meshes\SkyBox.ec:160
+msgid ":skycube"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:917
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:1074
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:1529
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:1669
+msgid ".target"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:1380
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:1465
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:1533
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:1605
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:1673
+msgid "$$$DUMMY"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:1394
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:1480
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:1547
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:1620
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:1687
+#, c-format
+msgid "%s.%s"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\3D\models\Object3DSFormat.ec:1772
+msgid "3ds"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\bitmaps\JPEGFormat.ec:183
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:102
+msgid "jpeg"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\bitmaps\RGBFormat.ec:5
+msgid "rgb"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Direct3D8DisplayDriver.ec:120
+#: .\sdk\ecere\src\gui\drivers\Win32Interface.ec:1092
+msgid "Direct3D8"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Direct3D8DisplayDriver.ec:237
+msgid "d3d8.dll"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Direct3D8DisplayDriver.ec:240
+msgid "Direct3DCreate8"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Direct3D8DisplayDriver.ec:259
+#: .\sdk\ecere\src\gfx\drivers\Direct3D9DisplayDriver.ec:261
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:563
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:599
+msgid "static"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Direct3D8DisplayDriver.ec:341
+msgid "Couldn't load library d3d8.dll\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Direct3D9DisplayDriver.ec:121
+#: .\sdk\ecere\src\gui\drivers\Win32Interface.ec:1092
+msgid "Direct3D"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Direct3D9DisplayDriver.ec:239
+msgid "d3d9.dll"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Direct3D9DisplayDriver.ec:242
+msgid "Direct3DCreate9"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Direct3D9DisplayDriver.ec:334
+msgid "Couldn't load library d3d9.dll\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\DirectDrawDisplayDriver.ec:118
+#: .\sdk\ecere\src\gui\drivers\Win32Interface.ec:1092
+msgid "DirectDraw"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\GDIDisplayDriver.ec:18
+msgid "Win32Interface"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\GDIDisplayDriver.ec:94
+#: .\sdk\ecere\src\gui\GuiApplication.ec:549
+#: .\sdk\ecere\src\gui\drivers\Win32Interface.ec:1092
+msgid "GDI"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\GDIDisplayDriver.ec:301
+#: .\sdk\ecere\src\gfx\drivers\Win32BitmapPrinterDisplayDriver.ec:344
+msgid "Error creating DIB Section\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:35
+#: .\sdk\ecere\src\gui\controls\Picture.ec:70
+#: .\sdk\ecere\src\sys\System.ec:50
+#: .\sdk\ecere\src\sys\unicode.ec:3
+msgid "File"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:49
+msgid "lfbBlit"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:50
+msgid "lfbConvert"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:53
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:5
+msgid "OpenGLDisplayDriver"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:54
+msgid "Direct3D8DisplayDriver"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:55
+msgid "Direct3D9DisplayDriver"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:476
+#, c-format
+msgid "font%d"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:730
+msgid "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:731
+msgid "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Fonts"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:781
+#: .\sdk\ecere\src\gui\FormDesigner.ec:68
+msgid "LFB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2690
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2964
+msgid "ECERE_FONTS"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2691
+msgid "<:ecere>"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2694
+msgid "linking.cfg"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2705
+msgid "bi"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2706
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2716
+msgid "bd"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2707
+msgid "i"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2708
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2717
+msgid ".ttf"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2747
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2961
+msgid "fonts"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2766
+msgid "Mangal"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2816
+msgid "otf"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2818
+msgid "ttc"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2828
+msgid "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\FontLink\\SystemLink"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:2829
+msgid "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\FontLink\\SystemLink"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\LFBDisplayDriver.ec:3180
+msgid "sa"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\NCursesDisplayDriver.ec:50
+#: .\sdk\ecere\src\gui\GuiApplication.ec:559
+#: .\sdk\ecere\src\gui\GuiApplication.ec:567
+#: .\sdk\ecere\src\gui\drivers\NCursesInterface.ec:339
+#: .\sdk\ecere\src\gui\drivers\NCursesInterface.ec:470
+msgid "NCurses"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:70
+#: .\sdk\ecere\src\gfx\drivers\XDisplayDriver.ec:46
+#: .\sdk\ecere\src\gui\GuiApplication.ec:71
+msgid "XInterface"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:436
+#: .\sdk\ecere\src\gui\GuiApplication.ec:587
+#: .\sdk\ecere\src\gui\drivers\Win32Interface.ec:1092
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:1757
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:1808
+msgid "OpenGL"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:589
+msgid "glActiveTextureARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:590
+msgid "glMultiTexCoord2fARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:591
+msgid "glClientActiveTextureARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:592
+msgid "glLockArraysEXT"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:593
+msgid "glUnlockArraysEXT"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:594
+msgid "glGenBuffersARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:595
+msgid "glBindBufferARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:596
+msgid "glBufferDataARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:597
+msgid "glMapBufferARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:598
+msgid "glUnmapBufferARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:599
+msgid "glDeleteBuffersARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:600
+msgid "glBlendFuncSeparate"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:602
+msgid "wglChoosePixelFormatARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:603
+msgid "wglGetExtensionsStringARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:604
+msgid "wglCreatePbufferARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:605
+msgid "wglGetPbufferDCARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:606
+msgid "wglQueryPbufferARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:607
+msgid "wglDestroyPbufferARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:608
+msgid "wglReleasePbufferDCARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:609
+msgid "wglBindTexImageARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:610
+msgid "wglReleaseTexImageARB"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:612
+msgid "wglSwapIntervalEXT"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\OpenGLDisplayDriver.ec:1221
+#, c-format
+msgid "Alpha blending windows not supported on this display\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Win32BitmapPrinterDisplayDriver.ec:21
+#: .\sdk\ecere\src\gfx\drivers\Win32PrinterDisplayDriver.ec:20
+msgid "Printing ECERE Document..."
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Win32BitmapPrinterDisplayDriver.ec:93
+msgid "Win32BitmapPrinter"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Win32BitmapPrinterDisplayDriver.ec:241
+#: .\sdk\ecere\src\gfx\drivers\Win32PrinterDisplayDriver.ec:241
+msgid "windows"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Win32BitmapPrinterDisplayDriver.ec:241
+#: .\sdk\ecere\src\gfx\drivers\Win32PrinterDisplayDriver.ec:241
+msgid "device"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Win32ConsoleDisplayDriver.ec:21
+#: .\sdk\ecere\src\gui\GuiApplication.ec:551
+#: .\sdk\ecere\src\gui\drivers\Win32ConsoleInterface.ec:50
+#: .\sdk\ecere\src\gui\drivers\Win32ConsoleInterface.ec:280
+msgid "Win32Console"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\Win32PrinterDisplayDriver.ec:92
+msgid "Win32Printer"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\XDisplayDriver.ec:373
+#: .\sdk\ecere\src\gui\GuiApplication.ec:558
+#: .\sdk\ecere\src\gui\GuiApplication.ec:562
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:984
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:1757
+msgid "X"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\XDisplayDriver.ec:513
+#, c-format
+msgid "Using shared memory!\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\XDisplayDriver.ec:1405
+msgid "bilinear"
+msgstr ""
+
+#: .\sdk\ecere\src\gfx\drivers\XDisplayDriver.ec:1407
+msgid "nearest"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Anchor.ec:35
+#: .\sdk\ecere\src\gui\Anchor.ec:117
+#, c-format
+msgid "%f"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Anchor.ec:176
+msgid "left = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Anchor.ec:183
+msgid "horz = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Anchor.ec:188
+msgid "top = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Anchor.ec:192
+msgid "right = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Anchor.ec:199
+msgid "vert = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Anchor.ec:204
+msgid "bottom = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Anchor.ec:374
+#: .\sdk\ecere\src\gui\Anchor.ec:390
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:549
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:609
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:631
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:653
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:675
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:832
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:853
+msgid "%"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:112
+msgid "CommonControl"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:143
+msgid "parent"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:157
+msgid "master"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:160
+msgid "visible"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:181
+msgid ""
+"import \"ecere\"\n"
+"\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:182
+#, c-format
+msgid "class %s : %s\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:183
+#: .\sdk\ecere\src\sys\JSON.ec:778
+msgid "{\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:185
+#, c-format
+msgid "   text = \"%s\";\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:188
+msgid "   background = activeBorder;\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:189
+msgid "   borderStyle = sizable;\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:190
+msgid "   hasMaximize = true;\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:191
+msgid "   hasMinimize = true;\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:192
+msgid "   hasClose = true;\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:194
+#, c-format
+msgid "   size = { %d, %d };\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:200
+msgid "}\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:822
+msgid "Deleting control with code"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:822
+msgid "Control contains code. Delete anyways?"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:838
+msgid "Deleting control with children"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\FormDesigner.ec:838
+msgid "Control contains other controls. Delete control and children?"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:67
+#: .\sdk\ecere\src\net\dcom.ec:35
+#: .\sdk\ecere\src\net\HTTPFile.ec:5
+#: .\sdk\ecere\src\net\NetworkClientFile.ec:5
+#: .\sdk\ecere\src\net\Service.ec:36
+#: .\sdk\ecere\src\net\Socket.ec:37
+msgid "network"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:89
+#: .\sdk\ecere\src\sys\System.ec:101
+msgid "No error"
+msgstr "没有错误"
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:90
+msgid "Graphics driver not supported by any user interface system"
+msgstr "图形驱动不支持任何用户界面"
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:91
+msgid "Window creation failed"
+msgstr "窗体创建失败"
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:92
+msgid "Window graphics loading failed"
+msgstr "窗体图像加载失败"
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:93
+msgid "Driver/Mode switch failed"
+msgstr "驱动/模式切换失败"
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:187
+#: .\sdk\ecere\src\gui\drivers\Win32Interface.ec:104
+msgid "ECERE Application"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:508
+msgid "ECERE_DRIVER"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:556
+msgid "DISPLAY"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:582
+msgid "SVGA"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:793
+#, c-format
+msgid "bug"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:837
+msgid "[P] [NProcess]\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:877
+#, c-format
+msgid "[P] Accepting connection (%x)\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:892
+msgid "[P] Connection accepted\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:926
+#, c-format
+msgid "[P] Processing disconnected connect (%x)\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:930
+#: .\sdk\ecere\src\net\Socket.ec:557
+#, c-format
+msgid "Error resolving address %s\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:941
+msgid "[P] Processing connected connect\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\GuiApplication.ec:1209
+msgid "Error falling back to previous video mode.\n"
+msgstr "切换回先前的视频模式出现致命错误.\n"
+
+#: .\sdk\ecere\src\gui\Interface.ec:139
+#: .\sdk\ecere\src\gui\controls\Menu.ec:87
+#: .\sdk\ecere\src\gui\controls\Menu.ec:1533
+msgid "\t"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:5
+msgid "Anchor"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:6
+msgid "Key"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:7
+#: .\sdk\ecere\src\net\network.ec:34
+#: .\sdk\ecere\src\sys\System.ec:65
+msgid "GuiApplication"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:8
+#: .\sdk\ecere\src\gui\drivers\NCursesInterface.ec:24
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:64
+msgid "Interface"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:9
+#: .\sdk\ecere\src\gui\skins\TVisionSkin.ec:11
+msgid "Skin"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:10
+msgid "Timer"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:11
+msgid "Cursor"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:12
+msgid "ClipBoard"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:14
+#: .\sdk\ecere\src\gui\Window.ec:20
+msgid "Button"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:17
+msgid "Label"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:18
+msgid "Picture"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:19
+msgid "ScrollBar"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:21
+msgid "Menu"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:22
+msgid "StatusBar"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:23
+msgid "ProgressBar"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:24
+msgid "EditBox"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:25
+msgid "DataBox"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:28
+msgid "Desktop3D"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:32
+msgid "FormDesigner"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:35
+msgid "FileDialog"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:36
+msgid "MessageBox"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:37
+msgid "WindowList"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:667
+#: .\sdk\ecere\src\gui\Window.ec:684
+msgid "(Desktop)"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:682
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:623
+msgid "this"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:792
+#: .\sdk\ecere\src\gui\Window.ec:809
+#: .\sdk\ecere\src\gui\Window.ec:814
+msgid " - "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:798
+#: .\sdk\ecere\src\gui\Window.ec:821
+#: .\sdk\ecere\src\gui\Window.ec:7080
+#, c-format
+msgid "Untitled %d"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:802
+#: .\sdk\ecere\src\gui\Window.ec:825
+msgid " *"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:815
+msgid "["
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:826
+#: .\sdk\ecere\src\sys\JSON.ec:630
+msgid "]"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:2374
+#, c-format
+msgid "%d %s"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:6478
+msgid "Restore"
+msgstr "恢复(R)"
+
+#: .\sdk\ecere\src\gui\Window.ec:6483
+msgid "Move"
+msgstr "移动(M)"
+
+#: .\sdk\ecere\src\gui\Window.ec:6488
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1410
+msgid "Size"
+msgstr "大小(S)"
+
+#: .\sdk\ecere\src\gui\Window.ec:6493
+msgid "Minimize"
+msgstr "最小化(N)"
+
+#: .\sdk\ecere\src\gui\Window.ec:6498
+msgid "Maximize"
+msgstr "最大化(X)"
+
+#: .\sdk\ecere\src\gui\Window.ec:6503
+msgid "Stay On Top"
+msgstr "置顶(T)"
+
+#: .\sdk\ecere\src\gui\Window.ec:6509
+#: .\sdk\ecere\src\gui\dialogs\GoToDialog.ec:44
+msgid "Close"
+msgstr "关闭(C)"
+
+#: .\sdk\ecere\src\gui\Window.ec:6972
+#, c-format
+msgid "Save changes to %s?"
+msgstr "保存更改至%s?"
+
+#: .\sdk\ecere\src\gui\Window.ec:6974
+#, c-format
+msgid "Save changes to Untitled %d?"
+msgstr "保存更改至%d?"
+
+#: .\sdk\ecere\src\gui\Window.ec:7056
+#: .\sdk\ecere\src\gui\Window.ec:7104
+msgid "Error writing file"
+msgstr "写入文件错误"
+
+#: .\sdk\ecere\src\gui\Window.ec:7056
+#: .\sdk\ecere\src\gui\Window.ec:7104
+msgid "Save as a different file?"
+msgstr "保存至另外一个文件?"
+
+#: .\sdk\ecere\src\gui\Window.ec:7086
+msgid "Save As"
+msgstr "另存为"
+
+#: .\sdk\ecere\src\gui\Window.ec:7548
+#: .\sdk\ecere\src\gui\Window.ec:7917
+#: .\sdk\ecere\src\gui\Window.ec:7924
+#: .\sdk\ecere\src\gui\Window.ec:7992
+#: .\sdk\ecere\src\gui\Window.ec:8331
+#: .\sdk\ecere\src\gui\Window.ec:8367
+#: .\sdk\ecere\src\gui\Window.ec:8403
+#: .\sdk\ecere\src\gui\Window.ec:8435
+#: .\sdk\ecere\src\gui\Window.ec:8502
+#: .\sdk\ecere\src\gui\Window.ec:9026
+msgid "Layout"
+msgstr "布局"
+
+#: .\sdk\ecere\src\gui\Window.ec:7759
+#: .\sdk\ecere\src\gui\Window.ec:7823
+#: .\sdk\ecere\src\gui\Window.ec:8004
+#: .\sdk\ecere\src\gui\Window.ec:8051
+#: .\sdk\ecere\src\gui\Window.ec:8058
+#: .\sdk\ecere\src\gui\Window.ec:8065
+#: .\sdk\ecere\src\gui\Window.ec:8072
+#: .\sdk\ecere\src\gui\Window.ec:8079
+#: .\sdk\ecere\src\gui\Window.ec:8086
+#: .\sdk\ecere\src\gui\Window.ec:8093
+#: .\sdk\ecere\src\gui\Window.ec:8547
+#: .\sdk\ecere\src\gui\Window.ec:8574
+#: .\sdk\ecere\src\gui\Window.ec:8581
+#: .\sdk\ecere\src\gui\Window.ec:8822
+#: .\sdk\ecere\src\gui\Window.ec:8842
+#: .\sdk\ecere\src\gui\Window.ec:8848
+#: .\sdk\ecere\src\gui\Window.ec:8855
+#: .\sdk\ecere\src\gui\Window.ec:8865
+#: .\sdk\ecere\src\gui\Window.ec:8876
+#: .\sdk\ecere\src\gui\Window.ec:8888
+#: .\sdk\ecere\src\gui\Window.ec:8961
+#: .\sdk\ecere\src\gui\Window.ec:8994
+#: .\sdk\ecere\src\gui\Window.ec:9010
+#: .\sdk\ecere\src\gui\controls\Button.ec:855
+#: .\sdk\ecere\src\gui\controls\Button.ec:908
+#: .\sdk\ecere\src\gui\controls\Button.ec:931
+#: .\sdk\ecere\src\gui\controls\Button.ec:955
+#: .\sdk\ecere\src\gui\controls\Button.ec:972
+#: .\sdk\ecere\src\gui\controls\Button.ec:1051
+#: .\sdk\ecere\src\gui\controls\Button.ec:1053
+#: .\sdk\ecere\src\gui\controls\Button.ec:1056
+#: .\sdk\ecere\src\gui\controls\Button.ec:1057
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:130
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:167
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:171
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:708
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:709
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:712
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:722
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:723
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:724
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:725
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:726
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:727
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:728
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:729
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:730
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:731
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:732
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:734
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:735
+#: .\sdk\ecere\src\gui\controls\Label.ec:17
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:884
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:922
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:931
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:932
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:933
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:934
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:965
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:966
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:971
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:972
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:975
+#: .\sdk\ecere\src\gui\controls\ScrollBar.ec:84
+#: .\sdk\ecere\src\gui\controls\ScrollBar.ec:87
+#: .\sdk\ecere\src\gui\controls\ScrollBar.ec:98
+#: .\sdk\ecere\src\gui\controls\ScrollBar.ec:114
+#: .\sdk\ecere\src\gui\controls\ScrollBar.ec:127
+#: .\sdk\ecere\src\gui\controls\ScrollBar.ec:128
+#: .\sdk\ecere\src\gui\controls\ScrollBar.ec:129
+msgid "Behavior"
+msgstr "行为"
+
+#: .\sdk\ecere\src\gui\Window.ec:7804
+#: .\sdk\ecere\src\gui\Window.ec:7851
+#: .\sdk\ecere\src\gui\Window.ec:7868
+#: .\sdk\ecere\src\gui\Window.ec:7879
+#: .\sdk\ecere\src\gui\Window.ec:7892
+#: .\sdk\ecere\src\gui\Window.ec:8274
+#: .\sdk\ecere\src\gui\Window.ec:8968
+#: .\sdk\ecere\src\gui\controls\Button.ec:975
+#: .\sdk\ecere\src\gui\controls\Button.ec:1007
+#: .\sdk\ecere\src\gui\controls\Button.ec:1010
+#: .\sdk\ecere\src\gui\controls\Button.ec:1052
+#: .\sdk\ecere\src\gui\controls\Button.ec:1054
+#: .\sdk\ecere\src\gui\controls\Button.ec:1055
+#: .\sdk\ecere\src\gui\controls\Button.ec:1060
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:39
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:49
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:59
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:70
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:84
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:168
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:733
+#: .\sdk\ecere\src\gui\controls\Label.ec:46
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:901
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:935
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:936
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:939
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:967
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:968
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:969
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:970
+#: .\sdk\ecere\src\gui\controls\Picture.ec:18
+#: .\sdk\ecere\src\gui\controls\Picture.ec:39
+#: .\sdk\ecere\src\gui\controls\ScrollBar.ec:82
+msgid "Appearance"
+msgstr "外观"
+
+#: .\sdk\ecere\src\gui\Window.ec:7931
+#: .\sdk\ecere\src\gui\Window.ec:7952
+#: .\sdk\ecere\src\gui\Window.ec:7973
+#: .\sdk\ecere\src\gui\Window.ec:8122
+#: .\sdk\ecere\src\gui\Window.ec:8129
+#: .\sdk\ecere\src\gui\Window.ec:8165
+#: .\sdk\ecere\src\gui\Window.ec:8186
+#: .\sdk\ecere\src\gui\Window.ec:8239
+#: .\sdk\ecere\src\gui\Window.ec:8765
+#: .\sdk\ecere\src\gui\Window.ec:8772
+#: .\sdk\ecere\src\gui\Window.ec:8797
+#: .\sdk\ecere\src\gui\Window.ec:8954
+msgid "Window Style"
+msgstr "窗体样式"
+
+#: .\sdk\ecere\src\gui\Window.ec:8758
+#: .\sdk\ecere\src\gui\Window.ec:8895
+#: .\sdk\ecere\src\gui\Window.ec:8930
+msgid "Document"
+msgstr "文档"
+
+#: .\sdk\ecere\src\gui\Window.ec:8923
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:127
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:747
+#: .\sdk\ecere\src\gui\controls\ProgressBar.ec:13
+#: .\sdk\ecere\src\gui\controls\ProgressBar.ec:14
+msgid "Data"
+msgstr "数据"
+
+#: .\sdk\ecere\src\gui\Window.ec:8980
+msgid "Design"
+msgstr "设计"
+
+#: .\sdk\ecere\src\gui\Window.ec:9254
+#, c-format
+msgid "%.2f"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\Window.ec:9283
+#, c-format
+msgid "%sSkin_%s"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Button.ec:31
+msgid "<:ecere>controls/button.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Button.ec:875
+msgid "<:ecere>elements/optionBoxUp.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Button.ec:876
+msgid "<:ecere>elements/optionBoxDown.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Button.ec:877
+msgid "<:ecere>elements/optionBoxDisabled.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Button.ec:878
+msgid "<:ecere>elements/optionBoxSelectedUp.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Button.ec:879
+msgid "<:ecere>elements/optionBoxSelectedDown.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Button.ec:880
+msgid "<:ecere>elements/optionBoxDisabledSelected.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\CalendarControl.ec:9
+msgid "<:ecere>controls/calendar.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\CalendarControl.ec:44
+#: .\sdk\ecere\src\gui\controls\CalendarControl.ec:69
+#: .\sdk\ecere\src\gui\controls\CalendarControl.ec:90
+#: .\sdk\ecere\src\gui\controls\CalendarControl.ec:111
+msgid "Verdana"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\CalendarControl.ec:47
+msgid "«"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\CalendarControl.ec:71
+msgid "»"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\DataBox.ec:20
+msgid "<:ecere>controls/dataBox.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:25
+msgid "<:ecere>controls/dropBox.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:97
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:885
+msgid "Private"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:667
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:3327
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:2805
+msgid "W"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\DropBox.ec:794
+#: .\sdk\ecere\src\gui\controls\ScrollBar.ec:345
+msgid "<:ecere>elements/arrowDown.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:4
+msgid "ReplaceDialog"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:5
+msgid "FindDialog"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:6
+msgid "GoToDialog"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:258
+msgid "AddChar: y = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:258
+msgid "x = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:258
+msgid ", ch = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:258
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:273
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:317
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:383
+msgid ", addedSpaces = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:258
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:273
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:383
+msgid ", addedTabs = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:273
+msgid "AddText: y1 = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:273
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:317
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:383
+msgid "x1 = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:273
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:317
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:383
+msgid ", y2 = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:273
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:317
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:383
+msgid ", x2 = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:273
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:317
+msgid ", string = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:317
+msgid "DelText: y1 = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:317
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:383
+msgid ", placeAfter = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:383
+msgid "ReplaceText: y1 = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:383
+msgid ", y3 = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:383
+msgid ", x3 = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:383
+msgid ", oldString = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:383
+msgid ", newString = "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:598
+msgid "return"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:598
+msgid "break"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:598
+msgid "continue"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:598
+msgid "default"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:598
+msgid "switch"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:598
+msgid "case"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:598
+msgid "if"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:598
+msgid "else"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:598
+msgid "for"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:598
+msgid "while"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:598
+msgid "do"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:598
+msgid "long"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:599
+msgid "void"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:599
+msgid "unsigned"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:599
+msgid "extern"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:599
+msgid "union"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:599
+msgid "typedef"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:600
+msgid "const"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:600
+msgid "sizeof"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:601
+msgid "#include"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:601
+msgid "#define"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:601
+msgid "#pragma"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:601
+msgid "#if"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:601
+msgid "#else"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:601
+msgid "#elif"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:601
+msgid "#ifdef"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:601
+msgid "#ifndef"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:601
+msgid "#endif"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:601
+msgid "#undef"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:601
+msgid "#line"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:602
+msgid "__attribute__"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:602
+msgid "__stdcall"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:602
+msgid "_stdcall"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:603
+msgid "__declspec"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:603
+msgid "goto"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:604
+msgid "inline"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:604
+msgid "__inline__"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:604
+msgid "_inline"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:604
+msgid "__inline"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:604
+msgid "__typeof"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:604
+msgid "__extension__"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:605
+msgid "asm"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:605
+msgid "__asm"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:605
+msgid "_asm"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:605
+msgid "volatile"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:605
+msgid "#cpu"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:605
+msgid "__stdcall__"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:608
+msgid "private"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:608
+msgid "public"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:609
+msgid "property"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:609
+msgid "import"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:610
+msgid "delete"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:610
+msgid "new"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:610
+msgid "new0"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:610
+msgid "renew"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:610
+msgid "renew0"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:610
+msgid "define"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:611
+msgid "get"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:611
+msgid "set"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:612
+msgid "remote"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:613
+msgid "dllexport"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:613
+msgid "dllimport"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:613
+msgid "stdcall"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:614
+msgid "subclass"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:614
+msgid "__on_register_module"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:614
+msgid "namespace"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:614
+msgid "using"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:615
+msgid "typed_object"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:615
+msgid "any_object"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:615
+msgid "incref"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:615
+msgid "register"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:615
+msgid "watch"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:615
+msgid "stopwatching"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:615
+msgid "firewatchers"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:615
+msgid "watchable"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:615
+msgid "class_designer"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:616
+msgid "class_fixed"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:616
+msgid "class_no_expansion"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:616
+msgid "isset"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:616
+msgid "class_default_property"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:616
+msgid "property_category"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:616
+msgid "class_data"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:616
+msgid "class_property"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:617
+msgid "virtual"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:617
+msgid "thisclass"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:617
+msgid "unichar"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:617
+msgid "dbtable"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:617
+msgid "dbindex"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:617
+msgid "database_open"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:617
+msgid "dbfield"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:623
+#: .\sdk\ecere\src\sys\JSON.ec:159
+#: .\sdk\ecere\src\sys\JSON.ec:633
+#: .\sdk\ecere\src\sys\JSON.ec:914
+msgid "null"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:623
+msgid "value"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:627
+msgid "protected"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:634
+msgid "defined"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:634
+msgid "warning"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:663
+#: .\sdk\ecere\src\gui\dialogs\GoToDialog.ec:29
+#: .\sdk\ecere\src\gui\dialogs\GoToDialog.ec:35
+msgid "Go To"
+msgstr "跳至"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:668
+msgid "<:ecere>controls/editBox.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:920
+msgid "Edit"
+msgstr "编辑(E)"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:923
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:3004
+msgid "Cut\tCtrl+X"
+msgstr "剪切(X)\tCtrl+X"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:934
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:3005
+msgid "Copy\tCtrl+C"
+msgstr "复制(C)\tCtrl+C"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:944
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:3006
+msgid "Paste\tCtrl+V"
+msgstr "粘贴(P)\tCtrl+V"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:955
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:3007
+msgid "Delete\tDel"
+msgstr "删除(D)\tDel"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:967
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:3009
+msgid "Select All\tCtrl+A"
+msgstr "全选(A)\tCtrl+A"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:978
+msgid "Undo\tCtrl+Z"
+msgstr "撤销(U)\tCtrl+Z"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:989
+msgid "Redo\tCtrl+Y"
+msgstr "重做(Y)\tCtrl+Y"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:1001
+msgid "Find Previous\tShift-F3"
+msgstr "查找上一个(E)\tShift-F3"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:1014
+msgid "Find Next\tF3"
+msgstr "查找下一个(N)\tF3"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:1027
+msgid "Find...\tCtrl+F"
+msgstr "查找(F)...\tCtrl+F"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:1054
+msgid "Replace...\tCtrl+R"
+msgstr "替换(R)...\tCtrl+R"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:1088
+msgid "Go To...\tCtrl+G"
+msgstr "跳至(G)...\tCtrl+G"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:1101
+msgid "Insert Tabs"
+msgstr "插入制表符(I)"
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:2007
+msgid "/*"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:2007
+msgid "*/"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:2125
+#, c-format
+msgid "bug!"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:2406
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:2417
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:2426
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:4819
+#: .\sdk\ecere\src\gui\controls\EditBox.ec:4838
+#, c-format
+msgid "Warning"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Label.ec:7
+msgid "<:ecere>controls/label.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\ListBox.ec:880
+msgid "<:ecere>controls/listBox.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Menu.ec:92
+msgid "Ctrl+"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Menu.ec:93
+msgid "Alt+"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Menu.ec:94
+msgid "Shift+"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Menu.ec:619
+msgid "<:ecere>controls/menu.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Menu.ec:634
+#: .\sdk\ecere\src\gui\controls\Menu.ec:635
+#: .\sdk\ecere\src\gui\controls\Menu.ec:636
+#: .\sdk\ecere\src\gui\controls\ScrollBar.ec:357
+msgid "<:ecere>elements/arrowRight.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Picture.ec:7
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:41
+msgid "<:ecere>mimeTypes/image.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Picture.ec:71
+msgid "Save\tCtrl+S"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Picture.ec:72
+msgid "Save As..."
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\Picture.ec:108
+msgid ":mimeTypes/image.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\ProgressBar.ec:7
+msgid "<:ecere>controls/progressBar.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\ProgressBar.ec:37
+#, c-format
+msgid "%d%%"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\ScrollBar.ec:26
+msgid "<:ecere>controls/scrollBarHorizontal.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\ScrollBar.ec:350
+msgid "<:ecere>elements/arrowUp.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\ScrollBar.ec:362
+msgid "<:ecere>elements/arrowLeft.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\controls\StatusBar.ec:11
+msgid "<:ecere>controls/statusBar.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:240
+msgid "Select a color..."
+msgstr "选择一个颜色..."
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:323
+#, c-format
+msgid "%08X"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:325
+#, c-format
+msgid "%06X"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:591
+msgid "C:"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:613
+msgid "M:"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:635
+msgid "Y:"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:657
+msgid "K:"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:679
+msgid "0x"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:705
+msgid "A:"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:721
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:294
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1225
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1534
+#: .\sdk\ecere\src\gui\dialogs\MessageBox.ec:93
+#: .\sdk\ecere\src\gui\dialogs\MessageBox.ec:119
+#: .\sdk\ecere\src\gui\dialogs\WindowList.ec:24
+msgid "OK"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:730
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1262
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1558
+#: .\sdk\ecere\src\gui\dialogs\FindDialog.ec:73
+#: .\sdk\ecere\src\gui\dialogs\MessageBox.ec:87
+#: .\sdk\ecere\src\gui\dialogs\MessageBox.ec:106
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:364
+#: .\sdk\ecere\src\gui\dialogs\WindowList.ec:35
+msgid "Cancel"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:740
+msgid "H:"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:746
+msgid "S:"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:752
+msgid "V:"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:758
+msgid "L:"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:764
+msgid "a:"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:770
+msgid "b:"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:776
+msgid "R:"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:782
+msgid "G:"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\ColorPicker.ec:788
+msgid "B:"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:4
+msgid "Entire Computer"
+msgstr "我的电脑"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:5
+#: .\sdk\ecere\src\sys\File.ec:1216
+#: .\sdk\ecere\src\sys\File.ec:1265
+msgid "Microsoft Windows Network"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:18
+msgid "<:ecere>places/folder.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:19
+msgid "<:ecere>status/folderOpen.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:20
+msgid "<:ecere>devices/computer.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:21
+msgid "<:ecere>devices/driveHardDisk.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:22
+msgid "<:ecere>places/driveRemote.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:23
+msgid "<:ecere>devices/mediaOptical.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:24
+msgid "<:ecere>devices/driveRemovableMedia.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:25
+msgid "<:ecere>devices/mediaFloppy.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:26
+msgid "<:ecere>places/networkWorkgroup.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:27
+msgid "<:ecere>places/networkServer.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:28
+msgid "<:ecere>places/folderRemote.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:30
+msgid "<:ecere>mimeTypes/file.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:31
+msgid "<:ecere>mimeTypes/textEcereWorkspace.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:32
+msgid "<:ecere>mimeTypes/textEcereProject.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:33
+msgid "<:ecere>mimeTypes/textEcereSource.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:34
+msgid "<:ecere>mimeTypes/textEcereHeader.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:35
+msgid "<:ecere>mimeTypes/textCSource.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:36
+msgid "<:ecere>mimeTypes/textCHeader.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:37
+msgid "<:ecere>mimeTypes/textC++Source.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:38
+msgid "<:ecere>mimeTypes/textC++Header.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:39
+msgid "<:ecere>mimeTypes/text.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:40
+msgid "<:ecere>mimeTypes/textHyperTextMarkup.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:42
+msgid "<:ecere>status/audioVolumeHigh.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:43
+msgid "<:ecere>mimeTypes/package.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:44
+msgid "<:ecere>mimeTypes/packageSoftware.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:45
+msgid "<:ecere>mimeTypes/packageOpticalDisc.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:76
+msgid "ews"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:78
+msgid "epj"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:80
+msgid "ec"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:82
+msgid "eh"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:84
+msgid "cpp"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:85
+msgid "cc"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:85
+msgid "cxx"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:87
+msgid "hpp"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:88
+msgid "hh"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:88
+msgid "hxx"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:90
+msgid "c"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:92
+msgid "h"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:94
+msgid "txt"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:94
+msgid "text"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:95
+msgid "nfo"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:95
+msgid "info"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:97
+msgid "htm"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:97
+msgid "html"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:98
+msgid "css"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:98
+msgid "php"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:99
+msgid "js"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:104
+msgid "ico"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:106
+msgid "wav"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:106
+msgid "mp3"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:107
+msgid "ogg"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:107
+msgid "snd"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:109
+msgid "ear"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:109
+msgid "7z"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:110
+msgid "rar"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:110
+msgid "zip"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:111
+msgid "gz"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:111
+msgid "bz2"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:112
+msgid "tar"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:112
+msgid "arj"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:113
+msgid "lza"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:113
+msgid "lzh"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:114
+msgid "cpio"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:114
+msgid "z"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:116
+msgid "cab"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:116
+msgid "deb"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:117
+msgid "rpm"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:119
+msgid "iso"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:119
+msgid "mds"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:120
+msgid "cue"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:120
+msgid "bin"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:121
+msgid "ccd"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:121
+msgid "bwt"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:122
+msgid "cdi"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:122
+msgid "nrg"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:245
+msgid "Select a file..."
+msgstr "选择一个文件..."
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:276
+msgid "Select"
+msgstr "选择"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:309
+msgid "Directory:"
+msgstr "目录:"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:309
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1447
+msgid "File Name:"
+msgstr "文件名:"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:350
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:428
+msgid "All files"
+msgstr "所有文件"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:786
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:805
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:863
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:871
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:883
+msgid "*"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:863
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:871
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:883
+#: .\sdk\ecere\src\sys\File.ec:1174
+msgid "*.*"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:885
+msgid "All Files"
+msgstr "所有文件"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:912
+msgid "*."
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1064
+msgid "File Already Exists"
+msgstr "文件已存在"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1064
+msgid "Replace existing file?"
+msgstr "替换已存在文件吗?"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1077
+msgid "Directory doesn't exist"
+msgstr "目录不存在"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1077
+msgid "Create directory?"
+msgstr "创建目录吗?"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1169
+msgid "Filter:"
+msgstr "过滤器(R):"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1187
+msgid "As Type:"
+msgstr "类型(T):"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1255
+msgid "Open"
+msgstr "打开(O)"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1273
+msgid "Look in:"
+msgstr "浏览(L):"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1351
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1408
+msgid "FileName"
+msgstr "文件名(F):"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1408
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1565
+msgid "Name"
+msgstr "名称"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1409
+msgid "Type"
+msgstr "类型"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1410
+msgid "FileSize"
+msgstr "大小"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1416
+msgid "<:ecere>actions/goUp.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1433
+msgid "<:ecere>actions/folderNew.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1495
+msgid "Create Directory"
+msgstr "创建目录"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1548
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1551
+msgid "Create Directory Error"
+msgstr "创建目录错误"
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1548
+msgid "Directory already exists."
+msgstr "目录已存在."
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1551
+msgid "Please enter a name."
+msgstr "请输入名称."
+
+#: .\sdk\ecere\src\gui\dialogs\FileDialog.ec:1566
+msgid "New Directory"
+msgstr "新建文件夹"
+
+#: .\sdk\ecere\src\gui\dialogs\FindDialog.ec:7
+#: .\sdk\ecere\src\gui\dialogs\FindDialog.ec:61
+msgid "Find"
+msgstr "查找"
+
+#: .\sdk\ecere\src\gui\dialogs\FindDialog.ec:26
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:223
+msgid "Whole word only"
+msgstr "全字匹配(W)"
+
+#: .\sdk\ecere\src\gui\dialogs\FindDialog.ec:31
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:229
+msgid "Match case"
+msgstr "区分大小写(C)"
+
+#: .\sdk\ecere\src\gui\dialogs\FindDialog.ec:36
+msgid "Up"
+msgstr "向上(U)"
+
+#: .\sdk\ecere\src\gui\dialogs\FindDialog.ec:41
+msgid "Down"
+msgstr "向下(D)"
+
+#: .\sdk\ecere\src\gui\dialogs\FindDialog.ec:46
+msgid "Direction"
+msgstr "方向"
+
+#: .\sdk\ecere\src\gui\dialogs\FindDialog.ec:51
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:252
+msgid "Find Next"
+msgstr "查找下一个(F)"
+
+#: .\sdk\ecere\src\gui\dialogs\FindDialog.ec:61
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:162
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:341
+msgid "Search string not found."
+msgstr "搜索字符串未找到."
+
+#: .\sdk\ecere\src\gui\dialogs\FindDialog.ec:85
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:369
+msgid "Find what:"
+msgstr "查找内容(N):"
+
+#: .\sdk\ecere\src\gui\dialogs\GoToDialog.ec:7
+msgid "Go To Line..."
+msgstr "跳至行..."
+
+#: .\sdk\ecere\src\gui\dialogs\GoToDialog.ec:35
+msgid "No such line."
+msgstr "没有这行."
+
+#: .\sdk\ecere\src\gui\dialogs\GoToDialog.ec:50
+msgid "Line number:"
+msgstr "行号:"
+
+#: .\sdk\ecere\src\gui\dialogs\MessageBox.ec:74
+#: .\sdk\ecere\src\gui\dialogs\MessageBox.ec:100
+msgid "No"
+msgstr "否(N)"
+
+#: .\sdk\ecere\src\gui\dialogs\MessageBox.ec:80
+#: .\sdk\ecere\src\gui\dialogs\MessageBox.ec:112
+msgid "Yes"
+msgstr "是(Y)"
+
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:14
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:258
+msgid "Replace"
+msgstr "替换"
+
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:158
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:350
+#, c-format
+msgid "%d occurences found, %d replaced"
+msgstr "找到%d个匹配项, %d已替换"
+
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:159
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:162
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:341
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:351
+msgid "Search Finished"
+msgstr "搜索完成"
+
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:213
+msgid "Replace with:"
+msgstr "替换为(P):"
+
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:235
+msgid "Selection"
+msgstr "已选中内容(S)"
+
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:241
+msgid "Whole File"
+msgstr "整个文件(H)"
+
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:247
+msgid "Replace In"
+msgstr "替换"
+
+#: .\sdk\ecere\src\gui\dialogs\ReplaceDialog.ec:264
+msgid "Replace All"
+msgstr "替换全部(A)"
+
+#: .\sdk\ecere\src\gui\dialogs\WindowList.ec:9
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:103
+msgid "Windows"
+msgstr "窗口"
+
+#: .\sdk\ecere\src\gui\dialogs\WindowList.ec:41
+msgid "Select a Window to Activate..."
+msgstr "选择一个激活窗口..."
+
+#: .\sdk\ecere\src\gui\drivers\NCursesInterface.ec:109
+#, c-format
+msgid "  \\e: %d\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\NCursesInterface.ec:120
+#, c-format
+msgid "   [: %d\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\NCursesInterface.ec:124
+#, c-format
+msgid "   MOD: %c\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\NCursesInterface.ec:163
+#, c-format
+msgid "   O: %d\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\NCursesInterface.ec:358
+#, c-format
+msgid "(U"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\Win32Interface.ec:169
+msgid "Win32"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\Win32Interface.ec:244
+#: .\sdk\ecere\src\gui\drivers\Win32Interface.ec:1005
+msgid "Shell_TrayWnd"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\Win32Interface.ec:904
+msgid "dinput.dll"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\Win32Interface.ec:907
+msgid "DirectInputCreateA"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\Win32Interface.ec:1092
+msgid "Direct3D9"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:65
+msgid "XDisplayDriver"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:100
+msgid "CLIPBOARD"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:101
+msgid "MULTIPLE"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:102
+msgid "TARGETS"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:103
+msgid "UTF8_STRING"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:104
+msgid "WM_DELETE_WINDOW"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:105
+msgid "WM_HINTS"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:106
+msgid "WM_NAME"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:107
+msgid "WM_PROTOCOLS"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:108
+msgid "WM_STATE"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:109
+msgid "WM_TAKE_FOCUS"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:110
+msgid "WM_TRANSIENT_FOR"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:111
+msgid "_MOTIF_WM_HINTS"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:112
+msgid "_NET_ACTIVE_WINDOW"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:113
+msgid "_NET_CURRENT_DESKTOP"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:114
+msgid "_NET_NUMBER_OF_DESKTOPS"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:115
+msgid "_NET_WM_ICON"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:116
+msgid "_NET_WM_NAME"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:117
+msgid "_NET_WM_PID"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:118
+msgid "_NET_WM_STATE"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:119
+msgid "_NET_WM_STATE_DEMANDS_ATTENTION"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:120
+msgid "_NET_WM_STATE_HIDDEN"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:121
+msgid "_NET_WM_USER_TIME"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:122
+msgid "_NET_WM_WINDOW_TYPE"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:123
+msgid "_NET_WM_WINDOW_TYPE_DESKTOP"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:124
+msgid "_NET_WM_WINDOW_TYPE_DIALOG"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:125
+msgid "_NET_WM_WINDOW_TYPE_DOCK"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:126
+msgid "_NET_WM_WINDOW_TYPE_DROPDOWN_MENU"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:127
+msgid "_NET_WM_WINDOW_TYPE_MENU"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:128
+msgid "_NET_WM_WINDOW_TYPE_NORMAL"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:129
+msgid "_NET_WM_WINDOW_TYPE_POPUP_MENU"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:130
+msgid "_NET_WM_WINDOW_TYPE_SPLASH"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:131
+msgid "_NET_WM_WINDOW_TYPE_TOOLBAR"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:132
+msgid "_NET_WM_WINDOW_TYPE_UTILITY"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:133
+msgid "_NET_WORKAREA"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:134
+msgid "APP_SELECTION"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:220
+#, c-format
+msgid "cant get xa desktops property\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:241
+#, c-format
+msgid "cant get xa current property\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:829
+#, c-format
+msgid "X Error: %s\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:835
+msgid "X IO Error\n"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:989
+msgid "en_US.UTF-8"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:1001
+msgid "/dev/js0"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:1002
+msgid "/dev/js1"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:1003
+msgid "/dev/js2"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:1004
+msgid "/dev/js3"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\drivers\XInterface.ec:1987
+msgid "--helvetica-*-r-*-*-*-120-*-*-*-*-*-*,-misc-fixed-*-r-*-*-*-130-*-*-*-*-*-*"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:69
+msgid "<:ecere>aqua/upMiddle.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:70
+msgid "<:ecere>aqua/upLeft.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:71
+msgid "<:ecere>aqua/upRight.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:73
+msgid "<:ecere>aqua/downMiddle.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:74
+msgid "<:ecere>aqua/downLeft.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:75
+msgid "<:ecere>aqua/downRight.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:77
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:190
+msgid "<:ecere>aqua/scrollUp.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:78
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:185
+msgid "<:ecere>aqua/scrollDown.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:79
+msgid "<:ecere>aqua/scrollVert.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:81
+msgid "<:ecere>aqua/thumbUp.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:82
+msgid "<:ecere>aqua/thumbDown.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:83
+msgid "<:ecere>aqua/thumbVert.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:85
+msgid "<:ecere>aqua/leftBorder.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:86
+msgid "<:ecere>aqua/rightBorder.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:87
+msgid "<:ecere>aqua/topBorder.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:88
+msgid "<:ecere>aqua/bottomBorder.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:90
+msgid "<:ecere>aqua/topLeftBorder.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:91
+msgid "<:ecere>aqua/topRightBorder.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:92
+msgid "<:ecere>aqua/bottomLeftBorder.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:93
+msgid "<:ecere>aqua/bottomRightBorder.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:323
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:70
+msgid "<:ecere>cursors/arrow.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:324
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:71
+msgid "<:ecere>cursors/iBeam.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:325
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:72
+msgid "<:ecere>cursors/cross.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:326
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:331
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:73
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:78
+msgid "<:ecere>cursors/move.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:327
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:74
+msgid "<:ecere>cursors/sizeNorthEastSouthWest.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:328
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:75
+msgid "<:ecere>cursors/sizeNorthSouth.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:329
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:76
+msgid "<:ecere>cursors/sizeNorthWestSouthEast.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:330
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:77
+msgid "<:ecere>cursors/sizeWestEast.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:348
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:95
+msgid "<:ecere>elements/areaMinimize.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:349
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:96
+msgid "<:ecere>elements/areaMaximize.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:350
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:97
+msgid "<:ecere>elements/areaRestore.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:351
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:98
+msgid "<:ecere>elements/areaClose.png"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:356
+msgid "Aqua"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:361
+#: .\sdk\ecere\src\gui\skins\AquaSkin.ec:366
+#: .\sdk\ecere\src\gui\skins\TVisionSkin.ec:37
+#: .\sdk\ecere\src\gui\skins\TVisionSkin.ec:43
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:110
+#: .\sdk\ecere\src\gui\skins\WindowsSkin.ec:115
+msgid "Tahoma"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\TVisionSkin.ec:30
+msgid "TVision"
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\TVisionSkin.ec:248
+#, c-format
+msgid " %s "
+msgstr ""
+
+#: .\sdk\ecere\src\gui\skins\TVisionSkin.ec:252
+msgid "... "
+msgstr ""
+
+#: .\sdk\ecere\src\net\dcom.ec:387
+#: .\sdk\ecere\src\net\dcom.ec:393
+msgid "DCOMClient_"
+msgstr ""
+
+#: .\sdk\ecere\src\net\dcom.ec:392
+msgid "DCOM"
+msgstr ""
+
+#: .\sdk\ecere\src\net\HTTPFile.ec:142
+msgid "HTTP/1.1 "
+msgstr ""
+
+#: .\sdk\ecere\src\net\HTTPFile.ec:143
+msgid "HTTP/1.0 "
+msgstr ""
+
+#: .\sdk\ecere\src\net\HTTPFile.ec:147
+msgid "Transfer-Encoding: "
+msgstr ""
+
+#: .\sdk\ecere\src\net\HTTPFile.ec:149
+msgid "chunked"
+msgstr ""
+
+#: .\sdk\ecere\src\net\HTTPFile.ec:154
+msgid "Content-Length: "
+msgstr ""
+
+#: .\sdk\ecere\src\net\HTTPFile.ec:159
+msgid "Connection: "
+msgstr ""
+
+#: .\sdk\ecere\src\net\HTTPFile.ec:161
+msgid "close"
+msgstr ""
+
+#: .\sdk\ecere\src\net\HTTPFile.ec:166
+msgid "Location: "
+msgstr ""
+
+#: .\sdk\ecere\src\net\HTTPFile.ec:376
+msgid "GET /"
+msgstr ""
+
+#: .\sdk\ecere\src\net\HTTPFile.ec:400
+msgid ""
+" HTTP/1.1\r\n"
+"Host: "
+msgstr ""
+
+#: .\sdk\ecere\src\net\HTTPFile.ec:403
+#: .\sdk\ecere\src\net\HTTPFile.ec:409
+#: .\sdk\ecere\src\net\HTTPFile.ec:411
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:559
+msgid "\r\n"
+msgstr ""
+
+#: .\sdk\ecere\src\net\HTTPFile.ec:404
+msgid "Accept-Charset: ISO-8859-1\r\n"
+msgstr ""
+
+#: .\sdk\ecere\src\net\HTTPFile.ec:407
+msgid "Referer: "
+msgstr ""
+
+#: .\sdk\ecere\src\net\network.ec:35
+msgid "Service"
+msgstr ""
+
+#: .\sdk\ecere\src\net\network.ec:36
+msgid "Socket"
+msgstr ""
+
+#: .\sdk\ecere\src\net\network.ec:89
+msgid "[N] Waiting for network event...\n"
+msgstr ""
+
+#: .\sdk\ecere\src\net\network.ec:96
+msgid "[N] Signaling Network event\n"
+msgstr ""
+
+#: .\sdk\ecere\src\net\network.ec:100
+msgid "[N] Waiting for select semaphore in Network Thread...\n"
+msgstr ""
+
+#: .\sdk\ecere\src\net\network.ec:261
+msgid "[P] Network System Terminated\n"
+msgstr ""
+
+#: .\sdk\ecere\src\net\Service.ec:55
+msgid "[P] [NStartService]\n"
+msgstr ""
+
+#: .\sdk\ecere\src\net\Service.ec:68
+#, c-format
+msgid "Service Socket: %x\n"
+msgstr ""
+
+#: .\sdk\ecere\src\net\Service.ec:110
+msgid "[P] [NStopService]\n"
+msgstr ""
+
+#: .\sdk\ecere\src\net\Socket.ec:102
+#, c-format
+msgid "[C] Signaling connect event (%X)\n"
+msgstr ""
+
+#: .\sdk\ecere\src\net\Socket.ec:110
+#, c-format
+msgid "[C] Getting out of connect thread (%X)\n"
+msgstr ""
+
+#: .\sdk\ecere\src\net\Socket.ec:215
+msgid ""
+"\n"
+"[P] [NConnect]\n"
+msgstr ""
+
+#: .\sdk\ecere\src\net\Socket.ec:234
+#, c-format
+msgid "[P] [NDisconnect (%X, %x)]\n"
+msgstr ""
+
+#: .\sdk\ecere\src\net\Socket.ec:682
+#, c-format
+msgid "Remote Lost %s\n"
+msgstr ""
+
+#: .\sdk\ecere\src\net\Socket.ec:694
+#, c-format
+msgid "Disconnected (%d) %s\n"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:4
+msgid "CalendarControl"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:10
+msgid "Sunday"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:10
+msgid "Monday"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:10
+msgid "Tuesday"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:10
+msgid "Wednesday"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:10
+msgid "Thursday"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:10
+msgid "Friday"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:10
+msgid "Saturday"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:14
+msgid "January"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:14
+msgid "February"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:14
+msgid "March"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:14
+msgid "April"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:14
+#: .\sdk\ecere\src\sys\Date.ec:38
+#: .\sdk\ecere\src\sys\Time.ec:70
+msgid "May"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:14
+msgid "June"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:14
+msgid "July"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:14
+msgid "August"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:14
+msgid "September"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:14
+msgid "October"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:14
+msgid "November"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:14
+msgid "December"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:34
+#: .\sdk\ecere\src\sys\Time.ec:66
+msgid "Sun"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:34
+#: .\sdk\ecere\src\sys\Time.ec:66
+msgid "Mon"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:34
+#: .\sdk\ecere\src\sys\Time.ec:66
+msgid "Tue"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:34
+#: .\sdk\ecere\src\sys\Time.ec:66
+msgid "Wed"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:34
+#: .\sdk\ecere\src\sys\Time.ec:66
+msgid "Thu"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:34
+#: .\sdk\ecere\src\sys\Time.ec:66
+msgid "Fri"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:34
+#: .\sdk\ecere\src\sys\Time.ec:66
+msgid "Sat"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:38
+#: .\sdk\ecere\src\sys\Time.ec:70
+msgid "Jan"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:38
+#: .\sdk\ecere\src\sys\Time.ec:70
+msgid "Feb"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:38
+#: .\sdk\ecere\src\sys\Time.ec:70
+msgid "Mar"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:38
+#: .\sdk\ecere\src\sys\Time.ec:70
+msgid "Apr"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:38
+#: .\sdk\ecere\src\sys\Time.ec:70
+msgid "Jun"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:38
+#: .\sdk\ecere\src\sys\Time.ec:70
+msgid "Jul"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:38
+#: .\sdk\ecere\src\sys\Time.ec:70
+msgid "Aug"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:38
+#: .\sdk\ecere\src\sys\Time.ec:70
+msgid "Sep"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:38
+#: .\sdk\ecere\src\sys\Time.ec:70
+msgid "Oct"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:38
+#: .\sdk\ecere\src\sys\Time.ec:70
+msgid "Nov"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:38
+#: .\sdk\ecere\src\sys\Time.ec:70
+msgid "Dec"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:41
+#, c-format
+msgid "%s, %s %2d, %d"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:61
+#: .\sdk\ecere\src\sys\Time.ec:785
+msgid "today"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:61
+#: .\sdk\ecere\src\sys\Time.ec:785
+msgid "now"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:62
+#: .\sdk\ecere\src\sys\Date.ec:65
+#: .\sdk\ecere\src\sys\Time.ec:787
+msgid "tomorrow"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Date.ec:62
+#: .\sdk\ecere\src\sys\Date.ec:70
+#: .\sdk\ecere\src\sys\Time.ec:794
+msgid "yesterday"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\EARArchive.ec:8
+msgid "BufferedFile"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\EARArchive.ec:612
+#, c-format
+msgid "Error\n"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:74
+msgid "HTTPFile"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:132
+msgid "GB"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:132
+msgid "gb"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:133
+msgid "MB"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:133
+msgid "mb"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:134
+msgid "KB"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:134
+msgid "kb"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:165
+msgid "Select File"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:247
+msgid "Imp"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:271
+msgid "Exp"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:478
+#, c-format
+msgid "WARNING:  File::Truncate unimplemented in ecereBootstrap.\n"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:900
+msgid "File://"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:1155
+#: .\sdk\ecere\src\sys\File.ec:1477
+#, c-format
+msgid "%s [%s]"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:1696
+#: .\sdk\ecere\src\sys\File.ec:1722
+msgid "/tmp/"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:1699
+#: .\sdk\ecere\src\sys\File.ec:1725
+msgid "XXXXXX"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\File.ec:1704
+msgid "r+"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:187
+msgid "HOME"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:194
+msgid "rc"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:207
+msgid "USERPROFILE"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:223
+msgid "HOMEDRIVE"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:226
+msgid "HOMEPATH"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:262
+msgid "/etc/"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:280
+msgid "ini"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:282
+msgid "conf"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:477
+msgid " ,"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:524
+msgid "="
+msgstr ""
+
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:619
+#, c-format
+msgid ""
+"\r\n"
+"[%s]\r\n"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\GlobalAppSettings.ec:621
+#, c-format
+msgid ""
+"\n"
+"[%s]\n"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:4
+msgid "Array"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:152
+#: .\sdk\ecere\src\sys\JSON.ec:718
+msgid "SetBool"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:224
+#: .\sdk\ecere\src\sys\JSON.ec:429
+#: .\sdk\ecere\src\sys\JSON.ec:471
+#: .\sdk\ecere\src\sys\JSON.ec:611
+#: .\sdk\ecere\src\sys\JSON.ec:654
+#: .\sdk\ecere\src\sys\JSON.ec:814
+#: .\sdk\ecere\src\sys\JSON.ec:881
+msgid "int16"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:243
+msgid "Warning: Incompatible value for array value, expected "
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:371
+msgid "Warning: member "
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:371
+msgid " not found in class "
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:393
+msgid "warning: Unresolved data type "
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:488
+msgid "Warning: Incompatible value for "
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:489
+msgid ", expected "
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:572
+msgid "[\n"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:581
+#: .\sdk\ecere\src\sys\JSON.ec:828
+#: .\sdk\ecere\src\sys\JSON.ec:895
+msgid ",\n"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:624
+#: .\sdk\ecere\src\sys\JSON.ec:629
+#: .\sdk\ecere\src\sys\JSON.ec:829
+#: .\sdk\ecere\src\sys\JSON.ec:896
+#: .\sdk\ecere\src\sys\JSON.ec:910
+msgid "   "
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:725
+msgid "unset"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:834
+#: .\sdk\ecere\src\sys\JSON.ec:901
+msgid "\" : "
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSON.ec:910
+msgid "}"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSONGlobalSettings.ec:1
+msgid "GlobalAppSettings"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\JSONGlobalSettings.ec:2
+#: .\sdk\ecere\src\sys\JSONGlobalSettings.ec:6
+msgid "JSON"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:31
+msgid ""
+"movl %0, %%esi\n"
+"\tmovl %1, %%edi\n"
+"\tmovl %2, %%ecx\n"
+"\trep\n"
+"\tmovsb\n"
+"\t"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:37
+#: .\sdk\ecere\src\sys\memory.ec:71
+#: .\sdk\ecere\src\sys\memory.ec:105
+#: .\sdk\ecere\src\sys\memory.ec:137
+#: .\sdk\ecere\src\sys\memory.ec:171
+#: .\sdk\ecere\src\sys\memory.ec:207
+msgid "g"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:38
+msgid "ecx"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:38
+msgid "esi"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:38
+msgid "edi"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:38
+#: .\sdk\ecere\src\sys\memory.ec:72
+#: .\sdk\ecere\src\sys\memory.ec:106
+#: .\sdk\ecere\src\sys\memory.ec:138
+#: .\sdk\ecere\src\sys\memory.ec:172
+#: .\sdk\ecere\src\sys\memory.ec:208
+#: .\sdk\ecere\src\sys\System.ec:52
+msgid "memory"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:65
+msgid ""
+"movl %0, %%esi\n"
+"\tmovl %1, %%edi\n"
+"\tmovl %2, %%ecx\n"
+"\trep\n"
+"\tmovsw\n"
+"\t"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:72
+#: .\sdk\ecere\src\sys\memory.ec:106
+#: .\sdk\ecere\src\sys\memory.ec:138
+#: .\sdk\ecere\src\sys\memory.ec:172
+#: .\sdk\ecere\src\sys\memory.ec:208
+msgid "cx"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:72
+#: .\sdk\ecere\src\sys\memory.ec:106
+msgid "si"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:72
+#: .\sdk\ecere\src\sys\memory.ec:106
+#: .\sdk\ecere\src\sys\memory.ec:138
+#: .\sdk\ecere\src\sys\memory.ec:172
+#: .\sdk\ecere\src\sys\memory.ec:208
+msgid "di"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:99
+msgid ""
+"movl %0, %%esi\n"
+"\tmovl %1, %%edi\n"
+"\tmovl %2, %%ecx\n"
+"\trep\n"
+"\tmovsl\n"
+"\t"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:131
+msgid ""
+"movl %0, %%edi\n"
+"\tmovl %1, %%ecx\n"
+"\tmovb %2, %%al\n"
+"\trep\n"
+"\tstosb\n"
+"\t"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:138
+#: .\sdk\ecere\src\sys\memory.ec:172
+#: .\sdk\ecere\src\sys\memory.ec:208
+msgid "ax"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:165
+msgid ""
+"movl %0, %%edi\n"
+"\tmovl %1, %%ecx\n"
+"\tmovw %2, %%ax\n"
+"\trep\n"
+"\tstosw\n"
+"\t"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\memory.ec:201
+msgid ""
+"movl %0, %%edi\n"
+"\tmovl %1, %%ecx\n"
+"\tmovl %2, %%eax\n"
+"\trep\n"
+"\tstosl\n"
+"\t"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\System.ec:51
+msgid "TempFile"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\System.ec:55
+msgid "units"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\System.ec:56
+msgid "Time"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\System.ec:58
+#: .\sdk\ecere\src\sys\Thread.ec:17
+msgid "Semaphore"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\System.ec:59
+msgid "FileMonitor"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\System.ec:61
+msgid "Archive"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\System.ec:62
+msgid "EARArchive"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\System.ec:63
+msgid "Date"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\System.ec:64
+msgid "unicode"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\System.ec:102
+msgid "Memory allocation failed"
+msgstr "内存分配失败"
+
+#: .\sdk\ecere\src\sys\System.ec:103
+msgid "Inexistant string identifier specified"
+msgstr "不存在指定的字符串标识符"
+
+#: .\sdk\ecere\src\sys\System.ec:104
+msgid "Identic string identifier already exists"
+msgstr "已存在相同的字符串标识符"
+
+#: .\sdk\ecere\src\sys\System.ec:105
+msgid "Shared library loading failed"
+msgstr "共享库加载失败"
+
+#: .\sdk\ecere\src\sys\System.ec:106
+msgid "File not found"
+msgstr "文件未找到"
+
+#: .\sdk\ecere\src\sys\System.ec:107
+msgid "Couldn't write to file"
+msgstr "无法写入文件"
+
+#: .\sdk\ecere\src\sys\System.ec:260
+#, c-format
+msgid "%s - Error Log"
+msgstr "%s -错误日志"
+
+#: .\sdk\ecere\src\sys\System.ec:276
+#, c-format
+msgid "System Error [%d]: %s (%s).\n"
+msgstr "系统错误 [%d]: %s (%s).\n"
+
+#: .\sdk\ecere\src\sys\System.ec:281
+#, c-format
+msgid "System Error [%d]: %s.\n"
+msgstr "系统错误[%d]: %s.\n"
+
+#: .\sdk\ecere\src\sys\System.ec:329
+msgid " - Logging Errors...\n"
+msgstr " - 写日志错...\n"
+
+#: .\sdk\ecere\src\sys\System.ec:354
+#, c-format
+msgid "Access Violation Writing to 0x%08X"
+msgstr "无权写入0x%08X"
+
+#: .\sdk\ecere\src\sys\System.ec:356
+#, c-format
+msgid "Access Violation Reading from 0x%08X"
+msgstr "无权读取0x%08X"
+
+#: .\sdk\ecere\src\sys\System.ec:359
+#, c-format
+msgid "Array Bounds Exceeded"
+msgstr "超出数组范围"
+
+#: .\sdk\ecere\src\sys\System.ec:362
+#, c-format
+msgid "Breakpoint Encountered"
+msgstr "遇到断点"
+
+#: .\sdk\ecere\src\sys\System.ec:365
+#, c-format
+msgid "Data Type Misalignment"
+msgstr "数据类型不一致"
+
+#: .\sdk\ecere\src\sys\System.ec:368
+#, c-format
+msgid "Floating-Point Denormal Operand"
+msgstr "浮点型非正规操作数"
+
+#: .\sdk\ecere\src\sys\System.ec:371
+#, c-format
+msgid "Floating-Point Divide by Zero"
+msgstr "浮点型除以零法"
+
+#: .\sdk\ecere\src\sys\System.ec:374
+#, c-format
+msgid "Floating-Point Inexact Result"
+msgstr "浮点型不精确结果"
+
+#: .\sdk\ecere\src\sys\System.ec:377
+#, c-format
+msgid "Floating-Point Invalid Operation"
+msgstr "浮点型无效操作"
+
+#: .\sdk\ecere\src\sys\System.ec:380
+#, c-format
+msgid "Floating-Point Overflow"
+msgstr "浮点型溢出"
+
+#: .\sdk\ecere\src\sys\System.ec:383
+#, c-format
+msgid "Floating-Point Stack Check"
+msgstr "浮点型栈检查"
+
+#: .\sdk\ecere\src\sys\System.ec:386
+#, c-format
+msgid "Floating-Point Underflow"
+msgstr "浮点型下溢"
+
+#: .\sdk\ecere\src\sys\System.ec:389
+#, c-format
+msgid "Illegal Instruction"
+msgstr "非法指令"
+
+#: .\sdk\ecere\src\sys\System.ec:392
+#, c-format
+msgid "In Page Error"
+msgstr "页面错误"
+
+#: .\sdk\ecere\src\sys\System.ec:395
+#, c-format
+msgid "Integer Divide by Zero"
+msgstr "整数除以零"
+
+#: .\sdk\ecere\src\sys\System.ec:398
+#, c-format
+msgid "Integer Overflow"
+msgstr "整型溢出"
+
+#: .\sdk\ecere\src\sys\System.ec:401
+#, c-format
+msgid "Invalid Disposition"
+msgstr "无效处理"
+
+#: .\sdk\ecere\src\sys\System.ec:404
+#, c-format
+msgid "Non Continuable Exception"
+msgstr "非可连续异常"
+
+#: .\sdk\ecere\src\sys\System.ec:407
+#, c-format
+msgid "Unallowed Instruction"
+msgstr "指令不允许"
+
+#: .\sdk\ecere\src\sys\System.ec:410
+#, c-format
+msgid "Single Step Exception"
+msgstr "单步异常"
+
+#: .\sdk\ecere\src\sys\System.ec:420
+#, c-format
+msgid "%s - Fatal Error"
+msgstr "%s -致命错误"
+
+#: .\sdk\ecere\src\sys\System.ec:424
+msgid ""
+"\n"
+"\n"
+"Would you like to view the error log?"
+msgstr ""
+"\n"
+"\n"
+"你想查看错误日志吗?"
+
+#: .\sdk\ecere\src\sys\Thread.ec:103
+#, c-format
+msgid "Error %d creating a thread\n"
+msgstr "创建线程时发生错误%d\n"
+
+#: .\sdk\ecere\src\sys\Time.ec:226
+#: .\sdk\ecere\src\sys\Time.ec:233
+#: .\sdk\ecere\src\sys\Time.ec:239
+#, c-format
+msgid "%d:"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Time.ec:244
+#, c-format
+msgid "%02d"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Time.ec:670
+msgid "AM"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Time.ec:670
+msgid "PM"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Time.ec:680
+#, c-format
+msgid "%s %s %2d %2d:%02d:%02d %s %04d"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Time.ec:717
+msgid " :"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Time.ec:722
+#: .\sdk\ecere\src\sys\Time.ec:731
+msgid "am"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\Time.ec:723
+#: .\sdk\ecere\src\sys\Time.ec:732
+msgid "pm"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\unicode.ec:346
+msgid "<:ecere>unicode/derivedGeneralCategoryStripped.txt"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\units.ec:13
+#: .\sdk\ecere\src\sys\units.ec:23
+#, c-format
+msgid "Inf"
+msgstr ""
+
+#: .\sdk\ecere\src\sys\units.ec:15
+#: .\sdk\ecere\src\sys\units.ec:25
+#, c-format
+msgid "-Inf"
+msgstr ""
+

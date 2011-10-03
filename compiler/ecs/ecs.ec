@@ -634,14 +634,19 @@ static void WriteMain(char * fileName)
          }
       }
 
+      for(defModule = ::modules.first; defModule; defModule = defModule.next)
+         if(defModule.globalInstance)
+         {
+            if(!strcmp(defModule.name, "i18n"))
+               f.Printf("   __ecereCreateModuleInstances_i18n();\n");
+         }
+      if(i18n)
+         f.Printf("      LoadTranslatedStrings(module, \"%s\");\n", projectName);
       if(isDynamicLibrary)
       {
          //f.Printf("   module._vTbl[10](module);\n");
          f.Puts("   }\n");
       }
-
-      if(i18n)
-         f.Printf("   LoadTranslatedStrings(module, \"%s\");\n", projectName);
 
       if(!isDynamicLibrary && thisAppClass)
       {
@@ -663,6 +668,7 @@ static void WriteMain(char * fileName)
             if(defModule.globalInstance)
             {
                char moduleName[1024];
+               if(!strcmp(defModule.name, "i18n")) continue;
                strcpy(moduleName, defModule.name);
                ChangeCh(moduleName, ' ', '_');
                ChangeCh(moduleName, '-', '_');
@@ -709,23 +715,29 @@ static void WriteMain(char * fileName)
          f.Puts("   {\n");
       }
       // Then check if there's any global instances to destroy
-      if(::modules.count)
       {
-         for(defModule = ::modules.first; defModule; defModule = defModule.next)
-            if(defModule.globalInstance)
-            {
-               char moduleName[1024];
-               strcpy(moduleName, defModule.name);
-               ChangeCh(moduleName, ' ', '_');
-               ChangeCh(moduleName, '-', '_');
-               ChangeCh(moduleName, '.', '_');
-               f.Printf("   __ecereDestroyModuleInstances_%s();\n", moduleName);
-            }
+         bool destroyI18n = false;
+         if(::modules.count)
+         {
+            for(defModule = ::modules.first; defModule; defModule = defModule.next)
+               if(defModule.globalInstance)
+               {
+                  char moduleName[1024];
+                  if(!strcmp(defModule.name, "i18n")) { destroyI18n = true; continue; }
+                  strcpy(moduleName, defModule.name);
+                  ChangeCh(moduleName, ' ', '_');
+                  ChangeCh(moduleName, '-', '_');
+                  ChangeCh(moduleName, '.', '_');
+                  f.Printf("   __ecereDestroyModuleInstances_%s();\n", moduleName);
+               }
 
-         f.Printf("\n");
+            f.Printf("\n");
+         }
+         if(i18n)
+            f.Printf("   UnloadTranslatedStrings(__currentModule);\n");
+         if(destroyI18n)
+            f.Printf("   __ecereDestroyModuleInstances_i18n();\n");
       }
-      if(i18n)
-         f.Printf("   UnloadTranslatedStrings(__currentModule);\n");
       if(isDynamicLibrary)
       {
          f.Puts("   }\n");

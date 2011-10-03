@@ -10,7 +10,7 @@ static void Dummy()
 
 class ToolBox : Window
 {
-   text = "Toolbox";
+   text = $"Toolbox";
    background = activeBorder;
    borderStyle = sizable;
    hasClose = true;
@@ -33,8 +33,8 @@ class ToolBox : Window
    char * selectedControl;
    int numControls;
 
-   Menu viewMenu { menu, "View" };
-   MenuItem { viewMenu, "View Toolbox" };
+   Menu viewMenu { menu, $"View" };
+   MenuItem { viewMenu, $"View Toolbox" };
 
    ~ToolBox()
    {
@@ -129,7 +129,7 @@ class ToolBox : Window
    ToolBox()
    {
       int y = 5;
-      arrowControl = CreateControl(&y, ":others/mousePointer.png", "Pointer", null);
+      arrowControl = CreateControl(&y, ":others/mousePointer.png", $"Pointer", null);
       arrowControl.checked = true;
       incref arrowControl;
    }

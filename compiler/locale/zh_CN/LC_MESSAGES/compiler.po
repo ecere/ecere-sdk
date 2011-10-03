@@ -1,0 +1,7060 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-08-21 13:40+0800\n"
+"PO-Revision-Date: 2011-09-04 19:51+0800\n"
+"Last-Translator: lq <asdf@12.123>\n"
+"Language-Team: ec <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:2
+#: .\sdk\compiler\ecc\ecc.ec:5
+#: .\sdk\compiler\ecp\ecp.ec:2
+#: .\sdk\compiler\ecp\ecp.ec:5
+#: .\sdk\compiler\ecs\ecs.ec:2
+#: .\sdk\compiler\ecs\ecs.ec:5
+#: .\sdk\compiler\ecs\ecs.ec:191
+#: .\sdk\compiler\ecs\ecs.ec:193
+#: .\sdk\compiler\ecs\ecs.ec:199
+#: .\sdk\compiler\libec\src\ecdefs.ec:2
+#: .\sdk\compiler\libec\src\ecdefs.ec:4
+#: .\sdk\compiler\libec\src\loadSymbols.ec:703
+#: .\sdk\compiler\libec\src\shortcuts.ec:2
+#: .\sdk\compiler\libec\src\shortcuts.ec:4
+msgid "ecere"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:3
+#: .\sdk\compiler\ecc\ecc.ec:6
+#: .\sdk\compiler\ecp\ecp.ec:3
+#: .\sdk\compiler\ecp\ecp.ec:6
+#: .\sdk\compiler\ecs\ecs.ec:3
+#: .\sdk\compiler\ecs\ecs.ec:6
+#: .\sdk\compiler\ecs\ecs.ec:1716
+#: .\sdk\compiler\libec\src\loadSymbols.ec:792
+msgid "ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:33
+#: .\sdk\compiler\ecp\ecp.ec:1091
+msgid "[Imported Modules]\n"
+msgstr "[Imported Modules]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:40
+#: .\sdk\compiler\ecp\ecp.ec:1112
+#: .\sdk\compiler\ecp\ecp.ec:1120
+#: .\sdk\compiler\ecp\ecp.ec:1255
+#: .\sdk\compiler\ecp\ecp.ec:1264
+#: .\sdk\compiler\ecp\ecp.ec:1271
+#, c-format
+msgid "   %s\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:42
+msgid "   [This]\n"
+msgstr "   [This]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:44
+#: .\sdk\compiler\ecp\ecp.ec:1122
+msgid "      [Static]\n"
+msgstr "      [Static]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:46
+#: .\sdk\compiler\ecp\ecp.ec:1128
+msgid "      [Remote]\n"
+msgstr "      [Remote]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:49
+msgid "      [Private]\n"
+msgstr "      [Private]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:51
+msgid "      [Public]\n"
+msgstr "      [Public]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:55
+msgid "      [Imported Classes]\n"
+msgstr "      [Imported Classes]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:58
+#: .\sdk\compiler\ecc\ecc.ec:106
+#: .\sdk\compiler\ecp\ecp.ec:990
+#: .\sdk\compiler\ecp\ecp.ec:1018
+#: .\sdk\compiler\ecp\ecp.ec:1061
+#: .\sdk\compiler\ecp\ecp.ec:1147
+#: .\sdk\compiler\ecp\ecp.ec:1221
+#: .\sdk\compiler\ecp\ecp.ec:1266
+#: .\sdk\compiler\ecp\ecp.ec:1273
+#, c-format
+msgid "         %s\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:61
+msgid "            [Instantiated]\n"
+msgstr "            [Instantiated]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:65
+msgid "            [Remote]\n"
+msgstr "            [Remote]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:71
+msgid "            [Imported Methods]\n"
+msgstr "            [Imported Methods]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:74
+#: .\sdk\compiler\ecc\ecc.ec:88
+#: .\sdk\compiler\ecp\ecp.ec:1006
+#: .\sdk\compiler\ecp\ecp.ec:1037
+#: .\sdk\compiler\ecp\ecp.ec:1067
+#: .\sdk\compiler\ecp\ecp.ec:1160
+#: .\sdk\compiler\ecp\ecp.ec:1165
+#: .\sdk\compiler\ecp\ecp.ec:1166
+#: .\sdk\compiler\ecp\ecp.ec:1170
+#: .\sdk\compiler\ecp\ecp.ec:1186
+#: .\sdk\compiler\ecp\ecp.ec:1229
+#, c-format
+msgid "               %s\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:76
+#: .\sdk\compiler\ecc\ecc.ec:90
+msgid "                  [Virtual]\n"
+msgstr "                  [Virtual]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:79
+#: .\sdk\compiler\ecc\ecc.ec:96
+msgid "               .\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:85
+msgid "            [Imported Properties]\n"
+msgstr "            [Imported Properties]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:92
+msgid "                  [Set]\n"
+msgstr "                  [Set]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:94
+msgid "                  [Get]\n"
+msgstr "                  [Get]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:99
+#: .\sdk\compiler\ecc\ecc.ec:108
+msgid "        .\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:103
+msgid "      [Imported Functions]\n"
+msgstr "      [Imported Functions]\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:111
+#: .\sdk\compiler\ecp\ecp.ec:1089
+#: .\sdk\compiler\ecp\ecp.ec:1276
+msgid "   .\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:164
+#: .\sdk\compiler\ecp\ecp.ec:1326
+msgid "m32"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:181
+msgid "-DBUILDING_ECERE_COM"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:183
+msgid "-DECERE_COM_MODULE"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:200
+#: .\sdk\compiler\ecp\ecp.ec:1358
+msgid "t"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:207
+#: .\sdk\compiler\ecp\ecp.ec:1365
+msgid "cpp"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:214
+#: .\sdk\compiler\ecp\ecp.ec:1372
+#: .\sdk\compiler\ecs\ecs.ec:1592
+msgid "o"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:224
+#: .\sdk\compiler\ecc\ecc.ec:302
+#: .\sdk\compiler\ecp\ecp.ec:1382
+#: lexer.l:390
+#: lexer.l:497
+msgid "c"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:234
+#: .\sdk\compiler\ecp\ecp.ec:1392
+msgid "isystem"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:234
+#: .\sdk\compiler\ecp\ecp.ec:1392
+msgid "isysroot"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:255
+#: .\sdk\compiler\ecp\ecp.ec:1413
+msgid "symbols"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:265
+msgid "memguard"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:269
+#: .\sdk\compiler\ecp\ecp.ec:1423
+msgid "defaultns"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:280
+#: .\sdk\compiler\ecp\ecp.ec:1434
+msgid "strictns"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:284
+msgid "nolinenumbers"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:295
+#: .\sdk\compiler\ecp\ecp.ec:1445
+msgid "gcc"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:308
+#, c-format
+msgid ""
+"Syntax:\n"
+"   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n"
+msgstr ""
+"Syntax:\n"
+"   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n"
+
+#: .\sdk\compiler\ecc\ecc.ec:328
+#: .\sdk\compiler\ecp\ecp.ec:1479
+#: .\sdk\compiler\libec\src\pass15.ec:6168
+#: .\sdk\compiler\libec\src\pass3.ec:132
+#: .\sdk\compiler\libec\src\pass3.ec:141
+msgid "uint"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:328
+#: .\sdk\compiler\ecc\ecc.ec:330
+#: .\sdk\compiler\ecp\ecp.ec:1479
+#: .\sdk\compiler\ecp\ecp.ec:1481
+#: .\sdk\compiler\libec\src\output.ec:865
+msgid "unsigned int"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:329
+#: .\sdk\compiler\ecp\ecp.ec:1480
+#: .\sdk\compiler\libec\src\output.ec:589
+#: .\sdk\compiler\libec\src\pass15.ec:5849
+#: .\sdk\compiler\libec\src\pass15.ec:5860
+#: .\sdk\compiler\libec\src\pass15.ec:5884
+#: .\sdk\compiler\libec\src\pass15.ec:5929
+#: .\sdk\compiler\libec\src\pass15.ec:6169
+#: .\sdk\compiler\libec\src\pass2.ec:1185
+#: .\sdk\compiler\libec\src\pass2.ec:1191
+#: .\sdk\compiler\libec\src\pass2.ec:1200
+#: .\sdk\compiler\libec\src\pass2.ec:1222
+#: .\sdk\compiler\libec\src\pass2.ec:1430
+#: .\sdk\compiler\libec\src\pass2.ec:1435
+#: .\sdk\compiler\libec\src\pass2.ec:1446
+#: .\sdk\compiler\libec\src\pass2.ec:1468
+#: .\sdk\compiler\libec\src\pass3.ec:58
+#: .\sdk\compiler\libec\src\pass3.ec:59
+#: .\sdk\compiler\libec\src\pass3.ec:129
+#: .\sdk\compiler\libec\src\pass3.ec:138
+msgid "uint64"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:329
+#: .\sdk\compiler\ecp\ecp.ec:1480
+msgid "unsigned int64"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:330
+#: .\sdk\compiler\ecp\ecp.ec:1481
+#: .\sdk\compiler\libec\src\pass2.ec:1218
+#: .\sdk\compiler\libec\src\pass2.ec:1464
+#: .\sdk\compiler\libec\src\pass3.ec:130
+#: .\sdk\compiler\libec\src\pass3.ec:139
+msgid "uint32"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:331
+#: .\sdk\compiler\ecp\ecp.ec:1482
+#: .\sdk\compiler\libec\src\pass15.ec:6171
+#: .\sdk\compiler\libec\src\pass2.ec:1212
+#: .\sdk\compiler\libec\src\pass2.ec:1458
+#: .\sdk\compiler\libec\src\pass3.ec:131
+#: .\sdk\compiler\libec\src\pass3.ec:140
+msgid "uint16"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:331
+#: .\sdk\compiler\ecp\ecp.ec:1482
+msgid "unsigned short"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:332
+#: .\sdk\compiler\ecp\ecp.ec:1483
+#: .\sdk\compiler\libec\src\pass15.ec:6170
+#: .\sdk\compiler\libec\src\pass15.ec:7714
+#: .\sdk\compiler\libec\src\pass15.ec:7793
+#: .\sdk\compiler\libec\src\pass15.ec:7795
+#: .\sdk\compiler\libec\src\pass15.ec:8920
+#: .\sdk\compiler\libec\src\pass2.ec:1206
+#: .\sdk\compiler\libec\src\pass2.ec:1436
+#: .\sdk\compiler\libec\src\pass2.ec:1452
+#: .\sdk\compiler\libec\src\pass3.ec:133
+#: .\sdk\compiler\libec\src\pass3.ec:142
+msgid "byte"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:332
+#: .\sdk\compiler\ecp\ecp.ec:1483
+msgid "unsigned char"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:335
+#: .\sdk\compiler\libec\src\pass1.ec:558
+#: .\sdk\compiler\libec\src\pass1.ec:1261
+msgid "__thisModule"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:335
+#: .\sdk\compiler\libec\src\pass1.ec:283
+#: .\sdk\compiler\libec\src\pass1.ec:321
+msgid "Module"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:340
+#: .\sdk\compiler\ecp\ecp.ec:1491
+#, c-format
+msgid "%s%s -x c -E \"%s\""
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:361
+#: .\sdk\compiler\ecc\ecc.ec:371
+msgid "instance.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:361
+#: .\sdk\compiler\ecc\ecc.ec:371
+msgid "BinaryTree.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:362
+msgid "dataTypes.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:362
+msgid "OldList.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:363
+msgid "String.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:363
+#: .\sdk\compiler\ecc\ecc.ec:373
+msgid "BTNode.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:364
+msgid "Array.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:364
+msgid "AVLTree.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:365
+msgid "BuiltInContainer.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:365
+msgid "Container.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:366
+msgid "CustomAVLTree.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:366
+msgid "LinkList.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:367
+msgid "List.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:367
+msgid "Map.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:368
+#: .\sdk\compiler\ecc\ecc.ec:374
+msgid "Mutex.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:374
+msgid "Thread.ec"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:406
+#: .\sdk\compiler\ecp\ecp.ec:1452
+#: .\sdk\compiler\ecs\ecs.ec:1716
+#: .\sdk\compiler\libec\src\loadSymbols.ec:747
+#: .\sdk\compiler\libec\src\loadSymbols.ec:792
+#: .\sdk\compiler\libec\src\loadSymbols.ec:830
+msgid "sym"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:425
+#: .\sdk\compiler\ecs\ecs.ec:189
+#: .\sdk\compiler\ecs\ecs.ec:195
+msgid "ecereCOM"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:478
+#: .\sdk\compiler\ecs\ecs.ec:1682
+msgid "imp"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:507
+msgid "#if defined(__GNUC__)\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:508
+#: .\sdk\compiler\ecc\ecc.ec:520
+msgid "typedef long long int64;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:509
+#: .\sdk\compiler\ecc\ecc.ec:521
+msgid "typedef unsigned long long uint64;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:510
+msgid "#elif defined(__TINYC__)\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:511
+msgid "#include <stdarg.h>\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:512
+msgid "#define __builtin_va_list va_list\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:513
+msgid "#define __builtin_va_start va_start\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:514
+msgid "#define __builtin_va_end va_end\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:515
+msgid "#ifdef _WIN32\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:516
+msgid "#define strcasecmp stricmp\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:517
+msgid "#define strncasecmp strnicmp\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:518
+msgid "#define __declspec(x) __attribute__((x))\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:519
+#: .\sdk\compiler\ecc\ecc.ec:525
+#: .\sdk\compiler\ecc\ecc.ec:538
+msgid "#endif\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:522
+#: .\sdk\compiler\ecc\ecc.ec:536
+msgid "#else\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:523
+msgid "typedef __int64 int64;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:524
+msgid "typedef unsigned __int64 uint64;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:534
+msgid "#ifdef __BIG_ENDIAN__\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:535
+msgid "#define __ENDIAN_PAD(x) (8 - (x))\n"
+msgstr ""
+
+#: .\sdk\compiler\ecc\ecc.ec:537
+msgid "#define __ENDIAN_PAD(x) 0\n"
+msgstr ""
+
+#: .\sdk\compiler\ecp\ecp.ec:694
+#: .\sdk\compiler\libec\src\firstPass.ec:513
+#: grammar.y:269
+#: grammar.y:298
+#: grammar.y:357
+#: grammar.y:1813
+#: grammar.y:2427
+#: grammar.y:2443
+#: grammar.y:2475
+#: grammar.y:2491
+#: grammar.y:2522
+#: grammar.y:2538
+#: grammar.y:2569
+#: grammar.y:2585
+#: .\sdk\compiler\libec\src\output.ec:39
+#: .\sdk\compiler\libec\src\pass1.ec:888
+#: .\sdk\compiler\libec\src\pass1.ec:1576
+#: .\sdk\compiler\libec\src\pass15.ec:6033
+#: .\sdk\compiler\libec\src\pass15.ec:6248
+#: .\sdk\compiler\libec\src\pass15.ec:7092
+#: .\sdk\compiler\libec\src\pass15.ec:7147
+#: .\sdk\compiler\libec\src\pass15.ec:7173
+#: .\sdk\compiler\libec\src\pass15.ec:8775
+#: type.y:185
+#: type.y:695
+#: type.y:711
+#: type.y:742
+#: type.y:758
+msgid "::"
+msgstr ""
+
+#: .\sdk\compiler\ecp\ecp.ec:985
+#: .\sdk\compiler\ecp\ecp.ec:1013
+#: .\sdk\compiler\ecp\ecp.ec:1051
+#: .\sdk\compiler\ecp\ecp.ec:1069
+#: .\sdk\compiler\ecp\ecp.ec:1209
+#: .\sdk\compiler\ecp\ecp.ec:1231
+#: .\sdk\compiler\ecp\ecp.ec:1247
+msgid "         .\n"
+msgstr ""
+
+#: .\sdk\compiler\ecp\ecp.ec:986
+msgid "      [Defined Properties]\n"
+msgstr "      [Defined Properties]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:992
+msgid "         [Conversion]\n"
+msgstr "         [Conversion]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:994
+#: .\sdk\compiler\ecp\ecp.ec:1020
+#: .\sdk\compiler\ecp\ecp.ec:1042
+#: .\sdk\compiler\ecp\ecp.ec:1223
+msgid "            [Public]\n"
+msgstr "            [Public]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:996
+#: .\sdk\compiler\ecp\ecp.ec:1022
+#: .\sdk\compiler\ecp\ecp.ec:1044
+#: .\sdk\compiler\ecp\ecp.ec:1225
+msgid "            [Private]\n"
+msgstr "            [Private]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:998
+#: .\sdk\compiler\ecp\ecp.ec:1227
+msgid "            [Virtual]\n"
+msgstr "            [Virtual]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1000
+#: .\sdk\compiler\ecp\ecp.ec:1063
+msgid "            [Set]\n"
+msgstr "            [Set]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1002
+#: .\sdk\compiler\ecp\ecp.ec:1065
+msgid "            [Get]\n"
+msgstr "            [Get]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1004
+msgid "            [Watchable]\n"
+msgstr "            [Watchable]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1005
+#: .\sdk\compiler\ecp\ecp.ec:1036
+#: .\sdk\compiler\ecp\ecp.ec:1066
+#: .\sdk\compiler\ecp\ecp.ec:1228
+msgid "            [Type]\n"
+msgstr "            [Type]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1014
+msgid "      [Defined Data Members]\n"
+msgstr "      [Defined Data Members]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1027
+msgid "            [Size]\n"
+msgstr "            [Size]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1028
+#: .\sdk\compiler\ecp\ecp.ec:1033
+#, c-format
+msgid "               %d\n"
+msgstr ""
+
+#: .\sdk\compiler\ecp\ecp.ec:1032
+msgid "            [Pos]\n"
+msgstr "            [Pos]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1045
+msgid "      [Union]\n"
+msgstr "      [Union]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1045
+#: .\sdk\compiler\ecp\ecp.ec:1136
+msgid "      [Struct]\n"
+msgstr "      [Struct]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1057
+msgid "      [Defined Class Properties]\n"
+msgstr "      [Defined Class Properties]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1082
+msgid "[Global Instance]\n"
+msgstr "[Global Instance]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1093
+msgid "[Defined Classes]\n"
+msgstr "[Defined Classes]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1095
+msgid "[Defined Expressions]\n"
+msgstr "[Defined Expressions]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1097
+msgid "[Defined Functions]\n"
+msgstr "[Defined Functions]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1099
+msgid "[Defined Data]\n"
+msgstr "[Defined Data]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1107
+msgid "   [Static]\n"
+msgstr "   [Static]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1109
+msgid "   [Remote]\n"
+msgstr "   [Remote]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1111
+msgid "   [Private]\n"
+msgstr "   [Private]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1124
+msgid "      [Fixed]\n"
+msgstr "      [Fixed]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1126
+msgid "      [No Expansion]\n"
+msgstr "      [No Expansion]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1130
+msgid "      [Watchable]\n"
+msgstr "      [Watchable]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1132
+msgid "      [Enum]\n"
+msgstr "      [Enum]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1134
+msgid "      [Bit]\n"
+msgstr "      [Bit]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1138
+msgid "      [Unit]\n"
+msgstr "      [Unit]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1140
+msgid "      [NoHead]\n"
+msgstr "      [NoHead]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1143
+msgid "      [Private Base]\n"
+msgstr "      [Private Base]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1145
+msgid "      [Base]\n"
+msgstr "      [Base]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1149
+msgid "         [None]\n"
+msgstr "         [None]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1156
+msgid "         [Template Parameters]\n"
+msgstr "         [Template Parameters]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1164
+msgid "               [Type]\n"
+msgstr "               [Type]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1165
+#: .\sdk\compiler\ecp\ecp.ec:1166
+#: .\sdk\compiler\ecp\ecp.ec:1170
+#: .\sdk\compiler\libec\src\loadSymbols.ec:211
+#: .\sdk\compiler\libec\src\loadSymbols.ec:473
+#: .\sdk\compiler\libec\src\loadSymbols.ec:481
+#: .\sdk\compiler\libec\src\loadSymbols.ec:489
+#: .\sdk\compiler\libec\src\loadSymbols.ec:495
+#: .\sdk\compiler\libec\src\loadSymbols.ec:533
+msgid "[None]"
+msgstr "[None]"
+
+#: .\sdk\compiler\ecp\ecp.ec:1169
+msgid "               [Expression]\n"
+msgstr "               [Expression]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1177
+#: .\sdk\compiler\ecp\ecp.ec:1189
+msgid "               "
+msgstr ""
+
+#: .\sdk\compiler\ecp\ecp.ec:1179
+#: .\sdk\compiler\ecp\ecp.ec:1259
+#: .\sdk\compiler\ecs\ecs.ec:424
+#: .\sdk\compiler\ecs\ecs.ec:435
+#: .\sdk\compiler\ecs\ecs.ec:477
+#: .\sdk\compiler\ecs\ecs.ec:509
+#: .\sdk\compiler\ecs\ecs.ec:525
+#: .\sdk\compiler\ecs\ecs.ec:606
+#: .\sdk\compiler\ecs\ecs.ec:627
+#: .\sdk\compiler\ecs\ecs.ec:630
+#: .\sdk\compiler\ecs\ecs.ec:668
+#: .\sdk\compiler\ecs\ecs.ec:719
+#: .\sdk\compiler\ecs\ecs.ec:741
+#: .\sdk\compiler\ecs\ecs.ec:941
+#: .\sdk\compiler\ecs\ecs.ec:1011
+#: .\sdk\compiler\ecs\ecs.ec:1184
+#: .\sdk\compiler\ecs\ecs.ec:1189
+#: .\sdk\compiler\ecs\ecs.ec:1326
+#: .\sdk\compiler\ecs\ecs.ec:1407
+#: expression.ec:2652
+#: expression.ec:2674
+#: grammar.ec:9802
+#: grammar.ec:9824
+#: .\sdk\compiler\libec\src\output.ec:408
+#: .\sdk\compiler\libec\src\output.ec:414
+#: .\sdk\compiler\libec\src\output.ec:459
+#: .\sdk\compiler\libec\src\output.ec:464
+#: .\sdk\compiler\libec\src\output.ec:1205
+#: .\sdk\compiler\libec\src\output.ec:1214
+#: .\sdk\compiler\libec\src\output.ec:1247
+#: .\sdk\compiler\libec\src\output.ec:1357
+#: .\sdk\compiler\libec\src\output.ec:1366
+#: .\sdk\compiler\libec\src\output.ec:1372
+#: .\sdk\compiler\libec\src\output.ec:1389
+#: .\sdk\compiler\libec\src\output.ec:1408
+#: .\sdk\compiler\libec\src\output.ec:1456
+#: .\sdk\compiler\libec\src\output.ec:1461
+#: .\sdk\compiler\libec\src\output.ec:1466
+#: type.ec:3008
+#: type.ec:3030
+msgid "\n"
+msgstr ""
+
+#: .\sdk\compiler\ecp\ecp.ec:1182
+#: .\sdk\compiler\ecp\ecp.ec:1204
+msgid "               [None]\n"
+msgstr "               [None]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1185
+msgid "               [Identifier]\n"
+msgstr "               [Identifier]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1186
+#: .\sdk\compiler\libec\src\loadSymbols.ec:528
+msgid "[Data member]"
+msgstr "[Data member]"
+
+#: .\sdk\compiler\ecp\ecp.ec:1186
+#: .\sdk\compiler\libec\src\loadSymbols.ec:529
+msgid "[Method]"
+msgstr "[Method]"
+
+#: .\sdk\compiler\ecp\ecp.ec:1186
+#: .\sdk\compiler\libec\src\loadSymbols.ec:530
+msgid "[Property]"
+msgstr "[Property]"
+
+#: .\sdk\compiler\ecp\ecp.ec:1193
+#: .\sdk\compiler\ecp\ecp.ec:1198
+#, c-format
+msgid "%s::"
+msgstr ""
+
+#: .\sdk\compiler\ecp\ecp.ec:1200
+#: .\sdk\compiler\ecs\ecs.ec:1054
+#: lexer.ec:3067
+#, c-format
+msgid "%s\n"
+msgstr ""
+
+#: .\sdk\compiler\ecp\ecp.ec:1218
+msgid "      [Defined Methods]\n"
+msgstr "      [Defined Methods]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1239
+#: .\sdk\compiler\libec\src\output.ec:927
+#: .\sdk\compiler\libec\src\pass1.ec:1469
+#: .\sdk\compiler\libec\src\pass15.ec:3311
+#: .\sdk\compiler\libec\src\pass15.ec:3829
+#: .\sdk\compiler\libec\src\pass15.ec:4218
+#: .\sdk\compiler\libec\src\pass15.ec:4327
+#: .\sdk\compiler\libec\src\pass15.ec:6227
+#: .\sdk\compiler\libec\src\pass15.ec:6480
+#: .\sdk\compiler\libec\src\pass3.ec:125
+msgid "enum"
+msgstr ""
+
+#: .\sdk\compiler\ecp\ecp.ec:1242
+msgid "      [Enum Values]\n"
+msgstr "      [Enum Values]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1245
+#, c-format
+msgid "         %s = %d\n"
+msgstr ""
+
+#: .\sdk\compiler\ecp\ecp.ec:1256
+msgid "      [Value]\n"
+msgstr "      [Value]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1257
+msgid "         "
+msgstr ""
+
+#: .\sdk\compiler\ecp\ecp.ec:1265
+#: .\sdk\compiler\ecp\ecp.ec:1272
+msgid "      [Type]\n"
+msgstr "      [Type]\n"
+
+#: .\sdk\compiler\ecp\ecp.ec:1458
+#, c-format
+msgid ""
+"Syntax:\n"
+"   ecp [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n"
+msgstr ""
+"Syntax:\n"
+"   ecp [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n"
+
+#: .\sdk\compiler\ecs\ecs.ec:46
+#: .\sdk\compiler\libec\src\loadSymbols.ec:685
+msgid "[Imported Modules]"
+msgstr "[Imported Modules]"
+
+#: .\sdk\compiler\ecs\ecs.ec:53
+#: .\sdk\compiler\ecs\ecs.ec:95
+#: .\sdk\compiler\ecs\ecs.ec:114
+#: .\sdk\compiler\ecs\ecs.ec:135
+#: .\sdk\compiler\ecs\ecs.ec:169
+#: .\sdk\compiler\libec\src\loadSymbols.ec:55
+#: .\sdk\compiler\libec\src\loadSymbols.ec:172
+#: .\sdk\compiler\libec\src\loadSymbols.ec:298
+#: .\sdk\compiler\libec\src\loadSymbols.ec:328
+#: .\sdk\compiler\libec\src\loadSymbols.ec:368
+#: .\sdk\compiler\libec\src\loadSymbols.ec:422
+#: .\sdk\compiler\libec\src\loadSymbols.ec:567
+#: .\sdk\compiler\libec\src\loadSymbols.ec:588
+#: .\sdk\compiler\libec\src\loadSymbols.ec:609
+#: .\sdk\compiler\libec\src\loadSymbols.ec:693
+#: .\sdk\compiler\libec\src\output.ec:251
+#: .\sdk\compiler\libec\src\output.ec:1265
+msgid "."
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:60
+msgid "[This]"
+msgstr "[This]"
+
+#: .\sdk\compiler\ecs\ecs.ec:72
+#: .\sdk\compiler\libec\src\loadSymbols.ec:178
+#: .\sdk\compiler\libec\src\loadSymbols.ec:694
+msgid "[Static]"
+msgstr "[Static]"
+
+#: .\sdk\compiler\ecs\ecs.ec:76
+#: .\sdk\compiler\ecs\ecs.ec:103
+#: .\sdk\compiler\libec\src\loadSymbols.ec:176
+#: .\sdk\compiler\libec\src\loadSymbols.ec:695
+msgid "[Remote]"
+msgstr "[Remote]"
+
+#: .\sdk\compiler\ecs\ecs.ec:80
+#: .\sdk\compiler\libec\src\loadSymbols.ec:72
+#: .\sdk\compiler\libec\src\loadSymbols.ec:347
+#: .\sdk\compiler\libec\src\loadSymbols.ec:398
+#: .\sdk\compiler\libec\src\loadSymbols.ec:696
+msgid "[Private]"
+msgstr "[Private]"
+
+#: .\sdk\compiler\ecs\ecs.ec:85
+#: .\sdk\compiler\libec\src\loadSymbols.ec:70
+#: .\sdk\compiler\libec\src\loadSymbols.ec:345
+#: .\sdk\compiler\libec\src\loadSymbols.ec:396
+msgid "[Public]"
+msgstr "[Public]"
+
+#: .\sdk\compiler\ecs\ecs.ec:89
+msgid "[Imported Classes]"
+msgstr "[Imported Classes]"
+
+#: .\sdk\compiler\ecs\ecs.ec:99
+msgid "[Instantiated]"
+msgstr "[Instantiated]"
+
+#: .\sdk\compiler\ecs\ecs.ec:107
+msgid "[Imported Methods]"
+msgstr "[Imported Methods]"
+
+#: .\sdk\compiler\ecs\ecs.ec:123
+#: .\sdk\compiler\ecs\ecs.ec:148
+#: .\sdk\compiler\libec\src\loadSymbols.ec:343
+msgid "[Virtual]"
+msgstr "[Virtual]"
+
+#: .\sdk\compiler\ecs\ecs.ec:128
+msgid "[Imported Properties]"
+msgstr "[Imported Properties]"
+
+#: .\sdk\compiler\ecs\ecs.ec:144
+#: .\sdk\compiler\libec\src\loadSymbols.ec:390
+#: .\sdk\compiler\libec\src\loadSymbols.ec:435
+msgid "[Set]"
+msgstr "[Set]"
+
+#: .\sdk\compiler\ecs\ecs.ec:146
+#: .\sdk\compiler\libec\src\loadSymbols.ec:392
+#: .\sdk\compiler\libec\src\loadSymbols.ec:437
+msgid "[Get]"
+msgstr "[Get]"
+
+#: .\sdk\compiler\ecs\ecs.ec:163
+msgid "[Imported Functions]"
+msgstr "[Imported Functions]"
+
+#: .\sdk\compiler\ecs\ecs.ec:268
+msgid "typedef void * HINSTANCE;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:269
+msgid "#define WINAPI __stdcall\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:276
+msgid "import "
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:278
+msgid "static "
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:279
+#, c-format
+msgid "\"%s\"\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:283
+#: .\sdk\compiler\libec\src\output.ec:384
+msgid "default:\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:284
+msgid ""
+"static Module __currentModule;\n"
+"\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:287
+msgid ""
+"Module __thisModule;\n"
+"\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:294
+#, c-format
+msgid ""
+"void __ecereRegisterModule_%s(Module module);\n"
+"\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:309
+#, c-format
+msgid "bool __ecereDll_Load_%s(Module module);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:310
+#, c-format
+msgid "bool __ecereDll_Unload_%s(Module module);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:324
+#, c-format
+msgid "Class __ecereClass_%s;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:342
+#, c-format
+msgid "int __ecereVMethodID_%s_%s;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:360
+#, c-format
+msgid "int (*__ecereMethod_%s_%s)();\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:378
+#, c-format
+msgid "void * __ecereProp_%s_Set_%s;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:380
+#, c-format
+msgid "void * __ecereProp_%s_Get_%s;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:382
+#, c-format
+msgid "Property __ecereProp_%s_%s;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:398
+#, c-format
+msgid "void * __ecereFunction_%s;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:412
+#, c-format
+msgid "void __ecereRegisterModule_%s(Module module);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:413
+#, c-format
+msgid "void __ecereUnregisterModule_%s(Module module);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:416
+#, c-format
+msgid "void __ecereCreateModuleInstances_%s();\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:417
+#, c-format
+msgid "void __ecereDestroyModuleInstances_%s();\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:445
+#, c-format
+msgid ""
+"\n"
+"bool __ecereDll_Load_%s(Module module)\n"
+"{\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:450
+msgid ""
+"\n"
+"dllexport bool __stdcall __ecereDll_Load(Module module)\n"
+"{\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:452
+msgid ""
+"\n"
+"dllexport bool __ecereDll_Load(Module module)\n"
+"{\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:456
+msgid ""
+"\n"
+"int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, char * cmdLine, int show)\n"
+"{\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:459
+msgid ""
+"\n"
+"int main(int _argc, char * _argv[])\n"
+"{\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:463
+msgid "   int exitCode;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:464
+msgid "   Module module;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:468
+msgid "   Class _class;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:471
+msgid "   Method method;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:473
+msgid "   Property _property;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:475
+msgid "   GlobalFunction function;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:481
+msgid "   if(!__currentModule)\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:482
+#: .\sdk\compiler\ecs\ecs.ec:538
+#: .\sdk\compiler\ecs\ecs.ec:650
+#: .\sdk\compiler\ecs\ecs.ec:703
+#: .\sdk\compiler\ecs\ecs.ec:845
+#: .\sdk\compiler\ecs\ecs.ec:1055
+#: .\sdk\compiler\ecs\ecs.ec:1237
+#: .\sdk\compiler\ecs\ecs.ec:1414
+msgid "   {\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:483
+msgid "      __currentModule = module;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:485
+msgid "      __thisModule = module;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:486
+msgid ""
+"   }\n"
+"\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:489
+msgid ""
+"   __thisModule = __currentModule = module = __ecere_COM_Initialize(1, 0, null);\n"
+"\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:491
+msgid ""
+"   __thisModule = __currentModule = module = __ecere_COM_Initialize(1, _argc, (void *)_argv);\n"
+"\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:503
+#, c-format
+msgid "   eModule_LoadStatic(module, \"%s\", %s, __ecereDll_Load_%s, __ecereDll_Unload_%s);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:503
+#: .\sdk\compiler\ecs\ecs.ec:505
+#: .\sdk\compiler\libec\src\pass1.ec:414
+#: .\sdk\compiler\libec\src\pass1.ec:493
+#: .\sdk\compiler\libec\src\pass1.ec:609
+#: .\sdk\compiler\libec\src\pass1.ec:658
+#: .\sdk\compiler\libec\src\pass1.ec:712
+#: .\sdk\compiler\libec\src\pass1.ec:749
+#: .\sdk\compiler\libec\src\pass1.ec:1224
+#: .\sdk\compiler\libec\src\pass1.ec:1236
+#: .\sdk\compiler\libec\src\pass1.ec:1371
+#: .\sdk\compiler\libec\src\pass1.ec:1449
+#: .\sdk\compiler\libec\src\pass1.ec:1780
+#: .\sdk\compiler\libec\src\pass1.ec:1877
+msgid "privateAccess"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:503
+#: .\sdk\compiler\ecs\ecs.ec:505
+#: .\sdk\compiler\libec\src\pass1.ec:418
+#: .\sdk\compiler\libec\src\pass1.ec:497
+#: .\sdk\compiler\libec\src\pass1.ec:613
+#: .\sdk\compiler\libec\src\pass1.ec:716
+#: .\sdk\compiler\libec\src\pass1.ec:753
+#: .\sdk\compiler\libec\src\pass1.ec:1228
+#: .\sdk\compiler\libec\src\pass1.ec:1240
+#: .\sdk\compiler\libec\src\pass1.ec:1312
+#: .\sdk\compiler\libec\src\pass1.ec:1375
+#: .\sdk\compiler\libec\src\pass1.ec:1453
+#: .\sdk\compiler\libec\src\pass1.ec:1784
+#: .\sdk\compiler\libec\src\pass1.ec:1881
+msgid "publicAccess"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:505
+#, c-format
+msgid "   eModule_Load(module, \"%s\", %s);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:523
+#, c-format
+msgid "   __ecereRegisterModule_%s(module);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:531
+#, c-format
+msgid ""
+"   __ecereRegisterModule_%s(module);\n"
+"\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:537
+#: .\sdk\compiler\ecs\ecs.ec:649
+#: .\sdk\compiler\ecs\ecs.ec:702
+#: .\sdk\compiler\ecs\ecs.ec:743
+msgid "   if(__currentModule == module)\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:561
+#, c-format
+msgid "__ecereClass_%s"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:563
+#: .\sdk\compiler\libec\src\ast.ec:2695
+#: .\sdk\compiler\libec\src\pass15.ec:8924
+#: .\sdk\compiler\libec\src\pass15.ec:9084
+#: .\sdk\compiler\libec\src\pass15.ec:9143
+#: .\sdk\compiler\libec\src\pass15.ec:9698
+#: .\sdk\compiler\libec\src\pass15.ec:9818
+#: .\sdk\compiler\libec\src\pass2.ec:1856
+msgid "_class"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:566
+#, c-format
+msgid "   %s = eSystem_FindClass(__currentModule, \"%s\");\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:568
+#, c-format
+msgid "   %s = eSystem_FindClass(module, \"%s\");\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:577
+#, c-format
+msgid "   method = eClass_FindMethod(%s, \"%s\", module);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:580
+#, c-format
+msgid "   if(method) __ecereVMethodID_%s_%s = method.vid;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:582
+#, c-format
+msgid "   if(method) __ecereMethod_%s_%s = method.function;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:595
+#, c-format
+msgid "   __ecereProp_%s_%s = _property = eClass_FindProperty(%s, \"%s\", module);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:601
+#, c-format
+msgid "   __ecereProp_%s_Set_%s = _property.Set;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:603
+#, c-format
+msgid "   __ecereProp_%s_Get_%s = _property.Get;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:622
+#, c-format
+msgid "   function = eSystem_FindFunction(__currentModule, \"%s\");\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:624
+#, c-format
+msgid "   function = eSystem_FindFunction(module, \"%s\");\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:626
+#, c-format
+msgid "   if(function) __ecereFunction_%s = function.function;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:637
+#: .\sdk\compiler\ecs\ecs.ec:673
+#: .\sdk\compiler\ecs\ecs.ec:723
+#: .\sdk\compiler\ecs\ecs.ec:1010
+#: .\sdk\compiler\ecs\ecs.ec:1165
+#: .\sdk\compiler\ecs\ecs.ec:1394
+#: .\sdk\compiler\ecs\ecs.ec:1534
+msgid "   }\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:642
+#, c-format
+msgid "   _class = eSystem_FindClass(__currentModule, \"%s\");\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:643
+msgid "   eInstance_Evolve((Instance *)&__currentModule, _class);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:644
+msgid "   __thisModule = __currentModule;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:665
+#, c-format
+msgid "   __ecereCreateModuleInstances_%s();\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:677
+msgid "   __currentModule._vTbl[12](__currentModule);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:682
+#: .\sdk\compiler\ecs\ecs.ec:762
+msgid "   return true;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:683
+#: .\sdk\compiler\ecs\ecs.ec:763
+#: .\sdk\compiler\ecs\ecs.ec:1187
+#: .\sdk\compiler\ecs\ecs.ec:1540
+#: .\sdk\compiler\libec\src\output.ec:1244
+#: .\sdk\compiler\libec\src\output.ec:1437
+msgid "}\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:689
+#, c-format
+msgid ""
+"\n"
+"bool __ecereDll_Unload_%s(Module module)\n"
+"{\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:694
+msgid ""
+"\n"
+"dllexport bool __stdcall __ecereDll_Unload(Module module)\n"
+"{\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:696
+msgid ""
+"\n"
+"dllexport bool __ecereDll_Unload(Module module)\n"
+"{\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:716
+#, c-format
+msgid "   __ecereDestroyModuleInstances_%s();\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:739
+#, c-format
+msgid "   __ecereUnregisterModule_%s(module);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:744
+msgid "      __currentModule = (void *)0;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:747
+msgid "   if(__thisModule == module)\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:748
+msgid "      __thisModule = (void *)0;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:755
+msgid ""
+"\n"
+"   _class = eSystem_FindClass(__currentModule, \"ecere::com::Application\");\n"
+"   exitCode = ((ecere::com::Application)__currentModule).exitCode;\n"
+"   delete __currentModule;\n"
+"   return exitCode;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:780
+#: .\sdk\compiler\ecs\ecs.ec:784
+msgid "ecere::com::Application"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:818
+#: .\sdk\compiler\ecs\ecs.ec:836
+#: .\sdk\compiler\ecs\ecs.ec:1128
+msgid "ecere::net::DCOMClientObject"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:836
+msgid "__ecereClass___ecereNameSpace__ecere__net__DCOMClientObject"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:837
+#, c-format
+msgid "class %s : ecere::net::DCOMClientObject\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:838
+#: .\sdk\compiler\ecs\ecs.ec:1222
+#: .\sdk\compiler\libec\src\output.ec:392
+#: .\sdk\compiler\libec\src\output.ec:1236
+msgid "{\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:844
+msgid "   virtual void CallVirtualMethod(uint __ecereMethodID, SerialBuffer __ecereBuffer)\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:846
+#: .\sdk\compiler\ecs\ecs.ec:1238
+msgid "      switch(__ecereMethodID)\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:847
+#: .\sdk\compiler\ecs\ecs.ec:1132
+#: .\sdk\compiler\ecs\ecs.ec:1239
+#: .\sdk\compiler\ecs\ecs.ec:1492
+msgid "      {\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:863
+#: .\sdk\compiler\ecs\ecs.ec:1247
+#, c-format
+msgid "         case %d:\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:864
+#: .\sdk\compiler\ecs\ecs.ec:1248
+msgid "         {\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:883
+#: .\sdk\compiler\ecs\ecs.ec:925
+#: .\sdk\compiler\ecs\ecs.ec:1077
+#: .\sdk\compiler\ecs\ecs.ec:1112
+#: .\sdk\compiler\ecs\ecs.ec:1268
+#: .\sdk\compiler\ecs\ecs.ec:1310
+#: .\sdk\compiler\ecs\ecs.ec:1437
+#: .\sdk\compiler\ecs\ecs.ec:1472
+#: .\sdk\compiler\libec\src\ast.ec:2689
+#: .\sdk\compiler\libec\src\pass0.ec:807
+#: .\sdk\compiler\libec\src\pass15.ec:1082
+#: .\sdk\compiler\libec\src\pass15.ec:1097
+#: .\sdk\compiler\libec\src\pass15.ec:5529
+#: .\sdk\compiler\libec\src\pass15.ec:9507
+#: .\sdk\compiler\libec\src\pass15.ec:11461
+#: .\sdk\compiler\libec\src\pass15.ec:11606
+#: .\sdk\compiler\libec\src\pass16.ec:1037
+#: .\sdk\compiler\libec\src\pass16.ec:2266
+#: .\sdk\compiler\libec\src\pass2.ec:249
+#: .\sdk\compiler\libec\src\pass2.ec:1018
+#: .\sdk\compiler\libec\src\pass2.ec:1731
+#: .\sdk\compiler\libec\src\pass2.ec:1861
+#: .\sdk\compiler\libec\src\pass2.ec:2117
+#: .\sdk\compiler\libec\src\pass2.ec:2446
+#: .\sdk\compiler\libec\src\pass2.ec:2552
+#: .\sdk\compiler\libec\src\pass2.ec:2787
+msgid "__ecereClass_"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:890
+#: .\sdk\compiler\ecs\ecs.ec:1084
+#: .\sdk\compiler\ecs\ecs.ec:1275
+#: .\sdk\compiler\ecs\ecs.ec:1444
+msgid "__ecereResult"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:893
+#: .\sdk\compiler\ecs\ecs.ec:935
+#: .\sdk\compiler\ecs\ecs.ec:955
+#: .\sdk\compiler\ecs\ecs.ec:1278
+#: .\sdk\compiler\ecs\ecs.ec:1320
+#: .\sdk\compiler\ecs\ecs.ec:1340
+msgid "            "
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:895
+#: .\sdk\compiler\ecs\ecs.ec:938
+#: .\sdk\compiler\ecs\ecs.ec:1280
+#: .\sdk\compiler\ecs\ecs.ec:1323
+#: .\sdk\compiler\libec\src\output.ec:1179
+#: .\sdk\compiler\libec\src\output.ec:1326
+msgid ";\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:900
+#: .\sdk\compiler\ecs\ecs.ec:905
+#: .\sdk\compiler\ecs\ecs.ec:946
+#: .\sdk\compiler\ecs\ecs.ec:973
+#: .\sdk\compiler\ecs\ecs.ec:975
+#: .\sdk\compiler\ecs\ecs.ec:991
+#: .\sdk\compiler\ecs\ecs.ec:997
+#: .\sdk\compiler\ecs\ecs.ec:1118
+#: .\sdk\compiler\ecs\ecs.ec:1135
+#: .\sdk\compiler\ecs\ecs.ec:1137
+#: .\sdk\compiler\ecs\ecs.ec:1148
+#: .\sdk\compiler\ecs\ecs.ec:1285
+#: .\sdk\compiler\ecs\ecs.ec:1290
+#: .\sdk\compiler\ecs\ecs.ec:1331
+#: .\sdk\compiler\ecs\ecs.ec:1358
+#: .\sdk\compiler\ecs\ecs.ec:1360
+#: .\sdk\compiler\ecs\ecs.ec:1376
+#: .\sdk\compiler\ecs\ecs.ec:1382
+#: .\sdk\compiler\ecs\ecs.ec:1477
+#: .\sdk\compiler\ecs\ecs.ec:1495
+#: .\sdk\compiler\ecs\ecs.ec:1497
+#: .\sdk\compiler\ecs\ecs.ec:1508
+#: .\sdk\compiler\libec\src\dbpass.ec:781
+#: .\sdk\compiler\libec\src\pass15.ec:1467
+#: .\sdk\compiler\libec\src\pass15.ec:7685
+#: .\sdk\compiler\libec\src\pass15.ec:7686
+#: .\sdk\compiler\libec\src\pass15.ec:7690
+#: .\sdk\compiler\libec\src\pass15.ec:7743
+#: .\sdk\compiler\libec\src\pass15.ec:7750
+#: .\sdk\compiler\libec\src\pass2.ec:2107
+msgid "String"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:903
+#: .\sdk\compiler\ecs\ecs.ec:1288
+#, c-format
+msgid "            char %s[1024];\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:904
+#: .\sdk\compiler\ecs\ecs.ec:948
+#: .\sdk\compiler\ecs\ecs.ec:977
+#: .\sdk\compiler\ecs\ecs.ec:1120
+#: .\sdk\compiler\ecs\ecs.ec:1139
+#: .\sdk\compiler\ecs\ecs.ec:1150
+#: .\sdk\compiler\ecs\ecs.ec:1289
+#: .\sdk\compiler\ecs\ecs.ec:1333
+#: .\sdk\compiler\ecs\ecs.ec:1362
+#: .\sdk\compiler\ecs\ecs.ec:1479
+#: .\sdk\compiler\ecs\ecs.ec:1499
+#: .\sdk\compiler\ecs\ecs.ec:1510
+msgid "StaticString"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:904
+#: .\sdk\compiler\ecs\ecs.ec:948
+#: .\sdk\compiler\ecs\ecs.ec:977
+#: .\sdk\compiler\ecs\ecs.ec:1120
+#: .\sdk\compiler\ecs\ecs.ec:1139
+#: .\sdk\compiler\ecs\ecs.ec:1150
+#: .\sdk\compiler\ecs\ecs.ec:1289
+#: .\sdk\compiler\ecs\ecs.ec:1333
+#: .\sdk\compiler\ecs\ecs.ec:1362
+#: .\sdk\compiler\ecs\ecs.ec:1479
+#: .\sdk\compiler\ecs\ecs.ec:1499
+#: .\sdk\compiler\ecs\ecs.ec:1510
+msgid "__ecereClass_StaticString"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:905
+#: .\sdk\compiler\ecs\ecs.ec:1290
+msgid "__ecereClass_String"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:945
+#: .\sdk\compiler\ecs\ecs.ec:1330
+msgid "            __ecereBuffer.Unserialize("
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:949
+#: .\sdk\compiler\ecs\ecs.ec:1334
+msgid "(StaticString)"
+msgstr "(StaticString)"
+
+#: .\sdk\compiler\ecs\ecs.ec:952
+#: .\sdk\compiler\ecs\ecs.ec:969
+#: .\sdk\compiler\ecs\ecs.ec:1337
+#: .\sdk\compiler\ecs\ecs.ec:1354
+#: .\sdk\compiler\ecs\ecs.ec:1524
+#: .\sdk\compiler\libec\src\output.ec:681
+msgid ");\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:957
+#: .\sdk\compiler\ecs\ecs.ec:1342
+msgid "__ecereResult = "
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:960
+#, c-format
+msgid "%s("
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:965
+#: .\sdk\compiler\ecs\ecs.ec:1350
+#: .\sdk\compiler\ecs\ecs.ec:1522
+#: .\sdk\compiler\libec\src\ast.ec:1052
+#: .\sdk\compiler\libec\src\output.ec:211
+#: .\sdk\compiler\libec\src\output.ec:227
+#: .\sdk\compiler\libec\src\output.ec:242
+#: .\sdk\compiler\libec\src\output.ec:288
+#: .\sdk\compiler\libec\src\output.ec:297
+#: .\sdk\compiler\libec\src\output.ec:309
+#: .\sdk\compiler\libec\src\output.ec:438
+#: .\sdk\compiler\libec\src\output.ec:451
+#: .\sdk\compiler\libec\src\output.ec:480
+#: .\sdk\compiler\libec\src\output.ec:494
+#: .\sdk\compiler\libec\src\output.ec:511
+#: .\sdk\compiler\libec\src\output.ec:539
+#: .\sdk\compiler\libec\src\output.ec:620
+#: .\sdk\compiler\libec\src\output.ec:792
+#: .\sdk\compiler\libec\src\output.ec:941
+#: .\sdk\compiler\libec\src\output.ec:1036
+#: .\sdk\compiler\libec\src\output.ec:1137
+#: .\sdk\compiler\libec\src\output.ec:1160
+#: .\sdk\compiler\libec\src\output.ec:1289
+#: .\sdk\compiler\libec\src\output.ec:1400
+#: .\sdk\compiler\libec\src\pass15.ec:1754
+#: .\sdk\compiler\libec\src\pass15.ec:2530
+#: .\sdk\compiler\libec\src\pass15.ec:2571
+#: .\sdk\compiler\libec\src\pass15.ec:6268
+#: .\sdk\compiler\libec\src\pass15.ec:6400
+#: .\sdk\compiler\libec\src\pass15.ec:8883
+#: .\sdk\compiler\libec\src\pass15.ec:9387
+msgid ", "
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:966
+#: .\sdk\compiler\ecs\ecs.ec:1351
+#: .\sdk\compiler\ecs\ecs.ec:1521
+#, c-format
+msgid "%s"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:978
+#: .\sdk\compiler\ecs\ecs.ec:1363
+#, c-format
+msgid "            __ecereBuffer.Serialize((StaticString)%s);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:981
+#: .\sdk\compiler\ecs\ecs.ec:1366
+#, c-format
+msgid "            __ecereBuffer.Serialize(%s);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:986
+#: .\sdk\compiler\ecs\ecs.ec:1371
+msgid "            __ecereBuffer.Serialize(__ecereResult);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:994
+#: .\sdk\compiler\ecs\ecs.ec:1379
+#, c-format
+msgid "            delete %s;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1000
+#: .\sdk\compiler\ecs\ecs.ec:1385
+msgid "            delete __ecereResult;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1004
+#: .\sdk\compiler\ecs\ecs.ec:1389
+msgid "            break;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1005
+#: .\sdk\compiler\ecs\ecs.ec:1390
+msgid "         }\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1009
+#: .\sdk\compiler\ecs\ecs.ec:1156
+#: .\sdk\compiler\ecs\ecs.ec:1393
+#: .\sdk\compiler\ecs\ecs.ec:1516
+msgid "      }\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1042
+msgid "   "
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1046
+#: .\sdk\compiler\libec\src\pass1.ec:1380
+#: .\sdk\compiler\libec\src\pass2.ec:216
+#: .\sdk\compiler\libec\src\pass2.ec:1612
+#: .\sdk\compiler\libec\src\pass2.ec:2437
+msgid "__ecereVMethodID_"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1048
+#: .\sdk\compiler\libec\src\pass0.ec:1284
+#: .\sdk\compiler\libec\src\pass0.ec:1296
+#: .\sdk\compiler\libec\src\pass0.ec:1459
+#: .\sdk\compiler\libec\src\pass1.ec:424
+#: .\sdk\compiler\libec\src\pass1.ec:503
+#: .\sdk\compiler\libec\src\pass1.ec:510
+#: .\sdk\compiler\libec\src\pass1.ec:808
+#: .\sdk\compiler\libec\src\pass1.ec:815
+#: .\sdk\compiler\libec\src\pass1.ec:970
+#: .\sdk\compiler\libec\src\pass1.ec:1382
+#: .\sdk\compiler\libec\src\pass15.ec:1168
+#: .\sdk\compiler\libec\src\pass15.ec:1429
+#: .\sdk\compiler\libec\src\pass15.ec:1918
+#: .\sdk\compiler\libec\src\pass15.ec:1920
+#: .\sdk\compiler\libec\src\pass15.ec:10489
+#: .\sdk\compiler\libec\src\pass15.ec:10496
+#: .\sdk\compiler\libec\src\pass15.ec:11150
+#: .\sdk\compiler\libec\src\pass15.ec:11211
+#: .\sdk\compiler\libec\src\pass15.ec:11373
+#: .\sdk\compiler\libec\src\pass2.ec:218
+#: .\sdk\compiler\libec\src\pass2.ec:268
+#: .\sdk\compiler\libec\src\pass2.ec:1614
+#: .\sdk\compiler\libec\src\pass2.ec:1750
+#: .\sdk\compiler\libec\src\pass2.ec:2439
+#: .\sdk\compiler\libec\src\pass2.ec:2476
+msgid "_"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1052
+msgid "virtual "
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1087
+#: .\sdk\compiler\ecs\ecs.ec:1447
+msgid "      "
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1090
+#: .\sdk\compiler\ecs\ecs.ec:1450
+msgid " = { 0 }"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1092
+#: .\sdk\compiler\ecs\ecs.ec:1452
+msgid " { }"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1094
+#: .\sdk\compiler\ecs\ecs.ec:1454
+msgid " = 0"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1095
+#: .\sdk\compiler\ecs\ecs.ec:1455
+#: .\sdk\compiler\libec\src\output.ec:1402
+msgid ""
+";\n"
+"\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1121
+#, c-format
+msgid "      __ecereBuffer.Serialize((StaticString)%s);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1124
+#, c-format
+msgid "      __ecereBuffer.Serialize(%s);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1128
+msgid "CallMethod"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1129
+msgid "__ecereMethod___ecereNameSpace__ecere__net__DCOMClientObject_CallMethod"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1131
+#, c-format
+msgid "      if(DCOMClientObject::CallMethod(%d))\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1140
+#, c-format
+msgid "         __ecereBuffer.Unserialize((StaticString)%s);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1143
+#, c-format
+msgid "         __ecereBuffer.Unserialize(%s);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1151
+msgid "         __ecereBuffer.Unserialize((StaticString)__ecereResult);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1154
+msgid "         __ecereBuffer.Unserialize(__ecereResult);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1157
+msgid "      __ecereBuffer.Free();\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1161
+#: .\sdk\compiler\ecs\ecs.ec:1530
+msgid "      return __ecereResult;\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1209
+#: .\sdk\compiler\ecs\ecs.ec:1488
+msgid "ecere::net::DCOMServerObject"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1209
+msgid "__ecereClass___ecereNameSpace__ecere__net__DCOMServerObject"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1220
+#, c-format
+msgid "class DCOM%s : ecere::net::DCOMServerObject\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1236
+msgid "   virtual void CallMethod(uint __ecereMethodID, SerialBuffer __ecereBuffer)\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1345
+#, c-format
+msgid "((%s)instance).%s("
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1413
+#, c-format
+msgid "   virtual %s\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1418
+#, c-format
+msgid "      DCOM%s __ecereObject = (void *)_vTbl[-1];\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1480
+#, c-format
+msgid "      __ecereObject.virtualsBuffer.Serialize((StaticString)%s);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1483
+#, c-format
+msgid "      __ecereObject.virtualsBuffer.Serialize(%s);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1488
+msgid "CallVirtualMethod"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1489
+msgid "__ecereMethod___ecereNameSpace__ecere__net__DCOMServerObject_CallVirutalMethod"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1491
+#, c-format
+msgid "      if(__ecereObject.CallVirtualMethod(%d))\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1500
+#, c-format
+msgid "         __ecereObject.virtualsBuffer.Unserialize((StaticString)%s);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1503
+#, c-format
+msgid "         __ecereObject.virtualsBuffer.Unserialize(%s);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1511
+msgid "         __ecereObject.virtualsBuffer.Unserialize((StaticString)__ecereResult);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1514
+msgid "         __ecereObject.virtualsBuffer.Unserialize(__ecereResult);\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1517
+msgid "      else\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1518
+#, c-format
+msgid "         ((%s)this).%s::%s("
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1526
+msgid "      __ecereObject.virtualsBuffer.Free();\n"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1602
+msgid "-name"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1612
+msgid "-t"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1619
+msgid "-console"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1621
+msgid "-dynamiclib"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1623
+msgid "-staticlib"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1628
+msgid "-symbols"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1644
+#, c-format
+msgid ""
+"Syntax:\n"
+"   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n"
+msgstr ""
+"Syntax:\n"
+"   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n"
+
+#: .\sdk\compiler\ecs\ecs.ec:1675
+#: .\sdk\compiler\ecs\ecs.ec:1692
+#: .\sdk\compiler\ecs\ecs.ec:1702
+msgid "-c"
+msgstr ""
+
+#: .\sdk\compiler\ecs\ecs.ec:1714
+msgid ".ec"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:1
+#: .\sdk\compiler\libec\src\copy.ec:1
+#: .\sdk\compiler\libec\src\dbpass.ec:1
+#: expression.y:3
+#: .\sdk\compiler\libec\src\firstPass.ec:1
+#: .\sdk\compiler\libec\src\freeAst.ec:1
+#: grammar.y:2
+#: lexer.l:10
+#: .\sdk\compiler\libec\src\loadSymbols.ec:1
+#: .\sdk\compiler\libec\src\output.ec:1
+#: .\sdk\compiler\libec\src\pass0.ec:1
+#: .\sdk\compiler\libec\src\pass1.ec:1
+#: .\sdk\compiler\libec\src\pass15.ec:1
+#: .\sdk\compiler\libec\src\pass16.ec:1
+#: .\sdk\compiler\libec\src\pass2.ec:1
+#: .\sdk\compiler\libec\src\pass3.ec:1
+#: .\sdk\compiler\libec\src\shortcuts.ec:7
+#: type.y:3
+msgid "ecdefs"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:82
+#: .\sdk\compiler\libec\src\output.ec:34
+#: .\sdk\compiler\libec\src\output.ec:891
+#: .\sdk\compiler\libec\src\output.ec:909
+#: .\sdk\compiler\libec\src\pass15.ec:6120
+msgid "typed_object"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:84
+#: .\sdk\compiler\libec\src\ast.ec:1965
+#: .\sdk\compiler\libec\src\ast.ec:1969
+#: .\sdk\compiler\libec\src\ast.ec:1973
+#: .\sdk\compiler\libec\src\ast.ec:2315
+#: .\sdk\compiler\libec\src\ast.ec:2320
+#: .\sdk\compiler\libec\src\ast.ec:2346
+#: .\sdk\compiler\libec\src\ast.ec:2351
+#: .\sdk\compiler\libec\src\ast.ec:2358
+#: .\sdk\compiler\libec\src\ast.ec:2360
+#: .\sdk\compiler\libec\src\ast.ec:2363
+#: grammar.ec:1356
+#: .\sdk\compiler\libec\src\output.ec:33
+#: .\sdk\compiler\libec\src\output.ec:897
+#: .\sdk\compiler\libec\src\output.ec:907
+#: .\sdk\compiler\libec\src\pass0.ec:485
+#: .\sdk\compiler\libec\src\pass0.ec:491
+#: .\sdk\compiler\libec\src\pass1.ec:274
+#: .\sdk\compiler\libec\src\pass1.ec:278
+#: .\sdk\compiler\libec\src\pass1.ec:1028
+#: .\sdk\compiler\libec\src\pass1.ec:1247
+#: .\sdk\compiler\libec\src\pass1.ec:1261
+#: .\sdk\compiler\libec\src\pass1.ec:1263
+#: .\sdk\compiler\libec\src\pass1.ec:1275
+#: .\sdk\compiler\libec\src\pass1.ec:1296
+#: .\sdk\compiler\libec\src\pass1.ec:1340
+#: .\sdk\compiler\libec\src\pass1.ec:1417
+#: .\sdk\compiler\libec\src\pass1.ec:1463
+#: .\sdk\compiler\libec\src\pass1.ec:1477
+#: .\sdk\compiler\libec\src\pass1.ec:1506
+#: .\sdk\compiler\libec\src\pass1.ec:1624
+#: .\sdk\compiler\libec\src\pass1.ec:1647
+#: .\sdk\compiler\libec\src\pass1.ec:1648
+#: .\sdk\compiler\libec\src\pass1.ec:1654
+#: .\sdk\compiler\libec\src\pass1.ec:1655
+#: .\sdk\compiler\libec\src\pass1.ec:1661
+#: .\sdk\compiler\libec\src\pass1.ec:1662
+#: .\sdk\compiler\libec\src\pass1.ec:1670
+#: .\sdk\compiler\libec\src\pass1.ec:1671
+#: .\sdk\compiler\libec\src\pass1.ec:1678
+#: .\sdk\compiler\libec\src\pass15.ec:6679
+#: .\sdk\compiler\libec\src\pass15.ec:6822
+#: .\sdk\compiler\libec\src\pass15.ec:6884
+#: .\sdk\compiler\libec\src\pass15.ec:9088
+#: .\sdk\compiler\libec\src\pass15.ec:9147
+#: .\sdk\compiler\libec\src\pass15.ec:9700
+#: .\sdk\compiler\libec\src\pass15.ec:10315
+#: .\sdk\compiler\libec\src\pass15.ec:11511
+#: .\sdk\compiler\libec\src\pass2.ec:1075
+#: .\sdk\compiler\libec\src\pass2.ec:1645
+#: .\sdk\compiler\libec\src\pass2.ec:1704
+#: .\sdk\compiler\libec\src\pass2.ec:1721
+#: .\sdk\compiler\libec\src\pass2.ec:1804
+#: .\sdk\compiler\libec\src\pass2.ec:1851
+#: .\sdk\compiler\libec\src\pass2.ec:1922
+#: .\sdk\compiler\libec\src\pass2.ec:2110
+#: .\sdk\compiler\libec\src\pass2.ec:2113
+#: .\sdk\compiler\libec\src\pass2.ec:2462
+#: .\sdk\compiler\libec\src\pass3.ec:335
+#: .\sdk\compiler\libec\src\pass3.ec:345
+msgid "class"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:87
+#: .\sdk\compiler\libec\src\ast.ec:89
+#: expression.ec:825
+#: grammar.ec:1346
+#: .\sdk\compiler\libec\src\pass15.ec:225
+#: .\sdk\compiler\libec\src\pass15.ec:236
+#: .\sdk\compiler\libec\src\pass15.ec:6974
+#: .\sdk\compiler\libec\src\pass15.ec:8962
+#: .\sdk\compiler\libec\src\pass15.ec:8993
+#: .\sdk\compiler\libec\src\pass15.ec:9003
+#: type.ec:883
+msgid "property"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:92
+#: .\sdk\compiler\libec\src\ast.ec:94
+msgid "typed_object&"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:97
+#: .\sdk\compiler\libec\src\ast.ec:99
+#: .\sdk\compiler\libec\src\ast.ec:2317
+#: .\sdk\compiler\libec\src\ast.ec:2355
+#: .\sdk\compiler\libec\src\output.ec:894
+msgid "any_object"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:572
+#, c-format
+msgid "Redefinition of %s ignored\n"
+msgstr "Redefinition of %s ignored\n"
+
+#: .\sdk\compiler\libec\src\ast.ec:679
+#: .\sdk\compiler\libec\src\ast.ec:703
+#: .\sdk\compiler\libec\src\ast.ec:2688
+#: .\sdk\compiler\libec\src\dbpass.ec:270
+#: .\sdk\compiler\libec\src\dbpass.ec:1085
+#: .\sdk\compiler\libec\src\dbpass.ec:1093
+#: .\sdk\compiler\libec\src\output.ec:774
+#: .\sdk\compiler\libec\src\pass1.ec:359
+#: .\sdk\compiler\libec\src\pass1.ec:592
+#: .\sdk\compiler\libec\src\pass1.ec:598
+#: .\sdk\compiler\libec\src\pass1.ec:650
+#: .\sdk\compiler\libec\src\pass1.ec:694
+#: .\sdk\compiler\libec\src\pass1.ec:701
+#: .\sdk\compiler\libec\src\pass1.ec:1487
+#: .\sdk\compiler\libec\src\pass15.ec:369
+#: .\sdk\compiler\libec\src\pass15.ec:379
+#: .\sdk\compiler\libec\src\pass15.ec:389
+#: .\sdk\compiler\libec\src\pass15.ec:918
+#: .\sdk\compiler\libec\src\pass15.ec:3335
+#: .\sdk\compiler\libec\src\pass15.ec:3853
+#: .\sdk\compiler\libec\src\pass15.ec:6501
+#: .\sdk\compiler\libec\src\pass15.ec:6566
+#: .\sdk\compiler\libec\src\pass15.ec:6712
+#: .\sdk\compiler\libec\src\pass15.ec:9809
+#: .\sdk\compiler\libec\src\pass15.ec:10964
+#: .\sdk\compiler\libec\src\pass15.ec:11620
+#: .\sdk\compiler\libec\src\pass16.ec:320
+#: .\sdk\compiler\libec\src\pass16.ec:1031
+#: .\sdk\compiler\libec\src\pass16.ec:2261
+#: .\sdk\compiler\libec\src\pass2.ec:635
+#: .\sdk\compiler\libec\src\pass2.ec:1970
+#: .\sdk\compiler\libec\src\pass2.ec:2517
+#: .\sdk\compiler\libec\src\pass2.ec:2601
+#: .\sdk\compiler\libec\src\pass2.ec:2639
+#, c-format
+msgid "%d"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:854
+#: .\sdk\compiler\libec\src\pass1.ec:1732
+msgid "__on_register_module"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:946
+#, c-format
+msgid "Importing took %.3f seconds for %s\n"
+msgstr "Importing took %.3f seconds for %s\n"
+
+#: .\sdk\compiler\libec\src\ast.ec:996
+#: .\sdk\compiler\libec\src\pass15.ec:2529
+#: .\sdk\compiler\libec\src\pass15.ec:2570
+msgid "<"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:1056
+#: .\sdk\compiler\libec\src\output.ec:814
+#: .\sdk\compiler\libec\src\output.ec:1064
+#: .\sdk\compiler\libec\src\output.ec:1271
+#: .\sdk\compiler\libec\src\pass15.ec:1758
+#: .\sdk\compiler\libec\src\pass15.ec:2534
+#: .\sdk\compiler\libec\src\pass15.ec:2575
+#: .\sdk\compiler\libec\src\pass15.ec:8887
+#: .\sdk\compiler\libec\src\pass15.ec:9391
+msgid " = "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:1107
+#: .\sdk\compiler\libec\src\loadSymbols.ec:234
+msgid "DCOMClient_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:1308
+msgid "Expecting class specifier\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:1902
+#: .\sdk\compiler\libec\src\ast.ec:1923
+#: .\sdk\compiler\libec\src\ast.ec:2224
+#: .\sdk\compiler\libec\src\pass3.ec:278
+msgid "__declspec(dllexport)"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:1902
+#: .\sdk\compiler\libec\src\ast.ec:1923
+#: .\sdk\compiler\libec\src\ast.ec:2224
+#: .\sdk\compiler\libec\src\pass15.ec:2695
+#: .\sdk\compiler\libec\src\pass3.ec:268
+#: .\sdk\compiler\libec\src\pass3.ec:358
+msgid "dllexport"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:1907
+#: .\sdk\compiler\libec\src\ast.ec:1927
+msgid "__attribute__"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:2695
+#: .\sdk\compiler\libec\src\dbpass.ec:979
+#: .\sdk\compiler\libec\src\dbpass.ec:1021
+#: .\sdk\compiler\libec\src\pass0.ec:640
+#: .\sdk\compiler\libec\src\pass0.ec:708
+#: .\sdk\compiler\libec\src\pass0.ec:732
+#: .\sdk\compiler\libec\src\pass0.ec:991
+#: .\sdk\compiler\libec\src\pass15.ec:258
+#: .\sdk\compiler\libec\src\pass15.ec:1250
+#: .\sdk\compiler\libec\src\pass15.ec:1341
+#: .\sdk\compiler\libec\src\pass15.ec:2448
+#: .\sdk\compiler\libec\src\pass15.ec:7022
+#: .\sdk\compiler\libec\src\pass15.ec:7044
+#: .\sdk\compiler\libec\src\pass15.ec:8723
+#: .\sdk\compiler\libec\src\pass15.ec:9697
+#: .\sdk\compiler\libec\src\pass15.ec:9698
+#: .\sdk\compiler\libec\src\pass15.ec:10504
+#: .\sdk\compiler\libec\src\pass15.ec:10509
+#: .\sdk\compiler\libec\src\pass15.ec:10517
+#: .\sdk\compiler\libec\src\pass15.ec:10522
+#: .\sdk\compiler\libec\src\pass15.ec:10528
+#: .\sdk\compiler\libec\src\pass15.ec:11188
+#: .\sdk\compiler\libec\src\pass15.ec:11217
+#: .\sdk\compiler\libec\src\pass15.ec:11277
+#: .\sdk\compiler\libec\src\pass15.ec:11354
+#: .\sdk\compiler\libec\src\pass15.ec:11380
+#: .\sdk\compiler\libec\src\pass15.ec:11495
+#: .\sdk\compiler\libec\src\pass15.ec:11540
+#: .\sdk\compiler\libec\src\pass15.ec:11558
+#: .\sdk\compiler\libec\src\pass15.ec:11615
+#: .\sdk\compiler\libec\src\pass15.ec:11631
+#: .\sdk\compiler\libec\src\pass15.ec:11775
+#: .\sdk\compiler\libec\src\pass15.ec:11807
+#: .\sdk\compiler\libec\src\pass15.ec:11822
+#: .\sdk\compiler\libec\src\pass15.ec:11837
+#: .\sdk\compiler\libec\src\pass15.ec:11863
+#: .\sdk\compiler\libec\src\pass16.ec:2581
+#: .\sdk\compiler\libec\src\pass16.ec:2603
+#: .\sdk\compiler\libec\src\pass16.ec:2636
+#: .\sdk\compiler\libec\src\pass16.ec:2646
+#: .\sdk\compiler\libec\src\pass2.ec:1150
+#: .\sdk\compiler\libec\src\pass2.ec:1230
+#: .\sdk\compiler\libec\src\pass2.ec:1476
+#: .\sdk\compiler\libec\src\pass2.ec:3159
+#: .\sdk\compiler\libec\src\pass2.ec:3182
+#: .\sdk\compiler\libec\src\pass2.ec:3234
+#: .\sdk\compiler\libec\src\pass2.ec:3244
+msgid "this"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ast.ec:2696
+msgid "templateArgs"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:169
+#: .\sdk\compiler\libec\src\dbpass.ec:777
+#: .\sdk\compiler\libec\src\dbpass.ec:967
+#: .\sdk\compiler\libec\src\dbpass.ec:1086
+#, c-format
+msgid "__ecereDBField_%s_%s"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:183
+#: .\sdk\compiler\libec\src\dbpass.ec:707
+#, c-format
+msgid "__ecereDBTable_%s"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:197
+#: .\sdk\compiler\libec\src\dbpass.ec:1064
+#, c-format
+msgid "__ecereDBIndex_%s_%s"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:215
+msgid "Database"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:216
+#: .\sdk\compiler\libec\src\dbpass.ec:239
+#: .\sdk\compiler\libec\src\dbpass.ec:248
+#: .\sdk\compiler\libec\src\dbpass.ec:255
+#: .\sdk\compiler\libec\src\dbpass.ec:264
+#: .\sdk\compiler\libec\src\dbpass.ec:292
+#: .\sdk\compiler\libec\src\dbpass.ec:731
+#: .\sdk\compiler\libec\src\dbpass.ec:1099
+msgid "db"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:219
+#: .\sdk\compiler\libec\src\dbpass.ec:225
+#: .\sdk\compiler\libec\src\pass0.ec:938
+#: .\sdk\compiler\libec\src\pass0.ec:1249
+#: .\sdk\compiler\libec\src\pass15.ec:3554
+#: .\sdk\compiler\libec\src\pass15.ec:3657
+#: .\sdk\compiler\libec\src\pass15.ec:7656
+#: .\sdk\compiler\libec\src\pass15.ec:7663
+#: .\sdk\compiler\libec\src\pass15.ec:7669
+#: .\sdk\compiler\libec\src\pass15.ec:7676
+#: .\sdk\compiler\libec\src\pass15.ec:8099
+#: .\sdk\compiler\libec\src\pass15.ec:8153
+#: .\sdk\compiler\libec\src\pass15.ec:9612
+#: .\sdk\compiler\libec\src\pass15.ec:9947
+#: .\sdk\compiler\libec\src\pass15.ec:10604
+#: .\sdk\compiler\libec\src\pass15.ec:10652
+#: .\sdk\compiler\libec\src\pass15.ec:10672
+#: .\sdk\compiler\libec\src\pass15.ec:10693
+msgid "bool"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:220
+#: .\sdk\compiler\libec\src\dbpass.ec:257
+msgid "createNow"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:220
+#: .\sdk\compiler\libec\src\dbpass.ec:227
+#: .\sdk\compiler\libec\src\pass2.ec:1553
+msgid "false"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:227
+#: .\sdk\compiler\libec\src\dbpass.ec:230
+#: .\sdk\compiler\libec\src\dbpass.ec:233
+msgid "initialized"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:230
+#: .\sdk\compiler\libec\src\dbpass.ec:272
+#: .\sdk\compiler\libec\src\pass1.ec:1616
+msgid "null"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:233
+#: .\sdk\compiler\libec\src\dbpass.ec:258
+#: .\sdk\compiler\libec\src\pass0.ec:1070
+#: .\sdk\compiler\libec\src\pass2.ec:1553
+msgid "true"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:238
+msgid "no"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:240
+#: .\sdk\compiler\libec\src\dbpass.ec:256
+msgid "OpenDatabase"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:254
+#: .\sdk\compiler\libec\src\dbpass.ec:737
+msgid "create"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:271
+msgid "FieldIndex"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:271
+#: .\sdk\compiler\libec\src\dbpass.ec:905
+#: .\sdk\compiler\libec\src\dbpass.ec:909
+#: .\sdk\compiler\libec\src\dbpass.ec:916
+#: .\sdk\compiler\libec\src\dbpass.ec:1088
+#: .\sdk\compiler\libec\src\dbpass.ec:1090
+#: .\sdk\compiler\libec\src\dbpass.ec:1110
+msgid "indexes"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:299
+msgid "No database table defined in this module or database_open already used.\n"
+msgstr "No database table defined in this module or database_open already used.\n"
+
+#: .\sdk\compiler\libec\src\dbpass.ec:709
+#, c-format
+msgid "Row%s"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:724
+#: .\sdk\compiler\libec\src\dbpass.ec:1066
+#: .\sdk\compiler\libec\src\dbpass.ec:1129
+msgid "Table"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:731
+#: .\sdk\compiler\libec\src\dbpass.ec:1099
+msgid "OpenTable"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:736
+#: .\sdk\compiler\libec\src\dbpass.ec:1104
+msgid "tableRows"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:747
+#: .\sdk\compiler\libec\src\dbpass.ec:1130
+msgid "Row"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:752
+msgid "tbl"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:795
+#, c-format
+msgid "_%s"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:799
+msgid "Find"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:802
+msgid "middle"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:803
+msgid "nil"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:804
+#: .\sdk\compiler\libec\src\dbpass.ec:849
+#: .\sdk\compiler\libec\src\dbpass.ec:862
+#: .\sdk\compiler\libec\src\dbpass.ec:1009
+#: .\sdk\compiler\libec\src\dbpass.ec:1027
+#: .\sdk\compiler\libec\src\pass0.ec:1143
+#: .\sdk\compiler\libec\src\pass0.ec:1189
+#: .\sdk\compiler\libec\src\pass0.ec:1358
+#: .\sdk\compiler\libec\src\pass0.ec:1396
+#: .\sdk\compiler\libec\src\pass15.ec:1286
+#: .\sdk\compiler\libec\src\pass15.ec:1349
+#: .\sdk\compiler\libec\src\pass15.ec:11160
+msgid "value"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:827
+#: .\sdk\compiler\libec\src\dbpass.ec:833
+#: .\sdk\compiler\libec\src\dbpass.ec:844
+#: .\sdk\compiler\libec\src\dbpass.ec:850
+#: .\sdk\compiler\libec\src\dbpass.ec:853
+#: .\sdk\compiler\libec\src\dbpass.ec:984
+#: .\sdk\compiler\libec\src\dbpass.ec:990
+#: .\sdk\compiler\libec\src\dbpass.ec:1001
+#: .\sdk\compiler\libec\src\dbpass.ec:1010
+#: .\sdk\compiler\libec\src\dbpass.ec:1013
+msgid "d"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:833
+#: .\sdk\compiler\libec\src\dbpass.ec:892
+#: .\sdk\compiler\libec\src\dbpass.ec:906
+#: .\sdk\compiler\libec\src\dbpass.ec:910
+#: .\sdk\compiler\libec\src\dbpass.ec:990
+#: .\sdk\compiler\libec\src\pass1.ec:370
+#: .\sdk\compiler\libec\src\pass1.ec:390
+#: .\sdk\compiler\libec\src\pass1.ec:404
+#: .\sdk\compiler\libec\src\pass1.ec:471
+#: .\sdk\compiler\libec\src\pass1.ec:484
+#: .\sdk\compiler\libec\src\pass1.ec:554
+#: .\sdk\compiler\libec\src\pass1.ec:564
+#: .\sdk\compiler\libec\src\pass1.ec:858
+#: .\sdk\compiler\libec\src\pass1.ec:871
+#: .\sdk\compiler\libec\src\pass1.ec:1131
+#: .\sdk\compiler\libec\src\pass1.ec:1137
+#: .\sdk\compiler\libec\src\pass1.ec:1172
+#: .\sdk\compiler\libec\src\pass1.ec:1176
+#: .\sdk\compiler\libec\src\pass1.ec:1186
+#: .\sdk\compiler\libec\src\pass1.ec:1198
+#: .\sdk\compiler\libec\src\pass1.ec:1202
+#: .\sdk\compiler\libec\src\pass1.ec:1209
+#: .\sdk\compiler\libec\src\pass1.ec:1211
+#: .\sdk\compiler\libec\src\pass1.ec:1306
+#: .\sdk\compiler\libec\src\pass1.ec:1361
+#: .\sdk\compiler\libec\src\pass1.ec:1439
+#: .\sdk\compiler\libec\src\pass15.ec:7730
+#: .\sdk\compiler\libec\src\pass15.ec:8390
+#: .\sdk\compiler\libec\src\pass15.ec:8401
+#: .\sdk\compiler\libec\src\pass15.ec:8403
+#: .\sdk\compiler\libec\src\pass15.ec:11353
+#: .\sdk\compiler\libec\src\pass15.ec:11631
+#: .\sdk\compiler\libec\src\pass16.ec:195
+#: .\sdk\compiler\libec\src\pass16.ec:362
+#: .\sdk\compiler\libec\src\pass16.ec:442
+#: .\sdk\compiler\libec\src\pass16.ec:537
+#: .\sdk\compiler\libec\src\pass16.ec:894
+#: .\sdk\compiler\libec\src\pass16.ec:1805
+#: .\sdk\compiler\libec\src\pass16.ec:1832
+#: .\sdk\compiler\libec\src\pass16.ec:2038
+#: .\sdk\compiler\libec\src\pass16.ec:2040
+#: .\sdk\compiler\libec\src\pass2.ec:1042
+#: .\sdk\compiler\libec\src\pass2.ec:1055
+#: .\sdk\compiler\libec\src\pass2.ec:1088
+#: .\sdk\compiler\libec\src\pass2.ec:2145
+#: .\sdk\compiler\libec\src\shortcuts.ec:146
+msgid "0"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:838
+#: .\sdk\compiler\libec\src\dbpass.ec:995
+msgid "GetData"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:859
+#: .\sdk\compiler\libec\src\dbpass.ec:1024
+msgid "SetData"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:874
+#: .\sdk\compiler\libec\src\dbpass.ec:1128
+msgid "Field"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:881
+msgid "FindField"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:888
+msgid "AddField"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:906
+#: .\sdk\compiler\libec\src\dbpass.ec:1089
+msgid "field"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:910
+#: .\sdk\compiler\libec\src\dbpass.ec:1091
+msgid "order"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:910
+#: .\sdk\compiler\libec\src\dbpass.ec:1091
+msgid "ascending"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:914
+#: .\sdk\compiler\libec\src\dbpass.ec:1108
+#: .\sdk\compiler\libec\src\pass2.ec:1556
+msgid "Index"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:915
+#: .\sdk\compiler\libec\src\pass1.ec:655
+#: .\sdk\compiler\libec\src\pass1.ec:1656
+#: .\sdk\compiler\libec\src\pass1.ec:1663
+#: .\sdk\compiler\libec\src\pass15.ec:8404
+#: .\sdk\compiler\libec\src\pass2.ec:746
+#: .\sdk\compiler\libec\src\pass2.ec:749
+#: .\sdk\compiler\libec\src\pass2.ec:1204
+#: .\sdk\compiler\libec\src\pass2.ec:1450
+msgid "1"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:934
+#: .\sdk\compiler\libec\src\dbpass.ec:1131
+msgid "Id"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:941
+msgid "table"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:946
+msgid "nameField"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:978
+#: .\sdk\compiler\libec\src\dbpass.ec:995
+#: .\sdk\compiler\libec\src\dbpass.ec:1004
+#: .\sdk\compiler\libec\src\dbpass.ec:1020
+#: .\sdk\compiler\libec\src\dbpass.ec:1024
+#: .\sdk\compiler\libec\src\dbpass.ec:1030
+msgid "r"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\dbpass.ec:1073
+msgid "Multiple field index requires a name\n"
+msgstr "Multiple field index requires a name\n"
+
+#: .\sdk\compiler\libec\src\dbpass.ec:1091
+msgid "descending"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:7
+msgid "ast"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:8
+msgid "freeAst"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:9
+msgid "firstPass"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:10
+msgid "pass0"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:11
+msgid "pass1"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:12
+msgid "pass15"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:13
+msgid "pass16"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:14
+msgid "pass2"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:15
+msgid "pass3"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:16
+msgid "loadSymbols"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:17
+msgid "copy"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:18
+msgid "shortcuts"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:19
+msgid "output"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:20
+msgid "dbpass"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:1221
+#, c-format
+msgid ":%d:%d: error: "
+msgstr ":%d:%d: error: "
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:1261
+#, c-format
+msgid ":%d:%d: warning: "
+msgstr ":%d:%d: warning: "
+
+#: .\sdk\compiler\libec\src\ecdefs.ec:1280
+#: grammar.y:3048
+#: grammar.y:3049
+#: grammar.y:3050
+#: grammar.y:3051
+#: grammar.y:3052
+#: grammar.y:3053
+#: grammar.y:3054
+msgid "syntax error\n"
+msgstr "syntax error\n"
+
+#: .\sdk\compiler\libec\src\expression.ec:40
+#: .\sdk\compiler\libec\src\grammar.ec:40
+#: .\sdk\compiler\libec\src\type.ec:40
+msgid "yacc.c"
+msgstr ""
+
+#: expression.ec:786
+#: grammar.ec:1301
+#: type.ec:835
+msgid "$end"
+msgstr ""
+
+#: expression.ec:786
+#: grammar.ec:1301
+#: type.ec:835
+msgid "error"
+msgstr ""
+
+#: expression.ec:786
+#: grammar.ec:1301
+#: type.ec:835
+msgid "$undefined"
+msgstr ""
+
+#: expression.ec:786
+#: grammar.ec:1301
+#: type.ec:835
+msgid "IDENTIFIER"
+msgstr ""
+
+#: expression.ec:786
+#: grammar.ec:1301
+#: type.ec:835
+msgid "CONSTANT"
+msgstr ""
+
+#: expression.ec:787
+#: grammar.ec:1302
+#: type.ec:836
+msgid "STRING_LITERAL"
+msgstr ""
+
+#: expression.ec:787
+#: grammar.ec:1302
+#: type.ec:836
+msgid "SIZEOF"
+msgstr ""
+
+#: expression.ec:787
+#: grammar.ec:1302
+#: type.ec:836
+msgid "PTR_OP"
+msgstr ""
+
+#: expression.ec:787
+#: grammar.ec:1302
+#: type.ec:836
+msgid "INC_OP"
+msgstr ""
+
+#: expression.ec:787
+#: grammar.ec:1302
+#: type.ec:836
+msgid "DEC_OP"
+msgstr ""
+
+#: expression.ec:787
+#: grammar.ec:1302
+#: type.ec:836
+msgid "LEFT_OP"
+msgstr ""
+
+#: expression.ec:788
+#: grammar.ec:1303
+#: type.ec:837
+msgid "RIGHT_OP"
+msgstr ""
+
+#: expression.ec:788
+#: grammar.ec:1303
+#: type.ec:837
+msgid "LE_OP"
+msgstr ""
+
+#: expression.ec:788
+#: grammar.ec:1303
+#: type.ec:837
+msgid "GE_OP"
+msgstr ""
+
+#: expression.ec:788
+#: grammar.ec:1303
+#: type.ec:837
+msgid "EQ_OP"
+msgstr ""
+
+#: expression.ec:788
+#: grammar.ec:1303
+#: type.ec:837
+msgid "NE_OP"
+msgstr ""
+
+#: expression.ec:788
+#: grammar.ec:1303
+#: type.ec:837
+msgid "AND_OP"
+msgstr ""
+
+#: expression.ec:788
+#: grammar.ec:1303
+#: type.ec:837
+msgid "OR_OP"
+msgstr ""
+
+#: expression.ec:789
+#: grammar.ec:1304
+#: type.ec:838
+msgid "MUL_ASSIGN"
+msgstr ""
+
+#: expression.ec:789
+#: grammar.ec:1304
+#: type.ec:838
+msgid "DIV_ASSIGN"
+msgstr ""
+
+#: expression.ec:789
+#: grammar.ec:1304
+#: type.ec:838
+msgid "MOD_ASSIGN"
+msgstr ""
+
+#: expression.ec:789
+#: grammar.ec:1304
+#: type.ec:838
+msgid "ADD_ASSIGN"
+msgstr ""
+
+#: expression.ec:789
+#: grammar.ec:1304
+#: type.ec:838
+msgid "SUB_ASSIGN"
+msgstr ""
+
+#: expression.ec:790
+#: grammar.ec:1305
+#: type.ec:839
+msgid "LEFT_ASSIGN"
+msgstr ""
+
+#: expression.ec:790
+#: grammar.ec:1305
+#: type.ec:839
+msgid "RIGHT_ASSIGN"
+msgstr ""
+
+#: expression.ec:790
+#: grammar.ec:1305
+#: type.ec:839
+msgid "AND_ASSIGN"
+msgstr ""
+
+#: expression.ec:790
+#: grammar.ec:1305
+#: type.ec:839
+msgid "XOR_ASSIGN"
+msgstr ""
+
+#: expression.ec:790
+#: grammar.ec:1305
+#: type.ec:839
+msgid "OR_ASSIGN"
+msgstr ""
+
+#: expression.ec:791
+#: grammar.ec:1306
+#: type.ec:840
+msgid "TYPE_NAME"
+msgstr ""
+
+#: expression.ec:791
+#: grammar.ec:1306
+#: type.ec:840
+msgid "TYPEDEF"
+msgstr ""
+
+#: expression.ec:791
+#: grammar.ec:1306
+#: type.ec:840
+msgid "EXTERN"
+msgstr ""
+
+#: expression.ec:791
+#: grammar.ec:1306
+#: type.ec:840
+msgid "STATIC"
+msgstr ""
+
+#: expression.ec:791
+#: grammar.ec:1306
+#: type.ec:840
+msgid "AUTO"
+msgstr ""
+
+#: expression.ec:791
+#: grammar.ec:1306
+#: type.ec:840
+msgid "REGISTER"
+msgstr ""
+
+#: expression.ec:791
+#: grammar.ec:1306
+#: type.ec:840
+msgid "CHAR"
+msgstr ""
+
+#: expression.ec:792
+#: grammar.ec:1307
+#: type.ec:841
+msgid "SHORT"
+msgstr ""
+
+#: expression.ec:792
+#: grammar.ec:1307
+#: type.ec:841
+msgid "INT"
+msgstr ""
+
+#: expression.ec:792
+#: grammar.ec:1307
+#: type.ec:841
+msgid "UINT"
+msgstr ""
+
+#: expression.ec:792
+#: grammar.ec:1307
+#: type.ec:841
+msgid "INT64"
+msgstr ""
+
+#: expression.ec:792
+#: grammar.ec:1307
+#: type.ec:841
+msgid "LONG"
+msgstr ""
+
+#: expression.ec:792
+#: grammar.ec:1307
+#: type.ec:841
+msgid "SIGNED"
+msgstr ""
+
+#: expression.ec:792
+#: grammar.ec:1307
+#: type.ec:841
+msgid "UNSIGNED"
+msgstr ""
+
+#: expression.ec:792
+#: grammar.ec:1307
+#: type.ec:841
+msgid "FLOAT"
+msgstr ""
+
+#: expression.ec:793
+#: grammar.ec:1308
+#: type.ec:842
+msgid "DOUBLE"
+msgstr ""
+
+#: expression.ec:793
+#: grammar.ec:1308
+#: type.ec:842
+msgid "CONST"
+msgstr ""
+
+#: expression.ec:793
+#: grammar.ec:1308
+#: type.ec:842
+msgid "VOLATILE"
+msgstr ""
+
+#: expression.ec:793
+#: grammar.ec:1308
+#: type.ec:842
+msgid "VOID"
+msgstr ""
+
+#: expression.ec:793
+#: grammar.ec:1308
+#: type.ec:842
+msgid "VALIST"
+msgstr ""
+
+#: expression.ec:793
+#: grammar.ec:1308
+#: type.ec:842
+msgid "STRUCT"
+msgstr ""
+
+#: expression.ec:793
+#: grammar.ec:1308
+#: type.ec:842
+msgid "UNION"
+msgstr ""
+
+#: expression.ec:794
+#: grammar.ec:1309
+#: type.ec:843
+msgid "ENUM"
+msgstr ""
+
+#: expression.ec:794
+#: grammar.ec:1309
+#: type.ec:843
+msgid "ELLIPSIS"
+msgstr ""
+
+#: expression.ec:794
+#: grammar.ec:1309
+#: type.ec:843
+msgid "CASE"
+msgstr ""
+
+#: expression.ec:794
+#: grammar.ec:1309
+#: type.ec:843
+msgid "DEFAULT"
+msgstr ""
+
+#: expression.ec:794
+#: grammar.ec:1309
+#: type.ec:843
+msgid "IF"
+msgstr ""
+
+#: expression.ec:794
+#: grammar.ec:1309
+#: type.ec:843
+msgid "SWITCH"
+msgstr ""
+
+#: expression.ec:794
+#: grammar.ec:1309
+#: type.ec:843
+msgid "WHILE"
+msgstr ""
+
+#: expression.ec:794
+#: grammar.ec:1309
+#: type.ec:843
+msgid "DO"
+msgstr ""
+
+#: expression.ec:795
+#: grammar.ec:1310
+#: type.ec:844
+msgid "FOR"
+msgstr ""
+
+#: expression.ec:795
+#: grammar.ec:1310
+#: type.ec:844
+msgid "GOTO"
+msgstr ""
+
+#: expression.ec:795
+#: grammar.ec:1310
+#: type.ec:844
+msgid "CONTINUE"
+msgstr ""
+
+#: expression.ec:795
+#: grammar.ec:1310
+#: type.ec:844
+msgid "BREAK"
+msgstr ""
+
+#: expression.ec:795
+#: grammar.ec:1310
+#: type.ec:844
+msgid "RETURN"
+msgstr ""
+
+#: expression.ec:795
+#: grammar.ec:1310
+#: type.ec:844
+msgid "IFX"
+msgstr ""
+
+#: expression.ec:795
+#: grammar.ec:1310
+#: type.ec:844
+msgid "ELSE"
+msgstr ""
+
+#: expression.ec:795
+#: grammar.ec:1310
+#: type.ec:844
+msgid "CLASS"
+msgstr ""
+
+#: expression.ec:796
+#: grammar.ec:1311
+#: type.ec:845
+msgid "THISCLASS"
+msgstr ""
+
+#: expression.ec:796
+#: grammar.ec:1311
+#: type.ec:845
+msgid "CLASS_NAME"
+msgstr ""
+
+#: expression.ec:796
+#: grammar.ec:1311
+#: type.ec:845
+msgid "PROPERTY"
+msgstr ""
+
+#: expression.ec:796
+#: grammar.ec:1311
+#: type.ec:845
+msgid "SETPROP"
+msgstr ""
+
+#: expression.ec:796
+#: grammar.ec:1311
+#: type.ec:845
+msgid "GETPROP"
+msgstr ""
+
+#: expression.ec:796
+#: grammar.ec:1311
+#: type.ec:845
+msgid "NEWOP"
+msgstr ""
+
+#: expression.ec:797
+#: grammar.ec:1312
+#: type.ec:846
+msgid "RENEW"
+msgstr ""
+
+#: expression.ec:797
+#: grammar.ec:1312
+#: type.ec:846
+msgid "DELETE"
+msgstr ""
+
+#: expression.ec:797
+#: grammar.ec:1312
+#: type.ec:846
+msgid "EXT_DECL"
+msgstr ""
+
+#: expression.ec:797
+#: grammar.ec:1312
+#: type.ec:846
+msgid "EXT_STORAGE"
+msgstr ""
+
+#: expression.ec:797
+#: grammar.ec:1312
+#: type.ec:846
+msgid "IMPORT"
+msgstr ""
+
+#: expression.ec:797
+#: grammar.ec:1312
+#: type.ec:846
+msgid "DEFINE"
+msgstr ""
+
+#: expression.ec:798
+#: grammar.ec:1313
+#: type.ec:847
+msgid "VIRTUAL"
+msgstr ""
+
+#: expression.ec:798
+#: grammar.ec:1313
+#: type.ec:847
+msgid "EXT_ATTRIB"
+msgstr ""
+
+#: expression.ec:798
+#: grammar.ec:1313
+#: type.ec:847
+msgid "PUBLIC"
+msgstr ""
+
+#: expression.ec:798
+#: grammar.ec:1313
+#: type.ec:847
+msgid "PRIVATE"
+msgstr ""
+
+#: expression.ec:798
+#: grammar.ec:1313
+#: type.ec:847
+msgid "TYPED_OBJECT"
+msgstr ""
+
+#: expression.ec:799
+#: grammar.ec:1314
+#: type.ec:848
+msgid "ANY_OBJECT"
+msgstr ""
+
+#: expression.ec:799
+#: grammar.ec:1314
+#: type.ec:848
+msgid "_INCREF"
+msgstr ""
+
+#: expression.ec:799
+#: grammar.ec:1314
+#: type.ec:848
+msgid "EXTENSION"
+msgstr ""
+
+#: expression.ec:799
+#: grammar.ec:1314
+#: type.ec:848
+msgid "ASM"
+msgstr ""
+
+#: expression.ec:799
+#: grammar.ec:1314
+#: type.ec:848
+msgid "TYPEOF"
+msgstr ""
+
+#: expression.ec:799
+#: grammar.ec:1314
+#: type.ec:848
+msgid "WATCH"
+msgstr ""
+
+#: expression.ec:800
+#: grammar.ec:1315
+#: type.ec:849
+msgid "STOPWATCHING"
+msgstr ""
+
+#: expression.ec:800
+#: grammar.ec:1315
+#: type.ec:849
+msgid "FIREWATCHERS"
+msgstr ""
+
+#: expression.ec:800
+#: grammar.ec:1315
+#: type.ec:849
+msgid "WATCHABLE"
+msgstr ""
+
+#: expression.ec:800
+#: grammar.ec:1315
+#: type.ec:849
+msgid "CLASS_DESIGNER"
+msgstr ""
+
+#: expression.ec:801
+#: grammar.ec:1316
+#: type.ec:850
+msgid "CLASS_NO_EXPANSION"
+msgstr ""
+
+#: expression.ec:801
+#: grammar.ec:1316
+#: type.ec:850
+msgid "CLASS_FIXED"
+msgstr ""
+
+#: expression.ec:801
+#: grammar.ec:1316
+#: type.ec:850
+msgid "ISPROPSET"
+msgstr ""
+
+#: expression.ec:802
+#: grammar.ec:1317
+#: type.ec:851
+msgid "CLASS_DEFAULT_PROPERTY"
+msgstr ""
+
+#: expression.ec:802
+#: grammar.ec:1317
+#: type.ec:851
+msgid "PROPERTY_CATEGORY"
+msgstr ""
+
+#: expression.ec:802
+#: grammar.ec:1317
+#: type.ec:851
+msgid "CLASS_DATA"
+msgstr ""
+
+#: expression.ec:803
+#: grammar.ec:1318
+#: type.ec:852
+msgid "CLASS_PROPERTY"
+msgstr ""
+
+#: expression.ec:803
+#: grammar.ec:1318
+#: type.ec:852
+msgid "SUBCLASS"
+msgstr ""
+
+#: expression.ec:803
+#: grammar.ec:1318
+#: type.ec:852
+msgid "NAMESPACE"
+msgstr ""
+
+#: expression.ec:803
+#: grammar.ec:1318
+#: type.ec:852
+msgid "NEW0OP"
+msgstr ""
+
+#: expression.ec:803
+#: grammar.ec:1318
+#: type.ec:852
+msgid "RENEW0"
+msgstr ""
+
+#: expression.ec:803
+#: grammar.ec:1318
+#: type.ec:852
+msgid "VAARG"
+msgstr ""
+
+#: expression.ec:804
+#: grammar.ec:1319
+#: type.ec:853
+msgid "DBTABLE"
+msgstr ""
+
+#: expression.ec:804
+#: grammar.ec:1319
+#: type.ec:853
+msgid "DBFIELD"
+msgstr ""
+
+#: expression.ec:804
+#: grammar.ec:1319
+#: type.ec:853
+msgid "DBINDEX"
+msgstr ""
+
+#: expression.ec:804
+#: grammar.ec:1319
+#: type.ec:853
+msgid "DATABASE_OPEN"
+msgstr ""
+
+#: expression.ec:804
+#: grammar.ec:1320
+#: type.ec:854
+msgid "'('"
+msgstr ""
+
+#: expression.ec:804
+#: grammar.ec:1320
+#: type.ec:854
+msgid "')'"
+msgstr ""
+
+#: expression.ec:804
+#: grammar.ec:1321
+#: type.ec:854
+msgid "'['"
+msgstr ""
+
+#: expression.ec:805
+#: grammar.ec:1321
+#: type.ec:854
+msgid "']'"
+msgstr ""
+
+#: expression.ec:805
+#: grammar.ec:1320
+#: type.ec:854
+msgid "'.'"
+msgstr ""
+
+#: expression.ec:805
+#: grammar.ec:1320
+#: type.ec:854
+msgid "','"
+msgstr ""
+
+#: expression.ec:805
+#: grammar.ec:1321
+#: type.ec:854
+msgid "'&'"
+msgstr ""
+
+#: expression.ec:805
+#: grammar.ec:1319
+#: type.ec:853
+msgid "'*'"
+msgstr ""
+
+#: expression.ec:805
+#: grammar.ec:1321
+#: type.ec:854
+msgid "'+'"
+msgstr ""
+
+#: expression.ec:805
+#: grammar.ec:1321
+#: type.ec:854
+msgid "'-'"
+msgstr ""
+
+#: expression.ec:805
+#: grammar.ec:1320
+#: type.ec:854
+msgid "'~'"
+msgstr ""
+
+#: expression.ec:805
+#: grammar.ec:1321
+#: type.ec:855
+msgid "'!'"
+msgstr ""
+
+#: expression.ec:805
+#: grammar.ec:1321
+#: type.ec:855
+msgid "'/'"
+msgstr ""
+
+#: expression.ec:806
+#: grammar.ec:1321
+#: type.ec:855
+msgid "'%'"
+msgstr ""
+
+#: expression.ec:806
+#: grammar.ec:1319
+#: type.ec:853
+msgid "'<'"
+msgstr ""
+
+#: expression.ec:806
+#: grammar.ec:1319
+#: type.ec:853
+msgid "'>'"
+msgstr ""
+
+#: expression.ec:806
+#: grammar.ec:1321
+#: type.ec:855
+msgid "'^'"
+msgstr ""
+
+#: expression.ec:806
+#: grammar.ec:1321
+#: type.ec:855
+msgid "'|'"
+msgstr ""
+
+#: expression.ec:806
+#: grammar.ec:1322
+#: type.ec:855
+msgid "'?'"
+msgstr ""
+
+#: expression.ec:806
+#: grammar.ec:1320
+#: type.ec:855
+msgid "':'"
+msgstr ""
+
+#: expression.ec:806
+#: grammar.ec:1320
+#: type.ec:855
+msgid "'='"
+msgstr ""
+
+#: expression.ec:806
+#: grammar.ec:1320
+#: type.ec:855
+msgid "';'"
+msgstr ""
+
+#: expression.ec:806
+#: grammar.ec:1320
+#: type.ec:855
+msgid "'{'"
+msgstr ""
+
+#: expression.ec:807
+#: grammar.ec:1320
+#: type.ec:856
+msgid "'}'"
+msgstr ""
+
+#: expression.ec:807
+#: grammar.ec:1322
+#: type.ec:856
+msgid "$accept"
+msgstr ""
+
+#: expression.ec:807
+#: grammar.ec:1357
+#: .\sdk\compiler\libec\src\pass1.ec:1516
+#: type.ec:860
+msgid "identifier"
+msgstr ""
+
+#: expression.ec:807
+#: grammar.ec:1357
+#: type.ec:861
+msgid "primary_expression"
+msgstr ""
+
+#: expression.ec:808
+#: grammar.ec:1358
+#: type.ec:861
+msgid "simple_primary_expression"
+msgstr ""
+
+#: expression.ec:808
+#: grammar.ec:1358
+#: type.ec:862
+msgid "anon_instantiation_expression"
+msgstr ""
+
+#: expression.ec:809
+#: grammar.ec:1360
+#: type.ec:861
+msgid "postfix_expression"
+msgstr ""
+
+#: expression.ec:809
+#: grammar.ec:1360
+#: type.ec:862
+msgid "simple_postfix_expression"
+msgstr ""
+
+#: expression.ec:810
+#: grammar.ec:1361
+#: type.ec:863
+msgid "argument_expression_list"
+msgstr ""
+
+#: expression.ec:810
+#: grammar.ec:1362
+#: type.ec:863
+msgid "common_unary_expression"
+msgstr ""
+
+#: expression.ec:811
+#: grammar.ec:1362
+#: type.ec:864
+msgid "unary_expression"
+msgstr ""
+
+#: expression.ec:811
+#: grammar.ec:1362
+#: type.ec:864
+msgid "simple_unary_expression"
+msgstr ""
+
+#: expression.ec:811
+#: grammar.ec:1363
+#: type.ec:864
+msgid "unary_operator"
+msgstr ""
+
+#: expression.ec:812
+#: grammar.ec:1363
+#: type.ec:865
+msgid "cast_expression"
+msgstr ""
+
+#: expression.ec:812
+#: grammar.ec:1363
+#: type.ec:865
+msgid "multiplicative_expression"
+msgstr ""
+
+#: expression.ec:812
+#: grammar.ec:1364
+#: type.ec:865
+msgid "additive_expression"
+msgstr ""
+
+#: expression.ec:813
+#: grammar.ec:1364
+#: type.ec:866
+msgid "shift_expression"
+msgstr ""
+
+#: expression.ec:813
+#: grammar.ec:1365
+#: type.ec:867
+msgid "relational_expression"
+msgstr ""
+
+#: expression.ec:813
+#: grammar.ec:1366
+#: type.ec:867
+msgid "equality_expression"
+msgstr ""
+
+#: expression.ec:814
+#: grammar.ec:1366
+#: type.ec:867
+msgid "and_expression"
+msgstr ""
+
+#: expression.ec:814
+#: grammar.ec:1366
+#: type.ec:868
+msgid "exclusive_or_expression"
+msgstr ""
+
+#: expression.ec:814
+#: grammar.ec:1367
+#: type.ec:868
+msgid "inclusive_or_expression"
+msgstr ""
+
+#: expression.ec:815
+#: grammar.ec:1367
+#: type.ec:869
+msgid "logical_and_expression"
+msgstr ""
+
+#: expression.ec:815
+#: grammar.ec:1368
+#: type.ec:869
+msgid "logical_or_expression"
+msgstr ""
+
+#: expression.ec:816
+#: grammar.ec:1368
+#: type.ec:870
+msgid "conditional_expression"
+msgstr ""
+
+#: expression.ec:816
+#: grammar.ec:1369
+#: type.ec:870
+msgid "assignment_expression"
+msgstr ""
+
+#: expression.ec:816
+#: grammar.ec:1369
+#: type.ec:870
+msgid "assignment_operator"
+msgstr ""
+
+#: expression.ec:817
+#: grammar.ec:1369
+#: .\sdk\compiler\libec\src\pass1.ec:1516
+#: .\sdk\compiler\libec\src\pass1.ec:1601
+#: type.ec:871
+msgid "expression"
+msgstr ""
+
+#: expression.ec:817
+#: grammar.ec:1380
+#: type.ec:871
+msgid "constant_expression"
+msgstr ""
+
+#: expression.ec:817
+#: grammar.ec:1413
+#: type.ec:871
+msgid "declaration"
+msgstr ""
+
+#: expression.ec:818
+#: grammar.ec:1392
+#: type.ec:872
+msgid "specifier_qualifier_list"
+msgstr ""
+
+#: expression.ec:818
+#: grammar.ec:1393
+#: type.ec:873
+msgid "declaration_specifiers"
+msgstr ""
+
+#: expression.ec:819
+#: grammar.ec:1396
+#: type.ec:874
+msgid "property_specifiers"
+msgstr ""
+
+#: expression.ec:819
+#: grammar.ec:1396
+#: type.ec:875
+msgid "renew_specifiers"
+msgstr ""
+
+#: expression.ec:819
+#: grammar.ec:1407
+#: type.ec:875
+msgid "init_declarator_list"
+msgstr ""
+
+#: expression.ec:820
+#: grammar.ec:1406
+#: type.ec:875
+msgid "init_declarator"
+msgstr ""
+
+#: expression.ec:820
+#: grammar.ec:1381
+#: type.ec:876
+msgid "storage_class_specifier"
+msgstr ""
+
+#: expression.ec:820
+#: grammar.ec:1400
+#: type.ec:876
+msgid "ext_decl"
+msgstr ""
+
+#: expression.ec:820
+#: grammar.ec:1400
+#: type.ec:876
+msgid "ext_attrib"
+msgstr ""
+
+#: expression.ec:821
+#: grammar.ec:1386
+#: type.ec:877
+msgid "type_qualifier"
+msgstr ""
+
+#: expression.ec:821
+#: grammar.ec:1322
+#: .\sdk\compiler\libec\src\pass1.ec:1516
+#: .\sdk\compiler\libec\src\pass15.ec:7727
+#: .\sdk\compiler\libec\src\pass15.ec:7730
+#: .\sdk\compiler\libec\src\pass15.ec:7802
+#: .\sdk\compiler\libec\src\pass15.ec:7805
+#: .\sdk\compiler\libec\src\pass15.ec:9812
+#: .\sdk\compiler\libec\src\pass2.ec:1112
+#: .\sdk\compiler\libec\src\pass2.ec:1114
+#: .\sdk\compiler\libec\src\pass2.ec:1143
+#: .\sdk\compiler\libec\src\pass2.ec:1188
+#: .\sdk\compiler\libec\src\pass2.ec:1196
+#: .\sdk\compiler\libec\src\pass2.ec:1198
+#: .\sdk\compiler\libec\src\pass2.ec:1326
+#: .\sdk\compiler\libec\src\pass2.ec:1328
+#: .\sdk\compiler\libec\src\pass2.ec:1330
+#: .\sdk\compiler\libec\src\pass2.ec:1433
+#: .\sdk\compiler\libec\src\pass2.ec:1442
+#: .\sdk\compiler\libec\src\pass2.ec:1444
+#: .\sdk\compiler\libec\src\pass2.ec:2709
+#: .\sdk\compiler\libec\src\pass2.ec:2713
+#: type.ec:856
+msgid "type"
+msgstr ""
+
+#: expression.ec:821
+#: grammar.ec:1323
+#: type.ec:857
+msgid "strict_type"
+msgstr ""
+
+#: expression.ec:821
+#: grammar.ec:1386
+#: type.ec:877
+msgid "type_specifier"
+msgstr ""
+
+#: expression.ec:822
+#: grammar.ec:1387
+#: type.ec:877
+msgid "strict_type_specifier"
+msgstr ""
+
+#: expression.ec:822
+#: grammar.ec:1388
+#: type.ec:878
+msgid "struct_or_union_specifier_compound"
+msgstr ""
+
+#: expression.ec:823
+#: grammar.ec:1390
+#: type.ec:879
+msgid "struct_or_union_specifier_nocompound"
+msgstr ""
+
+#: expression.ec:823
+#: grammar.ec:1391
+#: type.ec:882
+msgid "struct_or_union"
+msgstr ""
+
+#: expression.ec:824
+#: grammar.ec:1350
+#: type.ec:882
+msgid "struct_declaration_list"
+msgstr ""
+
+#: expression.ec:824
+#: grammar.ec:1343
+#: type.ec:883
+msgid "default_property"
+msgstr ""
+
+#: expression.ec:824
+#: grammar.ec:1344
+#: type.ec:883
+msgid "default_property_list"
+msgstr ""
+
+#: expression.ec:825
+#: grammar.ec:1349
+#: type.ec:884
+msgid "struct_declaration"
+msgstr ""
+
+#: expression.ec:825
+#: grammar.ec:1387
+#: type.ec:884
+msgid "struct_declarator_list"
+msgstr ""
+
+#: expression.ec:826
+#: grammar.ec:1387
+#: type.ec:884
+msgid "struct_declarator"
+msgstr ""
+
+#: expression.ec:826
+#: grammar.ec:1383
+#: type.ec:885
+msgid "enum_specifier_nocompound"
+msgstr ""
+
+#: expression.ec:827
+#: grammar.ec:1383
+#: type.ec:885
+msgid "enum_specifier_compound"
+msgstr ""
+
+#: expression.ec:827
+#: grammar.ec:1382
+#: type.ec:886
+msgid "enumerator_list"
+msgstr ""
+
+#: expression.ec:827
+#: grammar.ec:1382
+#: type.ec:886
+msgid "enumerator"
+msgstr ""
+
+#: expression.ec:828
+#: grammar.ec:1401
+#: type.ec:886
+msgid "direct_abstract_declarator"
+msgstr ""
+
+#: expression.ec:828
+#: grammar.ec:1401
+#: type.ec:887
+msgid "direct_abstract_declarator_noarray"
+msgstr ""
+
+#: expression.ec:829
+#: grammar.ec:1402
+#: type.ec:887
+msgid "abstract_declarator"
+msgstr ""
+
+#: expression.ec:829
+#: grammar.ec:1402
+#: type.ec:888
+msgid "abstract_declarator_noarray"
+msgstr ""
+
+#: expression.ec:829
+#: grammar.ec:1403
+#: type.ec:888
+msgid "declarator"
+msgstr ""
+
+#: expression.ec:830
+#: grammar.ec:1398
+#: type.ec:889
+msgid "direct_declarator_nofunction"
+msgstr ""
+
+#: expression.ec:830
+#: grammar.ec:1403
+#: type.ec:889
+msgid "declarator_function"
+msgstr ""
+
+#: expression.ec:831
+#: grammar.ec:1400
+#: type.ec:891
+msgid "direct_declarator"
+msgstr ""
+
+#: expression.ec:831
+#: grammar.ec:1398
+#: type.ec:890
+msgid "direct_declarator_function_start"
+msgstr ""
+
+#: expression.ec:832
+#: grammar.ec:1399
+#: type.ec:890
+msgid "direct_declarator_function"
+msgstr ""
+
+#: expression.ec:832
+#: grammar.ec:1386
+#: type.ec:891
+msgid "type_qualifier_list"
+msgstr ""
+
+#: expression.ec:832
+#: grammar.ec:1402
+#: type.ec:892
+msgid "pointer"
+msgstr ""
+
+#: expression.ec:833
+#: grammar.ec:1410
+#: type.ec:892
+msgid "parameter_type_list"
+msgstr ""
+
+#: expression.ec:833
+#: grammar.ec:1409
+#: type.ec:892
+msgid "parameter_list"
+msgstr ""
+
+#: expression.ec:833
+#: grammar.ec:1408
+#: type.ec:893
+msgid "parameter_declaration"
+msgstr ""
+
+#: expression.ec:834
+#: grammar.ec:1397
+#: type.ec:893
+msgid "identifier_list"
+msgstr ""
+
+#: expression.ec:834
+#: grammar.ec:1407
+#: type.ec:893
+msgid "type_name"
+msgstr ""
+
+#: expression.ec:834
+#: grammar.ec:1404
+#: type.ec:894
+msgid "initializer"
+msgstr ""
+
+#: expression.ec:834
+#: grammar.ec:1405
+#: type.ec:894
+msgid "initializer_condition"
+msgstr ""
+
+#: expression.ec:835
+#: grammar.ec:1406
+#: type.ec:895
+msgid "initializer_list"
+msgstr ""
+
+#: expression.ec:835
+#: grammar.ec:1410
+#: type.ec:895
+msgid "statement"
+msgstr ""
+
+#: expression.ec:835
+#: grammar.ec:1412
+#: type.ec:895
+msgid "labeled_statement"
+msgstr ""
+
+#: expression.ec:835
+#: grammar.ec:1415
+#: type.ec:895
+msgid "declaration_list"
+msgstr ""
+
+#: expression.ec:836
+#: grammar.ec:1415
+#: type.ec:896
+msgid "statement_list"
+msgstr ""
+
+#: expression.ec:836
+#: grammar.ec:1416
+#: type.ec:896
+msgid "compound_inside"
+msgstr ""
+
+#: expression.ec:836
+#: grammar.ec:1417
+#: type.ec:896
+msgid "compound_start"
+msgstr ""
+
+#: expression.ec:837
+#: grammar.ec:1417
+#: type.ec:897
+msgid "compound_statement"
+msgstr ""
+
+#: expression.ec:837
+#: grammar.ec:1418
+#: type.ec:897
+msgid "expression_statement"
+msgstr ""
+
+#: expression.ec:837
+#: grammar.ec:1418
+#: type.ec:897
+msgid "selection_statement"
+msgstr ""
+
+#: expression.ec:838
+#: grammar.ec:1419
+#: type.ec:898
+msgid "iteration_statement"
+msgstr ""
+
+#: expression.ec:838
+#: grammar.ec:1420
+#: type.ec:898
+msgid "jump_statement"
+msgstr ""
+
+#: expression.ec:838
+#: grammar.ec:1339
+#: type.ec:898
+msgid "instantiation_named"
+msgstr ""
+
+#: expression.ec:839
+#: grammar.ec:1342
+#: type.ec:899
+msgid "instantiation_unnamed"
+msgstr ""
+
+#: expression.ec:839
+#: grammar.ec:1343
+#: type.ec:900
+msgid "instantiation_anon"
+msgstr ""
+
+#: expression.ec:840
+#: grammar.ec:1324
+#: type.ec:857
+msgid "class_function_definition_start"
+msgstr ""
+
+#: expression.ec:841
+#: grammar.ec:1325
+#: type.ec:858
+msgid "constructor_function_definition_start"
+msgstr ""
+
+#: expression.ec:842
+#: grammar.ec:1326
+#: type.ec:859
+msgid "destructor_function_definition_start"
+msgstr ""
+
+#: expression.ec:843
+#: grammar.ec:1327
+#: type.ec:860
+msgid "virtual_class_function_definition_start"
+msgstr ""
+
+#: expression.ec:843
+#: grammar.ec:1330
+#: type.ec:900
+msgid "class_function_definition"
+msgstr ""
+
+#: expression.ec:844
+#: grammar.ec:1331
+#: type.ec:901
+msgid "instance_class_function_definition_start"
+msgstr ""
+
+#: expression.ec:845
+#: grammar.ec:1333
+#: type.ec:902
+msgid "instance_class_function_definition"
+msgstr ""
+
+#: expression.ec:845
+#: grammar.ec:1334
+#: type.ec:902
+msgid "data_member_initialization"
+msgstr ""
+
+#: expression.ec:846
+#: grammar.ec:1335
+#: type.ec:903
+msgid "data_member_initialization_list"
+msgstr ""
+
+#: expression.ec:847
+#: grammar.ec:1337
+#: type.ec:904
+msgid "data_member_initialization_list_coloned"
+msgstr ""
+
+#: expression.ec:848
+#: grammar.ec:1338
+#: type.ec:905
+msgid "members_initialization_list_coloned"
+msgstr ""
+
+#: expression.ec:848
+#: grammar.ec:1338
+#: type.ec:905
+msgid "members_initialization_list"
+msgstr ""
+
+#: expression.ec:849
+msgid "expression_unit"
+msgstr ""
+
+#: expression.ec:2571
+#: grammar.ec:9721
+#: type.ec:2927
+msgid "syntax error: cannot back up"
+msgstr "syntax error: cannot back up"
+
+#: expression.ec:2614
+#: grammar.ec:9764
+#: type.ec:2970
+#, c-format
+msgid "%d.%d-%d.%d"
+msgstr ""
+
+#: expression.ec:2649
+#: expression.ec:2703
+#: grammar.ec:9799
+#: grammar.ec:9853
+#: type.ec:3005
+#: type.ec:3059
+#, c-format
+msgid "%s "
+msgstr ""
+
+#: expression.ec:2671
+#: grammar.ec:9821
+#: type.ec:3027
+msgid "Stack now"
+msgstr "Stack now"
+
+#: expression.ec:2673
+#: grammar.ec:9823
+#: type.ec:3029
+#, c-format
+msgid " %d"
+msgstr ""
+
+#: expression.ec:2699
+#: grammar.ec:9849
+#: type.ec:3055
+#, c-format
+msgid "Reducing stack by rule %d (line %u), "
+msgstr "Reducing stack by rule %d (line %u), "
+
+#: expression.ec:2704
+#: grammar.ec:9854
+#: type.ec:3060
+#, c-format
+msgid "-> %s\n"
+msgstr ""
+
+#: expression.ec:2819
+#: grammar.ec:9969
+#: type.ec:3175
+#, c-format
+msgid "token %s ("
+msgstr "token %s ("
+
+#: expression.ec:2821
+#: grammar.ec:9971
+#: type.ec:3177
+#, c-format
+msgid "nterm %s ("
+msgstr "nterm %s ("
+
+#: expression.ec:2824
+#: grammar.ec:9974
+#: type.ec:3180
+#, c-format
+msgid ": "
+msgstr ""
+
+#: expression.ec:2835
+#: grammar.ec:9985
+#: grammar.y:2728
+#: .\sdk\compiler\libec\src\output.ec:124
+#: .\sdk\compiler\libec\src\output.ec:130
+#: .\sdk\compiler\libec\src\output.ec:214
+#: .\sdk\compiler\libec\src\output.ec:245
+#: .\sdk\compiler\libec\src\output.ec:263
+#: .\sdk\compiler\libec\src\output.ec:269
+#: .\sdk\compiler\libec\src\output.ec:276
+#: .\sdk\compiler\libec\src\output.ec:299
+#: .\sdk\compiler\libec\src\output.ec:324
+#: .\sdk\compiler\libec\src\output.ec:743
+#: .\sdk\compiler\libec\src\output.ec:795
+#: .\sdk\compiler\libec\src\output.ec:974
+#: .\sdk\compiler\libec\src\output.ec:979
+#: .\sdk\compiler\libec\src\pass15.ec:6270
+#: .\sdk\compiler\libec\src\pass15.ec:6351
+#: .\sdk\compiler\libec\src\pass15.ec:6387
+#: .\sdk\compiler\libec\src\pass15.ec:6402
+#: type.ec:3191
+msgid ")"
+msgstr ""
+
+#: expression.ec:2860
+#: grammar.ec:10010
+#: type.ec:3216
+msgid "Deleting"
+msgstr "Deleting"
+
+#: expression.ec:2972
+#: grammar.ec:10917
+#: type.ec:3328
+msgid "Starting parse\n"
+msgstr "Starting parse\n"
+
+#: expression.ec:3029
+#: expression.ec:5219
+#: grammar.ec:10974
+#: grammar.ec:17705
+#: type.ec:3385
+#: type.ec:6183
+msgid "parser stack overflow"
+msgstr "parser stack overflow"
+
+#: expression.ec:3069
+#: grammar.ec:11014
+#: type.ec:3425
+#, c-format
+msgid "Stack size increased to %lu\n"
+msgstr "Stack size increased to %lu\n"
+
+#: expression.ec:3076
+#: grammar.ec:11021
+#: type.ec:3432
+#, c-format
+msgid "Entering state %d\n"
+msgstr "Entering state %d\n"
+
+#: expression.ec:3100
+#: grammar.ec:11045
+#: type.ec:3456
+msgid "Reading a token: "
+msgstr "Reading a token: "
+
+#: expression.ec:3107
+#: grammar.ec:11052
+#: type.ec:3463
+msgid "Now at end of input.\n"
+msgstr "Now at end of input.\n"
+
+#: expression.ec:3112
+#: grammar.ec:11057
+#: type.ec:3468
+msgid "Next token is"
+msgstr "Next token is"
+
+#: expression.ec:3133
+#: expression.ec:5191
+#: grammar.ec:11078
+#: grammar.ec:17677
+#: type.ec:3489
+#: type.ec:6155
+msgid "Shifting"
+msgstr "Shifting"
+
+#: expression.ec:5052
+#: expression.ec:5074
+#: grammar.ec:17538
+#: grammar.ec:17560
+#: type.ec:6016
+#: type.ec:6038
+msgid ", expecting "
+msgstr ", expecting "
+
+#: expression.ec:5064
+#: expression.ec:5069
+#: grammar.ec:17550
+#: grammar.ec:17555
+#: type.ec:6028
+#: type.ec:6033
+msgid "syntax error, unexpected "
+msgstr "syntax error, unexpected "
+
+#: expression.ec:5080
+#: grammar.ec:17566
+#: type.ec:6044
+msgid " or "
+msgstr " or "
+
+#: expression.ec:5087
+#: grammar.ec:17573
+#: type.ec:6051
+msgid "syntax error; also virtual memory exhausted"
+msgstr "syntax error; also virtual memory exhausted"
+
+#: expression.ec:5091
+#: grammar.ec:17577
+#: type.ec:6055
+msgid "syntax error"
+msgstr "syntax error"
+
+#: expression.ec:5112
+#: expression.ec:5173
+#: grammar.ec:17598
+#: grammar.ec:17659
+#: type.ec:6076
+#: type.ec:6137
+msgid "Error: popping"
+msgstr "Error: popping"
+
+#: expression.ec:5118
+#: grammar.ec:17604
+#: type.ec:6082
+msgid "Error: discarding"
+msgstr "Error: discarding"
+
+#: expression.ec:5208
+#: grammar.ec:17694
+#: type.ec:6172
+msgid "Error: discarding lookahead"
+msgstr "Error: discarding lookahead"
+
+#: .\sdk\compiler\libec\src\firstPass.ec:79
+#: .\sdk\compiler\libec\src\firstPass.ec:104
+#: .\sdk\compiler\libec\src\firstPass.ec:165
+#: .\sdk\compiler\libec\src\firstPass.ec:207
+#, c-format
+msgid "Member with same name already exists %s in class %s\n"
+msgstr "Member with same name already exists %s in class %s\n"
+
+#: .\sdk\compiler\libec\src\firstPass.ec:97
+#: .\sdk\compiler\libec\src\firstPass.ec:158
+#: .\sdk\compiler\libec\src\firstPass.ec:200
+#, c-format
+msgid "Member with same name already exists %s in member %s\n"
+msgstr "Member with same name already exists %s in member %s\n"
+
+#: .\sdk\compiler\libec\src\firstPass.ec:310
+#, c-format
+msgid "redefinition of class %s\n"
+msgstr "redefinition of class %s\n"
+
+#: .\sdk\compiler\libec\src\firstPass.ec:444
+#, c-format
+msgid "Redefinition of method %s in class %s\n"
+msgstr "Redefinition of method %s in class %s\n"
+
+#: grammar.ec:1322
+#: type.ec:856
+msgid "guess_type"
+msgstr ""
+
+#: grammar.ec:1322
+#: type.ec:857
+msgid "base_strict_type"
+msgstr ""
+
+#: grammar.ec:1323
+msgid "base_strict_type_name"
+msgstr ""
+
+#: grammar.ec:1328
+msgid "class_function_definition_start_error"
+msgstr ""
+
+#: grammar.ec:1329
+msgid "virtual_class_function_definition_start_error"
+msgstr ""
+
+#: grammar.ec:1330
+msgid "class_function_definition_error"
+msgstr ""
+
+#: grammar.ec:1332
+msgid "instance_class_function_definition_start_error"
+msgstr ""
+
+#: grammar.ec:1334
+msgid "instance_class_function_definition_error"
+msgstr ""
+
+#: grammar.ec:1335
+msgid "data_member_initialization_error"
+msgstr ""
+
+#: grammar.ec:1336
+msgid "data_member_initialization_list_error"
+msgstr ""
+
+#: grammar.ec:1339
+msgid "members_initialization_list_error"
+msgstr ""
+
+#: grammar.ec:1340
+msgid "instantiation_named_error"
+msgstr ""
+
+#: grammar.ec:1340
+#: type.ec:899
+msgid "guess_instantiation_named"
+msgstr ""
+
+#: grammar.ec:1341
+msgid "guess_instantiation_named_error"
+msgstr ""
+
+#: grammar.ec:1341
+msgid "external_guess_instantiation_named"
+msgstr ""
+
+#: grammar.ec:1342
+msgid "instantiation_unnamed_error"
+msgstr ""
+
+#: grammar.ec:1343
+msgid "instantiation_anon_error"
+msgstr ""
+
+#: grammar.ec:1344
+msgid "default_property_error"
+msgstr ""
+
+#: grammar.ec:1345
+msgid "default_property_list_error"
+msgstr ""
+
+#: grammar.ec:1345
+msgid "property_start"
+msgstr ""
+
+#: grammar.ec:1345
+msgid "property_body"
+msgstr ""
+
+#: grammar.ec:1346
+msgid "class_property_start"
+msgstr ""
+
+#: grammar.ec:1346
+msgid "class_property_body"
+msgstr ""
+
+#: grammar.ec:1347
+msgid "class_property"
+msgstr ""
+
+#: grammar.ec:1347
+msgid "watch_property_list"
+msgstr ""
+
+#: grammar.ec:1347
+msgid "property_watch"
+msgstr ""
+
+#: grammar.ec:1348
+msgid "property_watch_list"
+msgstr ""
+
+#: grammar.ec:1348
+msgid "self_watch_definition"
+msgstr ""
+
+#: grammar.ec:1348
+msgid "watch_definition"
+msgstr ""
+
+#: grammar.ec:1349
+msgid "stopwatching"
+msgstr ""
+
+#: grammar.ec:1349
+msgid "firewatchers"
+msgstr ""
+
+#: grammar.ec:1350
+msgid "struct_declaration_error"
+msgstr ""
+
+#: grammar.ec:1351
+msgid "struct_declaration_list_error"
+msgstr ""
+
+#: grammar.ec:1351
+#: type.ec:879
+msgid "template_datatype"
+msgstr ""
+
+#: grammar.ec:1352
+#: type.ec:880
+msgid "template_type_argument"
+msgstr ""
+
+#: grammar.ec:1352
+msgid "template_type_parameter"
+msgstr ""
+
+#: grammar.ec:1353
+#: type.ec:880
+msgid "template_identifier_argument"
+msgstr ""
+
+#: grammar.ec:1353
+msgid "template_identifier_parameter"
+msgstr ""
+
+#: grammar.ec:1354
+#: type.ec:881
+msgid "template_expression_argument"
+msgstr ""
+
+#: grammar.ec:1354
+msgid "template_expression_parameter"
+msgstr ""
+
+#: grammar.ec:1355
+msgid "template_parameter"
+msgstr ""
+
+#: grammar.ec:1355
+msgid "template_parameters_list"
+msgstr ""
+
+#: grammar.ec:1355
+#: type.ec:881
+msgid "template_argument"
+msgstr ""
+
+#: grammar.ec:1356
+#: type.ec:882
+msgid "template_arguments_list"
+msgstr ""
+
+#: grammar.ec:1356
+msgid "class_entry"
+msgstr ""
+
+#: grammar.ec:1356
+msgid "class_decl"
+msgstr ""
+
+#: grammar.ec:1357
+msgid "class_head"
+msgstr ""
+
+#: grammar.ec:1357
+msgid "class_error"
+msgstr ""
+
+#: grammar.ec:1359
+msgid "anon_instantiation_expression_error"
+msgstr ""
+
+#: grammar.ec:1359
+msgid "primary_expression_error"
+msgstr ""
+
+#: grammar.ec:1361
+msgid "argument_expression_list_error"
+msgstr ""
+
+#: grammar.ec:1365
+#: type.ec:866
+msgid "relational_expression_smaller_than"
+msgstr ""
+
+#: grammar.ec:1370
+msgid "expression_anon_inst"
+msgstr ""
+
+#: grammar.ec:1370
+msgid "postfix_expression_error"
+msgstr ""
+
+#: grammar.ec:1371
+msgid "simple_postfix_expression_error"
+msgstr ""
+
+#: grammar.ec:1371
+msgid "common_unary_expression_error"
+msgstr ""
+
+#: grammar.ec:1372
+msgid "unary_expression_error"
+msgstr ""
+
+#: grammar.ec:1372
+msgid "simple_unary_expression_error"
+msgstr ""
+
+#: grammar.ec:1373
+msgid "cast_expression_error"
+msgstr ""
+
+#: grammar.ec:1373
+msgid "multiplicative_expression_error"
+msgstr ""
+
+#: grammar.ec:1374
+msgid "additive_expression_error"
+msgstr ""
+
+#: grammar.ec:1374
+msgid "shift_expression_error"
+msgstr ""
+
+#: grammar.ec:1375
+msgid "relational_expression_error"
+msgstr ""
+
+#: grammar.ec:1375
+msgid "equality_expression_error"
+msgstr ""
+
+#: grammar.ec:1376
+msgid "and_expression_error"
+msgstr ""
+
+#: grammar.ec:1376
+msgid "exclusive_or_expression_error"
+msgstr ""
+
+#: grammar.ec:1377
+msgid "inclusive_or_expression_error"
+msgstr ""
+
+#: grammar.ec:1377
+msgid "logical_and_expression_error"
+msgstr ""
+
+#: grammar.ec:1378
+msgid "logical_or_expression_error"
+msgstr ""
+
+#: grammar.ec:1378
+msgid "conditional_expression_error"
+msgstr ""
+
+#: grammar.ec:1379
+msgid "assignment_expression_error"
+msgstr ""
+
+#: grammar.ec:1379
+msgid "expression_error"
+msgstr ""
+
+#: grammar.ec:1380
+msgid "expression_anon_inst_error"
+msgstr ""
+
+#: grammar.ec:1381
+msgid "constant_expression_error"
+msgstr ""
+
+#: grammar.ec:1382
+msgid "external_storage_class_specifier"
+msgstr ""
+
+#: grammar.ec:1383
+msgid "enum_specifier"
+msgstr ""
+
+#: grammar.ec:1384
+msgid "enum_specifier_compound_error"
+msgstr ""
+
+#: grammar.ec:1384
+msgid "enum_decl"
+msgstr ""
+
+#: grammar.ec:1384
+msgid "enum_class"
+msgstr ""
+
+#: grammar.ec:1385
+msgid "enum_class_error"
+msgstr ""
+
+#: grammar.ec:1385
+msgid "class_specifier"
+msgstr ""
+
+#: grammar.ec:1385
+msgid "class_specifier_error"
+msgstr ""
+
+#: grammar.ec:1386
+#: type.ec:876
+msgid "ext_storage"
+msgstr ""
+
+#: grammar.ec:1388
+msgid "struct_entry"
+msgstr ""
+
+#: grammar.ec:1389
+msgid "struct_or_union_specifier_compound_error"
+msgstr ""
+
+#: grammar.ec:1390
+msgid "struct_decl"
+msgstr ""
+
+#: grammar.ec:1390
+msgid "struct_head"
+msgstr ""
+
+#: grammar.ec:1391
+msgid "struct_class"
+msgstr ""
+
+#: grammar.ec:1391
+msgid "struct_class_error"
+msgstr ""
+
+#: grammar.ec:1392
+#: type.ec:872
+msgid "guess_specifier_qualifier_list"
+msgstr ""
+
+#: grammar.ec:1393
+#: type.ec:873
+msgid "guess_declaration_specifiers"
+msgstr ""
+
+#: grammar.ec:1394
+msgid "external_guess_declaration_specifiers"
+msgstr ""
+
+#: grammar.ec:1395
+msgid "external_guess_declaration_specifiers_error"
+msgstr ""
+
+#: grammar.ec:1395
+msgid "_inheritance_specifiers"
+msgstr ""
+
+#: grammar.ec:1396
+msgid "inheritance_specifiers"
+msgstr ""
+
+#: grammar.ec:1397
+msgid "new_specifiers"
+msgstr ""
+
+#: grammar.ec:1397
+msgid "identifier_list_error"
+msgstr ""
+
+#: grammar.ec:1399
+msgid "direct_declarator_function_error"
+msgstr ""
+
+#: grammar.ec:1403
+msgid "declarator_function_error"
+msgstr ""
+
+#: grammar.ec:1404
+#: type.ec:891
+msgid "declarator_nofunction"
+msgstr ""
+
+#: grammar.ec:1404
+msgid "initializer_error"
+msgstr ""
+
+#: grammar.ec:1405
+msgid "initializer_condition_error"
+msgstr ""
+
+#: grammar.ec:1406
+msgid "init_declarator_error"
+msgstr ""
+
+#: grammar.ec:1407
+msgid "init_declarator_list_error"
+msgstr ""
+
+#: grammar.ec:1408
+#: type.ec:894
+msgid "guess_type_name"
+msgstr ""
+
+#: grammar.ec:1409
+msgid "parameter_declaration_error"
+msgstr ""
+
+#: grammar.ec:1409
+msgid "parameter_list_error"
+msgstr ""
+
+#: grammar.ec:1410
+msgid "parameter_type_list_error"
+msgstr ""
+
+#: grammar.ec:1411
+msgid "statement_error"
+msgstr ""
+
+#: grammar.ec:1411
+msgid "asm_field"
+msgstr ""
+
+#: grammar.ec:1411
+msgid "asm_field_list"
+msgstr ""
+
+#: grammar.ec:1411
+msgid "asm_statement"
+msgstr ""
+
+#: grammar.ec:1412
+msgid "labeled_statement_error"
+msgstr ""
+
+#: grammar.ec:1412
+msgid "declaration_mode"
+msgstr ""
+
+#: grammar.ec:1413
+msgid "member_access"
+msgstr ""
+
+#: grammar.ec:1413
+msgid "external_guess_declaration"
+msgstr ""
+
+#: grammar.ec:1414
+msgid "external_guess_declaration_error"
+msgstr ""
+
+#: grammar.ec:1414
+msgid "declaration_error"
+msgstr ""
+
+#: grammar.ec:1415
+msgid "declaration_list_error"
+msgstr ""
+
+#: grammar.ec:1416
+msgid "statement_list_error"
+msgstr ""
+
+#: grammar.ec:1416
+msgid "compound_inside_error"
+msgstr ""
+
+#: grammar.ec:1417
+msgid "compound_statement_error"
+msgstr ""
+
+#: grammar.ec:1419
+msgid "selection_statement_error"
+msgstr ""
+
+#: grammar.ec:1420
+msgid "iteration_statement_error"
+msgstr ""
+
+#: grammar.ec:1420
+msgid "jump_statement_error"
+msgstr ""
+
+#: grammar.ec:1421
+msgid "function_definition"
+msgstr ""
+
+#: grammar.ec:1421
+msgid "function_definition_error"
+msgstr ""
+
+#: grammar.ec:1421
+msgid "string_literal"
+msgstr ""
+
+#: grammar.ec:1422
+msgid "external_declaration"
+msgstr ""
+
+#: grammar.ec:1422
+msgid "external_declaration_error"
+msgstr ""
+
+#: grammar.ec:1423
+msgid "translation_unit_error"
+msgstr ""
+
+#: grammar.ec:1423
+msgid "translation_unit"
+msgstr ""
+
+#: grammar.ec:1423
+msgid "thefile"
+msgstr ""
+
+#: grammar.ec:1424
+msgid "dbtable_definition"
+msgstr ""
+
+#: grammar.ec:1424
+msgid "dbfield_entry"
+msgstr ""
+
+#: grammar.ec:1424
+msgid "dbindex_item"
+msgstr ""
+
+#: grammar.ec:1425
+msgid "dbindex_item_list"
+msgstr ""
+
+#: grammar.ec:1425
+msgid "dbindex_entry"
+msgstr ""
+
+#: grammar.ec:1425
+msgid "dbfield_definition_list"
+msgstr ""
+
+#: grammar.ec:1426
+msgid "database_open"
+msgstr ""
+
+#: grammar.ec:1426
+msgid "dbfield"
+msgstr ""
+
+#: grammar.ec:1426
+msgid "dbindex"
+msgstr ""
+
+#: grammar.ec:1426
+msgid "dbtable"
+msgstr ""
+
+#: grammar.y:379
+#: type.y:281
+#, c-format
+msgid "Not a type: %s\n"
+msgstr "Not a type: %s\n"
+
+#: grammar.y:2726
+msgid "__asm__("
+msgstr ""
+
+#: grammar.y:3335
+#: grammar.y:3345
+msgid "remote"
+msgstr ""
+
+#: lexer.ec:1209
+msgid "C"
+msgstr ""
+
+#: lexer.ec:1298
+#: lexer.ec:1303
+msgid "input in flex scanner failed"
+msgstr "input in flex scanner failed"
+
+#: lexer.ec:2411
+msgid "fatal flex scanner internal error--no action found"
+msgstr "fatal flex scanner internal error--no action found"
+
+#: lexer.ec:2434
+msgid "fatal flex scanner internal error--end of buffer missed"
+msgstr "fatal flex scanner internal error--end of buffer missed"
+
+#: lexer.ec:2478
+msgid "input buffer overflow, can't enlarge buffer because scanner uses REJECT"
+msgstr "input buffer overflow, can't enlarge buffer because scanner uses REJECT"
+
+#: lexer.ec:2507
+msgid "fatal error - scanner input buffer overflow"
+msgstr "fatal error - scanner input buffer overflow"
+
+#: lexer.ec:2652
+msgid "flex scanner push-back overflow"
+msgstr "flex scanner push-back overflow"
+
+#: lexer.ec:2808
+#: lexer.ec:2817
+msgid "out of dynamic memory in yy_create_buffer()"
+msgstr "out of dynamic memory in yy_create_buffer()"
+
+#: lexer.ec:2929
+msgid "out of dynamic memory in yy_scan_buffer()"
+msgstr "out of dynamic memory in yy_scan_buffer()"
+
+#: lexer.ec:2983
+msgid "out of dynamic memory in yy_scan_bytes()"
+msgstr "out of dynamic memory in yy_scan_bytes()"
+
+#: lexer.ec:2992
+msgid "bad buffer in yy_scan_bytes()"
+msgstr "bad buffer in yy_scan_bytes()"
+
+#: lexer.ec:3028
+msgid "out of memory expanding start-condition stack"
+msgstr "out of memory expanding start-condition stack"
+
+#: lexer.ec:3042
+msgid "start-condition stack underflow"
+msgstr "start-condition stack underflow"
+
+#: lexer.l:390
+#: lexer.l:497
+msgid "h"
+msgstr ""
+
+#: lexer.l:444
+msgid "include"
+msgstr ""
+
+#: lexer.l:475
+#, c-format
+msgid "Includes nested too deeply"
+msgstr "Includes nested too deeply"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:58
+msgid "[Size]"
+msgstr "[Size]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:64
+msgid "[Pos]"
+msgstr "[Pos]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:74
+#: .\sdk\compiler\libec\src\loadSymbols.ec:331
+#: .\sdk\compiler\libec\src\loadSymbols.ec:371
+#: .\sdk\compiler\libec\src\loadSymbols.ec:425
+#: .\sdk\compiler\libec\src\loadSymbols.ec:589
+#: .\sdk\compiler\libec\src\loadSymbols.ec:610
+msgid "[Type]"
+msgstr "[Type]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:97
+#: .\sdk\compiler\libec\src\loadSymbols.ec:190
+msgid "[Struct]"
+msgstr "[Struct]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:97
+#: .\sdk\compiler\libec\src\loadSymbols.ec:99
+msgid "[Union]"
+msgstr "[Union]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:136
+msgid "instance.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:136
+msgid "BinaryTree.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:137
+msgid "dataTypes.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:137
+msgid "OldList.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:138
+msgid "String.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:138
+msgid "BTNode.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:139
+msgid "Array.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:139
+msgid "AVLTree.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:140
+msgid "BuiltInContainer.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:140
+msgid "Container.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:141
+msgid "CustomAVLTree.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:141
+msgid "LinkList.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:142
+msgid "List.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:142
+msgid "Map.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:143
+msgid "Mutex.sym"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:155
+msgid "[Global Instance]"
+msgstr "[Global Instance]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:157
+msgid "[Defined Classes]"
+msgstr "[Defined Classes]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:180
+msgid "[Fixed]"
+msgstr "[Fixed]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:182
+msgid "[No Expansion]"
+msgstr "[No Expansion]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:184
+#: .\sdk\compiler\libec\src\loadSymbols.ec:394
+msgid "[Watchable]"
+msgstr "[Watchable]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:186
+msgid "[Enum]"
+msgstr "[Enum]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:188
+msgid "[Bit]"
+msgstr "[Bit]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:192
+msgid "[Unit]"
+msgstr "[Unit]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:194
+msgid "[NoHead]"
+msgstr "[NoHead]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:196
+msgid "[Base]"
+msgstr "[Base]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:196
+#: .\sdk\compiler\libec\src\loadSymbols.ec:198
+msgid "[Private Base]"
+msgstr "[Private Base]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:211
+msgid "DCOMClientObject"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:223
+#: .\sdk\compiler\libec\src\pass0.ec:814
+msgid ".main.ec"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:290
+msgid "[Enum Values]"
+msgstr "[Enum Values]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:319
+msgid "[Defined Methods]"
+msgstr "[Defined Methods]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:358
+msgid "[Defined Properties]"
+msgstr "[Defined Properties]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:400
+msgid "[Conversion]"
+msgstr "[Conversion]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:414
+msgid "[Defined Class Properties]"
+msgstr "[Defined Class Properties]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:447
+msgid "[Defined Data Members]"
+msgstr "[Defined Data Members]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:451
+msgid "[Template Parameters]"
+msgstr "[Template Parameters]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:465
+msgid "[Expression]"
+msgstr "[Expression]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:466
+msgid "[Identifier]"
+msgstr "[Identifier]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:560
+msgid "[Defined Expressions]"
+msgstr "[Defined Expressions]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:568
+msgid "[Value]"
+msgstr "[Value]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:581
+msgid "[Defined Functions]"
+msgstr "[Defined Functions]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:602
+msgid "[Defined Data]"
+msgstr "[Defined Data]"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:716
+#, c-format
+msgid "Couldn't open %s\n"
+msgstr "Couldn't open %s\n"
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:749
+msgid "dll"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:828
+msgid "Debug"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\loadSymbols.ec:965
+#, c-format
+msgid "Redefinition of %s (defining as %s, already defined as %s)\n"
+msgstr "重复定义%s (定义%s, 已经存在定义%s)\n"
+
+#: .\sdk\compiler\libec\src\output.ec:42
+msgid "(null identifier)"
+msgstr "(空标识符)"
+
+#: .\sdk\compiler\libec\src\output.ec:49
+msgid "++"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:50
+msgid "--"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:51
+msgid "sizeof "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:52
+msgid "<<"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:53
+msgid ">>"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:54
+msgid "<="
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:55
+msgid ">="
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:56
+msgid "=="
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:57
+msgid "!="
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:58
+msgid "&&"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:59
+msgid "||"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:60
+msgid "*="
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:61
+msgid "/="
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:62
+msgid "%="
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:63
+msgid "+="
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:64
+msgid "-="
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:65
+msgid "<<="
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:66
+msgid ">>="
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:67
+msgid "&="
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:68
+msgid "^="
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:69
+msgid "|="
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:74
+msgid "delete "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:91
+#: .\sdk\compiler\libec\src\output.ec:96
+#: .\sdk\compiler\libec\src\output.ec:117
+#: .\sdk\compiler\libec\src\output.ec:121
+#: .\sdk\compiler\libec\src\output.ec:134
+#: .\sdk\compiler\libec\src\output.ec:142
+#: .\sdk\compiler\libec\src\output.ec:151
+#: .\sdk\compiler\libec\src\output.ec:160
+#: .\sdk\compiler\libec\src\output.ec:189
+#: .\sdk\compiler\libec\src\output.ec:195
+#: .\sdk\compiler\libec\src\output.ec:468
+#: .\sdk\compiler\libec\src\output.ec:521
+#: .\sdk\compiler\libec\src\output.ec:523
+#: .\sdk\compiler\libec\src\output.ec:699
+#: .\sdk\compiler\libec\src\output.ec:703
+#: .\sdk\compiler\libec\src\output.ec:733
+#: .\sdk\compiler\libec\src\output.ec:747
+#: .\sdk\compiler\libec\src\output.ec:752
+#: .\sdk\compiler\libec\src\output.ec:802
+#: .\sdk\compiler\libec\src\output.ec:930
+#: .\sdk\compiler\libec\src\output.ec:954
+#: .\sdk\compiler\libec\src\output.ec:1127
+#: .\sdk\compiler\libec\src\output.ec:1132
+#: .\sdk\compiler\libec\src\output.ec:1149
+#: .\sdk\compiler\libec\src\output.ec:1155
+#: .\sdk\compiler\libec\src\output.ec:1165
+#: .\sdk\compiler\libec\src\output.ec:1200
+#: .\sdk\compiler\libec\src\output.ec:1202
+#: .\sdk\compiler\libec\src\output.ec:1306
+#: .\sdk\compiler\libec\src\output.ec:1345
+#: .\sdk\compiler\libec\src\output.ec:1347
+#: .\sdk\compiler\libec\src\pass15.ec:6236
+#: .\sdk\compiler\libec\src\pass15.ec:6369
+msgid " "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:101
+#: .\sdk\compiler\libec\src\pass15.ec:6343
+msgid "..."
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:110
+msgid "class("
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:128
+#: .\sdk\compiler\libec\src\output.ec:204
+#: .\sdk\compiler\libec\src\output.ec:266
+msgid "__extension__ ("
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:133
+msgid "new "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:136
+#: .\sdk\compiler\libec\src\output.ec:144
+#: .\sdk\compiler\libec\src\output.ec:153
+#: .\sdk\compiler\libec\src\output.ec:162
+#: .\sdk\compiler\libec\src\output.ec:222
+#: .\sdk\compiler\libec\src\output.ec:302
+#: .\sdk\compiler\libec\src\output.ec:760
+#: .\sdk\compiler\libec\src\pass15.ec:6311
+msgid "["
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:138
+#: .\sdk\compiler\libec\src\output.ec:146
+#: .\sdk\compiler\libec\src\output.ec:155
+#: .\sdk\compiler\libec\src\output.ec:164
+#: .\sdk\compiler\libec\src\output.ec:229
+#: .\sdk\compiler\libec\src\output.ec:312
+#: .\sdk\compiler\libec\src\output.ec:777
+#: .\sdk\compiler\libec\src\pass15.ec:6317
+msgid "]"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:141
+msgid "new0 "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:149
+msgid "renew "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:158
+msgid "renew0 "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:205
+#: .\sdk\compiler\libec\src\output.ec:235
+#: .\sdk\compiler\libec\src\output.ec:274
+#: .\sdk\compiler\libec\src\output.ec:322
+#: .\sdk\compiler\libec\src\output.ec:645
+#: .\sdk\compiler\libec\src\output.ec:741
+#: .\sdk\compiler\libec\src\output.ec:785
+#: .\sdk\compiler\libec\src\pass15.ec:6264
+#: .\sdk\compiler\libec\src\pass15.ec:6385
+#: .\sdk\compiler\libec\src\pass15.ec:6396
+msgid "("
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:257
+msgid "->"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:261
+msgid "sizeof("
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:282
+msgid " ? "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:291
+#: .\sdk\compiler\libec\src\output.ec:723
+#: .\sdk\compiler\libec\src\output.ec:728
+#: .\sdk\compiler\libec\src\output.ec:1422
+msgid " : "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:295
+msgid "__builtin_va_arg("
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:362
+#: .\sdk\compiler\libec\src\output.ec:423
+#: .\sdk\compiler\libec\src\output.ec:532
+#: .\sdk\compiler\libec\src\output.ec:688
+#: .\sdk\compiler\libec\src\output.ec:1029
+#: .\sdk\compiler\libec\src\output.ec:1045
+#: .\sdk\compiler\libec\src\output.ec:1115
+#: .\sdk\compiler\libec\src\output.ec:1183
+#, c-format
+msgid ""
+"\n"
+"#line %d \"%s\"\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:370
+#: .\sdk\compiler\libec\src\output.ec:379
+msgid ":\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:377
+msgid "case "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:427
+#: .\sdk\compiler\libec\src\output.ec:634
+#: .\sdk\compiler\libec\src\output.ec:967
+#: .\sdk\compiler\libec\src\output.ec:1334
+#: .\sdk\compiler\libec\src\pass1.ec:1090
+#: .\sdk\compiler\libec\src\pass1.ec:1120
+#: .\sdk\compiler\libec\src\pass15.ec:6197
+msgid "}"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:441
+#: .\sdk\compiler\libec\src\output.ec:551
+#: .\sdk\compiler\libec\src\output.ec:602
+#: .\sdk\compiler\libec\src\output.ec:623
+#: .\sdk\compiler\libec\src\output.ec:1376
+#: .\sdk\compiler\libec\src\output.ec:1441
+msgid ";"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:447
+msgid "if("
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:453
+#: .\sdk\compiler\libec\src\output.ec:482
+#: .\sdk\compiler\libec\src\output.ec:496
+#: .\sdk\compiler\libec\src\output.ec:542
+msgid ")\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:461
+msgid "else"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:476
+msgid "switch("
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:490
+#: .\sdk\compiler\libec\src\output.ec:507
+msgid "while("
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:504
+msgid "do\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:513
+msgid ");"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:519
+msgid "for("
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:549
+msgid "goto "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:555
+msgid "continue;"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:558
+msgid "break;"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:567
+msgid "{ "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:579
+#: .\sdk\compiler\libec\src\output.ec:585
+#: .\sdk\compiler\libec\src\output.ec:590
+#: .\sdk\compiler\libec\src\output.ec:596
+msgid "__ecereReturnVal"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:607
+msgid "return "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:612
+msgid "__ecereReturnVal = "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:628
+msgid " __ecereNameSpace__ecere__com__MemoryGuard_PopLoc();"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:630
+msgid "return __ecereReturnVal;"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:632
+msgid "return;"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:642
+msgid "__asm__ "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:650
+#: .\sdk\compiler\libec\src\output.ec:662
+#: .\sdk\compiler\libec\src\output.ec:674
+msgid ":"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:655
+#: .\sdk\compiler\libec\src\output.ec:667
+#: .\sdk\compiler\libec\src\output.ec:677
+msgid ","
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:695
+msgid "*"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:774
+#: .\sdk\compiler\libec\src\pass15.ec:734
+msgid "enumSize"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:828
+msgid "typedef"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:831
+msgid "extern"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:834
+msgid "static"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:837
+msgid "auto"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:840
+msgid "register"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:845
+msgid "const"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:848
+msgid "volatile"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:853
+#: .\sdk\compiler\libec\src\pass15.ec:6167
+msgid "void"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:856
+#: .\sdk\compiler\libec\src\pass15.ec:6170
+#: .\sdk\compiler\libec\src\pass15.ec:11615
+#: .\sdk\compiler\libec\src\pass2.ec:2625
+#: .\sdk\compiler\libec\src\pass3.ec:154
+msgid "char"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:859
+#: .\sdk\compiler\libec\src\pass15.ec:6171
+msgid "short"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:862
+#: .\sdk\compiler\libec\src\pass15.ec:1856
+#: .\sdk\compiler\libec\src\pass15.ec:3334
+#: .\sdk\compiler\libec\src\pass15.ec:3852
+#: .\sdk\compiler\libec\src\pass15.ec:6168
+#: .\sdk\compiler\libec\src\pass15.ec:6350
+#: .\sdk\compiler\libec\src\pass15.ec:6500
+#: .\sdk\compiler\libec\src\pass15.ec:7736
+#: .\sdk\compiler\libec\src\pass15.ec:8291
+#: .\sdk\compiler\libec\src\pass15.ec:8405
+#: .\sdk\compiler\libec\src\pass15.ec:8949
+#: .\sdk\compiler\libec\src\pass15.ec:9154
+#: .\sdk\compiler\libec\src\pass2.ec:1678
+#: .\sdk\compiler\libec\src\pass2.ec:2108
+msgid "int"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:870
+msgid "long long"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:873
+#: .\sdk\compiler\libec\src\pass15.ec:6360
+msgid "__builtin_va_list"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:876
+msgid "long"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:879
+#: .\sdk\compiler\libec\src\pass15.ec:6172
+msgid "float"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:882
+#: .\sdk\compiler\libec\src\pass15.ec:6173
+msgid "double"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:885
+msgid "signed"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:888
+msgid "unsigned"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:900
+#: .\sdk\compiler\libec\src\pass15.ec:6357
+#: .\sdk\compiler\libec\src\pass15.ec:8452
+#: .\sdk\compiler\libec\src\pass15.ec:8873
+msgid "thisclass"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:919
+#: .\sdk\compiler\libec\src\pass15.ec:9419
+msgid "(null)"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:936
+#: .\sdk\compiler\libec\src\output.ec:960
+#: .\sdk\compiler\libec\src\output.ec:1021
+#: .\sdk\compiler\libec\src\output.ec:1311
+#: .\sdk\compiler\libec\src\output.ec:1431
+msgid ""
+"\n"
+"{\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:943
+#: .\sdk\compiler\libec\src\output.ec:1038
+msgid ""
+"\n"
+"}"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:951
+msgid "struct"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:951
+msgid "union"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:972
+msgid "__typeof("
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:977
+#: .\sdk\compiler\libec\src\pass15.ec:6349
+msgid "subclass("
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:1237
+#, c-format
+msgid "   __ecereNameSpace__ecere__com__MemoryGuard_PushLoc(\"%s:%s\");\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:1243
+msgid "   __ecereNameSpace__ecere__com__MemoryGuard_PopLoc();\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:1315
+msgid " { "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:1317
+msgid "{"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:1332
+msgid " }"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\output.ec:1416
+msgid "class "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:74
+#: .\sdk\compiler\libec\src\pass3.ec:415
+msgid "__ecereNameSpace__"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:153
+#, c-format
+msgid "Non-static %s making use of a static class\n"
+msgstr "非静态%s 使用静态类\n"
+
+#: .\sdk\compiler\libec\src\pass0.ec:160
+#, c-format
+msgid "Public %s making use of a private class\n"
+msgstr "公共的%s使用私有类\n"
+
+#: .\sdk\compiler\libec\src\pass0.ec:178
+#: .\sdk\compiler\libec\src\pass0.ec:287
+msgid "define"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:397
+#: .\sdk\compiler\libec\src\pass0.ec:423
+msgid "class data member"
+msgstr "类数据成员"
+
+#: .\sdk\compiler\libec\src\pass0.ec:431
+msgid "class member instance"
+msgstr "类成员实例"
+
+#: .\sdk\compiler\libec\src\pass0.ec:570
+#, c-format
+msgid "Couldn't find member %s to override\n"
+msgstr "不能找到成员%s去继承\n"
+
+#: .\sdk\compiler\libec\src\pass0.ec:697
+#, c-format
+msgid "redefinition of destructor for class %s\n"
+msgstr "重复定义析构类%s\n"
+
+#: .\sdk\compiler\libec\src\pass0.ec:720
+#, c-format
+msgid "redefinition of constructor for class %s\n"
+msgstr "重复定义构造类%s\n"
+
+#: .\sdk\compiler\libec\src\pass0.ec:788
+#: .\sdk\compiler\libec\src\pass1.ec:1182
+#: .\sdk\compiler\libec\src\pass15.ec:9040
+#: .\sdk\compiler\libec\src\pass15.ec:9693
+msgid "__ecereClassData_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:816
+#: .\sdk\compiler\libec\src\pass1.ec:273
+#: .\sdk\compiler\libec\src\pass15.ec:10314
+#: .\sdk\compiler\libec\src\pass15.ec:11512
+#: .\sdk\compiler\libec\src\pass16.ec:726
+#: .\sdk\compiler\libec\src\pass2.ec:1652
+#: .\sdk\compiler\libec\src\pass3.ec:344
+msgid "__ecereNameSpace__ecere__com__Class"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:835
+msgid "__ecereDestructor_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:933
+msgid "__ecereConstructor_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:973
+#: .\sdk\compiler\libec\src\pass16.ec:2139
+msgid "ecere::com::eInstance_IncRef"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:1114
+#: .\sdk\compiler\libec\src\pass0.ec:1116
+msgid "class property"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:1129
+#: .\sdk\compiler\libec\src\pass0.ec:1178
+#: .\sdk\compiler\libec\src\pass0.ec:1237
+#: .\sdk\compiler\libec\src\pass0.ec:1282
+#: .\sdk\compiler\libec\src\pass1.ec:381
+#: .\sdk\compiler\libec\src\pass1.ec:394
+#: .\sdk\compiler\libec\src\pass1.ec:422
+#: .\sdk\compiler\libec\src\pass1.ec:462
+#: .\sdk\compiler\libec\src\pass1.ec:475
+#: .\sdk\compiler\libec\src\pass1.ec:501
+#: .\sdk\compiler\libec\src\pass1.ec:530
+#: .\sdk\compiler\libec\src\pass1.ec:806
+#: .\sdk\compiler\libec\src\pass15.ec:1154
+#: .\sdk\compiler\libec\src\pass15.ec:1160
+#: .\sdk\compiler\libec\src\pass15.ec:1166
+#: .\sdk\compiler\libec\src\pass15.ec:10487
+#: .\sdk\compiler\libec\src\pass15.ec:11209
+#: .\sdk\compiler\libec\src\pass15.ec:11371
+msgid "__ecereProp_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:1131
+#: .\sdk\compiler\libec\src\pass0.ec:1347
+#: .\sdk\compiler\libec\src\pass1.ec:396
+#: .\sdk\compiler\libec\src\pass1.ec:477
+#: .\sdk\compiler\libec\src\pass1.ec:864
+#: .\sdk\compiler\libec\src\pass15.ec:1162
+msgid "_Get_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:1180
+#: .\sdk\compiler\libec\src\pass0.ec:1388
+#: .\sdk\compiler\libec\src\pass1.ec:383
+#: .\sdk\compiler\libec\src\pass1.ec:464
+#: .\sdk\compiler\libec\src\pass1.ec:852
+#: .\sdk\compiler\libec\src\pass15.ec:1156
+msgid "_Set_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:1239
+#: .\sdk\compiler\libec\src\pass1.ec:532
+msgid "_IsSet_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:1281
+#: .\sdk\compiler\libec\src\pass15.ec:1418
+msgid "Property"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:1294
+#: .\sdk\compiler\libec\src\pass1.ec:508
+#: .\sdk\compiler\libec\src\pass1.ec:813
+#: .\sdk\compiler\libec\src\pass15.ec:1427
+#: .\sdk\compiler\libec\src\pass15.ec:10494
+msgid "__ecerePropM_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:1329
+#: .\sdk\compiler\libec\src\pass0.ec:1331
+msgid "classwide property"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:1345
+#: .\sdk\compiler\libec\src\pass0.ec:1386
+#, c-format
+msgid "class::__ecereClassProp_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:1445
+msgid "__ecereMethod___ecereNameSpace__"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:1451
+msgid "class method"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:1457
+#: .\sdk\compiler\libec\src\pass2.ec:266
+#: .\sdk\compiler\libec\src\pass2.ec:1748
+#: .\sdk\compiler\libec\src\pass2.ec:2474
+msgid "__ecereMethod_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass0.ec:1543
+#: .\sdk\compiler\libec\src\pass0.ec:1545
+msgid "function"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:141
+#, c-format
+msgid "Incompatible virtual function %s\n"
+msgstr "不兼容虚函数%s\n"
+
+#: .\sdk\compiler\libec\src\pass1.ec:277
+#: .\sdk\compiler\libec\src\pass15.ec:2913
+#: .\sdk\compiler\libec\src\pass15.ec:3530
+#: .\sdk\compiler\libec\src\pass15.ec:5215
+#: .\sdk\compiler\libec\src\pass15.ec:6667
+#: .\sdk\compiler\libec\src\pass15.ec:6679
+#: .\sdk\compiler\libec\src\pass15.ec:6971
+#: .\sdk\compiler\libec\src\pass15.ec:8944
+#: .\sdk\compiler\libec\src\pass15.ec:9038
+#: .\sdk\compiler\libec\src\pass15.ec:9680
+#: .\sdk\compiler\libec\src\pass15.ec:11893
+#: .\sdk\compiler\libec\src\pass2.ec:101
+#: .\sdk\compiler\libec\src\pass2.ec:1804
+#: .\sdk\compiler\libec\src\pass2.ec:1905
+#: .\sdk\compiler\libec\src\pass2.ec:1922
+#: .\sdk\compiler\libec\src\pass2.ec:2174
+#: .\sdk\compiler\libec\src\pass3.ec:68
+#: .\sdk\compiler\libec\src\pass3.ec:397
+msgid "ecere::com::Class"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:285
+#: .\sdk\compiler\libec\src\pass1.ec:323
+#: .\sdk\compiler\libec\src\pass1.ec:557
+#: .\sdk\compiler\libec\src\pass1.ec:1215
+#: .\sdk\compiler\libec\src\pass1.ec:1260
+#: .\sdk\compiler\libec\src\pass1.ec:1771
+#: .\sdk\compiler\libec\src\pass1.ec:1868
+msgid "module"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:293
+#, c-format
+msgid "__ecereRegisterModule_%s"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:331
+#, c-format
+msgid "__ecereUnregisterModule_%s"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:411
+#: .\sdk\compiler\libec\src\pass1.ec:490
+#: .\sdk\compiler\libec\src\pass1.ec:606
+#: .\sdk\compiler\libec\src\pass1.ec:709
+#: .\sdk\compiler\libec\src\pass1.ec:746
+#: .\sdk\compiler\libec\src\pass1.ec:1221
+#: .\sdk\compiler\libec\src\pass1.ec:1368
+#: .\sdk\compiler\libec\src\pass1.ec:1446
+#: .\sdk\compiler\libec\src\pass1.ec:1777
+#: .\sdk\compiler\libec\src\pass1.ec:1874
+msgid "staticAccess"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:431
+#: .\sdk\compiler\libec\src\pass1.ec:519
+#: .\sdk\compiler\libec\src\pass1.ec:523
+msgid "eClass_AddProperty"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:538
+msgid "IsSet"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:545
+msgid "category"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:557
+#: .\sdk\compiler\libec\src\pass1.ec:558
+#: .\sdk\compiler\libec\src\pass1.ec:1260
+#: .\sdk\compiler\libec\src\pass1.ec:1261
+msgid "application"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:618
+msgid "eClass_AddBitMember"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:638
+#, c-format
+msgid "\"__ecerePrivateData%d\""
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:644
+#, c-format
+msgid "\"byte[%d]\""
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:661
+#: .\sdk\compiler\libec\src\pass1.ec:721
+msgid "eMember_AddDataMember"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:661
+#: .\sdk\compiler\libec\src\pass1.ec:721
+msgid "eClass_AddDataMember"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:734
+#, c-format
+msgid "dataMember%d"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:740
+msgid "unionMember"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:740
+msgid "structMember"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:757
+msgid "DataMember"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:759
+msgid "eMember_New"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:774
+msgid "eMember_AddMember"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:777
+msgid "eClass_AddMember"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:822
+msgid "eProperty_Watchable"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:850
+#: .\sdk\compiler\libec\src\pass1.ec:862
+msgid "__ecereClassProp_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:873
+msgid "eClass_AddClassProperty"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:967
+#, c-format
+msgid "__ecerePropertySelfWatcher_%d"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1032
+msgid "eProperty_SelfWatch"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1035
+#: .\sdk\compiler\libec\src\pass15.ec:11223
+#: .\sdk\compiler\libec\src\pass15.ec:11295
+#: .\sdk\compiler\libec\src\pass15.ec:11384
+#, c-format
+msgid "Property %s not found in class %s\n"
+msgstr "属性%s在类%s中未能找到\n"
+
+#: .\sdk\compiler\libec\src\pass1.ec:1072
+#: .\sdk\compiler\libec\src\pass2.ec:1143
+#: .\sdk\compiler\libec\src\pass2.ec:1188
+#: .\sdk\compiler\libec\src\pass2.ec:1326
+#: .\sdk\compiler\libec\src\pass2.ec:1433
+msgid "structClass"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1073
+msgid "bitClass"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1074
+msgid "enumClass"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1075
+#: .\sdk\compiler\libec\src\pass15.ec:7802
+#: .\sdk\compiler\libec\src\pass2.ec:1114
+#: .\sdk\compiler\libec\src\pass2.ec:1198
+#: .\sdk\compiler\libec\src\pass2.ec:1330
+#: .\sdk\compiler\libec\src\pass2.ec:1444
+#: .\sdk\compiler\libec\src\pass2.ec:2714
+msgid "noHeadClass"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1076
+msgid "unitClass"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1077
+#: .\sdk\compiler\libec\src\pass15.ec:7805
+#: .\sdk\compiler\libec\src\pass2.ec:1112
+#: .\sdk\compiler\libec\src\pass2.ec:1196
+#: .\sdk\compiler\libec\src\pass2.ec:1328
+#: .\sdk\compiler\libec\src\pass2.ec:1442
+#: .\sdk\compiler\libec\src\pass2.ec:2710
+msgid "normalClass"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1228
+#: .\sdk\compiler\libec\src\pass1.ec:1784
+#: .\sdk\compiler\libec\src\pass1.ec:1881
+msgid "baseSystemAccess"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1244
+msgid "eSystem_RegisterClass"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1277
+msgid "eClass_DestructionWatchable"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1316
+#: .\sdk\compiler\libec\src\pass1.ec:1458
+msgid "eClass_AddMethod"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1385
+msgid "eClass_AddVirtualMethod"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1492
+msgid "eEnum_AddFixedValue"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1533
+msgid "TemplateMemberType::"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1556
+#: .\sdk\compiler\libec\src\pass1.ec:1584
+msgid "dataTypeString"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1602
+msgid "ui64"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1612
+msgid "ClassTemplateArgument"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1619
+msgid "eClass_AddTemplateParameter"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1623
+msgid "eClass_DoneAddingTemplateParameters"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1648
+msgid "designerClass"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1655
+msgid "noExpansion"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1662
+msgid "fixed"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1671
+msgid "defaultProperty"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1685
+#: .\sdk\compiler\libec\src\pass2.ec:706
+msgid "ecere::com::eClass_SetProperty"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1789
+msgid "eSystem_RegisterFunction"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass1.ec:1886
+msgid "eSystem_RegisterDefine"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:377
+#: .\sdk\compiler\libec\src\pass15.ec:392
+#: .\sdk\compiler\libec\src\pass15.ec:399
+#: .\sdk\compiler\libec\src\pass15.ec:3337
+#: .\sdk\compiler\libec\src\pass15.ec:3855
+#: .\sdk\compiler\libec\src\pass15.ec:6503
+#, c-format
+msgid "0x%X"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:387
+#, c-format
+msgid "'%c'"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:406
+#, c-format
+msgid "%.16ff"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:413
+#, c-format
+msgid "%.16f"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:719
+#, c-format
+msgid "Array size not constant int (%s)\n"
+msgstr "数组大小不是常整型(%s)\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:921
+msgid "__ecere_padding"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:1482
+msgid "cannot dereference type\n"
+msgstr "cannot dereference type\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:1666
+#: .\sdk\compiler\libec\src\pass15.ec:8801
+#: .\sdk\compiler\libec\src\pass15.ec:9309
+#, c-format
+msgid "%s<"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:1800
+#, c-format
+msgid "unresolved symbol used as an instance method %s\n"
+msgstr "unresolved symbol used as an instance method %s\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:1806
+#, c-format
+msgid "incompatible instance method %s\n"
+msgstr "不兼容的实例方法%s\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:1850
+#: .\sdk\compiler\libec\src\pass15.ec:1959
+#, c-format
+msgid "couldn't find virtual method %s in class %s\n"
+msgstr "不能找到虚方法%s在类%s中\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:1854
+#: .\sdk\compiler\libec\src\pass15.ec:9152
+#, c-format
+msgid "couldn't find member %s in class %s\n"
+msgstr "不能找到成员%s在类%s中\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:1860
+#, c-format
+msgid "too many initializers for instantiation of class %s\n"
+msgstr "too many initializers for instantiation of class %s\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:1916
+msgid "__ecereInstMeth_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:1917
+msgid "_UNKNOWNCLASS"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:1921
+#, c-format
+msgid "_%08d"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:3126
+#: .\sdk\compiler\libec\src\pass15.ec:3141
+#: .\sdk\compiler\libec\src\pass15.ec:3167
+#, c-format
+msgid "method class must be derived from %s\n"
+msgstr "method class must be derived from %s\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:3128
+msgid "method class should not take an object\n"
+msgstr "method class should not take an object\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:3152
+#: .\sdk\compiler\libec\src\pass15.ec:3178
+#, c-format
+msgid "%s expected to be derived from method class\n"
+msgstr "%s expected to be derived from method class\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:3154
+msgid "overriding class expected to be derived from method class\n"
+msgstr "overriding class expected to be derived from method class\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:3191
+msgid "incompatible return type for function\n"
+msgstr "函数返回类型不兼容\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:3202
+msgid "not enough parameters\n"
+msgstr "没有足够参数\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:3251
+#, c-format
+msgid "incompatible parameter %s (expected %s)\n"
+msgstr "不兼容参数%s (期望%s)\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:3265
+msgid "too many parameters\n"
+msgstr "太多参数\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:3452
+msgid "ecere::com::unichar"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:4284
+#: .\sdk\compiler\libec\src\pass15.ec:4385
+#, c-format
+msgid "error: unhandled type populating instance\n"
+msgstr "error: unhandled type populating instance\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:5536
+#: .\sdk\compiler\libec\src\pass15.ec:9516
+msgid "structSize"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:5852
+#: .\sdk\compiler\libec\src\pass15.ec:5853
+#: .\sdk\compiler\libec\src\pass15.ec:5885
+#: .\sdk\compiler\libec\src\pass15.ec:5886
+msgid "__internal"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6163
+msgid " *"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6169
+msgid "int64"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6177
+msgid "struct "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6191
+msgid "struct {"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6195
+msgid "; "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6203
+#: .\sdk\compiler\libec\src\pass15.ec:6212
+msgid "union "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6213
+msgid "(unnamed)"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6219
+msgid "enum "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6234
+msgid "dllexport "
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6409
+#, c-format
+msgid ":%d"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6683
+#: .\sdk\compiler\libec\src\pass2.ec:102
+#: .\sdk\compiler\libec\src\pass2.ec:979
+#: .\sdk\compiler\libec\src\pass2.ec:1909
+#: .\sdk\compiler\libec\src\pass2.ec:2738
+#: .\sdk\compiler\libec\src\pass3.ec:127
+#: .\sdk\compiler\libec\src\pass3.ec:153
+#: .\sdk\compiler\libec\src\pass3.ec:182
+msgid "char *"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6715
+#: .\sdk\compiler\libec\src\pass15.ec:8289
+#: .\sdk\compiler\libec\src\pass2.ec:1321
+#: .\sdk\compiler\libec\src\pass2.ec:1973
+msgid "__ENDIAN_PAD"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6759
+#: .\sdk\compiler\libec\src\pass15.ec:6761
+#: .\sdk\compiler\libec\src\pass2.ec:2050
+#: .\sdk\compiler\libec\src\pass2.ec:2052
+msgid "__internalValue"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6872
+msgid "Unspecified type\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6904
+#: .\sdk\compiler\libec\src\pass15.ec:11894
+#: .\sdk\compiler\libec\src\pass2.ec:100
+#: .\sdk\compiler\libec\src\pass2.ec:980
+#: .\sdk\compiler\libec\src\pass3.ec:126
+#: .\sdk\compiler\libec\src\pass3.ec:184
+#: .\sdk\compiler\libec\src\pass3.ec:397
+msgid "ecere::com::Instance"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:6969
+msgid "__ecereClass"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:7078
+#: .\sdk\compiler\libec\src\pass15.ec:9049
+#: .\sdk\compiler\libec\src\pass15.ec:9706
+#: .\sdk\compiler\libec\src\pass15.ec:9807
+#: .\sdk\compiler\libec\src\pass2.ec:1529
+#: .\sdk\compiler\libec\src\pass2.ec:1559
+msgid "data"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:7136
+#, c-format
+msgid "Recursion in defined expression %s\n"
+msgstr "Recursion in defined expression %s\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:7187
+msgid "__ecereFunction_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:7280
+msgid "unichar"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:7446
+msgid "key"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:7528
+#, c-format
+msgid "operator %s illegal on pointer\n"
+msgstr "operator %s illegal on pointer\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:7589
+#: .\sdk\compiler\libec\src\pass15.ec:7746
+#: .\sdk\compiler\libec\src\pass15.ec:7753
+msgid "void *: unknown size\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:7598
+#: .\sdk\compiler\libec\src\pass15.ec:7604
+#: .\sdk\compiler\libec\src\pass15.ec:7768
+msgid "cannot add two pointers\n"
+msgstr "cannot add two pointers\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:7616
+#: .\sdk\compiler\libec\src\pass15.ec:9959
+#, c-format
+msgid "incompatible expression %s (%s); expected %s\n"
+msgstr "incompatible expression %s (%s); expected %s\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:7703
+#, c-format
+msgid "operating on %s and %s with an untyped result, assuming %s\n"
+msgstr "operating on %s and %s with an untyped result, assuming %s\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:7711
+#: .\sdk\compiler\libec\src\pass15.ec:7786
+#: .\sdk\compiler\libec\src\pass2.ec:1066
+#: .\sdk\compiler\libec\src\pass2.ec:1107
+#: .\sdk\compiler\libec\src\pass2.ec:1179
+#: .\sdk\compiler\libec\src\pass2.ec:1316
+#: .\sdk\compiler\libec\src\pass2.ec:1424
+#: .\sdk\compiler\libec\src\pass2.ec:2702
+#: .\sdk\compiler\libec\src\pass2.ec:2776
+msgid "dataTypeClass"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:7727
+msgid "5"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:7733
+#: .\sdk\compiler\libec\src\pass15.ec:7808
+#: .\sdk\compiler\libec\src\pass2.ec:1116
+#: .\sdk\compiler\libec\src\pass2.ec:1180
+#: .\sdk\compiler\libec\src\pass2.ec:1333
+#: .\sdk\compiler\libec\src\pass2.ec:1425
+#: .\sdk\compiler\libec\src\pass2.ec:2717
+msgid "typeSize"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:7760
+msgid "different levels of indirection\n"
+msgstr "different levels of indirection\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:7873
+#: .\sdk\compiler\libec\src\pass15.ec:8028
+#, c-format
+msgid "incompatible expressions %s (%s) and %s (%s)\n"
+msgstr "不兼容的表达示%s (%s) 和%s (%s)\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:8135
+#: .\sdk\compiler\libec\src\pass15.ec:8147
+#: .\sdk\compiler\libec\src\pass15.ec:9930
+#: .\sdk\compiler\libec\src\pass15.ec:10004
+#, c-format
+msgid "couldn't determine type of %s\n"
+msgstr "无法确定%s的类型\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:8296
+#: .\sdk\compiler\libec\src\pass15.ec:8304
+#: .\sdk\compiler\libec\src\pass15.ec:8375
+#: .\sdk\compiler\libec\src\pass15.ec:8377
+msgid "Max"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:8297
+#: .\sdk\compiler\libec\src\pass15.ec:8305
+#: .\sdk\compiler\libec\src\pass15.ec:8375
+msgid "Min"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:8298
+#: .\sdk\compiler\libec\src\pass15.ec:8396
+msgid "Sgn"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:8299
+#: .\sdk\compiler\libec\src\pass15.ec:8386
+msgid "Abs"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:8348
+#: .\sdk\compiler\libec\src\pass15.ec:8358
+#: .\sdk\compiler\libec\src\pass16.ec:961
+#: .\sdk\compiler\libec\src\pass2.ec:482
+#: .\sdk\compiler\libec\src\pass2.ec:515
+#: .\sdk\compiler\libec\src\pass2.ec:2279
+#: .\sdk\compiler\libec\src\pass2.ec:2332
+#, c-format
+msgid "__simpleStruct%d"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:8404
+msgid "-1"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:8499
+#, c-format
+msgid "called object %s is not a function\n"
+msgstr "调用对象%s不是一个函数\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:8563
+#, c-format
+msgid "too many arguments for method %s::%s (%d given, expected %d)\n"
+msgstr "参数太多，方法%s::%s(规定%d个, 期望%d个)\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:8567
+#, c-format
+msgid "too many arguments for function %s (%d given, expected %d)\n"
+msgstr "参数太多，函数%s (规定%d个, 期望%d个)\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:8644
+#, c-format
+msgid "not enough arguments for method %s::%s (%d given, expected %d)\n"
+msgstr "参数不够，方法%s::%s(规定%d个, 期望%d个)\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:8648
+#, c-format
+msgid "not enough arguments for function %s (%d given, expected %d)\n"
+msgstr "参数不够，函数%s (规定%d个, 期望%d个)\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:8672
+msgid "__builtin_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:8674
+#, c-format
+msgid "%s undefined; assuming extern returning int\n"
+msgstr "%s不确定，假设外部返回整数\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:8675
+msgid "int()"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:8687
+msgid "callable object undefined; extern assuming returning int\n"
+msgstr "可调用对象未定义，外部假设返回整数\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:8922
+#: .\sdk\compiler\libec\src\pass15.ec:8924
+msgid "member"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:8922
+#: .\sdk\compiler\libec\src\pass15.ec:8924
+#: .\sdk\compiler\libec\src\pass15.ec:11627
+#: .\sdk\compiler\libec\src\pass2.ec:2610
+#: .\sdk\compiler\libec\src\pass2.ec:2646
+msgid "offset"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:8966
+#, c-format
+msgid "invalid class specifier %s for object of class %s\n"
+msgstr "无效的类说明%s关于对象类%s\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:9050
+#: .\sdk\compiler\libec\src\pass15.ec:9707
+msgid "offsetClass"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:9419
+#, c-format
+msgid "undefined class %s\n"
+msgstr "未定义类%s\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:9436
+#, c-format
+msgid "member operator on non-structure type expression %s\n"
+msgstr "成员操作符对非结构类型表达式%s\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:9805
+#, c-format
+msgid "Container<%s>"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:9807
+#: .\sdk\compiler\libec\src\pass15.ec:9837
+msgid "__internalList"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:9810
+#: .\sdk\compiler\libec\src\pass15.ec:10951
+msgid "count"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:9815
+#: .\sdk\compiler\libec\src\pass15.ec:9816
+#: .\sdk\compiler\libec\src\pass2.ec:259
+#: .\sdk\compiler\libec\src\pass2.ec:1078
+#: .\sdk\compiler\libec\src\pass2.ec:1698
+#: .\sdk\compiler\libec\src\pass2.ec:1704
+#: .\sdk\compiler\libec\src\pass2.ec:1713
+#: .\sdk\compiler\libec\src\pass2.ec:1741
+#: .\sdk\compiler\libec\src\pass2.ec:2453
+#: .\sdk\compiler\libec\src\pass2.ec:2462
+#: .\sdk\compiler\libec\src\pass2.ec:2465
+msgid "_vTbl"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:9816
+#: .\sdk\compiler\libec\src\pass15.ec:9819
+#: .\sdk\compiler\libec\src\pass15.ec:9839
+#: .\sdk\compiler\libec\src\pass2.ec:1529
+msgid "BuiltInContainer"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:9840
+#: .\sdk\compiler\libec\src\pass15.ec:9846
+msgid "__internalContainer"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:9853
+#: .\sdk\compiler\libec\src\pass15.ec:10730
+#: .\sdk\compiler\libec\src\pass15.ec:10887
+#: .\sdk\compiler\libec\src\pass15.ec:11883
+msgid "Container"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:9854
+#: .\sdk\compiler\libec\src\pass15.ec:10888
+msgid "Couldn't determine type of array elements\n"
+msgstr "无法确定数组元素的类型\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:9916
+#, c-format
+msgid "unresolved identifier %s; expected %s\n"
+msgstr "不确定的标识符%s; 期望%s\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:9918
+#, c-format
+msgid "couldn't determine type of %s; expected %s\n"
+msgstr "无法确定%s的类型; 期望%s\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:9928
+#: .\sdk\compiler\libec\src\pass15.ec:9997
+#, c-format
+msgid "unresolved identifier %s\n"
+msgstr "不确定的标识符%s\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:9995
+#, c-format
+msgid "unresolved identifier %s::%s\n"
+msgstr "不确定的标识符%s::%s\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:10177
+msgid "Assigning list initializer to non list\n"
+msgstr "列表分配给非列表\n"
+
+#: .\sdk\compiler\libec\src\pass15.ec:10506
+#: .\sdk\compiler\libec\src\pass15.ec:10511
+msgid "ecere::com::eInstance_FireWatchers"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10519
+#: .\sdk\compiler\libec\src\pass15.ec:10524
+msgid "ecere::com::eInstance_FireSelfWatchers"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10744
+#: .\sdk\compiler\libec\src\pass2.ec:1511
+msgid "Array"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10745
+msgid "LinkList"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10746
+msgid "CustomAVLTree"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10755
+msgid "Map"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10756
+msgid "AVLTree"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10766
+msgid "List"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10780
+#: .\sdk\compiler\libec\src\pass15.ec:10881
+#: .\sdk\compiler\libec\src\pass15.ec:10949
+#: .\sdk\compiler\libec\src\pass15.ec:10951
+#: .\sdk\compiler\libec\src\pass15.ec:10967
+#: .\sdk\compiler\libec\src\pass15.ec:10969
+msgid "__internalArray"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10911
+#: .\sdk\compiler\libec\src\pass15.ec:10994
+#: .\sdk\compiler\libec\src\pass15.ec:11004
+#: .\sdk\compiler\libec\src\pass15.ec:11007
+msgid "__internalLinkList"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10927
+#, c-format
+msgid "MapIterator<%s, %s >"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10929
+#: .\sdk\compiler\libec\src\pass2.ec:1545
+#, c-format
+msgid "Iterator<%s, %s >"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10933
+msgid "map"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10949
+#: .\sdk\compiler\libec\src\pass15.ec:10951
+#: .\sdk\compiler\libec\src\pass2.ec:1519
+msgid "array"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10989
+msgid "ListItem"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10991
+msgid "LT::link"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10994
+#: .\sdk\compiler\libec\src\pass15.ec:11004
+msgid "first"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:10996
+msgid "next"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11007
+msgid "GetNext"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11008
+msgid "IteratorPointer"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11031
+msgid "Next"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11046
+msgid "Expression is not a container\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11142
+#, c-format
+msgid "__ecerePropertyWatcher_%d"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11144
+msgid "_delete"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11190
+msgid "ecere::com::eInstance_WatchDestruction"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11220
+msgid "ecere::com::eInstance_Watch"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11228
+msgid "Invalid watched object\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11241
+msgid "No observer specified and not inside a _class\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11320
+#: .\sdk\compiler\libec\src\pass15.ec:11395
+msgid "Invalid object specified and not inside a class\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11355
+#: .\sdk\compiler\libec\src\pass15.ec:11381
+msgid "ecere::com::eInstance_StopWatching"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11398
+msgid "No observer specified and not inside a class\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11602
+#: .\sdk\compiler\libec\src\pass2.ec:2539
+msgid "__ecerePointer_"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11895
+msgid "ecere::com::Property"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11896
+msgid "ecere::com::DataMember"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11897
+msgid "ecere::com::Method"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11898
+msgid "ecere::com::SerialBuffer"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass15.ec:11899
+msgid "ecere::com::ClassTemplateArgument"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass16.ec:31
+#, c-format
+msgid "__ecereCreateModuleInstances_%s"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass16.ec:48
+#, c-format
+msgid "__ecereDestroyModuleInstances_%s"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass16.ec:1032
+#: .\sdk\compiler\libec\src\pass16.ec:2262
+#: .\sdk\compiler\libec\src\pass2.ec:303
+msgid "ecere::com::eSystem_New0"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass16.ec:1048
+#: .\sdk\compiler\libec\src\pass16.ec:2278
+msgid "ecere::com::eInstance_New"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass16.ec:1117
+#: .\sdk\compiler\libec\src\pass2.ec:3064
+#, c-format
+msgid "__ecereTemp%d"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass16.ec:1905
+#: .\sdk\compiler\libec\src\pass16.ec:1976
+#, c-format
+msgid "No set defined for property %s\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:302
+msgid "ecere::com::eSystem_New"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:304
+msgid "ecere::com::eSystem_Renew"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:305
+msgid "ecere::com::eSystem_Renew0"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:785
+#: .\sdk\compiler\libec\src\pass2.ec:2590
+#, c-format
+msgid "__ecTemp%d"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:877
+#, c-format
+msgid "no set defined for property %s of class %s\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:907
+#: .\sdk\compiler\libec\src\pass2.ec:916
+msgid "ecere::com::eInstance_SetMethod"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:958
+msgid "_refCount"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:982
+msgid "ecere::com::eInstance_DecRef"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:1031
+#: .\sdk\compiler\libec\src\pass2.ec:1037
+msgid "Destructor"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:1046
+#: .\sdk\compiler\libec\src\pass2.ec:1084
+msgid "ecere::com::eSystem_Delete"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:1069
+msgid "void (*)(void * _class, void * data)"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:1075
+msgid "OnFree"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:1075
+#: .\sdk\compiler\libec\src\pass2.ec:1079
+msgid "__ecereVMethodID_class_OnFree"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:1162
+msgid "memcpy"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:1210
+#: .\sdk\compiler\libec\src\pass2.ec:1456
+msgid "2"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:1216
+#: .\sdk\compiler\libec\src\pass2.ec:1462
+msgid "4"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:1550
+#: .\sdk\compiler\libec\src\pass2.ec:1555
+#: .\sdk\compiler\libec\src\pass2.ec:1559
+msgid "__internalIterator"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:2214
+msgid "cannot obtain address of property\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:2216
+#: .\sdk\compiler\libec\src\pass2.ec:2218
+#, c-format
+msgid "no get defined for property %s of class %s\n"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass2.ec:2410
+msgid "ecere::com::eClass_GetProperty"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass3.ec:177
+msgid "__ecereNameSpace__ecere__com__Instance"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass3.ec:236
+msgid "struct __ecereNameSpace__ecere__com__Class * class, void *"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass3.ec:280
+msgid "__attribute__ ((visibility(\"default\")))"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass3.ec:285
+#: .\sdk\compiler\libec\src\pass3.ec:362
+msgid "extern __declspec(dllexport)"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass3.ec:287
+#: .\sdk\compiler\libec\src\pass3.ec:364
+msgid "extern __attribute__ ((visibility(\"default\")))"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass3.ec:366
+msgid "stdcall"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass3.ec:366
+msgid "_stdcall"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass3.ec:367
+msgid "__stdcall"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass3.ec:367
+msgid "__stdcall__"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\pass3.ec:371
+msgid "__attribute__((__stdcall__))"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\shortcuts.ec:167
+msgid "void()"
+msgstr ""
+
+#: .\sdk\compiler\libec\src\shortcuts.ec:218
+#: .\sdk\compiler\libec\src\shortcuts.ec:224
+#, c-format
+msgid "parsing type %s\n"
+msgstr ""
+
+#: type.ec:856
+msgid "real_guess_type"
+msgstr ""
+
+#: type.ec:874
+msgid "real_guess_declaration_specifiers"
+msgstr ""
+
+#: type.ec:906
+msgid "type_unit"
+msgstr ""
+
