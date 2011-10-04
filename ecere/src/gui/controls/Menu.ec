@@ -91,9 +91,9 @@ public:
             char * tabPos;
             int length = 0;
 
-            if(value.ctrl)  strcat(accelString, "Ctrl+");
-            if(value.alt)   strcat(accelString, "Alt+");
-            if(value.shift) strcat(accelString, "Shift+");
+            if(value.ctrl)  strcat(accelString, $"Ctrl+");
+            if(value.alt)   strcat(accelString, $"Alt+");
+            if(value.shift) strcat(accelString, $"Shift+");
 
             if(value.code == k0)
                strcat(accelString, "0");

@@ -871,9 +871,8 @@ class ProjectView : Window
    bool DisplayCompiler(bool cleanLog)
    {
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      LogBox logBox = ide.outputView.buildBox;
       ShowOutputBuildLog(cleanLog);
-      logBox.Logf("$%s Compiler\n", compiler ? compiler.name : "${problem with compiler selection}");
+      ide.outputView.buildBox.Logf($"%s Compiler\n", compiler ? compiler.name : $"{problem with compiler selection}");
       delete compiler;
    }
 
