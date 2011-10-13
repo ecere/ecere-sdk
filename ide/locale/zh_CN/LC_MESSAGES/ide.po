@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-21 13:45+0800\n"
-"PO-Revision-Date: 2011-10-03 02:32-0500\n"
+"PO-Revision-Date: 2011-10-04 00:29-0500\n"
 "Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: ec <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -6799,15 +6799,15 @@ msgstr "{problem with compiler selection}"
 
 #: .\sdk\ide\src\project\ProjectView.ec:950
 msgid "Generating "
-msgstr "正在生成"
+msgstr "正在生成 "
 
 #: .\sdk\ide\src\project\ProjectView.ec:952
 msgid "Regenerating "
-msgstr "正在重新生成"
+msgstr "正在重新生成 "
 
 #: .\sdk\ide\src\project\ProjectView.ec:954
 msgid "Updating "
-msgstr "正在更新"
+msgstr "正在更新 "
 
 #: .\sdk\ide\src\project\ProjectView.ec:958
 msgid "Makefile doesn't exist. "

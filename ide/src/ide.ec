@@ -98,13 +98,13 @@ static Array<FileFilter> findInFilesFileFilters
 FileDialog ideFileDialog
 {
    type = multiOpen, text = $"Open";
-   types = fileTypes.array, sizeTypes = fileTypes.count * sizeof(FileType), filters = fileFilters.array, sizeFilters = fileFilters.count * sizeof(fileFilters);
+   types = fileTypes.array, sizeTypes = fileTypes.count * sizeof(FileType), filters = fileFilters.array, sizeFilters = fileFilters.count * sizeof(FileFilter);
 };
 
 FileDialog ideProjectFileDialog
 {
    type = open, text = $"Open Project";
-   types = projectTypes.array, sizeTypes = projectTypes.count * sizeof(FileType), filters = projectFilters.array, sizeFilters = projectFilters.count * sizeof(projectFilters);
+   types = projectTypes.array, sizeTypes = projectTypes.count * sizeof(FileType), filters = projectFilters.array, sizeFilters = projectFilters.count * sizeof(FileFilter);
 };
 
 GlobalSettingsDialog globalSettingsDialog
@@ -1127,7 +1127,7 @@ class IDE : Window
    FindInFilesDialog findInFilesDialog
    {
       master = this, parent = this;
-      filters = findInFilesFileFilters.array, sizeFilters = findInFilesFileFilters.count * sizeof(findInFilesFileFilters);
+      filters = findInFilesFileFilters.array, sizeFilters = findInFilesFileFilters.count * sizeof(FileFilter);
       filter = 1;
    };
 
