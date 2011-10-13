@@ -1808,9 +1808,11 @@ class SymbolgenApp : Application
                               {
                                  i18n = true;
                                  intlStrings[msgid] = comment;
-                                 potFile.Puts(comment); potFile.Puts("\n");
+                                 if(comment)
+                                    potFile.Puts(comment); potFile.Puts("\n");
                                  potFile.Puts(msgid); potFile.Puts("\n");
-                                 potFile.Puts(msgstr); potFile.Puts("\n");
+                                 if(msgstr)
+                                    potFile.Puts(msgstr); potFile.Puts("\n");
                                  potFile.Puts("\n");
                                  delete msgstr;
                                  // delete comment;
