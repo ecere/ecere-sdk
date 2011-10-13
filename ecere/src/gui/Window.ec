@@ -1012,7 +1012,7 @@ private:
 
       // This is required to get proper initial decoration size using native decorations on Windows
       if(nativeDecorations && guiApp && guiApp.interfaceDriver && !visible)
-         guiApp.interfaceDriver.PositionRootWindow(this, x, y, size.w, size.h, true, true);
+         guiApp.interfaceDriver.PositionRootWindow(this, x, y, Max(1, size.w), Max(1, size.h), true, true);
       GetDecorationsSize(&ew, &eh);
 
       if(anchor.left.type >= cascade && (state == normal /*|| state == Hidden*/))
