@@ -495,7 +495,7 @@ public:
                      result = syntaxError;
                }
             }
-            else
+            else if(ch)
                result = syntaxError;
             delete string;
 
