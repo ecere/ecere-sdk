@@ -334,7 +334,7 @@ extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameS
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
-extern __declspec(dllexport) void __ecereNameSpace__ecere__LoadTranslatedStrings(struct __ecereNameSpace__ecere__com__Instance * module, char * name)
+void __ecereNameSpace__ecere__LoadTranslatedStrings(struct __ecereNameSpace__ecere__com__Instance * module, char * name)
 {
 struct __ecereNameSpace__ecere__com__Instance * f;
 char fileName[797];
@@ -479,7 +479,7 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Delete;
 
-extern __declspec(dllexport) void __ecereNameSpace__ecere__UnloadTranslatedStrings(struct __ecereNameSpace__ecere__com__Instance * module)
+void __ecereNameSpace__ecere__UnloadTranslatedStrings(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, __ecereNameSpace__ecere__moduleMaps), it);
 
@@ -490,7 +490,7 @@ if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(((st
 }
 }
 
-extern __declspec(dllexport) char * __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char * string)
+char * __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char * string)
 {
 struct __ecereNameSpace__ecere__com__Instance * textMap = __ecereNameSpace__ecere__moduleMaps ? (__extension__ ({
 struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
@@ -523,9 +523,9 @@ void __ecereRegisterModule_i18n(struct __ecereNameSpace__ecere__com__Instance * 
 {
 struct __ecereNameSpace__ecere__com__Class * class;
 
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::LoadTranslatedStrings", "dllexport void ecere::LoadTranslatedStrings(ecere::com::Module module, char * name)", __ecereNameSpace__ecere__LoadTranslatedStrings, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::UnloadTranslatedStrings", "dllexport void ecere::UnloadTranslatedStrings(ecere::com::Module module)", __ecereNameSpace__ecere__UnloadTranslatedStrings, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::GetTranslatedString", "dllexport char * ecere::GetTranslatedString(ecere::com::Module module, char * string)", __ecereNameSpace__ecere__GetTranslatedString, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::LoadTranslatedStrings", "void ecere::LoadTranslatedStrings(ecere::com::Module module, char * name)", __ecereNameSpace__ecere__LoadTranslatedStrings, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::UnloadTranslatedStrings", "void ecere::UnloadTranslatedStrings(ecere::com::Module module)", __ecereNameSpace__ecere__UnloadTranslatedStrings, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::GetTranslatedString", "char * ecere::GetTranslatedString(ecere::com::Module module, char * string)", __ecereNameSpace__ecere__GetTranslatedString, module, 1);
 }
 
 void __ecereUnregisterModule_i18n(struct __ecereNameSpace__ecere__com__Instance * module)
