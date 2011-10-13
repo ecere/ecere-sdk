@@ -41,11 +41,7 @@ public struct MapIterator<class KT, class V> : Iterator<V, IT = KT>
    }
    property KT key
    {
-      get
-      {
-         MapNode<T, V> node = (MapNode<T, V>)pointer;
-         return node.key;
-      }
+      get { return ((Map<KT, V>)container).GetKey((MapNode<KT, V>)pointer); }
    }
    property V value
    {
@@ -58,7 +54,14 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
 {
    class_fixed
 
-   MT GetData(MapNode<MT, V> node)
+   MT GetKey(MapNode<KT, V> node)
+   {
+      if(class(MT).type == structClass)
+         return (MT)(((byte *)&(uint64)node.key) + __ENDIAN_PAD(sizeof(void *)));
+      return node.key;
+   }
+
+   V GetData(MapNode<MT, V> node)
    {
       if(node)
       {
