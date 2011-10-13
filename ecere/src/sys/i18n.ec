@@ -146,9 +146,9 @@ public dllexport void UnloadTranslatedStrings(Module module)
    }
 }
 
-public dllexport char * GetTranslatedString(Module module, char * string)
+public dllexport char * GetTranslatedString(Module module, char * string, char * stringAndContext)
 {
    Map<String, String> textMap = moduleMaps ? moduleMaps[module.name] : null;
-   char * result = textMap ? textMap[string] : string;
+   char * result = textMap ? textMap[stringAndContext ? stringAndContext : string] : string;
    return (result && result[0]) ? result : string;
 }

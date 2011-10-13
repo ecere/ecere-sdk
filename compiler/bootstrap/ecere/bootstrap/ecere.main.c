@@ -1019,10 +1019,10 @@ __ecereClass___ecereNameSpace__ecere__sys__TempFile = __ecereNameSpace__ecere__c
 __ecereClass_int = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int");
 __ecereClass_uint = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "uint");
 __ecereClass_uint64 = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "uint64");
+__ecereCreateModuleInstances_i18n();
 }
 if(__currentModule == module)
 {
-__ecereCreateModuleInstances_i18n();
 }
 return 0x1;
 }

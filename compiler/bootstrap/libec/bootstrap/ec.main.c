@@ -463,6 +463,8 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecer
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassTemplateParameter;
 
+int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
+
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
@@ -483,7 +485,9 @@ struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ec
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__Location_;
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_Location___;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__MapIterator;
 
@@ -721,6 +725,9 @@ __ecereClass___ecereNameSpace__ecere__com__ClassProperty = __ecereNameSpace__ece
 __ecereClass___ecereNameSpace__ecere__com__ClassTemplateArgument = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::ClassTemplateArgument");
 __ecereClass___ecereNameSpace__ecere__com__ClassTemplateParameter = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::ClassTemplateParameter");
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Container");
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Add", module);
+if(method)
+__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add = method->vid;
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Free", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free = method->vid;
@@ -733,7 +740,8 @@ __ecereClass___ecereNameSpace__ecere__com__GlobalFunction = __ecereNameSpace__ec
 __ecereClass___ecereNameSpace__ecere__com__Iterator = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Iterator");
 __ecereProp___ecereNameSpace__ecere__com__Iterator_data = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__Iterator, "data", module);
 __ecereClass___ecereNameSpace__ecere__com__IteratorPointer = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::IteratorPointer");
-__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__Location_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<String, Location>");
+__ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<Location>");
+__ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_Location___ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<ContextStringPair, ecere::com::List<Location> >");
 __ecereClass___ecereNameSpace__ecere__com__MapIterator = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::MapIterator");
 __ecereProp___ecereNameSpace__ecere__com__MapIterator_key = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__MapIterator, "key", module);
 __ecereProp___ecereNameSpace__ecere__com__MapIterator_map = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__MapIterator, "map", module);

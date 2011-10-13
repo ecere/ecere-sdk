@@ -353,9 +353,10 @@ simple_primary_expression:
       { $$ = MkExpInstance($1); $$.loc = @$; }
 	| CONSTANT
       { $$ = MkExpConstant(yytext); $$.loc = @$; }
-	| STRING_LITERAL
+	| string_literal
       { $$ = MkExpString(yytext); $$.loc = @$; }
-   | '$' string_literal     { $$ = MkExpIntlString($2); delete $2; $$.loc = @$; }
+   | '$' string_literal     { $$ = MkExpIntlString($2, null); delete $2; $$.loc = @$; }
+   | '$' string_literal '.' string_literal     { $$ = MkExpIntlString($4, $2); delete $2; delete $4; $$.loc = @$; }
    | '(' ')'
       { Expression exp = MkExpDummy(); exp.loc.start = @1.end; exp.loc.end = @2.start; $$ = MkExpBrackets(MkListOne(exp)); $$.loc = @$; yyerror(); }
 

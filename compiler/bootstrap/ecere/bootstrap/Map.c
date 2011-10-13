@@ -362,11 +362,11 @@ void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(struct __ecer
 this->container = (struct __ecereNameSpace__ecere__com__Instance *)value;
 }
 
+uint64 __ecereMethod___ecereNameSpace__ecere__com__Map_GetKey(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__MapNode * node);
+
 uint64 __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(struct __ecereNameSpace__ecere__com__MapIterator * this)
 {
-struct __ecereNameSpace__ecere__com__MapNode * node = (struct __ecereNameSpace__ecere__com__MapNode *)this->pointer;
-
-return __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(node);
+return __ecereMethod___ecereNameSpace__ecere__com__Map_GetKey(((struct __ecereNameSpace__ecere__com__Instance *)this->container), (struct __ecereNameSpace__ecere__com__MapNode *)this->pointer);
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData;
@@ -384,6 +384,13 @@ void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_value(struct __ec
 }
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
+
+uint64 __ecereMethod___ecereNameSpace__ecere__com__Map_GetKey(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__MapNode * node)
+{
+if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass->type == 1)
+return (uint64)(((unsigned char *)&node->key) + __ENDIAN_PAD(sizeof(void *)));
+return __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(node);
+}
 
 uint64 __ecereMethod___ecereNameSpace__ecere__com__Map_GetData(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__MapNode * node)
 {

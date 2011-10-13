@@ -225,21 +225,43 @@ Expression MkExpString(char * string)
    return { type = stringExp, string = CopyString(string) };
 }
 
-Map<String, Location> intlStrings { };
+struct ContextStringPair { String string, context; };
 
-Expression MkExpIntlString(char * string)
+Map<ContextStringPair, List<Location> > intlStrings { };
+
+Expression MkExpIntlString(char * string, char * context)
 {
    OldList * list = MkList();
    if(inCompiler)
    {
-      MapIterator<String, Location> it { map = intlStrings };
-      if(!it.Index(string, false))
+      MapIterator<ContextStringPair, List<Location>> it { map = intlStrings };
+      ContextStringPair pair {string, context};
+      List<Location> list = intlStrings[pair];
+      if(!list)
       {
-         intlStrings[string] = yylloc;
+         list = { };
+         pair.string = CopyString(string);
+         pair.context = CopyString(context);
+         intlStrings[pair] = list;
       }
+      list.Add(yylloc);
+      // if(!it.Index({string, context }, false))
    }
    ListAdd(list, QMkExpId("__thisModule"));
    ListAdd(list, MkExpString(string));
+   if(context)
+   {
+      int lenString = strlen(string), lenContext = strlen(context);
+      char * msgid = new char[lenString-2 + lenContext-2 + 4];
+      msgid[0] = '\"';
+      memcpy(msgid+1, string+1, lenString-2);
+      msgid[1+lenString-2] = 4; // EOT
+      memcpy(msgid+1+lenString-2+1, context+1, lenContext-2);
+      memcpy(msgid+1+lenString-2+1+lenContext-2, "\"", 2);
+      ListAdd(list, MkExpString(msgid));
+   }
+   else
+      ListAdd(list, QMkExpId("null"));
    return MkExpCall(QMkExpId("GetTranslatedString"), list);
 }
 
@@ -2722,6 +2744,17 @@ Expression GetTemplateArgExp(TemplateParameter param, Class curClass, bool point
    return param.identifier ? GetTemplateArgExpByName(param.identifier.string, curClass, type) : null;
 }
 
+/*char * CreateMsgID(char * string, char * context)
+{
+   int lenString = strlen(string), lenContext = strlen(context);
+   char * msgid = new char[lenString + lenContext + 20];
+   memcpy(msgid, string, lenString);
+   memcpy(msgid+lenString, " [msgctxt: ", 11);
+   memcpy(msgid+lenString+11, context, lenContext);
+   memcpy(msgid+lenString+11+lenContext, "]", 2);
+   return msgid;
+}*/
+
 public void OutputIntlStrings()
 {
    if(intlStrings.count)
@@ -2734,11 +2767,36 @@ public void OutputIntlStrings()
       f = FileOpen(potFile, write);
       if(f)
       {
+         char * filePrefix = "";
+         if(!(srcFile[0] && (srcFile[1] == ':' || srcFile[0] == '/')))
+            filePrefix = (GetRuntimePlatform() == win32) ? ".\\" : "./";
          for(s : intlStrings)
          {
-            f.Printf("# %s %d\n", srcFile, s.start.line);
-            f.Printf("msgid %s\n", &s);
-            f.Printf("msgstr %s\n\n", &s);
+            // TOFIX: (#654) ContextStringPair * pair = &s;
+            ContextStringPair pair = &s;
+            for(l : s)
+               f.Printf("#: %s%s:%d\n", filePrefix, srcFile, l.start.line);
+            /* PoEdit does not support msgctxt yet so we'll bundle them in the msgid for now
+            if(pair.context)
+               f.Printf("msgctxt %s\n", pair.context);
+            f.Printf("msgid %s\n", pair.string);
+            */
+            if(pair.context)
+            {
+               int lenString = strlen(pair.string), lenContext = strlen(pair.context);
+               char * msgid = new char[lenString-2 + lenContext-2 + 4];
+               msgid[0] = '\"';
+               memcpy(msgid+1, pair.string+1, lenString-2);
+               msgid[1+lenString-2] = 4; // EOT
+               memcpy(msgid+1+lenString-2+1, pair.context+1, lenContext-2);
+               memcpy(msgid+1+lenString-2+1+lenContext-2, "\"", 2);
+
+               f.Printf("msgid %s\n", msgid);
+               delete msgid;
+            }
+            else
+               f.Printf("msgid %s\n", pair.string);
+            f.Printf("msgstr %s\n\n", pair.string);
          }
          delete f;
       }

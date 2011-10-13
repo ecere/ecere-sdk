@@ -1414,6 +1414,13 @@ void * __ecereTemp1;
 return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 3, ((struct Expression *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(string), ((struct Expression *)__ecereTemp1));
 }
 
+struct ContextStringPair
+{
+char * string, * context;
+};
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ContextStringPair;
+
 struct __ecereNameSpace__ecere__com__Instance * intlStrings;
 
 extern unsigned int inCompiler;
@@ -1434,15 +1441,13 @@ extern struct Expression * QMkExpId(char *  id);
 
 struct Expression * MkExpCall(struct Expression * expression, struct __ecereNameSpace__ecere__sys__OldList * arguments);
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_;
+
 struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_map(struct __ecereNameSpace__ecere__com__MapIterator * this);
 
 void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(struct __ecereNameSpace__ecere__com__MapIterator * this, struct __ecereNameSpace__ecere__com__Instance * value);
 
 extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
-
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 index, unsigned int create);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Iterator;
 
 struct __ecereNameSpace__ecere__com__Iterator
 {
@@ -1450,35 +1455,70 @@ struct __ecereNameSpace__ecere__com__Instance * container;
 struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
 };
 
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 index, unsigned int create);
+
 uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecereNameSpace__ecere__com__Iterator * this);
 
 void __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 value);
 
 extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
 
-struct Expression * MkExpIntlString(char * string)
+int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
+
+struct Expression * MkExpIntlString(char * string, char * context)
 {
 struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
 
 if(inCompiler)
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, intlStrings), it);
-
-if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(string), 0x0))
+struct ContextStringPair pair = 
 {
+string, context
+};
+struct __ecereNameSpace__ecere__com__Instance * list = (__extension__ ({
+struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
+{
+intlStrings, 0
+};
+
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (((&pair))), 0x0);
+((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&__internalIterator));
+}));
+
+if(!list)
+{
+list = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_);
+pair.string = __ecereNameSpace__ecere__sys__CopyString(string);
+pair.context = __ecereNameSpace__ecere__sys__CopyString(context);
 __extension__ ({
 struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
 {
 intlStrings, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (uint64)(((uint64)(string))), 0x1);
-__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, &yylloc);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (((&pair))), 0x1);
+__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, list);
 });
 }
+((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (&yylloc));
 }
 ListAdd(list, QMkExpId("__thisModule"));
 ListAdd(list, MkExpString(string));
+if(context)
+{
+int lenString = strlen(string), lenContext = strlen(context);
+char * msgid = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (lenString - 2 + lenContext - 2 + 4));
+
+msgid[0] = '\"';
+memcpy(msgid + 1, string + 1, lenString - 2);
+msgid[1 + lenString - 2] = (char)4;
+memcpy(msgid + 1 + lenString - 2 + 1, context + 1, lenContext - 2);
+memcpy(msgid + 1 + lenString - 2 + 1 + lenContext - 2, "\"", 2);
+ListAdd(list, MkExpString(msgid));
+}
+else
+ListAdd(list, QMkExpId("null"));
 return MkExpCall(QMkExpId("GetTranslatedString"), list);
 }
 
@@ -4137,6 +4177,10 @@ extern char *  __ecereNameSpace__ecere__sys__ChangeExtension(char *  string, cha
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(char *  fileName, int mode);
 
+extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Iterator;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
 
 struct __ecereNameSpace__ecere__com__CustomAVLTree
@@ -4147,11 +4191,11 @@ int count;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
 
-int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, char *  format, ...);
-
 uint64 __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(struct __ecereNameSpace__ecere__com__MapIterator * this);
 
 extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_key;
+
+int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, char *  format, ...);
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
@@ -4170,14 +4214,42 @@ __ecereNameSpace__ecere__sys__ChangeExtension(objFile, "bowl", potFile);
 f = __ecereNameSpace__ecere__sys__FileOpen(potFile, 2);
 if(f)
 {
+char * filePrefix = "";
+
+if(!(srcFile[0] && (srcFile[1] == ':' || srcFile[0] == '/')))
+filePrefix = (__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? ".\\" : "./";
 {
 struct __ecereNameSpace__ecere__com__MapIterator s = (s.container = (void *)0, s.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&s, (intlStrings)), s);
 
 while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&s))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "# %s %d\n", srcFile, (*(struct Location *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&s)).start.line);
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgid %s\n", ((char *)(char *)(char *)__ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(&s)));
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgstr %s\n\n", ((char *)(char *)(char *)__ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(&s)));
+struct ContextStringPair pair = (*(struct ContextStringPair *)__ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(&s));
+
+{
+struct __ecereNameSpace__ecere__com__Iterator l = 
+{
+((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&s)), 0
+};
+
+while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&l))
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "#: %s%s:%d\n", filePrefix, srcFile, (*(struct Location *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&l)).start.line);
+}
+if(pair.context)
+{
+int lenString = strlen(pair.string), lenContext = strlen(pair.context);
+char * msgid = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (lenString - 2 + lenContext - 2 + 4));
+
+msgid[0] = '\"';
+memcpy(msgid + 1, pair.string + 1, lenString - 2);
+msgid[1 + lenString - 2] = (char)4;
+memcpy(msgid + 1 + lenString - 2 + 1, pair.context + 1, lenContext - 2);
+memcpy(msgid + 1 + lenString - 2 + 1 + lenContext - 2, "\"", 2);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgid %s\n", msgid);
+(__ecereNameSpace__ecere__com__eSystem_Delete(msgid), msgid = 0);
+}
+else
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgid %s\n", pair.string);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgstr %s\n\n", pair.string);
 }
 }
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
@@ -4211,6 +4283,12 @@ struct __ecereNameSpace__ecere__com__GlobalFunction;
 
 extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(char *  name, char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, unsigned int size, unsigned int alignment, int declMode);
+
 void __ecereRegisterModule_ast(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 struct __ecereNameSpace__ecere__com__Class * class;
@@ -4239,7 +4317,12 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIdentifier", "Expre
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpDummy", "Expression MkExpDummy(void)", MkExpDummy, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpConstant", "Expression MkExpConstant(char * string)", MkExpConstant, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpString", "Expression MkExpString(char * string)", MkExpString, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIntlString", "Expression MkExpIntlString(char * string)", MkExpIntlString, module, 2);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ContextStringPair", 0, sizeof(struct ContextStringPair), 0, 0, 0, module, 2, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+__ecereClass_ContextStringPair = class;
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "string", "String", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "context", "String", 4, 4, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIntlString", "Expression MkExpIntlString(char * string, char * context)", MkExpIntlString, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpOp", "Expression MkExpOp(Expression exp1, int op, Expression exp2)", MkExpOp, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpBrackets", "Expression MkExpBrackets(ecere::sys::OldList expressions)", MkExpBrackets, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIndex", "Expression MkExpIndex(Expression expression, ecere::sys::OldList index)", MkExpIndex, module, 2);
@@ -4385,11 +4468,11 @@ void __ecereUnregisterModule_ast(struct __ecereNameSpace__ecere__com__Instance *
 
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__Location_;
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_Location___;
 
 void __ecereCreateModuleInstances_ast()
 {
-intlStrings = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__Location_);
+intlStrings = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_Location___);
 __ecereNameSpace__ecere__com__eInstance_IncRef(intlStrings);
 }
 
