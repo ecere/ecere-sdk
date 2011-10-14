@@ -99,15 +99,6 @@ public:
 
 static define stackerScrolling = 16;
 
-public enum FlipStackerSpringMode { none, previous, next };
-
-public class FlipStacker : Window
-{
-   size = { };
-public:
-   FlipStackerSpringMode spring;
-}
-
 public class Stacker : Window
 {
 public:
@@ -239,14 +230,10 @@ private:
          int y = 0;
          Array<Window> oldControls = controls;
          Array<Window> orderedControls;
-         Array<Window> controlsDirA { };
-         Array<Window> controlsDirB { };
          Window child;
 
          controls = { };     
 
-         // TOFIX: this needs to maintain an order and allow for dynamically adding
-         //        children. inserting in the order should also be possible.
          for(c : oldControls)
          {
             for(child = firstChild; child; child = child.next)
@@ -273,164 +260,43 @@ private:
          oldControls.Free();
          delete oldControls;
 
-         if(scrollable)
+         if(reverse)
          {
-            if(reverse)
+            int c;
+            orderedControls = { };
+            for(c = controls.count-1; c >= 0; c--)
             {
-               int c;
-               orderedControls = { };
-               for(c = controls.count-1; c >= 0; c--)
-               {
-                  child = controls[c];
-                  orderedControls.Add(child);
-                  incref child;
-               }
-            }
-            else
-               orderedControls = controls;
-
-            for(child : orderedControls)
-            {
-               if(direction == vertical)
-               {
-                  if(reverse)
-                     child.anchor.bottom = y;
-                  else
-                     child.anchor.top = y;
-                  y += child.size.h + gap;
-               }
-               else
-               {
-                  if(reverse)
-                     child.anchor.right = y;
-                  else
-                     child.anchor.left = y;
-                  y += child.size.w + gap;
-               }
-            }
-            if(reverse)
-            {
-               orderedControls.Free();
-               delete orderedControls;
+               child = controls[c];
+               orderedControls.Add(child);
+               incref child;
             }
          }
          else
+            orderedControls = controls;
+         
+         for(child : orderedControls)
          {
-            int c;
-            int limit = 0;
-            Window previousChild = 0;
-            FlipStackerSpringMode spring = none;
-            if(reverse)
+            if(direction == vertical)
             {
-               for(c = controls.count-1; c >= 0; c--)
-               {
-                  child = controls[c];
-                  if(child._class == class(FlipStacker) || eClass_IsDerived(child._class, class(FlipStacker)))
-                  {
-                     FlipStacker flip = (FlipStacker)child;
-                     spring = flip.spring;
-                     break;
-                  }
-                  previousChild = child;
-                  controlsDirA.Add(child);
-                  incref child;
-               }
-               if(c >= 0)
-               {
-                  limit = c;
-                  for(c = 0; c < limit; c++)
-                  {
-                     child = controls[c];
-                     if(child._class != class(FlipStacker) && !eClass_IsDerived(child._class, class(FlipStacker)))
-                     {
-                        controlsDirB.Add(child);
-                        incref child;
-                     }
-                  }
-               }
+               if(reverse)
+                  child.anchor.bottom = y;
+               else
+                  child.anchor.top = y;
+               y += child.size.h + gap;
             }
             else
             {
-               for(c = 0; c < controls.count; c++)
-               {
-                  child = controls[c];
-                  if(child._class == class(FlipStacker) || eClass_IsDerived(child._class, class(FlipStacker)))
-                  {
-                     FlipStacker flip = (FlipStacker)child;
-                     spring = flip.spring;
-                     break;
-                  }
-                  previousChild = child;
-                  controlsDirA.Add(child);
-                  incref child;
-               }
-               if(c < controls.count)
-               {
-                  limit = c;
-                  for(c = controls.count-1; c > limit; c--)
-                  {
-                     child = controls[c];
-                     if(child._class != class(FlipStacker) && !eClass_IsDerived(child._class, class(FlipStacker)))
-                     {
-                        controlsDirB.Add(child);
-                        incref child;
-                     }
-                  }
-               }
-            }
-
-            y = 0;
-            for(child : controlsDirA)
-            {
-               if(direction == vertical)
-               {
-                  if(reverse)
-                     child.anchor.bottom = y;
-                  else
-                     child.anchor.top = y;
-                  y += child.size.h + gap;
-               }
-               else
-               {
-                  if(reverse)
-                     child.anchor.right = y;
-                  else
-                     child.anchor.left = y;
-                  y += child.size.w + gap;
-               }
-            }
-            y = 0;
-            for(child : controlsDirB)
-            {
-               if(direction == vertical)
-               {
-                  if(reverse)
-                     child.anchor.top = y;
-                  else
-                     child.anchor.bottom = y;
-                  y += child.size.h + gap;
-               }
-               else
-               {
-                  if(reverse)
-                     child.anchor.left = y;
-                  else
-                     child.anchor.right = y;
-                  y += child.size.w + gap;
-               }
-            }
-            if(spring == previous && previousChild)
-            {
                if(reverse)
-                  previousChild.anchor.left = y;
+                  child.anchor.right = y;
                else
-                  previousChild.anchor.right = y;
+                  child.anchor.left = y;
+               y += child.size.w + gap;
             }
-
-            controlsDirA.Free();
-            delete controlsDirA;
-            controlsDirB.Free();
-            delete controlsDirB;
+         }
+         if(reverse)
+         {
+            orderedControls.Free();
+            delete orderedControls;
          }
 
          if(scrollable && y > ((direction == horizontal) ? width : height))
