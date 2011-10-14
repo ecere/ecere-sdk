@@ -269,7 +269,12 @@ void Network_Terminate()
 
 public bool GetAddressFromName(char * hostName, char * inetAddress)
 {
-   HOSTENT * host = gethostbyname(hostName);
+   HOSTENT * host;
+
+   if(!Network_Initialize())
+      return false;
+
+   host = gethostbyname(hostName);
    if(host)
    {
       strcpy(inetAddress, inet_ntoa(*((IN_ADDR *)host->h_addr)));
@@ -283,6 +288,9 @@ public bool GetNameFromAddress(char * inetAddress, char * hostName)
    struct in_addr in;
    HOSTENT * host;
 
+   if(!Network_Initialize())
+      return false;
+
    in.s_addr = inet_addr(inetAddress);
    host = gethostbyaddr((byte *)&in, 4, PF_INET);
    if(host)
@@ -295,6 +303,9 @@ public bool GetNameFromAddress(char * inetAddress, char * hostName)
 
 public bool GetHostName(char * hostName, int size)
 {
+   if(!Network_Initialize())
+      return false;
+
    return !gethostname(hostName,size);
 }
 
