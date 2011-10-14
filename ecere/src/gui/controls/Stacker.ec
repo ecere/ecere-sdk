@@ -270,12 +270,7 @@ private:
             }
          }
 
-         for(c : oldControls)
-         {
-            // TOCHECK: Problem if an object was created without a refCount! Does this apply elsewhere here? Does this cause any leaks?
-            if(c._refCount > 1 || !c.created)
-               delete c;
-         }
+         oldControls.Free();
          delete oldControls;
 
          if(scrollable)
@@ -444,12 +439,12 @@ private:
                      previousChild.anchor.right = y;
                }
             }
-         }
 
-         controlsDirA.Free();
-         delete controlsDirA;
-         controlsDirB.Free();
-         delete controlsDirB;
+            controlsDirA.Free();
+            delete controlsDirA;
+            controlsDirB.Free();
+            delete controlsDirB;
+         }
 
          if(scrollable && y > ((direction == horizontal) ? width : height))
          {
