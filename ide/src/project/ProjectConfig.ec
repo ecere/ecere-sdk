@@ -370,7 +370,7 @@ private:
             noLineNumbers == unset &&
             optimization == unset &&
             !preprocessorDefinitions &&
-            !includeDirs &&
+            (!includeDirs || !includeDirs.count) &&
             !defaultNameSpace &&
             strictNameSpaces == unset &&
             targetType == unset &&
@@ -379,12 +379,12 @@ private:
             !objectsDirectory &&
             !libraries &&
             !linkerOptions &&
-            !libraryDirs &&
+            (!libraryDirs || !libraryDirs.count) &&
             console == unset &&
             compress == unset &&
             excludeFromBuild == unset &&
-            !prebuildCommands &&
-            !postbuildCommands)
+            (!prebuildCommands || !prebuildCommands.count) &&
+            (!postbuildCommands || !postbuildCommands.count) )
             return true;
          return false;          
       }
