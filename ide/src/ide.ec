@@ -1311,7 +1311,7 @@ class IDE : Window
    {
       char temp[4096];
       sprintf(temp, $"The document %s was modified by another application.\n"
-            $"Would you like to reload it and lose your changes?", this.fileName);
+            "Would you like to reload it and lose your changes?", this.fileName);
       if(MessageBox { type = yesNo, master = this/*.parent*/,
             text = $"Document has been modified", contents = temp }.Modal() == yes)
       {

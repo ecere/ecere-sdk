@@ -2,7 +2,7 @@ import "ide"
 
 //bool eString_PathInsideOf(char * path, char * of);
 
-static void ParseListValue(List<String> list, char * equal)
+/*static void ParseListValue(List<String> list, char * equal)
 {
    char * start, * comma;
    char * string;
@@ -21,7 +21,7 @@ static void ParseListValue(List<String> list, char * equal)
       start = comma;
    }
    delete string;
-}
+}*/
 
 enum OpenedFileState { unknown, opened, closed };
 
