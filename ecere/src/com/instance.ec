@@ -4314,7 +4314,14 @@ public dllexport void eInstance_Delete(Instance instance)
    if(instance)
    {
       Class _class, base;
-      bool ownVtbl = instance._vTbl != instance._class._vTbl;
+      bool ownVtbl;
+
+#ifdef MEMINFO
+      if(instance._class == 0xecececec)
+         _free(instance);
+#endif
+
+      ownVtbl = instance._vTbl != instance._class._vTbl;
 
       for(_class = instance._class; _class; _class = base)
       {
