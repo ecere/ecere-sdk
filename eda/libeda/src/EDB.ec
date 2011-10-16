@@ -1047,27 +1047,27 @@ static class EDBRow : DriverRow
             tf.Write(offsets, sizeof(uint), numFields);
 
             size = f.GetSize();
-            // *** Fields are based at index 1, if we're writing the last field we need to set size to its offset
-            // because we will be rewriting over it. ***
-            if(field.num <= oldNumFields)
+            if(field.num-1 < oldNumFields)
             {
                // We will read right up to to the field we're writing to
                // (Size will be from right after the offset table to that offset)
-               int c;
-               for(c = field.num - 1; c >= 0; c--)
-               {
-                  if(offsets[c])
-                  {
-                     // *** I don't know why were incrementing c on init here, because the current field is the offset we want ***
-                     for(; c < oldNumFields; c++)
-                        if(offsets[c])
-                        {
-                           size = offsets[c];
-                           break;
-                        }
-                     break;
-                  }
-               }
+                if(offsets[field.num-1])
+                  // *** Fields are based at index 1, if we're writing the last field we need to set size to its offset
+                  // because we will be rewriting over it. ***
+                  size = offsets[field.num-1];
+                else
+                {
+                   int c;
+                   // If this field does not exist yet (offsets[field.num-1] == 0), we want to write at the end (leave size = f.GetSize()),
+                   for(c = field.num; c < oldNumFields; c++)
+                   {
+                      if(offsets[c])
+                      {
+                         size = offsets[c];
+                         break;
+                      }
+                   }
+                }
             }
 
             // Subtract the header (numFields + offsets table), that's where we're at right now
