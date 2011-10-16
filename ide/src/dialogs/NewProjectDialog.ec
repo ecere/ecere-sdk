@@ -140,7 +140,7 @@ class NewProjectDialog : Window
             topNode.type = NodeTypes::project;
             config = debug;
          };
-         project.topNode.options = project.options =
+         /*project.topNode.options = */project.options =
          {
             warnings = all;
             // TOFIX: Precomp problems withou the extra ( )
@@ -408,7 +408,7 @@ class QuickProjectDialog : Window
             topNode.type = NodeTypes::project;
             config = debug;
          };
-         project.topNode.options = project.options =
+         /*project.topNode.options = */project.options =
          {
             warnings = all;
             // TOFIX: Precomp problems withou the extra ( )

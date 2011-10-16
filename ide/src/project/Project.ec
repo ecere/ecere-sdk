@@ -636,8 +636,36 @@ public:
    String description;
    String license;
 
-   ProjectOptions options;
-   Array<PlatformOptions> platforms;
+   property ProjectOptions options { get { return options; } set { options = value; } isset { return options && !options.isEmpty; } }
+   property Array<PlatformOptions> platforms
+   {
+      get { return platforms; }
+      set
+      {
+         if(platforms) { platforms.Free(); delete platforms; }
+         if(value)
+         {
+            List<PlatformOptions> empty { };
+            Iterator<PlatformOptions> it { value };
+            platforms = value;
+            for(p : platforms; !p.options || p.options.isEmpty) empty.Add(p);
+            for(p : empty; it.Find(p)) platforms.Delete(it.pointer);
+            delete empty;
+         }
+      }
+      isset
+      {
+         if(platforms)
+         {
+            for(p : platforms)
+            {
+               if(p.options && !p.options.isEmpty)
+                  return true;
+            }
+         }
+         return false;
+      }
+   }
    List<ProjectConfig> configurations;
    LinkList<ProjectNode> files;
    String resourcesPath;
@@ -645,6 +673,8 @@ public:
 
 private:
    // topNode.name holds the file name (.epj)
+   ProjectOptions options;
+   Array<PlatformOptions> platforms;
    ProjectNode topNode { type = project, icon = epjFile, files = LinkList<ProjectNode>{ }, project = this };
    ProjectNode resNode;
 
@@ -656,9 +686,11 @@ private:
 
    ~Project()
    {
+      /* // THIS IS NOW AUTOMATED WITH A project CHECK IN ProjectNode
       topNode.configurations = null;
       topNode.platforms = null;
       topNode.options = null;
+      */
 
       if(platforms) { platforms.Free(); delete platforms; }
       if(configurations) { configurations.Free(); delete configurations; }
@@ -3278,9 +3310,10 @@ Project LoadProject(char * filePath)
             project.topNode.name = CopyString(project.config.options.targetFileName);
          }
 
+         /* // THIS IS NOW AUTOMATED WITH A project CHECK IN ProjectNode
          project.topNode.configurations = project.configurations;
          project.topNode.platforms = project.platforms;
-         project.topNode.options = project.options;
+         project.topNode.options = project.options;*/
       }
    }
    return project;

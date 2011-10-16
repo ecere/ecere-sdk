@@ -395,7 +395,7 @@ public class PlatformOptions
 {
 public:
    String name;
-   ProjectOptions options;
+   property ProjectOptions options { get { return options; } set { options = value; } isset { return options && !options.isEmpty; } }
 
    ~PlatformOptions()
    {
@@ -411,19 +411,50 @@ public:
          options ? options.Copy() : null
       };
    }
+private:
+   ProjectOptions options;
 }
 
 class ProjectConfig : struct
 {
 public:
    String name;
-   ProjectOptions options;
-   Array<PlatformOptions> platforms;
+   property ProjectOptions options { get { return options; } set { options = value; } isset { return options && !options.isEmpty; } }
+   property Array<PlatformOptions> platforms
+   {
+      get { return platforms; }
+      set
+      {
+         if(platforms) { platforms.Free(); delete platforms; }
+         if(value)
+         {
+            List<PlatformOptions> empty { };
+            Iterator<PlatformOptions> it { value };
+            platforms = value;
+            for(p : platforms; !p.options || p.options.isEmpty) empty.Add(p);
+            for(p : empty; it.Find(p)) platforms.Delete(it.pointer);
+            delete empty;
+         }
+      }
+      isset
+      {
+         if(platforms)
+         {
+            for(p : platforms)
+            {
+               if(p.options && !p.options.isEmpty)
+                  return true;
+            }
+         }
+         return false;
+      }
+   }
 
 private:
-
+   ProjectOptions options;
    bool makingModified;
    bool compilingModified, linkingModified, symbolGenModified;
+   Array<PlatformOptions> platforms;
 
    ~ProjectConfig()
    {

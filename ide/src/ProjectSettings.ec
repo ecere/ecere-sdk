@@ -446,7 +446,7 @@ class OptionBox<class Z> : CommonControl
                         }
                      }
                      if(!c.platforms.count)
-                        delete c.platforms;
+                        c.platforms = null;
                   }
                   Load();
                   return;
@@ -468,7 +468,7 @@ class OptionBox<class Z> : CommonControl
                }
             }
             if(!currentNode.configurations.count)
-               delete currentNode.configurations;
+               currentNode.configurations = null;
          }
          Load();
          return;
@@ -496,7 +496,7 @@ class OptionBox<class Z> : CommonControl
                }
             }
             if(!currentNode.platforms.count)
-               delete currentNode.platforms;
+               currentNode.platforms = null;
          }
          Load();
          return;
@@ -1668,9 +1668,11 @@ class BuildTab : Tab
 
       project.config = null;
 
+      /* // THIS IS NOW AUTOMATED WITH A project CHECK IN ProjectNode
       project.configurations = project.topNode.configurations;
       project.platforms = project.topNode.platforms;
       project.options = project.topNode.options;
+      */
 
       if(project.topNode.configurations)
       {

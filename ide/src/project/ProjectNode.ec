@@ -245,9 +245,108 @@ public:
    };
 
    LinkList<ProjectNode> files;
-   ProjectOptions options;
-   Array<PlatformOptions> platforms;
-   List<ProjectConfig> configurations;
+   property ProjectOptions options
+   {
+      get { return project ? project.options : options; }
+      set { if(project) project.options = value; else options = value; }
+      isset { ProjectOptions options = project ? project.options : this.options; return options && !options.isEmpty; }
+   }
+   property Array<PlatformOptions> platforms
+   {
+      get { return project ? project.platforms : platforms; }
+      set
+      {
+         if(project) { project.platforms = value; }
+         else
+         {
+            if(platforms) { platforms.Free(); delete platforms; }
+            if(value)
+            {
+               List<PlatformOptions> empty { };
+               Iterator<PlatformOptions> it { value };
+               platforms = value;
+               for(p : platforms; !p.options || p.options.isEmpty) empty.Add(p);
+               for(p : empty; it.Find(p)) platforms.Delete(it.pointer);
+               delete empty;
+            }
+         }
+      }
+      isset
+      {
+         Array<PlatformOptions> platforms = project ? project.platforms : this.platforms;
+         if(platforms)
+         {
+            for(p : platforms)
+            {
+               if(p.options && !p.options.isEmpty)
+                  return true;
+            }
+         }
+         return false;
+      }
+   }
+   property List<ProjectConfig> configurations
+   {
+      get { return project ? project.configurations : configurations; }
+      set
+      {
+         if(project) { project.configurations = value; }
+         else
+         {
+            if(configurations) { configurations.Free(); delete configurations; }
+            if(value)
+            {
+               List<ProjectConfig> empty { };
+               Iterator<ProjectConfig> it { value };
+               configurations = value;
+               for(c : configurations)
+               {
+                  bool somethingSet = c.options && !c.options.isEmpty;
+                  // TODO: Implement isset keyword
+                  if(!somethingSet && c.platforms && c.platforms.count)
+                  {
+                     for(p : c.platforms)
+                     {
+                        if(p.options && !p.options.isEmpty)
+                        {
+                           somethingSet = true;
+                           break;
+                        }
+                     }
+                  }
+                  if(!somethingSet)
+                     empty.Add(c);
+               }
+               for(c : empty; it.Find(c)) configurations.Delete(it.pointer);
+               delete empty;
+            }
+         }
+      }
+      isset
+      {
+         if(!parent) return true;
+         if(configurations)
+         {
+            for(c : configurations)
+            {
+               bool somethingSet = c.options && !c.options.isEmpty;
+               if(!somethingSet && c.platforms && c.platforms.count)
+               {
+                  for(p : c.platforms)
+                  {
+                     if(p.options && !p.options.isEmpty)
+                     {
+                        somethingSet = true;
+                        break;
+                     }
+                  }
+               }
+               return somethingSet;
+            }
+         }
+         return false;
+      }
+   }
 
    property ProjectConfig config
    {
@@ -255,10 +354,6 @@ public:
       {
          Project prj;
          ProjectConfig result = null;
-         /*if(configurations)
-            printf("test\n");
-         if(prj)
-            printf("test\n");*/
          if(configurations && (prj = property::project) && prj.config)
          {
             const char * projectConfigName = prj.config.name;
@@ -278,10 +373,10 @@ public:
    ProjectConfig GetMatchingNodeConfig(ProjectConfig config)
    {
       ProjectConfig nodeConfig = null;
-      if(configurations)
+      if(property::configurations)
       {
          const char * configName = config.name;
-         for(cfg : configurations)
+         for(cfg : property::configurations)
          {
             if(!strcmpi(cfg.name, configName))
             {
@@ -298,7 +393,7 @@ public:
       get
       {
          ProjectConfig config = this.config;
-         ProjectOptions options = this.options;
+         ProjectOptions options = property::options;
          SetBool memoryGuard = localMemoryGuard;
          String defaultNameSpace = localDefaultNameSpace;
          SetBool strictNameSpaces = localStrictNameSpaces;
@@ -317,7 +412,7 @@ public:
       get
       {
          ProjectConfig config = this.config;
-         ProjectOptions options = this.options;
+         ProjectOptions options = property::options;
          SetBool memoryGuard = localMemoryGuard;
          if(!memoryGuard)
          {
@@ -332,7 +427,7 @@ public:
       get
       {
          ProjectConfig config = this.config;
-         ProjectOptions options = this.options;
+         ProjectOptions options = property::options;
          String defaultNameSpace = localDefaultNameSpace;
          if(!defaultNameSpace)
          {
@@ -347,7 +442,7 @@ public:
       get
       {
          ProjectConfig config = this.config;
-         ProjectOptions options = this.options;
+         ProjectOptions options = property::options;
          SetBool strictNameSpaces = localStrictNameSpaces;
          if(!strictNameSpaces)
          {
@@ -362,7 +457,7 @@ public:
       get
       {
          ProjectConfig config = this.config;
-         ProjectOptions options = this.options;
+         ProjectOptions options = property::options;
          SetBool noLineNumbers = localNoLineNumbers;
          if(!noLineNumbers)
          {
@@ -442,9 +537,10 @@ public:
       // TODO: Check how to fix duplication of following options when configuration is made per-config-per-file
       while((node = nodeStack.lastIterator.data))
       {
-         if(node.options && node.options.preprocessorDefinitions)
+         ProjectOptions nodeOptions = node.property::options;
+         if(nodeOptions && nodeOptions.preprocessorDefinitions)
          {
-            for(def : node.options.preprocessorDefinitions)
+            for(def : nodeOptions.preprocessorDefinitions)
                perFilePreprocessorDefs.Add(CopyString(def));
          }
          if(config && config.options && config.options.preprocessorDefinitions)
@@ -452,9 +548,9 @@ public:
             for(def : config.options.preprocessorDefinitions)
                perFilePreprocessorDefs.Add(CopyString(def));
          }
-         if(node.options && node.options.includeDirs)
+         if(nodeOptions && nodeOptions.includeDirs)
          {
-            for(dir : node.options.includeDirs)
+            for(dir : nodeOptions.includeDirs)
                perFileIncludeDirs.Add(CopySystemPath(dir));
          }
          if(config && config.options && config.options.includeDirs)
@@ -468,6 +564,9 @@ public:
    }
 
 private:
+   ProjectOptions options;
+   Array<PlatformOptions> platforms;
+   List<ProjectConfig> configurations;
    ProjectNodeType nodeType;
    ProjectNode parent;
    char * name;
@@ -505,9 +604,9 @@ private:
       {
          for(f : files; (f.configurations || f.files)) { f.RenameConfig(oldName, newName); }
       }
-      if(configurations)
+      if(property::configurations)
       {
-         for(c : configurations; !strcmp(c.name, oldName))
+         for(c : property::configurations; !strcmp(c.name, oldName))
          {
             delete c.name;
             c.name = CopyString(newName);
@@ -521,9 +620,9 @@ private:
       {
          for(f : files; (f.configurations || f.files)) { f.DeleteConfig(configToDelete); }
       }
-      if(configurations)
+      if(property::configurations)
       {
-         Iterator<ProjectConfig> c { configurations };
+         Iterator<ProjectConfig> c { property::configurations };
          while(c.Next())
          {
             ProjectConfig config = c.data;
@@ -534,10 +633,8 @@ private:
                break;
             }
          }
-         if(!configurations.count)
-         {
-            delete configurations;
-         }
+         if(!property::configurations.count)
+            property::configurations = null;
       }
    }
 
@@ -550,20 +647,20 @@ private:
          backupNode.files = { };
          for(f : files) backupNode.files.Add(f.Backup());
       }
-      if(options)
-         backupNode.options = options.Copy();
+      if(property::options)
+         backupNode.options = property::options.Copy();
 
-      if(platforms)
+      if(property::platforms)
       {
          backupNode.platforms = { };
-         for(p : platforms)
+         for(p : property::platforms)
             backupNode.platforms.Add(p.Copy());
       }
 
-      if(configurations)
+      if(property::configurations)
       {
          backupNode.configurations = { };
-         for(c : configurations)
+         for(c : property::configurations)
             backupNode.configurations.Add(c.Copy());
       }
       return backupNode;
@@ -581,28 +678,19 @@ private:
          }
       }
 
-      delete options;
-      if(platforms)
-      {
-         platforms.Free();
-         delete platforms;
-      }
-      if(configurations)
-      {
-         configurations.Free();
-         delete configurations;
-      }
-
-      options = backupNode.options ? backupNode.options.Copy() : null;
+      property::options = backupNode.options ? backupNode.options.Copy() : null;
       if(backupNode.platforms)
       {
-         platforms = { };
+         Array<PlatformOptions> platforms { };
+         property::platforms = platforms;
+
          for(p : backupNode.platforms)
             platforms.Add(p.Copy());
       }
       if(backupNode.configurations)
       {
-         configurations = { };
+         List<ProjectConfig> configurations { };
+         property::configurations = configurations;
          for(c : backupNode.configurations)
             configurations.Add(c.Copy());
       }
@@ -663,7 +751,7 @@ private:
       if(!needClass)
       {
          // TOCHECK: Called from JSON writer
-         if(nodeType == file && !options && !configurations && !platforms && name)
+         if(nodeType == file && !property::options && !property::configurations && !property::platforms && name)
          {
             strcpy(tempString, "\"");
             strcat(tempString, property::fileName);
@@ -685,14 +773,15 @@ private:
          files.Free();
          delete files;
       }
-      delete options;
+      if(!project)
+         delete options;
 
-      if(platforms)
+      if(!project && platforms)
       {
          platforms.Free();
          delete platforms;
       };
-      if(configurations)
+      if(!project && configurations)
       {
          configurations.Free();
          delete configurations;
@@ -848,6 +937,9 @@ private:
       // note: unknown platform is for common
       Platform platform;
       ProjectConfig config = property::config;
+      ProjectOptions options = property::options;
+      Array<PlatformOptions> platforms = property::platforms;
+      List<ProjectConfig> configurations = property::configurations;
 
       if(parent)
          parent.CollectExclusionInfo(output);
@@ -1206,13 +1298,14 @@ private:
 
       while((node = nodeStack.lastIterator.data))
       {
+         ProjectOptions nodeOptions = node.property::options;
          ProjectConfig config = node.config;
-         if(node.options && node.options.preprocessorDefinitions)
-            OutputListOption(f, "D", node.options.preprocessorDefinitions, inPlace, false);
+         if(nodeOptions && nodeOptions.preprocessorDefinitions)
+            OutputListOption(f, "D", nodeOptions.preprocessorDefinitions, inPlace, false);
          if(config && config.options && config.options.preprocessorDefinitions)
             OutputListOption(f, "D", config.options.preprocessorDefinitions, inPlace, false);
-         if(node.options && node.options.includeDirs)
-            OutputListOption(f, "I", node.options.includeDirs, inPlace, true);
+         if(nodeOptions && nodeOptions.includeDirs)
+            OutputListOption(f, "I", nodeOptions.includeDirs, inPlace, true);
          if(config && config.options && config.options.includeDirs)
             OutputListOption(f, "I", config.options.includeDirs, inPlace, true);
 
