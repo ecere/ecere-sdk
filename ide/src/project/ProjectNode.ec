@@ -895,6 +895,7 @@ private:
             strcat(exp, ")");
             result.b = exp;
          }
+         delete exclusionInfo;
          
          return result;
       }
