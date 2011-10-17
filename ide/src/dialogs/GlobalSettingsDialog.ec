@@ -25,6 +25,7 @@ class GlobalSettingsDialog : Window
    
    TabControl tabControl { this, background = activeBorder, anchor = { left = 8, top = 8, right = 8, bottom = 40 } };
    
+   GeneralSettingsTab generalSettingsTab { this, tabControl = tabControl };
    EditorTab editorTab { this, tabControl = tabControl };
    CompilersTab compilersTab { this, tabControl = tabControl };
    ProjectOptionsTab projectOptionsTab { this, tabControl = tabControl };
@@ -34,8 +35,11 @@ class GlobalSettingsDialog : Window
    {
       get
       {
-         return editorTab.modifiedDocument || compilersTab.modifiedDocument ||
-               projectOptionsTab.modifiedDocument || workspaceOptionsTab.modifiedDocument;
+         return generalSettingsTab.modifiedDocument ||
+               editorTab.modifiedDocument ||
+               compilersTab.modifiedDocument ||
+               projectOptionsTab.modifiedDocument ||
+               workspaceOptionsTab.modifiedDocument;
       }
    }
 
@@ -67,11 +71,21 @@ class GlobalSettingsDialog : Window
       {
          if(settingsModified)
          {
+            //bool generalSettingsChanged = false;
             bool editorSettingsChanged = false;
             bool compilerSettingsChanged = false;
             bool projectOptionsChanged = false;
             bool workspaceOptionsChanged = false;
             
+            if(generalSettingsTab.modifiedDocument)
+            {
+               if(strcmp(generalSettingsTab.fileSystemTool.path, ideSettings.fileSystemTool))
+               {
+                  ideSettings.fileSystemTool = generalSettingsTab.fileSystemTool.path;
+                  //generalSettingsChanged = true;
+               }
+            }
+
             if(editorTab.modifiedDocument)
             {
                if(editorTab.useFreeCaret.checked != ideSettings.useFreeCaret ||
@@ -119,6 +133,8 @@ class GlobalSettingsDialog : Window
 
             settingsContainer.Save();
 
+            /*if(generalSettingsChanged)
+               OnGlobalSettingChange(GlobalSettingsChange::compilerSettings);*/
             if(compilerSettingsChanged)
                OnGlobalSettingChange(GlobalSettingsChange::compilerSettings);
             if(editorSettingsChanged)
@@ -159,6 +175,9 @@ class GlobalSettingsDialog : Window
       CompilerConfig activateCompiler = null;
       CompilerConfig readonlyCompiler = null;
 
+      // GeneralSettingsTab
+      generalSettingsTab.fileSystemTool.path = ideSettings.fileSystemTool;
+
       // EditorTab
       editorTab.useFreeCaret.checked = ideSettings.useFreeCaret;
       editorTab.showLineNumbers.checked = ideSettings.showLineNumbers;
@@ -194,6 +213,7 @@ class GlobalSettingsDialog : Window
 
    void OnDestroy()
    {
+      generalSettingsTab.modifiedDocument = false;
       editorTab.modifiedDocument = false;
       compilersTab.modifiedDocument = false;
       compilersTab.dirsTab.modifiedDocument = false;
@@ -207,6 +227,26 @@ class GlobalSettingsDialog : Window
    }
 
    virtual void OnGlobalSettingChange(GlobalSettingsChange globalSettingsChange);
+}
+
+class GeneralSettingsTab : GlobalSettingsSubTab
+{
+   background = activeBorder;
+   text = "General";
+
+   Label lfileSystemTool { this, position = { 8, 34 }, labeledWindow = fileSystemTool };
+   PathBox fileSystemTool
+   {
+      this, size = { 160, 21 }, position = { 8, 52 }, anchor = { left = 8, top = 52, right = 8 };
+      text = "File System Tool", hotKey = altF;
+      typeExpected = file;
+
+      bool NotifyModified(PathBox editBox)
+      {
+         modifiedDocument = true;
+         return true;
+      }
+   };
 }
 
 class EditorTab : GlobalSettingsSubTab

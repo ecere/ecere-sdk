@@ -23,7 +23,7 @@ char * settingsDirectoryNames[DirTypes] =
    "Executable Files"
 };
 
-enum GlobalSettingsChange { none, editorSettings, projectOptions, compilerSettings };
+enum GlobalSettingsChange { none/*, generalSettings*/, editorSettings, projectOptions, compilerSettings };
 
 char * CopyValidateMakefilePath(char * path)
 {
@@ -326,6 +326,13 @@ public:
       isset { return defaultCompiler && defaultCompiler[0]; }
    }
 
+   property char * fileSystemTool
+   {
+      set { delete fileSystemTool; if(value && value[0]) fileSystemTool = CopyString(value); }
+      get { return fileSystemTool/* && fileSystemTool[0]*/ ? fileSystemTool : ""/*null*/; }
+      isset { return fileSystemTool && fileSystemTool[0]; }
+   }
+
 private:
    char * docDir;
    char * ideFileDialogLocation;
@@ -334,6 +341,7 @@ private:
    char * projectDefaultIntermediateObjDir;
    char * portableLocation;
    char * defaultCompiler;
+   char * fileSystemTool;
 
    CompilerConfig GetCompilerConfig(String compilerName)
    {
@@ -368,6 +376,7 @@ private:
       delete projectDefaultIntermediateObjDir;
       delete portableLocation;
       delete defaultCompiler;
+      delete fileSystemTool;
 
       delete ideFileDialogLocation;
       delete ideProjectFileDialogLocation;
