@@ -180,7 +180,7 @@ private:
       return path;
    }
 
-   char * PrepareHomePath()
+   char * PrepareHomePath(bool useIni)
    {
       // ~/.apprc
       char * path = null;
@@ -189,9 +189,18 @@ private:
       {
          char * name = new char[strlen(settingsName) + 16];
          path = new char[strlen(home) + strlen(settingsName) + 16];
-         strcpy(name, ".");
-         strcat(name, settingsName);
-         strcat(name, "rc");
+         if(useIni)
+         {
+            strcpy(name, settingsName);
+            strcat(name, ".");
+            strcat(name, GetExtension());
+         }
+         else
+         {
+            strcpy(name, ".");
+            strcat(name, settingsName);
+            strcat(name, "rc");
+         }
          strcpy(path, home);
          PathCat(path, name);
          delete name;
@@ -332,7 +341,11 @@ public:
                   FileOpenTryRead();
                if(f)
                   portable = true;
-               if(!f && (settingsFilePath = PrepareHomePath()))
+#if defined(__WIN32__)
+               if(!f && (settingsFilePath = PrepareHomePath(true)))
+                  FileOpenTryRead();
+#endif
+               if(!f && (settingsFilePath = PrepareHomePath(false)))
                   FileOpenTryRead();
 #if defined(__WIN32__)
                if(!f && (settingsFilePath = PrepareUserProfilePath()))
@@ -390,14 +403,20 @@ public:
                FileOpenTryWrite();
             if(!settingsLocation || allowDefaultLocations)
             {
-               // never try to write a new portbale configuration file?
+               // never try to write a new portable configuration file?
                //if(!f && (settingsFilePath = PreparePortablePath()))
                //   FileOpenTryWrite();
 #if !defined(__WIN32__)
                if(!f && (settingsFilePath = PrepareEtcPath()))
                   FileOpenTryWrite();
 #endif
-               if(!f && (settingsFilePath = PrepareHomePath()))
+               if(!f && (settingsFilePath = PrepareHomePath(
+#if defined(__WIN32__)
+                  true
+#else
+                  false
+#endif
+                     )))
                   FileOpenTryWrite();
 #if defined(__WIN32__)
                if(!f && (settingsFilePath = PrepareUserProfilePath()))
