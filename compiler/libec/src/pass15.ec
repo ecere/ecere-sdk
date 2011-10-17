@@ -11953,7 +11953,7 @@ static void ProcessClass(OldList definitions, Symbol symbol)
             Symbol thisSymbol
             {
                string = CopyString("this");
-               type = MkClassType(regClass.fullName);
+               type = regClass ? MkClassType(regClass.fullName) : null;
             };
 
             propertyWatch.compound.compound.context.symbols.Add((BTNode)thisSymbol);
