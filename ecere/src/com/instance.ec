@@ -1976,9 +1976,12 @@ static void FixDerivativesBase(Class base, Class mod)
                   if(method)
                   {
                      if(method.function) _class._vTbl[vMethod.vid] = method.function;
-                     delete method.name;
-                     delete method.dataTypeString;
-                     _class.methods.Delete((BTNode)method);
+                     if(!method.symbol)
+                     {
+                        delete method.name;
+                        delete method.dataTypeString;
+                        _class.methods.Delete((BTNode)method);
+                     }
                   }
                   else
                      _class._vTbl[vMethod.vid] = _class.base._vTbl[vMethod.vid];
@@ -3774,9 +3777,12 @@ static void FixDerivativeVirtualMethod(Class base, char * name, int vid, void * 
       {
          if(method.function) function = method.function;
 
-         delete method.name;
-         delete method.dataTypeString;
-         _class.methods.Delete((BTNode)method);
+         if(!method.symbol)
+         {
+            delete method.name;
+            delete method.dataTypeString;
+            _class.methods.Delete((BTNode)method);
+         }
       }
       for(method = (Method)_class.methods.first; method; method = next)
       {
