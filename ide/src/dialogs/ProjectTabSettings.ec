@@ -36,9 +36,10 @@ class ProjectTab : Tab
    {
       if(description.modifiedDocument || license.modifiedDocument || moduleName.modifiedDocument)
       {
+         char * s;
          delete project.moduleName; project.moduleName = CopyString(moduleName.contents);
-         delete project.description; project.description = description.multiLineContents;
-         delete project.license; project.license = license.multiLineContents;  // THIS ALLOCATES A NEW STRING (multi line)
+         project.description = s = description.multiLineContents; delete s;
+         project.license = s = license.multiLineContents; delete s;
          
          project.topNode.modified = true;
          ide.projectView.modifiedDocument = true;
