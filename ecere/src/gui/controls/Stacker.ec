@@ -345,7 +345,7 @@ private:
          {
             child.Destroy(0);
             child.parent = null;
-            delete child;
+            // delete child;
          }
       }
    }

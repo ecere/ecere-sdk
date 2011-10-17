@@ -26,6 +26,8 @@ static void DrawStipple(Surface surface, Size clientSize)
 
 public class SelectorBar : Stacker
 {
+   // We need this because Stacker incref's only when created
+   Array<SelectorButton> buttonsHolder { };
    direction = horizontal;
    background = activeBorder;
    //tabCycle = true;
@@ -54,8 +56,8 @@ public:
          SelectorButton button = (SelectorButton)it.data;
          button.visible = false;
          button.Destroy(0);
-         delete button;
       }
+      buttonsHolder.Free();
       OnResize(clientSize.w, clientSize.h);
    }
 
@@ -70,6 +72,7 @@ public:
    void AddButton(SelectorButton button)
    {
       incref button;
+      buttonsHolder.Add(button);
       if(created)
       {
          button.Create();
@@ -81,6 +84,7 @@ public:
    void RemoveButton(SelectorButton button)
    {
       Iterator<Window> it { controls };
+      buttonsHolder.TakeOut(button);
       while(it.Next())
       {
          if(button == (SelectorButton)it.data)
@@ -155,6 +159,10 @@ public:
       }
    }
 
+   ~SelectorBar()
+   {
+      Clear();
+   }
 };
 
 public class SelectorButton : Button
