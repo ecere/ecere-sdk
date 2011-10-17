@@ -1978,6 +1978,7 @@ class MainForm : Window
    borderStyle = sizable;
    hasMaximize = true;
    hasMinimize = true;
+   icon = { ":documentorIcon.png" };
    text = $"API Documentation Browser";
 
    BitmapResource icons[CodeObjectType];
