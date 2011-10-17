@@ -556,7 +556,13 @@ private:
       ResPtr ptr;
 
       if(parent)
+      {
          stopwatching(parent, font);
+         if(parent.activeChild == this)
+            parent.activeChild = null;
+         if(parent.activeClient == this)
+            parent.activeClient = null;
+      }
 
       if(!destroyed)
       { 
