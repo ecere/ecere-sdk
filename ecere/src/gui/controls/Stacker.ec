@@ -99,15 +99,6 @@ public:
 
 static define stackerScrolling = 16;
 
-public enum FlipStackerSpringMode { none, previous, next };
-
-public class FlipStacker : Window
-{
-   size = { };
-public:
-   FlipStackerSpringMode spring;
-}
-
 public class Stacker : Window
 {
 public:
@@ -234,116 +225,78 @@ private:
 
    void OnResize(int width, int height)
    {
-      // TOIMPROVE: this needs to maintain an order and allow for dynamically adding
-      //            children. inserting in the order should also be possible.
-      // TOIMPROVE: in Window.ec... it should be possible to change the order of children
-      //            at runtime. it should also be possible to choose where dynamically
-      //            created children are inserted.
-
       if(created)
       {
-         int y, c;
+         int y = 0;
+         Array<Window> oldControls = controls;
+         Array<Window> orderedControls;
          Window child;
-         Window previousChild = null;
-         FlipStacker flip = null;
-         Array<Window> newControls { };
 
-         for(c : controls)
+         controls = { };     
+
+         for(c : oldControls)
          {
             for(child = firstChild; child; child = child.next)
             {
-               if(child.nonClient) continue;
+               if(child.nonClient || !child.visible /*|| !child.created*/) continue;
                if(c == child)
-               {  // add the controls that are still children to the list in the original order
-                  newControls.Add(child);
+               {
+                  controls.Add(child);
+                  incref child;
                   break;
                }
-            }
-            if(!child)
-            {
-               child = c;
-               delete child;
             }
          }
          for(child = firstChild; child; child = child.next)
          {
-            if(child.nonClient) continue;
-            if(!newControls.Find(child))
-            {  // add any addition control at the end if the list to preserve the original order
-               // are those two loops required because Window changes the order of children during runtime?
-               // when focusing controls for example?
-               newControls.Add(child);
+            if(child.nonClient || !child.visible /*|| !child.created*/) continue;
+            if(!controls.Find(child))
+            {
+               controls.Add(child);
                incref child;
             }
          }
 
-         delete controls;
-         controls = newControls;
-         newControls = null;
+         oldControls.Free();
+         delete oldControls;
 
-         y = 0;
-         //for(child = reverse ? lastChild : firstChild; child; child = reverse ? child.prev : child.next)
-         for(c = reverse ? controls.count-1 : 0; c<controls.count && c>-1; c += reverse ? -1 : 1)
+         if(reverse)
          {
-            child = controls[c];
-            if(child.nonClient || !child.visible/* || !child.created*/) continue;
-            // would be nice to have a short version of this... like eClass_IsOrIsDerived(child._class, class(FlipStacker))
-            if(child._class == class(FlipStacker) || eClass_IsDerived(child._class, class(FlipStacker)))
+            int c;
+            orderedControls = { };
+            for(c = controls.count-1; c >= 0; c--)
             {
-               flip = (FlipStacker)child;
-               break;
+               child = controls[c];
+               orderedControls.Add(child);
+               incref child;
             }
-            previousChild = child;
-
+         }
+         else
+            orderedControls = controls;
+         
+         for(child : orderedControls)
+         {
             if(direction == vertical)
             {
-               if(reverse) child.anchor.bottom = y;
-               else        child.anchor.top = y;
+               if(reverse)
+                  child.anchor.bottom = y;
+               else
+                  child.anchor.top = y;
                y += child.size.h + gap;
             }
             else
             {
-               if(reverse) child.anchor.right = y;
-               else        child.anchor.left = y;
+               if(reverse)
+                  child.anchor.right = y;
+               else
+                  child.anchor.left = y;
                y += child.size.w + gap;
             }
          }
-
-         if(flip)
+         if(reverse)
          {
-            y = 0;
-            child = null;
-            //for(child = reverse ? firstChild : lastChild; child && child != (Window)flip; child = reverse ? child.next : child.prev)
-            for(c = (reverse ? 0 : controls.count-1); c<controls.count && c>-1 && child != (Window)flip; c += (reverse ? 1 : -1))
-            {
-               child = controls[c];
-               if(child.nonClient || !child.visible/* || !child.created*/) continue;
-               if(direction == vertical)
-               {
-                  if(reverse) child.anchor.top = y;
-                  else        child.anchor.bottom = y;
-                  y += child.size.h + gap;
-               }
-               else
-               {
-                  if(reverse) child.anchor.left = y;
-                  else        child.anchor.right = y;
-                  y += child.size.w + gap;
-               }
-            }
-            if(flip.spring == previous && previousChild)
-            {
-               if(direction == vertical)
-               {
-                  if(reverse) previousChild.anchor.top = y;
-                  else        previousChild.anchor.bottom = y;
-               }
-               else
-               {
-                  if(reverse) previousChild.anchor.left = y;
-                  else        previousChild.anchor.right = y;
-               }
-            }
+            orderedControls.Free();
+            delete orderedControls;
          }
 
          if(scrollable && y > ((direction == horizontal) ? width : height))
@@ -392,7 +345,7 @@ private:
          {
             child.Destroy(0);
             child.parent = null;
-            delete child;
+            // delete child;
          }
       }
    }
