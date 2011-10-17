@@ -1233,7 +1233,7 @@ class BuildTab : Tab
             name = CopyString(tmp);
             options =
             {
-               // objectsDirectory = CopyString(defaultObjDirExpression);
+               // objectsDirectory = /*CopyString(*/defaultObjDirExpression/*)*/;
             };
          };
          if(!project.topNode.configurations) project.topNode.configurations = { };
@@ -1241,9 +1241,9 @@ class BuildTab : Tab
          /*
          targetType = project.config.options.targetType;
          config.options.
-         config.options.targetFileName = CopyString(project.moduleName);
-         config.targetDir.dir = "";
-         config.objectsDirectory = CopyString(defaultObjDirExpression);
+         config.options.targetFileName = project.moduleName;
+         config.options.targetDir.dir = "";
+         config.options.objectsDirectory = defaultObjDirExpression);
          config.options.debug = true;
          config.options.optimization = none;
          config.options.warnings = all;

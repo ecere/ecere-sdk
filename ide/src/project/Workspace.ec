@@ -74,6 +74,10 @@ class OpenedFileInfo
          } 
       }
    }
+   ~OpenedFileInfo()
+   {
+      delete path;
+   }
 };
 
 class Workspace

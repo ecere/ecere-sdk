@@ -145,7 +145,7 @@ class NewProjectDialog : Window
             warnings = all;
             // TOFIX: Precomp problems withou the extra ( )
             targetType = ((TargetTypes)targetType.GetTag());
-            targetFileName = CopyString(name);
+            targetFileName = /*CopyString(*/name/*)*/;
          };
          if(project.targetType != staticLibrary)
          {
@@ -413,7 +413,7 @@ class QuickProjectDialog : Window
             warnings = all;
             // TOFIX: Precomp problems withou the extra ( )
             targetType = ((TargetTypes)targetType.GetTag());
-            targetFileName = CopyString(prjName);
+            targetFileName = /*CopyString(*/prjName/*)*/;
          };
 
          if(project.targetType != staticLibrary)

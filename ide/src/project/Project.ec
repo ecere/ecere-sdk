@@ -2471,6 +2471,7 @@ Project LegacyBinaryLoadProject(File f, char * filePath)
       {
          int temp;
          int len,c, count;
+         String targetFileName, targetDirectory, objectsDirectory;
 
          // { executable = 0, sharedLibrary = 1, staticLibrary = 2 };
          f.Read(&temp, sizeof(int),1);
@@ -2482,18 +2483,22 @@ Project LegacyBinaryLoadProject(File f, char * filePath)
          }
 
          f.Read(&len, sizeof(int),1);
-         project.options.targetFileName = new char[len+1];
-         f.Read(project.options.targetFileName, sizeof(char), len+1);
+         targetFileName = new char[len+1];
+         f.Read(targetFileName, sizeof(char), len+1);
+         project.options.targetFileName = targetFileName;
+         delete targetFileName;
 
          f.Read(&len, sizeof(int),1);
-         delete project.options.targetDirectory;
-         project.options.targetDirectory = new char[len+1];
-         f.Read(project.options.targetDirectory, sizeof(char), len+1);
+         targetDirectory = new char[len+1];
+         f.Read(targetDirectory, sizeof(char), len+1);
+         project.options.targetDirectory = targetDirectory;
+         delete targetDirectory;
 
          f.Read(&len, sizeof(int),1);
-         delete project.options.objectsDirectory;
-         project.options.objectsDirectory = new byte[len+1];
-         f.Read(project.options.objectsDirectory, sizeof(char), len+1);
+         objectsDirectory = new byte[len+1];
+         f.Read(objectsDirectory, sizeof(char), len+1);
+         project.options.objectsDirectory = objectsDirectory;
+         delete objectsDirectory;
 
          f.Read(&temp, sizeof(int),1);
          project./*config.*/options.debug = temp ? true : false;
@@ -2655,7 +2660,7 @@ void ProjectConfig::LegacyProjectConfigLoad(File f)
                equal++;
                TrimLSpaces(equal, equal);
                if(!strcmpi(buffer, "Target Name"))
-                  options.targetFileName = CopyString(equal);
+                  options.targetFileName = /*CopyString(*/equal/*)*/;
                else if(!strcmpi(buffer, "Target Type"))
                {
                   if(!strcmpi(equal, "Executable"))
@@ -2668,7 +2673,7 @@ void ProjectConfig::LegacyProjectConfigLoad(File f)
                      options.targetType = executable;
                }
                else if(!strcmpi(buffer, "Target Directory"))
-                  options.targetDirectory = CopyString(equal);
+                  options.targetDirectory = /*CopyString(*/equal/*)*/;
                else if(!strcmpi(buffer, "Console"))
                   options.console = ParseTrueFalseValue(equal);
                else if(!strcmpi(buffer, "Libraries"))
@@ -2677,7 +2682,7 @@ void ProjectConfig::LegacyProjectConfigLoad(File f)
                   ParseArrayValue(options.libraries, equal);
                }
                else if(!strcmpi(buffer, "Intermediate Directory"))
-                  options.objectsDirectory = CopyString(equal); //objDir.expression = equal;
+                  options.objectsDirectory = /*CopyString(*/equal/*)*/; //objDir.expression = equal;
                else if(!strcmpi(buffer, "Debug"))
                   options.debug = ParseTrueFalseValue(equal);
                else if(!strcmpi(buffer, "Optimize"))
@@ -2713,7 +2718,7 @@ void ProjectConfig::LegacyProjectConfigLoad(File f)
       }
    }
    if(!options.targetDirectory && options.objectsDirectory)
-      options.targetDirectory = CopyString(options.objectsDirectory);
+      options.targetDirectory = /*CopyString(*/options.objectsDirectory/*)*/;
    //if(!objDir.dir) objDir.dir = "obj";
    //if(!targetDir.dir) targetDir.dir = "";
    // if(!targetName) property::targetName = "";   // How can a targetFileName be nothing???
@@ -2935,7 +2940,7 @@ Project LegacyAsciiLoadProject(File f, char * filePath)
 
                   // Config Settings
                   else if(!strcmpi(buffer, "Intermediate Directory"))
-                     project.config.options.objectsDirectory = CopyString(equal); //objDir.expression = equal;
+                     project.config.options.objectsDirectory = /*CopyString(*/equal/*)*/; //objDir.expression = equal;
                   else if(!strcmpi(buffer, "Debug"))
                      project.config.options.debug = ParseTrueFalseValue(equal);
                   else if(!strcmpi(buffer, "Optimize"))
@@ -2959,7 +2964,7 @@ Project LegacyAsciiLoadProject(File f, char * filePath)
 
                      // Project Wide Settings (All configs)
                      if(!strcmpi(buffer, "Target Name"))
-                        project.options.targetFileName = CopyString(equal);
+                        project.options.targetFileName = /*CopyString(*/equal/*)*/;
                      else if(!strcmpi(buffer, "Target Type"))
                      {
                         if(!strcmpi(equal, "Executable"))
@@ -2972,7 +2977,7 @@ Project LegacyAsciiLoadProject(File f, char * filePath)
                            project.options.targetType = executable;
                      }
                      else if(!strcmpi(buffer, "Target Directory"))
-                        project.options.targetDirectory = CopyString(equal);
+                        project.options.targetDirectory = /*CopyString(*/equal/*)*/;
                      else if(!strcmpi(buffer, "Console"))
                         project.options.console = ParseTrueFalseValue(equal);
                      else if(!strcmpi(buffer, "Libraries"))
@@ -3295,9 +3300,9 @@ Project LoadProject(char * filePath)
             (!project.options || !project.options.targetFileName || !project.options.targetFileName[0]) &&
             (!project.config.options.targetFileName || !project.config.options.targetFileName[0]))
          {
-            delete project.config.options.targetFileName;
+            //delete project.config.options.targetFileName;
             
-            project.options.targetFileName = CopyString(project.moduleName);
+            project.options.targetFileName = /*CopyString(*/project.moduleName/*)*/;
             project.config.options.optimization = none;
             project.config.options.debug = true;
             //project.config.options.warnings = unset;

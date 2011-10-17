@@ -216,8 +216,10 @@ private:
          if(result == fileNotFound || !data)
          {
             CompilerConfig defaultCompiler = MakeDefaultCompiler(defaultCompilerName, true);
+            // We incref the compilers below, so reset refCount to 0
+            defaultCompiler._refCount = 0;
             data = (IDESettings)this.data;
-            data.compilerConfigs = { };
+
             data.compilerConfigs.Add(defaultCompiler);
             data.useFreeCaret = true;
             data.showLineNumbers = true;
@@ -746,9 +748,10 @@ private:
       delete makeCommand;
       delete execPrefixCommand;
       delete distccHosts;
-      if(includeDirs) { includeDirs.Free(); delete includeDirs; }
-      if(libraryDirs) { libraryDirs.Free(); delete libraryDirs; }
-      if(executableDirs) { executableDirs.Free(); delete executableDirs; }
+      if(environmentVars) environmentVars.Free();
+      if(includeDirs) { includeDirs.Free(); }
+      if(libraryDirs) { libraryDirs.Free(); }
+      if(executableDirs) { executableDirs.Free(); }
    }
    CompilerConfig Copy()
    {
@@ -774,7 +777,7 @@ private:
       for(s : includeDirs) copy.includeDirs.Add(CopyString(s));
       for(s : libraryDirs) copy.libraryDirs.Add(CopyString(s));
       for(s : executableDirs) copy.executableDirs.Add(CopyString(s));
-      for(ns : environmentVars) copy.environmentVars.Add(NamedString { name = CopyString(ns.name), string = CopyString(ns.string) });
+      for(ns : environmentVars) copy.environmentVars.Add(NamedString { name = ns.name, string = ns.string });
 
       incref copy;
       return copy;

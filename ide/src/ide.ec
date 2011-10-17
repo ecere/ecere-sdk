@@ -2446,6 +2446,7 @@ class IDE : Window
    {
       delete driverItems;
       delete skinItems;
+      delete ideSettings;
    }
 }
 

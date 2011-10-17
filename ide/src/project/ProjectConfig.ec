@@ -217,6 +217,9 @@ public:
 
    // Linker Options
    TargetTypes targetType;
+   // NOTE: The JSON Parser deletes strings after setting a String property, so we do a copy here.
+   //       (This behavior is different from Objects (class instances) values which are not deleted)
+   //       Code calling these properties should *NOT* use CopyString().
    property char * targetFileName
    {
       set { delete targetFileName; if(value && value[0]) targetFileName = CopyValidateMakefilePath(value); }
@@ -320,9 +323,9 @@ public:
          defaultNameSpace = CopyString(defaultNameSpace),
          strictNameSpaces = strictNameSpaces,
          targetType = targetType,
-         targetFileName = CopyString(targetFileName),
-         targetDirectory = CopyString(targetDirectory),
-         objectsDirectory = CopyString(objectsDirectory),
+         targetFileName = /*CopyString(*/targetFileName/*)*/,
+         targetDirectory = /*CopyString(*/targetDirectory/*)*/,
+         objectsDirectory = /*CopyString(*/objectsDirectory/*)*/,
          console = console,
          compress = compress,
          excludeFromBuild = excludeFromBuild,

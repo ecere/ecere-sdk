@@ -619,6 +619,7 @@ class Debugger
 
    ~Debugger()
    {
+      sysBPs.Free();
       Stop();
       CleanUp();
    }
