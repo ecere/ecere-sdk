@@ -23,20 +23,56 @@ TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)EDA$(SO)
 SONAME =
 endif
 
-OBJECTS = $(OBJ)EDB.o $(OBJ)MemoryEDB.o $(OBJ)FieldBox.o $(OBJ)TableEditor.o $(OBJ)EDA.o \
-	$(OBJ)ers.o $(OBJ)gui.o $(OBJ)idList.o $(OBJ)$(MODULE).main$(O)
+OBJECTS = \
+	$(OBJ)EDB.o \
+	$(OBJ)MemoryEDB.o \
+	$(OBJ)FieldBox.o \
+	$(OBJ)TableEditor.o \
+	$(OBJ)EDA.o \
+	$(OBJ)ers.o \
+	$(OBJ)gui.o \
+	$(OBJ)idList.o \
+	$(OBJ)$(MODULE).main$(O)
 
-COBJECTS = $(OBJ)EDB.c $(OBJ)MemoryEDB.c $(OBJ)FieldBox.c $(OBJ)TableEditor.c $(OBJ)EDA.c \
-	$(OBJ)ers.c $(OBJ)gui.c $(OBJ)idList.c
+COBJECTS = \
+	$(OBJ)EDB.c \
+	$(OBJ)MemoryEDB.c \
+	$(OBJ)FieldBox.c \
+	$(OBJ)TableEditor.c \
+	$(OBJ)EDA.c \
+	$(OBJ)ers.c \
+	$(OBJ)gui.c \
+	$(OBJ)idList.c
 
-SYMBOLS = $(OBJ)EDB.sym $(OBJ)MemoryEDB.sym $(OBJ)FieldBox.sym $(OBJ)TableEditor.sym \
-	$(OBJ)EDA.sym $(OBJ)ers.sym $(OBJ)gui.sym $(OBJ)idList.sym
+SYMBOLS = \
+	$(OBJ)EDB.sym \
+	$(OBJ)MemoryEDB.sym \
+	$(OBJ)FieldBox.sym \
+	$(OBJ)TableEditor.sym \
+	$(OBJ)EDA.sym \
+	$(OBJ)ers.sym \
+	$(OBJ)gui.sym \
+	$(OBJ)idList.sym
 
-IMPORTS = $(OBJ)EDB.imp $(OBJ)MemoryEDB.imp $(OBJ)FieldBox.imp $(OBJ)TableEditor.imp \
-	$(OBJ)EDA.imp $(OBJ)ers.imp $(OBJ)gui.imp $(OBJ)idList.imp
+IMPORTS = \
+	$(OBJ)EDB.imp \
+	$(OBJ)MemoryEDB.imp \
+	$(OBJ)FieldBox.imp \
+	$(OBJ)TableEditor.imp \
+	$(OBJ)EDA.imp \
+	$(OBJ)ers.imp \
+	$(OBJ)gui.imp \
+	$(OBJ)idList.imp
 
-SOURCES = src/EDB.ec src/MemoryEDB.ec src/gui/controls/FieldBox.ec \
-	src/gui/TableEditor.ec src/EDA.ec src/ers.ec src/gui.ec src/idList.ec
+SOURCES = \
+	src/EDB.ec \
+	src/MemoryEDB.ec \
+	src/gui/controls/FieldBox.ec \
+	src/gui/TableEditor.ec \
+	src/EDA.ec \
+	src/ers.ec \
+	src/gui.ec \
+	src/idList.ec
 
 RESOURCES =
 

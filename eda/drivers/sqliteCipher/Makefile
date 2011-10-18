@@ -23,16 +23,28 @@ TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)EDASQLiteCipher$(SO)
 SONAME =
 endif
 
-OBJECTS = $(OBJ)sqlite3.o $(OBJ)EDASQLiteCipher.o $(OBJ)EDASQLite.o \
+OBJECTS = \
+	$(OBJ)sqlite3.o \
+	$(OBJ)EDASQLiteCipher.o \
+	$(OBJ)EDASQLite.o \
 	$(OBJ)$(MODULE).main$(O)
 
-COBJECTS = $(OBJ)EDASQLiteCipher.c $(OBJ)EDASQLite.c
+COBJECTS = \
+	$(OBJ)EDASQLiteCipher.c \
+	$(OBJ)EDASQLite.c
 
-SYMBOLS = $(OBJ)EDASQLiteCipher.sym $(OBJ)EDASQLite.sym
+SYMBOLS = \
+	$(OBJ)EDASQLiteCipher.sym \
+	$(OBJ)EDASQLite.sym
 
-IMPORTS = $(OBJ)EDASQLiteCipher.imp $(OBJ)EDASQLite.imp
+IMPORTS = \
+	$(OBJ)EDASQLiteCipher.imp \
+	$(OBJ)EDASQLite.imp
 
-SOURCES = sqlite3.c EDASQLiteCipher.ec ../sqlite/EDASQLite.ec
+SOURCES = \
+	sqlite3.c \
+	EDASQLiteCipher.ec \
+	../sqlite/EDASQLite.ec
 
 RESOURCES =
 

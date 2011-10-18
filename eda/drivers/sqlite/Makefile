@@ -23,15 +23,23 @@ TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)EDASQLite$(SO)
 SONAME =
 endif
 
-OBJECTS = $(OBJ)sqlite3.o $(OBJ)EDASQLite.o $(OBJ)$(MODULE).main$(O)
+OBJECTS = \
+	$(OBJ)sqlite3.o \
+	$(OBJ)EDASQLite.o \
+	$(OBJ)$(MODULE).main$(O)
 
-COBJECTS = $(OBJ)EDASQLite.c
+COBJECTS = \
+	$(OBJ)EDASQLite.c
 
-SYMBOLS = $(OBJ)EDASQLite.sym
+SYMBOLS = \
+	$(OBJ)EDASQLite.sym
 
-IMPORTS = $(OBJ)EDASQLite.imp
+IMPORTS = \
+	$(OBJ)EDASQLite.imp
 
-SOURCES = sqlite3.c EDASQLite.ec
+SOURCES = \
+	sqlite3.c \
+	EDASQLite.ec
 
 RESOURCES =
 

@@ -23,30 +23,92 @@ TARGET = obj/$(MODULE).$(CONFIG).$(PLATFORM)/$(LP)ecereCOM$(SO)
 SONAME =
 endif
 
-OBJECTS = $(OBJ)Mutex.o $(OBJ)Array.o $(OBJ)AVLTree.o $(OBJ)BuiltInContainer.o \
-	$(OBJ)Container.o $(OBJ)CustomAVLTree.o $(OBJ)LinkList.o $(OBJ)List.o $(OBJ)Map.o \
-	$(OBJ)BinaryTree.o $(OBJ)BTNode.o $(OBJ)dataTypes.o $(OBJ)instance.o $(OBJ)String.o \
-	$(OBJ)OldList.o $(OBJ)instance.c.o $(OBJ)$(MODULE).main$(O)
+OBJECTS = \
+	$(OBJ)Mutex.o \
+	$(OBJ)Array.o \
+	$(OBJ)AVLTree.o \
+	$(OBJ)BuiltInContainer.o \
+	$(OBJ)Container.o \
+	$(OBJ)CustomAVLTree.o \
+	$(OBJ)LinkList.o \
+	$(OBJ)List.o \
+	$(OBJ)Map.o \
+	$(OBJ)BinaryTree.o \
+	$(OBJ)BTNode.o \
+	$(OBJ)dataTypes.o \
+	$(OBJ)instance.o \
+	$(OBJ)String.o \
+	$(OBJ)OldList.o \
+	$(OBJ)instance.c.o \
+	$(OBJ)$(MODULE).main$(O)
 
-COBJECTS = $(OBJ)Mutex.c $(OBJ)Array.c $(OBJ)AVLTree.c $(OBJ)BuiltInContainer.c \
-	$(OBJ)Container.c $(OBJ)CustomAVLTree.c $(OBJ)LinkList.c $(OBJ)List.c $(OBJ)Map.c \
-	$(OBJ)BinaryTree.c $(OBJ)BTNode.c $(OBJ)dataTypes.c $(OBJ)instance.c $(OBJ)String.c \
+COBJECTS = \
+	$(OBJ)Mutex.c \
+	$(OBJ)Array.c \
+	$(OBJ)AVLTree.c \
+	$(OBJ)BuiltInContainer.c \
+	$(OBJ)Container.c \
+	$(OBJ)CustomAVLTree.c \
+	$(OBJ)LinkList.c \
+	$(OBJ)List.c \
+	$(OBJ)Map.c \
+	$(OBJ)BinaryTree.c \
+	$(OBJ)BTNode.c \
+	$(OBJ)dataTypes.c \
+	$(OBJ)instance.c \
+	$(OBJ)String.c \
 	$(OBJ)OldList.c
 
-SYMBOLS = $(OBJ)Mutex.sym $(OBJ)Array.sym $(OBJ)AVLTree.sym $(OBJ)BuiltInContainer.sym \
-	$(OBJ)Container.sym $(OBJ)CustomAVLTree.sym $(OBJ)LinkList.sym $(OBJ)List.sym $(OBJ)Map.sym \
-	$(OBJ)BinaryTree.sym $(OBJ)BTNode.sym $(OBJ)dataTypes.sym $(OBJ)instance.sym $(OBJ)String.sym \
+SYMBOLS = \
+	$(OBJ)Mutex.sym \
+	$(OBJ)Array.sym \
+	$(OBJ)AVLTree.sym \
+	$(OBJ)BuiltInContainer.sym \
+	$(OBJ)Container.sym \
+	$(OBJ)CustomAVLTree.sym \
+	$(OBJ)LinkList.sym \
+	$(OBJ)List.sym \
+	$(OBJ)Map.sym \
+	$(OBJ)BinaryTree.sym \
+	$(OBJ)BTNode.sym \
+	$(OBJ)dataTypes.sym \
+	$(OBJ)instance.sym \
+	$(OBJ)String.sym \
 	$(OBJ)OldList.sym
 
-IMPORTS = $(OBJ)Mutex.imp $(OBJ)Array.imp $(OBJ)AVLTree.imp $(OBJ)BuiltInContainer.imp \
-	$(OBJ)Container.imp $(OBJ)CustomAVLTree.imp $(OBJ)LinkList.imp $(OBJ)List.imp $(OBJ)Map.imp \
-	$(OBJ)BinaryTree.imp $(OBJ)BTNode.imp $(OBJ)dataTypes.imp $(OBJ)instance.imp $(OBJ)String.imp \
+IMPORTS = \
+	$(OBJ)Mutex.imp \
+	$(OBJ)Array.imp \
+	$(OBJ)AVLTree.imp \
+	$(OBJ)BuiltInContainer.imp \
+	$(OBJ)Container.imp \
+	$(OBJ)CustomAVLTree.imp \
+	$(OBJ)LinkList.imp \
+	$(OBJ)List.imp \
+	$(OBJ)Map.imp \
+	$(OBJ)BinaryTree.imp \
+	$(OBJ)BTNode.imp \
+	$(OBJ)dataTypes.imp \
+	$(OBJ)instance.imp \
+	$(OBJ)String.imp \
 	$(OBJ)OldList.imp
 
-SOURCES = src/sys/Mutex.ec src/com/containers/Array.ec src/com/containers/AVLTree.ec \
-	src/com/containers/BuiltInContainer.ec src/com/containers/Container.ec src/com/containers/CustomAVLTree.ec \
-	src/com/containers/LinkList.ec src/com/containers/List.ec src/com/containers/Map.ec src/com/BinaryTree.ec \
-	src/com/BTNode.ec src/com/dataTypes.ec src/com/instance.ec src/com/String.ec src/com/OldList.ec \
+SOURCES = \
+	src/sys/Mutex.ec \
+	src/com/containers/Array.ec \
+	src/com/containers/AVLTree.ec \
+	src/com/containers/BuiltInContainer.ec \
+	src/com/containers/Container.ec \
+	src/com/containers/CustomAVLTree.ec \
+	src/com/containers/LinkList.ec \
+	src/com/containers/List.ec \
+	src/com/containers/Map.ec \
+	src/com/BinaryTree.ec \
+	src/com/BTNode.ec \
+	src/com/dataTypes.ec \
+	src/com/instance.ec \
+	src/com/String.ec \
+	src/com/OldList.ec \
 	src/com/instance.c
 
 RESOURCES =
