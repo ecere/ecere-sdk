@@ -1983,7 +1983,12 @@ static void FixDerivativesBase(Class base, Class mod)
                         _class.methods.Delete((BTNode)method);
                      }
                      else
-                        _class.methods.Remove((BTNode)method);
+                     {
+                        delete method.dataTypeString;
+                        method.type = vMethod.type;
+                        method.dataTypeString = CopyString(vMethod.dataTypeString);
+                        method._class = vMethod._class;
+                     }
                   }
                   else
                      _class._vTbl[vMethod.vid] = _class.base._vTbl[vMethod.vid];
@@ -3761,7 +3766,7 @@ public dllexport bool eClass_IsDerived(Class _class, Class from)
    return false;
 }
 
-static void FixDerivativeVirtualMethod(Class base, char * name, int vid, void * origFunction)
+static void FixDerivativeVirtualMethod(Class base, char * name, int vid, void * origFunction, char * type)
 {
    OldLink derivative;
    for(derivative = base.derivatives.first; derivative; derivative = derivative.next)
@@ -3786,7 +3791,12 @@ static void FixDerivativeVirtualMethod(Class base, char * name, int vid, void * 
             _class.methods.Delete((BTNode)method);
          }
          else
-            _class.methods.Remove((BTNode)method);
+         {
+            delete method.dataTypeString;
+            method.type = virtualMethod;
+            method.dataTypeString = CopyString(type);
+            method._class = base;
+         }
       }
       for(method = (Method)_class.methods.first; method; method = next)
       {
@@ -3805,7 +3815,7 @@ static void FixDerivativeVirtualMethod(Class base, char * name, int vid, void * 
          }
       }
       if(_class.derivatives.first || _class.templatized.first)
-         FixDerivativeVirtualMethod(_class, name, vid, function);
+         FixDerivativeVirtualMethod(_class, name, vid, function, type);
    }
    {
       OldLink templateLink;
@@ -3813,7 +3823,7 @@ static void FixDerivativeVirtualMethod(Class base, char * name, int vid, void * 
       {
          Class template = templateLink.data;
          template._vTbl = base._vTbl;
-         FixDerivativeVirtualMethod(template, name, vid, origFunction);
+         FixDerivativeVirtualMethod(template, name, vid, origFunction, type);
       }
    }
 }
@@ -3926,7 +3936,7 @@ public dllexport Method eClass_AddVirtualMethod(Class _class, char * name, char 
 
          // TODO: Fix derived classes
          if(_class.derivatives.first || _class.templatized.first)
-            FixDerivativeVirtualMethod(_class, name, method.vid, function ? function : (void *)DefaultFunction);
+            FixDerivativeVirtualMethod(_class, name, method.vid, function ? function : (void *)DefaultFunction, type);
          return method;
       }
    }
