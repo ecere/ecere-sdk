@@ -15,17 +15,24 @@ CONSOLE = -mconsole
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/ear$(E)
 
-OBJECTS = $(OBJ)ear.o $(OBJ)$(MODULE).main$(O)
+OBJECTS = \
+	$(OBJ)ear.o \
+	$(OBJ)$(MODULE).main$(O)
 
-COBJECTS = $(OBJ)ear.c
+COBJECTS = \
+	$(OBJ)ear.c
 
-SYMBOLS = $(OBJ)ear.sym
+SYMBOLS = \
+	$(OBJ)ear.sym
 
-IMPORTS = $(OBJ)ear.imp
+IMPORTS = \
+	$(OBJ)ear.imp
 
-SOURCES = ear.ec
+SOURCES = \
+	ear.ec
 
-RESOURCES = ../extract/obj/release.$(PLATFORM)/extract$(E)
+RESOURCES = \
+	../extract/obj/release.$(PLATFORM)/extract$(E)
 
 # CROSS-PLATFORM MAGIC
 

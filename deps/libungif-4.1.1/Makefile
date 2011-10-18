@@ -13,7 +13,10 @@ RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)ungif$(A)
 
-OBJECTS = $(OBJ)dgif_lib.o $(OBJ)gif_err.o $(OBJ)gifalloc.o
+OBJECTS = \
+	$(OBJ)dgif_lib.o \
+	$(OBJ)gif_err.o \
+	$(OBJ)gifalloc.o
 
 COBJECTS =
 
@@ -21,7 +24,10 @@ SYMBOLS =
 
 IMPORTS =
 
-SOURCES = lib/dgif_lib.c lib/gif_err.c lib/gifalloc.c
+SOURCES = \
+	lib/dgif_lib.c \
+	lib/gif_err.c \
+	lib/gifalloc.c
 
 RESOURCES =
 

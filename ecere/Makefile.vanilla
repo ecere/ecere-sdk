@@ -14,181 +14,602 @@ RES = res/
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)ecereVanilla$(A)
 
 OBJECTS = $(OBJECTS1) $(OBJECTS2) $(OBJECTS3)
-OBJECTS1 = $(OBJ)Archive.o $(OBJ)BufferedFile.o $(OBJ)Date.o $(OBJ)DualPipe.o \
-	$(OBJ)EARArchive.o $(OBJ)File.o $(OBJ)FileMonitor.o $(OBJ)GlobalAppSettings.o $(OBJ)JSON.o \
-	$(OBJ)JSONGlobalSettings.o $(OBJ)memory.o $(OBJ)Mutex.o $(OBJ)Semaphore.o $(OBJ)System.o $(OBJ)TempFile.o \
-	$(OBJ)Thread.o $(OBJ)Time.o $(OBJ)unicode.o $(OBJ)units.o $(OBJ)File.c.o $(OBJ)DualPipe.c.o \
-	$(OBJ)System.c.o $(OBJ)i18n.o $(OBJ)BMPFormat.o $(if $(WINDOWS),,$(OBJ)harfbuzz-freetype.o) \
-	$(if $(WINDOWS),,$(OBJ)harfbuzz-unicode-tables.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-unicode.o) \
-	$(if $(WINDOWS),,$(OBJ)harfbuzz-arabic.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-buffer.o) \
-	$(if $(WINDOWS),,$(OBJ)harfbuzz-gdef.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-gpos.o) \
-	$(if $(WINDOWS),,$(OBJ)harfbuzz-gsub.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-hangul.o) \
-	$(if $(WINDOWS),,$(OBJ)harfbuzz-hebrew.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-indic.o) \
-	$(if $(WINDOWS),,$(OBJ)harfbuzz-khmer.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-myanmar.o) \
+OBJECTS1 = \
+	$(OBJ)Archive.o \
+	$(OBJ)BufferedFile.o \
+	$(OBJ)Date.o \
+	$(OBJ)DualPipe.o \
+	$(OBJ)EARArchive.o \
+	$(OBJ)File.o \
+	$(OBJ)FileMonitor.o \
+	$(OBJ)GlobalAppSettings.o \
+	$(OBJ)JSON.o \
+	$(OBJ)JSONGlobalSettings.o \
+	$(OBJ)memory.o \
+	$(OBJ)Mutex.o \
+	$(OBJ)Semaphore.o \
+	$(OBJ)System.o \
+	$(OBJ)TempFile.o \
+	$(OBJ)Thread.o \
+	$(OBJ)Time.o \
+	$(OBJ)unicode.o \
+	$(OBJ)units.o \
+	$(OBJ)File.c.o \
+	$(OBJ)DualPipe.c.o \
+	$(OBJ)System.c.o \
+	$(OBJ)i18n.o \
+	$(OBJ)BMPFormat.o \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-freetype.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-unicode-tables.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-unicode.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-arabic.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-buffer.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-gdef.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-gpos.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-gsub.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-hangul.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-hebrew.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-indic.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-khmer.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-myanmar.o) \
 	$(if $(WINDOWS),,$(OBJ)harfbuzz-open.o)
-OBJECTS2 = $(if $(WINDOWS),,$(OBJ)harfbuzz-shaper.o) \
-	$(if $(WINDOWS),,$(OBJ)harfbuzz-stream.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-tibetan.o) \
-	$(if $(WINDOWS),,$(OBJ)harfbuzz-impl.o) $(if $(WINDOWS),,$(OBJ)harfbuzz-thai.o) \
-	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.o,) $(OBJ)lfbBlit.o $(OBJ)lfbConvert.o $(OBJ)LFBDisplayDriver.o \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.o,) $(if $(LINUX),$(OBJ)XDisplayDriver.o,) $(OBJ)Bitmap.o $(OBJ)BitmapResource.o \
-	$(OBJ)Color.o $(OBJ)Display.o $(OBJ)DisplaySystem.o $(OBJ)FontResource.o $(OBJ)Resource.o \
-	$(OBJ)Surface.o $(OBJ)Button.o $(OBJ)CalendarControl.o $(OBJ)DataBox.o $(OBJ)DropBox.o \
-	$(OBJ)EditBox.o $(OBJ)Label.o $(OBJ)ListBox.o $(OBJ)Menu.o $(OBJ)Picture.o $(OBJ)ProgressBar.o \
-	$(OBJ)ScrollBar.o $(OBJ)StatusBar.o $(OBJ)Stacker.o $(OBJ)PathBox.o $(OBJ)ColorPicker.o \
-	$(OBJ)FileDialog.o $(OBJ)FindDialog.o $(OBJ)GoToDialog.o $(OBJ)MessageBox.o $(OBJ)ReplaceDialog.o \
+OBJECTS2 = \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-shaper.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-stream.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-tibetan.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-impl.o) \
+	$(if $(WINDOWS),,$(OBJ)harfbuzz-thai.o) \
+	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.o,) \
+	$(OBJ)lfbBlit.o \
+	$(OBJ)lfbConvert.o \
+	$(OBJ)LFBDisplayDriver.o \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.o,) \
+	$(if $(LINUX),$(OBJ)XDisplayDriver.o,) \
+	$(OBJ)Bitmap.o \
+	$(OBJ)BitmapResource.o \
+	$(OBJ)Color.o \
+	$(OBJ)Display.o \
+	$(OBJ)DisplaySystem.o \
+	$(OBJ)FontResource.o \
+	$(OBJ)Resource.o \
+	$(OBJ)Surface.o \
+	$(OBJ)Button.o \
+	$(OBJ)CalendarControl.o \
+	$(OBJ)DataBox.o \
+	$(OBJ)DropBox.o \
+	$(OBJ)EditBox.o \
+	$(OBJ)Label.o \
+	$(OBJ)ListBox.o \
+	$(OBJ)Menu.o \
+	$(OBJ)Picture.o \
+	$(OBJ)ProgressBar.o \
+	$(OBJ)ScrollBar.o \
+	$(OBJ)StatusBar.o \
+	$(OBJ)Stacker.o \
+	$(OBJ)PathBox.o \
+	$(OBJ)ColorPicker.o \
+	$(OBJ)FileDialog.o \
+	$(OBJ)FindDialog.o \
+	$(OBJ)GoToDialog.o \
+	$(OBJ)MessageBox.o \
+	$(OBJ)ReplaceDialog.o \
 	$(OBJ)WindowList.o
-OBJECTS3 = $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.o,) \
-	$(if $(WINDOWS),$(OBJ)Win32Interface.o,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.o,) $(OBJ)WindowsSkin.o \
-	$(OBJ)Anchor.o $(OBJ)ClipBoard.o $(OBJ)Cursor.o $(OBJ)FormDesigner.o $(OBJ)GuiApplication.o \
-	$(OBJ)Interface.o $(OBJ)Key.o $(OBJ)Skin.o $(OBJ)Timer.o $(OBJ)typeEdit.o $(OBJ)Window.o \
-	$(OBJ)Array.o $(OBJ)AVLTree.o $(OBJ)BuiltInContainer.o $(OBJ)Container.o \
-	$(OBJ)CustomAVLTree.o $(OBJ)LinkList.o $(OBJ)List.o $(OBJ)Map.o $(OBJ)BinaryTree.o $(OBJ)BTNode.o \
-	$(OBJ)dataTypes.o $(OBJ)instance.o $(OBJ)String.o $(OBJ)OldList.o $(OBJ)instance.c.o \
+OBJECTS3 = \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.o,) \
+	$(if $(WINDOWS),$(OBJ)Win32Interface.o,) \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.o,) \
+	$(OBJ)WindowsSkin.o \
+	$(OBJ)Anchor.o \
+	$(OBJ)ClipBoard.o \
+	$(OBJ)Cursor.o \
+	$(OBJ)FormDesigner.o \
+	$(OBJ)GuiApplication.o \
+	$(OBJ)Interface.o \
+	$(OBJ)Key.o \
+	$(OBJ)Skin.o \
+	$(OBJ)Timer.o \
+	$(OBJ)typeEdit.o \
+	$(OBJ)Window.o \
+	$(OBJ)Array.o \
+	$(OBJ)AVLTree.o \
+	$(OBJ)BuiltInContainer.o \
+	$(OBJ)Container.o \
+	$(OBJ)CustomAVLTree.o \
+	$(OBJ)LinkList.o \
+	$(OBJ)List.o \
+	$(OBJ)Map.o \
+	$(OBJ)BinaryTree.o \
+	$(OBJ)BTNode.o \
+	$(OBJ)dataTypes.o \
+	$(OBJ)instance.o \
+	$(OBJ)String.o \
+	$(OBJ)OldList.o \
+	$(OBJ)instance.c.o \
 	$(OBJ)$(MODULE).main$(O)
 
 COBJECTS = $(COBJECTS1) $(COBJECTS2)
-COBJECTS1 = $(OBJ)Archive.c $(OBJ)BufferedFile.c $(OBJ)Date.c $(OBJ)DualPipe.c \
-	$(OBJ)EARArchive.c $(OBJ)File.c $(OBJ)FileMonitor.c $(OBJ)GlobalAppSettings.c $(OBJ)JSON.c \
-	$(OBJ)JSONGlobalSettings.c $(OBJ)memory.c $(OBJ)Mutex.c $(OBJ)Semaphore.c $(OBJ)System.c $(OBJ)TempFile.c \
-	$(OBJ)Thread.c $(OBJ)Time.c $(OBJ)unicode.c $(OBJ)units.c $(OBJ)i18n.c $(OBJ)BMPFormat.c \
-	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.c,) $(OBJ)lfbBlit.c $(OBJ)lfbConvert.c $(OBJ)LFBDisplayDriver.c \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.c,) $(if $(LINUX),$(OBJ)XDisplayDriver.c,) $(OBJ)Bitmap.c $(OBJ)BitmapResource.c \
-	$(OBJ)Color.c $(OBJ)Display.c $(OBJ)DisplaySystem.c $(OBJ)FontResource.c $(OBJ)Resource.c \
-	$(OBJ)Surface.c $(OBJ)Button.c $(OBJ)CalendarControl.c $(OBJ)DataBox.c $(OBJ)DropBox.c \
-	$(OBJ)EditBox.c $(OBJ)Label.c $(OBJ)ListBox.c $(OBJ)Menu.c $(OBJ)Picture.c $(OBJ)ProgressBar.c \
-	$(OBJ)ScrollBar.c $(OBJ)StatusBar.c
-COBJECTS2 = $(OBJ)Stacker.c $(OBJ)PathBox.c $(OBJ)ColorPicker.c $(OBJ)FileDialog.c \
-	$(OBJ)FindDialog.c $(OBJ)GoToDialog.c $(OBJ)MessageBox.c $(OBJ)ReplaceDialog.c $(OBJ)WindowList.c \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.c,) $(if $(WINDOWS),$(OBJ)Win32Interface.c,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.c,) $(OBJ)WindowsSkin.c $(OBJ)Anchor.c $(OBJ)ClipBoard.c $(OBJ)Cursor.c \
-	$(OBJ)FormDesigner.c $(OBJ)GuiApplication.c $(OBJ)Interface.c $(OBJ)Key.c $(OBJ)Skin.c $(OBJ)Timer.c \
-	$(OBJ)typeEdit.c $(OBJ)Window.c $(OBJ)Array.c $(OBJ)AVLTree.c $(OBJ)BuiltInContainer.c \
-	$(OBJ)Container.c $(OBJ)CustomAVLTree.c $(OBJ)LinkList.c $(OBJ)List.c $(OBJ)Map.c \
-	$(OBJ)BinaryTree.c $(OBJ)BTNode.c $(OBJ)dataTypes.c $(OBJ)instance.c $(OBJ)String.c \
+COBJECTS1 = \
+	$(OBJ)Archive.c \
+	$(OBJ)BufferedFile.c \
+	$(OBJ)Date.c \
+	$(OBJ)DualPipe.c \
+	$(OBJ)EARArchive.c \
+	$(OBJ)File.c \
+	$(OBJ)FileMonitor.c \
+	$(OBJ)GlobalAppSettings.c \
+	$(OBJ)JSON.c \
+	$(OBJ)JSONGlobalSettings.c \
+	$(OBJ)memory.c \
+	$(OBJ)Mutex.c \
+	$(OBJ)Semaphore.c \
+	$(OBJ)System.c \
+	$(OBJ)TempFile.c \
+	$(OBJ)Thread.c \
+	$(OBJ)Time.c \
+	$(OBJ)unicode.c \
+	$(OBJ)units.c \
+	$(OBJ)i18n.c \
+	$(OBJ)BMPFormat.c \
+	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.c,) \
+	$(OBJ)lfbBlit.c \
+	$(OBJ)lfbConvert.c \
+	$(OBJ)LFBDisplayDriver.c \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.c,) \
+	$(if $(LINUX),$(OBJ)XDisplayDriver.c,) \
+	$(OBJ)Bitmap.c \
+	$(OBJ)BitmapResource.c \
+	$(OBJ)Color.c \
+	$(OBJ)Display.c \
+	$(OBJ)DisplaySystem.c \
+	$(OBJ)FontResource.c \
+	$(OBJ)Resource.c \
+	$(OBJ)Surface.c \
+	$(OBJ)Button.c \
+	$(OBJ)CalendarControl.c \
+	$(OBJ)DataBox.c \
+	$(OBJ)DropBox.c \
+	$(OBJ)EditBox.c \
+	$(OBJ)Label.c \
+	$(OBJ)ListBox.c \
+	$(OBJ)Menu.c \
+	$(OBJ)Picture.c \
+	$(OBJ)ProgressBar.c \
+	$(OBJ)ScrollBar.c \
+	$(OBJ)StatusBar.c
+COBJECTS2 = \
+	$(OBJ)Stacker.c \
+	$(OBJ)PathBox.c \
+	$(OBJ)ColorPicker.c \
+	$(OBJ)FileDialog.c \
+	$(OBJ)FindDialog.c \
+	$(OBJ)GoToDialog.c \
+	$(OBJ)MessageBox.c \
+	$(OBJ)ReplaceDialog.c \
+	$(OBJ)WindowList.c \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.c,) \
+	$(if $(WINDOWS),$(OBJ)Win32Interface.c,) \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.c,) \
+	$(OBJ)WindowsSkin.c \
+	$(OBJ)Anchor.c \
+	$(OBJ)ClipBoard.c \
+	$(OBJ)Cursor.c \
+	$(OBJ)FormDesigner.c \
+	$(OBJ)GuiApplication.c \
+	$(OBJ)Interface.c \
+	$(OBJ)Key.c \
+	$(OBJ)Skin.c \
+	$(OBJ)Timer.c \
+	$(OBJ)typeEdit.c \
+	$(OBJ)Window.c \
+	$(OBJ)Array.c \
+	$(OBJ)AVLTree.c \
+	$(OBJ)BuiltInContainer.c \
+	$(OBJ)Container.c \
+	$(OBJ)CustomAVLTree.c \
+	$(OBJ)LinkList.c \
+	$(OBJ)List.c \
+	$(OBJ)Map.c \
+	$(OBJ)BinaryTree.c \
+	$(OBJ)BTNode.c \
+	$(OBJ)dataTypes.c \
+	$(OBJ)instance.c \
+	$(OBJ)String.c \
 	$(OBJ)OldList.c
 
 SYMBOLS = $(SYMBOLS1) $(SYMBOLS2)
-SYMBOLS1 = $(OBJ)Archive.sym $(OBJ)BufferedFile.sym $(OBJ)Date.sym $(OBJ)DualPipe.sym \
-	$(OBJ)EARArchive.sym $(OBJ)File.sym $(OBJ)FileMonitor.sym $(OBJ)GlobalAppSettings.sym \
-	$(OBJ)JSON.sym $(OBJ)JSONGlobalSettings.sym $(OBJ)memory.sym $(OBJ)Mutex.sym \
-	$(OBJ)Semaphore.sym $(OBJ)System.sym $(OBJ)TempFile.sym $(OBJ)Thread.sym $(OBJ)Time.sym \
-	$(OBJ)unicode.sym $(OBJ)units.sym $(OBJ)i18n.sym $(OBJ)BMPFormat.sym \
-	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.sym,) $(OBJ)lfbBlit.sym $(OBJ)lfbConvert.sym $(OBJ)LFBDisplayDriver.sym \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.sym,) $(if $(LINUX),$(OBJ)XDisplayDriver.sym,) $(OBJ)Bitmap.sym \
-	$(OBJ)BitmapResource.sym $(OBJ)Color.sym $(OBJ)Display.sym $(OBJ)DisplaySystem.sym \
-	$(OBJ)FontResource.sym $(OBJ)Resource.sym $(OBJ)Surface.sym $(OBJ)Button.sym \
-	$(OBJ)CalendarControl.sym $(OBJ)DataBox.sym $(OBJ)DropBox.sym $(OBJ)EditBox.sym $(OBJ)Label.sym \
-	$(OBJ)ListBox.sym $(OBJ)Menu.sym $(OBJ)Picture.sym
-SYMBOLS2 = $(OBJ)ProgressBar.sym $(OBJ)ScrollBar.sym $(OBJ)StatusBar.sym \
-	$(OBJ)Stacker.sym $(OBJ)PathBox.sym $(OBJ)ColorPicker.sym $(OBJ)FileDialog.sym \
-	$(OBJ)FindDialog.sym $(OBJ)GoToDialog.sym $(OBJ)MessageBox.sym $(OBJ)ReplaceDialog.sym \
-	$(OBJ)WindowList.sym $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.sym,) \
-	$(if $(WINDOWS),$(OBJ)Win32Interface.sym,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.sym,) $(OBJ)WindowsSkin.sym \
-	$(OBJ)Anchor.sym $(OBJ)ClipBoard.sym $(OBJ)Cursor.sym $(OBJ)FormDesigner.sym \
-	$(OBJ)GuiApplication.sym $(OBJ)Interface.sym $(OBJ)Key.sym $(OBJ)Skin.sym $(OBJ)Timer.sym \
-	$(OBJ)typeEdit.sym $(OBJ)Window.sym $(OBJ)Array.sym $(OBJ)AVLTree.sym $(OBJ)BuiltInContainer.sym \
-	$(OBJ)Container.sym $(OBJ)CustomAVLTree.sym $(OBJ)LinkList.sym $(OBJ)List.sym $(OBJ)Map.sym \
-	$(OBJ)BinaryTree.sym $(OBJ)BTNode.sym $(OBJ)dataTypes.sym $(OBJ)instance.sym $(OBJ)String.sym \
+SYMBOLS1 = \
+	$(OBJ)Archive.sym \
+	$(OBJ)BufferedFile.sym \
+	$(OBJ)Date.sym \
+	$(OBJ)DualPipe.sym \
+	$(OBJ)EARArchive.sym \
+	$(OBJ)File.sym \
+	$(OBJ)FileMonitor.sym \
+	$(OBJ)GlobalAppSettings.sym \
+	$(OBJ)JSON.sym \
+	$(OBJ)JSONGlobalSettings.sym \
+	$(OBJ)memory.sym \
+	$(OBJ)Mutex.sym \
+	$(OBJ)Semaphore.sym \
+	$(OBJ)System.sym \
+	$(OBJ)TempFile.sym \
+	$(OBJ)Thread.sym \
+	$(OBJ)Time.sym \
+	$(OBJ)unicode.sym \
+	$(OBJ)units.sym \
+	$(OBJ)i18n.sym \
+	$(OBJ)BMPFormat.sym \
+	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.sym,) \
+	$(OBJ)lfbBlit.sym \
+	$(OBJ)lfbConvert.sym \
+	$(OBJ)LFBDisplayDriver.sym \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.sym,) \
+	$(if $(LINUX),$(OBJ)XDisplayDriver.sym,) \
+	$(OBJ)Bitmap.sym \
+	$(OBJ)BitmapResource.sym \
+	$(OBJ)Color.sym \
+	$(OBJ)Display.sym \
+	$(OBJ)DisplaySystem.sym \
+	$(OBJ)FontResource.sym \
+	$(OBJ)Resource.sym \
+	$(OBJ)Surface.sym \
+	$(OBJ)Button.sym \
+	$(OBJ)CalendarControl.sym \
+	$(OBJ)DataBox.sym \
+	$(OBJ)DropBox.sym \
+	$(OBJ)EditBox.sym \
+	$(OBJ)Label.sym \
+	$(OBJ)ListBox.sym \
+	$(OBJ)Menu.sym \
+	$(OBJ)Picture.sym
+SYMBOLS2 = \
+	$(OBJ)ProgressBar.sym \
+	$(OBJ)ScrollBar.sym \
+	$(OBJ)StatusBar.sym \
+	$(OBJ)Stacker.sym \
+	$(OBJ)PathBox.sym \
+	$(OBJ)ColorPicker.sym \
+	$(OBJ)FileDialog.sym \
+	$(OBJ)FindDialog.sym \
+	$(OBJ)GoToDialog.sym \
+	$(OBJ)MessageBox.sym \
+	$(OBJ)ReplaceDialog.sym \
+	$(OBJ)WindowList.sym \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.sym,) \
+	$(if $(WINDOWS),$(OBJ)Win32Interface.sym,) \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.sym,) \
+	$(OBJ)WindowsSkin.sym \
+	$(OBJ)Anchor.sym \
+	$(OBJ)ClipBoard.sym \
+	$(OBJ)Cursor.sym \
+	$(OBJ)FormDesigner.sym \
+	$(OBJ)GuiApplication.sym \
+	$(OBJ)Interface.sym \
+	$(OBJ)Key.sym \
+	$(OBJ)Skin.sym \
+	$(OBJ)Timer.sym \
+	$(OBJ)typeEdit.sym \
+	$(OBJ)Window.sym \
+	$(OBJ)Array.sym \
+	$(OBJ)AVLTree.sym \
+	$(OBJ)BuiltInContainer.sym \
+	$(OBJ)Container.sym \
+	$(OBJ)CustomAVLTree.sym \
+	$(OBJ)LinkList.sym \
+	$(OBJ)List.sym \
+	$(OBJ)Map.sym \
+	$(OBJ)BinaryTree.sym \
+	$(OBJ)BTNode.sym \
+	$(OBJ)dataTypes.sym \
+	$(OBJ)instance.sym \
+	$(OBJ)String.sym \
 	$(OBJ)OldList.sym
 
 IMPORTS = $(IMPORTS1) $(IMPORTS2)
-IMPORTS1 = $(OBJ)Archive.imp $(OBJ)BufferedFile.imp $(OBJ)Date.imp $(OBJ)DualPipe.imp \
-	$(OBJ)EARArchive.imp $(OBJ)File.imp $(OBJ)FileMonitor.imp $(OBJ)GlobalAppSettings.imp \
-	$(OBJ)JSON.imp $(OBJ)JSONGlobalSettings.imp $(OBJ)memory.imp $(OBJ)Mutex.imp \
-	$(OBJ)Semaphore.imp $(OBJ)System.imp $(OBJ)TempFile.imp $(OBJ)Thread.imp $(OBJ)Time.imp \
-	$(OBJ)unicode.imp $(OBJ)units.imp $(OBJ)i18n.imp $(OBJ)BMPFormat.imp \
-	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.imp,) $(OBJ)lfbBlit.imp $(OBJ)lfbConvert.imp $(OBJ)LFBDisplayDriver.imp \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.imp,) $(if $(LINUX),$(OBJ)XDisplayDriver.imp,) $(OBJ)Bitmap.imp \
-	$(OBJ)BitmapResource.imp $(OBJ)Color.imp $(OBJ)Display.imp $(OBJ)DisplaySystem.imp \
-	$(OBJ)FontResource.imp $(OBJ)Resource.imp $(OBJ)Surface.imp $(OBJ)Button.imp \
-	$(OBJ)CalendarControl.imp $(OBJ)DataBox.imp $(OBJ)DropBox.imp $(OBJ)EditBox.imp $(OBJ)Label.imp \
-	$(OBJ)ListBox.imp $(OBJ)Menu.imp $(OBJ)Picture.imp
-IMPORTS2 = $(OBJ)ProgressBar.imp $(OBJ)ScrollBar.imp $(OBJ)StatusBar.imp \
-	$(OBJ)Stacker.imp $(OBJ)PathBox.imp $(OBJ)ColorPicker.imp $(OBJ)FileDialog.imp \
-	$(OBJ)FindDialog.imp $(OBJ)GoToDialog.imp $(OBJ)MessageBox.imp $(OBJ)ReplaceDialog.imp \
-	$(OBJ)WindowList.imp $(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.imp,) \
-	$(if $(WINDOWS),$(OBJ)Win32Interface.imp,) $(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.imp,) $(OBJ)WindowsSkin.imp \
-	$(OBJ)Anchor.imp $(OBJ)ClipBoard.imp $(OBJ)Cursor.imp $(OBJ)FormDesigner.imp \
-	$(OBJ)GuiApplication.imp $(OBJ)Interface.imp $(OBJ)Key.imp $(OBJ)Skin.imp $(OBJ)Timer.imp \
-	$(OBJ)typeEdit.imp $(OBJ)Window.imp $(OBJ)Array.imp $(OBJ)AVLTree.imp $(OBJ)BuiltInContainer.imp \
-	$(OBJ)Container.imp $(OBJ)CustomAVLTree.imp $(OBJ)LinkList.imp $(OBJ)List.imp $(OBJ)Map.imp \
-	$(OBJ)BinaryTree.imp $(OBJ)BTNode.imp $(OBJ)dataTypes.imp $(OBJ)instance.imp $(OBJ)String.imp \
+IMPORTS1 = \
+	$(OBJ)Archive.imp \
+	$(OBJ)BufferedFile.imp \
+	$(OBJ)Date.imp \
+	$(OBJ)DualPipe.imp \
+	$(OBJ)EARArchive.imp \
+	$(OBJ)File.imp \
+	$(OBJ)FileMonitor.imp \
+	$(OBJ)GlobalAppSettings.imp \
+	$(OBJ)JSON.imp \
+	$(OBJ)JSONGlobalSettings.imp \
+	$(OBJ)memory.imp \
+	$(OBJ)Mutex.imp \
+	$(OBJ)Semaphore.imp \
+	$(OBJ)System.imp \
+	$(OBJ)TempFile.imp \
+	$(OBJ)Thread.imp \
+	$(OBJ)Time.imp \
+	$(OBJ)unicode.imp \
+	$(OBJ)units.imp \
+	$(OBJ)i18n.imp \
+	$(OBJ)BMPFormat.imp \
+	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.imp,) \
+	$(OBJ)lfbBlit.imp \
+	$(OBJ)lfbConvert.imp \
+	$(OBJ)LFBDisplayDriver.imp \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.imp,) \
+	$(if $(LINUX),$(OBJ)XDisplayDriver.imp,) \
+	$(OBJ)Bitmap.imp \
+	$(OBJ)BitmapResource.imp \
+	$(OBJ)Color.imp \
+	$(OBJ)Display.imp \
+	$(OBJ)DisplaySystem.imp \
+	$(OBJ)FontResource.imp \
+	$(OBJ)Resource.imp \
+	$(OBJ)Surface.imp \
+	$(OBJ)Button.imp \
+	$(OBJ)CalendarControl.imp \
+	$(OBJ)DataBox.imp \
+	$(OBJ)DropBox.imp \
+	$(OBJ)EditBox.imp \
+	$(OBJ)Label.imp \
+	$(OBJ)ListBox.imp \
+	$(OBJ)Menu.imp \
+	$(OBJ)Picture.imp
+IMPORTS2 = \
+	$(OBJ)ProgressBar.imp \
+	$(OBJ)ScrollBar.imp \
+	$(OBJ)StatusBar.imp \
+	$(OBJ)Stacker.imp \
+	$(OBJ)PathBox.imp \
+	$(OBJ)ColorPicker.imp \
+	$(OBJ)FileDialog.imp \
+	$(OBJ)FindDialog.imp \
+	$(OBJ)GoToDialog.imp \
+	$(OBJ)MessageBox.imp \
+	$(OBJ)ReplaceDialog.imp \
+	$(OBJ)WindowList.imp \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.imp,) \
+	$(if $(WINDOWS),$(OBJ)Win32Interface.imp,) \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.imp,) \
+	$(OBJ)WindowsSkin.imp \
+	$(OBJ)Anchor.imp \
+	$(OBJ)ClipBoard.imp \
+	$(OBJ)Cursor.imp \
+	$(OBJ)FormDesigner.imp \
+	$(OBJ)GuiApplication.imp \
+	$(OBJ)Interface.imp \
+	$(OBJ)Key.imp \
+	$(OBJ)Skin.imp \
+	$(OBJ)Timer.imp \
+	$(OBJ)typeEdit.imp \
+	$(OBJ)Window.imp \
+	$(OBJ)Array.imp \
+	$(OBJ)AVLTree.imp \
+	$(OBJ)BuiltInContainer.imp \
+	$(OBJ)Container.imp \
+	$(OBJ)CustomAVLTree.imp \
+	$(OBJ)LinkList.imp \
+	$(OBJ)List.imp \
+	$(OBJ)Map.imp \
+	$(OBJ)BinaryTree.imp \
+	$(OBJ)BTNode.imp \
+	$(OBJ)dataTypes.imp \
+	$(OBJ)instance.imp \
+	$(OBJ)String.imp \
 	$(OBJ)OldList.imp
 
 SOURCES = $(SOURCES1) $(SOURCES2) $(SOURCES3)
-SOURCES1 = src/sys/Archive.ec src/sys/BufferedFile.ec src/sys/Date.ec src/sys/DualPipe.ec \
-	src/sys/EARArchive.ec src/sys/File.ec src/sys/FileMonitor.ec src/sys/GlobalAppSettings.ec \
-	src/sys/JSON.ec src/sys/JSONGlobalSettings.ec src/sys/memory.ec src/sys/Mutex.ec \
-	src/sys/Semaphore.ec src/sys/System.ec src/sys/TempFile.ec src/sys/Thread.ec src/sys/Time.ec \
-	src/sys/unicode.ec src/sys/units.ec src/sys/File.c src/sys/DualPipe.c src/sys/System.c \
-	src/sys/i18n.ec src/gfx/bitmaps/BMPFormat.ec \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode-tables.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-arabic.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-buffer.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-gdef.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-gpos.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-gsub.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-hangul.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-hebrew.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-indic.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-khmer.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-myanmar.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-open.c) \
+SOURCES1 = \
+	src/sys/Archive.ec \
+	src/sys/BufferedFile.ec \
+	src/sys/Date.ec \
+	src/sys/DualPipe.ec \
+	src/sys/EARArchive.ec \
+	src/sys/File.ec \
+	src/sys/FileMonitor.ec \
+	src/sys/GlobalAppSettings.ec \
+	src/sys/JSON.ec \
+	src/sys/JSONGlobalSettings.ec \
+	src/sys/memory.ec \
+	src/sys/Mutex.ec \
+	src/sys/Semaphore.ec \
+	src/sys/System.ec \
+	src/sys/TempFile.ec \
+	src/sys/Thread.ec \
+	src/sys/Time.ec \
+	src/sys/unicode.ec \
+	src/sys/units.ec \
+	src/sys/File.c \
+	src/sys/DualPipe.c \
+	src/sys/System.c \
+	src/sys/i18n.ec \
+	src/gfx/bitmaps/BMPFormat.ec \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode-tables.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-arabic.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-buffer.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-gdef.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-gpos.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-gsub.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-hangul.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-hebrew.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-indic.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-khmer.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-myanmar.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-open.c) \
 	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-shaper.c)
-SOURCES2 = $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-stream.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c) $(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-impl.c) \
-	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-thai.c) $(if $(WINDOWS),src/gfx/drivers/GDIDisplayDriver.ec,) \
-	src/gfx/drivers/lfbBlit.ec src/gfx/drivers/lfbConvert.ec src/gfx/drivers/LFBDisplayDriver.ec \
-	$(if $(or $(LINUX),$(OSX)),src/gfx/drivers/NCursesDisplayDriver.ec,) $(if $(LINUX),src/gfx/drivers/XDisplayDriver.ec,) src/gfx/Bitmap.ec \
-	src/gfx/BitmapResource.ec src/gfx/Color.ec src/gfx/Display.ec src/gfx/DisplaySystem.ec \
-	src/gfx/FontResource.ec src/gfx/Resource.ec src/gfx/Surface.ec src/gui/controls/Button.ec \
-	src/gui/controls/CalendarControl.ec src/gui/controls/DataBox.ec src/gui/controls/DropBox.ec \
-	src/gui/controls/EditBox.ec src/gui/controls/Label.ec src/gui/controls/ListBox.ec \
-	src/gui/controls/Menu.ec src/gui/controls/Picture.ec src/gui/controls/ProgressBar.ec \
-	src/gui/controls/ScrollBar.ec src/gui/controls/StatusBar.ec src/gui/controls/Stacker.ec \
-	src/gui/controls/PathBox.ec src/gui/dialogs/ColorPicker.ec src/gui/dialogs/FileDialog.ec \
-	src/gui/dialogs/FindDialog.ec src/gui/dialogs/GoToDialog.ec src/gui/dialogs/MessageBox.ec \
-	src/gui/dialogs/ReplaceDialog.ec src/gui/dialogs/WindowList.ec \
+SOURCES2 = \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-stream.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-impl.c) \
+	$(if $(WINDOWS),,src/gfx/drivers/harfbuzz/harfbuzz-thai.c) \
+	$(if $(WINDOWS),src/gfx/drivers/GDIDisplayDriver.ec,) \
+	src/gfx/drivers/lfbBlit.ec \
+	src/gfx/drivers/lfbConvert.ec \
+	src/gfx/drivers/LFBDisplayDriver.ec \
+	$(if $(or $(LINUX),$(OSX)),src/gfx/drivers/NCursesDisplayDriver.ec,) \
+	$(if $(LINUX),src/gfx/drivers/XDisplayDriver.ec,) \
+	src/gfx/Bitmap.ec \
+	src/gfx/BitmapResource.ec \
+	src/gfx/Color.ec \
+	src/gfx/Display.ec \
+	src/gfx/DisplaySystem.ec \
+	src/gfx/FontResource.ec \
+	src/gfx/Resource.ec \
+	src/gfx/Surface.ec \
+	src/gui/controls/Button.ec \
+	src/gui/controls/CalendarControl.ec \
+	src/gui/controls/DataBox.ec \
+	src/gui/controls/DropBox.ec \
+	src/gui/controls/EditBox.ec \
+	src/gui/controls/Label.ec \
+	src/gui/controls/ListBox.ec \
+	src/gui/controls/Menu.ec \
+	src/gui/controls/Picture.ec \
+	src/gui/controls/ProgressBar.ec \
+	src/gui/controls/ScrollBar.ec \
+	src/gui/controls/StatusBar.ec \
+	src/gui/controls/Stacker.ec \
+	src/gui/controls/PathBox.ec \
+	src/gui/dialogs/ColorPicker.ec \
+	src/gui/dialogs/FileDialog.ec \
+	src/gui/dialogs/FindDialog.ec \
+	src/gui/dialogs/GoToDialog.ec \
+	src/gui/dialogs/MessageBox.ec \
+	src/gui/dialogs/ReplaceDialog.ec \
+	src/gui/dialogs/WindowList.ec \
 	$(if $(or $(LINUX),$(OSX)),src/gui/drivers/NCursesInterface.ec,)
-SOURCES3 = $(if $(WINDOWS),src/gui/drivers/Win32Interface.ec,) \
-	$(if $(or $(LINUX),$(OSX)),src/gui/drivers/XInterface.ec,) src/gui/skins/WindowsSkin.ec src/gui/Anchor.ec src/gui/ClipBoard.ec \
-	src/gui/Cursor.ec src/gui/FormDesigner.ec src/gui/GuiApplication.ec src/gui/Interface.ec \
-	src/gui/Key.ec src/gui/Skin.ec src/gui/Timer.ec src/gui/typeEdit.ec src/gui/Window.ec \
-	src/com/containers/Array.ec src/com/containers/AVLTree.ec src/com/containers/BuiltInContainer.ec \
-	src/com/containers/Container.ec src/com/containers/CustomAVLTree.ec src/com/containers/LinkList.ec \
-	src/com/containers/List.ec src/com/containers/Map.ec src/com/BinaryTree.ec src/com/BTNode.ec \
-	src/com/dataTypes.ec src/com/instance.ec src/com/String.ec src/com/OldList.ec src/com/instance.c
+SOURCES3 = \
+	$(if $(WINDOWS),src/gui/drivers/Win32Interface.ec,) \
+	$(if $(or $(LINUX),$(OSX)),src/gui/drivers/XInterface.ec,) \
+	src/gui/skins/WindowsSkin.ec \
+	src/gui/Anchor.ec \
+	src/gui/ClipBoard.ec \
+	src/gui/Cursor.ec \
+	src/gui/FormDesigner.ec \
+	src/gui/GuiApplication.ec \
+	src/gui/Interface.ec \
+	src/gui/Key.ec \
+	src/gui/Skin.ec \
+	src/gui/Timer.ec \
+	src/gui/typeEdit.ec \
+	src/gui/Window.ec \
+	src/com/containers/Array.ec \
+	src/com/containers/AVLTree.ec \
+	src/com/containers/BuiltInContainer.ec \
+	src/com/containers/Container.ec \
+	src/com/containers/CustomAVLTree.ec \
+	src/com/containers/LinkList.ec \
+	src/com/containers/List.ec \
+	src/com/containers/Map.ec \
+	src/com/BinaryTree.ec \
+	src/com/BTNode.ec \
+	src/com/dataTypes.ec \
+	src/com/instance.ec \
+	src/com/String.ec \
+	src/com/OldList.ec \
+	src/com/instance.c
 
 RESOURCES = $(RESOURCES1) $(RESOURCES2) $(RESOURCES3)
-RESOURCES1 = $(RES)actions/editFind.png $(RES)actions/folderNew.png \
-	$(RES)actions/goDown.png $(RES)actions/goHome.png $(RES)actions/goNext.png \
-	$(RES)actions/goPrevious.png $(RES)actions/goUp.png $(RES)actions/listAdd.png $(RES)actions/listRemove.png \
-	$(RES)actions/viewRefresh.png $(RES)actions/windowNew.png $(RES)constructs/class.png \
-	$(RES)constructs/data.png $(RES)constructs/dataPrivate.png $(RES)constructs/dataType.png \
-	$(RES)constructs/enum.png $(RES)constructs/enumValue.png $(RES)constructs/event.png \
-	$(RES)constructs/library.png $(RES)constructs/method.png $(RES)constructs/methodPrivate.png \
-	$(RES)constructs/namespace.png $(RES)constructs/property.png $(RES)constructs/propertyPrivate.png \
-	$(RES)controls/button.png $(RES)controls/calendar.png $(RES)controls/checkBox.png \
-	$(RES)controls/dataBox.png $(RES)controls/dropBox.png $(RES)controls/editBox.png \
-	$(RES)controls/groupBox.png $(RES)controls/label.png $(RES)controls/listBox.png $(RES)controls/menu.png \
-	$(RES)controls/optionBox.png $(RES)controls/progressBar.png $(RES)controls/scrollBarHorizontal.png \
-	$(RES)controls/scrollBarVertical.png $(RES)controls/statusBar.png $(RES)cursors/arrow.png $(RES)cursors/cross.png \
-	$(RES)cursors/iBeam.png $(RES)cursors/move.png $(RES)cursors/sizeEastWest.png \
-	$(RES)cursors/sizeNortEastSouthWest.png $(RES)cursors/sizeNorthSouth.png $(RES)cursors/sizeNortWestSouthEast.png \
-	$(RES)devices/computer.png $(RES)devices/driveHardDisk.png
-RESOURCES2 = $(RES)devices/driveRemovableMedia.png $(RES)devices/mediaFloppy.png \
-	$(RES)devices/mediaOptical.png $(RES)elements/areaClose.png $(RES)elements/areaMaximize.png \
-	$(RES)elements/areaMinimize.png $(RES)elements/areaRestore.png $(RES)elements/arrowDown.png \
-	$(RES)elements/arrowLeft.png $(RES)elements/arrowRight.png $(RES)elements/arrowUp.png \
-	$(RES)elements/checkBoxChecked.png $(RES)elements/checkBoxDisabled.png \
-	$(RES)elements/checkBoxDisabledChecked.png $(RES)elements/checkBox.png $(RES)elements/optionBoxDisabled.png \
-	$(RES)elements/optionBoxDisabledSelected.png $(RES)elements/optionBoxDown.png $(RES)elements/optionBoxSelectedDown.png \
-	$(RES)elements/optionBoxSelectedUp.png $(RES)elements/optionBoxUp.png $(RES)elements/orderAscending.png \
-	$(RES)elements/orderCategorized.png $(RES)elements/orderDescending.png $(RES)emblems/unreadable.png \
-	$(RES)mimeTypes/file.png $(RES)mimeTypes/image.png $(RES)mimeTypes/package.png \
-	$(RES)mimeTypes/packageOpticalDisc.png $(RES)mimeTypes/packageSoftware.png $(RES)mimeTypes/text.png \
-	$(RES)mimeTypes/textCHeader.png $(RES)mimeTypes/textCSource.png $(RES)mimeTypes/textC++Header.png \
-	$(RES)mimeTypes/textC++Source.png $(RES)mimeTypes/textEcereHeader.png $(RES)mimeTypes/textEcereProject.png \
-	$(RES)mimeTypes/textEcereSource.png $(RES)mimeTypes/textEcereWorkspace.png \
-	$(RES)mimeTypes/textHyperTextMarkup.png $(RES)mimeTypes/brokenFile.png $(RES)places/driveRemote.png
-RESOURCES3 = $(RES)places/folder.png $(RES)places/folderRemote.png \
-	$(RES)places/networkServer.png $(RES)places/networkWorkgroup.png $(RES)places/brokenFolder.png \
-	$(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png $(RES)unicode/derivedGeneralCategoryStripped.txt
+RESOURCES1 = \
+	$(RES)actions/editFind.png \
+	$(RES)actions/folderNew.png \
+	$(RES)actions/goDown.png \
+	$(RES)actions/goHome.png \
+	$(RES)actions/goNext.png \
+	$(RES)actions/goPrevious.png \
+	$(RES)actions/goUp.png \
+	$(RES)actions/listAdd.png \
+	$(RES)actions/listRemove.png \
+	$(RES)actions/viewRefresh.png \
+	$(RES)actions/windowNew.png \
+	$(RES)constructs/class.png \
+	$(RES)constructs/data.png \
+	$(RES)constructs/dataPrivate.png \
+	$(RES)constructs/dataType.png \
+	$(RES)constructs/enum.png \
+	$(RES)constructs/enumValue.png \
+	$(RES)constructs/event.png \
+	$(RES)constructs/library.png \
+	$(RES)constructs/method.png \
+	$(RES)constructs/methodPrivate.png \
+	$(RES)constructs/namespace.png \
+	$(RES)constructs/property.png \
+	$(RES)constructs/propertyPrivate.png \
+	$(RES)controls/button.png \
+	$(RES)controls/calendar.png \
+	$(RES)controls/checkBox.png \
+	$(RES)controls/dataBox.png \
+	$(RES)controls/dropBox.png \
+	$(RES)controls/editBox.png \
+	$(RES)controls/groupBox.png \
+	$(RES)controls/label.png \
+	$(RES)controls/listBox.png \
+	$(RES)controls/menu.png \
+	$(RES)controls/optionBox.png \
+	$(RES)controls/progressBar.png \
+	$(RES)controls/scrollBarHorizontal.png \
+	$(RES)controls/scrollBarVertical.png \
+	$(RES)controls/statusBar.png \
+	$(RES)cursors/arrow.png \
+	$(RES)cursors/cross.png \
+	$(RES)cursors/iBeam.png \
+	$(RES)cursors/move.png \
+	$(RES)cursors/sizeEastWest.png \
+	$(RES)cursors/sizeNortEastSouthWest.png \
+	$(RES)cursors/sizeNorthSouth.png \
+	$(RES)cursors/sizeNortWestSouthEast.png \
+	$(RES)devices/computer.png \
+	$(RES)devices/driveHardDisk.png
+RESOURCES2 = \
+	$(RES)devices/driveRemovableMedia.png \
+	$(RES)devices/mediaFloppy.png \
+	$(RES)devices/mediaOptical.png \
+	$(RES)elements/areaClose.png \
+	$(RES)elements/areaMaximize.png \
+	$(RES)elements/areaMinimize.png \
+	$(RES)elements/areaRestore.png \
+	$(RES)elements/arrowDown.png \
+	$(RES)elements/arrowLeft.png \
+	$(RES)elements/arrowRight.png \
+	$(RES)elements/arrowUp.png \
+	$(RES)elements/checkBoxChecked.png \
+	$(RES)elements/checkBoxDisabled.png \
+	$(RES)elements/checkBoxDisabledChecked.png \
+	$(RES)elements/checkBox.png \
+	$(RES)elements/optionBoxDisabled.png \
+	$(RES)elements/optionBoxDisabledSelected.png \
+	$(RES)elements/optionBoxDown.png \
+	$(RES)elements/optionBoxSelectedDown.png \
+	$(RES)elements/optionBoxSelectedUp.png \
+	$(RES)elements/optionBoxUp.png \
+	$(RES)elements/orderAscending.png \
+	$(RES)elements/orderCategorized.png \
+	$(RES)elements/orderDescending.png \
+	$(RES)emblems/unreadable.png \
+	$(RES)mimeTypes/file.png \
+	$(RES)mimeTypes/image.png \
+	$(RES)mimeTypes/package.png \
+	$(RES)mimeTypes/packageOpticalDisc.png \
+	$(RES)mimeTypes/packageSoftware.png \
+	$(RES)mimeTypes/text.png \
+	$(RES)mimeTypes/textCHeader.png \
+	$(RES)mimeTypes/textCSource.png \
+	$(RES)mimeTypes/textC++Header.png \
+	$(RES)mimeTypes/textC++Source.png \
+	$(RES)mimeTypes/textEcereHeader.png \
+	$(RES)mimeTypes/textEcereProject.png \
+	$(RES)mimeTypes/textEcereSource.png \
+	$(RES)mimeTypes/textEcereWorkspace.png \
+	$(RES)mimeTypes/textHyperTextMarkup.png \
+	$(RES)mimeTypes/brokenFile.png \
+	$(RES)places/driveRemote.png
+RESOURCES3 = \
+	$(RES)places/folder.png \
+	$(RES)places/folderRemote.png \
+	$(RES)places/networkServer.png \
+	$(RES)places/networkWorkgroup.png \
+	$(RES)places/brokenFolder.png \
+	$(RES)status/audioVolumeHigh.png \
+	$(RES)status/folderOpen.png \
+	$(RES)unicode/derivedGeneralCategoryStripped.txt
 
 # CROSS-PLATFORM MAGIC
 

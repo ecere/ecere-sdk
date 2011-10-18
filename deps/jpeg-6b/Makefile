@@ -13,16 +13,56 @@ RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)jpeg$(A)
 
-OBJECTS = $(OBJ)jcapimin.o $(OBJ)jcapistd.o $(OBJ)jccoefct.o $(OBJ)jccolor.o \
-	$(OBJ)jcdctmgr.o $(OBJ)jchuff.o $(OBJ)jcinit.o $(OBJ)jcmainct.o $(OBJ)jcmarker.o \
-	$(OBJ)jcmaster.o $(OBJ)jcomapi.o $(OBJ)jcparam.o $(OBJ)jcphuff.o $(OBJ)jcprepct.o \
-	$(OBJ)jcsample.o $(OBJ)jctrans.o $(OBJ)jdapimin.o $(OBJ)jdapistd.o $(OBJ)jdatadst.o \
-	$(OBJ)jdatasrc.o $(OBJ)jdcoefct.o $(OBJ)jdcolor.o $(OBJ)jddctmgr.o $(OBJ)jdhuff.o \
-	$(OBJ)jdinput.o $(OBJ)jdmainct.o $(OBJ)jdmarker.o $(OBJ)jdmaster.o $(OBJ)jdmerge.o \
-	$(OBJ)jdphuff.o $(OBJ)jdpostct.o $(OBJ)jdsample.o $(OBJ)jdtrans.o $(OBJ)jerror.o \
-	$(OBJ)jfdctflt.o $(OBJ)jfdctfst.o $(OBJ)jfdctint.o $(OBJ)jidctflt.o $(OBJ)jidctfst.o \
-	$(OBJ)jidctint.o $(OBJ)jidctred.o $(OBJ)jmemansi.o $(OBJ)jmemmgr.o $(OBJ)jmemname.o \
-	$(OBJ)jmemnobs.o $(OBJ)jquant1.o $(OBJ)jquant2.o $(OBJ)jutils.o $(OBJ)transupp.o
+OBJECTS = \
+	$(OBJ)jcapimin.o \
+	$(OBJ)jcapistd.o \
+	$(OBJ)jccoefct.o \
+	$(OBJ)jccolor.o \
+	$(OBJ)jcdctmgr.o \
+	$(OBJ)jchuff.o \
+	$(OBJ)jcinit.o \
+	$(OBJ)jcmainct.o \
+	$(OBJ)jcmarker.o \
+	$(OBJ)jcmaster.o \
+	$(OBJ)jcomapi.o \
+	$(OBJ)jcparam.o \
+	$(OBJ)jcphuff.o \
+	$(OBJ)jcprepct.o \
+	$(OBJ)jcsample.o \
+	$(OBJ)jctrans.o \
+	$(OBJ)jdapimin.o \
+	$(OBJ)jdapistd.o \
+	$(OBJ)jdatadst.o \
+	$(OBJ)jdatasrc.o \
+	$(OBJ)jdcoefct.o \
+	$(OBJ)jdcolor.o \
+	$(OBJ)jddctmgr.o \
+	$(OBJ)jdhuff.o \
+	$(OBJ)jdinput.o \
+	$(OBJ)jdmainct.o \
+	$(OBJ)jdmarker.o \
+	$(OBJ)jdmaster.o \
+	$(OBJ)jdmerge.o \
+	$(OBJ)jdphuff.o \
+	$(OBJ)jdpostct.o \
+	$(OBJ)jdsample.o \
+	$(OBJ)jdtrans.o \
+	$(OBJ)jerror.o \
+	$(OBJ)jfdctflt.o \
+	$(OBJ)jfdctfst.o \
+	$(OBJ)jfdctint.o \
+	$(OBJ)jidctflt.o \
+	$(OBJ)jidctfst.o \
+	$(OBJ)jidctint.o \
+	$(OBJ)jidctred.o \
+	$(OBJ)jmemansi.o \
+	$(OBJ)jmemmgr.o \
+	$(OBJ)jmemname.o \
+	$(OBJ)jmemnobs.o \
+	$(OBJ)jquant1.o \
+	$(OBJ)jquant2.o \
+	$(OBJ)jutils.o \
+	$(OBJ)transupp.o
 
 COBJECTS =
 
@@ -30,12 +70,56 @@ SYMBOLS =
 
 IMPORTS =
 
-SOURCES = jcapimin.c jcapistd.c jccoefct.c jccolor.c jcdctmgr.c jchuff.c jcinit.c jcmainct.c \
-	jcmarker.c jcmaster.c jcomapi.c jcparam.c jcphuff.c jcprepct.c jcsample.c jctrans.c \
-	jdapimin.c jdapistd.c jdatadst.c jdatasrc.c jdcoefct.c jdcolor.c jddctmgr.c jdhuff.c \
-	jdinput.c jdmainct.c jdmarker.c jdmaster.c jdmerge.c jdphuff.c jdpostct.c jdsample.c \
-	jdtrans.c jerror.c jfdctflt.c jfdctfst.c jfdctint.c jidctflt.c jidctfst.c jidctint.c \
-	jidctred.c jmemansi.c jmemmgr.c jmemname.c jmemnobs.c jquant1.c jquant2.c jutils.c transupp.c
+SOURCES = \
+	jcapimin.c \
+	jcapistd.c \
+	jccoefct.c \
+	jccolor.c \
+	jcdctmgr.c \
+	jchuff.c \
+	jcinit.c \
+	jcmainct.c \
+	jcmarker.c \
+	jcmaster.c \
+	jcomapi.c \
+	jcparam.c \
+	jcphuff.c \
+	jcprepct.c \
+	jcsample.c \
+	jctrans.c \
+	jdapimin.c \
+	jdapistd.c \
+	jdatadst.c \
+	jdatasrc.c \
+	jdcoefct.c \
+	jdcolor.c \
+	jddctmgr.c \
+	jdhuff.c \
+	jdinput.c \
+	jdmainct.c \
+	jdmarker.c \
+	jdmaster.c \
+	jdmerge.c \
+	jdphuff.c \
+	jdpostct.c \
+	jdsample.c \
+	jdtrans.c \
+	jerror.c \
+	jfdctflt.c \
+	jfdctfst.c \
+	jfdctint.c \
+	jidctflt.c \
+	jidctfst.c \
+	jidctint.c \
+	jidctred.c \
+	jmemansi.c \
+	jmemmgr.c \
+	jmemname.c \
+	jmemnobs.c \
+	jquant1.c \
+	jquant2.c \
+	jutils.c \
+	transupp.c
 
 RESOURCES =
 

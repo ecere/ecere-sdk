@@ -13,9 +13,22 @@ RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)png$(A)
 
-OBJECTS = $(OBJ)png.o $(OBJ)pngerror.o $(OBJ)pngget.o $(OBJ)pngmem.o $(OBJ)pngpread.o \
-	$(OBJ)pngread.o $(OBJ)pngrio.o $(OBJ)pngrtran.o $(OBJ)pngrutil.o $(OBJ)pngset.o \
-	$(OBJ)pngtrans.o $(OBJ)pngwio.o $(OBJ)pngwrite.o $(OBJ)pngwtran.o $(OBJ)pngwutil.o
+OBJECTS = \
+	$(OBJ)png.o \
+	$(OBJ)pngerror.o \
+	$(OBJ)pngget.o \
+	$(OBJ)pngmem.o \
+	$(OBJ)pngpread.o \
+	$(OBJ)pngread.o \
+	$(OBJ)pngrio.o \
+	$(OBJ)pngrtran.o \
+	$(OBJ)pngrutil.o \
+	$(OBJ)pngset.o \
+	$(OBJ)pngtrans.o \
+	$(OBJ)pngwio.o \
+	$(OBJ)pngwrite.o \
+	$(OBJ)pngwtran.o \
+	$(OBJ)pngwutil.o
 
 COBJECTS =
 
@@ -23,8 +36,21 @@ SYMBOLS =
 
 IMPORTS =
 
-SOURCES = ./png.c ./pngerror.c ./pngget.c ./pngmem.c ./pngpread.c ./pngread.c ./pngrio.c \
-	./pngrtran.c ./pngrutil.c ./pngset.c ./pngtrans.c ./pngwio.c ./pngwrite.c ./pngwtran.c \
+SOURCES = \
+	./png.c \
+	./pngerror.c \
+	./pngget.c \
+	./pngmem.c \
+	./pngpread.c \
+	./pngread.c \
+	./pngrio.c \
+	./pngrtran.c \
+	./pngrutil.c \
+	./pngset.c \
+	./pngtrans.c \
+	./pngwio.c \
+	./pngwrite.c \
+	./pngwtran.c \
 	./pngwutil.c
 
 RESOURCES =

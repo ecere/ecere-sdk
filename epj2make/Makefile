@@ -15,21 +15,51 @@ CONSOLE = -mconsole
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/epj2make$(E)
 
-OBJECTS = $(OBJ)Project.o $(OBJ)ProjectConfig.o $(OBJ)ProjectNode.o $(OBJ)IDESettings.o \
-	$(OBJ)OldIDESettings.o $(OBJ)StringsBox.o $(OBJ)epj2make.o $(OBJ)$(MODULE).main$(O)
+OBJECTS = \
+	$(OBJ)Project.o \
+	$(OBJ)ProjectConfig.o \
+	$(OBJ)ProjectNode.o \
+	$(OBJ)IDESettings.o \
+	$(OBJ)OldIDESettings.o \
+	$(OBJ)StringsBox.o \
+	$(OBJ)epj2make.o \
+	$(OBJ)$(MODULE).main$(O)
 
-COBJECTS = $(OBJ)Project.c $(OBJ)ProjectConfig.c $(OBJ)ProjectNode.c $(OBJ)IDESettings.c \
-	$(OBJ)OldIDESettings.c $(OBJ)StringsBox.c $(OBJ)epj2make.c
+COBJECTS = \
+	$(OBJ)Project.c \
+	$(OBJ)ProjectConfig.c \
+	$(OBJ)ProjectNode.c \
+	$(OBJ)IDESettings.c \
+	$(OBJ)OldIDESettings.c \
+	$(OBJ)StringsBox.c \
+	$(OBJ)epj2make.c
 
-SYMBOLS = $(OBJ)Project.sym $(OBJ)ProjectConfig.sym $(OBJ)ProjectNode.sym \
-	$(OBJ)IDESettings.sym $(OBJ)OldIDESettings.sym $(OBJ)StringsBox.sym $(OBJ)epj2make.sym
+SYMBOLS = \
+	$(OBJ)Project.sym \
+	$(OBJ)ProjectConfig.sym \
+	$(OBJ)ProjectNode.sym \
+	$(OBJ)IDESettings.sym \
+	$(OBJ)OldIDESettings.sym \
+	$(OBJ)StringsBox.sym \
+	$(OBJ)epj2make.sym
 
-IMPORTS = $(OBJ)Project.imp $(OBJ)ProjectConfig.imp $(OBJ)ProjectNode.imp \
-	$(OBJ)IDESettings.imp $(OBJ)OldIDESettings.imp $(OBJ)StringsBox.imp $(OBJ)epj2make.imp
+IMPORTS = \
+	$(OBJ)Project.imp \
+	$(OBJ)ProjectConfig.imp \
+	$(OBJ)ProjectNode.imp \
+	$(OBJ)IDESettings.imp \
+	$(OBJ)OldIDESettings.imp \
+	$(OBJ)StringsBox.imp \
+	$(OBJ)epj2make.imp
 
-SOURCES = ../ide/src/project/Project.ec ../ide/src/project/ProjectConfig.ec \
-	../ide/src/project/ProjectNode.ec ../ide/src/IDESettings.ec ../ide/src/OldIDESettings.ec \
-	../extras/gui/controls/StringsBox.ec epj2make.ec
+SOURCES = \
+	../ide/src/project/Project.ec \
+	../ide/src/project/ProjectConfig.ec \
+	../ide/src/project/ProjectNode.ec \
+	../ide/src/IDESettings.ec \
+	../ide/src/OldIDESettings.ec \
+	../extras/gui/controls/StringsBox.ec \
+	epj2make.ec
 
 RESOURCES = ../include.mk
 

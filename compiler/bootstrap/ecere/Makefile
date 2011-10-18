@@ -13,19 +13,60 @@ RES = res/
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)ecereBootstrap$(A)
 
-OBJECTS = $(OBJ)Array.o $(OBJ)AVLTree.o $(OBJ)BinaryTree.o $(OBJ)BTNode.o \
-	$(OBJ)BufferedFile.o $(OBJ)BuiltInContainer.o $(OBJ)Container.o $(OBJ)CustomAVLTree.o \
-	$(OBJ)dataTypes.o $(OBJ)DualPipe.o $(OBJ)ecere.main.o $(OBJ)File.o $(OBJ)instance.o \
-	$(OBJ)LinkList.o $(OBJ)List.o $(OBJ)Map.o $(OBJ)memory.o $(OBJ)OldList.o $(OBJ)String.o \
-	$(OBJ)System.o $(OBJ)TempFile.o $(OBJ)instance.c.o $(OBJ)DualPipe.c.o $(OBJ)File.c.o \
-	$(OBJ)System.c.o $(OBJ)i18n.o
+OBJECTS = \
+	$(OBJ)Array.o \
+	$(OBJ)AVLTree.o \
+	$(OBJ)BinaryTree.o \
+	$(OBJ)BTNode.o \
+	$(OBJ)BufferedFile.o \
+	$(OBJ)BuiltInContainer.o \
+	$(OBJ)Container.o \
+	$(OBJ)CustomAVLTree.o \
+	$(OBJ)dataTypes.o \
+	$(OBJ)DualPipe.o \
+	$(OBJ)ecere.main.o \
+	$(OBJ)File.o \
+	$(OBJ)instance.o \
+	$(OBJ)LinkList.o \
+	$(OBJ)List.o \
+	$(OBJ)Map.o \
+	$(OBJ)memory.o \
+	$(OBJ)OldList.o \
+	$(OBJ)String.o \
+	$(OBJ)System.o \
+	$(OBJ)TempFile.o \
+	$(OBJ)instance.c.o \
+	$(OBJ)DualPipe.c.o \
+	$(OBJ)File.c.o \
+	$(OBJ)System.c.o \
+	$(OBJ)i18n.o
 
-SOURCES = bootstrap/Array.c bootstrap/AVLTree.c bootstrap/BinaryTree.c bootstrap/i18n.c \
-	bootstrap/BTNode.c bootstrap/BufferedFile.c bootstrap/BuiltInContainer.c bootstrap/Container.c \
-	bootstrap/CustomAVLTree.c bootstrap/dataTypes.c bootstrap/DualPipe.c bootstrap/ecere.main.c \
-	bootstrap/File.c bootstrap/instance.c bootstrap/LinkList.c bootstrap/List.c bootstrap/Map.c \
-	bootstrap/memory.c bootstrap/OldList.c bootstrap/String.c bootstrap/System.c bootstrap/TempFile.c \
-	../../../ecere/src/com/instance.c ../../../ecere/src/sys/DualPipe.c ../../../ecere/src/sys/File.c \
+SOURCES = \
+	bootstrap/Array.c \
+	bootstrap/AVLTree.c \
+	bootstrap/BinaryTree.c \
+	bootstrap/i18n.c \
+	bootstrap/BTNode.c \
+	bootstrap/BufferedFile.c \
+	bootstrap/BuiltInContainer.c \
+	bootstrap/Container.c \
+	bootstrap/CustomAVLTree.c \
+	bootstrap/dataTypes.c \
+	bootstrap/DualPipe.c \
+	bootstrap/ecere.main.c \
+	bootstrap/File.c \
+	bootstrap/instance.c \
+	bootstrap/LinkList.c \
+	bootstrap/List.c \
+	bootstrap/Map.c \
+	bootstrap/memory.c \
+	bootstrap/OldList.c \
+	bootstrap/String.c \
+	bootstrap/System.c \
+	bootstrap/TempFile.c \
+	../../../ecere/src/com/instance.c \
+	../../../ecere/src/sys/DualPipe.c \
+	../../../ecere/src/sys/File.c \
 	../../../ecere/src/sys/System.c
 
 # CROSS-PLATFORM MAGIC
