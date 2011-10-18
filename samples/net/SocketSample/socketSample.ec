@@ -107,7 +107,7 @@ class SocketSample : Window
          SamplePacket * packet = (SamplePacket *)new byte[size];
          packet->stringLen = len;
          memcpy(packet->string, string, len+1);
-         // If we've connected to another server, we use the connectedSocket, otherwise we use the servingSocket (Send back to who connected to us)
+         // If we've connected to another server, we use the connectedSocket, otherwise we use the servingSocket (Send back to whom connected to us)
          (connectedSocket ? connectedSocket : servingSocket).Send(packet, size);
          // Make sure to free memory allocated with 'new'
          delete packet;
@@ -163,7 +163,7 @@ class SocketSample : Window
 // The form
 SocketSample form {};
 
-// The servuce
+// The service
 SampleService service { port = samplePort };
 
 // We use 2 sockets: one for when we connect to a server, one for the incoming connections to our SampleService
