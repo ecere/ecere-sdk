@@ -13,14 +13,51 @@ RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)freetype$(A)
 
-OBJECTS = $(OBJ)afglobal.o $(OBJ)afindic.o $(OBJ)autofit.o $(OBJ)ftapi.o $(OBJ)ftbase.o \
-	$(OBJ)ftbbox.o $(OBJ)ftbdf.o $(OBJ)ftbitmap.o $(OBJ)ftdebug.o $(OBJ)ftgasp.o $(OBJ)ftglyph.o \
-	$(OBJ)ftgxval.o $(OBJ)ftinit.o $(OBJ)ftlcdfil.o $(OBJ)ftmm.o $(OBJ)ftotval.o $(OBJ)ftpatent.o \
-	$(OBJ)ftpfr.o $(OBJ)ftstroke.o $(OBJ)ftsynth.o $(OBJ)ftsystem.o $(OBJ)fttype1.o \
-	$(OBJ)ftwinfnt.o $(OBJ)ftxf86.o $(OBJ)bdf.o $(OBJ)ftcache.o $(OBJ)cff.o $(OBJ)type1cid.o \
-	$(OBJ)gxvalid.o $(OBJ)ftgzip.o $(OBJ)ftlzw.o $(OBJ)otvalid.o $(OBJ)pcf.o $(OBJ)pfr.o \
-	$(OBJ)psaux.o $(OBJ)pshinter.o $(OBJ)psnames.o $(OBJ)raster.o $(OBJ)sfnt.o $(OBJ)smooth.o \
-	$(OBJ)truetype.o $(OBJ)type1.o $(OBJ)type42.o $(OBJ)winfnt.o
+OBJECTS = \
+	$(OBJ)afglobal.o \
+	$(OBJ)afindic.o \
+	$(OBJ)autofit.o \
+	$(OBJ)ftapi.o \
+	$(OBJ)ftbase.o \
+	$(OBJ)ftbbox.o \
+	$(OBJ)ftbdf.o \
+	$(OBJ)ftbitmap.o \
+	$(OBJ)ftdebug.o \
+	$(OBJ)ftgasp.o \
+	$(OBJ)ftglyph.o \
+	$(OBJ)ftgxval.o \
+	$(OBJ)ftinit.o \
+	$(OBJ)ftlcdfil.o \
+	$(OBJ)ftmm.o \
+	$(OBJ)ftotval.o \
+	$(OBJ)ftpatent.o \
+	$(OBJ)ftpfr.o \
+	$(OBJ)ftstroke.o \
+	$(OBJ)ftsynth.o \
+	$(OBJ)ftsystem.o \
+	$(OBJ)fttype1.o \
+	$(OBJ)ftwinfnt.o \
+	$(OBJ)ftxf86.o \
+	$(OBJ)bdf.o \
+	$(OBJ)ftcache.o \
+	$(OBJ)cff.o \
+	$(OBJ)type1cid.o \
+	$(OBJ)gxvalid.o \
+	$(OBJ)ftgzip.o \
+	$(OBJ)ftlzw.o \
+	$(OBJ)otvalid.o \
+	$(OBJ)pcf.o \
+	$(OBJ)pfr.o \
+	$(OBJ)psaux.o \
+	$(OBJ)pshinter.o \
+	$(OBJ)psnames.o \
+	$(OBJ)raster.o \
+	$(OBJ)sfnt.o \
+	$(OBJ)smooth.o \
+	$(OBJ)truetype.o \
+	$(OBJ)type1.o \
+	$(OBJ)type42.o \
+	$(OBJ)winfnt.o
 
 COBJECTS =
 
@@ -28,16 +65,51 @@ SYMBOLS =
 
 IMPORTS =
 
-SOURCES = src/autofit/afglobal.c src/autofit/afindic.c src/autofit/autofit.c \
-	src/base/ftapi.c src/base/ftbase.c src/base/ftbbox.c src/base/ftbdf.c src/base/ftbitmap.c \
-	src/base/ftdebug.c src/base/ftgasp.c src/base/ftglyph.c src/base/ftgxval.c src/base/ftinit.c \
-	src/base/ftlcdfil.c src/base/ftmm.c src/base/ftotval.c src/base/ftpatent.c src/base/ftpfr.c \
-	src/base/ftstroke.c src/base/ftsynth.c src/base/ftsystem.c src/base/fttype1.c src/base/ftwinfnt.c \
-	src/base/ftxf86.c src/bdf/bdf.c src/cache/ftcache.c src/cff/cff.c src/cid/type1cid.c \
-	src/gxvalid/gxvalid.c src/gzip/ftgzip.c src/lzw/ftlzw.c src/otvalid/otvalid.c src/pcf/pcf.c \
-	src/pfr/pfr.c src/psaux/psaux.c src/pshinter/pshinter.c src/psnames/psnames.c \
-	src/raster/raster.c src/sfnt/sfnt.c src/smooth/smooth.c src/truetype/truetype.c src/type1/type1.c \
-	src/type42/type42.c src/winfonts/winfnt.c
+SOURCES = \
+	src/autofit/afglobal.c \
+	src/autofit/afindic.c \
+	src/autofit/autofit.c \
+	src/base/ftapi.c \
+	src/base/ftbase.c \
+	src/base/ftbbox.c \
+	src/base/ftbdf.c \
+	src/base/ftbitmap.c \
+	src/base/ftdebug.c \
+	src/base/ftgasp.c \
+	src/base/ftglyph.c \
+	src/base/ftgxval.c \
+	src/base/ftinit.c \
+	src/base/ftlcdfil.c \
+	src/base/ftmm.c \
+	src/base/ftotval.c \
+	src/base/ftpatent.c \
+	src/base/ftpfr.c \
+	src/base/ftstroke.c \
+	src/base/ftsynth.c \
+	src/base/ftsystem.c \
+	src/base/fttype1.c \
+	src/base/ftwinfnt.c \
+	src/base/ftxf86.c \
+	src/bdf/bdf.c \
+	src/cache/ftcache.c \
+	src/cff/cff.c \
+	src/cid/type1cid.c \
+	src/gxvalid/gxvalid.c \
+	src/gzip/ftgzip.c \
+	src/lzw/ftlzw.c \
+	src/otvalid/otvalid.c \
+	src/pcf/pcf.c \
+	src/pfr/pfr.c \
+	src/psaux/psaux.c \
+	src/pshinter/pshinter.c \
+	src/psnames/psnames.c \
+	src/raster/raster.c \
+	src/sfnt/sfnt.c \
+	src/smooth/smooth.c \
+	src/truetype/truetype.c \
+	src/type1/type1.c \
+	src/type42/type42.c \
+	src/winfonts/winfnt.c
 
 RESOURCES =
 

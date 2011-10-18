@@ -15,9 +15,13 @@ CONSOLE =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/ecs$(E)
 
-OBJECTS = $(OBJ)ecs.o $(OBJ)$(MODULE).main$(O)
+OBJECTS = \
+	$(OBJ)ecs.o \
+	$(OBJ)$(MODULE).main$(O)
 
-SOURCES = bootstrap/ecs.c bootstrap/ecs.main.c
+SOURCES = \
+	bootstrap/ecs.c \
+	bootstrap/ecs.main.c
 
 # CROSS-PLATFORM MAGIC
 
