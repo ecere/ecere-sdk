@@ -440,7 +440,7 @@ class OptionBox<class Z> : CommonControl
                            Iterator<PlatformOptions> it { c.platforms };
                            if(it.Find(p))
                            {
-                              it.Remove(p);
+                              it.Remove();
                               delete p;
                            }
                         }

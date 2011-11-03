@@ -1225,7 +1225,10 @@ static void * _myrealloc(void * pointer, unsigned int size)
       if(pool)
       {
          // if((1 << pool) >= size && (pool - SIZE_POSITION(size)) <= 1)
-         if(NEXT_SIZE(size) == pool->blockSize)
+         uint ns = NEXT_SIZE(size);
+         uint mod = ns % 4;
+         if(mod) ns += 4-mod;
+         if(ns == pool->blockSize)
          {
             newPointer = pointer;
             pool->usedSpace += size - block.size;
@@ -1270,7 +1273,10 @@ static void * _mycrealloc(void * pointer, unsigned int size)
       if(pool)
       {
          // if((1 << pool) >= size && (pool - SIZE_POSITION(size)) <= 1)
-         if(NEXT_SIZE(size) == pool->blockSize)
+         uint ns = NEXT_SIZE(size);
+         uint mod = ns % 4;
+         if(mod) ns += 4-mod;
+         if(ns == pool->blockSize)
          {
             int extra = size - block.size;
             newPointer = pointer;
