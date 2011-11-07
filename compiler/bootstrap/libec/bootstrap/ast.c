@@ -1425,29 +1425,15 @@ struct __ecereNameSpace__ecere__com__Instance * intlStrings;
 
 extern unsigned int inCompiler;
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
-
-struct __ecereNameSpace__ecere__com__IteratorPointer;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__MapIterator;
-
-struct __ecereNameSpace__ecere__com__MapIterator
-{
-struct __ecereNameSpace__ecere__com__Instance * container;
-struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
-};
-
 extern struct Expression * QMkExpId(char *  id);
 
 struct Expression * MkExpCall(struct Expression * expression, struct __ecereNameSpace__ecere__sys__OldList * arguments);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_;
 
-struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_map(struct __ecereNameSpace__ecere__com__MapIterator * this);
+struct __ecereNameSpace__ecere__com__IteratorPointer;
 
-void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(struct __ecereNameSpace__ecere__com__MapIterator * this, struct __ecereNameSpace__ecere__com__Instance * value);
-
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
 
 struct __ecereNameSpace__ecere__com__Iterator
 {
@@ -1471,12 +1457,24 @@ struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
 
 if(inCompiler)
 {
-struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, intlStrings), it);
 struct ContextStringPair pair = 
 {
-string, context
+0, 0
 };
-struct __ecereNameSpace__ecere__com__Instance * list = (__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * list;
+int len = strlen(string);
+
+pair.string = __ecereNameSpace__ecere__com__eSystem_New(sizeof(unsigned char) * (len - 2 + 1));
+memcpy(pair.string, string + 1, len - 2);
+pair.string[len - 2] = '\0';
+if(context)
+{
+len = strlen(context);
+pair.context = __ecereNameSpace__ecere__com__eSystem_New(sizeof(unsigned char) * (len - 2 + 1));
+memcpy(pair.context, context + 1, len - 2);
+pair.context[len - 2] = '\0';
+}
+list = (__extension__ ({
 struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
 {
 intlStrings, 0
@@ -1489,8 +1487,6 @@ __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, 
 if(!list)
 {
 list = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_);
-pair.string = __ecereNameSpace__ecere__sys__CopyString(string);
-pair.context = __ecereNameSpace__ecere__sys__CopyString(context);
 __extension__ ({
 struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
 {
@@ -1500,6 +1496,11 @@ intlStrings, 0
 __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (((&pair))), 0x1);
 __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, list);
 });
+}
+else
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete(pair.string), pair.string = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete(pair.context), pair.context = 0);
 }
 ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (&yylloc));
 }
@@ -1511,10 +1512,10 @@ int lenString = strlen(string), lenContext = strlen(context);
 char * msgid = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (lenString - 2 + lenContext - 2 + 4));
 
 msgid[0] = '\"';
-memcpy(msgid + 1, string + 1, lenString - 2);
-msgid[1 + lenString - 2] = (char)4;
-memcpy(msgid + 1 + lenString - 2 + 1, context + 1, lenContext - 2);
-memcpy(msgid + 1 + lenString - 2 + 1 + lenContext - 2, "\"", 2);
+memcpy(msgid + 1, context + 1, lenContext - 2);
+msgid[1 + lenContext - 2] = (char)4;
+memcpy(msgid + 1 + lenContext - 2 + 1, string + 1, lenString - 2);
+memcpy(msgid + 1 + lenContext - 2 + 1 + lenString - 2, "\"", 2);
 ListAdd(list, MkExpString(msgid));
 }
 else
@@ -4179,6 +4180,16 @@ extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__
 
 extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
 
+extern char *  __ecereNameSpace__ecere__sys__GetSystemPathBuffer(char *  d, char *  p);
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__MapIterator;
+
+struct __ecereNameSpace__ecere__com__MapIterator
+{
+struct __ecereNameSpace__ecere__com__Instance * container;
+struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
+};
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Iterator;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
@@ -4188,6 +4199,12 @@ struct __ecereNameSpace__ecere__com__CustomAVLTree
 struct __ecereNameSpace__ecere__com__AVLNode * root;
 int count;
 };
+
+struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_map(struct __ecereNameSpace__ecere__com__MapIterator * this);
+
+void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(struct __ecereNameSpace__ecere__com__MapIterator * this, struct __ecereNameSpace__ecere__com__Instance * value);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
 
@@ -4207,6 +4224,7 @@ if(((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)intlStrings 
 {
 char * srcFile = GetSourceFile();
 char * objFile = GetOutputFile();
+char srcFileFixed[797];
 char potFile[797];
 struct __ecereNameSpace__ecere__com__Instance * f;
 
@@ -4218,6 +4236,7 @@ char * filePrefix = "";
 
 if(!(srcFile[0] && (srcFile[1] == ':' || srcFile[0] == '/')))
 filePrefix = (__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? ".\\" : "./";
+__ecereNameSpace__ecere__sys__GetSystemPathBuffer(srcFileFixed, srcFile);
 {
 struct __ecereNameSpace__ecere__com__MapIterator s = (s.container = (void *)0, s.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&s, (intlStrings)), s);
 
@@ -4232,24 +4251,12 @@ struct __ecereNameSpace__ecere__com__Iterator l =
 };
 
 while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&l))
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "#: %s%s:%d\n", filePrefix, srcFile, (*(struct Location *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&l)).start.line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "#: %s%s:%d\n", filePrefix, srcFileFixed, (*(struct Location *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&l)).start.line);
 }
 if(pair.context)
-{
-int lenString = strlen(pair.string), lenContext = strlen(pair.context);
-char * msgid = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (lenString - 2 + lenContext - 2 + 4));
-
-msgid[0] = '\"';
-memcpy(msgid + 1, pair.string + 1, lenString - 2);
-msgid[1 + lenString - 2] = (char)4;
-memcpy(msgid + 1 + lenString - 2 + 1, pair.context + 1, lenContext - 2);
-memcpy(msgid + 1 + lenString - 2 + 1 + lenContext - 2, "\"", 2);
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgid %s\n", msgid);
-(__ecereNameSpace__ecere__com__eSystem_Delete(msgid), msgid = 0);
-}
-else
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgid %s\n", pair.string);
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgstr %s\n\n", pair.string);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgctxt \"%s\"\n", pair.context);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgid \"%s\"\n", pair.string);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgstr \"%s\"\n\n", pair.string);
 }
 }
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
@@ -4317,7 +4324,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIdentifier", "Expre
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpDummy", "Expression MkExpDummy(void)", MkExpDummy, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpConstant", "Expression MkExpConstant(char * string)", MkExpConstant, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpString", "Expression MkExpString(char * string)", MkExpString, module, 2);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ContextStringPair", 0, sizeof(struct ContextStringPair), 0, 0, 0, module, 2, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ContextStringPair", 0, sizeof(struct ContextStringPair), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
 __ecereClass_ContextStringPair = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "string", "String", 4, 4, 1);

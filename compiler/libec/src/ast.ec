@@ -225,7 +225,7 @@ Expression MkExpString(char * string)
    return { type = stringExp, string = CopyString(string) };
 }
 
-struct ContextStringPair { String string, context; };
+public struct ContextStringPair { String string, context; };
 
 Map<ContextStringPair, List<Location> > intlStrings { };
 
@@ -234,18 +234,25 @@ Expression MkExpIntlString(char * string, char * context)
    OldList * list = MkList();
    if(inCompiler)
    {
-      MapIterator<ContextStringPair, List<Location>> it { map = intlStrings };
-      ContextStringPair pair {string, context};
-      List<Location> list = intlStrings[pair];
+      ContextStringPair pair { };
+      List<Location> list;
+      int len = strlen(string);
+
+      pair.string = new byte[len-2+1]; memcpy(pair.string, string+1, len-2); pair.string[len-2] = '\0';
+      if(context) { len = strlen(context); pair.context = new byte[len-2+1]; memcpy(pair.context, context+1, len-2); pair.context[len-2] = '\0'; }
+
+      list = intlStrings[pair];
       if(!list)
       {
          list = { };
-         pair.string = CopyString(string);
-         pair.context = CopyString(context);
          intlStrings[pair] = list;
       }
+      else
+      {
+         delete pair.string;
+         delete pair.context;
+      }
       list.Add(yylloc);
-      // if(!it.Index({string, context }, false))
    }
    ListAdd(list, QMkExpId("__thisModule"));
    ListAdd(list, MkExpString(string));
@@ -254,10 +261,10 @@ Expression MkExpIntlString(char * string, char * context)
       int lenString = strlen(string), lenContext = strlen(context);
       char * msgid = new char[lenString-2 + lenContext-2 + 4];
       msgid[0] = '\"';
-      memcpy(msgid+1, string+1, lenString-2);
-      msgid[1+lenString-2] = 4; // EOT
-      memcpy(msgid+1+lenString-2+1, context+1, lenContext-2);
-      memcpy(msgid+1+lenString-2+1+lenContext-2, "\"", 2);
+      memcpy(msgid+1, context+1, lenContext-2);
+      msgid[1+lenContext-2] = 4; // EOT
+      memcpy(msgid+1+lenContext-2+1, string+1, lenString-2);
+      memcpy(msgid+1+lenContext-2+1+lenString-2, "\"", 2);
       ListAdd(list, MkExpString(msgid));
    }
    else
@@ -2761,6 +2768,7 @@ public void OutputIntlStrings()
    {
       char * srcFile = GetSourceFile();
       char * objFile = GetOutputFile();
+      char srcFileFixed[MAX_LOCATION];
       char potFile[MAX_LOCATION];
       File f;
       ChangeExtension(objFile, "bowl", potFile);
@@ -2770,33 +2778,18 @@ public void OutputIntlStrings()
          char * filePrefix = "";
          if(!(srcFile[0] && (srcFile[1] == ':' || srcFile[0] == '/')))
             filePrefix = (GetRuntimePlatform() == win32) ? ".\\" : "./";
+         GetSystemPathBuffer(srcFileFixed, srcFile);
          for(s : intlStrings)
          {
             // TOFIX: (#654) ContextStringPair * pair = &s;
             ContextStringPair pair = &s;
             for(l : s)
-               f.Printf("#: %s%s:%d\n", filePrefix, srcFile, l.start.line);
-            /* PoEdit does not support msgctxt yet so we'll bundle them in the msgid for now
+               f.Printf("#: %s%s:%d\n", filePrefix, srcFileFixed, l.start.line);
+             // PoEdit now preserves and distinguish msgctxt
             if(pair.context)
-               f.Printf("msgctxt %s\n", pair.context);
-            f.Printf("msgid %s\n", pair.string);
-            */
-            if(pair.context)
-            {
-               int lenString = strlen(pair.string), lenContext = strlen(pair.context);
-               char * msgid = new char[lenString-2 + lenContext-2 + 4];
-               msgid[0] = '\"';
-               memcpy(msgid+1, pair.string+1, lenString-2);
-               msgid[1+lenString-2] = 4; // EOT
-               memcpy(msgid+1+lenString-2+1, pair.context+1, lenContext-2);
-               memcpy(msgid+1+lenString-2+1+lenContext-2, "\"", 2);
-
-               f.Printf("msgid %s\n", msgid);
-               delete msgid;
-            }
-            else
-               f.Printf("msgid %s\n", pair.string);
-            f.Printf("msgstr %s\n\n", pair.string);
+               f.Printf("msgctxt \"%s\"\n", pair.context);
+            f.Printf("msgid \"%s\"\n", pair.string);
+            f.Printf("msgstr \"%s\"\n\n", pair.string);
          }
          delete f;
       }

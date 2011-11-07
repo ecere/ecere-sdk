@@ -571,7 +571,7 @@ class IDE : Window
 
    MenuPlacement editMenu { menu, $"Edit", e };
    
-   Menu projectMenu { menu, $"Project", p };
+   Menu projectMenu { menu, $"Menu"."Project", p };
       MenuItem projectNewItem
       {
          projectMenu, $"New...", n, Key { n, true, true };

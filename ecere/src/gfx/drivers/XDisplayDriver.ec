@@ -321,7 +321,9 @@ static void PutBitmapMask(Pixmap mask, Bitmap bitmap) {
       case pixelFormat555:
       case pixelFormat565: {
          uint16 *p = (uint16*)bitmap.picture;
+#ifdef _DEBUG
          PrintLn(bitmap.pixelFormat);
+#endif
          for(y = 0; y<bitmap.height; y++, p+=bitmap.stride) {
             for(x = 0; x<bitmap.width; x++) {
                if(p[x])
