@@ -150,6 +150,7 @@ public:
       ersNumRows = 0;
       if(!report.groupings._[0].filtered)
       {
+         pleaseWait.master = destination.master;
          pleaseWait.Create();
          pleaseWait.progress.range = report.groupings._[0].row.tbl.rowsCount;
          pleaseWait.progress.progress = 0;
@@ -586,13 +587,14 @@ public class CSVReport : ReportDestination
       f.Puts(output);
    }
 
-   FileDialog saveTo { type = save, master = this, text = "Export as Spreadsheet (CSV)", filters = csvFilters, sizeFilters = sizeof(csvFilters) };
+   FileDialog saveTo { type = save, text = "Export as Spreadsheet (CSV)", filters = csvFilters, sizeFilters = sizeof(csvFilters) };
 
    void EndPage(Page page)
    {
       char filePath[MAX_LOCATION];
       strcpy(filePath, report.title);
       strcat(filePath, ".csv");
+      saveTo.master = master;
       saveTo.filePath = filePath;
       if(saveTo.Modal())
       {
