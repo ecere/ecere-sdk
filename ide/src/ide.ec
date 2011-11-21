@@ -1667,6 +1667,13 @@ class IDE : Window
                      workspace.Save();
                      findInFilesDialog.AddProjectItem(prj);
                      projectView.ProjectUpdateMakefileForAllConfigs(prj, true, true);
+
+                     {
+                        char location[MAX_LOCATION];
+                        StripLastDirectory(prj.topNode.path, location);
+                        ChangeProjectFileDialogDirectory(location);
+                     }
+
                      // projectView is associated with the main project and not with the one just added but
                      return projectView; // just to let the caller know something was opened
                   }
