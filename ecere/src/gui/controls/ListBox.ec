@@ -1381,9 +1381,17 @@ public:
       if(!row) row = currentRow;
       if(row)
       {
-         DataRow search;
+         DataRow sub, next, search;
          // Trying to move this here (Messed up deleting watches)
          //HideEditBox(false, false, true);
+
+         // Delete Sub Rows
+         for(sub = row.subRows.first; sub; sub = next)
+         {
+            next = sub.next;
+            DeleteRow(sub);
+         }
+
          if(row.parent.IsExpanded())
          {
             // TODO: FIX row indices
