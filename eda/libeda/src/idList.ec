@@ -139,6 +139,8 @@ public class Id : uint
          dataBox.OnConfigure(dropBox);
          dropBox.Create();
          dropBox.currentRow = dropBox.FindSubRow(this);
+         if(!dropBox.currentRow && this)
+            dataBox.SetData((uint *)&this, false);
          {
             DataRow r = dropBox.currentRow;
             if(r)
