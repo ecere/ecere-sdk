@@ -481,6 +481,10 @@ static void _FreeExpression(Expression exp, bool freePointer)
          if(exp._class)
             FreeSpecifier(exp._class);
          break;
+      case classDataExp:
+         if(exp.classData.id)
+            FreeIdentifier(exp.classData.id);
+            break;
    }
    if(freePointer)
    {
@@ -908,9 +912,16 @@ void FreeClassDef(ClassDef def)
       case accessOverrideClassDef:
          break;
       case classDataClassDef:
+      {
+         if(def.decl)
+            FreeDeclaration(def.decl);
          break;
+      }
       case classDesignerClassDef:
+      {
+         delete def.designer;
          break;
+      }
       case classFixedClassDef:
          break;
       case classNoExpansionClassDef:
@@ -922,11 +933,19 @@ void FreeClassDef(ClassDef def)
             FreeInitializer(def.initializer);
          break;
       case designerDefaultPropertyClassDef:
+      {
+         if(def.defaultProperty)
+            FreeIdentifier(def.defaultProperty);
          break;
+      }
       case memberAccessClassDef:
          break;
       case propertyWatchClassDef:
+      {
+         if(def.propertyWatch)
+            FreePropertyWatch(def.propertyWatch);
          break;
+      }
    }
    delete def;
 }
@@ -1053,6 +1072,7 @@ void FreeModuleData(Module module)
       DataMember dataMember;
       Method method;
       ClassTemplateParameter param;
+      ClassProperty classProp;
 
       if(_class.dataType)
       {
