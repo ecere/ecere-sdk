@@ -1136,3 +1136,29 @@ public bool GetAlNum(char ** buffer, char * string, int max)
    }
    return result;
 }
+
+public char * strcasestr(const char * haystack, const char * needle)
+{
+   if(haystack && *haystack && needle && *needle)
+   {
+      char * h = haystack;
+      char * a = haystack;
+      char * n = needle;
+      while(*h && *n)
+      {
+         if(toupper(*h) != toupper(*n))
+         {
+            ++a;
+            h = a;
+            n = needle;
+         }
+         else
+         {
+            ++h;
+            ++n;
+         }
+      }
+      return *n ? null : a;
+   }
+   return null;
+}
