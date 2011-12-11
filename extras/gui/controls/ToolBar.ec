@@ -170,6 +170,7 @@ public class ToolButton/*<class TT>*/ : public Button
    //isRemote = true;
    borderStyle = none;
    opacity = 0.0f;
+   bitmapAlignment = left;
 
 public:
    Window focusHolder;
