@@ -14355,6 +14355,21 @@ yyreduce:
     { ListAdd((yyvsp[-2].list), (yyvsp[0].exp)); ;}
     break;
 
+  case 625:
+#line 1986 "grammar.y"
+    { FreeList((yyvsp[0].list), FreeExpression); ;}
+    break;
+
+  case 626:
+#line 1987 "grammar.y"
+    { FreeList((yyvsp[0].list), FreeExpression); ;}
+    break;
+
+  case 627:
+#line 1988 "grammar.y"
+    { FreeList((yyvsp[0].list), FreeExpression); ;}
+    break;
+
   case 628:
 #line 1992 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[0].exp)); ;}
@@ -17622,7 +17637,7 @@ yyreduce:
     }
 
 /* Line 1037 of yacc.c.  */
-#line 17626 "grammar.ec"
+#line 17641 "grammar.ec"
 
   yyvsp -= yylen;
   yyssp -= yylen;

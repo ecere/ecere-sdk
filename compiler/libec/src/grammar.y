@@ -1983,9 +1983,9 @@ expression_error:
    | expression ',' error 
    | expression_error ',' error 
    | expression error
-   | expression expression
-   | expression_error expression
-   | expression expression_error
+   | expression expression                      { FreeList($2, FreeExpression); }
+   | expression_error expression                { FreeList($2, FreeExpression); }
+   | expression expression_error                { FreeList($2, FreeExpression); }
    ;
 
 expression_anon_inst_error: 
