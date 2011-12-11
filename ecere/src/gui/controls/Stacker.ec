@@ -99,6 +99,8 @@ public:
 
 static define stackerScrolling = 16;
 
+public enum FlipStackerSpringMode { none, spring };
+
 public class Stacker : Window
 {
 public:
@@ -125,12 +127,18 @@ public:
 
    property Array<Window> controls { get { return controls; } };
 
+   property Window flipper { set { flipper = value; } get { return flipper; } };
+   property FlipStackerSpringMode flipMode { set { flipMode = value; } get { return flipMode; } };
+
 private:
    ScrollDirection direction;
    int gap;
    bool scrollable;
    Array<Window> controls { };
    bool reverse;
+   Window flipper;
+   FlipStackerSpringMode flipMode;
+
    RepButton left
    {
       this, visible = false, bevelOver = true, nonClient = true, keyRepeat = true, opacity = 0;
@@ -225,78 +233,110 @@ private:
 
    void OnResize(int width, int height)
    {
+      // TOIMPROVE: this needs to maintain an order and allow for dynamically adding
+      //            children. inserting in the order should also be possible.
+      // TOIMPROVE: in Window.ec... it should be possible to change the order of children
+      //            at runtime. it should also be possible to choose where dynamically
+      //            created children are inserted.
+
       if(created)
       {
-         int y = 0;
-         Array<Window> oldControls = controls;
-         Array<Window> orderedControls;
+         int y, c, t;
+         bool r = reverse;
          Window child;
+         Window flip = null;
+         Array<Window> newControls { };
 
-         controls = { };     
-
-         for(c : oldControls)
+         for(c : controls)
          {
             for(child = firstChild; child; child = child.next)
             {
-               if(child.nonClient || !child.visible /*|| !child.created*/) continue;
+               if(child.nonClient) continue;
                if(c == child)
                {
-                  controls.Add(child);
+                  newControls.Add(child);
                   incref child;
                   break;
                }
             }
+            if(!child)
+            {
+               child = c;
+               delete child;
+            }
          }
          for(child = firstChild; child; child = child.next)
          {
-            if(child.nonClient || !child.visible /*|| !child.created*/) continue;
-            if(!controls.Find(child))
+            if(child.nonClient) continue;
+            if(!newControls.Find(child))
             {
-               controls.Add(child);
+               newControls.Add(child);
                incref child;
             }
          }
 
-         oldControls.Free();
-         delete oldControls;
+         delete controls;
+         controls = newControls;
+         newControls = null;
 
-         if(reverse)
+         y = 0;
+         for(c = reverse ? controls.count-1 : 0; c<controls.count && c>-1; c += reverse ? -1 : 1)
          {
-            int c;
-            orderedControls = { };
-            for(c = controls.count-1; c >= 0; c--)
-            {
-               child = controls[c];
-               orderedControls.Add(child);
-               incref child;
-            }
-         }
-         else
-            orderedControls = controls;
-         
-         for(child : orderedControls)
-         {
+            child = controls[c];
+            if(child.nonClient || !child.visible) continue;
             if(direction == vertical)
             {
-               if(reverse)
-                  child.anchor.bottom = y;
-               else
-                  child.anchor.top = y;
+               if(reverse) child.anchor.bottom = y;
+               else        child.anchor.top = y;
                y += child.size.h + gap;
             }
             else
             {
-               if(reverse)
-                  child.anchor.right = y;
-               else
-                  child.anchor.left = y;
+               if(reverse) child.anchor.right = y;
+               else        child.anchor.left = y;
                y += child.size.w + gap;
             }
+            if(flipper && child == flipper)
+            {
+               flip = child;
+               break;
+            }
          }
-         if(reverse)
+
+         if(flip)
          {
-            orderedControls.Free();
-            delete orderedControls;
+            y = 0;
+            child = null;
+            for(c = (reverse ? 0 : controls.count-1); c<controls.count && c>-1 && child != (Window)flip; c += (reverse ? 1 : -1))
+            {
+               child = controls[c];
+               if(child.nonClient || !child.visible) continue;
+               if(direction == vertical)
+               {
+                  if(reverse) child.anchor.top = y;
+                  else        child.anchor.bottom = y;
+                  y += child.size.h + gap;
+               }
+               else
+               {
+                  if(reverse) child.anchor.left = y;
+                  else        child.anchor.right = y;
+                  y += child.size.w + gap;
+               }
+            }
+            if(flipMode == spring)
+            {
+               if(direction == vertical)
+               {
+                  if(reverse) flip.anchor.top = y;
+                  else        flip.anchor.bottom = y;
+               }
+               else
+               {
+                  if(reverse) flip.anchor.left = y;
+                  else        flip.anchor.right = y;
+               }
+            }
          }
 
          if(scrollable && y > ((direction == horizontal) ? width : height))
