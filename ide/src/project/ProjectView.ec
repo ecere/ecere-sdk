@@ -1790,6 +1790,7 @@ class ProjectView : Window
    // Returns true if we opened something
    bool OpenSelectedNodes()
    {
+      bool result = false;
       OldList selection;
       OldLink item;
 
@@ -1801,11 +1802,12 @@ class ProjectView : Window
          if(node.type == file)
          {
             OpenNode(node);
-            return true;
+            result = true;
+            break;
          }
       }
       selection.Free(null);
-      return false;
+      return result;
    }
 
    void RemoveSelectedNodes()

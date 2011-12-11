@@ -25,30 +25,112 @@ SONAME =
 endif
 
 # $(OBJ)bsl.o is added manually here
-OBJECTS = $(OBJ)ast.o $(OBJ)copy.o $(OBJ)dbpass.o $(OBJ)ecdefs.o $(OBJ)expression.o \
-	$(OBJ)firstPass.o $(OBJ)freeAst.o $(OBJ)grammar.o $(OBJ)lexer.o $(OBJ)loadSymbols.o \
-	$(OBJ)output.o $(OBJ)pass0.o $(OBJ)pass1.o $(OBJ)pass15.o $(OBJ)pass16.o $(OBJ)pass2.o \
-	$(OBJ)pass3.o $(OBJ)shortcuts.o $(OBJ)type.o $(OBJ)bsl.o $(OBJ)$(MODULE).main$(O)
+OBJECTS = \
+	$(OBJ)ast.o \
+	$(OBJ)copy.o \
+	$(OBJ)dbpass.o \
+	$(OBJ)ecdefs.o \
+	$(OBJ)expression.o \
+	$(OBJ)firstPass.o \
+	$(OBJ)freeAst.o \
+	$(OBJ)grammar.o \
+	$(OBJ)lexer.o \
+	$(OBJ)loadSymbols.o \
+	$(OBJ)output.o \
+	$(OBJ)pass0.o \
+	$(OBJ)pass1.o \
+	$(OBJ)pass15.o \
+	$(OBJ)pass16.o \
+	$(OBJ)pass2.o \
+	$(OBJ)pass3.o \
+	$(OBJ)shortcuts.o \
+	$(OBJ)type.o \
+	$(OBJ)bsl.o \
+	$(OBJ)$(MODULE).main$(O)
 
-COBJECTS = $(OBJ)ast.c $(OBJ)copy.c $(OBJ)dbpass.c $(OBJ)ecdefs.c $(OBJ)expression.c \
-	$(OBJ)firstPass.c $(OBJ)freeAst.c $(OBJ)grammar.c $(OBJ)lexer.c $(OBJ)loadSymbols.c \
-	$(OBJ)output.c $(OBJ)pass0.c $(OBJ)pass1.c $(OBJ)pass15.c $(OBJ)pass16.c $(OBJ)pass2.c \
-	$(OBJ)pass3.c $(OBJ)shortcuts.c $(OBJ)type.c
+COBJECTS = \
+	$(OBJ)ast.c \
+	$(OBJ)copy.c \
+	$(OBJ)dbpass.c \
+	$(OBJ)ecdefs.c \
+	$(OBJ)expression.c \
+	$(OBJ)firstPass.c \
+	$(OBJ)freeAst.c \
+	$(OBJ)grammar.c \
+	$(OBJ)lexer.c \
+	$(OBJ)loadSymbols.c \
+	$(OBJ)output.c \
+	$(OBJ)pass0.c \
+	$(OBJ)pass1.c \
+	$(OBJ)pass15.c \
+	$(OBJ)pass16.c \
+	$(OBJ)pass2.c \
+	$(OBJ)pass3.c \
+	$(OBJ)shortcuts.c \
+	$(OBJ)type.c
 
-SYMBOLS = $(OBJ)ast.sym $(OBJ)copy.sym $(OBJ)dbpass.sym $(OBJ)ecdefs.sym \
-	$(OBJ)expression.sym $(OBJ)firstPass.sym $(OBJ)freeAst.sym $(OBJ)grammar.sym $(OBJ)lexer.sym \
-	$(OBJ)loadSymbols.sym $(OBJ)output.sym $(OBJ)pass0.sym $(OBJ)pass1.sym $(OBJ)pass15.sym \
-	$(OBJ)pass16.sym $(OBJ)pass2.sym $(OBJ)pass3.sym $(OBJ)shortcuts.sym $(OBJ)type.sym
+SYMBOLS = \
+	$(OBJ)ast.sym \
+	$(OBJ)copy.sym \
+	$(OBJ)dbpass.sym \
+	$(OBJ)ecdefs.sym \
+	$(OBJ)expression.sym \
+	$(OBJ)firstPass.sym \
+	$(OBJ)freeAst.sym \
+	$(OBJ)grammar.sym \
+	$(OBJ)lexer.sym \
+	$(OBJ)loadSymbols.sym \
+	$(OBJ)output.sym \
+	$(OBJ)pass0.sym \
+	$(OBJ)pass1.sym \
+	$(OBJ)pass15.sym \
+	$(OBJ)pass16.sym \
+	$(OBJ)pass2.sym \
+	$(OBJ)pass3.sym \
+	$(OBJ)shortcuts.sym \
+	$(OBJ)type.sym
 
-IMPORTS = $(OBJ)ast.imp $(OBJ)copy.imp $(OBJ)dbpass.imp $(OBJ)ecdefs.imp \
-	$(OBJ)expression.imp $(OBJ)firstPass.imp $(OBJ)freeAst.imp $(OBJ)grammar.imp $(OBJ)lexer.imp \
-	$(OBJ)loadSymbols.imp $(OBJ)output.imp $(OBJ)pass0.imp $(OBJ)pass1.imp $(OBJ)pass15.imp \
-	$(OBJ)pass16.imp $(OBJ)pass2.imp $(OBJ)pass3.imp $(OBJ)shortcuts.imp $(OBJ)type.imp
+IMPORTS = \
+	$(OBJ)ast.imp \
+	$(OBJ)copy.imp \
+	$(OBJ)dbpass.imp \
+	$(OBJ)ecdefs.imp \
+	$(OBJ)expression.imp \
+	$(OBJ)firstPass.imp \
+	$(OBJ)freeAst.imp \
+	$(OBJ)grammar.imp \
+	$(OBJ)lexer.imp \
+	$(OBJ)loadSymbols.imp \
+	$(OBJ)output.imp \
+	$(OBJ)pass0.imp \
+	$(OBJ)pass1.imp \
+	$(OBJ)pass15.imp \
+	$(OBJ)pass16.imp \
+	$(OBJ)pass2.imp \
+	$(OBJ)pass3.imp \
+	$(OBJ)shortcuts.imp \
+	$(OBJ)type.imp
 
-SOURCES = src/ast.ec src/copy.ec src/dbpass.ec src/ecdefs.ec src/expression.ec \
-	src/firstPass.ec src/freeAst.ec src/grammar.ec src/lexer.ec src/loadSymbols.ec src/output.ec \
-	src/pass0.ec src/pass1.ec src/pass15.ec src/pass16.ec src/pass2.ec src/pass3.ec \
-	src/shortcuts.ec src/type.ec
+SOURCES = \
+	src/ast.ec \
+	src/copy.ec \
+	src/dbpass.ec \
+	src/ecdefs.ec \
+	src/expression.ec \
+	src/firstPass.ec \
+	src/freeAst.ec \
+	src/grammar.ec \
+	src/lexer.ec \
+	src/loadSymbols.ec \
+	src/output.ec \
+	src/pass0.ec \
+	src/pass1.ec \
+	src/pass15.ec \
+	src/pass16.ec \
+	src/pass2.ec \
+	src/pass3.ec \
+	src/shortcuts.ec \
+	src/type.ec
 
 RESOURCES =
 

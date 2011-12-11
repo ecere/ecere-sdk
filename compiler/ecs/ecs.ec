@@ -1687,9 +1687,8 @@ class SymbolgenApp : Application
 
          //if(!strcmp(ext, "c"))
          {
-            File potFile = null;
-            Map<String, String> intlStrings { };
-            MapIterator<String, String> it { map = intlStrings };
+            Map<ContextStringPair, List<String> > intlStrings { };
+            MapIterator<ContextStringPair, List<String>> it { map = intlStrings };
 
             for(c = 1; c<argc; c++)
             {
@@ -1781,45 +1780,67 @@ class SymbolgenApp : Application
                         f = FileOpen(fileName, read);
                         if(f)
                         {
-                           if(!potFile)
-                           {
-                              char potFileName[MAX_LOCATION];
-                              strcpy(potFileName, output);
-                              StripExtension(potFileName);
-                              ChangeExtension(potFileName, "pot", potFileName);
-                              potFile = FileOpen(potFileName, write);
-                           }
-                           potFile.Printf("# %s\n", moduleName);
+                           static char line[65536];
+                           List<String> comments { };
+                           String msgid = null, msgstr = null, msgctxt = null;
                            while(!f.Eof())
                            {
-                              String comment = null, msgid = null, msgstr = null;
-                              int c;
-                              for(c = 0; c < 4; c++)
+                              if(f.GetLine(line, sizeof(line)))
                               {
-                                 static char line[65536];
-                                 if(f.GetLine(line, sizeof(line)))
+                                 int len;
+                                 TrimLSpaces(line, line);
+                                 if(line[0] == '#')
                                  {
-                                    if(c == 0) comment = CopyString(line);
-                                    else if(c == 1) msgid = CopyString(line);
-                                    else if(c == 2) msgstr = CopyString(line);
+                                    comments.Add(CopyString(line));
+                                 }
+                                 else if(strstr(line, "msgid \"") == line)
+                                 {
+                                    delete msgid;
+                                    msgid = CopyString(line + 7);
+                                    len = strlen(msgid);
+                                    if(len) msgid[len-1] = 0;
+                                 }
+                                 else if(strstr(line, "msgctxt \"") == line)
+                                 {
+                                    delete msgctxt;
+                                    msgctxt = CopyString(line + 9);
+                                    len = strlen(msgctxt);
+                                    if(len) msgctxt[len-1] = 0;
+                                 }
+                                 else if(strstr(line, "msgstr \"") == line)
+                                 {
+                                    delete msgstr;
+                                    msgstr = CopyString(line + 8);
+                                    len = strlen(msgstr);
+                                    if(len) msgstr[len-1] = 0;
+                                 }
+
+                                 if(msgid && msgstr)
+                                 {
+                                    ContextStringPair pair { msgid, msgctxt };
+                                    i18n = true;
+                                    if(!it.Index(pair, false))
+                                    {
+                                       msgid = null; msgctxt = null;
+                                       intlStrings[pair] = comments;
+                                       comments = { };
+                                    }
+                                    else
+                                    {
+                                       for(s : comments)
+                                          it.data.Add(s);
+                                       comments.RemoveAll();
+                                    }
+
+                                    delete msgid;
+                                    delete msgctxt;
+                                    delete msgstr;
                                  }
                               }
-                              if(msgid && !it.Index(msgid, false))
-                              {
-                                 i18n = true;
-                                 intlStrings[msgid] = comment;
-                                 if(comment)
-                                    potFile.Puts(comment); potFile.Puts("\n");
-                                 potFile.Puts(msgid); potFile.Puts("\n");
-                                 if(msgstr)
-                                    potFile.Puts(msgstr); potFile.Puts("\n");
-                                 potFile.Puts("\n");
-                                 delete msgstr;
-                                 // delete comment;
-                              }
                            }
+                           comments.Free();
+                           delete comments;
                            delete f;
-                           potFile.Puts("\n");
                         }
                      }
                   }
@@ -1844,10 +1865,40 @@ class SymbolgenApp : Application
             }
             WriteMain(output);
 
-            intlStrings.Free();
-            delete intlStrings;
-            if(potFile)
-               delete potFile;
+            if(intlStrings.count)
+            {
+               File potFile;
+               char potFileName[MAX_LOCATION];
+               //strcpy(potFileName, output);
+               //StripExtension(potFileName);
+               strcpy(potFileName, projectName);
+               ChangeExtension(potFileName, "pot", potFileName);
+               potFile = FileOpen(potFileName, write);
+               if(potFile)
+               {
+                  for(i : intlStrings)
+                  {
+                     ContextStringPair pair = &i;
+                     List<String> comments = i;
+                     for(s : comments)
+                     {
+                        potFile.Printf(s);
+                        potFile.Puts("\n");
+                     }
+
+                     potFile.Puts("msgid \""); potFile.Puts(pair.string); potFile.Puts("\"\n");
+                     if(pair.context)
+                     {
+                        potFile.Puts("msgctxt \""); potFile.Puts(pair.context); potFile.Puts("\"\n");
+                     }
+                     potFile.Puts("msgstr \""); potFile.Puts(pair.string); potFile.Puts("\"\n");
+                     potFile.Puts("\n");
+                  }
+                  intlStrings.Free();
+                  delete intlStrings;
+                  delete potFile;
+               }
+            }
          }
 
          FreeContext(theGlobalContext);

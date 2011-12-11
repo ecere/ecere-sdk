@@ -593,28 +593,20 @@ class CompilerDirectoriesTab : CompilersSubTab
             row.SetData(null, (s = CopyUnixPath(settingsFileDialog.filePath)));
    */
 
-            bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
+            bool NotifyModified(DirectoriesBox dirsBox)
             {
-               // DirectoriesBox's NotifyModified isn't working! Or it's not called before this?
-               if(!active && (modifiedDocument || list.modifiedDocument))
+               CompilerConfig compiler = loadedCompiler;
+               if(compiler)
                {
-                  CompilerDirectoriesTab dirsTab = (CompilerDirectoriesTab)parent;
-                  CompilerConfig compiler = dirsTab.loadedCompiler;
-                  if(compiler)
-                  {
-                     DirTypes dirType = (DirTypes)id;
-                     // TODO ? I think not, see DirectoriesBox.ec: CopyUnixPath() must be called when copying these dirs
+                  DirTypes dirType = (DirTypes)dirsBox.id;
+                  if(dirType == includes)
+                     compiler.includeDirs = dirsBox.strings;
+                  else if(dirType == libraries)
+                     compiler.libraryDirs = dirsBox.strings;
+                  else if(dirType == executables)
+                     compiler.executableDirs = dirsBox.strings;
 
-                     if(dirType == includes)
-                        compiler.includeDirs = strings;
-                     else if(dirType == libraries)
-                        compiler.libraryDirs = strings;
-                     else if(dirType == executables)
-                        compiler.executableDirs = strings;
-
-                     //modifiedDocument = true;
-                     dirsTab.compilersTab.modifiedDocument = true;
-                  }
+                  compilersTab.modifiedDocument = true;
                }
                return true;
             }
@@ -670,6 +662,9 @@ class CompilerDirectoriesTab : CompilersSubTab
          dirs[includes].strings = compiler.includeDirs;
          dirs[libraries].strings = compiler.libraryDirs;
          dirs[executables].strings = compiler.executableDirs;
+         dirs[includes].list.scroll = { 0, 0 };
+         dirs[libraries].list.scroll = { 0, 0 };
+         dirs[executables].list.scroll = { 0, 0 };
       }
    }
 }

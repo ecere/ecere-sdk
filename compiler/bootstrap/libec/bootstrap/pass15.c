@@ -15922,7 +15922,7 @@ struct PropertyWatch * propertyWatch = def->propertyWatch;
 thisClass = regClass;
 if(propertyWatch->compound)
 {
-struct Symbol * thisSymbol = (thisSymbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), thisSymbol->string = __ecereNameSpace__ecere__sys__CopyString("this"), thisSymbol->type = MkClassType(regClass->fullName), thisSymbol);
+struct Symbol * thisSymbol = (thisSymbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), thisSymbol->string = __ecereNameSpace__ecere__sys__CopyString("this"), thisSymbol->type = regClass ? MkClassType(regClass->fullName) : (((void *)0)), thisSymbol);
 
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&propertyWatch->compound->compound.context->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)thisSymbol);
 curExternal = (((void *)0));

@@ -1184,9 +1184,6 @@ from wherever you obtained them.",
                            ],
                            "Configurations" : [
                               {
-                                 "Name" : "WSMS"
-                              },
-                              {
                                  "Name" : "Vanilla",
                                  "Platforms" : [
                                     {
@@ -1232,9 +1229,6 @@ from wherever you obtained them.",
                               }
                            ],
                            "Configurations" : [
-                              {
-                                 "Name" : "WSMS"
-                              },
                               {
                                  "Name" : "Bootstrap",
                                  "Platforms" : [

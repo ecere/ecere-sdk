@@ -937,7 +937,12 @@ if(block)
 {
 if(pool)
 {
-if(__ecereNameSpace__ecere__com__pow1_5i(size) == (*pool).blockSize)
+unsigned int ns = __ecereNameSpace__ecere__com__pow1_5i(size);
+unsigned int mod = ns % 4;
+
+if(mod)
+ns += 4 - mod;
+if(ns == (*pool).blockSize)
 {
 newPointer = pointer;
 (*pool).usedSpace += size - block->size;
@@ -981,7 +986,12 @@ if(block)
 {
 if(pool)
 {
-if(__ecereNameSpace__ecere__com__pow1_5i(size) == (*pool).blockSize)
+unsigned int ns = __ecereNameSpace__ecere__com__pow1_5i(size);
+unsigned int mod = ns % 4;
+
+if(mod)
+ns += 4 - mod;
+if(ns == (*pool).blockSize)
 {
 int extra = size - block->size;
 
@@ -1226,9 +1236,19 @@ if(method)
 {
 if(method->function)
 _class->_vTbl[vMethod->vid] = method->function;
+if(!method->symbol)
+{
 (__ecereNameSpace__ecere__com__eSystem_Delete(method->name), method->name = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(method->dataTypeString), method->dataTypeString = 0);
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->methods, (struct __ecereNameSpace__ecere__sys__BTNode *)method);
+}
+else
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete(method->dataTypeString), method->dataTypeString = 0);
+method->type = vMethod->type;
+method->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(vMethod->dataTypeString);
+method->_class = vMethod->_class;
+}
 }
 else
 _class->_vTbl[vMethod->vid] = _class->base->_vTbl[vMethod->vid];
@@ -2983,7 +3003,7 @@ return 0x1;
 return 0x0;
 }
 
-static void __ecereNameSpace__ecere__com__FixDerivativeVirtualMethod(struct __ecereNameSpace__ecere__com__Class * base, char * name, int vid, void * origFunction)
+static void __ecereNameSpace__ecere__com__FixDerivativeVirtualMethod(struct __ecereNameSpace__ecere__com__Class * base, char * name, int vid, void * origFunction, char * type)
 {
 struct __ecereNameSpace__ecere__sys__OldLink * derivative;
 
@@ -3001,9 +3021,19 @@ if(method)
 {
 if(method->function)
 function = method->function;
+if(!method->symbol)
+{
 (__ecereNameSpace__ecere__com__eSystem_Delete(method->name), method->name = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(method->dataTypeString), method->dataTypeString = 0);
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->methods, (struct __ecereNameSpace__ecere__sys__BTNode *)method);
+}
+else
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete(method->dataTypeString), method->dataTypeString = 0);
+method->type = 1;
+method->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(type);
+method->_class = base;
+}
 }
 for(method = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->methods); method; method = next)
 {
@@ -3023,7 +3053,7 @@ template->_vTbl = _class->_vTbl;
 }
 }
 if(_class->derivatives.first || _class->templatized.first)
-__ecereNameSpace__ecere__com__FixDerivativeVirtualMethod(_class, name, vid, function);
+__ecereNameSpace__ecere__com__FixDerivativeVirtualMethod(_class, name, vid, function, type);
 }
 {
 struct __ecereNameSpace__ecere__sys__OldLink * templateLink;
@@ -3033,7 +3063,7 @@ for(templateLink = base->templatized.first; templateLink; templateLink = templat
 struct __ecereNameSpace__ecere__com__Class * template = templateLink->data;
 
 template->_vTbl = base->_vTbl;
-__ecereNameSpace__ecere__com__FixDerivativeVirtualMethod(template, name, vid, origFunction);
+__ecereNameSpace__ecere__com__FixDerivativeVirtualMethod(template, name, vid, origFunction, type);
 }
 }
 }
@@ -3133,7 +3163,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&_class->methods, (st
 _class->_vTbl = __ecereNameSpace__ecere__com__eSystem_Renew(_class->_vTbl, sizeof(void *) * (_class->vTblSize));
 _class->_vTbl[method->vid] = function ? function : __ecereNameSpace__ecere__com__DefaultFunction;
 if(_class->derivatives.first || _class->templatized.first)
-__ecereNameSpace__ecere__com__FixDerivativeVirtualMethod(_class, name, method->vid, function ? function : (void *)__ecereNameSpace__ecere__com__DefaultFunction);
+__ecereNameSpace__ecere__com__FixDerivativeVirtualMethod(_class, name, method->vid, function ? function : (void *)__ecereNameSpace__ecere__com__DefaultFunction, type);
 return method;
 }
 }
@@ -3489,8 +3519,9 @@ void __ecereNameSpace__ecere__com__eInstance_Delete(struct __ecereNameSpace__ece
 if(instance)
 {
 struct __ecereNameSpace__ecere__com__Class * _class, * base;
-unsigned int ownVtbl = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl != ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->_vTbl;
+unsigned int ownVtbl;
 
+ownVtbl = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl != ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->_vTbl;
 for(_class = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class; _class; _class = base)
 {
 if(_class->templateClass)

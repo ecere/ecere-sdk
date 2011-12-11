@@ -15,80 +15,265 @@ CONSOLE = -mwindows
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/ide$(E)
 
-OBJECTS = $(OBJ)FileSystemIterator.o $(OBJ)layout.o $(OBJ)SelectorBar.o \
-	$(OBJ)StringsBox.o $(OBJ)ActiveCompilerDialog.o $(OBJ)CompilersDetectionDialog.o \
-	$(OBJ)FindInFilesDialog.o $(OBJ)GlobalSettingsDialog.o $(OBJ)NewProjectDialog.o $(OBJ)NodeProperties.o \
-	$(OBJ)ProjectActiveConfig.o $(OBJ)WorkspaceSettings.o $(OBJ)ProjectTabSettings.o $(OBJ)Project.o \
-	$(OBJ)ProjectConfig.o $(OBJ)ProjectNode.o $(OBJ)ProjectView.o $(OBJ)Workspace.o \
-	$(if $(WINDOWS),$(OBJ)vsSupport.o,) $(OBJ)CodeEditor.o $(OBJ)CodeObject.o $(OBJ)Designer.o $(OBJ)findCtx.o \
-	$(OBJ)findExp.o $(OBJ)findParams.o $(OBJ)Sheet.o $(OBJ)ToolBox.o $(OBJ)debugFindCtx.o \
-	$(OBJ)Debugger.o $(OBJ)debugTools.o $(OBJ)GDBDialog.o $(OBJ)process.o $(OBJ)BreakpointsView.o \
-	$(OBJ)CallStackView.o $(OBJ)OutputView.o $(OBJ)ThreadsView.o $(OBJ)WatchesView.o $(OBJ)ModelView.o \
-	$(OBJ)PictureEdit.o $(OBJ)about.o $(OBJ)ide.o $(OBJ)IDESettings.o $(OBJ)OldIDESettings.o \
-	$(OBJ)ProjectSettings.o $(OBJ)$(MODULE).main$(O)
+OBJECTS = \
+	$(OBJ)FileSystemIterator.o \
+	$(OBJ)layout.o \
+	$(OBJ)SelectorBar.o \
+	$(OBJ)StringsBox.o \
+	$(OBJ)ActiveCompilerDialog.o \
+	$(OBJ)CompilersDetectionDialog.o \
+	$(OBJ)FindInFilesDialog.o \
+	$(OBJ)GlobalSettingsDialog.o \
+	$(OBJ)NewProjectDialog.o \
+	$(OBJ)NodeProperties.o \
+	$(OBJ)ProjectActiveConfig.o \
+	$(OBJ)WorkspaceSettings.o \
+	$(OBJ)ProjectTabSettings.o \
+	$(OBJ)Project.o \
+	$(OBJ)ProjectConfig.o \
+	$(OBJ)ProjectNode.o \
+	$(OBJ)ProjectView.o \
+	$(OBJ)Workspace.o \
+	$(if $(WINDOWS),$(OBJ)vsSupport.o,) \
+	$(OBJ)CodeEditor.o \
+	$(OBJ)CodeObject.o \
+	$(OBJ)Designer.o \
+	$(OBJ)findCtx.o \
+	$(OBJ)findExp.o \
+	$(OBJ)findParams.o \
+	$(OBJ)Sheet.o \
+	$(OBJ)ToolBox.o \
+	$(OBJ)debugFindCtx.o \
+	$(OBJ)Debugger.o \
+	$(OBJ)debugTools.o \
+	$(OBJ)GDBDialog.o \
+	$(OBJ)process.o \
+	$(OBJ)BreakpointsView.o \
+	$(OBJ)CallStackView.o \
+	$(OBJ)OutputView.o \
+	$(OBJ)ThreadsView.o \
+	$(OBJ)WatchesView.o \
+	$(OBJ)ModelView.o \
+	$(OBJ)PictureEdit.o \
+	$(OBJ)about.o \
+	$(OBJ)ide.o \
+	$(OBJ)IDESettings.o \
+	$(OBJ)OldIDESettings.o \
+	$(OBJ)ProjectSettings.o \
+	$(OBJ)$(MODULE).main$(O)
 
-COBJECTS = $(OBJ)FileSystemIterator.c $(OBJ)layout.c $(OBJ)SelectorBar.c \
-	$(OBJ)StringsBox.c $(OBJ)ActiveCompilerDialog.c $(OBJ)CompilersDetectionDialog.c \
-	$(OBJ)FindInFilesDialog.c $(OBJ)GlobalSettingsDialog.c $(OBJ)NewProjectDialog.c $(OBJ)NodeProperties.c \
-	$(OBJ)ProjectActiveConfig.c $(OBJ)WorkspaceSettings.c $(OBJ)ProjectTabSettings.c $(OBJ)Project.c \
-	$(OBJ)ProjectConfig.c $(OBJ)ProjectNode.c $(OBJ)ProjectView.c $(OBJ)Workspace.c \
-	$(if $(WINDOWS),$(OBJ)vsSupport.c,) $(OBJ)CodeEditor.c $(OBJ)CodeObject.c $(OBJ)Designer.c $(OBJ)findCtx.c \
-	$(OBJ)findExp.c $(OBJ)findParams.c $(OBJ)Sheet.c $(OBJ)ToolBox.c $(OBJ)debugFindCtx.c \
-	$(OBJ)Debugger.c $(OBJ)debugTools.c $(OBJ)GDBDialog.c $(OBJ)process.c $(OBJ)BreakpointsView.c \
-	$(OBJ)CallStackView.c $(OBJ)OutputView.c $(OBJ)ThreadsView.c $(OBJ)WatchesView.c $(OBJ)ModelView.c \
-	$(OBJ)PictureEdit.c $(OBJ)about.c $(OBJ)ide.c $(OBJ)IDESettings.c $(OBJ)OldIDESettings.c \
+COBJECTS = \
+	$(OBJ)FileSystemIterator.c \
+	$(OBJ)layout.c \
+	$(OBJ)SelectorBar.c \
+	$(OBJ)StringsBox.c \
+	$(OBJ)ActiveCompilerDialog.c \
+	$(OBJ)CompilersDetectionDialog.c \
+	$(OBJ)FindInFilesDialog.c \
+	$(OBJ)GlobalSettingsDialog.c \
+	$(OBJ)NewProjectDialog.c \
+	$(OBJ)NodeProperties.c \
+	$(OBJ)ProjectActiveConfig.c \
+	$(OBJ)WorkspaceSettings.c \
+	$(OBJ)ProjectTabSettings.c \
+	$(OBJ)Project.c \
+	$(OBJ)ProjectConfig.c \
+	$(OBJ)ProjectNode.c \
+	$(OBJ)ProjectView.c \
+	$(OBJ)Workspace.c \
+	$(if $(WINDOWS),$(OBJ)vsSupport.c,) \
+	$(OBJ)CodeEditor.c \
+	$(OBJ)CodeObject.c \
+	$(OBJ)Designer.c \
+	$(OBJ)findCtx.c \
+	$(OBJ)findExp.c \
+	$(OBJ)findParams.c \
+	$(OBJ)Sheet.c \
+	$(OBJ)ToolBox.c \
+	$(OBJ)debugFindCtx.c \
+	$(OBJ)Debugger.c \
+	$(OBJ)debugTools.c \
+	$(OBJ)GDBDialog.c \
+	$(OBJ)process.c \
+	$(OBJ)BreakpointsView.c \
+	$(OBJ)CallStackView.c \
+	$(OBJ)OutputView.c \
+	$(OBJ)ThreadsView.c \
+	$(OBJ)WatchesView.c \
+	$(OBJ)ModelView.c \
+	$(OBJ)PictureEdit.c \
+	$(OBJ)about.c \
+	$(OBJ)ide.c \
+	$(OBJ)IDESettings.c \
+	$(OBJ)OldIDESettings.c \
 	$(OBJ)ProjectSettings.c
 
 SYMBOLS = $(SYMBOLS1) $(SYMBOLS2)
-SYMBOLS1 = $(OBJ)FileSystemIterator.sym $(OBJ)layout.sym $(OBJ)SelectorBar.sym \
-	$(OBJ)StringsBox.sym $(OBJ)ActiveCompilerDialog.sym $(OBJ)CompilersDetectionDialog.sym \
-	$(OBJ)FindInFilesDialog.sym $(OBJ)GlobalSettingsDialog.sym $(OBJ)NewProjectDialog.sym \
-	$(OBJ)NodeProperties.sym $(OBJ)ProjectActiveConfig.sym $(OBJ)WorkspaceSettings.sym \
-	$(OBJ)ProjectTabSettings.sym $(OBJ)Project.sym $(OBJ)ProjectConfig.sym $(OBJ)ProjectNode.sym \
-	$(OBJ)ProjectView.sym $(OBJ)Workspace.sym $(if $(WINDOWS),$(OBJ)vsSupport.sym,) \
-	$(OBJ)CodeEditor.sym $(OBJ)CodeObject.sym $(OBJ)Designer.sym $(OBJ)findCtx.sym $(OBJ)findExp.sym \
-	$(OBJ)findParams.sym $(OBJ)Sheet.sym $(OBJ)ToolBox.sym $(OBJ)debugFindCtx.sym $(OBJ)Debugger.sym \
-	$(OBJ)debugTools.sym $(OBJ)GDBDialog.sym $(OBJ)process.sym $(OBJ)BreakpointsView.sym \
-	$(OBJ)CallStackView.sym $(OBJ)OutputView.sym $(OBJ)ThreadsView.sym $(OBJ)WatchesView.sym \
-	$(OBJ)ModelView.sym $(OBJ)PictureEdit.sym $(OBJ)about.sym $(OBJ)ide.sym $(OBJ)IDESettings.sym
-SYMBOLS2 = $(OBJ)OldIDESettings.sym $(OBJ)ProjectSettings.sym
+SYMBOLS1 = \
+	$(OBJ)FileSystemIterator.sym \
+	$(OBJ)layout.sym \
+	$(OBJ)SelectorBar.sym \
+	$(OBJ)StringsBox.sym \
+	$(OBJ)ActiveCompilerDialog.sym \
+	$(OBJ)CompilersDetectionDialog.sym \
+	$(OBJ)FindInFilesDialog.sym \
+	$(OBJ)GlobalSettingsDialog.sym \
+	$(OBJ)NewProjectDialog.sym \
+	$(OBJ)NodeProperties.sym \
+	$(OBJ)ProjectActiveConfig.sym \
+	$(OBJ)WorkspaceSettings.sym \
+	$(OBJ)ProjectTabSettings.sym \
+	$(OBJ)Project.sym \
+	$(OBJ)ProjectConfig.sym \
+	$(OBJ)ProjectNode.sym \
+	$(OBJ)ProjectView.sym \
+	$(OBJ)Workspace.sym \
+	$(if $(WINDOWS),$(OBJ)vsSupport.sym,) \
+	$(OBJ)CodeEditor.sym \
+	$(OBJ)CodeObject.sym \
+	$(OBJ)Designer.sym \
+	$(OBJ)findCtx.sym \
+	$(OBJ)findExp.sym \
+	$(OBJ)findParams.sym \
+	$(OBJ)Sheet.sym \
+	$(OBJ)ToolBox.sym \
+	$(OBJ)debugFindCtx.sym \
+	$(OBJ)Debugger.sym \
+	$(OBJ)debugTools.sym \
+	$(OBJ)GDBDialog.sym \
+	$(OBJ)process.sym \
+	$(OBJ)BreakpointsView.sym \
+	$(OBJ)CallStackView.sym \
+	$(OBJ)OutputView.sym \
+	$(OBJ)ThreadsView.sym \
+	$(OBJ)WatchesView.sym \
+	$(OBJ)ModelView.sym \
+	$(OBJ)PictureEdit.sym \
+	$(OBJ)about.sym \
+	$(OBJ)ide.sym \
+	$(OBJ)IDESettings.sym
+SYMBOLS2 = \
+	$(OBJ)OldIDESettings.sym \
+	$(OBJ)ProjectSettings.sym
 
 IMPORTS = $(IMPORTS1) $(IMPORTS2)
-IMPORTS1 = $(OBJ)FileSystemIterator.imp $(OBJ)layout.imp $(OBJ)SelectorBar.imp \
-	$(OBJ)StringsBox.imp $(OBJ)ActiveCompilerDialog.imp $(OBJ)CompilersDetectionDialog.imp \
-	$(OBJ)FindInFilesDialog.imp $(OBJ)GlobalSettingsDialog.imp $(OBJ)NewProjectDialog.imp \
-	$(OBJ)NodeProperties.imp $(OBJ)ProjectActiveConfig.imp $(OBJ)WorkspaceSettings.imp \
-	$(OBJ)ProjectTabSettings.imp $(OBJ)Project.imp $(OBJ)ProjectConfig.imp $(OBJ)ProjectNode.imp \
-	$(OBJ)ProjectView.imp $(OBJ)Workspace.imp $(if $(WINDOWS),$(OBJ)vsSupport.imp,) \
-	$(OBJ)CodeEditor.imp $(OBJ)CodeObject.imp $(OBJ)Designer.imp $(OBJ)findCtx.imp $(OBJ)findExp.imp \
-	$(OBJ)findParams.imp $(OBJ)Sheet.imp $(OBJ)ToolBox.imp $(OBJ)debugFindCtx.imp $(OBJ)Debugger.imp \
-	$(OBJ)debugTools.imp $(OBJ)GDBDialog.imp $(OBJ)process.imp $(OBJ)BreakpointsView.imp \
-	$(OBJ)CallStackView.imp $(OBJ)OutputView.imp $(OBJ)ThreadsView.imp $(OBJ)WatchesView.imp \
-	$(OBJ)ModelView.imp $(OBJ)PictureEdit.imp $(OBJ)about.imp $(OBJ)ide.imp $(OBJ)IDESettings.imp
-IMPORTS2 = $(OBJ)OldIDESettings.imp $(OBJ)ProjectSettings.imp
+IMPORTS1 = \
+	$(OBJ)FileSystemIterator.imp \
+	$(OBJ)layout.imp \
+	$(OBJ)SelectorBar.imp \
+	$(OBJ)StringsBox.imp \
+	$(OBJ)ActiveCompilerDialog.imp \
+	$(OBJ)CompilersDetectionDialog.imp \
+	$(OBJ)FindInFilesDialog.imp \
+	$(OBJ)GlobalSettingsDialog.imp \
+	$(OBJ)NewProjectDialog.imp \
+	$(OBJ)NodeProperties.imp \
+	$(OBJ)ProjectActiveConfig.imp \
+	$(OBJ)WorkspaceSettings.imp \
+	$(OBJ)ProjectTabSettings.imp \
+	$(OBJ)Project.imp \
+	$(OBJ)ProjectConfig.imp \
+	$(OBJ)ProjectNode.imp \
+	$(OBJ)ProjectView.imp \
+	$(OBJ)Workspace.imp \
+	$(if $(WINDOWS),$(OBJ)vsSupport.imp,) \
+	$(OBJ)CodeEditor.imp \
+	$(OBJ)CodeObject.imp \
+	$(OBJ)Designer.imp \
+	$(OBJ)findCtx.imp \
+	$(OBJ)findExp.imp \
+	$(OBJ)findParams.imp \
+	$(OBJ)Sheet.imp \
+	$(OBJ)ToolBox.imp \
+	$(OBJ)debugFindCtx.imp \
+	$(OBJ)Debugger.imp \
+	$(OBJ)debugTools.imp \
+	$(OBJ)GDBDialog.imp \
+	$(OBJ)process.imp \
+	$(OBJ)BreakpointsView.imp \
+	$(OBJ)CallStackView.imp \
+	$(OBJ)OutputView.imp \
+	$(OBJ)ThreadsView.imp \
+	$(OBJ)WatchesView.imp \
+	$(OBJ)ModelView.imp \
+	$(OBJ)PictureEdit.imp \
+	$(OBJ)about.imp \
+	$(OBJ)ide.imp \
+	$(OBJ)IDESettings.imp
+IMPORTS2 = \
+	$(OBJ)OldIDESettings.imp \
+	$(OBJ)ProjectSettings.imp
 
-SOURCES = ../extras/FileSystemIterator.ec ../extras/gui/layout.ec \
-	../extras/gui/controls/SelectorBar.ec ../extras/gui/controls/StringsBox.ec src/dialogs/ActiveCompilerDialog.ec \
-	src/dialogs/CompilersDetectionDialog.ec src/dialogs/FindInFilesDialog.ec src/dialogs/GlobalSettingsDialog.ec \
-	src/dialogs/NewProjectDialog.ec src/dialogs/NodeProperties.ec src/dialogs/ProjectActiveConfig.ec \
-	src/dialogs/WorkspaceSettings.ec src/dialogs/ProjectTabSettings.ec src/project/Project.ec \
-	src/project/ProjectConfig.ec src/project/ProjectNode.ec src/project/ProjectView.ec \
-	src/project/Workspace.ec $(if $(WINDOWS),src/project/vsSupport.ec,) src/designer/CodeEditor.ec \
-	src/designer/CodeObject.ec src/designer/Designer.ec src/designer/findCtx.ec src/designer/findExp.ec \
-	src/designer/findParams.ec src/designer/Sheet.ec src/designer/ToolBox.ec src/debugger/debugFindCtx.ec \
-	src/debugger/Debugger.ec src/debugger/debugTools.ec src/debugger/GDBDialog.ec src/debugger/process.ec \
-	src/panels/BreakpointsView.ec src/panels/CallStackView.ec src/panels/OutputView.ec \
-	src/panels/ThreadsView.ec src/panels/WatchesView.ec src/documents/ModelView.ec \
-	src/documents/PictureEdit.ec src/about.ec src/ide.ec src/IDESettings.ec src/OldIDESettings.ec \
+SOURCES = \
+	../extras/FileSystemIterator.ec \
+	../extras/gui/layout.ec \
+	../extras/gui/controls/SelectorBar.ec \
+	../extras/gui/controls/StringsBox.ec \
+	src/dialogs/ActiveCompilerDialog.ec \
+	src/dialogs/CompilersDetectionDialog.ec \
+	src/dialogs/FindInFilesDialog.ec \
+	src/dialogs/GlobalSettingsDialog.ec \
+	src/dialogs/NewProjectDialog.ec \
+	src/dialogs/NodeProperties.ec \
+	src/dialogs/ProjectActiveConfig.ec \
+	src/dialogs/WorkspaceSettings.ec \
+	src/dialogs/ProjectTabSettings.ec \
+	src/project/Project.ec \
+	src/project/ProjectConfig.ec \
+	src/project/ProjectNode.ec \
+	src/project/ProjectView.ec \
+	src/project/Workspace.ec \
+	$(if $(WINDOWS),src/project/vsSupport.ec,) \
+	src/designer/CodeEditor.ec \
+	src/designer/CodeObject.ec \
+	src/designer/Designer.ec \
+	src/designer/findCtx.ec \
+	src/designer/findExp.ec \
+	src/designer/findParams.ec \
+	src/designer/Sheet.ec \
+	src/designer/ToolBox.ec \
+	src/debugger/debugFindCtx.ec \
+	src/debugger/Debugger.ec \
+	src/debugger/debugTools.ec \
+	src/debugger/GDBDialog.ec \
+	src/debugger/process.ec \
+	src/panels/BreakpointsView.ec \
+	src/panels/CallStackView.ec \
+	src/panels/OutputView.ec \
+	src/panels/ThreadsView.ec \
+	src/panels/WatchesView.ec \
+	src/documents/ModelView.ec \
+	src/documents/PictureEdit.ec \
+	src/about.ec \
+	src/ide.ec \
+	src/IDESettings.ec \
+	src/OldIDESettings.ec \
 	src/ProjectSettings.ec
 
-RESOURCES = $(RES)actions/attach.png $(RES)actions/delete.png $(RES)actions/detach.png \
-	$(RES)actions/docNew.png $(RES)actions/editCopy.png $(RES)actions/editDelete.png \
-	$(RES)actions/delete2.png $(RES)codeMarks/breakpoint.png $(RES)codeMarks/breakpointDisabled.png \
-	$(RES)codeMarks/breakpointHalf.png $(RES)codeMarks/breakpointHalfDisabled.png $(RES)codeMarks/cursor.png \
-	$(RES)codeMarks/cursorError.png $(RES)codeMarks/topFrame.png $(RES)codeMarks/topFrameError.png \
-	$(RES)codeMarks/topFrameHalf.png $(RES)codeMarks/topFrameHalfError.png $(RES)others/mousePointer.png \
-	locale/zh_CN/LC_MESSAGES/ide.mo res/ecere.jpg res/ecereBack.jpg res/icon.png ../include.mk
+RESOURCES = \
+	$(RES)actions/attach.png \
+	$(RES)actions/delete.png \
+	$(RES)actions/detach.png \
+	$(RES)actions/docNew.png \
+	$(RES)actions/editCopy.png \
+	$(RES)actions/editDelete.png \
+	$(RES)actions/delete2.png \
+	$(RES)codeMarks/breakpoint.png \
+	$(RES)codeMarks/breakpointDisabled.png \
+	$(RES)codeMarks/breakpointHalf.png \
+	$(RES)codeMarks/breakpointHalfDisabled.png \
+	$(RES)codeMarks/cursor.png \
+	$(RES)codeMarks/cursorError.png \
+	$(RES)codeMarks/topFrame.png \
+	$(RES)codeMarks/topFrameError.png \
+	$(RES)codeMarks/topFrameHalf.png \
+	$(RES)codeMarks/topFrameHalfError.png \
+	$(RES)others/mousePointer.png \
+	locale/zh_CN/LC_MESSAGES/ide.mo \
+	res/ecere.jpg \
+	res/ecereBack.jpg \
+	res/icon.png \
+	../include.mk
 
 # CROSS-PLATFORM MAGIC
 

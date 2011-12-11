@@ -13,8 +13,18 @@ RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)z$(A)
 
-OBJECTS = $(OBJ)adler32.o $(OBJ)compress.o $(OBJ)crc32.o $(OBJ)deflate.o $(OBJ)gzio.o \
-	$(OBJ)infback.o $(OBJ)inffast.o $(OBJ)inflate.o $(OBJ)inftrees.o $(OBJ)trees.o $(OBJ)uncompr.o \
+OBJECTS = \
+	$(OBJ)adler32.o \
+	$(OBJ)compress.o \
+	$(OBJ)crc32.o \
+	$(OBJ)deflate.o \
+	$(OBJ)gzio.o \
+	$(OBJ)infback.o \
+	$(OBJ)inffast.o \
+	$(OBJ)inflate.o \
+	$(OBJ)inftrees.o \
+	$(OBJ)trees.o \
+	$(OBJ)uncompr.o \
 	$(OBJ)zutil.o
 
 COBJECTS =
@@ -23,8 +33,19 @@ SYMBOLS =
 
 IMPORTS =
 
-SOURCES = adler32.c compress.c crc32.c deflate.c gzio.c infback.c inffast.c inflate.c \
-	inftrees.c trees.c uncompr.c zutil.c
+SOURCES = \
+	adler32.c \
+	compress.c \
+	crc32.c \
+	deflate.c \
+	gzio.c \
+	infback.c \
+	inffast.c \
+	inflate.c \
+	inftrees.c \
+	trees.c \
+	uncompr.c \
+	zutil.c
 
 RESOURCES =
 

@@ -7916,12 +7916,14 @@ void ProcessExpressionType(Expression exp)
                         // If first expression is constant, try to match that first
                         if(CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false))
                         {
+                           if(exp.expType) FreeType(exp.expType);
                            exp.expType = exp.op.exp1.destType;
                            if(exp.op.exp1.destType) exp.op.exp1.destType.refCount++;
                            success = true;
                         }
                         else if(CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false))
                         {
+                           if(exp.expType) FreeType(exp.expType);
                            exp.expType = exp.op.exp2.destType;
                            if(exp.op.exp2.destType) exp.op.exp2.destType.refCount++;
                            success = true;
@@ -7931,12 +7933,14 @@ void ProcessExpressionType(Expression exp)
                      {
                         if(CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false))
                         {
+                           if(exp.expType) FreeType(exp.expType);
                            exp.expType = exp.op.exp2.destType;
                            if(exp.op.exp2.destType) exp.op.exp2.destType.refCount++;
                            success = true;
                         }
                         else if(CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false))
                         {
+                           if(exp.expType) FreeType(exp.expType);
                            exp.expType = exp.op.exp1.destType;
                            if(exp.op.exp1.destType) exp.op.exp1.destType.refCount++;
                            success = true;
@@ -8004,6 +8008,7 @@ void ProcessExpressionType(Expression exp)
 
                      CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false);
                      type2 = exp.op.exp2.destType;
+
                      exp.expType = type2;
                      type2.refCount++;
                   }
@@ -8030,15 +8035,18 @@ void ProcessExpressionType(Expression exp)
                      {
                         if(CheckExpressionType(exp.op.exp1, exp.op.exp2.expType, false))
                         {
+                           if(exp.expType) FreeType(exp.expType);
                            exp.expType = exp.op.exp1.expType;
                            if(exp.op.exp2.expType) exp.op.exp1.expType.refCount++;
                            valid = true;
                         }
                      }
+
                      else if(type2 && (type2.kind == classType && type2._class && type2._class.registered && type2._class.registered.type == enumClass && exp.op.exp1.expType))
                      {
                         if(CheckExpressionType(exp.op.exp2, exp.op.exp1.expType, false))
                         {
+                           if(exp.expType) FreeType(exp.expType);
                            exp.expType = exp.op.exp2.expType;
                            if(exp.op.exp2.expType) exp.op.exp2.expType.refCount++;
                            valid = true;
@@ -8094,6 +8102,7 @@ void ProcessExpressionType(Expression exp)
 
                      if(CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false))
                      {
+                        if(exp.expType) FreeType(exp.expType);
                         exp.expType = exp.op.exp2.destType;
                         if(exp.op.exp2.destType) exp.op.exp2.destType.refCount++;
                      }
@@ -8170,6 +8179,7 @@ void ProcessExpressionType(Expression exp)
 
                   if(CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false))
                   {
+                     if(exp.expType) FreeType(exp.expType);
                      exp.expType = exp.op.exp1.destType;
                      if(exp.op.exp1.destType) exp.op.exp1.destType.refCount++;
                   }
@@ -11953,7 +11963,7 @@ static void ProcessClass(OldList definitions, Symbol symbol)
             Symbol thisSymbol
             {
                string = CopyString("this");
-               type = MkClassType(regClass.fullName);
+               type = regClass ? MkClassType(regClass.fullName) : null;
             };
 
             propertyWatch.compound.compound.context.symbols.Add((BTNode)thisSymbol);

@@ -2150,7 +2150,29 @@ extern void CheckDataRedefinitions(void);
 
 extern char *  __ecereNameSpace__ecere__sys__ChangeExtension(char *  string, char *  ext, char *  output);
 
+extern char *  strstr(char * , const char * );
+
+extern int strlen(const char * );
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ContextStringPair;
+
+struct ContextStringPair
+{
+char * string;
+char * context;
+};
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Iterator;
+
+struct __ecereNameSpace__ecere__com__Iterator
+{
+struct __ecereNameSpace__ecere__com__Instance * container;
+struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
+};
+
 extern void ComputeModuleClasses(struct __ecereNameSpace__ecere__com__Instance * module);
+
+extern char *  strchr(char * , int);
 
 extern void FreeContext(struct Context * context);
 
@@ -2170,7 +2192,9 @@ extern void FreeIncludeFiles(void);
 
 extern void FreeGlobalData(struct __ecereNameSpace__ecere__com__NameSpace * globalDataList);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__String_;
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_String___;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_String_;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
 
@@ -2199,15 +2223,9 @@ void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(struct __ecer
 
 extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
 
+int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
+
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 index, unsigned int create);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Iterator;
-
-struct __ecereNameSpace__ecere__com__Iterator
-{
-struct __ecereNameSpace__ecere__com__Instance * container;
-struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
-};
 
 uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecereNameSpace__ecere__com__Iterator * this);
 
@@ -2215,7 +2233,23 @@ void __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(struct __ecereN
 
 extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
 
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
+
+int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
+
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
+
+struct __ecereNameSpace__ecere__com__CustomAVLTree
+{
+struct __ecereNameSpace__ecere__com__AVLNode * root;
+int count;
+};
+
+uint64 __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(struct __ecereNameSpace__ecere__com__MapIterator * this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_key;
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(struct __ecereNameSpace__ecere__sys__OldList * this, void (*  freeFn)(void * ));
 
@@ -2307,8 +2341,7 @@ mainModule = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleImpo
 SetMainModule(mainModule);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_imports, mainModule);
 {
-struct __ecereNameSpace__ecere__com__Instance * potFile = (((void *)0));
-struct __ecereNameSpace__ecere__com__Instance * intlStrings = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__String_);
+struct __ecereNameSpace__ecere__com__Instance * intlStrings = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_String___);
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, intlStrings), it);
 
 for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc; c++)
@@ -2388,61 +2421,90 @@ __ecereNameSpace__ecere__sys__ChangeExtension(file, "bowl", fileName);
 f = __ecereNameSpace__ecere__sys__FileOpen(fileName, 1);
 if(f)
 {
-if(!potFile)
-{
-char potFileName[797];
+static char line[65536];
+struct __ecereNameSpace__ecere__com__Instance * comments = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_String_);
+char * msgid = (((void *)0)), * msgstr = (((void *)0)), * msgctxt = (((void *)0));
 
-strcpy(potFileName, output);
-__ecereNameSpace__ecere__sys__StripExtension(potFileName);
-__ecereNameSpace__ecere__sys__ChangeExtension(potFileName, "pot", potFileName);
-potFile = __ecereNameSpace__ecere__sys__FileOpen(potFileName, 2);
-}
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(potFile, "# %s\n", moduleName);
 while(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(f))
 {
-char * comment = (((void *)0)), * msgid = (((void *)0)), * msgstr = (((void *)0));
-int c;
-
-for(c = 0; c < 4; c++)
-{
-static char line[65536];
-
 if(__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
 {
-if(c == 0)
-comment = __ecereNameSpace__ecere__sys__CopyString(line);
-else if(c == 1)
-msgid = __ecereNameSpace__ecere__sys__CopyString(line);
-else if(c == 2)
-msgstr = __ecereNameSpace__ecere__sys__CopyString(line);
-}
-}
-if(msgid && !__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(msgid), 0x0))
+int len;
+
+__ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
+if(line[0] == '#')
 {
+((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))comments->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(comments, (uint64)(__ecereNameSpace__ecere__sys__CopyString(line)));
+}
+else if(strstr(line, "msgid \"") == line)
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete(msgid), msgid = 0);
+msgid = __ecereNameSpace__ecere__sys__CopyString(line + 7);
+len = strlen(msgid);
+if(len)
+msgid[len - 1] = (unsigned char)0;
+}
+else if(strstr(line, "msgctxt \"") == line)
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete(msgctxt), msgctxt = 0);
+msgctxt = __ecereNameSpace__ecere__sys__CopyString(line + 9);
+len = strlen(msgctxt);
+if(len)
+msgctxt[len - 1] = (unsigned char)0;
+}
+else if(strstr(line, "msgstr \"") == line)
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete(msgstr), msgstr = 0);
+msgstr = __ecereNameSpace__ecere__sys__CopyString(line + 8);
+len = strlen(msgstr);
+if(len)
+msgstr[len - 1] = (unsigned char)0;
+}
+if(msgid && msgstr)
+{
+struct ContextStringPair pair = 
+{
+msgid, msgctxt
+};
+
 i18n = 0x1;
+if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (&pair), 0x0))
+{
+msgid = (((void *)0));
+msgctxt = (((void *)0));
 __extension__ ({
 struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
 {
 intlStrings, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (uint64)(((uint64)(msgid))), 0x1);
-__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, comment);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (((&pair))), 0x1);
+__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, comments);
 });
-if(comment)
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, comment);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, msgid);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
-if(msgstr)
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, msgstr);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
+comments = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_String_);
+}
+else
+{
+{
+struct __ecereNameSpace__ecere__com__Iterator s = 
+{
+(comments), 0
+};
+
+while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&s))
+((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it))->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it)), __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&s));
+}
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *))comments->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll])(comments);
+}
+(__ecereNameSpace__ecere__com__eSystem_Delete(msgid), msgid = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete(msgctxt), msgctxt = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(msgstr), msgstr = 0);
 }
 }
+}
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *))comments->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(comments);
+(__ecereNameSpace__ecere__com__eInstance_DecRef(comments), comments = 0);
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
 }
 }
 }
@@ -2454,10 +2516,60 @@ if(!isDynamicLibrary)
 thisAppClass = SearchAppClass_Module(privateModule);
 }
 WriteMain(output);
+if(((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)intlStrings + 12)))->count)
+{
+struct __ecereNameSpace__ecere__com__Instance * potFile;
+char potFileName[797];
+
+strcpy(potFileName, projectName);
+__ecereNameSpace__ecere__sys__ChangeExtension(potFileName, "pot", potFileName);
+potFile = __ecereNameSpace__ecere__sys__FileOpen(potFileName, 2);
+if(potFile)
+{
+{
+struct __ecereNameSpace__ecere__com__MapIterator i = (i.container = (void *)0, i.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&i, (intlStrings)), i);
+
+while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&i))
+{
+struct ContextStringPair pair = (*(struct ContextStringPair *)__ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(&i));
+struct __ecereNameSpace__ecere__com__Instance * comments = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&i));
+char * eot;
+
+{
+struct __ecereNameSpace__ecere__com__Iterator s = 
+{
+(comments), 0
+};
+
+while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&s))
+{
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(potFile, __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&s));
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
+}
+}
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgid \"");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, pair.string);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"\n");
+if(pair.context)
+{
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgctxt \"");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, pair.context);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"\n");
+}
+eot = strchr(pair.string, 4);
+if(eot)
+*eot = '\0';
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgstr \"");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, pair.string);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
+}
+}
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *))intlStrings->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(intlStrings);
 (__ecereNameSpace__ecere__com__eInstance_DecRef(intlStrings), intlStrings = 0);
-if(potFile)
 (__ecereNameSpace__ecere__com__eInstance_DecRef(potFile), potFile = 0);
+}
+}
 }
 FreeContext(theGlobalContext);
 FreeExcludedSymbols(&_excludedSymbols);

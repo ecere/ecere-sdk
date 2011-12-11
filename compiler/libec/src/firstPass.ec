@@ -277,13 +277,6 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                inCompiler ? propertyDef.setStmt : null, inCompiler ? propertyDef.getStmt : null);
 
             delete dataTypeString;
-
-            // Testing this... wasn't found anywhere, seems to be useful 
-            // (Determining if it's a conversion property in ProcessClassFunction)
-            // propertyDef.symbol.property = prop;
-
-            if(propertyDef.symbol.type)
-               propertyDef.symbol.type.refCount++;
          }
       }
    }

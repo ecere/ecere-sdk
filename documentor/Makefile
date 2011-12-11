@@ -15,27 +15,65 @@ CONSOLE = -mwindows
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/documentor$(E)
 
-OBJECTS = $(OBJ)htmlParser.o $(OBJ)HTMLView.o $(OBJ)lines.o $(OBJ)tables.o \
-	$(OBJ)IDESettings.o $(OBJ)OldIDESettings.o $(OBJ)StringsBox.o $(OBJ)Documentor.o \
-	$(OBJ)SettingsDialog.o $(OBJ)$(MODULE).main$(O)
+OBJECTS = \
+	$(OBJ)htmlParser.o \
+	$(OBJ)HTMLView.o \
+	$(OBJ)lines.o \
+	$(OBJ)tables.o \
+	$(OBJ)IDESettings.o \
+	$(OBJ)OldIDESettings.o \
+	$(OBJ)StringsBox.o \
+	$(OBJ)Documentor.o \
+	$(OBJ)SettingsDialog.o \
+	$(OBJ)$(MODULE).main$(O)
 
-COBJECTS = $(OBJ)htmlParser.c $(OBJ)HTMLView.c $(OBJ)lines.c $(OBJ)tables.c \
-	$(OBJ)IDESettings.c $(OBJ)OldIDESettings.c $(OBJ)StringsBox.c $(OBJ)Documentor.c \
+COBJECTS = \
+	$(OBJ)htmlParser.c \
+	$(OBJ)HTMLView.c \
+	$(OBJ)lines.c \
+	$(OBJ)tables.c \
+	$(OBJ)IDESettings.c \
+	$(OBJ)OldIDESettings.c \
+	$(OBJ)StringsBox.c \
+	$(OBJ)Documentor.c \
 	$(OBJ)SettingsDialog.c
 
-SYMBOLS = $(OBJ)htmlParser.sym $(OBJ)HTMLView.sym $(OBJ)lines.sym $(OBJ)tables.sym \
-	$(OBJ)IDESettings.sym $(OBJ)OldIDESettings.sym $(OBJ)StringsBox.sym $(OBJ)Documentor.sym \
+SYMBOLS = \
+	$(OBJ)htmlParser.sym \
+	$(OBJ)HTMLView.sym \
+	$(OBJ)lines.sym \
+	$(OBJ)tables.sym \
+	$(OBJ)IDESettings.sym \
+	$(OBJ)OldIDESettings.sym \
+	$(OBJ)StringsBox.sym \
+	$(OBJ)Documentor.sym \
 	$(OBJ)SettingsDialog.sym
 
-IMPORTS = $(OBJ)htmlParser.imp $(OBJ)HTMLView.imp $(OBJ)lines.imp $(OBJ)tables.imp \
-	$(OBJ)IDESettings.imp $(OBJ)OldIDESettings.imp $(OBJ)StringsBox.imp $(OBJ)Documentor.imp \
+IMPORTS = \
+	$(OBJ)htmlParser.imp \
+	$(OBJ)HTMLView.imp \
+	$(OBJ)lines.imp \
+	$(OBJ)tables.imp \
+	$(OBJ)IDESettings.imp \
+	$(OBJ)OldIDESettings.imp \
+	$(OBJ)StringsBox.imp \
+	$(OBJ)Documentor.imp \
 	$(OBJ)SettingsDialog.imp
 
-SOURCES = ../extras/html/htmlParser.ec ../extras/html/HTMLView.ec \
-	../extras/html/lines.ec ../extras/html/tables.ec ../ide/src/IDESettings.ec \
-	../ide/src/OldIDESettings.ec ../extras/gui/controls/StringsBox.ec src/Documentor.ec src/SettingsDialog.ec
+SOURCES = \
+	../extras/html/htmlParser.ec \
+	../extras/html/HTMLView.ec \
+	../extras/html/lines.ec \
+	../extras/html/tables.ec \
+	../ide/src/IDESettings.ec \
+	../ide/src/OldIDESettings.ec \
+	../extras/gui/controls/StringsBox.ec \
+	src/Documentor.ec \
+	src/SettingsDialog.ec
 
-RESOURCES = locale/zh_CN/LC_MESSAGES/documentor.mo
+RESOURCES = \
+	locale/zh_CN/LC_MESSAGES/documentor.mo \
+	res/documentorIcon.png
 
 # CROSS-PLATFORM MAGIC
 
@@ -89,6 +127,7 @@ $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
+	$(EAR) awq $(TARGET) res/documentorIcon.png ""
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/documentor.mo "locale/zh_CN/LC_MESSAGES"
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
 

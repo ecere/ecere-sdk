@@ -1225,7 +1225,10 @@ static void * _myrealloc(void * pointer, unsigned int size)
       if(pool)
       {
          // if((1 << pool) >= size && (pool - SIZE_POSITION(size)) <= 1)
-         if(NEXT_SIZE(size) == pool->blockSize)
+         uint ns = NEXT_SIZE(size);
+         uint mod = ns % 4;
+         if(mod) ns += 4-mod;
+         if(ns == pool->blockSize)
          {
             newPointer = pointer;
             pool->usedSpace += size - block.size;
@@ -1270,7 +1273,10 @@ static void * _mycrealloc(void * pointer, unsigned int size)
       if(pool)
       {
          // if((1 << pool) >= size && (pool - SIZE_POSITION(size)) <= 1)
-         if(NEXT_SIZE(size) == pool->blockSize)
+         uint ns = NEXT_SIZE(size);
+         uint mod = ns % 4;
+         if(mod) ns += 4-mod;
+         if(ns == pool->blockSize)
          {
             int extra = size - block.size;
             newPointer = pointer;
@@ -1976,9 +1982,19 @@ static void FixDerivativesBase(Class base, Class mod)
                   if(method)
                   {
                      if(method.function) _class._vTbl[vMethod.vid] = method.function;
-                     delete method.name;
-                     delete method.dataTypeString;
-                     _class.methods.Delete((BTNode)method);
+                     if(!method.symbol)
+                     {
+                        delete method.name;
+                        delete method.dataTypeString;
+                        _class.methods.Delete((BTNode)method);
+                     }
+                     else
+                     {
+                        delete method.dataTypeString;
+                        method.type = vMethod.type;
+                        method.dataTypeString = CopyString(vMethod.dataTypeString);
+                        method._class = vMethod._class;
+                     }
                   }
                   else
                      _class._vTbl[vMethod.vid] = _class.base._vTbl[vMethod.vid];
@@ -3756,7 +3772,7 @@ public dllexport bool eClass_IsDerived(Class _class, Class from)
    return false;
 }
 
-static void FixDerivativeVirtualMethod(Class base, char * name, int vid, void * origFunction)
+static void FixDerivativeVirtualMethod(Class base, char * name, int vid, void * origFunction, char * type)
 {
    OldLink derivative;
    for(derivative = base.derivatives.first; derivative; derivative = derivative.next)
@@ -3774,9 +3790,19 @@ static void FixDerivativeVirtualMethod(Class base, char * name, int vid, void * 
       {
          if(method.function) function = method.function;
 
-         delete method.name;
-         delete method.dataTypeString;
-         _class.methods.Delete((BTNode)method);
+         if(!method.symbol)
+         {
+            delete method.name;
+            delete method.dataTypeString;
+            _class.methods.Delete((BTNode)method);
+         }
+         else
+         {
+            delete method.dataTypeString;
+            method.type = virtualMethod;
+            method.dataTypeString = CopyString(type);
+            method._class = base;
+         }
       }
       for(method = (Method)_class.methods.first; method; method = next)
       {
@@ -3795,7 +3821,7 @@ static void FixDerivativeVirtualMethod(Class base, char * name, int vid, void * 
          }
       }
       if(_class.derivatives.first || _class.templatized.first)
-         FixDerivativeVirtualMethod(_class, name, vid, function);
+         FixDerivativeVirtualMethod(_class, name, vid, function, type);
    }
    {
       OldLink templateLink;
@@ -3803,7 +3829,7 @@ static void FixDerivativeVirtualMethod(Class base, char * name, int vid, void * 
       {
          Class template = templateLink.data;
          template._vTbl = base._vTbl;
-         FixDerivativeVirtualMethod(template, name, vid, origFunction);
+         FixDerivativeVirtualMethod(template, name, vid, origFunction, type);
       }
    }
 }
@@ -3916,7 +3942,7 @@ public dllexport Method eClass_AddVirtualMethod(Class _class, char * name, char 
 
          // TODO: Fix derived classes
          if(_class.derivatives.first || _class.templatized.first)
-            FixDerivativeVirtualMethod(_class, name, method.vid, function ? function : (void *)DefaultFunction);
+            FixDerivativeVirtualMethod(_class, name, method.vid, function ? function : (void *)DefaultFunction, type);
          return method;
       }
    }

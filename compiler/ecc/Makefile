@@ -15,15 +15,21 @@ CONSOLE = -mconsole
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/ecc$(E)
 
-OBJECTS = $(OBJ)ecc.o $(OBJ)$(MODULE).main$(O)
+OBJECTS = \
+	$(OBJ)ecc.o \
+	$(OBJ)$(MODULE).main$(O)
 
-COBJECTS = $(OBJ)ecc.c
+COBJECTS = \
+	$(OBJ)ecc.c
 
-SYMBOLS = $(OBJ)ecc.sym
+SYMBOLS = \
+	$(OBJ)ecc.sym
 
-IMPORTS = $(OBJ)ecc.imp
+IMPORTS = \
+	$(OBJ)ecc.imp
 
-SOURCES = ecc.ec
+SOURCES = \
+	ecc.ec
 
 RESOURCES =
 

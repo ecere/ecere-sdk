@@ -411,7 +411,7 @@ int OutputFileList(File f, char * name, Array<String> list, Map<String, int> var
 {
    int numOfBreaks = 0;
    const int breakListLength = 1536;
-   const int breakLineLength = 78;
+   const int breakLineLength = 78; // TODO: turn this into an option.
 
    int c, len, itemCount = 0;
    Array<int> breaks { };
@@ -467,17 +467,22 @@ int OutputFileList(File f, char * name, Array<String> list, Map<String, int> var
          itemCount = breaks[c];
          for(n=offset; n<offset+itemCount; n++)
          {
-            int itemLen = strlen(list[n]);
-            if(len > 3 && len + itemLen > breakLineLength)
+            if(false) // TODO: turn this into an option.
             {
-               f.Printf(" \\\n\t%s", list[n]);
-               len = 3;
+               int itemLen = strlen(list[n]);
+               if(len > 3 && len + itemLen > breakLineLength)
+               {
+                  f.Printf(" \\\n\t%s", list[n]);
+                  len = 3;
+               }
+               else
+               {
+                  len += itemLen;
+                  f.Printf(" %s", list[n]);
+               }
             }
             else
-            {
-               len += itemLen;
-               f.Printf(" %s", list[n]);
-            }
+               f.Printf(" \\\n\t%s", list[n]);
          }
          offset += itemCount;
          f.Printf("\n");
@@ -633,8 +638,6 @@ class Project : struct
 public:
    float version;
    String moduleName;
-   String description;
-   String license;
 
    property ProjectOptions options { get { return options; } set { options = value; } isset { return options && !options.isEmpty; } }
    property Array<PlatformOptions> platforms
@@ -671,6 +674,20 @@ public:
    String resourcesPath;
    LinkList<ProjectNode> resources;
 
+   property char * description
+   {
+      set { delete description; if(value && value[0]) description = CopyString(value); }
+      get { return description ? description : ""; }
+      isset { return description != null && description[0]; }
+   }
+
+   property char * license
+   {
+      set { delete license; if(value && value[0]) license = CopyString(value); }
+      get { return license ? license : ""; }
+      isset { return license != null && license[0]; }
+   }
+
 private:
    // topNode.name holds the file name (.epj)
    ProjectOptions options;
@@ -683,6 +700,9 @@ private:
    // This is the file name stripped of the epj extension
    // It should NOT be edited, saved or loaded anywhere
    String name;
+
+   String description;
+   String license;
 
    ~Project()
    {

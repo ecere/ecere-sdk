@@ -13,16 +13,51 @@ RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)ecBootstrap$(A)
 
-OBJECTS = $(OBJ)ast.o $(OBJ)copy.o $(OBJ)dbpass.o $(OBJ)ec.main.o $(OBJ)ecdefs.o \
-	$(OBJ)expression.o $(OBJ)firstPass.o $(OBJ)freeAst.o $(OBJ)grammar.o $(OBJ)lexer.o \
-	$(OBJ)loadSymbols.o $(OBJ)output.o $(OBJ)pass0.o $(OBJ)pass1.o $(OBJ)pass15.o $(OBJ)pass16.o \
-	$(OBJ)pass2.o $(OBJ)pass3.o $(OBJ)shortcuts.o $(OBJ)type.o $(OBJ)bsl.o
+OBJECTS = \
+	$(OBJ)ast.o \
+	$(OBJ)copy.o \
+	$(OBJ)dbpass.o \
+	$(OBJ)ec.main.o \
+	$(OBJ)ecdefs.o \
+	$(OBJ)expression.o \
+	$(OBJ)firstPass.o \
+	$(OBJ)freeAst.o \
+	$(OBJ)grammar.o \
+	$(OBJ)lexer.o \
+	$(OBJ)loadSymbols.o \
+	$(OBJ)output.o \
+	$(OBJ)pass0.o \
+	$(OBJ)pass1.o \
+	$(OBJ)pass15.o \
+	$(OBJ)pass16.o \
+	$(OBJ)pass2.o \
+	$(OBJ)pass3.o \
+	$(OBJ)shortcuts.o \
+	$(OBJ)type.o \
+	$(OBJ)bsl.o
 
-SOURCES = bootstrap/ast.c bootstrap/copy.c bootstrap/dbpass.c bootstrap/ec.main.c \
-	bootstrap/ecdefs.c bootstrap/expression.c bootstrap/firstPass.c bootstrap/freeAst.c \
-	bootstrap/grammar.c bootstrap/lexer.c bootstrap/loadSymbols.c bootstrap/output.c bootstrap/pass0.c \
-	bootstrap/pass1.c bootstrap/pass15.c bootstrap/pass16.c bootstrap/pass2.c bootstrap/pass3.c \
-	bootstrap/shortcuts.c bootstrap/type.c ../bsl.c
+SOURCES = \
+	bootstrap/ast.c \
+	bootstrap/copy.c \
+	bootstrap/dbpass.c \
+	bootstrap/ec.main.c \
+	bootstrap/ecdefs.c \
+	bootstrap/expression.c \
+	bootstrap/firstPass.c \
+	bootstrap/freeAst.c \
+	bootstrap/grammar.c \
+	bootstrap/lexer.c \
+	bootstrap/loadSymbols.c \
+	bootstrap/output.c \
+	bootstrap/pass0.c \
+	bootstrap/pass1.c \
+	bootstrap/pass15.c \
+	bootstrap/pass16.c \
+	bootstrap/pass2.c \
+	bootstrap/pass3.c \
+	bootstrap/shortcuts.c \
+	bootstrap/type.c \
+	../bsl.c
 
 # CROSS-PLATFORM MAGIC
 
