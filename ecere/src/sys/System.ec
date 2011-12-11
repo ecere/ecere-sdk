@@ -186,6 +186,18 @@ public bool ShellOpen(char * fileName, ...)
 {
    bool result;
    va_list args;
+#ifndef __WIN32__
+   char command[MAX_LOCATION] = "";
+   char desktop[MAX_F_STRING];
+   GetEnvironment("DESKTOP_SESSION", desktop, sizeof(desktop));
+   if(strcasestr(desktop, "gnome"))
+      sprintf(command, "gnome-open \"%s\"", fileName);
+   else if(strcasestr(desktop, "kde"))
+      sprintf(command, "kde-open \"%s\"", fileName);
+   else
+      sprintf(command, fileName);
+   result = System_ShellOpen(command, args);
+#endif
    result = System_ShellOpen(fileName, args);
    va_end(args);
    return result;
