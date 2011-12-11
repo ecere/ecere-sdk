@@ -1404,25 +1404,7 @@ class ProjectView : Window
          Execute(command);
       }
       else
-      {
-      #ifndef __WIN32__
-         // move this code to ShellOpen?
-         char command[MAX_LOCATION] = "";
-         char desktop[MAX_LOCATION * 65];
-
-         GetEnvironment("DESKTOP_SESSION", desktop, sizeof(desktop));
-         if(strstr("gnome", desktop))
-            sprintf(command, "gnome-open \"%s\"", folder);
-         else if(strstr("kde", desktop))
-            sprintf(command, "kde-open \"%s\"", folder);
-         if(command[0])
-            Execute(command);
-         else
-            PrintLn("unable to detect known desktop");
-      #else
          ShellOpen(folder);
-      #endif
-      }
    }
 
    bool Run(MenuItem selection, Modifiers mods)
