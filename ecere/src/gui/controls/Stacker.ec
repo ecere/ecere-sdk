@@ -144,11 +144,13 @@ public:
    property Window flipper { set { flipper = value; } get { return flipper; } };
    property bool flipperSpring { set { bits.flipperSpring = value; } get { return bits.flipperSpring; } };
    property bool autoSize { set { bits.autoSize = value; } get { return bits.autoSize; } };
+   property int margin { set { margin = value; } get { return margin; } };
 
 private:
    StackerBits bits;
    ScrollDirection direction;
    int gap;
+   int margin;
    Array<Window> controls { };
    Window flipper;
 
@@ -320,7 +322,7 @@ private:
 
          overseeing = true;
 
-         y = 0;
+         y = margin;
 #ifdef OPTIMIZED_RUNTIME_LOOPS
          if(direction == vertical)
          {
@@ -332,7 +334,7 @@ private:
                if(bits.reverse/* && (int)child.anchor.bottom != y*/) child.anchor.bottom = y;
                else           /* if((int)child.anchor.top != y)*/    child.anchor.top = y;
                y += child.size.h + gap;
-               Flip(flipper, child, controls, &bits, &inc, &c, &y, &flip);
+               Flip(flipper, child, controls, margin, &bits, &inc, &c, &y, &flip);
             }
          }
          else
@@ -345,7 +347,7 @@ private:
                if(bits.reverse/* && (int)child.anchor.right != y*/) child.anchor.right = y;
                else           /* if((int)child.anchor.left != y)*/  child.anchor.left = y;
                y += child.size.w + gap;
-               Flip(flipper, child, controls, &bits, &inc, &c, &y, &flip);
+               Flip(flipper, child, controls, margin, &bits, &inc, &c, &y, &flip);
             }
          }
 #else
@@ -366,7 +368,7 @@ private:
                else           /* if((int)child.anchor.left != y)*/  child.anchor.left = y;
                y += child.size.w + gap;
             }
-            Flip(flipper, child, controls, &bits, &inc, &c, &y, &flip);
+            Flip(flipper, child, controls, margin, &bits, &inc, &c, &y, &flip);
          }
 #endif
 
@@ -389,9 +391,9 @@ private:
          else if(bits.autoSize)
          {
             if(direction == vertical)
-               this.clientSize.h = y - gap;
+               this.clientSize.h = y - gap + margin;
             else
-               this.clientSize.w = y - gap;
+               this.clientSize.w = y - gap + margin;
          }
 
          if(bits.scrollable && y > ((direction == horizontal) ? width : height))
@@ -530,7 +532,7 @@ private:
    }
 }
 
-static inline void Flip(Window flipper, Window child, Array<Window> controls, StackerBits * bits, int * inc, int * c, int * y, Window * flip)
+static inline void Flip(Window flipper, Window child, Array<Window> controls, int margin, StackerBits * bits, int * inc, int * c, int * y, Window * flip)
 {
    if(flipper && !*flip && child == flipper)
    {
@@ -538,6 +540,6 @@ static inline void Flip(Window flipper, Window child, Array<Window> controls, St
       (*bits).reverse = !(*bits).reverse;
       *inc = (*bits).reverse ? -1 : 1;
       *c = (*bits).reverse ? controls.count : -1;
-      *y = 0;
+      *y = margin;
    }
 }
