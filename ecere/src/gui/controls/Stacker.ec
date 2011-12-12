@@ -110,7 +110,10 @@ public:
 
 static define stackerScrolling = 16;
 
-public enum FlipStackerSpringMode { none, spring };
+class StackerBits
+{
+   bool reverse:1, scrollable:1, flipperSpring:1;
+}
 
 public class Stacker : Window
 {
@@ -118,37 +121,35 @@ public:
 
    property ScrollDirection direction { set { direction = value; } get { return direction; } };
    property int gap { set { gap = value; } get { return gap; } };
-   property bool reverse { set { reverse = value; } get { return reverse; } };
+   property bool reverse { set { bits.reverse = value; } get { return bits.reverse; } };
 
    property bool scrollable
    {
       set
       {
-         if(value != scrollable)
+         if(value != bits.scrollable)
          {
-            scrollable = value;
+            bits.scrollable = value;
             // how to recall these?
             //GetDecorationsSize(...);
             //SetWindowArea(...);
             OnResize(clientSize.w, clientSize.h);
          }
       }
-      get { return scrollable; }
+      get { return bits.scrollable; }
    }
 
    property Array<Window> controls { get { return controls; } };
 
    property Window flipper { set { flipper = value; } get { return flipper; } };
-   property FlipStackerSpringMode flipMode { set { flipMode = value; } get { return flipMode; } };
+   property bool flipperSpring { set { bits.flipperSpring = value; } get { return bits.flipperSpring; } };
 
 private:
+   StackerBits bits;
    ScrollDirection direction;
    int gap;
-   bool scrollable;
    Array<Window> controls { };
-   bool reverse;
    Window flipper;
-   FlipStackerSpringMode flipMode;
 
    RepButton left
    {
@@ -311,8 +312,8 @@ private:
       if(created)
       {
          int y, c;
-         bool r = reverse;
-         int inc = reverse ? -1 : 1;
+         bool r = bits.reverse;
+         int inc = bits.reverse ? -1 : 1;
          Window child;
          Window flip = null;
 
@@ -322,70 +323,70 @@ private:
 #ifdef OPTIMIZED_RUNTIME_LOOPS
          if(direction == vertical)
          {
-            for(c = reverse ? controls.count-1 : 0; c<controls.count && c>-1; c += inc)
+            for(c = bits.reverse ? controls.count-1 : 0; c<controls.count && c>-1; c += inc)
             {
                child = controls[c];
                if(flip && child == flip) break;
                if(child.nonClient || !child.visible) continue;
-               if(reverse/* && (int)child.anchor.bottom != y*/) child.anchor.bottom = y;
-               else      /* if((int)child.anchor.top != y)*/    child.anchor.top = y;
+               if(bits.reverse/* && (int)child.anchor.bottom != y*/) child.anchor.bottom = y;
+               else           /* if((int)child.anchor.top != y)*/    child.anchor.top = y;
                y += child.size.h + gap;
-               Flip(flipper, child, controls, &reverse, &inc, &c, &y, &flip);
+               Flip(flipper, child, controls, &bits, &inc, &c, &y, &flip);
             }
          }
          else
          {
-            for(c = reverse ? controls.count-1 : 0; c<controls.count && c>-1; c += inc)
+            for(c = bits.reverse ? controls.count-1 : 0; c<controls.count && c>-1; c += inc)
             {
                child = controls[c];
                if(flip && child == flip) break;
                if(child.nonClient || !child.visible) continue;
-               if(reverse/* && (int)child.anchor.right != y*/) child.anchor.right = y;
-               else      /* if((int)child.anchor.left != y)*/  child.anchor.left = y;
+               if(bits.reverse/* && (int)child.anchor.right != y*/) child.anchor.right = y;
+               else           /* if((int)child.anchor.left != y)*/  child.anchor.left = y;
                y += child.size.w + gap;
-               Flip(flipper, child, controls, &reverse, &inc, &c, &y, &flip);
+               Flip(flipper, child, controls, &bits, &inc, &c, &y, &flip);
             }
          }
 #else
-         for(c = reverse ? controls.count-1 : 0; c<controls.count && c>-1; c += inc)
+         for(c = bits.reverse ? controls.count-1 : 0; c<controls.count && c>-1; c += inc)
          {
             child = controls[c];
             if(flip && child == flip) break;
             if(child.nonClient || !child.visible) continue;
             if(direction == vertical)
             {
-               if(reverse/* && (int)child.anchor.bottom != y*/) child.anchor.bottom = y;
-               else      /* if((int)child.anchor.top != y)*/    child.anchor.top = y;
+               if(bits.reverse/* && (int)child.anchor.bottom != y*/) child.anchor.bottom = y;
+               else           /* if((int)child.anchor.top != y)*/    child.anchor.top = y;
                y += child.size.h + gap;
             }
             else
             {
-               if(reverse/* && (int)child.anchor.right != y*/) child.anchor.right = y;
-               else      /* if((int)child.anchor.left != y)*/  child.anchor.left = y;
+               if(bits.reverse/* && (int)child.anchor.right != y*/) child.anchor.right = y;
+               else           /* if((int)child.anchor.left != y)*/  child.anchor.left = y;
                y += child.size.w + gap;
             }
-            Flip(flipper, child, controls, &reverse, &inc, &c, &y, &flip);
+            Flip(flipper, child, controls, &bits, &inc, &c, &y, &flip);
          }
 #endif
 
          if(flip)
          {
-            if(flipMode == spring)
+            if(bits.flipperSpring)
             {
                if(direction == vertical)
                {
-                  if(reverse/* && (int)child.anchor.bottom != y*/) flip.anchor.bottom = y;
-                  else      /* if((int)child.anchor.top != y)*/    flip.anchor.top = y;
+                  if(bits.reverse/* && (int)child.anchor.bottom != y*/) flip.anchor.bottom = y;
+                  else           /* if((int)child.anchor.top != y)*/    flip.anchor.top = y;
                }
                else
                {
-                  if(reverse/* && (int)child.anchor.right != y*/) flip.anchor.right = y;
-                  else      /* if((int)child.anchor.left != y)*/  flip.anchor.left = y;
+                  if(bits.reverse/* && (int)child.anchor.right != y*/) flip.anchor.right = y;
+                  else           /* if((int)child.anchor.left != y)*/  flip.anchor.left = y;
                }
             }
          }
 
-         if(scrollable && y > ((direction == horizontal) ? width : height))
+         if(bits.scrollable && y > ((direction == horizontal) ? width : height))
          {
             scrollArea = (direction == horizontal) ? { y, 0 } : { 0, y };
             left.visible = true;
@@ -398,7 +399,7 @@ private:
             scrollArea = { 0, 0 };
          }
 
-         if(scrollable)
+         if(bits.scrollable)
          {
             // FOR WHEN SCROLLING OCCURED
             for(child : controls)
@@ -521,14 +522,14 @@ private:
    }
 }
 
-static inline void Flip(Window flipper, Window child, Array<Window> controls, bool * reverse, int * inc, int * c, int * y, Window * flip)
+static inline void Flip(Window flipper, Window child, Array<Window> controls, StackerBits * bits, int * inc, int * c, int * y, Window * flip)
 {
    if(flipper && !*flip && child == flipper)
    {
       *flip = child;
-      *reverse = !*reverse;
-      *inc = *reverse ? -1 : 1;
-      *c = *reverse ? controls.count : -1;
+      (*bits).reverse = !(*bits).reverse;
+      *inc = (*bits).reverse ? -1 : 1;
+      *c = (*bits).reverse ? controls.count : -1;
       *y = 0;
    }
 }
