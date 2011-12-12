@@ -1674,6 +1674,8 @@ private:
          }
          if((clientResized || windowMoved) && created)
             OnPosition(position.x, position.y, clientSize.w, clientSize.h);
+
+         //if(clientResized && created && parent && parent.created && !parent.overseeing && !nonClient) parent.NotifyClientResize(parent, this);
    /*
          if(guiApp.interimWindow && guiApp.interimWindow.master.rootWindow == this)
          {
@@ -5107,6 +5109,7 @@ private:
             child.SetVisibility(visible);
          Update(null);
          ConsequentialMouseMove(false);
+         if(parent && !nonClient) parent.NotifyClientVisibility(parent, this);
       }
    }
 
@@ -6144,6 +6147,7 @@ public:
                master.modalSlave = null;
          }
          delete this;
+         //if(parent/* && parent.created*/ && !parent.overseeing && !nonClient) parent.NotifyClientCreation(parent, this);
       }
       return result;
    }
@@ -6303,6 +6307,7 @@ public:
             return true;
          }
          delete this;
+         //if(parent/* && parent.created*/ && !parent.overseeing && !nonClient) parent.NotifyClientCreation(parent, this);
       }
       return false;
    }
@@ -7630,6 +7635,11 @@ public:
    virtual void Window::NotifyDestroyed(Window window, DialogResult result);
    virtual void Window::NotifySaved(Window window, char * filePath);
 
+   virtual void Window::NotifyChild(Window child, bool removing);
+   virtual void Window::NotifyClientCreation(Window client);
+   virtual void Window::NotifyClientVisibility(Window client);
+   virtual void Window::NotifyClientResize(Window client);
+
    // Public Methods
 
    // Properties
@@ -7657,6 +7667,7 @@ public:
             if(parent)
             {
                parent.children.Remove(this);
+               parent.NotifyChild(parent, this, true);
 
                parent.Update(
                {
@@ -7749,6 +7760,8 @@ public:
                   else if(anchor.vert.type == middleRelative) anchor.vert.percent = (float)((y + h / 2) - (vph / 2)) / vph;
                }
                parent = value;
+
+               parent.NotifyChild(parent, this, false);
 
                // *** NEW HERE ***
                if(!style.inactive)
@@ -8483,6 +8496,7 @@ public:
 
             ComputeAnchors(stateAnchor, stateSizeAnchor, &x, &y, &w, &h);
             Position(x, y, w, h, true, true, true, true, false, true);
+            if(parent && parent.created && !nonClient) parent.NotifyClientResize(parent, this);
          }
       }
       get { value = size; }
@@ -9328,6 +9342,7 @@ private:
       bool nativeDecorations:1;
       bool manageDisplay:1;
       bool formDesigner:1; // True if we this is running in the form editor
+      bool overseeing:1;
    }; 
 
    // Checks used internally for them not to take effect in FormDesigner
