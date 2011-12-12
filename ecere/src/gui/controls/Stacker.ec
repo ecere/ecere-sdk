@@ -112,7 +112,7 @@ static define stackerScrolling = 16;
 
 class StackerBits
 {
-   bool reverse:1, scrollable:1, flipperSpring:1, autoSize:1;
+   bool reverse:1, scrollable:1, flipSpring:1, autoSize:1;
 }
 
 public class Stacker : Window
@@ -142,7 +142,7 @@ public:
    property Array<Window> controls { get { return controls; } };
 
    property Window flipper { set { flipper = value; } get { return flipper; } };
-   property bool flipperSpring { set { bits.flipperSpring = value; } get { return bits.flipperSpring; } };
+   property bool flipSpring { set { bits.flipSpring = value; } get { return bits.flipSpring; } };
    property bool autoSize { set { bits.autoSize = value; } get { return bits.autoSize; } };
    property int margin { set { margin = value; } get { return margin; } };
 
@@ -374,7 +374,7 @@ private:
 
          if(flip)
          {
-            if(bits.flipperSpring)
+            if(bits.flipSpring)
             {
                if(direction == vertical)
                {
