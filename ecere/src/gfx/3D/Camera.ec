@@ -52,7 +52,7 @@ public:
          t = 0 - this.origin.y;
          b = height - this.origin.y;
 
-         if(fovDirection == horizontal || (fovDirection == widest && width * this.aspectRatio > height))
+         if(fovDirection == horizontal || (fovDirection == widest && width * aspectRatio > height))
          {
             focalX = (float)((width / 2) / tan(fov/2));
             focalY = focalX * height / width;
