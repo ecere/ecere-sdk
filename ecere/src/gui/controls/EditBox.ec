@@ -3486,13 +3486,10 @@ private:
                   {
                      int i;
                      int length;
-                     //Can't delete right away as that would change the line.count
                      for(i = this.x; i < this.line.count; i++)
                      {
                         if(!IS_ALUNDER(this.line.buffer[i]))
                            break;
-                        DelCh(this.line, this.y, this.x, this.line, this.y, this.x+1, false);
-                        i--;
                      }
                      
                      for(; i < this.line.count; i++)
@@ -3500,9 +3497,8 @@ private:
                         //Delete trailing whitespace
                         if(IS_ALUNDER(this.line.buffer[i]))
                            break;
-                        DelCh(this.line, this.y, this.x, this.line, this.y, this.x+1, false);
-                        i--;
                      }
+                     DelCh(this.line, this.y, this.x, this.line, this.y, i, false);
                      SetViewToCursor(true);
                      Modified();
                   }
