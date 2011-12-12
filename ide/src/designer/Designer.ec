@@ -235,7 +235,7 @@ class Designer : DesignerBase
    {
       ClassDesignerBase classDesigner = this.classDesigner;
 #ifdef _DEBUG
-      if(instance._class.module.application != codeEditor.privateModule)
+      if(instance && instance._class.module.application != codeEditor.privateModule)
          printf("warning: SelectObject: instance._class.module.application != codeEditor.privateModule\n");
 #endif
       if(!classDesigner || !instance || classDesigner._class != (Class)eInstance_GetDesigner(instance))

@@ -2447,6 +2447,8 @@ class CodeEditor : Window
       }
       FreeExcludedSymbols(this.excludedSymbols);
       FreeContext(this.globalContext);
+      FreeIncludeFiles();
+      FreeGlobalData(&this.globalData);
 
       if(GetGlobalContext() == globalContext)
       {
@@ -5315,11 +5317,14 @@ class CodeEditor : Window
 
       for(oClass = classes.first; oClass; oClass = oClass.next)
       {
-         ObjectInfo object;
+         if(oClass.instance)
+         {
+            ObjectInfo object;
 
-         sheet.AddObject(oClass, oClass.name ? oClass.name : oClass.instance._class.name, typeClass, false);
-         for(object = oClass.instances.first; object; object = object.next)
-            sheet.AddObject(object, object.name ? object.name : object.instance._class.name, typeData, false);
+            sheet.AddObject(oClass, oClass.name ? oClass.name : oClass.instance._class.name, typeClass, false);
+            for(object = oClass.instances.first; object; object = object.next)
+               sheet.AddObject(object, object.name ? object.name : object.instance._class.name, typeData, false);
+         }
       }
       sheet.SelectObject(selected);
    }
@@ -6705,11 +6710,4 @@ CodeEditor NewCodeEditor(Window parent, WindowState state, bool modified)
    CodeEditor document { state = state, parent = parent, modifiedDocument = modified };
    document.Create();
    return document;
-}
-
-void CodeEditor_Terminate()
-{
-   FindParams_Terminate();
-   FindCtx_Terminate();
-   FreeIncludeFiles();
 }

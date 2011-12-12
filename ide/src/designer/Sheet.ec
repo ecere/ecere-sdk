@@ -797,7 +797,10 @@ class Sheet : Window
 
                         // Hide properties like this for now..
                         if(name && !strcmp(name, "Private")) 
+                        {
+                           delete info;
                            continue;
+                        }
 
                         if(!category)
                         {
