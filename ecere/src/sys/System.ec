@@ -197,8 +197,9 @@ public bool ShellOpen(char * fileName, ...)
    else
       sprintf(command, fileName);
    result = System_ShellOpen(command, args);
-#endif
+#else
    result = System_ShellOpen(fileName, args);
+#endif
    va_end(args);
    return result;
 }
