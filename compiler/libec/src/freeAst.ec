@@ -1143,6 +1143,40 @@ void FreeModuleData(Module module)
       if(function.symbol) 
          FreeSymbol(function.symbol);
    }
+
+   // Free the extra module instance on closing the last code editor using it
+   if(!inCompiler)
+   {
+      MapIterator <String, List<Module> > mapIt { map = loadedModules };
+      while(mapIt.Next())
+      {
+         List<Module> list = mapIt.data;
+         Iterator<Module> it { list };
+         bool found = false;
+         while(it.Next())
+         {
+            if(it.data == module)
+            {
+               list.Remove(it.pointer);
+               found = true;
+               break;
+            }
+         }
+         if(found)
+         {
+            if(list.count == 1)
+            {
+               // Unload the initial module that we loaded for safe sharing
+               Module mod = list[0];
+               list.Remove(list.GetFirst());
+               loadedModules.Remove(mapIt.pointer);
+               delete list;
+               eModule_Unload(__thisModule, mod);
+            }
+            break;
+         }
+      }
+   }
 }
 
 public void FreeTypeData(Module privateModule)

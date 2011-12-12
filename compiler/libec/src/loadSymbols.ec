@@ -718,6 +718,8 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
    return globalInstance;
 }
 
+Map<String, List<Module> > loadedModules { };
+
 // (Same function as in actual compiler)
 public void ImportModule(char * name, ImportType importType, AccessMode importAccess, bool loadDllOnly)
 {
@@ -776,15 +778,43 @@ public void ImportModule(char * name, ImportType importType, AccessMode importAc
 
             if(ext[0] || !FileExists(symFile))
             {
+               bool skipLoad = false;
+               List<Module> list = null;
+
                char file[MAX_FILENAME];
                strcpy(file, name);
                StripExtension(file);
 
-               loadedModule = eModule_LoadStrict(privateModule, file, importAccess);
-               if(loadedModule)
+               // Load an extra instance of any shared module to ensure freeing up a 
+               // module loaded in another file will not invalidate our objects.
+               if(!inCompiler)
                {
-                  loadedModule.importType = importType;
-                  module.dllOnly = false;    // If this is truly a dll, no need to reload it again...
+                  Iterator<List<Module> > it { loadedModules };
+                  if(!it.Index(file, false))
+                  {
+                     Module firstModule = eModule_LoadStrict(__thisModule, file, importAccess);
+                     if(firstModule)
+                     {
+                        list = { };
+                        list.Add(firstModule);
+                        loadedModules[file] = list;
+                     }
+                     else
+                        skipLoad = true;
+                  }
+                  else
+                     list = it.data;
+               }
+
+               if(!skipLoad)
+               {
+                  loadedModule = eModule_LoadStrict(privateModule, file, importAccess);
+                  if(loadedModule)
+                  {
+                     loadedModule.importType = importType;
+                     module.dllOnly = false;    // If this is truly a dll, no need to reload it again...
+                     if(list) list.Add(loadedModule);
+                  }
                }
             }
          }
