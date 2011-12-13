@@ -10,6 +10,17 @@ public import "ecere"
 #endif
 #endif
 
+#define OPTIMIZED_RUNTIME_LOOPS
+
+static void Dummy()
+{
+   Window a;
+   Class b;
+   eClass_IsDerived(a._class, class(Window));
+   //a.OnApplyGraphics();
+   //a.OnRedraw(null);
+}
+
 public class RepButton : Button
 {
 public:
@@ -99,38 +110,53 @@ public:
 
 static define stackerScrolling = 16;
 
+class StackerBits
+{
+   bool reverse:1, scrollable:1, flipSpring:1, autoSize:1;
+
+   // internals
+   bool holdChildMonitoring:1;
+}
+
 public class Stacker : Window
 {
 public:
 
    property ScrollDirection direction { set { direction = value; } get { return direction; } };
    property int gap { set { gap = value; } get { return gap; } };
-   property bool reverse { set { reverse = value; } get { return reverse; } };
+   property bool reverse { set { bits.reverse = value; } get { return bits.reverse; } };
 
    property bool scrollable
    {
       set
       {
-         if(value != scrollable)
+         if(value != bits.scrollable)
          {
-            scrollable = value;
+            bits.scrollable = value;
             // how to recall these?
             //GetDecorationsSize(...);
             //SetWindowArea(...);
             OnResize(clientSize.w, clientSize.h);
          }
       }
-      get { return scrollable; }
+      get { return bits.scrollable; }
    }
 
    property Array<Window> controls { get { return controls; } };
 
+   property Window flipper { set { flipper = value; } get { return flipper; } };
+   property bool flipSpring { set { bits.flipSpring = value; } get { return bits.flipSpring; } };
+   property bool autoSize { set { bits.autoSize = value; } get { return bits.autoSize; } };
+   property int margin { set { margin = value; } get { return margin; } };
+
 private:
+   StackerBits bits;
    ScrollDirection direction;
    int gap;
-   bool scrollable;
+   int margin;
    Array<Window> controls { };
-   bool reverse;
+   Window flipper;
+
    RepButton left
    {
       this, visible = false, bevelOver = true, nonClient = true, keyRepeat = true, opacity = 0;
@@ -194,7 +220,7 @@ private:
 
    ~Stacker()
    {
-      controls.Free();
+      //controls.Free();
    }
 
    bool OnPostCreate()
@@ -223,83 +249,158 @@ private:
    gap = 5;
    direction = vertical;
 
-   void OnResize(int width, int height)
+   void Stacker::NotifyChild(Window child, bool removing)
    {
-      if(created)
+      if(!bits.holdChildMonitoring)
+         UpdateControls();
+   }
+   void Stacker::NotifyClientCreation(Window client)
+   {
+      DoResize(size.w, size.h); // todo: improve with DoPartialResize(size.w, size.h, client);
+   }
+   void Stacker::NotifyClientVisibility(Window client)
+   {
+      DoResize(size.w, size.h); // todo: improve with DoPartialResize(size.w, size.h, client);
+   }
+   void Stacker::NotifyClientResize(Window client)
+   {
+      DoResize(size.w, size.h); // todo: improve with DoPartialResize(size.w, size.h, client);
+   }
+
+   void UpdateControls()
+   {
+      Window child;
+      Array<Window> newControls { };
+      for(c : controls)
       {
-         int y = 0;
-         Array<Window> oldControls = controls;
-         Array<Window> orderedControls;
-         Window child;
-
-         controls = { };     
-
-         for(c : oldControls)
-         {
-            for(child = firstChild; child; child = child.next)
-            {
-               if(child.nonClient || !child.visible /*|| !child.created*/) continue;
-               if(c == child)
-               {
-                  controls.Add(child);
-                  incref child;
-                  break;
-               }
-            }
-         }
          for(child = firstChild; child; child = child.next)
          {
-            if(child.nonClient || !child.visible /*|| !child.created*/) continue;
-            if(!controls.Find(child))
+            if(child.nonClient) continue;
+            if(c == child)
             {
-               controls.Add(child);
+               newControls.Add(child);
                incref child;
+               break;
             }
          }
-
-         oldControls.Free();
-         delete oldControls;
-
-         if(reverse)
+         if(!child)
          {
-            int c;
-            orderedControls = { };
-            for(c = controls.count-1; c >= 0; c--)
+            child = c;
+            delete child;
+         }
+      }
+      for(child = firstChild; child; child = child.next)
+      {
+         if(child.nonClient) continue;
+         if(!newControls.Find(child))
+         {
+            newControls.Add(child);
+            incref child;
+         }
+      }
+      delete controls;
+      controls = newControls;
+      newControls = null;
+   }
+
+   void OnResize(int width, int height)
+   {
+      DoResize(width, height);
+   }
+
+   void DoResize(int width, int height)
+   {
+      // TOIMPROVE: this needs to maintain an order and allow for dynamically adding
+      //            children. inserting in the order should also be possible.
+      // TOIMPROVE: in Window.ec... it should be possible to change the order of children
+      //            at runtime. it should also be possible to choose where dynamically
+      //            created children are inserted.
+
+      if(created)
+      {
+         int y, c;
+         bool r = bits.reverse;
+         int inc = bits.reverse ? -1 : 1;
+         Window child;
+         Window flip = null;
+
+         overseeing = true;
+
+         y = margin;
+#ifdef OPTIMIZED_RUNTIME_LOOPS
+         if(direction == vertical)
+         {
+            for(c = bits.reverse ? controls.count-1 : 0; c<controls.count && c>-1; c += inc)
             {
                child = controls[c];
-               orderedControls.Add(child);
-               incref child;
+               if(flip && child == flip) break;
+               if(child.nonClient || !child.visible) continue;
+               if(bits.reverse/* && (int)child.anchor.bottom != y*/) child.anchor.bottom = y;
+               else           /* if((int)child.anchor.top != y)*/    child.anchor.top = y;
+               y += child.size.h + gap;
+               Flip(flipper, child, controls, margin, &bits, &inc, &c, &y, &flip);
             }
          }
          else
-            orderedControls = controls;
-         
-         for(child : orderedControls)
          {
+            for(c = bits.reverse ? controls.count-1 : 0; c<controls.count && c>-1; c += inc)
+            {
+               child = controls[c];
+               if(flip && child == flip) break;
+               if(child.nonClient || !child.visible) continue;
+               if(bits.reverse/* && (int)child.anchor.right != y*/) child.anchor.right = y;
+               else           /* if((int)child.anchor.left != y)*/  child.anchor.left = y;
+               y += child.size.w + gap;
+               Flip(flipper, child, controls, margin, &bits, &inc, &c, &y, &flip);
+            }
+         }
+#else
+         for(c = bits.reverse ? controls.count-1 : 0; c<controls.count && c>-1; c += inc)
+         {
+            child = controls[c];
+            if(flip && child == flip) break;
+            if(child.nonClient || !child.visible) continue;
             if(direction == vertical)
             {
-               if(reverse)
-                  child.anchor.bottom = y;
-               else
-                  child.anchor.top = y;
+               if(bits.reverse/* && (int)child.anchor.bottom != y*/) child.anchor.bottom = y;
+               else           /* if((int)child.anchor.top != y)*/    child.anchor.top = y;
                y += child.size.h + gap;
             }
             else
             {
-               if(reverse)
-                  child.anchor.right = y;
-               else
-                  child.anchor.left = y;
+               if(bits.reverse/* && (int)child.anchor.right != y*/) child.anchor.right = y;
+               else           /* if((int)child.anchor.left != y)*/  child.anchor.left = y;
                y += child.size.w + gap;
             }
+            Flip(flipper, child, controls, margin, &bits, &inc, &c, &y, &flip);
          }
-         if(reverse)
+#endif
+
+         if(flip)
          {
-            orderedControls.Free();
-            delete orderedControls;
+            if(bits.flipSpring)
+            {
+               if(direction == vertical)
+               {
+                  if(bits.reverse/* && (int)child.anchor.bottom != y*/) flip.anchor.bottom = y;
+                  else           /* if((int)child.anchor.top != y)*/    flip.anchor.top = y;
+               }
+               else
+               {
+                  if(bits.reverse/* && (int)child.anchor.right != y*/) flip.anchor.right = y;
+                  else           /* if((int)child.anchor.left != y)*/  flip.anchor.left = y;
+               }
+            }
+         }
+         else if(bits.autoSize)
+         {
+            if(direction == vertical)
+               this.clientSize.h = y - gap + margin;
+            else
+               this.clientSize.w = y - gap + margin;
          }
 
-         if(scrollable && y > ((direction == horizontal) ? width : height))
+         if(bits.scrollable && y > ((direction == horizontal) ? width : height))
          {
             scrollArea = (direction == horizontal) ? { y, 0 } : { 0, y };
             left.visible = true;
@@ -312,12 +413,12 @@ private:
             scrollArea = { 0, 0 };
          }
 
-         // FOR WHEN SCROLLING OCCURED
-         for(child : controls)
-            child.anchor = child.anchor;
-
-         if(scrollable)
+         if(bits.scrollable)
          {
+            // FOR WHEN SCROLLING OCCURED
+            for(child : controls)
+               child.anchor = child.anchor;
+
             if(direction == horizontal)
             {
                left.disabled = (scroll.x == 0);
@@ -331,6 +432,8 @@ private:
             if(left.disabled && left.buttonState == down) left.OnLeftButtonUp(-1,0,0);
             if(right.disabled && right.buttonState == down) right.OnLeftButtonUp(-1,0,0);
          }
+
+         overseeing = false;
       }
    }
 
@@ -338,6 +441,7 @@ private:
    {
       Window child, next;
 
+      bits.holdChildMonitoring = true;
       for(child = firstChild; child; child = next)
       {
          next = child ? child.next : null;
@@ -348,6 +452,7 @@ private:
             // delete child;
          }
       }
+      bits.holdChildMonitoring = true;
    }
 
    public void MakeControlVisible(Window control)
@@ -392,5 +497,55 @@ private:
             size = size;
          }
       }
+   }
+
+   public Window GetNextStackedItem(Window current, bool previous, Class filter)
+   {
+      Window result = null;
+      Window next = null;
+      Window child;
+      bool direction = !(reverse^previous);
+      int c;// = !direction ? controls.count-1 : 0;
+      for(c = (!direction) ? controls.count-1 : 0; c<controls.count && c>-1; c += (!direction) ? -1 : 1)
+      {
+         //PrintLn(c);
+         child = controls[c];
+         if(child.nonClient || !child.created || !child.visible) continue;
+         if(filter && !eClass_IsDerived(child._class, filter)) continue;
+         next = child;
+         /*if(next.text)
+            PrintLn(next.text);*/
+         break;
+      }
+      //PrintLn("outloop-c-is-", c);
+      if(current)
+      {
+         //next = controls[c];
+         for(c = direction ? controls.count-1 : 0; c<controls.count && c>-1; c += direction ? -1 : 1)
+         {
+            child = controls[c];
+            if(child.nonClient || !child.created || !child.visible) continue;
+            if(!eClass_IsDerived(child._class, filter)) continue;
+            if(child == current)
+               break;
+            next = child;
+         }
+         result = next;
+      }
+      else
+         result = next;
+      return result;
+   }
+}
+
+static inline void Flip(Window flipper, Window child, Array<Window> controls, int margin, StackerBits * bits, int * inc, int * c, int * y, Window * flip)
+{
+   if(flipper && !*flip && child == flipper)
+   {
+      *flip = child;
+      (*bits).reverse = !(*bits).reverse;
+      *inc = (*bits).reverse ? -1 : 1;
+      *c = (*bits).reverse ? controls.count : -1;
+      *y = margin;
    }
 }
