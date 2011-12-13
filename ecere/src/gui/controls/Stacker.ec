@@ -113,6 +113,9 @@ static define stackerScrolling = 16;
 class StackerBits
 {
    bool reverse:1, scrollable:1, flipSpring:1, autoSize:1;
+
+   // internals
+   bool holdChildMonitoring:1;
 }
 
 public class Stacker : Window
@@ -217,7 +220,7 @@ private:
 
    ~Stacker()
    {
-      controls.Free();
+      //controls.Free();
    }
 
    bool OnPostCreate()
@@ -248,7 +251,8 @@ private:
 
    void Stacker::NotifyChild(Window child, bool removing)
    {
-      UpdateControls();
+      if(!bits.holdChildMonitoring)
+         UpdateControls();
    }
    void Stacker::NotifyClientCreation(Window client)
    {
@@ -437,6 +441,7 @@ private:
    {
       Window child, next;
 
+      bits.holdChildMonitoring = true;
       for(child = firstChild; child; child = next)
       {
          next = child ? child.next : null;
@@ -447,6 +452,7 @@ private:
             // delete child;
          }
       }
+      bits.holdChildMonitoring = true;
    }
 
    public void MakeControlVisible(Window control)
