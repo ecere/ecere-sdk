@@ -350,15 +350,24 @@ bool System_ShellOpen(char * fileName, va_list args)
    {
       char command[MAX_LOCATION] = "";
       char desktop[MAX_F_STRING];
-      __ecereNameSpace__ecere__sys__GetEnvironment("DESKTOP_SESSION", desktop, sizeof(desktop));
-      if(__ecereNameSpace__ecere__sys__SearchString(desktop, 0, "gnome", false, false))
-         sprintf(command, "gnome-open \"%s\" &", filePath);
-      else if(__ecereNameSpace__ecere__sys__SearchString(desktop, 0, "kde", false, false))
-         sprintf(command, "kde-open \"%s\" &", filePath);
+      __ecereNameSpace__ecere__sys__GetEnvironment("ECERE_DESKTOP", desktop, sizeof(desktop));
+      if(__ecereNameSpace__ecere__sys__SearchString(desktop, 0, "ecere", false, false))
+         sprintf(command, "ede-open \"%s\" &", filePath);
       else
-         sprintf(command, "%s &", filePath);
+      {
+         __ecereNameSpace__ecere__sys__GetEnvironment("DESKTOP_SESSION", desktop, sizeof(desktop));
+         if(__ecereNameSpace__ecere__sys__SearchString(desktop, 0, "gnome", false, false))
+            sprintf(command, "gnome-open \"%s\" &", filePath);
+         else if(__ecereNameSpace__ecere__sys__SearchString(desktop, 0, "kde", false, false))
+            sprintf(command, "kde-open \"%s\" &", filePath);
+         else
+         {
+            if(FILE_FileExists(filePath) != isDirectory)
+               sprintf(command, "%s &", filePath);
+         }
+      }
 
-      if(system(command) != -1)
+      if(command[0] && system(command) != -1)
          result = true;
    }
 #elif defined(ECERE_VANILLA)
