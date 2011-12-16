@@ -159,7 +159,7 @@ private:
 
    RepButton left
    {
-      this, visible = false, bevelOver = true, nonClient = true, keyRepeat = true, opacity = 0;
+      nonClient = true, parent = this, visible = false, bevelOver = true, keyRepeat = true, opacity = 0;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -180,7 +180,7 @@ private:
    };
    RepButton right
    {
-      this, visible = false, bevelOver = true, nonClient = true, keyRepeat = true, opacity = 0;
+      nonClient = true, parent = this, visible = false, bevelOver = true, keyRepeat = true, opacity = 0;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -220,7 +220,7 @@ private:
 
    ~Stacker()
    {
-      //controls.Free();
+      controls.Free();
    }
 
    bool OnPostCreate()
@@ -279,7 +279,6 @@ private:
             if(c == child)
             {
                newControls.Add(child);
-               incref child;
                break;
             }
          }
