@@ -7642,6 +7642,8 @@ public:
    virtual void Window::NotifyClientVisibility(Window client);
    virtual void Window::NotifyClientResize(Window client);
 
+   virtual void Window::NotifySlave(Window slave, bool removing);
+
    // Public Methods
 
    // Properties
@@ -7878,6 +7880,7 @@ public:
                      master.slaves.Delete(slaveHolder);
                      break;
                   }
+               master.NotifySlave(master, this, true);
             }
 
             if(value)
@@ -7897,6 +7900,7 @@ public:
                if(style.isDefault && !value.defaultControl)
                   value.defaultControl = this;
 
+               value.NotifySlave(value, this, false);
             }
          }
          master = value;
