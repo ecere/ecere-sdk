@@ -789,7 +789,7 @@ public void ImportModule(char * name, ImportType importType, AccessMode importAc
                // module loaded in another file will not invalidate our objects.
                if(!inCompiler)
                {
-                  Iterator<List<Module> > it { loadedModules };
+                  MapIterator<String, List<Module> > it { map = loadedModules };
                   if(!it.Index(file, false))
                   {
                      Module firstModule = eModule_LoadStrict(__thisModule, file, importAccess);
