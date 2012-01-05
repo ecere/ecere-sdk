@@ -1,3 +1,10 @@
+#if defined(WIN32)
+#define WIN32_LEAN_AND_MEAN
+#define Method _Method
+#include <windows.h>
+#undef Method
+#endif
+
 public import "ecere"
 
 //define test = Color { 5, 4, 2 };
@@ -46,6 +53,9 @@ class SimSkin_Window : Window
    {
       bool isNormal = (state == normal || state == maximized);
       int top = 0, border = 0, bottom = 0;
+
+      if(nativeDecorations && rootWindow == this) return;
+
       if(state == minimized)
          top = border = bottom = DEAD_BORDER;
       else if(((BorderBits)borderStyle).sizable)
@@ -154,6 +164,29 @@ class SimSkin_Window : Window
    void GetDecorationsSize(MinMaxValue * w, MinMaxValue * h)
    {
       *w = *h = 0;
+
+      if(hasMenuBar && state != minimized)
+      {
+         *h += MENU_HEIGHT;
+      }
+      if(statusBar && state != minimized)
+      {
+         *h += STATUS_HEIGHT;
+      }
+
+      if(nativeDecorations && rootWindow == this)
+      {
+#if defined(WIN32)
+         RECT rcClient, rcWindow;
+         GetClientRect(systemHandle, &rcClient);
+         GetWindowRect(systemHandle, &rcWindow);
+         *w += (rcWindow.right - rcWindow.left) - rcClient.right;
+         *h += (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
+
+         // PrintLn(_class.name, " is at l = ", rcWindow.left, ", r = ", rcWindow.right);
+#endif
+         return;
+      }
       if((((BorderBits)borderStyle).deep || ((BorderBits)borderStyle).bevel) && state != minimized)
       {
          *w += 4;
@@ -178,19 +211,12 @@ class SimSkin_Window : Window
          *w += 2;
          *h += 2;
       }
-      if(hasMenuBar && state != minimized)
-      {
-         *h += MENU_HEIGHT;
-      }
-      if(statusBar && state != minimized)
-      {
-         *h += STATUS_HEIGHT;
-      }
    }
 
    bool IsMouseMoving(int x, int y, int w, int h)
    {
       BorderBits style = (BorderBits)borderStyle; // TOFIX: borderStyle.fixed doesn't work
+      if(nativeDecorations && rootWindow == this) return false;
       if(style.fixed)
       {
          bool resizeX, resizeY, resizeEndX, resizeEndY;
@@ -205,6 +231,7 @@ class SimSkin_Window : Window
       bool result = false;
 
       *resizeX = *resizeY = *resizeEndX = *resizeEndY = false;
+      if(nativeDecorations && rootWindow == this) return false;
 
       if(((BorderBits)borderStyle).sizable && (state == normal))
       {
@@ -239,6 +266,7 @@ class SimSkin_Window : Window
    void SetWindowMinimum(MinMaxValue * mw, MinMaxValue * mh)
    {
       bool isNormal = (state == normal || state == maximized);
+      if(nativeDecorations && rootWindow == this) return;
       if(((BorderBits)borderStyle).fixed && (state != maximized || !parent.menuBar))
       {
          *mw = MIN_WIDTH;
@@ -274,40 +302,54 @@ class SimSkin_Window : Window
 
       *x = *y = 0;
 
-      GetDecorationsSize(&aw, &ah);
-
-      // Compute client area start
-      if(((BorderBits)borderStyle).deep || ((BorderBits)borderStyle).bevel)
-      {
-         *x += 2;
-         *y += 2;
-      }
-
-      if(((BorderBits)borderStyle).sizable && isNormal)
-      {
-         *x += BORDER;
-         *y += TOP;
-      }
-
       if(hasMenuBar)
       {
          *y += MENU_HEIGHT;
       }
 
-      if(((BorderBits)borderStyle).fixed && (state != maximized || !parent.menuBar))
-      {
-         *y += CAPTION;
-         if(!((BorderBits)borderStyle).sizable || state == minimized)
-         {
-            *y += DEAD_BORDER;
-            *x += DEAD_BORDER;
-         }
-      }
+      GetDecorationsSize(&aw, &ah);
 
-      if(((BorderBits)borderStyle).contour && !((BorderBits)borderStyle).fixed)
+      if(nativeDecorations && rootWindow == this)
       {
-         *x += 1;
-         *y += 1;
+#if defined(WIN32)
+         RECT rcWindow;
+         POINT client00 = { 0, 0 };
+         ClientToScreen(systemHandle, &client00);
+         GetWindowRect(systemHandle, &rcWindow);
+         *x += client00.x - rcWindow.left;
+         *y += client00.y - rcWindow.top;
+#endif
+      }
+      else
+      {
+         // Compute client area start
+         if(((BorderBits)borderStyle).deep || ((BorderBits)borderStyle).bevel)
+         {
+            *x += 2;
+            *y += 2;
+         }
+
+         if(((BorderBits)borderStyle).sizable && isNormal)
+         {
+            *x += BORDER;
+            *y += TOP;
+         }
+
+         if(((BorderBits)borderStyle).fixed && (state != maximized || !parent.menuBar))
+         {
+            *y += CAPTION;
+            if(!((BorderBits)borderStyle).sizable || state == minimized)
+            {
+               *y += DEAD_BORDER;
+               *x += DEAD_BORDER;
+            }
+         }
+
+         if(((BorderBits)borderStyle).contour && !((BorderBits)borderStyle).fixed)
+         {
+            *x += 1;
+            *y += 1;
+         }
       }
 
       // Reduce client area
@@ -323,84 +365,90 @@ class SimSkin_Window : Window
       bool isNormal = (state == normal || state == maximized);
       int top = 0, border = 0;
       int insideBorder;
-      if(state == minimized)
-         top = border = DEAD_BORDER;
-      else if(((BorderBits)borderStyle).sizable)
+
+      if(!nativeDecorations || rootWindow != this)
       {
-         if(state == maximized && parent.menuBar)
+         if(state == minimized)
+            top = border = DEAD_BORDER;
+         else if(((BorderBits)borderStyle).sizable)
+         {
+            if(state == maximized && parent.menuBar)
+            {
+               top = 2;
+               border = 2;
+            }
+            else
+            {
+               top = isNormal ? TOP : 0;
+               border = isNormal ? BORDER : 0;
+            }
+         }
+         else if(((BorderBits)borderStyle).fixed)
          {
             top = 2;
             border = 2;
          }
-         else
+         else if(((BorderBits)borderStyle).contour)
          {
-            top = isNormal ? TOP : 0;
-            border = isNormal ? BORDER : 0;
+            top = 1;
+            border = 1;
+         }
+         insideBorder = border;
+         if(((BorderBits)borderStyle).deep)
+            insideBorder += 2;
+
+         if(menuBar)
+         {
+            if(state == minimized)
+               menuBar.visible = false;
+            else
+               menuBar.visible = true;
+            menuBar.Move(clientStart.x, clientStart.y - MENU_HEIGHT, size.w - insideBorder * 2, MENU_HEIGHT);
+         }
+         if(statusBar)
+         {
+            if(state == minimized)
+               statusBar.visible = false;
+            else
+            {
+               statusBar.visible = true;
+               statusBar.anchor = { left = clientStart.x, bottom = border };
+               statusBar.size.w = size.w - insideBorder * 2;
+            }
          }
       }
-      else if(((BorderBits)borderStyle).fixed)
+      if(!nativeDecorations || rootWindow != this)
       {
-         top = 2;
-         border = 2;
-      }
-      else if(((BorderBits)borderStyle).contour)
-      {
-         top = 1;
-         border = 1;
-      }
-      insideBorder = border;
-      if(((BorderBits)borderStyle).deep)
-         insideBorder += 2;
-
-      if(menuBar)
-      {
-         if(state == minimized)
-            menuBar.visible = false;
-         else
-            menuBar.visible = true;
-         menuBar.Move(clientStart.x, clientStart.y - MENU_HEIGHT, size.w - insideBorder * 2, MENU_HEIGHT);
-      }
-      if(statusBar)
-      {
-         if(state == minimized)
-            statusBar.visible = false;
-         else
+         if(minimizeButton)
          {
-            statusBar.visible = true;
-            statusBar.anchor = { left = clientStart.x, bottom = border };
-            statusBar.size.w = size.w - insideBorder * 2;
+            minimizeButton.anchor = { right = ((maximizeButton && !maximizeButton.disabled) ? 25 + 34 + 4 : 34 + 4) + border, top = top + BUTTON_OFFSET };
+            minimizeButton.size = { 20, 10 };
+            minimizeButton.foreground = skinForeground;
+            minimizeButton.background = skinBackground;
+            minimizeButton.bevel = false;
+            minimizeButton.OnRedraw = Minimize_OnRedraw;
+            minimizeButton.visible = true;
          }
-      }
-
-      if(minimizeButton)
-      {
-         minimizeButton.anchor = { right = ((maximizeButton && !maximizeButton.disabled) ? 25 + 34 + 4 : 34 + 4) + border, top = top + BUTTON_OFFSET };
-         minimizeButton.size = { 20, 10 };
-         minimizeButton.foreground = skinForeground;
-         minimizeButton.background = skinBackground;
-         minimizeButton.bevel = false;
-         minimizeButton.OnRedraw = Minimize_OnRedraw;
-         minimizeButton.visible = true;
-      }
-      if(maximizeButton && !maximizeButton.disabled)
-      {
-         maximizeButton.anchor = { right = 34 + 4 + border, top = top + BUTTON_OFFSET };
-         maximizeButton.size = { 20, 10 };
-         maximizeButton.bevel = false;
-         maximizeButton.foreground = skinForeground;
-         maximizeButton.background = skinBackground;
-         maximizeButton.OnRedraw = Maximize_OnRedraw;
-         maximizeButton.visible = true;
-      }
-      if(closeButton)
-      {
-         closeButton.anchor = { right = -1 + border, top = top + BUTTON_OFFSET };
-         closeButton.size = { 34, 10 };
-         closeButton.bevel = false;
-         closeButton.foreground = skinForeground;
-         closeButton.background = skinBackground;
-         closeButton.OnRedraw = Close_OnRedraw;
-         closeButton.visible = true;
+         if(maximizeButton && !maximizeButton.disabled)
+         {
+            maximizeButton.anchor = { right = 34 + 4 + border, top = top + BUTTON_OFFSET };
+            maximizeButton.size = { 20, 10 };
+            maximizeButton.bevel = false;
+            maximizeButton.foreground = skinForeground;
+            maximizeButton.background = skinBackground;
+            maximizeButton.OnRedraw = Maximize_OnRedraw;
+            maximizeButton.visible = true;
+         }
+         if(closeButton)
+         {
+            closeButton.anchor = { right = -1 + border, top = top + BUTTON_OFFSET };
+            closeButton.size = { 34, 10 };
+            closeButton.bevel = false;
+            closeButton.foreground = skinForeground;
+            closeButton.background = skinBackground;
+            closeButton.OnRedraw = Close_OnRedraw;
+            closeButton.visible = true;
+         }
       }
    }
 
