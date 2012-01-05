@@ -882,6 +882,7 @@ public class SimSkin : Skin
    class_property(selectionColor) = (Color)skinMainColor;
    class_property(disabledBackColor) = (Color)Color{ 128,128,128 };
    class_property(disabledFrontColor) = (Color)Color{ 255,255,255 };
+   class_property(selectionText)  = (Color)white;
 
    FontResource ::SystemFont()
    {
