@@ -1,5 +1,12 @@
 import "ecere"
 
+import remote "BlokusServer"
+
+define BLOKUS_PORT = 1495;
+static bool hosting;
+
+define MaxPlayers = 4;
+
 public enum BlokusColor : byte { none, blue, yellow, red, green };
 
 public enum PlayerColor : byte
@@ -12,9 +19,12 @@ public enum PlayerColor : byte
    }
 };
 
-static Color colors[BlokusColor] = { 0, blue, goldenrod, red, green };
-byte playerPieces[PlayerColor][21];
-bool firstPiece[PlayerColor];
+static Color colors[2][BlokusColor] =
+{
+   // TOFIX: (omitting Color { })
+   { 0, Color { 64, 64, 96 }, Color { 141, 114, 48 }, Color { 96, 32, 32 }, Color { 64, 96, 64 } },
+   { 0, blue, goldenrod, red, green }
+};
 Point corners[PlayerColor] =
 {
    { 0, 0 },
@@ -26,9 +36,6 @@ Point corners[PlayerColor] =
 define numPieces = 21;
 define bs = 20;
 define squareWidth = 30;
-
-BlokusColor board[bs * bs];
-PlayerColor playerColor = blue;
 
 struct Piece
 {
@@ -206,6 +213,108 @@ Piece pieces[numPieces] =
    }
 };
 
+struct BlokusGameState
+{
+   byte playerPieces[PlayerColor][numPieces];
+   bool firstPiece[PlayerColor];
+   BlokusColor board[bs * bs];
+   PlayerColor colorTurn;
+   PlayerColor rotatingColor;
+   int numPlayers;
+
+   void NewGame()
+   {
+      PlayerColor p;
+      int i;
+
+      // TOFIX: for(p = 0; p < PlayerColor::enumSize; p++)
+      for(p = blue; p <= green; p++)
+      {
+         for(i = 0; i < numPieces; i++)
+            playerPieces[p][i] = 1;
+         firstPiece[p] = true;
+      }
+      for(i = 0; i < bs * bs; i++)
+         board[i] = none;
+
+      colorTurn = blue;
+      rotatingColor = blue;
+   }
+
+   bool ValidMove(int selectedPiece, int direction, bool flip, int boardX, int boardY)
+   {
+      Piece * piece = &pieces[selectedPiece];
+      int x, y;
+      bool valid = true;
+      bool touchCorner = false;
+
+      // TODO: Add check whether player color has this particular piece
+
+      for(y = 0; y < 5; y++)
+         for(x = 0; x < 5; x++)
+            if(PieceBlock(selectedPiece, x, y, direction, flip))
+            {
+               int bx = x + boardX, by = y + boardY;
+               if(board[by * bs + bx] ||
+                  (by > 0    && board[(by-1) * bs + bx] == colorTurn) ||
+                  (by < bs-1 && board[(by+1) * bs + bx] == colorTurn) ||
+                  (bx > 0    && board[by * bs + bx - 1] == colorTurn) ||
+                  (bx < bs-1 && board[by * bs + bx + 1] == colorTurn))
+               {
+                  valid = false;
+                  break;
+               }
+               if((by > 0     && bx > 0    && board[(by-1) * bs + (bx-1)] == colorTurn) ||
+                  (by > 0     && bx < bs-1 && board[(by-1) * bs + (bx+1)] == colorTurn) ||
+                  (by < bs-1  && bx > 0    && board[(by+1) * bs + (bx-1)] == colorTurn) ||
+                  (by < bs-1  && bx < bs-1 && board[(by+1) * bs + (bx+1)] == colorTurn))
+                  touchCorner = true;
+            }
+      if(valid && firstPiece[colorTurn])
+      {
+         for(y = 0; y < 5; y++)
+            for(x = 0; x < 5; x++)
+               if(PieceBlock(selectedPiece, x, y, direction, flip))
+               {
+                  int bx = x + boardX, by = y + boardY;
+                  if(bx == corners[colorTurn].x && by == corners[colorTurn].y)
+                  {
+                     touchCorner = true;
+                     break;
+                  }
+               }
+      }
+
+      return valid && touchCorner;
+   }
+
+   void PlayMove(int pieceType, int direction, bool flip, int boardX, int boardY)
+   {
+      int y, x;
+      for(y = 0; y < 5; y++)
+         for(x = 0; x < 5; x++)
+            if(PieceBlock(pieceType, x, y, direction, flip))
+               board[(y + boardY) * bs + x + boardX] = colorTurn;
+      playerPieces[colorTurn][pieceType] = 0;
+
+      firstPiece[colorTurn] = false;
+      if(numPlayers == 3 && colorTurn == green)
+      {
+         if(++rotatingColor == green) rotatingColor = 0;
+      }
+      if(++colorTurn > green) colorTurn = 0;
+   }
+
+   void Pass()
+   {
+      if(numPlayers == 3 && colorTurn == green)
+      {
+         if(++rotatingColor == green) rotatingColor = 0;
+      }
+      if(++colorTurn > green) colorTurn = 0;
+   }
+};
+
 int PieceBlock(int p, int x, int y, int direction, bool flip)
 {
    Piece * piece = &pieces[p];
@@ -234,8 +343,19 @@ class Blokus : Window
    hasClose = true;
    size = { 1280, 728 };
    nativeDecorations = true;
-                                                                                                                            //allo
 
+   ServerConnection server;
+
+   // Other player info
+   char playerNames[MaxPlayers][256];
+   bool gameStarted;
+   PlayerColor firstColor;
+
+   // Current game state
+   BlokusGameState gameState;
+
+   // User Interaction
+   PlayerColor colorPlayed; // Color currently (or next) being played
    int selectedPiece;
    bool dragging, onBoard;
    Point drag, offset;
@@ -244,28 +364,31 @@ class Blokus : Window
    int direction;
    bool flip;
 
+   void NextColorPlayed()
+   {
+      if(gameState.numPlayers == 1)
+      {
+         if(++colorPlayed > green) colorPlayed = 0;
+      }
+      else if(gameState.numPlayers == 2)
+      {
+         if((colorPlayed+=2) > green) colorPlayed = firstColor;
+      }
+      else if(gameState.numPlayers == 3)
+      {
+         colorPlayed = (colorPlayed == firstColor && gameState.rotatingColor == firstColor) ? green : firstColor;
+      }
+   }
+
    void DrawSquare(Surface surface, int x, int y, BlokusColor color)
    {
-      surface.background = colors[color];
+      surface.background = colors[blokus.gameStarted][color];
       surface.Area(x+1, y+1, x + squareWidth-1, y + squareWidth-1);      
       surface.foreground = lightGray;
       surface.VLine(y+5, y + 15, x + 5);
       surface.HLine(x+5, x + 18, y + 5);
       surface.foreground = white;
-      surface.Rectangle(x + 2,y+2, x + squareWidth-2, y + squareWidth - 2);                                                              /////   esteban
-   }
-
-   Blokus()
-   {
-      PlayerColor c;
-      int p;
-      for(c = blue; c <= green; c++)
-      //TOFIX: for(c = 0; c < 4; c++)
-      {
-         for(p = 0; p < numPieces; p++)
-            playerPieces[c][p] = 1;
-         firstPiece[c] = true;
-      }
+      surface.Rectangle(x + 2,y+2, x + squareWidth-2, y + squareWidth - 2);
    }
 
    bool OnMouseMove(int mx, int my, Modifiers mods)
@@ -303,57 +426,11 @@ class Blokus : Window
       {
          if(onBoard)
          {
-            Piece * piece = &pieces[selectedPiece];
-            int x, y;
-            bool valid = true;
-            bool touchCorner = false;
-            BlokusColor color = playerColor;
-            
-            for(y = 0; y < 5; y++)
-               for(x = 0; x < 5; x++)
-                  if(PieceBlock(selectedPiece, x, y, direction, flip))
-                  {
-                     int bx = x + boardPos.x, by = y + boardPos.y;
-                     if(board[by * bs + bx] ||
-                        (by > 0    && board[(by-1) * bs + bx] == color) ||
-                        (by < bs-1 && board[(by+1) * bs + bx] == color) ||
-                        (bx > 0    && board[by * bs + bx - 1] == color) ||
-                        (bx < bs-1 && board[by * bs + bx + 1] == color))
-                     {
-                        valid = false;
-                        break;
-                     }
-                     if((by > 0     && bx > 0    && board[(by-1) * bs + (bx-1)] == color) ||
-                        (by > 0     && bx < bs-1 && board[(by-1) * bs + (bx+1)] == color) ||
-                        (by < bs-1  && bx > 0    && board[(by+1) * bs + (bx-1)] == color) ||
-                        (by < bs-1  && bx < bs-1 && board[(by+1) * bs + (bx+1)] == color))
-                        touchCorner = true;
-                  }
-            if(valid && firstPiece)
+            if(gameStarted && colorPlayed == gameState.colorTurn)
             {
-               for(y = 0; y < 5; y++)
-                  for(x = 0; x < 5; x++)
-                     if(PieceBlock(selectedPiece, x, y, direction, flip))
-                     {
-                        int bx = x + boardPos.x, by = y + boardPos.y;
-                        if(bx == corners[playerColor].x && by == corners[playerColor].y)
-                        {
-                           touchCorner = true;
-                           break;
-                        }
-                     }
-            }
-
-            if(valid && touchCorner)
-            {
-               for(y = 0; y < 5; y++)
-                  for(x = 0; x < 5; x++)
-                     if(PieceBlock(selectedPiece, x, y, direction, flip))
-                        board[(y + boardPos.y) * bs + x + boardPos.x] = color;
-               playerPieces[playerColor][selectedPiece] = 0;
-
-               firstPiece[playerColor] = false;
-               if(++playerColor > green) playerColor = 0;
+               Piece * piece = &pieces[selectedPiece];
+               if(gameState.ValidMove(selectedPiece, direction, flip, boardPos.x, boardPos.y))
+                  server.PlayPiece(selectedPiece, direction, flip, boardPos.x, boardPos.y);
             }
          }
          dragging = false;
@@ -439,7 +516,7 @@ class Blokus : Window
          by = 20;
          for(c = 0; c < numPieces; c++)
          {
-            if(playerPieces[playerColor][c])
+            if(gameState.playerPieces[colorPlayed][c])
             {
                int w = pieces[c].w, h = pieces[c].h;
                int y;
@@ -496,8 +573,8 @@ class Blokus : Window
    void OnRedraw(Surface surface)
    {
       int c;
-      int bx = 20;//(clientSize.w - squareWidth * bs) / 2;
-      int by = 20;//(clientSize.h - squareWidth * bs) / 2;
+      int bx = 20;
+      int by = 20;
       int x, y;
       
       surface.foreground = aqua;
@@ -507,25 +584,25 @@ class Blokus : Window
          surface.VLine(by,by+squareWidth*bs, bx + c * squareWidth);
       }
 
-      surface.background = colors[blue];
+      surface.background = colors[blokus.gameStarted][blue];
       x = bx;
       y = by;
       surface.Area(x - 10, y - 10, x + 10, y-1);
       surface.Area(x - 10, y - 10, x - 1, y+10);
 
-      surface.background = colors[yellow];
+      surface.background = colors[blokus.gameStarted][yellow];
       x = bx + bs*squareWidth;
       y = by;
       surface.Area(x + 10, y - 10, x - 10, y-1);
       surface.Area(x + 10, y - 10, x + 1,  y+10);
 
-      surface.background = colors[red];
+      surface.background = colors[blokus.gameStarted][red];
       x = bx + bs*squareWidth;
       y = by + bs*squareWidth;
       surface.Area(x + 10, y + 1, x - 10, y+10);
       surface.Area(x + 10, y - 10, x + 1,  y+10);
 
-      surface.background = colors[green];
+      surface.background = colors[blokus.gameStarted][green];
       x = bx;
       y = by + bs*squareWidth;
       surface.Area(x - 10, y + 1, x + 10, y+10);
@@ -535,7 +612,7 @@ class Blokus : Window
       {
          for(x = 0; x < bs; x++)
          {
-            BlokusColor color = board[y * bs + x];
+            BlokusColor color = gameState.board[y * bs + x];
             if(color)
             {
                DrawSquare(surface, bx + x * squareWidth, by + y * squareWidth, color);
@@ -550,7 +627,7 @@ class Blokus : Window
          by = 20;
          for(c = 0; c < numPieces; c++)
          {
-            if(playerPieces[playerColor][c])
+            if(gameState.playerPieces[colorPlayed][c])
             {
                int w = pieces[c].w, h = pieces[c].h;
                for(y = 0; y < 5; y++)
@@ -560,7 +637,7 @@ class Blokus : Window
                      if(PieceBlock(c, x, y, 0, false))
                      {
                         if(!dragging || selectedPiece != c)
-                           DrawSquare(surface, bx + x * squareWidth, by + y * squareWidth, playerColor);
+                           DrawSquare(surface, bx + x * squareWidth, by + y * squareWidth, colorPlayed);
                      }
                   }
                }
@@ -582,7 +659,7 @@ class Blokus : Window
                {
                   if(PieceBlock(selectedPiece, x, y, direction, flip))
                   {
-                     DrawSquare(surface, drag.x + x * squareWidth, drag.y + y * squareWidth, playerColor);
+                     DrawSquare(surface, drag.x + x * squareWidth, drag.y + y * squareWidth, colorPlayed);
                      
                      if(x == 0 || !PieceBlock(selectedPiece, x-1, y, direction, flip))
                      {
@@ -627,14 +704,175 @@ class Blokus : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         if(++playerColor > green)
-            playerColor = blue;
-         Update(null);
+         server.Pass();
          return true;
       }
 
    };
+
+   Button hostBtn
+   {
+      this, text = "Host", bevel = false, anchor = { right = 20, top = 122 };
+      foreground = white;
+      font = { "Arial", 16, true };
+      opacity = 0; drawBehind = true;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         if(!blokus.gameStarted)
+         {
+            blokusService.Stop();
+
+            scores.Clear();
+            scores.ClearFields();
+            blokusService.Start();
+            Update(null);
+
+            hosting = true;
+         }
+         return true;
+      }
+   };
+   Button connectBtn
+   {
+      this, text = "Connect", bevel = false, anchor = { right = 20, top = 222 };
+      font = { "Arial", 20, true };
+      foreground = white;
+      opacity = 0; drawBehind = true;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         if(!server)
+         {
+            server = ServerConnection
+            {
+               void OnDisconnect(int code)
+               {
+                  if(blokus)
+                  {
+                     delete blokus.server;
+                     blokus.gameStarted = false;
+                     blokus.Update(null);
+                  }
+                  DCOMClientObject::OnDisconnect(code);
+               }
+
+               void GameStarted(GameInfo gameInfo)
+               {
+                  int x,y;
+                  int c;
+                  blokus.scores.Clear();
+                  blokus.scores.ClearFields();
+
+                  blokus.gameState.numPlayers = gameInfo.numPlayers;
+                  blokus.firstColor = gameInfo.firstColor;
+                  blokus.colorPlayed = blokus.firstColor;
+
+                  for(c = 0; c<MaxPlayers; c++)
+                  {
+                     strcpy(blokus.playerNames[c], gameInfo.players[c]);
+                     blokus.scoreFields[c] = null;
+
+                     if(blokus.playerNames[c][0])
+                        blokus.scores.AddField(blokus.scoreFields[c] = DataField { dataType = class(int), header = blokus.playerNames[c], width = 40 });
+                  }
+
+                  blokus.gameState.NewGame();
+                  blokus.gameStarted = true;
+
+                  blokus.Update(null);
+               }
+
+               void GameEnded()
+               {
+                  int c;
+                  blokus.scores.Clear();
+                  blokus.scores.ClearFields();
+                  for(c = 0; c<MaxPlayers; c++)
+                     blokus.scoreFields[c] = null;
+
+                  blokus.gameStarted = false;
+                  blokus.Update(null);
+
+                  // Reset to connected players for host to know
+                  if(hosting)
+                  {
+                     for(c = 0; c<MaxPlayers; c++)
+                     {
+                        if(serverPlayers[c])
+                           blokus.scores.AddField(blokus.scoreFields[c] = DataField { dataType = class(int), header = serverPlayers[c].name, width = 40 });
+                     }
+                  }
+               }
+
+               void MovePlayed(PlayerColor color, int pieceType, int direction, bool flip, int boardX, int boardY)
+               {
+                  blokus.gameState.PlayMove(pieceType, direction, flip, boardX, boardY);
+                  if(color == blokus.colorPlayed)
+                     blokus.NextColorPlayed();
+                  blokus.Update(null);
+               }
+
+               void Passed(PlayerColor color)
+               {
+                  blokus.gameState.Pass();
+                  if(color == blokus.colorPlayed)
+                     blokus.NextColorPlayed();
+                  blokus.Update(null);
+               }
+            };
+            incref server;
+            if(server.Connect(serverAddress.contents, BLOKUS_PORT))
+            {
+               int playerID = server.Join();
+               if(playerID != -1)
+                  server.SetName(playerName.contents);
+            }
+            else
+               delete server;
+         }
+         return true;
+      }
+   };
+   Button startBtn
+   {
+      this, text = "Start", bevel = false, anchor = { right = 20, top = 322 };
+      foreground = white;
+      font = { "Arial", 20, true };
+      opacity = 0; drawBehind = true;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         if(hosting)
+            StartGame();
+         return true;
+      }
+   };
+
+   EditBox playerName
+   {
+      this, text = "Name", contents = "[Your Name]", anchor = { right = 20, top = 10 }, size = { 100, 24 };
+   };
+   EditBox serverAddress
+   {
+      this, text = "Server", contents = "localhost", anchor = { right = 20, top = 40 }, size = { 100, 24 };
+   };
+   ListBox scores
+   {
+      master = this, hasMinimize = true, hasHeader = true, anchor = { right = 0 }, text = "Scores", size = { 300, 300 };
+   };
+   DataField scoreFields[MaxPlayers];
+}
+
+class BlokusApp : GuiApplication
+{
+   void Terminate()
+   {
+      if(hosting)
+         blokusService.Stop();
+   }
 }
 
 Blokus blokus {};
-// yay its done
+
+DCOMService blokusService { port = BLOKUS_PORT };

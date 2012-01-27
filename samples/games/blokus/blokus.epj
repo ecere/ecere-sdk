@@ -14,11 +14,9 @@
          "Name" : "Debug",
          "Options" : {
             "Debug" : true,
-            "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ],
-            "Console" : true
+            ]
          }
       },
       {
@@ -27,10 +25,21 @@
             "Debug" : false,
             "Optimization" : "Speed"
          }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
       }
    ],
    "Files" : [
-      "blokus.ec"
+      "blokus.ec",
+      "BlokusServer.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
