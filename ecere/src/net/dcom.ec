@@ -99,6 +99,7 @@ public:
 
    dllexport bool CallVirtualMethod(unsigned int methodID)
    {
+      guiApp.Unlock();
       if(serverSocket && serverSocket.connected)
       {
          unsigned int size = (uint)&((CallVirtualMethodPacket)0).args + virtualsBuffer.size; // sizeof(class CallVirtualMethodPacket) + virtualsBuffer.size - 1;
@@ -120,8 +121,10 @@ public:
             else
                serverSocket.thread.semaphore.Wait();
          }
+         guiApp.Lock();
          return overridden == true;
       }
+      guiApp.Lock();
       return false;
    }
 // private:
@@ -200,6 +203,7 @@ class DCOMClientThread : Thread
 
    void OnReceivePacket(DCOMPacket packet)
    {
+      guiApp.Lock();
       switch((DCOMPacketType)letohd(packet.type))
       {
          case dcom_CreateInstance:
@@ -279,11 +283,13 @@ class DCOMClientThread : Thread
             break;
          }
       }
+      guiApp.Unlock();
    }
 
    void OnDisconnect(int code)
    {
       int c;
+      guiApp.Lock();
       thread.connected = false;
       for(c = 0; c<numObjects; c++)
       {
@@ -293,6 +299,7 @@ class DCOMClientThread : Thread
          delete objects[c];         
       }
       delete objects;
+      guiApp.Unlock();
    }
 
    ~DCOMServerSocket()
@@ -397,6 +404,7 @@ public:
          thread.socket = this;
          thread.connected = true;
          thread.Create();
+         guiApp.Unlock();
          while(!answered && thread)
          {
             //guiApp.WaitNetworkEvent();
@@ -408,6 +416,7 @@ public:
             else
                thread.semaphore.Wait();
          }
+         guiApp.Lock();
          result = true;
       }
       return result;
@@ -417,6 +426,7 @@ public:
 
    void OnReceivePacket(DCOMPacket p)
    {
+      guiApp.Lock();
       switch((DCOMPacketType)letohd(p.type))
       {
          case dcom_InstanceCreated:
@@ -463,6 +473,7 @@ public:
             break;
          }
       }
+      guiApp.Unlock();
    }
 
    void OnDisconnect(int code)
@@ -474,6 +485,7 @@ public:
 
    dllexport bool CallMethod(unsigned int methodID)
    {
+      guiApp.Unlock();
       if(connected)
       {
          unsigned int size = (uint)&((CallMethodPacket)0).args + __ecereBuffer.size; // sizeof(class CallMethodPacket) + __ecereBuffer.size - 1;
@@ -500,6 +512,7 @@ public:
          }
          return answered == true;
       }
+      guiApp.Lock();
       return false;
    }
 
