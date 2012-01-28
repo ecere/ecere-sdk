@@ -33,7 +33,8 @@
             "MemoryGuard" : true,
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "Console" : true
          }
       }
    ],

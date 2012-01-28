@@ -42,7 +42,7 @@ class Player
 };
 
 Player serverPlayers[MaxPlayers];
-static bool gameStarted;
+bool serverGameStarted;
 
 static BlokusGameState gameState;
 
@@ -60,7 +60,7 @@ void StartGame()
       GameInfo gameInfo { };
 
       gameState.NewGame();
-      gameStarted = true;
+      serverGameStarted = true;
 
       strcpy(gameInfo.players[0], serverPlayers[0] ? serverPlayers[0].name : "");
       strcpy(gameInfo.players[1], serverPlayers[1] ? serverPlayers[1].name : "");
@@ -76,6 +76,20 @@ void StartGame()
             gameInfo.firstColor = serverPlayers[c].firstColor;
             serverPlayers[c].connection.GameStarted(gameInfo);
          }
+   }
+}
+
+void KickPlayer(int id)
+{
+   int c;
+   for(c = 0; c<MaxPlayers; c++)
+   {
+      if(serverPlayers[c] && serverPlayers[c].id == id)
+      {
+         DCOMServerObject object = (DCOMServerObject)serverPlayers[c].connection._vTbl[-1];
+         object.serverSocket.Disconnect(0);
+         delete serverPlayers[c];
+      }
    }
 }
 
@@ -95,7 +109,7 @@ void KickEveryoneOut()
 
 void EndGame()
 {
-   if(gameStarted)
+   if(serverGameStarted)
    {
       int c;
       for(c = 0; c<MaxPlayers; c++)
@@ -103,7 +117,7 @@ void EndGame()
          if(serverPlayers[c])
             serverPlayers[c].connection.GameEnded();
       }
-      gameStarted = false;
+      serverGameStarted = false;
    }
 }
 
@@ -121,13 +135,15 @@ public:
          delete serverPlayers[player.id];
          delete player;
          EndGame();
+         panel.UpdateControlsStates();
+         panel.ListPlayers();
       }
    }
 
    int Join()
    {
       int result = -1;
-      if(!gameStarted)
+      if(!serverGameStarted)
       {
          int c;
          for(c = 0; c<MaxPlayers; c++)
@@ -143,6 +159,7 @@ public:
             incref serverPlayers[c];
             result = c;
          }
+         panel.UpdateControlsStates();
       }
       return result;
    }
@@ -151,13 +168,9 @@ public:
    {
       if(player)
       {
+         delete player.name;
          player.name = CopyString(name);
-         if(!blokus.scoreFields[player.id])
-         {
-            blokus.scoreFields[player.id] = DataField { dataType = class(int), header = name, width = 40 };
-            blokus.scores.AddField(blokus.scoreFields[player.id]);
-         }
-         blokus.scoreFields[player.id].header = name;
+         panel.ListPlayers();
       }
       return true;
    }

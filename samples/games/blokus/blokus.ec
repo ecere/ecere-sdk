@@ -1,12 +1,5 @@
 import "ecere"
 
-import remote "BlokusServer"
-
-define BLOKUS_PORT = 1495;
-static bool hosting;
-
-define MaxPlayers = 4;
-
 public enum BlokusColor : byte { none, blue, yellow, red, green };
 
 public enum PlayerColor : byte
@@ -344,10 +337,6 @@ class Blokus : Window
    size = { 1280, 728 };
    nativeDecorations = true;
 
-   ServerConnection server;
-
-   // Other player info
-   char playerNames[MaxPlayers][256];
    bool gameStarted;
    PlayerColor firstColor;
 
@@ -391,6 +380,11 @@ class Blokus : Window
       surface.Rectangle(x + 2,y+2, x + squareWidth-2, y + squareWidth - 2);
    }
 
+   void OnDestroy()
+   {
+      panel.Destroy(0);
+   }
+
    bool OnMouseMove(int mx, int my, Modifiers mods)
    {
       if(dragging)
@@ -430,7 +424,7 @@ class Blokus : Window
             {
                Piece * piece = &pieces[selectedPiece];
                if(gameState.ValidMove(selectedPiece, direction, flip, boardPos.x, boardPos.y))
-                  server.PlayPiece(selectedPiece, direction, flip, boardPos.x, boardPos.y);
+                  panel.server.PlayPiece(selectedPiece, direction, flip, boardPos.x, boardPos.y);
             }
          }
          dragging = false;
@@ -704,41 +698,140 @@ class Blokus : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         server.Pass();
+         panel.server.Pass();
          return true;
       }
 
    };
+}
 
-   Button hostBtn
+Blokus blokus {};
+
+class BlokusApp : GuiApplication
+{
+   bool Init()
    {
-      this, text = "Host", bevel = false, anchor = { right = 20, top = 122 };
-      foreground = white;
-      font = { "Arial", 16, true };
-      opacity = 0; drawBehind = true;
+      blokus.Create();
+      panel.Create();
+      return true;
+   }
+   void Terminate()
+   {
+      if(hosting)
+         blokusService.Stop();
+   }
+}
 
-      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+import remote "BlokusServer"
+
+define app = ((BlokusApp)__thisModule.application);
+
+define BLOKUS_PORT = 1495;
+static bool hosting;
+define MaxPlayers = 4;
+
+class CommunicationPanel : Window
+{
+   text = "Blokus Communication Panel";
+   background = lightSlateGray;
+   borderStyle = fixed;
+   hasClose = true;
+   tabCycle = true;
+   size = { 400, 300 };
+   anchor = { horz = -3, vert = -7 };
+   nativeDecorations = true;
+
+   ServerConnection server;
+
+   // Other player info
+   char playerNames[MaxPlayers][256];
+
+   DataField fldName { header = "Name", width = 100 };
+   DataField fldAddr { header = "Address" };
+
+   void OnDestroy()
+   {
+      app.Unlock();
+      if(hosting)
+         blokusService.Stop();
+      app.Lock();
+
+      if(panel.server)
+         panel.server.Disconnect(0);
+      blokus.Destroy(0);
+   }
+
+   CommunicationPanel()
+   {
+      listPlayers.AddField(fldName);
+      listPlayers.AddField(fldAddr);
+   }
+
+   ~CommunicationPanel()
+   {
+      delete server;
+   }
+
+   void ListPlayers()
+   {
+      int c;
+      listPlayers.Clear();
+      fldAddr.header = hosting ? "Address" : "";
+      for(c = 0; c<MaxPlayers; c++)
       {
-         if(!blokus.gameStarted)
+         if(hosting)
          {
-            blokusService.Stop();
+            if(serverPlayers[c])
+            {
+               DataRow row = listPlayers.AddRow();
+               DCOMServerObject object = (DCOMServerObject)serverPlayers[c].connection._vTbl[-1];
 
-            scores.Clear();
-            scores.ClearFields();
-            blokusService.Start();
-            Update(null);
-
-            hosting = true;
+               row.tag = serverPlayers[c].id;
+               row.SetData(fldName, serverPlayers[c].name);
+               row.SetData(fldAddr, object.serverSocket.inetAddress);
+            }
          }
-         return true;
+         else if(playerNames[c][0])
+         {
+            DataRow row = listPlayers.AddRow();
+            row.SetData(fldName, playerNames[c]);
+         }
       }
-   };
-   Button connectBtn
+   }
+
+   void UpdateControlsStates()
    {
-      this, text = "Connect", bevel = false, anchor = { right = 20, top = 222 };
-      font = { "Arial", 20, true };
-      foreground = white;
-      opacity = 0; drawBehind = true;
+      int numPlayers = 0;
+      if(hosting && !serverGameStarted)
+      {
+         int c;
+         for(c = 0; c<MaxPlayers; c++)
+            if(serverPlayers[c])
+               numPlayers++;
+      }
+      lblServerAddress.disabled = serverAddress.disabled = server ? true : false;
+      lblPlayerName.disabled = playerName.disabled = server ? true : false;
+      lblServerAddress.Update(null);
+      lblPlayerName.Update(null);
+      btnConnect.visible = server ? false : true;
+      btnDisconnect.visible = server ? true : false;
+
+      btnHost.visible = !hosting && !server;
+      btnStopHosting.visible = hosting;
+      btnStart.visible = hosting && !serverGameStarted && numPlayers > 0;
+      btnStopGame.visible = hosting && serverGameStarted;
+      listPlayers.visible = (hosting && (serverGameStarted || numPlayers > 0)) || (!hosting && server && blokus.gameStarted);
+      btnKick.visible = hosting && !serverGameStarted && numPlayers > 0;
+      btnKick.disabled = listPlayers.currentRow ? false : true;
+   }
+   EditBox serverAddress
+   {
+      this, text = "Server Address:", altA, font = { "Tahoma", 10, bold = true }, size = { 220, 24 }, position = { 16, 64 }, contents = "localhost"
+   };
+   Label lblServerAddress { this, font = { "Tahoma", 8.25f, bold = true }, position = { 16, 40 }, labeledWindow = serverAddress };
+   Button btnConnect
+   {
+      this, text = "Connect", altC, isDefault = true, font = { "Arial", 16, bold = true }, size = { 126, 32 }, position = { 256, 64 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -748,61 +841,48 @@ class Blokus : Window
             {
                void OnDisconnect(int code)
                {
+                  app.Lock();
                   if(blokus)
                   {
-                     delete blokus.server;
+                     delete panel.server;
                      blokus.gameStarted = false;
                      blokus.Update(null);
+                     panel.UpdateControlsStates();
+                     panel.ListPlayers();
                   }
                   DCOMClientObject::OnDisconnect(code);
+                  app.Unlock();
                }
 
                void GameStarted(GameInfo gameInfo)
                {
                   int x,y;
                   int c;
-                  blokus.scores.Clear();
-                  blokus.scores.ClearFields();
 
                   blokus.gameState.numPlayers = gameInfo.numPlayers;
                   blokus.firstColor = gameInfo.firstColor;
                   blokus.colorPlayed = blokus.firstColor;
 
                   for(c = 0; c<MaxPlayers; c++)
-                  {
-                     strcpy(blokus.playerNames[c], gameInfo.players[c]);
-                     blokus.scoreFields[c] = null;
-
-                     if(blokus.playerNames[c][0])
-                        blokus.scores.AddField(blokus.scoreFields[c] = DataField { dataType = class(int), header = blokus.playerNames[c], width = 40 });
-                  }
+                     strcpy(panel.playerNames[c], gameInfo.players[c]);
 
                   blokus.gameState.NewGame();
                   blokus.gameStarted = true;
 
                   blokus.Update(null);
+
+                  panel.UpdateControlsStates();
+                  panel.ListPlayers();
                }
 
                void GameEnded()
                {
                   int c;
-                  blokus.scores.Clear();
-                  blokus.scores.ClearFields();
-                  for(c = 0; c<MaxPlayers; c++)
-                     blokus.scoreFields[c] = null;
+
+                  panel.ListPlayers();
 
                   blokus.gameStarted = false;
                   blokus.Update(null);
-
-                  // Reset to connected players for host to know
-                  if(hosting)
-                  {
-                     for(c = 0; c<MaxPlayers; c++)
-                     {
-                        if(serverPlayers[c])
-                           blokus.scores.AddField(blokus.scoreFields[c] = DataField { dataType = class(int), header = serverPlayers[c].name, width = 40 });
-                     }
-                  }
                }
 
                void MovePlayed(PlayerColor color, int pieceType, int direction, bool flip, int boardX, int boardY)
@@ -821,58 +901,117 @@ class Blokus : Window
                   blokus.Update(null);
                }
             };
-            incref server;
-            if(server.Connect(serverAddress.contents, BLOKUS_PORT))
+            incref panel.server;
+            if(panel.server.Connect(serverAddress.contents, BLOKUS_PORT))
             {
-               int playerID = server.Join();
+               int playerID = panel.server.Join();
                if(playerID != -1)
-                  server.SetName(playerName.contents);
+                  panel.server.SetName(playerName.contents);
+               UpdateControlsStates();
             }
             else
-               delete server;
+               delete panel.server;
          }
          return true;
       }
    };
-   Button startBtn
+   Button btnDisconnect
    {
-      this, text = "Start", bevel = false, anchor = { right = 20, top = 322 };
-      foreground = white;
-      font = { "Arial", 20, true };
-      opacity = 0; drawBehind = true;
+      this, text = "Disconnect", altD, font = { "Arial", 16, bold = true }, size = { 126, 32 }, position = { 256, 64 }, visible = false;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         if(panel.server)
+            panel.server.Disconnect(0);
+         return true;
+      }
+   };
+   Button btnHost
+   {
+      this, text = "Host", altH, font = { "Arial", 16, bold = true }, size = { 90, 32 }, position = { 16, 112 };
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         if(!blokus.gameStarted)
+         {
+            if(blokusService.Start())
+            {
+               hosting = true;
+               Update(null);
+               UpdateControlsStates();
+            }
+         }
+         return true;
+      }
+   };
+   Button btnStopHosting
+   {
+      this, text = "Stop Hosting", altP, font = { "Arial", 16, bold = true }, position = { 16, 112 }, visible = false;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         blokusService.Stop();
+         hosting = false;
+         Update(null);
+         UpdateControlsStates();
+         return true;
+      }
+   };
+   Button btnStart
+   {
+      this, text = "Start Game", altS, font = { "Arial", 16, bold = true }, size = { 124, 32 }, position = { 256, 112 }, visible = false;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          if(hosting)
+         {
             StartGame();
+            UpdateControlsStates();
+         }
          return true;
       }
    };
+   Button btnStopGame
+   {
+      this, text = "Stop Game", altG, font = { "Arial", 16, bold = true }, position = { 256, 112 }, visible = false;
 
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         EndGame();
+         UpdateControlsStates();
+         return true;
+      }
+   };
+   ListBox listPlayers
+   {
+      this, text = "Players Connected", altD, size = { 236, 84 }, position = { 16, 176 }, visible = false, hasHeader = true;
+
+      bool NotifySelect(ListBox listBox, DataRow row, Modifiers mods)
+      {
+         UpdateControlsStates();
+         return true;
+      }
+   };
+   Label lblListPlayers { this, font = { "Tahoma", 8.25f, bold = true }, position = { 16, 152 }, visible = false, labeledWindow = listPlayers };
+   Button btnKick
+   {
+      this, text = "Kick", altK, font = { "Arial", 16, bold = true }, size = { 80, 32 }, position = { 264, 224 }, visible = false;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         DataRow row = listPlayers.currentRow;
+         if(row)
+            KickPlayer(row.tag);
+         return true;
+      }
+   };
    EditBox playerName
    {
-      this, text = "Name", contents = "[Your Name]", anchor = { right = 20, top = 10 }, size = { 100, 24 };
+      this, text = "Player Name:", altN, font = { "Arial", 12 }, size = { 132, 24 }, position = { 104, 8 }, contents = "BlokusPlayer"
    };
-   EditBox serverAddress
-   {
-      this, text = "Server", contents = "localhost", anchor = { right = 20, top = 40 }, size = { 100, 24 };
-   };
-   ListBox scores
-   {
-      master = this, hasMinimize = true, hasHeader = true, anchor = { right = 0 }, text = "Scores", size = { 300, 300 };
-   };
-   DataField scoreFields[MaxPlayers];
+   Label lblPlayerName { this, font = { "Tahoma", 8.25f, bold = true }, position = { 16, 16 }, labeledWindow = playerName };
 }
 
-class BlokusApp : GuiApplication
-{
-   void Terminate()
-   {
-      if(hosting)
-         blokusService.Stop();
-   }
-}
-
-Blokus blokus {};
+CommunicationPanel panel { };
 
 DCOMService blokusService { port = BLOKUS_PORT };
