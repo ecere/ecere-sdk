@@ -110,11 +110,13 @@ public:
       Log("[P] [NStopService]\n");
    #endif
 
+      network.mutex.Wait();
       while((socket = sockets.first))
       {
-         socket.Free();
+         socket.Free(false);
          delete socket;
       }
+      network.mutex.Release();
 
       if(s)
       {

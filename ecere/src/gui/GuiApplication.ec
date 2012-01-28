@@ -943,7 +943,7 @@ public:
                         if(socket.s == network.ns - 1)
                            Network_DetermineMaxSocket();
 
-                        socket.Free();
+                        socket.Free(false);
                         delete socket;
                      }
                      else if(socket._connected == 1)

@@ -426,16 +426,16 @@ private:
    ~Socket()
    {
       _refCount = MAXINT;
-      Free();
+      Free(true);
       _refCount = 0;
    }
 
 #ifndef ECERE_NONET
-   void Free()
+   void Free(bool mustLock)
    {
       SOCKET s = this.s;
 
-      network.mutex.Wait();
+      if(mustLock) network.mutex.Wait();
       if(!service)
       {
          if(_connected == -1/* != 1*/)
@@ -488,7 +488,7 @@ private:
       // COMMENTED THIS OUT SINCE IT WAS INVALIDATING PROTECTION FOR HTTP FILE CONNECTION REUSE...
       // WATCH FOR LEAKS IN OTHER PROJECTS?
       //if(_refCount > 1) _refCount--;
-      network.mutex.Release();
+      if(mustLock) network.mutex.Release();
    }
 
    void _Disconnect(DisconnectCode code)
@@ -497,7 +497,8 @@ private:
       network.mutex.Wait();
 
       disconnectCode = code;
-      Free();
+
+      Free(false);
       delete this;
 
       if(s == network.ns - 1)

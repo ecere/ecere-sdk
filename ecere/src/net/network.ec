@@ -233,14 +233,14 @@ void Network_Terminate()
       {
          incref socket;
          //network.sockets.Remove(socket); //THIS IS ALREADY DONE IN Socket::Free
-         socket.Free();
+         socket.Free(true);
          if(socket._refCount > 1) socket._refCount--;
          delete socket;
       }
       while((socket = network.connectSockets.first))
       {
          //network.connectSockets.Remove(socket); //THIS IS ALREADY DONE IN Socket::Free
-         socket.Free();
+         socket.Free(true);
          delete socket;
       }
 
