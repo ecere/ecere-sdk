@@ -40,7 +40,8 @@
    ],
    "Files" : [
       "blokus.ec",
-      "BlokusServer.ec"
+      "BlokusServer.ec",
+      "../../net/eirc/console.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [

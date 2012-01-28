@@ -1,4 +1,5 @@
 import "ecere"
+import "console"
 
 public enum BlokusColor : byte { none, blue, yellow, red, green };
 
@@ -28,7 +29,10 @@ Point corners[PlayerColor] =
 
 define numPieces = 21;
 define bs = 20;
-define squareWidth = 30;
+define squareWidth = 28;
+define boardStartX = 20;
+define boardStartY = 30;
+define piecesY = 20;
 
 struct Piece
 {
@@ -330,15 +334,18 @@ class Blokus : Window
    text = "Blokus";
    background = black;
    borderStyle = sizable;
-   minClientSize = { 800, 700 };
+   minClientSize = { 1068 /*800*/, 700 };
    hasMaximize = true;
    hasMinimize = true;
    hasClose = true;
    size = { 1280, 728 };
    nativeDecorations = true;
+   font = { "Arial", 12, bold = true };
+   FontResource yourTurnFont { "Arial", 12, bold = true, italic = true, window = this };
 
    bool gameStarted;
    PlayerColor firstColor;
+   char *playerNames[MaxPlayers];
 
    // Current game state
    BlokusGameState gameState;
@@ -369,6 +376,35 @@ class Blokus : Window
       }
    }
 
+   void UpdatePlayerNames()
+   {
+      int c;
+      if(gameState.numPlayers == 1)
+      {
+         for(c = 0; c < 4; c++)
+            playerNames[c] = panel.playerNames[0];
+      }
+      else if(gameState.numPlayers == 2)
+      {
+         for(c = 0; c < 2; c++)
+         {
+            playerNames[c] = panel.playerNames[c];
+            playerNames[c+2] = panel.playerNames[c];
+         }
+      }
+      else if(gameState.numPlayers == 3)
+      {
+         for(c = 0; c < 3; c++)
+            playerNames[c] = panel.playerNames[c];
+         playerNames[3] = panel.playerNames[gameState.rotatingColor];
+      }
+      else if(gameState.numPlayers == 4)
+      {
+         for(c = 0; c < 4; c++)
+            playerNames[c] = panel.playerNames[c];
+      }
+   }
+
    void DrawSquare(Surface surface, int x, int y, BlokusColor color)
    {
       surface.background = colors[blokus.gameStarted][color];
@@ -394,16 +430,16 @@ class Blokus : Window
          int h = (direction & 1) ? piece->w : piece->h;
          drag = { offset.x + mx, offset.y + my }; 
 
-         if(mx - squareDragged.x * squareWidth >= 20 - 10 && mx - squareDragged.x * squareWidth < 20 + ((bs-w)+1) * squareWidth + 10 && 
-            my - squareDragged.y * squareWidth >= 20 - 10 && my - squareDragged.y * squareWidth < 20 + ((bs-h)+1) * squareWidth + 10)
+         if(mx - squareDragged.x * squareWidth >= boardStartX - 10 && mx - squareDragged.x * squareWidth < boardStartX + ((bs-w)+1) * squareWidth + 10 && 
+            my - squareDragged.y * squareWidth >= boardStartY - 10 && my - squareDragged.y * squareWidth < boardStartY + ((bs-h)+1) * squareWidth + 10)
          {
             int x, y;
-            x = Max(0,mx - squareDragged.x * squareWidth - 20) / squareWidth;
-            y = Max(0,my - squareDragged.y * squareWidth - 20) / squareWidth;
+            x = Max(0,mx - squareDragged.x * squareWidth - boardStartX) / squareWidth;
+            y = Max(0,my - squareDragged.y * squareWidth - boardStartY) / squareWidth;
             x = Min(x, bs-w);
             y = Min(y, bs-h);
-            drag.x = 20 + x * squareWidth;
-            drag.y = 20 + y * squareWidth;
+            drag.x = boardStartX + x * squareWidth;
+            drag.y = boardStartY + y * squareWidth;
             boardPos = { x, y };
             onBoard = true;
          }
@@ -507,7 +543,7 @@ class Blokus : Window
          int c;
          // Draw Player Pieces
          bx = squareWidth * bs + 40;
-         by = 20;
+         by = piecesY;
          for(c = 0; c < numPieces; c++)
          {
             if(gameState.playerPieces[colorPlayed][c])
@@ -564,12 +600,42 @@ class Blokus : Window
       return true;
    }
 
+   float lightValue, lightDir;
+   lightValue = 1;
+   lightDir = -.1f;
+   Timer turnLightTimer
+   {
+      this, 0.1, false;
+
+      bool DelayExpired()
+      {
+         lightValue += lightDir;
+         if(lightValue < 0) { lightValue = 0; lightDir = .1f; }
+         if(lightValue > 1) { lightValue = 1; lightDir =-.1f; }
+         Update(null);
+         return true;
+      }
+   };
+
    void OnRedraw(Surface surface)
    {
       int c;
-      int bx = 20;
-      int by = 20;
+      int bx = boardStartX;
+      int by = boardStartY;
       int x, y;
+      char * s;
+      int len, tw;
+      Color turnLight = white;
+      if(gameStarted)
+      {
+         ColorRGB empty = gray, full = white;
+         turnLight = ColorRGB
+         {
+            empty.r + lightValue * (full.r - empty.r),
+            empty.g + lightValue * (full.g - empty.g),
+            empty.b + lightValue * (full.b - empty.b)
+         };
+      }
       
       surface.foreground = aqua;
       for(c = 0; c <= bs; c++)
@@ -584,23 +650,62 @@ class Blokus : Window
       surface.Area(x - 10, y - 10, x + 10, y-1);
       surface.Area(x - 10, y - 10, x - 1, y+10);
 
+      s = playerNames[PlayerColor::blue];
+      if(s)
+      {
+         len = strlen(s);
+         surface.foreground = (gameState.colorTurn == blue) ? turnLight : white;
+         surface.WriteText(x + 15, y - 20, s, len);
+      }
+
       surface.background = colors[blokus.gameStarted][yellow];
       x = bx + bs*squareWidth;
       y = by;
       surface.Area(x + 10, y - 10, x - 10, y-1);
       surface.Area(x + 10, y - 10, x + 1,  y+10);
 
+      s = playerNames[PlayerColor::yellow];
+      if(s)
+      {
+         len = strlen(s);
+         surface.TextExtent(s, len, &tw, null);
+         surface.foreground = (gameState.colorTurn == yellow) ? turnLight : white;
+         surface.WriteText(x - 15 - tw, y - 20, s, len);
+      }
+
       surface.background = colors[blokus.gameStarted][red];
       x = bx + bs*squareWidth;
       y = by + bs*squareWidth;
       surface.Area(x + 10, y + 1, x - 10, y+10);
       surface.Area(x + 10, y - 10, x + 1,  y+10);
+      s = playerNames[PlayerColor::red];
+      if(s)
+      {
+         len = strlen(s);
+         surface.TextExtent(s, len, &tw, null);
+         surface.foreground = (gameState.colorTurn == red) ? turnLight : white;
+         surface.WriteText(x - 15 - tw, y, s, len);
+      }
 
       surface.background = colors[blokus.gameStarted][green];
       x = bx;
       y = by + bs*squareWidth;
       surface.Area(x - 10, y + 1, x + 10, y+10);
       surface.Area(x - 10, y - 10, x - 1,  y+10);
+      s = playerNames[PlayerColor::green];
+      if(s)
+      {
+         len = strlen(s);
+         surface.foreground = (gameState.colorTurn == green) ? turnLight : white;
+         surface.WriteText(x + 15, y, s, len);
+      }
+
+      if(gameState.numPlayers > 1 && colorPlayed == gameState.colorTurn)
+      {
+         surface.font = yourTurnFont.font;
+         surface.foreground = tomato;
+         surface.CenterTextf(x + bs*squareWidth/2, y + 5, "Your turn");
+      }
 
       for(y = 0; y < bs; y++)
       {
@@ -618,7 +723,7 @@ class Blokus : Window
          int rh = 0;
          // Draw Player Pieces
          bx = squareWidth * bs + 40;
-         by = 20;
+         by = piecesY;
          for(c = 0; c < numPieces; c++)
          {
             if(gameState.playerPieces[colorPlayed][c])
@@ -692,9 +797,20 @@ class Blokus : Window
       }
    }
 
+   Console chat
+   {
+      this, size = { bs*squareWidth }, anchor = { left = boardStartX, top = boardStartY + bs*squareWidth + 20, bottom = 5 };
+      font = { "Arial", 11, bold = true };
+      editTextColor = white;
+      logTextColor = white;
+      editHeight = 24;
+      log.hasVertScroll = bool::true;
+   };
+
    Button button1
    {
-      this, text = "Pass", position = { 24, 656 };
+      this, text = "Pass", anchor = { right = 5, bottom = 5 };
+      inactive = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -846,6 +962,9 @@ class CommunicationPanel : Window
                   {
                      delete panel.server;
                      blokus.gameStarted = false;
+                     blokus.turnLightTimer.Stop();
+                     blokus.lightValue = 1;
+                     blokus.lightDir = -.1f;
                      blokus.Update(null);
                      panel.UpdateControlsStates();
                      panel.ListPlayers();
@@ -857,17 +976,24 @@ class CommunicationPanel : Window
                void GameStarted(GameInfo gameInfo)
                {
                   int x,y;
-                  int c;
+                  int c, np = 0;
 
                   blokus.gameState.numPlayers = gameInfo.numPlayers;
                   blokus.firstColor = gameInfo.firstColor;
                   blokus.colorPlayed = blokus.firstColor;
 
                   for(c = 0; c<MaxPlayers; c++)
-                     strcpy(panel.playerNames[c], gameInfo.players[c]);
+                  {
+                     if(gameInfo.players[c][0])
+                        strcpy(panel.playerNames[np++], gameInfo.players[c]);
+                  }
 
                   blokus.gameState.NewGame();
                   blokus.gameStarted = true;
+                  blokus.lightValue = 1;
+                  blokus.lightDir = -.1f;
+                  blokus.turnLightTimer.Start();
+                  blokus.UpdatePlayerNames();
 
                   blokus.Update(null);
 
@@ -890,6 +1016,8 @@ class CommunicationPanel : Window
                   blokus.gameState.PlayMove(pieceType, direction, flip, boardX, boardY);
                   if(color == blokus.colorPlayed)
                      blokus.NextColorPlayed();
+
+                  blokus.UpdatePlayerNames();
                   blokus.Update(null);
                }
 
@@ -905,8 +1033,10 @@ class CommunicationPanel : Window
             if(panel.server.Connect(serverAddress.contents, BLOKUS_PORT))
             {
                int playerID = panel.server.Join();
-               if(playerID != -1)
+               if(panel.server && playerID != -1)
                   panel.server.SetName(playerName.contents);
+               else
+                  panel.server.Disconnect(0);
                UpdateControlsStates();
             }
             else

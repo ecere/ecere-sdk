@@ -52,6 +52,7 @@ class Console : Window
    char * bmpFile;
    Color editBackColor;
    Color editTextColor;
+   alpha = 255;
 
    Timer timer
    {
@@ -109,6 +110,9 @@ class Console : Window
       commands.circ = true;
       movement = 1;
       doneLooping = true;
+      if(!referenceHeight)
+         referenceHeight = 768;
+
       log.anchor = { left = 0, top = 0, right = 0, bottom = editHeight + separatorHeight* 768/referenceHeight };
       return true;
    }

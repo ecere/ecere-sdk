@@ -161,6 +161,11 @@ public:
          }
          panel.UpdateControlsStates();
       }
+      else
+      {
+         DCOMServerObject object = (DCOMServerObject)_vTbl[-1];
+         object.serverSocket.Disconnect(0);
+      }
       return result;
    }
 
