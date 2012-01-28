@@ -187,7 +187,7 @@ public:
          (gameState.numPlayers == 2 && gameState.colorTurn == player.firstColor + 2) ||
          (gameState.numPlayers == 3 && gameState.colorTurn == green && gameState.rotatingColor == player.firstColor)))
       {
-         if(gameState.ValidMove(piece, direction, flip, bx, by))
+         if(gameState.ValidMove(gameState.colorTurn, piece, direction, flip, bx, by))
          {
             int c;
             PlayerColor moveColor = gameState.colorTurn;
@@ -196,6 +196,7 @@ public:
             for(c = 0; c<MaxPlayers; c++)
                if(serverPlayers[c])
                   serverPlayers[c].connection.MovePlayed(moveColor, piece, direction, flip, bx, by);
+
             return true;
          }
       }
@@ -212,7 +213,6 @@ public:
          int c;
          PlayerColor moveColor = gameState.colorTurn;
 
-         // TODO: Check if we can pass any time?
          gameState.Pass();
 
          for(c = 0; c<MaxPlayers; c++)
