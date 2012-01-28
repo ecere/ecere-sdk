@@ -202,7 +202,9 @@ class Console : Window
                   command = commands.first;
                   doneLooping = true;
                }
-               log.PutCh('\n');
+               log.End();
+               if(log.numLines > 1 || log.line.count)
+                  log.PutCh('\n');
                log.PutS(" > ");
                log.PutS(lineBuffer);
                if(ProcessCommand)
@@ -308,6 +310,7 @@ class Console : Window
 
          va_start(args, format);
          vsprintf(text, format, args);
+         log.End();
          log.PutS(text);
          va_end(args);
       }

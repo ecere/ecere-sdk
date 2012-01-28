@@ -223,8 +223,17 @@ public:
       return false;
    }
 
+   void SendMessage(String msg)
+   {
+      int c;
+      for(c = 0; c<MaxPlayers; c++)
+         if(serverPlayers[c] && player != serverPlayers[c])
+            serverPlayers[c].connection.NotifyMessage(player.name, msg);
+   }
+
    virtual void MovePlayed(PlayerColor player, int pieceType, int direction, bool flip, int x, int y);
    virtual void Passed(PlayerColor player);
    virtual void GameStarted(GameInfo gameInfo);
    virtual void GameEnded();
+   virtual void NotifyMessage(String name, String msg);
 }

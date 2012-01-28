@@ -628,7 +628,7 @@ class Blokus : Window
       Color turnLight = white;
       if(gameStarted)
       {
-         ColorRGB empty = gray, full = white;
+         ColorRGB empty = colors[1][gameState.colorTurn] /*gray*/, full = white;
          turnLight = ColorRGB
          {
             empty.r + lightValue * (full.r - empty.r),
@@ -704,7 +704,7 @@ class Blokus : Window
       {
          surface.font = yourTurnFont.font;
          surface.foreground = tomato;
-         surface.CenterTextf(x + bs*squareWidth/2, y + 5, "Your turn");
+         surface.CenterTextf(x + bs*squareWidth/2, y + 3, "Your turn");
       }
 
       for(y = 0; y < bs; y++)
@@ -805,6 +805,13 @@ class Blokus : Window
       logTextColor = white;
       editHeight = 24;
       log.hasVertScroll = bool::true;
+      visible = false;
+
+      bool ProcessCommand(char * command)
+      {
+         panel.server.SendMessage(command);
+         return false;
+      }
    };
 
    Button button1
@@ -931,6 +938,7 @@ class CommunicationPanel : Window
       lblPlayerName.Update(null);
       btnConnect.visible = server ? false : true;
       btnDisconnect.visible = server ? true : false;
+      blokus.chat.visible = server ? true : false;
 
       btnHost.visible = !hosting && !server;
       btnStopHosting.visible = hosting;
@@ -1027,6 +1035,14 @@ class CommunicationPanel : Window
                   if(color == blokus.colorPlayed)
                      blokus.NextColorPlayed();
                   blokus.Update(null);
+               }
+
+               void NotifyMessage(String name, String msg)
+               {
+                  EditBox log = blokus.chat.log;
+                  char * format = (log.numLines > 1 || log.line.count) ?
+                     "\n%s: %s" : "%s: %s";
+                  blokus.chat.Log(format, name, msg);
                }
             };
             incref panel.server;
