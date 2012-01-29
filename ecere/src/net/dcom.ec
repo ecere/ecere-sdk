@@ -99,6 +99,7 @@ public:
 
    dllexport bool CallVirtualMethod(unsigned int methodID)
    {
+      bool reentrant = !answered;
       guiApp.Unlock();
       if(serverSocket && serverSocket.connected)
       {
@@ -121,6 +122,8 @@ public:
             else
                serverSocket.thread.semaphore.Wait();
          }
+         if(reentrant)
+            answered = false;
          guiApp.Lock();
          return overridden == true;
       }
@@ -133,6 +136,8 @@ public:
    SerialBuffer buffer { };
    SerialBuffer virtualsBuffer { };
    bool answered, overridden;
+
+   answered = true;
 };
 
 #define GETLEDWORD(b) (uint32)(((b)[3] << 24) | ((b)[2] << 16) | ((b)[1] << 8) | (b)[0])
@@ -488,6 +493,7 @@ public:
       guiApp.Unlock();
       if(connected)
       {
+         bool result, reentrant = !answered;
          unsigned int size = (uint)&((CallMethodPacket)0).args + __ecereBuffer.size; // sizeof(class CallMethodPacket) + __ecereBuffer.size - 1;
          CallMethodPacket packet = (CallMethodPacket)new0 byte[size];
          packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_CallMethod);
@@ -510,7 +516,10 @@ public:
             else
                thread.semaphore.Wait();
          }
-         return answered == true;
+         result = answered == true;
+         if(reentrant)
+            answered = false;
+         return result;
       }
       guiApp.Lock();
       return false;
