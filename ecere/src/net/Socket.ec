@@ -191,12 +191,20 @@ public:
          uint size = GETLEDWORD((byte *)&packet.size);
          if(count >= size)
          {
+            byte * tempBuffer = null;
             if(size)
             {
-               CopyBytes(recvBuffer, recvBuffer + size, recvBytes - size);
+               if(recvBytes - size)
+               {
+                  tempBuffer = new byte[size];
+                  packet = (Packet)tempBuffer;
+                  memcpy(tempBuffer, buffer, size);
+                  memmove(recvBuffer, recvBuffer + size, recvBytes - size);
+               }
                recvBytes -= size;
             }
             OnReceivePacket(packet);
+            delete tempBuffer;
             return 0;
          }                   
       }
@@ -662,7 +670,7 @@ private:
             {
                if(flushCount)
                {
-                  CopyBytes(recvBuffer, recvBuffer + flushCount, recvBytes - flushCount);
+                  memmove(recvBuffer, recvBuffer + flushCount, recvBytes - flushCount);
                   recvBytes -= flushCount;
                }
                else
