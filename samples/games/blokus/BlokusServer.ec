@@ -44,22 +44,22 @@ class Player
 Player serverPlayers[MaxPlayers];
 bool serverGameStarted;
 
-static BlokusGameState gameState;
+BlokusGameState serverGameState;
 
 void StartGame()
 {
    int c;
 
-   gameState.numPlayers = 0;
+   serverGameState.numPlayers = 0;
    for(c = 0; c<MaxPlayers; c++)
       if(serverPlayers[c])
-         gameState.numPlayers++;
+         serverGameState.numPlayers++;
 
-   if(gameState.numPlayers > 0)
+   if(serverGameState.numPlayers > 0)
    {
       GameInfo gameInfo { };
 
-      gameState.NewGame();
+      serverGameState.NewGame();
       serverGameStarted = true;
 
       strcpy(gameInfo.players[0], serverPlayers[0] ? serverPlayers[0].name : "");
@@ -67,7 +67,7 @@ void StartGame()
       strcpy(gameInfo.players[2], serverPlayers[2] ? serverPlayers[2].name : "");
       strcpy(gameInfo.players[3], serverPlayers[3] ? serverPlayers[3].name : "");
 
-      gameInfo.numPlayers = gameState.numPlayers;
+      gameInfo.numPlayers = serverGameState.numPlayers;
 
       for(c = 0; c<MaxPlayers; c++)
          if(serverPlayers[c])
@@ -183,20 +183,22 @@ public:
    bool PlayPiece(int piece, int direction, bool flip, int bx, int by)
    {
       if(player &&
-         (gameState.numPlayers == 1 || gameState.colorTurn == player.firstColor ||
-         (gameState.numPlayers == 2 && gameState.colorTurn == player.firstColor + 2) ||
-         (gameState.numPlayers == 3 && gameState.colorTurn == green && gameState.rotatingColor == player.firstColor)))
+         (serverGameState.numPlayers == 1 || serverGameState.colorTurn == player.firstColor ||
+         (serverGameState.numPlayers == 2 && serverGameState.colorTurn == player.firstColor + 2) ||
+         (serverGameState.numPlayers == 3 && serverGameState.colorTurn == green && serverGameState.rotatingColor == player.firstColor)))
       {
-         if(gameState.ValidMove(gameState.colorTurn, piece, direction, flip, bx, by))
+         if(serverGameState.ValidMove(serverGameState.colorTurn, piece, direction, flip, bx, by))
          {
             int c;
-            PlayerColor moveColor = gameState.colorTurn;
+            PlayerColor moveColor = serverGameState.colorTurn;
 
-            gameState.PlayMove(piece, direction, flip, bx, by);
+            serverGameState.PlayMove(piece, direction, flip, bx, by);
             for(c = 0; c<MaxPlayers; c++)
                if(serverPlayers[c])
                   serverPlayers[c].connection.MovePlayed(moveColor, piece, direction, flip, bx, by);
 
+            if(serverGameState.over)
+               panel.UpdateControlsStates();
             return true;
          }
       }
@@ -206,13 +208,13 @@ public:
    bool Pass()
    {
       if(player &&
-         (gameState.numPlayers == 1 || gameState.colorTurn == player.firstColor ||
-         (gameState.numPlayers == 2 && gameState.colorTurn == player.firstColor + 2) ||
-         (gameState.numPlayers == 3 && gameState.colorTurn == green && gameState.rotatingColor == player.firstColor)))
+         (serverGameState.numPlayers == 1 || serverGameState.colorTurn == player.firstColor ||
+         (serverGameState.numPlayers == 2 && serverGameState.colorTurn == player.firstColor + 2) ||
+         (serverGameState.numPlayers == 3 && serverGameState.colorTurn == green && serverGameState.rotatingColor == player.firstColor)))
       {
          int c;
-         PlayerColor moveColor = gameState.colorTurn;
-         gameState.Pass();
+         PlayerColor moveColor = serverGameState.colorTurn;
+         serverGameState.Pass();
 
          for(c = 0; c<MaxPlayers; c++)
             if(serverPlayers[c])
