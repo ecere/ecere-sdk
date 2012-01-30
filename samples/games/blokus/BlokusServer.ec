@@ -212,7 +212,6 @@ public:
       {
          int c;
          PlayerColor moveColor = gameState.colorTurn;
-
          gameState.Pass();
 
          for(c = 0; c<MaxPlayers; c++)
@@ -233,7 +232,7 @@ public:
 
    virtual void MovePlayed(PlayerColor player, int pieceType, int direction, bool flip, int x, int y);
    virtual void Passed(PlayerColor player);
-   virtual void GameStarted(GameInfo gameInfo);
+   virtual void GameStarted(const GameInfo gameInfo);
    virtual void GameEnded();
-   virtual void NotifyMessage(String name, String msg);
+   virtual void NotifyMessage(const String name, const String msg);
 }

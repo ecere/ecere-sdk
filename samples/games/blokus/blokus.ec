@@ -221,6 +221,8 @@ struct BlokusGameState
    bool validPieces[numPieces];
    bool over;
    bool validMove;
+   int bonus[4];
+   int scores[4];
 
    void NewGame()
    {
@@ -233,6 +235,8 @@ struct BlokusGameState
          for(i = 0; i < numPieces; i++)
             playerPieces[p][i] = 1;
          firstPiece[p] = true;
+         bonus[p] = 0;
+         scores[0] = 0;
       }
       for(i = 0; i < bs * bs; i++)
          board[i] = none;
@@ -329,12 +333,28 @@ struct BlokusGameState
 
    void PlayMove(int pieceType, int direction, bool flip, int boardX, int boardY)
    {
+      int p;
       int y, x;
       for(y = 0; y < 5; y++)
          for(x = 0; x < 5; x++)
             if(PieceBlock(pieceType, x, y, direction, flip))
                board[(y + boardY) * bs + x + boardX] = colorTurn;
       playerPieces[colorTurn][pieceType] = 0;
+      scores[colorTurn] = 0;
+      for(p = 0; p < numPieces; p++)
+      {
+         if(playerPieces[colorTurn][p])
+         {
+            Piece * piece = &pieces[p];
+            int y, x;
+            for(y = 0; y < piece->h; y++)
+               for(x = 0; x < piece->w; x++)
+                  if(piece->blocks[y * piece->w + x])
+                     scores[colorTurn]--;
+         }
+      }
+      if(scores[colorTurn] == 0)
+         bonus[colorTurn] = (pieceType == 0) ? 20 : 15;
 
       firstPiece[colorTurn] = false;
       if(numPlayers == 3 && colorTurn == green)
@@ -484,6 +504,7 @@ class Blokus : Window
    void OnDestroy()
    {
       panel.Destroy(0);
+      scoresPanel.Destroy(0);
    }
 
    bool OnMouseMove(int mx, int my, Modifiers mods)
@@ -770,7 +791,7 @@ class Blokus : Window
          surface.foreground = crimson;
          surface.CenterTextf(x + bs*squareWidth/2, y + 3, "Game Over");
       }
-      else if(gameState.numPlayers > 1 && colorPlayed == gameState.colorTurn)
+      else if(gameState.numPlayers > 1 && gameStarted && colorPlayed == gameState.colorTurn)
       {
          surface.font = yourTurnFont.font;
          surface.foreground = tomato;
@@ -901,7 +922,158 @@ class Blokus : Window
    };
 }
 
-Blokus blokus {};
+class BlokusScores : Window
+{
+   master = blokus;
+   moveable = true;
+   borderStyle = fixed;
+   background = black;
+   text = "Blokus Final Scores";
+   clientSize = { 580, 210 };
+   font = { "Arial", 12, bold = true };
+
+   void OnRedraw(Surface surface)
+   {
+      PlayerColor p;
+      char * s;
+      int len;
+      char temp[256];
+      int grandTotals[4];
+      BlokusGameState * state = &blokus.gameState;
+      surface.foreground = white;
+      s = "Score"; len = strlen(s);
+      surface.WriteText(10, 40, s, len);
+
+      s = "Bonus"; len = strlen(s);
+      surface.WriteText(10, 60, s, len);
+
+      s = "Total"; len = strlen(s);
+      surface.WriteText(10, 100, s, len);
+
+      if(state->numPlayers < 3)
+      {
+         s = "Grand Total"; len = strlen(s);
+         surface.WriteText(10, 160, s, len);
+      }
+
+      for(p = blue; p <= green; p++)
+      {
+         // TOFIX: bug here, why is -1 required?
+         int x = 80 + (p-1) * 120;
+         surface.foreground = colors[1][p];
+         /* // GCC internal compiler error with -O2, MinGW GCC 4.4.0
+         s = (state->numPlayers == 3 && p == green) ? "* Green *" : blokus.playerNames[p];
+         len = strlen(s);
+         surface.WriteText(x, 20, s, len);
+         */
+         if(state->numPlayers == 3 && p == green)
+         {
+            s = "* Green *";
+            len = strlen(s);
+            surface.WriteText(x, 20, s, len);
+         }
+         else if(blokus.playerNames[p])
+         {
+            s = blokus.playerNames[p];
+            len = strlen(s);
+            surface.WriteText(x, 20, s, len);
+         }
+
+         s = temp; sprintf(temp, "%d", state->scores[p]);
+         len = strlen(s);
+         surface.WriteText(x + 30, 40, s, len);
+
+         if(state->bonus[p])
+         {
+            s = temp; sprintf(temp, "%d", state->bonus[p]);
+            len = strlen(s);
+            surface.WriteText(x + 30, 60, s, len);
+         }
+
+         if(state->numPlayers > 2)
+            grandTotals[p] = state->scores[p] + state->bonus[p];
+         s = temp; sprintf(temp, "%d", state->scores[p] + state->bonus[p]);
+         len = strlen(s);
+         surface.WriteText(x + 30, 100, s, len);
+
+         if((state->numPlayers == 2 && p <= yellow) ||
+            (state->numPlayers == 1 && p == blue))
+         {
+            // TOFIX: Annoying +2 conversion issue
+            if(state->numPlayers == 2)
+               grandTotals[p] = state->scores[p] + state->bonus[p] +
+                                state->scores[p+red /*2*/] + state->bonus[p+red /*2*/];
+            else
+               grandTotals[p] = state->scores[0] + state->bonus[0] +
+                                state->scores[1] + state->bonus[1] +
+                                state->scores[2] + state->bonus[2] +
+                                state->scores[3] + state->bonus[3];
+
+            if(blokus.playerNames[p])
+            {
+               s = blokus.playerNames[p];
+               len = strlen(s);
+               surface.WriteText(x, 140, s, len);
+            }
+
+            s = temp; sprintf(temp, "%d", grandTotals[p]);
+            len = strlen(s);
+            surface.WriteText(x + 30, 160, s, len);
+         }
+      }
+      if(state->numPlayers > 1)
+      {
+         char string[256];
+         int c, greatest = -MAXINT;
+         int numTies = 0, ties[3], winner;
+
+         string[0] = 0;
+         for(c = 0; c < state->numPlayers; c++)
+         {
+            if(grandTotals[c] > greatest)
+            {
+               greatest = grandTotals[c];
+               numTies = 0;
+               winner = c;
+            }
+            else if(grandTotals[c] == greatest)
+            {
+               if(!numTies)
+               {
+                  numTies = 1;
+                  ties[0] = winner;
+               }
+               ties[numTies++] = c;
+            }
+         }
+         if(numTies)
+         {
+            for(c = 0; c < numTies; c++)
+            {
+               strcat(string, blokus.playerNames[c]);
+               if(c < numTies-2)
+                  strcat(string, ", ");
+               else if(c < numTies-1)
+                  strcat(string, " and ");
+            }
+            surface.foreground = white;
+            strcat(string, " tied!");
+         }
+         else
+         {
+            surface.foreground = colors[1][(PlayerColor)winner];
+            sprintf(string, "%s won!", blokus.playerNames[winner]);
+         }
+
+         len = strlen(string);
+         surface.WriteText(100, 180, string, strlen(string));
+      }
+   }
+}
+
+BlokusScores scoresPanel { visible = false };
+
+Blokus blokus { };
 
 class BlokusApp : GuiApplication
 {
@@ -909,6 +1081,13 @@ class BlokusApp : GuiApplication
    {
       blokus.Create();
       panel.Create();
+      return true;
+   }
+
+   bool Cycle(bool idle)
+   {
+      // This is here because it hangs in MovePlayed() (Why?)
+      scoresPanel.visible = blokus.gameStarted && blokus.gameState.over;
       return true;
    }
    void Terminate()
@@ -1112,8 +1291,14 @@ class CommunicationPanel : Window
                         panel.server.Pass();
                   }
 
-                  blokus.UpdatePlayerNames();
-                  blokus.Update(null);
+                  // This hangs here, why?
+                  /*if(blokus.gameState.over)
+                     scoresPanel.visible = true;*/
+                  if(blokus)
+                  {
+                     blokus.UpdatePlayerNames();
+                     blokus.Update(null);
+                  }
                }
 
                void Passed(PlayerColor color)
@@ -1131,8 +1316,11 @@ class CommunicationPanel : Window
                         panel.server.Pass();
                   }
 
-                  blokus.UpdatePlayerNames();
-                  blokus.Update(null);
+                  if(blokus)
+                  {
+                     blokus.UpdatePlayerNames();
+                     blokus.Update(null);
+                  }
                }
 
                void NotifyMessage(String name, String msg)
