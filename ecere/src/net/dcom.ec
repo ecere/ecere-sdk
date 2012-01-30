@@ -72,6 +72,7 @@ static class CallMethodPacket : DCOMPacket
 static class CallVirtualMethodPacket : DCOMPacket
 {
    int methodID;
+   bool hasReturnValue;
    unsigned int argsSize;
    byte args[1];
 };
@@ -97,23 +98,28 @@ public:
 
    virtual void CallMethod(unsigned int __ecereMethodID, SerialBuffer __ecereBuffer);
 
-   dllexport bool CallVirtualMethod(unsigned int methodID)
+   dllexport bool CallVirtualMethod(unsigned int methodID, bool hasReturnValue)
    {
       bool reentrant = !answered;
-      guiApp.Unlock();
+
       if(serverSocket && serverSocket.connected)
       {
          unsigned int size = (uint)&((CallVirtualMethodPacket)0).args + virtualsBuffer.size; // sizeof(class CallVirtualMethodPacket) + virtualsBuffer.size - 1;
          CallVirtualMethodPacket packet = (CallVirtualMethodPacket)new0 byte[size];
+         guiApp.Unlock();
+
          packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_CallVirtualMethod);
          packet.size = size;
          packet.methodID = htoled(methodID);
+         packet.hasReturnValue = hasReturnValue;
          packet.argsSize = htoled(virtualsBuffer.size);
          virtualsBuffer.ReadData(packet.args, virtualsBuffer.size);
          answered = false;
 
          serverSocket.SendPacket(packet);
          delete packet;
+
+         mutex.Release();
 
          while(serverSocket && !answered)
          {
@@ -122,12 +128,17 @@ public:
             else
                serverSocket.thread.semaphore.Wait();
          }
+
+         // NOTE: There is a slight potential that a virtual method
+         // returning a value might have its virtualsBuffer modified
+         // before we manage to lock it...
+         guiApp.Lock();
+         mutex.Wait();
+
          if(reentrant)
             answered = false;
-         guiApp.Lock();
          return overridden == true;
       }
-      guiApp.Lock();
       return false;
    }
 // private:
@@ -136,6 +147,7 @@ public:
    SerialBuffer buffer { };
    SerialBuffer virtualsBuffer { };
    bool answered, overridden;
+   Mutex mutex { };
 
    answered = true;
 };
@@ -257,7 +269,7 @@ class DCOMClientThread : Thread
 
                MethodReturnedPacket packet;
                unsigned int size;
-               SerialBuffer buffer = object.buffer;
+               SerialBuffer buffer { };
 
                buffer.WriteData(callMethod.args, callMethod.argsSize);
                // TOFIX: Hardcoded VTBL ID
@@ -269,7 +281,7 @@ class DCOMClientThread : Thread
                packet.size = size;
                packet.argsSize = htoled(buffer.size);
                buffer.ReadData(packet.args, buffer.size);
-               buffer.Free();
+               delete buffer;
                SendPacket(packet);
                delete packet;
             }
@@ -454,26 +466,42 @@ public:
             CallVirtualMethodPacket callMethod = (CallVirtualMethodPacket)p;
             VirtualMethodReturnedPacket packet;
             unsigned int size = (uint)&((VirtualMethodReturnedPacket)0).args; // sizeof(class VirtualMethodReturnedPacket);
-            SerialBuffer buffer = virtualsBuffer;
+            SerialBuffer buffer { };
             // TOFIX: Hardcoded VTBL ID
             bool overridden = _vTbl[18 + callMethod.methodID] != _class._vTbl[18 + callMethod.methodID];
             callMethod.argsSize = letohd(callMethod.argsSize);
+
+            if(!callMethod.hasReturnValue)
+            {
+               packet = (VirtualMethodReturnedPacket)new0 byte[size];
+               packet.overridden = overridden;
+               packet.objectID = objectID;
+               packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_VirtualMethodReturned);
+               packet.size = size;
+               packet.argsSize = 0;
+               SendPacket(packet);
+            }
+
             if(overridden)
             {
                buffer.WriteData(callMethod.args, callMethod.argsSize);
+
                // TOFIX: Hardcoded VTBL ID
                _vTbl[17](this, callMethod.methodID, buffer);
                size += buffer.size; // - 1;
             }
-            packet = (VirtualMethodReturnedPacket)new0 byte[size];
-            packet.overridden = overridden;
-            packet.objectID = objectID;
-            packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_VirtualMethodReturned);
-            packet.size = size;
-            packet.argsSize = htoled(buffer.size);
-            buffer.ReadData(packet.args, buffer.size);
-            buffer.Free();
-            SendPacket(packet);
+            if(callMethod.hasReturnValue)
+            {
+               packet = (VirtualMethodReturnedPacket)new0 byte[size];
+               packet.overridden = overridden;
+               packet.objectID = objectID;
+               packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_VirtualMethodReturned);
+               packet.size = size;
+               packet.argsSize = htoled(buffer.size);
+               buffer.ReadData(packet.args, buffer.size);
+               SendPacket(packet);
+            }
+            delete buffer;
             delete packet;
             break;
          }

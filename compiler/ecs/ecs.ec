@@ -1213,6 +1213,7 @@ static void BindDCOMClient()
 
 static void BindDCOMServer()
 {
+   bool mutexDeclared = false;
    Class _class;
    for(_class = privateModule.classes.first; _class; _class = _class.next)
    {
@@ -1424,6 +1425,20 @@ static void BindDCOMServer()
                      break;
                if(method)
                {
+                  if(!mutexDeclared)
+                  {
+                     DeclareClass(FindClass("ecere::sys::Mutex"), "__ecereClass___ecereNameSpace__ecere__sys__Mutex");
+                     DeclareMethod(
+                        eClass_FindMethod(
+                           eSystem_FindClass(privateModule, "ecere::sys::Mutex"), "Wait", privateModule), 
+                              "__ecereMethod___ecereNameSpace__ecere__sys__Mutex_Wait");
+                     DeclareMethod(
+                        eClass_FindMethod(
+                           eSystem_FindClass(privateModule, "ecere::sys::Mutex"), "Release", privateModule), 
+                              "__ecereMethod___ecereNameSpace__ecere__sys__Mutex_Release");
+                     mutexDeclared = true;
+                  }
+
                   f.Printf("\n");
                   if(!method.dataType)
                      method.dataType = ProcessTypeString(method.dataTypeString, false);
@@ -1474,6 +1489,9 @@ static void BindDCOMServer()
                               f.Printf(" = 0");
                            f.Printf(";\n\n");
                         }
+
+                        f.Printf("      __ecereMethod___ecereNameSpace__ecere__sys__Mutex_Wait(__ecereObject.mutex);\n");
+
                         //f.Printf("      incref this;\n");
                         for(param = method.dataType.params.first; param; param = param.next)
                         {
@@ -1506,9 +1524,22 @@ static void BindDCOMServer()
                         DeclareMethod(
                            eClass_FindMethod(
                               eSystem_FindClass(privateModule, "ecere::net::DCOMServerObject"), "CallVirtualMethod", privateModule), 
-                           "__ecereMethod___ecereNameSpace__ecere__net__DCOMServerObject_CallVirutalMethod");
+                           "__ecereMethod___ecereNameSpace__ecere__net__DCOMServerObject_CallVirtualMethod");
 
-                        f.Printf("      if(__ecereObject.CallVirtualMethod(%d))\n", vid - _class.base.vTblSize);
+                        // Check if this method needs to return anything (hasReturnValue)
+                        {
+                           bool hasReturnValue = false;
+                           for(param = method.dataType.params.first; param; param = param.next)
+                           {
+                              if(param.kind == classType && ((param._class && param._class.registered && param._class.registered.type == structClass) || !strcmp(param._class.string, "String")) && !param.constant)
+                              {
+                                 hasReturnValue = true;
+                                 break;
+                              }
+                           }
+                           f.Printf("      if(__ecereObject.CallVirtualMethod(%d, %s))\n", vid - _class.base.vTblSize,
+                              hasReturnValue ? "true" : "false");
+                        }
                         f.Printf("      {\n");
                         for(param = method.dataType.params.first; param; param = param.next)
                         {
@@ -1544,6 +1575,7 @@ static void BindDCOMServer()
                         f.Printf(");\n");
 
                         f.Printf("      __ecereObject.virtualsBuffer.Free();\n");
+                        f.Printf("      __ecereMethod___ecereNameSpace__ecere__sys__Mutex_Release(__ecereObject.mutex);\n");
                         //f.Printf("      delete this;\n");
                         if(method.dataType.returnType.kind != voidType)
                         {
