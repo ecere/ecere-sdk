@@ -28,7 +28,11 @@ Point corners[PlayerColor] =
 };
 
 define numPieces = 21;
+#ifdef _DEBUG
+define boardSize = 10;
+#else
 define boardSize = 20;
+#endif
 define squareWidth = 28;
 define boardStartX = 20;
 define boardStartY = 30;
@@ -445,6 +449,17 @@ class Blokus : Window
    bool flip;
    bool passed[4];
 
+   Timer timer
+   {
+      this, delay = 0.1; //true;
+      bool DelayExpired()
+      {
+         if(/*hosting && */panel.server)
+            panel.server.SendMessage("Hello :)");
+         return true;
+      }
+   };
+
    void NextColorPlayed()
    {
       if(gameState.numPlayers == 1)
@@ -838,7 +853,11 @@ class Blokus : Window
                      if(PieceBlock(c, x, y, 0, false))
                      {
                         if(!dragging || selectedPiece != c)
-                           DrawSquare(surface, bx + x * squareWidth, by + y * squareWidth, colorPlayed, gameStarted && (gameState.colorTurn != colorPlayed || gameState.validPieces[c]));
+                           DrawSquare(surface,
+                              bx + x * squareWidth,
+                              by + y * squareWidth,
+                              colorPlayed,
+                              gameStarted && (gameState.colorTurn == colorPlayed && gameState.validPieces[c]));
                      }
                   }
                }
@@ -860,7 +879,11 @@ class Blokus : Window
                {
                   if(PieceBlock(selectedPiece, x, y, direction, flip))
                   {
-                     DrawSquare(surface, drag.x + x * squareWidth, drag.y + y * squareWidth, colorPlayed, gameStarted && gameState.colorTurn == colorPlayed);
+                     DrawSquare(surface,
+                        drag.x + x * squareWidth,
+                        drag.y + y * squareWidth,
+                        colorPlayed,
+                        gameStarted && gameState.colorTurn == colorPlayed && gameState.validPieces[selectedPiece]);
                      
                      if(x == 0 || !PieceBlock(selectedPiece, x-1, y, direction, flip))
                      {
@@ -907,6 +930,7 @@ class Blokus : Window
       logTextColor = white;
       editHeight = 24;
       log.hasVertScroll = bool::true;
+      log.inactive = bool::true;
       visible = false;
 
       bool ProcessCommand(char * command)
@@ -918,7 +942,9 @@ class Blokus : Window
 
    Button btnPass
    {
-      this, text = "No Move Available! Pass...", anchor = { right = 5, bottom = 5 };
+      this, text = "No Move Available! Pass...",
+      //anchor = { right = 5, bottom = 5 };
+      anchor = { left = squareWidth * boardSize + 40, bottom = 5 };
       inactive = true;
       visible = false;
 
@@ -1299,13 +1325,21 @@ class CommunicationPanel : Window
                   if(color == blokus.colorPlayed)
                      blokus.NextColorPlayed();
 
-                  if(blokus.colorPlayed == blokus.gameState.colorTurn &&
-                     !blokus.gameState.validMove && !blokus.gameState.over)
+                  if(blokus.colorPlayed == blokus.gameState.colorTurn && !blokus.gameState.over)
                   {
-                     if(!blokus.passed[blokus.gameState.colorTurn])
-                        blokus.btnPass.visible = true;
-                     else
-                        panel.server.Pass();
+                     if(!blokus.gameState.validMove)
+                     {
+                        if(!blokus.passed[blokus.gameState.colorTurn])
+                        {
+                           blokus.btnPass.visible = true;
+                           if(!blokus.active)
+                              blokus.Flash();
+                        }
+                        else
+                           panel.server.Pass();
+                     }
+                     else if(!blokus.active)
+                        blokus.Flash();
                   }
 
                   // This hangs here, why?
@@ -1323,14 +1357,24 @@ class CommunicationPanel : Window
                   blokus.gameState.Pass();
                   if(color == blokus.colorPlayed)
                      blokus.NextColorPlayed();
+                  else if(!blokus.active)
+                     blokus.Flash();
 
-                  if(blokus.colorPlayed == blokus.gameState.colorTurn &&
-                     !blokus.gameState.validMove && !blokus.gameState.over)
+                  if(blokus.colorPlayed == blokus.gameState.colorTurn && !blokus.gameState.over)
                   {
-                     if(!blokus.passed[blokus.gameState.colorTurn])
-                        blokus.btnPass.visible = true;
-                     else
-                        panel.server.Pass();
+                     if(!blokus.gameState.validMove)
+                     {
+                        if(!blokus.passed[blokus.gameState.colorTurn])
+                        {
+                           blokus.btnPass.visible = true;
+                           if(!blokus.active)
+                              blokus.Flash();
+                        }
+                        else
+                           panel.server.Pass();
+                     }
+                     else if(!blokus.active)
+                        blokus.Flash();
                   }
 
                   if(blokus)

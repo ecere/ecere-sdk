@@ -160,6 +160,8 @@ public:
             result = c;
          }
          panel.UpdateControlsStates();
+         if(!panel.active)
+            panel.Flash();
       }
       else
       {
@@ -224,7 +226,7 @@ public:
       return false;
    }
 
-   void SendMessage(String msg)
+   void SendMessage(const String msg)
    {
       int c;
       for(c = 0; c<MaxPlayers; c++)
