@@ -287,12 +287,13 @@ public:
          //if(_refCount > 1)
          /*if(_refCount >= 1)
             _refCount--;*/
-         network.mutex.Release();
 
          shutdown(s, 2);
 
          if(!wasDisconnected)
             delete this;
+
+         network.mutex.Release();
    #endif
       }
    }
@@ -648,7 +649,7 @@ private:
             }
          }
 
-         if(count > 0 || leftOver)
+         if(count > 0 || (leftOver && !count))
          {
             uint flushCount;
             leftOver = false;
@@ -715,8 +716,14 @@ private:
 
    public bool Process()
    {
+      ProcessTimeOut(0);
+   }
+
+   public bool ProcessTimeOut(Seconds timeOut)
+   {
       bool gotEvent = false;
       struct timeval tv = {0, 0};
+      struct timeval tvTO = {(uint)timeOut, (uint)((timeOut -(uint)timeOut)* 1000000)};
       fd_set rs, ws, es;
       int selectResult;
 
@@ -728,7 +735,7 @@ private:
       //FD_SET(s, &ws);
       FD_SET(s, &es);
 
-      selectResult = select(s+1, &rs, &ws, &es, leftOver ? &tv : null);
+      selectResult = select(s+1, &rs, &ws, &es, leftOver ? &tv : (timeOut ? &tvTO : null));
       mutex.Wait();
       if(s != -1 && _refCount && (leftOver || selectResult))
       {

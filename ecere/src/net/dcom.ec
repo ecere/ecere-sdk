@@ -104,6 +104,7 @@ public:
 
       if(serverSocket && serverSocket.connected)
       {
+         DCOMServerSocket socket = serverSocket;
          unsigned int size = (uint)&((CallVirtualMethodPacket)0).args + virtualsBuffer.size; // sizeof(class CallVirtualMethodPacket) + virtualsBuffer.size - 1;
          CallVirtualMethodPacket packet = (CallVirtualMethodPacket)new0 byte[size];
          guiApp.Unlock();
@@ -119,21 +120,50 @@ public:
          serverSocket.SendPacket(packet);
          delete packet;
 
+         incref socket;
+         incref socket;
+
+         incref this;
+
          mutex.Release();
 
-         while(serverSocket && !answered)
+         while(serverSocket && serverSocket.connected && serverSocket.thread && !answered)
          {
             if(GetCurrentThreadID() == serverSocket.thread.id)
-               serverSocket.Process();
+               serverSocket.ProcessTimeOut(0.01);
             else
-               serverSocket.thread.semaphore.Wait();
+            {
+               Socket s = null;
+               if(serverSocket.service)
+               {
+                  Socket next;
+                  for(s = serverSocket.service.sockets.first; s; s = next)
+                  {
+                     next = s.next;
+                     if(s.connected && ((DCOMServerSocket)s).thread.id == GetCurrentThreadID())
+                     {
+                        s.ProcessTimeOut(0.01);
+                        break;
+                     }
+                  }
+                  if(!s)
+                     ecere::sys::Sleep(0.01);//serverSocket.thread.semaphore.Wait();
+               }
+            }
          }
+
+         if(socket._refCount > 1)
+            socket._refCount--;
+         delete socket;
 
          // NOTE: There is a slight potential that a virtual method
          // returning a value might have its virtualsBuffer modified
          // before we manage to lock it...
          guiApp.Lock();
          mutex.Wait();
+
+         if(_refCount > 1)
+            _refCount--;
 
          if(reentrant)
             answered = false;
@@ -182,7 +212,7 @@ class DCOMServerThread : Thread
       incref socket;
       while(connected)
       {
-         socket.Process();
+         socket.ProcessTimeOut(0.01);
          semaphore.Release();
       }
       delete socket;
@@ -200,7 +230,7 @@ class DCOMClientThread : Thread
       incref socket;
       while(connected)
       {
-         socket.Process();
+         socket.ProcessTimeOut(0.01);
          semaphore.Release();
       }
       delete socket;
@@ -236,9 +266,11 @@ class DCOMClientThread : Thread
             
             objects = renew objects DCOMServerObject[numObjects+1];
             object = objects[numObjects] = eInstance_New(_class);
+            incref object;
             object.serverSocket = this;
             object.id = numObjects++;
             object.instance = eInstance_New(runClass);   
+            incref object.instance;
             object.instance._vTbl = new void *[object.instance._class.vTblSize + 1];
             object.instance._vTbl++;
             object.instance._vTbl[-1] = (void *)object;
@@ -266,24 +298,43 @@ class DCOMClientThread : Thread
             if(callMethod.objectID < numObjects /*&& callMethod.methodID < numMethods*/)
             {
                DCOMServerObject object = objects[callMethod.objectID];
-
+               bool hasReturnValue = true; //callMethod.methodID != 8;
                MethodReturnedPacket packet;
                unsigned int size;
                SerialBuffer buffer { };
 
                buffer.WriteData(callMethod.args, callMethod.argsSize);
+
+               if(!hasReturnValue)
+               {
+                  size = (uint)&((MethodReturnedPacket)0).args;
+                  packet = (MethodReturnedPacket)new0 byte[size];
+                  packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_MethodReturned);
+                  packet.size = size;
+                  packet.argsSize = 0;
+                  SendPacket(packet);
+
+               }
+
+               incref object;
                // TOFIX: Hardcoded VTBL ID
                object._vTbl[10](object, callMethod.methodID, buffer);
 
-               size = (uint)&((MethodReturnedPacket)0).args + buffer.size; // sizeof(class MethodReturnedPacket) + buffer.size - 1;
-               packet = (MethodReturnedPacket)new0 byte[size];
-               packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_MethodReturned);
-               packet.size = size;
-               packet.argsSize = htoled(buffer.size);
-               buffer.ReadData(packet.args, buffer.size);
+               if(hasReturnValue)                                          `
+               {
+                  size = (uint)&((MethodReturnedPacket)0).args + buffer.size; // sizeof(class MethodReturnedPacket) + buffer.size - 1;
+                  packet = (MethodReturnedPacket)new0 byte[size];
+                  packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_MethodReturned);
+                  packet.size = size;
+                  packet.argsSize = htoled(buffer.size);
+                  buffer.ReadData(packet.args, buffer.size);
+                  SendPacket(packet);
+               }
                delete buffer;
-               SendPacket(packet);
                delete packet;
+
+               if(object._refCount > 1)
+                  object._refCount--;
             }
             break;
          }
@@ -308,21 +359,26 @@ class DCOMClientThread : Thread
       int c;
       guiApp.Lock();
       thread.connected = false;
+      guiApp.Unlock();
+      if(thread.started && GetCurrentThreadID() != thread.id)
+         thread.Wait();
+   }
+
+   ~DCOMServerSocket()
+   {
+      int c;
+      guiApp.Lock();
+      mutex.Wait();
       for(c = 0; c<numObjects; c++)
       {
          objects[c].instance._vTbl--;
          delete objects[c].instance._vTbl;
          delete objects[c].instance;
-         delete objects[c];         
+         delete objects[c];
       }
       delete objects;
+      mutex.Release();
       guiApp.Unlock();
-   }
-
-   ~DCOMServerSocket()
-   {
-      if(thread.started && GetCurrentThreadID() != thread.id)
-         thread.Wait();
    }
 };
 
@@ -488,6 +544,7 @@ public:
 
                // TOFIX: Hardcoded VTBL ID
                _vTbl[17](this, callMethod.methodID, buffer);
+
                size += buffer.size; // - 1;
             }
             if(callMethod.hasReturnValue)
@@ -518,8 +575,7 @@ public:
 
    dllexport bool CallMethod(unsigned int methodID)
    {
-      guiApp.Unlock();
-      if(connected)
+      if(this && connected)
       {
          bool result, reentrant = !answered;
          unsigned int size = (uint)&((CallMethodPacket)0).args + __ecereBuffer.size; // sizeof(class CallMethodPacket) + __ecereBuffer.size - 1;
@@ -534,22 +590,23 @@ public:
          SendPacket(packet);
          delete packet;
 
+         guiApp.Unlock();
          while(!answered && thread)
          {
             //guiApp.WaitNetworkEvent();
             //guiApp.ProcessNetworkEvents();
             //Process();
             if(GetCurrentThreadID() == thread.id)
-               Process();
+               ProcessTimeOut(0.01);
             else
-               thread.semaphore.Wait();
+               ecere::sys::Sleep(0.01);//thread.semaphore.Wait();
          }
          result = answered == true;
          if(reentrant)
             answered = false;
+         guiApp.Lock();
          return result;
       }
-      guiApp.Lock();
       return false;
    }
 

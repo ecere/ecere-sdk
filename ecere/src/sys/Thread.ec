@@ -128,7 +128,8 @@ public:
    void Wait()
    {
 #if defined(__WIN32__)
-      WaitForSingleObject(handle, INFINITE);
+      if(WaitForSingleObject(handle, INFINITE /*2000*/) == WAIT_TIMEOUT)
+         PrintLn("Thread not returning?\n");
 #else
       
       /*dontDetach = true;

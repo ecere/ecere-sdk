@@ -177,10 +177,13 @@ public class GuiApplication : Application
    Size virtualScreen;   
    Point virtualScreenPos;
 
+   int mainThread;
+
    GuiApplication()
    {
       SystemCursor c;
       
+      mainThread = GetCurrentThreadID();
       if(!guiApp)
          guiApp = this;
 
@@ -666,6 +669,10 @@ public:
                for(window = desktop.children.first; window; window = window.next)
                   if(window.mutex) window.mutex.Release();
                wait = !ProcessInput(true);
+#ifdef _DEBUG
+               if(lockMutex.owningThread != GetCurrentThreadID())
+                  PrintLn("WARNING: ProcessInput returned unlocked GUI!");
+#endif
                if(!Cycle(wait))
                   wait = false;
 

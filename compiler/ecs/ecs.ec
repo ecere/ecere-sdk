@@ -1114,7 +1114,7 @@ static void BindDCOMClient()
                         f.Printf(" = 0");
                      f.Printf(";\n\n");
                   }
-                  //f.Printf("      incref this;\n");
+                  f.Printf("      incref this;\n");
                   for(param = method.dataType.params.first; param; param = param.next)
                   {
                      char type[1024] = "";
@@ -1175,7 +1175,7 @@ static void BindDCOMClient()
                   }
                   f.Printf("      }\n");
                   f.Printf("      __ecereBuffer.Free();\n");
-                  //f.Printf("      delete this;\n");
+                  f.Printf("      delete this;\n");
                   if(method.dataType.returnType.kind != voidType)
                   {
                      f.Printf("      return __ecereResult;\n");
@@ -1256,6 +1256,8 @@ static void BindDCOMServer()
             // f.Printf("\n");
             f.Printf("   virtual void CallMethod(uint __ecereMethodID, SerialBuffer __ecereBuffer)\n");
             f.Printf("   {\n");
+            f.Printf("      %s inst = (%s)instance;\n", _class.fullName, _class.fullName);
+            f.Printf("      incref inst;\n");
             f.Printf("      switch(__ecereMethodID)\n");
             f.Printf("      {\n");
 
@@ -1412,6 +1414,7 @@ static void BindDCOMServer()
                }
             }
             f.Printf("      }\n");
+            f.Printf("      delete inst;\n");
             f.Printf("   }\n");
 
             // *** VIRTUAL FUNCTIONS BINDINGS ***
@@ -1489,7 +1492,8 @@ static void BindDCOMServer()
                               f.Printf(" = 0");
                            f.Printf(";\n\n");
                         }
-
+                        
+                        f.Printf("      incref __ecereObject;\n");
                         f.Printf("      __ecereMethod___ecereNameSpace__ecere__sys__Mutex_Wait(__ecereObject.mutex);\n");
 
                         //f.Printf("      incref this;\n");
@@ -1577,6 +1581,7 @@ static void BindDCOMServer()
                         f.Printf("      __ecereObject.virtualsBuffer.Free();\n");
                         f.Printf("      __ecereMethod___ecereNameSpace__ecere__sys__Mutex_Release(__ecereObject.mutex);\n");
                         //f.Printf("      delete this;\n");
+                        f.Printf("      delete __ecereObject;\n");
                         if(method.dataType.returnType.kind != voidType)
                         {
                            f.Printf("      return __ecereResult;\n");

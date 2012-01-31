@@ -59,7 +59,8 @@ public:
    void Wait(void)
    {
 #if defined(__WIN32__)
-      WaitForSingleObject(handle, INFINITE);
+      if(WaitForSingleObject(handle, INFINITE /*2000*/) == WAIT_TIMEOUT)
+         PrintLn("Semaphore not released?");
 #else
 #ifdef _DEBUG
       while(true)
