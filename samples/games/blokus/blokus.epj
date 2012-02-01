@@ -16,7 +16,8 @@
             "Debug" : true,
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "Console" : true
          }
       },
       {

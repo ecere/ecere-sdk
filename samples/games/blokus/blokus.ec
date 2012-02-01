@@ -451,7 +451,8 @@ class Blokus : Window
 
    Timer timer
    {
-      this, delay = 0.1; //true;
+      this, delay = 0.1;
+      // started = true;
       bool DelayExpired()
       {
          if(/*hosting && */panel.server)
@@ -772,8 +773,8 @@ class Blokus : Window
       surface.background = colors[blokus.gameStarted][yellow];
       x = bx + boardSize*squareWidth;
       y = by;
-      surface.Area(x + 10, y - 10, x - 10, y-1);
-      surface.Area(x + 10, y - 10, x + 1,  y+10);
+      surface.Area(x - 10, y - 10, x + 10, y-1);
+      surface.Area(x + 1, y - 10, x + 10,  y+10);
 
       s = playerNames[PlayerColor::yellow];
       if(s)
@@ -787,8 +788,8 @@ class Blokus : Window
       surface.background = colors[blokus.gameStarted][red];
       x = bx + boardSize*squareWidth;
       y = by + boardSize*squareWidth;
-      surface.Area(x + 10, y + 1, x - 10, y+10);
-      surface.Area(x + 10, y - 10, x + 1,  y+10);
+      surface.Area(x - 10, y + 1, x + 10, y+10);
+      surface.Area(x + 1, y - 10, x + 10,  y+10);
       s = playerNames[PlayerColor::red];
       if(s)
       {
