@@ -13,7 +13,7 @@ namespace sys;
 import "instance"
 
 #ifdef _DEBUG
-import "system"
+import "System"
 #endif
 
 public class Mutex : struct
