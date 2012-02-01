@@ -33,6 +33,7 @@ typedef struct in_addr IN_ADDR;
 #endif
 
 import "network"
+import "List"
 
 // SERVER
 
@@ -72,6 +73,7 @@ static class CallMethodPacket : DCOMPacket
 static class CallVirtualMethodPacket : DCOMPacket
 {
    int methodID;
+   int callID;
    bool hasReturnValue;
    unsigned int argsSize;
    byte args[1];
@@ -86,13 +88,41 @@ static class MethodReturnedPacket : DCOMPacket
 static class VirtualMethodReturnedPacket : DCOMPacket
 {
    unsigned int objectID;
+   unsigned int methodID;
+   unsigned int callID;
    bool overridden;
    unsigned int argsSize;
    byte args[1];
 };
 
+static class VirtualCallAck : struct
+{
+public:
+   int objectID;
+   int methodID;
+   int callID;
+   bool overridden;
+
+   SerialBuffer buffer { };
+}
+
 public class DCOMServerObject
 {
+   VirtualCallAck VirtualCallAcknowledged(int methodID, int objectID, int callID)
+   {
+      Iterator<VirtualCallAck> it { acks };
+      while(it.Next())
+      {
+         VirtualCallAck ack = it.data;
+         if(ack.methodID == methodID && ack.objectID == objectID && ack.callID == callID)
+         {
+            it.Remove();
+            return ack;
+         }
+      }
+      return null;
+   }
+
 public:
    Instance instance;
 
@@ -100,74 +130,89 @@ public:
 
    dllexport bool CallVirtualMethod(unsigned int methodID, bool hasReturnValue)
    {
-      bool reentrant = !answered;
-
       if(serverSocket && serverSocket.connected)
       {
+         bool result;
+         int currentThreadID = GetCurrentThreadID();
+         int callID = nextCallID++;
          DCOMServerSocket socket = serverSocket;
+         DCOMServerSocket processingSocket;
          unsigned int size = (uint)&((CallVirtualMethodPacket)0).args + virtualsBuffer.size; // sizeof(class CallVirtualMethodPacket) + virtualsBuffer.size - 1;
          CallVirtualMethodPacket packet = (CallVirtualMethodPacket)new0 byte[size];
-         guiApp.Unlock();
+         VirtualCallAck ack = null;
+
+         if(currentThreadID == serverSocket.thread.id)
+            processingSocket = serverSocket;
+         else
+         {
+            processingSocket = null;
+            if(serverSocket.service)
+            {
+               Socket next;
+               for(processingSocket = serverSocket.service.sockets.first;
+                   processingSocket;
+                   processingSocket = (DCOMServerSocket)processingSocket.next)
+               {
+                  next = processingSocket.next;
+                  if(processingSocket.connected && 
+                     processingSocket.thread.id == currentThreadID)
+                     break;
+               }
+            }
+         }
 
          packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_CallVirtualMethod);
          packet.size = size;
+         packet.callID = callID;
          packet.methodID = htoled(methodID);
          packet.hasReturnValue = hasReturnValue;
          packet.argsSize = htoled(virtualsBuffer.size);
          virtualsBuffer.ReadData(packet.args, virtualsBuffer.size);
-         answered = false;
 
          serverSocket.SendPacket(packet);
          delete packet;
 
-         incref socket;
-         incref socket;
+         socket._refCount += 2;
+         if(processingSocket)
+            processingSocket._refCount += 2;
 
          incref this;
 
-         mutex.Release();
-
-         while(serverSocket && serverSocket.connected && serverSocket.thread && !answered)
+         while(true)
          {
-            if(GetCurrentThreadID() == serverSocket.thread.id)
-               serverSocket.ProcessTimeOut(0.01);
+            if(!serverSocket || !serverSocket.connected || !serverSocket.thread)
+               break;
+            if(ack = VirtualCallAcknowledged(methodID, id, callID))
+               break;
+
+            guiApp.Unlock();
+            mutex.Release();
+            if(processingSocket && processingSocket.connected)
+               processingSocket.ProcessTimeOut(0.01);
             else
-            {
-               Socket s = null;
-               if(serverSocket.service)
-               {
-                  Socket next;
-                  for(s = serverSocket.service.sockets.first; s; s = next)
-                  {
-                     next = s.next;
-                     if(s.connected && ((DCOMServerSocket)s).thread.id == GetCurrentThreadID())
-                     {
-                        s.ProcessTimeOut(0.01);
-                        break;
-                     }
-                  }
-                  if(!s)
-                     ecere::sys::Sleep(0.01);//serverSocket.thread.semaphore.Wait();
-               }
-            }
+               ecere::sys::Sleep(0.01);//serverSocket.thread.semaphore.Wait();
+            guiApp.Lock();
+            mutex.Wait();
          }
 
          if(socket._refCount > 1)
             socket._refCount--;
          delete socket;
 
-         // NOTE: There is a slight potential that a virtual method
-         // returning a value might have its virtualsBuffer modified
-         // before we manage to lock it...
-         guiApp.Lock();
-         mutex.Wait();
+         if(processingSocket && processingSocket._refCount > 1)
+            processingSocket._refCount--;
+         delete processingSocket;
 
          if(_refCount > 1)
             _refCount--;
 
-         if(reentrant)
-            answered = false;
-         return overridden == true;
+         result = ack.overridden;
+
+         virtualsBuffer.Free();
+         virtualsBuffer.WriteData(ack.buffer.buffer, ack.buffer.count);
+         delete ack;
+
+         return result;
       }
       return false;
    }
@@ -176,10 +221,16 @@ public:
    unsigned int id;
    SerialBuffer buffer { };
    SerialBuffer virtualsBuffer { };
-   bool answered, overridden;
+   List<VirtualCallAck> acks { };
    Mutex mutex { };
+   int nextCallID;
 
-   answered = true;
+   nextCallID = 100;
+
+   ~DCOMServerObject()
+   {
+      acks.Free();
+   }
 };
 
 #define GETLEDWORD(b) (uint32)(((b)[3] << 24) | ((b)[2] << 16) | ((b)[1] << 8) | (b)[0])
@@ -204,7 +255,7 @@ static uint32 letohd(uint32 value)
 
 class DCOMServerThread : Thread
 {
-   Socket socket;
+   DCOMServerSocket socket;
    Semaphore semaphore { };
    bool connected;
    unsigned int Main()
@@ -320,7 +371,7 @@ class DCOMClientThread : Thread
                // TOFIX: Hardcoded VTBL ID
                object._vTbl[10](object, callMethod.methodID, buffer);
 
-               if(hasReturnValue)                                          `
+               if(hasReturnValue)
                {
                   size = (uint)&((MethodReturnedPacket)0).args + buffer.size; // sizeof(class MethodReturnedPacket) + buffer.size - 1;
                   packet = (MethodReturnedPacket)new0 byte[size];
@@ -344,9 +395,17 @@ class DCOMClientThread : Thread
             if(methodReturned.objectID < numObjects)
             {
                DCOMServerObject object = objects[methodReturned.objectID];
-               object.virtualsBuffer.WriteData(methodReturned.args, letohd(methodReturned.argsSize));
-               object.answered = true;
-               object.overridden = methodReturned.overridden;
+               VirtualCallAck ack
+               {
+                  methodReturned.objectID,
+                  methodReturned.methodID,
+                  methodReturned.callID,
+                  methodReturned.overridden
+               };
+               ack.buffer.WriteData(methodReturned.args, letohd(methodReturned.argsSize));
+               mutex.Wait();
+               object.acks.Add(ack);
+               mutex.Release();
             }
             break;
          }
@@ -478,7 +537,7 @@ public:
          thread.connected = true;
          thread.Create();
          guiApp.Unlock();
-         while(!answered && thread)
+         while(!answered && thread && connected)
          {
             //guiApp.WaitNetworkEvent();
             //guiApp.ProcessNetworkEvents();
@@ -532,6 +591,8 @@ public:
                packet = (VirtualMethodReturnedPacket)new0 byte[size];
                packet.overridden = overridden;
                packet.objectID = objectID;
+               packet.methodID = callMethod.methodID;
+               packet.callID = callMethod.callID;
                packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_VirtualMethodReturned);
                packet.size = size;
                packet.argsSize = 0;
@@ -591,7 +652,7 @@ public:
          delete packet;
 
          guiApp.Unlock();
-         while(!answered && thread)
+         while(!answered && thread && connected)
          {
             //guiApp.WaitNetworkEvent();
             //guiApp.ProcessNetworkEvents();
