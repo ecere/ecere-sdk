@@ -801,7 +801,7 @@ public class DCOMSendControl
 public:
    void Stop()
    {
-      while(sendingOut) guiApp.Unlock(), Sleep(0.01), guiApp.Lock();
+      while(sendingOut) guiApp.Unlock(), ecere::sys::Sleep(0.01), guiApp.Lock();
       sendingOut = true;
    }
 

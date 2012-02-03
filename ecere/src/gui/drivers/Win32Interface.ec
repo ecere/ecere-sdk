@@ -1515,7 +1515,9 @@ class Win32Interface : Interface
       flashInfo.hwnd = window.windowHandle;
       flashInfo.uCount = 1;
       flashInfo.dwFlags = FLASHW_TRAY; // FLASHW_ALL;
+      guiApp.Unlock();
       FlashWindowEx((void *)&flashInfo);
+      guiApp.Lock();
    }
 
    // --- Mouse-based window movement ---
