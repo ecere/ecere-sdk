@@ -1519,10 +1519,10 @@ static void BindDCOMServer()
                            if(param.kind == classType && !strcmp(param._class.string, "String"))
                            {
                               DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
-                              f.Printf("      __ecereObject.virtualsBuffer.Serialize((StaticString)%s);\n", param.name);
+                              f.Printf("      __ecereObject.argsBuffer.Serialize((StaticString)%s);\n", param.name);
                            }
                            else
-                              f.Printf("      __ecereObject.virtualsBuffer.Serialize(%s);\n", param.name);
+                              f.Printf("      __ecereObject.argsBuffer.Serialize(%s);\n", param.name);
                         }
 
                         DeclareMethod(
@@ -1532,13 +1532,16 @@ static void BindDCOMServer()
 
                         // Check if this method needs to return anything (hasReturnValue)
                         {
-                           bool hasReturnValue = false;
-                           for(param = method.dataType.params.first; param; param = param.next)
+                           bool hasReturnValue = method.dataType.returnType.kind != voidType;
+                           if(!hasReturnValue)
                            {
-                              if(param.kind == classType && ((param._class && param._class.registered && param._class.registered.type == structClass) || !strcmp(param._class.string, "String")) && !param.constant)
+                              for(param = method.dataType.params.first; param; param = param.next)
                               {
-                                 hasReturnValue = true;
-                                 break;
+                                 if(param.kind == classType && ((param._class && param._class.registered && param._class.registered.type == structClass) || !strcmp(param._class.string, "String")) && !param.constant)
+                                 {
+                                    hasReturnValue = true;
+                                    break;
+                                 }
                               }
                            }
                            f.Printf("      if(__ecereObject.CallVirtualMethod(%d, %s))\n", vid - _class.base.vTblSize,
@@ -1552,10 +1555,10 @@ static void BindDCOMServer()
                               if(!strcmp(param._class.string, "String"))
                               {
                                  DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
-                                 f.Printf("         __ecereObject.virtualsBuffer.Unserialize((StaticString)%s);\n", param.name);
+                                 f.Printf("         __ecereObject.returnBuffer.Unserialize((StaticString)%s);\n", param.name);
                               }
                               else
-                                 f.Printf("         __ecereObject.virtualsBuffer.Unserialize(%s);\n", param.name);
+                                 f.Printf("         __ecereObject.returnBuffer.Unserialize(%s);\n", param.name);
                            }
                         }
                         if(method.dataType.returnType.kind != voidType)
@@ -1563,10 +1566,10 @@ static void BindDCOMServer()
                            if(method.dataType.returnType.kind == classType && !strcmp(method.dataType.returnType._class.string, "String"))
                            {
                               DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
-                              f.Printf("         __ecereObject.virtualsBuffer.Unserialize((StaticString)__ecereResult);\n");
+                              f.Printf("         __ecereObject.returnBuffer.Unserialize((StaticString)__ecereResult);\n");
                            }
                            else
-                              f.Printf("         __ecereObject.virtualsBuffer.Unserialize(__ecereResult);\n");
+                              f.Printf("         __ecereObject.returnBuffer.Unserialize(__ecereResult);\n");
                         }
                         f.Printf("      }\n");
                         f.Printf("      else\n");
@@ -1578,7 +1581,7 @@ static void BindDCOMServer()
                         }
                         f.Printf(");\n");
 
-                        f.Printf("      __ecereObject.virtualsBuffer.Free();\n");
+                        f.Printf("      __ecereObject.returnBuffer.Free();\n");
                         f.Printf("      __ecereMethod___ecereNameSpace__ecere__sys__Mutex_Release(__ecereObject.mutex);\n");
                         //f.Printf("      delete this;\n");
                         f.Printf("      delete __ecereObject;\n");

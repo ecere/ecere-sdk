@@ -46,10 +46,13 @@ bool serverGameStarted;
 
 BlokusGameState serverGameState;
 
+DCOMSendControl sendControl { };
+
 void StartGame()
 {
    int c;
 
+   sendControl.Stop();
    serverGameState.numPlayers = 0;
    for(c = 0; c<MaxPlayers; c++)
       if(serverPlayers[c])
@@ -77,6 +80,7 @@ void StartGame()
             serverPlayers[c].connection.GameStarted(gameInfo);
          }
    }
+   sendControl.Resume();
 }
 
 void KickPlayer(int id)
@@ -87,7 +91,9 @@ void KickPlayer(int id)
       if(serverPlayers[c] && serverPlayers[c].id == id)
       {
          DCOMServerObject object = (DCOMServerObject)serverPlayers[c].connection._vTbl[-1];
+         app.Unlock();
          object.serverSocket.Disconnect(0);
+         app.Lock();
          delete serverPlayers[c];
       }
    }
@@ -101,7 +107,9 @@ void KickEveryoneOut()
       if(serverPlayers[c])
       {
          DCOMServerObject object = (DCOMServerObject)serverPlayers[c].connection._vTbl[-1];
+         app.Unlock();
          object.serverSocket.Disconnect(0);
+         app.Lock();
          delete serverPlayers[c];
       }
    }
@@ -193,11 +201,15 @@ public:
          {
             int c;
             PlayerColor moveColor = serverGameState.colorTurn;
+            sendControl.Stop();
 
             serverGameState.PlayMove(piece, direction, flip, bx, by);
+
             for(c = 0; c<MaxPlayers; c++)
                if(serverPlayers[c])
                   serverPlayers[c].connection.MovePlayed(moveColor, piece, direction, flip, bx, by);
+
+            sendControl.Resume();
 
             if(serverGameState.over)
                panel.UpdateControlsStates();
@@ -216,11 +228,15 @@ public:
       {
          int c;
          PlayerColor moveColor = serverGameState.colorTurn;
+
+         sendControl.Stop();
+
          serverGameState.Pass();
 
          for(c = 0; c<MaxPlayers; c++)
             if(serverPlayers[c])
                serverPlayers[c].connection.Passed(moveColor);
+         sendControl.Resume();
          return true;
       }
       return false;

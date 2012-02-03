@@ -1,6 +1,5 @@
 import "ecere"
 import "console"
-
 public enum BlokusColor : byte { none, blue, yellow, red, green };
 
 public enum PlayerColor : byte
@@ -431,6 +430,8 @@ class Blokus : Window
    font = { "Arial", 12, bold = true };
    FontResource yourTurnFont { "Arial", 12, bold = true, italic = true, window = this };
 
+   ServerConnection server;
+
    bool gameStarted;
    PlayerColor firstColor;
    char *playerNames[MaxPlayers];
@@ -449,17 +450,73 @@ class Blokus : Window
    bool flip;
    bool passed[4];
 
+#ifdef _DEBUG
    Timer timer
    {
       this, delay = 0.1;
       // started = true;
       bool DelayExpired()
       {
-         if(/*hosting && */panel.server)
-            panel.server.SendMessage("Hello :)");
+         if(server)
+            server.SendMessage("Hello :)");
          return true;
       }
    };
+
+   Timer timerPlay
+   {
+      this, delay = 0.05;
+      // started = true;
+      bool DelayExpired()
+      {
+         if(server)
+         {
+            if(gotMove && gameStarted && colorPlayed == gameState.colorTurn)
+            {
+               if(btnPass.visible)
+                  btnPass.NotifyClicked(this, btnPass, 0, 0, 0);
+               else if(gameState.validMove)
+               {
+                  while(true)
+                  {
+                     int p = GetRandom(0, numPieces);
+                     if(gameState.validPieces[p])
+                     {
+                        bool validMove = false;
+                        int x, y;
+                        for(y = 0; y < boardSize && !validMove; y++)
+                        {
+                           for(x = 0; x < boardSize && !validMove; x++)
+                           {
+                              int flip;
+                              int direction;
+                              for(direction = 0; direction < 4 && !validMove; direction++)
+                              {
+                                 for(flip = 0; flip <=1 && !validMove; flip++)
+                                 {
+                                    if(gameState.ValidMove(colorPlayed, p, direction, flip, x, y))
+                                    {
+                                       bool result;
+                                       gotMove = false;
+                                       result = server.PlayPiece(p, direction, flip, x, y);
+                                       validMove = true;
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                        break;
+                     }
+                  }
+               }
+            }
+         }
+         return true;
+      }
+   };
+   bool gotMove;
+   gotMove = true;
+#endif
 
    void NextColorPlayed()
    {
@@ -530,8 +587,16 @@ class Blokus : Window
 
    void OnDestroy()
    {
+      if(server)
+         server.Disconnect(0);
+
       panel.Destroy(0);
       scoresPanel.Destroy(0);
+   }
+
+   ~Blokus()
+   {
+      delete server;
    }
 
    bool OnMouseMove(int mx, int my, Modifiers mods)
@@ -573,7 +638,7 @@ class Blokus : Window
             {
                Piece * piece = &pieces[selectedPiece];
                if(gameState.ValidMove(gameState.colorTurn, selectedPiece, direction, flip, boardPos.x, boardPos.y))
-                  panel.server.PlayPiece(selectedPiece, direction, flip, boardPos.x, boardPos.y);
+                  server.PlayPiece(selectedPiece, direction, flip, boardPos.x, boardPos.y);
             }
          }
          dragging = false;
@@ -936,7 +1001,7 @@ class Blokus : Window
 
       bool ProcessCommand(char * command)
       {
-         panel.server.SendMessage(command);
+         blokus.server.SendMessage(command);
          return false;
       }
    };
@@ -953,7 +1018,7 @@ class Blokus : Window
       {
          btnPass.visible = false;
          blokus.passed[blokus.gameState.colorTurn] = true;
-         panel.server.Pass();
+         server.Pass();
          return true;
       }
 
@@ -1126,6 +1191,10 @@ class BlokusApp : GuiApplication
    {
       // This is here because it hangs in MovePlayed() (Why?)
       scoresPanel.visible = blokus.gameStarted && blokus.gameState.over;
+#ifdef _DEBUG
+      /*if(blokus.gameState.over)
+         panel.btnStart.NotifyClicked(panel, panel.btnStart, 0, 0, 0);*/
+#endif
       return true;
    }
    void Terminate()
@@ -1154,8 +1223,6 @@ class CommunicationPanel : Window
    anchor = { horz = -3, vert = -7 };
    nativeDecorations = true;
 
-   ServerConnection server;
-
    // Other player info
    char playerNames[MaxPlayers][256];
 
@@ -1175,20 +1242,12 @@ class CommunicationPanel : Window
       if(hosting)
          blokusService.Stop();
       app.Lock();
-
-      if(panel.server)
-         panel.server.Disconnect(0);
    }
 
    CommunicationPanel()
    {
       listPlayers.AddField(fldName);
       listPlayers.AddField(fldAddr);
-   }
-
-   ~CommunicationPanel()
-   {
-      delete server;
    }
 
    void ListPlayers()
@@ -1228,19 +1287,19 @@ class CommunicationPanel : Window
             if(serverPlayers[c])
                numPlayers++;
       }
-      lblServerAddress.disabled = serverAddress.disabled = server ? true : false;
-      lblPlayerName.disabled = playerName.disabled = server ? true : false;
+      lblServerAddress.disabled = serverAddress.disabled = blokus.server ? true : false;
+      lblPlayerName.disabled = playerName.disabled = blokus.server ? true : false;
       lblServerAddress.Update(null);
       lblPlayerName.Update(null);
-      btnConnect.visible = server ? false : true;
-      btnDisconnect.visible = server ? true : false;
-      blokus.chat.visible = server ? true : false;
+      btnConnect.visible = blokus.server ? false : true;
+      btnDisconnect.visible = blokus.server ? true : false;
+      blokus.chat.visible = blokus.server ? true : false;
 
-      btnHost.visible = !hosting && !server;
+      btnHost.visible = !hosting && !blokus.server;
       btnStopHosting.visible = hosting;
       btnStart.visible = hosting && (!serverGameStarted || serverGameState.over) && numPlayers > 0;
       btnStopGame.visible = hosting && (serverGameStarted && !serverGameState.over);
-      listPlayers.visible = (hosting && (serverGameStarted || numPlayers > 0)) || (!hosting && server && blokus.gameStarted);
+      listPlayers.visible = (hosting && (serverGameStarted || numPlayers > 0)) || (!hosting && blokus.server && blokus.gameStarted);
       btnKick.visible = hosting && !serverGameStarted && numPlayers > 0;
       btnKick.disabled = listPlayers.currentRow ? false : true;
    }
@@ -1255,16 +1314,16 @@ class CommunicationPanel : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         if(!server)
+         if(!blokus.server)
          {
-            server = ServerConnection
+            blokus.server = ServerConnection
             {
                void OnDisconnect(int code)
                {
                   app.Lock();
                   if(blokus)
                   {
-                     delete panel.server;
+                     delete blokus.server;
                      blokus.gameStarted = false;
                      blokus.turnLightTimer.Stop();
                      blokus.lightValue = 1;
@@ -1315,8 +1374,8 @@ class CommunicationPanel : Window
                   int c;
 
                   panel.ListPlayers();
-
                   blokus.gameStarted = false;
+                  blokus.btnPass.visible = false;
                   blokus.Update(null);
                }
 
@@ -1325,7 +1384,9 @@ class CommunicationPanel : Window
                   blokus.gameState.PlayMove(pieceType, direction, flip, boardX, boardY);
                   if(color == blokus.colorPlayed)
                      blokus.NextColorPlayed();
-
+#ifdef _DEBUG
+                  blokus.gotMove = true;
+#endif
                   if(blokus.colorPlayed == blokus.gameState.colorTurn && !blokus.gameState.over)
                   {
                      if(!blokus.gameState.validMove)
@@ -1337,7 +1398,7 @@ class CommunicationPanel : Window
                               blokus.Flash();
                         }
                         else
-                           panel.server.Pass();
+                           blokus.server.Pass();
                      }
                      else if(!blokus.active)
                         blokus.Flash();
@@ -1372,7 +1433,7 @@ class CommunicationPanel : Window
                               blokus.Flash();
                         }
                         else
-                           panel.server.Pass();
+                           blokus.server.Pass();
                      }
                      else if(!blokus.active)
                         blokus.Flash();
@@ -1393,18 +1454,18 @@ class CommunicationPanel : Window
                   blokus.chat.Log(format, name, msg);
                }
             };
-            incref panel.server;
-            if(panel.server.Connect(serverAddress.contents, BLOKUS_PORT))
+            incref blokus.server;
+            if(blokus.server.Connect(serverAddress.contents, BLOKUS_PORT))
             {
-               int playerID = panel.server.Join();
-               if(panel.server && playerID != -1)
-                  panel.server.SetName(playerName.contents);
+               int playerID = blokus.server.Join();
+               if(blokus.server && playerID != -1)
+                  blokus.server.SetName(playerName.contents);
                else
-                  panel.server.Disconnect(0);
+                  blokus.server.Disconnect(0);
                UpdateControlsStates();
             }
             else
-               delete panel.server;
+               delete blokus.server;
          }
          return true;
       }
@@ -1420,8 +1481,8 @@ class CommunicationPanel : Window
                contents = "Game in progress! Disconnect?"
             }.Modal() == ok)
          {
-            if(panel.server)
-               panel.server.Disconnect(0);
+            if(blokus.server)
+               blokus.server.Disconnect(0);
          }
          return true;
       }

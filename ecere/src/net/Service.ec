@@ -118,15 +118,15 @@ public:
       }
       network.mutex.Release();
 
-      if(s)
+      if(s != -1)
       {
          network.mutex.Wait();
+         this.s = -1;
          network.services.Remove(this);
          FD_CLR(s, &network.readSet);
          FD_CLR(s, &network.exceptSet);
          network.mutex.Release();
          closesocket(s);
-         this.s = 0;
       }
 
       Network_DetermineMaxSocket();
@@ -138,32 +138,36 @@ public:
    bool Process()
    {
       bool gotEvent = false;
-      fd_set rs, ws, es;
-      int selectResult;
-
-      FD_ZERO(&rs);
-      FD_ZERO(&ws);
-      FD_ZERO(&es);
-      FD_SET(s, &rs);
-      //FD_SET(s, &ws);
-      FD_SET(s, &es);
-
-      selectResult = select(s+1, &rs, &ws, &es, null);
-      if(selectResult > 0)
+      if(s != -1)
       {
-         if(FD_ISSET(s, &rs))
+         fd_set rs, ws, es;
+         int selectResult;
+         struct timeval tvTO = {0, 200000};
+
+         FD_ZERO(&rs);
+         FD_ZERO(&ws);
+         FD_ZERO(&es);
+         FD_SET(s, &rs);
+         //FD_SET(s, &ws);
+         FD_SET(s, &es);
+
+         selectResult = select(s+1, &rs, &ws, &es, &tvTO);
+         if(selectResult > 0)
          {
-            accepted = false;
-            OnAccept();
-            if(!accepted)
+            if(FD_ISSET(s, &rs))
             {
-               SOCKET s;
-               SOCKADDR_IN a;
-               int addrLen = sizeof(a);
-               s = accept(this.s,(SOCKADDR *)&a,&addrLen);
-               closesocket(s);
+               accepted = false;
+               OnAccept();
+               if(!accepted)
+               {
+                  SOCKET s;
+                  SOCKADDR_IN a;
+                  int addrLen = sizeof(a);
+                  s = accept(this.s,(SOCKADDR *)&a,&addrLen);
+                  closesocket(s);
+               }
+               gotEvent |= true;
             }
-            gotEvent |= true;
          }
       }
       return gotEvent;
