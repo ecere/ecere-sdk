@@ -23,6 +23,7 @@ import "StatusBar"
 import "ProgressBar"
 import "EditBox"
 import "DataBox"
+import "ToolTip"
 
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
 import "Desktop3D"
@@ -9341,6 +9342,39 @@ private:
 public class CommonControl : Window
 {
    // creationActivation = doNothing;
+
+   ToolTip toolTip;
+   public property String toolTip
+   {
+      property_category "Appearance"
+      set
+      {
+         delete toolTip;
+         toolTip = value ? ToolTip { tip = value; } : null;
+         incref toolTip;
+      }
+      get { return toolTip ? toolTip.tip : null; }
+   }
+
+   void OnDestroy()
+   {
+      if(toolTip)
+         // (Very) Ugly work around for the fact that the parent watcher
+         // won't fire when it's already been disconnected...
+         eInstance_FireSelfWatchers(toolTip,
+            __ecereProp___ecereNameSpace__ecere__gui__Window_parent);
+   }
+
+   bool OnCreate()
+   {
+      if(toolTip)
+         toolTip.parent = this;
+      return true;
+   }
+   ~CommonControl()
+   {
+      delete toolTip;
+   }
 };
 
 public class Percentage : float

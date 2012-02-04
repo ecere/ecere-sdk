@@ -1762,6 +1762,12 @@ public void CheckMemory()
       memoryErrorsCount++;
    }
    printf("Starting Memory Check\n");
+   for(block = (MemInfo)memBlocks.first; block; block = block.next)
+   {
+      if(!block.freed && block._class)
+         leakedObjects++;
+   }
+
    for(block = (MemInfo)memBlocks.root; block;)
    {
       if(block.freed)
@@ -1770,14 +1776,13 @@ public void CheckMemory()
       {
          if(block._class)
          {
-            leakedObjects++;
             // if(!block.internal)
             {
                // printf("Object of class %s\n", block._class);
                block.OutputStacks(false);
             }
          }
-         else
+         else if(!leakedObjects)
          {
             printf("Memory Leak\n");
             block.OutputStacks(false);

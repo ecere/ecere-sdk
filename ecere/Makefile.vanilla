@@ -87,6 +87,7 @@ OBJECTS2 = \
 	$(OBJ)StatusBar.o \
 	$(OBJ)Stacker.o \
 	$(OBJ)PathBox.o \
+	$(OBJ)ToolTip.o \
 	$(OBJ)ColorPicker.o \
 	$(OBJ)FileDialog.o \
 	$(OBJ)FindDialog.o \
@@ -179,6 +180,7 @@ COBJECTS1 = \
 COBJECTS2 = \
 	$(OBJ)Stacker.c \
 	$(OBJ)PathBox.c \
+	$(OBJ)ToolTip.c \
 	$(OBJ)ColorPicker.c \
 	$(OBJ)FileDialog.c \
 	$(OBJ)FindDialog.c \
@@ -268,6 +270,7 @@ SYMBOLS2 = \
 	$(OBJ)StatusBar.sym \
 	$(OBJ)Stacker.sym \
 	$(OBJ)PathBox.sym \
+	$(OBJ)ToolTip.sym \
 	$(OBJ)ColorPicker.sym \
 	$(OBJ)FileDialog.sym \
 	$(OBJ)FindDialog.sym \
@@ -357,6 +360,7 @@ IMPORTS2 = \
 	$(OBJ)StatusBar.imp \
 	$(OBJ)Stacker.imp \
 	$(OBJ)PathBox.imp \
+	$(OBJ)ToolTip.imp \
 	$(OBJ)ColorPicker.imp \
 	$(OBJ)FileDialog.imp \
 	$(OBJ)FindDialog.imp \
@@ -468,6 +472,7 @@ SOURCES2 = \
 	src/gui/controls/StatusBar.ec \
 	src/gui/controls/Stacker.ec \
 	src/gui/controls/PathBox.ec \
+	src/gui/controls/ToolTip.ec \
 	src/gui/dialogs/ColorPicker.ec \
 	src/gui/dialogs/FileDialog.ec \
 	src/gui/dialogs/FindDialog.ec \
@@ -849,6 +854,9 @@ $(OBJ)Stacker.sym: src/gui/controls/Stacker.ec
 $(OBJ)PathBox.sym: src/gui/controls/PathBox.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/PathBox.ec -o $(OBJ)PathBox.sym
 
+$(OBJ)ToolTip.sym: src/gui/controls/ToolTip.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/ToolTip.ec -o $(OBJ)ToolTip.sym
+
 $(OBJ)ColorPicker.sym: src/gui/dialogs/ColorPicker.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/dialogs/ColorPicker.ec -o $(OBJ)ColorPicker.sym
 
@@ -1105,6 +1113,9 @@ $(OBJ)Stacker.c: src/gui/controls/Stacker.ec $(OBJ)Stacker.sym | $(SYMBOLS)
 
 $(OBJ)PathBox.c: src/gui/controls/PathBox.ec $(OBJ)PathBox.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/PathBox.ec -o $(OBJ)PathBox.c -symbols $(OBJ)
+
+$(OBJ)ToolTip.c: src/gui/controls/ToolTip.ec $(OBJ)ToolTip.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/ToolTip.ec -o $(OBJ)ToolTip.c -symbols $(OBJ)
 
 $(OBJ)ColorPicker.c: src/gui/dialogs/ColorPicker.ec $(OBJ)ColorPicker.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/ColorPicker.ec -o $(OBJ)ColorPicker.c -symbols $(OBJ)
@@ -1428,6 +1439,9 @@ $(OBJ)Stacker.o: $(OBJ)Stacker.c
 
 $(OBJ)PathBox.o: $(OBJ)PathBox.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)PathBox.c -o $(OBJ)PathBox.o
+
+$(OBJ)ToolTip.o: $(OBJ)ToolTip.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ToolTip.c -o $(OBJ)ToolTip.o
 
 $(OBJ)ColorPicker.o: $(OBJ)ColorPicker.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ColorPicker.c -o $(OBJ)ColorPicker.o
