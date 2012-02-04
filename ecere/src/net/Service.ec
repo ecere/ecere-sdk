@@ -44,6 +44,8 @@ public:
 
    virtual void OnAccept();
 
+   s = -1;
+
    // --- Services ---
 
    bool Start()

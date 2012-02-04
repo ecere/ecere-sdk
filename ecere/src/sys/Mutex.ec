@@ -13,7 +13,7 @@ namespace sys;
 import "instance"
 
 #ifdef _DEBUG
-import "System"
+int GetCurrentThreadID();
 #endif
 
 public class Mutex : struct

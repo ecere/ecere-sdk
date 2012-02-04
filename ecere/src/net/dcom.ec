@@ -301,12 +301,13 @@ class DCOMClientThread : Thread
    bool connected;
    unsigned int Main()
    {
-      incref socket;
+      socket._refCount += 2;
       while(connected)
       {
          socket.ProcessTimeOut(0.01);
          semaphore.Release();
       }
+      if(socket._refCount > 1) socket._refCount--;
       delete socket;
       return 0;
    }
