@@ -2955,7 +2955,7 @@ class CodeEditor : Window
                                                       }
                                                    }
                                                    // MOVED THIS UP NOW THAT char * IS A NORMAL CLASS
-                                                   else if(computed.type == stringExp)
+                                                   else if(computed.type == stringExp && propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
                                                    {
                                                       char temp[1024];
                                                       ReadString(temp, computed.string);
@@ -2981,7 +2981,7 @@ class CodeEditor : Window
                                                          valueData.i64 = value.i64;
                                                          SetProperty(prop, instance, valueData);
                                                       }
-                                                      else if(computed.type == stringExp)
+                                                      else if(computed.type == stringExp && propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
                                                       {
                                                          char temp[1024];
                                                          ReadString(temp, computed.string);
@@ -3242,7 +3242,7 @@ class CodeEditor : Window
                                                                                  }
                                                                               }
                                                                               // MOVED THIS UP NOW THAT char * IS A NORMAL CLASS
-                                                                              else if(computed.isConstant && computed.type == stringExp && (propertyClass.dataTypeString && !strcmp(propertyClass.dataTypeString, "char *")))
+                                                                              else if(computed.isConstant && computed.type == stringExp && propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
                                                                               {
                                                                                  char temp[1024];
                                                                                  ReadString(temp, computed.string);
@@ -3271,7 +3271,7 @@ class CodeEditor : Window
                                                                                     else
                                                                                        prop.Set(control, strtol(computed.constant, null, 0));
                                                                                  }
-                                                                                 else if(computed.type == stringExp && (propertyClass.dataTypeString && !strcmp(propertyClass.dataTypeString, "char *"))) //  || (!strcmp(propertyClass.name, "String"))))
+                                                                                 else if(computed.type == stringExp  && propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
                                                                                  {
                                                                                     char temp[1024];
                                                                                     ReadString(temp, computed.string);
