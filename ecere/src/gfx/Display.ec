@@ -1,5 +1,9 @@
 namespace gfx;
 
+#if (defined(ECERE_VANILLA) || defined(ECERE_ONEDRIVER)) && defined(__WIN32__)
+#define ECERE_NOTRUETYPE
+#endif
+
 import "System"
 
 import "Color"
@@ -11,6 +15,11 @@ import "FontResource"
 import "BitmapResource"
 
 import "LFBDisplayDriver"
+
+// TOFIX: Temporary until we pass Display instead of DisplaySystem to FontExtent
+#if defined(__WIN32__) && !defined(ECERE_NOTRUETYPE)
+import "GDIDisplayDriver"
+#endif
 
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
 import "Camera"
@@ -495,7 +504,23 @@ public:
 
    void FontExtent(Font font, char * text, int len, int * width, int * height)
    {
-      DisplaySystem::FontExtent(this ? displaySystem : null, font, text, len, width, height);
+      // Fix for OnLoadGraphics time alpha blended window text extent on GDI
+#if defined(__WIN32__) && !defined(ECERE_NOTRUETYPE)
+      if(this && alphaBlend && pixelFormat == pixelFormat888 && 
+         displaySystem.driver == class(GDIDisplayDriver))
+      {
+         Surface s = GetSurface(0,0,null);
+         if(s)
+         {
+            s.font = font;
+            s.TextExtent(text, len, width, height);
+            delete s;
+         }
+      }
+      else
+#endif
+         // TODO: Should really pass display here...
+         DisplaySystem::FontExtent(this ? displaySystem : null, font, text, len, width, height);
    }
 
    void SetPalette(ColorAlpha * palette, bool colorMatch)

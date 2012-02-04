@@ -21,7 +21,7 @@ public:
    {
       set
       {
-         iconNames.Copy(value);
+         iconNames.Copy((void *)value);  // TOFIX: Warning without the void * cast
       }
    }
 
