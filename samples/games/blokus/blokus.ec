@@ -518,6 +518,27 @@ class Blokus : Window
    gotMove = true;
 #endif
 
+#ifdef __WIN32__
+   // To work around Flash() lockups on Windows...
+   bool flash;
+   Timer flashTimer
+   {
+      this, delay = 0.2, true;
+
+      bool DelayExpired()
+      {
+         if(flash)
+            Window::Flash();
+         return true;
+      }
+   };
+
+   void Flash()
+   {
+      flash = true;
+   }
+#endif
+
    void NextColorPlayed()
    {
       if(gameState.numPlayers == 1)
