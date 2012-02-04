@@ -529,6 +529,7 @@ class Blokus : Window
       {
          if(flash)
             Window::Flash();
+         flash = false;
          return true;
       }
    };
