@@ -5,19 +5,11 @@ class ToolTipsDemo : Window
    text = "Tool Tips Demo";
    background = activeBorder;
    borderStyle = sizable;
-   hasMaximize = true;
-   hasMinimize = true;
    nativeDecorations = true;
    tabCycle = true;
    hasClose = true;
    font = { "Arial", 14 };
    size = { 400, 300 };
-
-   bool OnKeyDown(Key key, unichar ch)
-   {
-      if(key == escape) Destroy(0);
-      return true;
-   }
 
    Button button1
    {
