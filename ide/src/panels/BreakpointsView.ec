@@ -46,7 +46,8 @@ class BreakpointsView : Window
             else
             {
                ide.workspace.RemoveBreakpoint((Breakpoint)row.tag);
-               listBox.DeleteRow(null);
+               // This is already done by Workspace::RemoveBreakpoint!
+               // listBox.DeleteRow(null);
             }
          }
          else if(listBox.currentField == ignoreField || listBox.currentField == levelField)
