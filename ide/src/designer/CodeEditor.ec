@@ -1561,7 +1561,7 @@ class CodeEditor : Window
       }
    };
 
-   ListBox paramsList
+   Window paramsList
    {
       master = this, 
       interim = true,
@@ -1581,7 +1581,7 @@ class CodeEditor : Window
             Destroy(0);
             editor.membersListShown = false;
          }
-         return ListBox::OnActivate(active, previous, goOnWithActivation, direct);
+         return Window::OnActivate(active, previous, goOnWithActivation, direct);
       }
 
       bool OnKeyHit(Key key, unichar ch)
