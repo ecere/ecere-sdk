@@ -659,7 +659,8 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
    if(!windowData.ic)
    {
       ch = (byte)Interface::TranslateKey(key, event->state & ShiftMask);
-      if(ch == 128) ch = 0;
+      // 127 is delete, we don't treat that as a character (Use (SmartKey)key == del)
+      if(ch == 128 || ch == 127) ch = 0;
    }
    code = key;
    if(keysym == XK_ISO_Left_Tab)
