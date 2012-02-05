@@ -63,7 +63,7 @@ static void UnusedFunction()
    a.OnCompare(null);
    a.OnSaveEdit(null,0);
    a.OnEdit(null,null,0,0,0,0,0);
-   a.OnDisplay(null,0,0,0,0,0,0);
+   a.OnDisplay(null,0,0,0,0,null,null);
    a.OnGetDataFromString(null);
 }
 
