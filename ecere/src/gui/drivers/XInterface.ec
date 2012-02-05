@@ -688,6 +688,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
    {
       int numBytes;
       if(windowData && windowData.ic) ch = buflength ? UTF8GetChar(buf, &numBytes) : 0;
+      if(ch == 127) ch = 0;
       // printf("Release! %d %d %d\n", keysym, code, ch);
       result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp, code, ch);
    }
@@ -702,6 +703,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
             {
                int numBytes;
                ch = UTF8GetChar(buf + c, &numBytes);
+               if(ch == 127) ch = 0;
                if(!numBytes) c = buflength;
                result = window.KeyMessage((c == 0) ? 
                   __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown : __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit,
@@ -719,6 +721,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
             {
                int numBytes;
                ch = UTF8GetChar(buf + c, &numBytes);
+               if(ch == 127) ch = 0;
                if(!numBytes) c = buflength;
                result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, code, ch);
                c += numBytes;
