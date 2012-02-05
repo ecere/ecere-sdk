@@ -407,8 +407,8 @@ class ScrabbleGame
          for(c = 0; c<MaxPlayers; c++)
          {
             delete scrabbleGame.players[c];
-            gameStarted = false;
          }
+         gameStarted = false;
       }
    }
 }

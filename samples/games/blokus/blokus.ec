@@ -28,7 +28,7 @@ Point corners[PlayerColor] =
 
 define numPieces = 21;
 #ifdef _DEBUG
-define boardSize = 10;
+define boardSize = 20; //10;
 #else
 define boardSize = 20;
 #endif
@@ -598,7 +598,7 @@ class Blokus : Window
 
    bool OnClose(bool parentClosing)
    {
-      if((blokus.gameStarted && !blokus.gameState.over) || hosting)
+      if((gameStarted && !gameState.over) || hosting)
       {
          if(MessageBox { type = okCancel,
             text = "Ecere Blokus", contents = "Quit Ecere Blokus?" }.Modal() == cancel)

@@ -26,6 +26,7 @@ class TextScrollerDemo : Window
          String s = new char[size+1];
          f.Read(s, 1, size);
          scroller.contents = s;
+         delete s;
          delete f;
       }
    }

@@ -6292,14 +6292,13 @@ public:
       //if(created)
       if(this)
       {
-         if(!CloseConfirmation(false)) return false;
+         if(!destroyed && !CloseConfirmation(false)) return false;
          incref this;
          if(DestroyEx(code))
          {
             // TOCHECK: Should autoCreate be set to false here?
             autoCreate = false;
             wasCreated = false;
-            // Is this needed here? DestroyEx should decref already...
             delete this;
             return true;
          }
