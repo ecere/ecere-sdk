@@ -380,7 +380,7 @@ class OptionBox<class Z> : CommonControl
    virtual void FinalizeLoading();
 
    virtual void LoadOption(ProjectOptions options);
-   virtual void RetrieveOption(ProjectOptions options);
+   virtual void RetrieveOption(ProjectOptions options, bool isCfgOrPlt);
    virtual void UnsetOption(ProjectOptions options)
    {
       Z value = (Z)0;
@@ -580,12 +580,12 @@ class OptionBox<class Z> : CommonControl
                c.platforms.Add(p = PlatformOptions { CopyString(platformName) });
 
             if(!p.options) p.options = { };
-            RetrieveOption(p.options);
+            RetrieveOption(p.options, true);
             if(!mergeValues) SetAttribs(1);
             return;
          }
          if(!c.options) c.options = { };
-         RetrieveOption(c.options);
+         RetrieveOption(c.options, true);
          if(!mergeValues) SetAttribs(1);
          return;
       }
@@ -598,13 +598,13 @@ class OptionBox<class Z> : CommonControl
             currentNode.platforms.Add(p = PlatformOptions { CopyString(platformName) });
 
          if(!p.options) p.options = { };
-         RetrieveOption(p.options);
+         RetrieveOption(p.options, true);
          if(!mergeValues) SetAttribs(1);
          return;
       }
 
       if(!currentNode.options) currentNode.options = { };
-      RetrieveOption(currentNode.options);
+      RetrieveOption(currentNode.options, false);
       if(!mergeValues) SetAttribs((currentNode.parent || OptionCheck(currentNode.options)) ? 1 : 0);
    }
 
@@ -696,7 +696,7 @@ class StringOptionBox : OptionBox<String>
       textHorzScroll = true;
    };
 
-   void RetrieveOption(ProjectOptions options)
+   void RetrieveOption(ProjectOptions options, bool isCfgOrPlt)
    {
       String * string = (String*)((byte *)options + option);
       if(*string) delete *string;
@@ -743,7 +743,7 @@ class PathOptionBox : OptionBox<String>
       }
    };
 
-   void RetrieveOption(ProjectOptions options)
+   void RetrieveOption(ProjectOptions options, bool isCfgOrPlt)
    {
       String * string = (String*)((byte *)options + option);
       String slashPath = ((PathBox)editor).slashPath;
@@ -781,7 +781,7 @@ class MultiStringOptionBox : OptionBox<Array<String>>
 
    Array<String> tempStrings;
 
-   void RetrieveOption(ProjectOptions options)
+   void RetrieveOption(ProjectOptions options, bool isCfgOrPlt)
    {
       Array<String> newStrings = GetStrings();
       Array<String> * strings = (Array<String>*)((byte *)options + option);
@@ -997,10 +997,11 @@ class BoolOptionBox : OptionBox<SetBool>
       return *(SetBool*)((byte *)options + option) == true;
    }
 
-   void RetrieveOption(ProjectOptions options)
+   void RetrieveOption(ProjectOptions options, bool isCfgOrPlt)
    {
       bool checked = ((Button)editor).checked;
-      *(SetBool*)((byte *)options + option) = checked ? true : (currentNode.parent ? false : unset);
+      *(SetBool*)((byte *)options + option) = checked ? true : 
+         ((currentNode.parent || isCfgOrPlt) ? false : unset);
    }
 
    void LoadOption(ProjectOptions options)
@@ -1027,7 +1028,7 @@ class DropOptionBox : OptionBox
       dropBox.currentRow = value ? dropBox.FindRow((int)value) : dropBox.firstRow;
    }
 
-   void RetrieveOption(ProjectOptions options)
+   void RetrieveOption(ProjectOptions options, bool isCfgOrPlt)
    {
       DropBox dropBox = (DropBox)editor;
       DataRow row = dropBox.currentRow;

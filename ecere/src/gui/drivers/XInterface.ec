@@ -1,7 +1,7 @@
 namespace gui::drivers;
 
 import "instance"
-#ifndef ECERE_VANILLA
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
 import "OpenGLDisplayDriver"
 #endif
 
@@ -1807,7 +1807,7 @@ class XInterface : Interface
       attributes.override_redirect = window.interim ? True : False;
       attributes.event_mask = EVENT_MASK;
       //printf("%s\n", guiApp.defaultDisplayDriver);
-#ifndef ECERE_VANILLA
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
       if(window.dispDriver == class(OpenGLDisplayDriver) || !strcmp(guiApp.defaultDisplayDriver, "OpenGL"))
       {
          int samples;

@@ -274,14 +274,23 @@
             "PreprocessorDefinitions" : [
                "BUILDING_ECERE_COM",
                "ECERE_STATIC",
-               "ECERE_NOBLENDING",
-               "ECERE_NO3D",
-               "ECERE_NODINPUT",
-               "ECERE_NOTRUETYPE"
+               "ECERE_NO3D"
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereWSMS"
-         }
+         },
+         "Platforms" : [
+            {
+               "Name" : "win32",
+               "Options" : {
+                  "PreprocessorDefinitions" : [
+                     "ECERE_NOTRUETYPE",
+                     "ECERE_NOBLENDING",
+                     "ECERE_NODINPUT"
+                  ]
+               }
+            }
+         ]
       }
    ],
    "Files" : [
@@ -658,12 +667,6 @@
                            },
                            "Configurations" : [
                               {
-                                 "Name" : "WSMS",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              },
-                              {
                                  "Name" : "Bootstrap",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
@@ -671,6 +674,17 @@
                               },
                               {
                                  "Name" : "Vanilla",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "WSMS",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
