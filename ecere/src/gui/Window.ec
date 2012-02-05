@@ -9348,9 +9348,11 @@ public class CommonControl : Window
       property_category "Appearance"
       set
       {
+         if(created) CommonControl::OnDestroy();
          delete toolTip;
          toolTip = value ? ToolTip { tip = value; } : null;
          incref toolTip;
+         if(created) CommonControl::OnCreate();
       }
       get { return toolTip ? toolTip.tip : null; }
    }
