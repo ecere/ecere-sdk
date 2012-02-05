@@ -1364,6 +1364,7 @@ class XInterface : Interface
                   XButtonEvent * event = (XButtonEvent *) thisEvent;
                   uint button;
                   uint buttonMask;
+                  int x = event->x_root, y = event->y_root;
                   if(event->button == Button1)
                   {
                      button = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp;
@@ -1386,9 +1387,18 @@ class XInterface : Interface
                   if(event->state & Button1Mask)   keyFlags.left = true;
                   if(event->state & Button2Mask)   keyFlags.middle = true;
                   if(event->state & Button3Mask)   keyFlags.right = true;
+                  if(guiApp.windowCaptured && guiApp.windowCaptured != window)
+                  {
+                     // X hasn't noticed the capture yet, so fix it!
+                     x += window.absPosition.x;
+                     y += window.absPosition.x;
+                     window = guiApp.windowCaptured;
+                     x -= window.absPosition.x;
+                     y -= window.absPosition.y;
+                  }
                   //*XUnlockDisplay(xGlobalDisplay);
                   incref window;
-                  window.MouseMessage(button, event->x_root, event->y_root, &keyFlags, false, false);
+                  window.MouseMessage(button, x, y, &keyFlags, false, false);
                   delete window;
                   //*if(xGlobalDisplay) XLockDisplay(xGlobalDisplay);
                   break;
