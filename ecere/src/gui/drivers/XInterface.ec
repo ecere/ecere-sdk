@@ -1391,8 +1391,8 @@ class XInterface : Interface
                   {
                      // X hasn't noticed the capture yet, so fix it!
                      x += window.absPosition.x;
-                     y += window.absPosition.x;
-                     window = guiApp.windowCaptured;
+                     y += window.absPosition.y;
+                     window = guiApp.windowCaptured.rootWindow;
                      x -= window.absPosition.x;
                      y -= window.absPosition.y;
                   }
