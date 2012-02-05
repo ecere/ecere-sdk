@@ -67,7 +67,8 @@ import "XDisplayDriver"
 // These are the events we care about
 #define EVENT_MASK StructureNotifyMask | \
       ButtonPressMask | ButtonReleaseMask | PointerMotionMask | \
-      KeyPressMask | KeyReleaseMask | ExposureMask | FocusChangeMask
+      KeyPressMask | KeyReleaseMask | ExposureMask | FocusChangeMask | \
+      PropertyChangeMask
 
 void * xGlobalDisplay;
 static XIM im;
@@ -92,7 +93,18 @@ static XEvent xEvent;
 static int joystickFD[4];
 static X11Window activeWindow;
 
-static enum AtomIdents {clipboard, multiple, targets, utf8_string, wm_delete_window, wm_hints, wm_name, wm_protocols, wm_state, wm_take_focus, wm_transient_for, _motif_wm_hints, _net_active_window, _net_current_desktop, _net_number_of_desktops, _net_wm_icon, _net_wm_name, _net_wm_pid, _net_wm_state, _net_wm_state_demands_attention, _net_wm_state_hidden, _net_wm_user_time, _net_wm_window_type, _net_wm_window_type_desktop, _net_wm_window_type_dialog, _net_wm_window_type_dock, _net_wm_window_type_dropdown_menu, _net_wm_window_type_menu, _net_wm_window_type_normal, _net_wm_window_type_popup_menu, _net_wm_window_type_splash, _net_wm_window_type_toolbar, _net_wm_window_type_utility, _net_workarea, app_selection };
+static enum AtomIdents
+{
+   clipboard, multiple, targets, utf8_string, wm_delete_window, wm_hints, wm_name, wm_protocols, wm_state, wm_take_focus, wm_transient_for,
+   _motif_wm_hints,
+   _net_active_window, _net_current_desktop, _net_number_of_desktops, _net_wm_icon, _net_wm_name, _net_wm_pid,
+   _net_wm_state, _net_wm_state_demands_attention, _net_wm_state_hidden, _net_wm_user_time, _net_wm_window_type,
+   _net_wm_window_type_desktop, _net_wm_window_type_dialog, _net_wm_window_type_dock, _net_wm_window_type_dropdown_menu,
+   _net_wm_window_type_menu, _net_wm_window_type_normal, _net_wm_window_type_popup_menu, _net_wm_window_type_splash,
+   _net_wm_window_type_toolbar, _net_wm_window_type_utility, _net_workarea, _net_frame_extents, _net_request_frame_extents,
+   _net_wm_state_maximized_vert, _net_wm_state_maximized_horz, _net_wm_state_hidden,
+   app_selection
+};
 
 static Atom atoms[AtomIdents];
 
@@ -131,6 +143,11 @@ static const char *atomNames[AtomIdents] = {
    "_NET_WM_WINDOW_TYPE_TOOLBAR", //_net_wm_window_type_toolbar
    "_NET_WM_WINDOW_TYPE_UTILITY", //_net_wm_window_type_utility
    "_NET_WORKAREA",  //_net_workarea
+   "_NET_FRAME_EXTENTS", // _net_frame_extents
+   "_NET_REQUEST_FRAME_EXTENTS", // _net_request_frame_extents
+   "_NET_WM_STATE_MAXIMIZED_VERT", // _net_wm_state_maximized_vert
+   "_NET_WM_STATE_MAXIMIZED_HORZ", // _net_wm_state_maximized_horz
+   "_NET_WM_STATE_HIDDEN", // _net_wm_state_hidden
    "APP_SELECTION"
 };
 
@@ -149,7 +166,21 @@ public:
    XVisualInfo * visual;
    XIC ic;
    bool laterFocus;
+   // Decorations Size
+   Box decor;
+   bool gotFrameExtents;
 };
+
+bool XGetBorderWidths(Window window, Box box)
+{
+   XWindowData windowData = window.windowData;
+   if(windowData)
+   {
+      box = windowData.decor;
+      return true;
+   }
+   return false;
+}
 
 static Visual * FindFullColorVisual(X11Display *dpy, int * depth)
 {
@@ -1239,6 +1270,7 @@ class XInterface : Interface
          XFindContext(xGlobalDisplay, thisEvent->window, windowContext, (XPointer *) &window);
          if(window)
          {
+            XWindowData windowData = window.windowData;
             static uint lastKeyCode = 0;
             switch(thisEvent->type)
             {
@@ -1295,6 +1327,7 @@ class XInterface : Interface
                   bool doubleClick;
                   uint button, buttonDouble, whichButton;
                   uint buttonMask;
+                  int x = event->x_root, y = event->y_root;
 
                   if(event->button == Button1)
                   {
@@ -1349,14 +1382,14 @@ class XInterface : Interface
                   {
                      if(doubleClick)
                      {
-                        if(!window.MouseMessage(buttonDouble, event->x_root, event->y_root, &keyFlags, false, true))
+                        if(!window.MouseMessage(buttonDouble, x, y, &keyFlags, false, true))
                         {
                            //*if(xGlobalDisplay) XLockDisplay(xGlobalDisplay);
                            delete window;
                            break;
                         }
                      }
-                     window.MouseMessage(button, event->x_root, event->y_root, &keyFlags, false, /*doubleClick? false : */true);
+                     window.MouseMessage(button, x, y, &keyFlags, false, /*doubleClick? false : */true);
                   }
                   //*if(xGlobalDisplay) XLockDisplay(xGlobalDisplay);
                   delete window;
@@ -1415,7 +1448,8 @@ class XInterface : Interface
                   // if(event->time - lastTime > 15)
                   {
                      Modifiers keyFlags = 0;
-                     
+                     int x = event->x_root, y = event->y_root;
+
                      if(event->state & ShiftMask)     keyFlags.shift = true;
                      if(event->state & ControlMask)   keyFlags.ctrl = true;
                      if(event->state & Mod1Mask)      keyFlags.alt = true;
@@ -1625,8 +1659,62 @@ class XInterface : Interface
                   //if(event->x - desktopX != window.position.x || event->y - desktopY != window.position.y || event->width != window.size.w || event->height != window.size.h)
 
                   // TODO: Support _NET_REQUEST_FRAME_EXTENTS message / _NET_FRAME_EXTENTS property for decoration size awareness
+                  if(window.nativeDecorations)
+                  {
+                     int format, len, fill;
+                     Atom type;
+                     char * data = null;
+                     if(XGetWindowProperty(xGlobalDisplay, (uint)window.systemHandle, atoms[_net_wm_state], 0, 32, False,
+                            XA_ATOM, &type, &format, &len, &fill, &data) == Success)
+                     {
+                        bool maxVert = false, maxHorz = false, isMinimized = false;
+                        Atom * hints = (Atom *)data;
+                        int c;
+                        for(c = 0; c < len && hints[c]; c++)
+                        {
+                           if(hints[c] == atoms[_net_wm_state_maximized_vert])
+                              maxVert = true;
+                           else if(hints[c] == atoms[_net_wm_state_maximized_horz])
+                              maxHorz = true;
+                           else if(hints[c] == atoms[_net_wm_state_hidden])
+                              isMinimized = true;
+                        }
+                        XFree(data);
 
-                  window.ExternalPosition(event->x - desktopX, event->y - desktopY, event->width, event->height);
+                        if(maxVert && maxHorz)
+                        {
+                           if(window.state != maximized)
+                              window.state = maximized;
+                        }
+                        else if(isMinimized)
+                        {
+                           if(window.state != minimized)
+                              window.state = minimized;
+                        }
+                        else if(window.state != normal)
+                           window.state = normal;
+                     }
+                  }
+                  {
+                     int x = event->x - desktopX;
+                     int y = event->y - desktopY;
+                     int w = event->width, h = event->height;
+                     if(window.nativeDecorations)
+                     {
+
+                        x -= windowData.decor.left;
+                        y -= windowData.decor.top;
+                        w += windowData.decor.left + windowData.decor.right;
+                        h += windowData.decor.top + windowData.decor.bottom;
+                        /*
+                        x -= window.clientStart.x;
+                        y -= window.clientStart.y - (window.hasMenuBar ? skinMenuHeight : 0);
+                        w += window.size.w - window.clientSize.w;
+                        h += window.size.h - window.clientSize.h;
+                        */
+                     }
+                     window.ExternalPosition(x, y, w, h);
+                  }
                   break;
                }
                case ClientMessage:
@@ -1736,6 +1824,49 @@ class XInterface : Interface
                         incref lastActive;
                      }
                      delete window;
+                  }
+                  break;
+               }
+               case PropertyNotify:
+               {
+                  XPropertyEvent * event = (XPropertyEvent *) thisEvent;
+                  if(event->atom == atoms[_net_frame_extents] &&
+                    event->state == PropertyNewValue && window.windowData)
+                  {
+                     int format, len, fill;
+                     Atom type;
+                     char * data = null;
+
+                     if(XGetWindowProperty(xGlobalDisplay, (uint)window.windowHandle,
+                        atoms[_net_frame_extents], 0, 4,
+                         False, XA_CARDINAL, &type, &format, &len,
+                         &fill, &data) == Success && data)
+                     {
+                        int *extents = (int *)data;
+                        XWindowData windowData = window.windowData;
+                        bool hadFrameExtents = windowData.gotFrameExtents;
+                        windowData.decor =
+                        {
+                           left = extents[0], right  = extents[1],
+                           top  = extents[2], bottom = extents[3]
+                        };
+                        windowData.gotFrameExtents = true;
+                        {
+                           int x, y, w, h;
+                           window.ComputeAnchors(
+                              window.normalAnchor,
+                              window.normalSizeAnchor,
+                              &x, &y, &w, &h);
+                           if(!hadFrameExtents) // || window.state == normal)
+                           {
+                              bool isMaximized = window.state == maximized;
+                              window.Position(x, y, w, h, true, true, true, true, false, true);
+                              UpdateRootWindow(window);
+                           }
+                        }
+
+                        XFree(data);
+                     }
                   }
                   break;
                }
@@ -2097,6 +2228,22 @@ class XInterface : Interface
             GrabModeAsync, restrictedWindow ? confineWindow : None, fullScreenMode ? nullCursor : None, CurrentTime);
          XUngrabPointer(xGlobalDisplay, CurrentTime);
       }
+
+      if(window.nativeDecorations)
+      {
+         // Maximize / Restore the window
+         XClientMessageEvent event = { 0 };
+         event.type = ClientMessage;
+         event.message_type = atoms[_net_request_frame_extents];
+         event.display = xGlobalDisplay;
+         event.serial = 0;
+         event.window = (uint)windowHandle;
+         event.send_event = 1;
+         window.windowHandle = (void *)windowHandle;
+         event.format = 32;
+         XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false,
+            SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
+      }
       return (void *)windowHandle;
    }
 
@@ -2140,7 +2287,7 @@ class XInterface : Interface
    void PositionRootWindow(Window window, int x, int y, int w, int h, bool move, bool resize)
    {
       //Logf("Position root window %s\n", window.name);
-      if(!window.parent || !window.parent.display)
+      if(window.windowHandle && (!window.parent || !window.parent.display))
       {
 #if defined(__APPLE__)
          bool visible = window.visible;
@@ -2152,6 +2299,13 @@ class XInterface : Interface
 #endif
          if(window.state == minimized) return;
 
+         if(window.nativeDecorations)
+         {
+            XWindowData windowData = window.windowData;
+            if(!windowData.gotFrameExtents || window.state == maximized) return;
+            w -= window.size.w - window.clientSize.w;
+            h -= window.size.h - window.clientSize.h;
+         }
          if(move && resize)
             XMoveResizeWindow(xGlobalDisplay, (int)window.windowHandle, x + desktopX, y + desktopY, w, h);
          else if(move)
@@ -2259,8 +2413,35 @@ class XInterface : Interface
             }
             else
             {
-               XMoveResizeWindow(xGlobalDisplay, 
-                  (int)window.windowHandle, window.position.x + desktopX, window.position.y + desktopY, window.size.w, window.size.h);
+               if(!window.nativeDecorations || (!((XWindowData)window.windowData).gotFrameExtents && window.state == maximized)) //((XWindowData)window.windowData).gotFrameExtents && (!window.nativeDecorations || window.state == state))
+               {
+                  // With native decorations, we do it the first time
+                  // or the WM (Gnome) is sticking it to the top/right!
+                  XMoveResizeWindow(xGlobalDisplay, 
+                     (int)window.windowHandle,
+                     window.position.x + desktopX,
+                     window.position.y + desktopY,
+                     window.nativeDecorations ? window.clientSize.w : window.size.w,
+                     window.nativeDecorations ? window.clientSize.h : window.size.h);
+                  UpdateRootWindow(window);
+               }
+               if(window.nativeDecorations)
+               {
+                  // Maximize / Restore the window
+                  XClientMessageEvent event = { 0 };
+                  event.type = ClientMessage;
+                  event.message_type = atoms[_net_wm_state];
+                  event.display = xGlobalDisplay;
+                  event.serial = 0;
+                  event.window = (uint)window.windowHandle;
+                  event.send_event = 1;
+                  event.format = 32;
+                  event.data.l[0] = (state == maximized) ? 1 : 0;
+                  event.data.l[1] = atoms[_net_wm_state_maximized_vert];
+                  event.data.l[2] = atoms[_net_wm_state_maximized_horz];
+                  XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false,
+                     SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
+               }
             }
          }
          else

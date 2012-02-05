@@ -1622,6 +1622,8 @@ private:
       SetPosition(x, y, w, h, true, modifyArea, updateScrollBars);
 
       clientResized = oldCW != clientSize.w || oldCH != clientSize.h || force;
+      if(clientResized && this == rootWindow && nativeDecorations)
+         windowResized = true;
 
       if(display && rootWindow != this)
          Update(null);

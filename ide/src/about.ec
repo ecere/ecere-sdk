@@ -9,10 +9,11 @@ class AboutIDE : Window
    nativeDecorations = true;
    text = "About the Ecere SDK";
    borderStyle = fixed;
-   size = { 440, 240 };
+   hasClose = true;
+   clientSize = { 440, 220 };
 
-   Label { this, text = "Ecere Software Development Kit   0.44pre-2010-09-05", font = { "Tahoma", 8.25f, bold = true }, position = { 16, 112 } };
-   Label { this, text = "Copyright (c) 1996-2010 Ecere Corporation", font = { "Tahoma", 8.25f, bold = true }, position = { 16, 128 } };
+   Label { this, text = "Ecere Software Development Kit   0.44pre1.x", font = { "Tahoma", 8.25f, bold = true }, position = { 16, 112 } };
+   Label { this, text = "Copyright (c) 1996-2012 Ecere Corporation", font = { "Tahoma", 8.25f, bold = true }, position = { 16, 128 } };
    Label { this, text = "Design & Implementation", font = { "Tahoma", 8.25f, bold = true }, position = { 16, 152 } };
    Label { this, text = "Jérôme Jacovella-St-Louis", position = { 192, 152 } };
    Label { this, text = "Contributors", font = { "Tahoma", 8.25f, bold = true }, position = { 16, 176 } };

@@ -1,5 +1,3 @@
-namespace gui::skins;
-
 #if defined(WIN32)
 #define WIN32_LEAN_AND_MEAN
 #define Method _Method
@@ -8,6 +6,12 @@ namespace gui::skins;
 #endif
 
 import "Window"
+
+#if !defined(WIN32)
+bool gui::drivers::XGetBorderWidths(Window window, Box box);
+#endif
+
+namespace gui::skins;
 
 #define BORDER       4
 #define TOP          4
@@ -169,6 +173,11 @@ public class WindowsSkin_Window : Window
          *h += (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
 
          // PrintLn(_class.name, " is at l = ", rcWindow.left, ", r = ", rcWindow.right);
+#else
+         Box widths;
+         XGetBorderWidths(this, widths);
+         *w += widths.left + widths.right;
+         *h += widths.top + widths.bottom;
 #endif
          return;
       }
@@ -249,6 +258,11 @@ public class WindowsSkin_Window : Window
          GetWindowRect(windowHandle, &rcWindow);
          *x += client00.x - rcWindow.left;
          *y += client00.y - rcWindow.top;
+#else
+         Box widths;
+         XGetBorderWidths(this, widths);
+         *x += widths.left;
+         *y += widths.top;
 #endif
       }
       else
