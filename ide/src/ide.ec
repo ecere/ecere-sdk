@@ -52,6 +52,39 @@ define pathListSep = ";";
 define pathListSep = ":";
 #endif
 
+define maxPathLen = 65 * MAX_LOCATION;
+
+class PathBackup : struct
+{
+   String oldLDPath;
+   String oldPath;
+
+   PathBackup()
+   {
+      oldPath = new char[maxPathLen];
+      oldLDPath = new char[maxPathLen];
+
+      GetEnvironment("PATH", oldPath, maxPathLen);
+#if defined(__APPLE__)
+      GetEnvironment("DYLD_LIBRARY_PATH", oldLDPath, maxPathLen);
+#else
+      GetEnvironment("LD_LIBRARY_PATH", oldLDPath, maxPathLen);
+#endif
+   }
+
+   ~PathBackup()
+   {
+      SetEnvironment("PATH", oldPath);
+#if defined(__APPLE__)
+      SetEnvironment("DYLD_LIBRARY_PATH", oldLDPath);
+#else
+      SetEnvironment("LD_LIBRARY_PATH", oldLDPath);
+#endif
+      delete oldPath;
+      delete oldLDPath;
+   }
+};
+
 enum OpenCreateIfFails { no, yes, something, whatever };
 enum OpenMethod { normal, add };
 
@@ -2185,7 +2218,7 @@ class IDE : Window
       int c, len, count;
       char * newList;
       char * oldPaths[128];
-      char oldList[MAX_LOCATION * 128];
+      String oldList = new char[maxPathLen];
       Array<String> newExePaths { };
       //Map<String, bool> exePathExists { };
       bool found = false;
@@ -2260,7 +2293,7 @@ class IDE : Window
             newExePaths.Add(CopySystemPath(item));
       }
 
-      GetEnvironment("PATH", oldList, sizeof(oldList));
+      GetEnvironment("PATH", oldList, maxPathLen);
 /*#ifdef _DEBUG
       printf("Old value of PATH: %s\n", oldList);
 #endif*/
@@ -2312,9 +2345,9 @@ class IDE : Window
       }
 
 #if defined(__APPLE__)
-      GetEnvironment("DYLD_LIBRARY_PATH", oldList, sizeof(oldList));
+      GetEnvironment("DYLD_LIBRARY_PATH", oldList, maxPathLen);
 #else
-      GetEnvironment("LD_LIBRARY_PATH", oldList, sizeof(oldList));
+      GetEnvironment("LD_LIBRARY_PATH", oldList, maxPathLen);
 #endif
 /*#ifdef _DEBUG
       printf("Old value of [DY]LD_LIBRARY_PATH: %s\n", oldList);
@@ -2358,6 +2391,7 @@ class IDE : Window
          SetEnvironment("DISTCC_HOSTS", compiler.distccHosts);
 
       delete compiler;
+      delete oldList;
    }
 
    void DestroyTemporaryProjectDir()

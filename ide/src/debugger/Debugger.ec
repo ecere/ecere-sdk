@@ -1809,11 +1809,9 @@ class Debugger
       char oldDirectory[MAX_LOCATION];
       char tempPath[MAX_LOCATION];
       char command[MAX_LOCATION];
-      char oldPath[MAX_LOCATION * 65];
       Project project = ide.project;
       DirExpression targetDirExp = project.targetDir;
-
-      GetEnvironment("PATH", oldPath, sizeof(oldPath));
+      PathBackup pathBackup { };
 
       prjConfig = project.config;
 
@@ -1948,7 +1946,8 @@ class Debugger
       }
 
       ChangeWorkingDir(oldDirectory);
-      SetEnvironment("PATH", oldPath);
+
+      delete pathBackup;
 
       if(!result)
          GdbExit();

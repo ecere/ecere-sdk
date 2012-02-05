@@ -1447,15 +1447,13 @@ private:
       char makeTarget[MAX_LOCATION] = "";
       char makeFile[MAX_LOCATION];
       char makeFilePath[MAX_LOCATION];
-      char oldPath[MAX_LOCATION * 65];
       char configName[MAX_LOCATION];
       CompilerConfig compiler = GetCompilerConfig();
       DirExpression objDirExp = objDir;
+      PathBackup pathBackup { };
 
       int numJobs = compiler.numJobs;
       char command[MAX_LOCATION];
-
-      GetEnvironment("PATH", oldPath, sizeof(oldPath));
 
       strcpy(configName, this.configName);
       
@@ -1527,7 +1525,7 @@ private:
             ide.outputView.buildBox.Logf("Error executing make (%s) command\n", compiler.makeCommand);
       }
 
-      SetEnvironment("PATH", oldPath);
+      delete pathBackup;
 
       delete objDirExp;
       delete compiler;
@@ -1536,14 +1534,12 @@ private:
 
    void Clean()
    {
-      char oldPath[MAX_LOCATION * 65];
       char makeFile[MAX_LOCATION];
       char makeFilePath[MAX_LOCATION];
       char command[MAX_LOCATION];
       DualPipe f;
       CompilerConfig compiler = GetCompilerConfig();
-
-      GetEnvironment("PATH", oldPath, sizeof(oldPath));
+      PathBackup pathBackup { };
 
       SetPath(false);
 
@@ -1582,18 +1578,17 @@ private:
          }
       }
 
-      SetEnvironment("PATH", oldPath);
+      delete pathBackup;
       delete compiler;
    }
 
    void Run(char * args)
    {   
-      char target[MAX_LOCATION * 65], oldDirectory[MAX_LOCATION];
-      char oldPath[MAX_LOCATION * 65];
+      String target = new char[maxPathLen];
+      char oldDirectory[MAX_LOCATION];
       DirExpression targetDirExp = targetDir;
       CompilerConfig compiler = GetCompilerConfig();
-
-      GetEnvironment("PATH", oldPath, sizeof(oldPath));
+      PathBackup pathBackup { };
 
       // Build(project, ideMain, true, null);
 
@@ -1632,10 +1627,11 @@ private:
          Execute(target);
 
       ChangeWorkingDir(oldDirectory);
-      SetEnvironment("PATH", oldPath);
+      delete pathBackup;
 
       delete targetDirExp;
       delete compiler;
+      delete target;
    }
 
    void Compile(ProjectNode node)
@@ -1672,8 +1668,8 @@ private:
       char filePath[MAX_LOCATION];
       char makeFile[MAX_LOCATION];
       CompilerConfig compiler = GetCompilerConfig();
-      /*char oldPath[MAX_LOCATION * 65];
-      char oldDirectory[MAX_LOCATION];*/
+      // PathBackup pathBackup { };
+      // char oldDirectory[MAX_LOCATION];
       File f = null;
 
       if(!altMakefilePath)
@@ -1693,8 +1689,7 @@ private:
 #endif
       f = FileOpen(altMakefilePath ? altMakefilePath : filePath, write);
 
-      /*GetEnvironment("PATH", oldPath, sizeof(oldPath));
-      SetPath(false);
+      /*SetPath(false);
       GetWorkingDir(oldDirectory, MAX_LOCATION);
       ChangeWorkingDir(topNode.path);*/
 
@@ -2338,8 +2333,8 @@ private:
          result = true;
       }
 
-      /*ChangeWorkingDir(oldDirectory);
-      SetEnvironment("PATH", oldPath);*/
+      // ChangeWorkingDir(oldDirectory);
+      // delete pathBackup;
 
       if(config)
          config.makingModified = false;

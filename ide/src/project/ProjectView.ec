@@ -1401,7 +1401,7 @@ class ProjectView : Window
 
    bool Run(MenuItem selection, Modifiers mods)
    {
-      char args[MAX_LOCATION * 64];
+      String args = new char[maxPathLen];
       args[0] = '\0';
       if(ide.workspace.commandLineArgs)
          //ide.debugger.GetCommandLineArgs(args);
@@ -1412,6 +1412,7 @@ class ProjectView : Window
          MessageBox { master = ide, type = ok, text = "Run", contents = "Shared and static libraries cannot be run like executables." }.Modal();*/
       else if(BuildInterrim(project, run))
          project.Run(args);
+      delete args;
       return true;
    }
 
@@ -1432,10 +1433,9 @@ class ProjectView : Window
             {
                //bool result = false;
                char oldwd[MAX_LOCATION];
-               char oldPath[MAX_LOCATION * 65];
+               PathBackup pathBackup { };
                char command[MAX_LOCATION];
 
-               GetEnvironment("PATH", oldPath, sizeof(oldPath));
                ide.SetPath(false); //true
                
                GetWorkingDir(oldwd, sizeof(oldwd));
@@ -1445,7 +1445,8 @@ class ProjectView : Window
                //ide.outputView.buildBox.Logf("command: %s\n", command);
                Execute(command);
                ChangeWorkingDir(oldwd);
-               SetEnvironment("PATH", oldPath);
+
+               delete pathBackup;
             }
             else
             {

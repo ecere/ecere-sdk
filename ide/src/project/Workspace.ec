@@ -1108,11 +1108,11 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
          {
             int c = 0;
             char s[2] = "";
-            char files[MAX_LOCATION * 16] = "\n";
+            String files = new char[MAX_LOCATION * 16];
             char title[512];
-            char msg[MAX_LOCATION * 16 + 2048];
-
+            String msg = new char[MAX_LOCATION * 16 + 2048];
             NamedItem item;
+            strcpy(files,"\n");
 
             item = openedFilesNotFound.first;
             if(item.next)
@@ -1134,6 +1134,9 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
             sprintf(msg, "The following file%s could not be re-opened.%s", s, files);
             
             MessageBox { type = ok, master = ide, contents = msg, text = title }.Modal();
+
+            delete files;
+            delete msg;
          }
          openedFilesNotFound.Free(OldLink::Free);
       }
