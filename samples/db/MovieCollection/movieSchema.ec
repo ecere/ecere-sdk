@@ -30,8 +30,10 @@ class MovieCollectionApp : GuiApplication
    {
       SetDefaultIdField("ID");
       SetDefaultNameField("Name");
-      ds = DataSource { driver = "SQLite" };
-      db = database_open(ds, "collection");
+      //ds = DataSource { driver = "SQLite" };
+      //db = database_open(ds, "collection");
+      ds = DataSource { driver = "Oracle", host = "localhost", port = "1521", user = "test", pass = "test" };
+      db = database_open(ds, "xe");
    }
    ~MovieCollectionApp()
    {

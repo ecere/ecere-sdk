@@ -1,0 +1,51 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "EDAOracle",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "SharedLibrary",
+      "TargetFileName" : "EDAOracle",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "IncludeDirs" : [
+               "C:/oraclexe/app/oracle/product/11.2.0/server/oci/include"
+            ],
+            "Libraries" : [
+               "ecere",
+               "oci"
+            ],
+            "LinkerOptions" : [
+
+            ],
+            "LibraryDirs" : [
+               "C:/oraclexe/app/oracle/product/11.2.0/server/bin"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "EDAOracle.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

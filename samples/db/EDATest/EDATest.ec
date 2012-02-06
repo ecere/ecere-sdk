@@ -69,6 +69,15 @@ class EDABetterTestForm : Window
             nameDb.contents = "mysql";
             groupDs.disabled = false;
          }
+         else if (!strcmp(select, "Oracle"))
+         {
+            host.contents = "localhost";
+            username.contents = "test";
+            password.contents = "test";
+            port.contents = "1521";
+            nameDb.contents = "xe";
+            groupDs.disabled = false;
+         }
          return true;
       }
 
@@ -82,8 +91,9 @@ class EDABetterTestForm : Window
          AddString("MemoryEDB");
          AddString("MySQL");
          AddString("PostgreSQL");
-         SelectRow(AddString("SQLite"));
+         AddString("SQLite");
          AddString("SQLiteCipher");
+         SelectRow(AddString("Oracle"));
 
          return true;
       }
