@@ -70,60 +70,12 @@ int OracleExecuteNonQuery(OCIEnv* env, OCISvcCtx* svc, String command)
    r = OCIStmtExecute(svc, stmt, err, 1, 0,
       (OCISnapshot *) 0, (OCISnapshot *) 0, OCI_COMMIT_ON_SUCCESS);
    
+   OCIStmtRelease(stmt, err, (OraText *)NULL, 0, OCI_DEFAULT);
+
    if (err) OCIHandleFree(err, OCI_HTYPE_ERROR);
    if (stmt) OCIHandleFree(stmt, OCI_HTYPE_STMT);
 
    return r;
-}
-
-// Converts a hexadecimal string to integer
-int xtoi(const char* xs, unsigned int* result)
-{
- size_t szlen = strlen(xs);
- int i, xv, fact;
-
- if (szlen > 0)
- {
-  // Converting more than 32bit hexadecimal value?
-  if (szlen>8) return 2; // exit
-
-  // Begin conversion here
-  *result = 0;
-  fact = 1;
-
-  // Run until no more character to convert
-  for(i=szlen-1; i>=0 ;i--)
-  {
-   if (isxdigit(*(xs+i)))
-   {
-    if (*(xs+i)>=97)
-    {
-     xv = ( *(xs+i) - 97) + 10;
-    }
-    else if ( *(xs+i) >= 65)
-    {
-     xv = (*(xs+i) - 65) + 10;
-    }
-    else
-    {
-     xv = *(xs+i) - 48;
-    }
-    *result += (xv * fact);
-    fact *= 16;
-   }
-   else
-   {
-    // Conversion was abnormally terminated
-    // by non hexadecimal digit, hence
-    // returning only the converted with
-    // an error value 4 (illegal hex character)
-    return 4;
-   }
-  }
- }
-
- // Nothing to convert
- return 1;
 }
 
 class OracleDataSource : DataSourceDriver
@@ -242,6 +194,9 @@ class OracleField : Field
    int p_sliInt;
    double p_sliFloat;
    OCIDateTime *p_sliDateTime;
+
+   sb2 ind;
+   ub2 len;
 
    ~OracleField()
    {
@@ -429,6 +384,8 @@ class OracleDatabase : Database
             table.fields.Add(field);
          }
 
+         OCIStmtRelease(stmtRows, err, (OraText *)NULL, 0, OCI_DEFAULT);
+
          if (stmtRows) OCIHandleFree(stmtRows, OCI_HTYPE_STMT);   
       }
 
@@ -472,22 +429,6 @@ class OracleTable : Table
    OCIDefine* def;
    OCIDefine* p_dfn;
    char p_sli[1024];  
-
-   void OracleReinitFieldsDataTimeDescriptors()
-   {
-      int r;
-      int i;
-
-      for (i = 0; i < fields.count; i++)
-      {
-         OracleField field = fields[i];
-
-         OCIDescriptorFree(field.p_sliDateTime, OCI_DTYPE_TIMESTAMP_LTZ);
-         r= OCIDescriptorAlloc(db.env,(dvoid **)&field.p_sliDateTime, OCI_DTYPE_TIMESTAMP,
-            0, (dvoid **)0);
-      }
-   }
-
 
    Field AddField(const String fieldName, Class type, int length)
    {
@@ -633,6 +574,8 @@ class OracleTable : Table
       r = OCIStmtExecute(db.svc, stmtCount, err, 1, 0,
          (OCISnapshot *) 0, (OCISnapshot *) 0, OCI_COMMIT_ON_SUCCESS);
 
+      OCIStmtRelease(stmtCount, err, (OraText *)NULL, 0, OCI_DEFAULT);
+
       if (err) OCIHandleFree(err, OCI_HTYPE_ERROR);
       if (stmtCount) OCIHandleFree(stmtCount, OCI_HTYPE_STMT);
 
@@ -711,21 +654,21 @@ class OracleTable : Table
             case SQLT_INT:
             {
                r = OCIDefineByPos(stmt, &field.p_dfn, db.err, i + 1, (dvoid *) &field.p_sliInt,
-                  sizeof(int), SQLT_INT, (dvoid *) 0, (ub2 *)0,
+                  sizeof(int), SQLT_INT, (dvoid *) &field.ind, (ub2 *) &field.len,
                   (ub2 *)0, OCI_DEFAULT);
                break;
             }
             case SQLT_FLT:
             {
                r = OCIDefineByPos(stmt, &field.p_dfn, db.err, i + 1, (dvoid *) &field.p_sliFloat,
-                  sizeof(double), SQLT_FLT, (dvoid *) 0, (ub2 *)0,
+                  sizeof(double), SQLT_FLT, (dvoid *) &field.ind, (ub2 *) &field.len,
                   (ub2 *)0, OCI_DEFAULT);
                break;
             }
             case SQLT_TIMESTAMP_TZ:
             {
                r = OCIDefineByPos(stmt, &field.p_dfn, db.err, i + 1, (dvoid *) &field.p_sliDateTime,
-                  sizeof(field.p_sliDateTime), SQLT_TIMESTAMP_TZ, (dvoid *) 0, (ub2 *)0,
+                  sizeof(field.p_sliDateTime), SQLT_TIMESTAMP_TZ, (dvoid *) &field.ind, (ub2 *) &field.len,
                   (ub2 *)0, OCI_DEFAULT);
                break;
             }
@@ -733,7 +676,7 @@ class OracleTable : Table
             case SQLT_BLOB: // No basic datatype
             {
                r = OCIDefineByPos(stmt, &field.p_dfn, db.err, i + 1, (dvoid *) &field.p_sli,
-                  (sword) 1024, SQLT_STR, (dvoid *) 0, (ub2 *)0,
+                  (sword) 1024, SQLT_STR, (dvoid *) &field.ind, (ub2 *) &field.len,
                   (ub2 *)0, OCI_DEFAULT);
                break;
             }
@@ -782,8 +725,6 @@ class OracleRow : DriverRow
       text errbuf[512];
       ub4 errcode;  
       int i;
-
-      tbl.OracleReinitFieldsDataTimeDescriptors();
 
       switch(move)
       {
@@ -871,8 +812,6 @@ class OracleRow : DriverRow
                   {
                      int64 dataValue = *(int64 *)data;
 
-                     tbl.OracleReinitFieldsDataTimeDescriptors();
-
                      rowID = 1;
                      r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
                      
@@ -882,8 +821,6 @@ class OracleRow : DriverRow
                      }
                      while (r != OCI_NO_DATA)
                      {
-                        tbl.OracleReinitFieldsDataTimeDescriptors();
-
                         r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_NEXT, 0, OCI_DEFAULT);
                         rowID += 1;
                         if (oracleField.p_sliInt == dataValue)
@@ -897,8 +834,6 @@ class OracleRow : DriverRow
                   {
                      int dataValue = *(int *)data;
 
-                     tbl.OracleReinitFieldsDataTimeDescriptors();
-
                      rowID = 1;
                      r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
                      
@@ -908,8 +843,6 @@ class OracleRow : DriverRow
                      }
                      while (r != OCI_NO_DATA)
                      {
-                        tbl.OracleReinitFieldsDataTimeDescriptors();
-
                         r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_NEXT, 0, OCI_DEFAULT);
                         rowID += 1;
                         if (oracleField.p_sliInt == dataValue)
@@ -923,8 +856,6 @@ class OracleRow : DriverRow
                   {
                      uint16 dataValue = *(uint16 *)data;
 
-                     tbl.OracleReinitFieldsDataTimeDescriptors();
-
                      rowID = 1;
                      r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
                      
@@ -934,8 +865,6 @@ class OracleRow : DriverRow
                      }
                      while (r != OCI_NO_DATA)
                      {
-                        tbl.OracleReinitFieldsDataTimeDescriptors();
-
                         r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_NEXT, 0, OCI_DEFAULT);
                         rowID += 1;
                         if (oracleField.p_sliInt == dataValue)
@@ -951,8 +880,6 @@ class OracleRow : DriverRow
                      {
                         double dataValue = *(double *)data;
 
-                        tbl.OracleReinitFieldsDataTimeDescriptors();
-
                         rowID = 1;
                         r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
                         
@@ -962,8 +889,6 @@ class OracleRow : DriverRow
                         }
                         while (r != OCI_NO_DATA)
                         {
-                           tbl.OracleReinitFieldsDataTimeDescriptors();
-
                            r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_NEXT, 0, OCI_DEFAULT);
                            rowID += 1;
                            if (oracleField.p_sliInt == dataValue)
@@ -976,8 +901,6 @@ class OracleRow : DriverRow
                      {
                         float dataValue = *(float *)data;
 
-                        tbl.OracleReinitFieldsDataTimeDescriptors();
-
                         rowID = 1;
                         r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
                         
@@ -987,8 +910,6 @@ class OracleRow : DriverRow
                         }
                         while (r != OCI_NO_DATA)
                         {
-                           tbl.OracleReinitFieldsDataTimeDescriptors();
-
                            r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_NEXT, 0, OCI_DEFAULT);
                            rowID += 1;
                            if (oracleField.p_sliInt == dataValue)
@@ -1006,8 +927,6 @@ class OracleRow : DriverRow
             {
                byte dataValue = *(byte *)data;
 
-               tbl.OracleReinitFieldsDataTimeDescriptors();
-
                rowID = 1;
                r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
                
@@ -1017,8 +936,6 @@ class OracleRow : DriverRow
                }
                while (r != OCI_NO_DATA)
                {
-                  tbl.OracleReinitFieldsDataTimeDescriptors();
-
                   r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_NEXT, 0, OCI_DEFAULT);
                   rowID += 1;
                   if (oracleField.p_sliInt == dataValue)
@@ -1032,8 +949,6 @@ class OracleRow : DriverRow
             {
                char *dataValue = *(char **)data;
 
-               tbl.OracleReinitFieldsDataTimeDescriptors();
-
                rowID = 1;
                r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
                
@@ -1043,8 +958,6 @@ class OracleRow : DriverRow
                }
                while (r != OCI_NO_DATA)
                {
-                  tbl.OracleReinitFieldsDataTimeDescriptors();
-
                   r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_NEXT, 0, OCI_DEFAULT);
                   rowID += 1;
                   if (!strcmp(oracleField.p_sli, dataValue))
@@ -1061,8 +974,6 @@ class OracleRow : DriverRow
                ub1 day;
                Date date = *(Date *)data;
 
-               tbl.OracleReinitFieldsDataTimeDescriptors();
-
                rowID = 1;
                r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
                
@@ -1075,8 +986,6 @@ class OracleRow : DriverRow
                }
                while (r != OCI_NO_DATA)
                {
-                  tbl.OracleReinitFieldsDataTimeDescriptors();
-
                   r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_NEXT, 0, OCI_DEFAULT);
                   OCIDateTimeGetDate(tbl.db.env, tbl.db.err, oracleField.p_sliDateTime,
                      &year, &month, &day);
@@ -1150,6 +1059,8 @@ class OracleRow : DriverRow
 
       OracleExecuteNonQuery(tbl.db.env, tbl.db.svc, command);
       
+      OCIStmtRelease(tbl.stmt, tbl.db.err, (OraText *)NULL, 0, OCI_DEFAULT);
+
       r = OCIStmtExecute(tbl.db.svc, tbl.stmt, tbl.db.err, 0, 0,
          (OCISnapshot *) 0, (OCISnapshot *) 0, OCI_STMT_SCROLLABLE_READONLY); 
       r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_LAST, 0, OCI_DEFAULT);
@@ -1171,6 +1082,8 @@ class OracleRow : DriverRow
       bool deletePrimaryKeyValue = false;
       char command[1024];
       int r;
+      int actualRowID;
+      int numRows;
 
       if (tbl.primaryKey)
       {
@@ -1200,8 +1113,13 @@ class OracleRow : DriverRow
          primaryKeyValue = primaryKeyValueString;
       }
 
+      actualRowID = rowID;
       sprintf(command, "DELETE %s WHERE %s = %s", tableName, primaryKeyName, primaryKeyValue);
       r = OracleExecuteNonQuery(tbl.db.env, tbl.db.svc, command);
+
+      numRows = tbl.GetRowsCount();
+      if (actualRowID > numRows)
+         actualRowID = numRows;
 
       if (deletePrimaryKeyValue)
          delete primaryKeyValue;
@@ -1273,46 +1191,19 @@ class OracleRow : DriverRow
 
             OCIDateTimeGetDate(tbl.db.env, tbl.db.err, sqlFld.p_sliDateTime,
                &year, &month, &day);
-            if (day > 0)
+            if (!sqlFld.ind)
                *(Date *)data = Date { year = year, month = month - 1, day = day };
             break;
          }
          case SQLT_BLOB: // No basic datatype
          {
             SerialBuffer buffer { };
-            char *dataBuffer;
+            buffer._size = sqlFld.len;
+            buffer._buffer = sqlFld.p_sli;
+            buffer.count = buffer._size;
 
-            buffer._size = strlen(sqlFld.p_sli) / 2;
-
-            if (buffer._size > 0)
-            {
-               int i;
-               int x = 0;
-               dataBuffer = new byte[buffer._size];
-               for(i = 0; i < strlen(sqlFld.p_sli); i+=2)
-               {
-                  int h;
-                  char c[3];
-
-                  c[0] = sqlFld.p_sli[i];
-                  c[1] = sqlFld.p_sli[i + 1];
-                  c[2] = '\0';
-
-                  xtoi(c, &h);
-                  dataBuffer[x] = h;
-
-                  x += 1;
-               }
-
-               buffer._buffer = dataBuffer;
-               buffer.count = buffer._size;
-
-               dataType._vTbl[__ecereVMethodID_class_OnUnserialize](dataType, data, buffer);
-
-               delete dataBuffer;
-               dataBuffer = null;
-            }
-
+            dataType._vTbl[__ecereVMethodID_class_OnUnserialize](dataType, data, buffer);
+           
             buffer._buffer = null;
             delete buffer;
             break;
@@ -1421,13 +1312,13 @@ class OracleRow : DriverRow
             day = ecDate->day;
 
             sprintf(date, "%04i-%02i-%02i", year, month, day);
-            
-            sprintf(command, "UPDATE %s SET %s = TO_DATE('%s', 'YYYY-MM-DD') WHERE %s = %s", tableName, fieldName, date, primaryKeyName, primaryKeyValue);
 
-            if ((month > -1) && (month < 13))
-            {
-               r = OracleExecuteNonQuery(tbl.db.env, tbl.db.svc, command);
-            }
+            if (strcmp(date, "0000-00-00"))
+               sprintf(command, "UPDATE %s SET %s = TO_DATE('%s', 'YYYY-MM-DD') WHERE %s = %s", tableName, fieldName, date, primaryKeyName, primaryKeyValue);
+            else
+               sprintf(command, "UPDATE %s SET %s = NULL WHERE %s = %s", tableName, fieldName, primaryKeyName, primaryKeyValue);
+
+            r = OracleExecuteNonQuery(tbl.db.env, tbl.db.svc, command);
             break;
          }
          case SQLT_BLOB: // No basic datatype
@@ -1446,6 +1337,8 @@ class OracleRow : DriverRow
       actualRowID = rowID;
       OracleExecuteNonQuery(tbl.db.env, tbl.db.svc, command);
       
+      OCIStmtRelease(tbl.stmt, tbl.db.err, (OraText *)NULL, 0, OCI_DEFAULT);
+
       r = OCIStmtExecute(tbl.db.svc, tbl.stmt, tbl.db.err, 0, 0,
          (OCISnapshot *) 0, (OCISnapshot *) 0, OCI_STMT_SCROLLABLE_READONLY); 
       r = OCIStmtFetch2(tbl.stmt, tbl.db.err, actualRowID, OCI_FETCH_ABSOLUTE, 0, OCI_DEFAULT);
@@ -1468,8 +1361,6 @@ class OracleRow : DriverRow
       int r;
       int i;
 
-      tbl.OracleReinitFieldsDataTimeDescriptors();
-
       rowID = 1;
       r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
       if (tbl.primaryKey.p_sliInt == id)
@@ -1478,8 +1369,6 @@ class OracleRow : DriverRow
       }
       while (r != OCI_NO_DATA)
       {
-         tbl.OracleReinitFieldsDataTimeDescriptors();
-
          r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_NEXT, 0, OCI_DEFAULT);
          rowID += 1;
          if (tbl.primaryKey.p_sliInt == id)
