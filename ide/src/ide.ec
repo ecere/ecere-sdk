@@ -134,9 +134,11 @@ FileDialog ideFileDialog
    types = fileTypes.array, sizeTypes = fileTypes.count * sizeof(FileType), filters = fileFilters.array, sizeFilters = fileFilters.count * sizeof(FileFilter);
 };
 
+define openProjectFileDialogTitle = $"Open Project";
+define addProjectFileDialogTitle = $"Open Additional Project";
 FileDialog ideProjectFileDialog
 {
-   type = open, text = $"Open Project";
+   type = open;
    types = projectTypes.array, sizeTypes = projectTypes.count * sizeof(FileType), filters = projectFilters.array, sizeFilters = projectFilters.count * sizeof(FileFilter);
 };
 
@@ -642,6 +644,7 @@ class IDE : Window
             if(ideSettings.ideProjectFileDialogLocation)
                ideProjectFileDialog.currentDirectory = ideSettings.ideProjectFileDialogLocation;
 
+            ideProjectFileDialog.text = openProjectFileDialogTitle;
             if(ideProjectFileDialog.Modal() == ok)
             {
                OpenFile(ideProjectFileDialog.filePath, normal, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, normal);
@@ -669,6 +672,7 @@ class IDE : Window
             if(ideSettings.ideProjectFileDialogLocation)
                ideProjectFileDialog.currentDirectory = ideSettings.ideProjectFileDialogLocation;
 
+            ideProjectFileDialog.text = addProjectFileDialogTitle;
             for(;;)
             {
                if(ideProjectFileDialog.Modal() == ok)
@@ -1654,6 +1658,7 @@ class IDE : Window
                      {
                         if(MessageBox { type = yesNo, parent = this, text = $"Error opening project", contents = $"Open a different project?" }.Modal() == yes)
                         {
+                           ideProjectFileDialog.text = openProjectFileDialogTitle;
                            if(ideProjectFileDialog.Modal() == cancel)
                               return null;
                            filePath = ideProjectFileDialog.filePath;
