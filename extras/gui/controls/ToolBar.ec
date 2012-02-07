@@ -2,17 +2,19 @@
 namespace gui::controls;
 import "Window"
 import "Array"
+import "Stacker"
+import "IconBag"
 #else
 #ifdef ECERE_STATIC
-public import static "ecere"
+// TOCHECK: these two import directives will crash the form designer when ToolBar.ec is included in ecere.epj
+//public import static "ecere"
 #else
-public import "ecere"
+//public import "ecere"
 #endif
-#endif
-
 public import "IconBag"
+#endif
 
-public class ToolBar/*<class TT>*/ : Stacker
+public class ToolBar/*<class TT>*/ : public Stacker
 {
    direction = horizontal;
    background = activeBorder;
@@ -27,11 +29,12 @@ public class ToolBar/*<class TT>*/ : Stacker
    clientSize = { h = 32 };
    borderStyle = bevel;
 
-   IconBag/*<TT>*/ iconBag;
-
 public:
 
-   virtual void Window::NotifyToolClick(ToolButton button);
+   IconBag/*<TT>*/ iconBag;
+
+   // Notifications
+   virtual bool Window::NotifyClicked(Button button, int x, int y, Modifiers mods);
 
    /*Label label
    {
@@ -247,15 +250,10 @@ private:
          SetBitmap();
    }
 
-   bool ToolBar::NotifyClicked(ToolButton button, int x, int y, Modifiers mods)
+   bool Window::NotifyClicked(ToolButton button, int x, int y, Modifiers mods)
    {
-      // TOCHECK is this the best way to do this?
-      //or this type of thing?
-      //button.parent._vTbl[__ecereVMethodID_ToolBar_NotifyToolClick](this, button)
-      Window oldThis = this;
-      this = (ToolBar)button.parent;
-      NotifyToolClick(oldThis, button);
-      return true;
+      ToolBar bar = (ToolBar)button.parent;
+      return bar.NotifyClicked(bar.master, button, x,y, mods);
    }
 }
 
@@ -264,15 +262,10 @@ public class ToggleToolButton : ToolButton
    toggle = true;
    size = Size { 24, 24 };
    
-   bool ToolBar::NotifyClicked(ToggleToolButton button, int x, int y, Modifiers mods)
+   bool Window::NotifyClicked(ToggleToolButton button, int x, int y, Modifiers mods)
    {
-      // TOCHECK is this the best way to do this?
-      //or this type of thing?
-      //button.parent._vTbl[__ecereVMethodID_ToolBar_NotifyToolClick](this, button)
-      Window oldThis = this;
-      this = (ToolBar)button.parent;
-      NotifyToolClick(oldThis, button);
-      return true;
+      ToolBar bar = (ToolBar)button.parent;
+      return bar.NotifyClicked(bar.master, button, x,y, mods);
    }
 }
 
@@ -282,23 +275,18 @@ public class GroupToggleToolButton : ToolButton
    size = Size { 24, 24 };
    GroupToggleToolButton * selected;
    
-   bool ToolBar::NotifyClicked(GroupToggleToolButton button, int x, int y, Modifiers mods)
+   bool Window::NotifyClicked(GroupToggleToolButton button, int x, int y, Modifiers mods)
    {
       bool configured = (bool)button.selected;
       bool preselection = (configured && (*button.selected));
       bool reclick = preselection ? (*button.selected == button) : false;
-      // TOCHECK is this the best way to do this?
-      //or this type of thing?
-      //button.parent._vTbl[__ecereVMethodID_ToolBar_NotifyToolClick](this, button)
-      Window oldThis = this;
+      ToolBar bar = (ToolBar)button.parent;
       if(configured && preselection && !reclick)
       {
          (*button.selected).checked = false;
          *button.selected = button;
       }
-      this = (ToolBar)button.parent;
-      NotifyToolClick(oldThis, button);
-      return true;
+      return bar.NotifyClicked(bar.master, button, x,y, mods);
    }
 }
 
@@ -308,7 +296,7 @@ public class OptionToolButton : ToolButton
    size = Size { 24, 24 };
    OptionToolButton * selected;
 
-   bool ToolBar::NotifyClicked(OptionToolButton button, int x, int y, Modifiers mods)
+   bool Window::NotifyClicked(OptionToolButton button, int x, int y, Modifiers mods)
    {
       bool configured = (bool)button.selected;
       bool preselection = (configured && (*button.selected));
@@ -323,12 +311,8 @@ public class OptionToolButton : ToolButton
       button.checked = true;
       if(!reclick)
       {
-         // TOCHECK is this the best way to do this?
-         //or this type of thing?
-         //button.parent._vTbl[__ecereVMethodID_ToolBar_NotifyToolClick](this, button)
-         Window oldThis = this;
-         this = (ToolBar)button.parent;
-         NotifyToolClick(oldThis, button);
+         ToolBar bar = (ToolBar)button.parent;
+         return bar.NotifyClicked(bar.master, button, x,y, mods);
       }
       return true;
    }
