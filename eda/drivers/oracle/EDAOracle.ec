@@ -6,11 +6,13 @@ public import "ecere"
 public import "EDA"
 #endif
 
+#define uint _uint
 #define property _property
 #define get _get
 #include <oci.h>
 #undef get
 #undef property
+#undef uint
 
 define Oracle = "Oracle";
 
