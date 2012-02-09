@@ -1,0 +1,47 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "licensing",
+   "Options" : {
+      "Warnings" : "All",
+      "Debug" : true,
+      "Optimization" : "None",
+      "PreprocessorDefinitions" : [
+         "_DEBUG"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "licensing",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "V1"
+      },
+      {
+         "Name" : "V2",
+         "Options" : {
+            "PreprocessorDefinitions" : [
+               "SAMPLE_V2"
+            ]
+         }
+      }
+   ],
+   "Files" : [
+      "licensing.ec",
+      "../../../extras/gui/LicensesDialog.ec"
+   ],
+   "ResourcesPath" : "../../../extras/res",
+   "Resources" : [
+      {
+         "Folder" : "./licenses",
+         "Files" : [
+            "../../../extras/res/licenses/ecere.LICENSE",
+            "../../../extras/res/licenses/png.LICENSE",
+            "../../../extras/res/licenses/tango.COPYING",
+            "../../../extras/res/licenses/zlib.README",
+            "myapp.LICENSE"
+         ]
+      }
+   ]
+}
