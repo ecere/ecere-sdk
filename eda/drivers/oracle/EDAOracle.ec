@@ -9,7 +9,9 @@ public import "EDA"
 #define uint _uint
 #define property _property
 #define get _get
+#define string _string
 #include <oci.h>
+#undef string
 #undef get
 #undef property
 #undef uint
@@ -38,6 +40,7 @@ extern int __ecereVMethodID_class_OnCompare;
 extern int __ecereVMethodID_class_OnSerialize;
 extern int __ecereVMethodID_class_OnUnserialize;
 extern int __ecereVMethodID_class_OnFree;
+private:
 
 public class OracleStaticLink { }   // Until .imp generation is fixed
 
@@ -47,7 +50,7 @@ void ToUpperAndUnderscore(String stringValue)
 
    for (i = 0; stringValue[i]; i++)
    {
-      stringValue[i] = toupper(stringValue[i]);  
+      stringValue[i] = (char)toupper(stringValue[i]);
       if (stringValue[i] == 32)
          stringValue[i] = '_';
    }
@@ -589,7 +592,7 @@ class OracleTable : Table
    {
       if(!indexFields || (indexFieldsCount == 1 && indexFields[0].field == primaryKey && indexFields[0].order == ascending))
       {
-         OracleField field = GetFirstField();
+         OracleField field = (OracleField)GetFirstField();
          strcpy(fullOrder, " ORDER BY ");
          strcat(fullOrder, field.name);
          strcat(fullOrder, "\0");
@@ -982,7 +985,7 @@ class OracleRow : DriverRow
                OCIDateTimeGetDate(tbl.db.env, tbl.db.err, oracleField.p_sliDateTime,
                   &year, &month, &day);  
 
-               if ((year == date.year) && (month == date.month) && (day == date.day))
+               if ((year == date.year) && ((Month)(month-1) == date.month) && (day == date.day))
                {
                   return true;
                }
@@ -992,7 +995,7 @@ class OracleRow : DriverRow
                   OCIDateTimeGetDate(tbl.db.env, tbl.db.err, oracleField.p_sliDateTime,
                      &year, &month, &day);
                   rowID += 1;
-                  if ((year == date.year) && (month == date.month) && (day == date.day))
+                  if ((year == date.year) && ((Month)(month-1) == date.month) && (day == date.day))
                   {
                      return true;
                   }
@@ -1079,12 +1082,12 @@ class OracleRow : DriverRow
       String tableName;
       OracleField primaryKeyField;
       String primaryKeyValue;
-      String primaryKeyValueString[1024];
+      char primaryKeyValueString[1024];
       int primaryKeyValueInt;
       bool deletePrimaryKeyValue = false;
       char command[1024];
       int r;
-      int actualRowID;
+      int64 actualRowID;
       int numRows;
 
       if (tbl.primaryKey)
@@ -1096,7 +1099,7 @@ class OracleRow : DriverRow
          primaryKeyName = CopyString(tbl.GetFirstField().name);
       }
       
-      primaryKeyField = tbl.FindField(primaryKeyName);
+      primaryKeyField = (OracleField)tbl.FindField(primaryKeyName);
 
       tableName = CopyString(tbl.name);
 
@@ -1194,7 +1197,7 @@ class OracleRow : DriverRow
             OCIDateTimeGetDate(tbl.db.env, tbl.db.err, sqlFld.p_sliDateTime,
                &year, &month, &day);
             if (!sqlFld.ind)
-               *(Date *)data = Date { year = year, month = month - 1, day = day };
+               *(Date *)data = Date { year = year, month = (Month)(month-1), day = day };
             break;
          }
          case SQLT_BLOB: // No basic datatype
@@ -1222,14 +1225,14 @@ class OracleRow : DriverRow
       char command[1024];
       String primaryKeyName;
       String primaryKeyValue;
-      String primaryKeyValueString[1024];
+      char primaryKeyValueString[1024];
       int primaryKeyValueInt;
       OracleField primaryKeyField;
       bool deletePrimaryKeyValue = false;
       String tableName = CopyString(tbl.name);
       String fieldName = CopyString(sqlFld.name);
       int r;
-      int actualRowID;
+      int64 actualRowID;
 
       if (tbl.primaryKey)
       {
@@ -1240,7 +1243,7 @@ class OracleRow : DriverRow
          primaryKeyName = CopyString(tbl.GetFirstField().name);
       }
       
-      primaryKeyField = tbl.FindField(primaryKeyName);
+      primaryKeyField = (OracleField)tbl.FindField(primaryKeyName);
       if (primaryKeyField.oracleType == SQLT_STR)
       {
          GetData(primaryKeyField, primaryKeyValue);
@@ -1308,10 +1311,10 @@ class OracleRow : DriverRow
             ub1 day;
             char date[11];
 
-            Date* ecDate = data;
-            year = ecDate->year;
-            month = ecDate->month;
-            day = ecDate->day;
+            Date* ecDate = (Date *)data;
+            year = (short)ecDate->year;
+            month = ((byte)ecDate->month)+1;
+            day = (byte)ecDate->day;
 
             sprintf(date, "%04i-%02i-%02i", year, month, day);
 
@@ -1343,7 +1346,7 @@ class OracleRow : DriverRow
 
       r = OCIStmtExecute(tbl.db.svc, tbl.stmt, tbl.db.err, 0, 0,
          (OCISnapshot *) 0, (OCISnapshot *) 0, OCI_STMT_SCROLLABLE_READONLY); 
-      r = OCIStmtFetch2(tbl.stmt, tbl.db.err, actualRowID, OCI_FETCH_ABSOLUTE, 0, OCI_DEFAULT);
+      r = OCIStmtFetch2(tbl.stmt, tbl.db.err, (uint)actualRowID, OCI_FETCH_ABSOLUTE, 0, OCI_DEFAULT);
       
       if ((r == OCI_SUCCESS) || (r == OCI_SUCCESS_WITH_INFO))
          return true;
