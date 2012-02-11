@@ -85,6 +85,7 @@ class EditBoxBits
    bool cursorFollowsView:1;
    
    // bool lineNumbers:1;
+   bool autoSize:1;
 };
 
 /* TODO:
@@ -751,6 +752,7 @@ public:
    property bool syntaxHighlighting { property_category "Appearance" set { style.syntax = value; } get { return style.syntax; } };
    property bool noSelect { property_category "Behavior" set { style.noSelect = value; } get { return style.noSelect; } };
    property bool allCaps { property_category "Behavior" set { style.allCaps = value; } get { return style.allCaps; } };
+   property bool autoSize { property_category "Behavior" set { style.autoSize = value; } get { return style.autoSize; } };
    property bool wrap { set { style.wrap = value; Update(null); } get { return style.wrap; } };
    //property bool lineNumbers { set { style.lineNumbers = value; } get { return style.lineNumbers; } };
    property int numLines { get { return this ? lineCount : 0; } };
@@ -2258,6 +2260,7 @@ private:
       }
       ComputeLength(l1);
       FindMaxLine();
+      if(style.autoSize) AutoSize();
       if(style.syntax && (hadComment || HasCommentOrEscape(this.line)))
       {
          DirtyAll();
@@ -2471,6 +2474,7 @@ private:
                int backDontRecord = undoBuffer.dontRecord;
                undoBuffer.dontRecord = 0;
                NotifyCharsAdded(master, this, &before, &after, this.pasteOperation);
+               if(style.autoSize) AutoSize();
                undoBuffer.dontRecord = backDontRecord;
             }
             if(style.syntax && (hadComment || hasComment || line != this.line))
@@ -2983,6 +2987,43 @@ private:
       return true;
    }
 
+   void AutoSize()
+   {
+      if(created)
+      {
+         if(multiLine)
+         {
+            // todo: resize width based on largest on-screen-line extent...
+            int sh = 0;
+            display.FontExtent(font, " ", 1, null, &sh);
+            if(sh)
+            {
+               int nh = 0;
+               nh = lineCount * sh;
+               size.h = nh < minClientSize.h ? minClientSize.h : nh;
+            }
+         }
+         else
+         {
+            int tw = 0;
+            int sh = 0;
+            int nw = 0;
+            int nh = 0;
+            MinMaxValue dw = 0;
+            MinMaxValue dh = 0;
+            int len = line ? strlen(line.text) : 0;
+            GetDecorationsSize(&dw, &dh);
+            display.FontExtent(font, " ", 1, null, &sh);
+            if(len) display.FontExtent(font, line.text, len, &tw, null);
+            nw = dw+tw+12;
+            if(nw < minClientSize.w) nw = minClientSize.w;
+            nh = dh+sh+4;
+            if(nh < minClientSize.h) nh = minClientSize.h;
+            size = { nw, nh };
+         }
+      }
+   }
+
    bool OnResizing(int *w, int *h)
    {
       if(!*h)
@@ -3486,13 +3527,10 @@ private:
                   {
                      int i;
                      int length;
-                     //Can't delete right away as that would change the line.count
                      for(i = this.x; i < this.line.count; i++)
                      {
                         if(!IS_ALUNDER(this.line.buffer[i]))
                            break;
-                        DelCh(this.line, this.y, this.x, this.line, this.y, this.x+1, false);
-                        i--;
                      }
                      
                      for(; i < this.line.count; i++)
@@ -3500,9 +3538,8 @@ private:
                         //Delete trailing whitespace
                         if(IS_ALUNDER(this.line.buffer[i]))
                            break;
-                        DelCh(this.line, this.y, this.x, this.line, this.y, this.x+1, false);
-                        i--;
                      }
+                     DelCh(this.line, this.y, this.x, this.line, this.y, i, false);
                      SetViewToCursor(true);
                      Modified();
                   }
@@ -4350,6 +4387,7 @@ private:
                            if(!line.AdjustBuffer(line.count-lastC)) 
                               break;
                            line.count-=lastC;
+                           if(style.autoSize) AutoSize();
                            DirtyLine(y);
                         }
 
@@ -4374,6 +4412,7 @@ private:
                                        break;
 
                                     NotifyCharsAdded(master, this, &before, &after, this.pasteOperation);
+                                    if(style.autoSize) AutoSize();
                                     {
                                        AddCharAction action { ch = '\t', x = 0, y = y };
                                        Record(action);
@@ -4391,6 +4430,7 @@ private:
                                     int c;
                                     BufferLocation before = { line, y, 0 }, after = { line, y, this.tabSize };
                                     NotifyCharsAdded(master, this, &before, &after, this.pasteOperation);
+                                    if(style.autoSize) AutoSize();
 
                                     if(!line.AdjustBuffer(line.count+this.tabSize)) 
                                        break;
@@ -4877,6 +4917,7 @@ private:
             after.line = this.line, after.y = this.y, after.x = this.x;
 
             NotifyCharsAdded(master, this, &before, &after, this.pasteOperation);
+            if(style.autoSize) AutoSize();
          }
       }
       else

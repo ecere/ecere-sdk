@@ -1293,7 +1293,6 @@ class BuildTab : Tab
                   {                     
                      button.visible = false;
                      button.Destroy(0);
-                     delete button;
 
                      if(it.Prev())
                      {

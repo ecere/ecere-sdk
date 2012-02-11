@@ -1396,7 +1396,15 @@ class ProjectView : Window
       strcpy(folder, prj.topNode.path);
       if(node != prj.topNode)
          PathCatSlash(folder, node.path);
-      ShellOpen(folder);
+
+      if(ideSettings.fileSystemTool && ideSettings.fileSystemTool[0]/* && FileIsInSearchPath(ideSettings.fileSystemTool).isFile*/)
+      {
+         char command[MAX_LOCATION];
+         sprintf(command, "%s \"%s\"", ideSettings.fileSystemTool, folder);
+         Execute(command);
+      }
+      else
+         ShellOpen(folder);
    }
 
    bool Run(MenuItem selection, Modifiers mods)
