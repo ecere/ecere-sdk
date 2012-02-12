@@ -122,8 +122,7 @@
             "MemoryGuard" : true,
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
-               "_DEBUG",
-               "SETTINGS_TEST"
+               "_DEBUG"
             ],
             "Libraries" : [
                "ecere"
