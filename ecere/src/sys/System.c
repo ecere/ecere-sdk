@@ -62,6 +62,9 @@ char * __ecereNameSpace__ecere__sys__UTF16toUTF8Buffer(uint16 * source, byte * d
 
 char * __ecereNameSpace__ecere__sys__StripLastDirectory(char * string, char * output);
 
+char * __ecereNameSpace__ecere__sys__GetEnvironment(char * envName, char * envValue, int max);
+char * __ecereNameSpace__ecere__sys__SearchString(char * buffer, int start, char * subStr, bool matchCase, bool matchWord);
+
 FileAttribs FILE_FileExists(char * fileName);
 
 bool System_MoveFile(char * source, char * dest)
@@ -345,8 +348,26 @@ bool System_ShellOpen(char * fileName, va_list args)
 
 #if !defined(__WIN32__)
    {
-      strcat(filePath, " &");
-      if(system(filePath) != -1)
+      char command[MAX_LOCATION] = "";
+      char desktop[MAX_F_STRING];
+      __ecereNameSpace__ecere__sys__GetEnvironment("ECERE_DESKTOP", desktop, sizeof(desktop));
+      if(__ecereNameSpace__ecere__sys__SearchString(desktop, 0, "ecere", false, false))
+         sprintf(command, "ede-open \"%s\" &", filePath);
+      else
+      {
+         __ecereNameSpace__ecere__sys__GetEnvironment("DESKTOP_SESSION", desktop, sizeof(desktop));
+         if(__ecereNameSpace__ecere__sys__SearchString(desktop, 0, "gnome", false, false))
+            sprintf(command, "gnome-open \"%s\" &", filePath);
+         else if(__ecereNameSpace__ecere__sys__SearchString(desktop, 0, "kde", false, false))
+            sprintf(command, "kde-open \"%s\" &", filePath);
+         else
+         {
+            if(FILE_FileExists(filePath) != isDirectory)
+               sprintf(command, "%s &", filePath);
+         }
+      }
+
+      if(command[0] && system(command) != -1)
          result = true;
    }
 #elif defined(ECERE_VANILLA)
