@@ -5110,6 +5110,7 @@ private:
             child.SetVisibility(visible);
          Update(null);
          ConsequentialMouseMove(false);
+         if(parent && !nonClient) parent.OnChildVisibilityToggled(this, visible);
       }
    }
 
@@ -7604,6 +7605,13 @@ public:
    virtual bool OnFileModified(FileChange fileChange, char * param);
    virtual bool OnSaveFile(char * fileName);
 
+   // Virtual Methods -- Children management (To support Stacker, for lack of built-in auto-layout)
+   // Note: A 'client' would refer to isActiveClient, rather than
+   // being confined to the 'client area' (nonClient == false)
+   virtual void OnChildAddedOrRemoved(Window child, bool removed);
+   virtual void OnChildVisibilityToggled(Window child, bool visible);
+   virtual void OnChildResized(Window child, int x, int y, int w, int h);
+
    // Skins Virtual Functions
    virtual void GetDecorationsSize(MinMaxValue * w, MinMaxValue * h);
    virtual void SetWindowMinimum(MinMaxValue * mw, MinMaxValue * mh);
@@ -7659,6 +7667,7 @@ public:
             if(parent)
             {
                parent.children.Remove(this);
+               parent.OnChildAddedOrRemoved(this, true);
 
                parent.Update(
                {
@@ -7751,6 +7760,7 @@ public:
                   else if(anchor.vert.type == middleRelative) anchor.vert.percent = (float)((y + h / 2) - (vph / 2)) / vph;
                }
                parent = value;
+               parent.OnChildAddedOrRemoved(this, false);
 
                // *** NEW HERE ***
                if(!style.inactive)
@@ -7883,7 +7893,6 @@ public:
 
                if(style.isDefault && !value.defaultControl)
                   value.defaultControl = this;
-
             }
          }
          master = value;
@@ -8485,6 +8494,7 @@ public:
 
             ComputeAnchors(stateAnchor, stateSizeAnchor, &x, &y, &w, &h);
             Position(x, y, w, h, true, true, true, true, false, true);
+            if(parent && parent.created && !nonClient) parent.OnChildResized(this, x, y, w, h);
          }
       }
       get { value = size; }
