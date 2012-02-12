@@ -26,8 +26,6 @@ static void DrawStipple(Surface surface, Size clientSize)
 
 public class SelectorBar : Stacker
 {
-   // We need this because Stacker incref's only when created
-   Array<SelectorButton> buttonsHolder { };
    direction = horizontal;
    background = activeBorder;
    //tabCycle = true;
@@ -53,12 +51,10 @@ public:
       Iterator<Window> it { controls };
       while(it.Next())
       {
-         SelectorButton button = (SelectorButton)it.data;
+         Window button = it.data;
          button.visible = false;
          button.Destroy(0);
       }
-      buttonsHolder.Free();
-      OnResize(clientSize.w, clientSize.h);
    }
 
    void Select(SelectorButton button)
@@ -71,24 +67,17 @@ public:
 
    void AddButton(SelectorButton button)
    {
-      incref button;
-      buttonsHolder.Add(button);
       if(created)
-      {
          button.Create();
-         // Find a more elegant manner to force updating of positions?
-         OnResize(clientSize.w, clientSize.h);
-      }
    }
 
    void RemoveButton(SelectorButton button)
    {
       Iterator<Window> it { controls };
-      buttonsHolder.TakeOut(button);
       while(it.Next())
       {
          if(button == (SelectorButton)it.data)
-         {                     
+         {
             if(it.Next() || (it.Prev() && it.Prev()))
             {
                SelectorButton newSelection = (SelectorButton)it.data;
@@ -100,37 +89,21 @@ public:
       }
       button.visible = false;
       button.Destroy(0);
-      delete button;
-      OnResize(clientSize.w, clientSize.h);
    }
 
    SelectorButton FindButtonByID(int id)
    {
       SelectorButton button = null;
-      
       Iterator<Window> it { controls };
       while(it.Next())
       {
-         SelectorButton b = (SelectorButton)it.data;
-         if(eClass_IsDerived(b._class, class(SelectorButton)) && b.id == id)
-         {                     
-            button = b;
-            break;
-         }
-      }
-      
-      // This alternate technique works outside but give very weird results when used inside. :S
-      /*
-      SelectorButton b;
-      for(b = (SelectorButton)firstChild; b; b = (SelectorButton)b.next)
-      {
+         Window b = it.data;
          if(eClass_IsDerived(b._class, class(SelectorButton)) && b.id == id)
          {
-            button = b;
+            button = (SelectorButton)b;
             break;
          }
       }
-      */
       return button;
    }
 
@@ -148,11 +121,15 @@ public:
          Iterator<Window> it { controls };
          while(it.Next())
          {
-            SelectorButton b = (SelectorButton)it.data;
-            if(eClass_IsDerived(b._class, class(SelectorButton)) && b.checked)
-            {                     
-               button = b;
-               break;
+            Window w = it.data;
+            if(eClass_IsDerived(w._class, class(SelectorButton)))
+            {
+               SelectorButton b = (SelectorButton)w;
+               if(b.checked)
+               {
+                  button = (SelectorButton)b;
+                  break;
+               }
             }
          }
          return button;
@@ -189,6 +166,7 @@ public:
          SelectorBar selector = (SelectorBar)parent;
          for(b = (SelectorButton)parent.firstChild; b; b = (SelectorButton)b.next)
          {
+            if(b.nonClient) continue;
             if(eClass_IsDerived(b._class, class(SelectorButton)) && b != this)
             {
                b.font = null;
@@ -196,15 +174,11 @@ public:
             }
          }
          font = { font.faceName, font.size, bold = true }; 
+         // this should not be required: the font change should resize the control and Stacker should adapt automatically
+         // why does it not?
          selector.OnResize(selector.clientSize.w, selector.clientSize.h);
          selector.MakeControlVisible(this);
       }
-   };
-
-   watch(text)
-   {
-      if(parent && eClass_IsDerived(parent._class, class(SelectorBar)))
-         parent.OnResize(parent.clientSize.w, parent.clientSize.h);
    };
 
    bool OnLeftButtonDown(int x, int y, Modifiers mods)
@@ -274,10 +248,7 @@ class EditableSelectorButton : SelectorButton
                   SelectorBar selector = (SelectorBar)parent;
                   text = newName;
                   if(selector)
-                  {
-                     selector.OnResize(selector.clientSize.w, selector.clientSize.h);
                      selector.MakeControlVisible(this);
-                  }
                }
                
                delete oldName;
