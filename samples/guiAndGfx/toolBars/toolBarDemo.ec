@@ -43,7 +43,7 @@ class ToolBarDemo : Window
       iconBag = iconBag;
       size = { h = 32 };
 
-      void NotifyToolClick(ToolButton button)
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          ToolId id = (ToolId)button.id;
          switch(id)
@@ -53,6 +53,7 @@ class ToolBarDemo : Window
             case goForward: break;
             case goHome:    break;
          }
+         return true;
       }
    };
 
