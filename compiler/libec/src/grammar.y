@@ -158,6 +158,7 @@ default:
 %type <dbtableEntry> dbindex_entry dbfield_entry
 %type <dbindexItem> dbindex_item
 %type <dbtableDef> dbtable_definition
+%type <context> compound_start
 
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
@@ -182,7 +183,6 @@ default:
 %token NEW0OP RENEW0 VAARG
 %token DBTABLE DBFIELD DBINDEX DATABASE_OPEN
 
-
 %destructor { FreeIdentifier($$); } identifier 
 %destructor { FreePointer($$); } pointer
 %destructor { FreeExpression($$); } primary_expression primary_expression_error postfix_expression unary_expression cast_expression
@@ -196,10 +196,11 @@ default:
                                     relational_expression_error equality_expression_error and_expression_error
                                     exclusive_or_expression_error inclusive_or_expression_error logical_and_expression_error
                                     logical_or_expression_error conditional_expression_error assignment_expression_error
-%destructor { FreeSpecifier($$); }  storage_class_specifier external_storage_class_specifier type_qualifier type_specifier
-                                    struct_or_union_specifier_compound struct_or_union_specifier_nocompound type ext_storage class_specifier class_specifier_error
-                                    struct_or_union_specifier_compound_error struct_class struct_class_error
-                                    enum_specifier_compound_error
+%destructor { FreeSpecifier($$); }  storage_class_specifier enum_specifier_compound enum_specifier_nocompound type_qualifier type_specifier class_specifier class_specifier_error
+                                    struct_or_union_specifier_compound struct_or_union_specifier_nocompound ext_storage type strict_type guess_type enum_class strict_type_specifier struct_class
+                                    struct_or_union_specifier_compound_error struct_class_error struct_decl
+                                    enum_specifier_compound_error enum_class_error external_storage_class_specifier
+                                    base_strict_type struct_head struct_entry
 %destructor { FreeEnumerator($$); } enumerator
 %destructor { FreeDeclarator($$); } declarator direct_declarator direct_abstract_declarator abstract_declarator
                                     direct_abstract_declarator_noarray abstract_declarator_noarray
@@ -232,7 +233,8 @@ default:
 
 %destructor { FreeList($$, FreeExpression); }  argument_expression_list expression expression_error argument_expression_list_error 
 %destructor { FreeList($$, FreeEnumerator); }  enumerator_list 
-%destructor { FreeList($$, FreeSpecifier); }   type_qualifier_list specifier_qualifier_list declaration_specifiers inheritance_specifiers _inheritance_specifiers
+%destructor { FreeList($$, FreeSpecifier); }   type_qualifier_list specifier_qualifier_list declaration_specifiers inheritance_specifiers _inheritance_specifiers external_guess_declaration_specifiers external_guess_declaration_specifiers_error
+                                               guess_declaration_specifiers guess_specifier_qualifier_list
 %destructor { FreeList($$, FreeDeclarator); }  struct_declarator_list
 %destructor { FreeList($$, FreeDeclaration); } declaration_list declaration_list_error 
 %destructor { FreeList($$, FreeInitializer); } initializer_list
@@ -243,8 +245,11 @@ default:
 %destructor { FreeList($$, FreeClassDef); } struct_declaration_list struct_declaration_list_error
 %destructor { FreeList($$, FreeMemberInit); } default_property_list default_property_list_error data_member_initialization_list data_member_initialization_list_coloned data_member_initialization_list_error
 %destructor { FreeList($$, FreeMembersInit); } members_initialization_list members_initialization_list_coloned members_initialization_list_error  
+%destructor { PopContext($$); FreeContext($$); delete $$; } compound_start
+%destructor { FreeTemplateParameter($$); } template_parameter template_type_parameter template_identifier_parameter template_expression_parameter
+%destructor { FreeTemplateArgument($$); } template_argument template_type_argument template_identifier_argument template_expression_argument
+%destructor { FreeTemplateDataType($$); } template_datatype
 %destructor { } declaration_mode
-
 
 %start thefile
 
@@ -3316,7 +3321,7 @@ external_declaration:
       { $$ = MkExternalClass($1);  $$.loc = @$; $1.declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; }
 
    | external_guess_declaration_specifiers class
-      { $$ = MkExternalClass($2);  $$.loc = @$; $2.declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; }
+      { $$ = MkExternalClass($2);  $$.loc = @$; $2.declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; FreeList($1, FreeSpecifier); }
 
 	| external_guess_declaration
       { $$ = MkExternalDeclaration($1);  $$.loc = @$; $1.declMode = declMode; declMode = defaultDeclMode; }

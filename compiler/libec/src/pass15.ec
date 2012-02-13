@@ -3629,6 +3629,9 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
             sourceExp._classExp.decl = decl;
             sourceExp.expType = dest;
             dest.refCount++;
+
+            FreeType(source);
+            FreeType(dest);
             return true;
          }
       }

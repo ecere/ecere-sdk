@@ -715,44 +715,49 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                   id.string = CopyString(name);
                }
                
-               symbol = Symbol { string = CopyString(id.string), type = ProcessType(specifiers, d.declarator) };
-               (curContext.templateTypesOnly ? curContext.parent : curContext).symbols.Add((BTNode)symbol);
-               // TODO: Add better support to count declarators
-               if(symbol.type && symbol.type.kind == arrayType && !symbol.type.arraySizeExp && d.initializer)
+               // Avoid memory leaks on duplicated symbols (BinaryTree::Add Would Fail)
+               symbol = (Symbol)(curContext.templateTypesOnly ? curContext.parent : curContext).symbols.FindString(id.string);
+               if(!symbol)
                {
-                  if(d.initializer.type == listInitializer)
+                  symbol = Symbol { string = CopyString(id.string), type = ProcessType(specifiers, d.declarator) };
+                  (curContext.templateTypesOnly ? curContext.parent : curContext).symbols.Add((BTNode)symbol);
+                  // TODO: Add better support to count declarators
+                  if(symbol.type && symbol.type.kind == arrayType && !symbol.type.arraySizeExp && d.initializer)
                   {
-                     char string[256];
-                     sprintf(string, "%d",d.initializer.list->count);
-                     symbol.type.arraySizeExp = MkExpConstant(string);
-                     symbol.type.freeExp = true;
-                  }
-                  else if(d.initializer.type == expInitializer && d.initializer.exp.type == stringExp && d.initializer.exp.string)
-                  {
-                     char string[256];
-                     int c, count = 0;
-                     char ch;
-                     bool escaped = false;
-                     char * s = d.initializer.exp.string;
-
-                     // MAKE MORE ACCURATE
-                     for(c = 1; (ch = s[c]); c++)
+                     if(d.initializer.type == listInitializer)
                      {
-                        if(ch == '\\' && !escaped)
-                           escaped = true;
-                        else
-                        {
-                           count++;
-                           escaped = false;
-                        }
+                        char string[256];
+                        sprintf(string, "%d",d.initializer.list->count);
+                        symbol.type.arraySizeExp = MkExpConstant(string);
+                        symbol.type.freeExp = true;
                      }
+                     else if(d.initializer.type == expInitializer && d.initializer.exp.type == stringExp && d.initializer.exp.string)
+                     {
+                        char string[256];
+                        int c, count = 0;
+                        char ch;
+                        bool escaped = false;
+                        char * s = d.initializer.exp.string;
 
-                     sprintf(string, "%d", count);
-                     symbol.type.arraySizeExp = MkExpConstant(string);
-                     symbol.type.freeExp = true;
+                        // MAKE MORE ACCURATE
+                        for(c = 1; (ch = s[c]); c++)
+                        {
+                           if(ch == '\\' && !escaped)
+                              escaped = true;
+                           else
+                           {
+                              count++;
+                              escaped = false;
+                           }
+                        }
+
+                        sprintf(string, "%d", count);
+                        symbol.type.arraySizeExp = MkExpConstant(string);
+                        symbol.type.freeExp = true;
+                     }
                   }
+                  symbol.id = symbol.idCode = curContext.nextID++;
                }
-               symbol.id = symbol.idCode = curContext.nextID++;
                decl.symbol = d.declarator.symbol = symbol;
             }
          }
