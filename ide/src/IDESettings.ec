@@ -713,13 +713,69 @@ public:
       get { return distccHosts; }
       isset { return distccHosts && distccHosts[0]; }
    }
+   property Array<String> includeDirs
+   {
+      set
+      {
+         includeDirs.Free();
+         if(value)
+         {
+            delete includeDirs;
+            includeDirs = value;
+         }
+      }
+      get { return includeDirs; }
+      isset { return includeDirs.count != 0; }
+   }
+   property Array<String> libraryDirs
+   {
+      set
+      {
+         libraryDirs.Free();
+         if(value)
+         {
+            delete libraryDirs;
+            libraryDirs = value;
+         }
+      }
+      get { return libraryDirs; }
+      isset { return libraryDirs.count != 0; }
+   }
+   property Array<String> executableDirs
+   {
+      set
+      {
+         executableDirs.Free();
+         if(value)
+         {
+            delete executableDirs;
+            executableDirs = value;
+         }
+      }
+      get { return executableDirs; }
+      isset { return executableDirs.count != 0; }
+   }
+   property Array<NamedString> environmentVars
+   {
+      set
+      {
+         environmentVars.Free();
+         if(value)
+         {
+            delete environmentVars;
+            environmentVars = value;
+         }
+      }
+      get { return environmentVars; }
+      isset { return environmentVars.count != 0; }
+   }
+private:
    Array<String> includeDirs { };
    Array<String> libraryDirs { };
    Array<String> executableDirs { };
    // TODO: Can JSON parse and serialize maps?
    //EnvironmentVariables { };
    Array<NamedString> environmentVars { };
-private:
    char * name;
    char * makeCommand;
    char * ecpCommand;
