@@ -501,12 +501,16 @@ class CompilersTab : GlobalSettingsSubTab
 
    void LoadCompiler(CompilerConfig compiler)
    {
+      bool modified = modifiedDocument;
       activeCompiler = compiler;
 
       dirsTab.Load();
       toolchainTab.Load();
       environmentTab.Load();
       optionsTab.Load();
+
+      // Restore original modifiedDocument
+      modifiedDocument = modified;
 
       deleteCompiler.disabled = compiler.readOnly;
    }
@@ -754,6 +758,7 @@ class CompilerEnvironmentTab : CompilersSubTab
       {
          loadedCompiler.environmentVars = stringsBox.namedStrings;
          modifiedDocument = true;
+         compilersTab.modifiedDocument = true;
          return true;
       }
    };
@@ -769,9 +774,7 @@ class CompilerEnvironmentTab : CompilersSubTab
          CompilerConfig compiler = loadedCompiler;
          envVars.namedStrings = compiler.environmentVars;
 
-         // Was these meant to be false?
-         modifiedDocument = false;//true;
-         compilersTab.modifiedDocument = false;//true;
+         modifiedDocument = false;
       }
    }
 }
@@ -1040,6 +1043,9 @@ class WorkspaceOptionsTab : GlobalSettingsSubTab
 
    void OnDestroy()
    {
+      // TOFIX: The selection will be lost upon changing tab...
+      // Should either warn, or leave it modified and put in place
+      // checks to save/find the compiler by name
       defaultCompilerDropBox.Clear();
       modifiedDocument = false;
    }
