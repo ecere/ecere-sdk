@@ -173,9 +173,15 @@ public:
    {
       set
       {
+         delete bitmaps[0];
+         delete bitmaps[1];
+         delete bitmaps[2];
          bitmaps[0] = value;
-         bitmaps[1] = BitmapResource { fileName = value.fileName, monochrome = true };
-         bitmaps[2] = BitmapResource { fileName = value.fileName, grayed = true };
+         bitmaps[1] = value ? (value.alphaBlend ? value : { fileName = value.fileName, monochrome = true }) : null;
+         bitmaps[2] = value ? { fileName = value.fileName, grayed = true } : null;
+         incref bitmaps[0];
+         incref bitmaps[1];
+         incref bitmaps[2];
       }
    };
    property bool copyText
@@ -223,6 +229,9 @@ private:
          // delete ITEM_TEXT(this);
          delete text;
       delete subMenu;
+      delete bitmaps[0];
+      delete bitmaps[1];
+      delete bitmaps[2];
    }
 };
 
@@ -593,6 +602,7 @@ public:
    property Menu parent { set { if(value) value.AddSubMenu(this); } };
    property char * text { set { text = value; /* CopyString(value);*/ } };
    property Key hotKey { set { hotKey = value; } };
+   property bool hasMargin { set { hasMargin = value; } };
 
 private:
    OldList items;
@@ -603,6 +613,7 @@ private:
    int itemHeight;
    int itemCount;
    bool mergeClients;
+   bool hasMargin;
 
    Menu()
    {
@@ -997,6 +1008,7 @@ public class PopupMenu : Window
    // Window Overrides
    void OnRedraw(Surface surface)
    {
+      bool hasMargin = menu ? menu.hasMargin : false;
       int x = 0;
       int y = 0;
       int height;
@@ -1005,6 +1017,7 @@ public class PopupMenu : Window
       Window activeClient = parent.activeClient;
       bool systemButtons = activeClient && activeClient.state == maximized;
       int bitmapOffset = 0;
+      bool hasBitmap = false;
 
       surface.TextFont(fontObject);
       surface.TextExtent(" ", 1, null, &height);
@@ -1012,10 +1025,23 @@ public class PopupMenu : Window
 
       if(!isMenuBar)
       {
+         if(menu)
+         {
+            ItemPtr ptr;
+            for(ptr = menu.items.first; ptr; ptr = ptr.next)
+            {
+               if(ptr.item.bitmaps[0])
+               {
+                  hasBitmap = true;
+                  break;
+               }
+            }
+         }
+
          if(guiApp.textMode)
             bitmapOffset = 16;
          else
-            bitmapOffset = 12;
+            bitmapOffset = hasMargin ? 27 : (hasBitmap ? 18 : 12);
       }
       else if(guiApp.textMode)
          bitmapOffset = 8;
@@ -1046,7 +1072,7 @@ public class PopupMenu : Window
                   surface.Area(0,y,clientSize.w-1,y+rh-1);
                }
                else
-                  surface.Area(2,y,clientSize.w-3,y+rh);
+                  surface.Area(/*(hasMargin ? bitmapOffset : 0) +*/ 2,y,clientSize.w-3,y+rh);
             }
             else
             {
@@ -1088,10 +1114,12 @@ public class PopupMenu : Window
                   }
                   else
                   {
-                     surface.SetForeground(Color { 85, 85, 85 });
-                     surface.HLine(x + 2, x + rw - 5, y + (DIVIDER_HEIGHT) / 2);
-                     surface.SetForeground(white);
-                     surface.HLine(x + 2, x + rw - 5, y + (DIVIDER_HEIGHT) / 2 + 1);
+                     int start = x + hasMargin ? bitmapOffset : 2;
+                     int end   = x + rw - (hasMargin ? 13 : 5);
+                     surface.foreground = Color { 85, 85, 85 };
+                     surface.HLine(start, end, y + (DIVIDER_HEIGHT) / 2);
+                     surface.foreground = white;
+                     surface.HLine(start, end, y + (DIVIDER_HEIGHT) / 2 + 1);
                   }
                }
             }
@@ -1118,7 +1146,7 @@ public class PopupMenu : Window
                   {
                      Bitmap icon = bitmap.bitmap;
                      if(icon)
-                        surface.Blit(icon, x + 3, y + (rh - icon.height)/2, 0,0, icon.width, icon.height);
+                        surface.Blit(icon, x + hasMargin ? 5 : 3, y + (rh - icon.height)/2, 0,0, icon.width, icon.height);
                   }
 
                   if(item.bold)
@@ -1135,7 +1163,16 @@ public class PopupMenu : Window
                   else
                      Interface::WriteKeyedTextDisabled(surface, x + bitmapOffset + 5,
                         textY, ITEM_TEXT(item), ITEM_HOTKEY(item), ITEM_DISABLED(item));
-                  surface.SetForeground(foreground);
+
+                  // A nice vertical separation line
+                  if(hasMargin && !isMenuBar)
+                  {
+                     surface.foreground = Color { 85, 85, 85 };
+                     surface.VLine(clientArea.top, clientArea.bottom, x + bitmapOffset - 2);
+                     surface.foreground = white;
+                     surface.VLine(clientArea.top, clientArea.bottom, x + bitmapOffset - 1);
+                  }
+                  surface.foreground = foreground;
                   if(item.checked)
                   {
                      surface.DrawLine(x+5, y+9, x+8,y+12);
@@ -1567,7 +1604,7 @@ public class PopupMenu : Window
             if(item.bitmaps[1]) AddResource(item.bitmaps[1]);
             if(item.bitmaps[2]) AddResource(item.bitmaps[2]);
          }
-         maxW += 24;
+         maxW += menu.hasMargin ? 32 : 24;
          if(menu.text)
          {
             FontExtent(display, font,menu.text,strlen(menu.text),&width, &height);
