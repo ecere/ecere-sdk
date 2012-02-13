@@ -1,6 +1,6 @@
 import "IDESettings"
 
-import "SelectorBar"
+// import "SelectorBar"
 import "CompilersDetectionDialog"
 import "ide"
 

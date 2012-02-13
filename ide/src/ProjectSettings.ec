@@ -2,7 +2,7 @@ import "ide"
 import "WorkspaceSettings"
 import "ProjectTabSettings"
 import "StringsBox"
-import "SelectorBar"
+// import "SelectorBar"
 
 static ProjectConfig config;
 static Platform platform;

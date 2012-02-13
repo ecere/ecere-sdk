@@ -1,13 +1,14 @@
 #ifdef BUILDING_ECERE_COM
 namespace gui::controls;
-import "Window"
-import "Array"
+import "Stacker"
 #else
+/*
 #ifdef ECERE_STATIC
 public import static "ecere"
 #else
 public import "ecere"
 #endif
+*/
 #endif
 
 static void DrawStipple(Surface surface, Size clientSize)
@@ -144,7 +145,7 @@ public:
 
 public class SelectorButton : Button
 {
-   text = "Unknonw", bevelOver = true, isRadio = true, bitmap = null, minClientSize = { 44, 22 }; isRemote = true;
+   bevelOver = true, isRadio = true, bitmap = null, minClientSize = { 44, 22 }; isRemote = true;
 
 public:
    Window focusHolder;
@@ -154,6 +155,18 @@ public:
       if(parent && eClass_IsDerived(parent._class, class(SelectorBar)))
       {
          SelectorBar parent = (SelectorBar)this.parent;
+         // Fix Cycling order
+         if(cycle)
+            parent.childrenCycle.Move(cycle, null);
+
+         /* Currently, it could be done this way outside libecere:
+         if(parent.controls.count)
+         {
+            parent.controls.lastIterator.data.Activate();
+            inactive = true;
+            inactive = false;
+         }
+         */
          parent.AddButton(this);
       }
    };
@@ -192,12 +205,10 @@ public:
    }
 };
 
-class EditableSelectorButton : SelectorButton
+public class EditableSelectorButton : SelectorButton
 {
    EditBox editBox;
    bool renameable;
-
-   virtual bool Window::OnRename(EditableSelectorButton button, char ** oldName, char ** newName);
 
    bool OnKeyDown(Key key, unichar ch)
    {
@@ -286,5 +297,14 @@ class EditableSelectorButton : SelectorButton
       }
       return Button::OnLeftButtonDown(x, y, mods);
    }
-}
 
+public:
+   property bool renameable
+   {
+      set { renameable = value; }
+      get { return renameable; }
+   }
+   property EditBox editBox { get { return editBox; } }
+
+   virtual bool Window::OnRename(EditableSelectorButton button, char ** oldName, char ** newName);
+}

@@ -1269,7 +1269,8 @@
                         },
                         "Stacker.ec",
                         "PathBox.ec",
-                        "ToolTip.ec"
+                        "ToolTip.ec",
+                        "SelectorBar.ec"
                      ]
                   },
                   {

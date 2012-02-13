@@ -18,7 +18,6 @@ TARGET = obj/$(CONFIG).$(PLATFORM)/ide$(E)
 OBJECTS = \
 	$(OBJ)FileSystemIterator.o \
 	$(OBJ)layout.o \
-	$(OBJ)SelectorBar.o \
 	$(OBJ)StringsBox.o \
 	$(OBJ)ActiveCompilerDialog.o \
 	$(OBJ)CompilersDetectionDialog.o \
@@ -65,7 +64,6 @@ OBJECTS = \
 COBJECTS = \
 	$(OBJ)FileSystemIterator.c \
 	$(OBJ)layout.c \
-	$(OBJ)SelectorBar.c \
 	$(OBJ)StringsBox.c \
 	$(OBJ)ActiveCompilerDialog.c \
 	$(OBJ)CompilersDetectionDialog.c \
@@ -112,7 +110,6 @@ SYMBOLS = $(SYMBOLS1) $(SYMBOLS2)
 SYMBOLS1 = \
 	$(OBJ)FileSystemIterator.sym \
 	$(OBJ)layout.sym \
-	$(OBJ)SelectorBar.sym \
 	$(OBJ)StringsBox.sym \
 	$(OBJ)ActiveCompilerDialog.sym \
 	$(OBJ)CompilersDetectionDialog.sym \
@@ -151,16 +148,15 @@ SYMBOLS1 = \
 	$(OBJ)PictureEdit.sym \
 	$(OBJ)about.sym \
 	$(OBJ)ide.sym \
-	$(OBJ)IDESettings.sym
+	$(OBJ)IDESettings.sym \
+	$(OBJ)OldIDESettings.sym
 SYMBOLS2 = \
-	$(OBJ)OldIDESettings.sym \
 	$(OBJ)ProjectSettings.sym
 
 IMPORTS = $(IMPORTS1) $(IMPORTS2)
 IMPORTS1 = \
 	$(OBJ)FileSystemIterator.imp \
 	$(OBJ)layout.imp \
-	$(OBJ)SelectorBar.imp \
 	$(OBJ)StringsBox.imp \
 	$(OBJ)ActiveCompilerDialog.imp \
 	$(OBJ)CompilersDetectionDialog.imp \
@@ -199,15 +195,14 @@ IMPORTS1 = \
 	$(OBJ)PictureEdit.imp \
 	$(OBJ)about.imp \
 	$(OBJ)ide.imp \
-	$(OBJ)IDESettings.imp
+	$(OBJ)IDESettings.imp \
+	$(OBJ)OldIDESettings.imp
 IMPORTS2 = \
-	$(OBJ)OldIDESettings.imp \
 	$(OBJ)ProjectSettings.imp
 
 SOURCES = \
 	../extras/FileSystemIterator.ec \
 	../extras/gui/layout.ec \
-	../extras/gui/controls/SelectorBar.ec \
 	../extras/gui/controls/StringsBox.ec \
 	src/dialogs/ActiveCompilerDialog.ec \
 	src/dialogs/CompilersDetectionDialog.ec \
@@ -376,9 +371,6 @@ $(OBJ)FileSystemIterator.sym: ../extras/FileSystemIterator.ec
 $(OBJ)layout.sym: ../extras/gui/layout.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/layout.ec -o $(OBJ)layout.sym
 
-$(OBJ)SelectorBar.sym: ../extras/gui/controls/SelectorBar.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/controls/SelectorBar.ec -o $(OBJ)SelectorBar.sym
-
 $(OBJ)StringsBox.sym: ../extras/gui/controls/StringsBox.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.sym
 
@@ -510,9 +502,6 @@ $(OBJ)FileSystemIterator.c: ../extras/FileSystemIterator.ec $(OBJ)FileSystemIter
 $(OBJ)layout.c: ../extras/gui/layout.ec $(OBJ)layout.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/layout.ec -o $(OBJ)layout.c -symbols $(OBJ)
 
-$(OBJ)SelectorBar.c: ../extras/gui/controls/SelectorBar.ec $(OBJ)SelectorBar.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/SelectorBar.ec -o $(OBJ)SelectorBar.c -symbols $(OBJ)
-
 $(OBJ)StringsBox.c: ../extras/gui/controls/StringsBox.ec $(OBJ)StringsBox.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.c -symbols $(OBJ)
 
@@ -643,9 +632,6 @@ $(OBJ)FileSystemIterator.o: $(OBJ)FileSystemIterator.c
 
 $(OBJ)layout.o: $(OBJ)layout.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)layout.c -o $(OBJ)layout.o
-
-$(OBJ)SelectorBar.o: $(OBJ)SelectorBar.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)SelectorBar.c -o $(OBJ)SelectorBar.o
 
 $(OBJ)StringsBox.o: $(OBJ)StringsBox.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)StringsBox.c -o $(OBJ)StringsBox.o

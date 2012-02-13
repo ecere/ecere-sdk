@@ -124,6 +124,7 @@ OBJECTS3 = \
 	$(OBJ)Stacker.o \
 	$(OBJ)PathBox.o \
 	$(OBJ)ToolTip.o \
+	$(OBJ)SelectorBar.o \
 	$(OBJ)ColorPicker.o \
 	$(OBJ)FileDialog.o \
 	$(OBJ)FindDialog.o \
@@ -156,9 +157,9 @@ OBJECTS3 = \
 	$(OBJ)Service.o \
 	$(OBJ)Socket.o \
 	$(OBJ)Array.o \
-	$(OBJ)AVLTree.o \
-	$(OBJ)BuiltInContainer.o
+	$(OBJ)AVLTree.o
 OBJECTS4 = \
+	$(OBJ)BuiltInContainer.o \
 	$(OBJ)Container.o \
 	$(OBJ)CustomAVLTree.o \
 	$(OBJ)LinkList.o \
@@ -251,6 +252,7 @@ COBJECTS2 = \
 	$(OBJ)Stacker.c \
 	$(OBJ)PathBox.c \
 	$(OBJ)ToolTip.c \
+	$(OBJ)SelectorBar.c \
 	$(OBJ)ColorPicker.c \
 	$(OBJ)FileDialog.c \
 	$(OBJ)FindDialog.c \
@@ -259,9 +261,9 @@ COBJECTS2 = \
 	$(OBJ)ReplaceDialog.c \
 	$(OBJ)WindowList.c \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.c,) \
-	$(if $(WINDOWS),$(OBJ)Win32Interface.c,) \
-	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.c,)
+	$(if $(WINDOWS),$(OBJ)Win32Interface.c,)
 COBJECTS3 = \
+	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.c,) \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.c,) \
 	$(OBJ)TVisionSkin.c \
 	$(OBJ)WindowsSkin.c \
@@ -376,6 +378,7 @@ SYMBOLS2 = \
 	$(OBJ)Stacker.sym \
 	$(OBJ)PathBox.sym \
 	$(OBJ)ToolTip.sym \
+	$(OBJ)SelectorBar.sym \
 	$(OBJ)ColorPicker.sym \
 	$(OBJ)FileDialog.sym \
 	$(OBJ)FindDialog.sym \
@@ -501,6 +504,7 @@ IMPORTS2 = \
 	$(OBJ)Stacker.imp \
 	$(OBJ)PathBox.imp \
 	$(OBJ)ToolTip.imp \
+	$(OBJ)SelectorBar.imp \
 	$(OBJ)ColorPicker.imp \
 	$(OBJ)FileDialog.imp \
 	$(OBJ)FindDialog.imp \
@@ -649,6 +653,7 @@ SOURCES3 = \
 	src/gui/controls/Stacker.ec \
 	src/gui/controls/PathBox.ec \
 	src/gui/controls/ToolTip.ec \
+	src/gui/controls/SelectorBar.ec \
 	src/gui/dialogs/ColorPicker.ec \
 	src/gui/dialogs/FileDialog.ec \
 	src/gui/dialogs/FindDialog.ec \
@@ -686,10 +691,10 @@ SOURCES3 = \
 	src/com/containers/Container.ec \
 	src/com/containers/CustomAVLTree.ec \
 	src/com/containers/LinkList.ec \
-	src/com/containers/List.ec \
-	src/com/containers/Map.ec \
-	src/com/BinaryTree.ec
+	src/com/containers/List.ec
 SOURCES4 = \
+	src/com/containers/Map.ec \
+	src/com/BinaryTree.ec \
 	src/com/BTNode.ec \
 	src/com/dataTypes.ec \
 	src/com/instance.ec \
@@ -1173,6 +1178,9 @@ $(OBJ)PathBox.sym: src/gui/controls/PathBox.ec
 $(OBJ)ToolTip.sym: src/gui/controls/ToolTip.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/ToolTip.ec -o $(OBJ)ToolTip.sym
 
+$(OBJ)SelectorBar.sym: src/gui/controls/SelectorBar.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/SelectorBar.ec -o $(OBJ)SelectorBar.sym
+
 $(OBJ)ColorPicker.sym: src/gui/dialogs/ColorPicker.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/dialogs/ColorPicker.ec -o $(OBJ)ColorPicker.sym
 
@@ -1534,6 +1542,9 @@ $(OBJ)PathBox.c: src/gui/controls/PathBox.ec $(OBJ)PathBox.sym | $(SYMBOLS)
 
 $(OBJ)ToolTip.c: src/gui/controls/ToolTip.ec $(OBJ)ToolTip.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/ToolTip.ec -o $(OBJ)ToolTip.c -symbols $(OBJ)
+
+$(OBJ)SelectorBar.c: src/gui/controls/SelectorBar.ec $(OBJ)SelectorBar.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/SelectorBar.ec -o $(OBJ)SelectorBar.c -symbols $(OBJ)
 
 $(OBJ)ColorPicker.c: src/gui/dialogs/ColorPicker.ec $(OBJ)ColorPicker.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/ColorPicker.ec -o $(OBJ)ColorPicker.c -symbols $(OBJ)
@@ -1962,6 +1973,9 @@ $(OBJ)PathBox.o: $(OBJ)PathBox.c
 
 $(OBJ)ToolTip.o: $(OBJ)ToolTip.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ToolTip.c -o $(OBJ)ToolTip.o
+
+$(OBJ)SelectorBar.o: $(OBJ)SelectorBar.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)SelectorBar.c -o $(OBJ)SelectorBar.o
 
 $(OBJ)ColorPicker.o: $(OBJ)ColorPicker.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ColorPicker.c -o $(OBJ)ColorPicker.o
