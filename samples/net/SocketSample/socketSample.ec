@@ -88,7 +88,7 @@ class SocketSample : Window
 
       // The Send button is disabled if we're not connected
       btnSend.disabled = !connected;
-      // The Connect button is disabled if we haven't defined a connectedSocket yet
+      // The Connect button is disabled if we've already defined a connectedSocket
       btnConnect.disabled = connectedSocket != null;
       // The Listen button is disabled if we're already listening
       btnListen.disabled = listening;
