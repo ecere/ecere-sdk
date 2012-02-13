@@ -3410,10 +3410,16 @@ private:
             }
 
             if(activeChild)
-               if(!activeChild.PropagateActive(active, previous, goOnWithActivation, false) || !*goOnWithActivation)
+            {
+               Window aChild = activeChild;
+               incref aChild;
+               if(!aChild.PropagateActive(active, previous, goOnWithActivation, false) || !*goOnWithActivation)
                {
+                  delete aChild;
                   return false;
                }
+               delete aChild;
+            }
          }
       }
       return result;
