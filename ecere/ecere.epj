@@ -985,6 +985,14 @@
                            "Options" : {
                               "ExcludeFromBuild" : false
                            },
+                           "Platforms" : [
+                              {
+                                 "Name" : "apple",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ],
                            "Configurations" : [
                               {
                                  "Name" : "WSMS",
@@ -1066,6 +1074,25 @@
                                        }
                                     }
                                  ]
+                              }
+                           ]
+                        },
+                        {
+                           "FileName" : "CocoaOpenGLDisplayDriver.ec",
+                           "Platforms" : [
+                              {
+                                 "Name" : "apple",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "Vanilla",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               }
                            ]
                         },
@@ -1288,6 +1315,25 @@
                   {
                      "Folder" : "drivers",
                      "Files" : [
+                        {
+                           "Folder" : "cocoa",
+                           "Files" : [
+                              "CocoaDispatch.ec",
+                              "CocoaEcereBridge.h",
+                              "CocoaEcereBridge.m",
+                              "CocoaInterface.ec",
+                              "EcereView.h",
+                              "EcereView.m"
+                           ],
+                           "Platforms" : [
+                              {
+                                 "Name" : "apple",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
+                        },
                         {
                            "FileName" : "NCursesInterface.ec",
                            "Platforms" : [

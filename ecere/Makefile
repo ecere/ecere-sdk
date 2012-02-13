@@ -93,8 +93,9 @@ OBJECTS2 = \
 	$(OBJ)lfbConvert.o \
 	$(OBJ)LFBDisplayDriver.o \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.o,) \
-	$(OBJ)OpenGLDisplayDriver.o \
+	$(if $(OSX),,$(OBJ)OpenGLDisplayDriver.o) \
 	$(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.o,) \
+	$(if $(OSX),$(OBJ)CocoaOpenGLDisplayDriver.o,) \
 	$(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.o,) \
 	$(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.o,) \
 	$(if $(LINUX),$(OBJ)XDisplayDriver.o,) \
@@ -108,11 +109,11 @@ OBJECTS2 = \
 	$(OBJ)Surface.o \
 	$(OBJ)Button.o \
 	$(OBJ)CalendarControl.o \
-	$(OBJ)DataBox.o \
+	$(OBJ)DataBox.o
+OBJECTS3 = \
 	$(OBJ)DropBox.o \
 	$(OBJ)EditBox.o \
-	$(OBJ)Label.o
-OBJECTS3 = \
+	$(OBJ)Label.o \
 	$(OBJ)ListBox.o \
 	$(OBJ)Menu.o \
 	$(OBJ)Picture.o \
@@ -132,6 +133,10 @@ OBJECTS3 = \
 	$(OBJ)MessageBox.o \
 	$(OBJ)ReplaceDialog.o \
 	$(OBJ)WindowList.o \
+	$(if $(OSX),$(OBJ)CocoaDispatch.o,) \
+	$(if $(OSX),$(OBJ)CocoaEcereBridge.o,) \
+	$(if $(OSX),$(OBJ)CocoaInterface.o,) \
+	$(if $(OSX),$(OBJ)EcereView.o,) \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.o,) \
 	$(if $(WINDOWS),$(OBJ)Win32Interface.o,) \
 	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.o,) \
@@ -147,7 +152,8 @@ OBJECTS3 = \
 	$(OBJ)Interface.o \
 	$(OBJ)Key.o \
 	$(OBJ)Skin.o \
-	$(OBJ)Timer.o \
+	$(OBJ)Timer.o
+OBJECTS4 = \
 	$(OBJ)typeEdit.o \
 	$(OBJ)Window.o \
 	$(OBJ)dcom.o \
@@ -157,8 +163,7 @@ OBJECTS3 = \
 	$(OBJ)Service.o \
 	$(OBJ)Socket.o \
 	$(OBJ)Array.o \
-	$(OBJ)AVLTree.o
-OBJECTS4 = \
+	$(OBJ)AVLTree.o \
 	$(OBJ)BuiltInContainer.o \
 	$(OBJ)Container.o \
 	$(OBJ)CustomAVLTree.o \
@@ -222,8 +227,9 @@ COBJECTS1 = \
 	$(OBJ)LFBDisplayDriver.c \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.c,)
 COBJECTS2 = \
-	$(OBJ)OpenGLDisplayDriver.c \
+	$(if $(OSX),,$(OBJ)OpenGLDisplayDriver.c) \
 	$(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.c,) \
+	$(if $(OSX),$(OBJ)CocoaOpenGLDisplayDriver.c,) \
 	$(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.c,) \
 	$(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.c,) \
 	$(if $(LINUX),$(OBJ)XDisplayDriver.c,) \
@@ -260,9 +266,11 @@ COBJECTS2 = \
 	$(OBJ)MessageBox.c \
 	$(OBJ)ReplaceDialog.c \
 	$(OBJ)WindowList.c \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.c,) \
-	$(if $(WINDOWS),$(OBJ)Win32Interface.c,)
+	$(if $(OSX),$(OBJ)CocoaDispatch.c,)
 COBJECTS3 = \
+	$(if $(OSX),$(OBJ)CocoaInterface.c,) \
+	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.c,) \
+	$(if $(WINDOWS),$(OBJ)Win32Interface.c,) \
 	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.c,) \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.c,) \
 	$(OBJ)TVisionSkin.c \
@@ -300,7 +308,7 @@ COBJECTS3 = \
 	$(OBJ)String.c \
 	$(OBJ)OldList.c
 
-SYMBOLS = $(SYMBOLS1) $(SYMBOLS2) $(SYMBOLS3)
+SYMBOLS = $(SYMBOLS1) $(SYMBOLS2) $(SYMBOLS3) $(SYMBOLS4)
 SYMBOLS1 = \
 	$(OBJ)Archive.sym \
 	$(OBJ)BufferedFile.sym \
@@ -348,8 +356,9 @@ SYMBOLS1 = \
 	$(OBJ)LFBDisplayDriver.sym
 SYMBOLS2 = \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.sym,) \
-	$(OBJ)OpenGLDisplayDriver.sym \
+	$(if $(OSX),,$(OBJ)OpenGLDisplayDriver.sym) \
 	$(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.sym,) \
+	$(if $(OSX),$(OBJ)CocoaOpenGLDisplayDriver.sym,) \
 	$(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.sym,) \
 	$(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.sym,) \
 	$(if $(LINUX),$(OBJ)XDisplayDriver.sym,) \
@@ -382,11 +391,13 @@ SYMBOLS2 = \
 	$(OBJ)ColorPicker.sym \
 	$(OBJ)FileDialog.sym \
 	$(OBJ)FindDialog.sym \
-	$(OBJ)GoToDialog.sym \
+	$(OBJ)GoToDialog.sym
+SYMBOLS3 = \
 	$(OBJ)MessageBox.sym \
 	$(OBJ)ReplaceDialog.sym \
-	$(OBJ)WindowList.sym
-SYMBOLS3 = \
+	$(OBJ)WindowList.sym \
+	$(if $(OSX),$(OBJ)CocoaDispatch.sym,) \
+	$(if $(OSX),$(OBJ)CocoaInterface.sym,) \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.sym,) \
 	$(if $(WINDOWS),$(OBJ)Win32Interface.sym,) \
 	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.sym,) \
@@ -422,11 +433,12 @@ SYMBOLS3 = \
 	$(OBJ)BinaryTree.sym \
 	$(OBJ)BTNode.sym \
 	$(OBJ)dataTypes.sym \
-	$(OBJ)instance.sym \
+	$(OBJ)instance.sym
+SYMBOLS4 = \
 	$(OBJ)String.sym \
 	$(OBJ)OldList.sym
 
-IMPORTS = $(IMPORTS1) $(IMPORTS2) $(IMPORTS3)
+IMPORTS = $(IMPORTS1) $(IMPORTS2) $(IMPORTS3) $(IMPORTS4)
 IMPORTS1 = \
 	$(OBJ)Archive.imp \
 	$(OBJ)BufferedFile.imp \
@@ -474,8 +486,9 @@ IMPORTS1 = \
 	$(OBJ)LFBDisplayDriver.imp
 IMPORTS2 = \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.imp,) \
-	$(OBJ)OpenGLDisplayDriver.imp \
+	$(if $(OSX),,$(OBJ)OpenGLDisplayDriver.imp) \
 	$(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.imp,) \
+	$(if $(OSX),$(OBJ)CocoaOpenGLDisplayDriver.imp,) \
 	$(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.imp,) \
 	$(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.imp,) \
 	$(if $(LINUX),$(OBJ)XDisplayDriver.imp,) \
@@ -508,11 +521,13 @@ IMPORTS2 = \
 	$(OBJ)ColorPicker.imp \
 	$(OBJ)FileDialog.imp \
 	$(OBJ)FindDialog.imp \
-	$(OBJ)GoToDialog.imp \
+	$(OBJ)GoToDialog.imp
+IMPORTS3 = \
 	$(OBJ)MessageBox.imp \
 	$(OBJ)ReplaceDialog.imp \
-	$(OBJ)WindowList.imp
-IMPORTS3 = \
+	$(OBJ)WindowList.imp \
+	$(if $(OSX),$(OBJ)CocoaDispatch.imp,) \
+	$(if $(OSX),$(OBJ)CocoaInterface.imp,) \
 	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.imp,) \
 	$(if $(WINDOWS),$(OBJ)Win32Interface.imp,) \
 	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.imp,) \
@@ -548,7 +563,8 @@ IMPORTS3 = \
 	$(OBJ)BinaryTree.imp \
 	$(OBJ)BTNode.imp \
 	$(OBJ)dataTypes.imp \
-	$(OBJ)instance.imp \
+	$(OBJ)instance.imp
+IMPORTS4 = \
 	$(OBJ)String.imp \
 	$(OBJ)OldList.imp
 
@@ -622,8 +638,9 @@ SOURCES2 = \
 	src/gfx/drivers/lfbConvert.ec \
 	src/gfx/drivers/LFBDisplayDriver.ec \
 	$(if $(or $(LINUX),$(OSX)),src/gfx/drivers/NCursesDisplayDriver.ec,) \
-	src/gfx/drivers/OpenGLDisplayDriver.ec \
+	$(if $(OSX),,src/gfx/drivers/OpenGLDisplayDriver.ec) \
 	$(if $(WINDOWS),src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec,) \
+	$(if $(OSX),src/gfx/drivers/CocoaOpenGLDisplayDriver.ec,) \
 	$(if $(WINDOWS),src/gfx/drivers/Win32ConsoleDisplayDriver.ec,) \
 	$(if $(WINDOWS),src/gfx/drivers/Win32PrinterDisplayDriver.ec,) \
 	$(if $(LINUX),src/gfx/drivers/XDisplayDriver.ec,) \
@@ -639,11 +656,11 @@ SOURCES2 = \
 	src/gui/controls/CalendarControl.ec \
 	src/gui/controls/DataBox.ec \
 	src/gui/controls/DropBox.ec \
-	src/gui/controls/EditBox.ec \
+	src/gui/controls/EditBox.ec
+SOURCES3 = \
 	src/gui/controls/Label.ec \
 	src/gui/controls/ListBox.ec \
-	src/gui/controls/Menu.ec
-SOURCES3 = \
+	src/gui/controls/Menu.ec \
 	src/gui/controls/Picture.ec \
 	src/gui/controls/ProgressBar.ec \
 	src/gui/controls/ScrollBar.ec \
@@ -661,6 +678,10 @@ SOURCES3 = \
 	src/gui/dialogs/MessageBox.ec \
 	src/gui/dialogs/ReplaceDialog.ec \
 	src/gui/dialogs/WindowList.ec \
+	$(if $(OSX),src/gui/drivers/cocoa/CocoaDispatch.ec,) \
+	$(if $(OSX),src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
+	$(if $(OSX),src/gui/drivers/cocoa/CocoaInterface.ec,) \
+	$(if $(OSX),src/gui/drivers/cocoa/EcereView.m,) \
 	$(if $(or $(LINUX),$(OSX)),src/gui/drivers/NCursesInterface.ec,) \
 	$(if $(WINDOWS),src/gui/drivers/Win32Interface.ec,) \
 	$(if $(WINDOWS),src/gui/drivers/Win32ConsoleInterface.ec,) \
@@ -682,7 +703,8 @@ SOURCES3 = \
 	src/net/dcom.ec \
 	src/net/HTTPFile.ec \
 	src/net/network.ec \
-	src/net/NetworkClientFile.ec \
+	src/net/NetworkClientFile.ec
+SOURCES4 = \
 	src/net/Service.ec \
 	src/net/Socket.ec \
 	src/com/containers/Array.ec \
@@ -691,8 +713,7 @@ SOURCES3 = \
 	src/com/containers/Container.ec \
 	src/com/containers/CustomAVLTree.ec \
 	src/com/containers/LinkList.ec \
-	src/com/containers/List.ec
-SOURCES4 = \
+	src/com/containers/List.ec \
 	src/com/containers/Map.ec \
 	src/com/BinaryTree.ec \
 	src/com/BTNode.ec \
@@ -835,6 +856,10 @@ UPXFLAGS = -9 -q
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
 ifdef LINUX
 OFLAGS += -Wl,--no-undefined
+endif
+
+ifdef OSX
+OFLAGS += -framework cocoa -framework OpenGL
 endif
 
 # PLATFORM-SPECIFIC OPTIONS
@@ -1094,6 +1119,9 @@ $(OBJ)OpenGLDisplayDriver.sym: src/gfx/drivers/OpenGLDisplayDriver.ec
 $(OBJ)Win32BitmapPrinterDisplayDriver.sym: src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec -o $(OBJ)Win32BitmapPrinterDisplayDriver.sym
 
+$(OBJ)CocoaOpenGLDisplayDriver.sym: src/gfx/drivers/CocoaOpenGLDisplayDriver.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/CocoaOpenGLDisplayDriver.ec -o $(OBJ)CocoaOpenGLDisplayDriver.sym
+
 $(OBJ)Win32ConsoleDisplayDriver.sym: src/gfx/drivers/Win32ConsoleDisplayDriver.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/Win32ConsoleDisplayDriver.ec -o $(OBJ)Win32ConsoleDisplayDriver.sym
 
@@ -1201,6 +1229,12 @@ $(OBJ)ReplaceDialog.sym: src/gui/dialogs/ReplaceDialog.ec
 
 $(OBJ)WindowList.sym: src/gui/dialogs/WindowList.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/dialogs/WindowList.ec -o $(OBJ)WindowList.sym
+
+$(OBJ)CocoaDispatch.sym: src/gui/drivers/cocoa/CocoaDispatch.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/cocoa/CocoaDispatch.ec -o $(OBJ)CocoaDispatch.sym
+
+$(OBJ)CocoaInterface.sym: src/gui/drivers/cocoa/CocoaInterface.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/cocoa/CocoaInterface.ec -o $(OBJ)CocoaInterface.sym
 
 $(OBJ)NCursesInterface.sym: src/gui/drivers/NCursesInterface.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/NCursesInterface.ec -o $(OBJ)NCursesInterface.sym
@@ -1459,6 +1493,9 @@ $(OBJ)OpenGLDisplayDriver.c: src/gfx/drivers/OpenGLDisplayDriver.ec $(OBJ)OpenGL
 $(OBJ)Win32BitmapPrinterDisplayDriver.c: src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec $(OBJ)Win32BitmapPrinterDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec -o $(OBJ)Win32BitmapPrinterDisplayDriver.c -symbols $(OBJ)
 
+$(OBJ)CocoaOpenGLDisplayDriver.c: src/gfx/drivers/CocoaOpenGLDisplayDriver.ec $(OBJ)CocoaOpenGLDisplayDriver.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/CocoaOpenGLDisplayDriver.ec -o $(OBJ)CocoaOpenGLDisplayDriver.c -symbols $(OBJ)
+
 $(OBJ)Win32ConsoleDisplayDriver.c: src/gfx/drivers/Win32ConsoleDisplayDriver.ec $(OBJ)Win32ConsoleDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/Win32ConsoleDisplayDriver.ec -o $(OBJ)Win32ConsoleDisplayDriver.c -symbols $(OBJ)
 
@@ -1566,6 +1603,12 @@ $(OBJ)ReplaceDialog.c: src/gui/dialogs/ReplaceDialog.ec $(OBJ)ReplaceDialog.sym 
 
 $(OBJ)WindowList.c: src/gui/dialogs/WindowList.ec $(OBJ)WindowList.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/WindowList.ec -o $(OBJ)WindowList.c -symbols $(OBJ)
+
+$(OBJ)CocoaDispatch.c: src/gui/drivers/cocoa/CocoaDispatch.ec $(OBJ)CocoaDispatch.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/cocoa/CocoaDispatch.ec -o $(OBJ)CocoaDispatch.c -symbols $(OBJ)
+
+$(OBJ)CocoaInterface.c: src/gui/drivers/cocoa/CocoaInterface.ec $(OBJ)CocoaInterface.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/cocoa/CocoaInterface.ec -o $(OBJ)CocoaInterface.c -symbols $(OBJ)
 
 $(OBJ)NCursesInterface.c: src/gui/drivers/NCursesInterface.ec $(OBJ)NCursesInterface.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/NCursesInterface.ec -o $(OBJ)NCursesInterface.c -symbols $(OBJ)
@@ -1890,6 +1933,9 @@ $(OBJ)OpenGLDisplayDriver.o: $(OBJ)OpenGLDisplayDriver.c
 $(OBJ)Win32BitmapPrinterDisplayDriver.o: $(OBJ)Win32BitmapPrinterDisplayDriver.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Win32BitmapPrinterDisplayDriver.c -o $(OBJ)Win32BitmapPrinterDisplayDriver.o
 
+$(OBJ)CocoaOpenGLDisplayDriver.o: $(OBJ)CocoaOpenGLDisplayDriver.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CocoaOpenGLDisplayDriver.c -o $(OBJ)CocoaOpenGLDisplayDriver.o
+
 $(OBJ)Win32ConsoleDisplayDriver.o: $(OBJ)Win32ConsoleDisplayDriver.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Win32ConsoleDisplayDriver.c -o $(OBJ)Win32ConsoleDisplayDriver.o
 
@@ -1997,6 +2043,18 @@ $(OBJ)ReplaceDialog.o: $(OBJ)ReplaceDialog.c
 
 $(OBJ)WindowList.o: $(OBJ)WindowList.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)WindowList.c -o $(OBJ)WindowList.o
+
+$(OBJ)CocoaDispatch.o: $(OBJ)CocoaDispatch.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CocoaDispatch.c -o $(OBJ)CocoaDispatch.o
+
+$(OBJ)CocoaEcereBridge.o: src/gui/drivers/cocoa/CocoaEcereBridge.m
+	$(CC) $(CFLAGS) -c src/gui/drivers/cocoa/CocoaEcereBridge.m -o $(OBJ)CocoaEcereBridge.o
+
+$(OBJ)CocoaInterface.o: $(OBJ)CocoaInterface.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CocoaInterface.c -o $(OBJ)CocoaInterface.o
+
+$(OBJ)EcereView.o: src/gui/drivers/cocoa/EcereView.m
+	$(CC) $(CFLAGS) -c src/gui/drivers/cocoa/EcereView.m -o $(OBJ)EcereView.o
 
 $(OBJ)NCursesInterface.o: $(OBJ)NCursesInterface.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)NCursesInterface.c -o $(OBJ)NCursesInterface.o
@@ -2133,6 +2191,7 @@ clean: objdir
 	$(call rmq,$(IMPORTS1))
 	$(call rmq,$(IMPORTS2))
 	$(call rmq,$(IMPORTS3))
+	$(call rmq,$(IMPORTS4))
 	$(call rmq,$(SYMBOLS1))
 	$(call rmq,$(SYMBOLS2))
 	$(call rmq,$(SYMBOLS3))

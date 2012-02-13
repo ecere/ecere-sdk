@@ -12,6 +12,8 @@ import "dataTypes"
 #endif
 #endif
 
+#undef __BLOCKS__
+
 #if !defined(ECERE_BOOTSTRAP)
 import "Mutex"
 #endif

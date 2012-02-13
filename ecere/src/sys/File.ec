@@ -3,6 +3,7 @@ namespace sys;
 default:
 #define uint _uint
 #define File _File
+#undef __BLOCKS__
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>

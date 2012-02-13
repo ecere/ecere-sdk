@@ -1759,9 +1759,9 @@ private:
          /*if(!strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
                !strcmpi(extension, "ec") || !strcmpi(extension, "cc") ||
                !strcmpi(extension, "cxx"))*/
-         if((!strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
-               !strcmpi(extension, "cc") || !strcmpi(extension, "cxx")) ||
-               !strcmpi(extension, "ec"))
+         if(!strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
+               !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
+               !strcmpi(extension, "m") || !strcmpi(extension, "ec"))
          {
             DualPipe dep;
             char command[2048];

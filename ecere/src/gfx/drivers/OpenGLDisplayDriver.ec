@@ -3,7 +3,7 @@
 namespace gfx::drivers;
 
 // OpenGL Extensions
-#if defined(__unix__) || defined(__APPLE__)
+#if defined(__unix__)
 
 #if !defined(__MINGW32__)
 #define GL_GLEXT_PROTOTYPES
@@ -53,6 +53,10 @@ namespace gfx::drivers;
 
 #endif
 
+#if defined(__APPLE__)
+#include <OpenGl/gl.h>
+#endif
+
 #if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
 
 #if defined(__WIN32__)
@@ -66,7 +70,7 @@ namespace gfx::drivers;
 
 import "Display"
 
-#if defined(__unix__) || defined(__APPLE__)
+#if defined(__unix__)
 import "XInterface"
 #endif
 
@@ -441,11 +445,11 @@ class OpenGLDisplayDriver : DisplayDriver
       if(useSingleGLContext) return true;
    #if defined(__WIN32__)
       wglMakeCurrent(oglSystem.hdc, oglSystem.glrc);
-   #else
+   #elif defined(__unix__)
       //if(previous) return true;
       // printf("Making SYSTEM current\n");
 /*#if defined(__APPLE__)
-      glXMakeCurrent(xGlobalDisplay, displaySystem.window, oglSystem.glContext);
+      //glXMakeCurrent(xGlobalDisplay, displaySystem.window, oglSystem.glContext);
 #else*/
       glXMakeCurrent(xGlobalDisplay, oglSystem.dummyGLXPixmap /*displaySystem.window /*DefaultRootWindow(xGlobalDisplay)*/, oglSystem.glContext);
 //#endif
@@ -459,7 +463,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(useSingleGLContext) return;
    #if defined(__WIN32__)
       wglMakeCurrent(null, null);
-   #else
+   #elif defined(__unix__)
       // printf("Making NULL current\n");
       glXMakeCurrent(xGlobalDisplay, None, null);
       // previous = null;
@@ -474,7 +478,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(useSingleGLContext) return true;
    #if defined(__WIN32__)
       wglMakeCurrent(oglDisplay.hdc, oglDisplay.glrc);
-   #else
+   #elif defined(__unix__)
       // if(previous) glXMakeCurrent(xGlobalDisplay, None, null);
       // printf("   Making DISPLAY current\n");
       glXMakeCurrent(xGlobalDisplay, (int)display.window, oglDisplay.glContext);
@@ -515,7 +519,7 @@ class OpenGLDisplayDriver : DisplayDriver
          if(oglDisplay.memDC) DeleteDC(oglDisplay.memDC);
          if(oglDisplay.memBitmap) DeleteObject(oglDisplay.memBitmap); 
 
-   #else
+   #elif defined(__unix__)
          if(oglDisplay.shapePixmap)
             XFreePixmap(xGlobalDisplay, oglDisplay.shapePixmap);
          if(oglDisplay.pixmap)
@@ -674,7 +678,7 @@ class OpenGLDisplayDriver : DisplayDriver
             }
          }
       }
-   #else
+   #elif defined(__unix__)
       int attrList[] = 
       {
    #ifndef ECERE_MINIGLX
@@ -697,12 +701,7 @@ class OpenGLDisplayDriver : DisplayDriver
          if(oglSystem.glContext)
          {
             //printf("Got a Context\n");
-/*#if defined(__APPLE__)
-            glXMakeCurrent(xGlobalDisplay, displaySystem.window, oglSystem.glContext);
-#else
-*/
             glXMakeCurrent(xGlobalDisplay, oglSystem.dummyGLXPixmap /*displaySystem.window /*DefaultRootWindow(xGlobalDisplay)*/, oglSystem.glContext);
-//#endif
 
             // Setup Extensions
 
@@ -733,7 +732,7 @@ class OpenGLDisplayDriver : DisplayDriver
          ReleaseDC(oglSystem.hwnd, oglSystem.hdc);
       DestroyWindow(oglSystem.hwnd);
 
-   #else
+   #elif defined(__unix__)
 
       if(oglSystem.visualInfo)
       {
@@ -776,7 +775,7 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          else
             ReleaseDC(display.window, oglDisplay.hdc);
-   #else
+   #elif defined(__unix__)
          XVisualInfo * visualInfo = null;
          /*
          int attrib[] =
@@ -877,7 +876,7 @@ class OpenGLDisplayDriver : DisplayDriver
    if(!useSingleGLContext)
    #if defined(__WIN32__)
       wglMakeCurrent(null, null);
-   #else
+   #elif defined(__unix__)
       glXMakeCurrent(xGlobalDisplay, None, null);
    #endif
 
@@ -1049,7 +1048,7 @@ class OpenGLDisplayDriver : DisplayDriver
             }
             ReleaseDC(display.window, hdc);
          }
-#else
+#elif defined(__unix__)
       	int attrib[] =
       	{
       		GLX_DOUBLEBUFFER,  True,
@@ -1209,7 +1208,7 @@ class OpenGLDisplayDriver : DisplayDriver
          CreateDisplay(display);
 #if defined(__WIN32__)
          wglMakeCurrent(oglDisplay.hdc, oglDisplay.glrc);
-#else
+#elif defined(__unix__)
          glXMakeCurrent(xGlobalDisplay, (int)display.window, oglDisplay.glContext);
 #endif
       }
@@ -1336,7 +1335,7 @@ class OpenGLDisplayDriver : DisplayDriver
             */
 
             ReleaseDC(0, hdc);
-#else
+#elif defined(__unix__)
             XTransform transform = 
             {
                {
@@ -1363,7 +1362,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__WIN32__)
          //wglSwapLayerBuffers(oglDisplay.hdc,WGL_SWAP_MAIN_PLANE); 
          SwapBuffers(oglDisplay.hdc);
-#else
+#elif defined(__unix__)
          glXSwapBuffers(xGlobalDisplay, (int)display.window);
 #endif
       }

@@ -67,7 +67,9 @@ typedef struct in_addr IN_ADDR;
 import "network"
 #endif
 
-#if defined(__unix__) || defined(__APPLE__)
+#if defined(__APPLE__)
+import "CocoaInterface"
+#elif defined(__unix__)
 import "XInterface"
 #endif
 
@@ -564,6 +566,14 @@ public class GuiApplication : Application
             else
                defaultDriver = "Win32Console";
          }
+   #elif defined(__APPLE__)
+         {
+            if (driver) {
+               defaultDriver = driver;
+            } else {
+               defaultDriver = "CocoaOpenGL";
+            }
+         } 
    #else
          if(this.isGUIApp && !textMode)
          {
@@ -596,7 +606,11 @@ public class GuiApplication : Application
                SwitchMode(true, "SVGA", Res640x480, PixelFormat8, 0, null, true);
          #endif
 
-         #if defined(__unix__) || defined(__APPLE__)
+         #if defined(__APPLE__)
+               SwitchMode(true, "CocoaOpenGL", 0, 0, 0, null, true);
+         #endif
+
+         #if defined(__unix__)
          #if defined(ECERE_MINIGLX)
                SwitchMode(true, "OpenGL", 0, 0, 0, null, true);
          #endif

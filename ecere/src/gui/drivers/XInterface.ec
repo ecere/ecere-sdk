@@ -7,6 +7,7 @@ import "OpenGLDisplayDriver"
 
 #if (defined(__unix__) || defined(__APPLE__)) && !defined(ECERE_MINIGLX)
 
+#undef __BLOCKS__
 default:
 #define uint _uint
 #define property _property

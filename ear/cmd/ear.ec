@@ -2,7 +2,7 @@
 #define __unix__
 #endif
 
-#if defined(__unix__)
+#if defined(__unix__) || defined(__APPLE__)
 #define uint _uint
 #include <sys/stat.h>
 #undef uint

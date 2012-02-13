@@ -4,6 +4,7 @@ namespace sys;
 
 default:
 
+#undef __BLOCKS__
 #include <stdlib.h>
 #if !defined(ECERE_BOOTSTRAP) // quick fix for now
 #if defined(__WIN32__)

@@ -4,6 +4,7 @@ namespace gfx::drivers;
 #define ECERE_NOTRUETYPE
 #endif
 
+#undef __BLOCKS__
 #define uint _uint
 #if !defined(ECERE_NOTRUETYPE)
 #include <ft2build.h>

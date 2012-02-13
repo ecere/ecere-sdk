@@ -24,6 +24,7 @@ default:
 
 #endif
 
+#undef __BLOCKS__
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>

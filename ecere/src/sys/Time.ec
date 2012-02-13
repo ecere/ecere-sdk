@@ -14,6 +14,8 @@ import "instance"
 #define uint64 _uint64
 #define Alignment _Alignment
 
+#undef __BLOCKS__
+
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

@@ -4,6 +4,7 @@ import "instance"
 
 #if (defined(__unix__) || defined(__APPLE__)) && !defined(__DOS__)
 
+#undef __BLOCKS__
 #define DBLCLICK_DELAY  0.3  // seconds
 #define DBLCLICK_DELTA  1
 

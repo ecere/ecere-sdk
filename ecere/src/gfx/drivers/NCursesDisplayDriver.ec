@@ -2,6 +2,8 @@ namespace gfx::drivers;
 
 import "instance"
 
+#undef __BLOCKS__
+
 #if (defined(__unix__) || defined(__APPLE__)) && !defined(__DOS__)
 
 #define bool CursesBool

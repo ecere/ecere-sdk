@@ -6,7 +6,7 @@ public class Key
 {
 public:
    KeyCode code:16;
-   bool shift:1, ctrl:1, alt:1;
+   bool shift:1, ctrl:1, alt:1, cmd:1;
    Modifiers modifiers:16:16;
    property SmartKey
    {
@@ -263,7 +263,7 @@ public class Modifiers
       return 0;
    };
 
-   public bool shift:1, ctrl:1, alt:1, left:1, middle:1, right:1, isActivate:1, isSideEffect:1, closingDropDown:1;
+   public bool shift:1, ctrl:1, alt:1, cmd:1, left:1, middle:1, right:1, isActivate:1, isSideEffect:1, closingDropDown:1;
 };
 
 public enum PredefinedKey : Key
