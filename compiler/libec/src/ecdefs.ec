@@ -899,6 +899,7 @@ public:
    BinaryTree templateTypes { CompareKey = (void *)BinaryTree::CompareString };
    ClassDefinition classDef;
    bool templateTypesOnly;
+   bool hasNameSpace;
 };
 
 /*************** Compiling passes symbols ***************/

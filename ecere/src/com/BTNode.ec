@@ -239,6 +239,39 @@ private:
       return this;
    }
 
+   public BTNode FindPrefix(char * key)
+   {
+      BTNode subString = null;
+      int len = key ? strlen(key) : 0;
+      while(this)
+      {
+         int result;
+         if(key && this.key)
+            result = strcmp(key, (char *)this.key);
+         else if(key && !this.key)
+            result = 1;
+         else if(!key && this.key)
+            result = -1;
+         else
+            result = 0;
+
+         if(result < 0)
+         {
+            if(!strncmp(key, (char *)this.key, len))
+               subString = this;
+            this = left;
+         }
+         else if(result > 0)
+            this = right;
+         else
+         {
+            subString = this;
+            break;
+         }
+      }
+      return subString;
+   }
+
    BTNode FindAll(uint key)
    {
       BTNode result = null;

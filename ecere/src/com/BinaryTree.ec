@@ -75,6 +75,11 @@ public struct BinaryTree
       return root ? root.FindString(key) : null;
    }
 
+   BTNode FindPrefix(char * key)
+   {
+      return root ? root.FindPrefix(key) : null;
+   }
+
    BTNode FindAll(uint key)
    {
       return root ? root.FindAll(key) : null;

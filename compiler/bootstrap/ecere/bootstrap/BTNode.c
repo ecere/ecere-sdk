@@ -525,6 +525,42 @@ break;
 return this;
 }
 
+extern int strncmp(const char * , const char * , int n);
+
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindPrefix(struct __ecereNameSpace__ecere__sys__BTNode * this, char * key)
+{
+struct __ecereNameSpace__ecere__sys__BTNode * subString = (((void *)0));
+int len = key ? strlen(key) : 0;
+
+while(this)
+{
+int result;
+
+if(key && this->key)
+result = strcmp(key, (char *)this->key);
+else if(key && !this->key)
+result = 1;
+else if(!key && this->key)
+result = -1;
+else
+result = 0;
+if(result < 0)
+{
+if(!strncmp(key, (char *)this->key, len))
+subString = this;
+this = this->left;
+}
+else if(result > 0)
+this = this->right;
+else
+{
+subString = this;
+break;
+}
+}
+return subString;
+}
+
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindAll(struct __ecereNameSpace__ecere__sys__BTNode * this, unsigned int key)
 {
 struct __ecereNameSpace__ecere__sys__BTNode * result = (((void *)0));
@@ -1065,6 +1101,7 @@ if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->app
 __ecereClass___ecereNameSpace__ecere__sys__BTNode = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnSerialize", 0, __ecereMethod___ecereNameSpace__ecere__sys__BTNode_OnSerialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnUnserialize", 0, __ecereMethod___ecereNameSpace__ecere__sys__BTNode_OnUnserialize, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "FindPrefix", "ecere::sys::BTNode FindPrefix(char * key)", __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindPrefix, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "FindString", "ecere::sys::BTNode FindString(char * key)", __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindString, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "key", "uint", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "parent", "ecere::sys::BTNode", 4, 4, 1);

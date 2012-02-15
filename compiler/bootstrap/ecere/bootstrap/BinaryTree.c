@@ -332,6 +332,13 @@ struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ec
 return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindString(this->root, key) : (((void *)0));
 }
 
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindPrefix(struct __ecereNameSpace__ecere__sys__BTNode * this, char *  key);
+
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindPrefix(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char * key)
+{
+return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindPrefix(this->root, key) : (((void *)0));
+}
+
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindAll(struct __ecereNameSpace__ecere__sys__BTNode * this, unsigned int key);
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindAll(struct __ecereNameSpace__ecere__sys__BinaryTree * this, unsigned int key)
@@ -483,6 +490,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "CompareString", "int Comp
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Delete", "void Delete(ecere::sys::BTNode node)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Find", "ecere::sys::BTNode Find(unsigned int key)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Find, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "FindAll", "ecere::sys::BTNode FindAll(unsigned int key)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindAll, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "FindPrefix", "ecere::sys::BTNode FindPrefix(char * key)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindPrefix, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "FindString", "ecere::sys::BTNode FindString(char * key)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Free", "void Free()", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Free, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "FreeString", "void ::FreeString(char * string)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FreeString, 1);

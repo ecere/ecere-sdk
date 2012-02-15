@@ -2094,6 +2094,9 @@ void ProcessInstantiationType(Instantiation inst)
                         printf("TOCHECK: Will this ever be in a list? Yes.\n");
                         excludedSymbols->Remove(declarator.symbol);
                         globalContext.symbols.Add((BTNode)declarator.symbol);
+                        if(strstr(declarator.symbol.string), "::")
+                           globalContext.hasNameSpace = true;
+
                      }
                      */
                   
@@ -6044,28 +6047,37 @@ void CheckTemplateTypes(Expression exp)
       }
    }
 }
+// TODO: The Symbol tree should be reorganized by namespaces
+// Name Space:
+//    - Tree of all symbols within (stored without namespace)
+//    - Tree of sub-namespaces
 
 static Symbol ScanWithNameSpace(BinaryTree tree, char * nameSpace, char * name)
 {
-   Symbol symbol;
    int nsLen = strlen(nameSpace);
-   for(symbol = (Symbol)tree.first; symbol; symbol = (Symbol)((BTNode)symbol).next)
+   Symbol symbol;
+   // Start at the name space prefix
+   for(symbol = (Symbol)tree.FindPrefix(nameSpace); symbol; symbol = (Symbol)((BTNode)symbol).next)
    {
-      if(!strncmp(symbol.string, nameSpace, nsLen))
+      char * s = symbol.string;
+      if(!strncmp(s, nameSpace, nsLen))
       {
+         // This supports e.g. matching ecere::Socket to ecere::net::Socket
          int c;
          char * namePart;
-         for(c = strlen(symbol.string)-1; c >= 0; c--)
-            if(symbol.string[c] == ':')
+         for(c = strlen(s)-1; c >= 0; c--)
+            if(s[c] == ':')
                break;
 
-         namePart = symbol.string+c+1;
+         namePart = s+c+1;
          if(!strcmp(namePart, name))
          {
             // TODO: Error on ambiguity
             return symbol;
          }
       }
+      else
+         break;
    }
    return null;
 }
@@ -6089,17 +6101,31 @@ static Symbol FindWithNameSpace(BinaryTree tree, char * name)
    while(c >= 0 && name[c] == ':') c--;
    if(c >= 0)
    {
+      // Try an exact match first
+      Symbol symbol = (Symbol)tree.FindString(name);
+      if(symbol)
+         return symbol;
+
+      // Namespace specified
       memcpy(nameSpace, name, c + 1);
       nameSpace[c+1] = 0;
+
       return ScanWithNameSpace(tree, nameSpace, namePart);
    }
    else if(gotColon)
    {
+      // Looking for a global symbol, e.g. ::Sleep()
       Symbol symbol = (Symbol)tree.FindString(namePart);
       return symbol;
    }
    else
+   {
+      // Name only (no namespace specified)
+      Symbol symbol = (Symbol)tree.FindString(namePart);
+      if(symbol)
+         return symbol;
       return ScanWithNameSpace(tree, "", namePart);
+   }
    return null;
 }
 
@@ -6118,7 +6144,7 @@ static void ProcessDeclaration(Declaration decl);
 
    for(ctx = startContext; ctx /*!= topContext.parent */&& !symbol; ctx = ctx.parent)
    {
-      if(ctx == globalContext && !globalNameSpace)
+      if(ctx == globalContext && !globalNameSpace && ctx.hasNameSpace)
       {
          symbol = null;
          if(thisNameSpace)
@@ -6127,15 +6153,14 @@ static void ProcessDeclaration(Declaration decl);
             strcpy(curName, thisNameSpace);
             strcat(curName, "::");
             strcat(curName, name);
+            // Try to resolve in current namespace first
             symbol = FindWithNameSpace(isStruct ? ctx.structSymbols : ctx.symbols, curName);
          }
          if(!symbol)
             symbol = FindWithNameSpace(isStruct ? ctx.structSymbols : ctx.symbols, name);
       }
-      else if(isStruct)
-         symbol = (Symbol)ctx.structSymbols.FindString(name);
       else
-         symbol = (Symbol)ctx.symbols.FindString(name);
+         symbol = (Symbol)(isStruct ? ctx.structSymbols : ctx.symbols).FindString(name);
 
       if(symbol || ctx == endContext) break;
    }
@@ -8779,6 +8804,8 @@ void ProcessExpressionType(Expression exp)
                      Compiler_Warning("%s undefined; assuming extern returning int\n", string);
                   symbol = Symbol { string = CopyString(string), type = ProcessTypeString("int()", true) };
                   globalContext.symbols.Add((BTNode)symbol);
+                  if(strstr(symbol.string, "::"))
+                     globalContext.hasNameSpace = true;
 
                   yylloc = oldyylloc;
                }

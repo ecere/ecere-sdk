@@ -411,6 +411,8 @@ Specifier MkEnum(Identifier id, OldList list)
       {
          Symbol symbol { string = CopyString(id.string), isStruct = true, type = type };
          type.refCount++;
+         if(strstr(symbol.string, "::"))
+            curContext.hasNameSpace = true;
          if(!curContext.structSymbols.Add((BTNode)symbol))
             FreeSymbol(symbol);
       }
@@ -418,6 +420,8 @@ Specifier MkEnum(Identifier id, OldList list)
       {
          Symbol symbol { string = CopyString(e.id.string), type = type };
          type.refCount++;
+         if(strstr(symbol.string, "::"))
+            curContext.hasNameSpace = true;
          if(!(curContext.templateTypesOnly ? curContext.parent : curContext).symbols.Add((BTNode)symbol))
             FreeSymbol(symbol);
       }
@@ -586,6 +590,8 @@ Declaration MkDeclarationInst(Instantiation inst)
       type = MkClassTypeSymbol(inst._class.symbol);
    };
    symbol.idCode = symbol.id = curContext.nextID++;
+   if(strstr(symbol.string, "::"))
+      curContext.hasNameSpace = true;
    if(!(curContext.templateTypesOnly ? curContext.parent : curContext).symbols.Add((BTNode)symbol))
       excludedSymbols->Add(symbol);
    decl.symbol = inst.symbol = symbol;
@@ -736,6 +742,8 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                if(!symbol)
                {
                   symbol = Symbol { string = CopyString(id.string), type = ProcessType(specifiers, d.declarator) };
+                  if(strstr(symbol.string, "::"))
+                     curContext.hasNameSpace = true;
                   if(!(curContext.templateTypesOnly ? curContext.parent : curContext).symbols.Add((BTNode)symbol))
                      excludedSymbols->Add(symbol);
                   // TODO: Add better support to count declarators
@@ -948,6 +956,8 @@ void ProcessFunctionBody(FunctionDefinition func, Statement body)
       }
       symbol = Symbol { string = CopyString(id.string), type = ProcessType(func.specifiers, declarator) };
       symbol.idCode = symbol.id = globalContext.nextID++;
+      if(strstr(symbol.string, "::"))
+         globalContext.hasNameSpace = true;
       if(!globalContext.symbols.Add((BTNode)symbol))
          excludedSymbols->Add(symbol);
       declarator.symbol = symbol;
@@ -958,6 +968,8 @@ void ProcessFunctionBody(FunctionDefinition func, Statement body)
       excludedSymbols->Remove(declarator.symbol);
       delete symbol.string;
       symbol.string = CopyString(GetDeclId(declarator).string);
+      if(strstr(symbol.string, "::"))
+         globalContext.hasNameSpace = true;
       if(!globalContext.symbols.Add((BTNode)symbol))
          excludedSymbols->Add(symbol);
 
