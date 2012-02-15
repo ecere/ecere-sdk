@@ -10005,6 +10005,17 @@ void ProcessExpressionType(Expression exp)
          if(exp.expType.kind != enumType)
          {
             Type member;
+            String enumName = CopyString(exp.expType.enumName);
+
+            // Fixed a memory leak on self-referencing C structs typedefs
+            // by instantiating a new type rather than simply copying members
+            // into exp.expType
+            FreeType(exp.expType);
+            exp.expType = Type { };
+            exp.expType.kind = symbol.type.kind;
+            exp.expType.refCount++;
+            exp.expType.enumName = enumName;
+
             exp.expType.members = symbol.type.members;
             for(member = symbol.type.members.first; member; member = member.next)
                member.refCount++;

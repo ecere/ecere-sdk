@@ -144,6 +144,7 @@ int simpleID;
 struct __ecereNameSpace__ecere__sys__BinaryTree templateTypes;
 struct ClassDefinition * classDef;
 unsigned int templateTypesOnly;
+unsigned int hasNameSpace;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Instantiation;
@@ -10846,27 +10847,33 @@ break;
 
 extern int strncmp(const char * , const char * , int n);
 
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindPrefix(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char *  key);
+
 static struct Symbol * ScanWithNameSpace(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, char * nameSpace, char * name)
 {
-struct Symbol * symbol;
 int nsLen = strlen(nameSpace);
+struct Symbol * symbol;
 
-for(symbol = (struct Symbol *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(tree); symbol; symbol = (struct Symbol *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)symbol)))
+for(symbol = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindPrefix(tree, nameSpace); symbol; symbol = (struct Symbol *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)symbol)))
 {
-if(!strncmp(symbol->string, nameSpace, nsLen))
+char * s = symbol->string;
+
+if(!strncmp(s, nameSpace, nsLen))
 {
 int c;
 char * namePart;
 
-for(c = strlen(symbol->string) - 1; c >= 0; c--)
-if(symbol->string[c] == ':')
+for(c = strlen(s) - 1; c >= 0; c--)
+if(s[c] == ':')
 break;
-namePart = symbol->string + c + 1;
+namePart = s + c + 1;
 if(!strcmp(namePart, name))
 {
 return symbol;
 }
 }
+else
+break;
 }
 return (((void *)0));
 }
@@ -10890,6 +10897,10 @@ while(c >= 0 && name[c] == ':')
 c--;
 if(c >= 0)
 {
+struct Symbol * symbol = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(tree, name);
+
+if(symbol)
+return symbol;
 memcpy(nameSpace, name, c + 1);
 nameSpace[c + 1] = (char)0;
 return ScanWithNameSpace(tree, nameSpace, namePart);
@@ -10901,7 +10912,13 @@ struct Symbol * symbol = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere_
 return symbol;
 }
 else
+{
+struct Symbol * symbol = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(tree, namePart);
+
+if(symbol)
+return symbol;
 return ScanWithNameSpace(tree, "", namePart);
+}
 return (((void *)0));
 }
 
@@ -10914,7 +10931,7 @@ struct Symbol * symbol = (((void *)0));
 
 for(ctx = startContext; ctx && !symbol; ctx = ctx->parent)
 {
-if(ctx == globalContext && !globalNameSpace)
+if(ctx == globalContext && !globalNameSpace && ctx->hasNameSpace)
 {
 symbol = (((void *)0));
 if(thisNameSpace)
@@ -10929,10 +10946,8 @@ symbol = FindWithNameSpace(isStruct ? &ctx->structSymbols : &ctx->symbols, curNa
 if(!symbol)
 symbol = FindWithNameSpace(isStruct ? &ctx->structSymbols : &ctx->symbols, name);
 }
-else if(isStruct)
-symbol = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&ctx->structSymbols, name);
 else
-symbol = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&ctx->symbols, name);
+symbol = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString((isStruct ? &ctx->structSymbols : &ctx->symbols), name);
 if(symbol || ctx == endContext)
 break;
 }
@@ -13192,6 +13207,8 @@ else
 Compiler_Warning("%s undefined; assuming extern returning int\n", string);
 symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(string), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("int()", 0x1), ((struct Symbol *)__ecereTemp1));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol);
+if(strstr(symbol->string, "::"))
+globalContext->hasNameSpace = 0x1;
 yylloc = oldyylloc;
 }
 }
@@ -14231,7 +14248,13 @@ if(symbol)
 if(exp->expType->kind != 15)
 {
 struct Type * member;
+char * enumName = __ecereNameSpace__ecere__sys__CopyString(exp->expType->enumName);
 
+FreeType(exp->expType);
+exp->expType = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+exp->expType->kind = symbol->type->kind;
+exp->expType->refCount++;
+exp->expType->enumName = enumName;
 exp->expType->members = symbol->type->members;
 for(member = symbol->type->members.first; member; member = member->next)
 member->refCount++;

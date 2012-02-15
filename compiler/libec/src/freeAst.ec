@@ -33,8 +33,7 @@ public void FreeType(Type type)
                for(member = type.members.first; member; member = next)
                {
                   next = member.next;
-                  //if(member.refCount == 1)
-                     type.members.Remove(member);
+                  type.members.Remove(member);
                   delete member.name;
                   delete member;
                }
@@ -48,6 +47,8 @@ public void FreeType(Type type)
                for(member = type.members.first; member; member = next)
                {
                   next = member.next;
+                  // Remove from list only when reaching last reference
+                  // (The list is copied)
                   if(member.refCount == 1)
                      type.members.Remove(member);
                   FreeType(member);

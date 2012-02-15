@@ -144,6 +144,7 @@ int simpleID;
 struct __ecereNameSpace__ecere__sys__BinaryTree templateTypes;
 struct ClassDefinition * classDef;
 unsigned int templateTypesOnly;
+unsigned int hasNameSpace;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Instantiation;

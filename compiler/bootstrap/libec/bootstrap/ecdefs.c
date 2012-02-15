@@ -138,6 +138,7 @@ int simpleID;
 struct __ecereNameSpace__ecere__sys__BinaryTree templateTypes;
 struct ClassDefinition * classDef;
 unsigned int templateTypesOnly;
+unsigned int hasNameSpace;
 };
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Context;
@@ -2424,6 +2425,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "simpleID", "int", 4, 
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "templateTypes", "ecere::sys::BinaryTree", 16, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "classDef", "ClassDefinition", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "templateTypesOnly", "bool", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "hasNameSpace", "bool", 4, 4, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Symbol", 0, sizeof(struct Symbol), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
 __ecereClass_Symbol = class;
