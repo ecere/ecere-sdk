@@ -140,7 +140,8 @@ public TemplateParameter MkTypeTemplateParameter(Identifier identifier, Template
    {
       TemplateParameter param { type = TemplateParameterType::type, identifier = identifier, dataType = baseTplDatatype, defaultArgument = defaultArgument };
       TemplatedType type { key = (uint)identifier.string, param = param };
-      curContext.templateTypes.Add((BTNode)type);
+      if(!curContext.templateTypes.Add((BTNode)type))
+         delete type;
       return param;
    }
    return null;
@@ -212,7 +213,8 @@ public Expression MkExpIdentifier(Identifier id)
 
 public Expression MkExpDummy()
 {
-   return { type = dummyExp };
+   Expression exp { type = dummyExp };
+   return exp;
 }
 
 public Expression MkExpConstant(char * string)
@@ -407,13 +409,17 @@ Specifier MkEnum(Identifier id, OldList list)
 
       if(id)
       {
-         curContext.structSymbols.Add((BTNode)Symbol { string = CopyString(id.string), isStruct = true, type = type });
+         Symbol symbol { string = CopyString(id.string), isStruct = true, type = type };
          type.refCount++;
+         if(!curContext.structSymbols.Add((BTNode)symbol))
+            FreeSymbol(symbol);
       }
       for(e = list.first; e; e = e.next)
       {
-         (curContext.templateTypesOnly ? curContext.parent : curContext).symbols.Add((BTNode)Symbol { string = CopyString(e.id.string), type = type });
+         Symbol symbol { string = CopyString(e.id.string), type = type };
          type.refCount++;
+         if(!(curContext.templateTypesOnly ? curContext.parent : curContext).symbols.Add((BTNode)symbol))
+            FreeSymbol(symbol);
       }
       FreeType(type);
    }
@@ -429,8 +435,11 @@ Specifier MkStructOrUnion(SpecifierType type, Identifier id, OldList definitions
    if(definitions && id && !declMode)
    {
       OldList specs { };
+      Symbol symbol;
       specs.Add(spec);
-      curContext.structSymbols.Add((BTNode)Symbol { string = CopyString(id.string), type = ProcessType(specs, null), isStruct = true });
+      symbol = Symbol { string = CopyString(id.string), type = ProcessType(specs, null), isStruct = true };
+      if(!curContext.structSymbols.Add((BTNode)symbol))
+         FreeSymbol(symbol);
    }
    return spec;
 }
@@ -440,9 +449,12 @@ void AddStructDefinitions(Specifier spec, OldList definitions)
    spec.definitions = definitions;
    if(definitions && spec.id && !declMode)
    {
+      Symbol symbol;
       OldList specs { };
       specs.Add(spec);
-      curContext.parent.structSymbols.Add((BTNode)Symbol { string = CopyString(spec.id.string), type = ProcessType(specs, null), isStruct = true });
+      symbol = Symbol { string = CopyString(spec.id.string), type = ProcessType(specs, null), isStruct = true };
+      if(!curContext.parent.structSymbols.Add((BTNode)symbol))
+         FreeSymbol(symbol);
    }
 }
 
@@ -574,7 +586,8 @@ Declaration MkDeclarationInst(Instantiation inst)
       type = MkClassTypeSymbol(inst._class.symbol);
    };
    symbol.idCode = symbol.id = curContext.nextID++;
-   (curContext.templateTypesOnly ? curContext.parent : curContext).symbols.Add((BTNode)symbol);
+   if(!(curContext.templateTypesOnly ? curContext.parent : curContext).symbols.Add((BTNode)symbol))
+      excludedSymbols->Add(symbol);
    decl.symbol = inst.symbol = symbol;
    return decl;
 }
@@ -647,7 +660,8 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                      };
                      type.id = type.idCode = curContext.nextID++;
 
-                     (curContext.templateTypesOnly ? curContext.parent : curContext).types.Add((BTNode)type);
+                     if(!(curContext.templateTypesOnly ? curContext.parent : curContext).types.Add((BTNode)type))
+                        excludedSymbols->Add(type);
                      decl.symbol = d.declarator.symbol = type;
                   }
                }
@@ -664,7 +678,9 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                         type = ProcessType(specifiers, null);
                      };
                      type.id = type.idCode = curContext.nextID++;
-                     (curContext.templateTypesOnly ? curContext.parent : curContext).types.Add((BTNode)type);
+                     if(!(curContext.templateTypesOnly ? curContext.parent : curContext).types.Add((BTNode)type))
+                        excludedSymbols->Add(type);
+
                      decl.symbol = type;
                   }
                }
@@ -720,7 +736,8 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                if(!symbol)
                {
                   symbol = Symbol { string = CopyString(id.string), type = ProcessType(specifiers, d.declarator) };
-                  (curContext.templateTypesOnly ? curContext.parent : curContext).symbols.Add((BTNode)symbol);
+                  if(!(curContext.templateTypesOnly ? curContext.parent : curContext).symbols.Add((BTNode)symbol))
+                     excludedSymbols->Add(symbol);
                   // TODO: Add better support to count declarators
                   if(symbol.type && symbol.type.kind == arrayType && !symbol.type.arraySizeExp && d.initializer)
                   {
@@ -888,7 +905,8 @@ void ProcessFunctionBody(FunctionDefinition func, Statement body)
                if(!symbol && id)
                {
                   symbol = Symbol { string = CopyString(id.string), type = ProcessType(param.qualifiers, param.declarator), isParam = true };
-                  context.symbols.Add((BTNode)symbol);
+                  if(!context.symbols.Add((BTNode)symbol))
+                     excludedSymbols->Add(symbol);
 
                   // TODO: Fix this, the parameters' IDs should really be smaller...
                   symbol.id = context.nextID++;
@@ -930,7 +948,8 @@ void ProcessFunctionBody(FunctionDefinition func, Statement body)
       }
       symbol = Symbol { string = CopyString(id.string), type = ProcessType(func.specifiers, declarator) };
       symbol.idCode = symbol.id = globalContext.nextID++;
-      globalContext.symbols.Add((BTNode)symbol);
+      if(!globalContext.symbols.Add((BTNode)symbol))
+         excludedSymbols->Add(symbol);
       declarator.symbol = symbol;
    }
    else
@@ -939,7 +958,8 @@ void ProcessFunctionBody(FunctionDefinition func, Statement body)
       excludedSymbols->Remove(declarator.symbol);
       delete symbol.string;
       symbol.string = CopyString(GetDeclId(declarator).string);
-      globalContext.symbols.Add((BTNode)symbol);
+      if(!globalContext.symbols.Add((BTNode)symbol))
+         excludedSymbols->Add(symbol);
 
       if(!symbol.type)
          symbol.type = ProcessType(func.specifiers, declarator);
@@ -1241,7 +1261,8 @@ void ProcessClassFunctionBody(ClassFunction func, Statement body)
 
                   // TODO: Fix this, the parameters' IDs should really be smaller...
                   symbol.idCode = symbol.id = context.nextID++;
-                  context.symbols.Add((BTNode)symbol);
+                  if(!context.symbols.Add((BTNode)symbol))
+                     excludedSymbols->Add(symbol);
 
                   param.declarator.symbol = symbol;
                }
@@ -1489,7 +1510,8 @@ Symbol _DeclClass(int symbolID, char * name)
          string = CopyString(name);
          idCode = symbolID, id = symbolID;
       };
-      globalContext.classes.Add((BTNode)symbol);
+      if(!globalContext.classes.Add((BTNode)symbol))
+         excludedSymbols->Add(symbol);
 
       {
          int start = 0, c;
@@ -1529,7 +1551,8 @@ void SetupBaseSpecs(Symbol symbol, OldList baseSpecs)
          for(copy = (TemplatedType)baseClass.ctx.templateTypes.first; copy; copy = (TemplatedType)copy.next)
          {
             TemplatedType type { key = copy.key, param = copy.param };
-            curContext.templateTypes.Add((BTNode)type);
+            if(!curContext.templateTypes.Add((BTNode)type))
+               delete type;
          }
       }
       else if(baseClass.registered)
@@ -1556,7 +1579,8 @@ void SetupBaseSpecs(Symbol symbol, OldList baseSpecs)
                      };
                   }
                   type = TemplatedType { key = (uint)p.name, param = param };
-                  curContext.templateTypes.Add((BTNode)type);
+                  if(!curContext.templateTypes.Add((BTNode)type))
+                     delete type;
                }
             }
          }
@@ -1870,7 +1894,8 @@ public Symbol FindClass(char * name)
                cl.module = FindModule(_class.module);
             else
                cl.module = mainModule;
-            globalContext.classes.Add((BTNode)cl);
+            if(!globalContext.classes.Add((BTNode)cl))
+               excludedSymbols->Add(cl);
             if(strcmp(name, _class.name))
                cl.shortName = CopyString(_class.name);
          }
@@ -1894,7 +1919,8 @@ void CopyTypeInto(Type type, Type src)
       NamedLink member;
 
       type.members.Clear();
-      for(member = type.members.first; member; member = member.next)
+      // This must have been a mistake: member = **type**.members.first
+      for(member = src.members.first; member; member = member.next)
       {
          type.members.Add(NamedLink { name = CopyString(member.name), data = member.data });
       }
@@ -2032,6 +2058,11 @@ public Type ProcessType(OldList specs, Declarator decl)
                   Symbol symbol = spec.name ? FindType(curContext, spec.name) : null;
                   if(symbol && symbol.type)
                   {
+                     // Free Type Contents:
+                     Type dummy { };
+                     *dummy = *specType;
+                     FreeType(dummy);
+
                      CopyTypeInto(specType, symbol.type);
                      specType.typeName = CopyString(symbol.type.name);
                   }
@@ -2057,7 +2088,9 @@ public Type ProcessType(OldList specs, Declarator decl)
                      int nextValue = 0;
                      for(e = spec.list->first; e; e = e.next)
                      {
-                        specType.members.Add(NamedItem { name = CopyString(e.id.string) });
+                        // TOFIX: NamedItem i { } causes cryptic error, bad .c!
+                        NamedLink i { name = CopyString(e.id.string) };
+                        specType.members.Add(i);
                         /*
                         if(e.exp && ComputeExpression(e.exp), e.exp.isConstant && e.exp.expType.kind == intType)
                            value.data = (void *) nextValue = strtol(e.exp.string, null, 0);
@@ -2133,9 +2166,10 @@ public Type ProcessType(OldList specs, Declarator decl)
                               NamedLink member;
 
                               specType.members.Clear();
-                              for(member = specType.members.first; member; member = member.next)
+                              for(member = symbol.type.members.first; member; member = member.next)
                               {
-                                 specType.members.Add(NamedLink { name = CopyString(member.name), data = member.data });
+                                 NamedLink item { name = CopyString(member.name), data = member.data };
+                                 specType.members.Add(item);
                               }
                            }
                            else if(symbol.type.kind == structType || symbol.type.kind == unionType)
@@ -2550,6 +2584,7 @@ public Type ProcessType(OldList specs, Declarator decl)
             *type = specType;
             delete type.name;
             type.name = decl ? CopyString(decl.identifier.string) : null;
+
          }   
       }
       delete specType;
