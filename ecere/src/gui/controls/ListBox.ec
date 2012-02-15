@@ -1737,7 +1737,7 @@ public:
 
    int GetTag()
    {
-      return currentRow.tag;
+      return currentRow ? currentRow.tag : 0;
    }
 
 private:
