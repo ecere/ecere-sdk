@@ -2007,7 +2007,7 @@ public Type ProcessType(OldList specs, Declarator decl)
                   specType.keepCast = true;
                }
 
-               if(specType.kind == structType || specType.kind == unionType)
+               if(spec.specifier != CONST && (specType.kind == structType || specType.kind == unionType))
                {
                   FreeType(specType);
                   specType = { kind = intType, isSigned = true, refCount = 1 };
