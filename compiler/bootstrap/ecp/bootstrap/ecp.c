@@ -768,7 +768,10 @@ struct __ecereNameSpace__ecere__com__Method * method;
 };
 };
 
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_yytokentype;
+enum yytokentype
+{
+IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295, UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309, SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323, SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, EXT_ATTRIB = 334, PUBLIC = 335, PRIVATE = 336, TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347, CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356, NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363
+};
 
 typedef union YYSTYPE
 {
@@ -1571,7 +1574,7 @@ baseName[0] = '\0';
 else
 unitType = 0x1;
 FreeType(baseType);
-if(((struct Specifier *)baseSpecs->first)->type == 0 && ((struct Specifier *)baseSpecs->first)->specifier == 336)
+if(((struct Specifier *)baseSpecs->first)->type == 0 && ((struct Specifier *)baseSpecs->first)->specifier == PRIVATE)
 inheritanceAccess = 2;
 }
 if(classType == 0)
@@ -2736,115 +2739,6 @@ void __ecereRegisterModule_ecp(struct __ecereNameSpace__ecere__com__Instance * m
 {
 struct __ecereNameSpace__ecere__com__Class * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "yytokentype", 0, 0, 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
-__ecereClass_yytokentype = class;
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "IDENTIFIER", 258);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "CONSTANT", 259);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "STRING_LITERAL", 260);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "SIZEOF", 261);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "PTR_OP", 262);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "INC_OP", 263);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "DEC_OP", 264);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "LEFT_OP", 265);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "RIGHT_OP", 266);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "LE_OP", 267);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "GE_OP", 268);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "EQ_OP", 269);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "NE_OP", 270);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "AND_OP", 271);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "OR_OP", 272);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "MUL_ASSIGN", 273);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "DIV_ASSIGN", 274);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "MOD_ASSIGN", 275);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ADD_ASSIGN", 276);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "SUB_ASSIGN", 277);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "LEFT_ASSIGN", 278);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "RIGHT_ASSIGN", 279);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "AND_ASSIGN", 280);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "XOR_ASSIGN", 281);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "OR_ASSIGN", 282);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "TYPE_NAME", 283);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "TYPEDEF", 284);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "EXTERN", 285);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "STATIC", 286);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "AUTO", 287);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "REGISTER", 288);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "CHAR", 289);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "SHORT", 290);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "INT", 291);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "UINT", 292);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "INT64", 293);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "LONG", 294);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "SIGNED", 295);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "UNSIGNED", 296);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "FLOAT", 297);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "DOUBLE", 298);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "CONST", 299);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "VOLATILE", 300);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "VOID", 301);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "VALIST", 302);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "STRUCT", 303);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "UNION", 304);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ENUM", 305);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ELLIPSIS", 306);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "CASE", 307);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "DEFAULT", 308);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "IF", 309);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "SWITCH", 310);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "WHILE", 311);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "DO", 312);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "FOR", 313);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "GOTO", 314);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "CONTINUE", 315);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "BREAK", 316);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "RETURN", 317);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "IFX", 318);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ELSE", 319);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "CLASS", 320);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "THISCLASS", 321);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "CLASS_NAME", 322);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "PROPERTY", 323);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "SETPROP", 324);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "GETPROP", 325);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "NEWOP", 326);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "RENEW", 327);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "DELETE", 328);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "EXT_DECL", 329);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "EXT_STORAGE", 330);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "IMPORT", 331);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "DEFINE", 332);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "VIRTUAL", 333);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "EXT_ATTRIB", 334);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "PUBLIC", 335);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "PRIVATE", 336);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "TYPED_OBJECT", 337);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ANY_OBJECT", 338);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_INCREF", 339);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "EXTENSION", 340);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ASM", 341);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "TYPEOF", 342);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "WATCH", 343);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "STOPWATCHING", 344);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "FIREWATCHERS", 345);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "WATCHABLE", 346);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "CLASS_DESIGNER", 347);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "CLASS_NO_EXPANSION", 348);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "CLASS_FIXED", 349);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ISPROPSET", 350);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "CLASS_DEFAULT_PROPERTY", 351);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "PROPERTY_CATEGORY", 352);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "CLASS_DATA", 353);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "CLASS_PROPERTY", 354);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "SUBCLASS", 355);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "NAMESPACE", 356);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "NEW0OP", 357);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "RENEW0", 358);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "VAARG", 359);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "DBTABLE", 360);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "DBFIELD", 361);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "DBINDEX", 362);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "DATABASE_OPEN", 363);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassDefine", "Definition", sizeof(struct ClassDefine), 0, 0, 0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
 __ecereClass_ClassDefine = class;

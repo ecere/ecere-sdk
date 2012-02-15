@@ -7,7 +7,7 @@ import "ec"
 #endif
 
 #define YYLTYPE Location
-#include "../libec/src/grammar.eh"
+#include "../libec/src/grammar.h"
 
 // UNTIL IMPLEMENTED IN GRAMMAR
 #define ACCESS_CLASSDATA(_class, baseClass) \
