@@ -842,6 +842,11 @@ struct __ecereNameSpace__ecere__com__Method * method;
 };
 };
 
+enum yytokentype
+{
+IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295, UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309, SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323, SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, EXT_ATTRIB = 334, PUBLIC = 335, PRIVATE = 336, TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347, CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356, NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363
+};
+
 typedef union YYSTYPE
 {
 int specifierType;
@@ -1464,7 +1469,7 @@ funcDecl->function.parameters = MkList();
 struct TypeName * firstParam = ((struct TypeName *)(*funcDecl->function.parameters).first);
 struct Specifier * firstSpec = firstParam ? (*firstParam->qualifiers).first : (((void *)0));
 
-if(firstParam && firstSpec->type == 0 && firstSpec->specifier == 301 && !firstParam->declarator)
+if(firstParam && firstSpec->type == 0 && firstSpec->specifier == VOID && !firstParam->declarator)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*funcDecl->function.parameters), (*funcDecl->function.parameters).first);
 }
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*funcDecl->function.parameters), (((void *)0)), MkTypeName(MkListOne(MkSpecifierName(method->dataType->thisClass ? method->dataType->thisClass->string : method->_class->fullName)), (((void *)0))));
@@ -1545,20 +1550,20 @@ case '=':
 if(exp->op.exp2)
 exp->op.exp2->usage = (exp->op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
 break;
-case 273:
-case 274:
-case 275:
-case 276:
-case 277:
-case 278:
-case 279:
-case 280:
-case 281:
-case 282:
+case MUL_ASSIGN:
+case DIV_ASSIGN:
+case MOD_ASSIGN:
+case ADD_ASSIGN:
+case SUB_ASSIGN:
+case LEFT_ASSIGN:
+case RIGHT_ASSIGN:
+case AND_ASSIGN:
+case XOR_ASSIGN:
+case OR_ASSIGN:
 exp->op.exp2->usage = (exp->op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
 break;
-case 263:
-case 264:
+case INC_OP:
+case DEC_OP:
 case '&':
 if(exp->op.exp1 && exp->op.exp2)
 {
@@ -1584,25 +1589,25 @@ exp->op.exp2->usage = (exp->op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
 break;
 case '/':
 case '%':
-case 265:
-case 266:
+case LEFT_OP:
+case RIGHT_OP:
 case '<':
 case '>':
-case 267:
-case 268:
-case 269:
-case 270:
+case LE_OP:
+case GE_OP:
+case EQ_OP:
+case NE_OP:
 case '|':
 case '^':
-case 271:
-case 272:
+case AND_OP:
+case OR_OP:
 if(exp->op.exp1)
 exp->op.exp1->usage = (exp->op.exp1->usage & ~0x1) | (((unsigned int)0x1) << 0);
 if(exp->op.exp2)
 exp->op.exp2->usage = (exp->op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
 break;
 }
-if(exp->op.op == '=' || exp->op.op == 273 || exp->op.op == 274 || exp->op.op == 276 || exp->op.op == 275 || exp->op.op == 277 || exp->op.op == 278 || exp->op.op == 279 || exp->op.op == 280 || exp->op.op == 282 || exp->op.op == 281 || exp->op.op == 263 || exp->op.op == 264)
+if(exp->op.op == '=' || exp->op.op == MUL_ASSIGN || exp->op.op == DIV_ASSIGN || exp->op.op == ADD_ASSIGN || exp->op.op == MOD_ASSIGN || exp->op.op == SUB_ASSIGN || exp->op.op == LEFT_ASSIGN || exp->op.op == RIGHT_ASSIGN || exp->op.op == AND_ASSIGN || exp->op.op == OR_ASSIGN || exp->op.op == XOR_ASSIGN || exp->op.op == INC_OP || exp->op.op == DEC_OP)
 {
 struct Expression * memberExp;
 struct Expression * parentExp = (((void *)0));
@@ -1808,13 +1813,13 @@ else
 sprintf(mask, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), bitMember->mask);
 sprintf(shift, "%d", bitMember->pos);
 exp->op.exp1 = memberExp->member.exp;
-if(exp->op.op == 281)
+if(exp->op.op == XOR_ASSIGN)
 {
-exp->op.exp2 = MkExpOp(MkExpBrackets(MkListOne(MkExpCast(type, exp->op.exp2))), 265, MkExpConstant(shift));
+exp->op.exp2 = MkExpOp(MkExpBrackets(MkListOne(MkExpCast(type, exp->op.exp2))), LEFT_OP, MkExpConstant(shift));
 }
 else
 {
-exp->op.exp2 = MkExpOp(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(memberExp->member.exp), '&', MkExpOp((((void *)0)), '~', MkExpConstant(mask))))), '|', MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpCast(type, exp->op.exp2))), 265, MkExpConstant(shift)))));
+exp->op.exp2 = MkExpOp(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(memberExp->member.exp), '&', MkExpOp((((void *)0)), '~', MkExpConstant(mask))))), '|', MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpCast(type, exp->op.exp2))), LEFT_OP, MkExpConstant(shift)))));
 }
 memberExp->member.exp = (((void *)0));
 FreeExpression(memberExp);
@@ -1858,7 +1863,7 @@ exp->call.exp = MkExpIdentifier(MkIdentifier("ecere::com::eClass_SetProperty"));
 exp->call.arguments = MkList();
 ListAdd(exp->call.arguments, classExp);
 ListAdd(exp->call.arguments, MkExpString(QMkString(id->string)));
-ListAdd(exp->call.arguments, MkExpCast(MkTypeName(MkListOne(MkSpecifier(291)), (((void *)0))), value));
+ListAdd(exp->call.arguments, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT)), (((void *)0))), value));
 FreeIdentifier(id);
 ProcessExpression(exp);
 return ;
@@ -1877,42 +1882,42 @@ int operator = exp->op.op;
 
 switch(operator)
 {
-case 273:
+case MUL_ASSIGN:
 operator = '*';
 break;
-case 274:
+case DIV_ASSIGN:
 operator = '/';
 break;
-case 275:
+case MOD_ASSIGN:
 operator = '%';
 break;
-case 277:
+case SUB_ASSIGN:
 operator = '-';
 break;
-case 276:
+case ADD_ASSIGN:
 operator = '+';
 break;
-case 278:
-operator = 265;
+case LEFT_ASSIGN:
+operator = LEFT_OP;
 break;
-case 279:
-operator = 266;
+case RIGHT_ASSIGN:
+operator = RIGHT_OP;
 break;
-case 280:
+case AND_ASSIGN:
 operator = '&';
 break;
-case 282:
+case OR_ASSIGN:
 operator = '|';
 break;
-case 281:
+case XOR_ASSIGN:
 operator = '^';
 break;
 }
 if(operator != '=')
 {
-if(operator == 263)
+if(operator == INC_OP)
 value = MkExpOp(CopyExpression(memberExp), '+', MkExpConstant("1"));
-else if(operator == 264)
+else if(operator == DEC_OP)
 value = MkExpOp(CopyExpression(memberExp), '-', MkExpConstant("1"));
 else
 {
@@ -1945,7 +1950,7 @@ curExternal->function->tempCount = (__simpleStruct0 = curExternal->function->tem
 sprintf(ecereTemp, "__ecTemp%d", exp->tempCount);
 curContext = context;
 exp->type = 25;
-exp->compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifier(301)), MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier(ecereTemp))), MkInitializerAssignment(QBrackets(memberExp->member.exp)))))), list);
+exp->compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifier(VOID)), MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier(ecereTemp))), MkInitializerAssignment(QBrackets(memberExp->member.exp)))))), list);
 args = MkList();
 if(convertTo)
 {
@@ -2084,7 +2089,7 @@ memberExp->type = 9;
 }
 }
 }
-else if(exp->op.op == 339)
+else if(exp->op.op == _INCREF)
 {
 struct Expression * object = exp->op.exp2;
 
@@ -2092,10 +2097,10 @@ exp->op.exp2 = (((void *)0));
 FreeExpContents(exp);
 exp->expType = (((void *)0));
 exp->destType = (((void *)0));
-exp->op.op = 263;
+exp->op.op = INC_OP;
 exp->op.exp1 = MkExpPointer(object, MkIdentifier("_refCount"));
 }
-else if(exp->op.op == 328)
+else if(exp->op.op == DELETE)
 {
 struct Expression * object = exp->op.exp2;
 struct __ecereNameSpace__ecere__sys__OldList * args = MkList();
@@ -2169,7 +2174,7 @@ if(argExp)
 struct Expression * classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
 struct __ecereNameSpace__ecere__sys__OldList * args = MkList();
 struct Expression * derefExp = exp->op.exp1;
-struct Expression * sizeExp = MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("normalClass"))), 272, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(301)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize")));
+struct Expression * sizeExp = MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))), OR_OP, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize")));
 
 if(exp->op.exp1->type == 6)
 {
@@ -2179,7 +2184,7 @@ struct __ecereNameSpace__ecere__sys__OldList * indexExpIndex = derefExp->index.i
 derefExp->index.index = (((void *)0));
 derefExp->index.exp = (((void *)0));
 FreeExpression(derefExp);
-derefExp = MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(289)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), indexExp), '+', MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(indexExpIndex), '*', MkExpBrackets(MkListOne(CopyExpression(sizeExp)))))));
+derefExp = MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), indexExp), '+', MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(indexExpIndex), '*', MkExpBrackets(MkListOne(CopyExpression(sizeExp)))))));
 }
 else
 {
@@ -2192,7 +2197,7 @@ derefExp = indexExp;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), derefExp);
 ProcessExpressionType((*args).last);
 ProcessExpression((*args).last);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpCast(MkTypeName(MkListOne(MkSpecifier(289)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(classExp, MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("structClass"))))), MkListOne(exp->op.exp2), MkExpOp((((void *)0)), '&', CopyExpression(exp->op.exp2)))));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(classExp, MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))), MkListOne(exp->op.exp2), MkExpOp((((void *)0)), '&', CopyExpression(exp->op.exp2)))));
 thisClass = curExternal->function ? curExternal->function->_class : (((void *)0));
 {
 struct Symbol * thisSymbol = (thisSymbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), thisSymbol->string = __ecereNameSpace__ecere__sys__CopyString("this"), thisSymbol->type = MkClassType(thisClass->fullName), thisSymbol);
@@ -2222,7 +2227,7 @@ struct Expression * classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass")
 struct Expression * sizeExp = MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize"));
 
 exp->type = 5;
-exp->list = MkListOne(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("structClass"))))), MkListOne(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), CopyExpression(exp->op.exp2))))), MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("normalClass"))), 272, MkExpOp(MkExpMember(classExp, MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(301)), MkDeclaratorPointer(MkPointer((((void *)0)), MkPointer((((void *)0)), (((void *)0)))), (((void *)0)))), CopyExpression(exp->op.exp2))))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), 269, MkExpConstant("1")))), MkListOne(MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->op.exp2)))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), 269, MkExpConstant("2")))), MkListOne(MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint16")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->op.exp2)))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(sizeExp, 269, MkExpConstant("4")))), MkListOne(MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint32")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->op.exp2)))))), MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), exp->op.exp2)))))))))))))))))))));
+exp->list = MkListOne(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))), MkListOne(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), CopyExpression(exp->op.exp2))))), MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))), OR_OP, MkExpOp(MkExpMember(classExp, MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), MkPointer((((void *)0)), (((void *)0)))), (((void *)0)))), CopyExpression(exp->op.exp2))))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("1")))), MkListOne(MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->op.exp2)))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("2")))), MkListOne(MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint16")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->op.exp2)))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(sizeExp, EQ_OP, MkExpConstant("4")))), MkListOne(MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint32")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->op.exp2)))))), MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), exp->op.exp2)))))))))))))))))))));
 thisClass = curExternal->function ? curExternal->function->_class : (((void *)0));
 {
 struct Symbol * thisSymbol = (thisSymbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), thisSymbol->string = __ecereNameSpace__ecere__sys__CopyString("this"), thisSymbol->type = MkClassType(thisClass->fullName), thisSymbol);
@@ -2288,7 +2293,7 @@ struct Expression * classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass")
 struct Expression * e;
 
 exp->type = 5;
-exp->list = MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(289)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpOp((((void *)0)), '&', exp2)), '+', MkExpCall(MkExpIdentifier(MkIdentifier("__ENDIAN_PAD")), MkListOne((e = MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("structClass"))), 272, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("normalClass")))), 272, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(301)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(classExp, MkIdentifier("typeSize"))))))));
+exp->list = MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpOp((((void *)0)), '&', exp2)), '+', MkExpCall(MkExpIdentifier(MkIdentifier("__ENDIAN_PAD")), MkListOne((e = MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))), OR_OP, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass")))), OR_OP, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(classExp, MkIdentifier("typeSize"))))))));
 thisClass = curExternal->function ? curExternal->function->_class : (((void *)0));
 {
 ProcessExpressionType(e);
@@ -2360,7 +2365,7 @@ struct Expression * classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass")
 struct Expression * sizeExp = MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize"));
 
 exp->type = 5;
-exp->list = MkListOne(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("structClass"))))), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->index.exp)))), '+', MkExpOp(MkExpBrackets(CopyList(exp->index.index, CopyExpression)), '*', CopyExpression(sizeExp))))))), MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("normalClass"))), 272, MkExpOp(MkExpMember(classExp, MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(301)), MkDeclaratorPointer(MkPointer((((void *)0)), MkPointer((((void *)0)), (((void *)0)))), (((void *)0)))), CopyExpression(exp->index.exp)))), CopyList(exp->index.index, CopyExpression)))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), 269, MkExpConstant("1")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->index.exp)))), CopyList(exp->index.index, CopyExpression))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), 269, MkExpConstant("2")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint16")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->index.exp)))), CopyList(exp->index.index, CopyExpression))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(sizeExp, 269, MkExpConstant("4")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint32")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->index.exp)))), CopyList(exp->index.index, CopyExpression))), MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), exp->index.exp))), exp->index.index))))))))))))))))));
+exp->list = MkListOne(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->index.exp)))), '+', MkExpOp(MkExpBrackets(CopyList(exp->index.index, CopyExpression)), '*', CopyExpression(sizeExp))))))), MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))), OR_OP, MkExpOp(MkExpMember(classExp, MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), MkPointer((((void *)0)), (((void *)0)))), (((void *)0)))), CopyExpression(exp->index.exp)))), CopyList(exp->index.index, CopyExpression)))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("1")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->index.exp)))), CopyList(exp->index.index, CopyExpression))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("2")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint16")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->index.exp)))), CopyList(exp->index.index, CopyExpression))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(sizeExp, EQ_OP, MkExpConstant("4")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint32")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->index.exp)))), CopyList(exp->index.index, CopyExpression))), MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), exp->index.exp))), exp->index.index))))))))))))))))));
 thisClass = curExternal->function ? curExternal->function->_class : (((void *)0));
 {
 struct Symbol * thisSymbol = (thisSymbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), thisSymbol->string = __ecereNameSpace__ecere__sys__CopyString("this"), thisSymbol->type = MkClassType(thisClass->fullName), thisSymbol);
@@ -2509,13 +2514,13 @@ funcDecl->function.parameters = MkList();
 struct TypeName * firstParam = ((struct TypeName *)(*funcDecl->function.parameters).first);
 struct Specifier * firstSpec = firstParam ? (*firstParam->qualifiers).first : (((void *)0));
 
-if(firstParam && firstSpec && firstSpec->type == 0 && firstSpec->specifier == 301 && !firstParam->declarator)
+if(firstParam && firstSpec && firstSpec->type == 0 && firstSpec->specifier == VOID && !firstParam->declarator)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*funcDecl->function.parameters), (*funcDecl->function.parameters).first);
 }
 if(method->dataType->thisClass && !strcmp(method->dataType->thisClass->string, "class"))
 {
 typedObject = 0x1;
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*funcDecl->function.parameters), (((void *)0)), MkTypeName(MkListOne(MkSpecifier(301)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*funcDecl->function.parameters), (((void *)0)), MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))));
 if(!method->dataType->extraParam)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*funcDecl->function.parameters), (((void *)0)), MkTypeName(MkListOne(MkStructOrUnion(3, MkIdentifier("__ecereNameSpace__ecere__com__Class"), (((void *)0)))), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))));
 }
@@ -2742,7 +2747,7 @@ char size[100];
 
 ComputeTypeSize(e->expType);
 sprintf(size, "%d", e->expType->size);
-newExp = MkExpBrackets(MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(289)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), newExp), '+', MkExpCall(MkExpIdentifier(MkIdentifier("__ENDIAN_PAD")), MkListOne(MkExpConstant(size))))));
+newExp = MkExpBrackets(MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), newExp), '+', MkExpCall(MkExpIdentifier(MkIdentifier("__ENDIAN_PAD")), MkListOne(MkExpConstant(size))))));
 }
 if(parentExp->type == 7)
 {
@@ -2760,7 +2765,7 @@ else if(parentExp->type == 11)
 if(parentExp->destType && parentExp->destType->kind == 14)
 {
 FreeTypeName(parentExp->cast.typeName);
-parentExp->cast.typeName = MkTypeName(MkListOne(MkSpecifier(301)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0))));
+parentExp->cast.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0))));
 }
 parentExp->cast.exp = newExp;
 }
@@ -3210,7 +3215,7 @@ else
 sprintf(mask, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), bitMember->mask);
 sprintf(shift, "%d", bitMember->pos);
 FreeIdentifier(exp->member.member);
-ListAdd(list, MkExpCast(type, MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpOp(exp->member.exp, '&', MkExpConstant(mask)))), 266, MkExpConstant(shift))))));
+ListAdd(list, MkExpCast(type, MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpOp(exp->member.exp, '&', MkExpConstant(mask)))), RIGHT_OP, MkExpConstant(shift))))));
 exp->type = 5;
 exp->list = list;
 }
@@ -3267,7 +3272,7 @@ exp->tempCount++;
 curExternal->function->tempCount = (__simpleStruct0 = curExternal->function->tempCount, __simpleStruct1 = exp->tempCount, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
 sprintf(ecereTemp, "__ecTemp%d", exp->tempCount);
 curContext = context;
-compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifier(289)), MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier(ecereTemp))), MkInitializerAssignment(QBrackets(exp->member.exp)))))), (((void *)0)));
+compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifier(CHAR)), MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier(ecereTemp))), MkInitializerAssignment(QBrackets(exp->member.exp)))))), (((void *)0)));
 if(member->_class->fixed)
 {
 if(member->_class->templateClass ? member->_class->templateClass->offset : member->_class->offset)
@@ -3354,7 +3359,7 @@ struct Expression * classExp;
 FreeTypeName(exp->typeName);
 classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
 exp->type = 5;
-exp->list = MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("normalClass"))), 272, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(301)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(classExp, MkIdentifier("typeSize"))));
+exp->list = MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))), OR_OP, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(classExp, MkIdentifier("typeSize"))));
 ProcessExpressionType(exp);
 ProcessExpression(exp);
 }
@@ -3698,7 +3703,7 @@ for(c = 1; c <= function->tempCount; c++)
 char ecereTemp[100];
 
 sprintf(ecereTemp, "__ecereTemp%d", c);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*stmt->compound.declarations), (((void *)0)), QMkDeclarationBase(301, MkInitDeclarator(QMkPtrDecl(ecereTemp), (((void *)0)))));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*stmt->compound.declarations), (((void *)0)), QMkDeclarationBase(VOID, MkInitDeclarator(QMkPtrDecl(ecereTemp), (((void *)0)))));
 }
 curContext = stmt->compound.context->parent;
 }

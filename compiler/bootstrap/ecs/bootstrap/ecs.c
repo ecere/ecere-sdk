@@ -1718,6 +1718,7 @@ else
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, " = 0");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n\n");
 }
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      incref this;\n");
 for(param = method->dataType->params.first; param; param = param->next)
 {
 char type[1024] = "";
@@ -1772,6 +1773,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereBuff
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      }\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereBuffer.Free();\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      delete this;\n");
 if(method->dataType->returnType->kind != 0)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      return __ecereResult;\n");
@@ -1806,6 +1808,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 
 static void BindDCOMServer()
 {
+unsigned int mutexDeclared = 0x0;
 struct __ecereNameSpace__ecere__com__Class * _class;
 
 for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)privateModule + 12)))->classes.first; _class; _class = _class->next)
@@ -1833,6 +1836,8 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "class DCOM%s : ecere
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "{\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   virtual void CallMethod(uint __ecereMethodID, SerialBuffer __ecereBuffer)\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   {\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      %s inst = (%s)instance;\n", _class->fullName, _class->fullName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      incref inst;\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      switch(__ecereMethodID)\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      {\n");
 for(method = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->methods); method; method = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)method)))
@@ -1967,6 +1972,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         }\n");
 }
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      }\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      delete inst;\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   }\n");
 for(vid = _class->base->vTblSize; vid < _class->vTblSize; vid++)
 {
@@ -1978,6 +1984,13 @@ if(method->type == 1 && method->_class == _class && method->vid == vid)
 break;
 if(method)
 {
+if(!mutexDeclared)
+{
+DeclareClass(FindClass("ecere::sys::Mutex"), "__ecereClass___ecereNameSpace__ecere__sys__Mutex");
+DeclareMethod(__ecereNameSpace__ecere__com__eClass_FindMethod(__ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "ecere::sys::Mutex"), "Wait", privateModule), "__ecereMethod___ecereNameSpace__ecere__sys__Mutex_Wait");
+DeclareMethod(__ecereNameSpace__ecere__com__eClass_FindMethod(__ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "ecere::sys::Mutex"), "Release", privateModule), "__ecereMethod___ecereNameSpace__ecere__sys__Mutex_Release");
+mutexDeclared = 0x1;
+}
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 if(!method->dataType)
 method->dataType = ProcessTypeString(method->dataTypeString, 0x0);
@@ -2022,6 +2035,8 @@ else
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, " = 0");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n\n");
 }
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      incref __ecereObject;\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereMethod___ecereNameSpace__ecere__sys__Mutex_Wait(__ecereObject.mutex);\n");
 for(param = method->dataType->params.first; param; param = param->next)
 {
 char type[1024] = "";
@@ -2043,13 +2058,28 @@ DeclareClass(classSym, className);
 if(param->kind == 8 && !strcmp(param->_class->string, "String"))
 {
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereObject.virtualsBuffer.Serialize((StaticString)%s);\n", param->name);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereObject.argsBuffer.Serialize((StaticString)%s);\n", param->name);
 }
 else
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereObject.virtualsBuffer.Serialize(%s);\n", param->name);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereObject.argsBuffer.Serialize(%s);\n", param->name);
 }
-DeclareMethod(__ecereNameSpace__ecere__com__eClass_FindMethod(__ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "ecere::net::DCOMServerObject"), "CallVirtualMethod", privateModule), "__ecereMethod___ecereNameSpace__ecere__net__DCOMServerObject_CallVirutalMethod");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      if(__ecereObject.CallVirtualMethod(%d))\n", vid - _class->base->vTblSize);
+DeclareMethod(__ecereNameSpace__ecere__com__eClass_FindMethod(__ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "ecere::net::DCOMServerObject"), "CallVirtualMethod", privateModule), "__ecereMethod___ecereNameSpace__ecere__net__DCOMServerObject_CallVirtualMethod");
+{
+unsigned int hasReturnValue = method->dataType->returnType->kind != 0;
+
+if(!hasReturnValue)
+{
+for(param = method->dataType->params.first; param; param = param->next)
+{
+if(param->kind == 8 && ((param->_class && param->_class->registered && param->_class->registered->type == 1) || !strcmp(param->_class->string, "String")) && !param->constant)
+{
+hasReturnValue = 0x1;
+break;
+}
+}
+}
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      if(__ecereObject.CallVirtualMethod(%d, %s))\n", vid - _class->base->vTblSize, hasReturnValue ? "true" : "false");
+}
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      {\n");
 for(param = method->dataType->params.first; param; param = param->next)
 {
@@ -2058,10 +2088,10 @@ if(param->kind == 8 && ((param->_class && param->_class->registered && param->_c
 if(!strcmp(param->_class->string, "String"))
 {
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereObject.virtualsBuffer.Unserialize((StaticString)%s);\n", param->name);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereObject.returnBuffer.Unserialize((StaticString)%s);\n", param->name);
 }
 else
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereObject.virtualsBuffer.Unserialize(%s);\n", param->name);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereObject.returnBuffer.Unserialize(%s);\n", param->name);
 }
 }
 if(method->dataType->returnType->kind != 0)
@@ -2069,10 +2099,10 @@ if(method->dataType->returnType->kind != 0)
 if(method->dataType->returnType->kind == 8 && !strcmp(method->dataType->returnType->_class->string, "String"))
 {
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereObject.virtualsBuffer.Unserialize((StaticString)__ecereResult);\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereObject.returnBuffer.Unserialize((StaticString)__ecereResult);\n");
 }
 else
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereObject.virtualsBuffer.Unserialize(__ecereResult);\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereObject.returnBuffer.Unserialize(__ecereResult);\n");
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      }\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      else\n");
@@ -2084,7 +2114,9 @@ if(param->next)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ", ");
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ");\n");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereObject.virtualsBuffer.Free();\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereObject.returnBuffer.Free();\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereMethod___ecereNameSpace__ecere__sys__Mutex_Release(__ecereObject.mutex);\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      delete __ecereObject;\n");
 if(method->dataType->returnType->kind != 0)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      return __ecereResult;\n");
@@ -2171,8 +2203,6 @@ struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
 };
 
 extern void ComputeModuleClasses(struct __ecereNameSpace__ecere__com__Instance * module);
-
-extern char *  strchr(char * , int);
 
 extern void FreeContext(struct Context * context);
 
@@ -2533,7 +2563,6 @@ while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&i))
 {
 struct ContextStringPair pair = (*(struct ContextStringPair *)__ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(&i));
 struct __ecereNameSpace__ecere__com__Instance * comments = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&i));
-char * eot;
 
 {
 struct __ecereNameSpace__ecere__com__Iterator s = 
@@ -2556,9 +2585,6 @@ if(pair.context)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, pair.context);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"\n");
 }
-eot = strchr(pair.string, 4);
-if(eot)
-*eot = '\0';
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgstr \"");
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, pair.string);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"\n");

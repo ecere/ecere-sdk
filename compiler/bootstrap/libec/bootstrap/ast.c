@@ -896,6 +896,11 @@ struct __ecereNameSpace__ecere__com__Method * method;
 };
 };
 
+enum yytokentype
+{
+IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295, UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309, SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323, SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, EXT_ATTRIB = 334, PUBLIC = 335, PRIVATE = 336, TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347, CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356, NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363
+};
+
 typedef union YYSTYPE
 {
 int specifierType;
@@ -1309,7 +1314,8 @@ if(identifier->string)
 struct TemplateParameter * param = (param = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplateParameter), param->type = 0, param->identifier = identifier, param->dataType = baseTplDatatype, param->defaultArgument = defaultArgument, param);
 struct TemplatedType * type = (type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplatedType), type->key = (unsigned int)identifier->string, type->param = param, type);
 
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->templateTypes, (struct __ecereNameSpace__ecere__sys__BTNode *)type);
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->templateTypes, (struct __ecereNameSpace__ecere__sys__BTNode *)type))
+((type ? (__ecereClass_TemplatedType->Destructor ? __ecereClass_TemplatedType->Destructor(type) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor(type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
 return param;
 }
 return (((void *)0));
@@ -1395,9 +1401,9 @@ return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_
 
 struct Expression * MkExpDummy()
 {
-void * __ecereTemp1;
+struct Expression * exp = (exp = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), exp->type = 16, exp);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 16, ((struct Expression *)__ecereTemp1));
+return exp;
 }
 
 struct Expression * MkExpConstant(char * string)
@@ -1483,7 +1489,6 @@ intlStrings, 0
 __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (((&pair))), 0x0);
 ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&__internalIterator));
 }));
-
 if(!list)
 {
 list = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_);
@@ -1668,11 +1673,12 @@ return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_
 
 struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
 
+extern void FreeSymbol(struct Symbol * symbol);
+
 extern void FreeType(struct Type * type);
 
 struct Specifier * MkEnum(struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * list)
 {
-void * __ecereTemp1;
 struct Specifier * spec = (spec = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier), spec->type = 2, spec->id = id, spec->list = list, spec);
 
 if(list && (!declMode || !id))
@@ -1688,13 +1694,19 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&specs, spec);
 type = ProcessType(&specs, (((void *)0)));
 if(id)
 {
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->structSymbols, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(id->string), ((struct Symbol *)__ecereTemp1)->isStruct = 0x1, ((struct Symbol *)__ecereTemp1)->type = type, ((struct Symbol *)__ecereTemp1)));
+struct Symbol * symbol = (symbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), symbol->string = __ecereNameSpace__ecere__sys__CopyString(id->string), symbol->isStruct = 0x1, symbol->type = type, symbol);
+
 type->refCount++;
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->structSymbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
+FreeSymbol(symbol);
 }
 for(e = list->first; e; e = e->next)
 {
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(curContext->templateTypesOnly ? curContext->parent : curContext)->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(e->id->string), ((struct Symbol *)__ecereTemp1)->type = type, ((struct Symbol *)__ecereTemp1)));
+struct Symbol * symbol = (symbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), symbol->string = __ecereNameSpace__ecere__sys__CopyString(e->id->string), symbol->type = type, symbol);
+
 type->refCount++;
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(curContext->templateTypesOnly ? curContext->parent : curContext)->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
+FreeSymbol(symbol);
 }
 FreeType(type);
 }
@@ -1717,9 +1729,12 @@ struct __ecereNameSpace__ecere__sys__OldList specs =
 {
 0, 0, 0, 0, 0
 };
+struct Symbol * symbol;
 
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&specs, spec);
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->structSymbols, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(id->string), ((struct Symbol *)__ecereTemp1)->type = ProcessType(&specs, (((void *)0))), ((struct Symbol *)__ecereTemp1)->isStruct = 0x1, ((struct Symbol *)__ecereTemp1)));
+symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(id->string), ((struct Symbol *)__ecereTemp1)->type = ProcessType(&specs, (((void *)0))), ((struct Symbol *)__ecereTemp1)->isStruct = 0x1, ((struct Symbol *)__ecereTemp1));
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->structSymbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
+FreeSymbol(symbol);
 }
 return spec;
 }
@@ -1731,13 +1746,16 @@ void * __ecereTemp1;
 spec->definitions = definitions;
 if(definitions && spec->id && !declMode)
 {
+struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList specs = 
 {
 0, 0, 0, 0, 0
 };
 
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&specs, spec);
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->parent->structSymbols, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(spec->id->string), ((struct Symbol *)__ecereTemp1)->type = ProcessType(&specs, (((void *)0))), ((struct Symbol *)__ecereTemp1)->isStruct = 0x1, ((struct Symbol *)__ecereTemp1)));
+symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(spec->id->string), ((struct Symbol *)__ecereTemp1)->type = ProcessType(&specs, (((void *)0))), ((struct Symbol *)__ecereTemp1)->isStruct = 0x1, ((struct Symbol *)__ecereTemp1));
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->parent->structSymbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
+FreeSymbol(symbol);
 }
 }
 
@@ -1864,6 +1882,8 @@ extern struct Context * globalContext;
 
 struct Type * MkClassTypeSymbol(struct Symbol * symbol);
 
+extern struct __ecereNameSpace__ecere__sys__OldList *  excludedSymbols;
+
 struct Declaration * MkDeclarationInst(struct Instantiation * inst)
 {
 void * __ecereTemp1;
@@ -1898,7 +1918,8 @@ inst->exp->identifier->string = __ecereNameSpace__ecere__sys__CopyString(name);
 }
 symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = (inst->exp->type == 0) ? __ecereNameSpace__ecere__sys__CopyString(inst->exp->identifier->string) : (((void *)0)), ((struct Symbol *)__ecereTemp1)->type = MkClassTypeSymbol(inst->_class->symbol), ((struct Symbol *)__ecereTemp1));
 symbol->idCode = symbol->id = curContext->nextID++;
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(curContext->templateTypesOnly ? curContext->parent : curContext)->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol);
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(curContext->templateTypesOnly ? curContext->parent : curContext)->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
 decl->symbol = inst->symbol = symbol;
 return decl;
 }
@@ -1961,7 +1982,7 @@ return decl;
 
 extern int sprintf(char * , char * , ...);
 
-extern struct __ecereNameSpace__ecere__sys__OldList *  excludedSymbols;
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char *  key);
 
 struct Declaration * MkDeclaration(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct __ecereNameSpace__ecere__sys__OldList * initDeclarators)
 {
@@ -1975,7 +1996,7 @@ struct Specifier * spec;
 
 for(spec = specifiers->first; spec; spec = spec->next)
 {
-if(spec->type == 0 && spec->specifier == 284)
+if(spec->type == 0 && spec->specifier == TYPEDEF)
 {
 if(initDeclarators != (((void *)0)))
 {
@@ -1988,7 +2009,8 @@ if(GetDeclId(d->declarator)->string)
 struct Symbol * type = (type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), type->string = __ecereNameSpace__ecere__sys__CopyString(GetDeclId(d->declarator)->string), type->type = ProcessType(specifiers, d->declarator), type);
 
 type->id = type->idCode = curContext->nextID++;
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(curContext->templateTypesOnly ? curContext->parent : curContext)->types, (struct __ecereNameSpace__ecere__sys__BTNode *)type);
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(curContext->templateTypesOnly ? curContext->parent : curContext)->types, (struct __ecereNameSpace__ecere__sys__BTNode *)type))
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), type);
 decl->symbol = d->declarator->symbol = type;
 }
 }
@@ -2002,7 +2024,8 @@ if(spec->type == 1 && spec->name)
 struct Symbol * type = (type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), type->string = __ecereNameSpace__ecere__sys__CopyString(spec->name), type->type = ProcessType(specifiers, (((void *)0))), type);
 
 type->id = type->idCode = curContext->nextID++;
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(curContext->templateTypesOnly ? curContext->parent : curContext)->types, (struct __ecereNameSpace__ecere__sys__BTNode *)type);
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(curContext->templateTypesOnly ? curContext->parent : curContext)->types, (struct __ecereNameSpace__ecere__sys__BTNode *)type))
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), type);
 decl->symbol = type;
 }
 }
@@ -2010,7 +2033,7 @@ decl->symbol = type;
 variable = 0x0;
 break;
 }
-else if(spec->type == 0 && (spec->specifier == 303 || spec->specifier == 304))
+else if(spec->type == 0 && (spec->specifier == STRUCT || spec->specifier == UNION))
 variable = 0x0;
 }
 }
@@ -2054,8 +2077,12 @@ name[len] = (char)0;
 (__ecereNameSpace__ecere__com__eSystem_Delete(id->string), id->string = 0);
 id->string = __ecereNameSpace__ecere__sys__CopyString(name);
 }
+symbol = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(curContext->templateTypesOnly ? curContext->parent : curContext)->symbols, id->string);
+if(!symbol)
+{
 symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(id->string), ((struct Symbol *)__ecereTemp1)->type = ProcessType(specifiers, d->declarator), ((struct Symbol *)__ecereTemp1));
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(curContext->templateTypesOnly ? curContext->parent : curContext)->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol);
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(curContext->templateTypesOnly ? curContext->parent : curContext)->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
 if(symbol->type && symbol->type->kind == 12 && !symbol->type->arraySizeExp && d->initializer)
 {
 if(d->initializer->type == 1)
@@ -2090,6 +2117,7 @@ symbol->type->freeExp = 0x1;
 }
 }
 symbol->id = symbol->idCode = curContext->nextID++;
+}
 decl->symbol = d->declarator->symbol = symbol;
 }
 }
@@ -2266,7 +2294,8 @@ break;
 if(!symbol && id)
 {
 symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(id->string), ((struct Symbol *)__ecereTemp1)->type = ProcessType(param->qualifiers, param->declarator), ((struct Symbol *)__ecereTemp1)->isParam = 0x1, ((struct Symbol *)__ecereTemp1));
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&context->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol);
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&context->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
 symbol->id = context->nextID++;
 param->declarator->symbol = symbol;
 }
@@ -2306,7 +2335,8 @@ id->string = __ecereNameSpace__ecere__sys__CopyString(name);
 }
 symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(id->string), ((struct Symbol *)__ecereTemp1)->type = ProcessType(func->specifiers, declarator), ((struct Symbol *)__ecereTemp1));
 symbol->idCode = symbol->id = globalContext->nextID++;
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol);
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
 declarator->symbol = symbol;
 }
 else
@@ -2315,7 +2345,8 @@ symbol = declarator->symbol;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*excludedSymbols), declarator->symbol);
 (__ecereNameSpace__ecere__com__eSystem_Delete(symbol->string), symbol->string = 0);
 symbol->string = __ecereNameSpace__ecere__sys__CopyString(GetDeclId(declarator)->string);
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol);
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
 if(!symbol->type)
 symbol->type = ProcessType(func->specifiers, declarator);
 }
@@ -2342,7 +2373,7 @@ if(function->specifiers)
 struct Specifier * spec;
 
 for(spec = (*function->specifiers).first; spec; spec = spec->next)
-if(spec->type == 0 && spec->specifier == 286)
+if(spec->type == 0 && spec->specifier == STATIC)
 {
 declMode = 3;
 break;
@@ -2383,12 +2414,12 @@ if(declaration && declaration->type == 1 && declaration->specifiers)
 struct Specifier * spec;
 
 for(spec = (*declaration->specifiers).first; spec; spec = spec->next)
-if(spec->type == 0 && spec->specifier == 284)
+if(spec->type == 0 && spec->specifier == TYPEDEF)
 {
 declMode = 0;
 break;
 }
-else if(spec->type == 0 && spec->specifier == 286)
+else if(spec->type == 0 && spec->specifier == STATIC)
 {
 declMode = 3;
 break;
@@ -2582,8 +2613,6 @@ extern struct Specifier * CopySpecifier(struct Specifier * spec);
 
 extern void FreeSpecifier(struct Specifier * spec);
 
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char *  key);
-
 void ProcessClassFunctionBody(struct ClassFunction * func, struct Statement * body)
 {
 void * __ecereTemp1;
@@ -2617,7 +2646,8 @@ if(!symbol && id)
 {
 symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(id->string), ((struct Symbol *)__ecereTemp1)->type = ProcessType(param->qualifiers, param->declarator), ((struct Symbol *)__ecereTemp1)->isParam = 0x1, ((struct Symbol *)__ecereTemp1));
 symbol->idCode = symbol->id = context->nextID++;
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&context->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol);
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&context->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
 param->declarator->symbol = symbol;
 }
 }
@@ -2884,7 +2914,8 @@ if(!symbol)
 if(name[0] == ':' && name[1] == ':')
 name += 2;
 symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(name), ((struct Symbol *)__ecereTemp1)->idCode = symbolID, ((struct Symbol *)__ecereTemp1)->id = symbolID, ((struct Symbol *)__ecereTemp1));
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->classes, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol);
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->classes, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
 {
 int start = 0, c;
 char ch;
@@ -2948,7 +2979,8 @@ for(copy = (struct TemplatedType *)__ecereProp___ecereNameSpace__ecere__sys__Bin
 {
 struct TemplatedType * type = (type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplatedType), type->key = copy->key, type->param = copy->param, type);
 
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->templateTypes, (struct __ecereNameSpace__ecere__sys__BTNode *)type);
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->templateTypes, (struct __ecereNameSpace__ecere__sys__BTNode *)type))
+((type ? (__ecereClass_TemplatedType->Destructor ? __ecereClass_TemplatedType->Destructor(type) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor(type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
 }
 }
 else if(baseClass->registered)
@@ -2971,7 +3003,8 @@ if(!param)
 p->param = param = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplateParameter), ((struct TemplateParameter *)__ecereTemp1)->identifier = MkIdentifier(p->name), ((struct TemplateParameter *)__ecereTemp1)->type = p->type, ((struct TemplateParameter *)__ecereTemp1)->dataTypeString = p->dataTypeString, ((struct TemplateParameter *)__ecereTemp1));
 }
 type = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplatedType), ((struct TemplatedType *)__ecereTemp1)->key = (unsigned int)p->name, ((struct TemplatedType *)__ecereTemp1)->param = param, ((struct TemplatedType *)__ecereTemp1));
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->templateTypes, (struct __ecereNameSpace__ecere__sys__BTNode *)type);
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->templateTypes, (struct __ecereNameSpace__ecere__sys__BTNode *)type))
+((type ? (__ecereClass_TemplatedType->Destructor ? __ecereClass_TemplatedType->Destructor(type) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor(type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
 }
 }
 }
@@ -3058,17 +3091,17 @@ int CheckType(char * text)
 {
 if(FindTemplateTypeParameter(curContext, text))
 {
-return 283;
+return TYPE_NAME;
 }
 if(FindType(curContext, text))
 {
-return 283;
+return TYPE_NAME;
 }
 if(FindClass(text))
 {
-return 283;
+return TYPE_NAME;
 }
-return 258;
+return IDENTIFIER;
 }
 
 int check_type()
@@ -3267,7 +3300,8 @@ if(_class->module)
 cl->module = FindModule(_class->module);
 else
 cl->module = mainModule;
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->classes, (struct __ecereNameSpace__ecere__sys__BTNode *)cl);
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->classes, (struct __ecereNameSpace__ecere__sys__BTNode *)cl))
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), cl);
 if(strcmp(name, _class->name))
 cl->shortName = __ecereNameSpace__ecere__sys__CopyString(_class->name);
 }
@@ -3303,7 +3337,7 @@ if(src->kind == 15)
 struct __ecereNameSpace__ecere__sys__NamedLink * member;
 
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(&type->members);
-for(member = type->members.first; member; member = member->next)
+for(member = src->members.first; member; member = member->next)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&type->members, (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(16), ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(member->name), ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)->data = member->data, ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)));
 }
@@ -3343,15 +3377,6 @@ extern unsigned long strtoul(const char *  nptr, char * *  endptr, int base);
 extern char *  strstr(char * , const char * );
 
 extern struct Symbol * FindSymbol(char *  name, struct Context * startContext, struct Context * endContext, unsigned int isStruct, unsigned int globalNameSpace);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedItem;
-
-struct __ecereNameSpace__ecere__sys__NamedItem
-{
-struct __ecereNameSpace__ecere__sys__NamedItem * prev;
-struct __ecereNameSpace__ecere__sys__NamedItem * next;
-char *  name;
-};
 
 struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl)
 {
@@ -3406,37 +3431,37 @@ if(spec->type == 5 && strstr(spec->name, "__attribute__"))
 {
 specType->keepCast = 0x1;
 }
-if(specType->kind == 9 || specType->kind == 10)
+if(spec->specifier != CONST && (specType->kind == 9 || specType->kind == 10))
 {
 FreeType(specType);
 specType = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->kind = 3, ((struct Type *)__ecereTemp1)->isSigned = 0x1, ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
 }
 if(spec->type == 0)
 {
-if(spec->specifier == 284)
+if(spec->specifier == TYPEDEF)
 isTypedef = 0x1;
-else if(spec->specifier == 301)
+else if(spec->specifier == VOID)
 specType->kind = 0;
-else if(spec->specifier == 289)
+else if(spec->specifier == CHAR)
 specType->kind = 1;
-else if(spec->specifier == 291)
+else if(spec->specifier == INT)
 {
 if(specType->kind != 2 && specType->kind != 5)
 specType->kind = 3;
 }
-else if(spec->specifier == 292)
+else if(spec->specifier == UINT)
 {
 if(specType->kind != 2 && specType->kind != 5)
 specType->kind = 3;
 specType->isSigned = 0x0;
 }
-else if(spec->specifier == 293)
+else if(spec->specifier == INT64)
 specType->kind = 4;
-else if(spec->specifier == 302)
+else if(spec->specifier == VALIST)
 specType->kind = 17;
-else if(spec->specifier == 290)
+else if(spec->specifier == SHORT)
 specType->kind = 2;
-else if(spec->specifier == 294)
+else if(spec->specifier == LONG)
 {
 if(isLong)
 specType->kind = 4;
@@ -3444,35 +3469,35 @@ else
 specType->kind = 3;
 isLong = 0x1;
 }
-else if(spec->specifier == 297)
+else if(spec->specifier == FLOAT)
 specType->kind = 6;
-else if(spec->specifier == 298)
+else if(spec->specifier == DOUBLE)
 specType->kind = 7;
-else if(spec->specifier == 295)
+else if(spec->specifier == SIGNED)
 specType->isSigned = 0x1;
-else if(spec->specifier == 296)
+else if(spec->specifier == UNSIGNED)
 specType->isSigned = 0x0;
-else if(spec->specifier == 299)
+else if(spec->specifier == CONST)
 specType->constant = 0x1;
-else if(spec->specifier == 337)
+else if(spec->specifier == TYPED_OBJECT)
 {
 specType->classObjectType = 2;
 specType->kind = 8;
 specType->_class = FindClass("class");
 }
-else if(spec->specifier == 338)
+else if(spec->specifier == ANY_OBJECT)
 {
 specType->classObjectType = 3;
 specType->kind = 8;
 specType->_class = FindClass("class");
 }
-else if(spec->specifier == 320)
+else if(spec->specifier == CLASS)
 {
 specType->classObjectType = 1;
 specType->kind = 8;
 specType->_class = FindClass("class");
 }
-else if(spec->specifier == 321)
+else if(spec->specifier == THISCLASS)
 specType->kind = 21;
 }
 else if(spec->type == 1)
@@ -3481,6 +3506,10 @@ struct Symbol * symbol = spec->name ? FindType(curContext, spec->name) : (((void
 
 if(symbol && symbol->type)
 {
+struct Type * dummy = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+*dummy = *specType;
+FreeType(dummy);
 CopyTypeInto(specType, symbol->type);
 specType->typeName = __ecereNameSpace__ecere__sys__CopyString(symbol->type->name);
 }
@@ -3503,7 +3532,9 @@ int nextValue = 0;
 
 for(e = (*spec->list).first; e; e = e->next)
 {
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&specType->members, (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(12), ((struct __ecereNameSpace__ecere__sys__NamedItem *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(e->id->string), ((struct __ecereNameSpace__ecere__sys__NamedItem *)__ecereTemp1)));
+struct __ecereNameSpace__ecere__sys__NamedLink * i = (i = __ecereNameSpace__ecere__com__eSystem_New0(16), i->name = __ecereNameSpace__ecere__sys__CopyString(e->id->string), i);
+
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&specType->members, i);
 }
 }
 }
@@ -3546,9 +3577,11 @@ if(symbol->type->kind == 15)
 struct __ecereNameSpace__ecere__sys__NamedLink * member;
 
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(&specType->members);
-for(member = specType->members.first; member; member = member->next)
+for(member = symbol->type->members.first; member; member = member->next)
 {
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&specType->members, (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(16), ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(member->name), ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)->data = member->data, ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)));
+struct __ecereNameSpace__ecere__sys__NamedLink * item = (item = __ecereNameSpace__ecere__com__eSystem_New0(16), item->name = __ecereNameSpace__ecere__sys__CopyString(member->name), item->data = member->data, item);
+
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&specType->members, item);
 }
 }
 else if(symbol->type->kind == 9 || symbol->type->kind == 10)

@@ -1,7 +1,7 @@
 import "ecdefs"
 
 #define YYLTYPE Location
-#include "grammar.eh"
+#include "grammar.h"
 
 static OldList * tableStatements, * indexStatements, * addFieldStatements/*, * findFieldStatements*/;
 static int numIndexes;

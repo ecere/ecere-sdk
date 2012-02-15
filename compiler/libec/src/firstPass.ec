@@ -1,7 +1,7 @@
 import "ecdefs"
 
 #define YYLTYPE Location
-#include "grammar.eh"
+#include "grammar.h"
 
 static void AddDefinitions(Class regClass, DataMember member, OldList definitions)
 {

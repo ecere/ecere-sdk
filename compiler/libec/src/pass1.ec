@@ -5,7 +5,7 @@ import "ecdefs"
    (_class ? ((void *)(((char *)_class.data) + baseClass.offsetClass)) : null)
 
 #define YYLTYPE Location
-#include "grammar.eh"
+#include "grammar.h"
 
 static Statement registerModuleBody;
 static External registerModuleExternal;

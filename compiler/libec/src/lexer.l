@@ -10,7 +10,7 @@ IDENT    {L}({L}|{D})*
 import "ecdefs"
 #define YYLTYPE Location
 
-#include "grammar.eh"
+#include "grammar.h"
 
 bool echoOn = true;
 public void SetEchoOn(bool b) { echoOn = b; }

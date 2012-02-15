@@ -851,6 +851,11 @@ struct __ecereNameSpace__ecere__com__Method * method;
 };
 };
 
+enum yytokentype
+{
+IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295, UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309, SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323, SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, EXT_ATTRIB = 334, PUBLIC = 335, PRIVATE = 336, TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347, CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356, NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363
+};
+
 typedef union YYSTYPE
 {
 int specifierType;
@@ -1106,7 +1111,7 @@ struct Declarator * declarator;
 createInstancesBody = MkCompoundStmt((((void *)0)), MkList());
 createInstancesBody->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = globalContext, ((struct Context *)__ecereTemp1));
 specifiers = MkList();
-ListAdd(specifiers, MkSpecifier(301));
+ListAdd(specifiers, MkSpecifier(VOID));
 __ecereNameSpace__ecere__sys__GetLastDirectory(outputFile, moduleName);
 __ecereNameSpace__ecere__sys__StripExtension(moduleName);
 __ecereNameSpace__ecere__sys__ChangeCh(moduleName, ' ', '_');
@@ -1123,7 +1128,7 @@ ListAdd(ast, MkExternalFunction(function));
 destroyInstancesBody = MkCompoundStmt((((void *)0)), MkList());
 destroyInstancesBody->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = globalContext, ((struct Context *)__ecereTemp1));
 specifiers = MkList();
-ListAdd(specifiers, MkSpecifier(301));
+ListAdd(specifiers, MkSpecifier(VOID));
 sprintf(registerName, "__ecereDestroyModuleInstances_%s", moduleName);
 declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), (((void *)0)));
 {
@@ -1440,7 +1445,7 @@ if(bitMember->pos)
 char pos[10];
 
 sprintf(pos, "%d", bitMember->pos);
-part = MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(specs, decl), MkExpBrackets(MkListOne(member->initializer->exp))))), 265, MkExpConstant(pos))));
+part = MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(specs, decl), MkExpBrackets(MkListOne(member->initializer->exp))))), LEFT_OP, MkExpConstant(pos))));
 }
 else
 part = MkExpBrackets(MkListOne(MkExpCast(MkTypeName(specs, decl), MkExpBrackets(MkListOne(member->initializer->exp)))));
@@ -1821,7 +1826,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&classSym->module->class
 classSym->_import->itself = 0x1;
 specifiers = MkList();
 declarators = MkList();
-ListAdd(specifiers, MkSpecifier(285));
+ListAdd(specifiers, MkSpecifier(EXTERN));
 ListAdd(specifiers, MkStructOrUnion(3, MkIdentifier("__ecereNameSpace__ecere__com__Class"), (((void *)0))));
 d = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier(className)));
 ListAdd(declarators, MkInitDeclarator(d, (((void *)0))));
@@ -2225,24 +2230,24 @@ if(exp->op.exp1)
 exp->op.exp1->usage = (exp->op.exp1->usage & ~0x2) | (((unsigned int)0x1) << 1);
 assign = 0x1;
 break;
-case 273:
-case 274:
-case 275:
-case 276:
-case 277:
-case 278:
-case 279:
-case 280:
-case 281:
-case 282:
+case MUL_ASSIGN:
+case DIV_ASSIGN:
+case MOD_ASSIGN:
+case ADD_ASSIGN:
+case SUB_ASSIGN:
+case LEFT_ASSIGN:
+case RIGHT_ASSIGN:
+case AND_ASSIGN:
+case XOR_ASSIGN:
+case OR_ASSIGN:
 if(exp->op.exp2)
 exp->op.exp2->usage = (exp->op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
 assign = 0x1;
 if(exp->op.exp1)
 exp->op.exp1->usage = (exp->op.exp1->usage & ~0x2) | (((unsigned int)0x1) << 1);
 break;
-case 263:
-case 264:
+case INC_OP:
+case DEC_OP:
 if(exp->op.exp1)
 exp->op.exp1->usage = (exp->op.exp1->usage & ~0x2) | (((unsigned int)0x1) << 1);
 case '&':
@@ -2266,18 +2271,18 @@ exp->op.exp2->usage = (exp->op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
 break;
 case '/':
 case '%':
-case 265:
-case 266:
+case LEFT_OP:
+case RIGHT_OP:
 case '<':
 case '>':
-case 267:
-case 268:
-case 269:
-case 270:
+case LE_OP:
+case GE_OP:
+case EQ_OP:
+case NE_OP:
 case '|':
 case '^':
-case 271:
-case 272:
+case AND_OP:
+case OR_OP:
 if(exp->op.exp1)
 exp->op.exp1->usage = (exp->op.exp1->usage & ~0x1) | (((unsigned int)0x1) << 0);
 if(exp->op.exp2)
@@ -3035,7 +3040,7 @@ decl->type = 1;
 decl->specifiers = MkListOne(MkSpecifierName(inst->_class->name));
 if(decl->declMode == 3)
 {
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*decl->specifiers), (((void *)0)), MkSpecifier(286));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*decl->specifiers), (((void *)0)), MkSpecifier(STATIC));
 }
 decl->declarators = MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(inst->exp->identifier->string)), (((void *)0))));
 ProcessDeclaration(decl);
@@ -3051,7 +3056,7 @@ if(classSym && classSym->registered && (classSym->registered->type == 0))
 {
 ListAdd(createInstancesBody->compound.statements, MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_IncRef")), MkListOne(CopyExpression(inst->exp))))));
 {
-struct Expression * exp = MkExpOp((((void *)0)), 328, CopyExpression(inst->exp));
+struct Expression * exp = MkExpOp((((void *)0)), DELETE, CopyExpression(inst->exp));
 
 ListAdd(destroyInstancesBody->compound.statements, MkExpressionStmt(MkListOne(exp)));
 ProcessExpressionType(exp);
@@ -3059,7 +3064,7 @@ ProcessExpressionType(exp);
 }
 else if(classSym && classSym->registered && (classSym->registered->type == 5))
 {
-struct Expression * exp = MkExpOp((((void *)0)), 328, CopyExpression(inst->exp));
+struct Expression * exp = MkExpOp((((void *)0)), DELETE, CopyExpression(inst->exp));
 
 ListAdd(destroyInstancesBody->compound.statements, MkExpressionStmt(MkListOne(exp)));
 ProcessExpressionType(exp);

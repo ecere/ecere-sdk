@@ -897,6 +897,11 @@ long long int strtoll(const char * nptr, char ** endptr, int base);
 
 unsigned long long int strtoull(const char * nptr, char ** endptr, int base);
 
+enum yytokentype
+{
+IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295, UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309, SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323, SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, EXT_ATTRIB = 334, PUBLIC = 335, PRIVATE = 336, TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347, CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356, NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363
+};
+
 typedef union YYSTYPE
 {
 int specifierType;
@@ -2637,7 +2642,7 @@ else if(totalSize < maxSize && _class->type != 1000)
 char sizeString[50];
 
 sprintf(sizeString, "%d", maxSize - totalSize);
-ListAdd(declarations, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(289)), MkListOne(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__ecere_padding")), MkExpConstant(sizeString))), (((void *)0)))));
+ListAdd(declarations, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(CHAR)), MkListOne(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__ecere_padding")), MkExpConstant(sizeString))), (((void *)0)))));
 }
 if(context)
 FinishTemplatesContext(context);
@@ -2964,11 +2969,11 @@ specifiers = MkList();
 }
 d = MkDeclaratorFunction(d, params);
 if(dllImport)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(285));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(EXTERN));
 else if(prop->_class->symbol && ((struct Symbol *)prop->_class->symbol)->isStatic)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(286));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(STATIC));
 if(simple)
-ListAdd(specifiers, MkSpecifier(301));
+ListAdd(specifiers, MkSpecifier(VOID));
 ListAdd(declarators, MkInitDeclarator(d, (((void *)0))));
 decl = MkDeclaration(specifiers, declarators);
 external = MkExternalDeclaration(decl);
@@ -3031,11 +3036,11 @@ DeclareStruct(spec->name, 0x0);
 ListAdd(declarators, MkInitDeclarator(d, (((void *)0))));
 specifiers = MkList();
 if(dllImport)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(285));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(EXTERN));
 else if(prop->_class->symbol && ((struct Symbol *)prop->_class->symbol)->isStatic)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(286));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(STATIC));
 if(!prop->conversion || prop->_class->type == 1)
-ListAdd(specifiers, MkSpecifier(301));
+ListAdd(specifiers, MkSpecifier(VOID));
 else
 ListAdd(specifiers, MkSpecifierName(prop->_class->fullName));
 decl = MkDeclaration(specifiers, declarators);
@@ -3057,9 +3062,9 @@ struct External * external;
 struct __ecereNameSpace__ecere__sys__OldList * specifiers = MkList();
 
 if(imported)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(285));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(EXTERN));
 else
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(286));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(STATIC));
 ListAdd(specifiers, MkSpecifierName("Property"));
 {
 struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
@@ -3928,12 +3933,12 @@ struct External * external;
 specifiers = MkList();
 declarators = MkList();
 if(dllImport)
-ListAdd(specifiers, MkSpecifier(285));
+ListAdd(specifiers, MkSpecifier(EXTERN));
 else if(method->_class->symbol && ((struct Symbol *)method->_class->symbol)->isStatic)
-ListAdd(specifiers, MkSpecifier(286));
+ListAdd(specifiers, MkSpecifier(STATIC));
 if(method->type == 1)
 {
-ListAdd(specifiers, MkSpecifier(291));
+ListAdd(specifiers, MkSpecifier(INT));
 d = MkDeclaratorIdentifier(MkIdentifier(name));
 }
 else
@@ -3971,7 +3976,7 @@ struct TypeName * thisParam = MkTypeName(MkListOne(MkSpecifierName(method->dataT
 struct TypeName * firstParam = ((struct TypeName *)(*funcDecl->function.parameters).first);
 struct Specifier * firstSpec = firstParam->qualifiers ? (*firstParam->qualifiers).first : (((void *)0));
 
-if(firstSpec && firstSpec->type == 0 && firstSpec->specifier == 301 && !firstParam->declarator)
+if(firstSpec && firstSpec->type == 0 && firstSpec->specifier == VOID && !firstParam->declarator)
 {
 struct TypeName * param = (*funcDecl->function.parameters).first;
 
@@ -4113,7 +4118,7 @@ struct Specifier * spec;
 
 for(spec = specs->first; spec; spec = spec->next)
 {
-if(spec->type == 0 && spec->specifier == 321)
+if(spec->type == 0 && spec->specifier == THISCLASS)
 {
 spec->type = 1;
 spec->name = ReplaceThisClass(_class);
@@ -4203,7 +4208,7 @@ struct External * external;
 
 specifiers = MkList();
 declarators = MkList();
-ListAdd(specifiers, MkSpecifier(285));
+ListAdd(specifiers, MkSpecifier(EXTERN));
 d = MkDeclaratorIdentifier(MkIdentifier(imported ? name : function->name));
 if(dllImport)
 d = MkDeclaratorBrackets(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), d));
@@ -4224,7 +4229,7 @@ funcDecl = GetFuncDecl(d);
 if(funcDecl && !funcDecl->function.parameters)
 {
 funcDecl->function.parameters = MkList();
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*funcDecl->function.parameters), (((void *)0)), MkTypeName(MkListOne(MkSpecifier(301)), (((void *)0))));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*funcDecl->function.parameters), (((void *)0)), MkTypeName(MkListOne(MkSpecifier(VOID)), (((void *)0))));
 }
 ListAdd(declarators, MkInitDeclarator(d, (((void *)0))));
 {
@@ -4305,7 +4310,7 @@ struct External * external;
 
 specifiers = MkList();
 declarators = MkList();
-ListAdd(specifiers, MkSpecifier(285));
+ListAdd(specifiers, MkSpecifier(EXTERN));
 d = MkDeclaratorIdentifier(MkIdentifier(data->fullName));
 d = SpecDeclFromString(data->dataTypeString, specifiers, d);
 ListAdd(declarators, MkInitDeclarator(d, (((void *)0))));
@@ -5028,6 +5033,8 @@ sourceExp->_classExp.specifiers = specs;
 sourceExp->_classExp.decl = decl;
 sourceExp->expType = dest;
 dest->refCount++;
+FreeType(source);
+FreeType(dest);
 return 0x1;
 }
 }
@@ -5108,7 +5115,7 @@ sourceExp->destType->refCount++;
 if(sourceExp->expType)
 sourceExp->expType->refCount++;
 sourceExp->type = 11;
-sourceExp->cast.typeName = MkTypeName(MkListOne(MkSpecifier(301)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0))));
+sourceExp->cast.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0))));
 sourceExp->cast.exp = newExp;
 FreeType(sourceExp->expType);
 sourceExp->expType = (((void *)0));
@@ -5131,39 +5138,39 @@ dest->refCount++;
 }
 if(dest->kind == 7 && (source->kind == 7 || source->kind == 6 || dest->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 1))
 {
-specs = MkListOne(MkSpecifier(298));
+specs = MkListOne(MkSpecifier(DOUBLE));
 }
 else if(dest->kind == 6 && (source->kind == 6 || dest->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 1 || source->kind == 7))
 {
-specs = MkListOne(MkSpecifier(297));
+specs = MkListOne(MkSpecifier(FLOAT));
 }
 else if(dest->kind == 4 && (source->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 1 || source->kind == 6 || source->kind == 7))
 {
 specs = MkList();
 if(!dest->isSigned)
-ListAdd(specs, MkSpecifier(296));
-ListAdd(specs, MkSpecifier(293));
+ListAdd(specs, MkSpecifier(UNSIGNED));
+ListAdd(specs, MkSpecifier(INT64));
 }
 else if(dest->kind == 3 && (source->kind == 3 || source->kind == 2 || source->kind == 1 || source->kind == 6 || source->kind == 7))
 {
 specs = MkList();
 if(!dest->isSigned)
-ListAdd(specs, MkSpecifier(296));
-ListAdd(specs, MkSpecifier(291));
+ListAdd(specs, MkSpecifier(UNSIGNED));
+ListAdd(specs, MkSpecifier(INT));
 }
 else if(dest->kind == 2 && (source->kind == 2 || source->kind == 1 || source->kind == 3 || source->kind == 6 || source->kind == 7))
 {
 specs = MkList();
 if(!dest->isSigned)
-ListAdd(specs, MkSpecifier(296));
-ListAdd(specs, MkSpecifier(290));
+ListAdd(specs, MkSpecifier(UNSIGNED));
+ListAdd(specs, MkSpecifier(SHORT));
 }
 else if(dest->kind == 1 && (source->kind == 1 || source->kind == 2 || source->kind == 3 || source->kind == 6 || source->kind == 7))
 {
 specs = MkList();
 if(!dest->isSigned)
-ListAdd(specs, MkSpecifier(296));
-ListAdd(specs, MkSpecifier(289));
+ListAdd(specs, MkSpecifier(UNSIGNED));
+ListAdd(specs, MkSpecifier(CHAR));
 }
 else
 {
@@ -5174,39 +5181,39 @@ return 0x0;
 }
 else if(dest->kind == 7 && (source->kind == 7 || source->kind == 6 || source->kind == 4 || source->kind == 3 || source->kind == 15 || source->kind == 2 || source->kind == 1))
 {
-specs = MkListOne(MkSpecifier(298));
+specs = MkListOne(MkSpecifier(DOUBLE));
 }
 else if(dest->kind == 6 && (source->kind == 6 || source->kind == 15 || source->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 1))
 {
-specs = MkListOne(MkSpecifier(297));
+specs = MkListOne(MkSpecifier(FLOAT));
 }
 else if(dest->kind == 1 && (source->kind == 1 || source->kind == 15 || source->kind == 2 || source->kind == 3) && (dest->isSigned ? (value >= -128 && value <= 127) : (value >= 0 && value <= 255)))
 {
 specs = MkList();
 if(!dest->isSigned)
-ListAdd(specs, MkSpecifier(296));
-ListAdd(specs, MkSpecifier(289));
+ListAdd(specs, MkSpecifier(UNSIGNED));
+ListAdd(specs, MkSpecifier(CHAR));
 }
 else if(dest->kind == 2 && (source->kind == 15 || source->kind == 1 || source->kind == 2 || (source->kind == 3 && (dest->isSigned ? (value >= -32768 && value <= 32767) : (value >= 0 && value <= 65535)))))
 {
 specs = MkList();
 if(!dest->isSigned)
-ListAdd(specs, MkSpecifier(296));
-ListAdd(specs, MkSpecifier(290));
+ListAdd(specs, MkSpecifier(UNSIGNED));
+ListAdd(specs, MkSpecifier(SHORT));
 }
 else if(dest->kind == 3 && (source->kind == 15 || source->kind == 2 || source->kind == 1 || source->kind == 3))
 {
 specs = MkList();
 if(!dest->isSigned)
-ListAdd(specs, MkSpecifier(296));
-ListAdd(specs, MkSpecifier(291));
+ListAdd(specs, MkSpecifier(UNSIGNED));
+ListAdd(specs, MkSpecifier(INT));
 }
 else if(dest->kind == 4 && (source->kind == 15 || source->kind == 2 || source->kind == 1 || source->kind == 3 || source->kind == 4))
 {
 specs = MkList();
 if(!dest->isSigned)
-ListAdd(specs, MkSpecifier(296));
-ListAdd(specs, MkSpecifier(293));
+ListAdd(specs, MkSpecifier(UNSIGNED));
+ListAdd(specs, MkSpecifier(INT64));
 }
 else if(dest->kind == 15 && (source->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 1))
 {
@@ -9819,7 +9826,7 @@ FreeInstance(inst);
 
 void CallOperator(struct Expression * exp, struct Expression * exp1, struct Expression * exp2, struct Operand * op1, struct Operand * op2)
 {
-if(exp->op.op == 261)
+if(exp->op.op == SIZEOF)
 {
 FreeExpContents(exp);
 exp->type = 2;
@@ -9929,42 +9936,42 @@ FreeExpContents(exp);
 op1->ops.BitXor(exp, op1, op2);
 }
 break;
-case 265:
+case LEFT_OP:
 if(op1->ops.LShift)
 {
 FreeExpContents(exp);
 op1->ops.LShift(exp, op1, op2);
 }
 break;
-case 266:
+case RIGHT_OP:
 if(op1->ops.RShift)
 {
 FreeExpContents(exp);
 op1->ops.RShift(exp, op1, op2);
 }
 break;
-case 269:
+case EQ_OP:
 if(op1->ops.Equ)
 {
 FreeExpContents(exp);
 op1->ops.Equ(exp, op1, op2);
 }
 break;
-case 270:
+case NE_OP:
 if(op1->ops.Nqu)
 {
 FreeExpContents(exp);
 op1->ops.Nqu(exp, op1, op2);
 }
 break;
-case 271:
+case AND_OP:
 if(op1->ops.And)
 {
 FreeExpContents(exp);
 op1->ops.And(exp, op1, op2);
 }
 break;
-case 272:
+case OR_OP:
 if(op1->ops.Or)
 {
 FreeExpContents(exp);
@@ -9985,14 +9992,14 @@ FreeExpContents(exp);
 op1->ops.Sma(exp, op1, op2);
 }
 break;
-case 268:
+case GE_OP:
 if(op1->ops.GrtEqu)
 {
 FreeExpContents(exp);
 op1->ops.GrtEqu(exp, op1, op2);
 }
 break;
-case 267:
+case LE_OP:
 if(op1->ops.SmaEqu)
 {
 FreeExpContents(exp);
@@ -10741,7 +10748,7 @@ case 7:
 exp->type = 4;
 exp->op.exp1 = (((void *)0));
 context = PushContext();
-exp->op.exp2 = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpExtensionCompound(compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifier(298)), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal")), MkInitializerAssignment(newExp))))), MkListOne(MkExpressionStmt(MkListOne(MkExpOp((((void *)0)), '&', MkExpIdentifier(MkIdentifier("__internal")))))))));
+exp->op.exp2 = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpExtensionCompound(compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifier(DOUBLE)), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal")), MkInitializerAssignment(newExp))))), MkListOne(MkExpressionStmt(MkListOne(MkExpOp((((void *)0)), '&', MkExpIdentifier(MkIdentifier("__internal")))))))));
 compound->compound.context = context;
 PopContext(context);
 exp->op.op = '*';
@@ -10772,7 +10779,7 @@ case 7:
 exp->type = 4;
 exp->op.exp1 = (((void *)0));
 context = PushContext();
-exp->op.exp2 = MkExpCast(MkTypeName(MkListOne(MkSpecifier(298)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpExtensionCompound(compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("uint64")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal")), MkInitializerAssignment(newExp))))), MkListOne(MkExpressionStmt(MkListOne(MkExpOp((((void *)0)), '&', MkExpIdentifier(MkIdentifier("__internal")))))))));
+exp->op.exp2 = MkExpCast(MkTypeName(MkListOne(MkSpecifier(DOUBLE)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpExtensionCompound(compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("uint64")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal")), MkInitializerAssignment(newExp))))), MkListOne(MkExpressionStmt(MkListOne(MkExpOp((((void *)0)), '&', MkExpIdentifier(MkIdentifier("__internal")))))))));
 compound->compound.context = context;
 PopContext(context);
 exp->op.op = '*';
@@ -10956,7 +10963,7 @@ return symbol;
 static void GetTypeSpecs(struct Type * type, struct __ecereNameSpace__ecere__sys__OldList * specs)
 {
 if(!type->isSigned)
-ListAdd(specs, MkSpecifier(296));
+ListAdd(specs, MkSpecifier(UNSIGNED));
 switch(type->kind)
 {
 case 8:
@@ -10970,23 +10977,23 @@ GetTypeSpecs(type->_class->registered->dataType, specs);
 break;
 }
 case 7:
-ListAdd(specs, MkSpecifier(298));
+ListAdd(specs, MkSpecifier(DOUBLE));
 break;
 case 6:
-ListAdd(specs, MkSpecifier(297));
+ListAdd(specs, MkSpecifier(FLOAT));
 break;
 case 1:
-ListAdd(specs, MkSpecifier(289));
+ListAdd(specs, MkSpecifier(CHAR));
 break;
 case 2:
-ListAdd(specs, MkSpecifier(290));
+ListAdd(specs, MkSpecifier(SHORT));
 break;
 case 4:
-ListAdd(specs, MkSpecifier(293));
+ListAdd(specs, MkSpecifier(INT64));
 break;
 case 3:
 default:
-ListAdd(specs, MkSpecifier(291));
+ListAdd(specs, MkSpecifier(INT));
 break;
 }
 }
@@ -11529,7 +11536,7 @@ char size[100];
 
 ComputeTypeSize(e->expType);
 sprintf(size, "%d", e->expType->size);
-newExp = MkExpBrackets(MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(289)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), newExp), '+', MkExpCall(MkExpIdentifier(MkIdentifier("__ENDIAN_PAD")), MkListOne(MkExpConstant(size))))));
+newExp = MkExpBrackets(MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), newExp), '+', MkExpCall(MkExpIdentifier(MkIdentifier("__ENDIAN_PAD")), MkListOne(MkExpConstant(size))))));
 }
 ReplaceExpContents(checkedExp, newExp);
 e->byReference = 0x1;
@@ -12079,31 +12086,31 @@ struct Type * dummy = (dummy = __ecereNameSpace__ecere__com__eInstance_New(__ece
 switch(exp->op.op)
 {
 case '=':
-case 273:
-case 274:
-case 275:
-case 276:
-case 277:
-case 278:
-case 279:
-case 280:
-case 281:
-case 282:
+case MUL_ASSIGN:
+case DIV_ASSIGN:
+case MOD_ASSIGN:
+case ADD_ASSIGN:
+case SUB_ASSIGN:
+case LEFT_ASSIGN:
+case RIGHT_ASSIGN:
+case AND_ASSIGN:
+case XOR_ASSIGN:
+case OR_ASSIGN:
 assign = 0x1;
 break;
 case '!':
 break;
-case 271:
-case 272:
+case AND_OP:
+case OR_OP:
 boolOps = 0x1;
 boolResult = 0x1;
 break;
-case 269:
+case EQ_OP:
 case '<':
 case '>':
-case 267:
-case 268:
-case 270:
+case LE_OP:
+case GE_OP:
+case NE_OP:
 boolResult = 0x1;
 useSideType = 0x1;
 break;
@@ -12202,7 +12209,7 @@ if(inCompiler)
 PrintExpression(exp->op.exp2, expString);
 if(type1 && type1->kind == 13)
 {
-if(exp->op.op == 273 || exp->op.op == 274 || exp->op.op == 275 || exp->op.op == 278 || exp->op.op == 279 || exp->op.op == 280 || exp->op.op == 282)
+if(exp->op.op == MUL_ASSIGN || exp->op.op == DIV_ASSIGN || exp->op.op == MOD_ASSIGN || exp->op.op == LEFT_ASSIGN || exp->op.op == RIGHT_ASSIGN || exp->op.op == AND_ASSIGN || exp->op.op == OR_ASSIGN)
 Compiler_Error("operator %s illegal on pointer\n", exp->op.op);
 else if(exp->op.op == '=')
 {
@@ -12215,7 +12222,7 @@ type1->refCount++;
 }
 else
 {
-if(exp->op.op == 273 || exp->op.op == 274 || exp->op.op == 275 || exp->op.op == 278 || exp->op.op == 279)
+if(exp->op.op == MUL_ASSIGN || exp->op.op == DIV_ASSIGN || exp->op.op == MOD_ASSIGN || exp->op.op == LEFT_ASSIGN || exp->op.op == RIGHT_ASSIGN)
 ;
 else
 {
@@ -12265,12 +12272,12 @@ Compiler_Error("void *: unknown size\n");
 }
 else if(exp->op.exp2->expType->kind == 13 || exp->op.exp2->expType->kind == 12 || exp->op.exp2->expType->kind == 11 || exp->op.exp2->expType->kind == 16 || (type1->type->kind == 0 && exp->op.exp2->expType->kind == 8 && exp->op.exp2->expType->_class->registered && (exp->op.exp2->expType->_class->registered->type == 0 || exp->op.exp2->expType->_class->registered->type == 1 || exp->op.exp2->expType->_class->registered->type == 5)))
 {
-if(exp->op.op == 276)
+if(exp->op.op == ADD_ASSIGN)
 Compiler_Error("cannot add two pointers\n");
 }
 else if((exp->op.exp2->expType->kind == 8 && type1->kind == 13 && type1->type->kind == 8 && type1->type->_class == exp->op.exp2->expType->_class && exp->op.exp2->expType->_class->registered && exp->op.exp2->expType->_class->registered->type == 1))
 {
-if(exp->op.op == 276)
+if(exp->op.op == ADD_ASSIGN)
 Compiler_Error("cannot add two pointers\n");
 }
 else if(inCompiler)
@@ -12294,7 +12301,7 @@ exp->op.exp2->destType = (((void *)0));
 type2 = exp->op.exp2->expType;
 }
 dummy->kind = 0;
-if(exp->op.op == 261)
+if(exp->op.op == SIZEOF)
 {
 exp->expType = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1)->kind = 3, ((struct Type *)__ecereTemp1));
 exp->isConstant = 0x1;
@@ -12367,7 +12374,7 @@ ProcessExpressionType(exp->op.exp1);
 if(type2->kind != 13)
 {
 ProcessExpressionType(classExp);
-exp->op.exp2 = MkExpBrackets(MkListOne(MkExpOp(exp->op.exp2, '*', MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpConstant("5")), 272, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpConstant("0"))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(301)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(classExp, MkIdentifier("typeSize"))))))));
+exp->op.exp2 = MkExpBrackets(MkListOne(MkExpOp(exp->op.exp2, '*', MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpConstant("5")), OR_OP, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpConstant("0"))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(classExp, MkIdentifier("typeSize"))))))));
 if(!exp->op.exp2->expType)
 type2 = exp->op.exp2->expType = ProcessTypeString("int", 0x0);
 ProcessExpressionType(exp->op.exp2);
@@ -12418,7 +12425,7 @@ struct Expression * classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass")
 
 ProcessExpressionType(classExp);
 exp->type = 5;
-exp->list = MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpBrackets(MkListOne(exp->op.exp1))), exp->op.op, MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpBrackets(MkListOne(exp->op.exp2)))))), '/', MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("noHeadClass"))), 272, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), 269, MkExpIdentifier(MkIdentifier("normalClass")))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(301)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(classExp, MkIdentifier("typeSize")))))));
+exp->list = MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpBrackets(MkListOne(exp->op.exp1))), exp->op.op, MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpBrackets(MkListOne(exp->op.exp2)))))), '/', MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass"))), OR_OP, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass")))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(classExp, MkIdentifier("typeSize")))))));
 ProcessExpressionType(((struct Expression *)(*exp->list).first)->op.exp2);
 FreeType(dummy);
 return ;
@@ -12431,6 +12438,8 @@ if(!success && exp->op.exp1->type == 2)
 {
 if(CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0))
 {
+if(exp->expType)
+FreeType(exp->expType);
 exp->expType = exp->op.exp1->destType;
 if(exp->op.exp1->destType)
 exp->op.exp1->destType->refCount++;
@@ -12438,6 +12447,8 @@ success = 0x1;
 }
 else if(CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0))
 {
+if(exp->expType)
+FreeType(exp->expType);
 exp->expType = exp->op.exp2->destType;
 if(exp->op.exp2->destType)
 exp->op.exp2->destType->refCount++;
@@ -12448,6 +12459,8 @@ else if(!success)
 {
 if(CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0))
 {
+if(exp->expType)
+FreeType(exp->expType);
 exp->expType = exp->op.exp2->destType;
 if(exp->op.exp2->destType)
 exp->op.exp2->destType->refCount++;
@@ -12455,6 +12468,8 @@ success = 0x1;
 }
 else if(CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0))
 {
+if(exp->expType)
+FreeType(exp->expType);
 exp->expType = exp->op.exp1->destType;
 if(exp->op.exp1->destType)
 exp->op.exp1->destType->refCount++;
@@ -12545,6 +12560,8 @@ if(type1->kind == 8 && type1->_class && type1->_class->registered && type1->_cla
 {
 if(CheckExpressionType(exp->op.exp1, exp->op.exp2->expType, 0x0))
 {
+if(exp->expType)
+FreeType(exp->expType);
 exp->expType = exp->op.exp1->expType;
 if(exp->op.exp2->expType)
 exp->op.exp1->expType->refCount++;
@@ -12555,6 +12572,8 @@ else if(type2 && (type2->kind == 8 && type2->_class && type2->_class->registered
 {
 if(CheckExpressionType(exp->op.exp2, exp->op.exp1->expType, 0x0))
 {
+if(exp->expType)
+FreeType(exp->expType);
 exp->expType = exp->op.exp2->expType;
 if(exp->op.exp2->expType)
 exp->op.exp2->expType->refCount++;
@@ -12570,6 +12589,8 @@ exp->op.exp2->destType = type1;
 type1->refCount++;
 if(CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0))
 {
+if(exp->expType)
+FreeType(exp->expType);
 exp->expType = exp->op.exp2->destType;
 if(exp->op.exp2->destType)
 exp->op.exp2->destType->refCount++;
@@ -12628,6 +12649,8 @@ exp->op.exp1->destType = type2;
 type2->refCount++;
 if(CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0))
 {
+if(exp->expType)
+FreeType(exp->expType);
 exp->expType = exp->op.exp1->destType;
 if(exp->op.exp1->destType)
 exp->op.exp1->destType->refCount++;
@@ -12706,9 +12729,9 @@ FreeType(exp->expType);
 exp->expType = MkClassType("bool");
 exp->expType->truth = 0x1;
 }
-if(exp->op.op != 261)
+if(exp->op.op != SIZEOF)
 exp->isConstant = (!exp->op.exp1 || exp->op.exp1->isConstant) && (!exp->op.exp2 || exp->op.exp2->isConstant);
-if(exp->op.op == 261 && exp->op.exp2->expType)
+if(exp->op.op == SIZEOF && exp->op.exp2->expType)
 {
 DeclareType(exp->op.exp2->expType, 0x0, 0x0);
 }
@@ -13485,7 +13508,7 @@ strcpy(structName, "__ecereClassData_");
 FullClassNameCat(structName, type->_class->string, 0x0);
 exp->type = 9;
 exp->member.member = id;
-exp->member.exp = MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkStructOrUnion(3, MkIdentifier(structName), (((void *)0)))), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpBrackets(MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(289)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpMember(classExp, MkIdentifier("data"))), '+', MkExpMember(MkExpClass(MkListOne(MkSpecifierName(type->_class->string)), (((void *)0))), MkIdentifier("offsetClass"))))))));
+exp->member.exp = MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkStructOrUnion(3, MkIdentifier(structName), (((void *)0)))), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpBrackets(MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpMember(classExp, MkIdentifier("data"))), '+', MkExpMember(MkExpClass(MkListOne(MkSpecifierName(type->_class->string)), (((void *)0))), MkIdentifier("offsetClass"))))))));
 FreeType(type);
 ProcessExpressionType(exp);
 return ;
@@ -14073,7 +14096,7 @@ if(curCompound && FindSymbol("this", curContext, curCompound->compound.context, 
 classExp = MkExpMember(MkExpIdentifier(MkIdentifier("this")), MkIdentifier("_class"));
 else
 classExp = MkExpIdentifier(MkIdentifier("class"));
-exp->member.exp = MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkStructOrUnion(3, MkIdentifier(structName), (((void *)0)))), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpBrackets(MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(289)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpMember(classExp, MkIdentifier("data"))), '+', MkExpMember(MkExpClass(MkListOne(MkSpecifierName(_class->fullName)), (((void *)0))), MkIdentifier("offsetClass"))))))));
+exp->member.exp = MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkStructOrUnion(3, MkIdentifier(structName), (((void *)0)))), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpBrackets(MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpMember(classExp, MkIdentifier("data"))), '+', MkExpMember(MkExpClass(MkListOne(MkSpecifierName(_class->fullName)), (((void *)0))), MkIdentifier("offsetClass"))))))));
 ProcessExpressionType(exp);
 return ;
 }
@@ -14513,7 +14536,7 @@ switch(spec->type)
 {
 case 0:
 {
-if(spec->specifier == 321)
+if(spec->specifier == THISCLASS)
 {
 if(thisClass)
 {
@@ -14609,10 +14632,10 @@ if(param->qualifiers && (*param->qualifiers).first)
 {
 struct Specifier * spec = (*param->qualifiers).first;
 
-if(spec && spec->specifier == 337)
+if(spec && spec->specifier == TYPED_OBJECT)
 {
 struct Declarator * d = param->declarator;
-struct TypeName * newParam = (newParam = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName), newParam->qualifiers = MkListOne(MkSpecifier(301)), newParam->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), d), newParam);
+struct TypeName * newParam = (newParam = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName), newParam->qualifiers = MkListOne(MkSpecifier(VOID)), newParam->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), d), newParam);
 
 FreeList(param->qualifiers, FreeSpecifier);
 param->qualifiers = MkListOne(MkStructOrUnion(3, MkIdentifier("__ecereNameSpace__ecere__com__Class"), (((void *)0))));
@@ -14620,15 +14643,15 @@ param->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))),
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*decl->function.parameters), param, newParam);
 param = newParam;
 }
-else if(spec && spec->specifier == 338)
+else if(spec && spec->specifier == ANY_OBJECT)
 {
 struct Declarator * d = param->declarator;
 
 FreeList(param->qualifiers, FreeSpecifier);
-param->qualifiers = MkListOne(MkSpecifier(301));
+param->qualifiers = MkListOne(MkSpecifier(VOID));
 param->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), d);
 }
-else if(spec->specifier == 321)
+else if(spec->specifier == THISCLASS)
 {
 if(thisClass)
 {
@@ -15185,7 +15208,7 @@ block = MkIfStmt(filter, block, (((void *)0)));
 }
 if(isArray)
 {
-stmt->compound.statements = MkListOne(MkForStmt(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("array"))))), MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<', MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("array")), '+', MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("count")))))), MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), 263, (((void *)0)))), block));
+stmt->compound.statements = MkListOne(MkForStmt(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("array"))))), MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<', MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("array")), '+', MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("count")))))), MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), INC_OP, (((void *)0)))), block));
 ProcessStatement(((struct Statement *)(*stmt->compound.statements).first)->forStmt.init);
 ProcessStatement(((struct Statement *)(*stmt->compound.statements).first)->forStmt.check);
 ProcessExpressionType((*((struct Statement *)(*stmt->compound.statements).first)->forStmt.increment).first);
@@ -15195,7 +15218,7 @@ else if(isBuiltin)
 char count[128];
 
 sprintf(count, "%d", builtinCount);
-stmt->compound.statements = MkListOne(MkForStmt(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpIdentifier(MkIdentifier("__internalArray"))))), MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<', MkExpOp(MkExpIdentifier(MkIdentifier("__internalArray")), '+', MkExpConstant(count))))), MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), 263, (((void *)0)))), block));
+stmt->compound.statements = MkListOne(MkForStmt(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpIdentifier(MkIdentifier("__internalArray"))))), MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<', MkExpOp(MkExpIdentifier(MkIdentifier("__internalArray")), '+', MkExpConstant(count))))), MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), INC_OP, (((void *)0)))), block));
 ProcessStatement(((struct Statement *)(*stmt->compound.statements).first)->forStmt.init);
 ProcessStatement(((struct Statement *)(*stmt->compound.statements).first)->forStmt.check);
 ProcessExpressionType((*((struct Statement *)(*stmt->compound.statements).first)->forStmt.increment).first);
@@ -15343,7 +15366,7 @@ strcat(watcherName, propID->string);
 }
 if(object && object->expType && object->expType->kind == 8 && object->expType->_class && object->expType->_class->registered)
 {
-func = MkClassFunction(MkListOne(MkSpecifier(301)), (((void *)0)), MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(watcherName)), MkListOne(MkTypeName(MkListOne(MkSpecifierName(object->expType->_class->string)), MkDeclaratorIdentifier(MkIdentifier("value"))))), (((void *)0)));
+func = MkClassFunction(MkListOne(MkSpecifier(VOID)), (((void *)0)), MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(watcherName)), MkListOne(MkTypeName(MkListOne(MkSpecifierName(object->expType->_class->string)), MkDeclaratorIdentifier(MkIdentifier("value"))))), (((void *)0)));
 ProcessClassFunctionBody(func, propWatch->compound);
 propWatch->compound = (((void *)0));
 createdExternal = ProcessClassFunction(watcherClass, func, ast, curExternal, 0x1);
@@ -15632,7 +15655,7 @@ if(funcDecl->function.parameters && (*funcDecl->function.parameters).count == 1)
 {
 struct TypeName * param = (*funcDecl->function.parameters).first;
 
-if(param->qualifiers && (*param->qualifiers).count == 1 && ((struct Specifier *)(*param->qualifiers).first)->specifier == 301 && !param->declarator)
+if(param->qualifiers && (*param->qualifiers).count == 1 && ((struct Specifier *)(*param->qualifiers).first)->specifier == VOID && !param->declarator)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*funcDecl->function.parameters), param);
 FreeTypeName(param);
@@ -15672,7 +15695,7 @@ if(funcDecl->function.parameters && (*funcDecl->function.parameters).count == 1)
 {
 struct TypeName * param = (*funcDecl->function.parameters).first;
 
-if(param->qualifiers && (*param->qualifiers).count == 1 && ((struct Specifier *)(*param->qualifiers).first)->specifier == 301 && !param->declarator)
+if(param->qualifiers && (*param->qualifiers).count == 1 && ((struct Specifier *)(*param->qualifiers).first)->specifier == VOID && !param->declarator)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*funcDecl->function.parameters), param);
 FreeTypeName(param);

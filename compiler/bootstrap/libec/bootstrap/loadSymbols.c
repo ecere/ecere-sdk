@@ -1546,6 +1546,8 @@ Compiler_Error("Couldn't open %s\n", fileName);
 return globalInstance;
 }
 
+struct __ecereNameSpace__ecere__com__Instance * loadedModules;
+
 extern unsigned int __ecereNameSpace__ecere__sys__StripExtension(char *  string);
 
 extern struct __ecereNameSpace__ecere__sys__OldList *  defines;
@@ -1576,7 +1578,23 @@ extern char *  __ecereNameSpace__ecere__sys__ChangeExtension(char *  string, cha
 
 extern unsigned int __ecereNameSpace__ecere__sys__FileExists(char *  fileName);
 
+extern unsigned int inCompiler;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
+
+struct __ecereNameSpace__ecere__com__IteratorPointer;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__MapIterator;
+
+struct __ecereNameSpace__ecere__com__MapIterator
+{
+struct __ecereNameSpace__ecere__com__Instance * container;
+struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
+};
+
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_LoadStrict(struct __ecereNameSpace__ecere__com__Instance * fromModule, char *  name, int importAccess);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
@@ -1597,10 +1615,6 @@ struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 };
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
-
-struct __ecereNameSpace__ecere__com__IteratorPointer;
-
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Iterator;
 
 struct __ecereNameSpace__ecere__com__Iterator
@@ -1613,15 +1627,27 @@ extern int sprintf(char * , char * , ...);
 
 extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_;
+
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
+struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_map(struct __ecereNameSpace__ecere__com__MapIterator * this);
+
+void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(struct __ecereNameSpace__ecere__com__MapIterator * this, struct __ecereNameSpace__ecere__com__Instance * value);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 index, unsigned int create);
+
+int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
 uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecereNameSpace__ecere__com__Iterator * this);
 
 void __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 value);
 
 extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
 
 void ImportModule(char * name, int importType, int importAccess, unsigned int loadDllOnly)
 {
@@ -1665,15 +1691,50 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName((&*defines), module)
 module->dllOnly = loadDllOnly;
 if(ext[0] || !__ecereNameSpace__ecere__sys__FileExists(symFile))
 {
+unsigned int skipLoad = 0x0;
+struct __ecereNameSpace__ecere__com__Instance * list = (((void *)0));
 char file[274];
 
 strcpy(file, name);
 __ecereNameSpace__ecere__sys__StripExtension(file);
+if(!inCompiler)
+{
+struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, loadedModules), it);
+
+if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(file), 0x0))
+{
+struct __ecereNameSpace__ecere__com__Instance * firstModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(__thisModule, file, importAccess);
+
+if(firstModule)
+{
+list = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_);
+((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (uint64)(firstModule));
+__extension__ ({
+struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
+{
+loadedModules, 0
+};
+
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (uint64)(((uint64)(file))), 0x1);
+__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, list);
+});
+}
+else
+skipLoad = 0x1;
+}
+else
+list = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it));
+}
+if(!skipLoad)
+{
 loadedModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(privateModule, file, importAccess);
 if(loadedModule)
 {
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)loadedModule + 12)))->importType = importType;
 module->dllOnly = 0x0;
+if(list)
+((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (uint64)(loadedModule));
+}
 }
 }
 }
@@ -1907,5 +1968,18 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CheckDataRedefinitions",
 void __ecereUnregisterModule_loadSymbols(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 
+}
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___;
+
+void __ecereCreateModuleInstances_loadSymbols()
+{
+loadedModules = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___);
+__ecereNameSpace__ecere__com__eInstance_IncRef(loadedModules);
+}
+
+void __ecereDestroyModuleInstances_loadSymbols()
+{
+(__ecereNameSpace__ecere__com__eInstance_DecRef(loadedModules), loadedModules = 0);
 }
 

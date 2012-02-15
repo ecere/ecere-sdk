@@ -148,8 +148,7 @@ ECS := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecs)
 
 # FLAGS
 
-CFLAGS = -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w -I../bootstrap/include \
-	 -DYYTOKENTYPE
+CFLAGS = -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w -I../bootstrap/include
 
 # BSL CFLAGS
 BSL_CFLAGS = -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w

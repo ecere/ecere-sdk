@@ -3,6 +3,7 @@
 import "ecdefs"
 
 #define YYLTYPE Location
+#include "grammar.h"
 
 #ifndef YYLLOC_DEFAULT
 # define YYLLOC_DEFAULT(Current, Rhs, N)         \
@@ -122,6 +123,8 @@ default:
 %type <classFunction> instance_class_function_definition instance_class_function_definition_start 
 %type <prop> property
 
+%type <context> compound_start
+
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
 %token AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
@@ -144,6 +147,60 @@ default:
 %token CLASS_DEFAULT_PROPERTY PROPERTY_CATEGORY CLASS_DATA CLASS_PROPERTY SUBCLASS NAMESPACE
 %token NEW0OP RENEW0 VAARG
 %token DBTABLE DBFIELD DBINDEX DATABASE_OPEN
+
+%destructor { FreeIdentifier($$); } identifier 
+%destructor { FreePointer($$); } pointer
+%destructor { FreeExpression($$); } primary_expression postfix_expression unary_expression cast_expression
+                                    multiplicative_expression additive_expression shift_expression
+                                    relational_expression equality_expression and_expression
+                                    exclusive_or_expression inclusive_or_expression logical_and_expression
+                                    logical_or_expression conditional_expression assignment_expression
+                                    constant_expression
+%destructor { FreeSpecifier($$); }  storage_class_specifier enum_specifier_compound enum_specifier_nocompound type_qualifier type_specifier class_specifier
+                                    struct_or_union_specifier_compound struct_or_union_specifier_nocompound type strict_type enum_class strict_type_specifier struct_class
+%destructor { FreeEnumerator($$); } enumerator
+%destructor { FreeDeclarator($$); } declarator direct_declarator direct_abstract_declarator abstract_declarator
+                                    direct_abstract_declarator_noarray abstract_declarator_noarray
+                                    struct_declarator direct_declarator_function direct_declarator_function_start declarator_function direct_declarator_nofunction
+
+%destructor { FreeInitializer($$); } initializer initializer_condition
+%destructor { FreeInitDeclarator($$); } init_declarator
+%destructor { FreeTypeName($$); } type_name parameter_declaration
+%destructor { FreeStatement($$); }  statement labeled_statement compound_statement expression_statement 
+                                    selection_statement iteration_statement jump_statement compound_inside
+
+%destructor { FreeDeclaration($$); } declaration
+%destructor { FreeFunction($$); } function_definition 
+%destructor { FreeExternal($$); } external_declaration
+
+%destructor { FreeInstance($$); } instantiation_named instantiation_unnamed
+
+%destructor { FreeMemberInit($$); } data_member_initialization default_property
+
+%destructor { FreeClassFunction($$); } class_function_definition class_function_definition_start 
+                                       virtual_class_function_definition_start
+                                       constructor_function_definition_start destructor_function_definition_start 
+                                       instance_class_function_definition instance_class_function_definition_start 
+%destructor { FreeClass($$); } class
+%destructor { FreeClassDef($$); } struct_declaration
+%destructor { delete $$; } ext_decl string_literal
+%destructor { FreeProperty($$); } property
+
+%destructor { FreeList($$, FreeExpression); }  argument_expression_list expression 
+%destructor { FreeList($$, FreeEnumerator); }  enumerator_list 
+%destructor { FreeList($$, FreeSpecifier); }   type_qualifier_list specifier_qualifier_list declaration_specifiers inheritance_specifiers
+%destructor { FreeList($$, FreeDeclarator); }  struct_declarator_list
+%destructor { FreeList($$, FreeDeclaration); } declaration_list 
+%destructor { FreeList($$, FreeInitializer); } initializer_list
+%destructor { FreeList($$, FreeInitDeclarator); } init_declarator_list 
+%destructor { FreeList($$, FreeTypeName); } parameter_list parameter_type_list identifier_list 
+%destructor { FreeList($$, FreeStatement); } statement_list
+%destructor { if($$ != ast) FreeList($$, FreeExternal); } translation_unit
+%destructor { FreeList($$, FreeClassDef); } struct_declaration_list
+%destructor { FreeList($$, FreeMemberInit); } default_property_list data_member_initialization_list data_member_initialization_list_coloned
+%destructor { FreeList($$, FreeMembersInit); } members_initialization_list members_initialization_list_coloned
+%destructor { PopContext($$); FreeContext($$); delete $$; } compound_start
+%destructor { } declaration_mode
 
 %start expression_unit
 
@@ -456,10 +513,10 @@ type:
       resetScannerPos(&@1.start);
       yyclearin;
 
-      YYPOPSTACK;
+      YYPOPSTACK(1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
-      YYPOPSTACK;
+      YYPOPSTACK(1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
       goto yysetstate;

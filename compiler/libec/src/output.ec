@@ -2,7 +2,7 @@ import "ecdefs"
 
 #define YYLTYPE Location
 
-#include "grammar.eh"
+#include "grammar.h"
 
 int outputLine;
 

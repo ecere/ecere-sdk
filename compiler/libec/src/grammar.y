@@ -2,6 +2,7 @@
 import "ecdefs"
 
 #define YYLTYPE Location
+#include "grammar.h"
 
 #ifndef YYLLOC_DEFAULT
 # define YYLLOC_DEFAULT(Current, Rhs, N)         \
@@ -276,10 +277,10 @@ guess_type:
       resetScannerPos(&@1.start);
       yyclearin;
 
-      YYPOPSTACK;
+      YYPOPSTACK(1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
-      YYPOPSTACK;
+      YYPOPSTACK(1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
       goto yysetstate;
@@ -305,10 +306,10 @@ guess_type:
       resetScannerPos(&@1.start);
       yyclearin;
 
-      YYPOPSTACK;
+      YYPOPSTACK(1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
-      YYPOPSTACK;
+      YYPOPSTACK(1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
       goto yysetstate;
@@ -331,10 +332,10 @@ guess_type:
       resetScannerPos(&@1.start);
       yyclearin;
 
-      YYPOPSTACK;
+      YYPOPSTACK(1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
-      YYPOPSTACK;
+      YYPOPSTACK(1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
       goto yysetstate;
@@ -364,10 +365,10 @@ type:
       resetScannerPos(&@1.start);
       yyclearin;
 
-      YYPOPSTACK;
+      YYPOPSTACK(1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
-      YYPOPSTACK;
+      YYPOPSTACK(1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
       goto yysetstate;
@@ -396,10 +397,10 @@ type:
       resetScannerPos(&@1.start);
       yyclearin;
 
-      YYPOPSTACK;
+      YYPOPSTACK(1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
-      YYPOPSTACK;
+      YYPOPSTACK(1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
       goto yysetstate;
@@ -427,10 +428,10 @@ type:
       resetScannerPos(&@1.start);
       yyclearin;
 
-      YYPOPSTACK;
+      YYPOPSTACK(1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
-      YYPOPSTACK;
+      YYPOPSTACK(1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
       goto yysetstate;
@@ -485,13 +486,13 @@ strict_type:
          resetScannerPos(&@1.start);
          yyclearin;
 
-         YYPOPSTACK;
+         YYPOPSTACK(1);
          yystate = *yyssp;
          YY_STACK_PRINT (yyss, yyssp);
-         YYPOPSTACK;
+         YYPOPSTACK(1);
          yystate = *yyssp;
          YY_STACK_PRINT (yyss, yyssp);
-         YYPOPSTACK;
+         YYPOPSTACK(1);
          yystate = *yyssp;
          YY_STACK_PRINT (yyss, yyssp);
          goto yysetstate;
@@ -1825,19 +1826,19 @@ relational_expression_error:
          resetScannerPos(&@1.start);
          yyclearin;
 
-         YYPOPSTACK;
+         YYPOPSTACK(1);
          yystate = *yyssp;
          YY_STACK_PRINT (yyss, yyssp);
 
-         YYPOPSTACK;
+         YYPOPSTACK(1);
          yystate = *yyssp;
          YY_STACK_PRINT (yyss, yyssp);
 /*         
-         YYPOPSTACK;
+         YYPOPSTACK(1);
          yystate = *yyssp;
          YY_STACK_PRINT (yyss, yyssp);
 
-         YYPOPSTACK;
+         YYPOPSTACK(1);
          yystate = *yyssp;
          YY_STACK_PRINT (yyss, yyssp);
 */

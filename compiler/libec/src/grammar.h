@@ -1,27 +1,36 @@
-/* A Bison parser, made by GNU Bison 2.0.  */
+/* A Bison parser, made by GNU Bison 2.4.2.  */
 
-/* Skeleton parser for Yacc-like parsing with Bison,
-   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
-
-   This program is free software; you can redistribute it and/or modify
+/* Skeleton interface for Bison's Yacc-like parsers in C
+   
+      Copyright (C) 1984, 1989-1990, 2000-2006, 2009-2010 Free Software
+   Foundation, Inc.
+   
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
-
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+   
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330,
-   Boston, MA 02111-1307, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
-/* As a special exception, when this file is copied by Bison into a
-   Bison output file, you may use that output file without restriction.
-   This special exception was added by the Free Software Foundation
-   in version 1.24 of Bison.  */
+/* As a special exception, you may create a larger work that contains
+   part or all of the Bison parser skeleton and distribute that work
+   under terms of your choice, so long as that work isn't itself a
+   parser generator using the skeleton or a modified version thereof
+   as a parser skeleton.  Alternatively, if you modify or redistribute
+   the parser skeleton itself, you may (at your option) remove this
+   special exception, which will cause the skeleton and the resulting
+   Bison output files to be licensed under the GNU General Public
+   License without this special exception.
+   
+   This special exception was added by the Free Software Foundation in
+   version 2.2 of Bison.  */
+
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -137,119 +146,16 @@
      DATABASE_OPEN = 363
    };
 #endif
-#define IDENTIFIER 258
-#define CONSTANT 259
-#define STRING_LITERAL 260
-#define SIZEOF 261
-#define PTR_OP 262
-#define INC_OP 263
-#define DEC_OP 264
-#define LEFT_OP 265
-#define RIGHT_OP 266
-#define LE_OP 267
-#define GE_OP 268
-#define EQ_OP 269
-#define NE_OP 270
-#define AND_OP 271
-#define OR_OP 272
-#define MUL_ASSIGN 273
-#define DIV_ASSIGN 274
-#define MOD_ASSIGN 275
-#define ADD_ASSIGN 276
-#define SUB_ASSIGN 277
-#define LEFT_ASSIGN 278
-#define RIGHT_ASSIGN 279
-#define AND_ASSIGN 280
-#define XOR_ASSIGN 281
-#define OR_ASSIGN 282
-#define TYPE_NAME 283
-#define TYPEDEF 284
-#define EXTERN 285
-#define STATIC 286
-#define AUTO 287
-#define REGISTER 288
-#define CHAR 289
-#define SHORT 290
-#define INT 291
-#define UINT 292
-#define INT64 293
-#define LONG 294
-#define SIGNED 295
-#define UNSIGNED 296
-#define FLOAT 297
-#define DOUBLE 298
-#define CONST 299
-#define VOLATILE 300
-#define VOID 301
-#define VALIST 302
-#define STRUCT 303
-#define UNION 304
-#define ENUM 305
-#define ELLIPSIS 306
-#define CASE 307
-#define DEFAULT 308
-#define IF 309
-#define SWITCH 310
-#define WHILE 311
-#define DO 312
-#define FOR 313
-#define GOTO 314
-#define CONTINUE 315
-#define BREAK 316
-#define RETURN 317
-#define IFX 318
-#define ELSE 319
-#define CLASS 320
-#define THISCLASS 321
-#define CLASS_NAME 322
-#define PROPERTY 323
-#define SETPROP 324
-#define GETPROP 325
-#define NEWOP 326
-#define RENEW 327
-#define DELETE 328
-#define EXT_DECL 329
-#define EXT_STORAGE 330
-#define IMPORT 331
-#define DEFINE 332
-#define VIRTUAL 333
-#define EXT_ATTRIB 334
-#define PUBLIC 335
-#define PRIVATE 336
-#define TYPED_OBJECT 337
-#define ANY_OBJECT 338
-#define _INCREF 339
-#define EXTENSION 340
-#define ASM 341
-#define TYPEOF 342
-#define WATCH 343
-#define STOPWATCHING 344
-#define FIREWATCHERS 345
-#define WATCHABLE 346
-#define CLASS_DESIGNER 347
-#define CLASS_NO_EXPANSION 348
-#define CLASS_FIXED 349
-#define ISPROPSET 350
-#define CLASS_DEFAULT_PROPERTY 351
-#define PROPERTY_CATEGORY 352
-#define CLASS_DATA 353
-#define CLASS_PROPERTY 354
-#define SUBCLASS 355
-#define NAMESPACE 356
-#define NEW0OP 357
-#define RENEW0 358
-#define VAARG 359
-#define DBTABLE 360
-#define DBFIELD 361
-#define DBINDEX 362
-#define DATABASE_OPEN 363
 
 
 
+#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+typedef union YYSTYPE
+{
 
-#if ! defined (YYSTYPE) && ! defined (YYSTYPE_IS_DECLARED)
-#line 34 "grammar.y"
-typedef union YYSTYPE {
+/* Line 1685 of yacc.c  */
+#line 35 "grammar.y"
+
    SpecifierType specifierType;
    int i;
    AccessMode declMode;
@@ -287,17 +193,20 @@ typedef union YYSTYPE {
    DBTableEntry dbtableEntry;
    DBIndexItem dbindexItem;
    DBTableDef dbtableDef;
+
+
+
+/* Line 1685 of yacc.c  */
+#line 201 "grammar.h"
 } YYSTYPE;
-/* Line 1318 of yacc.c.  */
-#line 293 "grammar.eh"
+# define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
-# define YYSTYPE_IS_TRIVIAL 1
 #endif
 
 extern YYSTYPE yylval;
 
-#if ! defined (YYLTYPE) && ! defined (YYLTYPE_IS_DECLARED)
+#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
 typedef struct YYLTYPE
 {
   int first_line;
@@ -311,5 +220,4 @@ typedef struct YYLTYPE
 #endif
 
 extern YYLTYPE yylloc;
-
 

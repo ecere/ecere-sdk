@@ -467,6 +467,10 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
+int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
+
+int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataMember;
@@ -485,9 +489,15 @@ struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ec
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
 
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_;
 
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_Location___;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__MapIterator;
 
@@ -588,6 +598,10 @@ void __ecereUnregisterModule_lexer(struct __ecereNameSpace__ecere__com__Instance
 void __ecereRegisterModule_loadSymbols(struct __ecereNameSpace__ecere__com__Instance * module);
 
 void __ecereUnregisterModule_loadSymbols(struct __ecereNameSpace__ecere__com__Instance * module);
+
+void __ecereCreateModuleInstances_loadSymbols();
+
+void __ecereDestroyModuleInstances_loadSymbols();
 
 void __ecereRegisterModule_output(struct __ecereNameSpace__ecere__com__Instance * module);
 
@@ -731,6 +745,12 @@ __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add = method->vid;
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Free", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free = method->vid;
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "GetFirst", module);
+if(method)
+__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst = method->vid;
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Remove", module);
+if(method)
+__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove = method->vid;
 __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::CustomAVLTree");
 __ecereClass___ecereNameSpace__ecere__com__DataMember = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::DataMember");
 __ecereClass___ecereNameSpace__ecere__com__DataValue = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::DataValue");
@@ -740,8 +760,11 @@ __ecereClass___ecereNameSpace__ecere__com__GlobalFunction = __ecereNameSpace__ec
 __ecereClass___ecereNameSpace__ecere__com__Iterator = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Iterator");
 __ecereProp___ecereNameSpace__ecere__com__Iterator_data = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__Iterator, "data", module);
 __ecereClass___ecereNameSpace__ecere__com__IteratorPointer = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::IteratorPointer");
+__ecereClass___ecereNameSpace__ecere__com__LinkList = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::LinkList");
 __ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<Location>");
+__ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<ecere::com::Module>");
 __ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_Location___ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<ContextStringPair, ecere::com::List<Location> >");
+__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<String, ecere::com::List<ecere::com::Module> >");
 __ecereClass___ecereNameSpace__ecere__com__MapIterator = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::MapIterator");
 __ecereProp___ecereNameSpace__ecere__com__MapIterator_key = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__MapIterator, "key", module);
 __ecereProp___ecereNameSpace__ecere__com__MapIterator_map = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__MapIterator, "map", module);
@@ -789,6 +812,7 @@ __ecereClass___ecereNameSpace__ecere__sys__TempFile = __ecereNameSpace__ecere__c
 if(__currentModule == module)
 {
 __ecereCreateModuleInstances_ast();
+__ecereCreateModuleInstances_loadSymbols();
 }
 return 0x1;
 }
@@ -798,6 +822,7 @@ unsigned int __ecereDll_Unload_ec(struct __ecereNameSpace__ecere__com__Instance 
 if(__currentModule == module)
 {
 __ecereDestroyModuleInstances_ast();
+__ecereDestroyModuleInstances_loadSymbols();
 }
 __ecereUnregisterModule_ast(module);
 __ecereUnregisterModule_copy(module);

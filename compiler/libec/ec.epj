@@ -18,7 +18,6 @@
             "Debug" : true,
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
-               "YYTOKENTYPE",
                "_DEBUG"
             ]
          }
@@ -30,7 +29,6 @@
             "MemoryGuard" : true,
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
-               "YYTOKENTYPE",
                "_DEBUG"
             ]
          }
@@ -43,7 +41,7 @@
             "NoLineNumbers" : true,
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
-               "YYTOKENTYPE"
+
             ],
             "LibraryDirs" : [
                "../../obj/$(PLATFORM)/bin",
@@ -60,7 +58,7 @@
             "Debug" : false,
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
-               "YYTOKENTYPE"
+
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecStatic",
@@ -76,7 +74,6 @@
             "NoLineNumbers" : true,
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
-               "YYTOKENTYPE",
                "ECERE_STATIC"
             ],
             "IncludeDirs" : [
@@ -102,7 +99,6 @@
             "firstPass.ec",
             "freeAst.ec",
             "grammar.ec",
-            "grammar.eh",
             "lexer.ec",
             "loadSymbols.ec",
             "output.ec",
@@ -117,7 +113,8 @@
             "grammar.y",
             "expression.y",
             "type.y",
-            "lexer.l"
+            "lexer.l",
+            "grammar.h"
          ],
          "Options" : {
             "IncludeDirs" : [

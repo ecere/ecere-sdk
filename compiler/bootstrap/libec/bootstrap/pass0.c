@@ -842,6 +842,11 @@ struct __ecereNameSpace__ecere__com__Method * method;
 };
 };
 
+enum yytokentype
+{
+IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295, UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309, SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323, SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, EXT_ATTRIB = 334, PUBLIC = 335, PRIVATE = 336, TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347, CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356, NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363
+};
+
 typedef union YYSTYPE
 {
 int specifierType;
@@ -1905,7 +1910,7 @@ FullClassNameCat(className, symbol->string, 0x1);
 MangleClassName(className);
 symbol->className = __ecereNameSpace__ecere__sys__CopyString(className);
 if(!strstr(sourceFile, ".main.ec"))
-ListAdd(specs, MkSpecifier(286));
+ListAdd(specs, MkSpecifier(STATIC));
 ListAdd(specs, MkStructOrUnion(3, MkIdentifier("__ecereNameSpace__ecere__com__Class"), (((void *)0))));
 ListAdd(declarators, MkInitDeclarator(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier(className))), (((void *)0))));
 symbol->methodExternal = MkExternalDeclaration(MkDeclaration(specs, declarators));
@@ -1924,7 +1929,7 @@ struct __ecereNameSpace__ecere__sys__OldList * declarations = (((void *)0)), * s
 strcpy(destructorName, "__ecereDestructor_");
 FullClassNameCat(destructorName, symbol->string, 0x0);
 symbol->destructorName = __ecereNameSpace__ecere__sys__CopyString(destructorName);
-ListAdd(specs, MkSpecifier(301));
+ListAdd(specs, MkSpecifier(VOID));
 context = PushContext();
 statements = MkList();
 if(definitions != (((void *)0)))
@@ -1938,13 +1943,13 @@ struct Symbol * classSym = inst->_class->symbol;
 
 if(inst->exp && (!classSym || !classSym->registered || classSym->registered->type == 0))
 {
-struct Expression * exp = MkExpOp((((void *)0)), 328, CopyExpression(inst->exp));
+struct Expression * exp = MkExpOp((((void *)0)), DELETE, CopyExpression(inst->exp));
 
 ListAdd(statements, MkExpressionStmt(MkListOne(exp)));
 }
 if(inst->exp && (!classSym || !classSym->registered || classSym->registered->type == 5))
 {
-struct Expression * exp = MkExpOp((((void *)0)), 328, CopyExpression(inst->exp));
+struct Expression * exp = MkExpOp((((void *)0)), DELETE, CopyExpression(inst->exp));
 
 ListAdd(statements, MkExpressionStmt(MkListOne(exp)));
 }
@@ -2119,7 +2124,7 @@ if(propertyDef->symbol->type && propertyDef->symbol->type->kind == 8 && property
 {
 ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), MkDeclaratorIdentifier(MkIdentifier("value"))));
 decl = PlugDeclarator(propertyDef->declarator, MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(name)), params));
-func = MkClassFunction(MkListOne(MkSpecifier(301)), (((void *)0)), decl, (((void *)0)));
+func = MkClassFunction(MkListOne(MkSpecifier(VOID)), (((void *)0)), decl, (((void *)0)));
 }
 else
 {
@@ -2151,11 +2156,11 @@ params = MkList();
 ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value")))));
 decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(name)), params);
 if(!propertyDef->symbol->_property || !propertyDef->symbol->_property->conversion)
-ListAdd(specifiers, MkSpecifier(301));
+ListAdd(specifiers, MkSpecifier(VOID));
 else
 {
 if(regClass->type == 1)
-ListAdd(specifiers, MkSpecifier(301));
+ListAdd(specifiers, MkSpecifier(VOID));
 else
 ListAdd(specifiers, MkSpecifierName(regClass->fullName));
 }
@@ -2206,7 +2211,7 @@ struct Declaration * decl;
 struct External * external;
 struct __ecereNameSpace__ecere__sys__OldList * specifiers = MkList();
 
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(286));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(STATIC));
 ListAdd(specifiers, MkSpecifierName("Property"));
 strcpy(name, "__ecereProp_");
 FullClassNameCat(name, symbol->string, 0x0);
@@ -2271,7 +2276,7 @@ if(propertyDef->symbol->type && propertyDef->symbol->type->kind == 8 && property
 {
 ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), MkDeclaratorIdentifier(MkIdentifier("value"))));
 decl = PlugDeclarator(propertyDef->declarator, MkDeclaratorFunction(declId, params));
-func = MkClassFunction(MkListOne(MkSpecifier(301)), (((void *)0)), decl, (((void *)0)));
+func = MkClassFunction(MkListOne(MkSpecifier(VOID)), (((void *)0)), decl, (((void *)0)));
 }
 else
 {
@@ -2302,7 +2307,7 @@ MangleClassName(name);
 params = MkList();
 ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value")))));
 decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(name)), params);
-ListAdd(specifiers, MkSpecifier(301));
+ListAdd(specifiers, MkSpecifier(VOID));
 func = MkClassFunction(specifiers, (((void *)0)), decl, (((void *)0)));
 ProcessClassFunctionBody(func, propertyDef->setStmt);
 func->dontMangle = 0x1;
@@ -2334,7 +2339,7 @@ if(!funcDecl->function.parameters || !(*funcDecl->function.parameters).first)
 {
 if(!funcDecl->function.parameters)
 funcDecl->function.parameters = MkList();
-ListAdd(funcDecl->function.parameters, MkTypeName(MkListOne(MkSpecifier(301)), (((void *)0))));
+ListAdd(funcDecl->function.parameters, MkTypeName(MkListOne(MkSpecifier(VOID)), (((void *)0))));
 }
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(regClass, id->string, privateModule);
 FreeSpecifier(id->_class);

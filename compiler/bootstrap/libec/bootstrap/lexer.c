@@ -526,6 +526,11 @@ static char * yy_last_accepting_cpos;
 
 char * yytext;
 
+enum yytokentype
+{
+IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295, UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309, SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323, SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, EXT_ATTRIB = 334, PUBLIC = 335, PRIVATE = 336, TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347, CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356, NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363
+};
+
 typedef union YYSTYPE
 {
 int specifierType;
@@ -765,601 +770,601 @@ break;
 case 4:
 TESTTTT();
 {
-return (287);
+return (AUTO);
 }
 break;
 case 5:
 TESTTTT();
 {
-return (316);
+return (BREAK);
 }
 break;
 case 6:
 TESTTTT();
 {
-return (307);
+return (CASE);
 }
 break;
 case 7:
 TESTTTT();
 {
-return (289);
+return (CHAR);
 }
 break;
 case 8:
 TESTTTT();
 {
-return (299);
+return (CONST);
 }
 break;
 case 9:
 TESTTTT();
 {
-return (315);
+return (CONTINUE);
 }
 break;
 case 10:
 TESTTTT();
 {
-return (308);
+return (DEFAULT);
 }
 break;
 case 11:
 TESTTTT();
 {
-return (312);
+return (DO);
 }
 break;
 case 12:
 TESTTTT();
 {
-return (298);
+return (DOUBLE);
 }
 break;
 case 13:
 TESTTTT();
 {
-return (319);
+return (ELSE);
 }
 break;
 case 14:
 TESTTTT();
 {
-return (305);
+return (ENUM);
 }
 break;
 case 15:
 TESTTTT();
 {
-return (285);
+return (EXTERN);
 }
 break;
 case 16:
 TESTTTT();
 {
-return (297);
+return (FLOAT);
 }
 break;
 case 17:
 TESTTTT();
 {
-return (313);
+return (FOR);
 }
 break;
 case 18:
 TESTTTT();
 {
-return (314);
+return (GOTO);
 }
 break;
 case 19:
 TESTTTT();
 {
-return (309);
+return (IF);
 }
 break;
 case 20:
 TESTTTT();
 {
-return (291);
+return (INT);
 }
 break;
 case 21:
 TESTTTT();
 {
-return (292);
+return (UINT);
 }
 break;
 case 22:
 TESTTTT();
 {
-return (294);
+return (LONG);
 }
 break;
 case 23:
 TESTTTT();
 {
-return (288);
+return (REGISTER);
 }
 break;
 case 24:
 TESTTTT();
 {
-return (317);
+return (RETURN);
 }
 break;
 case 25:
 TESTTTT();
 {
-return (290);
+return (SHORT);
 }
 break;
 case 26:
 TESTTTT();
 {
-return (295);
+return (SIGNED);
 }
 break;
 case 27:
 TESTTTT();
 {
-return (295);
+return (SIGNED);
 }
 break;
 case 28:
 TESTTTT();
 {
-return (261);
+return (SIZEOF);
 }
 break;
 case 29:
 TESTTTT();
 {
-return (286);
+return (STATIC);
 }
 break;
 case 30:
 TESTTTT();
 {
-return (303);
+return (STRUCT);
 }
 break;
 case 31:
 TESTTTT();
 {
-return (310);
+return (SWITCH);
 }
 break;
 case 32:
 TESTTTT();
 {
-return (284);
+return (TYPEDEF);
 }
 break;
 case 33:
 TESTTTT();
 {
-return (304);
+return (UNION);
 }
 break;
 case 34:
 TESTTTT();
 {
-return (296);
+return (UNSIGNED);
 }
 break;
 case 35:
 TESTTTT();
 {
-return (301);
+return (VOID);
 }
 break;
 case 36:
 TESTTTT();
 {
-return (300);
+return (VOLATILE);
 }
 break;
 case 37:
 TESTTTT();
 {
-return (300);
+return (VOLATILE);
 }
 break;
 case 38:
 TESTTTT();
 {
-return (300);
+return (VOLATILE);
 }
 break;
 case 39:
 TESTTTT();
 {
-return (311);
+return (WHILE);
 }
 break;
 case 40:
 TESTTTT();
 {
-return (323);
+return (PROPERTY);
 }
 break;
 case 41:
 TESTTTT();
 {
-return (324);
+return (SETPROP);
 }
 break;
 case 42:
 TESTTTT();
 {
-return (325);
+return (GETPROP);
 }
 break;
 case 43:
 TESTTTT();
 {
-return (350);
+return (ISPROPSET);
 }
 break;
 case 44:
 TESTTTT();
 {
-return (320);
+return (CLASS);
 }
 break;
 case 45:
 TESTTTT();
 {
-return (321);
+return (THISCLASS);
 }
 break;
 case 46:
 TESTTTT();
 {
-return (333);
+return (VIRTUAL);
 }
 break;
 case 47:
 TESTTTT();
 {
-return (328);
+return (DELETE);
 }
 break;
 case 48:
 TESTTTT();
 {
-return (326);
+return (NEWOP);
 }
 break;
 case 49:
 TESTTTT();
 {
-return (357);
+return (NEW0OP);
 }
 break;
 case 50:
 TESTTTT();
 {
-return (327);
+return (RENEW);
 }
 break;
 case 51:
 TESTTTT();
 {
-return (358);
+return (RENEW0);
 }
 break;
 case 52:
 TESTTTT();
 {
-return (331);
+return (IMPORT);
 }
 break;
 case 53:
 TESTTTT();
 {
-return (332);
+return (DEFINE);
 }
 break;
 case 54:
 TESTTTT();
 {
-return (293);
+return (INT64);
 }
 break;
 case 55:
 TESTTTT();
 {
-return (293);
+return (INT64);
 }
 break;
 case 56:
 TESTTTT();
 {
-return (302);
+return (VALIST);
 }
 break;
 case 57:
 TESTTTT();
 {
-return (359);
+return (VAARG);
 }
 break;
 case 58:
 TESTTTT();
 {
-return (334);
+return (EXT_ATTRIB);
 }
 break;
 case 59:
 TESTTTT();
 {
-return (334);
+return (EXT_ATTRIB);
 }
 break;
 case 60:
 TESTTTT();
 {
-return (334);
+return (EXT_ATTRIB);
 }
 break;
 case 61:
 TESTTTT();
 {
-return (330);
+return (EXT_STORAGE);
 }
 break;
 case 62:
 TESTTTT();
 {
-return (330);
+return (EXT_STORAGE);
 }
 break;
 case 63:
 TESTTTT();
 {
-return (330);
+return (EXT_STORAGE);
 }
 break;
 case 64:
 TESTTTT();
 {
-return (330);
+return (EXT_STORAGE);
 }
 break;
 case 65:
 TESTTTT();
 {
-return (330);
+return (EXT_STORAGE);
 }
 break;
 case 66:
 TESTTTT();
 {
-return (330);
+return (EXT_STORAGE);
 }
 break;
 case 67:
 TESTTTT();
 {
-return (330);
+return (EXT_STORAGE);
 }
 break;
 case 68:
 TESTTTT();
 {
-return (329);
+return (EXT_DECL);
 }
 break;
 case 69:
 TESTTTT();
 {
-return (329);
+return (EXT_DECL);
 }
 break;
 case 70:
 TESTTTT();
 {
-return (329);
+return (EXT_DECL);
 }
 break;
 case 71:
 TESTTTT();
 {
-return (329);
+return (EXT_DECL);
 }
 break;
 case 72:
 TESTTTT();
 {
-return (329);
+return (EXT_DECL);
 }
 break;
 case 73:
 TESTTTT();
 {
-return (329);
+return (EXT_DECL);
 }
 break;
 case 74:
 TESTTTT();
 {
-return (329);
+return (EXT_DECL);
 }
 break;
 case 75:
 TESTTTT();
 {
-return (329);
+return (EXT_DECL);
 }
 break;
 case 76:
 TESTTTT();
 {
-return (335);
+return (PUBLIC);
 }
 break;
 case 77:
 TESTTTT();
 {
-return (336);
+return (PRIVATE);
 }
 break;
 case 78:
 TESTTTT();
 {
-return (337);
+return (TYPED_OBJECT);
 }
 break;
 case 79:
 TESTTTT();
 {
-return (338);
+return (ANY_OBJECT);
 }
 break;
 case 80:
 TESTTTT();
 {
-return (339);
+return (_INCREF);
 }
 break;
 case 81:
 TESTTTT();
 {
-return (340);
+return (EXTENSION);
 }
 break;
 case 82:
 TESTTTT();
 {
-return (340);
+return (EXTENSION);
 }
 break;
 case 83:
 TESTTTT();
 {
-return (341);
+return (ASM);
 }
 break;
 case 84:
 TESTTTT();
 {
-return (341);
+return (ASM);
 }
 break;
 case 85:
 TESTTTT();
 {
-return (341);
+return (ASM);
 }
 break;
 case 86:
 TESTTTT();
 {
-return (342);
+return (TYPEOF);
 }
 break;
 case 87:
 TESTTTT();
 {
-return (343);
+return (WATCH);
 }
 break;
 case 88:
 TESTTTT();
 {
-return (344);
+return (STOPWATCHING);
 }
 break;
 case 89:
 TESTTTT();
 {
-return (345);
+return (FIREWATCHERS);
 }
 break;
 case 90:
 TESTTTT();
 {
-return (346);
+return (WATCHABLE);
 }
 break;
 case 91:
 TESTTTT();
 {
-return (347);
+return (CLASS_DESIGNER);
 }
 break;
 case 92:
 TESTTTT();
 {
-return (348);
+return (CLASS_NO_EXPANSION);
 }
 break;
 case 93:
 TESTTTT();
 {
-return (349);
+return (CLASS_FIXED);
 }
 break;
 case 94:
 TESTTTT();
 {
-return (351);
+return (CLASS_DEFAULT_PROPERTY);
 }
 break;
 case 95:
 TESTTTT();
 {
-return (352);
+return (PROPERTY_CATEGORY);
 }
 break;
 case 96:
 TESTTTT();
 {
-return (353);
+return (CLASS_DATA);
 }
 break;
 case 97:
 TESTTTT();
 {
-return (354);
+return (CLASS_PROPERTY);
 }
 break;
 case 98:
 TESTTTT();
 {
-return (355);
+return (SUBCLASS);
 }
 break;
 case 99:
 TESTTTT();
 {
-return (356);
+return (NAMESPACE);
 }
 break;
 case 100:
 TESTTTT();
 {
-return (360);
+return (DBTABLE);
 }
 break;
 case 101:
 TESTTTT();
 {
-return (361);
+return (DBFIELD);
 }
 break;
 case 102:
 TESTTTT();
 {
-return (362);
+return (DBINDEX);
 }
 break;
 case 103:
 TESTTTT();
 {
-return (363);
+return (DATABASE_OPEN);
 }
 break;
 case 104:
@@ -1371,181 +1376,181 @@ break;
 case 105:
 TESTTTT();
 {
-return (259);
+return (CONSTANT);
 }
 break;
 case 106:
 TESTTTT();
 {
-return (259);
+return (CONSTANT);
 }
 break;
 case 107:
 TESTTTT();
 {
-return (259);
+return (CONSTANT);
 }
 break;
 case 108:
 TESTTTT();
 {
-return (259);
+return (CONSTANT);
 }
 break;
 case 109:
 TESTTTT();
 {
-return (259);
+return (CONSTANT);
 }
 break;
 case 110:
 TESTTTT();
 {
-return (259);
+return (CONSTANT);
 }
 break;
 case 111:
 TESTTTT();
 {
-return (259);
+return (CONSTANT);
 }
 break;
 case 112:
 TESTTTT();
 {
-return (260);
+return (STRING_LITERAL);
 }
 break;
 case 113:
 TESTTTT();
 {
-return (306);
+return (ELLIPSIS);
 }
 break;
 case 114:
 TESTTTT();
 {
-return (279);
+return (RIGHT_ASSIGN);
 }
 break;
 case 115:
 TESTTTT();
 {
-return (278);
+return (LEFT_ASSIGN);
 }
 break;
 case 116:
 TESTTTT();
 {
-return (276);
+return (ADD_ASSIGN);
 }
 break;
 case 117:
 TESTTTT();
 {
-return (277);
+return (SUB_ASSIGN);
 }
 break;
 case 118:
 TESTTTT();
 {
-return (273);
+return (MUL_ASSIGN);
 }
 break;
 case 119:
 TESTTTT();
 {
-return (274);
+return (DIV_ASSIGN);
 }
 break;
 case 120:
 TESTTTT();
 {
-return (275);
+return (MOD_ASSIGN);
 }
 break;
 case 121:
 TESTTTT();
 {
-return (280);
+return (AND_ASSIGN);
 }
 break;
 case 122:
 TESTTTT();
 {
-return (281);
+return (XOR_ASSIGN);
 }
 break;
 case 123:
 TESTTTT();
 {
-return (282);
+return (OR_ASSIGN);
 }
 break;
 case 124:
 TESTTTT();
 {
-return (266);
+return (RIGHT_OP);
 }
 break;
 case 125:
 TESTTTT();
 {
-return (265);
+return (LEFT_OP);
 }
 break;
 case 126:
 TESTTTT();
 {
-return (263);
+return (INC_OP);
 }
 break;
 case 127:
 TESTTTT();
 {
-return (264);
+return (DEC_OP);
 }
 break;
 case 128:
 TESTTTT();
 {
-return (262);
+return (PTR_OP);
 }
 break;
 case 129:
 TESTTTT();
 {
-return (271);
+return (AND_OP);
 }
 break;
 case 130:
 TESTTTT();
 {
-return (272);
+return (OR_OP);
 }
 break;
 case 131:
 TESTTTT();
 {
-return (267);
+return (LE_OP);
 }
 break;
 case 132:
 TESTTTT();
 {
-return (268);
+return (GE_OP);
 }
 break;
 case 133:
 TESTTTT();
 {
-return (269);
+return (EQ_OP);
 }
 break;
 case 134:
 TESTTTT();
 {
-return (270);
+return (NE_OP);
 }
 break;
 case 135:

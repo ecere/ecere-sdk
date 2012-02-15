@@ -859,6 +859,11 @@ struct __ecereNameSpace__ecere__com__Method * method;
 };
 };
 
+enum yytokentype
+{
+IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295, UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309, SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323, SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, EXT_ATTRIB = 334, PUBLIC = 335, PRIVATE = 336, TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347, CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356, NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363
+};
+
 typedef union YYSTYPE
 {
 int specifierType;
@@ -1107,7 +1112,7 @@ if(inCompiler)
 if(!func->specifiers)
 func->specifiers = MkList();
 if(makeStatic)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*func->specifiers), (((void *)0)), MkSpecifier(286));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*func->specifiers), (((void *)0)), MkSpecifier(STATIC));
 }
 propSymbol = func->declarator->symbol;
 ReplaceThisClassSpecifiers(func->specifiers, owningClass);
@@ -1330,7 +1335,7 @@ registerModuleBody = MkCompoundStmt(MkList(), MkList());
 registerModuleBody->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = globalContext, ((struct Context *)__ecereTemp1));
 ListAdd(registerModuleBody->compound.declarations, MkDeclaration(MkListOne(MkSpecifierName("ecere::com::Class")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("class")), (((void *)0))))));
 specifiers = MkList();
-ListAdd(specifiers, MkSpecifier(301));
+ListAdd(specifiers, MkSpecifier(VOID));
 moduleParam = MkTypeName(MkListOne(MkSpecifierName("Module")), MkDeclaratorIdentifier(MkIdentifier("module")));
 __ecereNameSpace__ecere__sys__GetLastDirectory(outputFile, moduleName);
 __ecereNameSpace__ecere__sys__StripExtension(moduleName);
@@ -1359,7 +1364,7 @@ struct TypeName * moduleParam;
 unregisterModuleBody = MkCompoundStmt(MkList(), MkList());
 unregisterModuleBody->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = globalContext, ((struct Context *)__ecereTemp1));
 specifiers = MkList();
-ListAdd(specifiers, MkSpecifier(301));
+ListAdd(specifiers, MkSpecifier(VOID));
 moduleParam = MkTypeName(MkListOne(MkSpecifierName("Module")), MkDeclaratorIdentifier(MkIdentifier("module")));
 __ecereNameSpace__ecere__sys__GetLastDirectory(outputFile, moduleName);
 __ecereNameSpace__ecere__sys__StripExtension(moduleName);
@@ -1622,7 +1627,7 @@ FullClassNameCat(name, regClass->fullName, 0x1);
 strcat(name, "_IsSet_");
 FullClassNameCat(name, prop->name, 0x0);
 MangleClassName(name);
-stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier(nameM)), MkIdentifier("IsSet")), '=', MkExpCast(MkTypeName(MkListOne(MkSpecifier(301)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpIdentifier(MkIdentifier(name))))));
+stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier(nameM)), MkIdentifier("IsSet")), '=', MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpIdentifier(MkIdentifier(name))))));
 ListAdd(registerModuleBody->compound.statements, stmt);
 }
 if(prop->category)
@@ -1635,10 +1640,10 @@ if(prop->dataTypeString)
 struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
 
 ListAdd(list, MkExpOp(MkExpIdentifier(MkIdentifier(name)), '=', MkExpIdentifier(MkIdentifier(nameM))));
-ListAdd(list, MkExpOp(MkExpIdentifier(MkIdentifier(nameM)), '=', MkExpCast(MkTypeName(MkListOne(MkSpecifier(301)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpConstant("0"))));
-stmt = MkIfStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("module")), MkIdentifier("application")), 269, MkExpMember(MkExpIdentifier(MkIdentifier("__thisModule")), MkIdentifier("application")))), MkExpressionStmt(list), (((void *)0)));
+ListAdd(list, MkExpOp(MkExpIdentifier(MkIdentifier(nameM)), '=', MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpConstant("0"))));
+stmt = MkIfStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("module")), MkIdentifier("application")), EQ_OP, MkExpMember(MkExpIdentifier(MkIdentifier("__thisModule")), MkIdentifier("application")))), MkExpressionStmt(list), (((void *)0)));
 ListAdd(registerModuleBody->compound.statements, stmt);
-stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(nameM)), '=', MkExpCast(MkTypeName(MkListOne(MkSpecifier(301)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpConstant("0")))));
+stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(nameM)), '=', MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpConstant("0")))));
 ListAdd(unregisterModuleBody->compound.statements, stmt);
 }
 }
@@ -2133,8 +2138,8 @@ for(propID = (*propWatch->properties).first; propID; propID = propID->next)
 strcat(watcherName, "_");
 strcat(watcherName, propID->string);
 }
-decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(watcherName)), MkListOne(MkTypeName(MkListOne(MkSpecifier(301)), (((void *)0)))));
-func = MkClassFunction(MkListOne(MkSpecifier(301)), (((void *)0)), decl, (((void *)0)));
+decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(watcherName)), MkListOne(MkTypeName(MkListOne(MkSpecifier(VOID)), (((void *)0)))));
+func = MkClassFunction(MkListOne(MkSpecifier(VOID)), (((void *)0)), decl, (((void *)0)));
 ProcessClassFunctionBody(func, propWatch->compound);
 decl->symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->id = symbol->id, ((struct Symbol *)__ecereTemp1)->idCode = symbol->idCode, ((struct Symbol *)__ecereTemp1));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), decl->symbol);
@@ -2146,8 +2151,8 @@ struct External * externalDecl = MkExternalDeclaration((((void *)0)));
 struct Declaration * decl;
 struct __ecereNameSpace__ecere__sys__OldList * specifiers = MkList();
 
-ListAdd(specifiers, MkSpecifier(286));
-ListAdd(specifiers, MkSpecifier(301));
+ListAdd(specifiers, MkSpecifier(STATIC));
+ListAdd(specifiers, MkSpecifier(VOID));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*ast), curExternal->prev, externalDecl);
 decl = MkDeclaration(specifiers, MkListOne(MkInitDeclarator(MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(watcherName)), MkListOne(MkTypeName(MkListOne(MkSpecifierName(regClass->fullName)), (((void *)0))))), (((void *)0)))));
 externalDecl->declaration = decl;
@@ -2266,7 +2271,7 @@ ListAdd(args, MkExpString(string));
 else
 ListAdd(args, MkExpConstant("0"));
 FreeType(baseType);
-if(((struct Specifier *)baseSpecs->first)->type == 0 && ((struct Specifier *)baseSpecs->first)->specifier == 336)
+if(((struct Specifier *)baseSpecs->first)->type == 0 && ((struct Specifier *)baseSpecs->first)->specifier == PRIVATE)
 inheritanceAccess = 2;
 }
 else
@@ -2346,7 +2351,7 @@ break;
 registerFunction = "eSystem_RegisterClass";
 stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("class")), '=', MkExpCall((exp = MkExpIdentifier(MkIdentifier(registerFunction))), args))));
 ListAdd(registerModuleBody->compound.statements, stmt);
-stmt = MkIfStmt(MkListOne(MkExpOp(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("module")), MkIdentifier("application")), 269, MkExpMember(MkExpIdentifier(MkIdentifier("__thisModule")), MkIdentifier("application"))), 271, MkExpIdentifier(MkIdentifier("class")))), MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(symbol->className)), '=', MkExpIdentifier(MkIdentifier("class"))))), (((void *)0)));
+stmt = MkIfStmt(MkListOne(MkExpOp(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("module")), MkIdentifier("application")), EQ_OP, MkExpMember(MkExpIdentifier(MkIdentifier("__thisModule")), MkIdentifier("application"))), AND_OP, MkExpIdentifier(MkIdentifier("class")))), MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(symbol->className)), '=', MkExpIdentifier(MkIdentifier("class"))))), (((void *)0)));
 ListAdd(registerModuleBody->compound.statements, stmt);
 if(external && external->type == 2 && external->_class->deleteWatchable)
 {
@@ -2559,7 +2564,7 @@ char memberTypeString[132] = "TemplateMemberType::";
 unsigned int needClass = 0x1;
 
 ((char *  (*)(struct __ecereNameSpace__ecere__com__Class *, void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass___ecereNameSpace__ecere__com__TemplateMemberType->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass___ecereNameSpace__ecere__com__TemplateMemberType, &param->memberType, memberTypeString + strlen(memberTypeString), (((void *)0)), &needClass);
-ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(301)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpIdentifier(MkIdentifier(memberTypeString))));
+ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpIdentifier(MkIdentifier(memberTypeString))));
 break;
 }
 }
@@ -2670,7 +2675,7 @@ struct __ecereNameSpace__ecere__sys__OldList * args = MkList();
 
 ListAdd(args, MkExpIdentifier(MkIdentifier("class")));
 ListAdd(args, MkExpString(QMkString(def->id->string)));
-ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(291)), (((void *)0))), def->initializer->exp));
+ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT)), (((void *)0))), def->initializer->exp));
 def->initializer->exp = (((void *)0));
 stmt = MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eClass_SetProperty")), args)));
 ListAdd(registerModuleBody->compound.statements, stmt);

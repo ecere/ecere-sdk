@@ -1520,6 +1520,10 @@ case 15:
 if(exp->_class)
 FreeSpecifier(exp->_class);
 break;
+case 27:
+if(exp->classData.id)
+FreeIdentifier(exp->classData.id);
+break;
 }
 if(freePointer)
 {
@@ -1970,9 +1974,16 @@ break;
 case 13:
 break;
 case 9:
+{
+if(def->decl)
+FreeDeclaration(def->decl);
 break;
+}
 case 5:
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete(def->designer), def->designer = 0);
 break;
+}
 case 7:
 break;
 case 6:
@@ -1984,11 +1995,19 @@ if(def->initializer)
 FreeInitializer(def->initializer);
 break;
 case 8:
+{
+if(def->defaultProperty)
+FreeIdentifier(def->defaultProperty);
 break;
+}
 case 12:
 break;
 case 4:
+{
+if(def->propertyWatch)
+FreePropertyWatch(def->propertyWatch);
 break;
+}
 }
 ((def ? (__ecereClass_ClassDef->Destructor ? __ecereClass_ClassDef->Destructor(def) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(def)) : 0), def = 0);
 }
@@ -2198,6 +2217,34 @@ struct Type * dataType;
 void *  symbol;
 };
 
+extern unsigned int inCompiler;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
+
+struct __ecereNameSpace__ecere__com__IteratorPointer;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__MapIterator;
+
+struct __ecereNameSpace__ecere__com__MapIterator
+{
+struct __ecereNameSpace__ecere__com__Instance * container;
+struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
+};
+
+extern struct __ecereNameSpace__ecere__com__Instance * loadedModules;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Iterator;
+
+struct __ecereNameSpace__ecere__com__Iterator
+{
+struct __ecereNameSpace__ecere__com__Instance * container;
+struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
+};
+
+extern void __ecereNameSpace__ecere__com__eModule_Unload(struct __ecereNameSpace__ecere__com__Instance * fromModule, struct __ecereNameSpace__ecere__com__Instance * module);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(struct __ecereNameSpace__ecere__sys__BinaryTree * this);
 
 extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
@@ -2205,6 +2252,35 @@ extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameS
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(struct __ecereNameSpace__ecere__sys__BTNode * this);
 
 extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
+
+struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_map(struct __ecereNameSpace__ecere__com__MapIterator * this);
+
+void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(struct __ecereNameSpace__ecere__com__MapIterator * this, struct __ecereNameSpace__ecere__com__Instance * value);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
+
+uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecereNameSpace__ecere__com__Iterator * this);
+
+void __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 value);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
+
+int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
+
+struct __ecereNameSpace__ecere__com__LinkList
+{
+void * first;
+void * last;
+int count;
+};
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 index, unsigned int create);
+
+int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
 
 void FreeModuleData(struct __ecereNameSpace__ecere__com__Instance * module)
 {
@@ -2216,6 +2292,7 @@ for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 
 struct __ecereNameSpace__ecere__com__DataMember * dataMember;
 struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
+struct __ecereNameSpace__ecere__com__ClassProperty * classProp;
 
 if(_class->dataType)
 {
@@ -2285,6 +2362,51 @@ if(function->dataType)
 FreeType(function->dataType);
 if(function->symbol)
 FreeSymbol(function->symbol);
+}
+if(!inCompiler)
+{
+struct __ecereNameSpace__ecere__com__MapIterator mapIt = (mapIt.container = (void *)0, mapIt.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&mapIt, loadedModules), mapIt);
+
+while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&mapIt))
+{
+struct __ecereNameSpace__ecere__com__Instance * list = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&mapIt));
+struct __ecereNameSpace__ecere__com__Iterator it = 
+{
+list, 0
+};
+unsigned int found = 0x0;
+
+while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&it))
+{
+if(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it)) == (uint64)(module))
+{
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(list, it.pointer);
+found = 0x1;
+break;
+}
+}
+if(found)
+{
+if(((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)list + 12)))->count == 1)
+{
+struct __ecereNameSpace__ecere__com__Instance * mod = (__extension__ ({
+struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
+{
+list, 0
+};
+
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (uint64)(((uint64)(0))), 0x0);
+((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&__internalIterator));
+}));
+
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(list, ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(list));
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))loadedModules->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(loadedModules, mapIt.pointer);
+(__ecereNameSpace__ecere__com__eInstance_DecRef(list), list = 0);
+__ecereNameSpace__ecere__com__eModule_Unload(__thisModule, mod);
+}
+break;
+}
+}
 }
 }
 
