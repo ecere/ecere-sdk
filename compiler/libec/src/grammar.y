@@ -159,7 +159,7 @@ default:
 %type <dbtableEntry> dbindex_entry dbfield_entry
 %type <dbindexItem> dbindex_item
 %type <dbtableDef> dbtable_definition
-%type <context> compound_start
+%type <context> compound_start class_entry
 
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
@@ -227,7 +227,9 @@ default:
                                        class_function_definition_start_error virtual_class_function_definition_start virtual_class_function_definition_start_error
                                        constructor_function_definition_start destructor_function_definition_start 
                                        instance_class_function_definition instance_class_function_definition_error instance_class_function_definition_start instance_class_function_definition_start_error 
-%destructor { FreeClass($$); } class class_error 
+%destructor { Context ctx = curContext; PopContext(ctx); FreeContext(ctx); delete ctx; } class_entry
+%destructor { Context ctx = curContext; PopContext(ctx); FreeContext(ctx); delete ctx; } class_decl
+%destructor { FreeClass($$); } class class_error class_head
 %destructor { FreeClassDef($$); } struct_declaration struct_declaration_error
 %destructor { delete $$; } ext_decl string_literal
 %destructor { FreeProperty($$); } property
@@ -250,6 +252,8 @@ default:
 %destructor { FreeTemplateParameter($$); } template_parameter template_type_parameter template_identifier_parameter template_expression_parameter
 %destructor { FreeTemplateArgument($$); } template_argument template_type_argument template_identifier_argument template_expression_argument
 %destructor { FreeTemplateDataType($$); } template_datatype
+%destructor { FreeList($$, FreeTemplateParameter); } template_parameters_list
+%destructor { FreeList($$, FreeTemplateArgument); } template_arguments_list
 %destructor { } declaration_mode
 
 %start thefile
@@ -1205,7 +1209,7 @@ template_parameter:
 
 template_parameters_list:
      template_parameter                               { $$ = MkList(); ListAdd($$, $1); }
-   | template_parameters_list ',' template_parameter  { ListAdd($1, $3); }
+   | template_parameters_list ',' template_parameter  { $$ = $1; ListAdd($1, $3); }
    ;
 
 template_argument:
@@ -1255,40 +1259,40 @@ template_argument:
 
 template_arguments_list:
      template_argument                                { $$ = MkList(); ListAdd($$, $1); }
-   | template_arguments_list ',' template_argument    { ListAdd($1, $3); }
+   | template_arguments_list ',' template_argument    { $$ = $1; ListAdd($1, $3); }
    ;
 
 class_entry:
    CLASS
    {
-      PushContext();
+      $$ = PushContext();
    };
 
 class_decl:
-     class_entry identifier { $$ = DeclClassAddNameSpace(globalContext.nextID++, $2.string); FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+     class_entry identifier { $1; $$ = DeclClassAddNameSpace(globalContext.nextID++, $2.string); FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
    | class_entry base_strict_type 
    { 
-      $$ = DeclClass(globalContext.nextID++, $2.name); 
+      $1; $$ = DeclClass(globalContext.nextID++, $2.name); 
       $$.nameLoc = @2; 
       FreeSpecifier($2); 
       ++defaultMemberAccess;
       memberAccessStack[defaultMemberAccess] = privateAccess;
    }
-   | identifier class_entry identifier { $$ = DeclClassAddNameSpace(globalContext.nextID++, $3.string); FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
-   | identifier class_entry base_strict_type { $$ = DeclClass(globalContext.nextID++, $3.name); FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry identifier { $2; $$ = DeclClassAddNameSpace(globalContext.nextID++, $3.string); FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry base_strict_type { $2; $$ = DeclClass(globalContext.nextID++, $3.name); FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
 
-   | class_entry identifier '<' template_parameters_list '>' { $$ = DeclClassAddNameSpace(globalContext.nextID++, $2.string); $$.templateParams = $4; FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | class_entry identifier '<' template_parameters_list '>' { $1; $$ = DeclClassAddNameSpace(globalContext.nextID++, $2.string); $$.templateParams = $4; FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
    | class_entry base_strict_type '<' template_parameters_list '>' 
    { 
-      $$ = DeclClass(globalContext.nextID++, $2.name);
+      $1; $$ = DeclClass(globalContext.nextID++, $2.name);
       $$.templateParams = $4; 
       $$.nameLoc = @2; 
       FreeSpecifier($2); 
       ++defaultMemberAccess;
       memberAccessStack[defaultMemberAccess] = privateAccess;
    }
-   | identifier class_entry identifier '<' template_parameters_list '>' { $$ = DeclClassAddNameSpace(globalContext.nextID++, $3.string); $$.templateParams = $5; FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
-   | identifier class_entry base_strict_type '<' template_parameters_list '>' { $$ = DeclClass(globalContext.nextID++, $3.name); $$.templateParams = $5; FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry identifier '<' template_parameters_list '>' { $2; $$ = DeclClassAddNameSpace(globalContext.nextID++, $3.string); $$.templateParams = $5; FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry base_strict_type '<' template_parameters_list '>' { $2; $$ = DeclClass(globalContext.nextID++, $3.name); $$.templateParams = $5; FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
    ;
 
 class:
@@ -1321,13 +1325,13 @@ class:
 
 	| class_entry identifier ';'
       {
-         $$ = MkClass(DeclClassAddNameSpace(0, $2.string), null, null); FreeIdentifier($2);
+         $1; $$ = MkClass(DeclClassAddNameSpace(0, $2.string), null, null); FreeIdentifier($2);
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
 	| class_entry type ';'
       {
-         $$ = MkClass(DeclClass(0, $2.name), null, null); FreeSpecifier($2);
+         $1; $$ = MkClass(DeclClass(0, $2.name), null, null); FreeSpecifier($2);
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
@@ -1842,6 +1846,7 @@ relational_expression_error:
          skipErrors = false;
 
          FreeExpression($1);
+         FreeExpression($2);
          
          fileInput.Seek(@1.start.pos, start); 
          resetScannerPos(&@1.start);

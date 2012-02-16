@@ -3027,12 +3027,19 @@ if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->temp
 }
 }
 
+extern void FreeContext(struct Context * context);
+
 struct ClassDefinition * MkClass(struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * baseSpecs, struct __ecereNameSpace__ecere__sys__OldList * definitions)
 {
 void * __ecereTemp1;
 struct ClassDefinition * classDef;
 
 SetupBaseSpecs(symbol, baseSpecs);
+if(symbol->ctx)
+{
+FreeContext(symbol->ctx);
+((symbol->ctx ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor(symbol->ctx) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(symbol->ctx)) : 0), symbol->ctx = 0);
+}
 symbol->ctx = curContext;
 classDef = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDefinition), ((struct ClassDefinition *)__ecereTemp1)->symbol = symbol, ((struct ClassDefinition *)__ecereTemp1)->_class = MkSpecifierName(symbol->string), ((struct ClassDefinition *)__ecereTemp1)->baseSpecs = baseSpecs, ((struct ClassDefinition *)__ecereTemp1)->definitions = definitions, ((struct ClassDefinition *)__ecereTemp1)->nameLoc = symbol->nameLoc, ((struct ClassDefinition *)__ecereTemp1));
 curContext->classDef = classDef;
