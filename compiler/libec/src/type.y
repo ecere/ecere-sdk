@@ -71,7 +71,6 @@ default:
 
 // *** Types ***
 
-%type <symbol> class_decl
 %type <specifierType> struct_or_union
 %type <i>   unary_operator assignment_operator
 %type <id>  identifier
@@ -90,22 +89,20 @@ default:
              parameter_list parameter_type_list declaration_list statement_list 
              members_initialization_list members_initialization_list_coloned data_member_initialization_list data_member_initialization_list_coloned
              guess_declaration_specifiers real_guess_declaration_specifiers
-             external_guess_declaration_specifiers
              specifier_qualifier_list guess_specifier_qualifier_list
-             type_qualifier_list inheritance_specifiers _inheritance_specifiers property_specifiers
-             renew_specifiers new_specifiers
+             type_qualifier_list property_specifiers
+             renew_specifiers
              default_property_list
-             template_arguments_list template_parameters_list
+             template_arguments_list
              
 
-%type <specifier> storage_class_specifier enum_specifier_compound enum_specifier_nocompound enum_class type_qualifier type_specifier strict_type_specifier
-                  struct_or_union_specifier_compound struct_or_union_specifier_nocompound guess_type type strict_type class_specifier struct_class
+%type <specifier> storage_class_specifier enum_specifier_compound enum_specifier_nocompound type_qualifier type_specifier strict_type_specifier
+                  struct_or_union_specifier_compound struct_or_union_specifier_nocompound guess_type type strict_type
                   real_guess_type ext_storage base_strict_type
 %type <enumerator> enumerator
 %type <declarator> declarator direct_declarator direct_abstract_declarator abstract_declarator
                    struct_declarator direct_declarator_function direct_declarator_function_start declarator_function direct_declarator_nofunction 
                    direct_abstract_declarator_noarray abstract_declarator_noarray declarator_nofunction
-%type <_class> class
                    
 %type <pointer> pointer
 %type <initializer> initializer initializer_condition
@@ -114,9 +111,9 @@ default:
 %type <stmt> statement labeled_statement compound_statement expression_statement 
              selection_statement iteration_statement jump_statement compound_inside
 
-%type <declaration> declaration external_guess_declaration
+%type <declaration> declaration
 %type <classDef> struct_declaration 
-%type <string> string_literal ext_decl ext_attrib base_strict_type_name
+%type <string> string_literal ext_decl ext_attrib
 %type <instance> instantiation_named instantiation_unnamed guess_instantiation_named instantiation_anon
 /* %type <membersInit>  members_initialization */
 %type <memberInit> data_member_initialization default_property
@@ -126,8 +123,7 @@ default:
 %type <classFunction> instance_class_function_definition instance_class_function_definition_start 
 %type <prop> property
 
-%type <templateParameter> template_parameter template_type_parameter template_identifier_parameter template_expression_parameter
-%type <templateArgument> template_argument template_type_argument template_identifier_argument template_expression_argument
+%type <templateArgument> template_argument template_type_argument template_expression_argument
 %type <templateDatatype> template_datatype
 
 %type <context> compound_start
@@ -163,8 +159,8 @@ default:
                                     exclusive_or_expression inclusive_or_expression logical_and_expression
                                     logical_or_expression conditional_expression assignment_expression
                                     constant_expression
-%destructor { FreeSpecifier($$); }  storage_class_specifier enum_specifier_compound enum_specifier_nocompound type_qualifier type_specifier class_specifier
-                                    struct_or_union_specifier_compound struct_or_union_specifier_nocompound ext_storage type strict_type guess_type enum_class strict_type_specifier struct_class
+%destructor { FreeSpecifier($$); }  storage_class_specifier enum_specifier_compound enum_specifier_nocompound type_qualifier type_specifier
+                                    struct_or_union_specifier_compound struct_or_union_specifier_nocompound ext_storage type strict_type guess_type strict_type_specifier
                                     base_strict_type
 %destructor { FreeEnumerator($$); } enumerator
 %destructor { FreeDeclarator($$); } declarator direct_declarator direct_abstract_declarator abstract_declarator
@@ -188,14 +184,13 @@ default:
                                        virtual_class_function_definition_start
                                        constructor_function_definition_start destructor_function_definition_start 
                                        instance_class_function_definition instance_class_function_definition_start 
-%destructor { FreeClass($$); } class
 %destructor { FreeClassDef($$); } struct_declaration
 %destructor { delete $$; } ext_decl string_literal
 %destructor { FreeProperty($$); } property
 
 %destructor { FreeList($$, FreeExpression); }  argument_expression_list expression 
 %destructor { FreeList($$, FreeEnumerator); }  enumerator_list 
-%destructor { FreeList($$, FreeSpecifier); }   type_qualifier_list specifier_qualifier_list declaration_specifiers inheritance_specifiers _inheritance_specifiers external_guess_declaration_specifiers
+%destructor { FreeList($$, FreeSpecifier); }   type_qualifier_list specifier_qualifier_list declaration_specifiers
                                                guess_declaration_specifiers guess_specifier_qualifier_list
 %destructor { FreeList($$, FreeDeclarator); }  struct_declarator_list
 %destructor { FreeList($$, FreeDeclaration); } declaration_list 
@@ -207,8 +202,7 @@ default:
 %destructor { FreeList($$, FreeMemberInit); } default_property_list data_member_initialization_list data_member_initialization_list_coloned
 %destructor { FreeList($$, FreeMembersInit); } members_initialization_list members_initialization_list_coloned
 %destructor { PopContext($$); FreeContext($$); delete $$; } compound_start
-%destructor { FreeTemplateParameter($$); } template_parameter template_type_parameter template_identifier_parameter template_expression_parameter
-%destructor { FreeTemplateArgument($$); } template_argument template_type_argument template_identifier_argument template_expression_argument
+%destructor { FreeTemplateArgument($$); } template_argument template_type_argument template_expression_argument
 %destructor { FreeTemplateDataType($$); } template_datatype
 
 %start type_unit
@@ -218,6 +212,7 @@ default:
 guess_type:
    identifier '*'
    {
+      $$ = null;
       DeclClass(0, $1.string);
       fileInput.Seek(@1.start.pos, start); 
       resetScannerPos(&@1.start);
@@ -235,6 +230,7 @@ guess_type:
    }
    | identifier '<'
    {
+      $$ = null;
    #ifdef PRECOMPILER
       // if($1._class && !$1._class.name)
       if($1._class)
@@ -347,10 +343,6 @@ base_strict_type:
      TYPE_NAME    { $$ = MkSpecifierName(yytext); }
    ;
 
-base_strict_type_name:
-     TYPE_NAME    { $$ = CopyString(yytext); }
-   ;
-
 strict_type:
      base_strict_type
     | base_strict_type '<' template_arguments_list '>' { $$ = $1; SetClassTemplateArgs($$, $3); $$.loc = @$; }
@@ -413,7 +405,7 @@ simple_primary_expression:
 	| CONSTANT
       { $$ = MkExpConstant(yytext); $$.loc = @$; }
 	| string_literal
-      { $$ = MkExpString(yytext); $$.loc = @$; }
+      { $$ = MkExpString($1); delete $1; $$.loc = @$; }
    | '$' string_literal     { $$ = MkExpIntlString($2, null); delete $2; $$.loc = @$; }
    | '$' string_literal '.' string_literal     { $$ = MkExpIntlString($4, $2); delete $2; delete $4; $$.loc = @$; }
    | '(' ')'
@@ -460,8 +452,8 @@ simple_postfix_expression:
 argument_expression_list:
 	  assignment_expression          { $$ = MkList(); ListAdd($$, $1); }
    | anon_instantiation_expression  { $$ = MkList(); ListAdd($$, $1); }
-	| argument_expression_list ',' assignment_expression   { ListAdd($1, $3);  }
-   | argument_expression_list ',' anon_instantiation_expression   { ListAdd($1, $3);  }
+	| argument_expression_list ',' assignment_expression   { $$ = $1; ListAdd($1, $3);  }
+   | argument_expression_list ',' anon_instantiation_expression   { $$ = $1; ListAdd($1, $3);  }
 	;
 
 common_unary_expression:
@@ -591,7 +583,7 @@ assignment_operator:
 
 expression:
      assignment_expression                 { $$ = MkList(); ListAdd($$, $1); }
-	| expression ',' assignment_expression  { ListAdd($1, $3); }
+	| expression ',' assignment_expression  { $$ = $1; ListAdd($1, $3); }
 	;
 
 constant_expression:
@@ -605,145 +597,70 @@ declaration:
    | DEFINE identifier '=' constant_expression ';'           { $$ = MkDeclarationDefine($2, $4); $$.loc = @$; }
 	;
 
-external_guess_declaration:
-	  external_guess_declaration_specifiers                  { $$ = MkDeclaration($1, null); $$.loc = @$; }
-	| guess_declaration_specifiers ';'                       { $$ = MkDeclaration($1, null); $$.loc = @$; }
-	| guess_declaration_specifiers init_declarator_list ';'  { $$ = MkDeclaration($1, $2); $$.loc = @$; }
-   | guess_instantiation_named ';'                          { $$ = MkDeclarationInst($1); $$.loc = @$; }
-   | DEFINE identifier '=' constant_expression ';'           { $$ = MkDeclarationDefine($2, $4); $$.loc = @$; }
-	;
-
 specifier_qualifier_list:
      type_qualifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | specifier_qualifier_list  type_qualifier            { ListAdd($1, $2); }
+   | specifier_qualifier_list  type_qualifier            { $$ = $1; ListAdd($1, $2); }
    | type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | specifier_qualifier_list  type_specifier            { ListAdd($1, $2); }
+   | specifier_qualifier_list  type_specifier            { $$ = $1; ListAdd($1, $2); }
    | enum_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| specifier_qualifier_list enum_specifier_compound          { ListAdd($1, $2); }
+	| specifier_qualifier_list enum_specifier_compound          { $$ = $1; ListAdd($1, $2); }
    | struct_or_union_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| specifier_qualifier_list struct_or_union_specifier_compound          { ListAdd($1, $2); }
+	| specifier_qualifier_list struct_or_union_specifier_compound          { $$ = $1; ListAdd($1, $2); }
    ;
 
 guess_specifier_qualifier_list:
      type_qualifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | guess_specifier_qualifier_list  type_qualifier            { ListAdd($1, $2); }
+   | guess_specifier_qualifier_list  type_qualifier            { $$ = $1; ListAdd($1, $2); }
    | type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | guess_specifier_qualifier_list  type_specifier            { ListAdd($1, $2); }
+   | guess_specifier_qualifier_list  type_specifier            { $$ = $1; ListAdd($1, $2); }
    | guess_type                                       { $$ = MkList(); ListAdd($$, $1); }
-   | guess_specifier_qualifier_list  guess_type            { ListAdd($1, $2); }
+   | guess_specifier_qualifier_list  guess_type            { $$ = $1; ListAdd($1, $2); }
    | enum_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| guess_specifier_qualifier_list enum_specifier_compound          { ListAdd($1, $2); }
+	| guess_specifier_qualifier_list enum_specifier_compound          { $$ = $1; ListAdd($1, $2); }
    | struct_or_union_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| guess_specifier_qualifier_list struct_or_union_specifier_compound          { ListAdd($1, $2); }
+	| guess_specifier_qualifier_list struct_or_union_specifier_compound          { $$ = $1; ListAdd($1, $2); }
    ;
 
 declaration_specifiers:
      storage_class_specifier                          { $$ = MkList(); ListAdd($$, $1); }
-   | declaration_specifiers storage_class_specifier    { ListAdd($1, $2); }
+   | declaration_specifiers storage_class_specifier    { $$ = $1; ListAdd($1, $2); }
    | type_qualifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | declaration_specifiers  type_qualifier            { ListAdd($1, $2); }
+   | declaration_specifiers  type_qualifier            { $$ = $1; ListAdd($1, $2); }
    | type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | declaration_specifiers  type_specifier            { ListAdd($1, $2); }
+   | declaration_specifiers  type_specifier            { $$ = $1; ListAdd($1, $2); }
    | enum_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| declaration_specifiers enum_specifier_compound          { ListAdd($1, $2); }
+	| declaration_specifiers enum_specifier_compound          { $$ = $1; ListAdd($1, $2); }
    | struct_or_union_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| declaration_specifiers struct_or_union_specifier_compound          { ListAdd($1, $2); }
+	| declaration_specifiers struct_or_union_specifier_compound          { $$ = $1; ListAdd($1, $2); }
    ;
 
 guess_declaration_specifiers:
      storage_class_specifier                          { $$ = MkList(); ListAdd($$, $1); }
-   | guess_declaration_specifiers storage_class_specifier    { ListAdd($1, $2); }
+   | guess_declaration_specifiers storage_class_specifier    { $$ = $1; ListAdd($1, $2); }
    | type_qualifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | guess_declaration_specifiers  type_qualifier            { ListAdd($1, $2); }
+   | guess_declaration_specifiers  type_qualifier            { $$ = $1; ListAdd($1, $2); }
    | type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | guess_declaration_specifiers  type_specifier            { ListAdd($1, $2); }
+   | guess_declaration_specifiers  type_specifier            { $$ = $1; ListAdd($1, $2); }
    | guess_type                                       { $$ = MkList(); ListAdd($$, $1); }
-	| guess_declaration_specifiers guess_type          { ListAdd($1, $2); }
+	| guess_declaration_specifiers guess_type          { $$ = $1; ListAdd($1, $2); }
    | struct_or_union_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| guess_declaration_specifiers struct_or_union_specifier_compound          { ListAdd($1, $2); }
+	| guess_declaration_specifiers struct_or_union_specifier_compound          { $$ = $1; ListAdd($1, $2); }
    | enum_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| guess_declaration_specifiers enum_specifier_compound          { ListAdd($1, $2); }
+	| guess_declaration_specifiers enum_specifier_compound          { $$ = $1; ListAdd($1, $2); }
    ;
 
 real_guess_declaration_specifiers:
-     storage_class_specifier                          { $$ = MkList(); ListAdd($$, $1); }
-   | guess_declaration_specifiers storage_class_specifier    { ListAdd($1, $2); }
-   | type_qualifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | guess_declaration_specifiers  type_qualifier            { ListAdd($1, $2); }
-   | type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | guess_declaration_specifiers  type_specifier            { ListAdd($1, $2); }
-   | real_guess_type                                       { $$ = MkList(); ListAdd($$, $1); }
-	| guess_declaration_specifiers real_guess_type          { ListAdd($1, $2); }
-   | struct_or_union_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| guess_declaration_specifiers struct_or_union_specifier_compound          { ListAdd($1, $2); }
-   | enum_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| guess_declaration_specifiers enum_specifier_compound          { ListAdd($1, $2); }
-   ;
-
-external_guess_declaration_specifiers:
-     class_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | guess_declaration_specifiers class_specifier            { ListAdd($1, $2); }
-   ;
-
-_inheritance_specifiers:
-     PRIVATE                                          { $$ = MkList(); ListAdd($$, MkSpecifier(PRIVATE)); }
-   | PUBLIC                                           { $$ = MkList(); ListAdd($$, MkSpecifier(PUBLIC)); }
-   | storage_class_specifier                          { $$ = MkList(); ListAdd($$, $1); }
-   | _inheritance_specifiers storage_class_specifier   { ListAdd($1, $2); }
-   | type_qualifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | _inheritance_specifiers type_qualifier            { ListAdd($1, $2); }
-   | strict_type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | _inheritance_specifiers strict_type_specifier            { ListAdd($1, $2); }
-   | identifier                                       
-      { _DeclClass(0, $1.string); $$ = MkListOne(MkSpecifierName($1.string)); FreeIdentifier($1); }
-	| _inheritance_specifiers identifier                { _DeclClass(0, $2.string); ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2); }
-
-   | identifier '<' template_arguments_list '>'
-      {
-         // if($1._class && !$1._class.name)
-         if($1._class)
-         {
-            char name[1024];
-            strcpy(name,  $1._class.name ? $1._class.name : "");
-            strcat(name, "::");
-            strcat(name, $1.string);
-            _DeclClass(0, name);
-         }
-         else
-            _DeclClass(0, $1.string);
-
-         $$ = MkList();
-         ListAdd($$, MkSpecifierNameArgs($1.string, $3));
-         FreeIdentifier($1);
-      }
-   | _inheritance_specifiers identifier '<' template_arguments_list '>'
-      {
-         if($2._class && !$2._class.name)
-         {
-            char name[1024];
-            strcpy(name, "::");
-            strcat(name, $2.string);
-            _DeclClass(0, name);
-         }
-         else
-            _DeclClass(0, $2.string);
-         ListAdd($1, MkSpecifierNameArgs($2.string, $4));
-         FreeIdentifier($2);
-      }
-   ;
-
-inheritance_specifiers:
-     _inheritance_specifiers
-   | struct_or_union    { $$ = MkListOne(MkStructOrUnion($1, null, null)); POP_DEFAULT_ACCESS }
+       guess_declaration_specifiers                          { $$ = $1; }
+     | real_guess_type                                       { $$ = MkList(); ListAdd($$, $1); }
    ;
 
 property_specifiers:
      storage_class_specifier                          { $$ = MkList(); ListAdd($$, $1); }
-   | property_specifiers storage_class_specifier     { ListAdd($1, $2); }
+   | property_specifiers storage_class_specifier     { $$ = $1; ListAdd($1, $2); }
    | type_qualifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | property_specifiers type_qualifier            { ListAdd($1, $2); }
+   | property_specifiers type_qualifier            { $$ = $1; ListAdd($1, $2); }
    | strict_type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | property_specifiers strict_type_specifier            { ListAdd($1, $2); }
+   | property_specifiers strict_type_specifier            { $$ = $1; ListAdd($1, $2); }
    | identifier                        { $$ = MkList(); ListAdd($$, MkSpecifierName($1.string)); FreeIdentifier($1); }
    | property_specifiers identifier          { ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2); }
    | identifier '<' template_arguments_list '>'
@@ -782,17 +699,17 @@ property_specifiers:
 
 renew_specifiers:
      storage_class_specifier                          { $$ = MkList(); ListAdd($$, $1); }
-   | renew_specifiers storage_class_specifier    { ListAdd($1, $2); }
+   | renew_specifiers storage_class_specifier    { $$ = $1; ListAdd($1, $2); }
    | type_qualifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | renew_specifiers type_qualifier            { ListAdd($1, $2); }
+   | renew_specifiers type_qualifier            { $$ = $1; ListAdd($1, $2); }
    | strict_type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | renew_specifiers strict_type_specifier            { ListAdd($1, $2); }
+   | renew_specifiers strict_type_specifier            { $$ = $1; ListAdd($1, $2); }
    | struct_or_union_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| renew_specifiers struct_or_union_specifier_compound          { ListAdd($1, $2); }
+	| renew_specifiers struct_or_union_specifier_compound          { $$ = $1; ListAdd($1, $2); }
    | enum_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| renew_specifiers enum_specifier_compound          { ListAdd($1, $2); }
+	| renew_specifiers enum_specifier_compound          { $$ = $1; ListAdd($1, $2); }
    | identifier                        { $$ = MkList(); ListAdd($$, MkSpecifierName($1.string)); FreeIdentifier($1); }
-   | renew_specifiers identifier          { ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2)}
+   | renew_specifiers identifier          { $$ = $1; ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2)}
    | identifier '<' template_arguments_list '>'
       {
          // if($1._class && !$1._class.name)
@@ -827,92 +744,9 @@ renew_specifiers:
       }
    ;
 
-new_specifiers:
-     storage_class_specifier                          { $$ = MkList(); ListAdd($$, $1); }
-   | new_specifiers storage_class_specifier    { ListAdd($1, $2); }
-   | type_qualifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | new_specifiers  type_qualifier            { ListAdd($1, $2); }
-   | strict_type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | new_specifiers strict_type_specifier            { ListAdd($1, $2); }
-   | struct_or_union_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| new_specifiers struct_or_union_specifier_compound          { ListAdd($1, $2); }
-   | enum_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| new_specifiers enum_specifier_compound          { ListAdd($1, $2); }
-   | identifier                        { $$ = MkList(); ListAdd($$, MkSpecifierName($1.string)); FreeIdentifier($1); }
-   | new_specifiers identifier          { ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2)}
-   | identifier '<' template_arguments_list '>'
-      {
-         // if($1._class && !$1._class.name)
-         if($1._class)
-         {
-            char name[1024];
-            strcpy(name,  $1._class.name ? $1._class.name : "");
-            strcat(name, "::");
-            strcat(name, $1.string);
-            _DeclClass(0, name);
-         }
-         else
-            _DeclClass(0, $1.string);
-
-         $$ = MkList();
-         ListAdd($$, MkSpecifierNameArgs($1.string, $3));
-         FreeIdentifier($1);
-      }
-   | new_specifiers identifier '<' template_arguments_list '>'
-      {
-         if($2._class && !$2._class.name)
-         {
-            char name[1024];
-            strcpy(name, "::");
-            strcat(name, $2.string);
-            _DeclClass(0, name);
-         }
-         else
-            _DeclClass(0, $2.string);
-         ListAdd($1, MkSpecifierNameArgs($2.string, $4));
-         FreeIdentifier($2);
-      }
-   ;
-/*
-inheritance_specifiers:
-     storage_class_specifier                          { $$ = MkList(); ListAdd($$, $1); }
-   | inheritance_specifiers storage_class_specifier   { ListAdd($1, $2); }
-   | type_qualifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | inheritance_specifiers type_qualifier            { ListAdd($1, $2); }
-   | strict_type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | inheritance_specifiers strict_type_specifier            { ListAdd($1, $2); }
-   | identifier                                       
-      { $$ = MkListOne(MkSpecifierName($1.string)); DeclClass(0, $1.string); FreeIdentifier($1); }
-	| inheritance_specifiers identifier                { ListAdd($1, MkSpecifierName($2.string)); DeclClass(0, $2.string);FreeIdentifier($2); }
-   ;
-
-property_specifiers:
-     storage_class_specifier                          { $$ = MkList(); ListAdd($$, $1); }
-   | property_specifiers storage_class_specifier     { ListAdd($1, $2); }
-   | type_qualifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | property_specifiers type_qualifier            { ListAdd($1, $2); }
-   | type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | property_specifiers type_specifier            { ListAdd($1, $2); }
-   | guess_type                                       { $$ = MkList(); ListAdd($$, $1); }
-	| property_specifiers guess_type          { ListAdd($1, $2); }
-   ;
-
-renew_specifiers:
-     storage_class_specifier                          { $$ = MkList(); ListAdd($$, $1); }
-   | renew_specifiers storage_class_specifier    { ListAdd($1, $2); }
-   | type_qualifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | renew_specifiers type_qualifier            { ListAdd($1, $2); }
-   | strict_type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
-   | renew_specifiers strict_type_specifier            { ListAdd($1, $2); }
-   | struct_or_union_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| renew_specifiers struct_or_union_specifier_compound          { ListAdd($1, $2); }
-   | enum_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
-	| renew_specifiers enum_specifier_compound          { ListAdd($1, $2); }
-   ;
-*/
 init_declarator_list:
 	  init_declarator                            { $$ = MkList(); ListAdd($$, $1); }
-	| init_declarator_list ',' init_declarator   { ListAdd($1, $3); }
+	| init_declarator_list ',' init_declarator   { $$ = $1; ListAdd($1, $3); }
 	;
 
 init_declarator:
@@ -1012,59 +846,29 @@ struct_or_union_specifier_nocompound:
 template_datatype:
      declaration_specifiers { $$ = MkTemplateDatatype($1, null); }
    | declaration_specifiers abstract_declarator { $$ = MkTemplateDatatype($1, $2); }
-   | identifier { $$ = MkTemplateDatatype(MkListOne(MkSpecifierName($1.string)), null); FreeIdentifier($1); }
+   /*| identifier { $$ = MkTemplateDatatype(MkListOne(MkSpecifierName($1.string)), null); FreeIdentifier($1); }*/
    ;
 
 template_type_argument:
      template_datatype { $$ = MkTemplateTypeArgument($1); }
    ;
 
-template_type_parameter:
-     CLASS identifier { $$ = MkTypeTemplateParameter($2, null, null); }
-   | CLASS identifier '=' template_type_argument { $$ = MkTypeTemplateParameter($2, null, $4); }
-   | CLASS identifier ':' template_datatype { $$ = MkTypeTemplateParameter($2, $4, null); }
-   | CLASS identifier ':' template_datatype '=' template_type_argument { $$ = MkTypeTemplateParameter($2, $4, $6); }
-   | CLASS base_strict_type_name { $$ = MkTypeTemplateParameter(MkIdentifier($2), null, null); delete $2; }
-   | CLASS base_strict_type_name '=' template_type_argument { $$ = MkTypeTemplateParameter(MkIdentifier($2), null, $4); }
-   | CLASS base_strict_type_name ':' template_datatype { $$ = MkTypeTemplateParameter(MkIdentifier($2), $4, null); }
-   | CLASS base_strict_type_name ':' template_datatype '=' template_type_argument { $$ = MkTypeTemplateParameter(MkIdentifier($2), $4, $6); }
-   ;
-
+/*
 template_identifier_argument:
      identifier { $$ = MkTemplateIdentifierArgument($1); }
    ;
-
-template_identifier_parameter:
-     identifier                                  { $$ = MkIdentifierTemplateParameter($1, dataMember, null); }
-   | identifier '=' template_identifier_argument { $$ = MkIdentifierTemplateParameter($1, dataMember, $3); }
-   ;
+*/
 
 template_expression_argument:
      shift_expression /*constant_expression*/ { $$ = MkTemplateExpressionArgument($1); }
    ;
 
-template_expression_parameter:
-     template_datatype identifier     { $$ = MkExpressionTemplateParameter($2, $1, null); }
-   | template_datatype identifier '=' template_expression_argument    { $$ = MkExpressionTemplateParameter($2, $1, $4); }
-   ;
-
-template_parameter:
-     template_type_parameter
-   | template_identifier_parameter
-   | template_expression_parameter
-   ;
-
-template_parameters_list:
-     template_parameter                               { $$ = MkList(); ListAdd($$, $1); }
-   | template_parameters_list ',' template_parameter  { ListAdd($1, $3); }
-   ;
-
 template_argument:
      template_expression_argument
-   | template_identifier_argument
+   /*| template_identifier_argument*/
    | template_type_argument
    | identifier '=' template_expression_argument   { $$ = $3; $$.name = $1; $$.loc = @$; }
-   | identifier '=' template_identifier_argument   { $$ = $3; $$.name = $1; $$.loc = @$; }
+   /*| identifier '=' template_identifier_argument   { $$ = $3; $$.name = $1; $$.loc = @$; }*/
    | identifier '=' template_type_argument         { $$ = $3; $$.name = $1; $$.loc = @$; }
    | template_datatype '=' template_expression_argument 
    {
@@ -1078,7 +882,7 @@ template_argument:
       FreeTemplateDataType($1);
       $$.loc = @$;
    }
-   | template_datatype '=' template_identifier_argument
+   /*| template_datatype '=' template_identifier_argument
    {
       $$ = $3; 
       if($1.specifiers && $1.specifiers->first)
@@ -1089,7 +893,7 @@ template_argument:
       }
       FreeTemplateDataType($1);
       $$.loc = @$;
-   }
+   } */
    | template_datatype '=' template_type_argument
    {
       $$ = $3; 
@@ -1108,115 +912,6 @@ template_arguments_list:
      template_argument                                { $$ = MkList(); ListAdd($$, $1); }
    | template_arguments_list ',' template_argument    { ListAdd($1, $3); }
    ;
-/*
-template_datatype:
-     declaration_specifiers { $$ = MkTemplateDatatype($1, null); }
-   | declaration_specifiers abstract_declarator { $$ = MkTemplateDatatype($1, $2); }
-   | identifier { $$ = MkTemplateDatatype(MkListOne(MkSpecifierName($1.string)), null); FreeIdentifier($1); }
-   ;
-
-template_type_argument:
-     template_datatype { $$ = MkTemplateTypeArgument($1); }
-   ;
-
-template_type_parameter:
-     CLASS identifier { $$ = MkTypeTemplateParameter($2, null, null); }
-   | CLASS identifier '=' template_type_argument { $$ = MkTypeTemplateParameter($2, null, $4); }
-   | CLASS identifier ':' template_datatype { $$ = MkTypeTemplateParameter($2, $4, null); }
-   | CLASS identifier ':' template_datatype '=' template_type_argument { $$ = MkTypeTemplateParameter($2, $4, $6); }
-   | CLASS base_strict_type_name { $$ = MkTypeTemplateParameter(MkIdentifier($2), null, null); delete $2; }
-   | CLASS base_strict_type_name '=' template_type_argument { $$ = MkTypeTemplateParameter(MkIdentifier($2), null, $4); }
-   | CLASS base_strict_type_name ':' template_datatype { $$ = MkTypeTemplateParameter(MkIdentifier($2), $4, null); }
-   | CLASS base_strict_type_name ':' template_datatype '=' template_type_argument { $$ = MkTypeTemplateParameter(MkIdentifier($2), $4, $6); }
-   ;
-
-template_identifier_argument:
-     identifier { $$ = MkTemplateIdentifierArgument($1); }
-   ;
-
-template_identifier_parameter:
-     identifier                                  { $$ = MkIdentifierTemplateParameter($1); }
-   | identifier '=' template_identifier_argument { $$ = MkIdentifierTemplateParameter($1); }
-   ;
-
-template_expression_argument:
-     constant_expression { $$ = MkTemplateExpressionArgument($1); }
-   ;
-
-template_expression_parameter:
-     template_datatype     { $$ = MkExpressionTemplateParameter($1); }
-   | template_datatype '=' template_expression_argument    { $$ = MkExpressionTemplateParameter($1); }
-   ;
-
-template_parameter:
-     template_type_parameter
-   | template_identifier_parameter
-   | template_expression_parameter
-   ;
-
-template_parameters_list:
-     template_parameter                               { $$ = MkList(); ListAdd($$, $1); }
-   | template_parameters_list ',' template_parameter  { ListAdd($1, $3); }
-   ;
-
-template_argument:
-    template_expression_argument
-   | template_identifier_argument
-   | template_type_argument
-   | identifier '=' template_expression_argument   { $$ = $3; $$.name = $1; $$.loc = @$; }
-   | identifier '=' template_identifier_argument   { $$ = $3; $$.name = $1; $$.loc = @$; }
-   | identifier '=' template_type_argument         { $$ = $3; $$.name = $1; $$.loc = @$; }
-   ;
-
-template_arguments_list:
-     template_argument                                { $$ = MkList(); ListAdd($$, $1); }
-   | template_arguments_list ',' template_argument    { ListAdd($1, $3); }
-   ;
-*/
-class_decl:
-     CLASS identifier { $$ = DeclClass(globalContext.nextID++, $2.string); FreeIdentifier($2); $$.nameLoc = @2; }
-   | CLASS base_strict_type { $$ = DeclClass(globalContext.nextID++, $2.name); $$.nameLoc = @2; FreeSpecifier($2); }
-   | identifier CLASS identifier { $$ = DeclClass(globalContext.nextID++, $3.string); FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; }
-   | identifier CLASS base_strict_type { $$ = DeclClass(globalContext.nextID++, $3.name); FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); }
-
-   | CLASS identifier '<' template_parameters_list '>' { $$ = DeclClassAddNameSpace(globalContext.nextID++, $2.string); $$.templateParams = $4; FreeIdentifier($2); $$.nameLoc = @2; }
-   | CLASS base_strict_type '<' template_parameters_list '>'
-   {
-      $$ = DeclClass(globalContext.nextID++, $2.name);
-      $$.templateParams = $4; 
-      $$.nameLoc = @2; 
-      FreeSpecifier($2); 
-   }
-   | identifier CLASS identifier '<' template_parameters_list '>' { $$ = DeclClassAddNameSpace(globalContext.nextID++, $3.string); $$.templateParams = $5; FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; }
-   | identifier CLASS base_strict_type '<' template_parameters_list '>' { $$ = DeclClass(globalContext.nextID++, $3.name); $$.templateParams = $5; FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); }
-   ;
-
-class:
-	  class_decl '{' struct_declaration_list '}'
-      { $$ = MkClass($1, null, $3); $$.blockStart = @2; $$.loc = @$; $$.endid = globalContext.nextID++; }
-	| class_decl ':' inheritance_specifiers  '{' struct_declaration_list '}'
-      { $$ = MkClass($1, $3, $5); $$.blockStart = @4;  $$.loc = @$; $$.endid = globalContext.nextID++; }
-	| class_decl '{' '}'
-      { $$ = MkClass($1, null, MkList()); $$.blockStart = @2;  $$.loc = @$; $$.endid = globalContext.nextID++; }
-	| class_decl ':' inheritance_specifiers '{' '}'
-      { $$ = MkClass($1, $3, MkList()); $$.blockStart = @4;  $$.loc = @$; $$.endid = globalContext.nextID++; }
-
-   // Added this for unit classes...
-	| class_decl ':' inheritance_specifiers  ';'
-      { $$ = MkClass($1, $3, MkList()); $$.blockStart = @4;  $$.loc = @$; $$.endid = globalContext.nextID++; }
-
-	| CLASS identifier ';'
-      { $$ = MkClass(DeclClass(0, $2.string), null, null); FreeIdentifier($2); }
-	| CLASS type ';'
-      { $$ = MkClass(DeclClass(0, $2.name), null, null); FreeSpecifier($2); }
-   ;
-
-struct_class:
-	  struct_or_union identifier ':' inheritance_specifiers '{' struct_declaration_list '}'
-      { $$ = MkStructOrUnion($1, $2, $6); $$.baseSpecs = $4; if(declMode) DeclClass(globalContext.nextID++, $2.string); }
-	| struct_or_union strict_type ':' inheritance_specifiers '{' struct_declaration_list '}'
-      { $$ = MkStructOrUnion($1, MkIdentifier($2.name), $6); $$.baseSpecs = $4; if(declMode) DeclClass(globalContext.nextID++, $2.name); FreeSpecifier($2); }
-   ;
 
 struct_or_union:
 	  STRUCT    { $$ = structSpecifier; }
@@ -1225,7 +920,7 @@ struct_or_union:
 
 struct_declaration_list:
 	  struct_declaration                            { $$ = MkList(); ListAdd($$, $1); }
-	| struct_declaration_list struct_declaration    { ListAdd($1, $2); }
+	| struct_declaration_list struct_declaration    { $$ = $1; ListAdd($1, $2); }
 	;
 
 default_property:
@@ -1234,7 +929,7 @@ default_property:
 
 default_property_list:
      default_property        { $$ = MkList(); ListAdd($$, $1); ((MemberInit)$$->last).loc = @$; }
-   | default_property_list ',' default_property      { ((MemberInit)$1->last).loc.end = @3.start; ListAdd($1, $3); }
+   | default_property_list ',' default_property      { ((MemberInit)$1->last).loc.end = @3.start; ListAdd($1, $3); $$ = $1; }
    ;
 
 property:
@@ -1298,7 +993,7 @@ struct_declarator_list:
 	  struct_declarator
       { $$ = MkList(); ListAdd($$, $1); }
 	| struct_declarator_list ',' struct_declarator
-      { ListAdd($1, $3); }
+      { $$ = $1; ListAdd($1, $3); }
 	;
 
 struct_declarator:
@@ -1328,23 +1023,11 @@ enum_specifier_compound:
    | ENUM strict_type '{' enumerator_list '}'          { $$ = MkEnum(MkIdentifier($2.name), $4); if(declMode) DeclClass(globalContext.nextID++, $2.name); FreeSpecifier($2); }
 	;
 
-enum_class:
-     ENUM identifier ':' inheritance_specifiers '{' enumerator_list '}'          { $$ = MkEnum($2, $6); $$.baseSpecs = $4; if(declMode) DeclClass(globalContext.nextID++, $2.string); }
-   | ENUM identifier ':' inheritance_specifiers '{' enumerator_list ';' struct_declaration_list '}'          { $$ = MkEnum($2, $6); $$.baseSpecs = $4; $$.definitions = $8; if(declMode) DeclClass(globalContext.nextID++, $2.string); }
-	| ENUM strict_type ':' inheritance_specifiers '{' enumerator_list '}'          { $$ = MkEnum(MkIdentifier($2.name), $6); $$.baseSpecs = $4; if(declMode) DeclClass(globalContext.nextID++, $2.name); FreeSpecifier($2); }
-   | ENUM strict_type ':' inheritance_specifiers '{' enumerator_list ';' struct_declaration_list '}'          { $$ = MkEnum(MkIdentifier($2.name), $6); $$.baseSpecs = $4; $$.definitions = $8; if(declMode) DeclClass(globalContext.nextID++, $2.name); FreeSpecifier($2); }
-   ;
-
-class_specifier:
-     enum_class
-   | struct_class
-   ;
-
 enumerator_list:
 	  enumerator
       { $$ = MkList(); ListAdd($$, $1); }
 	| enumerator_list ',' enumerator
-      { ListAdd($1, $3); }
+      { $$ = $1; ListAdd($1, $3); }
 	;
 
 enumerator:
@@ -1460,7 +1143,7 @@ declarator:
    | ext_decl pointer direct_declarator
       { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
    | declarator ext_decl
-   
+      { $$ = MkDeclaratorExtendedEnd($2, $1); }
    ;
 
 direct_declarator_nofunction:
@@ -1522,7 +1205,7 @@ declarator_nofunction:
 
 type_qualifier_list:
 	  type_qualifier                          { $$ = MkList(); ListAdd($$, $1); }
-	| type_qualifier_list type_qualifier      { ListAdd($1, $2);  }
+	| type_qualifier_list type_qualifier      { $$ = $1; ListAdd($1, $2);  }
 	;
 
 pointer:
@@ -1534,19 +1217,18 @@ pointer:
 
 parameter_type_list:
 	  parameter_list                 
-	| parameter_list ',' ELLIPSIS { ListAdd($1, MkTypeName(null, null)); }
+	| parameter_list ',' ELLIPSIS { $$ = $1; ListAdd($1, MkTypeName(null, null)); }
 	;
 
 parameter_list:
 	  parameter_declaration                      { $$ = MkList(); ListAdd($$, $1); }
-	| parameter_list ',' parameter_declaration   { ListAdd($1, $3); }
+	| parameter_list ',' parameter_declaration   { $$ = $1; ListAdd($1, $3); }
 	;
 
 parameter_declaration:
 	  guess_declaration_specifiers declarator          { $$ = MkTypeName($1, $2); }
 	| guess_declaration_specifiers abstract_declarator { $$ = MkTypeName($1, $2); }
-	| guess_declaration_specifiers                     { $$ = MkTypeName($1, null); }
-   | real_guess_declaration_specifiers                     { $$ = MkTypeName($1, null); }
+   | real_guess_declaration_specifiers                { $$ = MkTypeName($1, null); }
 /*
    | CLASS                                            
       { $$ = MkTypeName(MkList(), null); $$.typedObject = true; }                        // Confusion with ellipsis? MkList()?
@@ -1581,7 +1263,7 @@ parameter_declaration:
 
 identifier_list:
 	  identifier                        { $$ = MkList(); ListAdd($$, MkTypeName(null, MkDeclaratorIdentifier($1))); }
-	| identifier_list ',' identifier    { ListAdd($1, MkTypeName(null, MkDeclaratorIdentifier($3))); }
+	| identifier_list ',' identifier    { $$ = $1; ListAdd($1, MkTypeName(null, MkDeclaratorIdentifier($3))); }
 	;
 
 type_name:
@@ -1642,7 +1324,7 @@ initializer_list:
 	  initializer
       { $$ = MkList(); ListAdd($$, $1); }
 	| initializer_list ',' initializer
-      { ListAdd($1, $3); }
+      { $$ = $1; ListAdd($1, $3); }
 	;
 
 statement:
@@ -1665,15 +1347,15 @@ labeled_statement:
 
 declaration_list:
 	  declaration                       { $$ = MkList(); ListAdd($$, $1); }
-	| declaration_list declaration      { ListAdd($1, $2); }
+	| declaration_list declaration      { $$ = $1; ListAdd($1, $2); }
 	;
 
 statement_list:
 	  statement                         { $$ = MkList(); ListAdd($$, $1); }
-	| statement_list statement          { ListAdd($1, $2); }
+	| statement_list statement          { $$ = $1; ListAdd($1, $2); }
 
    // declaration not allowed after statements
-   | statement_list declaration              { Statement stmt = MkBadDeclStmt($2); stmt.loc = @2; /*yyerror(); */ ListAdd($1, stmt); }
+   | statement_list declaration              { Statement stmt = MkBadDeclStmt($2); stmt.loc = @2; /*yyerror(); */ ListAdd($1, stmt); $$ = $1; }
 	;
 
 compound_inside:
@@ -1819,21 +1501,21 @@ data_member_initialization_list:
      data_member_initialization
       { $$ = MkList(); ListAdd($$, $1); }
    | data_member_initialization_list ',' data_member_initialization
-      { ((MemberInit)$1->last).loc.end = @3.start; ListAdd($1, $3); }
+      { ((MemberInit)$1->last).loc.end = @3.start; ListAdd($1, $3); $$ = $1; }
    ;
 
 data_member_initialization_list_coloned:
    data_member_initialization_list ';'
-      { if($1->last) ((MemberInit)$1->last).loc.end = @2.end; }
+      { if($1->last) ((MemberInit)$1->last).loc.end = @2.end; $$ = $1; }
    ;
 
 members_initialization_list_coloned:
      data_member_initialization_list_coloned                                        { MembersInit members = MkMembersInitList($1); $$ = MkList(); ListAdd($$, members); members.loc = @1; }
    | instance_class_function_definition                                             { $$ = MkList(); ListAdd($$, MkMembersInitMethod($1)); ((MembersInit)$$->last).loc = @1; }
-   | members_initialization_list_coloned  data_member_initialization_list_coloned   { MembersInit members = MkMembersInitList($2); ListAdd($$, members); members.loc = @2;  }
-   | members_initialization_list_coloned  instance_class_function_definition        { ListAdd($$, MkMembersInitMethod($2)); ((MembersInit)$$->last).loc = @2; }
+   | members_initialization_list_coloned  data_member_initialization_list_coloned   { MembersInit members = MkMembersInitList($2); ListAdd($$, members); members.loc = @2; $$ = $1;  }
+   | members_initialization_list_coloned  instance_class_function_definition        { ListAdd($$, MkMembersInitMethod($2)); ((MembersInit)$$->last).loc = @2;$$ = $1;  }
    | ';'                                                                            { MembersInit members = MkMembersInitList(MkList()); $$ = MkList(); ListAdd($$, members); members.loc = @1;  }
-   | members_initialization_list_coloned ';'                                        { MembersInit members = MkMembersInitList(MkList()); ListAdd($$, members); members.loc = @2;  }
+   | members_initialization_list_coloned ';'                                        { MembersInit members = MkMembersInitList(MkList()); ListAdd($$, members); members.loc = @2; $$ = $1; }
    ;
 
 members_initialization_list:

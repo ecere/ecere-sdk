@@ -144,6 +144,7 @@ int simpleID;
 struct __ecereNameSpace__ecere__sys__BinaryTree templateTypes;
 struct ClassDefinition * classDef;
 unsigned int templateTypesOnly;
+unsigned int hasNameSpace;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Instantiation;
@@ -1635,6 +1636,8 @@ extern struct Declarator * GetFuncDecl(struct Declarator * decl);
 
 extern void ProcessMethodType(struct __ecereNameSpace__ecere__com__Method * method);
 
+extern void FreeInitDeclarator(struct InitDeclarator * decl);
+
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(struct __ecereNameSpace__ecere__sys__OldList * this, void *  prevItem, void *  item);
@@ -1866,6 +1869,7 @@ if((*list).count)
 {
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList(), * declarators = (initDeclarators != (((void *)0))) ? initDeclarators : MkList();
 
+initDeclarators = (((void *)0));
 strcpy(structName, symbol->string);
 symbol->structName = __ecereNameSpace__ecere__sys__CopyString(structName);
 ListAdd(specs, MkStructOrUnion(3, MkIdentifier(structName), isUnion ? MkListOne(MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkStructOrUnion(4, (((void *)0)), list)), (((void *)0)), (((void *)0))))) : list));
@@ -2372,6 +2376,8 @@ if(method->symbol)
 }
 }
 }
+if(initDeclarators != (((void *)0)))
+FreeList(initDeclarators, FreeInitDeclarator);
 }
 
 extern struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
@@ -2414,8 +2420,14 @@ struct Symbol * symbol = FindClass(specifier->id->string);
 
 if(symbol)
 {
-ProcessClass((specifier->type == 4) ? 6 : 0, specifier->definitions, symbol, specifier->baseSpecs, specifier->list, &specifier->loc, ast, external->prev, declaration->declarators);
+struct __ecereNameSpace__ecere__sys__OldList * initDeclarators = (((void *)0));
+
+if(inCompiler)
+{
+initDeclarators = declaration->declarators;
 declaration->declarators = (((void *)0));
+}
+ProcessClass((specifier->type == 4) ? 6 : 0, specifier->definitions, symbol, specifier->baseSpecs, specifier->list, &specifier->loc, ast, external->prev, initDeclarators);
 }
 }
 }
