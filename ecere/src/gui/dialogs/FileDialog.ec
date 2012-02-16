@@ -1138,7 +1138,7 @@ private:
 
       GetNameFromListBox(false);
 
-      fileName.Activate();
+      fileName.MakeActive();
       return true;
    }
 
@@ -1234,7 +1234,7 @@ private:
             GetNamesFromRow(listBox.currentRow, &selectedFileName);
             result = SelectFile(selectedFileName, fromEditBox, control.id == DialogResult::ok);
             if(result && style == selectDir)
-               listBox.Activate();
+               listBox.MakeActive();
          }
          else
          {
@@ -1243,7 +1243,7 @@ private:
             strcpy(selectedFileName, fileName);
             result = SelectFile(selectedFileName, fromListBox, control.id == DialogResult::ok);
             if(result && style == selectDir)
-               this.fileName.Activate();
+               this.fileName.MakeActive();
          }
          delete selectedFileName;
          return result;

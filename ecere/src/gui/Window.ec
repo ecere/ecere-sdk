@@ -3583,9 +3583,15 @@ private:
                         parent.activeChild = this;
                         if(!style.nonClient /*&& style.isActiveClient*/)
                         {
-                           if(style.isActiveClient && !style.hidden)
-                              parent.activeClient = this;
-                           parent.UpdateActiveDocument(previous);
+                           if(!style.hidden)
+                           {
+                              if(style.isActiveClient)
+                                 parent.activeClient = this;
+                              // Moved UpdateActiveDocument inside hidden check
+                              // To prevent activating previous window while creating a new one
+                              // (It was messing up the privateModule in the CodeEditor)
+                              parent.UpdateActiveDocument(previous);
+                           }
                         }
                      }
                   }
