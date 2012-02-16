@@ -1604,6 +1604,11 @@ ClassDefinition MkClass(Symbol symbol, OldList baseSpecs, OldList definitions)
 {
    ClassDefinition classDef;
    SetupBaseSpecs(symbol, baseSpecs);
+   if(symbol.ctx)
+   {
+      FreeContext(symbol.ctx);
+      delete symbol.ctx;
+   }
    symbol.ctx = curContext;
    classDef = { symbol = symbol, _class = MkSpecifierName /*MkClassName*/(symbol.string), baseSpecs = baseSpecs, definitions = definitions, nameLoc = symbol.nameLoc };
    curContext.classDef = classDef;
