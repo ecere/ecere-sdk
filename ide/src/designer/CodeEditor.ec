@@ -2795,9 +2795,15 @@ class CodeEditor : Window
          }
       }
       if(!strcmp(extension, "ec") || !strcmp(extension, "eh"))
+      {
          SetDefaultDeclMode(privateAccess);
+         SetDeclMode(privateAccess);
+      }
       else
+      {
          SetDefaultDeclMode(defaultAccess);
+         SetDeclMode(defaultAccess);
+      }
 
       StripExtension(mainModuleName);
       module = ImportedModule { name = CopyString(mainModuleName), type = moduleDefinition };

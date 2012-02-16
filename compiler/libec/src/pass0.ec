@@ -748,6 +748,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
       {
          // We need a struct
          OldList * specs = MkList(), * declarators = (initDeclarators != null) ? initDeclarators : MkList();
+         initDeclarators = null;
 
          /*
          structName[0] = 0;
@@ -764,7 +765,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          // TOFIX : Fix this...
          symbol.structExternal = external;
 
-         external.declaration = MkDeclaration(specs, declarators /*initDeclarators*/);
+         external.declaration = MkDeclaration(specs, declarators);
          after = external;
       
          symbol.declaredStruct = true;
@@ -1476,6 +1477,9 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          }
       }
    }
+
+   if(initDeclarators != null)
+      FreeList(initDeclarators, FreeInitDeclarator);
 }
 
 public void PreProcessClassDefinitions()
@@ -1514,8 +1518,17 @@ public void PreProcessClassDefinitions()
                         Symbol symbol = FindClass(specifier.id.string);
                         if(symbol)
                         {
-                           ProcessClass((specifier.type == unionSpecifier) ? unionClass : normalClass, specifier.definitions, symbol, specifier.baseSpecs, specifier.list, specifier.loc, ast, external.prev, declaration.declarators);
-                           declaration.declarators = null;
+                           OldList * initDeclarators = null;
+                           if(inCompiler)
+                           {
+                              // Give the declarators away to ProcessClass
+                              // It will include the declarators in the class if appropriate, otherwise free them
+                              initDeclarators = declaration.declarators;
+                              declaration.declarators = null;
+                           }
+                           ProcessClass((specifier.type == unionSpecifier) ? unionClass : normalClass, specifier.definitions,
+                              symbol, specifier.baseSpecs, specifier.list, specifier.loc, ast, external.prev,
+                              initDeclarators);
                         }
                      }
                   }
