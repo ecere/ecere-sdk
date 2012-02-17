@@ -381,6 +381,7 @@ class Debugger
 
    OldList stackFrames;
 
+   CompilerConfig currentCompiler;
    ProjectConfig prjConfig;
 
    CodeEditor codeEditor;
@@ -415,7 +416,7 @@ class Debugger
          {
             case restart:
                breakType = none;
-               Restart();
+               Restart(currentCompiler, prjConfig);
                break;
             case stop:
                breakType = none;
@@ -598,6 +599,7 @@ class Debugger
       bpRunToCursor = null;
       bpHit = null;
 
+      delete currentCompiler;
       prjConfig = null;
       codeEditor = null;
 
@@ -665,7 +667,7 @@ class Debugger
       }
    }
 
-   void Restart()
+   void Restart(CompilerConfig compiler, ProjectConfig config)
    {
       switch(state)
       {
@@ -680,7 +682,7 @@ class Debugger
             GdbAbortExec();
          case none:
          case terminated:
-            if(!GdbInit())
+            if(!GdbInit(compiler, config))
                break;
          case loaded:
             GdbExecRun();
@@ -854,14 +856,14 @@ class Debugger
       ide.Update(null);
    }
       
-   void Start()
+   void Start(CompilerConfig compiler, ProjectConfig config)
    {
       ide.outputView.debugBox.Clear();
       switch(state)
       {
          case none:
          case terminated:
-            if(!GdbInit())
+            if(!GdbInit(compiler, config))
                break;
          case loaded:
             GdbExecRun();
@@ -869,13 +871,13 @@ class Debugger
       }
    }
 
-   void StepInto()
+   void StepInto(CompilerConfig compiler, ProjectConfig config)
    {
       switch(state)
       {
          case none:
          case terminated:
-            if(!GdbInit()) 
+            if(!GdbInit(compiler, config)) 
                break;
          case loaded:
             ide.outputView.ShowClearSelectTab(debug);
@@ -889,13 +891,13 @@ class Debugger
       }
    }
 
-   void StepOver(bool ignoreBkpts)
+   void StepOver(CompilerConfig compiler, ProjectConfig config, bool ignoreBkpts)
    {
       switch(state)
       {
          case none:
          case terminated:
-            if(!GdbInit()) 
+            if(!GdbInit(compiler, config)) 
                break;
          case loaded:
             ide.outputView.ShowClearSelectTab(debug);
@@ -924,7 +926,7 @@ class Debugger
       }
    }
 
-   void RunToCursor(char * absoluteFilePath, int lineNumber, bool ignoreBkpts)
+   void RunToCursor(CompilerConfig compiler, ProjectConfig config, char * absoluteFilePath, int lineNumber, bool ignoreBkpts)
    {
       char relativeFilePath[MAX_LOCATION];
       DebuggerState oldState = state;
@@ -935,7 +937,7 @@ class Debugger
       {
          case none:
          case terminated:
-            Start();
+            Start(compiler, config);
          case stopped:
          case loaded:
             if(symbols)
@@ -1482,7 +1484,7 @@ class Debugger
       {
          //if(!breakpointsInserted)
          {
-            DirExpression objDir = ide.project.objDir;
+            DirExpression objDir = ide.project.GetObjDir(currentCompiler, prjConfig);
             for(bp : sysBPs)
             {
                if(!bp.inserted)
@@ -1803,17 +1805,23 @@ class Debugger
       return true;
    }
 
-   bool GdbInit()
+   bool GdbInit(CompilerConfig compiler, ProjectConfig config)
    {
       bool result = true;
       char oldDirectory[MAX_LOCATION];
       char tempPath[MAX_LOCATION];
       char command[MAX_LOCATION];
       Project project = ide.project;
-      DirExpression targetDirExp = project.targetDir;
+      DirExpression targetDirExp = project.GetTargetDir(compiler, config);
       PathBackup pathBackup { };
 
-      prjConfig = project.config;
+      if(currentCompiler != compiler)
+      {
+         delete currentCompiler;
+         currentCompiler = compiler;
+         incref currentCompiler;
+      }
+      prjConfig = config;
 
       ChangeState(loaded);
       sentKill = false;
@@ -1837,7 +1845,7 @@ class Debugger
       PathCatSlash(tempPath, targetDirExp.dir);
       delete targetDir;
       targetDir = CopyString(tempPath);
-      project.CatTargetFileName(tempPath);
+      project.CatTargetFileName(tempPath, compiler, config);
       delete targetFile;
       targetFile = CopyString(tempPath);
 
@@ -1852,7 +1860,7 @@ class Debugger
       else
          ChangeWorkingDir(ide.workspace.projectDir);
       
-      ide.SetPath(true);
+      ide.SetPath(true, compiler, config);
 
       // TODO: This pollutes the environment, but at least it works
       // It shouldn't really affect the IDE as the PATH gets restored and other variables set for testing will unlikely cause problems

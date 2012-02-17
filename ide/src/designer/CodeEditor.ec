@@ -1896,7 +1896,12 @@ class CodeEditor : Window
          {
             int line = editBox.lineNumber + 1;
             if(projectView)
-               ide.debugger.RunToCursor(fileName, line, false);
+            {
+               CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+               ProjectConfig config = projectView.project.config;
+               ide.debugger.RunToCursor(compiler, config, fileName, line, false);
+               delete compiler;
+            }
          }
          return true;
       }
@@ -1909,7 +1914,12 @@ class CodeEditor : Window
          ProjectView projectView = ide.projectView;
          int line = editBox.lineNumber + 1;
          if(projectView)
-            ide.debugger.RunToCursor(fileName, line, true);
+         {
+            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+            ProjectConfig config = projectView.project.config;
+            ide.debugger.RunToCursor(compiler, config, fileName, line, true);
+            delete compiler;
+         }
          return true;
       }
    };
@@ -2703,9 +2713,12 @@ class CodeEditor : Window
       // TODO: Get symbolsDir from project settings instead...
       if(ide.projectView)
       {
-         DirExpression objDir = project.objDir;
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         ProjectConfig config = project.config;
+         DirExpression objDir = project.GetObjDir(compiler, config);
          SetSymbolsDir(objDir.dir);
          delete objDir;
+         delete compiler;
          // SetIncludeDirs(ide.projectView.project.config.includeDirs);
          // SetSysIncludeDirs(ide.ideSettings.systemDirs[includes]);
       }

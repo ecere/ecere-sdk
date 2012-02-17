@@ -147,7 +147,7 @@ class NewProjectDialog : Window
             targetType = ((TargetTypes)targetType.GetTag());
             targetFileName = /*CopyString(*/name/*)*/;
          };
-         if(project.targetType != staticLibrary)
+         if(project.options.targetType != staticLibrary)
          {
             project.options.libraries = { [ CopyString("ecere") ] };
          }
@@ -217,7 +217,12 @@ class NewProjectDialog : Window
          }
 
          if(project && projectWindow)
-            projectWindow.ProjectPrepareMakefile(project, force, true, true);
+         {
+            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+            ProjectConfig config = project.config;
+            projectWindow.ProjectPrepareMakefile(project, force, true, true, compiler, config);
+            delete compiler;
+         }
 
          Destroy(0);
          return true;
@@ -416,7 +421,7 @@ class QuickProjectDialog : Window
             targetFileName = /*CopyString(*/prjName/*)*/;
          };
 
-         if(project.targetType != staticLibrary)
+         if(project.options.targetType != staticLibrary)
          {
             project.options.libraries = { [ CopyString("ecere") ] };
          }
@@ -495,7 +500,12 @@ class QuickProjectDialog : Window
          visible = false;
 
          if(project && projectWindow)
-            projectWindow.ProjectPrepareMakefile(project, force, true, true);
+         {
+            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+            ProjectConfig config = project.config;
+            projectWindow.ProjectPrepareMakefile(project, force, true, true, compiler, config);
+            delete compiler;
+         }
 
          ide.projectView.ProjectBuild(null, Modifiers { });
 

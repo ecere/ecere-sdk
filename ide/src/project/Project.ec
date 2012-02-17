@@ -6,6 +6,8 @@ public import "ecere"
 
 #ifndef MAKEFILE_GENERATOR
 import "ide"
+// We should have the .sln/.vcproj generation even on other platforms
+// e.g. detect from an environment variable pointing to a Windows drive
 #ifdef __WIN32__
 import "vsSupport"
 #endif
@@ -760,175 +762,134 @@ private:
       }
    }
 
-   property TargetTypes targetType
+   TargetTypes GetTargetType(ProjectConfig config)
    {
-      get
-      {
-         // TODO: Implement platform specific options?
-         TargetTypes targetType = localTargetType;
-         return targetType;
-      }
+      // TODO: Implement platform specific options?
+      TargetTypes targetType = localTargetType;
+      return targetType;
    }
 
-   property char * objDirExpression
+   char * GetObjDirExpression(CompilerConfig compiler, ProjectConfig config)
    {
-      get
-      {
-         // TODO: Support platform options
-         char * expression = localObjectsDirectory;
-         if(!expression)
-            expression = settingsObjectsDirectory;
-         return expression;
-      }
-   }
-   property DirExpression objDir
-   {
-      get
-      {
-         char * expression = objDirExpression;
-         DirExpression objDir { type = intermediateObjectsDir };
-         objDir.Evaluate(expression, this);
-         return objDir;
-      }
-   }
-   property char * targetDirExpression
-   {
-      get
-      {
-         // TODO: Support platform options
-         char * expression = localTargetDirectory;
-         if(!expression)
-            expression = settingsTargetDirectory;
-         return expression;
-      }
-   }
-   property DirExpression targetDir
-   {
-      get
-      {
-         char * expression = targetDirExpression;
-         DirExpression targetDir { type = DirExpressionType::targetDir /*intermediateObjectsDir*/};
-         targetDir.Evaluate(expression, this);
-         return targetDir;
-      }
+      // TODO: Support platform options
+      char * expression = localObjectsDirectory;
+      if(!expression)
+         expression = settingsObjectsDirectory;
+      return expression;
    }
 
-   property WarningsOption warnings
+   DirExpression GetObjDir(CompilerConfig compiler, ProjectConfig config)
    {
-      get
-      {
-         WarningsOption warnings = localWarnings;
-         return warnings;
-      }
+      char * expression = GetObjDirExpression(compiler, config);
+      DirExpression objDir { type = intermediateObjectsDir };
+      objDir.Evaluate(expression, this, compiler, config);
+      return objDir;
    }
-   property bool debug
+
+   char * GetTargetDirExpression(CompilerConfig compiler, ProjectConfig config)
    {
-      get
-      {
-         SetBool debug = localDebug;
-         return debug == true;
-      }
+      // TODO: Support platform options
+      char * expression = localTargetDirectory;
+      if(!expression)
+         expression = settingsTargetDirectory;
+      return expression;
    }
-   property bool memoryGuard
+
+   DirExpression GetTargetDir(CompilerConfig compiler, ProjectConfig config)
    {
-      get
-      {
-         SetBool memoryGuard = localMemoryGuard;
-         return memoryGuard == true;
-      }
+      char * expression = GetTargetDirExpression(compiler, config);
+      DirExpression targetDir { type = DirExpressionType::targetDir /*intermediateObjectsDir*/};
+      targetDir.Evaluate(expression, this, compiler, config);
+      return targetDir;
    }
-   property bool noLineNumbers
+
+   WarningsOption GetWarnings(ProjectConfig config)
    {
-      get
-      {
-         SetBool noLineNumbers = localNoLineNumbers;
-         return noLineNumbers == true;
-      }
+      WarningsOption warnings = localWarnings;
+      return warnings;
    }
-   property bool profile
+
+   bool GetDebug(ProjectConfig config)
    {
-      get
-      {
-         SetBool profile = localProfile;
-         return profile == true;
-      }
+      SetBool debug = localDebug;
+      return debug == true;
    }
-   property OptimizationStrategy optimization
+
+   bool GetMemoryGuard(ProjectConfig config)
    {
-      get
-      {
-         OptimizationStrategy optimization = localOptimization;
-         return optimization;
-      }
+      SetBool memoryGuard = localMemoryGuard;
+      return memoryGuard == true;
    }
-   property String defaultNameSpace
+
+   bool GetNoLineNumbers(ProjectConfig config)
    {
-      get
-      {
-         String defaultNameSpace = localDefaultNameSpace;
-         return defaultNameSpace;
-      }
+      SetBool noLineNumbers = localNoLineNumbers;
+      return noLineNumbers == true;
    }
-   property bool strictNameSpaces
+
+   bool GetProfile(ProjectConfig config)
    {
-      get
-      {
-         SetBool strictNameSpaces = localStrictNameSpaces;
-         return strictNameSpaces == true;
-      }
+      SetBool profile = localProfile;
+      return profile == true;
    }
-   property String targetFileName
+
+   OptimizationStrategy GetOptimization(ProjectConfig config)
    {
-      get
-      {
-         String targetFileName = localTargetFileName;
-         return targetFileName;
-      }
+      OptimizationStrategy optimization = localOptimization;
+      return optimization;
    }
+
+   String GetDefaultNameSpace(ProjectConfig config)
+   {
+      String defaultNameSpace = localDefaultNameSpace;
+      return defaultNameSpace;
+   }
+
+   bool GetStrictNameSpaces(ProjectConfig config)
+   {
+      SetBool strictNameSpaces = localStrictNameSpaces;
+      return strictNameSpaces == true;
+   }
+
+   String GetTargetFileName(ProjectConfig config)
+   {
+      String targetFileName = localTargetFileName;
+      return targetFileName;
+   }
+
    //String targetDirectory;
    //String objectsDirectory;
-   property bool console
+   bool GetConsole(ProjectConfig config)
    {
-      get
-      {
-         SetBool console = localConsole;
-         return console == true;
-      }
+      SetBool console = localConsole;
+      return console == true;
    }
-   property bool compress
+
+   bool GetCompress(ProjectConfig config)
    {
-      get
-      {
-         SetBool compress = localCompress;
-         return compress == true;
-      }
+      SetBool compress = localCompress;
+      return compress == true;
    }
    //SetBool excludeFromBuild;
 
-   property bool configIsInActiveDebugSession
+   bool GetConfigIsInActiveDebugSession(ProjectConfig config)
    {
-      get
-      {
 #ifndef MAKEFILE_GENERATOR
-         return ide.project == this  && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isActive;
+      return ide.project == this && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isActive;
 #endif
-      }
    }
 
-   property bool configIsInDebugSession
+   bool GetConfigIsInDebugSession(ProjectConfig config)
    {
-      get
-      {
 #ifndef MAKEFILE_GENERATOR
-         return ide.project == this  && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isPrepared;
+      return ide.project == this  && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isPrepared;
 #endif
-      }
    }
 
-   void SetPath(bool projectsDirs)
+   void SetPath(bool projectsDirs, CompilerConfig compiler, ProjectConfig config)
    {
 #ifndef MAKEFILE_GENERATOR
-      ide.SetPath(projectsDirs);
+      ide.SetPath(projectsDirs, compiler, config);
 #endif
    }
 
@@ -980,10 +941,10 @@ private:
    }
 #endif
 
-   void CatTargetFileName(char * string)
+   void CatTargetFileName(char * string, CompilerConfig compiler, ProjectConfig config)
    {
-      CompilerConfig compiler = GetCompilerConfig();
-
+      TargetTypes targetType = GetTargetType(config);
+      String targetFileName = GetTargetFileName(config);
       if(targetType == staticLibrary)
       {
          PathCatSlash(string, "lib");
@@ -1015,19 +976,16 @@ private:
             strcat(string, ".a");
             break;
       }
-      delete compiler;
    }
 
-   void CatMakeFileName(char * string)
+   void CatMakeFileName(char * string, CompilerConfig compiler, ProjectConfig config)
    {
       char projectName[MAX_LOCATION];
-      CompilerConfig compiler = GetCompilerConfig();
       strcpy(projectName, name);
       if(strcmpi(compiler.name, defaultCompilerName))
          sprintf(string, "%s-%s-%s.Makefile", projectName, compiler.name, config.name);
       else
          sprintf(string, "%s%s%s.Makefile", projectName, config ? "-" : "", config ? config.name : "");
-      delete compiler;
    }
 
 #ifndef MAKEFILE_GENERATOR
@@ -1126,15 +1084,15 @@ private:
       }
    }
 
-   bool ProcessBuildPipeOutput(DualPipe f, DirExpression objDirExp, bool isARun, ProjectNode onlyNode)
+   bool ProcessBuildPipeOutput(DualPipe f, DirExpression objDirExp, bool isARun, ProjectNode onlyNode,
+      CompilerConfig compiler, ProjectConfig config)
    {
       char line[65536];
       bool compiling = false, linking = false, precompiling = false;
       int compilingEC = 0;
       int numErrors = 0, numWarnings = 0;
       bool loggedALine = false;
-      CompilerConfig compiler = GetCompilerConfig();
-      char * configName = this.configName;
+      char * configName = config.name;
       int lenMakeCommand = strlen(compiler.makeCommand);
       
       char cppCommand[MAX_LOCATION];
@@ -1385,7 +1343,7 @@ private:
          else
          {
             if(!onlyNode)
-               ide.outputView.buildBox.Logf("\n%s (%s) - ", targetFileName, configName);
+               ide.outputView.buildBox.Logf("\n%s (%s) - ", GetTargetFileName(config), configName);
             if(numErrors)
                ide.outputView.buildBox.Logf("%d %s, ", numErrors, (numErrors > 1) ? "errors" : "error");
             else
@@ -1397,15 +1355,12 @@ private:
                ide.outputView.buildBox.Logf("no warning\n");
          }
       }
-      
-      delete compiler;
       return numErrors == 0;
    }
 
-   void ProcessCleanPipeOutput(DualPipe f)
+   void ProcessCleanPipeOutput(DualPipe f, CompilerConfig compiler, ProjectConfig config)
    {
       char line[65536];
-      CompilerConfig compiler = GetCompilerConfig();
       int lenMakeCommand = strlen(compiler.makeCommand);
       while(!f.Eof())
       {
@@ -1436,10 +1391,9 @@ private:
             app.Wait();
          //Sleep(1.0 / PEEK_RESOLUTION);
       }
-      delete compiler;
    }
 
-   bool Build(bool isARun, ProjectNode onlyNode)
+   bool Build(bool isARun, ProjectNode onlyNode, CompilerConfig compiler, ProjectConfig config)
    {
       bool result = false;
       DualPipe f;
@@ -1448,20 +1402,19 @@ private:
       char makeFile[MAX_LOCATION];
       char makeFilePath[MAX_LOCATION];
       char configName[MAX_LOCATION];
-      CompilerConfig compiler = GetCompilerConfig();
-      DirExpression objDirExp = objDir;
+      DirExpression objDirExp = GetObjDir(compiler, config);
       PathBackup pathBackup { };
 
       int numJobs = compiler.numJobs;
       char command[MAX_LOCATION];
 
-      strcpy(configName, this.configName);
+      strcpy(configName, config ? config.name : "Common");
       
-      SetPath(false); //true
-      CatTargetFileName(targetFileName);
+      SetPath(false, compiler, config); //true
+      CatTargetFileName(targetFileName, compiler, config);
 
       strcpy(makeFilePath, topNode.path);
-      CatMakeFileName(makeFile);
+      CatMakeFileName(makeFile, compiler, config);
       PathCatSlash(makeFilePath, makeFile);
       
       // TODO: TEST ON UNIX IF \" around makeTarget is ok
@@ -1518,7 +1471,7 @@ private:
                makeTarget, topNode.path, makeFilePath);
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
-            result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNode);
+            result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNode, compiler, config);
             delete f;
          }
          else
@@ -1528,23 +1481,21 @@ private:
       delete pathBackup;
 
       delete objDirExp;
-      delete compiler;
       return result;
    }
 
-   void Clean()
+   void Clean(CompilerConfig compiler, ProjectConfig config)
    {
       char makeFile[MAX_LOCATION];
       char makeFilePath[MAX_LOCATION];
       char command[MAX_LOCATION];
       DualPipe f;
-      CompilerConfig compiler = GetCompilerConfig();
       PathBackup pathBackup { };
 
-      SetPath(false);
+      SetPath(false, compiler, config);
 
       strcpy(makeFilePath, topNode.path);
-      CatMakeFileName(makeFile);
+      CatMakeFileName(makeFile, compiler, config);
       PathCatSlash(makeFilePath, makeFile);
       
       if(compiler.type.isVC)
@@ -1571,7 +1522,7 @@ private:
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
          {
             ide.outputView.buildBox.Tell("Deleting target and object files...");
-            ProcessCleanPipeOutput(f);
+            ProcessCleanPipeOutput(f, compiler, config);
             delete f;
 
             ide.outputView.buildBox.Logf("Target and object files deleted\n");
@@ -1579,15 +1530,13 @@ private:
       }
 
       delete pathBackup;
-      delete compiler;
    }
 
-   void Run(char * args)
+   void Run(char * args, CompilerConfig compiler, ProjectConfig config)
    {   
       String target = new char[maxPathLen];
       char oldDirectory[MAX_LOCATION];
-      DirExpression targetDirExp = targetDir;
-      CompilerConfig compiler = GetCompilerConfig();
+      DirExpression targetDirExp = GetTargetDir(compiler, config);
       PathBackup pathBackup { };
 
       // Build(project, ideMain, true, null);
@@ -1598,7 +1547,7 @@ private:
       strcpy(target, "");
    #endif
       PathCatSlash(target, targetDirExp.dir);
-      CatTargetFileName(target);
+      CatTargetFileName(target, compiler, config);
       sprintf(target, "%s %s", target, args);
       GetWorkingDir(oldDirectory, MAX_LOCATION);
 
@@ -1612,7 +1561,7 @@ private:
       else
          ChangeWorkingDir(topNode.path);
       // ChangeWorkingDir(topNode.path);
-      SetPath(true);
+      SetPath(true, compiler, config);
       if(compiler.execPrefixCommand)
       {
          char * prefixedTarget = new char[strlen(compiler.execPrefixCommand) + strlen(target) + 2];
@@ -1630,23 +1579,22 @@ private:
       delete pathBackup;
 
       delete targetDirExp;
-      delete compiler;
       delete target;
    }
 
-   void Compile(ProjectNode node)
+   void Compile(ProjectNode node, CompilerConfig compiler, ProjectConfig config)
    {
-      Build(false, node);
+      Build(false, node, compiler, config);
    }
 #endif
 
-   void GetMakefileTargetFileName(TargetTypes targetType, char * fileName)
+   void GetMakefileTargetFileName(TargetTypes targetType, char * fileName, ProjectConfig config)
    {
       char s[MAX_LOCATION];
       fileName[0] = '\0';
       if(targetType == staticLibrary || targetType == sharedLibrary)
          strcat(fileName, "$(LP)");
-      ReplaceSpaces(s, targetFileName);
+      ReplaceSpaces(s, GetTargetFileName(config));
       strcat(fileName, s);
       switch(targetType)
       {
@@ -1662,12 +1610,12 @@ private:
       }
    }
 
-   bool GenerateMakefile(char * altMakefilePath, bool noResources, char * includemkPath)
+   bool GenerateMakefile(char * altMakefilePath, bool noResources, char * includemkPath,
+      CompilerConfig compiler, ProjectConfig config)
    {
       bool result = false;
       char filePath[MAX_LOCATION];
       char makeFile[MAX_LOCATION];
-      CompilerConfig compiler = GetCompilerConfig();
       // PathBackup pathBackup { };
       // char oldDirectory[MAX_LOCATION];
       File f = null;
@@ -1675,21 +1623,21 @@ private:
       if(!altMakefilePath)
       {
          strcpy(filePath, topNode.path);
-         CatMakeFileName(makeFile);
+         CatMakeFileName(makeFile, compiler, config);
          PathCatSlash(filePath, makeFile);
       }
 
 #if defined(__WIN32__) && !defined(MAKEFILE_GENERATOR)
       if(compiler.type.isVC)
       {
-         GenerateVSSolutionFile(this);
-         GenerateVCProjectFile(this);
+         GenerateVSSolutionFile(this, compiler);
+         GenerateVCProjectFile(this, compiler);
       }
       else
 #endif
       f = FileOpen(altMakefilePath ? altMakefilePath : filePath, write);
 
-      /*SetPath(false);
+      /*SetPath(false, compiler, config);
       GetWorkingDir(oldDirectory, MAX_LOCATION);
       ChangeWorkingDir(topNode.path);*/
 
@@ -1708,7 +1656,8 @@ private:
          int c, len;
          int numCObjects = 0;
          bool sameObjTargetDirs;
-         DirExpression objDirExp = objDir;
+         DirExpression objDirExp = GetObjDir(compiler, config);
+         TargetTypes targetType = GetTargetType(config);
 
          bool crossCompiling = compiler.targetPlatform != GetRuntimePlatform();
          bool gccCompiler = compiler.ccCommand && strstr(compiler.ccCommand, "gcc") != null;
@@ -1721,13 +1670,13 @@ private:
          Map<String, NameCollisionInfo> namesInfo { };
 
          ReplaceSpaces(objDirNoSpaces, objDirExp.dir);
-         strcpy(temp, targetDirExpression);
+         strcpy(temp, GetTargetDirExpression(compiler, config));
          ReplaceSpaces(targetDirExpNoSpaces, temp);
-         GetMakefileTargetFileName(targetType, target);
+         GetMakefileTargetFileName(targetType, target, config);
          PathCatSlash(temp, target);
          ReplaceSpaces(targetNoSpaces, temp);
 
-         strcpy(objDirExpNoSpaces, objDirExpression);
+         strcpy(objDirExpNoSpaces, GetObjDirExpression(compiler, config));
          ChangeCh(objDirExpNoSpaces, '\\', '/'); // TODO: this is a hack, paths should never include win32 path seperators - fix this in ProjectSettings and ProjectLoad instead
          ReplaceSpaces(objDirExpNoSpaces, objDirExpNoSpaces);
          ReplaceSpaces(resDirNoSpaces, resNode.path ? resNode.path : "");
@@ -1760,33 +1709,33 @@ private:
          f.Printf("RES = %s%s\n\n", resDirNoSpaces, resDirNoSpaces[0] ? "/" : "");
 
          if(targetType == executable)
-            f.Printf("CONSOLE = %s\n\n", console ? "-mconsole" : "-mwindows");
+            f.Printf("CONSOLE = %s\n\n", GetConsole(config) ? "-mconsole" : "-mwindows");
 
          f.Printf("TARGET = %s\n\n", targetNoSpaces);
 
          varStringLenDiffs["$(OBJ)"] = strlen(objDirNoSpaces) - 6;
 
-         topNode.GenMakefileGetNameCollisionInfo(namesInfo);
+         topNode.GenMakefileGetNameCollisionInfo(namesInfo, config);
 
-         numCObjects = topNode.GenMakefilePrintNode(f, this, objects, namesInfo, listItems);
+         numCObjects = topNode.GenMakefilePrintNode(f, this, objects, namesInfo, listItems, config);
          if(numCObjects)
             listItems.Add(CopyString("$(OBJ)$(MODULE).main$(O)"));
          objectsParts = OutputFileList(f, "OBJECTS", listItems, varStringLenDiffs);
 
-         topNode.GenMakefilePrintNode(f, this, cObjects, namesInfo, listItems);
+         topNode.GenMakefilePrintNode(f, this, cObjects, namesInfo, listItems, config);
          cobjectsParts = OutputFileList(f, "COBJECTS", listItems, varStringLenDiffs);
 
-         topNode.GenMakefilePrintNode(f, this, symbols, null, listItems);
+         topNode.GenMakefilePrintNode(f, this, symbols, null, listItems, config);
          symbolsParts = OutputFileList(f, "SYMBOLS", listItems, varStringLenDiffs);
 
-         topNode.GenMakefilePrintNode(f, this, imports, null, listItems);
+         topNode.GenMakefilePrintNode(f, this, imports, null, listItems, config);
          importsParts = OutputFileList(f, "IMPORTS", listItems, varStringLenDiffs);
 
-         topNode.GenMakefilePrintNode(f, this, sources, null, listItems);
+         topNode.GenMakefilePrintNode(f, this, sources, null, listItems, config);
          OutputFileList(f, "SOURCES", listItems, varStringLenDiffs);
 
          if(!noResources)
-            resNode.GenMakefilePrintNode(f, this, resources, null, listItems);
+            resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config);
          OutputFileList(f, "RESOURCES", listItems, varStringLenDiffs);
 
          if(includemkPath)
@@ -1846,7 +1795,7 @@ private:
          if(gccCompiler)
          {
             f.Printf(" -fmessage-length=0");
-            switch(optimization)
+            switch(GetOptimization(config))
             {
                case speed:
                   f.Printf(" -O2");
@@ -1863,16 +1812,14 @@ private:
             f.Printf(" $(FPIC)");
             //f.Printf(" -fpack-struct");
          }
-         if(warnings)
+         switch(GetWarnings(config))
          {
-            if(warnings == all)
-               f.Printf(" -Wall");
-            if(warnings == none)
-               f.Printf(" -w");
+            case all: f.Printf(" -Wall"); break;
+            case none: f.Printf(" -w"); break;
          }
-         if(debug)
+         if(GetDebug(config))
             f.Printf(" -g");
-         if(profile)
+         if(GetProfile(config))
             f.Printf(" -pg");
          if(options && options.linkerOptions && options.linkerOptions.count)
          {
@@ -1898,15 +1845,15 @@ private:
          f.Printf("\n\n");
 
          f.Printf("ECFLAGS =");
-         if(memoryGuard)
+         if(GetMemoryGuard(config))
             f.Printf(" -memguard");
-         if(strictNameSpaces)
+         if(GetStrictNameSpaces(config))
             f.Printf(" -strictns");
-         if(noLineNumbers)
+         if(GetNoLineNumbers(config))
             f.Printf(" -nolinenumbers");
          {
             char * s;
-            if((s = defaultNameSpace) && s[0])
+            if((s = GetDefaultNameSpace(config)) && s[0])
                f.Printf(" -defaultns %s", s);
          }
          f.Printf("\n\n");
@@ -1914,7 +1861,7 @@ private:
          if(targetType != staticLibrary)
          {
             f.Printf("OFLAGS = -m32"); // TARGET_TYPE is fixed in a Makefile, we don't want this. $(if TARGET_TYPE_STATIC_LIBRARY,,-m32)");
-            if(profile)
+            if(GetProfile(config))
                f.Printf(" -pg");
             // no if? 
             OutputListOption(f, "L", compiler.libraryDirs, lineEach, true);
@@ -2153,7 +2100,7 @@ private:
             f.Printf("$(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)\n");
             // use of objDirExpNoSpaces used instead of $(OBJ) to prevent problematic joining of arguments in ecs
             f.Printf("\t$(ECS)%s $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols %s -o $(OBJ)$(MODULE).main.ec\n\n", 
-               console ? " -console" : "", objDirExpNoSpaces);
+               GetConsole(config) ? " -console" : "", objDirExpNoSpaces);
             // Main Module (Linking) for ECERE C modules
             f.Printf("$(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec\n");
             f.Printf("\t$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS)"
@@ -2186,11 +2133,11 @@ private:
             //f.Printf("endif\n");
             f.Printf("\t$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)\n");
 
-            if(!debug)
+            if(!GetDebug(config))
             {
                f.Printf("\t$(STRIP) $(STRIPOPT) $(TARGET)\n");
 
-               if(compress)
+               if(GetCompress(config))
                {
                   f.Printf("ifndef WINDOWS\n");
                   f.Printf("ifeq \"$(TARGET_TYPE)\" \"executable\"\n");
@@ -2202,7 +2149,7 @@ private:
                }
             }
             if(resNode.files && resNode.files.count && !noResources)
-               resNode.GenMakefileAddResources(f, resNode.path);
+               resNode.GenMakefileAddResources(f, resNode.path, config);
          }
          else
             f.Printf("\t$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)\n");
@@ -2284,10 +2231,10 @@ private:
          f.Printf("\n");
 
          f.Printf("# SYMBOL RULES\n\n");
-         topNode.GenMakefilePrintSymbolRules(f, this);
+         topNode.GenMakefilePrintSymbolRules(f, this, compiler, config);
 
          f.Printf("# C OBJECT RULES\n\n");
-         topNode.GenMakefilePrintCObjectRules(f, this);
+         topNode.GenMakefilePrintCObjectRules(f, this, compiler, config);
 
          /*if(numCObjects)
          {
@@ -2300,10 +2247,10 @@ private:
          f.Printf("# OBJECT RULES\n\n");
          // todo call this still but only generate rules whith specific options
          // see we-have-file-specific-options in ProjectNode.ec
-         topNode.GenMakefilePrintObjectRules(f, this, namesInfo);
+         topNode.GenMakefilePrintObjectRules(f, this, namesInfo, compiler, config);
 
          if(numCObjects)
-            GenMakefilePrintMainObjectRule(f);
+            GenMakefilePrintMainObjectRule(f, compiler, config);
 
          f.Printf("clean: objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
          f.Printf("\t$(call rmq,%s$(TARGET))\n", numCObjects ? "$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) " : "");
@@ -2338,13 +2285,10 @@ private:
 
       if(config)
          config.makingModified = false;
-
-      delete compiler;
-
       return result;
    }
 
-   void GenMakefilePrintMainObjectRule(File f)
+   void GenMakefilePrintMainObjectRule(File f, CompilerConfig compiler, ProjectConfig config)
    {
       char extension[MAX_EXTENSION] = "c";
       char modulePath[MAX_LOCATION];
@@ -2352,7 +2296,7 @@ private:
       DualPipe dep;
       char command[2048];
       char objDirNoSpaces[MAX_LOCATION];
-      DirExpression objDirExp = objDir;
+      DirExpression objDirExp = GetObjDir(compiler, config);
 
       ReplaceSpaces(objDirNoSpaces, objDirExp.dir);
       ReplaceSpaces(fixedModuleName, moduleName);

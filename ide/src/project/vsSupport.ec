@@ -55,7 +55,7 @@ static void IndentPop()
 #endif
 }
 
-void GenerateVSSolutionFile(Project project)
+void GenerateVSSolutionFile(Project project, CompilerConfig compiler)
 {
    char filePath[MAX_LOCATION];
    char slnFileName[MAX_LOCATION];
@@ -75,7 +75,6 @@ void GenerateVSSolutionFile(Project project)
       char * slnGUID = "8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942";
       char * prjGUID = "3A1E5467-4EE2-4299-8F0C-7D26CC8C24BA";
       //char * relPathToVCProjFile = "win32ProjectConsoleApp\\win32ProjectConsoleApp";
-      CompilerConfig compiler = GetCompilerConfig();
 
       f.Print(""); f.Printf("\r\n");
       f.Print("Microsoft Visual Studio Solution File, Format Version ", compiler.type.solutionFileVersionString); f.Printf("\r\n");
@@ -102,19 +101,17 @@ void GenerateVSSolutionFile(Project project)
       f.Print("\tEndGlobalSection"); f.Printf("\r\n");
       f.Print("EndGlobal"); f.Printf("\r\n");
    
-      delete compiler;
       delete f;
    }
 }
 
-void GenerateVCProjectFile(Project project)
+void GenerateVCProjectFile(Project project, CompilerConfig compiler)
 {
    char filePath[MAX_LOCATION];
    char slnFileName[MAX_LOCATION];
    char * projectName = project.name;
    bool usePrecompiledHeaders = false;
    File f;
-   CompilerConfig compiler = GetCompilerConfig();
 
    IndentClear();
 
@@ -129,7 +126,8 @@ void GenerateVCProjectFile(Project project)
       char * prjGUID = "3A1E5467-4EE2-4299-8F0C-7D26CC8C24BA";
       char * rootNamespace = projectName;
       Map<String, NameCollisionInfo> namesInfo { };
-      project.topNode.GenMakefileGetNameCollisionInfo(namesInfo);
+      // TOFIX: Collision and Config-specific!
+      project.topNode.GenMakefileGetNameCollisionInfo(namesInfo, project.config);
 
       f.Print(tagIndent, "<?xml version=\"1.0\" encoding=\"Windows-1252\"?>", tagLine);
       f.Print(tagIndent, "<VisualStudioProject", attribSep);
@@ -160,8 +158,8 @@ void GenerateVCProjectFile(Project project)
          f.Print(tagIndent, "<Configurations>", tagLine);
             IndentPush();
 
-            for(config : project.configurations)
-               PrintConfiguration(f, project, config, usePrecompiledHeaders);
+         for(config : project.configurations)
+            PrintConfiguration(f, project, compiler, config, usePrecompiledHeaders);
 
          IndentPop();
          f.Print(tagIndent, "</Configurations>", tagLine);
@@ -217,10 +215,9 @@ void GenerateVCProjectFile(Project project)
       delete namesInfo;
       delete f;
    }
-   delete compiler;
 }
 
-void PrintConfiguration(File f, Project project, ProjectConfig config, bool usePrecompiledHeaders)
+void PrintConfiguration(File f, Project project, CompilerConfig compiler, ProjectConfig config, bool usePrecompiledHeaders)
 {
    ProjectOptions options = project.options;
    SetBool consoleSet = localConsole;
@@ -234,21 +231,21 @@ void PrintConfiguration(File f, Project project, ProjectConfig config, bool useP
    char * targetDirExpr = localTargetDirectory;
    DirExpression objDir { type = intermediateObjectsDir };
    DirExpression targetDir { type = DirExpressionType::targetDir };
-   CompilerConfig compiler = GetCompilerConfig();
+   TargetTypes targetType = project.GetTargetType(config);
 
    if(!objDirExpr)
       objDirExpr = settingsObjectsDirectory;
-   objDir.Evaluate(objDirExpr, project);
+   objDir.Evaluate(objDirExpr, project, compiler, config);
    if(!targetDirExpr)
       targetDirExpr = settingsTargetDirectory;
-   targetDir.Evaluate(targetDirExpr, project);
+   targetDir.Evaluate(targetDirExpr, project, compiler, config);
 
    f.Print(tagIndent, "<Configuration", attribSep);
       IndentPush();
       f.Print(attribIndent, "Name=\"", config.name, "|Win32\"", attribSep);
       f.Print(attribIndent, "OutputDirectory=\"$(SolutionDir)", targetDir.dir/*"$(ConfigurationName)"*/, "\"", attribSep);
       f.Print(attribIndent, "IntermediateDirectory=\"", objDir.dir/*"$(ConfigurationName)"*/, "\"", attribSep);
-      f.Print(attribIndent, "ConfigurationType=\"", project.targetType == sharedLibrary ? 2 : project.targetType == staticLibrary ? 4 : 1, "\"", attribSep);
+      f.Print(attribIndent, "ConfigurationType=\"", targetType == sharedLibrary ? 2 : targetType == staticLibrary ? 4 : 1, "\"", attribSep);
       f.Print(attribIndent, "CharacterSet=\"", false/*unicode*/ ? 1 : true/*multibyte*/ ? 2 : 0, "\"", attribSep);
    if(optimizationSet == speed)
       f.Print(attribIndent, "WholeProgramOptimization=\"1\"", attribSep);
@@ -313,9 +310,9 @@ void PrintConfiguration(File f, Project project, ProjectConfig config, bool useP
          f.Print(";_CRT_SECURE_NO_DEPRECATE");
          if(console)
             f.Print(";_CONSOLE");
-         if(project.targetType == sharedLibrary)
+         if(targetType == sharedLibrary)
             f.Print(";_WINDOWS;_USRDLL;WIN32DYNAMICLIB_EXPORTS");
-         else if(project.targetType == staticLibrary)
+         else if(targetType == staticLibrary)
             f.Print(";_LIB");
          if(project.options && project.options.preprocessorDefinitions)
          {
@@ -360,7 +357,7 @@ void PrintConfiguration(File f, Project project, ProjectConfig config, bool useP
       f.Print(attribIndent, "/>", tagLine);
       f.Print(tagIndent, "<Tool", attribSep);
          IndentPush();
-         f.Print(attribIndent, "Name=\"", (project.targetType == executable || project.targetType == sharedLibrary) ? "VCLinkerTool" : "VCLibrarianTool", "\"", attribSep);
+         f.Print(attribIndent, "Name=\"", (targetType == executable || targetType == sharedLibrary) ? "VCLinkerTool" : "VCLibrarianTool", "\"", attribSep);
          {
             Array<String> additionalLibraries { };
             if(project.options && project.options.libraries)
@@ -385,14 +382,14 @@ void PrintConfiguration(File f, Project project, ProjectConfig config, bool useP
             delete additionalLibraries;
          }
          f.Print(attribIndent, "OutputFile=\"$(OutDir)\\", targetFileName, ".");
-         if(project.targetType == executable)
+         if(targetType == executable)
             f.Print("exe");
-         else if(project.targetType == sharedLibrary)
+         else if(targetType == sharedLibrary)
             f.Print("dll");
-         else if(project.targetType == staticLibrary)
+         else if(targetType == staticLibrary)
             f.Print("lib");
          f.Print("\"", attribSep);
-   if(project.targetType == executable)
+   if(targetType == executable)
          f.Print(attribIndent, "LinkIncremental=\"", debug ? 2 : 1, "\"", attribSep);
          {
             Array<DirPath> additionalLibraryDirs { };
@@ -417,7 +414,7 @@ void PrintConfiguration(File f, Project project, ProjectConfig config, bool useP
             }
             delete additionalLibraryDirs;
          }
-   if(project.targetType == executable)
+   if(targetType == executable)
    {
          f.Print(attribIndent, "GenerateDebugInformation=\"true\"", attribSep);
          f.Print(attribIndent, "SubSystem=\"1\"", attribSep);
@@ -435,7 +432,7 @@ void PrintConfiguration(File f, Project project, ProjectConfig config, bool useP
          f.Print(attribIndent, "Name=\"VCALinkTool\"", attribSep);
       IndentPop();
       f.Print(attribIndent, "/>", tagLine);
-   if(project.targetType == executable)
+   if(targetType == executable)
    {
       f.Print(tagIndent, "<Tool", attribSep);
          IndentPush();
@@ -458,7 +455,7 @@ void PrintConfiguration(File f, Project project, ProjectConfig config, bool useP
          f.Print(attribIndent, "Name=\"VCFxCopTool\"", attribSep);
       IndentPop();
       f.Print(attribIndent, "/>", tagLine);
-   if(project.targetType == executable)
+   if(targetType == executable)
    {
       f.Print(tagIndent, "<Tool", attribSep);
          IndentPush();
@@ -483,7 +480,6 @@ void PrintConfiguration(File f, Project project, ProjectConfig config, bool useP
 
    delete objDir;
    delete targetDir;
-   delete compiler;
 }
 
 void CollectPlatformSpecificDirs(Project project, ProjectConfig config, Array<String> additionalPreprocessorDefs,
@@ -662,7 +658,8 @@ bool PrintNodes(File f, Project prj, ProjectNode node, Map<String, NameCollision
       {
          for(child : node.files)
          {
-            if(child.type == folder || (child.type != resources && !child.isExcluded))
+            // TOFIX: Exclusion and Config!
+            if(child.type == folder || (child.type != resources && !child.GetIsExcluded(prj.config)))
             {
                if((hasChild = PrintNodes(f, prj, child, namesInfo, filter, true, usePrecompiledHeaders)))
                   break;
@@ -680,7 +677,8 @@ bool PrintNodes(File f, Project prj, ProjectNode node, Map<String, NameCollision
 
       for(child : node.files)
       {
-         if(child.type == folder || (child.type != resources && !child.isExcluded))
+         // TOFIX: Exclusion and config!
+         if(child.type == folder || (child.type != resources && !child.GetIsExcluded(prj.config)))
          {
             if(PrintNodes(f, prj, child, namesInfo, filter, justHasChild, usePrecompiledHeaders) && justHasChild)
                break;
@@ -750,13 +748,15 @@ void PrintFileConfiguration(File f, Project prj, ProjectNode node,
    info = namesInfo[moduleName];
    nameCollision = info ? info.IsExtensionColliding(extension) : false;
    if(perFilePreprocessorDefs.count || perFileIncludeDirs.count ||
-         node.isExcluded || nameCollision ||
+         // TOFIX: Exclusion and config!
+         node.GetIsExcluded(prj.config) || nameCollision ||
          !strcmpi(extension, "h") || usePrecompiledHeaders)
    {
    f.Print(tagIndent, "<FileConfiguration", attribSep);
       IndentPush();
       f.Print(attribIndent, "Name=\"", config.name, "|Win32\"", attribSep);
-      if(node.isExcluded || !strcmpi(extension, "h"))
+      // TOFIX: Exclusion and config!
+      if(node.GetIsExcluded(prj.config) || !strcmpi(extension, "h"))
          f.Print(attribIndent, "ExcludedFromBuild=\"true\"", attribSep);
       f.Print(attribIndent, ">", tagLine);
 

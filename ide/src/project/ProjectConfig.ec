@@ -32,7 +32,8 @@ class DirExpression : struct
       }
    }
 
-   void Evaluate(char * expression, Project project)
+   void Evaluate(char * expression, Project project,
+      CompilerConfig compiler, ProjectConfig config)
    {
       int len;
       char * expr = expression;
@@ -52,8 +53,6 @@ class DirExpression : struct
       if((len = strlen(expr)))
       {
          int c, d;
-         CompilerConfig compiler = GetCompilerConfig();
-         ProjectConfig config = project.config;
          char * configName = config && config.name && config.name[0] ? config.name : "Common";
          char * projectName = project.name ? project.name : "";
          char * moduleName = project.moduleName ? project.moduleName : "";
@@ -147,7 +146,6 @@ class DirExpression : struct
             delete dir;
          if(!dir)
             dir = CopyString(buffer);
-         delete compiler;
       }
       else
       {

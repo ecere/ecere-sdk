@@ -348,34 +348,37 @@ public:
       }
    }
 
-   property ProjectConfig config
-   {
-      get
-      {
-         Project prj;
-         ProjectConfig result = null;
-         if(configurations && (prj = property::project) && prj.config)
-         {
-            const char * projectConfigName = prj.config.name;
-            for(config : configurations)
-            {
-               if(!strcmpi(config.name, projectConfigName))
-               {
-                  result = config;
-                  break;
-               }
-            }
-         }
-         return result;
-      }
-   }
+private:
+   ProjectOptions options;
+   Array<PlatformOptions> platforms;
+   List<ProjectConfig> configurations;
+   ProjectNodeType nodeType;
+   ProjectNode parent;
+   char * name;
+   char * info;
 
-   ProjectConfig GetMatchingNodeConfig(ProjectConfig config)
+   // This holds the absolute path of the .epj for the project topnode (without the filename)
+   // It holds a relative path to the topNode (project) for other nodes (folders and files)
+   // For folders, it includes the folder it refers to. If there is a name difference between the
+   // file system folder and the grouping folder of the project view, it maps to that folder.
+   char * path;
+   
+   NodeTypes type;
+   NodeIcons icon;
+   int indent;
+   DataRow row;
+
+   bool modified;
+   
+   // This is only set for Top Nodes
+   Project project;
+
+   ProjectConfig GetMatchingNodeConfig(ProjectConfig prjConfig)
    {
       ProjectConfig nodeConfig = null;
-      if(property::configurations)
+      if(property::configurations && prjConfig)
       {
-         const char * configName = config.name;
+         const char * configName = prjConfig.name;
          for(cfg : property::configurations)
          {
             if(!strcmpi(cfg.name, configName))
@@ -388,84 +391,74 @@ public:
       return nodeConfig;
    }
 
-   property bool ecflags
+   // For makefile generation:
+   bool GetECFLAGS(ProjectConfig prjConfig)
    {
-      get
-      {
-         ProjectConfig config = this.config;
-         ProjectOptions options = property::options;
-         SetBool memoryGuard = localMemoryGuard;
-         String defaultNameSpace = localDefaultNameSpace;
-         SetBool strictNameSpaces = localStrictNameSpaces;
-         SetBool noLineNumbers = localNoLineNumbers;
+      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
+      ProjectOptions options = property::options;
+      SetBool memoryGuard = localMemoryGuard;
+      String defaultNameSpace = localDefaultNameSpace;
+      SetBool strictNameSpaces = localStrictNameSpaces;
+      SetBool noLineNumbers = localNoLineNumbers;
 
-         if(memoryGuard || defaultNameSpace || strictNameSpaces || noLineNumbers)
-            return true;
-         else if(parent.parent)
-            return parent.ecflags;
-         else
-            return false;
-      }
+      if(memoryGuard || defaultNameSpace || strictNameSpaces || noLineNumbers)
+         return true;
+      else if(parent.parent)
+         return parent.GetECFLAGS(prjConfig);
+      else
+         return false;
    }
-   property bool memoryGuard
+   
+   bool GetMemoryGuard(ProjectConfig prjConfig)
    {
-      get
+      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
+      ProjectOptions options = property::options;
+      SetBool memoryGuard = localMemoryGuard;
+      if(!memoryGuard)
       {
-         ProjectConfig config = this.config;
-         ProjectOptions options = property::options;
-         SetBool memoryGuard = localMemoryGuard;
-         if(!memoryGuard)
-         {
-            if(parent)
-               return parent.memoryGuard;
-         }
-         return memoryGuard == true;
+         if(parent)
+            return parent.GetMemoryGuard(prjConfig);
       }
+      return memoryGuard == true;
    }
-   property String defaultNameSpace
+
+   String GetDefaultNameSpace(ProjectConfig prjConfig)
    {
-      get
+      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
+      ProjectOptions options = property::options;
+      String defaultNameSpace = localDefaultNameSpace;
+      if(!defaultNameSpace)
       {
-         ProjectConfig config = this.config;
-         ProjectOptions options = property::options;
-         String defaultNameSpace = localDefaultNameSpace;
-         if(!defaultNameSpace)
-         {
-            if(parent)
-               return parent.defaultNameSpace;
-         }
-         return defaultNameSpace;
+         if(parent)
+            return parent.GetDefaultNameSpace(prjConfig);
       }
+      return defaultNameSpace;
    }
-   property bool strictNameSpaces
+
+   bool GetStrictNameSpaces(ProjectConfig prjConfig)
    {
-      get
+      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
+      ProjectOptions options = property::options;
+      SetBool strictNameSpaces = localStrictNameSpaces;
+      if(!strictNameSpaces)
       {
-         ProjectConfig config = this.config;
-         ProjectOptions options = property::options;
-         SetBool strictNameSpaces = localStrictNameSpaces;
-         if(!strictNameSpaces)
-         {
-            if(parent)
-               return parent.strictNameSpaces;
-         }
-         return strictNameSpaces == true;
+         if(parent)
+            return parent.GetStrictNameSpaces(prjConfig);
       }
+      return strictNameSpaces == true;
    }
-   property bool noLineNumbers
+
+   bool GetNoLineNumbers(ProjectConfig prjConfig)
    {
-      get
+      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
+      ProjectOptions options = property::options;
+      SetBool noLineNumbers = localNoLineNumbers;
+      if(!noLineNumbers)
       {
-         ProjectConfig config = this.config;
-         ProjectOptions options = property::options;
-         SetBool noLineNumbers = localNoLineNumbers;
-         if(!noLineNumbers)
-         {
-            if(parent)
-               return parent.noLineNumbers;
-         }
-         return noLineNumbers == true;
+         if(parent)
+            return parent.GetNoLineNumbers(prjConfig);
       }
+      return noLineNumbers == true;
    }
 
    property ProjectNode root { get { ProjectNode n; for(n = this; n.parent; n = n.parent); return n; } }
@@ -523,10 +516,10 @@ public:
       return buffer;
    }
 
-   void CollectPerFileAndDirOptions(ProjectConfig projectConfig, Array<String> perFilePreprocessorDefs, Array<DirPath> perFileIncludeDirs)
+   void CollectPerFileAndDirOptions(ProjectConfig prjConfig, Array<String> perFilePreprocessorDefs, Array<DirPath> perFileIncludeDirs)
    {
       ProjectNode node = null;
-      ProjectConfig config = GetMatchingNodeConfig(projectConfig);
+      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
       List<ProjectNode> nodeStack { };
       
       for(node = this; node && node.parent; node = node.parent)
@@ -537,6 +530,7 @@ public:
       // TODO: Check how to fix duplication of following options when configuration is made per-config-per-file
       while((node = nodeStack.lastIterator.data))
       {
+         ProjectConfig config = GetMatchingNodeConfig(prjConfig);
          ProjectOptions nodeOptions = node.property::options;
          if(nodeOptions && nodeOptions.preprocessorDefinitions)
          {
@@ -563,30 +557,6 @@ public:
       delete nodeStack;
    }
 
-private:
-   ProjectOptions options;
-   Array<PlatformOptions> platforms;
-   List<ProjectConfig> configurations;
-   ProjectNodeType nodeType;
-   ProjectNode parent;
-   char * name;
-   char * info;
-
-   // This holds the absolute path of the .epj for the project topnode (without the filename)
-   // It holds a relative path to the topNode (project) for other nodes (folders and files)
-   // For folders, it includes the folder it refers to. If there is a name difference between the
-   // file system folder and the grouping folder of the project view, it maps to that folder.
-   char * path;
-   
-   NodeTypes type;
-   NodeIcons icon;
-   int indent;
-   DataRow row;
-
-   bool modified;
-   
-   // This is only set for Top Nodes
-   Project project;
 
    property Project project
    {
@@ -807,143 +777,136 @@ private:
       }
    }
 
-   property TwoStrings platformSpecificFu
+   TwoStrings GetPlatformSpecificFu(ProjectConfig prjConfig)
    {
-      get
+      TwoStrings result { a = CopyString(""), b = CopyString("") };
+      // note: unknown platform is for common
+      Map<Platform, SetBool> exclusionInfo { };
+      MapNode<Platform, SetBool> mn;
+      char * exp, * var;
+      int len;
+      SetBool common;
+
+      CollectExclusionInfo(exclusionInfo, prjConfig);
+      common = exclusionInfo[unknown];
       {
-         TwoStrings result { a = CopyString(""), b = CopyString("") };
-         // note: unknown platform is for common
-         Map<Platform, SetBool> exclusionInfo { };
-         MapNode<Platform, SetBool> mn;
-         char * exp, * var;
-         int len;
-         SetBool common;
-
-         CollectExclusionInfo(exclusionInfo);
-         common = exclusionInfo[unknown];
+         Map<Platform, SetBool> cleaned { };
+         SetBool opposite = common == true ? false : true;
+         for(mn = exclusionInfo.root.minimum; mn; mn = mn.next)
          {
-            Map<Platform, SetBool> cleaned { };
-            SetBool opposite = common == true ? false : true;
-            for(mn = exclusionInfo.root.minimum; mn; mn = mn.next)
-            {
-               if(mn.key == unknown || mn.value == opposite)
-                 cleaned[mn.key] = mn.value;
-            }
-            delete exclusionInfo;
-            exclusionInfo = cleaned;
+            if(mn.key == unknown || mn.value == opposite)
+              cleaned[mn.key] = mn.value;
          }
+         delete exclusionInfo;
+         exclusionInfo = cleaned;
+      }
 
-         if(exclusionInfo.count > 1)
+      if(exclusionInfo.count > 1)
+      {
+         if(exclusionInfo.count > 2)
          {
-            if(exclusionInfo.count > 2)
-            {
-               exp = result.a;
-               len = strlen(exp) + strlen("$(if $(or ");
-               exp = renew exp char[len+1];
-               strcat(exp, "$(if $(or ");
-               result.a = exp;
-
-               for(mn = exclusionInfo.root.minimum; mn; mn = mn.next)
-               {
-                  if(mn.key != unknown)
-                  {
-                     char * comma = mn.next ? "," : "";
-
-                     var = PlatformToMakefileVariable(mn.key);
-
-                     exp = result.a;
-                     len = strlen(exp) + strlen("$(") + strlen(var) + strlen(")") + strlen(comma);
-                     exp = renew exp char[len+1];
-                     strcat(exp, "$(");
-                     strcat(exp, var);
-                     strcat(exp, ")");
-                     strcat(exp, comma);
-                     result.a = exp;
-                  }
-               }
-
-               exp = result.a;
-               len = strlen(exp) + strlen("),");
-               exp = renew exp char[len+1];
-            }
-            else
-            {
-               if(exclusionInfo.root.minimum.key != unknown)
-                  var = PlatformToMakefileVariable(exclusionInfo.root.minimum.key);
-               else
-                  var = PlatformToMakefileVariable(exclusionInfo.root.minimum.next.key);
-
-               exp = result.a;
-               len = strlen(exp) + strlen("$(if $(") + strlen(var) + strlen("),");
-               exp = renew exp char[len+1];
-               strcat(exp, "$(if $(");
-               strcat(exp, var);
-            }
-
-            strcat(exp, "),");
+            exp = result.a;
+            len = strlen(exp) + strlen("$(if $(or ");
+            exp = renew exp char[len+1];
+            strcat(exp, "$(if $(or ");
             result.a = exp;
 
-            exp = common == true ? result.b : result.a;
-            len = strlen(exp) + strlen(",");
-            exp = renew exp char[len+1];
-            strcat(exp, ",");
-            if(common == true) result.b = exp; else result.a = exp;
-
-            exp = result.b;
-            len = strlen(exp) + strlen(")");
-            exp = renew exp char[len+1];
-            strcat(exp, ")");
-            result.b = exp;
-         }
-         delete exclusionInfo;
-         
-         return result;
-      }
-   }
-
-   property bool isExcluded
-   {
-      get
-      {
-         bool result;
-         // note: unknown platform is for common
-         Map<Platform, SetBool> exclusionInfo { };
-         CollectExclusionInfo(exclusionInfo);
-         if(exclusionInfo.count == 0)
-            result = false;
-         else if(exclusionInfo.count == 1)
-            result = exclusionInfo.root.minimum.value == true;
-         else
-         {
-            SetBool check = exclusionInfo.root.minimum.value;
-            MapNode<Platform, SetBool> mn;
             for(mn = exclusionInfo.root.minimum; mn; mn = mn.next)
             {
-               if(check != mn.value)
-                  break;
-            }
-            if(!mn) // all are same
-               result = check == true;
-            else
-               result = false;
-         }
-         delete exclusionInfo;
-         return result;
+               if(mn.key != unknown)
+               {
+                  char * comma = mn.next ? "," : "";
 
+                  var = PlatformToMakefileVariable(mn.key);
+
+                  exp = result.a;
+                  len = strlen(exp) + strlen("$(") + strlen(var) + strlen(")") + strlen(comma);
+                  exp = renew exp char[len+1];
+                  strcat(exp, "$(");
+                  strcat(exp, var);
+                  strcat(exp, ")");
+                  strcat(exp, comma);
+                  result.a = exp;
+               }
+            }
+
+            exp = result.a;
+            len = strlen(exp) + strlen("),");
+            exp = renew exp char[len+1];
+         }
+         else
+         {
+            if(exclusionInfo.root.minimum.key != unknown)
+               var = PlatformToMakefileVariable(exclusionInfo.root.minimum.key);
+            else
+               var = PlatformToMakefileVariable(exclusionInfo.root.minimum.next.key);
+
+            exp = result.a;
+            len = strlen(exp) + strlen("$(if $(") + strlen(var) + strlen("),");
+            exp = renew exp char[len+1];
+            strcat(exp, "$(if $(");
+            strcat(exp, var);
+         }
+
+         strcat(exp, "),");
+         result.a = exp;
+
+         exp = common == true ? result.b : result.a;
+         len = strlen(exp) + strlen(",");
+         exp = renew exp char[len+1];
+         strcat(exp, ",");
+         if(common == true) result.b = exp; else result.a = exp;
+
+         exp = result.b;
+         len = strlen(exp) + strlen(")");
+         exp = renew exp char[len+1];
+         strcat(exp, ")");
+         result.b = exp;
       }
+      delete exclusionInfo;
+      
+      return result;
    }
 
-   void CollectExclusionInfo(Map<Platform, SetBool> output)
+   bool GetIsExcluded(ProjectConfig prjConfig)
+   {
+      bool result;
+      // note: unknown platform is for common
+      Map<Platform, SetBool> exclusionInfo { };
+      CollectExclusionInfo(exclusionInfo, prjConfig);
+      if(exclusionInfo.count == 0)
+         result = false;
+      else if(exclusionInfo.count == 1)
+         result = exclusionInfo.root.minimum.value == true;
+      else
+      {
+         SetBool check = exclusionInfo.root.minimum.value;
+         MapNode<Platform, SetBool> mn;
+         for(mn = exclusionInfo.root.minimum; mn; mn = mn.next)
+         {
+            if(check != mn.value)
+               break;
+         }
+         if(!mn) // all are same
+            result = check == true;
+         else
+            result = false;
+      }
+      delete exclusionInfo;
+      return result;
+   }
+
+   void CollectExclusionInfo(Map<Platform, SetBool> output, ProjectConfig prjConfig)
    {
       // note: unknown platform is for common
       Platform platform;
-      ProjectConfig config = property::config;
+      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
       ProjectOptions options = property::options;
       Array<PlatformOptions> platforms = property::platforms;
       List<ProjectConfig> configurations = property::configurations;
 
       if(parent)
-         parent.CollectExclusionInfo(output);
+         parent.CollectExclusionInfo(output, prjConfig);
       else
          output[unknown] = unset;
 
@@ -1060,7 +1023,8 @@ private:
       return result;
    }
 
-   ProjectNode FindSameNameConflict(char * name, bool includeResources, Map<Platform, SetBool> exclusionInfo)
+   ProjectNode FindSameNameConflict(char * name, bool includeResources,
+      Map<Platform, SetBool> exclusionInfo, ProjectConfig prjConfig)
    {
       ProjectNode result = null;
       Map<Platform, SetBool> compareExclusion { };
@@ -1074,7 +1038,7 @@ private:
             {
                if(child.type != folder && child.name && !strcmpi(child.name, name))
                {
-                  child.CollectExclusionInfo(compareExclusion);
+                  child.CollectExclusionInfo(compareExclusion, prjConfig);
                   common = exclusionInfo[unknown];
                   commonComp = compareExclusion[unknown];
                   if(exclusionInfo.count == 1 && compareExclusion.count == 1)
@@ -1107,7 +1071,7 @@ private:
                   compareExclusion.Free();
                   break;
                }
-               result = child.FindSameNameConflict(name, includeResources, exclusionInfo);
+               result = child.FindSameNameConflict(name, includeResources, exclusionInfo, prjConfig);
                if(result) break;
             }
          }
@@ -1125,8 +1089,10 @@ private:
 
       GetLastDirectory(filePath, temp);
       //if(!checkIfExists || !project.topNode.Find(temp, false))
-      CollectExclusionInfo(exclusionInfo);
-      if(!checkIfExists || !project.topNode.FindSameNameConflict(temp, false, exclusionInfo))
+      
+      // TOCHECK: Shouldn't this apply either for all configs or none?
+      CollectExclusionInfo(exclusionInfo, project.config);
+      if(!checkIfExists || !project.topNode.FindSameNameConflict(temp, false, exclusionInfo, project.config))
       {
          // Do the check for folder in the same parent or resource files only here
          if(type == folder || !checkIfExists)
@@ -1287,7 +1253,7 @@ private:
       return result;
    }
 
-   void GenFileFlags(File f, Project project)
+   void GenFileFlags(File f, Project project, ProjectConfig prjConfig)
    {
       ProjectNode node = null;
       List<ProjectNode> nodeStack { };
@@ -1300,7 +1266,7 @@ private:
       while((node = nodeStack.lastIterator.data))
       {
          ProjectOptions nodeOptions = node.property::options;
-         ProjectConfig config = node.config;
+         ProjectConfig config = node.GetMatchingNodeConfig(prjConfig);
          if(nodeOptions && nodeOptions.preprocessorDefinitions)
             OutputListOption(f, "D", nodeOptions.preprocessorDefinitions, inPlace, false);
          if(config && config.options && config.options.preprocessorDefinitions)
@@ -1315,7 +1281,7 @@ private:
       delete nodeStack;
    }
 
-   void GenMakefileGetNameCollisionInfo(Map<String, NameCollisionInfo> namesInfo)
+   void GenMakefileGetNameCollisionInfo(Map<String, NameCollisionInfo> namesInfo, ProjectConfig prjConfig)
    {
       if(type == file)
       {
@@ -1352,19 +1318,21 @@ private:
       {
          for(child : files)
          {
-            if(child.type != resources && (child.type == folder || !child.isExcluded))
-               child.GenMakefileGetNameCollisionInfo(namesInfo);
+            if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+               child.GenMakefileGetNameCollisionInfo(namesInfo, prjConfig);
          }
       }
    }
    
-   int GenMakefilePrintNode(File f, Project project, GenMakefilePrintTypes printType, Map<String, NameCollisionInfo> namesInfo, Array<String> items)
+   int GenMakefilePrintNode(File f, Project project, GenMakefilePrintTypes printType,
+      Map<String, NameCollisionInfo> namesInfo, Array<String> items,
+      ProjectConfig prjConfig)
    {
       int count = 0;
       if(type == file)
       {
          char s[2048];
-         TwoStrings ts = platformSpecificFu;
+         TwoStrings ts = GetPlatformSpecificFu(prjConfig);
          char moduleName[MAX_FILENAME];
          char extension[MAX_EXTENSION];
          GetExtension(name, extension);
@@ -1444,19 +1412,18 @@ private:
       {
          for(child : files)
          {
-            if(child.type != resources && (child.type == folder || !child.isExcluded))
-               count += child.GenMakefilePrintNode(f, project, printType, namesInfo, items);
+            if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+               count += child.GenMakefilePrintNode(f, project, printType, namesInfo, items, prjConfig);
          }
       }
       return count;
    }
 
-   void GenMakefilePrintSymbolRules(File f, Project project)
+   void GenMakefilePrintSymbolRules(File f, Project project, CompilerConfig compiler, ProjectConfig prjConfig)
    {
       //ProjectNode child;
       //char objDir[MAX_LOCATION];
-      CompilerConfig compiler = GetCompilerConfig();
-      //ReplaceSpaces(objDir, project.config.objDir.dir);
+      //ReplaceSpaces(objDir, config.objDir.dir);
 
       //eSystem_Log("Printing Symbol Rules\n");
       if(type == file)
@@ -1560,17 +1527,17 @@ private:
 
             f.Printf("\t$(ECP)");
             // Give priority to file flags
-            GenFileFlags(f, project);
+            GenFileFlags(f, project, prjConfig);
 
             f.Printf(" $(CECFLAGS)");
-            if(ecflags)
+            if(GetECFLAGS(prjConfig))
             {
-               if(memoryGuard)
+               if(GetMemoryGuard(prjConfig))
                   f.Printf(" -memguard");
-               if(strictNameSpaces)
+               if(GetStrictNameSpaces(prjConfig))
                   f.Printf(" -strictns");
                {
-                  char * s = defaultNameSpace;
+                  char * s = GetDefaultNameSpace(prjConfig);
                   if(s && s[0])
                      f.Printf(" -defaultns %s", s);
                }
@@ -1588,19 +1555,18 @@ private:
          for(child : files)
          {
             // TODO: Platform specific options
-            if(child.type != resources && (child.type == folder || !child.isExcluded))
-               child.GenMakefilePrintSymbolRules(f, project);
+            if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+               child.GenMakefilePrintSymbolRules(f, project, compiler, prjConfig);
          }
       }
-      delete compiler;
    }
 
-   void GenMakefilePrintCObjectRules(File f, Project project)
+   void GenMakefilePrintCObjectRules(File f, Project project, CompilerConfig compiler, ProjectConfig prjConfig)
    {
+      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
       //ProjectNode child;
       //char objDir[MAX_LOCATION];
-      CompilerConfig compiler = GetCompilerConfig();
-      //ReplaceSpaces(objDir, project.config.objDir.dir);
+      //ReplaceSpaces(objDir, config.objDir.dir);
       //eSystem_Log("Printing C Object Rules\n");
       if(type == file)
       {
@@ -1639,7 +1605,7 @@ private:
                   strcat(command, item);
             }
 
-            for(item : project.config.includeDirs)
+            for(item : config.includeDirs)
             {
                strcat(command, " -I");
                if(strchr(item, ' '))
@@ -1651,7 +1617,7 @@ private:
                else
                   strcat(command, item);
             }
-            for(item : project.config.preprocessorDefs)
+            for(item : config.preprocessorDefs)
             {
                strcat(command, " -D");
                strcat(command, item);
@@ -1707,16 +1673,16 @@ private:
 
             f.Printf("\t$(ECC)");
             // Give priority to file flags
-            GenFileFlags(f, project);
-            if(ecflags)
+            GenFileFlags(f, project, prjConfig);
+            if(GetECFLAGS(prjConfig))
             {
-               f.Printf("%s $(CECFLAGS)", noLineNumbers ? " -nolinenumbers" : "");
-               if(memoryGuard)
+               f.Printf("%s $(CECFLAGS)", GetNoLineNumbers(prjConfig) ? " -nolinenumbers" : "");
+               if(GetMemoryGuard(prjConfig))
                   f.Printf(" -memguard");
-               if(strictNameSpaces)
+               if(GetStrictNameSpaces(prjConfig))
                   f.Printf(" -strictns");
                {
-                  char * s = defaultNameSpace;
+                  char * s = GetDefaultNameSpace(prjConfig);
                   if(s && s[0])
                      f.Printf(" -defaultns %s", s);
                }
@@ -1734,19 +1700,20 @@ private:
          for(child : files)
          {
             // TODO: Platform specific options
-            if(child.type != resources && (child.type == folder || !child.isExcluded))
-               child.GenMakefilePrintCObjectRules(f, project);
+            if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+               child.GenMakefilePrintCObjectRules(f, project, compiler, prjConfig);
          }
       }
-      delete compiler;
    }
 
-   void GenMakefilePrintObjectRules(File f, Project project, Map<String, NameCollisionInfo> namesInfo)
+   void GenMakefilePrintObjectRules(File f, Project project,
+      Map<String, NameCollisionInfo> namesInfo,
+      CompilerConfig compiler, ProjectConfig prjConfig)
    {
+      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
       //ProjectNode child;
       //char objDir[MAX_LOCATION];
-      CompilerConfig compiler = GetCompilerConfig();
-      //ReplaceSpaces(objDir, project.config.objDir.dir);
+      //ReplaceSpaces(objDir, config.objDir.dir);
       //eSystem_Log("Printing Object Rules\n");
       if(type == file)
       {
@@ -1801,7 +1768,7 @@ private:
                      strcat(command, item);
                }
 
-               for(item : project.config.includeDirs)
+               for(item : config.includeDirs)
                {
                   strcat(command, " -I");
                   if(strchr(item, ' '))
@@ -1813,7 +1780,7 @@ private:
                   else
                      strcat(command, item);
                }
-               for(item : project.config.preprocessorDefs)
+               for(item : config.preprocessorDefs)
                {
                   strcat(command, " -D");
                   strcat(command, item);
@@ -1865,7 +1832,7 @@ private:
             }
             f.Printf("\t$(CC)");
             // Give priority to file flags
-            GenFileFlags(f, project);
+            GenFileFlags(f, project, prjConfig);
 
             f.Printf(" $(CFLAGS)");
 
@@ -1882,14 +1849,13 @@ private:
          for(child : files)
          {
             // TODO: Platform specific options
-            if(child.type != resources && (child.type == folder || !child.isExcluded))
-               child.GenMakefilePrintObjectRules(f, project, namesInfo);
+            if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+               child.GenMakefilePrintObjectRules(f, project, namesInfo, compiler, prjConfig);
          }
       }
-      delete compiler;
    }
 
-   void GenMakefileAddResources(File f, String resourcesPath)
+   void GenMakefileAddResources(File f, String resourcesPath, ProjectConfig prjConfig)
    {
       int count = 0;
       if(files)
@@ -1903,10 +1869,10 @@ private:
          for(c = 0; c < files.count; c++)
          {
             ProjectNode child = files[c];
-            TwoStrings ts = child.platformSpecificFu;
+            TwoStrings ts = child.GetPlatformSpecificFu(prjConfig);
             if(count > 0 && ts)
                prev = true;
-            if(child.type == file && !child.isExcluded && !(count > 0 && ts))
+            if(child.type == file && !child.GetIsExcluded(prjConfig) && !(count > 0 && ts))
             {
                bool useRes;
                char tempPath[MAX_LOCATION];
@@ -1966,7 +1932,7 @@ private:
          for(child : files)
          {
             if(child.type == folder)
-               child.GenMakefileAddResources(f, resourcesPath);
+               child.GenMakefileAddResources(f, resourcesPath, prjConfig);
          }
       }
    }

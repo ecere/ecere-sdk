@@ -1267,7 +1267,7 @@ class IDE : Window
       {
          Project project = projectView.project;
          if(project)
-            if(project.targetType == executable)
+            if(project.GetTargetType(project.config) == executable)
                return false;
            
       }
@@ -1415,7 +1415,7 @@ class IDE : Window
 
       projectCloseItem.disabled        = unavailable;
 
-      projectRunItem.disabled          = unavailable || project.targetType != executable;
+      projectRunItem.disabled          = unavailable || project.GetTargetType(project.config) != executable;
       projectBuildItem.disabled        = unavailable;
       projectLinkItem.disabled         = unavailable;
       projectRebuildItem.disabled      = unavailable;
@@ -1426,7 +1426,7 @@ class IDE : Window
 
    void AdjustDebugMenus()
    {
-      bool unavailable = !project || project.targetType != executable ||
+      bool unavailable = !project || project.GetTargetType(project.config) != executable ||
                projectView.buildInProgress == buildingMainProject;
       bool active = ide.debugger.isActive;
       bool executing = ide.debugger.state == running;
@@ -1602,7 +1602,11 @@ class IDE : Window
                         workspace.Save();
 
                         ide.projectView.ShowOutputBuildLog(true);
-                        ide.projectView.DisplayCompiler(false);
+                        {
+                           CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+                           ide.projectView.DisplayCompiler(compiler, false);
+                           delete compiler;
+                        }
                         UpdateMakefiles();
                         {
                            char newWorkingDir[MAX_LOCATION];
@@ -2218,7 +2222,7 @@ class IDE : Window
 #endif
    }
 
-   void SetPath(bool projectsDirs)
+   void SetPath(bool projectsDirs, CompilerConfig compiler, ProjectConfig config)
    {
       int c, len, count;
       char * newList;
@@ -2231,7 +2235,6 @@ class IDE : Window
       Array<String> newLibPaths { };
       Map<String, bool> libPathExists { };
 #endif
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
 
       if(projectsDirs)
       {
@@ -2242,7 +2245,7 @@ class IDE : Window
             // SKIP FIRST PROJECT...
             if(prj == workspace.projects.firstIterator.data) continue;
 
-            targetDirExp = prj.targetDir;
+            targetDirExp = prj.GetTargetDir(compiler, config);
 
             /*if(prj.config.targetType == sharedLibrary && prj.config.debug)
                cfg = prj.config;
@@ -2395,7 +2398,6 @@ class IDE : Window
       if(compiler.distccEnabled && compiler.distccHosts)
          SetEnvironment("DISTCC_HOSTS", compiler.distccHosts);
 
-      delete compiler;
       delete oldList;
    }
 

@@ -155,48 +155,33 @@ class ProjectView : Window
       get { return workspace; }
    }
    
-   /*property Project project
-   {
-      set
-      {
-         if(project)
-         {
-            DeleteNode(project.topNode);
-            project.Free();
-         }
-         project = value;
-         if(project)
-         {
-            AddNode(project.topNode, null);
-            fileDialog.currentDirectory = project.topNode.path;
-            resourceFileDialog.currentDirectory = project.topNode.path;
-
-            // Make sure this is done already...
-            {
-               char filePath[MAX_LOCATION];
-               strcpy(filePath, project.topNode.path);
-               PathCat(filePath, project.topNode.name);
-               strcat(filePath, ".epj");
-               fileName = filePath;
-            }
-
-            ide.statusBar.text = "Generating Makefile & Dependencies...";
-            app.UpdateDisplay();
-            // REDJ set makefile generation flag so generation occurs only when compiling instead of generating on the spot
-            project.config.makingModified = true;
-            ide.statusBar.text = "Initializing Debugger";
-            ide.statusBar.text = null;
-            app.UpdateDisplay();
-         }
-      }
-      get { return project; }
-   }*/
-
    bool drawingInProjectSettingsDialog;
    bool drawingInProjectSettingsDialogHeader;
    ProjectSettings projectSettingsDialog;
 
    bool stopBuild;
+
+   ProjectView()
+   {
+      NodeIcons c;
+      for(c = 0; c < NodeIcons::enumSize; c++)
+      {
+         icons[c] = BitmapResource { iconNames[c], alphaBlend = true };
+         AddResource(icons[c]);
+      }
+      fileList.AddField(DataField { dataType = class(ProjectNode), freeData = false, userData = this });
+   }
+
+   ~ProjectView()
+   {
+      DebugStop();
+      ide.DestroyTemporaryProjectDir();
+      if(project)
+      {
+         workspace.Free();
+         delete workspace;
+      }
+   }
 
    ListBox fileList
    {
@@ -510,19 +495,6 @@ class ProjectView : Window
 
    bool GetRelativePath(char * filePath, char * relativePath)
    {
-      /*ProjectNode node;
-      char moduleName[MAX_FILENAME]; //, modulePath[MAX_LOCATION];
-      GetLastDirectory(filePath, moduleName);
-      
-      // try with workspace dir first?
-      if((node = project.topNode.Find(moduleName, false)))
-      {
-         strcpy(relativePath, node.path);
-         PathCatSlash(relativePath, node.name);
-         return true;
-      }
-      // WARNING: On failure, relative path is uninitialized
-      return false;   */
       return project.GetRelativePath(filePath, relativePath);
    }
 
@@ -555,14 +527,341 @@ class ProjectView : Window
       return null;
    }
 
+   //                          ((( UTILITY FUNCTIONS )))
+   //
+   //  ************************************************************************
+   //  *** These methods below are part of a sequence of events, and as     ***
+   //  *** such they must be passed the current compiler and project config ***
+   //  ************************************************************************
+   bool DisplayCompiler(CompilerConfig compiler, bool cleanLog)
+   {
+      ShowOutputBuildLog(cleanLog);
+      ide.outputView.buildBox.Logf($"%s Compiler\n", compiler ? compiler.name : $"{problem with compiler selection}");
+   }
+
+   bool ProjectPrepareForToolchain(Project project, PrepareMakefileMethod method, bool cleanLog, bool displayCompiler,
+      CompilerConfig compiler, ProjectConfig config)
+   {
+      bool isReady = true;
+      char message[MAX_F_STRING];
+      LogBox logBox = ide.outputView.buildBox;
+
+      ShowOutputBuildLog(cleanLog);
+
+      if(displayCompiler)
+         DisplayCompiler(compiler, false);
+
+      ProjectPrepareMakefile(project, method, false, false, compiler, config);
+      return true;
+   }
+
+   bool ProjectPrepareMakefile(Project project, PrepareMakefileMethod method, bool cleanLog, bool displayCompiler,
+      CompilerConfig compiler, ProjectConfig config)
+   {
+      char makefilePath[MAX_LOCATION];
+      char makefileName[MAX_LOCATION];
+      bool exists;
+      LogBox logBox = ide.outputView.buildBox;
+      
+      ShowOutputBuildLog(cleanLog);
+
+      if(displayCompiler)
+         DisplayCompiler(compiler, false);
+
+      strcpy(makefilePath, project.topNode.path);
+      project.CatMakeFileName(makefileName, compiler, config);
+      PathCatSlash(makefilePath, makefileName);
+
+      exists = FileExists(makefilePath);
+      if((method == normal && (!exists || config.makingModified/*|| project.topNode.modified*/)) ||
+            (method == forceExists && exists) || 
+            method == force) // || config.makingModified || makefileDirty
+      {
+         char * reason;
+         char * action;
+         ide.statusBar.text = $"Generating Makefile & Dependencies..."; // Dependencies?
+         app.UpdateDisplay();
+         
+         if((method == normal && !exists) || (method == force && !exists))
+            action = $"Generating ";
+         else if(method == force)
+            action = $"Regenerating ";
+         else if(method == normal || method == forceExists)
+            action = $"Updating ";
+         else
+            action = "";
+         if(!exists)
+            reason = $"Makefile doesn't exist. ";
+         else if(project.topNode.modified)
+            reason = $"Project has been modified. ";
+         else
+            reason = "";
+
+         //logBox.Logf("%s\n", makefileName);
+         logBox.Logf($"%s - %s%smakefile for %s config...\n", makefileName, reason, action, project.configName);
+         project.GenerateMakefile(null, false, null, compiler, config);
+
+         ide.statusBar.text = null;
+         app.UpdateDisplay();
+         return true;
+      }
+      return false;
+   }
+   
+   bool BuildInterrim(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config)
+   {
+      if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+      {
+         ide.outputView.buildBox.Logf($"Building project %s using the %s configuration...\n", prj.name, prj.configName);
+         return Build(prj, buildType, compiler, config);
+      }
+      return false;
+   }
+
+   bool Build(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config)
+   {
+      bool result = true;
+      Window document;
+
+      stopBuild = false;
+      for(document = master.firstChild; document; document = document.next)
+      {
+         if(document.modifiedDocument)
+         {
+            ProjectNode node = GetNodeFromWindow(document, prj);
+            if(node && !document.MenuFileSave(null, 0))
+            {
+               result = false;
+               break;
+            }
+         }
+      }
+      if(result)
+      {
+         DirExpression targetDir = prj.GetTargetDir(compiler, config);
+
+         // TOFIX: DebugStop is being abused and backfiring on us.
+         //        It's supposed to be the 'Debug/Stop' item, not unloading executable or anything else
+
+         //        configIsInDebugSession seems to be used for two OPPOSITE things:
+         //        If we're debugging another config, we need to unload the executable!
+         //        In building, we want to stop if we're debugging the 'same' executable
+         if(buildType != run) ///* && prj == project*/ && prj.configIsInDebugSession)
+         {
+            if(buildType == start || buildType == restart)
+            {
+               if(ide.debugger && ide.debugger.isPrepared)
+               {
+                  DebugStop();
+               }
+            }
+            else
+            {
+               if(ide.project == prj && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isPrepared)
+               {
+                  DebugStop();
+               }
+            }
+         }
+         
+         // TODO: Disabled until problems fixed... is it fixed?
+         if(buildType == rebuild || (config && config.compilingModified))
+            prj.Clean(compiler, config);
+         else
+         {
+            if(buildType == relink || (config && config.linkingModified))
+            {
+               char target[MAX_LOCATION];
+
+               strcpy(target, prj.topNode.path);
+               PathCat(target, targetDir.dir);
+               prj.CatTargetFileName(target, compiler, config);
+               if(FileExists(target))
+                  DeleteFile(target);
+            }
+            if(config && config.symbolGenModified)
+            {
+               DirExpression objDir = prj.GetObjDir(compiler, config);
+               char fileName[MAX_LOCATION];
+               char moduleName[MAX_FILENAME];
+               strcpy(fileName, prj.topNode.path);
+               PathCatSlash(fileName, objDir.dir);
+               strcpy(moduleName, prj.moduleName);
+               strcat(moduleName, ".main.ec");
+               PathCatSlash(fileName, moduleName);
+               if(FileExists(fileName))
+                  DeleteFile(fileName);
+               ChangeExtension(fileName, "c", fileName);
+               if(FileExists(fileName))
+                  DeleteFile(fileName);
+               ChangeExtension(fileName, "o", fileName);
+               if(FileExists(fileName))
+                  DeleteFile(fileName);
+
+               delete objDir;
+            }
+         }
+         buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
+         ide.AdjustBuildMenus();
+         ide.AdjustDebugMenus();
+
+         result = prj.Build(buildType == run, null, compiler, config);
+
+         if(config)
+         {
+            config.compilingModified = false;
+            if(!ide.ShouldStopBuild())
+               config.linkingModified = false;
+
+            config.symbolGenModified = false;
+         }
+         buildInProgress = none;
+         ide.AdjustBuildMenus();
+         ide.AdjustDebugMenus();
+
+         ide.workspace.modified = true;
+
+         delete targetDir;
+      }
+      return result;
+   }
+
+   //                          ((( USER ACTIONS )))
+   //
+   //  ************************************************************************
+   //  *** Methods below should atomically start a process, and as such     ***
+   //  *** they can query compiler and config directly from ide and project ***
+   //  *** but ONLY ONCE!!!                                                 ***
+   //  ************************************************************************
+
+   bool ProjectBuild(MenuItem selection, Modifiers mods)
+   {
+      Project prj = project;
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      ProjectConfig config = prj.config;
+      if(selection || !ide.activeClient || activeClient == this)
+      {
+         DataRow row = fileList.currentRow;
+         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         if(node) prj = node.project;
+      }
+      // Added this code here until dependencies work:
+      else //if(ide.activeClient)
+      {
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
+         if(node)
+            prj = node.project;
+      }
+      if(/*prj != project || */!prj.GetConfigIsInDebugSession(config) || !ide.DontTerminateDebugSession($"Project Build"))
+      {
+         BuildInterrim(prj, build, compiler, config);
+      }
+      delete compiler;
+      return true;
+   }
+
+   bool ProjectLink(MenuItem selection, Modifiers mods)
+   {
+      Project prj = project;
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      ProjectConfig config;
+      if(selection || !ide.activeClient || activeClient == this)
+      {
+         DataRow row = fileList.currentRow;
+         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         if(node) prj = node.project;
+      }
+      // Added this code here until dependencies work:
+      else //if(ide.activeClient)
+      {
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
+         if(node)
+            prj = node.project;
+      }
+      config = prj.config;
+      if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+      {
+         ide.outputView.buildBox.Logf("Relinking project %s using the %s configuration...\n", prj.name, prj.configName);
+         if(config)
+            config.linkingModified = true;
+         Build(prj, relink, compiler, config);
+      }
+      delete compiler;
+      return true;
+   }
+
+   bool ProjectRebuild(MenuItem selection, Modifiers mods)
+   {
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      Project prj = GetSelectedProject((bool)selection);
+      ProjectConfig config = prj.config;
+      if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+      {
+         ide.outputView.buildBox.Logf($"Rebuilding project %s using the %s configuration...\n", prj.name, prj.configName);
+         /*if(config)
+         {
+            config.compilingModified = true;
+            config.makingModified = true;
+         }*/ // -- should this still be used depite the new solution of BuildType?
+         Build(prj, rebuild, compiler, config);
+      }
+      delete compiler;
+      return true;
+   }
+
+   bool ProjectClean(MenuItem selection, Modifiers mods)
+   {
+      Project prj = GetSelectedProject((bool)selection);
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      ProjectConfig config = prj.config;
+      if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+      {
+         ide.outputView.buildBox.Logf($"Cleaning project %s using the %s configuration...\n", prj.name, prj.configName);
+         
+         buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
+         ide.AdjustBuildMenus();
+
+         prj.Clean(compiler, config);
+         buildInProgress = none;
+         ide.AdjustBuildMenus();
+      }
+      delete compiler;
+      return true;
+   }
+
+   bool ProjectRegenerate(MenuItem selection, Modifiers mods)
+   {
+      Project prj = project;
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      if(selection || !ide.activeClient || activeClient == this)
+      {
+         DataRow row = fileList.currentRow;
+         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         if(node)
+            prj = node.project;
+      }
+      // Added this code here until dependencies work:
+      else //if(ide.activeClient)
+      {
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
+         if(node)
+            prj = node.project;
+      }
+
+      ProjectPrepareMakefile(prj, force, true, true, compiler, prj.config);
+      delete compiler;
+      return true;
+   }
+
    void Compile(ProjectNode node)
    {
       char fileName[MAX_LOCATION];
       char extension[MAX_EXTENSION];
       Window document;
       Project prj = node.project;
+      ProjectConfig config = prj.config;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      DirExpression objDir = prj.objDir;
+      DirExpression objDir = prj.GetObjDir(compiler, config);
 
       strcpy(fileName, prj.topNode.path);
       PathCatSlash(fileName, objDir.dir);
@@ -611,9 +910,9 @@ class ProjectView : Window
          }
       }
 
-      if(ProjectPrepareForToolchain(prj, normal, true, true))
+      if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
       {
-         if(!node.isExcluded)
+         if(!node.GetIsExcluded(config))
          {
             buildInProgress = compilingFile;
             ide.AdjustBuildMenus();
@@ -621,12 +920,12 @@ class ProjectView : Window
             //ide.outputView.ShowClearSelectTab(build);
             // this stuff doesn't even appear
             //ide.outputView.buildBox.Logf("%s Compiler\n", compiler.name);
-            if(prj.config)
-               ide.outputView.buildBox.Logf($"Compiling single file %s in project %s using the %s configuration...\n", node.name, prj.name, prj.config.name);
+            if(config)
+               ide.outputView.buildBox.Logf($"Compiling single file %s in project %s using the %s configuration...\n", node.name, prj.name, config.name);
             else
                ide.outputView.buildBox.Logf($"Compiling single file %s in project %s...\n", node.name, prj.name);
 
-            prj.Compile(node);
+            prj.Compile(node, compiler, config);
             buildInProgress = none;
             ide.AdjustBuildMenus();
          }
@@ -635,6 +934,292 @@ class ProjectView : Window
       }
       delete objDir;
       delete compiler;
+   }
+
+   bool ProjectNewFile(MenuItem selection, Modifiers mods)
+   {
+      DataRow row = fileList.currentRow;
+      if(row)
+      {
+         char fileName[1024];
+         char filePath[MAX_LOCATION];
+         ProjectNode parentNode = (ProjectNode)row.tag;
+         ProjectNode n, fileNode;
+         parentNode.GetFileSysMatchingPath(filePath);
+         MakePathRelative(filePath, parentNode.project.topNode.path, filePath);
+         for(n = parentNode; n && n != parentNode.project.resNode; n = n.parent);
+         sprintf(fileName, $"Untitled %d", documentID);
+         fileNode = AddFile(parentNode, fileName, (bool)n, true);
+         fileNode.path = CopyUnixPath(filePath);
+         if(fileNode)
+         {
+            NodeProperties nodeProperties
+            {
+               parent, this;
+               position = { position.x + 100, position.y + 100 };
+               mode = newFile;
+               node = fileNode;
+            };
+            nodeProperties.Create(); // not modal?
+         }
+      }
+      return true;
+   }
+
+   bool ProjectNewFolder(MenuItem selection, Modifiers mods)
+   {
+      DataRow row = fileList.currentRow;
+      if(row)
+      {
+         ProjectNode parentNode = (ProjectNode)row.tag;
+         NewFolder(parentNode, null, true);
+      }
+      return true;
+   }
+
+   bool ResourcesAddFiles(MenuItem selection, Modifiers mods)
+   {
+      AddFiles(true);
+      return true;
+   }
+
+   bool ProjectAddFiles(MenuItem selection, Modifiers mods)
+   {
+      AddFiles(false);
+      return true;
+   }
+
+   bool ProjectImportFolder(MenuItem selection, Modifiers mods)
+   {
+      DataRow row = fileList.currentRow;
+      if(row)
+      {
+         ProjectNode toNode = (ProjectNode)row.tag;
+         ImportFolder(toNode);
+      }
+      return true;
+   }
+
+   bool ProjectAddNewForm(MenuItem selection, Modifiers mods)
+   {
+      CodeEditor codeEditor = CreateNew("Form", "form", "Window", null);
+      codeEditor.EnsureUpToDate();
+      return true;
+   }
+
+   bool ProjectAddNewGraph(MenuItem selection, Modifiers mods)
+   {
+      CodeEditor codeEditor = CreateNew("Graph", "graph", "Block", null);
+      if(codeEditor)
+         codeEditor.EnsureUpToDate();
+      return true;
+   }
+
+   bool ProjectRemove(MenuItem selection, Modifiers mods)
+   {
+      DataRow row = fileList.currentRow;
+      if(row)
+      {
+         ProjectNode node = (ProjectNode)row.tag;
+         if(node.type == project)
+            RemoveSelectedNodes();
+      }
+      return true;
+   }
+
+   bool ProjectUpdateMakefileForAllConfigs(Project project, bool cleanLog, bool displayCompiler)
+   {
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      ShowOutputBuildLog(cleanLog);
+
+      if(displayCompiler)
+         DisplayCompiler(compiler, false);
+      
+      for(config : project.configurations)
+      {
+         ProjectPrepareMakefile(project, forceExists, false, false,
+            compiler, config);
+      }
+
+      ide.Update(null);
+      delete compiler;
+   }
+
+   bool MenuConfig(MenuItem selection, Modifiers mods)
+   {
+      if(ProjectActiveConfig { parent = parent.parent, master = parent, project = project }.Modal() == ok)
+         ide.AdjustMenus();
+      return true;
+   }
+
+   bool MenuCompiler(MenuItem selection, Modifiers mods)
+   {
+      ActiveCompilerDialog compilerDialog
+      {
+         parent = parent.parent, master = parent;
+         ideSettings = ideSettings, workspaceActiveCompiler = ide.workspace.compiler;
+      };
+      incref compilerDialog;
+      if(compilerDialog.Modal() == ok && strcmp(compilerDialog.workspaceActiveCompiler, ide.workspace.compiler))
+      {
+         ide.workspace.compiler = compilerDialog.workspaceActiveCompiler;
+         for(prj : ide.workspace.projects)
+            ide.projectView.ProjectUpdateMakefileForAllConfigs(prj, true, true);
+      }
+      delete compilerDialog;
+      return true;
+   }
+
+   bool MenuSettings(MenuItem selection, Modifiers mods)
+   {
+      ProjectNode node = GetSelectedNode(true);
+      Project prj = node ? node.project : project;
+      projectSettingsDialog = ProjectSettings { parent = parent.parent, master = parent, project = prj, projectNode = node };
+      projectSettingsDialog.Modal();
+
+      Update(null);
+      ide.AdjustMenus();
+      return true;
+   }
+
+   bool FileProperties(MenuItem selection, Modifiers mods)
+   {
+      DataRow row = fileList.currentRow;
+      if(row)
+      {
+         ProjectNode node = (ProjectNode)row.tag;
+         NodeProperties { parent = parent, master = this, node = node, 
+               position = { position.x + 100, position.y + 100 } }.Create();
+      }
+      return true;
+   }
+
+   bool FileOpenFile(MenuItem selection, Modifiers mods)
+   {
+      OpenSelectedNodes();
+      return true;
+   }
+
+   bool FileRemoveFile(MenuItem selection, Modifiers mods)
+   {
+      RemoveSelectedNodes();
+      return true;
+   }
+
+   bool FileCompile(MenuItem selection, Modifiers mods)
+   {
+      DataRow row = fileList.currentRow;
+      if(row)
+      {
+         ProjectNode node = (ProjectNode)row.tag;
+         Compile(node);
+      }
+      return true;
+   }
+
+   Project GetSelectedProject(bool useSelection)
+   {
+      Project prj = project;
+      if(useSelection)
+      {
+         DataRow row = fileList.currentRow;
+         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         if(node)
+            prj = node.project;
+      }
+      return prj;
+   }
+   
+   ProjectNode GetSelectedNode(bool useSelection)
+   {
+      ProjectNode node = null;
+      if(useSelection)
+      {
+         DataRow row = fileList.currentRow;
+         if(row)
+            node = (ProjectNode)row.tag;
+      }
+      return node;
+   }
+
+   bool MenuBrowseFolder(MenuItem selection, Modifiers mods)
+   {
+      char folder[MAX_LOCATION];
+      Project prj;
+      ProjectNode node = GetSelectedNode(true);
+      if(!node)
+         node = project.topNode;
+      prj = node.project;
+
+      strcpy(folder, prj.topNode.path);
+      if(node != prj.topNode)
+         PathCatSlash(folder, node.path);
+      ShellOpen(folder);
+   }
+
+   bool Run(MenuItem selection, Modifiers mods)
+   {
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      ProjectConfig config = project.config;
+      String args = new char[maxPathLen];
+      args[0] = '\0';
+      if(ide.workspace.commandLineArgs)
+         //ide.debugger.GetCommandLineArgs(args);
+         strcpy(args, ide.workspace.commandLineArgs);
+      if(ide.debugger.isActive)
+         project.Run(args, compiler, config);
+      /*else if(config.targetType == sharedLibrary || config.targetType == staticLibrary)
+         MessageBox { master = ide, type = ok, text = "Run", contents = "Shared and static libraries cannot be run like executables." }.Modal();*/
+      else if(BuildInterrim(project, run, compiler, config))
+         project.Run(args, compiler, config);
+      delete args;
+      delete compiler;
+      return true;
+   }
+
+   bool DebugStart()
+   {
+      bool result = false;
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      ProjectConfig config = project.config;
+      TargetTypes targetType = project.GetTargetType(config);
+      if(targetType == sharedLibrary || targetType == staticLibrary)
+         MessageBox { master = ide, type = ok, text = $"Run", contents = $"Shared and static libraries cannot be run like executables." }.Modal();
+      else if(project.GetCompress(config))
+         MessageBox { master = ide, text = $"Starting Debug", contents = $"Debugging compressed applications is not supported\n" }.Modal();
+      else if(project.GetDebug(config) ||
+         MessageBox { master = ide, type = okCancel, text = $"Starting Debug", contents = $"Attempting to debug non-debug configuration\nProceed anyways?" }.Modal() == ok)
+      {
+         if(/*!IsProjectModified() ||*/ BuildInterrim(project, start, compiler, config))
+         {
+            if(compiler.type.isVC)
+            {
+               //bool result = false;
+               char oldwd[MAX_LOCATION];
+               PathBackup pathBackup { };
+               char command[MAX_LOCATION];
+
+               ide.SetPath(false, compiler, config);
+               
+               GetWorkingDir(oldwd, sizeof(oldwd));
+               ChangeWorkingDir(project.topNode.path);
+
+               sprintf(command, "%s /useenv %s.sln /projectconfig \"%s|Win32\" /command \"%s\"" , "devenv", project.name, config.name, "Debug.Start");
+               //ide.outputView.buildBox.Logf("command: %s\n", command);
+               Execute(command);
+               ChangeWorkingDir(oldwd);
+
+               delete pathBackup;
+            }
+            else
+            {
+               ide.debugger.Start(compiler, config);
+               result = true;
+            }
+         }
+      }
+      delete compiler;
+      return result;      
    }
 
    void GoToError(const char * line)
@@ -806,28 +1391,6 @@ class ProjectView : Window
       projectNode.Delete();
    }
 
-   ProjectView()
-   {
-      NodeIcons c;
-      for(c = 0; c < NodeIcons::enumSize; c++)
-      {
-         icons[c] = BitmapResource { iconNames[c], alphaBlend = true };
-         AddResource(icons[c]);
-      }
-      fileList.AddField(DataField { dataType = class(ProjectNode), freeData = false, userData = this });
-   }
-
-   ~ProjectView()
-   {
-      DebugStop();
-      ide.DestroyTemporaryProjectDir();
-      if(project)
-      {
-         workspace.Free();
-         delete workspace;
-      }
-   }
-
    bool ProjectSave(MenuItem selection, Modifiers mods)
    {
       DataRow row = fileList.currentRow;
@@ -868,606 +1431,23 @@ class ProjectView : Window
       }
    }
 
-   bool DisplayCompiler(bool cleanLog)
-   {
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      ShowOutputBuildLog(cleanLog);
-      ide.outputView.buildBox.Logf($"%s Compiler\n", compiler ? compiler.name : $"{problem with compiler selection}");
-      delete compiler;
-   }
-
-   bool ProjectUpdateMakefileForAllConfigs(Project project, bool cleanLog, bool displayCompiler)
-   {
-      ProjectConfig currentConfig = project.config;
-      ShowOutputBuildLog(cleanLog);
-
-      if(displayCompiler)
-         DisplayCompiler(false);
-      
-      for(config : project.configurations)
-      {
-         project.config = config;
-         ProjectPrepareMakefile(project, forceExists, false, false);
-      }
-
-      project.config = currentConfig;
-
-      ide.Update(null);
-   }
-
-   bool ProjectPrepareForToolchain(Project project, PrepareMakefileMethod method, bool cleanLog, bool displayCompiler)
-   {
-      bool isReady = true;
-      char message[MAX_F_STRING];
-      LogBox logBox = ide.outputView.buildBox;
-
-      ShowOutputBuildLog(cleanLog);
-
-      if(displayCompiler)
-         DisplayCompiler(false);
-
-      ProjectPrepareMakefile(project, method, false, false);
-      return true;
-   }
-
-   bool ProjectPrepareMakefile(Project project, PrepareMakefileMethod method, bool cleanLog, bool displayCompiler)
-   {
-      char makefilePath[MAX_LOCATION];
-      char makefileName[MAX_LOCATION];
-      bool exists;
-      LogBox logBox = ide.outputView.buildBox;
-      
-      ShowOutputBuildLog(cleanLog);
-
-      if(displayCompiler)
-         DisplayCompiler(false);
-
-      strcpy(makefilePath, project.topNode.path);
-      project.CatMakeFileName(makefileName);
-      PathCatSlash(makefilePath, makefileName);
-
-      exists = FileExists(makefilePath);
-      if((method == normal && (!exists || project.config.makingModified/*|| project.topNode.modified*/)) ||
-            (method == forceExists && exists) || 
-            method == force) // || project.config.makingModified || makefileDirty
-      {
-         char * reason;
-         char * action;
-         ide.statusBar.text = $"Generating Makefile & Dependencies..."; // Dependencies?
-         app.UpdateDisplay();
-         
-         if((method == normal && !exists) || (method == force && !exists))
-            action = $"Generating ";
-         else if(method == force)
-            action = $"Regenerating ";
-         else if(method == normal || method == forceExists)
-            action = $"Updating ";
-         else
-            action = "";
-         if(!exists)
-            reason = $"Makefile doesn't exist. ";
-         else if(project.topNode.modified)
-            reason = $"Project has been modified. ";
-         else
-            reason = "";
-
-         //logBox.Logf("%s\n", makefileName);
-         logBox.Logf($"%s - %s%smakefile for %s config...\n", makefileName, reason, action, project.configName);
-         project.GenerateMakefile(null, false, null);
-
-         ide.statusBar.text = null;
-         app.UpdateDisplay();
-         return true;
-      }
-      return false;
-   }
-   
-   bool ProjectBuild(MenuItem selection, Modifiers mods)
-   {
-      Project prj = project;
-      if(selection || !ide.activeClient || activeClient == this)
-      {
-         DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
-         if(node) prj = node.project;
-      }
-      // Added this code here until dependencies work:
-      else //if(ide.activeClient)
-      {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
-         if(node)
-            prj = node.project;
-      }
-      if(/*prj != project || */!prj.configIsInDebugSession || !ide.DontTerminateDebugSession($"Project Build"))
-         BuildInterrim(prj, build);
-      return true;
-   }
-
-   bool BuildInterrim(Project prj, BuildType buildType)
-   {
-      if(ProjectPrepareForToolchain(prj, normal, true, true))
-      {
-         ide.outputView.buildBox.Logf($"Building project %s using the %s configuration...\n", prj.name, prj.configName);
-         return Build(prj, buildType);
-      }
-      return false;
-   }
-
-   bool ProjectLink(MenuItem selection, Modifiers mods)
-   {
-      Project prj = project;
-      if(selection || !ide.activeClient || activeClient == this)
-      {
-         DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
-         if(node) prj = node.project;
-      }
-      // Added this code here until dependencies work:
-      else //if(ide.activeClient)
-      {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
-         if(node)
-            prj = node.project;
-      }
-      if(ProjectPrepareForToolchain(prj, normal, true, true))
-      {
-         ide.outputView.buildBox.Logf("Relinking project %s using the %s configuration...\n", prj.name, prj.configName);
-         if(prj.config)
-            prj.config.linkingModified = true;
-         Build(prj, relink);
-      }
-      return true;
-   }
-
-   bool ProjectRebuild(MenuItem selection, Modifiers mods)
-   {
-      Project prj = GetSelectedProject((bool)selection);
-      if(ProjectPrepareForToolchain(prj, normal, true, true))
-      {
-         ide.outputView.buildBox.Logf($"Rebuilding project %s using the %s configuration...\n", prj.name, prj.configName);
-         /*if(prj.config)
-         {
-            prj.config.compilingModified = true;
-            prj.config.makingModified = true;
-         }*/ // -- should this still be used depite the new solution of BuildType?
-         Build(prj, rebuild);
-      }
-      return true;
-   }
-
-   bool ProjectClean(MenuItem selection, Modifiers mods)
-   {
-      Project prj = GetSelectedProject((bool)selection);
-      if(ProjectPrepareForToolchain(prj, normal, true, true))
-      {
-         ide.outputView.buildBox.Logf($"Cleaning project %s using the %s configuration...\n", prj.name, prj.configName);
-         
-         buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
-         ide.AdjustBuildMenus();
-
-         prj.Clean();
-         buildInProgress = none;
-         ide.AdjustBuildMenus();
-      }
-      return true;
-   }
-
-   bool ProjectRegenerate(MenuItem selection, Modifiers mods)
-   {
-      Project prj = project;
-      if(selection || !ide.activeClient || activeClient == this)
-      {
-         DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
-         if(node)
-            prj = node.project;
-      }
-      // Added this code here until dependencies work:
-      else //if(ide.activeClient)
-      {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
-         if(node)
-            prj = node.project;
-      }
-
-      ProjectPrepareMakefile(prj, force, true, true);
-      return true;
-   }
-
-   bool ProjectNewFile(MenuItem selection, Modifiers mods)
-   {
-      DataRow row = fileList.currentRow;
-      if(row)
-      {
-         char fileName[1024];
-         char filePath[MAX_LOCATION];
-         ProjectNode parentNode = (ProjectNode)row.tag;
-         ProjectNode n, fileNode;
-         parentNode.GetFileSysMatchingPath(filePath);
-         MakePathRelative(filePath, parentNode.project.topNode.path, filePath);
-         for(n = parentNode; n && n != parentNode.project.resNode; n = n.parent);
-         sprintf(fileName, $"Untitled %d", documentID);
-         fileNode = AddFile(parentNode, fileName, (bool)n, true);
-         fileNode.path = CopyUnixPath(filePath);
-         if(fileNode)
-         {
-            NodeProperties nodeProperties
-            {
-               parent, this;
-               position = { position.x + 100, position.y + 100 };
-               mode = newFile;
-               node = fileNode;
-            };
-            nodeProperties.Create(); // not modal?
-         }
-      }
-      return true;
-   }
-
-   bool ProjectNewFolder(MenuItem selection, Modifiers mods)
-   {
-      DataRow row = fileList.currentRow;
-      if(row)
-      {
-         ProjectNode parentNode = (ProjectNode)row.tag;
-         NewFolder(parentNode, null, true);
-      }
-      return true;
-   }
-
-   bool ResourcesAddFiles(MenuItem selection, Modifiers mods)
-   {
-      AddFiles(true);
-      return true;
-   }
-
-   bool ProjectAddFiles(MenuItem selection, Modifiers mods)
-   {
-      AddFiles(false);
-      return true;
-   }
-
-   bool ProjectImportFolder(MenuItem selection, Modifiers mods)
-   {
-      DataRow row = fileList.currentRow;
-      if(row)
-      {
-         ProjectNode toNode = (ProjectNode)row.tag;
-         ImportFolder(toNode);
-      }
-      return true;
-   }
-
-   bool ProjectAddNewForm(MenuItem selection, Modifiers mods)
-   {
-      CodeEditor codeEditor = CreateNew("Form", "form", "Window", null);
-      codeEditor.EnsureUpToDate();
-      return true;
-   }
-
-   bool ProjectAddNewGraph(MenuItem selection, Modifiers mods)
-   {
-      CodeEditor codeEditor = CreateNew("Graph", "graph", "Block", null);
-      if(codeEditor)
-         codeEditor.EnsureUpToDate();
-      return true;
-   }
-
-   bool ProjectRemove(MenuItem selection, Modifiers mods)
-   {
-      DataRow row = fileList.currentRow;
-      if(row)
-      {
-         ProjectNode node = (ProjectNode)row.tag;
-         if(node.type == project)
-            RemoveSelectedNodes();
-      }
-      return true;
-   }
-
-   bool MenuConfig(MenuItem selection, Modifiers mods)
-   {
-      if(ProjectActiveConfig { parent = parent.parent, master = parent, project = project }.Modal() == ok)
-         ide.AdjustMenus();
-      return true;
-   }
-
-   bool MenuCompiler(MenuItem selection, Modifiers mods)
-   {
-      ActiveCompilerDialog compilerDialog
-      {
-         parent = parent.parent, master = parent;
-         ideSettings = ideSettings, workspaceActiveCompiler = ide.workspace.compiler;
-      };
-      incref compilerDialog;
-      if(compilerDialog.Modal() == ok && strcmp(compilerDialog.workspaceActiveCompiler, ide.workspace.compiler))
-      {
-         ide.workspace.compiler = compilerDialog.workspaceActiveCompiler;
-         for(prj : ide.workspace.projects)
-            ide.projectView.ProjectUpdateMakefileForAllConfigs(prj, true, true);
-      }
-      delete compilerDialog;
-      return true;
-   }
-
-   bool MenuSettings(MenuItem selection, Modifiers mods)
-   {
-      ProjectNode node = GetSelectedNode(true);
-      Project prj = node ? node.project : project;
-      projectSettingsDialog = ProjectSettings { parent = parent.parent, master = parent, project = prj, projectNode = node };
-      projectSettingsDialog.Modal();
-
-      Update(null);
-      ide.AdjustMenus();
-      return true;
-   }
-
-   bool FileProperties(MenuItem selection, Modifiers mods)
-   {
-      DataRow row = fileList.currentRow;
-      if(row)
-      {
-         ProjectNode node = (ProjectNode)row.tag;
-         NodeProperties { parent = parent, master = this, node = node, 
-               position = { position.x + 100, position.y + 100 } }.Create();
-      }
-      return true;
-   }
-
-   bool FileOpenFile(MenuItem selection, Modifiers mods)
-   {
-      OpenSelectedNodes();
-      return true;
-   }
-
-   bool FileRemoveFile(MenuItem selection, Modifiers mods)
-   {
-      RemoveSelectedNodes();
-      return true;
-   }
-
-   bool FileCompile(MenuItem selection, Modifiers mods)
-   {
-      DataRow row = fileList.currentRow;
-      if(row)
-      {
-         ProjectNode node = (ProjectNode)row.tag;
-         Compile(node);
-      }
-      return true;
-   }
-
-   /*bool IsProjectModified()
-   {
-      Window document;
-
-      for(document = master.firstChild; document; document = document.next)
-      {
-         if(document.modifiedDocument)
-            if(GetNodeFromWindow(document), project)
-               return true;
-      }
-      return false;
-   }
-   */
-
-   bool Build(Project prj, BuildType buildType)
-   {
-      bool result = true;
-      Window document;
-
-      stopBuild = false;
-      for(document = master.firstChild; document; document = document.next)
-      {
-         if(document.modifiedDocument)
-         {
-            ProjectNode node = GetNodeFromWindow(document, prj);
-            if(node && !document.MenuFileSave(null, 0))
-            {
-               result = false;
-               break;
-            }
-         }
-      }
-      if(result)
-      {
-         DirExpression targetDir = prj.targetDir;
-
-         // TOFIX: DebugStop is being abused and backfiring on us.
-         //        It's supposed to be the 'Debug/Stop' item, not unloading executable or anything else
-
-         //        configIsInDebugSession seems to be used for two OPPOSITE things:
-         //        If we're debugging another config, we need to unload the executable!
-         //        In building, we want to stop if we're debugging the 'same' executable
-         if(buildType != run) ///* && prj == project*/ && prj.configIsInDebugSession)
-         {
-            if(buildType == start || buildType == restart)
-            {
-               if(ide.debugger && ide.debugger.isPrepared)
-               {
-                  DebugStop();
-               }
-            }
-            else
-            {
-               if(ide.project == prj && ide.debugger && ide.debugger.prjConfig == prj.config && ide.debugger.isPrepared)
-               {
-                  DebugStop();
-               }
-            }
-         }
-         
-         // TODO: Disabled until problems fixed... is it fixed?
-         if(buildType == rebuild || (prj.config && prj.config.compilingModified))
-            prj.Clean();
-         else
-         {
-            if(buildType == relink || (prj.config && prj.config.linkingModified))
-            {
-               char target[MAX_LOCATION];
-
-               strcpy(target, prj.topNode.path);
-               PathCat(target, targetDir.dir);
-               prj.CatTargetFileName(target);
-               if(FileExists(target))
-                  DeleteFile(target);
-            }
-            if(prj.config && prj.config.symbolGenModified)
-            {
-               DirExpression objDir = prj.objDir;
-               char fileName[MAX_LOCATION];
-               char moduleName[MAX_FILENAME];
-               strcpy(fileName, prj.topNode.path);
-               PathCatSlash(fileName, objDir.dir);
-               strcpy(moduleName, prj.moduleName);
-               strcat(moduleName, ".main.ec");
-               PathCatSlash(fileName, moduleName);
-               if(FileExists(fileName))
-                  DeleteFile(fileName);
-               ChangeExtension(fileName, "c", fileName);
-               if(FileExists(fileName))
-                  DeleteFile(fileName);
-               ChangeExtension(fileName, "o", fileName);
-               if(FileExists(fileName))
-                  DeleteFile(fileName);
-
-               delete objDir;
-            }
-         }
-         buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
-         ide.AdjustBuildMenus();
-         ide.AdjustDebugMenus();
-
-         result = prj.Build(buildType == run, null);
-
-         if(prj.config)
-         {
-            prj.config.compilingModified = false;
-            if(!ide.ShouldStopBuild())
-               prj.config.linkingModified = false;
-
-            prj.config.symbolGenModified = false;
-         }
-         buildInProgress = none;
-         ide.AdjustBuildMenus();
-         ide.AdjustDebugMenus();
-
-         ide.workspace.modified = true;
-
-         delete targetDir;
-      }
-      return result;
-   }
-
-   Project GetSelectedProject(bool useSelection)
-   {
-      Project prj = project;
-      if(useSelection)
-      {
-         DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
-         if(node)
-            prj = node.project;
-      }
-      return prj;
-   }
-   
-   ProjectNode GetSelectedNode(bool useSelection)
-   {
-      ProjectNode node = null;
-      if(useSelection)
-      {
-         DataRow row = fileList.currentRow;
-         if(row)
-            node = (ProjectNode)row.tag;
-      }
-      return node;
-   }
-
-   bool MenuBrowseFolder(MenuItem selection, Modifiers mods)
-   {
-      char folder[MAX_LOCATION];
-      Project prj;
-      ProjectNode node = GetSelectedNode(true);
-      if(!node)
-         node = project.topNode;
-      prj = node.project;
-
-      strcpy(folder, prj.topNode.path);
-      if(node != prj.topNode)
-         PathCatSlash(folder, node.path);
-      ShellOpen(folder);
-   }
-
-   bool Run(MenuItem selection, Modifiers mods)
-   {
-      String args = new char[maxPathLen];
-      args[0] = '\0';
-      if(ide.workspace.commandLineArgs)
-         //ide.debugger.GetCommandLineArgs(args);
-         strcpy(args, ide.workspace.commandLineArgs);
-      if(ide.debugger.isActive)
-         project.Run(args);
-      /*else if(project.config.targetType == sharedLibrary || project.config.targetType == staticLibrary)
-         MessageBox { master = ide, type = ok, text = "Run", contents = "Shared and static libraries cannot be run like executables." }.Modal();*/
-      else if(BuildInterrim(project, run))
-         project.Run(args);
-      delete args;
-      return true;
-   }
-
-   bool DebugStart()
-   {
-      bool result = false;
-      if(project.targetType == sharedLibrary || project.targetType == staticLibrary)
-         MessageBox { master = ide, type = ok, text = $"Run", contents = $"Shared and static libraries cannot be run like executables." }.Modal();
-      else if(project.compress)
-         MessageBox { master = ide, text = $"Starting Debug", contents = $"Debugging compressed applications is not supported\n" }.Modal();
-      else if(project.debug ||
-         MessageBox { master = ide, type = okCancel, text = $"Starting Debug", contents = $"Attempting to debug non-debug configuration\nProceed anyways?" }.Modal() == ok)
-      {
-         if(/*!IsProjectModified() ||*/ BuildInterrim(project, start))
-         {
-            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-            if(compiler.type.isVC)
-            {
-               //bool result = false;
-               char oldwd[MAX_LOCATION];
-               PathBackup pathBackup { };
-               char command[MAX_LOCATION];
-
-               ide.SetPath(false); //true
-               
-               GetWorkingDir(oldwd, sizeof(oldwd));
-               ChangeWorkingDir(project.topNode.path);
-
-               sprintf(command, "%s /useenv %s.sln /projectconfig \"%s|Win32\" /command \"%s\"" , "devenv", project.name, project.config.name, "Debug.Start");
-               //ide.outputView.buildBox.Logf("command: %s\n", command);
-               Execute(command);
-               ChangeWorkingDir(oldwd);
-
-               delete pathBackup;
-            }
-            else
-            {
-               ide.debugger.Start();
-               result = true;
-            }
-
-            delete compiler;
-         }
-      }
-      return result;      
-   }
-
    bool DebugRestart()
    {
-      if(/*!IsProjectModified() ||*/ BuildInterrim(project, restart))
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      ProjectConfig config = project.config;
+
+      bool result = false;
+      if(/*!IsProjectModified() ||*/ BuildInterrim(project, restart, compiler, config))
       {
-         ide.debugger.Restart();
-         return true;
+         // For Restart, compiler and config will only be used if for
+         // whatever reason (if at all possible) the Debugger is in a
+         // 'terminated' or 'none' state
+         ide.debugger.Restart(compiler, config);
+         result = true;
       }
-      return false;
+
+      delete compiler;
+      return result;
    }
 
    bool DebugResume()
@@ -1490,15 +1470,24 @@ class ProjectView : Window
 
    bool DebugStepInto()
    {
-      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start)))
-         ide.debugger.StepInto();
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      ProjectConfig config = project.config;
+
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config)))
+         ide.debugger.StepInto(compiler, config);
+      delete compiler;
       return true;
    }
 
    bool DebugStepOver(bool skip)
    {
-      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start)))
-         ide.debugger.StepOver(skip);
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      ProjectConfig config = project.config;
+
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config)))
+         ide.debugger.StepOver(compiler, config, skip);
+
+      delete compiler;
       return true;
    }
 

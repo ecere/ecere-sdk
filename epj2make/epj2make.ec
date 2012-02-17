@@ -353,7 +353,7 @@ class epj2makeApp : GuiApplication
                   }
                   if(valid)
                   {
-                     if(project.GenerateMakefile(makePath, noResources, includemkPath))
+                     if(project.GenerateMakefile(makePath, noResources, includemkPath, defaultCompiler, project.config))
                      {
                         if(makePath)
                            printf("%s\n", makePath);
