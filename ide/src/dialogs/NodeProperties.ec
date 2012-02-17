@@ -9,7 +9,7 @@ class NodeProperties : Window
    hasClose = true;
    borderStyle = sizable;
    isModal = true;
-   text = "Properties";
+   text = $"Properties";
    //size = { 280, 260 };
 
    ProjectNode node, topNode;
@@ -18,7 +18,7 @@ class NodeProperties : Window
    Label pathLabel { parent = this, position = { 10, 60 }, labeledWindow = path };
    EditBox path
    {
-      this, textHorzScroll = true, position = { 10, 80 }, size = { 260 }, text = "Path";
+      this, textHorzScroll = true, position = { 10, 80 }, size = { 260 }, text = $"Path";
       anchor = { left = 10, top = 80, right = 10 };
       NotifyModified = PathNotifyModified;
    };
@@ -27,14 +27,14 @@ class NodeProperties : Window
    EditBox absolutePath
    {
       this, background = activeBorder, textHorzScroll = true, readOnly = true;
-      position = { 10, 130 }, size = { 260 }, text = "Absolute Path";
+      position = { 10, 130 }, size = { 260 }, text = $"Absolute Path";
       anchor = { left = 10, top = 130, right = 10 };
    };
    
    Label nameLabel { parent = this, position = { 10, 10 }, labeledWindow = name };
    EditBox name
    {
-      this, textHorzScroll = true, position = { 10, 30 }, size = { 260 }, text = "Name";
+      this, textHorzScroll = true, position = { 10, 30 }, size = { 260 }, text = $"Name";
       anchor = { left = 10, top = 30, right = 10 };
       NotifyModified = NameNotifyModified;
    };
@@ -48,7 +48,7 @@ class NodeProperties : Window
       GetLastDirectory(name.contents, filePath);
       if(topNode.Find(filePath, false))
       {
-         MessageBox { type = ok, master = this, text = filePath, contents = "File with same name already in project." }.Modal();
+         MessageBox { type = ok, master = this, text = filePath, contents = $"File with same name already in project." }.Modal();
          node.name = oldName;
          return false;
       }
@@ -58,7 +58,7 @@ class NodeProperties : Window
          node.icon = NodeIcons::SelectFileIcon(filePath);
       {
          char * s;
-         text = (s = PrintString(node.name, " Properties"));
+         text = (s = PrintString(node.name, $" Properties"));
          delete s;
       }
       if(node.type == folder)
@@ -139,7 +139,7 @@ class NodeProperties : Window
             
             {
                char * s;
-               text = (s = PrintString(node.name, " Properties"));
+               text = (s = PrintString(node.name, $" Properties"));
                delete s;
             }
             name.contents = node.name;

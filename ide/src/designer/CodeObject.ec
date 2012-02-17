@@ -29,7 +29,7 @@ class CodeObject : struct
    {
       int indent = displayFlags.dropBox ? 0 : 10;
       int textOffset;
-      char * name = object ? (object.name ? object.name : "(unnamed)") : this.name;
+      char * name = object ? (object.name ? object.name : $"(unnamed)") : this.name;
       int nameLen = strlen(name);
 
       Bitmap icon = bitmap ? bitmap.bitmap : editor.icons[type].bitmap;

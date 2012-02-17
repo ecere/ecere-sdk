@@ -5,7 +5,7 @@ enum FindInFilesMode { directory, workspace, project };
 
 class FindInFilesDialog : Window
 {
-   text = "Find In Files";
+   text = $"Find In Files";
    background = activeBorder;
    borderStyle = sizable;
    minClientSize = { 440, 208 };
@@ -123,10 +123,10 @@ public:
          if(value != replaceMode)
          {
             int h = value ? 236 : 208;
-            find.text = value ? "Replace" : "Find";
+            find.text = value ? $"Replace" : $"Find";
             find.hotKey = value ? altF : altR; // tocheck: the hotkey keeps getting lost
             llreplaceWith.visible = value;
-            text = value ? "Replace In Files" : "Find In Files";
+            text = value ? $"Replace In Files" : $"Find In Files";
             minClientSize.h = h;
             maxClientSize.h = h;
             size.h = h;
@@ -141,7 +141,7 @@ public:
       {
          char label[MAX_FILENAME];
          DataRow row;
-         sprintf(label, "%s Project", project.name);
+         sprintf(label, $"%s Project", project.name);
          row = findIn.AddString(label);
          row.tag = (uint)project;
       }
@@ -228,7 +228,7 @@ private:
    Label lfindIn { llfindIn, this, size.w = 72, labeledWindow = findIn };
    DropBox findIn
    {
-      llfindIn, this, "Find in:", altI, anchor.right = 0;
+      llfindIn, this, $"Find in:", altI, anchor.right = 0;
 
       bool NotifySelect(DropBox control, DataRow row, Modifiers mods)
       {
@@ -291,12 +291,12 @@ private:
    Label lfindWhere { llfindWhere, this, size.w = 72, labeledWindow = findWhere };
    PathBox findWhere
    {
-      llfindWhere, this, "Find where:", altH, size.h = 24, anchor.right = 0;
+      llfindWhere, this, $"Find where:", altH, size.h = 24, anchor.right = 0;
       typeExpected = directory, browseDialog = fileDialog;
    };
    DropBox findWherePrjNode
    {
-      llfindWhere, this, "Find where:", altH, size.h = 24, anchor.right = 0;
+      llfindWhere, this, $"Find where:", altH, size.h = 24, anchor.right = 0;
       visible = false;
       //collapseControl = true, treeBranches = true;
 
@@ -312,13 +312,13 @@ private:
    Window spacerA { llsubDirs, this, size = { 72, 10 }, clickThrough = true, background = activeBorder, inactive = true };
    Button subDirs
    {
-      llsubDirs, this, "Include Subdirectories", altU, isCheckbox = true, checked = true;
+      llsubDirs, this, $"Include Subdirectories", altU, isCheckbox = true, checked = true;
    };
    
    Label lfilter { llfilter, this, size.w = 72, labeledWindow = filterDrop };
    DropBox filterDrop
    {
-      llfilter, this, "Filter:", altL, anchor.right = 0;
+      llfilter, this, $"Filter:", altL, anchor.right = 0;
 
       bool NotifySelect(DropBox control, DataRow row, Modifiers mods)
       {
@@ -331,7 +331,7 @@ private:
    Label lfileName { llfileName, this, size.w = 72, labeledWindow = fileName };
    EditBox fileName
    {
-      llfileName, this, "File name:", altN, size.h = 24, anchor.right = 0;
+      llfileName, this, $"File name:", altN, size.h = 24, anchor.right = 0;
    };
    
    //Window spacerX { ll, this, size = { 72, 10 }, clickThrough = true, background = activeBorder, inactive = true };
@@ -342,21 +342,21 @@ private:
    Label lfindContent { llfindWhat, this, size.w = 72, labeledWindow = findContent };
    EditBox findContent
    {
-      llfindWhat, this, "Find what:", altT, size.h = 24, anchor.right = 0;
+      llfindWhat, this, $"Find what:", altT, size.h = 24, anchor.right = 0;
    };
    
    Label lreplaceWith { llreplaceWith, this, size.w = 72, labeledWindow = replaceWith };
    EditBox replaceWith
    {
-      llreplaceWith, this, "Replace with:", altE;
+      llreplaceWith, this, $"Replace with:", altE;
       size.h = 24, anchor.right = 0;
    };
    
    Window spacerB { llwholeWord, this, size = { 72, 10 }, clickThrough = true, background = activeBorder, inactive = true };
-   Button contentWholeWord { llwholeWord, this, "Whole word only", altW, isCheckbox = true };
+   Button contentWholeWord { llwholeWord, this, $"Whole word only", altW, isCheckbox = true };
    
    Window spacerC { llmatchCase, this, size = { 72, 10 }, clickThrough = true, background = activeBorder, inactive = true };
-   Button contentMatchCase { llmatchCase, this, "Match case", altC, isCheckbox = true };
+   Button contentMatchCase { llmatchCase, this, $"Match case", altC, isCheckbox = true };
    
    LayoutPage lpbuttons
    {
@@ -373,7 +373,7 @@ private:
 
    Button find
    {
-      llfind, this, "Find", altF, isDefault = true, size = { 80, 24 }, anchor.horz = 0, anchor.vert = 0, keyRepeat = true;
+      llfind, this, $"Find", altF, isDefault = true, size = { 80, 24 }, anchor.horz = 0, anchor.vert = 0, keyRepeat = true;
 
       bool NotifyClicked(Button control, int x, int y, Modifiers mods)
       {
@@ -382,19 +382,19 @@ private:
          {
             findWhere.Activate();
             MessageBox { type = ok, master = parent, 
-                  text = text, contents = "You must specify a search location." }.Modal();
+                  text = text, contents = $"You must specify a search location." }.Modal();
          }
          else if(!FileExists(findPath))
          {
             findWhere.Activate();
             MessageBox { type = ok, master = parent, 
-                  text = text, contents = "Search location does not exist. Please provide a valid location." }.Modal();
+                  text = text, contents = $"Search location does not exist. Please provide a valid location." }.Modal();
          }
          else if(!fileName.contents[0] && !findContent.contents[0])
          {
             findContent.Activate();
             MessageBox { type = ok, master = parent, 
-                  text = text, contents = "Nothing to be found. Please specify at least one criteria." }.Modal();
+                  text = text, contents = $"Nothing to be found. Please specify at least one criteria." }.Modal();
          }
          else
          {
@@ -408,7 +408,7 @@ private:
    
    Button cancel
    {
-      llcancel, this, "Cancel", hotKey = { escape }, size = { 80, 24 }, anchor.horz = 0, anchor.vert = 0;
+      llcancel, this, $"Cancel", hotKey = { escape }, size = { 80, 24 }, anchor.horz = 0, anchor.vert = 0;
 
       bool NotifyClicked(Button control, int x, int y, Modifiers mods)
       {
@@ -419,7 +419,7 @@ private:
    };
    
    SearchThread searchThread { findDialog = this };
-   FileDialog fileDialog { master = this, type = selectDir, text = "Select Search Location..." };
+   FileDialog fileDialog { master = this, type = selectDir, text = $"Select Search Location..." };
 
    void OnDestroy()
    {
@@ -434,11 +434,11 @@ private:
       bool withWorkspace = (bool)ide.workspace;
       DataRow row;
       if(!inDirectoryRow)
-         inDirectoryRow = findIn.AddString("Directory");
+         inDirectoryRow = findIn.AddString($"Directory");
       if(withWorkspace)
       {
          if(!inWorkspaceRow)
-            inWorkspaceRow = findIn.AddString("Workspace");
+            inWorkspaceRow = findIn.AddString($"Workspace");
          for(prj : ide.workspace.projects)
             AddProjectItem(prj);
          if(lastSelectionProject)
@@ -554,7 +554,7 @@ private:
 
    void SearchComplete()
    {
-      //cancel.text = "Cancel";
+      //cancel.text = $"Cancel";
    }
 
    int GetSizeFilter()
@@ -638,26 +638,26 @@ private:
          {
             char substring[512];
             if(nameCriteria[0])
-               sprintf(substring, " with file name matching \"%s\"", nameCriteria);
+               sprintf(substring, $" with file name matching \"%s\"", nameCriteria);
             else
                substring[0] = '\0';
             if(mode == directory)
             {
                char * s;
                ide.outputView.findBox.Logf(
-                     "Searching \"%s\"%s for %s%s%s containing \"%s\"\n\n",
-                     (s = CopySystemPath(dir)), subDirs ? " and its sub directories" : "",
-                     filter.name, substring, substring[0] ? " and" : "", contentCriteria);
+                     $"Searching \"%s\"%s for %s%s%s containing \"%s\"\n\n",
+                     (s = CopySystemPath(dir)), subDirs ? $" and its sub directories" : "",
+                     filter.name, substring, substring[0] ? $" and" : "", contentCriteria);
                delete s;
             }
             else if(mode == workspace)
                ide.outputView.findBox.Logf(
-                     "Searching workspace files for files%s%s containing \"%s\"\n\n",
-                     substring, substring[0] ? " and" : "", contentCriteria);
+                     $"Searching workspace files for files%s%s containing \"%s\"\n\n",
+                     substring, substring[0] ? $" and" : "", contentCriteria);
             else if(mode == project)
                ide.outputView.findBox.Logf(
-                     "Searching project %s files for files%s%s containing \"%s\"\n\n",
-                     project.name, substring, substring[0] ? " and" : "", contentCriteria);
+                     $"Searching project %s files for files%s%s containing \"%s\"\n\n",
+                     project.name, substring, substring[0] ? $" and" : "", contentCriteria);
          }
       app.Unlock();
       
@@ -666,7 +666,7 @@ private:
          replaceEdit = EditBox
          {
             multiLine = true,textHorzScroll = true,textVertScroll = true, 
-            text = "Replacing Editbox", size = Size { 640,480 },maxLineSize = 65536
+            text = $"Replacing Editbox", size = Size { 640,480 },maxLineSize = 65536
          };
       }
 
@@ -703,7 +703,7 @@ private:
 
                         app.Lock();
                            ide.outputView.findBox.Tellf(
-                                 "Searching %s for %s", relative ? fileRelative : stack[frame].fileList.path, contentCriteria);
+                                 $"Searching %s for %s", relative ? fileRelative : stack[frame].fileList.path, contentCriteria);
                         app.Unlock();
 
                         if(replaceMode && contentReplace[0])
@@ -721,7 +721,7 @@ private:
                         filesMatchedCount++;
                         app.Lock();
                            ide.outputView.findBox.Logf(
-                                 "%s matches the file name criteria\n",
+                                 $"%s matches the file name criteria\n",
                                  relative ? fileRelative : stack[frame].fileList.path);
                         app.Unlock();
                      }
@@ -735,7 +735,7 @@ private:
                   relative = true;
                   app.Lock();
                      ide.outputView.findBox.Tellf(
-                           "Searching %s", relative ? fileRelative : stack[frame].fileList.path);
+                           $"Searching %s", relative ? fileRelative : stack[frame].fileList.path);
                   app.Unlock();
                }
 
@@ -822,7 +822,7 @@ private:
 
                               app.Lock();
                                  ide.outputView.findBox.Tellf(
-                                       "Searching %s for \"%s\"", relative ? fileRelative : filePath,
+                                       $"Searching %s for \"%s\"", relative ? fileRelative : filePath,
                                        contentCriteria);
                               app.Unlock();
 
@@ -891,22 +891,22 @@ private:
          {
             if(globalFindCount)
                ide.outputView.findBox.Logf(
-                     "%s search %s a total of %d match%s in %d out of the %d file%s searched\n",
-                     abort ? "Aborted" : "Completed", replaceMode ? "found" : "replaced", globalFindCount, (globalFindCount > 1) ? "es" : "",
-                     filesMatchedCount, filesSearchedCount, (filesSearchedCount > 1) ? "s" : "");
+                     $"%s search %s a total of %d match%s in %d out of the %d file%s searched\n",
+                     abort ? $"Aborted" : $"Completed", replaceMode ? $"found" : $"replaced", globalFindCount, (globalFindCount > 1) ? $"es" : "",
+                     filesMatchedCount, filesSearchedCount, (filesSearchedCount > 1) ? $"s" : "");
             else if(filesMatchedCount)
                ide.outputView.findBox.Logf(
-                     "%s search found a total of %d match%s in the %d file%s searched\n",
-                     abort ? "Aborted" : "Completed", filesMatchedCount, (filesMatchedCount > 1) ? "es" : "",
-                     filesSearchedCount, (filesSearchedCount > 1) ? "s" : "");
+                     $"%s search found a total of %d match%s in the %d file%s searched\n",
+                     abort ? $"Aborted" : $"Completed", filesMatchedCount, (filesMatchedCount > 1) ? $"es" : "",
+                     filesSearchedCount, (filesSearchedCount > 1) ? $"s" : "");
             else
                ide.outputView.findBox.Logf(
-                     "%s search did not find any match in the %d files searched\n",
-                     abort ? "Aborted" : "Completed", filesSearchedCount);
+                     $"%s search did not find any match in the %d files searched\n",
+                     abort ? $"Aborted" : $"Completed", filesSearchedCount);
          }
          else
             ide.outputView.findBox.Logf(
-                  "%s search did not find any file\n", abort ? "Aborted" : "Completed");
+                  $"%s search did not find any file\n", abort ? $"Aborted" : $"Completed");
          findDialog.SearchComplete();
       app.Unlock();
       return 0;
@@ -966,15 +966,15 @@ private:
       else
       {
          app.Lock();
-            ide.outputView.findBox.Logf("Unable to open file %s\n\n", filePath);
+            ide.outputView.findBox.Logf($"Unable to open file %s\n\n", filePath);
          app.Unlock();
       }
       if(findCount)
       {
          app.Lock();
             ide.outputView.findBox.Logf(
-                  "Found %d match%s in \"%s\"%s\n\n", findCount, (findCount > 1) ? "es" : "",
-                  relative ? fileRelative : filePath, abortNow ? " before search was aborted" : "");
+                  $"Found %d match%s in \"%s\"%s\n\n", findCount, (findCount > 1) ? "es" : "",
+                  relative ? fileRelative : filePath, abortNow ? $" before search was aborted" : "");
          app.Unlock();
       }
       return findCount;
@@ -1052,15 +1052,15 @@ private:
       else
       {
          app.Lock();
-            ide.outputView.findBox.Logf("Unable to open file %s\n\n", filePath);
+            ide.outputView.findBox.Logf($"Unable to open file %s\n\n", filePath);
          app.Unlock();
       }
       if(replaceCount)
       {
          app.Lock();
             ide.outputView.findBox.Logf(
-                  "Replaced %d match%s in \"%s\"%s\n\n", replaceCount, (replaceCount > 1) ? "es" : "",
-                  relative ? fileRelative : filePath, abortNow ? " before search was aborted" : "");
+                  $"Replaced %d match%s in \"%s\"%s\n\n", replaceCount, (replaceCount > 1) ? $"es" : "",
+                  relative ? fileRelative : filePath, abortNow ? $" before search was aborted" : "");
          app.Unlock();
       }
       return replaceCount;

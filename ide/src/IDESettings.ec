@@ -572,6 +572,7 @@ static const char * compilerTypeVersionString[CompilerType] = { "", "", "", "8.0
 static const char * compilerTypeSolutionFileVersionString[CompilerType] = { "", "", "", "9.00", "10.00", "11.00" };
 static const char * compilerTypeYearString[CompilerType] = { "", "", "", "2005", "2008", "2010" };
 static const char * compilerTypeProjectFileExtension[CompilerType] = { "", "", "", "vcproj", "vcproj", "vcxproj" };
+// TODO: i18n with Array
 static const char * compilerTypeLongNames[CompilerType] =
 {
    "GNU Compiler Collection (GCC) / GNU Make",

@@ -82,7 +82,7 @@ class StringListBox : EditBox
    }
 }
 
-define dialogTitle = "Project Settings";
+define dialogTitle = $"Project Settings";
 static Color unfocusedSelectorColor { 70, 96, 166 };
 class ProjectSettings : Window
 {
@@ -169,7 +169,7 @@ class ProjectSettings : Window
    {
       this, size = { 80, 22 };
       anchor = { right = 8, bottom = 8 };
-      text = "Cancel", hotKey = escape, id = DialogResult::cancel;
+      text = $"Cancel", hotKey = escape, id = DialogResult::cancel;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -178,8 +178,8 @@ class ProjectSettings : Window
             DialogResult diagRes = MessageBox
             {
                type = okCancel, master = ide,
-               text = "Lose Changes?",
-               contents = "Are you sure you wish to discard changes made to the build options?"
+               text = $"Lose Changes?",
+               contents = $"Are you sure you wish to discard changes made to the build options?"
             }.Modal();
             if(diagRes == ok)
             {
@@ -208,7 +208,7 @@ class ProjectSettings : Window
    {
       this, size = { 80, 22 };
       anchor = { right = 96, bottom = 8 };
-      text = "OK", isDefault = true;
+      text = $"OK", isDefault = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -285,7 +285,7 @@ class OptionBox<class Z> : CommonControl
    Menu clearMenu { };
    MenuItem clearItem
    {
-      clearMenu, "Clear";
+      clearMenu, $"Clear";
 
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
@@ -1045,15 +1045,15 @@ class TargetTypeDB : DropOptionBox<TargetTypes>
 
       row = ((DropBox)editor).AddRow();
       row.tag = TargetTypes::executable;
-      row.SetData(null, "Executable");
+      row.SetData(null, $"Executable");
 
       row = ((DropBox)editor).AddRow();
       row.tag = TargetTypes::sharedLibrary;
-      row.SetData(null, "Shared Library");
+      row.SetData(null, $"Shared Library");
 
       row = ((DropBox)editor).AddRow();
       row.tag = TargetTypes::staticLibrary;
-      row.SetData(null, "Static Library");
+      row.SetData(null, $"Static Library");
    }
 
    bool OptionCheck(ProjectOptions options)
@@ -1070,15 +1070,15 @@ class OptimizationDB : DropOptionBox<OptimizationStrategy>
       DataRow row;
       row = ((DropBox)editor).AddRow();
       row.tag = OptimizationStrategy::none;
-      row.SetData(null, "None");
+      row.SetData(null, $"None");
 
       row = ((DropBox)editor).AddRow();
       row.tag = OptimizationStrategy::speed;
-      row.SetData(null, "For Speed (-O2)");
+      row.SetData(null, $"For Speed (-O2)");
 
       row = ((DropBox)editor).AddRow();
       row.tag = OptimizationStrategy::size;
-      row.SetData(null, "For Size (-Os)");
+      row.SetData(null, $"For Size (-Os)");
    }
 
    bool OptionCheck(ProjectOptions options)
@@ -1095,15 +1095,15 @@ class WarningsDB : DropOptionBox<WarningsOption>
       DataRow row;
       row = ((DropBox)editor).AddRow();
       row.tag = WarningsOption::normal;
-      row.SetData(null, "Normal");
+      row.SetData(null, $"Normal");
 
       row = ((DropBox)editor).AddRow();
       row.tag = WarningsOption::none;
-      row.SetData(null, "None");
+      row.SetData(null, $"None");
 
       row = ((DropBox)editor).AddRow();
       row.tag = WarningsOption::all;
-      row.SetData(null, "All");
+      row.SetData(null, $"All");
    }
 
    bool OptionCheck(ProjectOptions options)
@@ -1129,7 +1129,7 @@ void DrawStipple(Surface surface, Size clientSize)
 
 class BuildTab : Tab
 {
-   text = "Build";
+   text = $"Build";
    background = activeBorder;
    tabCycle = true;
 
@@ -1185,7 +1185,7 @@ class BuildTab : Tab
    };
    SelectorBar configSelector
    {
-      this, text = "Configurations: ", anchor = { left = 98, top = 8, right = 54 }; size = { 0, 26 };
+      this, text = $"Configurations: ", anchor = { left = 98, top = 8, right = 54 }; size = { 0, 26 };
       opacity = 0;
       direction = horizontal, scrollable = true;
 
@@ -1279,8 +1279,8 @@ class BuildTab : Tab
       {
          if(config)
          {
-            String title = PrintString("Delete ", config.name, " Configuration");
-            String msg = PrintString("Are you sure you wish to delete the ", config.name, " configuration?");
+            String title = PrintString($"Delete ", config.name, $" Configuration");
+            String msg = PrintString($"Are you sure you wish to delete the ", config.name, $" configuration?");
             if(MessageBox { type = okCancel, text = title, contents = msg }.Modal() == ok)
             {
                Iterator<Window> it { configSelector.controls };
@@ -1326,7 +1326,7 @@ class BuildTab : Tab
    };
    SelectorBar platformSelector
    {
-      this, text = "Platforms: ", anchor = { left = 64, top = 38, right = 54 }; size = { 0, 26 };
+      this, text = $"Platforms: ", anchor = { left = 64, top = 38, right = 54 }; size = { 0, 26 };
       opacity = 0;
       direction = horizontal, scrollable = true;
 
@@ -1348,7 +1348,7 @@ class BuildTab : Tab
    Label rightClick
    {
       this, font = { font.faceName, font.size, italic = true }, stayOnTop = true,
-      text = "(Right click or press Ctrl-Del to revert an option to inherited value)", anchor = { top = 72, right = 16 }
+      text = $"(Right click or press Ctrl-Del to revert an option to inherited value)", anchor = { top = 72, right = 16 }
    };
 
    void FindUniqueConfigName(char * baseName, bool startWithNumber, char * output)
@@ -1580,7 +1580,7 @@ class BuildTab : Tab
       // Create Config Buttons
       commonButton = SelectorButton
       {
-         configSelector, master = this, text = "Common", id = (int)null; font = { font.faceName, font.size, true };
+         configSelector, master = this, text = $"Common", id = (int)null; font = { font.faceName, font.size, true };
          checked = true;
          NotifyClicked = ConfigClicked;
       };
@@ -1613,7 +1613,7 @@ class BuildTab : Tab
 
       platformButton = button =
       {
-         platformSelector, master = this, text = "Common", id = 0;  font = { font.faceName, font.size, true };
+         platformSelector, master = this, text = $"Common", id = 0;  font = { font.faceName, font.size, true };
          NotifyClicked = PlatformClicked; checked = true;
       };
 
@@ -1728,8 +1728,8 @@ class BuildTab : Tab
          DialogResult diagRes = MessageBox
          {
             type = yesNoCancel, master = ide,
-            text = "Save changes to project settings?",
-            contents = "Would you like to save changes made to the build options?"
+            text = $"Save changes to project settings?",
+            contents = $"Would you like to save changes made to the build options?"
          }.Modal();
          if(diagRes == no)
             RevertChanges();
@@ -1751,7 +1751,7 @@ class BuildTab : Tab
 class CompilerTab : Tab
 {
    background = activeBorder;
-   text = "Compiler";
+   text = $"Compiler";
 
    Window leftPane { this, size = { 180 }, anchor = { left = 0, top = 0, bottom = 0 }, background = activeBorder };
 
@@ -1765,7 +1765,7 @@ class CompilerTab : Tab
       selectionColor = unfocusedSelectorColor;
       size = { 180 };
       anchor = Anchor { left = 8, top = 24, right = 4, bottom = 8 };
-      text = "Files";
+      text = $"Files";
 
       bool NotifySelect(ListBox listBox, DataRow row, Modifiers mods)
       {
@@ -1837,77 +1837,77 @@ class CompilerTab : Tab
    PathOptionBox objDir
    {
       rightPane, this, size = { 250, 22 }, anchor = { left = 8, top = 24, right = 8 };
-      text = "Intermediate Objects Directory", hotKey = altJ, option = OPTION(objectsDirectory);
+      text = $"Intermediate Objects Directory", hotKey = altJ, option = OPTION(objectsDirectory);
    };
 
    BoolOptionBox excludeFromBuild
    {
       rightPane, this, position = { 8, 28 },
-      text = "Exclude from Build", visible = false, option = OPTION(excludeFromBuild);
+      text = $"Exclude from Build", visible = false, option = OPTION(excludeFromBuild);
    };
 
    Label labelPreprocessorDefs { rightPane, this, position = { 8, 50 }, labeledWindow = preprocessorDefs };
    StringArrayOptionBox preprocessorDefs
    {
       rightPane, this, size = { 290, 22 }, anchor = { left = 8, top = 66, right = 8 };
-      text = "Preprocessor Definitions", hotKey = altD, option = OPTION(preprocessorDefinitions);
+      text = $"Preprocessor Definitions", hotKey = altD, option = OPTION(preprocessorDefinitions);
    };
 
    Label labelDefaultNameSpace { rightPane, this, position = { 8, 92 }, labeledWindow = defaultNameSpace };
    StringOptionBox defaultNameSpace
    {
       rightPane, this, size = { 160, 22 }, position = { 8, 108 };
-      text = "Default Name Space", option = OPTION(defaultNameSpace);
+      text = $"Default Name Space", option = OPTION(defaultNameSpace);
    };
    BoolOptionBox strictNameSpaces
    {
       rightPane, this, position = { 172, 112 }, 
-      text = "Strict Name Spaces", option = OPTION(strictNameSpaces);
+      text = $"Strict Name Spaces", option = OPTION(strictNameSpaces);
    };
 
    BoolOptionBox memoryGuard
    {
       rightPane, this, position = { 8, 154 };
-      text = "MemoryGuard", hotKey = altM, option = OPTION(memoryGuard);
+      text = $"MemoryGuard", hotKey = altM, option = OPTION(memoryGuard);
    };
 
    Label labelWarnings { rightPane, position = { 116, 138 }, labeledWindow = warnings };
    WarningsDB warnings
    {
       rightPane, this, position = { 116, 154 };
-      text = "Warnings", hotKey = altW, option = OPTION(warnings);
+      text = $"Warnings", hotKey = altW, option = OPTION(warnings);
    };
 
    Label labelOptimization { rightPane, position = { 244, 138 }, labeledWindow = optimization };
    OptimizationDB optimization
    {
       rightPane, this, position = { 244, 154 }, size = { 120, 22 };
-      text = "Optimization", hotKey = altO, option = OPTION(optimization);
+      text = $"Optimization", hotKey = altO, option = OPTION(optimization);
    };
 
    BoolOptionBox debug
    {
       rightPane, this, position = { 8, 188 };
-      text = "Debuggable", hotKey = altG, option = OPTION(debug);
+      text = $"Debuggable", hotKey = altG, option = OPTION(debug);
    };
 
    BoolOptionBox profiling
    {
       rightPane, this, position = { 116, 188 };
-      text = "Profiling Data", hotKey = altP, option = OPTION(profile);
+      text = $"Profiling Data", hotKey = altP, option = OPTION(profile);
    };
 
    BoolOptionBox noLineNumbers
    {
       rightPane, this, position = { 244, 188 };
-      text = "No Line Numbers", hotKey = altN, option = OPTION(noLineNumbers);
+      text = $"No Line Numbers", hotKey = altN, option = OPTION(noLineNumbers);
    };
 
    Label labelIncludeDirs { includeDirs.editor, labeledWindow = includeDirs, position = { 0, 6 }; };
    DirsArrayOptionBox includeDirs
    {
       rightPane, this, size = { 290, 22 }, anchor = { left = 8, top = 208, right = 8, bottom = 8 };
-      text = "Additional Include Directories", hotKey = altI, option = OPTION(includeDirs);
+      text = $"Additional Include Directories", hotKey = altI, option = OPTION(includeDirs);
    };
 
    CompilerTab()
@@ -1971,34 +1971,34 @@ class CompilerTab : Tab
 class LinkerTab : Tab
 {
    background = activeBorder;
-   text = "Linker";
+   text = $"Linker";
 
    Label labelTargetName { this, position = { 8, 8 }, labeledWindow = targetName };
    StringOptionBox targetName
    {
       this, position = { 8, 24 }, size = { 200, 22 };
-      text = "Target Name", hotKey = altN, option = OPTION(targetFileName);
+      text = $"Target Name", hotKey = altN, option = OPTION(targetFileName);
    };
    
    Label labelTargetType { this, position = { 216, 8 }, labeledWindow = targetType };
    TargetTypeDB targetType
    {
       this, position = { 216, 24 }, size = { 120, 22 };
-      text = "Target Type", hotKey = altT, option = OPTION(targetType);
+      text = $"Target Type", hotKey = altT, option = OPTION(targetType);
    };
    
    Label labelTargetDirectory { this, position = { 344, 8 }, labeledWindow = targetDirectory };
    PathOptionBox targetDirectory
    {
       this, size = { 270, 22 }, anchor = { left = 344, top = 24, right = 8 };
-      hotKey = altR, text = "Target Directory", option = OPTION(targetDirectory);
+      hotKey = altR, text = $"Target Directory", option = OPTION(targetDirectory);
    };
 
    Label labelLibraries { this, position = { 8, 50 }, labeledWindow = libraries };
    StringArrayOptionBox libraries
    {
       this, size = { 290, 22 }, anchor = { left = 8, top = 66, right = 8 };
-      text = "Additional Libraries", hotKey = altL, option = OPTION(libraries);
+      text = $"Additional Libraries", hotKey = altL, option = OPTION(libraries);
       configReplaces = true;
    };
 
@@ -2006,27 +2006,27 @@ class LinkerTab : Tab
    StringArrayOptionBox linkerOptions
    {
       this, size = { 290, 22 }, anchor = { left = 8, top = 108, right = 8 };
-      text = "Linker Options", hotKey = altO, option = OPTION(linkerOptions);
+      text = $"Linker Options", hotKey = altO, option = OPTION(linkerOptions);
       configReplaces = true;
    };
 
    BoolOptionBox console
    {
       this, position = { 8, 138 };
-      text = "Console Application", hotKey = altC, option = OPTION(console);
+      text = $"Console Application", hotKey = altC, option = OPTION(console);
    };
 
    BoolOptionBox compress
    {
       this, position = { 8, 162 };
-      text = "Compress", hotKey = altW, option = OPTION(compress);
+      text = $"Compress", hotKey = altW, option = OPTION(compress);
    };
 
    Label labelLibraryDirs { libraryDirs.editor, labeledWindow = libraryDirs, position = { 0, 6 }; };
    DirsArrayOptionBox libraryDirs
    {
       this, size = { 290, 22 }, anchor = { left = 8, top = 182, right = 8, bottom = 8 };
-      text = "Additional Library Directories", hotKey = altY, option = OPTION(libraryDirs);
+      text = $"Additional Library Directories", hotKey = altY, option = OPTION(libraryDirs);
    };
 
    bool OnCreate()
@@ -2055,20 +2055,20 @@ class LinkerTab : Tab
 class BuilderTab : Tab
 {
    background = activeBorder;
-   text = "Builder";
+   text = $"Builder";
 
    Label labelPrebuildCommands { prebuildCommands.editor, labeledWindow = prebuildCommands, position = { 0, 6 }; };
    StringsArrayOptionBox prebuildCommands
    {
       this, size = { 290, 100 }, anchor = { left = 8, top = 52, right = 8 };
-      text = "Pre-build Commands", hotKey = altE, option = OPTION(prebuildCommands);
+      text = $"Pre-build Commands", hotKey = altE, option = OPTION(prebuildCommands);
    };
 
    Label labelPostbuildCommands { postbuildCommands.editor, labeledWindow = postbuildCommands, position = { 0, 6 }; };
    StringsArrayOptionBox postbuildCommands
    {
       this, size = { 290, 100 }, anchor = { left = 8, top = 160, right = 8 };
-      text = "Post-build Commands", hotKey = altT, option = OPTION(postbuildCommands);
+      text = $"Post-build Commands", hotKey = altT, option = OPTION(postbuildCommands);
    };
 
    void LoadSettings()

@@ -1098,7 +1098,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
             }
             else
             {
-               MessageBox { type = ok, master = ide, contents = "Workspace load file failed", text = "Workspace Load File Error" }.Modal();
+               MessageBox { type = ok, master = ide, contents = $"Workspace load file failed", text = $"Workspace Load File Error" }.Modal();
                delete workspace;
                return null;
             }
@@ -1130,8 +1130,8 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
                strcat(files, item.name);
             }
 
-            sprintf(title, "File%s not found", s);
-            sprintf(msg, "The following file%s could not be re-opened.%s", s, files);
+            sprintf(title, $"File%s not found", s);
+            sprintf(msg, $"The following file%s could not be re-opened.%s", s, files);
             
             MessageBox { type = ok, master = ide, contents = msg, text = title }.Modal();
 

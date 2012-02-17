@@ -15,7 +15,7 @@ class CompilersDetectionDialog : Window
    tabCycle = true;
    hasClose = true;
    showInTaskBar = false;
-   text = "Compilers Detection";
+   text = $"Compilers Detection";
 
    CompilerType selectedCompilerType;
    
@@ -112,7 +112,7 @@ class CompilersDetectionDialog : Window
       
       size = { 180 };
       anchor = Anchor { left = 8, top = 24, right = 8, bottom = 36 };
-      text = "Compilers";
+      text = $"Compilers";
 
       bool NotifySelect(ListBox listBox, DataRow row, Modifiers mods)
       {
@@ -127,7 +127,7 @@ class CompilersDetectionDialog : Window
 
    Button ok
    {
-      this, isDefault = true, disabled = true, text = "OK";
+      this, isDefault = true, disabled = true, text = $"OK";
       size = { 60 }, anchor = { right = 76, bottom = 8 };
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -139,7 +139,7 @@ class CompilersDetectionDialog : Window
    
    Button
    {
-      this, hotKey = escape, text = "Cancel";
+      this, hotKey = escape, text = $"Cancel";
       size = { 60 }, anchor = { right = 8, bottom = 8 };
       NotifyClicked = ButtonCloseDialog;
    };

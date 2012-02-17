@@ -50,14 +50,14 @@ class PictureEdit : Window
    
    //saveDialog = pictureEditFileDialog;
    
-   Menu fileMenu { menu, "File", f }
-      MenuItem { fileMenu, "Save", s, ctrlS, NotifySelect = MenuFileSave };
-      MenuItem { fileMenu, "Save As...", a, NotifySelect = MenuFileSaveAs };
-   Menu imageMenu { menu, "Image", i };
-      Menu modeMenu { imageMenu, "Mode", m };
+   Menu fileMenu { menu, $"File", f }
+      MenuItem { fileMenu, $"Save", s, ctrlS, NotifySelect = MenuFileSave };
+      MenuItem { fileMenu, $"Save As...", a, NotifySelect = MenuFileSaveAs };
+   Menu imageMenu { menu, $"Image", i };
+      Menu modeMenu { imageMenu, $"Mode", m };
          MenuItem imageModeIndexedItem
          {
-            modeMenu, "Indexed Color...", i, isRadio = true;
+            modeMenu, $"Indexed Color...", i, isRadio = true;
             bool NotifySelect(MenuItem selection, Modifiers mods)
             {
                ColorAlpha * palette = bitmap.Quantize(0, 255);
@@ -74,7 +74,7 @@ class PictureEdit : Window
          };
          MenuItem imageModeRGBItem
          {
-            modeMenu, "RGB Color", r, isRadio = true;
+            modeMenu, $"RGB Color", r, isRadio = true;
             bool NotifySelect(MenuItem selection, Modifiers mods)
             {
                bitmap.Convert(null, pixelFormat888, null);
@@ -87,7 +87,7 @@ class PictureEdit : Window
          MenuDivider { modeMenu };
          MenuItem imageModeColorTableItem
          {
-            modeMenu, "Color Table", r;
+            modeMenu, $"Color Table", r;
             bool NotifySelect(MenuItem selection, Modifiers mods)
             {
                PictureEditColorTable colorTable { master = this };
@@ -100,7 +100,7 @@ class PictureEdit : Window
          MenuDivider { imageMenu };
          MenuItem adjustHSVItem
          {
-            imageMenu, "Adjust Hue, Saturation, Value", h;
+            imageMenu, $"Adjust Hue, Saturation, Value", h;
             bool NotifySelect(MenuItem selection, Modifiers mods)
             {
                AdjustHSV adjustHSV { master = this };
@@ -269,13 +269,13 @@ class PictureEdit : Window
 class PictureEditColorTable : Window
 {
    hasClose = true;
-   text = "Color Table";
+   text = $"Color Table";
    background = activeBorder;
    minClientSize = Size { 400, 400 };
 
    Button button
    {
-      parent = this, hotKey = escape, size = { 80 }, text = "Close";
+      parent = this, hotKey = escape, size = { 80 }, text = $"Close";
       anchor = Anchor { right = 10, bottom = 10 };
       NotifyClicked = ButtonCloseDialog;
    };
@@ -315,7 +315,7 @@ class AdjustHSV : Window
 
    Button button1
    {
-      this, text = "Go", position = { 296, 104 }, isDefault = true;
+      this, text = $"Go", position = { 296, 104 }, isDefault = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {

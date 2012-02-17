@@ -1079,7 +1079,7 @@ private:
       }
       if(ide.ShouldStopBuild())
       {
-         ide.outputView.buildBox.Logf("\nBuild cancelled by user.\n", line);
+         ide.outputView.buildBox.Logf($"\nBuild cancelled by user.\n", line);
          f.Terminate();
       }
    }
@@ -1188,12 +1188,12 @@ private:
                   {
                      if(!compiling && !isPrecomp)
                      {
-                        ide.outputView.buildBox.Logf("Compiling...\n");
+                        ide.outputView.buildBox.Logf($"Compiling...\n");
                         compiling = true;
                      }
                      else if(!precompiling && isPrecomp)
                      {
-                        ide.outputView.buildBox.Logf("Generating symbols...\n");
+                        ide.outputView.buildBox.Logf($"Generating symbols...\n");
                         precompiling = true;
                      }
                      Tokenize(module, 1, tokens, false);
@@ -1205,7 +1205,7 @@ private:
                      compiling = false;
                      precompiling = false;
                      linking = true;
-                     ide.outputView.buildBox.Logf("Linking...\n");
+                     ide.outputView.buildBox.Logf($"Linking...\n");
                   }
                   else
                   {
@@ -1216,9 +1216,9 @@ private:
                   if(compilingEC) compilingEC--;
                }
                else if(strstr(line, "ar rcs") == line)
-                  ide.outputView.buildBox.Logf("Building library...\n");
+                  ide.outputView.buildBox.Logf($"Building library...\n");
                else if(strstr(line, ecsCommand) == line)
-                  ide.outputView.buildBox.Logf("Writing symbol loader...\n");
+                  ide.outputView.buildBox.Logf($"Writing symbol loader...\n");
                else
                {
                   if(linking || compiling || precompiling)
@@ -1330,7 +1330,7 @@ private:
       }
       if(ide.ShouldStopBuild())
       {
-         ide.outputView.buildBox.Logf("\nBuild cancelled by user.\n", line);
+         ide.outputView.buildBox.Logf($"\nBuild cancelled by user.\n", line);
          f.Terminate();
       }
       else if(loggedALine || !isARun)
@@ -1338,21 +1338,21 @@ private:
          if(f.GetExitCode() && !numErrors)
          {
             bool result = f.GetLine(line, sizeof(line)-1);
-            ide.outputView.buildBox.Logf("Fatal Error: child process terminated unexpectedly\n");
+            ide.outputView.buildBox.Logf($"Fatal Error: child process terminated unexpectedly\n");
          }
          else
          {
             if(!onlyNode)
                ide.outputView.buildBox.Logf("\n%s (%s) - ", GetTargetFileName(config), configName);
             if(numErrors)
-               ide.outputView.buildBox.Logf("%d %s, ", numErrors, (numErrors > 1) ? "errors" : "error");
+               ide.outputView.buildBox.Logf("%d %s, ", numErrors, (numErrors > 1) ? $"errors" : $"error");
             else
-               ide.outputView.buildBox.Logf("no error, ");
+               ide.outputView.buildBox.Logf($"no error, ");
    
             if(numWarnings)
-               ide.outputView.buildBox.Logf("%d %s\n", numWarnings, (numWarnings > 1) ? "warnings" : "warning");
+               ide.outputView.buildBox.Logf("%d %s\n", numWarnings, (numWarnings > 1) ? $"warnings" : $"warning");
             else
-               ide.outputView.buildBox.Logf("no warning\n");
+               ide.outputView.buildBox.Logf($"no warning\n");
          }
       }
       return numErrors == 0;
@@ -1475,7 +1475,7 @@ private:
             delete f;
          }
          else
-            ide.outputView.buildBox.Logf("Error executing make (%s) command\n", compiler.makeCommand);
+            ide.outputView.buildBox.Logf($"Error executing make (%s) command\n", compiler.makeCommand);
       }
 
       delete pathBackup;
@@ -1521,11 +1521,11 @@ private:
          sprintf(command, "%s clean -C \"%s\" -f \"%s\"", compiler.makeCommand, topNode.path, makeFilePath);
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
          {
-            ide.outputView.buildBox.Tell("Deleting target and object files...");
+            ide.outputView.buildBox.Tell($"Deleting target and object files...");
             ProcessCleanPipeOutput(f, compiler, config);
             delete f;
 
-            ide.outputView.buildBox.Logf("Target and object files deleted\n");
+            ide.outputView.buildBox.Logf($"Target and object files deleted\n");
          }
       }
 

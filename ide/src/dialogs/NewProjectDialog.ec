@@ -1,6 +1,6 @@
 import "ide"
 
-FileDialog fileDialog { type = selectDir, text = "Select project directory" };
+FileDialog fileDialog { type = selectDir, text = $"Select project directory" };
 
 class NewProjectDialog : Window
 {
@@ -10,7 +10,7 @@ class NewProjectDialog : Window
    borderStyle = sizable;
    tabCycle = true;
    hasClose = true;
-   text = "New Project";
+   text = $"New Project";
 
    char path[MAX_LOCATION];
    char name[MAX_FILENAME];
@@ -18,7 +18,7 @@ class NewProjectDialog : Window
    PathBox locationEditBox
    {
       this, position = { 10, 80 }, size = { 120, 22 }, anchor = { left = 10, top = 80, right = 10 };
-      hotKey = altL, text = "Location";
+      hotKey = altL, text = $"Location";
       typeExpected = directory, browseDialog = fileDialog;
 
       //NotifyUpdate = EditBoxUpdate;
@@ -53,13 +53,13 @@ class NewProjectDialog : Window
    };
    Label { this, position = { 10, 60 }, labeledWindow = locationEditBox };
 
-   DropBox targetType { this, position = { 10, 130 }, size = { 130 }, hotKey = altT, text = "Target Type" };
+   DropBox targetType { this, position = { 10, 130 }, size = { 130 }, hotKey = altT, text = $"Target Type" };
 
    Label { this, position = { 10, 110 }, labeledWindow = targetType };
 
    Button okBtn
    {
-      parent = this, isDefault = true, disabled = true, position = { 170, 130 }, size = { 60 }, text = "OK";
+      parent = this, isDefault = true, disabled = true, position = { 170, 130 }, size = { 60 }, text = $"OK";
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          char * location = locationEditBox.slashPath;
@@ -76,11 +76,11 @@ class NewProjectDialog : Window
          if(!FileExists(location).isDirectory)
          {
             if(MessageBox { type = yesNo, master = this, 
-                  text = "Directory doesn't exist", contents = "Create directory?" }.Modal() == yes)
+                  text = $"Directory doesn't exist", contents = $"Create directory?" }.Modal() == yes)
             {
                if(!MakeDir(location))
                {
-                  MessageBox { type = ok, master = this, text = location, contents = "Error creating directory" }.Modal();
+                  MessageBox { type = ok, master = this, text = location, contents = $"Error creating directory" }.Modal();
                   return true;
                }
             }
@@ -100,7 +100,7 @@ class NewProjectDialog : Window
          if(exists)
          {
             if(MessageBox { type = yesNo, master = this, 
-                  text = "Project Already Exists", contents = "Replace existing project?" }.Modal() == no)
+                  text = $"Project Already Exists", contents = $"Replace existing project?" }.Modal() == no)
                return true;
          }
 
@@ -165,7 +165,7 @@ class NewProjectDialog : Window
 
          if(!project.Save(filePath))
          {
-            MessageBox { type = ok, master = this, text = filePath, contents = "Error writing project file" }.Modal();
+            MessageBox { type = ok, master = this, text = filePath, contents = $"Error writing project file" }.Modal();
             delete project;
             return true;
          }
@@ -231,19 +231,19 @@ class NewProjectDialog : Window
    
    Button
    {
-      parent = this, position = { 240, 130 }, size = { 60 }, hotKey = escape, text = "Cancel";
+      parent = this, position = { 240, 130 }, size = { 60 }, hotKey = escape, text = $"Cancel";
       NotifyClicked = ButtonCloseDialog;
    };
    Button createForm
    {
-      parent = this, text = "Create Form", hotKey = altF, position = { 200, 30 };
+      parent = this, text = $"Create Form", hotKey = altF, position = { 200, 30 };
       isCheckbox = true, checked = true;
    };
    
    EditBox projectName
    {
       parent = this, textHorzScroll = true, position = { 10, 30 }, size = { 160 };
-      hotKey = altP, text = "Project Name";
+      hotKey = altP, text = $"Project Name";
       NotifyUpdate = EditBoxUpdate;
 
       bool NotifyModified(EditBox editBox)
@@ -305,15 +305,15 @@ class NewProjectDialog : Window
 
          row = targetType.AddRow();
          row.tag = TargetTypes::executable;
-         row.SetData(null, "Executable");
+         row.SetData(null, $"Executable");
 
          row = targetType.AddRow();
          row.tag = TargetTypes::sharedLibrary;
-         row.SetData(null, "Shared Library");
+         row.SetData(null, $"Shared Library");
 
          row = targetType.AddRow();
          row.tag = TargetTypes::staticLibrary;
-         row.SetData(null, "Static Library");
+         row.SetData(null, $"Static Library");
 
          targetType.currentRow = targetType.FindRow(TargetTypes::executable);
       }
@@ -328,19 +328,19 @@ class QuickProjectDialog : Window
    borderStyle = sizable;
    tabCycle = true;
    hasClose = true;
-   text = "Quick Project";
+   text = $"Quick Project";
 
    char path[MAX_LOCATION];
    char name[MAX_FILENAME];
 
-   Label message { this, position = { 10, 10 }, size = { 200 }, text = "Do you want to quickly create a temporary project?" };
+   Label message { this, position = { 10, 10 }, size = { 200 }, text = $"Do you want to quickly create a temporary project?" };
 
-   DropBox targetType { this, position = { 10, 70 }, size = { 130 }, hotKey = altT, text = "Target Type" };
+   DropBox targetType { this, position = { 10, 70 }, size = { 130 }, hotKey = altT, text = $"Target Type" };
    Label { this, position = { 10, 50 }, labeledWindow = targetType };
 
    Button okBtn
    {
-      parent = this, isDefault = true, position = { 170, 70 }, size = { 60 }, text = "OK";
+      parent = this, isDefault = true, position = { 170, 70 }, size = { 60 }, text = $"OK";
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          char tempDir[MAX_LOCATION] = "";
@@ -366,7 +366,7 @@ class QuickProjectDialog : Window
 
          if(!FileExists(tempDir).isDirectory)
          {
-            MessageBox { type = ok, master = this, text = tempDir, contents = "Temporary directory does not exist." }.Modal();
+            MessageBox { type = ok, master = this, text = tempDir, contents = $"Temporary directory does not exist." }.Modal();
             return true;
          }
          
@@ -440,7 +440,7 @@ class QuickProjectDialog : Window
 
          if(!project.Save(filePath))
          {
-            MessageBox { type = ok, master = this, text = filePath, contents = "Error writing project file" }.Modal();
+            MessageBox { type = ok, master = this, text = filePath, contents = $"Error writing project file" }.Modal();
             delete project;
             delete workspace;
             ide.DestroyTemporaryProjectDir();
@@ -516,7 +516,7 @@ class QuickProjectDialog : Window
    
    Button
    {
-      parent = this, position = { 240, 70 }, size = { 60 }, hotKey = escape, text = "Cancel";
+      parent = this, position = { 240, 70 }, size = { 60 }, hotKey = escape, text = $"Cancel";
       NotifyClicked = ButtonCloseDialog;
    };
    
@@ -526,15 +526,15 @@ class QuickProjectDialog : Window
 
       row = targetType.AddRow();
       row.tag = TargetTypes::executable;
-      row.SetData(null, "Executable");
+      row.SetData(null, $"Executable");
 
       row = targetType.AddRow();
       row.tag = TargetTypes::sharedLibrary;
-      row.SetData(null, "Shared Library");
+      row.SetData(null, $"Shared Library");
 
       row = targetType.AddRow();
       row.tag = TargetTypes::staticLibrary;
-      row.SetData(null, "Static Library");
+      row.SetData(null, $"Static Library");
 
       targetType.currentRow = targetType.FindRow(TargetTypes::executable);
    }

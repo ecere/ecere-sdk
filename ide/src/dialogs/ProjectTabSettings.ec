@@ -5,12 +5,12 @@ class ProjectTab : Tab
    Project project;
 
    background = activeBorder;
-   text = "Project";
+   text = $"Project";
    Label labelModuleName { this, position = { 8, 8 }, labeledWindow = moduleName };
    EditBox moduleName
    {
       this, size = { 180, 22 }, position = { 8, 24 };
-      text = "Module Name", hotKey = altU;
+      text = "$Module Name", hotKey = altU;
       NotifyModified = ProjectControlModified;
    };
    
@@ -19,7 +19,7 @@ class ProjectTab : Tab
    {
       this, size = { 290, 100 }, position = { 8, 66 }, anchor = { left = 8, top = 66, right = 8 };
       multiLine = true, hasVertScroll = true;
-      text = "Description", hotKey = altA;
+      text = $"Description", hotKey = altA;
       NotifyModified = ProjectControlModified;
    };
 
@@ -28,7 +28,7 @@ class ProjectTab : Tab
    {
       this, size = { 290, 22 }, position = { 8, 190 }, anchor = { left = 8, top = 190, right = 8, bottom = 8 };
       multiLine = true, hasVertScroll = true;
-      text = "License", hotKey = altA;
+      text = $"License", hotKey = altA;
       NotifyModified = ProjectControlModified;
    };
 
@@ -68,8 +68,8 @@ class ProjectTab : Tab
          DialogResult diagRes = MessageBox
          {
             type = yesNoCancel, master = ide,
-            text = "Save changes to project options?",
-            contents = "Would you like to save changes made to the project options?"
+            text = $"Save changes to project options?",
+            contents = $"Would you like to save changes made to the project options?"
          }.Modal();
          if(diagRes == cancel)
             return false;

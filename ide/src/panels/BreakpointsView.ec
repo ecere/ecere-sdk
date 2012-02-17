@@ -6,7 +6,7 @@ class BreakpointsView : Window
    borderStyle = sizable;
    background = { 224, 224, 224 };
    hasClose = true;
-   text = "Breakpoints";
+   text = $"Breakpoints";
    clientSize = Size { 206, 624 };
    //anchor = Anchor { left = 0.8, top = 200, right = 0, bottom = 200 };
    //size = { 150 };
@@ -107,10 +107,10 @@ class BreakpointsView : Window
       }
    };
    
-   DataField locationField { "char *", true, width = 180, header = "Location" };
-   DataField ignoreField { "char *", true, width = 72, header = "Ignore Count" };
-   DataField levelField { "char *", true, width = 50, header = "Hit Level" };
-   DataField conditionField { "char *", true, width = 130, header = "Condition" };
+   DataField locationField { "char *", true, width = 180, header = $"Location" };
+   DataField ignoreField { "char *", true, width = 72, header = $"Ignore Count" };
+   DataField levelField { "char *", true, width = 50, header = $"Hit Level" };
+   DataField conditionField { "char *", true, width = 130, header = $"Condition" };
    
    BreakpointsView()
    {

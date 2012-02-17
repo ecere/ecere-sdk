@@ -2,7 +2,7 @@ import "ide"
 
 class ProjectActiveConfig : Window
 {
-   text = "Project Active Configuration";
+   text = $"Project Active Configuration";
    background = activeBorder;
    borderStyle = fixed;
    minClientSize = { 568, 40 };
@@ -36,7 +36,7 @@ class ProjectActiveConfig : Window
    Button ok
    {
       this, size = { 80 }, position = { 392, 8 };
-      text = "OK", isDefault = true;
+      text = $"OK", isDefault = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -54,7 +54,7 @@ class ProjectActiveConfig : Window
    Button cancel
    {
       this, size = { 80 }, position = { 480, 8 };
-      text = "Cancel", hotKey = escape, id = DialogResult::cancel;
+      text = $"Cancel", hotKey = escape, id = DialogResult::cancel;
       NotifyClicked = ButtonCloseDialog;
    };
 
@@ -62,7 +62,7 @@ class ProjectActiveConfig : Window
    DropBox config
    {
       this, position = { 160, 8 }, size = { 220 };
-      text = "Active Configuration", hotKey = altA;
+      text = $"Active Configuration", hotKey = altA;
    };
    
 }

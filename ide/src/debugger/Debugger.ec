@@ -2871,15 +2871,15 @@ class Debugger
                                  }
                                  ide.callStackView.Logf("%3d ", frame.level);
                                  if(!strncmp(frame.func, "__ecereMethod_", strlen("__ecereMethod_")))
-                                    ide.callStackView.Logf("%s Method, %s:%d\n", &frame.func[strlen("__ecereMethod_")], (s = CopySystemPath(frame.file)), frame.line);
+                                    ide.callStackView.Logf($"%s Method, %s:%d\n", &frame.func[strlen("__ecereMethod_")], (s = CopySystemPath(frame.file)), frame.line);
                                  else if(!strncmp(frame.func, "__ecereProp_", strlen("__ecereProp_")))
-                                    ide.callStackView.Logf("%s Property, %s:%d\n", &frame.func[strlen("__ecereProp_")], (s = CopySystemPath(frame.file)), frame.line);
+                                    ide.callStackView.Logf($"%s Property, %s:%d\n", &frame.func[strlen("__ecereProp_")], (s = CopySystemPath(frame.file)), frame.line);
                                  else if(!strncmp(frame.func, "__ecereConstructor_", strlen("__ecereConstructor_")))
-                                    ide.callStackView.Logf("%s Constructor, %s:%d\n", &frame.func[strlen("__ecereConstructor_")], (s = CopySystemPath(frame.file)), frame.line);
+                                    ide.callStackView.Logf($"%s Constructor, %s:%d\n", &frame.func[strlen("__ecereConstructor_")], (s = CopySystemPath(frame.file)), frame.line);
                                  else if(!strncmp(frame.func, "__ecereDestructor_", strlen("__ecereDestructor_")))
-                                    ide.callStackView.Logf("%s Destructor, %s:%d\n", &frame.func[strlen("__ecereDestructor_")], (s = CopySystemPath(frame.file)), frame.line);
+                                    ide.callStackView.Logf($"%s Destructor, %s:%d\n", &frame.func[strlen("__ecereDestructor_")], (s = CopySystemPath(frame.file)), frame.line);
                                  else
-                                    ide.callStackView.Logf("%s Function, %s:%d\n", frame.func, (s = CopySystemPath(frame.file)), frame.line);
+                                    ide.callStackView.Logf($"%s Function, %s:%d\n", frame.func, (s = CopySystemPath(frame.file)), frame.line);
                                  delete s;
                               }
                               else
@@ -2889,13 +2889,13 @@ class Debugger
                                  if(frame.from)
                                  {
                                     char * s;
-                                    ide.callStackView.Logf("inside %s, %s\n", frame.func, (s = CopySystemPath(frame.from)));
+                                    ide.callStackView.Logf($"inside %s, %s\n", frame.func, (s = CopySystemPath(frame.from)));
                                     delete s;
                                  }
                                  else if(frame.func)
                                     ide.callStackView.Logf("%s\n", frame.func);
                                  else
-                                    ide.callStackView.Logf("unknown source\n");
+                                    ide.callStackView.Logf($"unknown source\n");
                               }
                            }
                            else
@@ -3571,7 +3571,7 @@ class ProgramThread : Thread
       else
       {
          app.Lock();
-         ide.outputView.debugBox.Logf("err: Unable to create FIFO %s\n", progFifoPath);
+         ide.outputView.debugBox.Logf($"err: Unable to create FIFO %s\n", progFifoPath);
          app.Unlock();
       }*/
 
