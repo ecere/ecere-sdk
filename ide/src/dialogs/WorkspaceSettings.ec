@@ -3,13 +3,13 @@ import "Project"
 class WorkspaceTab : Tab
 {
    background = activeBorder;
-   text = "Workspace";
+   text = $"Workspace";
 
    Label labelDebugDirectory { this, position = { 8, 8 }, labeledWindow = debugDirectory };
    PathBox debugDirectory
    {
       this, size = { 290, 22 }, position = { 8, 24 }, anchor = { left = 8, top = 24, right = 8 };
-      text = "Debug Working Directory", hotKey = altU;
+      text = $"Debug Working Directory", hotKey = altU;
       typeExpected = directory;
       browseDialog = { };
       NotifyModified = WorkspaceControlModified;
@@ -19,14 +19,14 @@ class WorkspaceTab : Tab
    EditBox commandLineArgs
    {
       this, size = { 290, 22 }, position = { 8, 66 }, anchor = { left = 8, top = 66, right = 8 };
-      text = "Command Line Arguments", hotKey = altA;
+      text = $"Command Line Arguments", hotKey = altA;
       NotifyModified = WorkspaceControlModified;
    };
    Label labelEnvironmentVars { environmentVars, this, position = { 0, 6 }, labeledWindow = environmentVars };
    NamedStringsBox environmentVars
    {
       this, size = { 290, 100 }, anchor = { left = 8, top = 96, right = 8 };
-      text = "Environment Variables", hotKey = altV;
+      text = $"Environment Variables", hotKey = altV;
       NotifyModified = WorkspaceControlModified;
    };
 
@@ -34,7 +34,7 @@ class WorkspaceTab : Tab
    DirectoriesBox sourceDirs
    {
       this, size = { 290, 100 }, anchor = { left = 8, top = 204, right = 8 };
-      text = "Source Files Directories", hotKey = altI;
+      text = $"Source Files Directories", hotKey = altI;
       NotifyModified = WorkspaceControlModified;
    };
 
@@ -88,8 +88,8 @@ class WorkspaceTab : Tab
          DialogResult diagRes = MessageBox
          {
             type = yesNoCancel, master = rootWindow,
-            text = "Save changes to workspace options?",
-            contents = "Would you like to save changes made to the workspace options?"
+            text = $"Save changes to workspace options?",
+            contents = $"Would you like to save changes made to the workspace options?"
          }.Modal();
          if(diagRes == cancel)
             return false;

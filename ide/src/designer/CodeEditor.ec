@@ -2823,7 +2823,7 @@ class CodeEditor : Window
       defines.AddName(module);
 
    #ifdef _DEBUG
-      //yydebug = true;
+      // SetYydebug(true);
    #endif
       resetScanner();
 

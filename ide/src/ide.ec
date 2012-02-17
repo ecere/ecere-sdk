@@ -2209,7 +2209,7 @@ class IDE : Window
 
    void OnDestroy()
    {
-      // IS THIS NEEDED? WASN'T HERE BEFORE...
+      // IS THIS NEEDED? WASN'T HERE BEFORE...  Crashes on getting node's projectView otherwise
       if(projectView)
       {
          projectView.visible = false;

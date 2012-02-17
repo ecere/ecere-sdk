@@ -501,7 +501,7 @@ class Debugger
             {
                char * s;
                signalOn = true;
-               ide.outputView.debugBox.Logf("Signal received: %s - %s\n", stopItem.name, stopItem.meaning);
+               ide.outputView.debugBox.Logf($"Signal received: %s - %s\n", stopItem.name, stopItem.meaning);
                ide.outputView.debugBox.Logf("    %s:%d\n", (s = CopySystemPath(stopItem.frame.file)), stopItem.frame.line);
                delete s;
             }
@@ -732,7 +732,7 @@ class Debugger
                char * s;
                char title[MAX_LOCATION];
 
-               sprintf(title, "Provide source file location for %s", (s = CopySystemPath(frame.file)));
+               sprintf(title, $"Provide source file location for %s", (s = CopySystemPath(frame.file)));
                delete s;
                if(SourceDirDialog(title, ide.workspace.projectDir, frame.file, sourceDir))
                {
@@ -806,7 +806,7 @@ class Debugger
       targetProcessId = 0;
 
       if(code)
-         sprintf(verboseExitCode, " with exit code %s", code);
+         sprintf(verboseExitCode, $" with exit code %s", code);
       else
          verboseExitCode[0] = '\0';
       
@@ -843,15 +843,15 @@ class Debugger
          char program[MAX_LOCATION];
          GetSystemPathBuffer(program, targetFile);
          if(!reason)
-            ide.outputView.debugBox.Logf("The program %s has exited%s.\n", program, verboseExitCode);
+            ide.outputView.debugBox.Logf($"The program %s has exited%s.\n", program, verboseExitCode);
          else if(!strcmp(reason, "exited-normally"))
-            ide.outputView.debugBox.Logf("The program %s has exited normally%s.\n", program, verboseExitCode);
+            ide.outputView.debugBox.Logf($"The program %s has exited normally%s.\n", program, verboseExitCode);
          else if(!strcmp(reason, "exited"))
-            ide.outputView.debugBox.Logf("The program %s has exited%s.\n", program, verboseExitCode);
+            ide.outputView.debugBox.Logf($"The program %s has exited%s.\n", program, verboseExitCode);
          else if(!strcmp(reason, "exited-signalled"))
-            ide.outputView.debugBox.Logf("The program %s has exited with a signal%s.\n", program, verboseExitCode);
+            ide.outputView.debugBox.Logf($"The program %s has exited with a signal%s.\n", program, verboseExitCode);
          else
-            ide.outputView.debugBox.Logf("The program %s has exited (gdb provided an unknown reason)%s.\n", program, verboseExitCode);
+            ide.outputView.debugBox.Logf($"The program %s has exited (gdb provided an unknown reason)%s.\n", program, verboseExitCode);
       }
       ide.Update(null);
    }
@@ -881,7 +881,7 @@ class Debugger
                break;
          case loaded:
             ide.outputView.ShowClearSelectTab(debug);
-            ide.outputView.debugBox.Logf("Starting debug mode\n");
+            ide.outputView.debugBox.Logf($"Starting debug mode\n");
             userBreakOnInternBreak = true;
             GdbExecRun();
             break;
@@ -901,7 +901,7 @@ class Debugger
                break;
          case loaded:
             ide.outputView.ShowClearSelectTab(debug);
-            ide.outputView.debugBox.Logf("Starting debug mode\n");
+            ide.outputView.debugBox.Logf($"Starting debug mode\n");
             ignoreBreakpoints = ignoreBkpts;
             userBreakOnInternBreak = true;
             GdbExecRun();
@@ -945,7 +945,7 @@ class Debugger
                if(state == loaded)
                {
                   ide.outputView.ShowClearSelectTab(debug);
-                  ide.outputView.debugBox.Logf("Starting debug mode\n");
+                  ide.outputView.debugBox.Logf($"Starting debug mode\n");
                }
                RunToCursorPrepare(absoluteFilePath, relativeFilePath, lineNumber);
                sentBreakInsert = true;
@@ -1108,8 +1108,8 @@ class Debugger
          strcpy(sourceDir, debuggerFileDialog.filePath);
          if(!fstrcmp(ide.workspace.projectDir, sourceDir) && 
                   MessageBox { type = yesNo, master = ide, 
-                              contents = "This is the project directory.\nWould you like to try again?", 
-                              text = "Invalid Source Directory" }.Modal() == no)
+                              contents = $"This is the project directory.\nWould you like to try again?", 
+                              text = $"Invalid Source Directory" }.Modal() == no)
             return false;
          else
          {
@@ -1124,8 +1124,8 @@ class Debugger
             
             if(srcDir && 
                   MessageBox { type = yesNo, master = ide, 
-                              contents = "This source directory is already specified.\nWould you like to try again?", 
-                              text = "Invalid Source Directory" }.Modal() == no)
+                              contents = $"This source directory is already specified.\nWould you like to try again?", 
+                              text = $"Invalid Source Directory" }.Modal() == no)
                return false;
             else
             {
@@ -1137,8 +1137,8 @@ class Debugger
                   result = FileExists(file);
                   if(!result && 
                         MessageBox { type = yesNo, master = ide, 
-                                    contents = "Unable to locate source file.\nWould you like to try again?", 
-                                    text = "Invalid Source Directory" }.Modal() == no)
+                                    contents = $"Unable to locate source file.\nWould you like to try again?", 
+                                    text = $"Invalid Source Directory" }.Modal() == no)
                         return false;
                }
                else
@@ -1217,7 +1217,7 @@ class Debugger
             char title[MAX_LOCATION];
             char directory[MAX_LOCATION];
             StripLastDirectory(absolutePath, directory);
-            sprintf(title, "Provide source files location directory for %s", absolutePath);
+            sprintf(title, $"Provide source files location directory for %s", absolutePath);
             while(true)
             {
                String srcDir = null;
@@ -1242,13 +1242,13 @@ class Debugger
                      break;
                   }
                   else if(MessageBox { type = yesNo, master = ide, 
-                                 contents = "You must provide a valid source directory in order to place a breakpoint in this file.\nWould you like to try again?", 
-                                 text = "Invalid Source Directory" }.Modal() == no)
+                                 contents = $"You must provide a valid source directory in order to place a breakpoint in this file.\nWould you like to try again?", 
+                                 text = $"Invalid Source Directory" }.Modal() == no)
                      return;
                }
                else if(MessageBox { type = yesNo, master = ide, 
-                                 contents = "You must provide a source directory in order to place a breakpoint in this file.\nWould you like to try again?", 
-                                 text = "No Source Directory Provided" }.Modal() == no)
+                                 contents = $"You must provide a source directory in order to place a breakpoint in this file.\nWould you like to try again?", 
+                                 text = $"No Source Directory Provided" }.Modal() == no)
                   return;
             }
          }
@@ -1832,7 +1832,7 @@ class Debugger
       //breakpointsInserted = false;
       
       ide.outputView.ShowClearSelectTab(debug);
-      ide.outputView.debugBox.Logf("Starting debug mode\n");
+      ide.outputView.debugBox.Logf($"Starting debug mode\n");
 
 #ifdef GDB_DEBUG_CONSOLE
       Log("Starting GDB"); Log("\n");
@@ -1876,7 +1876,7 @@ class Debugger
       gdbHandle = DualPipeOpen(PipeOpenMode { output = 1, error = 2, input = 1 }, command);
       if(!gdbHandle)
       {
-         ide.outputView.debugBox.Logf("Debugger Fatal Error: Couldn't start GDB\n");
+         ide.outputView.debugBox.Logf($"Debugger Fatal Error: Couldn't start GDB\n");
          result = false;
       }
       if(result)
@@ -1887,7 +1887,7 @@ class Debugger
          gdbProcessId = gdbHandle.GetProcessID();
          if(!gdbProcessId)
          {
-            ide.outputView.debugBox.Logf("Debugger Fatal Error: Couldn't get GDB process ID\n");
+            ide.outputView.debugBox.Logf($"Debugger Fatal Error: Couldn't get GDB process ID\n");
             result = false;
          }
          if(result)
@@ -1917,7 +1917,7 @@ class Debugger
                   else
                   {
                      //app.Lock();
-                     ide.outputView.debugBox.Logf("err: Unable to create FIFO %s\n", progFifoPath);
+                     ide.outputView.debugBox.Logf($"err: Unable to create FIFO %s\n", progFifoPath);
                      //app.Unlock();
                   }
                }
@@ -1993,7 +1993,7 @@ class Debugger
       if(bpRunToCursor)
          bpRunToCursor.inserted = false;
       
-      ide.outputView.debugBox.Logf("Debugging stopped\n");
+      ide.outputView.debugBox.Logf($"Debugging stopped\n");
       ClearBreakDisplay();
       //ide.AdjustDebugMenus();
       ide.Update(null);
@@ -2087,7 +2087,7 @@ class Debugger
       {
          char watchmsg[MAX_F_STRING];
          if(state == stopped && !codeEditor)
-            wh.value = CopyString("No source file found for selected frame");
+            wh.value = CopyString($"No source file found for selected frame");
          //if(codeEditor && state == stopped || state != stopped)
          else
          {
@@ -2258,11 +2258,11 @@ class Debugger
                switch(exp.type)
                {
                   case symbolErrorExp:
-                     sprintf(watchmsg, "Symbol \"%s\" not found", exp.identifier.string);
+                     sprintf(watchmsg, $"Symbol \"%s\" not found", exp.identifier.string);
                      break;
                   case structMemberSymbolErrorExp:
                      // todo get info as in next case (ExpClassMemberSymbolError)
-                     sprintf(watchmsg, "Error: Struct member not found for \"%s\"", wh.expression);
+                     sprintf(watchmsg, $"Error: Struct member not found for \"%s\"", wh.expression);
                      break;
                   case classMemberSymbolErrorExp:
                      {
@@ -2282,7 +2282,7 @@ class Debugger
                               _class = classSym ? classSym.registered : null;
                            }
                            if(_class)
-                              sprintf(watchmsg, "Member \"%s\" not found in class \"%s\"", memberID ? memberID.string : "", _class.name);
+                              sprintf(watchmsg, $"Member \"%s\" not found in class \"%s\"", memberID ? memberID.string : "", _class.name);
                            else
                               sprintf(watchmsg, "Member \"%s\" not found in unregistered class? (Should never get this message)", memberID ? memberID.string : "");
                         }
@@ -2292,22 +2292,22 @@ class Debugger
                      break;
                   case memoryErrorExp:
                      // Need to ensure when set to memoryErrorExp, constant is set
-                     sprintf(watchmsg, "Memory can't be read at %s", /*(exp.type == constantExp) ? */exp.constant /*: null*/);
+                     sprintf(watchmsg, $"Memory can't be read at %s", /*(exp.type == constantExp) ? */exp.constant /*: null*/);
                      break;
                   case dereferenceErrorExp:
-                     sprintf(watchmsg, "Dereference failure for \"%s\"", wh.expression);
+                     sprintf(watchmsg, $"Dereference failure for \"%s\"", wh.expression);
                      break;
                   case unknownErrorExp:
-                     sprintf(watchmsg, "Unknown error for \"%s\"", wh.expression);
+                     sprintf(watchmsg, $"Unknown error for \"%s\"", wh.expression);
                      break;
                   case noDebuggerErrorExp:
-                     sprintf(watchmsg, "Debugger required for symbol evaluation in \"%s\"", wh.expression);
+                     sprintf(watchmsg, $"Debugger required for symbol evaluation in \"%s\"", wh.expression);
                      break;
                   case debugStateErrorExp:
-                     sprintf(watchmsg, "Incorrect debugger state for symbol evaluation in \"%s\"", wh.expression);
+                     sprintf(watchmsg, $"Incorrect debugger state for symbol evaluation in \"%s\"", wh.expression);
                      break;
                   case 0:
-                     sprintf(watchmsg, "Null type for \"%s\"", wh.expression);
+                     sprintf(watchmsg, $"Null type for \"%s\"", wh.expression);
                      break;
                   case constantExp:
                   case stringExp:
@@ -2339,7 +2339,7 @@ class Debugger
                            sprintf(value, "0x%08x ", address);
                            
                            if(!address)
-                              strcat(value, "Null string");
+                              strcat(value, $"Null string");
                            else
                            {
                               int size = 4096;
@@ -2374,11 +2374,11 @@ class Debugger
                               }
                               else if(string)
                               {
-                                 strcat(value, "Empty string");
+                                 strcat(value, $"Empty string");
                                  delete string;
                               }
                               else
-                                 strcat(value, "Couldn't read memory");
+                                 strcat(value, $"Couldn't read memory");
                            }
                            wh.value = CopyString(value);
                         }
@@ -2396,7 +2396,7 @@ class Debugger
                         if(item)
                            wh.value = CopyString(item.name);
                         else
-                           wh.value = CopyString("Invalid Enum Value");
+                           wh.value = CopyString($"Invalid Enum Value");
                         result = (bool)atoi(exp.constant);
                      }
                      else if(wh.type && (wh.type.kind == charType || (wh.type.kind == classType && wh.type._class && 
@@ -2458,7 +2458,7 @@ class Debugger
                         else if(value > 256 || wh.type.kind != charType)
                         {
                            if(value > 0x10FFFF || !GetCharCategory(value))
-                              sprintf(string, "Invalid Unicode Keypoint (0x%08X)", value);
+                              sprintf(string, $"Invalid Unicode Keypoint (0x%08X)", value);
                            else
                               sprintf(string, "\'%s\' (U+%04X)", charString, value);
                         }
@@ -2484,16 +2484,16 @@ class Debugger
                      {
                         char tempString[256];
                         if(exp.member.memberType == propertyMember)
-                           sprintf(watchmsg, "Missing property evaluation support for \"%s\"", wh.expression);
+                           sprintf(watchmsg, $"Missing property evaluation support for \"%s\"", wh.expression);
                         else
-                           sprintf(watchmsg, "Evaluation failed for \"%s\" of type \"%s\"", wh.expression, 
+                           sprintf(watchmsg, $"Evaluation failed for \"%s\" of type \"%s\"", wh.expression, 
                                  exp.type.OnGetString(tempString, null, null));
                      }
                      break;
                }
             }
             else
-               sprintf(watchmsg, "Invalid expression: \"%s\"", wh.expression);
+               sprintf(watchmsg, $"Invalid expression: \"%s\"", wh.expression);
             if(exp) FreeExpression(exp);
 
             
@@ -2676,8 +2676,8 @@ class Debugger
             gdbHandle.Wait();
             delete gdbHandle;
             
-            ide.outputView.debugBox.Logf("Debugger Fatal Error: GDB lost\n");
-            ide.outputView.debugBox.Logf("Debugging stopped\n");
+            ide.outputView.debugBox.Logf($"Debugger Fatal Error: GDB lost\n");
+            ide.outputView.debugBox.Logf($"Debugging stopped\n");
             ide.Update(null);
          }
          //ChangeState(terminated);
@@ -2735,7 +2735,7 @@ class Debugger
             if(strstr(output, "No debugging symbols found") || strstr(output, "(no debugging symbols found)"))
             {
                symbols = false;
-               ide.outputView.debugBox.Logf("Target doesn't contain debug information!\n");
+               ide.outputView.debugBox.Logf($"Target doesn't contain debug information!\n");
                ide.Update(null);
             }
             break;
@@ -3332,7 +3332,7 @@ class Debugger
                   }
                   else if(!oldProcessID)
                   {
-                     ide.outputView.debugBox.Logf("Debugger Error: No target process ID\n");
+                     ide.outputView.debugBox.Logf($"Debugger Error: No target process ID\n");
                      // TO VERIFY: The rest of this block has not been thoroughly tested in this particular location
                      gdbHandle.Printf("-gdb-exit\n");
                      gdbTimer.Stop();
@@ -3349,7 +3349,7 @@ class Debugger
                      if(bpRunToCursor)
                         bpRunToCursor.inserted = false;
                      
-                     ide.outputView.debugBox.Logf("Debugging stopped\n");
+                     ide.outputView.debugBox.Logf($"Debugging stopped\n");
                      ClearBreakDisplay();
                      //ide.AdjustDebugMenus(); ide.Update(null);
 
@@ -3377,7 +3377,7 @@ class Debugger
                serialSemaphore.Release();
             }
             else
-               DebuggerProtocolUnknown("Unknown prompt", output);
+               DebuggerProtocolUnknown($"Unknown prompt", output);
 
             break;
          case '&':
@@ -3399,7 +3399,7 @@ class Debugger
             }
             break;
          default:
-            DebuggerProtocolUnknown("Unknown output", output);
+            DebuggerProtocolUnknown($"Unknown output", output);
       }
       if(!setWaitingForPID)
          waitingForPID = false;
@@ -3581,7 +3581,7 @@ class ProgramThread : Thread
          if(!fifoFile)
          {
             app.Lock();
-            ide.outputView.debugBox.Logf("err: Unable to open FIFO %s for read\n", progFifoPath);
+            ide.outputView.debugBox.Logf($"err: Unable to open FIFO %s for read\n", progFifoPath);
             app.Unlock();
          }
          else

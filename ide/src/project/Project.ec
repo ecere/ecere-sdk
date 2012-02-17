@@ -1140,7 +1140,7 @@ private:
                      if(end)
                      {
                         *end = '\0';
-                        ide.outputView.buildBox.Logf("   %s: No such file or directory\n", module);
+                        ide.outputView.buildBox.Logf($"   %s: No such file or directory\n", module);
                         // ide.outputView.buildBox.Logf("error: %s\n   No such file or directory\n", module);
                         numErrors ++;
                      }
