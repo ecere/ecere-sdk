@@ -632,6 +632,12 @@ char * PlatformToMakefileVariable(Platform platform)
    return platform == win32 ? "WINDOWS" : platform == tux ? "LINUX" : platform == apple ? "OSX"/*"APPLE"*/ : platform;
 }
 
+// Move this to ProjectConfig? null vs Common to consider...
+char * GetConfigName(ProjectConfig config)
+{
+   return config ? config.name : "Common";
+}
+
 class Project : struct
 {
    class_no_expansion;  // To use Find on the Container<Project> in Workspace::projects
@@ -729,15 +735,13 @@ private:
       delete name;
    }
 
-   property char * configName { get { return config ? config.name : "Common"; } }
-
    property ProjectConfig config
    {
       set
       {
          config = value;
          delete topNode.info;
-         topNode.info = CopyString(configName);
+         topNode.info = CopyString(GetConfigName(config));
       }
    }
    property char * filePath
@@ -1682,7 +1686,7 @@ private:
          ReplaceSpaces(resDirNoSpaces, resNode.path ? resNode.path : "");
          //ReplaceSpaces(fixedPrjName, name);
          ReplaceSpaces(fixedModuleName, moduleName);
-         ReplaceSpaces(fixedConfigName, configName);
+         ReplaceSpaces(fixedConfigName, GetConfigName(config));
          ReplaceSpaces(fixedCompilerName, compiler.name);
          //CamelCase(fixedModuleName); // case is important for static linking
          CamelCase(fixedConfigName);

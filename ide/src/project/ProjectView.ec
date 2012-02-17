@@ -598,7 +598,7 @@ class ProjectView : Window
             reason = "";
 
          //logBox.Logf("%s\n", makefileName);
-         logBox.Logf($"%s - %s%smakefile for %s config...\n", makefileName, reason, action, project.configName);
+         logBox.Logf($"%s - %s%smakefile for %s config...\n", makefileName, reason, action, GetConfigName(config));
          project.GenerateMakefile(null, false, null, compiler, config);
 
          ide.statusBar.text = null;
@@ -612,7 +612,7 @@ class ProjectView : Window
    {
       if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
       {
-         ide.outputView.buildBox.Logf($"Building project %s using the %s configuration...\n", prj.name, prj.configName);
+         ide.outputView.buildBox.Logf($"Building project %s using the %s configuration...\n", prj.name, GetConfigName(config));
          return Build(prj, buildType, compiler, config);
       }
       return false;
@@ -781,7 +781,7 @@ class ProjectView : Window
       config = prj.config;
       if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
       {
-         ide.outputView.buildBox.Logf("Relinking project %s using the %s configuration...\n", prj.name, prj.configName);
+         ide.outputView.buildBox.Logf("Relinking project %s using the %s configuration...\n", prj.name, GetConfigName(config));
          if(config)
             config.linkingModified = true;
          Build(prj, relink, compiler, config);
@@ -797,7 +797,7 @@ class ProjectView : Window
       ProjectConfig config = prj.config;
       if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
       {
-         ide.outputView.buildBox.Logf($"Rebuilding project %s using the %s configuration...\n", prj.name, prj.configName);
+         ide.outputView.buildBox.Logf($"Rebuilding project %s using the %s configuration...\n", prj.name, GetConfigName(config));
          /*if(config)
          {
             config.compilingModified = true;
@@ -816,7 +816,7 @@ class ProjectView : Window
       ProjectConfig config = prj.config;
       if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
       {
-         ide.outputView.buildBox.Logf($"Cleaning project %s using the %s configuration...\n", prj.name, prj.configName);
+         ide.outputView.buildBox.Logf($"Cleaning project %s using the %s configuration...\n", prj.name, GetConfigName(config));
          
          buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
          ide.AdjustBuildMenus();
