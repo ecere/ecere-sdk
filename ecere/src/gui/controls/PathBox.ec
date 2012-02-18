@@ -17,7 +17,7 @@ public class FilePath : String
       {
          dataBox, borderStyle = 0, anchor = { 0, 0, 0, 0 },
          typeExpected = any;
-         browseDialog = userData ? (FileDialog)userData : { type = open, text = "Select a file..." };
+         browseDialog = userData ? (FileDialog)userData : { type = open, text = $"Select a file..." };
          path = this;
       };
       pathBox.Create();
@@ -49,7 +49,7 @@ public class DirPath : FilePath
       {
          dataBox, borderStyle = 0, anchor = { 0, 0, 0, 0 },
          typeExpected = directory;
-         browseDialog = userData ? (FileDialog)userData : { type = selectDir, text = "Select a folder..." };
+         browseDialog = userData ? (FileDialog)userData : { type = selectDir, text = $"Select a folder..." };
          path = this;
       };
       pathBox.Create();
@@ -313,7 +313,7 @@ public:
 }
 
 // DirectoriesBox
-FileDialog browseFileDialog { type = selectDir, text = "Select directory" };
+FileDialog browseFileDialog { type = selectDir, text = $"Select directory" };
 
 public class DirectoriesBox : CommonControl
 {

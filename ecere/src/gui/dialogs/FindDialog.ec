@@ -4,7 +4,7 @@ import "Window"
 
 public class FindDialog : Window
 {
-   text = "Find";
+   text = $"Find";
    hasClose = true;
    tabCycle = true;
    borderStyle = fixed;
@@ -23,32 +23,32 @@ private:
 
    Button wholeWord
    {
-      this, isCheckbox = true, text = "Whole word only", position = { 10, 40 }, hotKey = altW
+      this, isCheckbox = true, text = $"Whole word only", position = { 10, 40 }, hotKey = altW
    };
 
    Button matchCase
    {
-      this, isCheckbox = true, text = "Match case", position = { 10, 60 }, hotKey = altC
+      this, isCheckbox = true, text = $"Match case", position = { 10, 60 }, hotKey = altC
    };
       
    Button searchUp
    {
-      this, isRadio = true, text = "Up", position = { 220, 50 }, hotKey = altU
+      this, isRadio = true, text = $"Up", position = { 220, 50 }, hotKey = altU
    };
 
    Button searchDown
    {
-      this, isRadio = true, text = "Down", position = { 220, 70 }, hotKey = altD, checked = true;
+      this, isRadio = true, text = $"Down", position = { 220, 70 }, hotKey = altD, checked = true;
    };
 
    Label directionLabel
    {
-      this, text = "Direction", position = { 220, 35 }
+      this, text = $"Direction", position = { 220, 35 }
    };
 
    Button findNext
    {
-      this, keyRepeat = true, isDefault = true, text = "Find Next", anchor = { right = 10, top = 10 }, size = { 80 }, hotKey = altF;
+      this, keyRepeat = true, isDefault = true, text = $"Find Next", anchor = { right = 10, top = 10 }, size = { 80 }, hotKey = altF;
 
       bool NotifyClicked(Button control, int x, int y, Modifiers mods)
       {
@@ -58,7 +58,7 @@ private:
          bool matchCase = this.matchCase.checked;
 
          if(!editBox || !editBox.Find(searchString, wholeWord, matchCase, !searchUp))
-            MessageBox { type = ok, master = this, text = "Find", contents = "Search string not found." }.Modal();
+            MessageBox { type = ok, master = this, text = $"Find", contents = $"Search string not found." }.Modal();
          else
          {
             findWhat.Activate();
@@ -70,7 +70,7 @@ private:
 
    Button cancel
    {
-      this, text = "Cancel", anchor = Anchor { right = 10, top = 45 }, size = { 80 }, hotKey = escape;
+      this, text = $"Cancel", anchor = Anchor { right = 10, top = 45 }, size = { 80 }, hotKey = escape;
       
       bool NotifyClicked(Button control, int x, int y, Modifiers mods)
       {
@@ -82,7 +82,7 @@ private:
 
    EditBox findWhat
    {
-      this, text = "Find what:", anchor = { left = 100, right = 100, top = 10 }, size.h = 20, hotKey = altN;
+      this, text = $"Find what:", anchor = { left = 100, right = 100, top = 10 }, size.h = 20, hotKey = altN;
    };
 
    Label findWhatLabel { this, position = { 10, 10 }, labeledWindow = findWhat };

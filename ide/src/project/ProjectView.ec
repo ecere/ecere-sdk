@@ -781,7 +781,7 @@ class ProjectView : Window
       config = prj.config;
       if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
       {
-         ide.outputView.buildBox.Logf("Relinking project %s using the %s configuration...\n", prj.name, GetConfigName(config));
+         ide.outputView.buildBox.Logf($"Relinking project %s using the %s configuration...\n", prj.name, GetConfigName(config));
          if(config)
             config.linkingModified = true;
          Build(prj, relink, compiler, config);
@@ -919,7 +919,7 @@ class ProjectView : Window
 
             //ide.outputView.ShowClearSelectTab(build);
             // this stuff doesn't even appear
-            //ide.outputView.buildBox.Logf("%s Compiler\n", compiler.name);
+            //ide.outputView.buildBox.Logf($"%s Compiler\n", compiler.name);
             if(config)
                ide.outputView.buildBox.Logf($"Compiling single file %s in project %s using the %s configuration...\n", node.name, prj.name, config.name);
             else

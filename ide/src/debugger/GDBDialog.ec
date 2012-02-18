@@ -185,7 +185,7 @@ class TagButton : public Button
 
 class GDBDialog : Window
 {
-   text = "GDB Command";
+   text = $"GDB Command";
    background = activeBorder;
    borderStyle = sizable;
    hasMaximize = true;
@@ -201,7 +201,7 @@ class GDBDialog : Window
    Label commandLabel { this, position = { 8, 12 }, labeledWindow = command };
    EditBox command
    {
-      this, text = "Command:", size = { 328, 19 }, anchor = { left = 80, top = 8, right = 8 };
+      this, text = $"Command:", size = { 328, 19 }, anchor = { left = 80, top = 8, right = 8 };
 
       bool NotifyKeyDown(EditBox editBox, Key key, unichar ch)
       {
@@ -247,7 +247,7 @@ class GDBDialog : Window
    Label treeLabel { this, position = { 8, 69 }, labeledWindow = tree };
    ListBox tree
    {
-      this, text = "Tree:";
+      this, text = $"Tree:";
       multiSelect = false, fullRowSelect = false, hasVertScroll = true, hasHorzScroll = true;
       borderStyle = deep, collapseControl = true, treeBranches = true;
       anchor = Anchor { left = 80, right = 8, top = 65, bottom = 100 };
@@ -257,7 +257,7 @@ class GDBDialog : Window
    Label outputLabel { this, position = { 8, 39 }, anchor = { left = 8, bottom = 73 }, labeledWindow = output };
    EditBox output
    {
-      this, text = "Output:", multiLine = true, hasVertScroll = true, hasHorzScroll = true;
+      this, text = $"Output:", multiLine = true, hasVertScroll = true, hasHorzScroll = true;
       size = { 328, 84 }, anchor = { left = 80, bottom = 8, right = 8 };
       font = { panelFont.faceName, panelFont.size };
    };

@@ -4,7 +4,7 @@ import "Window"
 
 public class GoToDialog : Window
 {
-   text = "Go To Line...";
+   text = $"Go To Line...";
    minClientSize = { 300, 80 };
    hasClose = true;
    tabCycle = true;
@@ -26,13 +26,13 @@ private:
 
    Button goTo
    {
-      this, isDefault = true, text = "Go To", hotKey = altG, anchor = { right = 10, top = 10 }, size = { 80 };
+      this, isDefault = true, text = $"Go To", hotKey = altG, anchor = { right = 10, top = 10 }, size = { 80 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          line = atoi(lineBox.contents);
          if(!editBox || !editBox.GoToLineNum(line - 1))
-            MessageBox { type = ok, master = this, text = "Go To", contents = "No such line." }.Modal();
+            MessageBox { type = ok, master = this, text = $"Go To", contents = $"No such line." }.Modal();
          else
             Destroy(0);
          return true;
@@ -41,13 +41,13 @@ private:
 
    Button close
    {
-      this, text = "Close", hotKey = escape, anchor = { right = 10, top = 45 }, size = { 80 };
+      this, text = $"Close", hotKey = escape, anchor = { right = 10, top = 45 }, size = { 80 };
       NotifyClicked = ButtonCloseDialog;
    };
    
    EditBox lineBox
    {
-      this, text = "Line number:", anchor = { left = 120, right = 100, top = 10 }, size.h = 20, hotKey = altL;
+      this, text = $"Line number:", anchor = { left = 120, right = 100, top = 10 }, size.h = 20, hotKey = altL;
       
       void NotifyUpdate(EditBox editBox)
       {

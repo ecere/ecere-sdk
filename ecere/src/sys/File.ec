@@ -163,7 +163,7 @@ public enum FileOpenMode { read = 1, write, append, readWrite, writeRead, append
 public enum FileSeekMode { start, current, end };
 
 #if !defined(ECERE_BOOTSTRAP)
-static FileDialog fileDialog { text = "Select File" };
+static FileDialog fileDialog { text = $"Select File" };
 #endif
 
 public enum FileLock
@@ -245,7 +245,7 @@ public class File : IOChannel
       Window editData = class::OnEdit(dataBox, obsolete, x + 24, y, w - 48, h, userData);
       Button load
       { 
-         dataBox, inactive = true, text = "Imp", hotKey = f2,
+         dataBox, inactive = true, text = $"Imp", hotKey = f2,
          position = { Max(x + 24, x + w - 24), y }, size = { 24, h };
 
          bool DataBox::NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -269,7 +269,7 @@ public class File : IOChannel
       };
       Button save
       { 
-         dataBox, inactive = true, text = "Exp", hotKey = f2,
+         dataBox, inactive = true, text = $"Exp", hotKey = f2,
          position = { Max(x + 24, x + w - 48), y }, size = { 24, h };
 
          bool DataBox::NotifyClicked(Button button, int x, int y, Modifiers mods)

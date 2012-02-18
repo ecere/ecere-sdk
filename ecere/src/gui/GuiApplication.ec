@@ -86,14 +86,14 @@ enum GuiErrorCode : ErrorCode
    modeSwitchFailed        = ErrorCode { VeryFatal, 4 }
 };
 
-static char * errorMessages[] =
-{
-   "No error",
-   "Graphics driver not supported by any user interface system",
-   "Window creation failed",
-   "Window graphics loading failed",
-   "Driver/Mode switch failed"
-};
+static Array<String> errorMessages
+{ [
+   $"No error",
+   $"Graphics driver not supported by any user interface system",
+   $"Window creation failed",
+   $"Window graphics loading failed",
+   $"Driver/Mode switch failed"
+] };
 
 public class GuiApplication : Application
 {
@@ -189,7 +189,7 @@ public class GuiApplication : Application
       if(!guiApp)
          guiApp = this;
 
-      strcpy(appName, "ECERE Application");
+      strcpy(appName, $"ECERE Application");
 
       processAll = true;
 
@@ -1238,7 +1238,7 @@ public:
       if(!result && fallBack && fbDriver)
       {
          if(!SwitchMode(fbFullScreen, fbDriver, fbResolution, fbColorDepth, fbRefreshRate, null, false))
-            Log("Error falling back to previous video mode.\n");
+            Log($"Error falling back to previous video mode.\n");
       }
       return result;
    }

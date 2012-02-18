@@ -1493,7 +1493,7 @@ public class CreateDirectoryDialog : Window
    minClientSize = Size { 240, 100 };
    tabCycle = true;
    hasClose = true;
-   text = "Create Directory";
+   text = $"Create Directory";
 
 public:
 
@@ -1532,7 +1532,7 @@ private:
 
    Button ok
    {
-      parent = this, isDefault = true, position = { 70, 60 }, size = { 60 }, text = "OK";
+      parent = this, isDefault = true, position = { 70, 60 }, size = { 60 }, text = $"OK";
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          if(newDirectoryName.contents && newDirectoryName.contents[0])

@@ -712,7 +712,7 @@ class APIPageNameSpace : APIPage
             if(name) name += 2; else name = function.name;
             if(first)
             {
-               f.Printf("<a name=Functions></a><H3>Functions</H3><br><br>\n");
+               f.Printf($"<a name=Functions></a><H3>Functions</H3><br><br>\n");
                f.Printf("<TABLE >\n");
                first = false;
             }
@@ -1143,7 +1143,7 @@ class APIPageClass : APIPage
          if(exampleDoc)
          {
             f.Printf($"<H3>Example</H3><br>\n");
-            f.Printf("<FONT face=\"Courier New\">\n");
+            f.Printf($"<FONT face=\"Courier New\">\n");
             f.Printf("<br><TABLE >\n");
             if(editing)
             {
@@ -1392,7 +1392,7 @@ class APIPageMethod : APIPage
          if(exampleDoc)
          {
             f.Printf($"<H3>Example</H3><br>\n");
-            f.Printf("<FONT face=\"Courier New\">\n");
+            f.Printf($"<FONT face=\"Courier New\">\n");
             f.Printf("<br><TABLE >\n");
             if(editing)
             {
@@ -1612,7 +1612,7 @@ class APIPageFunction : APIPage
          if(exampleDoc)
          {
             f.Printf($"<H3>Example</H3><br>\n");
-            f.Printf("<FONT face=\"Courier New\">\n");
+            f.Printf($"<FONT face=\"Courier New\">\n");
             f.Printf("<br><TABLE >\n");
             if(editing)
             {

@@ -17,7 +17,7 @@ class SettingsDialog : Window
 
    Button browseBtn 
    { 
-      this, text = "...", font = { "Tahoma", 8.25f, bold = true }, hotKey = f2;
+      this, text = "...", font = { $"Tahoma", 8.25f, bold = true }, hotKey = f2;
       anchor = { right = 20, top = 16 };
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {

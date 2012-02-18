@@ -663,17 +663,6 @@ static char ** keyWords[] = { keyWords1, keyWords2 };
 //static int * keyLen[NUM_KEYWORD_GROUPS];
 static int keyLen[NUM_KEYWORD_GROUPS][sizeof(keyWords1)];
 
-/*
-static FileFilter filters[] =
-{
-   { "All files", null },
-   {
-      "Text Files (*.txt)",
-      "txt"
-   }
-};
-static FileListConfig fileListConfig = { "", "", filters, sizeof(filters), null, 0 };
-*/
 static char searchString[1025], replaceString[1025];
 static bool matchCase = false, wholeWord = false, searchUp = false;
 
@@ -3383,8 +3372,8 @@ private:
       {
          Menu fileMenu { menu, "File", F };
          saveDialog = fileDialog;
-         MenuItem { fileMenu, "Save\tCtrl+S", S, CtrlS, NotifySelect = MenuFileSave };
-         MenuItem { fileMenu, "Save As...", A, NotifySelect = MenuFileSaveAs };
+         MenuItem { fileMenu, $"Save\tCtrl+S", S, CtrlS, NotifySelect = MenuFileSave };
+         MenuItem { fileMenu, $"Save As...", A, NotifySelect = MenuFileSaveAs };
       }
       return true;
    }

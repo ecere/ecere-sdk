@@ -122,12 +122,12 @@ class WindowsSkin : Skin
 
    FontResource ::SystemFont()
    {
-      return FontResource { faceName = "Tahoma", size = 8.25f };
+      return FontResource { faceName = $"Tahoma", size = 8.25f };
    }
 
    FontResource ::CaptionFont()
    {
-      return FontResource { faceName = "Tahoma", size = 8.25f, bold = true };
+      return FontResource { faceName = $"Tahoma", size = 8.25f, bold = true };
    }
 
    char * ::CursorsBitmaps(uint id, int * hotSpotX, int *hotSpotY, byte ** paletteShades)

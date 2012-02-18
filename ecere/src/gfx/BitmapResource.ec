@@ -2,19 +2,19 @@ namespace gfx;
 
 import "Window"
 
-static FileFilter filters[] =
-{
+static Array<FileFilter> filters
+{ [
    {
-      "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)",
+      $"Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)",
       "jpg, jpeg, bmp, pcx, png, gif"
-   },
-};
-static FileType types[] =
-{
-   { "Image",              "jpg" },
-};
+   }
+] };
+static Array<FileType> types
+{ [
+   { $"Image",              "jpg" }
+] };
 
-static FileDialog fileDialog { autoCreate = false, filters = filters, sizeFilters = sizeof(filters), types = types, sizeTypes = sizeof(types), text = "Select Image" };
+static FileDialog fileDialog { autoCreate = false, filters = filters.array, sizeFilters = filters.count * sizeof(FileFilter), types = types.array, sizeTypes = types.count * sizeof(FileType), text = $"Select Image" };
 
 public class BitmapResource : Resource
 {

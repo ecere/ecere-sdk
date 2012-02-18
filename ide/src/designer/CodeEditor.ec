@@ -4,8 +4,8 @@ import "ide"
 
 // *** The Old Color Scheme that was causing me auras and ophtalmic migraines -- Uncomment at your own risk! ***
 /*
-FontResource panelFont { "Courier New", 10 };
-FontResource codeFont { "Courier New", 10 };
+FontResource panelFont { $"Courier New", 10 };
+FontResource codeFont { $"Courier New", 10 };
 Color selectionColor = Color { 10, 36, 106 };
 Color selectionText = white;
 Color viewsBackground = white;
@@ -32,11 +32,11 @@ SyntaxColorScheme colorScheme
 
 // The new nice dark scheme -- so peaceful on my brain
 
-FontResource panelFont { "Courier New", 10 };
-FontResource codeFont { "Courier New", 10 };
+FontResource panelFont { $"Courier New", 10 };
+FontResource codeFont { $"Courier New", 10 };
 /*
-FontResource panelFont { "Consolas", 10.5f };
-FontResource codeFont { "Consolas", 10.5f };
+FontResource panelFont { $"Consolas", 12 };
+FontResource codeFont { $"Consolas", 12 };
 */
 Color selectionColor = lightYellow;
 Color selectionText = Color { 30, 40, 50 };
@@ -652,8 +652,8 @@ class CodeEditor : Window
 
    BitmapResource icons[CodeObjectType];
    
-   FontResource boldFont { "Tahoma", 8.25f, bold = true, window = this };
-   FontResource normalFont { "Tahoma", 8.25f, window = this };
+   FontResource boldFont { $"Tahoma", 8.25f, bold = true, window = this };
+   FontResource normalFont { $"Tahoma", 8.25f, window = this };
 
    Module privateModule;
    NameSpace globalData;

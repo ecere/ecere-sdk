@@ -573,15 +573,15 @@ static const char * compilerTypeSolutionFileVersionString[CompilerType] = { "", 
 static const char * compilerTypeYearString[CompilerType] = { "", "", "", "2005", "2008", "2010" };
 static const char * compilerTypeProjectFileExtension[CompilerType] = { "", "", "", "vcproj", "vcproj", "vcxproj" };
 // TODO: i18n with Array
-static const char * compilerTypeLongNames[CompilerType] =
-{
-   "GNU Compiler Collection (GCC) / GNU Make",
-   "Tiny C Compiler / GNU Make",
-   "Portable C Compiler / GNU Make",
-   "Microsoft Visual Studio 2005 (8.0) Compiler",
-   "Microsoft Visual Studio 2008 (9.0) Compiler",
-   "Microsoft Visual Studio 2010 (10.0) Compiler"
-};
+static Array<String> compilerTypeLongNames
+{ [
+   $"GNU Compiler Collection (GCC) / GNU Make",
+   $"Tiny C Compiler / GNU Make",
+   $"Portable C Compiler / GNU Make",
+   $"Microsoft Visual Studio 2005 (8.0) Compiler",
+   $"Microsoft Visual Studio 2008 (9.0) Compiler",
+   $"Microsoft Visual Studio 2010 (10.0) Compiler"
+] };
 const CompilerType firstCompilerType = gcc;
 const CompilerType lastCompilerType = vs10;
 public enum CompilerType

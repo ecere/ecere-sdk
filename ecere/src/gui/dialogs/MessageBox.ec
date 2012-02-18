@@ -72,52 +72,52 @@ private:
          case yesNo:
             Button
             {
-               this, text = "No", anchor = { horz = 40, bottom = 7 }, size = { 64 }, id = DialogResult::no, hotKey = n;
+               this, text = $"No", anchor = { horz = 40, bottom = 7 }, size = { 64 }, id = DialogResult::no, hotKey = n;
                NotifyClicked = ButtonCloseDialog, NotifyActivate = ButtonActivate;
             }.Create();
 
             Button
             {
-               this, isDefault = true, text = "Yes", anchor = { horz = -40, bottom = 7 }, size = { 64 }, id = DialogResult::yes, hotKey = y;
+               this, isDefault = true, text = $"Yes", anchor = { horz = -40, bottom = 7 }, size = { 64 }, id = DialogResult::yes, hotKey = y;
                NotifyClicked = ButtonCloseDialog, NotifyActivate = ButtonActivate;
             }.Create();
             break;
          case okCancel:
             Button
             {
-               this, text = "Cancel", anchor = { horz = 40, bottom = 7 }, size = { 64 }, id = DialogResult::cancel, hotKey = escape;
+               this, text = $"Cancel", anchor = { horz = 40, bottom = 7 }, size = { 64 }, id = DialogResult::cancel, hotKey = escape;
                NotifyClicked = ButtonCloseDialog, NotifyActivate = ButtonActivate;
             }.Create();
 
             Button
             {
-               this, isDefault = true, text = "OK", anchor = { horz = -40, bottom = 7 }, size = { 64 }, id = DialogResult::ok, hotKey = o;
+               this, isDefault = true, text = $"OK", anchor = { horz = -40, bottom = 7 }, size = { 64 }, id = DialogResult::ok, hotKey = o;
                NotifyClicked = ButtonCloseDialog, NotifyActivate = ButtonActivate;
             }.Create();
             break;
          case yesNoCancel:
             Button
             {
-               this, text = "No", anchor = { bottom = 7 }, size = { 64 }, id = DialogResult::no, hotKey = n;
+               this, text = $"No", anchor = { bottom = 7 }, size = { 64 }, id = DialogResult::no, hotKey = n;
                NotifyClicked = ButtonCloseDialog, NotifyActivate = ButtonActivate;
             }.Create();
 
             Button
             {
-               this, text = "Cancel", anchor = { horz = 72, bottom = 7 }, size = { 64 }, id = DialogResult::cancel, hotKey = escape;
+               this, text = $"Cancel", anchor = { horz = 72, bottom = 7 }, size = { 64 }, id = DialogResult::cancel, hotKey = escape;
                NotifyClicked = ButtonCloseDialog, NotifyActivate = ButtonActivate;
             }.Create();
 
             Button
             {
-               this, isDefault = true, text = "Yes", anchor = { horz = -72, bottom = 7 }, size = { 64 }, id = DialogResult::yes, hotKey = y;
+               this, isDefault = true, text = $"Yes", anchor = { horz = -72, bottom = 7 }, size = { 64 }, id = DialogResult::yes, hotKey = y;
                NotifyClicked = ButtonCloseDialog, NotifyActivate = ButtonActivate;
             }.Create();
             break;
          case ok:
             Button
             {
-               this, isDefault = true, text = "OK", anchor = { bottom = 7 }, size = { 64 }, id = DialogResult::ok, hotKey = o;
+               this, isDefault = true, text = $"OK", anchor = { bottom = 7 }, size = { 64 }, id = DialogResult::ok, hotKey = o;
                NotifyClicked = ButtonCloseDialog, NotifyActivate = ButtonActivate;
             }.Create();
             break;

@@ -31,7 +31,7 @@ class OutputView : Window
       this, inactive = true, text = "Build", bevelOver = true, isRadio = true, bitmap = null, checked = true;
       size = { 99, 20 };
       anchor = { left = 0, top = 1 };
-      font = { "Tahoma", 8.25f, bold = true };
+      font = { $"Tahoma", 8.25f, bold = true };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -96,7 +96,7 @@ class OutputView : Window
 #endif
 
       activeBtn.checked = true;
-      activeBtn.font = { "Tahoma", 8.25f, bold = true };
+      activeBtn.font = { $"Tahoma", 8.25f, bold = true };
       if(buildBtn != activeBtn) buildBtn.font = null;
       if(debugBtn != activeBtn) debugBtn.font = null;
       if(findBtn != activeBtn) findBtn.font = null;

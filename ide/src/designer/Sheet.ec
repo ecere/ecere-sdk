@@ -395,7 +395,7 @@ class Sheet : Window
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          text = $"Properties";
-         button.font = { "Tahoma", 8.25f, bold = true };
+         button.font = { $"Tahoma", 8.25f, bold = true };
          methBtn.font = null;
 
          methods.visible = false;
@@ -424,7 +424,7 @@ class Sheet : Window
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          text = $"Methods";
-         button.font = { "Tahoma", 8.25f, bold = true };
+         button.font = { $"Tahoma", 8.25f, bold = true };
          propBtn.font = null;
 
          properties.visible = false;
@@ -589,12 +589,12 @@ class Sheet : Window
    DataField methodName { dataType = class(CodeObject) };
 
 #ifdef SHOW_METHODS
-   methBtn.font = { "Tahoma", 8.25, bold = true };
+   methBtn.font = { $"Tahoma", 8.25, bold = true };
    methBtn.checked = true;
    properties.visible = false;
    text = $"Methods";
 #else
-   propBtn.font = { "Tahoma", 8.25f, bold = true };
+   propBtn.font = { $"Tahoma", 8.25f, bold = true };
    propBtn.checked = true;
    methods.visible = false;
    text = $"Properties";

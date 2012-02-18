@@ -12,11 +12,11 @@ class AboutIDE : Window
    hasClose = true;
    clientSize = { 440, 220 };
 
-   Label { this, text = "Ecere Software Development Kit   0.44pre1.x", font = { "Tahoma", 8.25f, bold = true }, position = { 16, 112 } };
-   Label { this, text = "Copyright (c) 1996-2012 Ecere Corporation", font = { "Tahoma", 8.25f, bold = true }, position = { 16, 128 } };
-   Label { this, text = $"Design & Implementation", font = { "Tahoma", 8.25f, bold = true }, position = { 16, 152 } };
+   Label { this, text = "Ecere Software Development Kit   0.44pre1.x", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 112 } };
+   Label { this, text = "Copyright (c) 1996-2012 Ecere Corporation", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 128 } };
+   Label { this, text = $"Design & Implementation", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 152 } };
    Label { this, text = "Jérôme Jacovella-St-Louis", position = { 192, 152 } };
-   Label { this, text = $"Contributors", font = { "Tahoma", 8.25f, bold = true }, position = { 16, 176 } };
+   Label { this, text = $"Contributors", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 176 } };
    Label { this, text = "Réjean Loyer, Joey Adams, Max Maton", position = { 124, 176 } };
    //Label { this, text = "Joey Adams", position = { 192, 190 } };
    //Label { this, text = "Max Maton", position = { 192, 204 } };

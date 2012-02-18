@@ -687,7 +687,7 @@ private class ColorValue : Color
 
    ColorPicker dialog
    {
-      text = "Select Color",
+      text = $"Select Color",
       master = this,
       autoCreate = false
    };
@@ -695,7 +695,7 @@ private class ColorValue : Color
    Button button
    {
       master = this, parent = pullDown,
-      text = "Custom",
+      text = $"Custom",
       size.w = 68,
       position = Point { 0, 0 },
       bevelOver = true,
@@ -732,7 +732,7 @@ private class ColorValue : Color
    Button definedButton
    {
       master = this, parent = pullDown,
-      text = "Defined",
+      text = $"Defined",
       hotKey = altD,
       size.w = 68,
       position = Point { 68, 0 },
@@ -752,7 +752,7 @@ private class ColorValue : Color
    Button systemButton
    {
       master = this, parent = pullDown,
-      text = "System",
+      text = $"System",
       hotKey = altS,
       size.w = 68,
       position = Point { 136, 0 },

@@ -97,16 +97,16 @@ public enum SysErrorCode : ErrorCode
 
 static define DEFAULT_BUFFER_SIZE = 100 * MAX_F_STRING;
 
-static char * errorMessages[] =
-{
-   "No error",
-   "Memory allocation failed",
-   "Inexistant string identifier specified",
-   "Identic string identifier already exists",
-   "Shared library loading failed",
-   "File not found",
-   "Couldn't write to file"
-};
+static Array<String> errorMessages
+{ [
+   $"No error",
+   $"Memory allocation failed",
+   $"Inexistant string identifier specified",
+   $"Identic string identifier already exists",
+   $"Shared library loading failed",
+   $"File not found",
+   $"Couldn't write to file"
+] };
 
 // --- File, directory & environment manipulation ---
 #undef MoveFile
@@ -422,7 +422,7 @@ static DWORD REAL_ExceptionHandler(EXCEPTION_POINTERS *exception)
 
    if(globalSystem.errorBuffer && globalSystem.errorBuffer[0])
    {
-      strcat(exceptionString, "\n\nWould you like to view the error log?");
+      strcat(exceptionString, $"\n\nWould you like to view the error log?");
       if(MessageBox(HWND_DESKTOP, exceptionString, title, MB_YESNO|MB_ICONERROR) == IDYES)
          DumpErrors(true);
    }

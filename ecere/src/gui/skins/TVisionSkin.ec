@@ -34,13 +34,13 @@ class TVisionSkin : Skin
    FontResource ::SystemFont()
    {
       //return null;
-      return { faceName = "Tahoma", size = 8.25f, bold = true };
+      return { faceName = $"Tahoma", size = 8.25f, bold = true };
    }
 
    FontResource ::CaptionFont()
    {
       //return null;
-      return { faceName = "Tahoma", size = 8.25f, bold = true };
+      return { faceName = $"Tahoma", size = 8.25f, bold = true };
    }
 
    char * ::CursorsBitmaps(uint id, int *hotSpotX, int *hotSpotY, byte ** paletteShades)

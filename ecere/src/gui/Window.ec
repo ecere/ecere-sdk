@@ -6580,38 +6580,38 @@ public:
       PopupMenu windowMenu { master = this, interim = true, position = { x + 1 - guiApp.desktop.position.x, y + 1 - guiApp.desktop.position.y }, menu = menu };
       MenuItem
       {
-         menu, "Restore", r, NotifySelect = MenuWindowRestore, 
+         menu, $"Restore", r, NotifySelect = MenuWindowRestore, 
          disabled = (!style.hasMaximize && !style.hasMinimize) || state == normal, bitmap = guiApp.currentSkin.GetBitmap(restore)
       };
       MenuItem
       {
-         menu, "Move", m, NotifySelect = MenuWindowMove, 
+         menu, $"Move", m, NotifySelect = MenuWindowMove, 
          disabled = !style.fixed || state == maximized
       };
       MenuItem
       {
-         menu, "Size", s, NotifySelect = MenuWindowSize, 
+         menu, $"Size", s, NotifySelect = MenuWindowSize, 
          disabled = !style.sizable || state != normal
       };
       MenuItem
       {
-         menu, "Minimize", n, NotifySelect = MenuWindowMinimize, 
+         menu, $"Minimize", n, NotifySelect = MenuWindowMinimize, 
          disabled = !style.hasMinimize || state == minimized, bitmap = guiApp.currentSkin.GetBitmap(minimize)
       };
       MenuItem
       {
-         menu, "Maximize", KeyCode::x, NotifySelect = MenuWindowMaximize, 
+         menu, $"Maximize", KeyCode::x, NotifySelect = MenuWindowMaximize, 
          disabled = !style.hasMaximize || state == maximized, bitmap = guiApp.currentSkin.GetBitmap(maximize)
       };
       MenuItem
       {
-         menu, "Stay On Top", t, NotifySelect = MenuWindowStayOnTop, 
+         menu, $"Stay On Top", t, NotifySelect = MenuWindowStayOnTop, 
          disabled = !style.fixed, checkable = true, checked = style.stayOnTop
       };
       MenuDivider { menu };
       MenuItem
       {
-         menu, "Close", c, (parent == guiApp.desktop) ? altF4 : ( style.isActiveClient ? ctrlF4 : 0), NotifySelect = MenuWindowClose,
+         menu, $"Close", c, (parent == guiApp.desktop) ? altF4 : ( style.isActiveClient ? ctrlF4 : 0), NotifySelect = MenuWindowClose,
          bold = true, disabled = !style.hasClose, bitmap = guiApp.currentSkin.GetBitmap(close)
       };
       windowMenu.Create();
@@ -7074,9 +7074,9 @@ public:
          DialogResult dialogRes;
          char message[1024];
          if(fileName)
-            sprintf(message, "Save changes to %s?", fileName);
+            sprintf(message, $"Save changes to %s?", fileName);
          else
-            sprintf(message, "Save changes to Untitled %d?", documentID);
+            sprintf(message, $"Save changes to Untitled %d?", documentID);
 
          dialogRes = MessageBox { master = master, type = yesNoCancel, text = parent.caption, contents = message }.Modal();
 
@@ -7158,7 +7158,7 @@ public:
          }
          else
          {
-            MessageBox dialog { master = master, type = yesNoCancel, text = "Error writing file", contents = "Save as a different file?" };
+            MessageBox dialog { master = master, type = yesNoCancel, text = $"Error writing file", contents = $"Save as a different file?" };
             DialogResult answer = dialog.Modal();
             saving = false;
             if(answer != yes) return (bool)answer;
@@ -7188,7 +7188,7 @@ public:
          fileMonitor.fileName = null;
 
          fileDialog.type = save;
-         fileDialog.text = "Save As";
+         fileDialog.text = $"Save As";
 
          while(true)
          {
@@ -7206,7 +7206,7 @@ public:
                }
                else
                {
-                  MessageBox dialog { master = master.parent ? master : this, type = yesNoCancel, text = "Error writing file", contents = "Save as a different file?" };
+                  MessageBox dialog { master = master.parent ? master : this, type = yesNoCancel, text = $"Error writing file", contents = $"Save as a different file?" };
                   DialogResult answer = dialog.Modal();
                   saving = false;
                   if(answer != yes) 

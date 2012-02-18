@@ -11,7 +11,7 @@ public class ReplaceDialog : Window
    borderStyle = fixed;
    background = activeBorder;
    minClientSize = { 432, 144 };
-   text = "Replace";
+   text = $"Replace";
   
 public:
    property EditBox editBox
@@ -155,11 +155,11 @@ private:
          if(entriesFound)
          {
             char contents[1024];
-            sprintf(contents, "%d occurences found, %d replaced", entriesFound, entriesReplaced);
-            MessageBox { type = ok, master = this, text = "Search Finished", contents = contents }.Modal();
+            sprintf(contents, $"%d occurences found, %d replaced", entriesFound, entriesReplaced);
+            MessageBox { type = ok, master = this, text = $"Search Finished", contents = contents }.Modal();
          }
          else
-            MessageBox { type = ok, master = this, text = "Search Finished", contents = "Search string not found." }.Modal();
+            MessageBox { type = ok, master = this, text = $"Search Finished", contents = $"Search string not found." }.Modal();
          continued = false;
 
          selection.disabled = true;
@@ -210,7 +210,7 @@ private:
 
    EditBox replaceWith
    {
-      this, text = "Replace with:", anchor = { left = 124, top = 35, right = 120 }, size.h = 20, hotKey = altP;
+      this, text = $"Replace with:", anchor = { left = 124, top = 35, right = 120 }, size.h = 20, hotKey = altP;
    };
 
    Label replaceWithLabel
@@ -220,48 +220,48 @@ private:
 
    Button wholeWord
    {
-      this, isCheckbox = true, text = "Whole word only", position = { 10, 65 }, hotKey = altW;
+      this, isCheckbox = true, text = $"Whole word only", position = { 10, 65 }, hotKey = altW;
       NotifyClicked = OtherClicked;
    };
 
    Button matchCase
    {
-      this, isCheckbox = true, text = "Match case", position = { 10, 85 }, hotKey = altC;
+      this, isCheckbox = true, text = $"Match case", position = { 10, 85 }, hotKey = altC;
       NotifyClicked = OtherClicked;
    };
 
    Button selection
    {
-      this, isRadio = true, text = "Selection", position = { 180, 85 }, hotKey = altS;
+      this, isRadio = true, text = $"Selection", position = { 180, 85 }, hotKey = altS;
       NotifyClicked = OtherClicked;
    };
 
    Button wholeFile
    {
-      this, isRadio = true, text = "Whole File", position = { 180, 105 }, hotKey = altH, checked = true;
+      this, isRadio = true, text = $"Whole File", position = { 180, 105 }, hotKey = altH, checked = true;
       NotifyClicked = OtherClicked;
    };
 
    Label replaceInLabel
    {
-      this, text = "Replace In", position = { 180, 65 }
+      this, text = $"Replace In", position = { 180, 65 }
    };
 
    Button findNext
    {
-      this, isDefault = true, keyRepeat = true, text = "Find Next", anchor = { top = 10, right = 10 }, size = { 100 }, hotKey = altF, disabled = true;
+      this, isDefault = true, keyRepeat = true, text = $"Find Next", anchor = { top = 10, right = 10 }, size = { 100 }, hotKey = altF, disabled = true;
       NotifyClicked = FindClicked;
    };
 
    Button replace
    {
-      this, keyRepeat = true, text = "Replace", anchor = { top = 42, right = 10 }, size = { 100 }, hotKey = altR, id = ID_REPLACE, disabled = true;
+      this, keyRepeat = true, text = $"Replace", anchor = { top = 42, right = 10 }, size = { 100 }, hotKey = altR, id = ID_REPLACE, disabled = true;
       NotifyClicked = FindClicked;
    };
 
    Button replaceAll
    {
-      this, text = "Replace All", anchor = { top = 75, right = 10 }, size = { 100 }, hotKey = altA, disabled = true;
+      this, text = $"Replace All", anchor = { top = 75, right = 10 }, size = { 100 }, hotKey = altA, disabled = true;
 
       bool NotifyClicked(Button control, int x, int y, Modifiers mods)
       {
@@ -338,7 +338,7 @@ private:
          }
          if(!entriesFound)
          {
-            MessageBox { type = ok, master = this, text = "Search Finished", contents = "Search string not found." }.Modal();
+            MessageBox { type = ok, master = this, text = $"Search Finished", contents = $"Search string not found." }.Modal();
 
             // Reselect text in proper order if no search result
             if(selectionOnly && (sel1X != sel2X || sel1Y != sel2Y))
@@ -347,8 +347,8 @@ private:
          else
          {
             char contents[1024];
-            sprintf(contents, "%d occurences found, %d replaced", entriesFound, entriesReplaced);
-            MessageBox { type = ok, master = this, text = "Search Finished", contents = contents }.Modal();
+            sprintf(contents, $"%d occurences found, %d replaced", entriesFound, entriesReplaced);
+            MessageBox { type = ok, master = this, text = $"Search Finished", contents = contents }.Modal();
          }
 
          selection.disabled = true;
@@ -361,12 +361,12 @@ private:
 
    Button cancel
    {
-      this, text = "Cancel", anchor = { top = 106, right = 10 }, size = { 100 }, hotKey = escape, NotifyClicked = ButtonCloseDialog;
+      this, text = $"Cancel", anchor = { top = 106, right = 10 }, size = { 100 }, hotKey = escape, NotifyClicked = ButtonCloseDialog;
    };
 
    EditBox findWhat
    {
-      this, text = "Find what:", anchor = { left = 124, top = 10, right = 120 }, size.h = 20, hotKey = altN;
+      this, text = $"Find what:", anchor = { left = 124, top = 10, right = 120 }, size.h = 20, hotKey = altN;
 
       void NotifyUpdate(EditBox control)
       {

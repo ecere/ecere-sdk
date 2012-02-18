@@ -237,7 +237,7 @@ public class ColorPicker : Window
    hasClose = true, tabCycle = true, background = activeBorder;
    autoCreate = false;
    clientSize.h = 275, size.w = 500;
-   text = "Select a color...";
+   text = $"Select a color...";
    argb = red;
 
 public:
@@ -718,7 +718,7 @@ private:
 
    Button ok
    {
-      this, text = "OK", isDefault = true;
+      this, text = $"OK", isDefault = true;
       anchor = { right = 10, bottom = 15 };
       size = { 80 };
       // anchor = { right = 10, bottom = 32 };
@@ -727,7 +727,7 @@ private:
 
    Button cancel
    {
-      this, text = "Cancel", hotKey = escape, anchor = { right = 95, bottom = 15 }, size = { 80 };
+      this, text = $"Cancel", hotKey = escape, anchor = { right = 95, bottom = 15 }, size = { 80 };
       id = DialogResult::cancel, NotifyClicked = ButtonCloseDialog;
    };
 

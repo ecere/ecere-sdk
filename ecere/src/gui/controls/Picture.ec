@@ -68,8 +68,8 @@ private:
          Menu fileMenu;
          menu = Menu { };
          fileMenu = Menu { menu, "File", f };
-         MenuItem { fileMenu, "Save\tCtrl+S", s, ctrlS, NotifySelect = MenuFileSave };
-         MenuItem { fileMenu, "Save As...",   a, NotifySelect = MenuFileSaveAs };
+         MenuItem { fileMenu, $"Save\tCtrl+S", s, ctrlS, NotifySelect = MenuFileSave };
+         MenuItem { fileMenu, $"Save As...",   a, NotifySelect = MenuFileSaveAs };
       }
       return true;
    }
@@ -274,39 +274,4 @@ private:
          }
       }
    }
-   /*
-   static FileFilter filters[] =
-   {
-      {
-         "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png)",
-         "jpg, jpeg, bmp, pcx, png"
-      },
-      { "All files", null }
-   };
-   static FileType types[] =
-   {
-      { "Based on extension", null,  false },
-      { "JPG Image",          "jpg", true },
-      { "BMP Image",          "bmp", true },
-      { "PCX Image",          "pcx", true },
-      { "PNG Image",          "png", true }
-   };
-   static FileDialogConfig fileListConfig = { "", "", filters, sizeof(filters), types, sizeof(types) };
-
-   bool SaveFile(char * fileName)
-   {
-      Bitmap bitmap { };
-      bool result = false;
-      if(bitmap.Load(this.bitmap.fileName, null, null))
-      {
-         if(bitmap.Save(fileName, null, (void *) true))  //  fileListConfig.types[fileListConfig.type].typeExtension
-         {
-            modifiedDocument = false;
-            result = true;
-         }
-      }
-      delete bitmap;
-      return result;
-   }
-   */
 }

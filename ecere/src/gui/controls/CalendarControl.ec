@@ -41,7 +41,7 @@ private:
       bevel = false;
       inactive = true;
       background = background;
-      font = { "Verdana", 8.25f, true };
+      font = { $"Verdana", 8.25f, true };
       foreground = navy;
       offset = false;
       text = "«";
@@ -66,7 +66,7 @@ private:
       inactive = true;
       offset = false;
       background = background;
-      font = { "Verdana", 8.25f, true };
+      font = { $"Verdana", 8.25f, true };
       foreground = navy;
       text = "»";
       hotKey = pageDown;
@@ -87,7 +87,7 @@ private:
       this, type = class(Month), data = &shownMonth, position = { 25, 5 }, size = { 75, 20 };
       background = background;
       foreground = navy;
-      font = { "Verdana", 8.25f, true };
+      font = { $"Verdana", 8.25f, true };
 
       bool OnPostCreate()
       {
@@ -108,7 +108,7 @@ private:
    DataBox yearBox
    {
       this, type = class(int), data = &shownYear, position = { 100, 5 }, size = { 38, 20 };
-      font = { "Verdana", 8.25f, true };
+      font = { $"Verdana", 8.25f, true };
       background = background;
       foreground = navy;
 

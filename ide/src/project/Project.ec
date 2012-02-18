@@ -1254,7 +1254,7 @@ private:
                         if(linking && (!strcmp(temp, "ld") || !strcmp(temp, "ld.exe")))
                         {
                            numErrors++;
-                           strcpy(moduleName, "Linker Error");
+                           strcpy(moduleName, $"Linker Error");
                         }
                         else
                         {

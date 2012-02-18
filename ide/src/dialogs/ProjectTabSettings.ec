@@ -10,7 +10,7 @@ class ProjectTab : Tab
    EditBox moduleName
    {
       this, size = { 180, 22 }, position = { 8, 24 };
-      text = "$Module Name", hotKey = altU;
+      text = $"Module Name", hotKey = altU;
       NotifyModified = ProjectControlModified;
    };
    

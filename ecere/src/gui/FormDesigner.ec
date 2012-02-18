@@ -830,7 +830,7 @@ static bool OnKeyDown(Window window, Key key, unichar ch)
          bool confirmation = activeDesigner.ObjectContainsCode(designer.selected.object);
 
          if(confirmation)
-            confirmation = MessageBox { type = okCancel, master = window.master, text = "Deleting control with code", contents = "Control contains code. Delete anyways?" }.Modal() != ok;
+            confirmation = MessageBox { type = okCancel, master = window.master, text = $"Deleting control with code", contents = $"Control contains code. Delete anyways?" }.Modal() != ok;
 
          // Confirmation if control contains other controls
          if(!confirmation)
@@ -846,7 +846,7 @@ static bool OnKeyDown(Window window, Key key, unichar ch)
             }
 
             if(confirmation)
-               confirmation = MessageBox { type = okCancel, master = window.master, text = "Deleting control with children", contents = "Control contains other controls. Delete control and children?"}.Modal() != ok;
+               confirmation = MessageBox { type = okCancel, master = window.master, text = $"Deleting control with children", contents = $"Control contains other controls. Delete control and children?"}.Modal() != ok;
          }
 
          if(!confirmation)
