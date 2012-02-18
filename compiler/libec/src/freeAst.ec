@@ -219,6 +219,9 @@ public void FreeContext(Context context)
 {
    Symbol symbol;
 
+   if(context == curContext)
+      curContext = globalContext;
+
    while(symbol = (Symbol)context.types.root)
    {
       context.types.Remove((BTNode)symbol);
