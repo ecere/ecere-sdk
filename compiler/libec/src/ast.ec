@@ -227,7 +227,41 @@ Expression MkExpString(char * string)
    return { type = stringExp, string = CopyString(string) };
 }
 
-public struct ContextStringPair { String string, context; };
+// TODO: String is case sensitive..
+//       What should we do about it?
+/*public class CaseSensitiveString : String
+{
+   int OnCompare(CaseSensitiveString string2)
+   {
+      int result = 0;
+      if(this && string2)
+         result = strcmpi(this, string2);
+      else if(!this && string2)
+         result = 1;
+      else if(this && !string2)
+         result = -1;
+      return result;
+   }
+}*/
+
+public struct ContextStringPair
+{
+   String string, context;
+   int OnCompare(ContextStringPair b)
+   {
+      int result;
+      result = (string && b.string) ? strcmp(string, b.string) :
+         (!string && b.string) ? 1 : (string && !b.string) ? -1 : 0;
+      if(result) return result;
+
+      result = (context && b.context) ? strcmp(context, b.context) :
+         (!context && b.context) ? 1 : (context && !b.context) ? -1 : 0;
+      if(result) return result;
+      // TODO: Support these
+      // result = CaseSensitiveString::OnCompare(string, b.string);
+      // result = ((CaseSensitiveString)string).OnCompare(b.string);
+   }
+};
 
 Map<ContextStringPair, List<Location> > intlStrings { };
 
