@@ -5,6 +5,7 @@ import "CustomAVLTree"
 
 default:
 extern int __ecereVMethodID_class_OnCopy;
+extern int __ecereVMethodID_class_OnFree;
 private:
 
 public class MapNode<class KT, class V> : private AVLNode<KT>
@@ -125,7 +126,14 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
    void Remove(MapNode<MT, V> node)
    {
       CustomAVLTree::Remove(node);
-      delete node.key;
+      if(class(MT).type == structClass)
+      {
+         // TODO: Make this easier...
+         Class Tclass = class(MT);
+         Tclass._vTbl[__ecereVMethodID_class_OnFree](Tclass, (((byte *)&(uint64)node.key) + __ENDIAN_PAD(sizeof(void *))));
+      }
+      else
+         delete node.key;
       delete node;
    }
 
