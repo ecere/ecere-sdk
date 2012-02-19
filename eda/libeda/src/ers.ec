@@ -12,7 +12,7 @@ static class PleaseWait : Window
    isModal = true;
    autoCreate = false;
    borderStyle = fixed;
-   text = "Please wait while the report is being generated...";
+   text = $"Please wait while the report is being generated...";
    clientSize = { 400, 30 };
    ProgressBar progress { this, anchor = { 0,0,0,0 } };
 }
@@ -25,7 +25,7 @@ public class ReportTitle : Window
    borderStyle = contour;
    background = white;
 
-   font = { "Arial", 14, bold = true };
+   font = { $"Arial", 14, bold = true };
 
    Label { this, foreground = black, anchor = { top = 4 }, labeledWindow = this };
 }
@@ -528,14 +528,14 @@ public class ReportPreviewArea : ReportDestination
    }
 }
 
-static FileFilter csvFilters[] =
-{
+Array<FileFilter> csvFilters
+{ [
    { 
-      "Comma Separated Values Spreadsheet (*.csv)",
+      $"Comma Separated Values Spreadsheet (*.csv)",
       "csv"
    },
-   { "All files", null }
-};
+   { $"All files", null }
+] };
 
 public class CSVReport : ReportDestination
 {
@@ -587,7 +587,7 @@ public class CSVReport : ReportDestination
       f.Puts(output);
    }
 
-   FileDialog saveTo { type = save, text = "Export as Spreadsheet (CSV)", filters = csvFilters, sizeFilters = sizeof(csvFilters) };
+   FileDialog saveTo { type = save, text = $"Export as Spreadsheet (CSV)", filters = csvFilters.array, sizeFilters = csvFilters.count * sizeof(FileFilter) };
 
    void EndPage(Page page)
    {

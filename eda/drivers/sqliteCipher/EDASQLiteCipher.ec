@@ -42,7 +42,7 @@ static class SQLiteCipherDataSource : SQLiteDataSource
             (SQLITE_OPEN_READWRITE | ((createOptions == create) ? SQLITE_OPEN_CREATE : 0)), null))
          {
             // fprintf(stderr, "%s\n", s); // interesting
-            printf("Can't open database (%s): %s\n", path, sqlite3_errmsg(db));
+            printf($"Can't open database (%s): %s\n", path, sqlite3_errmsg(db));
             sqlite3_close(db);
          }
          else
@@ -54,11 +54,11 @@ static class SQLiteCipherDataSource : SQLiteDataSource
                sqlite3_exec(db, command, null, null, null);
                if(sqlite3_exec(db, "SELECT count(*) FROM sqlite_master;", null, null, null) == SQLITE_OK)
                {
-                  PrintLn("EDASQLiteCipher: password is correct, database has been initialized");
+                  PrintLn($"EDASQLiteCipher: password is correct, database has been initialized");
                }
                else
                {
-                  PrintLn("EDASQLiteCipher: incorrect password!");
+                  PrintLn($"EDASQLiteCipher: incorrect password!");
                }
             }
             sprintf(command, "CREATE TABLE eda_table_fields(Table_Name TEXT, Name TEXT, Type TEXT, Length INT);");

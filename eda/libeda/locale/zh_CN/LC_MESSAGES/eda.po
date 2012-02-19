@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-21 13:45+0800\n"
-"PO-Revision-Date: 2012-02-19 05:12+0900\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2012-02-19 19:00+0900\n"
 "Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: ec <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,961 +16,97 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ..\\..\\..\n"
 
-#: .\sdk\eda\drivers\Firebird.ec:1
-#: .\sdk\eda\drivers\MySQL.ec:1
-#: .\sdk\eda\drivers\ODBC.ec:1
-#: .\sdk\eda\drivers\Oracle.ec:1
-#: .\sdk\eda\drivers\SQLServer.ec:1
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:2
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:5
-#: .\sdk\eda\drivers\sqliteCipher\EDASQLiteCipher.ec:2
-#: .\sdk\eda\drivers\sqliteCipher\EDASQLiteCipher.ec:5
-#: .\sdk\eda\libeda\src\EDA.ec:2
-#: .\sdk\eda\libeda\src\EDA.ec:4
-#: .\sdk\eda\libeda\src\idList.ec:2
-#: .\sdk\eda\libeda\src\idList.ec:4
-msgid "ecere"
-msgstr ""
-
-#: .\sdk\eda\drivers\Firebird.ec:2
-#: .\sdk\eda\drivers\MySQL.ec:2
-#: .\sdk\eda\drivers\ODBC.ec:2
-#: .\sdk\eda\drivers\Oracle.ec:2
-#: .\sdk\eda\drivers\PostgreSQL.ec:1
-#: .\sdk\eda\drivers\SQLServer.ec:2
-msgid "eda"
-msgstr ""
-
-#: .\sdk\eda\drivers\Firebird.ec:4
-msgid "Firebird"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:4
-msgid "MySQL"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:11
-msgid "SELECT * FROM db"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:17
-#: .\sdk\eda\drivers\MySQL.ec:29
-#, c-format
-msgid ""
-"%s\n"
-"   MySql Error: #%d %s\n"
-msgstr ""
-"%s\n"
-"   MySql 错误: #%d %s\n"
-
-#: .\sdk\eda\drivers\MySQL.ec:103
-msgid "MySql"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:131
-#: .\sdk\eda\drivers\MySQL.ec:133
-#: .\sdk\eda\drivers\MySQL.ec:139
-#: .\sdk\eda\drivers\MySQL.ec:141
-msgid " ********************************************* \n"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:132
-msgid " *      MySql Status Info                    * \n"
-msgstr " *      MySql状态信息                    * \n"
-
-#: .\sdk\eda\drivers\MySQL.ec:134
-#, c-format
-msgid "   Client info: %s\n"
-msgstr "   客户端信息: %s\n"
-
-#: .\sdk\eda\drivers\MySQL.ec:135
-#, c-format
-msgid "   Host info: %s\n"
-msgstr "   主机信息: %s\n"
-
-#: .\sdk\eda\drivers\MySQL.ec:136
-#, c-format
-msgid "   Server info: %s\n"
-msgstr "   服务器信息: %s\n"
-
-#: .\sdk\eda\drivers\MySQL.ec:137
-#: .\sdk\eda\drivers\MySQL.ec:143
-msgid ""
-"     _____________________________________\n"
-"\n"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:140
-msgid " *      Stats                                * \n"
-msgstr " *      统计                                * \n"
-
-#: .\sdk\eda\drivers\MySQL.ec:142
-#, c-format
-msgid "   %s\n"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:161
-#, c-format
-msgid "Can't connect to the mysql server on port %d !\n"
-msgstr "不能连接mysql服务器，端口%d !\n"
-
-#: .\sdk\eda\drivers\MySQL.ec:167
-msgid "Can't initialize mysql socket"
-msgstr "不能初始化mysql socket"
-
-#: .\sdk\eda\drivers\MySQL.ec:177
-msgid "TODO: MySql - DataSourceDatabasesCount"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:187
-msgid "TODO: MySql - DatabaseClose"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:193
-msgid "TODO: MySql - DatabaseTablesCount"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:200
-msgid "TODO: MySql - DatabaseViewsCount"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:207
-msgid "TODO: MySql - DatabaseNameGet"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:214
-msgid "TODO: MySql - DatabaseNameSet"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:229
-msgid "SCHEMA_NAME"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:236
-#, c-format
-msgid "CREATE DATABASE IF NOT EXISTS %s"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:238
-#: .\sdk\eda\drivers\MySQL.ec:376
-#, c-format
-msgid ""
-"Couldn't execute DDL statement on the server!\n"
-"   %s"
-msgstr ""
-"服务器上不能执行DDL声明!\n"
-"   %s"
-
-#: .\sdk\eda\drivers\MySQL.ec:242
-#, c-format
-msgid "Database (%s) does not exist.\n"
-msgstr "数据库(%s)不存在.\n"
-
-#: .\sdk\eda\drivers\MySQL.ec:248
-#: .\sdk\eda\drivers\MySQL.ec:252
-msgid "Unable to detect if database exists!\n"
-msgstr "未能找到数据库!\n"
-
-#: .\sdk\eda\drivers\MySQL.ec:256
-#, c-format
-msgid "Can't open the %s database!\n"
-msgstr "不能打开数据库%s!\n"
-
-#: .\sdk\eda\drivers\MySQL.ec:272
-msgid "TODO: MySql - DatabaseDelete"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:322
-msgid "TODO: MySql - TableNameGet"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:329
-msgid "TODO: MySql - TableNameSet"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:367
-msgid "TABLE_NAME"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:374
-#, c-format
-msgid "CREATE TABLE IF NOT EXISTS %s (a INT);"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:380
-#: .\sdk\eda\libeda\src\EDB.ec:548
-#, c-format
-msgid "Table (%s) does not exist.\n"
-msgstr "表(%s)不存在.\n"
-
-#: .\sdk\eda\drivers\MySQL.ec:386
-#: .\sdk\eda\drivers\MySQL.ec:390
-#: .\sdk\eda\libeda\src\EDB.ec:557
-msgid "Unable to detect if table exists!\n"
-msgstr "未能找到表!\n"
-
-#: .\sdk\eda\drivers\MySQL.ec:404
-#: .\sdk\eda\drivers\MySQL.ec:416
-#, c-format
-msgid "Couldn't execute %s on the server!"
-msgstr "数据库不能执行%s!"
-
-#: .\sdk\eda\drivers\MySQL.ec:407
-#, c-format
-msgid "SELECT * FROM %s"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:430
-#, c-format
-msgid "SHOW COLUMNS FROM %s"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:434
-#, c-format
-msgid "Listing fields for table %s failed!"
-msgstr "显示表%s的列字段失败!"
-
-#: .\sdk\eda\drivers\MySQL.ec:458
-msgid "TODO: MySql - TableDelete"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:557
-#: .\sdk\eda\drivers\MySQL.ec:609
-msgid "TODO: MySql - FieldNameSet"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:670
-#: .\sdk\eda\libeda\src\EDB.ec:828
-#: .\sdk\eda\libeda\src\EDB.ec:885
-#: .\sdk\eda\libeda\src\EDB.ec:1128
-#: .\sdk\eda\libeda\src\EDB.ec:1690
-#: .\sdk\eda\libeda\src\EDB.ec:1728
-#, c-format
-msgid "%d"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:674
-msgid "FIELD_TYPE_DECIMAL"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:676
-msgid "FIELD_TYPE_FLOAT"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:678
-msgid "FIELD_TYPE_DOUBLE"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:680
-msgid "FIELD_TYPE_TIMESTAMP"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:682
-msgid "FIELD_TYPE_DATE"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:684
-msgid "FIELD_TYPE_TIME"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:686
-msgid "FIELD_TYPE_DATETIME"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:688
-msgid "FIELD_TYPE_YEAR"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:694
-msgid "FIELD_TYPE_BLOB"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:696
-msgid "FIELD_TYPE_SET"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:698
-msgid "FIELD_TYPE_ENUM"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:700
-msgid "FIELD_TYPE_NULL"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:704
-msgid "DEFAULT"
-msgstr ""
-
-#: .\sdk\eda\drivers\MySQL.ec:716
-msgid "TODO: MySql - RowStringValueSet"
-msgstr ""
-
-#: .\sdk\eda\drivers\ODBC.ec:4
-msgid "ODBC"
-msgstr ""
-
-#: .\sdk\eda\drivers\Oracle.ec:4
-msgid "Oracle"
-msgstr ""
-
-#: .\sdk\eda\drivers\PostgreSQL.ec:7
-msgid "PostgreSQL"
-msgstr ""
-
-#: .\sdk\eda\drivers\PostgreSQL.ec:35
-#, c-format
-msgid "host=%s "
-msgstr ""
-
-#: .\sdk\eda\drivers\PostgreSQL.ec:37
-#, c-format
-msgid "port=%s "
-msgstr ""
-
-#: .\sdk\eda\drivers\PostgreSQL.ec:39
-#, c-format
-msgid "user=%s "
-msgstr ""
-
-#: .\sdk\eda\drivers\PostgreSQL.ec:41
-#, c-format
-msgid "password=%s "
-msgstr ""
-
-#: .\sdk\eda\drivers\PostgreSQL.ec:73
-#: .\sdk\eda\libeda\src\EDB.ec:153
-msgid "Status: Feeling groovy!\n"
-msgstr "状态: 感觉非常好!\n"
-
-#: .\sdk\eda\drivers\PostgreSQL.ec:112
-#, c-format
-msgid "%s dbname=%s "
-msgstr ""
-
-#: .\sdk\eda\drivers\PostgreSQL.ec:116
-#, c-format
-msgid "Connection to database failed: %s"
-msgstr "连接数据库失败: %s"
-
-#: .\sdk\eda\drivers\PostgreSQL.ec:184
-#, c-format
-msgid "SELECT * FROM %s;"
-msgstr ""
-
-#: .\sdk\eda\drivers\PostgreSQL.ec:258
-#, c-format
-msgid "Open table failed: %s"
-msgstr "打开表失败: %s"
-
-#: .\sdk\eda\drivers\SQLServer.ec:4
-msgid "SQLServer"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:3
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:6
-#: .\sdk\eda\drivers\sqliteCipher\EDASQLiteCipher.ec:3
-#: .\sdk\eda\drivers\sqliteCipher\EDASQLiteCipher.ec:6
-msgid "EDA"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:85
-msgid "SQLite"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:114
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:165
-msgid "sqlite"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:186
-#, c-format
-msgid "EDASQLite: Can't open database (%s): %s\n"
-msgstr "EDASQLite:不能打开数据库(%s): %s\n"
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:192
-#: .\sdk\eda\drivers\sqliteCipher\EDASQLiteCipher.ec:64
-#, c-format
-msgid "CREATE TABLE eda_table_fields(Table_Name TEXT, Name TEXT, Type TEXT, Length INT);"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:273
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:287
-#: .\sdk\eda\libeda\src\EDB.ec:438
-#: .\sdk\eda\libeda\src\EDB.ec:450
-#: .\sdk\eda\libeda\src\EDB.ec:536
-#: .\sdk\eda\libeda\src\gui.ec:10
-msgid "Name"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:274
-msgid "SELECT name FROM sqlite_master WHERE type='table' AND name!='eda_table_fields';"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:284
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:382
-#, c-format
-msgid "SELECT Name, Type, Length FROM eda_table_fields WHERE Table_Name='%s';"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:290
-#: .\sdk\eda\libeda\src\EDB.ec:458
-msgid "Type"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:293
-#: .\sdk\eda\libeda\src\EDB.ec:466
-msgid "Length"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:301
-#, c-format
-msgid "SELECT Name FROM eda_table_fields WHERE Table_Name='%s';"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:308
-#, c-format
-msgid "SELECT sql FROM sqlite_master WHERE type='table' AND name='%s';"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:358
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:510
-msgid "REAL"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:359
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:515
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:520
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:526
-msgid "TEXT"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:360
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:505
-msgid "INTEGER"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:361
-msgid "BLOB"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:363
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:605
-#, c-format
-msgid "INSERT INTO eda_table_fields (Table_Name, Name, Type, Length) VALUES ('%s', '%s', '%s', %d);"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:397
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:498
-msgid "int"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:397
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:498
-msgid "unsigned int"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:398
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:499
-msgid "long"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:398
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:499
-msgid "long int"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:399
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:500
-msgid "uint"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:399
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:500
-msgid "uint32"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:400
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:501
-msgid "int64"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:400
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:501
-msgid "unsigned int64"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:400
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:501
-msgid "uint64"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:401
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:502
-msgid "short"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:401
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:502
-msgid "unsigned short"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:401
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:502
-msgid "uint16"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:402
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:503
-msgid "char"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:402
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:503
-msgid "unsigned char"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:402
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:503
-msgid "byte"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:404
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:508
-msgid "double"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:404
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:508
-msgid "float"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:406
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:518
-msgid "String"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:406
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:518
-#: .\sdk\eda\libeda\src\idList.ec:870
-#: .\sdk\eda\libeda\src\idList.ec:938
-#: .\sdk\eda\libeda\src\idList.ec:994
-#: .\sdk\eda\libeda\src\idList.ec:1017
-#: .\sdk\eda\libeda\src\idList.ec:1043
-#: .\sdk\eda\libeda\src\idList.ec:1057
-#: .\sdk\eda\libeda\src\idList.ec:1094
-msgid "char *"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:410
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:513
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:562
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:584
-msgid "CIString"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:438
-#, c-format
-msgid "BEGIN;"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:441
-msgid "BEGIN FAILED!"
-msgstr "BEGIN失败!"
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:449
-#, c-format
-msgid "COMMIT;"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:452
-msgid "COMMIT FAILED!"
-msgstr "COMMIT失败!"
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:537
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:626
-msgid "table"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:547
-msgid "WARNING: field not yet created for class "
-msgstr "警告:类字段没有创建 "
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:554
-msgid "WARNING: Table not yet created for class "
-msgstr "警告:类表没有创建"
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:563
-#, c-format
-msgid "CREATE TABLE `%s`(%s %s COLLATE NOCASE);"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:565
-#, c-format
-msgid "CREATE TABLE `%s`(%s %s COLLATE '%s');"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:570
-#, c-format
-msgid "CREATE TABLE `%s`(`%s` %s PRIMARY KEY);"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:572
-#, c-format
-msgid "CREATE TABLE `%s`(`%s` %s REFERENCES `%s`(`%s`));"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:575
-#, c-format
-msgid "CREATE TABLE `%s`(`%s` %s);"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:585
-#, c-format
-msgid "ALTER TABLE `%s` ADD `%s` %s COLLATE NOCASE;"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:587
-#, c-format
-msgid "ALTER TABLE `%s` ADD `%s` %s COLLATE `%s`;"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:593
-msgid "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:594
-#, c-format
-msgid "ALTER TABLE `%s` ADD `%s` %s PRIMARY KEY;"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:597
-#, c-format
-msgid "ALTER TABLE `%s` ADD `%s` %s REFERENCES `%s`(`%s`);"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:600
-#, c-format
-msgid "ALTER TABLE `%s` ADD `%s` %s;"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:649
-#: .\sdk\eda\libeda\src\EDB.ec:322
-#: .\sdk\eda\libeda\src\EDB.ec:800
-msgid "index_"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:651
-msgid "_"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:661
-#: .\sdk\eda\libeda\src\EDB.ec:328
-#: .\sdk\eda\libeda\src\EDB.ec:806
-msgid "."
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:664
-#: .\sdk\eda\libeda\src\EDB.ec:331
-#: .\sdk\eda\libeda\src\EDB.ec:809
-msgid "+"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:664
-#: .\sdk\eda\libeda\src\EDB.ec:331
-#: .\sdk\eda\libeda\src\EDB.ec:809
-msgid "-"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:670
-#, c-format
-msgid "CREATE INDEX IF NOT EXISTS `%s` ON `%s` ("
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:674
-#, c-format
-msgid "`%s` %s"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:674
-msgid "ASC"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:674
-msgid "DESC"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:675
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:749
-#: .\sdk\eda\libeda\src\idList.ec:302
-msgid ", "
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:678
-msgid ");"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:706
-#, c-format
-msgid "SELECT COUNT(*) FROM `%s`;"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:728
-#, c-format
-msgid "SELECT ROWID, * FROM `%s` WHERE ROWID = ?;"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:731
-#, c-format
-msgid "INSERT INTO `%s` DEFAULT VALUES;"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:733
-#, c-format
-msgid "DELETE FROM `%s` WHERE ROWID = ?;"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:739
-#, c-format
-msgid "SELECT ROWID, * FROM `%s`;"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:743
-#, c-format
-msgid "SELECT ROWID, * FROM `%s` ORDER BY "
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:750
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:752
-msgid "`"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:753
-msgid " DESC"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:756
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:1028
-msgid ";"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:761
-#, c-format
-msgid "SELECT ROWID FROM `%s` WHERE ROWID > ?"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:764
-#, c-format
-msgid "UPDATE `%s` SET ROWID = ? WHERE ROWID = ?"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:840
-#, c-format
-msgid "SELECT MAX(ROWID) FROM `%s`"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:919
-#, c-format
-msgid "SELECT ROWID, * FROM `%s` WHERE `%s` = ?;"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:1019
-#, c-format
-msgid "SELECT ROWID, * FROM `%s` WHERE `"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:1024
-msgid " AND `"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:1026
-msgid "` = ?"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqlite\EDASQLite.ec:1291
-#, c-format
-msgid "UPDATE `%s` SET `%s` = ? WHERE ROWID = ?;"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqliteCipher\EDASQLiteCipher.ec:11
-msgid "EDASQLite.ec"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqliteCipher\EDASQLiteCipher.ec:15
-msgid "SQLiteCipher"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqliteCipher\EDASQLiteCipher.ec:24
-msgid "sqlcipher"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqliteCipher\EDASQLiteCipher.ec:45
-#, c-format
-msgid "Can't open database (%s): %s\n"
-msgstr "不能打开数据库(%s): %s\n"
-
-#: .\sdk\eda\drivers\sqliteCipher\EDASQLiteCipher.ec:53
-#, c-format
-msgid "PRAGMA key = '%s';"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqliteCipher\EDASQLiteCipher.ec:55
-msgid "SELECT count(*) FROM sqlite_master;"
-msgstr ""
-
-#: .\sdk\eda\drivers\sqliteCipher\EDASQLiteCipher.ec:57
-msgid "EDASQLiteCipher: password is correct, database has been initialized"
-msgstr "EDASQLiteCipher: 密码正确, 数据库已经初始化"
-
-#: .\sdk\eda\drivers\sqliteCipher\EDASQLiteCipher.ec:61
-msgid "EDASQLiteCipher: incorrect password!"
-msgstr "EDASQLiteCipher: 错误密码!"
-
-#: .\sdk\eda\libeda\src\EDA.ec:67
-#, c-format
-msgid "EDA%s"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\EDA.ec:69
-msgid "DataSourceDriver"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\EDB.ec:1
-#: .\sdk\eda\libeda\src\idList.ec:7
-msgid "EDA.ec"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\EDB.ec:61
-#: .\sdk\eda\libeda\src\EDB.ec:104
-msgid "rowsCount"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\EDB.ec:112
-#: .\sdk\eda\libeda\src\MemoryEDB.ec:1
-msgid "EDB"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\EDB.ec:142
-#: .\sdk\eda\libeda\src\EDB.ec:211
-msgid "edb"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\EDB.ec:234
-#, c-format
-msgid "Invalid, corrupted or in use (%s) database file.\n"
-msgstr "无效的, 滥用数据库文件 (%s).\n"
-
-#: .\sdk\eda\libeda\src\EDB.ec:245
-#: .\sdk\eda\libeda\src\EDB.ec:248
-#: .\sdk\eda\libeda\src\EDB.ec:561
-msgid "-/tables"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\EDB.ec:253
-#, c-format
-msgid "Database file (%s) could not be created.\n"
-msgstr "数据库文件(%s)不能被创建.\n"
-
-#: .\sdk\eda\libeda\src\EDB.ec:255
-#, c-format
-msgid "Database file (%s) could not be opened.\n"
-msgstr "数据库文件(%s)不能被打开.\n"
-
-#: .\sdk\eda\libeda\src\EDB.ec:394
-#: .\sdk\eda\libeda\src\EDB.ec:567
-#: .\sdk\eda\libeda\src\EDB.ec:887
-msgid "fields"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\EDB.ec:933
-msgid "Error reading field"
-msgstr "读字段错误"
-
-#: .\sdk\eda\libeda\src\ers.ec:1
-#: .\sdk\eda\libeda\src\gui.ec:1
-#: .\sdk\eda\libeda\src\gui\TableEditor.ec:1
-msgid "idList"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\ers.ec:14
-msgid "Please wait while the report is being generated..."
-msgstr "请等待：报表正在生成..."
-
-#: .\sdk\eda\libeda\src\ers.ec:27
-#: .\sdk\eda\libeda\src\gui.ec:19
-#: .\sdk\eda\libeda\src\gui.ec:29
-msgid "Arial"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\ers.ec:462
-msgid "Win32Printer"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\ers.ec:529
-msgid "Comma Separated Values Spreadsheet (*.csv)"
-msgstr "CSV(逗号分隔) (*.csv)"
-
-#: .\sdk\eda\libeda\src\ers.ec:530
-msgid "csv"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\ers.ec:532
+#: .\src\ers.ec:537
 msgid "All files"
 msgstr "所有文件(*.*)"
 
-#: .\sdk\eda\libeda\src\ers.ec:585
+#: .\src\ers.ec:28
+#: .\src\gui.ec:19
+#: .\src\gui.ec:29
+#, fuzzy
+msgid "Arial"
+msgstr "Arial"
+
+#: .\src\ers.ec:534
+msgid "Comma Separated Values Spreadsheet (*.csv)"
+msgstr "CSV(逗号分隔) (*.csv)"
+
+#: .\src\EDB.ec:253
+msgid "Database file (%s) could not be created.\n"
+msgstr "数据库文件(%s)不能被创建.\n"
+
+#: .\src\EDB.ec:255
+msgid "Database file (%s) could not be opened.\n"
+msgstr "数据库文件(%s)不能被打开.\n"
+
+#: .\src\gui.ec:788
+msgid "Delete"
+msgstr "删除(D)"
+
+#: .\src\gui.ec:919
+msgid "Entry"
+msgstr "条目"
+
+#: .\src\EDB.ec:935
+msgid "Error reading field"
+msgstr "读字段错误"
+
+#: .\src\ers.ec:590
 msgid "Export as Spreadsheet (CSV)"
 msgstr "导出数据表(CSV)"
 
-#: .\sdk\eda\libeda\src\ers.ec:591
-msgid ".csv"
-msgstr ""
+#: .\src\EDB.ec:234
+msgid "Invalid, corrupted or in use (%s) database file.\n"
+msgstr "无效的, 滥用数据库文件 (%s).\n"
 
-#: .\sdk\eda\libeda\src\ers.ec:608
-#: .\sdk\eda\libeda\src\ers.ec:621
-#: .\sdk\eda\libeda\src\ers.ec:622
-msgid "\n"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\ers.ec:615
-msgid ","
-msgstr ""
-
-#: .\sdk\eda\libeda\src\ers.ec:715
-#: .\sdk\eda\libeda\src\gui.ec:12
-msgid "Active"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\gui.ec:11
-msgid "Id"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\gui.ec:619
+#: .\src\gui.ec:622
 msgid "List"
 msgstr "列表"
 
-#: .\sdk\eda\libeda\src\gui.ec:664
-#: .\sdk\eda\libeda\src\gui.ec:768
+#: .\src\gui.ec:667
+#: .\src\gui.ec:777
 msgid "List Editor"
 msgstr "列表编辑器"
 
-#: .\sdk\eda\libeda\src\gui.ec:664
-#: .\sdk\eda\libeda\src\gui\TableEditor.ec:109
-msgid "You have modified this entry. Would you like to save it before proceeding?"
-msgstr "条目已经修改.你要保存它吗?"
-
-#: .\sdk\eda\libeda\src\gui.ec:718
+#: .\src\gui.ec:725
 msgid "New"
 msgstr "新建(N)"
 
-#: .\sdk\eda\libeda\src\gui.ec:748
-#: .\sdk\eda\libeda\src\gui.ec:753
-#: .\sdk\eda\libeda\src\gui\TableEditor.ec:276
-#: .\sdk\eda\libeda\src\gui\TableEditor.ec:286
-#: .\sdk\eda\libeda\src\gui\TableEditor.ec:287
-msgid "[New]"
-msgstr "[新的]"
+#: .\src\ers.ec:15
+msgid "Please wait while the report is being generated..."
+msgstr "请等待：报表正在生成..."
 
-#: .\sdk\eda\libeda\src\gui.ec:769
+#: .\src\gui.ec:963
+msgid "Revert"
+msgstr "恢复(V)"
+
+#: .\src\gui.ec:952
+msgid "Save"
+msgstr "保存(S)"
+
+#: .\src\EDB.ec:153
+msgid "Status: Feeling groovy!\n"
+msgstr "状态: 感觉非常好!\n"
+
+#: .\src\EDB.ec:548
+msgid "Table (%s) does not exist.\n"
+msgstr "表(%s)不存在.\n"
+
+#: .\src\gui\TableEditor.ec:120
+#: .\src\gui\TableEditor.ec:127
+msgid "Table Editor"
+msgstr "表编辑器"
+
+#: .\src\EDB.ec:557
+msgid "Unable to detect if table exists!\n"
+msgstr "未能找到表!\n"
+
+#: .\src\gui\TableEditor.ec:198
+#: .\src\gui\TableEditor.ec:215
+msgid "WordList match cannot be found in database."
+msgstr "在数据库中WordList不能找到."
+
+#: .\src\gui.ec:780
 msgid ""
 "You are about to delete an entry.\n"
 "Do you wish to continue?"
@@ -978,49 +114,7 @@ msgstr ""
 "你要删除一个条目.\n"
 "继续吗?"
 
-#: .\sdk\eda\libeda\src\gui.ec:779
-msgid "Delete"
-msgstr "删除(D)"
-
-#: .\sdk\eda\libeda\src\gui.ec:910
-msgid "Entry"
-msgstr "条目"
-
-#: .\sdk\eda\libeda\src\gui.ec:943
-msgid "Save"
-msgstr "保存(S)"
-
-#: .\sdk\eda\libeda\src\gui.ec:954
-msgid "Revert"
-msgstr "恢复(V)"
-
-#: .\sdk\eda\libeda\src\idList.ec:8
-msgid "gui"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\idList.ec:181
-#, c-format
-msgid "(Click to add a new %s...)"
-msgstr "(点击增加新项%s...)"
-
-#: .\sdk\eda\libeda\src\idList.ec:181
-msgid "item"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\MemoryEDB.ec:5
-msgid "MemoryEDB"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\gui\TableEditor.ec:3
-msgid "FieldBox"
-msgstr ""
-
-#: .\sdk\eda\libeda\src\gui\TableEditor.ec:108
-#: .\sdk\eda\libeda\src\gui\TableEditor.ec:115
-msgid "Table Editor"
-msgstr "表编辑器"
-
-#: .\sdk\eda\libeda\src\gui\TableEditor.ec:116
+#: .\src\gui\TableEditor.ec:130
 msgid ""
 "You are about to permanently remove an entry.\n"
 "Do you wish to continue?"
@@ -1028,24 +122,105 @@ msgstr ""
 "你要永久删除一个条目.\n"
 "继续吗?"
 
-#: .\sdk\eda\libeda\src\gui\TableEditor.ec:186
-#: .\sdk\eda\libeda\src\gui\TableEditor.ec:203
-msgid "WordList match cannot be found in database."
-msgstr "在数据库中WordList不能找到."
+#: .\src\gui\TableEditor.ec:122
+#: .\src\gui.ec:667
+msgid "You have modified this entry. Would you like to save it before proceeding?"
+msgstr "条目已经修改.你要保存它吗?"
 
-#: .\sdk\eda\libeda\src\gui\TableEditor.ec:327
-msgid "Test"
-msgstr "测试"
+#: .\src\gui.ec:756
+msgid "[New]"
+msgstr "[新的]"
 
-#: .\sdk\eda\libeda\src\gui\TableEditor.ec:493
-msgid " ',/-;[]{}"
-msgstr ""
+#: .\src\idList.ec:183
+#, fuzzy
+msgid "item"
+msgstr "item"
 
-#: .\sdk\eda\libeda\src\gui\TableEditor.ec:520
-msgid "Problem"
-msgstr "问题"
+#~ msgid "   Client info: %s\n"
+#~ msgstr "   客户端信息: %s\n"
 
-#: .\sdk\eda\libeda\src\gui\controls\FieldBox.ec:1
-msgid "TableEditor"
-msgstr ""
+#~ msgid "   Host info: %s\n"
+#~ msgstr "   主机信息: %s\n"
 
+#~ msgid "   Server info: %s\n"
+#~ msgstr "   服务器信息: %s\n"
+
+#~ msgid " *      MySql Status Info                    * \n"
+#~ msgstr " *      MySql状态信息                    * \n"
+
+#~ msgid " *      Stats                                * \n"
+#~ msgstr " *      统计                                * \n"
+
+#~ msgid ""
+#~ "%s\n"
+#~ "   MySql Error: #%d %s\n"
+#~ msgstr ""
+#~ "%s\n"
+#~ "   MySql 错误: #%d %s\n"
+
+#~ msgid "(Click to add a new %s...)"
+#~ msgstr "(点击增加新项%s...)"
+
+#~ msgid "BEGIN FAILED!"
+#~ msgstr "BEGIN失败!"
+
+#~ msgid "COMMIT FAILED!"
+#~ msgstr "COMMIT失败!"
+
+#~ msgid "Can't connect to the mysql server on port %d !\n"
+#~ msgstr "不能连接mysql服务器，端口%d !\n"
+
+#~ msgid "Can't initialize mysql socket"
+#~ msgstr "不能初始化mysql socket"
+
+#~ msgid "Can't open database (%s): %s\n"
+#~ msgstr "不能打开数据库(%s): %s\n"
+
+#~ msgid "Can't open the %s database!\n"
+#~ msgstr "不能打开数据库%s!\n"
+
+#~ msgid "Connection to database failed: %s"
+#~ msgstr "连接数据库失败: %s"
+
+#~ msgid "Couldn't execute %s on the server!"
+#~ msgstr "数据库不能执行%s!"
+
+#~ msgid ""
+#~ "Couldn't execute DDL statement on the server!\n"
+#~ "   %s"
+#~ msgstr ""
+#~ "服务器上不能执行DDL声明!\n"
+#~ "   %s"
+
+#~ msgid "Database (%s) does not exist.\n"
+#~ msgstr "数据库(%s)不存在.\n"
+
+#~ msgid "EDASQLite: Can't open database (%s): %s\n"
+#~ msgstr "EDASQLite:不能打开数据库(%s): %s\n"
+
+#~ msgid "EDASQLiteCipher: incorrect password!"
+#~ msgstr "EDASQLiteCipher: 错误密码!"
+
+#~ msgid "EDASQLiteCipher: password is correct, database has been initialized"
+#~ msgstr "EDASQLiteCipher: 密码正确, 数据库已经初始化"
+
+#~ msgid "Listing fields for table %s failed!"
+#~ msgstr "显示表%s的列字段失败!"
+
+#~ msgid "Open table failed: %s"
+#~ msgstr "打开表失败: %s"
+
+#~ msgid "Problem"
+#~ msgstr "问题"
+
+#~ msgid "Test"
+#~ msgstr "测试"
+
+#~ msgid "Unable to detect if database exists!\n"
+#~ msgstr "未能找到数据库!\n"
+
+#~ msgid "WARNING: Table not yet created for class "
+#~ msgstr "警告:类表没有创建"
+
+#~ msgid "WARNING: field not yet created for class "
+#~ msgstr "警告:类字段没有创建 "

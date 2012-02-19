@@ -185,7 +185,7 @@ class SQLiteDataSource : DataSourceDriver
             (SQLITE_OPEN_READWRITE | ((createOptions == create) ? SQLITE_OPEN_CREATE : 0)), null))
          {
             // fprintf(stderr, "%s\n", s); // interesting
-            printf("EDASQLite: Can't open database (%s): %s\n", path, sqlite3_errmsg(db));
+            printf($"EDASQLite: Can't open database (%s): %s\n", path, sqlite3_errmsg(db));
             sqlite3_close(db);
          }
          else
@@ -440,7 +440,7 @@ class SQLiteDatabase : Database
       sprintf(command, "BEGIN;");
       result = sqlite3_exec(db, command, null, null, null);
       if(result)
-         PrintLn("BEGIN FAILED!");
+         PrintLn($"BEGIN FAILED!");
       return result == SQLITE_OK;
    }
 
@@ -451,7 +451,7 @@ class SQLiteDatabase : Database
       sprintf(command, "COMMIT;");
       result = sqlite3_exec(db, command, null, null, null);
       if(result)
-         PrintLn("COMMIT FAILED!");
+         PrintLn($"COMMIT FAILED!");
       return result == SQLITE_OK;
    }
 
@@ -553,7 +553,7 @@ class SQLiteTable : Table
          }
          else
          {
-            PrintLn("WARNING: Table not yet created for class ", (String)type.name);
+            PrintLn($"WARNING: Table not yet created for class ", (String)type.name);
          }
       }
       
@@ -592,7 +592,7 @@ class SQLiteTable : Table
          {
             if(!idField && refTable == this)
             {
-               PrintLn("WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR ", (String)name);
+               PrintLn($"WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR ", (String)name);
                sprintf(command, "ALTER TABLE `%s` ADD `%s` %s PRIMARY KEY;", name, fieldName, dataType);
             }
             else if(idField)

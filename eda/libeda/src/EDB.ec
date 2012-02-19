@@ -150,7 +150,7 @@ static class EDBDataSource : DataSourceDriver
 
    void Status()
    {
-      Log("Status: Feeling groovy!\n");
+      Log($"Status: Feeling groovy!\n");
    }
 
    /*
@@ -231,7 +231,7 @@ static class EDBDataSource : DataSourceDriver
                archive = ArchiveOpen(path, { true, true, true });
             }
             else
-               printf("Invalid, corrupted or in use (%s) database file.\n", path);
+               printf($"Invalid, corrupted or in use (%s) database file.\n", path);
          }
          else if(createOptions == create)
          {
@@ -250,9 +250,9 @@ static class EDBDataSource : DataSourceDriver
             return db;
          }
          else if(createOptions == create)
-            Logf("Database file (%s) could not be created.\n", path);
+            Logf($"Database file (%s) could not be created.\n", path);
          else
-            Logf("Database file (%s) could not be opened.\n", path);
+            Logf($"Database file (%s) could not be opened.\n", path);
          delete path;
       }
       return null;
@@ -545,7 +545,7 @@ class EDBDatabase : Database
                            rowTables.SetData(fldTableName, name);
                         }
                         else
-                           Logf("Table (%s) does not exist.\n", name);
+                           Logf($"Table (%s) does not exist.\n", name);
                      }
                      else
                         strcpy(apath, name);
@@ -554,7 +554,7 @@ class EDBDatabase : Database
                   delete tblTables;
                }
                else
-                  Log("Unable to detect if table exists!\n");
+                  Log($"Unable to detect if table exists!\n");
             }
             break;
          case tablesList:
@@ -932,7 +932,7 @@ public:
             delete f;
          }
          else
-            Log("Error reading field");
+            Log($"Error reading field");
       }
    }
 

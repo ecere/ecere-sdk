@@ -16,7 +16,7 @@ public void SetDefaultNameField(char * value) { defaultNameField = value; }
 
 public class ButtonStyle : Button
 {
-   font = { "Arial", 10, bold = true };
+   font = { $"Arial", 10, bold = true };
    creationActivation = doNothing;
 }
 
@@ -26,7 +26,7 @@ public class Group : Window
    tabCycle = true;
    //inactive = true; // TOFIX causes problems...
 
-   public Label title { this, font = { "Arial", 10, bold = true }, position = { 16, 2 } };
+   public Label title { this, font = { $"Arial", 10, bold = true }, position = { 16, 2 } };
 
    bool OnCreate()
    {
@@ -619,7 +619,7 @@ public class EditFieldDropDataBox : FieldDropDataBox
 
 public class ListSection : Group
 {
-   text = "List";
+   text = $"List";
    size = { 710, 287 };
    anchor = { left = sgs, top = 32 + sgs * 3, bottom = 55 + sgs * 3 };
 
@@ -664,7 +664,7 @@ public class ListSection : Group
 
    public virtual DialogResult Window::NotifySaveConfirmation(ListSection listSection)
    {
-      return MessageBox { master = this, type = yesNoCancel, text = "List Editor", contents = "You have modified this entry. Would you like to save it before proceeding?" }.Modal();
+      return MessageBox { master = this, type = yesNoCancel, text = $"List Editor", contents = $"You have modified this entry. Would you like to save it before proceeding?" }.Modal();
    }
    
    bool OnClose(bool parentClosing)
@@ -722,7 +722,7 @@ public class ListSection : Group
 
    public ButtonStyle btnNew
    {
-      this, anchor = { right = shadowS + sgs * 2, top = 24 }, hotKey = altW, text = "New";
+      this, anchor = { right = shadowS + sgs * 2, top = 24 }, hotKey = altW, text = $"New";
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -753,13 +753,13 @@ public class ListSection : Group
                      r.SetData(fldId, id);
                }
                if(!strcmp(fldName.type.dataTypeString, "char *"))
-                  r.SetData(fldName, "[New]");
+                  r.SetData(fldName, $"[New]");
 
                if(fldActive)
                   r.SetData(fldActive, active);
 
                if(NotifyNew(master, this, r))
-                  list.currentRow = list.AddString("[New]");
+                  list.currentRow = list.AddString("$[New]");
                delete r;
             }
 
@@ -774,9 +774,9 @@ public class ListSection : Group
 
    public virtual bool Window::NotifyDeleteConfirmation(ListSection listSection)
    {
-      return MessageBox {  master = this, type = yesNo, text = "List Editor", 
-                           contents =  "You are about to delete an entry.\n"
-                                       "Do you wish to continue?"
+      return MessageBox {  master = this, type = yesNo, text = $"List Editor", 
+                           contents =  $"You are about to delete an entry.\n"
+                                        "Do you wish to continue?"
                   }.Modal() == yes;
    }
 
@@ -785,7 +785,7 @@ public class ListSection : Group
 
    public ButtonStyle btnDelete
    {
-      this, anchor = { right = shadowS + sgs * 2, top = 24 }, hotKey = altD, text = "Delete";
+      this, anchor = { right = shadowS + sgs * 2, top = 24 }, hotKey = altD, text = $"Delete";
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -916,7 +916,7 @@ public class ListSection : Group
 public class EditSection : Group
 {
    tabCycle = true;
-   text = "Entry";
+   text = $"Entry";
    size = { 710, 55 };
    anchor = { right = sgs, top = 32 + sgs * 3, bottom = 55 + sgs * 3 };
 
@@ -949,7 +949,7 @@ public:
    
    public ButtonStyle btnSave
    {
-      this, anchor = { right = shadowS + sgs * 2, top = 24 }, hotKey = altV, text = "Save";
+      this, anchor = { right = shadowS + sgs * 2, top = 24 }, hotKey = altV, text = $"Save";
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -960,7 +960,7 @@ public:
 
    public ButtonStyle btnReload
    {
-      this, anchor = { left = 10, top = 24 }, hotKey = altV, text = "Revert";
+      this, anchor = { left = 10, top = 24 }, hotKey = altV, text = $"Revert";
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {

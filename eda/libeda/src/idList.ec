@@ -180,7 +180,7 @@ public class Id : uint
          }
          else
          {
-            sprintf(tempString, "(Click to add a new %s...)", "item"/*class_data(addText)*/);
+            sprintf(tempString, "$(Click to add a new %s...)", $"item"/*class_data(addText)*/);
          }
          delete r;
       }

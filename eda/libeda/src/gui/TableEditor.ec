@@ -117,16 +117,16 @@ public:
    
    public virtual DialogResult OnLeavingModifiedDocument()
    {
-      return MessageBox { master = window, type = yesNoCancel, text = window ? window.text : "Table Editor",
-                          contents = "You have modified this entry. Would you like to save it before proceeding?"
+      return MessageBox { master = window, type = yesNoCancel, text = window ? window.text : $"Table Editor",
+                          contents = $"You have modified this entry. Would you like to save it before proceeding?"
                   }.Modal();
    }
    
    public virtual bool OnRemovalRequest()
    {
-      return MessageBox { master = window, type = yesNo, text = window ? window.text : "Table Editor", 
-                          contents =  "You are about to permanently remove an entry.\n"
-                                      "Do you wish to continue?"
+      return MessageBox { master = window, type = yesNo, text = window ? window.text : $"Table Editor", 
+                          contents =  $"You are about to permanently remove an entry.\n"
+                                       "Do you wish to continue?"
                   }.Modal() == yes;
    }
 
@@ -195,7 +195,7 @@ public:
                   SetListRowFields(r, row);
                }
                else
-                  PrintLn("WordList match cannot be found in database.");
+                  PrintLn($"WordList match cannot be found in database.");
             }
          }
          else if(idField && stringField)
@@ -212,7 +212,7 @@ public:
                   delete s;
                }
                else
-                  PrintLn("WordList match cannot be found in database.");
+                  PrintLn($"WordList match cannot be found in database.");
             }
          }
       }
@@ -285,7 +285,7 @@ public:
                   {
                      if(lf.field.type == class(String))
                      {
-                        r.SetData(lf.field, "[New]");
+                        r.SetData(lf.field, "$[New]");
                      }
                   }
                }
@@ -295,8 +295,8 @@ public:
             }
             else if(idField && stringField)
             {
-               r.SetData(stringField, "[New]");
-               list.AddString("[New]").tag = id;
+               r.SetData(stringField, "$[New]");
+               list.AddString("$[New]").tag = id;
             }
             delete r;
          }
@@ -337,11 +337,6 @@ public:
    void Write()
    {
       EditSave();
-   }
-
-   void Test()
-   {
-      PrintLn("Test");
    }
 
    bool ListSelect(DataRow row)
@@ -589,8 +584,10 @@ private:
                   for(i = 0; i<entries[c].items.count; i++)
                   {
                      int count = uniques[entries[c].items.ids[i]];
+#ifdef _DEBUG
                      if(count != 0)
                         PrintLn("Problem");
+#endif
                      matches[entries[c].items.ids[i]]++;
                   }
                   uniques.Free();
