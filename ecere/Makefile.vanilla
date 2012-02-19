@@ -640,7 +640,8 @@ RESOURCES3 = \
 	$(RES)places/brokenFolder.png \
 	$(RES)status/audioVolumeHigh.png \
 	$(RES)status/folderOpen.png \
-	$(RES)unicode/derivedGeneralCategoryStripped.txt
+	$(RES)unicode/derivedGeneralCategoryStripped.txt \
+	locale/zh_CN/LC_MESSAGES/ecere.mo
 
 # CROSS-PLATFORM MAGIC
 
@@ -791,7 +792,7 @@ $(OBJ)units.sym: src/sys/units.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/units.ec -o $(OBJ)units.sym
 
 $(OBJ)i18n.sym: src/sys/i18n.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/i18n.ec -o $(OBJ)i18n.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/i18n.ec -o $(OBJ)i18n.sym
 
 $(OBJ)BMPFormat.sym: src/gfx/bitmaps/BMPFormat.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/bitmaps/BMPFormat.ec -o $(OBJ)BMPFormat.sym
@@ -1063,7 +1064,7 @@ $(OBJ)units.c: src/sys/units.ec $(OBJ)units.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/units.ec -o $(OBJ)units.c -symbols $(OBJ)
 
 $(OBJ)i18n.c: src/sys/i18n.ec $(OBJ)i18n.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/i18n.ec -o $(OBJ)i18n.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/i18n.ec -o $(OBJ)i18n.c -symbols $(OBJ)
 
 $(OBJ)BMPFormat.c: src/gfx/bitmaps/BMPFormat.ec $(OBJ)BMPFormat.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/bitmaps/BMPFormat.ec -o $(OBJ)BMPFormat.c -symbols $(OBJ)
@@ -1344,7 +1345,7 @@ $(OBJ)System.c.o: src/sys/System.c
 	$(CC) $(CFLAGS) -c src/sys/System.c -o $(OBJ)System.c.o
 
 $(OBJ)i18n.o: $(OBJ)i18n.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)i18n.c -o $(OBJ)i18n.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)i18n.c -o $(OBJ)i18n.o
 
 $(OBJ)BMPFormat.o: $(OBJ)BMPFormat.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BMPFormat.c -o $(OBJ)BMPFormat.o

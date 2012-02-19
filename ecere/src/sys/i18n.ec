@@ -1,4 +1,4 @@
-#ifndef ECERE_COM_MODULE
+#ifndef ECERE_NOFILE
 import "File"
 #endif
 import "Map"
@@ -23,7 +23,7 @@ static Map<String, Map<String, String>> moduleMaps { };
 
 public dllexport void LoadTranslatedStrings(Module module, char * name)
 {
-#ifndef ECERE_COM_MODULE
+#ifndef ECERE_NOFILE
    File f;
    char fileName[MAX_LOCATION];
 

@@ -451,6 +451,11 @@
                   },
                   {
                      "FileName" : "i18n.ec",
+                     "Options" : {
+                        "PreprocessorDefinitions" : [
+                           "ECERE_COM_MODULE"
+                        ]
+                     },
                      "Configurations" : [
                         {
                            "Name" : "Bootstrap",

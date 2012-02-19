@@ -2405,7 +2405,7 @@ struct __ecereNameSpace__ecere__com__Class * arrayClass = __ecereNameSpace__ecer
 
 if(source && __ecereNameSpace__ecere__com__eClass_IsDerived(source->_class->registered, arrayClass))
 isArray = 0x1;
-if(isArray)
+if(isArray && _class->templateArgs)
 {
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
 struct Declarator * decl = SpecDeclFromString(_class->templateArgs[2].dataTypeString, specs, (((void *)0)));

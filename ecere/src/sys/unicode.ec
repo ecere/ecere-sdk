@@ -292,6 +292,63 @@ public enum PredefinedCharCategories : CharCategories
    connector = CharCategories { punctuationConnector = true },
 };
 
+public bool GetAlNum(char ** input, char * string, int max)
+{
+   int c = 0;
+   unichar ch;
+   int nb = 1;
+   bool result = true;
+   char * buffer = *input;
+   if(!buffer[0]) { string[0]=0; return false; }
+
+   // Eat all left spacing, leave last char in ch
+   for(;;)
+   {
+#if defined(ECERE_NOUNICODE) || defined(ECERE_BOOTSTRAP)
+      ch = *buffer;
+#else
+      ch = UTF8GetChar(buffer, &nb);
+#endif
+      if(!ch) { result = false; break; }
+
+#if defined(ECERE_NOUNICODE) || defined(ECERE_BOOTSTRAP)
+      if(isalnum(ch))
+#else
+      if(CharMatchCategories(ch, numbers|letters))
+#endif
+         break;
+      else
+         buffer += nb;
+   }
+   if(result)
+   {
+      while(c < max-1)
+      {
+         int i;
+         for(i = 0; i < nb && c < max-1; i++)
+            string[c++] = *(buffer++);
+
+#if defined(ECERE_NOUNICODE) || defined(ECERE_BOOTSTRAP)
+         ch = *buffer;
+#else
+         ch = UTF8GetChar(buffer, &nb);
+#endif
+         if(!ch) break; // End of input string
+
+#if defined(ECERE_NOUNICODE) || defined(ECERE_BOOTSTRAP)
+         if(!isalnum(ch))
+#else
+         if(!CharMatchCategories(ch, numbers|letters))
+#endif
+            // End of this alpha numeric word
+            break;
+      }
+      string[c]=0;
+   }
+   *input = buffer;
+   return result;
+}
+
 static struct Range
 {
    uint start, end;

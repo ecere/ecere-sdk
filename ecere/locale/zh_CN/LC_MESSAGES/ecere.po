@@ -66,11 +66,11 @@ msgstr "Alt+"
 msgid "Appearance"
 msgstr "外观"
 
-#: .\src\sys\Date.ec:24
+#: .\src\sys\Date.ec:42
 msgid "Apr"
 msgstr "四月"
 
-#: .\src\sys\Date.ec:15
+#: .\src\sys\Date.ec:33
 msgid "April"
 msgstr "四月"
 
@@ -78,11 +78,11 @@ msgstr "四月"
 msgid "As Type:"
 msgstr "类型(T):"
 
-#: .\src\sys\Date.ec:24
+#: .\src\sys\Date.ec:42
 msgid "Aug"
 msgstr "八月"
 
-#: .\src\sys\Date.ec:15
+#: .\src\sys\Date.ec:33
 msgid "August"
 msgstr "八月"
 
@@ -232,11 +232,11 @@ msgstr "剪切(X)\tCtrl+X"
 msgid "Data"
 msgstr "数据"
 
-#: .\src\sys\Date.ec:25
+#: .\src\sys\Date.ec:43
 msgid "Dec"
 msgstr "十二月"
 
-#: .\src\sys\Date.ec:16
+#: .\src\sys\Date.ec:34
 msgid "December"
 msgstr "十二月"
 
@@ -321,11 +321,16 @@ msgstr "写入文件错误"
 msgid "Exp"
 msgstr "Exp"
 
-#: .\src\sys\Date.ec:24
+#: .\src\gui\controls\CalendarControl.ec:10
+msgctxt "Friday"
+msgid "F"
+msgstr "五"
+
+#: .\src\sys\Date.ec:42
 msgid "Feb"
 msgstr "二月"
 
-#: .\src\sys\Date.ec:15
+#: .\src\sys\Date.ec:33
 msgid "February"
 msgstr "二月"
 
@@ -373,11 +378,11 @@ msgstr "查找内容(N):"
 msgid "Find...\tCtrl+F"
 msgstr "查找(F)...\tCtrl+F"
 
-#: .\src\sys\Date.ec:20
+#: .\src\sys\Date.ec:38
 msgid "Fri"
 msgstr "星期五"
 
-#: .\src\sys\Date.ec:11
+#: .\src\sys\Date.ec:29
 msgid "Friday"
 msgstr "星期五"
 
@@ -424,27 +429,27 @@ msgstr "不存在指定的字符串标识符"
 msgid "Insert Tabs"
 msgstr "插入制表符(I)"
 
-#: .\src\sys\Date.ec:24
+#: .\src\sys\Date.ec:42
 msgid "Jan"
 msgstr "一月"
 
-#: .\src\sys\Date.ec:15
+#: .\src\sys\Date.ec:33
 msgid "January"
 msgstr "一月"
 
-#: .\src\sys\Date.ec:24
+#: .\src\sys\Date.ec:42
 msgid "Jul"
 msgstr "七月"
 
-#: .\src\sys\Date.ec:15
+#: .\src\sys\Date.ec:33
 msgid "July"
 msgstr "七月"
 
-#: .\src\sys\Date.ec:24
+#: .\src\sys\Date.ec:42
 msgid "Jun"
 msgstr "六月"
 
-#: .\src\sys\Date.ec:15
+#: .\src\sys\Date.ec:33
 msgid "June"
 msgstr "六月"
 
@@ -469,11 +474,16 @@ msgstr "行号:"
 msgid "Look in:"
 msgstr "浏览(L):"
 
-#: .\src\sys\Date.ec:24
+#: .\src\gui\controls\CalendarControl.ec:9
+msgctxt "Monday"
+msgid "M"
+msgstr "一"
+
+#: .\src\sys\Date.ec:42
 msgid "Mar"
 msgstr "三月"
 
-#: .\src\sys\Date.ec:15
+#: .\src\sys\Date.ec:33
 msgid "March"
 msgstr "三月"
 
@@ -486,12 +496,12 @@ msgstr "区分大小写(C)"
 msgid "Maximize"
 msgstr "最大化(X)"
 
-#: .\src\sys\Date.ec:15
+#: .\src\sys\Date.ec:33
 msgctxt "LongMonthNames"
 msgid "May"
 msgstr "五月"
 
-#: .\src\sys\Date.ec:24
+#: .\src\sys\Date.ec:42
 msgctxt "ShortMonthNames"
 msgid "May"
 msgstr "五月"
@@ -509,11 +519,11 @@ msgstr "Microsoft Windows Network"
 msgid "Minimize"
 msgstr "最小化(N)"
 
-#: .\src\sys\Date.ec:20
+#: .\src\sys\Date.ec:38
 msgid "Mon"
 msgstr "星期一"
 
-#: .\src\sys\Date.ec:11
+#: .\src\sys\Date.ec:29
 msgid "Monday"
 msgstr "星期一"
 
@@ -544,11 +554,11 @@ msgstr "没有错误"
 msgid "No such line."
 msgstr "没有这行."
 
-#: .\src\sys\Date.ec:24
+#: .\src\sys\Date.ec:42
 msgid "Nov"
 msgstr "十一月"
 
-#: .\src\sys\Date.ec:15
+#: .\src\sys\Date.ec:33
 msgid "November"
 msgstr "十一月"
 
@@ -563,11 +573,11 @@ msgstr "十一月"
 msgid "OK"
 msgstr "OK"
 
-#: .\src\sys\Date.ec:24
+#: .\src\sys\Date.ec:42
 msgid "Oct"
 msgstr "十月"
 
-#: .\src\sys\Date.ec:15
+#: .\src\sys\Date.ec:33
 msgid "October"
 msgstr "十月"
 
@@ -623,11 +633,21 @@ msgstr "替换(R)...\tCtrl+R"
 msgid "Restore"
 msgstr "恢复(R)"
 
-#: .\src\sys\Date.ec:21
+#: .\src\gui\controls\CalendarControl.ec:11
+msgctxt "Saturday"
+msgid "S"
+msgstr "六"
+
+#: .\src\gui\controls\CalendarControl.ec:9
+msgctxt "Sunday"
+msgid "S"
+msgstr "日"
+
+#: .\src\sys\Date.ec:39
 msgid "Sat"
 msgstr "星期六"
 
-#: .\src\sys\Date.ec:12
+#: .\src\sys\Date.ec:30
 msgid "Saturday"
 msgstr "星期六"
 
@@ -721,11 +741,11 @@ msgstr "创建目录吗?"
 msgid "Selection"
 msgstr "已选中内容(S)"
 
-#: .\src\sys\Date.ec:24
+#: .\src\sys\Date.ec:42
 msgid "Sep"
 msgstr "九月"
 
-#: .\src\sys\Date.ec:15
+#: .\src\sys\Date.ec:33
 msgid "September"
 msgstr "九月"
 
@@ -747,11 +767,11 @@ msgstr "大小(S)"
 msgid "Stay On Top"
 msgstr "置顶(T)"
 
-#: .\src\sys\Date.ec:20
+#: .\src\sys\Date.ec:38
 msgid "Sun"
 msgstr "星期日"
 
-#: .\src\sys\Date.ec:11
+#: .\src\sys\Date.ec:29
 msgid "Sunday"
 msgstr "星期日"
 
@@ -759,6 +779,16 @@ msgstr "星期日"
 #, fuzzy
 msgid "System"
 msgstr "System"
+
+#: .\src\gui\controls\CalendarControl.ec:10
+msgctxt "Thursday"
+msgid "T"
+msgstr "四"
+
+#: .\src\gui\controls\CalendarControl.ec:9
+msgctxt "Tuesday"
+msgid "T"
+msgstr "二"
 
 #: .\src\gui\skins\TVisionSkin.ec:37
 #: .\src\gui\skins\TVisionSkin.ec:43
@@ -768,19 +798,19 @@ msgstr "System"
 msgid "Tahoma"
 msgstr "Tahoma"
 
-#: .\src\sys\Date.ec:20
+#: .\src\sys\Date.ec:38
 msgid "Thu"
 msgstr "星期四"
 
-#: .\src\sys\Date.ec:11
+#: .\src\sys\Date.ec:29
 msgid "Thursday"
 msgstr "星期四"
 
-#: .\src\sys\Date.ec:20
+#: .\src\sys\Date.ec:38
 msgid "Tue"
 msgstr "星期二"
 
-#: .\src\sys\Date.ec:11
+#: .\src\sys\Date.ec:29
 msgid "Tuesday"
 msgstr "星期二"
 
@@ -796,19 +826,24 @@ msgstr "撤销(U)\tCtrl+Z"
 msgid "Up"
 msgstr "向上(U)"
 
-#: .\src\gui\controls\CalendarControl.ec:44
-#: .\src\gui\controls\CalendarControl.ec:69
-#: .\src\gui\controls\CalendarControl.ec:90
-#: .\src\gui\controls\CalendarControl.ec:111
+#: .\src\gui\controls\CalendarControl.ec:50
+#: .\src\gui\controls\CalendarControl.ec:75
+#: .\src\gui\controls\CalendarControl.ec:96
+#: .\src\gui\controls\CalendarControl.ec:117
 #, fuzzy
 msgid "Verdana"
 msgstr "Verdana"
 
-#: .\src\sys\Date.ec:20
+#: .\src\gui\controls\CalendarControl.ec:9
+msgctxt "Wednesday"
+msgid "W"
+msgstr "三"
+
+#: .\src\sys\Date.ec:38
 msgid "Wed"
 msgstr "星期三"
 
-#: .\src\sys\Date.ec:11
+#: .\src\sys\Date.ec:29
 msgid "Wednesday"
 msgstr "星期三"
 
@@ -863,25 +898,25 @@ msgstr ""
 "\n"
 "你想查看错误日志吗?"
 
-#: .\src\sys\Date.ec:64
-#: .\src\sys\Time.ec:779
+#: .\src\sys\Date.ec:121
+#: .\src\sys\Time.ec:781
 msgid "now"
 msgstr "现在"
 
-#: .\src\sys\Date.ec:63
-#: .\src\sys\Time.ec:778
+#: .\src\sys\Date.ec:120
+#: .\src\sys\Time.ec:780
 msgid "today"
 msgstr "今日"
 
-#: .\src\sys\Date.ec:65
-#: .\src\sys\Date.ec:69
-#: .\src\sys\Time.ec:781
+#: .\src\sys\Date.ec:122
+#: .\src\sys\Date.ec:126
+#: .\src\sys\Time.ec:783
 msgid "tomorrow"
 msgstr "明天"
 
-#: .\src\sys\Date.ec:66
-#: .\src\sys\Date.ec:74
-#: .\src\sys\Time.ec:788
+#: .\src\sys\Date.ec:123
+#: .\src\sys\Date.ec:131
+#: .\src\sys\Time.ec:790
 msgid "yesterday"
 msgstr "昨天"
 

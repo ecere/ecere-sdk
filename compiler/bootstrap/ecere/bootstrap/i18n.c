@@ -531,9 +531,9 @@ void __ecereRegisterModule_i18n(struct __ecereNameSpace__ecere__com__Instance * 
 {
 struct __ecereNameSpace__ecere__com__Class * class;
 
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::LoadTranslatedStrings", "void ecere::LoadTranslatedStrings(ecere::com::Module module, char * name)", __ecereNameSpace__ecere__LoadTranslatedStrings, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::UnloadTranslatedStrings", "void ecere::UnloadTranslatedStrings(ecere::com::Module module)", __ecereNameSpace__ecere__UnloadTranslatedStrings, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::GetTranslatedString", "char * ecere::GetTranslatedString(ecere::com::Module module, char * string, char * stringAndContext)", __ecereNameSpace__ecere__GetTranslatedString, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::LoadTranslatedStrings", "void ecere::LoadTranslatedStrings(ecere::com::Module module, char * name)", __ecereNameSpace__ecere__LoadTranslatedStrings, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::UnloadTranslatedStrings", "void ecere::UnloadTranslatedStrings(ecere::com::Module module)", __ecereNameSpace__ecere__UnloadTranslatedStrings, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::GetTranslatedString", "char * ecere::GetTranslatedString(ecere::com::Module module, char * string, char * stringAndContext)", __ecereNameSpace__ecere__GetTranslatedString, module, 4);
 }
 
 void __ecereUnregisterModule_i18n(struct __ecereNameSpace__ecere__com__Instance * module)

@@ -695,12 +695,14 @@ public struct DateTime
       {
          int i;
          for(i = 0; i<7; i++) 
-            if(!strcmpi(tokens[c], shortDaysNames[i]) || !strcmpi(tokens[c], longDaysNames[i]))
+            if(!strcmpi(tokens[c], shortDaysNames[i]) || !strcmpi(tokens[c], longDaysNames[i]) ||
+               !strcmpi(tokens[c], enShortDaysNames[i]) || !strcmpi(tokens[c], enLongDaysNames[i]))
                break;               
          if(i < 7) { dayOfTheWeek = (DayOfTheWeek)i; foundDayOfTheWeek = true; continue; }
 
          for(i = 0; i<12; i++) 
-            if(!strcmpi(tokens[c], shortMonthsNames[i]) || !strcmpi(tokens[c], longMonthsNames[i]))
+            if(!strcmpi(tokens[c], shortMonthsNames[i]) || !strcmpi(tokens[c], longMonthsNames[i]) ||
+               !strcmpi(tokens[c], enShortMonthsNames[i]) || !strcmpi(tokens[c], enLongMonthsNames[i]))
                break;               
          if(i < 12) { month = (Month)i; continue; }
 

@@ -146,6 +146,7 @@ endif
 ECP := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecp)
 ECC := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecc)
 ECS := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecs)
+EAR := $(call psep,../../obj/$(PLATFORM)/bin/ear)
 
 # FLAGS
 

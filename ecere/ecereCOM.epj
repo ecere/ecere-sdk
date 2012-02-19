@@ -5,7 +5,8 @@
       "Warnings" : "All",
       "PreprocessorDefinitions" : [
          "ECERE_COM_MODULE",
-         "BUILDING_ECERE_COM"
+         "BUILDING_ECERE_COM",
+         "ECERE_NOFILE"
       ],
       "DefaultNameSpace" : "ecere",
       "TargetType" : "SharedLibrary",

@@ -1036,7 +1036,7 @@ $(OBJ)units.sym: src/sys/units.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/units.ec -o $(OBJ)units.sym
 
 $(OBJ)i18n.sym: src/sys/i18n.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/i18n.ec -o $(OBJ)i18n.sym
+	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/i18n.ec -o $(OBJ)i18n.sym
 
 $(OBJ)Cube.sym: src/gfx/3D/meshes/Cube.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/3D/meshes/Cube.ec -o $(OBJ)Cube.sym
@@ -1410,7 +1410,7 @@ $(OBJ)units.c: src/sys/units.ec $(OBJ)units.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/units.ec -o $(OBJ)units.c -symbols $(OBJ)
 
 $(OBJ)i18n.c: src/sys/i18n.ec $(OBJ)i18n.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/i18n.ec -o $(OBJ)i18n.c -symbols $(OBJ)
+	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/i18n.ec -o $(OBJ)i18n.c -symbols $(OBJ)
 
 $(OBJ)Cube.c: src/gfx/3D/meshes/Cube.ec $(OBJ)Cube.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/3D/meshes/Cube.ec -o $(OBJ)Cube.c -symbols $(OBJ)
@@ -1793,7 +1793,7 @@ $(OBJ)System.c.o: src/sys/System.c
 	$(CC) $(CFLAGS) -c src/sys/System.c -o $(OBJ)System.c.o
 
 $(OBJ)i18n.o: $(OBJ)i18n.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)i18n.c -o $(OBJ)i18n.o
+	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)i18n.c -o $(OBJ)i18n.o
 
 $(OBJ)Cube.o: $(OBJ)Cube.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Cube.c -o $(OBJ)Cube.o

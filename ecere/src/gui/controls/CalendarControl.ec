@@ -4,6 +4,12 @@ import "Window"
 
 #define ISLEAP(y) (!((y)%4) && (((y) % 100) || (!((y)% 400))))
 
+/*static */Array<String> veryShortDaysNames
+{ [
+   $"Sunday"."S", $"Monday"."M", $"Tuesday"."T", $"Wednesday"."W",
+   $"Thursday"."T", $"Friday"."F", $"Saturday"."S"
+] };
+
 public class CalendarControl : CommonControl
 {
    class_property(icon) = "<:ecere>controls/calendar.png";
@@ -240,8 +246,7 @@ private:
          surface.SetForeground(black);
          for(d = sunday; d <= saturday; d++)
          {
-            String s = shortDaysNames[d];
-            surface.CenterTextf(Width / 2 + d * Width, 0, "%c", toupper(s[0]));
+            surface.CenterTextf(Width / 2 + d * Width, 0, "%s", veryShortDaysNames[d]);
          }
 
          surface.SetBackground(Color { 238, 238, 238 } /*whiteSmoke*/);

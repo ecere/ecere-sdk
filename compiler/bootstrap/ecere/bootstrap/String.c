@@ -1352,48 +1352,6 @@ break;
 return (float)neg * res;
 }
 
-unsigned int __ecereNameSpace__ecere__sys__GetAlNum(char ** buffer, char * string, int max)
-{
-int c;
-char ch;
-unsigned int result = 0x1;
-
-if(!* *buffer)
-{
-string[0] = (char)0;
-return 0x0;
-}
-for(; ; )
-{
-if(!(ch = *((*buffer)++)))
-result = 0x0;
-if(isalnum(ch))
-break;
-if(!*(*buffer))
-break;
-}
-if(result)
-{
-for(c = 0; c < max - 1; c++)
-{
-if(!isalnum(ch))
-{
-result = 0x1;
-break;
-}
-string[c] = ch;
-if(!(ch = *(*buffer)))
-{
-c++;
-break;
-}
-(*buffer)++;
-}
-string[c] = (char)0;
-}
-return result;
-}
-
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DefinedExpression;
 
 struct __ecereNameSpace__ecere__com__DefinedExpression;
@@ -1443,7 +1401,6 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetValue", "
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetHexValue", "uint ecere::sys::GetHexValue(char * * buffer)", __ecereNameSpace__ecere__sys__GetHexValue, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::StripQuotes", "char * ecere::sys::StripQuotes(char * string, char * output)", __ecereNameSpace__ecere__sys__StripQuotes, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FloatFromString", "double ecere::sys::FloatFromString(char * string)", __ecereNameSpace__ecere__sys__FloatFromString, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetAlNum", "bool ecere::sys::GetAlNum(char * * buffer, char * string, int max)", __ecereNameSpace__ecere__sys__GetAlNum, module, 4);
 }
 
 void __ecereUnregisterModule_String(struct __ecereNameSpace__ecere__com__Instance * module)

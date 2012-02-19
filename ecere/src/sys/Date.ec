@@ -6,6 +6,24 @@ import "CalendarControl"
 
 #define ISLEAP(y) (!((y)%4) && (((y) % 100) || (!((y)% 400))))
 
+/*static */Array<String> enLongDaysNames
+{ [
+   "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+] };
+/*static */Array<String> enLongMonthsNames
+{ [
+   "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+] };
+
+/*static */Array<String> enShortDaysNames
+{ [
+   "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+] };
+/*static */Array<String> enShortMonthsNames
+{ [
+   "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+] };
+
 /*static */Array<String> longDaysNames
 { [
    $"Sunday", $"Monday", $"Tuesday", $"Wednesday", $"Thursday", $"Friday", $"Saturday"
@@ -23,7 +41,46 @@ import "CalendarControl"
 { [
    $"Jan", $"Feb", $"Mar", $"Apr", $"ShortMonthNames"."May", $"Jun", $"Jul", $"Aug", $"Sep", $"Oct", $"Nov", $"Dec"
 ] };
-public enum Month { january, february, march, april, may, june, july, august, september, october, november, december };
+
+default:
+extern int __ecereVMethodID_class_OnGetString;
+public:
+
+public enum Month
+{
+   january, february, march, april, may, june, july, august, september, october, november, december;
+
+   char * OnGetString(char * string, void * fieldData, bool * needClass)
+   {
+      Month m = this;
+      if(m >= january && m <= december)
+      {
+         if(!needClass || !*needClass)
+            return longMonthsNames[m];
+         else
+            return class::OnGetString(string, fieldData, needClass);
+      }
+      return null;
+   }
+
+   bool OnGetDataFromString(char * string)
+   {
+      if(string)
+      {
+         Month m;
+         for(m = 0; m<=december; m++)
+         {
+            if(!strcmpi(shortMonthsNames[m], string)  || !strcmpi(longMonthsNames[m], string) ||
+               !strcmpi(enShortMonthsNames[m], string) || !strcmpi(enLongMonthsNames[m], string))
+            {
+               this = m;
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+};
 
 default:
 extern int __ecereVMethodID_class_OnGetString;
@@ -97,16 +154,22 @@ public struct Date
             bool resolved = false;
             int c;
             bool isAlpha = false;
-            for(c = 0; value[c] && !isAlpha; c++)
-               if(isalpha(value[c])) isAlpha = true;
+            unichar ch;
+            int nb;
+            for(c = 0; (ch = UTF8GetChar(value + c, &nb)) && !isAlpha; c += nb)
+            {
+               // if(isalpha(value[c])) isAlpha = true;
+               if(CharMatchCategories(ch, letters)) isAlpha = true;
+            }
 
             if(isAlpha)
             {            
-               Month c;
-               for(c = 0; c<Month::enumSize; c++)
-                  if(!strnicmp(shortMonthsNames[c], value, 3))
+               Month m;
+               for(m = 0; m<Month::enumSize; m++)
+                  if(!strcmpi(shortMonthsNames[m], value)  || !strcmpi(longMonthsNames[m], value) ||
+                     !strcmpi(enShortMonthsNames[m], value) || !strcmpi(enLongMonthsNames[m], value))
                   {
-                     month = c;
+                     month = m;
                      gotAlphaMonth = true;
                      break;
                   }
