@@ -1,0 +1,277 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: eCere Translation Project\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Juan Sánchez Rangel <aldeacity@gmail.com>\n"
+"Language-Team: Juan Sánchez\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Spanish\n"
+"X-Poedit-Country: SPAIN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: .\src\Documentor.ec:675
+msgid "<a name=Classes></a><H3>Classes</H3><br><br>\n"
+msgstr "<a name=Classes></a><H3>Clases</H3><br><br>\n"
+
+#: .\src\Documentor.ec:948
+msgid "<a name=Conversions></a><H3>Conversions</H3><br><br>\n"
+msgstr "<a name=Conversions></a><H3>Conversiones</H3><br><br>\n"
+
+#: .\src\Documentor.ec:750
+msgid "<a name=Definitions></a><H3>Definitions</H3><br><br>\n"
+msgstr "<a name=Definitions></a><H3>Definiciones</H3><br><br>\n"
+
+#: .\src\Documentor.ec:881
+msgid "<a name=EnumerationValues></a><H3>Enumeration Values</H3><br><br>\n"
+msgstr "<a name=EnumerationValues></a><H3>Valores de Enumeración</H3><br><br>\n"
+
+#: .\src\Documentor.ec:999
+msgid "<a name=Members></a><H3>Properties and Members</H3><br><br>\n"
+msgstr "<a name=Members></a><H3>Propiedades y Miembros</H3><br><br>\n"
+
+#: .\src\Documentor.ec:1091
+msgid "<a name=Methods></a><H3>Non-Virtual Methods</H3><br><br>\n"
+msgstr "<a name=Methods></a><H3>Métodos No-Virtuales</H3><br><br>\n"
+
+#: .\src\Documentor.ec:1053
+msgid "<a name=VirtualMethods></a><H3>Virtual Methods</H3><br><br>\n"
+msgstr "<a name=VirtualMethods></a><H3>Métodos Virtuales</H3><br><br>\n"
+
+#: .\src\Documentor.ec:1281
+#: .\src\Documentor.ec:1503
+msgid "<br><br><H3>Description</H3><br><br>\n"
+msgstr "<br><br><H3>Descripción</H3><br><br>\n"
+
+#: .\src\Documentor.ec:859
+msgid "<br><H3>Description</H3><br><br>\n"
+msgstr "<br><H3>Descripción</H3><br><br>\n"
+
+#: .\src\Documentor.ec:593
+msgid "<FONT FACE=\"Arial\" SIZE=\"6\">Module %s</FONT><br>\n"
+msgstr "<FONT FACE=\"Arial\" SIZE=\"6\">Módulo %s</FONT><br>\n"
+
+#: .\src\Documentor.ec:1197
+msgid "<H3>Derived Classes</H3><br>\n"
+msgstr "<H3>Clases Derivadas</H3><br>\n"
+
+#: .\src\Documentor.ec:614
+msgid "<H3>Description</H3><br><br>\n"
+msgstr "<H3>Descripción</H3><br><br>\n"
+
+#: .\src\Documentor.ec:1145
+#: .\src\Documentor.ec:1394
+#: .\src\Documentor.ec:1614
+msgid "<H3>Example</H3><br>\n"
+msgstr "<H3>Ejemplo</H3><br>\n"
+
+#: .\src\Documentor.ec:1299
+#: .\src\Documentor.ec:1520
+msgid "<H3>Parameters</H3><br><br>\n"
+msgstr "<H3>Parámetros</H3><br><br>\n"
+
+#: .\src\Documentor.ec:1169
+#: .\src\Documentor.ec:1416
+#: .\src\Documentor.ec:1636
+msgid "<H3>Remarks</H3><br>\n"
+msgstr "<H3>Comentarios</H3><br>\n"
+
+#: .\src\Documentor.ec:1213
+#: .\src\Documentor.ec:1435
+#: .\src\Documentor.ec:1655
+msgid "<H3>See Also</H3><br>\n"
+msgstr "<H3>Ver También</H3><br>\n"
+
+#: .\src\Documentor.ec:637
+msgid "<H3>Sub Namespaces</H3><br><br>\n"
+msgstr "<H3>Sub Espacios de Nombres</H3><br><br>\n"
+
+#: .\src\Documentor.ec:1126
+#: .\src\Documentor.ec:1375
+#: .\src\Documentor.ec:1595
+msgid "<H3>Usage</H3><br>\n"
+msgstr "<H3>Uso</H3><br>\n"
+
+#: .\src\Documentor.ec:583
+#: .\src\Documentor.ec:805
+#: .\src\Documentor.ec:1254
+#: .\src\Documentor.ec:1476
+msgid ""
+"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n"
+"<BODY><FONT SIZE=\"3\">\n"
+msgstr ""
+"<HTML><HEAD><TITLE>Referencia API</TITLE></HEAD>\n"
+"<BODY><FONT SIZE=\"3\">\n"
+
+#: .\src\Documentor.ec:1345
+#: .\src\Documentor.ec:1565
+msgid "<TD valign=top height=22 nowrap=1><B>Return Value</B></TD>\n"
+msgstr "<TD valign=top height=22 nowrap=1><B>Valor de Retorno</B></TD>\n"
+
+#: .\src\Documentor.ec:555
+#: .\src\Documentor.ec:2278
+#: .\src\Documentor.ec:2686
+msgid "[Add Text]"
+msgstr "[Añadir Texto]"
+
+#: .\src\Documentor.ec:1983
+msgid "API Documentation Browser"
+msgstr "Navegador de Documentación API"
+
+#: .\src\Documentor.ec:843
+msgid "Base Class: "
+msgstr "Clase Base: "
+
+#: .\src\Documentor.ec:835
+msgid "Basic Data Type"
+msgstr "Tipo de Datos Básico"
+
+#: .\src\Documentor.ec:817
+msgid "Bit Collection"
+msgstr "Colección de Bits"
+
+#: .\src\Documentor.ec:2192
+#: .\src\SettingsDialog.ec:53
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: .\src\Documentor.ec:826
+msgid "Class"
+msgstr "Clase"
+
+#: .\src\Documentor.ec:829
+msgid "Class (No header)"
+msgstr "Clase (Sin Encabezado)"
+
+#: .\src\Documentor.ec:1740
+msgid "Classes"
+msgstr "Clases"
+
+#: .\src\Documentor.ec:1953
+msgid "Conversions"
+msgstr "Conversiones"
+
+#: .\src\Documentor.ec:1940
+msgid "Data Members"
+msgstr "Miembros de Datos"
+
+#: .\src\Documentor.ec:1786
+msgid "Definitions"
+msgstr "Definiciones"
+
+#: .\src\SettingsDialog.ec:16
+msgid "Documentation Path:"
+msgstr "Ruta de Documentación:"
+
+#: .\src\Documentor.ec:2002
+msgid "eC Shared Library files (*.dll, *.so, *.dylib)"
+msgstr "Archivos de Bibliotecas Compartidas de eC (*.dll, *.so, *.dylib)"
+
+#: .\src\Documentor.ec:2003
+msgid "eC Symbol files (*.sym)"
+msgstr "Archivos de Símbolos eC (*.sym)"
+
+#: .\src\Documentor.ec:820
+msgid "Enumeration"
+msgstr "Enumeración"
+
+#: .\src\Documentor.ec:1967
+msgid "Enumeration Values"
+msgstr "Valores de la Enumeración"
+
+#: .\src\Documentor.ec:1902
+msgid "Events"
+msgstr "Eventos"
+
+#: .\src\Documentor.ec:2033
+msgid "Exit"
+msgstr "Salir"
+
+#: .\src\Documentor.ec:1999
+msgid "File"
+msgstr "Archivo"
+
+#: .\src\Documentor.ec:1763
+msgid "Functions"
+msgstr "Funciones"
+
+#: .\src\Documentor.ec:1915
+msgid "Methods"
+msgstr "Métodos"
+
+#: .\src\Documentor.ec:588
+#: .\src\Documentor.ec:808
+#: .\src\Documentor.ec:1257
+#: .\src\Documentor.ec:1479
+msgid "Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgstr "Módulo: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+
+#: .\src\Documentor.ec:810
+#: .\src\Documentor.ec:1259
+#: .\src\Documentor.ec:1482
+msgid "Namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgstr "Espacio de Nombres: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+
+#: .\src\Documentor.ec:846
+msgid "None"
+msgstr "Ninguno"
+
+#: .\src\Documentor.ec:2012
+msgid "Open..."
+msgstr "Abrir..."
+
+#: .\src\Documentor.ec:607
+msgid "Parent namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgstr "Espacio de Nombres Padre: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+
+#: .\src\Documentor.ec:1934
+msgid "Properties"
+msgstr "Propiedades"
+
+#: .\src\SettingsDialog.ec:39
+msgid "Save"
+msgstr "Guardar"
+
+#: .\src\Documentor.ec:2188
+msgid "Save Changes"
+msgstr "Guardar Cambios"
+
+#: .\src\SettingsDialog.ec:34
+msgid "Select a path"
+msgstr "Seleccione una Ruta"
+
+#: .\src\SettingsDialog.ec:6
+msgid "Settings"
+msgstr "Configuración"
+
+#: .\src\Documentor.ec:2025
+msgid "Settings..."
+msgstr "Configuración..."
+
+#: .\src\Documentor.ec:823
+msgid "Structure"
+msgstr "Estructura"
+
+#: .\src\Documentor.ec:1267
+#: .\src\Documentor.ec:1489
+msgid "this pointer class: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgstr "esta clase de puntero: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+
+#: .\src\Documentor.ec:1263
+msgid "this pointer class: None<br>\n"
+msgstr "esta clase de puntero: Ninguno<br>\n"
+
+#: .\src\Documentor.ec:838
+msgid "Type: %s<br>\n"
+msgstr "Tipo: %s<br>\n"
+
+#: .\src\Documentor.ec:832
+msgid "Unit"
+msgstr "Unidad"
+
+#: .\src\Documentor.ec:1908
+msgid "Virtual Methods"
+msgstr "Métodos Virtuales"
+

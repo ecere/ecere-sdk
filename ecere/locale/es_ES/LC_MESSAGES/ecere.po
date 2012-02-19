@@ -1,0 +1,208 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: eCere Spanish Translation\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Juan Sánchez Rangel <aldeacity@gmail.com>\n"
+"Language-Team: Juan Sánchez\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Spanish\n"
+"X-Poedit-Country: SPAIN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: .\src\gui\dialogs\FileDialog.ec:351
+#: .\src\gui\dialogs\FileDialog.ec:429
+#: .\src\gui\dialogs\FileDialog.ec:886
+msgid "All files"
+msgstr "Todos los archivos"
+
+#: .\src\gui\controls\Menu.ec:95
+msgid "Alt+"
+msgstr "Alt+"
+
+#: .\src\gui\dialogs\FileDialog.ec:1188
+msgid "As Type:"
+msgstr "Tipo:"
+
+#: .\src\gui\dialogs\FileDialog.ec:1263
+#: .\src\gui\dialogs\FileDialog.ec:1559
+#: .\src\gui\dialogs\WindowList.ec:35
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: .\src\gui\controls\EditBox.ec:959
+#: .\src\gui\controls\EditBox.ec:3075
+msgid "Copy\tCtrl+C"
+msgstr "Copiar\tCtrl+C"
+
+#: .\src\gui\dialogs\FileDialog.ec:1549
+#: .\src\gui\dialogs\FileDialog.ec:1552
+msgid "Create Directory Error"
+msgstr "Error al crear directorio"
+
+#: .\src\gui\dialogs\FileDialog.ec:1078
+msgid "Create directory?"
+msgstr "¿Crear directorio?"
+
+#: .\src\gui\controls\Menu.ec:94
+msgid "Ctrl+"
+msgstr "Ctrl+"
+
+#: .\src\gui\controls\EditBox.ec:948
+#: .\src\gui\controls\EditBox.ec:3074
+msgid "Cut\tCtrl+X"
+msgstr "Copiar\tCtrl+X"
+
+#: .\src\gui\controls\EditBox.ec:980
+#: .\src\gui\controls\EditBox.ec:3077
+msgid "Delete\tDel"
+msgstr "Eliminar\tDel"
+
+#: .\src\gui\dialogs\FileDialog.ec:1549
+msgid "Directory already exists."
+msgstr "El directorio ya existe."
+
+#: .\src\gui\dialogs\FileDialog.ec:1078
+msgid "Directory doesn't exist"
+msgstr "El directorio no existe"
+
+#: .\src\gui\dialogs\FileDialog.ec:310
+msgid "Directory:"
+msgstr "Directorio:"
+
+#: .\src\gui\controls\EditBox.ec:945
+msgid "Edit"
+msgstr "Editar"
+
+#: .\src\gui\dialogs\FileDialog.ec:4
+msgid "Entire Computer"
+msgstr "Equipo"
+
+#: .\src\gui\dialogs\FileDialog.ec:1065
+msgid "File Already Exists"
+msgstr "El archivo ya existe"
+
+#: .\src\gui\dialogs\FileDialog.ec:310
+#: .\src\gui\dialogs\FileDialog.ec:1448
+msgid "File Name:"
+msgstr "Archivo:"
+
+#: .\src\gui\dialogs\FileDialog.ec:1170
+msgid "Filter:"
+msgstr "Filtro:"
+
+#: .\src\gui\controls\EditBox.ec:1039
+msgid "Find Next\tF3"
+msgstr "Buscar siguiente\tF3"
+
+#: .\src\gui\controls\EditBox.ec:1026
+msgid "Find Previous\tShift-F3"
+msgstr "Buscar anterior\tShift-F3"
+
+#: .\src\gui\controls\EditBox.ec:1052
+msgid "Find...\tCtrl+F"
+msgstr "Buscar...\tCtrl+F"
+
+#: .\src\gui\controls\EditBox.ec:683
+msgid "Go To"
+msgstr "Ir a"
+
+#: .\src\gui\controls\EditBox.ec:1113
+msgid "Go To...\tCtrl+G"
+msgstr "Ir a...\tCtrl+G"
+
+#: .\src\gui\controls\EditBox.ec:1126
+msgid "Insert Tabs"
+msgstr "Insertar Tabs"
+
+#: .\src\gui\dialogs\FileDialog.ec:1274
+msgid "Look in:"
+msgstr "Buscar en:"
+
+#: .\src\gui\dialogs\FileDialog.ec:5
+msgid "Microsoft Windows Network"
+msgstr "Red de Microsoft Windows"
+
+#: .\src\gui\dialogs\FileDialog.ec:1409
+#: .\src\gui\dialogs\FileDialog.ec:1566
+msgid "Name"
+msgstr "Nombre"
+
+#: .\src\gui\dialogs\FileDialog.ec:1567
+msgid "New Directory"
+msgstr "Nuevo directorio"
+
+#: .\src\gui\dialogs\FileDialog.ec:295
+#: .\src\gui\dialogs\FileDialog.ec:1226
+#: .\src\gui\dialogs\WindowList.ec:24
+msgid "OK"
+msgstr "Aceptar"
+
+#: .\src\gui\dialogs\FileDialog.ec:1256
+msgid "Open"
+msgstr "Abrir"
+
+#: .\src\gui\controls\EditBox.ec:969
+#: .\src\gui\controls\EditBox.ec:3076
+msgid "Paste\tCtrl+V"
+msgstr "Pegar\tCtrl+V"
+
+#: .\src\gui\dialogs\FileDialog.ec:1552
+msgid "Please enter a name."
+msgstr "Por favor, introduzca un nombre."
+
+#: .\src\gui\controls\EditBox.ec:1014
+msgid "Redo\tCtrl+Y"
+msgstr "Rehacer\tCtrl+Y"
+
+#: .\src\gui\dialogs\FileDialog.ec:1065
+msgid "Replace existing file?"
+msgstr "¿Sustituir el archivo existente?"
+
+#: .\src\gui\controls\EditBox.ec:1079
+msgid "Replace...\tCtrl+R"
+msgstr "Sustituir...\tCtrl+R"
+
+#: .\src\gui\dialogs\FileDialog.ec:277
+msgid "Select"
+msgstr "Seleccionar"
+
+#: .\src\gui\dialogs\FileDialog.ec:245
+msgid "Select a file..."
+msgstr "Seleccionar un archivo..."
+
+#: .\src\gui\dialogs\WindowList.ec:41
+msgid "Select a Window to Activate..."
+msgstr "Seleccione la ventana a activar..."
+
+#: .\src\gui\controls\EditBox.ec:992
+#: .\src\gui\controls\EditBox.ec:3079
+msgid "Select All\tCtrl+A"
+msgstr "Seleccionar todo\tCtrl+A"
+
+#: .\src\gui\controls\Menu.ec:96
+msgid "Shift+"
+msgstr "Shift+"
+
+#: .\src\gui\dialogs\FileDialog.ec:1411
+msgid "Size"
+msgstr "Tamaño"
+
+#: .\src\gui\dialogs\FileDialog.ec:1410
+msgid "Type"
+msgstr "Tipo"
+
+#: .\src\gui\controls\EditBox.ec:1003
+msgid "Undo\tCtrl+Z"
+msgstr "Deshacer\tCtrl+Z"
+
+#: .\src\gui\dialogs\WindowList.ec:9
+msgid "Windows"
+msgstr "Ventanas"
+
+#~ msgctxt "test"
+
+#~ msgid "OK"
+#~ msgstr "OK"

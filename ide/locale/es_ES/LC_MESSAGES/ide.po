@@ -1,0 +1,2025 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: eCere IDE Translation\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Juan Sánchez Rangel <aldeacity@gmail.com>\n"
+"Language-Team: Juan Sánchez\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Spanish\n"
+"X-Poedit-Country: SPAIN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: .\src\project\Project.ec:1147
+msgid "   %s: No such file or directory\n"
+msgstr "   %s: No existe el archivo o directorio\n"
+
+#: .\src\dialogs\FindInFilesDialog.ec:650
+#: .\src\dialogs\FindInFilesDialog.ec:656
+#: .\src\dialogs\FindInFilesDialog.ec:660
+msgid " and"
+msgstr " y"
+
+#: .\src\dialogs\FindInFilesDialog.ec:649
+msgid " and its sub directories"
+msgstr " y sus subdirectorios"
+
+#: .\src\dialogs\FindInFilesDialog.ec:977
+#: .\src\dialogs\FindInFilesDialog.ec:1063
+msgid " before search was aborted"
+msgstr " búsqueda anterior fue interrumpida"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:431
+msgid " Compiler Configuration"
+msgstr "Configuración del compilador"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:432
+msgid " compiler configuration?"
+msgstr " como configuración del compilador?"
+
+#: .\src\ProjectSettings.ec:1282
+msgid " Configuration"
+msgstr "Configuración"
+
+#: .\src\ProjectSettings.ec:1283
+msgid " configuration?"
+msgstr "configuración?"
+
+#: .\src\designer\CodeEditor.ec:1382
+msgid " file is not part of any project.\n"
+msgstr " el archivo no es parte de ningún proyecto.\n"
+
+#: .\src\dialogs\NodeProperties.ec:61
+#: .\src\dialogs\NodeProperties.ec:142
+msgid " Properties"
+msgstr " Propiedades"
+
+#: .\src\project\ProjectView.ec:1636
+msgid " was "
+msgstr " fue "
+
+#: .\src\debugger\Debugger.ec:809
+msgid " with exit code %s"
+msgstr " con código de salida %s"
+
+#: .\src\dialogs\FindInFilesDialog.ec:641
+msgid " with file name matching \"%s\""
+msgstr " con coincidencia de nombre de archivo \"%s\""
+
+#: .\src\project\ProjectView.ec:601
+msgid "%s - %s%smakefile for %s config...\n"
+msgstr "%s - %s%smakefile para %s config...\n"
+
+#: .\src\project\ProjectView.ec:539
+msgid "%s Compiler\n"
+msgstr "Compilador %s\n"
+
+#: .\src\debugger\Debugger.ec:2878
+msgid "%s Constructor, %s:%d\n"
+msgstr "Constructor %s, %s:%d\n"
+
+#: .\src\debugger\Debugger.ec:2880
+msgid "%s Destructor, %s:%d\n"
+msgstr "Destructor %s, %s:%d\n"
+
+#: .\src\debugger\Debugger.ec:2882
+msgid "%s Function, %s:%d\n"
+msgstr "Función %s, %s:%d\n"
+
+#: .\src\dialogs\FindInFilesDialog.ec:724
+msgid "%s matches the file name criteria\n"
+msgstr "%s coincidencias con el criterio de nombre de archivo\n"
+
+#: .\src\debugger\Debugger.ec:2874
+msgid "%s Method, %s:%d\n"
+msgstr "Método %s, %s:%d\n"
+
+#: .\src\dialogs\FindInFilesDialog.ec:144
+msgid "%s Project"
+msgstr "Proyecto %s"
+
+#: .\src\debugger\Debugger.ec:2876
+msgid "%s Property, %s:%d\n"
+msgstr "Propiedad %s, %s:%d\n"
+
+#: .\src\dialogs\FindInFilesDialog.ec:894
+msgid "%s search %s a total of %d match%s in %d out of the %d file%s searched\n"
+msgstr "%s búsqueda %s un total de %d coincidencia%s en %d fuera de los %d archivo%s buscado(s)\n"
+
+#: .\src\dialogs\FindInFilesDialog.ec:909
+msgid "%s search did not find any file\n"
+msgstr "%s búsqueda no encontró ningún archivo\n"
+
+#: .\src\dialogs\FindInFilesDialog.ec:904
+msgid "%s search did not find any match in the %d files searched\n"
+msgstr "%s búsqueda no encontró ninguna coincidencia en los %d archivos buscados\n"
+
+#: .\src\dialogs\FindInFilesDialog.ec:899
+msgid "%s search found a total of %d match%s in the %d file%s searched\n"
+msgstr "%s búsqueda encontró un total de %d coindicencia%s en el/los %d fichero%s buscado(s)\n"
+
+#: .\src\ProjectSettings.ec:1351
+msgid "(Right click or press Ctrl-Del to revert an option to inherited value)"
+msgstr "(Click en botón derecho o Ctrl-Del para devolver una opción a su valor heredado)"
+
+#: .\src\designer\CodeObject.ec:32
+msgid "(unnamed)"
+msgstr "(sin nombre)"
+
+#: .\src\project\ProjectView.ec:56
+#: .\src\ide.ec:108
+msgid "3D Studio Model"
+msgstr "3D Studio Model"
+
+#: .\src\project\ProjectView.ec:47
+#: .\src\ide.ec:99
+msgid "3D Studio Model Files (*.3ds)"
+msgstr "3D Studio Model Files (*.3ds)"
+
+#: .\src\project\Project.ec:1086
+#: .\src\project\Project.ec:1337
+msgid ""
+"\n"
+"Build cancelled by user.\n"
+msgstr ""
+"\n"
+"Build cancelled by user.\n"
+
+#: .\src\dialogs\FindInFilesDialog.ec:895
+#: .\src\dialogs\FindInFilesDialog.ec:900
+#: .\src\dialogs\FindInFilesDialog.ec:905
+#: .\src\dialogs\FindInFilesDialog.ec:909
+msgid "Aborted"
+msgstr "Interrumpido"
+
+#: .\src\about.ec:10
+msgid "About the Ecere SDK"
+msgstr "Acerca de Ecere SDK"
+
+#: .\src\ide.ec:1136
+msgid "About..."
+msgstr "Acerca de..."
+
+#: .\src\dialogs\NodeProperties.ec:30
+msgid "Absolute Path"
+msgstr "Ruta absoluta"
+
+#: .\src\dialogs\ActiveCompilerDialog.ec:5
+#: .\src\dialogs\ActiveCompilerDialog.ec:39
+msgid "Active Compiler"
+msgstr "Compilador activo"
+
+#: .\src\ide.ec:721
+msgid "Active Compiler..."
+msgstr "Compilador activo..."
+
+#: .\src\dialogs\ProjectActiveConfig.ec:65
+msgid "Active Configuration"
+msgstr "Configuración activa"
+
+#: .\src\project\ProjectView.ec:245
+#: .\src\ide.ec:730
+msgid "Active Configuration..."
+msgstr "Configuración activa..."
+
+#: .\src\ide.ec:683
+msgid "Add a different project?"
+msgstr "¿Añadir a un proyecto diferente?"
+
+#: .\src\project\ProjectView.ec:289
+msgid "Add Files to Folder..."
+msgstr "Añadir archivos a la carpeta..."
+
+#: .\src\project\ProjectView.ec:1581
+msgid "Add Files to Project"
+msgstr "Añadir archivos al proyecto"
+
+#: .\src\project\ProjectView.ec:235
+msgid "Add Files to Project..."
+msgstr "Añadir archivos al proyecto..."
+
+#: .\src\project\ProjectView.ec:295
+msgid "Add New Behavior Graph..."
+msgstr "Añadir nuevo gráfico de funcionamiento..."
+
+#: .\src\project\ProjectView.ec:237
+#: .\src\project\ProjectView.ec:294
+msgid "Add New Form..."
+msgstr "Añadir nuevo formulario..."
+
+#: .\src\ide.ec:668
+msgid "Add project to workspace..."
+msgstr "Añadir proyecto a espacio de trabajo..."
+
+#: .\src\project\ProjectView.ec:285
+msgid "Add Resources to Folder..."
+msgstr "Añadir recursos a la carpeta..."
+
+#: .\src\project\ProjectView.ec:1581
+msgid "Add Resources to Project"
+msgstr "Añadir recursos al proyecto"
+
+#: .\src\project\ProjectView.ec:258
+msgid "Add Resources to Project..."
+msgstr "Añadir recursos al proyecto..."
+
+#: .\src\ProjectSettings.ec:1910
+msgid "Additional Include Directories"
+msgstr "Additional Include Directories"
+
+#: .\src\ProjectSettings.ec:2001
+msgid "Additional Libraries"
+msgstr "Bibliotecas adicionales"
+
+#: .\src\ProjectSettings.ec:2029
+msgid "Additional Library Directories"
+msgstr "Additional Library Directories"
+
+#: .\src\ProjectSettings.ec:1106
+msgid "All"
+msgstr "Todo"
+
+#: .\src\ide.ec:1060
+msgid "All Debug Views"
+msgstr "Todas las vistas de depuración"
+
+#: .\src\dialogs\FindInFilesDialog.ec:60
+#: .\src\project\ProjectView.ec:41
+#: .\src\project\ProjectView.ec:48
+#: .\src\designer\CodeEditor.ec:85
+#: .\src\documents\PictureEdit.ec:22
+#: .\src\ide.ec:100
+#: .\src\ide.ec:128
+msgid "All files"
+msgstr "Todos los archivos"
+
+#: .\src\ide.ec:1126
+msgid "API Reference"
+msgstr "Referencia de la API"
+
+#: .\src\project\ProjectView.ec:1871
+msgid ""
+"Are you sure you want to remove the \"%s\" project\n"
+"from this workspace?"
+msgstr ""
+"¿Está seguro de eliminar el proyecto \"%s\"\n"
+"de este espacio de trabajo?"
+
+#: .\src\project\ProjectView.ec:1848
+msgid ""
+"Are you sure you want to remove the folder \"%s\"\n"
+"and all of its contents from the project?"
+msgstr ""
+"¿Estña seguro de eliminar la carpeta \"%s\"\n"
+"y todo su contenido del proyecto?"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:432
+#: .\src\ProjectSettings.ec:1283
+msgid "Are you sure you wish to delete the "
+msgstr "¿Está seguro de querer eliminar  "
+
+#: .\src\ProjectSettings.ec:183
+msgid "Are you sure you wish to discard changes made to the build options?"
+msgstr "¿Está seguro de querer descartar los cambios realizado en las opciones de construcción?"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:54
+msgid "Are you sure you wish to discard changes?"
+msgstr "¿Está seguro de querer descartar los cambios?"
+
+#: .\src\ide.ec:1120
+msgid "Arrange Icons"
+msgstr "Organizar iconos"
+
+#: .\src\designer\Sheet.ec:511
+msgid "Attach"
+msgstr "Adjuntar"
+
+#: .\src\designer\CodeEditor.ec:5150
+#: .\src\designer\CodeEditor.ec:5191
+msgid "Attach %s"
+msgstr "Adjuntar %s"
+
+#: .\src\project\ProjectView.ec:1191
+msgid ""
+"Attempting to debug non-debug configuration\n"
+"Proceed anyways?"
+msgstr ""
+"Intentando depurar con una configuración de no-depuración\n"
+"¿Proceder de todos modos?"
+
+#: .\src\project\ProjectView.ec:53
+#: .\src\documents\PictureEdit.ec:27
+#: .\src\ide.ec:105
+msgid "Based on extension"
+msgstr "Basado en extensión"
+
+#: .\src\documents\PictureEdit.ec:29
+msgid "BMP Image"
+msgstr "Imagen BMP"
+
+#: .\src\ide.ec:856
+msgid "Break"
+msgstr "Interrumpir"
+
+#: .\src\panels\BreakpointsView.ec:9
+#: .\src\ide.ec:1042
+msgid "Breakpoints"
+msgstr "Puntos de ruptura"
+
+#: .\src\project\ProjectView.ec:248
+#: .\src\project\ProjectView.ec:259
+#: .\src\project\ProjectView.ec:271
+#: .\src\project\ProjectView.ec:300
+msgid "Browse Folder"
+msgstr "Examinar carpeta"
+
+#: .\src\ide.ec:749
+msgid "Browse Project Folder"
+msgstr "Examinar carpeta del proyecto"
+
+#: .\src\project\ProjectView.ec:225
+#: .\src\ide.ec:770
+#: .\src\ProjectSettings.ec:1132
+msgid "Build"
+msgstr "Construir"
+
+#: .\src\ProjectSettings.ec:2058
+msgid "Builder"
+msgstr "Constructor"
+
+#: .\src\project\Project.ec:1223
+msgid "Building library...\n"
+msgstr "Building library...\n"
+
+#: .\src\project\ProjectView.ec:615
+msgid "Building project %s using the %s configuration...\n"
+msgstr "Construir el proyecto %s utilizando la configuración %s...\n"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:675
+msgid "C Compiler"
+msgstr "Compilador de C"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:669
+msgid "C Preprocessor"
+msgstr "Preprocesador de C"
+
+#: .\src\designer\CodeEditor.ec:81
+#: .\src\ide.ec:93
+#: .\src\ide.ec:124
+msgid "C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)"
+msgstr "Archivos de C/C++/eC(*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)"
+
+#: .\src\designer\CodeEditor.ec:83
+#: .\src\ide.ec:95
+#: .\src\ide.ec:126
+msgid "C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)"
+msgstr "Archivos fuente de C/C++/eC (*.ec, *.c, *.cpp, *.cc, *.cxx)"
+
+#: .\src\panels\CallStackView.ec:13
+#: .\src\ide.ec:1051
+msgid "Call Stack"
+msgstr "Pila de llamadas"
+
+#: .\src\dialogs\ActiveCompilerDialog.ec:32
+#: .\src\dialogs\CompilersDetectionDialog.ec:142
+#: .\src\dialogs\FindInFilesDialog.ec:411
+#: .\src\dialogs\GlobalSettingsDialog.ec:44
+#: .\src\dialogs\NewProjectDialog.ec:234
+#: .\src\dialogs\NewProjectDialog.ec:519
+#: .\src\dialogs\ProjectActiveConfig.ec:57
+#: .\src\designer\CodeEditor.ec:5222
+#: .\src\ProjectSettings.ec:172
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: .\src\ide.ec:2135
+msgid "CAPS"
+msgstr "MAYUSC"
+
+#: .\src\ide.ec:1117
+msgid "Cascade"
+msgstr "En cascada"
+
+#: .\src\project\ProjectView.ec:228
+#: .\src\ide.ec:800
+msgid "Clean"
+msgstr "Limpiar"
+
+#: .\src\project\ProjectView.ec:819
+msgid "Cleaning project %s using the %s configuration...\n"
+msgstr "Limpiar el proyecto %s utilizando la configuración %s...\n"
+
+#: .\src\ProjectSettings.ec:288
+msgid "Clear"
+msgstr "Limpiar"
+
+#: .\src\documents\PictureEdit.ec:278
+#: .\src\ide.ec:530
+#: .\src\ide.ec:696
+msgid "Close"
+msgstr "Cerrar"
+
+#: .\src\ide.ec:1112
+msgid "Close All"
+msgstr "Cerrar todo"
+
+#: .\src\ide.ec:2184
+msgid "Close IDE"
+msgstr "Cerrar el IDE"
+
+#: .\src\ide.ec:1086
+msgid "Color Picker..."
+msgstr "Selector de color..."
+
+#: .\src\documents\PictureEdit.ec:90
+#: .\src\documents\PictureEdit.ec:272
+msgid "Color Table"
+msgstr "Color Table"
+
+#: .\src\dialogs\WorkspaceSettings.ec:22
+msgid "Command Line Arguments"
+msgstr "Command Line Arguments"
+
+#: .\src\ProjectSettings.ec:1583
+#: .\src\ProjectSettings.ec:1616
+msgid "Common"
+msgstr "Common"
+
+#: .\src\project\ProjectView.ec:267
+msgid "Compile"
+msgstr "Compilar"
+
+#: .\src\ide.ec:2152
+msgid "Compile %s"
+msgstr "Compilar %s"
+
+#: .\src\ProjectSettings.ec:1754
+msgid "Compiler"
+msgstr "Compilador"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:263
+msgid "Compiler Configurations:"
+msgstr "Configuraciones del compilador:"
+
+#: .\src\dialogs\CompilersDetectionDialog.ec:115
+#: .\src\dialogs\GlobalSettingsDialog.ec:259
+msgid "Compilers"
+msgstr "Compiladores"
+
+#: .\src\dialogs\CompilersDetectionDialog.ec:18
+msgid "Compilers Detection"
+msgstr "Detección de compiladores"
+
+#: .\src\project\ProjectView.ec:924
+msgid "Compiling single file %s in project %s using the %s configuration...\n"
+msgstr "Compilar el archivo %s del proyecto %s utilizando la configuración %s...\n"
+
+#: .\src\project\ProjectView.ec:926
+msgid "Compiling single file %s in project %s...\n"
+msgstr "Compilar el archivo %s del proyecto %s...\n"
+
+#: .\src\project\Project.ec:1195
+msgid "Compiling...\n"
+msgstr "Compilando...\n"
+
+#: .\src\dialogs\FindInFilesDialog.ec:895
+#: .\src\dialogs\FindInFilesDialog.ec:900
+#: .\src\dialogs\FindInFilesDialog.ec:905
+#: .\src\dialogs\FindInFilesDialog.ec:909
+msgid "Completed"
+msgstr "Completado"
+
+#: .\src\ProjectSettings.ec:2022
+msgid "Compress"
+msgstr "Comprimir"
+
+#: .\src\panels\BreakpointsView.ec:113
+msgid "Condition"
+msgstr "Condición"
+
+#: .\src\ProjectSettings.ec:1188
+msgid "Configurations: "
+msgstr "Configuraciones:"
+
+#: .\src\ProjectSettings.ec:2016
+msgid "Console Application"
+msgstr "Console Application"
+
+#: .\src\about.ec:19
+msgid "Contributors"
+msgstr "Contributors"
+
+#: .\src\panels\CallStackView.ec:81
+#: .\src\panels\OutputView.ec:196
+#: .\src\panels\ThreadsView.ec:100
+msgid "Copy"
+msgstr "Copiar"
+
+#: .\src\project\ProjectView.ec:1617
+msgid "Couldn't create file."
+msgstr "Imposible crear el archivo."
+
+#: .\src\debugger\Debugger.ec:2381
+msgid "Couldn't read memory"
+msgstr "Imposible leer memoria"
+
+#: .\src\dialogs\NewProjectDialog.ec:79
+msgid "Create directory?"
+msgstr "¿Crear directorio?"
+
+#: .\src\dialogs\NewProjectDialog.ec:239
+msgid "Create Form"
+msgstr "Create Form"
+
+#: .\src\designer\CodeEditor.ec:1888
+#: .\src\ide.ec:822
+msgid "Debug"
+msgstr "Depurar"
+
+#: .\src\dialogs\WorkspaceSettings.ec:12
+msgid "Debug Working Directory"
+msgstr "Directorio de trabajo del depurador"
+
+#: .\src\ProjectSettings.ec:1891
+msgid "Debuggable"
+msgstr "Depurable"
+
+#: .\src\debugger\Debugger.ec:3335
+msgid "Debugger Error: No target process ID\n"
+msgstr "Error del depurador: No existe ID de proceso de destino\n"
+
+#: .\src\debugger\Debugger.ec:1890
+msgid "Debugger Fatal Error: Couldn't get GDB process ID\n"
+msgstr "Error fatal del depurador: Imposible obtener el ID del proceso GDB\n"
+
+#: .\src\debugger\Debugger.ec:1879
+msgid "Debugger Fatal Error: Couldn't start GDB\n"
+msgstr "Error fatal del depurador: Imposible iniciar GDB\n"
+
+#: .\src\debugger\Debugger.ec:2679
+msgid "Debugger Fatal Error: GDB lost\n"
+msgstr "Error fatal del depurador: GDB perdido\n"
+
+#: .\src\debugger\Debugger.ec:2304
+msgid "Debugger required for symbol evaluation in \"%s\""
+msgstr "Se requiere el depurador pra la evaluación del símbolo en \"%s\""
+
+#: .\src\project\ProjectView.ec:1189
+msgid "Debugging compressed applications is not supported\n"
+msgstr "La depuración de aplicaciones comprimidas no está soportada\n"
+
+#: .\src\debugger\Debugger.ec:1996
+#: .\src\debugger\Debugger.ec:2680
+#: .\src\debugger\Debugger.ec:3352
+msgid "Debugging stopped\n"
+msgstr "Depuración parada\n"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:1016
+msgid "Default Compiler"
+msgstr "Compilador por defecto"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:981
+msgid "Default Intermediate Objects Directory"
+msgstr "Directorio por defecto de objetos intermedios"
+
+#: .\src\ProjectSettings.ec:1860
+msgid "Default Name Space"
+msgstr "Espacio de nombres por defecto"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:968
+msgid "Default Target Directory"
+msgstr "Directorio por defecto de destino"
+
+#: .\src\designer\Sheet.ec:524
+msgid "Delete"
+msgstr "Eliminar"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:431
+#: .\src\ProjectSettings.ec:1282
+msgid "Delete "
+msgstr "Eliminar "
+
+#: .\src\designer\Sheet.ec:1267
+#: .\src\designer\Sheet.ec:1279
+msgid "Delete %s"
+msgstr "Eliminar %s"
+
+#: .\src\project\ProjectView.ec:1849
+msgid "Delete Folder"
+msgstr "Eliminar carpeta"
+
+#: .\src\project\Project.ec:1528
+msgid "Deleting target and object files..."
+msgstr "Deleting target and object files..."
+
+#: .\src\debugger\Debugger.ec:2298
+msgid "Dereference failure for \"%s\""
+msgstr "Fallo de eliminación de referencia para \"%s\""
+
+#: .\src\dialogs\ProjectTabSettings.ec:22
+msgid "Description"
+msgstr "Description"
+
+#: .\src\about.ec:17
+msgid "Design & Implementation"
+msgstr "Design & Implementation"
+
+#: .\src\designer\Sheet.ec:523
+#: .\src\designer\Sheet.ec:529
+msgid "Detach"
+msgstr "Separar"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:529
+msgid "Directories"
+msgstr "Directorios"
+
+#: .\src\dialogs\FindInFilesDialog.ec:437
+msgid "Directory"
+msgstr "Directorio"
+
+#: .\src\dialogs\NewProjectDialog.ec:79
+msgid "Directory doesn't exist"
+msgstr "El directorio no existe"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:886
+msgid "distcc hosts"
+msgstr "hosts distcc"
+
+#: .\src\dialogs\NewProjectDialog.ec:336
+msgid "Do you want to quickly create a temporary project?"
+msgstr "Do you want to quickly create a temporary project?"
+
+#: .\src\ide.ec:1505
+msgid "Do you want to terminate the debugging session in progress?"
+msgstr "¿Desea finalizar la sesión de depuración en proceso?"
+
+#: .\src\designer\CodeEditor.ec:2195
+#: .\src\ide.ec:1353
+msgid "Document has been modified"
+msgstr "El documento ha sido modificado"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:651
+msgid "eC Compiler"
+msgstr "Compilador de eC"
+
+#: .\src\ide.ec:123
+msgid "eC Files (*.ec, *.eh)"
+msgstr "Archivos de eC (*.ec, *.eh)"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:645
+msgid "eC Precompiler"
+msgstr "Precompilador de eC"
+
+#: .\src\designer\CodeEditor.ec:90
+msgid "eC Source Code"
+msgstr "Código fuente de eC"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:657
+msgid "eC Symbol Loader"
+msgstr "Carg. de símb. de eC"
+
+#: .\src\project\ProjectView.ec:38
+msgid "eC/C/C++ Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)"
+msgstr "Archivos de eC/C/C++(*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)"
+
+#: .\src\project\ProjectView.ec:39
+msgid "eC/C/C++ Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)"
+msgstr "Archivos fuente de eC/C/C++ (*.ec, *.c, *.cpp, *.cc, *.cxx)"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:663
+msgid "Ecere Archiver"
+msgstr "Archivador de Ecere"
+
+#: .\src\ide.ec:2567
+msgid "ECERE IDE"
+msgstr "ECERE IDE"
+
+#: .\src\project\ProjectView.ec:67
+msgid "Ecere IDE Project"
+msgstr "Ecere IDE Project"
+
+#: .\src\project\ProjectView.ec:68
+msgid "Ecere IDE Workspace"
+msgstr "Ecere IDE Workspace"
+
+#: .\src\designer\Sheet.ec:446
+#: .\src\panels\CallStackView.ec:76
+#: .\src\panels\OutputView.ec:191
+#: .\src\panels\ThreadsView.ec:95
+#: .\src\ide.ec:607
+msgid "Edit"
+msgstr "Editar"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:215
+msgid "Editor"
+msgstr "Editor"
+
+#: .\src\debugger\Debugger.ec:2377
+msgid "Empty string"
+msgstr "Cadena vacía"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:749
+msgid "Environment"
+msgstr "Entorno"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:755
+#: .\src\dialogs\WorkspaceSettings.ec:29
+msgid "Environment Variables"
+msgstr "Variables de entorno"
+
+#: .\src\project\Project.ec:1352
+msgid "error"
+msgstr "error"
+
+#: .\src\dialogs\NewProjectDialog.ec:83
+msgid "Error creating directory"
+msgstr "Error al crear directorio"
+
+#: .\src\project\Project.ec:1482
+msgid "Error executing make (%s) command\n"
+msgstr "Error executing make (%s) command\n"
+
+#: .\src\ide.ec:516
+msgid "Error opening file"
+msgstr "Error al abrir el archivo"
+
+#: .\src\ide.ec:1663
+msgid "Error opening project"
+msgstr "Error al abrir el proyecto"
+
+#: .\src\ide.ec:682
+msgid "Error opening project file"
+msgstr "Error al abrir el archivo del proyecto"
+
+#: .\src\dialogs\NewProjectDialog.ec:168
+#: .\src\dialogs\NewProjectDialog.ec:443
+msgid "Error writing project file"
+msgstr "Error al escribir el archivo del proyecto"
+
+#: .\src\debugger\Debugger.ec:2265
+msgid "Error: Struct member not found for \"%s\""
+msgstr "Error: Miembro de estructura no encontrado para \"%s\""
+
+#: .\src\project\Project.ec:1352
+msgid "errors"
+msgstr "errors"
+
+#: .\src\dialogs\FindInFilesDialog.ec:895
+#: .\src\dialogs\FindInFilesDialog.ec:900
+#: .\src\dialogs\FindInFilesDialog.ec:1062
+msgid "es"
+msgstr "es"
+
+#: .\src\debugger\Debugger.ec:2489
+msgid "Evaluation failed for \"%s\" of type \"%s\""
+msgstr "Falló la evaluación para \"%s\" de tipo \"%s\""
+
+#: .\src\ProjectSettings.ec:1846
+msgid "Exclude from Build"
+msgstr "Exclude from Build"
+
+#: .\src\dialogs\NewProjectDialog.ec:308
+#: .\src\dialogs\NewProjectDialog.ec:529
+#: .\src\ProjectSettings.ec:1048
+msgid "Executable"
+msgstr "Executable"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:687
+msgid "Execution Prefix"
+msgstr "Prefijo de ejecución"
+
+#: .\src\ide.ec:575
+msgid "Exit"
+msgstr "Salir"
+
+#: .\src\panels\WatchesView.ec:76
+msgid "Expression"
+msgstr "Expresión"
+
+#: .\src\project\Project.ec:1345
+msgid "Fatal Error: child process terminated unexpectedly\n"
+msgstr "Fatal Error: child process terminated unexpectedly\n"
+
+#: .\src\project\ProjectView.ec:443
+#: .\src\designer\CodeEditor.ec:1884
+#: .\src\documents\PictureEdit.ec:53
+#: .\src\ide.ec:483
+#: .\src\ide.ec:2465
+msgid "File"
+msgstr "Archivo"
+
+#: .\src\project\ProjectView.ec:933
+msgid "File %s is excluded from current build configuration.\n"
+msgstr "El archivo %s está excluido de la configuración actual de construcción.\n"
+
+#: .\src\ide.ec:1738
+#: .\src\ide.ec:1750
+msgid "File doesn't exist."
+msgstr "El archivo no existe."
+
+#: .\src\project\ProjectView.ec:1606
+#: .\src\ide.ec:1798
+msgid "File doesn't exist. Create?"
+msgstr "El archivo no existe. ¿Crearlo?"
+
+#: .\src\dialogs\FindInFilesDialog.ec:334
+msgid "File name:"
+msgstr "Nombre:"
+
+#: .\src\designer\CodeEditor.ec:1384
+msgid "File not in project error"
+msgstr "Error de fichero no existente en proyecto"
+
+#: .\src\dialogs\NodeProperties.ec:51
+msgid "File with same name already in project."
+msgstr "Ya existe un archivo con el mismo nombre en el proyecto."
+
+#: .\src\project\Workspace.ec:1133
+msgid "File%s not found"
+msgstr "Archivo%s on encontrado"
+
+#: .\src\ProjectSettings.ec:1768
+msgid "Files"
+msgstr "Archivos"
+
+#: .\src\dialogs\FindInFilesDialog.ec:321
+msgid "Filter:"
+msgstr "Filtro:"
+
+#: .\src\dialogs\FindInFilesDialog.ec:126
+#: .\src\dialogs\FindInFilesDialog.ec:376
+#: .\src\panels\CallStackView.ec:23
+#: .\src\panels\CallStackView.ec:91
+#: .\src\panels\OutputView.ec:206
+#: .\src\panels\ThreadsView.ec:110
+msgid "Find"
+msgstr "Buscar"
+
+#: .\src\dialogs\FindInFilesDialog.ec:8
+#: .\src\dialogs\FindInFilesDialog.ec:129
+msgid "Find In Files"
+msgstr "Buscar en archivos"
+
+#: .\src\ide.ec:538
+msgid "Find In Files..."
+msgstr "Buscar en archivos..."
+
+#: .\src\dialogs\FindInFilesDialog.ec:231
+msgid "Find in:"
+msgstr "Buscar en:"
+
+#: .\src\panels\CallStackView.ec:90
+#: .\src\panels\OutputView.ec:205
+#: .\src\panels\ThreadsView.ec:109
+msgid "Find Next"
+msgstr "Buscar siguiente"
+
+#: .\src\panels\CallStackView.ec:89
+#: .\src\panels\OutputView.ec:204
+#: .\src\panels\ThreadsView.ec:108
+msgid "Find Previous"
+msgstr "Buscar anterior"
+
+#: .\src\dialogs\FindInFilesDialog.ec:345
+msgid "Find what:"
+msgstr "A buscar:"
+
+#: .\src\dialogs\FindInFilesDialog.ec:294
+#: .\src\dialogs\FindInFilesDialog.ec:299
+msgid "Find where:"
+msgstr "Buscar en:"
+
+#: .\src\ProjectSettings.ec:1081
+msgid "For Size (-Os)"
+msgstr "For Size (-Os)"
+
+#: .\src\ProjectSettings.ec:1077
+msgid "For Speed (-O2)"
+msgstr "For Speed (-O2)"
+
+#: .\src\dialogs\FindInFilesDialog.ec:895
+msgid "found"
+msgstr "found"
+
+#: .\src\dialogs\FindInFilesDialog.ec:976
+msgid ""
+"Found %d match%s in \"%s\"%s\n"
+"\n"
+msgstr ""
+"%d coincidencia%s encontrada(s) en \"%s\"%s\n"
+"\n"
+
+#: .\src\project\ProjectView.ec:586
+msgid "Generating "
+msgstr "Generando "
+
+#: .\src\project\ProjectView.ec:146
+#: .\src\project\ProjectView.ec:582
+msgid "Generating Makefile & Dependencies..."
+msgstr "Generando Makefile y dependencias..."
+
+#: .\src\project\Project.ec:1200
+msgid "Generating symbols...\n"
+msgstr "Generando símbolos...\n"
+
+#: .\src\documents\PictureEdit.ec:32
+msgid "GIF Image"
+msgstr "Imagen GIF"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:18
+msgid "Global Settings"
+msgstr "Configuración global"
+
+#: .\src\ide.ec:559
+msgid "Global Settings..."
+msgstr "Configuración global..."
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:681
+msgid "GNU Make"
+msgstr "GNU Make"
+
+#: .\src\designer\Sheet.ec:522
+#: .\src\designer\Sheet.ec:528
+msgid "Go to"
+msgstr "Ir a"
+
+#: .\src\ide.ec:1109
+msgid "Graphics Driver"
+msgstr "Controlador gráfico"
+
+#: .\src\designer\CodeEditor.ec:82
+msgid "Header Files for C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)"
+msgstr "Archivos de cabecera para C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)"
+
+#: .\src\project\ProjectView.ec:40
+#: .\src\ide.ec:94
+#: .\src\ide.ec:125
+msgid "Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)"
+msgstr "Archivos de cabecera para eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)"
+
+#: .\src\ide.ec:1123
+msgid "Help"
+msgstr "Ayuda"
+
+#: .\src\panels\BreakpointsView.ec:112
+msgid "Hit Level"
+msgstr "Nivel Hit"
+
+#: .\src\panels\BreakpointsView.ec:111
+msgid "Ignore Count"
+msgstr "Ignorar contador"
+
+#: .\src\project\ProjectView.ec:55
+#: .\src\documents\PictureEdit.ec:56
+#: .\src\ide.ec:107
+#: .\src\ide.ec:929
+msgid "Image"
+msgstr "Imagen"
+
+#: .\src\documents\PictureEdit.ec:21
+#: .\src\ide.ec:98
+msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
+msgstr "Archivos de imagen (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
+
+#: .\src\project\ProjectView.ec:46
+msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png,*.gif)"
+msgstr "Archivos de imagen (*.jpg, *.jpeg, *.bmp, *.pcx, *.png,*.gif)"
+
+#: .\src\project\ProjectView.ec:426
+msgid "Import Folder"
+msgstr "Importar carpeta"
+
+#: .\src\project\ProjectView.ec:234
+#: .\src\project\ProjectView.ec:282
+msgid "Import Folder..."
+msgstr "Importar carpeta..."
+
+#: .\src\dialogs\FindInFilesDialog.ec:315
+msgid "Include Subdirectories"
+msgstr "Incluir subdirectorios"
+
+#: .\src\debugger\Debugger.ec:2307
+msgid "Incorrect debugger state for symbol evaluation in \"%s\""
+msgstr "Estado del depurador incorrecto en la evaluación del símbolo en \"%s\""
+
+#: .\src\documents\PictureEdit.ec:60
+msgid "Indexed Color..."
+msgstr "Color indexado..."
+
+#: .\src\project\ProjectView.ec:150
+msgid "Initializing Debugger"
+msgstr "Inicializando el depurador"
+
+#: .\src\debugger\Debugger.ec:2892
+msgid "inside %s, %s\n"
+msgstr "dentro de  %s, %s\n"
+
+#: .\src\ProjectSettings.ec:1840
+msgid "Intermediate Objects Directory"
+msgstr "Directorio intermedio de objetos"
+
+#: .\src\debugger\Debugger.ec:2399
+msgid "Invalid Enum Value"
+msgstr "Enum Value no válido"
+
+#: .\src\debugger\Debugger.ec:2496
+msgid "Invalid expression: \"%s\""
+msgstr "Expresión no válida: \"%s\""
+
+#: .\src\debugger\Debugger.ec:1112
+#: .\src\debugger\Debugger.ec:1128
+#: .\src\debugger\Debugger.ec:1141
+#: .\src\debugger\Debugger.ec:1246
+msgid "Invalid Source Directory"
+msgstr "Directorio fuente no válido"
+
+#: .\src\debugger\Debugger.ec:2461
+msgid "Invalid Unicode Keypoint (0x%08X)"
+msgstr "Clave unicode no válida (0x%08X)"
+
+#: .\src\designer\CodeEditor.ec:1383
+msgid "It can't be compiled."
+msgstr "No puede ser compilado."
+
+#: .\src\documents\PictureEdit.ec:28
+msgid "JPG Image"
+msgstr "Imagen JPG"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:225
+msgid "Keep caret visible (move along) when scrolling"
+msgstr "Mantener el cursor visible (avanzar) al desplazarse"
+
+#: .\src\dialogs\ProjectTabSettings.ec:31
+msgid "License"
+msgstr "License"
+
+#: .\src\ProjectSettings.ec:1974
+msgid "Linker"
+msgstr "Enlazador"
+
+#: .\src\ProjectSettings.ec:2009
+msgid "Linker Options"
+msgstr "Opciones del enlazador"
+
+#: .\src\project\Project.ec:1212
+msgid "Linking...\n"
+msgstr "Enlazando...\n"
+
+#: .\src\designer\CodeEditor.ec:677
+#: .\src\designer\CodeEditor.ec:714
+msgid "Ln %d, Col %d"
+msgstr "Lín %d, Col %d"
+
+#: .\src\dialogs\NewProjectDialog.ec:21
+#: .\src\panels\BreakpointsView.ec:110
+msgid "Location"
+msgstr "Localización"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:52
+#: .\src\ProjectSettings.ec:181
+msgid "Lose Changes?"
+msgstr "¿Descartar cambios?"
+
+#: .\src\project\ProjectView.ec:594
+msgid "Makefile doesn't exist. "
+msgstr "No existe Makefile. "
+
+#: .\src\dialogs\FindInFilesDialog.ec:359
+msgid "Match case"
+msgstr "Coincidir mayúsculas y minúsculas"
+
+#: .\src\debugger\Debugger.ec:2285
+msgid "Member \"%s\" not found in class \"%s\""
+msgstr "Miembro \"%s\" no encontrado en la clase \"%s\""
+
+#: .\src\debugger\Debugger.ec:2295
+msgid "Memory can't be read at %s"
+msgstr "No se puede leer la memoria en %s"
+
+#: .\src\ProjectSettings.ec:1871
+msgid "MemoryGuard"
+msgstr "MemoryGuard"
+
+#: .\src\designer\CodeEditor.ec:5151
+#: .\src\designer\CodeEditor.ec:5193
+msgid "Method is unused. Move method inside instance?"
+msgstr "Método no utilizado. ¿Mover el método dentro de la instancia?"
+
+#: .\src\designer\Sheet.ec:1272
+msgid "Method still contains code. Are you sure you want to delete it?"
+msgstr "El método aún contiene código. ¿Está seguro de querer eliminarlo?"
+
+#: .\src\designer\Sheet.ec:418
+#: .\src\designer\Sheet.ec:426
+msgid "Methods"
+msgstr "Métodos"
+
+#: .\src\designer\Sheet.ec:795
+#: .\src\designer\Sheet.ec:926
+#: .\src\designer\Sheet.ec:1633
+#: .\src\designer\Sheet.ec:1634
+msgid "Misc"
+msgstr "Misc"
+
+#: .\src\debugger\Debugger.ec:2487
+msgid "Missing property evaluation support for \"%s\""
+msgstr "Soporte de evaluación de propiedad no encontrado para \"%s\""
+
+#: .\src\documents\PictureEdit.ec:57
+msgid "Mode"
+msgstr "Mode"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:219
+msgid "Move code editor caret freely past end of line"
+msgstr "Mover el cursor del editor de código libremente más alla del final de línea"
+
+#: .\src\dialogs\NodeProperties.ec:37
+msgid "Name"
+msgstr "Nombre"
+
+#: .\src\project\ProjectView.ec:1654
+msgid "Name Conflict"
+msgstr "Nombrar conflicto"
+
+#: .\src\designer\CodeEditor.ec:5218
+msgid "Name detached method"
+msgstr "Nombrar método separado"
+
+#: .\src\ide.ec:486
+msgid "New"
+msgstr "Nuevo"
+
+#: .\src\project\ProjectView.ec:232
+#: .\src\project\ProjectView.ec:256
+#: .\src\project\ProjectView.ec:280
+msgid "New File..."
+msgstr "Nuevo archivo..."
+
+#: .\src\project\ProjectView.ec:233
+#: .\src\project\ProjectView.ec:257
+#: .\src\project\ProjectView.ec:281
+msgid "New Folder..."
+msgstr "Nueva carpeta..."
+
+#: .\src\dialogs\NewProjectDialog.ec:13
+#: .\src\ide.ec:615
+msgid "New Project"
+msgstr "Nuevo proyecto"
+
+#: .\src\ide.ec:612
+msgid "New..."
+msgstr "Nuevo..."
+
+#: .\src\ide.ec:1114
+msgid "Next"
+msgstr "Siguiente"
+
+#: .\src\project\Project.ec:1354
+msgid "no error, "
+msgstr "no error, "
+
+#: .\src\ProjectSettings.ec:1903
+msgid "No Line Numbers"
+msgstr "Sin número de líneas"
+
+#: .\src\debugger\Debugger.ec:1251
+msgid "No Source Directory Provided"
+msgstr "No se ha proporcionado directorio de origen"
+
+#: .\src\debugger\Debugger.ec:2090
+msgid "No source file found for selected frame"
+msgstr "No se encontró el archivo fuente del frame seleccionado"
+
+#: .\src\project\Project.ec:1359
+msgid "no warning\n"
+msgstr "no warning\n"
+
+#: .\src\ProjectSettings.ec:1073
+#: .\src\ProjectSettings.ec:1102
+msgid "None"
+msgstr "Ninguno"
+
+#: .\src\ProjectSettings.ec:1098
+msgid "Normal"
+msgstr "Normal"
+
+#: .\src\project\ProjectView.ec:1638
+msgid ""
+"not added because of identical file name conflict within the project.\n"
+"\n"
+msgstr ""
+"no añadido debido a un conflicto de nombres de archivo idénticos dentro del proyecto.\n"
+"\n"
+
+#: .\src\dialogs\FindInFilesDialog.ec:397
+msgid "Nothing to be found. Please specify at least one criteria."
+msgstr "Nothing to be found. Please specify at least one criteria."
+
+#: .\src\debugger\Debugger.ec:2342
+msgid "Null string"
+msgstr "Cadena nula"
+
+#: .\src\debugger\Debugger.ec:2310
+msgid "Null type for \"%s\""
+msgstr "Tipo nulo para \"%s\""
+
+#: .\src\ide.ec:2141
+msgid "NUM"
+msgstr "NUM"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:809
+msgid "Number of parallel build jobs"
+msgstr "Nº de construcciones paralelas"
+
+#: .\src\dialogs\ActiveCompilerDialog.ec:19
+#: .\src\dialogs\CompilersDetectionDialog.ec:130
+#: .\src\dialogs\GlobalSettingsDialog.ec:62
+#: .\src\dialogs\NewProjectDialog.ec:62
+#: .\src\dialogs\NewProjectDialog.ec:343
+#: .\src\dialogs\ProjectActiveConfig.ec:39
+#: .\src\designer\CodeEditor.ec:5227
+#: .\src\about.ec:27
+#: .\src\ProjectSettings.ec:211
+msgid "OK"
+msgstr "Aceptar"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:9
+#: .\src\project\ProjectView.ec:266
+#: .\src\designer\CodeEditor.ec:132
+#: .\src\ide.ec:133
+msgid "Open"
+msgstr "Abrir"
+
+#: .\src\ide.ec:517
+msgid "Open a different file?"
+msgstr "¿Abrir un archivo diferente?"
+
+#: .\src\ide.ec:1663
+msgid "Open a different project?"
+msgstr "¿Abrir un proyecto diferente?"
+
+#: .\src\ide.ec:138
+msgid "Open Additional Project"
+msgstr "Abrir proyecto adicional"
+
+#: .\src\designer\CodeEditor.ec:139
+#: .\src\ide.ec:137
+#: .\src\ide.ec:1561
+msgid "Open Project"
+msgstr "Abrir proyecto"
+
+#: .\src\ide.ec:496
+#: .\src\ide.ec:641
+msgid "Open..."
+msgstr "Abrir..."
+
+#: .\src\ProjectSettings.ec:1885
+msgid "Optimization"
+msgstr "Optimización"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:785
+msgid "Options"
+msgstr "Opciones"
+
+#: .\src\designer\Sheet.ec:1285
+msgid "Other methods are still attached to this method. Are you sure you want to delete it?"
+msgstr "Otros métodos están aún adjuntados a este método. ¿Está seguro de querer eliminarlo?"
+
+#: .\src\ide.ec:1015
+msgid "Output"
+msgstr "Salida"
+
+#: .\src\designer\Sheet.ec:508
+msgid "Override"
+msgstr "Anular"
+
+#: .\src\ide.ec:2138
+msgid "OVR"
+msgstr "OVR"
+
+#: .\src\dialogs\NodeProperties.ec:21
+msgid "Path"
+msgstr "Ruta"
+
+#: .\src\documents\PictureEdit.ec:30
+msgid "PCX Image"
+msgstr "Imagen PCX"
+
+#: .\src\ProjectSettings.ec:1329
+msgid "Platforms: "
+msgstr "Plataformas:"
+
+#: .\src\documents\PictureEdit.ec:31
+msgid "PNG Image"
+msgstr "Imagen PNG"
+
+#: .\src\designer\ToolBox.ec:132
+msgid "Pointer"
+msgstr "Puntero"
+
+#: .\src\ProjectSettings.ec:2071
+msgid "Post-build Commands"
+msgstr "Post-build Commands"
+
+#: .\src\ProjectSettings.ec:2064
+msgid "Pre-build Commands"
+msgstr "Pre-build Commands"
+
+#: .\src\ProjectSettings.ec:1853
+msgid "Preprocessor Definitions"
+msgstr "Definiciones del preprocesador"
+
+#: .\src\ide.ec:1115
+msgid "Previous"
+msgstr "Anterior"
+
+#: .\src\ProjectSettings.ec:1897
+msgid "Profiling Data"
+msgstr "Profiling Data"
+
+#: .\src\ide.ec:609
+msgctxt "Menu"
+msgid "Project"
+msgstr "Proyecto"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:962
+#: .\src\dialogs\ProjectTabSettings.ec:8
+msgid "Project"
+msgstr "Proyecto"
+
+#: .\src\dialogs\ProjectActiveConfig.ec:5
+msgid "Project Active Configuration"
+msgstr "Configuración activa del proyecto"
+
+#: .\src\dialogs\NewProjectDialog.ec:103
+msgid "Project Already Exists"
+msgstr "Project Already Exists"
+
+#: .\src\project\ProjectView.ec:755
+msgid "Project Build"
+msgstr "Cionstruir proyecto"
+
+#: .\src\ide.ec:701
+msgid "Project Close"
+msgstr "Cerrar proyecto"
+
+#: .\src\ide.ec:118
+msgid "Project File"
+msgstr "Archivo de proyecto"
+
+#: .\src\project\ProjectView.ec:61
+#: .\src\ide.ec:113
+msgid "Project Files (*.epj)"
+msgstr "Archivos de proyecto (*.epj)"
+
+#: .\src\project\ProjectView.ec:596
+msgid "Project has been modified. "
+msgstr "El proyecto ha sigo modificado. "
+
+#: .\src\dialogs\NewProjectDialog.ec:246
+msgid "Project Name"
+msgstr "Nombre del proyecto"
+
+#: .\src\ProjectSettings.ec:85
+msgid "Project Settings"
+msgstr "Configuración del proyecto"
+
+#: .\src\ide.ec:933
+msgid "Project View"
+msgstr "Vista de proyecto"
+
+#: .\src\dialogs\NodeProperties.ec:12
+#: .\src\designer\Sheet.ec:390
+#: .\src\designer\Sheet.ec:397
+#: .\src\designer\Sheet.ec:600
+msgid "Properties"
+msgstr "Propiedades"
+
+#: .\src\project\ProjectView.ec:274
+msgid "Properties.."
+msgstr "Propiedades.."
+
+#: .\src\project\ProjectView.ec:252
+#: .\src\project\ProjectView.ec:262
+#: .\src\project\ProjectView.ec:303
+msgid "Properties..."
+msgstr "Propiedades..."
+
+#: .\src\debugger\Debugger.ec:735
+msgid "Provide source file location for %s"
+msgstr "Provide source file location for %s"
+
+#: .\src\debugger\Debugger.ec:1220
+msgid "Provide source files location directory for %s"
+msgstr "Provide source files location directory for %s"
+
+#: .\src\dialogs\NewProjectDialog.ec:331
+msgid "Quick Project"
+msgstr "Proyecto rápido"
+
+#: .\src\ide.ec:658
+msgid "Quick..."
+msgstr "Rápido..."
+
+#: .\src\designer\Sheet.ec:532
+msgid "Reattach"
+msgstr "Readjuntar"
+
+#: .\src\project\ProjectView.ec:227
+#: .\src\ide.ec:790
+msgid "Rebuild"
+msgstr "Reconstruir"
+
+#: .\src\project\ProjectView.ec:800
+msgid "Rebuilding project %s using the %s configuration...\n"
+msgstr "Reconstruir el proyecto %s utilizando la configuración %s...\n"
+
+#: .\src\ide.ec:572
+#: .\src\ide.ec:2466
+msgid "Recent Files"
+msgstr "Archivos recientes"
+
+#: .\src\ide.ec:573
+#: .\src\ide.ec:2467
+msgid "Recent Projects"
+msgstr "Proyectos recientes"
+
+#: .\src\project\ProjectView.ec:229
+#: .\src\ide.ec:813
+msgid "Regenerate Makefile"
+msgstr "Regenerar Makefile"
+
+#: .\src\project\ProjectView.ec:588
+msgid "Regenerating "
+msgstr "Regenerando "
+
+#: .\src\project\ProjectView.ec:226
+#: .\src\ide.ec:780
+msgid "Relink"
+msgstr "Re-enlazar"
+
+#: .\src\project\ProjectView.ec:269
+#: .\src\project\ProjectView.ec:298
+msgid "Remove"
+msgstr "Quitar"
+
+#: .\src\project\ProjectView.ec:1872
+msgid "Remove Project"
+msgstr "Quitar proyecto"
+
+#: .\src\project\ProjectView.ec:242
+msgid "Remove project from workspace"
+msgstr "Quitar proyecto del espacio de trabajo"
+
+#: .\src\dialogs\FindInFilesDialog.ec:126
+msgid "Replace"
+msgstr "Sustituir"
+
+#: .\src\dialogs\NewProjectDialog.ec:103
+msgid "Replace existing project?"
+msgstr "¿Sustituir proyecto existente?"
+
+#: .\src\dialogs\FindInFilesDialog.ec:129
+msgid "Replace In Files"
+msgstr "Sustituir en archivos"
+
+#: .\src\ide.ec:548
+msgid "Replace In Files..."
+msgstr "Sustituir en archivos..."
+
+#: .\src\dialogs\FindInFilesDialog.ec:351
+msgid "Replace with:"
+msgstr "Sustituir por:"
+
+#: .\src\dialogs\FindInFilesDialog.ec:895
+msgid "replaced"
+msgstr "sustituido(s)"
+
+#: .\src\dialogs\FindInFilesDialog.ec:1062
+msgid ""
+"Replaced %d match%s in \"%s\"%s\n"
+"\n"
+msgstr ""
+"Sustituir %d coincidencia%s en \"%s\"%s\n"
+"\n"
+
+#: .\src\dialogs\FindInFilesDialog.ec:669
+msgid "Replacing Editbox"
+msgstr "Replacing Editbox"
+
+#: .\src\ide.ec:846
+msgid "Restart"
+msgstr "Reiniciar"
+
+#: .\src\ide.ec:1437
+msgid "Resume"
+msgstr "Reanudar"
+
+#: .\src\documents\PictureEdit.ec:77
+msgid "RGB Color"
+msgstr "RGB Color"
+
+#: .\src\project\ProjectView.ec:1187
+#: .\src\ide.ec:760
+msgid "Run"
+msgstr "Ejecutar"
+
+#: .\src\designer\CodeEditor.ec:1891
+#: .\src\ide.ec:905
+msgid "Run To Cursor"
+msgstr "Ejecutar hasta el cursor"
+
+#: .\src\designer\CodeEditor.ec:1911
+#: .\src\ide.ec:926
+msgid "Run To Cursor Skipping Breakpoints"
+msgstr "Ejecutar hasta el cursor evitando puntos de interrupción"
+
+#: .\src\dialogs\FindInFilesDialog.ec:896
+#: .\src\dialogs\FindInFilesDialog.ec:901
+msgid "s"
+msgstr "s"
+
+#: .\src\project\ProjectView.ec:1637
+msgid "s were "
+msgstr "s were "
+
+#: .\src\ide.ec:1697
+msgid "Same Project"
+msgstr "Mismo proyecto"
+
+#: .\src\project\ProjectView.ec:250
+#: .\src\project\ProjectView.ec:444
+#: .\src\designer\CodeEditor.ec:1885
+#: .\src\documents\PictureEdit.ec:54
+#: .\src\ide.ec:532
+msgid "Save"
+msgstr "Guardar"
+
+#: .\src\ide.ec:534
+msgid "Save All"
+msgstr "Guardar todo"
+
+#: .\src\designer\CodeEditor.ec:1886
+#: .\src\documents\PictureEdit.ec:55
+#: .\src\ide.ec:533
+msgid "Save As..."
+msgstr "Guardar como..."
+
+#: .\src\dialogs\ProjectTabSettings.ec:71
+msgid "Save changes to project options?"
+msgstr "¿Guardar cambios en las opciones del proyecto?"
+
+#: .\src\ProjectSettings.ec:1731
+msgid "Save changes to project settings?"
+msgstr "¿Guardar cambios en la configuración del proyecto?"
+
+#: .\src\dialogs\WorkspaceSettings.ec:91
+msgid "Save changes to workspace options?"
+msgstr "¿Guardar cambios en las opciones del espacio de trabajo?"
+
+#: .\src\dialogs\FindInFilesDialog.ec:391
+msgid "Search location does not exist. Please provide a valid location."
+msgstr "La localización de búsqueda no existe. Por favor, proporciones una localización válida."
+
+#: .\src\dialogs\FindInFilesDialog.ec:738
+msgid "Searching %s"
+msgstr "Buscando %s"
+
+#: .\src\dialogs\FindInFilesDialog.ec:706
+msgid "Searching %s for %s"
+msgstr "Buscando %s para %s"
+
+#: .\src\dialogs\FindInFilesDialog.ec:825
+msgid "Searching %s for \"%s\""
+msgstr "Buscando %s para \"%s\""
+
+#: .\src\dialogs\FindInFilesDialog.ec:648
+msgid ""
+"Searching \"%s\"%s for %s%s%s containing \"%s\"\n"
+"\n"
+msgstr ""
+"Buscando \"%s\"%s para %s%s%s conteniendo \"%s\"\n"
+"\n"
+
+#: .\src\dialogs\FindInFilesDialog.ec:659
+msgid ""
+"Searching project %s files for files%s%s containing \"%s\"\n"
+"\n"
+msgstr ""
+"Buscando proyecto %s archivo a archivo%s%s conteniendo \"%s\"\n"
+"\n"
+
+#: .\src\dialogs\FindInFilesDialog.ec:655
+msgid ""
+"Searching workspace files for files%s%s containing \"%s\"\n"
+"\n"
+msgstr ""
+"Buscando espacio de trabajo archivo a archivo%s%s conteniendo \"%s\"\n"
+"\n"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:7
+msgid "Select directory"
+msgstr "Seleccionar directorio"
+
+#: .\src\dialogs\NewProjectDialog.ec:3
+msgid "Select project directory"
+msgstr "Seleccionar directorio del proyecto"
+
+#: .\src\dialogs\FindInFilesDialog.ec:422
+msgid "Select Search Location..."
+msgstr "Seleccionar localización de búsqueda..."
+
+#: .\src\project\ProjectView.ec:246
+#: .\src\project\ProjectView.ec:261
+#: .\src\project\ProjectView.ec:273
+#: .\src\project\ProjectView.ec:302
+#: .\src\ide.ec:739
+msgid "Settings..."
+msgstr "Configuración..."
+
+#: .\src\project\ProjectView.ec:1187
+msgid "Shared and static libraries cannot be run like executables."
+msgstr "No se pueden ejecutar bibliotecas estáticas o dinámicas."
+
+#: .\src\dialogs\NewProjectDialog.ec:312
+#: .\src\dialogs\NewProjectDialog.ec:533
+#: .\src\ProjectSettings.ec:1052
+msgid "Shared Library"
+msgstr "Biblioteca compartida"
+
+#: .\src\designer\Sheet.ec:273
+msgid "Sheet"
+msgstr "Hoja"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:231
+msgid "Show line numbers in code editor"
+msgstr "Mostrar números de línea en el editor de código"
+
+#: .\src\debugger\Debugger.ec:504
+msgid "Signal received: %s - %s\n"
+msgstr "Señal recibida: %s - %s\n"
+
+#: .\src\dialogs\WorkspaceSettings.ec:37
+msgid "Source Files Directories"
+msgstr "Directorios de archivos de código fuente"
+
+#: .\src\ide.ec:825
+#: .\src\ide.ec:1437
+msgid "Start"
+msgstr "Iniciar"
+
+#: .\src\project\ProjectView.ec:1189
+#: .\src\project\ProjectView.ec:1191
+msgid "Starting Debug"
+msgstr "Iniciando depuración"
+
+#: .\src\debugger\Debugger.ec:884
+#: .\src\debugger\Debugger.ec:904
+#: .\src\debugger\Debugger.ec:948
+#: .\src\debugger\Debugger.ec:1835
+msgid "Starting debug mode\n"
+msgstr "Iniciando modo de depuración\n"
+
+#: .\src\dialogs\NewProjectDialog.ec:316
+#: .\src\dialogs\NewProjectDialog.ec:537
+#: .\src\ProjectSettings.ec:1056
+msgid "Static Library"
+msgstr "Biblioteca estática"
+
+#: .\src\ide.ec:877
+msgid "Step Into"
+msgstr "Paso a paso por instrucciones"
+
+#: .\src\ide.ec:897
+msgid "Step Out"
+msgstr "Ejecutar hasta fin de procedimiento"
+
+#: .\src\ide.ec:918
+msgid "Step Out Skipping Breakpoints"
+msgstr "Ejecutar hasta fin de procedimiento evitando puntos de interrupción"
+
+#: .\src\ide.ec:887
+msgid "Step Over"
+msgstr "Paso a paso por procedimientos"
+
+#: .\src\ide.ec:908
+msgid "Step Over Skipping Breakpoints"
+msgstr "Paso a paso por procedimientos evitando puntos de interrupción"
+
+#: .\src\ide.ec:866
+msgid "Stop"
+msgstr "Parar"
+
+#: .\src\ProjectSettings.ec:1865
+msgid "Strict Name Spaces"
+msgstr "Espacios de nombre estrictos"
+
+#: .\src\debugger\Debugger.ec:2261
+msgid "Symbol \"%s\" not found"
+msgstr "Símbolo \"%s\" no encontrado"
+
+#: .\src\project\Project.ec:1532
+msgid "Target and object files deleted\n"
+msgstr "Destino y archivos objeto eliminados\n"
+
+#: .\src\ProjectSettings.ec:1994
+msgid "Target Directory"
+msgstr "Directorio de destino"
+
+#: .\src\debugger\Debugger.ec:2738
+msgid "Target doesn't contain debug information!\n"
+msgstr "¡El destino no contiene información de depuración!\n"
+
+#: .\src\ProjectSettings.ec:1980
+msgid "Target Name"
+msgstr "Nombre de destino"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:791
+msgid "Target Platform"
+msgstr "Plataforma destino"
+
+#: .\src\dialogs\NewProjectDialog.ec:56
+#: .\src\dialogs\NewProjectDialog.ec:338
+#: .\src\ProjectSettings.ec:1987
+msgid "Target Type"
+msgstr "Tipo de destino"
+
+#: .\src\dialogs\NewProjectDialog.ec:369
+msgid "Temporary directory does not exist."
+msgstr "Temporary directory does not exist."
+
+#: .\src\project\ProjectView.ec:54
+#: .\src\ide.ec:106
+msgid "Text"
+msgstr "Texto"
+
+#: .\src\designer\CodeEditor.ec:91
+msgid "Text Files"
+msgstr "Archivos de texto"
+
+#: .\src\designer\CodeEditor.ec:84
+#: .\src\ide.ec:127
+msgid "Text files (*.txt)"
+msgstr "Archivos de texto (*.txt)"
+
+#: .\src\ide.ec:96
+msgid "Text files (*.txt, *.text, *.nfo, *.info)"
+msgstr "Archivos de texto (*.txt, *.text, *.nfo, *.info)"
+
+#: .\src\designer\CodeEditor.ec:1382
+msgid "The "
+msgstr "El "
+
+#: .\src\designer\CodeEditor.ec:2194
+#: .\src\ide.ec:1351
+msgid ""
+"The document %s was modified by another application.\n"
+"Would you like to reload it and lose your changes?"
+msgstr ""
+"El documento %s fue modificado por otra aplicación.\n"
+"¿Desea recargarlo y perder sus cambios?"
+
+#: .\src\project\ProjectView.ec:1635
+msgid "The following file"
+msgstr "El archivo siguiente"
+
+#: .\src\project\Workspace.ec:1134
+msgid "The following file%s could not be re-opened.%s"
+msgstr "The following file%s could not be re-opened.%s"
+
+#: .\src\debugger\Debugger.ec:854
+msgid "The program %s has exited (gdb provided an unknown reason)%s.\n"
+msgstr "El programa %s ha finalizado (gdb informó de una razón desconocida)%s.\n"
+
+#: .\src\debugger\Debugger.ec:848
+msgid "The program %s has exited normally%s.\n"
+msgstr "El programa %s ha finalizado con éxito%s.\n"
+
+#: .\src\debugger\Debugger.ec:852
+msgid "The program %s has exited with a signal%s.\n"
+msgstr "El programa %s ha finalizado con una señal%s.\n"
+
+#: .\src\debugger\Debugger.ec:846
+#: .\src\debugger\Debugger.ec:850
+msgid "The program %s has exited%s.\n"
+msgstr "El programa %s ha finalizado%s.\n"
+
+#: .\src\debugger\Debugger.ec:1111
+msgid ""
+"This is the project directory.\n"
+"Would you like to try again?"
+msgstr ""
+"This is the project directory.\n"
+"Would you like to try again?"
+
+#: .\src\ide.ec:1698
+msgid "This project is already present in workspace."
+msgstr "El proyecto está ya presente en el espacio de trabajo."
+
+#: .\src\debugger\Debugger.ec:1127
+msgid ""
+"This source directory is already specified.\n"
+"Would you like to try again?"
+msgstr ""
+"Ya se especificó este directorio de origen.\n"
+"¿Le gustaría intentarlo de nuevo?"
+
+#: .\src\ide.ec:1033
+msgid "Threads"
+msgstr "Threads"
+
+#: .\src\ide.ec:1118
+msgid "Tile Horizontally"
+msgstr "Mosaico horizontal"
+
+#: .\src\ide.ec:1119
+msgid "Tile Vertically"
+msgstr "Mosaico vertical"
+
+#: .\src\designer\CodeEditor.ec:1929
+msgid "Toggle Breakpoint"
+msgstr "Alternar punto de interrupción"
+
+#: .\src\designer\ToolBox.ec:13
+msgid "Toolbox"
+msgstr "Herramientas"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:639
+msgid "Toolchain"
+msgstr "Herramientas"
+
+#: .\src\debugger\Debugger.ec:1140
+msgid ""
+"Unable to locate source file.\n"
+"Would you like to try again?"
+msgstr ""
+"Imposible localizar el fichero de origen.\n"
+"¿Le gustaería intentarlo de nuevo?"
+
+#: .\src\dialogs\FindInFilesDialog.ec:969
+#: .\src\dialogs\FindInFilesDialog.ec:1055
+msgid ""
+"Unable to open file %s\n"
+"\n"
+msgstr ""
+"Unable to open file %s\n"
+"\n"
+
+#: .\src\debugger\Debugger.ec:2301
+msgid "Unknown error for \"%s\""
+msgstr "Error desconocido para \"%s\""
+
+#: .\src\debugger\Debugger.ec:3402
+msgid "Unknown output"
+msgstr "Salida desconocida"
+
+#: .\src\debugger\Debugger.ec:3380
+msgid "Unknown prompt"
+msgstr "Entrada desconocida"
+
+#: .\src\debugger\Debugger.ec:2898
+msgid "unknown source\n"
+msgstr "origen desconocido\n"
+
+#: .\src\project\ProjectView.ec:951
+#: .\src\designer\CodeEditor.ec:2415
+msgid "Untitled %d"
+msgstr "%d sin título"
+
+#: .\src\project\ProjectView.ec:590
+msgid "Updating "
+msgstr "Actualizando "
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:848
+msgid "Use ccache"
+msgstr "Utilizar ccache"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:866
+msgid "Use distcc"
+msgstr "Utilizar distcc"
+
+#: .\src\panels\WatchesView.ec:79
+msgid "Value"
+msgstr "Valor"
+
+#: .\src\designer\Sheet.ec:447
+#: .\src\designer\ToolBox.ec:36
+#: .\src\ide.ec:930
+msgid "View"
+msgstr "Ver"
+
+#: .\src\ide.ec:945
+#: .\src\ide.ec:967
+msgid "View Code"
+msgstr "Ver código"
+
+#: .\src\ide.ec:944
+#: .\src\ide.ec:950
+msgid "View Designer"
+msgstr "Ver diseñador"
+
+#: .\src\ide.ec:947
+#: .\src\ide.ec:994
+msgid "View Methods"
+msgstr "Ver métodos"
+
+#: .\src\ide.ec:946
+#: .\src\ide.ec:983
+msgid "View Properties"
+msgstr "Ver propiedades"
+
+#: .\src\designer\ToolBox.ec:37
+#: .\src\ide.ec:1005
+msgid "View Toolbox"
+msgstr "Ver herramientas"
+
+#: .\src\project\Project.ec:1357
+msgid "warning"
+msgstr "aviso"
+
+#: .\src\project\Project.ec:1357
+#: .\src\ProjectSettings.ec:1878
+msgid "warnings"
+msgstr "avisos"
+
+#: .\src\panels\WatchesView.ec:6
+#: .\src\ide.ec:1024
+msgid "Watches"
+msgstr "Inspección"
+
+#: .\src\ide.ec:97
+msgid "Web files (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)"
+msgstr "Archivos web (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)"
+
+#: .\src\dialogs\FindInFilesDialog.ec:356
+msgid "Whole word only"
+msgstr "Sólo palabras completas"
+
+#: .\src\ide.ec:1111
+msgid "Window"
+msgstr "Ventana"
+
+#: .\src\ide.ec:1122
+msgid "Windows..."
+msgstr "Ventanas..."
+
+#: .\src\dialogs\FindInFilesDialog.ec:441
+#: .\src\dialogs\GlobalSettingsDialog.ec:1010
+#: .\src\dialogs\WorkspaceSettings.ec:6
+msgid "Workspace"
+msgstr "Workspace"
+
+#: .\src\project\ProjectView.ec:62
+msgid "Workspace Files (*.ews)"
+msgstr "Archivos de espacio de trabajo (*.ews)"
+
+#: .\src\project\Workspace.ec:1101
+msgid "Workspace Load File Error"
+msgstr "Error en la carga del archivo de espacio de trabajo"
+
+#: .\src\project\Workspace.ec:1101
+msgid "Workspace load file failed"
+msgstr "Error en la carga del archivo de espacio de trabajo"
+
+#: .\src\ProjectSettings.ec:1733
+msgid "Would you like to save changes made to the build options?"
+msgstr "¿Le gustaría guardar los cambios realizados en las opciones de construccion?"
+
+#: .\src\dialogs\ProjectTabSettings.ec:73
+msgid "Would you like to save changes made to the project options?"
+msgstr "¿Le gustaría guardar los cambios realizados en las opciones del proyecto?"
+
+#: .\src\dialogs\WorkspaceSettings.ec:93
+msgid "Would you like to save changes made to the workspace options?"
+msgstr "¿Le gustaría guardar los cambios realizados en las opciones del espacio de trabajo?"
+
+#: .\src\project\Project.ec:1225
+msgid "Writing symbol loader...\n"
+msgstr "Escribiendo el cargador de símbolos...\n"
+
+#: .\src\debugger\Debugger.ec:1250
+msgid ""
+"You must provide a source directory in order to place a breakpoint in this file.\n"
+"Would you like to try again?"
+msgstr ""
+"Debe indicar un directorio de origen para localizar un punto de interrupción en este archivo.\n"
+"¿Le gustaría intentarlo de nuevo?"
+
+#: .\src\debugger\Debugger.ec:1245
+msgid ""
+"You must provide a valid source directory in order to place a breakpoint in this file.\n"
+"Would you like to try again?"
+msgstr ""
+"Debe indicar un directorio de origen válido para localizar un punto de interrupción en este archivo.\n"
+"Would you like to try again?"
+
+#: .\src\dialogs\FindInFilesDialog.ec:385
+msgid "You must specify a search location."
+msgstr "Debe especificar una localización de búsqueda."
+
+#: .\src\project\ProjectView.ec:539
+msgid "{problem with compiler selection}"
+msgstr "{problema con la selección de compilador}"
+
