@@ -88,6 +88,9 @@ void FreeSymbol(Symbol symbol)
 {
    OldLink link;
 
+   if(symbol.propCategory)
+      FreeExpression(symbol.propCategory);
+
    FreeType(symbol.type);
 
    while(link = symbol.templatedClasses.first)
@@ -874,6 +877,9 @@ void FreeProperty(PropertyDef def)
       FreeStatement(def.setStmt);
    if(def.issetStmt)
       FreeStatement(def.issetStmt);
+   if(def.category)
+      FreeExpression(def.category);
+   
    /*
    if(def.getFunction)
       FreeFunction(def.getFunction);

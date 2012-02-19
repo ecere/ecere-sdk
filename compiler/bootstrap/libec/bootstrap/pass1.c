@@ -672,6 +672,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
 struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
+struct Expression * propCategory;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
@@ -1416,6 +1417,8 @@ extern struct Declarator * MkDeclaratorPointer(struct Pointer * pointer, struct 
 
 extern struct Pointer * MkPointer(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Pointer * pointer);
 
+extern struct Expression * CopyExpression(struct Expression * exp);
+
 extern struct Statement * MkIfStmt(struct __ecereNameSpace__ecere__sys__OldList * exp, struct Statement * statement, struct Statement * elseStmt);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__BitMember;
@@ -1631,9 +1634,9 @@ MangleClassName(name);
 stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier(nameM)), MkIdentifier("IsSet")), '=', MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpIdentifier(MkIdentifier(name))))));
 ListAdd(registerModuleBody->compound.statements, stmt);
 }
-if(prop->category)
+if(((struct Symbol *)prop->symbol)->propCategory)
 {
-stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier(nameM)), MkIdentifier("category")), '=', MkExpString(QMkString(prop->category)))));
+stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier(nameM)), MkIdentifier("category")), '=', CopyExpression(((struct Symbol *)prop->symbol)->propCategory))));
 ListAdd(registerModuleBody->compound.statements, stmt);
 }
 if(prop->dataTypeString)

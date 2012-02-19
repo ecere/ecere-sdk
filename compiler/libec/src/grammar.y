@@ -85,9 +85,8 @@ default:
             exclusive_or_expression inclusive_or_expression logical_and_expression
             logical_or_expression conditional_expression assignment_expression
             constant_expression constant_expression_error
-            anon_instantiation_expression anon_instantiation_expression_error
-
-%type <exp> postfix_expression_error unary_expression_error cast_expression_error
+            anon_instantiation_expression anon_instantiation_expression_error i18n_string
+            postfix_expression_error unary_expression_error cast_expression_error
             multiplicative_expression_error additive_expression_error shift_expression_error
             relational_expression_error equality_expression_error and_expression_error
             exclusive_or_expression_error inclusive_or_expression_error logical_and_expression_error
@@ -97,7 +96,7 @@ default:
             common_unary_expression common_unary_expression_error
             simple_unary_expression simple_unary_expression_error
             database_open dbfield dbindex dbtable
-            
+
 %type <list> argument_expression_list expression expression_anon_inst expression_anon_inst_error enumerator_list type_qualifier_list
              struct_declarator_list struct_declaration_list
              declaration_specifiers identifier_list identifier_list_error initializer_list init_declarator_list
@@ -196,7 +195,7 @@ default:
                                     multiplicative_expression_error additive_expression_error shift_expression_error
                                     relational_expression_error equality_expression_error and_expression_error
                                     exclusive_or_expression_error inclusive_or_expression_error logical_and_expression_error
-                                    logical_or_expression_error conditional_expression_error assignment_expression_error
+                                    logical_or_expression_error conditional_expression_error assignment_expression_error i18n_string
 %destructor { FreeSpecifier($$); }  storage_class_specifier enum_specifier_compound enum_specifier_nocompound type_qualifier type_specifier class_specifier class_specifier_error
                                     struct_or_union_specifier_compound struct_or_union_specifier_nocompound ext_storage type strict_type guess_type enum_class strict_type_specifier struct_class
                                     struct_or_union_specifier_compound_error struct_class_error struct_decl
@@ -1007,7 +1006,7 @@ property_body:
       { $1.issetStmt = $3; }
    | property_body WATCHABLE
       { $1.isWatchable = true; }
-   | property_body PROPERTY_CATEGORY string_literal
+   | property_body PROPERTY_CATEGORY i18n_string
       { $1.category = $3; }
 	;
 
@@ -1396,6 +1395,12 @@ primary_expression:
       { $$ = MkExpBrackets($2); $$.loc = @$; }
    ;
 
+i18n_string:
+	  string_literal     { $$ = MkExpString($1); delete $1; $$.loc = @$; }
+   | '$' string_literal     { $$ = MkExpIntlString($2, null); delete $2; $$.loc = @$; }
+   | '$' string_literal '.' string_literal     { $$ = MkExpIntlString($4, $2); delete $2; delete $4; $$.loc = @$; }
+   ;
+
 simple_primary_expression:
 	  identifier         { $$ = MkExpIdentifier($1); $$.loc = @$; }
    | instantiation_unnamed      { $$ = MkExpInstance($1); $$.loc = @$; }
@@ -1404,9 +1409,7 @@ simple_primary_expression:
    | EXTENSION '(' type_name ')' initializer     { $$ = MkExpExtensionInitializer($3, $5); $$.loc = @$; }
    | EXTENSION '(' type_name ')' '(' type_name ')' initializer     { $$ = MkExpExtensionInitializer($3, MkInitializerAssignment(MkExpExtensionInitializer($6, $8))); $$.loc = @$; }
 	| CONSTANT           { $$ = MkExpConstant(yytext); $$.loc = @$; }
-	| string_literal     { $$ = MkExpString($1); delete $1; $$.loc = @$; }
-   | '$' string_literal     { $$ = MkExpIntlString($2, null); delete $2; $$.loc = @$; }
-   | '$' string_literal '.' string_literal     { $$ = MkExpIntlString($4, $2); delete $2; delete $4; $$.loc = @$; }
+   | i18n_string
    | '(' ')' { Expression exp = MkExpDummy(); exp.loc.start = @1.end; exp.loc.end = @2.start; $$ = MkExpBrackets(MkListOne(exp)); $$.loc = @$; yyerror(); }
    | NEWOP new_specifiers abstract_declarator_noarray '[' constant_expression ']' { $$ = MkExpNew(MkTypeName($2,$3), $5); $$.loc = @$; }
    | NEWOP new_specifiers abstract_declarator_noarray '[' constant_expression_error ']' { $$ = MkExpNew(MkTypeName($2,$3), $5); $$.loc = @$; }

@@ -247,6 +247,14 @@ Expression MkExpString(char * string)
 public struct ContextStringPair
 {
    String string, context;
+
+   // TODO: Should this be automated somehow?
+   void OnFree()
+   {
+      delete string;
+      delete context;
+   }
+
    int OnCompare(ContextStringPair b)
    {
       int result;
@@ -256,10 +264,10 @@ public struct ContextStringPair
 
       result = (context && b.context) ? strcmp(context, b.context) :
          (!context && b.context) ? 1 : (context && !b.context) ? -1 : 0;
-      if(result) return result;
       // TODO: Support these
       // result = CaseSensitiveString::OnCompare(string, b.string);
       // result = ((CaseSensitiveString)string).OnCompare(b.string);
+      return result;
    }
 };
 
@@ -302,6 +310,7 @@ Expression MkExpIntlString(char * string, char * context)
       memcpy(msgid+1+lenContext-2+1, string+1, lenString-2);
       memcpy(msgid+1+lenContext-2+1+lenString-2, "\"", 2);
       ListAdd(list, MkExpString(msgid));
+      delete msgid;
    }
    else
       ListAdd(list, QMkExpId("null"));

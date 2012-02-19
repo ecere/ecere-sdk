@@ -333,10 +333,32 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__SysErrorCode;
 
 
-static char * __ecereNameSpace__ecere__sys__errorMessages[] = 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Array;
+
+struct __ecereNameSpace__ecere__com__Array
 {
-"No error", "Memory allocation failed", "Inexistant string identifier specified", "Identic string identifier already exists", "Shared library loading failed", "File not found", "Couldn't write to file"
+uint64 *  array;
+unsigned int count;
+unsigned int minAllocSize;
 };
+
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer;
+
+struct __ecereNameSpace__ecere__com__BuiltInContainer
+{
+void *  _vTbl;
+struct __ecereNameSpace__ecere__com__Class * _class;
+int _refCount;
+void *  data;
+int count;
+struct __ecereNameSpace__ecere__com__Class * type;
+};
+
+static struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__errorMessages;
 
 unsigned int __ecereNameSpace__ecere__sys__MoveFile(char * source, char * dest)
 {
@@ -519,9 +541,9 @@ void __ecereNameSpace__ecere__sys__LogErrorCode(unsigned int errorCode, char * d
 if(((int)((errorCode & 0x3000) >> 12)) <= __ecereNameSpace__ecere__sys__globalSystem.errorLevel)
 {
 if(details)
-__ecereNameSpace__ecere__sys__Logf("System Error [%d]: %s (%s).\n", ((int)((errorCode & 0x3000) >> 12)), __ecereNameSpace__ecere__sys__errorMessages[((unsigned int)((errorCode & 0xFFF) >> 0))], details);
+__ecereNameSpace__ecere__sys__Logf("System Error [%d]: %s (%s).\n", ((int)((errorCode & 0x3000) >> 12)), ((char **)((struct __ecereNameSpace__ecere__com__Array *)(((char *)__ecereNameSpace__ecere__sys__errorMessages + 12)))->array)[((unsigned int)((errorCode & 0xFFF) >> 0))], details);
 else
-__ecereNameSpace__ecere__sys__Logf("System Error [%d]: %s.\n", ((int)((errorCode & 0x3000) >> 12)), __ecereNameSpace__ecere__sys__errorMessages[((unsigned int)((errorCode & 0xFFF) >> 0))]);
+__ecereNameSpace__ecere__sys__Logf("System Error [%d]: %s.\n", ((int)((errorCode & 0x3000) >> 12)), ((char **)((struct __ecereNameSpace__ecere__com__Array *)(((char *)__ecereNameSpace__ecere__sys__errorMessages + 12)))->array)[((unsigned int)((errorCode & 0xFFF) >> 0))]);
 }
 __ecereNameSpace__ecere__sys__globalSystem.lastErrorCode = errorCode;
 }
@@ -613,8 +635,6 @@ int importType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 };
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, char *  string, int value);
 
@@ -715,5 +735,37 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "systemTerminate", "bo
 void __ecereUnregisterModule_System(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 
+}
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Array_TPL_String_;
+
+extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
+
+void __ecereProp___ecereNameSpace__ecere__com__Container_Set_copySrc(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Instance * value);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Container_copySrc;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_String;
+
+void __ecereCreateModuleInstances_System()
+{
+(__ecereNameSpace__ecere__sys__errorMessages = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Array_TPL_String_), __ecereProp___ecereNameSpace__ecere__com__Container_Set_copySrc(__ecereNameSpace__ecere__sys__errorMessages, ((struct __ecereNameSpace__ecere__com__Instance *)__extension__ ({
+char * __internalList[] = 
+{
+__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "No error", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Memory allocation failed", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Inexistant string identifier specified", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Identic string identifier already exists", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Shared library loading failed", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "File not found", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Couldn't write to file", (((void *)0)))
+};
+struct __ecereNameSpace__ecere__com__BuiltInContainer __internalContainer = 
+{
+__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl, __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer, 0, __internalList, 7, __ecereClass_String
+};
+
+&__internalContainer;
+}))));
+__ecereNameSpace__ecere__com__eInstance_IncRef(__ecereNameSpace__ecere__sys__errorMessages);
+}
+
+void __ecereDestroyModuleInstances_System()
+{
+(__ecereNameSpace__ecere__com__eInstance_DecRef(__ecereNameSpace__ecere__sys__errorMessages), __ecereNameSpace__ecere__sys__errorMessages = 0);
 }
 

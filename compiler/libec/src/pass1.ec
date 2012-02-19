@@ -539,11 +539,11 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, char * classNam
                   MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null,null), null)), MkExpIdentifier(MkIdentifier(name))))));
                ListAdd(registerModuleBody.compound.statements, stmt);
             }
-            if(prop.category)
+            if(((Symbol)prop.symbol).propCategory)
             {
                stmt = MkExpressionStmt(MkListOne(
                   MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier(nameM)), MkIdentifier("category")), '=',
-                  MkExpString(QMkString(prop.category)))));
+                  CopyExpression(((Symbol)prop.symbol).propCategory))));
                ListAdd(registerModuleBody.compound.statements, stmt);
             }
 

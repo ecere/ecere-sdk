@@ -569,6 +569,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
 struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
+struct Expression * propCategory;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
@@ -861,7 +862,7 @@ struct Statement * issetStmt;
 struct Symbol * symbol;
 unsigned int conversion;
 unsigned int isWatchable;
-char *  category;
+struct Expression * category;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
@@ -968,8 +969,6 @@ extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__
 extern unsigned int inCompiler;
 
 extern char *  __ecereNameSpace__ecere__sys__CopyString(char *  string);
-
-extern void ReadString(char *  output, char *  string);
 
 extern void __ecereNameSpace__ecere__com__eProperty_Watchable(struct __ecereNameSpace__ecere__com__Property * _property);
 
@@ -1183,13 +1182,8 @@ if(inCompiler)
 prop->IsSet = (void *)propertyDef->issetStmt;
 prop->compiled = 0x0;
 prop->symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(propertyDef->symbol->string), ((struct Symbol *)__ecereTemp1)->id = propertyDef->symbol->id, ((struct Symbol *)__ecereTemp1)->type = propertyDef->symbol->type, ((struct Symbol *)__ecereTemp1));
-if(propertyDef->category)
-{
-char temp[1024];
-
-ReadString(temp, propertyDef->category);
-prop->category = __ecereNameSpace__ecere__sys__CopyString(temp);
-}
+((struct Symbol *)prop->symbol)->propCategory = propertyDef->category;
+propertyDef->category = (((void *)0));
 if(propertyDef->isWatchable)
 __ecereNameSpace__ecere__com__eProperty_Watchable(prop);
 }

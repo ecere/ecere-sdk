@@ -835,7 +835,7 @@ public:
    Symbol symbol;
    bool conversion;
    bool isWatchable;
-   char * category;
+   Expression category;
 };
 
 public class ClassDef : struct
@@ -962,6 +962,7 @@ public:
    OldList templatedClasses;
    Context ctx;
    int isIterator;
+   Expression propCategory;
 };
 
 // For the .imp file:

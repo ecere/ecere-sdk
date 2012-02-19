@@ -709,6 +709,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
 struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
+struct Expression * propCategory;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
@@ -1044,7 +1045,7 @@ struct Statement * issetStmt;
 struct Symbol * symbol;
 unsigned int conversion;
 unsigned int isWatchable;
-char *  category;
+struct Expression * category;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
@@ -1428,6 +1429,23 @@ char * string, * context;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ContextStringPair;
 
+void __ecereMethod_ContextStringPair_OnFree(struct __ecereNameSpace__ecere__com__Class * class, struct ContextStringPair * this)
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete(this->string), this->string = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete(this->context), this->context = 0);
+}
+
+int __ecereMethod_ContextStringPair_OnCompare(struct __ecereNameSpace__ecere__com__Class * class, struct ContextStringPair * this, struct ContextStringPair * b)
+{
+int result;
+
+result = (this->string && b->string) ? strcmp(this->string, b->string) : (!this->string && b->string) ? 1 : (this->string && !b->string) ? -1 : 0;
+if(result)
+return result;
+result = (this->context && b->context) ? strcmp(this->context, b->context) : (!this->context && b->context) ? 1 : (this->context && !b->context) ? -1 : 0;
+return result;
+}
+
 struct __ecereNameSpace__ecere__com__Instance * intlStrings;
 
 extern unsigned int inCompiler;
@@ -1523,6 +1541,7 @@ msgid[1 + lenContext - 2] = (char)4;
 memcpy(msgid + 1 + lenContext - 2 + 1, string + 1, lenString - 2);
 memcpy(msgid + 1 + lenContext - 2 + 1 + lenString - 2, "\"", 2);
 ListAdd(list, MkExpString(msgid));
+(__ecereNameSpace__ecere__com__eSystem_Delete(msgid), msgid = 0);
 }
 else
 ListAdd(list, QMkExpId("null"));
@@ -4347,6 +4366,8 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com
 
 extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
+extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
+
 extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, unsigned int size, unsigned int alignment, int declMode);
 
 void __ecereRegisterModule_ast(struct __ecereNameSpace__ecere__com__Instance * module)
@@ -4380,6 +4401,8 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpString", "Expressio
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ContextStringPair", 0, sizeof(struct ContextStringPair), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
 __ecereClass_ContextStringPair = class;
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnCompare", 0, __ecereMethod_ContextStringPair_OnCompare, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnFree", 0, __ecereMethod_ContextStringPair_OnFree, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "string", "String", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "context", "String", 4, 4, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIntlString", "Expression MkExpIntlString(char * string, char * context)", MkExpIntlString, module, 2);

@@ -242,12 +242,15 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                   type = propertyDef.symbol.type;
                };
 
-               if(propertyDef.category) 
+               /*if(propertyDef.category) 
                {
                   char temp[1024];
                   ReadString(temp, propertyDef.category);
                   prop.category = CopyString(temp);  // LEAK: To free in parsed classes...
-               }
+               }*/
+               // TODO: Support property category in parsing mode
+               ((Symbol)prop.symbol).propCategory = propertyDef.category;
+               propertyDef.category = null;
 
                if(propertyDef.isWatchable)
                   eProperty_Watchable(prop);

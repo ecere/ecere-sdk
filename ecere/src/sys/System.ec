@@ -48,6 +48,8 @@ void System_GetFreeSpace(char * path, FileSize * size);
 
 private:
 
+import "Array"
+import "i18n"
 import "File"
 import "TempFile"
 import "memory"

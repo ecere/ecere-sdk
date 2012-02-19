@@ -279,6 +279,10 @@ struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ec
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
 
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Array;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Array_TPL_String_;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__BitMember;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer;
@@ -386,6 +390,8 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData;
+
+struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Container_copySrc;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
 
@@ -565,6 +571,10 @@ void __ecereRegisterModule_System(struct __ecereNameSpace__ecere__com__Instance 
 
 void __ecereUnregisterModule_System(struct __ecereNameSpace__ecere__com__Instance * module);
 
+void __ecereCreateModuleInstances_System();
+
+void __ecereDestroyModuleInstances_System();
+
 void __ecereRegisterModule_TempFile(struct __ecereNameSpace__ecere__com__Instance * module);
 
 void __ecereUnregisterModule_TempFile(struct __ecereNameSpace__ecere__com__Instance * module);
@@ -639,6 +649,8 @@ extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__co
 
 extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_FindProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, struct __ecereNameSpace__ecere__com__Instance * module);
 
+extern void __ecereNameSpace__ecere__LoadTranslatedStrings(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
+
 unsigned int __ecereDll_Load_ecere(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 struct __ecereNameSpace__ecere__com__Class * _class;
@@ -712,6 +724,8 @@ __ecereProp___ecereNameSpace__ecere__com__AVLNode_minimum = _property = __ecereN
 __ecereProp___ecereNameSpace__ecere__com__AVLNode_next = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__AVLNode, "next", module);
 __ecereProp___ecereNameSpace__ecere__com__AVLNode_prev = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__AVLNode, "prev", module);
 __ecereClass___ecereNameSpace__ecere__com__Application = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Application");
+__ecereClass___ecereNameSpace__ecere__com__Array = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Array");
+__ecereClass___ecereNameSpace__ecere__com__Array_TPL_String_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Array<String>");
 __ecereClass___ecereNameSpace__ecere__com__BitMember = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::BitMember");
 __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::BuiltInContainer");
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer, "Add", module);
@@ -861,6 +875,7 @@ __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll = method->vid
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__com__Container, "SetData", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData = method->vid;
+__ecereProp___ecereNameSpace__ecere__com__Container_copySrc = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__Container, "copySrc", module);
 __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::CustomAVLTree");
 __ecereClass___ecereNameSpace__ecere__com__DataMember = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::DataMember");
 __ecereClass___ecereNameSpace__ecere__com__DataValue = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::DataValue");
@@ -1020,17 +1035,23 @@ __ecereClass_int = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int"
 __ecereClass_uint = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "uint");
 __ecereClass_uint64 = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "uint64");
 __ecereCreateModuleInstances_i18n();
+__ecereNameSpace__ecere__LoadTranslatedStrings(module, "ecere");
 }
 if(__currentModule == module)
 {
+__ecereCreateModuleInstances_System();
 }
 return 0x1;
 }
+
+extern void __ecereNameSpace__ecere__UnloadTranslatedStrings(struct __ecereNameSpace__ecere__com__Instance * module);
 
 unsigned int __ecereDll_Unload_ecere(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 if(__currentModule == module)
 {
+__ecereDestroyModuleInstances_System();
+__ecereNameSpace__ecere__UnloadTranslatedStrings(__currentModule);
 __ecereDestroyModuleInstances_i18n();
 }
 __ecereUnregisterModule_BufferedFile(module);

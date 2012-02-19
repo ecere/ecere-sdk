@@ -241,6 +241,8 @@ struct __ecereNameSpace__ecere__com__Method * method;
 
 extern int __ecereVMethodID_class_OnCopy;
 
+extern int __ecereVMethodID_class_OnFree;
+
 static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapNode_key, * __ecerePropM___ecereNameSpace__ecere__com__MapNode_key;
 
 static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapNode_value, * __ecerePropM___ecereNameSpace__ecere__com__MapNode_value;
@@ -473,6 +475,13 @@ int __ecereVMethodID_class_OnFree;
 void __ecereMethod___ecereNameSpace__ecere__com__Map_Remove(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__MapNode * node)
 {
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__ecereClass___ecereNameSpace__ecere__com__CustomAVLTree->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, node);
+if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass->type == 1)
+{
+struct __ecereNameSpace__ecere__com__Class * Tclass = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass;
+
+Tclass->_vTbl[__ecereVMethodID_class_OnFree](Tclass, (((unsigned char *)&node->key) + __ENDIAN_PAD(sizeof(void *))));
+}
+else
 (((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(node)), __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_key(node, 0));
 ((node ? (__ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor(node) : 0, __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor(node) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor(node) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(node)) : 0), node = 0);
 }

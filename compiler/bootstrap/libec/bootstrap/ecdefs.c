@@ -685,6 +685,7 @@ struct __ecereNameSpace__ecere__sys__OldList * templateParams;
 struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
+struct Expression * propCategory;
 };
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
@@ -1376,7 +1377,7 @@ struct Statement * issetStmt;
 struct Symbol * symbol;
 unsigned int conversion;
 unsigned int isWatchable;
-char * category;
+struct Expression * category;
 };
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyDef;
@@ -2354,7 +2355,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "issetStmt", "Statemen
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "symbol", "Symbol", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "conversion", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isWatchable", "bool", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "category", "char *", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "category", "Expression", 4, 4, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassDef", 0, sizeof(struct ClassDef), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
 __ecereClass_ClassDef = class;
@@ -2498,6 +2499,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "templateParams", "ece
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "templatedClasses", "ecere::sys::OldList", 20, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "ctx", "Context", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isIterator", "int", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "propCategory", "Expression", 4, 4, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassImport", 0, sizeof(struct ClassImport), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
 __ecereClass_ClassImport = class;

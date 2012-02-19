@@ -718,6 +718,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
 struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
+struct Expression * propCategory;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
@@ -1012,6 +1013,8 @@ void FreeSymbol(struct Symbol * symbol)
 {
 struct __ecereNameSpace__ecere__sys__OldLink * link;
 
+if(symbol->propCategory)
+FreeExpression(symbol->propCategory);
 FreeType(symbol->type);
 while(link = symbol->templatedClasses.first)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&symbol->templatedClasses, link);
@@ -1162,12 +1165,18 @@ void FreeTemplateType(struct TemplatedType * type)
 ((type ? (__ecereClass_TemplatedType->Destructor ? __ecereClass_TemplatedType->Destructor(type) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor(type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
 }
 
+extern struct Context * curContext;
+
+extern struct Context * globalContext;
+
 void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node);
 
 void FreeContext(struct Context * context)
 {
 struct Symbol * symbol;
 
+if(context == curContext)
+curContext = globalContext;
 while(symbol = (struct Symbol *)context->types.root)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&context->types, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol);
@@ -1258,7 +1267,7 @@ struct Statement * issetStmt;
 struct Symbol * symbol;
 unsigned int conversion;
 unsigned int isWatchable;
-char *  category;
+struct Expression * category;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
@@ -1941,6 +1950,8 @@ if(def->setStmt)
 FreeStatement(def->setStmt);
 if(def->issetStmt)
 FreeStatement(def->issetStmt);
+if(def->category)
+FreeExpression(def->category);
 if(def->symbol)
 {
 }
