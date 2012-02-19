@@ -713,11 +713,11 @@ public:
    };
 
    // Properties
-   property bool textHorzScroll { property_category "Behavior" set { style.hScroll = value; } get { return style.hScroll; } };      // Should cut the text on set to false
-   property bool textVertScroll { property_category "Behavior" set { style.vScroll = value; } get { return style.vScroll; } };
+   property bool textHorzScroll { property_category $"Behavior" set { style.hScroll = value; } get { return style.hScroll; } };      // Should cut the text on set to false
+   property bool textVertScroll { property_category $"Behavior" set { style.vScroll = value; } get { return style.vScroll; } };
    property bool readOnly
    {
-      property_category "Behavior" 
+      property_category $"Behavior" 
       set
       {
          style.readOnly = value;
@@ -727,21 +727,21 @@ public:
       }
       get { return style.readOnly; }
    };
-   property bool multiLine { property_category "Behavior" set { style.multiLine = value; } get { return style.multiLine; } };
-   property bool freeCaret { property_category "Behavior" set { style.freeCaret = value; } get { return style.freeCaret; } };
-   property bool tabKey { property_category "Behavior" set { style.tabKey = value; } get { return style.tabKey; } };
-   property int tabSize { property_category "Behavior" set { tabSize = value; } get { return tabSize; } };
-   property bool tabSelection { property_category "Behavior" set { style.tabSel = value; if(value) style.tabKey = true; } get { return style.tabSel; } };
-   property bool smartHome { property_category "Behavior" set { style.smartHome = value; } get { return style.smartHome; } };
-   property bool autoEmpty { property_category "Behavior" set { style.autoEmpty = value; } get { return style.autoEmpty; } };
-   property bool noCaret { property_category "Behavior" set { style.noCaret = value; if(value) { style.readOnly = true; style.stuckCaret = true; } } get { return style.noCaret; } };
-   property int maxLineSize { property_category "Behavior" set { maxLineSize = value; } get { return maxLineSize; } };
-   property int maxNumLines { property_category "Behavior" set { maxLines = value; } get { return maxLines; } };
-   property bool useTab { property_category "Behavior" set { style.useTab = value; itemEditInsertTab.checked = value; } get { return style.useTab; } };
-   property bool syntaxHighlighting { property_category "Appearance" set { style.syntax = value; } get { return style.syntax; } };
-   property bool noSelect { property_category "Behavior" set { style.noSelect = value; } get { return style.noSelect; } };
-   property bool allCaps { property_category "Behavior" set { style.allCaps = value; } get { return style.allCaps; } };
-   property bool autoSize { property_category "Behavior" set { style.autoSize = value; } get { return style.autoSize; } };
+   property bool multiLine { property_category $"Behavior" set { style.multiLine = value; } get { return style.multiLine; } };
+   property bool freeCaret { property_category $"Behavior" set { style.freeCaret = value; } get { return style.freeCaret; } };
+   property bool tabKey { property_category $"Behavior" set { style.tabKey = value; } get { return style.tabKey; } };
+   property int tabSize { property_category $"Behavior" set { tabSize = value; } get { return tabSize; } };
+   property bool tabSelection { property_category $"Behavior" set { style.tabSel = value; if(value) style.tabKey = true; } get { return style.tabSel; } };
+   property bool smartHome { property_category $"Behavior" set { style.smartHome = value; } get { return style.smartHome; } };
+   property bool autoEmpty { property_category $"Behavior" set { style.autoEmpty = value; } get { return style.autoEmpty; } };
+   property bool noCaret { property_category $"Behavior" set { style.noCaret = value; if(value) { style.readOnly = true; style.stuckCaret = true; } } get { return style.noCaret; } };
+   property int maxLineSize { property_category $"Behavior" set { maxLineSize = value; } get { return maxLineSize; } };
+   property int maxNumLines { property_category $"Behavior" set { maxLines = value; } get { return maxLines; } };
+   property bool useTab { property_category $"Behavior" set { style.useTab = value; itemEditInsertTab.checked = value; } get { return style.useTab; } };
+   property bool syntaxHighlighting { property_category $"Appearance" set { style.syntax = value; } get { return style.syntax; } };
+   property bool noSelect { property_category $"Behavior" set { style.noSelect = value; } get { return style.noSelect; } };
+   property bool allCaps { property_category $"Behavior" set { style.allCaps = value; } get { return style.allCaps; } };
+   property bool autoSize { property_category $"Behavior" set { style.autoSize = value; } get { return style.autoSize; } };
    property bool wrap { set { style.wrap = value; Update(null); } get { return style.wrap; } };
    //property bool lineNumbers { set { style.lineNumbers = value; } get { return style.lineNumbers; } };
    property int numLines { get { return this ? lineCount : 0; } };
@@ -753,7 +753,7 @@ public:
    property EditLine line { get { return this.line; } }; // TODO: Add Set   this.line = this.lines[10]
    property char * contents
    {
-      property_category "Data" 
+      property_category $"Data" 
       set
       {
          if(this)

@@ -7657,7 +7657,7 @@ public:
    // Properties
    property Window parent
    {
-      property_category "Layout"
+      property_category $"Layout"
       set
       {
          if(value || guiApp.desktop)
@@ -7870,7 +7870,7 @@ public:
 
    property Window master
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set
       {
          //if(this == value) return;
@@ -7914,7 +7914,7 @@ public:
 
    property char * text
    {
-      property_category "Appearance"
+      property_category $"Appearance"
       watchable
       set
       {
@@ -7933,7 +7933,7 @@ public:
 
    property Key hotKey
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set
       {
          setHotKey = value;
@@ -7961,7 +7961,7 @@ public:
 
    property Color background
    {
-      property_category "Appearance"
+      property_category $"Appearance"
       set
       {
          background.color = value;
@@ -7978,7 +7978,7 @@ public:
 
    property Percentage opacity
    {
-      property_category "Appearance"
+      property_category $"Appearance"
       set
       {
          background.a = (byte)Min(Max((int)(value * 255), 0), 255);
@@ -7989,7 +7989,7 @@ public:
 
    property Color foreground
    {
-      property_category "Appearance"
+      property_category $"Appearance"
       set
       {
          foreground = value;
@@ -8002,7 +8002,7 @@ public:
 
    property BorderStyle borderStyle
    {
-      property_category "Appearance"
+      property_category $"Appearance"
       set
       {
          if(!((BorderBits)value).fixed)
@@ -8027,21 +8027,21 @@ public:
 
    property Size minClientSize
    {
-      property_category "Layout"
+      property_category $"Layout"
       set { minSize = value; }
       get { value = minSize; }
    };
 
    property Size maxClientSize
    {
-      property_category "Layout"
+      property_category $"Layout"
       set { maxSize = value; }
       get { value = maxSize; }
    };
 
    property bool hasMaximize
    {
-      property_category "Window Style"
+      property_category $"Window Style"
       set
       {
          style.hasMaximize = value;
@@ -8062,7 +8062,7 @@ public:
 
    property bool hasMinimize
    {
-      property_category "Window Style"
+      property_category $"Window Style"
       set
       {
          style.hasMinimize = value;
@@ -8083,7 +8083,7 @@ public:
 
    property bool hasClose
    {
-      property_category "Window Style"
+      property_category $"Window Style"
       set
       {
          style.hasClose = value;
@@ -8102,7 +8102,7 @@ public:
    
    property bool nonClient
    {
-      property_category "Layout"
+      property_category $"Layout"
       set
       {
          style.nonClient = value;
@@ -8114,7 +8114,7 @@ public:
 
    property bool inactive
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set
       {
          if(value) 
@@ -8161,49 +8161,49 @@ public:
 
    property bool clickThrough
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set { style.clickThrough = value; }
       get { return style.clickThrough; }
    };
 
    property bool isRemote
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set { style.isRemote = value; }
       get { return style.isRemote; }
    };
 
    property bool noCycle
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set { style.noCycle = value; }
       get { return style.noCycle; }
    };
 
    property bool isModal
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set { style.modal = value; }
       get { return style.modal; }
    };
 
    property bool interim
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set { style.interim = value; }
       get { return style.interim; }
    };
 
    property bool tabCycle
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set { style.tabCycle = value; }
       get { return style.tabCycle; }
    };
      
    property bool isDefault
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set
       {
          if(master)
@@ -8232,14 +8232,14 @@ public:
 
    property bool drawBehind
    {
-      property_category "Window Style"
+      property_category $"Window Style"
       set { style.drawBehind = value; }
       get { return style.drawBehind; }
    };
 
    property bool hasMenuBar
    {
-      property_category "Window Style"
+      property_category $"Window Style"
       set
       {
          if(value) 
@@ -8275,7 +8275,7 @@ public:
 
    property bool hasStatusBar
    {
-      property_category "Window Style"
+      property_category $"Window Style"
       set
       {
          if(value)
@@ -8296,7 +8296,7 @@ public:
    };
    property bool stayOnTop
    {
-      property_category "Window Style"
+      property_category $"Window Style"
       set
       {
          if(value)
@@ -8349,7 +8349,7 @@ public:
 
    property Menu menu
    {
-      property_category "Window Style"
+      property_category $"Window Style"
       set
       {
          delete menu;
@@ -8384,7 +8384,7 @@ public:
 
    property FontResource font
    {
-      property_category "Appearance"
+      property_category $"Appearance"
       watchable
       isset { return setFont ? true : false; }
       set
@@ -8441,7 +8441,7 @@ public:
 
    property SizeAnchor sizeAnchor
    {
-      property_category "Layout"
+      property_category $"Layout"
       isset
       {
          return ((anchor.left.type == none || anchor.left.type == middleRelative || anchor.right.type == none) || 
@@ -8477,7 +8477,7 @@ public:
 
    property Size size
    {
-      property_category "Layout"
+      property_category $"Layout"
       isset
       {
          Anchor thisAnchor = anchor;
@@ -8514,7 +8514,7 @@ public:
 
    property Size clientSize
    {
-      property_category "Layout"
+      property_category $"Layout"
       isset
       {
          return ((anchor.left.type == none || anchor.left.type == middleRelative || anchor.right.type == none) || 
@@ -8546,7 +8546,7 @@ public:
 
    property Anchor anchor
    {
-      property_category "Layout"
+      property_category $"Layout"
       isset { return (anchor.left.type != offset || anchor.top.type != offset || anchor.right.type || anchor.bottom.type); }
 
       set
@@ -8613,7 +8613,7 @@ public:
 
    property Point position
    {
-      property_category "Layout"
+      property_category $"Layout"
       set
       {
          if(value == null) return;
@@ -8658,7 +8658,7 @@ public:
 
    property bool disabled
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set
       {
          if(this && disabled != value)
@@ -8685,14 +8685,14 @@ public:
 
    property WindowState state
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set { SetState(value, false, 0); }
       get { return this ? state : 0; }
    };
 
    property bool visible
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set
       {
          if(this && !value && !style.hidden && parent)
@@ -8872,21 +8872,21 @@ public:
     
    property bool isDocument
    {
-      property_category "Document"
+      property_category $"Document"
       set { style.isDocument = value; }
       get { return style.isDocument; }
    };
 
    property bool mergeMenus
    {
-      property_category "Window Style"
+      property_category $"Window Style"
       set { mergeMenus = value; }
       get { return (bool)mergeMenus; }
    };
 
    property bool hasHorzScroll
    {
-      property_category "Window Style"
+      property_category $"Window Style"
       set
       {
          if(value)
@@ -8911,7 +8911,7 @@ public:
 
    property bool hasVertScroll
    {
-      property_category "Window Style"
+      property_category $"Window Style"
       set
       {
          if(value)
@@ -8936,7 +8936,7 @@ public:
 
    property bool dontHideScroll
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set
       {
          scrollFlags.dontHide = value;
@@ -8956,20 +8956,20 @@ public:
 
    property bool dontScrollVert
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set { style.dontScrollVert = value; }
       get { return style.dontScrollVert; }
    };
    property bool dontScrollHorz
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set { style.dontScrollHorz = value; }
       get { return style.dontScrollHorz; }
    };
 
    property bool snapVertScroll
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set
       {
          scrollFlags.snapY = value;
@@ -8979,7 +8979,7 @@ public:
    };
    property bool snapHorzScroll
    {
-       property_category "Behavior"
+       property_category $"Behavior"
       set
       {
          scrollFlags.snapX = value;
@@ -8990,7 +8990,7 @@ public:
 
    property Point scroll
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set
       {
          // scroll = value;
@@ -9002,14 +9002,14 @@ public:
 
    property bool modifyVirtualArea
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set { modifyVirtArea = value; }
       get { return (bool)modifyVirtArea; }
    };
 
    property char * fileName
    {
-      property_category "Document"
+      property_category $"Document"
       set
       {
          if(menu && ((!fileName && value) || (fileName && !value)))
@@ -9037,14 +9037,14 @@ public:
 
    property int id
    {
-      property_category "Data"
+      property_category $"Data"
       set { id = value; }
       get { return id; }
    };
 
    property bool modifiedDocument
    {
-      property_category "Document"
+      property_category $"Document"
       set
       {
          if(style.isDocument || fileName)
@@ -9068,21 +9068,21 @@ public:
 
    property bool showInTaskBar
    {
-      property_category "Window Style"
+      property_category $"Window Style"
       set { style.showInTaskBar = value; }
       get { return (style.showInTaskBar; }
    };
    property FileDialog saveDialog { set { saveDialog = value; } };
    property bool isActiveClient
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set { style.isActiveClient = value; }
       get { return style.isActiveClient; }
    };
 
    property Cursor cursor
    {
-      property_category "Appearance"
+      property_category $"Appearance"
       set
       {
          cursor = value;
@@ -9094,7 +9094,7 @@ public:
 //#if !defined(ECERE_VANILLA)
    property char * name
    {
-      property_category "Design"
+      property_category $"Design"
       get
       {
          return (this && object) ? object.name : null;
@@ -9108,7 +9108,7 @@ public:
 //#endif
    property char * displayDriver
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set
       {
          dispDriver = GetDisplayDriver(value);
@@ -9124,7 +9124,7 @@ public:
    property bool autoCreate { set { autoCreate = value; } get { return (bool)autoCreate; } };
    property Size scrollArea
    {
-      property_category "Behavior"
+      property_category $"Behavior"
       set
       {
          if(value != null)
@@ -9140,7 +9140,7 @@ public:
    };
    property bool is3D
    {
-      property_category "Layout"
+      property_category $"Layout"
       set { if(this) is3D = value; }
       get { return (bool)is3D; }
    };
@@ -9369,7 +9369,7 @@ public class CommonControl : Window
    ToolTip toolTip;
    public property String toolTip
    {
-      property_category "Appearance"
+      property_category $"Appearance"
       set
       {
          if(created) CommonControl::OnDestroy();

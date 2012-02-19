@@ -29,9 +29,120 @@ msgstr "所有文件"
 msgid "Alt+"
 msgstr "Alt+"
 
+#: .\src\gui\controls\Button.ec:976
+#: .\src\gui\controls\Button.ec:1007
+#: .\src\gui\controls\Button.ec:1011
+#: .\src\gui\controls\Button.ec:1052
+#: .\src\gui\controls\Button.ec:1054
+#: .\src\gui\controls\Button.ec:1055
+#: .\src\gui\controls\Button.ec:1060
+#: .\src\gui\controls\DropBox.ec:40
+#: .\src\gui\controls\DropBox.ec:50
+#: .\src\gui\controls\DropBox.ec:60
+#: .\src\gui\controls\DropBox.ec:71
+#: .\src\gui\controls\DropBox.ec:85
+#: .\src\gui\controls\DropBox.ec:168
+#: .\src\gui\controls\EditBox.ec:741
+#: .\src\gui\controls\Label.ec:47
+#: .\src\gui\controls\ListBox.ec:907
+#: .\src\gui\controls\ListBox.ec:940
+#: .\src\gui\controls\ListBox.ec:941
+#: .\src\gui\controls\ListBox.ec:945
+#: .\src\gui\controls\ListBox.ec:972
+#: .\src\gui\controls\ListBox.ec:973
+#: .\src\gui\controls\ListBox.ec:974
+#: .\src\gui\controls\ListBox.ec:975
+#: .\src\gui\controls\Picture.ec:19
+#: .\src\gui\controls\Picture.ec:39
+#: .\src\gui\controls\ScrollBar.ec:82
+#: .\src\gui\Window.ec:7918
+#: .\src\gui\Window.ec:7965
+#: .\src\gui\Window.ec:7982
+#: .\src\gui\Window.ec:7993
+#: .\src\gui\Window.ec:8006
+#: .\src\gui\Window.ec:8388
+#: .\src\gui\Window.ec:9086
+#: .\src\gui\Window.ec:9373
+msgid "Appearance"
+msgstr "外观"
+
 #: .\src\gui\dialogs\FileDialog.ec:1188
 msgid "As Type:"
 msgstr "类型(T):"
+
+#: .\src\gui\controls\Button.ec:856
+#: .\src\gui\controls\Button.ec:909
+#: .\src\gui\controls\Button.ec:932
+#: .\src\gui\controls\Button.ec:956
+#: .\src\gui\controls\Button.ec:972
+#: .\src\gui\controls\Button.ec:1051
+#: .\src\gui\controls\Button.ec:1053
+#: .\src\gui\controls\Button.ec:1056
+#: .\src\gui\controls\Button.ec:1057
+#: .\src\gui\controls\DropBox.ec:131
+#: .\src\gui\controls\DropBox.ec:167
+#: .\src\gui\controls\DropBox.ec:172
+#: .\src\gui\controls\EditBox.ec:716
+#: .\src\gui\controls\EditBox.ec:717
+#: .\src\gui\controls\EditBox.ec:721
+#: .\src\gui\controls\EditBox.ec:730
+#: .\src\gui\controls\EditBox.ec:731
+#: .\src\gui\controls\EditBox.ec:732
+#: .\src\gui\controls\EditBox.ec:733
+#: .\src\gui\controls\EditBox.ec:734
+#: .\src\gui\controls\EditBox.ec:735
+#: .\src\gui\controls\EditBox.ec:736
+#: .\src\gui\controls\EditBox.ec:737
+#: .\src\gui\controls\EditBox.ec:738
+#: .\src\gui\controls\EditBox.ec:739
+#: .\src\gui\controls\EditBox.ec:740
+#: .\src\gui\controls\EditBox.ec:742
+#: .\src\gui\controls\EditBox.ec:743
+#: .\src\gui\controls\EditBox.ec:744
+#: .\src\gui\controls\Label.ec:18
+#: .\src\gui\controls\ListBox.ec:889
+#: .\src\gui\controls\ListBox.ec:928
+#: .\src\gui\controls\ListBox.ec:936
+#: .\src\gui\controls\ListBox.ec:937
+#: .\src\gui\controls\ListBox.ec:938
+#: .\src\gui\controls\ListBox.ec:939
+#: .\src\gui\controls\ListBox.ec:970
+#: .\src\gui\controls\ListBox.ec:971
+#: .\src\gui\controls\ListBox.ec:976
+#: .\src\gui\controls\ListBox.ec:977
+#: .\src\gui\controls\ListBox.ec:981
+#: .\src\gui\controls\ScrollBar.ec:84
+#: .\src\gui\controls\ScrollBar.ec:88
+#: .\src\gui\controls\ScrollBar.ec:99
+#: .\src\gui\controls\ScrollBar.ec:115
+#: .\src\gui\controls\ScrollBar.ec:127
+#: .\src\gui\controls\ScrollBar.ec:128
+#: .\src\gui\controls\ScrollBar.ec:129
+#: .\src\gui\Window.ec:7874
+#: .\src\gui\Window.ec:7937
+#: .\src\gui\Window.ec:8118
+#: .\src\gui\Window.ec:8165
+#: .\src\gui\Window.ec:8172
+#: .\src\gui\Window.ec:8179
+#: .\src\gui\Window.ec:8186
+#: .\src\gui\Window.ec:8193
+#: .\src\gui\Window.ec:8200
+#: .\src\gui\Window.ec:8207
+#: .\src\gui\Window.ec:8662
+#: .\src\gui\Window.ec:8689
+#: .\src\gui\Window.ec:8696
+#: .\src\gui\Window.ec:8940
+#: .\src\gui\Window.ec:8960
+#: .\src\gui\Window.ec:8966
+#: .\src\gui\Window.ec:8973
+#: .\src\gui\Window.ec:8983
+#: .\src\gui\Window.ec:8994
+#: .\src\gui\Window.ec:9006
+#: .\src\gui\Window.ec:9079
+#: .\src\gui\Window.ec:9112
+#: .\src\gui\Window.ec:9128
+msgid "Behavior"
+msgstr "行为"
 
 #: .\src\gui\dialogs\ColorPicker.ec:730
 #: .\src\gui\dialogs\FileDialog.ec:1263
@@ -65,7 +176,7 @@ msgstr "Control contains other controls. Delete control and children?"
 msgid "Copy\tCtrl+C"
 msgstr "复制(C)\tCtrl+C"
 
-#: .\src\sys\System.ec:109
+#: .\src\sys\System.ec:110
 msgid "Couldn't write to file"
 msgstr "无法写入文件"
 
@@ -97,6 +208,14 @@ msgstr "Custom"
 msgid "Cut\tCtrl+X"
 msgstr "剪切(X)\tCtrl+X"
 
+#: .\src\gui\controls\DropBox.ec:127
+#: .\src\gui\controls\EditBox.ec:757
+#: .\src\gui\controls\ProgressBar.ec:13
+#: .\src\gui\controls\ProgressBar.ec:14
+#: .\src\gui\Window.ec:9041
+msgid "Data"
+msgstr "数据"
+
 #: .\src\gfx\Color.ec:735
 #, fuzzy
 msgid "Defined"
@@ -117,6 +236,10 @@ msgstr "Deleting control with children"
 msgid "Deleting control with code"
 msgstr "Deleting control with code"
 
+#: .\src\gui\Window.ec:9098
+msgid "Design"
+msgstr "设计"
+
 #: .\src\gui\dialogs\FindDialog.ec:46
 msgid "Direction"
 msgstr "方向"
@@ -132,6 +255,12 @@ msgstr "目录不存在"
 #: .\src\gui\dialogs\FileDialog.ec:310
 msgid "Directory:"
 msgstr "目录:"
+
+#: .\src\gui\Window.ec:8876
+#: .\src\gui\Window.ec:9013
+#: .\src\gui\Window.ec:9048
+msgid "Document"
+msgstr "文档"
 
 #: .\src\gui\dialogs\FindDialog.ec:41
 msgid "Down"
@@ -177,7 +306,7 @@ msgstr "文件已存在"
 msgid "File Name:"
 msgstr "文件名:"
 
-#: .\src\sys\System.ec:107
+#: .\src\sys\System.ec:108
 msgid "File not found"
 msgstr "文件未找到"
 
@@ -230,7 +359,7 @@ msgstr "跳至(G)...\tCtrl+G"
 msgid "Graphics driver not supported by any user interface system"
 msgstr "图形驱动不支持任何用户界面"
 
-#: .\src\sys\System.ec:105
+#: .\src\sys\System.ec:106
 msgid "Identic string identifier already exists"
 msgstr "已存在相同的字符串标识符"
 
@@ -247,13 +376,26 @@ msgstr "图片文件(*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 msgid "Imp"
 msgstr "Imp"
 
-#: .\src\sys\System.ec:104
+#: .\src\sys\System.ec:105
 msgid "Inexistant string identifier specified"
 msgstr "不存在指定的字符串标识符"
 
 #: .\src\gui\controls\EditBox.ec:1115
 msgid "Insert Tabs"
 msgstr "插入制表符(I)"
+
+#: .\src\gui\Window.ec:7661
+#: .\src\gui\Window.ec:8031
+#: .\src\gui\Window.ec:8038
+#: .\src\gui\Window.ec:8106
+#: .\src\gui\Window.ec:8445
+#: .\src\gui\Window.ec:8481
+#: .\src\gui\Window.ec:8518
+#: .\src\gui\Window.ec:8550
+#: .\src\gui\Window.ec:8617
+#: .\src\gui\Window.ec:9144
+msgid "Layout"
+msgstr "布局"
 
 #: .\src\gui\dialogs\GoToDialog.ec:50
 msgid "Line number:"
@@ -272,7 +414,7 @@ msgstr "区分大小写(C)"
 msgid "Maximize"
 msgstr "最大化(X)"
 
-#: .\src\sys\System.ec:103
+#: .\src\sys\System.ec:104
 msgid "Memory allocation failed"
 msgstr "内存分配失败"
 
@@ -303,7 +445,7 @@ msgstr "新建文件夹"
 msgid "No"
 msgstr "否(N)"
 
-#: .\src\sys\System.ec:102
+#: .\src\sys\System.ec:103
 #: .\src\gui\GuiApplication.ec:91
 msgid "No error"
 msgstr "没有错误"
@@ -335,6 +477,11 @@ msgstr "粘贴(P)\tCtrl+V"
 #: .\src\gui\dialogs\FileDialog.ec:1552
 msgid "Please enter a name."
 msgstr "请输入名称."
+
+#: .\src\gui\controls\DropBox.ec:98
+#: .\src\gui\controls\ListBox.ec:890
+msgid "Private"
+msgstr "Private"
 
 #: .\src\gui\controls\EditBox.ec:1003
 msgid "Redo\tCtrl+Y"
@@ -459,7 +606,7 @@ msgstr "创建目录吗?"
 msgid "Selection"
 msgstr "已选中内容(S)"
 
-#: .\src\sys\System.ec:106
+#: .\src\sys\System.ec:107
 msgid "Shared library loading failed"
 msgstr "共享库加载失败"
 
@@ -519,6 +666,21 @@ msgstr "整个文件(H)"
 msgid "Whole word only"
 msgstr "全字匹配(W)"
 
+#: .\src\gui\Window.ec:8045
+#: .\src\gui\Window.ec:8066
+#: .\src\gui\Window.ec:8087
+#: .\src\gui\Window.ec:8236
+#: .\src\gui\Window.ec:8243
+#: .\src\gui\Window.ec:8279
+#: .\src\gui\Window.ec:8300
+#: .\src\gui\Window.ec:8353
+#: .\src\gui\Window.ec:8883
+#: .\src\gui\Window.ec:8890
+#: .\src\gui\Window.ec:8915
+#: .\src\gui\Window.ec:9072
+msgid "Window Style"
+msgstr "窗体样式"
+
 #: .\src\gui\GuiApplication.ec:93
 msgid "Window creation failed"
 msgstr "窗体创建失败"
@@ -536,7 +698,7 @@ msgstr "窗口"
 msgid "Yes"
 msgstr "是(Y)"
 
-#: .\src\sys\System.ec:425
+#: .\src\sys\System.ec:426
 msgid ""
 "\n"
 "\n"
@@ -561,26 +723,14 @@ msgstr ""
 #~ msgid "Access Violation Writing to 0x%08X"
 #~ msgstr "无权写入0x%08X"
 
-#~ msgid "Appearance"
-#~ msgstr "外观"
-
 #~ msgid "Array Bounds Exceeded"
 #~ msgstr "超出数组范围"
-
-#~ msgid "Behavior"
-#~ msgstr "行为"
 
 #~ msgid "Breakpoint Encountered"
 #~ msgstr "遇到断点"
 
-#~ msgid "Data"
-#~ msgstr "数据"
-
 #~ msgid "Data Type Misalignment"
 #~ msgstr "数据类型不一致"
-
-#~ msgid "Document"
-#~ msgstr "文档"
 
 #~ msgid "Error %d creating a thread\n"
 #~ msgstr "创建线程时发生错误%d\n"
@@ -630,9 +780,6 @@ msgstr ""
 #~ msgid "Invalid Disposition"
 #~ msgstr "无效处理"
 
-#~ msgid "Layout"
-#~ msgstr "布局"
-
 #~ msgid "Non Continuable Exception"
 #~ msgstr "非可连续异常"
 
@@ -650,9 +797,3 @@ msgstr ""
 
 #~ msgid "Unallowed Instruction"
 #~ msgstr "指令不允许"
-
-#~ msgid "Window Style"
-#~ msgstr "窗体样式"
-
-#~ msgid "Design"
-#~ msgstr "设计"

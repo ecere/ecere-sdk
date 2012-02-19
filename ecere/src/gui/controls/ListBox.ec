@@ -886,8 +886,8 @@ public class ListBox : CommonControl
 
 public:
    // Properties
-   property bool freeSelect { property_category "Behavior" set { style.freeSelect = value; } get { return style.freeSelect; } };
-   property DataRow currentRow { property_category "Private" /*"Behavior"*/ set { SetCurrentRow(value, false); } get { return currentRow; } };
+   property bool freeSelect { property_category $"Behavior" set { style.freeSelect = value; } get { return style.freeSelect; } };
+   property DataRow currentRow { property_category $"Private" /*"Behavior"*/ set { SetCurrentRow(value, false); } get { return currentRow; } };
    property DataField currentField
    {
       get { return currentField; }
@@ -903,7 +903,7 @@ public:
 
    property int rowHeight
    {
-      property_category "Appearance" 
+      property_category $"Appearance" 
       isset { return style.heightSet; }
       set
       {
@@ -924,7 +924,7 @@ public:
    };
    property Seconds typingTimeout
    {
-      property_category "Behavior" 
+      property_category $"Behavior" 
       set
       {
          typedString[0] = '\0';
@@ -933,15 +933,15 @@ public:
       }
       get { return typingTimeOut; }
    };
-   property bool moveRows { property_category "Behavior" set { style.moveRows = value; } get { return style.moveRows; } };
-   property bool moveFields { property_category "Behavior" set { style.moveFields = value; } get { return style.moveFields; } };
-   property bool resizable { property_category "Behavior" set { style.resizable = value; } get { return style.resizable; } };
-   property bool autoScroll { property_category "Behavior" set { style.autoScroll = value; } get { return style.autoScroll; } };
-   property bool alwaysHighLight { property_category "Appearance" set { style.alwaysHL = value; } get { return style.alwaysHL; } };
-   property bool hasClearHeader { property_category "Appearance" set { style.clearHeader = value; if(value) property::hasHeader = true; } get { return style.clearHeader; } };
+   property bool moveRows { property_category $"Behavior" set { style.moveRows = value; } get { return style.moveRows; } };
+   property bool moveFields { property_category $"Behavior" set { style.moveFields = value; } get { return style.moveFields; } };
+   property bool resizable { property_category $"Behavior" set { style.resizable = value; } get { return style.resizable; } };
+   property bool autoScroll { property_category $"Behavior" set { style.autoScroll = value; } get { return style.autoScroll; } };
+   property bool alwaysHighLight { property_category $"Appearance" set { style.alwaysHL = value; } get { return style.alwaysHL; } };
+   property bool hasClearHeader { property_category $"Appearance" set { style.clearHeader = value; if(value) property::hasHeader = true; } get { return style.clearHeader; } };
    property bool hasHeader
    {
-      property_category "Appearance" 
+      property_category $"Appearance" 
       set
       {
          if(value && !style.header)
@@ -967,17 +967,17 @@ public:
       }
       get { return style.header; }
    };   
-   property bool multiSelect { property_category "Behavior" set { style.multiSelect = value; } get { return style.multiSelect; } };
-   property bool alwaysEdit { property_category "Behavior" set { style.alwaysEdit = value; } get { return style.alwaysEdit; } };
-   property bool fullRowSelect { property_category "Appearance" set { style.fullRowSelect = value; } get { return style.fullRowSelect; } };
-   property bool collapseControl { property_category "Appearance" set { style.collapse = value; } get { return style.collapse; } };
-   property bool treeBranches { property_category "Appearance" set { style.treeBranch = value; } get { return style.treeBranch; } };
-   property bool rootCollapseButton { property_category "Appearance" set { style.rootCollapse = value; } get { return style.rootCollapse; } };
-   property bool sortable { property_category "Behavior" set { style.sortable = value; } get { return style.sortable; } };
-   property bool noDragging { property_category "Behavior" set { style.noDragging = value; } get { return style.noDragging; } };
+   property bool multiSelect { property_category $"Behavior" set { style.multiSelect = value; } get { return style.multiSelect; } };
+   property bool alwaysEdit { property_category $"Behavior" set { style.alwaysEdit = value; } get { return style.alwaysEdit; } };
+   property bool fullRowSelect { property_category $"Appearance" set { style.fullRowSelect = value; } get { return style.fullRowSelect; } };
+   property bool collapseControl { property_category $"Appearance" set { style.collapse = value; } get { return style.collapse; } };
+   property bool treeBranches { property_category $"Appearance" set { style.treeBranch = value; } get { return style.treeBranch; } };
+   property bool rootCollapseButton { property_category $"Appearance" set { style.rootCollapse = value; } get { return style.rootCollapse; } };
+   property bool sortable { property_category $"Behavior" set { style.sortable = value; } get { return style.sortable; } };
+   property bool noDragging { property_category $"Behavior" set { style.noDragging = value; } get { return style.noDragging; } };
    property bool fillLastField
    {
-      property_category "Behavior" 
+      property_category $"Behavior" 
       set
       {
          style.fillLastField = value;

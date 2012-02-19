@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-02-19 05:07+0900\n"
+"PO-Revision-Date: 2012-02-19 13:54+0900\n"
 "Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: ec <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -61,7 +61,7 @@ msgstr "配置吗?"
 msgid " file is not part of any project.\n"
 msgstr " file is not part of any project.\n"
 
-#: .\src\project\ProjectView.ec:1636
+#: .\src\project\ProjectView.ec:1637
 #, fuzzy
 msgid " was "
 msgstr " was "
@@ -190,7 +190,7 @@ msgstr "活动配置(G)..."
 msgid "Add Files to Folder..."
 msgstr "添加文件至文件夹(F)..."
 
-#: .\src\project\ProjectView.ec:1581
+#: .\src\project\ProjectView.ec:1582
 msgid "Add Files to Project"
 msgstr "添加文件至项目"
 
@@ -211,7 +211,7 @@ msgstr "添加新窗体(O)..."
 msgid "Add Resources to Folder..."
 msgstr "添加资源至文件夹(F)..."
 
-#: .\src\project\ProjectView.ec:1581
+#: .\src\project\ProjectView.ec:1582
 msgid "Add Resources to Project"
 msgstr "添加资源至项目"
 
@@ -257,7 +257,7 @@ msgstr "所有调试视图(A)"
 msgid "All files"
 msgstr "所有文件(*.*)"
 
-#: .\src\project\ProjectView.ec:1871
+#: .\src\project\ProjectView.ec:1872
 msgid ""
 "Are you sure you want to remove the \"%s\" project\n"
 "from this workspace?"
@@ -265,7 +265,7 @@ msgstr ""
 "你确认要删除\"%s\"项目吗?\n"
 "从工作空间?"
 
-#: .\src\project\ProjectView.ec:1848
+#: .\src\project\ProjectView.ec:1849
 msgid ""
 "Are you sure you want to remove the folder \"%s\"\n"
 "and all of its contents from the project?"
@@ -299,7 +299,7 @@ msgstr "附加(A)"
 msgid "Attach %s"
 msgstr "附加%s"
 
-#: .\src\project\ProjectView.ec:1191
+#: .\src\project\ProjectView.ec:1192
 msgid ""
 "Attempting to debug non-debug configuration\n"
 "Proceed anyways?"
@@ -405,7 +405,7 @@ msgstr "层叠(C)"
 msgid "Clean"
 msgstr "清理(E)"
 
-#: .\src\project\ProjectView.ec:819
+#: .\src\project\ProjectView.ec:820
 msgid "Cleaning project %s using the %s configuration...\n"
 msgstr "正在清理项目 %s (引用配置 %s)...\n"
 
@@ -475,11 +475,11 @@ msgstr "编译器"
 msgid "Compilers Detection"
 msgstr "编译器探测"
 
-#: .\src\project\ProjectView.ec:924
+#: .\src\project\ProjectView.ec:925
 msgid "Compiling single file %s in project %s using the %s configuration...\n"
 msgstr "正在编译单个文件%s属于%s项目中并使用配置%s...\n"
 
-#: .\src\project\ProjectView.ec:926
+#: .\src\project\ProjectView.ec:927
 msgid "Compiling single file %s in project %s...\n"
 msgstr "正在编译单个文件%s属于项目%s...\n"
 
@@ -525,7 +525,7 @@ msgstr "贡献者"
 msgid "Copy"
 msgstr "复制(C)"
 
-#: .\src\project\ProjectView.ec:1617
+#: .\src\project\ProjectView.ec:1618
 msgid "Couldn't create file."
 msgstr "无法创建文件."
 
@@ -577,7 +577,7 @@ msgstr "Debugger Fatal Error: GDB lost\n"
 msgid "Debugger required for symbol evaluation in \"%s\""
 msgstr "调试器需要使用“%s”来计算符号"
 
-#: .\src\project\ProjectView.ec:1189
+#: .\src\project\ProjectView.ec:1190
 msgid "Debugging compressed applications is not supported\n"
 msgstr "不支持调试压缩应用程序\n"
 
@@ -618,7 +618,7 @@ msgstr "删除"
 msgid "Delete %s"
 msgstr "删除%s"
 
-#: .\src\project\ProjectView.ec:1849
+#: .\src\project\ProjectView.ec:1850
 msgid "Delete Folder"
 msgstr "删除文件夹"
 
@@ -669,7 +669,7 @@ msgstr "你想结束正在调试的进程吗?"
 msgid "Document has been modified"
 msgstr "文档已经被修改"
 
-#: .\src\ide.ec:2604
+#: .\src\ide.ec:2610
 msgid "ECERE IDE"
 msgstr "ECERE IDE简体中文版"
 
@@ -775,11 +775,11 @@ msgstr "常规错误: 子进程异常终止\n"
 #: .\src\designer\CodeEditor.ec:1884
 #: .\src\documents\PictureEdit.ec:53
 #: .\src\ide.ec:483
-#: .\src\ide.ec:2465
+#: .\src\ide.ec:2471
 msgid "File"
 msgstr "文件(F)"
 
-#: .\src\project\ProjectView.ec:933
+#: .\src\project\ProjectView.ec:934
 msgid "File %s is excluded from current build configuration.\n"
 msgstr "文件%s包含当前生成配置.\n"
 
@@ -788,7 +788,7 @@ msgstr "文件%s包含当前生成配置.\n"
 msgid "File doesn't exist."
 msgstr "文件不存在."
 
-#: .\src\project\ProjectView.ec:1606
+#: .\src\project\ProjectView.ec:1607
 #: .\src\ide.ec:1798
 msgid "File doesn't exist. Create?"
 msgstr "文件不存在. 要创建吗?"
@@ -880,10 +880,6 @@ msgstr ""
 #: .\src\debugger\GDBDialog.ec:188
 msgid "GDB Command"
 msgstr "GDB命令"
-
-#: .\src\ide.ec:1075
-msgid "GDB Dialog"
-msgstr "GDB对话框(G)"
 
 #: .\src\documents\PictureEdit.ec:32
 msgid "GIF Image"
@@ -1139,7 +1135,7 @@ msgstr "NUM"
 msgid "Name"
 msgstr "名称"
 
-#: .\src\project\ProjectView.ec:1654
+#: .\src\project\ProjectView.ec:1655
 msgid "Name Conflict"
 msgstr "名称冲突"
 
@@ -1348,7 +1344,7 @@ msgstr "工程动态配置"
 msgid "Project Already Exists"
 msgstr "项目已经存在"
 
-#: .\src\project\ProjectView.ec:755
+#: .\src\project\ProjectView.ec:756
 msgid "Project Build"
 msgstr "Project Build"
 
@@ -1428,17 +1424,17 @@ msgstr "重新分离(R)"
 msgid "Rebuild"
 msgstr "重新生成(R)"
 
-#: .\src\project\ProjectView.ec:800
+#: .\src\project\ProjectView.ec:801
 msgid "Rebuilding project %s using the %s configuration...\n"
 msgstr "正在重新生成项目%s(引用配置%s)...\n"
 
 #: .\src\ide.ec:572
-#: .\src\ide.ec:2466
+#: .\src\ide.ec:2472
 msgid "Recent Files"
 msgstr "最近的文件"
 
 #: .\src\ide.ec:573
-#: .\src\ide.ec:2467
+#: .\src\ide.ec:2473
 msgid "Recent Projects"
 msgstr "最近的项目"
 
@@ -1456,7 +1452,7 @@ msgstr "正在重新生成 "
 msgid "Relink"
 msgstr "重新链接(L)"
 
-#: .\src\project\ProjectView.ec:784
+#: .\src\project\ProjectView.ec:785
 msgid "Relinking project %s using the %s configuration...\n"
 msgstr "正在重新连接项目%s(引用配置%s)...\n"
 
@@ -1465,7 +1461,7 @@ msgstr "正在重新连接项目%s(引用配置%s)...\n"
 msgid "Remove"
 msgstr "移除(R)"
 
-#: .\src\project\ProjectView.ec:1872
+#: .\src\project\ProjectView.ec:1873
 msgid "Remove Project"
 msgstr "删除项目"
 
@@ -1513,7 +1509,7 @@ msgstr "重新启动(R)"
 msgid "Resume"
 msgstr "继续调试"
 
-#: .\src\project\ProjectView.ec:1187
+#: .\src\project\ProjectView.ec:1188
 #: .\src\ide.ec:760
 msgid "Run"
 msgstr "运行(R)"
@@ -1628,7 +1624,7 @@ msgstr "配置(S)..."
 msgid "Shared Library"
 msgstr "共享动态库"
 
-#: .\src\project\ProjectView.ec:1187
+#: .\src\project\ProjectView.ec:1188
 msgid "Shared and static libraries cannot be run like executables."
 msgstr "共享和静态类库无法作为可执行文件运行."
 
@@ -1655,8 +1651,8 @@ msgstr "源文件目录(I)"
 msgid "Start"
 msgstr "启动(S)"
 
-#: .\src\project\ProjectView.ec:1189
-#: .\src\project\ProjectView.ec:1191
+#: .\src\project\ProjectView.ec:1190
+#: .\src\project\ProjectView.ec:1192
 msgid "Starting Debug"
 msgstr "正在启动调试"
 
@@ -1782,7 +1778,7 @@ msgstr ""
 "该文档 %s 被其他程序修改.\n"
 "你想重新加载并放弃你使用当前程序做的修改吗?"
 
-#: .\src\project\ProjectView.ec:1635
+#: .\src\project\ProjectView.ec:1636
 msgid "The following file"
 msgstr "文件"
 
@@ -1893,7 +1889,7 @@ msgstr "未知输出"
 msgid "Unknown prompt"
 msgstr "未知提示符"
 
-#: .\src\project\ProjectView.ec:951
+#: .\src\project\ProjectView.ec:952
 #: .\src\designer\CodeEditor.ec:2415
 msgid "Untitled %d"
 msgstr "Untitled %d"
@@ -2100,7 +2096,7 @@ msgstr "没有错误, "
 msgid "no warning\n"
 msgstr "没有警告\n"
 
-#: .\src\project\ProjectView.ec:1638
+#: .\src\project\ProjectView.ec:1639
 msgid ""
 "not added because of identical file name conflict within the project.\n"
 "\n"
@@ -2118,7 +2114,7 @@ msgstr "替换"
 msgid "s"
 msgstr " "
 
-#: .\src\project\ProjectView.ec:1637
+#: .\src\project\ProjectView.ec:1638
 #, fuzzy
 msgid "s were "
 msgstr "s were "

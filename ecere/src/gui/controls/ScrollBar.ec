@@ -79,12 +79,12 @@ public:
 
    virtual void Window::NotifyScrolling(ScrollBar scrollBar, ScrollBarAction action, int position, Key key);
 
-   property ScrollDirection direction { property_category "Appearance" set { sbStyle.vertical = value == vertical; } get { return sbStyle.vertical ? vertical : horizontal; } };
+   property ScrollDirection direction { property_category $"Appearance" set { sbStyle.vertical = value == vertical; } get { return sbStyle.vertical ? vertical : horizontal; } };
    property bool windowOwned { set { sbStyle.window = value; } /* get { return sbStyle.window; } */ };
-   property bool snap { property_category "Behavior" set { sbStyle.snap = value; } get { return sbStyle.snap; } };
+   property bool snap { property_category $"Behavior" set { sbStyle.snap = value; } get { return sbStyle.snap; } };
    property int range
    {
-      property_category "Behavior" 
+      property_category $"Behavior" 
       set
       {
          total = value + seen - 1;
@@ -95,7 +95,7 @@ public:
    // Improve this, needs to be done in 2 so updates commented out for seen
    property int seen
    {
-      property_category "Behavior" 
+      property_category $"Behavior" 
       set
       {
          if(this)
@@ -111,7 +111,7 @@ public:
    };
    property int total
    {
-      property_category "Behavior" 
+      property_category $"Behavior" 
       set
       {
          if(this)
@@ -124,9 +124,9 @@ public:
       get { return total; }
    };
 
-   property int lineStep { property_category "Behavior" set { if(this) lineStep = value; } get { return lineStep; } };
-   property int pageStep { property_category "Behavior" set { if(this) pageStep = value; } get { return pageStep; } };
-   property int thumbPosition { property_category "Behavior" set { Action(setPosition, value, 0); } get { return position; } };
+   property int lineStep { property_category $"Behavior" set { if(this) lineStep = value; } get { return lineStep; } };
+   property int pageStep { property_category $"Behavior" set { if(this) pageStep = value; } get { return pageStep; } };
+   property int thumbPosition { property_category $"Behavior" set { Action(setPosition, value, 0); } get { return position; } };
 
 private:
    ScrollBar()

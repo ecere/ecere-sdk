@@ -10,8 +10,8 @@ public class ProgressBar : CommonControl
    borderStyle = deep;
  
 public:
-   property uint progress { property_category "Data" set { position = value; Update(null); } get { return position; } };
-   property uint range { property_category "Data" set { range = value; Update(null); } get { return range; } };
+   property uint progress { property_category $"Data" set { position = value; Update(null); } get { return position; } };
+   property uint range { property_category $"Data" set { range = value; Update(null); } get { return range; } };
 
 private:
    uint position, range;

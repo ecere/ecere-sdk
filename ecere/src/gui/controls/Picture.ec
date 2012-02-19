@@ -15,7 +15,7 @@ public:
    property Color tint { set { tint = value; } };   
    property BitmapResource image
    {
-      property_category "Appearance" 
+      property_category $"Appearance" 
       set
       {
          if(this)
@@ -36,7 +36,7 @@ public:
          return null;
       }
    }
-   property bool filter { property_category "Appearance" set { filter = value; } get { return filter; } };
+   property bool filter { property_category $"Appearance" set { filter = value; } get { return filter; } };
    property Bitmap bitmapImage
    {
       set

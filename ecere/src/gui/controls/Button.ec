@@ -852,7 +852,7 @@ public:
    // Properties
    property bool isRadio
    {
-      property_category "Behavior" 
+      property_category $"Behavior" 
       set
       {
          if(value)
@@ -905,7 +905,7 @@ public:
    };
    property bool isCheckbox
    {
-      property_category "Behavior" 
+      property_category $"Behavior" 
       set
       {
          if(value)
@@ -928,7 +928,7 @@ public:
    };
    property bool bevel
    {
-      property_category "Behavior" 
+      property_category $"Behavior" 
       set
       {
          if(value)
@@ -952,7 +952,7 @@ public:
    };
    property bool bevelOver
    {
-      property_category "Behavior" 
+      property_category $"Behavior" 
       set
       {
          if(value)
@@ -969,10 +969,10 @@ public:
       }
       get { return buttonStyle.bevelOver; }
    };
-   property bool toggle { property_category "Behavior" set { buttonStyle.toggle = value; } get { return buttonStyle.toggle; } };
+   property bool toggle { property_category $"Behavior" set { buttonStyle.toggle = value; } get { return buttonStyle.toggle; } };
    property bool checked
    {
-      property_category "Appearance" 
+      property_category $"Appearance" 
       set
       {
          if(buttonStyle.toggle)
@@ -1004,10 +1004,10 @@ public:
       }
       get { return buttonStyle.toggle ? (state == down) : checked; }
    };
-   property Alignment alignment { property_category "Appearance" set { alignment = value; } get { return alignment; } };
+   property Alignment alignment { property_category $"Appearance" set { alignment = value; } get { return alignment; } };
    property BitmapResource bitmap
    {
-      property_category "Appearance" 
+      property_category $"Appearance" 
       set
       {
          AddResource(value);
@@ -1048,14 +1048,14 @@ public:
       }
       get { return bitmaps[up]; }
    };
-   property bool stayUp { property_category "Behavior" set { buttonStyle.stayUp = value; } get { return buttonStyle.stayUp; } };
-   property bool scaleBitmap { property_category "Appearance" set { buttonStyle.scale = value; } get { return buttonStyle.scale; } };
-   property bool keyRepeat { property_category "Behavior" set { buttonStyle.keyRepeat = value; } get { return buttonStyle.keyRepeat; } };
-   property unichar symbol { property_category "Appearance" set { this.symbol = value; } get { return symbol; } };
-   property bool ellipsis { property_category "Appearance" set { buttonStyle.ellipsis = value; } get { return buttonStyle.ellipsis; } };
-   property bool stayDown { property_category "Behavior" set { buttonStyle.stayDown = value; } get { return buttonStyle.stayDown; } };
-   property bool offset { property_category "Behavior" set { buttonStyle.offset = value; } get { return buttonStyle.offset; } };
+   property bool stayUp { property_category $"Behavior" set { buttonStyle.stayUp = value; } get { return buttonStyle.stayUp; } };
+   property bool scaleBitmap { property_category $"Appearance" set { buttonStyle.scale = value; } get { return buttonStyle.scale; } };
+   property bool keyRepeat { property_category $"Behavior" set { buttonStyle.keyRepeat = value; } get { return buttonStyle.keyRepeat; } };
+   property unichar symbol { property_category $"Appearance" set { this.symbol = value; } get { return symbol; } };
+   property bool ellipsis { property_category $"Appearance" set { buttonStyle.ellipsis = value; } get { return buttonStyle.ellipsis; } };
+   property bool stayDown { property_category $"Behavior" set { buttonStyle.stayDown = value; } get { return buttonStyle.stayDown; } };
+   property bool offset { property_category $"Behavior" set { buttonStyle.offset = value; } get { return buttonStyle.offset; } };
 
    property ButtonState buttonState { get { return state; } set { state = value; } };
-   property BoxAlignment bitmapAlignment { property_category "Appearance" set { bitmapAlignment = value; } get { return bitmapAlignment; } };
+   property BoxAlignment bitmapAlignment { property_category $"Appearance" set { bitmapAlignment = value; } get { return bitmapAlignment; } };
 };

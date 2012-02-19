@@ -36,7 +36,7 @@ public class DropBox : CommonControl
 public:
    property bool activeStipple
    {
-      property_category "Appearance" 
+      property_category $"Appearance" 
       set
       {
          style.noStipple = !value;
@@ -46,7 +46,7 @@ public:
    };
    property bool showButton
    {
-      property_category "Appearance" 
+      property_category $"Appearance" 
       set
       {
          button.visible = value;
@@ -56,7 +56,7 @@ public:
    };
    property Alignment alignment
    {
-      property_category "Appearance" 
+      property_category $"Appearance" 
       set
       {
          alignment = value;
@@ -67,7 +67,7 @@ public:
    };
    property bool noHighlight
    {
-      property_category "Appearance" 
+      property_category $"Appearance" 
       set
       {
          if(this)
@@ -81,7 +81,7 @@ public:
    };
    property bool activeColor
    {
-      property_category "Appearance" 
+      property_category $"Appearance" 
       set
       {
          if(this)
@@ -94,7 +94,7 @@ public:
    };
    property DataRow currentRow
    {
-      property_category "Private" 
+      property_category $"Private" 
       set
       {
          if(this)
@@ -124,10 +124,10 @@ public:
       get { return currentRow; }
    };
    property DataRow firstRow { get { return this ? listBox.firstRow : null; } };
-   property char * contents { property_category "Data" set { if(editBox) editBox.contents = value; } get { return editBox ? editBox.contents : null; } };
+   property char * contents { property_category $"Data" set { if(editBox) editBox.contents = value; } get { return editBox ? editBox.contents : null; } };
    property bool editText
    {
-      property_category "Behavior" 
+      property_category $"Behavior" 
       set
       {
          if(this)
@@ -164,11 +164,11 @@ public:
       get { return style.editText; }
    };
    property EditBox editBox { get { return editBox; } }
-   property Seconds typingTimeout { property_category "Behavior" set { listBox.typingTimeout = value; } get { return listBox.typingTimeout; } };
-   property int rowHeight { property_category "Appearance" set { listBox.rowHeight = value; } get { return listBox.rowHeight; } };
+   property Seconds typingTimeout { property_category $"Behavior" set { listBox.typingTimeout = value; } get { return listBox.typingTimeout; } };
+   property int rowHeight { property_category $"Appearance" set { listBox.rowHeight = value; } get { return listBox.rowHeight; } };
    property int maxShown
    {
-      property_category "Behavior" 
+      property_category $"Behavior" 
       set
       {
          listBoxMaxShown = value;
