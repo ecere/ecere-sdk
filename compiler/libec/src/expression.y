@@ -502,7 +502,7 @@ type:
       goto yysetstate;
    #else
       Location tmpLoc = yylloc; $$ = $2; yylloc = @1; 
-      Compiler_Error("Not a type: %s\n", $1.string);      
+      Compiler_Error($"Not a type: %s\n", $1.string);      
       yylloc = tmpLoc; $2.badID = $1; // FreeIdentifier($1);
    #endif
    }*/

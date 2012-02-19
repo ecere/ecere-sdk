@@ -25,6 +25,7 @@ endif
 
 OBJECTS = \
 	$(OBJ)Mutex.o \
+	$(OBJ)i18n.o \
 	$(OBJ)Array.o \
 	$(OBJ)AVLTree.o \
 	$(OBJ)BuiltInContainer.o \
@@ -44,6 +45,7 @@ OBJECTS = \
 
 COBJECTS = \
 	$(OBJ)Mutex.c \
+	$(OBJ)i18n.c \
 	$(OBJ)Array.c \
 	$(OBJ)AVLTree.c \
 	$(OBJ)BuiltInContainer.c \
@@ -61,6 +63,7 @@ COBJECTS = \
 
 SYMBOLS = \
 	$(OBJ)Mutex.sym \
+	$(OBJ)i18n.sym \
 	$(OBJ)Array.sym \
 	$(OBJ)AVLTree.sym \
 	$(OBJ)BuiltInContainer.sym \
@@ -78,6 +81,7 @@ SYMBOLS = \
 
 IMPORTS = \
 	$(OBJ)Mutex.imp \
+	$(OBJ)i18n.imp \
 	$(OBJ)Array.imp \
 	$(OBJ)AVLTree.imp \
 	$(OBJ)BuiltInContainer.imp \
@@ -95,6 +99,7 @@ IMPORTS = \
 
 SOURCES = \
 	src/sys/Mutex.ec \
+	src/sys/i18n.ec \
 	src/com/containers/Array.ec \
 	src/com/containers/AVLTree.ec \
 	src/com/containers/BuiltInContainer.ec \
@@ -178,6 +183,9 @@ endif
 $(OBJ)Mutex.sym: src/sys/Mutex.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/Mutex.ec -o $(OBJ)Mutex.sym
 
+$(OBJ)i18n.sym: src/sys/i18n.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/i18n.ec -o $(OBJ)i18n.sym
+
 $(OBJ)Array.sym: src/com/containers/Array.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/Array.ec -o $(OBJ)Array.sym
 
@@ -225,6 +233,9 @@ $(OBJ)OldList.sym: src/com/OldList.ec
 $(OBJ)Mutex.c: src/sys/Mutex.ec $(OBJ)Mutex.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/Mutex.ec -o $(OBJ)Mutex.c -symbols $(OBJ)
 
+$(OBJ)i18n.c: src/sys/i18n.ec $(OBJ)i18n.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/i18n.ec -o $(OBJ)i18n.c -symbols $(OBJ)
+
 $(OBJ)Array.c: src/com/containers/Array.ec $(OBJ)Array.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/Array.ec -o $(OBJ)Array.c -symbols $(OBJ)
 
@@ -271,6 +282,9 @@ $(OBJ)OldList.c: src/com/OldList.ec $(OBJ)OldList.sym | $(SYMBOLS)
 
 $(OBJ)Mutex.o: $(OBJ)Mutex.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Mutex.c -o $(OBJ)Mutex.o
+
+$(OBJ)i18n.o: $(OBJ)i18n.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)i18n.c -o $(OBJ)i18n.o
 
 $(OBJ)Array.o: $(OBJ)Array.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Array.c -o $(OBJ)Array.o

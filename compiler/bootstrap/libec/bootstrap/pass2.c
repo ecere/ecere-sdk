@@ -655,6 +655,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
 struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
+struct Expression * propCategory;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
@@ -983,7 +984,7 @@ struct Statement * issetStmt;
 struct Symbol * symbol;
 unsigned int conversion;
 unsigned int isWatchable;
-char *  category;
+struct Expression * category;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
@@ -1360,6 +1361,10 @@ extern void PopContext(struct Context * ctx);
 extern void FreeType(struct Type * type);
 
 extern void Compiler_Error(char *  format, ...);
+
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_FindMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, struct __ecereNameSpace__ecere__com__Instance * module);
 
@@ -2024,7 +2029,7 @@ if(member)
 memberExp->member.memberType = 3;
 }
 else
-Compiler_Error("no set defined for property %s of class %s\n", prop->name, prop->_class->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "no set defined for property %s of class %s\n", (((void *)0))), prop->name, prop->_class->fullName);
 }
 }
 else
@@ -2955,11 +2960,11 @@ prop = (((void *)0));
 else
 {
 if(((unsigned int)((exp->usage & 0x40) >> 6)))
-Compiler_Error("cannot obtain address of property\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "cannot obtain address of property\n", (((void *)0))));
 else if(!prop->Get)
-Compiler_Error("no get defined for property %s of class %s\n", prop->name, prop->_class->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "no get defined for property %s of class %s\n", (((void *)0))), prop->name, prop->_class->fullName);
 else if(((unsigned int)((exp->usage & 0x80) >> 7)))
-Compiler_Error("no get defined for property %s of class %s\n", prop->name, prop->_class->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "no get defined for property %s of class %s\n", (((void *)0))), prop->name, prop->_class->fullName);
 }
 }
 }

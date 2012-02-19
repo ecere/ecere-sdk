@@ -305,7 +305,7 @@ class CompilerApp : Application
       }
 
       if(!valid)
-         printf("Syntax:\n   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n");
+         printf($"Syntax:\n   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n");
       else
       {
          DualPipe cppOutput;

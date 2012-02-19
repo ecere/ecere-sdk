@@ -678,7 +678,7 @@ Declaration MkDeclarationDefine(Identifier id, Expression exp)
    if(!eSystem_FindDefine(privateModule, id.string))
       eSystem_RegisterDefine(id.string, expString, privateModule, buildingECERECOMModule ? baseSystemAccess : publicAccess);
    else
-      Compiler_Warning("Redefinition of %s ignored\n", id.string);
+      Compiler_Warning($"Redefinition of %s ignored\n", id.string);
    return decl;
 }
 
@@ -1433,7 +1433,7 @@ Instantiation MkInstantiationNamed(OldList specs, Expression exp, OldList member
          
       if(!spec)
       {
-         Compiler_Error("Expecting class specifier\n");
+         Compiler_Error($"Expecting class specifier\n");
          inst._class = MkSpecifierName /*MkClassName*/("");
          //exit(1);
          //return null;

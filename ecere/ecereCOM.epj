@@ -76,7 +76,8 @@
             {
                "Folder" : "sys",
                "Files" : [
-                  "Mutex.ec"
+                  "Mutex.ec",
+                  "i18n.ec"
                ]
             },
             {

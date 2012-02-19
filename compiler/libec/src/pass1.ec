@@ -138,7 +138,7 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
 #ifdef _DEBUG
                // MatchTypes(type, methodDataType, null, owningClass, owningClass, true, true, true, false);
 #endif
-               Compiler_Error("Incompatible virtual function %s\n", method.name);
+               Compiler_Error($"Incompatible virtual function %s\n", method.name);
             }
             else
             {
@@ -1032,7 +1032,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                         ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("eProperty_SelfWatch")), args));
                      }
                      else
-                        Compiler_Error("Property %s not found in class %s\n", propID.string, regClass.fullName);
+                        Compiler_Error($"Property %s not found in class %s\n", propID.string, regClass.fullName);
                   }
                   FreePropertyWatch(def.propertyWatch);
                   def.propertyWatch = (PropertyWatch)stmt; // Store this here to use it after CreateRegisterModuleBody is done

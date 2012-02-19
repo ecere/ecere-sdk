@@ -31,7 +31,8 @@ IMPORTS = \
 SOURCES = \
 	ecc.ec
 
-RESOURCES =
+RESOURCES = \
+	locale/zh_CN/LC_MESSAGES/ecc.mo
 
 # CROSS-PLATFORM MAGIC
 
@@ -85,6 +86,7 @@ $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
+	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ecc.mo "locale/zh_CN/LC_MESSAGES"
 	$(call cpq,$(TARGET),../../obj/$(PLATFORM)/bin/)
 
 # SYMBOL RULES

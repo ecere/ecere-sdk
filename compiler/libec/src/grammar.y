@@ -379,7 +379,7 @@ type:
       goto yysetstate;
    #else
       Location tmpLoc = yylloc; $$ = $2; yylloc = @1; 
-      Compiler_Error("Not a type: %s\n", $1.string);      
+      Compiler_Error($"Not a type: %s\n", $1.string);      
       yylloc = tmpLoc; $2.badID = $1;
    #endif
    }
@@ -442,7 +442,7 @@ type:
       goto yysetstate;
    #else
       Location tmpLoc = yylloc; $$ = $2; yylloc = @1; 
-      Compiler_Error("Not a type: %s\n", $1.string);      
+      Compiler_Error($"Not a type: %s\n", $1.string);      
       yylloc = tmpLoc; $2.badID = $1;
    #endif
    }*/
@@ -3079,13 +3079,13 @@ statement:
 	;
 
 statement_error:
-	labeled_statement_error          { $$ = $1; Compiler_Error("syntax error\n"); } 
-   | iteration_statement_error      { $$ = $1; Compiler_Error("syntax error\n"); } 
-   | compound_statement_error       { $$ = $1; Compiler_Error("syntax error\n"); } 
-	| selection_statement_error      { $$ = $1; Compiler_Error("syntax error\n"); } 
-   | jump_statement_error           { $$ = $1; Compiler_Error("syntax error\n"); } 
-	| jump_statement error           { $$ = $1; Compiler_Error("syntax error\n"); } 
-   | expression_error { $$ = MkExpressionStmt($1); Compiler_Error("syntax error\n"); $$.loc = @1; }
+	labeled_statement_error          { $$ = $1; Compiler_Error($"syntax error\n"); } 
+   | iteration_statement_error      { $$ = $1; Compiler_Error($"syntax error\n"); } 
+   | compound_statement_error       { $$ = $1; Compiler_Error($"syntax error\n"); } 
+	| selection_statement_error      { $$ = $1; Compiler_Error($"syntax error\n"); } 
+   | jump_statement_error           { $$ = $1; Compiler_Error($"syntax error\n"); } 
+	| jump_statement error           { $$ = $1; Compiler_Error($"syntax error\n"); } 
+   | expression_error { $$ = MkExpressionStmt($1); Compiler_Error($"syntax error\n"); $$.loc = @1; }
    ;
 
 asm_field:

@@ -383,6 +383,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
 struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
+struct Expression * propCategory;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
@@ -933,6 +934,10 @@ char type2[1024];
 void ImportModule(char *  name, int importType, int importAccess, unsigned int loadDllOnly);
 
 extern void Compiler_Error(char *  format, ...);
+
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
@@ -1541,7 +1546,7 @@ importAccess = 1;
 }
 else if(importType != 4)
 {
-Compiler_Error("Couldn't open %s\n", fileName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Couldn't open %s\n", (((void *)0))), fileName);
 }
 return globalInstance;
 }
@@ -1593,8 +1598,6 @@ struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
 };
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_LoadStrict(struct __ecereNameSpace__ecere__com__Instance * fromModule, char *  name, int importAccess);
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
@@ -1933,7 +1936,7 @@ char type2String[1024] = "";
 PrintType(type1, type1String, 0x0, 0x1);
 PrintType(type2, type2String, 0x0, 0x1);
 if(strcmp(type1String, type2String))
-Compiler_Warning("Redefinition of %s (defining as %s, already defined as %s)\n", redefinition->name, type1String, type2String);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Redefinition of %s (defining as %s, already defined as %s)\n", (((void *)0))), redefinition->name, type1String, type2String);
 FreeType(type1);
 FreeType(type2);
 }

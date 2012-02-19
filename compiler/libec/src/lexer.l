@@ -475,7 +475,7 @@ int preprocessor()
 
       if ( include_stack_ptr >= MAX_INCLUDE_DEPTH )
       {
-         fprintf( stderr, "Includes nested too deeply" );
+         fprintf( stderr, $"Includes nested too deeply" );
          exit( 1 );
       }
 

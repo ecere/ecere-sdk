@@ -655,6 +655,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
 struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
+struct Expression * propCategory;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
@@ -969,7 +970,7 @@ struct Statement * issetStmt;
 struct Symbol * symbol;
 unsigned int conversion;
 unsigned int isWatchable;
-char *  category;
+struct Expression * category;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
@@ -1166,6 +1167,10 @@ return 0x0;
 
 extern void Compiler_Error(char *  format, ...);
 
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
 struct __ecereNameSpace__ecere__com__Module
@@ -1212,14 +1217,14 @@ if(regClass->templateClass)
 regClass = regClass->templateClass;
 if(classSym->isStatic && access != 3)
 {
-Compiler_Error("Non-static %s making use of a static class\n", word);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Non-static %s making use of a static class\n", (((void *)0))), word);
 }
 else if(access == 1)
 {
 if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + 12)))->application + 296)))->systemNameSpace))
 {
 if(NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + 12)))->privateNameSpace) || !ModuleAccess(privateModule, regClass->module))
-Compiler_Error("Public %s making use of a private class\n", word);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Public %s making use of a private class\n", (((void *)0))), word);
 }
 }
 }
@@ -1476,7 +1481,7 @@ dataMember = link ? link->data : (((void *)0));
 else
 dataMember = __ecereNameSpace__ecere__com__eClass_FindDataMember(regClass, declId->string, privateModule, (((void *)0)), (((void *)0)));
 if(dataMember)
-CheckPublicDataType(dataMember->dataType, (def->memberAccess == 2) ? 2 : access, "class data member");
+CheckPublicDataType(dataMember->dataType, (def->memberAccess == 2) ? 2 : access, __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "class data member", (((void *)0))));
 }
 }
 }
@@ -1503,7 +1508,7 @@ dataMember = link ? link->data : (((void *)0));
 else
 dataMember = __ecereNameSpace__ecere__com__eClass_FindDataMember(regClass, spec->id->string, privateModule, (((void *)0)), (((void *)0)));
 if(dataMember)
-CheckPublicDataType(dataMember->dataType, (def->memberAccess == 2) ? 2 : access, "class data member");
+CheckPublicDataType(dataMember->dataType, (def->memberAccess == 2) ? 2 : access, __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "class data member", (((void *)0))));
 }
 }
 }
@@ -1511,7 +1516,7 @@ CheckPublicDataType(dataMember->dataType, (def->memberAccess == 2) ? 2 : access,
 }
 else if(decl->type == 2)
 {
-CheckPublicClass(decl->inst->_class->symbol, (def->memberAccess == 2) ? 2 : access, "class member instance");
+CheckPublicClass(decl->inst->_class->symbol, (def->memberAccess == 2) ? 2 : access, __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "class member instance", (((void *)0))));
 }
 }
 }
@@ -1682,13 +1687,13 @@ if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__c
 {
 if(!regClass->base->symbol)
 regClass->base->symbol = FindClass(regClass->base->fullName);
-CheckPublicClass(regClass->base->symbol, 1, "class");
+CheckPublicClass(regClass->base->symbol, 1, __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "class", (((void *)0))));
 }
 else if(!symbol->isStatic && regClass->base)
 {
 if(!regClass->base->symbol)
 regClass->base->symbol = FindClass(regClass->base->fullName);
-CheckPublicClass(regClass->base->symbol, 2, "class");
+CheckPublicClass(regClass->base->symbol, 2, __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "class", (((void *)0))));
 }
 }
 if(definitions != (((void *)0)))
@@ -1716,7 +1721,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(regClass, def->id->string, (((voi
 else
 {
 yylloc = def->loc;
-Compiler_Error("Couldn't find member %s to override\n", def->id->string);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Couldn't find member %s to override\n", (((void *)0))), def->id->string);
 }
 }
 }
@@ -1826,7 +1831,7 @@ if(func->isDestructor)
 if(destructor)
 {
 yylloc = *loc;
-Compiler_Error("redefinition of destructor for class %s\n", symbol->string);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "redefinition of destructor for class %s\n", (((void *)0))), symbol->string);
 }
 else
 {
@@ -1845,7 +1850,7 @@ if(func->isConstructor)
 if(constructor)
 {
 yylloc = *loc;
-Compiler_Error("redefinition of constructor for class %s\n", symbol->string);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "redefinition of constructor for class %s\n", (((void *)0))), symbol->string);
 }
 else
 {

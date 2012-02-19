@@ -1,4 +1,6 @@
+#ifndef ECERE_COM_MODULE
 import "File"
+#endif
 import "Map"
 
 #if defined(ECERE_BOOTSTRAP) || defined(ECERE_STATIC)
@@ -21,6 +23,7 @@ static Map<String, Map<String, String>> moduleMaps { };
 
 public dllexport void LoadTranslatedStrings(Module module, char * name)
 {
+#ifndef ECERE_COM_MODULE
    File f;
    char fileName[MAX_LOCATION];
 
@@ -134,6 +137,7 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
       }
       delete f;
    }
+#endif
 }
 
 public dllexport void UnloadTranslatedStrings(Module module)

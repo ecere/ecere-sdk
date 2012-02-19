@@ -12154,7 +12154,7 @@ yyreduce:
       goto yysetstate;
    #else
       Location tmpLoc = yylloc; (yyval.specifier) = (yyvsp[(2) - (2)].id); yylloc = (yylsp[(1) - (2)]); 
-      Compiler_Error("Not a type: %s\n", (yyvsp[(1) - (2)].id).string);      
+      Compiler_Error($"Not a type: %s\n", (yyvsp[(1) - (2)].id).string);      
       yylloc = tmpLoc; (yyvsp[(2) - (2)].id).badID = (yyvsp[(1) - (2)].id);
    #endif
    ;}
@@ -19159,49 +19159,49 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3082 "grammar.y"
-    { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error("syntax error\n"); ;}
+    { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error($"syntax error\n"); ;}
     break;
 
   case 1038:
 
 /* Line 1464 of yacc.c  */
 #line 3083 "grammar.y"
-    { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error("syntax error\n"); ;}
+    { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error($"syntax error\n"); ;}
     break;
 
   case 1039:
 
 /* Line 1464 of yacc.c  */
 #line 3084 "grammar.y"
-    { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error("syntax error\n"); ;}
+    { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error($"syntax error\n"); ;}
     break;
 
   case 1040:
 
 /* Line 1464 of yacc.c  */
 #line 3085 "grammar.y"
-    { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error("syntax error\n"); ;}
+    { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error($"syntax error\n"); ;}
     break;
 
   case 1041:
 
 /* Line 1464 of yacc.c  */
 #line 3086 "grammar.y"
-    { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error("syntax error\n"); ;}
+    { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error($"syntax error\n"); ;}
     break;
 
   case 1042:
 
 /* Line 1464 of yacc.c  */
 #line 3087 "grammar.y"
-    { (yyval.stmt) = (yyvsp[(1) - (2)].stmt); Compiler_Error("syntax error\n"); ;}
+    { (yyval.stmt) = (yyvsp[(1) - (2)].stmt); Compiler_Error($"syntax error\n"); ;}
     break;
 
   case 1043:
 
 /* Line 1464 of yacc.c  */
 #line 3088 "grammar.y"
-    { (yyval.stmt) = MkExpressionStmt((yyvsp[(1) - (1)].list)); Compiler_Error("syntax error\n"); (yyval.stmt).loc = (yylsp[(1) - (1)]); ;}
+    { (yyval.stmt) = MkExpressionStmt((yyvsp[(1) - (1)].list)); Compiler_Error($"syntax error\n"); (yyval.stmt).loc = (yylsp[(1) - (1)]); ;}
     break;
 
   case 1044:

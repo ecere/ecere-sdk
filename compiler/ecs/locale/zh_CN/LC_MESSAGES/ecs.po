@@ -1,0 +1,663 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2012-02-19 20:14+0900\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"Language-Team: ec <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ..\\..\\..\\\n"
+
+#: .\ecs.ec:1704
+msgid ""
+"Syntax:\n"
+"   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n"
+msgstr ""
+"Syntax:\n"
+"   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n"
+
+#~ msgid "                  [Get]\n"
+#~ msgstr "                  [Get]\n"
+
+#~ msgid "                  [Set]\n"
+#~ msgstr "                  [Set]\n"
+
+#~ msgid "                  [Virtual]\n"
+#~ msgstr "                  [Virtual]\n"
+
+#~ msgid "               [Expression]\n"
+#~ msgstr "               [Expression]\n"
+
+#~ msgid "               [Identifier]\n"
+#~ msgstr "               [Identifier]\n"
+
+#~ msgid "               [None]\n"
+#~ msgstr "               [None]\n"
+
+#~ msgid "               [Type]\n"
+#~ msgstr "               [Type]\n"
+
+#~ msgid "            [Get]\n"
+#~ msgstr "            [Get]\n"
+
+#~ msgid "            [Imported Methods]\n"
+#~ msgstr "            [Imported Methods]\n"
+
+#~ msgid "            [Imported Properties]\n"
+#~ msgstr "            [Imported Properties]\n"
+
+#~ msgid "            [Instantiated]\n"
+#~ msgstr "            [Instantiated]\n"
+
+#~ msgid "            [Pos]\n"
+#~ msgstr "            [Pos]\n"
+
+#~ msgid "            [Private]\n"
+#~ msgstr "            [Private]\n"
+
+#~ msgid "            [Public]\n"
+#~ msgstr "            [Public]\n"
+
+#~ msgid "            [Remote]\n"
+#~ msgstr "            [Remote]\n"
+
+#~ msgid "            [Set]\n"
+#~ msgstr "            [Set]\n"
+
+#~ msgid "            [Size]\n"
+#~ msgstr "            [Size]\n"
+
+#~ msgid "            [Type]\n"
+#~ msgstr "            [Type]\n"
+
+#~ msgid "            [Virtual]\n"
+#~ msgstr "            [Virtual]\n"
+
+#~ msgid "            [Watchable]\n"
+#~ msgstr "            [Watchable]\n"
+
+#~ msgid "         [Conversion]\n"
+#~ msgstr "         [Conversion]\n"
+
+#~ msgid "         [None]\n"
+#~ msgstr "         [None]\n"
+
+#~ msgid "         [Template Parameters]\n"
+#~ msgstr "         [Template Parameters]\n"
+
+#~ msgid "      [Base]\n"
+#~ msgstr "      [Base]\n"
+
+#~ msgid "      [Bit]\n"
+#~ msgstr "      [Bit]\n"
+
+#~ msgid "      [Defined Class Properties]\n"
+#~ msgstr "      [Defined Class Properties]\n"
+
+#~ msgid "      [Defined Data Members]\n"
+#~ msgstr "      [Defined Data Members]\n"
+
+#~ msgid "      [Defined Methods]\n"
+#~ msgstr "      [Defined Methods]\n"
+
+#~ msgid "      [Defined Properties]\n"
+#~ msgstr "      [Defined Properties]\n"
+
+#~ msgid "      [Enum Values]\n"
+#~ msgstr "      [Enum Values]\n"
+
+#~ msgid "      [Enum]\n"
+#~ msgstr "      [Enum]\n"
+
+#~ msgid "      [Fixed]\n"
+#~ msgstr "      [Fixed]\n"
+
+#~ msgid "      [Imported Classes]\n"
+#~ msgstr "      [Imported Classes]\n"
+
+#~ msgid "      [Imported Functions]\n"
+#~ msgstr "      [Imported Functions]\n"
+
+#~ msgid "      [No Expansion]\n"
+#~ msgstr "      [No Expansion]\n"
+
+#~ msgid "      [NoHead]\n"
+#~ msgstr "      [NoHead]\n"
+
+#~ msgid "      [Private Base]\n"
+#~ msgstr "      [Private Base]\n"
+
+#~ msgid "      [Private]\n"
+#~ msgstr "      [Private]\n"
+
+#~ msgid "      [Public]\n"
+#~ msgstr "      [Public]\n"
+
+#~ msgid "      [Remote]\n"
+#~ msgstr "      [Remote]\n"
+
+#~ msgid "      [Static]\n"
+#~ msgstr "      [Static]\n"
+
+#~ msgid "      [Struct]\n"
+#~ msgstr "      [Struct]\n"
+
+#~ msgid "      [Type]\n"
+#~ msgstr "      [Type]\n"
+
+#~ msgid "      [Union]\n"
+#~ msgstr "      [Union]\n"
+
+#~ msgid "      [Unit]\n"
+#~ msgstr "      [Unit]\n"
+
+#~ msgid "      [Value]\n"
+#~ msgstr "      [Value]\n"
+
+#~ msgid "      [Watchable]\n"
+#~ msgstr "      [Watchable]\n"
+
+#~ msgid "   [Private]\n"
+#~ msgstr "   [Private]\n"
+
+#~ msgid "   [Remote]\n"
+#~ msgstr "   [Remote]\n"
+
+#~ msgid "   [Static]\n"
+#~ msgstr "   [Static]\n"
+
+#~ msgid "   [This]\n"
+#~ msgstr "   [This]\n"
+
+#~ msgid " or "
+#~ msgstr " or "
+
+#~ msgid "%s expected to be derived from method class\n"
+#~ msgstr "%s expected to be derived from method class\n"
+
+#~ msgid "%s undefined; assuming extern returning int\n"
+#~ msgstr "%s不确定，假设外部返回整数\n"
+
+#~ msgid "(StaticString)"
+#~ msgstr "(StaticString)"
+
+#~ msgid "(null identifier)"
+#~ msgstr "(空标识符)"
+
+#~ msgid ", expecting "
+#~ msgstr ", expecting "
+
+#~ msgid ":%d:%d: error: "
+#~ msgstr ":%d:%d: error: "
+
+#~ msgid ":%d:%d: warning: "
+#~ msgstr ":%d:%d: warning: "
+
+#~ msgid "Array size not constant int (%s)\n"
+#~ msgstr "数组大小不是常整型(%s)\n"
+
+#~ msgid "Assigning list initializer to non list\n"
+#~ msgstr "列表分配给非列表\n"
+
+#~ msgid "Couldn't determine type of array elements\n"
+#~ msgstr "无法确定数组元素的类型\n"
+
+#~ msgid "Couldn't find member %s to override\n"
+#~ msgstr "不能找到成员%s去继承\n"
+
+#~ msgid "Couldn't open %s\n"
+#~ msgstr "Couldn't open %s\n"
+
+#~ msgid "Deleting"
+#~ msgstr "Deleting"
+
+#~ msgid "Entering state %d\n"
+#~ msgstr "Entering state %d\n"
+
+#~ msgid "Error: discarding"
+#~ msgstr "Error: discarding"
+
+#~ msgid "Error: discarding lookahead"
+#~ msgstr "Error: discarding lookahead"
+
+#~ msgid "Error: popping"
+#~ msgstr "Error: popping"
+
+#~ msgid "Importing took %.3f seconds for %s\n"
+#~ msgstr "Importing took %.3f seconds for %s\n"
+
+#~ msgid "Includes nested too deeply"
+#~ msgstr "Includes nested too deeply"
+
+#~ msgid "Incompatible virtual function %s\n"
+#~ msgstr "不兼容虚函数%s\n"
+
+#~ msgid "Member with same name already exists %s in class %s\n"
+#~ msgstr "Member with same name already exists %s in class %s\n"
+
+#~ msgid "Member with same name already exists %s in member %s\n"
+#~ msgstr "Member with same name already exists %s in member %s\n"
+
+#~ msgid "Multiple field index requires a name\n"
+#~ msgstr "Multiple field index requires a name\n"
+
+#~ msgid "Next token is"
+#~ msgstr "Next token is"
+
+#~ msgid ""
+#~ "No database table defined in this module or database_open already used.\n"
+#~ msgstr ""
+#~ "No database table defined in this module or database_open already used.\n"
+
+#~ msgid "Non-static %s making use of a static class\n"
+#~ msgstr "非静态%s 使用静态类\n"
+
+#~ msgid "Not a type: %s\n"
+#~ msgstr "Not a type: %s\n"
+
+#~ msgid "Now at end of input.\n"
+#~ msgstr "Now at end of input.\n"
+
+#~ msgid "Property %s not found in class %s\n"
+#~ msgstr "属性%s在类%s中未能找到\n"
+
+#~ msgid "Public %s making use of a private class\n"
+#~ msgstr "公共的%s使用私有类\n"
+
+#~ msgid "Reading a token: "
+#~ msgstr "Reading a token: "
+
+#~ msgid "Recursion in defined expression %s\n"
+#~ msgstr "Recursion in defined expression %s\n"
+
+#~ msgid "Redefinition of %s (defining as %s, already defined as %s)\n"
+#~ msgstr "重复定义%s (定义%s, 已经存在定义%s)\n"
+
+#~ msgid "Redefinition of %s ignored\n"
+#~ msgstr "Redefinition of %s ignored\n"
+
+#~ msgid "Redefinition of method %s in class %s\n"
+#~ msgstr "Redefinition of method %s in class %s\n"
+
+#~ msgid "Reducing stack by rule %d (line %u), "
+#~ msgstr "Reducing stack by rule %d (line %u), "
+
+#~ msgid "Shifting"
+#~ msgstr "Shifting"
+
+#~ msgid "Stack now"
+#~ msgstr "Stack now"
+
+#~ msgid "Stack size increased to %lu\n"
+#~ msgstr "Stack size increased to %lu\n"
+
+#~ msgid "Starting parse\n"
+#~ msgstr "Starting parse\n"
+
+#~ msgid ""
+#~ "Syntax:\n"
+#~ "   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-"
+#~ "symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-"
+#~ "D<definition>]* -c <input>\n"
+#~ msgstr ""
+#~ "Syntax:\n"
+#~ "   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-"
+#~ "symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-"
+#~ "D<definition>]* -c <input>\n"
+
+#~ msgid ""
+#~ "Syntax:\n"
+#~ "   ecp [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-"
+#~ "symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-"
+#~ "D<definition>]* -c <input>\n"
+#~ msgstr ""
+#~ "Syntax:\n"
+#~ "   ecp [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-"
+#~ "symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-"
+#~ "D<definition>]* -c <input>\n"
+
+#~ msgid "[Base]"
+#~ msgstr "[Base]"
+
+#~ msgid "[Bit]"
+#~ msgstr "[Bit]"
+
+#~ msgid "[Conversion]"
+#~ msgstr "[Conversion]"
+
+#~ msgid "[Data member]"
+#~ msgstr "[Data member]"
+
+#~ msgid "[Defined Class Properties]"
+#~ msgstr "[Defined Class Properties]"
+
+#~ msgid "[Defined Classes]"
+#~ msgstr "[Defined Classes]"
+
+#~ msgid "[Defined Classes]\n"
+#~ msgstr "[Defined Classes]\n"
+
+#~ msgid "[Defined Data Members]"
+#~ msgstr "[Defined Data Members]"
+
+#~ msgid "[Defined Data]"
+#~ msgstr "[Defined Data]"
+
+#~ msgid "[Defined Data]\n"
+#~ msgstr "[Defined Data]\n"
+
+#~ msgid "[Defined Expressions]"
+#~ msgstr "[Defined Expressions]"
+
+#~ msgid "[Defined Expressions]\n"
+#~ msgstr "[Defined Expressions]\n"
+
+#~ msgid "[Defined Functions]"
+#~ msgstr "[Defined Functions]"
+
+#~ msgid "[Defined Functions]\n"
+#~ msgstr "[Defined Functions]\n"
+
+#~ msgid "[Defined Methods]"
+#~ msgstr "[Defined Methods]"
+
+#~ msgid "[Defined Properties]"
+#~ msgstr "[Defined Properties]"
+
+#~ msgid "[Enum Values]"
+#~ msgstr "[Enum Values]"
+
+#~ msgid "[Enum]"
+#~ msgstr "[Enum]"
+
+#~ msgid "[Expression]"
+#~ msgstr "[Expression]"
+
+#~ msgid "[Fixed]"
+#~ msgstr "[Fixed]"
+
+#~ msgid "[Get]"
+#~ msgstr "[Get]"
+
+#~ msgid "[Global Instance]"
+#~ msgstr "[Global Instance]"
+
+#~ msgid "[Global Instance]\n"
+#~ msgstr "[Global Instance]\n"
+
+#~ msgid "[Identifier]"
+#~ msgstr "[Identifier]"
+
+#~ msgid "[Imported Classes]"
+#~ msgstr "[Imported Classes]"
+
+#~ msgid "[Imported Functions]"
+#~ msgstr "[Imported Functions]"
+
+#~ msgid "[Imported Methods]"
+#~ msgstr "[Imported Methods]"
+
+#~ msgid "[Imported Modules]"
+#~ msgstr "[Imported Modules]"
+
+#~ msgid "[Imported Modules]\n"
+#~ msgstr "[Imported Modules]\n"
+
+#~ msgid "[Imported Properties]"
+#~ msgstr "[Imported Properties]"
+
+#~ msgid "[Instantiated]"
+#~ msgstr "[Instantiated]"
+
+#~ msgid "[Method]"
+#~ msgstr "[Method]"
+
+#~ msgid "[No Expansion]"
+#~ msgstr "[No Expansion]"
+
+#~ msgid "[NoHead]"
+#~ msgstr "[NoHead]"
+
+#~ msgid "[None]"
+#~ msgstr "[None]"
+
+#~ msgid "[Pos]"
+#~ msgstr "[Pos]"
+
+#~ msgid "[Private Base]"
+#~ msgstr "[Private Base]"
+
+#~ msgid "[Private]"
+#~ msgstr "[Private]"
+
+#~ msgid "[Property]"
+#~ msgstr "[Property]"
+
+#~ msgid "[Public]"
+#~ msgstr "[Public]"
+
+#~ msgid "[Remote]"
+#~ msgstr "[Remote]"
+
+#~ msgid "[Set]"
+#~ msgstr "[Set]"
+
+#~ msgid "[Size]"
+#~ msgstr "[Size]"
+
+#~ msgid "[Static]"
+#~ msgstr "[Static]"
+
+#~ msgid "[Struct]"
+#~ msgstr "[Struct]"
+
+#~ msgid "[Template Parameters]"
+#~ msgstr "[Template Parameters]"
+
+#~ msgid "[This]"
+#~ msgstr "[This]"
+
+#~ msgid "[Type]"
+#~ msgstr "[Type]"
+
+#~ msgid "[Union]"
+#~ msgstr "[Union]"
+
+#~ msgid "[Unit]"
+#~ msgstr "[Unit]"
+
+#~ msgid "[Value]"
+#~ msgstr "[Value]"
+
+#~ msgid "[Virtual]"
+#~ msgstr "[Virtual]"
+
+#~ msgid "[Watchable]"
+#~ msgstr "[Watchable]"
+
+#~ msgid "bad buffer in yy_scan_bytes()"
+#~ msgstr "bad buffer in yy_scan_bytes()"
+
+#~ msgid "callable object undefined; extern assuming returning int\n"
+#~ msgstr "可调用对象未定义，外部假设返回整数\n"
+
+#~ msgid "called object %s is not a function\n"
+#~ msgstr "调用对象%s不是一个函数\n"
+
+#~ msgid "cannot add two pointers\n"
+#~ msgstr "cannot add two pointers\n"
+
+#~ msgid "cannot dereference type\n"
+#~ msgstr "cannot dereference type\n"
+
+#~ msgid "class data member"
+#~ msgstr "类数据成员"
+
+#~ msgid "class member instance"
+#~ msgstr "类成员实例"
+
+#~ msgid "couldn't determine type of %s; expected %s\n"
+#~ msgstr "无法确定%s的类型; 期望%s\n"
+
+#~ msgid "couldn't determine type of %s\n"
+#~ msgstr "无法确定%s的类型\n"
+
+#~ msgid "couldn't find member %s in class %s\n"
+#~ msgstr "不能找到成员%s在类%s中\n"
+
+#~ msgid "couldn't find virtual method %s in class %s\n"
+#~ msgstr "不能找到虚方法%s在类%s中\n"
+
+#~ msgid "different levels of indirection\n"
+#~ msgstr "different levels of indirection\n"
+
+#~ msgid "error: unhandled type populating instance\n"
+#~ msgstr "error: unhandled type populating instance\n"
+
+#~ msgid "fatal error - scanner input buffer overflow"
+#~ msgstr "fatal error - scanner input buffer overflow"
+
+#~ msgid "fatal flex scanner internal error--end of buffer missed"
+#~ msgstr "fatal flex scanner internal error--end of buffer missed"
+
+#~ msgid "fatal flex scanner internal error--no action found"
+#~ msgstr "fatal flex scanner internal error--no action found"
+
+#~ msgid "flex scanner push-back overflow"
+#~ msgstr "flex scanner push-back overflow"
+
+#~ msgid "incompatible expression %s (%s); expected %s\n"
+#~ msgstr "incompatible expression %s (%s); expected %s\n"
+
+#~ msgid "incompatible expressions %s (%s) and %s (%s)\n"
+#~ msgstr "不兼容的表达示%s (%s) 和%s (%s)\n"
+
+#~ msgid "incompatible instance method %s\n"
+#~ msgstr "不兼容的实例方法%s\n"
+
+#~ msgid "incompatible parameter %s (expected %s)\n"
+#~ msgstr "不兼容参数%s (期望%s)\n"
+
+#~ msgid "incompatible return type for function\n"
+#~ msgstr "函数返回类型不兼容\n"
+
+#~ msgid ""
+#~ "input buffer overflow, can't enlarge buffer because scanner uses REJECT"
+#~ msgstr ""
+#~ "input buffer overflow, can't enlarge buffer because scanner uses REJECT"
+
+#~ msgid "input in flex scanner failed"
+#~ msgstr "input in flex scanner failed"
+
+#~ msgid "invalid class specifier %s for object of class %s\n"
+#~ msgstr "无效的类说明%s关于对象类%s\n"
+
+#~ msgid "member operator on non-structure type expression %s\n"
+#~ msgstr "成员操作符对非结构类型表达式%s\n"
+
+#~ msgid "method class must be derived from %s\n"
+#~ msgstr "method class must be derived from %s\n"
+
+#~ msgid "method class should not take an object\n"
+#~ msgstr "method class should not take an object\n"
+
+#~ msgid "not enough arguments for function %s (%d given, expected %d)\n"
+#~ msgstr "参数不够，函数%s (规定%d个, 期望%d个)\n"
+
+#~ msgid "not enough arguments for method %s::%s (%d given, expected %d)\n"
+#~ msgstr "参数不够，方法%s::%s(规定%d个, 期望%d个)\n"
+
+#~ msgid "not enough parameters\n"
+#~ msgstr "没有足够参数\n"
+
+#~ msgid "nterm %s ("
+#~ msgstr "nterm %s ("
+
+#~ msgid "operating on %s and %s with an untyped result, assuming %s\n"
+#~ msgstr "operating on %s and %s with an untyped result, assuming %s\n"
+
+#~ msgid "operator %s illegal on pointer\n"
+#~ msgstr "operator %s illegal on pointer\n"
+
+#~ msgid "out of dynamic memory in yy_create_buffer()"
+#~ msgstr "out of dynamic memory in yy_create_buffer()"
+
+#~ msgid "out of dynamic memory in yy_scan_buffer()"
+#~ msgstr "out of dynamic memory in yy_scan_buffer()"
+
+#~ msgid "out of dynamic memory in yy_scan_bytes()"
+#~ msgstr "out of dynamic memory in yy_scan_bytes()"
+
+#~ msgid "out of memory expanding start-condition stack"
+#~ msgstr "out of memory expanding start-condition stack"
+
+#~ msgid "overriding class expected to be derived from method class\n"
+#~ msgstr "overriding class expected to be derived from method class\n"
+
+#~ msgid "parser stack overflow"
+#~ msgstr "parser stack overflow"
+
+#~ msgid "redefinition of class %s\n"
+#~ msgstr "redefinition of class %s\n"
+
+#~ msgid "redefinition of constructor for class %s\n"
+#~ msgstr "重复定义构造类%s\n"
+
+#~ msgid "redefinition of destructor for class %s\n"
+#~ msgstr "重复定义析构类%s\n"
+
+#~ msgid "start-condition stack underflow"
+#~ msgstr "start-condition stack underflow"
+
+#~ msgid "syntax error"
+#~ msgstr "syntax error"
+
+#~ msgid "syntax error, unexpected "
+#~ msgstr "syntax error, unexpected "
+
+#~ msgid "syntax error: cannot back up"
+#~ msgstr "syntax error: cannot back up"
+
+#~ msgid "syntax error; also virtual memory exhausted"
+#~ msgstr "syntax error; also virtual memory exhausted"
+
+#~ msgid "syntax error\n"
+#~ msgstr "syntax error\n"
+
+#~ msgid "token %s ("
+#~ msgstr "token %s ("
+
+#~ msgid "too many arguments for function %s (%d given, expected %d)\n"
+#~ msgstr "参数太多，函数%s (规定%d个, 期望%d个)\n"
+
+#~ msgid "too many arguments for method %s::%s (%d given, expected %d)\n"
+#~ msgstr "参数太多，方法%s::%s(规定%d个, 期望%d个)\n"
+
+#~ msgid "too many initializers for instantiation of class %s\n"
+#~ msgstr "too many initializers for instantiation of class %s\n"
+
+#~ msgid "too many parameters\n"
+#~ msgstr "太多参数\n"
+
+#~ msgid "undefined class %s\n"
+#~ msgstr "未定义类%s\n"
+
+#~ msgid "unresolved identifier %s::%s\n"
+#~ msgstr "不确定的标识符%s::%s\n"
+
+#~ msgid "unresolved identifier %s; expected %s\n"
+#~ msgstr "不确定的标识符%s; 期望%s\n"
+
+#~ msgid "unresolved identifier %s\n"
+#~ msgstr "不确定的标识符%s\n"
+
+#~ msgid "unresolved symbol used as an instance method %s\n"
+#~ msgstr "unresolved symbol used as an instance method %s\n"

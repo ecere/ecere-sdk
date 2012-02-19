@@ -664,6 +664,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
 struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
+struct Expression * propCategory;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
@@ -999,7 +1000,7 @@ struct Statement * issetStmt;
 struct Symbol * symbol;
 unsigned int conversion;
 unsigned int isWatchable;
-char *  category;
+struct Expression * category;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
@@ -2761,6 +2762,10 @@ return 0x1;
 
 extern void Compiler_Error(char *  format, ...);
 
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 static unsigned int ProcessBracketInst(struct Instantiation * inst, struct __ecereNameSpace__ecere__sys__OldList * list)
 {
 static int recursionCount = 0;
@@ -2829,7 +2834,7 @@ if(dataMember->isProperty)
 {
 if(!((struct __ecereNameSpace__ecere__com__Property *)dataMember)->Set)
 {
-Compiler_Error("No set defined for property %s\n", dataMember->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "No set defined for property %s\n", (((void *)0))), dataMember->name);
 continue;
 }
 recursionCount--;
@@ -2888,7 +2893,7 @@ if(dataMember->isProperty)
 {
 if(!((struct __ecereNameSpace__ecere__com__Property *)dataMember)->Set)
 {
-Compiler_Error("No set defined for property %s\n", dataMember->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "No set defined for property %s\n", (((void *)0))), dataMember->name);
 continue;
 }
 recursionCount--;

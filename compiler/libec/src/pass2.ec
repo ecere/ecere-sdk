@@ -874,7 +874,7 @@ static void ProcessExpression(Expression exp)
                                  memberExp.member.memberType = dataMember;
                               }
                               else
-                                 Compiler_Error("no set defined for property %s of class %s\n", prop.name, prop._class.fullName);
+                                 Compiler_Error($"no set defined for property %s of class %s\n", prop.name, prop._class.fullName);
                            }
                         }
                         else
@@ -2211,11 +2211,11 @@ static void ProcessExpression(Expression exp)
                   else 
                   {
                      if(exp.usage.usageRef)
-                        Compiler_Error("cannot obtain address of property\n");
+                        Compiler_Error($"cannot obtain address of property\n");
                      else if(!prop.Get)
-                        Compiler_Error("no get defined for property %s of class %s\n", prop.name, prop._class.fullName);
+                        Compiler_Error($"no get defined for property %s of class %s\n", prop.name, prop._class.fullName);
                      else if(exp.usage.usageDelete)
-                        Compiler_Error("no get defined for property %s of class %s\n", prop.name, prop._class.fullName);
+                        Compiler_Error($"no get defined for property %s of class %s\n", prop.name, prop._class.fullName);
                   }
                }
             }

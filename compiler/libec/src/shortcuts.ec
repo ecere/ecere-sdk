@@ -215,14 +215,14 @@ public Declarator SpecDeclFromString(char * string, OldList * specs, Declarator 
 
       if(parseTypeError)
       {
-         Compiler_Warning("parsing type %s\n", string);
-         // Compiler_Error("parsing type %s\n", string);
+         Compiler_Warning($"parsing type %s\n", string);
+         // Compiler_Error($"parsing type %s\n", string);
       }
    }
    else
    {
-      Compiler_Warning("parsing type %s\n", string);
-      // Compiler_Error("parsing type %s\n", string);
+      Compiler_Warning($"parsing type %s\n", string);
+      // Compiler_Error($"parsing type %s\n", string);
       //eSystem_Logf("parsing type %s\n", string);
       //exit(0);
       decl = baseDecl;

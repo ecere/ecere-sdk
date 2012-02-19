@@ -4,6 +4,7 @@ import "BinaryTree"
 import "OldList"
 import "String"
 import "dataTypes"
+import "i18n"
 
 #if defined(ECERE_BOOTSTRAP) || defined(ECERE_STATIC)
 #define dllexport
@@ -2277,7 +2278,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
          if(!_class.internalDecl)
          {
             if(declMode != baseSystemAccess)
-               printf("error: Redefinition of class %s\n", name);
+               printf($"error: Redefinition of class %s\n", name);
             else
             {
                _class.comRedefinition = true;

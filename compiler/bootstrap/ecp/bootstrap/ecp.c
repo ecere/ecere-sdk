@@ -144,6 +144,7 @@ int simpleID;
 struct __ecereNameSpace__ecere__sys__BinaryTree templateTypes;
 struct ClassDefinition * classDef;
 unsigned int templateTypesOnly;
+unsigned int hasNameSpace;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Instantiation;
@@ -580,6 +581,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
 struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
+struct Expression * propCategory;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
@@ -882,7 +884,7 @@ struct Statement * issetStmt;
 struct Symbol * symbol;
 unsigned int conversion;
 unsigned int isWatchable;
-char *  category;
+struct Expression * category;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
@@ -2367,6 +2369,10 @@ extern char *  __ecereNameSpace__ecere__sys__ChangeExtension(char *  string, cha
 
 extern int printf(char * , ...);
 
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 extern void SetGlobalContext(struct Context * context);
 
 extern void SetTopContext(struct Context * context);
@@ -2620,7 +2626,7 @@ SetOutputFile(defaultSymFile);
 }
 }
 if(!valid)
-printf("Syntax:\n   ecp [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n");
+printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Syntax:\n   ecp [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n", (((void *)0))));
 else
 {
 char command[1024];
@@ -2726,8 +2732,6 @@ int importType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 };
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__GlobalFunction;
 

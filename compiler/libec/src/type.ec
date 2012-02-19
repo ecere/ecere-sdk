@@ -4760,7 +4760,7 @@ yyreduce:
       goto yysetstate;
    #else
       Location tmpLoc = yylloc; (yyval.specifier) = (yyvsp[(2) - (2)].id); yylloc = (yylsp[(1) - (2)]); 
-      Compiler_Error("Not a type: %s\n", (yyvsp[(1) - (2)].id).string);      
+      Compiler_Error($"Not a type: %s\n", (yyvsp[(1) - (2)].id).string);      
       yylloc = tmpLoc; (yyvsp[(2) - (2)].id).badID = (yyvsp[(1) - (2)].id); // FreeIdentifier($1);
    #endif
    ;}

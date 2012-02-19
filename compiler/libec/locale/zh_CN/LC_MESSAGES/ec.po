@@ -1,0 +1,378 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2012-02-19 20:10+0900\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"Language-Team: ec <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ..\\..\\..\\\n"
+
+#: .\src\pass15.ec:3240
+#: .\src\pass15.ec:3266
+#, fuzzy
+msgid "%s expected to be derived from method class\n"
+msgstr "%s expected to be derived from method class\n"
+
+#: .\src\pass15.ec:8804
+msgid "%s undefined; assuming extern returning int\n"
+msgstr "%s不确定，假设外部返回整数\n"
+
+#: .\src\ecdefs.ec:1223
+#, fuzzy
+msgid ":%d:%d: error: "
+msgstr ":%d:%d: error: "
+
+#: .\src\pass15.ec:804
+msgid "Array size not constant int (%s)\n"
+msgstr "数组大小不是常整型(%s)\n"
+
+#: .\src\pass15.ec:10320
+msgid "Assigning list initializer to non list\n"
+msgstr "列表分配给非列表\n"
+
+#: .\src\pass15.ec:9986
+#: .\src\pass15.ec:11031
+msgid "Couldn't determine type of array elements\n"
+msgstr "无法确定数组元素的类型\n"
+
+#: .\src\pass0.ec:570
+msgid "Couldn't find member %s to override\n"
+msgstr "不能找到成员%s去继承\n"
+
+#: .\src\loadSymbols.ec:716
+#, fuzzy
+msgid "Couldn't open %s\n"
+msgstr "Couldn't open %s\n"
+
+#: .\src\ast.ec:1436
+#, fuzzy
+msgid "Expecting class specifier\n"
+msgstr "Expecting class specifier\n"
+
+#: .\src\pass15.ec:11189
+#, fuzzy
+msgid "Expression is not a container\n"
+msgstr "Expression is not a container\n"
+
+#: .\src\lexer.ec:478
+#, fuzzy
+msgid "Includes nested too deeply"
+msgstr "Includes nested too deeply"
+
+#: .\src\pass1.ec:141
+msgid "Incompatible virtual function %s\n"
+msgstr "不兼容虚函数%s\n"
+
+#: .\src\pass15.ec:11463
+#: .\src\pass15.ec:11538
+msgid "Invalid object specified and not inside a class\n"
+msgstr "无效的类说明%s关于对象类%s\n"
+
+#: .\src\pass15.ec:11371
+#, fuzzy
+msgid "Invalid watched object\n"
+msgstr "Invalid watched object\n"
+
+#: .\src\firstPass.ec:79
+#: .\src\firstPass.ec:104
+#: .\src\firstPass.ec:165
+#: .\src\firstPass.ec:207
+#, fuzzy
+msgid "Member with same name already exists %s in class %s\n"
+msgstr "Member with same name already exists %s in class %s\n"
+
+#: .\src\firstPass.ec:97
+#: .\src\firstPass.ec:158
+#: .\src\firstPass.ec:200
+#, fuzzy
+msgid "Member with same name already exists %s in member %s\n"
+msgstr "Member with same name already exists %s in member %s\n"
+
+#: .\src\dbpass.ec:1073
+#, fuzzy
+msgid "Multiple field index requires a name\n"
+msgstr "Multiple field index requires a name\n"
+
+#: .\src\dbpass.ec:299
+#, fuzzy
+msgid "No database table defined in this module or database_open already used.\n"
+msgstr "No database table defined in this module or database_open already used.\n"
+
+#: .\src\pass15.ec:11384
+#, fuzzy
+msgid "No observer specified and not inside a _class\n"
+msgstr "No observer specified and not inside a _class\n"
+
+#: .\src\pass15.ec:11541
+#, fuzzy
+msgid "No observer specified and not inside a class\n"
+msgstr "No observer specified and not inside a class\n"
+
+#: .\src\pass16.ec:1905
+#: .\src\pass16.ec:1976
+#, fuzzy
+msgid "No set defined for property %s\n"
+msgstr "No set defined for property %s\n"
+
+#: .\src\pass0.ec:153
+msgid "Non-static %s making use of a static class\n"
+msgstr "非静态%s 使用静态类\n"
+
+#: .\src\pass1.ec:1035
+#: .\src\pass15.ec:11366
+#: .\src\pass15.ec:11438
+#: .\src\pass15.ec:11527
+msgid "Property %s not found in class %s\n"
+msgstr "属性%s在类%s中未能找到\n"
+
+#: .\src\pass0.ec:160
+msgid "Public %s making use of a private class\n"
+msgstr "公共的%s使用私有类\n"
+
+#: .\src\pass15.ec:7256
+#, fuzzy
+msgid "Recursion in defined expression %s\n"
+msgstr "Recursion in defined expression %s\n"
+
+#: .\src\loadSymbols.ec:1000
+msgid "Redefinition of %s (defining as %s, already defined as %s)\n"
+msgstr "重复定义%s (定义%s, 已经存在定义%s)\n"
+
+#: .\src\ast.ec:681
+#, fuzzy
+msgid "Redefinition of %s ignored\n"
+msgstr "Redefinition of %s ignored\n"
+
+#: .\src\firstPass.ec:440
+#, fuzzy
+msgid "Redefinition of method %s in class %s\n"
+msgstr "Redefinition of method %s in class %s\n"
+
+#: .\src\pass15.ec:4382
+#: .\src\pass15.ec:4483
+#, fuzzy
+msgid "Unhandled type populating instance\n"
+msgstr "Unhandled type populating instance\n"
+
+#: .\src\pass15.ec:6992
+#, fuzzy
+msgid "Unspecified type\n"
+msgstr "Unspecified type\n"
+
+#: .\src\pass15.ec:8819
+msgid "callable object undefined; extern assuming returning int\n"
+msgstr "可调用对象未定义，外部假设返回整数\n"
+
+#: .\src\pass15.ec:8629
+msgid "called object %s is not a function\n"
+msgstr "调用对象%s不是一个函数\n"
+
+#: .\src\pass15.ec:7718
+#: .\src\pass15.ec:7724
+#: .\src\pass15.ec:7888
+#, fuzzy
+msgid "cannot add two pointers\n"
+msgstr "cannot add two pointers\n"
+
+#: .\src\pass15.ec:1567
+#, fuzzy
+msgid "cannot dereference type\n"
+msgstr "cannot dereference type\n"
+
+#: .\src\pass2.ec:2214
+#, fuzzy
+msgid "cannot obtain address of property\n"
+msgstr "cannot add two pointers\n"
+
+#: .\src\pass15.ec:10061
+msgid "couldn't determine type of %s; expected %s\n"
+msgstr "无法确定%s的类型; 期望%s\n"
+
+#: .\src\pass15.ec:8265
+#: .\src\pass15.ec:8277
+#: .\src\pass15.ec:10073
+#: .\src\pass15.ec:10147
+msgid "couldn't determine type of %s\n"
+msgstr "无法确定%s的类型\n"
+
+#: .\src\pass15.ec:1939
+#: .\src\pass15.ec:9284
+msgid "couldn't find member %s in class %s\n"
+msgstr "不能找到成员%s在类%s中\n"
+
+#: .\src\pass15.ec:1935
+#: .\src\pass15.ec:2044
+msgid "couldn't find virtual method %s in class %s\n"
+msgstr "不能找到虚方法%s在类%s中\n"
+
+#: .\src\pass15.ec:7880
+#, fuzzy
+msgid "different levels of indirection\n"
+msgstr "different levels of indirection\n"
+
+#: .\src\pass15.ec:7736
+#: .\src\pass15.ec:10102
+#, fuzzy
+msgid "incompatible expression %s (%s); expected %s\n"
+msgstr "incompatible expression %s (%s); expected %s\n"
+
+#: .\src\pass15.ec:7997
+#: .\src\pass15.ec:8157
+msgid "incompatible expressions %s (%s) and %s (%s)\n"
+msgstr "不兼容的表达示%s (%s) 和%s (%s)\n"
+
+#: .\src\pass15.ec:1891
+msgid "incompatible instance method %s\n"
+msgstr "不兼容的实例方法%s\n"
+
+#: .\src\pass15.ec:3339
+msgid "incompatible parameter %s (expected %s)\n"
+msgstr "不兼容参数%s (期望%s)\n"
+
+#: .\src\pass15.ec:3279
+msgid "incompatible return type for function\n"
+msgstr "函数返回类型不兼容\n"
+
+#: .\src\pass15.ec:9098
+msgid "invalid class specifier %s for object of class %s\n"
+msgstr "无效的类说明%s关于对象类%s\n"
+
+#: .\src\pass15.ec:9568
+msgid "member operator on non-structure type expression %s\n"
+msgstr "成员操作符对非结构类型表达式%s\n"
+
+#: .\src\pass15.ec:3214
+#: .\src\pass15.ec:3229
+#: .\src\pass15.ec:3255
+#, fuzzy
+msgid "method class must be derived from %s\n"
+msgstr "method class must be derived from %s\n"
+
+#: .\src\pass15.ec:3216
+#, fuzzy
+msgid "method class should not take an object\n"
+msgstr "method class should not take an object\n"
+
+#: .\src\pass2.ec:2216
+#: .\src\pass2.ec:2218
+#, fuzzy
+msgid "no get defined for property %s of class %s\n"
+msgstr "Redefinition of method %s in class %s\n"
+
+#: .\src\pass2.ec:877
+msgid "no set defined for property %s of class %s\n"
+msgstr "无效的类说明%s关于对象类%s\n"
+
+#: .\src\pass15.ec:8778
+msgid "not enough arguments for function %s (%d given, expected %d)\n"
+msgstr "参数不够，函数%s (规定%d个, 期望%d个)\n"
+
+#: .\src\pass15.ec:8774
+msgid "not enough arguments for method %s::%s (%d given, expected %d)\n"
+msgstr "参数不够，方法%s::%s(规定%d个, 期望%d个)\n"
+
+#: .\src\pass15.ec:3290
+msgid "not enough parameters\n"
+msgstr "没有足够参数\n"
+
+#: .\src\pass15.ec:7823
+#, fuzzy
+msgid "operating on %s and %s with an untyped result, assuming %s\n"
+msgstr "operating on %s and %s with an untyped result, assuming %s\n"
+
+#: .\src\pass15.ec:7648
+#, fuzzy
+msgid "operator %s illegal on pointer\n"
+msgstr "operator %s illegal on pointer\n"
+
+#: .\src\pass15.ec:3242
+#, fuzzy
+msgid "overriding class expected to be derived from method class\n"
+msgstr "overriding class expected to be derived from method class\n"
+
+#: .\src\shortcuts.ec:218
+#: .\src\shortcuts.ec:224
+#, fuzzy
+msgid "parsing type %s\n"
+msgstr "Not a type: %s\n"
+
+#: .\src\firstPass.ec:306
+#, fuzzy
+msgid "redefinition of class %s\n"
+msgstr "redefinition of class %s\n"
+
+#: .\src\pass0.ec:720
+msgid "redefinition of constructor for class %s\n"
+msgstr "重复定义构造类%s\n"
+
+#: .\src\pass0.ec:697
+msgid "redefinition of destructor for class %s\n"
+msgstr "重复定义析构类%s\n"
+
+#: .\src\ecdefs.ec:1282
+#: .\src\grammar.ec:3082
+#: .\src\grammar.ec:3083
+#: .\src\grammar.ec:3084
+#: .\src\grammar.ec:3085
+#: .\src\grammar.ec:3086
+#: .\src\grammar.ec:3087
+#: .\src\grammar.ec:3088
+#, fuzzy
+msgid "syntax error\n"
+msgstr "syntax error\n"
+
+#: .\src\pass15.ec:8697
+msgid "too many arguments for function %s (%d given, expected %d)\n"
+msgstr "参数太多，函数%s (规定%d个, 期望%d个)\n"
+
+#: .\src\pass15.ec:8693
+msgid "too many arguments for method %s::%s (%d given, expected %d)\n"
+msgstr "参数太多，方法%s::%s(规定%d个, 期望%d个)\n"
+
+#: .\src\pass15.ec:1945
+#, fuzzy
+msgid "too many initializers for instantiation of class %s\n"
+msgstr "too many initializers for instantiation of class %s\n"
+
+#: .\src\pass15.ec:3353
+msgid "too many parameters\n"
+msgstr "太多参数\n"
+
+#: .\src\pass15.ec:9551
+msgid "undefined class %s\n"
+msgstr "未定义类%s\n"
+
+#: .\src\pass15.ec:10138
+msgid "unresolved identifier %s::%s\n"
+msgstr "不确定的标识符%s::%s\n"
+
+#: .\src\pass15.ec:10059
+msgid "unresolved identifier %s; expected %s\n"
+msgstr "不确定的标识符%s; 期望%s\n"
+
+#: .\src\pass15.ec:10071
+#: .\src\pass15.ec:10140
+msgid "unresolved identifier %s\n"
+msgstr "不确定的标识符%s\n"
+
+#: .\src\pass15.ec:1885
+#, fuzzy
+msgid "unresolved symbol used as an instance method %s\n"
+msgstr "unresolved symbol used as an instance method %s\n"
+
+#: .\src\pass15.ec:7709
+#: .\src\pass15.ec:7866
+#: .\src\pass15.ec:7873
+#, fuzzy
+msgid "void *: unknown size\n"
+msgstr "void *: unknown size\n"
+

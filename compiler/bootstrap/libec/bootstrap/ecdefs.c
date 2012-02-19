@@ -1545,11 +1545,13 @@ extern char *  GetIncludeFileFromID(int id);
 
 extern int printf(char * , ...);
 
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 extern int vsprintf(char * , const char * , __builtin_va_list);
 
 extern int fputs(char * , void *  stream);
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
 
@@ -1621,7 +1623,7 @@ __ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof string);
 __ecereNameSpace__ecere__sys__PathCat(string, sourceFile);
 }
 printf(string);
-printf(":%d:%d: error: ", yylloc.start.line, yylloc.start.charPos);
+printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, ":%d:%d: error: ", (((void *)0))), yylloc.start.line, yylloc.start.charPos);
 __builtin_va_start(args, format);
 vsprintf(string, format, args);
 __builtin_va_end(args);
@@ -1660,7 +1662,7 @@ __ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof string);
 __ecereNameSpace__ecere__sys__PathCat(string, sourceFile);
 }
 printf(string);
-printf(":%d:%d: warning: ", yylloc.start.line, yylloc.start.charPos);
+printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, ":%d:%d: warning: ", (((void *)0))), yylloc.start.line, yylloc.start.charPos);
 __builtin_va_start(args, format);
 vsprintf(string, format, args);
 __builtin_va_end(args);
@@ -1678,7 +1680,7 @@ int yyerror(char * s)
 if(!skipErrors)
 {
 parseError = 0x1;
-Compiler_Error("syntax error\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "syntax error\n", (((void *)0))));
 }
 return 0;
 }

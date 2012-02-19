@@ -626,6 +626,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
 struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
+struct Expression * propCategory;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
@@ -947,7 +948,7 @@ struct Statement * issetStmt;
 struct Symbol * symbol;
 unsigned int conversion;
 unsigned int isWatchable;
-char *  category;
+struct Expression * category;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
@@ -1156,6 +1157,10 @@ extern struct Initializer * MkInitializerList(struct __ecereNameSpace__ecere__sy
 
 extern void Compiler_Error(char *  format, ...);
 
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
@@ -1347,7 +1352,7 @@ tableStatements = (((void *)0));
 else
 {
 FreeExpContents(exp);
-Compiler_Error("No database table defined in this module or database_open already used.\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "No database table defined in this module or database_open already used.\n", (((void *)0))));
 exp->type = 16;
 }
 break;
@@ -2081,7 +2086,7 @@ external->declaration->declMode = table->declMode;
 needTable = 0x1;
 }
 else
-Compiler_Error("Multiple field index requires a name\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Multiple field index requires a name\n", (((void *)0))));
 }
 else
 {

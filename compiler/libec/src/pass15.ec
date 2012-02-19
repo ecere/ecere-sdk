@@ -801,7 +801,7 @@ public int ComputeTypeSize(Type type)
                   yylloc = type.arraySizeExp.loc;
                   if(inCompiler)
                      PrintExpression(type.arraySizeExp, expression);
-                  Compiler_Error("Array size not constant int (%s)\n", expression);
+                  Compiler_Error($"Array size not constant int (%s)\n", expression);
                   yylloc = oldLoc;
                }
                GetInt(type.arraySizeExp, &type.arraySize);
@@ -1564,7 +1564,7 @@ public Type Dereference(Type source)
          source.refCount++;
       }
       else
-         Compiler_Error("cannot dereference type\n");
+         Compiler_Error($"cannot dereference type\n");
    }
    return type;
 }
@@ -1882,13 +1882,13 @@ void ProcessMemberInitData(MemberInit member, Class _class, Class * curClass, Da
                expString[0] = '\0';
                PrintExpression(member.initializer.exp, expString);
                ChangeCh(expString, '\n', ' ');
-               Compiler_Error("unresolved symbol used as an instance method %s\n", expString);
+               Compiler_Error($"unresolved symbol used as an instance method %s\n", expString);
             }
          }
          //else if(!MatchTypes(member.exp.expType, type, null, _class, null, true, true, false, false))
          else if(!MatchTypes(member.initializer.exp.expType, type, null, null, _class, true, true, false, false))
          {
-            Compiler_Error("incompatible instance method %s\n", ident.string);
+            Compiler_Error($"incompatible instance method %s\n", ident.string);
          }
       }
       else if(member.initializer)
@@ -1932,17 +1932,17 @@ void ProcessMemberInitData(MemberInit member, Class _class, Class * curClass, Da
          {
             if(method)
             {
-               Compiler_Error("couldn't find virtual method %s in class %s\n", ident.string, _class.fullName);
+               Compiler_Error($"couldn't find virtual method %s in class %s\n", ident.string, _class.fullName);
             }
             else if(_class)
             {
-               Compiler_Error("couldn't find member %s in class %s\n", ident.string, _class.fullName);
+               Compiler_Error($"couldn't find member %s in class %s\n", ident.string, _class.fullName);
                if(inCompiler)
                   eClass_AddDataMember(_class, ident.string, "int", 0, 0, publicAccess);
             }
          }
          else if(_class)
-            Compiler_Error("too many initializers for instantiation of class %s\n", _class.fullName);
+            Compiler_Error($"too many initializers for instantiation of class %s\n", _class.fullName);
       }
    }
 }
@@ -2041,7 +2041,7 @@ void ProcessInstantiationType(Instantiation inst)
                      }
                      else if(classSym)
                      {
-                        Compiler_Error("couldn't find virtual method %s in class %s\n",
+                        Compiler_Error($"couldn't find virtual method %s in class %s\n",
                            unmangled, classSym.string);
                      }
                   }
@@ -3211,9 +3211,9 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                !eClass_IsDerived(source.thisClass ? source.thisClass.registered : owningClassSource,paramDest._class.registered))))
             {
                if(paramDest && paramDest.kind == classType)
-                  Compiler_Error("method class must be derived from %s\n", paramDest._class.string);
+                  Compiler_Error($"method class must be derived from %s\n", paramDest._class.string);
                else
-                  Compiler_Error("method class should not take an object\n");
+                  Compiler_Error($"method class should not take an object\n");
                return false;
             }
             paramDest = paramDest.next;
@@ -3226,7 +3226,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                {
                   if(!paramSource || paramSource.kind != classType || !eClass_IsDerived(paramSource._class.registered,dest.thisClass.registered))
                   {
-                     Compiler_Error("method class must be derived from %s\n", dest.thisClass.string);
+                     Compiler_Error($"method class must be derived from %s\n", dest.thisClass.string);
                      return false;
                   }
                }
@@ -3237,9 +3237,9 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                   if(!paramSource || paramSource.kind != classType || (owningClassDest && !eClass_IsDerived(paramSource._class.registered, owningClassDest)))
                   {
                      if(owningClassDest)
-                       Compiler_Error("%s expected to be derived from method class\n", owningClassDest.fullName);
+                       Compiler_Error($"%s expected to be derived from method class\n", owningClassDest.fullName);
                      else
-                        Compiler_Error("overriding class expected to be derived from method class\n");      
+                        Compiler_Error($"overriding class expected to be derived from method class\n");      
                      return false;
                   }
                }
@@ -3252,7 +3252,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                   // Source thisClass must be derived from destination thisClass
                   if(!eClass_IsDerived(source.thisClass ? source.thisClass.registered : owningClassSource, dest.thisClass.registered))
                   {
-                     Compiler_Error("method class must be derived from %s\n", dest.thisClass.string);
+                     Compiler_Error($"method class must be derived from %s\n", dest.thisClass.string);
                      return false;
                   }
                }
@@ -3263,9 +3263,9 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                   if(source.thisClass && source.thisClass.registered && owningClassDest && !eClass_IsDerived(source.thisClass.registered, owningClassDest))
                   {
                      //if(owningClass)
-                        Compiler_Error("%s expected to be derived from method class\n", /*owningClass.name*/ source.thisClass.registered.fullName);
+                        Compiler_Error($"%s expected to be derived from method class\n", /*owningClass.name*/ source.thisClass.registered.fullName);
                      //else
-                        //Compiler_Error("overriding class expected to be derived from method class\n");      
+                        //Compiler_Error($"overriding class expected to be derived from method class\n");      
                      return false;
                   }
                }
@@ -3276,7 +3276,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
          // Source return type must be derived from destination return type
          if(!MatchTypes(source.returnType, dest.returnType, null, null, null, true, true, false, false))
          {
-            Compiler_Warning("incompatible return type for function\n");
+            Compiler_Warning($"incompatible return type for function\n");
             return false;
          }
 
@@ -3286,8 +3286,8 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
          {
             if(!paramSource)
             {
-               //Compiler_Warning("not enough parameters\n");
-               Compiler_Error("not enough parameters\n");
+               //Compiler_Warning($"not enough parameters\n");
+               Compiler_Error($"not enough parameters\n");
                return false;
             }
             {
@@ -3336,7 +3336,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                   char type[1024];
                   type[0] = 0;
                   PrintType(paramDest, type, false, true);
-                  Compiler_Warning("incompatible parameter %s (expected %s)\n", paramSource.name, type);
+                  Compiler_Warning($"incompatible parameter %s (expected %s)\n", paramSource.name, type);
                   
                   if(paramDestType != paramDest)
                      FreeType(paramDestType);
@@ -3350,7 +3350,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
          }
          if(paramSource)
          {
-            Compiler_Error("too many parameters\n");
+            Compiler_Error($"too many parameters\n");
             return false;
          }
          return true;
@@ -4379,7 +4379,7 @@ static void PopulateInstanceProcessMember(Instantiation inst, OldList * memberLi
                   break;
                }
                default:
-                  printf("error: unhandled type populating instance\n");
+                  Compiler_Error($"Unhandled type populating instance\n");
             }
          }
          ListAdd(memberList, member);
@@ -4480,7 +4480,7 @@ void PopulateInstance(Instantiation inst)
                      break;
                   }
                   default:
-                     printf("error: unhandled type populating instance\n");
+                     Compiler_Error($"Unhandled type populating instance\n");
                }
             }
             ListAdd(memberList, member);
@@ -6989,7 +6989,7 @@ void ApplyAnyObjectLogic(Expression e)
    {
       if(destType.kind == ellipsisType)
       {
-         Compiler_Error("Unspecified type\n");
+         Compiler_Error($"Unspecified type\n");
       }
       else if(!(destType.truth && e.expType.kind == classType && e.expType._class && e.expType._class.registered && e.expType._class.registered.type == structClass))
       {
@@ -7253,7 +7253,7 @@ void ProcessExpressionType(Expression exp)
                   {
                      if(inCompiler)
                      {
-                        Compiler_Error("Recursion in defined expression %s\n", id.string);
+                        Compiler_Error($"Recursion in defined expression %s\n", id.string);
                      }
                   }
                }
@@ -7645,7 +7645,7 @@ void ProcessExpressionType(Expression exp)
                {
                   if(exp.op.op == MUL_ASSIGN || exp.op.op == DIV_ASSIGN ||exp.op.op == MOD_ASSIGN ||exp.op.op == LEFT_ASSIGN ||exp.op.op == RIGHT_ASSIGN ||
                      exp.op.op == AND_ASSIGN || exp.op.op == OR_ASSIGN)
-                     Compiler_Error("operator %s illegal on pointer\n", exp.op.op);
+                     Compiler_Error($"operator %s illegal on pointer\n", exp.op.op);
                   else if(exp.op.op == '=')
                   {
                      if(exp.op.exp2.destType) FreeType(exp.op.exp2.destType);
@@ -7706,7 +7706,7 @@ void ProcessExpressionType(Expression exp)
                if(exp.op.exp2.expType.kind == int64Type || exp.op.exp2.expType.kind == intType || exp.op.exp2.expType.kind == shortType || exp.op.exp2.expType.kind == charType)
                {
                   if(exp.op.op != '=' && type1.type.kind == voidType) 
-                     Compiler_Error("void *: unknown size\n");
+                     Compiler_Error($"void *: unknown size\n");
                }
                else if(exp.op.exp2.expType.kind == pointerType || exp.op.exp2.expType.kind == arrayType || exp.op.exp2.expType.kind == functionType || exp.op.exp2.expType.kind == methodType|| 
                            (type1.type.kind == voidType && exp.op.exp2.expType.kind == classType && exp.op.exp2.expType._class.registered &&
@@ -7715,13 +7715,13 @@ void ProcessExpressionType(Expression exp)
                               exp.op.exp2.expType._class.registered.type == noHeadClass)))
                {
                   if(exp.op.op == ADD_ASSIGN)
-                     Compiler_Error("cannot add two pointers\n");                   
+                     Compiler_Error($"cannot add two pointers\n");                   
                }
                else if((exp.op.exp2.expType.kind == classType && type1.kind == pointerType && type1.type.kind == classType && 
                   type1.type._class == exp.op.exp2.expType._class && exp.op.exp2.expType._class.registered && exp.op.exp2.expType._class.registered.type == structClass))
                {
                   if(exp.op.op == ADD_ASSIGN)
-                     Compiler_Error("cannot add two pointers\n");                   
+                     Compiler_Error($"cannot add two pointers\n");                   
                }
                else if(inCompiler)
                {
@@ -7733,7 +7733,7 @@ void ProcessExpressionType(Expression exp)
                   PrintType(exp.op.exp2.expType, type1String, false, true);
                   PrintType(type1, type2String, false, true);
                   ChangeCh(expString, '\n', ' ');
-                  Compiler_Warning("incompatible expression %s (%s); expected %s\n", expString, type1String, type2String);
+                  Compiler_Warning($"incompatible expression %s (%s); expected %s\n", expString, type1String, type2String);
                }
             }
 
@@ -7820,7 +7820,7 @@ void ProcessExpressionType(Expression exp)
                      type1._class.registered && type1._class.registered.type == unitClass && 
                      type2._class.registered && type2._class.registered.type == unitClass && 
                      type1._class.registered != type2._class.registered)
-                     Compiler_Warning("operating on %s and %s with an untyped result, assuming %s\n",
+                     Compiler_Warning($"operating on %s and %s with an untyped result, assuming %s\n",
                         type1._class.string, type2._class.string, type1._class.string);
 
                   if(type1.kind == pointerType && type1.type.kind == templateType && type2.kind != pointerType)
@@ -7863,21 +7863,21 @@ void ProcessExpressionType(Expression exp)
                   if(!boolResult && ((type1.kind == pointerType || type1.kind == arrayType || (type1.kind == classType && !strcmp(type1._class.string, "String"))) && (type2.kind == int64Type || type2.kind == intType || type2.kind == shortType || type2.kind == charType)))
                   {
                      if(type1.kind != classType && type1.type.kind == voidType) 
-                        Compiler_Error("void *: unknown size\n");
+                        Compiler_Error($"void *: unknown size\n");
                      exp.expType = type1;
                      if(type1) type1.refCount++;
                   }
                   else if(!boolResult && ((type2.kind == pointerType || type2.kind == arrayType || (type2.kind == classType && !strcmp(type2._class.string, "String"))) && (type1.kind == int64Type || type1.kind == intType || type1.kind == shortType || type1.kind == charType)))
                   {
                      if(type2.kind != classType && type2.type.kind == voidType) 
-                        Compiler_Error("void *: unknown size\n");
+                        Compiler_Error($"void *: unknown size\n");
                      exp.expType = type2;
                      if(type2) type2.refCount++;
                   }
                   else if((type1.kind == pointerType && type2.kind != pointerType && type2.kind != arrayType && type2.kind != functionType && type2.kind != methodType && type2.kind != classType && type2.kind != subClassType) ||
                           (type2.kind == pointerType && type1.kind != pointerType && type1.kind != arrayType && type1.kind != functionType && type1.kind != methodType && type1.kind != classType && type1.kind != subClassType))
                   {
-                     Compiler_Warning("different levels of indirection\n");
+                     Compiler_Warning($"different levels of indirection\n");
                   }
                   else 
                   {
@@ -7885,7 +7885,7 @@ void ProcessExpressionType(Expression exp)
                      if(type1.kind == pointerType && type2.kind == pointerType)
                      {
                         if(exp.op.op == '+')
-                           Compiler_Error("cannot add two pointers\n");
+                           Compiler_Error($"cannot add two pointers\n");
                         else if(exp.op.op == '-')
                         {
                            // Pointer Subtraction gives integer
@@ -7994,7 +7994,7 @@ void ProcessExpressionType(Expression exp)
                            PrintType(exp.op.exp2.expType, type2, false, true);
                         }
 
-                        Compiler_Warning("incompatible expressions %s (%s) and %s (%s)\n", expString1, type1, expString2, type2);
+                        Compiler_Warning($"incompatible expressions %s (%s) and %s (%s)\n", expString1, type1, expString2, type2);
                      }
                   }
                }
@@ -8154,7 +8154,7 @@ void ProcessExpressionType(Expression exp)
                            PrintType(exp.op.exp2.expType, type2String, false, true);
                         }
 
-                        Compiler_Warning("incompatible expressions %s (%s) and %s (%s)\n", expString1, type1String, expString2, type2String);
+                        Compiler_Warning($"incompatible expressions %s (%s) and %s (%s)\n", expString1, type1String, expString2, type2String);
 
                         if(type1.kind == classType && type1._class && type1._class.registered && type1._class.registered.type == enumClass)
                         {
@@ -8262,7 +8262,7 @@ void ProcessExpressionType(Expression exp)
                ChangeCh(expString, '\n', ' ');
             }
             if(expString[0])
-               Compiler_Error("couldn't determine type of %s\n", expString);
+               Compiler_Error($"couldn't determine type of %s\n", expString);
          }
          if(exp.op.exp2 && !exp.op.exp2.expType)
          {
@@ -8274,7 +8274,7 @@ void ProcessExpressionType(Expression exp)
                ChangeCh(expString, '\n', ' ');
             }
             if(expString[0])
-               Compiler_Error("couldn't determine type of %s\n", expString);
+               Compiler_Error($"couldn't determine type of %s\n", expString);
          }
 
          if(boolResult)
@@ -8626,7 +8626,7 @@ void ProcessExpressionType(Expression exp)
          }
          if(functionType && functionType.kind != TypeKind::functionType)
          {
-            Compiler_Error("called object %s is not a function\n", name);
+            Compiler_Error($"called object %s is not a function\n", name);
          }
          else if(functionType)
          {
@@ -8690,11 +8690,11 @@ void ProcessExpressionType(Expression exp)
                {
                   yylloc = e.loc;
                   if(methodType && methodType.methodClass)
-                     Compiler_Error("too many arguments for method %s::%s (%d given, expected %d)\n",
+                     Compiler_Error($"too many arguments for method %s::%s (%d given, expected %d)\n",
                         methodType.methodClass.fullName, methodType.method.name, exp.call.arguments->count,
                         noParams ? 0 : functionType.params.count);
                   else
-                     Compiler_Error("too many arguments for function %s (%d given, expected %d)\n",
+                     Compiler_Error($"too many arguments for function %s (%d given, expected %d)\n",
                         name /*exp.call.exp.identifier.string*/, exp.call.arguments->count,
                         noParams ? 0 : functionType.params.count);
                   break;
@@ -8771,11 +8771,11 @@ void ProcessExpressionType(Expression exp)
             if(type && type.kind != ellipsisType)
             {
                if(methodType && methodType.methodClass)
-                  Compiler_Warning("not enough arguments for method %s::%s (%d given, expected %d)\n",
+                  Compiler_Warning($"not enough arguments for method %s::%s (%d given, expected %d)\n",
                      methodType.methodClass.fullName, methodType.method.name, exp.call.arguments ? exp.call.arguments->count : 0,
                      functionType.params.count + extra);
                else
-                  Compiler_Warning("not enough arguments for function %s (%d given, expected %d)\n",
+                  Compiler_Warning($"not enough arguments for function %s (%d given, expected %d)\n",
                      name /*exp.call.exp.identifier.string*/, exp.call.arguments ? exp.call.arguments->count : 0,
                      functionType.params.count + extra);
             }
@@ -8801,7 +8801,7 @@ void ProcessExpressionType(Expression exp)
                   yylloc = exp.call.exp.identifier.loc;
                   if(strstr(string, "__builtin_") == string);
                   else
-                     Compiler_Warning("%s undefined; assuming extern returning int\n", string);
+                     Compiler_Warning($"%s undefined; assuming extern returning int\n", string);
                   symbol = Symbol { string = CopyString(string), type = ProcessTypeString("int()", true) };
                   globalContext.symbols.Add((BTNode)symbol);
                   if(strstr(symbol.string, "::"))
@@ -8812,11 +8812,11 @@ void ProcessExpressionType(Expression exp)
             }
             else if(exp.call.exp.type == memberExp)
             {
-               /*Compiler_Warning("%s undefined; assuming returning int\n",
+               /*Compiler_Warning($"%s undefined; assuming returning int\n",
                   exp.call.exp.member.member.string);*/
             }
             else
-               Compiler_Warning("callable object undefined; extern assuming returning int\n");
+               Compiler_Warning($"callable object undefined; extern assuming returning int\n");
 
             if(!functionType.returnType)
             {
@@ -9095,7 +9095,7 @@ void ProcessExpressionType(Expression exp)
                   exp.member.memberType = propertyMember;
 
                if(id && id._class && type._class && !eClass_IsDerived(type._class.registered, _class))
-                  Compiler_Error("invalid class specifier %s for object of class %s\n", _class.fullName, type._class.string);
+                  Compiler_Error($"invalid class specifier %s for object of class %s\n", _class.fullName, type._class.string);
 
                if(typeKind != subClassType)
                {
@@ -9281,7 +9281,7 @@ void ProcessExpressionType(Expression exp)
                      return;
                   }
                   yylloc = exp.member.member.loc;
-                  Compiler_Error("couldn't find member %s in class %s\n", id.string, _class.fullName);
+                  Compiler_Error($"couldn't find member %s in class %s\n", id.string, _class.fullName);
                   if(inCompiler)
                      eClass_AddDataMember(_class, id.string, "int", 0, 0, publicAccess);
                }
@@ -9548,7 +9548,7 @@ void ProcessExpressionType(Expression exp)
                }
             }
             else
-               Compiler_Error("undefined class %s\n", (id && (!id._class || id._class.name))? (id.classSym ? id.classSym.string : (type._class ? type._class.string : null)) : "(null)");
+               Compiler_Error($"undefined class %s\n", (id && (!id._class || id._class.name))? (id.classSym ? id.classSym.string : (type._class ? type._class.string : null)) : "(null)");
          }
          else if(type && (type.kind == structType || type.kind == unionType))
          {
@@ -9565,7 +9565,7 @@ void ProcessExpressionType(Expression exp)
             char expString[10240];
             expString[0] = '\0';
             if(inCompiler) { PrintExpression(exp, expString); ChangeCh(expString, '\n', ' '); }
-            Compiler_Error("member operator on non-structure type expression %s\n", expString);
+            Compiler_Error($"member operator on non-structure type expression %s\n", expString);
          }
 
          if(exp.expType && exp.expType.kind == thisClassType && (!exp.destType || exp.destType.kind != thisClassType))
@@ -9983,7 +9983,7 @@ void ProcessExpressionType(Expression exp)
          else
          {
             exp.expType = ProcessTypeString("Container", false);
-            Compiler_Error("Couldn't determine type of array elements\n");
+            Compiler_Error($"Couldn't determine type of array elements\n");
          }
          break;
       }
@@ -10056,9 +10056,9 @@ void ProcessExpressionType(Expression exp)
 
                      if(inCompiler) { PrintExpression(exp, expString); ChangeCh(expString, '\n', ' '); }
                      if(unresolved)
-                        Compiler_Error("unresolved identifier %s; expected %s\n", expString, type2);
+                        Compiler_Error($"unresolved identifier %s; expected %s\n", expString, type2);
                      else if(exp.type != dummyExp)
-                        Compiler_Error("couldn't determine type of %s; expected %s\n", expString, type2);
+                        Compiler_Error($"couldn't determine type of %s; expected %s\n", expString, type2);
                   }
                }
                else
@@ -10068,9 +10068,9 @@ void ProcessExpressionType(Expression exp)
                   if(inCompiler) { PrintExpression(exp, expString); ChangeCh(expString, '\n', ' '); }
 
                   if(unresolved)
-                     Compiler_Error("unresolved identifier %s\n", expString);
+                     Compiler_Error($"unresolved identifier %s\n", expString);
                   else if(exp.type != dummyExp)
-                     Compiler_Error("couldn't determine type of %s\n", expString);
+                     Compiler_Error($"couldn't determine type of %s\n", expString);
                }
             }
             else
@@ -10099,7 +10099,7 @@ void ProcessExpressionType(Expression exp)
 #ifdef _DEBUG
                   CheckExpressionType(exp, exp.destType, false);
 #endif
-                  Compiler_Warning("incompatible expression %s (%s); expected %s\n", expString, type1, type2);
+                  Compiler_Warning($"incompatible expression %s (%s); expected %s\n", expString, type1, type2);
 
                   // TO CHECK: FORCING HERE TO HELP DEBUGGER
                   FreeType(exp.expType);
@@ -10135,16 +10135,16 @@ void ProcessExpressionType(Expression exp)
    else if(unresolved)
    {
       if(exp.identifier._class && exp.identifier._class.name)
-         Compiler_Error("unresolved identifier %s::%s\n", exp.identifier._class.name, exp.identifier.string);
+         Compiler_Error($"unresolved identifier %s::%s\n", exp.identifier._class.name, exp.identifier.string);
       else if(exp.identifier.string && exp.identifier.string[0])
-         Compiler_Error("unresolved identifier %s\n", exp.identifier.string);
+         Compiler_Error($"unresolved identifier %s\n", exp.identifier.string);
    }
    else if(!exp.expType && exp.type != dummyExp)
    {
       char expString[10240];
       expString[0] = '\0';
       if(inCompiler) { PrintExpression(exp, expString); ChangeCh(expString, '\n', ' '); }
-      Compiler_Error("couldn't determine type of %s\n", expString);
+      Compiler_Error($"couldn't determine type of %s\n", expString);
    }
 
    // Let's try to support any_object & typed_object here:
@@ -10317,7 +10317,7 @@ static void ProcessInitializer(Initializer init, Type type)
 
          if(type && type.kind != arrayType && type.kind != structType && type.kind != unionType && (type.kind != classType || !type._class.registered || type._class.registered.type != structClass))
          {
-            Compiler_Error("Assigning list initializer to non list\n");
+            Compiler_Error($"Assigning list initializer to non list\n");
          }
          break;
       }
@@ -11028,7 +11028,7 @@ static void ProcessStatement(Statement stmt)
                else
                {
                   arrayExp.expType = ProcessTypeString("Container", false);
-                  Compiler_Error("Couldn't determine type of array elements\n");
+                  Compiler_Error($"Couldn't determine type of array elements\n");
                }
 
                /*
@@ -11186,7 +11186,7 @@ static void ProcessStatement(Statement stmt)
          }
          else
          {
-            Compiler_Error("Expression is not a container\n");
+            Compiler_Error($"Expression is not a container\n");
          }
          break;
       }
@@ -11363,12 +11363,12 @@ static void ProcessStatement(Statement stmt)
                               ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_Watch")), args));
                            }
                            else
-                              Compiler_Error("Property %s not found in class %s\n", prop.name, _class.fullName);
+                              Compiler_Error($"Property %s not found in class %s\n", prop.name, _class.fullName);
                         }
                      }
                   }
                   else
-                     Compiler_Error("Invalid watched object\n");
+                     Compiler_Error($"Invalid watched object\n");
                }
 
                curExternal = external;
@@ -11381,7 +11381,7 @@ static void ProcessStatement(Statement stmt)
                FreeList(watches, FreePropertyWatch);
             }
             else
-               Compiler_Error("No observer specified and not inside a _class\n");
+               Compiler_Error($"No observer specified and not inside a _class\n");
          }
          else
          {
@@ -11423,7 +11423,7 @@ static void ProcessStatement(Statement stmt)
                }
                else if(!watches)
                {
-                  //Compiler_Error("No property specified and not inside a property set\n");
+                  //Compiler_Error($"No property specified and not inside a property set\n");
                }
                if(watches)
                {
@@ -11435,7 +11435,7 @@ static void ProcessStatement(Statement stmt)
                         CreateFireWatcher(prop, object, stmt);
                      }
                      else
-                        Compiler_Error("Property %s not found in class %s\n", propID.string, _class.fullName);
+                        Compiler_Error($"Property %s not found in class %s\n", propID.string, _class.fullName);
                   }
                }
                else
@@ -11460,7 +11460,7 @@ static void ProcessStatement(Statement stmt)
                FreeList(watches, FreeIdentifier);
             }
             else
-               Compiler_Error("Invalid object specified and not inside a class\n");
+               Compiler_Error($"Invalid object specified and not inside a class\n");
          }
          break;
       }
@@ -11524,7 +11524,7 @@ static void ProcessStatement(Statement stmt)
                            ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_StopWatching")), args));
                         }
                         else
-                           Compiler_Error("Property %s not found in class %s\n", prop.name, _class.fullName);
+                           Compiler_Error($"Property %s not found in class %s\n", prop.name, _class.fullName);
                      }
                   }
 
@@ -11535,10 +11535,10 @@ static void ProcessStatement(Statement stmt)
                   FreeList(watches, FreeIdentifier);
                }
                else
-                  Compiler_Error("Invalid object specified and not inside a class\n");
+                  Compiler_Error($"Invalid object specified and not inside a class\n");
             }
             else
-               Compiler_Error("No observer specified and not inside a class\n");
+               Compiler_Error($"No observer specified and not inside a class\n");
          }
          break;
       }

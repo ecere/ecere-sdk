@@ -296,7 +296,7 @@ static void ProcessExpression(Expression exp)
          else
          {
             FreeExpContents(exp);
-            Compiler_Error("No database table defined in this module or database_open already used.\n");
+            Compiler_Error($"No database table defined in this module or database_open already used.\n");
             exp.type = dummyExp;
          }
          break;
@@ -1070,7 +1070,7 @@ static void ProcessDBTable(DBTableDef table)
                         needTable = true;
                      }
                      else
-                        Compiler_Error("Multiple field index requires a name\n");
+                        Compiler_Error($"Multiple field index requires a name\n");
                   }
                   else
                   {

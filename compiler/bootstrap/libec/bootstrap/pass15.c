@@ -692,6 +692,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
 struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
+struct Expression * propCategory;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
@@ -1045,7 +1046,7 @@ struct Statement * issetStmt;
 struct Symbol * symbol;
 unsigned int conversion;
 unsigned int isWatchable;
-char *  category;
+struct Expression * category;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
@@ -2361,6 +2362,10 @@ extern unsigned int inCompiler;
 
 extern void Compiler_Error(char *  format, ...);
 
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 extern int __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
 int ComputeTypeSize(struct Type * type)
@@ -2434,7 +2439,7 @@ type->arraySizeExp->expType = (((void *)0));
 yylloc = type->arraySizeExp->loc;
 if(inCompiler)
 PrintExpression(type->arraySizeExp, expression);
-Compiler_Error("Array size not constant int (%s)\n", expression);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Array size not constant int (%s)\n", (((void *)0))), expression);
 yylloc = oldLoc;
 }
 GetInt(type->arraySizeExp, &type->arraySize);
@@ -3117,7 +3122,7 @@ type = source;
 source->refCount++;
 }
 else
-Compiler_Error("cannot dereference type\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "cannot dereference type\n", (((void *)0))));
 }
 return type;
 }
@@ -3439,12 +3444,12 @@ char expString[10240];
 expString[0] = '\0';
 PrintExpression(member->initializer->exp, expString);
 __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
-Compiler_Error("unresolved symbol used as an instance method %s\n", expString);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "unresolved symbol used as an instance method %s\n", (((void *)0))), expString);
 }
 }
 else if(!MatchTypes(member->initializer->exp->expType, type, (((void *)0)), (((void *)0)), _class, 0x1, 0x1, 0x0, 0x0))
 {
-Compiler_Error("incompatible instance method %s\n", ident->string);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "incompatible instance method %s\n", (((void *)0))), ident->string);
 }
 }
 else if(member->initializer)
@@ -3476,17 +3481,17 @@ if(ident)
 {
 if(method)
 {
-Compiler_Error("couldn't find virtual method %s in class %s\n", ident->string, _class->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "couldn't find virtual method %s in class %s\n", (((void *)0))), ident->string, _class->fullName);
 }
 else if(_class)
 {
-Compiler_Error("couldn't find member %s in class %s\n", ident->string, _class->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "couldn't find member %s in class %s\n", (((void *)0))), ident->string, _class->fullName);
 if(inCompiler)
 __ecereNameSpace__ecere__com__eClass_AddDataMember(_class, ident->string, "int", 0, 0, 1);
 }
 }
 else if(_class)
-Compiler_Error("too many initializers for instantiation of class %s\n", _class->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "too many initializers for instantiation of class %s\n", (((void *)0))), _class->fullName);
 }
 }
 }
@@ -3592,7 +3597,7 @@ DeclareType(symbol->type, 0x1, 0x1);
 }
 else if(classSym)
 {
-Compiler_Error("couldn't find virtual method %s in class %s\n", unmangled, classSym->string);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "couldn't find virtual method %s in class %s\n", (((void *)0))), unmangled, classSym->string);
 }
 }
 createdExternal = ProcessClassFunction(classSym ? classSym->registered : (((void *)0)), members->function, ast, afterExternal, 0x1);
@@ -4595,9 +4600,9 @@ if((dest->staticMethod || (!dest->thisClass && !owningClassDest)) && !(source->s
 if(!paramDest || (!(paramDest->kind == 13 && paramDest->type && paramDest->type->kind == 0) && (paramDest->kind != 8 || !__ecereNameSpace__ecere__com__eClass_IsDerived(source->thisClass ? source->thisClass->registered : owningClassSource, paramDest->_class->registered))))
 {
 if(paramDest && paramDest->kind == 8)
-Compiler_Error("method class must be derived from %s\n", paramDest->_class->string);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "method class must be derived from %s\n", (((void *)0))), paramDest->_class->string);
 else
-Compiler_Error("method class should not take an object\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "method class should not take an object\n", (((void *)0))));
 return 0x0;
 }
 paramDest = paramDest->next;
@@ -4610,7 +4615,7 @@ if(dest->thisClass)
 {
 if(!paramSource || paramSource->kind != 8 || !__ecereNameSpace__ecere__com__eClass_IsDerived(paramSource->_class->registered, dest->thisClass->registered))
 {
-Compiler_Error("method class must be derived from %s\n", dest->thisClass->string);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "method class must be derived from %s\n", (((void *)0))), dest->thisClass->string);
 return 0x0;
 }
 }
@@ -4619,9 +4624,9 @@ else
 if(!paramSource || paramSource->kind != 8 || (owningClassDest && !__ecereNameSpace__ecere__com__eClass_IsDerived(paramSource->_class->registered, owningClassDest)))
 {
 if(owningClassDest)
-Compiler_Error("%s expected to be derived from method class\n", owningClassDest->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "%s expected to be derived from method class\n", (((void *)0))), owningClassDest->fullName);
 else
-Compiler_Error("overriding class expected to be derived from method class\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "overriding class expected to be derived from method class\n", (((void *)0))));
 return 0x0;
 }
 }
@@ -4633,7 +4638,7 @@ if(dest->thisClass)
 {
 if(!__ecereNameSpace__ecere__com__eClass_IsDerived(source->thisClass ? source->thisClass->registered : owningClassSource, dest->thisClass->registered))
 {
-Compiler_Error("method class must be derived from %s\n", dest->thisClass->string);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "method class must be derived from %s\n", (((void *)0))), dest->thisClass->string);
 return 0x0;
 }
 }
@@ -4641,7 +4646,7 @@ else
 {
 if(source->thisClass && source->thisClass->registered && owningClassDest && !__ecereNameSpace__ecere__com__eClass_IsDerived(source->thisClass->registered, owningClassDest))
 {
-Compiler_Error("%s expected to be derived from method class\n", source->thisClass->registered->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "%s expected to be derived from method class\n", (((void *)0))), source->thisClass->registered->fullName);
 return 0x0;
 }
 }
@@ -4649,14 +4654,14 @@ return 0x0;
 }
 if(!MatchTypes(source->returnType, dest->returnType, (((void *)0)), (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0))
 {
-Compiler_Warning("incompatible return type for function\n");
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "incompatible return type for function\n", (((void *)0))));
 return 0x0;
 }
 for(; paramDest; paramDest = paramDest->next)
 {
 if(!paramSource)
 {
-Compiler_Error("not enough parameters\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "not enough parameters\n", (((void *)0))));
 return 0x0;
 }
 {
@@ -4705,7 +4710,7 @@ char type[1024];
 
 type[0] = (char)0;
 PrintType(paramDest, type, 0x0, 0x1);
-Compiler_Warning("incompatible parameter %s (expected %s)\n", paramSource->name, type);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "incompatible parameter %s (expected %s)\n", (((void *)0))), paramSource->name, type);
 if(paramDestType != paramDest)
 FreeType(paramDestType);
 return 0x0;
@@ -4717,7 +4722,7 @@ paramSource = paramSource->next;
 }
 if(paramSource)
 {
-Compiler_Error("too many parameters\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "too many parameters\n", (((void *)0))));
 return 0x0;
 }
 return 0x1;
@@ -9229,8 +9234,6 @@ int a;
 
 extern int __ecereVMethodID_class_OnGetString;
 
-extern int printf(char * , ...);
-
 static void PopulateInstanceProcessMember(struct Instantiation * inst, struct __ecereNameSpace__ecere__sys__OldList * memberList, struct __ecereNameSpace__ecere__com__DataMember * parentDataMember, unsigned int offset)
 {
 struct __ecereNameSpace__ecere__com__DataMember * dataMember;
@@ -9322,7 +9325,7 @@ exp->type = 2;
 break;
 }
 default:
-printf("error: unhandled type populating instance\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Unhandled type populating instance\n", (((void *)0))));
 }
 }
 ListAdd(memberList, member);
@@ -9427,7 +9430,7 @@ exp->type = 2;
 break;
 }
 default:
-printf("error: unhandled type populating instance\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Unhandled type populating instance\n", (((void *)0))));
 }
 }
 ListAdd(memberList, member);
@@ -11664,7 +11667,7 @@ else if(destType && e->expType && (e->expType->classObjectType == 3 || e->expTyp
 {
 if(destType->kind == 14)
 {
-Compiler_Error("Unspecified type\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Unspecified type\n", (((void *)0))));
 }
 else if(!(destType->truth && e->expType->kind == 8 && e->expType->_class && e->expType->_class->registered && e->expType->_class->registered->type == 1))
 {
@@ -11922,7 +11925,7 @@ else
 {
 if(inCompiler)
 {
-Compiler_Error("Recursion in defined expression %s\n", id->string);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Recursion in defined expression %s\n", (((void *)0))), id->string);
 }
 }
 }
@@ -12225,7 +12228,7 @@ PrintExpression(exp->op.exp2, expString);
 if(type1 && type1->kind == 13)
 {
 if(exp->op.op == MUL_ASSIGN || exp->op.op == DIV_ASSIGN || exp->op.op == MOD_ASSIGN || exp->op.op == LEFT_ASSIGN || exp->op.op == RIGHT_ASSIGN || exp->op.op == AND_ASSIGN || exp->op.op == OR_ASSIGN)
-Compiler_Error("operator %s illegal on pointer\n", exp->op.op);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "operator %s illegal on pointer\n", (((void *)0))), exp->op.op);
 else if(exp->op.op == '=')
 {
 if(exp->op.exp2->destType)
@@ -12283,17 +12286,17 @@ if(assign && type1 && type1->kind == 13 && exp->op.exp2->expType)
 if(exp->op.exp2->expType->kind == 4 || exp->op.exp2->expType->kind == 3 || exp->op.exp2->expType->kind == 2 || exp->op.exp2->expType->kind == 1)
 {
 if(exp->op.op != '=' && type1->type->kind == 0)
-Compiler_Error("void *: unknown size\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "void *: unknown size\n", (((void *)0))));
 }
 else if(exp->op.exp2->expType->kind == 13 || exp->op.exp2->expType->kind == 12 || exp->op.exp2->expType->kind == 11 || exp->op.exp2->expType->kind == 16 || (type1->type->kind == 0 && exp->op.exp2->expType->kind == 8 && exp->op.exp2->expType->_class->registered && (exp->op.exp2->expType->_class->registered->type == 0 || exp->op.exp2->expType->_class->registered->type == 1 || exp->op.exp2->expType->_class->registered->type == 5)))
 {
 if(exp->op.op == ADD_ASSIGN)
-Compiler_Error("cannot add two pointers\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "cannot add two pointers\n", (((void *)0))));
 }
 else if((exp->op.exp2->expType->kind == 8 && type1->kind == 13 && type1->type->kind == 8 && type1->type->_class == exp->op.exp2->expType->_class && exp->op.exp2->expType->_class->registered && exp->op.exp2->expType->_class->registered->type == 1))
 {
 if(exp->op.op == ADD_ASSIGN)
-Compiler_Error("cannot add two pointers\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "cannot add two pointers\n", (((void *)0))));
 }
 else if(inCompiler)
 {
@@ -12305,7 +12308,7 @@ type2String[0] = '\0';
 PrintType(exp->op.exp2->expType, type1String, 0x0, 0x1);
 PrintType(type1, type2String, 0x0, 0x1);
 __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
-Compiler_Warning("incompatible expression %s (%s); expected %s\n", expString, type1String, type2String);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "incompatible expression %s (%s); expected %s\n", (((void *)0))), expString, type1String, type2String);
 }
 }
 if(exp->op.exp2->destType == dummy)
@@ -12375,7 +12378,7 @@ FreeType(exp->op.exp1->destType);
 exp->op.exp1->destType = type2;
 type2->refCount++;
 if(!boolResult && type1->kind == 8 && (!exp->destType || exp->destType->kind != 8) && type1->_class->registered && type1->_class->registered->type == 3 && type2->_class->registered && type2->_class->registered->type == 3 && type1->_class->registered != type2->_class->registered)
-Compiler_Warning("operating on %s and %s with an untyped result, assuming %s\n", type1->_class->string, type2->_class->string, type1->_class->string);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "operating on %s and %s with an untyped result, assuming %s\n", (((void *)0))), type1->_class->string, type2->_class->string, type1->_class->string);
 if(type1->kind == 13 && type1->type->kind == 20 && type2->kind != 13)
 {
 struct Expression * argExp = GetTemplateArgExp(type1->type->templateParameter, thisClass, 0x1);
@@ -12399,7 +12402,7 @@ ProcessExpressionType(exp->op.exp2);
 if(!boolResult && ((type1->kind == 13 || type1->kind == 12 || (type1->kind == 8 && !strcmp(type1->_class->string, "String"))) && (type2->kind == 4 || type2->kind == 3 || type2->kind == 2 || type2->kind == 1)))
 {
 if(type1->kind != 8 && type1->type->kind == 0)
-Compiler_Error("void *: unknown size\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "void *: unknown size\n", (((void *)0))));
 exp->expType = type1;
 if(type1)
 type1->refCount++;
@@ -12407,14 +12410,14 @@ type1->refCount++;
 else if(!boolResult && ((type2->kind == 13 || type2->kind == 12 || (type2->kind == 8 && !strcmp(type2->_class->string, "String"))) && (type1->kind == 4 || type1->kind == 3 || type1->kind == 2 || type1->kind == 1)))
 {
 if(type2->kind != 8 && type2->type->kind == 0)
-Compiler_Error("void *: unknown size\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "void *: unknown size\n", (((void *)0))));
 exp->expType = type2;
 if(type2)
 type2->refCount++;
 }
 else if((type1->kind == 13 && type2->kind != 13 && type2->kind != 12 && type2->kind != 11 && type2->kind != 16 && type2->kind != 8 && type2->kind != 19) || (type2->kind == 13 && type1->kind != 13 && type1->kind != 12 && type1->kind != 11 && type1->kind != 16 && type1->kind != 8 && type1->kind != 19))
 {
-Compiler_Warning("different levels of indirection\n");
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "different levels of indirection\n", (((void *)0))));
 }
 else
 {
@@ -12423,7 +12426,7 @@ unsigned int success = 0x0;
 if(type1->kind == 13 && type2->kind == 13)
 {
 if(exp->op.op == '+')
-Compiler_Error("cannot add two pointers\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "cannot add two pointers\n", (((void *)0))));
 else if(exp->op.op == '-')
 {
 if(MatchTypes(type1->type, type2->type, (((void *)0)), (((void *)0)), (((void *)0)), 0x0, 0x0, 0x0, 0x0))
@@ -12511,7 +12514,7 @@ __ecereNameSpace__ecere__sys__ChangeCh(expString2, '\n', ' ');
 PrintType(exp->op.exp1->expType, type1, 0x0, 0x1);
 PrintType(exp->op.exp2->expType, type2, 0x0, 0x1);
 }
-Compiler_Warning("incompatible expressions %s (%s) and %s (%s)\n", expString1, type1, expString2, type2);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "incompatible expressions %s (%s) and %s (%s)\n", (((void *)0))), expString1, type1, expString2, type2);
 }
 }
 }
@@ -12630,7 +12633,7 @@ __ecereNameSpace__ecere__sys__ChangeCh(expString2, '\n', ' ');
 PrintType(exp->op.exp1->expType, type1String, 0x0, 0x1);
 PrintType(exp->op.exp2->expType, type2String, 0x0, 0x1);
 }
-Compiler_Warning("incompatible expressions %s (%s) and %s (%s)\n", expString1, type1String, expString2, type2String);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "incompatible expressions %s (%s) and %s (%s)\n", (((void *)0))), expString1, type1String, expString2, type2String);
 if(type1->kind == 8 && type1->_class && type1->_class->registered && type1->_class->registered->type == 4)
 {
 exp->expType = exp->op.exp1->expType;
@@ -12723,7 +12726,7 @@ PrintExpression(exp->op.exp1, expString);
 __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
 }
 if(expString[0])
-Compiler_Error("couldn't determine type of %s\n", expString);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "couldn't determine type of %s\n", (((void *)0))), expString);
 }
 if(exp->op.exp2 && !exp->op.exp2->expType)
 {
@@ -12736,7 +12739,7 @@ PrintExpression(exp->op.exp2, expString);
 __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
 }
 if(expString[0])
-Compiler_Error("couldn't determine type of %s\n", expString);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "couldn't determine type of %s\n", (((void *)0))), expString);
 }
 if(boolResult)
 {
@@ -13040,7 +13043,7 @@ functionType = type;
 }
 if(functionType && functionType->kind != 11)
 {
-Compiler_Error("called object %s is not a function\n", name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "called object %s is not a function\n", (((void *)0))), name);
 }
 else if(functionType)
 {
@@ -13098,9 +13101,9 @@ if(!type && !emptyParams)
 {
 yylloc = e->loc;
 if(methodType && methodType->methodClass)
-Compiler_Error("too many arguments for method %s::%s (%d given, expected %d)\n", methodType->methodClass->fullName, methodType->method->name, (*exp->call.arguments).count, noParams ? 0 : functionType->params.count);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "too many arguments for method %s::%s (%d given, expected %d)\n", (((void *)0))), methodType->methodClass->fullName, methodType->method->name, (*exp->call.arguments).count, noParams ? 0 : functionType->params.count);
 else
-Compiler_Error("too many arguments for function %s (%d given, expected %d)\n", name, (*exp->call.arguments).count, noParams ? 0 : functionType->params.count);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "too many arguments for function %s (%d given, expected %d)\n", (((void *)0))), name, (*exp->call.arguments).count, noParams ? 0 : functionType->params.count);
 break;
 }
 if(methodType && type && type->kind == 20 && type->templateParameter->type == 0)
@@ -13180,9 +13183,9 @@ type = next;
 if(type && type->kind != 14)
 {
 if(methodType && methodType->methodClass)
-Compiler_Warning("not enough arguments for method %s::%s (%d given, expected %d)\n", methodType->methodClass->fullName, methodType->method->name, exp->call.arguments ? (*exp->call.arguments).count : 0, functionType->params.count + extra);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "not enough arguments for method %s::%s (%d given, expected %d)\n", (((void *)0))), methodType->methodClass->fullName, methodType->method->name, exp->call.arguments ? (*exp->call.arguments).count : 0, functionType->params.count + extra);
 else
-Compiler_Warning("not enough arguments for function %s (%d given, expected %d)\n", name, exp->call.arguments ? (*exp->call.arguments).count : 0, functionType->params.count + extra);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "not enough arguments for function %s (%d given, expected %d)\n", (((void *)0))), name, exp->call.arguments ? (*exp->call.arguments).count : 0, functionType->params.count + extra);
 }
 yylloc = oldyylloc;
 if(type && !type->refCount)
@@ -13204,7 +13207,7 @@ yylloc = exp->call.exp->identifier->loc;
 if(strstr(string, "__builtin_") == string)
 ;
 else
-Compiler_Warning("%s undefined; assuming extern returning int\n", string);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "%s undefined; assuming extern returning int\n", (((void *)0))), string);
 symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(string), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("int()", 0x1), ((struct Symbol *)__ecereTemp1));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol);
 if(strstr(symbol->string, "::"))
@@ -13216,7 +13219,7 @@ else if(exp->call.exp->type == 8)
 {
 }
 else
-Compiler_Warning("callable object undefined; extern assuming returning int\n");
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "callable object undefined; extern assuming returning int\n", (((void *)0))));
 if(!functionType->returnType)
 {
 functionType->returnType = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1)->kind = 3, ((struct Type *)__ecereTemp1));
@@ -13456,7 +13459,7 @@ struct __ecereNameSpace__ecere__com__ClassProperty * classProp = (((void *)0));
 if(id && id->_class && id->_class->name && !strcmp(id->_class->name, "property"))
 exp->member.memberType = 1;
 if(id && id->_class && type->_class && !__ecereNameSpace__ecere__com__eClass_IsDerived(type->_class->registered, _class))
-Compiler_Error("invalid class specifier %s for object of class %s\n", _class->fullName, type->_class->string);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "invalid class specifier %s for object of class %s\n", (((void *)0))), _class->fullName, type->_class->string);
 if(typeKind != 19)
 {
 if((exp->member.memberType == 0 && thisPtr) || exp->member.memberType == 3)
@@ -13604,7 +13607,7 @@ ProcessExpressionType(exp);
 return ;
 }
 yylloc = exp->member.member->loc;
-Compiler_Error("couldn't find member %s in class %s\n", id->string, _class->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "couldn't find member %s in class %s\n", (((void *)0))), id->string, _class->fullName);
 if(inCompiler)
 __ecereNameSpace__ecere__com__eClass_AddDataMember(_class, id->string, "int", 0, 0, 1);
 }
@@ -13854,7 +13857,7 @@ FinishTemplatesContext(context);
 }
 }
 else
-Compiler_Error("undefined class %s\n", (id && (!id->_class || id->_class->name)) ? (id->classSym ? id->classSym->string : (type->_class ? type->_class->string : (((void *)0)))) : "(null)");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "undefined class %s\n", (((void *)0))), (id && (!id->_class || id->_class->name)) ? (id->classSym ? id->classSym->string : (type->_class ? type->_class->string : (((void *)0)))) : "(null)");
 }
 else if(type && (type->kind == 9 || type->kind == 10))
 {
@@ -13877,7 +13880,7 @@ if(inCompiler)
 PrintExpression(exp, expString);
 __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
 }
-Compiler_Error("member operator on non-structure type expression %s\n", expString);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "member operator on non-structure type expression %s\n", (((void *)0))), expString);
 }
 if(exp->expType && exp->expType->kind == 21 && (!exp->destType || exp->destType->kind != 21))
 {
@@ -14229,7 +14232,7 @@ ProcessExpressionType(expExt);
 else
 {
 exp->expType = ProcessTypeString("Container", 0x0);
-Compiler_Error("Couldn't determine type of array elements\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Couldn't determine type of array elements\n", (((void *)0))));
 }
 break;
 }
@@ -14301,9 +14304,9 @@ PrintExpression(exp, expString);
 __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
 }
 if(unresolved)
-Compiler_Error("unresolved identifier %s; expected %s\n", expString, type2);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "unresolved identifier %s; expected %s\n", (((void *)0))), expString, type2);
 else if(exp->type != 16)
-Compiler_Error("couldn't determine type of %s; expected %s\n", expString, type2);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "couldn't determine type of %s; expected %s\n", (((void *)0))), expString, type2);
 }
 }
 else
@@ -14317,9 +14320,9 @@ PrintExpression(exp, expString);
 __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
 }
 if(unresolved)
-Compiler_Error("unresolved identifier %s\n", expString);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "unresolved identifier %s\n", (((void *)0))), expString);
 else if(exp->type != 16)
-Compiler_Error("couldn't determine type of %s\n", expString);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "couldn't determine type of %s\n", (((void *)0))), expString);
 }
 }
 else
@@ -14346,7 +14349,7 @@ if(inCompiler)
 PrintExpression(exp, expString);
 __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
 }
-Compiler_Warning("incompatible expression %s (%s); expected %s\n", expString, type1, type2);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "incompatible expression %s (%s); expected %s\n", (((void *)0))), expString, type1, type2);
 FreeType(exp->expType);
 exp->destType->refCount++;
 exp->expType = exp->destType;
@@ -14378,9 +14381,9 @@ exp->cast.exp = newExp;
 else if(unresolved)
 {
 if(exp->identifier->_class && exp->identifier->_class->name)
-Compiler_Error("unresolved identifier %s::%s\n", exp->identifier->_class->name, exp->identifier->string);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "unresolved identifier %s::%s\n", (((void *)0))), exp->identifier->_class->name, exp->identifier->string);
 else if(exp->identifier->string && exp->identifier->string[0])
-Compiler_Error("unresolved identifier %s\n", exp->identifier->string);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "unresolved identifier %s\n", (((void *)0))), exp->identifier->string);
 }
 else if(!exp->expType && exp->type != 16)
 {
@@ -14392,7 +14395,7 @@ if(inCompiler)
 PrintExpression(exp, expString);
 __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
 }
-Compiler_Error("couldn't determine type of %s\n", expString);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "couldn't determine type of %s\n", (((void *)0))), expString);
 }
 ApplyAnyObjectLogic(exp);
 if(!notByReference && exp->expType && exp->expType->kind == 8 && exp->expType->_class && exp->expType->_class->registered && exp->expType->_class->registered->type == 5)
@@ -14542,7 +14545,7 @@ if(type && type->kind == 12)
 FreeType(initializerType);
 if(type && type->kind != 12 && type->kind != 9 && type->kind != 10 && (type->kind != 8 || !type->_class->registered || type->_class->registered->type != 1))
 {
-Compiler_Error("Assigning list initializer to non list\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Assigning list initializer to non list\n", (((void *)0))));
 }
 break;
 }
@@ -15200,7 +15203,7 @@ FreeList(exp, FreeExpression);
 else
 {
 arrayExp->expType = ProcessTypeString("Container", 0x0);
-Compiler_Error("Couldn't determine type of array elements\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Couldn't determine type of array elements\n", (((void *)0))));
 }
 }
 else if(isLinkList && !isList)
@@ -15281,7 +15284,7 @@ break;
 }
 else
 {
-Compiler_Error("Expression is not a container\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Expression is not a container\n", (((void *)0))));
 }
 break;
 }
@@ -15439,12 +15442,12 @@ ListAdd(args, MkExpIdentifier(MkIdentifier(watcherName)));
 ListAdd(stmt->expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_Watch")), args));
 }
 else
-Compiler_Error("Property %s not found in class %s\n", prop->name, _class->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Property %s not found in class %s\n", (((void *)0))), prop->name, _class->fullName);
 }
 }
 }
 else
-Compiler_Error("Invalid watched object\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Invalid watched object\n", (((void *)0))));
 }
 curExternal = external;
 curContext = context;
@@ -15455,7 +15458,7 @@ FreeExpression(object);
 FreeList(watches, FreePropertyWatch);
 }
 else
-Compiler_Error("No observer specified and not inside a _class\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "No observer specified and not inside a _class\n", (((void *)0))));
 }
 else
 {
@@ -15501,7 +15504,7 @@ if(prop)
 CreateFireWatcher(prop, object, stmt);
 }
 else
-Compiler_Error("Property %s not found in class %s\n", propID->string, _class->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Property %s not found in class %s\n", (((void *)0))), propID->string, _class->fullName);
 }
 }
 else
@@ -15525,7 +15528,7 @@ FreeExpression(object);
 FreeList(watches, FreeIdentifier);
 }
 else
-Compiler_Error("Invalid object specified and not inside a class\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Invalid object specified and not inside a class\n", (((void *)0))));
 }
 break;
 }
@@ -15585,7 +15588,7 @@ ListAdd(args, watcher ? CopyExpression(watcher) : MkExpIdentifier(MkIdentifier("
 ListAdd(stmt->expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_StopWatching")), args));
 }
 else
-Compiler_Error("Property %s not found in class %s\n", prop->name, _class->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Property %s not found in class %s\n", (((void *)0))), prop->name, _class->fullName);
 }
 }
 if(object)
@@ -15595,10 +15598,10 @@ FreeExpression(watcher);
 FreeList(watches, FreeIdentifier);
 }
 else
-Compiler_Error("Invalid object specified and not inside a class\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Invalid object specified and not inside a class\n", (((void *)0))));
 }
 else
-Compiler_Error("No observer specified and not inside a class\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "No observer specified and not inside a class\n", (((void *)0))));
 }
 break;
 }
@@ -16042,8 +16045,6 @@ thisNameSpace = (((void *)0));
 extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(char *  name, char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 void __ecereRegisterModule_pass15(struct __ecereNameSpace__ecere__com__Instance * module)
 {

@@ -1220,7 +1220,7 @@ void Compiler_Error(char * format, ...)
 #endif
 
          //printf("(%d, %d) : error: ", yylloc.start.line, yylloc.start.charPos);
-         printf(":%d:%d: error: ", yylloc.start.line, yylloc.start.charPos);
+         printf($":%d:%d: error: ", yylloc.start.line, yylloc.start.charPos);
          //printf(":%d: error: ", yylloc.start.line);
          va_start(args, format);
          vsprintf(string,format,args);
@@ -1260,7 +1260,7 @@ void Compiler_Warning(char * format, ...)
       printf(string);
 
       //printf("(%d, %d) : warning: ", yylloc.start.line, yylloc.start.charPos);
-      printf(":%d:%d: warning: ", yylloc.start.line, yylloc.start.charPos);
+      printf($":%d:%d: warning: ", yylloc.start.line, yylloc.start.charPos);
       //printf(":%d: warning: ", yylloc.start.line);
       va_start(args, format);
       vsprintf(string,format,args);
@@ -1279,7 +1279,7 @@ int yyerror(char * s)
    	//fflush(stdout);
    	//printf("\n%*s\n%*s\n", column, "^", column, s);
       parseError = true;
-      Compiler_Error("syntax error\n");
+      Compiler_Error($"syntax error\n");
    }
    return 0;
 }

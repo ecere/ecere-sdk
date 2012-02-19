@@ -79,7 +79,7 @@ static void ReadDataMembers(Class regClass, DataMember member, File f)
             if(member)
             {
                if(!eMember_AddDataMember(member, name, line[0] ? line : 0, 0, 0 /*size *//*type->size*/, memberAccess))
-                  ;//Compiler_Error("Member with same name already exists %s in member %s\n", name, member->name);
+                  ;//Compiler_Error($"Member with same name already exists %s in member %s\n", name, member->name);
             }
             else if(regClass && regClass.type == bitClass)
             {
@@ -91,7 +91,7 @@ static void ReadDataMembers(Class regClass, DataMember member, File f)
             else if(regClass)
             {
                if(!eClass_AddDataMember(regClass, name, line[0] ? line : 0, 0, 0 /*size *//*type->size*/, memberAccess))
-                  ;//Compiler_Error("Member with same name already exists %s in class %s\n", name, regClass.fullName);
+                  ;//Compiler_Error($"Member with same name already exists %s in class %s\n", name, regClass.fullName);
             }
          }
          else if(!strcmp(line, "[Struct]") || !strcmp(line, "[Union]"))
@@ -101,12 +101,12 @@ static void ReadDataMembers(Class regClass, DataMember member, File f)
             if(member)
             {
                if(!eMember_AddMember(member, dataMember))
-                  ;//Compiler_Error("Member with same name already exists %s in member %s\n", name, member->name);
+                  ;//Compiler_Error($"Member with same name already exists %s in member %s\n", name, member->name);
             }
             else if(regClass)
             {
                if(!eClass_AddMember(regClass, dataMember))
-                  ;//Compiler_Error("Member with same name already exists %s in class %s\n", name, regClass.name);
+                  ;//Compiler_Error($"Member with same name already exists %s in class %s\n", name, regClass.name);
             }
          }
       }
@@ -213,7 +213,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                            //if(baseSymbol && !baseSymbol->registered)
                            /*if(classType != unitClass && classType != bitClass && classType != enumClass && baseName && !eSystem_FindClass(privateModule, baseName))
                            {
-                              Compiler_Error("Base class %s undefined\n", baseName);
+                              Compiler_Error($"Base class %s undefined\n", baseName);
                               DeclClass(0, name);
                               regClass = null;
                               continue;
@@ -713,7 +713,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
    }
    else if(importType != comCheckImport)
    {
-      Compiler_Error("Couldn't open %s\n", fileName);
+      Compiler_Error($"Couldn't open %s\n", fileName);
    }
    return globalInstance;
 }
@@ -997,7 +997,7 @@ public void CheckDataRedefinitions()
       PrintType(type1, type1String, false, true);
       PrintType(type2, type2String, false, true);
       if(strcmp(type1String, type2String))
-         Compiler_Warning("Redefinition of %s (defining as %s, already defined as %s)\n", redefinition.name, type1String, type2String);
+         Compiler_Warning($"Redefinition of %s (defining as %s, already defined as %s)\n", redefinition.name, type1String, type2String);
       FreeType(type1);
       FreeType(type2);
    }

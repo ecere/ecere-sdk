@@ -1968,6 +1968,10 @@ extern unsigned int buildingECERECOMModule;
 
 extern void Compiler_Warning(char *  format, ...);
 
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 struct Declaration * MkDeclarationDefine(struct Identifier * id, struct Expression * exp)
 {
 struct Declaration * decl = (decl = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declaration), decl->type = 3, decl->id = id, decl->exp = exp, decl->loc = yylloc, decl);
@@ -2004,7 +2008,7 @@ id->string = __ecereNameSpace__ecere__sys__CopyString(name);
 if(!__ecereNameSpace__ecere__com__eSystem_FindDefine(privateModule, id->string))
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine(id->string, expString, privateModule, buildingECERECOMModule ? 4 : 1);
 else
-Compiler_Warning("Redefinition of %s ignored\n", id->string);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Redefinition of %s ignored\n", (((void *)0))), id->string);
 return decl;
 }
 
@@ -2803,7 +2807,7 @@ break;
 FreeList(specs, FreeSpecifier);
 if(!spec)
 {
-Compiler_Error("Expecting class specifier\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Expecting class specifier\n", (((void *)0))));
 inst->_class = MkSpecifierName("");
 }
 }
@@ -4363,8 +4367,6 @@ struct __ecereNameSpace__ecere__com__GlobalFunction;
 extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(char *  name, char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
 

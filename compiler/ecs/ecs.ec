@@ -1701,7 +1701,7 @@ class SymbolgenApp : Application
          valid = false;
      
       if(!valid)
-         printf("Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n");
+         printf($"Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n");
       else
       {
          int c;

@@ -2659,6 +2659,10 @@ extern struct Statement * MkExpressionStmt(struct __ecereNameSpace__ecere__sys__
 
 extern void Compiler_Error(char *  format, ...);
 
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 extern struct AsmField * MkAsmField(char *  command, struct Expression * expression);
 
 extern struct Statement * MkAsmStmt(struct Specifier * spec, char *  statements, struct __ecereNameSpace__ecere__sys__OldList * inputFields, struct __ecereNameSpace__ecere__sys__OldList * outputFields, struct __ecereNameSpace__ecere__sys__OldList * clobberedFields);
@@ -10302,49 +10306,49 @@ break;
 case 1037:
 {
 yyval.stmt = yyvsp[(1) - (1)].stmt;
-Compiler_Error("syntax error\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "syntax error\n", (((void *)0))));
 ;
 }
 break;
 case 1038:
 {
 yyval.stmt = yyvsp[(1) - (1)].stmt;
-Compiler_Error("syntax error\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "syntax error\n", (((void *)0))));
 ;
 }
 break;
 case 1039:
 {
 yyval.stmt = yyvsp[(1) - (1)].stmt;
-Compiler_Error("syntax error\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "syntax error\n", (((void *)0))));
 ;
 }
 break;
 case 1040:
 {
 yyval.stmt = yyvsp[(1) - (1)].stmt;
-Compiler_Error("syntax error\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "syntax error\n", (((void *)0))));
 ;
 }
 break;
 case 1041:
 {
 yyval.stmt = yyvsp[(1) - (1)].stmt;
-Compiler_Error("syntax error\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "syntax error\n", (((void *)0))));
 ;
 }
 break;
 case 1042:
 {
 yyval.stmt = yyvsp[(1) - (2)].stmt;
-Compiler_Error("syntax error\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "syntax error\n", (((void *)0))));
 ;
 }
 break;
 case 1043:
 {
 yyval.stmt = MkExpressionStmt(yyvsp[(1) - (1)].list);
-Compiler_Error("syntax error\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "syntax error\n", (((void *)0))));
 yyval.stmt->loc = (yylsp[(1) - (1)]);
 ;
 }

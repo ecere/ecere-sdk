@@ -289,6 +289,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
 struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
+struct Expression * propCategory;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
@@ -2140,6 +2141,10 @@ extern void SetSymbolsDir(char *  s);
 
 extern int printf(char * , ...);
 
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 extern char *  __ecereNameSpace__ecere__sys__GetExtension(char *  string, char *  output);
 
 extern void SetDefines(struct __ecereNameSpace__ecere__sys__OldList *  list);
@@ -2348,7 +2353,7 @@ valid = 0x0;
 if(!output)
 valid = 0x0;
 if(!valid)
-printf("Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n");
+printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n", (((void *)0))));
 else
 {
 int c;
@@ -2610,8 +2615,6 @@ SetSymbolsDir((((void *)0)));
 }
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
 

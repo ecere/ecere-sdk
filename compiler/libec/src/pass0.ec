@@ -150,14 +150,14 @@ static void CheckPublicClass(Symbol classSym, AccessMode access, char * word)
       // TODO: Will need to add checks for template parameter classes
       if(classSym.isStatic && access != staticAccess)
       {
-         Compiler_Error("Non-static %s making use of a static class\n", word);
+         Compiler_Error($"Non-static %s making use of a static class\n", word);
       }
       else if(access == publicAccess)
       {
          if(!NameSpaceContained(regClass.nameSpace, regClass.module.application.systemNameSpace))
          {
             if(NameSpaceContained(regClass.nameSpace, regClass.module.privateNameSpace) || !ModuleAccess(privateModule, regClass.module))
-               Compiler_Error("Public %s making use of a private class\n", word);
+               Compiler_Error($"Public %s making use of a private class\n", word);
          }
       }
    }
@@ -394,7 +394,7 @@ static void CheckMembersDefinitions(Class regClass, DataMember member, OldList d
                         else
                            dataMember = eClass_FindDataMember(regClass, declId.string, privateModule, null, null);
                         if(dataMember)
-                           CheckPublicDataType(dataMember.dataType,  (def.memberAccess == privateAccess) ? privateAccess : access, "class data member");
+                           CheckPublicDataType(dataMember.dataType,  (def.memberAccess == privateAccess) ? privateAccess : access, $"class data member");
                      }
                   }
                }
@@ -420,7 +420,7 @@ static void CheckMembersDefinitions(Class regClass, DataMember member, OldList d
                            else
                               dataMember = eClass_FindDataMember(regClass, spec.id.string, privateModule, null, null);
                            if(dataMember)
-                              CheckPublicDataType(dataMember.dataType,  (def.memberAccess == privateAccess) ? privateAccess : access, "class data member");
+                              CheckPublicDataType(dataMember.dataType,  (def.memberAccess == privateAccess) ? privateAccess : access, $"class data member");
                         }
                      }
                   }
@@ -428,7 +428,7 @@ static void CheckMembersDefinitions(Class regClass, DataMember member, OldList d
             }
             else if(decl.type == instDeclaration)
             {
-               CheckPublicClass(decl.inst._class.symbol /*FindClass(decl.inst._class.name)*/, (def.memberAccess == privateAccess) ? privateAccess : access, "class member instance");
+               CheckPublicClass(decl.inst._class.symbol /*FindClass(decl.inst._class.name)*/, (def.memberAccess == privateAccess) ? privateAccess : access, $"class member instance");
             }
          }
       }
@@ -482,13 +482,13 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
       {
          if(!regClass.base.symbol)
             regClass.base.symbol = FindClass(regClass.base.fullName);
-         CheckPublicClass(regClass.base.symbol, publicAccess, "class");
+         CheckPublicClass(regClass.base.symbol, publicAccess, $"class");
       }
       else if(!symbol.isStatic && regClass.base)
       {
          if(!regClass.base.symbol)
             regClass.base.symbol = FindClass(regClass.base.fullName);
-         CheckPublicClass(regClass.base.symbol, privateAccess, "class");
+         CheckPublicClass(regClass.base.symbol, privateAccess, $"class");
       }
    }
 
@@ -497,13 +497,13 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
    {
       if(regClass.inheritanceAccess == publicAccess && 
          (regClass.base.nameSpace == &regClass.base.module.privateNameSpace || !ModuleAccess(privateModule, regClass.base.module)))
-         Compiler_Error("Public class publicly inheriting off private base class\n");
+         Compiler_Error($"Public class publicly inheriting off private base class\n");
    }
    else if(!symbol.isStatic)
    {
       Symbol baseSym = FindClass(regClass.base.fullName);
       if(baseSym && baseSym.isStatic)
-         Compiler_Error("Non-static class inheriting off static base class\n");
+         Compiler_Error($"Non-static class inheriting off static base class\n");
    }
    */
 
@@ -567,7 +567,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
             else
             {
                yylloc = def.loc;
-               Compiler_Error("Couldn't find member %s to override\n", def.id.string);
+               Compiler_Error($"Couldn't find member %s to override\n", def.id.string);
             }
          }
       }
@@ -694,7 +694,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                if(destructor)
                {
                   yylloc = loc;
-                  Compiler_Error("redefinition of destructor for class %s\n", symbol.string);
+                  Compiler_Error($"redefinition of destructor for class %s\n", symbol.string);
                }
                else
                {
@@ -717,7 +717,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                if(constructor)
                {
                   yylloc = loc;
-                  Compiler_Error("redefinition of constructor for class %s\n", symbol.string);
+                  Compiler_Error($"redefinition of constructor for class %s\n", symbol.string);
                }
                else
                {

@@ -606,6 +606,10 @@ extern void FreeTypeName(struct TypeName * typeName);
 
 extern void Compiler_Warning(char *  format, ...);
 
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
@@ -666,12 +670,12 @@ FreeTypeName(parsedType);
 parsedType = (((void *)0));
 if(parseTypeError)
 {
-Compiler_Warning("parsing type %s\n", string);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "parsing type %s\n", (((void *)0))), string);
 }
 }
 else
 {
-Compiler_Warning("parsing type %s\n", string);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "parsing type %s\n", (((void *)0))), string);
 decl = baseDecl;
 }
 yylloc = oldLocation;

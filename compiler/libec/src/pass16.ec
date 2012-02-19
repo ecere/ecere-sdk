@@ -1902,7 +1902,7 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                               {
                                  if(!((Property)dataMember).Set) 
                                  {
-                                    Compiler_Error("No set defined for property %s\n", dataMember.name);
+                                    Compiler_Error($"No set defined for property %s\n", dataMember.name);
                                     continue;
                                  }
                                  recursionCount--;
@@ -1973,7 +1973,7 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                               {
                                  if(!((Property)dataMember).Set) 
                                  {
-                                    Compiler_Error("No set defined for property %s\n", dataMember.name);
+                                    Compiler_Error($"No set defined for property %s\n", dataMember.name);
                                     continue;
                                  }
                                  recursionCount--;

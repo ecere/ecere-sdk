@@ -1073,6 +1073,10 @@ extern unsigned int MatchTypes(struct Type * source, struct Type * dest, struct 
 
 extern void Compiler_Error(char *  format, ...);
 
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 extern struct Declarator * GetFuncDecl(struct Declarator * decl);
 
 extern void FreeType(struct Type * type);
@@ -1186,7 +1190,7 @@ type->extraParam = 0x1;
 yylloc = func->loc;
 if(!MatchTypes(type, methodDataType, (((void *)0)), owningClass, method->_class, 0x1, 0x1, 0x1, 0x0))
 {
-Compiler_Error("Incompatible virtual function %s\n", method->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Incompatible virtual function %s\n", (((void *)0))), method->name);
 }
 else
 {
@@ -2185,7 +2189,7 @@ ListAdd(args, MkExpIdentifier(MkIdentifier(watcherName)));
 ListAdd(stmt->expressions, MkExpCall(MkExpIdentifier(MkIdentifier("eProperty_SelfWatch")), args));
 }
 else
-Compiler_Error("Property %s not found in class %s\n", propID->string, regClass->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Property %s not found in class %s\n", (((void *)0))), propID->string, regClass->fullName);
 }
 FreePropertyWatch(def->propertyWatch);
 def->propertyWatch = (struct PropertyWatch *)stmt;

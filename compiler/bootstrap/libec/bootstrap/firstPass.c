@@ -946,6 +946,10 @@ extern struct __ecereNameSpace__ecere__com__BitMember * __ecereNameSpace__ecere_
 
 extern void Compiler_Error(char *  format, ...);
 
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 extern void FreeType(struct Type * type);
 
 extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eMember_AddDataMember(struct __ecereNameSpace__ecere__com__DataMember * member, char *  name, char *  type, unsigned int size, unsigned int alignment, int declMode);
@@ -1050,7 +1054,7 @@ if(dataMember)
 dataMember->dataType = dataType;
 else
 {
-Compiler_Error("Member with same name already exists %s in class %s\n", declId->string, regClass->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Member with same name already exists %s in class %s\n", (((void *)0))), declId->string, regClass->name);
 FreeType(dataType);
 }
 }
@@ -1065,13 +1069,13 @@ if(member)
 {
 dataMember = __ecereNameSpace__ecere__com__eMember_AddDataMember(member, declId->string, typeString, 0, 0, def->memberAccess);
 if(!dataMember)
-Compiler_Error("Member with same name already exists %s in member %s\n", declId->string, member->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Member with same name already exists %s in member %s\n", (((void *)0))), declId->string, member->name);
 }
 else
 {
 dataMember = __ecereNameSpace__ecere__com__eClass_AddDataMember(regClass, declId->string, typeString, 0, 0, def->memberAccess);
 if(!dataMember)
-Compiler_Error("Member with same name already exists %s in class %s\n", declId->string, regClass->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Member with same name already exists %s in class %s\n", (((void *)0))), declId->string, regClass->name);
 }
 if(dataMember)
 dataMember->dataType = dataType;
@@ -1118,13 +1122,13 @@ if(member)
 {
 dataMember = __ecereNameSpace__ecere__com__eMember_AddDataMember(member, id->string, typeString, 0, 0, def->memberAccess);
 if(!dataMember)
-Compiler_Error("Member with same name already exists %s in member %s\n", id->string, member->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Member with same name already exists %s in member %s\n", (((void *)0))), id->string, member->name);
 }
 else
 {
 dataMember = __ecereNameSpace__ecere__com__eClass_AddDataMember(regClass, id->string, typeString, 0, 0, def->memberAccess);
 if(!dataMember)
-Compiler_Error("Member with same name already exists %s in class %s\n", id->string, regClass->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Member with same name already exists %s in class %s\n", (((void *)0))), id->string, regClass->name);
 }
 if(dataMember)
 dataMember->dataType = dataType;
@@ -1152,13 +1156,13 @@ if(member)
 {
 dataMember = __ecereNameSpace__ecere__com__eMember_AddDataMember(member, string, inst->_class->name, 0, 0, def->memberAccess);
 if(!dataMember)
-Compiler_Error("Member with same name already exists %s in member %s\n", string, member->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Member with same name already exists %s in member %s\n", (((void *)0))), string, member->name);
 }
 else
 {
 dataMember = __ecereNameSpace__ecere__com__eClass_AddDataMember(regClass, string, inst->_class->name, 0, 0, def->memberAccess);
 if(!dataMember)
-Compiler_Error("Member with same name already exists %s in class %s\n", string, regClass->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Member with same name already exists %s in class %s\n", (((void *)0))), string, regClass->name);
 }
 if(dataMember)
 dataMember->dataType = dataType;
@@ -1326,7 +1330,7 @@ redefinition = 0x1;
 if(inCompiler)
 {
 yylloc = *loc;
-Compiler_Error("redefinition of class %s\n", symbol->string);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "redefinition of class %s\n", (((void *)0))), symbol->string);
 return ;
 }
 }
@@ -1454,7 +1458,7 @@ char * typeString = StringFromSpecDecl(func->specifiers, func->declarator);
 
 method = __ecereNameSpace__ecere__com__eClass_AddMethod(regClass, id->string, typeString, inCompiler ? func->declarator->symbol : (((void *)0)), def->memberAccess);
 if(!method)
-Compiler_Error("Redefinition of method %s in class %s\n", id->string, regClass->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Redefinition of method %s in class %s\n", (((void *)0))), id->string, regClass->name);
 (__ecereNameSpace__ecere__com__eSystem_Delete(typeString), typeString = 0);
 }
 if(method && (method->type != 1 || method->_class == regClass))

@@ -130,6 +130,7 @@ int simpleID;
 struct __ecereNameSpace__ecere__sys__BinaryTree templateTypes;
 struct ClassDefinition * classDef;
 unsigned int templateTypesOnly;
+unsigned int hasNameSpace;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Instantiation;
@@ -301,6 +302,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
 struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
+struct Expression * propCategory;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
@@ -636,6 +638,10 @@ extern char *  __ecereNameSpace__ecere__sys__PathCat(char *  string, char *  add
 extern char *  __ecereNameSpace__ecere__sys__ChangeExtension(char *  string, char *  ext, char *  output);
 
 extern int printf(char * , ...);
+
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern void SetGlobalData(struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace);
 
@@ -986,7 +992,7 @@ SetOutputFile(defaultOutputFile);
 }
 }
 if(!valid)
-printf("Syntax:\n   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n");
+printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Syntax:\n   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n", (((void *)0))));
 else
 {
 struct __ecereNameSpace__ecere__com__Instance * cppOutput;
@@ -1174,8 +1180,6 @@ int importType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 };
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
 

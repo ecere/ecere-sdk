@@ -2273,6 +2273,10 @@ extern int strncmp(const char * , const char * , int n);
 
 extern char *  strncpy(char * , const char * , int n);
 
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 extern unsigned int inCompiler;
 
 extern int FindIncludeFileID(char *  includeFile);
@@ -2387,7 +2391,7 @@ break;
 }
 if(include_stack_ptr >= (10))
 {
-fprintf((bsl_stderr()), "Includes nested too deeply");
+fprintf((bsl_stderr()), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Includes nested too deeply", (((void *)0))));
 exit(1);
 }
 if(inCompiler || !FindIncludeFileID(includeFile))
@@ -2482,8 +2486,6 @@ int importType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 };
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, unsigned int size, unsigned int alignment, int declMode);
 

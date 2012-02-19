@@ -132,7 +132,8 @@ SOURCES = \
 	src/shortcuts.ec \
 	src/type.ec
 
-RESOURCES =
+RESOURCES = \
+	locale/zh_CN/LC_MESSAGES/ec.mo
 
 # TOOLCHAIN
 
@@ -191,6 +192,7 @@ $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
+	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ec.mo "locale/zh_CN/LC_MESSAGES"
 	$(call cpq,$(TARGET),../../$(SODESTDIR))
 ifdef LINUX
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
