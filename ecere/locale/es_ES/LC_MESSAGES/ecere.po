@@ -85,7 +85,7 @@ msgstr "Aug"
 
 #: .\src\sys\Date.ec:33
 msgid "August"
-msgstr "August"
+msgstr "Agosto"
 
 #: .\src\gui\controls\Button.ec:856
 #: .\src\gui\controls\Button.ec:909
