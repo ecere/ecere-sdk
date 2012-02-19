@@ -738,7 +738,7 @@ class ProjectView : Window
    {
       Project prj = project;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      ProjectConfig config = prj.config;
+      ProjectConfig config;
       if(selection || !ide.activeClient || activeClient == this)
       {
          DataRow row = fileList.currentRow;
@@ -752,6 +752,7 @@ class ProjectView : Window
          if(node)
             prj = node.project;
       }
+      config = prj.config;
       if(/*prj != project || */!prj.GetConfigIsInDebugSession(config) || !ide.DontTerminateDebugSession($"Project Build"))
       {
          BuildInterrim(prj, build, compiler, config);

@@ -2245,7 +2245,13 @@ class IDE : Window
             // SKIP FIRST PROJECT...
             if(prj == workspace.projects.firstIterator.data) continue;
 
-            targetDirExp = prj.GetTargetDir(compiler, config);
+            // NOTE: Right now the additional project config dir will be
+            //       obtained when the debugger is started, so toggling it
+            //       while building will change which library gets used.
+            //       To go with the initial state, e.g. when F5 was pressed,
+            //       we nould need to keep a list of all project's active
+            //       config upon startup.
+            targetDirExp = prj.GetTargetDir(compiler, prj.config);
 
             /*if(prj.config.targetType == sharedLibrary && prj.config.debug)
                cfg = prj.config;
