@@ -1,7 +1,5 @@
 namespace sys;
 
-import "instance"
-
 #define Date _Date
 #define uint _uint
 #define Method _Method
@@ -40,6 +38,8 @@ import "instance"
 #undef Size
 #undef Date
 
+import "instance"
+
 define EPOCH_YEAR      = 1970;
 define EPOCH_WEEKDAY   = thursday;
 static define SECS_PER_HOUR   = 60 * 60;
@@ -61,15 +61,6 @@ int monthLengths[2][12] =
 {
 	{ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 },
 	{ 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }
-};
-
-char daysNames[7][4] =
-{
-   "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-};
-char monthsNames[12][4] = 
-{
-   "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
 
 #if defined(__WIN32__)
@@ -680,7 +671,7 @@ public struct DateTime
          stringOutput[0] = 0;
       else
          sprintf(stringOutput, "%s %s %2d %2d:%02d:%02d %s %04d", 
-            daysNames[dayOfTheWeek], monthsNames[month], day, hour, minute, second, ampm[pm], year);
+            shortDaysNames[dayOfTheWeek], shortMonthsNames[month], day, hour, minute, second, ampm[pm], year);
 
       return stringOutput;
    }
@@ -704,12 +695,12 @@ public struct DateTime
       {
          int i;
          for(i = 0; i<7; i++) 
-            if(!strcmpi(tokens[c], daysNames[i]) || !strcmpi(tokens[c], longDaysNames[i]))
+            if(!strcmpi(tokens[c], shortDaysNames[i]) || !strcmpi(tokens[c], longDaysNames[i]))
                break;               
          if(i < 7) { dayOfTheWeek = (DayOfTheWeek)i; foundDayOfTheWeek = true; continue; }
 
          for(i = 0; i<12; i++) 
-            if(!strcmpi(tokens[c], monthsNames[i]) || !strcmpi(tokens[c], longMonthsNames[i]))
+            if(!strcmpi(tokens[c], shortMonthsNames[i]) || !strcmpi(tokens[c], longMonthsNames[i]))
                break;               
          if(i < 12) { month = (Month)i; continue; }
 
@@ -784,16 +775,17 @@ public struct DateTime
          weWant = (SecSince1970)this + (int)(dayOfTheWeek - this.dayOfTheWeek) * 24 * 60 * 60;
          this = (DateTime)weWant;
       }
-      else if(!strcmpi(s, "today") || !strcmpi(s, "now"))
+      else if(!strcmpi(s, "today") || !strcmpi(s, $"today") ||
+              !strcmpi(s, "now") || !strcmpi(s, $"now"))
          GetLocalTime();
-      else if(!strcmpi(s, "tomorrow"))
+      else if(!strcmpi(s, "tomorrow") || !strcmpi(s, $"tomorrow"))
       {
          SecSince1970 weWant;
          GetLocalTime();
          weWant = (SecSince1970)this + 24 * 60 * 60;
          this = (DateTime)weWant;
       }
-      else if(!strcmpi(s, "yesterday"))
+      else if(!strcmpi(s, "yesterday") || !strcmpi(s, $"yesterday"))
       {
          SecSince1970 weWant;
          GetLocalTime();

@@ -1,18 +1,28 @@
 namespace sys;
 
+import "i18n"
 import "System"
 import "CalendarControl"
 
 #define ISLEAP(y) (!((y)%4) && (((y) % 100) || (!((y)% 400))))
 
-/*static */const char longDaysNames[7][10] =
-{
-   "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
-};
-/*static */const char longMonthsNames[12][10] = 
-{
-   "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
-};
+/*static */Array<String> longDaysNames
+{ [
+   $"Sunday", $"Monday", $"Tuesday", $"Wednesday", $"Thursday", $"Friday", $"Saturday"
+] };
+/*static */Array<String> longMonthsNames
+{ [
+   $"January", $"February", $"March", $"April", $"LongMonthNames"."May", $"June", $"July", $"August", $"September", $"October", $"November", $"December"
+] };
+
+/*static */Array<String> shortDaysNames
+{ [
+   $"Sun", $"Mon", $"Tue", $"Wed", $"Thu", $"Fri", $"Sat"
+] };
+/*static */Array<String> shortMonthsNames
+{ [
+   $"Jan", $"Feb", $"Mar", $"Apr", $"ShortMonthNames"."May", $"Jun", $"Jul", $"Aug", $"Sep", $"Oct", $"Nov", $"Dec"
+] };
 public enum Month { january, february, march, april, may, june, july, august, september, october, november, december };
 
 default:
@@ -29,14 +39,6 @@ public struct Date
    {
       if(stringOutput)
       {
-         static const char days[7][4] =
-         {
-            "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-         };
-         static const char months[12][4] = 
-         {
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-         };
          if(day && year)
             sprintf(stringOutput, "%s, %s %2d, %d", 
                longDaysNames[dayOfTheWeek], longMonthsNames[month], day, year);
@@ -58,16 +60,18 @@ public struct Date
       int count = 0;
       time.GetLocalTime();
 
-      if(!strcmpi(string, "today") || !strcmpi(string, "now") || 
-         !strcmpi(string, "tomorrow") || !strcmpi(string, "yesterday"))
+      if(!strcmpi(string, "today") || !strcmpi(string, $"today") ||
+         !strcmpi(string, "now") || !strcmpi(string, $"now") || 
+         !strcmpi(string, "tomorrow") || !strcmpi(string, $"tomorrow") ||
+         !strcmpi(string, "yesterday") || !strcmpi(string, $"yesterday"))
       {
          SecSince1970 weWant;
-         if(!strcmpi(string, "tomorrow"))
+         if(!strcmpi(string, "tomorrow") || !strcmpi(string, $"tomorrow"))
          {
             weWant = (SecSince1970)time + 24 * 60 * 60;
             time = (DateTime)weWant;
          }
-         else if(!strcmpi(string, "yesterday"))
+         else if(!strcmpi(string, "yesterday") || !strcmpi(string, $"yesterday"))
          {
             weWant = (SecSince1970)time - 24 * 60 * 60;
             time = (DateTime)weWant;
@@ -100,7 +104,7 @@ public struct Date
             {            
                Month c;
                for(c = 0; c<Month::enumSize; c++)
-                  if(!strnicmp(monthsNames[c], value, 3))
+                  if(!strnicmp(shortMonthsNames[c], value, 3))
                   {
                      month = c;
                      gotAlphaMonth = true;

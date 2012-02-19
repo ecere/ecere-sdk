@@ -140,17 +140,17 @@ class Designer : DesignerBase
    hasClose = true;
    hasMaximize = true;
    hasMinimize = true;
-   text = "Designer";
+   text = $"Designer";
    menu = Menu { };
    anchor = Anchor { left = 300, right = 150, top = 0, bottom = 0 };
 
    ToolBox toolBox;
    CodeEditor codeEditor;
 
-   Menu fileMenu { menu, "File", f };
+   Menu fileMenu { menu, $"File", f };
    MenuItem fileSaveItem
    {
-      fileMenu, "Save", s, ctrlS;
+      fileMenu, $"Save", s, ctrlS;
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
          return codeEditor.MenuFileSave(selection, mods);
@@ -158,7 +158,7 @@ class Designer : DesignerBase
    };
    MenuItem fileSaveAsItem
    {
-      fileMenu, "Save As...", a;
+      fileMenu, $"Save As...", a;
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
          return codeEditor.MenuFileSaveAs(selection, mods);

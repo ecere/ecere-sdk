@@ -1481,7 +1481,7 @@ static void ProcessExpression(Expression exp)
                   exp.expType = MkClassType(revConvert._class.fullName);
                }/*
                else
-                  printf("Error: Couldn't find member %s in class %s\n", 
+                  printf($"Error: Couldn't find member %s in class %s\n", 
                      exp.member.member.string, _class.name);*/
             }
          }

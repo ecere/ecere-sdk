@@ -1511,7 +1511,7 @@ static void ProcessExpression(Expression exp)
                Class arrayClass = eSystem_FindClass(privateModule, "Array");
                if(source && eClass_IsDerived(source._class.registered, arrayClass))
                   isArray = true;
-               if(isArray)
+               if(isArray && _class.templateArgs)
                {
                   OldList * specs = MkList();
                   Declarator decl = SpecDeclFromString(_class.templateArgs[2].dataTypeString, specs, null);

@@ -239,7 +239,10 @@ private:
 
          surface.SetForeground(black);
          for(d = sunday; d <= saturday; d++)
-            surface.CenterTextf(Width / 2 + d * Width, 0, "%c", toupper(daysNames[d][0]));
+         {
+            String s = shortDaysNames[d];
+            surface.CenterTextf(Width / 2 + d * Width, 0, "%c", toupper(s[0]));
+         }
 
          surface.SetBackground(Color { 238, 238, 238 } /*whiteSmoke*/);
          surface.Area(0, Height, Width, clientSize.h);

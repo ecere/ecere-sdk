@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-02-19 13:54+0900\n"
+"PO-Revision-Date: 2012-02-19 21:14+0900\n"
 "Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: ec <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -639,6 +639,11 @@ msgstr "描述(A)"
 msgid "Design & Implementation"
 msgstr "Design & Implementation"
 
+#: .\src\designer\Designer.ec:143
+#, fuzzy
+msgid "Designer"
+msgstr "查看设计器(D)"
+
 #: .\src\designer\Sheet.ec:523
 #: .\src\designer\Sheet.ec:529
 msgid "Detach"
@@ -773,6 +778,7 @@ msgstr "常规错误: 子进程异常终止\n"
 
 #: .\src\project\ProjectView.ec:443
 #: .\src\designer\CodeEditor.ec:1884
+#: .\src\designer\Designer.ec:150
 #: .\src\documents\PictureEdit.ec:53
 #: .\src\ide.ec:483
 #: .\src\ide.ec:2471
@@ -1531,6 +1537,7 @@ msgstr "相同项目"
 #: .\src\project\ProjectView.ec:250
 #: .\src\project\ProjectView.ec:444
 #: .\src\designer\CodeEditor.ec:1885
+#: .\src\designer\Designer.ec:153
 #: .\src\documents\PictureEdit.ec:54
 #: .\src\ide.ec:532
 msgid "Save"
@@ -1541,6 +1548,7 @@ msgid "Save All"
 msgstr "全部保存(L)"
 
 #: .\src\designer\CodeEditor.ec:1886
+#: .\src\designer\Designer.ec:161
 #: .\src\documents\PictureEdit.ec:55
 #: .\src\ide.ec:533
 msgid "Save As..."

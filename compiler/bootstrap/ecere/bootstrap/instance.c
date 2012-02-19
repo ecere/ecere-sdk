@@ -1367,8 +1367,6 @@ static void __ecereNameSpace__ecere__com__FreeTemplatesDerivatives(struct __ecer
 
 extern int printf(char * , ...);
 
-extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
-
 static void __ecereNameSpace__ecere__com__NameSpace_Free(struct __ecereNameSpace__ecere__com__NameSpace * parentNameSpace);
 
 static struct __ecereNameSpace__ecere__com__BTNamedLink * __ecereNameSpace__ecere__com__SearchNameSpace(struct __ecereNameSpace__ecere__com__NameSpace * nameSpace, char *  name, void *  listOffset);
@@ -1522,7 +1520,7 @@ __ecereNameSpace__ecere__com__FreeTemplatesDerivatives(_class);
 if(!_class->internalDecl)
 {
 if(declMode != 4)
-printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "error: Redefinition of class %s\n", (((void *)0))), name);
+printf("error: Redefinition of class %s\n", name);
 else
 {
 _class->comRedefinition = 0x1;

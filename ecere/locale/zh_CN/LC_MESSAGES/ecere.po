@@ -66,9 +66,25 @@ msgstr "Alt+"
 msgid "Appearance"
 msgstr "外观"
 
+#: .\src\sys\Date.ec:24
+msgid "Apr"
+msgstr "四月"
+
+#: .\src\sys\Date.ec:15
+msgid "April"
+msgstr "四月"
+
 #: .\src\gui\dialogs\FileDialog.ec:1188
 msgid "As Type:"
 msgstr "类型(T):"
+
+#: .\src\sys\Date.ec:24
+msgid "Aug"
+msgstr "八月"
+
+#: .\src\sys\Date.ec:15
+msgid "August"
+msgstr "八月"
 
 #: .\src\gui\controls\Button.ec:856
 #: .\src\gui\controls\Button.ec:909
@@ -176,7 +192,7 @@ msgstr "Control contains other controls. Delete control and children?"
 msgid "Copy\tCtrl+C"
 msgstr "复制(C)\tCtrl+C"
 
-#: .\src\sys\System.ec:110
+#: .\src\sys\System.ec:111
 msgid "Couldn't write to file"
 msgstr "无法写入文件"
 
@@ -215,6 +231,14 @@ msgstr "剪切(X)\tCtrl+X"
 #: .\src\gui\Window.ec:9041
 msgid "Data"
 msgstr "数据"
+
+#: .\src\sys\Date.ec:25
+msgid "Dec"
+msgstr "十二月"
+
+#: .\src\sys\Date.ec:16
+msgid "December"
+msgstr "十二月"
 
 #: .\src\gfx\Color.ec:735
 #, fuzzy
@@ -297,6 +321,14 @@ msgstr "写入文件错误"
 msgid "Exp"
 msgstr "Exp"
 
+#: .\src\sys\Date.ec:24
+msgid "Feb"
+msgstr "二月"
+
+#: .\src\sys\Date.ec:15
+msgid "February"
+msgstr "二月"
+
 #: .\src\gui\dialogs\FileDialog.ec:1065
 msgid "File Already Exists"
 msgstr "文件已存在"
@@ -306,7 +338,7 @@ msgstr "文件已存在"
 msgid "File Name:"
 msgstr "文件名:"
 
-#: .\src\sys\System.ec:108
+#: .\src\sys\System.ec:109
 msgid "File not found"
 msgstr "文件未找到"
 
@@ -341,6 +373,14 @@ msgstr "查找内容(N):"
 msgid "Find...\tCtrl+F"
 msgstr "查找(F)...\tCtrl+F"
 
+#: .\src\sys\Date.ec:20
+msgid "Fri"
+msgstr "星期五"
+
+#: .\src\sys\Date.ec:11
+msgid "Friday"
+msgstr "星期五"
+
 #: .\src\gui\controls\EditBox.ec:672
 #: .\src\gui\dialogs\GoToDialog.ec:29
 #: .\src\gui\dialogs\GoToDialog.ec:35
@@ -359,7 +399,7 @@ msgstr "跳至(G)...\tCtrl+G"
 msgid "Graphics driver not supported by any user interface system"
 msgstr "图形驱动不支持任何用户界面"
 
-#: .\src\sys\System.ec:106
+#: .\src\sys\System.ec:107
 msgid "Identic string identifier already exists"
 msgstr "已存在相同的字符串标识符"
 
@@ -376,13 +416,37 @@ msgstr "图片文件(*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 msgid "Imp"
 msgstr "Imp"
 
-#: .\src\sys\System.ec:105
+#: .\src\sys\System.ec:106
 msgid "Inexistant string identifier specified"
 msgstr "不存在指定的字符串标识符"
 
 #: .\src\gui\controls\EditBox.ec:1115
 msgid "Insert Tabs"
 msgstr "插入制表符(I)"
+
+#: .\src\sys\Date.ec:24
+msgid "Jan"
+msgstr "一月"
+
+#: .\src\sys\Date.ec:15
+msgid "January"
+msgstr "一月"
+
+#: .\src\sys\Date.ec:24
+msgid "Jul"
+msgstr "七月"
+
+#: .\src\sys\Date.ec:15
+msgid "July"
+msgstr "七月"
+
+#: .\src\sys\Date.ec:24
+msgid "Jun"
+msgstr "六月"
+
+#: .\src\sys\Date.ec:15
+msgid "June"
+msgstr "六月"
 
 #: .\src\gui\Window.ec:7661
 #: .\src\gui\Window.ec:8031
@@ -405,6 +469,14 @@ msgstr "行号:"
 msgid "Look in:"
 msgstr "浏览(L):"
 
+#: .\src\sys\Date.ec:24
+msgid "Mar"
+msgstr "三月"
+
+#: .\src\sys\Date.ec:15
+msgid "March"
+msgstr "三月"
+
 #: .\src\gui\dialogs\FindDialog.ec:31
 #: .\src\gui\dialogs\ReplaceDialog.ec:229
 msgid "Match case"
@@ -414,7 +486,17 @@ msgstr "区分大小写(C)"
 msgid "Maximize"
 msgstr "最大化(X)"
 
-#: .\src\sys\System.ec:104
+#: .\src\sys\Date.ec:15
+msgctxt "LongMonthNames"
+msgid "May"
+msgstr "五月"
+
+#: .\src\sys\Date.ec:24
+msgctxt "ShortMonthNames"
+msgid "May"
+msgstr "五月"
+
+#: .\src\sys\System.ec:105
 msgid "Memory allocation failed"
 msgstr "内存分配失败"
 
@@ -426,6 +508,14 @@ msgstr "Microsoft Windows Network"
 #: .\src\gui\Window.ec:6598
 msgid "Minimize"
 msgstr "最小化(N)"
+
+#: .\src\sys\Date.ec:20
+msgid "Mon"
+msgstr "星期一"
+
+#: .\src\sys\Date.ec:11
+msgid "Monday"
+msgstr "星期一"
 
 #: .\src\gui\Window.ec:6588
 msgid "Move"
@@ -445,7 +535,7 @@ msgstr "新建文件夹"
 msgid "No"
 msgstr "否(N)"
 
-#: .\src\sys\System.ec:103
+#: .\src\sys\System.ec:104
 #: .\src\gui\GuiApplication.ec:91
 msgid "No error"
 msgstr "没有错误"
@@ -453,6 +543,14 @@ msgstr "没有错误"
 #: .\src\gui\dialogs\GoToDialog.ec:35
 msgid "No such line."
 msgstr "没有这行."
+
+#: .\src\sys\Date.ec:24
+msgid "Nov"
+msgstr "十一月"
+
+#: .\src\sys\Date.ec:15
+msgid "November"
+msgstr "十一月"
 
 #: .\src\gui\dialogs\ColorPicker.ec:721
 #: .\src\gui\dialogs\FileDialog.ec:295
@@ -464,6 +562,14 @@ msgstr "没有这行."
 #, fuzzy
 msgid "OK"
 msgstr "OK"
+
+#: .\src\sys\Date.ec:24
+msgid "Oct"
+msgstr "十月"
+
+#: .\src\sys\Date.ec:15
+msgid "October"
+msgstr "十月"
 
 #: .\src\gui\dialogs\FileDialog.ec:1256
 msgid "Open"
@@ -480,6 +586,7 @@ msgstr "请输入名称."
 
 #: .\src\gui\controls\DropBox.ec:98
 #: .\src\gui\controls\ListBox.ec:890
+#, fuzzy
 msgid "Private"
 msgstr "Private"
 
@@ -515,6 +622,14 @@ msgstr "替换(R)...\tCtrl+R"
 #: .\src\gui\Window.ec:6583
 msgid "Restore"
 msgstr "恢复(R)"
+
+#: .\src\sys\Date.ec:21
+msgid "Sat"
+msgstr "星期六"
+
+#: .\src\sys\Date.ec:12
+msgid "Saturday"
+msgstr "星期六"
 
 #: .\src\gui\Window.ec:7191
 msgid "Save As"
@@ -606,7 +721,15 @@ msgstr "创建目录吗?"
 msgid "Selection"
 msgstr "已选中内容(S)"
 
-#: .\src\sys\System.ec:107
+#: .\src\sys\Date.ec:24
+msgid "Sep"
+msgstr "九月"
+
+#: .\src\sys\Date.ec:15
+msgid "September"
+msgstr "九月"
+
+#: .\src\sys\System.ec:108
 msgid "Shared library loading failed"
 msgstr "共享库加载失败"
 
@@ -624,6 +747,14 @@ msgstr "大小(S)"
 msgid "Stay On Top"
 msgstr "置顶(T)"
 
+#: .\src\sys\Date.ec:20
+msgid "Sun"
+msgstr "星期日"
+
+#: .\src\sys\Date.ec:11
+msgid "Sunday"
+msgstr "星期日"
+
 #: .\src\gfx\Color.ec:755
 #, fuzzy
 msgid "System"
@@ -636,6 +767,22 @@ msgstr "System"
 #, fuzzy
 msgid "Tahoma"
 msgstr "Tahoma"
+
+#: .\src\sys\Date.ec:20
+msgid "Thu"
+msgstr "星期四"
+
+#: .\src\sys\Date.ec:11
+msgid "Thursday"
+msgstr "星期四"
+
+#: .\src\sys\Date.ec:20
+msgid "Tue"
+msgstr "星期二"
+
+#: .\src\sys\Date.ec:11
+msgid "Tuesday"
+msgstr "星期二"
 
 #: .\src\gui\dialogs\FileDialog.ec:1410
 msgid "Type"
@@ -656,6 +803,14 @@ msgstr "向上(U)"
 #, fuzzy
 msgid "Verdana"
 msgstr "Verdana"
+
+#: .\src\sys\Date.ec:20
+msgid "Wed"
+msgstr "星期三"
+
+#: .\src\sys\Date.ec:11
+msgid "Wednesday"
+msgstr "星期三"
 
 #: .\src\gui\dialogs\ReplaceDialog.ec:241
 msgid "Whole File"
@@ -698,7 +853,7 @@ msgstr "窗口"
 msgid "Yes"
 msgstr "是(Y)"
 
-#: .\src\sys\System.ec:426
+#: .\src\sys\System.ec:427
 msgid ""
 "\n"
 "\n"
@@ -707,6 +862,32 @@ msgstr ""
 "\n"
 "\n"
 "你想查看错误日志吗?"
+
+#: .\src\sys\Date.ec:64
+#: .\src\sys\Time.ec:779
+msgid "now"
+msgstr "现在"
+
+#: .\src\sys\Date.ec:63
+#: .\src\sys\Time.ec:778
+msgid "today"
+msgstr "今日"
+
+#: .\src\sys\Date.ec:65
+#: .\src\sys\Date.ec:69
+#: .\src\sys\Time.ec:781
+msgid "tomorrow"
+msgstr "明天"
+
+#: .\src\sys\Date.ec:66
+#: .\src\sys\Date.ec:74
+#: .\src\sys\Time.ec:788
+msgid "yesterday"
+msgstr "昨天"
+
+#, fuzzy
+#~ msgid "error: Redefinition of class %s\n"
+#~ msgstr "error: Redefinition of class %s\n"
 
 #~ msgid " - Logging Errors...\n"
 #~ msgstr " - 写日志错...\n"
