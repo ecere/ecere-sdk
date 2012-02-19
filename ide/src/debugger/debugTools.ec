@@ -467,7 +467,7 @@ void DebugComputeExpression(Expression exp)
                         if(evalError != dummyExp)
                         {
                            exp1.type = evalError;
-                           exp.constant = CopyString("");
+                           exp1.constant = PrintHexUInt(address);
                            expError = exp1;
                         }
                         else
