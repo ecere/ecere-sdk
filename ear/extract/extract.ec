@@ -80,7 +80,7 @@ void ExtractFileFromArchive(ProgressBar progressBar, char * path, char * outputF
 
             FileGetSize(path, &dataSize);
             GetLastDirectory(outputFile, fileName);
-            progressBar.statusBar.SetText("Extracting %s...", fileName);
+            progressBar.statusBar.SetText($"Extracting %s...", fileName);
             
             app.UpdateDisplay();
 
@@ -114,10 +114,10 @@ class SelfExtract : Window
    size = Size { 506, 138 };
    anchor = Anchor { vert = -0.15 };
 
-   Button view { this, text = "View Files", anchor = Anchor { right = 100, top = 70 }, size = Size { 100 }, hotKey = altV, NotifyClicked = ViewClicked };
+   Button view { this, text = $"View Files", anchor = Anchor { right = 100, top = 70 }, size = Size { 100 }, hotKey = altV, NotifyClicked = ViewClicked };
    Button usePaths
    {
-      this, isCheckbox = true, text = "Use paths from archive...", position = Point { 10,70 }, hotKey = altU, checked = true;
+      this, isCheckbox = true, text = $"Use paths from archive...", position = Point { 10,70 }, hotKey = altU, checked = true;
 
       bool NotifyClicked(Button control, int x, int y, Modifiers mods)
       {
@@ -135,11 +135,11 @@ class SelfExtract : Window
          return true;
       }
    }
-   EditBox where { this, text = "Extract to", anchor = Anchor { left = 10, top = 40, right = 100 }, size = Size { h = 22 }, hotKey = altT, disabled = true };
+   EditBox where { this, text = $"Extract to", anchor = Anchor { left = 10, top = 40, right = 100 }, size = Size { h = 22 }, hotKey = altT, disabled = true };
    Label whereLabel { this, position = Point { 10,20 }, labeledWindow = where };
    Button browse
    {
-      this, text = "Browse...", anchor = Anchor { right = 10, top = 40 }, size = Size { 80 }, hotKey = altB, disabled = true;
+      this, text = $"Browse...", anchor = Anchor { right = 10, top = 40 }, size = Size { 80 }, hotKey = altB, disabled = true;
 
       bool NotifyClicked(Button control, int x, int y, Modifiers mods)
       {
@@ -149,15 +149,15 @@ class SelfExtract : Window
          return true;
       }
    }
-   Button close { this, text = "Exit", anchor = Anchor { right = 10, top = 70 }, size = Size { 80 }, hotKey = altX, NotifyClicked = ButtonCloseDialog };
+   Button close { this, text = $"Exit", anchor = Anchor { right = 10, top = 70 }, size = Size { 80 }, hotKey = altX, NotifyClicked = ButtonCloseDialog };
    Button extract
    {
-      this, isDefault = true, text = "Extract", anchor = Anchor { right = 10, top = 10 }, size = Size { 80 }, hotKey = altE;
+      this, isDefault = true, text = $"Extract", anchor = Anchor { right = 10, top = 10 }, size = Size { 80 }, hotKey = altE;
 
       bool NotifyClicked(Button control, int x, int y, Modifiers mods)
       {
          FileSize totalSize;
-         ProgressBar progressBar { master = this, isModal = true, borderStyle = fixed, hasStatusBar = true, text = "Extracting Files...", clientSize = Size { 400, 40 } };
+         ProgressBar progressBar { master = this, isModal = true, borderStyle = fixed, hasStatusBar = true, text = $"Extracting Files...", clientSize = Size { 400, 40 } };
 
          ArchiveQuerySize(archive, &totalSize);
          progressBar.range = totalSize;
@@ -174,17 +174,17 @@ class SelfExtract : Window
             if(!output[0]) strcpy(output, ".");
             ExtractFileFromArchive(progressBar, archivePath, output);
          }
-         MessageBox { master = progressBar, text = "Done.", contents = "Extraction Completed" }.Modal();
+         MessageBox { master = progressBar, text = $"Done.", contents = $"Extraction Completed" }.Modal();
          progressBar.Destroy(0);
          return true;
       }
    };
    ListBox viewList { this, hasHeader = true, borderStyle = deep, hasHorzScroll = true, hasVertScroll = true, anchor = Anchor { left = 10, top = 112, right = 10,bottom = 10 } };
-   DataField nameField { header = "File", width = 360 };
-   DataField sizeField { dataType = "FileSize", header = "Size", width = 96 };
-   DataField mField { dataType = "TimeStamp", header = "Modified", width = 216 };
-   DataField cField {dataType = "TimeStamp", header = "Created", width = 216 };
-   FileDialog fileDialog { master = this, type = selectDir, text = "Select extraction directory" };
+   DataField nameField { header = $"File", width = 360 };
+   DataField sizeField { dataType = "FileSize", header = $"Size", width = 96 };
+   DataField mField { dataType = "TimeStamp", header = $"Modified", width = 216 };
+   DataField cField {dataType = "TimeStamp", header = $"Created", width = 216 };
+   FileDialog fileDialog { master = this, type = selectDir, text = $"Select extraction directory" };
 
    bool HideClicked(Button control, int x, int y, Modifiers mods)
    {
@@ -192,7 +192,7 @@ class SelfExtract : Window
       viewList.visible = false;
       size = Size {};
       position = position;
-      view.text = "View Files";
+      view.text = $"View Files";
       view.hotKey = altV;
       view.NotifyClicked = ViewClicked;
       return true;
@@ -204,7 +204,7 @@ class SelfExtract : Window
       position = position;
       clientSize.h = 300;
       viewList.visible = true;
-      view.text = "Hide Files";
+      view.text = $"Hide Files";
       view.hotKey = altH;
       view.NotifyClicked = HideClicked;
       return true;
@@ -294,13 +294,13 @@ class SelfExtractApp : GuiApplication
       {
          strcpy(archive, argv[1]);
          sprintf(archivePath, "<%s>", archive);
-         sprintf(title, "ECERE Archive - %s", argv[1]);
+         sprintf(title, $"ECERE Archive - %s", argv[1]);
       }
       else
       {
          strcpy(archive, ":");
          strcpy(archivePath, ":");
-         strcpy(title, "ECERE Self-Extractable Archive");
+         strcpy(title, $"ECERE Self-Extractable Archive");
       }
 
       SetLoggingMode(stdOut, null);

@@ -203,7 +203,7 @@ class epj2makeApp : GuiApplication
             else
             {
                valid = false;
-               printf("invalid option: %s\n", arg);
+               printf($"invalid option: %s\n", arg);
             }
          }
          else
@@ -224,24 +224,24 @@ class epj2makeApp : GuiApplication
       
       if(!valid)
       {
-         printf("Syntax:\n");
-         printf("   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n");
-         printf("      toolchain:\n");
-         printf("         [-make <make tool>]\n");
-         printf("         [-cpp <c preprocessor>]\n");
-         printf("         [-cc <c compiler>]\n");
-         printf("         [-ecp <eC preprocessor>]\n");
-         printf("         [-ecc <eC compiler>]\n");
-         printf("         [-ecs <eC symbol generator>]\n");
-         printf("         [-ear <Ecere Archiver>]\n");
-         printf("      directories:\n");
-         printf("         [-i <include dir[;inc dir[...]]>]\n");
-         printf("         [-l <library dir[;lib dir[...]]>]\n");
-         printf("      options:\n");
-         printf("         [-noglobalsettings]\n");
-         printf("         [-noresources]\n");
-         printf("         [-d <intermediate objects directory>]\n");
-         printf("         [-includemk <include.mk path>]\n");
+         printf($"Syntax:\n");
+         printf($"   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n");
+         printf($"      toolchain:\n");
+         printf($"         [-make <make tool>]\n");
+         printf($"         [-cpp <c preprocessor>]\n");
+         printf($"         [-cc <c compiler>]\n");
+         printf($"         [-ecp <eC preprocessor>]\n");
+         printf($"         [-ecc <eC compiler>]\n");
+         printf($"         [-ecs <eC symbol generator>]\n");
+         printf($"         [-ear <Ecere Archiver>]\n");
+         printf($"      directories:\n");
+         printf($"         [-i <include dir[;inc dir[...]]>]\n");
+         printf($"         [-l <library dir[;lib dir[...]]>]\n");
+         printf($"      options:\n");
+         printf($"         [-noglobalsettings]\n");
+         printf($"         [-noresources]\n");
+         printf($"         [-d <intermediate objects directory>]\n");
+         printf($"         [-includemk <include.mk path>]\n");
       }
       else
       {
@@ -309,7 +309,7 @@ class epj2makeApp : GuiApplication
                         }
                      }
                      if(!valid)
-                        printf("Error: Project configuration (%s) was not found.\n", configName);
+                        printf($"Error: Project configuration (%s) was not found.\n", configName);
                   }
                   else
                   {
@@ -325,7 +325,7 @@ class epj2makeApp : GuiApplication
                      if(!releaseConfig && project.configurations.count)
                      {
                         releaseConfig = project.configurations[0];
-                        printf("Notice: Project configuration (%s) will be used.\n", releaseConfig.name);
+                        printf($"Notice: Project configuration (%s) will be used.\n", releaseConfig.name);
                      }
 
                      if(releaseConfig)
@@ -367,11 +367,11 @@ class epj2makeApp : GuiApplication
                   delete project;
                }
                else
-                  printf("Error: Unable to open project file (%s) due to unknown error.\n", epjPath);
+                  printf($"Error: Unable to open project file (%s) due to unknown error.\n", epjPath);
             }
          }
          else
-            printf("Error: Input file (%s) does not exist.\n", epjPath);
+            printf($"Error: Input file (%s) does not exist.\n", epjPath);
       }
 
       //if(optionsCompiler) // how to fix those leaks?

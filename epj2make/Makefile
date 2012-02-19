@@ -61,7 +61,9 @@ SOURCES = \
 	../extras/gui/controls/StringsBox.ec \
 	epj2make.ec
 
-RESOURCES = ../include.mk
+RESOURCES = \
+	locale/zh_CN/LC_MESSAGES/epj2make.mo \
+	../include.mk
 
 # CROSS-PLATFORM MAGIC
 
@@ -123,6 +125,7 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
 	$(EAR) awq $(TARGET) ../include.mk ""
+	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/epj2make.mo "locale/zh_CN/LC_MESSAGES"
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
 
 # SYMBOL RULES

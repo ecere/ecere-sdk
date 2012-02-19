@@ -45,15 +45,8 @@ static Array<FileFilter> resourceFilters
 { [
    { $"Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png,*.gif)", "jpg, jpeg, bmp, pcx, png, gif" },
    { $"3D Studio Model Files (*.3ds)", "3ds" },
+   { $"Translations (*.mo)", "mo" },
    { $"All files", null }
-] };
-
-static Array<FileType> fileTypes
-{ [
-   { $"Based on extension", null },
-   { $"Text",               "txt" },
-   { $"Image",              "jpg" },
-   { $"3D Studio Model",    "3ds" }
 ] };
 
 static Array<FileFilter> projectFilters
@@ -432,12 +425,10 @@ class ProjectView : Window
    FileDialog fileDialog
    {
       autoCreate = false, mayNotExist = true, filters = fileFilters.array, sizeFilters = fileFilters.count * sizeof(FileFilter);
-      types = fileTypes.array, sizeTypes = fileTypes.count * sizeof(FileType);
    };
    FileDialog resourceFileDialog
    {
       autoCreate = false, mayNotExist = true, filters = resourceFilters.array, sizeFilters = resourceFilters.count * sizeof(FileFilter);
-      types = fileTypes.array, sizeTypes = fileTypes.count * sizeof(FileType);
    };
 
    Menu fileMenu { menu, $"File", f };

@@ -57,7 +57,8 @@ RESOURCES = \
 	../../ecere/res/vanilla/ecere/places/folderRemote.png \
 	../../ecere/res/vanilla/ecere/places/networkServer.png \
 	../../ecere/res/vanilla/ecere/places/networkWorkgroup.png \
-	../../ecere/res/vanilla/ecere/status/folderOpen.png
+	../../ecere/res/vanilla/ecere/status/folderOpen.png \
+	locale/zh_CN/LC_MESSAGES/extract.mo
 
 # CROSS-PLATFORM MAGIC
 
@@ -151,6 +152,7 @@ endif
 	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/elements/optionBoxSelected.png ../../ecere/res/vanilla/ecere/elements/optionBoxSelectedDown.png ../../ecere/res/vanilla/ecere/elements/optionBoxUp.png "ecere/elements"
 	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/places/driveRemote.png ../../ecere/res/vanilla/ecere/places/folder.png ../../ecere/res/vanilla/ecere/places/folderRemote.png ../../ecere/res/vanilla/ecere/places/networkServer.png ../../ecere/res/vanilla/ecere/places/networkWorkgroup.png "ecere/places"
 	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/status/folderOpen.png "ecere/status"
+	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/extract.mo "locale/zh_CN/LC_MESSAGES"
 
 # SYMBOL RULES
 

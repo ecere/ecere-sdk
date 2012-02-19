@@ -204,6 +204,22 @@
                ]
             }
          ]
+      },
+      {
+         "Folder" : "locale",
+         "Files" : [
+            {
+               "Folder" : "zh_CN",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "extract.mo"
+                     ]
+                  }
+               ]
+            }
+         ]
       }
    ]
 }

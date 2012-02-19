@@ -93,6 +93,7 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
 	$(EAR) awq $(TARGET) ../extract/obj/release.$(PLATFORM)/extract$(E) ""
+	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ear.mo "locale/zh_CN/LC_MESSAGES"
 	$(call cpq,$(TARGET),../../obj/$(PLATFORM)/bin)
 
 # SYMBOL RULES

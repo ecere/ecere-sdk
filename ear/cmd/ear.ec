@@ -14,27 +14,27 @@ static void ShowSyntax()
 {
    Log("ECERE Archiver v0.1\n");
    Log("Copyright (c) 2003 Jerome Jacovella-St-Louis\n\n");
-   Log("General Syntax:\n");
-   Log("   eAR <command> <archive> <parameters>\n");
-   Log("Extraction Commands:\n");
-   Log("   v  (View)         <archive> [files...]\n");
-   Log("   x  (Extract All)  <archive> [where]\n");
-   Log("   e  (Extract)      <archive> <files...>\n");
-   Log("Modification Commands:\n");
-   Log("   a  (Add)          <archive> <files...>\n");
-   Log("   r  (Refresh)      <archive> <files...>\n");
-   Log("   u  (Update)       <archive> <files...>\n");
-   Log("   m  (Move)         <archive> <files...> <to>\n");
-   Log("   n  (Rename)       <archive> <file> <new name>\n");
-   Log("   d  (Delete)       <archive> <files...>\n");
-   Log("   c  (Clear)        <archive>\n");
-   Log("   s  (Self Extract) <archive> <self-extractable> (With a: overwrite)\n");
-   Log("Options:\n");
-   Log("(aru)    f  Treat <files> as folders to pack at the root of the archive\n");
-   Log("(aru)    0  No Compression\n");
-   Log("(aru)    1 ... 9  (Fastest Compression ... Best Compression (default = 9))\n");
-   Log("(earu)   w  Specify an output directory after <files>\n");
-   Log("(xearu)  q  Quiet mode\n");
+   Log($"General Syntax:\n");
+   Log($"   eAR <command> <archive> <parameters>\n");
+   Log($"Extraction Commands:\n");
+   Log($"   v  (View)         <archive> [files...]\n");
+   Log($"   x  (Extract All)  <archive> [where]\n");
+   Log($"   e  (Extract)      <archive> <files...>\n");
+   Log($"Modification Commands:\n");
+   Log($"   a  (Add)          <archive> <files...>\n");
+   Log($"   r  (Refresh)      <archive> <files...>\n");
+   Log($"   u  (Update)       <archive> <files...>\n");
+   Log($"   m  (Move)         <archive> <files...> <to>\n");
+   Log($"   n  (Rename)       <archive> <file> <new name>\n");
+   Log($"   d  (Delete)       <archive> <files...>\n");
+   Log($"   c  (Clear)        <archive>\n");
+   Log($"   s  (Self Extract) <archive> <self-extractable> (With a: overwrite)\n");
+   Log($"Options:\n");
+   Log($"(aru)    f  Treat <files> as folders to pack at the root of the archive\n");
+   Log($"(aru)    0  No Compression\n");
+   Log($"(aru)    1 ... 9  (Fastest Compression ... Best Compression (default = 9))\n");
+   Log($"(earu)   w  Specify an output directory after <files>\n");
+   Log($"(xearu)  q  Quiet mode\n");
 }
 
 #define ARCHIVE_ACTION_VIEW      1
@@ -80,7 +80,7 @@ static void ViewArchive(char * path)
 
       ((DateTime)listing.stats.modified).local.OnGetString(timeString, null, null);
 
-      strcat(string, "\n   Modified: ");
+      strcat(string, $"\n   Modified: ");
       strcat(string, timeString);
       strcat(string, "\n");
       
@@ -157,7 +157,7 @@ static void ExtractFileFromArchive(char * path, char * outputFile)
             static byte buffer[BUFFERSIZE];
             FileGetSize(path, &dataSize);
             if(!quiet)
-               Logf("Extracting %s...\n", outputFile);
+               Logf($"Extracting %s...\n", outputFile);
             for(c = 0; c<dataSize; c += BUFFERSIZE)
             {
                uint size = (dataSize > c + BUFFERSIZE) ? BUFFERSIZE : (dataSize - c);
@@ -213,7 +213,7 @@ static bool AddToArchive(Archive archive, ArchiveDir parentDir, char * name, cha
       int ratio;
       uint newPosition;
       if(!quiet)
-         Logf("Adding %s...", name);
+         Logf($"Adding %s...", name);
       if(parentDir.Add(name, path, addMode, compression, &ratio, &newPosition))
       {
          if(newPosition)
@@ -224,11 +224,11 @@ static bool AddToArchive(Archive archive, ArchiveDir parentDir, char * name, cha
                Log("\n");
          }
          else
-            Logf("Skipped%s%s.\n", quiet ? " " : "", quiet ? name : "");
+            Logf($"Skipped%s%s.\n", quiet ? " " : "", quiet ? name : "");
       }
       else
       {
-         Logf("Out of disk space.\nError: Ran out of disk space while archiving%s%s.\n", quiet ? " " : "", quiet ? name : "");
+         Logf($"Out of disk space.\nError: Ran out of disk space while archiving%s%s.\n", quiet ? " " : "", quiet ? name : "");
          ((GuiApplication)__thisModule).exitCode = 1;
          result = false;
       }
@@ -304,7 +304,7 @@ static void MoveFileInArchive(Archive* archive, char * sourcePath, char * output
                   if(!source[0])
                   {
                      ArchiveDir dir;
-                     Logf("Moving files in root to %s.\n", outputDirectory[0] ? outputDirectory : "root");
+                     Logf($"Moving files in root to %s.\n", outputDirectory[0] ? outputDirectory : "root");
                      dir = archive->OpenDirectory(outputDirectory, null, 0);
                      if(dir)
                      {
@@ -316,7 +316,7 @@ static void MoveFileInArchive(Archive* archive, char * sourcePath, char * output
                      }
                   }
                   else if(!rootMoving)
-                     Logf("Merging directory %s in %s with %s in %s.\n", 
+                     Logf($"Merging directory %s in %s with %s in %s.\n", 
                         sourceFileName, 
                         sourceDirectory[0] ? sourceDirectory : "root",
                         sourceFileName,
@@ -339,17 +339,17 @@ static void MoveFileInArchive(Archive* archive, char * sourcePath, char * output
                   }
                }
                else if(outputExists)
-                  Logf("A file with the same name already exists (%s).\n", existingFile);
+                  Logf($"A file with the same name already exists (%s).\n", existingFile);
                else
                   // Perform operation
                   doMove = true;
             }
             else
-               Logf("Can't move directory %s inside itself.\n", source);
+               Logf($"Can't move directory %s inside itself.\n", source);
          }
          // If source is a file
          else if(outputExists.isDirectory)
-            Logf("A folder with the same name already exists (%s).\n", existingFile);
+            Logf($"A folder with the same name already exists (%s).\n", existingFile);
          else
             doMove = true;
 
@@ -367,7 +367,7 @@ static void MoveFileInArchive(Archive* archive, char * sourcePath, char * output
                   if(outputExists.isFile)
                      output.Delete(sourceFileName);
 
-                  Logf("Moving file %s in directory %s to %s.\n", sourceFileName, 
+                  Logf($"Moving file %s in directory %s to %s.\n", sourceFileName, 
                      sourceDirectory[0] ? sourceDirectory : "root", 
                      outputDirectory[0] ? outputDirectory : "root");
 
@@ -381,7 +381,7 @@ static void MoveFileInArchive(Archive* archive, char * sourcePath, char * output
          }
       }
       else
-         Logf("File is already in directory \"%s\".\n",
+         Logf($"File is already in directory \"%s\".\n",
             sourceDirectory[0] ? sourceDirectory : "root");
    }
 }
@@ -526,12 +526,12 @@ class EARApp : GuiApplication
             FileSize size;
             if(!FileExists(argv[2]))
             {
-               Logf("Archive file not found: %s\n", argv[2]);
+               Logf($"Archive file not found: %s\n", argv[2]);
                action = 0;
             }
             else if(FileGetSize(argv[2], &size) && !size)
             {
-               Logf("Archive file is empty: %s\n", argv[2]);
+               Logf($"Archive file is empty: %s\n", argv[2]);
                action = 0;
             }
             else 
@@ -541,7 +541,7 @@ class EARApp : GuiApplication
                   delete archive;
                else
                {
-                  Logf("File is not a valid ECERE archive: %s\n", argv[2]);
+                  Logf($"File is not a valid ECERE archive: %s\n", argv[2]);
                   action = 0;
                }
             }
@@ -582,7 +582,7 @@ class EARApp : GuiApplication
                            Logf("%s\n", fileName + archivePathLen);
                      }
                      else
-                        Logf("File Not Found: %s\n", name);
+                        Logf($"File Not Found: %s\n", name);
                   }
                }
                break;
@@ -693,7 +693,7 @@ class EARApp : GuiApplication
                {
                   archive.Clear();
                   delete archive;
-                  Logf("Archive cleared: %s.\n", argv[2]);
+                  Logf($"Archive cleared: %s.\n", argv[2]);
                }
                break;
             }
@@ -720,7 +720,7 @@ class EARApp : GuiApplication
                         dir = archive.OpenDirectory(directory, null, 0);
                         if(dir)
                         {
-                           Logf("Deleting file %s in directory %s.\n", file,
+                           Logf($"Deleting file %s in directory %s.\n", file,
                               directory[0] ? directory : "root");
                            dir.Delete(file);
                            delete dir;
@@ -776,7 +776,7 @@ class EARApp : GuiApplication
                            char existingFilePath[MAX_LOCATION], * existingFile;
                            FileAttribs outputExists;
 
-                           Logf("Renaming %s in directory %s to %s.\n", name,
+                           Logf($"Renaming %s in directory %s to %s.\n", name,
                               directory[0] ? directory : "root", newName);
                            strcpy(existingFilePath, archivePath);
                            existingFile = existingFilePath + strlen(existingFilePath);
@@ -809,10 +809,10 @@ class EARApp : GuiApplication
                            }
                         }
                         else
-                           Logf("Drive letters and %s only valid at root.\n", DIR_SEPS);
+                           Logf($"Drive letters and %s only valid at root.\n", DIR_SEPS);
                      }
                      else
-                        Log("New name contains directory structure.\n");
+                        Log($"New name contains directory structure.\n");
                   }
                   delete archive;
                }
