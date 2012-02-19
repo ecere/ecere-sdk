@@ -489,12 +489,12 @@ msgstr "Maximizar"
 #: .\src\sys\Date.ec:33
 msgctxt "LongMonthNames"
 msgid "May"
-msgstr "May"
+msgstr "Mayo"
 
 #: .\src\sys\Date.ec:42
 msgctxt "ShortMonthNames"
 msgid "May"
-msgstr "Mayo"
+msgstr "May"
 
 #: .\src\sys\System.ec:105
 msgid "Memory allocation failed"
