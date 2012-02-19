@@ -73,6 +73,7 @@ SOURCES = \
 
 RESOURCES = \
 	locale/zh_CN/LC_MESSAGES/documentor.mo \
+	locale/es_ES/LC_MESSAGES/documentor.mo \
 	res/documentorIcon.png
 
 # CROSS-PLATFORM MAGIC
@@ -129,6 +130,7 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(STRIP) $(STRIPOPT) $(TARGET)
 	$(EAR) awq $(TARGET) res/documentorIcon.png ""
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/documentor.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/documentor.mo "locale/es_ES/LC_MESSAGES"
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
 
 # SYMBOL RULES

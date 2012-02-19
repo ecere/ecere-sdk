@@ -523,6 +523,13 @@ class CompilersTab : GlobalSettingsSubTab
    }
 }
 
+Array<String> displayDirectoryNames
+{ [
+   $"Include Files",
+   $"Library Files",
+   $"Executable Files"
+] };
+
 class CompilerDirectoriesTab : CompilersSubTab
 {
    background = activeBorder;
@@ -588,7 +595,7 @@ class CompilerDirectoriesTab : CompilersSubTab
          int v = (int)c * 100 + 8;
          dirTypeTglBtn[c] = Button
          {
-            this, inactive = true, text = settingsDirectoryNames[c], bevelOver = true, isRadio = true, bitmap = null;
+            this, inactive = true, text = displayDirectoryNames[c], bevelOver = true, isRadio = true, bitmap = null;
             stayOnTop = true;
             id = c;
             size = { 99, 20 };

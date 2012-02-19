@@ -265,6 +265,7 @@ RESOURCES = \
 	$(RES)codeMarks/topFrameHalfError.png \
 	$(RES)others/mousePointer.png \
 	locale/zh_CN/LC_MESSAGES/ide.mo \
+	locale/es_ES/LC_MESSAGES/ide.mo \
 	res/ecere.jpg \
 	res/ecereBack.jpg \
 	res/icon.png \
@@ -356,6 +357,7 @@ endif
 	$(EAR) awq $(TARGET) $(RES)codeMarks/breakpoint.png $(RES)codeMarks/breakpointDisabled.png $(RES)codeMarks/breakpointHalf.png $(RES)codeMarks/breakpointHalfDisabled.png $(RES)codeMarks/cursor.png $(RES)codeMarks/cursorError.png $(RES)codeMarks/topFrame.png $(RES)codeMarks/topFrameError.png $(RES)codeMarks/topFrameHalf.png $(RES)codeMarks/topFrameHalfError.png "codeMarks"
 	$(EAR) awq $(TARGET) $(RES)others/mousePointer.png "others"
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ide.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/ide.mo "locale/es_ES/LC_MESSAGES"
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
 
 ifdef WINDOWS

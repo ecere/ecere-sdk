@@ -1878,6 +1878,17 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "es_ES",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "locale/es_ES/LC_MESSAGES/ecere.mo"
+                     ]
+                  }
+               ]
             }
          ]
       }

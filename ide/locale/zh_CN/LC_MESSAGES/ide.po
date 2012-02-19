@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-02-19 21:14+0900\n"
+"PO-Revision-Date: 2012-02-20 04:02+0900\n"
 "Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: ec <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -61,7 +61,7 @@ msgstr "配置吗?"
 msgid " file is not part of any project.\n"
 msgstr " file is not part of any project.\n"
 
-#: .\src\project\ProjectView.ec:1637
+#: .\src\project\ProjectView.ec:1628
 #, fuzzy
 msgid " was "
 msgstr " was "
@@ -74,12 +74,12 @@ msgstr "退出代码%s"
 msgid " with file name matching \"%s\""
 msgstr "文件名匹配“%s”"
 
-#: .\src\project\ProjectView.ec:601
+#: .\src\project\ProjectView.ec:592
 #, fuzzy
 msgid "%s - %s%smakefile for %s config...\n"
 msgstr "%s - %s%smakefile for %s config...\n"
 
-#: .\src\project\ProjectView.ec:539
+#: .\src\project\ProjectView.ec:530
 msgid "%s Compiler\n"
 msgstr "%s编译器\n"
 
@@ -135,7 +135,6 @@ msgstr "(右击或按下Ctrl-Del恢复原来选项)"
 msgid "(unnamed)"
 msgstr "(未命名)"
 
-#: .\src\project\ProjectView.ec:56
 #: .\src\ide.ec:108
 msgid "3D Studio Model"
 msgstr "3D Studio模型文件"
@@ -181,41 +180,41 @@ msgstr "动态编译器(G)..."
 msgid "Active Configuration"
 msgstr "动态配置(A)"
 
-#: .\src\project\ProjectView.ec:245
+#: .\src\project\ProjectView.ec:238
 #: .\src\ide.ec:730
 msgid "Active Configuration..."
 msgstr "活动配置(G)..."
 
-#: .\src\project\ProjectView.ec:289
+#: .\src\project\ProjectView.ec:282
 msgid "Add Files to Folder..."
 msgstr "添加文件至文件夹(F)..."
 
-#: .\src\project\ProjectView.ec:1582
+#: .\src\project\ProjectView.ec:1573
 msgid "Add Files to Project"
 msgstr "添加文件至项目"
 
-#: .\src\project\ProjectView.ec:235
+#: .\src\project\ProjectView.ec:228
 msgid "Add Files to Project..."
 msgstr "添加文件至项目(F)..."
 
-#: .\src\project\ProjectView.ec:295
+#: .\src\project\ProjectView.ec:288
 msgid "Add New Behavior Graph..."
 msgstr "添加新行为图(G)..."
 
-#: .\src\project\ProjectView.ec:237
-#: .\src\project\ProjectView.ec:294
+#: .\src\project\ProjectView.ec:230
+#: .\src\project\ProjectView.ec:287
 msgid "Add New Form..."
 msgstr "添加新窗体(O)..."
 
-#: .\src\project\ProjectView.ec:285
+#: .\src\project\ProjectView.ec:278
 msgid "Add Resources to Folder..."
 msgstr "添加资源至文件夹(F)..."
 
-#: .\src\project\ProjectView.ec:1582
+#: .\src\project\ProjectView.ec:1573
 msgid "Add Resources to Project"
 msgstr "添加资源至项目"
 
-#: .\src\project\ProjectView.ec:258
+#: .\src\project\ProjectView.ec:251
 msgid "Add Resources to Project..."
 msgstr "添加资源至项目(F)..."
 
@@ -249,7 +248,7 @@ msgstr "所有调试视图(A)"
 
 #: .\src\dialogs\FindInFilesDialog.ec:60
 #: .\src\project\ProjectView.ec:41
-#: .\src\project\ProjectView.ec:48
+#: .\src\project\ProjectView.ec:49
 #: .\src\designer\CodeEditor.ec:85
 #: .\src\documents\PictureEdit.ec:22
 #: .\src\ide.ec:100
@@ -257,7 +256,7 @@ msgstr "所有调试视图(A)"
 msgid "All files"
 msgstr "所有文件(*.*)"
 
-#: .\src\project\ProjectView.ec:1872
+#: .\src\project\ProjectView.ec:1863
 msgid ""
 "Are you sure you want to remove the \"%s\" project\n"
 "from this workspace?"
@@ -265,7 +264,7 @@ msgstr ""
 "你确认要删除\"%s\"项目吗?\n"
 "从工作空间?"
 
-#: .\src\project\ProjectView.ec:1849
+#: .\src\project\ProjectView.ec:1840
 msgid ""
 "Are you sure you want to remove the folder \"%s\"\n"
 "and all of its contents from the project?"
@@ -299,7 +298,7 @@ msgstr "附加(A)"
 msgid "Attach %s"
 msgstr "附加%s"
 
-#: .\src\project\ProjectView.ec:1192
+#: .\src\project\ProjectView.ec:1183
 msgid ""
 "Attempting to debug non-debug configuration\n"
 "Proceed anyways?"
@@ -311,7 +310,6 @@ msgstr ""
 msgid "BMP Image"
 msgstr "BMP图片"
 
-#: .\src\project\ProjectView.ec:53
 #: .\src\documents\PictureEdit.ec:27
 #: .\src\ide.ec:105
 msgid "Based on extension"
@@ -326,10 +324,10 @@ msgstr "中断(B)"
 msgid "Breakpoints"
 msgstr "断点(B)"
 
-#: .\src\project\ProjectView.ec:248
-#: .\src\project\ProjectView.ec:259
-#: .\src\project\ProjectView.ec:271
-#: .\src\project\ProjectView.ec:300
+#: .\src\project\ProjectView.ec:241
+#: .\src\project\ProjectView.ec:252
+#: .\src\project\ProjectView.ec:264
+#: .\src\project\ProjectView.ec:293
 msgid "Browse Folder"
 msgstr "浏览文件夹(W)"
 
@@ -337,7 +335,7 @@ msgstr "浏览文件夹(W)"
 msgid "Browse Project Folder"
 msgstr "浏览项目目录(P)"
 
-#: .\src\project\ProjectView.ec:225
+#: .\src\project\ProjectView.ec:218
 #: .\src\ide.ec:770
 #: .\src\ProjectSettings.ec:1132
 msgid "Build"
@@ -351,15 +349,15 @@ msgstr "生成器"
 msgid "Building library...\n"
 msgstr "正在生成类库...\n"
 
-#: .\src\project\ProjectView.ec:615
+#: .\src\project\ProjectView.ec:606
 msgid "Building project %s using the %s configuration...\n"
 msgstr "正在生成项目%s(引用配置 %s)...\n"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:675
+#: .\src\dialogs\GlobalSettingsDialog.ec:682
 msgid "C Compiler"
 msgstr "C编译器"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:669
+#: .\src\dialogs\GlobalSettingsDialog.ec:676
 msgid "C Preprocessor"
 msgstr "C预编译器"
 
@@ -400,12 +398,12 @@ msgstr "取消"
 msgid "Cascade"
 msgstr "层叠(C)"
 
-#: .\src\project\ProjectView.ec:228
+#: .\src\project\ProjectView.ec:221
 #: .\src\ide.ec:800
 msgid "Clean"
 msgstr "清理(E)"
 
-#: .\src\project\ProjectView.ec:820
+#: .\src\project\ProjectView.ec:811
 msgid "Cleaning project %s using the %s configuration...\n"
 msgstr "正在清理项目 %s (引用配置 %s)...\n"
 
@@ -450,7 +448,7 @@ msgstr "命令:"
 msgid "Common"
 msgstr "Common"
 
-#: .\src\project\ProjectView.ec:267
+#: .\src\project\ProjectView.ec:260
 msgid "Compile"
 msgstr "编译(C)"
 
@@ -475,11 +473,11 @@ msgstr "编译器"
 msgid "Compilers Detection"
 msgstr "编译器探测"
 
-#: .\src\project\ProjectView.ec:925
+#: .\src\project\ProjectView.ec:916
 msgid "Compiling single file %s in project %s using the %s configuration...\n"
 msgstr "正在编译单个文件%s属于%s项目中并使用配置%s...\n"
 
-#: .\src\project\ProjectView.ec:927
+#: .\src\project\ProjectView.ec:918
 msgid "Compiling single file %s in project %s...\n"
 msgstr "正在编译单个文件%s属于项目%s...\n"
 
@@ -525,7 +523,7 @@ msgstr "贡献者"
 msgid "Copy"
 msgstr "复制(C)"
 
-#: .\src\project\ProjectView.ec:1618
+#: .\src\project\ProjectView.ec:1609
 msgid "Couldn't create file."
 msgstr "无法创建文件."
 
@@ -577,7 +575,7 @@ msgstr "Debugger Fatal Error: GDB lost\n"
 msgid "Debugger required for symbol evaluation in \"%s\""
 msgstr "调试器需要使用“%s”来计算符号"
 
-#: .\src\project\ProjectView.ec:1190
+#: .\src\project\ProjectView.ec:1181
 msgid "Debugging compressed applications is not supported\n"
 msgstr "不支持调试压缩应用程序\n"
 
@@ -588,11 +586,11 @@ msgstr "不支持调试压缩应用程序\n"
 msgid "Debugging stopped\n"
 msgstr "Debugging stopped\n"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:1016
+#: .\src\dialogs\GlobalSettingsDialog.ec:1023
 msgid "Default Compiler"
 msgstr "默认编译器"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:981
+#: .\src\dialogs\GlobalSettingsDialog.ec:988
 msgid "Default Intermediate Objects Directory"
 msgstr "默认中间结果目录(I)"
 
@@ -600,7 +598,7 @@ msgstr "默认中间结果目录(I)"
 msgid "Default Name Space"
 msgstr "默认命名空间"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:968
+#: .\src\dialogs\GlobalSettingsDialog.ec:975
 msgid "Default Target Directory"
 msgstr "默认目标目录(T)"
 
@@ -618,7 +616,7 @@ msgstr "删除"
 msgid "Delete %s"
 msgstr "删除%s"
 
-#: .\src\project\ProjectView.ec:1850
+#: .\src\project\ProjectView.ec:1841
 msgid "Delete Folder"
 msgstr "删除文件夹"
 
@@ -649,7 +647,7 @@ msgstr "查看设计器(D)"
 msgid "Detach"
 msgstr "分离(D)"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:529
+#: .\src\dialogs\GlobalSettingsDialog.ec:536
 msgid "Directories"
 msgstr "%s目录"
 
@@ -678,15 +676,15 @@ msgstr "文档已经被修改"
 msgid "ECERE IDE"
 msgstr "ECERE IDE简体中文版"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:663
+#: .\src\dialogs\GlobalSettingsDialog.ec:670
 msgid "Ecere Archiver"
 msgstr "Ecere存档"
 
-#: .\src\project\ProjectView.ec:67
+#: .\src\project\ProjectView.ec:60
 msgid "Ecere IDE Project"
 msgstr "ECERE项目"
 
-#: .\src\project\ProjectView.ec:68
+#: .\src\project\ProjectView.ec:61
 msgid "Ecere IDE Workspace"
 msgstr "ECERE解决方案"
 
@@ -707,11 +705,11 @@ msgstr "编辑器"
 msgid "Empty string"
 msgstr "Empty string"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:749
+#: .\src\dialogs\GlobalSettingsDialog.ec:756
 msgid "Environment"
 msgstr "环境"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:755
+#: .\src\dialogs\GlobalSettingsDialog.ec:762
 #: .\src\dialogs\WorkspaceSettings.ec:29
 msgid "Environment Variables"
 msgstr "环境变量"
@@ -760,7 +758,11 @@ msgstr "编译时不包括"
 msgid "Executable"
 msgstr "可执行"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:687
+#: .\src\dialogs\GlobalSettingsDialog.ec:531
+msgid "Executable Files"
+msgstr "可执行文件"
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:694
 msgid "Execution Prefix"
 msgstr "执行前置"
 
@@ -776,7 +778,7 @@ msgstr "表达式"
 msgid "Fatal Error: child process terminated unexpectedly\n"
 msgstr "常规错误: 子进程异常终止\n"
 
-#: .\src\project\ProjectView.ec:443
+#: .\src\project\ProjectView.ec:434
 #: .\src\designer\CodeEditor.ec:1884
 #: .\src\designer\Designer.ec:150
 #: .\src\documents\PictureEdit.ec:53
@@ -785,7 +787,7 @@ msgstr "常规错误: 子进程异常终止\n"
 msgid "File"
 msgstr "文件(F)"
 
-#: .\src\project\ProjectView.ec:934
+#: .\src\project\ProjectView.ec:925
 msgid "File %s is excluded from current build configuration.\n"
 msgstr "文件%s包含当前生成配置.\n"
 
@@ -794,7 +796,7 @@ msgstr "文件%s包含当前生成配置.\n"
 msgid "File doesn't exist."
 msgstr "文件不存在."
 
-#: .\src\project\ProjectView.ec:1607
+#: .\src\project\ProjectView.ec:1598
 #: .\src\ide.ec:1798
 msgid "File doesn't exist. Create?"
 msgstr "文件不存在. 要创建吗?"
@@ -895,16 +897,16 @@ msgstr "GIF图片"
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:681
+#: .\src\dialogs\GlobalSettingsDialog.ec:688
 msgid "GNU Make"
 msgstr "GNU Make"
 
-#: .\src\project\ProjectView.ec:586
+#: .\src\project\ProjectView.ec:577
 msgid "Generating "
 msgstr "正在生成 "
 
-#: .\src\project\ProjectView.ec:146
-#: .\src\project\ProjectView.ec:582
+#: .\src\project\ProjectView.ec:139
+#: .\src\project\ProjectView.ec:573
 msgid "Generating Makefile & Dependencies..."
 msgstr "正在生成Makefile和依赖项..."
 
@@ -951,7 +953,6 @@ msgstr "命中级别"
 msgid "Ignore Count"
 msgstr "忽略计数"
 
-#: .\src\project\ProjectView.ec:55
 #: .\src\documents\PictureEdit.ec:56
 #: .\src\ide.ec:107
 #: .\src\ide.ec:929
@@ -967,14 +968,18 @@ msgstr "图片文件(*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png,*.gif)"
 msgstr "图像文件(*.jpg, *.jpeg, *.bmp, *.pcx, *.png,*.gif)"
 
-#: .\src\project\ProjectView.ec:426
+#: .\src\project\ProjectView.ec:419
 msgid "Import Folder"
 msgstr "导入目录(I)..."
 
-#: .\src\project\ProjectView.ec:234
-#: .\src\project\ProjectView.ec:282
+#: .\src\project\ProjectView.ec:227
+#: .\src\project\ProjectView.ec:275
 msgid "Import Folder..."
 msgstr "导入目录(I)..."
+
+#: .\src\dialogs\GlobalSettingsDialog.ec:528
+msgid "Include Files"
+msgstr "包含文件"
 
 #: .\src\dialogs\FindInFilesDialog.ec:315
 msgid "Include Subdirectories"
@@ -988,7 +993,7 @@ msgstr "用于计算的“%s”调试器状态不正确"
 msgid "Indexed Color..."
 msgstr "索引颜色(I)..."
 
-#: .\src\project\ProjectView.ec:150
+#: .\src\project\ProjectView.ec:143
 msgid "Initializing Debugger"
 msgstr "初始化调试器"
 
@@ -1028,6 +1033,10 @@ msgstr "JPG图片"
 msgid "Keep caret visible (move along) when scrolling"
 msgstr "使用滚轴时光标可见"
 
+#: .\src\dialogs\GlobalSettingsDialog.ec:529
+msgid "Library Files"
+msgstr "库文件"
+
 #: .\src\dialogs\ProjectTabSettings.ec:31
 msgid "License"
 msgstr "许可(A)"
@@ -1063,7 +1072,7 @@ msgstr "位置"
 msgid "Lose Changes?"
 msgstr "放弃修改吗?"
 
-#: .\src\project\ProjectView.ec:594
+#: .\src\project\ProjectView.ec:585
 msgid "Makefile doesn't exist. "
 msgstr "Makefile不存在. "
 
@@ -1141,7 +1150,7 @@ msgstr "NUM"
 msgid "Name"
 msgstr "名称"
 
-#: .\src\project\ProjectView.ec:1655
+#: .\src\project\ProjectView.ec:1646
 msgid "Name Conflict"
 msgstr "名称冲突"
 
@@ -1153,15 +1162,15 @@ msgstr "命名分离方法"
 msgid "New"
 msgstr "新建(N)"
 
-#: .\src\project\ProjectView.ec:232
-#: .\src\project\ProjectView.ec:256
-#: .\src\project\ProjectView.ec:280
+#: .\src\project\ProjectView.ec:225
+#: .\src\project\ProjectView.ec:249
+#: .\src\project\ProjectView.ec:273
 msgid "New File..."
 msgstr "新建文件(L)..."
 
-#: .\src\project\ProjectView.ec:233
-#: .\src\project\ProjectView.ec:257
-#: .\src\project\ProjectView.ec:281
+#: .\src\project\ProjectView.ec:226
+#: .\src\project\ProjectView.ec:250
+#: .\src\project\ProjectView.ec:274
 msgid "New Folder..."
 msgstr "新建目录(N)..."
 
@@ -1213,7 +1222,7 @@ msgstr "Null string"
 msgid "Null type for \"%s\""
 msgstr "类型“%s”为空"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:809
+#: .\src\dialogs\GlobalSettingsDialog.ec:816
 msgid "Number of parallel build jobs"
 msgstr "并行生成数量(J)"
 
@@ -1234,7 +1243,7 @@ msgid "OVR"
 msgstr "OVR"
 
 #: .\src\dialogs\GlobalSettingsDialog.ec:9
-#: .\src\project\ProjectView.ec:266
+#: .\src\project\ProjectView.ec:259
 #: .\src\designer\CodeEditor.ec:132
 #: .\src\ide.ec:133
 msgid "Open"
@@ -1267,7 +1276,7 @@ msgstr "打开(O)..."
 msgid "Optimization"
 msgstr "优化(O)"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:785
+#: .\src\dialogs\GlobalSettingsDialog.ec:792
 msgid "Options"
 msgstr "选项"
 
@@ -1337,7 +1346,7 @@ msgctxt "Menu"
 msgid "Project"
 msgstr "项目(P)"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:962
+#: .\src\dialogs\GlobalSettingsDialog.ec:969
 #: .\src\dialogs\ProjectTabSettings.ec:8
 msgid "Project"
 msgstr "项目"
@@ -1350,7 +1359,7 @@ msgstr "工程动态配置"
 msgid "Project Already Exists"
 msgstr "项目已经存在"
 
-#: .\src\project\ProjectView.ec:756
+#: .\src\project\ProjectView.ec:747
 msgid "Project Build"
 msgstr "Project Build"
 
@@ -1362,7 +1371,7 @@ msgstr "关闭项目"
 msgid "Project File"
 msgstr "项目文件"
 
-#: .\src\project\ProjectView.ec:61
+#: .\src\project\ProjectView.ec:54
 #: .\src\ide.ec:113
 msgid "Project Files (*.epj)"
 msgstr "项目文件(*.epj)"
@@ -1380,7 +1389,7 @@ msgstr "Project Settings"
 msgid "Project View"
 msgstr "项目文件"
 
-#: .\src\project\ProjectView.ec:596
+#: .\src\project\ProjectView.ec:587
 msgid "Project has been modified. "
 msgstr "工程已被修改. "
 
@@ -1391,13 +1400,13 @@ msgstr "工程已被修改. "
 msgid "Properties"
 msgstr "属性"
 
-#: .\src\project\ProjectView.ec:274
+#: .\src\project\ProjectView.ec:267
 msgid "Properties.."
 msgstr "属性(P)..."
 
-#: .\src\project\ProjectView.ec:252
-#: .\src\project\ProjectView.ec:262
-#: .\src\project\ProjectView.ec:303
+#: .\src\project\ProjectView.ec:245
+#: .\src\project\ProjectView.ec:255
+#: .\src\project\ProjectView.ec:296
 msgid "Properties..."
 msgstr "属性(P)..."
 
@@ -1425,12 +1434,12 @@ msgstr "RGB颜色(R)"
 msgid "Reattach"
 msgstr "重新分离(R)"
 
-#: .\src\project\ProjectView.ec:227
+#: .\src\project\ProjectView.ec:220
 #: .\src\ide.ec:790
 msgid "Rebuild"
 msgstr "重新生成(R)"
 
-#: .\src\project\ProjectView.ec:801
+#: .\src\project\ProjectView.ec:792
 msgid "Rebuilding project %s using the %s configuration...\n"
 msgstr "正在重新生成项目%s(引用配置%s)...\n"
 
@@ -1444,34 +1453,34 @@ msgstr "最近的文件"
 msgid "Recent Projects"
 msgstr "最近的项目"
 
-#: .\src\project\ProjectView.ec:229
+#: .\src\project\ProjectView.ec:222
 #: .\src\ide.ec:813
 msgid "Regenerate Makefile"
 msgstr "重新生成Makefile"
 
-#: .\src\project\ProjectView.ec:588
+#: .\src\project\ProjectView.ec:579
 msgid "Regenerating "
 msgstr "正在重新生成 "
 
-#: .\src\project\ProjectView.ec:226
+#: .\src\project\ProjectView.ec:219
 #: .\src\ide.ec:780
 msgid "Relink"
 msgstr "重新链接(L)"
 
-#: .\src\project\ProjectView.ec:785
+#: .\src\project\ProjectView.ec:776
 msgid "Relinking project %s using the %s configuration...\n"
 msgstr "正在重新连接项目%s(引用配置%s)...\n"
 
-#: .\src\project\ProjectView.ec:269
-#: .\src\project\ProjectView.ec:298
+#: .\src\project\ProjectView.ec:262
+#: .\src\project\ProjectView.ec:291
 msgid "Remove"
 msgstr "移除(R)"
 
-#: .\src\project\ProjectView.ec:1873
+#: .\src\project\ProjectView.ec:1864
 msgid "Remove Project"
 msgstr "删除项目"
 
-#: .\src\project\ProjectView.ec:242
+#: .\src\project\ProjectView.ec:235
 msgid "Remove project from workspace"
 msgstr "移除项目从解决方案中(R)"
 
@@ -1515,7 +1524,7 @@ msgstr "重新启动(R)"
 msgid "Resume"
 msgstr "继续调试"
 
-#: .\src\project\ProjectView.ec:1188
+#: .\src\project\ProjectView.ec:1179
 #: .\src\ide.ec:760
 msgid "Run"
 msgstr "运行(R)"
@@ -1534,8 +1543,8 @@ msgstr "运行到光标处跳过断点(U)"
 msgid "Same Project"
 msgstr "相同项目"
 
-#: .\src\project\ProjectView.ec:250
-#: .\src\project\ProjectView.ec:444
+#: .\src\project\ProjectView.ec:243
+#: .\src\project\ProjectView.ec:435
 #: .\src\designer\CodeEditor.ec:1885
 #: .\src\designer\Designer.ec:153
 #: .\src\documents\PictureEdit.ec:54
@@ -1618,10 +1627,10 @@ msgstr "选择目录"
 msgid "Select project directory"
 msgstr "选择项目目录"
 
-#: .\src\project\ProjectView.ec:246
-#: .\src\project\ProjectView.ec:261
-#: .\src\project\ProjectView.ec:273
-#: .\src\project\ProjectView.ec:302
+#: .\src\project\ProjectView.ec:239
+#: .\src\project\ProjectView.ec:254
+#: .\src\project\ProjectView.ec:266
+#: .\src\project\ProjectView.ec:295
 #: .\src\ide.ec:739
 msgid "Settings..."
 msgstr "配置(S)..."
@@ -1632,7 +1641,7 @@ msgstr "配置(S)..."
 msgid "Shared Library"
 msgstr "共享动态库"
 
-#: .\src\project\ProjectView.ec:1188
+#: .\src\project\ProjectView.ec:1179
 msgid "Shared and static libraries cannot be run like executables."
 msgstr "共享和静态类库无法作为可执行文件运行."
 
@@ -1659,8 +1668,8 @@ msgstr "源文件目录(I)"
 msgid "Start"
 msgstr "启动(S)"
 
-#: .\src\project\ProjectView.ec:1190
-#: .\src\project\ProjectView.ec:1192
+#: .\src\project\ProjectView.ec:1181
+#: .\src\project\ProjectView.ec:1183
 msgid "Starting Debug"
 msgstr "正在启动调试"
 
@@ -1733,7 +1742,7 @@ msgstr "目标目录(R)"
 msgid "Target Name"
 msgstr "目标名称(N)"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:791
+#: .\src\dialogs\GlobalSettingsDialog.ec:798
 msgid "Target Platform"
 msgstr "目标平台(T)"
 
@@ -1755,7 +1764,6 @@ msgstr "目标不能包含编译信息!\n"
 msgid "Temporary directory does not exist."
 msgstr "临时目录不存在."
 
-#: .\src\project\ProjectView.ec:54
 #: .\src\ide.ec:106
 msgid "Text"
 msgstr "文本文件"
@@ -1786,7 +1794,7 @@ msgstr ""
 "该文档 %s 被其他程序修改.\n"
 "你想重新加载并放弃你使用当前程序做的修改吗?"
 
-#: .\src\project\ProjectView.ec:1636
+#: .\src\project\ProjectView.ec:1627
 msgid "The following file"
 msgstr "文件"
 
@@ -1856,9 +1864,13 @@ msgstr "Toggle Breakpoint"
 msgid "Toolbox"
 msgstr "工具箱"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:639
+#: .\src\dialogs\GlobalSettingsDialog.ec:646
 msgid "Toolchain"
 msgstr "工具链"
+
+#: .\src\project\ProjectView.ec:48
+msgid "Translations (*.mo)"
+msgstr "Translations (*.mo)"
 
 #: .\src\debugger\GDBDialog.ec:250
 msgid "Tree:"
@@ -1897,21 +1909,21 @@ msgstr "未知输出"
 msgid "Unknown prompt"
 msgstr "未知提示符"
 
-#: .\src\project\ProjectView.ec:952
+#: .\src\project\ProjectView.ec:943
 #: .\src\designer\CodeEditor.ec:2415
 msgid "Untitled %d"
 msgstr "Untitled %d"
 
-#: .\src\project\ProjectView.ec:590
+#: .\src\project\ProjectView.ec:581
 msgid "Updating "
 msgstr "正在更新 "
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:848
+#: .\src\dialogs\GlobalSettingsDialog.ec:855
 #, fuzzy
 msgid "Use ccache"
 msgstr "Use ccache"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:866
+#: .\src\dialogs\GlobalSettingsDialog.ec:873
 #, fuzzy
 msgid "Use distcc"
 msgstr "Use distcc"
@@ -1977,13 +1989,13 @@ msgid "Windows..."
 msgstr "窗口(W)..."
 
 #: .\src\dialogs\FindInFilesDialog.ec:441
-#: .\src\dialogs\GlobalSettingsDialog.ec:1010
+#: .\src\dialogs\GlobalSettingsDialog.ec:1017
 #: .\src\dialogs\WorkspaceSettings.ec:6
 #, fuzzy
 msgid "Workspace"
 msgstr "Workspace"
 
-#: .\src\project\ProjectView.ec:62
+#: .\src\project\ProjectView.ec:55
 msgid "Workspace Files (*.ews)"
 msgstr "解决方案文件(*.ews)"
 
@@ -2040,11 +2052,11 @@ msgstr ""
 "\n"
 "生成被取消.\n"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:886
+#: .\src\dialogs\GlobalSettingsDialog.ec:893
 msgid "distcc hosts"
 msgstr "distcc hosts"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:651
+#: .\src\dialogs\GlobalSettingsDialog.ec:658
 msgid "eC Compiler"
 msgstr "eC编译器"
 
@@ -2052,7 +2064,7 @@ msgstr "eC编译器"
 msgid "eC Files (*.ec, *.eh)"
 msgstr "eC文件(*.ec, *.eh)"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:645
+#: .\src\dialogs\GlobalSettingsDialog.ec:652
 msgid "eC Precompiler"
 msgstr "eC预编译器"
 
@@ -2060,7 +2072,7 @@ msgstr "eC预编译器"
 msgid "eC Source Code"
 msgstr "eC源代码"
 
-#: .\src\dialogs\GlobalSettingsDialog.ec:657
+#: .\src\dialogs\GlobalSettingsDialog.ec:664
 msgid "eC Symbol Loader"
 msgstr "eC符号加载器"
 
@@ -2104,7 +2116,7 @@ msgstr "没有错误, "
 msgid "no warning\n"
 msgstr "没有警告\n"
 
-#: .\src\project\ProjectView.ec:1639
+#: .\src\project\ProjectView.ec:1630
 msgid ""
 "not added because of identical file name conflict within the project.\n"
 "\n"
@@ -2122,7 +2134,7 @@ msgstr "替换"
 msgid "s"
 msgstr " "
 
-#: .\src\project\ProjectView.ec:1638
+#: .\src\project\ProjectView.ec:1629
 #, fuzzy
 msgid "s were "
 msgstr "s were "
@@ -2139,7 +2151,7 @@ msgstr "个警告"
 msgid "warnings"
 msgstr "个警告"
 
-#: .\src\project\ProjectView.ec:539
+#: .\src\project\ProjectView.ec:530
 #, fuzzy
 msgid "{problem with compiler selection}"
 msgstr "{problem with compiler selection}"

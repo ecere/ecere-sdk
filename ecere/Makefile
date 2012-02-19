@@ -826,7 +826,8 @@ RESOURCES3 = \
 	$(RES)status/audioVolumeHigh.png \
 	$(RES)status/folderOpen.png \
 	$(RES)unicode/derivedGeneralCategoryStripped.txt \
-	locale/zh_CN/LC_MESSAGES/ecere.mo
+	locale/zh_CN/LC_MESSAGES/ecere.mo \
+	locale/es_ES/LC_MESSAGES/ecere.mo
 
 
 # TOOLCHAIN
@@ -970,6 +971,7 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(EAR) awq $(TARGET) $(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png "status"
 	$(EAR) awq $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt "unicode"
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ecere.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/ecere.mo "locale/es_ES/LC_MESSAGES"
 	$(call cpq,$(TARGET),../$(SODESTDIR))
 ifdef LINUX
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
