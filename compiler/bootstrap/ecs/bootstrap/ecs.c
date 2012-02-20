@@ -2567,6 +2567,18 @@ __ecereNameSpace__ecere__sys__ChangeExtension(potFileName, "pot", potFileName);
 potFile = __ecereNameSpace__ecere__sys__FileOpen(potFileName, 2);
 if(potFile)
 {
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgid \"\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgstr \n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Project-Id-Version: \\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"POT-Creation-Date: \\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"PO-Revision-Date: \\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Last-Translator: \\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Language-Team: \\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"MIME-Version: 1.0\\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Content-Type: text/plain; charset=iso-8859-1\\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Content-Transfer-Encoding: 8bit\\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"X-Poedit-Basepath: ..\\\\\\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
 {
 struct __ecereNameSpace__ecere__com__MapIterator i = (i.container = (void *)0, i.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&i, (intlStrings)), i);
 

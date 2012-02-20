@@ -10,23 +10,35 @@ msgstr
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ..\\\n"
 
-#: .\EDASQLite.ec:443
+#: .\..\sqlite\EDASQLite.ec:443
 msgid "BEGIN FAILED!"
 msgstr "BEGIN FAILED!"
 
-#: .\EDASQLite.ec:454
+#: .\..\sqlite\EDASQLite.ec:454
 msgid "COMMIT FAILED!"
 msgstr "COMMIT FAILED!"
 
-#: .\EDASQLite.ec:188
+#: .\EDASQLiteCipher.ec:45
+msgid "Can't open database (%s): %s\n"
+msgstr "Can't open database (%s): %s\n"
+
+#: .\..\sqlite\EDASQLite.ec:188
 msgid "EDASQLite: Can't open database (%s): %s\n"
 msgstr "EDASQLite: Can't open database (%s): %s\n"
 
-#: .\EDASQLite.ec:595
+#: .\EDASQLiteCipher.ec:61
+msgid "EDASQLiteCipher: incorrect password!"
+msgstr "EDASQLiteCipher: incorrect password!"
+
+#: .\EDASQLiteCipher.ec:57
+msgid "EDASQLiteCipher: password is correct, database has been initialized"
+msgstr "EDASQLiteCipher: password is correct, database has been initialized"
+
+#: .\..\sqlite\EDASQLite.ec:595
 msgid "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 msgstr "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 
-#: .\EDASQLite.ec:556
+#: .\..\sqlite\EDASQLite.ec:556
 msgid "WARNING: Table not yet created for class "
 msgstr "WARNING: Table not yet created for class "
 

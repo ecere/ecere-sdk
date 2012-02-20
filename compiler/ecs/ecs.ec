@@ -1918,6 +1918,20 @@ class SymbolgenApp : Application
                potFile = FileOpen(potFileName, write);
                if(potFile)
                {
+                  // Write header:
+                  potFile.Puts("msgid \"\"\n");
+                  potFile.Puts("msgstr ""\n");
+                  potFile.Puts("\"Project-Id-Version: \\n\"\n");
+                  potFile.Puts("\"POT-Creation-Date: \\n\"\n");
+                  potFile.Puts("\"PO-Revision-Date: \\n\"\n");
+                  potFile.Puts("\"Last-Translator: \\n\"\n");
+                  potFile.Puts("\"Language-Team: \\n\"\n");
+                  potFile.Puts("\"MIME-Version: 1.0\\n\"\n");
+                  potFile.Puts("\"Content-Type: text/plain; charset=iso-8859-1\\n\"\n");
+                  potFile.Puts("\"Content-Transfer-Encoding: 8bit\\n\"\n");
+                  potFile.Puts("\"X-Poedit-Basepath: ..\\\\\\n\"\n");
+                  potFile.Puts("\n");
+
                   for(i : intlStrings)
                   {
                      ContextStringPair pair = &i;
