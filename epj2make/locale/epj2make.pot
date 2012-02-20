@@ -1,0 +1,116 @@
+#: .\epj2make.ec:232
+msgid "         [-cc <c compiler>]\n"
+msgstr "         [-cc <c compiler>]\n"
+
+#: .\epj2make.ec:231
+msgid "         [-cpp <c preprocessor>]\n"
+msgstr "         [-cpp <c preprocessor>]\n"
+
+#: .\epj2make.ec:243
+msgid "         [-d <intermediate objects directory>]\n"
+msgstr "         [-d <intermediate objects directory>]\n"
+
+#: .\epj2make.ec:236
+msgid "         [-ear <Ecere Archiver>]\n"
+msgstr "         [-ear <Ecere Archiver>]\n"
+
+#: .\epj2make.ec:234
+msgid "         [-ecc <eC compiler>]\n"
+msgstr "         [-ecc <eC compiler>]\n"
+
+#: .\epj2make.ec:233
+msgid "         [-ecp <eC preprocessor>]\n"
+msgstr "         [-ecp <eC preprocessor>]\n"
+
+#: .\epj2make.ec:235
+msgid "         [-ecs <eC symbol generator>]\n"
+msgstr "         [-ecs <eC symbol generator>]\n"
+
+#: .\epj2make.ec:238
+msgid "         [-i <include dir[;inc dir[...]]>]\n"
+msgstr "         [-i <include dir[;inc dir[...]]>]\n"
+
+#: .\epj2make.ec:244
+msgid "         [-includemk <include.mk path>]\n"
+msgstr "         [-includemk <include.mk path>]\n"
+
+#: .\epj2make.ec:239
+msgid "         [-l <library dir[;lib dir[...]]>]\n"
+msgstr "         [-l <library dir[;lib dir[...]]>]\n"
+
+#: .\epj2make.ec:230
+msgid "         [-make <make tool>]\n"
+msgstr "         [-make <make tool>]\n"
+
+#: .\epj2make.ec:241
+msgid "         [-noglobalsettings]\n"
+msgstr "         [-noglobalsettings]\n"
+
+#: .\epj2make.ec:242
+msgid "         [-noresources]\n"
+msgstr "         [-noresources]\n"
+
+#: .\epj2make.ec:237
+msgid "      directories:\n"
+msgstr "      directories:\n"
+
+#: .\epj2make.ec:240
+msgid "      options:\n"
+msgstr "      options:\n"
+
+#: .\epj2make.ec:229
+msgid "      toolchain:\n"
+msgstr "      toolchain:\n"
+
+#: .\epj2make.ec:228
+msgid "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
+msgstr "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
+
+#: .\epj2make.ec:374
+msgid "Error: Input file (%s) does not exist.\n"
+msgstr "Error: Input file (%s) does not exist.\n"
+
+#: .\epj2make.ec:312
+msgid "Error: Project configuration (%s) was not found.\n"
+msgstr "Error: Project configuration (%s) was not found.\n"
+
+#: .\epj2make.ec:370
+msgid "Error: Unable to open project file (%s) due to unknown error.\n"
+msgstr "Error: Unable to open project file (%s) due to unknown error.\n"
+
+#: .\..\ide\src\IDESettings.ec:578
+msgid "GNU Compiler Collection (GCC) / GNU Make"
+msgstr "GNU Compiler Collection (GCC) / GNU Make"
+
+#: .\..\ide\src\IDESettings.ec:581
+msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
+msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
+
+#: .\..\ide\src\IDESettings.ec:582
+msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
+msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
+
+#: .\..\ide\src\IDESettings.ec:584
+msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
+msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
+
+#: .\epj2make.ec:328
+msgid "Notice: Project configuration (%s) will be used.\n"
+msgstr "Notice: Project configuration (%s) will be used.\n"
+
+#: .\..\ide\src\IDESettings.ec:580
+msgid "Portable C Compiler / GNU Make"
+msgstr "Portable C Compiler / GNU Make"
+
+#: .\epj2make.ec:227
+msgid "Syntax:\n"
+msgstr "Syntax:\n"
+
+#: .\..\ide\src\IDESettings.ec:579
+msgid "Tiny C Compiler / GNU Make"
+msgstr "Tiny C Compiler / GNU Make"
+
+#: .\epj2make.ec:206
+msgid "invalid option: %s\n"
+msgstr "invalid option: %s\n"
+

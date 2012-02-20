@@ -1,0 +1,4 @@
+#: .\ecs.ec:1704
+msgid "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n"
+msgstr "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n"
+

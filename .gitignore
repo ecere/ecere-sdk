@@ -5,7 +5,6 @@
 *.imp
 *.sym
 *.main.ec
-*.pot
 *.bowl
 
 # Intermediate dirs

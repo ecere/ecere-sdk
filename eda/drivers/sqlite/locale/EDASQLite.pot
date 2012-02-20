@@ -1,0 +1,20 @@
+#: .\EDASQLite.ec:443
+msgid "BEGIN FAILED!"
+msgstr "BEGIN FAILED!"
+
+#: .\EDASQLite.ec:454
+msgid "COMMIT FAILED!"
+msgstr "COMMIT FAILED!"
+
+#: .\EDASQLite.ec:188
+msgid "EDASQLite: Can't open database (%s): %s\n"
+msgstr "EDASQLite: Can't open database (%s): %s\n"
+
+#: .\EDASQLite.ec:595
+msgid "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
+msgstr "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
+
+#: .\EDASQLite.ec:556
+msgid "WARNING: Table not yet created for class "
+msgstr "WARNING: Table not yet created for class "
+

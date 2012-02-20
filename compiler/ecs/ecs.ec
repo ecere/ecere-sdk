@@ -1911,7 +1911,9 @@ class SymbolgenApp : Application
                char potFileName[MAX_LOCATION];
                //strcpy(potFileName, output);
                //StripExtension(potFileName);
-               strcpy(potFileName, projectName);
+               strcpy(potFileName, "locale");
+               MakeDir(potFileName);
+               PathCat(potFileName, projectName);
                ChangeExtension(potFileName, "pot", potFileName);
                potFile = FileOpen(potFileName, write);
                if(potFile)

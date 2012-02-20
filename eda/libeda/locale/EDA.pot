@@ -1,0 +1,110 @@
+#: .\src\ers.ec:537
+msgid "All files"
+msgstr "All files"
+
+#: .\src\ers.ec:28
+#: .\src\gui.ec:19
+#: .\src\gui.ec:29
+msgid "Arial"
+msgstr "Arial"
+
+#: .\src\ers.ec:534
+msgid "Comma Separated Values Spreadsheet (*.csv)"
+msgstr "Comma Separated Values Spreadsheet (*.csv)"
+
+#: .\src\EDB.ec:253
+msgid "Database file (%s) could not be created.\n"
+msgstr "Database file (%s) could not be created.\n"
+
+#: .\src\EDB.ec:255
+msgid "Database file (%s) could not be opened.\n"
+msgstr "Database file (%s) could not be opened.\n"
+
+#: .\src\gui.ec:788
+msgid "Delete"
+msgstr "Delete"
+
+#: .\src\gui.ec:919
+msgid "Entry"
+msgstr "Entry"
+
+#: .\src\EDB.ec:935
+msgid "Error reading field"
+msgstr "Error reading field"
+
+#: .\src\ers.ec:590
+msgid "Export as Spreadsheet (CSV)"
+msgstr "Export as Spreadsheet (CSV)"
+
+#: .\src\EDB.ec:234
+msgid "Invalid, corrupted or in use (%s) database file.\n"
+msgstr "Invalid, corrupted or in use (%s) database file.\n"
+
+#: .\src\gui.ec:622
+msgid "List"
+msgstr "List"
+
+#: .\src\gui.ec:667
+#: .\src\gui.ec:777
+msgid "List Editor"
+msgstr "List Editor"
+
+#: .\src\gui.ec:725
+msgid "New"
+msgstr "New"
+
+#: .\src\ers.ec:15
+msgid "Please wait while the report is being generated..."
+msgstr "Please wait while the report is being generated..."
+
+#: .\src\gui.ec:963
+msgid "Revert"
+msgstr "Revert"
+
+#: .\src\gui.ec:952
+msgid "Save"
+msgstr "Save"
+
+#: .\src\EDB.ec:153
+msgid "Status: Feeling groovy!\n"
+msgstr "Status: Feeling groovy!\n"
+
+#: .\src\EDB.ec:548
+msgid "Table (%s) does not exist.\n"
+msgstr "Table (%s) does not exist.\n"
+
+#: .\src\gui\TableEditor.ec:120
+#: .\src\gui\TableEditor.ec:127
+msgid "Table Editor"
+msgstr "Table Editor"
+
+#: .\src\EDB.ec:557
+msgid "Unable to detect if table exists!\n"
+msgstr "Unable to detect if table exists!\n"
+
+#: .\src\gui\TableEditor.ec:198
+#: .\src\gui\TableEditor.ec:215
+msgid "WordList match cannot be found in database."
+msgstr "WordList match cannot be found in database."
+
+#: .\src\gui.ec:780
+msgid "You are about to delete an entry.\nDo you wish to continue?"
+msgstr "You are about to delete an entry.\nDo you wish to continue?"
+
+#: .\src\gui\TableEditor.ec:130
+msgid "You are about to permanently remove an entry.\nDo you wish to continue?"
+msgstr "You are about to permanently remove an entry.\nDo you wish to continue?"
+
+#: .\src\gui\TableEditor.ec:122
+#: .\src\gui.ec:667
+msgid "You have modified this entry. Would you like to save it before proceeding?"
+msgstr "You have modified this entry. Would you like to save it before proceeding?"
+
+#: .\src\gui.ec:756
+msgid "[New]"
+msgstr "[New]"
+
+#: .\src\idList.ec:183
+msgid "item"
+msgstr "item"
+
