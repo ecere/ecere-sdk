@@ -1942,11 +1942,11 @@ class SymbolgenApp : Application
                         potFile.Puts("\n");
                      }
 
-                     potFile.Puts("msgid \""); potFile.Puts(pair.string); potFile.Puts("\"\n");
                      if(pair.context)
                      {
                         potFile.Puts("msgctxt \""); potFile.Puts(pair.context); potFile.Puts("\"\n");
                      }
+                     potFile.Puts("msgid \""); potFile.Puts(pair.string); potFile.Puts("\"\n");
                      potFile.Puts("msgstr \""); potFile.Puts(pair.string); potFile.Puts("\"\n");
                      potFile.Puts("\n");
                   }

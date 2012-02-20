@@ -311,8 +311,8 @@ msgid "Exp"
 msgstr "Exp"
 
 #: .\src\gui\controls\CalendarControl.ec:10
-msgid "F"
 msgctxt "Friday"
+msgid "F"
 msgstr "F"
 
 #: .\src\sys\Date.ec:42
@@ -463,8 +463,8 @@ msgid "Look in:"
 msgstr "Look in:"
 
 #: .\src\gui\controls\CalendarControl.ec:9
-msgid "M"
 msgctxt "Monday"
+msgid "M"
 msgstr "M"
 
 #: .\src\sys\Date.ec:42
@@ -485,13 +485,13 @@ msgid "Maximize"
 msgstr "Maximize"
 
 #: .\src\sys\Date.ec:33
-msgid "May"
 msgctxt "LongMonthNames"
+msgid "May"
 msgstr "May"
 
 #: .\src\sys\Date.ec:42
-msgid "May"
 msgctxt "ShortMonthNames"
+msgid "May"
 msgstr "May"
 
 #: .\src\sys\System.ec:105
@@ -619,13 +619,13 @@ msgid "Restore"
 msgstr "Restore"
 
 #: .\src\gui\controls\CalendarControl.ec:11
-msgid "S"
 msgctxt "Saturday"
+msgid "S"
 msgstr "S"
 
 #: .\src\gui\controls\CalendarControl.ec:9
-msgid "S"
 msgctxt "Sunday"
+msgid "S"
 msgstr "S"
 
 #: .\src\sys\Date.ec:39
@@ -758,13 +758,13 @@ msgid "System"
 msgstr "System"
 
 #: .\src\gui\controls\CalendarControl.ec:10
-msgid "T"
 msgctxt "Thursday"
+msgid "T"
 msgstr "T"
 
 #: .\src\gui\controls\CalendarControl.ec:9
-msgid "T"
 msgctxt "Tuesday"
+msgid "T"
 msgstr "T"
 
 #: .\src\gui\skins\TVisionSkin.ec:37
@@ -810,8 +810,8 @@ msgid "Verdana"
 msgstr "Verdana"
 
 #: .\src\gui\controls\CalendarControl.ec:9
-msgid "W"
 msgctxt "Wednesday"
+msgid "W"
 msgstr "W"
 
 #: .\src\sys\Date.ec:38

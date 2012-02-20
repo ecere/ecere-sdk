@@ -1302,8 +1302,8 @@ msgid "Profiling Data"
 msgstr "Profiling Data"
 
 #: .\src\ide.ec:609
-msgid "Project"
 msgctxt "Menu"
+msgid "Project"
 msgstr "Project"
 
 #: .\src\dialogs\GlobalSettingsDialog.ec:969
