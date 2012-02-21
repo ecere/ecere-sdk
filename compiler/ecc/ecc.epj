@@ -99,6 +99,17 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "es_ES",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "ecc.mo"
+                     ]
+                  }
+               ]
             }
          ]
       }

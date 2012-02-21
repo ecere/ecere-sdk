@@ -133,7 +133,8 @@ SOURCES = \
 	src/type.ec
 
 RESOURCES = \
-	locale/zh_CN/LC_MESSAGES/ec.mo
+	locale/zh_CN/LC_MESSAGES/ec.mo \
+	locale/es_ES/LC_MESSAGES/ec.mo
 
 # TOOLCHAIN
 
@@ -194,6 +195,7 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ec.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/ec.mo "locale/es_ES/LC_MESSAGES"
 	$(call cpq,$(TARGET),../../$(SODESTDIR))
 ifdef LINUX
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../$(SODESTDIR)$(LP)$(MODULE)$(SO).0

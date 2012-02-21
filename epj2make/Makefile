@@ -126,6 +126,7 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(STRIP) $(STRIPOPT) $(TARGET)
 	$(EAR) awq $(TARGET) ../include.mk ""
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/epj2make.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/epj2make.mo "locale/es_ES/LC_MESSAGES"
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
 
 # SYMBOL RULES

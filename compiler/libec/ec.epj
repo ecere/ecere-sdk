@@ -139,6 +139,17 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "es_ES",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "ec.mo"
+                     ]
+                  }
+               ]
             }
          ]
       }

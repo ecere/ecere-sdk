@@ -101,6 +101,17 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "es_ES",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "locale/es_ES/EDASQLiteCipher.mo"
+                     ]
+                  }
+               ]
             }
          ]
       }

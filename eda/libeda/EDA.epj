@@ -127,6 +127,17 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "es_ES",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "EDA.mo"
+                     ]
+                  }
+               ]
             }
          ]
       }

@@ -55,6 +55,17 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "es_ES",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "../extract/locale/es_ES/LC_MESSAGES/extract.mo"
+                     ]
+                  }
+               ]
             }
          ]
       },

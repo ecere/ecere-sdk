@@ -1,0 +1,361 @@
+# Spanish translation for ecere
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2012-02-20 13:01+0000\n"
+"PO-Revision-Date: 2012-02-21 17:42+0900\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2012-02-21 08:32+0000\n"
+"X-Generator: Launchpad (build 14838)\n"
+
+#: .\src\pass15.ec:3240
+#: .\src\pass15.ec:3266
+msgid "%s expected to be derived from method class\n"
+msgstr "se esperaba que %s derivase de la clase del método\n"
+
+#: .\src\pass15.ec:8804
+msgid "%s undefined; assuming extern returning int\n"
+msgstr "%s no definido; asumiendo extern devolviendo int\n"
+
+#: .\src\ecdefs.ec:1223
+msgid ":%d:%d: error: "
+msgstr ":%d:%d: error: "
+
+#: .\src\ecdefs.ec:1263
+msgid ":%d:%d: warning: "
+msgstr ":%d:%d: aviso: "
+
+#: .\src\pass15.ec:804
+msgid "Array size not constant int (%s)\n"
+msgstr "El tamaño de la matriz no es un entero constante (%s)\n"
+
+#: .\src\pass15.ec:10320
+msgid "Assigning list initializer to non list\n"
+msgstr "Asignando inicializador de lista a objeto no de tipo lista\n"
+
+#: .\src\pass15.ec:9986
+#: .\src\pass15.ec:11031
+msgid "Couldn't determine type of array elements\n"
+msgstr "Imposible determinar el tipo de los elementos de la matriz\n"
+
+#: .\src\pass0.ec:570
+msgid "Couldn't find member %s to override\n"
+msgstr "Imposibe encontrar el miembro %s a reemplazar\n"
+
+#: .\src\loadSymbols.ec:716
+msgid "Couldn't open %s\n"
+msgstr "Imposible abrir %s\n"
+
+#: .\src\ast.ec:1436
+msgid "Expecting class specifier\n"
+msgstr "Se esperabe un especificador de clase\n"
+
+#: .\src\pass15.ec:11189
+msgid "Expression is not a container\n"
+msgstr "La expresión no es un contenedor\n"
+
+#: .\src\lexer.ec:478
+msgid "Includes nested too deeply"
+msgstr "Demasiadas cabeceras anidadas"
+
+#: .\src\pass1.ec:141
+msgid "Incompatible virtual function %s\n"
+msgstr "Función virtual incompatible %s\n"
+
+#: .\src\pass15.ec:11463
+#: .\src\pass15.ec:11538
+msgid "Invalid object specified and not inside a class\n"
+msgstr "Objeto especificado no válido y no dentro de una clase\n"
+
+#: .\src\pass15.ec:11371
+msgid "Invalid watched object\n"
+msgstr "Objeto a inspeccionar no válido\n"
+
+#: .\src\firstPass.ec:79
+#: .\src\firstPass.ec:104
+#: .\src\firstPass.ec:165
+#: .\src\firstPass.ec:207
+msgid "Member with same name already exists %s in class %s\n"
+msgstr "Un miembro con el mismo nombre ya existe %s en la clase %s\n"
+
+#: .\src\firstPass.ec:97
+#: .\src\firstPass.ec:158
+#: .\src\firstPass.ec:200
+msgid "Member with same name already exists %s in member %s\n"
+msgstr "Un miembro con el mismo nombre ya existe %s en el miembro %s\n"
+
+#: .\src\dbpass.ec:1073
+msgid "Multiple field index requires a name\n"
+msgstr "El índice de campo múltiple requiere un nombre\n"
+
+#: .\src\dbpass.ec:299
+msgid "No database table defined in this module or database_open already used.\n"
+msgstr "Tabla de base de datos no definida en este módulo o database_open ya utilizado.\n"
+
+#: .\src\pass15.ec:11384
+msgid "No observer specified and not inside a _class\n"
+msgstr "No se expecificó un observador y no dentro de una _class\n"
+
+#: .\src\pass15.ec:11541
+msgid "No observer specified and not inside a class\n"
+msgstr "No se especificó un obsercador y no dentro de una clase\n"
+
+#: .\src\pass16.ec:1905
+#: .\src\pass16.ec:1976
+msgid "No set defined for property %s\n"
+msgstr "Set no definido para la propiedad %s\n"
+
+#: .\src\pass0.ec:153
+msgid "Non-static %s making use of a static class\n"
+msgstr "%s no estático haciendo uso de una clase estática\n"
+
+#: .\src\pass1.ec:1035
+#: .\src\pass15.ec:11366
+#: .\src\pass15.ec:11438
+#: .\src\pass15.ec:11527
+msgid "Property %s not found in class %s\n"
+msgstr "Propiedad %s no encontrada en la clase %s\n"
+
+#: .\src\pass0.ec:160
+msgid "Public %s making use of a private class\n"
+msgstr "%s público haciendo uso de una clase privada\n"
+
+#: .\src\pass15.ec:7256
+msgid "Recursion in defined expression %s\n"
+msgstr "Recursividad en la expresión definida %s\n"
+
+#: .\src\loadSymbols.ec:1000
+msgid "Redefinition of %s (defining as %s, already defined as %s)\n"
+msgstr "Redefinición de %s (definiéndolo como %s, ya definido como %s)\n"
+
+#: .\src\ast.ec:681
+msgid "Redefinition of %s ignored\n"
+msgstr "Redefinición de %s ignorada\n"
+
+#: .\src\firstPass.ec:440
+msgid "Redefinition of method %s in class %s\n"
+msgstr "Redefinición del método %s en la clase %s\n"
+
+#: .\src\pass15.ec:4382
+#: .\src\pass15.ec:4483
+msgid "Unhandled type populating instance\n"
+msgstr "Tipo no soportado introduciendo la instancia\n"
+
+#: .\src\pass15.ec:6992
+msgid "Unspecified type\n"
+msgstr "Tipo no especificado\n"
+
+#: .\src\pass15.ec:8819
+msgid "callable object undefined; extern assuming returning int\n"
+msgstr "objeto a llamar no definido; extern asumiento que retorna int\n"
+
+#: .\src\pass15.ec:8629
+msgid "called object %s is not a function\n"
+msgstr "el objeto llamado %s no es una función\n"
+
+#: .\src\pass15.ec:7718
+#: .\src\pass15.ec:7724
+#: .\src\pass15.ec:7888
+msgid "cannot add two pointers\n"
+msgstr "imposible añadir dos punteros\n"
+
+#: .\src\pass15.ec:1567
+msgid "cannot dereference type\n"
+msgstr "imposible des-referenciar tipo\n"
+
+#: .\src\pass2.ec:2214
+msgid "cannot obtain address of property\n"
+msgstr "imposible obtener la dirección de la propiedad\n"
+
+#: .\src\pass0.ec:485
+#: .\src\pass0.ec:491
+msgid "class"
+msgstr "clase"
+
+#: .\src\pass0.ec:397
+#: .\src\pass0.ec:423
+msgid "class data member"
+msgstr "miembro de datos de la clase"
+
+#: .\src\pass0.ec:431
+msgid "class member instance"
+msgstr "instancia miembro de la clase"
+
+#: .\src\pass15.ec:10061
+msgid "couldn't determine type of %s; expected %s\n"
+msgstr "imposible determinar el tipo de %s; se esperaba %s\n"
+
+#: .\src\pass15.ec:8265
+#: .\src\pass15.ec:8277
+#: .\src\pass15.ec:10073
+#: .\src\pass15.ec:10147
+msgid "couldn't determine type of %s\n"
+msgstr "imposible determinar el tipo de %s\n"
+
+#: .\src\pass15.ec:1939
+#: .\src\pass15.ec:9284
+msgid "couldn't find member %s in class %s\n"
+msgstr "imposible encontrar el miembro %s en la clase %s\n"
+
+#: .\src\pass15.ec:1935
+#: .\src\pass15.ec:2044
+msgid "couldn't find virtual method %s in class %s\n"
+msgstr "imposible encontrar el método virtual %s en la clase %s\n"
+
+#: .\src\pass15.ec:7880
+msgid "different levels of indirection\n"
+msgstr "niveles diferentes de indirección\n"
+
+#: .\src\pass15.ec:7736
+#: .\src\pass15.ec:10102
+msgid "incompatible expression %s (%s); expected %s\n"
+msgstr "expresión no compatible %s (%s); se esperaba %s\n"
+
+#: .\src\pass15.ec:7997
+#: .\src\pass15.ec:8157
+msgid "incompatible expressions %s (%s) and %s (%s)\n"
+msgstr "expresiones incompatibles %s (%s) y %s (%s)\n"
+
+#: .\src\pass15.ec:1891
+msgid "incompatible instance method %s\n"
+msgstr "método de instancia incompatible %s\n"
+
+#: .\src\pass15.ec:3339
+msgid "incompatible parameter %s (expected %s)\n"
+msgstr "parámetro incompatible %s (se esperaba %s)\n"
+
+#: .\src\pass15.ec:3279
+msgid "incompatible return type for function\n"
+msgstr "tipo de retorno incompatible para la función\n"
+
+#: .\src\pass15.ec:9098
+msgid "invalid class specifier %s for object of class %s\n"
+msgstr "especificador de clase no válido %s para el objeto de clase %s\n"
+
+#: .\src\pass15.ec:9568
+msgid "member operator on non-structure type expression %s\n"
+msgstr "operador miembro o expresión de tipo no estructural %s\n"
+
+#: .\src\pass15.ec:3214
+#: .\src\pass15.ec:3229
+#: .\src\pass15.ec:3255
+msgid "method class must be derived from %s\n"
+msgstr "la clase del método debe ser derivada de %s\n"
+
+#: .\src\pass15.ec:3216
+msgid "method class should not take an object\n"
+msgstr "la clase del método no debería tomar un objeto\n"
+
+#: .\src\pass2.ec:2216
+#: .\src\pass2.ec:2218
+msgid "no get defined for property %s of class %s\n"
+msgstr "Get no definido para la propiedad %s de la clase %s\n"
+
+#: .\src\pass2.ec:877
+msgid "no set defined for property %s of class %s\n"
+msgstr "Set no definido para la propiedad %s de la clase %s\n"
+
+#: .\src\pass15.ec:8778
+msgid "not enough arguments for function %s (%d given, expected %d)\n"
+msgstr "número de argumentos insuficiente para la función %s (%d proporcionados, se esperaban %d)\n"
+
+#: .\src\pass15.ec:8774
+msgid "not enough arguments for method %s::%s (%d given, expected %d)\n"
+msgstr "número de argumentos insuficiente para el método %s::%s (%d proporcionados, se esperaban %d)\n"
+
+#: .\src\pass15.ec:3290
+msgid "not enough parameters\n"
+msgstr "número de argumentos insuficiente\n"
+
+#: .\src\pass15.ec:7823
+msgid "operating on %s and %s with an untyped result, assuming %s\n"
+msgstr "operando en %s y %s con un resultado no tipificado, asumiendo %s\n"
+
+#: .\src\pass15.ec:7648
+msgid "operator %s illegal on pointer\n"
+msgstr "el operador %s es ilegal en puntero\n"
+
+#: .\src\pass15.ec:3242
+msgid "overriding class expected to be derived from method class\n"
+msgstr "la clase que reemplaza se espera que sea derivada de la clase del método\n"
+
+#: .\src\shortcuts.ec:218
+#: .\src\shortcuts.ec:224
+msgid "parsing type %s\n"
+msgstr "analizando tipo %s\n"
+
+#: .\src\firstPass.ec:306
+msgid "redefinition of class %s\n"
+msgstr "redifinición de clase %s\n"
+
+#: .\src\pass0.ec:720
+msgid "redefinition of constructor for class %s\n"
+msgstr "redifinición del constructor de la clase %s\n"
+
+#: .\src\pass0.ec:697
+msgid "redefinition of destructor for class %s\n"
+msgstr "redifinición del destructor de la clase %s\n"
+
+#: .\src\ecdefs.ec:1282
+#: .\src\grammar.ec:3082
+#: .\src\grammar.ec:3083
+#: .\src\grammar.ec:3084
+#: .\src\grammar.ec:3085
+#: .\src\grammar.ec:3086
+#: .\src\grammar.ec:3087
+#: .\src\grammar.ec:3088
+msgid "syntax error\n"
+msgstr "error de sintaxis\n"
+
+#: .\src\pass15.ec:8697
+msgid "too many arguments for function %s (%d given, expected %d)\n"
+msgstr "demasiados argumentos para la función %s (%d proporcionados, se esperaban %d)\n"
+
+#: .\src\pass15.ec:8693
+msgid "too many arguments for method %s::%s (%d given, expected %d)\n"
+msgstr "demasiados argumentos para el método %s::%s (%d proporcionados, se esperaban %d)\n"
+
+#: .\src\pass15.ec:1945
+msgid "too many initializers for instantiation of class %s\n"
+msgstr "demasiados inicializadores para el instanciamiento de la clase %s\n"
+
+#: .\src\pass15.ec:3353
+msgid "too many parameters\n"
+msgstr "demasiados parámetros\n"
+
+#: .\src\pass15.ec:9551
+msgid "undefined class %s\n"
+msgstr "clase no definida %s\n"
+
+#: .\src\pass15.ec:10138
+msgid "unresolved identifier %s::%s\n"
+msgstr "identificador sin resolver %s::%s\n"
+
+#: .\src\pass15.ec:10059
+msgid "unresolved identifier %s; expected %s\n"
+msgstr "identificador sin resolver %s; se esperaba %s\n"
+
+#: .\src\pass15.ec:10071
+#: .\src\pass15.ec:10140
+msgid "unresolved identifier %s\n"
+msgstr "identificador sin resolver %s\n"
+
+#: .\src\pass15.ec:1885
+msgid "unresolved symbol used as an instance method %s\n"
+msgstr "símbolo sin resolver utilizado como método de instancia %s\n"
+
+#: .\src\pass15.ec:7709
+#: .\src\pass15.ec:7866
+#: .\src\pass15.ec:7873
+msgid "void *: unknown size\n"
+msgstr "void *: tamaño desconocido\n"
+

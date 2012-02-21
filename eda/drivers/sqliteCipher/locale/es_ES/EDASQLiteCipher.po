@@ -1,0 +1,51 @@
+# Spanish translation for ecere
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2012-02-20 13:01+0000\n"
+"PO-Revision-Date: 2012-02-21 17:49+0900\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2012-02-21 08:32+0000\n"
+"X-Generator: Launchpad (build 14838)\n"
+
+#: .\..\sqlite\EDASQLite.ec:443
+msgid "BEGIN FAILED!"
+msgstr "¡ERROR EN INICIO DE TRANSACCIÓN!"
+
+#: .\..\sqlite\EDASQLite.ec:454
+msgid "COMMIT FAILED!"
+msgstr "¡ERROR EN FIN DE TRANSACCIÓN!"
+
+#: .\EDASQLiteCipher.ec:45
+msgid "Can't open database (%s): %s\n"
+msgstr "Imposible abrir la base de datos (%s): %s\n"
+
+#: .\..\sqlite\EDASQLite.ec:188
+msgid "EDASQLite: Can't open database (%s): %s\n"
+msgstr "EDASQLite: Imposible abrir la base de datos (%s): %s\n"
+
+#: .\EDASQLiteCipher.ec:61
+msgid "EDASQLiteCipher: incorrect password!"
+msgstr "EDASQLiteCipher: ¡contraseña errónea!"
+
+#: .\EDASQLiteCipher.ec:57
+msgid "EDASQLiteCipher: password is correct, database has been initialized"
+msgstr "EDASQLiteCipher: la contraseña es correcta, la base de datos ha sido inicializada"
+
+#: .\..\sqlite\EDASQLite.ec:595
+msgid "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
+msgstr "AVISO: ALTER TABLE NO FUNCIONA CON PRIMARY KEY PARA "
+
+#: .\..\sqlite\EDASQLite.ec:556
+msgid "WARNING: Table not yet created for class "
+msgstr "AVISO: La tabla aún no ha sido creaada para la clase "
+

@@ -1,0 +1,137 @@
+# Spanish translation for ecere
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2012-02-20 13:28+0000\n"
+"PO-Revision-Date: 2012-02-21 17:44+0900\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2012-02-21 08:32+0000\n"
+"X-Generator: Launchpad (build 14838)\n"
+
+#: .\src\ers.ec:537
+msgid "All files"
+msgstr "Todos los archivos"
+
+#: .\src\ers.ec:28
+#: .\src\gui.ec:19
+#: .\src\gui.ec:29
+msgid "Arial"
+msgstr "Arial"
+
+#: .\src\ers.ec:534
+msgid "Comma Separated Values Spreadsheet (*.csv)"
+msgstr "Hola de cálculo de valores separados por coma (*.csv)"
+
+#: .\src\EDB.ec:253
+msgid "Database file (%s) could not be created.\n"
+msgstr "No se pudo crear el archivo de base de datos (%s).\n"
+
+#: .\src\EDB.ec:255
+msgid "Database file (%s) could not be opened.\n"
+msgstr "No se pudo abrir el archivo de base de datos (%s).\n"
+
+#: .\src\gui.ec:788
+msgid "Delete"
+msgstr "Eliminar"
+
+#: .\src\gui.ec:919
+msgid "Entry"
+msgstr "Entrada"
+
+#: .\src\EDB.ec:935
+msgid "Error reading field"
+msgstr "Error al leer el campo"
+
+#: .\src\ers.ec:590
+msgid "Export as Spreadsheet (CSV)"
+msgstr "Exportar como hoja de cálculo (CSV)"
+
+#: .\src\EDB.ec:234
+msgid "Invalid, corrupted or in use (%s) database file.\n"
+msgstr "Archivo de base de datos no válido, corrupto o en uso (%s).\n"
+
+#: .\src\gui.ec:622
+msgid "List"
+msgstr "Lista"
+
+#: .\src\gui.ec:667
+#: .\src\gui.ec:777
+msgid "List Editor"
+msgstr "Editor de lista"
+
+#: .\src\gui.ec:725
+msgid "New"
+msgstr "Nuevo"
+
+#: .\src\ers.ec:15
+msgid "Please wait while the report is being generated..."
+msgstr "Por favor, espere mientras se genera el informe..."
+
+#: .\src\gui.ec:963
+msgid "Revert"
+msgstr "Deshacer"
+
+#: .\src\gui.ec:952
+msgid "Save"
+msgstr "Guardar"
+
+#: .\src\EDB.ec:153
+msgid "Status: Feeling groovy!\n"
+msgstr "Estado: ¡Feeling groovy!\n"
+
+#: .\src\EDB.ec:548
+msgid "Table (%s) does not exist.\n"
+msgstr "La tabla (%s) no existe.\n"
+
+#: .\src\gui\TableEditor.ec:120
+#: .\src\gui\TableEditor.ec:127
+msgid "Table Editor"
+msgstr "Editor de tablas"
+
+#: .\src\EDB.ec:557
+msgid "Unable to detect if table exists!\n"
+msgstr "¡Imposible detectar si la tabla existe!\n"
+
+#: .\src\gui\TableEditor.ec:198
+#: .\src\gui\TableEditor.ec:215
+msgid "WordList match cannot be found in database."
+msgstr "No se pueden encontrar coincidencias para el WordList en la base de datos."
+
+#: .\src\gui.ec:780
+msgid ""
+"You are about to delete an entry.\n"
+"Do you wish to continue?"
+msgstr ""
+"Se dispone a eliminar una entrada.\n"
+"¿Desea continuar?"
+
+#: .\src\gui\TableEditor.ec:130
+msgid ""
+"You are about to permanently remove an entry.\n"
+"Do you wish to continue?"
+msgstr ""
+"Se dispone a eliminar permanentemente una entrada.\n"
+"¿Desea continuar?"
+
+#: .\src\gui\TableEditor.ec:122
+#: .\src\gui.ec:667
+msgid "You have modified this entry. Would you like to save it before proceeding?"
+msgstr "Ha modificado esta entrada. ¿Le gustaría guardarla antes de proceder?"
+
+#: .\src\gui.ec:756
+msgid "[New]"
+msgstr "[Nuevo]"
+
+#: .\src\idList.ec:183
+msgid "item"
+msgstr "elemento"
+

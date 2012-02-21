@@ -47,7 +47,8 @@ SOURCES = \
 	../sqlite/EDASQLite.ec
 
 RESOURCES = \
-	locale/zh_CN/LC_MESSAGES/EDASQLiteCipher.mo
+	locale/zh_CN/LC_MESSAGES/EDASQLiteCipher.mo \
+	locale/es_ES/EDASQLiteCipher.mo
 
 # TOOLCHAIN
 export LD_LIBRARY_PATH = ../../../obj/$(PLATFORM)/lib/
@@ -131,6 +132,7 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/EDASQLiteCipher.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) awq $(TARGET) locale/es_ES/EDASQLiteCipher.mo "locale/es_ES/LC_MESSAGES"
 	$(call cpq,$(TARGET),../../../$(SODESTDIR))
 ifdef LINUX
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../../$(SODESTDIR)$(LP)$(MODULE)$(SO).0

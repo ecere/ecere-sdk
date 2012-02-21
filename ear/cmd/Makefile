@@ -32,6 +32,8 @@ SOURCES = \
 	ear.ec
 
 RESOURCES = \
+	locale/zh_CN/LC_MESSAGES/ear.mo \
+	locale/es_ES/LC_MESSAGES/ear.mo \
 	../extract/obj/release.$(PLATFORM)/extract$(E)
 
 # CROSS-PLATFORM MAGIC
@@ -94,6 +96,7 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(STRIP) $(STRIPOPT) $(TARGET)
 	$(EAR) awq $(TARGET) ../extract/obj/release.$(PLATFORM)/extract$(E) ""
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ear.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) aw $(TARGET) locale/es_ES/LC_MESSAGES/ear.mo "locale/es_ES/LC_MESSAGES"
 	$(call cpq,$(TARGET),../../obj/$(PLATFORM)/bin)
 
 # SYMBOL RULES

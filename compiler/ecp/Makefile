@@ -32,7 +32,8 @@ SOURCES = \
 	ecp.ec
 
 RESOURCES = \
-	locale/zh_CN/LC_MESSAGES/ecp.mo
+	locale/zh_CN/LC_MESSAGES/ecp.mo \
+	locale/es_ES/LC_MESSAGES/ecp.mo
 
 # CROSS-PLATFORM MAGIC
 
@@ -88,6 +89,7 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ecp.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/ecp.mo "locale/es_ES"
 	$(call cpq,$(TARGET),../../obj/$(PLATFORM)/bin/)
 
 # SYMBOL RULES

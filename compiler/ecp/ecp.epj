@@ -120,6 +120,12 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "es_ES",
+               "Files" : [
+                  "locale/es_ES/LC_MESSAGES/ecp.mo"
+               ]
             }
          ]
       }
