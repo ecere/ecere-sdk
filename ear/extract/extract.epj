@@ -225,7 +225,7 @@
                   {
                      "Folder" : "LC_MESSAGES",
                      "Files" : [
-                        "locale/es_ES/extract.mo"
+                        "extract.mo"
                      ]
                   }
                ]
