@@ -2486,9 +2486,9 @@ char * cppOptions = (((void *)0));
 int cppOptionsLen = 0;
 int targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
 
-for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc; c++)
+for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)
 {
-char * arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c];
+char * arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c];
 
 if(arg[0] == '-')
 {
@@ -2529,23 +2529,23 @@ cppOptionsLen = newLen;
 }
 else if(!strcmp(arg + 1, "t"))
 {
-if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc)
-targetPlatform = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c]);
+if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+targetPlatform = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c]);
 else
 valid = 0x0;
 }
 else if(!strcmp(arg + 1, "cpp"))
 {
-if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc)
-cppCommand = __ecereNameSpace__ecere__sys__CopyString(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c]);
+if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+cppCommand = __ecereNameSpace__ecere__sys__CopyString(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c]);
 else
 valid = 0x0;
 }
 else if(!strcmp(arg + 1, "o"))
 {
-if(!GetOutputFile() && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc)
+if(!GetOutputFile() && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
 {
-SetOutputFile(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c + 1]);
+SetOutputFile(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
 c++;
 }
 else
@@ -2553,9 +2553,9 @@ valid = 0x0;
 }
 else if(!strcmp(arg + 1, "c"))
 {
-if(!GetSourceFile() && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc)
+if(!GetSourceFile() && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
 {
-SetSourceFile(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c + 1]);
+SetSourceFile(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
 c++;
 }
 else
@@ -2563,10 +2563,10 @@ valid = 0x0;
 }
 else if(!strcmp(arg + 1, "isystem") || !strcmp(arg + 1, "isysroot"))
 {
-if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc)
+if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
 {
 int argLen = strlen(arg);
-int arg1Len = strlen(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c + 1]);
+int arg1Len = strlen(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
 int newLen = cppOptionsLen + argLen + arg1Len + 4;
 
 cppOptions = __ecereNameSpace__ecere__com__eSystem_Renew(cppOptions, sizeof(char) * (newLen + 1));
@@ -2574,7 +2574,7 @@ cppOptions[cppOptionsLen] = ' ';
 strcpy(cppOptions + cppOptionsLen + 1, arg);
 cppOptions[cppOptionsLen + argLen + 1] = ' ';
 cppOptions[cppOptionsLen + argLen + 2] = '"';
-arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[++c];
+arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[++c];
 strcpy(cppOptions + cppOptionsLen + argLen + 3, arg);
 cppOptions[newLen - 1] = '\"';
 cppOptions[newLen] = '\0';
@@ -2585,9 +2585,9 @@ valid = 0x0;
 }
 else if(!strcmp(arg + 1, "symbols"))
 {
-if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc)
+if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
 {
-SetSymbolsDir(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c + 1]);
+SetSymbolsDir(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
 c++;
 }
 else
@@ -2595,9 +2595,9 @@ valid = 0x0;
 }
 else if(!strcmp(arg + 1, "defaultns"))
 {
-if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc)
+if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
 {
-SetDefaultNameSpace(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c + 1]);
+SetDefaultNameSpace(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
 c++;
 }
 else
@@ -2691,7 +2691,7 @@ if(ast)
 ProcessDBTableDefinitions();
 PreCompPreProcessClassDefinitions();
 }
-if(!((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->exitCode)
+if(!((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->exitCode)
 OutputSymbols(GetOutputFile());
 }
 if(ast)
@@ -2729,6 +2729,7 @@ char *  name;
 void *  library;
 void *  Unload;
 int importType;
+int origImportType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 };

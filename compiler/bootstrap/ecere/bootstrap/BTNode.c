@@ -1064,6 +1064,7 @@ char *  name;
 void *  library;
 void *  Unload;
 int importType;
+int origImportType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 };

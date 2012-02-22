@@ -1395,6 +1395,7 @@ char *  name;
 void *  library;
 void *  Unload;
 int importType;
+int origImportType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 };
@@ -2300,17 +2301,17 @@ unsigned int valid = 0x1;
 char * output = (((void *)0));
 
 targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
-for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc; c++)
+for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)
 {
-char * arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c];
+char * arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c];
 
 if(arg[0] == '-')
 {
 if(!strcmp(arg + 1, "o"))
 {
-if(!output && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc)
+if(!output && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
 {
-output = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c + 1];
+output = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1];
 c++;
 }
 else
@@ -2318,9 +2319,9 @@ valid = 0x0;
 }
 else if(!strcmp(arg, "-name"))
 {
-if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc)
+if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
 {
-strcpy(projectName, ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c + 1]);
+strcpy(projectName, ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
 c++;
 }
 else
@@ -2328,8 +2329,8 @@ valid = 0x0;
 }
 else if(!strcmp(arg, "-t"))
 {
-if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc)
-targetPlatform = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c]);
+if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+targetPlatform = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c]);
 else
 valid = 0x0;
 }
@@ -2344,9 +2345,9 @@ isStaticLibrary = 0x1;
 }
 else if(!strcmp(arg, "-symbols"))
 {
-if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc)
+if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
 {
-SetSymbolsDir(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c + 1]);
+SetSymbolsDir(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
 c++;
 }
 else
@@ -2383,9 +2384,9 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_imports, mainModule);
 struct __ecereNameSpace__ecere__com__Instance * intlStrings = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_String___);
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, intlStrings), it);
 
-for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc; c++)
+for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)
 {
-char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c];
+char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c];
 
 if(file[0] == '-')
 {
@@ -2401,9 +2402,9 @@ if(!strcmp(ext, "imp"))
 LoadImports(file);
 }
 }
-for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc; c++)
+for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)
 {
-char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c];
+char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c];
 
 if(file[0] == '-')
 {
@@ -2411,9 +2412,9 @@ if(!strcmp(file, "-c"))
 c++;
 }
 }
-for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argc; c++)
+for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)
 {
-char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 296)))->argv[c];
+char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c];
 
 if(file[0] == '-')
 {

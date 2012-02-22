@@ -1186,6 +1186,7 @@ char *  name;
 void *  library;
 void *  Unload;
 int importType;
+int origImportType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 };
@@ -1221,7 +1222,7 @@ Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Non-s
 }
 else if(access == 1)
 {
-if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + 12)))->application + 296)))->systemNameSpace))
+if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + 12)))->application + 300)))->systemNameSpace))
 {
 if(NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + 12)))->privateNameSpace) || !ModuleAccess(privateModule, regClass->module))
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Public %s making use of a private class\n", (((void *)0))), word);

@@ -2343,6 +2343,7 @@ char *  name;
 void *  library;
 void *  Unload;
 int importType;
+int origImportType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 };
@@ -4910,13 +4911,13 @@ unsigned int MatchWithEnums_Module(struct __ecereNameSpace__ecere__com__Instance
 {
 struct __ecereNameSpace__ecere__com__Instance * module;
 
-if(MatchWithEnums_NameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)mainModule + 12)))->application + 296)))->systemNameSpace, sourceExp, dest, string, conversions))
+if(MatchWithEnums_NameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)mainModule + 12)))->application + 300)))->systemNameSpace, sourceExp, dest, string, conversions))
 return 0x1;
 if(MatchWithEnums_NameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)mainModule + 12)))->application + 12)))->privateNameSpace, sourceExp, dest, string, conversions))
 return 0x1;
 if(MatchWithEnums_NameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)mainModule + 12)))->application + 12)))->publicNameSpace, sourceExp, dest, string, conversions))
 return 0x1;
-for(module = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)mainModule + 12)))->application + 296)))->allModules.first; module; module = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->next)
+for(module = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)mainModule + 12)))->application + 300)))->allModules.first; module; module = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->next)
 {
 if(ModuleVisibility(mainModule, module) && MatchWithEnums_NameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->publicNameSpace, sourceExp, dest, string, conversions))
 return 0x1;

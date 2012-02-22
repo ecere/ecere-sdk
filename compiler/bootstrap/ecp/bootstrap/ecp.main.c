@@ -532,6 +532,7 @@ char *  name;
 void *  library;
 void *  Unload;
 int importType;
+int origImportType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 };
@@ -650,7 +651,7 @@ __ecereCreateModuleInstances_ecp();
 __ecereDestroyModuleInstances_ecp();
 __ecereNameSpace__ecere__UnloadTranslatedStrings(__currentModule);
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(__currentModule, "ecere::com::Application");
-exitCode = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Instance *)__currentModule) + 296)))->exitCode;
+exitCode = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Instance *)__currentModule) + 300)))->exitCode;
 (__ecereNameSpace__ecere__com__eInstance_DecRef(__currentModule), __currentModule = 0);
 return exitCode;
 }

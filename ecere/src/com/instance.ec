@@ -189,7 +189,7 @@ public dllexport void MemoryGuard_PopLoc()
 default:
 
 extern bool stdcall COM_LOAD_FUNCTION(Module module);
-extern void stdcall COM_UNLOAD_FUNCTION(Module module);
+extern bool stdcall COM_UNLOAD_FUNCTION(Module module);
 
 private:
 
@@ -421,6 +421,8 @@ public class Module : struct
    void * library;
    void (stdcall * Unload)(Module module);
    ImportType importType;
+   // Added to solve stdcall issues with the bootstrap on Windows for Unload
+   ImportType origImportType;
 
    NameSpace privateNameSpace;
    NameSpace publicNameSpace;
@@ -4986,7 +4988,7 @@ public dllexport BitMember eClass_AddBitMember(Class _class, char * name, char *
 static Module Module_Load(Module fromModule, char * name, AccessMode importAccess, bool ensureCOM)
 {
    bool (stdcall * Load)(Module module) = null;
-   void (stdcall * Unload)(Module module) = null;
+   bool (stdcall * Unload)(Module module) = null;
    Module module;
 
    for(module = fromModule.application.allModules.first; module; module = module.next)
@@ -5022,6 +5024,7 @@ static Module Module_Load(Module fromModule, char * name, AccessMode importAcces
          module.library = library;
          module.name = CopyString(name);
          module.Unload = Unload;
+         module.origImportType = normalImport;
          if(!Load(module))
          {
             eInstance_Delete((Instance)module);
@@ -5105,6 +5108,7 @@ public dllexport Module eModule_LoadStatic(Module fromModule, char * name, Acces
          module = (Module)eInstance_New(eSystem_FindClass(fromModule, "Module"));
          module.application = fromModule.application;
          module.name = CopyString(name);
+         module.origImportType = staticImport;
          module.Unload = (void *)Unload;
          if(!Load(module))
          {
@@ -5239,7 +5243,7 @@ static void Module_Destructor(Module module)
 
    if(module.Unload)
    {
-      if(module.importType == staticImport)
+      if(module.origImportType == staticImport)
       {
          bool (* Unload)(Module module) = (void *)module.Unload;
          Unload(module);
@@ -5814,6 +5818,7 @@ static void LoadCOM(Module module)
    eClass_AddDataMember(moduleClass, "library", "void *", sizeof(void *), 4, publicAccess);
    eClass_AddDataMember(moduleClass, "Unload", "void *", sizeof(void *), 4, publicAccess);
    eClass_AddDataMember(moduleClass, "importType", "ImportType", sizeof(ImportType), 4, publicAccess);
+   eClass_AddDataMember(moduleClass, "origImportType", "ImportType", sizeof(ImportType), 4, publicAccess);
    eClass_AddDataMember(moduleClass, "privateNameSpace", "NameSpace", sizeof(NameSpace), 4, publicAccess);
    eClass_AddDataMember(moduleClass, "publicNameSpace", "NameSpace", sizeof(NameSpace), 4, publicAccess);
    moduleClass.fixed = true;

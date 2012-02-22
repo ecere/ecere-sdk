@@ -1584,6 +1584,7 @@ char *  name;
 void *  library;
 void *  Unload;
 int importType;
+int origImportType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 };
@@ -1628,7 +1629,7 @@ __builtin_va_start(args, format);
 vsprintf(string, format, args);
 __builtin_va_end(args);
 fputs(string, (bsl_stdout()));
-((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application + 296)))->exitCode = 1;
+((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application + 300)))->exitCode = 1;
 }
 else
 {
