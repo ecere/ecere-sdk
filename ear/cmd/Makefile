@@ -86,12 +86,16 @@ $(OBJECTS): | objdir
 
 nores: $(SOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
+ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
+endif
 	$(call cpq,$(TARGET),../../obj/$(PLATFORM)/bin/)
 
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
+ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
+endif
 	$(EAR) awq $(TARGET) ../extract/obj/release.$(PLATFORM)/extract$(E) ""
 	$(call cpq,$(TARGET),../../obj/$(PLATFORM)/bin)
 

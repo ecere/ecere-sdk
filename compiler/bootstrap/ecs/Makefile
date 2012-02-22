@@ -78,7 +78,9 @@ objdir:
 
 $(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
+ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
+endif
 
 $(OBJ)ecs.o: bootstrap/ecs.c
 	$(CC) $(CFLAGS) -c bootstrap/ecs.c -o $(OBJ)ecs.o
