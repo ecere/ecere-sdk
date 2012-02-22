@@ -940,7 +940,9 @@ $(OBJECTS): | objdir
 
 nores: $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
+ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
+endif
 ifdef WINDOWS
 	$(call cpq,$(TARGET),../compiler/bootstrap/obj/bin.$(PLATFORM)/)
 endif
@@ -952,7 +954,9 @@ endif
 
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(SONAME) $(INSTALLNAME)
+ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
+endif
 	$(EAR) awq $(TARGET) $(RES)actions/editFind.png $(RES)actions/folderNew.png $(RES)actions/goDown.png $(RES)actions/goHome.png $(RES)actions/goNext.png $(RES)actions/goPrevious.png $(RES)actions/goUp.png $(RES)actions/listAdd.png $(RES)actions/listRemove.png $(RES)actions/viewRefresh.png "actions"
 	$(EAR) awq $(TARGET) $(RES)actions/windowNew.png "actions"
 	$(EAR) awq $(TARGET) $(RES)constructs/class.png $(RES)constructs/data.png $(RES)constructs/dataPrivate.png $(RES)constructs/dataType.png $(RES)constructs/enum.png $(RES)constructs/enumValue.png $(RES)constructs/event.png $(RES)constructs/library.png $(RES)constructs/method.png $(RES)constructs/methodPrivate.png "constructs"

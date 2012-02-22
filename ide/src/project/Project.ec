@@ -2139,7 +2139,9 @@ private:
 
             if(!GetDebug(config))
             {
+               f.Printf("ifndef NOSTRIP\n");
                f.Printf("\t$(STRIP) $(STRIPOPT) $(TARGET)\n");
+               f.Printf("endif\n");
 
                if(GetCompress(config))
                {

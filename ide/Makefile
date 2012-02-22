@@ -351,7 +351,9 @@ ifdef WINDOWS
 $(TARGET): obj/resources.o
 endif
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
+ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
+endif
 	$(EAR) awq $(TARGET) res/ecere.jpg res/ecereBack.jpg res/icon.png ../include.mk ""
 	$(EAR) awq $(TARGET) $(RES)actions/attach.png $(RES)actions/delete.png $(RES)actions/detach.png $(RES)actions/docNew.png $(RES)actions/editCopy.png $(RES)actions/editDelete.png $(RES)actions/delete2.png "actions"
 	$(EAR) awq $(TARGET) $(RES)codeMarks/breakpoint.png $(RES)codeMarks/breakpointDisabled.png $(RES)codeMarks/breakpointHalf.png $(RES)codeMarks/breakpointHalfDisabled.png $(RES)codeMarks/cursor.png $(RES)codeMarks/cursorError.png $(RES)codeMarks/topFrame.png $(RES)codeMarks/topFrameError.png $(RES)codeMarks/topFrameHalf.png $(RES)codeMarks/topFrameHalfError.png "codeMarks"

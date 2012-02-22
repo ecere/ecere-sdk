@@ -107,7 +107,9 @@ $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
+ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
+endif
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/EDASQLite.mo "locale/zh_CN/LC_MESSAGES"
 	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/EDASQLite.mo "locale/es_ES/LC_MESSAGES"
 	$(call cpq,$(TARGET),../../../$(SODESTDIR))

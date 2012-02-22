@@ -127,7 +127,9 @@ $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
+ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
+endif
 	$(EAR) awq $(TARGET) res/documentorIcon.png ""
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/documentor.mo "locale/zh_CN/LC_MESSAGES"
 	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/documentor.mo "locale/es_ES/LC_MESSAGES"
