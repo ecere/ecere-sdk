@@ -1200,7 +1200,8 @@ private:
                         ide.outputView.buildBox.Logf($"Generating symbols...\n");
                         precompiling = true;
                      }
-                     Tokenize(module, 1, tokens, false);
+                     // Changed escapeBackSlashes here to handle paths with spaces
+                     Tokenize(module, 1, tokens, true); // false);
                      GetLastDirectory(module, moduleName);
                      ide.outputView.buildBox.Logf("%s\n", moduleName);
                   }
@@ -1594,12 +1595,12 @@ private:
 
    void GetMakefileTargetFileName(TargetTypes targetType, char * fileName, ProjectConfig config)
    {
-      char s[MAX_LOCATION];
       fileName[0] = '\0';
       if(targetType == staticLibrary || targetType == sharedLibrary)
          strcat(fileName, "$(LP)");
-      ReplaceSpaces(s, GetTargetFileName(config));
-      strcat(fileName, s);
+      // !!! ReplaceSpaces must be done after all PathCat calls !!!
+      // ReplaceSpaces(s, GetTargetFileName(config));
+      strcat(fileName, GetTargetFileName(config));
       switch(targetType)
       {
          case executable:
