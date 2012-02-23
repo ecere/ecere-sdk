@@ -541,7 +541,7 @@ public class GuiApplication : Application
          // Setup Desktop
          if(!desktop)
          {
-            desktop = Window { };
+            desktop = Window { nativeDecorations = false };
             incref desktop;
             incref desktop;
             desktop.childrenOrder.circ = true;

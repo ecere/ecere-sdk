@@ -176,12 +176,12 @@ class FormDesigner : ClassDesignerBase
 
    void ::CreateNew(EditBox editBox, Size clientSize, char * name, char * inherit)
    {
-      int w = 640, h = 480;
+      int w = 632, h = 438;
       if(clientSize.w - 40 -200 < w)
       {
          w = (clientSize.w - 40 - 200);
          w -= w % GridSnap;
-         h = h * w / 640;
+         h = h * w / 632;
          h -= h % GridSnap;
          w = Max(w, 304);
          h = Max(h, 304);
@@ -201,7 +201,7 @@ class FormDesigner : ClassDesignerBase
       editBox.Printf("   hasMinimize = true;\n");
       editBox.Printf("   hasClose = true;\n");
       //editBox.Printf("   position = { 20, 20 };\n");
-      editBox.Printf("   size = { %d, %d };\n", w, h);
+      editBox.Printf("   clientSize = { %d, %d };\n", w, h);
       
       
       //editBox.Printf("   Button ok { parent = this, position = { 100, 100 }, size = { 80, 20 } };\n");

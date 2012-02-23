@@ -539,6 +539,7 @@ private:
       autoCreate = true;
       modifyVirtArea = true;
       manageDisplay = true;
+      nativeDecorations = true;
 
       // scrollFlags = ScrollFlags { snapX = true, snapY = true };
       sbStep.x = sbStep.y = 8;
@@ -8010,6 +8011,7 @@ public:
             style.hasClose = false;
             style.hasMaximize = false;
             style.hasMinimize = false;
+            nativeDecorations = false;
          }
          style.borderBits = value;
          if(created)
@@ -9195,7 +9197,12 @@ public:
    property bool alphaBlend { get { return (bool)alphaBlend; } set { alphaBlend = value; } };
    property bool useSharedMemory { get { return (bool)useSharedMemory; } set { useSharedMemory = value; } };
    property CreationActivationOption creationActivation { get { return creationActivation; } set { creationActivation = value; } };
-   property bool nativeDecorations { get { return (bool)nativeDecorations && (formDesigner || rootWindow == this); } set { nativeDecorations = value; } };
+   property bool nativeDecorations
+   {
+      get { return (bool)nativeDecorations && (formDesigner || rootWindow == this); }
+      set { nativeDecorations = value; }
+      isset { return nativeDecorations != style.fixed; }
+   };
    property bool manageDisplay { get { return (bool)manageDisplay; } set { manageDisplay = value; } };
    
 private:
