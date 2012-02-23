@@ -82,7 +82,7 @@ class FormDesigner : ClassDesignerBase
    void ::DroppedObject(Window instance, ObjectInfo object, bool isClass, Window _class)
    {
       instance.parent = _class;
-      instance.text = object.name;
+      instance.caption = object.name;
       instance.Create();
    }
 
@@ -192,7 +192,7 @@ class FormDesigner : ClassDesignerBase
       editBox.Printf("class %s : %s\n", name, inherit);
       editBox.Printf("{\n");
       
-      editBox.Printf("   text = \"%s\";\n", name);
+      editBox.Printf("   caption = \"%s\";\n", name);
       //editBox.Printf("   background = Color { 212, 208, 200 };\n");
       
       editBox.Printf("   background = activeBorder;\n");
@@ -212,7 +212,7 @@ class FormDesigner : ClassDesignerBase
       /*
       editBox.Printf("class %s : %s\n", "SecondForm", inherit);
       editBox.Printf("{\n");
-      editBox.Printf("   text = \"%s\";\n", "SecondForm");
+      editBox.Printf("   caption = \"%s\";\n", "SecondForm");
       editBox.Printf("   background = Color { 100, 90, 120 };\n");
       editBox.Printf("   borderStyle = sizable;\n");
       editBox.Printf("   hasMaximize = true;\n");
@@ -220,7 +220,7 @@ class FormDesigner : ClassDesignerBase
       editBox.Printf("   hasClose = true;\n");
       editBox.Printf("   position = { 20, 20 };\n");
       editBox.Printf("   size = { %d, %d };\n", 320, 200);
-      editBox.Printf("   Button ok { parent = this, text = \"OK\", position = { A_RIGHT|10, A_RIGHT|10 }, size = { 80, 20 } };\n");
+      editBox.Printf("   Button ok { parent = this, caption = \"OK\", position = { A_RIGHT|10, A_RIGHT|10 }, size = { 80, 20 } };\n");
       editBox.Printf("}\n");
       */
    }
@@ -604,7 +604,7 @@ class FormDesigner : ClassDesignerBase
 
                control.position.x = x;
                control.position.y = y;
-               control.text = object.name;
+               control.caption = object.name;
 
                LockControls(control, control);
 
@@ -830,7 +830,7 @@ static bool OnKeyDown(Window window, Key key, unichar ch)
          bool confirmation = activeDesigner.ObjectContainsCode(designer.selected.object);
 
          if(confirmation)
-            confirmation = MessageBox { type = okCancel, master = window.master, text = $"Deleting control with code", contents = $"Control contains code. Delete anyways?" }.Modal() != ok;
+            confirmation = MessageBox { type = okCancel, master = window.master, caption = $"Deleting control with code", contents = $"Control contains code. Delete anyways?" }.Modal() != ok;
 
          // Confirmation if control contains other controls
          if(!confirmation)
@@ -846,7 +846,7 @@ static bool OnKeyDown(Window window, Key key, unichar ch)
             }
 
             if(confirmation)
-               confirmation = MessageBox { type = okCancel, master = window.master, text = $"Deleting control with children", contents = $"Control contains other controls. Delete control and children?"}.Modal() != ok;
+               confirmation = MessageBox { type = okCancel, master = window.master, caption = $"Deleting control with children", contents = $"Control contains other controls. Delete control and children?"}.Modal() != ok;
          }
 
          if(!confirmation)

@@ -549,8 +549,7 @@ public class GuiApplication : Application
             desktop.background = blue;
             desktop.rootWindow = desktop;
             desktop.cursor = GetCursor(arrow);
-            desktop.caption = new char[strlen(appName) + 1];
-            strcpy(desktop.caption, appName);
+            desktop.caption = appName;
             *&desktop.visible = true;
             desktop.position = Point { };
             desktop.mutex = Mutex { };

@@ -487,7 +487,7 @@ public class Window
 private:
    class_data char * icon;
    class_no_expansion
-   class_default_property text;
+   class_default_property caption;
    // class_initialize GuiApplication::Initialize;
    class_designer FormDesigner;
    class_property char * icon
@@ -7913,7 +7913,7 @@ public:
       get { return master ? master : parent; }
    };
 
-   property char * text
+   property char * caption
    {
       property_category $"Appearance"
       watchable
@@ -9204,7 +9204,14 @@ public:
       isset { return nativeDecorations != style.fixed; }
    };
    property bool manageDisplay { get { return (bool)manageDisplay; } set { manageDisplay = value; } };
-   
+
+   property char * text
+   {
+      property_category $"Deprecated"
+      watchable
+      set { property::caption = value; }
+      get { return property::caption; }
+   }
 private:
    // Data
    //char * yo;
