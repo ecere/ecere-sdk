@@ -309,7 +309,7 @@ public class WindowsSkin_Window : Window
    {
       bool isNormal = (state == normal);
       int top = 0, border = 0, bottom = 0;
-      Window parentMenuBar = GetParentMenuBar() != null;
+      Window parentMenuBar = GetParentMenuBar();
 
       if(nativeDecorations && rootWindow == this) return;
 
