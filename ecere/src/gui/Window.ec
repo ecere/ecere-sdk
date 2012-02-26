@@ -5867,7 +5867,8 @@ private:
 
       for(child = children.first; child; child = child.next)
       {
-         if(child.style.isDocument)
+         // TO CHECK: Do we want a documentID when we already have a file name?
+         if(child.style.isDocument && !child.fileName)
          {
             if(child.documentID-1 > size - 2)
             {
