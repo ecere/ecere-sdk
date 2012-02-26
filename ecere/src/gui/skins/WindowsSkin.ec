@@ -191,7 +191,7 @@ public class WindowsSkin_Window : Window
          *w += 2 * BORDER;
          *h += TOP + BOTTOM;
       }
-      if(((BorderBits)borderStyle).fixed && (state != maximized || !parent.menuBar))
+      if(((BorderBits)borderStyle).fixed && (state != maximized || !GetParentMenuBar()))
       {
          *h += CAPTION;
          if(!((BorderBits)borderStyle).sizable || state == minimized)
@@ -211,7 +211,7 @@ public class WindowsSkin_Window : Window
    {
       bool isNormal = (state == normal);
       if(nativeDecorations && rootWindow == this) return;
-      if(((BorderBits)borderStyle).fixed && (state != maximized || !parent.menuBar))
+      if(((BorderBits)borderStyle).fixed && (state != maximized || !GetParentMenuBar()))
       {
          *mw = MIN_WIDTH;
          *mh = MIN_HEIGHT;
@@ -280,7 +280,7 @@ public class WindowsSkin_Window : Window
             *y += TOP;
          }
 
-         if(((BorderBits)borderStyle).fixed && (state != maximized || !parent.menuBar))
+         if(((BorderBits)borderStyle).fixed && (state != maximized || !GetParentMenuBar()))
          {
             *y += CAPTION;
             if(!((BorderBits)borderStyle).sizable || state == minimized)
@@ -309,6 +309,7 @@ public class WindowsSkin_Window : Window
    {
       bool isNormal = (state == normal);
       int top = 0, border = 0, bottom = 0;
+      Window parentMenuBar = GetParentMenuBar() != null;
 
       if(nativeDecorations && rootWindow == this) return;
 
@@ -339,7 +340,7 @@ public class WindowsSkin_Window : Window
          if(((BorderBits)borderStyle).contour)
          {
             deepBorder = border;
-            deepTop = (((BorderBits)borderStyle).fixed && (state != maximized || !parent.menuBar)) ? (top + CAPTION) : top;
+            deepTop = (((BorderBits)borderStyle).fixed && (state != maximized || !parentMenuBar)) ? (top + CAPTION) : top;
             deepBottom = (((BorderBits)borderStyle).sizable && isNormal) ? bottom : border;
          }
 
@@ -347,7 +348,7 @@ public class WindowsSkin_Window : Window
             size.w - deepBorder - deepBorder, size.h - deepBottom - deepTop);
       }
 
-      if(((BorderBits)borderStyle).fixed && (state != maximized || !parent.menuBar))
+      if(((BorderBits)borderStyle).fixed && (state != maximized || !parentMenuBar))
       {
          if(state != maximized || !((BorderBits)borderStyle).sizable)
          {
@@ -411,7 +412,7 @@ public class WindowsSkin_Window : Window
       bool result = false;
       if(nativeDecorations && rootWindow == this) return false;
 
-      if(((BorderBits)borderStyle).fixed && (state != maximized || !parent.menuBar))
+      if(((BorderBits\)borderStyle).fixed && (state != maximized || !GetParentMenuBar()))
       {
          int corner = 0, border = 0, top = 0;
          if(((BorderBits)borderStyle).sizable && isNormal)
@@ -478,7 +479,7 @@ public class WindowsSkin_Window : Window
             top = border = DEAD_BORDER;
          else if(((BorderBits)borderStyle).sizable)
          {
-            if(state == maximized && parent.menuBar)
+            if(state == maximized && GetParentMenuBar())
             {
                top = 2;
                border = 2;

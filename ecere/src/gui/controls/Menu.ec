@@ -1569,6 +1569,14 @@ public class PopupMenu : Window
       {
          ItemPtr ptr;
 
+         // Default width & height for merging menus into menu bars
+         if(isMenuBar)
+         {
+            FontExtent(display, font, "W",1, &maxW, &maxH);
+            if(!guiApp.textMode)
+               maxH += 6;
+         }
+
          for(ptr = menu.items.first; ptr; ptr = ptr.next)
          {
             MenuItem item = ptr.item;
@@ -1868,6 +1876,9 @@ public class PopupMenu : Window
          {
             Window master = this.master;
             Window activeClient = master.activeClient;
+            // TOFIX: Fix need for a cast here...
+            while(activeClient && !((BorderBits)activeClient.borderStyle).fixed)
+               activeClient = activeClient.activeClient;
             if(activeClient && activeClient.state == maximized)
                activeClient.SetState(normal, false, mods);
          }

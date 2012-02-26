@@ -814,6 +814,8 @@ private:
 
    void FigureCaption(char * caption)
    {
+      Window activeClient = null;
+
       caption[0] = '\0';
       if(this.caption)
          strcpy(caption, this.caption);
@@ -831,8 +833,12 @@ private:
          if(modifiedDocument)
             strcat(caption, " *");
       }
-      if(activeClient && menuBar && 
-         activeClient.state == maximized)
+
+      if(menuBar)
+      {
+         for(activeClient = this.activeClient; activeClient && !((BorderBits)activeClient.borderStyle).fixed; activeClient = activeClient.activeClient);
+      }
+      if(activeClient && activeClient.state == maximized)
       {
          if(activeClient.caption)
          {
@@ -2152,6 +2158,21 @@ private:
       }
    }
 
+   Window GetParentMenuBar()
+   {
+      Window menuBarParent;
+      for(menuBarParent = this; menuBarParent; menuBarParent = menuBarParent.parent)
+      {
+         if(menuBarParent.menuBar) break;
+         if(menuBarParent.parent && /*menuBarParent != */!menuBarParent.parent.activeClient)
+         {
+            menuBarParent = null;
+            break;
+         }
+      }
+      return menuBarParent ? menuBarParent.menuBar : null;
+   }
+
    void CreateSystemChildren(void)
    {
       Window parent = this;
@@ -2159,13 +2180,8 @@ private:
       bool hasClose = false, hasMaxMin = false;
       Point scroll = this.scroll;
 
-      if(state == maximized && this.parent.menuBar)
-      {
-         if(this.parent.activeClient == this)
-            parent = this.parent.menuBar;
-         else
-            parent = null;
-      }
+      if(state == maximized)
+         parent = GetParentMenuBar();
 
       if(parent)
       {
@@ -2380,6 +2396,7 @@ private:
                previous.CreateSystemChildren();
          }
       }
+
       if(menu)
       {
          MenuItem item;
@@ -2388,21 +2405,6 @@ private:
          if(menu)
             menu.Clean(this);
 
-         if(activeClient && activeClient.menu && activeClient.state != minimized)
-         {
-            if(mergeMenus)
-            {
-               //activeClient.menu.Clean(activeClient);
-               menu.Merge(activeClient.menu, true, activeClient);
-            }
-         }
-         
-         if(activeChild && activeChild != activeClient && activeChild.menu && activeChild.state != minimized)
-         {
-            if(mergeMenus)
-               menu.Merge(activeChild.menu, true, activeChild);
-         }
-         
          // Build window list
          if(activeClient)
          {
@@ -2460,9 +2462,26 @@ private:
          if(item) item.disabled = !activeClient || !activeClient.style.hasClose;
          item = menu.FindItem(MenuFileSaveAll, 0);
          if(item) item.disabled = numDocuments < 1;
+
+         if(activeClient && activeClient.menu && activeClient.state != minimized)
+         {
+            if(mergeMenus)
+            {
+               //activeClient.menu.Clean(activeClient);
+               menu.Merge(activeClient.menu, true, activeClient);
+            }
+         }
+
+         if(activeChild && activeChild != activeClient && activeChild.menu && activeChild.state != minimized)
+         {
+            if(mergeMenus)
+               menu.Merge(activeChild.menu, true, activeChild);
+         }
       }
       // This is called again for a child window change, with same active client
       OnActivateClient(activeClient, previous);
+      if(!menuBar && !((BorderBits)borderStyle).fixed && parent && parent.activeClient == this)
+         parent.UpdateActiveDocument(null);
    }
 
    void _ShowDecorations(Box box, bool post)
@@ -4461,11 +4480,15 @@ private:
                                  status = false;
                                  break;
                               }
-                           if(style.tabCycle ||
-                              CycleChildren(key.shift, true, false, true))
+                           if(style.tabCycle)
                            {
                               delete this;
                               return true;
+                           }
+                           if(CycleChildren(key.shift, true, false, true))
+                           {
+                              status = false;
+                              break;
                            }
                         }
                         break;
@@ -7409,7 +7432,7 @@ public:
       while(true)
       {
          Window sibling = cycle.data;
-         if(sibling.style.isActiveClient)
+         if(sibling.style.isActiveClient && sibling.visible && !sibling.style.nonClient)
          {
             if(c == id)
                break;

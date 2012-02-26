@@ -193,27 +193,73 @@ void DrawLineMarginIcon(Surface surface, BitmapResource resource, int line, int 
    }
 }
 
-class IDE : Window
+public class ToolBar : public Stacker
 {
-   nativeDecorations = true;
-   icon = { ":icon.png" };
-   text = titleECEREIDE;
-   background = Color { 85, 85, 85 };
+   direction = horizontal;
+   background = activeBorder;
+   opacity = 1.0f;
+   gap = 0;
+
+   anchor = Anchor { left = 0, right = 0 };
+   clientSize = { h = 32 };
+   borderStyle = bevel;
+}
+
+class IDEMainFrame : Window
+{
+   background = activeBorder;
    borderStyle = sizable;
    hasMaximize = true;
    hasMinimize = true;
    hasClose = true;
+   size = { 840, 480 };
+   minClientSize = { 600, 300 };
+   nativeDecorations = true; 
+   borderStyle = sizable;
+   hasMaximize = true;
+   hasMinimize = true;
+   hasClose = true;
+   hasMenuBar = true;
+   icon = { ":icon.png" };
+   text = titleECEREIDE;
+
+   Stacker stack
+   {
+      this;
+      menu = { };
+      isActiveClient = true;
+      gap = 0;
+      direction = vertical;
+      background = activeBorder;
+      anchor = { left = 0, top = 0, right = 0, bottom = 0 };
+   };
+
+   ToolBar toolBar
+   {
+      stack, this;
+      size = { h = 32 };
+   };
+
+   IDEWorkSpace ideWorkSpace { stack, this };
+}
+
+define ide = ideMainFrame.ideWorkSpace;
+
+class IDEWorkSpace : Window
+{
+   background = Color { 85, 85, 85 };
+
    //tabCycle = true;
    hasVertScroll = true;
    hasHorzScroll = true;
-   hasMenuBar = true;
    hasStatusBar = true;
+   isActiveClient = true;
 #if 0 //def _DEBUG
    //stayOnTop = true;
    size = { 800, 600 };
    anchor = { top = 0, right = 0, bottom = 0 };
 #else
-   state = maximized;
+   //state = maximized;
    anchor = { left = 0, top = 0, right = 0, bottom = 0 };
 #endif
    menu = Menu {  };
@@ -572,7 +618,16 @@ class IDE : Window
       Menu recentFiles { fileMenu, $"Recent Files", r };
       Menu recentProjects { fileMenu, $"Recent Projects", p };
       MenuDivider { fileMenu };
-      MenuItem exitItem { fileMenu, $"Exit", x, altF4, NotifySelect = MenuFileExit };
+      MenuItem exitItem
+      {
+         fileMenu, $"Exit", x, altF4, NotifySelect = MenuFileExit;
+
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            ideMainFrame.Destroy(0);
+            return true;
+         }
+      };
 
       bool FileRecentFile(MenuItem selection, Modifiers mods)
       {
@@ -1244,7 +1299,7 @@ class IDE : Window
       // Leave it after Create to avoid flicker due to seeing IDE without a project view
       projectView.workspace = workspace;
       projectView.project = project;
-      SetText("%s - %s", project.topNode.name, titleECEREIDE);
+      ideMainFrame.SetText("%s - %s", project.topNode.name, titleECEREIDE);
 
       AdjustMenus();
 
@@ -1616,7 +1671,7 @@ class IDE : Window
                         if(document)
                            document.fileName = filePath;
 
-                        SetText("%s - %s", filePath, titleECEREIDE);
+                        ideMainFrame.SetText("%s - %s", filePath, titleECEREIDE);
 
                         // this crashes on starting ide with epj file, solution please?
                         // app.UpdateDisplay();
@@ -2190,6 +2245,7 @@ class IDE : Window
          workspace.timer.Stop();
          workspace.Save();
       }
+      ideMainFrame.Destroy(0);
       return true;
    }
 
@@ -2417,7 +2473,7 @@ class IDE : Window
       }
    }
 
-   IDE()
+   IDEWorkSpace()
    {
       // Graphics Driver Menu
       int c;
@@ -2496,7 +2552,7 @@ class IDE : Window
       }
    }
 
-   ~IDE()
+   ~IDEWorkSpace()
    {
       delete driverItems;
       delete skinItems;
@@ -2564,7 +2620,7 @@ class IDEApp : GuiApplication
    }
 }
 
-IDE ide { };
+IDEMainFrame ideMainFrame { };
 
 define app = ((IDEApp)__thisModule);
 #ifdef _DEBUG

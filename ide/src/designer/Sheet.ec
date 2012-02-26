@@ -299,7 +299,7 @@ class Sheet : Window
       bool NotifySelect(DropBox control, DataRow row, Modifiers keyFlags)
       {
          ObjectInfo selected = (ObjectInfo)(row ? row.tag : null);
-         ToolBox toolBox = ((IDE)parent).toolBox;
+         ToolBox toolBox = ((IDEWorkSpace)parent).toolBox;
 
          if(codeEditor && selected)
             codeEditor.SelectObject(selected);
@@ -407,7 +407,7 @@ class Sheet : Window
 
          properties.Activate();
 
-         // ((IDE)master).SheetSelected(Properties);
+         // ((IDEWorkSpace)master).SheetSelected(Properties);
          return true;
       }
    };
@@ -436,7 +436,7 @@ class Sheet : Window
 
          methods.Activate();
                        
-         // ((IDE)master).SheetSelected(Methods);
+         // ((IDEWorkSpace)master).SheetSelected(Methods);
          return true;
       }
    };

@@ -36,7 +36,7 @@ class Designer : DesignerBase
 
    void AddToolBoxClass(Class _class)
    {
-      ((IDE)master).toolBox.AddControl(_class);
+      ((IDEWorkSpace)master).toolBox.AddControl(_class);
    }
    
    void AddDefaultMethod(Instance instance, Instance classInstance)

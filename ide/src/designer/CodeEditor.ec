@@ -1976,11 +1976,11 @@ class CodeEditor : Window
       designer.parent = parent;
       designer.Create();
 
-      toolBox = ((IDE)master).toolBox;
+      toolBox = ((IDEWorkSpace)master).toolBox;
       incref toolBox;
       // Debugger bug here: value of toolBox appears as 0
 
-      sheet = ((IDE)master).sheet;
+      sheet = ((IDEWorkSpace)master).sheet;
       incref sheet;
       return true;
    }
