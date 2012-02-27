@@ -9,7 +9,7 @@ public class ReplaceDialog : Window
    hasClose = true;
    tabCycle = true;
    borderStyle = fixed;
-   background = activeBorder;
+   background = formColor;
    minClientSize = { 432, 144 };
    text = $"Replace";
   

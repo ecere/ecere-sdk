@@ -2058,11 +2058,11 @@ private:
          if(style.collapse && !(style.treeBranch) && rows.first)
          {
             x += 15;
-            surface.SetBackground(activeBorder);
+            surface.SetBackground(formColor);
             surface.Area(-scroll.x, 0, x, clientSize.h);
          }
 
-         surface.SetForeground(activeBorder);
+         surface.SetForeground(formColor);
          for(row = firstRowShown; row; row = row.GetNextRow())
          {
             y += rowHeight;
@@ -2247,8 +2247,8 @@ private:
          // Draw the current row background
          if(row.header)
          {
-            background = activeBorder;
-            surface.SetBackground(activeBorder);
+            background = formColor;
+            surface.SetBackground(formColor);
             surface.Area(rowStart, y, clientSize.w, (y + rowHeight) - 1);
             foreground = branchesColor;
          }
@@ -2257,7 +2257,7 @@ private:
             if(dataDisplayFlags.selected && (isActive || style.alwaysHL || (style.alwaysEdit && style.fullRowSelect)))
             {
                if(!isActive && style.alwaysEdit)
-                  background = activeBorder;
+                  background = formColor;
                else
                   background = selectionColor ? selectionColor : SELECTION_COLOR;
                if(style.fullRowSelect)
@@ -2354,11 +2354,11 @@ private:
                }
 
                if(!isActive && dataDisplayFlags.selected && style.alwaysEdit && field.editable)
-                  background = activeBorder;
+                  background = formColor;
 
                if(!dataDisplayFlags.firstField && !dataDisplayFlags.fullRow)
                {
-                  background = activeBorder;
+                  background = formColor;
                   foreground = this.background;
                }
 
@@ -2377,7 +2377,7 @@ private:
                surface.SetForeground(row.header ? headerCollapseForeground : this.foreground);
                surface.Rectangle(collapseRowStart + 3 + plusIndent, y + PLUSY, collapseRowStart + 11 + plusIndent, y + PLUSY + 8);
 
-               surface.SetBackground(row.header ? (activeBorder) : (this.background)); //white
+               surface.SetBackground(row.header ? (formColor) : (this.background)); //white
                surface.Area(collapseRowStart + 4 + plusIndent, y + PLUSY + 1, collapseRowStart + 10 + plusIndent, y + PLUSY + 7);
 
                surface.HLine(collapseRowStart + 5 + plusIndent, collapseRowStart + 9 + plusIndent, y+PLUSY+4);

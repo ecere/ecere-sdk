@@ -243,7 +243,7 @@ public struct FileName
 public class FileDialog : Window
 {
    text = $"Select a file...";
-   background = activeBorder;
+   background = formColor;
    hasClose = true;
    borderStyle = sizable;
    tabCycle = true;
@@ -1489,7 +1489,7 @@ private:
 
 public class CreateDirectoryDialog : Window
 {
-   background = activeBorder;
+   background = formColor;
    minClientSize = Size { 240, 100 };
    tabCycle = true;
    hasClose = true;

@@ -354,7 +354,7 @@ public class WindowsSkin_Window : Window
          {
             // Frame for ES_CAPTION windows
             surface.Bevel(false, 0, 0, size.w, size.h);
-            surface.SetForeground(activeBorder);
+            surface.SetForeground(formColor);
             surface.Rectangle(2, 2, size.w-3, size.h-3);
 
             // Resizeable frame is 1 pixel thicker 
@@ -371,7 +371,7 @@ public class WindowsSkin_Window : Window
             GRADIENT_SMOOTHNESS, GRADIENT_DIRECTION,
                border, top, size.w - border - 1, top + CAPTION - 2);
 
-         surface.SetForeground(activeBorder);
+         surface.SetForeground(formColor);
          if(state != minimized)
             surface.HLine(border, size.w-border-1, top + CAPTION-1);
 
@@ -396,7 +396,7 @@ public class WindowsSkin_Window : Window
       {
          if(sbh && sbh.visible && sbv && sbv.visible)
          {
-            surface.SetBackground(activeBorder);
+            surface.SetBackground(formColor);
             surface.Area(
                clientStart.x + clientSize.w,
                clientStart.y + clientSize.h,
@@ -638,12 +638,12 @@ public class WindowsSkin_Button : Button
             int start = (clientSize.h - height) / 2;
 
             if(!isEnabled)
-               // surface.SetBackground(activeBorder);
+               // surface.SetBackground(formColor);
                surface.SetBackground(gainsboro);
             else if(active && !text)
-               surface.SetBackground((offset ? activeBorder : Color { 0,0,170 }));
+               surface.SetBackground((offset ? formColor : Color { 0,0,170 }));
             else
-               surface.SetBackground((offset ? activeBorder : white));
+               surface.SetBackground((offset ? formColor : white));
             surface.Area(2, start+2,height-3,start+height-3);
 
             surface.SetForeground(Color { 85, 85, 85 });

@@ -1440,7 +1440,7 @@ private:
          Abs(selectionBackground.g - property::background.g) + 
          Abs(selectionBackground.b - property::background.b) < 92)
       {
-         selectionBackground = activeBorder;
+         selectionBackground = formColor;
          selectionForeground = selectionColor ? selectionColor : SELECTION_COLOR;
       }
 
@@ -1452,7 +1452,7 @@ private:
 
       if(!isEnabled)
       {
-         surface.SetBackground(activeBorder);
+         surface.SetBackground(formColor);
          surface.Area(0,0,clientSize.w, clientSize.h);
       }
 

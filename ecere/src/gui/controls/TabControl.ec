@@ -248,7 +248,7 @@ public class TabControl : Window
    tabCycle = true;
    int numTabs;
 
-   background = white;//activeBorder;
+   background = white;//formColor;
 
    Window tabButtons { this, opacity = 0, drawBehind = true };
 
@@ -349,7 +349,7 @@ public class TabControl : Window
          {
             if(sbh && sbh.visible && sbv && sbv.visible)
             {
-               surface.SetBackground(activeBorder);
+               surface.SetBackground(formColor);
                surface.Area(
                   clientStart.x + clientSize.w,
                   clientStart.y + clientSize.h,

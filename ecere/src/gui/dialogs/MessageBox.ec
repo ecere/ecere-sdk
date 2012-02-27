@@ -12,7 +12,7 @@ static class MsgLine : struct
 public enum MessageBoxType { ok, yesNo, okCancel, yesNoCancel };
 public class MessageBox : Window
 {
-   background = activeBorder;
+   background = formColor;
    hasClose = true;
    tabCycle = true;
    nativeDecorations = true;

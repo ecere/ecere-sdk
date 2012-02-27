@@ -1156,7 +1156,7 @@ public class PopupMenu : Window
 
                   if(ITEM_DISABLED(item) && selected == ptr)
                   {
-                     surface.SetForeground(activeBorder);
+                     surface.SetForeground(formColor);
                      Interface::WriteKeyedText(surface, x + bitmapOffset + 5,
                         textY, ITEM_TEXT(item), ITEM_HOTKEY(item));
                   }
@@ -1206,7 +1206,7 @@ public class PopupMenu : Window
                      surface.VLine(y+(rh - 8)/2, y+(rh - 8)/2+7, clientSize.w-10);
                      surface.SetForeground(Color { 85, 85, 85 });
                      surface.DrawLine(clientSize.w-10, y+(rh - 8)/2, clientSize.w-4, y+rh / 2);
-                     surface.SetForeground(activeBorder);
+                     surface.SetForeground(formColor);
                      surface.DrawLine(clientSize.w-10, y+(rh - 8)/2+7, clientSize.w-4, y+rh / 2);
                      */
                   }

@@ -234,7 +234,7 @@ class ColorZRamp : ColorPlane
 
 public class ColorPicker : Window
 {
-   hasClose = true, tabCycle = true, background = activeBorder;
+   hasClose = true, tabCycle = true, background = formColor;
    autoCreate = false;
    clientSize.h = 275, size.w = 500;
    text = $"Select a color...";
@@ -861,7 +861,7 @@ private:
          if(((ColorPicker)parent).hasAlpha && opacity < 1)
          {
             int x, y;
-            surface.background = activeBorder;
+            surface.background = formColor;
             surface.Clear(colorBuffer);
             surface.background = white;
             for(y = 0; y < 50; y+=10)

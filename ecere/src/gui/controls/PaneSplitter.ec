@@ -6,7 +6,7 @@ public class PaneSplitter : Window
 {
    bool sliding;
    int startPos, startX;
-   background = activeBorder, borderStyle = bevel;
+   background = formColor, borderStyle = bevel;
    anchor = { top = -2, bottom = -2 }, stayOnTop = true, inactive = true;
    size = { w = defaultToolSize };
    cursor = ((GuiApplication)__thisModule.application).GetCursor(sizeWE);

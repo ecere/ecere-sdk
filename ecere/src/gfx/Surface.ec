@@ -377,7 +377,7 @@ public:
    {
       ColorAlpha foreground = this.foreground;
 
-      SetForeground(inner ? Color { 128,128,128 } : activeBorder);
+      SetForeground(inner ? Color { 128,128,128 } : formColor);
       HLine(x,   x+w - 2, y);
       VLine(y+1, y+h - 2, x);
 
@@ -385,7 +385,7 @@ public:
       HLine(x+1, x+w-3, y+1);
       VLine(y+2, y+h-3, x+1);
 
-      SetForeground(inner ? activeBorder : Color { 128,128,128 } );
+      SetForeground(inner ? formColor : Color { 128,128,128 } );
       HLine(x+1, x+w-2, y + h -2);
       VLine(y+1, y+h-3, x + w - 2);
 

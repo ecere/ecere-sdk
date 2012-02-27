@@ -76,7 +76,7 @@ public class Button : CommonControl
 
    Button()
    {
-      background = activeBorder;
+      background = formColor;
       foreground = black;
       //opacity = 0;
       //drawBehind = true;
@@ -93,14 +93,14 @@ public class Button : CommonControl
       textColor[over] = black;
       textColor[disabled] = Color { 85, 85, 85 };
 
-      colors[up] = activeBorder;
-      colors[down] = activeBorder;
-      colors[over] = activeBorder;
+      colors[up] = formColor;
+      colors[down] = formColor;
+      colors[over] = formColor;
       colors[disabled] = white;
       colors[upChecked] = Color { 233,229,221 };
-      colors[overChecked] = activeBorder;
+      colors[overChecked] = formColor;
       colors[downChecked] = Color { 233,229,221 };
-      colors[disabledChecked] = activeBorder;
+      colors[disabledChecked] = formColor;
    }
 
    Bitmap GetButtonBitmap()
@@ -161,12 +161,12 @@ public class Button : CommonControl
          int start = (clientSize.h - height) / 2;
 
          if(!isEnabled)
-            // surface.SetBackground(activeBorder);
+            // surface.SetBackground(formColor);
             surface.SetBackground(gainsboro);
          else if(active && !text)
-            surface.SetBackground((offset ? activeBorder : Color { 0,0,170 }));
+            surface.SetBackground((offset ? formColor : Color { 0,0,170 }));
          else
-            surface.SetBackground((offset ? activeBorder : background /*white*/));
+            surface.SetBackground((offset ? formColor : background /*white*/));
          surface.Area(2, start+2,height-3,start+height-3);
 
          surface.SetForeground(Color { 85, 85, 85 });

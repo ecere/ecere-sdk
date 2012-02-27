@@ -418,9 +418,9 @@ private:
       else
       {
          // What to do here?
-         upBtn.background = activeBorder;
-         downBtn.background = activeBorder;
-         thumb.background = activeBorder;
+         upBtn.background = formColor;
+         downBtn.background = formColor;
+         thumb.background = formColor;
          background = Color { 224, 224, 224 };
       }
       if(sbStyle.vertical)

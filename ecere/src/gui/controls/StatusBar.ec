@@ -10,7 +10,7 @@ public class StatusBar : Window
 {
    class_property(icon) = "<:ecere>controls/statusBar.png";
 
-   background = activeBorder;
+   background = formColor;
    nonClient = true;
    inactive = true;
    anchor = Anchor { left = 0, right = 0, bottom = 0 };

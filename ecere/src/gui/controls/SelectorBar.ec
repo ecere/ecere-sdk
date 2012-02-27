@@ -28,7 +28,7 @@ static void DrawStipple(Surface surface, Size clientSize)
 public class SelectorBar : Stacker
 {
    direction = horizontal;
-   background = activeBorder;
+   background = formColor;
    //tabCycle = true;
    //isActiveClient = true;
 

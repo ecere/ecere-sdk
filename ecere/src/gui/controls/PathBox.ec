@@ -227,7 +227,7 @@ public class PathBox : CommonControl
    {
       if(!isEnabled)
       {
-         surface.SetBackground(activeBorder);
+         surface.SetBackground(formColor);
          surface.Area(0, 0, clientSize.w, clientSize.h);
       }
       else

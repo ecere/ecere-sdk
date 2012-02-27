@@ -10,7 +10,7 @@ public:
    tabCycle = true;
    borderStyle = sizable;
    hasClose = true;
-   background = activeBorder;
+   background = formColor;
 
 private:
    bool OnCreate()

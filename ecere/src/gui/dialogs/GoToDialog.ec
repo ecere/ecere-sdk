@@ -8,7 +8,7 @@ public class GoToDialog : Window
    minClientSize = { 300, 80 };
    hasClose = true;
    tabCycle = true;
-   background = activeBorder;
+   background = formColor;
 
 public:
    property int line { set { if(value) lineBox.Printf("%d", value); else lineBox.Clear(); } get { return line; } };

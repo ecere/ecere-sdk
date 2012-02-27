@@ -6,7 +6,7 @@ public class ProgressBar : CommonControl
 {
    class_property(icon) = "<:ecere>controls/progressBar.png";
 
-   background = activeBorder;
+   background = formColor;
    borderStyle = deep;
  
 public:

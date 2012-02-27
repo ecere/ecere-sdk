@@ -195,7 +195,7 @@ class FormDesigner : ClassDesignerBase
       editBox.Printf("   caption = \"%s\";\n", name);
       //editBox.Printf("   background = Color { 212, 208, 200 };\n");
       
-      editBox.Printf("   background = activeBorder;\n");
+      editBox.Printf("   background = formColor;\n");
       editBox.Printf("   borderStyle = sizable;\n");
       editBox.Printf("   hasMaximize = true;\n");
       editBox.Printf("   hasMinimize = true;\n");

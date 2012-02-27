@@ -8,7 +8,7 @@ public class FindDialog : Window
    hasClose = true;
    tabCycle = true;
    borderStyle = fixed;
-   background = activeBorder;
+   background = formColor;
    minClientSize = { 400, 112 };
 
 public:
