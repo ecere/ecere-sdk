@@ -222,6 +222,14 @@ class IDEMainFrame : Window
    hasMenuBar = true;
    icon = { ":icon.png" };
    text = titleECEREIDE;
+#ifdef _DEBUG
+   //stayOnTop = true;
+   size = { 800, 600 };
+   anchor = { top = 0, right = 0, bottom = 0 };
+#else
+   state = maximized;
+   anchor = { left = 0, top = 0, right = 0, bottom = 0 };
+#endif
 
    Stacker stack
    {
@@ -254,14 +262,7 @@ class IDEWorkSpace : Window
    hasHorzScroll = true;
    hasStatusBar = true;
    isActiveClient = true;
-#if 0 //def _DEBUG
-   //stayOnTop = true;
-   size = { 800, 600 };
-   anchor = { top = 0, right = 0, bottom = 0 };
-#else
-   //state = maximized;
    anchor = { left = 0, top = 0, right = 0, bottom = 0 };
-#endif
    menu = Menu {  };
 
    MenuItem * driverItems, * skinItems;
