@@ -199,6 +199,7 @@ public class ToolBar : public Stacker
    background = activeBorder;
    opacity = 1.0f;
    gap = 0;
+   inactive = true;
 
    anchor = Anchor { left = 0, right = 0 };
    clientSize = { h = 32 };
@@ -222,7 +223,7 @@ class IDEMainFrame : Window
    hasMenuBar = true;
    icon = { ":icon.png" };
    text = titleECEREIDE;
-#ifdef _DEBUG
+#if 0 //def _DEBUG
    //stayOnTop = true;
    size = { 800, 600 };
    anchor = { top = 0, right = 0, bottom = 0 };
