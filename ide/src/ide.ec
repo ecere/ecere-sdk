@@ -2220,7 +2220,7 @@ class IDEWorkSpace : Window
                         return true;
                      }
                   };
-                  projectMenu.AddDynamic(projectCompileItem, null, false);
+                  projectMenu.AddDynamic(projectCompileItem, ide, false);
                }
             }
          }
@@ -2537,7 +2537,7 @@ class IDEWorkSpace : Window
       {
          sprintf(itemName, "%d %s", 1 + c, recent);
          MakeSystemPath(itemName);
-         recentFiles.AddDynamic(MenuItem { copyText = true, text = itemName, (Key)k1 + c, id = c, NotifySelect = ide.FileRecentFile }, null, true);
+         recentFiles.AddDynamic(MenuItem { copyText = true, text = itemName, (Key)k1 + c, id = c, NotifySelect = ide.FileRecentFile }, ide, true);
          c++;
       }
 
@@ -2547,7 +2547,7 @@ class IDEWorkSpace : Window
       {
          sprintf(itemName, "%d %s", 1 + c, recent);
          MakeSystemPath(itemName);
-         recentProjects.AddDynamic(MenuItem { copyText = true, text = itemName, (Key)k1 + c, id = c, NotifySelect = ide.FileRecentProject }, null, true);
+         recentProjects.AddDynamic(MenuItem { copyText = true, text = itemName, (Key)k1 + c, id = c, NotifySelect = ide.FileRecentProject }, ide, true);
          c++;
       }
    }

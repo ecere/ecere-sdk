@@ -1039,7 +1039,7 @@ class ProjectView : Window
 
    bool MenuConfig(MenuItem selection, Modifiers mods)
    {
-      if(ProjectActiveConfig { parent = parent.parent, master = parent, project = project }.Modal() == ok)
+      if(ProjectActiveConfig { master = parent, project = project }.Modal() == ok)
          ide.AdjustMenus();
       return true;
    }
@@ -1048,7 +1048,7 @@ class ProjectView : Window
    {
       ActiveCompilerDialog compilerDialog
       {
-         parent = parent.parent, master = parent;
+         master = parent;
          ideSettings = ideSettings, workspaceActiveCompiler = ide.workspace.compiler;
       };
       incref compilerDialog;
@@ -1066,7 +1066,7 @@ class ProjectView : Window
    {
       ProjectNode node = GetSelectedNode(true);
       Project prj = node ? node.project : project;
-      projectSettingsDialog = ProjectSettings { parent = parent.parent, master = parent, project = prj, projectNode = node };
+      projectSettingsDialog = ProjectSettings { master = parent, project = prj, projectNode = node };
       projectSettingsDialog.Modal();
 
       Update(null);
