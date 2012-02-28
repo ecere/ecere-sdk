@@ -207,20 +207,9 @@ public class ToolBar : public Stacker
 
    watch(master)
    {
-      Window m = master;
       Window w;
       for(w = firstChild; w; w = w.next)
-      {
          w.master = master;
-         if(eClass_IsDerived(w._class, class(ToolButton)))
-         {
-            ToolButton b = (ToolButton)w;
-            MenuItem menuItem = b.menuItem;
-            BitmapResource bmp;
-            if(menuItem && (bmp = menuItem.bitmap))
-               b.bitmap = bmp;
-         }
-      }
    };
 }
 
@@ -232,7 +221,20 @@ public class ToolButton : public Button
    bitmapAlignment = center;
    MenuItem * menuItemPtr;
 
-   watch(master) { Window w; for(w = firstChild; w; w = w.next) w.master = master; };
+   watch(master)
+   {
+      if(menuItemPtr)
+      {
+         Window parent = this.parent;
+         if(parent && parent.parent && master != parent)
+         {
+            MenuItem menuItem = this.menuItem;
+            BitmapResource bmp;
+            if(menuItem && (bmp = menuItem.bitmap))
+               bitmap = bmp;
+         }
+      }
+   };
 
    NotifyClicked = SelectMenuItem;
 
