@@ -183,6 +183,7 @@ public:
          incref bitmaps[1];
          incref bitmaps[2];
       }
+      get { return bitmaps[0]; }
    };
    property bool copyText
    {

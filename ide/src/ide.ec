@@ -193,17 +193,73 @@ void DrawLineMarginIcon(Surface surface, BitmapResource resource, int line, int 
    }
 }
 
+// NOTE: We will move ToolBar and ToolButton classes to libecere...
 public class ToolBar : public Stacker
 {
    direction = horizontal;
    background = activeBorder;
-   opacity = 1.0f;
    gap = 0;
    inactive = true;
 
    anchor = Anchor { left = 0, right = 0 };
    clientSize = { h = 32 };
    borderStyle = bevel;
+
+   watch(master)
+   {
+      Window m = master;
+      Window w;
+      for(w = firstChild; w; w = w.next)
+      {
+         w.master = master;
+         if(eClass_IsDerived(w._class, class(ToolButton)))
+         {
+            ToolButton b = (ToolButton)w;
+            MenuItem menuItem = b.menuItem;
+            BitmapResource bmp;
+            if(menuItem && (bmp = menuItem.bitmap))
+               b.bitmap = bmp;
+         }
+      }
+   };
+}
+
+public class ToolButton : public Button
+{
+   bevelOver = true;
+   size = Size { 24, 24 };
+   opacity = 0;
+   bitmapAlignment = center;
+   MenuItem * menuItemPtr;
+
+   watch(master) { Window w; for(w = firstChild; w; w = w.next) w.master = master; };
+
+   NotifyClicked = SelectMenuItem;
+
+   bool Window::SelectMenuItem(Button button, int x, int y, Modifiers mods)
+   {
+      ToolButton toolButton = (ToolButton)button;
+      MenuItem menuItem = toolButton.menuItem;
+      return menuItem.NotifySelect(this, menuItem, 0);
+   }
+
+public:
+   property MenuItem * menuItemPtr { set { menuItemPtr = value; } }
+   property MenuItem menuItem
+   {
+      get
+      {
+         MenuItem menuItem = *(MenuItem *)((byte *)master + (uint)menuItemPtr);
+         return menuItem;
+      }
+   }
+}
+
+#define IDEItem(x)   (&((IDEWorkSpace)0).x)
+
+class IDEToolbar : ToolBar
+{
+   ToolButton buttonNewProject { this, toolTip = $"New Project", menuItemPtr = IDEItem(projectNewItem) };
 }
 
 class IDEMainFrame : Window
@@ -242,14 +298,8 @@ class IDEMainFrame : Window
       background = activeBorder;
       anchor = { left = 0, top = 0, right = 0, bottom = 0 };
    };
-
-   ToolBar toolBar
-   {
-      stack, this;
-      size = { h = 32 };
-   };
-
-   IDEWorkSpace ideWorkSpace { stack, this };
+   IDEToolbar toolBar { master = ideWorkSpace, parent = stack };
+   IDEWorkSpace ideWorkSpace { master = this, parent = stack };
 }
 
 define ide = ideMainFrame.ideWorkSpace;
@@ -663,10 +713,11 @@ class IDEWorkSpace : Window
 
    MenuPlacement editMenu { menu, $"Edit", e };
    
-   Menu projectMenu { menu, $"Menu"."Project", p };
+   Menu projectMenu { menu, $"Menu"."Project", p, hasMargin = true };
       MenuItem projectNewItem
       {
          projectMenu, $"New...", n, Key { n, true, true };
+         bitmap = { "<:ecere>actions/listAdd.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(!DontTerminateDebugSession($"New Project"))

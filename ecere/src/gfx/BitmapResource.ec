@@ -153,6 +153,8 @@ public:
       {
          delete fileName;
          fileName = CopyString(value);
+         if(value && SearchString(value, 0, ".png", false, true))
+            alphaBlend = true;
       }
       get { return this ? fileName : null; }
    };
