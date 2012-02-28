@@ -225,8 +225,8 @@ public class ToolButton : public Button
    {
       if(menuItemPtr)
       {
-         Window parent = this.parent;
-         if(parent && parent.parent && master != parent)
+         Window master = this.master;
+         if(master && master.parent && !eClass_IsDerived(master._class, class(Stacker)))
          {
             MenuItem menuItem = this.menuItem;
             BitmapResource bmp;
