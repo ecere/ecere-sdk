@@ -1697,12 +1697,26 @@ class XInterface : Interface
                      }
                   }
                   {
-                     int x = event->x - desktopX;
-                     int y = event->y - desktopY;
+                     int x = event->x;
+                     int y = event->y;
                      int w = event->width, h = event->height;
+
+                     //if(event->send_event)
+                     {
+                        X11Window rootChild;
+                        int rootX, rootY;
+                        XTranslateCoordinates(xGlobalDisplay, event->window,
+                           RootWindow(xGlobalDisplay, DefaultScreen(xGlobalDisplay)), 0, 0, 
+                           &rootX, &rootY, &rootChild);
+                        x = rootX;
+                        y = rootY;
+                     }
+
+                     x -= desktopX;
+                     y -= desktopY;
+
                      if(window.nativeDecorations)
                      {
-
                         x -= windowData.decor.left;
                         y -= windowData.decor.top;
                         w += windowData.decor.left + windowData.decor.right;
