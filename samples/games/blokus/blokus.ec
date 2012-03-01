@@ -418,7 +418,7 @@ int PieceBlock(int p, int x, int y, int direction, bool flip)
 
 class Blokus : Window
 {
-   text = "Ecere Blokus";
+   caption = "Ecere Blokus";
    background = black;
    borderStyle = sizable;
    minClientSize = { 1068 /*800*/, 700 };
@@ -601,7 +601,7 @@ class Blokus : Window
       if((gameStarted && !gameState.over) || hosting)
       {
          if(MessageBox { type = okCancel,
-            text = "Ecere Blokus", contents = "Quit Ecere Blokus?" }.Modal() == cancel)
+            caption = "Ecere Blokus", contents = "Quit Ecere Blokus?" }.Modal() == cancel)
             return false;
       }
       return true;
@@ -1030,7 +1030,7 @@ class Blokus : Window
 
    Button btnPass
    {
-      this, text = "No Move Available! Pass...",
+      this, caption = "No Move Available! Pass...",
       //anchor = { right = 5, bottom = 5 };
       anchor = { left = squareWidth * boardSize + 40, bottom = 5 };
       inactive = true;
@@ -1053,7 +1053,7 @@ class BlokusScores : Window
    moveable = true;
    borderStyle = fixed;
    background = black;
-   text = "Blokus Final Scores";
+   caption = "Blokus Final Scores";
    clientSize = { 580, 210 };
    font = { "Arial", 12, bold = true };
 
@@ -1236,7 +1236,7 @@ define MaxPlayers = 4;
 
 class CommunicationPanel : Window
 {
-   text = "Blokus Communication Panel";
+   caption = "Blokus Communication Panel";
    background = lightSlateGray;
    borderStyle = fixed;
    hasClose = true;
@@ -1327,12 +1327,12 @@ class CommunicationPanel : Window
    }
    EditBox serverAddress
    {
-      this, text = "Server Address:", altA, font = { "Tahoma", 10, bold = true }, size = { 220, 24 }, position = { 16, 64 }, contents = "localhost"
+      this, caption = "Server Address:", altA, font = { "Tahoma", 10, bold = true }, size = { 220, 24 }, position = { 16, 64 }, contents = "localhost"
    };
    Label lblServerAddress { this, font = { "Tahoma", 8.25f, bold = true }, position = { 16, 40 }, labeledWindow = serverAddress };
    Button btnConnect
    {
-      this, text = "Connect", altC, isDefault = true, font = { "Arial", 16, bold = true }, size = { 126, 32 }, position = { 256, 64 };
+      this, caption = "Connect", altC, isDefault = true, font = { "Arial", 16, bold = true }, size = { 126, 32 }, position = { 256, 64 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -1494,12 +1494,12 @@ class CommunicationPanel : Window
    };
    Button btnDisconnect
    {
-      this, text = "Disconnect", altD, font = { "Arial", 16, bold = true }, size = { 126, 32 }, position = { 256, 64 }, visible = false;
+      this, caption = "Disconnect", altD, font = { "Arial", 16, bold = true }, size = { 126, 32 }, position = { 256, 64 }, visible = false;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          if(!blokus.gameStarted || blokus.gameState.over ||
-            MessageBox { type = okCancel, text = "Ecere Blokus",
+            MessageBox { type = okCancel, caption = "Ecere Blokus",
                contents = "Game in progress! Disconnect?"
             }.Modal() == ok)
          {
@@ -1511,7 +1511,7 @@ class CommunicationPanel : Window
    };
    Button btnHost
    {
-      this, text = "Host", altH, font = { "Arial", 16, bold = true }, size = { 90, 32 }, position = { 16, 112 };
+      this, caption = "Host", altH, font = { "Arial", 16, bold = true }, size = { 90, 32 }, position = { 16, 112 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -1529,7 +1529,7 @@ class CommunicationPanel : Window
    };
    Button btnStopHosting
    {
-      this, text = "Stop Hosting", altP, font = { "Arial", 16, bold = true }, position = { 16, 112 }, visible = false;
+      this, caption = "Stop Hosting", altP, font = { "Arial", 16, bold = true }, position = { 16, 112 }, visible = false;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -1539,7 +1539,7 @@ class CommunicationPanel : Window
             if(serverPlayers[c])
                numPlayers++;
          if(!numPlayers ||
-            MessageBox { type = okCancel, text = "Ecere Blokus",
+            MessageBox { type = okCancel, caption = "Ecere Blokus",
                contents = "Players connected! Stop hosting?"
             }.Modal() == ok)
          {
@@ -1555,7 +1555,7 @@ class CommunicationPanel : Window
    };
    Button btnStart
    {
-      this, text = "Start Game", altS, font = { "Arial", 16, bold = true }, size = { 124, 32 }, position = { 256, 112 }, visible = false;
+      this, caption = "Start Game", altS, font = { "Arial", 16, bold = true }, size = { 124, 32 }, position = { 256, 112 }, visible = false;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -1569,12 +1569,12 @@ class CommunicationPanel : Window
    };
    Button btnStopGame
    {
-      this, text = "Stop Game", altG, font = { "Arial", 16, bold = true }, position = { 256, 112 }, visible = false;
+      this, caption = "Stop Game", altG, font = { "Arial", 16, bold = true }, position = { 256, 112 }, visible = false;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          if(!serverGameStarted || serverGameState.over ||
-            MessageBox { type = okCancel, text = "Ecere Blokus",
+            MessageBox { type = okCancel, caption = "Ecere Blokus",
                contents = "Stop game in progress?"
             }.Modal() == ok)
          {
@@ -1586,7 +1586,7 @@ class CommunicationPanel : Window
    };
    ListBox listPlayers
    {
-      this, text = "Players Connected", altD, size = { 236, 84 }, position = { 16, 176 }, visible = false, hasHeader = true;
+      this, caption = "Players Connected", altD, size = { 236, 84 }, position = { 16, 176 }, visible = false, hasHeader = true;
 
       bool NotifySelect(ListBox listBox, DataRow row, Modifiers mods)
       {
@@ -1597,7 +1597,7 @@ class CommunicationPanel : Window
    Label lblListPlayers { this, font = { "Tahoma", 8.25f, bold = true }, position = { 16, 152 }, visible = false, labeledWindow = listPlayers };
    Button btnKick
    {
-      this, text = "Kick", altK, font = { "Arial", 16, bold = true }, size = { 80, 32 }, position = { 264, 224 }, visible = false;
+      this, caption = "Kick", altK, font = { "Arial", 16, bold = true }, size = { 80, 32 }, position = { 264, 224 }, visible = false;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -1607,7 +1607,7 @@ class CommunicationPanel : Window
             int id = row.tag;
             char msg[1024];
             sprintf(msg, "Kick %s?", serverPlayers[id].name);
-            if(MessageBox { type = okCancel, text = "Ecere Blokus",
+            if(MessageBox { type = okCancel, caption = "Ecere Blokus",
                   contents = msg
                }.Modal() == ok)
                KickPlayer(id);
@@ -1617,7 +1617,7 @@ class CommunicationPanel : Window
    };
    EditBox playerName
    {
-      this, text = "Player Name:", altN, font = { "Arial", 12 }, size = { 132, 24 }, position = { 104, 8 }, contents = "BlokusPlayer"
+      this, caption = "Player Name:", altN, font = { "Arial", 12 }, size = { 132, 24 }, position = { 104, 8 }, contents = "BlokusPlayer"
    };
    Label lblPlayerName { this, font = { "Tahoma", 8.25f, bold = true }, position = { 16, 16 }, labeledWindow = playerName };
 }
