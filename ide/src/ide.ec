@@ -193,75 +193,81 @@ void DrawLineMarginIcon(Surface surface, BitmapResource resource, int line, int 
    }
 }
 
-// NOTE: We will move ToolBar and ToolButton classes to libecere...
-public class ToolBar : public Stacker
-{
-   direction = horizontal;
-   background = activeBorder;
-   gap = 0;
-   inactive = true;
-
-   anchor = Anchor { left = 0, right = 0 };
-   clientSize = { h = 32 };
-   borderStyle = bevel;
-
-   watch(master)
-   {
-      Window w;
-      for(w = firstChild; w; w = w.next)
-         w.master = master;
-   };
-}
-
-public class ToolButton : public Button
-{
-   bevelOver = true;
-   size = Size { 24, 24 };
-   opacity = 0;
-   bitmapAlignment = center;
-   MenuItem * menuItemPtr;
-
-   watch(master)
-   {
-      if(menuItemPtr)
-      {
-         Window master = this.master;
-         if(master && master.parent && !eClass_IsDerived(master._class, class(Stacker)))
-         {
-            MenuItem menuItem = this.menuItem;
-            BitmapResource bmp;
-            if(menuItem && (bmp = menuItem.bitmap))
-               bitmap = bmp;
-         }
-      }
-   };
-
-   NotifyClicked = SelectMenuItem;
-
-   bool Window::SelectMenuItem(Button button, int x, int y, Modifiers mods)
-   {
-      ToolButton toolButton = (ToolButton)button;
-      MenuItem menuItem = toolButton.menuItem;
-      return menuItem.NotifySelect(this, menuItem, 0);
-   }
-
-public:
-   property MenuItem * menuItemPtr { set { menuItemPtr = value; } }
-   property MenuItem menuItem
-   {
-      get
-      {
-         MenuItem menuItem = *(MenuItem *)((byte *)master + (uint)menuItemPtr);
-         return menuItem;
-      }
-   }
-}
-
 #define IDEItem(x)   (&((IDEWorkSpace)0).x)
 
 class IDEToolbar : ToolBar
 {
-   ToolButton buttonNewProject { this, toolTip = $"New Project", menuItemPtr = IDEItem(projectNewItem) };
+   /* File options */
+   // New
+   ToolButton buttonNewFile { this, toolTip = $"New file", menuItemPtr = IDEItem(fileNewItem) };
+   // Open
+   ToolButton buttonOpenFile { this, toolTip = $"Open file", menuItemPtr = IDEItem(fileOpenItem) };
+   // Close
+   // ToolButton buttonCloseFile { this, toolTip = $"Close file", menuItemPtr = IDEItem(fileCloseItem) };
+   // Save
+   ToolButton buttonSaveFile { this, toolTip = $"Save file", menuItemPtr = IDEItem(fileSaveItem) };
+   // Save All
+   ToolButton buttonSaveAllFile { this, toolTip = $"Save all", menuItemPtr = IDEItem(fileSaveAllItem) };
+
+   ToolSeparator separator1 { this };
+
+   /* Edit options */
+   // Cut
+   // Copy 
+   // Paste
+   // Undo
+   // Redo
+
+   //ToolSeparator separator2 { this };
+
+   /* Project  options */
+   // New project
+   ToolButton buttonNewProject { this, toolTip = $"New project", menuItemPtr = IDEItem(projectNewItem) };
+   // Open project
+   ToolButton buttonOpenProject { this, toolTip = $"Open project", menuItemPtr = IDEItem(projectOpenItem) };
+   // Add project to workspace
+   ToolButton buttonAddProject { this, toolTip = $"Add project to workspace", menuItemPtr = IDEItem(projectAddItem), disabled = true; };
+   // Close project
+   //ToolButton buttonCloseProject { this, toolTip = $"Close project", menuItemPtr = IDEItem(projectCloseItem), disabled = true; };
+
+   ToolSeparator separator3 { this };
+
+   /* Build/Execution options */
+   // Build
+   ToolButton buttonBuild { this, toolTip = $"Build project", menuItemPtr = IDEItem(projectBuildItem), disabled = true; };
+   // Re-link
+   ToolButton buttonReLink { this, toolTip = $"Relink project", menuItemPtr = IDEItem(projectLinkItem), disabled = true; };
+   // Rebuild
+   ToolButton buttonRebuild { this, toolTip = $"Rebuild project", menuItemPtr = IDEItem(projectRebuildItem), disabled = true; };
+   // Clean
+   ToolButton buttonClean { this, toolTip = $"Clean project", menuItemPtr = IDEItem(projectCleanItem), disabled = true; };
+   // Regenerate Makefile
+   ToolButton buttonRegenerateMakefile { this, toolTip = $"Regenerate Makefile", menuItemPtr = IDEItem(projectRegenerateItem), disabled = true; };
+   // Compile actual file
+   // Execute
+   ToolButton buttonRun { this, toolTip = $"Run", menuItemPtr = IDEItem(projectRunItem), disabled = true; };
+
+   ToolSeparator separator4 { this };
+
+   /* Debug options */
+   // Start/Resume
+   ToolButton buttonDebugStartResume { this, toolTip = $"Start", menuItemPtr = IDEItem(debugStartResumeItem), disabled = true; };
+   // Restart
+   ToolButton buttonDebugRestart { this, toolTip = $"Restart", menuItemPtr = IDEItem(debugRestartItem), disabled = true; };
+   // Pause
+   ToolButton buttonDebugPause { this, toolTip = $"Break", menuItemPtr = IDEItem(debugBreakItem), disabled = true; };
+   // Stop
+   ToolButton buttonDebugStop { this, toolTip = $"Stop", menuItemPtr = IDEItem(debugStopItem), disabled = true; };
+   // Breakpoints
+   //ToolButton buttonRun { this, toolTip = $"Run", menuItemPtr = IDEItem(projectRunItem) };
+   // F11
+   ToolButton buttonDebugStepInto { this, toolTip = $"Step Into", menuItemPtr = IDEItem(debugStepIntoItem), disabled = true; };
+   // F10
+   ToolButton buttonDebugStepOver { this, toolTip = $"Step Over", menuItemPtr = IDEItem(debugStepOverItem), disabled = true; };
+   // Shift+F11
+   ToolButton buttonDebugStepOut { this, toolTip = $"Step Out", menuItemPtr = IDEItem(debugStepOutItem), disabled = true; };
+   // Shift+F10
+   ToolButton buttonDebugSkipStepOver { this, toolTip = $"Step Over Skipping Breakpoints", menuItemPtr = IDEItem(debugSkipStepOverItem), disabled = true; };
 }
 
 class IDEMainFrame : Window
@@ -271,13 +277,7 @@ class IDEMainFrame : Window
    hasMaximize = true;
    hasMinimize = true;
    hasClose = true;
-   size = { 840, 480 };
    minClientSize = { 600, 300 };
-   nativeDecorations = true; 
-   borderStyle = sizable;
-   hasMaximize = true;
-   hasMinimize = true;
-   hasClose = true;
    hasMenuBar = true;
    icon = { ":icon.png" };
    text = titleECEREIDE;
@@ -300,8 +300,16 @@ class IDEMainFrame : Window
       background = activeBorder;
       anchor = { left = 0, top = 0, right = 0, bottom = 0 };
    };
-   IDEToolbar toolBar { master = ideWorkSpace, parent = stack };
-   IDEWorkSpace ideWorkSpace { master = this, parent = stack };
+   IDEToolbar toolBar
+   {
+      stack, ideWorkSpace;
+
+      void OnDestroy(void)
+      {
+         ((IDEWorkSpace)master).toolBar = null;
+      }
+   };
+   IDEWorkSpace ideWorkSpace { stack, this, toolBar = toolBar };
 }
 
 define ide = ideMainFrame.ideWorkSpace;
@@ -317,6 +325,7 @@ class IDEWorkSpace : Window
    isActiveClient = true;
    anchor = { left = 0, top = 0, right = 0, bottom = 0 };
    menu = Menu {  };
+   IDEToolbar toolBar;
 
    MenuItem * driverItems, * skinItems;
    StatusField pos { width = 150 };
@@ -580,10 +589,11 @@ class IDEWorkSpace : Window
    char * tmpPrjDir;
    property char * tmpPrjDir { set { delete tmpPrjDir; if(value) tmpPrjDir = CopyString(value); } get { return tmpPrjDir; } };
 
-   Menu fileMenu { menu, $"File", f };
+   Menu fileMenu { menu, $"File", f, hasMargin = true };
       MenuItem fileNewItem
       {
          fileMenu, $"New", n, ctrlN;
+         bitmap = { ":actions/docNew.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             Window document = (Window)NewCodeEditor(this, normal, false);
@@ -594,6 +604,7 @@ class IDEWorkSpace : Window
       MenuItem fileOpenItem
       {
          fileMenu, $"Open...", o, ctrlO;
+         bitmap = { ":actions/docOpen.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(!projectView && ideSettings.ideFileDialogLocation)
@@ -629,9 +640,9 @@ class IDEWorkSpace : Window
       }
       MenuItem fileCloseItem { fileMenu, $"Close", c, ctrlF4, NotifySelect = MenuFileClose };
       MenuDivider { fileMenu };
-      MenuItem fileSaveItem { fileMenu, $"Save", s, ctrlS };
+      MenuItem fileSaveItem { fileMenu, $"Save", s, ctrlS, bitmap = { ":actions/docSave.png" } };
       MenuItem fileSaveAsItem { fileMenu, $"Save As...", a };
-      MenuItem fileSaveAllItem { fileMenu, $"Save All", l, NotifySelect = MenuFileSaveAll };
+      MenuItem fileSaveAllItem { fileMenu, $"Save All", l, NotifySelect = MenuFileSaveAll, bitmap = { ":actions/docSaveAll.png" } };
       MenuDivider { fileMenu };
       MenuItem findInFiles
       {
@@ -719,7 +730,7 @@ class IDEWorkSpace : Window
       MenuItem projectNewItem
       {
          projectMenu, $"New...", n, Key { n, true, true };
-         bitmap = { "<:ecere>actions/listAdd.png" };
+         bitmap = { ":actions/projNew.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(!DontTerminateDebugSession($"New Project"))
@@ -749,6 +760,7 @@ class IDEWorkSpace : Window
       MenuItem projectOpenItem
       {
          projectMenu, $"Open...", o, Key { o, true, true };
+         bitmap = { ":actions/projOpen.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(ideSettings.ideProjectFileDialogLocation)
@@ -776,6 +788,7 @@ class IDEWorkSpace : Window
       MenuItem projectAddItem
       {
          projectMenu, $"Add project to workspace...", a, Key { a, true, true };
+         bitmap = { ":actions/projAdd.png" };
          disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
@@ -868,6 +881,7 @@ class IDEWorkSpace : Window
       MenuItem projectRunItem
       {
          projectMenu, $"Run", r, ctrlF5, disabled = true;
+         bitmap = { ":actions/run.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -878,6 +892,7 @@ class IDEWorkSpace : Window
       MenuItem projectBuildItem
       {
          projectMenu, $"Build", b, f7, disabled = true;
+         bitmap = { ":actions/build.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -888,6 +903,7 @@ class IDEWorkSpace : Window
       MenuItem projectLinkItem
       {
          projectMenu, $"Relink", l, disabled = true;
+         bitmap = { ":actions/relink.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -898,6 +914,7 @@ class IDEWorkSpace : Window
       MenuItem projectRebuildItem
       {
          projectMenu, $"Rebuild", d, shiftF7, disabled = true;
+         bitmap = { ":actions/rebuild.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -908,6 +925,7 @@ class IDEWorkSpace : Window
       MenuItem projectCleanItem
       {
          projectMenu, $"Clean", e, disabled = true;
+         bitmap = { ":actions/clean.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -921,6 +939,7 @@ class IDEWorkSpace : Window
       MenuItem projectRegenerateItem
       {
          projectMenu, $"Regenerate Makefile", m, disabled = true;
+         bitmap = { ":actions/regMakefile.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -929,10 +948,11 @@ class IDEWorkSpace : Window
          }
       }
       MenuItem projectCompileItem;
-   Menu debugMenu { menu, $"Debug", d };
+   Menu debugMenu { menu, $"Debug", d, hasMargin = true };
       MenuItem debugStartResumeItem
       {
          debugMenu, $"Start", s, f5, disabled = true;
+         bitmap = { ":actions/debug.png" };
          NotifySelect = MenuDebugStart;
       }
       bool MenuDebugStart(MenuItem selection, Modifiers mods)
@@ -954,6 +974,7 @@ class IDEWorkSpace : Window
       MenuItem debugRestartItem
       {
          debugMenu, $"Restart", r, Key { f5, ctrl = true, shift = true }, disabled = true;
+         bitmap = { ":actions/restart.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -964,6 +985,7 @@ class IDEWorkSpace : Window
       MenuItem debugBreakItem
       {
          debugMenu, $"Break", b, Key { pauseBreak, ctrl = true }, disabled = true;
+         bitmap = { ":actions/pause.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -974,6 +996,7 @@ class IDEWorkSpace : Window
       MenuItem debugStopItem
       {
          debugMenu, $"Stop", p, shiftF5, disabled = true;
+         bitmap = { ":actions/stopDebug.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -985,6 +1008,7 @@ class IDEWorkSpace : Window
       MenuItem debugStepIntoItem
       {
          debugMenu, $"Step Into", i, f11, disabled = true;
+         bitmap = { ":actions/stepInto.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -995,6 +1019,7 @@ class IDEWorkSpace : Window
       MenuItem debugStepOverItem
       {
          debugMenu, $"Step Over", v, f10, disabled = true;
+         bitmap = { ":actions/stepOver.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -1005,6 +1030,7 @@ class IDEWorkSpace : Window
       MenuItem debugStepOutItem
       {
          debugMenu, $"Step Out", o, shiftF11, disabled = true;
+         bitmap = { ":actions/stepOut.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -1026,6 +1052,7 @@ class IDEWorkSpace : Window
       MenuItem debugSkipStepOutItem
       {
          debugMenu, $"Step Out Skipping Breakpoints", t, Key { f11, ctrl = true, shift = true }, disabled = true;
+         bitmap = { ":actions/skipBreaks.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
@@ -1501,6 +1528,7 @@ class IDEWorkSpace : Window
       projectQuickItem.disabled           = !unavailable;
 
       projectAddItem.disabled             = unavailable;
+      ((IDEMainFrame)master).toolBar.buttonAddProject.disabled = unavailable;
 
       activeCompilerItem.disabled         = unavailable;
       projectActiveConfigItem.disabled    = unavailable;
@@ -1519,18 +1547,27 @@ class IDEWorkSpace : Window
       bool unavailable = project && projectView.buildInProgress;
 
       projectNewItem.disabled          = unavailable;
+      toolBar.buttonNewProject.disabled = unavailable;
       projectOpenItem.disabled         = unavailable;
+      toolBar.buttonOpenProject.disabled = unavailable;
 
       unavailable = !project || projectView.buildInProgress;
 
       projectCloseItem.disabled        = unavailable;
+      // toolBar.buttonCloseProject.disabled = unavailable;
 
       projectRunItem.disabled          = unavailable || project.GetTargetType(project.config) != executable;
+      toolBar.buttonRun.disabled = unavailable || project.GetTargetType(project.config) != executable;
       projectBuildItem.disabled        = unavailable;
+      toolBar.buttonBuild.disabled = unavailable;
       projectLinkItem.disabled         = unavailable;
+      toolBar.buttonReLink.disabled = unavailable;
       projectRebuildItem.disabled      = unavailable;
+      toolBar.buttonRebuild.disabled = unavailable;
       projectCleanItem.disabled        = unavailable;
+      toolBar.buttonClean.disabled = unavailable;
       projectRegenerateItem.disabled   = unavailable;
+      toolBar.buttonRegenerateMakefile.disabled = unavailable;
       projectCompileItem.disabled      = unavailable;
    }
 
@@ -1543,18 +1580,36 @@ class IDEWorkSpace : Window
       //bool holding = ide.debugger.state == stopped;
 
       debugStartResumeItem.disabled       = unavailable || executing;
+      if (toolBar)
+         toolBar.buttonDebugStartResume.disabled = unavailable || executing;
 
       debugStartResumeItem.text           = active ? $"Resume" : $"Start";
+      if (toolBar)
+         toolBar.buttonDebugStartResume.toolTip = active ? $"Resume" : $"Start";
       debugStartResumeItem.NotifySelect   = active ? MenuDebugResume : MenuDebugStart;
 
       debugBreakItem.disabled             = unavailable || !executing;
+      if (toolBar)
+         toolBar.buttonDebugPause.disabled = unavailable || !executing;
       debugStopItem.disabled              = unavailable || !active;
+      if (toolBar)
+         toolBar.buttonDebugStop.disabled = unavailable || !active;
       debugRestartItem.disabled           = unavailable || !active;
+      if (toolBar)
+         toolBar.buttonDebugRestart.disabled =unavailable || !active;
 
       debugStepIntoItem.disabled          = unavailable || executing;
+      if (toolBar)
+         toolBar.buttonDebugStepInto.disabled = unavailable || executing;
       debugStepOverItem.disabled          = unavailable || executing;
+      if (toolBar)
+         toolBar.buttonDebugStepOver.disabled = unavailable || executing;
       debugStepOutItem.disabled           = unavailable || executing || !active;
+      if (toolBar)
+         toolBar.buttonDebugStepOut.disabled = unavailable || executing || !active;
       debugSkipStepOverItem.disabled      = unavailable || executing;
+      if (toolBar)
+         toolBar.buttonDebugSkipStepOver.disabled = unavailable || executing;
       debugSkipStepOutItem.disabled       = unavailable || executing || !active;
 
       if((Designer)GetActiveDesigner())

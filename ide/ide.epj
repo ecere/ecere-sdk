@@ -310,7 +310,27 @@
             "docNew.png",
             "editCopy.png",
             "editDelete.png",
-            "delete2.png"
+            "delete2.png",
+            "build.png",
+            "clean.png",
+            "debug.png",
+            "docOpen.png",
+            "docSave.png",
+            "docSaveAll.png",
+            "pause.png",
+            "projAdd.png",
+            "projNew.png",
+            "projOpen.png",
+            "rebuild.png",
+            "regMakefile.png",
+            "relink.png",
+            "restart.png",
+            "run.png",
+            "skipBreaks.png",
+            "stepInto.png",
+            "stepOut.png",
+            "stepOver.png",
+            "stopDebug.png"
          ]
       },
       {

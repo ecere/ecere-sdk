@@ -242,3 +242,83 @@ public class ToolTip : Window
       }
    }
 }
+
+// NOTE: I'm putting this here for now because I don't have time to update all the makefiles right now
+import "Stacker"
+
+public class ToolBar : Stacker
+{
+   direction = horizontal;
+   background = activeBorder;
+   gap = 0;
+   inactive = true;
+
+   anchor = Anchor { left = 0, right = 0 };
+   clientSize = { h = 32 };
+   borderStyle = bevel;
+
+   watch(master)
+   {
+      Window w;
+      for(w = firstChild; w; w = w.next)
+         w.master = master;
+   };
+}
+
+public class ToolButton : Button
+{
+   bevelOver = true;
+   size = Size { 24, 24 };
+   opacity = 0;
+   bitmapAlignment = center;
+   MenuItem * menuItemPtr;
+
+   watch(master)
+   {
+      if(menuItemPtr)
+      {
+         Window master = this.master;
+         if(master && master.parent && !eClass_IsDerived(master._class, class(Stacker)))
+         {
+            MenuItem menuItem = this.menuItem;
+            BitmapResource bmp;
+            if(menuItem && (bmp = menuItem.bitmap))
+               bitmap = bmp;
+         }
+      }
+   };
+
+   NotifyClicked = SelectMenuItem;
+
+   bool Window::SelectMenuItem(Button button, int x, int y, Modifiers mods)
+   {
+      ToolButton toolButton = (ToolButton)button;
+      MenuItem menuItem = toolButton.menuItem;
+      return menuItem.NotifySelect(this, menuItem, 0);
+   }
+
+public:
+   property MenuItem * menuItemPtr { set { menuItemPtr = value; } }
+   property MenuItem menuItem
+   {
+      get
+      {
+         MenuItem menuItem = *(MenuItem *)((byte *)master + (uint)menuItemPtr);
+         return menuItem;
+      }
+   }
+}
+
+public class ToolSeparator : Window
+{
+   size = Size { 4, 24 };
+   opacity = 0;
+
+   void OnRedraw(Surface surface)
+   {
+      surface.foreground = Color { 85, 85, 85 };
+      surface.VLine(0, 23, 1);
+      surface.foreground = white;
+      surface.VLine(0, 23, 2);
+   } 
+}
