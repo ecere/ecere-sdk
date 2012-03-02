@@ -1934,7 +1934,7 @@ public class LFBDisplayDriver : DisplayDriver
                         {
                            int bla = (lfbSurface.bitmap.stride - w) * sizeof(uint32);
                            //memset_32((uint32 *) theOffset,color,w);
-                           /*_asm
+                           /-*_asm
                            {
                               push edi
                               push ecx

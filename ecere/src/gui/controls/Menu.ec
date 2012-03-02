@@ -483,7 +483,7 @@ public:
             for(mergeIntoItemPtr = items.first; mergeIntoItemPtr; mergeIntoItemPtr = mergeIntoItemPtr.next)
             {
                MenuItem mergeIntoItem = mergeIntoItemPtr.item;
-               if(/*!mergeIntoItem.subMenu && /*mergeIntoItem.placement && !mergeIntoItemPtr.inserted && */!strcmpTillTab(ITEM_TEXT(mergeIntoItem), ITEM_TEXT(beingMergedItem)))
+               if(/*!mergeIntoItem.subMenu && /-*mergeIntoItem.placement && !mergeIntoItemPtr.inserted && */!strcmpTillTab(ITEM_TEXT(mergeIntoItem), ITEM_TEXT(beingMergedItem)))
                {
                   //if(!beingMergedItem.placement || beingMergedItemPtr.inserted)
                   {

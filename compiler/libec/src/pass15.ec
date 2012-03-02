@@ -2950,7 +2950,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
 
          /*source.kind != voidType && source.kind != structType && source.kind != unionType  */
       
-         /*&& (source.kind != classType /*|| source._class.registered.type != structClass)*/)
+         /*&& (source.kind != classType /-*|| source._class.registered.type != structClass)*/)
          return true;
       if(!isConversionExploration && source.kind == pointerType && source.type.kind == voidType &&
          ((dest.kind == classType && (!dest._class || !dest._class.registered || dest._class.registered.type == structClass || dest._class.registered.type == normalClass || dest._class.registered.type == noHeadClass || dest._class.registered.type == systemClass))

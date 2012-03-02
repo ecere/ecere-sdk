@@ -281,7 +281,7 @@ public:
          return false;
       if(wNearNormal.DotProduct(center) + wNearD < -radius)
          return false;
-   /*   if(wFarNormal.DotProduct(center) + wFarD < -radius)
+   /-*   if(wFarNormal.DotProduct(center) + wFarD < -radius)
          return false;*/
       return true;
    }

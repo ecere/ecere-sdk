@@ -989,7 +989,7 @@ static void SigIntHandler(int value)
    int pid = getpgrp();
    int thisPid = getpid();
    //if(thisPid == pid)
-   /*
+   /-*
    {
       if(maxid >= 0)
       {

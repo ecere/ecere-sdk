@@ -473,7 +473,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #else*/
       #if defined(__ANDROID__)
       #else
-      glXMakeCurrent(xGlobalDisplay, oglSystem.dummyGLXPixmap /*displaySystem.window /*DefaultRootWindow(xGlobalDisplay)*/, oglSystem.glContext);
+      glXMakeCurrent(xGlobalDisplay, oglSystem.dummyGLXPixmap /*displaySystem.window /-*DefaultRootWindow(xGlobalDisplay)*/, oglSystem.glContext);
       #endif
 //#endif
       //previous = oglSystem.glContext;
@@ -739,7 +739,7 @@ class OpenGLDisplayDriver : DisplayDriver
          if(oglSystem.glContext)
          {
             //printf("Got a Context\n");
-            glXMakeCurrent(xGlobalDisplay, oglSystem.dummyGLXPixmap /*displaySystem.window /*DefaultRootWindow(xGlobalDisplay)*/, oglSystem.glContext);
+            glXMakeCurrent(xGlobalDisplay, oglSystem.dummyGLXPixmap /*displaySystem.window /-*DefaultRootWindow(xGlobalDisplay)*/, oglSystem.glContext);
 
             // Setup Extensions
 
