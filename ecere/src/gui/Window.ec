@@ -2530,7 +2530,13 @@ private:
          if(this == rootWindow)
          {
             if(style.drawBehind || background.a)
+            {
+               int a = background.a;
+               // Premultiply alpha for clear color
+               surface.SetBackground({ (byte)a, { (byte)(a*background.color.r/255), (byte)(a*background.color.g/255), (byte)(a*background.color.b/255) } });
                surface.Clear(colorBuffer);
+               surface.SetBackground(background);
+            }
          }
          else if(background.a)
          {
@@ -2548,8 +2554,12 @@ private:
             }
             else if(/*style.clearDepthBuffer || */background.a)
             {
+               int a = background.a;
                // surface.Clear((style.clearDepthBuffer ? depthBuffer : 0) | (background.a ? colorBuffer : 0));
+               // Premultiply alpha for clear color
+               surface.SetBackground({ (byte)a, { (byte)(a*background.color.r/255), (byte)(a*background.color.g/255), (byte)(a*background.color.b/255) } });
                surface.Clear(colorBuffer);
+               surface.SetBackground(background);
             }
          }
 

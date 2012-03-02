@@ -1,4 +1,5 @@
-#define USEPBUFFER
+// We were using PBUFFER for alpha compositing on Linux before, but it does not seem to work, nor be required anymore.
+// #define USEPBUFFER
 
 namespace gfx::drivers;
 
@@ -574,7 +575,8 @@ class OpenGLDisplayDriver : DisplayDriver
          oglSystem.pfd.nVersion = 1;
          oglSystem.pfd.dwFlags = PFD_DRAW_TO_WINDOW /*PFD_DRAW_TO_BITMAP*/ | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
          oglSystem.pfd.iPixelType = PFD_TYPE_RGBA;
-         oglSystem.pfd.cColorBits = 32;
+         oglSystem.pfd.cColorBits = 24;
+         oglSystem.pfd.cAlphaBits = 8;
          oglSystem.pfd.cDepthBits = 24;
          oglSystem.pfd.iLayerType = PFD_MAIN_PLANE;
 
@@ -659,6 +661,8 @@ class OpenGLDisplayDriver : DisplayDriver
                      oglSystem.format = pixelFormat;
                      wglMakeCurrent(null, null);
                      wglDeleteContext(oglSystem.glrc);
+
+                     // *** DescribePixelFormat does not support WGL pixel formats! ***
                      //DescribePixelFormat(oglSystem.hdc, oglSystem.format, sizeof(oglSystem.pfd), &oglSystem.pfd);
                      SetPixelFormat(oglSystem.hdc, oglSystem.format, &oglSystem.pfd);
                      //Log("Successfully set pixel format\n");
