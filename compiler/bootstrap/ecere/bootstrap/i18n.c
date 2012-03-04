@@ -357,6 +357,7 @@ if(locale)
 {
 char * dot;
 
+if(language != locale)
 strcpy(language, locale);
 dot = strstr(language, ".");
 if(dot)

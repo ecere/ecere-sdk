@@ -45,7 +45,8 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
    if(locale)
    {
       char * dot;
-      strcpy(language, locale);
+      if(language != locale)
+         strcpy(language, locale);
       dot = strstr(language, ".");
       if(dot) *dot = 0;
       locale = language;

@@ -900,6 +900,7 @@ return 0x0;
 
 char * __ecereNameSpace__ecere__sys__ChangeExtension(char * string, char * ext, char * output)
 {
+if(string != output)
 strcpy(output, string);
 __ecereNameSpace__ecere__sys__StripExtension(output);
 if(ext[0])
@@ -1178,7 +1179,7 @@ int c;
 
 for(c = 0; string[c] && string[c] == ' '; c++)
 ;
-strcpy(output, string + c);
+memmove(output, string + c, strlen(string + c) + 1);
 return output;
 }
 

@@ -672,7 +672,8 @@ public bool StripExtension(char * string)
 
 public char * ChangeExtension(char * string, char * ext, char * output)
 {
-   strcpy(output, string);
+   if(string != output)
+      strcpy(output, string);
    StripExtension(output);
    if(ext[0])
       strcat(output, ".");
@@ -949,7 +950,7 @@ public char * TrimLSpaces(char * string, char * output)
 {
    int c;
    for(c = 0; string[c] && string[c] == ' '; c++);
-   strcpy(output, string + c);
+   memmove(output, string + c, strlen(string+c)+1);
    return output;
 }
 
