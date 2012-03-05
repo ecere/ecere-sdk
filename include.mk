@@ -28,11 +28,11 @@ endif
 endif
 
 # MISC STRING TOOLS
-#empty :=
-#space := $(empty) $(empty)
-#fixspace = $(subst $(space),\$(space),$1)
-#hidspace = $(subst $(space),^,$1)
-#shwspace = $(subst ^,$(space),$1)
+empty :=
+space := $(empty) $(empty)
+fixspace = $(subst $(space),\$(space),$1)
+hidspace = $(subst $(space),^,$1)
+shwspace = $(subst ^,$(space),$1)
 
 # PATH SEPARATOR STRING TOOLS
 ifdef WINDOWS
