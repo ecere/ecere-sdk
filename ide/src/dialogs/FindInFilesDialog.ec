@@ -892,7 +892,7 @@ private:
             if(globalFindCount)
                ide.outputView.findBox.Logf(
                      $"%s search %s a total of %d match%s in %d out of the %d file%s searched\n",
-                     abort ? $"Aborted" : $"Completed", replaceMode ? $"found" : $"replaced", globalFindCount, (globalFindCount > 1) ? $"es" : "",
+                     abort ? $"Aborted" : $"Completed", replaceMode ? $"replaced" : $"found", globalFindCount, (globalFindCount > 1) ? $"es" : "",
                      filesMatchedCount, filesSearchedCount, (filesSearchedCount > 1) ? $"s" : "");
             else if(filesMatchedCount)
                ide.outputView.findBox.Logf(
