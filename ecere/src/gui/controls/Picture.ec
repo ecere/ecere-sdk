@@ -117,7 +117,7 @@ private:
 
       if(bitmap)
       {
-         if(zoom)
+         if(zoom || (hasVertScroll || hasHorzScroll))
             SetScrollArea(bitmap.width, bitmap.height, false);
          result = true;
       }
