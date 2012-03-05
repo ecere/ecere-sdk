@@ -9233,9 +9233,11 @@ public:
    property CreationActivationOption creationActivation { get { return creationActivation; } set { creationActivation = value; } };
    property bool nativeDecorations
    {
-      get { return (bool)nativeDecorations && (formDesigner || rootWindow == this); }
+      get { return (bool)nativeDecorations; }
       set { nativeDecorations = value; }
-      isset { return nativeDecorations != style.fixed; }
+#ifndef ECERE_VANILLA
+      isset { return (nativeDecorations && (rootWindow == this || (formDesigner && activeDesigner && parent == ((FormDesigner)activeDesigner.classDesigner).form.parent))) != style.fixed; }
+#endif
    };
    property bool manageDisplay { get { return (bool)manageDisplay; } set { manageDisplay = value; } };
 

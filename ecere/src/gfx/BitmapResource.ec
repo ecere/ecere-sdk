@@ -168,7 +168,12 @@ public:
       get { return this ? mono : false; }
    };
    property bool transparent { set { transparent = value; } get { return this ? transparent : false; } isset { return (this && !transparent) ? true : false; } };
-   property bool alphaBlend { set { alphaBlend = value; } get { return this ? alphaBlend : false; } };
+   property bool alphaBlend
+   {
+      set { alphaBlend = value; }
+      get { return this ? alphaBlend : false; }
+      isset { return alphaBlend && (!fileName || !SearchString(fileName, 0, ".png", false, true)); }
+   };
    property bool keepData { set { keepData = value; } get { return this ? keepData : false; } };
    property Bitmap bitmap { get { return this ? bitmap : null; } set { bitmap = value; if(bitmap) incref bitmap; } };
    property Window window { set { if(value) value.AddResource(this); } };
