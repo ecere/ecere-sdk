@@ -261,16 +261,18 @@ private:
                   Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2),
                   scroll.x,scroll.y, 
                   hasHorzScroll ? clientSize.w : bitmap.width, hasVertScroll ? clientSize.h : bitmap.height);
-            else if(filter)
-               surface.Filter(bitmap, 
-                  Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2), 
-                  scroll.x,scroll.y, clientSize.w, clientSize.h, 
-                  hasHorzScroll ? clientSize.w : bitmap.width, hasVertScroll ? clientSize.h : bitmap.height);
             else
-               surface.Stretch(bitmap, 
-                  Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2),
-                  scroll.x,scroll.y, clientSize.w, clientSize.h,
-                  hasHorzScroll ? clientSize.w : bitmap.width, hasVertScroll ? clientSize.h : bitmap.height);
+            {
+               int x = hasHorzScroll ? Max(0, (clientSize.w - w) / 2) : 0;
+               int y = hasVertScroll ? Max(0, (clientSize.h - h) / 2) : 0;
+               int sx = scroll.x, sy = scroll.y;
+               int w = clientSize.w, h = clientSize.h;
+               int sw = hasHorzScroll ? clientSize.w : bitmap.width, sh = hasVertScroll ? clientSize.h : bitmap.height;
+               if(filter)
+                  surface.Filter(bitmap, x, y, sx, sy, w, h, sw, sh);
+               else
+                  surface.Stretch(bitmap, x, y, sx, sy, w, h, sw, sh);
+            }
          }
       }
    }
