@@ -361,10 +361,7 @@ bool System_ShellOpen(char * fileName, va_list args)
          else if(__ecereNameSpace__ecere__sys__SearchString(desktop, 0, "kde", false, false))
             sprintf(command, "kde-open \"%s\" &", filePath);
          else
-         {
-            if(FILE_FileExists(filePath) != isDirectory)
-               sprintf(command, "%s &", filePath);
-         }
+            sprintf(command, "xdg-open \"%s\" &", filePath);
       }
 
       if(command[0] && system(command) != -1)
