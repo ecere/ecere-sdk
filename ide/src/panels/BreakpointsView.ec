@@ -59,7 +59,7 @@ class BreakpointsView : Window
             {
                TrimLSpaces(string, string);
                TrimRSpaces(string, string);
-               //value = atoi(string);
+               value = atoi(string);
             }
             //str[0] = '\0';
             //sprintf(str, "%d", value);
@@ -108,6 +108,7 @@ class BreakpointsView : Window
    };
    
    DataField locationField { "char *", true, width = 180, header = $"Location" };
+   DataField hitsField { "int", false, width = 72, header = $"Hits" };
    DataField ignoreField { "char *", true, width = 72, header = $"Ignore Count" };
    DataField levelField { "char *", true, width = 50, header = $"Hit Level" };
    DataField conditionField { "char *", true, width = 130, header = $"Condition" };
@@ -115,6 +116,7 @@ class BreakpointsView : Window
    BreakpointsView()
    {
       listBox.AddField(locationField);
+      listBox.AddField(hitsField);
       listBox.AddField(ignoreField);
       listBox.AddField(levelField);
       listBox.AddField(conditionField);
@@ -224,6 +226,7 @@ class BreakpointsView : Window
             row.SetData(conditionField, bp.condition.expression);
          else
             row.SetData(conditionField, null);
+         row.SetData(hitsField, bp.hits);
       }
    }
    
