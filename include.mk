@@ -184,3 +184,15 @@ ifdef WINDOWS
 else
    SODESTDIR := obj/$(PLATFORM)/lib/
 endif
+
+# COMMON LIBRARIES DETECTION
+
+ifdef WINDOWS
+
+_SSL_CONF = $(call hidspace,$(call fixps,$(OPENSSL_CONF)))
+_SSL_BIN = $(_SSL_CONF:$(notdir $(_SSL_CONF))=$(empty))
+OPEN_SSL_INCLUDE_DIR = $(call fixspace,$(call shwspace,$(subst /bin,/include,$(_SSL_BIN))))
+OPEN_SSL_LIB_DIR = $(call fixspace,$(call shwspace,$(subst /bin,/lib,$(_SSL_BIN))))
+OPEN_SSL_BIN_DIR = $(call fixspace,$(call shwspace,$(_SSL_BIN)))
+
+endif
