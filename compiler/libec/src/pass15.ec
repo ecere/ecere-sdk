@@ -8885,7 +8885,7 @@ void ProcessExpressionType(Expression exp)
             {
                for(param = _class.templateParams.first; param; param = param.next)
                {
-                  if(param.type == identifier && !strcmp(param.name, exp.member.member.string))
+                  if(param.type == identifier && exp.member.member && exp.member.member.string && !strcmp(param.name, exp.member.member.string))
                      break;
                }
             }
