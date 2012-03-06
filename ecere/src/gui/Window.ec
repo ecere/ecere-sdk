@@ -7133,12 +7133,15 @@ public:
       if(result)
       {
          for(slave = slaves.first; slave; slave = slave.next)
-            if(!((Window)slave.data).CloseConfirmation(true))
+         {
+            Window w = slave.data;
+            if((w.parent == this || !w.IsDescendantOf(this)) && !w.CloseConfirmation(true))
             {
                // ((Window)slave.data).CloseConfirmation(true);
                result = false;
                break;
             }
+         }
       }
 
       if(result)
