@@ -730,14 +730,13 @@ class ProjectView : Window
       Project prj = project;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config;
-      if(selection || !ide.activeClient || activeClient == this)
+      if(selection || !ide.activeClient)
       {
          DataRow row = fileList.currentRow;
          ProjectNode node = row ? (ProjectNode)row.tag : null;
          if(node) prj = node.project;
       }
-      // Added this code here until dependencies work:
-      else //if(ide.activeClient)
+      else
       {
          ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
          if(node)
@@ -757,14 +756,13 @@ class ProjectView : Window
       Project prj = project;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config;
-      if(selection || !ide.activeClient || activeClient == this)
+      if(selection || !ide.activeClient)
       {
          DataRow row = fileList.currentRow;
          ProjectNode node = row ? (ProjectNode)row.tag : null;
          if(node) prj = node.project;
       }
-      // Added this code here until dependencies work:
-      else //if(ide.activeClient)
+      else
       {
          ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
          if(node)
@@ -785,8 +783,21 @@ class ProjectView : Window
    bool ProjectRebuild(MenuItem selection, Modifiers mods)
    {
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      Project prj = GetSelectedProject((bool)selection);
-      ProjectConfig config = prj.config;
+      Project prj = project;
+      ProjectConfig config;
+      if(selection || !ide.activeClient)
+      {
+         DataRow row = fileList.currentRow;
+         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         if(node) prj = node.project;
+      }
+      else
+      {
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
+         if(node)
+            prj = node.project;
+      }
+      config = prj.config;
       if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
       {
          ide.outputView.buildBox.Logf($"Rebuilding project %s using the %s configuration...\n", prj.name, GetConfigName(config));
@@ -803,9 +814,22 @@ class ProjectView : Window
 
    bool ProjectClean(MenuItem selection, Modifiers mods)
    {
-      Project prj = GetSelectedProject((bool)selection);
+      Project prj = project;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      ProjectConfig config = prj.config;
+      ProjectConfig config;
+      if(selection || !ide.activeClient)
+      {
+         DataRow row = fileList.currentRow;
+         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         if(node) prj = node.project;
+      }
+      else
+      {
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
+         if(node)
+            prj = node.project;
+      }
+      config = prj.config;
       if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
       {
          ide.outputView.buildBox.Logf($"Cleaning project %s using the %s configuration...\n", prj.name, GetConfigName(config));
@@ -825,15 +849,14 @@ class ProjectView : Window
    {
       Project prj = project;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      if(selection || !ide.activeClient || activeClient == this)
+      if(selection || !ide.activeClient)
       {
          DataRow row = fileList.currentRow;
          ProjectNode node = row ? (ProjectNode)row.tag : null;
          if(node)
             prj = node.project;
       }
-      // Added this code here until dependencies work:
-      else //if(ide.activeClient)
+      else
       {
          ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
          if(node)
