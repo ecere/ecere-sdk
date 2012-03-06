@@ -1825,7 +1825,7 @@ class IDEWorkSpace : Window
                      }
                      else 
                      {
-                        if(MessageBox { type = yesNo, parent = this, text = $"Error opening project", contents = $"Open a different project?" }.Modal() == yes)
+                        if(MessageBox { type = yesNo, master = this, text = $"Error opening project", contents = $"Open a different project?" }.Modal() == yes)
                         {
                            ideProjectFileDialog.text = openProjectFileDialogTitle;
                            if(ideProjectFileDialog.Modal() == cancel)
@@ -1900,7 +1900,7 @@ class IDEWorkSpace : Window
                                        visible = visible, bitmapFile = filePath, OnClose = PictureEditOnClose/*why?--GenericDocumentOnClose*/;
                                     };
          if(!document)
-            MessageBox { type = ok, parent = this, text = filePath, contents = $"File doesn't exist." }.Modal();
+            MessageBox { type = ok, master = this, text = filePath, contents = $"File doesn't exist." }.Modal();
       }
 #ifndef NO3D
       else if(!strcmp(extension, "3ds"))
@@ -1912,7 +1912,7 @@ class IDEWorkSpace : Window
                                     };
 
          if(!document)
-            MessageBox { type = ok, parent = this, text = filePath, contents = $"File doesn't exist." }.Modal();
+            MessageBox { type = ok, master = this, text = filePath, contents = $"File doesn't exist." }.Modal();
       }
 #endif
       else if(!strcmp(extension, "txt") || !strcmp(extension, "text") ||
@@ -1960,7 +1960,7 @@ class IDEWorkSpace : Window
       if(!document && createIfFails != no)
       {
          if(createIfFails != yes && !needFileModified && 
-               MessageBox { type = yesNo, parent = this, text = filePath, contents = $"File doesn't exist. Create?" }.Modal() == yes)
+               MessageBox { type = yesNo, master = this, text = filePath, contents = $"File doesn't exist. Create?" }.Modal() == yes)
             createIfFails = yes;
          if(createIfFails == yes || createIfFails == whatever)
          {
