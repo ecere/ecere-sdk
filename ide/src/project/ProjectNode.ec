@@ -248,7 +248,7 @@ public:
    property ProjectOptions options
    {
       get { return project ? project.options : options; }
-      set { if(project) project.options = value; else options = value; }
+      set { if(project) { delete project.options; project.options = value; } else { delete options; options = value; } }
       isset { ProjectOptions options = project ? project.options : this.options; return options && !options.isEmpty; }
    }
    property Array<PlatformOptions> platforms
@@ -290,7 +290,15 @@ public:
       get { return project ? project.configurations : configurations; }
       set
       {
-         if(project) { project.configurations = value; }
+         if(project)
+         {
+            if(project.configurations)
+            {
+               project.configurations.Free();
+               delete project.configurations;
+            }
+            project.configurations = value;
+         }
          else
          {
             if(configurations) { configurations.Free(); delete configurations; }
