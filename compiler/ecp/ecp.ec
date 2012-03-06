@@ -1535,6 +1535,8 @@ class PrecompApp : Application
                if(!this.exitCode)
                   OutputSymbols(GetOutputFile());
             }
+            else
+               this.exitCode = exitCode;
 
             if(ast)
             {

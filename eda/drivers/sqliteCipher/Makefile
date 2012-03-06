@@ -84,17 +84,11 @@ endif
 
 ifdef WINDOWS
 
-_SSL_CONF = $(call hidspace,$(call fixps,$(OPENSSL_CONF)))
-_SSL_BIN = $(_SSL_CONF:$(notdir $(_SSL_CONF))=$(empty))
-_SSL_INC_DIR = $(call fixspace,$(call shwspace,$(subst /bin,/include,$(_SSL_BIN))))
-_SSL_LIB_DIR = $(call fixspace,$(call shwspace,$(subst /bin,/lib,$(_SSL_BIN))))
-_SSL_BIN_DIR = $(call fixspace,$(call shwspace,$(_SSL_BIN)))
-
 CFLAGS += \
-	 -I$(_SSL_INC_DIR)
+	 -I$(OPEN_SSL_INCLUDE_DIR)
 
 OFLAGS += \
-	 -L$(_SSL_BIN_DIR)
+	 -L$(OPEN_SSL_BIN_DIR)
 
 LIBS += -llibeay32
 
@@ -173,9 +167,9 @@ $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 openssldebug:
 	@$(call echo,OPENSSL_CONF $(OPENSSL_CONF))
 	@$(call echo,_SSL_CONF $(_SSL_CONF))
-	@$(call echo,_SSL_INC_DIR $(_SSL_INC_DIR))
-	@$(call echo,_SSL_BIN_DIR $(_SSL_BIN_DIR))
-	@$(call echo,_SSL_LIB_DIR $(_SSL_LIB_DIR))
+	@$(call echo,OPEN_SSL_INCLUDE_DIR $(OPEN_SSL_INCLUDE_DIR))
+	@$(call echo,OPEN_SSL_BIN_DIR $(OPEN_SSL_BIN_DIR))
+	@$(call echo,OPEN_SSL_LIB_DIR $(OPEN_SSL_LIB_DIR))
 
 clean: objdir
 	$(call rmq,$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))

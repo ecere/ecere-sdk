@@ -832,6 +832,7 @@ class IDEWorkSpace : Window
                      char workingDir[MAX_LOCATION];
                      GetWorkingDir(workingDir, MAX_LOCATION);
                      findInFilesDialog.currentDirectory = workingDir;
+                     ideMainFrame.text = titleECEREIDE;
                   }
                }
             }

@@ -636,6 +636,7 @@ class CodeEditor : Window
    char methodName[1024];
 
    bool updatingCode;
+   bool loadingFile;
    bool fixCaret;
    bool membersListShown;
    bool membersAbove;
@@ -846,35 +847,34 @@ class CodeEditor : Window
 
       bool NotifyCharsAdded(EditBox editBox, BufferLocation before, BufferLocation after, bool pasteOperation)
       {
+         if(!loadingFile && after.y != before.y)
+         {
+            ProjectView projectView = ide.projectView;
+            if(projectView && fileName)
+            {
+               int c;
+               // HOW WE MIGHT WANT TO DO IT:
+               char * text = before.line.text;
+               for(c = before.x-1; c>= 0; c--)
+                  if(!isspace(text[c]))
+                     break;
+               ide.debugger.MoveIcons(fileName, before.y + (((!pasteOperation && c > -1) || !after.line.count) ? 1 : 0), after.y - before.y, false);
+
+               // HOW VISUAL STUDIO DOES IT:
+               /*
+               char * text = after.line.text;
+               for(c = after.line.count-1; c>= 0; c--)
+                  if(!isspace(text[c]))
+                     break;
+               ide.debugger.MoveIcons(fileName, before.y + ((c < 0) ? 1 : 0), after.y - before.y, false);
+               */
+            }
+            Update({ 0, 0, editBox.position.x, clientSize.h });
+         }
+
          if(!updatingCode)
          {
             ObjectInfo oClass;
-
-            if(after.y != before.y)
-            {
-               ProjectView projectView = ide.projectView;
-               if(projectView && fileName)
-               {
-                  int c;
-                  // HOW WE MIGHT WANT TO DO IT:
-                  char * text = before.line.text;
-                  for(c = before.x-1; c>= 0; c--)
-                     if(!isspace(text[c]))
-                        break;
-                  ide.debugger.MoveIcons(fileName, before.y + (((!pasteOperation && c > -1) || !after.line.count) ? 1 : 0), after.y - before.y, false);
-                  
-                  // HOW VISUAL STUDIO DOES IT:
-                  /*
-                  char * text = after.line.text;
-                  for(c = after.line.count-1; c>= 0; c--)
-                     if(!isspace(text[c]))
-                        break;
-                  ide.debugger.MoveIcons(fileName, before.y + ((c < 0) ? 1 : 0), after.y - before.y, false);
-                  */
-
-                  Update(null);
-               }
-            }
 
             for(oClass = classes.first; oClass; oClass = oClass.next)
             {
@@ -1167,19 +1167,17 @@ class CodeEditor : Window
 
       bool NotifyCharsDeleted(EditBox editBox, BufferLocation before, BufferLocation after, bool pasteOperation)
       {
+         if(!loadingFile && after.y != before.y)
+         {
+            ProjectView projectView = ide.projectView;
+            if(projectView && fileName)
+               ide.debugger.MoveIcons(fileName, before.y + 1, before.y - after.y, before.x == 0);
+            Update({ 0, 0, editBox.position.x, clientSize.h });
+         }
+
          if(!updatingCode)
          {
             ObjectInfo oClass;
-
-            if(after.y != before.y)
-            {
-               ProjectView projectView = ide.projectView;
-               if(projectView && fileName)
-               {
-                  ide.debugger.MoveIcons(fileName, before.y + 1, before.y - after.y, before.x == 0);
-                  Update(null);
-               }
-            }
 
             for(oClass = classes.first; oClass; oClass = oClass.next)
             {
@@ -2205,6 +2203,7 @@ class CodeEditor : Window
             int lineNumber, charPos, len;
             Point scroll;
 
+            loadingFile = true;
             updatingCode = true;
             lineNumber = editBox.lineNumber;
             charPos = editBox.charPos;
@@ -2217,6 +2216,7 @@ class CodeEditor : Window
             editBox.GoToPosition(editBox.line, lineNumber, charPos <= len ? charPos - 1 : (len ? len - 1 : 0));
             editBox.scroll = scroll;
             updatingCode = false;
+            loadingFile = false;
 
             codeModified = true;
             if(designer)
@@ -2381,9 +2381,11 @@ class CodeEditor : Window
       {
          // Added this here... 
          fileName = filePath;
+         loadingFile = true;
          updatingCode = true;
          editBox.Load(f);
          updatingCode = false;
+         loadingFile = false;
          Create();
 
          delete(f);

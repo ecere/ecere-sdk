@@ -9245,7 +9245,7 @@ public:
       get { return (bool)nativeDecorations; }
       set { nativeDecorations = value; }
 #ifndef ECERE_VANILLA
-      isset { return (nativeDecorations && (rootWindow == this || (formDesigner && activeDesigner && parent == ((FormDesigner)activeDesigner.classDesigner).form.parent))) != style.fixed; }
+      isset { return (nativeDecorations && (rootWindow == this || (formDesigner && activeDesigner && ((FormDesigner)activeDesigner.classDesigner).form && parent == ((FormDesigner)activeDesigner.classDesigner).form.parent))) != style.fixed; }
 #endif
    };
    property bool manageDisplay { get { return (bool)manageDisplay; } set { manageDisplay = value; } };
