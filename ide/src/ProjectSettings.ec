@@ -1285,12 +1285,12 @@ class BuildTab : Tab
             {
                Iterator<Window> it { configSelector.controls };
                ProjectConfig configToDelete = config;
-
+               /*
                while(it.Next())
                {
                   SelectorButton button = (SelectorButton)it.data;
                   if((ProjectConfig)button.id == config)
-                  {                     
+                  {
                      button.visible = false;
                      button.Destroy(0);
 
@@ -1303,6 +1303,11 @@ class BuildTab : Tab
                      break;
                   }
                }
+               */
+               SelectorButton button = configSelector.FindButtonByID((int)configToDelete);
+               if(button)
+                  configSelector.RemoveButton(button);
+
                project.topNode.DeleteConfig(configToDelete);
 
                modifiedDocument = true;
