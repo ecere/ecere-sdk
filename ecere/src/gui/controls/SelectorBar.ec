@@ -79,12 +79,14 @@ public:
       {
          if(button == (SelectorButton)it.data)
          {
+            IteratorPointer toRemove = it.pointer;
             if(it.Next() || (it.Prev() && it.Prev()))
             {
                SelectorButton newSelection = (SelectorButton)it.data;
                newSelection.checked = true;
                newSelection.NotifyClicked(newSelection.master, newSelection, 0, 0, 0);
             }
+            controls.Delete(toRemove);
             break;
          }
       }
