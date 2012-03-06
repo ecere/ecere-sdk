@@ -402,7 +402,7 @@ private:
             child.parent = null;
          }
       }
-      bits.holdChildMonitoring = true;
+      bits.holdChildMonitoring = false;
    }
 
    public void MakeControlVisible(Window control)
