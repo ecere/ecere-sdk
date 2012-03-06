@@ -3079,6 +3079,12 @@ class Debugger
                         targetProcessId = 0;
                         //ide.AdjustDebugMenus();
                      }
+                     else if(strstr(item.value, "During startup program exited with code "))
+                     {
+                        ChangeState(loaded);
+                        targetProcessId = 0;
+                        //ide.AdjustDebugMenus();
+                     }
                      else
                      {
 #ifdef _DEBUG
