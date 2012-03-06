@@ -294,6 +294,7 @@ public:
             if(prevItem == last) 
                last = item;
          
+            link.prev = prevItem ? prevItem : (circ ? last : null);
             if(prevItem)
             {
                link.next = prevLink.next;
@@ -303,8 +304,14 @@ public:
             {
                link.next = first;
                first = item;
+               if(circ)
+               {
+                   if(link.prev)
+                     ((Item)((byte *)link.prev + offset)).next = item;
+                   else
+                      link.next = item;
+               }
             }
-            link.prev = prevItem;
             if(link.next) 
                ((Item) ((byte *)link.next + offset)).prev = item;
          }

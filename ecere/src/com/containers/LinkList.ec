@@ -134,6 +134,7 @@ public:
             if(prevItem == last) 
                last = item;
          
+            item.link.prev = prevItem ? prevItem : (circ ? last : null);
             if(prevItem)
             {
                item.link.next = prevItem.link.next;
@@ -143,8 +144,14 @@ public:
             {
                item.link.next = first;
                first = item;
+               if(circ)
+               {
+                   if(item.link.prev)
+                      item.link.prev.link.next = item;
+                   else
+                      item.link.next = item;
+               }
             }
-            item.link.prev = prevItem;
             if(item.link.next) 
                item.link.next.link.prev = item;
          }
