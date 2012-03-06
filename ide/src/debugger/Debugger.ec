@@ -2629,6 +2629,7 @@ class Debugger
                if(conditionMet && (bp.level == -1 || bp.level == frameCount))
                {
                   bp.hits++;
+                  ide.breakpointsView.UpdateBreakpoint(bp.row);
                   if(bp.hits > bp.ignore)
                   {
                      ignoreBreakpoints = false;

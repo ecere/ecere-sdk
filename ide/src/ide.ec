@@ -1711,7 +1711,8 @@ class IDEWorkSpace : Window
             if(document.isDocument && fileName && !fstrcmp(fileName, filePath) && document.created)
             {
                document.visible = true;
-               document.Activate();
+               if(visible)
+                  document.Activate();
                return document;
             }
          }
