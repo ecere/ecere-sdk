@@ -75,58 +75,58 @@
             {
                "Folder" : "actions",
                "Files" : [
-                  "/sdk/ecere/res/vanilla/ecere/actions/folderNew.png",
-                  "/sdk/ecere/res/vanilla/ecere/actions/goUp.png"
+                  "../../../ecere/res/vanilla/ecere/actions/folderNew.png",
+                  "../../../ecere/res/vanilla/ecere/actions/goUp.png"
                ]
             },
             {
                "Folder" : "devices",
                "Files" : [
-                  "/sdk/ecere/res/vanilla/ecere/devices/computer.png",
-                  "/sdk/ecere/res/vanilla/ecere/devices/driveHardDisk.png",
-                  "/sdk/ecere/res/vanilla/ecere/devices/driveRemovableMedia.png",
-                  "/sdk/ecere/res/vanilla/ecere/devices/mediaFloppy.png",
-                  "/sdk/ecere/res/vanilla/ecere/devices/mediaOptical.png"
+                  "../../../ecere/res/vanilla/ecere/devices/computer.png",
+                  "../../../ecere/res/vanilla/ecere/devices/driveHardDisk.png",
+                  "../../../ecere/res/vanilla/ecere/devices/driveRemovableMedia.png",
+                  "../../../ecere/res/vanilla/ecere/devices/mediaFloppy.png",
+                  "../../../ecere/res/vanilla/ecere/devices/mediaOptical.png"
                ]
             },
             {
                "Folder" : "elements",
                "Files" : [
-                  "/sdk/ecere/res/vanilla/ecere/elements/areaClose.png",
-                  "/sdk/ecere/res/vanilla/ecere/elements/areaMaximize.png",
-                  "/sdk/ecere/res/vanilla/ecere/elements/areaMinimize.png",
-                  "/sdk/ecere/res/vanilla/ecere/elements/areaRestore.png",
-                  "/sdk/ecere/res/vanilla/ecere/elements/arrowDown.png",
-                  "/sdk/ecere/res/vanilla/ecere/elements/arrowLeft.png",
-                  "/sdk/ecere/res/vanilla/ecere/elements/arrowRight.png",
-                  "/sdk/ecere/res/vanilla/ecere/elements/arrowUp.png",
-                  "/sdk/ecere/res/vanilla/ecere/elements/optionBoxDisabledSelected.png",
-                  "/sdk/ecere/res/vanilla/ecere/elements/optionBoxDown.png",
-                  "/sdk/ecere/res/vanilla/ecere/elements/optionBoxSelected.png",
-                  "/sdk/ecere/res/vanilla/ecere/elements/optionBoxSelectedDown.png",
-                  "/sdk/ecere/res/vanilla/ecere/elements/optionBoxUp.png"
+                  "../../../ecere/res/vanilla/ecere/elements/areaClose.png",
+                  "../../../ecere/res/vanilla/ecere/elements/areaMaximize.png",
+                  "../../../ecere/res/vanilla/ecere/elements/areaMinimize.png",
+                  "../../../ecere/res/vanilla/ecere/elements/areaRestore.png",
+                  "../../../ecere/res/vanilla/ecere/elements/arrowDown.png",
+                  "../../../ecere/res/vanilla/ecere/elements/arrowLeft.png",
+                  "../../../ecere/res/vanilla/ecere/elements/arrowRight.png",
+                  "../../../ecere/res/vanilla/ecere/elements/arrowUp.png",
+                  "../../../ecere/res/vanilla/ecere/elements/optionBoxDisabledSelected.png",
+                  "../../../ecere/res/vanilla/ecere/elements/optionBoxDown.png",
+                  "../../../ecere/res/vanilla/ecere/elements/optionBoxSelected.png",
+                  "../../../ecere/res/vanilla/ecere/elements/optionBoxSelectedDown.png",
+                  "../../../ecere/res/vanilla/ecere/elements/optionBoxUp.png"
                ]
             },
             {
                "Folder" : "mimeTypes",
                "Files" : [
-                  "/sdk/ecere/res/vanilla/ecere/mimeTypes/file.png"
+                  "../../../ecere/res/vanilla/ecere/mimeTypes/file.png"
                ]
             },
             {
                "Folder" : "places",
                "Files" : [
-                  "/sdk/ecere/res/vanilla/ecere/places/driveRemote.png",
-                  "/sdk/ecere/res/vanilla/ecere/places/folder.png",
-                  "/sdk/ecere/res/vanilla/ecere/places/folderRemote.png",
-                  "/sdk/ecere/res/vanilla/ecere/places/networkServer.png",
-                  "/sdk/ecere/res/vanilla/ecere/places/networkWorkgroup.png"
+                  "../../../ecere/res/vanilla/ecere/places/driveRemote.png",
+                  "../../../ecere/res/vanilla/ecere/places/folder.png",
+                  "../../../ecere/res/vanilla/ecere/places/folderRemote.png",
+                  "../../../ecere/res/vanilla/ecere/places/networkServer.png",
+                  "../../../ecere/res/vanilla/ecere/places/networkWorkgroup.png"
                ]
             },
             {
                "Folder" : "status",
                "Files" : [
-                  "/sdk/ecere/res/vanilla/ecere/status/folderOpen.png"
+                  "../../../ecere/res/vanilla/ecere/status/folderOpen.png"
                ]
             }
          ],
