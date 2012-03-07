@@ -31,7 +31,6 @@ The Ecere SDK is a Software Development Kit including:
         drivers for a minimal Ecere RDBMS and SQLite (as well as an encrypted
         version using SQLiteCipher), and recently a basic Oracle driver was
         introduced
-
       - An audio library (supporting DirectSound on Windows and ALSA on Linux)
       - WIA Scanning support on Windows
       - SSL Sockets suport through OpenSSL
