@@ -7119,7 +7119,7 @@ public:
          else
             sprintf(message, $"Save changes to Untitled %d?", documentID);
 
-         dialogRes = MessageBox { master = master, type = yesNoCancel, text = parent.caption, contents = message }.Modal();
+         dialogRes = MessageBox { master = master, type = yesNoCancel, text = parent.caption ? parent.caption : rootWindow.caption, contents = message }.Modal();
 
          if(dialogRes == yes)
          {
