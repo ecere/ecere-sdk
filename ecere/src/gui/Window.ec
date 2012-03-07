@@ -2371,11 +2371,16 @@ private:
       UpdateDecorations();
       if(parent)
       {
-         if(parent.rootWindow == parent && parent.activeClient == this) // Added this last check
+         if(parent.activeClient == this) // Added this last check
          {
-            char caption[2048];
-            parent.FigureCaption(caption);
-            guiApp.interfaceDriver.SetRootWindowCaption(parent, caption);
+            if(parent.rootWindow == parent)
+            {
+               char caption[2048];
+               parent.FigureCaption(caption);
+               guiApp.interfaceDriver.SetRootWindowCaption(parent, caption);
+            }
+            else
+               parent.UpdateCaption();
          }
          parent.UpdateDecorations();
       }
