@@ -1894,7 +1894,7 @@
       }
    ],
    "Description" : "The allmighty Ecere Runtime library.",
-   "License" : "Ecere SDK v0.44 Draft 1 - www.ecere.com
+   "License" : "Ecere SDK v0.44 - www.ecere.com
 
 The Ecere SDK is Free Open Source Software. It is provided with NO WARRANTY 
 expressed or implied to the extent permitted by law.
@@ -1908,13 +1908,15 @@ commercially, along with the supporting Ecere runtime library(ies):
       - Core eC framework only
    * libEDA.so / EDA.dll
       - Data Access System
+   * libEDASQLite.so / EDASQLite.dll
+      - SQLite driver for EDA
 
-The Ecere SDK is distributed under a revised BSD license:
+The Ecere SDK is distributed under the New BSD license:
 
 ================================================================================
 
-   Copyright (c) 1996-2008, Jerome Jacovella-St-Louis
-   Copyright (c) 2005-2008, Ecere Corporation
+   Copyright (c) 1996-2012, Jerome Jacovella-St-Louis
+   Copyright (c) 2005-2012, Ecere Corporation
 
    All rights reserved.
 
@@ -1946,11 +1948,14 @@ The Ecere SDK is distributed under a revised BSD license:
 
 This software makes use of other software components whose licenses may also 
 apply, which are found in their respective source directories (most under
-deps/). Among them: zlib, libpng, libjpeg, giflib, harfbuzz, freetype...
+deps/).
+
+Among them: zlib, libpng, libjpeg, giflib, harfbuzz, freetype, tango icons
 
 The IDE also communicates with GCC for compiling (MinGW on Windows), GDB for 
 debugging, and UPX for optionally compressing executables. Each of these have 
 their own license which can be found in their respective documentation folder 
 if distributed along with the SDK (in the case of the Windows version) or
-from wherever you obtained them."
+from wherever you obtained them.
+"
 }
