@@ -423,7 +423,7 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, char * commandLine, char * env, voi
       si.hStdInput  = hInput [PIPE_READ] ? hInput [PIPE_READ]  : hStdIn;
       if((mode & POM_error) && (mode & POM_output))
          si.hStdError = hOutput[PIPE_WRITE];
-      else if((mode & POM_output))
+      else if((mode & POM_error))
          si.hStdError = hError[PIPE_WRITE];
       else
          si.hStdError = hError[PIPE_WRITE] ? hError[PIPE_WRITE] : hStdErr;
