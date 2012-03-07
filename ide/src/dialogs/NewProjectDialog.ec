@@ -160,7 +160,7 @@ class NewProjectDialog : Window
          } 
          workspace.projects.Add(project);
 
-         project.topNode.configurations = project.configurations = { [ debug, release ] };
+         project.topNode.configurations = /*project.configurations = */{ [ debug, release ] };
          project.resNode = project.topNode.Add(project, "Resources", null, resources, archiveFile, false);
 
          if(!project.Save(filePath))
