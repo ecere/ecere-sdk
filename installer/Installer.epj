@@ -8776,15 +8776,6 @@
                      "Folder" : "ModelViewer",
                      "Files" : [
                         {
-                           "Folder" : "models",
-                           "Files" : [
-                              "../samples/3D/ModelViewer/models/dolphin.3ds",
-                              "../samples/3D/ModelViewer/models/teapot2.3ds",
-                              "../samples/3D/ModelViewer/models/ecere.3ds",
-                              "../samples/3D/ModelViewer/models/teapot - moving.3ds"
-                           ]
-                        },
-                        {
                            "Folder" : "res",
                            "Files" : [
                               "../samples/3D/ModelViewer/res/ecere.png",
@@ -8793,7 +8784,10 @@
                         },
                         "../samples/3D/ModelViewer/eModel.ec",
                         "../samples/3D/ModelViewer/eModel.epj",
-                        "../samples/3D/ModelViewer/engineSettings.ec"
+                        "../samples/3D/ModelViewer/engineSettings.ec",
+                        "../samples/3D/ModelViewer/dolphin.3ds",
+                        "../samples/3D/ModelViewer/ecere.3ds",
+                        "../samples/3D/ModelViewer/teapot.3ds"
                      ]
                   },
                   {

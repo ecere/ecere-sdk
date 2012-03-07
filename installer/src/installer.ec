@@ -941,9 +941,14 @@ class Installer : Window
       if(appData && appData[0])
       {
          static char defSamplesPath[MAX_LOCATION];
+         static char defExtrasPath[MAX_LOCATION];
          strcpy(defSamplesPath, appData);
          PathCat(defSamplesPath, "ECERE SDK\\Samples");
          components[samples].defInstallPath = defSamplesPath;
+
+         strcpy(defExtrasPath, appData);
+         PathCat(defExtrasPath, "ECERE SDK\\extras");
+         coreSDK[extras].defInstallPath = defExtrasPath;
       }
          
       destBox.contents = installDir;
