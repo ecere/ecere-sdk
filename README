@@ -64,6 +64,7 @@ However, you should still be able to use the 32 bit version on a 64 bit machine.
 The Ecere Tao of Programming is a Programmer's Guide (still work in progress)
 that will teach you the foundations of eC and Ecere. You will find it under:
 
+Online: http://ecere.com/tao.pdf
 On Windows:
       %PROGRAMFILES%\Ecere SDK\doc\Ecere Tao of Programming [work in progress].pdf
 On Linux/Unix: /usr/share/doc/tao.pdf
