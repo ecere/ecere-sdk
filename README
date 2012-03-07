@@ -81,7 +81,7 @@ You can also find the latest versions on GitHub:
 
 The Documentor is a tool under development to browse and document the APIs of
 eC modules. You can use it to browse all available classes, methods and properties
-of the Ecere runtime library.
+of the Ecere runtime library. It is available from the Help menu in the IDE (F1).
 However, at the moment the tool itself is being improved, and so not much 
 descriptive info has been added yet.
 
