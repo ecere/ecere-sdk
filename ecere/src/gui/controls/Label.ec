@@ -98,6 +98,34 @@ private:
       return isGroupBox;
    }
 
+   static void Surface::GroupBevel(bool inner, int x, int y, int w, int h, int tw)
+   {
+      ColorAlpha foreground = this.foreground;
+
+      SetForeground(inner ? Color { 128,128,128 } : formColor);
+
+      HLine(x,   x+8 - 2, y);       // Top
+      HLine(x+8+tw,   x+w - 2, y);    // Top part 2
+
+      VLine(y+1, y+h - 2, x);
+
+      SetForeground(inner ? Color { 64,64,64 } : white);
+
+      HLine(x+1, x+8-3, y+1);       // Top
+      HLine(x+8+tw+1, x+w-3, y+1);    // Top part 2
+      VLine(y+2, y+h-3, x+1);
+
+      SetForeground(inner ? formColor : Color { 128,128,128 } );
+      HLine(x+1, x+w-2, y + h -2);
+      VLine(y+1, y+h-3, x + w - 2);
+
+      SetForeground(inner ? white : Color { 64,64,64 });
+      HLine(x, x+w-1, y + h - 1);
+      VLine(y, y+h-2, x + w - 1);
+
+      SetForeground(foreground);
+   }
+
    void OnRedraw(Surface surface)
    {
       Window labeledWindow = text ? this : window;
@@ -105,13 +133,25 @@ private:
 
       if(isGroupBox)
       {
-         surface.Bevel(true,  1,7, clientSize.w - 2, clientSize.h - 8);
-         surface.Bevel(false, 0,6, clientSize.w, clientSize.h - 6);
-         if(parent.background)
+         if(labeledWindow)
+         {
+            int tw = 0;
+            char * caption = labeledWindow.caption;
+
+            surface.TextExtent(caption, strlen(caption), &tw, null);
+            GroupBevel(surface, true,  1,7, clientSize.w - 2, clientSize.h - 8, tw);
+            GroupBevel(surface, false, 0,6, clientSize.w, clientSize.h - 6, tw);
+         }
+         else
+         {
+            surface.Bevel(true,  1,7, clientSize.w - 2, clientSize.h - 8);
+            surface.Bevel(false, 0,6, clientSize.w, clientSize.h - 6);
+         }
+         /*if(parent.background)
          {
             surface.TextOpacity(true);
             surface.SetBackground(parent.background);
-         }
+         }*/
          offset = 8;
       }
       if(labeledWindow)
