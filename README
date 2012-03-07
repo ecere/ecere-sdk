@@ -74,7 +74,9 @@ On Windows they get installed in %APPDATA%\Ecere SDK\Samples
 On Linux/Unix they get installed in /usr/share/ecere/samples/
 You can also find the latest versions on GitHub:
 
-http://github.com/ecere/sdk/tree/master/samples
+   http://github.com/ecere/sdk/tree/master/samples
+   http://github.com/ecere/fractals
+   http://github.com/ecere/chess
 
 The Documentor is a tool under development to browse and document the APIs of
 eC modules. You can use it to browse all available classes, methods and properties
