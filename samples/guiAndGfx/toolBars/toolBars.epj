@@ -29,9 +29,7 @@
       }
    ],
    "Files" : [
-      "toolBarDemo.ec",
-      "../../../extras/gui/IconBag.ec",
-      "../../../extras/gui/controls/ToolBar.ec"
+      "toolBarDemo.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [

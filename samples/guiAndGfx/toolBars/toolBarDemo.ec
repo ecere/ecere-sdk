@@ -1,5 +1,4 @@
-import "IconBag"
-import "ToolBar"
+import "ecere"
 
 enum ToolId { none, newWindow, goBack, goForward, goHome };
 
@@ -14,20 +13,6 @@ class ToolBarDemo : Window
    minClientSize = { 600, 300 };
    nativeDecorations = true;
 
-   IconBag<ToolId> iconBag
-   {
-      window = this;
-      alphaBlend = true;
-      iconNames =
-      [
-         "<:ecere>emblems/unreadable.png",
-         "<:ecere>actions/windowNew.png",      /* newWindow */
-         "<:ecere>actions/goPrevious.png",     /* goBack */
-         "<:ecere>actions/goNext.png",         /* goForward */
-         "<:ecere>actions/goHome.png"          /* goHome */
-      ];
-   };
-
    Stacker stack
    {
       this;
@@ -40,10 +25,9 @@ class ToolBarDemo : Window
    ToolBar toolBar
    {
       stack, this;
-      iconBag = iconBag;
       size = { h = 32 };
 
-      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      /*bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          ToolId id = (ToolId)button.id;
          switch(id)
@@ -54,28 +38,18 @@ class ToolBarDemo : Window
             case goHome:    break;
          }
          return true;
-      }
+      }*/
    };
 
    Window s1 { toolBar, size = { w = 8 } };
-   ToolButton goBack { toolBar, this, id = ToolId::goBack, toolTip = "Go Back" };
+   ToolButton goBack { toolBar, this, id = ToolId::goBack, toolTip = "Go Back", bitmap = { "<:ecere>actions/goPrevious.png" } };
    Window s2 { toolBar, size = { w = 2 } };
-   ToolButton goForward { toolBar, this, id = ToolId::goForward, toolTip = "Go Forward" };
+   ToolButton goForward { toolBar, this, id = ToolId::goForward, toolTip = "Go Forward", bitmap = { "<:ecere>actions/goNext.png" } };
    Window s3 { toolBar, size = { w = 12 } };
-   ToolButton newWindow { toolBar, this, id = ToolId::newWindow, toolTip = "New Window" };
+   ToolButton newWindow { toolBar, this, id = ToolId::newWindow, toolTip = "New Window", bitmap = { "<:ecere>actions/windowNew.png" } };
    Window s4 { toolBar, size = { w = 2 } };
-   ToolButton goHome { toolBar, this, id = ToolId::goHome, toolTip = "Go Home" };
+   ToolButton goHome { toolBar, this, id = ToolId::goHome, toolTip = "Go Home", bitmap = { "<:ecere>actions/goHome.png" } };
 
-   bool OnLoadGraphics()
-   {
-      iconBag.Load();
-      return true;
-   }
-
-   void OnUnloadGraphics()
-   {
-      iconBag.Unload();
-   }
 }
 
 ToolBarDemo tbDemo { };
