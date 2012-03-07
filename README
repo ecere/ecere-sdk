@@ -1,5 +1,7 @@
 The Ecere SDK v0.44 - http://ecere.com
 
+Free Open Source Software released under the New BSD license.
+
 The Ecere SDK is a cross-platform toolkit for building software applications.
 It currently runs on Windows, Linux, and Mac OS X (through X11).
 With the Ecere SDK, you can develop applications once and deploy them on all 
