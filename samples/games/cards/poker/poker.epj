@@ -24,7 +24,7 @@
       "bet.ec",
       "player.ec",
       "poker.ec",
-      "pokerutils.ec",
+      "pokerUtils.ec",
       "widow.ec"
    ],
    "ResourcesPath" : "",
