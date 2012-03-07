@@ -8514,41 +8514,41 @@
             {
                "Folder" : "ecere_bin/ide/ide",
                "Files" : [
-                  "ecere/bin/documentor.exe",
-                  "ecere/bin/ide.exe"
+                  "../obj/win32/bin/documentor.exe",
+                  "../obj/win32/bin/ide.exe"
                ]
             },
             {
                "Folder" : "ecere_bin/compiler/compiler",
                "Files" : [
-                  "ecere/bin/ear.exe",
-                  "ecere/bin/ec.dll",
-                  "ecere/bin/ecc.exe",
-                  "ecere/bin/ecereCOM.dll",
-                  "ecere/bin/ecp.exe",
-                  "ecere/bin/ecs.exe",
-                  "ecere/bin/epj2make.exe"
+                  "../obj/win32/bin/ear.exe",
+                  "../obj/win32/bin/ec.dll",
+                  "../obj/win32/bin/ecc.exe",
+                  "../obj/win32/bin/ecereCOM.dll",
+                  "../obj/win32/bin/ecp.exe",
+                  "../obj/win32/bin/ecs.exe",
+                  "../obj/win32/bin/epj2make.exe"
                ]
             },
             {
                "Folder" : "eda",
                "Files" : [
-                  "ecere/bin/EDA.dll",
-                  "ecere/bin/EDASQLite.dll"
+                  "../obj/win32/bin/EDA.dll",
+                  "../obj/win32/bin/EDASQLite.dll"
                ]
             },
             {
                "Folder" : "doc",
                "Files" : [
-                  "ecere/doc/ecere.eCdoc",
-                  "ecere/doc/ecereCOM.eCdoc",
-                  "ecere/doc/EDA.eCdoc"
+                  "../doc/ecere.eCdoc",
+                  "../doc/ecereCOM.eCdoc",
+                  "../doc/EDA.eCdoc"
                ]
             },
             {
                "Folder" : "book",
                "Files" : [
-                  "ecere/doc/tao.pdf"
+                  "../doc/tao.pdf"
                ]
             },
             {
@@ -8673,10 +8673,10 @@
                   }
                ]
             },
-            "ecere/bin/ecere.dll",
-            "ecere/LICENSE",
-            "ecere/README",
-            "ecere/lib/libecereVanilla.a"
+            "../obj/win32/bin/ecere.dll",
+            "../LICENSE",
+            "../README",
+            "../obj/win32/lib/libecereVanilla.a"
          ]
       },
       {
