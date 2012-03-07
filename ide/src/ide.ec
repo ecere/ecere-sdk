@@ -2367,10 +2367,65 @@ class IDEWorkSpace : Window
       for(c = 1; c<app.argc; c++)
       {
          char fullPath[MAX_LOCATION];
+         char parentPath[MAX_LOCATION];
+         char ext[MAX_EXTENSION];
+         bool isProject;
+         FileAttribs dirAttribs;
          GetWorkingDir(fullPath, MAX_LOCATION);
          PathCat(fullPath, app.argv[c]);
-         if(FileExists(fullPath))
-            ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
+         StripLastDirectory(fullPath, parentPath);
+         GetExtension(app.argv[c], ext);
+         isProject = !strcmpi(ext, "epj");
+
+         if(isProject && c > 1) continue;
+
+         // Create directory for projects (only)
+         if(((dirAttribs = FileExists(parentPath)) && dirAttribs.isDirectory) || isProject)
+         {
+            if(isProject && !FileExists(fullPath))
+            {
+               // The NewProject will handle directory creation
+               /*if(!dirAttribs.isDirectory)
+               {
+                  MakeDir(parentPath);
+                  dirAttribs = FileExists(parentPath);
+               }
+               if(dirAttribs.isDirectory)*/
+               {
+                  char name[MAX_LOCATION];
+                  NewProjectDialog newProjectDialog;
+
+                  if(projectView)
+                  {
+                     projectView.visible = false;
+                     if(!projectView.Destroy(0))
+                        return true;
+                  }
+
+                  newProjectDialog = { master = this };
+
+                  strcpy(name, app.argv[c]);
+                  StripExtension(name);
+                  GetLastDirectory(name, name);
+                  newProjectDialog.projectName.contents = name;
+                  newProjectDialog.projectName.NotifyModified(newProjectDialog, newProjectDialog.projectName);
+                  newProjectDialog.locationEditBox.path = parentPath;
+                  newProjectDialog.NotifyModifiedLocation(newProjectDialog.locationEditBox);
+
+                  newProjectDialog.Modal();
+                  if(projectView)
+                  {
+                     ideSettings.AddRecentProject(projectView.fileName);
+                     ide.UpdateRecentMenus();
+                     settingsContainer.Save();
+                  }
+               }
+               // Open only one project
+               break;
+            }
+            else
+               ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
+         }
       }
       return true;
    }

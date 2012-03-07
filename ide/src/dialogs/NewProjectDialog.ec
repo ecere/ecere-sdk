@@ -21,35 +21,7 @@ class NewProjectDialog : Window
       hotKey = altL, text = $"Location";
       typeExpected = directory, browseDialog = fileDialog;
 
-      //NotifyUpdate = EditBoxUpdate;
-
-      bool NotifyModified(PathBox pathBox)
-      {
-         char location[MAX_LOCATION];
-         char lastPart[MAX_FILENAME];
-         char * text = pathBox.slashPath;
-         
-         //replacing this: NotifyUpdate = EditBoxUpdate;
-         okBtn.disabled = !(text[0] && projectName.contents[0]);
-
-         GetWorkingDir(location, sizeof(location) - 1);
-         PathCatSlash(location, text);
-         
-         GetLastDirectory(path, lastPart);
-         /*if(text[0] && (!name[0] || !strcmp(lastPart, name)))
-         {
-            char newName[MAX_FILENAME];
-            GetLastDirectory(location, newName);
-            if(strcmp(newName, location))
-            {
-               strcpy(name, newName);
-               projectName.contents = name;
-            }
-         }*/
-         strcpy(path, location);
-         pathBox.path = path;
-         return true;
-      }
+      NotifyModified = NotifyModifiedLocation;
    };
    Label { this, position = { 10, 60 }, labeledWindow = locationEditBox };
 
@@ -284,6 +256,34 @@ class NewProjectDialog : Window
    void EditBoxUpdate(EditBox editBox)
    {
       okBtn.disabled = !(locationEditBox.path[0] && projectName.contents[0]);
+   }
+
+   bool NotifyModifiedLocation(PathBox pathBox)
+   {
+      char location[MAX_LOCATION];
+      char lastPart[MAX_FILENAME];
+      char * text = pathBox.slashPath;
+
+      //replacing this: NotifyUpdate = EditBoxUpdate;
+      okBtn.disabled = !(text[0] && projectName.contents[0]);
+
+      GetWorkingDir(location, sizeof(location) - 1);
+      PathCatSlash(location, text);
+
+      GetLastDirectory(path, lastPart);
+      /*if(text[0] && (!name[0] || !strcmp(lastPart, name)))
+      {
+         char newName[MAX_FILENAME];
+         GetLastDirectory(location, newName);
+         if(strcmp(newName, location))
+         {
+            strcpy(name, newName);
+            projectName.contents = name;
+         }
+      }*/
+      strcpy(path, location);
+      pathBox.path = path;
+      return true;
    }
 
    NewProjectDialog()
