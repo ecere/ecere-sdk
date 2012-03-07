@@ -5,6 +5,7 @@ Free Open Source Software released under the New BSD license.
 The Ecere SDK is a Software Development Kit including:
 
    * A set of compiling tools for the eC programming language
+                               ( http://www.ecere.com/technologies.html#eC )
 
    * An Integrated Development Environment, with the usual features such as:
       - A source code editor with auto-completion, syntax highlighting
