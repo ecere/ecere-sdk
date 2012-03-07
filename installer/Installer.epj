@@ -8542,7 +8542,9 @@
                "Files" : [
                   "../doc/ecere.eCdoc",
                   "../doc/ecereCOM.eCdoc",
-                  "../doc/EDA.eCdoc"
+                  "../doc/EDA.eCdoc",
+                  "../LICENSE",
+                  "../README"
                ]
             },
             {
@@ -8674,8 +8676,6 @@
                ]
             },
             "../obj/win32/bin/ecere.dll",
-            "../LICENSE",
-            "../README",
             "../obj/win32/lib/libecereVanilla.a"
          ]
       },
