@@ -3293,7 +3293,7 @@ public class LFBDisplayDriver : DisplayDriver
                      //printf("Hebrew ");
                      break;
                   default:
-                     testChar = ch;
+                     testChar = (ch == '\t') ? ' ' : ch;
                   /*
                   case 60: testChar =　'あ'; break;
                   case 61: testChar =　0x3400; break; //'愛'; break;
