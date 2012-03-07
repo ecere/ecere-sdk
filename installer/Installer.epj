@@ -9493,6 +9493,14 @@
                         "../samples/guiAndGfx/treeView/explorer.ec",
                         "../samples/guiAndGfx/treeView/treeView.epj"
                      ]
+                  },
+                  {
+                     "Folder" : "pictureRotateAlpha",
+                     "Files" : [
+                        "../samples/guiAndGfx/pictureRotateAlpha/image.png",
+                        "../samples/guiAndGfx/pictureRotateAlpha/pictureRotate.epj",
+                        "../samples/guiAndGfx/pictureRotateAlpha/rotate1.ec"
+                     ]
                   }
                ]
             },
