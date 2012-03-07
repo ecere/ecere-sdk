@@ -736,7 +736,7 @@ bool WriteValue(File f, Class type, DataValue value, int indent)
    }
    else if(type.type == normalClass || type.type == noHeadClass || type.type == structClass || type.type == bitClass)
    {
-      WriteJSONObject(f, type, value.p, indent);
+      _WriteJSONObject(f, type, value.p, indent);
    }
    else if(type.type == systemClass)
    {
@@ -746,6 +746,17 @@ bool WriteValue(File f, Class type, DataValue value, int indent)
 }
 
 public bool WriteJSONObject(File f, Class objectType, void * object, int indent)
+{
+   bool result = false;
+   if(object)
+   {
+      result = _WriteJSONObject(f, objectType, object, indent);
+      f.Puts("\n");
+   }
+   return result;
+}
+
+static bool _WriteJSONObject(File f, Class objectType, void * object, int indent)
 {
    if(object)
    {
