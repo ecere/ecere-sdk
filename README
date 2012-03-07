@@ -17,7 +17,7 @@ A built-in 3D engine supporting both Direct3D and OpenGL is fully integrated.
 Please refer to the latest instructions at http://ecere.com/wiki/
 Windows binaries are available from that page.
 
-Ubuntu Debian daily builds are available from our Ubuntu PPA:
+Daily-built Ubuntu Debian packages are available from our Ubuntu PPA:
 
    https://code.launchpad.net/~ecere-team/+archive/ppa
 
@@ -59,4 +59,4 @@ descriptive info has been added yet.
 Git Repository @ http://github.com/ecere/sdk/  ( git://github.com/ecere/sdk.git )
 Support forums @ http://ecere.com/forums
 Bug tracker    @ http://ecere.com/mantis
-IRC            @ #ecere on irc.freenode.net
+IRC            @ #ecere on irc.freenode.net ( http://webchat.freenode.net/?channels=ecere )
