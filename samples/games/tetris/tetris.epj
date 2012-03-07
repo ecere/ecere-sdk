@@ -6,6 +6,7 @@
       "Profile" : false,
       "StrictNameSpaces" : false,
       "TargetType" : "Executable",
+      "TargetFileName" : "tetris",
       "Libraries" : [
          "ecere"
       ],
@@ -17,8 +18,7 @@
          "Options" : {
             "Debug" : true,
             "MemoryGuard" : false,
-            "Optimization" : "None",
-            "TargetFileName" : "tetris"
+            "Optimization" : "None"
          }
       },
       {
@@ -26,8 +26,7 @@
          "Options" : {
             "Debug" : false,
             "MemoryGuard" : false,
-            "Optimization" : "Speed",
-            "TargetFileName" : "tetris"
+            "Optimization" : "Speed"
          }
       },
       {
@@ -35,8 +34,7 @@
          "Options" : {
             "Debug" : true,
             "MemoryGuard" : true,
-            "Optimization" : "None",
-            "TargetFileName" : "tetris"
+            "Optimization" : "None"
          }
       }
    ],

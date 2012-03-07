@@ -1,62 +1,43 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "smtp",
+   "Options" : {
+      "Warnings" : "All",
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "smtp",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Console" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "Console" : false
+         }
+      }
+   ],
+   "Files" : [
+      "smtp.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
 
-ECERE Project File
-
-Version 0.1a
-
-Target "smtp"
-
-Active Configuration = Debug
-
-   Configurations
-
-    + Debug
-
-         Compiler Options
-
-            Intermediate Directory = debug
-            Debug = True
-            Optimize = None
-            Profile = False
-            MemoryGuard = False
-            AllWarnings = True
-            Modified = False
-
-            Preprocessor Definitions = _DEBUG
-            Strict Name Spaces = False
-
-         Linker Options
-
-            Target Name = smtp
-            Target Type = Executable
-            Target Directory = debug
-            Console = True
-            Modified = False
-
-            Libraries = ecere
-
-    + Release
-
-         Compiler Options
-
-            Intermediate Directory = release
-            Debug = False
-            Optimize = Speed
-            Profile = False
-            MemoryGuard = False
-            AllWarnings = True
-            Modified = False
-            Strict Name Spaces = False
-
-         Linker Options
-
-            Target Name = smtp
-            Target Type = Executable
-            Target Directory = release
-            Console = False
-            Modified = False
-
-            Libraries = ecere
-
-   Files
-
-    - smtp.ec
+   ]
+}

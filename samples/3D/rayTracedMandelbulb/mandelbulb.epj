@@ -13,9 +13,6 @@
       ],
       "Compress" : false
    },
-   "Platforms" : [
-
-   ],
    "Configurations" : [
       {
          "Name" : "Debug",

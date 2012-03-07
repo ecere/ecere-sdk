@@ -16,8 +16,7 @@
          "Options" : {
             "Debug" : true,
             "Profile" : false,
-            "Optimization" : "None",
-            "ObjectsDirectory" : "obj"
+            "Optimization" : "None"
          }
       }
    ],

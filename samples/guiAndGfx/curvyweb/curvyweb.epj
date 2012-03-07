@@ -4,6 +4,7 @@
    "Options" : {
       "Warnings" : "All",
       "TargetType" : "Executable",
+      "TargetFileName" : "bezier",
       "Libraries" : [
          "ecere"
       ]
@@ -16,20 +17,14 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ],
-            "TargetFileName" : "bezier",
-            "TargetDirectory" : "debug",
-            "ObjectsDirectory" : "debug"
+            ]
          }
       },
       {
          "Name" : "Release",
          "Options" : {
             "Debug" : false,
-            "Optimization" : "Speed",
-            "TargetFileName" : "bezier",
-            "TargetDirectory" : "release",
-            "ObjectsDirectory" : "release"
+            "Optimization" : "Speed"
          }
       }
    ],

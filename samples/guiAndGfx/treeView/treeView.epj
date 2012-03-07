@@ -1,26 +1,30 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "treeView",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "treeView",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Default",
+         "Options" : {
+            "Debug" : true,
+            "Profile" : false,
+            "Optimization" : "None"
+         }
+      }
+   ],
+   "Files" : [
+      "explorer.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
 
-ECERE Project File
-
-Version 0a
-
-Target "treeView"
-
-   Compiler Options
-
-      Intermediate Directory = obj
-      Debug = True
-      Optimize = False
-      Profile = False
-      AllWarnings = True
-
-   Linker Options
-
-      Target Name = treeView
-      Target Type = Executable
-      Console = False
-
-      Libraries = ecere
-
-   Files
-
-    - explorer.ec
+   ]
+}

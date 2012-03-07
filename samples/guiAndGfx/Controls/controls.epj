@@ -1,8 +1,6 @@
 {
    "Version" : 0.2,
    "ModuleName" : "Controls",
-   "Description" : "",
-   "License" : "",
    "Options" : {
       "Warnings" : "All",
       "MemoryGuard" : false,

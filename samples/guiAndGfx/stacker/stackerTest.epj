@@ -10,8 +10,6 @@
       ],
       "TargetType" : "Executable",
       "TargetFileName" : "test",
-      "TargetDirectory" : "obj",
-      "ObjectsDirectory" : "obj",
       "Libraries" : [
          "ecere"
       ]

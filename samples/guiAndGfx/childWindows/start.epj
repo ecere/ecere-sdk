@@ -1,64 +1,39 @@
-
-ECERE Project File
-
-Version 0.1a
-
-Target "ex1"
-
-Active Configuration = Debug
-
-   Configurations
-
-    + Debug
-
-         Compiler Options
-
-            Intermediate Directory = Debug
-            Debug = True
-            Optimize = None
-            Profile = False
-            MemoryGuard = False
-            AllWarnings = True
-            Modified = False
-            Strict Name Spaces = False
-
-         Linker Options
-
-            Target Name = ex1
-            Target Type = Executable
-            Target Directory = Debug
-            Console = False
-            Modified = True
-
-            Libraries = ecere
-
-    + Release
-
-         Compiler Options
-
-            Intermediate Directory = Release
-            Debug = False
-            Optimize = Speed
-            Profile = False
-            MemoryGuard = False
-            AllWarnings = True
-            Modified = True
-            Strict Name Spaces = False
-
-         Linker Options
-
-            Target Name = ex1
-            Target Type = Executable
-            Target Directory = Release
-            Console = False
-            Modified = True
-
-            Libraries = ecere
-
-   Files
-
-    - ex1.ec
-
-   Resources
-
-    = data/SoapBubbles.bmp
+{
+   "Version" : 0.2,
+   "ModuleName" : "ex1",
+   "Options" : {
+      "Warnings" : "All",
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "ex1",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None"
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "ex1.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "data/SoapBubbles.bmp"
+   ]
+}

@@ -1,58 +1,43 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "fibo",
+   "Options" : {
+      "Warnings" : "All",
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "fibo",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false,
+      "Compress" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "fibo.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
 
-ECERE Project File
-
-Version 0.1a
-
-Target "fibo"
-
-   Configurations
-
-    + Debug
-
-         Compiler Options
-
-            Intermediate Directory = debug
-            Debug = True
-            Optimize = None
-            Profile = False
-            MemoryGuard = False
-            AllWarnings = True
-
-            Preprocessor Definitions = _DEBUG
-            Strict Name Spaces = False
-
-         Linker Options
-
-            Target Name = fibo
-            Target Type = Executable
-            Target Directory = debug
-            Console = False
-            Compress = False
-
-            Libraries = ecere
-
-    + Release
-
-         Compiler Options
-
-            Intermediate Directory = release
-            Debug = False
-            Optimize = Speed
-            Profile = False
-            MemoryGuard = False
-            AllWarnings = True
-            Strict Name Spaces = False
-
-         Linker Options
-
-            Target Name = fibo
-            Target Type = Executable
-            Target Directory = release
-            Console = False
-            Compress = False
-
-            Libraries = ecere
-
-   Files
-
-    - fibo.ec
+   ]
+}

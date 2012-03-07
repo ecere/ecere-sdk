@@ -5,8 +5,6 @@
       "Warnings" : "All",
       "TargetType" : "Executable",
       "TargetFileName" : "Reminder",
-      "TargetDirectory" : "obj/$(Project)-$(Platform)-$(Config)",
-      "ObjectsDirectory" : "obj/$(Project)-$(Platform)-$(Config)",
       "Libraries" : [
          "ecere"
       ]

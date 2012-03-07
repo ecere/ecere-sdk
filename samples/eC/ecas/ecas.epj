@@ -4,6 +4,7 @@
    "Options" : {
       "Warnings" : "All",
       "TargetType" : "Executable",
+      "TargetFileName" : "ecas",
       "Libraries" : [
          "ecere"
       ]
@@ -17,9 +18,6 @@
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ],
-            "TargetFileName" : "ecas",
-            "TargetDirectory" : "debug",
-            "ObjectsDirectory" : "debug",
             "Console" : true
          }
       },
@@ -27,10 +25,7 @@
          "Name" : "Release",
          "Options" : {
             "Debug" : false,
-            "Optimization" : "Speed",
-            "TargetFileName" : "ecas",
-            "TargetDirectory" : "release",
-            "ObjectsDirectory" : "release"
+            "Optimization" : "Speed"
          }
       }
    ],

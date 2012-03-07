@@ -7,6 +7,7 @@
       "Profile" : false,
       "StrictNameSpaces" : false,
       "TargetType" : "Executable",
+      "TargetFileName" : "eCom",
       "Libraries" : [
          "ecere"
       ],
@@ -17,16 +18,14 @@
          "Name" : "Debug",
          "Options" : {
             "Debug" : true,
-            "Optimization" : "None",
-            "TargetFileName" : "eCom"
+            "Optimization" : "None"
          }
       },
       {
          "Name" : "Release",
          "Options" : {
             "Debug" : false,
-            "Optimization" : "Speed",
-            "TargetFileName" : "eCom"
+            "Optimization" : "Speed"
          }
       }
    ],

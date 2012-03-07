@@ -1,26 +1,30 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "replace",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "replace",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Default",
+         "Options" : {
+            "Debug" : true,
+            "Profile" : false,
+            "Optimization" : "None"
+         }
+      }
+   ],
+   "Files" : [
+      "replace.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
 
-ECERE Project File
-
-Version 0a
-
-Target "replace"
-
-   Compiler Options
-
-      Intermediate Directory = obj
-      Debug = True
-      Optimize = False
-      Profile = False
-      AllWarnings = True
-
-   Linker Options
-
-      Target Name = replace
-      Target Type = Executable
-      Console = False
-
-      Libraries = ecere
-
-   Files
-
-    - replace.ec
+   ]
+}

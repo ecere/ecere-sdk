@@ -1,8 +1,6 @@
 {
    "Version" : 0.2,
    "ModuleName" : "PlaySound",
-   "Description" : "",
-   "License" : "",
    "Options" : {
       "Warnings" : "All",
       "TargetType" : "Executable",

@@ -53,7 +53,7 @@ class MovieCollectionForm : Window
       list.text = "List of Movies", editor.text = "Movie Entry Being Edited" };
    Button editBorrowers
    {
-      this, text = "Edit Borrowers", altB, stayOnTop = true, anchor = { right = 40, bottom = 40 };
+      this, caption = "Edit Borrowers", altB, stayOnTop = true, anchor = { right = 40, bottom = 40 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {

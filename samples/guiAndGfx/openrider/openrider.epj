@@ -4,6 +4,7 @@
    "Options" : {
       "Warnings" : "All",
       "TargetType" : "Executable",
+      "TargetFileName" : "openrider",
       "Libraries" : [
          "ecere"
       ]
@@ -16,16 +17,14 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ],
-            "TargetFileName" : "openrider"
+            ]
          }
       },
       {
          "Name" : "Release",
          "Options" : {
             "Debug" : false,
-            "Optimization" : "Speed",
-            "TargetFileName" : "openrider"
+            "Optimization" : "Speed"
          }
       }
    ],

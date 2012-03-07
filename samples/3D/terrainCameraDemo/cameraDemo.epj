@@ -1,8 +1,6 @@
 {
    "Version" : 0.2,
    "ModuleName" : "cameraDemo",
-   "Description" : "",
-   "License" : "",
    "Options" : {
       "Warnings" : "All",
       "Debug" : true,
@@ -13,7 +11,6 @@
       ],
       "TargetType" : "Executable",
       "TargetFileName" : "cameraDemo",
-      "TargetDirectory" : "",
       "Libraries" : [
          "ecere"
       ]

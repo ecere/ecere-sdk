@@ -12,7 +12,7 @@ class ControlsSample : Window
 
    Button button1
    {
-      this, text = "Push Me", altP, isDefault = true, position = { 32, 40 };
+      this, caption = "Push Me", altP, isDefault = true, position = { 32, 40 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -20,7 +20,7 @@ class ControlsSample : Window
          return true;
       }
    };
-   EditBox editBox1 { this, text = "EditBox 1", altE, size = { 78, 19 }, position = { 112, 40 }, contents = "contents" };
+   EditBox editBox1 { this, caption = "EditBox 1", altE, size = { 78, 19 }, position = { 112, 40 }, contents = "contents" };
    Label label1 { parent = this, size = { 45, 13 }, position = { 120, 16 }, labeledWindow = editBox1 };
 }
 ControlsSample controlsSample {};

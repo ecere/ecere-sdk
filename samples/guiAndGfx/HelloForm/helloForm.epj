@@ -1,8 +1,6 @@
 {
    "Version" : 0.2,
    "ModuleName" : "HelloForm",
-   "Description" : "",
-   "License" : "",
    "Options" : {
       "Warnings" : "All",
       "TargetType" : "Executable",

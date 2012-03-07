@@ -1,60 +1,39 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "blank",
+   "Options" : {
+      "Warnings" : "All",
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "blank",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None"
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "blank.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
 
-ECERE Project File
-
-Version 0.1a
-
-Target "blank"
-
-Active Configuration = Debug
-
-   Configurations
-
-    + Debug
-
-         Compiler Options
-
-            Intermediate Directory = Debug
-            Debug = True
-            Optimize = None
-            Profile = False
-            MemoryGuard = False
-            AllWarnings = True
-            Modified = False
-            Strict Name Spaces = False
-
-         Linker Options
-
-            Target Name = blank
-            Target Type = Executable
-            Target Directory = Debug
-            Console = False
-            Modified = True
-
-            Libraries = ecere
-
-    + Release
-
-         Compiler Options
-
-            Intermediate Directory = Release
-            Debug = False
-            Optimize = Speed
-            Profile = False
-            MemoryGuard = False
-            AllWarnings = True
-            Modified = True
-            Strict Name Spaces = False
-
-         Linker Options
-
-            Target Name = blank
-            Target Type = Executable
-            Target Directory = Release
-            Console = False
-            Modified = True
-
-            Libraries = ecere
-
-   Files
-
-    - blank.ec
+   ]
+}

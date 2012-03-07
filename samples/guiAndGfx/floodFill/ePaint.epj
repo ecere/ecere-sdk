@@ -1,49 +1,39 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ePaint",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "ePaint",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Console" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "floodFill.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
 
-ECERE Project File
-
-Version 0.1a
-
-Target "ePaint"
-
-   Configurations
-
-    + Debug
-
-         Compiler Options
-
-            Intermediate Directory = debug
-            Debug = True
-            Optimize = None
-            AllWarnings = True
-
-            Preprocessor Definitions = _DEBUG
-
-         Linker Options
-
-            Target Name = ePaint
-            Target Type = Executable
-            Target Directory = debug
-            Console = True
-
-            Libraries = ecere
-
-    + Release
-
-         Compiler Options
-
-            Intermediate Directory = release
-            Debug = False
-            Optimize = Speed
-            AllWarnings = True
-
-         Linker Options
-
-            Target Name = ePaint
-            Target Type = Executable
-            Target Directory = release
-
-            Libraries = ecere
-
-   Files
-
-    - floodFill.ec
+   ]
+}

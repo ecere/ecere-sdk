@@ -7,6 +7,7 @@
       "Profile" : false,
       "StrictNameSpaces" : false,
       "TargetType" : "Executable",
+      "TargetFileName" : "eIRC",
       "Libraries" : [
          "ecere"
       ],
@@ -21,20 +22,14 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ],
-            "TargetFileName" : "eIRC",
-            "TargetDirectory" : "debug",
-            "ObjectsDirectory" : "debug"
+            ]
          }
       },
       {
          "Name" : "Release",
          "Options" : {
             "Debug" : false,
-            "Optimization" : "Speed",
-            "TargetFileName" : "eIRC",
-            "TargetDirectory" : "release",
-            "ObjectsDirectory" : "release"
+            "Optimization" : "Speed"
          }
       }
    ],
