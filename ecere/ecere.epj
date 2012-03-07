@@ -291,6 +291,23 @@
                }
             }
          ]
+      },
+      {
+         "Name" : "Installer",
+         "Options" : {
+            "NoLineNumbers" : true,
+            "Optimization" : "Size",
+            "PreprocessorDefinitions" : [
+               "BUILDING_ECERE_COM",
+               "ECERE_STATIC",
+               "ECERE_NO3D",
+               "ECERE_ONEDRIVER",
+               "ECERE_NONET",
+               "ECERE_NODINPUT"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecereInstaller"
+         }
       }
    ],
    "Files" : [
@@ -521,6 +538,17 @@
                            "Options" : {
                               "ExcludeFromBuild" : true
                            }
+                        },
+                        {
+                           "Name" : "Installer",
+                           "Platforms" : [
+                              {
+                                 "Name" : "win32",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
                         }
                      ]
                   },
@@ -552,6 +580,17 @@
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "Installer",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -563,6 +602,17 @@
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "Installer",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -592,6 +642,17 @@
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "Installer",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         }
@@ -698,6 +759,12 @@
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Installer",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               }
                            ]
                         },
@@ -747,6 +814,17 @@
                               },
                               {
                                  "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "Installer",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -812,6 +890,17 @@
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Installer",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -861,6 +950,17 @@
                               },
                               {
                                  "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "Installer",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -1022,6 +1122,12 @@
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "Installer",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               }
                            ]
                         },
@@ -1071,6 +1177,17 @@
                               },
                               {
                                  "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "Installer",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -1155,6 +1272,17 @@
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Installer",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1193,6 +1321,17 @@
                               },
                               {
                                  "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "Installer",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -1454,6 +1593,17 @@
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Installer",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1523,6 +1673,17 @@
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "Installer",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1552,6 +1713,17 @@
                            "Options" : {
                               "ExcludeFromBuild" : true
                            }
+                        },
+                        {
+                           "Name" : "Installer",
+                           "Platforms" : [
+                              {
+                                 "Name" : "win32",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
                         }
                      ]
                   },
@@ -1625,6 +1797,17 @@
                      "Options" : {
                         "ExcludeFromBuild" : true
                      }
+                  },
+                  {
+                     "Name" : "Installer",
+                     "Platforms" : [
+                        {
+                           "Name" : "win32",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
                   }
                ]
             },

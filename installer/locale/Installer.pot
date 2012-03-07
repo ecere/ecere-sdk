@@ -1,0 +1,195 @@
+msgid ""
+msgstr 
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ..\\\n"
+
+#: .\src\installer.ec:705
+msgid " Destination Folder"
+msgstr " Destination Folder"
+
+#: .\src\installer.ec:787
+msgid "Avail. Space"
+msgstr "Avail. Space"
+
+#: .\src\installer.ec:721
+msgid "Browse"
+msgstr "Browse"
+
+#: .\src\installer.ec:662
+msgid "By installing the ECERE SDK, you agree to the terms and conditions."
+msgstr "By installing the ECERE SDK, you agree to the terms and conditions."
+
+#: .\src\installer.ec:701
+#: .\src\installer.ec:1031
+msgid "Cancel"
+msgstr "Cancel"
+
+#: .\src\installer.ec:783
+msgid "Choose Components, Locations and Install Options"
+msgstr "Choose Components, Locations and Install Options"
+
+#: .\src\installer.ec:780
+msgid "Choose in which folder to install the ECERE SDK, which features\nof the SDK to install, as well as where to install program icons."
+msgstr "Choose in which folder to install the ECERE SDK, which features\nof the SDK to install, as well as where to install program icons."
+
+#: .\src\installer.ec:1217
+msgid "Close"
+msgstr "Close"
+
+#: .\src\installer.ec:784
+msgid "Component"
+msgstr "Component"
+
+#: .\src\installer.ec:1236
+msgid "Configuring ECERE IDE..."
+msgstr "Configuring ECERE IDE..."
+
+#: .\src\installer.ec:785
+msgid "Destination Folder"
+msgstr "Destination Folder"
+
+#: .\src\installer.ec:4
+msgid "ECERE SDK v0.44 -- built on March 7, 2012 "
+msgstr "ECERE SDK v0.44 -- built on March 7, 2012 "
+
+#: .\src\licenseBox.ec:9
+msgid "Ecere SDK License Agreement"
+msgstr "Ecere SDK License Agreement"
+
+#: .\src\installer.ec:542
+#: .\src\installer.ec:1013
+msgid "Ecere Software Development Kit Setup"
+msgstr "Ecere Software Development Kit Setup"
+
+#: .\src\installer.ec:1549
+msgid "Finish"
+msgstr "Finish"
+
+#: .\..\ide\src\IDESettings.ec:578
+msgid "GNU Compiler Collection (GCC) / GNU Make"
+msgstr "GNU Compiler Collection (GCC) / GNU Make"
+
+#: .\src\licenseBox.ec:56
+msgid "I agree"
+msgstr "I agree"
+
+#: .\src\licenseBox.ec:43
+msgid "I don't agree"
+msgstr "I don't agree"
+
+#: .\src\installer.ec:690
+#: .\src\installer.ec:1025
+msgid "Install"
+msgstr "Install"
+
+#: .\src\installer.ec:1222
+msgid "Installation Cancelled"
+msgstr "Installation Cancelled"
+
+#: .\src\installer.ec:1221
+msgid "Installation Cancelled."
+msgstr "Installation Cancelled."
+
+#: .\src\installer.ec:1553
+msgid "Installation Complete"
+msgstr "Installation Complete"
+
+#: .\src\installer.ec:1552
+msgid "Installation Complete."
+msgstr "Installation Complete."
+
+#: .\src\installer.ec:329
+msgid "Installing %s..."
+msgstr "Installing %s..."
+
+#: .\src\installer.ec:1461
+msgid "Installing Desktop Icon..."
+msgstr "Installing Desktop Icon..."
+
+#: .\src\installer.ec:1480
+msgid "Installing Quicklaunch Icon..."
+msgstr "Installing Quicklaunch Icon..."
+
+#: .\src\installer.ec:1384
+msgid "Installing Start Menu Icons..."
+msgstr "Installing Start Menu Icons..."
+
+#: .\src\installer.ec:1047
+msgid "Installing the ECERE SDK"
+msgstr "Installing the ECERE SDK"
+
+#: .\..\ide\src\IDESettings.ec:581
+msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
+msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
+
+#: .\..\ide\src\IDESettings.ec:582
+msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
+msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
+
+#: .\..\ide\src\IDESettings.ec:584
+msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
+msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
+
+#: .\src\installer.ec:1044
+msgid "Please wait while the Ecere Software Development Kit is being installed."
+msgstr "Please wait while the Ecere Software Development Kit is being installed."
+
+#: .\..\ide\src\IDESettings.ec:580
+msgid "Portable C Compiler / GNU Make"
+msgstr "Portable C Compiler / GNU Make"
+
+#: .\src\installer.ec:1314
+msgid "Registering uninstaller..."
+msgstr "Registering uninstaller..."
+
+#: .\src\installer.ec:786
+msgid "Req. Space"
+msgstr "Req. Space"
+
+#: .\src\installer.ec:1501
+msgid "Resgistering File Types..."
+msgstr "Resgistering File Types..."
+
+#: .\src\installer.ec:555
+msgid "Select a new location"
+msgstr "Select a new location"
+
+#: .\src\installer.ec:765
+msgid "Select icons to install, file\nassociations, and system\nenvironment modifications:"
+msgstr "Select icons to install, file\nassociations, and system\nenvironment modifications:"
+
+#: .\src\installer.ec:744
+msgid "Select the default root\nfolder where to install\nall components:"
+msgstr "Select the default root\nfolder where to install\nall components:"
+
+#: .\src\installer.ec:757
+msgid "Select the optional\ncomponents you wish\nto install:\n\nYou may customize the\ninstall location for each\nof them, or use the default\nbased on the main\ndestination folder."
+msgstr "Select the optional\ncomponents you wish\nto install:\n\nYou may customize the\ninstall location for each\nof them, or use the default\nbased on the main\ndestination folder."
+
+#: .\src\installer.ec:769
+msgid "Space Required: "
+msgstr "Space Required: "
+
+#: .\src\installer.ec:1554
+msgid "Thank you for using the Ecere SDK."
+msgstr "Thank you for using the Ecere SDK."
+
+#: .\src\installer.ec:1223
+msgid "The installation was not completed."
+msgstr "The installation was not completed."
+
+#: .\..\ide\src\IDESettings.ec:579
+msgid "Tiny C Compiler / GNU Make"
+msgstr "Tiny C Compiler / GNU Make"
+
+#: .\src\installer.ec:666
+msgid "terms and conditions"
+msgstr "terms and conditions"
+
