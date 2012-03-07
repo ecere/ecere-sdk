@@ -38,6 +38,7 @@ typedef unsigned int FileSize;
 typedef unsigned short uint16;
 typedef unsigned int uint;
 typedef unsigned long long uint64;
+typedef uint64 FileSize64;
 
 #define false 0
 #define true 1
@@ -391,7 +392,7 @@ bool System_ShellOpen(char * fileName, va_list args)
    return result;
 }
 
-void System_GetFreeSpace(char * path, FileSize * size)
+void System_GetFreeSpace(char * path, FileSize64 * size)
 {
    uint64 freeSize = 0;
 #ifdef __WIN32__
@@ -399,5 +400,5 @@ void System_GetFreeSpace(char * path, FileSize * size)
    GetDiskFreeSpaceEx(_wpath, (PULARGE_INTEGER)&freeSize, null, null);
    __ecereNameSpace__ecere__com__eSystem_Delete(_wpath);
 #endif
-   *size = (FileSize)freeSize;
+   *size = (FileSize64)freeSize;
 }

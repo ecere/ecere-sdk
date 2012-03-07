@@ -44,7 +44,7 @@ void System_SetEnvironment(char * envName, char * envValue);
 void System_UnsetEnvironment(char * envName);
 bool System_Execute(char * env, char * command, va_list args);
 bool System_ShellOpen(char * fileName, va_list args);
-void System_GetFreeSpace(char * path, FileSize * size);
+void System_GetFreeSpace(char * path, FileSize64 * size);
 
 private:
 
@@ -194,7 +194,7 @@ public bool ShellOpen(char * fileName, ...)
    return result;
 }
 
-public void GetFreeSpace(char * path, FileSize * size)
+public void GetFreeSpace(char * path, FileSize64 * size)
 {
    System_GetFreeSpace(path, size);
 }

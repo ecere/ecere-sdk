@@ -139,6 +139,43 @@ public class FileSize : uint
    }
 };
 
+public class FileSize64 : uint64
+{
+   int OnCompare(FileSize64 data2)
+   {
+      int result = 0;
+      if(&this && &data2)
+      {
+         if(this > data2)
+            result = 1;
+         else if(this < data2)
+            result = -1;
+      }
+      return result;
+   }
+
+   char * OnGetString(char * string, void * fieldData, bool * needClass)
+   {
+      PrintBigSize(string, this, 2);
+      return string;
+   }
+
+   bool OnGetDataFromString(char * string)
+   {
+      char * end;
+      double value = strtod(string, &end);
+      uint64 multiplier = 1;
+           if(strstr(end, "PB") || strstr(end, "pb")) multiplier = (uint64)1024 * 1024 * 1024 * 1024;
+      else if(strstr(end, "TB") || strstr(end, "tb")) multiplier = (uint64)1024 * 1024 * 1024 * 1024;
+      else if(strstr(end, "GB") || strstr(end, "gb")) multiplier = (uint64)1024 * 1024 * 1024;
+      else if(strstr(end, "MB") || strstr(end, "mb")) multiplier = (uint64)1024 * 1024;
+      else if(strstr(end, "KB") || strstr(end, "kb")) multiplier = 1024;
+
+      this = (uint64)(multiplier * value);
+      return true;
+   }
+};
+
 class FileSystem
 {
    virtual File ::Open(char * archive, char * name, FileOpenMode mode);
