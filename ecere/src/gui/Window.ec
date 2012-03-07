@@ -6141,11 +6141,11 @@ public:
                            next = link.next;
                            if(!slave.created && (slave.autoCreate || slave.wasCreated))
                            {
-                              slave.Create();
-                              // Things might have happened that invalidated 'next'...
-                              // Start over the search for slaves to create.
-                              // (Added this to fix crash with Stacker & Toolbar)
-                              next = slaves.first;
+                              if(slave.Create())
+                                 // Things might have happened that invalidated 'next'...
+                                 // Start over the search for slaves to create.
+                                 // (Added this to fix crash with Stacker & Toolbar)
+                                 next = slaves.first;
                            }
                         }
                      }
