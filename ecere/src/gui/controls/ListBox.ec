@@ -2299,6 +2299,7 @@ private:
          }
          else
          {
+            if(!opacity) surface.TextOpacity(false);
             // Draw the rows
             for(field = fields.first; field; field = field.next)
             {
