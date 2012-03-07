@@ -15,13 +15,18 @@ A built-in 3D engine supporting both Direct3D and OpenGL is fully integrated.
  * INSTALLATION *
 
 Please refer to the latest instructions at http://ecere.com/wiki/
+Windows binaries are available from that page.
 
-To build from source, simply type make.
+Ubuntu Debian daily builds are available from our Ubuntu PPA:
+
+   https://code.launchpad.net/~ecere-team/+archive/ppa
+
+To build from source, simply type make (mingw32-make on Windows).
 
 It should build fine on Linux, on Windows with MinGW,
 and on Mac OS X with a bit of luck.
 
-To install, type make install.
+To install, type make install (mingw32-make install on Windows).
 
 Please note that at this time eC and the Ecere SDK only support 32 bit.
 However, you should still be able to use the 32 bit version on a 64 bit machine.
@@ -35,7 +40,7 @@ that will teach you the foundations of eC and Ecere. You will find it under:
 On Windows:    %PROGRAMFILES%\Ecere SDK\doc\Ecere Tao of Programming [work in progress].pdf
 On Linux/Unix: /usr/share/doc/tao.pdf
 
-Please refer the samples that come with the SDK:
+Please check out the samples that come with the SDK:
 
 On Windows they get installed in %APPDATA%\Ecere SDK\Samples
 On Linux/Unix they get installed in /usr/share/ecere/samples/
