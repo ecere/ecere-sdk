@@ -505,7 +505,11 @@ class OptionBox<class Z> : CommonControl
       if(currentNode.options && OptionSet(currentNode.options))
          UnsetOption(currentNode.options);
       if(currentNode.options && currentNode.options.isEmpty)
-         delete currentNode.options;
+      {
+         // delete currentNode.options;
+         // Property will free:
+         currentNode.options = null;
+      }
 
       Load();
    }
