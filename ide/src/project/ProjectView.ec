@@ -248,6 +248,7 @@ class ProjectView : Window
                {
                   MenuItem { popupContent, $"New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
                   MenuItem { popupContent, $"New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
+                  MenuItem { popupContent, $"Import Folder...", i, NotifySelect = ProjectImportFolder };
                   MenuItem { popupContent, $"Add Resources to Project...", f, NotifySelect = ResourcesAddFiles };
                   MenuItem { popupContent, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
                   MenuDivider { popupContent };
