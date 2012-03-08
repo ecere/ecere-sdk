@@ -1432,6 +1432,13 @@ class InstallThread : Thread
                   documentation[ecereBook].GetFullPath(docPath);
                   PathCat(docPath, "Ecere Tao of Programming [work in progress].pdf");
 
+                  {
+                     char tao[MAX_LOCATION] ;
+                     documentation[ecereBook].GetFullPath(tao);
+                     PathCat(tao, "tao.pdf");
+                     RenameFile(tao, docPath);
+                  }
+
                   strcpy(destPath, startMenuPath);
                   PathCat(destPath, "ECERE SDK\\The Ecere Tao of Programming.lnk");
                   CreateLink(docPath, destPath, null);
