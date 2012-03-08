@@ -18,7 +18,7 @@ class AboutIDE : Window
    Label { this, text = "Copyright © 2005-2012 Ecere Corporation",         font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 144 } };
    Label { this, text = "Copyright © 1996-2012 Jérôme Jacovella-St-Louis", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 160 } };
    Label { this, text = $"Lead Architect and Developer", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 188 } };
-   Label { this, text = "Jérôme Jacovella-St-Louis", position = { 192, 188 } };
+   Label { this, text = "Jérôme Jacovella-St-Louis", position = { 220, 188 } };
    Label { this, text = $"With contributions from...", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 208 } };
    Button licensingBtn
    {

@@ -59,6 +59,7 @@ OBJECTS = \
 	$(OBJ)IDESettings.o \
 	$(OBJ)OldIDESettings.o \
 	$(OBJ)ProjectSettings.o \
+	$(OBJ)licensing.o \
 	$(OBJ)$(MODULE).main$(O)
 
 COBJECTS = \
@@ -104,7 +105,8 @@ COBJECTS = \
 	$(OBJ)ide.c \
 	$(OBJ)IDESettings.c \
 	$(OBJ)OldIDESettings.c \
-	$(OBJ)ProjectSettings.c
+	$(OBJ)ProjectSettings.c \
+	$(OBJ)licensing.c
 
 SYMBOLS = $(SYMBOLS1) $(SYMBOLS2)
 SYMBOLS1 = \
@@ -151,7 +153,8 @@ SYMBOLS1 = \
 	$(OBJ)IDESettings.sym \
 	$(OBJ)OldIDESettings.sym
 SYMBOLS2 = \
-	$(OBJ)ProjectSettings.sym
+	$(OBJ)ProjectSettings.sym \
+	$(OBJ)licensing.sym
 
 IMPORTS = $(IMPORTS1) $(IMPORTS2)
 IMPORTS1 = \
@@ -198,7 +201,8 @@ IMPORTS1 = \
 	$(OBJ)IDESettings.imp \
 	$(OBJ)OldIDESettings.imp
 IMPORTS2 = \
-	$(OBJ)ProjectSettings.imp
+	$(OBJ)ProjectSettings.imp \
+	$(OBJ)licensing.imp
 
 SOURCES = \
 	../extras/FileSystemIterator.ec \
@@ -243,9 +247,11 @@ SOURCES = \
 	src/ide.ec \
 	src/IDESettings.ec \
 	src/OldIDESettings.ec \
-	src/ProjectSettings.ec
+	src/ProjectSettings.ec \
+	src/licensing.ec
 
-RESOURCES = \
+RESOURCES = $(RESOURCES1) $(RESOURCES2)
+RESOURCES1 = \
 	$(RES)actions/attach.png \
 	$(RES)actions/delete.png \
 	$(RES)actions/detach.png \
@@ -286,6 +292,18 @@ RESOURCES = \
 	$(RES)others/mousePointer.png \
 	locale/zh_CN/LC_MESSAGES/ide.mo \
 	locale/es_ES/LC_MESSAGES/ide.mo \
+	../LICENSE \
+	../extras/res/licenses/png.LICENSE \
+	../extras/res/licenses/tango.COPYING \
+	../extras/res/licenses/zlib.README \
+	../extras/res/licenses/sqlite.LICENSE \
+	../extras/res/licenses/jpg.LICENSE \
+	../extras/res/licenses/ungif.LICENSE \
+	../extras/res/licenses/freetype.LICENSE
+RESOURCES2 = \
+	../extras/res/licenses/harfbuzz.LICENSE \
+	../extras/res/licenses/upx.LICENSE \
+	../extras/res/licenses/gpl.LICENSE \
 	res/ecere.jpg \
 	res/ecereBack.jpg \
 	res/icon.png \
@@ -382,6 +400,8 @@ endif
 	$(EAR) awq $(TARGET) $(RES)others/mousePointer.png "others"
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ide.mo "locale/zh_CN/LC_MESSAGES"
 	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/ide.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) awq $(TARGET) ../LICENSE ../extras/res/licenses/png.LICENSE ../extras/res/licenses/tango.COPYING ../extras/res/licenses/zlib.README ../extras/res/licenses/sqlite.LICENSE ../extras/res/licenses/jpg.LICENSE ../extras/res/licenses/ungif.LICENSE ../extras/res/licenses/freetype.LICENSE ../extras/res/licenses/harfbuzz.LICENSE ../extras/res/licenses/upx.LICENSE "licenses"
+	$(EAR) awq $(TARGET) ../extras/res/licenses/gpl.LICENSE "licenses"
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
 
 ifdef WINDOWS
@@ -520,6 +540,9 @@ $(OBJ)OldIDESettings.sym: src/OldIDESettings.ec
 $(OBJ)ProjectSettings.sym: src/ProjectSettings.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/ProjectSettings.ec -o $(OBJ)ProjectSettings.sym
 
+$(OBJ)licensing.sym: src/licensing.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/licensing.ec -o $(OBJ)licensing.sym
+
 # C OBJECT RULES
 
 $(OBJ)FileSystemIterator.c: ../extras/FileSystemIterator.ec $(OBJ)FileSystemIterator.sym | $(SYMBOLS)
@@ -651,6 +674,9 @@ $(OBJ)OldIDESettings.c: src/OldIDESettings.ec $(OBJ)OldIDESettings.sym | $(SYMBO
 $(OBJ)ProjectSettings.c: src/ProjectSettings.ec $(OBJ)ProjectSettings.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/ProjectSettings.ec -o $(OBJ)ProjectSettings.c -symbols $(OBJ)
 
+$(OBJ)licensing.c: src/licensing.ec $(OBJ)licensing.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/licensing.ec -o $(OBJ)licensing.c -symbols $(OBJ)
+
 # OBJECT RULES
 
 $(OBJ)FileSystemIterator.o: $(OBJ)FileSystemIterator.c
@@ -781,6 +807,9 @@ $(OBJ)OldIDESettings.o: $(OBJ)OldIDESettings.c
 
 $(OBJ)ProjectSettings.o: $(OBJ)ProjectSettings.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ProjectSettings.c -o $(OBJ)ProjectSettings.o
+
+$(OBJ)licensing.o: $(OBJ)licensing.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)licensing.c -o $(OBJ)licensing.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
