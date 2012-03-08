@@ -582,7 +582,6 @@ class Installer : Window
       alwaysEdit = true;
       opacity = 0;
 
-
       bool NotifyChanged(ListBox listBox, DataRow row)
       {
          Component * component = ((CheckItem *)listBox.GetData(componentField))->data;
@@ -707,14 +706,16 @@ class Installer : Window
    };
    Button button3 { parent = this, text = $"Cancel", hotKey = altX, size = Size { 75, 23 }, anchor = Anchor { left = 544, top = 416 }, NotifyClicked = ButtonCloseDialog };
    Label label1 { labeledWindow = destBox, tabCycle = true, isGroupBox = true, parent = this, inactive = false, size = Size { 458, 50 }, anchor = Anchor { left = 160, top = 96 } };
-   EditBox destBox
+   PathBox destBox
    {
-      parent = label1, master = this, text = $" Destination Folder", size = Size { 336, 19 }, anchor = Anchor { left = 12, top = 20 };
+      parent = label1, master = this, text = $" Destination Folder", size = Size { 336, 22 }, anchor = Anchor { left = 12, top = 20, right = 12 };
+      typeExpected = directory;
+      browseDialog = fileDialog;
 
-      bool NotifyModified(EditBox editBox)
+      bool NotifyModified(PathBox pathBox)
       {
          ComponentID c;
-         strcpy(installDir, destBox.contents);
+         strcpy(installDir, destBox.path);
          install.disabled = false;
          for(c = 0; components[c].name; c++)
          {
@@ -723,7 +724,7 @@ class Installer : Window
          return true;
       }
    };
-   Button button1
+   /*Button button1
    {
       label1, this, $"Browse", altB, size = { 83, 24 }, position = { 360, 16 };
 
@@ -740,7 +741,7 @@ class Installer : Window
          }
          return true;
       }
-   };
+   };*/
    EditBox label5
    {
       this, multiLine = true,
@@ -968,7 +969,7 @@ class Installer : Window
          coreSDK[extras].defInstallPath = defExtrasPath;
       }
          
-      destBox.contents = installDir;
+      destBox.path = installDir;
 
       {
          ComponentID c;
