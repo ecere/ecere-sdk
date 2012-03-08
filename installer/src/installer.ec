@@ -179,7 +179,7 @@ struct CheckItem
 
    void OnDisplay(Surface surface, int x, int y, int width, void * fieldData, Alignment alignment, DataDisplayFlags displayFlags)
    {
-      if(!displayFlags.active) displayFlags.current = false;
+      if(!displayFlags.active) { displayFlags.current = false; displayFlags.selected = false; }
       class::OnDisplay(surface, x + 22, y, width - 22, fieldData, alignment, displayFlags);
    }
 };
@@ -711,6 +711,7 @@ class Installer : Window
       parent = label1, master = this, text = $" Destination Folder", size = Size { 336, 22 }, anchor = Anchor { left = 12, top = 20, right = 12 };
       typeExpected = directory;
       browseDialog = fileDialog;
+      opacity = 0;
 
       bool NotifyModified(PathBox pathBox)
       {

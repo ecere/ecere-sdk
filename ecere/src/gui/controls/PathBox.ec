@@ -66,6 +66,7 @@ public class PathBox : CommonControl
 
    watch(background) { editBox.background = background; };
    watch(foreground) { editBox.foreground = foreground; };
+   watch(opacity)    { editBox.opacity    = opacity; };
 
 #if defined(__WIN32__)
    PathBox()

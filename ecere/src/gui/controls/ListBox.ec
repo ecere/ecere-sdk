@@ -2043,6 +2043,7 @@ private:
       Font font = fontObject;
       Font boldFont = this.boldFont.font;
 
+
       // Draw gray grid
       if(style.alwaysEdit && style.fullRowSelect)
       {
@@ -2323,7 +2324,7 @@ private:
                   foreground = this.foreground;
                }
 
-               if(!isActive && dataDisplayFlags.selected && style.alwaysEdit && field.editable)
+               if(!isActive && dataDisplayFlags.selected && style.alwaysEdit && field.editable && opacity)
                {
                   surface.Clip(null);
                   surface.SetBackground(background);
