@@ -67,7 +67,7 @@ static void ViewArchive(char * path)
    
    while(listing.Find())
    {
-      char timeString[28];
+      char timeString[100]; //28]; I18n strings take up more characters
       strcpy(string, directory);
       if(string[0])
       {
