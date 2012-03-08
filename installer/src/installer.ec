@@ -1079,8 +1079,10 @@ void ModifyPath(char * newPath)
    for(c = 0; coreSDK[c].name; c++)
    {
       char path[MAX_LOCATION];
+      if(c == extras || c == vanilla) continue;
+
       coreSDK[c].GetFullPath(path);
-      if(c != ide && c != runtime && c != eda && c != ec && c !=extras && c != vanilla)
+      if(c != ide && c != runtime && c != eda && c != ec)
       {
 #ifndef NOMINGW
          if(!pathOptions[PathOptions::AddMinGWPaths].selected)
