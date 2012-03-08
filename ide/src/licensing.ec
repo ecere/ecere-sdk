@@ -124,13 +124,37 @@ class LicensesForm : Window
       sourceFile = ":licenses/gpl.LICENSE";
       tabControl = tabControl;
    };
-   Button ok
+/*   Button ok
    {
       this;
       text = "OK";
       anchor = { bottom = 10 };
       size = { 80, 22 };
       isDefault = true;
+      NotifyClicked = ButtonCloseDialog;
+   };
+*/
+   Button dontAgreeButton
+   {
+      this;
+      text = $"I don't agree";
+      size = { 100, 22 };
+      anchor = { bottom = 10, right = 14 };
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         ((GuiApplication)__thisModule).desktop.Destroy(0);
+         return true;
+      }
+   };
+   Button agreeButton
+   {
+      this;
+      text = $"I agree";
+      font = { "Verdana", 10, bold = true };
+      isDefault = true;
+      size = { 80, 23 };
+      anchor = { bottom = 10 };
       NotifyClicked = ButtonCloseDialog;
    };
 }

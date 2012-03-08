@@ -67,14 +67,14 @@
       {
          "Folder" : "src",
          "Files" : [
-            "createLink.ec",
-            "installer.ec",
-            "licenseBox.ec"
+            "installer.ec"
          ]
       },
       "../ide/src/IDESettings.ec",
       "../ide/src/OldIDESettings.ec",
-      "../extras/gui/controls/StringsBox.ec"
+      "../extras/gui/controls/StringsBox.ec",
+      "../ide/src/licensing.ec",
+      "../extras/createLink.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
@@ -10057,6 +10057,22 @@
                   "ExcludeFromBuild" : true
                }
             }
+         ]
+      },
+      {
+         "Folder" : "licenses",
+         "Files" : [
+            "../extras/res/licenses/freetype.LICENSE",
+            "../extras/res/licenses/gpl.LICENSE",
+            "../extras/res/licenses/harfbuzz.LICENSE",
+            "../extras/res/licenses/jpg.LICENSE",
+            "../extras/res/licenses/png.LICENSE",
+            "../extras/res/licenses/sqlite.LICENSE",
+            "../extras/res/licenses/tango.COPYING",
+            "../extras/res/licenses/ungif.LICENSE",
+            "../extras/res/licenses/upx.LICENSE",
+            "../extras/res/licenses/zlib.README",
+            "../LICENSE"
          ]
       },
       "../ide/res/icon.png",

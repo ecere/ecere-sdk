@@ -16,7 +16,8 @@ import "ecere"
 #endif
 import "IDESettings"
 import "createLink"
-import "licenseBox"
+// import "licenseBox"
+import "licensing"
 
 class CheckListBox : ListBox
 {
@@ -672,7 +673,8 @@ class Installer : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         LicenseBox { master = this, sourceFile = ":ecere-sdk/doc/LICENSE" }.Modal();
+         // LicenseBox { master = this, sourceFile = ":ecere-sdk/doc/LICENSE" }.Modal();
+         LicensesForm { master = this }.Modal();
          return true;
       }
    };

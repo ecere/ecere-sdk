@@ -22,10 +22,20 @@ class AboutIDE : Window
    Label { this, text = $"With contributions from...", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 208 } };
    Button licensingBtn
    {
-      this, anchor = { left = 40, bottom = 10 }; hotKey = l; text = "Software Licenses";
+      this, anchor = { left = 40, bottom = 10 }; hotKey = altL; text = "Software Licenses";
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          LicensesForm { master = this }.Modal();
+         return true;
+      }
+   };
+   Button button 
+   {
+      this, text = $"OK", isDefault = true, size = { 80, 20 }, anchor = { right = 13, bottom = 10 };
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         Destroy(0);
          return true;
       }
    };
@@ -39,6 +49,7 @@ class AboutIDE : Window
          "Réjean Loyer\n"
          "   Most of the additional programming on the IDE\n"
          "   Initial EDA design\n"
+         "   Cross-platform and cross-compiler Makefile build system\n"
          "\n"
          "Juan Sánchez\n"
          "   Oracle EDA driver\n"
@@ -130,7 +141,7 @@ class AboutIDE : Window
          "\n"
          "   Richard M. Stallman (Bison, GCC)\n"
          "\n"
-         "   Linus Torvalds (Git, Linux)\n"
+         "   Linus Torvalds (Git, Linux)"
    };
    /*Label { this, text = "Réjean Loyer, Joey Adams, Max Maton", position = { 124, 176 } };
    */
@@ -144,16 +155,6 @@ class AboutIDE : Window
       bool OnLeftButtonDown(int x, int y, Modifiers mods)
       {
          ShellOpen("http://www.ecere.com/");
-         return true;
-      }
-   };
-   Button button 
-   {
-      this, text = $"OK", isDefault = true, size = { 80, 20 }, anchor = { right = 13, bottom = 10 };
-
-      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
-      {
-         Destroy(0);
          return true;
       }
    };
