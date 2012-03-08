@@ -1909,7 +1909,7 @@ private:
                   quotes = "\"";
                else
                   quotes = "";
-               f.Printf(" %s%s%s%s", quotes, useRes ? "$(RES)" : "", resPath, quotes);
+               f.Printf(" %s%s%s%s", quotes, useRes ? "$(RES)" : "", tempPath, quotes);
                count++;
             }
             if(count == 10 || (count > 0 && (ts || !child.next)))
