@@ -295,7 +295,8 @@
             "ide.ec",
             "IDESettings.ec",
             "OldIDESettings.ec",
-            "ProjectSettings.ec"
+            "ProjectSettings.ec",
+            "licensing.ec"
          ]
       }
    ],
@@ -379,6 +380,28 @@
                   }
                ]
             }
+         ]
+      },
+      {
+         "Folder" : "licenses",
+         "Files" : [
+
+         ]
+      },
+      {
+         "Folder" : "licenses",
+         "Files" : [
+            "../LICENSE",
+            "../extras/res/licenses/png.LICENSE",
+            "../extras/res/licenses/tango.COPYING",
+            "../extras/res/licenses/zlib.README",
+            "../extras/res/licenses/sqlite.LICENSE",
+            "../extras/res/licenses/jpg.LICENSE",
+            "../extras/res/licenses/ungif.LICENSE",
+            "../extras/res/licenses/freetype.LICENSE",
+            "../extras/res/licenses/harfbuzz.LICENSE",
+            "../extras/res/licenses/upx.LICENSE",
+            "../extras/res/licenses/gpl.LICENSE"
          ]
       },
       "ecere.jpg",
