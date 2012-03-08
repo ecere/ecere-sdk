@@ -7,13 +7,12 @@ import "ecere"
 class LicenseBox : Window
 {
    text = $"Ecere SDK License Agreement";
-   size = { 640, 480 };
+   clientSize = { 700, 480 };
    hasClose = true;
    borderStyle = sizable;
    background = activeBorder;
    tabCycle = true;
    font = { "Verdana", 10 };
-   
    EditBox editBox
    {
       this,
@@ -24,6 +23,7 @@ class LicenseBox : Window
       anchor = { 10, 10, 10, 40 };
       readOnly = true;
       noCaret = true;
+      font = { "Courier New", 10 };
    };
    property char * sourceFile
    {
@@ -54,6 +54,7 @@ class LicenseBox : Window
    {
       this;
       text = $"I agree";
+      font = { "Verdana", 10, bold = true };
       isDefault = true;
       size = { 80, 23 };
       anchor = { bottom = 10 };

@@ -10059,7 +10059,9 @@
             }
          ]
       },
-      "ecere.bmp",
-      "../ide/res/icon.png"
+      "../ide/res/icon.png",
+      "ecere.png",
+      "ryoanji.png",
+      "ryoanji-progress.png"
    ]
 }

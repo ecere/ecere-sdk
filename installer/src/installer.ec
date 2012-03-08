@@ -1,7 +1,7 @@
 #ifdef NOMINGW
-static define buildString = $"ECERE SDK v0.44 (Without MinGW) -- built on March 7, 2012 ";
+static define buildString = $"Ecere SDK v0.44 (Without MinGW) -- built on March 7, 2012 ";
 #else
-static define buildString = $"ECERE SDK v0.44 -- built on March 7, 2012 ";
+static define buildString = $"Ecere SDK v0.44 -- built on March 7, 2012 ";
 #endif
 
 #define WIN32_LEAN_AND_MEAN
@@ -539,7 +539,7 @@ char installDir[MAX_LOCATION];
 
 class Installer : Window
 {
-   text = $"Ecere Software Development Kit Setup";
+   text = $"Ecere Software Development Kit Setup - v0.44 \"Ryōan-ji\"";
    background = activeBorder;
    borderStyle = fixed;
    hasMinimize = true;
@@ -548,6 +548,7 @@ class Installer : Window
    clientSize = { 636, 456 };
    icon = { ":icon.png" };
 
+   Picture back { image = BitmapResource { ":ryoanji.png" }, parent = this, position = { 0, 0 } };
    FileDialog fileDialog
    {
       master = this, type = selectDir,
@@ -578,6 +579,8 @@ class Installer : Window
    {
       this, size = { 460, 112 }, position = { 160, 160 }, hasHeader = true;
       alwaysEdit = true;
+      opacity = 0;
+
 
       bool NotifyChanged(ListBox listBox, DataRow row)
       {
@@ -659,22 +662,24 @@ class Installer : Window
          }
       }
    };
-   Label agreementLbl { parent = this, text = $"By installing the ECERE SDK, you agree to the terms and conditions.", anchor = Anchor { left = 24, top = 424 } };
+   Label agreementLbl { parent = this, text = $"By installing the Ecere SDK, you agree to the                                         .", font = { "Tahoma", 8.25f }, anchor = Anchor { left = 24, top = 424 } };
    Button licenseButton
    {
-      this, inactive = true, offset = false, bevel = false, foreground = blue, font = { "Tahoma", 8.25f, underline = true },
-      text = $"terms and conditions", anchor = Anchor { left = 241, top = 421 };
+      this, inactive = true, offset = false, bevel = false, foreground = blue, font = { "Tahoma", 8.25f, underline = true, bold = true },
+      // text = $"terms and conditions", anchor = Anchor { left = 241, top = 421 };
+      text = $"terms and conditions", anchor = Anchor { left = 237, top = 421 };
       cursor = ((GuiApplication)__thisModule).GetCursor(hand);
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         LicenseBox { master = this, sourceFile = ":ecere-sdk/LICENSE" }.Modal();
+         LicenseBox { master = this, sourceFile = ":ecere-sdk/doc/LICENSE" }.Modal();
          return true;
       }
    };
    CheckListBox optionsBox
    {
       this, size = { 460, 94 }, position = { 160, 284 };
+      opacity = 0;
 
       void NotifyChecked(CheckListBox listBox, DataRow row)
       {
@@ -745,7 +750,7 @@ class Installer : Window
    EditBox label6
    {
       this, opacity = 0, borderStyle = none, inactive = true, size = { 136, 132 }, position = { 14, 152 }, noSelect = true,
-      multiLine = true, 
+      multiLine = true,
       contents = $"Select the optional\n"
          "components you wish\n"
          "to install:\n\n"
@@ -758,7 +763,7 @@ class Installer : Window
    EditBox label7
    {
       this, opacity = 0, borderStyle = none, inactive = true, size = { 136, 53 }, position = { 14, 280 }, noSelect = true, 
-      multiLine = true, 
+      multiLine = true,
       contents = $"Select icons to install, file\n"
       "associations, and system\n"
       "environment modifications:"
@@ -778,8 +783,8 @@ class Installer : Window
       contents = $"Choose in which folder to install the ECERE SDK, which features\n"
          "of the SDK to install, as well as where to install program icons."
    };
-   Label label2 { parent = this, text = buildString, position = { 16, 392 }, disabled = true, opacity = 1, background = activeBorder };
-   Picture picture1 { image = BitmapResource { ":ecere.bmp", transparent = true }, filter = true, parent = label3, text = "picture1", anchor = Anchor { left = 16, top = 4 } };
+   Label label2 { parent = this, text = buildString, position = { 16, 392 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
+   Picture picture1 { image = BitmapResource { ":ecere.png", alphaBlend = true }, filter = true, parent = label3, text = "picture1", anchor = Anchor { left = 16, top = 4 } };
    Label label4 { parent = label3, text = $"Choose Components, Locations and Install Options", font = FontResource { "Tahoma", 8.25f, bold = true }, size = Size { 326, 16 }, anchor = Anchor { horz = 91, vert = -12 } };
    DataField componentField { "CheckItem", width = 140, header = $"Component" };
    DataField locationField { "char *", width = 108, header = $"Destination Folder", editable = true };
@@ -981,48 +986,34 @@ class Installer : Window
       return true;
    }
 
-   void OnRedraw(Surface surface)
+   void OnDrawOverChildren(Surface surface)
    {
-      ColorKey keys[2] =
-      {
-         { blue, 0 },
-         { darkBlue, 1 }
-      };
-      //surface.Gradient(keys, sizeof(keys)/sizeof(ColorKey), 1.0f, Vertical, 0,0, clientSize.w, clientSize.h);
+      int tw = label2.size.w;
       surface.SetForeground(Color { 128, 128, 128 });
-      surface.HLine(160, 620, 400);
+      surface.HLine(label2.position.x + tw + 6, 620, 400);
       surface.SetForeground(white);
-      surface.HLine(160, 621, 401);
+      surface.HLine(label2.position.x + tw + 6, 621, 401);
       surface.PutPixel(621, 400);
    }
+
    Label label3
    {
-      parent = this, opacity = 1, borderStyle = deep, size = Size { 644, 93 }, anchor = Anchor { left = -8, top = -8 };
-
-      void OnRedraw(Surface surface)
-      {
-         ColorKey keys[] =
-         {
-            { white, 0 },
-            { activeBorder, 1 }
-         };
-         surface.Gradient(keys, sizeof(keys)/sizeof(ColorKey), 0, horizontal, 220,0, clientSize.w, clientSize.h);
-
-         Label::OnRedraw(surface);
-      }
+      parent = this, opacity = 0, borderStyle = deep, size = Size { 644, 93 }, anchor = Anchor { left = -8, top = -8 };
    };
 }
 
 class InstallProgress : Window
 {
-   text = $"Ecere Software Development Kit Setup";
+   text = $"Ecere Software Development Kit Setup - v0.44 \"Ryōan-ji\"";
    background = activeBorder;
    borderStyle = fixed;
    hasMinimize = true;
    hasClose = true;
    tabCycle = true;
    size = Size { 640, 480 };
+   icon = { ":icon.png" };
 
+   Picture back { image = BitmapResource { ":ryoanji-progress.png" }, parent = this, position = { 0, 0 } };
    Label installing { this, position = { 32, 160 } };
    ProgressBar progressBar { parent = this, size = Size { 588, 24 }, anchor = Anchor { left = 24, top = 184 } };
    Button finish
@@ -1047,39 +1038,23 @@ class InstallProgress : Window
       multiLine = true, parent = label3, opacity = 0, borderStyle = none, size = Size { 350, 35 }, anchor = Anchor { horz = 111, vert = 13 },
       contents = $"Please wait while the Ecere Software Development Kit is being installed."
    };
-   Label label2 { parent = this, text = buildString, position = { 16, 392 }, disabled = true, opacity = 1, background = activeBorder };
-   Picture picture1 { image = BitmapResource { ":ecere.bmp", transparent = true }, filter = true, parent = label3, anchor = Anchor { left = 16, top = 4 } };
+   Label label2 { parent = this, text = buildString, position = { 16, 392 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
+   Picture picture1 { image = BitmapResource { ":ecere.png", alphaBlend = true }, filter = true, parent = label3, anchor = Anchor { left = 16, top = 4 } };
    Label title { parent = label3, text = $"Installing the ECERE SDK", font = FontResource { "Tahoma", 8.25f, bold = true }, size = Size { 326, 16 }, anchor = Anchor { horz = 91, vert = -12 } };
 
-   void OnRedraw(Surface surface)
+   void OnDrawOverChildren(Surface surface)
    {
-      ColorKey keys[2] =
-      {
-         { blue, 0 },
-         { darkBlue, 1 }
-      };
-      //surface.Gradient(keys, sizeof(keys)/sizeof(ColorKey), 1.0f, Vertical, 0,0, clientSize.w, clientSize.h);
+      int tw = label2.size.w;
       surface.SetForeground(Color { 128, 128, 128 });
-      surface.HLine(160, 620, 400);
+      surface.HLine(label2.position.x + tw + 6, 620, 400);
       surface.SetForeground(white);
-      surface.HLine(160, 621, 401);
+      surface.HLine(label2.position.x + tw + 6, 621, 401);
       surface.PutPixel(621, 400);
    }
+
    Label label3
    {
-      parent = this, opacity = 1, borderStyle = deep, size = Size { 644, 93 }, anchor = Anchor { left = -8, top = -8 };
-
-      void OnRedraw(Surface surface)
-      {
-         ColorKey keys[] =
-         {
-            { white, 0 },
-            { activeBorder, 1 }
-         };
-         surface.Gradient(keys, sizeof(keys)/sizeof(ColorKey), 0, horizontal, 220,0, clientSize.w, clientSize.h);
-
-         Label::OnRedraw(surface);
-      }
+      parent = this, opacity = 0, borderStyle = deep, size = Size { 644, 93 }, anchor = Anchor { left = -8, top = -8 };
    };
    InstallThread thread
    {
@@ -1103,7 +1078,7 @@ void ModifyPath(char * newPath)
    {
       char path[MAX_LOCATION];
       coreSDK[c].GetFullPath(path);
-      if(c != ide && c != runtime && c != eda && c != ec)
+      if(c != ide && c != runtime && c != eda && c != ec && c !=extras && c != vanilla)
       {
 #ifndef NOMINGW
          if(!pathOptions[PathOptions::AddMinGWPaths].selected)
