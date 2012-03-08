@@ -1,7 +1,7 @@
 #ifdef NOMINGW
-static define buildString = $"Ecere SDK v0.44 (Without MinGW) -- built on March 7, 2012 ";
+static define buildString = $"Ecere SDK v0.44 (Without MinGW) -- built on March 8, 2012 ";
 #else
-static define buildString = $"Ecere SDK v0.44 -- built on March 7, 2012 ";
+static define buildString = $"Ecere SDK v0.44 -- built on March 8, 2012 ";
 #endif
 
 #define WIN32_LEAN_AND_MEAN
