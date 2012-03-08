@@ -8,7 +8,7 @@ import "licensing"
 
 class AboutIDE : Window
 {
-   borderStyle = fixed;
+   borderStyle = sizable;
    hasClose = true;
    clientSize = { 440, 440 };
    text = $"About the Ecere SDK";
@@ -149,7 +149,7 @@ class AboutIDE : Window
    };
    Button button 
    {
-      this, text = $"OK", isDefault = true, size = { 80, 20 }, anchor = { horz = 167, bottom = 10 };
+      this, text = $"OK", isDefault = true, size = { 80, 20 }, anchor = { right = 13, bottom = 10 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
