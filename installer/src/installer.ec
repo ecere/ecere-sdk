@@ -439,7 +439,7 @@ Component documentation[DocumentationID] =
    { "GDB Docs",        "mingw/doc/gdb",        "mingw",          null, false, false },
    { "Make Docs",       "mingw/doc/make",       "mingw",          null, false, false },
    { "Binutils Docs",   "mingw/doc/binutils",   "mingw",          null, false, false },
-   { "MinGW Docs",      "mingw/doc/mingw",      "mingw",          null, false, false },
+   { "MinGW Docs",      "mingw/doc/mingwrt",    "mingw",          null, false, false },
    { "gnurx Docs",      "mingw/doc/gnurx",      "mingw",          null, false, false },
    { "UPX Docs",        "upx/doc",              "mingw/doc/upx",  null, false, false },
 #endif
