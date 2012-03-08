@@ -405,7 +405,7 @@ Component coreSDK[CoreSDKID] =
 #ifndef NOMINGW
 Component additional[] =
 {
-   { "UPX",             "upx/bin",                 "mingw",    null, false, true },
+   { "UPX",             "upx/bin",                 "mingw/bin",null, false, true },
    { "GNU Regexp",      "mingw/gnurx",             "mingw",    null, false, true },
    { "Win32 APIs",      "mingw/w32api",            "mingw",    null, false, true },
    { "pthreads",        "mingw/pthreads",          "mingw",    null, false, true },
