@@ -407,9 +407,9 @@ Component additional[] =
 {
    { "UPX",             "upx/bin",                 "mingw/bin",null, false, true },
    { "GNU Regexp",      "mingw/gnurx",             "mingw",    null, false, true },
-   { "Win32 APIs",      "mingw/w32api",            "mingw",    null, false, true },
    { "pthreads",        "mingw/pthreads",          "mingw",    null, false, true },
    { "C++ Compiler",    "mingw/gcc/c++",           "mingw",    null, false, true },
+   { "Win32 APIs",      "mingw/w32api",            "mingw",    null, false, true },
    { "GCC I18n",        "mingw/locale/gcc",        "mingw",    null, false, false },
    { "GDB I18n",        "mingw/locale/gdb",        "mingw",    null, false, false },
    { "Make I18n",       "mingw/locale/make",       "mingw",    null, false, false },
@@ -1139,7 +1139,8 @@ void ModifyPath(char * newPath)
    if(pathOptions[PathOptions::AddMinGWPaths].selected)
    {
       int c;
-      for(c = 0; additional[c].name; c++)
+      // Up to before Win32 APIs
+      for(c = 0; c < 4 /*additional[c].name*/; c++)
       {
          char path[MAX_LOCATION];
          NamedItem item;
@@ -1235,84 +1236,74 @@ class InstallThread : Thread
          char userProfile[MAX_LOCATION];
 
          // Configure IDE
-         GlobalSettings settings
+         IDESettings settings { }; // instantiate the IDESettings class from the IDESettings.ec file. Do this at a global level so that all methods can access settings.
+
+         IDESettingsContainer settingsContainer
          {
-            
+            driver = "JSON";
+            dataOwner = &settings;
          };
+         CompilerConfig compiler;
          installProgress.installing.text = $"Configuring ECERE IDE...";
          ((GuiApplication)__thisModule).Unlock();
          ((GuiApplication)__thisModule).SignalEvent();
 
-         settings.Load();
-         for(c = 0; coreSDK[c].name; c++)
+         settingsContainer.Load();
+         compiler = settings.GetCompilerConfig(defaultCompilerName);
+         if(compiler)
          {
-            char path[MAX_LOCATION];
-            NamedItem item;
-            coreSDK[c].GetFullPath(path);
-            if(c != ide && c != runtime && c != eda && c != ec)
-               PathCat(path, "bin");
-            if(c == ide)
+            for(c = 0; coreSDK[c].name; c++)
             {
-               coreSDK[c].GetFullPath(idePath);
-               PathCat(idePath, "IDE.exe");
-            }
+               char path[MAX_LOCATION];
 
-            // TODO: Update This!
-            /*
-            for(item = settings.systemDirs[executables].first; item; item = item.next)
-               if(!fstrcmp(item.name, path))
-                  break;
-            if(!item)
-            {
-               settings.systemDirs[executables].Add(NamedItem { name = CopyString(path); });
-            }
-
-            if(c == runtime)
-            {
-               for(item = settings.systemDirs[libraries].first; item; item = item.next)
-                  if(!fstrcmp(item.name, path))
-                     break;
-               if(!item)
+               if(c == extras) continue;
+               coreSDK[c].GetFullPath(path);
+               if(c != ide && c != runtime && c != eda && c != ec && c != vanilla)
+                  PathCat(path, "bin");
+               if(c == ide)
                {
-                  settings.systemDirs[libraries].Add(NamedItem { name = CopyString(path); });
+                  coreSDK[c].GetFullPath(idePath);
+                  PathCat(idePath, "IDE.exe");
+               }
+
+               if(!compiler.executableDirs.Find(path))
+                  compiler.executableDirs.Add(CopyString(path));
+
+               if(c == runtime || c == vanilla)
+               {
+                  if(!compiler.libraryDirs.Find(path))
+                     compiler.libraryDirs.Add(CopyString(path));
                }
             }
-            */
-         }
-#ifndef NOMINGW
-         /*
-         for(c = 0; additional[c].name; c++)
-         {
-            char path[MAX_LOCATION];
-            NamedItem item;
-            additional[c].GetFullPath(path);
-            PathCat(path, "bin");
-            for(item = settings.systemDirs[executables].first; item; item = item.next)
-               if(!fstrcmp(item.name, path))
-                  break;
-            if(!item)
+   #ifndef NOMINGW
+            // Up to before Win32 APIs
+            for(c = 0; c < 4 /*additional[c].name*/; c++)
             {
-               settings.systemDirs[executables].Add(NamedItem { name = CopyString(path); });
+               char path[MAX_LOCATION];
+               additional[c].GetFullPath(path);
+               if(c != 0) // upx
+                  PathCat(path, "bin");
+               if(!compiler.executableDirs.Find(path))
+                  compiler.executableDirs.Add(CopyString(path));
+            }
+   #endif
+
+            {
+               char path[MAX_LOCATION] = "";
+               if(components[samples].selected)
+                  components[samples].GetFullPath(path);
+               else
+                  components[coreSDK].GetFullPath(path);
+
+               if(!settings.ideProjectFileDialogLocation)
+                  settings.ideProjectFileDialogLocation = path;
+               if(!settings.ideFileDialogLocation)
+                  settings.ideFileDialogLocation = path;
             }
          }
-         */
-#endif
-         
-         {
-            char path[MAX_LOCATION] = "";
-            if(components[samples].selected)
-               components[samples].GetFullPath(path);
-            else
-               components[coreSDK].GetFullPath(path);
-            /* TODO: Update This!
-            if(!settings.ideProjectFileDialogLocation)
-               settings.ideProjectFileDialogLocation = path;
-            if(!settings.ideFileDialogLocation)
-               settings.ideFileDialogLocation = path;
-            */
-         }
 
-         settings.Save();
+         settingsContainer.Save();
+         delete settingsContainer;
          delete settings;
 
          // Set up Uninstaller
