@@ -786,7 +786,17 @@ class Installer : Window
          "of the SDK to install, as well as where to install program icons."
    };
    Label label2 { parent = this, text = buildString, position = { 16, 392 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
-   Picture picture1 { image = BitmapResource { ":ecere.png", alphaBlend = true }, filter = true, parent = label3, text = "picture1", anchor = Anchor { left = 16, top = 4 } };
+   Picture picture1
+   {
+      image = BitmapResource { ":ecere.png", alphaBlend = true }, filter = true, parent = label3, text = "picture1", anchor = Anchor { left = 16, top = 4 };
+      cursor = ((GuiApplication)__thisModule).GetCursor(hand);
+
+      bool OnLeftButtonDown(int x, int y, Modifiers mods)
+      {
+         ShellOpen("http://www.ecere.com/");
+         return true;
+      }
+   };
    Label label4 { parent = label3, text = $"Choose Components, Locations and Install Options", font = FontResource { "Tahoma", 8.25f, bold = true }, size = Size { 326, 16 }, anchor = Anchor { horz = 91, vert = -12 } };
    DataField componentField { "CheckItem", width = 140, header = $"Component" };
    DataField locationField { "char *", width = 108, header = $"Destination Folder", editable = true };
@@ -1041,7 +1051,17 @@ class InstallProgress : Window
       contents = $"Please wait while the Ecere Software Development Kit is being installed."
    };
    Label label2 { parent = this, text = buildString, position = { 16, 392 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
-   Picture picture1 { image = BitmapResource { ":ecere.png", alphaBlend = true }, filter = true, parent = label3, anchor = Anchor { left = 16, top = 4 } };
+   Picture picture1
+   {
+      image = BitmapResource { ":ecere.png", alphaBlend = true }, filter = true, parent = label3, anchor = Anchor { left = 16, top = 4 };
+      cursor = ((GuiApplication)__thisModule).GetCursor(hand);
+
+      bool OnLeftButtonDown(int x, int y, Modifiers mods)
+      {
+         ShellOpen("http://www.ecere.com/");
+         return true;
+      }
+   };
    Label title { parent = label3, text = $"Installing the ECERE SDK", font = FontResource { "Tahoma", 8.25f, bold = true }, size = Size { 326, 16 }, anchor = Anchor { horz = 91, vert = -12 } };
 
    void OnDrawOverChildren(Surface surface)
