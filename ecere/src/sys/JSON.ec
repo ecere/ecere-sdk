@@ -328,7 +328,7 @@ public:
       if(ch == '{')
       {
          result = success;
-         if(objectType && objectType.type == noHeadClass || objectType.type == normalClass)
+         if(objectType && (objectType.type == noHeadClass || objectType.type == normalClass))
          {
             *object = eInstance_New(objectType);
          }

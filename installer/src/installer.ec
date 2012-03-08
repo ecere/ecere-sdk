@@ -1242,6 +1242,7 @@ class InstallThread : Thread
          {
             driver = "JSON";
             dataOwner = &settings;
+            dataClass = class(IDESettings);
          };
          CompilerConfig compiler;
          installProgress.installing.text = $"Configuring ECERE IDE...";
