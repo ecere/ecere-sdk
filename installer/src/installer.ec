@@ -1,7 +1,7 @@
 #ifdef NOMINGW
-static define buildString = $"Ecere SDK v0.44 (Without MinGW) -- built on March 8, 2012 ";
+static define buildString = $"Ecere SDK v0.44 (Without MinGW) -- built on March 9, 2012 ";
 #else
-static define buildString = $"Ecere SDK v0.44 -- built on March 8, 2012 ";
+static define buildString = $"Ecere SDK v0.44 -- built on March 9, 2012 ";
 #endif
 
 #define WIN32_LEAN_AND_MEAN
@@ -1236,7 +1236,7 @@ class InstallThread : Thread
          char userProfile[MAX_LOCATION];
 
          // Configure IDE
-         IDESettings settings { }; // instantiate the IDESettings class from the IDESettings.ec file. Do this at a global level so that all methods can access settings.
+         IDESettings settings = null; // Don't instantiate yet so we can pick up old settings
 
          IDESettingsContainer settingsContainer
          {
@@ -1267,8 +1267,11 @@ class InstallThread : Thread
                   PathCat(idePath, "IDE.exe");
                }
 
-               if(!compiler.executableDirs.Find(path))
-                  compiler.executableDirs.Add(CopyString(path));
+               if(c != vanilla)
+               {
+                  if(!compiler.executableDirs.Find(path))
+                     compiler.executableDirs.Add(CopyString(path));
+               }
 
                if(c == runtime || c == vanilla)
                {

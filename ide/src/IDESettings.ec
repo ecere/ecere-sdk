@@ -173,7 +173,7 @@ private:
    {
       SettingsIOResult result = GlobalSettings::Load();
       IDESettings data = (IDESettings)this.data;
-      //if(result == success)
+      CompilerConfig defaultCompiler = null;
       if(!data)
       {
          this.data = IDESettings { };
@@ -203,8 +203,7 @@ private:
                data.useFreeCaret = oldSettings.useFreeCaret;
                data.showLineNumbers = oldSettings.showLineNumbers;
                data.caretFollowsScrolling = oldSettings.caretFollowsScrolling;
-               delete data.displayDriver;
-               data.displayDriver = oldSettings.displayDriver;
+               delete data.displayDriver; data.displayDriver = CopyString(oldSettings.displayDriver);
                data.projectDefaultTargetDir = oldSettings.projectDefaultTargetDir;
                data.projectDefaultIntermediateObjDir = oldSettings.projectDefaultIntermediateObjDir;
                         
@@ -215,17 +214,23 @@ private:
          }
          if(result == fileNotFound || !data)
          {
-            CompilerConfig defaultCompiler = MakeDefaultCompiler(defaultCompilerName, true);
-            // We incref the compilers below, so reset refCount to 0
-            defaultCompiler._refCount = 0;
             data = (IDESettings)this.data;
-
-            data.compilerConfigs.Add(defaultCompiler);
             data.useFreeCaret = true;
             data.showLineNumbers = true;
             data.caretFollowsScrolling = true;
          }
       }
+      // Ensure we have a default compiler
+      defaultCompiler = data.GetCompilerConfig(defaultCompilerName);
+      if(!defaultCompiler)
+      {
+         defaultCompiler = MakeDefaultCompiler(defaultCompilerName, true);
+         data.compilerConfigs.Add(defaultCompiler);
+      }
+
+      // We incref the compilers below, so reset refCount to 0
+      defaultCompiler._refCount = 0;
+
       CloseAndMonitor();
       if(data.compilerConfigs)
       {
@@ -502,6 +507,7 @@ private:
          projectDefaultTargetDir = ReplaceInCopyString(projectDefaultTargetDir, oldPath, oldLen, newPath, newLen);
       if(projectDefaultIntermediateObjDir && projectDefaultIntermediateObjDir[0])
          projectDefaultIntermediateObjDir = ReplaceInCopyString(projectDefaultIntermediateObjDir, oldPath, oldLen, newPath, newLen);
+      return true;
    }
 
    char * ReplaceInCopyString(char * string, char * find, int lenFind, char * replace, int lenReplace)

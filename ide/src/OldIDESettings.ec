@@ -46,7 +46,7 @@ class OldIDESettings : GlobalAppSettings
    //int numJobs;
    char * displayDriver;
    useFreeCaret = true;
-   showLineNumbers = false;
+   showLineNumbers = true;
    caretFollowsScrolling = true;
    //numJobs = 1;
 
