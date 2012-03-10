@@ -4751,7 +4751,8 @@ private:
                delete display;
             }
          }
-         guiApp.interfaceDriver.SetIcon(this, icon);
+         // Sometimes icon does not show up on Windows XP if we set here...
+         // guiApp.interfaceDriver.SetIcon(this, icon);
       }
       else if(this != guiApp.desktop)
       {
@@ -6167,6 +6168,7 @@ public:
                      // Real set state & activate for proper display & activation
                      property::visible = visible;
                      //  SetState(state & 0x00000003, true, 0);
+                     guiApp.interfaceDriver.SetIcon(this, icon);
 
                      if(visible)
                      {
