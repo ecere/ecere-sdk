@@ -157,7 +157,6 @@
                         "mingw/binutils-2.21.53/bin/dllwrap.exe",
                         "mingw/binutils-2.21.53/bin/elfedit.exe",
                         "mingw/binutils-2.21.53/bin/gprof.exe",
-                        "mingw/binutils-2.21.53/bin/ld.bfd.exe",
                         "mingw/binutils-2.21.53/bin/ld.exe",
                         "mingw/binutils-2.21.53/bin/nm.exe",
                         "mingw/binutils-2.21.53/bin/objcopy.exe",
@@ -194,21 +193,6 @@
                   {
                      "Folder" : "mingw32",
                      "Files" : [
-                        {
-                           "Folder" : "bin",
-                           "Files" : [
-                              "mingw/binutils-2.21.53/mingw32/bin/ar.exe",
-                              "mingw/binutils-2.21.53/mingw32/bin/as.exe",
-                              "mingw/binutils-2.21.53/mingw32/bin/dlltool.exe",
-                              "mingw/binutils-2.21.53/mingw32/bin/ld.bfd.exe",
-                              "mingw/binutils-2.21.53/mingw32/bin/ld.exe",
-                              "mingw/binutils-2.21.53/mingw32/bin/nm.exe",
-                              "mingw/binutils-2.21.53/mingw32/bin/objcopy.exe",
-                              "mingw/binutils-2.21.53/mingw32/bin/objdump.exe",
-                              "mingw/binutils-2.21.53/mingw32/bin/ranlib.exe",
-                              "mingw/binutils-2.21.53/mingw32/bin/strip.exe"
-                           ]
-                        },
                         {
                            "Folder" : "lib",
                            "Files" : [
@@ -9753,7 +9737,14 @@
                         "../extras/res/licenses/ecere.LICENSE",
                         "../extras/res/licenses/png.LICENSE",
                         "../extras/res/licenses/tango.COPYING",
-                        "../extras/res/licenses/zlib.README"
+                        "../extras/res/licenses/zlib.README",
+                        "../extras/res/licenses/freetype.LICENSE",
+                        "../extras/res/licenses/gpl.LICENSE",
+                        "../extras/res/licenses/harfbuzz.LICENSE",
+                        "../extras/res/licenses/jpg.LICENSE",
+                        "../extras/res/licenses/sqlite.LICENSE",
+                        "../extras/res/licenses/ungif.LICENSE",
+                        "../extras/res/licenses/upx.LICENSE"
                      ]
                   },
                   {

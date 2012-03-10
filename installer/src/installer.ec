@@ -1261,6 +1261,7 @@ class InstallThread : Thread
                coreSDK[c].GetFullPath(path);
                if(c != ide && c != runtime && c != eda && c != ec && c != vanilla)
                   PathCat(path, "bin");
+               MakeSlashPath(path);
                if(c == ide)
                {
                   coreSDK[c].GetFullPath(idePath);
@@ -1287,6 +1288,7 @@ class InstallThread : Thread
                additional[c].GetFullPath(path);
                if(c != 0) // upx
                   PathCat(path, "bin");
+               MakeSlashPath(path);
                if(!compiler.executableDirs.Find(path))
                   compiler.executableDirs.Add(CopyString(path));
             }
