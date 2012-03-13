@@ -8,7 +8,7 @@ class ModelView : Window
 {
    isActiveClient = true;
    background = blue;
-   anchor = Anchor { left = 0.1, right = 0.9, top = 0.1, bottom = 0.9 };
+   anchor = Anchor { left = 0.1, right = 0.1, top = 0.1, bottom = 0.1 };
 
    FillModeValue fillMode;
    bool moving, lightMoving;
@@ -16,8 +16,12 @@ class ModelView : Window
    Camera camera { type = attached, zMax = 10000, position = Vector3D { 0, 0, -1000 } };
    Object model {};
    Point startPosition;
-   Euler startAngle;
-   Light light { diffuse = Color { 1, 1, 1 }, specular = Color { 1, 1, 1 } }; // light.diffuse.r = light.diffuse.g = light.diffuse.b = 1; light.specular.r = light.specular.g = light.specular.b = 1;
+   Euler startOrientation;
+   Light light
+   {
+      orientation = Euler { pitch = 50, yaw = 45 };
+      diffuse = white, specular = white;
+   }; // light.diffuse.r = light.diffuse.g = light.diffuse.b = 1; light.specular.r = light.specular.g = light.specular.b = 1;
    Window help;
    
    Timer timer
@@ -108,7 +112,7 @@ class ModelView : Window
       {
          startPosition.x = x;
          startPosition.y = y;
-         startAngle = camera.orientation;
+         startOrientation = camera.orientation;
          Capture();
          moving = true;
       }
@@ -131,7 +135,7 @@ class ModelView : Window
       {
          startPosition.x = x;
          startPosition.y = y;
-         startAngle = light.orientation;
+         startOrientation = light.orientation;
          Capture();
          lightMoving = true;
       }
@@ -152,42 +156,39 @@ class ModelView : Window
    {
       if(moving)
       {
-         Euler euler =
+         Euler euler
          {
-            (startAngle.yaw + (x - startPosition.x) * Pi / 180),
-            (startAngle.pitch + (y - startPosition.y) * Pi / 180)
+            startOrientation.yaw   - (x - startPosition.x),
+            startOrientation.pitch + (y - startPosition.y),
+            0
          };
-         camera.orientation.YawPitch(euler.yaw, euler.pitch);
-         /*
-            camera.euler.x = 6.14356;
-            camera.euler.y = 1.37881;
-         */
+         //if(euler.pitch > 90) euler.pitch = 90;
+         //if(euler.pitch < 1) euler.pitch = 1;
+
+         camera.orientation = euler;
+
+         Update(null);
       }
       else if(lightMoving)
       {
-         Euler euler =
-         { 
-            (startAngle.yaw + (x - startPosition.x) * Pi / 180),
-            (startAngle.pitch + (y - startPosition.y) * Pi / 180)
-            
+         light.orientation = Euler
+         {
+            startOrientation.yaw   - (x - startPosition.x),
+            startOrientation.pitch + (y - startPosition.y),
+            0
          };
-         /*
-            light.euler.x = 0.191986;
-            light.euler.y = -7.48746;
-         */
-         light.orientation.YawPitch(euler.yaw, euler.pitch);
-         
-         //display.SetLight(0, light);
+
+         Update(null);
       }
       return true;
    }
 
    bool OnKeyHit(Key key, unichar ch)
    {
-      switch(key)
+      switch((SmartKey) key)
       {
-         case minus: case keyPadMinus: case wheelDown: camera.position.z *= 1.1111111f; break;
-         case equal: case keyPadPlus: case wheelUp: camera.position.z *= 0.9f; break;
+         case wheelDown: case minus: camera.position.z *= 1.1111111f; break;
+         case wheelUp: case equal: camera.position.z *= 0.9f; break;
          
          /*
             case minus: camera.position.z += 10; break;
