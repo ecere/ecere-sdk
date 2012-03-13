@@ -11,6 +11,7 @@ public:
    bool writeAccess:1;
    bool buffered:1;
    bool exclusive:1;
+   bool waitLock:1;
 };
 
 public class Archive

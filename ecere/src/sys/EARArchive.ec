@@ -163,7 +163,11 @@ class EARArchive : Archive
          Defrag(rootDir);
          archiveStart += Update();
       }
-
+      if(f && writeAccess)
+      {
+         f.Flush();
+         f.Unlock(0, 0, true);
+      }
       delete f;
 
       /*if(rootDir && writeAccess)
@@ -1549,61 +1553,68 @@ class EARFileSystem : FileSystem
       EARArchive archive { writeAccess = flags.writeAccess };
       if(archive)
       {
-         // Check for existing Archive
-         if((archive.f = fileName ? (flags.buffered ? FileOpenBuffered : FileOpen)(fileName, flags.writeAccess ? readWrite : read) : TempFile { openMode = readWrite } ))
+         int try = flags.waitLock ? 10 : 0;
+         for(; try >= 0; try--)
          {
-            EARHeader header;
-            bool opened = false;
-            uint archiveSize = 0;
-            archive.f.Seek(-(int)sizeof(uint), end);
-            archive.f.Read(&archiveSize, sizeof(uint), 1);
-            archive.f.Seek(-(int)archiveSize, end);
-
-            archive.archiveStart = archive.f.Tell();
-            if(archive.f.Read(&header, sizeof(EARHeader), 1) == 1 &&
-               !strncmp(header.recognition, earRecognition, sizeof(earRecognition)))
-               opened = true;
-
-            if(!opened)
+            // Check for existing Archive
+            if((archive.f = fileName ? (flags.buffered ? FileOpenBuffered : FileOpen)(fileName, flags.writeAccess ? readWrite : read) : TempFile { openMode = readWrite } ))
             {
-               archive.f.Seek(0, start);
+               EARHeader header;
+               bool opened = false;
+               uint archiveSize = 0;
+               archive.f.Seek(-(int)sizeof(uint), end);
+               archive.f.Read(&archiveSize, sizeof(uint), 1);
+               archive.f.Seek(-(int)archiveSize, end);
+
                archive.archiveStart = archive.f.Tell();
-               archiveSize = archive.f.GetSize();
                if(archive.f.Read(&header, sizeof(EARHeader), 1) == 1 &&
                   !strncmp(header.recognition, earRecognition, sizeof(earRecognition)))
                   opened = true;
+
+               if(!opened)
+               {
+                  archive.f.Seek(0, start);
+                  archive.archiveStart = archive.f.Tell();
+                  archiveSize = archive.f.GetSize();
+                  if(archive.f.Read(&header, sizeof(EARHeader), 1) == 1 &&
+                     !strncmp(header.recognition, earRecognition, sizeof(earRecognition)))
+                     opened = true;
+               }
+
+               if(opened)
+               {
+                  // At this point we recognized the file as a valid eAR archive
+                  archive.rootDir = archive.archiveStart + sizeof(EARHeader);
+                  archive.totalSize = header.totalSize;
+
+                  archive.f.Seek(archive.rootDir, start);
+                  if(flags.buffered)
+                  {
+                     archive.freeBlocks.Add(FreeBlock { start = archive.rootDir + 2 * sizeof(uint), end = MAXDWORD });
+                     archive.SubtractUsedBlocks();
+                  }
+                  else
+                  {
+                     archive.freeBlocks.Add(FreeBlock { start = archive.archiveStart + (archiveSize - sizeof(uint)), end = MAXDWORD });
+                  }
+
+                  /*
+                  if(!flags.writeAccess)
+                  {
+                     delete archive.f;
+                     archive.f = FileOpen(fileName, readWrite);
+                  }
+                  */
+                  if(archive.f)
+                  {
+                     incref archive.f;
+                     result = archive;
+                  }
+               }
+               break;
             }
-
-            if(opened)
-            {
-               // At this point we recognized the file as a valid eAR archive
-               archive.rootDir = archive.archiveStart + sizeof(EARHeader);
-               archive.totalSize = header.totalSize;
-
-               archive.f.Seek(archive.rootDir, start);
-               if(flags.buffered)
-               {
-                  archive.freeBlocks.Add(FreeBlock { start = archive.rootDir + 2 * sizeof(uint), end = MAXDWORD });
-                  archive.SubtractUsedBlocks();
-               }
-               else
-               {
-                  archive.freeBlocks.Add(FreeBlock { start = archive.archiveStart + (archiveSize - sizeof(uint)), end = MAXDWORD });
-               }
-
-               /*
-               if(!flags.writeAccess)
-               {
-                  delete archive.f;
-                  archive.f = FileOpen(fileName, readWrite);
-               }
-               */
-               if(archive.f)
-               {
-                  incref archive.f;
-                  result = archive;
-               }
-            }
+            else if(try > 0)
+               Sleep(0.01);
          }
 
          // This piece of code will create a new archive as a new file or at the footer
@@ -1643,7 +1654,7 @@ class EARFileSystem : FileSystem
                result = archive;
             }
          }
-         if(archive.f && flags.writeAccess && flags.exclusive && !archive.f.Lock(flags.exclusive ? exclusive : shared, 0, 0, false))
+         if(archive.f && flags.writeAccess && flags.exclusive && !archive.f.Lock(flags.exclusive ? exclusive : shared, 0, 0, flags.waitLock))
             result = null;
          if(!result)
          {

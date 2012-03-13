@@ -639,7 +639,7 @@ class EARApp : GuiApplication
             }
             case ARCHIVE_ACTION_ADD:
             {
-               Archive archive = ArchiveOpen(argv[2], { true });
+               Archive archive = ArchiveOpen(argv[2], { true, waitLock = true });
                if(archive)
                {
                   if(selfExtract)
@@ -675,13 +675,28 @@ class EARApp : GuiApplication
                            if(dir)
                            {
                               if(!AddToArchive(archive, dir, file, argv[c], addMode, compression))
+                              {
+                                 exitCode = 2;
+                                 Logf($"Failed to add %s to archive!\n", argv[c]);
+                                 delete dir;
                                  break;
+                              }
                               delete dir;
+                           }
+                           else
+                           {
+                              exitCode = 3;
+                              Logf($"Failed to open the internal directory of archive %s!\n", argv[2]);
                            }
                         }
                      }
                   }
                   delete archive;
+               }
+               else
+               {
+                  Logf($"Failed to open archive %s for writing!\n", argv[2]);
+                  exitCode = 4;
                }
                break;
             }
