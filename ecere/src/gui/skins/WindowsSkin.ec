@@ -163,18 +163,19 @@ public class WindowsSkin_Window : Window
          *h += statusBarHeight;
       }
 
-      if(nativeDecorations && rootWindow == this)
+      if(nativeDecorations && rootWindow == this && windowHandle)
       {
 #if defined(WIN32)
-         RECT rcClient, rcWindow;
-         GetClientRect(windowHandle, &rcClient);
-         GetWindowRect(windowHandle, &rcWindow);
-         *w += (rcWindow.right - rcWindow.left) - rcClient.right;
-         *h += (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
+         RECT rcClient = { 0 }, rcWindow = { 0 };
+         if(GetClientRect(windowHandle, &rcClient) && GetWindowRect(windowHandle, &rcWindow))
+         {
+            *w += (rcWindow.right - rcWindow.left) - rcClient.right;
+            *h += (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
+         }
 
          // PrintLn(_class.name, " is at l = ", rcWindow.left, ", r = ", rcWindow.right);
 #else
-         Box widths;
+         Box widths = { 0 };
          XGetBorderWidths(this, widths);
          *w += widths.left + widths.right;
          *h += widths.top + widths.bottom;
@@ -210,7 +211,7 @@ public class WindowsSkin_Window : Window
    void SetWindowMinimum(MinMaxValue * mw, MinMaxValue * mh)
    {
       bool isNormal = (state == normal);
-      if(nativeDecorations && rootWindow == this) return;
+      if(nativeDecorations && rootWindow == this && windowHandle) return;
       if(((BorderBits)borderStyle).fixed && (state != maximized || !GetParentMenuBar()))
       {
          *mw = MIN_WIDTH;
@@ -249,7 +250,7 @@ public class WindowsSkin_Window : Window
 
       GetDecorationsSize(&aw, &ah);
 
-      if(nativeDecorations && rootWindow == this)
+      if(nativeDecorations && rootWindow == this && windowHandle)
       {
 #if defined(WIN32)
          RECT rcWindow;
@@ -311,7 +312,7 @@ public class WindowsSkin_Window : Window
       int top = 0, border = 0, bottom = 0;
       Window parentMenuBar = GetParentMenuBar();
 
-      if(nativeDecorations && rootWindow == this) return;
+      if(nativeDecorations && rootWindow == this && windowHandle) return;
 
       if(state == minimized)
          top = border = bottom = DEAD_BORDER;
@@ -410,7 +411,7 @@ public class WindowsSkin_Window : Window
    {
       bool isNormal = (state == normal);
       bool result = false;
-      if(nativeDecorations && rootWindow == this) return false;
+      if(nativeDecorations && rootWindow == this && windowHandle) return false;
 
       if(((BorderBits\)borderStyle).fixed && (state != maximized || !GetParentMenuBar()))
       {
@@ -435,7 +436,7 @@ public class WindowsSkin_Window : Window
       bool result = false;
 
       *resizeX = *resizeY = *resizeEndX = *resizeEndY = false;
-      if(nativeDecorations && rootWindow == this) return false;
+      if(nativeDecorations && rootWindow == this && windowHandle) return false;
 
       if(((BorderBits)borderStyle).sizable && (state == normal))
       {
@@ -473,7 +474,7 @@ public class WindowsSkin_Window : Window
       int top = 0, border = 0;
       int insideBorder = 0;
 
-      if(!nativeDecorations || rootWindow != this)
+      if(!nativeDecorations || rootWindow != this || !windowHandle)
       {
          if(state == minimized)
             top = border = DEAD_BORDER;
@@ -525,7 +526,7 @@ public class WindowsSkin_Window : Window
          else
          {
             statusBar.visible = true;
-            if(nativeDecorations && rootWindow == this)
+            if(nativeDecorations && rootWindow == this && windowHandle)
             {
                statusBar.anchor = { left = clientStart.x, bottom = (int)(size.h - clientSize.h - clientStart.y - statusBarHeight ) };
                statusBar.size.w = size.w - insideBorder * 2;
@@ -537,7 +538,7 @@ public class WindowsSkin_Window : Window
             }
          }
       }
-      if(!nativeDecorations || rootWindow != this)
+      if(!nativeDecorations || rootWindow != this || !windowHandle)
       {
          if(sysButtons[0])
          {

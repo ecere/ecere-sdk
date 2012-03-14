@@ -732,7 +732,7 @@ private:
       {
          int x = absPosition.x + clientStart.x;
          int y = absPosition.y + clientStart.y;
-         if(rootWindow.nativeDecorations)
+         if(rootWindow.nativeDecorations && rootWindow.windowHandle)
          {
             x -= rootWindow.clientStart.x;
             y -= rootWindow.clientStart.y - (rootWindow.hasMenuBar ? skinMenuHeight : 0);
@@ -780,7 +780,7 @@ private:
       {
          int x = absPosition.x;
          int y = absPosition.y;
-         if(rootWindow.nativeDecorations)
+         if(rootWindow.nativeDecorations && rootWindow.windowHandle)
          {
             x -= rootWindow.clientStart.x;
             y -= rootWindow.clientStart.y - (rootWindow.hasMenuBar ? skinMenuHeight : 0);
@@ -1025,7 +1025,7 @@ private:
       }
 
       // This is required to get proper initial decoration size using native decorations on Windows
-      if(nativeDecorations && guiApp && guiApp.interfaceDriver && !visible)
+      if(nativeDecorations && windowHandle && guiApp && guiApp.interfaceDriver && !visible)
          guiApp.interfaceDriver.PositionRootWindow(this, x, y, Max(1, size.w), Max(1, size.h), true, true);
       GetDecorationsSize(&ew, &eh);
 
@@ -1629,7 +1629,7 @@ private:
       SetPosition(x, y, w, h, true, modifyArea, updateScrollBars);
 
       clientResized = oldCW != clientSize.w || oldCH != clientSize.h || force;
-      if(clientResized && this == rootWindow && nativeDecorations)
+      if(clientResized && this == rootWindow && nativeDecorations && rootWindow.windowHandle)
          windowResized = true;
 
       if(display && rootWindow != this)
@@ -1699,14 +1699,17 @@ private:
                y -= guiApp.desktop.absPosition.y;
             }*/
             //guiApp.Log("Position %s\n", caption);
-            if(windowResized || windowMoved)
-               if(display && !display.flags.memBackBuffer && changeRootWindow)
-                  guiApp.interfaceDriver.PositionRootWindow(this, x, y, w, h, windowMoved, windowResized); //realResized);
+            if(windowHandle)
+            {
+               if(windowResized || windowMoved)
+                  if(display && !display.flags.memBackBuffer && changeRootWindow)
+                     guiApp.interfaceDriver.PositionRootWindow(this, x, y, w, h, windowMoved, windowResized); //realResized);
 
-            if(!guiApp.fullScreenMode && this != guiApp.desktop && (windowResized || windowMoved))
-               for(child = parent.children.first; child && child != this; child = child.next)
-                  if(child.rootWindow)
-                     guiApp.interfaceDriver.UpdateRootWindow(child.rootWindow);
+               if(!guiApp.fullScreenMode && this != guiApp.desktop && (windowResized || windowMoved))
+                  for(child = parent.children.first; child && child != this; child = child.next)
+                     if(child.rootWindow)
+                        guiApp.interfaceDriver.UpdateRootWindow(child.rootWindow);
+            }
 
             if(display)
             {
@@ -1720,7 +1723,7 @@ private:
                if(windowResized)
                {
                   // result = realResized ? display.Resize(size.w, size.h) : true;
-                  if(nativeDecorations)
+                  if(nativeDecorations && rootWindow.windowHandle)
                   {
                      int w = clientSize.w, h = clientSize.h;
                      if(hasMenuBar) h += skinMenuHeight;
@@ -1748,7 +1751,7 @@ private:
                   display.Unlock();
                }
             }
-            if(guiApp.driver && changeRootWindow)
+            if(guiApp.driver && changeRootWindow && windowHandle)
             {
                if(windowResized || windowMoved)
                   if(!display || display.flags.memBackBuffer)
@@ -2650,7 +2653,7 @@ private:
       bool opaque = IsOpaque();
       Window child;
       int offsetX = absPosition.x - rootWindow.absPosition.x, offsetY = absPosition.y - rootWindow.absPosition.y;
-      if(rootWindow.nativeDecorations)
+      if(rootWindow.nativeDecorations && rootWindow.windowHandle)
       {
          offsetX -= rootWindow.clientStart.x;
          offsetY -= rootWindow.clientStart.y - (rootWindow.hasMenuBar ? skinMenuHeight : 0);
@@ -2669,7 +2672,7 @@ private:
                Extent * renderArea = &rootWindow.tempExtents[1];
 
                int offsetX = child.absPosition.x - rootWindow.absPosition.x, offsetY = child.absPosition.y - rootWindow.absPosition.y;
-               if(child.rootWindow.nativeDecorations)
+               if(child.rootWindow.nativeDecorations && rootWindow.windowHandle)
                {
                   offsetX -= child.rootWindow.clientStart.x;
                   offsetY -= child.rootWindow.clientStart.y - (child.rootWindow.hasMenuBar ? skinMenuHeight : 0);
@@ -2723,7 +2726,7 @@ private:
       Extent * dirtyExtentWindow = &rootWindow.tempExtents[1];
       Window child;
       int offsetX = absPosition.x - rootWindow.absPosition.x, offsetY = absPosition.y - rootWindow.absPosition.y;
-      if(rootWindow.nativeDecorations)
+      if(rootWindow.nativeDecorations && rootWindow.windowHandle)
       {
          offsetX -= rootWindow.clientStart.x;
          offsetY -= rootWindow.clientStart.y - (rootWindow.hasMenuBar ? skinMenuHeight : 0);
@@ -2920,7 +2923,7 @@ private:
       Window child;
       Window rootWindow = this.rootWindow;
       int offsetX = absPosition.x - rootWindow.absPosition.x, offsetY = absPosition.y - rootWindow.absPosition.y;
-      if(rootWindow.nativeDecorations)
+      if(rootWindow.nativeDecorations && rootWindow.windowHandle)
       {
          offsetX -= rootWindow.clientStart.x;
          offsetY -= rootWindow.clientStart.y - (rootWindow.hasMenuBar ? skinMenuHeight : 0);
@@ -5641,7 +5644,7 @@ private:
       if(prevState != newState)
          lastState = prevState;
 
-      if(rootWindow != this || !nativeDecorations)
+      if(rootWindow != this || !nativeDecorations || !windowHandle)
       {
          if(style.isActiveClient && !style.hidden && prevState == minimized)
             parent.numIcons--;
