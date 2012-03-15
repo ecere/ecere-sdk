@@ -294,7 +294,7 @@ public class ToolButton : Button
    {
       ToolButton toolButton = (ToolButton)button;
       MenuItem menuItem = toolButton.menuItem;
-      return menuItem.NotifySelect(this, menuItem, 0);
+      return menuItem ? menuItem.NotifySelect(this, menuItem, 0) : 0;
    }
 
 public:
@@ -303,7 +303,7 @@ public:
    {
       get
       {
-         MenuItem menuItem = *(MenuItem *)((byte *)master + (uint)menuItemPtr);
+         MenuItem menuItem = menuItemPtr ? *(MenuItem *)((byte *)master + (uint)menuItemPtr) : null;
          return menuItem;
       }
    }
