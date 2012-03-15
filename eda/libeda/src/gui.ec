@@ -759,7 +759,7 @@ public class ListSection : Group
                   r.SetData(fldActive, active);
 
                if(NotifyNew(master, this, r))
-                  list.currentRow = list.AddString("$[New]");
+                  list.currentRow = list.AddString($"[New]");
                delete r;
             }
 

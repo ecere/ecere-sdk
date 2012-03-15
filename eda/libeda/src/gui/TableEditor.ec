@@ -285,7 +285,7 @@ public:
                   {
                      if(lf.field.type == class(String))
                      {
-                        r.SetData(lf.field, "$[New]");
+                        r.SetData(lf.field, $"[New]");
                      }
                   }
                }
@@ -295,8 +295,8 @@ public:
             }
             else if(idField && stringField)
             {
-               r.SetData(stringField, "$[New]");
-               list.AddString("$[New]").tag = id;
+               r.SetData(stringField, $"[New]");
+               list.AddString($"[New]").tag = id;
             }
             delete r;
          }
