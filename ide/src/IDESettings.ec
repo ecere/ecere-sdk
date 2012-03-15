@@ -25,6 +25,48 @@ char * settingsDirectoryNames[DirTypes] =
 
 enum GlobalSettingsChange { none, editorSettings, projectOptions, compilerSettings };
 
+enum PathRelationship { unrelated, identical, siblings, subPath, parentPath, insuficientInput, pathEmpty, toEmpty, pathNull, toNull, bothEmpty, bothNull };
+PathRelationship eString_PathRelated(char * path, char * to, char * pathDiff)
+{
+   PathRelationship result;
+   if(pathDiff) *pathDiff = '\0';
+   if(path && *path && to && *to)
+   {
+      char toPart[MAX_FILENAME], toRest[MAX_LOCATION];
+      char pathPart[MAX_FILENAME], pathRest[MAX_LOCATION];
+      strcpy(toRest, to);
+      strcpy(pathRest, path);
+      for(; toRest[0] && pathRest[0];)
+      {
+         SplitDirectory(toRest, toPart, toRest);
+         SplitDirectory(pathRest, pathPart, pathRest);
+         if(!fstrcmp(pathPart, toPart)) result = siblings;
+         else break;
+      }
+      if(result == siblings)
+      {
+         if(!*toRest && !*pathRest) result = identical;
+         else if(!*pathRest) result = parentPath;
+         else result = subPath;
+         if(pathDiff && result != identical) strcpy(pathDiff, *pathRest == '\0' ? toRest : pathRest);
+      }
+      else result = unrelated;
+   }
+   else
+   {
+      if(path && to)
+      {
+         if(!*path && !*to) result = bothEmpty;
+         else if(!*path) result = pathEmpty;
+         else result = toEmpty;
+      }
+      else if(!path && !to) result = bothNull;
+      else if(!path) result = pathNull;
+      else result = toNull;
+   }
+   return result;
+}
+
 char * CopyValidateMakefilePath(char * path)
 {
    const int map[]  =    { 0,           1,           2,             3,             4,           0,            1,                  7         };
@@ -114,12 +156,17 @@ class IDESettingsContainer : GlobalSettings
 
    virtual void OnLoad(GlobalSettingsData data);
 
+   char moduleLocation[MAX_LOCATION];
+
 private:
    IDESettingsContainer()
    {
       char path[MAX_LOCATION];
       char * start;
-      LocateModule(null, path);
+      LocateModule(null, moduleLocation);
+      strcpy(path, moduleLocation);
+      StripLastDirectory(moduleLocation, moduleLocation);
+      ChangeCh(moduleLocation, '\\', '/');
       // PortableApps.com directory structure
       if((start = strstr(path, "\\App\\EcereSDK\\bin\\ide.exe")))
       {
@@ -240,21 +287,8 @@ private:
             incref compiler;
          }
       }
-      if(portable)
-      {
-         char location[MAX_LOCATION];
-         LocateModule(null, location);
-         StripLastDirectory(location, location);
-         if(location[0] && FileExists(location).isDirectory)
-         {
-            if(data.portableLocation && data.portableLocation[0] && strcmp(data.portableLocation, location))
-            {
-               data.UpdatePortablePaths(data.portableLocation, location);
-               data.portableLocation = location;
-               Save();
-            }
-         }
-      }
+      if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
+         data.ManagePortablePaths(moduleLocation, true);
       data.ForcePathSeparatorStyle(true);
       OnLoad(data);
    }
@@ -263,11 +297,13 @@ private:
    {
       IDESettings data = (IDESettings)this.data;
       Platform runtimePlatform = GetRuntimePlatform();
-      data.ForcePathSeparatorStyle(runtimePlatform != win32);
+      if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
+         data.ManagePortablePaths(moduleLocation, false);
+      data.ForcePathSeparatorStyle(true);
       if(!GlobalSettings::Save())
          PrintLn("Error saving IDE settings");
-      if(runtimePlatform == win32)
-         data.ForcePathSeparatorStyle(true);
+      if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
+         data.ManagePortablePaths(moduleLocation, true);
       CloseAndMonitor();
    }
 }
@@ -451,28 +487,26 @@ private:
          ChangeCh(portableLocation, from, to);
    }
 
-   bool UpdatePortablePaths(char * oldPath, char * newPath)
+   void ManagePortablePaths(char * location, bool makeAbsolute)
    {
-      int oldLen = strlen(oldPath);
-      int newLen = strlen(newPath);
+      int c;
       if(compilerConfigs && compilerConfigs.count)
       {
          for(config : compilerConfigs)
          {
-            DirTypes c;
-            for(c = 0; c < DirTypes::enumSize; c++)
+            DirTypes t;
+            for(t = 0; t < DirTypes::enumSize; t++)
             {
-               Array<String> dirs;
-               if(c == executables) dirs = config.executableDirs;
-               else if(c == includes) dirs = config.includeDirs;
-               else if(c == libraries) dirs = config.libraryDirs;
+               Array<String> dirs = null;
+               if(t == executables) dirs = config.executableDirs;
+               else if(t == includes) dirs = config.includeDirs;
+               else if(t == libraries) dirs = config.libraryDirs;
                if(dirs && dirs.count)
                {
-                  int i;
-                  for(i = 0; i < dirs.count; i++)
+                  for(c = 0; c < dirs.count; c++)
                   {
-                     if(dirs[i] && dirs[i][0])
-                        dirs[i] = ReplaceInCopyString(dirs[i], oldPath, oldLen, newPath, newLen);
+                     if(dirs[c] && dirs[c][0])
+                        dirs[c] = UpdatePortablePath(dirs[c], location, makeAbsolute);
                   }
                }
             }
@@ -480,56 +514,58 @@ private:
       }
       if(recentFiles && recentFiles.count)
       {
-         int c;
          for(c = 0; c < recentFiles.count; c++)
          {
             if(recentFiles[c] && recentFiles[c][0])
-               recentFiles[c] = ReplaceInCopyString(recentFiles[c], oldPath, oldLen, newPath, newLen);
+               recentFiles[c] = UpdatePortablePath(recentFiles[c], location, makeAbsolute);
          }
       }
       if(recentProjects && recentProjects.count)
       {
-         int c;
          for(c = 0; c < recentProjects.count; c++)
          {
             if(recentProjects[c] && recentProjects[c][0])
-               recentProjects[c] = ReplaceInCopyString(recentProjects[c], oldPath, oldLen, newPath, newLen);
+               recentProjects[c] = UpdatePortablePath(recentProjects[c], location, makeAbsolute);
          }
       }
       if(docDir && docDir[0])
-         docDir = ReplaceInCopyString(docDir, oldPath, oldLen, newPath, newLen);
+         docDir = UpdatePortablePath(docDir, location, makeAbsolute);
       if(ideFileDialogLocation && ideFileDialogLocation[0])
-         ideFileDialogLocation = ReplaceInCopyString(ideFileDialogLocation, oldPath, oldLen, newPath, newLen);
+         ideFileDialogLocation = UpdatePortablePath(ideFileDialogLocation, location, makeAbsolute);
       if(ideProjectFileDialogLocation && ideProjectFileDialogLocation[0])
-         ideProjectFileDialogLocation = ReplaceInCopyString(ideProjectFileDialogLocation, oldPath, oldLen, newPath, newLen);
+         ideProjectFileDialogLocation = UpdatePortablePath(ideProjectFileDialogLocation, location, makeAbsolute);
 
       if(projectDefaultTargetDir && projectDefaultTargetDir[0])
-         projectDefaultTargetDir = ReplaceInCopyString(projectDefaultTargetDir, oldPath, oldLen, newPath, newLen);
+         projectDefaultTargetDir = UpdatePortablePath(projectDefaultTargetDir, location, makeAbsolute);
       if(projectDefaultIntermediateObjDir && projectDefaultIntermediateObjDir[0])
-         projectDefaultIntermediateObjDir = ReplaceInCopyString(projectDefaultIntermediateObjDir, oldPath, oldLen, newPath, newLen);
-      return true;
+         projectDefaultIntermediateObjDir = UpdatePortablePath(projectDefaultIntermediateObjDir, location, makeAbsolute);
    }
 
-   char * ReplaceInCopyString(char * string, char * find, int lenFind, char * replace, int lenReplace)
+   char * UpdatePortablePath(char * path, char * location, bool makeAbsolute)
    {
-      char * output = string;
-      char * start;
-      if(/*string && string[0] && */(start = strstr(string, find)))
+      char * output;
+      if(makeAbsolute)
       {
-         if(lenFind == lenReplace)
-            strncpy(start, replace, lenReplace);
-         else
+         char p[MAX_LOCATION];
+         strcpy(p, location);
+         PathCatSlash(p, path);
+         delete path;
+         output = CopyString(p);
+      }
+      else
+      {
+         PathRelationship rel = eString_PathRelated(path, location, null);
+         if(rel == subPath || rel == identical)
          {
-            int newLen = strlen(string) + lenReplace - lenFind + 1;
-            char * newString = new char[newLen];
-            start[0] = '\0';
-            strcpy(newString, string);
-            start += lenFind;
-            strcat(newString, replace);
-            strcat(newString, start);
-            delete string;
-            return newString;
+            char p[MAX_LOCATION];
+            MakePathRelative(path, location, p);
+            if(!*p) strcpy(p, "./");
+            else ChangeCh(p, '\\', '/');
+            delete path;
+            output = CopyString(p);
          }
+         else
+            output = path;
       }
       return output;
    }
