@@ -13274,7 +13274,7 @@ if(_class)
 {
 for(param = _class->templateParams.first; param; param = param->next)
 {
-if(param->type == 1 && !strcmp(param->name, exp->member.member->string))
+if(param->type == 1 && exp->member.member && exp->member.member->string && !strcmp(param->name, exp->member.member->string))
 break;
 }
 }

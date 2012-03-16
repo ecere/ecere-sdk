@@ -1,3 +1,3 @@
 @echo off
-set path=d:\bison2.4\bin
+set path=e:\bison2.4\bin
 bison --defines=grammar.h --locations --report=lookahead --verbose grammar.y -o grammar.ec

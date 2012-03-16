@@ -1264,6 +1264,8 @@ template_arguments_list:
 class_entry:
    CLASS
    {
+      if(curContext != globalContext)
+         PopContext(curContext);
       $$ = PushContext();
    };
 
