@@ -990,7 +990,6 @@ public:
 
    void EditNew()
    {
-
       modifiedDocument = false;
    }
 

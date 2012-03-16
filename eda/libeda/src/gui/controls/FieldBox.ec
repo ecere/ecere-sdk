@@ -79,7 +79,7 @@ public class FieldBox : DataBox
       {
          if(data)
             SetData(null, false);
-         
+
          if(type && (type.type == noHeadClass || type.type == normalClass))
          {
             if(eClass_IsDerived(type, class(String)))
@@ -88,7 +88,7 @@ public class FieldBox : DataBox
                dataHolder = (int64)eInstance_New(type);
             data = (void *)&dataHolder;
          }
-         
+
          if(created)
             Refresh();
       }
@@ -99,10 +99,9 @@ public class FieldBox : DataBox
       Row row = this.row;
       if(visible && field && row)
       {
-         Id test = row.sysID;
-         
+         //Id test = row.sysID;
          SetData(null, false);
-         
+
          ((bool (*)())(void *)Row::GetData)(row, field, field.type, data);
 
          if(!dataHolder && type && (type.type == noHeadClass || type.type == normalClass))

@@ -5,6 +5,15 @@ import "FieldBox"
 #define UTF8_IS_FIRST(x)   (__extension__({ byte b = x; (!(b) || !((b) & 0x80) || ((b) & 0x40)); }))
 #define UTF8_NUM_BYTES(x)  (__extension__({ byte b = x; (b & 0x80 && b & 0x40) ? ((b & 0x20) ? ((b & 0x10) ? 4 : 3) : 2) : 1; }))
 
+// all methods currently perform ascii conversion and all that jazz on every string added to the index
+public enum StringSearchIndexingMethod { fullString, allSubstrings };
+public class StringSearchField
+{
+public:
+   Field field;
+   StringSearchIndexingMethod method;
+};
+
 public class TableEditor
 {
 public:
@@ -62,7 +71,7 @@ public:
    int listSortOrder;
    DataField listSortField;
    bool disabledFullListing;
-   property Array<Field> searchFields
+   property Array<StringSearchField> searchFields
    {
       set
       {
@@ -74,7 +83,7 @@ public:
          }
       }
    }
-   Array<Field> searchFields;
+   Array<StringSearchField> searchFields;
    property String searchString
    {
       set
@@ -666,24 +675,26 @@ private:
             Id id = 0;
             r.GetData(idField, id);
 
-            for(field : searchFields)
+            for(ssf : searchFields)
             {
+               Field field = ssf.field;
+               StringSearchIndexingMethod method = ssf.method;
                if(field && field.type == class(String))
                {
-                  int c;
-                  unichar ch;
-                  unichar lastCh = 0;
-                  int count = 0;
-                  int numChars = 0;
-                  int nb;
-                  char word[1024];
-                  char asciiWord[1024];
-                  
                   String string = null;
                   r.GetData(field, string);
-                  
+
                   if(string && string[0])
                   {
+                     int c;
+                     unichar ch;
+                     unichar lastCh = 0;
+                     int count = 0;
+                     int numChars = 0;
+                     int nb;
+                     char word[1024];
+                     char asciiWord[1024];
+
                      for(c = 0; ; c += nb)
                      {
                         ch = UTF8GetChar(string + c, &nb);
@@ -698,9 +709,9 @@ private:
                               strlwr(word);
                               strlwr(asciiWord);
 
-                              AddWord(word, count, id);
+                              AddWord(word, count, method == allSubstrings, id);
                               if(count > numChars)
-                                 AddWord(asciiWord, strlen(asciiWord), id);
+                                 AddWord(asciiWord, strlen(asciiWord), method == allSubstrings, id);
                               count = 0;
                               numChars = 0;
                            }
@@ -726,7 +737,6 @@ private:
                         lastCh = ch;
                      }
                   }
-
                   delete string;
                }
             }
@@ -751,7 +761,7 @@ private:
    WordEntry letters[26];
    WordEntry doubleLetters[26][26];
 
-   void AddWord(char * word, int count, Id id)
+   void AddWord(char * word, int count, bool addAllSubstrings, Id id)
    {
       int s;
       WordEntry mainEntry = null;
@@ -766,7 +776,7 @@ private:
          memcpy(subWord, word + s, count-s);
          subWord[count-s] = 0;   // THIS IS REQUIRED!! THE WHILE LOOP BELOW CHECKED count-s FIRST!!
          ch1 = subWord[0];
-                              
+
          for(l = count-s; l>0; l--)
          {
             uint wid;
@@ -842,7 +852,6 @@ private:
          }                        
       }
    }
-
 }
 
 public class ListField : struct
