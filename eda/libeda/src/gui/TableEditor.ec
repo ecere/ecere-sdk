@@ -268,7 +268,7 @@ public:
          }
          else
             id = 1;
-      
+
          EditClear();
          {
             bool active = true;
@@ -280,7 +280,7 @@ public:
                   id = curID;
                else
                   r.SetData(idField, id);
-            }               
+            }
             /*if(fldActive)
                r.SetData(fldActive, active);*/
 
@@ -545,12 +545,97 @@ private:
       {
          if(lf.dataField && lf.field)
          {
-            if(lf.field.type == class(String))
+            if(eClass_IsDerived(lf.field.type, class(String)))
             {
                String s = null;
                dbRow.GetData(lf.field, s);
                listRow.SetData(lf.dataField, s);
                delete s;
+            }
+            else if(eClass_IsDerived(lf.field.type, class(Id)))
+            {
+               if(lf.CustomLookup)
+               {
+                  Id id = 0;
+                  String s = null;
+                  dbRow.GetData(lf.field, id);
+                  s = lf.CustomLookup(id);
+                  listRow.SetData(lf.dataField, s);
+                  delete s; // ?
+               }
+               else if(lf.lookupTable && lf.lookupField && lf.lookupValueField &&
+                     eClass_IsDerived(lf.lookupField.type, class(Id)) &&
+                     eClass_IsDerived(lf.lookupValueField.type, class(String)))
+               {
+                  Id id = 0;
+                  String s = null;
+                  Row lookupRow { lf.lookupTable };
+                  dbRow.GetData(lf.field, id);
+                  if(lookupRow.Find(lf.lookupField, middle, nil, id))
+                     lookupRow.GetData(lf.lookupValueField, s);
+                  listRow.SetData(lf.dataField, s);
+                  delete s;
+                  delete lookupRow;
+               }
+            }
+            else if(lf.CustomLookup && lf.field.type)
+            {
+               char * n = lf.field.name;
+               int64 data = 0;
+               String s = null;
+               Class type = lf.field.type;
+               if(type.type == unitClass && !type.typeSize)
+               {
+                  Class dataType = eSystem_FindClass(type.module, type.dataTypeString);
+                  if(dataType)
+                     type = dataType;
+               }
+               if(type.type == structClass)
+                  data = (int64)new0 byte[type.structSize];
+               ((bool (*)())(void *)dbRow.GetData)(dbRow, lf.field, type, (type.type == structClass) ? (void *)data : &data);
+               //if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
+               //   listRow.SetData(lf.dataField, (void *)&data);
+               //else
+               //   listRow.SetData(lf.dataField, (void *)data);
+               s = lf.CustomLookup((int)data);
+               listRow.SetData(lf.dataField, s);
+               // Is this missing some frees here? strings?
+               // type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+               if(type.type == structClass)
+               {
+                  void * dataPtr = (void *)data;
+                  delete dataPtr;
+               }
+               delete s; // ?
+            }
+            else if(lf.field.type)
+            {
+               char * n = lf.field.name;
+               //char tempString[256];
+               int64 data = 0;
+               Class type = lf.field.type;
+               if(type.type == unitClass && !type.typeSize)
+               {
+                  Class dataType = eSystem_FindClass(type.module, type.dataTypeString);
+                  if(dataType)
+                     type = dataType;
+               }
+               if(type.type == structClass)
+                  data = (int64)new0 byte[type.structSize];
+               ((bool (*)())(void *)dbRow.GetData)(dbRow, lf.field, type, (type.type == structClass) ? (void *)data : &data);
+               if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
+                  listRow.SetData(lf.dataField, (void *)&data);
+               else
+                  listRow.SetData(lf.dataField, (void *)data);
+               //extern int __ecereVMethodID_class_OnGetString;
+               //lf.field.type._vTbl[__ecereVMethodID_class_OnGetString](lf.field.type, &data, tempString, null, null);
+               // Is this missing some frees here? strings?
+               // type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+               if(type.type == structClass)
+               {
+                  void * dataPtr = (void *)data;
+                  delete dataPtr;
+               }
             }
          }
       }
@@ -859,6 +944,20 @@ public class ListField : struct
 public:
    Field field;
    DataField dataField;
+   Table lookupTable;
+   Field lookupField;
+   Field lookupValueField;
+   String (*CustomLookup)(Id);
+   /*public property Field lookupField
+   {
+      set
+      {
+         lookupField = value;
+         if(value && !lookupTable)
+            lookupTable = value.table;
+      }
+   }
+private:*/
 }
 
 static WordEntry * btnodes;
