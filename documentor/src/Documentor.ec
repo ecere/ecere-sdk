@@ -3289,7 +3289,7 @@ class HelpView : HTMLView
             default:
             {
                // eC BUG HERE: (Should be fixed)
-               if(key.ctrl && !key.alt && ch >= 32 && ch != 128 /*&& ch < 128*/)
+               if(!key.ctrl && !key.alt && ch >= 32 && ch != 128 /*&& ch < 128*/)
                {
                   char string[5];
                   int len = UTF32toUTF8Len(&ch, 1, string, 5);
