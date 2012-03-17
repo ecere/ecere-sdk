@@ -2,6 +2,8 @@ import "idList"
 
 import "FieldBox"
 
+#define FULL_STRING_SEARCH
+
 #define UTF8_IS_FIRST(x)   (__extension__({ byte b = x; (!(b) || !((b) & 0x80) || ((b) & 0x40)); }))
 #define UTF8_NUM_BYTES(x)  (__extension__({ byte b = x; (b & 0x80 && b & 0x40) ? ((b & 0x20) ? ((b & 0x10) ? 4 : 3) : 2) : 1; }))
 
@@ -465,6 +467,7 @@ private:
    {
       fieldsBoxes.Free(); // TOCHECK: do I need to delete each to oppose the increb in AddFieldBox?
       delete searchString;
+      wordTree.Free();
    }
 
    void ResetListFields()
@@ -645,6 +648,7 @@ private:
 
    Array<Id> SearchWordList()
    {
+#ifdef FULL_STRING_SEARCH
       int c;
       int numTokens = 0;
       int len[256];
@@ -709,10 +713,15 @@ private:
          }
       }
       return results;
+#else
+      return null;
+#endif
+
    }
 
    void PrepareWordList(char * filePath)
    {
+#ifdef FULL_STRING_SEARCH
       Row r { table };
       File f = filePath ? FileOpenBuffered(filePath, read) : null;
       if(f)
@@ -837,6 +846,7 @@ private:
          }
       }
       delete r;
+#endif
    }
 
    /*static */WordEntryBinaryTree wordTree
@@ -850,6 +860,7 @@ private:
 
    void AddWord(char * word, int count, bool addAllSubstrings, Id id)
    {
+#ifdef FULL_STRING_SEARCH
       int s;
       WordEntry mainEntry = null;
       WordEntry sEntry = null;
@@ -938,6 +949,7 @@ private:
             wordEntry.items.Add(id);
          }                        
       }
+#endif
    }
 }
 
