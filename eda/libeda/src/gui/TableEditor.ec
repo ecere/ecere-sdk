@@ -113,6 +113,7 @@ public:
 
    Array<FieldBox> fieldsBoxes { };
    
+   public virtual void Window::OnLoad();
    public virtual void Window::OnStateChanged();
    bool internalModifications;
    public void NotifyModifiedDocument()
@@ -519,6 +520,7 @@ private:
 
    void EditLoad()
    {
+      OnLoad(window);
       internalModifications = true;
       for(fb : fieldsBoxes)
          fb.Load();
