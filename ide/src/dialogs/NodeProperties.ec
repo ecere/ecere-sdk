@@ -5,7 +5,7 @@ enum NodePropertiesMode { normal, newFile, newFolder };
 class NodeProperties : Window
 {
    tabCycle = true;
-   background = activeBorder;
+   background = formColor;
    hasClose = true;
    borderStyle = sizable;
    isModal = true;
@@ -26,7 +26,7 @@ class NodeProperties : Window
    Label absolutePathLabel { parent = this, position = { 10, 110 }, labeledWindow = absolutePath };
    EditBox absolutePath
    {
-      this, background = activeBorder, textHorzScroll = true, readOnly = true;
+      this, background = formColor, textHorzScroll = true, readOnly = true;
       position = { 10, 130 }, size = { 260 }, text = $"Absolute Path";
       anchor = { left = 10, top = 130, right = 10 };
    };
@@ -166,7 +166,7 @@ class NodeProperties : Window
    {
       editBox.textHorzScroll = true;
       editBox.readOnly = true;
-      editBox.background = activeBorder;
+      editBox.background = formColor;
    }
 
    bool OnKeyDown(Key key, unichar ch)

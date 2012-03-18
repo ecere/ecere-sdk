@@ -4,7 +4,7 @@ FileDialog fileDialog { type = selectDir, text = $"Select project directory" };
 
 class NewProjectDialog : Window
 {
-   background = activeBorder;
+   background = formColor;
    minClientSize = { 316, 170 };
    maxClientSize = { 640, 170 };
    borderStyle = sizable;
@@ -322,7 +322,7 @@ class NewProjectDialog : Window
 
 class QuickProjectDialog : Window
 {
-   background = activeBorder;
+   background = formColor;
    minClientSize = { 316, 110 };
    maxClientSize = { 640, 110 };
    borderStyle = sizable;

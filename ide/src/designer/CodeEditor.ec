@@ -5217,7 +5217,7 @@ class CodeEditor : Window
          Window dialog
          {
             hasClose = true, borderStyle = sizable, minClientSize = { 300, 55 }, 
-            master = sheet, text = $"Name detached method", background = activeBorder
+            master = sheet, text = $"Name detached method", background = formColor
          };
          Button cancelButton
          {

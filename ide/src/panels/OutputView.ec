@@ -19,7 +19,7 @@ class OutputView : Window
    menu = Menu { };
    anchor = Anchor { left = 0, right = 0, bottom = 0 };
    size.h = 240;
-   background = activeBorder;
+   background = formColor;
 
    virtual void OnGotoError(char * line);
    virtual void OnCodeLocationParseAndGoTo(char * line);

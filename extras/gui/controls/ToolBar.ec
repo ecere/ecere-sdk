@@ -17,7 +17,7 @@ public import "IconBag"
 public class ToolBar/*<class TT>*/ : public Stacker
 {
    direction = horizontal;
-   background = activeBorder;
+   background = formColor;
    opacity = 1.0f;
    //tabCycle = true;
    //isActiveClient = true;

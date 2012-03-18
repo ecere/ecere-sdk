@@ -272,7 +272,7 @@ class IDEToolbar : ToolBar
 
 class IDEMainFrame : Window
 {
-   background = activeBorder;
+   background = formColor;
    borderStyle = sizable;
    hasMaximize = true;
    hasMinimize = true;
@@ -297,7 +297,7 @@ class IDEMainFrame : Window
       isActiveClient = true;
       gap = 0;
       direction = vertical;
-      background = activeBorder;
+      background = formColor;
       anchor = { left = 0, top = 0, right = 0, bottom = 0 };
    };
    IDEToolbar toolBar

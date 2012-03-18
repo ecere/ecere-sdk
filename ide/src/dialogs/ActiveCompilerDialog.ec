@@ -3,7 +3,7 @@ import "IDESettings"
 class ActiveCompilerDialog : Window
 {
    text = $"Active Compiler";
-   background = activeBorder;
+   background = formColor;
    borderStyle = fixed;
    minClientSize = { 568, 40 };
    hasClose = true;

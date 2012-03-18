@@ -8,7 +8,7 @@ static const char * compilerSignatureEnvVars[CompilerType] = { "", "", "", "VS80
 
 class CompilersDetectionDialog : Window
 {
-   background = activeBorder;
+   background = formColor;
    minClientSize = { 320, 180 };
    maxClientSize = { 640, 360 };
    borderStyle = sizable;

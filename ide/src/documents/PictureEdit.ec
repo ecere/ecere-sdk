@@ -270,7 +270,7 @@ class PictureEditColorTable : Window
 {
    hasClose = true;
    text = $"Color Table";
-   background = activeBorder;
+   background = formColor;
    minClientSize = Size { 400, 400 };
 
    Button button
@@ -306,7 +306,7 @@ class AdjustHSV : Window
 {
    size = { 400, 300 };
 
-   background = activeBorder;
+   background = formColor;
    ColorHSV target;
    ColorHSV replace;
    replace = { 248, 100, 71 }; //Color { 26, 0, 183 };

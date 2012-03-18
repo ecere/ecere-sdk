@@ -36,7 +36,7 @@ class LicenseTab : Tab
 class LicensesDialog : Window
 {
    text = "License Agreements";
-   background = activeBorder;
+   background = formColor;
    hasClose = true;
    borderStyle = sizable;
    size = { 700, 400 };

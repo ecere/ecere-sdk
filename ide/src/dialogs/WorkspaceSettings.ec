@@ -2,7 +2,7 @@ import "Project"
 
 class WorkspaceTab : Tab
 {
-   background = activeBorder;
+   background = formColor;
    text = $"Workspace";
 
    Label labelDebugDirectory { this, position = { 8, 8 }, labeledWindow = debugDirectory };

@@ -6,7 +6,7 @@ enum FindInFilesMode { directory, workspace, project };
 class FindInFilesDialog : Window
 {
    text = $"Find In Files";
-   background = activeBorder;
+   background = formColor;
    borderStyle = sizable;
    minClientSize = { 440, 208 };
    maxClientSize = { 640, 208 };
@@ -309,7 +309,7 @@ private:
    };
    DataField projectNodeField { dataType = "ProjectNode", freeData = false };
    
-   Window spacerA { llsubDirs, this, size = { 72, 10 }, clickThrough = true, background = activeBorder, inactive = true };
+   Window spacerA { llsubDirs, this, size = { 72, 10 }, clickThrough = true, background = formColor, inactive = true };
    Button subDirs
    {
       llsubDirs, this, $"Include Subdirectories", altU, isCheckbox = true, checked = true;
@@ -334,9 +334,9 @@ private:
       llfileName, this, $"File name:", altN, size.h = 24, anchor.right = 0;
    };
    
-   //Window spacerX { ll, this, size = { 72, 10 }, clickThrough = true, background = activeBorder, inactive = true };
+   //Window spacerX { ll, this, size = { 72, 10 }, clickThrough = true, background = formColor, inactive = true };
    //Button nameWholeWord { ll, this, "Whole word only", AltO, isCheckbox = true };
-   //Window spacerX { llwholeWord, this, size = { 72, 10 }, clickThrough = true, background = activeBorder, inactive = true };
+   //Window spacerX { llwholeWord, this, size = { 72, 10 }, clickThrough = true, background = formColor, inactive = true };
    //Button nameMatchCase { ll, this, "Match case", altA, isCheckbox = true };
    
    Label lfindContent { llfindWhat, this, size.w = 72, labeledWindow = findContent };
@@ -352,10 +352,10 @@ private:
       size.h = 24, anchor.right = 0;
    };
    
-   Window spacerB { llwholeWord, this, size = { 72, 10 }, clickThrough = true, background = activeBorder, inactive = true };
+   Window spacerB { llwholeWord, this, size = { 72, 10 }, clickThrough = true, background = formColor, inactive = true };
    Button contentWholeWord { llwholeWord, this, $"Whole word only", altW, isCheckbox = true };
    
-   Window spacerC { llmatchCase, this, size = { 72, 10 }, clickThrough = true, background = activeBorder, inactive = true };
+   Window spacerC { llmatchCase, this, size = { 72, 10 }, clickThrough = true, background = formColor, inactive = true };
    Button contentMatchCase { llmatchCase, this, $"Match case", altC, isCheckbox = true };
    
    LayoutPage lpbuttons

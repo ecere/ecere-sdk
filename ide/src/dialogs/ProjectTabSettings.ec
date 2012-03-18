@@ -4,7 +4,7 @@ class ProjectTab : Tab
 {
    Project project;
 
-   background = activeBorder;
+   background = formColor;
    text = $"Project";
    Label labelModuleName { this, position = { 8, 8 }, labeledWindow = moduleName };
    EditBox moduleName

@@ -11,7 +11,7 @@ static void Dummy()
 class ToolBox : Window
 {
    text = $"Toolbox";
-   background = activeBorder;
+   background = formColor;
    borderStyle = sizable;
    hasClose = true;
    //size = { 200, 500 };

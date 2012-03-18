@@ -249,7 +249,7 @@ import "Stacker"
 public class ToolBar : Stacker
 {
    direction = horizontal;
-   background = activeBorder;
+   background = formColor;
    gap = 0;
    inactive = true;
 

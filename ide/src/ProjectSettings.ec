@@ -87,7 +87,7 @@ static Color unfocusedSelectorColor { 70, 96, 166 };
 class ProjectSettings : Window
 {
    text = dialogTitle;
-   background = activeBorder;
+   background = formColor;
    borderStyle = sizable;
    minClientSize = { 650, 490 };
    hasClose = true;
@@ -159,7 +159,7 @@ class ProjectSettings : Window
 
    TabControl prjTabControl
    {
-      this, background = activeBorder, anchor = { left = 8, top = 4, right = 8, bottom = 38 };
+      this, background = formColor, anchor = { left = 8, top = 4, right = 8, bottom = 38 };
    };
    ProjectTab projectTab { this, tabControl = prjTabControl };
    BuildTab buildTab { this, tabControl = prjTabControl };
@@ -1134,7 +1134,7 @@ void DrawStipple(Surface surface, Size clientSize)
 class BuildTab : Tab
 {
    text = $"Build";
-   background = activeBorder;
+   background = formColor;
    tabCycle = true;
 
    ProjectNode backupNode;
@@ -1348,7 +1348,7 @@ class BuildTab : Tab
 
    TabControl buildTabControl
    {
-      this, background = activeBorder, anchor = { left = 8, top = 64, right = 8, bottom = 8 };
+      this, background = formColor, anchor = { left = 8, top = 64, right = 8, bottom = 8 };
       curTab = compilerTab;
    };
    CompilerTab compilerTab { this, tabControl = buildTabControl };
@@ -1759,10 +1759,10 @@ class BuildTab : Tab
 
 class CompilerTab : Tab
 {
-   background = activeBorder;
+   background = formColor;
    text = $"Compiler";
 
-   Window leftPane { this, size = { 180 }, anchor = { left = 0, top = 0, bottom = 0 }, background = activeBorder };
+   Window leftPane { this, size = { 180 }, anchor = { left = 0, top = 0, bottom = 0 }, background = formColor };
 
    Label labelFileList { leftPane, this, position = { 8, 8 }, labeledWindow = fileList };
    ListBox fileList
@@ -1817,7 +1817,7 @@ class CompilerTab : Tab
 
    Window rightPane 
    {
-      this, anchor = { left = 196, top = 0, right = 0, bottom = 0 }, background = activeBorder, tabCycle = true;
+      this, anchor = { left = 196, top = 0, right = 0, bottom = 0 }, background = formColor, tabCycle = true;
    };
 
    Window rightPaneHeader
@@ -1979,7 +1979,7 @@ class CompilerTab : Tab
 
 class LinkerTab : Tab
 {
-   background = activeBorder;
+   background = formColor;
    text = $"Linker";
 
    Label labelTargetName { this, position = { 8, 8 }, labeledWindow = targetName };
@@ -2063,7 +2063,7 @@ class LinkerTab : Tab
 
 class BuilderTab : Tab
 {
-   background = activeBorder;
+   background = formColor;
    text = $"Builder";
 
    Label labelPrebuildCommands { prebuildCommands.editor, labeledWindow = prebuildCommands, position = { 0, 6 }; };

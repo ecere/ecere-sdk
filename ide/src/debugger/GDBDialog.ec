@@ -186,7 +186,7 @@ class TagButton : public Button
 class GDBDialog : Window
 {
    text = $"GDB Command";
-   background = activeBorder;
+   background = formColor;
    borderStyle = sizable;
    hasMaximize = true;
    hasMinimize = true;

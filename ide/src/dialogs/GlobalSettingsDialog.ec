@@ -12,7 +12,7 @@ class GlobalSettingsDialog : Window
 {
    autoCreate = false;
    tabCycle = true;
-   background = activeBorder;
+   background = formColor;
    hasClose = true;
    borderStyle = sizable;
    text = $"Global Settings";
@@ -23,7 +23,7 @@ class GlobalSettingsDialog : Window
    IDESettingsContainer settingsContainer;
    String workspaceActiveCompiler;
    
-   TabControl tabControl { this, background = activeBorder, anchor = { left = 8, top = 8, right = 8, bottom = 40 } };
+   TabControl tabControl { this, background = formColor, anchor = { left = 8, top = 8, right = 8, bottom = 40 } };
    
    EditorTab editorTab { this, tabControl = tabControl };
    CompilersTab compilersTab { this, tabControl = tabControl };
@@ -211,7 +211,7 @@ class GlobalSettingsDialog : Window
 
 class EditorTab : GlobalSettingsSubTab
 {
-   background = activeBorder;
+   background = formColor;
    text = $"Editor";
 
    Button useFreeCaret
@@ -255,7 +255,7 @@ static void DrawStipple(Surface surface, Size clientSize)
 
 class CompilersTab : GlobalSettingsSubTab
 {
-   background = activeBorder;
+   background = formColor;
    text = $"Compilers";
 
    SelectorBar compilerSelector
@@ -298,7 +298,7 @@ class CompilersTab : GlobalSettingsSubTab
       }
    };
 
-   TabControl tabControl { this, background = activeBorder, anchor = { left = 8, top = 38, right = 8, bottom = 8 } };
+   TabControl tabControl { this, background = formColor, anchor = { left = 8, top = 38, right = 8, bottom = 8 } };
    
    CompilerDirectoriesTab dirsTab { this, tabControl = tabControl };
    CompilerToolchainTab toolchainTab { this, tabControl = tabControl };
@@ -532,7 +532,7 @@ Array<String> displayDirectoryNames
 
 class CompilerDirectoriesTab : CompilersSubTab
 {
-   background = activeBorder;
+   background = formColor;
    text = $"Directories";
 
    Button dirTypeTglBtn[DirTypes];
@@ -642,7 +642,7 @@ class CompilerDirectoriesTab : CompilersSubTab
 
 class CompilerToolchainTab : CompilersSubTab
 {
-   background = activeBorder;
+   background = formColor;
    text = $"Toolchain";
 
    Label ecpLabel { this, position = { 8, 12 }, labeledWindow = ecp, tabCycle = false, inactive = true };
@@ -752,7 +752,7 @@ class CompilerToolchainTab : CompilersSubTab
 
 class CompilerEnvironmentTab : CompilersSubTab
 {
-   background = activeBorder;
+   background = formColor;
    text = $"Environment";
 
    Label labelEnvVars { envVars, labeledWindow = envVars, position = { 0, 6 }; };
@@ -788,7 +788,7 @@ class CompilerEnvironmentTab : CompilersSubTab
 
 class CompilerOptionsTab : CompilersSubTab
 {
-   background = activeBorder;
+   background = formColor;
    text = $"Options";
 
    Label labelTargetPlatform { this, position = { 8, 12 }, labeledWindow = targetPlatform };   // TOCHECK: nameless instances dissapear when selecting tabs?
@@ -965,7 +965,7 @@ class CompilersSubTab : Tab
 
 class ProjectOptionsTab : GlobalSettingsSubTab
 {
-   background = activeBorder;
+   background = formColor;
    text = $"Project";
 
    Label defaultTargetDirLabel { this, position = { 8, 34 }, labeledWindow = defaultTargetDir };
@@ -1013,7 +1013,7 @@ class GlobalSettingsSubTab : Tab
 
 class WorkspaceOptionsTab : GlobalSettingsSubTab
 {
-   background = activeBorder;
+   background = formColor;
    text = $"Workspace";
 
    Label defaultCompilerLabel { this, position = { 8, 14 }, labeledWindow = defaultCompilerDropBox };

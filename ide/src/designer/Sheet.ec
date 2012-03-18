@@ -276,7 +276,7 @@ class Sheet : Window
    //tabCycle = true;
    size.w = 300;
    anchor = { left = 0, top = 0, bottom = 0 };
-   background = activeBorder;
+   background = formColor;
 
    Sheet()
    {

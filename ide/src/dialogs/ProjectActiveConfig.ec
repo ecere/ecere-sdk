@@ -3,7 +3,7 @@ import "ide"
 class ProjectActiveConfig : Window
 {
    text = $"Project Active Configuration";
-   background = activeBorder;
+   background = formColor;
    borderStyle = fixed;
    minClientSize = { 568, 40 };
    hasClose = true;
