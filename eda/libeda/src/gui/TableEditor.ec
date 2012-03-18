@@ -2,7 +2,14 @@ import "idList"
 
 import "FieldBox"
 
-#define FULL_STRING_SEARCH
+default:
+
+extern int __ecereVMethodID_class_OnFree;
+extern int __ecereVMethodID_class_OnGetDataFromString;
+
+private:
+
+//#define FULL_STRING_SEARCH
 
 #define UTF8_IS_FIRST(x)   (__extension__({ byte b = x; (!(b) || !((b) & 0x80) || ((b) & 0x40)); }))
 #define UTF8_NUM_BYTES(x)  (__extension__({ byte b = x; (b & 0x80 && b & 0x40) ? ((b & 0x20) ? ((b & 0x10) ? 4 : 3) : 2) : 1; }))
@@ -16,17 +23,31 @@ public:
    StringSearchIndexingMethod method;
 };
 
-public class TableEditor
+define newEntryStringDebug = $"New|id=";
+define newEntryString = $"New";
+
+public class TableEditor : public Window
 {
+
+   bool initialized;
+   bool dataFieldsUsed;
 public:
-   Window window;
    property Table table
    {
       set
       {
          table = value;
-         if(table)
+      }
+   }
+   Table table;
+
+   bool OnPostCreate()
+   {
+      if(table)
+      {
+         if(!initialized)
          {
+            ResetListFields();
             InitFieldsBoxes(); // IMPORTANT: table must be set *AFTER* all related FieldEditors have been initialized
             {
                Field fldId = idField, fldName = stringField, fldActive = null;
@@ -40,14 +61,17 @@ public:
                Enumerate();
                {
                   char name[MAX_FILENAME];
-                  sprintf(name, "%s.search", value.name);
+                  sprintf(name, "%s.search", table.name);
                   PrepareWordList(name);
                }
             }
+            initialized = true;
          }
+         if(list && !list.currentRow)
+            list.SelectRow(list.firstRow); // should the tableeditor select method be used here?
       }
+      return true;
    }
-   Table table;
 
    // List
    property ListBox list
@@ -55,7 +79,7 @@ public:
       set
       {
          list = value;
-         ResetListFields();
+         //ResetListFields();
       }
    }
    ListBox list;
@@ -66,7 +90,7 @@ public:
       set
       {
          listFields = value;
-         ResetListFields();
+         //ResetListFields();
       }
    }
    Array<ListField> listFields;
@@ -90,7 +114,7 @@ public:
    {
       set
       {
-         bool modified = window && window.modifiedDocument;
+         bool modified = modifiedDocument;
          switch(modified ? OnLeavingModifiedDocument() : no)
          {
             case cancel:
@@ -115,13 +139,13 @@ public:
 
    Array<FieldBox> fieldsBoxes { };
    
-   public virtual void Window::OnLoad();
-   public virtual void Window::OnStateChanged();
+   public virtual void OnLoad();
+   public virtual void OnStateChanged();
    bool internalModifications;
    public void NotifyModifiedDocument()
    {
       if(!internalModifications)
-         OnStateChanged(window);
+         OnStateChanged();
    }
 
    //public virtual bool Window::NotifyNew(AltListSection listSection, Row r);
@@ -129,14 +153,14 @@ public:
    
    public virtual DialogResult OnLeavingModifiedDocument()
    {
-      return MessageBox { master = window, type = yesNoCancel, text = window ? window.text : $"Table Editor",
+      return MessageBox { master = this, type = yesNoCancel, text = text && text[0] ? text : $"Table Editor",
                           contents = $"You have modified this entry. Would you like to save it before proceeding?"
                   }.Modal();
    }
    
    public virtual bool OnRemovalRequest()
    {
-      return MessageBox { master = window, type = yesNo, text = window ? window.text : $"Table Editor", 
+      return MessageBox { master = this, type = yesNo, text = text && text[0] ? text : $"Table Editor",
                           contents =  $"You are about to permanently remove an entry.\n"
                                        "Do you wish to continue?"
                   }.Modal() == yes;
@@ -148,7 +172,7 @@ public:
    public bool NotifyClosing()
    {
       bool result = true;
-      if(window && window.modifiedDocument)
+      if(modifiedDocument)
       {
          switch(OnLeavingModifiedDocument())
          {
@@ -158,7 +182,7 @@ public:
             case yes:
                EditSave();
             case no:
-               window.modifiedDocument = false;
+               EditLoad();
                break;
          }
       }
@@ -185,8 +209,7 @@ public:
          else
             EditClear();
       }
-      if(window)
-         window.modifiedDocument = false;
+      modifiedDocument = false;
    }
 
    virtual void TableEditor::OnList(Row r, Array<Id> matches)
@@ -256,14 +279,16 @@ public:
       }
    }
 
-   void Create()
+   void CreateRow()
    {
       //list.NotifySelect(this, list, null, 0);
-      if(window && !window.modifiedDocument)
+      if(!modifiedDocument)
       {
          uint id; // = table.rowsCount + 1; // this is bad with deleted rows, won't work, how to have unique id? 
          Row r = editRow;// { table };
-      
+         DataRow row = null;
+         String newText;
+
          if(r.Last())   // this will reuse ids in cases where the item(s) with the last id have been deleted
          {
             r.GetData(idField, id);
@@ -278,48 +303,105 @@ public:
             r.Add();
             {
                // Patch for SQLite driver which auto-increments IDs
-               int curID = 0;
-               if(r.GetData(idField, curID))
-                  id = curID;
+               int curId = 0;
+               if(r.GetData(idField, curId))
+                  id = curId;
                else
                   r.SetData(idField, id);
             }
             /*if(fldActive)
                r.SetData(fldActive, active);*/
 
+#ifdef _DEBUG
+            newText = PrintString("[", newEntryStringDebug, id, "]");
+#else
+            newText = PrintString("[", newEntryString, "]");
+#endif
+
             //if(NotifyNew(master, this, r))
             if(listFields && idField)
             {
-               DataRow row;
                for(lf : listFields)
                {
                   if(lf.dataField && lf.field)
                   {
                      if(lf.field.type == class(String))
+                        r.SetData(lf.field, newText);
+                     else
                      {
-                        r.SetData(lf.field, $"[New]");
+                        if(lf.field.type._vTbl[__ecereVMethodID_class_OnGetDataFromString])
+                        {
+                           Class dataType = lf.field.type;
+                           int64 dataHolder; // THERE SEEMS TO BE A BUG WHEN ACCESSING row ACROSS .so
+                           void * data;
+
+                           if(dataType && dataType.type == structClass)
+                           {
+                              dataHolder = (int64)new0 byte[dataType.structSize];
+                              data = (void *)dataHolder;
+                           }
+                           else if(dataType && (dataType.type == noHeadClass || dataType.type == normalClass))
+                           {
+                              if(eClass_IsDerived(dataType, class(String)))
+                                 dataHolder = (int64)CopyString("");
+                              else
+                                 dataHolder = (int64)eInstance_New(dataType);
+                              data = (void *)&dataHolder;
+                           }
+                           else
+                           {
+                              dataHolder = 0;
+                              data = &dataHolder;
+                           }
+                           if(data)
+                              dataType._vTbl[__ecereVMethodID_class_OnGetDataFromString](dataType, data, newText);
+
+
+                           dataType._vTbl[__ecereVMethodID_class_OnFree](dataType, dataHolder);
+                           if(dataType.type == structClass)
+                           {
+                              void * dataPtr = (void *)dataHolder;
+                              delete dataPtr;
+                           }
+                           dataHolder = 0;
+                        }
                      }
                   }
                }
-               row = list.AddRow();
-               row.tag = id;
-               SetListRowFields(r, row);
+               if(list)
+               {
+                  row = list.AddRow();
+                  row.tag = id;
+                  // have a better technique than Row::Next(); Row::Find(...); to make sure Row::GetData() will work right after a Row::SetData()?
+                  // it seems we're missing Row::Update()
+                  //r.Next();
+                  //r.tbl.db.Commit();
+                  //editRow.Synch(r);
+                  //r.Last();
+                  // next line is a patch for SQLite not returning data from GetData right after a SetData
+                  if(idField && r.Find(idField, middle, nil, id))
+                     SetListRowFields(r, row);
+               }
             }
             else if(idField && stringField)
             {
-               r.SetData(stringField, $"[New]");
-               list.AddString($"[New]").tag = id;
+               r.SetData(stringField, newText);
+               if(list)
+               {
+                  row = list.AddString(newText);
+                  row.tag = id;
+               }
             }
-            delete r;
+            //delete r;
+            delete newText;
          }
 
          if(list)
          {
             list.Sort(listSortField, listSortOrder);
-            list.currentRow.tag = id;
-            SelectListRow(list.currentRow);
+            if(row) SelectListRow(row);
          }
-         OnStateChanged(window);
+         OnStateChanged();
       }
    }
 
@@ -336,7 +418,7 @@ public:
             //NotifyDeleted(master, this);
             if(list)
                SelectListRow(list.currentRow);
-            OnStateChanged(window);
+            OnStateChanged();
          }
       }
    }
@@ -357,7 +439,7 @@ public:
       if(/*-row && -*/row != lastRow)
       {
          uint id;
-         if(window && window.modifiedDocument)
+         if(modifiedDocument)
          {
             if(row)
                list.currentRow = lastRow;
@@ -467,6 +549,16 @@ private:
    {
       fieldsBoxes.Free(); // TOCHECK: do I need to delete each to oppose the increb in AddFieldBox?
       delete searchString;
+      //listFields.Free();
+      if(!dataFieldsUsed && listFields)
+      {
+         for(lf : listFields)
+         {
+            delete lf.dataField;
+            //delete lf;
+         }
+         //delete listFields;
+      }
       wordTree.Free();
    }
 
@@ -474,18 +566,28 @@ private:
    {
       if(list && listFields && listFields.count)
       {
-         list.ClearFields();
+         bool c = list.created;
+         if(dataFieldsUsed)
+            list.ClearFields();
          for(lf : listFields)
             list.AddField(lf.dataField);
+         dataFieldsUsed = true;
       }
    }
 
    void AddFieldBox(FieldBox fieldBox)
    {
-      fieldsBoxes.Add(fieldBox);
-      if(table)
-         fieldBox.Init();
-      incref fieldBox;
+      if(!fieldsBoxes.Find(fieldBox))
+      {
+         fieldsBoxes.Add(fieldBox);
+         if(table)
+            fieldBox.Init();
+         incref fieldBox;
+      }
+#ifdef _DEBUG
+      else
+         PrintLn("no no");
+#endif
    }
 
    void InitFieldsBoxes()
@@ -497,8 +599,7 @@ private:
 
    void EditNew()
    {
-      if(window)
-         window.modifiedDocument = false;
+      modifiedDocument = false;
    }
 
    void EditSave()
@@ -516,21 +617,19 @@ private:
          list.Sort(listSortField, listSortOrder);
       }
       internalModifications = false;
-      if(window)
-         window.modifiedDocument = false;
-      OnStateChanged(window);
+      modifiedDocument = false;
+      OnStateChanged();
    }
 
    void EditLoad()
    {
-      OnLoad(window);
+      OnLoad();
       internalModifications = true;
       for(fb : fieldsBoxes)
          fb.Load();
       internalModifications = false;
-      if(window)
-         window.modifiedDocument = false;
-      OnStateChanged(window);
+      modifiedDocument = false;
+      OnStateChanged();
    }
 
    void EditClear()
@@ -538,10 +637,9 @@ private:
       internalModifications = true;
       for(fb : fieldsBoxes)
          fb.Clear();
-      if(window)
-         window.modifiedDocument = false;
+      modifiedDocument = false;
       internalModifications = false;
-      OnStateChanged(window);
+      OnStateChanged();
    }
 
    void SetListRowFields(Row dbRow, DataRow listRow)
@@ -1124,6 +1222,7 @@ class WordEntry : struct
 
    void OnSerialize(IOChannel channel)
    {
+#ifdef FULL_STRING_SEARCH
       if(this)
       {
          channel.Serialize(id);
@@ -1155,10 +1254,12 @@ class WordEntry : struct
          uint nothing = 0;
          channel.Serialize(nothing);
       }
+#endif
    }
 
    void OnUnserialize(IOChannel channel)
    {
+#ifdef FULL_STRING_SEARCH
       uint id;
       channel.Unserialize(id);
       if(id)
@@ -1183,5 +1284,6 @@ class WordEntry : struct
       }
       else
          this = null;
+#endif
    }
 }

@@ -21,13 +21,26 @@ public class FieldBox : DataBox
       {
          editor = value;
          if(editor)
-         {
             editor.AddFieldBox(this);
-            if(editor.window)
-               background = editor.window.background;
-         }
       }
    }
+
+   watch(parent)
+   {
+      if(eClass_IsDerived(parent._class, class(TableEditor)) && editor != (TableEditor)parent)
+      {
+         editor = (TableEditor)parent;
+         editor.AddFieldBox(this);
+      }
+   };
+   watch(master)
+   {
+      if(eClass_IsDerived(master._class, class(TableEditor)) && editor != (TableEditor)master)
+      {
+         editor = (TableEditor)master;
+         editor.AddFieldBox(this);
+      }
+   };
 
    public property Field field
    {
@@ -191,7 +204,7 @@ public class FieldBox : DataBox
 
       if(dataHolder)
       {
-         type._vTbl[4/*__ecereVMethodID_class_OnFree*/](type, dataHolder);
+         type._vTbl[__ecereVMethodID_class_OnFree](type, dataHolder);
          if(type.type == structClass)
          {
             void * dataPtr = (void *)dataHolder;
