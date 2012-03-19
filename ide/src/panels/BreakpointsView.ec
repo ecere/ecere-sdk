@@ -61,6 +61,8 @@ class BreakpointsView : Window
                TrimRSpaces(string, string);
                value = atoi(string);
             }
+            else if(listBox.currentField == levelField)
+               value = -1;
             //str[0] = '\0';
             //sprintf(str, "%d", value);
             //listBox.StopEditing(true);
@@ -107,16 +109,20 @@ class BreakpointsView : Window
       }
    };
    
-   DataField locationField { "char *", true, width = 180, header = $"Location" };
-   DataField hitsField { "int", false, width = 72, header = $"Hits" };
-   DataField ignoreField { "char *", true, width = 72, header = $"Ignore Count" };
-   DataField levelField { "char *", true, width = 50, header = $"Hit Level" };
-   DataField conditionField { "char *", true, width = 130, header = $"Condition" };
+   // TODO: set field size based on font and i18n header string
+   // TODO: save column widths to ide settings
+   DataField locationField    { "char *", true , width = 220, header = $"Location" };
+   DataField hitsField        { "int"   , false, width =  28, header = $"Hits" };
+   DataField breaksField      { "int"   , false, width =  46, header = $"Breaks" };
+   DataField ignoreField      { "char *", true , width =  80, header = $"Ignore Count" };
+   DataField levelField       { "char *", true , width =  74, header = $"Stack Depth" };
+   DataField conditionField   { "char *", true , width = 130, header = $"Condition" };
    
    BreakpointsView()
    {
       listBox.AddField(locationField);
       listBox.AddField(hitsField);
+      listBox.AddField(breaksField);
       listBox.AddField(ignoreField);
       listBox.AddField(levelField);
       listBox.AddField(conditionField);
@@ -215,7 +221,10 @@ class BreakpointsView : Window
          location = bp.LocationToString();
          row.SetData(locationField, location);
          delete location;
-         sprintf(string, "%d", bp.ignore);
+         if(bp.ignore == 0)
+            string[0] = '\0';
+         else
+            sprintf(string, "%d", bp.ignore);
          row.SetData(ignoreField, string);
          if(bp.level == -1)
             string[0] = '\0';
@@ -227,6 +236,7 @@ class BreakpointsView : Window
          else
             row.SetData(conditionField, null);
          row.SetData(hitsField, bp.hits);
+         row.SetData(breaksField, bp.breaks);
       }
    }
    

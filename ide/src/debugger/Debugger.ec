@@ -1583,6 +1583,7 @@ class Debugger
                      bpItem = null;
                      bp.inserted = (bp.bp && bp.bp.number != 0);
                      bp.hits = 0;
+                     bp.breaks = 0;
                      ValidateBreakpoint(bp);
                   }
                   else
@@ -2626,12 +2627,12 @@ class Debugger
             case runToCursor:
                if(bp.condition)
                   conditionMet = ResolveWatch(bp.condition);
-               if(conditionMet && (bp.level == -1 || bp.level == frameCount))
+               bp.hits++;
+               if((bp.level == -1 || bp.level == frameCount-1) && conditionMet)
                {
-                  bp.hits++;
-                  ide.breakpointsView.UpdateBreakpoint(bp.row);
-                  if(bp.hits > bp.ignore)
+                  if(!bp.ignore)
                   {
+                     bp.breaks++;
                      ignoreBreakpoints = false;
                      // Why was SelectFrame missing here?
                      SelectFrame(activeFrameLevel);
@@ -2647,13 +2648,13 @@ class Debugger
                   }
                   else
                   {
-                     /*bp.ignore--;
-                     ide.breakpointsView.UpdateBreakpoint(bp.row);*/
+                     bp.ignore--;
                      GdbExecContinue(false);
                   }
                }
                else
                   GdbExecContinue(false);
+               ide.breakpointsView.UpdateBreakpoint(bp.row);
                break;
          }
       }
@@ -3789,6 +3790,7 @@ class Breakpoint : struct
    int line;
    bool enabled;
    int hits;
+   int breaks;
    int ignore;
    int level;
    Watch condition;
