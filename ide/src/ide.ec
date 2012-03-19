@@ -218,7 +218,7 @@ class IDEToolbar : ToolBar
    // Undo
    // Redo
 
-   //ToolSeparator separator2 { this };
+   // ToolSeparator separator2 { this };
 
    /* Project  options */
    // New project
@@ -228,7 +228,7 @@ class IDEToolbar : ToolBar
    // Add project to workspace
    ToolButton buttonAddProject { this, toolTip = $"Add project to workspace", menuItemPtr = IDEItem(projectAddItem), disabled = true; };
    // Close project
-   //ToolButton buttonCloseProject { this, toolTip = $"Close project", menuItemPtr = IDEItem(projectCloseItem), disabled = true; };
+   // ToolButton buttonCloseProject { this, toolTip = $"Close project", menuItemPtr = IDEItem(projectCloseItem), disabled = true; };
 
    ToolSeparator separator3 { this };
 
@@ -241,6 +241,8 @@ class IDEToolbar : ToolBar
    ToolButton buttonRebuild { this, toolTip = $"Rebuild project", menuItemPtr = IDEItem(projectRebuildItem), disabled = true; };
    // Clean
    ToolButton buttonClean { this, toolTip = $"Clean project", menuItemPtr = IDEItem(projectCleanItem), disabled = true; };
+   // Real Clean
+   // ToolButton buttonRealClean { this, toolTip = $"Real clean project", menuItemPtr = IDEItem(projectRealCleanItem), disabled = true; };
    // Regenerate Makefile
    ToolButton buttonRegenerateMakefile { this, toolTip = $"Regenerate Makefile", menuItemPtr = IDEItem(projectRegenerateItem), disabled = true; };
    // Compile actual file
@@ -937,6 +939,20 @@ class IDEWorkSpace : Window
             return true;
          }
       }
+      MenuItem projectRealCleanItem
+      {
+         projectMenu, $"Real Clean", e, disabled = true;
+         bitmap = { ":actions/clean.png" };
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            if(projectView)
+            {
+               debugger.Stop();
+               projectView.ProjectRealClean(projectView.active ? selection : null, mods);
+            }
+            return true;
+         }
+      }
       MenuItem projectRegenerateItem
       {
          projectMenu, $"Regenerate Makefile", m, disabled = true;
@@ -1529,7 +1545,7 @@ class IDEWorkSpace : Window
       projectQuickItem.disabled           = !unavailable;
 
       projectAddItem.disabled             = unavailable;
-      ((IDEMainFrame)master).toolBar.buttonAddProject.disabled = unavailable;
+      toolBar.buttonAddProject.disabled   = unavailable;
 
       activeCompilerItem.disabled         = unavailable;
       projectActiveConfigItem.disabled    = unavailable;
@@ -1547,29 +1563,31 @@ class IDEWorkSpace : Window
    {
       bool unavailable = project && projectView.buildInProgress;
 
-      projectNewItem.disabled          = unavailable;
-      toolBar.buttonNewProject.disabled = unavailable;
-      projectOpenItem.disabled         = unavailable;
-      toolBar.buttonOpenProject.disabled = unavailable;
+      projectNewItem.disabled             = unavailable;
+      toolBar.buttonNewProject.disabled   = unavailable;
+      projectOpenItem.disabled            = unavailable;
+      toolBar.buttonOpenProject.disabled  = unavailable;
 
       unavailable = !project || projectView.buildInProgress;
 
-      projectCloseItem.disabled        = unavailable;
+      projectCloseItem.disabled           = unavailable;
       // toolBar.buttonCloseProject.disabled = unavailable;
 
-      projectRunItem.disabled          = unavailable || project.GetTargetType(project.config) != executable;
+      projectRunItem.disabled    = unavailable || project.GetTargetType(project.config) != executable;
       toolBar.buttonRun.disabled = unavailable || project.GetTargetType(project.config) != executable;
-      projectBuildItem.disabled        = unavailable;
-      toolBar.buttonBuild.disabled = unavailable;
-      projectLinkItem.disabled         = unavailable;
-      toolBar.buttonReLink.disabled = unavailable;
-      projectRebuildItem.disabled      = unavailable;
-      toolBar.buttonRebuild.disabled = unavailable;
-      projectCleanItem.disabled        = unavailable;
-      toolBar.buttonClean.disabled = unavailable;
-      projectRegenerateItem.disabled   = unavailable;
+      projectBuildItem.disabled                 = unavailable;
+      toolBar.buttonBuild.disabled              = unavailable;
+      projectLinkItem.disabled                  = unavailable;
+      toolBar.buttonReLink.disabled             = unavailable;
+      projectRebuildItem.disabled               = unavailable;
+      toolBar.buttonRebuild.disabled            = unavailable;
+      projectCleanItem.disabled                 = unavailable;
+      toolBar.buttonClean.disabled              = unavailable;
+      projectRealCleanItem.disabled             = unavailable;
+      // toolBar.buttonRealClean.disabled          = unavailable;
+      projectRegenerateItem.disabled            = unavailable;
       toolBar.buttonRegenerateMakefile.disabled = unavailable;
-      projectCompileItem.disabled      = unavailable;
+      projectCompileItem.disabled               = unavailable;
    }
 
    void AdjustDebugMenus()

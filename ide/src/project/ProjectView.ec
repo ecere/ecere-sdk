@@ -219,6 +219,7 @@ class ProjectView : Window
                      MenuItem { popupContent, $"Relink", l, NotifySelect = ProjectLink }.disabled = buildMenuUnavailable;
                      MenuItem { popupContent, $"Rebuild", r, NotifySelect = ProjectRebuild }.disabled = buildMenuUnavailable;
                      MenuItem { popupContent, $"Clean", c, NotifySelect = ProjectClean }.disabled = buildMenuUnavailable;
+                     MenuItem { popupContent, $"Real Clean", d, NotifySelect = ProjectRealClean }.disabled = buildMenuUnavailable;
                      MenuItem { popupContent, $"Regenerate Makefile", m, NotifySelect = ProjectRegenerate }.disabled = buildMenuUnavailable;
                      MenuDivider { popupContent };
                   }
@@ -658,7 +659,7 @@ class ProjectView : Window
          
          // TODO: Disabled until problems fixed... is it fixed?
          if(buildType == rebuild || (config && config.compilingModified))
-            prj.Clean(compiler, config);
+            prj.Clean(compiler, config, false);
          else
          {
             if(buildType == relink || (config && config.linkingModified))
@@ -834,11 +835,44 @@ class ProjectView : Window
       if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
       {
          ide.outputView.buildBox.Logf($"Cleaning project %s using the %s configuration...\n", prj.name, GetConfigName(config));
-         
+
          buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
          ide.AdjustBuildMenus();
 
-         prj.Clean(compiler, config);
+         prj.Clean(compiler, config, false);
+         buildInProgress = none;
+         ide.AdjustBuildMenus();
+      }
+      delete compiler;
+      return true;
+   }
+
+   bool ProjectRealClean(MenuItem selection, Modifiers mods)
+   {
+      Project prj = project;
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      ProjectConfig config;
+      if(selection || !ide.activeClient)
+      {
+         DataRow row = fileList.currentRow;
+         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         if(node) prj = node.project;
+      }
+      else
+      {
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
+         if(node)
+            prj = node.project;
+      }
+      config = prj.config;
+      if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+      {
+         ide.outputView.buildBox.Logf($"Removing intermediate objects directory for project %s using the %s configuration...\n", prj.name, GetConfigName(config));
+
+         buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
+         ide.AdjustBuildMenus();
+
+         prj.Clean(compiler, config, true);
          buildInProgress = none;
          ide.AdjustBuildMenus();
       }

@@ -1489,7 +1489,7 @@ private:
       return result;
    }
 
-   void Clean(CompilerConfig compiler, ProjectConfig config)
+   void Clean(CompilerConfig compiler, ProjectConfig config, bool realclean)
    {
       char makeFile[MAX_LOCATION];
       char makeFilePath[MAX_LOCATION];
@@ -1523,7 +1523,7 @@ private:
       }
       else
       {
-         sprintf(command, "%s clean -C \"%s\" -f \"%s\"", compiler.makeCommand, topNode.path, makeFilePath);
+         sprintf(command, "%s %sclean -C \"%s\" -f \"%s\"", compiler.makeCommand, realclean ? "real" : "", topNode.path, makeFilePath);
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
          {
             ide.outputView.buildBox.Tell($"Deleting target and object files...");
@@ -1695,7 +1695,7 @@ private:
 
          sameObjTargetDirs = !fstrcmp(objDirExpNoSpaces, targetDirExpNoSpaces);
 
-         f.Printf(".PHONY: all objdir%s clean distclean\n\n", sameObjTargetDirs ? "" : " targetdir");
+         f.Printf(".PHONY: all objdir%s clean realclean\n\n", sameObjTargetDirs ? "" : " targetdir");
 
          f.Printf("# CONTENT\n\n");
 
@@ -2270,8 +2270,8 @@ private:
          }
          f.Printf("\n");
 
-         f.Printf("distclean: clean\n");
-         f.Printf("\t$(call rmdirq,$(OBJ))\n");
+         f.Printf("realclean: clean\n");
+         f.Printf("\t$(call rmrq,$(OBJ))\n");
          if(!sameObjTargetDirs)
             f.Printf("\t$(call rmdirq,%s)\n", targetDirExpNoSpaces);
 
