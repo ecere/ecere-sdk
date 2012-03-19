@@ -9,6 +9,9 @@ extern int __ecereVMethodID_class_OnGetDataFromString;
 
 private:
 
+#ifdef _DEBUG
+#define __DEBUG
+#endif
 //#define FULL_STRING_SEARCH
 
 #define UTF8_IS_FIRST(x)   (__extension__({ byte b = x; (!(b) || !((b) & 0x80) || ((b) & 0x40)); }))
@@ -36,6 +39,9 @@ public:
    {
       set
       {
+#ifdef __DEBUG
+         PrintLn("TableEditor::table|set");
+#endif
          table = value;
       }
    }
@@ -43,11 +49,20 @@ public:
 
    bool OnPostCreate()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::OnPostCreate");
+#endif
       if(table)
       {
          if(!initialized)
          {
             ResetListFields();
+            if(searchFields)
+            {
+               char name[MAX_FILENAME];
+               sprintf(name, "%s.search", table.name);
+               PrepareWordList(name);
+            }
             InitFieldsBoxes(); // IMPORTANT: table must be set *AFTER* all related FieldEditors have been initialized
             {
                Field fldId = idField, fldName = stringField, fldActive = null;
@@ -78,6 +93,9 @@ public:
    {
       set
       {
+#ifdef __DEBUG
+         PrintLn("TableEditor::list|set");
+#endif
          list = value;
          //ResetListFields();
       }
@@ -89,6 +107,9 @@ public:
    {
       set
       {
+#ifdef __DEBUG
+         PrintLn("TableEditor::listFields|set");
+#endif
          listFields = value;
          //ResetListFields();
       }
@@ -101,12 +122,10 @@ public:
    {
       set
       {
+#ifdef __DEBUG
+         PrintLn("TableEditor::searchFields|set");
+#endif
          searchFields = value;
-         {
-            char name[MAX_FILENAME];
-            sprintf(name, "%s.search", table.name);
-            PrepareWordList(name);
-         }
       }
    }
    Array<StringSearchField> searchFields;
@@ -115,6 +134,9 @@ public:
       set
       {
          bool modified = modifiedDocument;
+#ifdef __DEBUG
+         PrintLn("TableEditor::searchString|set");
+#endif
          switch(modified ? OnLeavingModifiedDocument() : no)
          {
             case cancel:
@@ -144,6 +166,9 @@ public:
    bool internalModifications;
    public void NotifyModifiedDocument()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::NotifyModifiedDocument");
+#endif
       if(!internalModifications)
          OnStateChanged();
    }
@@ -153,6 +178,9 @@ public:
    
    public virtual DialogResult OnLeavingModifiedDocument()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::OnLeavingModifiedDocument");
+#endif
       return MessageBox { master = this, type = yesNoCancel, text = text && text[0] ? text : $"Table Editor",
                           contents = $"You have modified this entry. Would you like to save it before proceeding?"
                   }.Modal();
@@ -160,6 +188,9 @@ public:
    
    public virtual bool OnRemovalRequest()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::OnRemovalRequest");
+#endif
       return MessageBox { master = this, type = yesNo, text = text && text[0] ? text : $"Table Editor",
                           contents =  $"You are about to permanently remove an entry.\n"
                                        "Do you wish to continue?"
@@ -172,6 +203,9 @@ public:
    public bool NotifyClosing()
    {
       bool result = true;
+#ifdef __DEBUG
+      PrintLn("TableEditor::NotifyClosing");
+#endif
       if(modifiedDocument)
       {
          switch(OnLeavingModifiedDocument())
@@ -192,6 +226,9 @@ public:
    //public void List() // this gets called out of nowhere by some constructor thing...
    public void Enumerate()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::Enumerate");
+#endif
       if(list)
       {
          DataRow select;
@@ -214,6 +251,9 @@ public:
 
    virtual void TableEditor::OnList(Row r, Array<Id> matches)
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::OnList");
+#endif
       if(matches)
       {
          int c;
@@ -281,6 +321,9 @@ public:
 
    void CreateRow()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::CreateRow");
+#endif
       //list.NotifySelect(this, list, null, 0);
       if(!modifiedDocument)
       {
@@ -407,6 +450,9 @@ public:
 
    void Remove()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::Remove");
+#endif
       if(editRow.sysID) //list && list.currentRow)
       {
          if(OnRemovalRequest())
@@ -425,17 +471,26 @@ public:
 
    void Load()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::Load");
+#endif
       EditLoad();
    }
 
    void Write()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::Write");
+#endif
       EditSave();
    }
 
    bool ListSelect(DataRow row)
    {
       bool result = true;
+#ifdef __DEBUG
+      PrintLn("TableEditor::ListSelect");
+#endif
       if(/*-row && -*/row != lastRow)
       {
          uint id;
@@ -465,6 +520,9 @@ public:
    bool Select(Id id)
    {
       bool result;
+#ifdef __DEBUG
+      PrintLn("TableEditor::Select");
+#endif
       if(idField && editRow.Find(idField, middle, nil, id))
       {
          //Id test = editRow.sysID;
@@ -480,6 +538,9 @@ public:
    bool SelectNext()
    {
       bool result;
+#ifdef __DEBUG
+      PrintLn("TableEditor::SelectNext");
+#endif
       // How about confirmation / saving before changing the entry?
       if(editRow.Next())
       {
@@ -501,6 +562,9 @@ public:
    bool SelectPrevious()
    {
       bool result;
+#ifdef __DEBUG
+      PrintLn("TableEditor::SelectPrevious");
+#endif
       if(editRow.Previous())
       {
          //Id test = editRow.sysID;
@@ -521,6 +585,9 @@ public:
    void SelectListRow(DataRow row)
    {
       // Time startTime = GetTime();
+#ifdef __DEBUG
+      PrintLn("TableEditor::SelectListRow");
+#endif
       if(row)
       {
          selectedId = row.tag;
@@ -547,6 +614,9 @@ private:
 
    ~TableEditor()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::~()");
+#endif
       fieldsBoxes.Free(); // TOCHECK: do I need to delete each to oppose the increb in AddFieldBox?
       delete searchString;
       //listFields.Free();
@@ -564,10 +634,13 @@ private:
 
    void ResetListFields()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::ResetListFields");
+#endif
       if(list && listFields && listFields.count)
       {
          bool c = list.created;
-         if(dataFieldsUsed)
+         //if(dataFieldsUsed)
             list.ClearFields();
          for(lf : listFields)
             list.AddField(lf.dataField);
@@ -577,6 +650,9 @@ private:
 
    void AddFieldBox(FieldBox fieldBox)
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::AddFieldBox");
+#endif
       if(!fieldsBoxes.Find(fieldBox))
       {
          fieldsBoxes.Add(fieldBox);
@@ -592,6 +668,9 @@ private:
 
    void InitFieldsBoxes()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::InitFieldsBoxes");
+#endif
       for(fb : fieldsBoxes)
          fb.Init();
       //NotifyInitFields(master, this);
@@ -599,11 +678,17 @@ private:
 
    void EditNew()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::EditNew");
+#endif
       modifiedDocument = false;
    }
 
    void EditSave()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::EditSave");
+#endif
       internalModifications = true;
       for(fb : fieldsBoxes)
          fb.Save();
@@ -623,6 +708,9 @@ private:
 
    void EditLoad()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::EditLoad");
+#endif
       OnLoad();
       internalModifications = true;
       for(fb : fieldsBoxes)
@@ -634,6 +722,9 @@ private:
 
    void EditClear()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::EditClear");
+#endif
       internalModifications = true;
       for(fb : fieldsBoxes)
          fb.Clear();
@@ -644,6 +735,9 @@ private:
 
    void SetListRowFields(Row dbRow, DataRow listRow)
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::SetListRowFields");
+#endif
       for(lf : listFields)
       {
          if(lf.dataField && lf.field)
@@ -746,6 +840,9 @@ private:
 
    Array<Id> SearchWordList()
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::SearchWordList");
+#endif
 #ifdef FULL_STRING_SEARCH
       int c;
       int numTokens = 0;
@@ -819,6 +916,9 @@ private:
 
    void PrepareWordList(char * filePath)
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::PrepareWordList");
+#endif
 #ifdef FULL_STRING_SEARCH
       Row r { table };
       File f = filePath ? FileOpenBuffered(filePath, read) : null;
@@ -958,6 +1058,9 @@ private:
 
    void AddWord(char * word, int count, bool addAllSubstrings, Id id)
    {
+#ifdef __DEBUG
+      PrintLn("TableEditor::AddWord");
+#endif
 #ifdef FULL_STRING_SEARCH
       int s;
       WordEntry mainEntry = null;
@@ -1083,6 +1186,9 @@ struct WordEntryBinaryTree : BinaryTree
       WordEntry node;
       uint id;
       uint count = this.count;
+#ifdef __DEBUG
+      PrintLn("WordEntryBinaryTree::OnSerialize");
+#endif
       for(id = 1, node = (WordEntry)root; node;)
       {
          node.id = id++;
@@ -1120,6 +1226,9 @@ struct WordEntryBinaryTree : BinaryTree
    {
       WordEntry root, node;
       uint count;
+#ifdef __DEBUG
+      PrintLn("WordEntryBinaryTree::OnUnserialize");
+#endif
       channel.Unserialize(count);
       entries = new WordEntry[count];      
       btnodes = entries;

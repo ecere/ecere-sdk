@@ -1,5 +1,7 @@
 import "idList"
 
+#define DISABLE_SAVE_TO
+
 define pgs = 10; // print pgs size
 define margin = 36;
 
@@ -608,7 +610,11 @@ public class CSVReport : ReportDestination
       f.Puts(output);
    }
 
+#ifndef DISABLE_SAVE_TO
    FileDialog saveTo { type = save, text = $"Export as Spreadsheet (CSV)", filters = csvFilters.array, sizeFilters = csvFilters.count * sizeof(FileFilter) };
+#else
+   FileDialog saveTo;
+#endif
 
    void EndPage(Page page)
    {
