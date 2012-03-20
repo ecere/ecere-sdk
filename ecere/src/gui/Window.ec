@@ -9705,6 +9705,20 @@ class WindowControllerInterface : ControllableWindow
          result = controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnCreate](controller.window);
       return result;
    }
+
+   bool OnLoadGraphics()
+   {
+      bool result = ((int(*)())(void *)controller.OnLoadGraphics)((void *)controller.controlled, (void *)controller);
+      if(result)
+         result = controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLoadGraphics](controller.window);
+      return result;
+   }
+
+   void OnUnloadGraphics()
+   {
+      ((int(*)())(void *)controller.OnUnloadGraphics)((void *)controller.controlled, (void *)controller);
+         controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnUnloadGraphics](controller.window);
+   }
 }
 
 public class WindowController<class V>
@@ -9763,6 +9777,8 @@ public:
    virtual void V::OnResize(WindowController controller, int width, int height);
    virtual void V::OnRedraw(WindowController controller, Surface surface);
    virtual bool V::OnCreate(WindowController controller);
+   virtual bool V::OnLoadGraphics(WindowController controller);
+   virtual void V::OnUnloadGraphics(WindowController controller);
 
 private:
    int (** windowVTbl)();   
