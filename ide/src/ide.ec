@@ -941,7 +941,7 @@ class IDEWorkSpace : Window
       }
       MenuItem projectRealCleanItem
       {
-         projectMenu, $"Real Clean", e, disabled = true;
+         projectMenu, $"Real Clean", disabled = true;
          bitmap = { ":actions/clean.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
