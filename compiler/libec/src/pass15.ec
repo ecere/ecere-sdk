@@ -402,14 +402,14 @@ public char * PrintUChar(unsigned char result)
 
 public char * PrintFloat(float result)
 {
-   char temp[100];
+   char temp[350];
    sprintf(temp, "%.16ff", result);
    return CopyString(temp);
 }
 
 public char * PrintDouble(double result)
 {
-   char temp[100];
+   char temp[350];
    sprintf(temp, "%.16f", result);
    return CopyString(temp);
 }
