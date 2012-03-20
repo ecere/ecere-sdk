@@ -67,6 +67,11 @@ class BreakpointsView : Window
             //sprintf(str, "%d", value);
             //listBox.StopEditing(true);
             //row.SetData(listBox.currentField, str);
+            if((listBox.currentField == ignoreField && value < 1) ||
+                  (listBox.currentField == levelField && value < 0))
+               row.SetData(listBox.currentField, null);
+            if(listBox.currentField == levelField && value == 0)
+               row.SetData(listBox.currentField, "0");
             if(listBox.currentField == ignoreField)
                ide.workspace.ChangeBreakpointIgnore(row, value);
             else if(listBox.currentField == levelField)
