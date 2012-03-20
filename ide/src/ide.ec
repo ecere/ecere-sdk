@@ -1196,6 +1196,7 @@ class IDEWorkSpace : Window
          }
       }
       MenuPlacement debugSkipRunToCursorItem { debugMenu, $"Run To Cursor Skipping Breakpoints", u };
+      MenuPlacement debugSkipRunToCursorAtSameLevelItem { debugMenu, $"Run To Cursor At Same Level Skipping Breakpoints", s };
       //MenuDivider { debugMenu };
       //MenuPlacement debugToggleBreakpoint { debugMenu, "Toggle Breakpoint", t };
    MenuPlacement imageMenu { menu, $"Image", i };

@@ -918,7 +918,7 @@ class Debugger
       }
    }
 
-   void RunToCursor(CompilerConfig compiler, ProjectConfig config, int bitDepth, char * absoluteFilePath, int lineNumber, bool ignoreBkpts)
+   void RunToCursor(CompilerConfig compiler, ProjectConfig config, int bitDepth, char * absoluteFilePath, int lineNumber, bool ignoreBkpts, bool atSameLevel)
    {
       char relativeFilePath[MAX_LOCATION];
       DebuggerState oldState = state;
@@ -939,7 +939,7 @@ class Debugger
                   ide.outputView.ShowClearSelectTab(debug);
                   ide.outputView.debugBox.Logf($"Starting debug mode\n");
                }
-               RunToCursorPrepare(absoluteFilePath, relativeFilePath, lineNumber);
+               RunToCursorPrepare(absoluteFilePath, relativeFilePath, lineNumber, atSameLevel);
                sentBreakInsert = true;
                GdbCommand(false, "-break-insert %s:%d", relativeFilePath, lineNumber);
                bpRunToCursor.bp = bpItem;
@@ -2654,11 +2654,7 @@ class Debugger
       Breakpoint bp = bpHit;
 
       if(!bp && bpRunToCursor)
-      {
          bp = bpRunToCursor;
-         if(symbols)
-            GdbCommand(false, "-break-delete %d", bp.bp.number);
-      }
       
       if(bp)
       {
@@ -2714,6 +2710,8 @@ class Debugger
                      ide.Update(null);
                      if(bp.type == BreakpointType::runToCursor)
                      {
+                        if(symbols)
+                           GdbCommand(false, "-break-delete %d", bp.bp.number);
                         delete bpRunToCursor;
                         bpRunToCursor = null;
                      }
@@ -3483,7 +3481,7 @@ class Debugger
       delete item2;
    }
 
-   void RunToCursorPrepare(char * absoluteFilePath, char * relativeFilePath, int lineNumber)
+   void RunToCursorPrepare(char * absoluteFilePath, char * relativeFilePath, int lineNumber, bool atSameLevel)
    {
       if(bpRunToCursor)
       {
@@ -3502,7 +3500,7 @@ class Debugger
       bpRunToCursor.enabled = true;
       bpRunToCursor.condition = null;
       bpRunToCursor.ignore = 0;
-      bpRunToCursor.level = -1;
+      bpRunToCursor.level = atSameLevel ? frameCount - activeFrameLevel -1 : -1;
    }
 
    ExpressionType ::DebugEvalExpTypeError(char * result)

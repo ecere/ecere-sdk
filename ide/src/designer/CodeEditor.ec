@@ -1918,7 +1918,7 @@ class CodeEditor : Window
                CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
                ProjectConfig config = projectView.project.config;
                int bitDepth = ide.workspace.bitDepth;
-               ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, false);
+               ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, false, false);
                delete compiler;
             }
          }
@@ -1937,7 +1937,25 @@ class CodeEditor : Window
             CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
             ProjectConfig config = projectView.project.config;
             int bitDepth = ide.workspace.bitDepth;
-            ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, true);
+            ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, true, false);
+            delete compiler;
+         }
+         return true;
+      }
+   };
+   MenuItem debugSkipRunToCursorAtSameLevel
+   {
+      debugMenu, $"Run To Cursor At Same Level Skipping Breakpoints", u, Key { f10, alt = true };
+      bool NotifySelect(MenuItem selection, Modifiers mods)
+      {
+         ProjectView projectView = ide.projectView;
+         int line = editBox.lineNumber + 1;
+         if(projectView)
+         {
+            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+            ProjectConfig config = projectView.project.config;
+            int bitDepth = ide.workspace.bitDepth;
+            ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, true, true);
             delete compiler;
          }
          return true;
@@ -2419,9 +2437,11 @@ class CodeEditor : Window
 
    void AdjustDebugMenus(bool unavailable, bool bpNoToggle, bool executing)
    {
-      debugRunToCursor.disabled                = unavailable || executing;
-      debugSkipRunToCursor.disabled            = unavailable || executing;
-      debugToggleBreakpoint.disabled           = bpNoToggle;
+      bool debugMenusDisabled = ide.GetDebugMenusDisabled();
+      debugRunToCursor.disabled                 = debugMenusDisabled;
+      debugSkipRunToCursor.disabled             = debugMenusDisabled;
+      debugSkipRunToCursorAtSameLevel.disabled  = debugMenusDisabled;
+      debugToggleBreakpoint.disabled            = debugMenusDisabled;
    }
 
    CodeEditor()
