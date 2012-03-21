@@ -375,15 +375,15 @@ public:
                         if(lf.field.type._vTbl[__ecereVMethodID_class_OnGetDataFromString])
                         {
                            Class dataType = lf.field.type;
-                           int64 dataHolder; // THERE SEEMS TO BE A BUG WHEN ACCESSING row ACROSS .so
-                           void * data;
+                           int64 dataHolder = 0;
+                           void * data = &dataHolder;
 
                            if(dataType && dataType.type == structClass)
                            {
                               dataHolder = (int64)new0 byte[dataType.structSize];
                               data = (void *)dataHolder;
                            }
-                           else if(dataType && (dataType.type == noHeadClass || dataType.type == normalClass))
+                           /*else if(dataType && (dataType.type == noHeadClass || dataType.type == normalClass))
                            {
                               if(eClass_IsDerived(dataType, class(String)))
                                  dataHolder = (int64)CopyString("");
@@ -395,18 +395,18 @@ public:
                            {
                               dataHolder = 0;
                               data = &dataHolder;
-                           }
+                           }*/
                            if(data)
                               dataType._vTbl[__ecereVMethodID_class_OnGetDataFromString](dataType, data, newText);
 
 
-                           dataType._vTbl[__ecereVMethodID_class_OnFree](dataType, dataHolder);
+                           /*dataType._vTbl[__ecereVMethodID_class_OnFree](dataType, dataHolder);
                            if(dataType.type == structClass)
                            {
                               void * dataPtr = (void *)dataHolder;
                               delete dataPtr;
                            }
-                           dataHolder = 0;
+                           dataHolder = 0;*/
                         }
                      }
                   }
