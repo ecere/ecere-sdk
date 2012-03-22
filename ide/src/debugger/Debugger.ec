@@ -530,7 +530,7 @@ class Debugger
                break;
          }
          
-         if(curEvent == DebuggerEvent::breakEvent || curEvent == stepEnd || curEvent == functionEnd)
+         if(curEvent != hit)
             ignoreBreakpoints = false;
          
          if(stopItem)
