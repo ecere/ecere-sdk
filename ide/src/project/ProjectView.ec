@@ -1355,9 +1355,13 @@ class ProjectView : Window
             char * bracket;
             if(colon)
             {
+               char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
+               char * start = inFileIncludedFrom ? line + strlen(stringInFileIncludedFrom) : line;
+               int len = (int)(colon - start);
+               len = Min(len, MAX_LOCATION-1);
                // Cut module name
-               strncpy(moduleName, line, colon - line);
-               moduleName[colon - line] = '\0';
+               strncpy(moduleName, start, len);
+               moduleName[len] = '\0';
             }
             else
                strcpy(moduleName, line);

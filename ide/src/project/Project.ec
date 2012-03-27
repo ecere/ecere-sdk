@@ -379,6 +379,8 @@ enum GenMakefilePrintTypes { objects, cObjects, symbols, imports, sources, resou
 define WorkspaceExtension = "ews";
 define ProjectExtension = "epj";
 
+define stringInFileIncludedFrom = "In file included from ";
+
 void ReplaceSpaces(char * output, char * source)
 {
    int c, dc;
@@ -1165,7 +1167,6 @@ private:
             //printf("Peeking and GetLine...\n");
             if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)))
             {
-               const char * stringInFileIncludedFrom = "In file included from ";
                char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
                if(strstr(line, compiler.makeCommand) == line && line[lenMakeCommand] == ':')
                {
