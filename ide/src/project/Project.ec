@@ -1165,6 +1165,8 @@ private:
             //printf("Peeking and GetLine...\n");
             if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)))
             {
+               const char * stringInFileIncludedFrom = "In file included from ";
+               char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
                if(strstr(line, compiler.makeCommand) == line && line[lenMakeCommand] == ':')
                {
                   char * module = strstr(line, "No rule to make target `");
@@ -1178,14 +1180,14 @@ private:
                         *end = '\0';
                         ide.outputView.buildBox.Logf($"   %s: No such file or directory\n", module);
                         // ide.outputView.buildBox.Logf("error: %s\n   No such file or directory\n", module);
-                        numErrors ++;
+                        numErrors++;
                      }
                   }
-                  else
-                  {
+                  //else
+                  //{
                      //ide.outputView.buildBox.Logf("error: %s\n", line);
-                     //numErrors ++;
-                  }
+                     //numErrors++;
+                  //}
                }
                else if(strstr(line, "ear ") == line);
                else if(strstr(line, "strip ") == line);
@@ -1247,7 +1249,7 @@ private:
                   else
                   {
                      ide.outputView.buildBox.Logf("%s\n", line);
-                     numErrors ++;
+                     numErrors++;
                   }
 
                   if(compilingEC) compilingEC--;
@@ -1267,17 +1269,19 @@ private:
                      {
                         char moduleName[MAX_LOCATION], temp[MAX_LOCATION];
                         char * pointer;
-                        int len = (int)(colon - line);
+                        char * error;
+                        char * start = inFileIncludedFrom ? line + strlen(stringInFileIncludedFrom) : line;
+                        int len = (int)(colon - start);
                         len = Min(len, MAX_LOCATION-1);
                         // Don't be mistaken by the drive letter colon
                         // Cut module name
-                        // TODO: need to fix colon - line gives char * 
+                        // TODO: need to fix colon - line gives char *
                         // warning: incompatible expression colon - line (char *); expected int
                         /*
                         strncpy(moduleName, line, (int)(colon - line));
                         moduleName[colon - line] = '\0';
                         */
-                        strncpy(moduleName, line, len);
+                        strncpy(moduleName, start, len);
                         moduleName[len] = '\0';
                         // Remove stuff in brackets
                         //bracket = strstr(moduleName, "(");
@@ -1337,7 +1341,7 @@ private:
                            PathCat(fullModuleName, moduleName);
                            MakePathRelative(fullModuleName, ide.workspace.projects.firstIterator.data.topNode.path, fullModuleName);
                            MakeSystemPath(fullModuleName);
-                           ide.outputView.buildBox.Logf("   %s%s\n", fullModuleName, colon);                              
+                           ide.outputView.buildBox.Logf("   %s%s%s\n", inFileIncludedFrom ? stringInFileIncludedFrom : "", fullModuleName, colon);
                         }
                      }
                      else
