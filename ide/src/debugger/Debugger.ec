@@ -3500,9 +3500,9 @@ class GdbThread : Thread
          int result;
          app.Unlock();
          result = gdbHandle.Read(output, 1, sizeof(output));
+         app.Lock();
          if(debugger.state == terminated || !gdbHandle || gdbHandle.Eof())
             break;
-         app.Lock();
          if(result)
          {
             int c;
