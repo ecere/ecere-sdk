@@ -918,7 +918,7 @@ private:
    bool GetConfigIsInDebugSession(ProjectConfig config)
    {
 #ifndef MAKEFILE_GENERATOR
-      return ide.project == this  && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isPrepared;
+      return ide.project == this && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isPrepared;
 #endif
    }
 

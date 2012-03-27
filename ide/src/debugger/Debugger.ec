@@ -551,8 +551,10 @@ class Debugger
 
    void ChangeState(DebuggerState value)
    {
+      bool same = value == state;
+      // if(same) PrintLn("Debugger::ChangeState -- changing to same state");
       state = value;
-      if(ide) ide.AdjustDebugMenus();
+      if(!same && ide) ide.AdjustDebugMenus();
    }
 
    void CleanUp()
@@ -641,10 +643,7 @@ class Debugger
       if(state == running)
       {
          if(targetProcessId)
-         {
-            //ide.AdjustDebugMenus();
             GdbDebugBreak(false);
-         }
       }
    }
 
@@ -824,8 +823,6 @@ class Debugger
             ide.watchesView.UpdateWatch(wh);
          }
       }
-
-      //ide.AdjustDebugMenus();
 
 #if defined(__unix__)
       progThread.terminate = true;
@@ -1701,11 +1698,7 @@ class Debugger
          if(internal)
             breakType = DebuggerAction::internal;
 
-         if(ide)
-         {
-            //ide.AdjustDebugMenus();
-            ide.Update(null);
-         }
+         if(ide) ide.Update(null);
          app.Unlock();
          if(Process_Break(targetProcessId))  //GdbCommand(false, "-exec-interrupt");
             serialSemaphore.Wait();
@@ -1713,7 +1706,6 @@ class Debugger
          {
             ChangeState(loaded);
             targetProcessId = 0;
-            //ide.AdjustDebugMenus();
          }
          app.Lock();
       }
@@ -1900,7 +1892,6 @@ class Debugger
             if(!GdbTargetSet())
             {
                //ChangeState(terminated);
-               //ide.AdjustDebugMenus();
                result = false;
             }
 
@@ -1996,7 +1987,6 @@ class Debugger
       
       ide.outputView.debugBox.Logf($"Debugging stopped\n");
       ClearBreakDisplay();
-      //ide.AdjustDebugMenus();
       ide.Update(null);
 
 #if defined(__unix__)
@@ -2611,7 +2601,6 @@ class Debugger
                   // Why was SelectFrame missing here?
                   SelectFrame(activeFrameLevel);
                   GoToStackFrameLine(activeFrameLevel, true);
-                  //ide.AdjustDebugMenus();
                   ide.Activate();
                   ide.Update(null);
                }
@@ -2637,7 +2626,6 @@ class Debugger
                      // Why was SelectFrame missing here?
                      SelectFrame(activeFrameLevel);
                      GoToStackFrameLine(activeFrameLevel, true);
-                     //ide.AdjustDebugMenus();
                      ide.Activate();
                      ide.Update(null);
                      if(bp.type == BreakpointType::runToCursor)
@@ -2669,7 +2657,6 @@ class Debugger
          ChangeState(terminated);
          targetProcessId = 0;
          ClearBreakDisplay();
-         //ide.AdjustDebugMenus();
 
          if(gdbHandle)
          {
@@ -3015,9 +3002,8 @@ class Debugger
             else if(!strcmp(outTokens[0], "^exit"))
             {
                ChangeState(terminated);
-               //ide.AdjustDebugMenus();
                // ide.outputView.debugBox.Logf("Exit\n");
-               //ide.Update(null);
+               // ide.Update(null);
                gdbReady = true;
                serialSemaphore.Release();
             }
@@ -3064,7 +3050,6 @@ class Debugger
                      {
                         ChangeState(loaded);
                         targetProcessId = 0;
-                        //ide.AdjustDebugMenus();
                      }
                      else if(!strcmp(item.value, "Function \\\"WinMain\\\" not defined."))
                      {
@@ -3073,19 +3058,16 @@ class Debugger
                      {
                         ChangeState(loaded);
                         targetProcessId = 0;
-                        //ide.AdjustDebugMenus();
                      }
                      else if(strstr(item.value, "No such file or directory."))
                      {
                         ChangeState(loaded);
                         targetProcessId = 0;
-                        //ide.AdjustDebugMenus();
                      }
                      else if(strstr(item.value, "During startup program exited with code "))
                      {
                         ChangeState(loaded);
                         targetProcessId = 0;
-                        //ide.AdjustDebugMenus();
                      }
                      else
                      {
@@ -3213,7 +3195,6 @@ class Debugger
                            }
 
                            event = stepEnd;
-                           //ide.AdjustDebugMenus();
                            ide.Update(null);
                         }
                         else if(!strcmp(reason, "function-finished"))
@@ -3245,7 +3226,6 @@ class Debugger
                            }
 
                            event = functionEnd;
-                           //ide.AdjustDebugMenus();
                            ide.Update(null);
                         }
                         else if(!strcmp(reason, "signal-received"))
@@ -3287,13 +3267,11 @@ class Debugger
                                     break;
                                  default:
                                     event = breakEvent;
-                                    //ide.AdjustDebugMenus(); ide.Update(null);
                               }
                            }
                            else
                            {
                               event = signal;
-                              //ide.AdjustDebugMenus(); ide.Update(null);
                            }
                         }
                         else if(!strcmp(reason, "watchpoint-trigger"))
@@ -3334,10 +3312,7 @@ class Debugger
                   }
 
                   if(targetProcessId)
-                  {
                      ChangeState(running);
-                     //ide.AdjustDebugMenus(); ide.Update(null);
-                  }
                   else if(!oldProcessID)
                   {
                      ide.outputView.debugBox.Logf($"Debugger Error: No target process ID\n");
@@ -3359,7 +3334,6 @@ class Debugger
                      
                      ide.outputView.debugBox.Logf($"Debugging stopped\n");
                      ClearBreakDisplay();
-                     //ide.AdjustDebugMenus(); ide.Update(null);
 
                #if defined(__unix__)
                      if(FileExists(progFifoPath)) //fileCreated)

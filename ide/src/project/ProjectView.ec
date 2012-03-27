@@ -86,7 +86,7 @@ static char * iconNames[] =
 
 enum PrepareMakefileMethod { normal, force, forceExists };
 
-enum BuildType { build, rebuild, relink, run, start, restart };
+enum BuildType { build, rebuild, relink, run, start, restart, clean };
 enum BuildState
 {
    none, buildingMainProject, buildingSecondaryProject, compilingFile;
@@ -611,6 +611,31 @@ class ProjectView : Window
       return false;
    }
 
+   bool DebugStopForMake(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config)
+   {
+      bool result = false;
+      // TOFIX: DebugStop is being abused and backfiring on us.
+      //        It's supposed to be the 'Debug/Stop' item, not unloading executable or anything else
+
+      //        configIsInDebugSession seems to be used for two OPPOSITE things:
+      //        If we're debugging another config, we need to unload the executable!
+      //        In building, we want to stop if we're debugging the 'same' executable
+      if(buildType != run) ///* && prj == project*/ && prj.configIsInDebugSession)
+      {
+         if(buildType == start || buildType == restart)
+         {
+            if(ide.debugger && ide.debugger.isPrepared)
+               result = DebugStop();
+         }
+         else
+         {
+            if(ide.project == prj && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isPrepared)
+               result = DebugStop();
+         }
+      }
+      return result;
+   }
+
    bool Build(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config)
    {
       bool result = true;
@@ -633,30 +658,8 @@ class ProjectView : Window
       {
          DirExpression targetDir = prj.GetTargetDir(compiler, config);
 
-         // TOFIX: DebugStop is being abused and backfiring on us.
-         //        It's supposed to be the 'Debug/Stop' item, not unloading executable or anything else
+         DebugStopForMake(prj, buildType, compiler, config);
 
-         //        configIsInDebugSession seems to be used for two OPPOSITE things:
-         //        If we're debugging another config, we need to unload the executable!
-         //        In building, we want to stop if we're debugging the 'same' executable
-         if(buildType != run) ///* && prj == project*/ && prj.configIsInDebugSession)
-         {
-            if(buildType == start || buildType == restart)
-            {
-               if(ide.debugger && ide.debugger.isPrepared)
-               {
-                  DebugStop();
-               }
-            }
-            else
-            {
-               if(ide.project == prj && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isPrepared)
-               {
-                  DebugStop();
-               }
-            }
-         }
-         
          // TODO: Disabled until problems fixed... is it fixed?
          if(buildType == rebuild || (config && config.compilingModified))
             prj.Clean(compiler, config, false);
@@ -771,12 +774,16 @@ class ProjectView : Window
             prj = node.project;
       }
       config = prj.config;
-      if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+      if(!prj.GetConfigIsInDebugSession(config) ||
+            (!ide.DontTerminateDebugSession($"Project Link") && DebugStopForMake(prj, relink, compiler, config)))
       {
-         ide.outputView.buildBox.Logf($"Relinking project %s using the %s configuration...\n", prj.name, GetConfigName(config));
-         if(config)
-            config.linkingModified = true;
-         Build(prj, relink, compiler, config);
+         if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+         {
+            ide.outputView.buildBox.Logf($"Relinking project %s using the %s configuration...\n", prj.name, GetConfigName(config));
+            if(config)
+               config.linkingModified = true;
+            Build(prj, relink, compiler, config);
+         }
       }
       delete compiler;
       return true;
@@ -800,15 +807,19 @@ class ProjectView : Window
             prj = node.project;
       }
       config = prj.config;
-      if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+      if(!prj.GetConfigIsInDebugSession(config) ||
+            (!ide.DontTerminateDebugSession($"Project Rebuild") && DebugStopForMake(prj, rebuild, compiler, config)))
       {
-         ide.outputView.buildBox.Logf($"Rebuilding project %s using the %s configuration...\n", prj.name, GetConfigName(config));
-         /*if(config)
+         if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
          {
-            config.compilingModified = true;
-            config.makingModified = true;
-         }*/ // -- should this still be used depite the new solution of BuildType?
-         Build(prj, rebuild, compiler, config);
+            ide.outputView.buildBox.Logf($"Rebuilding project %s using the %s configuration...\n", prj.name, GetConfigName(config));
+            /*if(config)
+            {
+               config.compilingModified = true;
+               config.makingModified = true;
+            }*/ // -- should this still be used depite the new solution of BuildType?
+            Build(prj, rebuild, compiler, config);
+         }
       }
       delete compiler;
       return true;
@@ -832,16 +843,22 @@ class ProjectView : Window
             prj = node.project;
       }
       config = prj.config;
-      if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+      if(!prj.GetConfigIsInDebugSession(config) ||
+            (!ide.DontTerminateDebugSession($"Project Clean") && DebugStopForMake(prj, clean, compiler, config)))
       {
-         ide.outputView.buildBox.Logf($"Cleaning project %s using the %s configuration...\n", prj.name, GetConfigName(config));
+         if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+         {
+            ide.outputView.buildBox.Logf($"Cleaning project %s using the %s configuration...\n", prj.name, GetConfigName(config));
 
-         buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
-         ide.AdjustBuildMenus();
+            buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
+            ide.AdjustBuildMenus();
+            ide.AdjustDebugMenus();
 
-         prj.Clean(compiler, config, false);
-         buildInProgress = none;
-         ide.AdjustBuildMenus();
+            prj.Clean(compiler, config, false);
+            buildInProgress = none;
+            ide.AdjustBuildMenus();
+            ide.AdjustDebugMenus();
+         }
       }
       delete compiler;
       return true;
@@ -865,16 +882,22 @@ class ProjectView : Window
             prj = node.project;
       }
       config = prj.config;
-      if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+      if(!prj.GetConfigIsInDebugSession(config) ||
+            (!ide.DontTerminateDebugSession($"Project Real Clean") && DebugStopForMake(prj, clean, compiler, config)))
       {
-         ide.outputView.buildBox.Logf($"Removing intermediate objects directory for project %s using the %s configuration...\n", prj.name, GetConfigName(config));
+         if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+         {
+            ide.outputView.buildBox.Logf($"Removing intermediate objects directory for project %s using the %s configuration...\n", prj.name, GetConfigName(config));
 
-         buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
-         ide.AdjustBuildMenus();
+            buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
+            ide.AdjustBuildMenus();
+            ide.AdjustDebugMenus();
 
-         prj.Clean(compiler, config, true);
-         buildInProgress = none;
-         ide.AdjustBuildMenus();
+            prj.Clean(compiler, config, true);
+            buildInProgress = none;
+            ide.AdjustBuildMenus();
+            ide.AdjustDebugMenus();
+         }
       }
       delete compiler;
       return true;

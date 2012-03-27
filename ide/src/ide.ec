@@ -1599,38 +1599,37 @@ class IDEWorkSpace : Window
       //bool holding = ide.debugger.state == stopped;
 
       debugStartResumeItem.disabled       = unavailable || executing;
-      if (toolBar)
-         toolBar.buttonDebugStartResume.disabled = unavailable || executing;
-
       debugStartResumeItem.text           = active ? $"Resume" : $"Start";
-      if (toolBar)
-         toolBar.buttonDebugStartResume.toolTip = active ? $"Resume" : $"Start";
       debugStartResumeItem.NotifySelect   = active ? MenuDebugResume : MenuDebugStart;
+      if(toolBar)
+      {
+         toolBar.buttonDebugStartResume.disabled      = unavailable || executing;
+         toolBar.buttonDebugStartResume.toolTip       = active ? $"Resume" : $"Start";
+      }
 
       debugBreakItem.disabled             = unavailable || !executing;
-      if (toolBar)
-         toolBar.buttonDebugPause.disabled = unavailable || !executing;
       debugStopItem.disabled              = unavailable || !active;
-      if (toolBar)
-         toolBar.buttonDebugStop.disabled = unavailable || !active;
       debugRestartItem.disabled           = unavailable || !active;
-      if (toolBar)
-         toolBar.buttonDebugRestart.disabled =unavailable || !active;
+      if(toolBar)
+      {
+         toolBar.buttonDebugPause.disabled            = unavailable || !executing;
+         toolBar.buttonDebugStop.disabled             = unavailable || !active;
+         toolBar.buttonDebugRestart.disabled          = unavailable || !active;
+      }
 
       debugStepIntoItem.disabled          = unavailable || executing;
-      if (toolBar)
-         toolBar.buttonDebugStepInto.disabled = unavailable || executing;
       debugStepOverItem.disabled          = unavailable || executing;
-      if (toolBar)
-         toolBar.buttonDebugStepOver.disabled = unavailable || executing;
       debugStepOutItem.disabled           = unavailable || executing || !active;
-      if (toolBar)
-         toolBar.buttonDebugStepOut.disabled = unavailable || executing || !active;
       debugSkipStepOverItem.disabled      = unavailable || executing;
-      if (toolBar)
-         toolBar.buttonDebugSkipStepOver.disabled = unavailable || executing;
       debugSkipStepOutItem.disabled       = unavailable || executing || !active;
-
+      if(toolBar)
+      {
+         toolBar.buttonDebugStepInto.disabled         = unavailable || executing;
+         toolBar.buttonDebugStepOver.disabled         = unavailable || executing;
+         toolBar.buttonDebugStepOut.disabled          = unavailable || executing || !active;
+         toolBar.buttonDebugSkipStepOver.disabled     = unavailable || executing;
+         // toolBar.buttonDebugSkipStepOutItem.disabled  = unavailable || executing;
+      }
       if((Designer)GetActiveDesigner())
       {
          CodeEditor codeEditor = ((Designer)GetActiveDesigner()).codeEditor;
