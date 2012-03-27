@@ -627,9 +627,28 @@ define localCompress = config && config.options && config.options.compress ?
             config.options.compress : options && options.compress ?
             options.compress : SetBool::unset;
 
+define platformTargetType =
+         configPOs && configPOs.options && configPOs.options.targetType && configPOs.options.targetType != localTargetType ?
+               configPOs.options.targetType :
+         projectPOs && projectPOs.options && projectPOs.options.targetType && projectPOs.options.targetType != localTargetType ?
+               projectPOs.options.targetType : TargetTypes::unset;
+
+
+// we should have some kind of direct mapping between a platform and it's makefile variable
 char * PlatformToMakefileVariable(Platform platform)
 {
-   return platform == win32 ? "WINDOWS" : platform == tux ? "LINUX" : platform == apple ? "OSX"/*"APPLE"*/ : platform;
+   return platform == win32 ? "WINDOWS" :
+          platform == tux   ? "LINUX"   :
+          platform == apple ? "OSX"/*"APPLE"*/ :
+                              platform;
+}
+
+char * TargetTypeToMakefileVariable(TargetTypes targetType)
+{
+   return targetType == executable    ? "executable" :
+          targetType == sharedLibrary ? "sharedlib"  :
+          targetType == staticLibrary ? "staticlib"  :
+                                        "unknown";
 }
 
 // Move this to ProjectConfig? null vs Common to consider...
@@ -768,10 +787,23 @@ private:
 
    TargetTypes GetTargetType(ProjectConfig config)
    {
-      // TODO: Implement platform specific options?
       TargetTypes targetType = localTargetType;
       return targetType;
    }
+
+   bool GetTargetTypeIsSetByPlatform(ProjectConfig config)
+   {
+      Platform platform;
+      for(platform = (Platform)1; platform < Platform::enumSize; platform++)
+      {
+         PlatformOptions projectPOs, configPOs;
+         MatchProjectAndConfigPlatformOptions(config, platform, &projectPOs, &configPOs);
+         if(platformTargetType)
+            return true;
+      }
+      return false;
+   }
+
 
    char * GetObjDirExpression(CompilerConfig compiler, ProjectConfig config)
    {
@@ -1648,9 +1680,10 @@ private:
 
       if(f)
       {
-         char temp[MAX_LOCATION];
-         char target[MAX_LOCATION];
-         char targetNoSpaces[MAX_LOCATION];
+         bool test;
+         int ifCount;
+         Platform platform;
+         char targetDir[MAX_LOCATION];
          char objDirExpNoSpaces[MAX_LOCATION];
          char objDirNoSpaces[MAX_LOCATION];
          char resDirNoSpaces[MAX_LOCATION];
@@ -1675,11 +1708,8 @@ private:
          Map<String, NameCollisionInfo> namesInfo { };
 
          ReplaceSpaces(objDirNoSpaces, objDirExp.dir);
-         strcpy(temp, GetTargetDirExpression(compiler, config));
-         ReplaceSpaces(targetDirExpNoSpaces, temp);
-         GetMakefileTargetFileName(targetType, target, config);
-         PathCatSlash(temp, target);
-         ReplaceSpaces(targetNoSpaces, temp);
+         strcpy(targetDir, GetTargetDirExpression(compiler, config));
+         ReplaceSpaces(targetDirExpNoSpaces, targetDir);
 
          strcpy(objDirExpNoSpaces, GetObjDirExpression(compiler, config));
          ChangeCh(objDirExpNoSpaces, '\\', '/'); // TODO: this is a hack, paths should never include win32 path seperators - fix this in ProjectSettings and ProjectLoad instead
@@ -1705,18 +1735,92 @@ private:
          f.Printf("COMPILER := %s\n", fixedCompilerName);
          if(crossCompiling)
             f.Printf("PLATFORM = %s\n", (char *)compiler.targetPlatform);
-         f.Printf("TARGET_TYPE = %s\n", targetType == executable ? "executable" :
-               (targetType == sharedLibrary ? "sharedlib" : (targetType == staticLibrary ? "staticlib" : "unknown")));
+         test = GetTargetTypeIsSetByPlatform(config);
+         if(test)
+         {
+            ifCount = 0;
+            for(platform = (Platform)1; platform < Platform::enumSize; platform++)
+            {
+               TargetTypes targetType;
+               PlatformOptions projectPOs, configPOs;
+               MatchProjectAndConfigPlatformOptions(config, platform, &projectPOs, &configPOs);
+               targetType = platformTargetType;
+               if(targetType)
+               {
+                  if(ifCount)
+                     f.Printf("else\n");
+                  ifCount++;
+                  f.Printf("ifdef %s\n", PlatformToMakefileVariable(platform));
+
+                  f.Printf("TARGET_TYPE = ");
+                  f.Printf(TargetTypeToMakefileVariable(targetType));
+                  f.Printf("\n");
+               }
+            }
+            f.Printf("else\n"); // ifCount should always be > 0
+         }
+         f.Printf("TARGET_TYPE = ");
+         f.Printf(TargetTypeToMakefileVariable(targetType));
+         f.Printf("\n");
+         if(test)
+         {
+            if(ifCount)
+            {
+               for(c = 0; c < ifCount; c++)
+                  f.Printf("endif\n");
+            }
+         }
          f.Printf("\n");
 
          f.Printf("OBJ = %s%s\n\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
 
          f.Printf("RES = %s%s\n\n", resDirNoSpaces, resDirNoSpaces[0] ? "/" : "");
 
-         if(targetType == executable)
-            f.Printf("CONSOLE = %s\n\n", GetConsole(config) ? "-mconsole" : "-mwindows");
+         f.Printf("ifeq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(executable));
+         f.Printf("CONSOLE = %s\n", GetConsole(config) ? "-mconsole" : "-mwindows");
+         f.Printf("endif\n\n");
 
-         f.Printf("TARGET = %s\n\n", targetNoSpaces);
+         // test = GetTargetTypeIsSetByPlatform(config);
+         {
+            char target[MAX_LOCATION];
+            char targetNoSpaces[MAX_LOCATION];
+         if(test)
+         {
+            TargetTypes type;
+            ifCount = 0;
+            for(type = (TargetTypes)1; type < TargetTypes::enumSize; type++)
+            {
+               if(type != targetType)
+               {
+                  if(ifCount)
+                     f.Printf("else\n");
+                  ifCount++;
+                  f.Printf("ifeq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(type));
+
+                  GetMakefileTargetFileName(type, target, config);
+                  strcpy(targetNoSpaces, targetDir);
+                  PathCatSlash(targetNoSpaces, target);
+                  ReplaceSpaces(targetNoSpaces, targetNoSpaces);
+                  f.Printf("TARGET = %s\n", targetNoSpaces);
+               }
+            }
+            f.Printf("else\n"); // ifCount should always be > 0
+         }
+         GetMakefileTargetFileName(targetType, target, config);
+         strcpy(targetNoSpaces, targetDir);
+         PathCatSlash(targetNoSpaces, target);
+         ReplaceSpaces(targetNoSpaces, targetNoSpaces);
+         f.Printf("TARGET = %s\n", targetNoSpaces);
+         if(test)
+         {
+            if(ifCount)
+            {
+               for(c = 0; c < ifCount; c++)
+                  f.Printf("endif\n");
+            }
+         }
+         }
+         f.Printf("\n");
 
          varStringLenDiffs["$(OBJ)"] = strlen(objDirNoSpaces) - 6;
 
@@ -1837,8 +1941,8 @@ private:
             OutputListOption(f, "D", options.preprocessorDefinitions, newLine, false);
          if(config && config.options && config.options.preprocessorDefinitions)
             OutputListOption(f, "D", config.options.preprocessorDefinitions, newLine, false);
-         // no if?
-         OutputListOption(f, gccCompiler ? "isystem " : "I", compiler.includeDirs, lineEach, true);
+         if(compiler.includeDirs)
+            OutputListOption(f, gccCompiler ? "isystem " : "I", compiler.includeDirs, lineEach, true);
          if(options && options.includeDirs)
             OutputListOption(f, "I", options.includeDirs, lineEach, true);
          if(config && config.options && config.options.includeDirs)
@@ -1863,28 +1967,38 @@ private:
          }
          f.Printf("\n\n");
 
-         if(targetType != staticLibrary)
-         {
-            f.Printf("OFLAGS = -m32"); // TARGET_TYPE is fixed in a Makefile, we don't want this. $(if TARGET_TYPE_STATIC_LIBRARY,,-m32)");
-            if(GetProfile(config))
-               f.Printf(" -pg");
-            // no if? 
+         f.Printf("OFLAGS =\n");
+         f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
+         f.Printf("OFLAGS += -m32");
+         if(GetProfile(config))
+            f.Printf(" -pg");
+         // no if?
+         if(compiler.libraryDirs)
             OutputListOption(f, "L", compiler.libraryDirs, lineEach, true);
-            if(options && options.libraryDirs)
-               OutputListOption(f, "L", options.libraryDirs, lineEach, true);
-            if(config && config.options && config.options.libraryDirs)
-               OutputListOption(f, "L", config.options.libraryDirs, lineEach, true);
-            f.Printf("\n\n");
-         }
+         if(options && options.libraryDirs)
+            OutputListOption(f, "L", options.libraryDirs, lineEach, true);
+         if(config && config.options && config.options.libraryDirs)
+            OutputListOption(f, "L", config.options.libraryDirs, lineEach, true);
+         f.Printf("\n");
+         f.Printf("endif\n\n");
 
-         f.Printf("LIBS =");
-         if(targetType != staticLibrary)
+         if((config && config.options && config.options.libraries) ||
+               (options && options.libraries))
          {
+            f.Printf("LIBS =\n");
+            f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
+            f.Printf("LIBS +=");
             if(config && config.options && config.options.libraries)
                OutputLibraries(f, config.options.libraries);
             else if(options && options.libraries)
                OutputLibraries(f, options.libraries);
+            f.Printf("\n");
+            f.Printf("endif\n");
+            f.Printf("LIBS +=");
          }
+         else
+            f.Printf("LIBS =");
+
          f.Printf(" $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)\n\n");
 
          f.Printf("UPXFLAGS = -9\n\n"); // TOFEAT: Compression Level Option? Other UPX Options?
@@ -1901,46 +2015,22 @@ private:
 
          if(platforms || (config && config.platforms))
          {
-            int ifCount = 0;
-            Platform platform;
+            ifCount = 0;
             //for(platform = firstPlatform; platform <= lastPlatform; platform++)
             //for(platform = win32; platform <= apple; platform++)
             
             f.Printf("# PLATFORM-SPECIFIC OPTIONS\n\n");
             for(platform = (Platform)1; platform < Platform::enumSize; platform++)
             {
-               PlatformOptions projectPlatformOptions = null;
-               PlatformOptions configPlatformOptions = null;
+               PlatformOptions projectPlatformOptions, configPlatformOptions;
+               MatchProjectAndConfigPlatformOptions(config, platform, &projectPlatformOptions, &configPlatformOptions);
 
-               if(platforms)
-               {
-                  for(p : platforms)
-                  {
-                     if(!strcmpi(p.name, platform))
-                     {
-                        projectPlatformOptions = p;
-                        break;
-                     }
-                  }
-               }
-               if(config && config.platforms)
-               {
-                  for(p : config.platforms)
-                  {
-                     if(!strcmpi(p.name, platform))
-                     {
-                        configPlatformOptions = p;
-                        break;
-                     }
-                  }
-               }
                if(projectPlatformOptions || configPlatformOptions)
                {
                   if(ifCount)
                      f.Printf("else\n");
                   ifCount++;
                   f.Printf("ifdef ");
-                  // we should have some kind of direct mapping between a platform and it's makefile variable
                   f.Printf(PlatformToMakefileVariable(platform));
                   f.Printf("\n\n");
 
@@ -1973,8 +2063,12 @@ private:
                      f.Printf("\n\n");
                   }
 
-                  if(targetType != staticLibrary)
+                  if((projectPlatformOptions && projectPlatformOptions.options.libraryDirs && projectPlatformOptions.options.libraryDirs.count) ||
+                        (configPlatformOptions && configPlatformOptions.options.libraryDirs && configPlatformOptions.options.libraryDirs.count) ||
+                        (projectPlatformOptions && projectPlatformOptions.options.libraries && projectPlatformOptions.options.libraries.count) ||
+                        (configPlatformOptions && configPlatformOptions.options.libraries && configPlatformOptions.options.libraries.count))
                   {
+                     f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
                      if((projectPlatformOptions && projectPlatformOptions.options.libraryDirs && projectPlatformOptions.options.libraryDirs.count) ||
                         (configPlatformOptions && configPlatformOptions.options.libraryDirs && configPlatformOptions.options.libraryDirs.count))
                      {
@@ -1983,7 +2077,7 @@ private:
                            OutputListOption(f, "L", projectPlatformOptions.options.libraryDirs, lineEach, true);
                         if(configPlatformOptions && configPlatformOptions.options.libraryDirs)
                            OutputListOption(f, "L", configPlatformOptions.options.libraryDirs, lineEach, true);
-                        f.Printf("\n\n");
+                        f.Printf("\n");
                      }
 
                      if(projectPlatformOptions && projectPlatformOptions.options.libraries &&
@@ -1992,14 +2086,15 @@ private:
                      {
                         f.Printf("LIBS +=");
                         OutputLibraries(f, projectPlatformOptions.options.libraries);
-                        f.Printf("\n\n");
+                        f.Printf("\n");
                      }
                      {/*TOFIX: EXTRA CURLIES FOR NASTY WARNING*/if((configPlatformOptions && configPlatformOptions.options.libraries && configPlatformOptions.options.libraries.count))
                      {
                         f.Printf("LIBS +=");
                         OutputLibraries(f, configPlatformOptions.options.libraries);
-                        f.Printf("\n\n");
+                        f.Printf("\n");
                      }}
+                     f.Printf("endif\n\n");
                   }
                }
             }
@@ -2007,7 +2102,6 @@ private:
             {
                for(c = 0; c < ifCount; c++)
                   f.Printf("endif\n");
-               ifCount = 0;
             }
             f.Printf("\n");
          }
@@ -2031,36 +2125,13 @@ private:
          }
          if(platforms || (config && config.platforms))
          {
-            int ifCount = 0;
-            Platform platform;
+            ifCount = 0;
             //f.Printf("# PLATFORM-SPECIFIC PRE-BUILD COMMANDS\n");
             for(platform = (Platform)1; platform < Platform::enumSize; platform++)
             {
-               PlatformOptions projectPOs = null;
-               PlatformOptions configPOs = null;
+               PlatformOptions projectPOs, configPOs;
+               MatchProjectAndConfigPlatformOptions(config, platform, &projectPOs, &configPOs);
 
-               if(platforms)
-               {
-                  for(p : platforms)
-                  {
-                     if(!strcmpi(p.name, platform))
-                     {
-                        projectPOs = p;
-                        break;
-                     }
-                  }
-               }
-               if(config && config.platforms)
-               {
-                  for(p : config.platforms)
-                  {
-                     if(!strcmpi(p.name, platform))
-                     {
-                        configPOs = p;
-                        break;
-                     }
-                  }
-               }
                if((projectPOs && projectPOs.options.prebuildCommands && projectPOs.options.prebuildCommands.count) ||
                      (configPOs && configPOs.options.prebuildCommands && configPOs.options.prebuildCommands.count))
                {
@@ -2088,7 +2159,6 @@ private:
                int c;
                for(c = 0; c < ifCount; c++)
                   f.Printf("endif\n");
-               ifCount = 0;
             }
          }
          f.Printf("\n");
@@ -2126,40 +2196,30 @@ private:
          // This alone was breaking the tarball, object directory does not get created first (order-only rules happen last it seems!)
          f.Printf("$(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
 
-         if(targetType == sharedLibrary || targetType == executable)
+         f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
+         f.Printf("\t$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)\n");
+         if(!GetDebug(config))
          {
-            // f.Printf("\tinstall_name_tool $(TARGET) $(LP)$(MODULE)%s\n", targetType == sharedLibrary ? "$(SO)" : "$(A)");
-            //f.Printf("ifdef OSX\n");
-            //f.Printf("ifeq \"$(TARGET_TYPE)\" \"sharedlib\"\n");
-            //f.Printf("\t$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) -install_name $(LP)$(MODULE)$(SO)\n");
-            //f.Printf("endif\n");
-            //f.Printf("else\n");
-            //f.Printf("\t$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET)\n");
-            //f.Printf("endif\n");
-            f.Printf("\t$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)\n");
+            f.Printf("ifndef NOSTRIP\n");
+            f.Printf("\t$(STRIP) $(STRIPOPT) $(TARGET)\n");
+            f.Printf("endif\n");
 
-            if(!GetDebug(config))
+            if(GetCompress(config))
             {
-               f.Printf("ifndef NOSTRIP\n");
-               f.Printf("\t$(STRIP) $(STRIPOPT) $(TARGET)\n");
+               f.Printf("ifndef WINDOWS\n");
+               f.Printf("ifeq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(executable));
+                  f.Printf("\t$(UPX) $(UPXFLAGS) $(TARGET)\n");
                f.Printf("endif\n");
-
-               if(GetCompress(config))
-               {
-                  f.Printf("ifndef WINDOWS\n");
-                  f.Printf("ifeq \"$(TARGET_TYPE)\" \"executable\"\n");
-                     f.Printf("\t$(UPX) $(UPXFLAGS) $(TARGET)\n");
-                  f.Printf("endif\n");
-                  f.Printf("else\n");
-                     f.Printf("\t$(UPX) $(UPXFLAGS) $(TARGET)\n");
-                  f.Printf("endif\n");
-               }
+               f.Printf("else\n");
+                  f.Printf("\t$(UPX) $(UPXFLAGS) $(TARGET)\n");
+               f.Printf("endif\n");
             }
-            if(resNode.files && resNode.files.count && !noResources)
-               resNode.GenMakefileAddResources(f, resNode.path, config);
          }
-         else
-            f.Printf("\t$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)\n");
+         if(resNode.files && resNode.files.count && !noResources)
+            resNode.GenMakefileAddResources(f, resNode.path, config);
+         f.Printf("else\n");
+         f.Printf("\t$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)\n");
+         f.Printf("endif\n");
 
          //f.Printf("# POST-BUILD COMMANDS\n");
          if(options && options.postbuildCommands)
@@ -2174,37 +2234,13 @@ private:
          }
          if(platforms || (config && config.platforms))
          {
-            int ifCount = 0;
-            Platform platform;
-
+            ifCount = 0;
             //f.Printf("# PLATFORM-SPECIFIC POST-BUILD COMMANDS\n");
             for(platform = (Platform)1; platform < Platform::enumSize; platform++)
             {
-               PlatformOptions projectPOs = null;
-               PlatformOptions configPOs = null;
+               PlatformOptions projectPOs, configPOs;
+               MatchProjectAndConfigPlatformOptions(config, platform, &projectPOs, &configPOs);
 
-               if(platforms)
-               {
-                  for(p : platforms)
-                  {
-                     if(!strcmpi(p.name, platform))
-                     {
-                        projectPOs = p;
-                        break;
-                     }
-                  }
-               }
-               if(config && config.platforms)
-               {
-                  for(p : config.platforms)
-                  {
-                     if(!strcmpi(p.name, platform))
-                     {
-                        configPOs = p;
-                        break;
-                     }
-                  }
-               }
                if((projectPOs && projectPOs.options.postbuildCommands && projectPOs.options.postbuildCommands.count) ||
                      (configPOs && configPOs.options.postbuildCommands && configPOs.options.postbuildCommands.count))
                {
@@ -2232,7 +2268,6 @@ private:
                int c;
                for(c = 0; c < ifCount; c++)
                   f.Printf("endif\n");
-               ifCount = 0;
             }
          }
          f.Printf("\n");
@@ -2389,6 +2424,35 @@ private:
       f.Printf("\t$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.%s -o $(OBJ)$(MODULE).main$(O)\n\n", extension);
 
       delete objDirExp;
+   }
+
+   void MatchProjectAndConfigPlatformOptions(ProjectConfig config, Platform platform,
+         PlatformOptions * projectPlatformOptions, PlatformOptions * configPlatformOptions)
+   {
+      *projectPlatformOptions = null;
+      *configPlatformOptions = null;
+      if(platforms)
+      {
+         for(p : platforms)
+         {
+            if(!strcmpi(p.name, platform))
+            {
+               *projectPlatformOptions = p;
+               break;
+            }
+         }
+      }
+      if(config && config.platforms)
+      {
+         for(p : config.platforms)
+         {
+            if(!strcmpi(p.name, platform))
+            {
+               *configPlatformOptions = p;
+               break;
+            }
+         }
+      }
    }
 }
 
