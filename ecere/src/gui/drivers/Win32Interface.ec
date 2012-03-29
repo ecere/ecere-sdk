@@ -1389,18 +1389,23 @@ class Win32Interface : Interface
 
    void DestroyRootWindow(Window window)
    {
-      HICON oldIcon = (HICON)SendMessage(window.windowHandle, WM_GETICON, ICON_BIG, 0);
-      if(oldIcon && oldIcon != (HICON)GetClassLong(window.windowHandle, GCL_HICON))
-      {
-         DestroyIcon(oldIcon);
-      }
+      HICON oldIcon;
+      int c, lockCount = guiApp.lockMutex.lockCount;
+      for(c = 0; c < lockCount; c++)
+         guiApp.lockMutex.Release();
 
-      // TO FIX LOCK UP PROBLEMS...  WOULD NEED TO UNLOCK ALL RECURSIONS ((GuiApplication)__thisModule.application).Unlock();
+      oldIcon = (HICON)SendMessage(window.windowHandle, WM_GETICON, ICON_BIG, 0);
+      if(oldIcon && oldIcon != (HICON)GetClassLong(window.windowHandle, GCL_HICON))
+         DestroyIcon(oldIcon);
+
    	ShowWindow(window.windowHandle, SW_HIDE);
-      // TO FIX LOCK UP PROBLEMS...  WOULD NEED TO LOCK ALL RECURSIONS((GuiApplication)__thisModule.application).Lock();
 
       SetWindowLong(window.windowHandle, GWL_USERDATA, 0);
       DestroyWindow(window.windowHandle);
+
+      for(c = 0; c < lockCount; c++)
+         guiApp.lockMutex.Wait();
+
       window.windowHandle = null;
    }
 

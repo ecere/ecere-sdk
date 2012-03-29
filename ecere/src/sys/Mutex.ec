@@ -31,8 +31,8 @@ public class Mutex : struct
 
 #ifdef _DEBUG
    int owningThread;
-   int lockCount;
 #endif
+   int lockCount;
 
    Mutex()
    {
@@ -55,8 +55,8 @@ public class Mutex : struct
       pthread_mutex_init(&mutex, &attr);
       pthread_mutexattr_destroy(&attr);
 #endif
-#ifdef _DEBUG
       lockCount = 0;
+#ifdef _DEBUG
       owningThread = 0;
 #endif
       return true;
@@ -97,8 +97,8 @@ public:
 
 #ifdef _DEBUG
          owningThread = GetCurrentThreadID();
-         lockCount++;
 #endif
+         lockCount++;
       }
    }
 
@@ -111,9 +111,11 @@ public:
             printf("[%d] Releasing Mutex %x\n", GetCurrentThreadID(), this);
          */
 
-#ifdef _DEBUG
          if(!--lockCount)
+#ifdef _DEBUG
             owningThread = 0;
+#else
+            ;
 #endif
 #if defined(__WIN32__)
 #ifdef _DEBUG
