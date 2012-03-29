@@ -1837,12 +1837,19 @@ private:
             }
             else
             {
+               int oldHRange = sbh ? sbh.range : 0;
+               int oldVRange = sbv ? sbv.range : 0;
                // Then start off with horizontal scrollbar range
                if(sbh)
                {
                   positionH = sbh.thumbPosition;
+
+                  /*
                   sbh.seen = cw;
                   sbh.total = rvw;
+                  */
+                  SBSetSeen(sbh, cw);
+                  SBSetTotal(sbh, rvw);
                   rangeH = sbh.range;
                   if(rangeH > 1)
                      ch -= guiApp.currentSkin.HorizontalSBH();
@@ -1852,8 +1859,12 @@ private:
                if(sbv)
                {
                   positionV = sbv.thumbPosition;
+                  /*
                   sbv.seen = ch;
                   sbv.total = rvh;
+                  */
+                  SBSetSeen(sbv, ch);
+                  SBSetTotal(sbv, rvh);
                   rangeV = sbv.range;
                   if(rangeV > 1)
                   {
@@ -1861,20 +1872,30 @@ private:
                      // Maybe we need to set the range on the horizontal scrollbar again
                      if(sbh)
                      {
+                        /*
                         sbh.seen = cw;
                         sbh.total = rvw;
-                        sbh.Action(setRange, positionH, 0);
+                        */
+                        SBSetSeen(sbh, cw);
+                        SBSetTotal(sbh, rvw);
+                        //sbh.Action(setRange, positionH, 0);
                         if(rangeH <= 1 && sbh.range > 1)
                         {
                            ch -= guiApp.currentSkin.HorizontalSBH();
+                           /*
                            sbv.seen = ch;
                            sbv.total = rvh;
+                           */
+                           SBSetSeen(sbv, ch);
+                           SBSetTotal(sbv, rvh);
                            rangeV = sbv.range;
-                           sbv.Action(setRange, positionV, 0);
+                           //sbv.Action(setRange, positionV, 0);
                         }
                         rangeH = sbh.range;
                      }
                   }
+                  if(sbh && sbh.range != oldHRange) sbh.Action(setRange, positionH, 0);
+                  if(sbv && sbv.range != oldVRange) sbv.Action(setRange, positionV, 0);
                }
 
                // Update the scrollbar visibility

@@ -592,3 +592,17 @@ private:
       thumb.visible = !disabled;
    };
 };
+
+void SBSetSeen(ScrollBar sb, int value)
+{
+   value = Max(1,value);
+   if(sb.sbStyle.snap)
+      SNAPDOWN(value, *&sb.lineStep);
+   *&sb.seen = value;
+}
+
+void SBSetTotal(ScrollBar sb, int value)
+{
+   if(!value) value = *&sb.seen;
+   *&sb.total = value;
+}
