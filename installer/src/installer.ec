@@ -1090,9 +1090,9 @@ InstallProgress installProgress { autoCreate = false };
 
 void ModifyPath(char * newPath)
 {
-   char * paths[100];
+   char * paths[200];
    int p, count;
-   char oldPath[4096];
+   char oldPath[8192];
    CoreSDKID c;
 
    strcpy(oldPath, newPath);
@@ -1123,7 +1123,7 @@ void ModifyPath(char * newPath)
          if(count) 
          {
             strcat(newPath, ";");
-            start = oldPath + strlen(paths[count-1])+1;
+            start = paths[count-1] + strlen(paths[count-1])+1;
          }
          else
             start = oldPath;
@@ -1143,9 +1143,9 @@ void ModifyPath(char * newPath)
       for(c = 0; c < 4 /*additional[c].name*/; c++)
       {
          char path[MAX_LOCATION];
-         NamedItem item;
          additional[c].GetFullPath(path);
-         PathCat(path, "bin");
+         if(c != 0) // UPX already is in bin
+            PathCat(path, "bin");
          for(p = 0; p<count; p++)
             if(!fstrcmp(paths[p], path))
                break;
@@ -1156,7 +1156,7 @@ void ModifyPath(char * newPath)
             if(count) 
             {
                strcat(newPath, ";");
-               start = oldPath + strlen(paths[count-1])+1;
+               start = paths[count-1] + strlen(paths[count-1])+1;
             }
             else
                start = oldPath;
@@ -1347,8 +1347,8 @@ class InstallThread : Thread
          {
             HKEY key;
             uint status, size;
-            char path[2048] = "";
-            uint16 wPath[2048];
+            char path[4096] = "";
+            uint16 wPath[4096];
 
             ((GuiApplication)__thisModule).Lock();
             installProgress.installing.text = "Registering paths...";
