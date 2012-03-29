@@ -3545,7 +3545,7 @@ private:
                   bool real = parent.activeChild != this;
 
                   // TEST THIS: New activateParent check here!!! CAUSED MENUS NOT GOING AWAY
-                  if(/*activateParent && */guiApp.interimWindow && 
+                  if(!style.inactive && /*activateParent && */guiApp.interimWindow && 
                      !IsDescendantOf(guiApp.interimWindow) && 
                      !IsSlaveOf(guiApp.interimWindow))
                   {
