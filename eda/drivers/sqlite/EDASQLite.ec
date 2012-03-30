@@ -6,7 +6,11 @@ public import "ecere"
 public import "EDA"
 #endif
 
+#ifdef __linux__
+#include <sqlite3.h>
+#else
 #include "sqlite3.h"
+#endif
 
 static void UnusedFunction()
 {

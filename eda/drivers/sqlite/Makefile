@@ -24,7 +24,7 @@ SONAME =
 endif
 
 OBJECTS = \
-	$(OBJ)sqlite3.o \
+	$(if $(LINUX),,$(OBJ)sqlite3.o) \
 	$(OBJ)EDASQLite.o \
 	$(OBJ)$(MODULE).main$(O)
 
@@ -38,7 +38,7 @@ IMPORTS = \
 	$(OBJ)EDASQLite.imp
 
 SOURCES = \
-	sqlite3.c \
+	$(if $(LINUX),,sqlite3.c) \
 	EDASQLite.ec
 
 RESOURCES = \
@@ -79,7 +79,7 @@ endif
 
 ifdef LINUX
 
-LIBS += -lpthread -ldl
+LIBS += -lpthread -ldl -lsqlite3
 
 else
 ifdef OSX

@@ -18,7 +18,8 @@
          "Options" : {
             "Libraries" : [
                "pthread",
-               "dl"
+               "dl",
+               "sqlite3"
             ]
          }
       },
@@ -80,8 +81,28 @@
       }
    ],
    "Files" : [
-      "sqlite3.c",
-      "sqlite3.h",
+      {
+         "FileName" : "sqlite3.c",
+         "Platforms" : [
+            {
+               "Name" : "linux",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
+         ]
+      },
+      {
+         "FileName" : "sqlite3.h",
+         "Platforms" : [
+            {
+               "Name" : "linux",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
+         ]
+      },
       "EDASQLite.ec"
    ],
    "ResourcesPath" : "",
