@@ -153,6 +153,7 @@ class ProjectView : Window
    ProjectSettings projectSettingsDialog;
 
    bool stopBuild;
+   PopupMenu popupMenu;
 
    ProjectView()
    {
@@ -208,7 +209,6 @@ class ProjectView : Window
             if(node.type == NodeTypes::project || node.type == resources || node.type == file || node.type == folder)
             {
                bool buildMenuUnavailable = buildInProgress;
-               PopupMenu popupMenu;
                Menu popupContent { };
                
                if(node.type == NodeTypes::project)
@@ -304,6 +304,11 @@ class ProjectView : Window
                   position = {
                      x + clientStart.x + absPosition.x - app.desktop.position.x, 
                      y + clientStart.y + absPosition.y - app.desktop.position.y };
+
+                  void NotifyDestroyed(Window window, DialogResult result)
+                  {
+                     popupMenu = null;
+                  }
                };
                popupMenu.Create();
             }

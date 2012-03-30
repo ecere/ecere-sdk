@@ -1998,6 +1998,7 @@ public:
             }
          }
       }
+      get { return menu; }
    };
    property bool isMenuBar { set { isMenuBar = value; } };
    property bool focus { get { return keyboardFocus; } };

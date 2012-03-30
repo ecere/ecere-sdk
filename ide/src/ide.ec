@@ -1588,6 +1588,18 @@ class IDEWorkSpace : Window
       projectRegenerateItem.disabled            = unavailable;
       toolBar.buttonRegenerateMakefile.disabled = unavailable;
       projectCompileItem.disabled               = unavailable;
+
+      if(projectView && projectView.popupMenu && projectView.popupMenu.menu && projectView.popupMenu.created)
+      {
+         MenuItem menu;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectBuild, 0);      if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectLink, 0);       if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRebuild, 0);    if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectClean, 0);      if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRealClean, 0);  if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRegenerate, 0); if(menu) menu.disabled = unavailable;
+         projectView.popupMenu.Update(null);
+      }
    }
 
    void AdjustDebugMenus()
