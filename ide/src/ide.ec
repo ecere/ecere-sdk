@@ -715,7 +715,17 @@ class IDEWorkSpace : Window
          {
             if(id == selection.id)
             {
-               OpenFile(file, normal, true, null, no, normal);
+               if(mods.ctrl) // Menu::OnLeftButtonUp -> modifiers.ctrl == true, modifiers == 18
+                             // Menu::MenuItemSelection -> key.ctrl == false, key.modifiers.ctrl == false, key == 18
+                             // removing the (Key) cast from Modifiers when calling MenuItemSelection in OnLeftButtonUp didn't help
+               {
+                  // it never gets in here!!!
+                  char * command = PrintString("ide ", file);
+                  Execute(command);
+                  delete command;
+               }
+               else
+                  OpenFile(file, normal, true, null, no, normal);
                break;
             }
             id++;
@@ -730,7 +740,17 @@ class IDEWorkSpace : Window
          {
             if(id == selection.id)
             {
-               OpenFile(file, normal, true, null, no, normal);
+               if(mods.ctrl) // Menu::OnLeftButtonUp -> modifiers.ctrl == true, modifiers == 18
+                             // Menu::MenuItemSelection -> key.ctrl == false, key.modifiers.ctrl == false, key == 18
+                             // removing the (Key) cast from Modifiers when calling MenuItemSelection in OnLeftButtonUp didn't help
+               {
+                  // it never gets in here!!!
+                  char * command = PrintString("ide ", file);
+                  Execute(command);
+                  delete command;
+               }
+               else
+                  OpenFile(file, normal, true, null, no, normal);
                break;
             }
             id++;
