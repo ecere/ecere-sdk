@@ -14,6 +14,7 @@ private:
 #endif
 //#define FULL_STRING_SEARCH
 
+
 #define UTF8_IS_FIRST(x)   (__extension__({ byte b = x; (!(b) || !((b) & 0x80) || ((b) & 0x40)); }))
 #define UTF8_NUM_BYTES(x)  (__extension__({ byte b = x; (b & 0x80 && b & 0x40) ? ((b & 0x20) ? ((b & 0x10) ? 4 : 3) : 2) : 1; }))
 
@@ -31,9 +32,7 @@ define newEntryString = $"New";
 
 public class TableEditor : public Window
 {
-
    bool initialized;
-   bool dataFieldsUsed;
 public:
    property Table table
    {
@@ -73,7 +72,6 @@ public:
                indexedFields[0] = { fldId };
                table.Index(1, indexedFields);
                editRow.tbl = table;
-               Enumerate();
                {
                   char name[MAX_FILENAME];
                   sprintf(name, "%s.search", table.name);
@@ -82,10 +80,17 @@ public:
             }
             initialized = true;
          }
+         if(!listEnumerationCompleted)
+            Enumerate();
          if(list && !list.currentRow)
             list.SelectRow(list.firstRow); // should the tableeditor select method be used here?
       }
       return true;
+   }
+
+   bool OnClose(bool parentClosing)
+   {
+      return NotifyClosing();
    }
 
    // List
@@ -220,6 +225,8 @@ public:
                break;
          }
       }
+      if(result)
+         listEnumerationTimer.Stop();
       return result;
    }
 
@@ -231,8 +238,9 @@ public:
 #endif
       if(list)
       {
-         DataRow select;
+         listEnumerationTimer.Stop();
          list.Clear();
+         EditClear();
          {
             Row r { table };
             Array<Id> matches = SearchWordList();
@@ -240,13 +248,8 @@ public:
             delete matches;
             delete r;
          }
-         list.Sort(listSortField, listSortOrder);
-         if((select = list.FindRow(selectedId)))
-            SelectListRow(select);
-         else
-            EditClear();
       }
-      modifiedDocument = false;
+      modifiedDocument = false; // setting this here is not really logical, enumeration and modified have nothing to do with eachother
    }
 
    virtual void TableEditor::OnList(Row r, Array<Id> matches)
@@ -254,69 +257,11 @@ public:
 #ifdef __DEBUG
       PrintLn("TableEditor::OnList");
 #endif
-      if(matches)
-      {
-         int c;
-         if(listFields && idField)
-         {
-            for(c=0; c<matches.count; c++)
-            {
-               if(r.Find(idField, middle, nil, matches[c]))
-               {
-                  Id id = 0;
-                  DataRow row = list.AddRow();
-                  r.GetData(idField, id);
-                  row.tag = id;
-                  SetListRowFields(r, row);
-               }
-               else
-                  PrintLn($"WordList match cannot be found in database.");
-            }
-         }
-         else if(idField && stringField)
-         {
-            for(c=0; c<matches.count; c++)
-            {
-               if(r.Find(idField, middle, nil, matches[c]))
-               {
-                  Id id = 0;
-                  String s = null;
-                  r.GetData(idField, id);
-                  r.GetData(stringField, s);
-                  list.AddString(s).tag = id;
-                  delete s;
-               }
-               else
-                  PrintLn($"WordList match cannot be found in database.");
-            }
-         }
-      }
-      else if(!disabledFullListing)
-      {
-         if(listFields && idField)
-         {
-            while(r.Next())
-            {
-               Id id = 0;
-               DataRow row = list.AddRow();
-               r.GetData(idField, id);
-               row.tag = id;
-               SetListRowFields(r, row);
-            }
-         }
-         else if(idField && stringField)
-         {
-            while(r.Next())
-            {
-               Id id = 0;
-               String s = null;
-               r.GetData(idField, id);
-               r.GetData(stringField, s);
-               list.AddString(s).tag = id;
-               delete s;
-            }
-         }
-      }
+      listEnumerationCompleted = false;
+      listEnumerationIndex = 0;
+      listEnumerationRow = Row { r.tbl };
+      listEnumerationMatches = matches;
+      listEnumerationTimer.Start();
    }
 
    void CreateRow()
@@ -423,7 +368,7 @@ public:
                   //r.Last();
                   // next line is a patch for SQLite not returning data from GetData right after a SetData
                   if(idField && r.Find(idField, middle, nil, id))
-                     SetListRowFields(r, row);
+                     SetListRowFields(r, row, false);
                }
             }
             else if(idField && stringField)
@@ -612,6 +557,100 @@ private:
    DataRow lastRow;
    Id selectedId;
 
+   bool listEnumerationCompleted;
+   int listEnumerationIndex;
+   Array<Id> listEnumerationMatches;
+   Row listEnumerationRow;
+
+   Timer listEnumerationTimer
+   {
+      userData = this, delay = 0.1f;
+      bool DelayExpired()
+      {
+         bool next = false;
+         if(listEnumerationMatches)
+         {
+            if(listFields && idField)
+            {
+               int c;
+               for(c = 0; c<100 && (next = listEnumerationRow.Next()); c++)
+               for(c=0; c<100 && (next = listEnumerationIndex++<listEnumerationMatches.count); c++)
+               {
+                  if(listEnumerationRow.Find(idField, middle, nil, listEnumerationMatches[listEnumerationIndex]))
+                  {
+                     Id id = 0;
+                     DataRow row = list.AddRow();
+                     listEnumerationRow.GetData(idField, id);
+                     row.tag = id;
+                     SetListRowFields(listEnumerationRow, row, true);
+
+                  }
+                  else
+                     PrintLn($"WordList match cannot be found in database.");
+               }
+            }
+            else if(idField && stringField)
+            {
+               int c;
+               for(c = 0; c<100 && (next = listEnumerationRow.Next()); c++)
+               for(c=0; c<100 && (next = listEnumerationIndex++<listEnumerationMatches.count); c++)
+               {
+                  if(listEnumerationRow.Find(idField, middle, nil, listEnumerationMatches[listEnumerationIndex]))
+                  {
+                     Id id = 0;
+                     String s = null;
+                     listEnumerationRow.GetData(idField, id);
+                     listEnumerationRow.GetData(stringField, s);
+                     list.AddString(s).tag = id;
+                     delete s;
+                  }
+                  else
+                     PrintLn($"WordList match cannot be found in database.");
+               }
+            }
+         }
+         else if(!disabledFullListing)
+         {
+            if(listFields && idField)
+            {
+               int c;
+               for(c = 0; c<100 && (next = listEnumerationRow.Next()); c++)
+               {
+                  Id id = 0;
+                  DataRow row = list.AddRow();
+                  listEnumerationRow.GetData(idField, id);
+                  row.tag = id;
+                  SetListRowFields(listEnumerationRow, row, true);
+                  //Update(null);
+                  app.UpdateDisplay();
+               }
+            }
+            else if(idField && stringField)
+            {
+               int c;
+               for(c = 0; c<100 && (next = listEnumerationRow.Next()); c++)
+               {
+                  Id id = 0;
+                  String s = null;
+                  listEnumerationRow.GetData(idField, id);
+                  listEnumerationRow.GetData(stringField, s);
+                  list.AddString(s).tag = id;
+                  delete s;
+               }
+            }
+         }
+
+         list.Sort(listSortField, listSortOrder);
+
+         if(!next)
+         {
+            listEnumerationCompleted = true;
+            listEnumerationTimer.Stop();
+         }
+         return true;
+      }
+   };
+
    ~TableEditor()
    {
 #ifdef __DEBUG
@@ -619,17 +658,10 @@ private:
 #endif
       fieldsBoxes.Free(); // TOCHECK: do I need to delete each to oppose the increb in AddFieldBox?
       delete searchString;
-      //listFields.Free();
-      if(!dataFieldsUsed && listFields)
-      {
-         for(lf : listFields)
-         {
-            delete lf.dataField;
-            //delete lf;
-         }
-         //delete listFields;
-      }
       wordTree.Free();
+
+      delete listFields;
+      delete searchFields;
    }
 
    void ResetListFields()
@@ -640,11 +672,12 @@ private:
       if(list && listFields && listFields.count)
       {
          bool c = list.created;
-         //if(dataFieldsUsed)
-            list.ClearFields();
+         list.ClearFields();
          for(lf : listFields)
+         {
             list.AddField(lf.dataField);
-         dataFieldsUsed = true;
+            incref lf.dataField;
+         }
       }
    }
 
@@ -698,7 +731,7 @@ private:
          DataRow listRow = list.currentRow;
          // ADDED THIS HERE FOR SQLITE TO REFRESH
          editRow.Find(idField, middle, nil, listRow.tag);
-         SetListRowFields(editRow, listRow);
+         SetListRowFields(editRow, listRow, false);
          list.Sort(listSortField, listSortOrder);
       }
       internalModifications = false;
@@ -733,11 +766,11 @@ private:
       OnStateChanged();
    }
 
-   void SetListRowFields(Row dbRow, DataRow listRow)
+   void SetListRowFields(Row dbRow, DataRow listRow, bool restoreSelection)
    {
-#ifdef __DEBUG
-      PrintLn("TableEditor::SetListRowFields");
-#endif
+//#ifdef __DEBUG
+//      PrintLn("TableEditor::SetListRowFields");
+//#endif
       for(lf : listFields)
       {
          if(lf.dataField && lf.field)
@@ -790,19 +823,10 @@ private:
                if(type.type == structClass)
                   data = (int64)new0 byte[type.structSize];
                ((bool (*)())(void *)dbRow.GetData)(dbRow, lf.field, type, (type.type == structClass) ? (void *)data : &data);
-               //if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
-               //   listRow.SetData(lf.dataField, (void *)&data);
-               //else
-               //   listRow.SetData(lf.dataField, (void *)data);
                s = lf.CustomLookup((int)data);
                listRow.SetData(lf.dataField, s);
-               // Is this missing some frees here? strings?
-               // type._vTbl[__ecereVMethodID_class_OnFree](type, data);
-               if(type.type == structClass)
-               {
-                  void * dataPtr = (void *)data;
-                  delete dataPtr;
-               }
+               if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
+                  type._vTbl[__ecereVMethodID_class_OnFree](type, data);
                delete s; // ?
             }
             else if(lf.field.type)
@@ -826,15 +850,16 @@ private:
                   listRow.SetData(lf.dataField, (void *)data);
                //extern int __ecereVMethodID_class_OnGetString;
                //lf.field.type._vTbl[__ecereVMethodID_class_OnGetString](lf.field.type, &data, tempString, null, null);
-               // Is this missing some frees here? strings?
-               // type._vTbl[__ecereVMethodID_class_OnFree](type, data);
-               if(type.type == structClass)
-               {
-                  void * dataPtr = (void *)data;
-                  delete dataPtr;
-               }
+               if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
+                  type._vTbl[__ecereVMethodID_class_OnFree](type, data);
             }
          }
+      }
+      if(restoreSelection && !list.currentRow)
+      {
+         DataRow select;
+         if((select = list.FindRow(selectedId)))
+            SelectListRow(select);
       }
    }
 
@@ -1173,6 +1198,11 @@ public:
       }
    }
 private:*/
+
+   ~ListField()
+   {
+      delete dataField;
+   }
 }
 
 static WordEntry * btnodes;
@@ -1396,3 +1426,154 @@ class WordEntry : struct
 #endif
    }
 }
+
+#if 0
+class EnumerateThread : Thread
+{
+public:
+   bool active;
+   TableEditor editor;
+   //Table table;
+   //Row r;
+   Array<Id> matches;
+
+   void Abort()
+   {
+      /*if(abort)
+         abortNow = true;
+      else*/
+      if(active)
+         abort = true;
+   }
+
+private:
+   bool abort, abortNow;
+
+   unsigned int Main()
+   {
+      app.Wait();
+      app.Lock();
+
+      //if(app.ProcessInput(true))
+         //app.Wait();
+      {
+         Row r { editor.table };
+         if(matches)
+         {
+            int c;
+            if(editor.listFields && editor.idField)
+            {
+               /*for(c=0; c<matches.count && !abort; c++)
+               {
+                  if(r.Find(editor.idField, middle, nil, matches[c]))
+                  {
+                     Id id = 0;
+                     DataRow row;
+                     GuiLock();
+                     row = editor.list.AddRow();
+                     r.GetData(editor.idField, id);
+                     row.tag = id;
+                     editor.SetListRowFields(r, row, true);
+                     GuiUnlock();
+                  }
+                  else
+                     PrintLn($"WordList match cannot be found in database.");
+               }*/
+            }
+            else if(editor.idField && editor.stringField)
+            {
+               /*for(c=0; c<matches.count && !abort; c++)
+               {
+                  if(r.Find(editor.idField, middle, nil, matches[c]))
+                  {
+                     Id id = 0;
+                     String s = null;
+                     r.GetData(editor.idField, id);
+                     r.GetData(editor.stringField, s);
+                     GuiLock();
+                     editor.list.AddString(s).tag = id;
+                     GuiUnlock();
+                     delete s;
+                  }
+                  else
+                     PrintLn($"WordList match cannot be found in database.");
+               }*/
+            }
+            else
+               ;//app.Unlock();
+         }
+         else if(!editor.disabledFullListing)
+         {
+            if(editor.listFields && editor.idField)
+            {
+               app.Unlock();
+               while(r.Next() && !abort)
+               {
+                  Id id = 0;
+                  DataRow row;
+               app.Unlock();
+                  r.GetData(editor.idField, id);
+                  //if(app.ProcessInput(true))
+                     //app.Wait();
+                  //app.Wait();
+                  app.Lock();
+                     row = editor.list.AddRow();
+                     row.tag = id;
+                     editor.SetListRowFields(r, row, true);
+                  //app.Unlock();
+               }
+               //app.Unlock();
+            }
+            else if(editor.idField && editor.stringField)
+            {
+               /*while(r.Next() && !abort)
+               {
+                  Id id = 0;
+                  String s = null;
+                  GuiLock();
+                  r.GetData(editor.idField, id);
+                  r.GetData(editor.stringField, s);
+                  editor.list.AddString(s).tag = id;
+                  GuiUnlock();
+                  delete s;
+               }*/
+            }
+            else
+               ;//app.Unlock();
+         }
+         else
+            ;//app.Unlock();
+
+         //app.Lock();
+            editor.list.Sort(editor.listSortField, editor.listSortOrder);
+         //app.Unlock();
+      }
+      active = false;
+      abort = false;
+
+      app.Unlock();
+      return 0;
+   }
+
+   /*void GuiLock()
+   {
+      app.Wait();
+      app.Lock();
+   }*/
+
+   /*void GuiUnlock()
+   {
+      app.Unlock();
+      editor.list.Update(null);
+      //app.Wait(); // Sleep(0.2f);
+      //if(app.ProcessInput(true))
+         //app.Wait();
+         // Update(null);
+         //app.UpdateDisplay();
+      //app.Wait();
+      // app.Lock();
+   }*/
+}
+#endif
+
+static define app = ((GuiApplication)__thisModule);
