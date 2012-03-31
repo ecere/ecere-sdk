@@ -4,6 +4,8 @@ public import static "ecere"
 public import "ecere"
 #endif
 
+extern int __ecereVMethodID_class_OnGetString;
+
 static String countryNames[CountryCode] =
 {
    "(none)",
@@ -278,6 +280,9 @@ public class FlagCollection
    ~FlagCollection() { flags.Free(); }
 }
 
+
+static CountryCode firstCountryCode = AD;
+static CountryCode lastCountryCode = ZW;
 public enum CountryCode
 {
    none,
@@ -328,6 +333,19 @@ public enum CountryCode
 public:
    property char * { get { char * s = OnGetString(null, null, null); return s; } }
    property char * name { get { return countryNames[this]; } }
+   // ATTENTION: allocated memory must be freed by caller
+   property char * code
+   {
+      get
+      {
+         char * tmp = /*tempString ? tempString : */new char[4];
+         tmp[0] = '\0';
+         if(this >= firstCountryCode && this <= lastCountryCode)
+         // if(this > none && this < CountryCode::enumSize) // TOCHECK: CountryCode.ec:338:21: error: couldn't find member enumSize in class CountryCode
+            ((char *(*)())(void *)class(CountryCode).base._vTbl[__ecereVMethodID_class_OnGetString])(class(CountryCode), &this, tmp, null, null);
+         return tmp;
+      }
+   }
 };
 
 static String subdivisionCategoryNames[SubdivisionCategory] = 
@@ -454,8 +472,8 @@ static SubdivisionCategory caSubdivisionCategories[CASubdivisionCode] =
 {
    none, province, province, province, province, province, province, province, province, province, province, territory, territory, territory
 };
-static CASubdivisionCode FirstCASubdivisionCode = AB;
-static CASubdivisionCode LastCASubdivisionCode = YT;
+static CASubdivisionCode firstCASubdivisionCode = AB;
+static CASubdivisionCode lastCASubdivisionCode = YT;
 public enum CASubdivisionCode
 {
    none, AB, BC, MB, NB, NL, NS, ON, PE, QC, SK, NT, NU, YT;
@@ -470,6 +488,19 @@ public:
    // ATTENTION: allocated memory must be freed by caller
    property char * completeCode { get { return PrintString(CountryCode::CA, "-", this); } }
    property char * name { get { return caSubdivisionNames[this]; } }
+   // ATTENTION: allocated memory must be freed by caller
+   property char * code
+   {
+      get
+      {
+         char * tmp = /*tempString ? tempString : */new char[4];
+         tmp[0] = '\0';
+         // if(this > none && this < CASubdivisionCode::enumSize) // TOCHECK: CountryCode.ec:497:36: error: couldn't find member enumSize in class CASubdivisionCode
+         if(this >= firstCASubdivisionCode && this <= lastCASubdivisionCode)
+            ((char *(*)())(void *)class(CASubdivisionCode).base._vTbl[__ecereVMethodID_class_OnGetString])(class(CASubdivisionCode), &this, tmp, null, null);
+         return tmp;
+      }
+   }
    property SubdivisionCategory category { get { return caSubdivisionCategories[this]; } }
    // TODO: OnDisplay and flag resources
 };
@@ -543,8 +574,8 @@ static SubdivisionCategory usSubdivisionCategories[USSubdivisionCode] =
    state, state, state, state, state, state, state, state, state, state, outlyingTerritory, state, state, state, state, state,
    outlyingTerritory, state, state, outlyingTerritory, state, state, state, state, state
 };
-static USSubdivisionCode FirstUSSubdivisionCode = AK;
-static USSubdivisionCode LastUSSubdivisionCode = WY;
+static USSubdivisionCode firstUSSubdivisionCode = AK;
+static USSubdivisionCode lastUSSubdivisionCode = WY;
 public enum USSubdivisionCode
 {
    none,
@@ -563,6 +594,19 @@ public:
    // ATTENTION: allocated memory must be freed by caller
    property char * completeCode { get { return PrintString(CountryCode::US, "-", this); } }
    property char * name { get { return usSubdivisionNames[this]; } }
+   // ATTENTION: allocated memory must be freed by caller
+   property char * code
+   {
+      get
+      {
+         char * tmp = /*tempString ? tempString : */new char[4];
+         tmp[0] = '\0';
+         // if(this > none && this < USSubdivisionCode::enumSize) // TOCHECK: CountryCode.ec:603:35: error: couldn't find member enumSize in class USSubdivisionCode
+         if(this >= firstUSSubdivisionCode && this <= lastUSSubdivisionCode)
+            ((char *(*)())(void *)class(USSubdivisionCode).base._vTbl[__ecereVMethodID_class_OnGetString])(class(USSubdivisionCode), &this, tmp, null, null);
+         return tmp;
+      }
+   }
    property SubdivisionCategory category { get { return usSubdivisionCategories[this]; } }
    // TODO: OnDisplay and flag resources
 };
