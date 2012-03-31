@@ -1530,11 +1530,12 @@ class IDEWorkSpace : Window
    {
       if(workspace)
       {
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.compiler);
+         projectView.ShowOutputBuildLog(true);
+         projectView.DisplayCompiler(compiler, false);
          for(prj : workspace.projects)
-         {
-            bool first = prj == workspace.projects.firstIterator.data;
-            projectView.ProjectUpdateMakefileForAllConfigs(prj, first, first);
-         }
+            projectView.ProjectUpdateMakefileForAllConfigs(prj);
+         delete compiler;
       }
    }
 
@@ -1898,13 +1899,17 @@ class IDEWorkSpace : Window
                   prj = LoadProject(filePath);
                   if(prj)
                   {
+                     CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.compiler);
                      workspace.projects.Add(prj);
                      if(projectView)
                         projectView.AddNode(prj.topNode, null);
                      workspace.modified = true;
                      workspace.Save();
                      findInFilesDialog.AddProjectItem(prj);
-                     projectView.ProjectUpdateMakefileForAllConfigs(prj, true, true);
+                     projectView.ShowOutputBuildLog(true);
+                     projectView.DisplayCompiler(compiler, false);
+                     projectView.ProjectUpdateMakefileForAllConfigs(prj);
+                     delete compiler;
 
                      {
                         char location[MAX_LOCATION];

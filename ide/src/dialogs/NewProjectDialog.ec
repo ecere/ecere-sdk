@@ -192,6 +192,7 @@ class NewProjectDialog : Window
          {
             CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
             ProjectConfig config = project.config;
+            projectWindow.ShowOutputBuildLog(true);
             projectWindow.ProjectPrepareMakefile(project, force, true, true, compiler, config);
             delete compiler;
          }
@@ -503,6 +504,7 @@ class QuickProjectDialog : Window
          {
             CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
             ProjectConfig config = project.config;
+            projectWindow.ShowOutputBuildLog(true);
             projectWindow.ProjectPrepareMakefile(project, force, true, true, compiler, config);
             delete compiler;
          }

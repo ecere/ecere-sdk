@@ -475,7 +475,9 @@ class ProjectView : Window
       {
          if(prj.topNode.modified && prj.Save(prj.filePath))
          {
-            // ProjectUpdateMakefileForAllConfigs(prj, true, true);
+            // ShowOutputBuildLog(true);
+            // DisplayCompiler(compiler, false);
+            // ProjectUpdateMakefileForAllConfigs(prj);
             prj.topNode.modified = false;
          }
       }
@@ -533,7 +535,6 @@ class ProjectView : Window
    //  ************************************************************************
    bool DisplayCompiler(CompilerConfig compiler, bool cleanLog)
    {
-      ShowOutputBuildLog(cleanLog);
       ide.outputView.buildBox.Logf($"%s Compiler\n", compiler ? compiler.name : $"{problem with compiler selection}");
    }
 
@@ -561,8 +562,6 @@ class ProjectView : Window
       bool exists;
       LogBox logBox = ide.outputView.buildBox;
       
-      ShowOutputBuildLog(cleanLog);
-
       if(displayCompiler)
          DisplayCompiler(compiler, false);
 
@@ -912,6 +911,7 @@ class ProjectView : Window
    {
       Project prj = project;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      ShowOutputBuildLog(true);
       if(selection || !ide.activeClient)
       {
          DataRow row = fileList.currentRow;
@@ -1105,14 +1105,10 @@ class ProjectView : Window
       return true;
    }
 
-   bool ProjectUpdateMakefileForAllConfigs(Project project, bool cleanLog, bool displayCompiler)
+   bool ProjectUpdateMakefileForAllConfigs(Project project)
    {
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      ShowOutputBuildLog(cleanLog);
 
-      if(displayCompiler)
-         DisplayCompiler(compiler, false);
-      
       for(config : project.configurations)
       {
          ProjectPrepareMakefile(project, forceExists, false, false,
@@ -1140,9 +1136,13 @@ class ProjectView : Window
       incref compilerDialog;
       if(compilerDialog.Modal() == ok && strcmp(compilerDialog.workspaceActiveCompiler, ide.workspace.compiler))
       {
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(compilerDialog.workspaceActiveCompiler);
          ide.workspace.compiler = compilerDialog.workspaceActiveCompiler;
+         ide.projectView.ShowOutputBuildLog(true);
+         ide.projectView.DisplayCompiler(compiler, false);
          for(prj : ide.workspace.projects)
-            ide.projectView.ProjectUpdateMakefileForAllConfigs(prj, true, true);
+            ide.projectView.ProjectUpdateMakefileForAllConfigs(prj);
+         delete compiler;
       }
       delete compilerDialog;
       return true;
@@ -1482,7 +1482,9 @@ class ProjectView : Window
       {
          if(prj.Save(prj.filePath))
          {
-            // ProjectUpdateMakefileForAllConfigs(prj, true, true);
+            // ShowOutputBuildLog(true);
+            // DisplayCompiler(compiler, false);
+            // ProjectUpdateMakefileForAllConfigs(prj);
             prj.topNode.modified = false;
             prj = null;
             for(p : ide.workspace.projects)
