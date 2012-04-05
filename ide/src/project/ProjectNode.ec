@@ -1261,6 +1261,25 @@ private:
       return result;
    }
 
+   bool ContainsFilesWithExtension(char * extension)
+   {
+      if(type == file)
+      {
+         char ext[MAX_EXTENSION];
+         GetExtension(name, ext);
+         if(!fstrcmp(ext, extension))
+            return true;
+      }
+      else if(files)
+      {
+         bool needed = false;
+         for(child : files)
+            if(child.ContainsFilesWithExtension(extension))
+               return true;
+      }
+      return false;
+   }
+
    void GenFileFlags(File f, Project project, ProjectConfig prjConfig)
    {
       ProjectNode node = null;
@@ -1560,11 +1579,55 @@ private:
       }
       if(files)
       {
-         for(child : files)
+         bool needed = false;
+         if(ContainsFilesWithExtension("ec"))
          {
-            // TODO: Platform specific options
-            if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-               child.GenMakefilePrintSymbolRules(f, project, compiler, prjConfig);
+            for(child : files)
+            {
+               if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+               {
+                  needed = true;
+                  break;
+               }
+            }
+         }
+         if(needed)
+         {
+            int ifCount = 0;
+            Array<Platform> platforms { };
+            {
+               Map<Platform, SetBool> exclusionInfo { };
+               CollectExclusionInfo(exclusionInfo, prjConfig);
+               if(exclusionInfo[unknown] == true && exclusionInfo.count > 1)
+                  for(mn : exclusionInfo; mn == false)
+                     platforms.Add(&mn);
+               else
+                  platforms.Add(unknown);
+               delete exclusionInfo;
+            }
+            for(platform : platforms)
+            {
+               if(platform != unknown)
+               {
+                  if(ifCount)                  // we really need a if defined(a) || defined(b) here
+                     f.Printf("else\n");       // instead of repeating the rules for each platform
+                  ifCount++;                   //
+                  f.Printf("ifdef %s\n\n", PlatformToMakefileVariable(platform)); //
+               }
+               for(child : files)
+               {
+                  if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+                     child.GenMakefilePrintSymbolRules(f, project, compiler, prjConfig);
+               }
+            }
+            if(ifCount)
+            {
+               int c;
+               for(c = 0; c < ifCount; c++)
+                  f.Printf("endif\n");
+               f.Printf("\n");
+            }
+            delete platforms;
          }
       }
    }
@@ -1581,7 +1644,7 @@ private:
          char extension[MAX_EXTENSION];
          char modulePath[MAX_LOCATION];
          char moduleName[MAX_FILENAME];
-         
+
          GetExtension(name, extension);
          if(!strcmpi(extension, "ec"))
          {
@@ -1705,11 +1768,55 @@ private:
       }
       if(files)
       {
-         for(child : files)
+         bool needed = false;
+         if(ContainsFilesWithExtension("ec"))
          {
-            // TODO: Platform specific options
-            if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-               child.GenMakefilePrintCObjectRules(f, project, compiler, prjConfig);
+            for(child : files)
+            {
+               if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+               {
+                  needed = true;
+                  break;
+               }
+            }
+         }
+         if(needed)
+         {
+            int ifCount = 0;
+            Array<Platform> platforms { };
+            {
+               Map<Platform, SetBool> exclusionInfo { };
+               CollectExclusionInfo(exclusionInfo, prjConfig);
+               if(exclusionInfo[unknown] == true && exclusionInfo.count > 1)
+                  for(mn : exclusionInfo; mn == false)
+                     platforms.Add(&mn);
+               else
+                  platforms.Add(unknown);
+               delete exclusionInfo;
+            }
+            for(platform : platforms)
+            {
+               if(platform != unknown)
+               {
+                  if(ifCount)                  // we really need a if defined(a) || defined(b) here
+                     f.Printf("else\n");       // instead of repeating the rules for each platform
+                  ifCount++;                   //
+                  f.Printf("ifdef %s\n\n", PlatformToMakefileVariable(platform)); //
+               }
+               for(child : files)
+               {
+                  if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+                     child.GenMakefilePrintCObjectRules(f, project, compiler, prjConfig);
+               }
+            }
+            if(ifCount)
+            {
+               int c;
+               for(c = 0; c < ifCount; c++)
+                  f.Printf("endif\n");
+               f.Printf("\n");
+            }
+            delete platforms;
          }
       }
    }
@@ -1854,11 +1961,52 @@ private:
       }
       if(files)
       {
+         bool needed = false;
          for(child : files)
          {
-            // TODO: Platform specific options
             if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-               child.GenMakefilePrintObjectRules(f, project, namesInfo, compiler, prjConfig);
+            {
+               needed = true;
+               break;
+            }
+         }
+         if(needed)
+         {
+            int ifCount = 0;
+            Array<Platform> platforms { };
+            {
+               Map<Platform, SetBool> exclusionInfo { };
+               CollectExclusionInfo(exclusionInfo, prjConfig);
+               if(exclusionInfo[unknown] == true && exclusionInfo.count > 1)
+                  for(mn : exclusionInfo; mn == false)
+                     platforms.Add(&mn);
+               else
+                  platforms.Add(unknown);
+               delete exclusionInfo;
+            }
+            for(platform : platforms)
+            {
+               if(platform != unknown)
+               {
+                  if(ifCount)                  // we really need a if defined(a) || defined(b) here
+                     f.Printf("else\n");       // instead of repeating the rules for each platform
+                  ifCount++;                   //
+                  f.Printf("ifdef %s\n\n", PlatformToMakefileVariable(platform)); //
+               }
+               for(child : files)
+               {
+                  if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+                     child.GenMakefilePrintObjectRules(f, project, namesInfo, compiler, prjConfig);
+               }
+            }
+            if(ifCount)
+            {
+               int c;
+               for(c = 0; c < ifCount; c++)
+                  f.Printf("endif\n");
+               f.Printf("\n");
+            }
+            delete platforms;
          }
       }
    }
