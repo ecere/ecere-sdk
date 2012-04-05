@@ -1989,7 +1989,6 @@ class CodeEditor : Window
       {
          if(ide.workspace && fileName)
             ide.workspace.UpdateOpenedFileInfo(fileName, closed);
-         
          if(inUseDebug && !debugClosing)
          {
             debugClosing = true;
@@ -2015,6 +2014,7 @@ class CodeEditor : Window
                //formEditor.Destroy(0);
             }*/
          }
+         ide.AdjustFileMenus();
       }
       return true;
    }

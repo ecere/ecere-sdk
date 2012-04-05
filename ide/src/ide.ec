@@ -779,7 +779,7 @@ class IDEWorkSpace : Window
       }
       MenuItem projectQuickItem
       {
-         projectMenu, $"Quick...", q, f7;
+         projectMenu, $"Quick...", q, f7, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(!projectView)
@@ -1495,6 +1495,7 @@ class IDEWorkSpace : Window
    {
       ideSettings.AddRecentFile(fileName);
       ide.UpdateRecentMenus();
+      ide.AdjustFileMenus();
       settingsContainer.Save();
    }
 
@@ -1543,8 +1544,6 @@ class IDEWorkSpace : Window
    {
       bool unavailable = !project;
 
-      projectQuickItem.disabled           = !unavailable;
-
       projectAddItem.disabled             = unavailable;
       toolBar.buttonAddProject.disabled   = unavailable;
 
@@ -1556,8 +1555,30 @@ class IDEWorkSpace : Window
 
       viewProjectItem.disabled            = unavailable;
 
+      AdjustFileMenus();
       AdjustBuildMenus();
       AdjustDebugMenus();
+   }
+
+   property bool hasOpenedCodeEditors
+   {
+      get
+      {
+         Window w;
+         for(w = firstChild; w; w = w.next)
+            if(w._class == class(CodeEditor) &&
+                  w.isDocument && !w.closing && w.visible && w.created &&
+                  w.fileName && w.fileName[0])
+               return true;
+         return false;
+      }
+   }
+
+   void AdjustFileMenus()
+   {
+      bool unavailable = project != null || !hasOpenedCodeEditors; // are they supported source code (ec, c, cpp, etc) ?
+
+      projectQuickItem.disabled           = unavailable;
    }
 
    void AdjustBuildMenus()
@@ -1872,7 +1893,7 @@ class IDEWorkSpace : Window
                }
             }
             else
-               return document;
+               return null;
          }
          else if(openMethod == add)
          {
@@ -2034,6 +2055,7 @@ class IDEWorkSpace : Window
          else
             ideSettings.AddRecentFile(document.fileName);
          ide.UpdateRecentMenus();
+         ide.AdjustFileMenus();
          settingsContainer.Save();
          
          return document;
