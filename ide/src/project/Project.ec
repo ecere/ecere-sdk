@@ -1912,6 +1912,24 @@ private:
          f.Printf("LIBS =\n");
          f.Printf("\n");
 
+         if(compiler.includeDirs && compiler.includeDirs.count ||
+               compiler.libraryDirs && compiler.includeDirs.count)
+         {
+            if(compiler.includeDirs && compiler.includeDirs.count)
+            {
+               f.Printf("CFLAGS +=");
+               OutputListOption(f, gccCompiler ? "isystem " : "I", compiler.includeDirs, lineEach, true);
+               f.Printf("\n");
+            }
+            if(compiler.libraryDirs && compiler.includeDirs.count)
+            {
+               f.Printf("OFLAGS +=");
+               OutputListOption(f, "L", compiler.libraryDirs, lineEach, true);
+               f.Printf("\n");
+            }
+            f.Printf("\n");
+         }
+
          if(platforms || (config && config.platforms))
          {
             ifCount = 0;
@@ -2046,8 +2064,6 @@ private:
             OutputListOption(f, "D", options.preprocessorDefinitions, newLine, false);
          if(config && config.options && config.options.preprocessorDefinitions)
             OutputListOption(f, "D", config.options.preprocessorDefinitions, newLine, false);
-         if(compiler.includeDirs)
-            OutputListOption(f, gccCompiler ? "isystem " : "I", compiler.includeDirs, lineEach, true);
          if(config && config.options && config.options.includeDirs)
             OutputListOption(f, "I", config.options.includeDirs, lineEach, true);
          if(options && options.includeDirs)
@@ -2077,8 +2093,6 @@ private:
          f.Printf("OFLAGS += -m32");
          if(GetProfile(config))
             f.Printf(" -pg");
-         if(compiler.libraryDirs)
-            OutputListOption(f, "L", compiler.libraryDirs, lineEach, true);
          if(config && config.options && config.options.libraryDirs)
             OutputListOption(f, "L", config.options.libraryDirs, lineEach, true);
          if(options && options.libraryDirs)
