@@ -1905,7 +1905,107 @@ private:
 
          f.Printf("# FLAGS\n\n");
 
-         f.Printf("CFLAGS =");
+         f.Printf("CFLAGS =\n");
+         f.Printf("CECFLAGS =\n");
+         f.Printf("ECFLAGS =\n");
+         f.Printf("OFLAGS =\n");
+         f.Printf("LIBS =\n");
+         f.Printf("\n");
+
+         if(platforms || (config && config.platforms))
+         {
+            ifCount = 0;
+            //for(platform = firstPlatform; platform <= lastPlatform; platform++)
+            //for(platform = win32; platform <= apple; platform++)
+
+            f.Printf("# PLATFORM-SPECIFIC OPTIONS\n\n");
+            for(platform = (Platform)1; platform < Platform::enumSize; platform++)
+            {
+               PlatformOptions projectPlatformOptions, configPlatformOptions;
+               MatchProjectAndConfigPlatformOptions(config, platform, &projectPlatformOptions, &configPlatformOptions);
+
+               if(projectPlatformOptions || configPlatformOptions)
+               {
+                  if(ifCount)
+                     f.Printf("else\n");
+                  ifCount++;
+                  f.Printf("ifdef ");
+                  f.Printf(PlatformToMakefileVariable(platform));
+                  f.Printf("\n\n");
+
+                  if((projectPlatformOptions && projectPlatformOptions.options.preprocessorDefinitions && projectPlatformOptions.options.preprocessorDefinitions.count) ||
+                     (configPlatformOptions && configPlatformOptions.options.preprocessorDefinitions && configPlatformOptions.options.preprocessorDefinitions.count) ||
+                     (projectPlatformOptions && projectPlatformOptions.options.includeDirs && projectPlatformOptions.options.includeDirs.count) ||
+                     (configPlatformOptions && configPlatformOptions.options.includeDirs && configPlatformOptions.options.includeDirs.count))
+                  {
+                     f.Printf("CFLAGS +=");
+                     if(projectPlatformOptions && projectPlatformOptions.options.linkerOptions && projectPlatformOptions.options.linkerOptions.count)
+                     {
+                        f.Printf(" \\\n\t -Wl");
+                        for(s : projectPlatformOptions.options.linkerOptions)
+                           f.Printf(",%s", s);
+                     }
+                     if(configPlatformOptions && configPlatformOptions.options.linkerOptions && configPlatformOptions.options.linkerOptions.count)
+                     {
+                        f.Printf(" \\\n\t -Wl");
+                        for(s : configPlatformOptions.options.linkerOptions)
+                           f.Printf(",%s", s);
+                     }
+                     if(projectPlatformOptions && projectPlatformOptions.options.preprocessorDefinitions)
+                        OutputListOption(f, "D", projectPlatformOptions.options.preprocessorDefinitions, newLine, false);
+                     if(configPlatformOptions && configPlatformOptions.options.preprocessorDefinitions)
+                        OutputListOption(f, "D", configPlatformOptions.options.preprocessorDefinitions, newLine, false );
+                     if(configPlatformOptions && configPlatformOptions.options.includeDirs)
+                        OutputListOption(f, "I", configPlatformOptions.options.includeDirs, lineEach, true);
+                     if(projectPlatformOptions && projectPlatformOptions.options.includeDirs)
+                        OutputListOption(f, "I", projectPlatformOptions.options.includeDirs, lineEach, true);
+                     f.Printf("\n\n");
+                  }
+
+                  if((projectPlatformOptions && projectPlatformOptions.options.libraryDirs && projectPlatformOptions.options.libraryDirs.count) ||
+                        (configPlatformOptions && configPlatformOptions.options.libraryDirs && configPlatformOptions.options.libraryDirs.count) ||
+                        (projectPlatformOptions && projectPlatformOptions.options.libraries && projectPlatformOptions.options.libraries.count) ||
+                        (configPlatformOptions && configPlatformOptions.options.libraries && configPlatformOptions.options.libraries.count))
+                  {
+                     f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
+                     if((projectPlatformOptions && projectPlatformOptions.options.libraryDirs && projectPlatformOptions.options.libraryDirs.count) ||
+                        (configPlatformOptions && configPlatformOptions.options.libraryDirs && configPlatformOptions.options.libraryDirs.count))
+                     {
+                        f.Printf("OFLAGS +=");
+                        if(configPlatformOptions && configPlatformOptions.options.libraryDirs)
+                           OutputListOption(f, "L", configPlatformOptions.options.libraryDirs, lineEach, true);
+                        if(projectPlatformOptions && projectPlatformOptions.options.libraryDirs)
+                           OutputListOption(f, "L", projectPlatformOptions.options.libraryDirs, lineEach, true);
+                        f.Printf("\n");
+                     }
+
+                     if((configPlatformOptions && configPlatformOptions.options.libraries &&
+                           configPlatformOptions.options.libraries.count))
+                     {
+                        f.Printf("LIBS +=");
+                        OutputLibraries(f, configPlatformOptions.options.libraries);
+                        f.Printf("\n");
+                     }
+                     if(projectPlatformOptions && projectPlatformOptions.options.libraries &&
+                           projectPlatformOptions.options.libraries.count)
+                     {
+                        f.Printf("LIBS +=");
+                        OutputLibraries(f, projectPlatformOptions.options.libraries);
+                        f.Printf("\n");
+                     }
+                     f.Printf("endif\n\n");
+                  }
+               }
+            }
+            if(ifCount)
+            {
+               for(c = 0; c < ifCount; c++)
+                  f.Printf("endif\n");
+            }
+            f.Printf("\n");
+         }
+
+         f.Printf("CFLAGS +=");
          if(gccCompiler)
          {
             f.Printf(" -fmessage-length=0");
@@ -1948,17 +2048,17 @@ private:
             OutputListOption(f, "D", config.options.preprocessorDefinitions, newLine, false);
          if(compiler.includeDirs)
             OutputListOption(f, gccCompiler ? "isystem " : "I", compiler.includeDirs, lineEach, true);
-         if(options && options.includeDirs)
-            OutputListOption(f, "I", options.includeDirs, lineEach, true);
          if(config && config.options && config.options.includeDirs)
             OutputListOption(f, "I", config.options.includeDirs, lineEach, true);
+         if(options && options.includeDirs)
+            OutputListOption(f, "I", options.includeDirs, lineEach, true);
          f.Printf("\n\n");
 
-         f.Printf("CECFLAGS =%s%s%s%s", defaultPreprocessor ? "" : " -cpp ", defaultPreprocessor ? "" : compiler.cppCommand, 
+         f.Printf("CECFLAGS +=%s%s%s%s", defaultPreprocessor ? "" : " -cpp ", defaultPreprocessor ? "" : compiler.cppCommand,
                crossCompiling ? " -t " : "", crossCompiling ? (char*)compiler.targetPlatform : "");
          f.Printf("\n\n");
 
-         f.Printf("ECFLAGS =");
+         f.Printf("ECFLAGS +=");
          if(GetMemoryGuard(config))
             f.Printf(" -memguard");
          if(GetStrictNameSpaces(config))
@@ -1972,25 +2072,23 @@ private:
          }
          f.Printf("\n\n");
 
-         f.Printf("OFLAGS =\n");
+         f.Printf("OFLAGS +=\n");
          f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
          f.Printf("OFLAGS += -m32");
          if(GetProfile(config))
             f.Printf(" -pg");
-         // no if?
          if(compiler.libraryDirs)
             OutputListOption(f, "L", compiler.libraryDirs, lineEach, true);
-         if(options && options.libraryDirs)
-            OutputListOption(f, "L", options.libraryDirs, lineEach, true);
          if(config && config.options && config.options.libraryDirs)
             OutputListOption(f, "L", config.options.libraryDirs, lineEach, true);
+         if(options && options.libraryDirs)
+            OutputListOption(f, "L", options.libraryDirs, lineEach, true);
          f.Printf("\n");
          f.Printf("endif\n\n");
 
          if((config && config.options && config.options.libraries) ||
                (options && options.libraries))
          {
-            f.Printf("LIBS =\n");
             f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
             f.Printf("LIBS +=");
             if(config && config.options && config.options.libraries)
@@ -2002,7 +2100,7 @@ private:
             f.Printf("LIBS +=");
          }
          else
-            f.Printf("LIBS =");
+            f.Printf("LIBS +=");
 
          f.Printf(" $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)\n\n");
 
@@ -2017,99 +2115,6 @@ private:
          f.Printf("ifdef %s\n", PlatformToMakefileVariable(apple));
          f.Printf("OFLAGS += -framework cocoa -framework OpenGL\n");
          f.Printf("endif\n\n");
-
-         if(platforms || (config && config.platforms))
-         {
-            ifCount = 0;
-            //for(platform = firstPlatform; platform <= lastPlatform; platform++)
-            //for(platform = win32; platform <= apple; platform++)
-            
-            f.Printf("# PLATFORM-SPECIFIC OPTIONS\n\n");
-            for(platform = (Platform)1; platform < Platform::enumSize; platform++)
-            {
-               PlatformOptions projectPlatformOptions, configPlatformOptions;
-               MatchProjectAndConfigPlatformOptions(config, platform, &projectPlatformOptions, &configPlatformOptions);
-
-               if(projectPlatformOptions || configPlatformOptions)
-               {
-                  if(ifCount)
-                     f.Printf("else\n");
-                  ifCount++;
-                  f.Printf("ifdef ");
-                  f.Printf(PlatformToMakefileVariable(platform));
-                  f.Printf("\n\n");
-
-                  if((projectPlatformOptions && projectPlatformOptions.options.preprocessorDefinitions && projectPlatformOptions.options.preprocessorDefinitions.count) ||
-                     (configPlatformOptions && configPlatformOptions.options.preprocessorDefinitions && configPlatformOptions.options.preprocessorDefinitions.count) ||
-                     (projectPlatformOptions && projectPlatformOptions.options.includeDirs && projectPlatformOptions.options.includeDirs.count) ||
-                     (configPlatformOptions && configPlatformOptions.options.includeDirs && configPlatformOptions.options.includeDirs.count))
-                  {
-                     f.Printf("CFLAGS +=");
-                     if(projectPlatformOptions && projectPlatformOptions.options.linkerOptions && projectPlatformOptions.options.linkerOptions.count)
-                     {
-                        f.Printf(" \\\n\t -Wl");
-                        for(s : projectPlatformOptions.options.linkerOptions)
-                           f.Printf(",%s", s);
-                     }
-                     if(configPlatformOptions && configPlatformOptions.options.linkerOptions && configPlatformOptions.options.linkerOptions.count)
-                     {
-                        f.Printf(" \\\n\t -Wl");
-                        for(s : configPlatformOptions.options.linkerOptions)
-                           f.Printf(",%s", s);
-                     }
-                     if(projectPlatformOptions && projectPlatformOptions.options.preprocessorDefinitions)
-                        OutputListOption(f, "D", projectPlatformOptions.options.preprocessorDefinitions, newLine, false);
-                     if(configPlatformOptions && configPlatformOptions.options.preprocessorDefinitions)
-                        OutputListOption(f, "D", configPlatformOptions.options.preprocessorDefinitions, newLine, false );
-                     if(projectPlatformOptions && projectPlatformOptions.options.includeDirs)
-                        OutputListOption(f, "I", projectPlatformOptions.options.includeDirs, lineEach, true);
-                     if(configPlatformOptions && configPlatformOptions.options.includeDirs)
-                        OutputListOption(f, "I", configPlatformOptions.options.includeDirs, lineEach, true);
-                     f.Printf("\n\n");
-                  }
-
-                  if((projectPlatformOptions && projectPlatformOptions.options.libraryDirs && projectPlatformOptions.options.libraryDirs.count) ||
-                        (configPlatformOptions && configPlatformOptions.options.libraryDirs && configPlatformOptions.options.libraryDirs.count) ||
-                        (projectPlatformOptions && projectPlatformOptions.options.libraries && projectPlatformOptions.options.libraries.count) ||
-                        (configPlatformOptions && configPlatformOptions.options.libraries && configPlatformOptions.options.libraries.count))
-                  {
-                     f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
-                     if((projectPlatformOptions && projectPlatformOptions.options.libraryDirs && projectPlatformOptions.options.libraryDirs.count) ||
-                        (configPlatformOptions && configPlatformOptions.options.libraryDirs && configPlatformOptions.options.libraryDirs.count))
-                     {
-                        f.Printf("OFLAGS +=");
-                        if(projectPlatformOptions && projectPlatformOptions.options.libraryDirs)
-                           OutputListOption(f, "L", projectPlatformOptions.options.libraryDirs, lineEach, true);
-                        if(configPlatformOptions && configPlatformOptions.options.libraryDirs)
-                           OutputListOption(f, "L", configPlatformOptions.options.libraryDirs, lineEach, true);
-                        f.Printf("\n");
-                     }
-
-                     if(projectPlatformOptions && projectPlatformOptions.options.libraries &&
-                           projectPlatformOptions.options.libraries.count/* && 
-                           (!config || !config.options || !config.options.libraries)*/)
-                     {
-                        f.Printf("LIBS +=");
-                        OutputLibraries(f, projectPlatformOptions.options.libraries);
-                        f.Printf("\n");
-                     }
-                     {/*TOFIX: EXTRA CURLIES FOR NASTY WARNING*/if((configPlatformOptions && configPlatformOptions.options.libraries && configPlatformOptions.options.libraries.count))
-                     {
-                        f.Printf("LIBS +=");
-                        OutputLibraries(f, configPlatformOptions.options.libraries);
-                        f.Printf("\n");
-                     }}
-                     f.Printf("endif\n\n");
-                  }
-               }
-            }
-            if(ifCount)
-            {
-               for(c = 0; c < ifCount; c++)
-                  f.Printf("endif\n");
-            }
-            f.Printf("\n");
-         }
 
          f.Printf("# TARGETS\n\n");
 
