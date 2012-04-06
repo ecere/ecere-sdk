@@ -1446,8 +1446,11 @@ private:
       return count;
    }
 
-   void GenMakefilePrintSymbolRules(File f, Project project, CompilerConfig compiler, ProjectConfig prjConfig)
+   void GenMakefilePrintSymbolRules(File f, Project project, CompilerConfig compiler,
+         ProjectConfig prjConfig, Map<Platform, bool> parentExcludedPlatforms)
    {
+      int ifCount = 0;
+      Array<Platform> platforms = GetPlatformsArrayFromExcluisionInfo(prjConfig);
       //ProjectNode child;
       //char objDir[MAX_LOCATION];
       //ReplaceSpaces(objDir, config.objDir.dir);
@@ -1458,7 +1461,7 @@ private:
          char extension[MAX_EXTENSION];
          char modulePath[MAX_LOCATION];
          char moduleName[MAX_FILENAME];
-         
+
          GetExtension(name, extension);
          if(!strcmpi(extension, "ec"))
          {
@@ -1541,6 +1544,7 @@ private:
                if(!result)
                {
 #endif
+               OpenRulesPlatformExclusionIfs(f, &ifCount, platforms[0], parentExcludedPlatforms, null);
                   f.Printf("$(OBJ)%s.sym: %s%s.%s\n",
                      moduleName, modulePath, moduleName, extension);
 #if 0
@@ -1575,6 +1579,7 @@ private:
 
             f.Printf(" -c %s%s.%s -o $(OBJ)%s.sym\n\n",
                modulePath, moduleName, extension, moduleName);
+            CloseRulesPlatformExclusionIfs(f, ifCount);
          }
       }
       if(files)
@@ -1593,48 +1598,126 @@ private:
          }
          if(needed)
          {
-            int ifCount = 0;
-            Array<Platform> platforms { };
-            {
-               Map<Platform, SetBool> exclusionInfo { };
-               CollectExclusionInfo(exclusionInfo, prjConfig);
-               if(exclusionInfo[unknown] == true && exclusionInfo.count > 1)
-                  for(mn : exclusionInfo; mn == false)
-                     platforms.Add(&mn);
-               else
-                  platforms.Add(unknown);
-               delete exclusionInfo;
-            }
+            Map<Platform, bool> excludedPlatforms { };
+            for(mn : parentExcludedPlatforms) if(mn) excludedPlatforms[&mn] = true;
             for(platform : platforms)
             {
-               if(platform != unknown)
-               {
-                  if(ifCount)                  // we really need a if defined(a) || defined(b) here
-                     f.Printf("else\n");       // instead of repeating the rules for each platform
-                  ifCount++;                   //
-                  f.Printf("ifdef %s\n\n", PlatformToMakefileVariable(platform)); //
-               }
+               OpenRulesPlatformExclusionIfs(f, &ifCount, platform, parentExcludedPlatforms, excludedPlatforms);
                for(child : files)
                {
                   if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-                     child.GenMakefilePrintSymbolRules(f, project, compiler, prjConfig);
+                     child.GenMakefilePrintSymbolRules(f, project, compiler, prjConfig, excludedPlatforms);
                }
             }
-            if(ifCount)
-            {
-               int c;
-               for(c = 0; c < ifCount; c++)
-                  f.Printf("endif\n");
-               f.Printf("\n");
-            }
-            delete platforms;
+            CloseRulesPlatformExclusionIfs(f, ifCount);
+            delete excludedPlatforms;
          }
       }
+      delete platforms;
    }
 
-   void GenMakefilePrintCObjectRules(File f, Project project, CompilerConfig compiler, ProjectConfig prjConfig)
+   void GenMakefilePrintPrepecsRules(File f, Project project, CompilerConfig compiler,
+         ProjectConfig prjConfig, Map<Platform, bool> parentExcludedPlatforms)
    {
+      int ifCount = 0;
       ProjectConfig config = GetMatchingNodeConfig(prjConfig);
+      Array<Platform> platforms = GetPlatformsArrayFromExcluisionInfo(prjConfig);
+      //ProjectNode child;
+      //char objDir[MAX_LOCATION];
+      //ReplaceSpaces(objDir, config.objDir.dir);
+
+      //eSystem_Log("Printing Symbol Rules\n");
+      if(type == file)
+      {
+         char extension[MAX_EXTENSION];
+         char modulePath[MAX_LOCATION];
+         char moduleName[MAX_FILENAME];
+
+         GetExtension(name, extension);
+         if(!strcmpi(extension, "ec"))
+         {
+            DualPipe dep;
+            char command[2048];
+
+            ReplaceSpaces(moduleName, name);
+            StripExtension(moduleName);
+
+            ReplaceSpaces(modulePath, path);
+            if(modulePath[0]) strcat(modulePath, SEPS);
+
+            OpenRulesPlatformExclusionIfs(f, &ifCount, platforms[0], parentExcludedPlatforms, null);
+            f.Printf("$(OBJ)%s$(EC): %s%s.%s\n",
+               moduleName, modulePath, moduleName, extension);
+            //$(CPP) -x c -E ../extras/gui/controls/DirectoriesBox.ec -o $(OBJ)DirectoriesBox$(EC)
+            /*f.Printf("\t$(CPP) %s%s.%s %s$(S)\n\n",
+               modulePath, moduleName, extension, moduleName);*/
+
+            f.Printf("\t$(CPP)");
+            // Give priority to file flags
+            GenFileFlags(f, project, prjConfig);
+
+            /*f.Printf(" $(CECFLAGS)");
+            if(GetECFLAGS(prjConfig))
+            {
+               if(GetMemoryGuard(prjConfig))
+                  f.Printf(" -memguard");
+               if(GetStrictNameSpaces(prjConfig))
+                  f.Printf(" -strictns");
+               {
+                  char * s = GetDefaultNameSpace(prjConfig);
+                  if(s && s[0])
+                     f.Printf(" -defaultns %s", s);
+               }
+            }
+            else
+               f.Printf(" $(ECFLAGS)");*/
+            f.Printf(" $(CFLAGS)");
+
+            f.Printf(" -x c -E %s%s.%s -o $(OBJ)%s$(EC)\n\n",
+               modulePath, moduleName, extension, moduleName);
+            CloseRulesPlatformExclusionIfs(f, ifCount);
+         }
+      }
+      if(files)
+      {
+         bool needed = false;
+         if(ContainsFilesWithExtension("ec"))
+         {
+            for(child : files)
+            {
+               if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+               {
+                  needed = true;
+                  break;
+               }
+            }
+         }
+         if(needed)
+         {
+            Map<Platform, bool> excludedPlatforms { };
+            for(mn : parentExcludedPlatforms) if(mn) excludedPlatforms[&mn] = true;
+            for(platform : platforms)
+            {
+               OpenRulesPlatformExclusionIfs(f, &ifCount, platform, parentExcludedPlatforms, excludedPlatforms);
+               for(child : files)
+               {
+                  if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+                     child.GenMakefilePrintPrepecsRules(f, project, compiler, prjConfig, excludedPlatforms);
+               }
+            }
+            CloseRulesPlatformExclusionIfs(f, ifCount);
+            delete excludedPlatforms;
+         }
+      }
+      delete platforms;
+   }
+
+   void GenMakefilePrintCObjectRules(File f, Project project, CompilerConfig compiler,
+      ProjectConfig prjConfig, Map<Platform, bool> parentExcludedPlatforms)
+   {
+      int ifCount = 0;
+      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
+      Array<Platform> platforms = GetPlatformsArrayFromExcluisionInfo(prjConfig);
       //ProjectNode child;
       //char objDir[MAX_LOCATION];
       //ReplaceSpaces(objDir, config.objDir.dir);
@@ -1731,6 +1814,7 @@ private:
                      moduleName, modulePath, moduleName, extension);
                   */
 #endif
+            OpenRulesPlatformExclusionIfs(f, &ifCount, platforms[0], parentExcludedPlatforms, null);
                   f.Printf("$(OBJ)%s.c: %s%s.%s $(OBJ)%s.sym | $(SYMBOLS)\n",
                      moduleName, modulePath, moduleName, extension, moduleName);
 #if 0
@@ -1764,6 +1848,7 @@ private:
 
             f.Printf(" -c %s%s.%s -o $(OBJ)%s.c -symbols $(OBJ)\n\n",
                modulePath, moduleName, extension, moduleName);
+            CloseRulesPlatformExclusionIfs(f, ifCount);
          }
       }
       if(files)
@@ -1782,50 +1867,32 @@ private:
          }
          if(needed)
          {
-            int ifCount = 0;
-            Array<Platform> platforms { };
-            {
-               Map<Platform, SetBool> exclusionInfo { };
-               CollectExclusionInfo(exclusionInfo, prjConfig);
-               if(exclusionInfo[unknown] == true && exclusionInfo.count > 1)
-                  for(mn : exclusionInfo; mn == false)
-                     platforms.Add(&mn);
-               else
-                  platforms.Add(unknown);
-               delete exclusionInfo;
-            }
+            Map<Platform, bool> excludedPlatforms { };
+            for(mn : parentExcludedPlatforms) if(mn) excludedPlatforms[&mn] = true;
             for(platform : platforms)
             {
-               if(platform != unknown)
-               {
-                  if(ifCount)                  // we really need a if defined(a) || defined(b) here
-                     f.Printf("else\n");       // instead of repeating the rules for each platform
-                  ifCount++;                   //
-                  f.Printf("ifdef %s\n\n", PlatformToMakefileVariable(platform)); //
-               }
+               OpenRulesPlatformExclusionIfs(f, &ifCount, platform, parentExcludedPlatforms, excludedPlatforms);
                for(child : files)
                {
                   if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-                     child.GenMakefilePrintCObjectRules(f, project, compiler, prjConfig);
+                     child.GenMakefilePrintCObjectRules(f, project, compiler, prjConfig, excludedPlatforms);
                }
             }
-            if(ifCount)
-            {
-               int c;
-               for(c = 0; c < ifCount; c++)
-                  f.Printf("endif\n");
-               f.Printf("\n");
-            }
-            delete platforms;
+            CloseRulesPlatformExclusionIfs(f, ifCount);
+            delete excludedPlatforms;
          }
       }
+      delete platforms;
    }
 
    void GenMakefilePrintObjectRules(File f, Project project,
       Map<String, NameCollisionInfo> namesInfo,
-      CompilerConfig compiler, ProjectConfig prjConfig)
+      CompilerConfig compiler, ProjectConfig prjConfig,
+      Map<Platform, bool> parentExcludedPlatforms)
    {
+      int ifCount = 0;
       ProjectConfig config = GetMatchingNodeConfig(prjConfig);
+      Array<Platform> platforms = GetPlatformsArrayFromExcluisionInfo(prjConfig);
       //ProjectNode child;
       //char objDir[MAX_LOCATION];
       //ReplaceSpaces(objDir, config.objDir.dir);
@@ -1836,7 +1903,7 @@ private:
          char extension[MAX_EXTENSION];
          char modulePath[MAX_LOCATION];
          char moduleName[MAX_FILENAME];
-         
+
          GetExtension(name, extension);
          /*if(!strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
                !strcmpi(extension, "ec") || !strcmpi(extension, "cc") ||
@@ -1935,6 +2002,8 @@ private:
                   if(!result)
                   {
 #endif
+            OpenRulesPlatformExclusionIfs(f, &ifCount, platforms[0], parentExcludedPlatforms, null);
+
                      /*if(!strcmpi(extension, "ec"))
                         f.Printf("$(OBJ)%s.o: $(OBJ)%s.c\n", moduleName, moduleName);
                      else*/
@@ -1957,6 +2026,7 @@ private:
                f.Printf(" -c %s%s.%s -o $(OBJ)%s%s%s.o\n\n",
                      modulePath, moduleName, !strcmpi(extension, "ec") ? "c" : extension, moduleName,
                      collision ? "." : "", collision ? extension : "");
+            CloseRulesPlatformExclusionIfs(f, ifCount);
          }
       }
       if(files)
@@ -1972,43 +2042,22 @@ private:
          }
          if(needed)
          {
-            int ifCount = 0;
-            Array<Platform> platforms { };
-            {
-               Map<Platform, SetBool> exclusionInfo { };
-               CollectExclusionInfo(exclusionInfo, prjConfig);
-               if(exclusionInfo[unknown] == true && exclusionInfo.count > 1)
-                  for(mn : exclusionInfo; mn == false)
-                     platforms.Add(&mn);
-               else
-                  platforms.Add(unknown);
-               delete exclusionInfo;
-            }
+            Map<Platform, bool> excludedPlatforms { };
+            for(mn : parentExcludedPlatforms) if(mn) excludedPlatforms[&mn] = true;
             for(platform : platforms)
             {
-               if(platform != unknown)
-               {
-                  if(ifCount)                  // we really need a if defined(a) || defined(b) here
-                     f.Printf("else\n");       // instead of repeating the rules for each platform
-                  ifCount++;                   //
-                  f.Printf("ifdef %s\n\n", PlatformToMakefileVariable(platform)); //
-               }
+               OpenRulesPlatformExclusionIfs(f, &ifCount, platform, parentExcludedPlatforms, excludedPlatforms);
                for(child : files)
                {
                   if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-                     child.GenMakefilePrintObjectRules(f, project, namesInfo, compiler, prjConfig);
+                     child.GenMakefilePrintObjectRules(f, project, namesInfo, compiler, prjConfig, excludedPlatforms);
                }
             }
-            if(ifCount)
-            {
-               int c;
-               for(c = 0; c < ifCount; c++)
-                  f.Printf("endif\n");
-               f.Printf("\n");
-            }
-            delete platforms;
+            CloseRulesPlatformExclusionIfs(f, ifCount);
+            delete excludedPlatforms;
          }
       }
+      delete platforms;
    }
 
    void GenMakefileAddResources(File f, String resourcesPath, ProjectConfig prjConfig)
@@ -2092,6 +2141,20 @@ private:
          }
       }
    }
+
+   Array<Platform> GetPlatformsArrayFromExcluisionInfo(ProjectConfig prjConfig)
+   {
+      Array<Platform> platforms { };
+      Map<Platform, SetBool> exclusionInfo { };
+      CollectExclusionInfo(exclusionInfo, prjConfig);
+      if(exclusionInfo[unknown] == true && exclusionInfo.count > 1)
+         for(mn : exclusionInfo; mn == false)
+            platforms.Add(&mn);
+      else
+         platforms.Add(unknown);
+      delete exclusionInfo;
+      return platforms;
+   }
 }
 
 class NameCollisionInfo
@@ -2116,5 +2179,30 @@ class NameCollisionInfo
       else
          colliding = false;
      return colliding;
+   }
+}
+
+static inline void OpenRulesPlatformExclusionIfs(File f, int * ifCount, Platform platform,
+      Map<Platform, bool> parentExcludedPlatforms, Map<Platform, bool> excludedPlatforms)
+{
+   if(platform != unknown && !parentExcludedPlatforms[platform])
+   {
+      if(*ifCount)                 // we really need a if defined(a) || defined(b) here
+         f.Printf("else\n");       // instead of repeating the rules for each platform
+      (*ifCount)++;                  //
+      f.Printf("ifdef %s\n\n", PlatformToMakefileVariable(platform)); //
+      if(excludedPlatforms)
+         excludedPlatforms[platform] = true;
+   }
+}
+
+static inline void CloseRulesPlatformExclusionIfs(File f, int ifCount)
+{
+   if(ifCount)
+   {
+      int c;
+      for(c = 0; c < ifCount; c++)
+         f.Printf("endif\n");
+      f.Printf("\n");
    }
 }

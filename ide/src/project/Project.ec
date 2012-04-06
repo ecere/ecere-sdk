@@ -2297,10 +2297,18 @@ private:
          f.Printf("\n");
 
          f.Printf("# SYMBOL RULES\n\n");
-         topNode.GenMakefilePrintSymbolRules(f, this, compiler, config);
+         {
+            Map<Platform, bool> excludedPlatforms { };
+            topNode.GenMakefilePrintSymbolRules(f, this, compiler, config, excludedPlatforms);
+            delete excludedPlatforms;
+         }
 
          f.Printf("# C OBJECT RULES\n\n");
-         topNode.GenMakefilePrintCObjectRules(f, this, compiler, config);
+         {
+            Map<Platform, bool> excludedPlatforms { };
+            topNode.GenMakefilePrintCObjectRules(f, this, compiler, config, excludedPlatforms);
+            delete excludedPlatforms;
+         }
 
          /*if(numCObjects)
          {
@@ -2313,7 +2321,11 @@ private:
          f.Printf("# OBJECT RULES\n\n");
          // todo call this still but only generate rules whith specific options
          // see we-have-file-specific-options in ProjectNode.ec
-         topNode.GenMakefilePrintObjectRules(f, this, namesInfo, compiler, config);
+         {
+            Map<Platform, bool> excludedPlatforms { };
+            topNode.GenMakefilePrintObjectRules(f, this, namesInfo, compiler, config, excludedPlatforms);
+            delete excludedPlatforms;
+         }
 
          if(numCObjects)
             GenMakefilePrintMainObjectRule(f, compiler, config);
