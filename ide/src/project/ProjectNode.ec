@@ -1007,6 +1007,34 @@ private:
       return result;
    }
 
+   ProjectNode FindByFullPath(char * path, bool includeResources)
+   {
+      ProjectNode result = null;
+      if(files)
+      {
+         for(child : files)
+         {
+            if(includeResources || child.type != resources)
+            {
+               if(child.type != folder && child.name)
+               {
+                  char p[MAX_LOCATION];
+                  child.GetFullFilePath(p);
+                  if(!strcmpi(p, path))
+                  {
+                     result = child;
+                     break;
+                  }
+               }
+               result = child.FindByFullPath(path, includeResources);
+               if(result)
+                  break;
+            }
+         }
+      }
+      return result;
+   }
+
    ProjectNode FindSpecial(char * name, bool recursive, bool includeResources, bool includeFolders)
    {
       ProjectNode result = null;

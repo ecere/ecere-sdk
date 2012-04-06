@@ -508,19 +508,8 @@ class ProjectView : Window
          {
             Project prj = project ? project : p;
             ProjectNode node;
-            char moduleName[MAX_FILENAME], modulePath[MAX_LOCATION];
-            GetLastDirectory(document.fileName, moduleName);
-
-            if((node = prj.topNode.Find(moduleName, false)))
-            {
-               strcpy(modulePath, prj.topNode.path);
-               PathCatSlash(modulePath, node.path);
-               PathCatSlash(modulePath, node.name);
-               if(!fstrcmp(documentFileName, modulePath))
-               {
-                  return node;
-               }
-            }
+            if((node = prj.topNode.FindByFullPath(documentFileName, false)))
+               return node;
             if(project) break;
          }
       }
