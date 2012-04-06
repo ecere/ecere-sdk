@@ -1930,6 +1930,21 @@ private:
             f.Printf("\n");
          }
 
+         if((config && config.options && config.options.libraries) ||
+               (options && options.libraries))
+         {
+            f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
+            f.Printf("LIBS +=");
+            if(options && options.libraries)
+               OutputLibraries(f, options.libraries);
+            else if(config && config.options && config.options.libraries)
+               OutputLibraries(f, config.options.libraries);
+            f.Printf("\n");
+            f.Printf("endif\n");
+            f.Printf("\n");
+         }
+         f.Printf("LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)\n\n");
+
          if(platforms || (config && config.platforms))
          {
             ifCount = 0;
@@ -1997,18 +2012,18 @@ private:
                         f.Printf("\n");
                      }
 
-                     if((configPlatformOptions && configPlatformOptions.options.libraries &&
-                           configPlatformOptions.options.libraries.count))
-                     {
-                        f.Printf("LIBS +=");
-                        OutputLibraries(f, configPlatformOptions.options.libraries);
-                        f.Printf("\n");
-                     }
                      if(projectPlatformOptions && projectPlatformOptions.options.libraries &&
                            projectPlatformOptions.options.libraries.count)
                      {
                         f.Printf("LIBS +=");
                         OutputLibraries(f, projectPlatformOptions.options.libraries);
+                        f.Printf("\n");
+                     }
+                     if((configPlatformOptions && configPlatformOptions.options.libraries &&
+                           configPlatformOptions.options.libraries.count))
+                     {
+                        f.Printf("LIBS +=");
+                        OutputLibraries(f, configPlatformOptions.options.libraries);
                         f.Printf("\n");
                      }
                      f.Printf("endif\n\n");
@@ -2099,24 +2114,6 @@ private:
             OutputListOption(f, "L", options.libraryDirs, lineEach, true);
          f.Printf("\n");
          f.Printf("endif\n\n");
-
-         if((config && config.options && config.options.libraries) ||
-               (options && options.libraries))
-         {
-            f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
-            f.Printf("LIBS +=");
-            if(config && config.options && config.options.libraries)
-               OutputLibraries(f, config.options.libraries);
-            else if(options && options.libraries)
-               OutputLibraries(f, options.libraries);
-            f.Printf("\n");
-            f.Printf("endif\n");
-            f.Printf("LIBS +=");
-         }
-         else
-            f.Printf("LIBS +=");
-
-         f.Printf(" $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)\n\n");
 
          f.Printf("UPXFLAGS = -9\n\n"); // TOFEAT: Compression Level Option? Other UPX Options?
 
