@@ -24,6 +24,7 @@ public:
    Window editor;
    bool readOnly;
    bool keepEditor;
+   bool autoSize;
 
    virtual void SetData(any_object newData, bool closingDropDown)
    {

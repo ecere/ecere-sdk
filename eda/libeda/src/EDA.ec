@@ -4,6 +4,12 @@ public import static "ecere"
 public import "ecere"
 #endif
 
+#include <stdarg.h>
+
+#ifdef _DEBUG
+#define _DEBUG_LINE
+#endif
+
 public enum OpenType { queryRows, tableRows, viewRows, processesList, databasesList, tablesList, fieldsList };
 public enum CreateOptions { no, create, readOnly };
 public enum AccessOptions { integral, random };
@@ -537,3 +543,15 @@ public struct FieldFindData
    Field field;
    DataValue value;
 };
+
+static inline void DebugLn(typed_object object, ...)
+{
+#if defined(_DEBUG_LINE)
+   va_list args;
+   char buffer[4096];
+   va_start(args, object);
+   PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
+   va_end(args);
+   puts(buffer);
+#endif
+}

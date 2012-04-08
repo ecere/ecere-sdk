@@ -19,27 +19,27 @@ public class FieldBox : DataBox
    {
       set
       {
-         editor = value;
-         if(editor)
-            editor.AddFieldBox(this);
+         if(value != editor)
+         {
+            if(editor)
+               editor.RemoveFieldBox(this);
+            editor = value;
+            if(value)
+               value.AddFieldBox(this);
+         }
       }
    }
 
    watch(parent)
    {
-      if(eClass_IsDerived(parent._class, class(TableEditor)) && editor != (TableEditor)parent)
-      {
-         editor = (TableEditor)parent;
-         editor.AddFieldBox(this);
-      }
+      if(eClass_IsDerived(parent._class, class(TableEditor)))
+         property::editor = (TableEditor)parent;
    };
+
    watch(master)
    {
-      if(eClass_IsDerived(master._class, class(TableEditor)) && editor != (TableEditor)master)
-      {
-         editor = (TableEditor)master;
-         editor.AddFieldBox(this);
-      }
+      if(eClass_IsDerived(master._class, class(TableEditor)))
+         property::editor = (TableEditor)master;
    };
 
    public property Field field

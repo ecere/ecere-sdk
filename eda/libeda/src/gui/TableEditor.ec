@@ -77,6 +77,7 @@ public:
                }
             }
             initialized = true;
+            OnInitizlize();
          }
          if(!listEnumerationCompleted)
             Enumerate();
@@ -151,11 +152,24 @@ public:
    }
    String searchString;
 
+   Array<LookupField> dynamicLookupFields;
+   property Array<LookupField> dynamicLookupFields
+   {
+      set
+      {
+         DebugLn("TableEditor::dynamicLookupFields|set");
+         dynamicLookupFields = value;
+      }
+   }
+
    // Fields Editor
    property Id selectedId { get { return selectedId; } }
 
    Array<FieldBox> fieldsBoxes { };
+   Array<TableEditor> tableEditors { };
+   Array<TableEditor> dynamicLookupTableEditors { };
    
+   public virtual void OnInitizlize();
    public virtual void OnLoad();
    public virtual void OnStateChanged();
    bool internalModifications;
@@ -242,6 +256,53 @@ public:
       listEnumerationTimer.Start();
    }
 
+   virtual void TableEditor::OnCreateDynamicLookupEditors()
+   {
+      DebugLn("TableEditor::OnCreateLookupEditors");
+      if(dynamicLookupFields && dynamicLookupFields.count)
+      {
+         for(luf : dynamicLookupFields)
+         {
+            if(luf.editorClass && luf.parentWindow)
+            {
+               TableEditor editor = eInstance_New(luf.editorClass);
+               editor.parent = luf.parentWindow;
+               editor.master = this;
+               dynamicLookupTableEditors.Add(editor);
+            }
+         }
+      }
+   }
+
+   TableEditor masterEditor;
+
+   public property TableEditor masterEditor
+   {
+      set
+      {
+         if(value != masterEditor)
+         {
+            if(masterEditor)
+               masterEditor.RemoveTableEditor(this);
+            masterEditor = value;
+            if(value)
+               value.AddTableEditor(this);
+         }
+      }
+   }
+
+   watch(parent)
+   {
+      if(eClass_IsDerived(parent._class, class(TableEditor)))
+         property::masterEditor = (TableEditor)parent;
+   };
+
+   watch(master)
+   {
+      if(eClass_IsDerived(master._class, class(TableEditor)))
+         property::masterEditor = (TableEditor)master;
+   };
+
    void CreateRow()
    {
       DebugLn("TableEditor::CreateRow");
@@ -249,10 +310,19 @@ public:
       if(!modifiedDocument)
       {
          uint id; // = table.rowsCount + 1; // this is bad with deleted rows, won't work, how to have unique id? 
-         Row r = editRow;// { table };
+                               // I think the 3 following comment lines apply to the old sqlite driver before many fix we done for wsms
+         Row r = editRow;// { table }; // the multipurpose row is buggy with sqlite driver, you can't use the same row to do Row::Last(), Row::Next(), Row::Find(), etc...
+         //Row r { editRow.tbl };                    // for example, Row::Last() here is not using the proper sqlite statement and fails to
+                                                   // return false when no rows are present in a table
          DataRow row = null;
          String newText;
 
+         /*uint count = editRow.tbl.GetRowsCount();
+
+         id = 0;
+         // r.Last() is returning true even if there are not rows in this table (SQLite)
+         if(count && !(r.Last() || r.Last()))
+            DebugLn("PROBLEM");*/
          if(r.Last())   // this will reuse ids in cases where the item(s) with the last id have been deleted
          {
             r.GetData(idField, id);
@@ -291,7 +361,7 @@ public:
                   {
                      if(lf.field.type == class(String))
                         r.SetData(lf.field, newText);
-                     else
+                     else // this whole block is new?
                      {
                         if(lf.field.type._vTbl[__ecereVMethodID_class_OnGetDataFromString])
                         {
@@ -675,6 +745,18 @@ private:
          DebugLn("   FieldBox instance already added");
    }
 
+   void RemoveFieldBox(FieldBox fieldBox)
+   {
+      Iterator<FieldBox> it { fieldsBoxes };
+      DebugLn("TableEditor::RemoveFieldBox");
+      if(it.Find(fieldBox))
+      {
+         it.Remove(); // fieldsBoxes.Remove(it.pointer); // <-- any reason why we would want to do that instead?
+      }
+      else
+         DebugLn("   FieldBox instance not found, no need to remove");
+   }
+
    void InitFieldsBoxes()
    {
       DebugLn("TableEditor::InitFieldsBoxes");
@@ -706,6 +788,10 @@ private:
          list.Sort(listSortField, listSortOrder);
       }
       internalModifications = false;
+
+      for(te : tableEditors)
+         te.EditSave();
+
       modifiedDocument = false;
       OnStateChanged();
    }
@@ -718,6 +804,9 @@ private:
       for(fb : fieldsBoxes)
          fb.Load();
       internalModifications = false;
+
+      DebugLn("   TODO: implement virtual method TableEditor::OnSubEditorsLoad");
+
       modifiedDocument = false;
       OnStateChanged();
    }
@@ -728,8 +817,11 @@ private:
       internalModifications = true;
       for(fb : fieldsBoxes)
          fb.Clear();
-      modifiedDocument = false;
       internalModifications = false;
+
+      DebugLn("   TODO: remove all sub table editors");
+
+      modifiedDocument = false;
       OnStateChanged();
    }
 
@@ -902,6 +994,8 @@ private:
 
    }
 
+   // find a way to not load a tree for different searchFields
+   // if the code that sets the searchFields has changed
    void PrepareWordList(char * filePath)
    {
       DebugLn("TableEditor::PrepareWordList");
@@ -1162,6 +1256,18 @@ private:*/
    {
       delete dataField;
    }
+}
+
+public class LookupField : struct
+{
+public:
+   Field field;
+   Table lookupTable;
+   Field lookupField;
+   Field lookupValueField;
+   String (*CustomLookup)(Id);
+   subclass(TableEditor) editorClass;
+   Window parentWindow;
 }
 
 static WordEntry * btnodes;
