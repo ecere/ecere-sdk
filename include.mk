@@ -1,4 +1,3 @@
-
 # HOST PLATFORM DETECTION
 ifeq "$(OS)" "Windows_NT"
    WINDOWS = defined
@@ -54,6 +53,7 @@ endif
 .SUFFIXES: .c .ec .sym .imp .o
 S := .sym
 I := .imp
+C := .c
 O := .o
 A := .a
 ifeq "$(PLATFORM)" "win32"

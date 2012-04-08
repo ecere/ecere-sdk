@@ -374,7 +374,7 @@ define PEEK_RESOLUTION = (18.2 * 10);
 
 static byte epjSignature[] = { 'E', 'P', 'J', 0x04, 0x01, 0x12, 0x03, 0x12 };
 
-enum GenMakefilePrintTypes { objects, cObjects, symbols, imports, sources, resources };
+enum GenMakefilePrintTypes { objects, cObjects, symbols, imports, sources, resources, eCsources };
 
 define WorkspaceExtension = "ews";
 define ProjectExtension = "epj";
@@ -411,7 +411,7 @@ static void OutputNoSpace(File f, char * source)
 
 enum ListOutputMethod { inPlace, newLine, lineEach };
 
-int OutputFileList(File f, char * name, Array<String> list, Map<String, int> varStringLenDiffs)
+int OutputFileList(File f, char * name, Array<String> list, Map<String, int> varStringLenDiffs, char * prefix)
 {
    int numOfBreaks = 0;
    const int breakListLength = 1536;
@@ -450,13 +450,13 @@ int OutputFileList(File f, char * name, Array<String> list, Map<String, int> var
 
    if(numOfBreaks > 1)
    {
-      f.Printf("%s =", name);
+      f.Printf("%s =%s%s", name, prefix ? " " : "", prefix ? prefix : "");
       for(c=0; c<numOfBreaks; c++)
          f.Printf(" $(%s%d)", name, c+1);
       f.Printf("\n");
    }
    else
-      f.Printf("%s =", name);
+      f.Printf("%s =%s%s", name, prefix ? " " : "", prefix ? prefix : "");
 
    if(numOfBreaks)
    {
@@ -1132,7 +1132,7 @@ private:
       bool loggedALine = false;
       char * configName = config.name;
       int lenMakeCommand = strlen(compiler.makeCommand);
-      
+
       char cppCommand[MAX_LOCATION];
       char ccCommand[MAX_LOCATION];
       char ecpCommand[MAX_LOCATION];
@@ -1198,7 +1198,7 @@ private:
                   byte * tokens[1];
                   char * module;
                   bool isPrecomp = false;
-               
+
                   if(strstr(line, ccCommand) == line)
                   {
                      module = strstr(line, " -c ");
@@ -1287,7 +1287,7 @@ private:
                         // Remove stuff in brackets
                         //bracket = strstr(moduleName, "(");
                         //if(bracket) *bracket = '\0';
-                     
+
                         GetLastDirectory(moduleName, temp);
                         if(linking && (!strcmp(temp, "ld") || !strcmp(temp, "ld.exe")))
                         {
@@ -1451,7 +1451,7 @@ private:
       char command[MAX_LOCATION];
 
       strcpy(configName, config ? config.name : "Common");
-      
+
       SetPath(false, compiler, config); //true
       CatTargetFileName(targetFileName, compiler, config);
 
@@ -1521,7 +1521,6 @@ private:
       }
 
       delete pathBackup;
-
       delete objDirExp;
       return result;
    }
@@ -1707,7 +1706,7 @@ private:
          bool tccCompiler = compiler.ccCommand && strstr(compiler.ccCommand, "tcc") != null;
          bool defaultPreprocessor = compiler.cppCommand && (strstr(compiler.cppCommand, "gcc") != null || compiler.cppCommand && strstr(compiler.cppCommand, "cpp") != null);
 
-         int objectsParts, cobjectsParts, symbolsParts, importsParts;
+         int objectsParts, eCsourcesParts;
          Array<String> listItems { };
          Map<String, int> varStringLenDiffs { };
          Map<String, NameCollisionInfo> namesInfo { };
@@ -1834,23 +1833,39 @@ private:
          numCObjects = topNode.GenMakefilePrintNode(f, this, objects, namesInfo, listItems, config);
          if(numCObjects)
             listItems.Add(CopyString("$(OBJ)$(MODULE).main$(O)"));
-         objectsParts = OutputFileList(f, "OBJECTS", listItems, varStringLenDiffs);
+         objectsParts = OutputFileList(f, "OBJECTS", listItems, varStringLenDiffs, null);
 
-         topNode.GenMakefilePrintNode(f, this, cObjects, namesInfo, listItems, config);
-         cobjectsParts = OutputFileList(f, "COBJECTS", listItems, varStringLenDiffs);
+         {
+            int c;
+            char * map[3][2] = { { "COBJECTS", "C" }, { "SYMBOLS", "S" }, { "IMPORTS", "I" } };
 
-         topNode.GenMakefilePrintNode(f, this, symbols, null, listItems, config);
-         symbolsParts = OutputFileList(f, "SYMBOLS", listItems, varStringLenDiffs);
+            topNode.GenMakefilePrintNode(f, this, eCsources, namesInfo, listItems, config);
+            eCsourcesParts = OutputFileList(f, "ECSOURCES", listItems, varStringLenDiffs, null);
 
-         topNode.GenMakefilePrintNode(f, this, imports, null, listItems, config);
-         importsParts = OutputFileList(f, "IMPORTS", listItems, varStringLenDiffs);
+            for(c = 0; c < 3; c++)
+            {
+               if(eCsourcesParts > 1)
+               {
+                  int n;
+                  f.Printf("%s =", map[c][0]);
+                  for(n = 1; n <= eCsourcesParts; n++)
+                     f.Printf(" $(%s%d)", map[c][0], n);
+                  f.Printf("\n");
+                  for(n = 1; n <= eCsourcesParts; n++)
+                     f.Printf("%s%d = $(addprefix $(OBJ),$(patsubst %%.ec,%%$(%s),$(notdir $(ECSOURCES%d))))\n", map[c][0], n, map[c][1], n);
+               }
+               else if(eCsourcesParts == 1)
+                  f.Printf("%s = $(addprefix $(OBJ),$(patsubst %%.ec,%%$(%s),$(notdir $(ECSOURCES))))\n", map[c][0], map[c][1]);
+               f.Printf("\n");
+            }
+         }
 
          topNode.GenMakefilePrintNode(f, this, sources, null, listItems, config);
-         OutputFileList(f, "SOURCES", listItems, varStringLenDiffs);
+         OutputFileList(f, "SOURCES", listItems, varStringLenDiffs, "$(ECSOURCES)");
 
          if(!noResources)
             resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config);
-         OutputFileList(f, "RESOURCES", listItems, varStringLenDiffs);
+         OutputFileList(f, "RESOURCES", listItems, varStringLenDiffs, null);
 
          if(includemkPath)
          {
@@ -2307,14 +2322,6 @@ private:
             delete excludedPlatforms;
          }
 
-         /*if(numCObjects)
-         {
-            f.Printf("# IMPLICIT OBJECT RULE\n\n");
-
-            f.Printf("$(OBJ)%%$(O) : $(OBJ)%%.c\n");
-            f.Printf("\t$(CC) $(CFLAGS) $(FVISIBILITY) -c $< -o $@\n\n");
-         }*/
-
          f.Printf("# OBJECT RULES\n\n");
          // todo call this still but only generate rules whith specific options
          // see we-have-file-specific-options in ProjectNode.ec
@@ -2330,11 +2337,11 @@ private:
          f.Printf("clean: objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
          f.Printf("\t$(call rmq,%s$(TARGET))\n", numCObjects ? "$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) " : "");
          OutputCleanActions(f, "OBJECTS", objectsParts);
-         OutputCleanActions(f, "COBJECTS", cobjectsParts);
+         OutputCleanActions(f, "COBJECTS", eCsourcesParts);
          if(numCObjects)
          {
-            OutputCleanActions(f, "IMPORTS", importsParts);
-            OutputCleanActions(f, "SYMBOLS", symbolsParts);
+            OutputCleanActions(f, "IMPORTS", eCsourcesParts);
+            OutputCleanActions(f, "SYMBOLS", eCsourcesParts);
          }
          f.Printf("\n");
 

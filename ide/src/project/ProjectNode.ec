@@ -1417,7 +1417,19 @@ private:
          {
             if(!strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
                   !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
-                  !strcmpi(extension, "ec") || !strcmpi(extension, "m"))
+                  !strcmpi(extension, "m"))
+            {
+               char modulePath[MAX_LOCATION];
+
+               ReplaceSpaces(modulePath, path);
+               ReplaceSpaces(moduleName, name);
+               sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
+               items.Add(CopyString(s));
+            }
+         }
+         else if(printType == eCsources)
+         {
+            if(!strcmpi(extension, "ec"))
             {
                char modulePath[MAX_LOCATION];
 
