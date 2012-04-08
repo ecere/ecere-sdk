@@ -29,9 +29,9 @@ endif
 # MISC STRING TOOLS
 empty :=
 space := $(empty) $(empty)
-fixspace = $(subst $(space),\$(space),$1)
-hidspace = $(subst $(space),^,$1)
-shwspace = $(subst ^,$(space),$1)
+escspace = $(subst $(space),\$(space),$1)
+hidspace = $(subst \$(space),,$1)
+shwspace = $(subst ,\$(space),$1)
 
 # PATH SEPARATOR STRING TOOLS
 ifdef WINDOWS
@@ -191,8 +191,8 @@ ifdef WINDOWS
 
 _SSL_CONF = $(call hidspace,$(call fixps,$(OPENSSL_CONF)))
 _SSL_BIN = $(_SSL_CONF:$(notdir $(_SSL_CONF))=$(empty))
-OPEN_SSL_INCLUDE_DIR = $(call fixspace,$(call shwspace,$(subst /bin,/include,$(_SSL_BIN))))
-OPEN_SSL_LIB_DIR = $(call fixspace,$(call shwspace,$(subst /bin,/lib,$(_SSL_BIN))))
-OPEN_SSL_BIN_DIR = $(call fixspace,$(call shwspace,$(_SSL_BIN)))
+OPEN_SSL_INCLUDE_DIR = $(call escspace,$(call shwspace,$(subst /bin,/include,$(_SSL_BIN))))
+OPEN_SSL_LIB_DIR = $(call escspace,$(call shwspace,$(subst /bin,/lib,$(_SSL_BIN))))
+OPEN_SSL_BIN_DIR = $(call escspace,$(call shwspace,$(_SSL_BIN)))
 
 endif

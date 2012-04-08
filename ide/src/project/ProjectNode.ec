@@ -1433,8 +1433,8 @@ private:
             {
                char modulePath[MAX_LOCATION];
 
-               ReplaceSpaces(modulePath, path);
-               ReplaceSpaces(moduleName, name);
+               ReplaceUnwantedMakeChars(modulePath, path);
+               ReplaceUnwantedMakeChars(moduleName, name);
                sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
                items.Add(CopyString(s));
             }

@@ -401,6 +401,28 @@ void ReplaceSpaces(char * output, char * source)
    output[dc] = '\0';
 }
 
+void ReplaceUnwantedMakeChars(char * output, char * source)
+{
+   int c, dc;
+   char ch, pch = 0;
+
+   for(c = 0, dc = 0; (ch = source[c]); c++, dc++)
+   {
+      if(pch != '$')
+      {
+         if(ch == '(' || ch == ')') output[dc++] = '\\';
+         pch = ch;
+      }
+      else if(ch == ')')
+         pch = 0;
+      if(ch == ' ')
+         output[dc] = 127;
+      else
+         output[dc] = ch;
+   }
+   output[dc] = '\0';
+}
+
 static void OutputNoSpace(File f, char * source)
 {
    char * output = new char[strlen(source)+1024];
@@ -1840,7 +1862,15 @@ private:
             char * map[3][2] = { { "COBJECTS", "C" }, { "SYMBOLS", "S" }, { "IMPORTS", "I" } };
 
             topNode.GenMakefilePrintNode(f, this, eCsources, namesInfo, listItems, config);
-            eCsourcesParts = OutputFileList(f, "ECSOURCES", listItems, varStringLenDiffs, null);
+            eCsourcesParts = OutputFileList(f, "_ECSOURCES", listItems, varStringLenDiffs, null);
+
+            f.Printf("ECSOURCES = $(call shwspace,$(_ECSOURCES))\n");
+            if(eCsourcesParts > 1)
+            {
+               for(c = 1; c <= eCsourcesParts; c++)
+                  f.Printf("ECSOURCES%d = $(call shwspace,$(_ECSOURCES%d))\n", c, c);
+            }
+            f.Printf("\n");
 
             for(c = 0; c < 3; c++)
             {
@@ -1852,10 +1882,10 @@ private:
                      f.Printf(" $(%s%d)", map[c][0], n);
                   f.Printf("\n");
                   for(n = 1; n <= eCsourcesParts; n++)
-                     f.Printf("%s%d = $(addprefix $(OBJ),$(patsubst %%.ec,%%$(%s),$(notdir $(ECSOURCES%d))))\n", map[c][0], n, map[c][1], n);
+                     f.Printf("%s%d = $(call shwspace,$(addprefix $(OBJ),$(patsubst %%.ec,%%$(%s),$(notdir $(_ECSOURCES%d)))))\n", map[c][0], n, map[c][1], n);
                }
                else if(eCsourcesParts == 1)
-                  f.Printf("%s = $(addprefix $(OBJ),$(patsubst %%.ec,%%$(%s),$(notdir $(ECSOURCES))))\n", map[c][0], map[c][1]);
+                  f.Printf("%s = $(call shwspace,$(addprefix $(OBJ),$(patsubst %%.ec,%%$(%s),$(notdir $(_ECSOURCES)))))\n", map[c][0], map[c][1]);
                f.Printf("\n");
             }
          }
