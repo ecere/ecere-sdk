@@ -1912,8 +1912,8 @@ private:
          f.Printf("LIBS =\n");
          f.Printf("\n");
 
-         if(compiler.includeDirs && compiler.includeDirs.count ||
-               compiler.libraryDirs && compiler.includeDirs.count)
+         if((compiler.includeDirs && compiler.includeDirs.count) ||
+               (compiler.libraryDirs && compiler.libraryDirs.count))
          {
             if(compiler.includeDirs && compiler.includeDirs.count)
             {
@@ -1921,7 +1921,7 @@ private:
                OutputListOption(f, gccCompiler ? "isystem " : "I", compiler.includeDirs, lineEach, true);
                f.Printf("\n");
             }
-            if(compiler.libraryDirs && compiler.includeDirs.count)
+            if(compiler.libraryDirs && compiler.libraryDirs.count)
             {
                f.Printf("OFLAGS +=");
                OutputListOption(f, "L", compiler.libraryDirs, lineEach, true);
