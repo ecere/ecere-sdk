@@ -189,10 +189,11 @@ endif
 
 ifdef WINDOWS
 
-_SSL_CONF = $(call hidspace,$(call fixps,$(OPENSSL_CONF)))
-_SSL_BIN = $(_SSL_CONF:$(notdir $(_SSL_CONF))=$(empty))
-OPEN_SSL_INCLUDE_DIR = $(call escspace,$(call shwspace,$(subst /bin,/include,$(_SSL_BIN))))
-OPEN_SSL_LIB_DIR = $(call escspace,$(call shwspace,$(subst /bin,/lib,$(_SSL_BIN))))
-OPEN_SSL_BIN_DIR = $(call escspace,$(call shwspace,$(_SSL_BIN)))
+ifdef OPENSSL_CONF
+_OPENSSL_CONF = $(call hidspace,$(call fixps,$(OPENSSL_CONF)))
+OPENSSL_INCLUDE_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/include,$(_OPENSSL_CONF)))
+OPENSSL_LIB_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/lib,$(_OPENSSL_CONF)))
+OPENSSL_BIN_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/bin,$(_OPENSSL_CONF)))
+endif
 
 endif
