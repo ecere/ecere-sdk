@@ -50,7 +50,7 @@ else
 endif
 
 # PREFIXES AND EXTENSIONS
-.SUFFIXES: .c .ec .sym .imp .o
+.SUFFIXES: .c .ec .sym .imp .o .a
 S := .sym
 I := .imp
 C := .c
