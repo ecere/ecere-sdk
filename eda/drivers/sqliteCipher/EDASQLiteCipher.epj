@@ -39,8 +39,14 @@
       {
          "Name" : "win32",
          "Options" : {
+            "IncludeDirs" : [
+               "$(OPENSSL_INCLUDE_DIR)"
+            ],
             "Libraries" : [
                "libeay32"
+            ],
+            "LibraryDirs" : [
+               "$(OPENSSL_LIB_DIR)"
             ]
          }
       }

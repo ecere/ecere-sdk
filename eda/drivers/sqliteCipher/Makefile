@@ -1,4 +1,4 @@
-.PHONY: all objdir clean realclean distclean openssldebug
+.PHONY: all objdir clean realclean distclean openssl_debug
 
 # CONTENT
 
@@ -85,10 +85,10 @@ endif
 ifdef WINDOWS
 
 CFLAGS += \
-	 -I$(OPEN_SSL_INCLUDE_DIR)
+	 -I$(OPENSSL_INCLUDE_DIR)
 
 OFLAGS += \
-	 -L$(OPEN_SSL_BIN_DIR)
+	 -L$(OPENSSL_BIN_DIR)
 
 LIBS += -llibeay32
 
@@ -164,12 +164,12 @@ $(OBJ)sqlite3.o: sqlite3.c
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
-openssldebug:
+openssl_debug:
 	@$(call echo,OPENSSL_CONF $(OPENSSL_CONF))
-	@$(call echo,_SSL_CONF $(_SSL_CONF))
-	@$(call echo,OPEN_SSL_INCLUDE_DIR $(OPEN_SSL_INCLUDE_DIR))
-	@$(call echo,OPEN_SSL_BIN_DIR $(OPEN_SSL_BIN_DIR))
-	@$(call echo,OPEN_SSL_LIB_DIR $(OPEN_SSL_LIB_DIR))
+	@$(call echo,_OPENSSL_CONF $(_OPENSSL_CONF))
+	@$(call echo,OPENSSL_INCLUDE_DIR $(OPENSSL_INCLUDE_DIR))
+	@$(call echo,OPENSSL_BIN_DIR $(OPENSSL_BIN_DIR))
+	@$(call echo,OPENSSL_LIB_DIR $(OPENSSL_LIB_DIR))
 
 clean: objdir
 	$(call rmq,$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
