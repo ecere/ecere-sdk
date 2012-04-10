@@ -29,8 +29,8 @@ endif
 # MISC STRING TOOLS
 empty :=
 space := $(empty) $(empty)
-escspace = $(subst $(space),\$(space),$1)
-hidspace = $(subst \$(space),,$1)
+escspace = $(subst $(space),\$(space),$(subst \$(space),$(space),$1))
+hidspace = $(subst $(space),,$(subst \$(space),,$1))
 shwspace = $(subst ,\$(space),$1)
 
 # PATH SEPARATOR STRING TOOLS
