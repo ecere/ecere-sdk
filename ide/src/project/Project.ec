@@ -30,6 +30,12 @@ private:
 extern int __ecereVMethodID_class_OnCompare;
 extern int __ecereVMethodID_class_OnFree;
 
+#ifdef __WIN32__
+define cfDir = "C:/temp/";
+#else
+define cfDir = "/home/redj/.ecereIDE/";
+#endif
+
 IDESettings ideSettings;
 
 IDESettingsContainer settingsContainer
@@ -1471,6 +1477,10 @@ private:
 
       int numJobs = compiler.numJobs;
       char command[MAX_LOCATION];
+      char * compilerName;
+
+      compilerName = CopyString(compiler.name);
+      CamelCase(compilerName);
 
       strcpy(configName, config ? config.name : "Common");
 
@@ -1496,7 +1506,7 @@ private:
             ChangeWorkingDir(topNode.path);
             // Create object dir if it does not exist already
             if(!FileExists(objDirExp.dir).isDirectory)
-               Execute("%s objdir -C \"%s\" -f \"%s\"", compiler.makeCommand, topNode.path, makeFilePath);
+               Execute("%s E_IDE_CF_DIR=%s COMPILER=%s objdir -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, topNode.path, makeFilePath);
             ChangeWorkingDir(pushD);
 
             PathCatSlash(makeTarget+1, objDirExp.dir);
@@ -1529,7 +1539,7 @@ private:
       }
       else
       {
-         sprintf(command, "%s -j%d %s%s%s -C \"%s\" -f \"%s\"", compiler.makeCommand, numJobs,
+         sprintf(command, "%s E_IDE_CF_DIR=%s COMPILER=%s -j%d %s%s%s -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",
                makeTarget, topNode.path, makeFilePath);
@@ -1544,6 +1554,7 @@ private:
 
       delete pathBackup;
       delete objDirExp;
+      delete compilerName;
       return result;
    }
 
@@ -1552,8 +1563,12 @@ private:
       char makeFile[MAX_LOCATION];
       char makeFilePath[MAX_LOCATION];
       char command[MAX_LOCATION];
+      char * compilerName;
       DualPipe f;
       PathBackup pathBackup { };
+
+      compilerName = CopyString(compiler.name);
+      CamelCase(compilerName);
 
       SetPath(false, compiler, config);
 
@@ -1581,7 +1596,7 @@ private:
       }
       else
       {
-         sprintf(command, "%s %sclean -C \"%s\" -f \"%s\"", compiler.makeCommand, realclean ? "real" : "", topNode.path, makeFilePath);
+         sprintf(command, "%s E_IDE_CF_DIR=%s COMPILER=%s %sclean -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, realclean ? "real" : "", topNode.path, makeFilePath);
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
          {
             ide.outputView.buildBox.Tell($"Deleting target and object files...");
@@ -1593,6 +1608,7 @@ private:
       }
 
       delete pathBackup;
+      delete compilerName;
    }
 
    void Run(char * args, CompilerConfig compiler, ProjectConfig config)
@@ -1673,6 +1689,149 @@ private:
       }
    }
 
+   bool GenerateDebugCf(CompilerConfig compiler)
+   {
+      bool result = false;
+      char path[MAX_LOCATION];
+
+      GetWorkingDir(path, sizeof(path));
+      PathCatSlash(path, cfDir);
+      PathCatSlash(path, "debug.cf");
+
+      if(!FileExists(path))
+      {
+         File f = FileOpen(path, write);
+         if(f)
+         {
+            f.Printf(".PHONY: debug_lists\n");
+            f.Printf("\n");
+
+            f.Printf("ifdef WINDOWS\n");
+            f.Printf(".PHONY: debug_openssl\n");
+            f.Printf("debug_openssl:\n");
+            f.Printf("	@$(call echo,OPENSSL_CONF = $(OPENSSL_CONF))\n");
+            f.Printf("	@$(call echo,_OPENSSL_CONF = $(_OPENSSL_CONF))\n");
+            f.Printf("	@$(call echo,OPENSSL_INCLUDE_DIR = $(OPENSSL_INCLUDE_DIR))\n");
+            f.Printf("	@$(call echo,OPENSSL_LIB_DIR = $(OPENSSL_LIB_DIR))\n");
+            f.Printf("	@$(call echo,OPENSSL_BIN_DIR = $(OPENSSL_BIN_DIR))\n");
+            f.Printf("endif\n");
+            f.Printf("\n");
+
+            f.Printf("debug_lists:\n");
+            f.Printf("	@$(call echo,ECSOURCES = $(ECSOURCES))\n");
+            f.Printf("	@$(call echo,SYMBOLS = $(SYMBOLS))\n");
+            f.Printf("	@$(call echo,IMPORTS = $(IMPORTS))\n");
+            f.Printf("	@$(call echo,COBJECTS = $(COBJECTS))\n");
+
+            delete f;
+         }
+      }
+      return result;
+   }
+
+   bool GenerateCrossPlatformCf()
+   {
+      bool result = false;
+      char path[MAX_LOCATION];
+
+      GetWorkingDir(path, sizeof(path));
+      PathCatSlash(path, cfDir);
+      PathCatSlash(path, "crossplatform.cf");
+
+      if(!FileExists(path))
+      {
+         File f = FileOpen(path, write);
+         if(f)
+         {
+            File include = FileOpen(":include.mk", read);
+            if(include)
+            {
+               for(; !include.Eof(); )
+               {
+                  char buffer[4096];
+                  int count = include.Read(buffer, 1, 4096);
+                  f.Write(buffer, 1, count);
+               }
+               delete include;
+               result = true;
+            }
+            delete f;
+         }
+      }
+      return result;
+   }
+
+   bool GenerateCompilerMk(CompilerConfig compiler)
+   {
+      bool result = false;
+      char path[MAX_LOCATION];
+      char * name;
+      char * compilerName;
+      Platform platform = GetRuntimePlatform();
+
+      compilerName = CopyString(compiler.name);
+      CamelCase(compilerName);
+      name = PrintString(platform, "-", compilerName, ".cf");
+
+      GetWorkingDir(path, sizeof(path));
+      PathCatSlash(path, cfDir);
+      PathCatSlash(path, name);
+
+      if(!FileExists(path))
+      {
+         File f = FileOpen(path, write);
+         if(f)
+         {
+            bool crossCompiling = compiler.targetPlatform != platform;
+
+            if(strcmpi(compiler.cppCommand, "cpp") ||
+                  strcmpi(compiler.ccCommand,  "gcc") ||
+                  strcmpi(compiler.ecpCommand, "ecp") ||
+                  strcmpi(compiler.eccCommand, "ecc") ||
+                  strcmpi(compiler.ecsCommand, "ecs") || crossCompiling ||
+                  strcmpi(compiler.earCommand, "ear"))
+            {
+               f.Printf("# TOOLCHAIN\n\n");
+
+               //f.Printf("SHELL := %s\n", "ar"/*compiler.arCommand*/); // is this really needed?
+               if(strcmpi(compiler.cppCommand, "cpp"))
+                  f.Printf("CPP := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.cppCommand);
+               if(strcmpi(compiler.ccCommand,  "gcc"))
+                  f.Printf("CC := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.ccCommand);
+               if(strcmpi(compiler.ecpCommand, "ecp"))
+                  f.Printf("ECP := %s\n", compiler.ecpCommand);
+               if(strcmpi(compiler.eccCommand, "ecc"))
+                  f.Printf("ECC := %s\n", compiler.eccCommand);
+               if(strcmpi(compiler.ecsCommand, "ecs") || crossCompiling)
+               {
+                  f.Printf("ECS := %s%s%s\n", compiler.ecsCommand,
+                        crossCompiling ? " -t " : "", crossCompiling ? (char*)compiler.targetPlatform : "");
+               }
+               if(strcmpi(compiler.earCommand, "ear"))
+                  f.Printf("EAR := %s\n", compiler.earCommand);
+               f.Printf("\n");
+            }
+
+            f.Printf("UPXFLAGS = -9\n\n"); // TOFEAT: Compression Level Option? Other UPX Options?
+
+            f.Printf("# HARD CODED PLATFORM-SPECIFIC OPTIONS\n");
+            f.Printf("ifdef %s\n", PlatformToMakefileVariable(tux));
+            f.Printf("OFLAGS += -Wl,--no-undefined\n");
+            f.Printf("endif\n\n");
+
+            // JF's
+            f.Printf("ifdef %s\n", PlatformToMakefileVariable(apple));
+            f.Printf("OFLAGS += -framework cocoa -framework OpenGL\n");
+            f.Printf("endif\n\n");
+
+            delete f;
+         }
+      }
+      delete name;
+      delete compilerName;
+      return result;
+   }
+
    bool GenerateMakefile(char * altMakefilePath, bool noResources, char * includemkPath,
       CompilerConfig compiler, ProjectConfig config)
    {
@@ -1709,6 +1868,7 @@ private:
          bool test;
          int ifCount;
          Platform platform;
+         Platform runtimePlatform = GetRuntimePlatform();
          char targetDir[MAX_LOCATION];
          char objDirExpNoSpaces[MAX_LOCATION];
          char objDirNoSpaces[MAX_LOCATION];
@@ -1723,7 +1883,7 @@ private:
          DirExpression objDirExp = GetObjDir(compiler, config);
          TargetTypes targetType = GetTargetType(config);
 
-         bool crossCompiling = compiler.targetPlatform != GetRuntimePlatform();
+         bool crossCompiling = compiler.targetPlatform != runtimePlatform;
          bool gccCompiler = compiler.ccCommand && strstr(compiler.ccCommand, "gcc") != null;
          bool tccCompiler = compiler.ccCommand && strstr(compiler.ccCommand, "tcc") != null;
          bool defaultPreprocessor = compiler.cppCommand && (strstr(compiler.cppCommand, "gcc") != null || compiler.cppCommand && strstr(compiler.cppCommand, "cpp") != null);
@@ -1758,7 +1918,9 @@ private:
          f.Printf("MODULE := %s\n", fixedModuleName);
          //f.Printf("VERSION = %s\n", version);
          f.Printf("CONFIG := %s\n", fixedConfigName);
+         f.Printf("ifndef COMPILER\n");
          f.Printf("COMPILER := %s\n", fixedCompilerName);
+         f.Printf("endif\n");
          if(crossCompiling)
             f.Printf("PLATFORM = %s\n", (char *)compiler.targetPlatform);
          test = GetTargetTypeIsSetByPlatform(config);
@@ -1798,13 +1960,26 @@ private:
          }
          f.Printf("\n");
 
+         f.Printf("# FLAGS\n\n");
+
+         f.Printf("CFLAGS =\n");
+         f.Printf("CECFLAGS =\n");
+         f.Printf("ECFLAGS =\n");
+         f.Printf("OFLAGS =\n");
+         f.Printf("LIBS =\n");
+         f.Printf("\n");
+
+         f.Printf("# INCLUDES\n\n");
+
+         f.Printf("include %s\n", includemkPath ? includemkPath : "$(E_IDE_CF_DIR)crossplatform.cf");
+         f.Printf("include $(E_IDE_CF_DIR)%s-%s.cf\n", (char*)runtimePlatform, fixedCompilerName);
+         f.Printf("\n");
+
+         f.Printf("# VARIABLES\n\n");
+
          f.Printf("OBJ = %s%s\n\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
 
          f.Printf("RES = %s%s\n\n", resDirNoSpaces, resDirNoSpaces[0] ? "/" : "");
-
-         f.Printf("ifeq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(executable));
-         f.Printf("CONSOLE = %s\n", GetConsole(config) ? "-mconsole" : "-mwindows");
-         f.Printf("endif\n\n");
 
          // test = GetTargetTypeIsSetByPlatform(config);
          {
@@ -1897,65 +2072,9 @@ private:
             resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config);
          OutputFileList(f, "RESOURCES", listItems, varStringLenDiffs, null);
 
-         if(includemkPath)
-         {
-            f.Printf("# CROSS-PLATFORM MAGIC\n\n");
-
-            f.Printf("include %s\n\n", includemkPath);
-         }
-         else
-         {
-            File include = FileOpen(":include.mk", read);
-            if(include)
-            {
-               for(; !include.Eof(); )
-               {
-                  char buffer[4096];
-                  int count = include.Read(buffer, 1, 4096);
-                  f.Write(buffer, 1, count);
-               }
-               delete include;
-            }
-         }
-
-         f.Printf("\n");
-
-         if(strcmpi(compiler.cppCommand, "cpp") ||
-               strcmpi(compiler.ccCommand,  "gcc") ||
-               strcmpi(compiler.ecpCommand, "ecp") ||
-               strcmpi(compiler.eccCommand, "ecc") ||
-               strcmpi(compiler.ecsCommand, "ecs") || crossCompiling ||
-               strcmpi(compiler.earCommand, "ear"))
-         {
-            f.Printf("# TOOLCHAIN\n\n");
-
-            //f.Printf("SHELL := %s\n", "ar"/*compiler.arCommand*/); // is this really needed?
-            if(strcmpi(compiler.cppCommand, "cpp"))
-               f.Printf("CPP := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.cppCommand);
-            if(strcmpi(compiler.ccCommand,  "gcc"))
-               f.Printf("CC := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.ccCommand);
-            if(strcmpi(compiler.ecpCommand, "ecp"))
-               f.Printf("ECP := %s\n", compiler.ecpCommand);
-            if(strcmpi(compiler.eccCommand, "ecc"))
-               f.Printf("ECC := %s\n", compiler.eccCommand);
-            if(strcmpi(compiler.ecsCommand, "ecs") || crossCompiling)
-            {
-               f.Printf("ECS := %s%s%s\n", compiler.ecsCommand,
-                     crossCompiling ? " -t " : "", crossCompiling ? (char*)compiler.targetPlatform : "");
-            }
-            if(strcmpi(compiler.earCommand, "ear"))
-               f.Printf("EAR := %s\n", compiler.earCommand);
-            f.Printf("\n");
-         }
-
-         f.Printf("# FLAGS\n\n");
-
-         f.Printf("CFLAGS =\n");
-         f.Printf("CECFLAGS =\n");
-         f.Printf("ECFLAGS =\n");
-         f.Printf("OFLAGS =\n");
-         f.Printf("LIBS =\n");
-         f.Printf("\n");
+         f.Printf("ifeq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(executable));
+         f.Printf("CONSOLE = %s\n", GetConsole(config) ? "-mconsole" : "-mwindows");
+         f.Printf("endif\n\n");
 
          if((compiler.includeDirs && compiler.includeDirs.count) ||
                (compiler.libraryDirs && compiler.libraryDirs.count))
@@ -2158,18 +2277,6 @@ private:
          if(options && options.libraryDirs)
             OutputListOption(f, "L", options.libraryDirs, lineEach, true);
          f.Printf("\n");
-         f.Printf("endif\n\n");
-
-         f.Printf("UPXFLAGS = -9\n\n"); // TOFEAT: Compression Level Option? Other UPX Options?
-
-         f.Printf("# HARD CODED PLATFORM-SPECIFIC OPTIONS\n");
-         f.Printf("ifdef %s\n", PlatformToMakefileVariable(tux));
-         f.Printf("OFLAGS += -Wl,--no-undefined\n");
-         f.Printf("endif\n\n");
-
-         // JF's
-         f.Printf("ifdef %s\n", PlatformToMakefileVariable(apple));
-         f.Printf("OFLAGS += -framework cocoa -framework OpenGL\n");
          f.Printf("endif\n\n");
 
          f.Printf("# TARGETS\n\n");
@@ -2379,6 +2486,9 @@ private:
          f.Printf("\t$(call rmrq,$(OBJ))\n");
          if(!sameObjTargetDirs)
             f.Printf("\t$(call rmdirq,%s)\n", targetDirExpNoSpaces);
+         f.Printf("\n");
+
+         f.Printf("include $(E_IDE_CF_DIR)debug.cf\n");
 
          delete f;
          delete objDirExp;
