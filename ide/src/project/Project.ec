@@ -1935,10 +1935,10 @@ private:
          {
             f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
             f.Printf("LIBS +=");
-            if(options && options.libraries)
-               OutputLibraries(f, options.libraries);
             if(config && config.options && config.options.libraries)
                OutputLibraries(f, config.options.libraries);
+            else if(options && options.libraries)
+               OutputLibraries(f, options.libraries);
             f.Printf("\n");
             f.Printf("endif\n");
             f.Printf("\n");
