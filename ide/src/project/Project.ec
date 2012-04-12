@@ -1937,7 +1937,7 @@ private:
             f.Printf("LIBS +=");
             if(options && options.libraries)
                OutputLibraries(f, options.libraries);
-            else if(config && config.options && config.options.libraries)
+            if(config && config.options && config.options.libraries)
                OutputLibraries(f, config.options.libraries);
             f.Printf("\n");
             f.Printf("endif\n");
