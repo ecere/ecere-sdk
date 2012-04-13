@@ -9275,7 +9275,7 @@ public:
    {
       get { return (bool)nativeDecorations; }
       set { nativeDecorations = value; }
-#ifndef ECERE_VANILLA
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NOTRUETYPE)
       isset { return (nativeDecorations && (rootWindow == this || (formDesigner && activeDesigner && ((FormDesigner)activeDesigner.classDesigner).form && parent == ((FormDesigner)activeDesigner.classDesigner).form.parent))) != style.fixed; }
 #endif
    };
