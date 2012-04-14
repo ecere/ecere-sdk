@@ -89,7 +89,12 @@ public:
 
    bool OnClose(bool parentClosing)
    {
-      return NotifyClosing();
+      bool result = NotifyClosing();
+      if(result)
+      {
+         EditClear();
+      }
+      return result;
    }
 
    // List
@@ -238,7 +243,7 @@ public:
          {
             Row r { table };
             Array<Id> matches = SearchWordList();
-            OnList(this, r, matches);
+            OnList(r, matches);
             delete matches;
             delete r;
          }
@@ -246,7 +251,7 @@ public:
       modifiedDocument = false; // setting this here is not really logical, enumeration and modified have nothing to do with eachother
    }
 
-   virtual void TableEditor::OnList(Row r, Array<Id> matches)
+   virtual void OnList(Row r, Array<Id> matches)
    {
       DebugLn("TableEditor::OnList");
       listEnumerationCompleted = false;
@@ -256,19 +261,33 @@ public:
       listEnumerationTimer.Start();
    }
 
-   virtual void TableEditor::OnCreateDynamicLookupEditors()
+   virtual void OnCreateDynamicLookupEditors()
    {
       DebugLn("TableEditor::OnCreateLookupEditors");
       if(dynamicLookupFields && dynamicLookupFields.count)
       {
-         for(luf : dynamicLookupFields)
+         for(f : dynamicLookupFields)
          {
-            if(luf.editorClass && luf.parentWindow)
+            if(f.editorClass && f.parentWindow)
             {
-               TableEditor editor = eInstance_New(luf.editorClass);
-               editor.parent = luf.parentWindow;
-               editor.master = this;
-               dynamicLookupTableEditors.Add(editor);
+               Row row { tbl = f.lookupTable };
+               // todo: make this work for all types
+               uint id = 0;
+               editRow.GetData(f.field, id);
+               for(row.Find(f.lookupField, middle, nil, id); !row.nil; row.Next())
+               {
+                  // todo: make this work for all types, although this is meant to be an id field
+                  uint id = 0;
+                  TableEditor editor = eInstance_New(f.editorClass);
+                  incref editor;
+                  editor.parent = f.parentWindow;
+                  editor.master = this;
+                  dynamicLookupTableEditors.Add(editor);
+                  editor.Create();
+                  row.GetData(f.lookupIdField, id);
+                  editor.Select(id);
+               }
+               delete row;
             }
          }
       }
@@ -799,10 +818,12 @@ private:
    void EditLoad()
    {
       DebugLn("TableEditor::EditLoad");
+      EditClear();
       OnLoad();
       internalModifications = true;
       for(fb : fieldsBoxes)
          fb.Load();
+      OnCreateDynamicLookupEditors();
       internalModifications = false;
 
       DebugLn("   TODO: implement virtual method TableEditor::OnSubEditorsLoad");
@@ -817,6 +838,16 @@ private:
       internalModifications = true;
       for(fb : fieldsBoxes)
          fb.Clear();
+      for(e : dynamicLookupTableEditors)
+      {
+         e.visible = false;
+         e.parent = null;
+         e.master = null;
+         e.Destroy(0);
+         delete e;
+      }
+      dynamicLookupTableEditors.Free();
+      //dynamicLookupTableEditors.size = 0;
       internalModifications = false;
 
       DebugLn("   TODO: remove all sub table editors");
@@ -1261,13 +1292,13 @@ private:*/
 public class LookupField : struct
 {
 public:
+   subclass(TableEditor) editorClass;
+   Window parentWindow;
    Field field;
    Table lookupTable;
    Field lookupField;
-   Field lookupValueField;
+   Field lookupIdField;
    String (*CustomLookup)(Id);
-   subclass(TableEditor) editorClass;
-   Window parentWindow;
 }
 
 static WordEntry * btnodes;

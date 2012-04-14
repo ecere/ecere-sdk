@@ -33,6 +33,8 @@ private:
 public class Id : uint
 {
    class_data Table * table;     class_property Table * table     { set { class_data(table) = value; } get { return class_data(table); } };
+   //class_data Field * idField; class_property Field * idField { set { class_data(nameField) = value; } get { return class_data(idField); } };
+   //class_data Field * displayField; class_property Field * displayField { set { class_data(displayField) = value; } get { return class_data(displayField); } };
    class_data Field * nameField; class_property Field * nameField { set { class_data(nameField) = value; } get { return class_data(nameField); } };
    class_data char * addText;   class_property char * addText  { set { class_data(addText) = value; } };
    class_data void * Refill;    class_property void * Refill   { set { class_data(Refill) = value; } };
@@ -43,6 +45,19 @@ public class Id : uint
          TableDropBox dropBox = dataBox.keepEditor ? (TableDropBox)dataBox.editor /*obsolete*/ : null;
          if(!dropBox)
          {
+/*
+            if(eClass_IsDerived(dataBox._class, class(FieldDropBox)))
+            {
+               FieldDropBox fieldDropBox = (FieldDropBox)dataBox;
+
+            }
+            else if(eClass_IsDerived(dataBox._class, class(FieldBox)))
+            {
+               FieldBox fieldBox = (FieldBox)dataBox;
+
+            }
+*/
+
             dropBox = TableDropBox
             {
                dataBox, borderStyle = 0, anchor = { 0, 0, 0, 0 }, 
