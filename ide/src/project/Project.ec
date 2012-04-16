@@ -1743,7 +1743,7 @@ private:
          File f = FileOpen(path, write);
          if(f)
          {
-            File include = FileOpen(":include.mk", read);
+            File include = FileOpen(":crossplatform.cf", read);
             if(include)
             {
                for(; !include.Eof(); )
@@ -1767,6 +1767,7 @@ private:
       char path[MAX_LOCATION];
       char * name;
       char * compilerName;
+      bool gccCompiler = compiler.ccCommand && strstr(compiler.ccCommand, "gcc") != null;
       Platform platform = GetRuntimePlatform();
 
       compilerName = CopyString(compiler.name);
@@ -1784,33 +1785,24 @@ private:
          {
             bool crossCompiling = compiler.targetPlatform != platform;
 
-            if(strcmpi(compiler.cppCommand, "cpp") ||
-                  strcmpi(compiler.ccCommand,  "gcc") ||
-                  strcmpi(compiler.ecpCommand, "ecp") ||
-                  strcmpi(compiler.eccCommand, "ecc") ||
-                  strcmpi(compiler.ecsCommand, "ecs") || crossCompiling ||
-                  strcmpi(compiler.earCommand, "ear"))
-            {
-               f.Printf("# TOOLCHAIN\n\n");
+            f.Printf("# TOOLCHAIN\n\n");
 
-               //f.Printf("SHELL := %s\n", "ar"/*compiler.arCommand*/); // is this really needed?
-               if(strcmpi(compiler.cppCommand, "cpp"))
-                  f.Printf("CPP := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.cppCommand);
-               if(strcmpi(compiler.ccCommand,  "gcc"))
-                  f.Printf("CC := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.ccCommand);
-               if(strcmpi(compiler.ecpCommand, "ecp"))
-                  f.Printf("ECP := %s\n", compiler.ecpCommand);
-               if(strcmpi(compiler.eccCommand, "ecc"))
-                  f.Printf("ECC := %s\n", compiler.eccCommand);
-               if(strcmpi(compiler.ecsCommand, "ecs") || crossCompiling)
-               {
-                  f.Printf("ECS := %s%s%s\n", compiler.ecsCommand,
-                        crossCompiling ? " -t " : "", crossCompiling ? (char*)compiler.targetPlatform : "");
-               }
-               if(strcmpi(compiler.earCommand, "ear"))
-                  f.Printf("EAR := %s\n", compiler.earCommand);
-               f.Printf("\n");
-            }
+            //f.Printf("SHELL := %s\n", "ar"/*compiler.arCommand*/); // is this really needed?
+            f.Printf("CPP := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.cppCommand);
+            f.Printf("CC := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.ccCommand);
+            f.Printf("ECP := %s\n", compiler.ecpCommand);
+            f.Printf("ECC := %s\n", compiler.eccCommand);
+            f.Printf("ECS := %s%s%s\n", compiler.ecsCommand,
+                  crossCompiling ? " -t " : "", crossCompiling ? (char*)compiler.targetPlatform : "");
+            f.Printf("EAR := %s\n", compiler.earCommand);
+
+            f.Printf("AS := as\n");
+            f.Printf("LD := ld\n");
+            f.Printf("AR := ar\n");
+            f.Printf("STRIP := strip\n");
+            f.Printf("UPX := upx\n");
+
+            f.Printf("\n");
 
             f.Printf("UPXFLAGS = -9\n\n"); // TOFEAT: Compression Level Option? Other UPX Options?
 
@@ -1823,6 +1815,27 @@ private:
             f.Printf("ifdef %s\n", PlatformToMakefileVariable(apple));
             f.Printf("OFLAGS += -framework cocoa -framework OpenGL\n");
             f.Printf("endif\n\n");
+
+            if(crossCompiling)
+               f.Printf("PLATFORM = %s\n", (char *)compiler.targetPlatform);
+
+            if((compiler.includeDirs && compiler.includeDirs.count) ||
+                  (compiler.libraryDirs && compiler.libraryDirs.count))
+            {
+               if(compiler.includeDirs && compiler.includeDirs.count)
+               {
+                  f.Printf("CFLAGS +=");
+                  OutputListOption(f, gccCompiler ? "isystem " : "I", compiler.includeDirs, lineEach, true);
+                  f.Printf("\n");
+               }
+               if(compiler.libraryDirs && compiler.libraryDirs.count)
+               {
+                  f.Printf("OFLAGS +=");
+                  OutputListOption(f, "L", compiler.libraryDirs, lineEach, true);
+                  f.Printf("\n");
+               }
+               f.Printf("\n");
+            }
 
             delete f;
          }
@@ -1921,8 +1934,6 @@ private:
          f.Printf("ifndef COMPILER\n");
          f.Printf("COMPILER := %s\n", fixedCompilerName);
          f.Printf("endif\n");
-         if(crossCompiling)
-            f.Printf("PLATFORM = %s\n", (char *)compiler.targetPlatform);
          test = GetTargetTypeIsSetByPlatform(config);
          if(test)
          {
@@ -2075,24 +2086,6 @@ private:
          f.Printf("ifeq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(executable));
          f.Printf("CONSOLE = %s\n", GetConsole(config) ? "-mconsole" : "-mwindows");
          f.Printf("endif\n\n");
-
-         if((compiler.includeDirs && compiler.includeDirs.count) ||
-               (compiler.libraryDirs && compiler.libraryDirs.count))
-         {
-            if(compiler.includeDirs && compiler.includeDirs.count)
-            {
-               f.Printf("CFLAGS +=");
-               OutputListOption(f, gccCompiler ? "isystem " : "I", compiler.includeDirs, lineEach, true);
-               f.Printf("\n");
-            }
-            if(compiler.libraryDirs && compiler.libraryDirs.count)
-            {
-               f.Printf("OFLAGS +=");
-               OutputListOption(f, "L", compiler.libraryDirs, lineEach, true);
-               f.Printf("\n");
-            }
-            f.Printf("\n");
-         }
 
          if((config && config.options && config.options.libraries) ||
                (options && options.libraries))
