@@ -920,45 +920,14 @@ class ProjectView : Window
       return true;
    }
 
-   void Compile(ProjectNode node)
+   bool Compile(ProjectNode node)
    {
+      bool result = false;
       char fileName[MAX_LOCATION];
-      char extension[MAX_EXTENSION];
       Window document;
       Project prj = node.project;
       ProjectConfig config = prj.config;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      DirExpression objDir = prj.GetObjDir(compiler, config);
-
-      strcpy(fileName, prj.topNode.path);
-      PathCatSlash(fileName, objDir.dir);
-      PathCatSlash(fileName, node.name);
-      StripExtension(fileName);
-      strcat(fileName, ".o");
-      if(FileExists(fileName))
-         DeleteFile(fileName);
-
-      GetExtension(node.name, extension);
-      if(!strcmp(extension, "ec"))
-      {
-         // Delete generated C file
-         strcpy(fileName, prj.topNode.path);
-         PathCat(fileName, objDir.dir);
-         PathCat(fileName, node.name);
-         StripExtension(fileName);
-         strcat(fileName, ".c");
-         if(FileExists(fileName))
-            DeleteFile(fileName);
-
-         // Delete symbol file
-         strcpy(fileName, prj.topNode.path);
-         PathCat(fileName, node.path);
-         PathCat(fileName, node.name);
-         StripExtension(fileName);
-         strcat(fileName, ".sym");
-         if(FileExists(fileName))
-            DeleteFile(fileName);
-      }
 
       stopBuild = false;
 
@@ -981,6 +950,43 @@ class ProjectView : Window
       {
          if(!node.GetIsExcluded(config))
          {
+            // Delete intermedaite files
+            {
+               char extension[MAX_EXTENSION];
+               DirExpression objDir = prj.GetObjDir(compiler, config);
+
+               strcpy(fileName, prj.topNode.path);
+               PathCatSlash(fileName, objDir.dir);
+               PathCatSlash(fileName, node.name);
+               StripExtension(fileName);
+               strcat(fileName, ".o");
+               if(FileExists(fileName))
+                  DeleteFile(fileName);
+
+               GetExtension(node.name, extension);
+               if(!strcmp(extension, "ec"))
+               {
+                  // Delete generated C file
+                  strcpy(fileName, prj.topNode.path);
+                  PathCat(fileName, objDir.dir);
+                  PathCat(fileName, node.name);
+                  StripExtension(fileName);
+                  strcat(fileName, ".c");
+                  if(FileExists(fileName))
+                     DeleteFile(fileName);
+
+                  // Delete symbol file
+                  strcpy(fileName, prj.topNode.path);
+                  PathCat(fileName, node.path);
+                  PathCat(fileName, node.name);
+                  StripExtension(fileName);
+                  strcat(fileName, ".sym");
+                  if(FileExists(fileName))
+                     DeleteFile(fileName);
+               }
+
+               delete objDir;
+            }
             buildInProgress = compilingFile;
             ide.AdjustBuildMenus();
 
@@ -995,12 +1001,12 @@ class ProjectView : Window
             prj.Compile(node, compiler, config);
             buildInProgress = none;
             ide.AdjustBuildMenus();
+
+            result = true;
          }
-         else
-            ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
       }
-      delete objDir;
       delete compiler;
+      return result;
    }
 
    bool ProjectNewFile(MenuItem selection, Modifiers mods)
@@ -1179,7 +1185,8 @@ class ProjectView : Window
       if(row)
       {
          ProjectNode node = (ProjectNode)row.tag;
-         Compile(node);
+         if(!Compile(node))
+            ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
       }
       return true;
    }

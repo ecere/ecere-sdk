@@ -2381,9 +2381,19 @@ class IDEWorkSpace : Window
                      {
                         if(projectView)
                         {
-                           ProjectNode node = projectView.GetNodeFromWindow(activeClient, null);
-                           if(node)
-                              projectView.Compile(node);
+                           bool result = false;
+                           ProjectNode node = null;
+                           for(p : ide.workspace.projects)
+                           {
+                              node = projectView.GetNodeFromWindow(activeClient, p);
+                              if(node && projectView.Compile(node))
+                              {
+                                 result = true;
+                                 break;
+                              }
+                           }
+                           if(!result && node)
+                              ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
                         }
                         return true;
                      }
