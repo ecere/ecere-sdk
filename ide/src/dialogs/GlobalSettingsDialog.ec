@@ -265,7 +265,7 @@ class CompilersTab : GlobalSettingsSubTab
    PathBox compilerConfigsDir
    {
       this, anchor = { left = 210, top = 8, right = 8 };
-      text = $"Compiler Configurations Directory:", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"Compiler Configurations Directory", browseDialog = settingsFileDialog, NotifyModified = NotifyModifiedDocument;
    };
 
    SelectorBar compilerSelector

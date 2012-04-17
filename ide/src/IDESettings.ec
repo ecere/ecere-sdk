@@ -274,8 +274,6 @@ private:
          defaultCompiler = MakeDefaultCompiler(defaultCompilerName, true);
          data.compilerConfigs.Add(defaultCompiler);
       }
-      if(!data.compilerConfigsDir || !data.compilerConfigsDir[0])
-         data.property::compilerConfigsDir = "configs";
 
       // We incref the compilers below, so reset refCount to 0
       defaultCompiler._refCount = 0;

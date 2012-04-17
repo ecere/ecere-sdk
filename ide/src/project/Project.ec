@@ -739,6 +739,13 @@ public:
       isset { return license != null && license[0]; }
    }
 
+   property char * compilerConfigsDir
+   {
+      set { delete compilerConfigsDir; if(value && value[0]) compilerConfigsDir = CopyString(value); }
+      get { return compilerConfigsDir ? compilerConfigsDir : ""; }
+      isset { return compilerConfigsDir && compilerConfigsDir[0]; }
+   }
+
 private:
    // topNode.name holds the file name (.epj)
    ProjectOptions options;
@@ -754,6 +761,7 @@ private:
 
    String description;
    String license;
+   String compilerConfigsDir;
 
    ~Project()
    {
@@ -772,6 +780,7 @@ private:
 
       delete description;
       delete license;
+      delete compilerConfigsDir;
       delete moduleName;
       delete filePath;
       delete topNode;
@@ -1041,7 +1050,10 @@ private:
    void GetCompilerConfigsDir(char * cfDir)
    {
       strcpy(cfDir, topNode.path);
-      PathCatSlash(cfDir, ideSettings.compilerConfigsDir);
+      if(compilerConfigsDir && compilerConfigsDir[0])
+         PathCatSlash(cfDir, compilerConfigsDir);
+      else if(ideSettings.compilerConfigsDir && ideSettings.compilerConfigsDir[0])
+         PathCatSlash(cfDir, ideSettings.compilerConfigsDir);
       if(cfDir && cfDir[0] && cfDir[strlen(cfDir)-1] != '/')
          strcat(cfDir, "/");
    }
@@ -1944,7 +1956,7 @@ private:
          //f.Printf("VERSION = %s\n", version);
          f.Printf("CONFIG := %s\n", fixedConfigName);
          f.Printf("ifndef COMPILER\n");
-         f.Printf("COMPILER := %s\n", fixedCompilerName);
+         f.Printf("COMPILER := default\n");
          f.Printf("endif\n");
          test = GetTargetTypeIsSetByPlatform(config);
          if(test)
