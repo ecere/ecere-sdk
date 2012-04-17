@@ -173,6 +173,8 @@ public:
    Array<FieldBox> fieldsBoxes { };
    Array<TableEditor> tableEditors { };
    Array<TableEditor> dynamicLookupTableEditors { };
+
+   bool readOnly;
    
    public virtual void OnInitizlize();
    public virtual void OnLoad();
@@ -779,8 +781,19 @@ private:
    void InitFieldsBoxes()
    {
       DebugLn("TableEditor::InitFieldsBoxes");
-      for(fb : fieldsBoxes)
-         fb.Init();
+      if(readOnly)
+      {
+         for(fb : fieldsBoxes)
+         {
+            fb.readOnly = true;
+            fb.Init();
+         }
+      }
+      else
+      {
+         for(fb : fieldsBoxes)
+            fb.Init();
+      }
       //NotifyInitFields(master, this);
    }
 
