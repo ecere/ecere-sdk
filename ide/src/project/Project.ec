@@ -1740,11 +1740,11 @@ private:
 
       if(!FileExists(path))
       {
-         File f = FileOpen(path, write);
-         if(f)
+         File include = FileOpen(":crossplatform.cf", read);
+         if(include)
          {
-            File include = FileOpen(":crossplatform.cf", read);
-            if(include)
+            File f = FileOpen(path, write);
+            if(f)
             {
                for(; !include.Eof(); )
                {
@@ -1752,10 +1752,11 @@ private:
                   int count = include.Read(buffer, 1, 4096);
                   f.Write(buffer, 1, count);
                }
-               delete include;
+               delete f;
+
                result = true;
             }
-            delete f;
+            delete include;
          }
       }
       return result;
