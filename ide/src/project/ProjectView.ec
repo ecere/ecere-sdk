@@ -555,7 +555,7 @@ class ProjectView : Window
          DisplayCompiler(compiler, false);
 
       strcpy(makefilePath, project.topNode.path);
-      project.CatMakeFileName(makefileName, compiler, config);
+      project.CatMakeFileName(makefileName, config);
       PathCatSlash(makefilePath, makefileName);
 
       exists = FileExists(makefilePath);

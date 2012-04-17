@@ -30,12 +30,6 @@ private:
 extern int __ecereVMethodID_class_OnCompare;
 extern int __ecereVMethodID_class_OnFree;
 
-#ifdef __WIN32__
-define cfDir = "C:/temp/";
-#else
-define cfDir = "/home/redj/.ecereIDE/";
-#endif
-
 IDESettings ideSettings;
 
 IDESettingsContainer settingsContainer
@@ -1044,14 +1038,19 @@ private:
       }
    }
 
-   void CatMakeFileName(char * string, CompilerConfig compiler, ProjectConfig config)
+   void GetCompilerConfigsDir(char * cfDir)
+   {
+      strcpy(cfDir, topNode.path);
+      PathCatSlash(cfDir, ideSettings.compilerConfigsDir);
+      if(cfDir && cfDir[0] && cfDir[strlen(cfDir)-1] != '/')
+         strcat(cfDir, "/");
+   }
+
+   void CatMakeFileName(char * string, ProjectConfig config)
    {
       char projectName[MAX_LOCATION];
       strcpy(projectName, name);
-      if(strcmpi(compiler.name, defaultCompilerName))
-         sprintf(string, "%s-%s-%s.Makefile", projectName, compiler.name, config.name);
-      else
-         sprintf(string, "%s%s%s.Makefile", projectName, config ? "-" : "", config ? config.name : "");
+      sprintf(string, "%s%s%s.Makefile", projectName, config ? "-" : "", config ? config.name : "");
    }
 
 #ifndef MAKEFILE_GENERATOR
@@ -1488,7 +1487,7 @@ private:
       CatTargetFileName(targetFileName, compiler, config);
 
       strcpy(makeFilePath, topNode.path);
-      CatMakeFileName(makeFile, compiler, config);
+      CatMakeFileName(makeFile, config);
       PathCatSlash(makeFilePath, makeFile);
       
       // TODO: TEST ON UNIX IF \" around makeTarget is ok
@@ -1502,6 +1501,8 @@ private:
          {
             int len;
             char pushD[MAX_LOCATION];
+            char cfDir[MAX_LOCATION];
+            GetCompilerConfigsDir(cfDir);
             GetWorkingDir(pushD, sizeof(pushD));
             ChangeWorkingDir(topNode.path);
             // Create object dir if it does not exist already
@@ -1539,6 +1540,8 @@ private:
       }
       else
       {
+         char cfDir[MAX_LOCATION];
+         GetCompilerConfigsDir(cfDir);
          sprintf(command, "%s E_IDE_CF_DIR=%s COMPILER=%s -j%d %s%s%s -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",
@@ -1573,7 +1576,7 @@ private:
       SetPath(false, compiler, config);
 
       strcpy(makeFilePath, topNode.path);
-      CatMakeFileName(makeFile, compiler, config);
+      CatMakeFileName(makeFile, config);
       PathCatSlash(makeFilePath, makeFile);
       
       if(compiler.type.isVC)
@@ -1596,6 +1599,8 @@ private:
       }
       else
       {
+         char cfDir[MAX_LOCATION];
+         GetCompilerConfigsDir(cfDir);
          sprintf(command, "%s E_IDE_CF_DIR=%s COMPILER=%s %sclean -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, realclean ? "real" : "", topNode.path, makeFilePath);
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
          {
@@ -1694,11 +1699,13 @@ private:
       bool result = false;
       char path[MAX_LOCATION];
 
-      GetWorkingDir(path, sizeof(path));
-      PathCatSlash(path, cfDir);
+      GetCompilerConfigsDir(path);
+      if(!FileExists(path).isDirectory)
+         MakeDir(path);
       PathCatSlash(path, "debug.cf");
 
-      if(!FileExists(path))
+      if(FileExists(path))
+         DeleteFile(path);
       {
          File f = FileOpen(path, write);
          if(f)
@@ -1734,11 +1741,13 @@ private:
       bool result = false;
       char path[MAX_LOCATION];
 
-      GetWorkingDir(path, sizeof(path));
-      PathCatSlash(path, cfDir);
+      GetCompilerConfigsDir(path);
+      if(!FileExists(path).isDirectory)
+         MakeDir(path);
       PathCatSlash(path, "crossplatform.cf");
 
-      if(!FileExists(path))
+      if(FileExists(path))
+         DeleteFile(path);
       {
          File include = FileOpen(":crossplatform.cf", read);
          if(include)
@@ -1775,11 +1784,13 @@ private:
       CamelCase(compilerName);
       name = PrintString(platform, "-", compilerName, ".cf");
 
-      GetWorkingDir(path, sizeof(path));
-      PathCatSlash(path, cfDir);
+      GetCompilerConfigsDir(path);
+      if(!FileExists(path).isDirectory)
+         MakeDir(path);
       PathCatSlash(path, name);
 
-      if(!FileExists(path))
+      if(FileExists(path))
+         DeleteFile(path);
       {
          File f = FileOpen(path, write);
          if(f)
@@ -1859,7 +1870,7 @@ private:
       if(!altMakefilePath)
       {
          strcpy(filePath, topNode.path);
-         CatMakeFileName(makeFile, compiler, config);
+         CatMakeFileName(makeFile, config);
          PathCatSlash(filePath, makeFile);
       }
 

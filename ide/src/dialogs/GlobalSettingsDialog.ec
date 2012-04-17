@@ -87,6 +87,8 @@ class GlobalSettingsDialog : Window
             
             if(compilersTab.modifiedDocument)
             {
+               if(strcmp(compilersTab.compilerConfigsDir.path, ideSettings.compilerConfigsDir))
+                  ideSettings.compilerConfigsDir = compilersTab.compilerConfigsDir.path;
                ideSettings.compilerConfigs.Free();
                for(compiler : compilersTab.compilerConfigs)
                   ideSettings.compilerConfigs.Add(compiler.Copy());
@@ -184,6 +186,7 @@ class GlobalSettingsDialog : Window
       
       for(compiler : ideSettings.compilerConfigs)
          compilersTab.AddCompiler(compiler.Copy(), compiler == activateCompiler);
+      compilersTab.compilerConfigsDir.path = ideSettings.compilerConfigsDir;
 
       // ProjectOptionsTab
       projectOptionsTab.defaultTargetDir.path = ideSettings.projectDefaultTargetDir;
@@ -258,9 +261,16 @@ class CompilersTab : GlobalSettingsSubTab
    background = formColor;
    text = $"Compilers";
 
+   Label compilerConfigsDirLabel { this, position = { 8, 12 }, labeledWindow = compilerConfigsDir, tabCycle = false, inactive = true };
+   PathBox compilerConfigsDir
+   {
+      this, anchor = { left = 210, top = 8, right = 8 };
+      text = $"Compiler Configurations Directory:", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+   };
+
    SelectorBar compilerSelector
    {
-      this, text = $"Compiler Configurations:", anchor = { left = 148, top = 8, right = 99 }; size = { 0, 26 };
+      this, text = $"Compiler Configurations:", anchor = { left = 148, top = 38, right = 99 }; size = { 0, 26 };
       opacity = 0;
       direction = horizontal, scrollable = true;
 
@@ -298,7 +308,7 @@ class CompilersTab : GlobalSettingsSubTab
       }
    };
 
-   TabControl tabControl { this, background = formColor, anchor = { left = 8, top = 38, right = 8, bottom = 8 } };
+   TabControl tabControl { this, background = formColor, anchor = { left = 8, top = 68, right = 8, bottom = 8 } };
    
    CompilerDirectoriesTab dirsTab { this, tabControl = tabControl };
    CompilerToolchainTab toolchainTab { this, tabControl = tabControl };
@@ -310,7 +320,7 @@ class CompilersTab : GlobalSettingsSubTab
 
    Label labelCompilers
    {
-      this, anchor = { left = 8, top = 14 }, labeledWindow = compilerSelector;
+      this, anchor = { left = 8, top = 44 }, labeledWindow = compilerSelector;
 
       void OnRedraw(Surface surface)
       {
@@ -354,7 +364,7 @@ class CompilersTab : GlobalSettingsSubTab
    {
       parent = this, bevelOver = true, inactive = true;
       size = { 22, 22 };
-      anchor = { top = 10, right = 77 };
+      anchor = { top = 40, right = 77 };
       hotKey = altC, bitmap = BitmapResource { fileName = ":actions/docNew.png", alphaBlend = true };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -372,7 +382,7 @@ class CompilersTab : GlobalSettingsSubTab
    {
       parent = this, bevelOver = true, inactive = true;
       size = { 22, 22 };
-      anchor = { top = 10, right = 54 };
+      anchor = { top = 40, right = 54 };
       hotKey = altC, bitmap = BitmapResource { fileName = ":actions/attach.png", alphaBlend = true };
 
       bool NotifyClicked(Button b, int x, int y, Modifiers mods)
@@ -401,7 +411,7 @@ class CompilersTab : GlobalSettingsSubTab
    {
       parent = this, bevelOver = true, inactive = true;
       size = { 22, 22 };
-      anchor = { top = 10, right = 31 };
+      anchor = { top = 40, right = 31 };
       hotKey = altU, bitmap = BitmapResource { fileName = ":actions/editCopy.png", alphaBlend = true };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -420,7 +430,7 @@ class CompilersTab : GlobalSettingsSubTab
    {
       parent = this, bevelOver = true, inactive = true;
       size = { 22, 22 };
-      anchor = { top = 10, right = 8 };
+      anchor = { top = 40, right = 8 };
       hotKey = altD, bitmap = BitmapResource { fileName = ":actions/delete2.png", alphaBlend = true };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -519,6 +529,12 @@ class CompilersTab : GlobalSettingsSubTab
    {
       if(!eClass_IsDerived(clickedButton._class, class(EditableSelectorButton)) || !((EditableSelectorButton)clickedButton).editBox)
          LoadCompiler((CompilerConfig)clickedButton.id);
+      return true;
+   }
+
+   bool NotifyModifiedDocument(PathBox pathBox)
+   {
+      modifiedDocument = true;
       return true;
    }
 }

@@ -274,6 +274,8 @@ private:
          defaultCompiler = MakeDefaultCompiler(defaultCompilerName, true);
          data.compilerConfigs.Add(defaultCompiler);
       }
+      if(!data.compilerConfigsDir || !data.compilerConfigsDir[0])
+         data.property::compilerConfigsDir = "configs";
 
       // We incref the compilers below, so reset refCount to 0
       defaultCompiler._refCount = 0;
@@ -353,11 +355,11 @@ public:
       isset { return projectDefaultIntermediateObjDir && projectDefaultIntermediateObjDir[0]; }
    }
 
-   property char * portableLocation
+   property char * compilerConfigsDir
    {
-      set { delete portableLocation; if(value && value[0]) portableLocation = CopyString(value); }
-      get { return portableLocation ? portableLocation : ""; }
-      isset { return portableLocation && portableLocation[0]; }
+      set { delete compilerConfigsDir; if(value && value[0]) compilerConfigsDir = CopyString(value); }
+      get { return compilerConfigsDir ? compilerConfigsDir : ""; }
+      isset { return compilerConfigsDir && compilerConfigsDir[0]; }
    }
 
    property char * defaultCompiler
@@ -373,7 +375,7 @@ private:
    char * ideProjectFileDialogLocation;
    char * projectDefaultTargetDir;
    char * projectDefaultIntermediateObjDir;
-   char * portableLocation;
+   char * compilerConfigsDir;
    char * defaultCompiler;
 
    CompilerConfig GetCompilerConfig(String compilerName)
@@ -407,7 +409,7 @@ private:
    
       delete projectDefaultTargetDir;
       delete projectDefaultIntermediateObjDir;
-      delete portableLocation;
+      delete compilerConfigsDir;
       delete defaultCompiler;
 
       delete ideFileDialogLocation;
@@ -483,8 +485,8 @@ private:
       if(projectDefaultIntermediateObjDir && projectDefaultIntermediateObjDir[0])
          ChangeCh(projectDefaultIntermediateObjDir, from, to);
 
-      if(portableLocation && portableLocation[0])
-         ChangeCh(portableLocation, from, to);
+      if(compilerConfigsDir && compilerConfigsDir[0])
+         ChangeCh(compilerConfigsDir, from, to);
    }
 
    void ManagePortablePaths(char * location, bool makeAbsolute)
@@ -539,6 +541,9 @@ private:
          projectDefaultTargetDir = UpdatePortablePath(projectDefaultTargetDir, location, makeAbsolute);
       if(projectDefaultIntermediateObjDir && projectDefaultIntermediateObjDir[0])
          projectDefaultIntermediateObjDir = UpdatePortablePath(projectDefaultIntermediateObjDir, location, makeAbsolute);
+
+      if(compilerConfigsDir && compilerConfigsDir[0])
+         compilerConfigsDir = UpdatePortablePath(compilerConfigsDir, location, makeAbsolute);
    }
 
    char * UpdatePortablePath(char * path, char * location, bool makeAbsolute)
