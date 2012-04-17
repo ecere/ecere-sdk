@@ -1958,6 +1958,27 @@ private:
          f.Printf("ifndef COMPILER\n");
          f.Printf("COMPILER := default\n");
          f.Printf("endif\n");
+
+         f.Printf("ifndef DEBUG\n");
+         f.Printf("OPTIMIZE :=");
+         switch(GetOptimization(config))
+         {
+            case speed:
+               f.Printf(" -O2");
+               f.Printf(" -ffast-math");
+               break;
+            case size:
+               f.Printf(" -Os");
+               break;
+         }
+         if(GetDebug(config))
+            f.Printf(" -g");
+         f.Printf("\n");
+         f.Printf("else\n");
+         f.Printf("OPTIMIZE := -g\n");
+         f.Printf("NOSTRIP := y\n");
+         f.Printf("endif\n");
+
          test = GetTargetTypeIsSetByPlatform(config);
          if(test)
          {
@@ -2012,7 +2033,11 @@ private:
 
          f.Printf("# VARIABLES\n\n");
 
-         f.Printf("OBJ = %s%s\n\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
+         f.Printf("ifndef DEBUG\n");
+         f.Printf("OBJ = %s%s\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
+         f.Printf("else\n");
+         f.Printf("OBJ = %s.debug%s\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
+         f.Printf("endif\n\n");
 
          f.Printf("RES = %s%s\n\n", resDirNoSpaces, resDirNoSpaces[0] ? "/" : "");
 
@@ -2034,19 +2059,36 @@ private:
                   f.Printf("ifeq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(type));
 
                   GetMakefileTargetFileName(type, target, config);
+                  f.Printf("ifndef DEBUG\n");
                   strcpy(targetNoSpaces, targetDir);
                   PathCatSlash(targetNoSpaces, target);
                   ReplaceSpaces(targetNoSpaces, targetNoSpaces);
                   f.Printf("TARGET = %s\n", targetNoSpaces);
+                  f.Printf("else\n");
+                  strcpy(targetNoSpaces, targetDir);
+                  strcat(targetNoSpaces, ".debug");
+                  PathCatSlash(targetNoSpaces, target);
+                  ReplaceSpaces(targetNoSpaces, targetNoSpaces);
+                  f.Printf("TARGET = %s\n", targetNoSpaces);
+                  f.Printf("endif\n");
                }
             }
             f.Printf("else\n"); // ifCount should always be > 0
          }
          GetMakefileTargetFileName(targetType, target, config);
+         f.Printf("ifndef DEBUG\n");
          strcpy(targetNoSpaces, targetDir);
          PathCatSlash(targetNoSpaces, target);
          ReplaceSpaces(targetNoSpaces, targetNoSpaces);
          f.Printf("TARGET = %s\n", targetNoSpaces);
+         f.Printf("else\n");
+         strcpy(targetNoSpaces, targetDir);
+         strcat(targetNoSpaces, ".debug");
+         PathCatSlash(targetNoSpaces, target);
+         ReplaceSpaces(targetNoSpaces, targetNoSpaces);
+         f.Printf("TARGET = %s\n", targetNoSpaces);
+         f.Printf("endif\n");
+
          if(test)
          {
             if(ifCount)
@@ -2222,17 +2264,7 @@ private:
          f.Printf("CFLAGS +=");
          if(gccCompiler)
          {
-            f.Printf(" -fmessage-length=0");
-            switch(GetOptimization(config))
-            {
-               case speed:
-                  f.Printf(" -O2");
-                  f.Printf(" -ffast-math");
-                  break;
-               case size:
-                  f.Printf(" -Os");
-                  break;
-            }
+            f.Printf(" -fmessage-length=0 $(OPTIMIZE)");
             //if(compiler.targetPlatform.is32Bits)
                f.Printf(" -m32");
             //else if(compiler.targetPlatform.is64Bits)
@@ -2245,8 +2277,6 @@ private:
             case all: f.Printf(" -Wall"); break;
             case none: f.Printf(" -w"); break;
          }
-         if(GetDebug(config))
-            f.Printf(" -g");
          if(GetProfile(config))
             f.Printf(" -pg");
          if(options && options.linkerOptions && options.linkerOptions.count)
