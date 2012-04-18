@@ -2029,7 +2029,7 @@ private:
          f.Printf("OBJ = %s%s\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
          f.Printf("else\n");
          f.Printf("OBJ = %s.debug%s\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
-         f.Printf("CFLAGS += _DEBUG\n");
+         f.Printf("CFLAGS += -D_DEBUG\n");
          f.Printf("endif\n\n");
 
          f.Printf("RES = %s%s\n\n", resDirNoSpaces, resDirNoSpaces[0] ? "/" : "");
