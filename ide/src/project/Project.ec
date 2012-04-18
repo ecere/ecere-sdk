@@ -2011,6 +2011,10 @@ private:
          }
          f.Printf("\n");
 
+         f.Printf("ifeq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(executable));
+         f.Printf("CONSOLE = %s\n", GetConsole(config) ? "-mconsole" : "-mwindows");
+         f.Printf("endif\n\n");
+
          f.Printf("# FLAGS\n\n");
 
          f.Printf("CFLAGS =\n");
@@ -2127,10 +2131,6 @@ private:
          if(!noResources)
             resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config);
          OutputFileList(f, "RESOURCES", listItems, varStringLenDiffs, null);
-
-         f.Printf("ifeq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(executable));
-         f.Printf("CONSOLE = %s\n", GetConsole(config) ? "-mconsole" : "-mwindows");
-         f.Printf("endif\n\n");
 
          f.Printf("LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)\n\n");
          if((config && config.options && config.options.libraries) ||

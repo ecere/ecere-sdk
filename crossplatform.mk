@@ -137,9 +137,9 @@ ifdef WINDOWS
    FVISIBILITY :=
    FPIC :=
 ifeq "$(TARGET_TYPE)" "executable"
-   EXECUTABLE = $(CONSOLE)
+   EXECUTABLE := $(CONSOLE)
 else
-   EXECUTABLE =
+   EXECUTABLE :=
 endif
 else
    FVISIBILITY := -fvisibility=hidden
