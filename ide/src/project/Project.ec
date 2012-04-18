@@ -1723,50 +1723,6 @@ private:
       }
    }
 
-   bool GenerateDebugCf(CompilerConfig compiler)
-   {
-      bool result = false;
-      char path[MAX_LOCATION];
-
-      if(!GetProjectCompilerConfigsDir(path))
-         GetIDECompilerConfigsDir(path);
-
-      if(!FileExists(path).isDirectory)
-         MakeDir(path);
-      PathCatSlash(path, "debug.cf");
-
-      if(FileExists(path))
-         DeleteFile(path);
-      {
-         File f = FileOpen(path, write);
-         if(f)
-         {
-            f.Printf(".PHONY: debug_lists\n");
-            f.Printf("\n");
-
-            f.Printf("ifdef WINDOWS\n");
-            f.Printf(".PHONY: debug_openssl\n");
-            f.Printf("debug_openssl:\n");
-            f.Printf("	@$(call echo,OPENSSL_CONF = $(OPENSSL_CONF))\n");
-            f.Printf("	@$(call echo,_OPENSSL_CONF = $(_OPENSSL_CONF))\n");
-            f.Printf("	@$(call echo,OPENSSL_INCLUDE_DIR = $(OPENSSL_INCLUDE_DIR))\n");
-            f.Printf("	@$(call echo,OPENSSL_LIB_DIR = $(OPENSSL_LIB_DIR))\n");
-            f.Printf("	@$(call echo,OPENSSL_BIN_DIR = $(OPENSSL_BIN_DIR))\n");
-            f.Printf("endif\n");
-            f.Printf("\n");
-
-            f.Printf("debug_lists:\n");
-            f.Printf("	@$(call echo,ECSOURCES = $(ECSOURCES))\n");
-            f.Printf("	@$(call echo,SYMBOLS = $(SYMBOLS))\n");
-            f.Printf("	@$(call echo,IMPORTS = $(IMPORTS))\n");
-            f.Printf("	@$(call echo,COBJECTS = $(COBJECTS))\n");
-
-            delete f;
-         }
-      }
-      return result;
-   }
-
    bool GenerateCrossPlatformCf()
    {
       bool result = false;
@@ -2571,8 +2527,6 @@ private:
          if(!sameObjTargetDirs)
             f.Printf("\t$(call rmdirq,%s)\n", targetDirExpNoSpaces);
          f.Printf("\n");
-
-         f.Printf("include $(CF_DIR)debug.cf\n");
 
          delete f;
          delete objDirExp;

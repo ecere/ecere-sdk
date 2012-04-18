@@ -587,7 +587,6 @@ class ProjectView : Window
          logBox.Logf($"%s - %s%smakefile for %s config...\n", makefileName, reason, action, GetConfigName(config));
 
          project.GenerateCrossPlatformCf();
-         project.GenerateDebugCf(compiler);
          project.GenerateCompilerMk(compiler);
          project.GenerateMakefile(null, false, null, compiler, config);
 
