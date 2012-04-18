@@ -2179,13 +2179,14 @@ private:
          // Non-zero if we're building eC code
          // We'll have to be careful with this when merging configs where eC files can be excluded in some configs and included in others
          int numCObjects = 0;
+         int numObjects = 0;
          bool containsCXX = false; // True if the project contains a C++ file
          bool sameObjTargetDirs;
          String objDirExp = GetObjDirExpression(config);
          TargetTypes targetType = GetTargetType(config);
 
          char cfDir[MAX_LOCATION];
-         int objectsParts, eCsourcesParts;
+         int objectsParts = 0, eCsourcesParts = 0;
          Array<String> listItems { };
          Map<String, int> varStringLenDiffs { };
          Map<String, NameCollisionInfo> namesInfo { };
@@ -2358,16 +2359,11 @@ private:
 
          topNode.GenMakefileGetNameCollisionInfo(namesInfo, config);
 
-         numCObjects = topNode.GenMakefilePrintNode(f, this, objects, namesInfo, listItems, config, &containsCXX);
-         if(numCObjects)
-            listItems.Add(CopyString("$(OBJ)$(MODULE).main$(O)"));
-         objectsParts = OutputFileList(f, "OBJECTS", listItems, varStringLenDiffs, null);
-
          {
             int c;
-            char * map[4][2] = { { "COBJECTS", "C" }, { "SYMBOLS", "S" }, { "IMPORTS", "I" }, { "BOWLS", "B" } };
+            char * map[5][2] = { { "COBJECTS", "C" }, { "SYMBOLS", "S" }, { "IMPORTS", "I" }, { "ECOBJECTS", "O" }, { "BOWLS", "B" } };
 
-            topNode.GenMakefilePrintNode(f, this, eCsources, namesInfo, listItems, config, null);
+            numCObjects = topNode.GenMakefilePrintNode(f, this, eCsources, namesInfo, listItems, config, null);
             eCsourcesParts = OutputFileList(f, "_ECSOURCES", listItems, varStringLenDiffs, null);
 
             f.Printf("ECSOURCES = $(call shwspace,$(_ECSOURCES))\n");
@@ -2378,7 +2374,7 @@ private:
             }
             f.Printf("\n");
 
-            for(c = 0; c < 3; c++)
+            for(c = 0; c < 5; c++)
             {
                if(eCsourcesParts > 1)
                {
@@ -2395,6 +2391,11 @@ private:
                f.Printf("\n");
             }
          }
+
+         numObjects = topNode.GenMakefilePrintNode(f, this, objects, namesInfo, listItems, config, &containsCXX);
+         if(numObjects)
+            objectsParts = OutputFileList(f, "_OBJECTS", listItems, varStringLenDiffs, null);
+         f.Printf("OBJECTS =%s%s%s\n\n", numObjects ? " $(_OBJECTS)" : "", numCObjects ? " $(ECOBJECTS)" : "", numCObjects ? " $(OBJ)$(MODULE).main$(O)" : "");
 
          topNode.GenMakefilePrintNode(f, this, sources, null, listItems, config, null);
          OutputFileList(f, "SOURCES", listItems, varStringLenDiffs, "$(ECSOURCES)");
@@ -2737,10 +2738,11 @@ private:
             GenMakefilePrintMainObjectRule(f, config);
 
          f.Printf("clean: objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
-         f.Printf("\t$(call rmq,%s$(TARGET))\n", numCObjects ? "$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) " : "");
-         OutputCleanActions(f, "OBJECTS", objectsParts);
+         f.Printf("\t$(call rmq,%s$(TARGET))\n", numCObjects ? "$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) " : "");
+         OutputCleanActions(f, "_OBJECTS", objectsParts);
          if(numCObjects)
          {
+            OutputCleanActions(f, "ECOBJECTS", eCsourcesParts);
             OutputCleanActions(f, "COBJECTS", eCsourcesParts);
             OutputCleanActions(f, "BOWLS", eCsourcesParts);
             OutputCleanActions(f, "IMPORTS", eCsourcesParts);

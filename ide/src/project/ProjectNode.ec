@@ -1341,6 +1341,7 @@ private:
                ReplaceUnwantedMakeChars(moduleName, name);
                sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
                items.Add(CopyString(s));
+               count++;
             }
          }
          else if(!strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
@@ -1351,6 +1352,7 @@ private:
             {
                bool collision;
                NameCollisionInfo info;
+               count++;
                ReplaceSpaces(moduleName, name);
                StripExtension(moduleName);
                info = namesInfo[moduleName];
@@ -1360,24 +1362,6 @@ private:
                if(containsCXX && (!strcmpi(extension, "cpp") || !strcmpi(extension, "cc") || !strcmpi(extension, "cxx")))
                   *containsCXX = true;
             }
-         }
-         else if(!strcmpi(extension, "ec"))
-         {
-            ReplaceSpaces(moduleName, name);
-            StripExtension(moduleName);
-            if(printType == objects)
-               count++;
-            s[0] = '\0';
-            if(printType == objects)
-               sprintf(s, "%s$(OBJ)%s.o%s", ts.a, moduleName, ts.b);
-            else if(printType == cObjects)
-               sprintf(s, "%s$(OBJ)%s.c%s", ts.a, moduleName, ts.b);
-            else if(printType == symbols)
-               sprintf(s, "%s$(OBJ)%s.sym%s", ts.a, moduleName, ts.b);
-            else if(printType == imports)
-               sprintf(s, "%s$(OBJ)%s.imp%s", ts.a, moduleName, ts.b);
-            if(s[0])
-               items.Add(CopyString(s));
          }
          delete ts;
       }
