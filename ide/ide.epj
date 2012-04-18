@@ -408,6 +408,6 @@
       "ecereBack.jpg",
       "icon.png",
       "../include.mk",
-      "../crossplatform.cf"
+      "../crossplatform.mk"
    ]
 }

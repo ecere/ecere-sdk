@@ -1047,15 +1047,32 @@ private:
       }
    }
 
-   void GetCompilerConfigsDir(char * cfDir)
+   bool GetProjectCompilerConfigsDir(char * cfDir)
    {
+      bool result = false;
       strcpy(cfDir, topNode.path);
       if(compilerConfigsDir && compilerConfigsDir[0])
+      {
          PathCatSlash(cfDir, compilerConfigsDir);
-      else if(ideSettings.compilerConfigsDir && ideSettings.compilerConfigsDir[0])
-         PathCatSlash(cfDir, ideSettings.compilerConfigsDir);
+         result = true;
+      }
       if(cfDir && cfDir[0] && cfDir[strlen(cfDir)-1] != '/')
          strcat(cfDir, "/");
+      return result;
+   }
+
+   bool GetIDECompilerConfigsDir(char * cfDir)
+   {
+      bool result = false;
+      strcpy(cfDir, topNode.path);
+      if(ideSettings.compilerConfigsDir && ideSettings.compilerConfigsDir[0])
+      {
+         PathCatSlash(cfDir, ideSettings.compilerConfigsDir);
+         result = true;
+      }
+      if(cfDir && cfDir[0] && cfDir[strlen(cfDir)-1] != '/')
+         strcat(cfDir, "/");
+      return result;
    }
 
    void CatMakeFileName(char * string, ProjectConfig config)
@@ -1514,7 +1531,7 @@ private:
             int len;
             char pushD[MAX_LOCATION];
             char cfDir[MAX_LOCATION];
-            GetCompilerConfigsDir(cfDir);
+            GetIDECompilerConfigsDir(cfDir);
             GetWorkingDir(pushD, sizeof(pushD));
             ChangeWorkingDir(topNode.path);
             // Create object dir if it does not exist already
@@ -1553,7 +1570,7 @@ private:
       else
       {
          char cfDir[MAX_LOCATION];
-         GetCompilerConfigsDir(cfDir);
+         GetIDECompilerConfigsDir(cfDir);
          sprintf(command, "%s E_IDE_CF_DIR=%s COMPILER=%s -j%d %s%s%s -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",
@@ -1612,7 +1629,7 @@ private:
       else
       {
          char cfDir[MAX_LOCATION];
-         GetCompilerConfigsDir(cfDir);
+         GetIDECompilerConfigsDir(cfDir);
          sprintf(command, "%s E_IDE_CF_DIR=%s COMPILER=%s %sclean -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, realclean ? "real" : "", topNode.path, makeFilePath);
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
          {
@@ -1711,7 +1728,9 @@ private:
       bool result = false;
       char path[MAX_LOCATION];
 
-      GetCompilerConfigsDir(path);
+      if(!GetProjectCompilerConfigsDir(path))
+         GetIDECompilerConfigsDir(path);
+
       if(!FileExists(path).isDirectory)
          MakeDir(path);
       PathCatSlash(path, "debug.cf");
@@ -1753,15 +1772,17 @@ private:
       bool result = false;
       char path[MAX_LOCATION];
 
-      GetCompilerConfigsDir(path);
+      if(!GetProjectCompilerConfigsDir(path))
+         GetIDECompilerConfigsDir(path);
+
       if(!FileExists(path).isDirectory)
          MakeDir(path);
-      PathCatSlash(path, "crossplatform.cf");
+      PathCatSlash(path, "crossplatform.mk");
 
       if(FileExists(path))
          DeleteFile(path);
       {
-         File include = FileOpen(":crossplatform.cf", read);
+         File include = FileOpen(":crossplatform.mk", read);
          if(include)
          {
             File f = FileOpen(path, write);
@@ -1796,7 +1817,9 @@ private:
       CamelCase(compilerName);
       name = PrintString(platform, "-", compilerName, ".cf");
 
-      GetCompilerConfigsDir(path);
+      if(!GetProjectCompilerConfigsDir(path))
+         GetIDECompilerConfigsDir(path);
+
       if(!FileExists(path).isDirectory)
          MakeDir(path);
       PathCatSlash(path, name);
@@ -1924,7 +1947,7 @@ private:
          bool gccCompiler = compiler.ccCommand && strstr(compiler.ccCommand, "gcc") != null;
          bool tccCompiler = compiler.ccCommand && strstr(compiler.ccCommand, "tcc") != null;
          bool defaultPreprocessor = compiler.cppCommand && (strstr(compiler.cppCommand, "gcc") != null || compiler.cppCommand && strstr(compiler.cppCommand, "cpp") != null);
-
+         char cfDir[MAX_LOCATION];
          int objectsParts, eCsourcesParts;
          Array<String> listItems { };
          Map<String, int> varStringLenDiffs { };
@@ -1958,6 +1981,19 @@ private:
          f.Printf("ifndef COMPILER\n");
          f.Printf("COMPILER := default\n");
          f.Printf("endif\n");
+         f.Printf("\n");
+
+         if(compilerConfigsDir && compilerConfigsDir[0])
+         {
+            strcpy(cfDir, compilerConfigsDir);
+            if(cfDir && cfDir[0] && cfDir[strlen(cfDir)-1] != '/')
+               strcat(cfDir, "/");
+         }
+         else
+            strcpy(cfDir, "$(E_IDE_CF_DIR)");
+
+         f.Printf("CF_DIR = %s\n", cfDir);
+         f.Printf("\n");
 
          f.Printf("ifndef DEBUG\n");
          f.Printf("OPTIMIZE :=");
@@ -2027,8 +2063,8 @@ private:
 
          f.Printf("# INCLUDES\n\n");
 
-         f.Printf("include %s\n", includemkPath ? includemkPath : "$(E_IDE_CF_DIR)crossplatform.cf");
-         f.Printf("include $(E_IDE_CF_DIR)%s-%s.cf\n", (char*)runtimePlatform, fixedCompilerName);
+         f.Printf("include %s\n", includemkPath ? includemkPath : "$(CF_DIR)crossplatform.mk");
+         f.Printf("include $(CF_DIR)$(PLATFORM)-$(COMPILER).cf\n", (char*)runtimePlatform, fixedCompilerName);
          f.Printf("\n");
 
          f.Printf("# VARIABLES\n\n");
@@ -2037,6 +2073,7 @@ private:
          f.Printf("OBJ = %s%s\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
          f.Printf("else\n");
          f.Printf("OBJ = %s.debug%s\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
+         f.Printf("CFLAGS += _DEBUG\n");
          f.Printf("endif\n\n");
 
          f.Printf("RES = %s%s\n\n", resDirNoSpaces, resDirNoSpaces[0] ? "/" : "");
@@ -2535,7 +2572,7 @@ private:
             f.Printf("\t$(call rmdirq,%s)\n", targetDirExpNoSpaces);
          f.Printf("\n");
 
-         f.Printf("include $(E_IDE_CF_DIR)debug.cf\n");
+         f.Printf("include $(CF_DIR)debug.cf\n");
 
          delete f;
          delete objDirExp;

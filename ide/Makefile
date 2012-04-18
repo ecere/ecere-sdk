@@ -308,7 +308,7 @@ RESOURCES2 = \
 	res/ecereBack.jpg \
 	res/icon.png \
 	../include.mk \
-	../crossplatform.cf
+	../crossplatform.mk
 
 # CROSS-PLATFORM MAGIC
 
@@ -393,7 +393,7 @@ endif
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) awq $(TARGET) res/ecere.jpg res/ecereBack.jpg res/icon.png ../include.mk ../crossplatform.cf ""
+	$(EAR) awq $(TARGET) res/ecere.jpg res/ecereBack.jpg res/icon.png ../include.mk ../crossplatform.mk ""
 	$(EAR) awq $(TARGET) $(RES)actions/attach.png $(RES)actions/delete.png $(RES)actions/detach.png $(RES)actions/docNew.png $(RES)actions/editCopy.png $(RES)actions/editDelete.png $(RES)actions/delete2.png $(RES)actions/build.png $(RES)actions/clean.png $(RES)actions/debug.png "actions"
 	$(EAR) awq $(TARGET) $(RES)actions/docOpen.png $(RES)actions/docSave.png $(RES)actions/docSaveAll.png $(RES)actions/pause.png $(RES)actions/projAdd.png $(RES)actions/projNew.png $(RES)actions/projOpen.png $(RES)actions/rebuild.png $(RES)actions/regMakefile.png $(RES)actions/relink.png "actions"
 	$(EAR) awq $(TARGET) $(RES)actions/restart.png $(RES)actions/run.png $(RES)actions/skipBreaks.png $(RES)actions/stepInto.png $(RES)actions/stepOut.png $(RES)actions/stepOver.png $(RES)actions/stopDebug.png "actions"
