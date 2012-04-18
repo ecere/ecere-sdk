@@ -2090,7 +2090,7 @@ private:
 
          {
             int c;
-            char * map[3][2] = { { "COBJECTS", "C" }, { "SYMBOLS", "S" }, { "IMPORTS", "I" } };
+            char * map[4][2] = { { "COBJECTS", "C" }, { "SYMBOLS", "S" }, { "IMPORTS", "I" }, { "BOWLS", "B" } };
 
             topNode.GenMakefilePrintNode(f, this, eCsources, namesInfo, listItems, config);
             eCsourcesParts = OutputFileList(f, "_ECSOURCES", listItems, varStringLenDiffs, null);
@@ -2508,9 +2508,10 @@ private:
          f.Printf("clean: objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
          f.Printf("\t$(call rmq,%s$(TARGET))\n", numCObjects ? "$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) " : "");
          OutputCleanActions(f, "OBJECTS", objectsParts);
-         OutputCleanActions(f, "COBJECTS", eCsourcesParts);
          if(numCObjects)
          {
+            OutputCleanActions(f, "COBJECTS", eCsourcesParts);
+            OutputCleanActions(f, "BOWLS", eCsourcesParts);
             OutputCleanActions(f, "IMPORTS", eCsourcesParts);
             OutputCleanActions(f, "SYMBOLS", eCsourcesParts);
          }

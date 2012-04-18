@@ -61,11 +61,11 @@ else
 endif
 
 # PREFIXES AND EXTENSIONS
-.SUFFIXES: .ec .pec .sym .imp .c .o .a
-P := .pec
+.SUFFIXES: .c .ec .sym .imp .bowl .o .a
 EC := .ec
 S := .sym
 I := .imp
+B := .bowl
 C := .c
 O := .o
 A := .a

@@ -50,9 +50,10 @@ else
 endif
 
 # PREFIXES AND EXTENSIONS
-.SUFFIXES: .c .ec .sym .imp .o .a
+.SUFFIXES: .c .ec .sym .imp .bowl .o .a
 S := .sym
 I := .imp
+B := .bowl
 C := .c
 O := .o
 A := .a
