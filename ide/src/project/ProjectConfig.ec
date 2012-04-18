@@ -111,6 +111,25 @@ class DirExpression : struct
                            d += strlen(compilerName);
                            c = i;
                         }
+                        else if(!strnicmp(&expr[c + 2], "Debug_Suffix", n))
+                        {
+                           // We don't support .debug from the IDE yet...
+                           c = i;
+                        }
+                        else if(!strnicmp(&expr[c + 2], "Compiler_Suffix", n))
+                        {
+                           if(compilerName[0] && strcmpi(compilerName, "default"))
+                           {
+                              buffer[d] = '.';
+                              buffer[d+1] = '\0';
+                              strcat(buffer, compilerName);
+                              CamelCase(&buffer[d]);
+                              d += strlen(compilerName)+1;
+                              c = i;
+                           }
+                           else
+                              c = i;
+                        }
                         else
                         {
                            buffer[d++] = expr[c];
