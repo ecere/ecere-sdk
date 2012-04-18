@@ -26,6 +26,11 @@ endif
 endif
 endif
 
+# DEBUG SUFFIX
+ifdef DEBUG
+DEBUG_SUFFIX := .debug
+endif
+
 # MISC STRING TOOLS
 empty :=
 space := $(empty) $(empty)
