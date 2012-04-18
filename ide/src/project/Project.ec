@@ -2025,10 +2025,9 @@ private:
 
          f.Printf("# VARIABLES\n\n");
 
-         f.Printf("ifndef DEBUG\n");
-         f.Printf("OBJ = %s%s\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
-         f.Printf("else\n");
-         f.Printf("OBJ = %s.debug%s\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
+         f.Printf("OBJ = %s%s\n\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
+
+         f.Printf("ifdef DEBUG\n");
          f.Printf("CFLAGS += -D_DEBUG\n");
          f.Printf("endif\n\n");
 
@@ -2052,35 +2051,19 @@ private:
                   f.Printf("ifeq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(type));
 
                   GetMakefileTargetFileName(type, target, config);
-                  f.Printf("ifndef DEBUG\n");
                   strcpy(targetNoSpaces, targetDir);
                   PathCatSlash(targetNoSpaces, target);
                   ReplaceSpaces(targetNoSpaces, targetNoSpaces);
                   f.Printf("TARGET = %s\n", targetNoSpaces);
-                  f.Printf("else\n");
-                  strcpy(targetNoSpaces, targetDir);
-                  strcat(targetNoSpaces, ".debug");
-                  PathCatSlash(targetNoSpaces, target);
-                  ReplaceSpaces(targetNoSpaces, targetNoSpaces);
-                  f.Printf("TARGET = %s\n", targetNoSpaces);
-                  f.Printf("endif\n");
                }
             }
             f.Printf("else\n"); // ifCount should always be > 0
          }
          GetMakefileTargetFileName(targetType, target, config);
-         f.Printf("ifndef DEBUG\n");
          strcpy(targetNoSpaces, targetDir);
          PathCatSlash(targetNoSpaces, target);
          ReplaceSpaces(targetNoSpaces, targetNoSpaces);
          f.Printf("TARGET = %s\n", targetNoSpaces);
-         f.Printf("else\n");
-         strcpy(targetNoSpaces, targetDir);
-         strcat(targetNoSpaces, ".debug");
-         PathCatSlash(targetNoSpaces, target);
-         ReplaceSpaces(targetNoSpaces, targetNoSpaces);
-         f.Printf("TARGET = %s\n", targetNoSpaces);
-         f.Printf("endif\n");
 
          if(test)
          {

@@ -31,6 +31,12 @@ ifdef DEBUG
 DEBUG_SUFFIX := .debug
 endif
 
+ifdef COMPILER
+ifneq "$(COMPILER)" "default"
+COMPILER_SUFFIX := .$(COMPILER)
+endif
+endif
+
 # MISC STRING TOOLS
 empty :=
 space := $(empty) $(empty)

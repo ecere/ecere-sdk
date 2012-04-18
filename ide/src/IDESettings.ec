@@ -14,7 +14,7 @@ enum DirTypes { includes, libraries, executables };
 
 define defaultCompilerName = "Default";
 
-define defaultObjDirExpression = "obj/$(CONFIG).$(PLATFORM)";
+define defaultObjDirExpression = "obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)";
 
 char * settingsDirectoryNames[DirTypes] = 
 {
