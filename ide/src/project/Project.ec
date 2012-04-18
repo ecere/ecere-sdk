@@ -1536,7 +1536,7 @@ private:
             ChangeWorkingDir(topNode.path);
             // Create object dir if it does not exist already
             if(!FileExists(objDirExp.dir).isDirectory)
-               Execute("%s E_IDE_CF_DIR=%s COMPILER=%s objdir -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, topNode.path, makeFilePath);
+               Execute("%s CF_DIR=%s COMPILER=%s objdir -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, topNode.path, makeFilePath);
             ChangeWorkingDir(pushD);
 
             PathCatSlash(makeTarget+1, objDirExp.dir);
@@ -1571,7 +1571,7 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir);
-         sprintf(command, "%s E_IDE_CF_DIR=%s COMPILER=%s -j%d %s%s%s -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, numJobs,
+         sprintf(command, "%s CF_DIR=%s COMPILER=%s -j%d %s%s%s -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",
                makeTarget, topNode.path, makeFilePath);
@@ -1630,7 +1630,7 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir);
-         sprintf(command, "%s E_IDE_CF_DIR=%s COMPILER=%s %sclean -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, realclean ? "real" : "", topNode.path, makeFilePath);
+         sprintf(command, "%s CF_DIR=%s COMPILER=%s %sclean -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, realclean ? "real" : "", topNode.path, makeFilePath);
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
          {
             ide.outputView.buildBox.Tell($"Deleting target and object files...");
@@ -1946,9 +1946,9 @@ private:
                strcat(cfDir, "/");
          }
          else
-            strcpy(cfDir, "$(E_IDE_CF_DIR)");
+            strcpy(cfDir, "$(CF_DIR)");
 
-         f.Printf("CF_DIR = %s\n", cfDir);
+         f.Printf("_CF_DIR = %s\n", cfDir);
          f.Printf("\n");
 
          f.Printf("ifndef DEBUG\n");
@@ -2019,8 +2019,8 @@ private:
 
          f.Printf("# INCLUDES\n\n");
 
-         f.Printf("include %s\n", includemkPath ? includemkPath : "$(CF_DIR)crossplatform.mk");
-         f.Printf("include $(CF_DIR)$(PLATFORM)-$(COMPILER).cf\n", (char*)runtimePlatform, fixedCompilerName);
+         f.Printf("include %s\n", includemkPath ? includemkPath : "$(_CF_DIR)crossplatform.mk");
+         f.Printf("include $(_CF_DIR)$(PLATFORM)-$(COMPILER).cf\n", (char*)runtimePlatform, fixedCompilerName);
          f.Printf("\n");
 
          f.Printf("# VARIABLES\n\n");
