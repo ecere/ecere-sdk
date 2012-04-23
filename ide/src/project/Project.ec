@@ -1894,6 +1894,8 @@ private:
          char fixedConfigName[MAX_FILENAME];
          char fixedCompilerName[MAX_FILENAME];
          int c, len;
+         // Non-zero if we're building eC code
+         // We'll have to be careful with this when merging configs where eC files can be excluded in some configs and included in others
          int numCObjects = 0;
          bool sameObjTargetDirs;
          DirExpression objDirExp = GetObjDir(compiler, config);
@@ -1908,6 +1910,7 @@ private:
          Array<String> listItems { };
          Map<String, int> varStringLenDiffs { };
          Map<String, NameCollisionInfo> namesInfo { };
+         bool forceBitDepth = false;
 
          ReplaceSpaces(objDirNoSpaces, objDirExp.dir);
          strcpy(targetDir, GetTargetDirExpression(compiler, config));
@@ -2242,7 +2245,9 @@ private:
          {
             f.Printf(" -fmessage-length=0 $(OPTIMIZE)");
             //if(compiler.targetPlatform.is32Bits)
-               f.Printf(" -m32");
+            forceBitDepth = (options && options.buildBitDepth) || numCObjects;
+            if(forceBitDepth)
+               f.Printf((!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? " -m32" : " -m64");
             //else if(compiler.targetPlatform.is64Bits)
             //   f.Printf(" -m64");
             f.Printf(" $(FPIC)");
@@ -2292,7 +2297,9 @@ private:
 
          f.Printf("OFLAGS +=\n");
          f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
-         f.Printf("OFLAGS += -m32");
+         if(forceBitDepth)
+            f.Printf((!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? "OFLAGS += -m32" : "OFLAGS += -m64");
+
          if(GetProfile(config))
             f.Printf(" -pg");
          if(config && config.options && config.options.libraryDirs)

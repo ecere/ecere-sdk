@@ -177,6 +177,7 @@ class DirExpression : struct
 public enum TargetTypes { unset, executable, sharedLibrary, staticLibrary };
 public enum OptimizationStrategy { unset, none, speed, size };
 public enum WarningsOption { unset, normal, none, all }; // TOCHECK: More options?
+public enum BuildBitDepth { all, bits32, bits64 };
 
 Array<String> CopyArrayString(Array<String> array)
 {
@@ -282,6 +283,7 @@ public:
    SetBool compress;
 
    SetBool excludeFromBuild;
+   BuildBitDepth buildBitDepth;
 
    property Array<String> prebuildCommands
    {

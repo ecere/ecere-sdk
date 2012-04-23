@@ -385,12 +385,6 @@
       {
          "Folder" : "licenses",
          "Files" : [
-
-         ]
-      },
-      {
-         "Folder" : "licenses",
-         "Files" : [
             "../LICENSE",
             "../extras/res/licenses/png.LICENSE",
             "../extras/res/licenses/tango.COPYING",
