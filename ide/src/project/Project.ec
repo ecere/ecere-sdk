@@ -2214,18 +2214,18 @@ private:
                         f.Printf("\n");
                      }
 
-                     if(projectPlatformOptions && projectPlatformOptions.options.libraries &&
-                           projectPlatformOptions.options.libraries.count)
-                     {
-                        f.Printf("LIBS +=");
-                        OutputLibraries(f, projectPlatformOptions.options.libraries);
-                        f.Printf("\n");
-                     }
                      if((configPlatformOptions && configPlatformOptions.options.libraries &&
                            configPlatformOptions.options.libraries.count))
                      {
                         f.Printf("LIBS +=");
                         OutputLibraries(f, configPlatformOptions.options.libraries);
+                        f.Printf("\n");
+                     }
+                     else if(projectPlatformOptions && projectPlatformOptions.options.libraries &&
+                           projectPlatformOptions.options.libraries.count)
+                     {
+                        f.Printf("LIBS +=");
+                        OutputLibraries(f, projectPlatformOptions.options.libraries);
                         f.Printf("\n");
                      }
                      f.Printf("endif\n\n");
