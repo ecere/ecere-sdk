@@ -316,6 +316,7 @@ class OptionBox<class Z> : CommonControl
       return (((bool(*)(Window, Key, unichar)) ob.chainKeyDown)(this, key, ch);
    }
 
+   // code: 0 = not set anywhere, 1 = overridden here, 2 = inherited
    void SetAttribs(int code)
    {
       Window c;
@@ -521,6 +522,7 @@ class OptionBox<class Z> : CommonControl
       bool skipped = false;
       for(node = currentNode; node; node = node.parent)
       {
+         bool configXplatformSet = false;
          if(config && node.configurations)
          {
             for(c : node.configurations; !strcmpi(c.name, config.name))
@@ -529,8 +531,12 @@ class OptionBox<class Z> : CommonControl
                {
                   for(p : c.platforms; !strcmpi(p.name, platformName))
                   {
-                     if(skipped && p.options && OptionSet(p.options))
-                        LoadOption(p.options);
+                     if(p.options && OptionSet(p.options))
+                     {
+                        if(skipped)
+                           LoadOption(p.options);
+                     }
+                     configXplatformSet = true;
                      skipped = true;
                      break;
                   }
@@ -545,7 +551,7 @@ class OptionBox<class Z> : CommonControl
                break;
             }
          }
-         if(platform && node.platforms)
+         if((!configXplatformSet || !configReplaces) && platform && node.platforms)
          {
             for(p : node.platforms; !strcmpi(p.name, platformName))
             {
@@ -619,6 +625,7 @@ class OptionBox<class Z> : CommonControl
       bool setAttribs = false;
       for(node = currentNode; node; node = node.parent)
       {
+         bool configXplatformSet = false;
          ProjectConfig nodeConfig = null;
          if(config && node.configurations)
          {
@@ -633,6 +640,7 @@ class OptionBox<class Z> : CommonControl
                         LoadOption(p.options);
                         if(!setAttribs) { setAttribs = true; SetAttribs((node == currentNode) ? 1 : 2); }
                         if(!mergeValues) { FinalizeLoading(); return; }
+                        configXplatformSet = true;
                      }
                      break;
                   }
@@ -642,7 +650,7 @@ class OptionBox<class Z> : CommonControl
                break;
             }
          }
-         if(platform && node.platforms)
+         if(platform && node.platforms && (!configXplatformSet || !configReplaces))
          {
             for(p : node.platforms; !strcmpi(p.name, platformName))
             {
