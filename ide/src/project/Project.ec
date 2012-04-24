@@ -2214,19 +2214,23 @@ private:
                         f.Printf("\n");
                      }
 
-                     if((configPlatformOptions && configPlatformOptions.options.libraries &&
-                           configPlatformOptions.options.libraries.count))
+                     if((configPlatformOptions && configPlatformOptions.options.libraries))
                      {
-                        f.Printf("LIBS +=");
-                        OutputLibraries(f, configPlatformOptions.options.libraries);
-                        f.Printf("\n");
+                        if(configPlatformOptions.options.libraries.count)
+                        {
+                           f.Printf("LIBS +=");
+                           OutputLibraries(f, configPlatformOptions.options.libraries);
+                           f.Printf("\n");
+                        }
                      }
-                     else if(projectPlatformOptions && projectPlatformOptions.options.libraries &&
-                           projectPlatformOptions.options.libraries.count)
+                     else if(projectPlatformOptions && projectPlatformOptions.options.libraries)
                      {
-                        f.Printf("LIBS +=");
-                        OutputLibraries(f, projectPlatformOptions.options.libraries);
-                        f.Printf("\n");
+                        if(projectPlatformOptions.options.libraries.count)
+                        {
+                           f.Printf("LIBS +=");
+                           OutputLibraries(f, projectPlatformOptions.options.libraries);
+                           f.Printf("\n");
+                        }
                      }
                      f.Printf("endif\n\n");
                   }
@@ -2295,10 +2299,10 @@ private:
          }
          f.Printf("\n\n");
 
-         f.Printf("OFLAGS +=\n");
          f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
+         f.Printf("OFLAGS +=");
          if(forceBitDepth)
-            f.Printf((!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? "OFLAGS += -m32" : "OFLAGS += -m64");
+            f.Printf((!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? " -m32" : " -m64 \\\n");
 
          if(GetProfile(config))
             f.Printf(" -pg");
