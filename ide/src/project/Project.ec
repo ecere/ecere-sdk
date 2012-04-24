@@ -2132,6 +2132,7 @@ private:
          f.Printf("CONSOLE = %s\n", GetConsole(config) ? "-mconsole" : "-mwindows");
          f.Printf("endif\n\n");
 
+         f.Printf("LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)\n\n");
          if((config && config.options && config.options.libraries) ||
                (options && options.libraries))
          {
@@ -2145,7 +2146,6 @@ private:
             f.Printf("endif\n");
             f.Printf("\n");
          }
-         f.Printf("LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)\n\n");
 
          if(platforms || (config && config.platforms))
          {
