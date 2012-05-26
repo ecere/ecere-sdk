@@ -260,6 +260,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
                if(gdiSystem.hdc)
                {
                   char curDir[MAX_LOCATION];
+                  String docName = printingDocumentName ? printingDocumentName : szMessage;
 
                   gdiSystem.tmpDC = CreateCompatibleDC(gdiSystem.hdc);
                   gdiSystem.depth = GetDeviceCaps(gdiSystem.hdc, BITSPIXEL);
@@ -273,7 +274,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
                   gdiDisplay.hdc = gdiSystem.hdc;
                   gdiDisplay.bitmap.pixelFormat = display.displaySystem.pixelFormat;
                   GetWorkingDir(curDir, MAX_LOCATION);
-               	if(Escape(gdiDisplay.hdc, STARTDOC, sizeof(szMessage)-1, szMessage, null ) > 0)
+                  if(Escape(gdiDisplay.hdc, STARTDOC, strlen(docName), docName, null ) > 0)
                	{
                		StartPage(gdiSystem.hdc);
                   }

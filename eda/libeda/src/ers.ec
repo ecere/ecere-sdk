@@ -467,6 +467,13 @@ public class PrintedReport : ReportDestination
 
    Page lastPage;
 
+   bool OnCreate()
+   {
+      if(report)
+         SetPrintingDocumentName(report.title);
+      return ReportDestination::OnCreate();
+   }
+
    void AddPage(Page page)
    {
       if(pageCount && display)

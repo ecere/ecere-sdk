@@ -272,9 +272,11 @@ class Win32PrinterDisplayDriver : DisplayDriver
                   SetMapMode(gdiSystem.hdc, MM_TEXT);
 
                   {
+                     String docName = printingDocumentName ? printingDocumentName : szMessage;
                      char curDir[MAX_LOCATION];
                      GetWorkingDir(curDir, MAX_LOCATION);
-                  	if(Escape(gdiSystem.hdc, STARTDOC, sizeof(szMessage)-1, szMessage, null ) > 0)
+
+                     if(Escape(gdiSystem.hdc, STARTDOC, strlen(docName), docName, null ) > 0)
                   	{
                   		StartPage(gdiSystem.hdc);
                         result = true;

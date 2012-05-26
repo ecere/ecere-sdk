@@ -3,6 +3,13 @@ namespace gfx;
 import "Mutex"
 import "Display"
 
+String printingDocumentName;
+
+public void SetPrintingDocumentName(String name)
+{
+   printingDocumentName = name;
+}
+
 public class DisplaySystemResPtr : struct
 {
    DisplaySystemResPtr prev, next;
