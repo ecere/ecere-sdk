@@ -79,7 +79,7 @@ public char * StripLastDirectory(char * string, char * output)
 
       if((runtimePlatform == win32) ? (c >= 0) : (c > 0))
       {
-         strncpy(output, string, c);
+         memmove(output, string, c);
          if(c > 0)
          {
             if(runtimePlatform == win32 && c == 1 && output[0] == '\\' && output[1] == '\\')
