@@ -141,6 +141,7 @@ public:
 
    void Render(ReportDestination destination, Report report)
    {
+      Detail lastDetail = null;
       bool dontAdvance = false;
       bool nil;
       level = 0;
@@ -226,7 +227,11 @@ public:
                for(c = 0; c < ((renderAction == groupStart) ? level : (level + 1)); c++)
                {
                   if(report.groupings._[c].continuation)
+                  {
+                     if(lastDetail)
+                        lastDetail.isLast = true;
                      AddDetailToPage(destination, eInstance_New(report.groupings._[c].continuation));
+                  }
                }
             }
 
@@ -295,6 +300,8 @@ public:
                      }
                      break;
                   case groupFinish:
+                     if(lastDetail)
+                        lastDetail.isLast = true;
                      if(report.groupings._[level].footer)
                      {
                         Detail groupEnd = eInstance_New(report.groupings._[level].footer);
@@ -317,14 +324,18 @@ public:
                   case actualRows:
                      if(report.Advance(report.groupings._[level], level ? report.groupings._[level - 1].groupId : 0, &dontAdvance))
                      {
-                        if(AddDetailToPage(destination, eInstance_New(report.rowDetail)))
+                        Detail detail;
+                        if(AddDetailToPage(destination, (detail = eInstance_New(report.rowDetail))))
                         {
                            dontAdvance = true;
                            loop = false;
                            break;
                         }
                         else
+                        {
                            report.ExecuteRowData(level);
+                           lastDetail = detail;
+                        }
                      }
                      else
                      {
@@ -423,8 +434,11 @@ private:
 
          detail.Create();
          // This will probably never go here... (Only report/page headers have keepTogether set to false)
-         if(overlap < 0)
-            return true;
+         /*if(overlap < 0)
+         {
+            printf("bug");
+         }*/
+
       }
       return false;
    }
@@ -880,6 +894,7 @@ public class Detail : Window
 {
 public:
    bool keepTogether;
+   bool isLast;
 
    subclass(Detail) rowDetail;
 }
