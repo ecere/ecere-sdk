@@ -1548,7 +1548,10 @@ private:
             
             textColor = newTextColor;
             if(!selected)
+            {
+               foreground = textColor;
                surface.SetForeground(textColor);
+            }
 
             // Look at words
             for(; c<end && !cantHaveWords;)
@@ -1755,7 +1758,10 @@ private:
                            {
                               textColor = newTextColor;
                               if(!selected)
+                              {
+                                 foreground = textColor;
                                  surface.SetForeground(textColor);
+                              }
                            }
                         }
                      }
