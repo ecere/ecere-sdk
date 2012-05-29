@@ -79,7 +79,7 @@ class EditBoxBits
    bool noCaret:1, noSelect:1, tabKey:1, useTab:1, tabSel:1, allCaps:1, syntax:1, wrap:1;
 
    // Syntax States
-   bool inMultiLineComment:1, inPrep:1, escaped:1;
+   bool inMultiLineComment:1, inPrep:1, escaped:1, continuedSingleLineComment:1;
 
    bool recomputeSyntax:1;
    bool cursorFollowsView:1;
@@ -1279,7 +1279,7 @@ private:
          bool inPrep = reset ? false : style.inPrep;
          bool inSingleLineComment = false;
          bool escaped = reset ? false : style.escaped;
-         bool continuedSingleLineComment = false;
+         bool continuedSingleLineComment = reset ? false : style.continuedSingleLineComment;
 
          EditLine line = reset ? lines.first : firstLine;
          // int maxBackUp = 1000, c;
@@ -1361,10 +1361,10 @@ private:
                }
                firstWord = false;
             }
+            continuedSingleLineComment = inSingleLineComment && (line.count && line.text[line.count - 1] == '\\');
          }
          
-         continuedSingleLineComment = inSingleLineComment && (line.count && line.text[line.count - 1] == '\\');
-
+         style.continuedSingleLineComment = continuedSingleLineComment;
          style.inMultiLineComment = inMultiLineComment;
          style.inPrep = inPrep;
          style.escaped = escaped;
@@ -1428,7 +1428,7 @@ private:
       bool inPrep = style.inPrep;
       bool inSingleLineComment = false;
       bool escaped = style.escaped;
-      bool continuedSingleLineComment = false;
+      bool continuedSingleLineComment = style.continuedSingleLineComment;
       // ****** ************* ******
 
       if(!isEnabled)
