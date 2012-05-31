@@ -6,6 +6,8 @@
 *.sym
 *.main.ec
 *.bowl
+*.mk
+*.cf
 
 # Intermediate dirs
 #obj/**/*.c
