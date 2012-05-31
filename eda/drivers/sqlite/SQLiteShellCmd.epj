@@ -7,10 +7,7 @@
       "TargetType" : "Executable",
       "TargetFileName" : "sqlite3",
       "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "Libraries" : [
-         "ecere"
-      ]
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)"
    },
    "Platforms" : [
       {
