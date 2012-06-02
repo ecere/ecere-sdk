@@ -307,23 +307,41 @@ private:
          int inc = bits.reverse ? -1 : 1;
          Window child;
          Window flip = null;
-
          y = margin;
+
          for(c = bits.reverse ? controls.count-1 : 0; c<controls.count && c>-1; c += inc)
          {
+            Anchor anchor;
             child = controls[c];
             if(flip && child == flip) break;
             if(child.nonClient || !child.visible) continue;
+            anchor = child.anchor;
             if(direction == vertical)
             {
-               if(bits.reverse) child.anchor.bottom = y;
-               else             child.anchor.top = y;
+               if(bits.reverse)
+               {
+                  if(!anchor.bottom.type || anchor.bottom.distance != y)
+                     child.anchor.bottom = y;
+               }
+               else
+               {
+                  if(!anchor.top.type || anchor.top.distance != y)
+                     child.anchor.top = y;
+               }
                y += child.size.h + gap;
             }
             else
             {
-               if(bits.reverse) child.anchor.right = y;
-               else             child.anchor.left = y;
+               if(bits.reverse)
+               {
+                  if(!anchor.right.type || anchor.right.distance != y)
+                     child.anchor.right = y;
+               }
+               else
+               {
+                  if(!anchor.left.type || anchor.left.distance != y)
+                     child.anchor.left = y;
+               }
                y += child.size.w + gap;
             }
             Flip(flipper, child, controls, margin, &bits, &inc, &c, &y, &flip);
