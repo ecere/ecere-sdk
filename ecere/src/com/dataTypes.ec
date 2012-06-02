@@ -1078,6 +1078,7 @@ static void OnUnserialize(Class _class, void ** data, IOChannel channel)
          Class lastClass = null;
          if(_class.type == normalClass || _class.type == noHeadClass)
          {
+            // TOFIX: Seriously!?!?? Fix me!
             data = *data = eInstance_New(_class);
             if(_class.type == normalClass) 
                ((Instance)data)._refCount++;

@@ -2057,7 +2057,7 @@ class XInterface : Interface
 #endif
       depth = visualInfo ? visualInfo->depth : (window.alphaBlend ? 32 : xSystemDepth);
       visual = visualInfo ? visualInfo->visual : (window.alphaBlend ? FindFullColorVisual (xGlobalDisplay, &depth) : xSystemVisual);
-      // printf("visual: %x, depth: %d\n", visualInfo ? visualInfo->visualid : 0, depth);
+      // printf("visual: %d, depth: %d\n", visual, depth);
 
       if(visual)
       {

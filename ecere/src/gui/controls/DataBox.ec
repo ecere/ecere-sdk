@@ -25,11 +25,19 @@ public:
    bool readOnly;
    bool keepEditor;
    bool autoSize;
+   bool needUpdate;
+   String stringValue;
+   needUpdate = true;
+
+   ~DataBox()
+   {
+      delete stringValue;
+   }
 
    virtual void SetData(any_object newData, bool closingDropDown)
    {
       //type._vTbl[__ecereVMethodID_class_OnCopy](type, data, newData);
-
+      needUpdate = true;
       if(type)
       {
          if(type.type == normalClass || type.type == noHeadClass)
@@ -69,6 +77,7 @@ public:
 
    void Refresh()
    {
+      needUpdate = true;
       if(created)
       {
          if(!keepEditor)
@@ -115,11 +124,19 @@ private:
    {
       if(type)
       {
-         //type._vTbl[__ecereVMethodID_class_OnDisplay](type, this.data, surface, 3, 2, clientSize.w, null, type.defaultAlignment, 0);
-         if(type.type == noHeadClass || type.type == normalClass)
-            type._vTbl[__ecereVMethodID_class_OnDisplay](type, *(void **)this.data, surface, 3, 1, clientSize.w, fieldData, type.defaultAlignment, 0);
-         else
-            type._vTbl[__ecereVMethodID_class_OnDisplay](type, this.data, surface, 3, 1, clientSize.w, fieldData, type.defaultAlignment, 0);
+         char tempString[1024];
+         if(needUpdate)
+         {
+            String s;
+            if(type.type == noHeadClass || type.type == normalClass)
+               s = type._vTbl[__ecereVMethodID_class_OnGetString](type, *(void **)this.data, tempString, fieldData, null);
+            else
+               s = type._vTbl[__ecereVMethodID_class_OnGetString](type, this.data, tempString, fieldData, null);
+            delete stringValue;
+            stringValue = CopyString(s);
+            needUpdate = false;
+         }
+         type._vTbl[__ecereVMethodID_class_OnDisplay](class(String), stringValue, surface, 3, 1, clientSize.w, fieldData, type.defaultAlignment, 0);
       }
    }
 
