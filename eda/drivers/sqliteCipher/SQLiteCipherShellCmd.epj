@@ -7,13 +7,13 @@
       "PreprocessorDefinitions" : [
          "SQLITE_HAS_CODEC"
       ],
+      "IncludeDirs" : [
+         "../sqliteCipher"
+      ],
       "TargetType" : "Executable",
       "TargetFileName" : "sqlcipher3",
       "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "Libraries" : [
-         "ecere"
-      ]
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)"
    },
    "Platforms" : [
       {
@@ -52,7 +52,8 @@
             "Debug" : true,
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "Console" : true
          }
       },
       {

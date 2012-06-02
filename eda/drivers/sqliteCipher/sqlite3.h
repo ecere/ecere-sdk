@@ -1447,6 +1447,7 @@ struct sqlite3_mem_methods {
 #define SQLITE_CONFIG_PCACHE       14  /* sqlite3_pcache_methods* */
 #define SQLITE_CONFIG_GETPCACHE    15  /* sqlite3_pcache_methods* */
 #define SQLITE_CONFIG_LOG          16  /* xFunc, void* */
+#define SQLITE_CONFIG_URI          17
 
 /*
 ** CAPI3REF: Database Connection Configuration Options
