@@ -92,7 +92,8 @@ int64 _strtoi64(char * string, char ** endString, int base)
          ch -= 'A';
       else
       {
-         *endString = string + c;
+         if(endString)
+            *endString = string + c;
          // Invalid character
          break;
       }
@@ -103,7 +104,8 @@ int64 _strtoi64(char * string, char ** endString, int base)
       }
       else
       {
-         *endString = string + c;
+         if(endString)
+            *endString = string + c;
          // Invalid character
          break;
       }
