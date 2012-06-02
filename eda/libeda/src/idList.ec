@@ -183,14 +183,30 @@ public class Id : uint
                String name = null;
                Field * nameField = class_data(nameField);
                char * fn = nameField->name;
-               r.GetData(*nameField, name);
-               if(name)
+
+               // r.GetData(*nameField, name);
+
+               // Get name data from row
+               int64 data = 0;
+               Class type = nameField->type;
+               if(type.type == unitClass && !type.typeSize)
                {
-                  strcpy(tempString, name);
-                  delete name;
+                  Class dataType = eSystem_FindClass(type.module, type.dataTypeString);
+                  if(dataType)
+                     type = dataType;
                }
+               if(type.type == structClass)
+                  data = (int64)new0 byte[type.structSize];
+               ((bool (*)())(void *)r.GetData)(r, *nameField, type, (type.type == structClass) ? (void *)data : &data);
+
+               if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
+                  name = (String)type._vTbl[__ecereVMethodID_class_OnGetString](type, (void *)&data, tempString, null, null);
                else
-                  strcpy(tempString, "");
+                  name = (String)type._vTbl[__ecereVMethodID_class_OnGetString](type, (void *)data, tempString, null, null);
+
+               strcpy(tempString, name ? name : "");
+               if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
+                  type._vTbl[__ecereVMethodID_class_OnFree](type, data);
             }
          }
          else
