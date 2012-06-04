@@ -129,9 +129,9 @@ private:
          {
             String s;
             if(type.type == noHeadClass || type.type == normalClass)
-               s = type._vTbl[__ecereVMethodID_class_OnGetString](type, *(void **)this.data, tempString, fieldData, null);
+               s = (String)type._vTbl[__ecereVMethodID_class_OnGetString](type, *(void **)this.data, tempString, fieldData, null);
             else
-               s = type._vTbl[__ecereVMethodID_class_OnGetString](type, this.data, tempString, fieldData, null);
+               s = (String)type._vTbl[__ecereVMethodID_class_OnGetString](type, this.data, tempString, fieldData, null);
             delete stringValue;
             stringValue = CopyString(s);
             needUpdate = false;
