@@ -1324,7 +1324,7 @@ private:
                {
                   if(!c || text[c-1] != '/') lastWasStar = true;
                }
-               else if(!inSingleLineComment && !inMultiLineComment && !inQuotes && ch == '\"')
+               else if(ch == '\"' && !inSingleLineComment && !inMultiLineComment && !inQuotes)
                {
                   if(inString && !wasEscaped)
                   {
@@ -1335,7 +1335,7 @@ private:
                      inString = true;
                   }
                }
-               else if(!inSingleLineComment && !inMultiLineComment && !inString && ch == '\'')
+               else if(ch == '\'' && !inSingleLineComment && !inMultiLineComment && !inString)
                {
                   if(inQuotes && !wasEscaped)
                      inQuotes = false;
@@ -1349,17 +1349,15 @@ private:
                   if(!wasEscaped)
                      escaped = true;
                }
-               else
+               else if(ch == '#' && !inQuotes && !inString && !inMultiLineComment && !inSingleLineComment)
                {
-                  if(!inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && ch == '#')
+                  if(firstWord)
                   {
-                     if(firstWord)
-                     {
-                        inPrep = true;
-                     }
+                     inPrep = true;
                   }
                }
-               firstWord = false;
+               else if(ch != ' ' && ch != '\t')
+                  firstWord = false;
             }
             continuedSingleLineComment = inSingleLineComment && (line.count && line.text[line.count - 1] == '\\');
          }
