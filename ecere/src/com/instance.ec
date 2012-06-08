@@ -104,6 +104,7 @@ public class Property : struct
 {
 public:
    class_fixed
+   class_no_expansion
    Property prev, next;
    char * name;
    bool isProperty;

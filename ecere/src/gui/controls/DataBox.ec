@@ -125,18 +125,28 @@ private:
       if(type)
       {
          char tempString[1024];
-         if(needUpdate)
+         if(type._vTbl[__ecereVMethodID_class_OnDisplay] == class(Instance)._vTbl[__ecereVMethodID_class_OnDisplay])
          {
-            String s;
-            if(type.type == noHeadClass || type.type == normalClass)
-               s = (String)type._vTbl[__ecereVMethodID_class_OnGetString](type, *(void **)this.data, tempString, fieldData, null);
-            else
-               s = (String)type._vTbl[__ecereVMethodID_class_OnGetString](type, this.data, tempString, fieldData, null);
-            delete stringValue;
-            stringValue = CopyString(s);
-            needUpdate = false;
+            if(needUpdate)
+            {
+               String s;
+               if(type.type == noHeadClass || type.type == normalClass)
+                  s = (String)type._vTbl[__ecereVMethodID_class_OnGetString](type, *(void **)this.data, tempString, fieldData, null);
+               else
+                  s = (String)type._vTbl[__ecereVMethodID_class_OnGetString](type, this.data, tempString, fieldData, null);
+               delete stringValue;
+               stringValue = CopyString(s);
+               needUpdate = false;
+            }
+            class(String)._vTbl[__ecereVMethodID_class_OnDisplay](class(String), stringValue, surface, 3, 1, clientSize.w, fieldData, type.defaultAlignment, 0);
          }
-         type._vTbl[__ecereVMethodID_class_OnDisplay](class(String), stringValue, surface, 3, 1, clientSize.w, fieldData, type.defaultAlignment, 0);
+         else
+         {
+            if(type.type == noHeadClass || type.type == normalClass)
+               type._vTbl[__ecereVMethodID_class_OnDisplay](type, *(void **)this.data, surface, 3, 1, clientSize.w, fieldData, type.defaultAlignment, 0);
+            else
+               type._vTbl[__ecereVMethodID_class_OnDisplay](type, this.data, surface, 3, 1, clientSize.w, fieldData, type.defaultAlignment, 0);
+         }
       }
    }
 
