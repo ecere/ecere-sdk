@@ -13,7 +13,8 @@
       "TargetType" : "Executable",
       "TargetFileName" : "sqlcipher3",
       "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)"
+      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "Console" : true
    },
    "Platforms" : [
       {
@@ -52,8 +53,7 @@
             "Debug" : true,
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ],
-            "Console" : true
+            ]
          }
       },
       {
