@@ -15,7 +15,7 @@ private:
 #define _DEBUG_LINE
 #endif
 
-//#define FULL_STRING_SEARCH
+#define FULL_STRING_SEARCH
 
 #define UTF8_IS_FIRST(x)   (__extension__({ byte b = x; (!(b) || !((b) & 0x80) || ((b) & 0x40)); }))
 #define UTF8_NUM_BYTES(x)  (__extension__({ byte b = x; (b & 0x80 && b & 0x40) ? ((b & 0x20) ? ((b & 0x10) ? 4 : 3) : 2) : 1; }))
@@ -229,7 +229,7 @@ public:
          }
       }
       if(result)
-         listEnumerationTimer.Stop();
+         StopListEnumerationTimer();
       return result;
    }
 
@@ -239,12 +239,15 @@ public:
       DebugLn("TableEditor::Enumerate");
       if(list)
       {
-         listEnumerationTimer.Stop();
+         StopListEnumerationTimer();
          list.Clear();
          EditClear();
          {
             Row r { table };
             Array<Id> matches = SearchWordList();
+#ifdef _DEBUG
+            int t = matches ? matches.count : 0;
+#endif
             OnList(r, matches);
             delete matches;
             delete r;
@@ -256,11 +259,23 @@ public:
    virtual void OnList(Row r, Array<Id> matches)
    {
       DebugLn("TableEditor::OnList");
-      listEnumerationCompleted = false;
-      listEnumerationIndex = 0;
-      listEnumerationRow = Row { r.tbl };
-      listEnumerationMatches = matches;
-      listEnumerationTimer.Start();
+      if(!listEnumerationTimer.started)
+      {
+         listEnumerationCompleted = false;
+         listEnumerationIndex = 0;
+         listEnumerationRow = Row { r.tbl };
+         if(matches)
+         {
+            listEnumerationMatches = { };
+            // fixme: stupid warning?
+            listEnumerationMatches.Copy(matches);
+         }
+         else
+            listEnumerationMatches = null;
+         listEnumerationTimer.Start();
+      }
+      else
+         DebugLn("TableEditor::OnList -- timer state error");
    }
 
    virtual void OnCreateDynamicLookupEditors()
@@ -624,7 +639,6 @@ private:
             if(listFields && idField)
             {
                int c;
-               for(c = 0; c<100 && (next = listEnumerationRow.Next()); c++)
                for(c=0; c<100 && (next = listEnumerationIndex++<listEnumerationMatches.count); c++)
                {
                   if(listEnumerationRow.Find(idField, middle, nil, listEnumerationMatches[listEnumerationIndex]))
@@ -634,7 +648,6 @@ private:
                      listEnumerationRow.GetData(idField, id);
                      row.tag = id;
                      SetListRowFields(listEnumerationRow, row, true);
-
                   }
                   else
                      DebugLn($"WordList match cannot be found in database.");
@@ -643,7 +656,6 @@ private:
             else if(idField && stringField)
             {
                int c;
-               for(c = 0; c<100 && (next = listEnumerationRow.Next()); c++)
                for(c=0; c<100 && (next = listEnumerationIndex++<listEnumerationMatches.count); c++)
                {
                   if(listEnumerationRow.Find(idField, middle, nil, listEnumerationMatches[listEnumerationIndex]))
@@ -672,7 +684,6 @@ private:
                   listEnumerationRow.GetData(idField, id);
                   row.tag = id;
                   SetListRowFields(listEnumerationRow, row, true);
-                  //Update(null);
                   app.UpdateDisplay();
                }
             }
@@ -696,11 +707,18 @@ private:
          if(!next)
          {
             listEnumerationCompleted = true;
-            listEnumerationTimer.Stop();
+            StopListEnumerationTimer();
          }
          return true;
       }
    };
+
+   void StopListEnumerationTimer()
+   {
+      listEnumerationTimer.Stop();
+      delete listEnumerationRow;
+      delete listEnumerationMatches;
+   }
 
    ~TableEditor()
    {
@@ -968,6 +986,7 @@ private:
    {
       DebugLn("TableEditor::SearchWordList");
 #ifdef FULL_STRING_SEARCH
+   {
       int c;
       int numTokens = 0;
       int len[256];
@@ -1032,6 +1051,7 @@ private:
          }
       }
       return results;
+   }
 #else
       return null;
 #endif
@@ -1044,6 +1064,7 @@ private:
    {
       DebugLn("TableEditor::PrepareWordList");
 #ifdef FULL_STRING_SEARCH
+   {
       Row r { table };
       File f = filePath ? FileOpenBuffered(filePath, read) : null;
       if(f)
@@ -1168,6 +1189,7 @@ private:
          }
       }
       delete r;
+   }
 #endif
    }
 
@@ -1184,6 +1206,7 @@ private:
    {
       DebugLn("TableEditor::AddWord");
 #ifdef FULL_STRING_SEARCH
+   {
       int s;
       WordEntry mainEntry = null;
       WordEntry sEntry = null;
@@ -1272,6 +1295,7 @@ private:
             wordEntry.items.Add(id);
          }                        
       }
+   }
 #endif
    }
 }
