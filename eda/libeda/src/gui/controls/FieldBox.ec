@@ -62,7 +62,8 @@ public class FieldBox : DataBox
 
          field = value;
          dataType = value ? value.type : null;
-         text = field ? field.name : null;
+         if(!text || !text[0])
+            text = field ? field.name : null;
 
          if(dataType && dataType.type == structClass)
          {
