@@ -94,6 +94,7 @@ public:
    virtual void OnConfigure(Window editor);
 
 private:
+   bool inAutoSize;
 
    bool OnPostCreate()
    {
@@ -179,6 +180,16 @@ private:
          return true;
       }
       return editor ? editor.OnKeyDown(key, ch) : true;
+   }
+
+   void OnChildResized(Window child, int x, int y, int w, int h)
+   {
+      if(!inAutoSize && autoSize == true)
+      {
+         inAutoSize = true;
+         clientSize = { w, h };
+         inAutoSize = false;
+      }
    }
 };
 
