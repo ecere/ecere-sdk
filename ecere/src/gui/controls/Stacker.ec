@@ -189,6 +189,8 @@ private:
       }
    };
 
+   bool inAutoSize;
+
    void GetDecorationsSize(MinMaxValue * w, MinMaxValue * h)
    {
       Window::GetDecorationsSize(w, h);
@@ -289,7 +291,8 @@ private:
 
    void OnResize(int width, int height)
    {
-      DoResize(width, height);
+      if(!inAutoSize)
+         DoResize(width, height);
    }
 
    void DoResize(int width, int height)
@@ -365,10 +368,15 @@ private:
          }
          else if(bits.autoSize)
          {
+            inAutoSize = true;
             if(direction == vertical)
-               this.clientSize.h = y - gap + margin;
+               //this.clientSize.h = y - gap + margin;
+               this.size.h = y - gap + margin + (this.size.h - this.clientSize.h);
             else
-               this.clientSize.w = y - gap + margin;
+               //this.clientSize.w = y - gap + margin;
+               this.size.w = y - gap + margin + (this.size.w - this.clientSize.w);
+            //Update(null);
+            inAutoSize = false;
          }
 
          if(bits.scrollable && y > ((direction == horizontal) ? width : height))
