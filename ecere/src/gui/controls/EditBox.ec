@@ -2982,7 +2982,7 @@ private:
 
    void AutoSize()
    {
-      if(created)
+      //if(created)
       {
          if(multiLine)
          {
@@ -2992,7 +2992,7 @@ private:
             if(sh)
             {
                int nh = 0;
-               nh = lineCount * sh;
+               nh = lineCount * sh + 2;
                size.h = nh < minClientSize.h ? minClientSize.h : nh;
             }
          }
@@ -3369,19 +3369,18 @@ private:
       return true;
    }
 
-   /*
    bool OnPostCreate()
    {
-      if(isDocument)
+      /*if(isDocument)
       {
          Menu fileMenu { menu, "File", F };
          saveDialog = fileDialog;
          MenuItem { fileMenu, $"Save\tCtrl+S", S, CtrlS, NotifySelect = MenuFileSave };
          MenuItem { fileMenu, $"Save As...", A, NotifySelect = MenuFileSaveAs };
-      }
+      }*/
+      if(style.autoSize) AutoSize();
       return true;
    }
-   */
 
    void ComputeFont()
    {
