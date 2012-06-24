@@ -70,6 +70,7 @@ public:
                indexedFields[0] = { fldId };
                table.Index(1, indexedFields);
                editRow.tbl = table;
+               if(searchFields)
                {
                   char name[MAX_FILENAME];
                   sprintf(name, "%s.search", table.name);
