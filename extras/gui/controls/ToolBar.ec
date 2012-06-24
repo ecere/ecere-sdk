@@ -11,9 +11,11 @@ import "IconBag"
 #else
 //public import "ecere"
 #endif
-public import "IconBag"
+public import "ecere"
+//public import "IconBag"
 #endif
 
+#if 0
 public class ToolBar/*<class TT>*/ : public Stacker
 {
    direction = horizontal;
@@ -256,19 +258,21 @@ private:
       return bar.NotifyClicked(bar.master, button, x,y, mods);
    }
 }
+#endif
 
 public class ToggleToolButton : ToolButton
 {
    toggle = true;
    size = Size { 24, 24 };
    
-   bool Window::NotifyClicked(ToggleToolButton button, int x, int y, Modifiers mods)
+   /*bool Window::NotifyClicked(ToggleToolButton button, int x, int y, Modifiers mods)
    {
       ToolBar bar = (ToolBar)button.parent;
       return bar.NotifyClicked(bar.master, button, x,y, mods);
-   }
+   }*/
 }
 
+#if 0
 public class GroupToggleToolButton : ToolButton
 {
    toggle = true;
@@ -416,3 +420,4 @@ class EditableToolButton : ToolButton
       return Button::OnLeftButtonDown(x, y, mods);
    }
 }
+#endif
