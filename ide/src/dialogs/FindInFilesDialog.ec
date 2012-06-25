@@ -21,7 +21,7 @@ public:
    property bool contentWholeWord { set { contentWholeWord.checked = value; } get { return contentWholeWord.checked; } };
    property bool contentMatchCase { set { contentMatchCase.checked = value; } get { return contentMatchCase.checked; } };
    property char * currentDirectory
-   { 
+   {
       set
       {
          GetWorkingDir(currentDirectory, MAX_DIRECTORY);
@@ -162,7 +162,7 @@ public:
          }
       }
    }
-   
+
    void Show()
    {
       if(!created)
@@ -287,7 +287,7 @@ private:
             ListProjectNodeFolders(child, row);
       }
    }
-   
+
    Label lfindWhere { llfindWhere, this, size.w = 72, labeledWindow = findWhere };
    PathBox findWhere
    {
@@ -308,13 +308,13 @@ private:
       }
    };
    DataField projectNodeField { dataType = "ProjectNode", freeData = false };
-   
+
    Window spacerA { llsubDirs, this, size = { 72, 10 }, clickThrough = true, background = formColor, inactive = true };
    Button subDirs
    {
       llsubDirs, this, $"Include Subdirectories", altU, isCheckbox = true, checked = true;
    };
-   
+
    Label lfilter { llfilter, this, size.w = 72, labeledWindow = filterDrop };
    DropBox filterDrop
    {
@@ -327,37 +327,37 @@ private:
          return true;
       }
    };
-   
+
    Label lfileName { llfileName, this, size.w = 72, labeledWindow = fileName };
    EditBox fileName
    {
       llfileName, this, $"File name:", altN, size.h = 24, anchor.right = 0;
    };
-   
+
    //Window spacerX { ll, this, size = { 72, 10 }, clickThrough = true, background = formColor, inactive = true };
    //Button nameWholeWord { ll, this, "Whole word only", AltO, isCheckbox = true };
    //Window spacerX { llwholeWord, this, size = { 72, 10 }, clickThrough = true, background = formColor, inactive = true };
    //Button nameMatchCase { ll, this, "Match case", altA, isCheckbox = true };
-   
+
    Label lfindContent { llfindWhat, this, size.w = 72, labeledWindow = findContent };
    EditBox findContent
    {
       llfindWhat, this, $"Find what:", altT, size.h = 24, anchor.right = 0;
    };
-   
+
    Label lreplaceWith { llreplaceWith, this, size.w = 72, labeledWindow = replaceWith };
    EditBox replaceWith
    {
       llreplaceWith, this, $"Replace with:", altE;
       size.h = 24, anchor.right = 0;
    };
-   
+
    Window spacerB { llwholeWord, this, size = { 72, 10 }, clickThrough = true, background = formColor, inactive = true };
    Button contentWholeWord { llwholeWord, this, $"Whole word only", altW, isCheckbox = true };
-   
+
    Window spacerC { llmatchCase, this, size = { 72, 10 }, clickThrough = true, background = formColor, inactive = true };
    Button contentMatchCase { llmatchCase, this, $"Match case", altC, isCheckbox = true };
-   
+
    LayoutPage lpbuttons
    {
       layout, this;
@@ -381,19 +381,19 @@ private:
          if(findIn.currentRow == inDirectoryRow && !findPath[0])
          {
             findWhere.Activate();
-            MessageBox { type = ok, master = parent, 
+            MessageBox { type = ok, master = parent,
                   text = text, contents = $"You must specify a search location." }.Modal();
          }
          else if(!FileExists(findPath))
          {
             findWhere.Activate();
-            MessageBox { type = ok, master = parent, 
+            MessageBox { type = ok, master = parent,
                   text = text, contents = $"Search location does not exist. Please provide a valid location." }.Modal();
          }
          else if(!fileName.contents[0] && !findContent.contents[0])
          {
             findContent.Activate();
-            MessageBox { type = ok, master = parent, 
+            MessageBox { type = ok, master = parent,
                   text = text, contents = $"Nothing to be found. Please specify at least one criteria." }.Modal();
          }
          else
@@ -405,7 +405,7 @@ private:
          return true;
       }
    };
-   
+
    Button cancel
    {
       llcancel, this, $"Cancel", hotKey = { escape }, size = { 80, 24 }, anchor.horz = 0, anchor.vert = 0;
