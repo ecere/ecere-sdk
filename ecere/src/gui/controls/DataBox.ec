@@ -110,6 +110,12 @@ private:
             editor.background = background;
             editor.foreground = foreground;
             editor.opacity = opacity;
+/*#if _DEBUG
+            if(autoSize)
+               PrintLn("DataBox::OnPostCreate -- autoSize == true");
+#endif*/
+            if(eClass_IsDerived(editor._class, class(EditBox)))
+               ((EditBox)editor).autoSize = autoSize;
          }
          else
          {

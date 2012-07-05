@@ -756,6 +756,7 @@ public class MultiLineString : String
          borderStyle = 0,
          hasHorzScroll = true, hasVertScroll = true,
          modifyVirtualArea = false,
+         autoSize = dataBox.autoSize;
          anchor = { 0, 0, 0, 0 };
          multiLine = true;
 
@@ -763,6 +764,12 @@ public class MultiLineString : String
          {
             Modified();
             modifiedDocument = true;
+         }
+
+         bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
+         {
+            opacity = active ? 1.0f : parent.opacity;
+            return true;
          }
       };
       editBox.contents = this;

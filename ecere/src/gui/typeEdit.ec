@@ -172,13 +172,19 @@ static Window OnEdit(Class _class, void * data, Window window, Window master,
          window, master = master, visible = false, //position = { x, y }, 
          borderStyle = 0,
          modifyVirtualArea = false, //sizeAnchor = { { w, h }, isClientH = true };
+         autoSize = (eClass_IsDerived(window._class, class(DataBox)) ? ((DataBox)window).autoSize : false),
          anchor = { 0, 0, 0, 0 };
 
          void DataBox::NotifyUpdate(EditBox editBox)
          {
             Modified();
             modifiedDocument = true;
+         }
 
+         bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
+         {
+            opacity = active ? 1.0f : parent.opacity;
+            return true;
          }
       };
       if(data)
@@ -188,6 +194,11 @@ static Window OnEdit(Class _class, void * data, Window window, Window master,
          if(result)
             string = result;
       }
+      PrintLn(window._class.name);
+/*#ifdef _DEBUG
+      if(editBox.autoSize)
+         PrintLn("typeEdit::OnEdit -- editBox.autoSize == true");
+#endif*/
       editBox.contents = string;
       editBox.visible = true;
       editBox.Create();
