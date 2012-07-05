@@ -7,6 +7,7 @@ import "FieldBox"
 default:
 
 extern int __ecereVMethodID_class_OnFree;
+extern int __ecereVMethodID_class_OnGetString;
 extern int __ecereVMethodID_class_OnGetDataFromString;
 
 private:
@@ -19,15 +20,6 @@ private:
 
 #define UTF8_IS_FIRST(x)   (__extension__({ byte b = x; (!(b) || !((b) & 0x80) || ((b) & 0x40)); }))
 #define UTF8_NUM_BYTES(x)  (__extension__({ byte b = x; (b & 0x80 && b & 0x40) ? ((b & 0x20) ? ((b & 0x10) ? 4 : 3) : 2) : 1; }))
-
-// all methods currently perform ascii conversion and all that jazz on every string added to the index
-public enum StringSearchIndexingMethod { fullString, allSubstrings };
-public class StringSearchField
-{
-public:
-   Field field;
-   StringSearchIndexingMethod method;
-};
 
 define newEntryStringDebug = $"New|id=";
 define newEntryString = $"New";
@@ -55,12 +47,8 @@ public:
          if(!initialized)
          {
             ResetListFields();
-            if(searchFields)
-            {
-               char name[MAX_FILENAME];
-               sprintf(name, "%s.search", table.name);
-               PrepareWordList(name);
-            }
+            if(searchTables)
+               PrepareWordList();
             InitFieldsBoxes(); // IMPORTANT: table must be set *AFTER* all related FieldEditors have been initialized
             {
                Field fldId = idField, fldName = stringField, fldActive = null;
@@ -71,17 +59,13 @@ public:
                indexedFields[0] = { fldId };
                table.Index(1, indexedFields);
                editRow.tbl = table;
-               if(searchFields)
-               {
-                  char name[MAX_FILENAME];
-                  sprintf(name, "%s.search", table.name);
-                  PrepareWordList(name);
-               }
+               if(searchTables)
+                  PrepareWordList();
             }
             initialized = true;
             OnInitizlize();
          }
-         if(!listEnumerationCompleted)
+         if(!listEnumerationTimer.hasCompleted)
             Enumerate();
          if(list && !list.currentRow)
             list.SelectRow(list.firstRow); // should the tableeditor select method be used here?
@@ -125,15 +109,37 @@ public:
    int listSortOrder;
    DataField listSortField;
    bool disabledFullListing;
+
    property Array<StringSearchField> searchFields
    {
       set
       {
+         StringSearchTable searchTable { table, idField, value };
          DebugLn("TableEditor::searchFields|set");
-         searchFields = value;
+         property::searchTables = { [ searchTable ] };
       }
    }
-   Array<StringSearchField> searchFields;
+
+   property Array<StringSearchTable> searchTables
+   {
+      set
+      {
+         DebugLn("TableEditor::searchTables|set");
+         searchTables = value;
+      }
+   }
+   Array<StringSearchTable> searchTables;
+
+   property Array<SQLiteSearchTable> sqliteSearchTables
+   {
+      set
+      {
+         DebugLn("TableEditor::searchTables|set");
+         sqliteSearchTables = value;
+      }
+   }
+   Array<SQLiteSearchTable> sqliteSearchTables;
+
    property String searchString
    {
       set
@@ -231,7 +237,10 @@ public:
          }
       }
       if(result)
+      {
+         StopWordListPrepTimer();
          StopListEnumerationTimer();
+      }
       return result;
    }
 
@@ -244,16 +253,27 @@ public:
          StopListEnumerationTimer();
          list.Clear();
          EditClear();
-         {
-            Row r { table };
-            Array<Id> matches = SearchWordList();
-#ifdef _DEBUG
-            int t = matches ? matches.count : 0;
-#endif
-            OnList(r, matches);
-            delete matches;
-            delete r;
-         }
+      }
+      if(list || OnList != TableEditor::OnList)
+      {
+         Row r { table };
+         Array<Id> matches = null;
+         listEnumerationTimer.sqliteSearch = false;
+         if(searchTables && searchTables.count)
+            matches = SearchWordList();
+         //else if(sqliteSearchTables && sqliteSearchTables.count)
+            //matches = SearchSQLite();
+         else if(searchString && searchString[0] &&
+               sqliteSearchTables && sqliteSearchTables.count &&
+               sqliteSearchTables[0].table && sqliteSearchTables[0].idField &&
+               sqliteSearchTables[0].searchFields && sqliteSearchTables[0].searchFields.count &&
+               sqliteSearchTables[0].searchFields[0].field)
+            listEnumerationTimer.sqliteSearch = true;
+         if(matches && matches.count)
+            PrintLn("results count: ", matches.count);
+         OnList(r, matches);
+         delete matches;
+         delete r;
       }
       modifiedDocument = false; // setting this here is not really logical, enumeration and modified have nothing to do with eachother
    }
@@ -263,17 +283,19 @@ public:
       DebugLn("TableEditor::OnList");
       if(!listEnumerationTimer.started)
       {
-         listEnumerationCompleted = false;
-         listEnumerationIndex = 0;
-         listEnumerationRow = Row { r.tbl };
+         listEnumerationTimer.hasCompleted = false;
+         listEnumerationTimer.matchesIndex = 0;
+         listEnumerationTimer.tablesIndex = 0;
+         if(!listEnumerationTimer.sqliteSearch)
+            listEnumerationTimer.row = Row { r.tbl };
          if(matches)
          {
-            listEnumerationMatches = { };
+            listEnumerationTimer.matches = { };
             // fixme: stupid warning?
-            listEnumerationMatches.Copy(matches);
+            listEnumerationTimer.matches.Copy(matches);
          }
          else
-            listEnumerationMatches = null;
+            listEnumerationTimer.matches = null;
          listEnumerationTimer.Start();
       }
       else
@@ -414,7 +436,7 @@ public:
                            }
                            /*else if(dataType && (dataType.type == noHeadClass || dataType.type == normalClass))
                            {
-                              if(eClass_IsDerived(dataType, class(String)))
+                              if(eClass_IsDerived(dataType, class(char*)))
                                  dataHolder = (int64)CopyString("");
                               else
                                  dataHolder = (int64)eInstance_New(dataType);
@@ -625,82 +647,208 @@ private:
    DataRow lastRow;
    Id selectedId;
 
-   bool listEnumerationCompleted;
-   int listEnumerationIndex;
-   Array<Id> listEnumerationMatches;
-   Row listEnumerationRow;
-
-   Timer listEnumerationTimer
+   ListEnumerationTimer listEnumerationTimer
    {
       userData = this, delay = 0.1f;
       bool DelayExpired()
       {
          bool next = false;
-         if(listEnumerationMatches)
+         int c;
+         Row row = listEnumerationTimer.row;
+         Array<Id> matches = listEnumerationTimer.matches;
+         Time delay = listEnumerationTimer.delay;
+         Time lastTime = GetTime();
+         static int slice = 128;
+
+         static int wordListPrepRowCount = 0, wordListPrepRowNum = 0, ticks = 0;
+         ticks++;
+         if(ticks % 10 == 0)
+            PrintLn("listing... ");
+
+         if(matches)
          {
+            int index = listEnumerationTimer.matchesIndex;
             if(listFields && idField)
             {
-               int c;
-               for(c=0; c<100 && (next = listEnumerationIndex++<listEnumerationMatches.count); c++)
+               for(c=0; c<slice && (next = index++<matches.count); c++)
                {
-                  if(listEnumerationRow.Find(idField, middle, nil, listEnumerationMatches[listEnumerationIndex]))
+                  if(row.Find(idField, middle, nil, matches[index]))
                   {
                      Id id = 0;
-                     DataRow row = list.AddRow();
-                     listEnumerationRow.GetData(idField, id);
-                     row.tag = id;
-                     SetListRowFields(listEnumerationRow, row, true);
+                     DataRow dataRow = list.AddRow();
+                     row.GetData(idField, id);
+                     dataRow.tag = id;
+                     SetListRowFields(row, dataRow, true);
                   }
                   else
                      DebugLn($"WordList match cannot be found in database.");
                }
+               listEnumerationTimer.matchesIndex = index;
+               if(next) slice = Max(32, (int)(slice * (delay / (GetTime() - lastTime))));
             }
             else if(idField && stringField)
             {
-               int c;
-               for(c=0; c<100 && (next = listEnumerationIndex++<listEnumerationMatches.count); c++)
+               for(c=0; c<slice && (next = index++<matches.count); c++)
                {
-                  if(listEnumerationRow.Find(idField, middle, nil, listEnumerationMatches[listEnumerationIndex]))
+                  if(row.Find(idField, middle, nil, matches[index]))
                   {
                      Id id = 0;
                      String s = null;
-                     listEnumerationRow.GetData(idField, id);
-                     listEnumerationRow.GetData(stringField, s);
+                     row.GetData(idField, id);
+                     row.GetData(stringField, s);
                      list.AddString(s).tag = id;
                      delete s;
                   }
                   else
                      DebugLn($"WordList match cannot be found in database.");
                }
+               listEnumerationTimer.matchesIndex = index;
+               if(next) slice = Max(32, (int)(slice * (delay / (GetTime() - lastTime))));
             }
+         }
+         else if(listEnumerationTimer.sqliteSearch)
+         {
+            static SQLiteSearchTable st = null;
+            Row lookupRow { table };
+            Map<Id, int> uniques = listEnumerationTimer.uniques;
+            if(!row)
+            {
+               if(listEnumerationTimer.tablesIndex < sqliteSearchTables.count)
+               {
+                  char queryString[4096*4];
+
+                  if(!listEnumerationTimer.uniques)
+                     listEnumerationTimer.uniques = uniques = { };
+
+                  st = sqliteSearchTables[listEnumerationTimer.tablesIndex];
+                  if(st.table && st.idField && st.searchFields && st.searchFields.count)
+                  {
+                     wordListPrepRowNum = 0;
+                     wordListPrepRowCount = st.table.rowsCount;
+
+                     if(st.table && st.idField && st.searchFields && st.searchFields.count &&
+                           st.searchFields[0].field)
+                     {
+                        bool notFirst = false;
+
+                        listEnumerationTimer.row = row = { st.table };
+
+                        sprintf(queryString, "SELECT ROWID, * FROM `%s`", st.table.name);
+                        strcat(queryString, " WHERE ");
+                        for(sf : st.searchFields)
+                        {
+                           if(sf.field)
+                           {
+                              if(notFirst)
+                              {
+                                 strcatf(queryString, " OR `%s` LIKE '%%%s%%'", sf.field.name, searchString);
+                              }
+                              else
+                              {
+                                 strcatf(queryString, "`%s` LIKE '%%%s%%'", sf.field.name, searchString);
+                                 notFirst = true;
+                              }
+                           }
+                        }
+                        PrintLn(queryString);
+                        row.query = queryString;
+                     }
+                  }
+               }
+            }
+            if(row)
+            {
+               if(listFields && idField)
+               {
+                  // should we not start with a Next() ??? :S
+                  // when going through all the rows in a table you always start with Next() no?
+                  // is this different for query results?
+                  for(c = 0, next = !row.nil; c<slice && next; c++, next = row.Next())
+                  {
+                     Id id = 0;
+                     row.GetData(st.idField, id);
+                     //if(uniques[id]++ == 0)
+                     if(uniques[id] == 0)
+                     {
+                        DataRow dataRow = list.AddRow();
+                        dataRow.tag = id;
+                        if(st.table == table)
+                           SetListRowFields(row, dataRow, true);
+                        else if(lookupRow.Find(idField, middle, nil, id))
+                           SetListRowFields(lookupRow, dataRow, true);
+                        else
+                           PrintLn("no");
+                     }
+                     uniques[id] = uniques[id] + 1;
+                  }
+                  if(next) slice = Max(32, (int)(slice * (delay / (GetTime() - lastTime))));
+                  else
+                  {
+                     delete listEnumerationTimer.row; row = null;
+                     next = ++listEnumerationTimer.tablesIndex < sqliteSearchTables.count;
+                  }
+               }
+               else if(idField && stringField)
+               {
+                  // should we not start with a Next() ??? :S
+                  // when going through all the rows in a table you always start with Next() no?
+                  // is this different for query results?
+                  for(c = 0, next = !row.nil; c<slice && next; c++, next = row.Next())
+                  {
+                     Id id = 0;
+                     row.GetData(st.idField, id);
+                     //if(uniques[id]++ == 0)
+                     if(uniques[id] == 0)
+                     {
+                        String s = null;
+                        if(st.table == table)
+                           row.GetData(stringField, s);
+                        else if(lookupRow.Find(idField, middle, nil, id))
+                           lookupRow.GetData(stringField, s);
+                        else
+                           PrintLn("no");
+                        list.AddString(s).tag = id;
+                        delete s;
+                     }
+                     uniques[id] = uniques[id] + 1;
+                  }
+                  if(next) slice = Max(32, (int)(slice * (delay / (GetTime() - lastTime))));
+                  else
+                  {
+                     delete listEnumerationTimer.row; row = null;
+                     next = ++listEnumerationTimer.tablesIndex < sqliteSearchTables.count;
+                  }
+               }
+            }
+            delete lookupRow;
          }
          else if(!disabledFullListing)
          {
             if(listFields && idField)
             {
-               int c;
-               for(c = 0; c<100 && (next = listEnumerationRow.Next()); c++)
+               for(c = 0; c<slice && (next = row.Next()); c++)
                {
                   Id id = 0;
-                  DataRow row = list.AddRow();
-                  listEnumerationRow.GetData(idField, id);
-                  row.tag = id;
-                  SetListRowFields(listEnumerationRow, row, true);
-                  app.UpdateDisplay();
+                  DataRow dataRow = list.AddRow();
+                  row.GetData(idField, id);
+                  dataRow.tag = id;
+                  SetListRowFields(row, dataRow, true);
+                  //app.UpdateDisplay();
                }
+               if(next) slice = Max(32, (int)(slice * (delay / (GetTime() - lastTime))));
             }
             else if(idField && stringField)
             {
-               int c;
-               for(c = 0; c<100 && (next = listEnumerationRow.Next()); c++)
+               for(c = 0; c<slice && (next = row.Next()); c++)
                {
                   Id id = 0;
                   String s = null;
-                  listEnumerationRow.GetData(idField, id);
-                  listEnumerationRow.GetData(stringField, s);
+                  row.GetData(idField, id);
+                  row.GetData(stringField, s);
                   list.AddString(s).tag = id;
                   delete s;
                }
+               if(next) slice = Max(32, (int)(slice * (delay / (GetTime() - lastTime))));
             }
          }
 
@@ -708,7 +856,7 @@ private:
 
          if(!next)
          {
-            listEnumerationCompleted = true;
+            listEnumerationTimer.hasCompleted = true;
             StopListEnumerationTimer();
          }
          return true;
@@ -718,8 +866,137 @@ private:
    void StopListEnumerationTimer()
    {
       listEnumerationTimer.Stop();
-      delete listEnumerationRow;
-      delete listEnumerationMatches;
+      listEnumerationTimer.matchesIndex = 0;
+      listEnumerationTimer.tablesIndex = 0;
+      delete listEnumerationTimer.row;
+      delete listEnumerationTimer.matches;
+      delete listEnumerationTimer.uniques;
+   }
+
+   WordListPrepTimer wordListPrepTimer
+   {
+      userData = this, delay = 0.1f;
+      bool DelayExpired()
+      {
+         bool next = false;
+         Row row = wordListPrepTimer.row;
+         static int slice = 512;
+         static StringSearchTable st = null;
+
+         static int wordListPrepRowCount = 0, wordListPrepRowNum = 0, ticks = 0;
+
+         if(!row)
+         {
+            if(wordListPrepTimer.tablesIndex < searchTables.count)
+            {
+               st = searchTables[wordListPrepTimer.tablesIndex];
+               if(st.table && st.idField && st.searchFields && st.searchFields.count)
+               {
+                  wordListPrepRowNum = 0;
+                  wordListPrepRowCount = st.table.rowsCount;
+
+                  wordListPrepTimer.row = row = { st.table };
+                  DebugLn("building word list for ", st.table.name, " table ------------------------------------- ");
+               }
+            }
+         }
+         if(row)
+         {
+            int c;
+            Time delay = wordListPrepTimer.delay;
+            Time lastTime = GetTime();
+
+            ticks++;
+            if(ticks % 10 == 0)
+               PrintLn("indexing ", wordListPrepRowNum, " of ", wordListPrepRowCount, " --- slice is ", slice);
+
+            for(c = 0; c<slice && (next = row.Next()); c++)
+            {
+               Id id = 0;
+               row.GetData(st.idField, id);
+
+               wordListPrepRowNum++;
+
+               for(sf : st.searchFields)
+               {
+                  Field field = sf.field;
+                  StringSearchIndexingMethod method = sf.method;
+                  if(field && field.type == class(String))
+                  {
+                     String string = null;
+                     row.GetData(field, string);
+
+                     if(string && string[0])
+                        ProcessWordListString(string, method, id);
+                     delete string;
+                  }
+                  // todo: need to improve on this...
+                  // else ... call OnGetString of type ... etc...
+                     //PrintLn("todo: support other field types for string search");
+                  else if(field && field.type)
+                  {
+                     char * n = field.name;
+                     char tempString[MAX_F_STRING];
+                     int64 data = 0;
+                     Class type = field.type;
+                     if(type.type == unitClass && !type.typeSize)
+                     {
+                        Class dataType = eSystem_FindClass(type.module, type.dataTypeString);
+                        if(dataType)
+                           type = dataType;
+                     }
+                     if(type.type == structClass)
+                        data = (int64)new0 byte[type.structSize];
+                     ((bool (*)())(void *)row.GetData)(row, field, type, (type.type == structClass) ? (void *)data : &data);
+
+                     if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
+                        field.type._vTbl[__ecereVMethodID_class_OnGetString](field.type, &data, tempString, null, null);
+                     else
+                        field.type._vTbl[__ecereVMethodID_class_OnGetString](field.type, (void *)data, tempString, null, null);
+
+                     if(tempString[0])
+                        ProcessWordListString(tempString, method, id);
+
+                     if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
+                        type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+                  }
+               }
+            }
+            if(next) slice = Max(32, (int)(slice * (delay / (GetTime() - lastTime))));
+            else
+            {
+               delete wordListPrepTimer.row; row = null;
+               next = ++wordListPrepTimer.tablesIndex < searchTables.count;
+            }
+         }
+
+         if(!next)
+         {
+            char filePath[MAX_FILENAME];
+            File f;
+
+            sprintf(filePath, "%s.search", table.name);
+            // this doesn't want to work? :S :S :S
+            // f == 0x0
+            f = FileOpenBuffered(filePath, read);
+            if(f)
+            {
+               f.Put(wordTree);
+               delete f;
+            }
+
+            wordListPrepTimer.hasCompleted = true;
+            StopWordListPrepTimer();
+         }
+         return true;
+      }
+   };
+
+   void StopWordListPrepTimer()
+   {
+      wordListPrepTimer.Stop();
+      wordListPrepTimer.tablesIndex = 0;
+      delete wordListPrepTimer.row;
    }
 
    ~TableEditor()
@@ -730,7 +1007,8 @@ private:
       wordTree.Free();
 
       delete listFields;
-      delete searchFields;
+      delete searchTables;
+      delete sqliteSearchTables;
    }
 
    void ResetListFields()
@@ -896,7 +1174,7 @@ private:
       {
          if(lf.dataField && lf.field)
          {
-            if(eClass_IsDerived(lf.field.type, class(String)))
+            if(eClass_IsDerived(lf.field.type, class(char*)))
             {
                String s = null;
                dbRow.GetData(lf.field, s);
@@ -916,7 +1194,7 @@ private:
                }
                else if(lf.lookupTable && lf.lookupField && lf.lookupValueField &&
                      eClass_IsDerived(lf.lookupField.type, class(Id)) &&
-                     eClass_IsDerived(lf.lookupValueField.type, class(String)))
+                     eClass_IsDerived(lf.lookupValueField.type, class(char*)))
                {
                   Id id = 0;
                   String s = null;
@@ -950,6 +1228,31 @@ private:
                   type._vTbl[__ecereVMethodID_class_OnFree](type, data);
                delete s; // ?
             }
+            else if(lf.field.type && eClass_IsDerived(lf.dataField.dataType, class(char*)))
+            {
+               char * n = lf.field.name;
+               char tempString[MAX_F_STRING];
+               int64 data = 0;
+               Class type = lf.field.type;
+               if(type.type == unitClass && !type.typeSize)
+               {
+                  Class dataType = eSystem_FindClass(type.module, type.dataTypeString);
+                  if(dataType)
+                     type = dataType;
+               }
+               if(type.type == structClass)
+                  data = (int64)new0 byte[type.structSize];
+               ((bool (*)())(void *)dbRow.GetData)(dbRow, lf.field, type, (type.type == structClass) ? (void *)data : &data);
+               if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
+                  lf.field.type._vTbl[__ecereVMethodID_class_OnGetString](lf.field.type, &data, tempString, null, null);
+               else
+                  lf.field.type._vTbl[__ecereVMethodID_class_OnGetString](lf.field.type, (void*)data, tempString, null, null);
+
+               listRow.SetData(lf.dataField, tempString);
+
+               if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
+                  type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+            }
             else if(lf.field.type)
             {
                char * n = lf.field.name;
@@ -969,8 +1272,6 @@ private:
                   listRow.SetData(lf.dataField, (void *)&data);
                else
                   listRow.SetData(lf.dataField, (void *)data);
-               //extern int __ecereVMethodID_class_OnGetString;
-               //lf.field.type._vTbl[__ecereVMethodID_class_OnGetString](lf.field.type, &data, tempString, null, null);
                if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
                   type._vTbl[__ecereVMethodID_class_OnFree](type, data);
             }
@@ -995,7 +1296,7 @@ private:
       char * words[256];
       WordEntry entries[256];
       Array<Id> results = null;
-      if(searchFields && searchFields.count && searchString && searchString[0])
+      if(searchTables && searchTables.count && searchString && searchString[0])
       {
          char * searchCopy = CopyString(searchString);
          numTokens = TokenizeWith(searchCopy, sizeof(words) / sizeof(char *), words, " ',/-;[]{}", false);
@@ -1062,13 +1363,18 @@ private:
 
    // find a way to not load a tree for different searchFields
    // if the code that sets the searchFields has changed
-   void PrepareWordList(char * filePath)
+   // store a search index signature containing following:
+   // tables name, idField name and type, fields name and type
+   void PrepareWordList()
    {
       DebugLn("TableEditor::PrepareWordList");
 #ifdef FULL_STRING_SEARCH
    {
-      Row r { table };
-      File f = filePath ? FileOpenBuffered(filePath, read) : null;
+      char filePath[MAX_FILENAME];
+      File f;
+
+      sprintf(filePath, "%s.search", table.name);
+      f = filePath ? FileOpenBuffered(filePath, read) : null;
       if(f)
       {
          int a;
@@ -1090,7 +1396,7 @@ private:
             }
          }
       }
-      else if(r && idField && searchFields && searchFields.count)
+      else if(searchTables && searchTables.count)
       {
          if(!letters[0])
          {
@@ -1111,88 +1417,65 @@ private:
             }
          }
 
-         while(r.Next())
-         {
-            Id id = 0;
-            r.GetData(idField, id);
-
-            for(ssf : searchFields)
-            {
-               Field field = ssf.field;
-               StringSearchIndexingMethod method = ssf.method;
-               if(field && field.type == class(String))
-               {
-                  String string = null;
-                  r.GetData(field, string);
-
-                  if(string && string[0])
-                  {
-                     int c;
-                     unichar ch;
-                     unichar lastCh = 0;
-                     int count = 0;
-                     int numChars = 0;
-                     int nb;
-                     char word[1024];
-                     char asciiWord[1024];
-
-                     for(c = 0; ; c += nb)
-                     {
-                        ch = UTF8GetChar(string + c, &nb);
-
-                        if(!ch || CharMatchCategories(ch, separators) || 
-                           (count && CharMatchCategories(ch, letters|numbers|marks|connector) != CharMatchCategories(lastCh, letters|numbers|marks|connector)))
-                        {
-                           if(count)
-                           {
-                              word[count] = 0;
-                              asciiWord[numChars] = 0;
-                              strlwr(word);
-                              strlwr(asciiWord);
-
-                              AddWord(word, count, method == allSubstrings, id);
-                              if(count > numChars)
-                                 AddWord(asciiWord, strlen(asciiWord), method == allSubstrings, id);
-                              count = 0;
-                              numChars = 0;
-                           }
-                           if(!CharMatchCategories(ch, separators))
-                           {
-                              int cc;
-                              for(cc = 0; cc < nb; cc++)
-                                 word[count++] = string[c + cc];
-
-                              asciiWord[numChars++] = ToASCII(ch);
-                           }
-                           if(!ch)
-                              break;
-                        }
-                        else
-                        {
-                           int cc;
-                           for(cc = 0; cc < nb; cc++)
-                              word[count++] = string[c + cc];
-
-                           asciiWord[numChars++] = ToASCII(ch);
-                        }
-                        lastCh = ch;
-                     }
-                  }
-                  delete string;
-               }
-            }
-         }
-
-         f = filePath ? FileOpen(filePath, write) : null;
-         if(f)
-         {
-            f.Put(wordTree);
-            delete f;
-         }
+         wordListPrepTimer.tablesIndex = 0;
+         wordListPrepTimer.Start();
       }
-      delete r;
    }
 #endif
+   }
+
+   void ProcessWordListString(char * string, StringSearchIndexingMethod method, Id id)
+   {
+      int c;
+      unichar ch;
+      unichar lastCh = 0;
+      int count = 0;
+      int numChars = 0;
+      int nb;
+      char word[1024];
+      char asciiWord[1024];
+
+      for(c = 0; ; c += nb)
+      {
+         ch = UTF8GetChar(string + c, &nb);
+
+         if(!ch || CharMatchCategories(ch, separators) ||
+            (count && CharMatchCategories(ch, letters|numbers|marks|connector) != CharMatchCategories(lastCh, letters|numbers|marks|connector)))
+         {
+            if(count)
+            {
+               word[count] = 0;
+               asciiWord[numChars] = 0;
+               strlwr(word);
+               strlwr(asciiWord);
+
+               AddWord(word, count, method == allSubstrings, id);
+               if(count > numChars)
+                  AddWord(asciiWord, strlen(asciiWord), method == allSubstrings, id);
+               count = 0;
+               numChars = 0;
+            }
+            if(!CharMatchCategories(ch, separators))
+            {
+               int cc;
+               for(cc = 0; cc < nb; cc++)
+                  word[count++] = string[c + cc];
+
+               asciiWord[numChars++] = ToASCII(ch);
+            }
+            if(!ch)
+               break;
+         }
+         else
+         {
+            int cc;
+            for(cc = 0; cc < nb; cc++)
+               word[count++] = string[c + cc];
+
+            asciiWord[numChars++] = ToASCII(ch);
+         }
+         lastCh = ch;
+      }
    }
 
    /*static */WordEntryBinaryTree wordTree
@@ -1206,96 +1489,107 @@ private:
 
    void AddWord(char * word, int count, bool addAllSubstrings, Id id)
    {
-      DebugLn("TableEditor::AddWord");
+      //DebugLn("TableEditor::AddWord");
 #ifdef FULL_STRING_SEARCH
    {
-      int s;
-      WordEntry mainEntry = null;
-      WordEntry sEntry = null;
-
-      for(s = 0; s < count; s += UTF8_NUM_BYTES(word[s]))
+      if(addAllSubstrings)
       {
-         int l;
-         char subWord[1024];
-         char ch1;
-         WordEntry lEntry = null;
-         memcpy(subWord, word + s, count-s);
-         subWord[count-s] = 0;   // THIS IS REQUIRED!! THE WHILE LOOP BELOW CHECKED count-s FIRST!!
-         ch1 = subWord[0];
+         int s;
+         WordEntry mainEntry = null;
+         WordEntry sEntry = null;
 
-         for(l = count-s; l>0; l--)
+         for(s = 0; s < count; s += UTF8_NUM_BYTES(word[s]))
          {
-            uint wid;
-            WordEntry start = null, wordEntry;
+            int l;
+            char subWord[1024];
+            char ch1;
+            WordEntry lEntry = null;
+            memcpy(subWord, word + s, count-s);
+            subWord[count-s] = 0;   // THIS IS REQUIRED!! THE WHILE LOOP BELOW CHECKED count-s FIRST!!
+            ch1 = subWord[0];
 
-            while(l > 0 && !UTF8_IS_FIRST(subWord[l])) l--;
-            if(!l) break;
-
-            subWord[l] = 0;
-
-            if(ch1 >= 'a' && ch1 <= 'z')
+            for(l = count-s; l>0; l--)
             {
-               char ch2 = subWord[1];
-               if(count - s > 1 && ch2 >= 'a' && ch2 <= 'z')
+               uint wid;
+               WordEntry start = null, wordEntry;
+
+               while(l > 0 && !UTF8_IS_FIRST(subWord[l])) l--;
+               if(!l) break;
+
+               subWord[l] = 0;
+
+               if(ch1 >= 'a' && ch1 <= 'z')
                {
                   char ch2 = subWord[1];
-                  start = doubleLetters[ch1 - 'a'][ch2 - 'a'];
+                  if(count - s > 1 && ch2 >= 'a' && ch2 <= 'z')
+                  {
+                     char ch2 = subWord[1];
+                     start = doubleLetters[ch1 - 'a'][ch2 - 'a'];
+                  }
+                  else
+                  {
+                     start = letters[ch1 - 'a'];
+                  }
+               }
+
+               if(start)
+               {
+                  WordEntry max;
+                  while(start && (max = (WordEntry)((BTNode)start).maximum))
+                  {
+                     if(strcmp(max.string, subWord) >= 0)
+                        break;
+                     start = start.parent;
+                  }
+               }
+
+               if(!start)
+                  start = (WordEntry)wordTree.root;
+
+               if((wordEntry = (WordEntry)((BTNode)start).FindString(subWord)))
+               {
+
                }
                else
                {
-                  start = letters[ch1 - 'a'];
+                  wordTree.Add((BTNode)(wordEntry = WordEntry { string = CopyString(subWord) }));
                }
-            }
-            
-            if(start)
-            {
-               WordEntry max;
-               while(start && (max = (WordEntry)((BTNode)start).maximum))
+               if(!mainEntry)
                {
-                  if(strcmp(max.string, subWord) >= 0)
-                     break;
-                  start = start.parent;
+                  mainEntry = wordEntry;
+                  sEntry = wordEntry;
+                  lEntry = wordEntry;
                }
+               else if(!sEntry)
+               {
+                  sEntry = wordEntry;
+                  lEntry = wordEntry;
+                  if(!wordEntry.words) wordEntry.words = IdList { };
+                  wordEntry.words.Add((Id)mainEntry);
+               }
+               else if(!lEntry)
+               {
+                  lEntry = wordEntry;
+                  if(!wordEntry.words) wordEntry.words = IdList { };
+                  wordEntry.words.Add((Id)sEntry);
+               }
+               else
+               {
+                  if(!wordEntry.words) wordEntry.words = IdList { };
+                  wordEntry.words.Add((Id)lEntry);
+               }
+               if(!wordEntry.items) wordEntry.items = IdList { };
+               wordEntry.items.Add(id);
             }
-            
-            if(!start)
-               start = (WordEntry)wordTree.root;
-
-            if((wordEntry = (WordEntry)((BTNode)start).FindString(subWord)))
-            {
-
-            }
-            else
-            {
-               wordTree.Add((BTNode)(wordEntry = WordEntry { string = CopyString(subWord) }));
-            }
-            if(!mainEntry)
-            {
-               mainEntry = wordEntry;
-               sEntry = wordEntry;
-               lEntry = wordEntry;
-            }
-            else if(!sEntry)
-            {
-               sEntry = wordEntry;
-               lEntry = wordEntry;
-               if(!wordEntry.words) wordEntry.words = IdList { };
-               wordEntry.words.Add((Id)mainEntry);
-            }
-            else if(!lEntry)
-            {
-               lEntry = wordEntry;
-               if(!wordEntry.words) wordEntry.words = IdList { };
-               wordEntry.words.Add((Id)sEntry);
-            }
-            else
-            {
-               if(!wordEntry.words) wordEntry.words = IdList { };
-               wordEntry.words.Add((Id)lEntry);
-            }
-            if(!wordEntry.items) wordEntry.items = IdList { };
-            wordEntry.items.Add(id);
-         }                        
+         }
+      }
+      else
+      {
+         WordEntry wordEntry;
+         if(!(wordEntry = (WordEntry)(wordTree.root).FindString(word)))
+            wordTree.Add((BTNode)(wordEntry = WordEntry { string = CopyString(word) }));
+         if(!wordEntry.items) wordEntry.items = IdList { };
+         wordEntry.items.Add(id);
       }
    }
 #endif
@@ -1337,7 +1631,64 @@ public:
    Table lookupTable;
    Field lookupField;
    Field lookupIdField;
-   String (*CustomLookup)(Id);
+}
+
+// all methods currently perform ascii conversion and all that jazz on every string added to the index
+public enum StringSearchIndexingMethod { fullString, allSubstrings };
+
+public class StringSearchField
+{
+public:
+   Field field;
+   StringSearchIndexingMethod method;
+
+   Table lookupTable;
+   Field lookupField;
+   Field lookupValueField;
+
+   //String (*CustomRead)(Id);
+};
+
+public class StringSearchTable
+{
+public:
+   Table table;
+   Field idField;
+   Array<StringSearchField> searchFields;
+
+private:
+   ~StringSearchTable()
+   {
+      delete searchFields;
+   }
+}
+
+public class SQLiteSearchField
+{
+public:
+   Field field;
+   //StringSearchIndexingMethod method;
+
+   /*
+   Table lookupTable;
+   Field lookupField;
+   Field lookupValueField;
+   //String (*CustomRead)(Id);
+   */
+};
+
+public class SQLiteSearchTable
+{
+public:
+   Table table;
+   Field idField;
+   Array<SQLiteSearchField> searchFields;
+
+private:
+   ~SQLiteSearchTable()
+   {
+      delete searchFields;
+   }
 }
 
 static WordEntry * btnodes;
@@ -1556,6 +1907,25 @@ class WordEntry : struct
          this = null;
 #endif
    }
+}
+
+
+class ListEnumerationTimer : Timer
+{
+   bool hasCompleted;
+   int matchesIndex;
+   bool sqliteSearch;
+   int tablesIndex;
+   Array<Id> matches;
+   Row row;
+   Map<Id, int> uniques;
+}
+
+class WordListPrepTimer : Timer
+{
+   bool hasCompleted;
+   int tablesIndex;
+   Row row;
 }
 
 #if 0
