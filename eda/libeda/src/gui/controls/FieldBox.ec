@@ -15,6 +15,8 @@ public class FieldBox : DataBox
 
    property Row row { get { return editor ? editor.editRow : null; } }
    
+   // DataBox has a member called editor as well?
+   // would like to rename TableEditor to TableControl anyway
    public property TableEditor editor
    {
       set

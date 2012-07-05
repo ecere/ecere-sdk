@@ -32,6 +32,7 @@ public:
 define newEntryStringDebug = $"New|id=";
 define newEntryString = $"New";
 
+// Rename TableEditor to TableControl and move to eda/src/gui/controls
 public class TableEditor : public Window
 {
    bool initialized;
