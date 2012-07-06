@@ -196,7 +196,7 @@ private:
       Window::GetDecorationsSize(w, h);
       if(scrollable)
       {
-         if(direction == vertical) *h += left.size.w + right.size.w + 8; else *w += left.size.h + right.size.h + 8;
+         if(direction == vertical) *h += left.size.h + right.size.h + 8; else *w += left.size.w + right.size.w + 8;
       }
    }
 
@@ -205,7 +205,7 @@ private:
       Window::SetWindowArea(x, y, w, h, cw, ch);
       if(scrollable)
       {
-         if(direction == vertical) *y += left.size.w + 4; else *x += left.size.h + 4;
+         if(direction == vertical) *y += left.size.h + 4; else *x += left.size.w + 4;
       }
    }
 
