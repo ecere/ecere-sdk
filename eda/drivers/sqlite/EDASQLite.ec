@@ -835,6 +835,9 @@ class SQLiteRow : DriverRow
    bool done;
    done = true;
    int64 rowID;
+   // Because we use GoToSysID() and the sysIDStatement when searching for a primary key with Find(),
+   // this flag is used to distinguish between a Find() and a GoToSysID() for Select(next) purposes:
+   bool findSysID;
    
    bool Nil()
    {
@@ -889,7 +892,8 @@ class SQLiteRow : DriverRow
          case middle:
             break;
          case next:
-            if(!stepping)
+            // For sysID statement, for a Find() we want to go through next/previous in order, otherwise we just go to nil
+            if(!stepping && (curStatement != sysIDStatement || findSysID))
             {
                result = sqlite3_step(curStatement);
                done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
@@ -1120,7 +1124,10 @@ class SQLiteRow : DriverRow
 
       if(fld == tbl.primaryKey)
       {
-         return GoToSysID(*(int *)data);
+         result = GoToSysID(*(int *)data);
+         if(result)
+            findSysID = true;
+         return result;
       }
 
       sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ", tbl.name);
@@ -1261,6 +1268,7 @@ class SQLiteRow : DriverRow
          }
          sqlite3_reset(id ? insertIDStatement : insertStatement);
          curStatement = sysIDStatement;
+         findSysID = false;
          sqlite3_reset(curStatement);
          sqlite3_bind_int64(sysIDStatement, 1, (sqlite3_int64)rowID);
          result = sqlite3_step(curStatement);
@@ -1408,6 +1416,7 @@ class SQLiteRow : DriverRow
       //sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ROWID = ?;", tbl.name);
       //result = sqlite3_prepare_v2(tbl.db.db, command, -1, &statement, null);
 
+      findSysID = false;
       if(curStatement)
          sqlite3_reset(curStatement);
 
