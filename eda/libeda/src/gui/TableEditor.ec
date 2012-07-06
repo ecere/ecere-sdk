@@ -291,8 +291,9 @@ public:
          if(matches)
          {
             listEnumerationTimer.matches = { };
-            // fixme: stupid warning?
-            listEnumerationTimer.matches.Copy(matches);
+            // TOFIX: This (void *) cast here should NOT be required... Fix this Container warning:
+            // warning: incompatible expression matches (ecere::com::Array<eda::Id>); expected ecere::com::Container<T>
+            listEnumerationTimer.matches.Copy((void *)matches);
          }
          else
             listEnumerationTimer.matches = null;
