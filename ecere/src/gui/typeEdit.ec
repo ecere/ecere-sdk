@@ -184,7 +184,7 @@ static Window OnEdit(Class _class, void * data, Window window, Window master,
          bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
          {
             opacity = active ? 1.0f : parent.opacity;
-            return true;
+            return EditBox::OnActivate(active, previous, goOnWithActivation, direct);
          }
       };
       if(data)
