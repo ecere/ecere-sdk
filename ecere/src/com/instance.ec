@@ -1963,24 +1963,59 @@ static void FixDerivativesBase(Class base, Class mod)
       _class.offsetClass = offsetClass;
       _class.sizeClass = totalSizeClass;
 
-      if(mod.base && mod.base.base && mod.base.vTblSize > baseClass.vTblSize && 
-         (mod != (base.templateClass ? base.templateClass : base) || _class.vTblSize != mod.vTblSize))
       {
          Method method, next;
          Class b;
-         _class.vTblSize += mod.base.vTblSize - baseClass.vTblSize;
-         _class._vTbl = renew _class._vTbl void *[_class.vTblSize];
-         // memmove(_class._vTbl + mod.base.vTblSize, _class._vTbl + baseClass.vTblSize, (mod.base.vTblSize - baseClass.vTblSize) * sizeof(void *));
-         memmove(_class._vTbl + mod.base.vTblSize, _class._vTbl + baseClass.vTblSize, (_class.vTblSize - mod.vTblSize) * sizeof(void *));
-         
-         for(method = (Method)_class.methods.first; method; method = next)
+
+         if(mod.base && mod.base.base && mod.base.vTblSize > baseClass.vTblSize && 
+            (mod != (base.templateClass ? base.templateClass : base) || _class.vTblSize != mod.vTblSize))
          {
-            next = (Method)((BTNode)method).next;
-            if(method.type == virtualMethod)
-               method.vid += mod.base.vTblSize - baseClass.vTblSize;
+            _class.vTblSize += mod.base.vTblSize - baseClass.vTblSize;
+            _class._vTbl = renew _class._vTbl void *[_class.vTblSize];
+            // memmove(_class._vTbl + mod.base.vTblSize, _class._vTbl + baseClass.vTblSize, (mod.base.vTblSize - baseClass.vTblSize) * sizeof(void *));
+            memmove(_class._vTbl + mod.base.vTblSize, _class._vTbl + baseClass.vTblSize, (_class.vTblSize - mod.vTblSize) * sizeof(void *));
+
+            for(method = (Method)_class.methods.first; method; method = next)
+            {
+               next = (Method)((BTNode)method).next;
+               if(method.type == virtualMethod)
+                  method.vid += mod.base.vTblSize - baseClass.vTblSize;
+            }
+
+            for(b = mod.base; b && b != null; b = b.base)
+            {
+               Method vMethod;
+               for(vMethod = (Method)b.methods.first; vMethod; vMethod = (Method)((BTNode)vMethod).next)
+               {
+                  if(vMethod.type == virtualMethod)
+                  {
+                     method = (Method)_class.methods.FindString(vMethod.name);
+                     if(method)
+                     {
+                        if(method.function) _class._vTbl[vMethod.vid] = method.function;
+                        if(!method.symbol)
+                        {
+                           delete method.name;
+                           delete method.dataTypeString;
+                           _class.methods.Delete((BTNode)method);
+                        }
+                        else
+                        {
+                           delete method.dataTypeString;
+                           method.type = vMethod.type;
+                           method.dataTypeString = CopyString(vMethod.dataTypeString);
+                           method._class = vMethod._class;
+                        }
+                     }
+                     else
+                        _class._vTbl[vMethod.vid] = _class.base._vTbl[vMethod.vid];
+                  }
+               }
+            }
          }
 
-         // TO CHECK: WHY WAS THIS baseClass? ANY PROBLEMS? CRASH WHEN DECLARING A BASE CLASS LATER (WSMS)
+         // Also doing this now, otherwise overridden methods of base classes from intermediate classes will not be set in higher level class
+         // (e.g. OnGetString overridden in Id , Location inheriting from Id, LocationAbbreviation created later inheriting from Location would not get Id's OnGetString)
          for(b = mod.base; b && b != null; b = b.base)
          {
             Method vMethod;
@@ -1988,25 +2023,7 @@ static void FixDerivativesBase(Class base, Class mod)
             {
                if(vMethod.type == virtualMethod)
                {
-                  method = (Method)_class.methods.FindString(vMethod.name);
-                  if(method)
-                  {
-                     if(method.function) _class._vTbl[vMethod.vid] = method.function;
-                     if(!method.symbol)
-                     {
-                        delete method.name;
-                        delete method.dataTypeString;
-                        _class.methods.Delete((BTNode)method);
-                     }
-                     else
-                     {
-                        delete method.dataTypeString;
-                        method.type = vMethod.type;
-                        method.dataTypeString = CopyString(vMethod.dataTypeString);
-                        method._class = vMethod._class;
-                     }
-                  }
-                  else
+                  if(_class._vTbl[vMethod.vid] == baseClass._vTbl[vMethod.vid] && _class._vTbl[vMethod.vid] != _class.base._vTbl[vMethod.vid])
                      _class._vTbl[vMethod.vid] = _class.base._vTbl[vMethod.vid];
                }
             }
