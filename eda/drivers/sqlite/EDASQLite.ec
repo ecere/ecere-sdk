@@ -214,6 +214,7 @@ class SQLiteField : Field
    public LinkElement<SQLiteField> link;
    int num;
    int sqliteType;
+   SQLiteTable tbl;
 
    ~SQLiteField()
    {
@@ -236,6 +237,10 @@ class SQLiteField : Field
    Field GetNext()
    {
       return link.next;
+   }
+   Table GetTable()
+   {
+      return tbl;
    }
 }
 
@@ -276,9 +281,10 @@ class SQLiteDatabase : Database
       SQLiteTable table = null;
       if(options.type == tablesList)
       {
-         SQLiteField field { name = CopyString("Name"), type = class(String), num = -1, sqliteType = SQLITE_TEXT };
+         SQLiteField field;
          strcpy(command, "SELECT name FROM sqlite_master WHERE type='table' AND name!='eda_table_fields';");
          table = SQLiteTable { db = this, specialStatement = CopyString(command) };
+         field = { tbl = table, name = CopyString("Name"), type = class(String), num = -1, sqliteType = SQLITE_TEXT };
          LinkTable(table);
          incref field;
          table.fields.Add(field);
@@ -290,13 +296,13 @@ class SQLiteDatabase : Database
          sprintf(command, "SELECT Name, Type, Length FROM eda_table_fields WHERE Table_Name='%s';", name);
          table = SQLiteTable { db = this, specialStatement = CopyString(command) };
          LinkTable(table);
-         field = { name = CopyString("Name"), type = class(String), num = -1, sqliteType = SQLITE_TEXT };
+         field = { tbl = table, name = CopyString("Name"), type = class(String), num = -1, sqliteType = SQLITE_TEXT };
          incref field;
          table.fields.Add(field);
-         field = { name = CopyString("Type"), type = class(Class), num = 0, sqliteType = SQLITE_TEXT };
+         field = { tbl = table, name = CopyString("Type"), type = class(Class), num = 0, sqliteType = SQLITE_TEXT };
          incref field;
          table.fields.Add(field);
-         field = { name = CopyString("Length"), type = class(int), num = 1, sqliteType = SQLITE_INTEGER };
+         field = { tbl = table, name = CopyString("Length"), type = class(int), num = 1, sqliteType = SQLITE_INTEGER };
          incref field;
          table.fields.Add(field);
       }
@@ -371,7 +377,7 @@ class SQLiteDatabase : Database
                            result = sqlite3_exec(db, command, null, null, null);
 
                            {
-                              SQLiteField field { name = CopyString(fieldName), type = type, num = table.fields.count, sqliteType = sqliteType };
+                              SQLiteField field { tbl = table, name = CopyString(fieldName), type = type, num = table.fields.count, sqliteType = sqliteType };
                               incref field;
                               table.fields.Add(field);
                            }
@@ -423,7 +429,7 @@ class SQLiteDatabase : Database
                      }
 
                      {
-                        SQLiteField field { name = CopyString(fieldName), type = type, length = length, num = table.fields.count, sqliteType = sqliteType };
+                        SQLiteField field { tbl = table, name = CopyString(fieldName), type = type, length = length, num = table.fields.count, sqliteType = sqliteType };
                         incref field;
                         table.fields.Add(field);
                      }

@@ -906,6 +906,7 @@ public:
    int GetLength() { return length; }
    Field GetNext() { return next; }
    Field GetPrev() { return prev; }
+   Table GetTable() { return (Table)tbl; }
 
    ~EDBField()
    {

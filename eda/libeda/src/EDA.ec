@@ -374,12 +374,14 @@ public:
    virtual int GetLength();
    virtual Field GetPrev();
    virtual Field GetNext();
+   virtual Table GetTable();
 
    property String name { get { return GetName(); } }
    property Class type { get { return GetType(); } }
    property int length { get { return GetLength(); } }
    property Field prev { get { return GetPrev(); } }
    property Field next { get { return GetNext(); } }
+   property Table table { get { return GetTable(); } }
 
    bool GetData(Row row, typed_object & data)
    {
