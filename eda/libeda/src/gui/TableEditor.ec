@@ -39,6 +39,17 @@ public:
    }
    Table table;
 
+   property Table index
+   {
+      set
+      {
+         DebugLn("TableEditor::index|set");
+         index = value;
+         filterRow.tbl = index;
+      }
+   }
+   Table index;
+
    bool OnPostCreate()
    {
       DebugLn("TableEditor::OnPostCreate");
@@ -93,9 +104,11 @@ public:
          //ResetListFields();
       }
    }
-   ListBox list;
    Field idField;
    Field stringField;
+   Field indexFilterField;
+
+   ListBox list;
    property Array<ListField> listFields
    {
       set
@@ -165,13 +178,15 @@ public:
    }
    String searchString;
 
-   Array<LookupField> dynamicLookupFields;
-   property Array<LookupField> dynamicLookupFields
+   Map<Table, Lookup> lookups;
+
+   Array<LookupEditor> dynamicLookupEditors;
+   property Array<LookupEditor> dynamicLookupEditors
    {
       set
       {
-         DebugLn("TableEditor::dynamicLookupFields|set");
-         dynamicLookupFields = value;
+         DebugLn("TableEditor::dynamicLookupEditors|set");
+         dynamicLookupEditors = value;
       }
    }
 
@@ -306,17 +321,18 @@ public:
    virtual void OnCreateDynamicLookupEditors()
    {
       DebugLn("TableEditor::OnCreateLookupEditors");
-      if(dynamicLookupFields && dynamicLookupFields.count)
+      if(dynamicLookupEditors && dynamicLookupEditors.count)
       {
-         for(f : dynamicLookupFields)
+         for(f : dynamicLookupEditors)
          {
-            if(f.editorClass && f.parentWindow)
+            if(f.editorClass && f.parentWindow && f.lookupFindField)
             {
-               Row row { tbl = f.lookupTable };
+               Row row { f.lookupFindIndex ? f.lookupFindIndex : f.lookupFindField.table };
                // todo: make this work for all types
                uint id = 0;
-               editRow.GetData(f.field, id);
-               for(row.Find(f.lookupField, middle, nil, id); !row.nil; row.Next())
+               editRow.GetData(f.lookupValueField, id);
+               // TODO: add alternative class instance for creation when no rows are found via lookup
+               for(row.Find(f.lookupFindField, middle, nil, id); !row.nil; row.Next())
                {
                   // todo: make this work for all types, although this is meant to be an id field
                   uint id = 0;
@@ -578,12 +594,44 @@ public:
       return result;
    }
 
+   bool Filter(Id id)
+   {
+      bool result;
+      DebugLn("TableEditor::Filter");
+      if(selectedId && index && indexFilterField)
+      {
+         for(filterRow.Find(indexFilterField, middle, nil, id); !filterRow.nil; filterRow.Next())
+         {
+            Id id2;
+            filterRow.GetData(idField, id2);
+            if(id2 == selectedId)
+            {
+               filtered = true;
+               result = true;
+               break;
+            }
+         }
+      }
+      else
+         result = false;
+      return result;
+   }
+
    bool SelectNext()
    {
       bool result;
       DebugLn("TableEditor::SelectNext");
       // How about confirmation / saving before changing the entry?
-      if(editRow.Next())
+      if(filtered)
+      {
+         if(filterRow.Next())
+            editRow.sysID = filterRow.sysID;
+         else
+            editRow.Last(), editRow.Next(); // TODO: need a way to park Row to nil
+      }
+      else
+         editRow.Next();
+      if(!editRow.nil)
       {
          //Id test = editRow.sysID;
          selectedId = editRow.sysID;
@@ -604,7 +652,18 @@ public:
    {
       bool result;
       DebugLn("TableEditor::SelectPrevious");
-      if(editRow.Previous())
+      if(filtered)
+      {
+         // TOCHECK: filtered previous does not seem to work with sqlite
+         //          it's doing a table.Previous() instead of backtracking the results set
+         if(filterRow.Previous())
+            editRow.sysID = filterRow.sysID;
+         else
+            editRow.Last(), editRow.Next(); // TODO: need a way to park Row to nil
+      }
+      else
+         editRow.Previous();
+      if(!editRow.nil)
       {
          //Id test = editRow.sysID;
          selectedId = editRow.sysID;
@@ -648,6 +707,8 @@ private:
    DataRow listRow;
    DataRow lastRow;
    Id selectedId;
+   Row filterRow { };
+   bool filtered;
 
    ListEnumerationTimer listEnumerationTimer
    {
@@ -1009,6 +1070,9 @@ private:
       wordTree.Free();
 
       delete listFields;
+      delete lookups;
+      delete dynamicLookupEditors;
+      delete dynamicLookupTableEditors;
       delete searchTables;
       delete sqliteSearchTables;
    }
@@ -1134,6 +1198,21 @@ private:
       EditClear();
       OnLoad();
       internalModifications = true;
+      for(lu : lookups)
+      {
+         if(&lu == table)
+         {
+            if(!lu.row)
+               lu.row = { lu.findIndex ? lu.findIndex : lu.findField.table };
+            if(lu.valueField && eClass_IsDerived(lu.valueField.type, class(Id)) &&
+                  lu.findField && eClass_IsDerived(lu.findField.type, class(Id)))
+            {
+               Id id = 0;
+               editRow.GetData(lu.valueField, id);
+               lu.row.Find(lu.findField, middle, nil, id);
+            }
+         }
+      }
       for(fb : fieldsBoxes)
          fb.Load();
       OnCreateDynamicLookupEditors();
@@ -1194,15 +1273,15 @@ private:
                   listRow.SetData(lf.dataField, s);
                   delete s; // ?
                }
-               else if(lf.lookupTable && lf.lookupField && lf.lookupValueField &&
-                     eClass_IsDerived(lf.lookupField.type, class(Id)) &&
+               else if(lf.lookupFindField && (lf.lookupFindIndex || lf.lookupFindField.table) && lf.lookupValueField &&
+                     eClass_IsDerived(lf.lookupFindField.type, class(Id)) &&
                      eClass_IsDerived(lf.lookupValueField.type, class(char*)))
                {
                   Id id = 0;
                   String s = null;
-                  Row lookupRow { lf.lookupTable };
+                  Row lookupRow { lf.lookupFindIndex ? lf.lookupFindIndex : lf.lookupFindField.table };
                   dbRow.GetData(lf.field, id);
-                  if(lookupRow.Find(lf.lookupField, middle, nil, id))
+                  if(lookupRow.Find(lf.lookupFindField, middle, nil, id))
                      lookupRow.GetData(lf.lookupValueField, s);
                   listRow.SetData(lf.dataField, s);
                   delete s;
@@ -1603,20 +1682,11 @@ public class ListField : struct
 public:
    Field field;
    DataField dataField;
-   Table lookupTable;
-   Field lookupField;
+   Field lookupFindField;
    Field lookupValueField;
+   Table lookupFindIndex;
    String (*CustomLookup)(Id);
-   /*public property Field lookupField
-   {
-      set
-      {
-         lookupField = value;
-         if(value && !lookupTable)
-            lookupTable = value.table;
-      }
-   }
-private:*/
+private:
 
    ~ListField()
    {
@@ -1624,15 +1694,31 @@ private:*/
    }
 }
 
-public class LookupField : struct
+public class Lookup
+{
+public:
+   Field valueField;
+   Field findField;
+   Table findIndex;
+
+private:
+   Row row;
+
+   ~Lookup()
+   {
+      delete row;
+   }
+}
+
+public class LookupEditor : struct
 {
 public:
    subclass(TableEditor) editorClass;
    Window parentWindow;
-   Field field;
-   Table lookupTable;
-   Field lookupField;
+   Field lookupValueField;
+   Field lookupFindField;
    Field lookupIdField;
+   Table lookupFindIndex;
 }
 
 // all methods currently perform ascii conversion and all that jazz on every string added to the index
@@ -1644,8 +1730,7 @@ public:
    Field field;
    StringSearchIndexingMethod method;
 
-   Table lookupTable;
-   Field lookupField;
+   Field lookupFindField;
    Field lookupValueField;
 
    //String (*CustomRead)(Id);
@@ -1670,13 +1755,6 @@ public class SQLiteSearchField
 public:
    Field field;
    //StringSearchIndexingMethod method;
-
-   /*
-   Table lookupTable;
-   Field lookupField;
-   Field lookupValueField;
-   //String (*CustomRead)(Id);
-   */
 };
 
 public class SQLiteSearchTable

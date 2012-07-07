@@ -13,7 +13,25 @@ public class FieldBox : DataBox
    int64 dataHolder; // THERE SEEMS TO BE A BUG WHEN ACCESSING row ACROSS .so
    TableEditor editor;
 
-   property Row row { get { return editor ? editor.editRow : null; } }
+   property Row row
+   {
+      get
+      {
+         Row result = null;
+         if(field && editor)
+         {
+            if(editor.table == field.table)
+               result = editor.editRow;
+            else
+            {
+               Lookup lookup = editor.lookups[field.table]; // Map<Table, Lookup> limits to single lookup per table
+               if(lookup.valueField && lookup.findField && lookup.row && !lookup.row.nil)
+                  result = lookup.row;
+            }
+         }
+         return result;
+      }
+   }
    
    // DataBox has a member called editor as well?
    // would like to rename TableEditor to TableControl anyway
@@ -113,7 +131,7 @@ public class FieldBox : DataBox
    void Load()
    {
       Row row = this.row;
-      if(visible && field && row)
+      if(visible && row)
       {
          //Id test = row.sysID;
          SetData(null, false);
@@ -138,7 +156,7 @@ public class FieldBox : DataBox
    {
       bool result;
       Row row = this.row;
-      if(visible && field && row)
+      if(visible && row)
       {
          Class type = field.type;
          if(!DataBox::SaveData())
