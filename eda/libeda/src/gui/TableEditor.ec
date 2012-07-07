@@ -620,14 +620,19 @@ public:
    bool SelectNext()
    {
       bool result;
+      bool wasNil = !editRow.sysID;
       DebugLn("TableEditor::SelectNext");
       // How about confirmation / saving before changing the entry?
       if(filtered)
       {
          if(filterRow.Next())
+         {
+            if(wasNil && filterRow.sysID == selectedId)
+               filterRow.Next();
             editRow.sysID = filterRow.sysID;
+         }
          else
-            editRow.Last(), editRow.Next(); // TODO: need a way to park Row to nil
+            editRow.sysID = 0;
       }
       else
          editRow.Next();
@@ -651,15 +656,18 @@ public:
    bool SelectPrevious()
    {
       bool result;
+      bool wasNil = !editRow.sysID;
       DebugLn("TableEditor::SelectPrevious");
       if(filtered)
       {
-         // TOCHECK: filtered previous does not seem to work with sqlite
-         //          it's doing a table.Previous() instead of backtracking the results set
          if(filterRow.Previous())
+         {
+            if(wasNil && filterRow.sysID == selectedId)
+               filterRow.Previous();
             editRow.sysID = filterRow.sysID;
+         }
          else
-            editRow.Last(), editRow.Next(); // TODO: need a way to park Row to nil
+            editRow.sysID = 0;
       }
       else
          editRow.Previous();
