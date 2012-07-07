@@ -726,9 +726,9 @@ class SQLiteTable : Table
    }
 
    // Returns true if not ordered by row ID
-   bool GetIndexOrder(char * fullOrder)
+   bool GetIndexOrder(char * fullOrder, bool flip)
    {
-      if(!indexFields || (indexFieldsCount == 1 && indexFields[0].field == primaryKey && indexFields[0].order == ascending))
+      if(!flip && (!indexFields || (indexFieldsCount == 1 && indexFields[0].field == primaryKey && indexFields[0].order == ascending)))
       {
          strcpy(fullOrder, " ORDER BY ROWID");
          return false;
@@ -737,7 +737,7 @@ class SQLiteTable : Table
       {
          int c;
          strcpy(fullOrder, " ORDER BY ");
-         for(c = 0; c < indexFieldsCount; c++)
+         for(c = flip ? indexFieldsCount-1 : 0; flip ? (c >= 0) : (c < indexFieldsCount); flip ? c-- : c++)
          {
             char order[1024];
             FieldIndex * fIndex = &indexFields[c];
@@ -746,7 +746,7 @@ class SQLiteTable : Table
             strcat(order, "`");
             strcat(order, fIndex->field.name);
             strcat(order, "`");
-            if(fIndex->order == descending) strcat(order, " DESC");
+            if(fIndex->order == (flip ? ascending : descending)) strcat(order, " DESC");
             strcat(fullOrder, order);
          }
          return true;
@@ -792,7 +792,7 @@ class SQLiteTable : Table
 
          sqlite3_prepare_v2(db.db, command, -1, &updateStmt, null);*/
 
-         GetIndexOrder(order);
+         GetIndexOrder(order, false);
          sprintf(command, "SELECT ROWID, * FROM `%s`%s;", name, order);
       }
       sqlite3_prepare_v2(db.db, command, -1, &statement, null);
@@ -825,6 +825,8 @@ class SQLiteRow : DriverRow
 
    sqlite3_stmt * defaultStatement;
    sqlite3_stmt * findStatement;
+   sqlite3_stmt * prevFindStatement, * lastFindStatement;
+   sqlite3_stmt * nextFindStatement;
    sqlite3_stmt * sysIDStatement;
    sqlite3_stmt * queryStatement;
    sqlite3_stmt * findMultipleStatement;
@@ -854,6 +856,9 @@ class SQLiteRow : DriverRow
    {
       if(defaultStatement) sqlite3_finalize(defaultStatement);
       if(findStatement)    sqlite3_finalize(findStatement);
+      if(prevFindStatement)sqlite3_finalize(prevFindStatement);
+      if(lastFindStatement)sqlite3_finalize(lastFindStatement);
+      if(nextFindStatement)sqlite3_finalize(nextFindStatement);
       if(findMultipleStatement)    sqlite3_finalize(findMultipleStatement);
       if(sysIDStatement)   sqlite3_finalize(sysIDStatement);
       if(insertStatement)  sqlite3_finalize(insertStatement);
@@ -898,24 +903,54 @@ class SQLiteRow : DriverRow
          case middle:
             break;
          case next:
+         case previous:
+         {
             // For sysID statement, for a Find() we want to go through next/previous in order, otherwise we just go to nil
-            if(!stepping && (curStatement != sysIDStatement || findSysID))
+            if((move == next && curStatement != prevFindStatement && curStatement != lastFindStatement && !stepping && (curStatement != sysIDStatement || findSysID)) || 
+               (move == previous && (curStatement == prevFindStatement || curStatement == lastFindStatement)))
             {
                result = sqlite3_step(curStatement);
                done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
                if(done) { rowID = 0; sqlite3_reset(curStatement); return false; }
                rowID = sqlite3_column_int64(curStatement, 0);
-               break;
             }
-         case previous:
-         {
-            sqlite3_reset(curStatement);
-            curStatement = (move == previous) ? (rowID ? previousStatement : lastStatement) : (rowID ? nextStatement : defaultStatement);
-            sqlite3_bind_int64(curStatement, 1, (sqlite3_int64)rowID);
-            result = sqlite3_step(curStatement);
-            done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
-            if(done) { rowID = 0; sqlite3_reset(curStatement); return false; }
-            rowID = sqlite3_column_int64(curStatement, 0);
+            else if(curStatement == prevFindStatement || curStatement == findStatement || curStatement == nextFindStatement || curStatement == lastFindStatement)
+            {
+               if(rowID)
+               {
+                  int bindId = 2;   // Does not work with multiple find for now
+                  sqlite3_reset((move == next) ? nextFindStatement : prevFindStatement);
+                  BindCursorData((move == next) ? nextFindStatement : prevFindStatement, move,
+                     (move == next && (!tbl.indexFields || (tbl.indexFieldsCount == 1 && tbl.indexFields[0].field == tbl.primaryKey && tbl.indexFields[0].order == ascending))) ? false : true, &bindId);
+                  sqlite3_reset(curStatement);
+                  curStatement = (move == next) ? nextFindStatement : prevFindStatement;
+                  result = sqlite3_step(curStatement);
+                  done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
+                  if(done) { rowID = 0; sqlite3_reset(curStatement); return false; }
+                  rowID = sqlite3_column_int64(curStatement, 0);
+               }
+               else
+               {
+                  int bindId = 2;   // Does not work with multiple find for now
+                  sqlite3_reset((move == next) ? findStatement : lastFindStatement);
+                  sqlite3_reset(curStatement);
+                  curStatement = (move == next) ? findStatement : lastFindStatement;
+                  result = sqlite3_step(curStatement);
+                  done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
+                  if(done) { rowID = 0; sqlite3_reset(curStatement); return false; }
+                  rowID = sqlite3_column_int64(curStatement, 0);
+               }
+            }
+            else
+            {
+               sqlite3_reset(curStatement);
+               curStatement = (move == previous) ? (rowID ? previousStatement : lastStatement) : (rowID ? nextStatement : defaultStatement);
+               sqlite3_bind_int64(curStatement, 1, (sqlite3_int64)rowID);
+               result = sqlite3_step(curStatement);
+               done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
+               if(done) { rowID = 0; sqlite3_reset(curStatement); return false; }
+               rowID = sqlite3_column_int64(curStatement, 0);
+            }
             break;
          }
          case nil:
@@ -1033,7 +1068,7 @@ class SQLiteRow : DriverRow
 
    void AddCursorWhereClauses(char * command, MoveOptions move, bool useIndex)
    {
-      if(move == next)
+      if(move == next || move == previous)
       {
          // Where clauses for index
          if(useIndex)
@@ -1042,7 +1077,7 @@ class SQLiteRow : DriverRow
             bool gotPrimaryKey = false;
 
             strcatf(command, " AND (");
-            for(c = 0; c < tbl.indexFieldsCount; c++)
+            for(c = ((move == next) ? 0 : tbl.indexFieldsCount-1); (move == next) ? c < tbl.indexFieldsCount : c >= 0; (move == next) ? c++ : c--)
             {
                char where[1024];
                FieldIndex * fIndex = &tbl.indexFields[c];
@@ -1051,7 +1086,7 @@ class SQLiteRow : DriverRow
                strcat(where, "`");
                strcat(where, fIndex->field.name);
                strcat(where, "` ");
-               strcat(where, fIndex->order == descending ? "<" : ">");
+               strcat(where, (fIndex->order == ((move == next) ? descending : ascending)) ? "<" : ">");
                strcat(where, " ? OR (");
                strcat(where, fIndex->field.name);
                if(fIndex->field == tbl.primaryKey)
@@ -1059,24 +1094,24 @@ class SQLiteRow : DriverRow
                strcat(where, " = ? AND (");
                strcat(command, where);
             }
-            strcat(command, gotPrimaryKey ? "1)" : "ROWID > ?)");
-            for(; c > 0; c--)
+            strcat(command, gotPrimaryKey ? "1)" : ((move == next) ? "ROWID > ?)" : "ROWID < ?)"));
+            for(c = 0; c < tbl.indexFieldsCount; c++)
                strcat(command, "))");
          }
          else
-            strcatf(command, " AND ROWID > ?");
+            strcatf(command, (move == next) ? " AND ROWID > ?" : " AND ROWID < ?");
       }
    }
 
    void BindCursorData(sqlite3_stmt * stmt, MoveOptions move, bool useIndex, int * bindId)
    {
-      if(move == next)
+      if(move == next || move == previous)
       {
          // The binds for the Extra ordering Where clauses
          if(useIndex)
          {
             int c;
-            for(c = 0; c < tbl.indexFieldsCount; c++)
+            for(c = ((move == next) ? 0 : tbl.indexFieldsCount-1); (move == next) ? c < tbl.indexFieldsCount : c >= 0; (move == next) ? c++ : c--)
             {
                FieldIndex * fIndex = &tbl.indexFields[c];
                int64 data;
@@ -1128,6 +1163,32 @@ class SQLiteRow : DriverRow
       sqlite3_stmt * stmt = null;
       int bindId = 1;
 
+      if(curStatement)
+      {
+         sqlite3_reset(curStatement);
+         curStatement = null;
+      }
+      if(findStatement)
+      {
+         sqlite3_finalize(findStatement);
+         findStatement = null;
+      }
+      if(nextFindStatement)
+      {
+         sqlite3_finalize(nextFindStatement);
+         nextFindStatement = null;
+      }
+      if(prevFindStatement)
+      {
+         sqlite3_finalize(prevFindStatement);
+         prevFindStatement = null;
+      }
+      if(lastFindStatement)
+      {
+         sqlite3_finalize(lastFindStatement);
+         lastFindStatement = null;
+      }
+
       if(fld == tbl.primaryKey)
       {
          result = GoToSysID(*(int *)data);
@@ -1138,21 +1199,49 @@ class SQLiteRow : DriverRow
 
       sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ", tbl.name);
       strcatf(command, "`%s` = ?", fld.name);
-      useIndex = tbl.GetIndexOrder(order);
+      useIndex = tbl.GetIndexOrder(order, false);
       AddCursorWhereClauses(command, move, useIndex);
       strcat(command, order);
       strcat(command, ";");
-
       result = sqlite3_prepare_v2(tbl.db.db, command, -1, &stmt, null);
-
       BindData(stmt, bindId++, (SQLiteField)fld, data, null);
       BindCursorData(stmt, move, useIndex, &bindId);
-
-      if(curStatement)
-         sqlite3_reset(curStatement);
-      if(findStatement)
-         sqlite3_finalize(findStatement);
       curStatement = findStatement = stmt;
+
+      // For tracing back forward finds
+      bindId = 1;
+      sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ", tbl.name);
+      strcatf(command, "`%s` = ?", fld.name);
+      useIndex = tbl.GetIndexOrder(order, false);
+      AddCursorWhereClauses(command, next, useIndex);
+      strcat(command, order);
+      strcat(command, ";");
+      result = sqlite3_prepare_v2(tbl.db.db, command, -1, &stmt, null);
+      BindData(stmt, bindId++, (SQLiteField)fld, data, null);
+      nextFindStatement = stmt;
+
+      // For tracing back finds
+      bindId = 1;
+      sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ", tbl.name);
+      strcatf(command, "`%s` = ?", fld.name);
+      tbl.GetIndexOrder(order, true);
+      AddCursorWhereClauses(command, previous, true);
+      strcat(command, order);
+      strcat(command, ";");
+      result = sqlite3_prepare_v2(tbl.db.db, command, -1, &stmt, null);
+      BindData(stmt, bindId++, (SQLiteField)fld, data, null);
+      prevFindStatement = stmt;
+
+      // For tracing back from last
+      bindId = 1;
+      sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ", tbl.name);
+      strcatf(command, "`%s` = ?", fld.name);
+      tbl.GetIndexOrder(order, true);
+      strcat(command, order);
+      strcat(command, ";");
+      result = sqlite3_prepare_v2(tbl.db.db, command, -1, &stmt, null);
+      BindData(stmt, bindId++, (SQLiteField)fld, data, null);
+      lastFindStatement = stmt;
 
       result = sqlite3_step(findStatement);
 
@@ -1188,7 +1277,7 @@ class SQLiteRow : DriverRow
             strcat(command, "` = ?");
          }
 
-         useIndex = tbl.GetIndexOrder(order);
+         useIndex = tbl.GetIndexOrder(order, false);
          AddCursorWhereClauses(command, move, useIndex);
          strcat(command, order);
          strcat(command, ";");
