@@ -101,7 +101,7 @@ static define stackerScrolling = 16;
 
 class StackerBits
 {
-   bool reverse:1, scrollable:1, flipSpring:1, autoSize:1;
+   bool reverse:1, scrollable:1, flipSpring:1, autoSize:1, endButtons:1;
 
    // internals
    bool holdChildMonitoring:1;
@@ -137,6 +137,24 @@ public:
    property bool flipSpring { set { bits.flipSpring = value; } get { return bits.flipSpring; } };
    property bool autoSize { set { bits.autoSize = value; } get { return bits.autoSize; } };
    property int margin { set { margin = value; } get { return margin; } };
+   property bool endButtons
+   {
+      set
+      {
+         if(bits.endButtons && scrollable && !value)
+         {
+            left.visible = false;
+            right.visible = false;
+         }
+         bits.endButtons = value;
+         if(value && scrollable)
+         {
+            left.visible = true;
+            right.visible = true;
+         }
+      }
+      get { return bits.endButtons; }
+   };
 
 private:
    StackerBits bits;
@@ -145,6 +163,28 @@ private:
    int margin;
    Array<Window> controls { };
    Window flipper;
+
+   void OnVScroll(ScrollBarAction action, int position, Key key)
+   {
+      if(bits.endButtons)
+      {
+         bool ld = false, rd = false;
+         left.disabled = false;
+         right.disabled = false;
+         if(direction == horizontal)
+         {
+            if(position == 0) ld = true;
+            if(position + clientSize.w >= scrollArea.w) rd = true;
+         }
+         else
+         {
+            if(position == 0) ld = true;
+            if(position + clientSize.h >= scrollArea.h) rd = true;
+         }
+         if(left.disabled != ld)  { left.disabled = ld;  left.OnLeftButtonUp(-1,0,0); }
+         if(right.disabled != rd) { right.disabled = rd; right.OnLeftButtonUp(-1,0,0); }
+      }
+   }
 
    RepButton left
    {
@@ -194,7 +234,7 @@ private:
    void GetDecorationsSize(MinMaxValue * w, MinMaxValue * h)
    {
       Window::GetDecorationsSize(w, h);
-      if(scrollable)
+      if(bits.scrollable && bits.endButtons)
       {
          if(direction == vertical) *h += left.size.h + right.size.h + 8; else *w += left.size.w + right.size.w + 8;
       }
@@ -203,7 +243,7 @@ private:
    void SetWindowArea(int * x, int * y, MinMaxValue * w, MinMaxValue * h, MinMaxValue * cw, MinMaxValue * ch)
    {
       Window::SetWindowArea(x, y, w, h, cw, ch);
-      if(scrollable)
+      if(bits.scrollable && bits.endButtons)
       {
          if(direction == vertical) *y += left.size.h + 4; else *x += left.size.w + 4;
       }
@@ -220,10 +260,10 @@ private:
 
       if(direction == vertical)
       {
-         left.bitmap = { "<:ecere>elements/arrowTop.png" };
+         left.bitmap = { "<:ecere>elements/arrowUp.png" };
          left.anchor = { top = 2, left = 2, right = 2 };
 
-         right.bitmap = { "<:ecere>elements/arrowBottom.png" };
+         right.bitmap = { "<:ecere>elements/arrowDown.png" };
          right.anchor = { bottom = 2, left = 2, right = 2 };
       }
       else
@@ -239,6 +279,7 @@ private:
 
    gap = 5;
    direction = vertical;
+   endButtons = true;
 
    void OnChildAddedOrRemoved(Window child, bool removed)
    {
@@ -384,8 +425,11 @@ private:
          if(bits.scrollable && y > ((direction == horizontal) ? width : height))
          {
             scrollArea = (direction == horizontal) ? { y, 0 } : { 0, y };
-            left.visible = true;
-            right.visible = true;
+            if(bits.endButtons)
+            {
+               left.visible = true;
+               right.visible = true;
+            }
          }
          else
          {
