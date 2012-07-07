@@ -248,10 +248,12 @@ private:
    void OnChildVisibilityToggled(Window child, bool visible)
    {
       DoResize(size.w, size.h); // todo: improve with DoPartialResize(size.w, size.h, client);
+      size = size;   // TRIGGER SCROLLING UPDATE (Currently required since we aren't using Window scrollbars)
    }
    void OnChildResized(Window child, int x, int y, int w, int h)
    {
       DoResize(size.w, size.h); // todo: improve with DoPartialResize(size.w, size.h, client);
+      size = size;   // TRIGGER SCROLLING UPDATE (Currently required since we aren't using Window scrollbars)
    }
 
    void UpdateControls()
