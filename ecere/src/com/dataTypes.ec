@@ -1050,7 +1050,7 @@ static int DataMember_OnUnserialize(DataMember parentMember, void * data, IOChan
          else
          {
             DataValue value;
-            memberType._vTbl[__ecereVMethodID_class_OnUnserialize](memberType, &value);
+            memberType._vTbl[__ecereVMethodID_class_OnUnserialize](memberType, &value, channel);  // channel was missing here?
             *(int *)((byte *)data + member.offset) = value.i;
          }
       }
