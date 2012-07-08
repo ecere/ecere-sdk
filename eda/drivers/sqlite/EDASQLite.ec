@@ -829,7 +829,6 @@ class SQLiteRow : DriverRow
    sqlite3_stmt * nextFindStatement;
    sqlite3_stmt * sysIDStatement;
    sqlite3_stmt * queryStatement;
-   sqlite3_stmt * findMultipleStatement;
    sqlite3_stmt * selectRowIDsStmt;
    sqlite3_stmt * setRowIDStmt;
    sqlite3_stmt * lastStatement;
@@ -846,6 +845,7 @@ class SQLiteRow : DriverRow
    // Because we use GoToSysID() and the sysIDStatement when searching for a primary key with Find(),
    // this flag is used to distinguish between a Find() and a GoToSysID() for Select(next) purposes:
    bool findSysID;
+   int findBindId;
    
    bool Nil()
    {
@@ -859,7 +859,6 @@ class SQLiteRow : DriverRow
       if(prevFindStatement)sqlite3_finalize(prevFindStatement);
       if(lastFindStatement)sqlite3_finalize(lastFindStatement);
       if(nextFindStatement)sqlite3_finalize(nextFindStatement);
-      if(findMultipleStatement)    sqlite3_finalize(findMultipleStatement);
       if(sysIDStatement)   sqlite3_finalize(sysIDStatement);
       if(insertStatement)  sqlite3_finalize(insertStatement);
       if(deleteStatement)  sqlite3_finalize(deleteStatement);
@@ -918,7 +917,7 @@ class SQLiteRow : DriverRow
             {
                if(rowID)
                {
-                  int bindId = 2;   // Does not work with multiple find for now
+                  int bindId = findBindId;
                   sqlite3_reset((move == next) ? nextFindStatement : prevFindStatement);
                   BindCursorData((move == next) ? nextFindStatement : prevFindStatement, move,
                      (move == next && (!tbl.indexFields || (tbl.indexFieldsCount == 1 && tbl.indexFields[0].field == tbl.primaryKey && tbl.indexFields[0].order == ascending))) ? false : true, &bindId);
@@ -931,7 +930,7 @@ class SQLiteRow : DriverRow
                }
                else
                {
-                  int bindId = 2;   // Does not work with multiple find for now
+                  int bindId = findBindId;
                   sqlite3_reset((move == next) ? findStatement : lastFindStatement);
                   sqlite3_reset(curStatement);
                   curStatement = (move == next) ? findStatement : lastFindStatement;
@@ -1163,31 +1162,11 @@ class SQLiteRow : DriverRow
       sqlite3_stmt * stmt = null;
       int bindId = 1;
 
-      if(curStatement)
-      {
-         sqlite3_reset(curStatement);
-         curStatement = null;
-      }
-      if(findStatement)
-      {
-         sqlite3_finalize(findStatement);
-         findStatement = null;
-      }
-      if(nextFindStatement)
-      {
-         sqlite3_finalize(nextFindStatement);
-         nextFindStatement = null;
-      }
-      if(prevFindStatement)
-      {
-         sqlite3_finalize(prevFindStatement);
-         prevFindStatement = null;
-      }
-      if(lastFindStatement)
-      {
-         sqlite3_finalize(lastFindStatement);
-         lastFindStatement = null;
-      }
+      if(curStatement) { sqlite3_reset(curStatement); curStatement = null; }
+      if(findStatement) { sqlite3_finalize(findStatement); findStatement = null; }
+      if(nextFindStatement) { sqlite3_finalize(nextFindStatement); nextFindStatement = null; }
+      if(prevFindStatement) { sqlite3_finalize(prevFindStatement); prevFindStatement = null; }
+      if(lastFindStatement) { sqlite3_finalize(lastFindStatement); lastFindStatement = null; }
 
       if(fld == tbl.primaryKey)
       {
@@ -1197,9 +1176,9 @@ class SQLiteRow : DriverRow
          return result;
       }
 
-      sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ", tbl.name);
-      strcatf(command, "`%s` = ?", fld.name);
       useIndex = tbl.GetIndexOrder(order, false);
+      // Basic Find
+      sprintf(command, "SELECT ROWID, * FROM `%s` WHERE `%s` = ?", tbl.name, fld.name);
       AddCursorWhereClauses(command, move, useIndex);
       strcat(command, order);
       strcat(command, ";");
@@ -1207,12 +1186,11 @@ class SQLiteRow : DriverRow
       BindData(stmt, bindId++, (SQLiteField)fld, data, null);
       BindCursorData(stmt, move, useIndex, &bindId);
       curStatement = findStatement = stmt;
+      findBindId = bindId;
 
-      // For tracing back forward finds
+      // For going back to forward find
       bindId = 1;
-      sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ", tbl.name);
-      strcatf(command, "`%s` = ?", fld.name);
-      useIndex = tbl.GetIndexOrder(order, false);
+      sprintf(command, "SELECT ROWID, * FROM `%s` WHERE `%s` = ?", tbl.name, fld.name);
       AddCursorWhereClauses(command, next, useIndex);
       strcat(command, order);
       strcat(command, ";");
@@ -1220,11 +1198,11 @@ class SQLiteRow : DriverRow
       BindData(stmt, bindId++, (SQLiteField)fld, data, null);
       nextFindStatement = stmt;
 
+      // Backwards
+      tbl.GetIndexOrder(order, true);
       // For tracing back finds
       bindId = 1;
-      sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ", tbl.name);
-      strcatf(command, "`%s` = ?", fld.name);
-      tbl.GetIndexOrder(order, true);
+      sprintf(command, "SELECT ROWID, * FROM `%s` WHERE `%s` = ?", tbl.name, fld.name);
       AddCursorWhereClauses(command, previous, true);
       strcat(command, order);
       strcat(command, ";");
@@ -1234,9 +1212,7 @@ class SQLiteRow : DriverRow
 
       // For tracing back from last
       bindId = 1;
-      sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ", tbl.name);
-      strcatf(command, "`%s` = ?", fld.name);
-      tbl.GetIndexOrder(order, true);
+      sprintf(command, "SELECT ROWID, * FROM `%s` WHERE `%s` = ?", tbl.name, fld.name);
       strcat(command, order);
       strcat(command, ";");
       result = sqlite3_prepare_v2(tbl.db.db, command, -1, &stmt, null);
@@ -1258,57 +1234,93 @@ class SQLiteRow : DriverRow
 
    bool FindMultiple(FieldFindData * findData, MoveOptions move, int numFields)
    {
+#define BINDDATA \
+         for(c = 0; c < numFields; c++) \
+         { \
+            FieldFindData * fieldFind = &findData[c]; \
+            SQLiteField sqlFld = (SQLiteField)findData->field; \
+            Class dataType = sqlFld.type; \
+            BindData(stmt, bindId++, sqlFld, (dataType.type == structClass || dataType.type == noHeadClass || dataType.type == normalClass) ? fieldFind->value.p : &fieldFind->value.i, null); \
+         }
+
       if(numFields)
       {
-         char command[4096], order[1024];
+         char criterias[4096], command[4096], order[1024];
          int result;
          int c;
          bool useIndex;
          sqlite3_stmt * stmt = null;
          int bindId = 1;
 
-         sprintf(command, "SELECT ROWID, * FROM `%s` WHERE `", tbl.name);
+         if(curStatement) { sqlite3_reset(curStatement); curStatement = null; }
+         if(findStatement) { sqlite3_finalize(findStatement); findStatement = null; }
+         if(nextFindStatement) { sqlite3_finalize(nextFindStatement); nextFindStatement = null; }
+         if(prevFindStatement) { sqlite3_finalize(prevFindStatement); prevFindStatement = null; }
+         if(lastFindStatement) { sqlite3_finalize(lastFindStatement); lastFindStatement = null; }
+
+         // Criterias
+         sprintf(criterias, "SELECT ROWID, * FROM `%s` WHERE `", tbl.name);
          for(c = 0; c < numFields; c++)
          {
             FieldFindData * fieldFind = &findData[c];
 
-            if(c) strcat(command, " AND `");
-            strcat(command, fieldFind->field.name);
-            strcat(command, "` = ?");
+            if(c) strcat(criterias, " AND `");
+            strcat(criterias, fieldFind->field.name);
+            strcat(criterias, "` = ?");
          }
 
          useIndex = tbl.GetIndexOrder(order, false);
+         // Basic Find (multiple)
+         strcpy(command, criterias);
          AddCursorWhereClauses(command, move, useIndex);
          strcat(command, order);
          strcat(command, ";");
-
          result = sqlite3_prepare_v2(tbl.db.db, command, -1, &stmt, null);
-
-         for(c = 0; c < numFields; c++)
-         {
-            FieldFindData * fieldFind = &findData[c];
-            SQLiteField sqlFld = (SQLiteField)findData->field;
-            Class dataType = sqlFld.type;
-            BindData(stmt, bindId++, sqlFld, (dataType.type == structClass || dataType.type == noHeadClass || dataType.type == normalClass) ? fieldFind->value.p : &fieldFind->value.i, null);
-         }
+         BINDDATA;
          BindCursorData(stmt, move, useIndex, &bindId);
+         curStatement = findStatement = stmt;
+         findBindId = bindId;
 
-         if(curStatement)
-            sqlite3_reset(curStatement);
-         if(findMultipleStatement)
-            sqlite3_finalize(findMultipleStatement);
+         // For tracing back forward finds
+         bindId = 1;
+         strcpy(command, criterias);
+         AddCursorWhereClauses(command, previous, true);
+         strcat(command, order);
+         strcat(command, ";");
+         result = sqlite3_prepare_v2(tbl.db.db, command, -1, &stmt, null);
+         BINDDATA;
+         nextFindStatement = stmt;
 
-         curStatement = findMultipleStatement = stmt;
+         // Backwards
+         tbl.GetIndexOrder(order, true);
+         // For tracing back finds
+         bindId = 1;
+         strcpy(command, criterias);
+         AddCursorWhereClauses(command, next, useIndex);
+         strcat(command, order);
+         strcat(command, ";");
+         result = sqlite3_prepare_v2(tbl.db.db, command, -1, &stmt, null);
+         BINDDATA;
+         prevFindStatement = stmt;
 
-         result = sqlite3_step(findMultipleStatement);
+         // For tracing back from last
+         bindId = 1;
+         strcpy(command, criterias);
+         strcat(command, order);
+         strcat(command, ";");
+         result = sqlite3_prepare_v2(tbl.db.db, command, -1, &stmt, null);
+         BINDDATA;
+         lastFindStatement = stmt;
+
+         result = sqlite3_step(findStatement);
          done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
          if(done)
          {
             rowID = 0;
-            sqlite3_reset(findMultipleStatement);
+            sqlite3_reset(findStatement);
          }
          else
-            rowID = sqlite3_column_int64(findMultipleStatement, 0);
+            rowID = sqlite3_column_int64(findStatement, 0);
          return !done;
       }
       return false;
