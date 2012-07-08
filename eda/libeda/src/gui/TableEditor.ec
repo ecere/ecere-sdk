@@ -74,7 +74,7 @@ public:
                   PrepareWordList();
             }
             initialized = true;
-            OnInitizlize();
+            OnInitialize();
          }
          if(!listEnumerationTimer.hasCompleted)
             Enumerate();
@@ -199,7 +199,7 @@ public:
 
    bool readOnly;
    
-   public virtual void OnInitizlize();
+   public virtual void OnInitialize();
    public virtual void OnLoad();
    public virtual void OnStateChanged();
    bool internalModifications;
