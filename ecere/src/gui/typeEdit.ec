@@ -194,8 +194,8 @@ static Window OnEdit(Class _class, void * data, Window window, Window master,
          if(result)
             string = result;
       }
-      PrintLn(window._class.name);
 /*#ifdef _DEBUG
+      PrintLn(window._class.name);
       if(editBox.autoSize)
          PrintLn("typeEdit::OnEdit -- editBox.autoSize == true");
 #endif*/
