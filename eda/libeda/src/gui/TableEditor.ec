@@ -24,6 +24,101 @@ private:
 define newEntryStringDebug = $"New|id=";
 define newEntryString = $"New";
 
+public char ToASCII(unichar ch)
+{
+   char asciiCH = 0;
+   if(ch > 127)
+   {
+      if(ch == 'À' || ch == 'Á' || ch == 'Â' || ch == 'Ã' || ch == 'Ä' || ch == 'Å')
+         asciiCH = 'A';
+      else if(ch == 'Ç')
+         asciiCH = 'C';
+      else if(ch == 'È' || ch == 'É' || ch == 'Ê' || ch == 'Ë')
+         asciiCH = 'E';
+      else if(ch == 'Ì' || ch == 'Í' || ch == 'Î' || ch == 'Ï')
+         asciiCH = 'I';
+      else if(ch == 'Ñ')
+         asciiCH = 'N';
+      else if(ch == 'Ò' || ch == 'Ó' || ch == 'Ô' || ch == 'Õ' || ch == 'Ö')
+         asciiCH = 'O';
+      else if(ch == 'Ù' || ch == 'Ú' || ch == 'Û' || ch == 'Ü')
+         asciiCH = 'U';
+      else if(ch == 'à' || ch == 'á' || ch == 'â' || ch == 'ã' || ch == 'ä' || ch == 'å')
+         asciiCH = 'a';
+      else if(ch == 'ç')
+         asciiCH = 'c';
+      else if(ch == 'è' || ch == 'é' || ch == 'ê' || ch == 'ë')
+         asciiCH = 'e';
+      else if(ch == 'ì' || ch == 'í' || ch == 'î' || ch == 'ï')
+         asciiCH = 'i';
+      else if(ch == 'ñ')
+         asciiCH = 'n';
+      else if(ch == 'ò' || ch == 'ó' || ch == 'ô' || ch == 'õ' || ch == 'ö')
+         asciiCH = 'o';
+      else if(ch == 'ù' || ch == 'ú' || ch == 'û' || ch == 'ü')
+         asciiCH = 'u';
+   }
+   else
+      asciiCH = (char)ch;
+   return asciiCH;
+}
+
+public char * ConvertToASCII(char * string, char * newString, int * len, bool lowerCase)
+{
+   if(string)
+   {
+      unichar unich;
+      int nb;
+      int c, d = 0;
+      for(c = 0; (unich = UTF8GetChar(string + c, &nb)); c += nb)
+      {
+         char ch = ToASCII(unich);
+         if(ch < 128 && (ch == '-' || isalpha(ch) || ch == ','))
+            newString[d++] = lowerCase ? (char)tolower(ch) : (char)ch;
+      }
+      newString[d] = 0;
+      if(len) *len = d;
+   }
+   return null;
+}
+
+public class NoCaseAccent : SQLCustomFunction
+{
+   void Process(char * text)
+   {
+      int len = text ? strlen(text) : 0;
+      array.size = len + 1;
+      ConvertToASCII(text ? text : "", array.array, &len, true);
+      array.count = len + 1;
+   }
+}
+
+public class MemberStringSample
+{
+   String name;
+}
+
+default extern int __ecereVMethodID_class_OnUnserialize;
+
+public class GetMemberString<class NT:void * = MemberStringSample, name = NT::name> : SQLCustomFunction
+{
+   SerialBuffer buffer { };
+   void Process(char * text)
+   {
+      NT pn;
+      buffer.buffer = text;
+      buffer.count = MAXINT;
+      buffer.pos = 0;
+      class(NT)._vTbl[__ecereVMethodID_class_OnUnserialize](class(NT), &pn, buffer);
+      NoCaseAccent::Process((NoCaseAccent)this, (pn && pn.name) ? pn.name : null);
+      delete pn;
+      buffer.buffer = null;
+      buffer.count = 0;
+      // TOFIX: If we name GetName's type 'T', the following name confuses with Array's 'T'
+      //ConvertToASCII(s ? s : "", array.array, &len, true);
+   }
+}
+
 // Rename TableEditor to TableControl and move to eda/src/gui/controls
 public class TableEditor : public Window
 {
@@ -717,12 +812,14 @@ private:
    Id selectedId;
    Row filterRow { };
    bool filtered;
+   Array<char> searchCI { };
 
    ListEnumerationTimer listEnumerationTimer
    {
       userData = this, delay = 0.1f;
       bool DelayExpired()
       {
+         static Time startTime;
          bool next = false;
          int c;
          Row row = listEnumerationTimer.row;
@@ -800,9 +897,17 @@ private:
                      if(st.table && st.idField && st.searchFields && st.searchFields.count &&
                            st.searchFields[0].field)
                      {
-                        bool notFirst = false;
+                        bool first = true;
+                        int bindId = 0;
 
                         listEnumerationTimer.row = row = { st.table };
+
+                        {
+                           int len = searchString ? strlen(searchString) : 0;
+                           searchCI.size = len + 1;
+                           ConvertToASCII(searchString ? searchString : "", searchCI.array, &len, true);
+                           searchCI.count = len + 1;
+                        }
 
                         sprintf(queryString, "SELECT ROWID, * FROM `%s`", st.table.name);
                         strcat(queryString, " WHERE ");
@@ -810,19 +915,108 @@ private:
                         {
                            if(sf.field)
                            {
-                              if(notFirst)
+                              if(!first)
+                                 strcat(queryString, " OR ");
+#define PERSON_SEARCH_LIKE
+                              // This code tries to implement the logic of PersonName::OnGetDataFromString because PersonName is inaccessible from here
+                              if(strstr(sf.field.type.name, "PersonName"))
                               {
-                                 strcatf(queryString, " OR `%s` LIKE '%%%s%%'", sf.field.name, searchString);
+#ifdef PERSON_SEARCH_LIKE
+                                 String ln = null, fn = null, mn = null;
+                                 char * comma = strchr(searchCI.array, ',');
+                                 if(comma)
+                                 {
+                                    int len = comma - searchCI.array;
+                                    ln = new char[len + 1];
+                                    memcpy(ln, searchCI.array, len);
+                                    ln[len] = 0;
+
+                                    fn = CopyString(comma+1);
+                                    {
+                                       int c;
+                                       for(c = strlen(fn)-2; c > 0; c--)
+                                       {
+                                          if(fn[c] == ' ')
+                                          {
+                                             mn = CopyString(fn + c + 1);
+                                             fn[c] = 0;
+                                          }
+                                       }
+                                    }
+                                 }
+                                 else
+                                    ln = CopyString(searchCI.array);
+
+                                 /* We could simply do this if we had access to PersonName: (don't forget the delete pn; below)
+                                 PersonName pn;
+                                 pn.OnGetDataFromString(searchCI.array);
+                                 */
+                                 if(ln && !fn && !mn)
+                                 {
+                                    // Only last name is pecified in search object, it is looked for in all fields
+                                    strcatf(queryString, "(PNLastName(`%s`) LIKE '%%%s%%' OR PNFirstName(`%s`) LIKE '%%%s%%' OR PNMiddleName(`%s`) LIKE '%%%s%%')",
+                                       sf.field.name, searchCI.array, sf.field.name, searchCI.array, sf.field.name, ln);
+                                 }
+                                 else if(ln || fn || mn)
+                                 {
+                                    // Otherwise search is in respective fields only (all specified must match)
+                                    bool first = true;
+                                    strcatf(queryString, "(");
+                                    if(ln)
+                                    {
+                                       if(!first) strcatf(queryString, " AND ");
+                                       first = false;
+                                       strcatf(queryString, "PNLastName(`%s`) LIKE '%%%s%%'", sf.field.name, ln);
+                                    }
+                                    if(fn)
+                                    {
+                                       if(!first) strcatf(queryString, " AND ");
+                                       first = false;
+                                       strcatf(queryString, "PNFirstName(`%s`) LIKE '%%%s%%'", sf.field.name, fn);
+                                    }
+                                    if(mn)
+                                    {
+                                       if(!first) strcatf(queryString, " AND ");
+                                       first = false;
+                                       strcatf(queryString, "PNMiddleName(`%s`) LIKE '%%%s%%'", sf.field.name, mn);
+                                    }
+                                    strcatf(queryString, ")");
+                                 }
+                                 //delete pn;
+                                 delete ln; delete fn; delete mn;
+#else
+                                 // To use CompPersonName::OnCompare:
+                                 strcatf(queryString, "`%s` = ?", sf.field.name);
+#endif
                               }
                               else
-                              {
                                  strcatf(queryString, "`%s` LIKE '%%%s%%'", sf.field.name, searchString);
-                                 notFirst = true;
-                              }
+                              first = false;
                            }
                         }
                         PrintLn(queryString);
+                        startTime = GetTime();
                         row.query = queryString;
+#ifndef PERSON_SEARCH_LIKE
+                        // To use CompPersonName::OnCompare:
+                        for(sf : st.searchFields)
+                        {
+                           if(sf.field)
+                           {
+                              if(strstr(sf.field.type.name, "PersonName"))
+                              {
+                                 void * pn;
+                                 sf.field.type._vTbl[__ecereVMethodID_class_OnGetDataFromString](sf.field.type, &pn, searchCI.array);
+                                 row.SetQueryParamObject(++bindId, pn, sf.field.type);
+                                 bindId++;
+                                 delete pn;
+                              }
+                              first = false;
+                           }
+                        }
+#endif
+                        if(bindId)
+                           row.Next();
                      }
                   }
                }
@@ -831,7 +1025,7 @@ private:
             {
                if(listFields && idField)
                {
-                  // should we not start with a Next() ??? :S
+                  // should we not start with a Next() ??? :S  -- right now, query = does not need a Next(), unless it had parameters (SetQueryParam), See #591
                   // when going through all the rows in a table you always start with Next() no?
                   // is this different for query results?
                   for(c = 0, next = !row.nil; c<slice && next; c++, next = row.Next())
@@ -930,6 +1124,7 @@ private:
             listEnumerationTimer.hasCompleted = true;
             StopListEnumerationTimer();
          }
+         if(startTime) PrintLn("*** Search took ", (uint)((GetTime() - startTime) * 1000), "ms ***");
          return true;
       }
    };
@@ -1872,45 +2067,6 @@ struct WordEntryBinaryTree : BinaryTree
       btnodes = null;
    }
 };
-
-static char ToASCII(unichar ch)
-{
-   char asciiCH = 0;
-   if(ch > 127)
-   {
-      if(ch == 'À' || ch == 'Á' || ch == 'Â' || ch == 'Ã' || ch == 'Ä' || ch == 'Å')
-         asciiCH = 'A';
-      else if(ch == 'Ç')
-         asciiCH = 'C';
-      else if(ch == 'È' || ch == 'É' || ch == 'Ê' || ch == 'Ë')
-         asciiCH = 'E';
-      else if(ch == 'Ì' || ch == 'Í' || ch == 'Î' || ch == 'Ï')
-         asciiCH = 'I';
-      else if(ch == 'Ñ')
-         asciiCH = 'N';
-      else if(ch == 'Ò' || ch == 'Ó' || ch == 'Ô' || ch == 'Õ' || ch == 'Ö')
-         asciiCH = 'O';
-      else if(ch == 'Ù' || ch == 'Ú' || ch == 'Û' || ch == 'Ü')
-         asciiCH = 'U';
-      else if(ch == 'à' || ch == 'á' || ch == 'â' || ch == 'ã' || ch == 'ä' || ch == 'å')
-         asciiCH = 'a';
-      else if(ch == 'ç')
-         asciiCH = 'c';
-      else if(ch == 'è' || ch == 'é' || ch == 'ê' || ch == 'ë')
-         asciiCH = 'e';
-      else if(ch == 'ì' || ch == 'í' || ch == 'î' || ch == 'ï')
-         asciiCH = 'i';
-      else if(ch == 'ñ')
-         asciiCH = 'n';
-      else if(ch == 'ò' || ch == 'ó' || ch == 'ô' || ch == 'õ' || ch == 'ö')
-         asciiCH = 'o';
-      else if(ch == 'ù' || ch == 'ú' || ch == 'û' || ch == 'ü')
-         asciiCH = 'u';
-   }
-   else
-      asciiCH = (char)ch;
-   return asciiCH;
-}
 
 class WordEntry : struct
 {
