@@ -5,6 +5,7 @@ define shadowS = 4;
 
 default:
 extern int __ecereVMethodID_class_OnFree;
+extern int __ecereVMethodID_class_OnGetString;
 private:
 
 char * defaultNameField = "Name";
@@ -81,6 +82,30 @@ public class CheckBool : bool
    }
 }
 
+String GetNameString(Row r, Field nameField)
+{
+   String s = null;
+   if(nameField.type != class(String) && nameField.type != class(char *))
+   {
+      char tempString[4096];
+      Class type = nameField.type;
+      int64 data = 0;
+      if(type.type == structClass)
+         data = (int64)new0 byte[type.structSize];
+      ((bool (*)())(void *)r.GetData)(r, nameField, type, (type.type == structClass) ? (void *)data : &data);
+      s = CopyString((String)type._vTbl[__ecereVMethodID_class_OnGetString](type, (void *)data, tempString, null, null));
+      type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+      if(type.type == structClass)
+      {
+         void * _data = (void *)data;
+         delete _data;
+      }
+   }
+   else
+      r.GetData(nameField, s);
+   return s;
+}
+
 public class TableDropBox : DropBox
 {
    anchor = { left = 130, top = 180, right = shadowS + sgs * 2 };
@@ -143,8 +168,7 @@ public class TableDropBox : DropBox
                            break;
                         if(!exclusion || id != exclusion)
                         {
-                           String s;
-                           r.GetData(nameField, s);
+                           String s = GetNameString(r, nameField);
                            AddString(s).tag = id;
                            delete s;
                         }
@@ -161,8 +185,7 @@ public class TableDropBox : DropBox
                      r.GetData(fldId, id);
                      if(idList && idList.Includes(filter) && (!exclusion || !idList.Includes(exclusion)))
                      {
-                        String s;
-                        r.GetData(nameField, s);
+                        String s = GetNameString(r, nameField);
                         AddString(s).tag = id;
                         delete s;
                      }
@@ -178,8 +201,7 @@ public class TableDropBox : DropBox
                   r.GetData(fldId, id);
                   if(id != exclusion)
                   {
-                     String s;
-                     r.GetData(nameField, s);
+                     String s = GetNameString(r, nameField);
                      AddString(s).tag = id;
                      delete s;
                   }
@@ -190,9 +212,8 @@ public class TableDropBox : DropBox
                while(r.Next())
                {
                   Id id;
-                  String s;
+                  String s = GetNameString(r, nameField);
                   r.GetData(fldId, id);
-                  r.GetData(nameField, s);
                   AddString(s).tag = id;
                   delete s;
                }
