@@ -1191,12 +1191,14 @@ private:
 
       char cppCommand[MAX_LOCATION];
       char ccCommand[MAX_LOCATION];
+      char cxxCommand[MAX_LOCATION];
       char ecpCommand[MAX_LOCATION];
       char eccCommand[MAX_LOCATION];
       char ecsCommand[MAX_LOCATION];
       char earCommand[MAX_LOCATION];
 
       char * cc = compiler.ccCommand;
+      char * cxx = compiler.cxxCommand;
       char * cpp = compiler.cppCommand;
       sprintf(cppCommand, "%s%s%s%s ",
             compiler.ccacheEnabled ? "ccache " : "",
@@ -1208,6 +1210,11 @@ private:
             compiler.ccacheEnabled && !compiler.distccEnabled ? " " : "",
             compiler.distccEnabled ? "distcc " : "",
             compiler.ccCommand);
+      sprintf(cxxCommand, "%s%s%s%s ",
+            compiler.ccacheEnabled ? "ccache " : "",
+            compiler.ccacheEnabled && !compiler.distccEnabled ? " " : "",
+            compiler.distccEnabled ? "distcc " : "",
+            compiler.cxxCommand);
       sprintf(ecpCommand, "%s ", compiler.ecpCommand);
       sprintf(eccCommand, "%s ", compiler.eccCommand);
       sprintf(ecsCommand, "%s ", compiler.ecsCommand);
@@ -1248,14 +1255,14 @@ private:
                }
                else if(strstr(line, "ear ") == line);
                else if(strstr(line, "strip ") == line);
-               else if(strstr(line, ccCommand) == line || strstr(line, ecpCommand) == line || strstr(line, eccCommand) == line)
+               else if(strstr(line, ccCommand) == line || strstr(line, cxxCommand) == line || strstr(line, ecpCommand) == line || strstr(line, eccCommand) == line)
                {
                   char moduleName[MAX_FILENAME];
                   byte * tokens[1];
                   char * module;
                   bool isPrecomp = false;
 
-                  if(strstr(line, ccCommand) == line)
+                  if(strstr(line, ccCommand) == line || strstr(line, cxxCommand) == line)
                   {
                      module = strstr(line, " -c ");
                      if(module) module += 4;
@@ -1766,7 +1773,7 @@ private:
       char path[MAX_LOCATION];
       char * name;
       char * compilerName;
-      bool gccCompiler = compiler.ccCommand && strstr(compiler.ccCommand, "gcc") != null;
+      bool gccCompiler = compiler.ccCommand && (strstr(compiler.ccCommand, "gcc") != null || strstr(compiler.ccCommand, "g++") != null);
       Platform platform = GetRuntimePlatform();
 
       compilerName = CopyString(compiler.name);
@@ -1793,6 +1800,7 @@ private:
             //f.Printf("SHELL := %s\n", "ar"/*compiler.arCommand*/); // is this really needed?
             f.Printf("CPP := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.cppCommand);
             f.Printf("CC := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.ccCommand);
+            f.Printf("CXX := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.cxxCommand);
             f.Printf("ECP := %s\n", compiler.ecpCommand);
             f.Printf("ECC := %s\n", compiler.eccCommand);
             f.Printf("ECS := %s%s%s\n", compiler.ecsCommand,
@@ -1897,12 +1905,13 @@ private:
          // Non-zero if we're building eC code
          // We'll have to be careful with this when merging configs where eC files can be excluded in some configs and included in others
          int numCObjects = 0;
+         bool containsCXX = false; // True if the project contains a C++ file
          bool sameObjTargetDirs;
          DirExpression objDirExp = GetObjDir(compiler, config);
          TargetTypes targetType = GetTargetType(config);
 
          bool crossCompiling = compiler.targetPlatform != runtimePlatform;
-         bool gccCompiler = compiler.ccCommand && strstr(compiler.ccCommand, "gcc") != null;
+         bool gccCompiler = compiler.ccCommand && (strstr(compiler.ccCommand, "gcc") != null || strstr(compiler.ccCommand, "g++") != null);
          bool tccCompiler = compiler.ccCommand && strstr(compiler.ccCommand, "tcc") != null;
          bool defaultPreprocessor = compiler.cppCommand && (strstr(compiler.cppCommand, "gcc") != null || compiler.cppCommand && strstr(compiler.cppCommand, "cpp") != null);
          char cfDir[MAX_LOCATION];
@@ -2087,7 +2096,7 @@ private:
 
          topNode.GenMakefileGetNameCollisionInfo(namesInfo, config);
 
-         numCObjects = topNode.GenMakefilePrintNode(f, this, objects, namesInfo, listItems, config);
+         numCObjects = topNode.GenMakefilePrintNode(f, this, objects, namesInfo, listItems, config, &containsCXX);
          if(numCObjects)
             listItems.Add(CopyString("$(OBJ)$(MODULE).main$(O)"));
          objectsParts = OutputFileList(f, "OBJECTS", listItems, varStringLenDiffs, null);
@@ -2096,7 +2105,7 @@ private:
             int c;
             char * map[4][2] = { { "COBJECTS", "C" }, { "SYMBOLS", "S" }, { "IMPORTS", "I" }, { "BOWLS", "B" } };
 
-            topNode.GenMakefilePrintNode(f, this, eCsources, namesInfo, listItems, config);
+            topNode.GenMakefilePrintNode(f, this, eCsources, namesInfo, listItems, config, null);
             eCsourcesParts = OutputFileList(f, "_ECSOURCES", listItems, varStringLenDiffs, null);
 
             f.Printf("ECSOURCES = $(call shwspace,$(_ECSOURCES))\n");
@@ -2125,11 +2134,11 @@ private:
             }
          }
 
-         topNode.GenMakefilePrintNode(f, this, sources, null, listItems, config);
+         topNode.GenMakefilePrintNode(f, this, sources, null, listItems, config, null);
          OutputFileList(f, "SOURCES", listItems, varStringLenDiffs, "$(ECSOURCES)");
 
          if(!noResources)
-            resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config);
+            resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config, null);
          OutputFileList(f, "RESOURCES", listItems, varStringLenDiffs, null);
 
          f.Printf("LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)\n\n");
@@ -2404,7 +2413,7 @@ private:
          f.Printf("$(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
 
          f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
-         f.Printf("\t$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)\n");
+         f.Printf("\t$(%s) $(OFLAGS) $(OBJECTS) $(LIBS) %s-o $(TARGET) $(INSTALLNAME)\n", containsCXX ? "CXX" : "CC", containsCXX ? "-lstdc++ " : "");
          if(!GetDebug(config))
          {
             f.Printf("ifndef NOSTRIP\n");

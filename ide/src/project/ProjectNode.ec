@@ -1381,7 +1381,7 @@ private:
    
    int GenMakefilePrintNode(File f, Project project, GenMakefilePrintTypes printType,
       Map<String, NameCollisionInfo> namesInfo, Array<String> items,
-      ProjectConfig prjConfig)
+      ProjectConfig prjConfig, bool * containsCXX)
    {
       int count = 0;
       if(type == file)
@@ -1453,6 +1453,8 @@ private:
                collision = info ? info.IsExtensionColliding(extension) : false;
                sprintf(s, "%s$(OBJ)%s%s%s.o%s", ts.a, moduleName, collision ? "." : "", collision ? extension : "", ts.b);
                items.Add(CopyString(s));
+               if(containsCXX && (!strcmpi(extension, "cpp") || !strcmpi(extension, "cc") || !strcmpi(extension, "cxx")))
+                  *containsCXX = true;
             }
          }
          else if(!strcmpi(extension, "ec"))
@@ -1480,7 +1482,7 @@ private:
          for(child : files)
          {
             if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-               count += child.GenMakefilePrintNode(f, project, printType, namesInfo, items, prjConfig);
+               count += child.GenMakefilePrintNode(f, project, printType, namesInfo, items, prjConfig, containsCXX);
          }
       }
       return count;
@@ -1969,7 +1971,8 @@ private:
             if(!strcmpi(extension, "ec"))
                sprintf(command, "%s -MT $(OBJ)%s.o -MM $(OBJ)%s.c", compiler.ccCommand, moduleName, moduleName);
             else
-               sprintf(command, "%s -MT $(OBJ)%s.o -MM %s%s.%s", compiler.ccCommand, moduleName, modulePath, moduleName, extension);
+               sprintf(command, "%s -MT $(OBJ)%s.o -MM %s%s.%s", (!strcmpi(extension, "cc") || !strcmpi(extension, "cxx") || !strcmpi(extension, "cpp")) ? compiler.cxxCommand : compiler.ccCommand,
+                  moduleName, modulePath, moduleName, extension);
 
             if(!strcmpi(extension, "ec"))
                f.Printf("$(OBJ)%s.o: $(OBJ)%s.c\n", moduleName, moduleName);
@@ -2054,7 +2057,7 @@ private:
                }
 #endif
             }
-            f.Printf("\t$(CC)");
+            f.Printf("\t$(%s)", (!strcmpi(extension, "cc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cxx")) ? "CXX" : "CC");
             // Give priority to file flags
             GenFileFlags(f, project, prjConfig);
 

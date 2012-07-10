@@ -13,6 +13,7 @@ define ecsCommandSetting = "ECS Command";
 define earCommandSetting = "EAR Command";
 define cPreprocessorCommandSetting = "C Preprocessor Command";
 define cCompilerCommandSetting = "C Compiler Command";
+define cxxCompilerCommandSetting = "C++ Compiler Command";
 
 define projectOptions = "Project Options";
 define defaultTargetDir = "Default Target Directory";
@@ -25,6 +26,7 @@ define ecsDefaultCommand = "ecs";
 define earDefaultCommand = "ear";
 define cppDefaultCommand = "cpp";
 define ccDefaultCommand = "gcc";
+define cxxDefaultCommand = "g++";
 
 class OldIDESettings : GlobalAppSettings
 {
@@ -151,6 +153,7 @@ class OldIDESettings : GlobalAppSettings
                GetGlobalValue(section, earCommandSetting, singleString, &v); compiler.earCommand = v && v[0] ? v : earDefaultCommand; delete v;
                GetGlobalValue(section, cPreprocessorCommandSetting, singleString, &v); compiler.cppCommand = v && v[0] ? v : cppDefaultCommand; delete v;
                GetGlobalValue(section, cCompilerCommandSetting, singleString, &v); compiler.ccCommand = v && v[0] ? v : ccDefaultCommand; delete v;
+               GetGlobalValue(section, cCompilerCommandSetting, singleString, &v); compiler.cxxCommand = v && v[0] ? v : cxxDefaultCommand; delete v;
                delete section;
                section = new char[len + 13];
                sprintf(section, "%s Directories", configName);
@@ -254,6 +257,7 @@ class OldIDESettings : GlobalAppSettings
                PutGlobalValue(section, earCommandSetting, singleString, compiler.earCommand);
                PutGlobalValue(section, cPreprocessorCommandSetting, singleString, compiler.cppCommand);
                PutGlobalValue(section, cCompilerCommandSetting, singleString, compiler.ccCommand);
+               PutGlobalValue(section, cxxCompilerCommandSetting, singleString, compiler.cxxCommand);
                delete section;
                section = new char[len + 13];
                sprintf(section, "%s Directories", compiler.name);

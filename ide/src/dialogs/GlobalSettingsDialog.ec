@@ -16,7 +16,7 @@ class GlobalSettingsDialog : Window
    hasClose = true;
    borderStyle = sizable;
    text = $"Global Settings";
-   minClientSize = { 560, 420 };
+   minClientSize = { 560, 446 };
    nativeDecorations = true;
 
    IDESettings ideSettings;
@@ -697,16 +697,22 @@ class CompilerToolchainTab : CompilersSubTab
       this, anchor = { left = 120, top = 138, right = 8 };
       text = $"C Compiler", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
-   Label makeLabel { this, position = { 8, 168 }, labeledWindow = make, tabCycle = false, inactive = true };
-   PathBox make
+   Label cxxLabel { this, position = { 8, 168 }, labeledWindow = cxx, tabCycle = false, inactive = true };
+   PathBox cxx
    {
       this, anchor = { left = 120, top = 164, right = 8 };
-      text = $"GNU Make", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"C++ Compiler", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
-   Label execPrefixLabel { this, position = { 8, 194 }, labeledWindow = execPrefix, tabCycle = false, inactive = true };
-   PathBox execPrefix
+   Label makeLabel { this, position = { 8, 194 }, labeledWindow = make, tabCycle = false, inactive = true };
+   PathBox make
    {
       this, anchor = { left = 120, top = 190, right = 8 };
+      text = $"GNU Make", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+   };
+   Label execPrefixLabel { this, position = { 8, 220 }, labeledWindow = execPrefix, tabCycle = false, inactive = true };
+   PathBox execPrefix
+   {
+      this, anchor = { left = 120, top = 216, right = 8 };
       text = $"Execution Prefix", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
 
@@ -727,6 +733,8 @@ class CompilerToolchainTab : CompilersSubTab
             compiler.cppCommand = pathBox.slashPath;
          else if(pathBox == cc)
             compiler.ccCommand = pathBox.slashPath;
+         else if(pathBox == cxx)
+            compiler.cxxCommand = pathBox.slashPath;
          else if(pathBox == make)
             compiler.makeCommand = pathBox.slashPath;
          else if(pathBox == execPrefix)
@@ -750,6 +758,7 @@ class CompilerToolchainTab : CompilersSubTab
          ear.path = compiler.earCommand;
          cpp.path = compiler.cppCommand;
          cc.path = compiler.ccCommand;
+         cxx.path = compiler.cxxCommand;
          make.path = compiler.makeCommand;
          execPrefix.path = compiler.execPrefixCommand;
 

@@ -140,7 +140,8 @@ CompilerConfig MakeDefaultCompiler(char * name, bool readOnly)
       ecsDefaultCommand,
       earDefaultCommand,
       cppDefaultCommand,
-      ccDefaultCommand
+      ccDefaultCommand,
+      cxxDefaultCommand
    };
    incref defaultCompiler;
    return defaultCompiler;
@@ -745,6 +746,12 @@ public:
       get { return ccCommand; }
       isset { return ccCommand && ccCommand[0]; }
    }
+   property char * cxxCommand
+   {
+      set { delete cxxCommand; if(value && value[0]) cxxCommand = CopyString(value); }
+      get { return cxxCommand; }
+      isset { return cxxCommand && cxxCommand[0]; }
+   }
    property char * execPrefixCommand
    {
       set { delete execPrefixCommand; if(value && value[0]) execPrefixCommand = CopyString(value); }
@@ -830,6 +837,7 @@ private:
    char * earCommand;
    char * cppCommand;
    char * ccCommand;
+   char * cxxCommand;
    char * execPrefixCommand;
    char * distccHosts;
    /*union
@@ -847,6 +855,7 @@ private:
       delete earCommand;
       delete cppCommand;
       delete ccCommand;
+      delete cxxCommand;
       delete makeCommand;
       delete execPrefixCommand;
       delete distccHosts;
@@ -871,6 +880,7 @@ private:
          earCommand,
          cppCommand,
          ccCommand,
+         cxxCommand,
          execPrefixCommand,
          ccacheEnabled,
          distccEnabled,
