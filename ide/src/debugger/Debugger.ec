@@ -464,6 +464,16 @@ class Debugger
                         break;
                      }
                   }
+                  if(bp && bp.type != user && stopItem && stopItem.frame)
+                  {
+                     // In case the user put a breakpoint where an internal breakpoint is, avoid the confusion...
+                     for(i : ide.workspace.breakpoints)
+                     {
+                        if(i.bp && i.line == stopItem.frame.line && !fstrcmp(i.absoluteFilePath, stopItem.frame.absoluteFile))
+                           bp = i;
+                        break;
+                     }
+                  }
                   bpHit = bp;
                   
                   if(!(!userBreakOnInternBreak && 
