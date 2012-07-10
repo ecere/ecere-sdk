@@ -7,7 +7,7 @@ static uint TokenizeList(char * string, const uint maxTokens, const char seperat
    uint level = 0;
    
    bool quoted = false; //bool escaped = false;
-   char * start = string;
+   char * start = null;
    
    for(; *string && count < maxTokens; string++)
    {
