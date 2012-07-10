@@ -53,8 +53,6 @@ endif
 
 ifdef WINDOWS
 
-LIBS += -Wl,--enable-stdcall-fixup
-
 else
 ifdef LINUX
 

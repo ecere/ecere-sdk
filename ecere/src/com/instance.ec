@@ -189,8 +189,13 @@ public dllexport void MemoryGuard_PopLoc()
 
 default:
 
+#if defined(ECERE_BOOTSTRAP)
+extern bool COM_LOAD_FUNCTION(Module module);
+extern bool COM_UNLOAD_FUNCTION(Module module);
+#else
 extern bool stdcall COM_LOAD_FUNCTION(Module module);
 extern bool stdcall COM_UNLOAD_FUNCTION(Module module);
+#endif
 
 private:
 

@@ -351,9 +351,9 @@ void __ecereNameSpace__ecere__com__MemoryGuard_PopLoc()
 {
 }
 
-extern unsigned int stdcall __ecereDll_Load_ecere(struct __ecereNameSpace__ecere__com__Instance * module);
+extern unsigned int __ecereDll_Load_ecere(struct __ecereNameSpace__ecere__com__Instance * module);
 
-extern unsigned int stdcall __ecereDll_Unload_ecere(struct __ecereNameSpace__ecere__com__Instance * module);
+extern unsigned int __ecereDll_Unload_ecere(struct __ecereNameSpace__ecere__com__Instance * module);
 
 struct __ecereNameSpace__ecere__com__BTNamedLink
 {
@@ -1210,11 +1210,12 @@ memset((unsigned char *)_class->data, (unsigned char)0, totalSizeClass - _class-
 }
 _class->offsetClass = offsetClass;
 _class->sizeClass = totalSizeClass;
-if(mod->base && mod->base->base && mod->base->vTblSize > baseClass->vTblSize && (mod != (base->templateClass ? base->templateClass : base) || _class->vTblSize != mod->vTblSize))
 {
 struct __ecereNameSpace__ecere__com__Method * method, * next;
 struct __ecereNameSpace__ecere__com__Class * b;
 
+if(mod->base && mod->base->base && mod->base->vTblSize > baseClass->vTblSize && (mod != (base->templateClass ? base->templateClass : base) || _class->vTblSize != mod->vTblSize))
+{
 _class->vTblSize += mod->base->vTblSize - baseClass->vTblSize;
 _class->_vTbl = __ecereNameSpace__ecere__com__eSystem_Renew(_class->_vTbl, sizeof(void *) * (_class->vTblSize));
 memmove(_class->_vTbl + mod->base->vTblSize, _class->_vTbl + baseClass->vTblSize, (_class->vTblSize - mod->vTblSize) * sizeof(void *));
@@ -1252,6 +1253,20 @@ method->_class = vMethod->_class;
 }
 }
 else
+_class->_vTbl[vMethod->vid] = _class->base->_vTbl[vMethod->vid];
+}
+}
+}
+}
+for(b = mod->base; b && b != (((void *)0)); b = b->base)
+{
+struct __ecereNameSpace__ecere__com__Method * vMethod;
+
+for(vMethod = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&b->methods); vMethod; vMethod = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)vMethod)))
+{
+if(vMethod->type == 1)
+{
+if(_class->_vTbl[vMethod->vid] == baseClass->_vTbl[vMethod->vid] && _class->_vTbl[vMethod->vid] != _class->base->_vTbl[vMethod->vid])
 _class->_vTbl[vMethod->vid] = _class->base->_vTbl[vMethod->vid];
 }
 }
@@ -5862,6 +5877,8 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "selfWatchable", "bool
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isWatchable", "bool", 4, 4, 1);
 if(class)
 class->fixed = (unsigned int)1;
+if(class)
+class->noExpansion = (unsigned int)1;
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::MemoryGuard_PushLoc", "void ecere::com::MemoryGuard_PushLoc(char * loc)", __ecereNameSpace__ecere__com__MemoryGuard_PushLoc, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::MemoryGuard_PopLoc", "void ecere::com::MemoryGuard_PopLoc(void)", __ecereNameSpace__ecere__com__MemoryGuard_PopLoc, module, 4);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::BTNamedLink", 0, sizeof(struct __ecereNameSpace__ecere__com__BTNamedLink), 0, 0, 0, module, 4, 1);
