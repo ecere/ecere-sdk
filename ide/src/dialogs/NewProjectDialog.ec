@@ -436,7 +436,9 @@ class QuickProjectDialog : Window
 
          workspace.projects.Add(project);
 
-         project.topNode.configurations = project.configurations = { [ debug, release ] };
+         // *** Don't set this directly on project, it must be set on top ProjectNode ***
+         project.topNode.configurations = { [ debug, release ] };
+
          project.resNode = project.topNode.Add(project, "Resources", null, resources, archiveFile, false);
 
          if(!project.Save(filePath))
