@@ -1,5 +1,5 @@
 msgid ""
-msgstr 
+msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
@@ -8,884 +8,888 @@ msgstr
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ..\\\n"
+"X-Poedit-Basepath: ../\n"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:158
-#: .\src\gui\dialogs\ReplaceDialog.ec:350
+#: ./src/gui/dialogs/ReplaceDialog.ec:158
+#: ./src/gui/dialogs/ReplaceDialog.ec:350
 msgid "%d occurences found, %d replaced"
 msgstr "%d occurences found, %d replaced"
 
-#: .\src\gui\dialogs\FileDialog.ec:886
+#: ./src/gui/dialogs/FileDialog.ec:886
 msgid "All Files"
 msgstr "All Files"
 
-#: .\src\gui\dialogs\FileDialog.ec:351
-#: .\src\gui\dialogs\FileDialog.ec:429
+#: ./src/gui/dialogs/FileDialog.ec:351
+#: ./src/gui/dialogs/FileDialog.ec:429
 msgid "All files"
 msgstr "All files"
 
-#: .\src\gui\controls\Menu.ec:95
+#: ./src/gui/controls/Menu.ec:95
 msgid "Alt+"
 msgstr "Alt+"
 
-#: .\src\gui\controls\Button.ec:976
-#: .\src\gui\controls\Button.ec:1007
-#: .\src\gui\controls\Button.ec:1011
-#: .\src\gui\controls\Button.ec:1052
-#: .\src\gui\controls\Button.ec:1054
-#: .\src\gui\controls\Button.ec:1055
-#: .\src\gui\controls\Button.ec:1060
-#: .\src\gui\controls\DropBox.ec:40
-#: .\src\gui\controls\DropBox.ec:50
-#: .\src\gui\controls\DropBox.ec:60
-#: .\src\gui\controls\DropBox.ec:71
-#: .\src\gui\controls\DropBox.ec:85
-#: .\src\gui\controls\DropBox.ec:168
-#: .\src\gui\controls\EditBox.ec:741
-#: .\src\gui\controls\Label.ec:47
-#: .\src\gui\controls\ListBox.ec:907
-#: .\src\gui\controls\ListBox.ec:940
-#: .\src\gui\controls\ListBox.ec:941
-#: .\src\gui\controls\ListBox.ec:945
-#: .\src\gui\controls\ListBox.ec:972
-#: .\src\gui\controls\ListBox.ec:973
-#: .\src\gui\controls\ListBox.ec:974
-#: .\src\gui\controls\ListBox.ec:975
-#: .\src\gui\controls\Picture.ec:19
-#: .\src\gui\controls\Picture.ec:39
-#: .\src\gui\controls\ScrollBar.ec:82
-#: .\src\gui\Window.ec:7918
-#: .\src\gui\Window.ec:7965
-#: .\src\gui\Window.ec:7982
-#: .\src\gui\Window.ec:7993
-#: .\src\gui\Window.ec:8006
-#: .\src\gui\Window.ec:8388
-#: .\src\gui\Window.ec:9086
-#: .\src\gui\Window.ec:9373
+#: ./src/gui/controls/Button.ec:976
+#: ./src/gui/controls/Button.ec:1007
+#: ./src/gui/controls/Button.ec:1011
+#: ./src/gui/controls/Button.ec:1052
+#: ./src/gui/controls/Button.ec:1054
+#: ./src/gui/controls/Button.ec:1055
+#: ./src/gui/controls/Button.ec:1060
+#: ./src/gui/controls/DropBox.ec:40
+#: ./src/gui/controls/DropBox.ec:50
+#: ./src/gui/controls/DropBox.ec:60
+#: ./src/gui/controls/DropBox.ec:71
+#: ./src/gui/controls/DropBox.ec:85
+#: ./src/gui/controls/DropBox.ec:168
+#: ./src/gui/controls/EditBox.ec:741
+#: ./src/gui/controls/Label.ec:47
+#: ./src/gui/controls/ListBox.ec:907
+#: ./src/gui/controls/ListBox.ec:940
+#: ./src/gui/controls/ListBox.ec:941
+#: ./src/gui/controls/ListBox.ec:945
+#: ./src/gui/controls/ListBox.ec:972
+#: ./src/gui/controls/ListBox.ec:973
+#: ./src/gui/controls/ListBox.ec:974
+#: ./src/gui/controls/ListBox.ec:975
+#: ./src/gui/controls/Picture.ec:19
+#: ./src/gui/controls/Picture.ec:39
+#: ./src/gui/controls/ScrollBar.ec:82
+#: ./src/gui/Window.ec:7993
+#: ./src/gui/Window.ec:8040
+#: ./src/gui/Window.ec:8057
+#: ./src/gui/Window.ec:8068
+#: ./src/gui/Window.ec:8081
+#: ./src/gui/Window.ec:8464
+#: ./src/gui/Window.ec:9162
+#: ./src/gui/Window.ec:9463
 msgid "Appearance"
 msgstr "Appearance"
 
-#: .\src\sys\Date.ec:42
+#: ./src/sys/Date.ec:42
 msgid "Apr"
 msgstr "Apr"
 
-#: .\src\sys\Date.ec:33
+#: ./src/sys/Date.ec:33
 msgid "April"
 msgstr "April"
 
-#: .\src\gui\dialogs\FileDialog.ec:1188
+#: ./src/gui/dialogs/FileDialog.ec:1188
 msgid "As Type:"
 msgstr "As Type:"
 
-#: .\src\sys\Date.ec:42
+#: ./src/sys/Date.ec:42
 msgid "Aug"
 msgstr "Aug"
 
-#: .\src\sys\Date.ec:33
+#: ./src/sys/Date.ec:33
 msgid "August"
 msgstr "August"
 
-#: .\src\gui\controls\Button.ec:856
-#: .\src\gui\controls\Button.ec:909
-#: .\src\gui\controls\Button.ec:932
-#: .\src\gui\controls\Button.ec:956
-#: .\src\gui\controls\Button.ec:972
-#: .\src\gui\controls\Button.ec:1051
-#: .\src\gui\controls\Button.ec:1053
-#: .\src\gui\controls\Button.ec:1056
-#: .\src\gui\controls\Button.ec:1057
-#: .\src\gui\controls\DropBox.ec:131
-#: .\src\gui\controls\DropBox.ec:167
-#: .\src\gui\controls\DropBox.ec:172
-#: .\src\gui\controls\EditBox.ec:716
-#: .\src\gui\controls\EditBox.ec:717
-#: .\src\gui\controls\EditBox.ec:721
-#: .\src\gui\controls\EditBox.ec:730
-#: .\src\gui\controls\EditBox.ec:731
-#: .\src\gui\controls\EditBox.ec:732
-#: .\src\gui\controls\EditBox.ec:733
-#: .\src\gui\controls\EditBox.ec:734
-#: .\src\gui\controls\EditBox.ec:735
-#: .\src\gui\controls\EditBox.ec:736
-#: .\src\gui\controls\EditBox.ec:737
-#: .\src\gui\controls\EditBox.ec:738
-#: .\src\gui\controls\EditBox.ec:739
-#: .\src\gui\controls\EditBox.ec:740
-#: .\src\gui\controls\EditBox.ec:742
-#: .\src\gui\controls\EditBox.ec:743
-#: .\src\gui\controls\EditBox.ec:744
-#: .\src\gui\controls\Label.ec:18
-#: .\src\gui\controls\ListBox.ec:889
-#: .\src\gui\controls\ListBox.ec:928
-#: .\src\gui\controls\ListBox.ec:936
-#: .\src\gui\controls\ListBox.ec:937
-#: .\src\gui\controls\ListBox.ec:938
-#: .\src\gui\controls\ListBox.ec:939
-#: .\src\gui\controls\ListBox.ec:970
-#: .\src\gui\controls\ListBox.ec:971
-#: .\src\gui\controls\ListBox.ec:976
-#: .\src\gui\controls\ListBox.ec:977
-#: .\src\gui\controls\ListBox.ec:981
-#: .\src\gui\controls\ScrollBar.ec:84
-#: .\src\gui\controls\ScrollBar.ec:88
-#: .\src\gui\controls\ScrollBar.ec:99
-#: .\src\gui\controls\ScrollBar.ec:115
-#: .\src\gui\controls\ScrollBar.ec:127
-#: .\src\gui\controls\ScrollBar.ec:128
-#: .\src\gui\controls\ScrollBar.ec:129
-#: .\src\gui\Window.ec:7874
-#: .\src\gui\Window.ec:7937
-#: .\src\gui\Window.ec:8118
-#: .\src\gui\Window.ec:8165
-#: .\src\gui\Window.ec:8172
-#: .\src\gui\Window.ec:8179
-#: .\src\gui\Window.ec:8186
-#: .\src\gui\Window.ec:8193
-#: .\src\gui\Window.ec:8200
-#: .\src\gui\Window.ec:8207
-#: .\src\gui\Window.ec:8662
-#: .\src\gui\Window.ec:8689
-#: .\src\gui\Window.ec:8696
-#: .\src\gui\Window.ec:8940
-#: .\src\gui\Window.ec:8960
-#: .\src\gui\Window.ec:8966
-#: .\src\gui\Window.ec:8973
-#: .\src\gui\Window.ec:8983
-#: .\src\gui\Window.ec:8994
-#: .\src\gui\Window.ec:9006
-#: .\src\gui\Window.ec:9079
-#: .\src\gui\Window.ec:9112
-#: .\src\gui\Window.ec:9128
+#: ./src/gui/controls/Button.ec:856
+#: ./src/gui/controls/Button.ec:909
+#: ./src/gui/controls/Button.ec:932
+#: ./src/gui/controls/Button.ec:956
+#: ./src/gui/controls/Button.ec:972
+#: ./src/gui/controls/Button.ec:1051
+#: ./src/gui/controls/Button.ec:1053
+#: ./src/gui/controls/Button.ec:1056
+#: ./src/gui/controls/Button.ec:1057
+#: ./src/gui/controls/DropBox.ec:131
+#: ./src/gui/controls/DropBox.ec:167
+#: ./src/gui/controls/DropBox.ec:172
+#: ./src/gui/controls/EditBox.ec:716
+#: ./src/gui/controls/EditBox.ec:717
+#: ./src/gui/controls/EditBox.ec:721
+#: ./src/gui/controls/EditBox.ec:730
+#: ./src/gui/controls/EditBox.ec:731
+#: ./src/gui/controls/EditBox.ec:732
+#: ./src/gui/controls/EditBox.ec:733
+#: ./src/gui/controls/EditBox.ec:734
+#: ./src/gui/controls/EditBox.ec:735
+#: ./src/gui/controls/EditBox.ec:736
+#: ./src/gui/controls/EditBox.ec:737
+#: ./src/gui/controls/EditBox.ec:738
+#: ./src/gui/controls/EditBox.ec:739
+#: ./src/gui/controls/EditBox.ec:740
+#: ./src/gui/controls/EditBox.ec:742
+#: ./src/gui/controls/EditBox.ec:743
+#: ./src/gui/controls/EditBox.ec:744
+#: ./src/gui/controls/Label.ec:18
+#: ./src/gui/controls/ListBox.ec:889
+#: ./src/gui/controls/ListBox.ec:928
+#: ./src/gui/controls/ListBox.ec:936
+#: ./src/gui/controls/ListBox.ec:937
+#: ./src/gui/controls/ListBox.ec:938
+#: ./src/gui/controls/ListBox.ec:939
+#: ./src/gui/controls/ListBox.ec:970
+#: ./src/gui/controls/ListBox.ec:971
+#: ./src/gui/controls/ListBox.ec:976
+#: ./src/gui/controls/ListBox.ec:977
+#: ./src/gui/controls/ListBox.ec:981
+#: ./src/gui/controls/ScrollBar.ec:84
+#: ./src/gui/controls/ScrollBar.ec:88
+#: ./src/gui/controls/ScrollBar.ec:99
+#: ./src/gui/controls/ScrollBar.ec:115
+#: ./src/gui/controls/ScrollBar.ec:127
+#: ./src/gui/controls/ScrollBar.ec:128
+#: ./src/gui/controls/ScrollBar.ec:129
+#: ./src/gui/Window.ec:7949
+#: ./src/gui/Window.ec:8012
+#: ./src/gui/Window.ec:8194
+#: ./src/gui/Window.ec:8241
+#: ./src/gui/Window.ec:8248
+#: ./src/gui/Window.ec:8255
+#: ./src/gui/Window.ec:8262
+#: ./src/gui/Window.ec:8269
+#: ./src/gui/Window.ec:8276
+#: ./src/gui/Window.ec:8283
+#: ./src/gui/Window.ec:8738
+#: ./src/gui/Window.ec:8765
+#: ./src/gui/Window.ec:8772
+#: ./src/gui/Window.ec:9016
+#: ./src/gui/Window.ec:9036
+#: ./src/gui/Window.ec:9042
+#: ./src/gui/Window.ec:9049
+#: ./src/gui/Window.ec:9059
+#: ./src/gui/Window.ec:9070
+#: ./src/gui/Window.ec:9082
+#: ./src/gui/Window.ec:9155
+#: ./src/gui/Window.ec:9188
+#: ./src/gui/Window.ec:9204
 msgid "Behavior"
 msgstr "Behavior"
 
-#: .\src\gui\dialogs\ColorPicker.ec:730
-#: .\src\gui\dialogs\FileDialog.ec:1263
-#: .\src\gui\dialogs\FileDialog.ec:1559
-#: .\src\gui\dialogs\FindDialog.ec:73
-#: .\src\gui\dialogs\MessageBox.ec:88
-#: .\src\gui\dialogs\MessageBox.ec:107
-#: .\src\gui\dialogs\ReplaceDialog.ec:364
-#: .\src\gui\dialogs\WindowList.ec:35
+#: ./src/gui/dialogs/ColorPicker.ec:730
+#: ./src/gui/dialogs/FileDialog.ec:1263
+#: ./src/gui/dialogs/FileDialog.ec:1559
+#: ./src/gui/dialogs/FindDialog.ec:73
+#: ./src/gui/dialogs/MessageBox.ec:88
+#: ./src/gui/dialogs/MessageBox.ec:107
+#: ./src/gui/dialogs/ReplaceDialog.ec:364
+#: ./src/gui/dialogs/WindowList.ec:35
 msgid "Cancel"
 msgstr "Cancel"
 
-#: .\src\gui\dialogs\GoToDialog.ec:44
-#: .\src\gui\Window.ec:6614
+#: ./src/gui/dialogs/GoToDialog.ec:44
+#: ./src/gui/Window.ec:6686
 msgid "Close"
 msgstr "Close"
 
-#: .\src\gui\FormDesigner.ec:833
+#: ./src/gui/FormDesigner.ec:833
 msgid "Control contains code. Delete anyways?"
 msgstr "Control contains code. Delete anyways?"
 
-#: .\src\gui\FormDesigner.ec:849
+#: ./src/gui/FormDesigner.ec:849
 msgid "Control contains other controls. Delete control and children?"
 msgstr "Control contains other controls. Delete control and children?"
 
-#: .\src\gui\controls\EditBox.ec:948
-#: .\src\gui\controls\EditBox.ec:3064
+#: ./src/gui/controls/EditBox.ec:948
+#: ./src/gui/controls/EditBox.ec:3068
 msgid "Copy\tCtrl+C"
 msgstr "Copy\tCtrl+C"
 
-#: .\src\sys\System.ec:111
+#: ./src/sys/System.ec:111
 msgid "Couldn't write to file"
 msgstr "Couldn't write to file"
 
-#: .\src\gui\dialogs\FileDialog.ec:1496
+#: ./src/gui/dialogs/FileDialog.ec:1496
 msgid "Create Directory"
 msgstr "Create Directory"
 
-#: .\src\gui\dialogs\FileDialog.ec:1549
-#: .\src\gui\dialogs\FileDialog.ec:1552
+#: ./src/gui/dialogs/FileDialog.ec:1549
+#: ./src/gui/dialogs/FileDialog.ec:1552
 msgid "Create Directory Error"
 msgstr "Create Directory Error"
 
-#: .\src\gui\dialogs\FileDialog.ec:1078
+#: ./src/gui/dialogs/FileDialog.ec:1078
 msgid "Create directory?"
 msgstr "Create directory?"
 
-#: .\src\gui\controls\Menu.ec:94
+#: ./src/gui/controls/Menu.ec:94
 msgid "Ctrl+"
 msgstr "Ctrl+"
 
-#: .\src\gfx\Color.ec:698
+#: ./src/gfx/Color.ec:699
 msgid "Custom"
 msgstr "Custom"
 
-#: .\src\gui\controls\EditBox.ec:937
-#: .\src\gui\controls\EditBox.ec:3063
+#: ./src/gui/controls/EditBox.ec:937
+#: ./src/gui/controls/EditBox.ec:3067
 msgid "Cut\tCtrl+X"
 msgstr "Cut\tCtrl+X"
 
-#: .\src\gui\controls\DropBox.ec:127
-#: .\src\gui\controls\EditBox.ec:757
-#: .\src\gui\controls\ProgressBar.ec:13
-#: .\src\gui\controls\ProgressBar.ec:14
-#: .\src\gui\Window.ec:9041
+#: ./src/gui/controls/DropBox.ec:127
+#: ./src/gui/controls/EditBox.ec:757
+#: ./src/gui/controls/ProgressBar.ec:13
+#: ./src/gui/controls/ProgressBar.ec:14
+#: ./src/gui/Window.ec:9117
 msgid "Data"
 msgstr "Data"
 
-#: .\src\sys\Date.ec:43
+#: ./src/sys/Date.ec:43
 msgid "Dec"
 msgstr "Dec"
 
-#: .\src\sys\Date.ec:34
+#: ./src/sys/Date.ec:34
 msgid "December"
 msgstr "December"
 
-#: .\src\gfx\Color.ec:735
+#: ./src/gfx/Color.ec:736
 msgid "Defined"
 msgstr "Defined"
 
-#: .\src\gui\controls\EditBox.ec:969
-#: .\src\gui\controls\EditBox.ec:3066
+#: ./src/gui/controls/EditBox.ec:969
+#: ./src/gui/controls/EditBox.ec:3070
 msgid "Delete\tDel"
 msgstr "Delete\tDel"
 
-#: .\src\gui\FormDesigner.ec:849
+#: ./src/gui/FormDesigner.ec:849
 msgid "Deleting control with children"
 msgstr "Deleting control with children"
 
-#: .\src\gui\FormDesigner.ec:833
+#: ./src/gui/FormDesigner.ec:833
 msgid "Deleting control with code"
 msgstr "Deleting control with code"
 
-#: .\src\gui\Window.ec:9098
+#: ./src/gui/Window.ec:9287
+msgid "Deprecated"
+msgstr "Deprecated"
+
+#: ./src/gui/Window.ec:9174
 msgid "Design"
 msgstr "Design"
 
-#: .\src\gui\dialogs\FindDialog.ec:46
+#: ./src/gui/dialogs/FindDialog.ec:46
 msgid "Direction"
 msgstr "Direction"
 
-#: .\src\gui\dialogs\FileDialog.ec:1549
+#: ./src/gui/dialogs/FileDialog.ec:1549
 msgid "Directory already exists."
 msgstr "Directory already exists."
 
-#: .\src\gui\dialogs\FileDialog.ec:1078
+#: ./src/gui/dialogs/FileDialog.ec:1078
 msgid "Directory doesn't exist"
 msgstr "Directory doesn't exist"
 
-#: .\src\gui\dialogs\FileDialog.ec:310
+#: ./src/gui/dialogs/FileDialog.ec:310
 msgid "Directory:"
 msgstr "Directory:"
 
-#: .\src\gui\Window.ec:8876
-#: .\src\gui\Window.ec:9013
-#: .\src\gui\Window.ec:9048
+#: ./src/gui/Window.ec:8952
+#: ./src/gui/Window.ec:9089
+#: ./src/gui/Window.ec:9124
 msgid "Document"
 msgstr "Document"
 
-#: .\src\gui\dialogs\FindDialog.ec:41
+#: ./src/gui/dialogs/FindDialog.ec:41
 msgid "Down"
 msgstr "Down"
 
-#: .\src\gui\GuiApplication.ec:96
+#: ./src/gui/GuiApplication.ec:96
 msgid "Driver/Mode switch failed"
 msgstr "Driver/Mode switch failed"
 
-#: .\src\gui\GuiApplication.ec:192
+#: ./src/gui/GuiApplication.ec:192
 msgid "ECERE Application"
 msgstr "ECERE Application"
 
-#: .\src\gui\controls\EditBox.ec:934
+#: ./src/gui/controls/EditBox.ec:934
 msgid "Edit"
 msgstr "Edit"
 
-#: .\src\gui\dialogs\FileDialog.ec:4
+#: ./src/gui/dialogs/FileDialog.ec:4
 msgid "Entire Computer"
 msgstr "Entire Computer"
 
-#: .\src\gui\GuiApplication.ec:1241
+#: ./src/gui/GuiApplication.ec:1240
 msgid "Error falling back to previous video mode.\n"
 msgstr "Error falling back to previous video mode.\n"
 
-#: .\src\gui\Window.ec:7161
-#: .\src\gui\Window.ec:7209
+#: ./src/gui/Window.ec:7236
+#: ./src/gui/Window.ec:7284
 msgid "Error writing file"
 msgstr "Error writing file"
 
-#: .\src\sys\File.ec:272
+#: ./src/sys/File.ec:309
 msgid "Exp"
 msgstr "Exp"
 
-#: .\src\gui\controls\CalendarControl.ec:10
+#: ./src/gui/controls/CalendarControl.ec:10
 msgctxt "Friday"
 msgid "F"
 msgstr "F"
 
-#: .\src\sys\Date.ec:42
+#: ./src/sys/Date.ec:42
 msgid "Feb"
 msgstr "Feb"
 
-#: .\src\sys\Date.ec:33
+#: ./src/sys/Date.ec:33
 msgid "February"
 msgstr "February"
 
-#: .\src\gui\dialogs\FileDialog.ec:1065
+#: ./src/gui/dialogs/FileDialog.ec:1065
 msgid "File Already Exists"
 msgstr "File Already Exists"
 
-#: .\src\gui\dialogs\FileDialog.ec:310
-#: .\src\gui\dialogs\FileDialog.ec:1448
+#: ./src/gui/dialogs/FileDialog.ec:310
+#: ./src/gui/dialogs/FileDialog.ec:1448
 msgid "File Name:"
 msgstr "File Name:"
 
-#: .\src\sys\System.ec:109
+#: ./src/sys/System.ec:109
 msgid "File not found"
 msgstr "File not found"
 
-#: .\src\gui\dialogs\FileDialog.ec:1170
+#: ./src/gui/dialogs/FileDialog.ec:1170
 msgid "Filter:"
 msgstr "Filter:"
 
-#: .\src\gui\dialogs\FindDialog.ec:7
-#: .\src\gui\dialogs\FindDialog.ec:61
+#: ./src/gui/dialogs/FindDialog.ec:7
+#: ./src/gui/dialogs/FindDialog.ec:61
 msgid "Find"
 msgstr "Find"
 
-#: .\src\gui\dialogs\FindDialog.ec:51
-#: .\src\gui\dialogs\ReplaceDialog.ec:252
+#: ./src/gui/dialogs/FindDialog.ec:51
+#: ./src/gui/dialogs/ReplaceDialog.ec:252
 msgid "Find Next"
 msgstr "Find Next"
 
-#: .\src\gui\controls\EditBox.ec:1028
+#: ./src/gui/controls/EditBox.ec:1028
 msgid "Find Next\tF3"
 msgstr "Find Next\tF3"
 
-#: .\src\gui\controls\EditBox.ec:1015
+#: ./src/gui/controls/EditBox.ec:1015
 msgid "Find Previous\tShift-F3"
 msgstr "Find Previous\tShift-F3"
 
-#: .\src\gui\dialogs\FindDialog.ec:85
-#: .\src\gui\dialogs\ReplaceDialog.ec:369
+#: ./src/gui/dialogs/FindDialog.ec:85
+#: ./src/gui/dialogs/ReplaceDialog.ec:369
 msgid "Find what:"
 msgstr "Find what:"
 
-#: .\src\gui\controls\EditBox.ec:1041
+#: ./src/gui/controls/EditBox.ec:1041
 msgid "Find...\tCtrl+F"
 msgstr "Find...\tCtrl+F"
 
-#: .\src\sys\Date.ec:38
+#: ./src/sys/Date.ec:38
 msgid "Fri"
 msgstr "Fri"
 
-#: .\src\sys\Date.ec:29
+#: ./src/sys/Date.ec:29
 msgid "Friday"
 msgstr "Friday"
 
-#: .\src\gui\controls\EditBox.ec:672
-#: .\src\gui\dialogs\GoToDialog.ec:29
-#: .\src\gui\dialogs\GoToDialog.ec:35
+#: ./src/gui/controls/EditBox.ec:672
+#: ./src/gui/dialogs/GoToDialog.ec:29
+#: ./src/gui/dialogs/GoToDialog.ec:35
 msgid "Go To"
 msgstr "Go To"
 
-#: .\src\gui\dialogs\GoToDialog.ec:7
+#: ./src/gui/dialogs/GoToDialog.ec:7
 msgid "Go To Line..."
 msgstr "Go To Line..."
 
-#: .\src\gui\controls\EditBox.ec:1102
+#: ./src/gui/controls/EditBox.ec:1102
 msgid "Go To...\tCtrl+G"
 msgstr "Go To...\tCtrl+G"
 
-#: .\src\gui\GuiApplication.ec:92
+#: ./src/gui/GuiApplication.ec:92
 msgid "Graphics driver not supported by any user interface system"
 msgstr "Graphics driver not supported by any user interface system"
 
-#: .\src\sys\System.ec:107
+#: ./src/sys/System.ec:107
 msgid "Identic string identifier already exists"
 msgstr "Identic string identifier already exists"
 
-#: .\src\gfx\BitmapResource.ec:14
+#: ./src/gfx/BitmapResource.ec:14
 msgid "Image"
 msgstr "Image"
 
-#: .\src\gfx\BitmapResource.ec:8
+#: ./src/gfx/BitmapResource.ec:8
 msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 msgstr "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 
-#: .\src\sys\File.ec:248
+#: ./src/sys/File.ec:285
 msgid "Imp"
 msgstr "Imp"
 
-#: .\src\sys\System.ec:106
+#: ./src/sys/System.ec:106
 msgid "Inexistant string identifier specified"
 msgstr "Inexistant string identifier specified"
 
-#: .\src\gui\controls\EditBox.ec:1115
+#: ./src/gui/controls/EditBox.ec:1115
 msgid "Insert Tabs"
 msgstr "Insert Tabs"
 
-#: .\src\sys\Date.ec:42
+#: ./src/sys/Date.ec:42
 msgid "Jan"
 msgstr "Jan"
 
-#: .\src\sys\Date.ec:33
+#: ./src/sys/Date.ec:33
 msgid "January"
 msgstr "January"
 
-#: .\src\sys\Date.ec:42
+#: ./src/sys/Date.ec:42
 msgid "Jul"
 msgstr "Jul"
 
-#: .\src\sys\Date.ec:33
+#: ./src/sys/Date.ec:33
 msgid "July"
 msgstr "July"
 
-#: .\src\sys\Date.ec:42
+#: ./src/sys/Date.ec:42
 msgid "Jun"
 msgstr "Jun"
 
-#: .\src\sys\Date.ec:33
+#: ./src/sys/Date.ec:33
 msgid "June"
 msgstr "June"
 
-#: .\src\gui\Window.ec:7661
-#: .\src\gui\Window.ec:8031
-#: .\src\gui\Window.ec:8038
-#: .\src\gui\Window.ec:8106
-#: .\src\gui\Window.ec:8445
-#: .\src\gui\Window.ec:8481
-#: .\src\gui\Window.ec:8518
-#: .\src\gui\Window.ec:8550
-#: .\src\gui\Window.ec:8617
-#: .\src\gui\Window.ec:9144
+#: ./src/gui/Window.ec:7736
+#: ./src/gui/Window.ec:8107
+#: ./src/gui/Window.ec:8114
+#: ./src/gui/Window.ec:8182
+#: ./src/gui/Window.ec:8521
+#: ./src/gui/Window.ec:8557
+#: ./src/gui/Window.ec:8594
+#: ./src/gui/Window.ec:8626
+#: ./src/gui/Window.ec:8693
+#: ./src/gui/Window.ec:9220
 msgid "Layout"
 msgstr "Layout"
 
-#: .\src\gui\dialogs\GoToDialog.ec:50
+#: ./src/gui/dialogs/GoToDialog.ec:50
 msgid "Line number:"
 msgstr "Line number:"
 
-#: .\src\gui\dialogs\FileDialog.ec:1274
+#: ./src/gui/dialogs/FileDialog.ec:1274
 msgid "Look in:"
 msgstr "Look in:"
 
-#: .\src\gui\controls\CalendarControl.ec:9
+#: ./src/gui/controls/CalendarControl.ec:9
 msgctxt "Monday"
 msgid "M"
 msgstr "M"
 
-#: .\src\sys\Date.ec:42
+#: ./src/sys/Date.ec:42
 msgid "Mar"
 msgstr "Mar"
 
-#: .\src\sys\Date.ec:33
+#: ./src/sys/Date.ec:33
 msgid "March"
 msgstr "March"
 
-#: .\src\gui\dialogs\FindDialog.ec:31
-#: .\src\gui\dialogs\ReplaceDialog.ec:229
+#: ./src/gui/dialogs/FindDialog.ec:31
+#: ./src/gui/dialogs/ReplaceDialog.ec:229
 msgid "Match case"
 msgstr "Match case"
 
-#: .\src\gui\Window.ec:6603
+#: ./src/gui/Window.ec:6675
 msgid "Maximize"
 msgstr "Maximize"
 
-#: .\src\sys\Date.ec:33
+#: ./src/sys/Date.ec:33
 msgctxt "LongMonthNames"
 msgid "May"
 msgstr "May"
 
-#: .\src\sys\Date.ec:42
+#: ./src/sys/Date.ec:42
 msgctxt "ShortMonthNames"
 msgid "May"
 msgstr "May"
 
-#: .\src\sys\System.ec:105
+#: ./src/sys/System.ec:105
 msgid "Memory allocation failed"
 msgstr "Memory allocation failed"
 
-#: .\src\gui\dialogs\FileDialog.ec:5
+#: ./src/gui/dialogs/FileDialog.ec:5
 msgid "Microsoft Windows Network"
 msgstr "Microsoft Windows Network"
 
-#: .\src\gui\Window.ec:6598
+#: ./src/gui/Window.ec:6670
 msgid "Minimize"
 msgstr "Minimize"
 
-#: .\src\sys\Date.ec:38
+#: ./src/sys/Date.ec:38
 msgid "Mon"
 msgstr "Mon"
 
-#: .\src\sys\Date.ec:29
+#: ./src/sys/Date.ec:29
 msgid "Monday"
 msgstr "Monday"
 
-#: .\src\gui\Window.ec:6588
+#: ./src/gui/Window.ec:6660
 msgid "Move"
 msgstr "Move"
 
-#: .\src\gui\dialogs\FileDialog.ec:1409
-#: .\src\gui\dialogs\FileDialog.ec:1566
+#: ./src/gui/dialogs/FileDialog.ec:1409
+#: ./src/gui/dialogs/FileDialog.ec:1566
 msgid "Name"
 msgstr "Name"
 
-#: .\src\gui\dialogs\FileDialog.ec:1567
+#: ./src/gui/dialogs/FileDialog.ec:1567
 msgid "New Directory"
 msgstr "New Directory"
 
-#: .\src\gui\dialogs\MessageBox.ec:75
-#: .\src\gui\dialogs\MessageBox.ec:101
+#: ./src/gui/dialogs/MessageBox.ec:75
+#: ./src/gui/dialogs/MessageBox.ec:101
 msgid "No"
 msgstr "No"
 
-#: .\src\sys\System.ec:104
-#: .\src\gui\GuiApplication.ec:91
+#: ./src/sys/System.ec:104
+#: ./src/gui/GuiApplication.ec:91
 msgid "No error"
 msgstr "No error"
 
-#: .\src\gui\dialogs\GoToDialog.ec:35
+#: ./src/gui/dialogs/GoToDialog.ec:35
 msgid "No such line."
 msgstr "No such line."
 
-#: .\src\sys\Date.ec:42
+#: ./src/sys/Date.ec:42
 msgid "Nov"
 msgstr "Nov"
 
-#: .\src\sys\Date.ec:33
+#: ./src/sys/Date.ec:33
 msgid "November"
 msgstr "November"
 
-#: .\src\gui\dialogs\ColorPicker.ec:721
-#: .\src\gui\dialogs\FileDialog.ec:295
-#: .\src\gui\dialogs\FileDialog.ec:1226
-#: .\src\gui\dialogs\FileDialog.ec:1535
-#: .\src\gui\dialogs\MessageBox.ec:94
-#: .\src\gui\dialogs\MessageBox.ec:120
-#: .\src\gui\dialogs\WindowList.ec:24
+#: ./src/gui/dialogs/ColorPicker.ec:721
+#: ./src/gui/dialogs/FileDialog.ec:295
+#: ./src/gui/dialogs/FileDialog.ec:1226
+#: ./src/gui/dialogs/FileDialog.ec:1535
+#: ./src/gui/dialogs/MessageBox.ec:94
+#: ./src/gui/dialogs/MessageBox.ec:120
+#: ./src/gui/dialogs/WindowList.ec:24
 msgid "OK"
 msgstr "OK"
 
-#: .\src\sys\Date.ec:42
+#: ./src/sys/Date.ec:42
 msgid "Oct"
 msgstr "Oct"
 
-#: .\src\sys\Date.ec:33
+#: ./src/sys/Date.ec:33
 msgid "October"
 msgstr "October"
 
-#: .\src\gui\dialogs\FileDialog.ec:1256
+#: ./src/gui/dialogs/FileDialog.ec:1256
 msgid "Open"
 msgstr "Open"
 
-#: .\src\gui\controls\EditBox.ec:958
-#: .\src\gui\controls\EditBox.ec:3065
+#: ./src/gui/controls/EditBox.ec:958
+#: ./src/gui/controls/EditBox.ec:3069
 msgid "Paste\tCtrl+V"
 msgstr "Paste\tCtrl+V"
 
-#: .\src\gui\dialogs\FileDialog.ec:1552
+#: ./src/gui/dialogs/FileDialog.ec:1552
 msgid "Please enter a name."
 msgstr "Please enter a name."
 
-#: .\src\gui\controls\DropBox.ec:98
-#: .\src\gui\controls\ListBox.ec:890
+#: ./src/gui/controls/DropBox.ec:98
+#: ./src/gui/controls/ListBox.ec:890
 msgid "Private"
 msgstr "Private"
 
-#: .\src\gui\controls\EditBox.ec:1003
+#: ./src/gui/controls/EditBox.ec:1003
 msgid "Redo\tCtrl+Y"
 msgstr "Redo\tCtrl+Y"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:14
-#: .\src\gui\dialogs\ReplaceDialog.ec:258
+#: ./src/gui/dialogs/ReplaceDialog.ec:14
+#: ./src/gui/dialogs/ReplaceDialog.ec:258
 msgid "Replace"
 msgstr "Replace"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:264
+#: ./src/gui/dialogs/ReplaceDialog.ec:264
 msgid "Replace All"
 msgstr "Replace All"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:247
+#: ./src/gui/dialogs/ReplaceDialog.ec:247
 msgid "Replace In"
 msgstr "Replace In"
 
-#: .\src\gui\dialogs\FileDialog.ec:1065
+#: ./src/gui/dialogs/FileDialog.ec:1065
 msgid "Replace existing file?"
 msgstr "Replace existing file?"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:213
+#: ./src/gui/dialogs/ReplaceDialog.ec:213
 msgid "Replace with:"
 msgstr "Replace with:"
 
-#: .\src\gui\controls\EditBox.ec:1068
+#: ./src/gui/controls/EditBox.ec:1068
 msgid "Replace...\tCtrl+R"
 msgstr "Replace...\tCtrl+R"
 
-#: .\src\gui\Window.ec:6583
+#: ./src/gui/Window.ec:6655
 msgid "Restore"
 msgstr "Restore"
 
-#: .\src\gui\controls\CalendarControl.ec:11
+#: ./src/gui/controls/CalendarControl.ec:11
 msgctxt "Saturday"
 msgid "S"
 msgstr "S"
 
-#: .\src\gui\controls\CalendarControl.ec:9
+#: ./src/gui/controls/CalendarControl.ec:9
 msgctxt "Sunday"
 msgid "S"
 msgstr "S"
 
-#: .\src\sys\Date.ec:39
+#: ./src/sys/Date.ec:39
 msgid "Sat"
 msgstr "Sat"
 
-#: .\src\sys\Date.ec:30
+#: ./src/sys/Date.ec:30
 msgid "Saturday"
 msgstr "Saturday"
 
-#: .\src\gui\Window.ec:7191
+#: ./src/gui/Window.ec:7266
 msgid "Save As"
 msgstr "Save As"
 
-#: .\src\gui\controls\Picture.ec:72
+#: ./src/gui/controls/Picture.ec:72
 msgid "Save As..."
 msgstr "Save As..."
 
-#: .\src\gui\Window.ec:7161
-#: .\src\gui\Window.ec:7209
+#: ./src/gui/Window.ec:7236
+#: ./src/gui/Window.ec:7284
 msgid "Save as a different file?"
 msgstr "Save as a different file?"
 
-#: .\src\gui\Window.ec:7077
+#: ./src/gui/Window.ec:7149
 msgid "Save changes to %s?"
 msgstr "Save changes to %s?"
 
-#: .\src\gui\Window.ec:7079
+#: ./src/gui/Window.ec:7151
 msgid "Save changes to Untitled %d?"
 msgstr "Save changes to Untitled %d?"
 
-#: .\src\gui\controls\Picture.ec:71
+#: ./src/gui/controls/Picture.ec:71
 msgid "Save\tCtrl+S"
 msgstr "Save\tCtrl+S"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:159
-#: .\src\gui\dialogs\ReplaceDialog.ec:162
-#: .\src\gui\dialogs\ReplaceDialog.ec:341
-#: .\src\gui\dialogs\ReplaceDialog.ec:351
+#: ./src/gui/dialogs/ReplaceDialog.ec:159
+#: ./src/gui/dialogs/ReplaceDialog.ec:162
+#: ./src/gui/dialogs/ReplaceDialog.ec:341
+#: ./src/gui/dialogs/ReplaceDialog.ec:351
 msgid "Search Finished"
 msgstr "Search Finished"
 
-#: .\src\gui\dialogs\FindDialog.ec:61
-#: .\src\gui\dialogs\ReplaceDialog.ec:162
-#: .\src\gui\dialogs\ReplaceDialog.ec:341
+#: ./src/gui/dialogs/FindDialog.ec:61
+#: ./src/gui/dialogs/ReplaceDialog.ec:162
+#: ./src/gui/dialogs/ReplaceDialog.ec:341
 msgid "Search string not found."
 msgstr "Search string not found."
 
-#: .\src\gui\dialogs\FileDialog.ec:277
+#: ./src/gui/dialogs/FileDialog.ec:277
 msgid "Select"
 msgstr "Select"
 
-#: .\src\gui\controls\EditBox.ec:981
-#: .\src\gui\controls\EditBox.ec:3068
+#: ./src/gui/controls/EditBox.ec:981
+#: ./src/gui/controls/EditBox.ec:3072
 msgid "Select All\tCtrl+A"
 msgstr "Select All\tCtrl+A"
 
-#: .\src\gfx\Color.ec:690
+#: ./src/gfx/Color.ec:691
 msgid "Select Color"
 msgstr "Select Color"
 
-#: .\src\sys\File.ec:166
+#: ./src/sys/File.ec:203
 msgid "Select File"
 msgstr "Select File"
 
-#: .\src\gfx\BitmapResource.ec:17
+#: ./src/gfx/BitmapResource.ec:17
 msgid "Select Image"
 msgstr "Select Image"
 
-#: .\src\gui\dialogs\WindowList.ec:41
+#: ./src/gui/dialogs/WindowList.ec:41
 msgid "Select a Window to Activate..."
 msgstr "Select a Window to Activate..."
 
-#: .\src\gui\dialogs\ColorPicker.ec:240
+#: ./src/gui/dialogs/ColorPicker.ec:240
 msgid "Select a color..."
 msgstr "Select a color..."
 
-#: .\src\gui\controls\PathBox.ec:20
-#: .\src\gui\dialogs\FileDialog.ec:245
+#: ./src/gui/controls/PathBox.ec:20
+#: ./src/gui/dialogs/FileDialog.ec:245
 msgid "Select a file..."
 msgstr "Select a file..."
 
-#: .\src\gui\controls\PathBox.ec:52
+#: ./src/gui/controls/PathBox.ec:52
 msgid "Select a folder..."
 msgstr "Select a folder..."
 
-#: .\src\gui\controls\PathBox.ec:316
+#: ./src/gui/controls/PathBox.ec:317
 msgid "Select directory"
 msgstr "Select directory"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:235
+#: ./src/gui/dialogs/ReplaceDialog.ec:235
 msgid "Selection"
 msgstr "Selection"
 
-#: .\src\sys\Date.ec:42
+#: ./src/sys/Date.ec:42
 msgid "Sep"
 msgstr "Sep"
 
-#: .\src\sys\Date.ec:33
+#: ./src/sys/Date.ec:33
 msgid "September"
 msgstr "September"
 
-#: .\src\sys\System.ec:108
+#: ./src/sys/System.ec:108
 msgid "Shared library loading failed"
 msgstr "Shared library loading failed"
 
-#: .\src\gui\controls\Menu.ec:96
+#: ./src/gui/controls/Menu.ec:96
 msgid "Shift+"
 msgstr "Shift+"
 
-#: .\src\gui\dialogs\FileDialog.ec:1411
-#: .\src\gui\Window.ec:6593
+#: ./src/gui/dialogs/FileDialog.ec:1411
+#: ./src/gui/Window.ec:6665
 msgid "Size"
 msgstr "Size"
 
-#: .\src\gui\Window.ec:6608
+#: ./src/gui/Window.ec:6680
 msgid "Stay On Top"
 msgstr "Stay On Top"
 
-#: .\src\sys\Date.ec:38
+#: ./src/sys/Date.ec:38
 msgid "Sun"
 msgstr "Sun"
 
-#: .\src\sys\Date.ec:29
+#: ./src/sys/Date.ec:29
 msgid "Sunday"
 msgstr "Sunday"
 
-#: .\src\gfx\Color.ec:755
+#: ./src/gfx/Color.ec:756
 msgid "System"
 msgstr "System"
 
-#: .\src\gui\controls\CalendarControl.ec:10
+#: ./src/gui/controls/CalendarControl.ec:10
 msgctxt "Thursday"
 msgid "T"
 msgstr "T"
 
-#: .\src\gui\controls\CalendarControl.ec:9
+#: ./src/gui/controls/CalendarControl.ec:9
 msgctxt "Tuesday"
 msgid "T"
 msgstr "T"
 
-#: .\src\gui\skins\TVisionSkin.ec:37
-#: .\src\gui\skins\TVisionSkin.ec:43
-#: .\src\gui\skins\WindowsSkin.ec:125
-#: .\src\gui\skins\WindowsSkin.ec:130
+#: ./src/gui/skins/TVisionSkin.ec:37
+#: ./src/gui/skins/TVisionSkin.ec:43
+#: ./src/gui/skins/WindowsSkin.ec:125
+#: ./src/gui/skins/WindowsSkin.ec:130
 msgid "Tahoma"
 msgstr "Tahoma"
 
-#: .\src\sys\Date.ec:38
+#: ./src/sys/Date.ec:38
 msgid "Thu"
 msgstr "Thu"
 
-#: .\src\sys\Date.ec:29
+#: ./src/sys/Date.ec:29
 msgid "Thursday"
 msgstr "Thursday"
 
-#: .\src\sys\Date.ec:38
+#: ./src/sys/Date.ec:38
 msgid "Tue"
 msgstr "Tue"
 
-#: .\src\sys\Date.ec:29
+#: ./src/sys/Date.ec:29
 msgid "Tuesday"
 msgstr "Tuesday"
 
-#: .\src\gui\dialogs\FileDialog.ec:1410
+#: ./src/gui/dialogs/FileDialog.ec:1410
 msgid "Type"
 msgstr "Type"
 
-#: .\src\gui\controls\EditBox.ec:992
+#: ./src/gui/controls/EditBox.ec:992
 msgid "Undo\tCtrl+Z"
 msgstr "Undo\tCtrl+Z"
 
-#: .\src\gui\dialogs\FindDialog.ec:36
+#: ./src/gui/dialogs/FindDialog.ec:36
 msgid "Up"
 msgstr "Up"
 
-#: .\src\gui\controls\CalendarControl.ec:50
-#: .\src\gui\controls\CalendarControl.ec:75
-#: .\src\gui\controls\CalendarControl.ec:96
-#: .\src\gui\controls\CalendarControl.ec:117
+#: ./src/gui/controls/CalendarControl.ec:50
+#: ./src/gui/controls/CalendarControl.ec:75
+#: ./src/gui/controls/CalendarControl.ec:96
+#: ./src/gui/controls/CalendarControl.ec:117
 msgid "Verdana"
 msgstr "Verdana"
 
-#: .\src\gui\controls\CalendarControl.ec:9
+#: ./src/gui/controls/CalendarControl.ec:9
 msgctxt "Wednesday"
 msgid "W"
 msgstr "W"
 
-#: .\src\sys\Date.ec:38
+#: ./src/sys/Date.ec:38
 msgid "Wed"
 msgstr "Wed"
 
-#: .\src\sys\Date.ec:29
+#: ./src/sys/Date.ec:29
 msgid "Wednesday"
 msgstr "Wednesday"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:241
+#: ./src/gui/dialogs/ReplaceDialog.ec:241
 msgid "Whole File"
 msgstr "Whole File"
 
-#: .\src\gui\dialogs\FindDialog.ec:26
-#: .\src\gui\dialogs\ReplaceDialog.ec:223
+#: ./src/gui/dialogs/FindDialog.ec:26
+#: ./src/gui/dialogs/ReplaceDialog.ec:223
 msgid "Whole word only"
 msgstr "Whole word only"
 
-#: .\src\gui\Window.ec:8045
-#: .\src\gui\Window.ec:8066
-#: .\src\gui\Window.ec:8087
-#: .\src\gui\Window.ec:8236
-#: .\src\gui\Window.ec:8243
-#: .\src\gui\Window.ec:8279
-#: .\src\gui\Window.ec:8300
-#: .\src\gui\Window.ec:8353
-#: .\src\gui\Window.ec:8883
-#: .\src\gui\Window.ec:8890
-#: .\src\gui\Window.ec:8915
-#: .\src\gui\Window.ec:9072
+#: ./src/gui/Window.ec:8121
+#: ./src/gui/Window.ec:8142
+#: ./src/gui/Window.ec:8163
+#: ./src/gui/Window.ec:8312
+#: ./src/gui/Window.ec:8319
+#: ./src/gui/Window.ec:8355
+#: ./src/gui/Window.ec:8376
+#: ./src/gui/Window.ec:8429
+#: ./src/gui/Window.ec:8959
+#: ./src/gui/Window.ec:8966
+#: ./src/gui/Window.ec:8991
+#: ./src/gui/Window.ec:9148
 msgid "Window Style"
 msgstr "Window Style"
 
-#: .\src\gui\GuiApplication.ec:93
+#: ./src/gui/GuiApplication.ec:93
 msgid "Window creation failed"
 msgstr "Window creation failed"
 
-#: .\src\gui\GuiApplication.ec:94
+#: ./src/gui/GuiApplication.ec:94
 msgid "Window graphics loading failed"
 msgstr "Window graphics loading failed"
 
-#: .\src\gui\dialogs\WindowList.ec:9
+#: ./src/gui/dialogs/WindowList.ec:9
 msgid "Windows"
 msgstr "Windows"
 
-#: .\src\gui\dialogs\MessageBox.ec:81
-#: .\src\gui\dialogs\MessageBox.ec:113
+#: ./src/gui/dialogs/MessageBox.ec:81
+#: ./src/gui/dialogs/MessageBox.ec:113
 msgid "Yes"
 msgstr "Yes"
 
-#: .\src\sys\System.ec:427
+#: ./src/sys/System.ec:427
 msgid "\n\nWould you like to view the error log?"
 msgstr "\n\nWould you like to view the error log?"
 
-#: .\src\sys\Date.ec:121
-#: .\src\sys\Time.ec:781
+#: ./src/sys/Date.ec:121
+#: ./src/sys/Time.ec:781
 msgid "now"
 msgstr "now"
 
-#: .\src\sys\Date.ec:120
-#: .\src\sys\Time.ec:780
+#: ./src/sys/Date.ec:120
+#: ./src/sys/Time.ec:780
 msgid "today"
 msgstr "today"
 
-#: .\src\sys\Date.ec:122
-#: .\src\sys\Date.ec:126
-#: .\src\sys\Time.ec:783
+#: ./src/sys/Date.ec:122
+#: ./src/sys/Date.ec:126
+#: ./src/sys/Time.ec:783
 msgid "tomorrow"
 msgstr "tomorrow"
 
-#: .\src\sys\Date.ec:123
-#: .\src\sys\Date.ec:131
-#: .\src\sys\Time.ec:790
+#: ./src/sys/Date.ec:123
+#: ./src/sys/Date.ec:131
+#: ./src/sys/Time.ec:790
 msgid "yesterday"
 msgstr "yesterday"
 

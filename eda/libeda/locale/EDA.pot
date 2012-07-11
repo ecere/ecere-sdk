@@ -1,5 +1,5 @@
 msgid ""
-msgstr 
+msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
@@ -8,115 +8,121 @@ msgstr
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ..\\\n"
+"X-Poedit-Basepath: ../\n"
 
-#: .\src\ers.ec:537
+#: ./src/idList.ec:220
+msgid "(Click to add a new %s...)"
+msgstr "(Click to add a new %s...)"
+
+#: ./src/ers.ec:560
 msgid "All files"
 msgstr "All files"
 
-#: .\src\ers.ec:28
-#: .\src\gui.ec:19
-#: .\src\gui.ec:29
+#: ./src/ers.ec:30
+#: ./src/gui.ec:20
+#: ./src/gui.ec:30
 msgid "Arial"
 msgstr "Arial"
 
-#: .\src\ers.ec:534
+#: ./src/ers.ec:557
 msgid "Comma Separated Values Spreadsheet (*.csv)"
 msgstr "Comma Separated Values Spreadsheet (*.csv)"
 
-#: .\src\EDB.ec:253
+#: ./src/EDB.ec:253
 msgid "Database file (%s) could not be created.\n"
 msgstr "Database file (%s) could not be created.\n"
 
-#: .\src\EDB.ec:255
+#: ./src/EDB.ec:255
 msgid "Database file (%s) could not be opened.\n"
 msgstr "Database file (%s) could not be opened.\n"
 
-#: .\src\gui.ec:788
+#: ./src/gui.ec:809
 msgid "Delete"
 msgstr "Delete"
 
-#: .\src\gui.ec:919
+#: ./src/gui.ec:940
 msgid "Entry"
 msgstr "Entry"
 
-#: .\src\EDB.ec:935
+#: ./src/EDB.ec:936
 msgid "Error reading field"
 msgstr "Error reading field"
 
-#: .\src\ers.ec:590
-msgid "Export as Spreadsheet (CSV)"
-msgstr "Export as Spreadsheet (CSV)"
-
-#: .\src\EDB.ec:234
+#: ./src/EDB.ec:234
 msgid "Invalid, corrupted or in use (%s) database file.\n"
 msgstr "Invalid, corrupted or in use (%s) database file.\n"
 
-#: .\src\gui.ec:622
+#: ./src/gui.ec:643
 msgid "List"
 msgstr "List"
 
-#: .\src\gui.ec:667
-#: .\src\gui.ec:777
+#: ./src/gui.ec:688
+#: ./src/gui.ec:798
 msgid "List Editor"
 msgstr "List Editor"
 
-#: .\src\gui.ec:725
+#: ./src/gui/TableEditor.ec:25
+#: ./src/gui.ec:746
 msgid "New"
 msgstr "New"
 
-#: .\src\ers.ec:15
+#: ./src/gui/TableEditor.ec:24
+msgid "New|id="
+msgstr "New|id="
+
+#: ./src/ers.ec:17
 msgid "Please wait while the report is being generated..."
 msgstr "Please wait while the report is being generated..."
 
-#: .\src\gui.ec:963
+#: ./src/gui.ec:984
 msgid "Revert"
 msgstr "Revert"
 
-#: .\src\gui.ec:952
+#: ./src/gui.ec:973
 msgid "Save"
 msgstr "Save"
 
-#: .\src\EDB.ec:153
+#: ./src/EDB.ec:153
 msgid "Status: Feeling groovy!\n"
 msgstr "Status: Feeling groovy!\n"
 
-#: .\src\EDB.ec:548
+#: ./src/EDB.ec:548
 msgid "Table (%s) does not exist.\n"
 msgstr "Table (%s) does not exist.\n"
 
-#: .\src\gui\TableEditor.ec:120
-#: .\src\gui\TableEditor.ec:127
+#: ./src/gui/TableEditor.ec:314
+#: ./src/gui/TableEditor.ec:322
 msgid "Table Editor"
 msgstr "Table Editor"
 
-#: .\src\EDB.ec:557
+#: ./src/EDB.ec:557
 msgid "Unable to detect if table exists!\n"
 msgstr "Unable to detect if table exists!\n"
 
-#: .\src\gui\TableEditor.ec:198
-#: .\src\gui\TableEditor.ec:215
+#: ./src/gui/TableEditor.ec:852
+#: ./src/gui/TableEditor.ec:871
 msgid "WordList match cannot be found in database."
 msgstr "WordList match cannot be found in database."
 
-#: .\src\gui.ec:780
+#: ./src/gui.ec:801
 msgid "You are about to delete an entry.\nDo you wish to continue?"
 msgstr "You are about to delete an entry.\nDo you wish to continue?"
 
-#: .\src\gui\TableEditor.ec:130
+#: ./src/gui/TableEditor.ec:325
 msgid "You are about to permanently remove an entry.\nDo you wish to continue?"
 msgstr "You are about to permanently remove an entry.\nDo you wish to continue?"
 
-#: .\src\gui\TableEditor.ec:122
-#: .\src\gui.ec:667
+#: ./src/gui/TableEditor.ec:316
+#: ./src/gui.ec:688
 msgid "You have modified this entry. Would you like to save it before proceeding?"
 msgstr "You have modified this entry. Would you like to save it before proceeding?"
 
-#: .\src\gui.ec:756
+#: ./src/gui.ec:777
+#: ./src/gui.ec:783
 msgid "[New]"
 msgstr "[New]"
 
-#: .\src\idList.ec:183
+#: ./src/idList.ec:220
 msgid "item"
 msgstr "item"
 

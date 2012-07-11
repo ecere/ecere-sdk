@@ -1,5 +1,5 @@
 msgid ""
-msgstr 
+msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
@@ -8,78 +8,78 @@ msgstr
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ..\\\n"
+"X-Poedit-Basepath: ../\n"
 
-#: .\extract.ec:142
+#: ./extract.ec:142
 msgid "Browse..."
 msgstr "Browse..."
 
-#: .\extract.ec:186
+#: ./extract.ec:186
 msgid "Created"
 msgstr "Created"
 
-#: .\extract.ec:177
+#: ./extract.ec:177
 msgid "Done."
 msgstr "Done."
 
-#: .\extract.ec:297
+#: ./extract.ec:297
 msgid "ECERE Archive - %s"
 msgstr "ECERE Archive - %s"
 
-#: .\extract.ec:303
+#: ./extract.ec:303
 msgid "ECERE Self-Extractable Archive"
 msgstr "ECERE Self-Extractable Archive"
 
-#: .\extract.ec:152
+#: ./extract.ec:152
 msgid "Exit"
 msgstr "Exit"
 
-#: .\extract.ec:155
+#: ./extract.ec:155
 msgid "Extract"
 msgstr "Extract"
 
-#: .\extract.ec:138
+#: ./extract.ec:138
 msgid "Extract to"
 msgstr "Extract to"
 
-#: .\extract.ec:83
+#: ./extract.ec:83
 msgid "Extracting %s..."
 msgstr "Extracting %s..."
 
-#: .\extract.ec:160
+#: ./extract.ec:160
 msgid "Extracting Files..."
 msgstr "Extracting Files..."
 
-#: .\extract.ec:177
+#: ./extract.ec:177
 msgid "Extraction Completed"
 msgstr "Extraction Completed"
 
-#: .\extract.ec:183
+#: ./extract.ec:183
 msgid "File"
 msgstr "File"
 
-#: .\extract.ec:207
+#: ./extract.ec:207
 msgid "Hide Files"
 msgstr "Hide Files"
 
-#: .\extract.ec:185
+#: ./extract.ec:185
 msgid "Modified"
 msgstr "Modified"
 
-#: .\extract.ec:187
+#: ./extract.ec:187
 msgid "Select extraction directory"
 msgstr "Select extraction directory"
 
-#: .\extract.ec:184
+#: ./extract.ec:184
 msgid "Size"
 msgstr "Size"
 
-#: .\extract.ec:120
+#: ./extract.ec:120
 msgid "Use paths from archive..."
 msgstr "Use paths from archive..."
 
-#: .\extract.ec:117
-#: .\extract.ec:195
+#: ./extract.ec:117
+#: ./extract.ec:195
 msgid "View Files"
 msgstr "View Files"
 

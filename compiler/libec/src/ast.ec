@@ -2877,8 +2877,9 @@ public void OutputIntlStrings()
       {
          char * filePrefix = "";
          if(!(srcFile[0] && (srcFile[1] == ':' || srcFile[0] == '/')))
-            filePrefix = (GetRuntimePlatform() == win32) ? ".\\" : "./";
-         GetSystemPathBuffer(srcFileFixed, srcFile);
+            filePrefix = "./"; //(GetRuntimePlatform() == win32) ? ".\\" : "./";
+         // GetSystemPathBuffer(srcFileFixed, srcFile);
+         GetSlashPathBuffer(srcFileFixed, srcFile);
          for(s : intlStrings)
          {
             // TOFIX: (#654) ContextStringPair * pair = &s;

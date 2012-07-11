@@ -4255,9 +4255,7 @@ extern char *  __ecereNameSpace__ecere__sys__ChangeExtension(char *  string, cha
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(char *  fileName, int mode);
 
-extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
-
-extern char *  __ecereNameSpace__ecere__sys__GetSystemPathBuffer(char *  d, char *  p);
+extern char *  __ecereNameSpace__ecere__sys__GetSlashPathBuffer(char *  d, char *  p);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__MapIterator;
 
@@ -4312,8 +4310,8 @@ if(f)
 char * filePrefix = "";
 
 if(!(srcFile[0] && (srcFile[1] == ':' || srcFile[0] == '/')))
-filePrefix = (__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? ".\\" : "./";
-__ecereNameSpace__ecere__sys__GetSystemPathBuffer(srcFileFixed, srcFile);
+filePrefix = "./";
+__ecereNameSpace__ecere__sys__GetSlashPathBuffer(srcFileFixed, srcFile);
 {
 struct __ecereNameSpace__ecere__com__MapIterator s = (s.container = (void *)0, s.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&s, (intlStrings)), s);
 

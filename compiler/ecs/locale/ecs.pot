@@ -1,5 +1,5 @@
 msgid ""
-msgstr 
+msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
@@ -8,9 +8,9 @@ msgstr
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ..\\\n"
+"X-Poedit-Basepath: ../\n"
 
-#: .\ecs.ec:1704
+#: ./ecs.ec:1704
 msgid "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n"
 msgstr "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n"
 

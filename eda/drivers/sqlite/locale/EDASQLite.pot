@@ -1,5 +1,5 @@
 msgid ""
-msgstr 
+msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
@@ -8,25 +8,25 @@ msgstr
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ..\\\n"
+"X-Poedit-Basepath: ../\n"
 
-#: .\EDASQLite.ec:443
+#: ./EDASQLite.ec:453
 msgid "BEGIN FAILED!"
 msgstr "BEGIN FAILED!"
 
-#: .\EDASQLite.ec:454
+#: ./EDASQLite.ec:464
 msgid "COMMIT FAILED!"
 msgstr "COMMIT FAILED!"
 
-#: .\EDASQLite.ec:188
+#: ./EDASQLite.ec:192
 msgid "EDASQLite: Can't open database (%s): %s\n"
 msgstr "EDASQLite: Can't open database (%s): %s\n"
 
-#: .\EDASQLite.ec:595
+#: ./EDASQLite.ec:605
 msgid "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 msgstr "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 
-#: .\EDASQLite.ec:556
+#: ./EDASQLite.ec:566
 msgid "WARNING: Table not yet created for class "
 msgstr "WARNING: Table not yet created for class "
 

@@ -1,5 +1,5 @@
 msgid ""
-msgstr 
+msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
@@ -8,37 +8,37 @@ msgstr
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: ..\\\n"
+"X-Poedit-Basepath: ../\n"
 
-#: .\..\sqlite\EDASQLite.ec:443
+#: .\..\sqlite\EDASQLite.ec:453
 msgid "BEGIN FAILED!"
 msgstr "BEGIN FAILED!"
 
-#: .\..\sqlite\EDASQLite.ec:454
+#: .\..\sqlite\EDASQLite.ec:464
 msgid "COMMIT FAILED!"
 msgstr "COMMIT FAILED!"
 
-#: .\EDASQLiteCipher.ec:45
+#: ./EDASQLiteCipher.ec:45
 msgid "Can't open database (%s): %s\n"
 msgstr "Can't open database (%s): %s\n"
 
-#: .\..\sqlite\EDASQLite.ec:188
+#: .\..\sqlite\EDASQLite.ec:192
 msgid "EDASQLite: Can't open database (%s): %s\n"
 msgstr "EDASQLite: Can't open database (%s): %s\n"
 
-#: .\EDASQLiteCipher.ec:61
+#: ./EDASQLiteCipher.ec:61
 msgid "EDASQLiteCipher: incorrect password!"
 msgstr "EDASQLiteCipher: incorrect password!"
 
-#: .\EDASQLiteCipher.ec:57
+#: ./EDASQLiteCipher.ec:57
 msgid "EDASQLiteCipher: password is correct, database has been initialized"
 msgstr "EDASQLiteCipher: password is correct, database has been initialized"
 
-#: .\..\sqlite\EDASQLite.ec:595
+#: .\..\sqlite\EDASQLite.ec:605
 msgid "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 msgstr "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 
-#: .\..\sqlite\EDASQLite.ec:556
+#: .\..\sqlite\EDASQLite.ec:566
 msgid "WARNING: Table not yet created for class "
 msgstr "WARNING: Table not yet created for class "
 

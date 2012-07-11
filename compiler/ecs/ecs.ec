@@ -1727,6 +1727,9 @@ class SymbolgenApp : Application
 
          //if(!strcmp(ext, "c"))
          {
+            String symbolsDir = GetSymbolsDir();
+            // Only generating .pot files when building from release.* directory for now
+            bool outputPot = symbolsDir && SearchString(symbolsDir, 0, "release.", false, false);
             Map<ContextStringPair, List<String> > intlStrings { };
             MapIterator<ContextStringPair, List<String>> it { map = intlStrings };
 
@@ -1905,7 +1908,7 @@ class SymbolgenApp : Application
             }
             WriteMain(output);
 
-            if(intlStrings.count)
+            if(outputPot && intlStrings.count)
             {
                File potFile;
                char potFileName[MAX_LOCATION];
@@ -1920,7 +1923,7 @@ class SymbolgenApp : Application
                {
                   // Write header:
                   potFile.Puts("msgid \"\"\n");
-                  potFile.Puts("msgstr ""\n");
+                  potFile.Puts("msgstr \"\"\n");
                   potFile.Puts("\"Project-Id-Version: \\n\"\n");
                   potFile.Puts("\"POT-Creation-Date: \\n\"\n");
                   potFile.Puts("\"PO-Revision-Date: \\n\"\n");
@@ -1929,7 +1932,7 @@ class SymbolgenApp : Application
                   potFile.Puts("\"MIME-Version: 1.0\\n\"\n");
                   potFile.Puts("\"Content-Type: text/plain; charset=iso-8859-1\\n\"\n");
                   potFile.Puts("\"Content-Transfer-Encoding: 8bit\\n\"\n");
-                  potFile.Puts("\"X-Poedit-Basepath: ..\\\\\\n\"\n");
+                  potFile.Puts("\"X-Poedit-Basepath: ../\\n\"\n");
                   potFile.Puts("\n");
 
                   for(i : intlStrings)
