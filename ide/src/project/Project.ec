@@ -992,6 +992,7 @@ private:
    }
 #endif
 
+   // This method is only called from Debugger, should be moved to Debugger class?
 #ifndef MAKEFILE_GENERATOR
    bool GetRelativePath(char * filePath, char * relativePath)
    {
@@ -1004,6 +1005,24 @@ private:
          strcpy(relativePath, strcmp(node.path, ".") ? node.path : "");
          PathCatSlash(relativePath, node.name);
          return true;
+      }
+      else
+      {
+         // Tweak for automatically resolving symbol loader modules
+         char * sl = strstr(moduleName, ".main.ec");
+         if(sl && (*sl = 0, !strcmpi(moduleName, name)))
+         {
+            char objDir[MAX_LOCATION];
+            DirExpression objDirExp = GetObjDir(ide.debugger.currentCompiler, ide.debugger.prjConfig);
+            strcpy(objDir, objDirExp.dir);
+            delete objDirExp;
+            ChangeCh(objDir, '\\', '/'); // TODO: this is a hack, paths should never include win32 path seperators - fix this in ProjectSettings and ProjectLoad instead
+            ReplaceSpaces(objDir, objDir);
+            strcpy(relativePath, objDir);
+            *sl = '.';
+            PathCatSlash(relativePath, moduleName);
+            return true;
+         }
       }
       // WARNING: On failure, relative path is uninitialized
       return false;   
