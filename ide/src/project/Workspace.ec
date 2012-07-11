@@ -601,6 +601,19 @@ public:
                   project = p;
                   break;
                }
+               // Handle symbol loader modules:
+               {
+                  char moduleName[MAX_FILENAME];
+                  char * sl;
+                  GetLastDirectory(bp.absoluteFilePath, moduleName);
+                  // Tweak for automatically resolving symbol loader modules
+                  sl = strstr(moduleName, ".main.ec");
+                  if(sl && (*sl = 0, !strcmpi(moduleName, p.name)))
+                  {
+                     project = p;
+                     break;
+                  }
+               }
             }
             if(!project)
             {

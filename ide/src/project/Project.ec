@@ -1013,7 +1013,27 @@ private:
          if(sl && (*sl = 0, !strcmpi(moduleName, name)))
          {
             char objDir[MAX_LOCATION];
-            DirExpression objDirExp = GetObjDir(ide.debugger.currentCompiler, ide.debugger.prjConfig);
+            DirExpression objDirExp;
+            CompilerConfig compiler = ide.debugger.currentCompiler;
+            ProjectConfig config = ide.debugger.prjConfig;
+            // This is not perfect, as multiple source files exist for the symbol loader module...
+            // We try to set it in the debug config object directory.
+            if(!compiler || !config)
+            {
+               // If we're not currently debugging, set a breakpoint in the active compiler/config
+               compiler = GetCompilerConfig();
+               config = this.config;
+               // If the current config is not debuggable, set it in the first debuggable config found
+               if(config && !config.options.debug)
+               {
+                  for(c : configurations; c.options.debug)
+                  {
+                     config = c;
+                     break;
+                  }
+               }
+            }
+            objDirExp = GetObjDir(compiler, config);
             strcpy(objDir, objDirExp.dir);
             delete objDirExp;
             ChangeCh(objDir, '\\', '/'); // TODO: this is a hack, paths should never include win32 path seperators - fix this in ProjectSettings and ProjectLoad instead
