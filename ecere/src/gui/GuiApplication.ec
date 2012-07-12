@@ -1248,6 +1248,8 @@ public:
       FileMonitor monitor, next;
       static int reentrant = 0;
       
+      // Reentrant FileNotification is asking for trouble since each monitor is spawning a Modal() MessageBox
+      if(reentrant) return false;
       // printf("[%d] Waiting in ProcessFileNotifications for fileMonitor Mutex %x...\n", GetCurrentThreadID(), globalSystem.fileMonitorMutex);
       globalSystem.fileMonitorMutex.Wait();
       reentrant++;

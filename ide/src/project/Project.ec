@@ -793,7 +793,7 @@ private:
       char temp[4096];
       sprintf(temp, $"The project %s was modified by another application.\n"
             "Would you like to reload it and lose your changes?", name);
-      if(MessageBox { type = yesNo, master = ide.parent.parent, //this/*.parent*/,
+      if(MessageBox { type = yesNo, master = ide,
             text = $"Project has been modified", contents = temp }.Modal() == yes)
       {
          Project project = LoadProject(filePath);
