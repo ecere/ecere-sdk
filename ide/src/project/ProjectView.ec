@@ -451,6 +451,35 @@ class ProjectView : Window
       }
       if(buildInProgress)
          return false;
+
+      if(modifiedDocument)
+      {
+         DialogResult dialogRes;
+         char msg[2048];
+         bool first = true;
+         strcpy(msg, $"You have modified projects.\nSave changes to ");
+         for(p : ide.workspace.projects)
+         {
+            if(p.topNode.modified)
+            {
+               if(!first) strcat(msg, ", ");
+               strcat(msg, p.name);
+               first = false;
+            }
+         }
+         strcat(msg, "?");
+
+         dialogRes = MessageBox { master = master, type = yesNoCancel, text = parent.caption ? parent.caption : rootWindow.caption, contents = msg }.Modal();
+
+         if(dialogRes == yes)
+         {
+            // TOFIX: Precomp error if brackets are taken out
+            return (DialogResult)MenuFileSave(null, 0) != cancel;
+         }
+         else if(dialogRes == cancel)
+            return false;
+         modifiedDocument = false;
+      }
       return true;
    }
 
