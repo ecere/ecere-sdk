@@ -187,6 +187,7 @@ class NewProjectDialog : Window
             editBox.Home();
             */
          }
+         project.StartMonitoring();
 
          if(project && projectWindow)
          {
@@ -475,6 +476,7 @@ class QuickProjectDialog : Window
          }
          else
          {
+            // TOCHECK: Why is the Quick project creating a form???
             char className[256];
             char varName[256];
             CodeEditor codeEditor = projectWindow.CreateNew("Form", "form", "Window", className);
@@ -499,6 +501,7 @@ class QuickProjectDialog : Window
             projectWindow.modifiedDocument = false;
             project.topNode.modified = false;
          }
+         project.StartMonitoring();
 
          visible = false;
 

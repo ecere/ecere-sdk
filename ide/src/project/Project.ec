@@ -782,6 +782,12 @@ private:
       return true;
    }
 
+   bool StopMonitoring()
+   {
+      fileMonitor.StopMonitoring();
+      return true;
+   }
+
    bool OnProjectModified(FileChange fileChange, char * param)
    {
       char temp[4096];

@@ -473,12 +473,17 @@ class ProjectView : Window
    {
       for(prj : ide.workspace.projects)
       {
-         if(prj.topNode.modified && prj.Save(prj.filePath))
+         if(prj.topNode.modified)
          {
-            // ShowOutputBuildLog(true);
-            // DisplayCompiler(compiler, false);
-            // ProjectUpdateMakefileForAllConfigs(prj);
-            prj.topNode.modified = false;
+            prj.StopMonitoring();
+            if(prj.Save(prj.filePath))
+            {
+               // ShowOutputBuildLog(true);
+               // DisplayCompiler(compiler, false);
+               // ProjectUpdateMakefileForAllConfigs(prj);
+               prj.topNode.modified = false;
+            }
+            prj.StartMonitoring();
          }
       }
       modifiedDocument = false;
@@ -1479,25 +1484,27 @@ class ProjectView : Window
       Project prj = node ? node.project : null;
       if(prj)
       {
+         prj.StopMonitoring();
          if(prj.Save(prj.filePath))
          {
+            Project modPrj = null;
             // ShowOutputBuildLog(true);
             // DisplayCompiler(compiler, false);
             // ProjectUpdateMakefileForAllConfigs(prj);
             prj.topNode.modified = false;
-            prj = null;
             for(p : ide.workspace.projects)
             {
                if(p.topNode.modified)
                { 
-                  prj = p;
+                  modPrj = p;
                   break;
                }
             }
-            if(!prj)
+            if(!modPrj)
                modifiedDocument = false;
             Update(null);
          }
+         prj.StartMonitoring();
       }
       return true;
    }
