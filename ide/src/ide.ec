@@ -1774,6 +1774,7 @@ class IDEWorkSpace : Window
          ;
       else if(!strcmp(extension, ProjectExtension) || !strcmp(extension, WorkspaceExtension))
       {
+         needFileModified = false;
          if(openMethod == normal)
          {
             if(DontTerminateDebugSession($"Open Project"))
@@ -1921,6 +1922,7 @@ class IDEWorkSpace : Window
                   if(prj)
                   {
                      CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.compiler);
+                     prj.StartMonitoring();
                      workspace.projects.Add(prj);
                      if(projectView)
                         projectView.AddNode(prj.topNode, null);

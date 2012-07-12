@@ -899,7 +899,10 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
                   PathCatSlash(projectFilePath, equal);
                   newProject = LoadProject(projectFilePath);
                   if(newProject)
+                  {
                      workspace.projects.Add(newProject);
+                     newProject.StartMonitoring();
+                  }
                   else if(workspace.projects.count == 0)
                   {
                      delete workspace;
@@ -1106,6 +1109,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
             }
             if(project)
             {
+               project.StartMonitoring();
                workspace.projects.Add(project);
                workspace.name = CopyString(project.name);
             }
@@ -1169,6 +1173,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
 
       if(newProject)
       {
+         newProject.StartMonitoring();
          workspace = Workspace { workspaceFile = filePath };
 
          workspace.projects.Add(newProject);

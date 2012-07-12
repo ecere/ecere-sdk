@@ -114,12 +114,12 @@ private:
    TimeStamp modified;
    FileSize size;
    FileAttribs attribs;
-   virtual bool any_object::OnDirNotify(FileChange action, char * fileName, char * param);
+   public virtual bool any_object::OnDirNotify(FileChange action, char * fileName, char * param);
 
    // For directory monitors
    bool directory;
    OldList files;
-   virtual bool any_object::OnFileNotify(FileChange action, char * param);
+   public virtual bool any_object::OnFileNotify(FileChange action, char * param);
 
    /*
 #if defined(__WIN32__)

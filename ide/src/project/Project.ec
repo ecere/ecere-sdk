@@ -762,15 +762,67 @@ private:
    String description;
    String license;
    String compilerConfigsDir;
-
-   ~Project()
+#ifndef MAKEFILE_GENERATOR
+   FileMonitor fileMonitor
    {
-      /* // THIS IS NOW AUTOMATED WITH A project CHECK IN ProjectNode
-      topNode.configurations = null;
-      topNode.platforms = null;
-      topNode.options = null;
-      */
+      this, FileChange { modified = true };
+      bool OnFileNotify(FileChange action, char * param)
+      {
+         fileMonitor.StopMonitoring();
+         if(OnProjectModified(action, param))
+            fileMonitor.StartMonitoring();
+         return true;
+      }
+   };
 
+   bool StartMonitoring()
+   {
+      fileMonitor.fileName = filePath;
+      fileMonitor.StartMonitoring();
+      return true;
+   }
+
+   bool OnProjectModified(FileChange fileChange, char * param)
+   {
+      char temp[4096];
+      sprintf(temp, $"The project %s was modified by another application.\n"
+            "Would you like to reload it and lose your changes?", name);
+      if(MessageBox { type = yesNo, master = ide.parent.parent, //this/*.parent*/,
+            text = $"Project has been modified", contents = temp }.Modal() == yes)
+      {
+         Project project = LoadProject(filePath);
+         if(project)
+         {
+            ProjectView projectView = ide.projectView;
+            DataRow prev = topNode.row ? topNode.row.previous : null;
+            FileMonitor fm = fileMonitor;
+
+            if(projectView) projectView.DeleteNode(topNode);
+
+            *this = *project;
+            delete fileMonitor;
+            fileMonitor = fm;
+            topNode.project = this;
+
+            if(projectView)
+            {
+               projectView.AddNode(topNode, null);
+               topNode.row.Move(prev);
+            }
+            eSystem_Delete(project);
+         }
+         return true;
+      }
+      return true;
+   }
+
+#endif
+
+   // This frees contents without freeing the instance
+   // For use from destructor and for file monitor reloading
+   // (To work around JSON loader (LoadProject) always returning a new instance)
+   void Free()
+   {
       if(platforms) { platforms.Free(); delete platforms; }
       if(configurations) { configurations.Free(); delete configurations; }
       if(files) { files.Free(); delete files; }
@@ -785,6 +837,16 @@ private:
       delete filePath;
       delete topNode;
       delete name;
+   }
+
+   ~Project()
+   {
+      /* // THIS IS NOW AUTOMATED WITH A project CHECK IN ProjectNode
+      topNode.configurations = null;
+      topNode.platforms = null;
+      topNode.options = null;
+      */
+      Free();
    }
 
    property ProjectConfig config
