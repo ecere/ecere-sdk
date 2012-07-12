@@ -1257,6 +1257,8 @@ public:
 
          next = monitor.next;
          incref monitor;
+         if(next)
+            incref next;
          
          if(!monitor.reentrant && !monitor.toBeFreed)
          {
@@ -1287,6 +1289,10 @@ public:
             monitor.reentrant = false;
          }
          delete monitor;
+         if(next && next._refCount > 1)
+            next._refCount--;
+         else
+            delete next;
       }
       reentrant--;
       if(!reentrant)
