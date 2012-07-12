@@ -638,12 +638,19 @@ class Win32Interface : Interface
                if(msg == WM_CHAR || msg == WM_DEADCHAR || PeekMessage(&charMsg, windowHandle, min, max, PM_REMOVE))
                {
                   ch = (msg == WM_CHAR || msg == WM_DEADCHAR) ? wParam : (unichar)charMsg.wParam;
+                  // TOCHECK: What is this for again? Fixing some obscure activation status?
+                  // -- I believe this was somehow allowing 'unmaximizing', but was causing problems
+                  // as there was no way to prevent AltEnter from doing so (e.g. when it is used for a node property)
+                  // Worked around by fixing ProcessHotKeys to properly check for sysButtons in parent.parent when sys buttons
+                  // are placed inside a menu bar for a document
+                  /*
                   if(msg == WM_SYSKEYDOWN && ch == 13)
                   {
-                     // TOCHECK: What is this for again? Fixing some obscure activation status?
                      ShowWindow(window.windowHandle, window.state == maximized ? SW_MAXIMIZE : SW_SHOWNORMAL);
+                     // This last line been commented out for a long time:
                      // window.ExternalActivate(true, true, window, null);
                   }
+                  */
                   if(msg == WM_SYSKEYUP || msg == WM_KEYUP)
                   {
                      if(!ProcessKeyMessage(window, WM_KEYDOWN, 0x40000000, 0, ch))

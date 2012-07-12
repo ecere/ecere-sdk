@@ -4657,9 +4657,12 @@ private:
             Window hotKeyWindow = hotKey.window;
             Window parent = hotKeyWindow.parent;
             Window prevActiveWindow = activeChild;
+            // For when sys buttons are placed inside the menu bar
+            if(parent && parent._class == class(PopupMenu))
+               parent = parent.parent;
 
-            // Don't process non-visible buttons, but make an exception for the Alt-F4 with Native Decorations turned on
-            if(hotKeyWindow.style.hidden && (!hotKeyWindow.style.nonClient || !parent || !parent.nativeDecorations || (hotKeyWindow != parent.sysButtons[2] && hotKeyWindow != parent.sysButtons[1] )))
+            // Don't process non-visible buttons, but make an exception for the Alt-F4 with Native Decorations turned on; This handles alt+enter as well
+            if(hotKeyWindow.style.hidden && (!hotKeyWindow.style.nonClient || !parent || !parent.nativeDecorations || (hotKeyWindow != parent.sysButtons[2] && hotKeyWindow != parent.sysButtons[1])))
                continue;
 
             if(prevActiveWindow) incref prevActiveWindow;
