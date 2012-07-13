@@ -260,7 +260,6 @@ public:
                   }
                }
 
-               // TODO: FIX row indices
                index = this.index+1;
                for(search = GetNextRow(); search; search = search.GetNextRow())
                   search.index = index++;
@@ -277,6 +276,9 @@ public:
                listBox.NotifyCollapse(listBox.master, listBox, this, value);
             }
          }
+#ifdef _DEBUG
+         listBox.CheckConsistency();
+#endif
       }
       get { return this ? collapsed : false; }
    };
@@ -300,11 +302,12 @@ public:
          {
             DataRow search;
             DataRow after = value ? value.subRows.last : listBox.rows.last;
+            int ixCount = (!collapsed && subRows.count) ? GetLastRow().index - index + 1 : 1;
             if(parent.IsExpanded())
             {
                for(search = GetNextRow(); search; search = search.GetNextRow())
-                  search.index--;         
-               listBox.rowCount--;
+                  search.index -= ixCount;
+               listBox.rowCount -= ixCount;
             }
 
             listBox.HideEditBox(false, false, true);
@@ -351,17 +354,19 @@ public:
 
                if(after && after.subRows.first && !after.collapsed)
                {
-                  for(search = after.subRows.last; !search.collapsed && search.subRows.last; )
-                     search = search.subRows.last;
+                  search = after.GetLastRow();
                   index = search.index + 1;
                }
                else
                   index = after ? (after.index + 1) : (index + 1);
 
-               listBox.rowCount++;
+               listBox.rowCount += ixCount;
 
-               for(search = GetNextRow(); search; search = search.GetNextRow())
-                  search.index++;            
+               {
+                  int ix = index+1;
+                  for(search = GetNextRow(); search; search = search.GetNextRow())
+                     search.index = ix++;
+               }
 
                listBox.SetScrollArea(
                   listBox.width,
@@ -419,6 +424,7 @@ public:
       }
    }
 
+   // NOTE: This does not support reparenting (Use row.parent = first)
    void Move(DataRow after)
    {
       if(this)
@@ -430,6 +436,7 @@ public:
             int afterIndex = -1;
             int headerSize = ((listBox.style.header) ? listBox.rowHeight : 0);
             int height = listBox.clientSize.h + 1 - headerSize;
+            int ixCount = (!collapsed && subRows.count) ? GetLastRow().index - index + 1 : 1;
 
             if(!after || after.index < index)
             {
@@ -439,38 +446,48 @@ public:
                // All rows between AFTER (exclusive) and ROW (exclusive) are incremented by one
                // ROW is equal to AFTER's index + 1
 
-               // TODO: Fix indices
                for(search = after ? after.next : listBox.rows.first; search && search != this; search = search.GetNextRow())
-                  search.index++;
+                  search.index += ixCount;
 
                if(after && after.subRows.first && !after.collapsed)
                {
-                  for(search = after.subRows.last; !search.collapsed && search.subRows.last; )
-                     search = search.subRows.last;
+                  search = after.GetLastRow();
                   index = search.index + 1;
                }
                else
                   index = after ? (after.index + 1) : 0;
+
+               // Fix indices of sub rows
+               if(!collapsed)
+               {
+                  int c, ix = index+1;
+                  for(c = 1, search = GetNextRow(); search && c < ixCount; c++, search = search.GetNextRow())
+                     search.index = ix++;
+               }
             }
             else
             {
+               DataRow nextRow = GetNextRow();
                if(this == listBox.firstRowShown)
                {
-                  listBox.firstRowShown = GetNextRow();
+                  listBox.firstRowShown = nextRow;
+                  index = after ? (after.index + 1) : 0;
                }
 
                // All rows between ROW (exclusive) and AFTER (inclusive) are decremented by one
                // ROW is equal to AFTER's index
 
-               // TODO: Fix indices
-               for(search = GetNextRow(); search; search = search.GetNextRow())
+               for(search = nextRow; search; search = search.GetNextRow())
                {
-                  search.index--;
+                  search.index -= ixCount;
                   if(search == after) break;
                }
-               index = after ? (after.index + 1) : 0;
             }
             listBox.rows.Move(this, after);
+
+#ifdef _DEBUG
+            listBox.CheckConsistency();
+#endif
 
             listBox.HideEditBox(true, false, true);
             if(listBox)
@@ -654,7 +671,6 @@ public:
 
                listBox.rowCount++;
 
-               // TODO: Fix indices
                for(search = row.GetNextRow(); search; search = search.GetNextRow())
                   search.index++;            
 
@@ -669,6 +685,9 @@ public:
 
             listBox.modifiedDocument = true;
          }
+#ifdef _DEBUG
+         listBox.CheckConsistency();
+#endif
          return row;
       }
       return null;
@@ -812,7 +831,6 @@ private:
       {
          _SortSubRows(listBox.sortField, listBox.sortField.sortOrder);
 
-         // TODO: Recompute row indices
          {
             DataRow search;
             int index = this.index;
@@ -861,6 +879,14 @@ private:
       return row;
    }
 
+   private DataRow GetLastRow()
+   {
+      DataRow row = this;
+      while(row && !row.collapsed && row.subRows.last)
+         row = row.subRows.last;
+      return row;
+   }
+
    DataRow prev, next;
    OldList cells;
    int tag;
@@ -891,7 +917,7 @@ public:
    property DataField currentField
    {
       get { return currentField; }
-      // TODO: Needs definition of what this is, testing
+      // TODO: Document what this does
       set
       {
          currentField = value;
@@ -1031,6 +1057,19 @@ public:
    virtual bool Window::NotifyModified(ListBox listBox, DataRow row);   
    virtual bool Window::NotifyEditing(ListBox listBox, DataRow row);
 
+#ifdef _DEBUG
+   private void CheckConsistency()
+   {
+      DataRow r;
+      int index = 0;
+      for(r = rows.first; r; r = r.GetNextRow())
+      {
+         if(r.index != index++)
+            PrintLn("bug");
+      }
+   }
+#endif
+
    // Methods
    void AddField(DataField addedField)
    {
@@ -1040,7 +1079,6 @@ public:
          if(fields.first && ((DataField)fields.first).defaultField)
          {
             DataField defaultField = fields.first;
-            // TODO:
             defaultField.Free();
             delete defaultField;
          }
@@ -1270,6 +1308,9 @@ public:
                   SetScrollPosition(0, MAXINT - rowHeight);
                modifiedDocument = true;
             }
+#ifdef _DEBUG
+            CheckConsistency();
+#endif
             return row;
          }
       }
@@ -1299,7 +1340,6 @@ public:
             rows.Insert(after, row);
             row.listBox = this;
 
-            // TODO: FIX row indices
             for(search = row.GetNextRow(); search; search = search.GetNextRow())
                search.index++;         
 
@@ -1333,6 +1373,9 @@ public:
             if(style.autoScroll)
                SetScrollPosition(0, MAXINT - rowHeight);
             modifiedDocument = true;
+#ifdef _DEBUG
+            CheckConsistency();
+#endif
             return row;
          }
       }
@@ -1394,7 +1437,6 @@ public:
 
          if(row.parent.IsExpanded())
          {
-            // TODO: FIX row indices
             for(search = row.GetNextRow(); search; search = search.GetNextRow())
                search.index--;         
             this.rowCount--;
@@ -1438,6 +1480,9 @@ public:
          modifiedDocument = true;
 
          Update(null);
+#ifdef _DEBUG
+         CheckConsistency();
+#endif
       }
    }
 
@@ -1683,7 +1728,6 @@ public:
          for(search = rows.first; search; search = search.next)
             search._SortSubRows(field, order);
 
-         // TODO: Recompute row indices
          {
             int index = 0;
             for(search = rows.first; search; search = search.GetNextRow())
@@ -4159,9 +4203,7 @@ private:
                      }
                      break;
                   case end:
-                     // TODO: Find very last row
-                     for(currentRow = rows.last; currentRow && !currentRow.collapsed && currentRow.subRows.last;)
-                        currentRow = currentRow.subRows.last;
+                     currentRow = lastRow.GetLastRow();
                      break;
                   case pageUp:
                   {
