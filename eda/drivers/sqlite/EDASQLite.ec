@@ -1110,6 +1110,10 @@ class SQLiteRow : DriverRow
          if(useIndex)
          {
             int c;
+            /* // Code to not rely on curStatement being set up
+            SQLiteRow dataRow = (SQLiteRow)tbl.CreateRow();
+            dataRow.GoToSysID((uint)rowID);
+            */
             for(c = ((move == next) ? 0 : tbl.indexFieldsCount-1); (move == next) ? c < tbl.indexFieldsCount : c >= 0; (move == next) ? c++ : c--)
             {
                FieldIndex * fIndex = &tbl.indexFields[c];
@@ -1130,6 +1134,7 @@ class SQLiteRow : DriverRow
                   data = (int64)new0 byte[type.structSize];
                   dataPtr = (void *) data;
                }
+               // ((bool (*)())(void *)dataRow.GetData)(dataRow, fld, type, (type.type == structClass) ? (void *)data : &data);
                ((bool (*)())(void *)this.GetData)(this, fld, type, (type.type == structClass) ? (void *)data : &data);
                if(type.type == normalClass || type.type == noHeadClass)
                   dataPtr = (void *) data;
@@ -1147,6 +1152,7 @@ class SQLiteRow : DriverRow
 
                type._vTbl[__ecereVMethodID_class_OnFree](type, dataPtr);
             }
+            // delete dataRow;
          }
 
          // Bind for the rowid
@@ -1162,14 +1168,13 @@ class SQLiteRow : DriverRow
       sqlite3_stmt * stmt = null;
       int bindId = 1;
 
-      if(curStatement) { sqlite3_reset(curStatement); curStatement = null; }
-      if(findStatement) { sqlite3_finalize(findStatement); findStatement = null; }
-      if(nextFindStatement) { sqlite3_finalize(nextFindStatement); nextFindStatement = null; }
-      if(prevFindStatement) { sqlite3_finalize(prevFindStatement); prevFindStatement = null; }
-      if(lastFindStatement) { sqlite3_finalize(lastFindStatement); lastFindStatement = null; }
-
       if(fld == tbl.primaryKey)
       {
+         if(curStatement) { sqlite3_reset(curStatement); curStatement = null; }
+         if(findStatement) { sqlite3_finalize(findStatement); findStatement = null; }
+         if(nextFindStatement) { sqlite3_finalize(nextFindStatement); nextFindStatement = null; }
+         if(prevFindStatement) { sqlite3_finalize(prevFindStatement); prevFindStatement = null; }
+         if(lastFindStatement) { sqlite3_finalize(lastFindStatement); lastFindStatement = null; }
          result = GoToSysID(*(int *)data);
          if(result)
             findSysID = true;
@@ -1185,6 +1190,14 @@ class SQLiteRow : DriverRow
       result = sqlite3_prepare_v2(tbl.db.db, command, -1, &stmt, null);
       BindData(stmt, bindId++, (SQLiteField)fld, data, null);
       BindCursorData(stmt, move, useIndex, &bindId);
+
+      // Currently, we can't reset curStatement until after BindCursorData, as current data is read from it
+      if(curStatement) { sqlite3_reset(curStatement); curStatement = null; }
+      if(findStatement) { sqlite3_finalize(findStatement); findStatement = null; }
+      if(nextFindStatement) { sqlite3_finalize(nextFindStatement); nextFindStatement = null; }
+      if(prevFindStatement) { sqlite3_finalize(prevFindStatement); prevFindStatement = null; }
+      if(lastFindStatement) { sqlite3_finalize(lastFindStatement); lastFindStatement = null; }
+
       curStatement = findStatement = stmt;
       findBindId = bindId;
 
@@ -1252,12 +1265,6 @@ class SQLiteRow : DriverRow
          sqlite3_stmt * stmt = null;
          int bindId = 1;
 
-         if(curStatement) { sqlite3_reset(curStatement); curStatement = null; }
-         if(findStatement) { sqlite3_finalize(findStatement); findStatement = null; }
-         if(nextFindStatement) { sqlite3_finalize(nextFindStatement); nextFindStatement = null; }
-         if(prevFindStatement) { sqlite3_finalize(prevFindStatement); prevFindStatement = null; }
-         if(lastFindStatement) { sqlite3_finalize(lastFindStatement); lastFindStatement = null; }
-
          // Criterias
          sprintf(criterias, "SELECT ROWID, * FROM `%s` WHERE `", tbl.name);
          for(c = 0; c < numFields; c++)
@@ -1278,6 +1285,14 @@ class SQLiteRow : DriverRow
          result = sqlite3_prepare_v2(tbl.db.db, command, -1, &stmt, null);
          BINDDATA;
          BindCursorData(stmt, move, useIndex, &bindId);
+
+         // Currently, we can't reset curStatement until after BindCursorData, as current data is read from it
+         if(curStatement) { sqlite3_reset(curStatement); curStatement = null; }
+         if(findStatement) { sqlite3_finalize(findStatement); findStatement = null; }
+         if(nextFindStatement) { sqlite3_finalize(nextFindStatement); nextFindStatement = null; }
+         if(prevFindStatement) { sqlite3_finalize(prevFindStatement); prevFindStatement = null; }
+         if(lastFindStatement) { sqlite3_finalize(lastFindStatement); lastFindStatement = null; }
+
          curStatement = findStatement = stmt;
          findBindId = bindId;
 
