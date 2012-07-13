@@ -559,6 +559,7 @@ class ProjectView : Window
    bool DisplayCompiler(CompilerConfig compiler, bool cleanLog)
    {
       ide.outputView.buildBox.Logf($"%s Compiler\n", compiler ? compiler.name : $"{problem with compiler selection}");
+      return true;
    }
 
    bool ProjectPrepareForToolchain(Project project, PrepareMakefileMethod method, bool cleanLog, bool displayCompiler,
@@ -979,7 +980,7 @@ class ProjectView : Window
             char documentFileName[MAX_LOCATION];
             if(!fstrcmp(GetSlashPathBuffer(documentFileName, document.fileName), fileName))
                if(!document.MenuFileSave(null, 0))
-                  return;
+                  return result;
          }
       }
 
@@ -1149,6 +1150,7 @@ class ProjectView : Window
 
       ide.Update(null);
       delete compiler;
+      return true;
    }
 
    bool MenuConfig(MenuItem selection, Modifiers mods)
@@ -1266,6 +1268,7 @@ class ProjectView : Window
       if(node != prj.topNode)
          PathCatSlash(folder, node.path);
       ShellOpen(folder);
+      return true;
    }
 
    bool Run(MenuItem selection, Modifiers mods)
@@ -1548,6 +1551,7 @@ class ProjectView : Window
          output.SelectTab(build);
          output.Show();
       }
+      return true;
    }
 
    bool DebugRestart()
