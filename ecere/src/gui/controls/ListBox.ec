@@ -213,6 +213,9 @@ private:
 public class DataRow
 {
    class_no_expansion
+#ifdef _DEBUG
+   bool skipCheck;
+#endif
 public:
    property int tag { set { tag = value; } get { return tag; } };
    property DataRow previous { get { return prev; } };
@@ -277,7 +280,8 @@ public:
             }
          }
 #ifdef _DEBUG
-         listBox.CheckConsistency();
+         if(!skipCheck)
+            listBox.CheckConsistency();
 #endif
       }
       get { return this ? collapsed : false; }
@@ -346,7 +350,15 @@ public:
             parent = value;
 
             if(value && listBox.style.expandOnAdd)
+            {
+#ifdef _DEBUG
+               value.skipCheck = true;
+#endif
                value.collapsed = false;
+#ifdef _DEBUG
+               value.skipCheck = false;
+#endif
+            }
 
             if(value.IsExpanded(this))
             {
