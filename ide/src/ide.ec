@@ -642,7 +642,19 @@ class IDEWorkSpace : Window
       }
       MenuItem fileCloseItem { fileMenu, $"Close", c, ctrlF4, NotifySelect = MenuFileClose };
       MenuDivider { fileMenu };
-      MenuItem fileSaveItem { fileMenu, $"Save", s, ctrlS, bitmap = { ":actions/docSave.png" } };
+      MenuItem fileSaveItem
+      {
+         fileMenu, $"Save", s, ctrlS, bitmap = { ":actions/docSave.png" };
+
+         // For the toolbar button; clients can still override that for the menu item
+         bool Window::NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            Window w = activeClient;
+            if(w)
+               w.MenuFileSave(null, 0);
+            return true;
+         }
+      };
       MenuItem fileSaveAsItem { fileMenu, $"Save As...", a };
       MenuItem fileSaveAllItem { fileMenu, $"Save All", l, NotifySelect = MenuFileSaveAll, bitmap = { ":actions/docSaveAll.png" } };
       MenuDivider { fileMenu };
