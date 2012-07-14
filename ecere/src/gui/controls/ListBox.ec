@@ -1072,6 +1072,7 @@ public:
 #ifdef _DEBUG
    private void CheckConsistency()
    {
+#if 0
       DataRow r;
       int index = 0;
       for(r = rows.first; r; r = r.GetNextRow())
@@ -1079,6 +1080,7 @@ public:
          if(r.index != index++)
             PrintLn("bug");
       }
+#endif
    }
 #endif
 

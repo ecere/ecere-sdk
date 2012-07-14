@@ -98,7 +98,8 @@ private:
 
    bool OnPostCreate()
    {
-      if(type && !readOnly && (type.type == normalClass || type.type == noHeadClass || data))
+      if(type && (!readOnly || (autoSize && type._vTbl[__ecereVMethodID_class_OnEdit] == class(Instance)._vTbl[__ecereVMethodID_class_OnEdit])) &&
+         (type.type == normalClass || type.type == noHeadClass || data))
       {
          // IMPORTANT FIX: If keepEditor is true, we were passing editor rather than the editor's current master
          editor = (Window)type._vTbl[__ecereVMethodID_class_OnEdit](type, 
@@ -115,7 +116,10 @@ private:
                PrintLn("DataBox::OnPostCreate -- autoSize == true");
 #endif*/
             if(eClass_IsDerived(editor._class, class(EditBox)))
+            {
+               ((EditBox)editor).readOnly = readOnly;
                ((EditBox)editor).autoSize = autoSize;
+            }
          }
          else
          {
@@ -129,7 +133,7 @@ private:
 
    void OnRedraw(Surface surface)
    {
-      if(type)
+      if(type && !editor)
       {
          char tempString[1024];
          if(type._vTbl[__ecereVMethodID_class_OnDisplay] == class(Instance)._vTbl[__ecereVMethodID_class_OnDisplay])

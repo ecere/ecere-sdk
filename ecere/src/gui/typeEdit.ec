@@ -172,8 +172,7 @@ static Window OnEdit(Class _class, void * data, Window window, Window master,
          window, master = master, visible = false, //position = { x, y }, 
          borderStyle = 0,
          modifyVirtualArea = false, //sizeAnchor = { { w, h }, isClientH = true };
-         autoSize = (eClass_IsDerived(window._class, class(DataBox)) ? ((DataBox)window).autoSize : false),
-         anchor = { 0, 0, 0, 0 };
+         autoSize = (eClass_IsDerived(window._class, class(DataBox)) ? ((DataBox)window).autoSize : false);
 
          void DataBox::NotifyUpdate(EditBox editBox)
          {
@@ -183,10 +182,15 @@ static Window OnEdit(Class _class, void * data, Window window, Window master,
 
          bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
          {
-            opacity = active ? 1.0f : parent.opacity;
+            opacity = (active && !readOnly) ? 1.0f : parent.opacity;
             return EditBox::OnActivate(active, previous, goOnWithActivation, direct);
          }
       };
+      if(!editBox.autoSize)
+         editBox.anchor = { 0, 0, 0, 0 };
+      else
+         editBox.anchor = { 0, 0 };
+
       if(data)
       {
          bool needClass = false;

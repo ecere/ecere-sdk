@@ -1321,6 +1321,11 @@ private:
 
    void AddFieldBox(FieldBox fieldBox)
    {
+      // I was putting this here to force autosize on the lists (e.g. the Radiologists fields):
+      /*
+      if(!fieldBox.autoSize)
+         fieldBox.autoSize = true;
+      */
       DebugLn("TableEditor::AddFieldBox");
       if(!fieldsBoxes.Find(fieldBox))
       {
@@ -1420,6 +1425,7 @@ private:
          fb.Load();
       OnCreateDynamicLookupEditors();
       internalModifications = false;
+      size = size;   // This seems to be required to fix autoSize on entering order screen
 
       DebugLn("   TODO: implement virtual method TableEditor::OnSubEditorsLoad");
 
