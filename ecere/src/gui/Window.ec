@@ -2184,17 +2184,16 @@ private:
 
    Window GetParentMenuBar()
    {
+      Window result = this;
+      bool notActiveClient = false;
       Window menuBarParent;
       for(menuBarParent = this; menuBarParent; menuBarParent = menuBarParent.parent)
       {
-         if(menuBarParent.menuBar) break;
+         if(menuBarParent.menuBar) { result = notActiveClient ? null : menuBarParent.menuBar; break; }
          if(menuBarParent.parent && /*menuBarParent != */!menuBarParent.parent.activeClient)
-         {
-            menuBarParent = null;
-            break;
-         }
+            notActiveClient = true;
       }
-      return menuBarParent ? menuBarParent.menuBar : null;
+      return result;
    }
 
    void CreateSystemChildren(void)
