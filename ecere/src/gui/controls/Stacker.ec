@@ -314,15 +314,18 @@ private:
    {
       Window child;
       Array<Window> newControls { };
-      for(c : controls)
+      for(c : controls; !c.nonClient)
       {
-         for(child = firstChild; child; child = child.next)
+         child = null;
+         if(!c.destroyed)
          {
-            if(child.nonClient) continue;
-            if(c == child)
+            for(child = firstChild; child; child = child.next)
             {
-               newControls.Add(child);
-               break;
+               if(c == child)
+               {
+                  newControls.Add(child);
+                  break;
+               }
             }
          }
          if(!child)
@@ -454,7 +457,7 @@ private:
          if(bits.scrollable)
          {
             // FOR WHEN SCROLLING OCCURED
-            for(child : controls)
+            for(child : controls; !child.nonClient && child.visible)
                child.anchor = child.anchor;
 
             if(direction == horizontal)
