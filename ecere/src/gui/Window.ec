@@ -8065,7 +8065,7 @@ public:
       set
       {
          background.a = (byte)Min(Max((int)(value * 255), 0), 255);
-         drawBehind = background.a ? false : true;
+         drawBehind = (background.a == 255) ? false : true;
       }
       get { return background.a / 255.0f; }
    };
