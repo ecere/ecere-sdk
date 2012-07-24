@@ -7797,6 +7797,12 @@ public:
                parent.childrenOrder.Delete(order);
             cycle = null;
             order = null;
+            // *** TODO: Added this here to solve crash on setting parent to null before destroying/destructing ***
+            //           Should something else be done?
+            if(parent && parent.activeChild == this)
+               parent.activeChild = null;
+            if(parent && parent.activeClient == this)
+               parent.activeClient = null;
 
             //if(created)
             {
