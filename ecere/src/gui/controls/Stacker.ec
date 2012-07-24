@@ -135,7 +135,20 @@ public:
 
    property Window flipper { set { flipper = value; } get { return flipper; } };
    property bool flipSpring { set { bits.flipSpring = value; } get { return bits.flipSpring; } };
-   property bool autoSize { set { bits.autoSize = value; } get { return bits.autoSize; } };
+   property bool autoSize
+   {
+      set
+      {
+         bits.autoSize = value;
+         if(value)
+         {
+            // Auto Size implementation conflicts with this base Window property, resulting in overhead and potential glitches:
+            // dontAutoScrollArea = false;
+            modifyVirtualArea = false;
+         }
+      }
+      get { return bits.autoSize; }
+   };
    property int margin { set { margin = value; } get { return margin; } };
    property bool endButtons
    {
