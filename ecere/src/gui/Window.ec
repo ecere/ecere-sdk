@@ -9091,6 +9091,14 @@ public:
       get { return (bool)modifyVirtArea; }
    };
 
+   property bool dontAutoScrollArea
+   {
+      property_category $"Behavior"
+      // Activating a child control out of view will automatically scroll to make it in view
+      set { noAutoScrollArea = value; }
+      get { return (bool)noAutoScrollArea; }
+   };
+
    property char * fileName
    {
       property_category $"Document"
