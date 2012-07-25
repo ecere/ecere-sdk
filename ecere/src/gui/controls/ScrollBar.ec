@@ -378,7 +378,7 @@ private:
             {
                SNAPUP(height, textCellH);
             }
-            thumbPos = upBtn.size.h + position * height / (range - 1);
+            thumbPos = upBtn.size.h + (int)((int64)position * height / (range - 1));
             if(guiApp.textMode)
             {
                SNAPUP(thumbPos, textCellH);
@@ -393,7 +393,7 @@ private:
             {
                SNAPUP(width, textCellW);
             }
-            thumbPos = upBtn.size.w + position * width / (range - 1);
+            thumbPos = upBtn.size.w + (int)((int64)position * width / (range - 1));
             if(guiApp.textMode)
             {
                SNAPUP(thumbPos, textCellW);
