@@ -1772,7 +1772,7 @@ public void CheckMemory()
       memoryErrorsCount++;
    }
    printf("Starting Memory Check\n");
-   for(block = (MemInfo)memBlocks.first; block; block = block.next)
+   for(block = (MemInfo)memBlocks.first; block; block = (MemInfo)block.next)
    {
       if(!block.freed && block._class)
          leakedObjects++;

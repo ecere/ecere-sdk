@@ -6015,6 +6015,9 @@ public:
             (master && master != guiApp.desktop && !master.created))
             return false;
 
+         if(parent)
+            stopwatching(parent, font);
+
          if(!parent)
             property::parent = guiApp.desktop;
          if(!master) master = parent;

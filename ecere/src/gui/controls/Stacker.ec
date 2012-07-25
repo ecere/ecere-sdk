@@ -336,7 +336,7 @@ private:
       }
       for(child = firstChild; child; child = child.next)
       {
-         if(child.nonClient) continue;
+         if(child.nonClient || child.destroyed || !child.created) continue;
          if(!newControls.Find(child))
          {
             newControls.Add(child);
