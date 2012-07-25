@@ -269,6 +269,7 @@ private:
 
    bool OnPostCreate()
    {
+      UpdateControls();
       OnResize(clientSize.w, clientSize.h);
 
       if(direction == vertical)

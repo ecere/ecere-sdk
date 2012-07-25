@@ -13,7 +13,7 @@ extern int __ecereVMethodID_class_OnGetDataFromString;
 private:
 
 #ifdef _DEBUG
-#define _DEBUG_LINE
+// #define _DEBUG_LINE
 #endif
 
 #define FULL_STRING_SEARCH
