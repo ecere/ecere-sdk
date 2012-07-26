@@ -224,6 +224,7 @@ public:
       {
          StringSearchTable searchTable { table, idField, value };
          DebugLn("TableEditor::searchFields|set");
+         // The searchTables property will incref...
          property::searchTables = { [ searchTable ] };
       }
    }
@@ -232,7 +233,13 @@ public:
    {
       set
       {
+         // This API is not very clear on ownership of search tables array/search table/field...
+         // Right now both the array and tables themselves are incref'ed here
+         incref value;
+         for(t : value) { incref t; }
          DebugLn("TableEditor::searchTables|set");
+         if(searchTables) searchTables.Free();
+         delete searchTables;
          searchTables = value;
       }
    }
@@ -242,7 +249,11 @@ public:
    {
       set
       {
+         incref value;
+         for(t : value) { incref t; }
          DebugLn("TableEditor::searchTables|set");
+         if(sqliteSearchTables) sqliteSearchTables.Free();
+         delete sqliteSearchTables;
          sqliteSearchTables = value;
       }
    }
@@ -1268,7 +1279,8 @@ private:
    ~TableEditor()
    {
       DebugLn("TableEditor::~()");
-      fieldsBoxes.Free(); // TOCHECK: do I need to delete each to oppose the increb in AddFieldBox?
+
+      fieldsBoxes.Free(); // TOCHECK: do I need to delete each to oppose the incref in AddFieldBox? -- Free() does just that
       delete searchString;
       wordTree.Free();
 
@@ -1276,7 +1288,9 @@ private:
       delete lookups;
       delete dynamicLookupEditors;
       delete dynamicLookupTableEditors;
+      if(searchTables) searchTables.Free();
       delete searchTables;
+      if(sqliteSearchTables) sqliteSearchTables.Free();
       delete sqliteSearchTables;
    }
 
@@ -1313,7 +1327,8 @@ private:
       DebugLn("TableEditor::RemoveTableEditor");
       if(it.Find(tableEditor))
       {
-         it.Remove(); // tableEditors.Remove(it.pointer); // <-- any reason why we would want to do that instead?
+         it.Remove(); // tableEditors.Remove(it.pointer); // <-- any reason why we would want to do that instead? -- It's the same.
+         delete tableEditor; // AddTableEditor increfs...
       }
       else
          DebugLn("   TableEditor instance not found, no need to remove");
@@ -1344,7 +1359,7 @@ private:
       DebugLn("TableEditor::RemoveFieldBox");
       if(it.Find(fieldBox))
       {
-         it.Remove(); // fieldsBoxes.Remove(it.pointer); // <-- any reason why we would want to do that instead?
+         it.Remove(); // fieldsBoxes.Remove(it.pointer); // <-- any reason why we would want to do that instead? -- It's the same.
       }
       else
          DebugLn("   FieldBox instance not found, no need to remove");
@@ -1440,13 +1455,10 @@ private:
       for(fb : fieldsBoxes)
          fb.Clear();
       for(e : dynamicLookupTableEditors)
-      {
-         e.visible = false;
-         e.parent = null;
-         e.master = null;
          e.Destroy(0);
-         delete e;
-      }
+      for(e : tableEditors)
+         e.Destroy(0);
+      tableEditors.Free();
       dynamicLookupTableEditors.Free();
       //dynamicLookupTableEditors.size = 0;
       internalModifications = false;
