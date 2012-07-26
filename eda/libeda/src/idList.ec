@@ -30,32 +30,6 @@ static void UnusedFunction()
 }
 private:
 
-class IdRowCache : Map<Table, Row>
-{
-   Mutex mutex { };
-   Row GetRow(Table tbl)
-   {
-      MapIterator<Table, Row> it { map = this };
-      mutex.Wait();
-      if(it.Index(tbl, false))
-      {
-         Row r = it.data;
-         return it.data;
-      }
-      else
-      {
-         Row r { tbl };
-         this[tbl] = r;
-         return r;
-      }
-   }
-   ~IdRowCache()
-   {
-      Free();
-   }
-}
-IdRowCache idRowCache { };
-
 public class Id : uint
 {
    class_data Table * table;     class_property Table * table     { set { class_data(table) = value; } get { return class_data(table); } };
@@ -200,7 +174,14 @@ public class Id : uint
          // FIXME
          Table tbl = *class_data(table);
          Field idField = tbl.FindField(defaultIdField);
-         Row r = idRowCache.GetRow(tbl);
+         Row r;
+         idRowCacheMutex.Wait();
+         if(!tbl.cachedIdRow)
+         {
+            tbl.cachedIdRow = Row { tbl };
+            incref tbl.cachedIdRow;
+         }
+         r = tbl.cachedIdRow;
 
          if(this)
          {
@@ -246,7 +227,7 @@ public class Id : uint
             sprintf(tempString, $"(Click to add a new %s...)", $"item"/*class_data(addText)*/);
          }
          // delete r;
-         idRowCache.mutex.Release();
+         idRowCacheMutex.Release();
       }
       return tempString;
    }

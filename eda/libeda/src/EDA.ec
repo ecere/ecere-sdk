@@ -4,9 +4,6 @@ public import static "ecere"
 public import "ecere"
 #endif
 
-// For idRowCache connection...
-import "idList"
-
 #include <stdarg.h>
 
 #ifdef _DEBUG
@@ -238,12 +235,15 @@ public struct FieldIndex
    Field memberIdField;
 };
 
+Mutex idRowCacheMutex { };
+
 public class Table
 {
    class_no_expansion;
    Table prev, next;
    Database db;
    OldList listRows { offset = (uint)&((Row)0).prev };
+   Row cachedIdRow;
 public:
    virtual String GetName();
    virtual Field GetFirstField();
@@ -254,19 +254,11 @@ public:
    ~Table()
    {
       Row row;
-      MapIterator<Table, Row> it { map = idRowCache };
 
-      // Remove row from Id row cache
-      idRowCache.mutex.Wait();
-      if(it.Index(this, false))
-      {
-         Row r = it.data;
-         if(_refCount < 2)
-            _refCount = 2; // Removing the Table entry will try to decref the table ('this') again
-         it.Remove(r);
-         delete r;
-      }
-      idRowCache.mutex.Release();
+      // Delete cached Id row
+      idRowCacheMutex.Wait();
+      delete cachedIdRow;
+      idRowCacheMutex.Release();
 
 #ifdef AUTO_DELETE_TABLES
       if(db)
