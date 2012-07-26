@@ -39,22 +39,23 @@ class GlobalSettingsDialog : Window
       }
    }
 
+   bool OnClose(bool parentClosing)
+   {
+      if(!settingsModified || MessageBox {
+         type = okCancel, master = ide,
+         text = $"Lose Changes?",
+         contents = $"Are you sure you wish to discard changes?"
+          }.Modal() == ok)
+         return true;
+      return false;
+   }
+
    Button cancel
    {
       parent = this, hotKey = escape, text = $"Cancel", id = DialogResult::cancel;
       position = { 290, 290 }, size = { 80 };
       anchor = { right = 8, bottom = 8 };
-
-      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
-      {
-         if(!settingsModified || MessageBox {
-            type = okCancel, master = ide,
-            text = $"Lose Changes?",
-            contents = $"Are you sure you wish to discard changes?"
-             }.Modal() == ok)
-            Destroy(0);
-         return true;
-      }
+      NotifyClicked = ButtonCloseDialog;
    };
 
    Button ok
