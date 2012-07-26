@@ -164,6 +164,7 @@ private:
    void OnDestroy()
    {
       editor = null;
+      CommonControl::OnDestroy();
    }
 
    void OnPosition(int x, int y, int width, int height)

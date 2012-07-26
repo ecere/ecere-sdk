@@ -61,6 +61,7 @@ private:
          stopwatching(window, text);
          delete window;
       }
+      CommonControl::OnDestroy();
    }
 
    ~Label()
