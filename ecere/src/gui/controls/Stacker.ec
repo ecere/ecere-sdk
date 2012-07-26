@@ -267,9 +267,15 @@ private:
       controls.Free();
    }
 
+   bool OnCreate()
+   {
+      bits.holdChildMonitoring = true;
+      return true;
+   }
+
    bool OnPostCreate()
    {
-      UpdateControls();
+      bits.holdChildMonitoring = false;
       OnResize(clientSize.w, clientSize.h);
 
       if(direction == vertical)
@@ -297,8 +303,34 @@ private:
 
    void OnChildAddedOrRemoved(Window child, bool removed)
    {
-      if(!bits.holdChildMonitoring)
-         UpdateControls();
+      if(!child.nonClient)
+      {
+         if(removed)
+         {
+            if((child.destroyed && !destroyed) || child.parent != this)
+            {
+               Iterator<Window> it { controls };
+               if(it.Find(child))
+               {
+                  it.Remove();
+                  delete child;
+               }
+            }
+         }
+         else
+         {
+            if((child.created || (!created && child.autoCreate)) && !child.destroyed && child.parent == this)
+            {
+               if(!controls.Find(child))
+               {
+                  controls.Add(child);
+                  incref child;
+               }
+            }
+         }
+         if(!bits.holdChildMonitoring)
+            DoResize(size.w, size.h);
+      }
    }
    void OnChildVisibilityToggled(Window child, bool visible)
    {
@@ -311,7 +343,7 @@ private:
       size = size;   // TRIGGER SCROLLING UPDATE (Currently required since we aren't using Window scrollbars)
    }
 
-   void UpdateControls()
+   /*void UpdateControls()
    {
       Window child;
       Array<Window> newControls { };
@@ -347,11 +379,11 @@ private:
       delete controls;
       controls = newControls;
       newControls = null;
-   }
+   }*/
 
    void OnResize(int width, int height)
    {
-      if(!inAutoSize)
+      if(!bits.holdChildMonitoring && !inAutoSize)
          DoResize(width, height);
    }
 
@@ -365,23 +397,21 @@ private:
 
       if(created)
       {
-         int y, c;
+         int y = margin, c;
          bool r = bits.reverse;
          int inc = bits.reverse ? -1 : 1;
-         Window child;
          Window flip = null;
-         y = margin;
 
-         for(c = bits.reverse ? controls.count-1 : 0; c<controls.count && c>-1; c += inc)
+         for(c = r ? controls.count-1 : 0; c<controls.count && c>-1; c += inc)
          {
             Anchor anchor;
-            child = controls[c];
+            Window child = controls[c];
             if(flip && child == flip) break;
             if(child.nonClient || !child.visible) continue;
             anchor = child.anchor;
             if(direction == vertical)
             {
-               if(bits.reverse)
+               if(r)
                {
                   if(!anchor.bottom.type || anchor.bottom.distance != y)
                      child.anchor.bottom = y;
@@ -395,7 +425,7 @@ private:
             }
             else
             {
-               if(bits.reverse)
+               if(r)
                {
                   if(!anchor.right.type || anchor.right.distance != y)
                      child.anchor.right = y;
@@ -407,7 +437,14 @@ private:
                }
                y += child.size.w + gap;
             }
-            Flip(flipper, child, controls, margin, &bits, &inc, &c, &y, &flip);
+            // If this child is the flipper, we flip
+            if(flipper && !flip && child == flipper)
+            {
+               flip = child;
+               if(r) { r = false; inc = 1; c = -1; }
+               else  { r = true;  inc =-1; c = controls.count; }
+               y = margin;
+            }
          }
 
          if(flip)
@@ -416,13 +453,13 @@ private:
             {
                if(direction == vertical)
                {
-                  if(bits.reverse) flip.anchor.bottom = y;
-                  else             flip.anchor.top = y;
+                  if(r) flip.anchor.bottom = y;
+                  else  flip.anchor.top = y;
                }
                else
                {
-                  if(bits.reverse) flip.anchor.right = y;
-                  else             flip.anchor.left = y;
+                  if(r) flip.anchor.right = y;
+                  else  flip.anchor.left = y;
                }
             }
          }
@@ -435,7 +472,6 @@ private:
             else
                //this.clientSize.w = y - gap + margin;
                this.size.w = y - gap + margin + (this.size.w - this.clientSize.w);
-            //Update(null);
             inAutoSize = false;
          }
 
@@ -479,19 +515,12 @@ private:
 
    public void DestroyChildren()
    {
-      Window child, next;
-
-      bits.holdChildMonitoring = true;
-      for(child = firstChild; child; child = next)
+      // This is not required and will jam if the Stacker is destroyed
+      if(!destroyed)
       {
-         next = child ? child.next : null;
-         if(!child.nonClient)
-         {
-            child.Destroy(0);
-            child.parent = null;
-         }
+         while(controls.count)
+            controls[0].Destroy(0);
       }
-      bits.holdChildMonitoring = false;
    }
 
    public void MakeControlVisible(Window control)
@@ -569,17 +598,5 @@ private:
       else
          result = next;
       return result;
-   }
-}
-
-static void Flip(Window flipper, Window child, Array<Window> controls, int margin, StackerBits * bits, int * inc, int * c, int * y, Window * flip)
-{
-   if(flipper && !*flip && child == flipper)
-   {
-      *flip = child;
-      (*bits).reverse = !(*bits).reverse;
-      *inc = (*bits).reverse ? -1 : 1;
-      *c = (*bits).reverse ? controls.count : -1;
-      *y = margin;
    }
 }

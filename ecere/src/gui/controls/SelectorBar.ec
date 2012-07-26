@@ -49,19 +49,14 @@ public:
 
    void Clear()
    {
-      Iterator<Window> it { controls };
-      while(it.Next())
-      {
-         Window button = it.data;
-         button.visible = false;
-         button.Destroy(0);
-      }
+      DestroyChildren();
    }
 
    void Select(SelectorButton button)
    {
       button.checked = true;
-      button.Activate();
+      if(button.created)
+         button.Activate();
       button.NotifyClicked(button.master, button, 0, 0, 0);
       MakeControlVisible(button);
    }
@@ -86,11 +81,9 @@ public:
                newSelection.checked = true;
                newSelection.NotifyClicked(newSelection.master, newSelection, 0, 0, 0);
             }
-            controls.Delete(toRemove);
             break;
          }
       }
-      button.visible = false;
       button.Destroy(0);
    }
 

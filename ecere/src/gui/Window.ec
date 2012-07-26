@@ -5417,6 +5417,8 @@ private:
          if(master.defaultControl == this)
             master.defaultControl = null;
       }
+      if(parent)
+         parent.OnChildAddedOrRemoved(this, true);
       if(parent && !parent.destroyed /*&&
          rootWindow && rootWindow.display && !rootWindow.destroyed*/)
       {
@@ -6193,6 +6195,8 @@ public:
                         parent.numPositions--;
                         if(state == minimized) parent.numIcons--;
                      }
+
+                     parent.OnChildAddedOrRemoved(this, false);
 
                      // Real set state & activate for proper display & activation
                      property::visible = visible;
@@ -7759,7 +7763,6 @@ public:
             if(parent)
             {
                parent.children.Remove(this);
-               parent.OnChildAddedOrRemoved(this, true);
 
                parent.Update(
                {
@@ -7949,6 +7952,8 @@ public:
 
             }
             // else parent = value;
+            if(oldParent)
+               oldParent.OnChildAddedOrRemoved(this, true);
          }
       }
       get { return parent; }
