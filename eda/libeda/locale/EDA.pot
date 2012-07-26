@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./src/idList.ec:220
+#: ./src/idList.ec:227
 msgid "(Click to add a new %s...)"
 msgstr "(Click to add a new %s...)"
 
@@ -90,8 +90,8 @@ msgstr "Status: Feeling groovy!\n"
 msgid "Table (%s) does not exist.\n"
 msgstr "Table (%s) does not exist.\n"
 
-#: ./src/gui/TableEditor.ec:314
-#: ./src/gui/TableEditor.ec:322
+#: ./src/gui/TableEditor.ec:325
+#: ./src/gui/TableEditor.ec:333
 msgid "Table Editor"
 msgstr "Table Editor"
 
@@ -99,8 +99,8 @@ msgstr "Table Editor"
 msgid "Unable to detect if table exists!\n"
 msgstr "Unable to detect if table exists!\n"
 
-#: ./src/gui/TableEditor.ec:852
-#: ./src/gui/TableEditor.ec:871
+#: ./src/gui/TableEditor.ec:863
+#: ./src/gui/TableEditor.ec:882
 msgid "WordList match cannot be found in database."
 msgstr "WordList match cannot be found in database."
 
@@ -108,11 +108,11 @@ msgstr "WordList match cannot be found in database."
 msgid "You are about to delete an entry.\nDo you wish to continue?"
 msgstr "You are about to delete an entry.\nDo you wish to continue?"
 
-#: ./src/gui/TableEditor.ec:325
+#: ./src/gui/TableEditor.ec:336
 msgid "You are about to permanently remove an entry.\nDo you wish to continue?"
 msgstr "You are about to permanently remove an entry.\nDo you wish to continue?"
 
-#: ./src/gui/TableEditor.ec:316
+#: ./src/gui/TableEditor.ec:327
 #: ./src/gui.ec:688
 msgid "You have modified this entry. Would you like to save it before proceeding?"
 msgstr "You have modified this entry. Would you like to save it before proceeding?"
@@ -122,7 +122,7 @@ msgstr "You have modified this entry. Would you like to save it before proceedin
 msgid "[New]"
 msgstr "[New]"
 
-#: ./src/idList.ec:220
+#: ./src/idList.ec:227
 msgid "item"
 msgstr "item"
 
