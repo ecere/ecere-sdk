@@ -298,12 +298,15 @@ class CompilersTab : GlobalSettingsSubTab
 
       bool OnPostCreate()
       {
+         CompilersTab compilers = (CompilersTab)parent;
          SelectorBar::OnPostCreate();
-         if(((CompilersTab)parent).selectedButton)
+         if(compilers.selectedButton)
          {
-            ((CompilersTab)parent).selectedButton.Activate();
-            ((CompilersTab)parent).selectedButton.checked = true;
-            ((CompilersTab)parent).selectedButton = null;
+            Button sb = compilers.selectedButton;
+            sb.Activate();
+            sb.checked = true;
+            // Why was this being set to null? On going back to compilers the 2nd time, the selectedButton was lost and so was not made visible...
+            // compilers.selectedButton = null;
          }
          return true;
       }
@@ -529,7 +532,10 @@ class CompilersTab : GlobalSettingsSubTab
    bool CompilerClicked(Button clickedButton, int x, int y, Modifiers mods)
    {
       if(!eClass_IsDerived(clickedButton._class, class(EditableSelectorButton)) || !((EditableSelectorButton)clickedButton).editBox)
+      {
          LoadCompiler((CompilerConfig)clickedButton.id);
+         selectedButton = (SelectorButton)clickedButton;
+      }
       return true;
    }
 
