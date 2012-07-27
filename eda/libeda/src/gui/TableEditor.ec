@@ -703,7 +703,6 @@ public:
       // EDA is now set up so that Next()/Prev() will work with sysID = , but not with Find() (As Find() will return a particular set of results)
       if(idField && (editRow.sysID = id, !editRow.nil))// && editRow.Find(idField, middle, nil, id))
       {
-         //Id test = editRow.sysID;
          selectedId = editRow.sysID;
          EditLoad();
          result = true;
@@ -757,7 +756,6 @@ public:
          editRow.Next();
       if(!editRow.nil)
       {
-         //Id test = editRow.sysID;
          selectedId = editRow.sysID;
          EditLoad();
          result = true;
@@ -792,7 +790,6 @@ public:
          editRow.Previous();
       if(!editRow.nil)
       {
-         //Id test = editRow.sysID;
          selectedId = editRow.sysID;
          EditLoad();
          result = true;
@@ -820,7 +817,6 @@ public:
             list.currentRow = row;
          if(idField && editRow.Find(idField, middle, nil, selectedId))
          {
-            //Id test = editRow.sysID;
             listRow = row;
             //NotifySelectListRow(master, this, selectedId);
             EditLoad();
@@ -1447,8 +1443,10 @@ private:
 
    void EditLoad()
    {
+      Id selId = selectedId;
       DebugLn("TableEditor::EditLoad");
       EditClear();
+      selectedId = selId;
       OnLoad();
       internalModifications = true;
       for(lu : lookups)
@@ -1481,6 +1479,7 @@ private:
    void EditClear()
    {
       DebugLn("TableEditor::EditClear");
+      selectedId = 0;
       internalModifications = true;
       for(fb : fieldsBoxes)
          fb.Clear();
