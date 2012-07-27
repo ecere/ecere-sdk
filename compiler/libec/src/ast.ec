@@ -1649,6 +1649,22 @@ ClassDefinition MkClass(Symbol symbol, OldList baseSpecs, OldList definitions)
    SetupBaseSpecs(symbol, baseSpecs);
    if(symbol.ctx)
    {
+      ClassDefinition classDef = symbol.ctx.classDef;
+      if(classDef)
+      {
+         // This can occur if two instances of a class are defined...
+         // To avoid dangling 'parent' Contexts, we free the previous class definition
+         External external;
+         for(external = ast->first; external; external = external.next)
+         {
+            if(external.type == classExternal && external._class == classDef)
+            {
+               ast->Remove(external);
+               FreeExternal(external);
+               break;
+            }
+         }
+      }
       FreeContext(symbol.ctx);
       delete symbol.ctx;
    }
