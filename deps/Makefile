@@ -1,4 +1,4 @@
-.PHONY: freetype jpeg png gif z clean realclean distclean
+.PHONY: freetype jpeg png gif z ffi clean realclean distclean
 .SILENT:
 
 # CROSS-PLATFORM MAGIC
@@ -6,7 +6,12 @@
 include ../include.mk
 
 ifdef WINDOWS
+ifdef MSYSCON
+# Need MSYS to build libffi
+all: freetype jpeg png gif ffi z
+else
 all: freetype jpeg png gif z
+endif
 else
 ifdef OSX
 all: jpeg png gif
@@ -21,6 +26,9 @@ clean:
 	cd zlib && $(MAKE) clean
 	cd jpeg-6b && $(MAKE) clean
 	cd libungif-4.1.1 && $(MAKE) clean
+ifdef MSYSCON
+	cd libffi-3.0.11 && $(MAKE) clean
+endif
 
 realclean:
 	cd freetype-2.3.12 && $(MAKE) realclean
@@ -56,4 +64,6 @@ z:
 	@$(call echo,Building zlib...)
 	cd zlib && $(MAKE)
 
-
+ffi:
+	@$(call echo,Building libffi...)
+	cd libffi-3.0.11 && $(MAKE)

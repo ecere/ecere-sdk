@@ -27,6 +27,9 @@ dat/
 *.o
 *.so
 *.a
+*.la
+*.lo
+*.lai
 *.lib
 
 # Packages
