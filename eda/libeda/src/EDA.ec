@@ -480,11 +480,12 @@ public:
    bool GetData(Field field, typed_object & data) { return (row && field) ? row.GetData(field, data) : false; }
    bool SetData(Field field, typed_object data) { return (row && field) ? row.SetData(field, data) : false; }
    bool Delete() { return row ? row.Delete() : false; }
-   // TODO: Implement as a typed_object?
    bool SetQueryParam(int paramID, int value) { return row ? row.SetQueryParam(paramID, value) : false; }
    bool SetQueryParam64(int paramID, int64 value) { return row ? row.SetQueryParam64(paramID, value) : false; }   
    bool SetQueryParamText(int paramID, char * value) { return row ? row.SetQueryParamText(paramID, value) : false; }
    bool SetQueryParamObject(int paramID, void * value, Class type) { return row ? row.SetQueryParamObject(paramID, value, type) : false; }
+   // TOCHECK: Field is passed here to have sqlite type handy. The API might be nicer without
+   bool BindQueryData(int paramID, Field fld, typed_object value) { return row ? row.BindQueryData(paramID, fld, value) : false; }
    char * GetColumn(int paramID) { return row ? row.GetColumn(paramID) : null; }
 
    bool GUIDataRowSetData(DataRow dr, DataField df, Field fld)
@@ -542,6 +543,7 @@ public:
    virtual bool SetQueryParamText(int paramID, char * value);
    virtual bool SetQueryParamObject(int paramID, void * data, Class type);
    virtual char * GetColumn(int paramID);
+   virtual bool BindQueryData(int paramID, Field fld, typed_object value);
 };
 
 public class SQLCustomFunction

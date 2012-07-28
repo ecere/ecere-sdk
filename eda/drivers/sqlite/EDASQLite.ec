@@ -995,8 +995,9 @@ class SQLiteRow : DriverRow
       return status;
    }
 
-   void BindData(sqlite3_stmt * statement, int pos, SQLiteField fld, typed_object data, SerialBuffer * bufferOut)
+   bool BindData(sqlite3_stmt * statement, int pos, SQLiteField fld, typed_object data, SerialBuffer * bufferOut)
    {
+      int result = 1;
       Class dataType = fld.type;
       SerialBuffer buffer = null;
       switch(fld.sqliteType)
@@ -1006,10 +1007,10 @@ class SQLiteRow : DriverRow
             switch(dataType.typeSize)
             {
                case 8:
-                  sqlite3_bind_int64(statement, pos, (sqlite3_int64)*(int64 *)data);
+                  result = sqlite3_bind_int64(statement, pos, (sqlite3_int64)*(int64 *)data);
                   break;
                case 4:
-                  sqlite3_bind_int(statement, pos, *(int *)data);
+                  result = sqlite3_bind_int(statement, pos, *(int *)data);
                   break;
                case 2:
                {
@@ -1018,7 +1019,7 @@ class SQLiteRow : DriverRow
                      value = (int)*(short *)data;
                   else
                      value = (int)*(uint16 *)data;
-                  sqlite3_bind_int(statement, pos, value);
+                  result = sqlite3_bind_int(statement, pos, value);
                   break;
                }
                case 1:
@@ -1028,7 +1029,7 @@ class SQLiteRow : DriverRow
                      value = (int)*(char *)data;
                   else
                      value = (int)*(byte *)data;
-                  sqlite3_bind_int(statement, pos, value);
+                  result = sqlite3_bind_int(statement, pos, value);
                   break;
                }
             }
@@ -1037,17 +1038,17 @@ class SQLiteRow : DriverRow
          case SQLITE_FLOAT:
          {
             if(dataType.typeSize == 8)
-               sqlite3_bind_double(statement, pos, *(double *)data);
+               result = sqlite3_bind_double(statement, pos, *(double *)data);
             else
-               sqlite3_bind_double(statement, pos, (double)*(float *)data);
+               result = sqlite3_bind_double(statement, pos, (double)*(float *)data);
             break;
          }
          case SQLITE_TEXT:
          {
             if((char *)data)
-               sqlite3_bind_text(statement, pos, (char *)data, strlen((char *)data), SQLITE_TRANSIENT);
+               result = sqlite3_bind_text(statement, pos, (char *)data, strlen((char *)data), SQLITE_TRANSIENT);
             else
-               sqlite3_bind_text(statement, pos, null, 0, SQLITE_TRANSIENT);
+               result = sqlite3_bind_text(statement, pos, null, 0, SQLITE_TRANSIENT);
             break;
          }
          case SQLITE_BLOB:
@@ -1055,7 +1056,7 @@ class SQLiteRow : DriverRow
          {
             buffer = SerialBuffer { };
             dataType._vTbl[__ecereVMethodID_class_OnSerialize](dataType, data, buffer);
-            sqlite3_bind_text(statement, pos, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
+            result = sqlite3_bind_text(statement, pos, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
             break;
          }
       }
@@ -1063,6 +1064,7 @@ class SQLiteRow : DriverRow
          *bufferOut = buffer;
       else
          delete buffer;
+      return !result;
    }
 
    void AddCursorWhereClauses(char * command, MoveOptions move, bool useIndex)
@@ -1609,6 +1611,17 @@ class SQLiteRow : DriverRow
          delete buffer;
       }
       return !result;
+   }
+
+   bool BindQueryData(int pos, SQLiteField fld, typed_object data)
+   {
+      if(curStatement != queryStatement)
+      {
+         if(curStatement) sqlite3_reset(curStatement);
+         curStatement = queryStatement;
+      }
+      sqlite3_reset(queryStatement);
+      return BindData(queryStatement, pos, fld, data, null);
    }
 
    /*char * GetExtraColumn(int paramID)
