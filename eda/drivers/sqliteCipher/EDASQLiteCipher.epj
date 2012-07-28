@@ -12,7 +12,8 @@
       "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "Libraries" : [
-         "ecere"
+         "ecere",
+         "ffi"
       ]
    },
    "Platforms" : [
@@ -40,13 +41,15 @@
          "Name" : "win32",
          "Options" : {
             "IncludeDirs" : [
-               "$(OPENSSL_INCLUDE_DIR)"
+               "$(OPENSSL_INCLUDE_DIR)",
+               "../../../deps/libffi-3.0.11/i686-pc-mingw32/include"
             ],
             "Libraries" : [
                "libeay32"
             ],
             "LibraryDirs" : [
-               "$(OPENSSL_LIB_DIR)"
+               "$(OPENSSL_LIB_DIR)",
+               "../../../deps/libffi-3.0.11/i686-pc-mingw32/.libs"
             ]
          }
       }

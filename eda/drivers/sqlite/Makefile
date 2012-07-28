@@ -75,17 +75,37 @@ ifdef LINUX
 OFLAGS += -Wl,--no-undefined
 endif
 
+ifneq "$(TARGET_TYPE)" "staticlib"
+LIBS += -lecere -lffi
+endif
+
 # PLATFORM-SPECIFIC OPTIONS
 
+ifdef WINDOWS
+
+CFLAGS += \
+	 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include
+
+ifneq "$(TARGET_TYPE)" "staticlib"
+OFLAGS += \
+	 -L../../../deps/libffi-3.0.11/i686-pc-mingw32/.libs
+endif
+
+else
 ifdef LINUX
 
+ifneq "$(TARGET_TYPE)" "staticlib"
 LIBS += -lpthread -ldl -lsqlite3
+endif
 
 else
 ifdef OSX
 
+ifneq "$(TARGET_TYPE)" "staticlib"
 LIBS += -lpthread -ldl
+endif
 
+endif
 endif
 endif
 

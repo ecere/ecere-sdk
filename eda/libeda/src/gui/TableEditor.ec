@@ -73,7 +73,7 @@ public char * ConvertToASCII(char * string, char * newString, int * len, bool lo
       for(c = 0; (unich = UTF8GetChar(string + c, &nb)); c += nb)
       {
          char ch = ToASCII(unich);
-         if(ch < 128 && (ch == '-' || isalpha(ch) || ch == ','))
+         if(ch < 128 && ch > 32) //(ch == '-' || isalpha(ch) || ch == ','))
             newString[d++] = lowerCase ? (char)tolower(ch) : (char)ch;
       }
       newString[d] = 0;
@@ -84,12 +84,14 @@ public char * ConvertToASCII(char * string, char * newString, int * len, bool lo
 
 public class NoCaseAccent : SQLCustomFunction
 {
-   void Process(char * text)
+   Array<char> array { minAllocSize = 1024 };
+public:
+   String function(String text)
    {
       int len = text ? strlen(text) : 0;
       array.size = len + 1;
       ConvertToASCII(text ? text : "", array.array, &len, true);
-      array.count = len + 1;
+      return array.array;
    }
 }
 
@@ -100,23 +102,34 @@ public class MemberStringSample
 
 default extern int __ecereVMethodID_class_OnUnserialize;
 
-public class GetMemberString<class NT:void * = MemberStringSample, name = NT::name> : SQLCustomFunction
+public class GetMemberString<class NT:void * = MemberStringSample, name = NT::name> : NoCaseAccent
 {
-   SerialBuffer buffer { };
-   void Process(char * text)
+public:
+   String function(NT pn)
    {
+      return NoCaseAccent::function((pn && pn.name) ? pn.name : null);
+   }
+
+/*
+   // The old way is still possible...
+   SerialBuffer buffer { };
+   String function(void * ptr)
+   {
+      String result;
       NT pn;
-      buffer.buffer = text;
+      buffer.buffer = ptr;
       buffer.count = MAXINT;
       buffer.pos = 0;
       class(NT)._vTbl[__ecereVMethodID_class_OnUnserialize](class(NT), &pn, buffer);
-      NoCaseAccent::Process((NoCaseAccent)this, (pn && pn.name) ? pn.name : null);
+      result = NoCaseAccent::function((pn && pn.name) ? pn.name : null);
       delete pn;
       buffer.buffer = null;
       buffer.count = 0;
       // TOFIX: If we name GetName's type 'T', the following name confuses with Array's 'T'
       //ConvertToASCII(s ? s : "", array.array, &len, true);
+      return result;
    }
+*/
 }
 
 // Rename TableEditor to TableControl and move to eda/src/gui/controls

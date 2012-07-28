@@ -1,0 +1,22 @@
+src/types.lo: ../src/types.c include/ffi.h include/ffitarget.h \
+ e:\msys\1.0\bin\../lib/gcc/mingw32/4.6.2/include/stddef.h \
+ e:\msys\1.0\bin\../lib/gcc/mingw32/4.6.2/../../../../include/limits.h \
+ e:\msys\1.0\bin\../lib/gcc/mingw32/4.6.2/../../../../include/_mingw.h \
+ ../include/ffi_common.h fficonfig.h \
+ e:\msys\1.0\bin\../lib/gcc/mingw32/4.6.2/../../../../include/string.h
+
+include/ffi.h:
+
+include/ffitarget.h:
+
+e:\msys\1.0\bin\../lib/gcc/mingw32/4.6.2/include/stddef.h:
+
+e:\msys\1.0\bin\../lib/gcc/mingw32/4.6.2/../../../../include/limits.h:
+
+e:\msys\1.0\bin\../lib/gcc/mingw32/4.6.2/../../../../include/_mingw.h:
+
+../include/ffi_common.h:
+
+fficonfig.h:
+
+e:\msys\1.0\bin\../lib/gcc/mingw32/4.6.2/../../../../include/string.h:

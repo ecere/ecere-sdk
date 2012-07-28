@@ -12,6 +12,10 @@ public import "EDA"
 #include "sqlite3.h"
 #endif
 
+#define uint _uint
+#include "ffi.h"
+#undef uint
+
 static void UnusedFunction()
 {
    int a;
@@ -467,19 +471,364 @@ class SQLiteDatabase : Database
 
    bool CreateCustomFunction(char * name, SQLCustomFunction customFunction)
    {
-      int result = sqlite3_create_function(db, name, 1, SQLITE_UTF8, customFunction, SQLiteFunctionProcessor, null, null);
-      return result == SQLITE_OK;
+      bool result = false;
+      Class cfClass = customFunction._class;
+      customFunction.method = eClass_FindMethod(cfClass, "function", cfClass.module);
+      if(customFunction.method)
+      {
+         String typeString = CopyString(customFunction.method.dataTypeString);
+         char * tokens[256];
+         int count = TokenizeWith(typeString, sizeof(tokens)/sizeof(tokens[0]), tokens, "(,)", false);
+         int c;
+         bool variadic = false;
+
+         for(c = 0; c < count; c++)
+         {
+            Class type = null;
+            bool pointer = false;
+            String arg = tokens[c];
+            char * space;
+            TrimLSpaces(arg, arg);
+            if(strchr(arg, '*')) pointer = true;
+            if(pointer)
+               // Using String for generic pointer...
+               type = class(String);
+            else
+            {
+               if((space = strchr(arg, ' '))) *space = 0;
+               if(!strcmp(arg, "void"))
+                  type = null;
+               else if(!strcmp(arg, "..."))
+                  variadic = true;
+               else
+               {
+                  if(cfClass.templateParams.count)
+                  {
+                     ClassTemplateParameter p;
+                     int id = 0;
+                     for(p = cfClass.templateParams.first; p; p = p.next, id++)
+                     {
+                        if(!strcmp(p.name, arg))
+                           break;
+                     }
+                     if(p && cfClass.templateArgs)
+                        arg = cfClass.templateArgs[id].dataTypeString;
+                  }
+                  type = eSystem_FindClass(customFunction._class.module, arg);
+                  if(!type)
+                     type = eSystem_FindClass(customFunction._class.module.application, arg);
+               }
+            }
+            if(c == 0)
+               customFunction.returnType = type;
+            else
+               customFunction.args.Add(type);
+         }
+         delete typeString;
+         if(variadic)
+         {
+            result = false;
+            // Variadic args don't make sense for SQL custom functions
+            // Note that different CIF must be prepared for different set of arguments
+            // ffi_prep_cif_var(&customFunction.cif, FFI_DEFAULT_ABI, args.count-1, rType, argTypes);
+         }
+         else
+         {
+            customFunction.rType = FFIGetType(customFunction.returnType, true);
+            customFunction.argTypes.Add((void *)&ffi_type_pointer);    // This pointer for SQLCustomFunction object
+            for(a : customFunction.args) customFunction.argTypes.Add((void *)FFIGetType(a, false));
+            ffi_prep_cif(&customFunction.cif, FFI_DEFAULT_ABI, customFunction.argTypes.count, customFunction.rType, (ffi_type **) customFunction.argTypes.array);
+            result = sqlite3_create_function(db, name, customFunction.args.count, SQLITE_UTF8, customFunction, SQLiteFunctionProcessor, null, null) == SQLITE_OK;
+         }
+      }
+      return result;
    }
 }
 
-void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** value)
+static class FFITypesHolder : Map<Class, String> { ~FFITypesHolder() { Free(); } }
+FFITypesHolder structFFITypes { };
+
+public ffi_type * FFIGetType(Class type, bool structByValue)
+{
+   if(type)
+      switch(type.type)
+      {
+         // Pointer Types
+         case structClass:
+            if(structByValue)
+            {
+               MapIterator<Class, String> it { map = structFFITypes };
+               ffi_type * ffiType = null;
+               if(it.Index(type, false))
+                  ffiType = (void *)it.data;
+               else
+               {
+                  /*
+                  DataMember member;
+                  Array<String> memberTypes { };
+                  for(member = type.membersAndProperties.first; member; member = member.next)
+                  {
+                     if(!member.isProperty)
+                     {
+                        memberTypes.Add(FFIGetType(member.dataType
+                     }
+                  }
+                  */
+                  ffiType = new0 ffi_type[1];
+                  ffiType->size = type.structSize;
+                  ffiType->type = FFI_TYPE_STRUCT;
+                  structFFITypes[type] = (void *)ffiType;
+               }
+               return ffiType;
+            }
+         case normalClass:
+         case noHeadClass:
+         case unionClass:
+            return &ffi_type_pointer;
+         // Scalar Types
+         case bitClass:
+         case enumClass:
+         case systemClass:
+         case unitClass:
+                 if(!strcmp(type.dataTypeString, "float"))  return &ffi_type_float;
+            else if(!strcmp(type.dataTypeString, "double")) return &ffi_type_double;
+            else
+               switch(type.typeSize)
+               {
+                  case 1: return &ffi_type_uint8;
+                  case 2: return &ffi_type_uint16;
+                  case 4: return &ffi_type_uint32;
+                  case 8: return &ffi_type_uint64;
+               }
+      }
+   else
+      return &ffi_type_void;
+   return null;
+}
+
+static SerialBuffer staticBuffer { };
+void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** values)
 {
    SQLCustomFunction sqlFunction = sqlite3_user_data(context);
-   char * text = sqlite3_value_text(*value);
-   sqlFunction.array.size = 1;
-   sqlFunction.array[0] = 0;
-   sqlFunction.Process(text);
-   sqlite3_result_text(context, sqlFunction.array.array, sqlFunction.array.count ? sqlFunction.array.count - 1 : 0, SQLITE_TRANSIENT);
+
+   /*  // Simple 1 pointer param returning a string
+   void * p = sqlFunction.method.function(sqlFunction, sqlite3_value_text(values[0]));
+   sqlite3_result_text(context, p, strlen(p), SQLITE_TRANSIENT);
+   */
+   int64 retData = 0;
+   void * ret = &retData;
+   Array<String> args { size = sqlFunction.args.count + 1 };
+   Iterator<String> ffiArg { sqlFunction.argTypes };
+   Iterator<String> arg { args };
+   int i = 0;
+
+   // this * for the SQLCustomFunction
+   args[0] = (void *)&sqlFunction;
+   ffiArg.Next();
+   // Get the arguments from SQLite
+   for(a : sqlFunction.args)
+   {
+      ffi_type * type = (ffi_type *)ffiArg.data;
+      if(i >= n) break;
+      switch(a.type)
+      {
+         case normalClass:
+         case noHeadClass:
+         case structClass:
+         case unionClass:
+         {
+            void ** data = new void *[1];
+            args[i+1] = (void *)data;
+            if(a == class(String))
+            {
+               int numBytes = sqlite3_value_bytes(values[i]);
+               char * text = sqlite3_value_text(values[i]);
+               *(char **)data = text ? new byte[numBytes+1] : null;
+               if(text)
+                  memcpy(*(char **)data, text, numBytes+1);
+            }
+            else
+            {
+               SerialBuffer buffer = staticBuffer; //{ };
+               buffer.pos = 0;
+               buffer._size = sqlite3_value_bytes(values[i]);
+               buffer._buffer = sqlite3_value_text(values[i]);
+               //buffer._buffer = sqlite3_value_blob(curStatement);
+               buffer.count = buffer._size;
+               a._vTbl[__ecereVMethodID_class_OnUnserialize](a, data, buffer);
+               buffer._buffer = null;
+               //delete buffer;
+            }
+            break;
+         }
+         case bitClass:
+         case enumClass:
+         case systemClass:
+         case unitClass:
+            if(type == &ffi_type_double || type == &ffi_type_float)
+            {
+               double d = sqlite3_value_double(values[i]);
+               if(a.typeSize == 8)
+               {
+                  double * data = new double[1];
+                  args[i+1] = (void *)data;
+                  *data = d;
+               }
+               else
+               {
+                  float * data = new float[1];
+                  args[i+1] = (void *)data;
+                  *data = (float)d;
+               }
+            }
+            else
+            {
+               switch(a.typeSize)
+               {
+                  case 8:
+                  {
+                     int64 * data = new int64[1];
+                     args[i+1] = (void *)data;
+                     *data = sqlite3_value_int64(values[i]);
+                     break;
+                  }
+                  case 4:
+                  {
+                     int * data = new int[1];
+                     args[i+1] = (void *)data;
+                     *data = sqlite3_value_int(values[i]);
+                     break;
+                  }
+                  case 2:
+                  {
+                     short * data = new short[1];
+                     int value;
+                     args[i+1] = (void *)data;
+                     value = sqlite3_value_int(values[i]);
+                     if(value < 0)
+                        *data = (short)value;
+                     else
+                        *(uint16 *)data = (uint16)value;
+                     break;
+                  }
+                  case 1:
+                  {
+                     char * data = new char[1];
+                     int value;
+                     args[i+1] = data;
+                     value = sqlite3_value_int(values[i]);
+                     if(value < 0)
+                        *data = (char)value;
+                     else
+                        *(byte *)data = (byte)value;
+                     break;
+                  }
+               }
+            }
+            break;
+      }
+      i++;
+      ffiArg.Next();
+   }
+   if(sqlFunction.returnType && sqlFunction.returnType.type == structClass)
+      ret = new byte[sqlFunction.returnType.typeSize];
+   ffi_call(&sqlFunction.cif, (void *)sqlFunction.method.function, ret, args.array);
+   // Give SQLite the return value
+   if(sqlFunction.returnType)
+   {
+      ffi_type * type = sqlFunction.rType;
+      Class r = sqlFunction.returnType;
+      switch(r.type)
+      {
+         case normalClass:
+         case noHeadClass:
+         case structClass:
+         case unionClass:
+         {
+            void * data = ret ? *(void **)ret : null;
+            if(r.type == structClass)
+               data = ret;
+            if(r == class(String))
+            {
+               if(data)
+                  sqlite3_result_text(context, (char *)data, strlen((char *)data), SQLITE_TRANSIENT);
+               else
+                  sqlite3_result_text(context, null, 0, SQLITE_TRANSIENT);
+            }
+            else
+            {
+               SerialBuffer buffer { };
+               r._vTbl[__ecereVMethodID_class_OnSerialize](r, data, buffer);
+               sqlite3_result_text(context, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
+               delete buffer;
+
+               // Avoid destroying Strings for now... (Returning memory owned by the Custom Function)
+               r._vTbl[__ecereVMethodID_class_OnFree](r, data);
+            }
+
+            if(r.type == structClass)
+               delete ret;
+            break;
+         }
+         case bitClass:
+         case enumClass:
+         case systemClass:
+         case unitClass:
+            if(type == &ffi_type_double || type == &ffi_type_float)
+            {
+               if(r.typeSize == 8)
+                  sqlite3_result_double(context, *(double *)ret);
+               else
+                  sqlite3_result_double(context, (double)*(float *)ret);
+            }
+            else
+            {
+               switch(r.typeSize)
+               {
+                  case 8:
+                     sqlite3_result_int64(context, (sqlite3_int64)*(int64 *)ret);
+                     break;
+                  case 4:
+                     sqlite3_result_int(context, *(int *)ret);
+                     break;
+                  case 2:
+                  {
+                     int value;
+                     //if((int)data < 0)
+                        value = (int)*(short *)ret;
+                     //else
+                        //value = (int)*(uint16 *)ret;
+                     sqlite3_result_int(context, value);
+                     break;
+                  }
+                  case 1:
+                  {
+                     int value;
+                     //if((int)data < 0)
+                        value = (int)*(char *)ret;
+                     //else
+                        //value = (int)*(byte *)ret;
+                     sqlite3_result_int(context, value);
+                     break;
+                  }
+               }
+            }
+            break;
+      }
+   }
+
+   // Free Stuff up
+   arg.Next();
+   for(type : sqlFunction.args; arg.Next())
+   {
+      // Free instance
+      void * data = *(void **)arg.data;
+      type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+      // Free arg holder
+      data = arg.data;
+      delete data;
+   }
+   delete args;
 }
 
 class SQLiteTable : Table
@@ -979,16 +1328,21 @@ class SQLiteRow : DriverRow
       if(queryString)
       {
          result = sqlite3_prepare_v2(tbl.db.db, queryString, -1, &queryStatement, null);
-         curStatement = queryStatement;
-         if(!strchr(queryString, '?'))
+         if(!result)
          {
-            result = sqlite3_step(queryStatement);
+            curStatement = queryStatement;
+            if(!strchr(queryString, '?'))
+            {
+               result = sqlite3_step(queryStatement);
 
-            done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
-            if(done) { rowID = 0; sqlite3_reset(queryStatement); return false; }
+               done = result == SQLITE_DONE || (result && result != SQLITE_ROW);
+               if(done) { rowID = 0; sqlite3_reset(queryStatement); return false; }
 
-            rowID = sqlite3_column_int64(queryStatement, 0);
+               rowID = sqlite3_column_int64(queryStatement, 0);
+            }
          }
+         else
+            status = false;
       }
       else
          curStatement = null;

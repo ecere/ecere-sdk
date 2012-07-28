@@ -12,6 +12,16 @@
          "ecere"
       ]
    },
+   "Platforms" : [
+      {
+         "Name" : "win32",
+         "Options" : {
+            "IncludeDirs" : [
+               "../../deps/libffi-3.0.11/i686-pc-mingw32/include"
+            ]
+         }
+      }
+   ],
    "Configurations" : [
       {
          "Name" : "Debug",

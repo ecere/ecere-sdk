@@ -107,6 +107,15 @@ ifdef LINUX
 OFLAGS += -Wl,--no-undefined
 endif
 
+# PLATFORM-SPECIFIC OPTIONS
+
+ifdef WINDOWS
+
+CFLAGS += \
+	 -I../../deps/libffi-3.0.11/i686-pc-mingw32/include
+
+endif
+
 # TARGETS
 
 all: objdir $(TARGET)

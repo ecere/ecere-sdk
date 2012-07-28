@@ -9,7 +9,8 @@
       "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "Libraries" : [
-         "ecere"
+         "ecere",
+         "ffi"
       ]
    },
    "Platforms" : [
@@ -29,6 +30,17 @@
             "Libraries" : [
                "pthread",
                "dl"
+            ]
+         }
+      },
+      {
+         "Name" : "win32",
+         "Options" : {
+            "IncludeDirs" : [
+               "../../../deps/libffi-3.0.11/i686-pc-mingw32/include"
+            ],
+            "LibraryDirs" : [
+               "../../../deps/libffi-3.0.11/i686-pc-mingw32/.libs"
             ]
          }
       }

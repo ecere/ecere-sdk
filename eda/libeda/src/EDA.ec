@@ -4,6 +4,10 @@ public import static "ecere"
 public import "ecere"
 #endif
 
+#define uint _uint
+#include "ffi.h"
+#undef uint
+
 #include <stdarg.h>
 
 #ifdef _DEBUG
@@ -517,6 +521,7 @@ public:
          char * string = (char *)data;
          delete string;
       }
+      return true;
    }
 
    property uint sysID { get { return row ? row.GetSysID() : 0; } set { if(row) row.GoToSysID(value); } }
@@ -549,8 +554,13 @@ public:
 public class SQLCustomFunction
 {
 public:
-   Array<char> array { minAllocSize = 1024 };
-   virtual void Process(char * text);
+   Method method;
+   Class returnType;
+   Array<Class> args { };
+   ffi_type * rType;
+   // Array<void *> does not work right now :(
+   Array</*ffi_type*/ String> argTypes { };
+   ffi_cif cif;
 }
 
 public struct FieldFindData

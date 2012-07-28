@@ -10,23 +10,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./EDASQLite.ec:453
+#: ./EDASQLite.ec:457
 msgid "BEGIN FAILED!"
 msgstr "BEGIN FAILED!"
 
-#: ./EDASQLite.ec:464
+#: ./EDASQLite.ec:468
 msgid "COMMIT FAILED!"
 msgstr "COMMIT FAILED!"
 
-#: ./EDASQLite.ec:192
+#: ./EDASQLite.ec:196
 msgid "EDASQLite: Can't open database (%s): %s\n"
 msgstr "EDASQLite: Can't open database (%s): %s\n"
 
-#: ./EDASQLite.ec:605
+#: ./EDASQLite.ec:954
 msgid "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 msgstr "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 
-#: ./EDASQLite.ec:566
+#: ./EDASQLite.ec:915
 msgid "WARNING: Table not yet created for class "
 msgstr "WARNING: Table not yet created for class "
 
