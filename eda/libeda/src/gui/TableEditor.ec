@@ -1236,6 +1236,8 @@ private:
 
                      if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
                         type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+                     if(type.type == structClass)
+                        delete data;
                   }
                }
             }
@@ -1528,6 +1530,8 @@ private:
                listRow.SetData(lf.dataField, s);
                if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
                   type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+               if(type.type == structClass)
+                  delete data;
                delete s; // ?
             }
             else if(lf.field.type && eClass_IsDerived(lf.dataField.dataType, class(char*)))
@@ -1554,6 +1558,8 @@ private:
 
                if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
                   type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+               if(type.type == structClass)
+                  delete data;
             }
             else if(lf.field.type)
             {
@@ -1576,6 +1582,8 @@ private:
                   listRow.SetData(lf.dataField, (void *)data);
                if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
                   type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+               if(type.type == structClass)
+                  delete data;
             }
          }
       }
