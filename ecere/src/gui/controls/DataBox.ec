@@ -119,6 +119,7 @@ private:
             {
                ((EditBox)editor).readOnly = readOnly;
                ((EditBox)editor).autoSize = autoSize;
+               ((EditBox)editor).clickThrough = true;
             }
          }
          else

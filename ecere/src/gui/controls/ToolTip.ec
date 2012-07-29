@@ -169,7 +169,7 @@ public class ToolTip : Window
    ToolTip ::Find(Window window)
    {
       Window w;
-      for(w = window.firstSlave; w; w = w.next)
+      for(w = window.firstSlave; w; w = w.nextSlave)
       {
          if(eClass_IsDerived(w._class, class(ToolTip)))
             break;
