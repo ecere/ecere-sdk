@@ -74,7 +74,7 @@ private:
 
 static void OnDisplay(Class _class, void * data, Surface surface, int x, int y, int width, void * fieldData, Alignment alignment, DataDisplayFlags displayFlags)
 {
-   char tempString[MAX_F_STRING];
+   static char tempString[16384];
    char * string;
    int len;
    bool needClass = false;

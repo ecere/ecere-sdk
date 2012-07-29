@@ -334,11 +334,12 @@ public:
          channel.Serialize(none);
       }
    }
-
+   /*
    void OnDisplay(Surface surface, int x, int y, int width, void * fieldData, Alignment alignment, DataDisplayFlags displayFlags)
    {
 
    }
+   */
    
    char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
@@ -373,7 +374,10 @@ public:
 
    int OnCompare(IdList b)
    {
-      if(count > b.count) return 1;
+      if(!this && !b) return 0;
+      else if(this && !b) return 1;
+      else if(!this && b) return -1;
+      else if(count > b.count) return 1;
       else if(count < b.count) return -1;
       else
       {
