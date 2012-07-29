@@ -66,7 +66,7 @@ OFLAGS = -m32 \
 	 -L../../../obj/$(PLATFORM)/bin \
 	 -L../../../obj/$(PLATFORM)/lib
 
-LIBS = -lecere $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 UPXFLAGS = -9 -q
 

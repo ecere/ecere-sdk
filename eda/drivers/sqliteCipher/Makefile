@@ -71,7 +71,7 @@ OFLAGS = -m32 \
 	 -L../../../obj/$(PLATFORM)/bin \
 	 -L../../../obj/$(PLATFORM)/lib
 
-LIBS = -lecere $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 UPXFLAGS = -9 -q
 
@@ -80,15 +80,23 @@ ifdef LINUX
 OFLAGS += -Wl,--no-undefined
 endif
 
+ifneq "$(TARGET_TYPE)" "staticlib"
+LIBS += -lecere -lffi
+endif
+
 # PLATFORM-SPECIFIC OPTIONS
 
 ifdef WINDOWS
 
 CFLAGS += \
+	 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include \
 	 -I$(OPENSSL_INCLUDE_DIR)
 
+ifneq "$(TARGET_TYPE)" "staticlib"
 OFLAGS += \
+	 -L../../../deps/libffi-3.0.11/i686-pc-mingw32/.libs \
 	 -L$(OPENSSL_BIN_DIR)
+endif
 
 LIBS += -llibeay32
 
