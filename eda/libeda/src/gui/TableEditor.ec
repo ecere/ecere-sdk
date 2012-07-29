@@ -73,7 +73,7 @@ public char * ConvertToASCII(char * string, char * newString, int * len, bool lo
       for(c = 0; (unich = UTF8GetChar(string + c, &nb)); c += nb)
       {
          char ch = ToASCII(unich);
-         if(ch < 128 && ch > 32) //(ch == '-' || isalpha(ch) || ch == ','))
+         if(ch < 128)
             newString[d++] = lowerCase ? (char)tolower(ch) : (char)ch;
       }
       newString[d] = 0;
@@ -970,6 +970,21 @@ private:
                                  }
                                  else
                                     ln = CopyString(searchCI.array);
+                                 if(ln)
+                                 {
+                                    TrimLSpaces(ln, ln);
+                                    TrimRSpaces(ln, ln);
+                                 }
+                                 if(fn)
+                                 {
+                                    TrimLSpaces(fn, fn);
+                                    TrimRSpaces(fn, fn);
+                                 }
+                                 if(mn)
+                                 {
+                                    TrimLSpaces(mn, mn);
+                                    TrimRSpaces(mn, mn);
+                                 }
 
                                  /* We could simply do this if we had access to PersonName: (don't forget the delete pn; below)
                                  PersonName pn;
