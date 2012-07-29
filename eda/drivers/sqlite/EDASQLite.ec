@@ -1496,7 +1496,8 @@ class SQLiteRow : DriverRow
                   dataPtr = (void *) data;
                else
                   dataPtr = &data;
-               ((void (*)())(void *)this.BindData)(this, stmt, (*bindId)++, fld, type, dataPtr, &buffer);
+               ((bool (*)())(void *)this.BindData)(this, stmt, (*bindId)++, fld, type, dataPtr, &buffer);
+               // NOTE: The data is bound twice, for there are 2x '?' in the query from AddCursorWhereClauses
                // Reuse the buffer for Blobs...
                if(fld.sqliteType == SQLITE_BLOB || fld.sqliteType == SQLITE_NULL)
                {
@@ -1504,7 +1505,7 @@ class SQLiteRow : DriverRow
                   delete buffer;
                }
                else
-                  ((void (*)())(void *)this.BindData)(this, stmt, (*bindId)++, fld, type, dataPtr, null);
+                  ((bool (*)())(void *)this.BindData)(this, stmt, (*bindId)++, fld, type, dataPtr, null);
 
                type._vTbl[__ecereVMethodID_class_OnFree](type, dataPtr);
             }
