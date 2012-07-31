@@ -9083,12 +9083,7 @@ public:
    property Point scroll
    {
       property_category $"Behavior"
-      set
-      {
-         // scroll = value;
-         // TESTING THIS IMPLEMENTATION:
-         SetScrollPosition(value.x, value.y);
-      }
+      set { SetScrollPosition(value.x, value.y); }
       get { value = scroll; }
    };
 

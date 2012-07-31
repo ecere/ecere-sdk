@@ -171,16 +171,9 @@ public:
    }
 };
 
-
-class ArrayUndoActions : OldArray
-{
-   type = class(UndoAction);
-   UndoAction * _;
-};
-
 public class UndoBuffer
 {
-   ArrayUndoActions actions { size = 8 };
+   Array<UndoAction> actions { size = 8 };
 public:
    int count;
    int curAction;
@@ -189,13 +182,18 @@ public:
    bool insideRedo;
 
    dontRecord = 0;
+
+   ~UndoBuffer()
+   {
+      actions.Free();
+   }
    
    void Undo()
    {
       dontRecord++;
       if(curAction > 0)
       {
-         UndoAction action = actions._[--curAction];
+         UndoAction action = actions[--curAction];
 #ifdef _DEBUG
          /*Print("Undoing: ");
          action.Print(data);*/
@@ -211,7 +209,7 @@ public:
       insideRedo = true;
       if(curAction < count)
       {
-         UndoAction action = actions._[curAction];
+         UndoAction action = actions[curAction];
          curAction++;
 #ifdef _DEBUG
          /*Print("Redoing: ");
@@ -231,7 +229,7 @@ public:
          {
             int c;
             for(c = curAction; c < count; c++)
-               delete actions._[c];
+               delete actions[c];
          }
 
          count = curAction;
@@ -243,7 +241,7 @@ public:
          /*Print("Recording: ");
          action.Print(data);*/
 #endif
-         actions._[count++] = action;
+         actions[count++] = action;
          curAction = count;
 
          if(actions.size > count + count / 2 && count + count / 2 >= 8)
