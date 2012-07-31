@@ -98,6 +98,8 @@ private:
 
    bool OnPostCreate()
    {
+      // Right now for read-only DataBoxes the only reason we'd want to create an editor is for autoSize purposes, when using the default EditBox editor that supports it.
+      // ( A tweak for enum classes is in typeEdit.ec, as the base class editor invokes it )
       if(type && (!readOnly || (autoSize && type._vTbl[__ecereVMethodID_class_OnEdit] == class(Instance)._vTbl[__ecereVMethodID_class_OnEdit])) &&
          (type.type == normalClass || type.type == noHeadClass || data))
       {
@@ -134,7 +136,7 @@ private:
 
    void OnRedraw(Surface surface)
    {
-      if(type && !editor)
+      if(type && (!editor || !editor.created))
       {
          char tempString[1024];
          if(type._vTbl[__ecereVMethodID_class_OnDisplay] == class(Instance)._vTbl[__ecereVMethodID_class_OnDisplay])

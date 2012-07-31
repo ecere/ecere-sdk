@@ -58,15 +58,20 @@ private:
          return true;
       }
    };
-   dropBox.AddField({ dataType = _class, userData = userData });
-   dropBox.Create();
-
-   for(item = enumeration.values.first; item; item = item.next)
+   // Read only DataBoxes don't really need the edition, but it will be invoked if autoSize is on because the base class OnEdit check succeeded and chained here,
+   // and it's thinking the editor is going to be an EditBox. We return an editor so the DataBox goes on with life.
+   if(!((DataBox)window).readOnly)
    {
-      DataRow row = dropBox.AddRow();
-      row.SetData(null, (uint)item.data); //name);
-      if(data && (int)item.data == *data)
-         dropBox.currentRow = row;
+      dropBox.AddField({ dataType = _class, userData = userData });
+      dropBox.Create();
+
+      for(item = enumeration.values.first; item; item = item.next)
+      {
+         DataRow row = dropBox.AddRow();
+         row.SetData(null, (uint)item.data); //name);
+         if(data && (int)item.data == *data)
+            dropBox.currentRow = row;
+      }
    }
    return dropBox;
 }

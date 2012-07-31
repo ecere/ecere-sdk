@@ -280,8 +280,8 @@ msgstr "Arrange Icons"
 msgid "Attach"
 msgstr "Attach"
 
-#: ./src/designer/CodeEditor.ec:5152
-#: ./src/designer/CodeEditor.ec:5193
+#: ./src/designer/CodeEditor.ec:5153
+#: ./src/designer/CodeEditor.ec:5194
 msgid "Attach %s"
 msgstr "Attach %s"
 
@@ -385,7 +385,7 @@ msgstr "Call Stack"
 #: ./src/dialogs/NewProjectDialog.ec:208
 #: ./src/dialogs/NewProjectDialog.ec:526
 #: ./src/dialogs/ProjectActiveConfig.ec:57
-#: ./src/designer/CodeEditor.ec:5224
+#: ./src/designer/CodeEditor.ec:5225
 #: ./src/ProjectSettings.ec:172
 msgid "Cancel"
 msgstr "Cancel"
@@ -1088,8 +1088,8 @@ msgstr "Memory can't be read at %s"
 msgid "MemoryGuard"
 msgstr "MemoryGuard"
 
-#: ./src/designer/CodeEditor.ec:5153
-#: ./src/designer/CodeEditor.ec:5195
+#: ./src/designer/CodeEditor.ec:5154
+#: ./src/designer/CodeEditor.ec:5196
 msgid "Method is unused. Move method inside instance?"
 msgstr "Method is unused. Move method inside instance?"
 
@@ -1149,7 +1149,7 @@ msgstr "Name"
 msgid "Name Conflict"
 msgstr "Name Conflict"
 
-#: ./src/designer/CodeEditor.ec:5220
+#: ./src/designer/CodeEditor.ec:5221
 msgid "Name detached method"
 msgstr "Name detached method"
 
@@ -1233,7 +1233,7 @@ msgstr "Number of parallel build jobs"
 #: ./src/dialogs/NewProjectDialog.ec:34
 #: ./src/dialogs/NewProjectDialog.ec:345
 #: ./src/dialogs/ProjectActiveConfig.ec:39
-#: ./src/designer/CodeEditor.ec:5229
+#: ./src/designer/CodeEditor.ec:5230
 #: ./src/about.ec:34
 #: ./src/ProjectSettings.ec:211
 msgid "OK"

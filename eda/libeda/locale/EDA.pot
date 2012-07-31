@@ -14,17 +14,17 @@ msgstr ""
 msgid "(Click to add a new %s...)"
 msgstr "(Click to add a new %s...)"
 
-#: ./src/ers.ec:519
+#: ./src/ers.ec:517
 msgid "All files"
 msgstr "All files"
 
-#: ./src/ers.ec:30
+#: ./src/ers.ec:28
 #: ./src/gui.ec:20
 #: ./src/gui.ec:30
 msgid "Arial"
 msgstr "Arial"
 
-#: ./src/ers.ec:516
+#: ./src/ers.ec:514
 msgid "Comma Separated Values Spreadsheet (*.csv)"
 msgstr "Comma Separated Values Spreadsheet (*.csv)"
 
@@ -48,6 +48,10 @@ msgstr "Entry"
 msgid "Error reading field"
 msgstr "Error reading field"
 
+#: ./src/ers.ec:570
+msgid "Export as Spreadsheet (CSV)"
+msgstr "Export as Spreadsheet (CSV)"
+
 #: ./src/EDB.ec:234
 msgid "Invalid, corrupted or in use (%s) database file.\n"
 msgstr "Invalid, corrupted or in use (%s) database file.\n"
@@ -70,7 +74,7 @@ msgstr "New"
 msgid "New|id="
 msgstr "New|id="
 
-#: ./src/ers.ec:17
+#: ./src/ers.ec:15
 msgid "Please wait while the report is being generated..."
 msgstr "Please wait while the report is being generated..."
 
