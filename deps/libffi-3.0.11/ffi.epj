@@ -39,7 +39,7 @@
                "Files" : [
                   "ffi.c",
                   "ffitarget.h",
-                  "win32.c"
+                  "win32.S"
                ]
             },
             "prep_cif.c",
