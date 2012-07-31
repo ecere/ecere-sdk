@@ -565,13 +565,16 @@ public:
    int Printf(char * format, ...)
    {
       int result = 0;
-      char text[MAX_F_STRING];
-      va_list args;
-      va_start(args, format);
-      vsprintf(text, format, args);
-      if(Puts(text))
-         result = strlen(text);
-      va_end(args);
+      if(format)
+      {
+         char text[MAX_F_STRING];
+         va_list args;
+         va_start(args, format);
+         vsprintf(text, format, args);
+         if(Puts(text))
+            result = strlen(text);
+         va_end(args);
+      }
       return result;
    }
 

@@ -4182,7 +4182,8 @@ class CodeEditor : Window
                      for(param = dataType.params.first; param; param = param.next)
                      {
                         if(param.prev) f.Printf(", ");
-                        f.Printf(param.name);
+                        if(param.kind != voidType)
+                           f.Printf(param.name);
                      }
                      f.Printf(");\n");
                   }
@@ -4771,7 +4772,7 @@ class CodeEditor : Window
                      for(param = dataType.params.first; param; param = param.next)
                      {
                         if(param.prev) f.Printf(", ");
-                        if(param.kind != voidType) 
+                        if(param.kind != voidType)
                            f.Printf(param.name);
                      }
                      f.Printf(");\n");
@@ -6157,7 +6158,7 @@ class CodeEditor : Window
 
          f.Printf("\n");
 
-         //if(test._class._vTbl[method.vid] == moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad]) // Temp Check for DefaultFunction
+         if(!_class || (isInstance ? _class : _class.base)._vTbl[method.vid] == moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad]) // Temp Check for DefaultFunction
          {
             if(returnType && returnType.kind == classType && !strcmp(returnType._class.string, "bool"))
             {
@@ -6170,20 +6171,21 @@ class CodeEditor : Window
                f.Printf("      return 0;\n");
             }
          }
-         /*else
+         else
          {
+            if(extraIndent) f.Printf("   ");
             f.Printf("      ");
             if(returnType.kind != voidType)
                f.Printf("return ");
-            f.Printf("%s::%s(this", classDef.base.name, method.name);
+            f.Printf("%s::%s(", isInstance ? _class.name : _class.base.name, method.name);
             for(param = dataType.params.first; param; param = param.next)
             {
-               f.Printf(", ");
-               f.Printf(param.name);
+               if(param.prev) f.Printf(", ");
+               if(param.kind != voidType)
+                  f.Printf(param.name);
             }
             f.Printf(");\n");
-         }*/
-         
+         }
       }
 
       if(extraIndent) f.Printf("   ");
