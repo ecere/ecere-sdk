@@ -14,7 +14,7 @@ msgstr ""
 msgid "(Click to add a new %s...)"
 msgstr "(Click to add a new %s...)"
 
-#: ./src/ers.ec:560
+#: ./src/ers.ec:519
 msgid "All files"
 msgstr "All files"
 
@@ -24,7 +24,7 @@ msgstr "All files"
 msgid "Arial"
 msgstr "Arial"
 
-#: ./src/ers.ec:557
+#: ./src/ers.ec:516
 msgid "Comma Separated Values Spreadsheet (*.csv)"
 msgstr "Comma Separated Values Spreadsheet (*.csv)"
 
@@ -99,8 +99,8 @@ msgstr "Table Editor"
 msgid "Unable to detect if table exists!\n"
 msgstr "Unable to detect if table exists!\n"
 
-#: ./src/gui/TableEditor.ec:876
-#: ./src/gui/TableEditor.ec:895
+#: ./src/gui/TableEditor.ec:872
+#: ./src/gui/TableEditor.ec:891
 msgid "WordList match cannot be found in database."
 msgstr "WordList match cannot be found in database."
 

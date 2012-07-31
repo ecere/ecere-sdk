@@ -71,9 +71,10 @@ class PreviewPage : Window
 public class Page : Window
 {
    background = white;
-   //size = { 612, 792 };
 
-   public property Orientation orientation
+   Orientation orientation;
+public:
+   property Orientation orientation
    {
       set
       {
@@ -90,22 +91,11 @@ public class Page : Window
          orientation = value;
       }
    }
-   Orientation orientation;
 
-   public PageInside inside { this }; // , size = { 612, 792 }
+   Window inside { this };
 
-   public int headerHeight;
+   int headerHeight;
    
-}
-
-public class PageInside : Window
-{
-   public OldList details;
-
-   ~PageInside()
-   {
-      details.Free(null);
-   }
 }
 
 public class ReportRender
@@ -131,13 +121,6 @@ public void ERSProgressAdvanceLevelCheck()
 
 public class ReportRenderNormal : ReportRender
 {
-   OldList pages;
-
-   ~ReportRender()
-   {
-      pages.Free(null);
-   }
-
 public:
    int pageNumber;
 
@@ -151,11 +134,11 @@ public:
       renderAction = levelStart;
       ersCurrentReport = this;
       ersNumRows = 0;
-      if(!report.groupings._[0].filtered)
+      if(!report.groupings[0].filtered)
       {
          pleaseWait.master = destination.master;
          pleaseWait.Create();
-         pleaseWait.progress.range = report.groupings._[0].row.tbl.rowsCount;
+         pleaseWait.progress.range = report.groupings[0].row.tbl.rowsCount;
          pleaseWait.progress.progress = 0;
          ((GuiApplication)__thisModule.application).ProcessInput(true);
          pleaseWait.UpdateDisplay();
@@ -179,7 +162,6 @@ public:
                reportHeader.anchor = Anchor { left = 0, top = 0, right = 0 };
                
                pageTop += reportHeader.size.h;
-               //inside.details.Add(OldLink { data = reportHeader });
                reportHeader.Create();
             
             }
@@ -201,7 +183,6 @@ public:
             pageHeader.anchor = Anchor { left = 0, top = pageTop, right = 0 };
             
             pageTop += pageHeader.size.h;
-            //inside.details.Add(OldLink { data = pageHeader });
 
             pageHeader.Create();
          }
@@ -228,11 +209,11 @@ public:
                int c;
                for(c = 0; c < ((renderAction == groupStart) ? level : (level + 1)); c++)
                {
-                  if(report.groupings._[c].continuation)
+                  if(report.groupings[c].continuation)
                   {
                      if(lastDetail)
                         lastDetail.isLast = true;
-                     AddDetailToPage(destination, eInstance_New(report.groupings._[c].continuation));
+                     AddDetailToPage(destination, eInstance_New(report.groupings[c].continuation));
                   }
                }
             }
@@ -253,9 +234,9 @@ public:
                      {
                         // end of rows, end of last group, end of report
                         // TESTING THIS HERE... (UNCOMMENTED AND ADDED CHECK FOR size == 1)
-                        if(report.groupings.size == 1 && report.groupings._[level].footer)
+                        if(report.groupings.size == 1 && report.groupings[level].footer)
                         {
-                           if(AddDetailToPage(destination, eInstance_New(report.groupings._[level].footer)))
+                           if(AddDetailToPage(destination, eInstance_New(report.groupings[level].footer)))
                            {
                               //dontAdvance = true;
                               loop = false;
@@ -272,12 +253,12 @@ public:
                      }
                      break;
                   case groupStart:
-                     if(report.Advance(report.groupings._[level], level ? report.groupings._[level - 1].groupId : 0, &dontAdvance))
+                     if(report.Advance(report.groupings[level], level ? report.groupings[level - 1].groupId : 0, &dontAdvance))
                      {
                         report.ExecuteRowData(level);
-                        if(report.groupings._[level].header)
+                        if(report.groupings[level].header)
                         {
-                           Detail groupStart = eInstance_New(report.groupings._[level].header);
+                           Detail groupStart = eInstance_New(report.groupings[level].header);
                            if(AddDetailToPage(destination, groupStart))
                            {
                               dontAdvance = true;
@@ -304,9 +285,9 @@ public:
                   case groupFinish:
                      if(lastDetail)
                         lastDetail.isLast = true;
-                     if(report.groupings._[level].footer)
+                     if(report.groupings[level].footer)
                      {
-                        Detail groupEnd = eInstance_New(report.groupings._[level].footer);
+                        Detail groupEnd = eInstance_New(report.groupings[level].footer);
                         if(AddDetailToPage(destination, groupEnd))
                         {
                            //dontAdvance = true;
@@ -324,7 +305,7 @@ public:
                      renderAction = groupStart;
                      break;
                   case actualRows:
-                     if(report.Advance(report.groupings._[level], level ? report.groupings._[level - 1].groupId : 0, &dontAdvance))
+                     if(report.Advance(report.groupings[level], level ? report.groupings[level - 1].groupId : 0, &dontAdvance))
                      {
                         Detail detail;
                         if(AddDetailToPage(destination, (detail = eInstance_New(report.rowDetail))))
@@ -371,16 +352,12 @@ public:
             else
                pageFooter.anchor = Anchor { left = 0, bottom = 0, right = 0 };
             
-            //inside.details.Add(OldLink { data = pageFooter });
             pageFooter.Create();
          }
          if(nil && report.reportFooter)
          {
-            //inside.details.Add(OldLink { data = reportFooter });
             reportFooter.Create();
          }
-
-         pages.Add(OldLink { data = page });
          
          destination.EndPage(page);
 
@@ -404,7 +381,7 @@ private:
    RenderAction renderAction;
 
    Page page;
-   PageInside inside;
+   Window inside;
 
    Detail reportHeader;
    Detail reportFooter;
@@ -432,7 +409,6 @@ private:
       {
          detail.anchor = Anchor { left = 0, top = pageTop, right = 0 };
          pageTop += detailSize;
-         //inside.details.Add(OldLink { data = detail });
 
          detail.Create();
          // This will probably never go here... (Only report/page headers have keepTogether set to false)
@@ -451,7 +427,7 @@ public class ReportDestination : Window
 
    int pageCount;
 
-   OldList pages;
+   List<PreviewPage> pages { };
 public:
    Report report;
 
@@ -461,20 +437,8 @@ public:
       SetScrollPosition((page.master.size.w - clientSize.w) / 2, 0);
    }
 
-   virtual void AddPage(Page page)
-   {
-   }
-
-   virtual Report GetReport()
-   {
-      return null;
-   }
-
-private:
-   ~ReportDestination()
-   {
-      pages.Free(null);
-   }
+   virtual void AddPage(Page page);
+   virtual Report GetReport() { return null; }
 }
 
 public class PrintedReport : ReportDestination
@@ -531,7 +495,6 @@ public class ReportPreviewArea : ReportDestination
       page.master = previewPage;
       page.parent = previewPage;
       page.anchor = { left = pgs, top = pgs, right = shadowS + pgs, bottom = shadowS + pgs};
-      pages.Add(OldLink { data = previewPage });
       page.Create();
       pageCount++;
    }
@@ -543,11 +506,7 @@ public class ReportPreviewArea : ReportDestination
 
    void OnResize(int width, int height)
    {
-      SetScrollPosition((scrollArea.w - width) / 2, scroll.y);
-   }
-
-   ~ReportPreviewArea()
-   {
+      scroll = { (scrollArea.w - width) / 2, scroll.y };
    }
 }
 
@@ -637,7 +596,7 @@ public class CSVReport : ReportDestination
                   Label label, first = null;
       
                   if(detail._class == report.pageFooter) continue;
-                  if(detail._class == report.groupings._[0].header) 
+                  if(detail._class == report.groupings[0].header)
                      f.Puts("\n");
                   for(label = (Label)detail.firstChild; label && label != first; label = (Label)label.next)
                   {
@@ -650,7 +609,7 @@ public class CSVReport : ReportDestination
                            PutString(f, text);
                      }
                   }
-                  if(detail._class == report.groupings._[0].header) 
+                  if(detail._class == report.groupings[0].header)
                      f.Puts("\n");
                   f.Puts("\n");
                }
@@ -684,13 +643,6 @@ public:
    }
 }
 
-public class ArrayIdFilters : OldArray
-{
-   type = class(IdFilter);
-public:
-   IdFilter * const _;
-}
-
 public class Grouping
 {
 public:
@@ -698,7 +650,7 @@ public:
    Row row;
    Field field, fieldLink;
    bool filtered;
-   ArrayIdFilters filters { };
+   Array<IdFilter> filters { };
 
    // Contractors have a list of trades they're in
    Field listFieldLink;
@@ -716,6 +668,7 @@ public:
 
    ~Grouping()
    {
+      filters.Free();
       delete row;
    }
    
@@ -794,11 +747,11 @@ public:
          if(result && filtered && filters.size)
          {
             int f;
-            for(f = 0; f < filters.size && result && filters._[f].field; f++)
+            for(f = 0; f < filters.size && result && filters[f].field; f++)
             {
                Id id = 0;
-               row.GetData(filters._[f].field, id);
-               if(id != filters._[f].id)
+               row.GetData(filters[f].field, id);
+               if(id != filters[f].id)
                {
                   result = false;
                   break;
@@ -825,20 +778,13 @@ public:
    }
 }
 
-public class ArrayGroupings : OldArray
-{
-   type = class(Grouping);
-public:
-   Grouping * const _;
-}
-
 public class Report
 {
 public:
    Orientation orientation;
    Anchor insideMarginAnchor;
 
-   ArrayGroupings groupings { };
+   Array<Grouping> groupings { };
 
    property String title
    {
@@ -879,8 +825,8 @@ public:
    {
       get
       {
-         if(groupings && groupings.size && groupings._[0].row)
-            return groupings._[0].row.nil;
+         if(groupings && groupings.size && groupings[0].row)
+            return groupings[0].row.nil;
          return true;
       }
    }
@@ -888,9 +834,7 @@ public:
 private:   
    ~Report()
    {
-      /*int c;
-      for(c = 0; c<groupings.size; c++)
-         delete groupings._[c];*/
+      groupings.Free();
       delete title;
       delete render;
    }
