@@ -31,11 +31,14 @@ private:
       }
    }
 
-   void Window::NotifyUpdate(EditBox editBox)
+   watch(modifiedDocument)
    {
-      if(editBox.contents && editBox.contents[0])
-         editBox.foreground = ((SearchBox)editBox).originalFg;
-      else
-         editBox.foreground = ((SearchBox)editBox).searchLabelColor;
-   }
+      if(modifiedDocument)
+      {
+         if(contents && contents[0])
+            foreground = originalFg;
+         else
+            foreground = searchLabelColor;
+      }
+   };
 }
