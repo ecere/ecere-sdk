@@ -503,7 +503,7 @@ public:
    {
       DebugLn("TableEditor::CreateRow");
       //list.NotifySelect(this, list, null, 0);
-      if(!modifiedDocument)
+      if(table && editRow && editRow.tbl && !modifiedDocument)
       {
          uint id; // = table.rowsCount + 1; // this is bad with deleted rows, won't work, how to have unique id? 
                                // I think the 3 following comment lines apply to the old sqlite driver before many fix we done for wsms
@@ -541,6 +541,7 @@ public:
             }
             /*if(fldActive)
                r.SetData(fldActive, active);*/
+            selectedId = id;
 
 #ifdef _DEBUG
             newText = PrintString("[", newEntryStringDebug, id, "]");
