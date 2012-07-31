@@ -168,7 +168,9 @@ public:
 
    watch(checked)
    {
-      if(parent && eClass_IsDerived(parent._class, class(SelectorBar)) && checked)
+      if(!checked)
+         font = null;
+      else if(parent && eClass_IsDerived(parent._class, class(SelectorBar)))
       {
          SelectorButton b;
          SelectorBar selector = (SelectorBar)parent;
@@ -176,10 +178,7 @@ public:
          {
             if(b.nonClient) continue;
             if(eClass_IsDerived(b._class, class(SelectorButton)) && b != this)
-            {
-               b.font = null;
                b.checked = false;
-            }
          }
          font = { font.faceName, font.size, bold = true }; 
          // this should not be required: the font change should resize the control and Stacker should adapt automatically
