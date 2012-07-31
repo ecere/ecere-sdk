@@ -40,7 +40,7 @@
                "../../../deps/libffi-3.0.11/i686-pc-mingw32/include"
             ],
             "LibraryDirs" : [
-               "../../../deps/libffi-3.0.11/i686-pc-mingw32/.libs"
+               "../../../deps/libffi-3.0.11/obj/release.$(PLATFORM)"
             ]
          }
       }

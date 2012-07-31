@@ -94,7 +94,7 @@ CFLAGS += \
 
 ifneq "$(TARGET_TYPE)" "staticlib"
 OFLAGS += \
-	 -L../../../deps/libffi-3.0.11/i686-pc-mingw32/.libs \
+	 -L../../../deps/libffi-3.0.11/obj/release.$(PLATFORM) \
 	 -L$(OPENSSL_BIN_DIR)
 endif
 

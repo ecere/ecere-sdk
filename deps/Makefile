@@ -6,12 +6,7 @@
 include ../include.mk
 
 ifdef WINDOWS
-ifdef MSYSCON
-# Need MSYS to build libffi
 all: freetype jpeg png gif ffi z
-else
-all: freetype jpeg png gif z
-endif
 else
 ifdef OSX
 all: jpeg png gif
@@ -26,9 +21,7 @@ clean:
 	cd zlib && $(MAKE) clean
 	cd jpeg-6b && $(MAKE) clean
 	cd libungif-4.1.1 && $(MAKE) clean
-ifdef MSYSCON
 	cd libffi-3.0.11 && $(MAKE) clean
-endif
 
 realclean:
 	cd freetype-2.3.12 && $(MAKE) realclean

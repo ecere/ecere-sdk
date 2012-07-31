@@ -1,0 +1,56 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ffi",
+   "Options" : {
+      "Warnings" : "All",
+      "IncludeDirs" : [
+         "include",
+         "i686-pc-mingw32/include",
+         "i686-pc-mingw32"
+      ],
+      "TargetType" : "StaticLibrary",
+      "TargetFileName" : "ffi"
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "src",
+         "Files" : [
+            {
+               "Folder" : "x86",
+               "Files" : [
+                  "ffi.c",
+                  "ffitarget.h",
+                  "win32.c"
+               ]
+            },
+            "prep_cif.c",
+            "raw_api.c",
+            "types.c",
+            "closures.c"
+         ]
+      }
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
