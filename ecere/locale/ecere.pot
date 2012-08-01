@@ -43,14 +43,14 @@ msgstr "Alt+"
 #: ./src/gui/controls/DropBox.ec:168
 #: ./src/gui/controls/EditBox.ec:739
 #: ./src/gui/controls/Label.ec:47
-#: ./src/gui/controls/ListBox.ec:945
-#: ./src/gui/controls/ListBox.ec:978
+#: ./src/gui/controls/ListBox.ec:946
 #: ./src/gui/controls/ListBox.ec:979
-#: ./src/gui/controls/ListBox.ec:983
-#: ./src/gui/controls/ListBox.ec:1010
+#: ./src/gui/controls/ListBox.ec:980
+#: ./src/gui/controls/ListBox.ec:984
 #: ./src/gui/controls/ListBox.ec:1011
 #: ./src/gui/controls/ListBox.ec:1012
 #: ./src/gui/controls/ListBox.ec:1013
+#: ./src/gui/controls/ListBox.ec:1014
 #: ./src/gui/controls/Picture.ec:19
 #: ./src/gui/controls/Picture.ec:39
 #: ./src/gui/controls/ScrollBar.ec:82
@@ -115,17 +115,17 @@ msgstr "August"
 #: ./src/gui/controls/EditBox.ec:741
 #: ./src/gui/controls/EditBox.ec:742
 #: ./src/gui/controls/Label.ec:18
-#: ./src/gui/controls/ListBox.ec:927
-#: ./src/gui/controls/ListBox.ec:966
-#: ./src/gui/controls/ListBox.ec:974
+#: ./src/gui/controls/ListBox.ec:928
+#: ./src/gui/controls/ListBox.ec:967
 #: ./src/gui/controls/ListBox.ec:975
 #: ./src/gui/controls/ListBox.ec:976
 #: ./src/gui/controls/ListBox.ec:977
-#: ./src/gui/controls/ListBox.ec:1008
+#: ./src/gui/controls/ListBox.ec:978
 #: ./src/gui/controls/ListBox.ec:1009
-#: ./src/gui/controls/ListBox.ec:1014
+#: ./src/gui/controls/ListBox.ec:1010
 #: ./src/gui/controls/ListBox.ec:1015
-#: ./src/gui/controls/ListBox.ec:1019
+#: ./src/gui/controls/ListBox.ec:1016
+#: ./src/gui/controls/ListBox.ec:1020
 #: ./src/gui/controls/ScrollBar.ec:84
 #: ./src/gui/controls/ScrollBar.ec:88
 #: ./src/gui/controls/ScrollBar.ec:99
@@ -586,7 +586,7 @@ msgid "Please enter a name."
 msgstr "Please enter a name."
 
 #: ./src/gui/controls/DropBox.ec:98
-#: ./src/gui/controls/ListBox.ec:928
+#: ./src/gui/controls/ListBox.ec:929
 msgid "Private"
 msgstr "Private"
 

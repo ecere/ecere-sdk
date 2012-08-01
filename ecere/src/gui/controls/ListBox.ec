@@ -57,7 +57,7 @@ public class DataField
 public:
    property Class dataType
    {
-      set { dataType = value; if(value) alignment = value.defaultAlignment; }
+      set { dataType = value; if(value) { alignment = (Alignment)value.defaultAlignment; } }  // NOTE: Class::defaultAlignment does not seem to be used anywhere
       get { return dataType; }
    }
    property bool editable { set { editable = value; } };
@@ -69,6 +69,7 @@ public:
          if(headButton) headButton.alignment = value;
          if(listBox) listBox.Update(null);
       }
+      get { return alignment; }
    };
    property int width
    {
@@ -202,7 +203,7 @@ private:
    int x;
    Button headButton;
    int sortOrder;
-   int alignment;
+   Alignment alignment;
    bool editable;
    ListBox listBox;
    bool defaultField;
