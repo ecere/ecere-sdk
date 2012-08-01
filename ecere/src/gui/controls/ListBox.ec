@@ -160,6 +160,41 @@ public:
       }
    }
 
+   void AutoSize()
+   {
+      if(listBox && dataType)
+      {
+         Display display = listBox.display;
+         Font boldFont = listBox.boldFont.font;
+         Font font = listBox.fontObject;
+         DataRow row;
+         int width = 0;
+         for(row = listBox.firstRow; row; row = row.next)
+         {
+            ListBoxCell cell;
+            uint i;
+            for(i = 0, cell = row.cells.first; i != index; i++, cell = cell.next);
+            if(cell && cell.isSet && dataType)
+            {
+               static char tempString[4096];
+               String string;
+               int tw = 0;
+               if(dataType.type == normalClass || dataType.type == noHeadClass)
+                  string = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, cell.data[0], tempString, userData, null);
+               else
+                  string = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, cell.data, tempString, userData, null);
+               if(string)
+                  display.FontExtent(row.header ? boldFont : font, string, strlen(string), &tw, null);
+               else
+                  display.FontExtent(row.header ? boldFont : font, "", 0, &tw, null);
+               if(tw > width) width = tw;
+            }
+         }
+         if(width)
+            property::width = width;
+      }
+   }
+
 private:
    DataField()
    {
@@ -995,6 +1030,7 @@ public:
                size.h = rowHeight;
                NotifyPushed = HeaderPushed;
                NotifyClicked = HeaderClicked;
+               NotifyDoubleClick = HeaderDoubleClicked;
                NotifyReleased = HeaderReleased;
                NotifyMouseMove = HeaderMouseMove;
             };
@@ -1126,6 +1162,7 @@ public:
                alignment = addedField.alignment;
                NotifyPushed = HeaderPushed;
                NotifyClicked = HeaderClicked;
+               NotifyDoubleClick = HeaderDoubleClicked;
                NotifyReleased = HeaderReleased;
                NotifyMouseMove = HeaderMouseMove;
             };
@@ -2868,6 +2905,32 @@ private:
       return true;
    }
 
+   bool HeaderDoubleClicked(Button control, int x, int y, Modifiers mods)
+   {
+      if(style.resizable)
+      {
+         DataField field = (DataField)control.id;
+         if(field)
+         {
+            if(x < RESIZE_BORDER && field.prev)
+               field = field.prev;
+            else if(x >= control.clientSize.w - RESIZE_BORDER);
+            else
+               field = null;
+         }
+         else
+         {
+            if(x < RESIZE_BORDER && fields.last)
+               field = fields.last;
+            else
+               field = null;
+         }
+         if(field)
+            field.AutoSize();
+      }
+      return false;
+   }
+
    watch(visible)
    {
       if(style.freeSelect)
@@ -2962,11 +3025,10 @@ private:
                      // Should always be as many cells in the row as fields in the listbox
                      if(cell && cell.isSet && field.dataType)
                      {
-                        Bitmap icon = null;
-                        char tempString[1024];
+                        static char tempString[4096];
                         char * string;
                         int tw, th;
-                        if(field.dataType.type == 0 normalClass || field.dataType.type == noHeadClass)
+                        if(field.dataType.type == normalClass || field.dataType.type == noHeadClass)
                            string = (char *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString](field.dataType, cell.data[0], tempString, field.userData, null);
                         else
                            string = (char *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString](field.dataType, cell.data, tempString, field.userData, null);
