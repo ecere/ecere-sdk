@@ -73,6 +73,8 @@ private:
             dropBox.currentRow = row;
       }
    }
+   else
+      dropBox.autoCreate = false;
    return dropBox;
 }
 
