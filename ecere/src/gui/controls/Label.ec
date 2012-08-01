@@ -83,11 +83,15 @@ private:
          int width = 0, height = 0;
 
          display.FontExtent(fontObject, string, strlen(string), &width, &height);
-         if(labeledWindow && labeledWindow.text)
-            *w = Max(width, *w);
-         else
-            *w = Max(width, 80);
-         *h = Max(height, *h);
+         if(!*w)
+         {
+            if(labeledWindow && labeledWindow.text)
+               *w = Max(width, *w);
+            else
+               *w = Max(width, 80);
+         }
+         if(!*h)
+            *h = Max(height, *h);
       }
       return true;
    }
