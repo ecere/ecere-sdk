@@ -169,7 +169,7 @@ public:
          Font font = listBox.fontObject;
          DataRow row;
          int width = 0;
-         for(row = listBox.firstRow; row; row = row.next)
+         for(row = listBox.firstRow; row; row = row.GetNextRow())
          {
             ListBoxCell cell;
             uint i;
