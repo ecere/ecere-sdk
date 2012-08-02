@@ -9295,7 +9295,27 @@ public:
       get { return (bool)nativeDecorations; }
       set { nativeDecorations = value; }
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NOTRUETYPE)
-      isset { return (nativeDecorations && (rootWindow == this || (formDesigner && activeDesigner && ((FormDesigner)activeDesigner.classDesigner).form && parent == ((FormDesigner)activeDesigner.classDesigner).form.parent))) != style.fixed; }
+      isset
+      {
+         //return (nativeDecorations && (rootWindow == this || (formDesigner && activeDesigner && ((FormDesigner)activeDesigner.classDesigner).form && parent == ((FormDesigner)activeDesigner.classDesigner).form.parent))) != style.fixed;
+         bool result = false;
+         if(nativeDecorations)
+         {
+            if(rootWindow == this)
+               result = true;
+            else
+            {
+               if(formDesigner && activeDesigner)
+               {
+                  FormDesigner cd = (FormDesigner)activeDesigner.classDesigner;
+                  Window form = cd ? cd.form : null;
+                  if(form && parent == form.parent)
+                     result = true;
+               }
+            }
+         }
+         return result != style.fixed;
+      }
 #endif
    };
    property bool manageDisplay { get { return (bool)manageDisplay; } set { manageDisplay = value; } };
