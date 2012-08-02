@@ -2348,8 +2348,12 @@ private:
          // Draw the current row background
          if(row.header)
          {
-            background = formColor;
-            surface.SetBackground(formColor);
+            Color colors[] = { formColor, azure, mistyRose, linen, floralWhite, lavender, lavenderBlush, lemonChiffon };
+            int level = 0;
+            DataRow p = row;
+            while(p = p.parent) level++;
+            background = colors[(level % (sizeof(colors)/sizeof(colors[0]))];
+            surface.SetBackground(background);
             surface.Area(rowStart, y, clientSize.w, (y + rowHeight) - 1);
             foreground = branchesColor;
          }
