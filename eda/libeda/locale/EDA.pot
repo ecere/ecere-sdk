@@ -14,7 +14,7 @@ msgstr ""
 msgid "(Click to add a new %s...)"
 msgstr "(Click to add a new %s...)"
 
-#: ./src/ers.ec:517
+#: ./src/ers.ec:535
 msgid "All files"
 msgstr "All files"
 
@@ -24,7 +24,7 @@ msgstr "All files"
 msgid "Arial"
 msgstr "Arial"
 
-#: ./src/ers.ec:514
+#: ./src/ers.ec:532
 msgid "Comma Separated Values Spreadsheet (*.csv)"
 msgstr "Comma Separated Values Spreadsheet (*.csv)"
 
@@ -48,7 +48,7 @@ msgstr "Entry"
 msgid "Error reading field"
 msgstr "Error reading field"
 
-#: ./src/ers.ec:570
+#: ./src/ers.ec:588
 msgid "Export as Spreadsheet (CSV)"
 msgstr "Export as Spreadsheet (CSV)"
 

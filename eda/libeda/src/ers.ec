@@ -117,6 +117,19 @@ public void ERSProgressAdvanceLevelCheck()
    }
 }
 
+public void ERSProgressAdvance()
+{
+   if(!ersNumRows) ersNumRows++;
+   ersNumRows++;
+   ersNumRows = Min(ersNumRows, pleaseWait.progress.range);
+   pleaseWait.progress.progress = ersNumRows;
+   if(ersNumRows == pleaseWait.progress.range || !(ersNumRows%100))
+   {
+      ((GuiApplication)__thisModule.application).ProcessInput(true);
+      pleaseWait.UpdateDisplay();
+   }
+}
+
 public class ReportRenderNormal : ReportRender
 {
 public:
@@ -136,7 +149,8 @@ public:
       {
          pleaseWait.master = destination.master;
          pleaseWait.Create();
-         pleaseWait.progress.range = report.groupings[0].row.tbl.rowsCount;
+
+         pleaseWait.progress.range = report.groupings[0].rowsCount ? report.groupings[0].rowsCount : report.groupings[0].row.rowsCount;
          pleaseWait.progress.progress = 0;
          ((GuiApplication)__thisModule.application).ProcessInput(true);
          pleaseWait.UpdateDisplay();
@@ -655,6 +669,7 @@ public:
 
    bool activeOnly;
    Field activeField;
+   uint rowsCount;
 
    subclass(Detail) header;
    subclass(Detail) continuation;
