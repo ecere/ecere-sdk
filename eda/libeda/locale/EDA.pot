@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./src/idList.ec:227
+#: ./src/idList.ec:229
 msgid "(Click to add a new %s...)"
 msgstr "(Click to add a new %s...)"
 
@@ -126,7 +126,7 @@ msgstr "You have modified this entry. Would you like to save it before proceedin
 msgid "[New]"
 msgstr "[New]"
 
-#: ./src/idList.ec:227
+#: ./src/idList.ec:229
 msgid "item"
 msgstr "item"
 

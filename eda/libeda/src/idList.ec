@@ -221,6 +221,8 @@ public class Id : uint
                   PrintLn("Id::OnGetString -- data type"/*, this._class.name, */" has no class_data(nameField)");
                }
             }
+            else
+               tempString[0] = 0;
          }
          else
          {
