@@ -1225,6 +1225,9 @@ public:
             int index = field.index;
             DataRow row;
 
+            if(sortField == field)
+               sortField = null;
+
             for(row = rows.first; row; )
             {
                int c;
