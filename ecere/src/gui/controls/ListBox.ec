@@ -61,6 +61,7 @@ public:
       get { return dataType; }
    }
    property bool editable { set { editable = value; } };
+   property bool fixed { set { fixed = value; } get { return fixed; } };
    property Alignment alignment
    {
       set
@@ -244,6 +245,7 @@ private:
    bool defaultField;
    void * userData;
    bool freeData;
+   bool fixed;
 };
 
 public class DataRow
@@ -2713,6 +2715,7 @@ private:
          else if(x < RESIZE_BORDER && field.prev)
             field = field.prev;
 
+         if(field.fixed) return false;
          resizingField = field;
          this.resizeX = x + control.position.x;
          this.startWidth = field.width;
@@ -2721,6 +2724,7 @@ private:
       }
       else if(field)
       {
+         if(field.fixed) return false;
          draggingField = field;
          if(style.moveFields)
             field.headButton.stayDown = true;
@@ -2816,7 +2820,10 @@ private:
          if(field)
          {
             if(x < RESIZE_BORDER && field.prev)
-               control.cursor = guiApp.GetCursor(sizeWE);
+            {
+               if(!field.prev.fixed)
+                  control.cursor = guiApp.GetCursor(sizeWE);
+            }
             else if(x >= control.clientSize.w - RESIZE_BORDER)
                control.cursor = guiApp.GetCursor(sizeWE);
             else
