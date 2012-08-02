@@ -2409,7 +2409,7 @@ private:
             for(field = fields.first; field; field = field.next)
             {
                uint index;
-               int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ? 
+               int width = ((!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) || row.header) ?
                   clientSize.w - field.x : (field.width + EXTRA_SPACE);
 
                // Box clip = { x, y+1, x + field.width - EXTRA_SPACE - 1, y + rowHeight - 2 };
