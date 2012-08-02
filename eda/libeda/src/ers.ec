@@ -223,9 +223,11 @@ public:
                {
                   if(report.groupings[c].continuation)
                   {
+                     Detail continuation = eInstance_New(report.groupings[c].continuation);
+                     continuation.level = c;
                      if(lastDetail)
                         lastDetail.isLast = true;
-                     AddDetailToPage(destination, eInstance_New(report.groupings[c].continuation));
+                     AddDetailToPage(destination, continuation);
                   }
                }
             }
@@ -271,6 +273,8 @@ public:
                         if(report.groupings[level].header)
                         {
                            Detail groupStart = eInstance_New(report.groupings[level].header);
+                           groupStart.level = level;
+
                            if(AddDetailToPage(destination, groupStart))
                            {
                               dontAdvance = true;
@@ -854,6 +858,7 @@ public class Detail : Window
 public:
    bool keepTogether;
    bool isLast;
+   int level;
 
    subclass(Detail) rowDetail;
 }
