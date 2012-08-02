@@ -225,8 +225,6 @@ public:
                   {
                      Detail continuation = eInstance_New(report.groupings[c].continuation);
                      continuation.level = c;
-                     if(lastDetail)
-                        lastDetail.isLast = true;
                      AddDetailToPage(destination, continuation);
                   }
                }
@@ -267,6 +265,7 @@ public:
                      }
                      break;
                   case groupStart:
+                     lastDetail = null;
                      if(report.Advance(report.groupings[level], level ? report.groupings[level - 1].groupId : 0, &dontAdvance))
                      {
                         report.ExecuteRowData(level);
@@ -350,6 +349,31 @@ public:
          {
             nil = true;
          }
+
+         // Cancel group headers if we didn't have space to display any row
+         if(!lastDetail)
+         {
+            Detail detail, prev;
+            for(detail = (Detail)inside.lastChild; detail; detail = prev)
+            {
+               prev = (Detail)detail.previous;
+               if(level > 0 && detail._class == report.groupings[level-1].header)
+               {
+                  detail.Destroy(0);
+                  level--;
+                  renderAction = groupStart;
+               }
+               else
+               {
+                  if(detail._class == report.groupings[level].footer);
+                  else
+                     lastDetail = detail;
+                  break;
+               }
+            }
+         }
+         if(lastDetail)
+            lastDetail.isLast = true;
 
          if(nil && report.reportFooter)
          {
