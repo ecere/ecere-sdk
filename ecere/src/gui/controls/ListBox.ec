@@ -2288,10 +2288,11 @@ private:
          DataRow parent;
          Bitmap icon = row.icon ? row.icon.bitmap : null;
          int collapseRowStart;
+         bool lastWasHeader = row.header;
 
          for(parent = row.parent; parent; parent = parent.parent)
          {
-            if(!parent.header)
+            if(!parent.header || lastWasHeader)
             {
                if(style.treeBranch)
                   indent += 20;
