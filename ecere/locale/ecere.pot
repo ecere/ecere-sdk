@@ -61,7 +61,7 @@ msgstr "Alt+"
 #: ./src/gui/Window.ec:8097
 #: ./src/gui/Window.ec:8480
 #: ./src/gui/Window.ec:9181
-#: ./src/gui/Window.ec:9482
+#: ./src/gui/Window.ec:9502
 msgid "Appearance"
 msgstr "Appearance"
 
@@ -252,7 +252,7 @@ msgstr "Deleting control with children"
 msgid "Deleting control with code"
 msgstr "Deleting control with code"
 
-#: ./src/gui/Window.ec:9306
+#: ./src/gui/Window.ec:9326
 msgid "Deprecated"
 msgstr "Deprecated"
 

@@ -169,9 +169,9 @@ public:
             if(report.reportHeader)
             {
                reportHeader = eInstance_New(report.reportHeader);
+               reportHeader.anchor = Anchor { left = 0, top = 0, right = 0 };
                reportHeader.master = destination;
                reportHeader.parent = inside;
-               reportHeader.anchor = Anchor { left = 0, top = 0, right = 0 };
                
                pageTop += reportHeader.size.h;
                reportHeader.Create();
@@ -180,9 +180,9 @@ public:
             /*if(report.reportFooter)
             {
                reportFooter = eInstance_New(report.reportFooter);
+               reportFooter.anchor = Anchor { left = 0, bottom = 0, right = 0 };
                reportFooter.master = destination;
                reportFooter.parent = inside;
-               reportFooter.anchor = Anchor { left = 0, bottom = 0, right = 0 };
                reportFooter.Create();
             }*/
          }
@@ -190,9 +190,9 @@ public:
          if(report.pageHeader)
          {
             pageHeader = eInstance_New(report.pageHeader);
+            pageHeader.anchor = Anchor { left = 0, top = pageTop, right = 0 };
             pageHeader.master = destination;
             pageHeader.parent = inside;
-            pageHeader.anchor = Anchor { left = 0, top = pageTop, right = 0 };
             
             pageTop += pageHeader.size.h;
 
@@ -409,6 +409,7 @@ private:
    {
       int detailSize;
 
+      detail.anchor = Anchor { left = 0, right = 0 };
       detail.master = destination;
       detail.parent = inside;
 
@@ -475,9 +476,9 @@ public class PrintedReport : ReportDestination
       if(pageCount && display)
          display.NextPage();
       lastPage = page;
+      page.anchor = { left = 0, top = 0, right = 0, bottom = 0};
       page.master = this;
       page.parent = this;
-      page.anchor = { left = 0, top = 0, right = 0, bottom = 0};
       pageCount++;
       page.Create();
    }
@@ -508,9 +509,9 @@ public class ReportPreviewArea : ReportDestination
       PreviewPage previewPage { this, this, page = page, orientation = page.orientation, 
                                    anchor = { top = pageCount * ((int)page.size.h + shadowS + pgs) } };
       previewPage.Create();
+      page.anchor = { left = pgs, top = pgs, right = shadowS + pgs, bottom = shadowS + pgs};
       page.master = previewPage;
       page.parent = previewPage;
-      page.anchor = { left = pgs, top = pgs, right = shadowS + pgs, bottom = shadowS + pgs};
       page.Create();
       pageCount++;
    }
