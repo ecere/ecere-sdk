@@ -1142,10 +1142,11 @@ static void OnUnserialize(Class _class, void ** data, IOChannel channel)
 static int Integer_OnCompare(Class _class, int * data1, int * data2)
 {
    int result = 0;
-   if(*data1 > *data2)
-      result = 1;
-   else if(*data1 < *data2)
-      result = -1;
+   if(!data1 && !data2) result = 0;
+   else if(data1 && !data2) result = 1;
+   else if(!data1 && data2) result = -1;
+   else if(*data1 > *data2) result = 1;
+   else if(*data1 < *data2) result = -1;
    return result;
 }
 
@@ -1171,16 +1172,11 @@ static bool Integer_OnGetDataFromString(Class _class, int * data, char * string)
 static int UInteger_OnCompare(Class _class, unsigned int * data1, unsigned int * data2)
 {
    int result = 0;
-   if(data1 && !data2)
-      result = 1;
-   else if(!data1 && data2)
-      result = -1;
-   else if(!data1 && !data2)
-      result = 0;
-   else if(*data1 > *data2)
-      result = 1;
-   else if(*data1 < *data2)
-      result = -1;
+   if(!data1 && !data2) result = 0;
+   else if(data1 && !data2) result = 1;
+   else if(!data1 && data2) result = -1;
+   else if(*data1 > *data2) result = 1;
+   else if(*data1 < *data2) result = -1;
    return result;
 }
 
@@ -1205,10 +1201,11 @@ static bool UInteger_OnGetDataFromString(Class _class, unsigned int * data, char
 static int Byte_OnCompare(Class _class, byte * data1, byte * data2)
 {
    int result = 0;
-   if(*data1 > *data2)
-      result = 1;
-   else if(*data1 < *data2)
-      result = -1;
+   if(!data1 && !data2) result = 0;
+   else if(data1 && !data2) result = 1;
+   else if(!data1 && data2) result = -1;
+   else if(*data1 > *data2) result = 1;
+   else if(*data1 < *data2) result = -1;
    return result;
 }
 
@@ -1451,10 +1448,11 @@ static void RegisterClass_Integer(Module module)
 static int Float_OnCompare(Class _class, float * data1, float * data2)
 {
    int result = 0;
-   if(*data1 > *data2)
-      result = 1;
-   else if(*data1 < *data2)
-      result = -1;
+   if(!data1 && !data2) result = 0;
+   else if(data1 && !data2) result = 1;
+   else if(!data1 && data2) result = -1;
+   else if(*data1 > *data2) result = 1;
+   else if(*data1 < *data2) result = -1;
    return result;
 }
 
@@ -1535,10 +1533,11 @@ static void RegisterClass_Float(Module module)
 static int Double_OnCompare(Class _class, double * data1, double * data2)
 {
    int result = 0;
-   if(*data1 > *data2)
-      result = 1;
-   else if(*data1 < *data2)
-      result = -1;
+   if(!data1 && !data2) result = 0;
+   else if(data1 && !data2) result = 1;
+   else if(!data1 && data2) result = -1;
+   else if(*data1 > *data2) result = 1;
+   else if(*data1 < *data2) result = -1;
    return result;
 }
 
