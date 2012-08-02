@@ -222,7 +222,7 @@ public class Id : uint
                }
             }
             else
-               tempString[0] = 0;
+               sprintf(tempString, "(Invalid %s entry: %d)", tbl.name, this);
          }
          else
          {
