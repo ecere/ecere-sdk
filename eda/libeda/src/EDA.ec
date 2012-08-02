@@ -416,6 +416,7 @@ public class Row
    DriverRow row;
    Row prev, next;
    Table tbl;
+   String query;
 
    ~Row()
    {
@@ -424,6 +425,7 @@ public class Row
          tbl.listRows.Remove(this);
 #endif
       delete row;
+      delete query;
    }
 
 public:
@@ -462,7 +464,36 @@ public:
 
    property bool nil { get { return row ? row.Nil() : true; } }
 
-   property char * query { set { if(row) row.Query(value); } }
+   property char * query { set { delete query; query = CopyString(value); if(row) row.Query(value); } get { return query; } }
+   property uint rowsCount
+   {
+      get
+      {
+         if(query)
+         {
+            // NOTE: This does not work if the query relies on bound data...
+            String from = SearchString(query, 0, "FROM", false, true);
+            if(from)
+            {
+               uint len = strlen(query);
+               String countQuery = new char[len+40];
+               uint count;
+               String result;
+               Row r { tbl = tbl };
+               strcpy(countQuery, "SELECT COUNT(*) ");
+               strcat(countQuery, from);
+               r.query = countQuery;
+               result = r.GetColumn(0);
+               count = result ? strtol(result, null, 0) : 0;
+               delete r;
+               return count;
+            }
+         }
+         else if(tbl)
+            return tbl.rowsCount;
+         return 0;
+     }
+   }
 
    public bool Query(char * query)  // Add printf format support
    {
