@@ -393,6 +393,7 @@ class SQLiteDatabase : Database
                }
                else
                {
+                  Table refTable = null;
                   sqlite3_stmt * statement;
                   
                   sprintf(command, "SELECT Name, Type, Length FROM eda_table_fields WHERE Table_Name='%s';", name);
@@ -433,8 +434,13 @@ class SQLiteDatabase : Database
                      }
 
                      {
+                        Table * fTable = (Table *)eClass_GetProperty(type, "table");
                         SQLiteField field { tbl = table, name = CopyString(fieldName), type = type, length = length, num = table.fields.count, sqliteType = sqliteType };
                         incref field;
+                        if(fTable) refTable = *fTable;
+                        if(!table.primaryKey && refTable && !strcmp(refTable.name, table.name))
+                           table.primaryKey = field;
+
                         table.fields.Add(field);
                      }
                   }
@@ -1050,6 +1056,11 @@ class SQLiteTable : Table
    Field GetFirstField()
    {
       return fields.first;
+   }
+
+   Field GetPrimaryKey()
+   {
+      return primaryKey;
    }
 
    uint GetFieldsCount()

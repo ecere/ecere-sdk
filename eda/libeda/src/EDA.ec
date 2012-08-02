@@ -251,6 +251,7 @@ public class Table
 public:
    virtual String GetName();
    virtual Field GetFirstField();
+   virtual Field GetPrimaryKey();
    virtual uint GetFieldsCount();
    virtual uint GetRowsCount();
    virtual DriverRow CreateRow();
@@ -274,6 +275,7 @@ public:
 public:
    property String name { get { return GetName(); } }
    property Field firstField { get { return GetFirstField(); } }
+   property Field primaryKey { get { return GetPrimaryKey(); } }
    property uint fieldsCount { get { return GetFieldsCount(); } }
    property uint rowsCount { get { return GetRowsCount(); } }
    
