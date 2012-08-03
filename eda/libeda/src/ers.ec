@@ -855,9 +855,8 @@ public:
       return false;
    }
 
-   virtual void ExecuteRowData(int group)
-   {
-   }
+   virtual void ExecuteRowData(int group);
+   virtual void OnReset();
 
    property bool nil
    {
