@@ -170,6 +170,9 @@ public:
          Font font = listBox.fontObject;
          DataRow row;
          int width = 0;
+         if(header)
+            display.FontExtent(boldFont, header, strlen(header), &width, null);
+         width += EXTRA_SPACE;
          for(row = listBox.firstRow; row; row = row.GetNextRow())
          {
             ListBoxCell cell;
