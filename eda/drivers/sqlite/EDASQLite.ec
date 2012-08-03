@@ -1413,15 +1413,20 @@ class SQLiteRow : DriverRow
             if((char *)data)
                result = sqlite3_bind_text(statement, pos, (char *)data, strlen((char *)data), SQLITE_TRANSIENT);
             else
-               result = sqlite3_bind_text(statement, pos, null, 0, SQLITE_TRANSIENT);
+               result = sqlite3_bind_null(statement, pos);
             break;
          }
          case SQLITE_BLOB:
          case SQLITE_NULL:
          {
-            buffer = SerialBuffer { };
-            dataType._vTbl[__ecereVMethodID_class_OnSerialize](dataType, data, buffer);
-            result = sqlite3_bind_text(statement, pos, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
+            if((void *)data)
+            {
+               buffer = SerialBuffer { };
+               dataType._vTbl[__ecereVMethodID_class_OnSerialize](dataType, data, buffer);
+               result = sqlite3_bind_text(statement, pos, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
+            }
+            else
+               result = sqlite3_bind_null(statement, pos);
             break;
          }
       }
@@ -1762,6 +1767,7 @@ class SQLiteRow : DriverRow
          sqlite3_reset(curStatement);
          sqlite3_bind_int64(sysIDStatement, 1, (sqlite3_int64)rowID);
          result = sqlite3_step(curStatement);
+         done = false; // Make sure 'nil' is false
          return true;
       }
       sqlite3_reset(insertStatement);
