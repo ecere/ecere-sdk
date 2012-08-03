@@ -485,6 +485,7 @@ public:
 public class PrintedReport : ReportDestination
 {
    displayDriver = "Win32Printer";
+   fullRender = true;
 
    Page lastPage;
 

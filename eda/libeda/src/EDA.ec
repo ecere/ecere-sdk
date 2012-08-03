@@ -464,7 +464,16 @@ public:
 
    property bool nil { get { return row ? row.Nil() : true; } }
 
-   property char * query { set { delete query; query = CopyString(value); if(row) row.Query(value); } get { return query; } }
+   property char * query
+   {
+      set
+      {
+         // So we can do row.query = row.query
+         if(query != value) { delete query; query = CopyString(value); }
+         if(row) row.Query(value);
+      }
+      get { return query; }
+   }
    property uint rowsCount
    {
       get
