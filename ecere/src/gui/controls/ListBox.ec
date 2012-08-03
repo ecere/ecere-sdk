@@ -2577,7 +2577,7 @@ private:
             }
             else if(field.alignment == right)
             {
-               x = field.x + width - tw - EXTRA_SPACE - 4;
+               x = field.x + width - tw - 2*EXTRA_SPACE - 4;
                x = Max(x, field.x + 2);
             }
             x -= scroll.x;
