@@ -1907,7 +1907,10 @@
             "listAdd.png",
             "listRemove.png",
             "viewRefresh.png",
-            "windowNew.png"
+            "windowNew.png",
+            "clean.png",
+            "docSave.png",
+            "docNew.png"
          ]
       },
       {
