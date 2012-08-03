@@ -497,10 +497,12 @@ class DateDropBox : DropBox
    }
 };
 
-class RepButton : Button
+public class RepButton : Button
 {
+public:
    bool pressing;
    isRemote = true;
+   inactive = true;
    
    property Seconds delay { set { timer2.delay = value; } }
    property Seconds delay0 { set { timer.delay = value; } }
@@ -509,8 +511,8 @@ class RepButton : Button
    {
       if(key == hotKey)
       {
-         NotifyClicked(master, this, 0, 0, key.modifiers);
-         return false;
+         return NotifyClicked(master, this, 0, 0, key.modifiers);
+         // return false;
       }
       return true;
    }
@@ -519,8 +521,8 @@ class RepButton : Button
    {
       if(key == hotKey)
       {
-         //NotifyPushed(master, this, 0,0, key.modifiers);
-         return true;
+         return NotifyPushed(master, this, 0,0, key.modifiers);
+         // return true;
       }
       return true;
    }
@@ -529,8 +531,8 @@ class RepButton : Button
    {
       if(key == hotKey)
       {
-         //NotifyReleased(master, this, 0,0, key.modifiers);
-         return false;
+         return NotifyReleased(master, this, 0,0, key.modifiers);
+         // return false;
       }
       return true;
    }

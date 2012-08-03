@@ -10,92 +10,7 @@ public import "ecere"
 #endif
 #endif
 
-public class RepButton : Button
-{
-public:
-   bool pressing;
-   isRemote = true;
-   inactive = true;
-   
-   property Seconds delay { set { timer2.delay = value; } }
-   property Seconds delay0 { set { timer.delay = value; } }
-   
-   bool OnKeyHit(Key key, unichar ch)
-   {
-      return true;
-   }
-
-   bool OnKeyDown(Key key, unichar ch)
-   {
-      if(key == hotKey)
-      {
-         NotifyPushed(master, this, 0,0, key.modifiers);
-         return false;
-      }
-      return true;
-   }
-
-   bool OnKeyUp(Key key, unichar ch)
-   {
-      if(key == hotKey)
-      {
-         NotifyReleased(master, this, 0,0, key.modifiers);
-         return false;
-      }
-      return true;
-   }
-
-   bool NotifyPushed(RepButton button, int x, int y, Modifiers mods)
-   {
-      button.pressing = true;
-      button.NotifyClicked(this, button, x, y, mods);
-      button.timer.Start();
-      return true;
-   }
-
-   bool NotifyMouseLeave(RepButton button, Modifiers mods)
-   {
-      button.timer.Stop();
-      button.timer2.Stop();
-      return true;
-   }
-
-   bool NotifyReleased(RepButton button, int x, int y, Modifiers mods)
-   {
-      button.pressing = false;
-      button.NotifyMouseLeave(this, button, mods);
-      return false;
-   }
-
-   bool NotifyMouseOver(RepButton button, int x, int y, Modifiers mods)
-   {
-      if(button.pressing)
-         button.timer2.Start();
-      return true;
-   }
-
-   Timer timer
-   {
-      this, delay = 0.1;
-
-      bool DelayExpired()
-      {
-         timer.Stop();
-         timer2.Start();
-         timer2.DelayExpired(this);
-         return true;
-      }
-   };
-   Timer timer2
-   {
-      this, delay = 0.1;
-      bool DelayExpired()
-      {
-         NotifyClicked(master, this, 0, 0, 0);
-         return true;
-      }
-   };
-}
+// class RepButton WAS ALREADY DEFINED IN date.ec! The version here broke CalendarControl behavior.
 
 static define stackerScrolling = 16;
 
@@ -201,7 +116,7 @@ private:
 
    RepButton left
    {
-      nonClient = true, parent = this, visible = false, bevelOver = true, keyRepeat = true, opacity = 0;
+      nonClient = true, parent = this, visible = false, bevelOver = true, keyRepeat = true, opacity = 0; delay0 = 0.1;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -222,7 +137,7 @@ private:
    };
    RepButton right
    {
-      nonClient = true, parent = this, visible = false, bevelOver = true, keyRepeat = true, opacity = 0;
+      nonClient = true, parent = this, visible = false, bevelOver = true, keyRepeat = true, opacity = 0; delay0 = 0.1;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
