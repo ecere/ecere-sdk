@@ -2057,7 +2057,8 @@ private:
 
       if(sbh) // && !sbh.style.hidden
       {
-         sbh.Move(clientStart.x, clientStart.y + clientSize.h, clientSize.w,0);
+         if(!sbh.anchored)
+            sbh.Move(clientStart.x, clientStart.y + clientSize.h, clientSize.w,0);
          // Need to set the range again (should improve...) since the scrollbars didn't have
          // the right size when UpdateScrollArea set the range on it
          if(flag)
@@ -2068,7 +2069,8 @@ private:
       }
       if(sbv) // && !sbv.state.hidden
       {
-         sbv.Move(clientStart.x + clientSize.w, clientStart.y, 0, clientSize.h);
+         if(!sbv.anchored)
+            sbv.Move(clientStart.x + clientSize.w, clientStart.y, 0, clientSize.h);
          // Need to set the range again (should improve...) since the scrollbars didn't have
          // the right size when UpdateScrollArea set the range on it
          if(flag)
@@ -7938,7 +7940,11 @@ public:
                   */
                }
                scrolledPos.x = MININT; // Prevent parent update
-               property::anchor = anchor;
+               {
+                  bool anchored = this.anchored;
+                  property::anchor = anchor;
+                  this.anchored = anchored;
+               }
                /*
                {
                   int x, y, w, h;
