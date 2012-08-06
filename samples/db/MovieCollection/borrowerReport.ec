@@ -16,7 +16,7 @@ class BorrowerReportDetail : Detail
    {
       String s;
       BorrowerReport report = (BorrowerReport)((ReportDestination)master).GetReport();
-      RowMovies row = (RowMovies)report.groupings._[1].row;
+      RowMovies row = (RowMovies)report.groupings[1].row;
       
       s = row.name; movieName.text = s; delete s;
       s = PrintString((ShortDate)row.dateBorrowed); dateBorrowed.text = s; delete s;
@@ -53,7 +53,7 @@ class BorrowerGroupHeader : Detail
    {
       String s;
       BorrowerReport report = (BorrowerReport)((ReportDestination)master).GetReport();
-      RowBorrowers row = (RowBorrowers)report.groupings._[0].row;      
+      RowBorrowers row = (RowBorrowers)report.groupings[0].row;
       s = row.name; name.text = s; delete s;
       s = row.phoneNumber; phone.text = s; delete s;
       return true;
@@ -79,7 +79,7 @@ class BorrowerGroupContinuation : Detail
    {
       String s;
       BorrowerReport report = (BorrowerReport)((ReportDestination)master).GetReport();
-      RowBorrowers row = (RowBorrowers)report.groupings._[0].row;      
+      RowBorrowers row = (RowBorrowers)report.groupings[0].row;
       
       s = PrintString(row.name, " (Continued)"); name.text = s; delete s;
       return true;
@@ -106,7 +106,7 @@ class BorrowerGroupFooter : Detail
 
    bool OnCreate(void)
    {
-      String s = PrintString(numMovies);      
+      String s = PrintString(numMovies);
       total.text = s;
       delete s;
       return true;
@@ -141,13 +141,13 @@ class BorrowerReport : CommonReport
    {
       groupings.size = 2;
 
-      groupings._[1] = groupings._[0];
+      groupings[1] = groupings[0];
 
-      groupings._[0] = BorrowerGrouping { };
-      groupings._[0].field = dbfield("Borrowers", id);
-      groupings._[0].header = class(BorrowerGroupHeader);
-      groupings._[0].continuation = class(BorrowerGroupContinuation);
-      groupings._[0].footer = class(BorrowerGroupFooter);      
+      groupings[0] = BorrowerGrouping { };
+      groupings[0].field = dbfield("Borrowers", id);
+      groupings[0].header = class(BorrowerGroupHeader);
+      groupings[0].continuation = class(BorrowerGroupContinuation);
+      groupings[0].footer = class(BorrowerGroupFooter);
    }
 
    bool ExecuteData(Database db)
@@ -168,13 +168,13 @@ class BorrowerReport : CommonReport
       else
          title = "Borrowed movies";
 
-      groupings._[0].row = RowBorrowers { };
-      groupings._[0].row.query = "SELECT ROWID, * FROM `Borrowers` ORDER BY `Name`;";
-      groupings._[0].row.Select(nil);
+      groupings[0].row = RowBorrowers { };
+      groupings[0].row.query = "SELECT ROWID, * FROM `Borrowers` ORDER BY `Name`;";
+      groupings[0].row.Select(nil);
 
-      groupings._[1].row = RowMovies { };
-      groupings._[1].row.query = "SELECT ROWID, * FROM `Movies` WHERE `Date Borrowed` < ? AND `Borrower` = ? ORDER BY `Date Borrowed`;";
-      groupings._[1].row.SetQueryParamObject(1, Date { d.year, d.month, d.day }, class(Date));
+      groupings[1].row = RowMovies { };
+      groupings[1].row.query = "SELECT ROWID, * FROM `Movies` WHERE `Date Borrowed` < ? AND `Borrower` = ? ORDER BY `Date Borrowed`;";
+      groupings[1].row.SetQueryParamObject(1, Date { d.year, d.month, d.day }, class(Date));
       return true;
    }
 
@@ -182,10 +182,10 @@ class BorrowerReport : CommonReport
    {
       if(group == 0)
       {
-         groupings._[1].row.SetQueryParam(2, (int)groupings._[0].row.sysID);
+         groupings[1].row.SetQueryParam(2, (int)groupings[0].row.sysID);
          numMovies = 0;
       }
       else if(group == 1)
-         numMovies++;         
+         numMovies++;
    }
 }

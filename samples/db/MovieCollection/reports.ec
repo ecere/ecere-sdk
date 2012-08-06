@@ -106,8 +106,8 @@ class CommonReport : Report
 
    CommonReport()
    {
-      groupings.size = 1;      
-      groupings._[0] = Grouping { };
+      groupings.size = 1;
+      groupings[0] = Grouping { };
    }
 }
 

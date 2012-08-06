@@ -16,7 +16,7 @@ class MoviesReportDetail : Detail
    bool OnCreate(void)
    {
       String s;
-      RowMovies row = (RowMovies)report.groupings._[0].row;
+      RowMovies row = (RowMovies)report.groupings[0].row;
       
       s = row.name; movieName.text = s; delete s;
       s = PrintString(row.mediaType); mediaType.text = s; delete s;
@@ -54,7 +54,7 @@ class MoviesReport : CommonReport
       RowMovies row { };
       row.query = "SELECT ROWID, * FROM `Movies` ORDER BY `Media Type`, `Name`;";
       row.Select(nil);
-      groupings._[0].row = row;
+      groupings[0].row = row;
       return true;
    }
 }
