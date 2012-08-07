@@ -245,6 +245,16 @@ public class GuiApplication : Application
       delete globalSystem.fileMonitorThread;
 
       UnapplySkin(class(Window));
+
+      // Stop all timers
+      {
+         Timer timer, nextTimer;
+         for(timer = windowTimers.first; timer; timer = nextTimer)
+         {
+            nextTimer = timer.next;
+            timer.Stop();
+         }
+      }
    }
 
    bool UpdateTimers()
