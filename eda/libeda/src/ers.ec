@@ -137,7 +137,6 @@ public:
 
    void Render(ReportDestination destination, Report report)
    {
-      Detail lastDetail = null;
       bool dontAdvance = false;
       bool nil;
       level = 0;
@@ -157,6 +156,7 @@ public:
       }
       for(pageNumber = 1; true; pageNumber++)
       {
+         Detail lastDetail = null;
          page = Page { orientation = report.orientation };
          destination.AddPage(page);
          inside = page.inside;
