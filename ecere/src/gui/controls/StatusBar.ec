@@ -128,7 +128,7 @@ private:
       surface.Clip(null);
    }
 
-   watch(text)
+   watch(caption)
    {
       text = property::text;
       Update(null);

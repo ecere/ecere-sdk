@@ -56,7 +56,7 @@ public class Button : CommonControl
       SetInitSize(initSize);
    };
 
-   watch(text)
+   watch(caption)
    {
       OnLoadGraphics();
       SetInitSize(initSize);

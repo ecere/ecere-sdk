@@ -164,7 +164,7 @@ private:
    }
 
    watch(font) { SetInitSize(initSize); };
-   watch(text) { SetInitSize(initSize); };
+   watch(caption) { SetInitSize(initSize); };
 
    Window window;
    bool isGroupBox;

@@ -739,7 +739,7 @@ public class Tab : Window
       button.NotifyClicked(button.master, button, 0, 0, 0);
    }
 
-   watch(text)
+   watch(caption)
    {
       if(button)
          button.text = text;
