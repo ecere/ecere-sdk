@@ -557,6 +557,17 @@ private:
       OldLink slave;
       ResPtr ptr;
 
+      // Stop the timer in case it was started while the window was not created...
+      {
+         Timer timer, nextTimer;
+         for(timer = guiApp.windowTimers.first; timer; timer = nextTimer)
+         {
+            nextTimer = timer.next;
+            if(timer.window == this)
+               timer.Stop();
+         }
+      }
+
       if(parent)
       {
          stopwatching(parent, font);
