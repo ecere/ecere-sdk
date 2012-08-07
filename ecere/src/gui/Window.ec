@@ -558,6 +558,7 @@ private:
       ResPtr ptr;
 
       // Stop the timer in case it was started while the window was not created...
+      if(guiApp)
       {
          Timer timer, nextTimer;
          for(timer = guiApp.windowTimers.first; timer; timer = nextTimer)
