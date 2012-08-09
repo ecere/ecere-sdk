@@ -128,6 +128,11 @@ class GlobalSettingsDialog : Window
                OnGlobalSettingChange(GlobalSettingsChange::editorSettings);
             if(projectOptionsChanged)
                OnGlobalSettingChange(GlobalSettingsChange::projectOptions);
+
+            editorTab.modifiedDocument = false;
+            compilersTab.modifiedDocument = false;
+            projectOptionsTab.modifiedDocument = false;
+            workspaceOptionsTab.modifiedDocument = false;
          }
          
          Destroy(DialogResult::ok);
