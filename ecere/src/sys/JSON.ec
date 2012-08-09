@@ -240,7 +240,8 @@ public:
             {
                if(itemResult == typeMismatch)
                {
-                  PrintLn("Warning: Incompatible value for array value, expected ", (String)arrayType.name);
+                  if(arrayType)
+                     PrintLn("Warning: Incompatible value for array value, expected ", (String)arrayType.name);
                }
                else if(itemResult == noItem)
                   result = success;
