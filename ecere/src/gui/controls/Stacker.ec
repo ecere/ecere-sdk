@@ -431,10 +431,22 @@ private:
    public void DestroyChildren()
    {
       // This is not required and will jam if the Stacker is destroyed
-      if(!destroyed)
+      if(!destroyed && created)
       {
-         while(controls.count)
-            controls[0].Destroy(0);
+         bool left = true;
+         while(left)
+         {
+            left = false;
+            for(w : controls)
+            {
+               if(!w.destroyed && w.created)
+               {
+                  w.Destroy(0);
+                  left = true;
+                  break;
+               }
+            }
+         }
       }
    }
 
