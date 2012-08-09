@@ -822,6 +822,34 @@ public:
       get { return environmentVars; }
       isset { return environmentVars.count != 0; }
    }
+   property Array<String> prepDirectives
+   {
+      set
+      {
+         prepDirectives.Free();
+         if(value)
+         {
+            delete prepDirectives;
+            prepDirectives = value;
+         }
+      }
+      get { return prepDirectives; }
+      isset { return prepDirectives.count != 0; }
+   }
+   property Array<String> excludeLibs
+   {
+      set
+      {
+         excludeLibs.Free();
+         if(value)
+         {
+            delete excludeLibs;
+            excludeLibs = value;
+         }
+      }
+      get { return excludeLibs; }
+      isset { return excludeLibs.count != 0; }
+   }
 private:
    Array<String> includeDirs { };
    Array<String> libraryDirs { };
@@ -829,6 +857,8 @@ private:
    // TODO: Can JSON parse and serialize maps?
    //EnvironmentVariables { };
    Array<NamedString> environmentVars { };
+   Array<String> prepDirectives { };
+   Array<String> excludeLibs { };
    char * name;
    char * makeCommand;
    char * ecpCommand;
@@ -863,6 +893,8 @@ private:
       if(includeDirs) { includeDirs.Free(); }
       if(libraryDirs) { libraryDirs.Free(); }
       if(executableDirs) { executableDirs.Free(); }
+      if(prepDirectives) { prepDirectives.Free(); }
+      if(excludeLibs) { excludeLibs.Free(); }
    }
    CompilerConfig Copy()
    {
@@ -890,6 +922,8 @@ private:
       for(s : libraryDirs) copy.libraryDirs.Add(CopyString(s));
       for(s : executableDirs) copy.executableDirs.Add(CopyString(s));
       for(ns : environmentVars) copy.environmentVars.Add(NamedString { name = ns.name, string = ns.string });
+      for(s : prepDirectives) copy.prepDirectives.Add(CopyString(s));
+      for(s : excludeLibs) copy.excludeLibs.Add(CopyString(s));
 
       incref copy;
       return copy;

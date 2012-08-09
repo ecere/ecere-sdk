@@ -10,11 +10,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./src/project/Project.ec:1352
+#: ./src/project/Project.ec:1356
 msgid "   %s: No such file or directory\n"
 msgstr "   %s: No such file or directory\n"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:445
+#: ./src/dialogs/GlobalSettingsDialog.ec:450
 msgid " Compiler Configuration"
 msgstr " Compiler Configuration"
 
@@ -42,7 +42,7 @@ msgstr " and its sub directories"
 msgid " before search was aborted"
 msgstr " before search was aborted"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:446
+#: ./src/dialogs/GlobalSettingsDialog.ec:451
 msgid " compiler configuration?"
 msgstr " compiler configuration?"
 
@@ -259,7 +259,7 @@ msgstr "Are you sure you want to remove the \"%s\" project\nfrom this workspace?
 msgid "Are you sure you want to remove the folder \"%s\"\nand all of its contents from the project?"
 msgstr "Are you sure you want to remove the folder \"%s\"\nand all of its contents from the project?"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:446
+#: ./src/dialogs/GlobalSettingsDialog.ec:451
 #: ./src/ProjectSettings.ec:1295
 msgid "Are you sure you wish to delete the "
 msgstr "Are you sure you wish to delete the "
@@ -337,7 +337,7 @@ msgstr "Build project"
 msgid "Builder"
 msgstr "Builder"
 
-#: ./src/project/Project.ec:1429
+#: ./src/project/Project.ec:1433
 msgid "Building library...\n"
 msgstr "Building library...\n"
 
@@ -345,15 +345,15 @@ msgstr "Building library...\n"
 msgid "Building project %s using the %s configuration...\n"
 msgstr "Building project %s using the %s configuration...\n"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:705
+#: ./src/dialogs/GlobalSettingsDialog.ec:710
 msgid "C Compiler"
 msgstr "C Compiler"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:699
+#: ./src/dialogs/GlobalSettingsDialog.ec:704
 msgid "C Preprocessor"
 msgstr "C Preprocessor"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:711
+#: ./src/dialogs/GlobalSettingsDialog.ec:716
 msgid "C++ Compiler"
 msgstr "C++ Compiler"
 
@@ -459,17 +459,17 @@ msgstr "Compile %s"
 msgid "Compiler"
 msgstr "Compiler"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:269
+#: ./src/dialogs/GlobalSettingsDialog.ec:274
 #: ./src/dialogs/ProjectTabSettings.ec:22
 msgid "Compiler Configurations Directory"
 msgstr "Compiler Configurations Directory"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:274
+#: ./src/dialogs/GlobalSettingsDialog.ec:279
 msgid "Compiler Configurations:"
 msgstr "Compiler Configurations:"
 
 #: ./src/dialogs/CompilersDetectionDialog.ec:115
-#: ./src/dialogs/GlobalSettingsDialog.ec:263
+#: ./src/dialogs/GlobalSettingsDialog.ec:268
 msgid "Compilers"
 msgstr "Compilers"
 
@@ -485,7 +485,7 @@ msgstr "Compiling single file %s in project %s using the %s configuration...\n"
 msgid "Compiling single file %s in project %s...\n"
 msgstr "Compiling single file %s in project %s...\n"
 
-#: ./src/project/Project.ec:1400
+#: ./src/project/Project.ec:1404
 msgid "Compiling...\n"
 msgstr "Compiling...\n"
 
@@ -582,11 +582,11 @@ msgstr "Debugging compressed applications is not supported\n"
 msgid "Debugging stopped\n"
 msgstr "Debugging stopped\n"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:1055
+#: ./src/dialogs/GlobalSettingsDialog.ec:1100
 msgid "Default Compiler"
 msgstr "Default Compiler"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:1020
+#: ./src/dialogs/GlobalSettingsDialog.ec:1065
 msgid "Default Intermediate Objects Directory"
 msgstr "Default Intermediate Objects Directory"
 
@@ -594,7 +594,7 @@ msgstr "Default Intermediate Objects Directory"
 msgid "Default Name Space"
 msgstr "Default Name Space"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:1007
+#: ./src/dialogs/GlobalSettingsDialog.ec:1052
 msgid "Default Target Directory"
 msgstr "Default Target Directory"
 
@@ -602,7 +602,7 @@ msgstr "Default Target Directory"
 msgid "Delete"
 msgstr "Delete"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:445
+#: ./src/dialogs/GlobalSettingsDialog.ec:450
 #: ./src/ProjectSettings.ec:1294
 msgid "Delete "
 msgstr "Delete "
@@ -616,7 +616,7 @@ msgstr "Delete %s"
 msgid "Delete Folder"
 msgstr "Delete Folder"
 
-#: ./src/project/Project.ec:1750
+#: ./src/project/Project.ec:1754
 msgid "Deleting target and object files..."
 msgstr "Deleting target and object files..."
 
@@ -637,7 +637,7 @@ msgstr "Designer"
 msgid "Detach"
 msgstr "Detach"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:559
+#: ./src/dialogs/GlobalSettingsDialog.ec:564
 msgid "Directories"
 msgstr "Directories"
 
@@ -666,7 +666,7 @@ msgstr "Document has been modified"
 msgid "ECERE IDE"
 msgstr "ECERE IDE"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:693
+#: ./src/dialogs/GlobalSettingsDialog.ec:698
 msgid "Ecere Archiver"
 msgstr "Ecere Archiver"
 
@@ -686,7 +686,7 @@ msgstr "Ecere IDE Workspace"
 msgid "Edit"
 msgstr "Edit"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:219
+#: ./src/dialogs/GlobalSettingsDialog.ec:224
 msgid "Editor"
 msgstr "Editor"
 
@@ -694,11 +694,11 @@ msgstr "Editor"
 msgid "Empty string"
 msgstr "Empty string"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:788
+#: ./src/dialogs/GlobalSettingsDialog.ec:793
 msgid "Environment"
 msgstr "Environment"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:794
+#: ./src/dialogs/GlobalSettingsDialog.ec:799
 #: ./src/dialogs/WorkspaceSettings.ec:29
 msgid "Environment Variables"
 msgstr "Environment Variables"
@@ -707,7 +707,7 @@ msgstr "Environment Variables"
 msgid "Error creating directory"
 msgstr "Error creating directory"
 
-#: ./src/project/Project.ec:1698
+#: ./src/project/Project.ec:1702
 msgid "Error executing make (%s) command\n"
 msgstr "Error executing make (%s) command\n"
 
@@ -746,11 +746,11 @@ msgstr "Exclude from Build"
 msgid "Executable"
 msgstr "Executable"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:554
+#: ./src/dialogs/GlobalSettingsDialog.ec:559
 msgid "Executable Files"
 msgstr "Executable Files"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:723
+#: ./src/dialogs/GlobalSettingsDialog.ec:728
 msgid "Execution Prefix"
 msgstr "Execution Prefix"
 
@@ -762,7 +762,7 @@ msgstr "Exit"
 msgid "Expression"
 msgstr "Expression"
 
-#: ./src/project/Project.ec:1553
+#: ./src/project/Project.ec:1557
 msgid "Fatal Error: child process terminated unexpectedly\n"
 msgstr "Fatal Error: child process terminated unexpectedly\n"
 
@@ -877,11 +877,11 @@ msgstr "GDB Command"
 msgid "GIF Image"
 msgstr "GIF Image"
 
-#: ./src/IDESettings.ec:624
+#: ./src/IDESettings.ec:626
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:717
+#: ./src/dialogs/GlobalSettingsDialog.ec:722
 msgid "GNU Make"
 msgstr "GNU Make"
 
@@ -894,7 +894,7 @@ msgstr "Generating "
 msgid "Generating Makefile & Dependencies..."
 msgstr "Generating Makefile & Dependencies..."
 
-#: ./src/project/Project.ec:1405
+#: ./src/project/Project.ec:1409
 msgid "Generating symbols...\n"
 msgstr "Generating symbols...\n"
 
@@ -970,7 +970,7 @@ msgstr "Import Folder"
 msgid "Import Folder..."
 msgstr "Import Folder..."
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:551
+#: ./src/dialogs/GlobalSettingsDialog.ec:556
 msgid "Include Files"
 msgstr "Include Files"
 
@@ -1021,7 +1021,7 @@ msgstr "It can't be compiled."
 msgid "JPG Image"
 msgstr "JPG Image"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:229
+#: ./src/dialogs/GlobalSettingsDialog.ec:234
 msgid "Keep caret visible (move along) when scrolling"
 msgstr "Keep caret visible (move along) when scrolling"
 
@@ -1029,7 +1029,11 @@ msgstr "Keep caret visible (move along) when scrolling"
 msgid "Lead Architect and Developer"
 msgstr "Lead Architect and Developer"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:552
+#: ./src/dialogs/GlobalSettingsDialog.ec:949
+msgid "Libraries to exclude:"
+msgstr "Libraries to exclude:"
+
+#: ./src/dialogs/GlobalSettingsDialog.ec:557
 msgid "Library Files"
 msgstr "Library Files"
 
@@ -1041,7 +1045,7 @@ msgstr "License"
 msgid "Linker"
 msgstr "Linker"
 
-#: ./src/project/Project.ec:1465
+#: ./src/project/Project.ec:1469
 msgid "Linker Error"
 msgstr "Linker Error"
 
@@ -1049,7 +1053,7 @@ msgstr "Linker Error"
 msgid "Linker Options"
 msgstr "Linker Options"
 
-#: ./src/project/Project.ec:1418
+#: ./src/project/Project.ec:1422
 msgid "Linking...\n"
 msgstr "Linking...\n"
 
@@ -1102,15 +1106,15 @@ msgstr "Method still contains code. Are you sure you want to delete it?"
 msgid "Methods"
 msgstr "Methods"
 
-#: ./src/IDESettings.ec:627
+#: ./src/IDESettings.ec:629
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
 
-#: ./src/IDESettings.ec:628
+#: ./src/IDESettings.ec:630
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 
-#: ./src/IDESettings.ec:630
+#: ./src/IDESettings.ec:632
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
@@ -1133,7 +1137,7 @@ msgstr "Mode"
 msgid "Module Name"
 msgstr "Module Name"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:223
+#: ./src/dialogs/GlobalSettingsDialog.ec:228
 msgid "Move code editor caret freely past end of line"
 msgstr "Move code editor caret freely past end of line"
 
@@ -1223,7 +1227,7 @@ msgstr "Null string"
 msgid "Null type for \"%s\""
 msgstr "Null type for \"%s\""
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:848
+#: ./src/dialogs/GlobalSettingsDialog.ec:853
 msgid "Number of parallel build jobs"
 msgstr "Number of parallel build jobs"
 
@@ -1285,7 +1289,7 @@ msgstr "Open..."
 msgid "Optimization"
 msgstr "Optimization"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:824
+#: ./src/dialogs/GlobalSettingsDialog.ec:829
 msgid "Options"
 msgstr "Options"
 
@@ -1325,7 +1329,7 @@ msgstr "Platforms: "
 msgid "Pointer"
 msgstr "Pointer"
 
-#: ./src/IDESettings.ec:626
+#: ./src/IDESettings.ec:628
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
@@ -1341,6 +1345,10 @@ msgstr "Pre-build Commands"
 msgid "Preprocessor Definitions"
 msgstr "Preprocessor Definitions"
 
+#: ./src/dialogs/GlobalSettingsDialog.ec:968
+msgid "Preprocessor directives:"
+msgstr "Preprocessor directives:"
+
 #: ./src/ide.ec:1281
 msgid "Previous"
 msgstr "Previous"
@@ -1354,7 +1362,7 @@ msgctxt "Menu"
 msgid "Project"
 msgstr "Project"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:1001
+#: ./src/dialogs/GlobalSettingsDialog.ec:1046
 #: ./src/dialogs/ProjectTabSettings.ec:8
 msgid "Project"
 msgstr "Project"
@@ -1412,7 +1420,7 @@ msgstr "Project Settings"
 msgid "Project View"
 msgstr "Project View"
 
-#: ./src/project/Project.ec:797
+#: ./src/project/Project.ec:801
 msgid "Project has been modified"
 msgstr "Project has been modified"
 
@@ -1689,7 +1697,7 @@ msgstr "Shared and static libraries cannot be run like executables."
 msgid "Sheet"
 msgstr "Sheet"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:235
+#: ./src/dialogs/GlobalSettingsDialog.ec:240
 msgid "Show line numbers in code editor"
 msgstr "Show line numbers in code editor"
 
@@ -1790,7 +1798,7 @@ msgstr "Target Directory"
 msgid "Target Name"
 msgstr "Target Name"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:830
+#: ./src/dialogs/GlobalSettingsDialog.ec:835
 msgid "Target Platform"
 msgstr "Target Platform"
 
@@ -1800,7 +1808,7 @@ msgstr "Target Platform"
 msgid "Target Type"
 msgstr "Target Type"
 
-#: ./src/project/Project.ec:1754
+#: ./src/project/Project.ec:1758
 msgid "Target and object files deleted\n"
 msgstr "Target and object files deleted\n"
 
@@ -1863,7 +1871,7 @@ msgstr "The program %s has exited with a signal%s.\n"
 msgid "The program %s has exited%s.\n"
 msgstr "The program %s has exited%s.\n"
 
-#: ./src/project/Project.ec:795
+#: ./src/project/Project.ec:799
 msgid "The project %s was modified by another application.\nWould you like to reload it and lose your changes?"
 msgstr "The project %s was modified by another application.\nWould you like to reload it and lose your changes?"
 
@@ -1891,7 +1899,7 @@ msgstr "Tile Horizontally"
 msgid "Tile Vertically"
 msgstr "Tile Vertically"
 
-#: ./src/IDESettings.ec:625
+#: ./src/IDESettings.ec:627
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 
@@ -1903,7 +1911,7 @@ msgstr "Toggle Breakpoint"
 msgid "Toolbox"
 msgstr "Toolbox"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:669
+#: ./src/dialogs/GlobalSettingsDialog.ec:674
 msgid "Toolchain"
 msgstr "Toolchain"
 
@@ -1949,11 +1957,11 @@ msgstr "Untitled %d"
 msgid "Updating "
 msgstr "Updating "
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:887
+#: ./src/dialogs/GlobalSettingsDialog.ec:892
 msgid "Use ccache"
 msgstr "Use ccache"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:905
+#: ./src/dialogs/GlobalSettingsDialog.ec:910
 msgid "Use distcc"
 msgstr "Use distcc"
 
@@ -2022,7 +2030,7 @@ msgid "With contributions from..."
 msgstr "With contributions from..."
 
 #: ./src/dialogs/FindInFilesDialog.ec:441
-#: ./src/dialogs/GlobalSettingsDialog.ec:1049
+#: ./src/dialogs/GlobalSettingsDialog.ec:1094
 #: ./src/dialogs/WorkspaceSettings.ec:6
 msgid "Workspace"
 msgstr "Workspace"
@@ -2051,7 +2059,7 @@ msgstr "Would you like to save changes made to the project options?"
 msgid "Would you like to save changes made to the workspace options?"
 msgstr "Would you like to save changes made to the workspace options?"
 
-#: ./src/project/Project.ec:1431
+#: ./src/project/Project.ec:1435
 msgid "Writing symbol loader...\n"
 msgstr "Writing symbol loader...\n"
 
@@ -2071,16 +2079,16 @@ msgstr "You must provide a valid source directory in order to place a breakpoint
 msgid "You must specify a search location."
 msgstr "You must specify a search location."
 
-#: ./src/project/Project.ec:1283
-#: ./src/project/Project.ec:1545
+#: ./src/project/Project.ec:1287
+#: ./src/project/Project.ec:1549
 msgid "\nBuild cancelled by user.\n"
 msgstr "\nBuild cancelled by user.\n"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:925
+#: ./src/dialogs/GlobalSettingsDialog.ec:930
 msgid "distcc hosts"
 msgstr "distcc hosts"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:681
+#: ./src/dialogs/GlobalSettingsDialog.ec:686
 msgid "eC Compiler"
 msgstr "eC Compiler"
 
@@ -2088,7 +2096,7 @@ msgstr "eC Compiler"
 msgid "eC Files (*.ec, *.eh)"
 msgstr "eC Files (*.ec, *.eh)"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:675
+#: ./src/dialogs/GlobalSettingsDialog.ec:680
 msgid "eC Precompiler"
 msgstr "eC Precompiler"
 
@@ -2096,7 +2104,7 @@ msgstr "eC Precompiler"
 msgid "eC Source Code"
 msgstr "eC Source Code"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:687
+#: ./src/dialogs/GlobalSettingsDialog.ec:692
 msgid "eC Symbol Loader"
 msgstr "eC Symbol Loader"
 
@@ -2108,11 +2116,11 @@ msgstr "eC/C/C++ Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *
 msgid "eC/C/C++ Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)"
 msgstr "eC/C/C++ Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)"
 
-#: ./src/project/Project.ec:1560
+#: ./src/project/Project.ec:1564
 msgid "error"
 msgstr "error"
 
-#: ./src/project/Project.ec:1560
+#: ./src/project/Project.ec:1564
 msgid "errors"
 msgstr "errors"
 
@@ -2130,11 +2138,11 @@ msgstr "found"
 msgid "inside %s, %s\n"
 msgstr "inside %s, %s\n"
 
-#: ./src/project/Project.ec:1562
+#: ./src/project/Project.ec:1566
 msgid "no error, "
 msgstr "no error, "
 
-#: ./src/project/Project.ec:1567
+#: ./src/project/Project.ec:1571
 msgid "no warning\n"
 msgstr "no warning\n"
 
@@ -2159,11 +2167,11 @@ msgstr "s were "
 msgid "unknown source\n"
 msgstr "unknown source\n"
 
-#: ./src/project/Project.ec:1565
+#: ./src/project/Project.ec:1569
 msgid "warning"
 msgstr "warning"
 
-#: ./src/project/Project.ec:1565
+#: ./src/project/Project.ec:1569
 msgid "warnings"
 msgstr "warnings"
 

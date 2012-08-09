@@ -185,6 +185,8 @@ else
    SODESTDIR := obj/$(PLATFORM)/lib/
 endif
 
+_L = $(if $(filter $(1),$(EXCLUDED_LIBS)),,-l$(1))
+
 # COMMON LIBRARIES DETECTION
 
 ifdef WINDOWS

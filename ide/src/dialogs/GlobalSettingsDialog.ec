@@ -943,6 +943,44 @@ class CompilerOptionsTab : CompilersSubTab
       }
    }
 
+   Label lblExcludedLibraries { this, position = { 8, 152 }, labeledWindow = excludedLibraries };
+   StringListBox excludedLibraries
+   {
+      this, text = $"Libraries to exclude:", hotKey = altX;
+      position = { 148, 152 }, size = { 300 };
+
+      bool NotifyModified(EditBox editBox)
+      {
+         if(loadedCompiler)
+         {
+            CompilerConfig compiler = loadedCompiler;
+            compiler.excludeLibs = ((StringListBox)editBox).strings;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   }
+
+   Label lblPrepDefs { this, position = { 8, 180 }, labeledWindow = prepDefs };
+   StringListBox prepDefs
+   {
+      this, text = $"Preprocessor directives:", hotKey = altP;
+      position = { 148, 180 }, size = { 300 };
+
+      bool NotifyModified(EditBox editBox)
+      {
+         if(loadedCompiler)
+         {
+            CompilerConfig compiler = loadedCompiler;
+            compiler.prepDirectives = ((StringListBox)editBox).strings;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   }
+
    CompilerOptionsTab()
    {
       Platform p;
@@ -968,6 +1006,8 @@ class CompilerOptionsTab : CompilersSubTab
          distccEnabled.checked = compiler.distccEnabled;
          distccHosts.disabled = !compiler.distccEnabled;
          distccHosts.contents = compiler.distccHosts;
+         prepDefs.strings = compiler.prepDirectives;
+         excludedLibraries.strings = compiler.excludeLibs;
          
          labelTargetPlatform.disabled = disabled;
          targetPlatform.disabled = disabled;

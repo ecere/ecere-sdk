@@ -187,7 +187,7 @@ msgstr "File"
 msgid "Functions"
 msgstr "Functions"
 
-#: ./../ide/src/IDESettings.ec:624
+#: ./../ide/src/IDESettings.ec:626
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
@@ -195,15 +195,15 @@ msgstr "GNU Compiler Collection (GCC) / GNU Make"
 msgid "Methods"
 msgstr "Methods"
 
-#: ./../ide/src/IDESettings.ec:627
+#: ./../ide/src/IDESettings.ec:629
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:628
+#: ./../ide/src/IDESettings.ec:630
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:630
+#: ./../ide/src/IDESettings.ec:632
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
@@ -232,7 +232,7 @@ msgstr "Open..."
 msgid "Parent namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
 msgstr "Parent namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
 
-#: ./../ide/src/IDESettings.ec:626
+#: ./../ide/src/IDESettings.ec:628
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
@@ -268,7 +268,7 @@ msgstr "Structure"
 msgid "Tahoma"
 msgstr "Tahoma"
 
-#: ./../ide/src/IDESettings.ec:625
+#: ./../ide/src/IDESettings.ec:627
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 

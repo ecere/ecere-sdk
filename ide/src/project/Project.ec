@@ -561,6 +561,7 @@ static void OutputLibraries(File f, Array<String> libraries)
       char ext[MAX_EXTENSION];
       char temp[MAX_LOCATION];
       char * s = item;
+      bool usedFunction = false;
       GetExtension(item, ext);
       if(!strcmp(ext, "o") || !strcmp(ext, "a"))
          f.Printf(" ");
@@ -575,9 +576,12 @@ static void OutputLibraries(File f, Array<String> libraries)
             StripExtension(temp);
             s = temp;
          } 
-         f.Printf(" -l");
+         f.Printf(" \\\n\t$(call _L,");
+         usedFunction = true;
       }
       OutputNoSpace(f, s);
+      if(usedFunction)
+         f.Printf(")");
    }
 }
 
@@ -1932,27 +1936,39 @@ private:
             // JF's
             f.Printf("ifdef %s\n", PlatformToMakefileVariable(apple));
             f.Printf("OFLAGS += -framework cocoa -framework OpenGL\n");
-            f.Printf("endif\n\n");
+            f.Printf("endif\n");
 
             if(crossCompiling)
-               f.Printf("PLATFORM = %s\n", (char *)compiler.targetPlatform);
-
-            if((compiler.includeDirs && compiler.includeDirs.count) ||
-                  (compiler.libraryDirs && compiler.libraryDirs.count))
             {
-               if(compiler.includeDirs && compiler.includeDirs.count)
-               {
-                  f.Printf("CFLAGS +=");
-                  OutputListOption(f, gccCompiler ? "isystem " : "I", compiler.includeDirs, lineEach, true);
-                  f.Printf("\n");
-               }
-               if(compiler.libraryDirs && compiler.libraryDirs.count)
-               {
-                  f.Printf("OFLAGS +=");
-                  OutputListOption(f, "L", compiler.libraryDirs, lineEach, true);
-                  f.Printf("\n");
-               }
+               f.Printf("\nPLATFORM = %s\n", (char *)compiler.targetPlatform);
+            }
+
+            if(compiler.includeDirs && compiler.includeDirs.count)
+            {
+               f.Printf("\nCFLAGS +=");
+               OutputListOption(f, gccCompiler ? "isystem " : "I", compiler.includeDirs, lineEach, true);
                f.Printf("\n");
+            }
+            if(compiler.prepDirectives && compiler.prepDirectives.count)
+            {
+               f.Printf("\nCFLAGS +=");
+               OutputListOption(f, "D", compiler.prepDirectives, inPlace, true);
+               f.Printf("\n");
+            }
+            if(compiler.libraryDirs && compiler.libraryDirs.count)
+            {
+               f.Printf("\nOFLAGS +=");
+               OutputListOption(f, "L", compiler.libraryDirs, lineEach, true);
+               f.Printf("\n");
+            }
+            if(compiler.excludeLibs && compiler.excludeLibs.count)
+            {
+               f.Puts("\nEXCLUDED_LIBS =");
+               for(l : compiler.excludeLibs)
+               {
+                  f.Puts(" ");
+                  f.Puts(l);
+               }
             }
 
             delete f;
