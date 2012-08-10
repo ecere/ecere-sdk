@@ -910,7 +910,7 @@ private:
    }
 
 
-   char * GetObjDirExpression(CompilerConfig compiler, ProjectConfig config)
+   char * GetObjDirExpression(ProjectConfig config)
    {
       // TODO: Support platform options
       char * expression = localObjectsDirectory;
@@ -921,13 +921,13 @@ private:
 
    DirExpression GetObjDir(CompilerConfig compiler, ProjectConfig config)
    {
-      char * expression = GetObjDirExpression(compiler, config);
+      char * expression = GetObjDirExpression(config);
       DirExpression objDir { type = intermediateObjectsDir };
       objDir.Evaluate(expression, this, compiler, config);
       return objDir;
    }
 
-   char * GetTargetDirExpression(CompilerConfig compiler, ProjectConfig config)
+   char * GetTargetDirExpression(ProjectConfig config)
    {
       // TODO: Support platform options
       char * expression = localTargetDirectory;
@@ -938,7 +938,7 @@ private:
 
    DirExpression GetTargetDir(CompilerConfig compiler, ProjectConfig config)
    {
-      char * expression = GetTargetDirExpression(compiler, config);
+      char * expression = GetTargetDirExpression(config);
       DirExpression targetDir { type = DirExpressionType::targetDir /*intermediateObjectsDir*/};
       targetDir.Evaluate(expression, this, compiler, config);
       return targetDir;
@@ -1179,6 +1179,12 @@ private:
       if(ideSettings.compilerConfigsDir && ideSettings.compilerConfigsDir[0])
       {
          PathCatSlash(cfDir, ideSettings.compilerConfigsDir);
+         result = true;
+      }
+      else
+      {
+         // Default to <ProjectDir>/configs if unset
+         PathCatSlash(cfDir, "configs");
          result = true;
       }
       if(cfDir && cfDir[0] && cfDir[strlen(cfDir)-1] != '/')
@@ -1909,7 +1915,7 @@ private:
             f.Printf("# TOOLCHAIN\n\n");
 
             //f.Printf("SHELL := %s\n", "ar"/*compiler.arCommand*/); // is this really needed?
-            f.Printf("CPP := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.cppCommand);
+            f.Printf("CPP := %s\n", compiler.cppCommand);
             f.Printf("CC := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.ccCommand);
             f.Printf("CXX := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.cxxCommand);
             f.Printf("ECP := %s\n", compiler.ecpCommand);
@@ -1941,6 +1947,11 @@ private:
             if(crossCompiling)
             {
                f.Printf("\nPLATFORM = %s\n", (char *)compiler.targetPlatform);
+            }
+
+            if(gccCompiler)
+            {
+               f.Printf("\nCFLAGS += -fmessage-length=0\n");
             }
 
             if(compiler.includeDirs && compiler.includeDirs.count)
@@ -1979,8 +1990,7 @@ private:
       return result;
    }
 
-   bool GenerateMakefile(char * altMakefilePath, bool noResources, char * includemkPath,
-      CompilerConfig compiler, ProjectConfig config)
+   bool GenerateMakefile(char * altMakefilePath, bool noResources, char * includemkPath, ProjectConfig config)
    {
       bool result = false;
       char filePath[MAX_LOCATION];
@@ -1996,14 +2006,6 @@ private:
          PathCatSlash(filePath, makeFile);
       }
 
-#if defined(__WIN32__) && !defined(MAKEFILE_GENERATOR)
-      if(compiler.type.isVC)
-      {
-         GenerateVSSolutionFile(this, compiler);
-         GenerateVCProjectFile(this, compiler);
-      }
-      else
-#endif
       f = FileOpen(altMakefilePath ? altMakefilePath : filePath, write);
 
       /*SetPath(false, compiler, config);
@@ -2023,20 +2025,15 @@ private:
          char targetDirExpNoSpaces[MAX_LOCATION];
          char fixedModuleName[MAX_FILENAME];
          char fixedConfigName[MAX_FILENAME];
-         char fixedCompilerName[MAX_FILENAME];
          int c, len;
          // Non-zero if we're building eC code
          // We'll have to be careful with this when merging configs where eC files can be excluded in some configs and included in others
          int numCObjects = 0;
          bool containsCXX = false; // True if the project contains a C++ file
          bool sameObjTargetDirs;
-         DirExpression objDirExp = GetObjDir(compiler, config);
+         String objDirExp = GetObjDirExpression(config);
          TargetTypes targetType = GetTargetType(config);
 
-         bool crossCompiling = compiler.targetPlatform != runtimePlatform;
-         bool gccCompiler = compiler.ccCommand && (strstr(compiler.ccCommand, "gcc") != null || strstr(compiler.ccCommand, "g++") != null);
-         bool tccCompiler = compiler.ccCommand && strstr(compiler.ccCommand, "tcc") != null;
-         bool defaultPreprocessor = compiler.cppCommand && (strstr(compiler.cppCommand, "gcc") != null || compiler.cppCommand && strstr(compiler.cppCommand, "cpp") != null);
          char cfDir[MAX_LOCATION];
          int objectsParts, eCsourcesParts;
          Array<String> listItems { };
@@ -2044,21 +2041,17 @@ private:
          Map<String, NameCollisionInfo> namesInfo { };
          bool forceBitDepth = false;
 
-         ReplaceSpaces(objDirNoSpaces, objDirExp.dir);
-         strcpy(targetDir, GetTargetDirExpression(compiler, config));
+         ReplaceSpaces(objDirNoSpaces, objDirExp);
+         strcpy(targetDir, GetTargetDirExpression(config));
          ReplaceSpaces(targetDirExpNoSpaces, targetDir);
 
-         strcpy(objDirExpNoSpaces, GetObjDirExpression(compiler, config));
+         strcpy(objDirExpNoSpaces, GetObjDirExpression(config));
          ChangeCh(objDirExpNoSpaces, '\\', '/'); // TODO: this is a hack, paths should never include win32 path seperators - fix this in ProjectSettings and ProjectLoad instead
          ReplaceSpaces(objDirExpNoSpaces, objDirExpNoSpaces);
          ReplaceSpaces(resDirNoSpaces, resNode.path ? resNode.path : "");
-         //ReplaceSpaces(fixedPrjName, name);
          ReplaceSpaces(fixedModuleName, moduleName);
          ReplaceSpaces(fixedConfigName, GetConfigName(config));
-         ReplaceSpaces(fixedCompilerName, compiler.name);
-         //CamelCase(fixedModuleName); // case is important for static linking
          CamelCase(fixedConfigName);
-         CamelCase(fixedCompilerName);
 
          sameObjTargetDirs = !fstrcmp(objDirExpNoSpaces, targetDirExpNoSpaces);
 
@@ -2159,7 +2152,7 @@ private:
          f.Printf("# INCLUDES\n\n");
 
          f.Printf("include %s\n", includemkPath ? includemkPath : "$(_CF_DIR)crossplatform.mk");
-         f.Printf("include $(_CF_DIR)$(PLATFORM)-$(COMPILER).cf\n", (char*)runtimePlatform, fixedCompilerName);
+         f.Printf("include $(_CF_DIR)$(PLATFORM)-$(COMPILER).cf\n");
          f.Printf("\n");
 
          f.Printf("# VARIABLES\n\n");
@@ -2215,7 +2208,9 @@ private:
          }
          f.Printf("\n");
 
-         varStringLenDiffs["$(OBJ)"] = strlen(objDirNoSpaces) - 6;
+         // Use something fixed here, to not cause Makefile differences across compilers...
+         varStringLenDiffs["$(OBJ)"] = 30; // strlen("obj/memoryGuard.android.gcc-4.6.2") - 6;
+         // varStringLenDiffs["$(OBJ)"] = strlen(objDirNoSpaces) - 6;
 
          topNode.GenMakefileGetNameCollisionInfo(namesInfo, config);
 
@@ -2377,17 +2372,13 @@ private:
          }
 
          f.Printf("CFLAGS +=");
-         if(gccCompiler)
+         //if(gccCompiler)
          {
-            f.Printf(" -fmessage-length=0 $(OPTIMIZE)");
-            //if(compiler.targetPlatform.is32Bits)
+            f.Printf(" $(OPTIMIZE)");
             forceBitDepth = (options && options.buildBitDepth) || numCObjects;
             if(forceBitDepth)
                f.Printf((!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? " -m32" : " -m64");
-            //else if(compiler.targetPlatform.is64Bits)
-            //   f.Printf(" -m64");
             f.Printf(" $(FPIC)");
-            //f.Printf(" -fpack-struct");
          }
          switch(GetWarnings(config))
          {
@@ -2413,8 +2404,7 @@ private:
             OutputListOption(f, "I", options.includeDirs, lineEach, true);
          f.Printf("\n\n");
 
-         f.Printf("CECFLAGS +=%s%s%s%s", defaultPreprocessor ? "" : " -cpp ", defaultPreprocessor ? "" : compiler.cppCommand,
-               crossCompiling ? " -t " : "", crossCompiling ? (char*)compiler.targetPlatform : "");
+         f.Printf("CECFLAGS += -cpp $(call escspace,$(CPP)) -t $(PLATFORM)");
          f.Printf("\n\n");
 
          f.Printf("ECFLAGS +=");
@@ -2614,14 +2604,14 @@ private:
          f.Printf("# SYMBOL RULES\n\n");
          {
             Map<Platform, bool> excludedPlatforms { };
-            topNode.GenMakefilePrintSymbolRules(f, this, compiler, config, excludedPlatforms);
+            topNode.GenMakefilePrintSymbolRules(f, this, config, excludedPlatforms);
             delete excludedPlatforms;
          }
 
          f.Printf("# C OBJECT RULES\n\n");
          {
             Map<Platform, bool> excludedPlatforms { };
-            topNode.GenMakefilePrintCObjectRules(f, this, compiler, config, excludedPlatforms);
+            topNode.GenMakefilePrintCObjectRules(f, this, config, excludedPlatforms);
             delete excludedPlatforms;
          }
 
@@ -2630,12 +2620,12 @@ private:
          // see we-have-file-specific-options in ProjectNode.ec
          {
             Map<Platform, bool> excludedPlatforms { };
-            topNode.GenMakefilePrintObjectRules(f, this, namesInfo, compiler, config, excludedPlatforms);
+            topNode.GenMakefilePrintObjectRules(f, this, namesInfo, config, excludedPlatforms);
             delete excludedPlatforms;
          }
 
          if(numCObjects)
-            GenMakefilePrintMainObjectRule(f, compiler, config);
+            GenMakefilePrintMainObjectRule(f, config);
 
          f.Printf("clean: objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
          f.Printf("\t$(call rmq,%s$(TARGET))\n", numCObjects ? "$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) " : "");
@@ -2656,7 +2646,7 @@ private:
          f.Printf("\n");
 
          delete f;
-         delete objDirExp;
+
          listItems.Free();
          delete listItems;
          varStringLenDiffs.Free();
@@ -2675,7 +2665,7 @@ private:
       return result;
    }
 
-   void GenMakefilePrintMainObjectRule(File f, CompilerConfig compiler, ProjectConfig config)
+   void GenMakefilePrintMainObjectRule(File f, ProjectConfig config)
    {
       char extension[MAX_EXTENSION] = "c";
       char modulePath[MAX_LOCATION];
@@ -2683,9 +2673,9 @@ private:
       DualPipe dep;
       char command[2048];
       char objDirNoSpaces[MAX_LOCATION];
-      DirExpression objDirExp = GetObjDir(compiler, config);
+      String objDirExp = GetObjDirExpression(config);
 
-      ReplaceSpaces(objDirNoSpaces, objDirExp.dir);
+      ReplaceSpaces(objDirNoSpaces, objDirExp);
       ReplaceSpaces(fixedModuleName, moduleName);
       
       //sprintf(fixedModuleName, "%s.main", fixedPrjName);
@@ -2767,8 +2757,6 @@ private:
 #endif
 
       f.Printf("\t$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.%s -o $(OBJ)$(MODULE).main$(O)\n\n", extension);
-
-      delete objDirExp;
    }
 
    void MatchProjectAndConfigPlatformOptions(ProjectConfig config, Platform platform,

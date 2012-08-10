@@ -1488,7 +1488,7 @@ private:
       return count;
    }
 
-   void GenMakefilePrintSymbolRules(File f, Project project, CompilerConfig compiler,
+   void GenMakefilePrintSymbolRules(File f, Project project,
          ProjectConfig prjConfig, Map<Platform, bool> parentExcludedPlatforms)
    {
       int ifCount = 0;
@@ -1648,7 +1648,7 @@ private:
                for(child : files)
                {
                   if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-                     child.GenMakefilePrintSymbolRules(f, project, compiler, prjConfig, excludedPlatforms);
+                     child.GenMakefilePrintSymbolRules(f, project, prjConfig, excludedPlatforms);
                }
             }
             CloseRulesPlatformExclusionIfs(f, ifCount);
@@ -1658,7 +1658,7 @@ private:
       delete platforms;
    }
 
-   void GenMakefilePrintPrepecsRules(File f, Project project, CompilerConfig compiler,
+   void GenMakefilePrintPrepecsRules(File f, Project project,
          ProjectConfig prjConfig, Map<Platform, bool> parentExcludedPlatforms)
    {
       int ifCount = 0;
@@ -1744,7 +1744,7 @@ private:
                for(child : files)
                {
                   if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-                     child.GenMakefilePrintPrepecsRules(f, project, compiler, prjConfig, excludedPlatforms);
+                     child.GenMakefilePrintPrepecsRules(f, project, prjConfig, excludedPlatforms);
                }
             }
             CloseRulesPlatformExclusionIfs(f, ifCount);
@@ -1754,7 +1754,7 @@ private:
       delete platforms;
    }
 
-   void GenMakefilePrintCObjectRules(File f, Project project, CompilerConfig compiler,
+   void GenMakefilePrintCObjectRules(File f, Project project,
       ProjectConfig prjConfig, Map<Platform, bool> parentExcludedPlatforms)
    {
       int ifCount = 0;
@@ -1917,7 +1917,7 @@ private:
                for(child : files)
                {
                   if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-                     child.GenMakefilePrintCObjectRules(f, project, compiler, prjConfig, excludedPlatforms);
+                     child.GenMakefilePrintCObjectRules(f, project, prjConfig, excludedPlatforms);
                }
             }
             CloseRulesPlatformExclusionIfs(f, ifCount);
@@ -1929,7 +1929,7 @@ private:
 
    void GenMakefilePrintObjectRules(File f, Project project,
       Map<String, NameCollisionInfo> namesInfo,
-      CompilerConfig compiler, ProjectConfig prjConfig,
+      ProjectConfig prjConfig,
       Map<Platform, bool> parentExcludedPlatforms)
    {
       int ifCount = 0;
@@ -1969,9 +1969,9 @@ private:
 
             // *** Dependency command ***
             if(!strcmpi(extension, "ec"))
-               sprintf(command, "%s -MT $(OBJ)%s.o -MM $(OBJ)%s.c", compiler.ccCommand, moduleName, moduleName);
+               sprintf(command, "%s -MT $(OBJ)%s.o -MM $(OBJ)%s.c", "$(CPP)", moduleName, moduleName);
             else
-               sprintf(command, "%s -MT $(OBJ)%s.o -MM %s%s.%s", (!strcmpi(extension, "cc") || !strcmpi(extension, "cxx") || !strcmpi(extension, "cpp")) ? compiler.cxxCommand : compiler.ccCommand,
+               sprintf(command, "%s -MT $(OBJ)%s.o -MM %s%s.%s", (!strcmpi(extension, "cc") || !strcmpi(extension, "cxx") || !strcmpi(extension, "cpp")) ? "$(CXX)" : "$(CC)",
                   moduleName, modulePath, moduleName, extension);
 
             if(!strcmpi(extension, "ec"))
@@ -2093,7 +2093,7 @@ private:
                for(child : files)
                {
                   if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-                     child.GenMakefilePrintObjectRules(f, project, namesInfo, compiler, prjConfig, excludedPlatforms);
+                     child.GenMakefilePrintObjectRules(f, project, namesInfo, prjConfig, excludedPlatforms);
                }
             }
             CloseRulesPlatformExclusionIfs(f, ifCount);

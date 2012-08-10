@@ -623,7 +623,16 @@ class ProjectView : Window
 
          project.GenerateCrossPlatformCf();
          project.GenerateCompilerMk(compiler);
-         project.GenerateMakefile(null, false, null, compiler, config);
+
+#if defined(__WIN32__)  // I'm guessing we'll want to support generating VS files on Linux as well...
+         if(compiler.type.isVC)
+         {
+            GenerateVSSolutionFile(project, compiler);
+            GenerateVCProjectFile(project, compiler);
+         }
+         else
+#endif
+            project.GenerateMakefile(null, false, null, config);
 
          ide.statusBar.text = null;
          app.UpdateDisplay();
