@@ -335,7 +335,7 @@ class QuickProjectDialog : Window
    char path[MAX_LOCATION];
    char name[MAX_FILENAME];
 
-   Label message { this, position = { 10, 10 }, size = { 200 }, text = $"Do you want to quickly create a temporary project?" };
+   Label message { this, position = { 10, 10 }, text = $"Do you want to quickly create a temporary project?" };
 
    DropBox targetType { this, position = { 10, 70 }, size = { 130 }, hotKey = altT, text = $"Target Type" };
    Label { this, position = { 10, 50 }, labeledWindow = targetType };
