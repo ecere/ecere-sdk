@@ -506,12 +506,7 @@ class ProjectView : Window
          {
             prj.StopMonitoring();
             if(prj.Save(prj.filePath))
-            {
-               // ShowOutputBuildLog(true);
-               // DisplayCompiler(compiler, false);
-               // ProjectUpdateMakefileForAllConfigs(prj);
                prj.topNode.modified = false;
-            }
             prj.StartMonitoring();
          }
       }
@@ -574,69 +569,80 @@ class ProjectView : Window
       if(displayCompiler)
          DisplayCompiler(compiler, false);
 
-      ProjectPrepareMakefile(project, method, false, false, compiler, config);
+      ProjectPrepareCompiler(project, compiler);
+      ProjectPrepareMakefile(project, method, compiler, config);
       return true;
    }
 
-   bool ProjectPrepareMakefile(Project project, PrepareMakefileMethod method, bool cleanLog, bool displayCompiler,
-      CompilerConfig compiler, ProjectConfig config)
+   bool ProjectPrepareCompiler(Project project, CompilerConfig compiler)
    {
-      char makefilePath[MAX_LOCATION];
-      char makefileName[MAX_LOCATION];
-      bool exists;
-      LogBox logBox = ide.outputView.buildBox;
-      
-      if(displayCompiler)
-         DisplayCompiler(compiler, false);
+      project.GenerateCrossPlatformCf();
+      project.GenerateCompilerMk(compiler);
+      return true;
+   }
 
-      strcpy(makefilePath, project.topNode.path);
-      project.CatMakeFileName(makefileName, config);
-      PathCatSlash(makefilePath, makefileName);
-
-      exists = FileExists(makefilePath);
-      if((method == normal && (!exists || config.makingModified/*|| project.topNode.modified*/)) ||
-            (method == forceExists && exists) || 
-            method == force) // || config.makingModified || makefileDirty
-      {
-         char * reason;
-         char * action;
-         ide.statusBar.text = $"Generating Makefile & Dependencies..."; // Dependencies?
-         app.UpdateDisplay();
-         
-         if((method == normal && !exists) || (method == force && !exists))
-            action = $"Generating ";
-         else if(method == force)
-            action = $"Regenerating ";
-         else if(method == normal || method == forceExists)
-            action = $"Updating ";
-         else
-            action = "";
-         if(!exists)
-            reason = $"Makefile doesn't exist. ";
-         else if(project.topNode.modified)
-            reason = $"Project has been modified. ";
-         else
-            reason = "";
-
-         //logBox.Logf("%s\n", makefileName);
-         logBox.Logf($"%s - %s%smakefile for %s config...\n", makefileName, reason, action, GetConfigName(config));
-
-         project.GenerateCrossPlatformCf();
-         project.GenerateCompilerMk(compiler);
-
+   // Note: Compiler is only passed in to for VisualStudio support
+   bool ProjectPrepareMakefile(Project project, PrepareMakefileMethod method, CompilerConfig compiler, ProjectConfig config)
+   {
 #if defined(__WIN32__)  // I'm guessing we'll want to support generating VS files on Linux as well...
-         if(compiler.type.isVC)
-         {
-            GenerateVSSolutionFile(project, compiler);
-            GenerateVCProjectFile(project, compiler);
-         }
-         else
-#endif
-            project.GenerateMakefile(null, false, null, config);
-
+      if(compiler.type.isVC)
+      {
+         ide.statusBar.text = $"Generating Visual Studio Solution...";
+         app.UpdateDisplay();
+         GenerateVSSolutionFile(project, compiler);
+         ide.statusBar.text = $"Generating Visual Studio Project...";
+         app.UpdateDisplay();
+         GenerateVCProjectFile(project, compiler);
          ide.statusBar.text = null;
          app.UpdateDisplay();
          return true;
+      }
+      else
+#endif
+      {
+         char makefilePath[MAX_LOCATION];
+         char makefileName[MAX_LOCATION];
+         bool exists;
+         LogBox logBox = ide.outputView.buildBox;
+         
+         strcpy(makefilePath, project.topNode.path);
+         project.CatMakeFileName(makefileName, config);
+         PathCatSlash(makefilePath, makefileName);
+
+         exists = FileExists(makefilePath);
+         if(method == force ||
+           (method == forceExists && exists) ||
+           (method == normal && (!exists || config.makingModified)) )
+         {
+            char * reason;
+            char * action;
+            ide.statusBar.text = $"Generating Makefile & Dependencies..."; // Dependencies?
+            app.UpdateDisplay();
+
+            if((method == normal && !exists) || (method == force && !exists))
+               action = $"Generating ";
+            else if(method == force)
+               action = $"Regenerating ";
+            else if(method == normal || method == forceExists)
+               action = $"Updating ";
+            else
+               action = "";
+            if(!exists)
+               reason = $"Makefile doesn't exist. ";
+            else if(project.topNode.modified)
+               reason = $"Project has been modified. ";
+            else
+               reason = "";
+
+            //logBox.Logf("%s\n", makefileName);
+            logBox.Logf($"%s - %s%smakefile for %s config...\n", makefileName, reason, action, GetConfigName(config));
+
+            project.GenerateMakefile(null, false, null, config);
+
+            ide.statusBar.text = null;
+            app.UpdateDisplay();
+            return true;
+         }
       }
       return false;
    }
@@ -962,7 +968,9 @@ class ProjectView : Window
             prj = node.project;
       }
 
-      ProjectPrepareMakefile(prj, force, true, true, compiler, prj.config);
+      DisplayCompiler(compiler, false);
+      ProjectPrepareCompiler(project, compiler);
+      ProjectPrepareMakefile(prj, force, compiler, prj.config);
       delete compiler;
       return true;
    }
@@ -1152,10 +1160,7 @@ class ProjectView : Window
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
 
       for(config : project.configurations)
-      {
-         ProjectPrepareMakefile(project, forceExists, false, false,
-            compiler, config);
-      }
+         ProjectPrepareMakefile(project, forceExists, compiler, config);
 
       ide.Update(null);
       delete compiler;
@@ -1183,8 +1188,9 @@ class ProjectView : Window
          ide.workspace.compiler = compilerDialog.workspaceActiveCompiler;
          ide.projectView.ShowOutputBuildLog(true);
          ide.projectView.DisplayCompiler(compiler, false);
+
          for(prj : ide.workspace.projects)
-            ide.projectView.ProjectUpdateMakefileForAllConfigs(prj);
+            ide.projectView.ProjectPrepareCompiler(prj, compiler);
          delete compiler;
       }
       delete compilerDialog;
@@ -1529,9 +1535,6 @@ class ProjectView : Window
          if(prj.Save(prj.filePath))
          {
             Project modPrj = null;
-            // ShowOutputBuildLog(true);
-            // DisplayCompiler(compiler, false);
-            // ProjectUpdateMakefileForAllConfigs(prj);
             prj.topNode.modified = false;
             for(p : ide.workspace.projects)
             {

@@ -44,7 +44,6 @@ IDESettingsContainer settingsContainer
 #ifndef MAKEFILE_GENERATOR
       globalSettingsDialog.ideSettings = settings;
       ide.UpdateRecentMenus();
-      // ide.UpdateMakefiles(); -- can't really regenerate on Load since all recent menus changes will happen
 #endif
    }
 };

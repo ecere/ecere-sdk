@@ -49,14 +49,12 @@ class ActiveCompilerDialog : Window
 
    bool OnPostCreate()
    {
-      DataRow row;
       for(compiler : ideSettings.compilerConfigs)
       {
-         row = compilerDropBox.AddString(compiler.name);
+         DataRow row = compilerDropBox.AddString(compiler.name);
          if(workspaceActiveCompiler && !strcmp(compiler.name, workspaceActiveCompiler))
             compilerDropBox.currentRow = row;
       }
       return true;
    }
-   
 }

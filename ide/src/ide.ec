@@ -171,7 +171,7 @@ GlobalSettingsDialog globalSettingsDialog
             break;
          case compilerSettings:
          {
-            ide.UpdateMakefiles();
+            ide.UpdateCompilerConfigs();
             break;
          }
       }
@@ -1544,10 +1544,21 @@ class IDEWorkSpace : Window
       if(workspace)
       {
          CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.compiler);
+         for(prj : workspace.projects)
+            projectView.ProjectUpdateMakefileForAllConfigs(prj);
+         delete compiler;
+      }
+   }
+
+   void UpdateCompilerConfigs()
+   {
+      if(workspace)
+      {
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.compiler);
          projectView.ShowOutputBuildLog(true);
          projectView.DisplayCompiler(compiler, false);
          for(prj : workspace.projects)
-            projectView.ProjectUpdateMakefileForAllConfigs(prj);
+            projectView.ProjectPrepareCompiler(prj, compiler);
          delete compiler;
       }
    }
@@ -1838,6 +1849,7 @@ class IDEWorkSpace : Window
                            ide.projectView.DisplayCompiler(compiler, false);
                            delete compiler;
                         }
+                        UpdateCompilerConfigs();
                         UpdateMakefiles();
                         {
                            char newWorkingDir[MAX_LOCATION];
