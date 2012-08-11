@@ -25,7 +25,9 @@ Build-Depends:
  libxrender-dev,
  linux-libc-dev,
  upx-ucl,
- zlib1g-dev
+ zlib1g-dev,
+ libffi-dev,
+ lib32ffi-dev
 Standards-Version: 3.8.0
 Homepage: http://www.ecere.com/
 
