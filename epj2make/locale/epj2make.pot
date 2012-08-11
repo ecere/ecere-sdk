@@ -78,7 +78,7 @@ msgstr "      toolchain:\n"
 msgid "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
 msgstr "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
 
-#: ./epj2make.ec:374
+#: ./epj2make.ec:376
 msgid "Error: Input file (%s) does not exist.\n"
 msgstr "Error: Input file (%s) does not exist.\n"
 
@@ -86,7 +86,7 @@ msgstr "Error: Input file (%s) does not exist.\n"
 msgid "Error: Project configuration (%s) was not found.\n"
 msgstr "Error: Project configuration (%s) was not found.\n"
 
-#: ./epj2make.ec:370
+#: ./epj2make.ec:372
 msgid "Error: Unable to open project file (%s) due to unknown error.\n"
 msgstr "Error: Unable to open project file (%s) due to unknown error.\n"
 
