@@ -21,8 +21,7 @@ Build-Depends:
  linux-libc-dev,
  upx-ucl,
  zlib1g-dev,
- libffi-dev,
- lib32ffi-dev
+ libffi-dev
 Standards-Version: 3.8.0
 Homepage: http://www.ecere.com/
 
