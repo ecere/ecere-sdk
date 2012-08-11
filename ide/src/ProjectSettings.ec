@@ -823,7 +823,13 @@ class MultiStringOptionBox : OptionBox<Array<String>>
          delete tempStrings;
       }
 
-      *strings = newStrings;
+      if(!mergeValues || (configReplaces && isCfgOrPlt && !platform))
+         *strings = newStrings;
+      else
+      {
+         *strings = (newStrings && newStrings.count) ? newStrings : null;
+         if(newStrings && !newStrings.count) delete newStrings;
+      }
 
       Load();
    }
