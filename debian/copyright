@@ -1,0 +1,39 @@
+This package was debianized by NECDET COKYAZICI <cokyazici@gmail.com> on
+Tue, 6 Sep 2011 21:30:00 -0400.
+
+It was downloaded from http://www.ecere.com/ from the git repository
+
+Upstream Author(s):
+
+    Jérôme Jacovella-St-Louis <jerstlouis@gmail.com>
+    Réjean Loyer (http://ilyeus.com/ecere)
+    Joey Adams
+    Walter Charles Griffin
+
+Copyright:
+
+    Copyright (c) 1996-2011 Ecere Corporation
+
+License:
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted under the terms of the BSD License.
+
+    THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+    OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+    HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+    SUCH DAMAGE.
+
+On Debian systems, the complete text of the BSD License can be
+found in `/usr/share/common-licenses/BSD'.
+
+
+The Debian packaging is copyright 1996-2011 Ecere Corporation and
+is licensed under the BSD License (/usr/share/common-licenses/BSD).

@@ -1,0 +1,73 @@
+Source: ecere
+Section: devel
+Priority: optional
+Maintainer: Jerome St-Louis <jerome@ecere.com>
+XSBC-Original-Maintainer: Ryan Prior <ryanprior@gmail.com>
+Build-Depends:
+ autotools-dev,
+ debhelper (>= 7.0.50~),
+ gcc-multilib [amd64],
+ ia32-libs [amd64],
+ lib32ncurses5-dev [amd64],
+ lib32z1-dev [amd64],
+ libc6-dev-i386 [amd64],
+ libfontconfig1-dev,
+ libfreetype6-dev,
+ libgif-dev,
+ libgl1-mesa-glx,
+ libgl1-mesa-dev,
+ libjpeg62-dev,
+ libncurses5-dev,
+ libpng12-dev,
+ libsqlite3-dev,
+ libx11-dev,
+ libxext-dev,
+ libxrender-dev,
+ linux-libc-dev,
+ upx-ucl,
+ zlib1g-dev
+Standards-Version: 3.8.0
+Homepage: http://www.ecere.com/
+
+Package: ecere-sdk
+Architecture: amd64 i386
+Depends: ecere-doc, ecere-samples, ecere-extras, libecere, ${devel:Depends}, ${shlibs:Depends}
+Description: Ecere cross-platform SDK
+  Develop applications once, deploy them on
+  all platforms alongside a lightweight runtime
+  environment.
+
+Package: libecere
+Architecture: amd64 i386
+Depends: ${devel:Depends}, ${shlibs:Depends}
+Description: Ecere Runtime Library
+  Develop applications once, deploy them on
+  all platforms alongside a lightweight runtime
+  environment.
+
+Package: ecere-samples
+Architecture: all
+Depends: ${devel:Depends}, ${shlibs:Depends}
+Description: Project samples for the Ecere SDK
+  This package contains samples for multimedia,
+  database, graphics, communication, and other
+  useful software that can be created with the
+  Ecere SDK.
+
+Package: ecere-doc
+Architecture: all
+Depends: ${devel:Depends}, ${shlibs:Depends}
+Description: Documentation for the Ecere SDK
+  This package includes the Ecere Tao of Programming,
+  an ebook designed to help programmers become familiar
+  with eC and Ecere, as well the API reference
+  in the form of .eCdoc until it is embedded.
+
+Package: ecere-extras
+Architecture: all
+Depends: ${devel:Depends}, ${shlibs:Depends}
+Description: Extras for the Ecere SDK
+  This package provides additional Ecere
+  functionality, such as SSL Sockets, Audio,
+  in the form of source code. Also included:
+  the Application and Pixmap for the IDE.

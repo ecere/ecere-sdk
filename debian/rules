@@ -1,0 +1,20 @@
+#!/usr/bin/make -f
+
+DEB_HOST_ARCH=$(shell dpkg-architecture -qDEB_HOST_ARCH)
+
+%:
+	dh $@
+
+override_dh_install:
+ifeq ($(DEB_HOST_ARCH),amd64)
+	cp debian/libecere.install.in64 debian/libecere.install
+	cp debian/ecere-sdk.install.in64 debian/ecere-sdk.install
+endif
+
+ifeq ($(DEB_HOST_ARCH),i386)
+	cp debian/libecere.install.in32 debian/libecere.install
+	cp debian/ecere-sdk.install.in32 debian/ecere-sdk.install
+endif
+	dh_install
+
+override_dh_strip:
