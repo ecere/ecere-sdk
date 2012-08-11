@@ -1228,6 +1228,7 @@ else if(ch >= 'A' && ch <= 'Z')
 ch -= 'A';
 else
 {
+if(endString)
 *endString = string + c;
 break;
 }
@@ -1238,6 +1239,7 @@ value += ch;
 }
 else
 {
+if(endString)
 *endString = string + c;
 break;
 }
@@ -1630,7 +1632,7 @@ return __ecereNameSpace__ecere__sys__CopyString(temp);
 
 char * PrintFloat(float result)
 {
-char temp[100];
+char temp[350];
 
 sprintf(temp, "%.16ff", result);
 return __ecereNameSpace__ecere__sys__CopyString(temp);
@@ -1638,7 +1640,7 @@ return __ecereNameSpace__ecere__sys__CopyString(temp);
 
 char * PrintDouble(double result)
 {
-char temp[100];
+char temp[350];
 
 sprintf(temp, "%.16f", result);
 return __ecereNameSpace__ecere__sys__CopyString(temp);

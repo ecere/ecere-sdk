@@ -359,6 +359,50 @@ multiplier = 1024;
 return 0x1;
 }
 
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__FileSize64;
+
+int __ecereMethod___ecereNameSpace__ecere__sys__FileSize64_OnCompare(struct __ecereNameSpace__ecere__com__Class * class, uint64 * this, uint64 * data2)
+{
+int result = 0;
+
+if(&(*(this)) && &(*(data2)))
+{
+if((*(this)) > (*(data2)))
+result = 1;
+else if((*(this)) < (*(data2)))
+result = -1;
+}
+return result;
+}
+
+extern void __ecereNameSpace__ecere__sys__PrintBigSize(char *  string, double size, int prec);
+
+char * __ecereMethod___ecereNameSpace__ecere__sys__FileSize64_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, uint64 * this, char * string, void * fieldData, unsigned int * needClass)
+{
+__ecereNameSpace__ecere__sys__PrintBigSize(string, *(uint64 *)this, 2);
+return string;
+}
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__FileSize64_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * class, uint64 * this, char * string)
+{
+char * end;
+double value = strtod(string, &end);
+uint64 multiplier = 1;
+
+if(strstr(end, "PB") || strstr(end, "pb"))
+multiplier = (uint64)1024 * 1024 * 1024 * 1024;
+else if(strstr(end, "TB") || strstr(end, "tb"))
+multiplier = (uint64)1024 * 1024 * 1024 * 1024;
+else if(strstr(end, "GB") || strstr(end, "gb"))
+multiplier = (uint64)1024 * 1024 * 1024;
+else if(strstr(end, "MB") || strstr(end, "mb"))
+multiplier = (uint64)1024 * 1024;
+else if(strstr(end, "KB") || strstr(end, "kb"))
+multiplier = 1024;
+(*(this)) = (uint64)((double)multiplier * value);
+return 0x1;
+}
+
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__FileSystem;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__FileOpenMode;
@@ -636,6 +680,9 @@ int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSp
 {
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 int result = 0;
+
+if(format)
+{
 char text[1025];
 va_list args;
 
@@ -644,6 +691,7 @@ vsprintf(text, format, args);
 if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(this, text))
 result = strlen(text);
 __builtin_va_end(args);
+}
 return result;
 }
 
@@ -1196,6 +1244,12 @@ __ecereClass___ecereNameSpace__ecere__sys__FileSize = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnCompare", 0, __ecereMethod___ecereNameSpace__ecere__sys__FileSize_OnCompare, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetString", 0, __ecereMethod___ecereNameSpace__ecere__sys__FileSize_OnGetString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetDataFromString", 0, __ecereMethod___ecereNameSpace__ecere__sys__FileSize_OnGetDataFromString, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(3, "ecere::sys::FileSize64", "uint64", 0, 0, 0, 0, module, 1, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+__ecereClass___ecereNameSpace__ecere__sys__FileSize64 = class;
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnCompare", 0, __ecereMethod___ecereNameSpace__ecere__sys__FileSize64_OnCompare, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetString", 0, __ecereMethod___ecereNameSpace__ecere__sys__FileSize64_OnGetString, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetDataFromString", 0, __ecereMethod___ecereNameSpace__ecere__sys__FileSize64_OnGetDataFromString, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::sys::FileSystem", 0, 0, 0, 0, 0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__FileSystem = class;

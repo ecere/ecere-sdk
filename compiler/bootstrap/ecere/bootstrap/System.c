@@ -708,7 +708,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UnsetEnviron
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::Execute", "bool ecere::sys::Execute(char * command, ...)", __ecereNameSpace__ecere__sys__Execute, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ExecuteEnv", "bool ecere::sys::ExecuteEnv(char * env, char * command, ...)", __ecereNameSpace__ecere__sys__ExecuteEnv, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ShellOpen", "bool ecere::sys::ShellOpen(char * fileName, ...)", __ecereNameSpace__ecere__sys__ShellOpen, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetFreeSpace", "void ecere::sys::GetFreeSpace(char * path, FileSize * size)", __ecereNameSpace__ecere__sys__GetFreeSpace, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetFreeSpace", "void ecere::sys::GetFreeSpace(char * path, FileSize64 * size)", __ecereNameSpace__ecere__sys__GetFreeSpace, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::Logf", "void ecere::sys::Logf(char * format, ...)", __ecereNameSpace__ecere__sys__Logf, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::Log", "void ecere::sys::Log(char * text)", __ecereNameSpace__ecere__sys__Log, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DumpErrors", "void ecere::sys::DumpErrors(bool display)", __ecereNameSpace__ecere__sys__DumpErrors, module, 1);

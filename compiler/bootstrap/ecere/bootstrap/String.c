@@ -295,7 +295,7 @@ return output;
 
 extern int strcmp(const char * , const char * );
 
-extern char *  strncpy(char * , const char * , int n);
+extern void *  memmove(void * , const void * , unsigned int size);
 
 extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
 
@@ -322,7 +322,7 @@ break;
 }
 if((runtimePlatform == 1) ? (c >= 0) : (c > 0))
 {
-strncpy(output, string, c);
+memmove(output, string, c);
 if(c > 0)
 {
 if(runtimePlatform == 1 && c == 1 && output[0] == '\\' && output[1] == '\\')
@@ -370,7 +370,7 @@ part[len++] = ch;
 }
 for(; (ch = string[c]) && (ch == '/' || ch == '\\'); c++)
 ;
-strcpy(rest, string + c);
+memmove(rest, string + c, strlen(string + c) + 1);
 for(c = strlen(rest); c >= 0; c--)
 if(ch != '/' && ch != '\\')
 break;
@@ -390,7 +390,7 @@ if(string[c] == '/' || string[c] == '\\' || string[c] == ':' || string[c] == '>'
 break;
 c++;
 if(c >= 0)
-strcpy(output, string + c);
+memmove(output, string + c, strlen(string + c) + 1);
 else
 output[0] = '\0';
 len = strlen(output);
@@ -398,6 +398,8 @@ if(len > 1 && (output[len - 1] == '\\' || output[len - 1] == '/'))
 output[len - 1] = '\0';
 return output;
 }
+
+extern char *  strncpy(char * , const char * , int n);
 
 unsigned int __ecereNameSpace__ecere__sys__SplitArchivePath(char * fileName, char * archiveName, char ** archiveFile)
 {
@@ -850,7 +852,7 @@ extern int strcasecmp(const char * , const char * );
 char * __ecereNameSpace__ecere__sys__MakePathRelative(char * path, char * to, char * destination)
 {
 if(!path[0])
-strcpy(destination, path);
+memmove(destination, path, strlen(path) + 1);
 else
 {
 char pathPart[4384LL], pathRest[797];
@@ -1035,8 +1037,6 @@ return ptr1;
 }
 return (((void *)0));
 }
-
-extern void *  memmove(void * , const void * , unsigned int size);
 
 int __ecereNameSpace__ecere__sys__Tokenize(char * string, int maxTokens, char * tokens[], unsigned int escapeBackSlashes)
 {
@@ -1306,8 +1306,9 @@ return strtoul(string, (((void *)0)), 16);
 char * __ecereNameSpace__ecere__sys__StripQuotes(char * string, char * output)
 {
 int len;
+char * src = (string[0] == '\"') ? (string + 1) : string;
 
-strcpy(output, (string[0] == '\"') ? (string + 1) : string);
+memmove(output, src, strlen(src) + 1);
 len = strlen(output);
 if(len && output[len - 1] == '\"')
 output[len - 1] = '\0';

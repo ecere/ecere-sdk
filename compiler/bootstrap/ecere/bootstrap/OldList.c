@@ -472,6 +472,7 @@ if(item == this->last)
 this->last = link->prev;
 if(prevItem == this->last)
 this->last = item;
+link->prev = prevItem ? prevItem : (this->circ ? this->last : (((void *)0)));
 if(prevItem)
 {
 link->next = prevLink->next;
@@ -481,8 +482,14 @@ else
 {
 link->next = this->first;
 this->first = item;
+if(this->circ)
+{
+if(link->prev)
+((struct __ecereNameSpace__ecere__sys__Item *)((unsigned char *)link->prev + this->offset))->next = item;
+else
+link->next = item;
 }
-link->prev = prevItem;
+}
 if(link->next)
 ((struct __ecereNameSpace__ecere__sys__Item *)((unsigned char *)link->next + this->offset))->prev = item;
 }

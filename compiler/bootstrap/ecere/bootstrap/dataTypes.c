@@ -1314,7 +1314,7 @@ else
 {
 struct __ecereNameSpace__ecere__com__DataValue value;
 
-memberType->_vTbl[__ecereVMethodID_class_OnUnserialize](memberType, &value);
+memberType->_vTbl[__ecereVMethodID_class_OnUnserialize](memberType, &value, channel);
 *(int *)((unsigned char *)data + member->offset) = value.i;
 }
 }
@@ -1392,7 +1392,13 @@ static int __ecereNameSpace__ecere__com__Integer_OnCompare(struct __ecereNameSpa
 {
 int result = 0;
 
-if(*data1 > *data2)
+if(!data1 && !data2)
+result = 0;
+else if(data1 && !data2)
+result = 1;
+else if(!data1 && data2)
+result = -1;
+else if(*data1 > *data2)
 result = 1;
 else if(*data1 < *data2)
 result = -1;
@@ -1426,12 +1432,12 @@ static int __ecereNameSpace__ecere__com__UInteger_OnCompare(struct __ecereNameSp
 {
 int result = 0;
 
-if(data1 && !data2)
+if(!data1 && !data2)
+result = 0;
+else if(data1 && !data2)
 result = 1;
 else if(!data1 && data2)
 result = -1;
-else if(!data1 && !data2)
-result = 0;
 else if(*data1 > *data2)
 result = 1;
 else if(*data1 < *data2)
@@ -1464,7 +1470,13 @@ static int __ecereNameSpace__ecere__com__Byte_OnCompare(struct __ecereNameSpace_
 {
 int result = 0;
 
-if(*data1 > *data2)
+if(!data1 && !data2)
+result = 0;
+else if(data1 && !data2)
+result = 1;
+else if(!data1 && data2)
+result = -1;
+else if(*data1 > *data2)
 result = 1;
 else if(*data1 < *data2)
 result = -1;
@@ -1723,7 +1735,13 @@ static int __ecereNameSpace__ecere__com__Float_OnCompare(struct __ecereNameSpace
 {
 int result = 0;
 
-if(*data1 > *data2)
+if(!data1 && !data2)
+result = 0;
+else if(data1 && !data2)
+result = 1;
+else if(!data1 && data2)
+result = -1;
+else if(*data1 > *data2)
 result = 1;
 else if(*data1 < *data2)
 result = -1;
@@ -1815,7 +1833,13 @@ static int __ecereNameSpace__ecere__com__Double_OnCompare(struct __ecereNameSpac
 {
 int result = 0;
 
-if(*data1 > *data2)
+if(!data1 && !data2)
+result = 0;
+else if(data1 && !data2)
+result = 1;
+else if(!data1 && data2)
+result = -1;
+else if(*data1 > *data2)
 result = 1;
 else if(*data1 < *data2)
 result = -1;

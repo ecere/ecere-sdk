@@ -3050,6 +3050,10 @@ if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->temp
 }
 }
 
+extern struct __ecereNameSpace__ecere__sys__OldList * ast;
+
+extern void FreeExternal(struct External * external);
+
 extern void FreeContext(struct Context * context);
 
 struct ClassDefinition * MkClass(struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * baseSpecs, struct __ecereNameSpace__ecere__sys__OldList * definitions)
@@ -3060,6 +3064,22 @@ struct ClassDefinition * classDef;
 SetupBaseSpecs(symbol, baseSpecs);
 if(symbol->ctx)
 {
+struct ClassDefinition * classDef = symbol->ctx->classDef;
+
+if(classDef)
+{
+struct External * external;
+
+for(external = (*ast).first; external; external = external->next)
+{
+if(external->type == 2 && external->_class == classDef)
+{
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*ast), external);
+FreeExternal(external);
+break;
+}
+}
+}
 FreeContext(symbol->ctx);
 ((symbol->ctx ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor(symbol->ctx) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(symbol->ctx)) : 0), symbol->ctx = 0);
 }
@@ -4339,8 +4359,6 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgstr \"%s\"\n\n", 
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *))intlStrings->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(intlStrings);
 }
 }
-
-extern struct __ecereNameSpace__ecere__sys__OldList * ast;
 
 extern int yyparse();
 

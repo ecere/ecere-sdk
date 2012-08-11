@@ -2694,6 +2694,8 @@ PreCompPreProcessClassDefinitions();
 if(!((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->exitCode)
 OutputSymbols(GetOutputFile());
 }
+else
+((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->exitCode = exitCode;
 if(ast)
 {
 FreeASTTree(ast);
