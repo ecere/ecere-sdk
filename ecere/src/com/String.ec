@@ -127,7 +127,7 @@ public char * SplitDirectory(const char * string, char * part, char * rest)
    }
 
    for(;(ch = string[c]) && (ch == '/' || ch == '\\'); c++);
-   strcpy(rest, string + c);
+   memmove(rest, string + c, strlen(string + c) + 1);
    for(c = strlen(rest); c >= 0; c--)
       if(ch != '/' && ch != '\\') 
          break;
@@ -148,7 +148,7 @@ public char * GetLastDirectory(char * string, char * output)
 
    c++;
    if(c >= 0)
-      strcpy(output, string+c);
+      memmove(output, string+c, strlen(string+c)+1);
    else
       output[0] = '\0';
 
@@ -619,7 +619,7 @@ public char * MakePathRelative(char * path, char * to, char * destination)
 {
    // Don't process empty paths
    if(!path[0])
-      strcpy(destination, path);
+      memmove(destination, path, strlen(path)+1);
    else
    {
       // TOFIX: DANGER OF OVERFLOW HERE
@@ -1060,8 +1060,8 @@ public uint GetHexValue(char ** buffer)
 public char * StripQuotes(char * string, char * output)
 {
    int len;
-
-   strcpy(output,(string[0] == '\"') ? (string+1) : string);
+   char * src = (string[0] == '\"') ? (string+1) : string;
+   memmove(output, src, strlen(src)+1);
    len = strlen(output);
    if(len && output[len-1] == '\"')
       output[len-1] = '\0';
