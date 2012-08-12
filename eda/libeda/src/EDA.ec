@@ -123,7 +123,18 @@ public:
    property String driver
    {
       get { return ds ? ((subclass(DataSourceDriver))(ds._class)).name : null; }
-      set { delete ds; ds = value ? eInstance_New(GetDataDriver(value)) : null; }
+      set
+      {
+         delete ds;
+         if(value && value[0])
+         {
+            subclass(DataSourceDriver) driver = GetDataDriver(value);
+            if(driver)
+               ds = eInstance_New(driver);
+            else
+               PrintLn("EDA: Unable to find a driver named ", value);
+         }
+      }
    }
    property String host
    {
