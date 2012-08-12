@@ -702,7 +702,7 @@ public:
       bool result;
       DebugLn("TableEditor::Select");
       // EDA is now set up so that Next()/Prev() will work with sysID = , but not with Find() (As Find() will return a particular set of results)
-      if(idField && (editRow.sysID = id, !editRow.nil))// && editRow.Find(idField, middle, nil, id))
+      if(idField && editRow && (editRow.sysID = id, !editRow.nil))// && editRow.Find(idField, middle, nil, id))
       {
          selectedId = editRow.sysID;
          EditLoad();
