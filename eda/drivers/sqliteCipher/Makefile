@@ -103,6 +103,9 @@ LIBS += -llibeay32
 else
 ifdef LINUX
 
+CFLAGS += \
+	 -I/usr/include/i686-linux-gnu
+
 LIBS += -lpthread -ldl -lcrypto
 
 else

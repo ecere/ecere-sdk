@@ -94,6 +94,9 @@ endif
 else
 ifdef LINUX
 
+CFLAGS += \
+	 -I/usr/include/i686-linux-gnu
+
 ifneq "$(TARGET_TYPE)" "staticlib"
 LIBS += -lpthread -ldl -lsqlite3
 endif

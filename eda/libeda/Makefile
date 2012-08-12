@@ -116,6 +116,13 @@ CFLAGS += \
 
 endif
 
+ifdef LINUX
+
+CFLAGS += \
+	 -I/usr/include/i686-linux-gnu
+
+endif
+
 # TARGETS
 
 all: objdir $(TARGET)
