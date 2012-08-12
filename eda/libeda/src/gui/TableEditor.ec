@@ -736,71 +736,84 @@ public:
       return result;
    }
 
-   bool SelectNext()
+   bool SelectNext(bool loopAround)
    {
-      bool result;
+      bool result = NotifyClosing();
       bool wasNil = !editRow.sysID;
       DebugLn("TableEditor::SelectNext");
-      // How about confirmation / saving before changing the entry?
-      if(filtered)
+      if(result)
       {
-         if(filterRow.Next())
+         if(filtered)
          {
-            if(wasNil && filterRow.sysID == selectedId)
+            if(!filterRow.Next() && loopAround)
+            {
+               //filterRow.First(); // Row::First doesn't behave properly in a filtered table
+               while(filterRow.Previous())
+                  ;
                filterRow.Next();
-            editRow.sysID = filterRow.sysID;
+            }
+            if(!filterRow.nil)
+            {
+               if(wasNil && filterRow.sysID == selectedId)
+                  filterRow.Next();       // this whole wasNil thing makes no sense to me?
+               editRow.sysID = filterRow.sysID;
+            }
+            else
+               editRow.sysID = 0;
          }
          else
-            editRow.sysID = 0;
-      }
-      else
-         editRow.Next();
-      if(!editRow.nil)
-      {
-         selectedId = editRow.sysID;
-         EditLoad();
-         result = true;
-      }
-      else
-      {
-         result = false;
-         // Wrap around after 2 Next if commented out (1st time could inform user of reaching the end)
-         // The first Next() bring the row to a null row (rowID = 0), a Next() on a rowID = 0 starts at first row
-         //editRow.Previous();
+         {
+            if(!editRow.Next() && loopAround)
+               editRow.Next();
+         }
+         if(!editRow.nil)
+         {
+            selectedId = editRow.sysID;
+            EditLoad();
+         }
+         else
+            result = false;
       }
       return result;
    }
    
-   bool SelectPrevious()
+   bool SelectPrevious(bool loopAround)
    {
-      bool result;
+      bool result = NotifyClosing();
       bool wasNil = !editRow.sysID;
       DebugLn("TableEditor::SelectPrevious");
-      if(filtered)
+      if(result)
       {
-         if(filterRow.Previous())
+         if(filtered)
          {
-            if(wasNil && filterRow.sysID == selectedId)
+            if(!filterRow.Previous() && loopAround)
+            {
+               //filterRow.Last(); // Row::Last doesn't behave properly in a filtered table
+               while(filterRow.Next())
+                  ;
                filterRow.Previous();
-            editRow.sysID = filterRow.sysID;
+            }
+            if(!filterRow.nil)
+            {
+               if(wasNil && filterRow.sysID == selectedId)
+                  filterRow.Previous();       // this whole wasNil thing makes no sense to me?
+               editRow.sysID = filterRow.sysID;
+            }
+            else
+               editRow.sysID = 0;
          }
          else
-            editRow.sysID = 0;
-      }
-      else
-         editRow.Previous();
-      if(!editRow.nil)
-      {
-         selectedId = editRow.sysID;
-         EditLoad();
-         result = true;
-      }
-      else
-      {
-         result = false;
-         // Wrap around after 2 Prev if commented out (1st time could inform user of reaching the end)
-         // The first Prev() bring the row to a null row (rowID = 0), a Prev() on a rowID = 0 starts at last row
-         //editRow.Next();
+         {
+            if(!editRow.Previous() && loopAround)
+               editRow.Previous();
+         }
+         if(!editRow.nil)
+         {
+            selectedId = editRow.sysID;
+            EditLoad();
+         }
+         else
+            result = false;
       }
       return result;
    }
