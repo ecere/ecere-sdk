@@ -3120,13 +3120,17 @@ Project LegacyAsciiLoadProject(File f, char * filePath)
             TrimLSpaces(equal, equal);
             if(!strcmpi(section, "Target") && !strcmpi(subSection, "LibraryDirs"))
             {
-               if(!project.config.options.libraryDirs) project.config.options.libraryDirs = { };
-               project.config.options.libraryDirs.Add(CopyString(equal));
+               if(!project.config.options.libraryDirs)
+                  project.config.options.libraryDirs = { [ CopyString(equal) ] };
+               else
+                  project.config.options.libraryDirs.Add(CopyString(equal));
             }
             else if(!strcmpi(section, "Target") && !strcmpi(subSection, "IncludeDirs"))
             {
-               if(!project.config.options.includeDirs) project.config.options.includeDirs = { };
-               project.config.options.includeDirs.Add(CopyString(equal));
+               if(!project.config.options.includeDirs)
+                  project.config.options.includeDirs = { [ CopyString(equal) ] };
+               else
+                  project.config.options.includeDirs.Add(CopyString(equal));
             }
             else if(!strcmpi(section, "Target") && (!strcmpi(subSection, "Files") || !strcmpi(subSection, "Resources")))
             {
