@@ -12,9 +12,15 @@ namespace sys;
 
 import "instance"
 
-#ifdef _DEBUG
-int GetCurrentThreadID();
+// Moved this here from Thread.ec to make compiling ecereCOM in Debug easier
+public int GetCurrentThreadID()
+{
+#if defined(__WIN32__)
+   return (int)GetCurrentThreadId();
+#else
+   return pthread_self();
 #endif
+}
 
 public class Mutex : struct
 {

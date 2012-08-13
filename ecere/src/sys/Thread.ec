@@ -28,15 +28,6 @@ public enum ThreadPriority
    timeCritical = 15
 };
 
-public int GetCurrentThreadID()
-{
-#if defined(__WIN32__)
-   return (int)GetCurrentThreadId();
-#else
-   return pthread_self();
-#endif
-}
-
 public class Thread
 {
    ~Thread()
