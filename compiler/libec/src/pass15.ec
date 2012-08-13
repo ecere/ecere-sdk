@@ -6914,7 +6914,7 @@ void ApplyAnyObjectLogic(Expression e)
                            sprintf(name, "__internalValue%03X", internalValueCounter++);
                            if(!curCompound.compound.declarations)
                               curCompound.compound.declarations = MkList();
-                           ListAdd(curCompound.compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(name)), null))));
+                           curCompound.compound.declarations->Insert(null, MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(name)), null))));
                            ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(name)), '=', newExp))));
                            ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier(name)))));
                            e.compound = MkCompoundStmt(null, stmts);

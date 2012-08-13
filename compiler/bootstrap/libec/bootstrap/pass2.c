@@ -2828,7 +2828,7 @@ struct __ecereNameSpace__ecere__sys__OldList * stmts = MkList();
 sprintf(name, "__internalValue%03X", internalValueCounter++);
 if(!curCompound->compound.declarations)
 curCompound->compound.declarations = MkList();
-ListAdd(curCompound->compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(name)), (((void *)0))))));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*curCompound->compound.declarations), (((void *)0)), MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(name)), (((void *)0))))));
 ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(name)), '=', newExp))));
 ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier(name)))));
 e->compound = MkCompoundStmt((((void *)0)), stmts);
