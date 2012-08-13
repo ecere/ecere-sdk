@@ -1147,6 +1147,8 @@ struct __ecereNameSpace__ecere__com__Class * containerClass;
 
 unsigned int thisClassParams = 0x1;
 
+unsigned int internalValueCounter;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
 
 struct __ecereNameSpace__ecere__sys__TempFile
@@ -3262,7 +3264,7 @@ break;
 if(type && type->kind == 20 && type->templateParameter->type == 0 && _class->templateArgs)
 {
 int id = 0;
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * curParam;
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * curParam = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * sClass;
 
 for(sClass = _class; sClass; sClass = sClass->base)
@@ -3714,7 +3716,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument * FindTemplateArg(str
 {
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument * arg = (((void *)0));
 int id = 0;
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * curParam;
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * curParam = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * sClass;
 
 for(sClass = _class; sClass; sClass = sClass->base)
@@ -4675,7 +4677,7 @@ struct Type * type = paramDestType;
 if(paramDest->kind == 20 && paramDest->templateParameter->type == 0 && owningClassSource && paramSource->kind != 20)
 {
 int id = 0;
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * curParam;
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * curParam = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * sClass;
 
 for(sClass = owningClassSource; sClass; sClass = sClass->base)
@@ -11530,6 +11532,8 @@ checkedExp->next = next;
 
 extern struct Expression * MkExpCall(struct Expression * expression, struct __ecereNameSpace__ecere__sys__OldList * arguments);
 
+extern int printf(char * , ...);
+
 void __ecereMethod_Expression_Clear();
 
 void ApplyAnyObjectLogic(struct Expression * e)
@@ -11622,7 +11626,21 @@ decl = SpecDeclFromString(typeString, specs, (((void *)0)));
 newExp->destType = ProcessType(specs, decl);
 curContext = context;
 e->type = 25;
-e->compound = MkCompoundStmt(MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internalValue")), MkInitializerAssignment(newExp))))), MkListOne(MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier("__internalValue"))))));
+if(curCompound)
+{
+char name[100];
+struct __ecereNameSpace__ecere__sys__OldList * stmts = MkList();
+
+sprintf(name, "__internalValue%03X", internalValueCounter++);
+if(!curCompound->compound.declarations)
+curCompound->compound.declarations = MkList();
+ListAdd(curCompound->compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(name)), (((void *)0))))));
+ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(name)), '=', newExp))));
+ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier(name)))));
+e->compound = MkCompoundStmt((((void *)0)), stmts);
+}
+else
+printf("libec: compiler error, curCompound is null in ApplyAnyObjectLogic\n");
 {
 struct Type * type = e->destType;
 
@@ -13657,7 +13675,7 @@ tClass = tClass->base;
 if(tClass && exp->expType->kind == 20 && exp->expType->templateParameter->type == 0)
 {
 int id = 0;
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * curParam;
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * curParam = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * sClass;
 
 for(sClass = tClass; sClass; sClass = sClass->base)
@@ -13710,7 +13728,7 @@ FinishTemplatesContext(context);
 else if(tClass && exp->expType->kind == 13 && exp->expType->type && exp->expType->type->kind == 20 && exp->expType->type->templateParameter->type == 0)
 {
 int id = 0;
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * curParam;
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * curParam = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * sClass;
 
 for(sClass = tClass; sClass; sClass = sClass->base)

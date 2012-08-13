@@ -2045,11 +2045,29 @@ static void ProcessExpression(Expression exp)
 
                                     curContext = context;
                                     e.type = extensionCompoundExp;
-                                    e.compound = MkCompoundStmt(
-                                       MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(/*PlugDeclarator(decl, */
-                                          MkDeclaratorIdentifier(MkIdentifier("__internalValue"))/*)*/, MkInitializerAssignment(newExp))))), 
 
+                                    // We need a current compound for this
+                                    if(curCompound)
+                                    {
+                                       char name[100];
+                                       OldList * stmts = MkList();
+                                       sprintf(name, "__internalValue%03X", internalValueCounter++);
+                                       if(!curCompound.compound.declarations)
+                                          curCompound.compound.declarations = MkList();
+                                       ListAdd(curCompound.compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(name)), null))));
+                                       ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(name)), '=', newExp))));
+                                       ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier(name)))));
+                                       e.compound = MkCompoundStmt(null, stmts);
+                                    }
+                                    else
+                                       printf("libec: compiler error, curCompound is null in ApplyAnyObjectLogic\n");
+
+                                    /*
+
+                                    e.compound = MkCompoundStmt(
+                                       MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internalValue")), MkInitializerAssignment(newExp))))), 
                                        MkListOne(MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier("__internalValue"))))));
+                                    */
                                     
                                     e.compound.compound.context = context;
                                     PopContext(context);

@@ -1416,6 +1416,10 @@ extern void FreeTypeName(struct TypeName * typeName);
 
 extern struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
 
+extern unsigned int internalValueCounter;
+
+extern int printf(char * , ...);
+
 extern struct Type * ProcessTemplateParameterType(struct TemplateParameter * param);
 
 extern void DeclareStruct(char *  name, unsigned int skipNoHead);
@@ -2816,7 +2820,21 @@ decl = SpecDeclFromString(typeString, specs, (((void *)0)));
 newExp->destType = ProcessType(specs, decl);
 curContext = context;
 e->type = 25;
-e->compound = MkCompoundStmt(MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internalValue")), MkInitializerAssignment(newExp))))), MkListOne(MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier("__internalValue"))))));
+if(curCompound)
+{
+char name[100];
+struct __ecereNameSpace__ecere__sys__OldList * stmts = MkList();
+
+sprintf(name, "__internalValue%03X", internalValueCounter++);
+if(!curCompound->compound.declarations)
+curCompound->compound.declarations = MkList();
+ListAdd(curCompound->compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(name)), (((void *)0))))));
+ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(name)), '=', newExp))));
+ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier(name)))));
+e->compound = MkCompoundStmt((((void *)0)), stmts);
+}
+else
+printf("libec: compiler error, curCompound is null in ApplyAnyObjectLogic\n");
 e->compound->compound.context = context;
 PopContext(context);
 curContext = context->parent;

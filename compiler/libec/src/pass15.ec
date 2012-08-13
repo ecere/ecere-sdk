@@ -34,6 +34,8 @@ static char * thisNameSpace;
 /*static */Class containerClass;
 bool thisClassParams = true;
 
+uint internalValueCounter;
+
 #ifdef _DEBUG
 Time findSymbolTotalTime;
 #endif
@@ -1696,7 +1698,7 @@ void ProcessMemberInitData(MemberInit member, Class _class, Class * curClass, Da
       if(type && type.kind == templateType && type.templateParameter.type == TemplateParameterType::type && _class.templateArgs /* TODO: Watch out for these _class.templateClass*/)
       {
          int id = 0;
-         ClassTemplateParameter curParam;
+         ClassTemplateParameter curParam = null;
          Class sClass;
          for(sClass = _class; sClass; sClass = sClass.base)
          {
@@ -2220,7 +2222,7 @@ ClassTemplateArgument * FindTemplateArg(Class _class, TemplateParameter param)
 {
    ClassTemplateArgument * arg = null;
    int id = 0;
-   ClassTemplateParameter curParam;
+   ClassTemplateParameter curParam = null;
    Class sClass;
    for(sClass = _class; sClass; sClass = sClass.base)
    {
@@ -3302,7 +3304,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                   paramSource.kind != templateType)
                {
                   int id = 0;
-                  ClassTemplateParameter curParam;
+                  ClassTemplateParameter curParam = null;
                   Class sClass;
                   for(sClass = owningClassSource; sClass; sClass = sClass.base)
                   {
@@ -6903,11 +6905,30 @@ void ApplyAnyObjectLogic(Expression e)
 
                         curContext = context;
                         e.type = extensionCompoundExp;
+
+                        // We need a current compound for this
+                        if(curCompound)
+                        {
+                           char name[100];
+                           OldList * stmts = MkList();
+                           sprintf(name, "__internalValue%03X", internalValueCounter++);
+                           if(!curCompound.compound.declarations)
+                              curCompound.compound.declarations = MkList();
+                           ListAdd(curCompound.compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(name)), null))));
+                           ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(name)), '=', newExp))));
+                           ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier(name)))));
+                           e.compound = MkCompoundStmt(null, stmts);
+                        }
+                        else
+                           printf("libec: compiler error, curCompound is null in ApplyAnyObjectLogic\n");
+
+                        /*
                         e.compound = MkCompoundStmt(
                            MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(
                               MkDeclaratorIdentifier(MkIdentifier("__internalValue")), MkInitializerAssignment(newExp))))), 
 
                            MkListOne(MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier("__internalValue"))))));
+                        */
                         
                         {
                            Type type = e.destType;
@@ -9325,7 +9346,7 @@ void ProcessExpressionType(Expression exp)
                   if(tClass && exp.expType.kind == templateType && exp.expType.templateParameter.type == TemplateParameterType::type)
                   {
                      int id = 0;
-                     ClassTemplateParameter curParam;
+                     ClassTemplateParameter curParam = null;
                      Class sClass;
 
                      for(sClass = tClass; sClass; sClass = sClass.base)
@@ -9383,7 +9404,7 @@ void ProcessExpressionType(Expression exp)
                   else if(tClass && exp.expType.kind == pointerType && exp.expType.type && exp.expType.type.kind == templateType && exp.expType.type.templateParameter.type == TemplateParameterType::type)
                   {
                      int id = 0;
-                     ClassTemplateParameter curParam;
+                     ClassTemplateParameter curParam = null;
                      Class sClass;
 
                      for(sClass = tClass; sClass; sClass = sClass.base)
