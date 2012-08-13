@@ -22,28 +22,28 @@ Build-Depends:
  upx-ucl,
  zlib1g-dev,
  libffi-dev
-Standards-Version: 3.8.0
+Standards-Version: 3.9.3
 Homepage: http://www.ecere.com/
 
 Package: ecere-sdk
-Architecture: i386
-Depends: ecere-doc, ecere-samples, ecere-extras, libecere, ${devel:Depends}, ${shlibs:Depends}
+Architecture: !amd64 !powerpc64
+Depends: ecere-doc, ecere-samples, ecere-extras, libecere, ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Ecere cross-platform SDK
   Develop applications once, deploy them on
   all platforms alongside a lightweight runtime
   environment.
 
 Package: libecere
-Architecture: i386
-Depends: ${devel:Depends}, ${shlibs:Depends}
+Architecture: !amd64 !powerpc64
+Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Ecere Runtime Library
   Develop applications once, deploy them on
   all platforms alongside a lightweight runtime
   environment.
 
 Package: ecere-samples
-Architecture: i386
-Depends: ${devel:Depends}, ${shlibs:Depends}
+Architecture: all
+Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Project samples for the Ecere SDK
   This package contains samples for multimedia,
   database, graphics, communication, and other
@@ -51,8 +51,8 @@ Description: Project samples for the Ecere SDK
   Ecere SDK.
 
 Package: ecere-doc
-Architecture: i386
-Depends: ${devel:Depends}, ${shlibs:Depends}
+Architecture: all
+Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Documentation for the Ecere SDK
   This package includes the Ecere Tao of Programming,
   an ebook designed to help programmers become familiar
@@ -60,8 +60,8 @@ Description: Documentation for the Ecere SDK
   in the form of .eCdoc until it is embedded.
 
 Package: ecere-extras
-Architecture: i386
-Depends: ${devel:Depends}, ${shlibs:Depends}
+Architecture: all
+Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Extras for the Ecere SDK
   This package provides additional Ecere
   functionality, such as SSL Sockets, Audio,
