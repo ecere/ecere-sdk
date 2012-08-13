@@ -1,5 +1,5 @@
-ecere (0.44.01) precise; urgency=low
+0.44.01-0ubuntu1 quantal; urgency=low
 
-  First free and open source release of the Ecere SDK and runtime environment (LP: #394998)
+  * Initial packing of Ecere SDK for Ubuntu.  (LP: #394998)
 
- -- NECDET COKYAZICI (Launchpad key) <cokyazici@gmail.com>  Tue, 6 Sep 2011 21:30:00 -0400
+ -- Jerome St-Louis (Launchpad key) <jerstlouis@gmail.com>  Mon, 13 Aug 2012 15:41:00 -0400
