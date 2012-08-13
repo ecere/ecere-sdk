@@ -1182,8 +1182,8 @@ private:
       }
       else
       {
-         // Default to <ProjectDir>/configs if unset
-         PathCatSlash(cfDir, "configs");
+         // Default to <ProjectDir>/.configs if unset
+         PathCatSlash(cfDir, ".configs");
          result = true;
       }
       if(cfDir && cfDir[0] && cfDir[strlen(cfDir)-1] != '/')
@@ -1855,7 +1855,15 @@ private:
          GetIDECompilerConfigsDir(path);
 
       if(!FileExists(path).isDirectory)
+      {
          MakeDir(path);
+         {
+            char dirName[MAX_FILENAME];
+            GetLastDirectory(path, dirName);
+            if(!strcmp(dirName, ".configs"))
+               FileSetAttribs(path, FileAttribs { isHidden = true });
+         }
+      }
       PathCatSlash(path, "crossplatform.mk");
 
       if(FileExists(path))
@@ -1900,7 +1908,15 @@ private:
          GetIDECompilerConfigsDir(path);
 
       if(!FileExists(path).isDirectory)
+      {
          MakeDir(path);
+         {
+            char dirName[MAX_FILENAME];
+            GetLastDirectory(path, dirName);
+            if(!strcmp(dirName, ".configs"))
+               FileSetAttribs(path, FileAttribs { isHidden = true });
+         }
+      }
       PathCatSlash(path, name);
 
       if(FileExists(path))
