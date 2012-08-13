@@ -2804,6 +2804,11 @@ static void ProcessExpression(Expression exp)
          ProcessExpression(exp.vaArg.exp);
          break;
       }
+      case extensionInitializerExp:
+      {
+         ProcessInitializer(exp.initializer.initializer);
+         break;
+      }
    }
    FixRefExp(exp);
    yylloc = oldyylloc;

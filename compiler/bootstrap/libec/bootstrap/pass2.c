@@ -1430,6 +1430,8 @@ extern void FreeDeclarator(struct Declarator * decl);
 
 extern char *  StringFromSpecDecl(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
 
+static void ProcessInitializer(struct Initializer * init);
+
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(struct __ecereNameSpace__ecere__sys__OldList * this, void *  prevItem, void *  item);
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node);
@@ -3443,6 +3445,11 @@ break;
 case 36:
 {
 ProcessExpression(exp->vaArg.exp);
+break;
+}
+case 35:
+{
+ProcessInitializer(exp->initializer.initializer);
 break;
 }
 }

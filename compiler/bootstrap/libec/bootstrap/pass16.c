@@ -2491,6 +2491,11 @@ case 36:
 ProcessExpression(exp->vaArg.exp);
 break;
 }
+case 35:
+{
+ProcessInitializer(exp->initializer.initializer);
+break;
+}
 }
 CheckTemplateTypes(exp);
 }

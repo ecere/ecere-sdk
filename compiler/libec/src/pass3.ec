@@ -532,6 +532,12 @@ static void InstDeclPassExpression(Expression exp)
          InstDeclPassExpression(exp.vaArg.exp);
          break;
       }
+      case extensionInitializerExp:
+      {
+         InstDeclPassTypeName(exp.initializer.typeName, false);
+         InstDeclPassInitializer(exp.initializer.initializer);
+         break;
+      }
    }
 }
 

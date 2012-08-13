@@ -10728,11 +10728,11 @@ result = 0x1;
 return result;
 }
 
-extern struct Expression * MkExpExtensionCompound(struct Statement * compound);
-
 extern struct Statement * MkCompoundStmt(struct __ecereNameSpace__ecere__sys__OldList * declarations, struct __ecereNameSpace__ecere__sys__OldList * statements);
 
 extern struct Statement * MkExpressionStmt(struct __ecereNameSpace__ecere__sys__OldList * expressions);
+
+extern struct Expression * MkExpMember(struct Expression * expression, struct Identifier * member);
 
 void CheckTemplateTypes(struct Expression * exp)
 {
@@ -10752,13 +10752,31 @@ newExp->next = (((void *)0));
 switch(exp->expType->kind)
 {
 case 7:
-exp->type = 4;
-exp->op.exp1 = (((void *)0));
+if(exp->destType->classObjectType)
+{
+if(exp->destType)
+exp->destType->refCount--;
+if(exp->expType)
+exp->expType->refCount--;
+((newExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(newExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newExp)) : 0), newExp = 0);
+}
+else
+{
+struct __ecereNameSpace__ecere__sys__OldList * specs;
+struct __ecereNameSpace__ecere__sys__OldList * unionDefs = MkList();
+struct __ecereNameSpace__ecere__sys__OldList * statements = MkList();
+
 context = PushContext();
-exp->op.exp2 = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpExtensionCompound(compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifier(DOUBLE)), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal")), MkInitializerAssignment(newExp))))), MkListOne(MkExpressionStmt(MkListOne(MkExpOp((((void *)0)), '&', MkExpIdentifier(MkIdentifier("__internal")))))))));
-compound->compound.context = context;
+ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(DOUBLE)), MkListOne(MkDeclaratorIdentifier(MkIdentifier("d"))), (((void *)0)))));
+ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifierName("uint64")), MkListOne(MkDeclaratorIdentifier(MkIdentifier("i"))), (((void *)0)))));
+specs = MkListOne(MkStructOrUnion(4, (((void *)0)), unionDefs));
+exp->type = 25;
+exp->compound = MkCompoundStmt(MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_union")), (((void *)0)))))), statements);
+ListAdd(statements, MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("d")), '=', newExp))));
+ListAdd(statements, MkExpressionStmt(MkListOne(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("i")))));
+exp->compound->compound.context = context;
 PopContext(context);
-exp->op.op = '*';
+}
 break;
 default:
 exp->type = 11;
@@ -10783,14 +10801,31 @@ newExp->next = (((void *)0));
 switch(exp->expType->kind)
 {
 case 7:
-exp->type = 4;
-exp->op.exp1 = (((void *)0));
+if(exp->destType->classObjectType)
+{
+if(exp->destType)
+exp->destType->refCount--;
+if(exp->expType)
+exp->expType->refCount--;
+((newExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(newExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newExp)) : 0), newExp = 0);
+}
+else
+{
+struct __ecereNameSpace__ecere__sys__OldList * specs;
+struct __ecereNameSpace__ecere__sys__OldList * unionDefs = MkList();
+struct __ecereNameSpace__ecere__sys__OldList * statements = MkList();
+
 context = PushContext();
-exp->op.exp2 = MkExpCast(MkTypeName(MkListOne(MkSpecifier(DOUBLE)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpExtensionCompound(compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("uint64")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal")), MkInitializerAssignment(newExp))))), MkListOne(MkExpressionStmt(MkListOne(MkExpOp((((void *)0)), '&', MkExpIdentifier(MkIdentifier("__internal")))))))));
-compound->compound.context = context;
+ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(DOUBLE)), MkListOne(MkDeclaratorIdentifier(MkIdentifier("d"))), (((void *)0)))));
+ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifierName("uint64")), MkListOne(MkDeclaratorIdentifier(MkIdentifier("i"))), (((void *)0)))));
+specs = MkListOne(MkStructOrUnion(4, (((void *)0)), unionDefs));
+exp->type = 25;
+exp->compound = MkCompoundStmt(MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_union")), (((void *)0)))))), statements);
+ListAdd(statements, MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("i")), '=', newExp))));
+ListAdd(statements, MkExpressionStmt(MkListOne(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("d")))));
+exp->compound->compound.context = context;
 PopContext(context);
-exp->op.op = '*';
-ProcessExpressionType(exp->op.exp2);
+}
 break;
 case 8:
 {
@@ -11739,8 +11774,6 @@ extern unsigned int __ecereNameSpace__ecere__sys__UTF8GetChar(char *  string, in
 
 extern struct Expression * GetTemplateArgExp(struct TemplateParameter * param, struct __ecereNameSpace__ecere__com__Class * curClass, unsigned int pointer);
 
-extern struct Expression * MkExpMember(struct Expression * expression, struct Identifier * member);
-
 extern struct Expression * MkExpCondition(struct Expression * cond, struct __ecereNameSpace__ecere__sys__OldList * expressions, struct Expression * elseExp);
 
 extern struct Expression * CopyExpression(struct Expression * exp);
@@ -11751,11 +11784,11 @@ extern struct Expression * MkExpClass(struct __ecereNameSpace__ecere__sys__OldLi
 
 static void ProcessStatement(struct Statement * stmt);
 
+extern struct Expression * MkExpExtensionInitializer(struct TypeName * typeName, struct Initializer * initializer);
+
 extern struct Initializer * MkInitializerList(struct __ecereNameSpace__ecere__sys__OldList * list);
 
-extern struct Declaration * MkDeclarationInst(struct Instantiation * inst);
-
-extern struct Instantiation * MkInstantiationNamed(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Expression * exp, struct __ecereNameSpace__ecere__sys__OldList * members);
+extern char *  __ecereNameSpace__ecere__com__PrintString(struct __ecereNameSpace__ecere__com__Class * class, void * object, ...);
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(struct __ecereNameSpace__ecere__sys__OldList * this);
 
@@ -14192,25 +14225,17 @@ type = (((void *)0));
 if(typeString)
 {
 char templateString[1024];
-struct __ecereNameSpace__ecere__sys__OldList * declarations = MkList();
-struct __ecereNameSpace__ecere__sys__OldList * instMembers = MkList();
-struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
 struct __ecereNameSpace__ecere__sys__OldList * initializers = MkList();
-char count[128];
-struct Expression * e;
+struct __ecereNameSpace__ecere__sys__OldList * structInitializers = MkList();
+struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
 struct Expression * expExt;
 struct Declarator * decl = SpecDeclFromString(typeString, specs, (((void *)0)));
-struct Context * context = PushContext();
 
 sprintf(templateString, "Container<%s>", typeString);
-ListAdd(instMembers, MkMemberInit(MkListOne(MkIdentifier("data")), MkInitializerAssignment(MkExpIdentifier(MkIdentifier("__internalList")))));
-sprintf(count, "%d", (*exp->list).count);
-ListAdd(instMembers, MkMemberInit(MkListOne(MkIdentifier("count")), MkInitializerAssignment(MkExpConstant(count))));
-ListAdd(instMembers, MkMemberInit(MkListOne(MkIdentifier("type")), MkInitializerAssignment(MkExpClass(CopyList(specs, CopySpecifier), CopyDeclarator(decl)))));
-ListAdd(instMembers, MkMemberInit(MkListOne(MkIdentifier("_vTbl")), MkInitializerAssignment(MkExpMember(MkExpClass(MkListOne(MkSpecifierName("BuiltInContainer")), (((void *)0))), MkIdentifier("_vTbl")))));
-ListAdd(instMembers, MkMemberInit(MkListOne(MkIdentifier("_class")), MkInitializerAssignment(MkExpClass(MkListOne(MkSpecifierName("BuiltInContainer")), (((void *)0))))));
 if(exp->list)
 {
+struct Expression * e;
+
 type = ProcessTypeString(typeString, 0x0);
 while(e = (*exp->list).first)
 {
@@ -14223,13 +14248,22 @@ ListAdd(initializers, MkInitializerAssignment(e));
 FreeType(type);
 (__ecereNameSpace__ecere__com__eSystem_Delete(exp->list), exp->list = 0);
 }
-ListAdd(declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorArray(PlugDeclarator(decl, MkDeclaratorIdentifier(MkIdentifier("__internalList"))), (((void *)0))), MkInitializerList(initializers)))));
-ListAdd(declarations, MkDeclarationInst(MkInstantiationNamed(MkListOne(MkSpecifierName("BuiltInContainer")), MkExpIdentifier(MkIdentifier("__internalContainer")), MkListOne(MkMembersInitList(instMembers)))));
+DeclareStruct("ecere::com::BuiltInContainer", 0x0);
+ListAdd(structInitializers, MkInitializerAssignment(MkExpMember(MkExpClass(MkListOne(MkSpecifierName("BuiltInContainer")), (((void *)0))), MkIdentifier("_vTbl"))));
+ProcessExpressionType(((struct Initializer *)(*structInitializers).last)->exp);
+ListAdd(structInitializers, MkInitializerAssignment(MkExpClass(MkListOne(MkSpecifierName("BuiltInContainer")), (((void *)0)))));
+ProcessExpressionType(((struct Initializer *)(*structInitializers).last)->exp);
+ListAdd(structInitializers, MkInitializerAssignment(MkExpConstant("0")));
+ProcessExpressionType(((struct Initializer *)(*structInitializers).last)->exp);
+ListAdd(structInitializers, MkInitializerAssignment(MkExpExtensionInitializer(MkTypeName(specs, MkDeclaratorArray(decl, (((void *)0)))), MkInitializerList(initializers))));
+ProcessExpressionType(((struct Initializer *)(*structInitializers).last)->exp);
+ListAdd(structInitializers, MkInitializerAssignment((__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 2, ((struct Expression *)__ecereTemp1)->constant = __ecereNameSpace__ecere__com__PrintString(__ecereClass_int, &(*initializers).count, 0), ((struct Expression *)__ecereTemp1))));
+ProcessExpressionType(((struct Initializer *)(*structInitializers).last)->exp);
+ListAdd(structInitializers, MkInitializerAssignment(MkExpClass(CopyList(specs, CopySpecifier), CopyDeclarator(decl))));
+ProcessExpressionType(((struct Initializer *)(*structInitializers).last)->exp);
 exp->expType = ProcessTypeString(templateString, 0x0);
 exp->type = 5;
-exp->list = MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName(templateString)), (((void *)0))), (expExt = MkExpExtensionCompound(MkCompoundStmt(declarations, MkListOne(MkExpressionStmt(MkListOne(MkExpOp((((void *)0)), '&', MkExpIdentifier(MkIdentifier("__internalContainer")))))))))));
-expExt->compound->compound.context = context;
-PopContext(context);
+exp->list = MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName(templateString)), (((void *)0))), MkExpOp((((void *)0)), '&', expExt = MkExpExtensionInitializer(MkTypeName(MkListOne(MkSpecifierName("BuiltInContainer")), (((void *)0))), MkInitializerList(structInitializers)))));
 ProcessExpressionType(expExt);
 }
 else
@@ -14862,6 +14896,10 @@ ListAdd(stmt->expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::e
 if(curFunction->propSet && !strcmp(curFunction->propSet->string, prop->name) && (!object || (object->type == 0 && !strcmp(object->identifier->string, "this"))))
 curFunction->propSet->fireWatchersDone = 0x1;
 }
+
+extern struct Declaration * MkDeclarationInst(struct Instantiation * inst);
+
+extern struct Instantiation * MkInstantiationNamed(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Expression * exp, struct __ecereNameSpace__ecere__sys__OldList * members);
 
 extern struct Statement * MkIfStmt(struct __ecereNameSpace__ecere__sys__OldList * exp, struct Statement * statement, struct Statement * elseStmt);
 

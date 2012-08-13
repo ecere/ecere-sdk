@@ -5943,17 +5943,31 @@ void CheckTemplateTypes(Expression exp)
       switch(exp.expType.kind)
       {
          case doubleType:
-            exp.type = opExp;
-            exp.op.exp1 = null;
-            context = PushContext();               
-            exp.op.exp2 = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer(null, null), null)), 
-               MkExpExtensionCompound(compound = MkCompoundStmt(
-                  MkListOne(MkDeclaration(MkListOne(MkSpecifier(DOUBLE)), 
-                     MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal")), MkInitializerAssignment(newExp))))),
-                  MkListOne(MkExpressionStmt(MkListOne(MkExpOp(null, '&', MkExpIdentifier(MkIdentifier("__internal")))))))));
-            compound.compound.context = context;
-            PopContext(context);
-            exp.op.op = '*';
+            if(exp.destType.classObjectType)
+            {
+               // We need to pass the address, just pass it along (Undo what was done above)
+               if(exp.destType) exp.destType.refCount--;
+               if(exp.expType)  exp.expType.refCount--;
+               delete newExp;
+            }
+            else
+            {
+               // If we're looking for value:
+               // ({ union { double d; uint64 i; } u; u.i = [newExp]; u.d; })
+               OldList * specs;
+               OldList * unionDefs = MkList();
+               OldList * statements = MkList();
+               context = PushContext();
+               ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(DOUBLE)), MkListOne(MkDeclaratorIdentifier(MkIdentifier("d"))), null))); 
+               ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifierName("uint64")), MkListOne(MkDeclaratorIdentifier(MkIdentifier("i"))), null)));
+               specs = MkListOne(MkStructOrUnion(unionSpecifier, null, unionDefs ));
+               exp.type = extensionCompoundExp;
+               exp.compound = MkCompoundStmt(MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_union")), null)))),statements);
+               ListAdd(statements, MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("d")), '=', newExp))));
+               ListAdd(statements, MkExpressionStmt(MkListOne(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("i")))));
+               exp.compound.compound.context = context;
+               PopContext(context);
+            }
             break;
          default:
             exp.type = castExp;
@@ -5976,18 +5990,31 @@ void CheckTemplateTypes(Expression exp)
       switch(exp.expType.kind)
       {
          case doubleType:
-            exp.type = opExp;
-            exp.op.exp1 = null;
-            context = PushContext();               
-            exp.op.exp2 = MkExpCast(MkTypeName(MkListOne(MkSpecifier(DOUBLE)), MkDeclaratorPointer(MkPointer(null, null), null)), 
-               MkExpExtensionCompound(compound = MkCompoundStmt(
-                  MkListOne(MkDeclaration(MkListOne(MkSpecifierName("uint64")), 
-                     MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal")), MkInitializerAssignment(newExp))))),
-                  MkListOne(MkExpressionStmt(MkListOne(MkExpOp(null, '&', MkExpIdentifier(MkIdentifier("__internal")))))))));
-            compound.compound.context = context;
-            PopContext(context);
-            exp.op.op = '*';
-            ProcessExpressionType(exp.op.exp2);
+            if(exp.destType.classObjectType)
+            {
+               // We need to pass the address, just pass it along (Undo what was done above)
+               if(exp.destType) exp.destType.refCount--;
+               if(exp.expType)  exp.expType.refCount--;
+               delete newExp;
+            }
+            else
+            {
+               // If we're looking for value:
+               // ({ union { double d; uint64 i; } u; u.i = [newExp]; u.d; })
+               OldList * specs;
+               OldList * unionDefs = MkList();
+               OldList * statements = MkList();
+               context = PushContext();
+               ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(DOUBLE)), MkListOne(MkDeclaratorIdentifier(MkIdentifier("d"))), null))); 
+               ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifierName("uint64")), MkListOne(MkDeclaratorIdentifier(MkIdentifier("i"))), null)));
+               specs = MkListOne(MkStructOrUnion(unionSpecifier, null, unionDefs ));
+               exp.type = extensionCompoundExp;
+               exp.compound = MkCompoundStmt(MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_union")), null)))),statements);
+               ListAdd(statements, MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("i")), '=', newExp))));
+               ListAdd(statements, MkExpressionStmt(MkListOne(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("d")))));
+               exp.compound.compound.context = context;
+               PopContext(context);
+            }
             break;
          case classType:
          {
@@ -9725,6 +9752,8 @@ void ProcessExpressionType(Expression exp)
       {
          Type type = ProcessType(exp.initializer.typeName.qualifiers, exp.initializer.typeName.declarator);
          type.refCount++;
+
+         // We have yet to support this... ( { } initializers are currently processed inside ProcessDeclaration()'s initDeclaration case statement
          // ProcessInitializer(exp.initializer.initializer, type);
          exp.expType = type;
          break;
@@ -9911,49 +9940,27 @@ void ProcessExpressionType(Expression exp)
          if(typeString)
          {
             /*
-            (Container)(__extension__( { 
-               int __arrayMembers[] = { 1, 7, 3, 4, 5 };
-               BuiltInContainer __baseContainer
-               {
-                  data = __arrayMembers,
-                  count = 5,
-                  type = class(int),
-                  _vTbl = class(BuiltInContainer)._vTbl,
-                  _class = class(BuiltInContainer) };
-               &__baseContainer;
-             }))
+            (Container)& (struct BuiltInContainer)
+            {
+               ._vTbl = class(BuiltInContainer)._vTbl,
+               ._class = class(BuiltInContainer),
+               .refCount = 0,
+               .data = (int[]){ 1, 7, 3, 4, 5 },
+               .count = 5,
+               .type = class(int),
+            }
             */
-            
             char templateString[1024];
-            OldList * declarations = MkList();
-            OldList * instMembers = MkList();
-            OldList * specs = MkList();
             OldList * initializers = MkList();
-            char count[128];
-            Expression e;
+            OldList * structInitializers = MkList();
+            OldList * specs = MkList();
             Expression expExt;
             Declarator decl = SpecDeclFromString(typeString, specs, null);
-            Context context = PushContext();
-
-            // sprintf(templateString, "Container<%s >", typeString);
             sprintf(templateString, "Container<%s>", typeString);
-   
-            ListAdd(instMembers, MkMemberInit(MkListOne(MkIdentifier("data")), MkInitializerAssignment(MkExpIdentifier(MkIdentifier("__internalList")))));
-
-            sprintf(count, "%d", exp.list->count);
-            ListAdd(instMembers, MkMemberInit(MkListOne(MkIdentifier("count")), MkInitializerAssignment(MkExpConstant(count))));
-
-            ListAdd(instMembers, MkMemberInit(MkListOne(MkIdentifier("type")), MkInitializerAssignment(MkExpClass(CopyList(specs, CopySpecifier), 
-               CopyDeclarator(decl)))));
-
-            ListAdd(instMembers, MkMemberInit(MkListOne(MkIdentifier("_vTbl")), MkInitializerAssignment(MkExpMember(
-               MkExpClass(MkListOne(MkSpecifierName("BuiltInContainer")), null), MkIdentifier("_vTbl")))));
-
-            ListAdd(instMembers, MkMemberInit(MkListOne(MkIdentifier("_class")), MkInitializerAssignment(
-               MkExpClass(MkListOne(MkSpecifierName("BuiltInContainer")), null))));
 
             if(exp.list)
             {
+               Expression e;
                type = ProcessTypeString(typeString, false);
                while(e = exp.list->first)
                {
@@ -9967,19 +9974,28 @@ void ProcessExpressionType(Expression exp)
                delete exp.list;
             }
             
-            ListAdd(declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorArray(PlugDeclarator(decl, 
-               MkDeclaratorIdentifier(MkIdentifier("__internalList"))), null),
-               MkInitializerList(initializers)))));
-            ListAdd(declarations, MkDeclarationInst(MkInstantiationNamed(MkListOne(MkSpecifierName("BuiltInContainer")),
-               MkExpIdentifier(MkIdentifier("__internalContainer")), MkListOne(MkMembersInitList(instMembers)))));
+            DeclareStruct("ecere::com::BuiltInContainer", false);
 
+            ListAdd(structInitializers, /*MkIdentifier("_vTbl")*/    MkInitializerAssignment(MkExpMember(MkExpClass(MkListOne(MkSpecifierName("BuiltInContainer")), null), MkIdentifier("_vTbl"))));
+               ProcessExpressionType(((Initializer)structInitializers->last).exp);
+            ListAdd(structInitializers, /*MkIdentifier("_class")*/   MkInitializerAssignment(MkExpClass(MkListOne(MkSpecifierName("BuiltInContainer")), null)));
+               ProcessExpressionType(((Initializer)structInitializers->last).exp);
+            ListAdd(structInitializers, /*MkIdentifier("_refCount")*/MkInitializerAssignment(MkExpConstant("0")));
+               ProcessExpressionType(((Initializer)structInitializers->last).exp);
+            ListAdd(structInitializers, /*MkIdentifier("data")*/     MkInitializerAssignment(MkExpExtensionInitializer(
+               MkTypeName(specs, MkDeclaratorArray(decl, null)),
+               MkInitializerList(initializers))));
+               ProcessExpressionType(((Initializer)structInitializers->last).exp);
+            ListAdd(structInitializers, /*MkIdentifier("count")*/    MkInitializerAssignment({ type = constantExp, constant = PrintString(initializers->count) }));
+               ProcessExpressionType(((Initializer)structInitializers->last).exp);
+            ListAdd(structInitializers, /*MkIdentifier("type")*/     MkInitializerAssignment(MkExpClass(CopyList(specs, CopySpecifier), CopyDeclarator(decl))));
+               ProcessExpressionType(((Initializer)structInitializers->last).exp);
             exp.expType = ProcessTypeString(templateString, false);
             exp.type = bracketsExp;
             exp.list = MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName(templateString)), null),
-               (expExt = MkExpExtensionCompound(MkCompoundStmt(
-                  declarations, MkListOne(MkExpressionStmt(MkListOne(MkExpOp(null, '&', MkExpIdentifier(MkIdentifier("__internalContainer")))))))))));
-            expExt.compound.compound.context = context;
-            PopContext(context);
+               MkExpOp(null, '&',
+               expExt = MkExpExtensionInitializer(MkTypeName(MkListOne(MkSpecifierName("BuiltInContainer")), null),
+                  MkInitializerList(structInitializers)))));
             ProcessExpressionType(expExt);
          }
          else

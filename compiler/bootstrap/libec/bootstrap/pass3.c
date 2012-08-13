@@ -1407,6 +1407,8 @@ extern void FreeType(struct Type * type);
 
 static void InstDeclPassStatement(struct Statement * stmt);
 
+static void InstDeclPassInitializer(struct Initializer * init);
+
 static void InstDeclPassExpression(struct Expression * exp)
 {
 switch(exp->type)
@@ -1515,6 +1517,12 @@ break;
 case 36:
 {
 InstDeclPassExpression(exp->vaArg.exp);
+break;
+}
+case 35:
+{
+InstDeclPassTypeName(exp->initializer.typeName, 0x0);
+InstDeclPassInitializer(exp->initializer.initializer);
 break;
 }
 }

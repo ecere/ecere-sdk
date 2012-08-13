@@ -103,8 +103,8 @@ msgstr "Table Editor"
 msgid "Unable to detect if table exists!\n"
 msgstr "Unable to detect if table exists!\n"
 
-#: ./src/gui/TableEditor.ec:873
-#: ./src/gui/TableEditor.ec:892
+#: ./src/gui/TableEditor.ec:886
+#: ./src/gui/TableEditor.ec:905
 msgid "WordList match cannot be found in database."
 msgstr "WordList match cannot be found in database."
 

@@ -750,18 +750,13 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_String;
 
 void __ecereCreateModuleInstances_System()
 {
-(__ecereNameSpace__ecere__sys__errorMessages = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Array_TPL_String_), __ecereProp___ecereNameSpace__ecere__com__Container_Set_copySrc(__ecereNameSpace__ecere__sys__errorMessages, ((struct __ecereNameSpace__ecere__com__Instance *)__extension__ ({
-char * __internalList[] = 
+(__ecereNameSpace__ecere__sys__errorMessages = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Array_TPL_String_), __ecereProp___ecereNameSpace__ecere__com__Container_Set_copySrc(__ecereNameSpace__ecere__sys__errorMessages, ((struct __ecereNameSpace__ecere__com__Instance *)&__extension__ (struct __ecereNameSpace__ecere__com__BuiltInContainer)
+{
+__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl, __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer, 0, __extension__ (char * [])
 {
 __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "No error", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Memory allocation failed", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Inexistant string identifier specified", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Identic string identifier already exists", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Shared library loading failed", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "File not found", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Couldn't write to file", (((void *)0)))
-};
-struct __ecereNameSpace__ecere__com__BuiltInContainer __internalContainer = 
-{
-__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl, __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer, 0, __internalList, 7, __ecereClass_String
-};
-
-&__internalContainer;
-}))));
+}, 7, __ecereClass_String
+})));
 __ecereNameSpace__ecere__com__eInstance_IncRef(__ecereNameSpace__ecere__sys__errorMessages);
 }
 
