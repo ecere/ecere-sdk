@@ -26,7 +26,7 @@ Standards-Version: 3.9.3
 Homepage: http://www.ecere.com/
 
 Package: ecere-sdk
-Architecture: !amd64 !powerpc64
+Architecture: i386 armel armhf powerpc
 Depends: ecere-doc, ecere-samples, ecere-extras, libecere, ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Ecere cross-platform SDK
   Develop applications once, deploy them on
@@ -34,7 +34,7 @@ Description: Ecere cross-platform SDK
   environment.
 
 Package: libecere
-Architecture: !amd64 !powerpc64
+Architecture: i386 armel armhf powerpc
 Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Ecere Runtime Library
   Develop applications once, deploy them on
