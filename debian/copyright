@@ -1,82 +1,118 @@
-This package was debianized by NECDET COKYAZICI <cokyazici@gmail.com> on
-Tue, 6 Sep 2011 21:30:00 -0400.
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: ecere-sdk
+Upstream-Contact: Jerome St-Louis <jerome@ecere.com>
+Source: http://www.ecere.com/
 
-It was downloaded from http://www.ecere.com/ from the git repository
+Files: *
+Copyright: 1996-2012 Jérôme Jacovella-St-Louis
+Copyright: 2005-2012 Ecere Corporation
+License: BSD-3-clause
+ The Ecere SDK is Free Open Source Software. It is provided with NO WARRANTY 
+ expressed or implied to the extent permitted by law.
+ .
+ Applications built with it can be distributed both commercially and non
+ commercially, along with the supporting Ecere runtime library(ies):
+ .
+    * libecere.so / ecere.dll
+       - Core eC framework + GUI toolkit, 2D/3D graphics engine, networking
+    * libecereCOM.so / ecereCOM.dll
+       - Core eC framework only
+    * libEDA.so / EDA.dll
+       - Data Access System
+    * libEDASQLite.so / EDASQLite.dll
+       - SQLite driver for EDA
+ .
+ The Ecere SDK is distributed under the New BSD license:
+ .
+ ================================================================================
+ .
+    Copyright (c) 1996-2012, Jerome Jacovella-St-Louis
+    Copyright (c) 2005-2012, Ecere Corporation
+ .
+    All rights reserved.
+ .
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+ .
+     * Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
+       and/or other materials provided with the distribution.
+     * Neither the name of Ecere Corporation nor the names of its contributors
+       may be used to endorse or promote products derived from this software 
+       without specific prior written permission.
+ .
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+    A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+    CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ .
+ ===============================================================================
+ .
+ This software makes use of other software components whose licenses may also 
+ apply, which are found in their respective source directories (most under
+ deps/).
+ .
+  Among them: zlib, libpng, libjpeg, giflib, harfbuzz, freetype, tango icons
+ .
+  The IDE also communicates with GCC for compiling (MinGW on Windows), GDB for 
+  debugging, and UPX for optionally compressing executables. Each of these have 
+  their own license which can be found in their respective documentation folder 
+  if distributed along with the SDK (in the case of the Windows version) or
+  from wherever you obtained them.
 
-Upstream Author(s):
+Files: ecere/src/gfx/drivers/harfbuzz/*
+Copyright: Harfbuzz Project & Contributors
+License: MIT
 
-    Ecere Corporation
-    Jérôme Jacovella-St-Louis <jerstlouis@gmail.com>
-    Réjean Loyer (http://ilyeus.com/ecere)
-    & other contributors (See the Ecere IDE's about box for details)
+Files: ecere/res/*.png
+Copyright: (some) Tango Project
+License: public domain
 
-Copyright:
+Files: eda/drivers/sqlite/sqlite3.c eda/drivers/sqlite/sqlite3.h eda/drivers/sqlite/shell.c
+Copyright: SQLite Project
+License: public domain
 
-   Copyright (c) 1996-2012, Jerome Jacovella-St-Louis
-   Copyright (c) 2005-2012, Ecere Corporation
+Files: eda/drivers/sqliteCipher/sqlite3.c eda/drivers/sqliteCipher/sqlite3.h
+Copyright: 2010 Zetetic LLC
+License: BSD-3-clause
 
-License:
+Files: deps/DirectX-9.0
+Copyright: Microsoft Corporation
 
-Ecere SDK v0.44 - www.ecere.com
+Files: deps/freetype-2.3.12
+Copyright: 1996-2001, 2006 David Turner, Robert Wilhelm, and Werner Lemberg.
+License: FPL
 
-The Ecere SDK is Free Open Source Software. It is provided with NO WARRANTY 
-expressed or implied to the extent permitted by law.
+Files: deps/glext
+Copyright: 2007 The Khronos Group Inc.
+License: MIT
 
-Applications built with it can be distributed both commercially and non
-commercially, along with the supporting Ecere runtime library(ies):
+Files: deps/jpeg-6b
+Copyright: 1991-1998, Thomas G. Lane.
+License: libjpeg
 
-   * libecere.so / ecere.dll
-      - Core eC framework + GUI toolkit, 2D/3D graphics engine, networking
-   * libecereCOM.so / ecereCOM.dll
-      - Core eC framework only
-   * libEDA.so / EDA.dll
-      - Data Access System
-   * libEDASQLite.so / EDASQLite.dll
-      - SQLite driver for EDA
 
-The Ecere SDK is distributed under the New BSD license:
+Files: deps/libffi-3.0.11
+Copyright: 1996-2012  Anthony Green, Red Hat, Inc and others.
+License: MIT
 
-================================================================================
+Files: deps/libpng-1.4.0
+Copyright: 2004, 2006-2007 Glenn Randers-Pehrson
+License: libpng
 
-   Copyright (c) 1996-2012, Jerome Jacovella-St-Louis
-   Copyright (c) 2005-2012, Ecere Corporation
+Files: deps/libungif-4.1.1
+Copyright: 1997 Eric S. Raymond
+License: MIT
 
-   All rights reserved.
-
-   Redistribution and use in source and binary forms, with or without
-   modification, are permitted provided that the following conditions are met:
-
-    * Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-    * Neither the name of Ecere Corporation nor the names of its contributors
-      may be used to endorse or promote products derived from this software 
-      without specific prior written permission.
-
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-   EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-   PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-===============================================================================
-
-This software makes use of other software components whose licenses may also 
-apply, which are found in their respective source directories (most under
-deps/).
-
-Among them: zlib, libpng, libjpeg, giflib, harfbuzz, freetype, tango icons
-
-The IDE also communicates with GCC for compiling (MinGW on Windows), GDB for 
-debugging, and UPX for optionally compressing executables. Each of these have 
-their own license which can be found in their respective documentation folder 
-if distributed along with the SDK (in the case of the Windows version) or
-from wherever you obtained them.
+Files: deps/zlib
+Copyright: 1995-2005 Jean-loup Gailly and Mark Adler
+License: zlib
