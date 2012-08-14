@@ -485,8 +485,8 @@ endif
 ifdef EDASQLiteCipher
 	ln -sf $(LP)EDASQLiteCipher$(SOV) $(LIBDIR)/$(LP)EDASQLiteCipher$(SO)
 endif
-	install -D share/pixmaps/ecere.png $(DESTDIR)$(prefix)/share/pixmaps/ecere.png
-	install -D share/applications/ecere.desktop $(DESTDIR)$(prefix)/share/applications/ecere.desktop
+	install -D -m 644 share/pixmaps/ecere.png $(DESTDIR)$(prefix)/share/pixmaps/ecere.png
+	install -D -m 644 share/applications/ecere.desktop $(DESTDIR)$(prefix)/share/applications/ecere.desktop
 else
 	install -D $(OBJLIBDIR)$(LP)ecere$(SO) $(LIBDIR)/$(LP)ecere$(SO)
 	install -D $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(LIBDIR)/$(LP)ecereCOM$(SO)
@@ -508,10 +508,10 @@ ifdef CodeGuard
 	install -D $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/CodeGuard$(E)
 endif
 	install -D $(OBJLIBDIR)libecereVanilla$(A) $(SLIBDIR)/libecereVanilla$(A)
-	install -D doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf"
-	install -D doc/ecere.eCdoc $(DOCDIR)/ecere.eCdoc
-	install -D doc/ecereCOM.eCdoc $(DOCDIR)/ecereCOM.eCdoc
-	install -D doc/EDA.eCdoc $(DOCDIR)/EDA.eCdoc
+	install -D -m 644 doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf"
+	install -D -m 644 doc/ecere.eCdoc $(DOCDIR)/ecere.eCdoc
+	install -D -m 644 doc/ecereCOM.eCdoc $(DOCDIR)/ecereCOM.eCdoc
+	install -D -m 644 doc/EDA.eCdoc $(DOCDIR)/EDA.eCdoc
 	mkdir -p -m 777 $(SAMPLESDIR)
 	cp -pRf samples/* $(SAMPLESDIR)
 	mkdir -p -m 777 $(EXTRASDIR)
