@@ -67,7 +67,7 @@ Description: Documentation for the Ecere SDK
 Package: ecere-extras
 Architecture: all
 Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
-Description:Extras for the Ecere SDK
+Description: Extras for the Ecere SDK
  This package provides additional Ecere
  functionality, such as SSL Sockets,
  Audio, in the form of source code.
