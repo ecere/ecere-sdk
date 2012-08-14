@@ -69,11 +69,33 @@ License: BSD-3-clause
   if distributed along with the SDK (in the case of the Windows version) or
   from wherever you obtained them.
 
+Files: extras/md5.ec
+Copyright: Copyright 1991-1992, RSA Data Security, Inc
+Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All rights reserved.
+License:
+ License to copy and use this software is granted provided that it is identified as the 
+ "RSA Data Security, Inc. MD5 Message-Digest Algorithm" in all material mentioning or 
+ referencing this software or this function.
+ .
+ License is also granted to make and use derivative works provided that such works are 
+ identified as "derived from the RSA Data Security, Inc. MD5 Message-Digest Algorithm" 
+ in all material mentioning or referencing the derived work.
+ .
+ RSA Data Security, Inc. makes no representations concerning either the merchantability 
+ of this software or the suitability of this software for any particular purpose. It is 
+ provided "as is" without express or implied warranty of any kind.
+ .
+ These notices must be retained in any copies of any part of this documentation and/or software.
+
+Files: extras/sha256.ec
+Copyright: Copyright 2009  Gabriel A. Petursson
+License: BSD-3-clause
+
 Files: ecere/src/gfx/drivers/harfbuzz/*
 Copyright: Harfbuzz Project & Contributors
 License: MIT
 
-Files: ecere/res/*.png
+Files: ecere/res/*/*.png
 Copyright: (some) Tango Project
 License: public domain
 
@@ -99,7 +121,6 @@ License: MIT
 Files: deps/jpeg-6b
 Copyright: 1991-1998, Thomas G. Lane.
 License: libjpeg
-
 
 Files: deps/libffi-3.0.11
 Copyright: 1996-2012  Anthony Green, Red Hat, Inc and others.
