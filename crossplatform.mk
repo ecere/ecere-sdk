@@ -177,7 +177,7 @@ else
    SHAREDLIB :=
 endif
    LINKOPT :=
-   STRIPOPT := -x
+   STRIPOPT := -x --strip-unneeded
 endif
 ifdef WINDOWS
    SODESTDIR := obj/$(PLATFORM)/bin/
