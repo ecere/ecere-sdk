@@ -2,7 +2,6 @@ Source: ecere-sdk
 Section: devel
 Priority: optional
 Maintainer: Jerome St-Louis <jerome@ecere.com>
-XSBC-Original-Maintainer: Ryan Prior <ryanprior@gmail.com>
 Build-Depends:
  autotools-dev,
  debhelper (>= 7.0.50~),
