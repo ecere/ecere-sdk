@@ -1,4 +1,4 @@
-0.44.01-0ubuntu1 quantal; urgency=low
+ecere-sdk (0.44.01-0ubuntu1) quantal; urgency=low
 
   * Initial packing of Ecere SDK for Ubuntu.  (LP: #394998)
 
