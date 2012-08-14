@@ -287,7 +287,7 @@ public:
    }
 
 
-   bool PointsVisible(Vector3D * points, int numPoints, double treshold)
+   bool PointsVisible(Vector3D * points, int numPoints, double threshold)
    {
       ClippingPlane p;
       int c;
@@ -307,7 +307,7 @@ public:
                out1a = out1b = false;
                break;
             }
-            else if(dot + plane->d > -treshold)
+            else if(dot + plane->d > -threshold)
                out1a = false;
          }
 
@@ -323,7 +323,7 @@ public:
                out2a = out2b = false;
                break;
             }
-            else if(dot + plane->d > -treshold)
+            else if(dot + plane->d > -threshold)
                out2a = false;
          }
 
@@ -334,7 +334,7 @@ public:
    }
 
 /*
-   bool PointsVisible(Vector3D * origPoints, int numPoints, double treshold)
+   bool PointsVisible(Vector3D * origPoints, int numPoints, double threshold)
    {
       Plane * planes = worldClippingPlanes;
       static byte goodPoints[50];
@@ -360,7 +360,7 @@ public:
          {
             double dot = plane->normal.DotProduct(points[i]);
             double distance = dot + plane->d;
-		      if(distance > -treshold)
+		      if(distance > -threshold)
             {
                numGoodPoints++;
                goodPoints[i] = 1;
