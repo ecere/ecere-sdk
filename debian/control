@@ -1,7 +1,8 @@
 Source: ecere-sdk
 Section: devel
 Priority: optional
-Maintainer: Jerome St-Louis <jerome@ecere.com>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Jerome St-Louis <jerome@ecere.com>
 Build-Depends:
  autotools-dev,
  debhelper (>= 7.0.50~),
