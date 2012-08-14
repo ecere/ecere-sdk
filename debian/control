@@ -29,41 +29,46 @@ Package: ecere-sdk
 Architecture: i386 armel armhf powerpc
 Depends: ecere-doc, ecere-samples, ecere-extras, libecere, ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Ecere cross-platform SDK
-  Develop applications once, deploy them on
-  all platforms alongside a lightweight runtime
-  environment.
+ This package provides the compiling tools
+ for the eC language and the Ecere IDE, as
+ well as EDA, Ecere's Data Access layer.
 
 Package: libecere
 Architecture: i386 armel armhf powerpc
 Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Ecere Runtime Library
-  Develop applications once, deploy them on
-  all platforms alongside a lightweight runtime
-  environment.
+ This package provides the Linux version
+ of Ecere's cross-platform runtime library
+ for running applications built using the
+ Ecere SDK. It includes a GUI toolkit,
+ 2D/3D graphics engine, networking engine
+ as well as system functionality.
 
 Package: ecere-samples
 Architecture: all
 Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Project samples for the Ecere SDK
-  This package contains samples for multimedia,
-  database, graphics, communication, and other
-  useful software that can be created with the
-  Ecere SDK.
+ This package contains samples for
+ multimedia, database, graphics,
+ communication, and other useful
+ software that can be created with
+ the Ecere SDK.
 
 Package: ecere-doc
 Architecture: all
 Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Documentation for the Ecere SDK
-  This package includes the Ecere Tao of Programming,
-  an ebook designed to help programmers become familiar
-  with eC and Ecere, as well the API reference
-  in the form of .eCdoc until it is embedded.
+ This package includes the Ecere Tao
+ of Programming, an ebook designed
+ to help programmers become familiar
+ with eC and Ecere, as well the API
+ reference in the form of .eCdoc
+ until it is embedded in the library.
 
 Package: ecere-extras
 Architecture: all
 Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
-Description: Extras for the Ecere SDK
-  This package provides additional Ecere
-  functionality, such as SSL Sockets, Audio,
-  in the form of source code. Also included:
-  the Application and Pixmap for the IDE.
+Description:Extras for the Ecere SDK
+ This package provides additional Ecere
+ functionality, such as SSL Sockets,
+ Audio, in the form of source code.
