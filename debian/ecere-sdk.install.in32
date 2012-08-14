@@ -4,3 +4,5 @@ usr/lib/libec.so*
 usr/lib/libecereVanilla.a
 usr/lib/libEDASQLite.so*
 usr/lib/libecereCOM.so*
+usr/share/applications
+usr/share/pixmaps
