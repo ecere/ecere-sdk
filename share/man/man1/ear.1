@@ -36,7 +36,9 @@ ear \fIcommand\fR[\fIcommand-options\fR] \fIarchive\fR \fIrequired-parameters\fR
 .SH DESCRIPTION
 ear is an archiving tool for manipulating Ecere Archives.
 .P
-It can pack files at the end of existing files (e.g. binaries), which is the basis for the Ecere resources functionality.
+Compression is currently provided by \fBZLib\fR. We hope to add support for other compression algorithms and archive formats (e.g. .zip, .7z, .tar.gz, .tar.bz2) in the future to both the Ecere runtime library and ear.
+.P
+ear can pack files at the end of existing files (e.g. binaries), which is the basis for the Ecere resources functionality.
 The Ecere runtime library supports accessing such resources from the executable as well as imported modules (shared libraries).
 .P
 The Ecere File manipulation API (which is used by all APIs taking in a file path) understands resources paths with the general format: "<\fIarchive\fR>\fIpath/to/file\fR".
