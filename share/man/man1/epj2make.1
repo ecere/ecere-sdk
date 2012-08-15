@@ -1,0 +1,57 @@
+.TH EPJ2MAKE "1" "August 2012" "epj2make" "Ecere SDK/eC Compiling Tools"
+.SH NAME
+epj2make - Cross-Platform Makefile Generator for Ecere IDE Project Files (\fB.epj\fR)
+.SH SYNOPSIS
+.IX
+epj2make [\fB-c\fR \fIconfiguration\fR] [options] [\fB-o\fR \fIoutput\fR] \fIinput\fR
+.SH DESCRIPTION
+epj2make will generate a makefile from the Ecere IDE project file specified in \fIinput\fR.
+.SH OPTIONS
+.SS Configuration
+\fB-c\fR \fIconfiguration\fR
+.P
+Which Configuration from the project to use for generating the makefile.
+.RS 0
+Defaults to \fBRelease\fR.
+.SS Output
+\fIoutput\fR specifies the file name and location for the generated makefile.
+.RS 0
+If no name is specified, ./\fBproject\fR-\fBConfig\fR.Makefile is used.
+.SS Toolchain Options
+.P
+\fB-make\fR \fImake-tool\fR
+.RS 0
+\fB-cpp\fR \fIC-preprocessor\fR
+.RS 0
+\fB-cc\fR \fIC-compiler\fR
+.RS 0
+\fB-ecp\fR \fIeC-preprocessor\fR
+.RS 0
+\fB-ecc\fR \fIeC-compiler\fR
+.RS 0
+\fB-ecs\fR \fIeC-symbol-generator\fR
+.RS 0
+\fB-ear\fR \fIEcere-archiver\fR
+.SS Directories Options:
+.P
+\fB-i\fR \fIinclude-dir\fR[;\fIinc-dir\fR[...]
+.RS 0
+\fB-l\fR \fIlibrary-dir\fR[;\fIlib-dir\fR[...]
+.SS
+Miscellaneous Options
+.P
+\fB-noglobalsettings\fR
+.P
+\fB-noresources\fR
+.P
+\fB-w\fR Disables warnings (Override configuration setting)
+.P
+\fB-d\fR \fIintermediate-objects-directory\fR
+.P
+\fB-includemk\fR \fIcrossplatform.mk-path\fR
+.SS Obsolete Options
+\fB-t\fR \fItarget-platform\fR
+.P
+Where \fBtarget-platform\fR is one of: \fBwin32 linux apple\fR
+.RE 0
+(\fBObsolete\fR - makefile should work for all platforms)

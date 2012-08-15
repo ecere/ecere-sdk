@@ -1,0 +1,53 @@
+.TH ECP "1" "August 2012" "ecp" "Ecere SDK/eC Compiling Tools"
+.SH NAME
+ecp - eC Precompiler (Symbol File Generator)
+.SH SYNOPSIS
+.IX
+ecp [\fB-t\fR \fItarget-platform\fR]
+    [\fB-cpp\fR \fIC-preprocessor\fR]
+    [\fB-defaultns\fR \fIdefault-namespace\fR]
+    [\fB-strictns\fR]
+    [understood-C-flags]
+    \fB-c\fR \fIinput\fR
+    [\fB-o\fR \fIoutput\fR]
+    [\fB-symbols\fR \fIsymbols-dir\fR]
+
+.SH DESCRIPTION
+ecp will parse the eC source file specified in \fIinput\fR and generate a list of symbols.
+.SH OPTIONS
+.SS Input
+\fB-c\fR \fIinput\fR
+The eC source file to compile
+.SS Output
+\fB-o\fR \fIoutput\fR
+The location and name for the output intermediate C file
+.P
+(Defaults to the name of \fIinput\fR with the \fB.ec\fR extension replaced by \fB.sym\fR, placed in the directory specified by \fIsymbolsdir\fR, or current working directory if none is specified)
+.SS Intermediate Directory
+\fB-symbols\fR \fIsymbols-dir\fR
+.P
+Default output location for symbols file (\fB.sym\fR) if no output is specified
+.SS Platform
+\fB-t\fR \fItarget-platform\fR
+.P
+Where \fBtarget-platform\fR is one of: \fBwin32 linux apple\fR (Ignored for \fBecp\fR)
+.SS Toolchain Options
+\fB-cpp\fR \fIC-preprocessor\fR
+.P
+Which C preprocessor to use (defaults to \fBgcc\fR)
+.SS Namespace Options
+\fB-defaultns\fR \fIdefault-namespace\fR
+.P
+   Assume all classes and namespaces defined in source file are within the namespace \fIdefault-namespace\fR.
+This does not affect constructs defined with the \fBdefault\fR access mode, which are non-mangled and C compatible.
+.P
+\fB-strictns\fR
+   Do not automatically resolve constructs within namespaces and sub-namespaces. All classes, functions and defines must be explicitly qualified with their full namespaces.
+.SS Understood C Flags
+\fB-I\fR\fIincludedir\fR
+
+\fB-isystem\fR|\fB-isysroot\fR \fIsysincludedir\fR
+
+\fB-D\fR\fIdefinition\fR
+
+\fB-m32\fR

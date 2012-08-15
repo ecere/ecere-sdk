@@ -1,0 +1,63 @@
+.TH ECS "1" "August 2012" "ecs" "Ecere SDK/eC Compiling Tools"
+.SH NAME
+ecs - eC Symbol Loader Generator
+.SH SYNOPSIS
+.IX
+ecs [-t \fItarget-platform\fR]
+    [\fB-name\fR]
+    [\fB-console\fR]
+    [\fB-dynamiclib\fR|\fB-staticlib\fR]
+    \fIinput\fR [\fIinput\fR]* \fB-o\fR \fIoutput\fR
+    [\fB-symbols\fR \fIintermediate-dir\fR]
+
+.SH DESCRIPTION
+ecs generates a symbol loader for an eC module (shared/static library or executable).
+.SH OVERVIEW
+The symbol loader is what allow for eC runtime module importing and ejection, as well as its reflection capabilities.
+It is an eC source file with a \fB.main.ec\fR suffix, which must itself be compiled and linked into the target.
+.P
+ecs also takes care of the eC Distributed Objects binding mechanism and will include the client and/or server bindings as appropriate within the symbol loader source file.
+.P
+Additionally, ecs takes care of assembling the individual internationalizable string catalogs (\fB.bowl\fR) into translation templates (\fB.pot\fR).
+The generated translation templates are compatible with the GNU gettext format.
+Translations however are handled internally by the Ecere runtime library, and can be embedded within eC libraries and executables under the \fBlocale/\fR module resources folder using the Ecere Archiver (\fBear\fR).
+.P
+For an executable, the symbol loader implements the program's entry point at the C level (main() function).
+For shared libraries, the symbol loader implements an exported __ecereDll_Load function.
+For static libraries, the symbol loader implements a __ecereDll_Load_[\fImodule-name\fR] function.
+.P
+The \fIinput\fR list of files specified should include all symbol files (\fB.sym\fR), import files (\fB.imp\fR) and partial
+translation string catalogs (\fB.bowl\fR) produced by \fBecp\fR and \fBecc\fR for every eC source file within the project.
+.SS Output file
+\fB-o\fR \fIoutput\fR
+.P
+The location and name for the symbol loader generated.
+.RS 0
+The name is normally \fImodule-name\fR\fB.main.ec\fR
+.SH OPTIONS
+.SS Platform
+\fB-t\fR \fItarget-platform\fR
+.P
+Where \fBtarget-platform\fR is one of: \fBwin32 linux apple\fR
+.RS 0
+(Defaults to the host platform if not specified)
+.SS Module Options
+\fB-console\fR
+Specifies that this application is a console application (Windows only)
+.P
+\fB-dynamiclib\fR
+Specifies that this module is a dynamic (shared) library
+
+\fB-staticlib\fR
+Specifies that this module is a static library
+.SS Module Name
+\fB-name\fR \fImodule-name\fR
+.P
+Name to be used for static library entry point, internally by the eC Distributed Objects bindings, as well as for the generated translation template (\fBlocale/\fR\fImodule-name\fR\fB.pot\fR).
+(Defaults to the output file name stripped of the \fBmain.ec\fR suffix)
+.SS Miscellaneous Options
+\fB-symbols\fR \fIintermediate-dir\fR
+
+Specifies the location of the intermediate directory.
+Note: Currently this is only used to check the currently built config, and only generate translation template (\fB.pot\fR) if we are building \fBRelease\fR.
+Since the output file name could be checked instead, this option should probably be phased out entirely as it is otherwise not required for \fBecs\fR.
