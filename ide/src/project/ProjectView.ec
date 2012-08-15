@@ -584,21 +584,20 @@ class ProjectView : Window
    // Note: Compiler is only passed in to for VisualStudio support
    bool ProjectPrepareMakefile(Project project, PrepareMakefileMethod method, CompilerConfig compiler, ProjectConfig config)
    {
-#if defined(__WIN32__)  // I'm guessing we'll want to support generating VS files on Linux as well...
       if(compiler.type.isVC)
       {
+         // I'm guessing we'll want to support generating VS files on Linux as well...
          ide.statusBar.text = $"Generating Visual Studio Solution...";
          app.UpdateDisplay();
-         GenerateVSSolutionFile(project, compiler);
+         //GenerateVSSolutionFile(project, compiler);
          ide.statusBar.text = $"Generating Visual Studio Project...";
          app.UpdateDisplay();
-         GenerateVCProjectFile(project, compiler);
+         //GenerateVCProjectFile(project, compiler);
          ide.statusBar.text = null;
          app.UpdateDisplay();
          return true;
       }
       else
-#endif
       {
          char makefilePath[MAX_LOCATION];
          char makefileName[MAX_LOCATION];

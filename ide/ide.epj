@@ -401,7 +401,6 @@
       "ecere.jpg",
       "ecereBack.jpg",
       "icon.png",
-      "../include.mk",
       "../crossplatform.mk"
    ]
 }

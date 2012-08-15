@@ -66,6 +66,10 @@ ifndef DOCDIR
 export DOCDIR=$(DESTDIR)$(prefix)/share/ecere/doc
 endif
 
+ifndef MANDIR
+export MANDIR=$(DESTDIR)$(prefix)/share/man/
+endif
+
 ifndef BINDIR
 export BINDIR=$(DESTDIR)$(prefix)/bin
 endif
@@ -296,7 +300,7 @@ endif
 	$(call rmrq,obj/)
 	@$(call echo,Done.)
 
-DOC = doc/tao.pdf doc/ecere.eCdoc doc/ecereCOM.eCdoc doc/EDA.eCdoc
+DOC = doc/ecere.eCdoc doc/ecereCOM.eCdoc doc/EDA.eCdoc
 
 BINARIES = \
 	ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SOV) \
@@ -421,7 +425,7 @@ ifdef CodeGuard
 	$(call cpq,$(OBJBINDIR)CodeGuard$(E),"$(BINDIR)/")
 endif
 	$(call cpq,$(OBJLIBDIR)libecereVanilla$(A),"$(SLIBDIR)/")
-	$(call cpq,doc/tao.pdf,"$(DOCDIR)/Ecere Tao of Programming [work in progress].pdf")
+	$(call cpq,doc/tao.pdf,"$(DOCDIR)/Ecere Tao of Programming [work in progress].pdf") || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
 	$(call cpq,doc/ecere.eCdoc,"$(DOCDIR)/")
 	$(call cpq,doc/ecereCOM.eCdoc,"$(DOCDIR)/")
 	$(call cpq,doc/EDA.eCdoc,"$(DOCDIR)/")
@@ -448,7 +452,7 @@ ifdef CodeGuard
 endif
 	install $(OBJLIBDIR)libecereVanilla$(A) $(SLIBDIR)/
 	install -d $(DOCDIR)/
-	install doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf"
+	install doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf" >/dev/null 2>&1 || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
 	install doc/ecere.eCdoc $(DOCDIR)/
 	install doc/ecereCOM.eCdoc $(DOCDIR)/
 	install doc/EDA.eCdoc $(DOCDIR)/
@@ -508,10 +512,13 @@ ifdef CodeGuard
 	install -D $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/CodeGuard$(E)
 endif
 	install -D $(OBJLIBDIR)libecereVanilla$(A) $(SLIBDIR)/libecereVanilla$(A)
-	install -D -m 644 doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf"
+	install -D -m 644 doc/EDA.eCdoc $(DOCDIR)/EDA.eCdoc
+	install -D -m 644 doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf" >/dev/null 2>&1 || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
 	install -D -m 644 doc/ecere.eCdoc $(DOCDIR)/ecere.eCdoc
 	install -D -m 644 doc/ecereCOM.eCdoc $(DOCDIR)/ecereCOM.eCdoc
 	install -D -m 644 doc/EDA.eCdoc $(DOCDIR)/EDA.eCdoc
+	mkdir -p -m 777 $(MANDIR)/man1
+	cp -pRf share/man/man1/* $(MANDIR)/man1
 	mkdir -p -m 777 $(SAMPLESDIR)
 	cp -pRf samples/* $(SAMPLESDIR)
 	mkdir -p -m 777 $(EXTRASDIR)

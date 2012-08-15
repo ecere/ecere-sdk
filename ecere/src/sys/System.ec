@@ -344,6 +344,8 @@ public void SetLoggingMode(LoggingMode mode, void * where)
    }
 }
 
+static define errorLogMsg = $"\n\nWould you like to view the error log?";
+
 #if defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
 static DWORD REAL_ExceptionHandler(EXCEPTION_POINTERS *exception)
 {
@@ -424,7 +426,7 @@ static DWORD REAL_ExceptionHandler(EXCEPTION_POINTERS *exception)
 
    if(globalSystem.errorBuffer && globalSystem.errorBuffer[0])
    {
-      strcat(exceptionString, $"\n\nWould you like to view the error log?");
+      strcat(exceptionString, errorLogMsg);
       if(MessageBox(HWND_DESKTOP, exceptionString, title, MB_YESNO|MB_ICONERROR) == IDYES)
          DumpErrors(true);
    }

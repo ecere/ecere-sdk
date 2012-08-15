@@ -868,7 +868,7 @@ msgstr "Windows"
 msgid "Yes"
 msgstr "Yes"
 
-#: ./src/sys/System.ec:427
+#: ./src/sys/System.ec:347
 msgid "\n\nWould you like to view the error log?"
 msgstr "\n\nWould you like to view the error log?"
 

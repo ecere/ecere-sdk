@@ -119,6 +119,6 @@
             }
          ]
       },
-      "../include.mk"
+      "../crossplatform.mk"
    ]
 }

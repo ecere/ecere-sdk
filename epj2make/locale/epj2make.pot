@@ -43,8 +43,8 @@ msgid "         [-i <include dir[;inc dir[...]]>]\n"
 msgstr "         [-i <include dir[;inc dir[...]]>]\n"
 
 #: ./epj2make.ec:244
-msgid "         [-includemk <include.mk path>]\n"
-msgstr "         [-includemk <include.mk path>]\n"
+msgid "         [-includemk <crossplatform.mk path>]\n"
+msgstr "         [-includemk <crossplatform.mk path>]\n"
 
 #: ./epj2make.ec:239
 msgid "         [-l <library dir[;lib dir[...]]>]\n"

@@ -1,9 +1,9 @@
 namespace gui::dialogs;
 
-#ifdef __WIN32__
+//#ifdef __WIN32__  // We want the strings in the .pot when building on Unix
 static define rootName = $"Entire Computer";
 static define msNetwork = $"Microsoft Windows Network";
-#endif
+//#endif
 
 import "Window"
 

@@ -1919,7 +1919,7 @@ class Debugger
                   else
                   {
                      //app.Lock();
-                     ide.outputView.debugBox.Logf($"err: Unable to create FIFO %s\n", progFifoPath);
+                     ide.outputView.debugBox.Logf(createFIFOMsg, progFifoPath);
                      //app.Unlock();
                   }
                }
@@ -3535,6 +3535,9 @@ class GdbThread : Thread
    }
 }
 
+static define createFIFOMsg = $"err: Unable to create FIFO %s\n";
+static define openFIFOMsg = $"err: Unable to open FIFO %s for read\n";
+
 #if defined(__unix__)
 #define uint _uint
 #include <errno.h>
@@ -3573,7 +3576,7 @@ class ProgramThread : Thread
          if(!fifoFile)
          {
             app.Lock();
-            ide.outputView.debugBox.Logf($"err: Unable to open FIFO %s for read\n", progFifoPath);
+            ide.outputView.debugBox.Logf(openFIFOMsg, progFifoPath);
             app.Unlock();
          }
          else

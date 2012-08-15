@@ -241,7 +241,7 @@ class epj2makeApp : GuiApplication
          printf($"         [-noglobalsettings]\n");
          printf($"         [-noresources]\n");
          printf($"         [-d <intermediate objects directory>]\n");
-         printf($"         [-includemk <include.mk path>]\n");
+         printf($"         [-includemk <crossplatform.mk path>]\n");
       }
       else
       {
