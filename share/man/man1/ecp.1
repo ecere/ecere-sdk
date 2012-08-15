@@ -19,11 +19,12 @@ ecp will parse the eC source file specified in \fIinput\fR and generate a list o
 \fB-o\fR \fIoutput\fR
 The location and name for the output intermediate C file
 .P
-(Defaults to the name of \fIinput\fR with the \fB.ec\fR extension replaced by \fB.sym\fR, placed in the directory specified by \fIsymbolsdir\fR, or current working directory if none is specified)
+(Defaults to the \fIinput\fR path with the \fB.ec\fR extension replaced by \fB.sym\fR, concatenated to the directory specified by \fIsymbolsdir\fR, or current working directory if none is specified.
+If any directory in the output path does not exist, it will not be created and no file will be written.)
 .SS Intermediate Directory
 \fB-symbols\fR \fIsymbols-dir\fR
 .P
-Default output location for symbols file (\fB.sym\fR) if no output is specified
+The default output location for symbols file (\fB.sym\fR) if no output is specified
 .SS Platform
 \fB-t\fR \fItarget-platform\fR
 .P
