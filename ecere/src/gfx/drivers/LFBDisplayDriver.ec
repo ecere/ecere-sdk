@@ -2807,7 +2807,7 @@ public class LFBDisplayDriver : DisplayDriver
             strcat(fileName, ".ttf");
             strlwr(fileName);
             fakeItalic = false;
-            
+
             if(flags.italic && !FileExists(fileName))
             {
                strcpy(fileName, ecereFonts);
@@ -2816,6 +2816,27 @@ public class LFBDisplayDriver : DisplayDriver
                strcat(fileName, ".ttf");
                strlwr(fileName);
                fakeItalic = true;
+            }
+
+            // Search in current working directory
+            if(!FileExists(fileName))
+            {
+               strcpy(fileName, faceName);
+               if(flags.bold && flags.italic) strcat(fileName, "bi");
+               else if(flags.bold) strcat(fileName, "bd");
+               else if(flags.italic) strcat(fileName, "i");
+               strcat(fileName, ".ttf");
+               strlwr(fileName);
+               fakeItalic = false;
+
+               if(flags.italic && !FileExists(fileName))
+               {
+                  strcpy(fileName, faceName);
+                  if(flags.bold) strcat(fileName, "bd");
+                  strcat(fileName, ".ttf");
+                  strlwr(fileName);
+                  fakeItalic = true;
+               }
             }
 
    #if defined(__WIN32__)
