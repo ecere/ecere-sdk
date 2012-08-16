@@ -538,15 +538,15 @@ ifdef DEBIAN_PACKAGE
 	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/ecere-dev
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-dev/
 	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/ecere-extras
-	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-extras/
+	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-extras/
 	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/ecere-samples
-	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-samples/
+	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-samples/
 	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/ecere-sdk
-	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-sdk/
+	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-sdk/
 	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libec0
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libec0/
 	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libecerecom0
-	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libecerecom0/
+	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz (DESTDIR)$(prefix)/share/doc/libecerecom0/
 	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libeda0
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libeda0/
 	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libedasqlite0
