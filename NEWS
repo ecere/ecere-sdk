@@ -145,7 +145,7 @@ Ecere SDK 0.41.16 (August 30, 2007)
 Ecere SDK 0.40 (September 27, 2006) (v3)
 
  * All SDK tools are now written in eC
- * X11 Interface/Graphics
+ * Windows Installer packaging MinGW
 ---------------------------------------
  ( November 2005 )      
 
@@ -192,6 +192,8 @@ Ecere SDK 0.39 Pre-Release 1 (April 6, 2003)
 
    * Ecere Archiver
    * Resources Support
+   * X11 Interface/Graphics
+   * Ecere Linux Distro / Ecere Partition Editor (gparted frontend)
 ----------------------------------------
 Ecere SDK 0.38 (January 18, 2003) (v2)
 
