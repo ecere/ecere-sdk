@@ -219,12 +219,13 @@ Ecere SDK 0.26 (1999) (v0)
 ----------------------------------------
 DirectDraw WarCraft II Clone (1997-1998)
 
-   * A*, sprites and tiles 
+   * A*
 ----------------------------------------
 DJGPP WarCraft II Clone (Summer 1997) 
 
    * 256 colors VESA Support
    * WarCraft II font format support
+   * Sprites and tiles
    * Button GUI Components
    * DOS Interface Mouse / Keyboard
 ----------------------------------------
