@@ -137,21 +137,35 @@ Ecere SDK 0.41.17 (October 29, 2007)
 Ecere SDK 0.41.16 (August 30, 2007)
 ----------------------------------------
 Ecere SDK 0.40 (September 27, 2006) (v3)
+---------------------------------------
+ ( November 2005 )      
 
+ * Debugger work begins (GDB integration)
+----------------------------------------
+ ( September 2005 )
+
+  * eC Distributed Objects
+  * CodeGuard Server/Client
+----------------------------------------
+ ( July 25, 2005 )
+
+ * Ecere Corporation 
+---------------------------------------
+ ( 2004 - 2005 )
    * eC Language & Compiler
-   * Modern Ecere IDE
-      - Project Management
-      - Debugger
-----------------------------------------
- ( Summer 2005 )
 
- * Ecere Corporation ( July 25, 2005 )
- * eC Distributed Objects
- * CodeGuard ( Our own version control system )
-----------------------------------------
+   * Modern Ecere IDE
+      - Intelligent Code Editor
+      - Methods & property sheets
+      - Form Designer with Code/ Visual Synchronization
+ ---------------------------------------
   ( November 2004 )
 
  * Design of the eC language and development of the eC compiler starts
+----------------------------------------
+  ( October 2004 )
+
+ * CodeGuard ( Our own version control system )
 ----------------------------------------
   ( Summer 2004 )
 
@@ -161,6 +175,7 @@ Ecere SDK 0.40 (September 27, 2006) (v3)
   ( Early 2004 )
 
   * More native default skin (Win2K)
+  * IDE Project Building work begins
 ----------------------------------------
 Ecere SDK 0.39 Pre-Release 4 (November 26, 2003)
 Ecere SDK 0.39 Pre-Release 3 (August 1, 2003)
