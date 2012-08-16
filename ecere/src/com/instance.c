@@ -300,6 +300,20 @@ void * Instance_Module_Load(char * name, void ** Load, void ** Unload)
 #endif
 
    library = dlopen(fileName, RTLD_LAZY);
+   if(!library)
+   {
+      strcpy(fileName, "/usr/lib/ec/lib");
+      strcat(fileName, name);
+      GetExtension(fileName, extension);
+      if(!extension[0])
+#if defined(__APPLE__)
+         strcat(fileName, ".dylib");
+#else
+         strcat(fileName, ".so");
+#endif
+      library = dlopen(fileName, RTLD_LAZY);
+   }
+
    if(library)
    {
       *Load = dlsym(library, "__ecereDll_Load");
