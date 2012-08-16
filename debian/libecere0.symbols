@@ -1,4 +1,4 @@
-libecere.so.0 libecere #MINVER#
+libecere.so.0 libecere0 #MINVER#
  AddExtensionBlock@Base 0.44.01
  ApplyTranslation@Base 0.44.01
  BitSize@Base 0.44.01

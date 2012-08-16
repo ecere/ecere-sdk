@@ -1,13 +1,4 @@
-libEDA.so.0 ecere-sdk #MINVER#
- __ecereDll_Load@Base 0.44.01
- __ecereDll_Unload@Base 0.44.01
-libEDASQLite.so.0 ecere-sdk #MINVER#
- __ecereDll_Load@Base 0.44.01
- __ecereDll_Unload@Base 0.44.01
-libec.so.0 ecere-sdk #MINVER#
- __ecereDll_Load@Base 0.44.01
- __ecereDll_Unload@Base 0.44.01
-libecereCOM.so.0 ecere-sdk #MINVER#
+libecereCOM.so.0 libecerecom0 #MINVER#
  Instance_COM_Initialize@Base 0.44.01
  Instance_LocateModule@Base 0.44.01
  Instance_Module_Free@Base 0.44.01
