@@ -203,4 +203,8 @@ OPENSSL_LIB_DIR = .
 OPENSSL_BIN_DIR = .
 endif
 
+else
+
+OFLAGS += -L/usr/lib/ec
+
 endif

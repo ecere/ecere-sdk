@@ -24,11 +24,10 @@ endif
 
 # FLAGS
 
+ifndef DEBIAN_PACKAGE
 CFLAGS =
-CECFLAGS =
-ECFLAGS =
+endif
 OFLAGS =
-LIBS =
 
 # INCLUDES
 
@@ -71,16 +70,16 @@ SOURCES = $(ECSOURCES) \
 
 RESOURCES =
 
-LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 CFLAGS += -fmessage-length=0 $(OPTIMIZE) $(FPIC) -Wall \
 	 -Iinclude \
 	 -Ii686-pc-mingw32/include \
 	 -Ii686-pc-mingw32
 
-CECFLAGS +=
+CECFLAGS =
 
-ECFLAGS +=
+ECFLAGS =
 
 ifneq "$(TARGET_TYPE)" "staticlib"
 OFLAGS +=

@@ -23,20 +23,25 @@ SOURCES = \
 	bootstrap/ecs.c \
 	bootstrap/ecs.main.c
 
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+OFLAGS =
+
 # CROSS-PLATFORM MAGIC
 
 include ../../../include.mk
 
 # FLAGS
 
-CFLAGS = -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w \
+CFLAGS += -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w \
 	 -DECERE_STATIC
 
 CECFLAGS =
 
 ECFLAGS = -nolinenumbers
 
-OFLAGS = -m32 \
+OFLAGS += -m32 \
 	 -L../ecere/obj/bootstrap.$(PLATFORM) \
 	 -L../libec/obj/bootstrap.$(PLATFORM)
 

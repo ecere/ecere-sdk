@@ -113,6 +113,11 @@ SOURCES = \
 
 RESOURCES =
 
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+OFLAGS =
+
 # CROSS-PLATFORM MAGIC
 
 include ../../include.mk
@@ -120,7 +125,7 @@ include ../../include.mk
 # FLAGS
 
 # Warning: Compiling with -O2 gives 0 font height with MinGW!!
-CFLAGS = -fmessage-length=0 -m32 $(FPIC) -w \
+CFLAGS += -fmessage-length=0 -m32 $(FPIC) -w \
 	 -DFT2_BUILD_LIBRARY -DFT_OPTION_AUTOFIT2 \
 	 -I../zlib \
 	 -Iinclude \

@@ -157,6 +157,12 @@ else
    INSTALLNAME :=
 endif
 
+# DEBIAN
+ifdef DEBIAN_PACKAGE
+CFLAGS += $(CPPFLAGS)
+OFLAGS += $(LDFLAGS)
+endif
+
 # LINKER OPTIONS
 ifdef OSX
 ifeq "$(TARGET_TYPE)" "sharedlib"

@@ -486,6 +486,12 @@ endif
 	ln -sf $(LP)ec$(SOV) $(LIBDIR)/$(LP)ec$(SO)
 	ln -sf $(LP)EDA$(SOV) $(LIBDIR)/$(LP)EDA$(SO)
 	ln -sf $(LP)EDASQLite$(SOV) $(LIBDIR)/$(LP)EDASQLite$(SO)
+	mkdir -p -m 777 $(DESTDIR)$(prefix)/lib/ec
+	ln -sf $(LIBDIR)/$(LP)ecere$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)ecere$(SO)
+	ln -sf $(LIBDIR)/$(LP)ecereCOM$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)ecereCOM$(SO)
+	ln -sf $(LIBDIR)/$(LP)ec$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)ec$(SO)
+	ln -sf $(LIBDIR)/$(LP)EDA$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)EDA$(SO)
+	ln -sf $(LIBDIR)/$(LP)EDASQLite$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)EDASQLite$(SO)
 ifdef EDASQLiteCipher
 	ln -sf $(LP)EDASQLiteCipher$(SOV) $(LIBDIR)/$(LP)EDASQLiteCipher$(SO)
 endif
@@ -523,6 +529,27 @@ endif
 	cp -pRf samples/* $(SAMPLESDIR)
 	mkdir -p -m 777 $(EXTRASDIR)
 	cp -pRf extras/* $(EXTRASDIR)
+ifdef DEBIAN_PACKAGE
+	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libecere0
+	install -D -m644 NEWS $(DESTDIR)$(prefix)/share/doc/libecere0/changelog
+	gzip -f -9 $(DESTDIR)$(prefix)/share/doc/libecere0/changelog
+	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/ecere-dev
+	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-dev/
+	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/ecere-extras
+	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-extras/
+	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/ecere-samples
+	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-samples/
+	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/ecere-sdk
+	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-sdk/
+	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libec0
+	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libec0/
+	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libecerecom0
+	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libecerecom0/
+	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libeda0
+	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libeda0/
+	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libedasqlite0
+	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libedasqlite0/
+endif
 endif
 endif
 

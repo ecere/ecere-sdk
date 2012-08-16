@@ -63,6 +63,11 @@ RESOURCES1 = \
 RESOURCES2 = \
 	locale/es_ES/LC_MESSAGES/extract.mo
 
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+OFLAGS =
+
 # CROSS-PLATFORM MAGIC
 
 include ../../include.mk
@@ -77,14 +82,14 @@ EAR := $(call psep,../../obj/$(PLATFORM)/bin/ear)
 
 # FLAGS
 
-CFLAGS = -fmessage-length=0 -Os -m32 $(FPIC) -w \
+CFLAGS += -fmessage-length=0 -Os -m32 $(FPIC) -w \
 	 -DECERE_STATIC
 
 CECFLAGS =
 
 ECFLAGS = -nolinenumbers
 
-OFLAGS = -m32 \
+OFLAGS += -m32 \
 	 -L../../ecere/obj/vanilla.$(PLATFORM) \
 	 -L../../deps/zlib/obj/release.$(PLATFORM)
 

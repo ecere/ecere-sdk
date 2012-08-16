@@ -29,6 +29,7 @@ realclean:
 	cd zlib && $(MAKE) realclean
 	cd jpeg-6b && $(MAKE) realclean
 	cd libungif-4.1.1 && $(MAKE) realclean
+	cd libffi-3.0.11 && $(MAKE) realclean
 
 distclean:
 	cd freetype-2.3.12 && $(MAKE) distclean
@@ -36,6 +37,7 @@ distclean:
 	cd zlib && $(MAKE) distclean
 	cd jpeg-6b && $(MAKE) distclean
 	cd libungif-4.1.1 && $(MAKE) distclean
+	cd libffi-3.0.11 && $(MAKE) distclean
 
 freetype:
 	@$(call echo,Building FreeType...)

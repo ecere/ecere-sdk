@@ -59,13 +59,18 @@ SOURCES = \
 	bootstrap/type.c \
 	../bsl.c
 
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+OFLAGS =
+
 # CROSS-PLATFORM MAGIC
 
 include ../../../include.mk
 
 # FLAGS
 
-CFLAGS = -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w \
+CFLAGS += -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w \
 	 -DYYTOKENTYPE -DECERE_STATIC
 
 CECFLAGS =

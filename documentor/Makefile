@@ -76,6 +76,11 @@ RESOURCES = \
 	locale/es_ES/LC_MESSAGES/documentor.mo \
 	res/documentorIcon.png
 
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+OFLAGS =
+
 # CROSS-PLATFORM MAGIC
 
 include ../include.mk
@@ -90,13 +95,13 @@ EAR := $(call psep,../obj/$(PLATFORM)/bin/ear)
 
 # FLAGS
 
-CFLAGS = -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w
+CFLAGS += -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w
 
 CECFLAGS =
 
 ECFLAGS = -nolinenumbers
 
-OFLAGS = -m32 \
+OFLAGS += -m32 \
 	 -L../obj/$(PLATFORM)/bin \
 	 -L../obj/$(PLATFORM)/lib
 

@@ -69,13 +69,18 @@ SOURCES = \
 	../../../ecere/src/sys/File.c \
 	../../../ecere/src/sys/System.c
 
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+OFLAGS =
+
 # CROSS-PLATFORM MAGIC
 
 include ../../../include.mk
 
 # FLAGS
 
-CFLAGS = -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w \
+CFLAGS += -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w \
 	 -DBUILDING_ECERE_COM -DECERE_STATIC -DECERE_BOOTSTRAP
 
 CECFLAGS =
