@@ -79,6 +79,7 @@ Ecere SDK 0.42 (May 16, 2008)
 Ecere SDK 0.41.17.11 (December 2, 2007)
 
    * This release corrects an X performance issue introduced in the last release.
+   * Acovel Media Player 0.01 (December 5, 2007)
 ----------------------------------------
 Ecere SDK 0.41.17.10 (December 1, 2007)
 
@@ -131,17 +132,37 @@ Ecere SDK 0.41.17.4 (November 9, 2007)
 Ecere SDK 0.41.17 (October 29, 2007)
 
    * Minor feature enhancements and bugfixes.
+   * Ecere Communicator 0.01 (October 21, 2007)
 ----------------------------------------
 Ecere SDK 0.41.16 (August 30, 2007)
 ----------------------------------------
-Ecere SDK 0.40 ( September 27, 2006) (v3)
+Ecere SDK 0.40 (September 27, 2006) (v3)
 
    * eC Language & Compiler
    * Modern Ecere IDE
       - Project Management
       - Debugger
 ----------------------------------------
-Ecere SDK 0.39 Pre-Release 4 (Novemnber 26, 2003)
+ ( Summer 2005 )
+
+ * Ecere Corporation ( July 25, 2005 )
+ * eC Distributed Objects
+ * CodeGuard ( Our own version control system )
+----------------------------------------
+  ( November 2004 )
+
+ * Design of the eC language and development of the eC compiler starts
+----------------------------------------
+  ( Summer 2004 )
+
+  * The Dreamix Project - a set top box PVR
+  * Python Bindings for Ecere
+----------------------------------------
+  ( Early 2004 )
+
+  * More native default skin (Win2K)
+----------------------------------------
+Ecere SDK 0.39 Pre-Release 4 (November 26, 2003)
 Ecere SDK 0.39 Pre-Release 3 (August 1, 2003)
 Ecere SDK 0.39 Pre-Release 1 (April 6, 2003)
 
