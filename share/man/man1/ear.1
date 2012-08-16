@@ -1,39 +1,39 @@
 .TH EAR "1" "August 2012" "ear" "Ecere SDK/eC Compiling Tools"
 .SH NAME
-ear - Ecere Archiver
+ear \- Ecere Archiver
 .SH SYNOPSIS
-ear \fIcommand\fR[\fIcommand-options\fR] \fIarchive\fR \fIrequired-parameters\fR
+ear \fIcommand\fR[\fIcommand\-options\fR] \fIarchive\fR \fIrequired\-parameters\fR
 .SS "Extraction Commands:"
-\fBv\fR (View)         \fIarchive\fR [\fIarchive-paths...\fR]
+\fBv\fR (View)         \fIarchive\fR [\fIarchive\-paths...\fR]
 .RS 0
-\fBx\fR (Extract All)  \fIarchive\fR [\fIoutput-directory\fR]
+\fBx\fR (Extract All)  \fIarchive\fR [\fIoutput\-directory\fR]
 .RS 0
-\fBe\fR (Extract)      \fIarchive\fR \fIarchive-paths...\fR
+\fBe\fR (Extract)      \fIarchive\fR \fIarchive\-paths...\fR
 .RS 0
-\fBew\fR(Extract Where)\fIarchive\fR \fIarchive-paths...\fR \fIoutput-directory\fR
+\fBew\fR(Extract Where)\fIarchive\fR \fIarchive\-paths...\fR \fIoutput\-directory\fR
 .SS "Archiving/Cleanup Commands:"
 .RS 0
-\fBa\fR (Add)          \fIarchive\fR \fIinput-paths...\fR
+\fBa\fR (Add)          \fIarchive\fR \fIinput\-paths...\fR
 .RS 0
-\fBr\fR (Refresh)      \fIarchive\fR \fIinput-paths...\fR
+\fBr\fR (Refresh)      \fIarchive\fR \fIinput\-paths...\fR
 .RS 0
-\fBu\fR (Update)       \fIarchive\fR \fIinput-paths...\fR
- Add \fBw\fR (e.g. \fBaw\fR) for specifying an \fIarchive-dest-path\fR at the end
- Add \fBf\fR (e.g. \fBaf\fR) for packing the contents of folders \fIinput-paths\fR at the root of the archive    
+\fBu\fR (Update)       \fIarchive\fR \fIinput\-paths...\fR
+ Add \fBw\fR (e.g. \fBaw\fR) for specifying an \fIarchive\-dest\-path\fR at the end
+ Add \fBf\fR (e.g. \fBaf\fR) for packing the contents of folders \fIinput\-paths\fR at the root of the archive
 .RS 0
-\fBm\fR (Move)         \fIarchive\fR \fIarchive-src-paths...\fR \fIarchive-dest-path\fR
+\fBm\fR (Move)         \fIarchive\fR \fIarchive\-src\-paths...\fR \fIarchive\-dest\-path\fR
 .RS 0
-\fBn\fR (Rename)       \fIarchive\fR \fIarchive-path\fR \fInew-name\fR
+\fBn\fR (Rename)       \fIarchive\fR \fIarchive\-path\fR \fInew\-name\fR
 .RS 0
-\fBd\fR (Delete)       \fIarchive\fR \fIarchive-paths...\fR
+\fBd\fR (Delete)       \fIarchive\fR \fIarchive\-paths...\fR
 .RS 0
 \fBc\fR (Clear)        \fIarchive\fR
 .RS 0
-\fBs\fR (Self Extract) \fIarchive\fR \fIself-extractable\fR
-   Create a self-extractable archive out of an existing archive
+\fBs\fR (Self Extract) \fIarchive\fR \fIself\-extractable\fR
+   Create a self\-extractable archive out of an existing archive
 .RS 0
-\fBsa\fR(Self-Ext/Add) \fIarchive\fR \fIinput-paths...\fR
-   Create a new self-extractable archive and add files
+\fBsa\fR(Self\-Ext/Add) \fIarchive\fR \fIinput\-paths...\fR
+   Create a new self\-extractable archive and add files
 .SH DESCRIPTION
 ear is an archiving tool for manipulating Ecere Archives.
 .P
@@ -44,7 +44,7 @@ The Ecere runtime library supports accessing such resources from the executable 
 .P
 The Ecere File manipulation API (which is used by all APIs taking in a file path) understands resources paths with the general format: "<\fIarchive\fR>\fIpath/to/file\fR".
 .P
-Resources from imported modules can be accessed as: "<:\fImodule-name\fR>\fIpath/to/file\fR".
+Resources from imported modules can be accessed as: "<:\fImodule\-name\fR>\fIpath/to/file\fR".
 .P
 Rsources embedded within the application itself can be accessed as: "<:>\fIpath/to/file\fR" or simply ":\fIpath/to/file\fR"
 .P
@@ -62,4 +62,4 @@ Resources can be emdedded inside applications and modules from the Project View'
 .RS 0
 \fBq\fR  Quiet mode (Add, Refresh, Update, Extract and Extract All)
 .SH KNOWN BUGS
-When using the \fBf\fR command modifier (with Add, Refresh or Update), ear will crash if any of the \fIinput-paths\fR is a file instead of a folder
+When using the \fBf\fR command modifier (with Add, Refresh or Update), ear will crash if any of the \fIinput\-paths\fR is a file instead of a folder
