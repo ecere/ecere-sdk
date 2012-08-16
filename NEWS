@@ -233,12 +233,12 @@ Ecere SDK 0.26 (1999) (v0)
    * DOS (DJGPP) C library (graphical or text mode)
    * 24 bit True color VESA or palletized bitmap/video support
    * 3D Software Rendering
+   * ASCII 3D models (.ASC) loading
+   * FLC / FLI video playback support
    * SoundBlaster Support
    * MIDI (MPU/OPL3) player
-   * ASCII 3D models (.ASC) loading
-   * CD Audio Playback
    * S3M player
-   * FLC / FLI video playback support
+   * CD Audio Playback
    * GUI CD Player
 ----------------------------------------
 DirectDraw WarCraft II Clone (1997-1998)
