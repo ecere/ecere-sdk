@@ -142,7 +142,7 @@ Ecere SDK 0.41.17 (October 29, 2007)
 ----------------------------------------
 Ecere SDK 0.41.16 (August 30, 2007)
 ----------------------------------------
-Ecere SDK 0.40 (September 27, 2006) (v3)
+Ecere SDK 0.40 (September 27, 2006)
 
  * All SDK tools are now written in eC
 ---------------------------------------
@@ -159,7 +159,7 @@ Ecere SDK 0.40 (September 27, 2006) (v3)
 
  * Ecere Corporation 
 ---------------------------------------
- ( 2004 - 2005 )
+ ( 2004 - 2005 ) (v3)
    * eC Language & Compiler
 
    * Modern Ecere IDE
@@ -255,6 +255,6 @@ DJGPP WarCraft II Clone (Summer 1997)
 ----------------------------------------
 The 3D Coding Blackhole Tutorial (http://ecere.com/3dbhole/ - 1996)
 
-   * Software textured polygon filling 3D engine
+   * Software textured polygon filling 3D engine (DOS/DJGPP)
    * Gouraud and Flat Shading
    * PCX loading/saving (Run Length Encoding compression)
