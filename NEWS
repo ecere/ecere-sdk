@@ -167,6 +167,8 @@ Ecere SDK 0.40 (September 27, 2006) (v3)
       - Intelligent Code Editor
       - Methods & property sheets
       - Form Designer with Code/ Visual Synchronization
+
+   * Begin using MinGW
  ---------------------------------------
   ( November 2004 )
 
@@ -218,9 +220,7 @@ Ecere SDK 0.38 (January 18, 2003) (v2)
 Ecere SDK 0.37.5 (September 2, 2001) (v1)
 
    * BMP Support
-   * Quaternion rotation system, with SLERP'ing cameras
    * 3Dfx GLIDE, OpenGL, DirectDraw, GDI, SVGALib
-   * Real Time Optimally Adapting Mesh (ROAM) system for terrain
    * Object oriented window & event-driven messaging system
    * Graphical User Interface runs in either Win32 Console,
      Win32 API's window system, ECERE GUI system within a Win32 window,
@@ -230,6 +230,13 @@ Ecere SDK 0.37.5 (September 2, 2001) (v1)
    * Supports Linux (GCC), DOS (DJGPP/Watcom), Win32 (Watcom/Borland/Visual)
    * Joystick interface
    * A full-featured multiline edit box control
+----------------------------------------
+ (1999-2001)
+
+ (Simis) Flight Sim Toolkit Enthusiast Update
+   * 3Dfx GLIDE and OpenGL Support
+   * Quaternion rotation system, with SLERP'ing cameras
+   * Real Time Optimally Adapting Mesh (ROAM) system for terrain
 ----------------------------------------
 Ecere SDK 0.26 (1999) (v0)
 
