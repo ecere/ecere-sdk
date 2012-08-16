@@ -189,16 +189,17 @@ Ecere SDK 0.39 Pre-Release 4 (November 26, 2003)
 Ecere SDK 0.39 Pre-Release 3 (August 1, 2003)
 Ecere SDK 0.39 Pre-Release 1 (April 6, 2003)
 
-   * Original Ecere IDE (Text Editor + Original Form Designer)
    * Ecere Archiver
+   * Resources Support
 ----------------------------------------
 Ecere SDK 0.38 (January 18, 2003) (v2)
 
    * Ecere is a C library working in DOS - SVGA/Console (Unfinished support),
      Windows (GDI/OpenGL/DirectDraw/Direct3D) and Linux (Text only/NCurses)
    * Ecere is modularized into sys, gfx, gui, net
+   * Original Ecere IDE (Text Editor + Original Form Designer)
    * 3DS Support
-   * Networking Library
+   * Networking Library (eCom, 2D Networked Ecere Chess)
    * Common Controls:
       - Button
       - DropBox
