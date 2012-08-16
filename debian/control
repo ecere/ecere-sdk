@@ -35,7 +35,7 @@ Description: Ecere cross-platform SDK
 
 Package: ecere-dev
 Architecture: i386 armel armhf powerpc
-Depends: libec0 (= ${binary:Version}), libecerecom0 (= ${binary:Version}), ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
+Depends: fonts-freefont-ttf, libec0 (= ${binary:Version}), libecerecom0 (= ${binary:Version}), ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Ecere SDK Development Tools
  This package provides the compiling tools
  for the eC language, the Ecere IDE,
@@ -43,6 +43,7 @@ Description: Ecere SDK Development Tools
  libraries.
 
 Package: libecere0
+Section: libs
 Architecture: i386 armel armhf powerpc
 Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Ecere Runtime Library
@@ -54,6 +55,7 @@ Description: Ecere Runtime Library
  as well as system functionality.
 
 Package: libecerecom0
+Section: libs
 Architecture: i386 armel armhf powerpc
 Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: eC Core Runtime Library
@@ -62,6 +64,7 @@ Description: eC Core Runtime Library
  written in eC.
 
 Package: libec0
+Section: libs
 Architecture: i386 armel armhf powerpc
 Depends: libecere0 (= ${binary:Version}), ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Ecere Compiler Library
@@ -72,6 +75,7 @@ Description: Ecere Compiler Library
  wanting to parse or compile eC code.
 
 Package: libeda0
+Section: libs
 Architecture: i386 armel armhf powerpc
 Depends: libecere0, ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Ecere Data Access
@@ -82,6 +86,7 @@ Description: Ecere Data Access
  (libedasqlite0) is also required.
 
 Package: libedasqlite0
+Section: libs
 Architecture: i386 armel armhf powerpc
 Depends: libeda0, ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: EDA SQLite Driver
