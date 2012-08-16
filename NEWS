@@ -1,0 +1,260 @@
+Ecere SDK 0.44.01 (August 2012)
+
+   * Compiler Configurations Support for truly cross-compiler/platform makefiles
+   * Project and file monitoring crash fixes and support for monitoring added projects
+   * Fixed toolbar Save button
+   * Fixed problems building with GCC 4.7
+   * Fixed remaining bad usage of strcpy with newer GCC resulting in corrupt strings
+   * Improvements to EDA and SQLite driver (Better stepping, improved custom function support)
+   * Improvements to Stacker and auto-sizing support
+   * Manual Pages for ecc, ecs, ecp, epj2make, ear, ide and documentor
+   * Improved debian packaging
+   * Other bug fixes
+----------------------------------------
+Ecere SDK 0.44 "Ryoanji" (March 13, 2012)
+
+   * Native Window decorations, toolbar and tool tips
+   * A new JSON-based .epj project format and powerful project settings, with powerful per File X Config X Platform Project Settings
+   * Internationalization support, with Chinese and Spanish available by setting the LANGUAGE environment variable to zh_CN or es_ES
+   * SQLite and Oracle drivers for Ecere Data Access (EDA)
+   * Improved eC Distributed Objects
+   * Less memory leaking on parsing code
+   * Line Numbers in the Code Editor
+   * Settings for multiple compilers (e.g. allowing to set up cross-compilers, different GCC versions...)
+   * Support for ccache and distcc to speed up your builds
+   * New Credits and License dialogs for the About box
+   * A bunch of new samples, PowerPoint Tutorials and extras (SSLSocket, Audio, WIA Scanning...)
+   * Coursework to accompany the Tao
+   * A new updated Windows installer, with MinGW (GCC 4.4.0 and GDB 7.0 were selected for working best)
+   * PPAs for Ubuntu working on both 32 and 64 bit machines, for Lucid Lynx, Maverick Meerkat, Natty Narwhal, Oneiric Ocelot and Precise Pangolin
+   * Numerous tracked issues were resolved, see the complete list at: http://ecere.com/mantis/changelog_page.php
+----------------------------------------
+ ( May 2010 )
+
+   * We adopted Git as our version control system.
+   * Our source repository is hosted on GitHub at http://github.com/ecere/sdk
+----------------------------------------
+Ecere SDK 0.44 preview 1 (February 4, 2010)
+
+   * The toolkit will now build on 64-bit Linux systems (still as 32-bit).
+   * New more flexible (per file, config, and platform) project files (.epj) are supported.
+   * The IDE now generates cross-platform makefiles.
+   * The samples were updated, added to, and reorganized.
+   * A collection of useful eC code for diverse purposes ("extras") was added.
+   * There were improvements and bugfixes to the compiler and throughout the SDK
+----------------------------------------
+Ecere SDK 0.44 draft 1 (December 25, 2008)
+
+   * First open-source which could bootstrap itself from GCC.
+   * The Ecere SDK is now Open Source under the revised BSD license.
+   * An automatic bootstrapping/build system was implemented.
+   * Mac OS X and PowerPC support was improved. A SQLite driver was added for the Ecere Data Access system.
+   * New IDE configuration options enable the integration of cross compilers. Lots
+   * of bugs were fixed.
+   * A tab control was added
+----------------------------------------
+Ecere SDK 0.43 (September 4, 2008)
+
+   * Dynamic class templates for meta (generic) programming were introduced in the eC language.
+   * Proper syntax highlighting was implemented in the IDE.
+   * The debugger integration under Linux was significantly improved.
+   * Many bugs and other issues were resolved.
+   * Packages for Debian/Ubuntu and GoboLinux are now provided.
+----------------------------------------
+Ecere SDK 0.42.1 (June 12, 2008)
+
+   * Major bugfixes and improvements were made to Ecere Database Access.
+   * Improvements were made to the Undo buffer.
+   * Various other bugfixes and improvements were made
+----------------------------------------
+Ecere SDK 0.42 (May 16, 2008)
+
+   * An undo/redo buffer was added to the code editor.
+   * Installation on Windows Vista was made easier.
+   * libpng usage was improved.
+   * X support was improved.
+   * IDE improvements were made.
+   * Numerous bugs were fixed.
+----------------------------------------
+ (December 5, 2007)
+
+   * Acovel Media Player 0.01
+----------------------------------------
+Ecere SDK 0.41.17.11 (December 2, 2007)
+
+   * This release corrects an X performance issue introduced in the last release.
+   ----------------------------------------
+Ecere SDK 0.41.17.10 (December 1, 2007)
+
+   * Mac OS X is now supported (through X11).
+   * Windows can now be closed through the window manager.
+   * Repositioning windows from the window manager doesn't confuse their positions anymore.
+   * 15-bit and 16-bit displays are now supported
+----------------------------------------
+Ecere SDK 0.41.17.9 (November 25, 2007)
+
+   * Support for international input on X.
+   * Proper keysym support on X.
+   * Clipboard operations on X have been fixed.
+   * An issue on Windows where internal resources could not 
+     be accessed when a executable was inside a path containing
+     Unicode characters (the installer itself would not work) has been fixed
+----------------------------------------
+Ecere SDK 0.41.17.8 (November 21, 2007)
+
+   * Additional X bitmap rendering support.
+   * Additonal samples: transparent clock, and a utility to take a screen shot
+    of the X desktop.
+   * An OpenGL and transparent window fix.
+   * Minor IDE and debugger improvements.
+   * Improvements to the networking system.
+   * Unicode and latest improvements are now available in Windows.
+   * Jumping behavior with the taskbar autohiding in Windows has been resolved.
+   * Support for reestablishing network connections in Windows has been added
+----------------------------------------
+Ecere SDK 0.41.17.6 (November 15, 2007)
+
+   * This release adds transparency and alpha blending support through both XRender 
+     and OpenGL, XShape support for frameless windows, and shared memory support.
+   * Antialiasing now works in OpenGL.
+   * A proper distinction is made between key presses and releases and repeated key hits.
+   * Bugs were fixed.
+   * Additional samples were added.
+----------------------------------------
+Ecere SDK 0.41.17.4 (November 9, 2007)
+
+   * Working Unicode support (UTF-8 across the API).
+   * Support for fonts in the X driver, located through fontconfig.
+   * XRender support (bitmap scaling and alpha blending).
+   * Improved X events support.
+   * Linking with newer libpng.so.12.
+   * Tested with X.org.
+   * The integrated debugger is now working (experimental).
+   * A positioning issue with panels on the left and top edges has been resolved
+----------------------------------------
+Ecere SDK 0.41.17 (October 29, 2007)
+
+   * Minor feature enhancements and bugfixes.
+----------------------------------------
+ (October 21, 2007)
+
+   * Ecere Communicator 0.01
+----------------------------------------
+Ecere SDK 0.41.16 (August 30, 2007)
+----------------------------------------
+Ecere SDK 0.40 (September 27, 2006)
+
+ * All SDK tools are now written in eC
+---------------------------------------
+ ( November 2005 )      
+
+ * Debugger work begins (GDB integration)
+----------------------------------------
+ ( September 2005 )
+
+  * eC Distributed Objects
+  * CodeGuard Server/Client
+----------------------------------------
+ ( July 25, 2005 )
+
+ * Ecere Corporation 
+---------------------------------------
+ ( 2004 - 2005 ) (v3)
+   * eC Language & Compiler
+
+   * Modern Ecere IDE
+      - Intelligent Code Editor
+      - Methods & property sheets
+      - Form Designer with Code/ Visual Synchronization
+ ---------------------------------------
+  ( November 2004 )
+
+ * Design of the eC language and development of the eC compiler starts
+----------------------------------------
+  ( October 2004 )
+
+ * CodeGuard ( Our own version control system )
+----------------------------------------
+  ( Summer 2004 )
+
+  * The Dreamix Project - a set top box PVR
+  * Python Bindings for Ecere
+----------------------------------------
+  ( Early 2004 )
+
+  * More native default skin (Win2K)
+  * IDE Project Building work begins
+----------------------------------------
+Ecere SDK 0.39 Pre-Release 4 (November 26, 2003)
+Ecere SDK 0.39 Pre-Release 3 (August 1, 2003)
+Ecere SDK 0.39 Pre-Release 1 (April 6, 2003)
+
+   * Ecere Archiver
+   * Resources Support
+----------------------------------------
+Ecere SDK 0.38 (January 18, 2003) (v2)
+
+   * Ecere is a C library working in DOS - SVGA/Console (Unfinished support),
+     Windows (GDI/OpenGL/DirectDraw/Direct3D) and Linux (Text only/NCurses)
+   * Ecere is modularized into sys, gfx, gui, net
+   * Original Ecere IDE (Text Editor + Original Form Designer)
+   * 3DS Support
+   * Networking Library (eCom, 2D Networked Ecere Chess)
+   * Common Controls:
+      - Button
+      - DropBox
+      - ListBox
+      - EditBox
+      - Label
+      - Menu
+      - ScrollBar
+      - StatusBar
+      - MessageBox
+   * C++ wrapper class library
+----------------------------------------
+Ecere SDK 0.37.5 (September 2, 2001) (v1)
+
+   * BMP Support
+   * Quaternion rotation system, with SLERP'ing cameras
+   * 3Dfx GLIDE, OpenGL, DirectDraw, GDI, SVGALib
+   * Real Time Optimally Adapting Mesh (ROAM) system for terrain
+   * Object oriented window & event-driven messaging system
+   * Graphical User Interface runs in either Win32 Console,
+     Win32 API's window system, ECERE GUI system within a Win32 window,
+     NCURSES character based console for terminal support,
+     SVGALib interface (graphical or through the virtual console),
+     DOS (graphical or text mode)
+   * Supports Linux (GCC), DOS (DJGPP/Watcom), Win32 (Watcom/Borland/Visual)
+   * Joystick interface
+   * A full-featured multiline edit box control
+----------------------------------------
+Ecere SDK 0.26 (1999) (v0)
+
+   * DOS (DJGPP) C library (graphical or text mode)
+   * 24 bit True color VESA or palletized bitmap/video support
+   * 3D Software Rendering
+   * ASCII 3D models (.ASC) loading
+   * FLC / FLI video playback support
+   * SoundBlaster Support
+   * MIDI (MPU/OPL3) player
+   * S3M player
+   * CD Audio Playback
+   * GUI CD Player
+----------------------------------------
+DirectDraw WarCraft II Clone (1997-1998)
+
+   * A*
+----------------------------------------
+DJGPP WarCraft II Clone (Summer 1997) 
+
+   * 256 colors VESA Support
+   * WarCraft II font format support
+   * Sprites and tiles
+   * Button GUI Components
+   * DOS Interface Mouse / Keyboard
+----------------------------------------
+The 3D Coding Blackhole Tutorial (http://ecere.com/3dbhole/ - 1996)
+
+   * Software textured polygon filling 3D engine (DOS/DJGPP)
+   * Gouraud and Flat Shading
+   * PCX loading/saving (Run Length Encoding compression)
