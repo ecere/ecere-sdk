@@ -546,7 +546,7 @@ ifdef DEBIAN_PACKAGE
 	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libec0
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libec0/
 	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libecerecom0
-	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz (DESTDIR)$(prefix)/share/doc/libecerecom0/
+	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libecerecom0/
 	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libeda0
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libeda0/
 	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libedasqlite0
