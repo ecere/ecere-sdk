@@ -79,8 +79,10 @@ HOSTTYPE := $(shell uname -m)
 ifndef LIBDIR
 ifeq "$(HOSTTYPE)" "x86_64"
 export LIBDIR=$(DESTDIR)$(prefix)/lib32
+export PREFIXLIBDIR=$(prefix)/lib32
 else
 export LIBDIR=$(DESTDIR)$(prefix)/lib
+export PREFIXLIBDIR=$(prefix)/lib
 endif
 endif
 
@@ -487,11 +489,11 @@ endif
 	ln -sf $(LP)EDA$(SOV) $(LIBDIR)/$(LP)EDA$(SO)
 	ln -sf $(LP)EDASQLite$(SOV) $(LIBDIR)/$(LP)EDASQLite$(SO)
 	mkdir -p -m 777 $(DESTDIR)$(prefix)/lib/ec
-	ln -sf $(LIBDIR)/$(LP)ecere$(SOV) $(prefix)/lib/ec/$(LP)ecere$(SO)
-	ln -sf $(LIBDIR)/$(LP)ecereCOM$(SOV) $(prefix)/lib/ec/$(LP)ecereCOM$(SO)
-	ln -sf $(LIBDIR)/$(LP)ec$(SOV) $(prefix)/lib/ec/$(LP)ec$(SO)
-	ln -sf $(LIBDIR)/$(LP)EDA$(SOV) $(prefix)/lib/ec/$(LP)EDA$(SO)
-	ln -sf $(LIBDIR)/$(LP)EDASQLite$(SOV) $(prefix)/lib/ec/$(LP)EDASQLite$(SO)
+	ln -sf $(PREFIXLIBDIR)/$(LP)ecere$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)ecere$(SO)
+	ln -sf $(PREFIXLIBDIR)/$(LP)ecereCOM$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)ecereCOM$(SO)
+	ln -sf $(PREFIXLIBDIR)/$(LP)ec$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)ec$(SO)
+	ln -sf $(PREFIXLIBDIR)/$(LP)EDA$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)EDA$(SO)
+	ln -sf $(PREFIXLIBDIR)/$(LP)EDASQLite$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)EDASQLite$(SO)
 ifdef EDASQLiteCipher
 	ln -sf $(LP)EDASQLiteCipher$(SOV) $(LIBDIR)/$(LP)EDASQLiteCipher$(SO)
 endif
