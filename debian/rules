@@ -1,19 +1,28 @@
 #!/usr/bin/make -f
 
 DEB_HOST_ARCH=$(shell dpkg-architecture -qDEB_HOST_ARCH)
+export DEBIAN_PACKAGE=1
 
 %:
 	dh $@
 
 override_dh_install:
 ifeq ($(DEB_HOST_ARCH),amd64)
-	cp debian/libecere.install.in64 debian/libecere.install
-	cp debian/ecere-sdk.install.in64 debian/ecere-sdk.install
+	cp debian/libecere0.install.in64 debian/libecere0.install
+	cp debian/libecerecom0.install.in64 debian/libecerecom0.install
+	cp debian/libeda0.install.in64 debian/libeda0.install
+	cp debian/libedasqlite0.install.in64 debian/libedasqlite0.install
+	cp debian/libec0.install.in64 debian/libec0.install
+	cp debian/ecere-dev.install.in64 debian/ecere-dev.install
 endif
 
 ifeq ($(DEB_HOST_ARCH),i386)
-	cp debian/libecere.install.in32 debian/libecere.install
-	cp debian/ecere-sdk.install.in32 debian/ecere-sdk.install
+	cp debian/libecere0.install.in32 debian/libecere0.install
+	cp debian/libecerecom0.install.in32 debian/libecerecom0.install
+	cp debian/libeda0.install.in32 debian/libeda0.install
+	cp debian/libedasqlite0.install.in32 debian/libedasqlite0.install
+	cp debian/libec0.install.in32 debian/libec0.install
+	cp debian/ecere-dev.install.in32 debian/ecere-dev.install
 endif
 	dh_install
 

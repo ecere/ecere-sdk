@@ -1,0 +1,3 @@
+libEDA.so.0 libeda0 #MINVER#
+ __ecereDll_Load@Base 0.44.01
+ __ecereDll_Unload@Base 0.44.01

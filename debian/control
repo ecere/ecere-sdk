@@ -1,4 +1,4 @@
-Source: ecere
+Source: ecere-sdk
 Section: devel
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
@@ -27,13 +27,24 @@ Homepage: http://www.ecere.com/
 
 Package: ecere-sdk
 Architecture: i386 armel armhf powerpc
-Depends: ecere-doc, ecere-samples, ecere-extras, libecere, ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
+Depends: ecere-dev, ecere-samples, ecere-extras, libeda0, libedasqlite0, ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Ecere cross-platform SDK
- This package provides the compiling tools
- for the eC language and the Ecere IDE, as
- well as EDA, Ecere's Data Access layer.
+ This package is a metapackage providing
+ the entire Ecere cross-platform SDK
+ (ecere-dev, ecere-samples, ecere-extras,
+ libeda0, libedasqlite0).
 
-Package: libecere
+Package: ecere-dev
+Architecture: i386 armel armhf powerpc
+Depends: libec0 (= ${binary:Version}), libecerecom0 (= ${binary:Version}), ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
+Description: Ecere SDK Development Tools
+ This package provides the compiling tools
+ for the eC language, the Ecere IDE,
+ as well as the symlinks for the Ecere
+ libraries.
+
+Package: libecere0
+Section: libs
 Architecture: i386 armel armhf powerpc
 Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Ecere Runtime Library
@@ -43,6 +54,46 @@ Description: Ecere Runtime Library
  Ecere SDK. It includes a GUI toolkit,
  2D/3D graphics engine, networking engine
  as well as system functionality.
+
+Package: libecerecom0
+Section: libs
+Architecture: i386 armel armhf powerpc
+Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
+Description: eC Core Runtime Library
+ This package provides the bare minimum
+ runtime library for applications
+ written in eC.
+
+Package: libec0
+Section: libs
+Architecture: i386 armel armhf powerpc
+Depends: libecere0 (= ${binary:Version}), ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
+Description: Ecere Compiler Library
+ This package provides the eC compiler.
+ It is used by the Ecere IDE, as well
+ as the eC compiling tools (ecp, ecc, ecs).
+ It could also be used by applications
+ wanting to parse or compile eC code.
+
+Package: libeda0
+Section: libs
+Architecture: i386 armel armhf powerpc
+Depends: libecere0, ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
+Description: Ecere Data Access
+ This package provides the Ecere
+ Data Access RDBMS abstraction layer.
+ The Ecere Database (EDB) engine is built-in.
+ For SQLite support, the SQLite driver
+ (libedasqlite0) is also required.
+
+Package: libedasqlite0
+Section: libs
+Architecture: i386 armel armhf powerpc
+Depends: libeda0, ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
+Description: EDA SQLite Driver
+ This package provides SQLite driver
+ for building database applications
+ with the Ecere Database Access layer.
 
 Package: ecere-samples
 Architecture: all
@@ -54,21 +105,10 @@ Description: Project samples for the Ecere SDK
  software that can be created with
  the Ecere SDK.
 
-Package: ecere-doc
-Architecture: all
-Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
-Description: Documentation for the Ecere SDK
- This package includes the Ecere Tao
- of Programming, an ebook designed
- to help programmers become familiar
- with eC and Ecere, as well the API
- reference in the form of .eCdoc
- until it is embedded in the library.
-
 Package: ecere-extras
 Architecture: all
 Depends: ${devel:Depends}, ${shlibs:Depends}, ${misc:Depends}
-Description:Extras for the Ecere SDK
+Description: Extras for the Ecere SDK
  This package provides additional Ecere
  functionality, such as SSL Sockets,
  Audio, in the form of source code.

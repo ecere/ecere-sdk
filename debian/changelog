@@ -1,4 +1,4 @@
-ecere (0.44.01-0ubuntu1) quantal; urgency=low
+ecere-sdk (0.44.01-0ubuntu1) quantal; urgency=low
 
   * Initial packaging of Ecere SDK for Debian. (Closes: #665332, LP: #394998)
 
