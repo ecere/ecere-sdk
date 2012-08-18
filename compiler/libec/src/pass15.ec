@@ -7857,7 +7857,7 @@ void ProcessExpressionType(Expression exp)
             {
                if(type1 && type2 &&
                   // If either both are class or both are not class
-                  ((type1.kind == classType && strcmp(type1._class.string, "String")) == (type2.kind == classType && strcmp(type2._class.string, "String"))))
+                  ((type1.kind == classType && type1._class && strcmp(type1._class.string, "String")) == (type2.kind == classType && type2._class && strcmp(type2._class.string, "String"))))
                {
                   if(exp.op.exp2.destType) FreeType(exp.op.exp2.destType);
                   exp.op.exp2.destType = type1;
