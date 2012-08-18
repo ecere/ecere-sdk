@@ -2,6 +2,7 @@ namespace sys;
 
 // Platform includes
 #define uint _uint
+#define set _set
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -9,6 +10,7 @@ namespace sys;
 #include <pthread.h>
 #endif
 #undef uint
+#undef set
 
 import "instance"
 

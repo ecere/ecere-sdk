@@ -1803,8 +1803,10 @@ void InitializeDataTypes(Module module)
    RegisterClass_String(module);
 }
 
+#define uint _uint
 #include <stdarg.h>
 #include <stdio.h>
+#undef uint
 
 public int PrintStdArgsToBuffer(char * buffer, int maxLen, typed_object object, va_list args)
 {

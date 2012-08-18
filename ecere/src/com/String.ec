@@ -1,5 +1,6 @@
 namespace sys;
 
+#define set _set
 #define uint _uint
 
 default:
@@ -16,6 +17,7 @@ default:
 #endif
 
 #undef uint
+#undef set
 private:
 
 import "instance"
