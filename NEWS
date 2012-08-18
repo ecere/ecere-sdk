@@ -49,8 +49,7 @@ Ecere SDK 0.44 draft 1 (December 25, 2008)
    * The Ecere SDK is now Open Source under the revised BSD license.
    * An automatic bootstrapping/build system was implemented.
    * Mac OS X and PowerPC support was improved. A SQLite driver was added for the Ecere Data Access system.
-   * New IDE configuration options enable the integration of cross compilers. Lots
-   * of bugs were fixed.
+   * New IDE configuration options enable the integration of cross compilers. Lots of bugs were fixed.
    * A tab control was added
 ----------------------------------------
 Ecere SDK 0.43 (September 4, 2008)
@@ -220,6 +219,7 @@ Ecere SDK 0.38 (January 18, 2003) (v2)
 Ecere SDK 0.37.5 (September 2, 2001) (v1)
 
    * BMP Support
+   * PCX saving (Run Length Encoding compression)
    * 3Dfx GLIDE, OpenGL, DirectDraw, GDI, SVGALib
    * Object oriented window & event-driven messaging system
    * Graphical User Interface runs in either Win32 Console,
@@ -233,7 +233,7 @@ Ecere SDK 0.37.5 (September 2, 2001) (v1)
 ----------------------------------------
  (1999-2001)
 
- (Simis) Flight Sim Toolkit Enthusiast Update
+ (Simis) Flight Sim Toolkit Enthusiasts Update
    * 3Dfx GLIDE and OpenGL Support
    * Quaternion rotation system, with SLERP'ing cameras
    * Real Time Optimally Adapting Mesh (ROAM) system for terrain
@@ -267,4 +267,4 @@ The 3D Coding Blackhole Tutorial (http://ecere.com/3dbhole/ - 1996)
 
    * Software textured polygon filling 3D engine (DOS/DJGPP)
    * Gouraud and Flat Shading
-   * PCX loading/saving (Run Length Encoding compression)
+   * PCX loading
