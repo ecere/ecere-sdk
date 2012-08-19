@@ -74,6 +74,7 @@ Ecere SDK 0.42 (May 16, 2008)
    * X support was improved.
    * IDE improvements were made.
    * Numerous bugs were fixed.
+   * The eC Compiler is self-hosting
 ----------------------------------------
  (December 5, 2007)
 
@@ -137,7 +138,7 @@ Ecere SDK 0.41.17 (October 29, 2007)
 ----------------------------------------
  (October 21, 2007)
 
-   * Ecere Communicator 0.01
+   * Ecere Communicator 0.01 (Jabber & MSN Support)
 ----------------------------------------
 Ecere SDK 0.41.16 (August 30, 2007)
 ----------------------------------------
@@ -179,6 +180,7 @@ Ecere SDK 0.40 (September 27, 2006) (v3)
 ----------------------------------------
   ( Summer 2004 )
 
+  * ICQ/AIM Ecere Communitcator (eMessenger)
   * The Dreamix Project - a set top box PVR
   * Python Bindings for Ecere
 ----------------------------------------
@@ -187,6 +189,7 @@ Ecere SDK 0.40 (September 27, 2006) (v3)
   * More native default skin (Win2K)
   * IDE Project Building work begins
 ----------------------------------------
+Ecere SDK 0.39 Pre-Release 5 (March 8, 2004)
 Ecere SDK 0.39 Pre-Release 4 (November 26, 2003)
 Ecere SDK 0.39 Pre-Release 3 (August 1, 2003)
 Ecere SDK 0.39 Pre-Release 1 (April 6, 2003)
@@ -203,7 +206,7 @@ Ecere SDK 0.38 (January 18, 2003) (v2)
    * Ecere is modularized into sys, gfx, gui, net
    * Original Ecere IDE (Text Editor + Original Form Designer)
    * 3DS Support
-   * Networking Library (eCom, 2D Networked Ecere Chess)
+   * Networking Library (2D Networked Ecere Chess)
    * Common Controls:
       - Button
       - DropBox
@@ -216,7 +219,17 @@ Ecere SDK 0.38 (January 18, 2003) (v2)
       - MessageBox
    * C++ wrapper class library
 ----------------------------------------
-Ecere SDK 0.37.5 (September 2, 2001) (v1)
+ ( May 2002 )
+
+   * eCom (File transfer / Chat client)
+----------------------------------------
+Ecere SDK 0.37.7 (May 9, 2001)
+
+   * TCP/IP Sockets
+----------------------------------------
+Ecere SDK 0.37.5 (September 2, 2000)
+----------------------------------------
+Ecere SDK 0.37.4 (June 12, 2000) (v1)
 
    * BMP Support
    * PCX saving (Run Length Encoding compression)
