@@ -1171,8 +1171,9 @@ private:
       return result;
    }
 
-   bool GetIDECompilerConfigsDir(char * cfDir)
+   bool GetIDECompilerConfigsDir(char * cfDir, bool replaceSpaces)
    {
+      char temp[MAX_LOCATION];
       bool result = false;
       strcpy(cfDir, topNode.path);
       if(ideSettings.compilerConfigsDir && ideSettings.compilerConfigsDir[0])
@@ -1186,8 +1187,18 @@ private:
          PathCatSlash(cfDir, ".configs");
          result = true;
       }
+      strcpy(temp, cfDir);
+      // Using a relative path makes it less likely to run into spaces issues
+      // Even with escaped spaces, there still seems to be issues including a config file
+      // in a path containing spaces
+      MakePathRelative(temp, topNode.path, cfDir);
       if(cfDir && cfDir[0] && cfDir[strlen(cfDir)-1] != '/')
          strcat(cfDir, "/");
+      if(replaceSpaces)
+      {
+         strcpy(temp, cfDir);
+         ReplaceSpaces(cfDir, temp);
+      }
       return result;
    }
 
@@ -1654,7 +1665,7 @@ private:
             int len;
             char pushD[MAX_LOCATION];
             char cfDir[MAX_LOCATION];
-            GetIDECompilerConfigsDir(cfDir);
+            GetIDECompilerConfigsDir(cfDir, true);
             GetWorkingDir(pushD, sizeof(pushD));
             ChangeWorkingDir(topNode.path);
             // Create object dir if it does not exist already
@@ -1693,8 +1704,8 @@ private:
       else
       {
          char cfDir[MAX_LOCATION];
-         GetIDECompilerConfigsDir(cfDir);
-         sprintf(command, "%s CF_DIR=%s COMPILER=%s -j%d %s%s%s -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, numJobs,
+         GetIDECompilerConfigsDir(cfDir, true);
+         sprintf(command, "%s CF_DIR=\"%s\" COMPILER=%s -j%d %s%s%s -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",
                makeTarget, topNode.path, makeFilePath);
@@ -1752,7 +1763,7 @@ private:
       else
       {
          char cfDir[MAX_LOCATION];
-         GetIDECompilerConfigsDir(cfDir);
+         GetIDECompilerConfigsDir(cfDir, true);
          sprintf(command, "%s CF_DIR=%s COMPILER=%s %sclean -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, realclean ? "real" : "", topNode.path, makeFilePath);
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
          {
@@ -1852,7 +1863,7 @@ private:
       char path[MAX_LOCATION];
 
       if(!GetProjectCompilerConfigsDir(path))
-         GetIDECompilerConfigsDir(path);
+         GetIDECompilerConfigsDir(path, false);
 
       if(!FileExists(path).isDirectory)
       {
@@ -1905,7 +1916,7 @@ private:
       name = PrintString(platform, "-", compilerName, ".cf");
 
       if(!GetProjectCompilerConfigsDir(path))
-         GetIDECompilerConfigsDir(path);
+         GetIDECompilerConfigsDir(path, false);
 
       if(!FileExists(path).isDirectory)
       {
