@@ -304,8 +304,10 @@ class BMPFormat : BitmapFormat
       
       BMPHead header;
       BMPInfo info;
-
-      if(f.Read(header, sizeof(header), 1) && header.type[0] == 'B' && header.type[1] == 'M' && f.Read(info, sizeof(info), 1))
+      // if(f.Read(&header, sizeof(header), 1) && header.type[0] == 'B' && header.type[1] == 'M' && f.Read(info, sizeof(info), 1))
+      if(f.Read(&header.type, 2, 1) && header.type[0] == 'B' && header.type[1] == 'M' &&
+         f.Read(&header.size,sizeof(header) - (uint)&((BMPHead *)0)->size,1) &&
+         f.Read(info, sizeof(info), 1))
       {
          header.Swap();
          info.Swap();
@@ -336,7 +338,8 @@ class BMPFormat : BitmapFormat
 
             header.Swap();
 
-            if(f.Write(&header,sizeof(header),1))
+            //if(f.Write(&header,sizeof(header),1))
+            if(f.Write(&header.type, 2, 1) && f.Write(&header.size,sizeof(header) - (uint)&((BMPHead *)0)->size,1))
             {
                BMPInfo info;  
 
@@ -488,7 +491,7 @@ class BMPFormat : BitmapFormat
       {
          BMPHead header;
          //Load BMP header
-         if(f.Read(&header,sizeof(header),1))
+         if(f.Read(&header.type, 2, 1) && f.Read(&header.size,sizeof(header) - (uint)&((BMPHead *)0)->size,1))
          {
             BMPInfo info;
             if(f.Read(&info,sizeof(info),1))
