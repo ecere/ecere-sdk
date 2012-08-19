@@ -77,7 +77,8 @@ class PictureEdit : Window
             modeMenu, $"RGB Color", r, isRadio = true;
             bool NotifySelect(MenuItem selection, Modifiers mods)
             {
-               bitmap.Convert(null, pixelFormat888, null);
+               if(bitmap)
+                  bitmap.Convert(null, pixelFormat888, null);
                imageModeColorTableItem.disabled = true;
                Update(null);
                modifiedDocument = true;

@@ -144,7 +144,7 @@ Ecere SDK 0.41.16 (August 30, 2007)
 ----------------------------------------
 Ecere SDK 0.40 (September 27, 2006) (v3)
 
- * All SDK tools are now written in eC
+ * The Ecere runtime library and the IDE are now written in eC
  * Windows Installer packaging MinGW
 ---------------------------------------
  ( November 2005 )      
