@@ -585,16 +585,16 @@ class Installer : Window
       bool NotifyChanged(ListBox listBox, DataRow row)
       {
          Component * component = ((CheckItem *)listBox.GetData(componentField))->data;
-         char path[MAX_LOCATION], relative[MAX_LOCATION] = "", ** newPath;
+         char path[MAX_LOCATION], relative[MAX_LOCATION] = "", * newPath;
          char fullPath[MAX_LOCATION];
 
          component->parent->GetFullPath(path);
          strcpy(fullPath, path);
 
-         newPath = (char **)row.GetData(locationField);
-         if(newPath && *newPath)
+         newPath = row.GetData(locationField);
+         if(newPath)
          {
-            PathCat(fullPath, *newPath);
+            PathCat(fullPath, newPath);
             MakePathRelative(fullPath, path, relative);
          }
          listBox.SetData(locationField, relative);
