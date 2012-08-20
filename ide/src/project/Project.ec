@@ -1157,21 +1157,37 @@ private:
       }
    }
 
-   bool GetProjectCompilerConfigsDir(char * cfDir)
+   bool GetProjectCompilerConfigsDir(char * cfDir, bool replaceSpaces, bool makeRelative)
    {
       bool result = false;
+      char temp[MAX_LOCATION];
       strcpy(cfDir, topNode.path);
       if(compilerConfigsDir && compilerConfigsDir[0])
       {
          PathCatSlash(cfDir, compilerConfigsDir);
          result = true;
       }
+      if(makeRelative)
+      {
+         strcpy(temp, cfDir);
+         // Using a relative path makes it less likely to run into spaces issues
+         // Even with escaped spaces, there still seems to be issues including a config file
+         // in a path containing spaces
+
+         MakePathRelative(temp, topNode.path, cfDir);
+      }
+
       if(cfDir && cfDir[0] && cfDir[strlen(cfDir)-1] != '/')
          strcat(cfDir, "/");
+      if(replaceSpaces)
+      {
+         strcpy(temp, cfDir);
+         ReplaceSpaces(cfDir, temp);
+      }
       return result;
    }
 
-   bool GetIDECompilerConfigsDir(char * cfDir, bool replaceSpaces)
+   bool GetIDECompilerConfigsDir(char * cfDir, bool replaceSpaces, bool makeRelative)
    {
       char temp[MAX_LOCATION];
       bool result = false;
@@ -1187,11 +1203,15 @@ private:
          PathCatSlash(cfDir, ".configs");
          result = true;
       }
-      strcpy(temp, cfDir);
-      // Using a relative path makes it less likely to run into spaces issues
-      // Even with escaped spaces, there still seems to be issues including a config file
-      // in a path containing spaces
-      MakePathRelative(temp, topNode.path, cfDir);
+      if(makeRelative)
+      {
+         strcpy(temp, cfDir);
+         // Using a relative path makes it less likely to run into spaces issues
+         // Even with escaped spaces, there still seems to be issues including a config file
+         // in a path containing spaces
+
+         MakePathRelative(temp, topNode.path, cfDir);
+      }
       if(cfDir && cfDir[0] && cfDir[strlen(cfDir)-1] != '/')
          strcat(cfDir, "/");
       if(replaceSpaces)
@@ -1665,7 +1685,7 @@ private:
             int len;
             char pushD[MAX_LOCATION];
             char cfDir[MAX_LOCATION];
-            GetIDECompilerConfigsDir(cfDir, true);
+            GetIDECompilerConfigsDir(cfDir, true, true);
             GetWorkingDir(pushD, sizeof(pushD));
             ChangeWorkingDir(topNode.path);
             // Create object dir if it does not exist already
@@ -1704,7 +1724,7 @@ private:
       else
       {
          char cfDir[MAX_LOCATION];
-         GetIDECompilerConfigsDir(cfDir, true);
+         GetIDECompilerConfigsDir(cfDir, true, true);
          sprintf(command, "%s CF_DIR=\"%s\" COMPILER=%s -j%d %s%s%s -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",
@@ -1763,7 +1783,7 @@ private:
       else
       {
          char cfDir[MAX_LOCATION];
-         GetIDECompilerConfigsDir(cfDir, true);
+         GetIDECompilerConfigsDir(cfDir, true, true);
          sprintf(command, "%s CF_DIR=%s COMPILER=%s %sclean -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, realclean ? "real" : "", topNode.path, makeFilePath);
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
          {
@@ -1862,8 +1882,8 @@ private:
       bool result = false;
       char path[MAX_LOCATION];
 
-      if(!GetProjectCompilerConfigsDir(path))
-         GetIDECompilerConfigsDir(path, false);
+      if(!GetProjectCompilerConfigsDir(path, false, false))
+         GetIDECompilerConfigsDir(path, false, false);
 
       if(!FileExists(path).isDirectory)
       {
@@ -1915,8 +1935,8 @@ private:
       CamelCase(compilerName);
       name = PrintString(platform, "-", compilerName, ".cf");
 
-      if(!GetProjectCompilerConfigsDir(path))
-         GetIDECompilerConfigsDir(path, false);
+      if(!GetProjectCompilerConfigsDir(path, false, false))
+         GetIDECompilerConfigsDir(path, false, false);
 
       if(!FileExists(path).isDirectory)
       {
