@@ -10138,8 +10138,8 @@ void ProcessExpressionType(Expression exp)
 #ifdef _DEBUG
                   CheckExpressionType(exp, exp.destType, false);
 #endif
-                  // Flex generates code that triggers this, so we ignore it for a quiet sdk build:
-                  if(strcmp(sourceFile, "src\\lexer.ec") && strcmp(sourceFile, "src/lexer.ec"))
+                  // Flex & Bison generate code that triggers this, so we ignore it for a quiet sdk build:
+                  if(!sourceFile || (strcmp(sourceFile, "src\\lexer.ec") && strcmp(sourceFile, "src/lexer.ec") && strcmp(sourceFile, "src\\grammar.ec") && strcmp(sourceFile, "src/grammar.ec")))
                      Compiler_Warning($"incompatible expression %s (%s); expected %s\n", expString, type1, type2);
 
                   // TO CHECK: FORCING HERE TO HELP DEBUGGER

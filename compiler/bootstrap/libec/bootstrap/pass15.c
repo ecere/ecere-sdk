@@ -14406,7 +14406,7 @@ if(inCompiler)
 PrintExpression(exp, expString);
 __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
 }
-if(strcmp(sourceFile, "src\\lexer.ec") && strcmp(sourceFile, "src/lexer.ec"))
+if(!sourceFile || (strcmp(sourceFile, "src\\lexer.ec") && strcmp(sourceFile, "src/lexer.ec") && strcmp(sourceFile, "src\\grammar.ec") && strcmp(sourceFile, "src/grammar.ec")))
 Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "incompatible expression %s (%s); expected %s\n", (((void *)0))), expString, type1, type2);
 FreeType(exp->expType);
 exp->destType->refCount++;
