@@ -31,12 +31,12 @@ msgstr ":%d:%d: warning: "
 msgid "Array size not constant int (%s)\n"
 msgstr "Array size not constant int (%s)\n"
 
-#: ./src/pass15.ec:10359
+#: ./src/pass15.ec:10361
 msgid "Assigning list initializer to non list\n"
 msgstr "Assigning list initializer to non list\n"
 
 #: ./src/pass15.ec:10025
-#: ./src/pass15.ec:11070
+#: ./src/pass15.ec:11072
 msgid "Couldn't determine type of array elements\n"
 msgstr "Couldn't determine type of array elements\n"
 
@@ -52,7 +52,7 @@ msgstr "Couldn't open %s\n"
 msgid "Expecting class specifier\n"
 msgstr "Expecting class specifier\n"
 
-#: ./src/pass15.ec:11228
+#: ./src/pass15.ec:11230
 msgid "Expression is not a container\n"
 msgstr "Expression is not a container\n"
 
@@ -64,12 +64,12 @@ msgstr "Includes nested too deeply"
 msgid "Incompatible virtual function %s\n"
 msgstr "Incompatible virtual function %s\n"
 
-#: ./src/pass15.ec:11502
-#: ./src/pass15.ec:11577
+#: ./src/pass15.ec:11504
+#: ./src/pass15.ec:11579
 msgid "Invalid object specified and not inside a class\n"
 msgstr "Invalid object specified and not inside a class\n"
 
-#: ./src/pass15.ec:11410
+#: ./src/pass15.ec:11412
 msgid "Invalid watched object\n"
 msgstr "Invalid watched object\n"
 
@@ -94,11 +94,11 @@ msgstr "Multiple field index requires a name\n"
 msgid "No database table defined in this module or database_open already used.\n"
 msgstr "No database table defined in this module or database_open already used.\n"
 
-#: ./src/pass15.ec:11423
+#: ./src/pass15.ec:11425
 msgid "No observer specified and not inside a _class\n"
 msgstr "No observer specified and not inside a _class\n"
 
-#: ./src/pass15.ec:11580
+#: ./src/pass15.ec:11582
 msgid "No observer specified and not inside a class\n"
 msgstr "No observer specified and not inside a class\n"
 
@@ -112,9 +112,9 @@ msgid "Non-static %s making use of a static class\n"
 msgstr "Non-static %s making use of a static class\n"
 
 #: ./src/pass1.ec:1035
-#: ./src/pass15.ec:11405
-#: ./src/pass15.ec:11477
-#: ./src/pass15.ec:11566
+#: ./src/pass15.ec:11407
+#: ./src/pass15.ec:11479
+#: ./src/pass15.ec:11568
 msgid "Property %s not found in class %s\n"
 msgstr "Property %s not found in class %s\n"
 
@@ -190,7 +190,7 @@ msgstr "couldn't determine type of %s; expected %s\n"
 #: ./src/pass15.ec:8315
 #: ./src/pass15.ec:8327
 #: ./src/pass15.ec:10112
-#: ./src/pass15.ec:10186
+#: ./src/pass15.ec:10188
 msgid "couldn't determine type of %s\n"
 msgstr "couldn't determine type of %s\n"
 
@@ -209,7 +209,7 @@ msgid "different levels of indirection\n"
 msgstr "different levels of indirection\n"
 
 #: ./src/pass15.ec:7786
-#: ./src/pass15.ec:10141
+#: ./src/pass15.ec:10143
 msgid "incompatible expression %s (%s); expected %s\n"
 msgstr "incompatible expression %s (%s); expected %s\n"
 
@@ -299,6 +299,13 @@ msgid "redefinition of destructor for class %s\n"
 msgstr "redefinition of destructor for class %s\n"
 
 #: ./src/ecdefs.ec:1282
+#: ./src/grammar.ec:3084
+#: ./src/grammar.ec:3085
+#: ./src/grammar.ec:3086
+#: ./src/grammar.ec:3087
+#: ./src/grammar.ec:3088
+#: ./src/grammar.ec:3089
+#: ./src/grammar.ec:3090
 msgid "syntax error\n"
 msgstr "syntax error\n"
 
@@ -322,7 +329,7 @@ msgstr "too many parameters\n"
 msgid "undefined class %s\n"
 msgstr "undefined class %s\n"
 
-#: ./src/pass15.ec:10177
+#: ./src/pass15.ec:10179
 msgid "unresolved identifier %s::%s\n"
 msgstr "unresolved identifier %s::%s\n"
 
@@ -331,7 +338,7 @@ msgid "unresolved identifier %s; expected %s\n"
 msgstr "unresolved identifier %s; expected %s\n"
 
 #: ./src/pass15.ec:10110
-#: ./src/pass15.ec:10179
+#: ./src/pass15.ec:10181
 msgid "unresolved identifier %s\n"
 msgstr "unresolved identifier %s\n"
 

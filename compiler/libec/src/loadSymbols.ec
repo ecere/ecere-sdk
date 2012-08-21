@@ -7,7 +7,7 @@ public void SetGlobalData(NameSpace * nameSpace) { globalData = nameSpace; }
 
 OldList dataRedefinitions;
 
-#define MAX_INCLUDE_DEPTH 10
+// #define MAX_INCLUDE_DEPTH 10
 
 extern char sourceFileStack[MAX_INCLUDE_DEPTH][MAX_LOCATION];
 extern int include_stack_ptr;

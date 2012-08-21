@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./src/project/Project.ec:1361
+#: ./src/project/Project.ec:1392
 msgid "   %s: No such file or directory\n"
 msgstr "   %s: No such file or directory\n"
 
@@ -337,7 +337,7 @@ msgstr "Build project"
 msgid "Builder"
 msgstr "Builder"
 
-#: ./src/project/Project.ec:1438
+#: ./src/project/Project.ec:1469
 msgid "Building library...\n"
 msgstr "Building library...\n"
 
@@ -411,7 +411,7 @@ msgstr "Cleaning project %s using the %s configuration...\n"
 msgid "Clear"
 msgstr "Clear"
 
-#: ./src/documents/PictureEdit.ec:278
+#: ./src/documents/PictureEdit.ec:279
 #: ./src/ide.ec:643
 #: ./src/ide.ec:833
 msgid "Close"
@@ -429,8 +429,8 @@ msgstr "Close IDE"
 msgid "Color Picker..."
 msgstr "Color Picker..."
 
-#: ./src/documents/PictureEdit.ec:90
-#: ./src/documents/PictureEdit.ec:272
+#: ./src/documents/PictureEdit.ec:91
+#: ./src/documents/PictureEdit.ec:273
 msgid "Color Table"
 msgstr "Color Table"
 
@@ -485,7 +485,7 @@ msgstr "Compiling single file %s in project %s using the %s configuration...\n"
 msgid "Compiling single file %s in project %s...\n"
 msgstr "Compiling single file %s in project %s...\n"
 
-#: ./src/project/Project.ec:1409
+#: ./src/project/Project.ec:1440
 msgid "Compiling...\n"
 msgstr "Compiling...\n"
 
@@ -508,6 +508,11 @@ msgstr "Condition"
 msgid "Configurations: "
 msgstr "Configurations: "
 
+#: ./src/designer/CodeEditor.ec:38
+#: ./src/designer/CodeEditor.ec:39
+msgid "Consolas"
+msgstr "Consolas"
+
 #: ./src/ProjectSettings.ec:2039
 msgid "Console Application"
 msgstr "Console Application"
@@ -525,11 +530,6 @@ msgstr "Couldn't create file."
 #: ./src/debugger/Debugger.ec:2382
 msgid "Couldn't read memory"
 msgstr "Couldn't read memory"
-
-#: ./src/designer/CodeEditor.ec:35
-#: ./src/designer/CodeEditor.ec:36
-msgid "Courier New"
-msgstr "Courier New"
 
 #: ./src/dialogs/NewProjectDialog.ec:215
 msgid "Create Form"
@@ -582,11 +582,11 @@ msgstr "Debugging compressed applications is not supported\n"
 msgid "Debugging stopped\n"
 msgstr "Debugging stopped\n"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:1109
+#: ./src/dialogs/GlobalSettingsDialog.ec:1110
 msgid "Default Compiler"
 msgstr "Default Compiler"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:1074
+#: ./src/dialogs/GlobalSettingsDialog.ec:1075
 msgid "Default Intermediate Objects Directory"
 msgstr "Default Intermediate Objects Directory"
 
@@ -594,7 +594,7 @@ msgstr "Default Intermediate Objects Directory"
 msgid "Default Name Space"
 msgstr "Default Name Space"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:1061
+#: ./src/dialogs/GlobalSettingsDialog.ec:1062
 msgid "Default Target Directory"
 msgstr "Default Target Directory"
 
@@ -616,7 +616,7 @@ msgstr "Delete %s"
 msgid "Delete Folder"
 msgstr "Delete Folder"
 
-#: ./src/project/Project.ec:1759
+#: ./src/project/Project.ec:1790
 msgid "Deleting target and object files..."
 msgstr "Deleting target and object files..."
 
@@ -694,11 +694,11 @@ msgstr "Editor"
 msgid "Empty string"
 msgstr "Empty string"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:802
+#: ./src/dialogs/GlobalSettingsDialog.ec:803
 msgid "Environment"
 msgstr "Environment"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:808
+#: ./src/dialogs/GlobalSettingsDialog.ec:809
 #: ./src/dialogs/WorkspaceSettings.ec:29
 msgid "Environment Variables"
 msgstr "Environment Variables"
@@ -707,7 +707,7 @@ msgstr "Environment Variables"
 msgid "Error creating directory"
 msgstr "Error creating directory"
 
-#: ./src/project/Project.ec:1707
+#: ./src/project/Project.ec:1738
 msgid "Error executing make (%s) command\n"
 msgstr "Error executing make (%s) command\n"
 
@@ -762,7 +762,7 @@ msgstr "Exit"
 msgid "Expression"
 msgstr "Expression"
 
-#: ./src/project/Project.ec:1562
+#: ./src/project/Project.ec:1593
 msgid "Fatal Error: child process terminated unexpectedly\n"
 msgstr "Fatal Error: child process terminated unexpectedly\n"
 
@@ -902,7 +902,7 @@ msgstr "Generating Visual Studio Project..."
 msgid "Generating Visual Studio Solution..."
 msgstr "Generating Visual Studio Solution..."
 
-#: ./src/project/Project.ec:1414
+#: ./src/project/Project.ec:1445
 msgid "Generating symbols...\n"
 msgstr "Generating symbols...\n"
 
@@ -1037,7 +1037,7 @@ msgstr "Keep caret visible (move along) when scrolling"
 msgid "Lead Architect and Developer"
 msgstr "Lead Architect and Developer"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:958
+#: ./src/dialogs/GlobalSettingsDialog.ec:959
 msgid "Libraries to exclude:"
 msgstr "Libraries to exclude:"
 
@@ -1053,7 +1053,7 @@ msgstr "License"
 msgid "Linker"
 msgstr "Linker"
 
-#: ./src/project/Project.ec:1474
+#: ./src/project/Project.ec:1505
 msgid "Linker Error"
 msgstr "Linker Error"
 
@@ -1061,7 +1061,7 @@ msgstr "Linker Error"
 msgid "Linker Options"
 msgstr "Linker Options"
 
-#: ./src/project/Project.ec:1427
+#: ./src/project/Project.ec:1458
 msgid "Linking...\n"
 msgstr "Linking...\n"
 
@@ -1235,7 +1235,7 @@ msgstr "Null string"
 msgid "Null type for \"%s\""
 msgstr "Null type for \"%s\""
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:862
+#: ./src/dialogs/GlobalSettingsDialog.ec:863
 msgid "Number of parallel build jobs"
 msgstr "Number of parallel build jobs"
 
@@ -1297,7 +1297,7 @@ msgstr "Open..."
 msgid "Optimization"
 msgstr "Optimization"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:838
+#: ./src/dialogs/GlobalSettingsDialog.ec:839
 msgid "Options"
 msgstr "Options"
 
@@ -1353,7 +1353,7 @@ msgstr "Pre-build Commands"
 msgid "Preprocessor Definitions"
 msgstr "Preprocessor Definitions"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:977
+#: ./src/dialogs/GlobalSettingsDialog.ec:978
 msgid "Preprocessor directives:"
 msgstr "Preprocessor directives:"
 
@@ -1370,7 +1370,7 @@ msgctxt "Menu"
 msgid "Project"
 msgstr "Project"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:1055
+#: ./src/dialogs/GlobalSettingsDialog.ec:1056
 #: ./src/dialogs/ProjectTabSettings.ec:8
 msgid "Project"
 msgstr "Project"
@@ -1806,7 +1806,7 @@ msgstr "Target Directory"
 msgid "Target Name"
 msgstr "Target Name"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:844
+#: ./src/dialogs/GlobalSettingsDialog.ec:845
 msgid "Target Platform"
 msgstr "Target Platform"
 
@@ -1816,7 +1816,7 @@ msgstr "Target Platform"
 msgid "Target Type"
 msgstr "Target Type"
 
-#: ./src/project/Project.ec:1763
+#: ./src/project/Project.ec:1794
 msgid "Target and object files deleted\n"
 msgstr "Target and object files deleted\n"
 
@@ -1965,11 +1965,11 @@ msgstr "Untitled %d"
 msgid "Updating "
 msgstr "Updating "
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:901
+#: ./src/dialogs/GlobalSettingsDialog.ec:902
 msgid "Use ccache"
 msgstr "Use ccache"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:919
+#: ./src/dialogs/GlobalSettingsDialog.ec:920
 msgid "Use distcc"
 msgstr "Use distcc"
 
@@ -2038,7 +2038,7 @@ msgid "With contributions from..."
 msgstr "With contributions from..."
 
 #: ./src/dialogs/FindInFilesDialog.ec:441
-#: ./src/dialogs/GlobalSettingsDialog.ec:1103
+#: ./src/dialogs/GlobalSettingsDialog.ec:1104
 #: ./src/dialogs/WorkspaceSettings.ec:6
 msgid "Workspace"
 msgstr "Workspace"
@@ -2067,7 +2067,7 @@ msgstr "Would you like to save changes made to the project options?"
 msgid "Would you like to save changes made to the workspace options?"
 msgstr "Would you like to save changes made to the workspace options?"
 
-#: ./src/project/Project.ec:1440
+#: ./src/project/Project.ec:1471
 msgid "Writing symbol loader...\n"
 msgstr "Writing symbol loader...\n"
 
@@ -2087,12 +2087,12 @@ msgstr "You must provide a valid source directory in order to place a breakpoint
 msgid "You must specify a search location."
 msgstr "You must specify a search location."
 
-#: ./src/project/Project.ec:1292
-#: ./src/project/Project.ec:1554
+#: ./src/project/Project.ec:1323
+#: ./src/project/Project.ec:1585
 msgid "\nBuild cancelled by user.\n"
 msgstr "\nBuild cancelled by user.\n"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:939
+#: ./src/dialogs/GlobalSettingsDialog.ec:940
 msgid "distcc hosts"
 msgstr "distcc hosts"
 
@@ -2132,11 +2132,11 @@ msgstr "err: Unable to create FIFO %s\n"
 msgid "err: Unable to open FIFO %s for read\n"
 msgstr "err: Unable to open FIFO %s for read\n"
 
-#: ./src/project/Project.ec:1569
+#: ./src/project/Project.ec:1600
 msgid "error"
 msgstr "error"
 
-#: ./src/project/Project.ec:1569
+#: ./src/project/Project.ec:1600
 msgid "errors"
 msgstr "errors"
 
@@ -2154,11 +2154,11 @@ msgstr "found"
 msgid "inside %s, %s\n"
 msgstr "inside %s, %s\n"
 
-#: ./src/project/Project.ec:1571
+#: ./src/project/Project.ec:1602
 msgid "no error, "
 msgstr "no error, "
 
-#: ./src/project/Project.ec:1576
+#: ./src/project/Project.ec:1607
 msgid "no warning\n"
 msgstr "no warning\n"
 
@@ -2183,11 +2183,11 @@ msgstr "s were "
 msgid "unknown source\n"
 msgstr "unknown source\n"
 
-#: ./src/project/Project.ec:1574
+#: ./src/project/Project.ec:1605
 msgid "warning"
 msgstr "warning"
 
-#: ./src/project/Project.ec:1574
+#: ./src/project/Project.ec:1605
 msgid "warnings"
 msgstr "warnings"
 

@@ -11808,6 +11808,8 @@ extern struct Initializer * MkInitializerList(struct __ecereNameSpace__ecere__sy
 
 extern char *  __ecereNameSpace__ecere__com__PrintString(struct __ecereNameSpace__ecere__com__Class * class, void * object, ...);
 
+extern char *  sourceFile;
+
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(struct __ecereNameSpace__ecere__sys__OldList * this);
 
 void ProcessExpressionType(struct Expression * exp)
@@ -12421,7 +12423,7 @@ exp->op.exp2->expType->truth = 0x1;
 }
 else if(exp->op.exp1 && exp->op.exp2 && ((useSideType) || ((!type1 || type1->kind != 8 || !strcmp(type1->_class->string, "String")) && (!type2 || type2->kind != 8 || !strcmp(type2->_class->string, "String")))))
 {
-if(type1 && type2 && ((type1->kind == 8 && strcmp(type1->_class->string, "String")) == (type2->kind == 8 && strcmp(type2->_class->string, "String"))))
+if(type1 && type2 && ((type1->kind == 8 && type1->_class && strcmp(type1->_class->string, "String")) == (type2->kind == 8 && type2->_class && strcmp(type2->_class->string, "String"))))
 {
 if(exp->op.exp2->destType)
 FreeType(exp->op.exp2->destType);
@@ -14404,6 +14406,7 @@ if(inCompiler)
 PrintExpression(exp, expString);
 __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
 }
+if(strcmp(sourceFile, "src\\lexer.ec") && strcmp(sourceFile, "src/lexer.ec"))
 Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "incompatible expression %s (%s); expected %s\n", (((void *)0))), expString, type1, type2);
 FreeType(exp->expType);
 exp->destType->refCount++;

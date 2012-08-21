@@ -115,7 +115,7 @@ ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
   if (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
     return FFI_BAD_ABI;
 #else
-  if (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI || abi == FFI_THISCALL))
+  if (! ((abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI) || abi == FFI_THISCALL))
     return FFI_BAD_ABI;
 #endif
 
