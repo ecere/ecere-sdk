@@ -13,7 +13,12 @@ public struct ShortDate : Date
          "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
       };
       if(day || month || year)
-         sprintf(stringOutput, "%s %d, %d", months[month], day, year);
+      {
+         if(month >= january && month <= december)
+            sprintf(stringOutput, "%s %d, %d", months[month], day, year);
+         else
+            strcpy(stringOutput, "Invalid date");
+      }
       else
          stringOutput[0] = 0;
       return stringOutput;
