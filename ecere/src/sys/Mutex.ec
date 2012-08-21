@@ -1,5 +1,6 @@
 namespace sys;
 
+#define _GNU_SOURCE
 // Platform includes
 #define uint _uint
 #define set _set
@@ -54,7 +55,8 @@ public class Mutex : struct
       pthread_mutexattr_t attr;
       pthread_mutexattr_init(&attr);
 
-#ifdef __linux__
+      // settype is available on Linux now, and hopefully _GNU_SOURCE should ensure it is
+#if 0 // def __linux__
       pthread_mutexattr_setkind_np(&attr, PTHREAD_MUTEX_RECURSIVE_NP);
 #else
       pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
