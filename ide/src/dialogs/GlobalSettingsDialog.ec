@@ -788,6 +788,7 @@ class CompilerToolchainTab : CompilersSubTab
          ecsLabel.disabled = ecs.disabled = disabled;
          earLabel.disabled = ear.disabled = disabled;
          cppLabel.disabled = cpp.disabled = isVC || disabled;
+         cxxLabel.disabled = cxx.disabled = isVC || disabled;
          ccLabel.disabled = cc.disabled = isVC || disabled;
          makeLabel.disabled = make.disabled = disabled;
          execPrefixLabel.disabled = execPrefix.disabled = disabled;
