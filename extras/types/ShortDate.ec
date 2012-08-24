@@ -4,20 +4,21 @@ public import static "ecere"
 public import "ecere"
 #endif
 
+static Array<String> shortMonths
+{ [
+   $"Jan", $"Feb", $"Mar", $"Apr", $"May", $"Jun", $"Jul", $"Aug", $"Sep", $"Oct", $"Nov", $"Dec"
+] };
+
 public struct ShortDate : Date
 {
    char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
-      static const char months[12][4] = 
-      {
-         "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-      };
       if(day || month || year)
       {
          if(month >= january && month <= december)
-            sprintf(stringOutput, "%s %d, %d", months[month], day, year);
+            sprintf(stringOutput, "%s %d, %d", shortMonths[month], day, year);
          else
-            strcpy(stringOutput, "Invalid date");
+            strcpy(stringOutput, $"Invalid date");
       }
       else
          stringOutput[0] = 0;
