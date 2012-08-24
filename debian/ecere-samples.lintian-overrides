@@ -1,0 +1,4 @@
+# A sample usage for the LicensesDialog provided in ecere-extras
+# is provided in this package, with a sample license resource which is displayed
+# in addition to the licenses in the base LicensesDialog class
+ecere-samples binary: extra-license-file usr/share/ecere/samples/misc/licensing/myapp.LICENSE

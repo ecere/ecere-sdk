@@ -1,0 +1,7 @@
+# This extras package provides the source for a licenses dialog which can be used
+# in an Ecere application to acknowledge in the application interface itself
+# software used by or integrated with the Ecere SDK, and thus the resulting
+# application itself. It can be found in: extras/gui/LicensesDialog.ec
+# The licenses for those software components are thus provided as a convenience
+# for use together with that dialog in: extras/res/licenses/
+ecere-extras binary:  extra-license-file

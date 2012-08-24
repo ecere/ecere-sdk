@@ -1,5 +1,5 @@
-ecere (0.44.01) natty; urgency=low
+ecere-sdk (0.44.01-0ubuntu1) natty; urgency=low
 
-  First free and open source release of the Ecere SDK and runtime environment (LP: #394998)
+  * Initial packaging of Ecere SDK for Debian. (Closes: #665332, LP: #394998)
 
- -- NECDET COKYAZICI (Launchpad key) <cokyazici@gmail.com>  Tue, 6 Sep 2011 21:30:00 -0400
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Tue, 14 Aug 2012 06:58:00 -0400
