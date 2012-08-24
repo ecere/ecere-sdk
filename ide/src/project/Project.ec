@@ -1656,6 +1656,8 @@ private:
       char configName[MAX_LOCATION];
       DirExpression objDirExp = GetObjDir(compiler, config);
       PathBackup pathBackup { };
+      bool crossCompiling = (compiler.targetPlatform != GetRuntimePlatform());
+      char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
 
       int numJobs = compiler.numJobs;
       char command[MAX_LOCATION];
@@ -1690,7 +1692,8 @@ private:
             ChangeWorkingDir(topNode.path);
             // Create object dir if it does not exist already
             if(!FileExists(objDirExp.dir).isDirectory)
-               Execute("%s CF_DIR=%s COMPILER=%s objdir -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, topNode.path, makeFilePath);
+               Execute("%s CF_DIR=%s%s%s COMPILER=%s objdir -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir,
+                  crossCompiling ? " PLATFORM=" : "", targetPlatform, compilerName, topNode.path, makeFilePath);
             ChangeWorkingDir(pushD);
 
             PathCatSlash(makeTarget+1, objDirExp.dir);
@@ -1725,7 +1728,9 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s CF_DIR=\"%s\" COMPILER=%s -j%d %s%s%s -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, numJobs,
+         sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s -j%d %s%s%s -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir,
+               crossCompiling ? " PLATFORM=" : "", targetPlatform,
+               compilerName, numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",
                makeTarget, topNode.path, makeFilePath);
@@ -1752,6 +1757,8 @@ private:
       char * compilerName;
       DualPipe f;
       PathBackup pathBackup { };
+      bool crossCompiling = (compiler.targetPlatform != GetRuntimePlatform());
+      char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
 
       compilerName = CopyString(compiler.name);
       CamelCase(compilerName);
@@ -1784,7 +1791,8 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s CF_DIR=%s COMPILER=%s %sclean -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir, compilerName, realclean ? "real" : "", topNode.path, makeFilePath);
+         sprintf(command, "%s CF_DIR=%s%s%s COMPILER=%s %sclean -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir,
+            crossCompiling ? " PLATFORM=" : "", targetPlatform, compilerName, realclean ? "real" : "", topNode.path, makeFilePath);
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
          {
             ide.outputView.buildBox.Tell($"Deleting target and object files...");
@@ -1929,7 +1937,7 @@ private:
       char * name;
       char * compilerName;
       bool gccCompiler = compiler.ccCommand && (strstr(compiler.ccCommand, "gcc") != null || strstr(compiler.ccCommand, "g++") != null);
-      Platform platform = GetRuntimePlatform();
+      Platform platform = compiler.targetPlatform;
 
       compilerName = CopyString(compiler.name);
       CamelCase(compilerName);
@@ -1956,18 +1964,20 @@ private:
          File f = FileOpen(path, write);
          if(f)
          {
-            bool crossCompiling = compiler.targetPlatform != platform;
+            /*
+            if(compiler.targetPlatform != GetRuntimePlatform())
+               f.Printf("\nPLATFORM = %s\n", (char *)compiler.targetPlatform);
+            */
 
             f.Printf("# TOOLCHAIN\n\n");
 
-            //f.Printf("SHELL := %s\n", "ar"/*compiler.arCommand*/); // is this really needed?
+            //f.Printf("SHELL := %s\n", "sh"/*compiler.shellCommand*/); // is this really needed?
             f.Printf("CPP := %s\n", compiler.cppCommand);
             f.Printf("CC := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.ccCommand);
             f.Printf("CXX := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.cxxCommand);
             f.Printf("ECP := %s\n", compiler.ecpCommand);
             f.Printf("ECC := %s\n", compiler.eccCommand);
-            f.Printf("ECS := %s%s%s\n", compiler.ecsCommand,
-                  crossCompiling ? " -t " : "", crossCompiling ? (char*)compiler.targetPlatform : "");
+            f.Printf("ECS := %s -t $(PLATFORM)\n", compiler.ecsCommand);
             f.Printf("EAR := %s\n", compiler.earCommand);
 
             f.Printf("AS := as\n");
@@ -1981,19 +1991,14 @@ private:
             f.Printf("UPXFLAGS = -9\n\n"); // TOFEAT: Compression Level Option? Other UPX Options?
 
             f.Printf("# HARD CODED PLATFORM-SPECIFIC OPTIONS\n");
-            f.Printf("ifdef %s\n", PlatformToMakefileVariable(tux));
+            f.Printf("ifeq \"PLATFORM\" \"linux\"\n"); //, PlatformToMakefileVariable(tux));
             f.Printf("OFLAGS += -Wl,--no-undefined\n");
             f.Printf("endif\n\n");
 
             // JF's
-            f.Printf("ifdef %s\n", PlatformToMakefileVariable(apple));
+            f.Printf("ifeq \"PLATFORM\" \"apple\"\n"); //%s\n", PlatformToMakefileVariable(apple));
             f.Printf("OFLAGS += -framework cocoa -framework OpenGL\n");
             f.Printf("endif\n");
-
-            if(crossCompiling)
-            {
-               f.Printf("\nPLATFORM = %s\n", (char *)compiler.targetPlatform);
-            }
 
             if(gccCompiler)
             {
@@ -2027,6 +2032,8 @@ private:
                   f.Puts(l);
                }
             }
+            f.Printf("\nFORCE_64_BIT = %s", compiler.supportsBitDepth ? "-m64" : "");
+            f.Printf("\nFORCE_32_BIT = %s", compiler.supportsBitDepth ? "-m32" : "");
 
             delete f;
          }
@@ -2063,7 +2070,6 @@ private:
          bool test;
          int ifCount;
          Platform platform;
-         Platform runtimePlatform = GetRuntimePlatform();
          char targetDir[MAX_LOCATION];
          char objDirExpNoSpaces[MAX_LOCATION];
          char objDirNoSpaces[MAX_LOCATION];
@@ -2160,7 +2166,7 @@ private:
                   if(ifCount)
                      f.Printf("else\n");
                   ifCount++;
-                  f.Printf("ifdef %s\n", PlatformToMakefileVariable(platform));
+                  f.Printf("ifeq \"PLATFORM\" \"%s\"\n", (char *)platform); //%s\n", PlatformToMakefileVariable(platform));
 
                   f.Printf("TARGET_TYPE = ");
                   f.Printf(TargetTypeToMakefileVariable(targetType));
@@ -2337,9 +2343,10 @@ private:
                   if(ifCount)
                      f.Printf("else\n");
                   ifCount++;
-                  f.Printf("ifdef ");
-                  f.Printf(PlatformToMakefileVariable(platform));
-                  f.Printf("\n\n");
+                  f.Printf("ifeq \"$(PLATFORM)\" \"");
+                  // f.Printf(PlatformToMakefileVariable(platform));
+                  f.Printf((char *)platform);
+                  f.Printf("\"\n\n");
 
                   if((projectPlatformOptions && projectPlatformOptions.options.preprocessorDefinitions && projectPlatformOptions.options.preprocessorDefinitions.count) ||
                      (configPlatformOptions && configPlatformOptions.options.preprocessorDefinitions && configPlatformOptions.options.preprocessorDefinitions.count) ||
@@ -2423,7 +2430,7 @@ private:
             f.Printf(" $(OPTIMIZE)");
             forceBitDepth = (options && options.buildBitDepth) || numCObjects;
             if(forceBitDepth)
-               f.Printf((!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? " -m32" : " -m64");
+               f.Printf(" %s",(!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? "$(FORCE_32_BIT)" : "$(FORCE_64_BIT)");
             f.Printf(" $(FPIC)");
          }
          switch(GetWarnings(config))

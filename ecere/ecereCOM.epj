@@ -14,6 +14,16 @@
       "TargetDirectory" : "obj/$(MODULE).$(CONFIG).$(PLATFORM)",
       "ObjectsDirectory" : "obj/$(MODULE).$(CONFIG).$(PLATFORM)"
    },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "m"
+            ]
+         }
+      }
+   ],
    "Configurations" : [
       {
          "Name" : "Debug",

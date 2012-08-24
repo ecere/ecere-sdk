@@ -32,8 +32,7 @@ class DirExpression : struct
       }
    }
 
-   void Evaluate(char * expression, Project project,
-      CompilerConfig compiler, ProjectConfig config)
+   void Evaluate(char * expression, Project project, CompilerConfig compiler, ProjectConfig config)
    {
       int len;
       char * expr = expression;
@@ -56,7 +55,6 @@ class DirExpression : struct
          char * configName = config && config.name && config.name[0] ? config.name : "Common";
          char * projectName = project.name ? project.name : "";
          char * moduleName = project.moduleName ? project.moduleName : "";
-         char * compilingPlatformName = GetRuntimePlatform();
          char * compilerName = (compiler && compiler.name) ? compiler.name : defaultCompilerName;
          char * targetPlatformName = compiler && compiler.targetPlatform ? compiler.targetPlatform : "";
          char buffer[MAX_LOCATION];
@@ -94,13 +92,6 @@ class DirExpression : struct
                            strcat(buffer, targetPlatformName);
                            CamelCase(&buffer[d]);
                            d += strlen(targetPlatformName);
-                           /*if(strcmpi(targetPlatformName, compilingPlatformName))
-                           {
-                              strcat(buffer, "~");
-                              d++;
-                              strcat(buffer, compilingPlatformName);
-                              d += strlen(compilingPlatformName);
-                           }*/
                            c = i;
                         }
                         else if(!strnicmp(&expr[c + 2], "Compiler", n))

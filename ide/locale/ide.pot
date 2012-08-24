@@ -582,11 +582,11 @@ msgstr "Debugging compressed applications is not supported\n"
 msgid "Debugging stopped\n"
 msgstr "Debugging stopped\n"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:1110
+#: ./src/dialogs/GlobalSettingsDialog.ec:1129
 msgid "Default Compiler"
 msgstr "Default Compiler"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:1075
+#: ./src/dialogs/GlobalSettingsDialog.ec:1094
 msgid "Default Intermediate Objects Directory"
 msgstr "Default Intermediate Objects Directory"
 
@@ -594,7 +594,7 @@ msgstr "Default Intermediate Objects Directory"
 msgid "Default Name Space"
 msgstr "Default Name Space"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:1062
+#: ./src/dialogs/GlobalSettingsDialog.ec:1081
 msgid "Default Target Directory"
 msgstr "Default Target Directory"
 
@@ -616,7 +616,7 @@ msgstr "Delete %s"
 msgid "Delete Folder"
 msgstr "Delete Folder"
 
-#: ./src/project/Project.ec:1790
+#: ./src/project/Project.ec:1798
 msgid "Deleting target and object files..."
 msgstr "Deleting target and object files..."
 
@@ -707,7 +707,7 @@ msgstr "Environment Variables"
 msgid "Error creating directory"
 msgstr "Error creating directory"
 
-#: ./src/project/Project.ec:1738
+#: ./src/project/Project.ec:1743
 msgid "Error executing make (%s) command\n"
 msgstr "Error executing make (%s) command\n"
 
@@ -1370,7 +1370,7 @@ msgctxt "Menu"
 msgid "Project"
 msgstr "Project"
 
-#: ./src/dialogs/GlobalSettingsDialog.ec:1056
+#: ./src/dialogs/GlobalSettingsDialog.ec:1075
 #: ./src/dialogs/ProjectTabSettings.ec:8
 msgid "Project"
 msgstr "Project"
@@ -1779,6 +1779,10 @@ msgstr "Stop"
 msgid "Strict Name Spaces"
 msgstr "Strict Name Spaces"
 
+#: ./src/dialogs/GlobalSettingsDialog.ec:996
+msgid "Supports forcing bit depth"
+msgstr "Supports forcing bit depth"
+
 #: ./src/debugger/Debugger.ec:2262
 msgid "Symbol \"%s\" not found"
 msgstr "Symbol \"%s\" not found"
@@ -1816,7 +1820,7 @@ msgstr "Target Platform"
 msgid "Target Type"
 msgstr "Target Type"
 
-#: ./src/project/Project.ec:1794
+#: ./src/project/Project.ec:1802
 msgid "Target and object files deleted\n"
 msgstr "Target and object files deleted\n"
 
@@ -2038,7 +2042,7 @@ msgid "With contributions from..."
 msgstr "With contributions from..."
 
 #: ./src/dialogs/FindInFilesDialog.ec:441
-#: ./src/dialogs/GlobalSettingsDialog.ec:1104
+#: ./src/dialogs/GlobalSettingsDialog.ec:1123
 #: ./src/dialogs/WorkspaceSettings.ec:6
 msgid "Workspace"
 msgstr "Workspace"

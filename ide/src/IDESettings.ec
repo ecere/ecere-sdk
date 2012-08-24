@@ -689,6 +689,7 @@ class CompilerConfig
    class_no_expansion;
 
    numJobs = 1;
+   supportsBitDepth = true;
 public:
    property char * name
    {
@@ -760,6 +761,13 @@ public:
    }
    bool ccacheEnabled;
    bool distccEnabled;
+   property bool supportsBitDepth
+   {
+      set { supportsBitDepth = value; }
+      get { return supportsBitDepth; }
+      isset { return !supportsBitDepth; }
+   }
+
    property char * distccHosts
    {
       set { delete distccHosts; if(value && value[0]) distccHosts = CopyString(value); }
@@ -870,6 +878,7 @@ private:
    char * cxxCommand;
    char * execPrefixCommand;
    char * distccHosts;
+   bool supportsBitDepth;
    /*union
    {
       struct { Array<String> includes, libraries, executables; };
@@ -916,6 +925,7 @@ private:
          execPrefixCommand,
          ccacheEnabled,
          distccEnabled,
+         supportsBitDepth,
          distccHosts
       };
       for(s : includeDirs) copy.includeDirs.Add(CopyString(s));

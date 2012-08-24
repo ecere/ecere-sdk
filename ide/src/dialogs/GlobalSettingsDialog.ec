@@ -991,6 +991,24 @@ class CompilerOptionsTab : CompilersSubTab
       }
    }
 
+   Button supportsBitDepth
+   {
+      this, text = $"Supports forcing bit depth", hotKey = altD, position = { 8, 208 };
+      isCheckbox = true;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         CompilerConfig compiler = loadedCompiler;
+         if(compiler)
+         {
+            compiler.supportsBitDepth = button.checked;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   };
+
    CompilerOptionsTab()
    {
       Platform p;
@@ -1016,6 +1034,7 @@ class CompilerOptionsTab : CompilersSubTab
          distccEnabled.checked = compiler.distccEnabled;
          distccHosts.disabled = !compiler.distccEnabled;
          distccHosts.contents = compiler.distccHosts;
+         supportsBitDepth.checked = compiler.supportsBitDepth;
          prepDefs.strings = compiler.prepDirectives;
          excludedLibraries.strings = compiler.excludeLibs;
          
