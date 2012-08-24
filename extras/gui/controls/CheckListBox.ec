@@ -238,13 +238,14 @@ class CheckListBox : ListBox
          }
          else
          {
+            DataRow rr = row;
             UncheckBoxes(row);
             parent = row.parent;
 
-            while(row)
+            while(rr)
             {
                Iterator<DataRow> it { rowChecks };
-               if(it.Find(row))
+               if(it.Find(rr))
                {
                   it.Remove();
                   break;
@@ -254,10 +255,10 @@ class CheckListBox : ListBox
                   DataRow r;
                   for(r = row.parent.firstRow; r; r = r.next)
                   {
-                     if(r != row)
+                     if(r != rr)
                         rowChecks.Add(r);
                   }
-                  row = row.parent;
+                  rr = rr.parent;
                }
             }
 
