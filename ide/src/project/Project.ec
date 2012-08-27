@@ -1991,12 +1991,12 @@ private:
             f.Printf("UPXFLAGS = -9\n\n"); // TOFEAT: Compression Level Option? Other UPX Options?
 
             f.Printf("# HARD CODED PLATFORM-SPECIFIC OPTIONS\n");
-            f.Printf("ifeq \"PLATFORM\" \"linux\"\n"); //, PlatformToMakefileVariable(tux));
+            f.Printf("ifeq \"$(PLATFORM)\" \"linux\"\n"); //, PlatformToMakefileVariable(tux));
             f.Printf("OFLAGS += -Wl,--no-undefined\n");
             f.Printf("endif\n\n");
 
             // JF's
-            f.Printf("ifeq \"PLATFORM\" \"apple\"\n"); //%s\n", PlatformToMakefileVariable(apple));
+            f.Printf("ifeq \"$(PLATFORM)\" \"apple\"\n"); //%s\n", PlatformToMakefileVariable(apple));
             f.Printf("OFLAGS += -framework cocoa -framework OpenGL\n");
             f.Printf("endif\n");
 
@@ -2166,7 +2166,7 @@ private:
                   if(ifCount)
                      f.Printf("else\n");
                   ifCount++;
-                  f.Printf("ifeq \"PLATFORM\" \"%s\"\n", (char *)platform); //%s\n", PlatformToMakefileVariable(platform));
+                  f.Printf("ifeq \"$(PLATFORM)\" \"%s\"\n", (char *)platform); //%s\n", PlatformToMakefileVariable(platform));
 
                   f.Printf("TARGET_TYPE = ");
                   f.Printf(TargetTypeToMakefileVariable(targetType));
