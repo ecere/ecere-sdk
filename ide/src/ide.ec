@@ -439,7 +439,7 @@ class IDEWorkSpace : Window
                {
                   for(p : ide.workspace.projects)
                   {
-                     if(eString_PathInsideOf(debugger.activeFrame.absoluteFile, p.topNode.path))
+                     if(IsPathInsideOf(debugger.activeFrame.absoluteFile, p.topNode.path))
                      {
                         prj = p;
                         break;

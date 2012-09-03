@@ -1949,7 +1949,7 @@ class CodeEditor : Window
                {
                   for(p : ide.workspace.projects)
                   {
-                     if(eString_PathInsideOf(fileName, p.topNode.path))
+                     if(IsPathInsideOf(fileName, p.topNode.path))
                      {
                         prj = p;
                         break;

@@ -1103,3 +1103,28 @@ public double FloatFromString(char * string)
    }
    return neg * res;
 }
+
+public bool IsPathInsideOf(char * path, char * of)
+{
+   if(!path[0] || !of[0])
+      return false;  // What to do here? Ever used?
+   else
+   {
+      char ofPart[MAX_FILENAME], ofRest[MAX_LOCATION];
+      char pathPart[MAX_FILENAME], pathRest[MAX_LOCATION];
+      strcpy(ofRest, of);
+      strcpy(pathRest, path);
+      for(; ofRest[0] && pathRest[0];)
+      {
+         SplitDirectory(ofRest, ofPart, ofRest);
+         SplitDirectory(pathRest, pathPart, pathRest);
+         if(fstrcmp(pathPart, ofPart))
+            return false;
+      }
+      if(!ofRest[0] && !pathRest[0])  // paths are identical - should return false or true? (changed to false)
+         return false;
+      else if(!pathRest[0])           // not inside of, it's the other way around
+         return false;
+      return true;
+   }
+}

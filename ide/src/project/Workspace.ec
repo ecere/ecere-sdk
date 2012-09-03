@@ -1,7 +1,5 @@
 import "ide"
 
-//bool eString_PathInsideOf(char * path, char * of);
-
 /*static void ParseListValue(List<String> list, char * equal)
 {
    char * start, * comma;
@@ -302,7 +300,7 @@ public:
                char * location;
                char chr[2];
                char relativePath[MAX_LOCATION];
-               if(eString_PathInsideOf(ofi.path, workspaceDir))
+               if(IsPathInsideOf(ofi.path, workspaceDir))
                {
                   MakePathRelative(ofi.path, workspaceDir, relativePath);
                   MakeSlashPath(relativePath);
@@ -377,7 +375,7 @@ public:
 
    char * GetPathWorkspaceRelativeOrAbsolute(char * path)
    {
-      if(eString_PathInsideOf(path, workspaceDir))
+      if(IsPathInsideOf(path, workspaceDir))
       {
          char relativePath[MAX_LOCATION];
          MakePathRelative(path, workspaceDir, relativePath);
@@ -624,7 +622,7 @@ public:
                bool found = false;
                for(dir : sourceDirs)
                {
-                  if(eString_PathInsideOf(bp.absoluteFilePath, dir))
+                  if(IsPathInsideOf(bp.absoluteFilePath, dir))
                   {
                      found = true;
                      break;

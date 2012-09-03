@@ -21,31 +21,6 @@ extern char * strrchr(char * s, char c);
 #endif
 #undef uint
 
-//bool eString_PathInsidePath(char * to, char * path)
-bool eString_PathInsideOf(char * path, char * of)
-{
-   if(!path[0] || !of[0])
-      return false;  // What to do here? Ever used?
-   else
-   {
-      char ofPart[MAX_FILENAME], ofRest[MAX_LOCATION];
-      char pathPart[MAX_FILENAME], pathRest[MAX_LOCATION];
-      strcpy(ofRest, of);
-      strcpy(pathRest, path);
-      for(; ofRest[0] && pathRest[0];)
-      {
-         SplitDirectory(ofRest, ofPart, ofRest);      
-         SplitDirectory(pathRest, pathPart, pathRest);
-         if(fstrcmp(pathPart, ofPart))
-            return false;
-      }
-      if(!ofRest[0] && !pathRest[0])  // paths are identical - should return false or true? (changed to false)
-         return false;
-      else if(!pathRest[0])           // not inside of, it's the other way around
-         return false;
-      return true;
-   }
-}
 
 public char * StripQuotes2(char * string, char * output)
 {
@@ -1210,7 +1185,7 @@ class Debugger
       else
       {
          // FIXED: This is how it should have been... Source locations are only for files not in project
-         // if(eString_PathInsideOf(absolutePath, ide.workspace.projectDir))
+         // if(IsPathInsideOf(absolutePath, ide.workspace.projectDir))
          //   MakePathRelative(absolutePath, ide.workspace.projectDir, relativePath);
          bool result = false;
          if(prj)
@@ -1230,7 +1205,7 @@ class Debugger
                String srcDir = null;
                for(dir : ide.workspace.sourceDirs)
                {
-                  if(eString_PathInsideOf(absolutePath, dir))
+                  if(IsPathInsideOf(absolutePath, dir))
                   {
                      MakePathRelative(absoluteFilePath, dir, relativePath);
                      srcDir = dir;
@@ -1242,7 +1217,7 @@ class Debugger
                
                if(SourceDirDialog(title, directory, null, sourceDir))
                {
-                  if(eString_PathInsideOf(absolutePath, sourceDir))
+                  if(IsPathInsideOf(absolutePath, sourceDir))
                   {
                      AddSourceDir(sourceDir);
                      MakePathRelative(absoluteFilePath, sourceDir, relativePath);
