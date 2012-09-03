@@ -858,6 +858,20 @@ public:
       get { return excludeLibs; }
       isset { return excludeLibs.count != 0; }
    }
+   property Array<String> linkerFlags
+   {
+      set
+      {
+         linkerFlags.Free();
+         if(value)
+         {
+            delete linkerFlags;
+            linkerFlags = value;
+         }
+      }
+      get { return linkerFlags; }
+      isset { return linkerFlags.count != 0; }
+   }
 private:
    Array<String> includeDirs { };
    Array<String> libraryDirs { };
@@ -867,6 +881,7 @@ private:
    Array<NamedString> environmentVars { };
    Array<String> prepDirectives { };
    Array<String> excludeLibs { };
+   Array<String> linkerFlags { };
    char * name;
    char * makeCommand;
    char * ecpCommand;
@@ -904,6 +919,7 @@ private:
       if(executableDirs) { executableDirs.Free(); }
       if(prepDirectives) { prepDirectives.Free(); }
       if(excludeLibs) { excludeLibs.Free(); }
+      if(linkerFlags) { linkerFlags.Free(); }
    }
    CompilerConfig Copy()
    {
@@ -934,6 +950,7 @@ private:
       for(ns : environmentVars) copy.environmentVars.Add(NamedString { name = ns.name, string = ns.string });
       for(s : prepDirectives) copy.prepDirectives.Add(CopyString(s));
       for(s : excludeLibs) copy.excludeLibs.Add(CopyString(s));
+      for(s : linkerFlags) copy.linkerFlags.Add(CopyString(s));
 
       incref copy;
       return copy;

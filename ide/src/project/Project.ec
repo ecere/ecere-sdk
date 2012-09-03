@@ -1992,12 +1992,12 @@ private:
 
             f.Printf("# HARD CODED PLATFORM-SPECIFIC OPTIONS\n");
             f.Printf("ifeq \"$(PLATFORM)\" \"linux\"\n"); //, PlatformToMakefileVariable(tux));
-            f.Printf("OFLAGS += -Wl,--no-undefined\n");
+            f.Printf("LDFLAGS += -Wl,--no-undefined\n");
             f.Printf("endif\n\n");
 
             // JF's
             f.Printf("ifeq \"$(PLATFORM)\" \"apple\"\n"); //%s\n", PlatformToMakefileVariable(apple));
-            f.Printf("OFLAGS += -framework cocoa -framework OpenGL\n");
+            f.Printf("LDFLAGS += -framework cocoa -framework OpenGL\n");
             f.Printf("endif\n");
 
             if(gccCompiler)
@@ -2019,8 +2019,10 @@ private:
             }
             if(compiler.libraryDirs && compiler.libraryDirs.count)
             {
-               f.Printf("\nOFLAGS +=");
+               f.Printf("\nLDFLAGS +=");
                OutputListOption(f, "L", compiler.libraryDirs, lineEach, true);
+               // We would need a bool option to know whether we want to add to rpath as well...
+               // OutputListOption(f, "Wl,-rpath ", compiler.libraryDirs, lineEach, true);
                f.Printf("\n");
             }
             if(compiler.excludeLibs && compiler.excludeLibs.count)
@@ -2031,6 +2033,12 @@ private:
                   f.Puts(" ");
                   f.Puts(l);
                }
+            }
+            if(compiler.linkerFlags && compiler.linkerFlags.count)
+            {
+               f.Printf("\nLDFLAGS +=");
+               OutputListOption(f, "Wl,", compiler.linkerFlags, inPlace, true);
+               f.Printf("\n");
             }
             f.Printf("\nFORCE_64_BIT = %s", compiler.supportsBitDepth ? "-m64" : "");
             f.Printf("\nFORCE_32_BIT = %s", compiler.supportsBitDepth ? "-m32" : "");
@@ -2199,6 +2207,7 @@ private:
          f.Printf("CECFLAGS =\n");
          f.Printf("ECFLAGS =\n");
          f.Printf("OFLAGS =\n");
+         f.Printf("LDFLAGS =\n");
          f.Printf("LIBS =\n");
          f.Printf("\n");
 
@@ -2487,6 +2496,7 @@ private:
          if(options && options.libraryDirs)
             OutputListOption(f, "L", options.libraryDirs, lineEach, true);
          f.Printf("\n");
+         f.Printf("OFLAGS += $(LDFLAGS)\n");
          f.Printf("endif\n\n");
 
          f.Printf("# TARGETS\n\n");

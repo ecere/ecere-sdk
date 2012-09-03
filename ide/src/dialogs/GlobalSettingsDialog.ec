@@ -917,7 +917,7 @@ class CompilerOptionsTab : CompilersSubTab
 
    Button distccEnabled
    {
-      this, text = $"Use distcc", hotKey = altD, position = { 8, 96 };
+      this, text = $"Use distcc", hotKey = altD, position = { 158, 68 };
       isCheckbox = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -934,11 +934,11 @@ class CompilerOptionsTab : CompilersSubTab
       }
    };
 
-   Label distccHostsLabel { this, position = { 8, 124 }, labeledWindow = distccHosts };
+   Label distccHostsLabel { this, position = { 8, 96 }, labeledWindow = distccHosts };
    EditBox distccHosts
    {
       this, text = $"distcc hosts", hotKey = altH;
-      position = { 88, 120 }, size = { 300 };
+      position = { 88, 92 }, size = { 300 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -953,30 +953,11 @@ class CompilerOptionsTab : CompilersSubTab
       }
    }
 
-   Label lblExcludedLibraries { this, position = { 8, 152 }, labeledWindow = excludedLibraries };
-   StringListBox excludedLibraries
-   {
-      this, text = $"Libraries to exclude:", hotKey = altX;
-      position = { 148, 152 }, size = { 300 };
-
-      bool NotifyModified(EditBox editBox)
-      {
-         if(loadedCompiler)
-         {
-            CompilerConfig compiler = loadedCompiler;
-            compiler.excludeLibs = ((StringListBox)editBox).strings;
-            modifiedDocument = true;
-            compilersTab.modifiedDocument = true;
-         }
-         return true;
-      }
-   }
-
-   Label lblPrepDefs { this, position = { 8, 180 }, labeledWindow = prepDefs };
+   Label lblPrepDefs { this, position = { 8, 124 }, labeledWindow = prepDefs };
    StringListBox prepDefs
    {
       this, text = $"Preprocessor directives:", hotKey = altP;
-      position = { 148, 180 }, size = { 300 };
+      position = { 148, 124 }, size = { 300 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -984,6 +965,44 @@ class CompilerOptionsTab : CompilersSubTab
          {
             CompilerConfig compiler = loadedCompiler;
             compiler.prepDirectives = ((StringListBox)editBox).strings;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   }
+
+   Label lblLinkerFlags { this, position = { 8, 152 }, labeledWindow = linkerFlags };
+   StringListBox linkerFlags
+   {
+      this, text = $"Additional Linker flags:", hotKey = altL;
+      position = { 148, 152 }, size = { 300 };
+
+      bool NotifyModified(EditBox editBox)
+      {
+         if(loadedCompiler)
+         {
+            CompilerConfig compiler = loadedCompiler;
+            compiler.linkerFlags = ((StringListBox)editBox).strings;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   }
+
+   Label lblExcludedLibraries { this, position = { 8, 180 }, labeledWindow = excludedLibraries };
+   StringListBox excludedLibraries
+   {
+      this, text = $"Libraries to exclude:", hotKey = altX;
+      position = { 148, 180 }, size = { 300 };
+
+      bool NotifyModified(EditBox editBox)
+      {
+         if(loadedCompiler)
+         {
+            CompilerConfig compiler = loadedCompiler;
+            compiler.excludeLibs = ((StringListBox)editBox).strings;
             modifiedDocument = true;
             compilersTab.modifiedDocument = true;
          }
@@ -1037,6 +1056,7 @@ class CompilerOptionsTab : CompilersSubTab
          supportsBitDepth.checked = compiler.supportsBitDepth;
          prepDefs.strings = compiler.prepDirectives;
          excludedLibraries.strings = compiler.excludeLibs;
+         linkerFlags.strings = compiler.linkerFlags;
          
          labelTargetPlatform.disabled = disabled;
          targetPlatform.disabled = disabled;
