@@ -309,7 +309,8 @@ class CompilerApp : Application
       else
       {
          DualPipe cppOutput;
-         char command[1024];
+         // TODO: Improve this
+         char command[MAX_F_STRING*3];
 
          SetGlobalData(&globalData);
          SetExcludedSymbols(&_excludedSymbols);

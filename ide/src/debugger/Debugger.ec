@@ -1424,7 +1424,8 @@ class Debugger
    {
       if(gdbHandle)
       {
-         char string[MAX_F_STRING];
+         // TODO: Improve this limit
+         static char string[MAX_F_STRING*3];
          
          va_list args;
          va_start(args, format);
@@ -1445,7 +1446,8 @@ class Debugger
          if(ide.gdbDialog)
             ide.gdbDialog.AddCommand(string);
 #endif
-         gdbHandle.Printf("%s\n", string);
+         strcat(string,"\n");
+         gdbHandle.Puts(string);
          
          if(focus)
             Process_ShowWindows(targetProcessId);

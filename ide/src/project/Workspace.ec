@@ -250,7 +250,11 @@ public:
          
          file.Printf("\n   Execution Data\n");
          if(commandLineArgs && commandLineArgs[0])
-            file.Printf("\n      Command Line Arguments = %s\n", commandLineArgs);
+         {
+            file.Printf("\n      Command Line Arguments = ");
+            file.Puts(commandLineArgs);
+            file.Printf("\n");
+         }
 
          if(environmentVars.count)
          {

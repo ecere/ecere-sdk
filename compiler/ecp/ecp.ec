@@ -1458,7 +1458,8 @@ class PrecompApp : Application
          printf($"Syntax:\n   ecp [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n");
       else
       {
-         char command[1024];
+         // TODO: Improve this
+         char command[MAX_F_STRING*3];
          DualPipe cppOutput;
          
          SetGlobalContext(globalContext);

@@ -333,6 +333,7 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, char * commandLine, char * env, voi
          tokens[numTokens] = null;
          if(env)
          {
+            // TOFIX: env must be split into separate strings!!
             if(execve(tokens[0], (char **)tokens, env) < 0)
             {
                __ecereNameSpace__ecere__com__eSystem_Delete(commandLineCopy);
