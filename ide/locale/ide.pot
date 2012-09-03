@@ -881,7 +881,7 @@ msgstr "GDB Command"
 msgid "GIF Image"
 msgstr "GIF Image"
 
-#: ./src/IDESettings.ec:624
+#: ./src/IDESettings.ec:627
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
@@ -1118,15 +1118,15 @@ msgstr "Method still contains code. Are you sure you want to delete it?"
 msgid "Methods"
 msgstr "Methods"
 
-#: ./src/IDESettings.ec:627
+#: ./src/IDESettings.ec:630
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
 
-#: ./src/IDESettings.ec:628
+#: ./src/IDESettings.ec:631
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 
-#: ./src/IDESettings.ec:630
+#: ./src/IDESettings.ec:633
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
@@ -1341,7 +1341,7 @@ msgstr "Platforms: "
 msgid "Pointer"
 msgstr "Pointer"
 
-#: ./src/IDESettings.ec:626
+#: ./src/IDESettings.ec:629
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
@@ -1915,7 +1915,7 @@ msgstr "Tile Horizontally"
 msgid "Tile Vertically"
 msgstr "Tile Vertically"
 
-#: ./src/IDESettings.ec:625
+#: ./src/IDESettings.ec:628
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 

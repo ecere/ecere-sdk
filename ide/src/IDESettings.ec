@@ -285,6 +285,9 @@ private:
          for(c : data.compilerConfigs)
          {
             CompilerConfig compiler = c;
+            char * cxxCommand = compiler.cxxCommand;
+            if(!cxxCommand || !cxxCommand[0])
+               compiler.cxxCommand = cxxDefaultCommand;
             incref compiler;
          }
       }
