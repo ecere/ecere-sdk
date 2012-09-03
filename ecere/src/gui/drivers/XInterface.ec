@@ -2053,7 +2053,19 @@ class XInterface : Interface
             if(samples == 1) samples = 0;
             else if(!samples) alpha = false;
          }
-      } 
+      }
+      if(!visualInfo)
+      {
+         int attrList[] = 
+         {
+            GLX_USE_GL, GLX_DEPTH_SIZE, 1,
+            GLX_RGBA, 
+            GLX_RED_SIZE, 1, GLX_GREEN_SIZE, 1, GLX_BLUE_SIZE, 1,
+            GLX_DOUBLEBUFFER, 
+            None
+         };
+         visualInfo = glXChooseVisual(xGlobalDisplay, DefaultScreen(xGlobalDisplay), attrList);
+      }
 #endif
       depth = visualInfo ? visualInfo->depth : (window.alphaBlend ? 32 : xSystemDepth);
       visual = visualInfo ? visualInfo->visual : (window.alphaBlend ? FindFullColorVisual (xGlobalDisplay, &depth) : xSystemVisual);
