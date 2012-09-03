@@ -1209,8 +1209,8 @@ private:
          // Using a relative path makes it less likely to run into spaces issues
          // Even with escaped spaces, there still seems to be issues including a config file
          // in a path containing spaces
-
-         MakePathRelative(temp, topNode.path, cfDir);
+         if(IsPathInsideOf(cfDir, topNode.path))
+            MakePathRelative(temp, topNode.path, cfDir);
       }
       if(cfDir && cfDir[0] && cfDir[strlen(cfDir)-1] != '/')
          strcat(cfDir, "/");
@@ -2135,7 +2135,12 @@ private:
                strcat(cfDir, "/");
          }
          else
-            strcpy(cfDir, "$(CF_DIR)");
+         {
+            GetIDECompilerConfigsDir(cfDir, true, true);
+            // Use CF_DIR environment variable for absolute paths only
+            if(cfDir[0] == '/' || (cfDir[0] && cfDir[1] == ':'))
+               strcpy(cfDir, "$(CF_DIR)");
+         }
 
          f.Printf("_CF_DIR = %s\n", cfDir);
          f.Printf("\n");
