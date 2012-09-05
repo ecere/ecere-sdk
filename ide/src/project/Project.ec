@@ -1992,7 +1992,7 @@ private:
                f.Printf("# ENVIRONMENT VARIABLES\n");
                for(e : compiler.environmentVars)
                {
-                  f.Printf("%s := %s\n", e.name, e.string);
+                  f.Printf("export %s := %s\n", e.name, e.string);
                }
             }
 
