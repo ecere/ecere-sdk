@@ -1987,6 +1987,14 @@ private:
             f.Printf("UPX := upx\n");
 
             f.Printf("\n");
+            if(compiler.environmentVars && compiler.environmentVars.count)
+            {
+               f.Printf("# ENVIRONMENT VARIABLES\n");
+               for(e : compiler.environmentVars)
+               {
+                  f.Printf("%s := %s\n", e.name, e.string);
+               }
+            }
 
             f.Printf("UPXFLAGS = -9\n\n"); // TOFEAT: Compression Level Option? Other UPX Options?
 
