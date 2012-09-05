@@ -78,15 +78,15 @@ msgstr "      toolchain:\n"
 msgid "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
 msgstr "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
 
-#: ./epj2make.ec:376
+#: ./epj2make.ec:378
 msgid "Error: Input file (%s) does not exist.\n"
 msgstr "Error: Input file (%s) does not exist.\n"
 
-#: ./epj2make.ec:312
+#: ./epj2make.ec:314
 msgid "Error: Project configuration (%s) was not found.\n"
 msgstr "Error: Project configuration (%s) was not found.\n"
 
-#: ./epj2make.ec:372
+#: ./epj2make.ec:374
 msgid "Error: Unable to open project file (%s) due to unknown error.\n"
 msgstr "Error: Unable to open project file (%s) due to unknown error.\n"
 
@@ -106,7 +106,7 @@ msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
-#: ./epj2make.ec:328
+#: ./epj2make.ec:330
 msgid "Notice: Project configuration (%s) will be used.\n"
 msgstr "Notice: Project configuration (%s) will be used.\n"
 

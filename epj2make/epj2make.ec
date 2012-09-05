@@ -259,6 +259,8 @@ class epj2makeApp : GuiApplication
                }
                else
                {
+                  char * compiler = getenv("COMPILER");
+                  if(!compiler) compiler = "Default";
                   settingsContainer.Load();
                   //incref ideSettings;
                   delete settingsContainer;
@@ -266,7 +268,7 @@ class epj2makeApp : GuiApplication
       // TODO: Command line option to choose between the two
       // or a command line option to not use global settings 
       //defaultCompiler = MakeDefaultCompiler();
-                  defaultCompiler = ideSettings.GetCompilerConfig("Default");
+                  defaultCompiler = ideSettings.GetCompilerConfig(compiler);
       // possible TODO: use the workspace to select the active compiler
       // TODO: option to specify compiler name when using global settings
                }
