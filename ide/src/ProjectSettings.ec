@@ -2083,14 +2083,14 @@ class BuilderTab : Tab
    Label labelPrebuildCommands { prebuildCommands.editor, labeledWindow = prebuildCommands, position = { 0, 6 }; };
    StringsArrayOptionBox prebuildCommands
    {
-      this, size = { 290, 100 }, anchor = { left = 8, top = 52, right = 8 };
+      this, size = { 290, 100 }, anchor = { left = 8, top = 8, right = 8, bottom = 0.5 };
       text = $"Pre-build Commands", hotKey = altE, option = OPTION(prebuildCommands);
    };
 
    Label labelPostbuildCommands { postbuildCommands.editor, labeledWindow = postbuildCommands, position = { 0, 6 }; };
    StringsArrayOptionBox postbuildCommands
    {
-      this, size = { 290, 100 }, anchor = { left = 8, top = 160, right = 8 };
+      this, size = { 290 }, anchor = { left = 8, top = 0.5, right = 8, bottom = 8 };
       text = $"Post-build Commands", hotKey = altT, option = OPTION(postbuildCommands);
    };
 
