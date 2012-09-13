@@ -112,6 +112,14 @@ struct CodePosition start;
 struct CodePosition end;
 };
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
+
+struct Attrib;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
+
+struct ExtDecl;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefinition;
 
 struct ClassDefinition;
@@ -355,6 +363,8 @@ unsigned int __ecereDll_Load_ec(struct __ecereNameSpace__ecere__com__Instance * 
 
 unsigned int __ecereDll_Unload_ec(struct __ecereNameSpace__ecere__com__Instance * module);
 
+struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefinition;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassImport;
@@ -374,6 +384,8 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass_Declarator;
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_Definition;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_External;
 
@@ -579,6 +591,7 @@ __ecereRegisterModule_ecs(module);
 __ecereClass___ecereNameSpace__ecere__com__Application = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Application");
 __ecereClass___ecereNameSpace__ecere__com__Instance = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Instance");
 __ecereClass___ecereNameSpace__ecere__com__Module = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Module");
+__ecereClass_Attrib = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Attrib");
 __ecereClass_ClassDefinition = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ClassDefinition");
 __ecereClass_ClassImport = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ClassImport");
 __ecereClass_CodePosition = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "CodePosition");
@@ -589,6 +602,7 @@ __ecereClass_Declaration = __ecereNameSpace__ecere__com__eSystem_FindClass(modul
 __ecereClass_Declarator = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Declarator");
 __ecereClass_Definition = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Definition");
 __ecereClass_Expression = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Expression");
+__ecereClass_ExtDecl = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ExtDecl");
 __ecereClass_External = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "External");
 __ecereClass_FunctionDefinition = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "FunctionDefinition");
 __ecereClass_FunctionImport = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "FunctionImport");

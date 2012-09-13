@@ -233,7 +233,7 @@ static void InstDeclPassSpecifier(Specifier spec)
          if(spec.specifier == TYPED_OBJECT)
          {
             spec.type = extendedSpecifier;
-            spec.name = CopyString("struct __ecereNameSpace__ecere__com__Class * class, void *");
+            spec.extDecl = MkExtDeclString(CopyString("struct __ecereNameSpace__ecere__com__Class * class, void *"));
          }
          break;
       case nameSpecifier:
@@ -265,26 +265,26 @@ static void InstDeclPassSpecifier(Specifier spec)
          break;
       }
       case extendedSpecifier:
-         if(!strcmp(spec.name, "dllexport"))
+         if(spec.extDecl && spec.extDecl.type == extDeclString && spec.extDecl.s && !strcmp(spec.extDecl.s, "dllexport"))
          {
             Specifier prevSpec;
-            delete spec.name;
+            delete spec.extDecl.s;
             for(prevSpec = spec.prev; prevSpec; prevSpec = prevSpec.prev)
                if(prevSpec.type == baseSpecifier && prevSpec.specifier == EXTERN)
                   break;
             if(prevSpec)
             {
                if(targetPlatform == win32)
-                  spec.name = CopyString("__declspec(dllexport)");
+                  spec.extDecl.s = CopyString("__declspec(dllexport)");
                else
-                  spec.name = CopyString("__attribute__ ((visibility(\"default\")))");
+                  spec.extDecl.s = CopyString("__attribute__ ((visibility(\"default\")))");
             }
             else
             {
                if(targetPlatform == win32)
-                  spec.name = CopyString("extern __declspec(dllexport)");
+                  spec.extDecl.s = CopyString("extern __declspec(dllexport)");
                else
-                  spec.name = CopyString("extern __attribute__ ((visibility(\"default\")))");
+                  spec.extDecl.s = CopyString("extern __attribute__ ((visibility(\"default\")))");
             }
          }
          break;
@@ -355,22 +355,23 @@ static void InstDeclPassDeclarator(Declarator decl)
       case extendedDeclaratorEnd:
          if((decl.type == extendedDeclarator || decl.type == extendedDeclaratorEnd) && decl.extended.extended)
          {
-            if(!strcmp(decl.extended.extended, "dllexport"))
+            if(decl.extended.extended.type == extDeclString && decl.extended.extended.s && !strcmp(decl.extended.extended.s, "dllexport"))
             {
-               delete decl.extended.extended;
+               delete decl.extended.extended.s;
                if(targetPlatform == win32)
-                  decl.extended.extended = CopyString("extern __declspec(dllexport)");
+                  decl.extended.extended.s = CopyString("extern __declspec(dllexport)");
                else
-                  decl.extended.extended = CopyString("extern __attribute__ ((visibility(\"default\")))");
+                  decl.extended.extended.s = CopyString("extern __attribute__ ((visibility(\"default\")))");
             }
-            else if(!strcmp(decl.extended.extended, "stdcall") || !strcmp(decl.extended.extended, "_stdcall") || 
-               !strcmp(decl.extended.extended, "__stdcall") || !strcmp(decl.extended.extended, "__stdcall__"))
+            else if(decl.extended.extended.type == extDeclString && decl.extended.extended.s &&
+               (!strcmp(decl.extended.extended.s, "stdcall") || !strcmp(decl.extended.extended.s, "_stdcall") || 
+               !strcmp(decl.extended.extended.s, "__stdcall") || !strcmp(decl.extended.extended.s, "__stdcall__")))
             {
-               delete decl.extended.extended;
+               delete decl.extended.extended.s;
                if(targetPlatform == win32)
-                  decl.extended.extended = CopyString("__attribute__((__stdcall__))");
+                  decl.extended.extended.s = CopyString("__attribute__((__stdcall__))");
                else
-                  decl.extended.extended = CopyString("");
+                  decl.extended.extended.s = CopyString("");
             }
          }
          if(decl.declarator)

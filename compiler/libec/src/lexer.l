@@ -94,8 +94,10 @@ default:
 "return"             { return(RETURN); }
 "short"              { return(SHORT); }
 "signed"             { return(SIGNED); }
+"__signed"           { return(SIGNED); }
 "__signed__"         { return(SIGNED); }
 "sizeof"             { return(SIZEOF); }
+"__alignof__"        { return(ALIGNOF); }
 "static"             { return(STATIC); }
 "struct"             { return(STRUCT); }
 "switch"             { return(SWITCH); }
@@ -131,12 +133,30 @@ default:
 
  /* DID I MEAN? "__attribute__"" "*"(("" "*({D}|{L})*" "*("("({D}|{L})*(" "*","" "*({D}|{L})*)*" "*")")?" "*"))" { return(EXT_ATTRIB); } */
 
-"__attribute_deprecated__"(" "*)"(("(" "*)({D}|{L})*(" "*)("("({D}|{L}|\")*((" "*)","(" "*)({D}|{L}|\")*)*(" "*)")")?(" "*)(","(" "*)({D}|{L})*(" "*)("("({D}|{L}|\")*((" "*)","(" "*)({D}|{L}|\")*)*(" "*)")")?(" "*))*"))" { return(EXT_ATTRIB); }
-"__attribute__"(" "*)"(("(" "*)({D}|{L})*(" "*)("("({D}|{L}|\")*((" "*)","(" "*)({D}|{L}|\")*)*(" "*)")")?(" "*)(","(" "*)({D}|{L})*(" "*)("("({D}|{L}|\")*((" "*)","(" "*)({D}|{L}|\")*)*(" "*)")")?(" "*))*"))" { return(EXT_ATTRIB); }
-"__attribute"(" "*)"(("(" "*)({D}|{L})*(" "*)("("({D}|{L}|\")*((" "*)","(" "*)({D}|{L}|\")*)*(" "*)")")?(" "*)(","(" "*)({D}|{L})*(" "*)("("({D}|{L}|\")*((" "*)","(" "*)({D}|{L}|\")*)*(" "*)")")?(" "*))*"))" { return(EXT_ATTRIB); }
-
+ /*
+ "__attribute_deprecated__"(" "*)"(("(" "*)({D}|{L})*(" "*)("("({D}|{L}|\")*((" "*)","(" "*)({D}|{L}|\")*)*(" "*)")")?(" "*)(","(" "*)({D}|{L})*(" "*)("("({D}|{L}|\")*((" "*)","(" "*)({D}|{L}|\")*)*(" "*)")")?(" "*))*"))" { return(EXT_ATTRIB); }
+ "__attribute__"           (" "*)"(("(" "*)({D}|{L})*(" "*)("("({D}|{L}|\")*((" "*)","(" "*)({D}|{L}|\")*)*(" "*)")")?(" "*)(","(" "*)({D}|{L})*(" "*)("("({D}|{L}|\")*((" "*)","(" "*)({D}|{L}|\")*)*(" "*)")")?(" "*))*"))" { return(EXT_ATTRIB); }
+ "__attribute"             (" "*)"(("(" "*)({D}|{L})*(" "*)("("({D}|{L}|\")*((" "*)","(" "*)({D}|{L}|\")*)*(" "*)")")?(" "*)(","(" "*)({D}|{L})*(" "*)("("({D}|{L}|\")*((" "*)","(" "*)({D}|{L}|\")*)*(" "*)")")?(" "*))*"))" { return(EXT_ATTRIB); }
+ */
+ /*
+ [__attribute__] [spaces]
+   [((] [spaces] 
+      [digits | letters] [spaces]
+         ( [(]  [digits or letters or "]  ( [spaces] [,] [spaces] [digits or letters or "] )*  [spaces]  [)] )?
+      [spaces]
+      ( [,] [spaces]  [digits or letters]  [spaces]
+         ( [(]  [digits or letters or "]
+            ( [spaces] [,] [spaces] [digits or letters or "] )*  [spaces] [)]
+         )? [spaces] 
+      )*
+   [))]
+ */
  /* "__attribute__".?"((".?({D}|{L})*.?("("({D}|{L})*(.?",".?({D}|{L})*)*.?")")?.?"))" { return(EXT_ATTRIB); } */
  /* "__attribute".?"((".?({D}|{L})*.?("("({D}|{L})*(.?",".?({D}|{L})*)*.?")")?.?"))" { return(EXT_ATTRIB); }*/
+
+"__attribute_deprecated__" { return ATTRIB_DEP; }
+"__attribute__" { return ATTRIB; }
+"__attribute" { return __ATTRIB; }
 
 "__inline__"               { return(EXT_STORAGE); }
 "_inline"                  { return(EXT_STORAGE); }

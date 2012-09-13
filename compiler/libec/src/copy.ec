@@ -159,6 +159,9 @@ static Instantiation CopyInstantiation(Instantiation inst)
          case typeSizeExp:
             result = MkExpTypeSize(CopyTypeName(exp.typeName));
             break;
+         case typeAlignExp:
+            result = MkExpTypeAlign(CopyTypeName(exp.typeName));
+            break;
          case castExp:
             result = MkExpCast(CopyTypeName(exp.cast.typeName), CopyExpression(exp.cast.exp));
             break;
@@ -287,6 +290,8 @@ Specifier CopySpecifier(Specifier spec)
    /*      case classSpecifier:
             return MkClassName(spec.name);
    */
+         case extendedSpecifier:
+            return MkSpecifierExtended(CopyExtDecl(spec.extDecl));
       }
    return null;
 }
@@ -310,6 +315,32 @@ TypeName CopyTypeName(TypeName typeName)
    return copy;
 }
 
+ExtDecl CopyExtDecl(ExtDecl extDecl)
+{
+   if(extDecl)
+   {
+      if(extDecl.type == extDeclAttrib)
+         return MkExtDeclAttrib(CopyAttrib(extDecl.attr));
+      else if(extDecl.type == extDeclString)
+         return MkExtDeclString(CopyString(extDecl.s));
+   }
+   return null;
+}
+
+Attribute CopyAttribute(Attribute attrib)
+{
+   if(attrib)
+      return MkAttribute(CopyString(attrib.attr), CopyExpression(attrib.exp));
+   return null;
+}
+
+Attrib CopyAttrib(Attrib attrib)
+{
+   if(attrib)
+      return MkAttrib(attrib.type, CopyList(attrib.attribs, CopyAttribute));
+   return null;
+}
+
 Declarator CopyDeclarator(Declarator declarator)
 {
    if(declarator)
@@ -321,7 +352,7 @@ Declarator CopyDeclarator(Declarator declarator)
             Declarator decl = MkStructDeclarator(CopyDeclarator(declarator.declarator), 
                CopyExpression(declarator.structDecl.exp));
             if(declarator.structDecl.attrib)
-               decl.structDecl.attrib = CopyString(declarator.structDecl.attrib);
+               decl.structDecl.attrib = CopyAttrib(declarator.structDecl.attrib);
             return decl;
          }
          case identifierDeclarator:
@@ -350,9 +381,9 @@ Declarator CopyDeclarator(Declarator declarator)
             return MkDeclaratorPointer(CopyPointer(declarator.pointer.pointer),
                CopyDeclarator(declarator.declarator));
          case extendedDeclarator:
-            return MkDeclaratorExtended(CopyString(declarator.extended.extended), CopyDeclarator(declarator.declarator));
+            return MkDeclaratorExtended(CopyExtDecl(declarator.extended.extended), CopyDeclarator(declarator.declarator));
          case extendedDeclaratorEnd:
-            return MkDeclaratorExtendedEnd(CopyString(declarator.extended.extended), CopyDeclarator(declarator.declarator));
+            return MkDeclaratorExtendedEnd(CopyExtDecl(declarator.extended.extended), CopyDeclarator(declarator.declarator));
       }
    }
    return null;

@@ -374,6 +374,11 @@ Expression MkExpTypeSize(TypeName typeName)
    return { type = typeSizeExp, typeName = typeName };
 }
 
+Expression MkExpTypeAlign(TypeName typeName)
+{
+   return { type = typeAlignExp, typeName = typeName };
+}
+
 Expression MkExpClassSize(Specifier _class)
 {
    return { type = classSizeExp, _class = _class };
@@ -429,9 +434,9 @@ Specifier MkSpecifierSubClass(Specifier _class)
    return { type = subClassSpecifier, _class = _class };
 }
 
-Specifier MkSpecifierExtended(char * name)
+Specifier MkSpecifierExtended(ExtDecl extDecl)
 {
-   return { type = extendedSpecifier, name = CopyString(name) };
+   return { type = extendedSpecifier, extDecl = extDecl /*name = CopyString(name)*/ };
 }
 
 Specifier MkEnum(Identifier id, OldList list)
@@ -505,6 +510,28 @@ void AddStructDefinitions(Specifier spec, OldList definitions)
    }
 }
 
+Attribute MkAttribute(String attr, Expression exp)
+{
+   return { attr = attr, exp = exp };
+}
+
+Attrib MkAttrib(int type, OldList * attribs)
+{
+   return { type = type, attribs = attribs };
+}
+
+ExtDecl MkExtDeclString(String s)
+{
+   return { type = extDeclString, s = s };
+
+}
+
+ExtDecl MkExtDeclAttrib(Attrib attr)
+{
+   return { type = extDeclAttrib, attr = attr };
+}
+
+
 public Declarator MkDeclaratorIdentifier(Identifier id)
 {
    return { type = identifierDeclarator, identifier = id };
@@ -515,12 +542,12 @@ Declarator MkDeclaratorFunction(Declarator declarator, OldList parameters)
    return { type = functionDeclarator, declarator = declarator, function.parameters = parameters };
 }
 
-Declarator MkDeclaratorExtended(char * extended, Declarator declarator)
+Declarator MkDeclaratorExtended(ExtDecl extended, Declarator declarator)
 {
    return { type = extendedDeclarator, declarator = declarator, extended.extended = extended };
 }
 
-Declarator MkDeclaratorExtendedEnd(char * extended, Declarator declarator)
+Declarator MkDeclaratorExtendedEnd(ExtDecl extended, Declarator declarator)
 {
    return { type = extendedDeclaratorEnd, declarator = declarator, extended.extended = extended };
 }
@@ -2052,13 +2079,12 @@ public Type ProcessType(OldList specs, Declarator decl)
             if(decl.structDecl.exp.type == constantExp)
                specType.bitFieldCount = strtoul(decl.structDecl.exp.constant, null, 0);
          }
-         if((decl.type == extendedDeclarator || decl.type == extendedDeclaratorEnd) && decl.extended.extended && 
-            (!strcmp(decl.extended.extended, "__declspec(dllexport)") || !strcmp(decl.extended.extended, "dllexport")))
+         if((decl.type == extendedDeclarator || decl.type == extendedDeclaratorEnd) && decl.extended.extended && decl.extended.extended.type == extDeclString &&
+            decl.extended.extended.s && (!strcmp(decl.extended.extended.s, "__declspec(dllexport)") || !strcmp(decl.extended.extended.s, "dllexport")))
          {
             dllExport = true;
          }
-         if((decl.type == extendedDeclarator || decl.type == extendedDeclaratorEnd) && decl.extended.extended && 
-            (strstr(decl.extended.extended, "__attribute__")))
+         if((decl.type == extendedDeclarator || decl.type == extendedDeclaratorEnd) && decl.extended.extended && decl.extended.extended.type == extDeclAttrib)
          {
             specType.keepCast = true;
          }
@@ -2074,11 +2100,11 @@ public Type ProcessType(OldList specs, Declarator decl)
             bool isLong = false;
             for(spec = specs.first; spec; spec = spec.next)
             {
-               if(spec.type == extendedSpecifier && (!strcmp(spec.name, "__declspec(dllexport)") || !strcmp(spec.name, "dllexport")))
+               if(spec.type == extendedSpecifier && spec.extDecl && spec.extDecl.type == extDeclString && spec.extDecl.s && (!strcmp(spec.extDecl.s, "__declspec(dllexport)") || !strcmp(spec.extDecl.s, "dllexport")))
                {
                   dllExport = true;
                }
-               if(spec.type == extendedSpecifier && strstr(spec.name, "__attribute__"))
+               if(spec.type == extendedSpecifier && spec.extDecl.type == extDeclAttrib)
                {
                   specType.keepCast = true;
                }
@@ -2382,8 +2408,8 @@ public Type ProcessType(OldList specs, Declarator decl)
          // TESTING: Added extendedDeclarator here
          while(d && (d.type == bracketsDeclarator || d.type == extendedDeclarator || d.type == extendedDeclaratorEnd))
          {
-            if((d.type == extendedDeclarator || d.type == extendedDeclaratorEnd) && d.extended.extended && 
-               (!strcmp(d.extended.extended, "__declspec(dllexport)") || !strcmp(d.extended.extended, "dllexport")))
+            if((d.type == extendedDeclarator || d.type == extendedDeclaratorEnd) && d.extended.extended && d.extended.extended.type == extDeclString &&
+               d.extended.extended.s && (!strcmp(d.extended.extended.s, "__declspec(dllexport)") || !strcmp(d.extended.extended.s, "dllexport")))
             {
                dllExport = true;            
             }

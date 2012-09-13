@@ -112,6 +112,28 @@ struct CodePosition start;
 struct CodePosition end;
 };
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
+
+struct Attrib
+{
+struct Location loc;
+int type;
+struct __ecereNameSpace__ecere__sys__OldList *  attribs;
+};
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
+
+struct ExtDecl
+{
+struct Location loc;
+int type;
+union
+{
+char * s;
+struct Attrib * attr;
+};
+};
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefinition;
 
 struct ClassDefinition
@@ -496,6 +518,7 @@ union
 int specifier;
 struct
 {
+struct ExtDecl * extDecl;
 char *  name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
@@ -556,7 +579,7 @@ struct
 {
 struct Expression * exp;
 struct Expression * posExp;
-char * attrib;
+struct Attrib * attrib;
 } structDecl;
 struct
 {
@@ -573,7 +596,7 @@ struct Pointer * pointer;
 } pointer;
 struct
 {
-char * extended;
+struct ExtDecl * extended;
 } extended;
 };
 };
@@ -900,7 +923,7 @@ struct __ecereNameSpace__ecere__com__Method * method;
 
 enum yytokentype
 {
-IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295, UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309, SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323, SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, EXT_ATTRIB = 334, PUBLIC = 335, PRIVATE = 336, TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347, CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356, NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363
+IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295, UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309, SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323, SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, ATTRIB = 334, PUBLIC = 335, PRIVATE = 336, TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347, CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356, NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363, ALIGNOF = 364, ATTRIB_DEP = 365, __ATTRIB = 366
 };
 
 typedef union YYSTYPE
@@ -924,6 +947,9 @@ struct FunctionDefinition * function;
 struct External * external;
 struct Context * context;
 struct AsmField * asmField;
+struct Attrib * attrib;
+struct ExtDecl * extDecl;
+struct Attribute * attribute;
 struct Instantiation * instance;
 struct MembersInit * membersInit;
 struct MemberInit * memberInit;
@@ -973,6 +999,17 @@ struct AsmField * next;
 struct Location loc;
 char *  command;
 struct Expression * expression;
+};
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attribute;
+
+struct Attribute
+{
+struct Attribute * prev;
+struct Attribute * next;
+struct Location loc;
+char * attr;
+struct Expression * exp;
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassFunction;
@@ -1607,6 +1644,13 @@ void * __ecereTemp1;
 return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 10, ((struct Expression *)__ecereTemp1)->typeName = typeName, ((struct Expression *)__ecereTemp1));
 }
 
+struct Expression * MkExpTypeAlign(struct TypeName * typeName)
+{
+void * __ecereTemp1;
+
+return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 38, ((struct Expression *)__ecereTemp1)->typeName = typeName, ((struct Expression *)__ecereTemp1));
+}
+
 struct Expression * MkExpClassSize(struct Specifier * _class)
 {
 void * __ecereTemp1;
@@ -1684,11 +1728,11 @@ void * __ecereTemp1;
 return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier), ((struct Specifier *)__ecereTemp1)->type = 7, ((struct Specifier *)__ecereTemp1)->_class = _class, ((struct Specifier *)__ecereTemp1));
 }
 
-struct Specifier * MkSpecifierExtended(char * name)
+struct Specifier * MkSpecifierExtended(struct ExtDecl * extDecl)
 {
 void * __ecereTemp1;
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier), ((struct Specifier *)__ecereTemp1)->type = 5, ((struct Specifier *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(name), ((struct Specifier *)__ecereTemp1));
+return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier), ((struct Specifier *)__ecereTemp1)->type = 5, ((struct Specifier *)__ecereTemp1)->extDecl = extDecl, ((struct Specifier *)__ecereTemp1));
 }
 
 struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
@@ -1785,6 +1829,34 @@ FreeSymbol(symbol);
 }
 }
 
+struct Attribute * MkAttribute(char * attr, struct Expression * exp)
+{
+void * __ecereTemp1;
+
+return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Attribute), ((struct Attribute *)__ecereTemp1)->attr = attr, ((struct Attribute *)__ecereTemp1)->exp = exp, ((struct Attribute *)__ecereTemp1));
+}
+
+struct Attrib * MkAttrib(int type, struct __ecereNameSpace__ecere__sys__OldList * attribs)
+{
+void * __ecereTemp1;
+
+return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Attrib), ((struct Attrib *)__ecereTemp1)->type = type, ((struct Attrib *)__ecereTemp1)->attribs = attribs, ((struct Attrib *)__ecereTemp1));
+}
+
+struct ExtDecl * MkExtDeclString(char * s)
+{
+void * __ecereTemp1;
+
+return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ExtDecl), ((struct ExtDecl *)__ecereTemp1)->type = 0, ((struct ExtDecl *)__ecereTemp1)->s = s, ((struct ExtDecl *)__ecereTemp1));
+}
+
+struct ExtDecl * MkExtDeclAttrib(struct Attrib * attr)
+{
+void * __ecereTemp1;
+
+return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ExtDecl), ((struct ExtDecl *)__ecereTemp1)->type = 1, ((struct ExtDecl *)__ecereTemp1)->attr = attr, ((struct ExtDecl *)__ecereTemp1));
+}
+
 struct Declarator * MkDeclaratorIdentifier(struct Identifier * id)
 {
 void * __ecereTemp1;
@@ -1799,14 +1871,14 @@ void * __ecereTemp1;
 return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator), ((struct Declarator *)__ecereTemp1)->type = 4, ((struct Declarator *)__ecereTemp1)->declarator = declarator, ((struct Declarator *)__ecereTemp1)->function.parameters = parameters, ((struct Declarator *)__ecereTemp1));
 }
 
-struct Declarator * MkDeclaratorExtended(char * extended, struct Declarator * declarator)
+struct Declarator * MkDeclaratorExtended(struct ExtDecl * extended, struct Declarator * declarator)
 {
 void * __ecereTemp1;
 
 return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator), ((struct Declarator *)__ecereTemp1)->type = 6, ((struct Declarator *)__ecereTemp1)->declarator = declarator, ((struct Declarator *)__ecereTemp1)->extended.extended = extended, ((struct Declarator *)__ecereTemp1));
 }
 
-struct Declarator * MkDeclaratorExtendedEnd(char * extended, struct Declarator * declarator)
+struct Declarator * MkDeclaratorExtendedEnd(struct ExtDecl * extended, struct Declarator * declarator)
 {
 void * __ecereTemp1;
 
@@ -3467,11 +3539,11 @@ ComputeExpression(decl->structDecl.exp);
 if(decl->structDecl.exp->type == 2)
 specType->bitFieldCount = strtoul(decl->structDecl.exp->constant, (((void *)0)), 0);
 }
-if((decl->type == 6 || decl->type == 7) && decl->extended.extended && (!strcmp(decl->extended.extended, "__declspec(dllexport)") || !strcmp(decl->extended.extended, "dllexport")))
+if((decl->type == 6 || decl->type == 7) && decl->extended.extended && decl->extended.extended->type == 0 && decl->extended.extended->s && (!strcmp(decl->extended.extended->s, "__declspec(dllexport)") || !strcmp(decl->extended.extended->s, "dllexport")))
 {
 dllExport = 0x1;
 }
-if((decl->type == 6 || decl->type == 7) && decl->extended.extended && (strstr(decl->extended.extended, "__attribute__")))
+if((decl->type == 6 || decl->type == 7) && decl->extended.extended && decl->extended.extended->type == 1)
 {
 specType->keepCast = 0x1;
 }
@@ -3487,11 +3559,11 @@ unsigned int isLong = 0x0;
 
 for(spec = specs->first; spec; spec = spec->next)
 {
-if(spec->type == 5 && (!strcmp(spec->name, "__declspec(dllexport)") || !strcmp(spec->name, "dllexport")))
+if(spec->type == 5 && spec->extDecl && spec->extDecl->type == 0 && spec->extDecl->s && (!strcmp(spec->extDecl->s, "__declspec(dllexport)") || !strcmp(spec->extDecl->s, "dllexport")))
 {
 dllExport = 0x1;
 }
-if(spec->type == 5 && strstr(spec->name, "__attribute__"))
+if(spec->type == 5 && spec->extDecl->type == 1)
 {
 specType->keepCast = 0x1;
 }
@@ -3763,7 +3835,7 @@ funcType->returnType = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_N
 }
 while(d && (d->type == 2 || d->type == 6 || d->type == 7))
 {
-if((d->type == 6 || d->type == 7) && d->extended.extended && (!strcmp(d->extended.extended, "__declspec(dllexport)") || !strcmp(d->extended.extended, "dllexport")))
+if((d->type == 6 || d->type == 7) && d->extended.extended && d->extended.extended->type == 0 && d->extended.extended->s && (!strcmp(d->extended.extended->s, "__declspec(dllexport)") || !strcmp(d->extended.extended->s, "dllexport")))
 {
 dllExport = 0x1;
 }
@@ -4432,6 +4504,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpCall", "Expression 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpMember", "Expression MkExpMember(Expression expression, Identifier member)", MkExpMember, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpPointer", "Expression MkExpPointer(Expression expression, Identifier member)", MkExpPointer, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpTypeSize", "Expression MkExpTypeSize(TypeName typeName)", MkExpTypeSize, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpTypeAlign", "Expression MkExpTypeAlign(TypeName typeName)", MkExpTypeAlign, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpClassSize", "Expression MkExpClassSize(Specifier _class)", MkExpClassSize, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpCast", "Expression MkExpCast(TypeName typeName, Expression expression)", MkExpCast, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpCondition", "Expression MkExpCondition(Expression cond, ecere::sys::OldList expressions, Expression elseExp)", MkExpCondition, module, 2);
@@ -4443,14 +4516,18 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpVaArg", "Expression
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkSpecifier", "Specifier MkSpecifier(int specifier)", MkSpecifier, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkSpecifierTypeOf", "Specifier MkSpecifierTypeOf(Expression expression)", MkSpecifierTypeOf, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkSpecifierSubClass", "Specifier MkSpecifierSubClass(Specifier _class)", MkSpecifierSubClass, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkSpecifierExtended", "Specifier MkSpecifierExtended(char * name)", MkSpecifierExtended, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkSpecifierExtended", "Specifier MkSpecifierExtended(ExtDecl extDecl)", MkSpecifierExtended, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkEnum", "Specifier MkEnum(Identifier id, ecere::sys::OldList list)", MkEnum, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkStructOrUnion", "Specifier MkStructOrUnion(SpecifierType type, Identifier id, ecere::sys::OldList definitions)", MkStructOrUnion, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("AddStructDefinitions", "void AddStructDefinitions(Specifier spec, ecere::sys::OldList definitions)", AddStructDefinitions, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkAttribute", "Attribute MkAttribute(String attr, Expression exp)", MkAttribute, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkAttrib", "Attrib MkAttrib(int type, ecere::sys::OldList * attribs)", MkAttrib, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExtDeclString", "ExtDecl MkExtDeclString(String s)", MkExtDeclString, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExtDeclAttrib", "ExtDecl MkExtDeclAttrib(Attrib attr)", MkExtDeclAttrib, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkDeclaratorIdentifier", "Declarator MkDeclaratorIdentifier(Identifier id)", MkDeclaratorIdentifier, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkDeclaratorFunction", "Declarator MkDeclaratorFunction(Declarator declarator, ecere::sys::OldList parameters)", MkDeclaratorFunction, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkDeclaratorExtended", "Declarator MkDeclaratorExtended(char * extended, Declarator declarator)", MkDeclaratorExtended, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkDeclaratorExtendedEnd", "Declarator MkDeclaratorExtendedEnd(char * extended, Declarator declarator)", MkDeclaratorExtendedEnd, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkDeclaratorExtended", "Declarator MkDeclaratorExtended(ExtDecl extended, Declarator declarator)", MkDeclaratorExtended, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkDeclaratorExtendedEnd", "Declarator MkDeclaratorExtendedEnd(ExtDecl extended, Declarator declarator)", MkDeclaratorExtendedEnd, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkStructDeclarator", "Declarator MkStructDeclarator(Declarator declarator, Expression exp)", MkStructDeclarator, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkDeclaratorBrackets", "Declarator MkDeclaratorBrackets(Declarator declarator)", MkDeclaratorBrackets, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkDeclaratorArray", "Declarator MkDeclaratorArray(Declarator declarator, Expression exp)", MkDeclaratorArray, module, 2);

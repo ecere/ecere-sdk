@@ -19,11 +19,11 @@ msgstr "%s expected to be derived from method class\n"
 msgid "%s undefined; assuming extern returning int\n"
 msgstr "%s undefined; assuming extern returning int\n"
 
-#: ./src/ecdefs.ec:1223
+#: ./src/ecdefs.ec:1258
 msgid ":%d:%d: error: "
 msgstr ":%d:%d: error: "
 
-#: ./src/ecdefs.ec:1263
+#: ./src/ecdefs.ec:1298
 msgid ":%d:%d: warning: "
 msgstr ":%d:%d: warning: "
 
@@ -44,11 +44,11 @@ msgstr "Couldn't determine type of array elements\n"
 msgid "Couldn't find member %s to override\n"
 msgstr "Couldn't find member %s to override\n"
 
-#: ./src/loadSymbols.ec:716
+#: ./src/loadSymbols.ec:720
 msgid "Couldn't open %s\n"
 msgstr "Couldn't open %s\n"
 
-#: ./src/ast.ec:1436
+#: ./src/ast.ec:1463
 msgid "Expecting class specifier\n"
 msgstr "Expecting class specifier\n"
 
@@ -56,7 +56,7 @@ msgstr "Expecting class specifier\n"
 msgid "Expression is not a container\n"
 msgstr "Expression is not a container\n"
 
-#: ./src/lexer.ec:478
+#: ./src/lexer.ec:498
 msgid "Includes nested too deeply"
 msgstr "Includes nested too deeply"
 
@@ -126,11 +126,11 @@ msgstr "Public %s making use of a private class\n"
 msgid "Recursion in defined expression %s\n"
 msgstr "Recursion in defined expression %s\n"
 
-#: ./src/loadSymbols.ec:1000
+#: ./src/loadSymbols.ec:1004
 msgid "Redefinition of %s (defining as %s, already defined as %s)\n"
 msgstr "Redefinition of %s (defining as %s, already defined as %s)\n"
 
-#: ./src/ast.ec:681
+#: ./src/ast.ec:708
 msgid "Redefinition of %s ignored\n"
 msgstr "Redefinition of %s ignored\n"
 
@@ -298,14 +298,14 @@ msgstr "redefinition of constructor for class %s\n"
 msgid "redefinition of destructor for class %s\n"
 msgstr "redefinition of destructor for class %s\n"
 
-#: ./src/ecdefs.ec:1282
-#: ./src/grammar.ec:3084
-#: ./src/grammar.ec:3085
-#: ./src/grammar.ec:3086
-#: ./src/grammar.ec:3087
-#: ./src/grammar.ec:3088
-#: ./src/grammar.ec:3089
-#: ./src/grammar.ec:3090
+#: ./src/ecdefs.ec:1317
+#: ./src/grammar.ec:3127
+#: ./src/grammar.ec:3128
+#: ./src/grammar.ec:3129
+#: ./src/grammar.ec:3130
+#: ./src/grammar.ec:3131
+#: ./src/grammar.ec:3132
+#: ./src/grammar.ec:3133
 msgid "syntax error\n"
 msgstr "syntax error\n"
 

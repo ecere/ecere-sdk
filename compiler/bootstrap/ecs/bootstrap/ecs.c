@@ -112,6 +112,14 @@ struct CodePosition start;
 struct CodePosition end;
 };
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
+
+struct Attrib;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
+
+struct ExtDecl;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefinition;
 
 struct ClassDefinition;

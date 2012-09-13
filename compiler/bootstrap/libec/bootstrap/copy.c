@@ -112,6 +112,28 @@ struct CodePosition start;
 struct CodePosition end;
 };
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
+
+struct Attrib
+{
+struct Location loc;
+int type;
+struct __ecereNameSpace__ecere__sys__OldList *  attribs;
+};
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
+
+struct ExtDecl
+{
+struct Location loc;
+int type;
+union
+{
+char * s;
+struct Attrib * attr;
+};
+};
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefinition;
 
 struct ClassDefinition;
@@ -437,6 +459,7 @@ union
 int specifier;
 struct
 {
+struct ExtDecl * extDecl;
 char *  name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
@@ -497,7 +520,7 @@ struct
 {
 struct Expression * exp;
 struct Expression * posExp;
-char * attrib;
+struct Attrib * attrib;
 } structDecl;
 struct
 {
@@ -514,7 +537,7 @@ struct Pointer * pointer;
 } pointer;
 struct
 {
-char * extended;
+struct ExtDecl * extended;
 } extended;
 };
 };
@@ -904,6 +927,8 @@ extern struct Expression * MkExpTypeSize(struct TypeName * typeName);
 
 struct TypeName * CopyTypeName(struct TypeName * typeName);
 
+extern struct Expression * MkExpTypeAlign(struct TypeName * typeName);
+
 extern struct Expression * MkExpCast(struct TypeName * typeName, struct Expression * expression);
 
 extern struct Expression * MkExpCondition(struct Expression * cond, struct __ecereNameSpace__ecere__sys__OldList * expressions, struct Expression * elseExp);
@@ -982,6 +1007,9 @@ result = MkExpPointer(CopyExpression(exp->member.exp), CopyIdentifier(exp->membe
 break;
 case 10:
 result = MkExpTypeSize(CopyTypeName(exp->typeName));
+break;
+case 38:
+result = MkExpTypeAlign(CopyTypeName(exp->typeName));
 break;
 case 11:
 result = MkExpCast(CopyTypeName(exp->cast.typeName), CopyExpression(exp->cast.exp));
@@ -1131,6 +1159,10 @@ extern char *  __ecereNameSpace__ecere__sys__CopyString(char *  string);
 
 extern struct Specifier * MkSpecifierSubClass(struct Specifier * _class);
 
+extern struct Specifier * MkSpecifierExtended(struct ExtDecl * extDecl);
+
+struct ExtDecl * CopyExtDecl(struct ExtDecl * extDecl);
+
 struct Specifier * CopySpecifier(struct Specifier * spec)
 {
 void * __ecereTemp1;
@@ -1181,6 +1213,8 @@ case 7:
 return MkSpecifierSubClass(CopySpecifier(spec->_class));
 case 8:
 return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier), ((struct Specifier *)__ecereTemp1)->loc = spec->loc, ((struct Specifier *)__ecereTemp1)->type = 8, ((struct Specifier *)__ecereTemp1)->templateParameter = spec->templateParameter, ((struct Specifier *)__ecereTemp1));
+case 5:
+return MkSpecifierExtended(CopyExtDecl(spec->extDecl));
 }
 return (((void *)0));
 }
@@ -1207,6 +1241,53 @@ copy->classObjectType = typeName->classObjectType;
 return copy;
 }
 
+extern struct ExtDecl * MkExtDeclAttrib(struct Attrib * attr);
+
+struct Attrib * CopyAttrib(struct Attrib * attrib);
+
+extern struct ExtDecl * MkExtDeclString(char * s);
+
+struct ExtDecl * CopyExtDecl(struct ExtDecl * extDecl)
+{
+if(extDecl)
+{
+if(extDecl->type == 1)
+return MkExtDeclAttrib(CopyAttrib(extDecl->attr));
+else if(extDecl->type == 0)
+return MkExtDeclString(__ecereNameSpace__ecere__sys__CopyString(extDecl->s));
+}
+return (((void *)0));
+}
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attribute;
+
+struct Attribute
+{
+struct Attribute * prev;
+struct Attribute * next;
+struct Location loc;
+char * attr;
+struct Expression * exp;
+};
+
+extern struct Attribute * MkAttribute(char * attr, struct Expression * exp);
+
+struct Attribute * CopyAttribute(struct Attribute * attrib)
+{
+if(attrib)
+return MkAttribute(__ecereNameSpace__ecere__sys__CopyString(attrib->attr), CopyExpression(attrib->exp));
+return (((void *)0));
+}
+
+extern struct Attrib * MkAttrib(int type, struct __ecereNameSpace__ecere__sys__OldList *  attribs);
+
+struct Attrib * CopyAttrib(struct Attrib * attrib)
+{
+if(attrib)
+return MkAttrib(attrib->type, CopyList(attrib->attribs, CopyAttribute));
+return (((void *)0));
+}
+
 extern struct Declarator * MkStructDeclarator(struct Declarator * declarator, struct Expression * exp);
 
 extern struct Declarator * MkDeclaratorIdentifier(struct Identifier * id);
@@ -1221,9 +1302,9 @@ extern struct Declarator * MkDeclaratorFunction(struct Declarator * declarator, 
 
 extern struct Declarator * MkDeclaratorPointer(struct Pointer * pointer, struct Declarator * declarator);
 
-extern struct Declarator * MkDeclaratorExtended(char *  extended, struct Declarator * declarator);
+extern struct Declarator * MkDeclaratorExtended(struct ExtDecl * extended, struct Declarator * declarator);
 
-extern struct Declarator * MkDeclaratorExtendedEnd(char *  extended, struct Declarator * declarator);
+extern struct Declarator * MkDeclaratorExtendedEnd(struct ExtDecl * extended, struct Declarator * declarator);
 
 struct Declarator * CopyDeclarator(struct Declarator * declarator)
 {
@@ -1236,7 +1317,7 @@ case 0:
 struct Declarator * decl = MkStructDeclarator(CopyDeclarator(declarator->declarator), CopyExpression(declarator->structDecl.exp));
 
 if(declarator->structDecl.attrib)
-decl->structDecl.attrib = __ecereNameSpace__ecere__sys__CopyString(declarator->structDecl.attrib);
+decl->structDecl.attrib = CopyAttrib(declarator->structDecl.attrib);
 return decl;
 }
 case 1:
@@ -1263,9 +1344,9 @@ return MkDeclaratorFunction(CopyDeclarator(declarator->declarator), parameters);
 case 5:
 return MkDeclaratorPointer(CopyPointer(declarator->pointer.pointer), CopyDeclarator(declarator->declarator));
 case 6:
-return MkDeclaratorExtended(__ecereNameSpace__ecere__sys__CopyString(declarator->extended.extended), CopyDeclarator(declarator->declarator));
+return MkDeclaratorExtended(CopyExtDecl(declarator->extended.extended), CopyDeclarator(declarator->declarator));
 case 7:
-return MkDeclaratorExtendedEnd(__ecereNameSpace__ecere__sys__CopyString(declarator->extended.extended), CopyDeclarator(declarator->declarator));
+return MkDeclaratorExtendedEnd(CopyExtDecl(declarator->extended.extended), CopyDeclarator(declarator->declarator));
 }
 }
 return (((void *)0));
@@ -1352,6 +1433,9 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyExpression", "Expres
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyClassDef", "ClassDef CopyClassDef(ClassDef def)", CopyClassDef, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopySpecifier", "Specifier CopySpecifier(Specifier spec)", CopySpecifier, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyTypeName", "TypeName CopyTypeName(TypeName typeName)", CopyTypeName, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyExtDecl", "ExtDecl CopyExtDecl(ExtDecl extDecl)", CopyExtDecl, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyAttribute", "Attribute CopyAttribute(Attribute attrib)", CopyAttribute, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyAttrib", "Attrib CopyAttrib(Attrib attrib)", CopyAttrib, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyDeclarator", "Declarator CopyDeclarator(Declarator declarator)", CopyDeclarator, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyInitDeclarator", "InitDeclarator CopyInitDeclarator(InitDeclarator initDecl)", CopyInitDeclarator, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyDeclaration", "Declaration CopyDeclaration(Declaration decl)", CopyDeclaration, module, 2);

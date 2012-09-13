@@ -109,6 +109,28 @@ struct CodePosition start, end;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Location;
 
+struct Attrib
+{
+struct Location loc;
+int type;
+struct __ecereNameSpace__ecere__sys__OldList * attribs;
+};
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
+
+struct ExtDecl
+{
+struct Location loc;
+int type;
+union
+{
+char * s;
+struct Attrib * attr;
+};
+};
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
+
 struct ClassDefinition
 {
 struct ClassDefinition * prev, * next;
@@ -478,6 +500,7 @@ union
 int specifier;
 struct
 {
+struct ExtDecl * extDecl;
 char * name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList * templateArgs;
@@ -535,7 +558,7 @@ struct
 {
 struct Expression * exp;
 struct Expression * posExp;
-char * attrib;
+struct Attrib * attrib;
 } structDecl;
 struct
 {
@@ -552,7 +575,7 @@ struct Pointer * pointer;
 } pointer;
 struct
 {
-char * extended;
+struct ExtDecl * extended;
 } extended;
 };
 };
@@ -1238,6 +1261,18 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExpUsage;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_SpecifierType;
 
+struct Attribute
+{
+struct Attribute * prev, * next;
+struct Location loc;
+char * attr;
+struct Expression * exp;
+};
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attribute;
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDeclType;
+
 void __ecereMethod_Expression_Clear(struct Expression * this)
 {
 struct __ecereNameSpace__ecere__com__DataValue __simpleStruct0 = 
@@ -1883,6 +1918,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "extensionExpressionExp
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "extensionInitializerExp", 35);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "vaArgExp", 36);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "arrayExp", 37);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "typeAlignExp", 38);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "MemberType", 0, 0, 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
 __ecereClass_MemberType = class;
@@ -1968,6 +2004,7 @@ __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "specifier", "i
 {
 struct __ecereNameSpace__ecere__com__DataMember * dataMember1 = __ecereNameSpace__ecere__com__eMember_New(2, 1);
 
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "extDecl", "ExtDecl", 4, 4, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "name", "char *", 4, 4, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "symbol", "Symbol", 4, 4, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "templateArgs", "ecere::sys::OldList *", 4, 4, 1);
@@ -1989,6 +2026,37 @@ __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "_class", "Spec
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "templateParameter", "TemplateParameter", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Attribute", 0, sizeof(struct Attribute), 0, 0, 0, module, 1, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+__ecereClass_Attribute = class;
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "Attribute", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "Attribute", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "loc", "Location", 32, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "attr", "String", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "exp", "Expression", 4, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Attrib", 0, sizeof(struct Attrib), 0, 0, 0, module, 1, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+__ecereClass_Attrib = class;
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "loc", "Location", 32, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "type", "int", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "attribs", "ecere::sys::OldList *", 4, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ExtDecl", 0, sizeof(struct ExtDecl), 0, 0, 0, module, 1, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+__ecereClass_ExtDecl = class;
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "loc", "Location", 32, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "type", "ExtDeclType", 4, 4, 1);
+{
+struct __ecereNameSpace__ecere__com__DataMember * dataMember0 = __ecereNameSpace__ecere__com__eMember_New(1, 1);
+
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "s", "String", 4, 4, 1);
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "attr", "Attrib", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
+}
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ExtDeclType", 0, 0, 0, 0, 0, module, 1, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+__ecereClass_ExtDeclType = class;
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "extDeclString", 0);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "extDeclAttrib", 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Expression", 0, sizeof(struct Expression), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
 __ecereClass_Expression = class;
@@ -2077,11 +2145,11 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "declarator", "Declara
 struct __ecereNameSpace__ecere__com__DataMember * dataMember0 = __ecereNameSpace__ecere__com__eMember_New(1, 1);
 
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "identifier", "Identifier", 4, 4, 1);
-__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "structDecl", "struct {Expression exp; Expression posExp; char * attrib; }", 12, 4, 1);
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "structDecl", "struct {Expression exp; Expression posExp; Attrib attrib; }", 12, 4, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "array", "struct {Expression exp; Specifier enumClass; }", 8, 4, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "function", "struct {ecere::sys::OldList * parameters; }", 4, 4, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "pointer", "struct {Pointer pointer; }", 4, 4, 1);
-__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "extended", "struct {char * extended; }", 4, 4, 1);
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "extended", "struct {ExtDecl extended; }", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "InitializerType", 0, 0, 0, 0, 0, module, 1, 1);

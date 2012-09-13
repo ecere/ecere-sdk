@@ -1,3 +1,4 @@
 @echo off
-set path=%path%;d:\msys\1.0\bin
+
+set path=e:\msys.bak\1.0\bin;%path%
 flex -olexer.ec lexer.l

@@ -496,12 +496,18 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   char memberString[1024];
                   memberString[0] = '\0';
 
-                  if(param.defaultArgument.identifier._class && param.defaultArgument.identifier._class.name)
+                  if(param.defaultArgument.identifier._class)
                   {
                      if(param.defaultArgument.identifier._class.type == templateTypeSpecifier)
-                        strcpy(memberString, param.defaultArgument.identifier._class.templateParameter.identifier.string);
+                     {
+                        if(param.defaultArgument.identifier._class.templateParameter)
+                           strcpy(memberString, param.defaultArgument.identifier._class.templateParameter.identifier.string);
+                     }
                      else
-                        strcpy(memberString, param.defaultArgument.identifier._class.name);
+                     {
+                        if(param.defaultArgument.identifier._class.name)
+                           strcpy(memberString, param.defaultArgument.identifier._class.name);
+                     }
                   }
                   
                   if(memberString[0])

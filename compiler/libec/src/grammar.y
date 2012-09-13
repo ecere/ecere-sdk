@@ -52,6 +52,9 @@ default:
    External external;
    Context context;
    AsmField asmField;
+   Attrib attrib;
+   ExtDecl extDecl;
+   Attribute attribute;
 
    Instantiation instance;
    MembersInit membersInit;
@@ -112,7 +115,7 @@ default:
              new_specifiers renew_specifiers asm_field_list
              property_watch_list watch_property_list
              dbindex_item_list dbfield_definition_list
-             template_arguments_list template_parameters_list
+             template_arguments_list template_parameters_list attribs_list
 
 %type <asmField> asm_field
 %type <specifier> storage_class_specifier enum_specifier_compound enum_specifier_nocompound type_qualifier type_specifier class_specifier class_specifier_error
@@ -147,7 +150,10 @@ default:
 %type <classFunction> instance_class_function_definition instance_class_function_definition_error instance_class_function_definition_start instance_class_function_definition_start_error 
 %type <_class> class class_error class_head
 %type <classDef> struct_declaration struct_declaration_error
-%type <string> ext_decl string_literal ext_attrib base_strict_type_name
+%type <string> string_literal base_strict_type_name attribute_word
+%type <extDecl> ext_decl
+%type <attrib> attrib
+%type <attribute> attribute
 %type <prop> property property_start property_body class_property class_property_start class_property_body
 %type <propertyWatch> property_watch self_watch_definition
 
@@ -175,13 +181,14 @@ default:
 %nonassoc IFX
 %nonassoc ELSE
 %token CLASS THISCLASS CLASS_NAME
-%token PROPERTY SETPROP GETPROP NEWOP RENEW DELETE EXT_DECL EXT_STORAGE IMPORT DEFINE VIRTUAL EXT_ATTRIB
+%token PROPERTY SETPROP GETPROP NEWOP RENEW DELETE EXT_DECL EXT_STORAGE IMPORT DEFINE VIRTUAL ATTRIB
 %token PUBLIC PRIVATE
 %token TYPED_OBJECT ANY_OBJECT _INCREF EXTENSION ASM TYPEOF
 %token WATCH STOPWATCHING FIREWATCHERS WATCHABLE CLASS_DESIGNER CLASS_NO_EXPANSION CLASS_FIXED ISPROPSET
 %token CLASS_DEFAULT_PROPERTY PROPERTY_CATEGORY CLASS_DATA CLASS_PROPERTY SUBCLASS NAMESPACE
 %token NEW0OP RENEW0 VAARG
 %token DBTABLE DBFIELD DBINDEX DATABASE_OPEN
+%token ALIGNOF ATTRIB_DEP __ATTRIB
 
 %destructor { FreeIdentifier($$); } identifier 
 %destructor { FreePointer($$); } pointer
@@ -230,7 +237,7 @@ default:
 %destructor { Context ctx = curContext; PopContext(ctx); FreeContext(ctx); delete ctx; } class_decl
 %destructor { FreeClass($$); } class class_error class_head
 %destructor { FreeClassDef($$); } struct_declaration struct_declaration_error
-%destructor { delete $$; } ext_decl string_literal
+%destructor { delete $$; } string_literal attribute_word base_strict_type_name
 %destructor { FreeProperty($$); } property
 
 %destructor { FreeList($$, FreeExpression); }  argument_expression_list expression expression_error argument_expression_list_error 
@@ -254,6 +261,10 @@ default:
 %destructor { FreeList($$, FreeTemplateParameter); } template_parameters_list
 %destructor { FreeList($$, FreeTemplateArgument); } template_arguments_list
 %destructor { } declaration_mode
+%destructor { FreeAttrib($$); } attrib
+%destructor { FreeExtDecl($$); } ext_decl
+%destructor { FreeAttribute($$); } attribute
+%destructor { FreeList($$, FreeAttribute); }  attribs_list
 
 %start thefile
 
@@ -1527,6 +1538,10 @@ common_unary_expression:
    | SIZEOF '(' guess_type_name ')'          { $$ = MkExpTypeSize($3); $$.loc = @$; }
    | SIZEOF '(' CLASS type ')'          { $$ = MkExpClassSize($4); $$.loc = @$; }
    | SIZEOF '(' CLASS guess_type ')'          { $$ = MkExpClassSize($4); $$.loc = @$; }
+
+	| ALIGNOF '(' unary_expression ')'         { $$ = MkExpOp(null, ALIGNOF, $3); $$.loc = @$; }
+   | ALIGNOF simple_unary_expression           { $$ = MkExpOp(null, ALIGNOF, $2); $$.loc = @$; }
+   | ALIGNOF '(' guess_type_name ')'          { $$ = MkExpTypeAlign($3); $$.loc = @$; }
 	;
 
 unary_expression:
@@ -1775,6 +1790,9 @@ common_unary_expression_error:
 	 | SIZEOF '(' guess_type_name ')' error          { $$ = MkExpTypeSize($3); $$.loc = @$; }
     | SIZEOF '(' CLASS type ')' error   { $$ = MkExpClassSize($4); $$.loc = @$; }
     | SIZEOF '(' CLASS guess_type ')' error   { $$ = MkExpClassSize($4); $$.loc = @$; }
+    | ALIGNOF '(' unary_expression_error           { $$ = MkExpOp(null, ALIGNOF, $3); $$.loc = @$; }
+	 | ALIGNOF simple_unary_expression_error           { $$ = MkExpOp(null, ALIGNOF, $2); $$.loc = @$; }
+	 | ALIGNOF '(' guess_type_name ')' error          { $$ = MkExpTypeAlign($3); $$.loc = @$; }
 	;
 
 unary_expression_error:
@@ -2147,8 +2165,8 @@ class_specifier_error:
    ;
 
 ext_storage:
-     EXT_STORAGE  { $$ = MkSpecifierExtended(yytext); }
-   | ext_decl   { $$ = MkSpecifierExtended($1); delete $1; }
+     EXT_STORAGE  { $$ = MkSpecifierExtended(MkExtDeclString(CopyString(yytext))); }
+   | ext_decl   { $$ = MkSpecifierExtended($1); }
    ;
 
 type_qualifier:
@@ -2216,7 +2234,7 @@ strict_type_specifier:
 struct_declarator:
 	  declarator_nofunction
       { $$ = MkStructDeclarator($1, null); $$.loc = @$; }
-	| declarator_nofunction ext_attrib
+	| declarator_nofunction attrib
       { $$ = MkStructDeclarator($1, null); $$.structDecl.attrib = $2; $$.loc = @$; }  
 	| ':' constant_expression
       { $$ = MkStructDeclarator(null, $2);  $$.loc = @$; }
@@ -2732,15 +2750,15 @@ asm_start:
    ;  
 
 ext_decl:
-     EXT_DECL { $$ = CopyString(yytext); }
-   | ext_attrib
+     EXT_DECL { $$ = MkExtDeclString(CopyString(yytext)); }
+   | attrib { $$ = MkExtDeclAttrib($1);
    | asm_start ')'
       {
          char temp[1024];
          strcpy(temp, $<string>1);
          strcat(temp, ")");
          delete $<string>1;
-         $$ = CopyString(temp);
+         $$ = MkExtDeclString(CopyString(temp));
       }
    | asm_start STRING_LITERAL { $$ = CopyString(yytext); } ')'
       {
@@ -2751,29 +2769,54 @@ ext_decl:
          strcat(temp, ")");
          delete $<string>1;
          delete $<string>3;
-         $$ = CopyString(temp);
+         $$ = MkExtDeclString(CopyString(temp));
       }
    ;
 */
 
 ext_decl:
-     EXT_DECL { $$ = CopyString(yytext); }
-   | ext_attrib
+     EXT_DECL { $$ = MkExtDeclString(CopyString(yytext)); }
+   | attrib { $$ = MkExtDeclAttrib($1); }
    | ASM '(' string_literal ')'
       {
          char temp[1024];
          strcpy(temp, "__asm__(");
          strcat(temp, $3);
          strcat(temp, ")");
-         $$ = CopyString(temp);
+         $$ = MkExtDeclString(CopyString(temp));
          delete $3;
       }
    ;
 
-ext_attrib:
-   EXT_ATTRIB  { $$ = CopyString(yytext); }
+_attrib:
+   ATTRIB      { $<i>$ = ATTRIB; }
+ | ATTRIB_DEP  { $<i>$ = ATTRIB_DEP; }
+ | __ATTRIB    { $<i>$ = __ATTRIB; }
+ ;
+
+
+attribute_word:
+     IDENTIFIER   { $$  = CopyString(yytext); }
+   | TYPE_NAME    { $$  = CopyString(yytext); }
+   | EXT_STORAGE  { $$  = CopyString(yytext); }
+   | EXT_DECL     { $$  = CopyString(yytext); }
+   | CONST        { $$  = CopyString(yytext); }
    ;
-   
+
+attribute:
+     attribute_word  { $$ = MkAttribute($1, null); $$.loc = @$; }
+   | attribute_word '(' expression ')'  { $$ = MkAttribute($1, MkExpBrackets($3)); $$.loc = @$; }
+   ;
+
+attribs_list:
+     attribute { $$ = MkListOne($1); }
+   | attribs_list attribute { ListAdd($1, $2); $$ = $1; }
+   ;
+
+attrib:
+     _attrib '(' '(' attribs_list ')' ')' { $$ = MkAttrib($<i>1, $4); $$.loc = @$; }
+   | _attrib '(' '('              ')' ')'  { $$ = MkAttrib($<i>1, null); $$.loc = @$; }
+   ;
 
 direct_abstract_declarator:
 	  '(' abstract_declarator ')'
@@ -3066,7 +3109,7 @@ parameter_type_list_error:
 /****** STATEMENTS *******************************************************************/
 statement:
 	  labeled_statement
-   | EXT_ATTRIB { $$ = MkExpressionStmt(null); }   // Ignoring this for now... ( For __attribute__ ((__unused__)) )
+   | attrib { $$ = MkExpressionStmt(null); FreeAttrib($1); }   // Ignoring this for now... ( For __attribute__ ((__unused__)) )
 	| compound_statement
    | ';' { $$ = MkExpressionStmt(null); }
    | ':' { $$ = MkExpressionStmt(null); }

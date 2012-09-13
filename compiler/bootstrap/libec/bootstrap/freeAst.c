@@ -112,6 +112,28 @@ struct CodePosition start;
 struct CodePosition end;
 };
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
+
+struct Attrib
+{
+struct Location loc;
+int type;
+struct __ecereNameSpace__ecere__sys__OldList *  attribs;
+};
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
+
+struct ExtDecl
+{
+struct Location loc;
+int type;
+union
+{
+char * s;
+struct Attrib * attr;
+};
+};
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefinition;
 
 struct ClassDefinition
@@ -496,6 +518,7 @@ union
 int specifier;
 struct
 {
+struct ExtDecl * extDecl;
 char *  name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
@@ -556,7 +579,7 @@ struct
 {
 struct Expression * exp;
 struct Expression * posExp;
-char * attrib;
+struct Attrib * attrib;
 } structDecl;
 struct
 {
@@ -573,7 +596,7 @@ struct Pointer * pointer;
 } pointer;
 struct
 {
-char * extended;
+struct ExtDecl * extended;
 } extended;
 };
 };
@@ -1227,6 +1250,8 @@ FreeExpression(enumerator->exp);
 ((enumerator ? (__ecereClass_Enumerator->Destructor ? __ecereClass_Enumerator->Destructor(enumerator) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(enumerator)) : 0), enumerator = 0);
 }
 
+void FreeExtDecl(struct ExtDecl * extDecl);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassFunction;
 
 struct ClassFunction
@@ -1318,8 +1343,11 @@ if(spec)
 switch(spec->type)
 {
 case 1:
-case 5:
 (__ecereNameSpace__ecere__com__eSystem_Delete(spec->name), spec->name = 0);
+break;
+case 5:
+if(spec->extDecl)
+FreeExtDecl(spec->extDecl);
 if(spec->templateArgs)
 {
 FreeList(spec->templateArgs, FreeTemplateArgument);
@@ -1340,7 +1368,7 @@ FreeIdentifier(spec->id);
 if(spec->definitions)
 FreeList(spec->definitions, FreeClassDef);
 if(spec->baseSpecs)
-FreeList(spec->baseSpecs, FreeSpecifier);
+;
 if(spec->ctx)
 {
 FreeContext(spec->ctx);
@@ -1460,6 +1488,9 @@ break;
 case 10:
 FreeTypeName(exp->_new.typeName);
 break;
+case 38:
+FreeTypeName(exp->_new.typeName);
+break;
 case 11:
 if(exp->cast.exp)
 FreeExpression(exp->cast.exp);
@@ -1554,6 +1585,43 @@ FreeList(pointer->qualifiers, FreeSpecifier);
 ((pointer ? (__ecereClass_Pointer->Destructor ? __ecereClass_Pointer->Destructor(pointer) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(pointer)) : 0), pointer = 0);
 }
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attribute;
+
+struct Attribute
+{
+struct Attribute * prev;
+struct Attribute * next;
+struct Location loc;
+char * attr;
+struct Expression * exp;
+};
+
+void FreeAttribute(struct Attribute * attr);
+
+void FreeAttrib(struct Attrib * attr)
+{
+if(attr->attribs)
+FreeList(attr->attribs, FreeAttribute);
+((attr ? (__ecereClass_Attrib->Destructor ? __ecereClass_Attrib->Destructor(attr) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(attr)) : 0), attr = 0);
+}
+
+void FreeAttribute(struct Attribute * attr)
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete(attr->attr), attr->attr = 0);
+if(attr->exp)
+FreeExpression(attr->exp);
+((attr ? (__ecereClass_Attribute->Destructor ? __ecereClass_Attribute->Destructor(attr) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(attr)) : 0), attr = 0);
+}
+
+void FreeExtDecl(struct ExtDecl * extDecl)
+{
+if(extDecl->type == 1 && extDecl->attr)
+FreeAttrib(extDecl->attr);
+else if(extDecl->type == 0)
+(__ecereNameSpace__ecere__com__eSystem_Delete(extDecl->s), extDecl->s = 0);
+((extDecl ? (__ecereClass_ExtDecl->Destructor ? __ecereClass_ExtDecl->Destructor(extDecl) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(extDecl)) : 0), extDecl = 0);
+}
+
 void FreeDeclarator(struct Declarator * decl)
 {
 if(decl->declarator)
@@ -1565,7 +1633,8 @@ if(decl->structDecl.exp)
 FreeExpression(decl->structDecl.exp);
 if(decl->structDecl.posExp)
 FreeExpression(decl->structDecl.posExp);
-(__ecereNameSpace__ecere__com__eSystem_Delete(decl->structDecl.attrib), decl->structDecl.attrib = 0);
+if(decl->structDecl.attrib)
+FreeAttrib(decl->structDecl.attrib);
 break;
 case 1:
 FreeIdentifier(decl->identifier);
@@ -1587,7 +1656,8 @@ FreePointer(decl->pointer.pointer);
 break;
 case 6:
 case 7:
-(__ecereNameSpace__ecere__com__eSystem_Delete(decl->extended.extended), decl->extended.extended = 0);
+if(decl->extended.extended)
+FreeExtDecl(decl->extended.extended);
 break;
 }
 ((decl ? (__ecereClass_Declarator->Destructor ? __ecereClass_Declarator->Destructor(decl) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(decl)) : 0), decl = 0);
@@ -2475,6 +2545,9 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeTypeName", "void Fre
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeExpContents", "void FreeExpContents(Expression exp)", FreeExpContents, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeExpression", "void FreeExpression(Expression exp)", FreeExpression, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreePointer", "void FreePointer(Pointer pointer)", FreePointer, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeAttrib", "void FreeAttrib(Attrib attr)", FreeAttrib, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeAttribute", "void FreeAttribute(Attribute attr)", FreeAttribute, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeExtDecl", "void FreeExtDecl(ExtDecl extDecl)", FreeExtDecl, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeDeclarator", "void FreeDeclarator(Declarator decl)", FreeDeclarator, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreePropertyWatch", "void FreePropertyWatch(PropertyWatch watcher)", FreePropertyWatch, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeStatement", "void FreeStatement(Statement stmt)", FreeStatement, module, 2);

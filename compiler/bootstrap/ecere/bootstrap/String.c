@@ -1354,6 +1354,32 @@ break;
 return (float)neg * res;
 }
 
+unsigned int __ecereNameSpace__ecere__sys__IsPathInsideOf(char * path, char * of)
+{
+if(!path[0] || !of[0])
+return 0x0;
+else
+{
+char ofPart[274], ofRest[797];
+char pathPart[274], pathRest[797];
+
+strcpy(ofRest, of);
+strcpy(pathRest, path);
+for(; ofRest[0] && pathRest[0]; )
+{
+__ecereNameSpace__ecere__sys__SplitDirectory(ofRest, ofPart, ofRest);
+__ecereNameSpace__ecere__sys__SplitDirectory(pathRest, pathPart, pathRest);
+if(((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? (strcasecmp) : strcmp)(pathPart, ofPart))
+return 0x0;
+}
+if(!ofRest[0] && !pathRest[0])
+return 0x0;
+else if(!pathRest[0])
+return 0x0;
+return 0x1;
+}
+}
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DefinedExpression;
 
 struct __ecereNameSpace__ecere__com__DefinedExpression;
@@ -1403,6 +1429,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetValue", "
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetHexValue", "uint ecere::sys::GetHexValue(char * * buffer)", __ecereNameSpace__ecere__sys__GetHexValue, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::StripQuotes", "char * ecere::sys::StripQuotes(char * string, char * output)", __ecereNameSpace__ecere__sys__StripQuotes, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FloatFromString", "double ecere::sys::FloatFromString(char * string)", __ecereNameSpace__ecere__sys__FloatFromString, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::IsPathInsideOf", "bool ecere::sys::IsPathInsideOf(char * path, char * of)", __ecereNameSpace__ecere__sys__IsPathInsideOf, module, 4);
 }
 
 void __ecereUnregisterModule_String(struct __ecereNameSpace__ecere__com__Instance * module)

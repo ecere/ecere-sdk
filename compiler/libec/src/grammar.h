@@ -114,7 +114,7 @@
      IMPORT = 331,
      DEFINE = 332,
      VIRTUAL = 333,
-     EXT_ATTRIB = 334,
+     ATTRIB = 334,
      PUBLIC = 335,
      PRIVATE = 336,
      TYPED_OBJECT = 337,
@@ -143,7 +143,10 @@
      DBTABLE = 360,
      DBFIELD = 361,
      DBINDEX = 362,
-     DATABASE_OPEN = 363
+     DATABASE_OPEN = 363,
+     ALIGNOF = 364,
+     ATTRIB_DEP = 365,
+     __ATTRIB = 366
    };
 #endif
 
@@ -175,6 +178,9 @@ typedef union YYSTYPE
    External external;
    Context context;
    AsmField asmField;
+   Attrib attrib;
+   ExtDecl extDecl;
+   Attribute attribute;
 
    Instantiation instance;
    MembersInit membersInit;
@@ -197,7 +203,7 @@ typedef union YYSTYPE
 
 
 /* Line 1685 of yacc.c  */
-#line 201 "grammar.h"
+#line 207 "grammar.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

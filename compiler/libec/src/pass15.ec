@@ -2784,7 +2784,7 @@ bool DeclareFunction(GlobalFunction function, char * name)
             {
                Specifier spec;
                for(spec = specifiers->first; spec; spec = spec.next)
-                  if(spec.type == extendedSpecifier && !strcmp(spec.name, "dllexport"))
+                  if(spec.type == extendedSpecifier && spec.extDecl && spec.extDecl.type == extDeclString && !strcmp(spec.extDecl.s, "dllexport"))
                   {
                      specifiers->Remove(spec);
                      FreeSpecifier(spec);

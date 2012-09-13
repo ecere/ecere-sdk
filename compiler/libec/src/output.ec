@@ -262,6 +262,11 @@ public void OutputExpression(Expression exp, File f)
          OutputTypeName(exp.typeName, f);
          f.Puts(")");
          break;
+      case typeAlignExp:
+         f.Puts("__alignof__(");
+         OutputTypeName(exp.typeName, f);
+         f.Puts(")");
+         break;
       case extensionInitializerExp:
          f.Puts("__extension__ (");
          if(exp.initializer.typeName)
@@ -731,7 +736,7 @@ static void OutputDeclarator(Declarator decl, File f)
          if(decl.structDecl.attrib)
          {
             f.Puts(" ");
-            f.Puts(decl.structDecl.attrib);
+            OutputAttrib(decl.structDecl.attrib, f);
          }
          break;
       case identifierDeclarator:
@@ -743,14 +748,15 @@ static void OutputDeclarator(Declarator decl, File f)
          f.Puts(")");
          break;
       case extendedDeclarator:
-         f.Puts(decl.extended.extended);
+         if(decl.extended.extended) OutputExtDecl(decl.extended.extended, f);
          f.Puts(" ");
          OutputDeclarator(decl.declarator, f);
          break;
       case extendedDeclaratorEnd:
          OutputDeclarator(decl.declarator, f);
          f.Puts(" ");
-         f.Puts(decl.extended.extended);
+         if(decl.extended.extended)
+            OutputExtDecl(decl.extended.extended, f);
          break;
       case arrayDeclarator:
          if(decl.declarator)
@@ -814,6 +820,46 @@ static void OutputEnumerator(Enumerator enumerator, File f)
       f.Puts(" = ");
       OutputExpression(enumerator.exp, f);
    }
+}
+
+static void OutputAttribute(Attribute attr, File f)
+{
+   if(attr.attr)
+      f.Puts(attr.attr);
+   if(attr.exp)
+   {
+      f.Puts(" ");
+      OutputExpression(attr.exp, f);
+   }
+}
+
+static void OutputAttrib(Attrib attr, File f)
+{
+   switch(attr.type)
+   {
+      case ATTRIB:      f.Puts("__attribute__(("); break;
+      case __ATTRIB:    f.Puts("__attribute((");  break;
+      case ATTRIB_DEP:  f.Puts("__attribute_deprecated__(("); break;
+   }
+   
+   if(attr.attribs)
+   {
+      Attribute attrib;
+      for(attrib = attr.attribs->first; attrib; attrib = attrib.next)
+      {
+         if(attrib.prev) f.Puts(" ");
+         OutputAttribute(attrib, f);
+      }
+   }
+   f.Puts("))"); 
+}
+
+static void OutputExtDecl(ExtDecl extDecl, File f)
+{
+   if(extDecl.type == extDeclString && extDecl.s)
+      f.Puts(extDecl.s);
+   else if(extDecl.type == extDeclAttrib)
+      OutputAttrib(extDecl.attr, f);
 }
 
 static void OutputSpecifier(Specifier spec, File f)
@@ -902,6 +948,9 @@ static void OutputSpecifier(Specifier spec, File f)
          }
          break;
       case extendedSpecifier:
+         if(spec.extDecl)
+            OutputExtDecl(spec.extDecl, f);
+         break;
       case nameSpecifier:
       //case classSpecifier:
          if(spec.name && !strcmp(spec.name, "class"))

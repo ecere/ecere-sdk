@@ -112,6 +112,14 @@ struct CodePosition start;
 struct CodePosition end;
 };
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
+
+struct Attrib;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
+
+struct ExtDecl;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefinition;
 
 struct ClassDefinition;
@@ -996,7 +1004,7 @@ printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Syntax:\n   e
 else
 {
 struct __ecereNameSpace__ecere__com__Instance * cppOutput;
-char command[1024];
+char command[3075LL];
 
 SetGlobalData(&globalData);
 SetExcludedSymbols(&_excludedSymbols);

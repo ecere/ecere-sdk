@@ -238,7 +238,7 @@ public enum ExpressionType
    noDebuggerErrorExp, debugStateErrorExp,
    extensionCompoundExp, classExp, classDataExp, new0Exp, renew0Exp,
    dbopenExp, dbfieldExp, dbtableExp, dbindexExp, extensionExpressionExp, extensionInitializerExp,
-   vaArgExp, arrayExp
+   vaArgExp, arrayExp, typeAlignExp
 };
 
 public enum MemberType
@@ -312,6 +312,7 @@ public:
       int specifier;
       struct
       {
+         ExtDecl extDecl;
          char * name;
          Symbol symbol;
          OldList * templateArgs;
@@ -329,6 +330,40 @@ public:
       Specifier _class;
       TemplateParameter templateParameter;
    };
+};
+
+public class Attribute : struct
+{
+public:
+   Attribute prev, next;
+   Location loc;
+   String attr;
+   Expression exp;
+}
+
+public class Attrib : struct
+{
+public:
+   Location loc;
+   int type;
+   OldList * attribs;
+}
+
+public class ExtDecl : struct
+{
+public:
+   Location loc;
+   ExtDeclType type;
+   union
+   {
+      String s;
+      Attrib attr;
+   };
+}
+
+public enum ExtDeclType
+{
+   extDeclString, extDeclAttrib
 };
 
 public class Expression : struct
@@ -504,7 +539,7 @@ public:
       {
          Expression exp;
          Expression posExp;
-         char * attrib;
+         Attrib attrib;
       } structDecl;
       struct
       {
@@ -521,7 +556,7 @@ public:
       } pointer;
       struct
       {
-         char * extended;
+         ExtDecl extended;
       } extended;
    };
 };

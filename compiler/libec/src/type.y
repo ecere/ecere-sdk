@@ -54,6 +54,9 @@ default:
    FunctionDefinition function;
    External external;
    Context context;
+   Attrib attrib;
+   ExtDecl extDecl;
+   Attribute attribute;
 
    Instantiation instance;
    MembersInit membersInit;
@@ -93,7 +96,7 @@ default:
              type_qualifier_list property_specifiers
              renew_specifiers
              default_property_list
-             template_arguments_list
+             template_arguments_list attribs_list
              
 
 %type <specifier> storage_class_specifier enum_specifier_compound enum_specifier_nocompound type_qualifier type_specifier strict_type_specifier
@@ -113,7 +116,11 @@ default:
 
 %type <declaration> declaration
 %type <classDef> struct_declaration 
-%type <string> string_literal ext_decl ext_attrib
+%type <string> string_literal attribute_word
+%type <extDecl> ext_decl
+%type <attrib> attrib
+%type <attribute> attribute
+
 %type <instance> instantiation_named instantiation_unnamed guess_instantiation_named instantiation_anon
 /* %type <membersInit>  members_initialization */
 %type <memberInit> data_member_initialization default_property
@@ -143,13 +150,14 @@ default:
 %nonassoc IFX
 %nonassoc ELSE
 %token CLASS THISCLASS CLASS_NAME
-%token PROPERTY SETPROP GETPROP NEWOP RENEW DELETE EXT_DECL EXT_STORAGE IMPORT DEFINE VIRTUAL EXT_ATTRIB
+%token PROPERTY SETPROP GETPROP NEWOP RENEW DELETE EXT_DECL EXT_STORAGE IMPORT DEFINE VIRTUAL ATTRIB
 %token PUBLIC PRIVATE
 %token TYPED_OBJECT ANY_OBJECT _INCREF EXTENSION ASM TYPEOF
 %token WATCH STOPWATCHING FIREWATCHERS WATCHABLE CLASS_DESIGNER CLASS_NO_EXPANSION CLASS_FIXED ISPROPSET
 %token CLASS_DEFAULT_PROPERTY PROPERTY_CATEGORY CLASS_DATA CLASS_PROPERTY SUBCLASS NAMESPACE
 %token NEW0OP RENEW0 VAARG
 %token DBTABLE DBFIELD DBINDEX DATABASE_OPEN
+%token ALIGNOF ATTRIB_DEP __ATTRIB
 
 %destructor { FreeIdentifier($$); } identifier 
 %destructor { FreePointer($$); } pointer
@@ -185,7 +193,7 @@ default:
                                        constructor_function_definition_start destructor_function_definition_start 
                                        instance_class_function_definition instance_class_function_definition_start 
 %destructor { FreeClassDef($$); } struct_declaration
-%destructor { delete $$; } ext_decl string_literal
+%destructor { delete $$; } string_literal attribute_word
 %destructor { FreeProperty($$); } property
 
 %destructor { FreeList($$, FreeExpression); }  argument_expression_list expression 
@@ -204,6 +212,10 @@ default:
 %destructor { PopContext($$); FreeContext($$); delete $$; } compound_start
 %destructor { FreeTemplateArgument($$); } template_argument template_type_argument template_expression_argument
 %destructor { FreeTemplateDataType($$); } template_datatype
+%destructor { FreeAttrib($$); } attrib
+%destructor { FreeExtDecl($$); } ext_decl
+%destructor { FreeAttribute($$); } attribute
+%destructor { FreeList($$, FreeAttribute); }  attribs_list
 
 %start type_unit
 
@@ -463,6 +475,9 @@ common_unary_expression:
 	| SIZEOF '(' unary_expression ')'         { $$ = MkExpOp(null, SIZEOF, $3); $$.loc = @$; }
    | SIZEOF simple_unary_expression          { $$ = MkExpOp(null, SIZEOF, $2); $$.loc = @$; }
    | SIZEOF '(' guess_type_name ')'          { $$ = MkExpTypeSize($3); $$.loc = @$; }
+	| ALIGNOF '(' unary_expression ')'         { $$ = MkExpOp(null, ALIGNOF, $3); $$.loc = @$; }
+   | ALIGNOF simple_unary_expression          { $$ = MkExpOp(null, ALIGNOF, $2); $$.loc = @$; }
+   | ALIGNOF '(' guess_type_name ')'          { $$ = MkExpTypeAlign($3); $$.loc = @$; }
    ;
 
 unary_expression:
@@ -763,18 +778,43 @@ storage_class_specifier:
 	;
 
 ext_decl:
-     EXT_DECL { $$ = CopyString(yytext); }
-   | ext_attrib
+     EXT_DECL { $$ = MkExtDeclString(CopyString(yytext)); }
+   | attrib { $$ = MkExtDeclAttrib($1); }
    ;
 
-ext_attrib:
-   EXT_ATTRIB  { $$ = CopyString(yytext); }
+_attrib:
+   ATTRIB      { $<i>$ = ATTRIB; }
+ | ATTRIB_DEP  { $<i>$ = ATTRIB_DEP; }
+ | __ATTRIB    { $<i>$ = __ATTRIB; }
+ ;
+
+
+attribute_word: 
+     IDENTIFIER   { $$  = CopyString(yytext); } 
+   | TYPE_NAME    { $$  = CopyString(yytext); } 
+   | EXT_STORAGE  { $$  = CopyString(yytext); } 
+   | EXT_DECL     { $$  = CopyString(yytext); } 
+   | CONST        { $$  = CopyString(yytext); }
    ;
-   
+
+attribute:
+     attribute_word  { $$ = MkAttribute($1, null); $$.loc = @$; }
+   | attribute_word '(' expression ')'  { $$ = MkAttribute($1, MkExpBrackets($3)); $$.loc = @$; }
+   ;   
+
+attribs_list:
+     attribute { $$ = MkListOne($1); }
+   | attribs_list attribute { ListAdd($1, $2); $$ = $1; }
+   ;
+
+attrib:
+     _attrib '(' '(' attribs_list ')' ')' { $$ = MkAttrib($<i>1, $4); $$.loc = @$; }
+   | _attrib '(' '('              ')' ')'  { $$ = MkAttrib($<i>1, null); $$.loc = @$; }
+   ;   
 
 ext_storage:
-     EXT_STORAGE  { $$ = MkSpecifierExtended(yytext); }
-   | ext_decl   { $$ = MkSpecifierExtended($1); delete $1; }
+     EXT_STORAGE  { $$ = MkSpecifierExtended(MkExtDeclString(CopyString(yytext))); }
+   | ext_decl   { $$ = MkSpecifierExtended($1); }
    ;
 
 type_qualifier:
@@ -999,7 +1039,7 @@ struct_declarator_list:
 struct_declarator:
 	  declarator_nofunction
       { $$ = MkStructDeclarator($1, null); $$.loc = @$; }  
-	| declarator_nofunction ext_attrib
+	| declarator_nofunction attrib
       { $$ = MkStructDeclarator($1, null); $$.structDecl.attrib = $2; $$.loc = @$; }  
 	| ':' constant_expression
       { $$ = MkStructDeclarator(null, $2);  $$.loc = @$; }

@@ -112,6 +112,14 @@ struct CodePosition start;
 struct CodePosition end;
 };
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
+
+struct Attrib;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
+
+struct ExtDecl;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefinition;
 
 struct ClassDefinition;
@@ -349,6 +357,10 @@ static struct __ecereNameSpace__ecere__com__Instance * __currentModule;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_AsmField;
 
+struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attribute;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDef;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefinition;
@@ -378,6 +390,8 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass_Definition;
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_Enumerator;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_External;
 
@@ -682,6 +696,8 @@ __ecereRegisterModule_type(module);
 if(__currentModule == module)
 {
 __ecereClass_AsmField = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "AsmField");
+__ecereClass_Attrib = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Attrib");
+__ecereClass_Attribute = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Attribute");
 __ecereClass_ClassDef = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ClassDef");
 __ecereClass_ClassDefinition = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ClassDefinition");
 __ecereClass_ClassFunction = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ClassFunction");
@@ -697,6 +713,7 @@ __ecereClass_Declarator = __ecereNameSpace__ecere__com__eSystem_FindClass(module
 __ecereClass_Definition = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Definition");
 __ecereClass_Enumerator = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Enumerator");
 __ecereClass_Expression = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Expression");
+__ecereClass_ExtDecl = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ExtDecl");
 __ecereClass_External = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "External");
 __ecereClass_FunctionDefinition = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "FunctionDefinition");
 __ecereClass_FunctionImport = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "FunctionImport");

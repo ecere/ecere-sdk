@@ -274,8 +274,11 @@ void FreeSpecifier(Specifier spec)
       {
          case nameSpecifier:
          //case classSpecifier:
-         case extendedSpecifier:
             delete spec.name;
+            break;
+         case extendedSpecifier:
+            if(spec.extDecl)
+               FreeExtDecl(spec.extDecl);
             if(spec.templateArgs)
             {
                FreeList(spec.templateArgs, FreeTemplateArgument);
@@ -414,6 +417,9 @@ static void _FreeExpression(Expression exp, bool freePointer)
       case typeSizeExp:
          FreeTypeName(exp._new.typeName);
          break;
+      case typeAlignExp:
+         FreeTypeName(exp._new.typeName);
+         break;
       case castExp:
          if(exp.cast.exp)
             FreeExpression(exp.cast.exp);
@@ -512,6 +518,30 @@ void FreePointer(Pointer pointer)
    delete pointer;
 }
 
+void FreeAttrib(Attrib attr)
+{
+   if(attr.attribs)
+      FreeList(attr.attribs, FreeAttribute);
+   delete attr;
+}
+
+void FreeAttribute(Attribute attr)
+{
+   delete attr.attr;
+   if(attr.exp)
+      FreeExpression(attr.exp);
+   delete attr;
+}
+
+void FreeExtDecl(ExtDecl extDecl)
+{
+   if(extDecl.type == extDeclAttrib && extDecl.attr)
+      FreeAttrib(extDecl.attr);
+   else if(extDecl.type == extDeclString)
+      delete extDecl.s;
+   delete extDecl;
+}
+
 void FreeDeclarator(Declarator decl)
 {
    if(decl.declarator)
@@ -524,7 +554,8 @@ void FreeDeclarator(Declarator decl)
             FreeExpression(decl.structDecl.exp);
          if(decl.structDecl.posExp)
             FreeExpression(decl.structDecl.posExp);
-         delete decl.structDecl.attrib;
+         if(decl.structDecl.attrib)
+            FreeAttrib(decl.structDecl.attrib);
          break;
       case identifierDeclarator:
          FreeIdentifier(decl.identifier);
@@ -546,7 +577,8 @@ void FreeDeclarator(Declarator decl)
          break;
       case extendedDeclarator:
       case extendedDeclaratorEnd:
-         delete decl.extended.extended;
+         if(decl.extended.extended)
+            FreeExtDecl(decl.extended.extended);
          break;
    }
    delete decl;
