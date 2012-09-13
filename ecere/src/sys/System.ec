@@ -8,6 +8,7 @@ namespace sys;
 
 default:
 #define uint _uint
+#define set _set
 
 #if defined(__WIN32__)
 
@@ -29,6 +30,7 @@ default:
 #include <stdio.h>
 #include <stdlib.h>
 #undef uint
+#undef set
 
 default:
 // IMPLEMENTED IN _System.c

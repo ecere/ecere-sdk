@@ -1123,7 +1123,7 @@ private:
    DisplaySystem displaySystem;
    void * window;
    public int width, height;
-   
+
    Mutex mutex { };
    int current;
 

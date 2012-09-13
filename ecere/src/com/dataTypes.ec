@@ -1898,6 +1898,11 @@ public char * PrintLnString(typed_object object, ...)
    return string;
 }
 
+#if defined(__ANDROID__)
+#include <android/log.h>
+#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "ecere-app", __VA_ARGS__))
+#endif
+
 public void PrintLn(typed_object object, ...)
 {
    va_list args;
@@ -1905,7 +1910,11 @@ public void PrintLn(typed_object object, ...)
    va_start(args, object);
    PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
    va_end(args);
+#if defined(__ANDROID__)
+   LOGI("%s", buffer);
+#else
    puts(buffer);
+#endif
 }
 
 public void Print(typed_object object, ...)

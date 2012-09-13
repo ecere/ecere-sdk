@@ -16,6 +16,10 @@ namespace gfx::drivers;
 
 #else
 
+#if defined(__ANDROID__)
+
+#else
+
 #define property _property
 #define new _new
 #define class _class
@@ -54,6 +58,8 @@ namespace gfx::drivers;
 
 #endif
 
+#endif
+
 #if defined(__APPLE__)
 #include <OpenGl/gl.h>
 #endif
@@ -66,13 +72,26 @@ namespace gfx::drivers;
 #include <windows.h>
 #endif
 
+#if defined(__ANDROID__)
+
+#include <GLES/gl.h>
+#include <EGL/egl.h>
+
+#else
+
 #include <GL/gl.h>
 #include <GL/glext.h>
+
+#endif
 
 import "Display"
 
 #if defined(__unix__)
+
+#ifndef __ANDROID__
 import "XInterface"
+#endif
+
 #endif
 
 #define glLoadMatrix glLoadMatrixd
@@ -452,7 +471,10 @@ class OpenGLDisplayDriver : DisplayDriver
 /*#if defined(__APPLE__)
       //glXMakeCurrent(xGlobalDisplay, displaySystem.window, oglSystem.glContext);
 #else*/
+      #if defined(__ANDROID__)
+      #else
       glXMakeCurrent(xGlobalDisplay, oglSystem.dummyGLXPixmap /*displaySystem.window /*DefaultRootWindow(xGlobalDisplay)*/, oglSystem.glContext);
+      #endif
 //#endif
       //previous = oglSystem.glContext;
    #endif
@@ -466,7 +488,10 @@ class OpenGLDisplayDriver : DisplayDriver
       wglMakeCurrent(null, null);
    #elif defined(__unix__)
       // printf("Making NULL current\n");
+      #if defined(__ANDROID__)
+      #else
       glXMakeCurrent(xGlobalDisplay, None, null);
+      #endif
       // previous = null;
    #endif
    }
@@ -482,7 +507,10 @@ class OpenGLDisplayDriver : DisplayDriver
    #elif defined(__unix__)
       // if(previous) glXMakeCurrent(xGlobalDisplay, None, null);
       // printf("   Making DISPLAY current\n");
+      #if defined(__ANDROID__)
+      #else
       glXMakeCurrent(xGlobalDisplay, (int)display.window, oglDisplay.glContext);
+      #endif
    #endif
       return true;
    }
@@ -521,6 +549,8 @@ class OpenGLDisplayDriver : DisplayDriver
          if(oglDisplay.memBitmap) DeleteObject(oglDisplay.memBitmap); 
 
    #elif defined(__unix__)
+      #if defined(__ANDROID__)
+      #else
          if(oglDisplay.shapePixmap)
             XFreePixmap(xGlobalDisplay, oglDisplay.shapePixmap);
          if(oglDisplay.pixmap)
@@ -552,6 +582,7 @@ class OpenGLDisplayDriver : DisplayDriver
       
          if(oglDisplay.glContext) 
             glXDestroyContext(xGlobalDisplay, oglDisplay.glContext);
+      #endif
    #endif
          delete oglDisplay.flippingBuffer;
          delete oglDisplay;
@@ -683,6 +714,9 @@ class OpenGLDisplayDriver : DisplayDriver
          }
       }
    #elif defined(__unix__)
+      #if defined(__ANDROID__)
+         result = true;
+      #else
       int attrList[] = 
       {
    #ifndef ECERE_MINIGLX
@@ -714,6 +748,7 @@ class OpenGLDisplayDriver : DisplayDriver
             result = true;
          }
       }
+      #endif
    #endif
 
       displaySystem.flags.alpha = true;
@@ -737,7 +772,8 @@ class OpenGLDisplayDriver : DisplayDriver
       DestroyWindow(oglSystem.hwnd);
 
    #elif defined(__unix__)
-
+      #if defined(__ANDROID__)
+      #else
       if(oglSystem.visualInfo)
       {
    #ifdef   ECERE_MINIGLX
@@ -751,6 +787,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glXDestroyGLXPixmap(xGlobalDisplay, oglSystem.dummyGLXPixmap);
       if(oglSystem.dummyPixmap);
          XFreePixmap(xGlobalDisplay, oglSystem.dummyPixmap);
+      #endif
    #endif
       delete oglSystem;
    }
@@ -780,6 +817,8 @@ class OpenGLDisplayDriver : DisplayDriver
          else
             ReleaseDC(display.window, oglDisplay.hdc);
    #elif defined(__unix__)
+      #if defined(__ANDROID__)
+      #else
          XVisualInfo * visualInfo = null;
          /*
          int attrib[] =
@@ -843,6 +882,7 @@ class OpenGLDisplayDriver : DisplayDriver
             glXMakeCurrent(xGlobalDisplay, (int)display.window, oglDisplay.glContext);
             result = true;
          }
+      #endif
    #endif
       }
 #if defined(__WIN32__) || defined(USEPBUFFER)
@@ -881,7 +921,11 @@ class OpenGLDisplayDriver : DisplayDriver
    #if defined(__WIN32__)
       wglMakeCurrent(null, null);
    #elif defined(__unix__)
+      #if defined(__ANDROID__)
+      result = true;
+      #else
       glXMakeCurrent(xGlobalDisplay, None, null);
+      #endif
    #endif
 
       return result;
@@ -1053,6 +1097,9 @@ class OpenGLDisplayDriver : DisplayDriver
             ReleaseDC(display.window, hdc);
          }
 #elif defined(__unix__)
+      #if defined(__ANDROID__)
+         result = true;
+      #else
       	int attrib[] =
       	{
       		GLX_DOUBLEBUFFER,  True,
@@ -1208,12 +1255,18 @@ class OpenGLDisplayDriver : DisplayDriver
             }
             XFree(config);
          }
+     #endif
 #endif
          CreateDisplay(display);
 #if defined(__WIN32__)
          wglMakeCurrent(oglDisplay.hdc, oglDisplay.glrc);
 #elif defined(__unix__)
+      #if defined(__ANDROID__)
+         width = eglWidth;
+         height = eglHeight;
+      #else
          glXMakeCurrent(xGlobalDisplay, (int)display.window, oglDisplay.glContext);
+      #endif
 #endif
       }
       else
@@ -1340,6 +1393,8 @@ class OpenGLDisplayDriver : DisplayDriver
 
             ReleaseDC(0, hdc);
 #elif defined(__unix__)
+      #if defined(__ANDROID__)
+      #else
             XTransform transform = 
             {
                {
@@ -1357,6 +1412,7 @@ class OpenGLDisplayDriver : DisplayDriver
             XShapeCombineMask(xGlobalDisplay, display.window, 2, 0, 0, oglDisplay.shapePixmap, ShapeSet);
             #endif
             XFlush(xGlobalDisplay);
+     #endif
 #endif
          }
       } 
@@ -1367,7 +1423,11 @@ class OpenGLDisplayDriver : DisplayDriver
          //wglSwapLayerBuffers(oglDisplay.hdc,WGL_SWAP_MAIN_PLANE); 
          SwapBuffers(oglDisplay.hdc);
 #elif defined(__unix__)
+      #if defined(__ANDROID__)
+         eglSwapBuffers(eglDisplay, eglSurface);
+      #else
          glXSwapBuffers(xGlobalDisplay, (int)display.window);
+      #endif
 #endif
       }
       //Logf("Out of DisplayScreen\n");

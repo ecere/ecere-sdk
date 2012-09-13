@@ -1,5 +1,6 @@
 namespace sys;
 
+#define set _set
 #define uint _uint
 // Platform includes
 #if defined(__WIN32__)
@@ -7,9 +8,12 @@ namespace sys;
 #include <windows.h>
 #else
 #include <pthread.h>
+#ifndef __ANDROID__
 #include <sys/signal.h>
 #endif
+#endif
 #undef uint
+#undef set
 
 import "instance"
 

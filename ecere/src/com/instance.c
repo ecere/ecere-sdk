@@ -289,7 +289,11 @@ void * Instance_Module_Load(char * name, void ** Load, void ** Unload)
          FreeLibrary(library);
    }
 #elif defined(__unix__) || defined(__APPLE__)
+#if defined(__ANDROID__)
+   sprintf(fileName, "/data/data/com.ecere.%s/lib/lib", name);
+#else
    strcpy(fileName, "lib");
+#endif
    strcat(fileName, name);
    GetExtension(fileName, extension);
    if(!extension[0])

@@ -1,6 +1,7 @@
 namespace sys;
 
 default:
+#define set _set
 #define uint _uint
 #define File _File
 #undef __BLOCKS__
@@ -66,6 +67,7 @@ DWORD APIENTRY WNetGetResourceInformationA(LPNETRESOURCE lpNetResource, LPVOID l
 #endif //#ifndef ECERE_BOOTSTRAP
 private:
 
+#undef set
 #undef uint
 #undef File
 

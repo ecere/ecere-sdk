@@ -1,5 +1,6 @@
 namespace sys;
 
+#define set _set
 #define Date _Date
 #define uint _uint
 #define Method _Method
@@ -26,6 +27,7 @@ namespace sys;
 #include <time.h>
 #include <stdlib.h>
 
+#undef set
 #undef uint
 #undef int64
 #undef uint64

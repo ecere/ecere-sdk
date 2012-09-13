@@ -69,10 +69,10 @@ public class Button : CommonControl
    unichar symbol;
    Color textColor[ButtonState];
    Font font;
-   bool hint:1, key:1, captured:1, over:1, checked:1;
    Color colors[ButtonState];
    Alignment alignment;
    BoxAlignment bitmapAlignment;
+   struct { bool hint:1, key:1, captured:1, over:1, checked:1; };
 
    Button()
    {

@@ -2874,7 +2874,7 @@ public class LFBDisplayDriver : DisplayDriver
                }
                ReleaseDC(0, hdc);
             }  
-   #else
+   #elif !defined(ECERE_NOFONTCONFIG)
             {
                char * fileName2;
                FcResult result = 0;
@@ -3086,7 +3086,7 @@ public class LFBDisplayDriver : DisplayDriver
                      GetWindowsDirectory(fileName, MAX_LOCATION);
                      PathCat(fileName, "fonts");
                      PathCat(fileName, fontName);
-#elif defined(ECERE_NOFONTCONFIG)
+#elif !defined(ECERE_NOFONTCONFIG)
                      if(getenv("ECERE_FONTS"))
                      {
                         strcpy(fileName, ecereFonts);
@@ -3335,7 +3335,7 @@ public class LFBDisplayDriver : DisplayDriver
                
                if(fontEntryNum == MAX_FONT_LINK_ENTRIES) 
                {
-#if !defined(__WIN32__)
+#if !defined(__WIN32__) && !defined(ECERE_NOFONTCONFIG)
                   int fontID = 0;
                   double fontSize = font.size;
                   FcResult result = 0;
@@ -3353,7 +3353,7 @@ public class LFBDisplayDriver : DisplayDriver
 #endif
                      continue;
             
-#if !defined(__WIN32__)
+#if !defined(__WIN32__) && !defined(ECERE_NOFONTCONFIG)
                   {
                      charSet = FcCharSetCreate();
                      FcCharSetAddChar(charSet, testChar);

@@ -10,6 +10,7 @@ static WSADATA wsaData;
 
 #elif defined(__unix__) || defined(__APPLE__)
 default:
+#define set _set
 #define uint _uint
 #include <sys/time.h>
 #include <unistd.h>
@@ -21,6 +22,7 @@ default:
 #include <sys/types.h>
 #include <sys/time.h>
 #include <arpa/inet.h>
+#undef set
 #undef uint
 private:
 

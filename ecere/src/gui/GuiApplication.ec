@@ -1,6 +1,6 @@
 namespace gui;
 
-#if defined(__unix__) || defined(__APPLE__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
 #define property _property
 #define new _new
 #define class _class
@@ -42,6 +42,7 @@ static WSADATA wsaData;
 
 default:
 #define uint _uint
+#define set _set
 #include <sys/time.h>
 #include <unistd.h>
 
@@ -53,8 +54,10 @@ default:
 #include <sys/time.h>
 #include <arpa/inet.h>
 
-private:
+#undef set
 #undef uint
+
+private:
 typedef int SOCKET;
 typedef struct hostent HOSTENT;
 typedef struct sockaddr SOCKADDR;
@@ -69,7 +72,7 @@ import "network"
 
 #if defined(__APPLE__)
 import "CocoaInterface"
-#elif defined(__unix__)
+#elif defined(__unix__) && !defined(__ANDROID__)
 import "XInterface"
 #endif
 
@@ -215,7 +218,7 @@ public class GuiApplication : Application
       delete desktop;
       customCursors.Clear();
 
-#if defined(__unix__)
+#if defined(__unix__) && !defined(__ANDROID__)
       if(xGlobalDisplay)
          XUnlockDisplay(xGlobalDisplay);
 #endif
@@ -518,7 +521,7 @@ public class GuiApplication : Application
    void Initialize(bool switchMode)
    {
       static bool initialized = false;
-      
+
       // TODO:
       // if(!initialized && eClass_IsDerived(__ecereModule->app->module.inst.class, guiApplicationClass))
       if(!initialized)
@@ -543,7 +546,7 @@ public class GuiApplication : Application
          errorLevel = 2;
 
          lockMutex.Wait();
-#if defined(__unix__)
+#if defined(__unix__) && !defined(__ANDROID__)
          if(xGlobalDisplay)
             XLockDisplay(xGlobalDisplay);
 #endif
@@ -582,7 +585,14 @@ public class GuiApplication : Application
             } else {
                defaultDriver = "CocoaOpenGL";
             }
-         } 
+         }
+   #elif defined(__ANDROID__)
+         {
+            if(driver)
+               defaultDriver = driver;
+            else
+               defaultDriver = "OpenGL";
+         }
    #else
          if(this.isGUIApp && !textMode)
          {
@@ -703,7 +713,7 @@ public:
                   Wait();
                else
                {
-#if defined(__unix__)
+#if defined(__unix__) && !defined(__ANDROID__)
                   if(xGlobalDisplay)
                      XUnlockDisplay(xGlobalDisplay);
 #endif
@@ -711,7 +721,7 @@ public:
                   lockMutex.Release();
                   lockMutex.Wait();
 
-#if defined(__unix__)
+#if defined(__unix__) && !defined(__ANDROID__)
                   if(xGlobalDisplay)
                      XLockDisplay(xGlobalDisplay);
 #endif
@@ -725,7 +735,7 @@ public:
 
    void Wait(void)
    {
-#if defined(__unix__)
+#if defined(__unix__) && !defined(__ANDROID__)
       if(xGlobalDisplay)
          XUnlockDisplay(xGlobalDisplay);
 #endif
@@ -741,7 +751,7 @@ public:
 
       lockMutex.Wait();
 
-#if defined(__unix__)
+#if defined(__unix__) && !defined(__ANDROID__)
       if(xGlobalDisplay)
          XLockDisplay(xGlobalDisplay);
 #endif
@@ -1324,7 +1334,7 @@ public:
    void Lock(void)
    {
       lockMutex.Wait();
-#if defined(__unix__)
+#if defined(__unix__) && !defined(__ANDROID__)
       if(xGlobalDisplay)
          XLockDisplay(xGlobalDisplay);
 #endif
@@ -1332,7 +1342,7 @@ public:
 
    void Unlock(void)
    {
-#if defined(__unix__)
+#if defined(__unix__) && !defined(__ANDROID__)
       if(xGlobalDisplay)
          XUnlockDisplay(xGlobalDisplay);
 #endif

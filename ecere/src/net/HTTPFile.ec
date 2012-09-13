@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #ifndef ECERE_NONET
 
 import "network"
