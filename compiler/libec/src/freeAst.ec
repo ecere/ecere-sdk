@@ -275,14 +275,12 @@ void FreeSpecifier(Specifier spec)
          case nameSpecifier:
          //case classSpecifier:
             delete spec.name;
+            if(spec.templateArgs)
+               FreeList(spec.templateArgs, FreeTemplateArgument);
             break;
          case extendedSpecifier:
             if(spec.extDecl)
                FreeExtDecl(spec.extDecl);
-            if(spec.templateArgs)
-            {
-               FreeList(spec.templateArgs, FreeTemplateArgument);
-            }
             break;
          case enumSpecifier:
             if(spec.id)
