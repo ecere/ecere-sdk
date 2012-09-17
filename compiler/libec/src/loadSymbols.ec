@@ -652,7 +652,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                         {
                            // TOFIX:
                            //if(!(data = (GlobalData)nameSpace->functions.FindString(name)))
-                           data = (GlobalData)nameSpace->functions.FindString(name);
+                           data = (GlobalData)nameSpace->functions.FindString(name + start);
                            if(!data)
                            {
                               data = GlobalData
