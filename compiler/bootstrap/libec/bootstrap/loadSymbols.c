@@ -1466,8 +1466,6 @@ for(c = 0; name[c]; c++)
 if(name[c] == '.' || (name[c] == ':' && name[c + 1] == ':'))
 {
 struct __ecereNameSpace__ecere__com__NameSpace * newSpace;
-
-{
 char * spaceName = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (c - start + 1));
 
 strncpy(spaceName, name + start, c - start);
@@ -1486,7 +1484,6 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(*nameSpace).nameSpa
 }
 else
 (__ecereNameSpace__ecere__com__eSystem_Delete(spaceName), spaceName = 0);
-}
 nameSpace = newSpace;
 if(name[c] == ':')
 c++;
@@ -1495,7 +1492,7 @@ start = c + 1;
 }
 if(c - start)
 {
-data = (struct GlobalData *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*nameSpace).functions, name);
+data = (struct GlobalData *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*nameSpace).functions, name + start);
 if(!data)
 {
 data = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_GlobalData), ((struct GlobalData *)__ecereTemp1)->fullName = __ecereNameSpace__ecere__sys__CopyString(name), ((struct GlobalData *)__ecereTemp1)->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(line), ((struct GlobalData *)__ecereTemp1)->module = privateModule, ((struct GlobalData *)__ecereTemp1));

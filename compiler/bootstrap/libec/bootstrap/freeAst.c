@@ -1344,14 +1344,12 @@ switch(spec->type)
 {
 case 1:
 (__ecereNameSpace__ecere__com__eSystem_Delete(spec->name), spec->name = 0);
+if(spec->templateArgs)
+FreeList(spec->templateArgs, FreeTemplateArgument);
 break;
 case 5:
 if(spec->extDecl)
 FreeExtDecl(spec->extDecl);
-if(spec->templateArgs)
-{
-FreeList(spec->templateArgs, FreeTemplateArgument);
-}
 break;
 case 2:
 if(spec->id)
@@ -1368,7 +1366,7 @@ FreeIdentifier(spec->id);
 if(spec->definitions)
 FreeList(spec->definitions, FreeClassDef);
 if(spec->baseSpecs)
-;
+FreeList(spec->baseSpecs, FreeSpecifier);
 if(spec->ctx)
 {
 FreeContext(spec->ctx);

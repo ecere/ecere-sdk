@@ -1092,9 +1092,12 @@ name[0] = (char)0;
 FullClassNameCat(name, _class->fullName, 0x0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(spec->name), spec->name = 0);
 spec->type = 3;
+spec->baseSpecs = (((void *)0));
 spec->id = MkIdentifier(name);
 spec->list = (((void *)0));
 spec->definitions = (((void *)0));
+spec->ctx = (((void *)0));
+spec->addNameSpace = 0x0;
 }
 else if(_class && _class->type == 5)
 {
@@ -1103,9 +1106,12 @@ char name[1024] = "";
 FullClassNameCat(name, _class->fullName, 0x0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(spec->name), spec->name = 0);
 spec->type = 3;
+spec->baseSpecs = (((void *)0));
 spec->id = MkIdentifier(name);
 spec->list = (((void *)0));
 spec->definitions = (((void *)0));
+spec->ctx = (((void *)0));
+spec->addNameSpace = 0x0;
 }
 else if(_class)
 {
@@ -1150,7 +1156,10 @@ else
 spec->type = 3;
 spec->id = MkIdentifier("__ecereNameSpace__ecere__com__Instance");
 spec->list = (((void *)0));
+spec->baseSpecs = (((void *)0));
 spec->definitions = (((void *)0));
+spec->ctx = (((void *)0));
+spec->addNameSpace = 0x0;
 }
 if(_class && _class->dataTypeString && !strcmp(_class->dataTypeString, "char *"))
 return 0x1;
