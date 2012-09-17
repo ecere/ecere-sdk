@@ -509,6 +509,7 @@ attribute:
 attribs_list:
      attribute { $$ = MkListOne($1); }
    | attribs_list attribute { ListAdd($1, $2); $$ = $1; }
+   | attribs_list ',' attribute { ListAdd($1, $3); $$ = $1; }
    ;
 
 attrib:
