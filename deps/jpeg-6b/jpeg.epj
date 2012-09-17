@@ -1,12 +1,9 @@
 {
    "Version" : 0.2,
    "ModuleName" : "libjpeg",
-   "License" : "",
    "Options" : {
       "TargetType" : "StaticLibrary",
-      "TargetFileName" : "jpeg",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)"
+      "TargetFileName" : "jpeg"
    },
    "Configurations" : [
       {

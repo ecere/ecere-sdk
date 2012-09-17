@@ -7,9 +7,7 @@
          "../zlib"
       ],
       "TargetType" : "StaticLibrary",
-      "TargetFileName" : "png",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)"
+      "TargetFileName" : "png"
    },
    "Configurations" : [
       {

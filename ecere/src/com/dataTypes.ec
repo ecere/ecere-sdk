@@ -1914,7 +1914,7 @@ public void PrintLn(typed_object object, ...)
    va_start(args, object);
    PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
    va_end(args);
-#if defined(__ANDROID__)
+#if defined(__ANDROID__) && !defined(ECERE_NOFILE)
    LOGI("%s", buffer);
 #else
    puts(buffer);

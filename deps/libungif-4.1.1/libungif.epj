@@ -5,9 +5,7 @@
       "Debug" : false,
       "Optimization" : "None",
       "TargetType" : "StaticLibrary",
-      "TargetFileName" : "ungif",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)"
+      "TargetFileName" : "ungif"
    },
    "Configurations" : [
       {

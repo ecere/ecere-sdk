@@ -30,8 +30,7 @@
          "Name" : "Release",
          "Options" : {
             "Warnings" : "None",
-            "Optimization" : "None",
-            "TargetDirectory" : "obj"
+            "Optimization" : "None"
          }
       }
    ],

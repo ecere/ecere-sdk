@@ -3,6 +3,9 @@
    "ModuleName" : "ecere",
    "Options" : {
       "Warnings" : "All",
+      "PreprocessorDefinitions" : [
+         "BUILDING_ECERE_COM"
+      ],
       "IncludeDirs" : [
          "src/gfx/drivers/harfbuzz",
          "/usr/X11R6/include",
@@ -11,8 +14,7 @@
       "DefaultNameSpace" : "ecere",
       "TargetType" : "SharedLibrary",
       "TargetFileName" : "ecere",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "TargetDirectory" : "",
       "Libraries" : [
          "jpeg",
          "png",
@@ -308,6 +310,44 @@
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereInstaller"
          }
+      },
+      {
+         "Name" : "Android",
+         "Options" : {
+            "PreprocessorDefinitions" : [
+               "ECERE_NOFONTCONFIG"
+            ],
+            "IncludeDirs" : [
+               "../deps/jpeg-6b",
+               "../deps/libpng-1.4.0",
+               "../deps/libungif-4.1.1/lib",
+               "../deps/zlib",
+               "../deps/freetype-2.3.12/include",
+               "../deps/glext"
+            ]
+         },
+         "Platforms" : [
+            {
+               "Name" : "linux",
+               "Options" : {
+                  "Libraries" : [
+                     "m",
+                     "dl",
+                     "ungif",
+                     "log",
+                     "android",
+                     "EGL",
+                     "GLESv1_CM"
+                  ],
+                  "LibraryDirs" : [
+                     "../deps/libungif-4.1.1/obj/release.$(PLATFORM).$(COMPILER)",
+                     "../deps/libpng-1.4.0/obj/release.$(PLATFORM).$(COMPILER)",
+                     "../deps/jpeg-6b/obj/release.$(PLATFORM).$(COMPILER)",
+                     "../deps/freetype-2.3.12/obj/release.$(PLATFORM).$(COMPILER)"
+                  ]
+               }
+            }
+         ]
       }
    ],
    "Files" : [

@@ -5,9 +5,7 @@
       "Debug" : false,
       "Optimization" : "None",
       "TargetType" : "StaticLibrary",
-      "TargetFileName" : "z",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)"
+      "TargetFileName" : "z"
    },
    "Configurations" : [
       {
