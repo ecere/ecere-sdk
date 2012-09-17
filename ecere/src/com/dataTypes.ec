@@ -76,7 +76,11 @@ extern int __ecereVMethodID_class_OnUnserialize;
 extern int __ecereVMethodID_class_OnCopy;
 public:
 
-// TOFIX: Declaration ordering
+#if defined(ECERE_BOOTSTRAP) || defined(ECERE_STATIC)
+#define dllexport
+#endif
+
+// TOFIX: Declaration ordering (Required on gcc 3.4.5)
 dllexport void eSystem_Delete(void * memory);
 
 public class IOChannel
