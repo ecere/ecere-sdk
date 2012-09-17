@@ -60,9 +60,10 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
       }
    }
 
-   if(spec.type == nameSpecifier /*Class*/ || spec.type == subClassSpecifier)
+   if(spec.type == nameSpecifier || spec.type == subClassSpecifier)
    {
-      Symbol classSym = spec.symbol; // FindClass(spec.name);
+      // TODO: Apply more care because nameSpecifier / subClassSpecifier use different parts of the union!
+      Symbol classSym = spec.symbol;
       if(spec.type == subClassSpecifier)
       {
          classSym = FindClass("ecere::com::Class");
@@ -88,36 +89,25 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
             //spec.name = CopyString(name);
             delete spec.name;
             spec.type = structSpecifier;
+            spec.baseSpecs = null;
             spec.id = MkIdentifier(name);
             spec.list = null;
             spec.definitions = null;
-
-            /*
-            external = DeclareStruct(_class.fullName, false);
-            // If this declaration created something, we gotta pass it through
-            if(external)
-            {
-               Context ctx = curContext;
-               curContext = globalContext;
-               InstDeclPassDeclaration(external.declaration);
-               curContext = ctx;
-            }
-            */
+            spec.ctx = null;
+            spec.addNameSpace = false;
          }
          else if(_class && _class.type == noHeadClass)
          {
-            /*
-            delete spec.name;
-            spec.name = CopyString("void");
-            */
-
             char name[1024] = "";
             FullClassNameCat(name, _class.fullName, false);
             delete spec.name;
             spec.type = structSpecifier;
+            spec.baseSpecs = null;
             spec.id = MkIdentifier(name);
             spec.list = null;
             spec.definitions = null;
+            spec.ctx = null;
+            spec.addNameSpace = false;
          }
          else if(_class)
          {
@@ -176,10 +166,13 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
             spec.type = structSpecifier;
             spec.id = MkIdentifier("__ecereNameSpace__ecere__com__Instance");
             spec.list = null;
+            spec.baseSpecs = null;
             spec.definitions = null;
+            spec.ctx = null;
+            spec.addNameSpace = false;
          }
 
-         if(_class && _class.dataTypeString && !strcmp(_class.dataTypeString /*fullName*/, "char *"))
+         if(_class && _class.dataTypeString && !strcmp(_class.dataTypeString, "char *"))
             return true; //false;
          if(!_class || _class.type == normalClass || _class.type == noHeadClass || !strcmp(_class.fullName, "ecere::com::Instance"))
             return true;
@@ -288,9 +281,6 @@ static void InstDeclPassSpecifier(Specifier spec)
             }
          }
          break;
-
-      /*case classSpecifier:
-         break;*/
    }
 }
 
