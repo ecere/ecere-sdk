@@ -155,7 +155,7 @@ static uint16 ReadWORD(File f)
 {
    uint16 wordValue;
    f.Read(&wordValue, sizeof(uint16), 1);
-   BIGENDSWAP_WORD(floatValue);
+   BIGENDSWAP_WORD(wordValue);
    return wordValue;
 }
 
@@ -163,7 +163,7 @@ static uint ReadDWORD(File f)
 {
    uint dwordValue;
    f.Read(&dwordValue, sizeof(uint), 1);
-   BIGENDSWAP_DWORD(floatValue);
+   BIGENDSWAP_DWORD(dwordValue);
    return dwordValue;
 }
 
