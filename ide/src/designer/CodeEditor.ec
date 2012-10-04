@@ -5784,7 +5784,10 @@ class CodeEditor : Window
 
    void ListEnumValues(Class _class)
    {
+      List<Class> classes { };
       for(; _class && _class.type == enumClass; _class = _class.base)
+         classes.Insert(null, _class);
+      for(_class : classes)
       {
          EnumClassData enumeration = (EnumClassData)_class.data;
          NamedLink item;
@@ -5794,6 +5797,7 @@ class CodeEditor : Window
             row.icon = icons[typeEnumValue];
          }
       }
+      delete classes;
    }
 
    bool ListEnumsModule(Module mainModule, Type dest)
