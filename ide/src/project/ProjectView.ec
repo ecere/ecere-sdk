@@ -316,6 +316,16 @@ class ProjectView : Window
          return true;
       }
 
+      bool NotifyKeyHit(ListBox listBox, DataRow row, Key key, unichar ch)
+      {
+         if(key == altUp || key == altDown)
+         {
+            SelectNextProject(key == altUp);
+            return false;
+         }
+         return true;
+      }
+
       bool NotifyKeyDown(ListBox listBox, DataRow row, Key key, unichar ch)
       {
          if(row)
@@ -1257,6 +1267,24 @@ class ProjectView : Window
       return prj;
    }
    
+   void SelectNextProject(bool backwards)
+   {
+      DataRow row = fileList.currentRow;
+      DataRow currentRow = row;
+      ProjectNode node = (ProjectNode)row.tag;
+      if(node.type != project)
+         row = node.project.topNode.row;
+      else if(backwards)
+         row = row.previous ? row.previous : fileList.lastRow;
+      if(!backwards)
+         row = row.next ? row.next : fileList.firstRow;
+      if(row && row != currentRow)
+      {
+         fileList.SelectRow(row);
+         fileList.currentRow = row;
+      }
+   }
+
    ProjectNode GetSelectedNode(bool useSelection)
    {
       ProjectNode node = null;
