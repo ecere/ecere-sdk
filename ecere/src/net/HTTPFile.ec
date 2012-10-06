@@ -108,11 +108,18 @@ private class HTTPConnection : Socket
       int c;
       while(!file.done)
       {
+         bool gotEndLine = false;
          for(c = 0; c<count-1; c++)
          {
             if(buffer[c] == '\r' && buffer[c+1] == '\n')
+            {
+               gotEndLine = true;
                break;
+            }
          }   
+         if(!gotEndLine)
+            // Incomplete packet
+            return pos;
          if(c<count)
          {
             char * string = (char *)buffer;
@@ -128,7 +135,7 @@ private class HTTPConnection : Socket
             fwrite(buffer, 1, c, stdout);
             puts("");
             */
-         
+
             if(!c)
             {
                //if(file.openStarted)
@@ -400,6 +407,8 @@ public:
             strcat(msg, server);
             strcat(msg, "\r\n");
             strcat(msg, "Accept-Charset: ISO-8859-1\r\n");
+            //strcat(msg, "Accept-Charset: UTF-8\r\n");
+            strcat(msg, "Connection: Keep-Alive\r\n");
             if(referer)
             {
                strcat(msg, "Referer: ");
