@@ -379,6 +379,7 @@ public:
                }
             }
          }
+         // NOTE: Here we're currently making the assumption that the primitives are in indices mode (vertexRange = false)
          for(c = 0; c<nPrimitives; c++)
          {
             int i;
@@ -491,6 +492,8 @@ public:
                int offset = 0;
                int strip = 0;
                int nPoints, nIndex;
+               int groupCount = group.type.vertexRange ? group.nVertices : group.nIndices;
+               if(!groupCount) continue;
 
                if(group.type.primitiveType == triangles)
                   nIndex = nPoints = 3;
@@ -505,11 +508,11 @@ public:
                else
                   continue;
 
-               nPrimitives += (group.nIndices - offset) / nIndex;
+               nPrimitives += (groupCount - offset) / nIndex;
 
                primitives = renew primitives PrimitiveSingle[this.nPrimitives + nPrimitives];
 
-               for(c = offset; c<group.nIndices; c+= nIndex)
+               for(c = offset; c<groupCount; c+= nIndex)
                {
                   PrimitiveSingle * primitive = &primitives[this.nPrimitives++];
 
