@@ -290,7 +290,18 @@ class OptionBox<class Z> : CommonControl
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
          OptionBox ob = (OptionBox)id;
-         ob.Unset();
+         if(eClass_IsDerived(ob._class, class(CheckBoxForEnumOptionBox)))
+         {
+            Window slave;
+            for(slave = ob.master.firstSlave; slave; slave = slave.nextSlave)
+            {
+               if(eClass_IsDerived(slave._class, class(CheckBoxForEnumOptionBox)) &&
+                  ((OptionBox)slave).option == ob.option)
+                     ((OptionBox)slave).Unset();
+            }
+         }
+         else
+            ob.Unset();
          return true;
       }
    };
@@ -1027,6 +1038,46 @@ class BoolOptionBox : OptionBox<SetBool>
       ((Button)editor).checked = options && (*(SetBool*)((byte *)options + option) == true);
    }
 }
+
+class CheckBoxForEnumOptionBox : OptionBox
+{
+   editor = Button
+   {
+      isCheckbox = true;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         ((OptionBox)button.id).Retrieve();
+         {
+            Window slave;
+            for(slave = master.firstSlave; slave; slave = slave.nextSlave)
+            {
+               if(eClass_IsDerived(slave._class, class(CheckBoxForEnumOptionBox)) &&
+                     slave != (Window)button.id &&
+                     ((OptionBox)slave).option == ((OptionBox)button.id).option)
+                  ((OptionBox)slave).Load();
+            }
+         }
+         return true;
+      }
+   };
+
+   Z enumValue;
+   void LoadOption(ProjectOptions options)
+   {
+      Z value = options ? *(Z*)((byte *)options + option) : (Z)0;
+      ((Button)editor).checked = value == enumValue;
+   }
+
+   void RetrieveOption(ProjectOptions options, bool isCfgOrPlt)
+   {
+      Button checkBox = (Button)editor;
+      if(checkBox.checked)
+         *(Z*)((byte *)options + option) = enumValue;
+   }
+}
+
+class BuildBitDepthOptionBox : CheckBoxForEnumOptionBox<BuildBitDepth> { }
 
 class DropOptionBox : OptionBox
 {
@@ -1902,11 +1953,17 @@ class CompilerTab : Tab
       text = $"Warnings", hotKey = altW, option = OPTION(warnings);
    };
 
-   Label labelOptimization { rightPane, position = { 244, 138 }, labeledWindow = optimization };
+   Label labelOptimization { rightPane, position = { 220, 138 }, labeledWindow = optimization };
    OptimizationDB optimization
    {
-      rightPane, this, position = { 244, 154 }, size = { 120, 22 };
+      rightPane, this, position = { 220, 154 }, size = { 120, 22 };
       text = $"Optimization", hotKey = altO, option = OPTION(optimization);
+   };
+
+   BuildBitDepthOptionBox m32
+   {
+      rightPane, this, position = { 348, 154 };
+      text = $"32bit", hotKey = alt3, option = OPTION(buildBitDepth), enumValue = bits32;
    };
 
    BoolOptionBox debug
@@ -1923,8 +1980,14 @@ class CompilerTab : Tab
 
    BoolOptionBox noLineNumbers
    {
-      rightPane, this, position = { 244, 188 };
+      rightPane, this, position = { 220, 188 };
       text = $"No Line Numbers", hotKey = altN, option = OPTION(noLineNumbers);
+   };
+
+   BuildBitDepthOptionBox m64
+   {
+      rightPane, this, position = { 348, 188 };
+      text = $"64bit", hotKey = alt6, option = OPTION(buildBitDepth), enumValue = bits64;
    };
 
    Label labelIncludeDirs { includeDirs.editor, labeledWindow = includeDirs, position = { 0, 6 }; };
