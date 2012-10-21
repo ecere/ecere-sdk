@@ -1495,6 +1495,7 @@ class BuildTab : Tab
          if(!mods)
             buildTabControl.Activate();
 
+         compilerTab.fileList.Update(null);
          if(compilerTab.rightPaneHeader.visible)
             compilerTab.rightPaneHeader.Update(null);
          ((ProjectSettings)master).UpdateDialogTitle();
