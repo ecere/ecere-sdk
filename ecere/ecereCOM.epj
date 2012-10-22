@@ -19,7 +19,9 @@
          "Name" : "linux",
          "Options" : {
             "Libraries" : [
-               "m"
+               "dl",
+               "m",
+               "pthread"
             ]
          }
       }
@@ -47,19 +49,7 @@
             "PostbuildCommands" : [
                "$(call cpq,$(TARGET),../$(SODESTDIR))"
             ]
-         },
-         "Platforms" : [
-            {
-               "Name" : "Linux",
-               "Options" : {
-                  "Libraries" : [
-                     "dl",
-                     "m",
-                     "pthread"
-                  ]
-               }
-            }
-         ]
+         }
       },
       {
          "Name" : "Static",
