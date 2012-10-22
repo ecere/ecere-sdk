@@ -4153,9 +4153,6 @@ private:
 
    bool OnKeyHit(Key key, unichar ch)
    {
-      if(key.code == up && key.alt == true && key.ctrl == false && key.shift == false)
-         return true;
-
       if(!ch && !key.alt && !key.ctrl)
       {
          key.code = (SmartKey)key.code;
