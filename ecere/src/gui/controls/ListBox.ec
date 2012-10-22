@@ -4184,254 +4184,254 @@ private:
          }
       }
 
-      if(!(style.multiSelect) && (key.ctrl))
-         return true;
-
       if(editData && editData.visible && ch && !key.alt && !key.ctrl && editData.active)
          return false;
 
-      switch(key.code)
+      if(!key.alt && (style.multiSelect || !key.ctrl))
       {
-         case left:
-            if(style.alwaysEdit)
-            {
-               if(currentField)
-               {
-                  DataField field;
-                  for(field = currentField.prev; field; field = field.prev)
-                  {
-                     if(field.editable)
-                     {
-                        currentField = field;
-                        HideEditBox(true, true, false);
-                        PopupEditBox(currentField, false);
-                        return false;
-                     }                     
-                  }
-               }
-            }
-            if(style.collapse && currentRow /*&& !currentField*/)  // THIS PREVENTED COLLAPSING THE PROPERTY SHEET
-            {
-               if(currentRow.subRows.first && !currentRow.collapsed)
-               {
-                  currentRow.collapsed = true;
-               }
-               else if(currentRow.parent)
-                  SetCurrentRow(currentRow.parent, true);
-               return false;
-            }
-            break;
-         case right:
-            if(style.collapse && currentRow && currentRow.subRows.first)
-            {
-               if(currentRow.collapsed)
-                  currentRow.collapsed = false;
-               else
-                  SetCurrentRow(currentRow.subRows.first, true);
-               return false;
-            }
-            else if(style.alwaysEdit)
-            {
-               if(currentField)
-               {
-                  DataField field;
-                  for(field = currentField.next; field; field = field.next)
-                  {
-                     if(field.editable)
-                     {
-                        currentField = field;
-                        HideEditBox(true, true, false);
-                        PopupEditBox(currentField, false);
-                        break;
-                     }                     
-                  }
-               }
-            }
-            break;
-         case down: case up:
-         case pageDown: case pageUp:
-         case end: case home:
+         switch(key.code)
          {
-            int headerSize = ((style.header) ? rowHeight : 0);
-            int height = clientSize.h + 1 - headerSize;
-            DataRow oldRow;
-
-            // true: destroy edit box
-            // !!! TESTING true HERE !!!
-            HideEditBox(true, true, false);
-            // HideEditBox(false, true, false);
-            
-            oldRow = currentRow;
-
-            SNAPDOWN(height, rowHeight);
-            if((!currentRow || key.code == home) && key.code != end)
-            {
-               currentRow = rows.first;
-            }
-            else
-            {
-               DataRow next;
-               switch(key.code)
+            case left:
+               if(style.alwaysEdit)
                {
-                  case down:
-                     if(!(style.multiSelect) && currentRow && !currentRow.selectedFlag)
-                        next = currentRow;
-                     else
-                        next = currentRow.GetNextRow();
-                     if(next)
-                     {
-                        currentRow = next;
-                     }
-                     break;
-                  case up:
-                     if(!(style.multiSelect) && currentRow && !currentRow.selectedFlag)
-                        next = currentRow;
-                     else
-                        next = currentRow.GetPrevRow();
-
-                     if(next)
-                     {
-                        currentRow = next;
-                     }
-                     break;
-                  case end:
-                     currentRow = lastRow.GetLastRow();
-                     break;
-                  case pageUp:
+                  if(currentField)
                   {
-                     int c;
-                     for(c = 0;
-                     currentRow && (next = currentRow.GetPrevRow()) && c < height / rowHeight;
-                         c++, currentRow = next);
-                     break;
-                  }
-                  case pageDown:
-                  {
-                     int c;
-                     for(c = 0;
-                         currentRow && (next = currentRow.GetNextRow()) && c < height / rowHeight;
-                         c++, currentRow = next);
-                     break;
+                     DataField field;
+                     for(field = currentField.prev; field; field = field.prev)
+                     {
+                        if(field.editable)
+                        {
+                           currentField = field;
+                           HideEditBox(true, true, false);
+                           PopupEditBox(currentField, false);
+                           return false;
+                        }
+                     }
                   }
                }
-            }
-            if(currentRow && currentRow.index * rowHeight > scroll.y + height - rowHeight)
-               SetScrollPosition(scroll.x, currentRow.index * rowHeight - height + rowHeight);
-            else if(!currentRow || currentRow.index * rowHeight < scroll.y)
-               SetScrollPosition(scroll.x, currentRow ? currentRow.index * rowHeight : 0);
-
-            if(style.multiSelect)
-            {
-               DataRow selRow;
-
-               if(!(key.shift) && (key.ctrl))
+               if(style.collapse && currentRow /*&& !currentField*/)  // THIS PREVENTED COLLAPSING THE PROPERTY SHEET
                {
-                  DataRow row;
-                  for(row = rows.first; row; row = row.GetNextRow())
+                  if(currentRow.subRows.first && !currentRow.collapsed)
                   {
-                     if(row.selectedFlag == tempSelected)
-                        row.selectedFlag = selected;
-                     else if(row.selectedFlag == tempUnselected)
-                        row.selectedFlag = unselected;
+                     currentRow.collapsed = true;
+                  }
+                  else if(currentRow.parent)
+                     SetCurrentRow(currentRow.parent, true);
+                  return false;
+               }
+               break;
+            case right:
+               if(style.collapse && currentRow && currentRow.subRows.first)
+               {
+                  if(currentRow.collapsed)
+                     currentRow.collapsed = false;
+                  else
+                     SetCurrentRow(currentRow.subRows.first, true);
+                  return false;
+               }
+               else if(style.alwaysEdit)
+               {
+                  if(currentField)
+                  {
+                     DataField field;
+                     for(field = currentField.next; field; field = field.next)
+                     {
+                        if(field.editable)
+                        {
+                           currentField = field;
+                           HideEditBox(true, true, false);
+                           PopupEditBox(currentField, false);
+                           break;
+                        }
+                     }
                   }
                }
+               break;
+            case down: case up:
+            case pageDown: case pageUp:
+            case end: case home:
+            {
+               int headerSize = ((style.header) ? rowHeight : 0);
+               int height = clientSize.h + 1 - headerSize;
+               DataRow oldRow;
 
-               if(!(key.ctrl))
+               // true: destroy edit box
+               // !!! TESTING true HERE !!!
+               HideEditBox(true, true, false);
+               // HideEditBox(false, true, false);
+
+               oldRow = currentRow;
+
+               SNAPDOWN(height, rowHeight);
+               if((!currentRow || key.code == home) && key.code != end)
                {
-                  for(selRow = rows.first; selRow; selRow = selRow.GetNextRow())
-                     selRow.selectedFlag = unselected;
+                  currentRow = rows.first;
                }
                else
                {
-                  for(selRow = rows.first; selRow; selRow = selRow.GetNextRow())
+                  DataRow next;
+                  switch(key.code)
                   {
-                     if(selRow.selectedFlag == tempUnselected) selRow.selectedFlag = selected;
-                     else if(selRow.selectedFlag == tempSelected) selRow.selectedFlag = unselected;
+                     case down:
+                        if(!(style.multiSelect) && currentRow && !currentRow.selectedFlag)
+                           next = currentRow;
+                        else
+                           next = currentRow.GetNextRow();
+                        if(next)
+                        {
+                           currentRow = next;
+                        }
+                        break;
+                     case up:
+                        if(!(style.multiSelect) && currentRow && !currentRow.selectedFlag)
+                           next = currentRow;
+                        else
+                           next = currentRow.GetPrevRow();
+
+                        if(next)
+                        {
+                           currentRow = next;
+                        }
+                        break;
+                     case end:
+                        currentRow = lastRow.GetLastRow();
+                        break;
+                     case pageUp:
+                     {
+                        int c;
+                        for(c = 0;
+                        currentRow && (next = currentRow.GetPrevRow()) && c < height / rowHeight;
+                            c++, currentRow = next);
+                        break;
+                     }
+                     case pageDown:
+                     {
+                        int c;
+                        for(c = 0;
+                            currentRow && (next = currentRow.GetNextRow()) && c < height / rowHeight;
+                            c++, currentRow = next);
+                        break;
+                     }
                   }
                }
+               if(currentRow && currentRow.index * rowHeight > scroll.y + height - rowHeight)
+                  SetScrollPosition(scroll.x, currentRow.index * rowHeight - height + rowHeight);
+               else if(!currentRow || currentRow.index * rowHeight < scroll.y)
+                  SetScrollPosition(scroll.x, currentRow ? currentRow.index * rowHeight : 0);
 
-               if(key.shift)
+               if(style.multiSelect)
                {
-                  if(currentRow.index >= clickedRow.index)
+                  DataRow selRow;
+
+                  if(!(key.shift) && (key.ctrl))
                   {
-                     for(selRow = clickedRow; selRow; selRow = selRow.GetNextRow())
+                     DataRow row;
+                     for(row = rows.first; row; row = row.GetNextRow())
                      {
-                        if(key.ctrl)
+                        if(row.selectedFlag == tempSelected)
+                           row.selectedFlag = selected;
+                        else if(row.selectedFlag == tempUnselected)
+                           row.selectedFlag = unselected;
+                     }
+                  }
+
+                  if(!(key.ctrl))
+                  {
+                     for(selRow = rows.first; selRow; selRow = selRow.GetNextRow())
+                        selRow.selectedFlag = unselected;
+                  }
+                  else
+                  {
+                     for(selRow = rows.first; selRow; selRow = selRow.GetNextRow())
+                     {
+                        if(selRow.selectedFlag == tempUnselected) selRow.selectedFlag = selected;
+                        else if(selRow.selectedFlag == tempSelected) selRow.selectedFlag = unselected;
+                     }
+                  }
+
+                  if(key.shift)
+                  {
+                     if(currentRow.index >= clickedRow.index)
+                     {
+                        for(selRow = clickedRow; selRow; selRow = selRow.GetNextRow())
                         {
-                           if(selRow.selectedFlag) selRow.selectedFlag = tempUnselected; else selRow.selectedFlag = tempSelected;
+                           if(key.ctrl)
+                           {
+                              if(selRow.selectedFlag) selRow.selectedFlag = tempUnselected; else selRow.selectedFlag = tempSelected;
+                           }
+                           else
+                              selRow.selectedFlag = selected;
+                           if(selRow == currentRow)
+                              break;
                         }
-                        else
-                           selRow.selectedFlag = selected;
-                        if(selRow == currentRow)
-                           break;
+                     }
+                     else
+                     {
+                        for(selRow = currentRow; selRow; selRow = selRow.GetNextRow())
+                        {
+                           if(key.ctrl)
+                           {
+                              if(selRow.selectedFlag) selRow.selectedFlag = tempUnselected; else selRow.selectedFlag = tempSelected;
+                           }
+                           else
+                              selRow.selectedFlag = selected;
+                           if(selRow == clickedRow)
+                              break;
+                        }
                      }
                   }
                   else
                   {
-                     for(selRow = currentRow; selRow; selRow = selRow.GetNextRow())
+                     if(!(key.ctrl) && currentRow)
                      {
-                        if(key.ctrl)
-                        {
-                           if(selRow.selectedFlag) selRow.selectedFlag = tempUnselected; else selRow.selectedFlag = tempSelected;
-                        }
-                        else
-                           selRow.selectedFlag = selected;
-                        if(selRow == clickedRow)
-                           break;
+                        currentRow.selectedFlag = selected;
                      }
+
+                     clickedRow = currentRow;
                   }
                }
                else
                {
-                  if(!(key.ctrl) && currentRow)
-                  {
-                     currentRow.selectedFlag = selected;
-                  }
-
-                  clickedRow = currentRow;
+                  if(oldRow) oldRow.selectedFlag = unselected;
+                  if(currentRow) currentRow.selectedFlag = selected;
                }
-            }
-            else
-            {
-               if(oldRow) oldRow.selectedFlag = unselected;
-               if(currentRow) currentRow.selectedFlag = selected;
-            }
 
-            if(currentRow)
-            {
-               if(style.freeSelect)
-                  NotifyHighlight(master, this, currentRow, 0);
-               else
-                  NotifySelect(master, this, currentRow, 0);
-
-               if(style.alwaysEdit && currentRow)
-                  currentRow.Edit(currentField /*null*/);
-            }
-            Update(null);
-            return false;
-         }
-         case space:
-         {
-            if(style.multiSelect && currentRow)
-            {
-               if(currentRow.selectedFlag)
+               if(currentRow)
                {
-                  if(key.ctrl)
-                     currentRow.selectedFlag = unselected;
+                  if(style.freeSelect)
+                     NotifyHighlight(master, this, currentRow, 0);
+                  else
+                     NotifySelect(master, this, currentRow, 0);
+
+                  if(style.alwaysEdit && currentRow)
+                     currentRow.Edit(currentField /*null*/);
                }
-               else
-                  currentRow.selectedFlag = selected;
                Update(null);
-
-               if(style.freeSelect)
-                  NotifyHighlight(master, this, currentRow, 0);
-               else
-                  NotifySelect(master, this, currentRow, 0);
+               return false;
             }
-            break;
+            case space:
+            {
+               if(style.multiSelect && currentRow)
+               {
+                  if(currentRow.selectedFlag)
+                  {
+                     if(key.ctrl)
+                        currentRow.selectedFlag = unselected;
+                  }
+                  else
+                     currentRow.selectedFlag = selected;
+                  Update(null);
+
+                  if(style.freeSelect)
+                     NotifyHighlight(master, this, currentRow, 0);
+                  else
+                     NotifySelect(master, this, currentRow, 0);
+               }
+               break;
+            }
          }
       }
- 
+
       if(!NotifyKeyHit(master, this, currentRow, key, ch))
          return false;
 
@@ -4447,7 +4447,6 @@ private:
       }
       return true;
    }
-
 
    void OnHScroll(ScrollBarAction action, int position, Key key)
    {
