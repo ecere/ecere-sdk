@@ -19,9 +19,10 @@ OFLAGS =
 
 # CROSS-PLATFORM MAGIC
 
+include ../../crossplatform.mk
 include ../../include.mk
 
-ifdef LINUX
+ifdef LINUX_TARGET
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)ec$(SO).0.44
 SONAME = -Wl,-soname,libec.so.0
 else
@@ -143,7 +144,7 @@ RESOURCES = \
 
 # TOOLCHAIN
 
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 else
 export LD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
 export DYLD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
@@ -174,7 +175,7 @@ LIBS = -lecere $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 UPXFLAGS = -9 -q
 
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX
+ifdef LINUX_TARGET
 OFLAGS += -Wl,--no-undefined
 endif
 
@@ -204,11 +205,11 @@ endif
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ec.mo "locale/zh_CN/LC_MESSAGES"
 	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/ec.mo "locale/es_ES/LC_MESSAGES"
 	$(call cpq,$(TARGET),../../$(SODESTDIR))
-ifdef LINUX
+ifdef LINUX_TARGET
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../$(SODESTDIR)$(LP)$(MODULE)$(SO)
 endif	
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 	$(call cpq,$(TARGET),../../compiler/bootstrap/obj/bin.$(PLATFORM)/)
 endif
 

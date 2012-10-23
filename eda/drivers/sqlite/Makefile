@@ -18,9 +18,10 @@ OFLAGS =
 
 # CROSS-PLATFORM MAGIC
 
+include ../../../crossplatform.mk
 include ../../../include.mk
 
-ifdef LINUX
+ifdef LINUX_TARGET
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)EDASQLite$(SO).0.44
 SONAME = -Wl,-soname,$(LP)EDASQLite$(SO).0
 else
@@ -29,7 +30,7 @@ SONAME =
 endif
 
 OBJECTS = \
-	$(if $(LINUX),,$(OBJ)sqlite3.o) \
+	$(if $(LINUX_TARGET),,$(OBJ)sqlite3.o) \
 	$(OBJ)EDASQLite.o \
 	$(OBJ)$(MODULE).main$(O)
 
@@ -43,7 +44,7 @@ IMPORTS = \
 	$(OBJ)EDASQLite.imp
 
 SOURCES = \
-	$(if $(LINUX),,sqlite3.c) \
+	$(if $(LINUX_TARGET),,sqlite3.c) \
 	EDASQLite.ec
 
 RESOURCES = \
@@ -76,7 +77,7 @@ LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 UPXFLAGS = -9 -q
 
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX
+ifdef LINUX_TARGET
 OFLAGS += -Wl,--no-undefined
 endif
 
@@ -86,7 +87,7 @@ endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 
 CFLAGS += \
 	 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include
@@ -97,7 +98,7 @@ OFLAGS += \
 endif
 
 else
-ifdef LINUX
+ifdef LINUX_TARGET
 
 CFLAGS += \
 	 -I/usr/include/i686-linux-gnu
@@ -107,7 +108,7 @@ LIBS += -lpthread -ldl -lsqlite3
 endif
 
 else
-ifdef OSX
+ifdef OSX_TARGET
 
 ifneq "$(TARGET_TYPE)" "staticlib"
 LIBS += -lpthread -ldl
@@ -141,7 +142,7 @@ endif
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/EDASQLite.mo "locale/zh_CN/LC_MESSAGES"
 	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/EDASQLite.mo "locale/es_ES/LC_MESSAGES"
 	$(call cpq,$(TARGET),../../../$(SODESTDIR))
-ifdef LINUX
+ifdef LINUX_TARGET
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../../$(SODESTDIR)$(LP)$(MODULE)$(SO)
 endif	

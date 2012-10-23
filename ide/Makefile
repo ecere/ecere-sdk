@@ -33,7 +33,7 @@ OBJECTS = \
 	$(OBJ)ProjectNode.o \
 	$(OBJ)ProjectView.o \
 	$(OBJ)Workspace.o \
-	$(if $(WINDOWS),$(OBJ)vsSupport.o,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)vsSupport.o,) \
 	$(OBJ)CodeEditor.o \
 	$(OBJ)CodeObject.o \
 	$(OBJ)Designer.o \
@@ -80,7 +80,7 @@ COBJECTS = \
 	$(OBJ)ProjectNode.c \
 	$(OBJ)ProjectView.c \
 	$(OBJ)Workspace.c \
-	$(if $(WINDOWS),$(OBJ)vsSupport.c,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)vsSupport.c,) \
 	$(OBJ)CodeEditor.c \
 	$(OBJ)CodeObject.c \
 	$(OBJ)Designer.c \
@@ -127,7 +127,7 @@ SYMBOLS1 = \
 	$(OBJ)ProjectNode.sym \
 	$(OBJ)ProjectView.sym \
 	$(OBJ)Workspace.sym \
-	$(if $(WINDOWS),$(OBJ)vsSupport.sym,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)vsSupport.sym,) \
 	$(OBJ)CodeEditor.sym \
 	$(OBJ)CodeObject.sym \
 	$(OBJ)Designer.sym \
@@ -175,7 +175,7 @@ IMPORTS1 = \
 	$(OBJ)ProjectNode.imp \
 	$(OBJ)ProjectView.imp \
 	$(OBJ)Workspace.imp \
-	$(if $(WINDOWS),$(OBJ)vsSupport.imp,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)vsSupport.imp,) \
 	$(OBJ)CodeEditor.imp \
 	$(OBJ)CodeObject.imp \
 	$(OBJ)Designer.imp \
@@ -222,7 +222,7 @@ SOURCES = \
 	src/project/ProjectNode.ec \
 	src/project/ProjectView.ec \
 	src/project/Workspace.ec \
-	$(if $(WINDOWS),src/project/vsSupport.ec,) \
+	$(if $(WINDOWS_TARGET),src/project/vsSupport.ec,) \
 	src/designer/CodeEditor.ec \
 	src/designer/CodeObject.ec \
 	src/designer/Designer.ec \
@@ -307,7 +307,6 @@ RESOURCES2 = \
 	res/ecere.jpg \
 	res/ecereBack.jpg \
 	res/icon.png \
-	../include.mk \
 	../crossplatform.mk
 
 ifndef DEBIAN_PACKAGE
@@ -317,6 +316,7 @@ OFLAGS =
 
 # CROSS-PLATFORM MAGIC
 
+include ../crossplatform.mk
 include ../include.mk
 
 # TOOLCHAIN
@@ -344,18 +344,18 @@ LIBS = -lecere $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 UPXFLAGS = -9 -q
 
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX
+ifdef LINUX_TARGET
 OFLAGS += -Wl,--no-undefined
 endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 
 LIBS += obj/resources.o
 
 else
-ifdef LINUX
+ifdef LINUX_TARGET
 
 OFLAGS += \
 	 -L/usr/X11R6/lib
@@ -363,7 +363,7 @@ OFLAGS += \
 LIBS += -lX11
 
 else
-ifdef OSX
+ifdef OSX_TARGET
 
 OFLAGS += \
 	 -L/usr/X11R6/lib
@@ -391,14 +391,14 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 $(TARGET): obj/resources.o
 endif
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) awq $(TARGET) res/ecere.jpg res/ecereBack.jpg res/icon.png ../include.mk ../crossplatform.mk ""
+	$(EAR) awq $(TARGET) res/ecere.jpg res/ecereBack.jpg res/icon.png ../crossplatform.mk ""
 	$(EAR) awq $(TARGET) $(RES)actions/attach.png $(RES)actions/delete.png $(RES)actions/detach.png $(RES)actions/docNew.png $(RES)actions/editCopy.png $(RES)actions/editDelete.png $(RES)actions/delete2.png $(RES)actions/build.png $(RES)actions/clean.png $(RES)actions/debug.png "actions"
 	$(EAR) awq $(TARGET) $(RES)actions/docOpen.png $(RES)actions/docSave.png $(RES)actions/docSaveAll.png $(RES)actions/pause.png $(RES)actions/projAdd.png $(RES)actions/projNew.png $(RES)actions/projOpen.png $(RES)actions/rebuild.png $(RES)actions/regMakefile.png $(RES)actions/relink.png "actions"
 	$(EAR) awq $(TARGET) $(RES)actions/restart.png $(RES)actions/run.png $(RES)actions/skipBreaks.png $(RES)actions/stepInto.png $(RES)actions/stepOut.png $(RES)actions/stepOver.png $(RES)actions/stopDebug.png "actions"
@@ -410,7 +410,7 @@ endif
 	$(EAR) awq $(TARGET) ../extras/res/licenses/gpl.LICENSE "licenses"
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
 
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 obj/resources.o: src/icon2.ico src/resources.rc | objdir
 	windres src/resources.rc obj/resources.o
 endif

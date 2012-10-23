@@ -18,9 +18,10 @@ OFLAGS =
 
 # CROSS-PLATFORM MAGIC
 
+include ../crossplatform.mk
 include ../include.mk
 
-ifdef LINUX
+ifdef LINUX_TARGET
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)$(MODULE)$(SO).0.44
 SONAME = -Wl,-soname,libecere.so.0
 else
@@ -90,20 +91,20 @@ OBJECTS2 = \
 	$(OBJ)harfbuzz-tibetan.o \
 	$(OBJ)harfbuzz-impl.o \
 	$(OBJ)harfbuzz-thai.o \
-	$(if $(WINDOWS),$(OBJ)Direct3D8DisplayDriver.o,) \
-	$(if $(WINDOWS),$(OBJ)Direct3D9DisplayDriver.o,) \
-	$(if $(WINDOWS),$(OBJ)DirectDrawDisplayDriver.o,) \
-	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.o,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D8DisplayDriver.o,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D9DisplayDriver.o,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)DirectDrawDisplayDriver.o,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)GDIDisplayDriver.o,) \
 	$(OBJ)lfbBlit.o \
 	$(OBJ)lfbConvert.o \
 	$(OBJ)LFBDisplayDriver.o \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.o,) \
-	$(if $(OSX),,$(OBJ)OpenGLDisplayDriver.o) \
-	$(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.o,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesDisplayDriver.o,) \
+	$(if $(OSX_TARGET),,$(OBJ)OpenGLDisplayDriver.o) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32BitmapPrinterDisplayDriver.o,) \
 	$(if $(OSX),$(OBJ)CocoaOpenGLDisplayDriver.o,) \
-	$(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.o,) \
-	$(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.o,) \
-	$(if $(LINUX),$(OBJ)XDisplayDriver.o,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleDisplayDriver.o,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32PrinterDisplayDriver.o,) \
+	$(if $(LINUX_TARGET),$(OBJ)XDisplayDriver.o,) \
 	$(OBJ)Bitmap.o \
 	$(OBJ)BitmapResource.o \
 	$(OBJ)Color.o \
@@ -138,14 +139,14 @@ OBJECTS3 = \
 	$(OBJ)MessageBox.o \
 	$(OBJ)ReplaceDialog.o \
 	$(OBJ)WindowList.o \
-	$(if $(OSX),$(OBJ)CocoaDispatch.o,) \
-	$(if $(OSX),$(OBJ)CocoaEcereBridge.o,) \
-	$(if $(OSX),$(OBJ)CocoaInterface.o,) \
-	$(if $(OSX),$(OBJ)EcereView.o,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.o,) \
-	$(if $(WINDOWS),$(OBJ)Win32Interface.o,) \
-	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.o,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.o,) \
+	$(if $(OSX_TARGET),$(OBJ)CocoaDispatch.o,) \
+	$(if $(OSX_TARGET),$(OBJ)CocoaEcereBridge.o,) \
+	$(if $(OSX_TARGET),$(OBJ)CocoaInterface.o,) \
+	$(if $(OSX_TARGET),$(OBJ)EcereView.o,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesInterface.o,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32Interface.o,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleInterface.o,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)XInterface.o,) \
 	$(OBJ)TVisionSkin.o \
 	$(OBJ)WindowsSkin.o \
 	$(OBJ)Anchor.o \
@@ -223,21 +224,21 @@ COBJECTS1 = \
 	$(OBJ)PCXFormat.c \
 	$(OBJ)PNGFormat.c \
 	$(OBJ)RGBFormat.c \
-	$(if $(WINDOWS),$(OBJ)Direct3D8DisplayDriver.c,) \
-	$(if $(WINDOWS),$(OBJ)Direct3D9DisplayDriver.c,) \
-	$(if $(WINDOWS),$(OBJ)DirectDrawDisplayDriver.c,) \
-	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.c,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D8DisplayDriver.c,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D9DisplayDriver.c,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)DirectDrawDisplayDriver.c,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)GDIDisplayDriver.c,) \
 	$(OBJ)lfbBlit.c \
 	$(OBJ)lfbConvert.c \
 	$(OBJ)LFBDisplayDriver.c \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.c,)
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesDisplayDriver.c,)
 COBJECTS2 = \
-	$(if $(OSX),,$(OBJ)OpenGLDisplayDriver.c) \
-	$(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.c,) \
-	$(if $(OSX),$(OBJ)CocoaOpenGLDisplayDriver.c,) \
-	$(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.c,) \
-	$(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.c,) \
-	$(if $(LINUX),$(OBJ)XDisplayDriver.c,) \
+	$(if $(OSX_TARGET),,$(OBJ)OpenGLDisplayDriver.c) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32BitmapPrinterDisplayDriver.c,) \
+	$(if $(OSX_TARGET),$(OBJ)CocoaOpenGLDisplayDriver.c,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleDisplayDriver.c,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32PrinterDisplayDriver.c,) \
+	$(if $(LINUX_TARGET),$(OBJ)XDisplayDriver.c,) \
 	$(OBJ)Bitmap.c \
 	$(OBJ)BitmapResource.c \
 	$(OBJ)Color.c \
@@ -271,13 +272,13 @@ COBJECTS2 = \
 	$(OBJ)MessageBox.c \
 	$(OBJ)ReplaceDialog.c \
 	$(OBJ)WindowList.c \
-	$(if $(OSX),$(OBJ)CocoaDispatch.c,)
+	$(if $(OSX_TARGET),$(OBJ)CocoaDispatch.c,)
 COBJECTS3 = \
-	$(if $(OSX),$(OBJ)CocoaInterface.c,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.c,) \
-	$(if $(WINDOWS),$(OBJ)Win32Interface.c,) \
-	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.c,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.c,) \
+	$(if $(OSX_TARGET),$(OBJ)CocoaInterface.c,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesInterface.c,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32Interface.c,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleInterface.c,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)XInterface.c,) \
 	$(OBJ)TVisionSkin.c \
 	$(OBJ)WindowsSkin.c \
 	$(OBJ)Anchor.c \
@@ -352,21 +353,21 @@ SYMBOLS1 = \
 	$(OBJ)PCXFormat.sym \
 	$(OBJ)PNGFormat.sym \
 	$(OBJ)RGBFormat.sym \
-	$(if $(WINDOWS),$(OBJ)Direct3D8DisplayDriver.sym,) \
-	$(if $(WINDOWS),$(OBJ)Direct3D9DisplayDriver.sym,) \
-	$(if $(WINDOWS),$(OBJ)DirectDrawDisplayDriver.sym,) \
-	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.sym,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D8DisplayDriver.sym,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D9DisplayDriver.sym,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)DirectDrawDisplayDriver.sym,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)GDIDisplayDriver.sym,) \
 	$(OBJ)lfbBlit.sym \
 	$(OBJ)lfbConvert.sym \
 	$(OBJ)LFBDisplayDriver.sym
 SYMBOLS2 = \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.sym,) \
-	$(if $(OSX),,$(OBJ)OpenGLDisplayDriver.sym) \
-	$(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.sym,) \
-	$(if $(OSX),$(OBJ)CocoaOpenGLDisplayDriver.sym,) \
-	$(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.sym,) \
-	$(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.sym,) \
-	$(if $(LINUX),$(OBJ)XDisplayDriver.sym,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesDisplayDriver.sym,) \
+	$(if $(OSX_TARGET),,$(OBJ)OpenGLDisplayDriver.sym) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32BitmapPrinterDisplayDriver.sym,) \
+	$(if $(OSX_TARGET),$(OBJ)CocoaOpenGLDisplayDriver.sym,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleDisplayDriver.sym,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32PrinterDisplayDriver.sym,) \
+	$(if $(LINUX_TARGET),$(OBJ)XDisplayDriver.sym,) \
 	$(OBJ)Bitmap.sym \
 	$(OBJ)BitmapResource.sym \
 	$(OBJ)Color.sym \
@@ -401,12 +402,12 @@ SYMBOLS3 = \
 	$(OBJ)MessageBox.sym \
 	$(OBJ)ReplaceDialog.sym \
 	$(OBJ)WindowList.sym \
-	$(if $(OSX),$(OBJ)CocoaDispatch.sym,) \
-	$(if $(OSX),$(OBJ)CocoaInterface.sym,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.sym,) \
-	$(if $(WINDOWS),$(OBJ)Win32Interface.sym,) \
-	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.sym,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.sym,) \
+	$(if $(OSX_TARGET),$(OBJ)CocoaDispatch.sym,) \
+	$(if $(OSX_TARGET),$(OBJ)CocoaInterface.sym,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesInterface.sym,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32Interface.sym,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleInterface.sym,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)XInterface.sym,) \
 	$(OBJ)TVisionSkin.sym \
 	$(OBJ)WindowsSkin.sym \
 	$(OBJ)Anchor.sym \
@@ -482,21 +483,21 @@ IMPORTS1 = \
 	$(OBJ)PCXFormat.imp \
 	$(OBJ)PNGFormat.imp \
 	$(OBJ)RGBFormat.imp \
-	$(if $(WINDOWS),$(OBJ)Direct3D8DisplayDriver.imp,) \
-	$(if $(WINDOWS),$(OBJ)Direct3D9DisplayDriver.imp,) \
-	$(if $(WINDOWS),$(OBJ)DirectDrawDisplayDriver.imp,) \
-	$(if $(WINDOWS),$(OBJ)GDIDisplayDriver.imp,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D8DisplayDriver.imp,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D9DisplayDriver.imp,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)DirectDrawDisplayDriver.imp,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)GDIDisplayDriver.imp,) \
 	$(OBJ)lfbBlit.imp \
 	$(OBJ)lfbConvert.imp \
 	$(OBJ)LFBDisplayDriver.imp
 IMPORTS2 = \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesDisplayDriver.imp,) \
-	$(if $(OSX),,$(OBJ)OpenGLDisplayDriver.imp) \
-	$(if $(WINDOWS),$(OBJ)Win32BitmapPrinterDisplayDriver.imp,) \
-	$(if $(OSX),$(OBJ)CocoaOpenGLDisplayDriver.imp,) \
-	$(if $(WINDOWS),$(OBJ)Win32ConsoleDisplayDriver.imp,) \
-	$(if $(WINDOWS),$(OBJ)Win32PrinterDisplayDriver.imp,) \
-	$(if $(LINUX),$(OBJ)XDisplayDriver.imp,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesDisplayDriver.imp,) \
+	$(if $(OSX_TARGET),,$(OBJ)OpenGLDisplayDriver.imp) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32BitmapPrinterDisplayDriver.imp,) \
+	$(if $(OSX_TARGET),$(OBJ)CocoaOpenGLDisplayDriver.imp,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleDisplayDriver.imp,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32PrinterDisplayDriver.imp,) \
+	$(if $(LINUX_TARGET),$(OBJ)XDisplayDriver.imp,) \
 	$(OBJ)Bitmap.imp \
 	$(OBJ)BitmapResource.imp \
 	$(OBJ)Color.imp \
@@ -531,12 +532,12 @@ IMPORTS3 = \
 	$(OBJ)MessageBox.imp \
 	$(OBJ)ReplaceDialog.imp \
 	$(OBJ)WindowList.imp \
-	$(if $(OSX),$(OBJ)CocoaDispatch.imp,) \
-	$(if $(OSX),$(OBJ)CocoaInterface.imp,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)NCursesInterface.imp,) \
-	$(if $(WINDOWS),$(OBJ)Win32Interface.imp,) \
-	$(if $(WINDOWS),$(OBJ)Win32ConsoleInterface.imp,) \
-	$(if $(or $(LINUX),$(OSX)),$(OBJ)XInterface.imp,) \
+	$(if $(OSX_TARGET),$(OBJ)CocoaDispatch.imp,) \
+	$(if $(OSX_TARGET),$(OBJ)CocoaInterface.imp,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesInterface.imp,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32Interface.imp,) \
+	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleInterface.imp,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)XInterface.imp,) \
 	$(OBJ)TVisionSkin.imp \
 	$(OBJ)WindowsSkin.imp \
 	$(OBJ)Anchor.imp \
@@ -635,20 +636,20 @@ SOURCES2 = \
 	src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c \
 	src/gfx/drivers/harfbuzz/harfbuzz-impl.c \
 	src/gfx/drivers/harfbuzz/harfbuzz-thai.c \
-	$(if $(WINDOWS),src/gfx/drivers/Direct3D8DisplayDriver.ec,) \
-	$(if $(WINDOWS),src/gfx/drivers/Direct3D9DisplayDriver.ec,) \
-	$(if $(WINDOWS),src/gfx/drivers/DirectDrawDisplayDriver.ec,) \
-	$(if $(WINDOWS),src/gfx/drivers/GDIDisplayDriver.ec,) \
+	$(if $(WINDOWS_TARGET),src/gfx/drivers/Direct3D8DisplayDriver.ec,) \
+	$(if $(WINDOWS_TARGET),src/gfx/drivers/Direct3D9DisplayDriver.ec,) \
+	$(if $(WINDOWS_TARGET),src/gfx/drivers/DirectDrawDisplayDriver.ec,) \
+	$(if $(WINDOWS_TARGET),src/gfx/drivers/GDIDisplayDriver.ec,) \
 	src/gfx/drivers/lfbBlit.ec \
 	src/gfx/drivers/lfbConvert.ec \
 	src/gfx/drivers/LFBDisplayDriver.ec \
-	$(if $(or $(LINUX),$(OSX)),src/gfx/drivers/NCursesDisplayDriver.ec,) \
-	$(if $(OSX),,src/gfx/drivers/OpenGLDisplayDriver.ec) \
-	$(if $(WINDOWS),src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec,) \
-	$(if $(OSX),src/gfx/drivers/CocoaOpenGLDisplayDriver.ec,) \
-	$(if $(WINDOWS),src/gfx/drivers/Win32ConsoleDisplayDriver.ec,) \
-	$(if $(WINDOWS),src/gfx/drivers/Win32PrinterDisplayDriver.ec,) \
-	$(if $(LINUX),src/gfx/drivers/XDisplayDriver.ec,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/NCursesDisplayDriver.ec,) \
+	$(if $(OSX_TARGET),,src/gfx/drivers/OpenGLDisplayDriver.ec) \
+	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec,) \
+	$(if $(OSX_TARGET),src/gfx/drivers/CocoaOpenGLDisplayDriver.ec,) \
+	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32ConsoleDisplayDriver.ec,) \
+	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32PrinterDisplayDriver.ec,) \
+	$(if $(LINUX_TARGET),src/gfx/drivers/XDisplayDriver.ec,) \
 	src/gfx/Bitmap.ec \
 	src/gfx/BitmapResource.ec \
 	src/gfx/Color.ec \
@@ -683,14 +684,14 @@ SOURCES3 = \
 	src/gui/dialogs/MessageBox.ec \
 	src/gui/dialogs/ReplaceDialog.ec \
 	src/gui/dialogs/WindowList.ec \
-	$(if $(OSX),src/gui/drivers/cocoa/CocoaDispatch.ec,) \
-	$(if $(OSX),src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
-	$(if $(OSX),src/gui/drivers/cocoa/CocoaInterface.ec,) \
-	$(if $(OSX),src/gui/drivers/cocoa/EcereView.m,) \
-	$(if $(or $(LINUX),$(OSX)),src/gui/drivers/NCursesInterface.ec,) \
-	$(if $(WINDOWS),src/gui/drivers/Win32Interface.ec,) \
-	$(if $(WINDOWS),src/gui/drivers/Win32ConsoleInterface.ec,) \
-	$(if $(or $(LINUX),$(OSX)),src/gui/drivers/XInterface.ec,) \
+	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaDispatch.ec,) \
+	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
+	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaInterface.ec,) \
+	$(if $(OSX_TARGET),src/gui/drivers/cocoa/EcereView.m,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/NCursesInterface.ec,) \
+	$(if $(WINDOWS_TARGET),src/gui/drivers/Win32Interface.ec,) \
+	$(if $(WINDOWS_TARGET),src/gui/drivers/Win32ConsoleInterface.ec,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/XInterface.ec,) \
 	src/gui/skins/TVisionSkin.ec \
 	src/gui/skins/WindowsSkin.ec \
 	src/gui/Anchor.ec \
@@ -860,7 +861,7 @@ LIBS = -ljpeg -lpng -lz -lfreetype $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 UPXFLAGS = -9 -q
 
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX
+ifdef LINUX_TARGET
 OFLAGS += -Wl,--no-undefined
 endif
 
@@ -870,7 +871,7 @@ endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 
 CFLAGS += \
 	 -isystem ../deps/glext \
@@ -891,7 +892,7 @@ OFLAGS += \
 LIBS += -ldxguid -lddraw -ldinput -lwinmm -lopengl32 -lws2_32 -lkernel32 -luser32 -lgdi32 -lmpr -ladvapi32 -lshell32 -lwinspool -limm32 -lungif
 
 else
-ifdef LINUX
+ifdef LINUX_TARGET
 
 CFLAGS += \
 	 -I/usr/include/freetype2 \
@@ -904,7 +905,7 @@ OFLAGS += \
 LIBS += -lncurses -lpthread -lm -ldl -lfontconfig -lungif -lX11 -lXext -lXrender -lGL
 
 else
-ifdef OSX
+ifdef OSX_TARGET
 
 CFLAGS += \
 	 -I/usr/include/freetype2 \
@@ -948,11 +949,11 @@ nores: $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 	$(call cpq,$(TARGET),../compiler/bootstrap/obj/bin.$(PLATFORM)/)
 endif
 	$(call cpq,$(TARGET),../$(SODESTDIR))
-ifdef LINUX
+ifdef LINUX_TARGET
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO)
 endif	
@@ -982,7 +983,7 @@ endif
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ecere.mo "locale/zh_CN/LC_MESSAGES"
 	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/ecere.mo "locale/es_ES/LC_MESSAGES"
 	$(call cpq,$(TARGET),../$(SODESTDIR))
-ifdef LINUX
+ifdef LINUX_TARGET
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO)
 endif	

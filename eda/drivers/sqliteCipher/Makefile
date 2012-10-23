@@ -18,9 +18,10 @@ OFLAGS =
 
 # CROSS-PLATFORM MAGIC
 
+include ../../../crossplatform.mk
 include ../../../include.mk
 
-ifdef LINUX
+ifdef LINUX_TARGET
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)EDASQLiteCipher$(SO).0.44
 SONAME = -Wl,-soname,$(LP)EDASQLiteCipher$(SO).0
 else
@@ -81,7 +82,7 @@ LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 UPXFLAGS = -9 -q
 
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX
+ifdef LINUX_TARGET
 OFLAGS += -Wl,--no-undefined
 endif
 
@@ -91,7 +92,7 @@ endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 
 CFLAGS += \
 	 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include \
@@ -106,7 +107,7 @@ endif
 LIBS += -llibeay32
 
 else
-ifdef LINUX
+ifdef LINUX_TARGET
 
 CFLAGS += \
 	 -I/usr/include/i686-linux-gnu
@@ -114,7 +115,7 @@ CFLAGS += \
 LIBS += -lpthread -ldl -lcrypto
 
 else
-ifdef OSX
+ifdef OSX_TARGET
 
 LIBS += -lpthread -ldl -lcrypto
 
@@ -146,7 +147,7 @@ endif
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/EDASQLiteCipher.mo "locale/zh_CN/LC_MESSAGES"
 	$(EAR) awq $(TARGET) locale/es_ES/EDASQLiteCipher.mo "locale/es_ES/LC_MESSAGES"
 	$(call cpq,$(TARGET),../../../$(SODESTDIR))
-ifdef LINUX
+ifdef LINUX_TARGET
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../../$(SODESTDIR)$(LP)$(MODULE)$(SO)
 endif	

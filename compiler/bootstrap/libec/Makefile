@@ -66,6 +66,7 @@ OFLAGS =
 
 # CROSS-PLATFORM MAGIC
 
+include ../../../crossplatform.mk
 include ../../../include.mk
 
 # FLAGS

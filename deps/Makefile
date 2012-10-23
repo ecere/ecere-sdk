@@ -3,12 +3,13 @@
 
 # CROSS-PLATFORM MAGIC
 
+include ../crossplatform.mk
 include ../include.mk
 
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 all: freetype jpeg png gif ffi z
 else
-ifdef OSX
+ifdef OSX_TARGET
 all: jpeg png gif
 else
 all: gif

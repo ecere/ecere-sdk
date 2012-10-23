@@ -18,9 +18,10 @@ OFLAGS =
 
 # CROSS-PLATFORM MAGIC
 
+include ../crossplatform.mk
 include ../include.mk
 
-ifdef LINUX
+ifdef LINUX_TARGET
 TARGET = obj/$(MODULE).$(CONFIG).$(PLATFORM)/$(LP)ecereCOM$(SO).0.44
 SONAME = -Wl,-soname,libecereCOM.so.0
 else
@@ -146,13 +147,13 @@ LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 UPXFLAGS = -9 -q
 
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX
+ifdef LINUX_TARGET
 OFLAGS += -Wl,--no-undefined
 endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
-ifdef LINUX
+ifdef LINUX_TARGET
 
 LIBS += -ldl -lm -lpthread
 
@@ -180,7 +181,7 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 	$(call cpq,$(TARGET),../$(SODESTDIR))
-ifdef LINUX
+ifdef LINUX_TARGET
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO)
 endif

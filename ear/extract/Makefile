@@ -70,6 +70,7 @@ OFLAGS =
 
 # CROSS-PLATFORM MAGIC
 
+include ../../crossplatform.mk
 include ../../include.mk
 
 # TOOLCHAIN
@@ -98,18 +99,18 @@ LIBS = -lecereVanilla -lz $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 UPXFLAGS = -9 -q --no-progress --no-color
 
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX
+ifdef LINUX_TARGET
 OFLAGS += -Wl,--no-undefined
 endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 
 LIBS += -lmpr -lwinmm -limm32
 
 else
-ifdef LINUX
+ifdef LINUX_TARGET
 
 OFLAGS += \
 	 -L/usr/X11R6/lib
@@ -117,7 +118,7 @@ OFLAGS += \
 LIBS += -lfontconfig -lfreetype -lXrender -lXext -lncurses -lm -ldl -lpthread -lX11
 
 else
-ifdef OSX
+ifdef OSX_TARGET
 
 OFLAGS += \
 	 -L/usr/X11R6/lib
@@ -149,7 +150,7 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-ifndef WINDOWS
+ifndef WINDOWS_TARGET
 ifeq "$(TARGET_TYPE)" "executable"
 	@-$(call psep,$(UPX) $(UPXFLAGS) $(TARGET)) || $(call echo,upx not installed; not compressing.)
 endif

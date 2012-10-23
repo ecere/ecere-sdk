@@ -69,8 +69,8 @@ PathRelationship eString_PathRelated(char * path, char * to, char * pathDiff)
 
 char * CopyValidateMakefilePath(char * path)
 {
-   const int map[]  =    { 0,           1,           2,             3,             4,           5,                    6,                 0,             1,                 7         };
-   const char * vars[] = { "$(MODULE)", "$(CONFIG)", "$(PLATFORM)", "$(COMPILER)", "$(TARGET)", "$(COMPILER_SUFFIX)", "$(DEBUG_SUFFIX)", "$(PROJECT)",  "$(CONFIGURATION)",(char *)0 };
+   const int map[]  =    {           0,           1,             2,             3,           4,                    5,                 6,            0,                   1,                    2,        7 };
+   const char * vars[] = { "$(MODULE)", "$(CONFIG)", "$(PLATFORM)", "$(COMPILER)", "$(TARGET)", "$(COMPILER_SUFFIX)", "$(DEBUG_SUFFIX)", "$(PROJECT)",  "$(CONFIGURATION)", "$(TARGET_PLATFORM)",(char *)0 };
 
    char * copy = null;
    if(path)

@@ -18,9 +18,10 @@ OFLAGS =
 
 # CROSS-PLATFORM MAGIC
 
+include ../../crossplatform.mk
 include ../../include.mk
 
-ifdef LINUX
+ifdef LINUX_TARGET
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)EDA$(SO).0.44
 SONAME = -Wl,-soname,$(LP)EDA$(SO).0
 else
@@ -108,20 +109,20 @@ LIBS = -lecere $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 UPXFLAGS = -9 -q
 
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX
+ifdef LINUX_TARGET
 OFLAGS += -Wl,--no-undefined
 endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 
 CFLAGS += \
 	 -I../../deps/libffi-3.0.11/i686-pc-mingw32/include
 
 endif
 
-ifdef LINUX
+ifdef LINUX_TARGET
 
 CFLAGS += \
 	 -I/usr/include/i686-linux-gnu
@@ -152,7 +153,7 @@ endif
 	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/EDA.mo "locale/zh_CN/LC_MESSAGES"
 	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/EDA.mo "locale/es_ES/LC_MESSAGES"
 	$(call cpq,$(TARGET),../../$(SODESTDIR))
-ifdef LINUX
+ifdef LINUX_TARGET
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../$(SODESTDIR)$(LP)$(MODULE)$(SO)
 endif

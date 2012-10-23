@@ -31,6 +31,7 @@ OFLAGS =
 
 # INCLUDES
 
+include ../../crossplatform.mk
 include ../../include.mk
 
 # VARIABLES

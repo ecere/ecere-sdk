@@ -1,27 +1,59 @@
 # HOST PLATFORM DETECTION
 ifeq "$(OS)" "Windows_NT"
-   WINDOWS = defined
+   HOST_PLATFORM := win32
+   WINDOWS_HOST := defined
 else
 ifeq "$(OSTYPE)" "FreeBSD"
-   BSD = defined
+# tocheck: temporarily using linux when on bsd
+#   HOST_PLATFORM := bsd
+#   BSD_HOST := defined
+   HOST_PLATFORM := linux
+   LINUX_HOST := defined
 else
 ifeq "$(shell uname)" "Darwin"
-   OSX = defined
+   HOST_PLATFORM := apple
+   OSX_HOST := defined
 else
-   LINUX = defined
+   HOST_PLATFORM := linux
+   LINUX_HOST := defined
 endif
 endif
 endif
 
-# PLATFORM (TARGET)
+# TARGET_PLATFORM
+ifndef TARGET_PLATFORM
+ifdef PLATFORM
+   TARGET_PLATFORM := $(PLATFORM)
+endif
+endif
+ifndef TARGET_PLATFORM
+ifdef WINDOWS_HOST
+   TARGET_PLATFORM := win32
+else
+ifdef OSX_HOST
+   TARGET_PLATFORM := apple
+else
+ifdef BSD_HOST
+   TARGET_PLATFORM := bsd
+else
+   TARGET_PLATFORM := linux
+endif
+endif
+endif
+endif
 ifndef PLATFORM
-ifdef WINDOWS
-   PLATFORM := win32
+   PLATFORM := $(TARGET_PLATFORM)
+endif
+ifeq "$(TARGET_PLATFORM)" "win32"
+   WINDOWS_TARGET := defined
 else
-ifdef OSX
-   PLATFORM := apple
+ifeq "$(TARGET_PLATFORM)" "apple"
+   OSX_TARGET := defined
 else
-   PLATFORM := linux
+ifeq "$(TARGET_PLATFORM)" "bsd"
+   BSD_TARGET := defined
+else
+   LINUX_TARGET := defined
 endif
 endif
 endif
@@ -45,7 +77,7 @@ hidspace = $(subst $(space),,$(subst \$(space),,$1))
 shwspace = $(subst ,\$(space),$1)
 
 # PATH SEPARATOR STRING TOOLS
-ifdef WINDOWS
+ifdef WINDOWS_HOST
 ifndef MSYSCON
    WIN_PS_TOOLS := defined
 endif
@@ -69,7 +101,7 @@ B := .bowl
 C := .c
 O := .o
 A := .a
-ifeq "$(PLATFORM)" "win32"
+ifdef WINDOWS_TARGET
    E := .exe
 ifeq "$(TARGET_TYPE)" "staticlib"
    LP := lib
@@ -78,7 +110,7 @@ else
 endif
    SO := .dll
 else
-ifeq "$(PLATFORM)" "apple"
+ifdef OSX_TARGET
    E :=
    LP := lib
    SO := .dylib
@@ -102,7 +134,7 @@ endif
 endif
 
 # SHELL COMMANDS
-ifdef WINDOWS
+ifdef WINDOWS_HOST
 ifndef MSYSCON
    WIN_SHELL_COMMANDS := defined
 endif
@@ -133,7 +165,7 @@ else
    ECSLIBOPT :=
 endif
 endif
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
    FVISIBILITY :=
    FPIC :=
 ifeq "$(TARGET_TYPE)" "executable"
@@ -179,17 +211,17 @@ endif
    LINKOPT :=
    STRIPOPT := -x --strip-unneeded --remove-section=.comment --remove-section=.note
 endif
-ifdef WINDOWS
-   SODESTDIR := obj/$(PLATFORM)/bin/
+ifdef WINDOWS_TARGET
+   SODESTDIR := obj/$(TARGET_PLATFORM)/bin/
 else
-   SODESTDIR := obj/$(PLATFORM)/lib/
+   SODESTDIR := obj/$(TARGET_PLATFORM)/lib/
 endif
 
 _L = $(if $(filter $(1),$(EXCLUDED_LIBS)),,-l$(1))
 
 # COMMON LIBRARIES DETECTION
 
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 
 ifdef OPENSSL_CONF
 _OPENSSL_CONF = $(call hidspace,$(call fixps,$(OPENSSL_CONF)))
@@ -197,7 +229,7 @@ OPENSSL_INCLUDE_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/include,$(_OPENS
 OPENSSL_LIB_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/lib,$(_OPENSSL_CONF)))
 OPENSSL_BIN_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/bin,$(_OPENSSL_CONF)))
 else
-# To avoid confusion with empty -L/-I
+# to avoid issues with empty -L/-I
 OPENSSL_INCLUDE_DIR = .
 OPENSSL_LIB_DIR = .
 OPENSSL_BIN_DIR = .

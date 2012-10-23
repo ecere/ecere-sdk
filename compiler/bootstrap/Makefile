@@ -3,6 +3,7 @@
 
 OBJ = obj/bin.$(PLATFORM)/
 
+include ../../crossplatform.mk
 include ../../include.mk
 
 all: bindir ecere libec ecp ecc ecs
@@ -19,7 +20,7 @@ clean: bindir
 	cd ecc && $(MAKE) clean
 	cd ecs && $(MAKE) clean
 	$(call rmq,$(OBJ)ecp$(E) $(OBJ)ecc$(E) $(OBJ)ecs$(E))
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 	$(call rmq,$(OBJ)$(LP)ecere$(SO) $(OBJ)$(LP)ec$(SO))
 endif
 

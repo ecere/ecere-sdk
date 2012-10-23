@@ -1,11 +1,12 @@
 .PHONY: all clean realclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make ide documentor eda prepcodeguard codeguard
 .SILENT:
 
+include crossplatform.mk
 include include.mk
 
 LIBVER := .0.44
 
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 
 SOV := $(SO)
 
@@ -50,7 +51,7 @@ export EXTRASDIR=$(DESTDIR)$(prefix)/extras
 endif
 
 
-else # WINDOWS
+else # WINDOWS_TARGET
 
 SOV := $(SO)$(LIBVER)
 
@@ -150,12 +151,12 @@ compiler: ecere ear
 
 prepbinaries: compiler ecerecom
 	@$(call echo,Enabling 2nd stage binaries...)
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SOV),$(OBJBINDIR))
 	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SOV),$(OBJBINDIR))
 	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SOV),$(OBJBINDIR))
 endif
-ifdef LINUX
+ifdef LINUX_TARGET
 	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SOV),$(OBJLIBDIR))
 	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SOV),$(OBJLIBDIR))
 	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SOV),$(OBJLIBDIR))
@@ -166,8 +167,8 @@ ifdef LINUX
 	ln -sf $(LP)ecereCOM$(SOV) $(OBJLIBDIR)$(LP)ecereCOM$(SO)
 	ln -sf $(LP)ec$(SOV) $(OBJLIBDIR)$(LP)ec$(SO)
 endif
-ifndef WINDOWS
-ifndef LINUX
+ifndef WINDOWS_TARGET
+ifndef LINUX_TARGET
 	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SO),$(OBJLIBDIR))
 	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SO),$(OBJLIBDIR))
 	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SO),$(OBJLIBDIR))
@@ -198,18 +199,18 @@ endif
 
 prepcodeguard: eda
 ifdef CodeGuard
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SO),$(OBJBINDIR))
 endif
 
-ifdef LINUX
+ifdef LINUX_TARGET
 	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SOV),$(OBJLIBDIR))
 	ln -sf $(LP)EDA$(SOV) $(OBJLIBDIR)$(LP)EDA$(SO).0
 	ln -sf $(LP)EDA$(SOV) $(OBJLIBDIR)$(LP)EDA$(SO)
 endif
 
-ifndef WINDOWS
-ifndef LINUX
+ifndef WINDOWS_TARGET
+ifndef LINUX_TARGET
 	$(call cpq,eda/libeda/obj/release.$(PLATFORM)/$(LP)EDA$(SO),$(OBJLIBDIR))
 endif
 endif
@@ -229,7 +230,7 @@ emptyoutput: outputdirs
 ifdef EDASQLiteCipher
 	$(call rmq,$(SODESTDIR)$(LP)EDASQLiteCipher$(SO))
 endif
-ifdef LINUX
+ifdef LINUX_TARGET
 	$(call rmq,$(SODESTDIR)$(LP)ecere$(SO).0)
 	$(call rmq,$(SODESTDIR)$(LP)ecereCOM$(SO).0)
 	$(call rmq,$(SODESTDIR)$(LP)ec$(SO).0)
@@ -333,7 +334,7 @@ endif
 # Binaries (always in $(OBJBINDIR)) and Static Libraries (always in $(OBJLIBDIR))
 prepinstall: $(DOC) $(BINARIES) outputdirs
 
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SO),$(OBJBINDIR))
 	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SO),$(OBJBINDIR))
 	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SO),$(OBJBINDIR))
@@ -344,7 +345,7 @@ ifdef EDASQLiteCipher
 endif
 endif
 
-ifdef LINUX
+ifdef LINUX_TARGET
 	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SOV),$(OBJLIBDIR))
 	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SOV),$(OBJLIBDIR))
 	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SOV),$(OBJLIBDIR))
@@ -371,8 +372,8 @@ ifdef EDASQLiteCipher
 endif
 endif
 
-ifndef WINDOWS
-ifndef LINUX
+ifndef WINDOWS_TARGET
+ifndef LINUX_TARGET
 	$(call cpq,ecere/obj/release.$(PLATFORM)/$(LP)ecere$(SO),$(OBJLIBDIR))
 	$(call cpq,ecere/obj/ecereCOM.release.$(PLATFORM)/$(LP)ecereCOM$(SO),$(OBJLIBDIR))
 	$(call cpq,compiler/libec/obj/release.$(PLATFORM)/$(LP)ec$(SO),$(OBJLIBDIR))
@@ -404,7 +405,7 @@ copyonlyinstall: actualinstall
 	@$(call echo,The Ecere SDK has been installed. copyonlyinstall.)
 
 actualinstall:
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 	$(call mkdirq,"$(BINDIR)/")
 	$(call mkdirq,"$(SLIBDIR)/")
 	$(call mkdirq,"$(DOCDIR)/")
@@ -433,7 +434,7 @@ endif
 	$(call cpq,doc/EDA.eCdoc,"$(DOCDIR)/")
 endif
 
-ifdef OSX 
+ifdef OSX_TARGET
 	install $(OBJLIBDIR)$(LP)ecere$(SO) $(LIBDIR)/
 	install $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(LIBDIR)/
 	install $(OBJLIBDIR)$(LP)ec$(SO) $(LIBDIR)/
@@ -464,9 +465,9 @@ endif
 	cp -pRf extras/* $(EXTRASDIR)
 endif
 
-ifndef OSX
-ifndef WINDOWS
-ifdef LINUX
+ifndef OSX_TARGET
+ifndef WINDOWS_TARGET
+ifdef LINUX_TARGET
 	install -D $(OBJLIBDIR)$(LP)ecere$(SOV) $(LIBDIR)/$(LP)ecere$(SOV)
 	install -D $(OBJLIBDIR)$(LP)ecereCOM$(SOV) $(LIBDIR)/$(LP)ecereCOM$(SOV)
 	install -D $(OBJLIBDIR)$(LP)ec$(SOV) $(LIBDIR)/$(LP)ec$(SOV)
@@ -579,7 +580,7 @@ endif
 	$(call rmq,"$(DOCDIR)/ecere.eCdoc")
 	$(call rmq,"$(DOCDIR)/ecereCOM.eCdoc")
 	$(call rmq,"$(DOCDIR)/EDA.eCdoc")
-ifdef LINUX
+ifdef LINUX_TARGET
 	$(call rmq,"$(LIBDIR)/$(LP)ecere$(SO).0")
 	$(call rmq,"$(LIBDIR)/$(LP)ecereCOM$(SO).0")
 	$(call rmq,"$(LIBDIR)/$(LP)ec$(SO).0")
@@ -603,13 +604,24 @@ endif
 	$(call rmdirq,"$(LIBDIR)/")
 	$(call rmdirq,"$(SLIBDIR)/")
 	$(call rmdirq,"$(DOCDIR)/")
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 	$(call rmdirq,"$(DESTDIR)/")
 endif
 	@$(call echo,The Ecere SDK has been uninstalled.)
 
 troubleshoot:
 	@$(call echo,Printing values of some variables.)
+	@$(call echo,HOST_PLATFORM=$(HOST_PLATFORM))
+	@$(call echo,TARGET_PLATFORM=$(HOST_PLATFORM))
+	@$(call echo,PLATFORM=$(PLATFORM))
+	@$(call echo,LINUX_HOST=$(LINUX_HOST))
+	@$(call echo,LINUX_TARGET=$(LINUX_TARGET))
+	@$(call echo,OSX_HOST=$(OSX_HOST))
+	@$(call echo,OSX_TARGET=$(OSX_TARGET))
+	@$(call echo,WINDOWS_HOST=$(WINDOWS_HOST))
+	@$(call echo,WINDOWS_TARGET=$(WINDOWS_TARGET))
+	@$(call echo,BSD_HOST=$(BSD_HOST))
+	@$(call echo,BSD_TARGET=$(BSD_TARGET))
 	@$(call echo,CCACHE=$(CCACHE))
 	@$(call echo,CCACHE_COMPILE=$(CCACHE_COMPILE))
 	@$(call echo,CCACHE_PREFIX=$(CCACHE_PREFIX))

@@ -666,7 +666,7 @@ char * PlatformToMakefileVariable(Platform platform)
 {
    return platform == win32 ? "WINDOWS" :
           platform == tux   ? "LINUX"   :
-          platform == apple ? "OSX"/*"APPLE"*/ :
+          platform == apple ? "OSX"     :
                               platform;
 }
 
@@ -682,6 +682,14 @@ char * TargetTypeToMakefileVariable(TargetTypes targetType)
 char * GetConfigName(ProjectConfig config)
 {
    return config ? config.name : "Common";
+}
+
+char * PlatformToMakefileTargetVariable(Platform platform)
+{
+   return platform == win32 ? "WINDOWS_TARGET" :
+          platform == tux   ? "LINUX_TARGET"   :
+          platform == apple ? "OSX_TARGET"     :
+                              "ERROR_BAD_TARGET";
 }
 
 class Project : struct
@@ -1674,7 +1682,7 @@ private:
       strcpy(makeFilePath, topNode.path);
       CatMakeFileName(makeFile, config);
       PathCatSlash(makeFilePath, makeFile);
-      
+
       // TODO: TEST ON UNIX IF \" around makeTarget is ok
       if(onlyNode)
       {
@@ -1692,8 +1700,18 @@ private:
             ChangeWorkingDir(topNode.path);
             // Create object dir if it does not exist already
             if(!FileExists(objDirExp.dir).isDirectory)
-               Execute("%s CF_DIR=%s%s%s COMPILER=%s objdir -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir,
-                  crossCompiling ? " PLATFORM=" : "", targetPlatform, compilerName, topNode.path, makeFilePath);
+            {
+               sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s objdir -C \"%s\" -f \"%s\"",
+                     compiler.makeCommand, cfDir,
+                     crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
+                     compilerName, topNode.path, makeFilePath);
+#ifdef _DEBUG
+               PrintLn(command);
+               ide.outputView.buildBox.Logf("command: %s\n", command);
+#endif
+               Execute(command);
+            }
+
             ChangeWorkingDir(pushD);
 
             PathCatSlash(makeTarget+1, objDirExp.dir);
@@ -1716,6 +1734,10 @@ private:
 
          sprintf(command, "%s /useenv /nologo /logcommands %s.sln %s|Win32", compiler.makeCommand, name, config.name);
          ide.outputView.buildBox.Logf("command: %s\n", command);
+#ifdef _DEBUG
+         PrintLn(command);
+         ide.outputView.buildBox.Logf("command: %s\n", command);
+#endif
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
             ProcessPipeOutputRaw(f);
@@ -1728,19 +1750,29 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s -j%d %s%s%s -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir,
-               crossCompiling ? " PLATFORM=" : "", targetPlatform,
+         sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s -j%d %s%s%s -C \"%s\" -f \"%s\"",
+               compiler.makeCommand, cfDir,
+               crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
                compilerName, numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",
                makeTarget, topNode.path, makeFilePath);
+#ifdef _DEBUG
+         PrintLn(command);
+         ide.outputView.buildBox.Logf("command: %s\n", command);
+#endif
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
             result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNode, compiler, config);
             delete f;
          }
          else
+         {
             ide.outputView.buildBox.Logf($"Error executing make (%s) command\n", compiler.makeCommand);
+#ifndef _DEBUG
+            ide.outputView.buildBox.Logf("command: %s\n", command);
+#endif
+         }
       }
 
       delete pathBackup;
@@ -1778,6 +1810,10 @@ private:
          
          sprintf(command, "%s /useenv /clean /nologo /logcommands %s.sln %s|Win32", compiler.makeCommand, name, config.name);
          ide.outputView.buildBox.Logf("command: %s\n", command);
+#ifdef _DEBUG
+         PrintLn(command);
+         ide.outputView.buildBox.Logf("command: %s\n", command);
+#endif
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
             ProcessPipeOutputRaw(f);
@@ -1791,8 +1827,14 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s CF_DIR=%s%s%s COMPILER=%s %sclean -C \"%s\" -f \"%s\"", compiler.makeCommand, cfDir,
-            crossCompiling ? " PLATFORM=" : "", targetPlatform, compilerName, realclean ? "real" : "", topNode.path, makeFilePath);
+         sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s %sclean -C \"%s\" -f \"%s\"",
+               compiler.makeCommand, cfDir,
+               crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
+               compilerName, realclean ? "real" : "", topNode.path, makeFilePath);
+#ifdef _DEBUG
+         PrintLn(command);
+         ide.outputView.buildBox.Logf("command: %s\n", command);
+#endif
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
          {
             ide.outputView.buildBox.Tell($"Deleting target and object files...");
@@ -1885,7 +1927,7 @@ private:
       }
    }
 
-   bool GenerateCrossPlatformCf()
+   bool GenerateCrossPlatformMk()
    {
       bool result = false;
       char path[MAX_LOCATION];
@@ -1930,7 +1972,7 @@ private:
       return result;
    }
 
-   bool GenerateCompilerMk(CompilerConfig compiler)
+   bool GenerateCompilerCf(CompilerConfig compiler)
    {
       bool result = false;
       char path[MAX_LOCATION];
@@ -1964,11 +2006,6 @@ private:
          File f = FileOpen(path, write);
          if(f)
          {
-            /*
-            if(compiler.targetPlatform != GetRuntimePlatform())
-               f.Printf("\nPLATFORM = %s\n", (char *)compiler.targetPlatform);
-            */
-
             f.Printf("# TOOLCHAIN\n\n");
 
             //f.Printf("SHELL := %s\n", "sh"/*compiler.shellCommand*/); // is this really needed?
@@ -1977,7 +2014,7 @@ private:
             f.Printf("CXX := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.cxxCommand);
             f.Printf("ECP := %s\n", compiler.ecpCommand);
             f.Printf("ECC := %s\n", compiler.eccCommand);
-            f.Printf("ECS := %s -t $(PLATFORM)\n", compiler.ecsCommand);
+            f.Printf("ECS := %s -t $(TARGET_PLATFORM)\n", compiler.ecsCommand);
             f.Printf("EAR := %s\n", compiler.earCommand);
 
             f.Printf("AS := as\n");
@@ -1998,13 +2035,13 @@ private:
 
             f.Printf("UPXFLAGS = -9\n\n"); // TOFEAT: Compression Level Option? Other UPX Options?
 
-            f.Printf("# HARD CODED PLATFORM-SPECIFIC OPTIONS\n");
-            f.Printf("ifeq \"$(PLATFORM)\" \"linux\"\n"); //, PlatformToMakefileVariable(tux));
+            f.Printf("# HARD CODED TARGET_PLATFORM-SPECIFIC OPTIONS\n");
+            f.Printf("ifdef %s\n", PlatformToMakefileTargetVariable(tux));
             f.Printf("LDFLAGS += -Wl,--no-undefined\n");
             f.Printf("endif\n\n");
 
             // JF's
-            f.Printf("ifeq \"$(PLATFORM)\" \"apple\"\n"); //%s\n", PlatformToMakefileVariable(apple));
+            f.Printf("ifdef %s\n", PlatformToMakefileTargetVariable(apple));
             f.Printf("LDFLAGS += -framework cocoa -framework OpenGL\n");
             f.Printf("endif\n");
 
@@ -2188,7 +2225,7 @@ private:
                   if(ifCount)
                      f.Printf("else\n");
                   ifCount++;
-                  f.Printf("ifeq \"$(PLATFORM)\" \"%s\"\n", (char *)platform); //%s\n", PlatformToMakefileVariable(platform));
+                  f.Printf("ifdef %s\n", PlatformToMakefileTargetVariable(platform));
 
                   f.Printf("TARGET_TYPE = ");
                   f.Printf(TargetTypeToMakefileVariable(targetType));
@@ -2227,7 +2264,7 @@ private:
          f.Printf("# INCLUDES\n\n");
 
          f.Printf("include %s\n", includemkPath ? includemkPath : "$(_CF_DIR)crossplatform.mk");
-         f.Printf("include $(_CF_DIR)$(PLATFORM)-$(COMPILER).cf\n");
+         f.Printf("include $(_CF_DIR)$(TARGET_PLATFORM)-$(COMPILER).cf\n");
          f.Printf("\n");
 
          f.Printf("# VARIABLES\n\n");
@@ -2355,7 +2392,7 @@ private:
             //for(platform = firstPlatform; platform <= lastPlatform; platform++)
             //for(platform = win32; platform <= apple; platform++)
 
-            f.Printf("# PLATFORM-SPECIFIC OPTIONS\n\n");
+            f.Printf("# TARGET_PLATFORM-SPECIFIC OPTIONS\n\n");
             for(platform = (Platform)1; platform < Platform::enumSize; platform++)
             {
                PlatformOptions projectPlatformOptions, configPlatformOptions;
@@ -2366,10 +2403,8 @@ private:
                   if(ifCount)
                      f.Printf("else\n");
                   ifCount++;
-                  f.Printf("ifeq \"$(PLATFORM)\" \"");
-                  // f.Printf(PlatformToMakefileVariable(platform));
-                  f.Printf((char *)platform);
-                  f.Printf("\"\n\n");
+                  f.Printf("ifdef %s\n", PlatformToMakefileTargetVariable(platform));
+                  f.Printf("\n");
 
                   if((projectPlatformOptions && projectPlatformOptions.options.preprocessorDefinitions && projectPlatformOptions.options.preprocessorDefinitions.count) ||
                      (configPlatformOptions && configPlatformOptions.options.preprocessorDefinitions && configPlatformOptions.options.preprocessorDefinitions.count) ||
@@ -2480,7 +2515,7 @@ private:
             OutputListOption(f, "I", options.includeDirs, lineEach, true);
          f.Printf("\n\n");
 
-         f.Printf("CECFLAGS += -cpp $(call escspace,$(CPP)) -t $(PLATFORM)");
+         f.Printf("CECFLAGS += -cpp $(call escspace,$(CPP)) -t $(TARGET_PLATFORM)");
          f.Printf("\n\n");
 
          f.Printf("ECFLAGS +=");
@@ -2532,7 +2567,7 @@ private:
          if(platforms || (config && config.platforms))
          {
             ifCount = 0;
-            //f.Printf("# PLATFORM-SPECIFIC PRE-BUILD COMMANDS\n");
+            //f.Printf("# TARGET_PLATFORM-SPECIFIC PRE-BUILD COMMANDS\n");
             for(platform = (Platform)1; platform < Platform::enumSize; platform++)
             {
                PlatformOptions projectPOs, configPOs;
@@ -2641,7 +2676,7 @@ private:
          if(platforms || (config && config.platforms))
          {
             ifCount = 0;
-            //f.Printf("# PLATFORM-SPECIFIC POST-BUILD COMMANDS\n");
+            //f.Printf("# TARGET_PLATFORM-SPECIFIC POST-BUILD COMMANDS\n");
             for(platform = (Platform)1; platform < Platform::enumSize; platform++)
             {
                PlatformOptions projectPOs, configPOs;

@@ -586,8 +586,8 @@ class ProjectView : Window
 
    bool ProjectPrepareCompiler(Project project, CompilerConfig compiler)
    {
-      project.GenerateCrossPlatformCf();
-      project.GenerateCompilerMk(compiler);
+      project.GenerateCrossPlatformMk();
+      project.GenerateCompilerCf(compiler);
       return true;
    }
 

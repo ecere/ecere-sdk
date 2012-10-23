@@ -63,7 +63,7 @@ SOURCES = \
 
 RESOURCES = \
 	locale/zh_CN/LC_MESSAGES/epj2make.mo \
-	../include.mk
+	../crossplatform.mk
 
 ifndef DEBIAN_PACKAGE
 CFLAGS =
@@ -72,6 +72,7 @@ OFLAGS =
 
 # CROSS-PLATFORM MAGIC
 
+include ../crossplatform.mk
 include ../include.mk
 
 # TOOLCHAIN
@@ -100,13 +101,13 @@ LIBS = -lecere $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 UPXFLAGS = -9 -q
 
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX
+ifdef LINUX_TARGET
 OFLAGS += -Wl,--no-undefined
 endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
-ifdef LINUX
+ifdef LINUX_TARGET
 
 endif
 

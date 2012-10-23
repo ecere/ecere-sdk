@@ -130,6 +130,7 @@ OFLAGS =
 
 # CROSS-PLATFORM MAGIC
 
+include ../../crossplatform.mk
 include ../../include.mk
 
 # FLAGS
@@ -141,7 +142,7 @@ LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 UPXFLAGS = -9 -q
 
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX
+ifdef LINUX_TARGET
 OFLAGS += -Wl,--no-undefined
 endif
 

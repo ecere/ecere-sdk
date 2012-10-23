@@ -30,6 +30,7 @@ OFLAGS =
 
 # CROSS-PLATFORM MAGIC
 
+include ../../../crossplatform.mk
 include ../../../include.mk
 
 # FLAGS
@@ -50,21 +51,21 @@ LIBS = -lecereBootstrap -lecBootstrap $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 UPXFLAGS = -9 -q
 
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX
+ifdef LINUX_TARGET
 OFLAGS += -Wl,--no-undefined
 endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
-ifdef WINDOWS
+ifdef WINDOWS_TARGET
 
 else
-ifdef LINUX
+ifdef LINUX_TARGET
 
 LIBS += -lm -ldl
 
 else
-ifdef OSX
+ifdef OSX_TARGET
 
 LIBS += -lm -ldl
 

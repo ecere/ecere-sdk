@@ -825,7 +825,7 @@ private:
                {
                   char * comma = mn.next ? "," : "";
 
-                  var = PlatformToMakefileVariable(mn.key);
+                  var = PlatformToMakefileTargetVariable(mn.key);
 
                   exp = result.a;
                   len = strlen(exp) + strlen("$(") + strlen(var) + strlen(")") + strlen(comma);
@@ -845,9 +845,9 @@ private:
          else
          {
             if(exclusionInfo.root.minimum.key != unknown)
-               var = PlatformToMakefileVariable(exclusionInfo.root.minimum.key);
+               var = PlatformToMakefileTargetVariable(exclusionInfo.root.minimum.key);
             else
-               var = PlatformToMakefileVariable(exclusionInfo.root.minimum.next.key);
+               var = PlatformToMakefileTargetVariable(exclusionInfo.root.minimum.next.key);
 
             exp = result.a;
             len = strlen(exp) + strlen("$(if $(") + strlen(var) + strlen("),");
@@ -2233,7 +2233,7 @@ static inline void OpenRulesPlatformExclusionIfs(File f, int * ifCount, Platform
       if(*ifCount)                 // we really need a if defined(a) || defined(b) here
          f.Printf("else\n");       // instead of repeating the rules for each platform
       (*ifCount)++;                  //
-      f.Printf("ifdef %s\n\n", PlatformToMakefileVariable(platform)); //
+      f.Printf("ifdef %s\n\n", PlatformToMakefileTargetVariable(platform)); //
       if(excludedPlatforms)
          excludedPlatforms[platform] = true;
    }
