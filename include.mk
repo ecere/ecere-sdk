@@ -1,14 +1,14 @@
 # TOOLCHAIN
-export CC      = $(CCACHE_COMPILE) $(DISTCC_COMPILE) gcc
-export CPP     = $(CCACHE_COMPILE) $(DISTCC_COMPILE) cpp
+export CC      = $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)gcc
+export CPP     = $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)cpp
 export ECP     = ecp
 export ECC     = ecc
 export ECS     = ecs
 export EAR     = ear
-export AS      = as
-export LD      = ld
-export AR      = ar
-export STRIP   = strip
+export AS      = $(GCC_PREFIX)as
+export LD      = $(GCC_PREFIX)ld
+export AR      = $(GCC_PREFIX)ar
+export STRIP   = $(GCC_PREFIX)strip
 UPX := upx
 
 # DEBIAN

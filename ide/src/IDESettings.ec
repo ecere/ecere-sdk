@@ -777,6 +777,12 @@ public:
       get { return distccHosts; }
       isset { return distccHosts && distccHosts[0]; }
    }
+   property char * gccPrefix
+   {
+      set { delete gccPrefix; if(value && value[0]) gccPrefix = CopyString(value); }
+      get { return gccPrefix; }
+      isset { return gccPrefix && gccPrefix[0]; }
+   }
    property Array<String> includeDirs
    {
       set
@@ -897,6 +903,7 @@ private:
    char * execPrefixCommand;
    char * distccHosts;
    bool supportsBitDepth;
+   char * gccPrefix;
    /*union
    {
       struct { Array<String> includes, libraries, executables; };
@@ -916,6 +923,7 @@ private:
       delete makeCommand;
       delete execPrefixCommand;
       delete distccHosts;
+      delete gccPrefix;
       if(environmentVars) environmentVars.Free();
       if(includeDirs) { includeDirs.Free(); }
       if(libraryDirs) { libraryDirs.Free(); }
@@ -945,7 +953,8 @@ private:
          ccacheEnabled,
          distccEnabled,
          supportsBitDepth,
-         distccHosts
+         distccHosts,
+         gccPrefix
       };
       for(s : includeDirs) copy.includeDirs.Add(CopyString(s));
       for(s : libraryDirs) copy.libraryDirs.Add(CopyString(s));

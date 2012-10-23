@@ -626,6 +626,7 @@ troubleshoot:
 	@$(call echo,CCACHE_COMPILE=$(CCACHE_COMPILE))
 	@$(call echo,CCACHE_PREFIX=$(CCACHE_PREFIX))
 	@$(call echo,DISTCC=$(DISTCC))
+	@$(call echo,GCC_PREFIX=$(GCC_PREFIX))
 	@$(call echo,CC=$(CC))
 	@$(call echo,CPP=$(CPP))
 	@$(call echo,ECP=$(ECP))

@@ -16,7 +16,7 @@ class GlobalSettingsDialog : Window
    hasClose = true;
    borderStyle = sizable;
    text = $"Global Settings";
-   minClientSize = { 560, 446 };
+   minClientSize = { 560, 466 };
    nativeDecorations = true;
 
    IDESettings ideSettings;
@@ -736,6 +736,12 @@ class CompilerToolchainTab : CompilersSubTab
       this, anchor = { left = 120, top = 216, right = 8 };
       text = $"Execution Prefix", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
+   Label gccPrefixLabel { this, position = { 8, 246 }, labeledWindow = gccPrefix, tabCycle = false, inactive = true };
+   PathBox gccPrefix
+   {
+      this, anchor = { left = 120, top = 242, right = 8 };
+      text = $"GCC Prefix", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+   };
 
    bool NotifyModifiedDocument(PathBox pathBox)
    {
@@ -760,6 +766,8 @@ class CompilerToolchainTab : CompilersSubTab
             compiler.makeCommand = pathBox.slashPath;
          else if(pathBox == execPrefix)
             compiler.execPrefixCommand = pathBox.slashPath;
+         else if(pathBox == gccPrefix)
+            compiler.gccPrefix = pathBox.slashPath;
          modifiedDocument = true;
          compilersTab.modifiedDocument = true;
       }
@@ -782,6 +790,7 @@ class CompilerToolchainTab : CompilersSubTab
          cxx.path = compiler.cxxCommand;
          make.path = compiler.makeCommand;
          execPrefix.path = compiler.execPrefixCommand;
+         gccPrefix.path = compiler.gccPrefix;
 
          ecpLabel.disabled = ecp.disabled = disabled;
          eccLabel.disabled = ecc.disabled = disabled;
@@ -792,6 +801,7 @@ class CompilerToolchainTab : CompilersSubTab
          ccLabel.disabled = cc.disabled = isVC || disabled;
          makeLabel.disabled = make.disabled = disabled;
          execPrefixLabel.disabled = execPrefix.disabled = disabled;
+         gccPrefixLabel.disabled = gccPrefix.disabled = disabled;
       }
       modifiedDocument = false;
    }

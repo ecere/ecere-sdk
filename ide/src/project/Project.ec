@@ -1347,6 +1347,7 @@ private:
       char cppCommand[MAX_LOCATION];
       char ccCommand[MAX_LOCATION];
       char cxxCommand[MAX_LOCATION];
+      char stripCommand[MAX_LOCATION];
       char ecpCommand[MAX_LOCATION];
       char eccCommand[MAX_LOCATION];
       char ecsCommand[MAX_LOCATION];
@@ -1355,21 +1356,29 @@ private:
       char * cc = compiler.ccCommand;
       char * cxx = compiler.cxxCommand;
       char * cpp = compiler.cppCommand;
-      sprintf(cppCommand, "%s%s%s%s ",
+      char * strip = compiler.cppCommand;
+      sprintf(cppCommand, "%s%s%s%s%s ",
             compiler.ccacheEnabled ? "ccache " : "",
             compiler.ccacheEnabled && !compiler.distccEnabled ? " " : "",
             compiler.distccEnabled ? "distcc " : "",
+            compiler.gccPrefix ? compiler.gccPrefix : "",
             compiler.cppCommand);
-      sprintf(ccCommand, "%s%s%s%s ",
+      sprintf(ccCommand, "%s%s%s%s%s ",
             compiler.ccacheEnabled ? "ccache " : "",
             compiler.ccacheEnabled && !compiler.distccEnabled ? " " : "",
             compiler.distccEnabled ? "distcc " : "",
+            compiler.gccPrefix ? compiler.gccPrefix : "",
             compiler.ccCommand);
-      sprintf(cxxCommand, "%s%s%s%s ",
+      sprintf(cxxCommand, "%s%s%s%s%s ",
             compiler.ccacheEnabled ? "ccache " : "",
             compiler.ccacheEnabled && !compiler.distccEnabled ? " " : "",
             compiler.distccEnabled ? "distcc " : "",
+            compiler.gccPrefix ? compiler.gccPrefix : "",
             compiler.cxxCommand);
+
+      sprintf(stripCommand, "%sstrip ",
+            compiler.gccPrefix ? compiler.gccPrefix : "");
+
       sprintf(ecpCommand, "%s ", compiler.ecpCommand);
       sprintf(eccCommand, "%s ", compiler.eccCommand);
       sprintf(ecsCommand, "%s ", compiler.ecsCommand);
@@ -1409,7 +1418,7 @@ private:
                   //}
                }
                else if(strstr(line, "ear ") == line);
-               else if(strstr(line, "strip ") == line);
+               else if(strstr(line, stripCommand) == line);
                else if(strstr(line, ccCommand) == line || strstr(line, cxxCommand) == line || strstr(line, ecpCommand) == line || strstr(line, eccCommand) == line)
                {
                   char moduleName[MAX_FILENAME];
@@ -2008,19 +2017,22 @@ private:
          {
             f.Printf("# TOOLCHAIN\n\n");
 
+            if(compiler.gccPrefix && compiler.gccPrefix[0])
+               f.Printf("GCC_PREFIX := %s\n", compiler.gccPrefix);
+
             //f.Printf("SHELL := %s\n", "sh"/*compiler.shellCommand*/); // is this really needed?
-            f.Printf("CPP := %s\n", compiler.cppCommand);
-            f.Printf("CC := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.ccCommand);
-            f.Printf("CXX := $(CCACHE_COMPILE) $(DISTCC_COMPILE) %s\n", compiler.cxxCommand);
+            f.Printf("CPP := $(GCC_PREFIX)%s\n", compiler.cppCommand);
+            f.Printf("CC := $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)%s\n", compiler.ccCommand);
+            f.Printf("CXX := $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)%s\n", compiler.cxxCommand);
             f.Printf("ECP := %s\n", compiler.ecpCommand);
             f.Printf("ECC := %s\n", compiler.eccCommand);
             f.Printf("ECS := %s -t $(TARGET_PLATFORM)\n", compiler.ecsCommand);
             f.Printf("EAR := %s\n", compiler.earCommand);
 
-            f.Printf("AS := as\n");
-            f.Printf("LD := ld\n");
-            f.Printf("AR := ar\n");
-            f.Printf("STRIP := strip\n");
+            f.Printf("AS := $(GCC_PREFIX)as\n");
+            f.Printf("LD := $(GCC_PREFIX)ld\n");
+            f.Printf("AR := $(GCC_PREFIX)ar\n");
+            f.Printf("STRIP := $(GCC_PREFIX)strip\n");
             f.Printf("UPX := upx\n");
 
             f.Printf("\n");
