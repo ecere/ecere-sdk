@@ -102,13 +102,19 @@
          "Folder" : "deps",
          "Files" : [
             {
-               "Folder" : "freetype-2.3.5",
+               "Folder" : "freetype-2.3.12",
                "Files" : [
                   "Makefile"
                ]
             },
             {
                "Folder" : "jpeg-6b",
+               "Files" : [
+                  "Makefile"
+               ]
+            },
+            {
+               "Folder" : "libffi-3.0.11",
                "Files" : [
                   "Makefile"
                ]
@@ -130,7 +136,8 @@
                "Files" : [
                   "Makefile"
                ]
-            }
+            },
+            "Makefile"
          ],
          "Options" : {
             "ExcludeFromBuild" : true
@@ -223,6 +230,12 @@
          "Files" : [
             "Makefile"
          ],
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      },
+      {
+         "FileName" : "crossplatform.mk",
          "Options" : {
             "ExcludeFromBuild" : true
          }
