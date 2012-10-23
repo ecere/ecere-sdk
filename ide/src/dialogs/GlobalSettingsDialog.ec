@@ -664,9 +664,9 @@ class CompilerDirectoriesTab : CompilersSubTab
 
    void Load()
    {
-      if(loadedCompiler)
+      CompilerConfig compiler = loadedCompiler;
+      if(compiler)
       {
-         CompilerConfig compiler = loadedCompiler;
          dirs[includes].strings = compiler.includeDirs;
          dirs[libraries].strings = compiler.libraryDirs;
          dirs[executables].strings = compiler.executableDirs;
@@ -739,9 +739,9 @@ class CompilerToolchainTab : CompilersSubTab
 
    bool NotifyModifiedDocument(PathBox pathBox)
    {
-      if(loadedCompiler)
+      CompilerConfig compiler = loadedCompiler;
+      if(compiler)
       {
-         CompilerConfig compiler = loadedCompiler;
          if(pathBox == ecp)
             compiler.ecpCommand = pathBox.slashPath;
          else if(pathBox == ecc)
@@ -768,9 +768,9 @@ class CompilerToolchainTab : CompilersSubTab
 
    void Load()
    {
-      if(loadedCompiler)
+      CompilerConfig compiler = loadedCompiler;
+      if(compiler)
       {
-         CompilerConfig compiler = loadedCompiler;
          bool disabled = compiler.readOnly;
          bool isVC = compiler.type.isVC;
          ecp.path = compiler.ecpCommand;
@@ -810,9 +810,13 @@ class CompilerEnvironmentTab : CompilersSubTab
 
       bool NotifyModified(NamedStringsBox stringsBox)
       {
-         loadedCompiler.environmentVars = stringsBox.namedStrings;
-         modifiedDocument = true;
-         compilersTab.modifiedDocument = true;
+         CompilerConfig compiler = loadedCompiler;
+         if(compiler)
+         {
+            compiler.environmentVars = stringsBox.namedStrings;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
          return true;
       }
    };
@@ -823,9 +827,9 @@ class CompilerEnvironmentTab : CompilersSubTab
 
    void Load()
    {
-      if(loadedCompiler)
+      CompilerConfig compiler = loadedCompiler;
+      if(compiler)
       {
-         CompilerConfig compiler = loadedCompiler;
          envVars.namedStrings = compiler.environmentVars;
 
          modifiedDocument = false;
@@ -942,9 +946,9 @@ class CompilerOptionsTab : CompilersSubTab
 
       bool NotifyModified(EditBox editBox)
       {
-         if(loadedCompiler)
+         CompilerConfig compiler = loadedCompiler;
+         if(compiler)
          {
-            CompilerConfig compiler = loadedCompiler;
             compiler.distccHosts = editBox.contents;
             modifiedDocument = true;
             compilersTab.modifiedDocument = true;
@@ -1042,9 +1046,9 @@ class CompilerOptionsTab : CompilersSubTab
 
    void Load()
    {
-      if(loadedCompiler)
+      CompilerConfig compiler = loadedCompiler;
+      if(compiler)
       {
-         CompilerConfig compiler = loadedCompiler;
          bool disabled = compiler.readOnly;
          targetPlatform.currentRow = targetPlatform.FindRow(compiler.targetPlatform);
          numJobs = compiler.numJobs;
