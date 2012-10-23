@@ -6,9 +6,6 @@
       "PreprocessorDefinitions" : [
          "GDB_DEBUG_GUI"
       ],
-      "IncludeDirs" : [
-         "/usr/X11R6/include"
-      ],
       "TargetType" : "Executable",
       "TargetFileName" : "ide",
       "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
@@ -18,6 +15,9 @@
       {
          "Name" : "linux",
          "Options" : {
+            "IncludeDirs" : [
+               "/usr/X11R6/include"
+            ],
             "Libraries" : [
                "X11"
             ],
@@ -29,6 +29,9 @@
       {
          "Name" : "apple",
          "Options" : {
+            "IncludeDirs" : [
+               "/usr/X11R6/include"
+            ],
             "Libraries" : [
                "X11"
             ],
