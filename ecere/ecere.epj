@@ -1122,6 +1122,17 @@
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Android",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1404,6 +1415,17 @@
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Android",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         }
@@ -1557,6 +1579,17 @@
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Android",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1675,6 +1708,17 @@
                                     },
                                     {
                                        "Name" : "apple",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "Android",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
                                        "Options" : {
                                           "ExcludeFromBuild" : true
                                        }
