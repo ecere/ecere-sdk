@@ -18,6 +18,19 @@ else
    LINUX_HOST := defined
 endif
 endif
+
+UNAME_P := $(shell uname -p)
+ifeq ($(UNAME_P),x86_64)
+  HOST_ARCH = X64
+else
+ifneq ($(filter %86,$(UNAME_P)),)
+  HOST_ARCH = X86
+else
+ifneq ($(filter arm%,$(UNAME_P)),)
+  HOST_ARCH = ARM
+endif
+endif
+endif
 endif
 
 # TARGET_PLATFORM

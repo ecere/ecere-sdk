@@ -85,14 +85,14 @@ EAR := $(call psep,../obj/$(PLATFORM)/bin/ear)
 
 # FLAGS
 
-CFLAGS += -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w \
+CFLAGS += -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w \
 	 -DMAKEFILE_GENERATOR
 
 CECFLAGS =
 
 ECFLAGS = -nolinenumbers
 
-OFLAGS += -m32 \
+OFLAGS += $(FORCE_32_BIT) \
 	 -L../obj/$(PLATFORM)/bin \
 	 -L../obj/$(PLATFORM)/lib
 

@@ -662,7 +662,7 @@ EAR := $(call psep,../obj/$(PLATFORM)/bin/ear)
 
 # FLAGS
 
-CFLAGS += -fmessage-length=0 -Os -m32 $(FPIC) -w \
+CFLAGS += -fmessage-length=0 -Os $(FORCE_32_BIT) $(FPIC) -w \
 	 -DBUILDING_ECERE_COM -DECERE_STATIC -DECERE_VANILLA -DNOBLENDING \
 	 -Isrc/gfx/drivers/harfbuzz
 

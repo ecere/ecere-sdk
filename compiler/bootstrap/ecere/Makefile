@@ -81,7 +81,7 @@ include ../../../include.mk
 
 # FLAGS
 
-CFLAGS += -fmessage-length=0 -O2 -ffast-math -m32 $(FPIC) -w \
+CFLAGS += -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w \
 	 -DBUILDING_ECERE_COM -DECERE_STATIC -DECERE_BOOTSTRAP
 
 CECFLAGS =

@@ -66,14 +66,14 @@ EAR := $(call psep,../../../obj/$(PLATFORM)/bin/ear)
 
 # FLAGS
 
-CFLAGS += -fmessage-length=0 -O2 -m32 $(FPIC) -w \
+CFLAGS += -fmessage-length=0 -O2 $(FORCE_32_BIT) $(FPIC) -w \
 	 -DSQLITE_HAS_CODEC
 
 CECFLAGS =
 
 ECFLAGS = -nolinenumbers
 
-OFLAGS += -m32 \
+OFLAGS += $(FORCE_32_BIT) \
 	 -L../../../obj/$(PLATFORM)/bin \
 	 -L../../../obj/$(PLATFORM)/lib
 

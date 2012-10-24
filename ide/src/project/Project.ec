@@ -2563,7 +2563,7 @@ private:
          f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
          f.Printf("OFLAGS +=");
          if(forceBitDepth)
-            f.Printf((!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? " -m32" : " -m64 \\\n");
+            f.Printf((!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? " $(FORCE_32_BIT)" : " $(FORCE_64_BIT) \\\n");
 
          if(GetProfile(config))
             f.Printf(" -pg");

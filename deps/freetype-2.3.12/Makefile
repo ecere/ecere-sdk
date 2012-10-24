@@ -126,7 +126,7 @@ include ../../include.mk
 # FLAGS
 
 # Warning: Compiling with -O2 gives 0 font height with MinGW!!
-CFLAGS += -fmessage-length=0 -m32 $(FPIC) -w \
+CFLAGS += -fmessage-length=0 $(FORCE_32_BIT) $(FPIC) -w \
 	 -DFT2_BUILD_LIBRARY -DFT_OPTION_AUTOFIT2 \
 	 -I../zlib \
 	 -Iinclude \

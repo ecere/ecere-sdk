@@ -83,14 +83,14 @@ EAR := $(call psep,../../obj/$(PLATFORM)/bin/ear)
 
 # FLAGS
 
-CFLAGS += -fmessage-length=0 -Os -m32 $(FPIC) -w \
+CFLAGS += -fmessage-length=0 -Os $(FORCE_32_BIT) $(FPIC) -w \
 	 -DECERE_STATIC
 
 CECFLAGS =
 
 ECFLAGS = -nolinenumbers
 
-OFLAGS += -m32 \
+OFLAGS += $(FORCE_32_BIT) \
 	 -L../../ecere/obj/vanilla.$(PLATFORM) \
 	 -L../../deps/zlib/obj/release.$(PLATFORM)
 

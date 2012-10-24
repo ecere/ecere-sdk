@@ -20,3 +20,11 @@ ifdef DEBIAN_PACKAGE
 CFLAGS += $(CPPFLAGS)
 OFLAGS += $(LDFLAGS)
 endif
+
+ifeq "$(HOST_ARCH)" "ARM"
+FORCE_64_BIT =
+FORCE_32_BIT =
+else
+FORCE_64_BIT = -m64
+FORCE_32_BIT = -m32
+endif
