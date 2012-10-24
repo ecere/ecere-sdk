@@ -174,7 +174,7 @@ private:
       bool NotifyPushed(Button button, int x, int y, Modifiers mods)
       {
          action = down;
-         Action(action, 0, (Key)mods);
+         Action(action, 0, Key { modifiers = mods });
          timer.Start();
          return true;
       }
@@ -187,7 +187,7 @@ private:
       bool NotifyPushed(Button button, int x, int y, Modifiers mods)
       {
          action = up; 
-         Action(action, 0, (Key)mods);
+         Action(action, 0, Key { modifiers = mods });
          timer.Start();
          return true;
       }
@@ -247,9 +247,9 @@ private:
                if(sbStyle.snap)
                   SNAPDOWN(position, lineStep);
                if(position == 0)
-                  Action(setPosition, position, (Key)mods);
+                  Action(setPosition, position, Key { modifiers = mods });
                else
-                  Action(setPosition, position, (Key)mods);
+                  Action(setPosition, position, Key { modifiers = mods });
             }
          }
          return true;
@@ -525,7 +525,7 @@ private:
       else
          action = pageDown;
 
-      Action(action, 0, (Key)mods);
+      Action(action, 0, Key { modifiers = mods });
       timer.Start();
 
       Update(null);

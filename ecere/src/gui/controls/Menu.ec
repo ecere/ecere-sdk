@@ -1850,7 +1850,7 @@ public class PopupMenu : Window
                      keyboardFocus = false;
                      Update(null);
                   }
-                  if(MenuItemSelection(menu, selected, (Key)mods))
+                  if(MenuItemSelection(menu, selected, Key { modifiers = mods }))
                      return false;
                }
             }
