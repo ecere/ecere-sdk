@@ -2036,7 +2036,11 @@ private:
             f.Printf("CXX := $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cxxCommand);
             f.Printf("ECP := %s\n", compiler.ecpCommand);
             f.Printf("ECC := %s\n", compiler.eccCommand);
+            f.Printf("ifeq \"$(TARGET_PLATFORM)\" \"$(HOST_PLATFORM)\"\n");
+            f.Printf("ECS := %s\n", compiler.ecsCommand);
+            f.Printf("else\n");
             f.Printf("ECS := %s -t $(TARGET_PLATFORM)\n", compiler.ecsCommand);
+            f.Printf("endif\n");
             f.Printf("EAR := %s\n", compiler.earCommand);
 
             f.Printf("AS := $(GCC_PREFIX)as\n");
