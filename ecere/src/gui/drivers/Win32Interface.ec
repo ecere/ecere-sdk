@@ -7,7 +7,7 @@ import "instance"
 #if defined(__WIN32__)
 
 #define WINVER 0x0500
-#define _WIN32_WINNT 0x0500
+#define _WIN32_WINNT 0x0501
 
 #undef JOY_BUTTON1
 #undef JOY_BUTTON2
@@ -19,6 +19,7 @@ import "instance"
 #define byte _byte
 #define int64 _int64
 #include <windows.h>
+#include <wincon.h>
 #include <shellapi.h>
 
 
@@ -1149,6 +1150,7 @@ class Win32Interface : Interface
          null,
          className
       };
+      AttachConsole(-1);
       wcl.hInstance = hInstance = GetModuleHandle(null);
       RegisterClass(&wcl);
 
