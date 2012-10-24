@@ -16,7 +16,7 @@ class GlobalSettingsDialog : Window
    hasClose = true;
    borderStyle = sizable;
    text = $"Global Settings";
-   minClientSize = { 560, 466 };
+   minClientSize = { 560, 506 };
    nativeDecorations = true;
 
    IDESettings ideSettings;
@@ -742,6 +742,12 @@ class CompilerToolchainTab : CompilersSubTab
       this, anchor = { left = 120, top = 242, right = 8 };
       text = $"GCC Prefix", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
+   Label sysrootLabel { this, position = { 8, 272 }, labeledWindow = sysroot, tabCycle = false, inactive = true };
+   PathBox sysroot
+   {
+      this, anchor = { left = 120, top = 268, right = 8 };
+      text = $"SYSROOT", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+   };
 
    bool NotifyModifiedDocument(PathBox pathBox)
    {
@@ -768,6 +774,8 @@ class CompilerToolchainTab : CompilersSubTab
             compiler.execPrefixCommand = pathBox.slashPath;
          else if(pathBox == gccPrefix)
             compiler.gccPrefix = pathBox.slashPath;
+         else if(pathBox == sysroot)
+            compiler.sysroot = pathBox.slashPath;
          modifiedDocument = true;
          compilersTab.modifiedDocument = true;
       }
@@ -791,6 +799,7 @@ class CompilerToolchainTab : CompilersSubTab
          make.path = compiler.makeCommand;
          execPrefix.path = compiler.execPrefixCommand;
          gccPrefix.path = compiler.gccPrefix;
+         sysroot.path = compiler.sysroot;
 
          ecpLabel.disabled = ecp.disabled = disabled;
          eccLabel.disabled = ecc.disabled = disabled;
@@ -802,6 +811,7 @@ class CompilerToolchainTab : CompilersSubTab
          makeLabel.disabled = make.disabled = disabled;
          execPrefixLabel.disabled = execPrefix.disabled = disabled;
          gccPrefixLabel.disabled = gccPrefix.disabled = disabled;
+         sysrootLabel.disabled = sysroot.disabled = disabled;
       }
       modifiedDocument = false;
    }

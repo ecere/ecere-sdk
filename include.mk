@@ -1,6 +1,6 @@
 # TOOLCHAIN
-export CC      = $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)gcc
-export CPP     = $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)cpp
+export CC      = $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)gcc$(_SYSROOT)
+export CPP     = $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)cpp$(_SYSROOT)
 export ECP     = ecp
 export ECC     = ecc
 export ECS     = ecs

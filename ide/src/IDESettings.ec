@@ -783,6 +783,12 @@ public:
       get { return gccPrefix; }
       isset { return gccPrefix && gccPrefix[0]; }
    }
+   property char * sysroot
+   {
+      set { delete sysroot; if(value && value[0]) sysroot = CopyString(value); }
+      get { return sysroot; }
+      isset { return sysroot && sysroot[0]; }
+   }
    property Array<String> includeDirs
    {
       set
@@ -904,6 +910,7 @@ private:
    char * distccHosts;
    bool supportsBitDepth;
    char * gccPrefix;
+   char * sysroot;
    /*union
    {
       struct { Array<String> includes, libraries, executables; };
@@ -924,6 +931,7 @@ private:
       delete execPrefixCommand;
       delete distccHosts;
       delete gccPrefix;
+      delete sysroot;
       if(environmentVars) environmentVars.Free();
       if(includeDirs) { includeDirs.Free(); }
       if(libraryDirs) { libraryDirs.Free(); }
@@ -954,7 +962,8 @@ private:
          distccEnabled,
          supportsBitDepth,
          distccHosts,
-         gccPrefix
+         gccPrefix,
+         sysroot
       };
       for(s : includeDirs) copy.includeDirs.Add(CopyString(s));
       for(s : libraryDirs) copy.libraryDirs.Add(CopyString(s));

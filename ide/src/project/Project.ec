@@ -2015,15 +2015,25 @@ private:
          File f = FileOpen(path, write);
          if(f)
          {
-            f.Printf("# TOOLCHAIN\n\n");
+            f.Printf("# TOOLCHAIN\n");
+            f.Printf("\n");
 
             if(compiler.gccPrefix && compiler.gccPrefix[0])
+            {
                f.Printf("GCC_PREFIX := %s\n", compiler.gccPrefix);
+               f.Printf("\n");
+            }
+            if(compiler.sysroot && compiler.sysroot[0])
+            {
+               f.Printf("SYSROOT := %s\n", compiler.sysroot);
+               f.Printf("_SYSROOT := $(space)--sysroot=$(SYSROOT)\n");
+               f.Printf("\n");
+            }
 
             //f.Printf("SHELL := %s\n", "sh"/*compiler.shellCommand*/); // is this really needed?
-            f.Printf("CPP := $(GCC_PREFIX)%s\n", compiler.cppCommand);
-            f.Printf("CC := $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)%s\n", compiler.ccCommand);
-            f.Printf("CXX := $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)%s\n", compiler.cxxCommand);
+            f.Printf("CPP := $(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cppCommand);
+            f.Printf("CC := $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.ccCommand);
+            f.Printf("CXX := $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cxxCommand);
             f.Printf("ECP := %s\n", compiler.ecpCommand);
             f.Printf("ECC := %s\n", compiler.eccCommand);
             f.Printf("ECS := %s -t $(TARGET_PLATFORM)\n", compiler.ecsCommand);
@@ -2034,8 +2044,8 @@ private:
             f.Printf("AR := $(GCC_PREFIX)ar\n");
             f.Printf("STRIP := $(GCC_PREFIX)strip\n");
             f.Printf("UPX := upx\n");
-
             f.Printf("\n");
+
             if(compiler.environmentVars && compiler.environmentVars.count)
             {
                f.Printf("# ENVIRONMENT VARIABLES\n");
@@ -2045,12 +2055,14 @@ private:
                }
             }
 
-            f.Printf("UPXFLAGS = -9\n\n"); // TOFEAT: Compression Level Option? Other UPX Options?
+            f.Printf("UPXFLAGS = -9\n"); // TOFEAT: Compression Level Option? Other UPX Options?
+            f.Printf("\n");
 
             f.Printf("# HARD CODED TARGET_PLATFORM-SPECIFIC OPTIONS\n");
             f.Printf("ifdef %s\n", PlatformToMakefileTargetVariable(tux));
             f.Printf("LDFLAGS += -Wl,--no-undefined\n");
-            f.Printf("endif\n\n");
+            f.Printf("endif\n");
+            f.Printf("\n");
 
             // JF's
             f.Printf("ifdef %s\n", PlatformToMakefileTargetVariable(apple));
