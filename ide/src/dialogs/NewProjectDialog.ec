@@ -96,6 +96,7 @@ class NewProjectDialog : Window
             options =
             {
                optimization = speed;
+               fastMath = true;
                debug = false;
             };
             makingModified = true;
@@ -403,6 +404,7 @@ class QuickProjectDialog : Window
             options =
             {
                optimization = speed;
+               fastMath = true;
                debug = false;
             };
             makingModified = true;

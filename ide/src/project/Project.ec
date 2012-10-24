@@ -625,6 +625,9 @@ define localProfile = config && config.options && config.options.profile ?
 define localOptimization = config && config.options && config.options.optimization ?
             config.options.optimization : options && options.optimization ?
             options.optimization : OptimizationStrategy::none;
+define localFastMath = config && config.options && config.options.fastMath ?
+            config.options.fastMath : options && options.fastMath ?
+            options.fastMath : SetBool::unset;
 define localDefaultNameSpace = config && config.options && config.options.defaultNameSpace ?
             config.options.defaultNameSpace : options && options.defaultNameSpace ?
             options.defaultNameSpace : null;
@@ -985,6 +988,12 @@ private:
    {
       OptimizationStrategy optimization = localOptimization;
       return optimization;
+   }
+
+   bool GetFastMath(ProjectConfig config)
+   {
+      SetBool fastMath = localFastMath;
+      return fastMath == true;
    }
 
    String GetDefaultNameSpace(ProjectConfig config)
@@ -2224,12 +2233,13 @@ private:
          {
             case speed:
                f.Printf(" -O2");
-               f.Printf(" -ffast-math");
                break;
             case size:
                f.Printf(" -Os");
                break;
          }
+         if(GetFastMath(config))
+            f.Printf(" -ffast-math");
          if(GetDebug(config))
             f.Printf(" -g");
          f.Printf("\n");

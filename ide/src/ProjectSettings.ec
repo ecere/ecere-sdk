@@ -1936,8 +1936,14 @@ class CompilerTab : Tab
    };
    BoolOptionBox strictNameSpaces
    {
-      rightPane, this, position = { 172, 112 }, 
+      rightPane, this, position = { 172, 112 },
       text = $"Strict Name Spaces", option = OPTION(strictNameSpaces);
+   };
+
+   BoolOptionBox fastMath
+   {
+      rightPane, this, position = { 316, 112 },
+      text = $"Fast Math", option = OPTION(fastMath);
    };
 
    BoolOptionBox memoryGuard

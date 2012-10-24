@@ -275,6 +275,7 @@ public:
 
    SetBool excludeFromBuild;
    BuildBitDepth buildBitDepth;
+   SetBool fastMath;
 
    property Array<String> prebuildCommands
    {
@@ -339,6 +340,7 @@ public:
          console = console,
          compress = compress,
          excludeFromBuild = excludeFromBuild,
+         fastMath = fastMath,
          preprocessorDefinitions = CopyArrayString(preprocessorDefinitions),
          includeDirs = CopyArrayString(includeDirs),
          libraries = CopyArrayString(libraries),
