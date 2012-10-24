@@ -521,7 +521,8 @@
                            }
                         }
                      ]
-                  }
+                  },
+                  "Condition.ec"
                ],
                "Configurations" : [
                   {
