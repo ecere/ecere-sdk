@@ -810,7 +810,7 @@ private:
       if(MessageBox { type = yesNo, master = ide,
             text = $"Project has been modified", contents = temp }.Modal() == yes)
       {
-         Project project = LoadProject(filePath);
+         Project project = LoadProject(filePath, config.name);
          if(project)
          {
             ProjectView projectView = ide.projectView;
@@ -3754,7 +3754,7 @@ void CombineIdenticalConfigOptions(Project project)
    }
 }
 
-Project LoadProject(char * filePath)
+Project LoadProject(char * filePath, char * activeConfigName)
 {
    Project project = null;
    File f = FileOpen(filePath, read);
@@ -3803,6 +3803,17 @@ Project LoadProject(char * filePath)
       if(project)
       {
          if(!project.options) project.options = { };
+         if(activeConfigName && activeConfigName[0] && project.configurations)
+         {
+            for(cfg : project.configurations)
+            {
+               if(!strcmpi(cfg.name, activeConfigName))
+               {
+                  project.config = cfg;
+                  break;
+               }
+            }
+         }
          if(!project.config && project.configurations)
             project.config = project.configurations.firstIterator.data;
 

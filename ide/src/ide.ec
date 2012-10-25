@@ -1852,7 +1852,7 @@ class IDEWorkSpace : Window
                            workspace = LoadWorkspace(filePath, null);
                         else
                            return null;
-                        //project = LoadProject(filePath);
+                        //project = LoadProject(filePath, null);
                      }
                      
                      if(workspace)
@@ -1963,7 +1963,7 @@ class IDEWorkSpace : Window
                }
                else
                {
-                  prj = LoadProject(filePath);
+                  prj = LoadProject(filePath, null);
                   if(prj)
                   {
                      CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.compiler);

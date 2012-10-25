@@ -899,7 +899,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
                   Project newProject;
                   strcpy(projectFilePath, workspace.workspaceDir);
                   PathCatSlash(projectFilePath, equal);
-                  newProject = LoadProject(projectFilePath);
+                  newProject = LoadProject(projectFilePath, null);
                   if(newProject)
                   {
                      workspace.projects.Add(newProject);
@@ -1101,13 +1101,13 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
          {
             Project project;
             if(fromProjectFile)
-               project = LoadProject(fromProjectFile /*projectFilePath*/);
+               project = LoadProject(fromProjectFile /*projectFilePath*/, null);
             else
             {
                char projectFilePath[MAX_LOCATION];
                strcpy(projectFilePath, workspace.workspaceFile);
                ChangeExtension(projectFilePath, ProjectExtension, projectFilePath);
-               project = LoadProject(projectFilePath);
+               project = LoadProject(projectFilePath, null);
             }
             if(project)
             {
@@ -1171,7 +1171,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
       
       //strcpy(projectFile, filePath);
       //ChangeExtension(projectFile, ProjectExtension, projectFile);
-      newProject = LoadProject(fromProjectFile /*projectFile*/);
+      newProject = LoadProject(fromProjectFile /*projectFile*/, null);
 
       if(newProject)
       {
