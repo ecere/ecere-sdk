@@ -826,8 +826,14 @@ private:
 
             if(projectView)
             {
+               CompilerConfig compiler = ideSettings.GetCompilerConfig(projectView.workspace.compiler);
                projectView.AddNode(topNode, null);
                topNode.row.Move(prev);
+
+               projectView.ShowOutputBuildLog(true);
+               projectView.DisplayCompiler(compiler, false);
+               projectView.ProjectUpdateMakefileForAllConfigs(this);
+               delete compiler;
             }
             eSystem_Delete(project);
          }
