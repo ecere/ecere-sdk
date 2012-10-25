@@ -294,7 +294,7 @@ class epj2makeApp : GuiApplication
                   defaultCompiler.libraryDirs.Add(dir);
                delete optionsCompiler;
 
-               project = LoadProject(epjPath);
+               project = LoadProject(epjPath, null);
                if(project)
                {
                   ProjectConfig defaultConfig = null;
