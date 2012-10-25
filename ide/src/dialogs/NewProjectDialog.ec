@@ -82,6 +82,7 @@ class NewProjectDialog : Window
             options = 
             {
                optimization = none;
+               fastMath = false;
                debug = true;
                preprocessorDefinitions = { [ CopyString("_DEBUG") ] };
             };
@@ -390,6 +391,7 @@ class QuickProjectDialog : Window
             options = 
             {
                optimization = none;
+               fastMath = false;
                debug = true;
                preprocessorDefinitions = { [ CopyString("_DEBUG") ] };
             };
