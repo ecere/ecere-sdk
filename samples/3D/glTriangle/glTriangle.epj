@@ -35,14 +35,16 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
          "Name" : "Release",
          "Options" : {
             "Debug" : false,
-            "Optimization" : "Speed"
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       }
    ],

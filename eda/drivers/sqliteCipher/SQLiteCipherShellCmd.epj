@@ -53,14 +53,16 @@
             "Debug" : true,
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
          "Name" : "Release",
          "Options" : {
             "NoLineNumbers" : true,
-            "Optimization" : "Speed"
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       }
    ],

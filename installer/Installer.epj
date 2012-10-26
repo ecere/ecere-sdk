@@ -40,7 +40,8 @@
             ],
             "LibraryDirs" : [
                "../ecere/obj/installer.win32"
-            ]
+            ],
+            "FastMath" : true
          }
       },
       {
@@ -58,7 +59,8 @@
                "../ide/obj/resources.o",
                "ecere"
             ],
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       }
    ],

@@ -14,7 +14,8 @@
       {
          "Name" : "Debug",
          "Options" : {
-            "Debug" : true
+            "Debug" : true,
+            "FastMath" : false
          }
       }
    ],

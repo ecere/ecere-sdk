@@ -13,7 +13,8 @@
       {
          "Name" : "Default",
          "Options" : {
-            "Debug" : true
+            "Debug" : true,
+            "FastMath" : false
          }
       }
    ],

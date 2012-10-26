@@ -16,14 +16,16 @@
          "Options" : {
             "Debug" : true,
             "Profile" : false,
-            "Optimization" : "None"
+            "Optimization" : "None",
+            "FastMath" : true
          }
       },
       {
          "Name" : "Debug",
          "Options" : {
             "Debug" : true,
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       }
    ],

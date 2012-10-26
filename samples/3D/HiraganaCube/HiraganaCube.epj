@@ -17,7 +17,8 @@
             ],
             "Libraries" : [
                "ecere"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
@@ -47,7 +48,8 @@
             ],
             "LibraryDirs" : [
                "../../ecere/obj/tight"
-            ]
+            ],
+            "FastMath" : true
          }
       },
       {
@@ -56,7 +58,8 @@
             "Optimization" : "Speed",
             "Libraries" : [
                "ecere"
-            ]
+            ],
+            "FastMath" : true
          }
       },
       {
@@ -87,7 +90,8 @@
             "LibraryDirs" : [
                "../../ecere/obj/tight"
             ],
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       },
       {
@@ -100,7 +104,8 @@
             "Libraries" : [
                "ecere"
             ],
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       }
    ],

@@ -16,7 +16,8 @@
          "Options" : {
             "Debug" : true,
             "Profile" : false,
-            "Optimization" : "None"
+            "Optimization" : "None",
+            "FastMath" : false
          }
       }
    ],

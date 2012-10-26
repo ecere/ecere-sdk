@@ -6,7 +6,6 @@
       "MemoryGuard" : false,
       "Profile" : false,
       "Optimization" : "Speed",
-      "StrictNameSpaces" : false,
       "TargetType" : "Executable",
       "TargetFileName" : "Controls",
       "Libraries" : [
@@ -17,13 +16,15 @@
       {
          "Name" : "Debug",
          "Options" : {
-            "Debug" : true
+            "Debug" : true,
+            "FastMath" : false
          }
       },
       {
          "Name" : "MemoryGuard",
          "Options" : {
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       }
    ],

@@ -21,7 +21,8 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
@@ -29,7 +30,8 @@
          "Options" : {
             "Debug" : false,
             "MemoryGuard" : false,
-            "Optimization" : "Speed"
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       },
       {
@@ -40,7 +42,8 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "FastMath" : false
          }
       }
    ],

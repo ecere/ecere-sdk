@@ -15,13 +15,15 @@
       {
          "Name" : "Debug",
          "Options" : {
-            "Debug" : true
+            "Debug" : true,
+            "FastMath" : false
          }
       },
       {
          "Name" : "Release",
          "Options" : {
-            "Optimization" : "Speed"
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       }
    ],

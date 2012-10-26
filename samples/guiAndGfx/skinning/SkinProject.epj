@@ -17,13 +17,15 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
          "Name" : "Release",
          "Options" : {
-            "Optimization" : "Speed"
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       },
       {
@@ -33,7 +35,8 @@
             "MemoryGuard" : true,
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "FastMath" : false
          }
       }
    ],

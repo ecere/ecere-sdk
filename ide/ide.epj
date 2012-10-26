@@ -61,7 +61,8 @@
             "Libraries" : [
                "ecere"
             ],
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          },
          "Platforms" : [
             {
@@ -87,6 +88,7 @@
                "../obj/$(PLATFORM)/bin",
                "../obj/$(PLATFORM)/lib"
             ],
+            "FastMath" : true,
             "PostbuildCommands" : [
                "$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)"
             ]
@@ -130,7 +132,8 @@
             "Libraries" : [
                "ecere"
             ],
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          },
          "Platforms" : [
             {
@@ -162,7 +165,8 @@
                "freetype",
                "harfbuzz"
             ],
-            "Console" : true
+            "Console" : true,
+            "FastMath" : true
          },
          "Platforms" : [
             {

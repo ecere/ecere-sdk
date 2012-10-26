@@ -19,7 +19,8 @@
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ],
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       },
       {
@@ -32,6 +33,7 @@
                "../obj/$(PLATFORM)/bin",
                "../obj/$(PLATFORM)/lib"
             ],
+            "FastMath" : true,
             "PostbuildCommands" : [
                "$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)"
             ]
@@ -45,7 +47,8 @@
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ],
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       }
    ],

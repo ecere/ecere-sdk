@@ -34,7 +34,8 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
@@ -46,6 +47,7 @@
             "Libraries" : [
 
             ],
+            "FastMath" : true,
             "PostbuildCommands" : [
                "$(call cpq,$(TARGET),../$(SODESTDIR))"
             ]
@@ -66,7 +68,8 @@
             "ObjectsDirectory" : "ecereCOMStatic",
             "Libraries" : [
 
-            ]
+            ],
+            "FastMath" : true
          }
       }
    ],

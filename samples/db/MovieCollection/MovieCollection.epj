@@ -18,14 +18,16 @@
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ],
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       },
       {
          "Name" : "Release",
          "Options" : {
             "Debug" : false,
-            "Optimization" : "Speed"
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       },
       {
@@ -33,7 +35,8 @@
          "Options" : {
             "Debug" : true,
             "MemoryGuard" : true,
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       }
    ],

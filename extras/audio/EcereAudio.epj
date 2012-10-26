@@ -41,7 +41,8 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
@@ -51,7 +52,8 @@
             "Optimization" : "Speed",
             "IncludeDirs" : [
                "../../deps/DirectX-9.0/include"
-            ]
+            ],
+            "FastMath" : true
          }
       }
    ],

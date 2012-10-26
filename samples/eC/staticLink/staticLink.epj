@@ -17,7 +17,8 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
@@ -26,7 +27,8 @@
             "Debug" : false,
             "MemoryGuard" : true,
             "NoLineNumbers" : true,
-            "Optimization" : "Speed"
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       },
       {
@@ -41,7 +43,8 @@
             "Libraries" : [
                "ecereVanilla"
             ],
-            "Compress" : true
+            "Compress" : true,
+            "FastMath" : false
          },
          "Platforms" : [
             {

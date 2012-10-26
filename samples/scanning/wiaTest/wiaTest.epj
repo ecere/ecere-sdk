@@ -27,7 +27,8 @@
             ],
             "LibraryDirs" : [
                "I:/Development/mssdk/lib"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
@@ -37,7 +38,8 @@
             "Optimization" : "Speed",
             "Libraries" : [
                "ecere"
-            ]
+            ],
+            "FastMath" : true
          }
       }
    ],

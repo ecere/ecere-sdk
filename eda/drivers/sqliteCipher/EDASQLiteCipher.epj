@@ -61,7 +61,8 @@
             "Debug" : true,
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
@@ -73,6 +74,7 @@
                "../../../obj/$(PLATFORM)/bin",
                "../../../obj/$(PLATFORM)/lib"
             ],
+            "FastMath" : true,
             "PostbuildCommands" : [
                "$(call cpq,$(TARGET),../../../$(SODESTDIR))"
             ]
@@ -85,7 +87,8 @@
             "MemoryGuard" : true,
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "FastMath" : false
          }
       }
    ],

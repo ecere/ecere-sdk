@@ -18,14 +18,16 @@
          "Name" : "Debug",
          "Options" : {
             "Debug" : true,
-            "Optimization" : "None"
+            "Optimization" : "None",
+            "FastMath" : false
          }
       },
       {
          "Name" : "Release",
          "Options" : {
             "Debug" : false,
-            "Optimization" : "Speed"
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       }
    ],

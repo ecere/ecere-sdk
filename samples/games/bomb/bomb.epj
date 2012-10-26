@@ -18,7 +18,8 @@
             "Debug" : true,
             "MemoryGuard" : false,
             "Optimization" : "None",
-            "Console" : false
+            "Console" : false,
+            "FastMath" : false
          }
       },
       {
@@ -27,7 +28,8 @@
             "Debug" : true,
             "MemoryGuard" : true,
             "Optimization" : "None",
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       },
       {
@@ -36,7 +38,8 @@
             "Debug" : false,
             "MemoryGuard" : false,
             "Optimization" : "Speed",
-            "Console" : false
+            "Console" : false,
+            "FastMath" : true
          }
       }
    ],

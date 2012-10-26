@@ -18,7 +18,8 @@
             ],
             "Libraries" : [
                "ecere"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
@@ -51,7 +52,8 @@
             "LibraryDirs" : [
                "/v3/tight/release"
             ],
-            "Console" : false
+            "Console" : false,
+            "FastMath" : true
          }
       },
       {
@@ -63,7 +65,8 @@
             "Libraries" : [
                "ecere"
             ],
-            "Console" : false
+            "Console" : false,
+            "FastMath" : true
          }
       },
       {
@@ -96,7 +99,8 @@
             "LibraryDirs" : [
                "/v3/tight/debug"
             ],
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       },
       {
@@ -111,7 +115,8 @@
             "Libraries" : [
                "ecere"
             ],
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       }
    ],

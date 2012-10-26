@@ -23,7 +23,8 @@
          "Options" : {
             "PreprocessorDefinitions" : [
                "SAMPLE_V2"
-            ]
+            ],
+            "FastMath" : false
          }
       }
    ],

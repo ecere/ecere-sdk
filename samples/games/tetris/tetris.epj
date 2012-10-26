@@ -18,7 +18,8 @@
          "Options" : {
             "Debug" : true,
             "MemoryGuard" : false,
-            "Optimization" : "None"
+            "Optimization" : "None",
+            "FastMath" : false
          }
       },
       {
@@ -26,7 +27,8 @@
          "Options" : {
             "Debug" : false,
             "MemoryGuard" : false,
-            "Optimization" : "Speed"
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       },
       {
@@ -34,7 +36,8 @@
          "Options" : {
             "Debug" : true,
             "MemoryGuard" : true,
-            "Optimization" : "None"
+            "Optimization" : "None",
+            "FastMath" : false
          }
       }
    ],

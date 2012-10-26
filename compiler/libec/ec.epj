@@ -19,7 +19,8 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
@@ -30,7 +31,8 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
@@ -47,6 +49,7 @@
                "../../obj/$(PLATFORM)/bin",
                "../../obj/$(PLATFORM)/lib"
             ],
+            "FastMath" : true,
             "PostbuildCommands" : [
                "$(call cpq,$(TARGET),../../$(SODESTDIR))"
             ]
@@ -64,7 +67,8 @@
             "TargetFileName" : "ecStatic",
             "Libraries" : [
 
-            ]
+            ],
+            "FastMath" : true
          }
       },
       {
@@ -83,7 +87,8 @@
             "TargetFileName" : "ecBootstrap",
             "Libraries" : [
 
-            ]
+            ],
+            "FastMath" : true
          }
       }
    ],

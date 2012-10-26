@@ -12,14 +12,16 @@
          "Name" : "Debug",
          "Options" : {
             "Warnings" : "All",
-            "Debug" : true
+            "Debug" : true,
+            "FastMath" : false
          }
       },
       {
          "Name" : "Release",
          "Options" : {
             "Warnings" : "None",
-            "Optimization" : "Speed"
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       }
    ],

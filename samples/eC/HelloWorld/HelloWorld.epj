@@ -22,7 +22,8 @@
             "MemoryGuard" : true,
             "Libraries" : [
                "ecere"
-            ]
+            ],
+            "FastMath" : false
          }
       }
    ],

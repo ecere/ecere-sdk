@@ -21,7 +21,8 @@
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ],
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       },
       {
@@ -29,7 +30,8 @@
          "Options" : {
             "Debug" : false,
             "Optimization" : "Speed",
-            "Console" : false
+            "Console" : false,
+            "FastMath" : true
          }
       }
    ],

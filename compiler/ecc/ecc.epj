@@ -18,7 +18,8 @@
             ],
             "Libraries" : [
                "ecere"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
@@ -33,6 +34,7 @@
                "../../obj/$(PLATFORM)/bin",
                "../../obj/$(PLATFORM)/lib"
             ],
+            "FastMath" : true,
             "PostbuildCommands" : [
                "$(call cpq,$(TARGET),../../obj/$(PLATFORM)/bin/)"
             ]
@@ -66,7 +68,8 @@
             "LibraryDirs" : [
                "../../ecere/obj/bootstrap.$(PLATFORM)",
                "../libec/obj/bootstrap.$(PLATFORM)"
-            ]
+            ],
+            "FastMath" : true
          },
          "Platforms" : [
             {

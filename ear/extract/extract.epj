@@ -41,7 +41,8 @@
             "Libraries" : [
                "ecereVanilla",
                "z"
-            ]
+            ],
+            "FastMath" : false
          },
          "Platforms" : [
             {
@@ -80,7 +81,8 @@
             "Libraries" : [
                "ecere"
             ],
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       },
       {
@@ -96,7 +98,8 @@
                "ecereVanilla",
                "z"
             ],
-            "Compress" : true
+            "Compress" : true,
+            "FastMath" : false
          },
          "Platforms" : [
             {

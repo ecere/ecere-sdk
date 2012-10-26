@@ -126,7 +126,8 @@
             "PreprocessorDefinitions" : [
                "_DEBUG",
                "BUILDING_ECERE_COM"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
@@ -140,7 +141,8 @@
                "_DEBUG",
                "MEMINFO",
                "REDZONE=32"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
@@ -153,7 +155,8 @@
                "BUILDING_ECERE_COM",
                "MEMINFO",
                "REDZONE=256"
-            ]
+            ],
+            "FastMath" : true
          }
       },
       {
@@ -167,7 +170,8 @@
                "ECERE_STATIC"
             ],
             "TargetType" : "StaticLibrary",
-            "TargetFileName" : "ecereStatic"
+            "TargetFileName" : "ecereStatic",
+            "FastMath" : true
          }
       },
       {
@@ -180,6 +184,7 @@
             "PreprocessorDefinitions" : [
                "BUILDING_ECERE_COM"
             ],
+            "FastMath" : true,
             "PostbuildCommands" : [
                "$(call cpq,$(TARGET),../$(SODESTDIR))"
             ]
@@ -202,7 +207,8 @@
                "z",
                "freetype"
             ],
-            "Compress" : true
+            "Compress" : true,
+            "FastMath" : false
          }
       },
       {
@@ -213,7 +219,8 @@
             "PreprocessorDefinitions" : [
                "BUILDING_ECERE_COM"
             ],
-            "Compress" : true
+            "Compress" : true,
+            "FastMath" : false
          }
       },
       {
@@ -229,7 +236,8 @@
                "ECERE_NOTRUETYPE"
             ],
             "TargetType" : "StaticLibrary",
-            "TargetFileName" : "ecerePACS"
+            "TargetFileName" : "ecerePACS",
+            "FastMath" : false
          }
       },
       {
@@ -248,7 +256,8 @@
             "TargetFileName" : "ecereBootstrap",
             "Libraries" : [
 
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
@@ -264,6 +273,7 @@
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereVanilla",
+            "FastMath" : false,
             "PostbuildCommands" : [
                "$(call cpq,$(TARGET),../obj/$(PLATFORM)/lib/)"
             ]
@@ -279,7 +289,8 @@
                "ECERE_NO3D"
             ],
             "TargetType" : "StaticLibrary",
-            "TargetFileName" : "ecereWSMS"
+            "TargetFileName" : "ecereWSMS",
+            "FastMath" : false
          },
          "Platforms" : [
             {
@@ -308,7 +319,8 @@
                "ECERE_NODINPUT"
             ],
             "TargetType" : "StaticLibrary",
-            "TargetFileName" : "ecereInstaller"
+            "TargetFileName" : "ecereInstaller",
+            "FastMath" : false
          }
       },
       {
@@ -324,7 +336,8 @@
                "../deps/zlib",
                "../deps/freetype-2.3.12/include",
                "../deps/glext"
-            ]
+            ],
+            "FastMath" : false
          },
          "Platforms" : [
             {

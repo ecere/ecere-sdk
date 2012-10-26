@@ -19,14 +19,16 @@
          "Options" : {
             "Debug" : true,
             "Optimization" : "None",
-            "Console" : true
+            "Console" : true,
+            "FastMath" : false
          }
       },
       {
          "Name" : "Release",
          "Options" : {
             "Debug" : false,
-            "Optimization" : "Speed"
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       }
    ],

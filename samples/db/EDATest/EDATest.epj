@@ -17,14 +17,16 @@
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ],
-            "DefaultNameSpace" : "eda"
+            "DefaultNameSpace" : "eda",
+            "FastMath" : false
          }
       },
       {
          "Name" : "Release",
          "Options" : {
             "Optimization" : "Speed",
-            "DefaultNameSpace" : "eda"
+            "DefaultNameSpace" : "eda",
+            "FastMath" : true
          }
       },
       {
@@ -34,7 +36,8 @@
             "MemoryGuard" : true,
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ]
+            ],
+            "FastMath" : false
          }
       }
    ],

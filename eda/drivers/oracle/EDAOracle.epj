@@ -30,14 +30,16 @@
             ],
             "LibraryDirs" : [
                "C:/oraclexe/app/oracle/product/11.2.0/server/bin"
-            ]
+            ],
+            "FastMath" : false
          }
       },
       {
          "Name" : "Release",
          "Options" : {
             "Debug" : false,
-            "Optimization" : "Speed"
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       }
    ],
