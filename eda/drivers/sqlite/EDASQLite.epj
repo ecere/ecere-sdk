@@ -99,6 +99,9 @@
    "Files" : [
       {
          "FileName" : "sqlite3.c",
+         "Options" : {
+            "FastMath" : false
+         },
          "Platforms" : [
             {
                "Name" : "linux",

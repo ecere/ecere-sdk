@@ -67,7 +67,12 @@
       }
    ],
    "Files" : [
-      "../sqlite/shell.c",
+      {
+         "FileName" : "../sqlite/shell.c",
+         "Options" : {
+            "FastMath" : false
+         }
+      },
       "sqlite3.c",
       "sqlite3.h"
    ],

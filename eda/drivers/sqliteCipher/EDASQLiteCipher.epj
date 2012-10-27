@@ -93,7 +93,12 @@
       }
    ],
    "Files" : [
-      "sqlite3.c",
+      {
+         "FileName" : "sqlite3.c",
+         "Options" : {
+            "FastMath" : false
+         }
+      },
       "sqlite3.h",
       "EDASQLiteCipher.ec",
       "../sqlite/EDASQLite.ec"
