@@ -273,6 +273,7 @@ public:
    SetBool console;
    SetBool compress;
 
+   // todo; move those to compiler/linker sections
    SetBool excludeFromBuild;
    BuildBitDepth buildBitDepth;
    SetBool fastMath;
@@ -399,6 +400,8 @@ private:
             console == unset &&
             compress == unset &&
             excludeFromBuild == unset &&
+            buildBitDepth == all &&
+            fastMath == unset &&
             (!prebuildCommands || !prebuildCommands.count) &&
             (!postbuildCommands || !postbuildCommands.count) )
             return true;
