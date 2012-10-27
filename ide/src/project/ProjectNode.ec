@@ -12,6 +12,8 @@ import "Project"
 static define app = ((GuiApplication)__thisModule);
 #endif
 
+#define OPTION(x) ((uint)(&((ProjectOptions)0).x))
+
 bool eString_PathInsideOfMore(char * path, char * of, char * pathRest)
 {
    if(!path[0] || !of[0])
@@ -399,76 +401,6 @@ private:
       return nodeConfig;
    }
 
-   // For makefile generation:
-   bool GetECFLAGS(ProjectConfig prjConfig)
-   {
-      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
-      ProjectOptions options = property::options;
-      SetBool memoryGuard = localMemoryGuard;
-      String defaultNameSpace = localDefaultNameSpace;
-      SetBool strictNameSpaces = localStrictNameSpaces;
-      SetBool noLineNumbers = localNoLineNumbers;
-
-      if(memoryGuard || defaultNameSpace || strictNameSpaces || noLineNumbers)
-         return true;
-      else if(parent.parent)
-         return parent.GetECFLAGS(prjConfig);
-      else
-         return false;
-   }
-   
-   bool GetMemoryGuard(ProjectConfig prjConfig)
-   {
-      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
-      ProjectOptions options = property::options;
-      SetBool memoryGuard = localMemoryGuard;
-      if(!memoryGuard)
-      {
-         if(parent)
-            return parent.GetMemoryGuard(prjConfig);
-      }
-      return memoryGuard == true;
-   }
-
-   String GetDefaultNameSpace(ProjectConfig prjConfig)
-   {
-      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
-      ProjectOptions options = property::options;
-      String defaultNameSpace = localDefaultNameSpace;
-      if(!defaultNameSpace)
-      {
-         if(parent)
-            return parent.GetDefaultNameSpace(prjConfig);
-      }
-      return defaultNameSpace;
-   }
-
-   bool GetStrictNameSpaces(ProjectConfig prjConfig)
-   {
-      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
-      ProjectOptions options = property::options;
-      SetBool strictNameSpaces = localStrictNameSpaces;
-      if(!strictNameSpaces)
-      {
-         if(parent)
-            return parent.GetStrictNameSpaces(prjConfig);
-      }
-      return strictNameSpaces == true;
-   }
-
-   bool GetNoLineNumbers(ProjectConfig prjConfig)
-   {
-      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
-      ProjectOptions options = property::options;
-      SetBool noLineNumbers = localNoLineNumbers;
-      if(!noLineNumbers)
-      {
-         if(parent)
-            return parent.GetNoLineNumbers(prjConfig);
-      }
-      return noLineNumbers == true;
-   }
-
    property ProjectNode root { get { ProjectNode n; for(n = this; n.parent; n = n.parent); return n; } }
 
    property bool containsFile
@@ -529,11 +461,11 @@ private:
       ProjectNode node = null;
       ProjectConfig config = GetMatchingNodeConfig(prjConfig);
       List<ProjectNode> nodeStack { };
-      
+
       for(node = this; node && node.parent; node = node.parent)
          nodeStack.Add(node);
 
-      // Should we reverse this stack to give priority to the per-file includes? Does the following technique already reverse? 
+      // Should we reverse this stack to give priority to the per-file includes? Does the following technique already reverse?
 
       // TODO: Check how to fix duplication of following options when configuration is made per-config-per-file
       while((node = nodeStack.lastIterator.data))
@@ -1308,34 +1240,6 @@ private:
       return false;
    }
 
-   void GenFileFlags(File f, Project project, ProjectConfig prjConfig)
-   {
-      ProjectNode node = null;
-      List<ProjectNode> nodeStack { };
-      
-      for(node = this; node && node.parent; node = node.parent)
-         nodeStack.Add(node);
-
-      // Should we reverse this stack to give priority to the per-file includes?
-
-      while((node = nodeStack.lastIterator.data))
-      {
-         ProjectOptions nodeOptions = node.property::options;
-         ProjectConfig config = node.GetMatchingNodeConfig(prjConfig);
-         if(nodeOptions && nodeOptions.preprocessorDefinitions)
-            OutputListOption(f, "D", nodeOptions.preprocessorDefinitions, inPlace, false);
-         if(config && config.options && config.options.preprocessorDefinitions)
-            OutputListOption(f, "D", config.options.preprocessorDefinitions, inPlace, false);
-         if(nodeOptions && nodeOptions.includeDirs)
-            OutputListOption(f, "I", nodeOptions.includeDirs, inPlace, true);
-         if(config && config.options && config.options.includeDirs)
-            OutputListOption(f, "I", config.options.includeDirs, inPlace, true);
-
-         nodeStack.lastIterator.Remove();
-      }
-      delete nodeStack;
-   }
-
    void GenMakefileGetNameCollisionInfo(Map<String, NameCollisionInfo> namesInfo, ProjectConfig prjConfig)
    {
       if(type == file)
@@ -1489,7 +1393,8 @@ private:
    }
 
    void GenMakefilePrintSymbolRules(File f, Project project,
-         ProjectConfig prjConfig, Map<Platform, bool> parentExcludedPlatforms)
+         ProjectConfig prjConfig, Map<Platform, bool> parentExcludedPlatforms,
+         Map<int, int> nodeCFlagsMapping, Map<int, int> nodeECFlagsMapping)
    {
       int ifCount = 0;
       Array<Platform> platforms = GetPlatformsArrayFromExcluisionInfo(prjConfig);
@@ -1599,25 +1504,11 @@ private:
             */
 
             f.Printf("\t$(ECP)");
-            // Give priority to file flags
-            GenFileFlags(f, project, prjConfig);
 
-            f.Printf(" $(CECFLAGS)");
-            if(GetECFLAGS(prjConfig))
-            {
-               if(GetMemoryGuard(prjConfig))
-                  f.Printf(" -memguard");
-               if(GetStrictNameSpaces(prjConfig))
-                  f.Printf(" -strictns");
-               {
-                  char * s = GetDefaultNameSpace(prjConfig);
-                  if(s && s[0])
-                     f.Printf(" -defaultns %s", s);
-               }
-            }
-            else
-               f.Printf(" $(ECFLAGS)");
-            f.Printf(" $(CFLAGS)");
+            f.Printf(" $(CECFLAGS)"); // tocheck: what of this? should this stuff be per-file customized?
+
+            GenMakePrintNodeFlagsVariable(this, nodeECFlagsMapping, "ECFLAGS", f);
+            GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "CFLAGS", f);
 
             f.Printf(" -c %s%s.%s -o $(OBJ)%s.sym\n\n",
                modulePath, moduleName, extension, moduleName);
@@ -1648,7 +1539,8 @@ private:
                for(child : files)
                {
                   if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-                     child.GenMakefilePrintSymbolRules(f, project, prjConfig, excludedPlatforms);
+                     child.GenMakefilePrintSymbolRules(f, project, prjConfig, excludedPlatforms,
+                           nodeCFlagsMapping, nodeECFlagsMapping);
                }
             }
             CloseRulesPlatformExclusionIfs(f, ifCount);
@@ -1659,7 +1551,8 @@ private:
    }
 
    void GenMakefilePrintPrepecsRules(File f, Project project,
-         ProjectConfig prjConfig, Map<Platform, bool> parentExcludedPlatforms)
+         ProjectConfig prjConfig, Map<Platform, bool> parentExcludedPlatforms,
+         Map<int, int> nodeCFlagsMapping, Map<int, int> nodeECFlagsMapping)
    {
       int ifCount = 0;
       ProjectConfig config = GetMatchingNodeConfig(prjConfig);
@@ -1695,25 +1588,10 @@ private:
                modulePath, moduleName, extension, moduleName);*/
 
             f.Printf("\t$(CPP)");
-            // Give priority to file flags
-            GenFileFlags(f, project, prjConfig);
 
-            /*f.Printf(" $(CECFLAGS)");
-            if(GetECFLAGS(prjConfig))
-            {
-               if(GetMemoryGuard(prjConfig))
-                  f.Printf(" -memguard");
-               if(GetStrictNameSpaces(prjConfig))
-                  f.Printf(" -strictns");
-               {
-                  char * s = GetDefaultNameSpace(prjConfig);
-                  if(s && s[0])
-                     f.Printf(" -defaultns %s", s);
-               }
-            }
-            else
-               f.Printf(" $(ECFLAGS)");*/
-            f.Printf(" $(CFLAGS)");
+            //f.Printf(" $(CECFLAGS)");
+            //GenMakePrintNodeFlagsVariable(this, nodeECFlagsMapping, "ECFLAGS", f);
+            GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "CFLAGS", f);
 
             f.Printf(" -x c -E %s%s.%s -o $(OBJ)%s$(EC)\n\n",
                modulePath, moduleName, extension, moduleName);
@@ -1744,7 +1622,8 @@ private:
                for(child : files)
                {
                   if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-                     child.GenMakefilePrintPrepecsRules(f, project, prjConfig, excludedPlatforms);
+                     child.GenMakefilePrintPrepecsRules(f, project, prjConfig, excludedPlatforms,
+                           nodeCFlagsMapping, nodeECFlagsMapping);
                }
             }
             CloseRulesPlatformExclusionIfs(f, ifCount);
@@ -1755,7 +1634,8 @@ private:
    }
 
    void GenMakefilePrintCObjectRules(File f, Project project,
-      ProjectConfig prjConfig, Map<Platform, bool> parentExcludedPlatforms)
+      ProjectConfig prjConfig, Map<Platform, bool> parentExcludedPlatforms,
+      Map<int, int> nodeCFlagsMapping, Map<int, int> nodeECFlagsMapping)
    {
       int ifCount = 0;
       ProjectConfig config = GetMatchingNodeConfig(prjConfig);
@@ -1869,24 +1749,11 @@ private:
          */
 
             f.Printf("\t$(ECC)");
-            // Give priority to file flags
-            GenFileFlags(f, project, prjConfig);
-            if(GetECFLAGS(prjConfig))
-            {
-               f.Printf("%s $(CECFLAGS)", GetNoLineNumbers(prjConfig) ? " -nolinenumbers" : "");
-               if(GetMemoryGuard(prjConfig))
-                  f.Printf(" -memguard");
-               if(GetStrictNameSpaces(prjConfig))
-                  f.Printf(" -strictns");
-               {
-                  char * s = GetDefaultNameSpace(prjConfig);
-                  if(s && s[0])
-                     f.Printf(" -defaultns %s", s);
-               }
-            }
-            else
-               f.Printf(" $(CECFLAGS) $(ECFLAGS)");
-            f.Printf(" $(CFLAGS) $(FVISIBILITY)");
+
+            f.Printf(" $(CECFLAGS)"); // what of this? should this stuff be per-file customized?
+            GenMakePrintNodeFlagsVariable(this, nodeECFlagsMapping, "ECFLAGS", f);
+            GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "CFLAGS", f);
+            f.Printf(" $(FVISIBILITY)");
 
             f.Printf(" -c %s%s.%s -o $(OBJ)%s.c -symbols $(OBJ)\n\n",
                modulePath, moduleName, extension, moduleName);
@@ -1917,7 +1784,8 @@ private:
                for(child : files)
                {
                   if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-                     child.GenMakefilePrintCObjectRules(f, project, prjConfig, excludedPlatforms);
+                     child.GenMakefilePrintCObjectRules(f, project, prjConfig, excludedPlatforms,
+                           nodeCFlagsMapping, nodeECFlagsMapping);
                }
             }
             CloseRulesPlatformExclusionIfs(f, ifCount);
@@ -1930,7 +1798,8 @@ private:
    void GenMakefilePrintObjectRules(File f, Project project,
       Map<String, NameCollisionInfo> namesInfo,
       ProjectConfig prjConfig,
-      Map<Platform, bool> parentExcludedPlatforms)
+      Map<Platform, bool> parentExcludedPlatforms,
+      Map<int, int> nodeCFlagsMapping, Map<int, int> nodeECFlagsMapping)
    {
       int ifCount = 0;
       ProjectConfig config = GetMatchingNodeConfig(prjConfig);
@@ -2058,10 +1927,8 @@ private:
 #endif
             }
             f.Printf("\t$(%s)", (!strcmpi(extension, "cc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cxx")) ? "CXX" : "CC");
-            // Give priority to file flags
-            GenFileFlags(f, project, prjConfig);
 
-            f.Printf(" $(CFLAGS)");
+            GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "CFLAGS", f);
 
             if(!strcmpi(extension, "ec"))
                f.Printf(" $(FVISIBILITY) -c $(OBJ)%s.c -o $(OBJ)%s.o\n\n", moduleName, moduleName);
@@ -2093,7 +1960,8 @@ private:
                for(child : files)
                {
                   if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-                     child.GenMakefilePrintObjectRules(f, project, namesInfo, prjConfig, excludedPlatforms);
+                     child.GenMakefilePrintObjectRules(f, project, namesInfo, prjConfig, excludedPlatforms,
+                           nodeCFlagsMapping, nodeECFlagsMapping);
                }
             }
             CloseRulesPlatformExclusionIfs(f, ifCount);
@@ -2185,6 +2053,191 @@ private:
       }
    }
 
+   void GenMakeCollectAssignNodeFlags(ProjectConfig prjConfig, bool prjWithEcFiles,
+         Map<String, int> cflagsVariations, Map<int, int> nodeCFlagsMapping,
+         Map<String, int> ecflagsVariations, Map<int, int> nodeECFlagsMapping,
+         Map<Platform, ProjectOptions> parentByPlatformOptions)
+   {
+      Map<Platform, ProjectOptions> byPlatformOptions = parentByPlatformOptions;
+      if(type == file || type == folder || type == project)
+      {
+         bool hasPerNodeOptions = type == project;
+         if(!hasPerNodeOptions)
+         {
+            if(options && !options.isEmpty)
+               hasPerNodeOptions = true;
+            else if(configurations)
+            {
+               for(c : configurations)
+               {
+                  if(c.options && !c.options.isEmpty)
+                  {
+                     hasPerNodeOptions = true;
+                     break;
+                  }
+                  if(c.platforms)
+                  {
+                     for(p : c.platforms)
+                     {
+                        if(p.options && !p.options.isEmpty)
+                        {
+                           hasPerNodeOptions = true;
+                           break;
+                        }
+                     }
+                     if(hasPerNodeOptions)
+                        break;
+                  }
+               }
+            }
+            if(!hasPerNodeOptions && platforms)
+            {
+               for(p : platforms)
+               {
+                  if(p.options && !p.options.isEmpty)
+                  {
+                     hasPerNodeOptions = true;
+                     break;
+                  }
+               }
+            }
+
+         }
+         if(hasPerNodeOptions)
+         {
+            bool isEqual = false, isGreater = false;
+            ComplexComparison complexCmp;
+            DynamicString s;
+            Map<Platform, ProjectOptions> additionsByPlatformOptions { };
+            ProjectOptions platformsCommonOptions;
+            ProjectOptions byFileConfigPlatformProjectOptions;
+
+            DynamicString cflags { };
+            DynamicString ecflags { };
+
+            Platform platform;
+
+            byPlatformOptions = { };
+
+            for(platform = (Platform)1; platform < Platform::enumSize; platform++)
+            {
+               byFileConfigPlatformProjectOptions =
+                     BlendFileConfigPlatformProjectOptions(this, prjConfig, platform);
+               byPlatformOptions[platform] = byFileConfigPlatformProjectOptions;
+            }
+
+            CollectPlatformsCommonOptions(byPlatformOptions, &platformsCommonOptions);
+
+            byPlatformOptions[unknown] = platformsCommonOptions;
+
+            if(parentByPlatformOptions)
+            {
+               complexCmp = PlatformsOptionsGreaterEqual(byPlatformOptions,
+                     parentByPlatformOptions, additionsByPlatformOptions);
+               isGreater = complexCmp == greater;
+               isEqual = complexCmp == equal;
+            }
+
+            if(!isEqual)
+            {
+               if(!isGreater)
+               {
+                  // absolutely common stuff outside of platform only, stuff that can't be changed by platform
+                  cflags.concatf(" \\\n\t $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,)");
+               }
+
+               for(platform = (Platform)1; platform < Platform::enumSize; platform++)
+               {
+                  byFileConfigPlatformProjectOptions = isGreater ? additionsByPlatformOptions[platform] : byPlatformOptions[platform];
+                  s = { };
+                  GenCFlagsFromProjectOptions(byFileConfigPlatformProjectOptions, prjWithEcFiles, false, isGreater, s);
+                  if(s.count > 1)
+                     cflags.concatf(" \\\n\t $(if $(%s),%s,)", PlatformToMakefileTargetVariable(platform), (String)s);
+                  delete s;
+                  s = { };
+                  GenECFlagsFromProjectOptions(byFileConfigPlatformProjectOptions, prjWithEcFiles, s);
+                  if(s.count > 1)
+                     ecflags.concatf(" \\\n\t $(if $(%s),%s,)", PlatformToMakefileTargetVariable(platform), (String)s);
+                  delete s;
+               }
+
+               platformsCommonOptions = isGreater ? additionsByPlatformOptions[unknown] : byPlatformOptions[unknown];
+               s = { };
+               GenCFlagsFromProjectOptions(platformsCommonOptions, prjWithEcFiles, true, isGreater, s);
+               if(s.count > 1)
+                  cflags.concatf(isGreater ? "%s" : " \\\n\t%s", (String)s);
+               delete s;
+               s = { };
+               GenECFlagsFromProjectOptions(platformsCommonOptions, prjWithEcFiles, s);
+               if(s.count > 1)
+                  ecflags.concatf(" \\\n\t%s", (String)s);
+               delete s;
+
+               if(isGreater)
+               {
+                  cflags.concatf(" \\\n\t");
+                  DynStringPrintNodeFlagsVariable(parent, nodeCFlagsMapping, "CFLAGS", cflags);
+               }
+            }
+
+            additionsByPlatformOptions.Free();
+            delete additionsByPlatformOptions;
+
+            // output
+            {
+               if(isEqual)
+               {
+                  nodeCFlagsMapping[(int)this] = nodeCFlagsMapping[(int)parent];
+                  nodeECFlagsMapping[(int)this] = nodeECFlagsMapping[(int)parent];
+               }
+               else
+               {
+                  String s;
+                  int variationNum;
+
+                  variationNum = 1;
+                  if((s = cflags) && s[0] && !(variationNum = cflagsVariations[s]))
+                     cflagsVariations[s] = variationNum = cflagsVariations.count;
+                  nodeCFlagsMapping[(int)this] = variationNum;
+
+                  variationNum = 1;
+                  if((s = ecflags) && s[0] && !(variationNum = ecflagsVariations[s]))
+                     ecflagsVariations[s] = variationNum = ecflagsVariations.count;
+                  nodeECFlagsMapping[(int)this] = variationNum;
+               }
+            }
+
+            delete cflags;
+            delete ecflags;
+         }
+         else
+         {
+            // output
+            {
+               nodeCFlagsMapping[(int)this] = nodeCFlagsMapping[(int)parent];
+               nodeECFlagsMapping[(int)this] = nodeECFlagsMapping[(int)parent];
+            }
+         }
+
+      }
+      if(files)
+      {
+         for(child : files)
+         {
+            if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+               child.GenMakeCollectAssignNodeFlags(prjConfig, prjWithEcFiles,
+                     cflagsVariations, nodeCFlagsMapping, ecflagsVariations, nodeECFlagsMapping,
+                     byPlatformOptions);
+         }
+      }
+
+      if(byPlatformOptions != parentByPlatformOptions)
+      {
+         byPlatformOptions.Free();
+         delete byPlatformOptions;
+      }
+   }
+
    Array<Platform> GetPlatformsArrayFromExcluisionInfo(ProjectConfig prjConfig)
    {
       Array<Platform> platforms { };
@@ -2198,6 +2251,645 @@ private:
       delete exclusionInfo;
       return platforms;
    }
+}
+
+// the code in this function is closely matched to OptionsBox::Load
+// and accompanying derivations of OptionBox and their use of OptionSet,
+// OptionCheck, LoadOption and FinalizeLoading methods.
+// output changing modification should be mirrored in both implementations
+static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, ProjectConfig projectConfig, Platform platform)
+{
+   ProjectOptions output { };
+
+   // legend: e Element
+   //         o Option (of a ProjectOptions)
+   //         n Node (ProjectNode)
+   //         p Platform
+   //         u Utility (GenericOptionTools)
+
+   int e;
+   int o;
+   int priority = 0;
+   int includeDirsOption = OPTION(includeDirs);
+   ProjectNode n;
+   char * platformName = platform ? platform.OnGetString(0,0,0) : null;
+
+   Array<bool> optionConfigXplatformSet   { size = OPTION(postbuildCommands) };
+   Array<bool> optionDone                 { size = OPTION(postbuildCommands) };
+   Array<Array<String>> optionTempStrings { size = OPTION(postbuildCommands) };
+
+   GenericOptionTools<SetBool>              utilSetBool {
+      bool OptionCheck(ProjectOptions options, int option) {
+         return *(SetBool*)((byte *)options + option) == true;
+      }
+      void LoadOption(ProjectOptions options, int option, int priority, Array<Array<String>> optionTempStrings, ProjectOptions output) {
+         if(options && (*(SetBool*)((byte *)options + option) == true))
+            *(SetBool*)((byte *)output + option) = true;
+      }
+   };
+   GenericOptionTools<String>               utilString {
+      void LoadOption(ProjectOptions options, int option, int priority, Array<Array<String>> optionTempStrings, ProjectOptions output) {
+         String * string = (String*)((byte *)output + option);
+         if(*string) delete *string;
+         if(options)
+            *string = CopyString(*(String*)((byte *)options + option));
+      }
+   };
+   StringArrayOptionTools                   utilStringArrays {
+      mergeValues = true;
+      caseSensitive = true;
+      bool OptionCheck(ProjectOptions options, int option) {
+         String string = *(String*)((byte *)options + option);
+         return string && string[0];
+      }
+      bool OptionSet(ProjectOptions options, int option) {
+         Array<String> strings = *(Array<String>*)((byte *)options + option);
+         if(mergeValues && !configReplaces)
+            return strings && strings.count;
+         else
+            return strings != null;
+      }
+      void LoadOption(ProjectOptions options, int option, int priority, Array<Array<String>> optionTempStrings, ProjectOptions output) {
+         if(mergeValues)
+         {
+            Array<String> strings = options ? *((Array<String>*)((byte *)options + option) : null;
+            if(strings)
+            {
+               Array<String> tempStrings = optionTempStrings[option];
+               if(!tempStrings)
+                  optionTempStrings[option] = tempStrings = { };
+               for(s : strings)
+               {
+                  bool found = false;
+                  char priorityMark[3];
+                  if(priority)
+                     sprintf(priorityMark, "%02d\n", priority);
+                  for(i : tempStrings; !(caseSensitive ? strcmp : strcmpi)(i, s)) { found = true; break; }
+                  if(!found) tempStrings.Add(priority ? PrintString(priorityMark, s) : CopyString(s));
+               }
+            }
+         }
+         else
+         {
+            Array<String> * newStrings = (Array<String>*)((byte *)options + option);
+            Array<String> * strings = (Array<String>*)((byte *)output + option);
+            if(*strings) { strings->Free(); delete *strings; }
+            if(*newStrings && newStrings->count) { *strings = { }; strings->Copy((void*)*newStrings); }
+         }
+      }
+      void FinalizeLoading(int option, Array<Array<String>> optionTempStrings, ProjectOptions output) {
+         if(mergeValues)
+         {
+            Array<String> tempStrings = optionTempStrings[option];
+            Array<String> * strings = (Array<String>*)((byte *)output + option);
+            if(*strings) { strings->Free(); delete *strings; }
+            if(tempStrings && tempStrings.count) { *strings = { }; strings->Copy((void*)tempStrings); }
+            delete tempStrings;
+         }
+      }
+   };
+   GenericOptionTools<WarningsOption>       utilWarningsOption {
+      bool OptionCheck(ProjectOptions options, int option) {
+         WarningsOption value = *(WarningsOption*)((byte *)options + option);
+         return value && value != none;
+      }
+      void LoadOption(ProjectOptions options, int option, int priority, Array<Array<String>> optionTempStrings, ProjectOptions output) {
+         WarningsOption value = options ? *(WarningsOption*)((byte *)options + option) : (WarningsOption)0;
+         *(WarningsOption*)((byte *)output + option) = value;
+      }
+   };
+   GenericOptionTools<OptimizationStrategy> utilOptimizationStrategy {
+      bool OptionCheck(ProjectOptions options, int option) {
+         OptimizationStrategy value = *(OptimizationStrategy*)((byte *)options + option);
+         return value && value != none;
+      }
+      void LoadOption(ProjectOptions options, int option, int priority, Array<Array<String>> optionTempStrings, ProjectOptions output) {
+         OptimizationStrategy value = options ? *(OptimizationStrategy*)((byte *)options + option) : (OptimizationStrategy)0;
+         *(OptimizationStrategy*)((byte *)output + option) = value;
+      }
+   };
+   GenericOptionTools<BuildBitDepth>        utilBuildBitDepth {
+      bool OptionCheck(ProjectOptions options, int option) {
+         BuildBitDepth value = *(BuildBitDepth*)((byte *)options + option);
+         return value && value != all;
+      }
+      void LoadOption(ProjectOptions options, int option, int priority, Array<Array<String>> optionTempStrings, ProjectOptions output) {
+         BuildBitDepth value = options ? *(BuildBitDepth*)((byte *)options + option) : (BuildBitDepth)0;
+         *(BuildBitDepth*)((byte *)output + option) = value;
+      }
+   };
+
+   Map<int, GenericOptionTools> ot { };
+
+   // The following are compiler options
+
+   ot[OPTION(debug)] =                   utilSetBool;
+   ot[OPTION(memoryGuard)] =             utilSetBool;
+   ot[OPTION(profile)] =                 utilSetBool;
+   ot[OPTION(noLineNumbers)] =           utilSetBool;
+   ot[OPTION(strictNameSpaces)] =        utilSetBool;
+   ot[OPTION(fastMath)] =                utilSetBool;
+
+   ot[OPTION(defaultNameSpace)] =        utilString;
+
+   ot[OPTION(preprocessorDefinitions)] = utilStringArrays;
+   ot[OPTION(includeDirs)] =             utilStringArrays;
+
+   ot[OPTION(warnings)] =                utilWarningsOption;
+
+   ot[OPTION(optimization)] =            utilOptimizationStrategy;
+
+   ot[OPTION(buildBitDepth)] =           utilBuildBitDepth;
+
+   for(n = node; n; n = n.parent)
+   {
+      ProjectConfig nodeConfig = null;
+      if(n.parent)
+         priority++;
+      else
+         priority = 99;
+      if(projectConfig && n.configurations)
+      {
+         for(c : n.configurations; !strcmpi(c.name, projectConfig.name))
+         {
+            if(platform && c.platforms)
+            {
+               for(p : c.platforms; !strcmpi(p.name, platformName))
+               {
+                  for(uu : ot)
+                  {
+                     GenericOptionTools u = uu;
+                     o = &uu;
+                     if(!optionDone[o] && p.options && (u.mergeValues ? u.OptionCheck(p.options, o) : u.OptionSet(p.options, o)))
+                     {
+                        u.LoadOption(p.options, o, o == includeDirsOption ? priority : 0, optionTempStrings, output);
+                        if(!u.mergeValues) { u.FinalizeLoading(o, optionTempStrings, output); optionDone[o] = true; }
+                        optionConfigXplatformSet[o] = true;
+                     }
+                  }
+                  break;
+               }
+            }
+            nodeConfig = c;
+            break;
+         }
+      }
+      for(uu : ot)
+      {
+         GenericOptionTools u = uu;
+         o = &uu;
+         if(!optionDone[o])
+         {
+            if(platform && n.platforms && (!optionConfigXplatformSet[o] || !u.configReplaces))
+            {
+               for(p : n.platforms; !strcmpi(p.name, platformName))
+               {
+                  if(p.options && (u.mergeValues ? u.OptionCheck(p.options, o) : u.OptionSet(p.options, o)))
+                  {
+                     u.LoadOption(p.options, o, o == includeDirsOption ? priority : 0, optionTempStrings, output);
+                     if(!u.mergeValues) { u.FinalizeLoading(o, optionTempStrings, output); optionDone[o] = true; }
+                  }
+                  break;
+               }
+            }
+            if(!optionDone[o] && nodeConfig && nodeConfig.options &&
+                  ((u.mergeValues && !u.configReplaces) ?
+                        u.OptionCheck(nodeConfig.options, o) :
+                        u.OptionSet(nodeConfig.options, o)))
+            {
+               u.LoadOption(nodeConfig.options, o, o == includeDirsOption ? priority : 0, optionTempStrings, output);
+               if(!u.mergeValues || u.configReplaces) { u.FinalizeLoading(o, optionTempStrings, output); optionDone[o] = true; }
+            }
+            if(!optionDone[o])
+            {
+               if(n.options && (u.mergeValues ? u.OptionCheck(n.options, o) : u.OptionSet(n.options, o)))
+               {
+                  u.LoadOption(n.options, o, o == includeDirsOption ? priority : 0, optionTempStrings, output);
+                  if(!u.mergeValues) { u.FinalizeLoading(o, optionTempStrings, output); optionDone[o] = true; }
+               }
+               else if(!n.parent)
+               {
+                  u.LoadOption(null, o, o == includeDirsOption ? priority : 0, optionTempStrings, output);
+                  if(!u.mergeValues) { u.FinalizeLoading(o, optionTempStrings, output); optionDone[o] = true; }
+               }
+            }
+         }
+      }
+   }
+   for(uu : ot)
+   {
+      GenericOptionTools u = uu;
+      o = &uu;
+      if(!optionDone[o])
+         u.FinalizeLoading(o, optionTempStrings, output);
+   }
+
+   delete optionConfigXplatformSet;
+   delete optionDone;
+   delete optionTempStrings;
+
+   delete utilSetBool;
+   delete utilString;
+   delete utilStringArrays;
+   delete utilWarningsOption;
+   delete utilOptimizationStrategy;
+   delete utilBuildBitDepth;
+
+   delete ot;
+
+   return output;
+}
+
+static void CollectPlatformsCommonOptions(Map<Platform, ProjectOptions> byPlatformOptions, ProjectOptions * platformsCommonOptions)
+{
+   char * s;
+   int i;
+   ProjectOptions first;
+   ProjectOptions commonOptions;
+
+   Map<String, int> countIncludeDirs { };
+   Map<String, int> countPreprocessorDefinitions { };
+   Map<String, bool> commonIncludeDirs { };
+   Map<String, bool> commonPreprocessorDefinitions { };
+
+   for(options : byPlatformOptions) { first = options; break; }
+
+   *platformsCommonOptions = commonOptions = first.Copy();
+
+   if(commonOptions.includeDirs)
+      commonOptions.includeDirs.Free();
+   if(commonOptions.preprocessorDefinitions)
+      commonOptions.preprocessorDefinitions.Free();
+
+   for(options : byPlatformOptions)
+   {
+      if(options != first)
+      {
+         if(commonOptions.debug && options.debug != commonOptions.debug)
+            commonOptions.debug = unset;
+         if(commonOptions.memoryGuard && options.memoryGuard != commonOptions.memoryGuard)
+            commonOptions.memoryGuard = unset;
+         if(commonOptions.profile && options.profile != commonOptions.profile)
+            commonOptions.profile = unset;
+         if(commonOptions.noLineNumbers && options.noLineNumbers != commonOptions.noLineNumbers)
+            commonOptions.noLineNumbers = unset;
+         if(commonOptions.strictNameSpaces && options.strictNameSpaces != commonOptions.strictNameSpaces)
+            commonOptions.strictNameSpaces = unset;
+         if(commonOptions.fastMath && options.fastMath != commonOptions.fastMath)
+            commonOptions.fastMath = unset;
+
+         if(commonOptions.warnings && options.warnings != commonOptions.warnings)
+            commonOptions.warnings = unset;
+         if(commonOptions.optimization && options.optimization != commonOptions.optimization)
+            commonOptions.optimization = unset;
+         if(commonOptions.buildBitDepth && options.buildBitDepth != commonOptions.buildBitDepth)
+            commonOptions.buildBitDepth = all;
+
+         if(commonOptions.defaultNameSpace && strcmp(options.defaultNameSpace, commonOptions.defaultNameSpace))
+            delete commonOptions.defaultNameSpace;
+      }
+
+      CountSameNonEmptyOrNullStrings(options.includeDirs, countIncludeDirs);
+      CountSameNonEmptyOrNullStrings(options.preprocessorDefinitions, countPreprocessorDefinitions);
+   }
+
+   GetPlatformsCommonStrings(countIncludeDirs, byPlatformOptions.count,
+         commonIncludeDirs, commonOptions.includeDirs);
+   GetPlatformsCommonStrings(countPreprocessorDefinitions, byPlatformOptions.count,
+         commonPreprocessorDefinitions, commonOptions.preprocessorDefinitions);
+
+   for(options : byPlatformOptions)
+   {
+      if(options.debug && options.debug == commonOptions.debug)
+         options.debug = unset;
+      if(options.memoryGuard && options.memoryGuard == commonOptions.memoryGuard)
+         options.memoryGuard = unset;
+      if(options.profile && options.profile == commonOptions.profile)
+         options.profile = unset;
+      if(options.noLineNumbers && options.noLineNumbers == commonOptions.noLineNumbers)
+         options.noLineNumbers = unset;
+      if(options.strictNameSpaces && options.strictNameSpaces == commonOptions.strictNameSpaces)
+         options.strictNameSpaces = unset;
+      if(options.fastMath && options.fastMath == commonOptions.fastMath)
+         options.fastMath = unset;
+
+      if(options.warnings && options.warnings == commonOptions.warnings)
+         options.warnings = unset;
+      if(options.optimization && options.optimization == commonOptions.optimization)
+         options.optimization = unset;
+      if(options.buildBitDepth && options.buildBitDepth == commonOptions.buildBitDepth)
+         options.buildBitDepth = all;
+
+      if(options.defaultNameSpace && !strcmp(options.defaultNameSpace, commonOptions.defaultNameSpace))
+         delete options.defaultNameSpace;
+
+      RemovePlatformsCommonStrings(commonIncludeDirs, options.includeDirs);
+      RemovePlatformsCommonStrings(commonPreprocessorDefinitions, options.preprocessorDefinitions);
+   }
+
+   delete countIncludeDirs;
+   delete countPreprocessorDefinitions;
+   delete commonIncludeDirs;
+   delete commonPreprocessorDefinitions;
+}
+
+static ComplexComparison PlatformsOptionsGreaterEqual(Map<Platform, ProjectOptions> byPlatformOptions,
+      Map<Platform, ProjectOptions> parentByPlatformOptions,
+      Map<Platform, ProjectOptions> additionsByPlatformOptions)
+{
+   ComplexComparison result = equal;
+   ComplexComparison compare;
+   Platform platform;
+   for(platform = (Platform)0; platform < Platform::enumSize; platform++)
+   {
+      ProjectOptions additionalOptions;
+      additionsByPlatformOptions[platform] = { };
+      additionalOptions = additionsByPlatformOptions[platform];
+      compare = ExtractPlatformsOptionsAdditions(byPlatformOptions[platform], parentByPlatformOptions[platform], additionalOptions);
+      if(compare == greater && result == equal)
+         result = greater;
+      else if(compare == different)
+      {
+         result = different;
+         break;
+      }
+   }
+   return result;
+}
+
+static ComplexComparison ExtractPlatformsOptionsAdditions(ProjectOptions options, ProjectOptions parentOptions, ProjectOptions additionalOptions)
+{
+   ComplexComparison result = equal;
+   if(options.debug != parentOptions.debug ||
+         options.memoryGuard != parentOptions.memoryGuard ||
+         options.profile != parentOptions.profile ||
+         options.noLineNumbers != parentOptions.noLineNumbers ||
+         options.strictNameSpaces != parentOptions.strictNameSpaces ||
+         options.fastMath != parentOptions.fastMath ||
+         options.warnings != parentOptions.warnings ||
+         options.optimization != parentOptions.optimization ||
+         (options.defaultNameSpace != parentOptions.defaultNameSpace &&
+               strcmp(options.defaultNameSpace, parentOptions.defaultNameSpace)))
+      result = different;
+   else
+   {
+      if(!StringsAreSameOrMore(options.includeDirs, parentOptions.includeDirs, &additionalOptions.includeDirs) ||
+            !StringsAreSameOrMore(options.preprocessorDefinitions, parentOptions.preprocessorDefinitions, &additionalOptions.preprocessorDefinitions))
+         result = different;
+      if((additionalOptions.includeDirs && additionalOptions.includeDirs.count) ||
+            (additionalOptions.preprocessorDefinitions && additionalOptions.preprocessorDefinitions.count))
+         result = greater;
+   }
+   return result;
+}
+
+enum ComplexComparison { different/*, smaller*/, equal, greater };
+
+static bool StringsAreSameOrMore(Array<String> strings, Array<String> originals, Array<String> * additions)
+{
+   bool result = true;
+   if((!strings || !strings.count) && originals && originals.count)
+      result = false;
+   else if(strings && strings.count && (!originals || !originals.count))
+   {
+      if(!*additions)
+         *additions = { };
+      for(s : strings)
+         additions->Add(CopyString(s));
+   }
+   else if(strings && strings.count && originals && originals.count)
+   {
+      Map<String, String> map { };
+      MapIterator<String, bool> mit { map = map };
+      for(it : strings)
+      {
+         char * s = strstr(it, "\n");
+         s = s ? s+1 : it;
+         map[s] = it;
+      }
+      for(it : originals)
+      {
+         char * s = strstr(it, "\n");
+         s = s ? s+1 : it;
+         if(!mit.Index(s, false))
+         {
+            result = false;
+            break;
+         }
+         else
+            map[s] = null;
+      }
+      if(result)
+      {
+         if(!*additions)
+            *additions = { };
+         for(it : map)
+         {
+            if(it)
+               additions->Add(CopyString(it));
+         }
+      }
+      delete map;
+   }
+   return result;
+}
+
+static void CountSameNonEmptyOrNullStrings(Array<String> strings, Map<String, int> counts)
+{
+   if(strings)
+   {
+      for(it : strings)
+      {
+         char * s = it;
+         if(s && s[0])
+            counts[s]++;
+      }
+   }
+}
+
+static void GetPlatformsCommonStrings(Map<String, int> counts, int goodCount, Map<String, bool> common, Array<String> strings)
+{
+   for(it : counts)
+   {
+      int i = it;
+      if(i == goodCount)
+      {
+         char * s = &it;
+         strings.Add(CopyString(s));
+         common[s] = true;
+      }
+   }
+}
+
+static void RemovePlatformsCommonStrings(Map<String, bool> common, Array<String> strings)
+{
+   if(strings)
+   {
+      Array<String> tmp { };
+      MapIterator<String, bool> mit { map = common };
+      for(it : strings)
+      {
+         char * s = it;
+         if(!mit.Index(s, false))
+            tmp.Add(CopyString(s));
+      }
+      strings.Free();
+      if(tmp.count)
+      {
+         for(s : tmp)
+            strings.Add(CopyString(s));
+         tmp.Free();
+      }
+      delete tmp;
+   }
+}
+
+static void GenMakePrintNodeFlagsVariable(ProjectNode node, Map<int, int> nodeFlagsMapping, String variableName, File f)
+{
+   int customFlags;
+   customFlags = nodeFlagsMapping[(int)node];
+   if(customFlags > 1)
+      f.Printf(" $(CUSTOM%d_%s)", customFlags-1, variableName);
+   else
+      f.Printf(" $(%s)", variableName);
+}
+
+static void DynStringPrintNodeFlagsVariable(ProjectNode node, Map<int, int> nodeFlagsMapping, String variableName, DynamicString s)
+{
+   int customFlags;
+   customFlags = nodeFlagsMapping[(int)node];
+   if(customFlags > 1)
+      s.concatf(" $(CUSTOM%d_%s)", customFlags-1, variableName);
+   else
+      s.concatf(" $(%s)", variableName);
+}
+
+static void GenCFlagsFromProjectOptions(ProjectOptions options, bool prjWithEcFiles, bool commonOptions, bool isGreater, DynamicString s)
+{
+   if(!isGreater)
+   {
+      //if(gccCompiler)
+      {
+         if(options.optimization == speed || options.optimization == size ||
+               options.fastMath == true || options.debug == true)
+         {
+            if(options.debug != true)
+            {
+               s.concatf(" $(if $(DEBUG),");
+               s.concatf(" -g");
+               s.concatf(",");
+            }
+            switch(options.optimization)
+            {
+               case speed: s.concatf(" -O2"); break;
+               case size: s.concatf(" -Os"); break;
+            }
+            if(options.fastMath == true)
+               s.concatf(" -ffast-math");
+            if(options.debug == true)
+               s.concatf(" -g");
+            if(options.debug != true)
+               s.concatf(")");
+         }
+         else if(commonOptions)
+            s.concatf(" $(if $(DEBUG),-g)");
+         if(options.buildBitDepth || (commonOptions && prjWithEcFiles))
+            s.concatf(" %s", (!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? "$(FORCE_32_BIT)" : "$(FORCE_64_BIT)");
+         if(commonOptions)
+            s.concatf(" $(FPIC)");
+      }
+      switch(options.warnings)
+      {
+         case all: s.concatf(" -Wall"); break;
+         case none: s.concatf(" -w"); break;
+      }
+      if(options.profile)
+         s.concatf(" -pg");
+   }
+
+   if(options && options.preprocessorDefinitions)
+      ListOptionToDynamicString("D", options.preprocessorDefinitions, false, lineEach, "\t\t\t", false, s);
+   if(options && options.includeDirs)
+      ListOptionToDynamicString("I", options.includeDirs, true, lineEach, "\t\t\t", true, s);
+}
+
+static void GenECFlagsFromProjectOptions(ProjectOptions options, bool prjWithEcFiles, DynamicString s)
+{
+   if(options.memoryGuard == true)
+      s.concatf(" -memguard");
+   if(options.noLineNumbers == true)
+      s.concatf(" -nolinenumbers");
+   if(options.strictNameSpaces == true)
+      s.concatf(" -strictns");
+   if(options.defaultNameSpace && options.defaultNameSpace[0])
+      s.concatf(" -defaultns %s", options.defaultNameSpace);
+}
+
+static void ListOptionToDynamicString(char * option, Array<String> list, bool prioritize,
+      ListOutputMethod method, String newLineStart, bool noSpace, DynamicString s)
+{
+   if(list.count)
+   {
+      if(method == newLine)
+         s.concatf(" \\\n%s", newLineStart);
+      if(prioritize)
+      {
+         Map<String, int> sortedList { };
+         MapNode<String, int> mn;
+         for(item : list)
+            sortedList[item] = 1;
+         for(mn = sortedList.root.minimum; mn; mn = mn.next)
+         {
+            char * start = strstr(mn.key, "\n");
+            if(method == lineEach)
+               s.concatf(" \\\n%s", newLineStart);
+            s.concatf(" -%s", option);
+            if(noSpace)
+               StringNoSpaceToDynamicString(s, start ? start+1 : mn.key);
+            else
+               s.concat(start ? start+1 : mn.key);
+         }
+         delete sortedList;
+      }
+      else
+      {
+         for(item : list)
+         {
+            if(method == lineEach)
+               s.concatf(" \\\n%s", newLineStart);
+            s.concatf(" -%s", option);
+            if(noSpace)
+               StringNoSpaceToDynamicString(s, item);
+            else
+               s.concat(item);
+         }
+      }
+   }
+}
+
+class GenericOptionTools<class X>
+{
+   bool mergeValues, configReplaces;
+
+   virtual bool OptionSet(ProjectOptions options, int option) {
+      if(*(X*)((byte *)options + option))
+         return true;
+      return false;
+   }
+
+   // BUG: OptionCheck = OptionSet; // Overrides derived classes OptionCheck ?
+
+   virtual bool OptionCheck(ProjectOptions options, int option) {
+      return OptionSet(options, option);
+   }
+
+   virtual void LoadOption(ProjectOptions options, int option, int priority, Array<Array<String>> optionTempStrings, ProjectOptions output);
+   virtual void FinalizeLoading(int option, Array<Array<String>> optionTempStrings, ProjectOptions output);
+}
+
+class StringArrayOptionTools : GenericOptionTools<Array<String>>
+{
+   bool caseSensitive;
 }
 
 class NameCollisionInfo

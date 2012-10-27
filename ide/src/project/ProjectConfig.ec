@@ -353,6 +353,32 @@ public:
       };
    }
 
+#ifdef _DEBUG
+   void print()
+   {
+      PrintLn("warnings:", warnings);
+      PrintLn("debug:", debug);
+      PrintLn("memoryGuard:", memoryGuard);
+      PrintLn("profile:", profile);
+      //PrintLn("noLineNumbers:", noLineNumbers);
+      PrintLn("optimization:", optimization);
+
+      //...
+      //PrintLn("dddddddd:", dddddddd);
+
+      PrintLn("buildBitDepth:", buildBitDepth);
+      PrintLn("fastMath:", fastMath);
+
+      PrintLn("preprocessorDefinitions:", preprocessorDefinitions);
+      PrintLn("includeDirs:", includeDirs);
+
+      //...
+      //PrintLn("dddddddd:", dddddddd);
+
+      PrintLn("");
+   }
+#endif
+
    ~ProjectOptions()
    {
       if(preprocessorDefinitions) { preprocessorDefinitions.Free(); delete preprocessorDefinitions; }

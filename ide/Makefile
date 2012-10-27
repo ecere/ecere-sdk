@@ -19,6 +19,7 @@ OBJECTS = \
 	$(OBJ)FileSystemIterator.o \
 	$(OBJ)layout.o \
 	$(OBJ)StringsBox.o \
+	$(OBJ)DynamicString.o \
 	$(OBJ)ActiveCompilerDialog.o \
 	$(OBJ)CompilersDetectionDialog.o \
 	$(OBJ)FindInFilesDialog.o \
@@ -66,6 +67,7 @@ COBJECTS = \
 	$(OBJ)FileSystemIterator.c \
 	$(OBJ)layout.c \
 	$(OBJ)StringsBox.c \
+	$(OBJ)DynamicString.c \
 	$(OBJ)ActiveCompilerDialog.c \
 	$(OBJ)CompilersDetectionDialog.c \
 	$(OBJ)FindInFilesDialog.c \
@@ -113,6 +115,7 @@ SYMBOLS1 = \
 	$(OBJ)FileSystemIterator.sym \
 	$(OBJ)layout.sym \
 	$(OBJ)StringsBox.sym \
+	$(OBJ)DynamicString.sym \
 	$(OBJ)ActiveCompilerDialog.sym \
 	$(OBJ)CompilersDetectionDialog.sym \
 	$(OBJ)FindInFilesDialog.sym \
@@ -161,6 +164,7 @@ IMPORTS1 = \
 	$(OBJ)FileSystemIterator.imp \
 	$(OBJ)layout.imp \
 	$(OBJ)StringsBox.imp \
+	$(OBJ)DynamicString.imp \
 	$(OBJ)ActiveCompilerDialog.imp \
 	$(OBJ)CompilersDetectionDialog.imp \
 	$(OBJ)FindInFilesDialog.imp \
@@ -208,6 +212,7 @@ SOURCES = \
 	../extras/FileSystemIterator.ec \
 	../extras/gui/layout.ec \
 	../extras/gui/controls/StringsBox.ec \
+	../extras/types/DynamicString.ec \
 	src/dialogs/ActiveCompilerDialog.ec \
 	src/dialogs/CompilersDetectionDialog.ec \
 	src/dialogs/FindInFilesDialog.ec \
@@ -426,6 +431,9 @@ $(OBJ)layout.sym: ../extras/gui/layout.ec
 $(OBJ)StringsBox.sym: ../extras/gui/controls/StringsBox.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.sym
 
+$(OBJ)DynamicString.sym: ../extras/types/DynamicString.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/types/DynamicString.ec -o $(OBJ)DynamicString.sym
+
 $(OBJ)ActiveCompilerDialog.sym: src/dialogs/ActiveCompilerDialog.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/dialogs/ActiveCompilerDialog.ec -o $(OBJ)ActiveCompilerDialog.sym
 
@@ -560,6 +568,9 @@ $(OBJ)layout.c: ../extras/gui/layout.ec $(OBJ)layout.sym | $(SYMBOLS)
 $(OBJ)StringsBox.c: ../extras/gui/controls/StringsBox.ec $(OBJ)StringsBox.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.c -symbols $(OBJ)
 
+$(OBJ)DynamicString.c: ../extras/types/DynamicString.ec $(OBJ)DynamicString.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/types/DynamicString.ec -o $(OBJ)DynamicString.c -symbols $(OBJ)
+
 $(OBJ)ActiveCompilerDialog.c: src/dialogs/ActiveCompilerDialog.ec $(OBJ)ActiveCompilerDialog.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/dialogs/ActiveCompilerDialog.ec -o $(OBJ)ActiveCompilerDialog.c -symbols $(OBJ)
 
@@ -693,6 +704,9 @@ $(OBJ)layout.o: $(OBJ)layout.c
 
 $(OBJ)StringsBox.o: $(OBJ)StringsBox.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)StringsBox.c -o $(OBJ)StringsBox.o
+
+$(OBJ)DynamicString.o: $(OBJ)DynamicString.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DynamicString.c -o $(OBJ)DynamicString.o
 
 $(OBJ)ActiveCompilerDialog.o: $(OBJ)ActiveCompilerDialog.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ActiveCompilerDialog.c -o $(OBJ)ActiveCompilerDialog.o

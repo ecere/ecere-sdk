@@ -248,6 +248,9 @@ class ProjectSettings : Window
 
 // TOFIX: USING T INSTEAD OF Z HERE CAUSED US SOME CONFLICTS WITH T IN Array TEMPLATES
 
+// the BlendFileConfigPlatformProjectOptions function and the GenericOptionTools class
+// contain code that is closely matched to the following code
+// output changing modification should be mirrored in both implementations
 class OptionBox<class Z> : CommonControl
 {
    bool mergeValues, configReplaces;
@@ -413,7 +416,7 @@ class OptionBox<class Z> : CommonControl
    {
       return OptionSet(options);
    }
-   
+
    void MarkBuildTabModified()
    {
       BuildTab buildTab = (BuildTab)master;

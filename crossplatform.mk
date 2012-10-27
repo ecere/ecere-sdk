@@ -232,6 +232,11 @@ endif
 
 _L = $(if $(filter $(1),$(EXCLUDED_LIBS)),,-l$(1))
 
+# DEBIAN
+ifdef DEBIAN_PACKAGE
+OFLAGS += $(LDFLAGS)
+endif
+
 # COMMON LIBRARIES DETECTION
 
 ifdef WINDOWS_TARGET

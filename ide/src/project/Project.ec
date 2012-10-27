@@ -4,6 +4,8 @@ public import static "ecere"
 public import "ecere"
 #endif
 
+import "DynamicString"
+
 #ifndef MAKEFILE_GENERATOR
 import "ide"
 // We should have the .sln/.vcproj generation even on other platforms
@@ -553,6 +555,14 @@ void OutputListOption(File f, char * option, Array<String> list, ListOutputMetho
    }
 }
 
+void StringNoSpaceToDynamicString(DynamicString s, char * path)
+{
+   char * output = new char[strlen(path)+1024];
+   ReplaceSpaces(output, path);
+   s.concat(output);
+   delete output;
+}
+
 static void OutputLibraries(File f, Array<String> libraries)
 {
    for(item : libraries)
@@ -664,13 +674,12 @@ define platformTargetType =
                projectPOs.options.targetType : TargetTypes::unset;
 
 
-// we should have some kind of direct mapping between a platform and it's makefile variable
-char * PlatformToMakefileVariable(Platform platform)
+char * PlatformToMakefileTargetVariable(Platform platform)
 {
-   return platform == win32 ? "WINDOWS" :
-          platform == tux   ? "LINUX"   :
-          platform == apple ? "OSX"     :
-                              platform;
+   return platform == win32 ? "WINDOWS_TARGET" :
+          platform == tux   ? "LINUX_TARGET"   :
+          platform == apple ? "OSX_TARGET"     :
+                              "ERROR_BAD_TARGET";
 }
 
 char * TargetTypeToMakefileVariable(TargetTypes targetType)
@@ -685,14 +694,6 @@ char * TargetTypeToMakefileVariable(TargetTypes targetType)
 char * GetConfigName(ProjectConfig config)
 {
    return config ? config.name : "Common";
-}
-
-char * PlatformToMakefileTargetVariable(Platform platform)
-{
-   return platform == win32 ? "WINDOWS_TARGET" :
-          platform == tux   ? "LINUX_TARGET"   :
-          platform == apple ? "OSX_TARGET"     :
-                              "ERROR_BAD_TARGET";
 }
 
 class Project : struct
@@ -2128,8 +2129,8 @@ private:
                OutputListOption(f, "Wl,", compiler.linkerFlags, inPlace, true);
                f.Printf("\n");
             }
-            f.Printf("\nFORCE_64_BIT = %s", compiler.supportsBitDepth ? "-m64" : "");
-            f.Printf("\nFORCE_32_BIT = %s", compiler.supportsBitDepth ? "-m32" : "");
+            f.Printf("\nFORCE_64_BIT := %s", compiler.supportsBitDepth ? "-m64" : "");
+            f.Printf("\nFORCE_32_BIT := %s", compiler.supportsBitDepth ? "-m32" : "");
             f.Printf("\n");
 
             delete f;
@@ -2190,6 +2191,12 @@ private:
          Map<String, NameCollisionInfo> namesInfo { };
          bool forceBitDepth = false;
 
+         Map<String, int> cflagsVariations { };
+         Map<int, int> nodeCFlagsMapping { };
+
+         Map<String, int> ecflagsVariations { };
+         Map<int, int> nodeECFlagsMapping { };
+
          ReplaceSpaces(objDirNoSpaces, objDirExp);
          strcpy(targetDir, GetTargetDirExpression(config));
          ReplaceSpaces(targetDirExpNoSpaces, targetDir);
@@ -2233,24 +2240,7 @@ private:
          f.Printf("_CF_DIR = %s\n", cfDir);
          f.Printf("\n");
 
-         f.Printf("ifndef DEBUG\n");
-         f.Printf("OPTIMIZE :=");
-         switch(GetOptimization(config))
-         {
-            case speed:
-               f.Printf(" -O2");
-               break;
-            case size:
-               f.Printf(" -Os");
-               break;
-         }
-         if(GetFastMath(config))
-            f.Printf(" -ffast-math");
-         if(GetDebug(config))
-            f.Printf(" -g");
-         f.Printf("\n");
-         f.Printf("else\n");
-         f.Printf("OPTIMIZE := -g\n");
+         f.Printf("ifdef DEBUG\n");
          f.Printf("NOSTRIP := y\n");
          f.Printf("endif\n");
 
@@ -2297,9 +2287,11 @@ private:
 
          f.Printf("# FLAGS\n\n");
 
-         f.Printf("CFLAGS =\n");
-         f.Printf("CECFLAGS =\n");
          f.Printf("ECFLAGS =\n");
+         f.Printf("ifndef DEBIAN_PACKAGE\n");
+         f.Printf("CFLAGS =\n");
+         f.Printf("endif\n");
+         f.Printf("CECFLAGS =\n");
          f.Printf("OFLAGS =\n");
          f.Printf("LDFLAGS =\n");
          f.Printf("LIBS =\n");
@@ -2314,10 +2306,6 @@ private:
          f.Printf("# VARIABLES\n\n");
 
          f.Printf("OBJ = %s%s\n\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
-
-         f.Printf("ifdef DEBUG\n");
-         f.Printf("CFLAGS += -D_DEBUG\n");
-         f.Printf("endif\n\n");
 
          f.Printf("RES = %s%s\n\n", resDirNoSpaces, resDirNoSpaces[0] ? "/" : "");
 
@@ -2430,6 +2418,13 @@ private:
             f.Printf("\n");
          }
 
+         topNode.GenMakeCollectAssignNodeFlags(config, numCObjects,
+               cflagsVariations, nodeCFlagsMapping,
+               ecflagsVariations, nodeECFlagsMapping, null);
+
+         GenMakePrintCustomFlags(f, "CFLAGS", false, cflagsVariations);
+         GenMakePrintCustomFlags(f, "ECFLAGS", true, ecflagsVariations);
+
          if(platforms || (config && config.platforms))
          {
             ifCount = 0;
@@ -2450,12 +2445,11 @@ private:
                   f.Printf("ifdef %s\n", PlatformToMakefileTargetVariable(platform));
                   f.Printf("\n");
 
-                  if((projectPlatformOptions && projectPlatformOptions.options.preprocessorDefinitions && projectPlatformOptions.options.preprocessorDefinitions.count) ||
-                     (configPlatformOptions && configPlatformOptions.options.preprocessorDefinitions && configPlatformOptions.options.preprocessorDefinitions.count) ||
-                     (projectPlatformOptions && projectPlatformOptions.options.includeDirs && projectPlatformOptions.options.includeDirs.count) ||
-                     (configPlatformOptions && configPlatformOptions.options.includeDirs && configPlatformOptions.options.includeDirs.count))
+                  if((projectPlatformOptions && projectPlatformOptions.options.linkerOptions && projectPlatformOptions.options.linkerOptions.count) ||
+                     (configPlatformOptions && configPlatformOptions.options.linkerOptions && configPlatformOptions.options.linkerOptions.count))
                   {
                      f.Printf("CFLAGS +=");
+                     // tocheck: does any of that -Wl stuff from linkerOptions have any business being in CFLAGS?
                      if(projectPlatformOptions && projectPlatformOptions.options.linkerOptions && projectPlatformOptions.options.linkerOptions.count)
                      {
                         f.Printf(" \\\n\t -Wl");
@@ -2468,14 +2462,6 @@ private:
                         for(s : configPlatformOptions.options.linkerOptions)
                            f.Printf(",%s", s);
                      }
-                     if(projectPlatformOptions && projectPlatformOptions.options.preprocessorDefinitions)
-                        OutputListOption(f, "D", projectPlatformOptions.options.preprocessorDefinitions, newLine, false);
-                     if(configPlatformOptions && configPlatformOptions.options.preprocessorDefinitions)
-                        OutputListOption(f, "D", configPlatformOptions.options.preprocessorDefinitions, newLine, false );
-                     if(configPlatformOptions && configPlatformOptions.options.includeDirs)
-                        OutputListOption(f, "I", configPlatformOptions.options.includeDirs, lineEach, true);
-                     if(projectPlatformOptions && projectPlatformOptions.options.includeDirs)
-                        OutputListOption(f, "I", projectPlatformOptions.options.includeDirs, lineEach, true);
                      f.Printf("\n\n");
                   }
 
@@ -2526,58 +2512,22 @@ private:
             f.Printf("\n");
          }
 
-         f.Printf("CFLAGS +=");
-         //if(gccCompiler)
-         {
-            f.Printf(" $(OPTIMIZE)");
-            forceBitDepth = (options && options.buildBitDepth) || numCObjects;
-            if(forceBitDepth)
-               f.Printf(" %s",(!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? "$(FORCE_32_BIT)" : "$(FORCE_64_BIT)");
-            f.Printf(" $(FPIC)");
-         }
-         switch(GetWarnings(config))
-         {
-            case all: f.Printf(" -Wall"); break;
-            case none: f.Printf(" -w"); break;
-         }
-         if(GetProfile(config))
-            f.Printf(" -pg");
+         // tocheck: does any of that -Wl stuff from linkerOptions have any business being in CFLAGS?
          if(options && options.linkerOptions && options.linkerOptions.count)
          {
+            f.Printf("CFLAGS +=");
             f.Printf(" \\\n\t -Wl");
             for(s : options.linkerOptions)
                f.Printf(",%s", s);
          }
-
-         if(options && options.preprocessorDefinitions)
-            OutputListOption(f, "D", options.preprocessorDefinitions, newLine, false);
-         if(config && config.options && config.options.preprocessorDefinitions)
-            OutputListOption(f, "D", config.options.preprocessorDefinitions, newLine, false);
-         if(config && config.options && config.options.includeDirs)
-            OutputListOption(f, "I", config.options.includeDirs, lineEach, true);
-         if(options && options.includeDirs)
-            OutputListOption(f, "I", options.includeDirs, lineEach, true);
          f.Printf("\n\n");
 
          f.Printf("CECFLAGS += -cpp $(call escspace,$(CPP)) -t $(TARGET_PLATFORM)");
          f.Printf("\n\n");
 
-         f.Printf("ECFLAGS +=");
-         if(GetMemoryGuard(config))
-            f.Printf(" -memguard");
-         if(GetStrictNameSpaces(config))
-            f.Printf(" -strictns");
-         if(GetNoLineNumbers(config))
-            f.Printf(" -nolinenumbers");
-         {
-            char * s;
-            if((s = GetDefaultNameSpace(config)) && s[0])
-               f.Printf(" -defaultns %s", s);
-         }
-         f.Printf("\n\n");
-
          f.Printf("ifneq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(staticLibrary));
          f.Printf("OFLAGS +=");
+         forceBitDepth = (options && options.buildBitDepth) || numCObjects;
          if(forceBitDepth)
             f.Printf((!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? " $(FORCE_32_BIT)" : " $(FORCE_64_BIT) \\\n");
 
@@ -2624,7 +2574,7 @@ private:
                      f.Printf("else\n");
                   ifCount++;
                   f.Printf("ifdef ");
-                  f.Printf(PlatformToMakefileVariable(platform));
+                  f.Printf(PlatformToMakefileTargetVariable(platform));
                   f.Printf("\n");
 
                   if(projectPOs && projectPOs.options.prebuildCommands && projectPOs.options.prebuildCommands.count)
@@ -2733,7 +2683,7 @@ private:
                      f.Printf("else\n");
                   ifCount++;
                   f.Printf("ifdef ");
-                  f.Printf(PlatformToMakefileVariable(platform));
+                  f.Printf(PlatformToMakefileTargetVariable(platform));
                   f.Printf("\n");
 
                   if(projectPOs && projectPOs.options.postbuildCommands && projectPOs.options.postbuildCommands.count)
@@ -2760,14 +2710,16 @@ private:
          f.Printf("# SYMBOL RULES\n\n");
          {
             Map<Platform, bool> excludedPlatforms { };
-            topNode.GenMakefilePrintSymbolRules(f, this, config, excludedPlatforms);
+            topNode.GenMakefilePrintSymbolRules(f, this, config, excludedPlatforms,
+                  nodeCFlagsMapping, nodeECFlagsMapping);
             delete excludedPlatforms;
          }
 
          f.Printf("# C OBJECT RULES\n\n");
          {
             Map<Platform, bool> excludedPlatforms { };
-            topNode.GenMakefilePrintCObjectRules(f, this, config, excludedPlatforms);
+            topNode.GenMakefilePrintCObjectRules(f, this, config, excludedPlatforms,
+                  nodeCFlagsMapping, nodeECFlagsMapping);
             delete excludedPlatforms;
          }
 
@@ -2776,7 +2728,8 @@ private:
          // see we-have-file-specific-options in ProjectNode.ec
          {
             Map<Platform, bool> excludedPlatforms { };
-            topNode.GenMakefilePrintObjectRules(f, this, namesInfo, config, excludedPlatforms);
+            topNode.GenMakefilePrintObjectRules(f, this, namesInfo, config, excludedPlatforms,
+                  nodeCFlagsMapping, nodeECFlagsMapping);
             delete excludedPlatforms;
          }
 
@@ -2809,6 +2762,11 @@ private:
          delete varStringLenDiffs;
          namesInfo.Free();
          delete namesInfo;
+
+         delete cflagsVariations;
+         delete nodeCFlagsMapping;
+         delete ecflagsVariations;
+         delete nodeECFlagsMapping;
 
          result = true;
       }
@@ -2913,6 +2871,28 @@ private:
 #endif
 
       f.Printf("\t$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.%s -o $(OBJ)$(MODULE).main$(O)\n\n", extension);
+   }
+
+   void GenMakePrintCustomFlags(File f, String variableName, bool printNonCustom, Map<String, int> cflagsVariations)
+   {
+      int c;
+      for(c = printNonCustom ? 0 : 1; c <= cflagsVariations.count; c++)
+      {
+         for(v : cflagsVariations)
+         {
+            if(v == c)
+            {
+               if(v == 1)
+                  f.Printf("%s +=", variableName);
+               else
+                  f.Printf("CUSTOM%d_%s =", v-1, variableName);
+               f.Puts(&v ? &v : "");
+               f.Puts("\n\n");
+               break;
+            }
+         }
+      }
+      f.Printf("\n");
    }
 
    void MatchProjectAndConfigPlatformOptions(ProjectConfig config, Platform platform,

@@ -22,6 +22,7 @@ OBJECTS = \
 	$(OBJ)IDESettings.o \
 	$(OBJ)OldIDESettings.o \
 	$(OBJ)StringsBox.o \
+	$(OBJ)DynamicString.o \
 	$(OBJ)epj2make.o \
 	$(OBJ)$(MODULE).main$(O)
 
@@ -32,6 +33,7 @@ COBJECTS = \
 	$(OBJ)IDESettings.c \
 	$(OBJ)OldIDESettings.c \
 	$(OBJ)StringsBox.c \
+	$(OBJ)DynamicString.c \
 	$(OBJ)epj2make.c
 
 SYMBOLS = \
@@ -41,6 +43,7 @@ SYMBOLS = \
 	$(OBJ)IDESettings.sym \
 	$(OBJ)OldIDESettings.sym \
 	$(OBJ)StringsBox.sym \
+	$(OBJ)DynamicString.sym \
 	$(OBJ)epj2make.sym
 
 IMPORTS = \
@@ -50,6 +53,7 @@ IMPORTS = \
 	$(OBJ)IDESettings.imp \
 	$(OBJ)OldIDESettings.imp \
 	$(OBJ)StringsBox.imp \
+	$(OBJ)DynamicString.imp \
 	$(OBJ)epj2make.imp
 
 SOURCES = \
@@ -59,6 +63,7 @@ SOURCES = \
 	../ide/src/IDESettings.ec \
 	../ide/src/OldIDESettings.ec \
 	../extras/gui/controls/StringsBox.ec \
+	../extras/types/DynamicString.ec \
 	epj2make.ec
 
 RESOURCES = \
@@ -157,6 +162,9 @@ $(OBJ)OldIDESettings.sym: ../ide/src/OldIDESettings.ec
 $(OBJ)StringsBox.sym: ../extras/gui/controls/StringsBox.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.sym
 
+$(OBJ)DynamicString.sym: ../extras/types/DynamicString.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/types/DynamicString.ec -o $(OBJ)DynamicString.sym
+
 $(OBJ)epj2make.sym: epj2make.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c epj2make.ec -o $(OBJ)epj2make.sym
 
@@ -180,6 +188,9 @@ $(OBJ)OldIDESettings.c: ../ide/src/OldIDESettings.ec $(OBJ)OldIDESettings.sym | 
 $(OBJ)StringsBox.c: ../extras/gui/controls/StringsBox.ec $(OBJ)StringsBox.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.c -symbols $(OBJ)
 
+$(OBJ)DynamicString.c: ../extras/types/DynamicString.ec $(OBJ)DynamicString.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/types/DynamicString.ec -o $(OBJ)DynamicString.c -symbols $(OBJ)
+
 $(OBJ)epj2make.c: epj2make.ec $(OBJ)epj2make.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c epj2make.ec -o $(OBJ)epj2make.c -symbols $(OBJ)
 
@@ -202,6 +213,9 @@ $(OBJ)OldIDESettings.o: $(OBJ)OldIDESettings.c
 
 $(OBJ)StringsBox.o: $(OBJ)StringsBox.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)StringsBox.c -o $(OBJ)StringsBox.o
+
+$(OBJ)DynamicString.o: $(OBJ)DynamicString.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DynamicString.c -o $(OBJ)DynamicString.o
 
 $(OBJ)epj2make.o: $(OBJ)epj2make.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)epj2make.c -o $(OBJ)epj2make.o

@@ -18,7 +18,6 @@ UPX := upx
 # DEBIAN
 ifdef DEBIAN_PACKAGE
 CFLAGS += $(CPPFLAGS)
-OFLAGS += $(LDFLAGS)
 endif
 
 ifeq "$(HOST_ARCH)" "ARM"
