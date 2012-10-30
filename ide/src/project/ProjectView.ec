@@ -621,7 +621,7 @@ class ProjectView : Window
          exists = FileExists(makefilePath);
          if(method == force ||
            (method == forceExists && exists) ||
-           (method == normal && (!exists || config.makingModified)) )
+           (method == normal && (!exists || (config && config.makingModified))))
          {
             char * reason;
             char * action;

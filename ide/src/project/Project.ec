@@ -1357,7 +1357,7 @@ private:
       int compilingEC = 0;
       int numErrors = 0, numWarnings = 0;
       bool loggedALine = false;
-      char * configName = config.name;
+      char * configName = config ? config.name : "Common";
       int lenMakeCommand = strlen(compiler.makeCommand);
 
       char cppCommand[MAX_LOCATION];
