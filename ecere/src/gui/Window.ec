@@ -498,7 +498,12 @@ private:
 
    Window()
    {
-      if(guiApp) guiApp.Initialize(true);
+      bool switchMode = true;
+#if defined(__ANDROID__)
+      switchMode = false;
+#endif
+      if(guiApp)
+         guiApp.Initialize(switchMode);
 
       if(guiApp && guiApp.currentSkin && ((subclass(Window))_class).pureVTbl)
       {
@@ -4820,11 +4825,6 @@ private:
       Window child;
       WindowState stateBackup = state;
 
-      /*
-      if(!rootWindow.created)
-         printf("");
-      */
-      
       if(((subclass(Window))_class).pureVTbl)
       {
          if(_vTbl == _class._vTbl)

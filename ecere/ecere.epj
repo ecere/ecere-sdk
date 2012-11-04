@@ -326,6 +326,7 @@
       {
          "Name" : "Android",
          "Options" : {
+            "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ECERE_NOFONTCONFIG"
             ],
@@ -1740,6 +1741,17 @@
                                  ]
                               }
                            ]
+                        },
+                        {
+                           "FileName" : "AndroidInterface.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "Android",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
                         }
                      ],
                      "Options" : {
@@ -2173,6 +2185,34 @@
                      ]
                   }
                ]
+            }
+         ]
+      },
+      {
+         "FileName" : "C:/Windows/Fonts/tahoma.ttf",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         },
+         "Configurations" : [
+            {
+               "Name" : "Android",
+               "Options" : {
+                  "ExcludeFromBuild" : false
+               }
+            }
+         ]
+      },
+      {
+         "FileName" : "C:/Windows/Fonts/tahomabd.ttf",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         },
+         "Configurations" : [
+            {
+               "Name" : "Android",
+               "Options" : {
+                  "ExcludeFromBuild" : false
+               }
             }
          ]
       }

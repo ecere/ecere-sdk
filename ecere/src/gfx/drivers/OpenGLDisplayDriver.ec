@@ -354,12 +354,487 @@ static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
 
 #else
 
+#if defined(__ANDROID__)
+
+// OpenGL ES Porting Kit
+
+#define glBindFramebuffer        glBindFramebufferOES
+#define glBindRenderbuffer       glBindRenderbufferOES
+#define GL_FRAMEBUFFER           GL_FRAMEBUFFER_OES
+#define GL_RENDERBUFFER          GL_RENDERBUFFER_OES
+#define glFramebufferTexture2D   glFramebufferTexture2DOES
+#define GL_COLOR_ATTACHMENT0     GL_COLOR_ATTACHMENT0_OES
+#define glGenFramebuffers        glGenFramebuffersOES
+#define glGenRenderbuffers       glGenRenderbuffersOES
+#define glDeleteFramebuffers     glDeleteFramebuffersOES
+#define glDeleteRenderbuffers    glDeleteRenderbuffersOES
+
+#define GL_POLYGON_STIPPLE 0xFFFF
+#define GL_LINE_STIPPLE 0xFFFF
+#define GL_LINE 0xFFFF
+#define GL_FILL 0xFFFF
+#define GL_ALL_ATTRIB_BITS 0xFFFF
+#define GL_LIGHT_MODEL_LOCAL_VIEWER 0xFFFF
+#define glDrawElementsi(type, count, start)  glDrawElements(type, count, GL_UNSIGNED_SHORT, start)
+
+#define GL_POLYGON      9
+#define GL_QUADS        7
+
+#define glBufferDatai         glesBufferDatai
+#define glBufferDatad         glesBufferDatad
+#define glVertexPointeri      glesVertexPointeri
+#define glVertexPointerd      glesVertexPointerd
+
+#define glRecti               glesRecti
+#define glBegin               glesBegin
+#define glTexCoord2i          glesTexCoord2i
+#define glVertex2i            glesVertex2i
+#define glTexCoord2d          glesTexCoord2d
+#define glVertex2d            glesVertex2d
+#define glTexCoord2f          glesTexCoord2f
+#define glVertex2f            glesVertex2f
+#define glEnd                 glesEnd
+#define glColor3f             glesColor3f
+#define glColor4ub            glesColor4ub
+#define glColor4fv            glesColor4fv
+
+#define glLoadMatrixd         glesLoadMatrixd
+#define glMultMatrixd         glesMultMatrixd
+#define glOrtho               glesOrtho
+#define glScaled              glesScaled
+#define glTranslated          glesTranslated
+#define glRotated             glesRotated
+#define glVertex3d            glesVertex3d
+#define glVertex3f            glesVertex3f
+#define glVertex3fv           glesVertex3fv
+
+#define APIENTRY
+//#define GL_QUADS              0
+#define GL_QUAD_STRIP         0
+#define GL_DOUBLE             0
+#define GL_UNSIGNED_INT       0
+//#define GL_FILL               0
+//#define GL_LINE               0
+//#define GL_LINE_STIPPLE       0
+#define GL_BGRA_EXT           0
+#define GL_UNPACK_ROW_LENGTH  0
+#define GL_UNPACK_SKIP_PIXELS 0
+#define GL_UNPACK_SKIP_ROWS   0
+#define GL_RGBA8              0
+#define GL_PACK_ROW_LENGTH    0
+#define GL_PACK_SKIP_ROWS     0
+#define GL_PACK_SKIP_PIXELS   0
+
+static EGLDisplay eglDisplay;
+static EGLSurface eglSurface;
+static EGLContext eglContext;
+static int eglWidth, eglHeight;
+
+static bool egl_init_display(ANativeWindow* window)
+{
+   const EGLint attribs[] =
+   {
+      EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+      EGL_BLUE_SIZE, 8,
+      EGL_GREEN_SIZE, 8,
+      EGL_RED_SIZE, 8,
+      EGL_NONE
+   };
+   EGLint w, h, dummy, format;
+   EGLint numConfigs;
+   EGLConfig config;
+   EGLSurface surface;
+   EGLContext context;
+
+   EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+   eglInitialize(display, 0, 0);
+   eglChooseConfig(display, attribs, &config, 1, &numConfigs);
+   eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
+
+   surface = eglCreateWindowSurface(display, config, window, null);
+   context = eglCreateContext(display, config, null, null);
+
+   if(!eglMakeCurrent(display, surface, surface, context))
+      return false;
+
+   eglQuerySurface(display, surface, EGL_WIDTH, &w);
+   eglQuerySurface(display, surface, EGL_HEIGHT, &h);
+
+   eglDisplay = display;
+   eglContext = context;
+   eglSurface = surface;
+   eglWidth = w;
+   eglHeight = h;
+
+   glEnableClientState(GL_VERTEX_ARRAY);
+   /*
+   // Initialize GL state.
+   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+   glEnable(GL_CULL_FACE);
+   glShadeModel(GL_SMOOTH);
+   glDisable(GL_DEPTH_TEST);
+   */
+   glDisable(GL_CULL_FACE);
+   glDisable(GL_DEPTH_TEST);
+
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glEnable(GL_BLEND);
+
+   glMatrixMode(GL_MODELVIEW);
+   glScalef(1.0f, 1.0f, -1.0f);
+   glMatrixMode(GL_PROJECTION);
+   glShadeModel(GL_FLAT);
+
+   glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+   glFogi(GL_FOG_MODE, GL_EXP);
+   glFogf(GL_FOG_DENSITY, 0);
+   glEnable(GL_NORMALIZE);
+   glDepthFunc(GL_LESS);
+   glClearDepth(1.0);
+   glDisable(GL_MULTISAMPLE_ARB);
+
+   glViewport(0,0,w,h);
+   glLoadIdentity();
+   glOrtho(0,w,h,0,0.0,1.0);
+   return true;
+}  
+
+static void egl_term_display()
+{
+   if(eglDisplay != EGL_NO_DISPLAY)
+   {
+      eglMakeCurrent(eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+      if(eglContext != EGL_NO_CONTEXT)
+         eglDestroyContext(eglDisplay, eglContext);
+      if(eglSurface != EGL_NO_SURFACE)
+         eglDestroySurface(eglDisplay, eglSurface);
+      eglTerminate(eglDisplay);
+   }
+   eglDisplay = EGL_NO_DISPLAY;
+   eglContext = EGL_NO_CONTEXT;
+   eglSurface = EGL_NO_SURFACE;
+}
+
+// OpenGL Immediate Mode Porting Kit
+static int beginCount;
+static int vertexCount;
+static float *vertexPointer;
+static GLenum beginMode;
+static unsigned int beginBufferSize;
+
+void glesRecti(int a, int b, int c, int d)
+{
+   glBegin(GL_QUADS);
+   glVertex2i(a, b);
+   glVertex2i(a, d);
+   glVertex2i(c, d);
+   glVertex2i(c, b);
+   glEnd();
+}
+
+void glesBegin(GLenum mode)
+{
+   beginMode = mode;
+   beginCount = 0;
+   vertexCount = 0;
+   if(!vertexPointer)
+   {
+      beginBufferSize = 1024;  // default number of vertices
+      vertexPointer = new float[beginBufferSize * 4];
+   }
+}
+
+void glesTexCoord2f(float x, float y)
+{
+   int count = vertexCount;
+
+   if(vertexCount + 4 > beginBufferSize)
+   {
+      beginBufferSize = beginBufferSize + beginBufferSize/2;
+      vertexPointer = renew vertexPointer float[beginBufferSize * 4];
+   }
+
+   vertexPointer[count*4  ] = x;
+   vertexPointer[count*4+1] = y;
+   count++;
+
+   if(beginMode == GL_QUADS && ((beginCount % 4) == 3))
+   {
+      vertexPointer[count*4  ] = vertexPointer[(count-4)*4];
+      vertexPointer[count*4+1] = vertexPointer[(count-4)*4+1];
+      count++;
+      vertexPointer[count*4  ] = vertexPointer[(count-3)*4];
+      vertexPointer[count*4+1] = vertexPointer[(count-3)*4+1];
+      count++;
+   }
+} 
+void glesTexCoord2i(int x, int y)       { glesTexCoord2f((float)x, (float)y); }
+void glesTexCoord2d(double x, double y) { glesTexCoord2f((float)x, (float)y); }
+
+void glesVertex2f(float x, float y)
+{
+   if(vertexCount + 4 > beginBufferSize)
+   {
+      beginBufferSize = beginBufferSize + beginBufferSize/2;
+      vertexPointer = renew vertexPointer float[beginBufferSize * 4];
+   }
+
+   vertexPointer[vertexCount*4+2] = x;
+   vertexPointer[vertexCount*4+3] = y;
+   vertexCount++;
+
+   if(beginMode == GL_QUADS && ((beginCount % 4) == 3))
+   {
+      vertexPointer[vertexCount*4+2] = vertexPointer[(vertexCount-4)*4+2];
+      vertexPointer[vertexCount*4+3] = vertexPointer[(vertexCount-4)*4+3];
+      vertexCount++;
+      vertexPointer[vertexCount*4+2] = vertexPointer[(vertexCount-3)*4+2];
+      vertexPointer[vertexCount*4+3] = vertexPointer[(vertexCount-3)*4+3];
+      vertexCount++;
+   }
+   beginCount++;
+}
+void glesVertex2i(int x, int y)         { glesVertex2f((float)x, (float)y); }
+void glesVertex2d(double x, double y)   { glesVertex2f((float)x, (float)y); }
+
+void glesEnd(void)
+{
+   int mode = beginMode;
+   if(mode == GL_QUADS)        mode = GL_TRIANGLES;
+   else if(mode == GL_POLYGON) mode = GL_TRIANGLE_FAN;
+   GLSelectVBO(0);
+   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+   glTexCoordPointer(2, GL_FLOAT, 2*2*sizeof(float),vertexPointer);
+   glVertexPointer  (2, GL_FLOAT, 2*2*sizeof(float),vertexPointer+2);
+   glDrawArrays(mode, 0, vertexCount);
+   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+}
+
+// Vertex Pointer
+static float *floatVPBuffer = null;
+static short *shortVPBuffer = null;
+static unsigned int shortVPSize = 0, floatVPSize = 0;
+
+// Buffer Data
+//static float *floatVPBuffer = null;  // For floats we reuse floatVPBuffer
+static unsigned short *shortBDBuffer = null;
+static unsigned int shortBDSize = 0/*, floatVPSize = 0*/;
+
+void glesVertexPointeri(int numCoords, int stride, int *pointer, int numVertices)
+{
+   if(pointer)
+   {
+      int i;
+      if(numVertices*numCoords > shortVPSize)
+      {
+         shortVPSize = numVertices*numCoords;
+         shortVPBuffer = renew shortVPBuffer short[shortVPSize];
+      }
+      for(i = 0; i < numVertices*numCoords; i++)
+         shortVPBuffer[i] = (short)pointer[i];
+      glVertexPointer(numCoords, GL_SHORT, stride, shortVPBuffer);
+   }
+   else
+      glVertexPointer(numCoords, GL_SHORT, stride, 0);
+}
+
+void glesVertexPointerd(int numCoords, int stride, double *pointer, int numVertices)
+{
+   if(pointer)
+   {
+      int i;
+      if(numVertices*numCoords > floatVPSize)
+      {
+         floatVPSize = numVertices*numCoords;
+         floatVPBuffer = renew floatVPBuffer float[floatVPSize];
+      }
+      for(i = 0; i < numVertices*numCoords; i++)
+         floatVPBuffer[i] = (float)pointer[i];
+      glVertexPointer(numCoords, GL_FLOAT, stride, floatVPBuffer);
+   }
+   else
+      glVertexPointer(numCoords, GL_FLOAT, stride, 0);
+}
+
+void glesTexReuseIntVP(int numCoords)
+{
+   glTexCoordPointer(numCoords, GL_SHORT, 0, floatVPBuffer);
+}
+
+void glesTexReuseDoubleVP(int numCoords)
+{
+   glTexCoordPointer(numCoords, GL_FLOAT, 0, floatVPBuffer);
+}
+
+void glesColor3f( float r, float g, float b )
+{
+   glColor4f(r, g, b, 1.0f);
+}
+
+void glesColor4ub(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+   glColor4f(r/255.0f, g/255.0f, b/255.0f, a/255.0f);
+}
+
+void glesColor4fv(float * a)
+{
+   glColor4f(a[0], a[1], a[2], a[3]);
+}
+
+void glesBufferDatad(int target, int size, void * data, int usage)
+{
+   int numElems = size/sizeof(double);
+   double * dblPtr = (double *)data;
+   int i;
+   if (numElems > floatVPSize)
+   {
+      floatVPSize = numElems;
+      floatVPBuffer = renew floatVPBuffer float[floatVPSize];
+   }
+   for (i=0; i< numElems; i++)
+      floatVPBuffer[i] = (float)dblPtr[i];
+
+   glBufferData(target, numElems*sizeof(float), floatVPBuffer, usage);
+}
+
+void glesBufferDatai(int target, int size, void * data, int usage)
+{
+   int numElems = size/sizeof(unsigned int);
+   unsigned int * pointer = (unsigned int *)data;
+   int i;
+   if (numElems > shortBDSize)
+   {
+      shortBDSize = numElems;
+      shortBDBuffer = renew shortBDBuffer uint16[shortBDSize];
+   }
+   for (i=0; i< numElems; i++)
+      shortBDBuffer[i] = (unsigned short)pointer[i];
+
+   glBufferData(target, numElems*sizeof(unsigned short), shortBDBuffer, usage);
+}
+
+/// *** These might require an implementation to get things working ***
+void glesLoadMatrixd( double * i )
+{
+   float m[16] =
+   {
+      (float)i[0],(float)i[1],(float)i[2],(float)i[3],
+      (float)i[4],(float)i[5],(float)i[6],(float)i[7],
+      (float)i[8],(float)i[9],(float)i[10],(float)i[11],
+      (float)i[12],(float)i[13],(float)i[14],(float)i[15]
+   };
+   glLoadMatrixf(m);
+}
+
+void glesOrtho( double l, double r, double b, double t, double n, double f )
+{
+   float matrix[4][4] =
+   {
+      { (float)(2 / (r - l)), 0, 0, 0 }, 
+      { 0, (float)(2 / (t - b)), 0, 0 },
+      { 0, 0, (float)(-2 / (f - n)), 0 },
+      { (float)(-(r + l) / (r - l)), (float)(-(t + b) / (t - b)), (float)(-(f + n) / (f - n)), 1 }
+   };
+   glMultMatrixf((float *)matrix);
+}
+
+void glesRotated( double a, double b, double c, double d ) { glRotatef((float)a, (float)b, (float)c, (float)d); }
+void glesScaled( double a, double b, double c ) { glScalef((float)a, (float)b, (float)c); }
+void glesTranslated( double a, double b, double c ) { glTranslatef((float)a, (float)b, (float)c); }
+
+void glesMultMatrixd( double * i ) { }
+void glesVertex3d( double x, double y, double z ) { }
+void glesVertex3f( float x, float y, float z ) { }
+void glesVertex3fv( float* coords ) { }
+
+void glesTerminate()
+{
+   delete vertexPointer;
+   beginBufferSize = 0;
+
+   delete floatVPBuffer;
+   shortVPSize = 0;
+
+   delete shortVPBuffer;
+   floatVPSize = 0;
+
+   delete shortBDBuffer;
+   shortBDSize = 0;
+}
+
+// *** TO DO ***
+void glPushName( unsigned int i ) { }
+void glLoadName( unsigned int i ) { }
+void glPopName() { }
+void glLineStipple( int i, unsigned short j ) { }
+void glPopAttrib() { }
+void glPushAttrib( unsigned int i ) { }
+void glBitmap( int w, int h, float xo, float yo, float xm, float ym, const unsigned int* bmp ) { }
+void glCallLists( int n, unsigned int type, const void* lists ) { }
+void glClearDepth( double depth ) { }
+void glFogi( unsigned int pname, int param ) { }
+void glFrustum( double a, double b, double c, double d, double e, double f ) { }
+void glLightModeli( unsigned int pname, int param ) { }
+void glListBase( unsigned int base ) { }
+void glPolygonMode( unsigned int i, unsigned int j ) { }
+void glRasterPos3f( float x, float y, float z ) { }
+void glBlendFuncSeparate(int a, int b, int c, int d) { }
+void glRasterPos2d(double a, double b) { }
+void glPixelZoom(float a, float b) { }
+void glDrawPixels(int a, int b, int c, int d, void * e) { }
+void glColorMaterial(int a, int b) { }
+void glUnlockArraysEXT() { }
+void glLockArraysEXT(int a, int b) { }
+void glNormal3fv(float * a) { }
+void glTexCoord2fv(float * a) { }
+
+#else
+
+/* Non OpenGL ES friendly stuff
+#undef GL_UNSIGNED_INT
+#undef GL_DOUBLE
+#undef GL_INT
+//#undef GL_POLYGON
+//#undef GL_QUADS
+#undef GL_QUAD_STRIP
+#undef GL_POLYGON_STIPPLE
+#undef GL_LINE_STIPPLE
+#undef GL_LINE
+#undef GL_FILL
+#undef GL_ALL_ATTRIB_BITS
+#undef GL_LIGHT_MODEL_LOCAL_VIEWER
+*/
+
+#endif
+
 void (APIENTRY * glBindBufferARB) (GLenum target, GLuint buffer);
 void (APIENTRY * glGenBuffersARB) (GLsizei n, GLuint *buffers);
 void (APIENTRY * glDeleteBuffersARB) (GLsizei n, const GLuint *buffers);
 void (APIENTRY * glBufferDataARB) (GLenum target, int size, const GLvoid *data, GLenum usage);
 
 #endif
+
+static int currentVertexBuffer;
+
+bool GLSelectVBO(uint vbo)
+{
+   if(currentVertexBuffer != vbo)
+   {
+      GLBindBuffer(GL_ARRAY_BUFFER, vbo);
+      currentVertexBuffer = vbo;
+      return true;
+   }
+   return false;
+}
+
+void GLBindBuffer(int target, uint buffer)
+{
+#ifdef __ANDROID__
+   glBindBuffer(target, buffer);
+#else
+   glBindBufferARB(target, buffer);
+#endif
+}
 
 static int displayWidth, displayHeight;
 
@@ -715,6 +1190,7 @@ class OpenGLDisplayDriver : DisplayDriver
       }
    #elif defined(__unix__)
       #if defined(__ANDROID__)
+         egl_init_display(guiApp.desktop.windowHandle);
          result = true;
       #else
       int attrList[] = 
@@ -773,6 +1249,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
    #elif defined(__unix__)
       #if defined(__ANDROID__)
+         egl_term_display();
       #else
       if(oglSystem.visualInfo)
       {
@@ -1466,7 +1943,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
       mipMap.Allocate(null, w, h, w, pixelFormatRGBA, false);
 
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
+      // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
+
       delete mipMap;
 
       bitmap.driverData = (void *)glBitmap;
@@ -1556,7 +2035,8 @@ class OpenGLDisplayDriver : DisplayDriver
                int error;
                //int width = 0;
                glGetError();
-               glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
+               // glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
+               glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
                //printf("Calling glTexImage2D\n");
                //glGetTexLevelParameteriv(GL_TEXTURE_2D, level, GL_TEXTURE_WIDTH, &width);
                //printf("width = %d (Should be %d, %d)\n", width, w, h);

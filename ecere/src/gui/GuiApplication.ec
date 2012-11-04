@@ -78,6 +78,7 @@ import "XInterface"
 
 import "Window"
 
+/*static */bool guiApplicationInitialized = false;
 GuiApplication guiApp;
 int terminateX;
 
@@ -520,11 +521,9 @@ public class GuiApplication : Application
 
    void Initialize(bool switchMode)
    {
-      static bool initialized = false;
-
       // TODO:
       // if(!initialized && eClass_IsDerived(__ecereModule->app->module.inst.class, guiApplicationClass))
-      if(!initialized)
+      if(!guiApplicationInitialized)
       {
          char * defaultDriver = null;
 #if defined(ECERE_VANILLA) || defined(ECERE_ONEDRIVER)
@@ -537,7 +536,7 @@ public class GuiApplication : Application
          GetEnvironment("ECERE_DRIVER", driverStorage, sizeof(driverStorage));
          if(driverStorage[0]) driver = driverStorage;
 #endif
-         initialized = true;
+         guiApplicationInitialized = true;
 
          fullScreenMode = true; // Needs to start at true for the desktop to resize
          // Set this to true earlier so we can override it!
@@ -636,7 +635,7 @@ public class GuiApplication : Application
          #endif
             }
             if(!interfaceDriver)
-               initialized = false;
+               guiApplicationInitialized = false;
          }
          else
             defaultDisplayDriver = defaultDriver;

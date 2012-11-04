@@ -1,0 +1,13 @@
+- You need to configure an Android compiler and select it as the active compiler
+   You can simply use the default toolchain values, with a GCC prefix:
+      e.g. arm-linux-androideabi-
+      
+   And a sysroot, e.g. C:\android-sdk\android-ndk-r8b\platforms\android-14\arch-arm
+
+- Use the following to create your signing key:
+
+   keytool -genkey -v -alias mykey -keyalg RSA -keysize 2048 -validity 10000
+
+   By default, the project is configured (Project Settings, Builder, Post Build Commands - Common config) with 'mypassword'
+
+- There's also a hardcoded reference in the Post-Build Commands to an Android SDK at C:/android-sdk/platforms/android-16/
