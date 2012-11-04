@@ -2,6 +2,7 @@
    "Version" : 0.2,
    "ModuleName" : "ecc",
    "Options" : {
+      "Warnings" : "All",
       "TargetType" : "Executable",
       "TargetFileName" : "ecc",
       "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
@@ -25,6 +26,8 @@
       {
          "Name" : "Release",
          "Options" : {
+            "Warnings" : "None",
+            "Debug" : false,
             "NoLineNumbers" : true,
             "Optimization" : "Speed",
             "Libraries" : [

@@ -1,62 +1,61 @@
 .PHONY: all objdir clean realclean distclean
 
-# CONTENT
+# CORE VARIABLES
 
 MODULE := epj2make
 CONFIG := release
+ifndef COMPILER
 COMPILER := default
+endif
+
 TARGET_TYPE = executable
+
+# FLAGS
+
+ECFLAGS =
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+CECFLAGS =
+OFLAGS =
+LDFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+ifdef EXECUTABLE_TARGET
+CONSOLE = -mconsole
+endif
+
+# INCLUDES
+
+_CF_DIR = ../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)include.mk
+
+# CUSTOM TOOLCHAIN / COMPILER CONFIG
+
+export LD_LIBRARY_PATH=../obj/$(PLATFORM)/lib
+export DYLD_LIBRARY_PATH=../obj/$(PLATFORM)/lib
+ECP := $(call psep,../obj/$(PLATFORM)/bin/ecp)
+ECC := $(call psep,../obj/$(PLATFORM)/bin/ecc)
+ECS := $(call psep,../obj/$(PLATFORM)/bin/ecs)
+EAR := $(call psep,../obj/$(PLATFORM)/bin/ear)
+
+# END OF CUSTOM TOOLCHAIN / COMPILER CONFIG
+
+# POST-INCLUDES VARIABLES
 
 OBJ = obj/$(CONFIG).$(PLATFORM)/
 
 RES = 
 
-CONSOLE = -mconsole
-
 TARGET = obj/$(CONFIG).$(PLATFORM)/epj2make$(E)
 
-OBJECTS = \
-	$(OBJ)Project.o \
-	$(OBJ)ProjectConfig.o \
-	$(OBJ)ProjectNode.o \
-	$(OBJ)IDESettings.o \
-	$(OBJ)OldIDESettings.o \
-	$(OBJ)StringsBox.o \
-	$(OBJ)DynamicString.o \
-	$(OBJ)epj2make.o \
-	$(OBJ)$(MODULE).main$(O)
-
-COBJECTS = \
-	$(OBJ)Project.c \
-	$(OBJ)ProjectConfig.c \
-	$(OBJ)ProjectNode.c \
-	$(OBJ)IDESettings.c \
-	$(OBJ)OldIDESettings.c \
-	$(OBJ)StringsBox.c \
-	$(OBJ)DynamicString.c \
-	$(OBJ)epj2make.c
-
-SYMBOLS = \
-	$(OBJ)Project.sym \
-	$(OBJ)ProjectConfig.sym \
-	$(OBJ)ProjectNode.sym \
-	$(OBJ)IDESettings.sym \
-	$(OBJ)OldIDESettings.sym \
-	$(OBJ)StringsBox.sym \
-	$(OBJ)DynamicString.sym \
-	$(OBJ)epj2make.sym
-
-IMPORTS = \
-	$(OBJ)Project.imp \
-	$(OBJ)ProjectConfig.imp \
-	$(OBJ)ProjectNode.imp \
-	$(OBJ)IDESettings.imp \
-	$(OBJ)OldIDESettings.imp \
-	$(OBJ)StringsBox.imp \
-	$(OBJ)DynamicString.imp \
-	$(OBJ)epj2make.imp
-
-SOURCES = \
+_ECSOURCES = \
 	../ide/src/project/Project.ec \
 	../ide/src/project/ProjectConfig.ec \
 	../ide/src/project/ProjectNode.ec \
@@ -66,54 +65,59 @@ SOURCES = \
 	../extras/types/DynamicString.ec \
 	epj2make.ec
 
+ECSOURCES = $(call shwspace,$(_ECSOURCES))
+
+COBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES)))))
+
+SYMBOLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES)))))
+
+IMPORTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES)))))
+
+ECOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES)))))
+
+BOWLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES)))))
+
+OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+
+SOURCES = $(ECSOURCES)
+
 RESOURCES = \
 	locale/zh_CN/LC_MESSAGES/epj2make.mo \
+	locale/es_ES/LC_MESSAGES/epj2make.mo \
 	../crossplatform.mk
 
-ifndef DEBIAN_PACKAGE
-CFLAGS =
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+
+ifndef STATIC_LIBRARY_TARGET
+LIBS += \
+	$(call _L,ecere)
 endif
-OFLAGS =
 
-# CROSS-PLATFORM MAGIC
+CFLAGS += \
+	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
+			 -DMAKEFILE_GENERATOR
 
-include ../crossplatform.mk
-include ../include.mk
 
-# TOOLCHAIN
-export LD_LIBRARY_PATH = ../obj/$(PLATFORM)/lib/
-export DYLD_LIBRARY_PATH = ../obj/$(PLATFORM)/lib/
-ECP := $(call psep,../obj/$(PLATFORM)/bin/ecp)
-ECC := $(call psep,../obj/$(PLATFORM)/bin/ecc)
-ECS := $(call psep,../obj/$(PLATFORM)/bin/ecs)
-EAR := $(call psep,../obj/$(PLATFORM)/bin/ear)
+ECFLAGS += \
+	 -nolinenumbers
 
-# FLAGS
-
-CFLAGS += -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w \
-	 -DMAKEFILE_GENERATOR
-
-CECFLAGS =
-
-ECFLAGS = -nolinenumbers
-
-OFLAGS += $(FORCE_32_BIT) \
-	 -L../obj/$(PLATFORM)/bin \
-	 -L../obj/$(PLATFORM)/lib
-
-LIBS = -lecere $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
-
-UPXFLAGS = -9 -q
-
-# HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX_TARGET
-OFLAGS += -Wl,--no-undefined
-endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
 ifdef LINUX_TARGET
 
+endif
+
+
+
+CECFLAGS += -cpp $(call escspace,$(CPP))
+
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS += $(FORCE_32_BIT) \
+	 -L../obj/$(PLATFORM)/bin \
+	 -L../obj/$(PLATFORM)/lib
+OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -133,13 +137,17 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
+ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) awq $(TARGET) ../crossplatform.mk ""
-	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/epj2make.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/epj2make.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) $(EARFLAGS) $(TARGET) ../crossplatform.mk ""
+	$(EAR) $(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/epj2make.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) $(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/epj2make.mo "locale/es_ES/LC_MESSAGES"
+else
+	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
+endif
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
 
 # SYMBOL RULES
@@ -224,13 +232,15 @@ $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 clean: objdir
-	$(call rmq,$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
-	$(call rmq,$(OBJECTS))
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
+	$(call rmq,$(_OBJECTS))
+	$(call rmq,$(ECOBJECTS))
 	$(call rmq,$(COBJECTS))
+	$(call rmq,$(BOWLS))
 	$(call rmq,$(IMPORTS))
 	$(call rmq,$(SYMBOLS))
 
-realclean:
+realclean: clean
 	$(call rmrq,$(OBJ))
 
 distclean:

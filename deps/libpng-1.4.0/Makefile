@@ -1,11 +1,42 @@
 .PHONY: all objdir clean realclean distclean
 
-# CONTENT
+# CORE VARIABLES
 
 MODULE := libpng
 CONFIG := release
+ifndef COMPILER
 COMPILER := default
+endif
+
 TARGET_TYPE = staticlib
+
+# FLAGS
+
+ECFLAGS =
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+CECFLAGS =
+OFLAGS =
+LDFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+ifdef EXECUTABLE_TARGET
+CONSOLE = -mwindows
+endif
+
+# INCLUDES
+
+_CF_DIR = ../../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)include.mk
+
+# POST-INCLUDES VARIABLES
 
 OBJ = obj/$(CONFIG).$(PLATFORM)/
 
@@ -13,7 +44,7 @@ RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)png$(A)
 
-OBJECTS = \
+_OBJECTS = \
 	$(OBJ)png.o \
 	$(OBJ)pngerror.o \
 	$(OBJ)pngget.o \
@@ -30,13 +61,9 @@ OBJECTS = \
 	$(OBJ)pngwtran.o \
 	$(OBJ)pngwutil.o
 
-COBJECTS =
+OBJECTS = $(_OBJECTS)
 
-SYMBOLS =
-
-IMPORTS =
-
-SOURCES = \
+SOURCES = $(ECSOURCES) \
 	./png.c \
 	./pngerror.c \
 	./pngget.c \
@@ -55,29 +82,23 @@ SOURCES = \
 
 RESOURCES =
 
-ifndef DEBIAN_PACKAGE
-CFLAGS =
-endif
-OFLAGS =
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-# CROSS-PLATFORM MAGIC
+CFLAGS += \
+	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
+			 -I. \
+			 -I../zlib
 
-include ../../crossplatform.mk
-include ../../include.mk
 
-# FLAGS
 
-CFLAGS += -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w \
-	 -I. \
-	 -I../zlib
 
-LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-UPXFLAGS = -9 -q
+CECFLAGS += -cpp $(call escspace,$(CPP))
 
-# HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX_TARGET
-OFLAGS += -Wl,--no-undefined
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS +=
+OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -143,10 +164,9 @@ $(OBJ)pngwutil.o: ./pngwutil.c
 
 clean: objdir
 	$(call rmq,$(TARGET))
-	$(call rmq,$(OBJECTS))
-	$(call rmq,$(COBJECTS))
+	$(call rmq,$(_OBJECTS))
 
-realclean:
+realclean: clean
 	$(call rmrq,$(OBJ))
 
 distclean:

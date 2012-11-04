@@ -1,25 +1,57 @@
 .PHONY: all objdir clean realclean distclean
 
-# CONTENT
+# CORE VARIABLES
 
 MODULE := EDA
 CONFIG := release
+ifndef COMPILER
 COMPILER := default
+endif
+
 TARGET_TYPE = sharedlib
+
+# FLAGS
+
+ECFLAGS =
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+CECFLAGS =
+OFLAGS =
+LDFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+ifdef EXECUTABLE_TARGET
+CONSOLE = -mwindows
+endif
+
+# INCLUDES
+
+_CF_DIR = ../../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)include.mk
+
+# CUSTOM TOOLCHAIN / COMPILER CONFIG
+
+export LD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
+export DYLD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
+ECP := $(call psep,../../obj/$(PLATFORM)/bin/ecp)
+ECC := $(call psep,../../obj/$(PLATFORM)/bin/ecc)
+ECS := $(call psep,../../obj/$(PLATFORM)/bin/ecs)
+EAR := $(call psep,../../obj/$(PLATFORM)/bin/ear)
+
+# END OF CUSTOM TOOLCHAIN / COMPILER CONFIG
+
+# POST-INCLUDES VARIABLES
 
 OBJ = obj/$(CONFIG).$(PLATFORM)/
 
 RES = 
-
-ifndef DEBIAN_PACKAGE
-CFLAGS =
-endif
-OFLAGS =
-
-# CROSS-PLATFORM MAGIC
-
-include ../../crossplatform.mk
-include ../../include.mk
 
 ifdef LINUX_TARGET
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)EDA$(SO).0.44
@@ -29,48 +61,7 @@ TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)EDA$(SO)
 SONAME =
 endif
 
-OBJECTS = \
-	$(OBJ)EDB.o \
-	$(OBJ)MemoryEDB.o \
-	$(OBJ)FieldBox.o \
-	$(OBJ)TableEditor.o \
-	$(OBJ)EDA.o \
-	$(OBJ)ers.o \
-	$(OBJ)gui.o \
-	$(OBJ)idList.o \
-	$(OBJ)$(MODULE).main$(O)
-
-COBJECTS = \
-	$(OBJ)EDB.c \
-	$(OBJ)MemoryEDB.c \
-	$(OBJ)FieldBox.c \
-	$(OBJ)TableEditor.c \
-	$(OBJ)EDA.c \
-	$(OBJ)ers.c \
-	$(OBJ)gui.c \
-	$(OBJ)idList.c
-
-SYMBOLS = \
-	$(OBJ)EDB.sym \
-	$(OBJ)MemoryEDB.sym \
-	$(OBJ)FieldBox.sym \
-	$(OBJ)TableEditor.sym \
-	$(OBJ)EDA.sym \
-	$(OBJ)ers.sym \
-	$(OBJ)gui.sym \
-	$(OBJ)idList.sym
-
-IMPORTS = \
-	$(OBJ)EDB.imp \
-	$(OBJ)MemoryEDB.imp \
-	$(OBJ)FieldBox.imp \
-	$(OBJ)TableEditor.imp \
-	$(OBJ)EDA.imp \
-	$(OBJ)ers.imp \
-	$(OBJ)gui.imp \
-	$(OBJ)idList.imp
-
-SOURCES = \
+_ECSOURCES = \
 	src/EDB.ec \
 	src/MemoryEDB.ec \
 	src/gui/controls/FieldBox.ec \
@@ -80,53 +71,59 @@ SOURCES = \
 	src/gui.ec \
 	src/idList.ec
 
+ECSOURCES = $(call shwspace,$(_ECSOURCES))
+
+COBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES)))))
+
+SYMBOLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES)))))
+
+IMPORTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES)))))
+
+ECOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES)))))
+
+BOWLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES)))))
+
+OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+
+SOURCES = $(ECSOURCES)
+
 RESOURCES = \
 	locale/zh_CN/LC_MESSAGES/EDA.mo \
 	locale/es_ES/LC_MESSAGES/EDA.mo
 
-# TOOLCHAIN
-export LD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
-export DYLD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
-ECP := $(call psep,../../obj/$(PLATFORM)/bin/ecp)
-ECC := $(call psep,../../obj/$(PLATFORM)/bin/ecc)
-ECS := $(call psep,../../obj/$(PLATFORM)/bin/ecs)
-EAR := $(call psep,../../obj/$(PLATFORM)/bin/ear)
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-# FLAGS
-
-CFLAGS += -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w
-
-CECFLAGS =
-
-ECFLAGS = -nolinenumbers -defaultns eda
-
-OFLAGS += $(FORCE_32_BIT) \
-	 -L../../obj/$(PLATFORM)/bin \
-	 -L../../obj/$(PLATFORM)/lib
-
-LIBS = -lecere $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
-
-UPXFLAGS = -9 -q
-
-# HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX_TARGET
-OFLAGS += -Wl,--no-undefined
+ifndef STATIC_LIBRARY_TARGET
+LIBS += \
+	$(call _L,ecere)
 endif
+
+CFLAGS += \
+	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+	 $(if $(WINDOWS_TARGET), \
+			 -I../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w
+
+
+ECFLAGS += \
+	 -nolinenumbers -defaultns eda
+
 
 # PLATFORM-SPECIFIC OPTIONS
 
 ifdef WINDOWS_TARGET
 
-CFLAGS += \
-	 -I../../deps/libffi-3.0.11/i686-pc-mingw32/include
-
 endif
 
-ifdef LINUX_TARGET
 
-CFLAGS += \
-	 -I/usr/include/i686-linux-gnu
 
+CECFLAGS += -cpp $(call escspace,$(CPP))
+
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS += $(FORCE_32_BIT) \
+	 -L../../obj/$(PLATFORM)/bin \
+	 -L../../obj/$(PLATFORM)/lib
+OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -146,12 +143,16 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
+ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/EDA.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/EDA.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) $(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/EDA.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) $(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/EDA.mo "locale/es_ES/LC_MESSAGES"
+else
+	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
+endif
 	$(call cpq,$(TARGET),../../$(SODESTDIR))
 ifdef LINUX_TARGET
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
@@ -240,13 +241,15 @@ $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 clean: objdir
-	$(call rmq,$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
-	$(call rmq,$(OBJECTS))
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
+	$(call rmq,$(_OBJECTS))
+	$(call rmq,$(ECOBJECTS))
 	$(call rmq,$(COBJECTS))
+	$(call rmq,$(BOWLS))
 	$(call rmq,$(IMPORTS))
 	$(call rmq,$(SYMBOLS))
 
-realclean:
+realclean: clean
 	$(call rmrq,$(OBJ))
 
 distclean:

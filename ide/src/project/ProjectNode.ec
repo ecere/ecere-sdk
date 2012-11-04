@@ -1487,9 +1487,9 @@ private:
                modulePath, moduleName, extension, moduleName);
             */
 
-            f.Printf("\t$(ECP)");
+            f.Puts("\t$(ECP)");
 
-            f.Printf(" $(CECFLAGS)"); // tocheck: what of this? should this stuff be per-file customized?
+            f.Puts(" $(CECFLAGS)"); // tocheck: what of this? should this stuff be per-file customized?
 
             GenMakePrintNodeFlagsVariable(this, nodeECFlagsMapping, "ECFLAGS", f);
             GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "CFLAGS", f);
@@ -1571,9 +1571,9 @@ private:
             /*f.Printf("\t$(CPP) %s%s.%s %s$(S)\n\n",
                modulePath, moduleName, extension, moduleName);*/
 
-            f.Printf("\t$(CPP)");
+            f.Puts("\t$(CPP)");
 
-            //f.Printf(" $(CECFLAGS)");
+            //f.Puts(" $(CECFLAGS)");
             //GenMakePrintNodeFlagsVariable(this, nodeECFlagsMapping, "ECFLAGS", f);
             GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "CFLAGS", f);
 
@@ -1732,12 +1732,12 @@ private:
                modulePath, moduleName, extension, moduleName);
          */
 
-            f.Printf("\t$(ECC)");
+            f.Puts("\t$(ECC)");
 
-            f.Printf(" $(CECFLAGS)"); // what of this? should this stuff be per-file customized?
+            f.Puts(" $(CECFLAGS)"); // what of this? should this stuff be per-file customized?
             GenMakePrintNodeFlagsVariable(this, nodeECFlagsMapping, "ECFLAGS", f);
             GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "CFLAGS", f);
-            f.Printf(" $(FVISIBILITY)");
+            f.Puts(" $(FVISIBILITY)");
 
             f.Printf(" -c %s%s.%s -o $(OBJ)%s.c -symbols $(OBJ)\n\n",
                modulePath, moduleName, extension, moduleName);
@@ -1982,7 +1982,7 @@ private:
 
                // $(EAR) aw%s --- /*quiet ? "q" : */""
                if(count == 0)
-                  f.Printf("\t%s$(EAR) aw $(TARGET)", ts.a);
+                  f.Printf("\t%s$(EAR) $(EARFLAGS) $(TARGET)", ts.a);
 
                tempPath[0] = '\0';
                if(eString_PathInsideOfMore(child.path, resourcesPath, tempPath))
@@ -2800,11 +2800,11 @@ static void GenCFlagsFromProjectOptions(ProjectOptions options, bool prjWithEcFi
 static void GenECFlagsFromProjectOptions(ProjectOptions options, bool prjWithEcFiles, DynamicString s)
 {
    if(options.memoryGuard == true)
-      s.concatf(" -memguard");
+      s.concat(" -memguard");
    if(options.noLineNumbers == true)
-      s.concatf(" -nolinenumbers");
+      s.concat(" -nolinenumbers");
    if(options.strictNameSpaces == true)
-      s.concatf(" -strictns");
+      s.concat(" -strictns");
    if(options.defaultNameSpace && options.defaultNameSpace[0])
       s.concatf(" -defaultns %s", options.defaultNameSpace);
 }
@@ -2906,10 +2906,10 @@ static inline void OpenRulesPlatformExclusionIfs(File f, int * ifCount, Platform
 {
    if(platform != unknown && !parentExcludedPlatforms[platform])
    {
-      if(*ifCount)                 // we really need a if defined(a) || defined(b) here
-         f.Printf("else\n");       // instead of repeating the rules for each platform
-      (*ifCount)++;                  //
-      f.Printf("ifdef %s\n\n", PlatformToMakefileTargetVariable(platform)); //
+      if(*ifCount)             // we really need a if defined(a) || defined(b) here
+         f.Puts("else\n");     // instead of repeating the rules for each platform
+      (*ifCount)++;            // hmm... what?
+      f.Printf("ifdef %s\n\n", PlatformToMakefileTargetVariable(platform));
       if(excludedPlatforms)
          excludedPlatforms[platform] = true;
    }
@@ -2921,7 +2921,7 @@ static inline void CloseRulesPlatformExclusionIfs(File f, int ifCount)
    {
       int c;
       for(c = 0; c < ifCount; c++)
-         f.Printf("endif\n");
-      f.Printf("\n");
+         f.Puts("endif\n");
+      f.Puts("\n");
    }
 }

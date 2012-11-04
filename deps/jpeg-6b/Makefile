@@ -1,11 +1,42 @@
 .PHONY: all objdir clean realclean distclean
 
-# CONTENT
+# CORE VARIABLES
 
 MODULE := libjpeg
 CONFIG := release
+ifndef COMPILER
 COMPILER := default
+endif
+
 TARGET_TYPE = staticlib
+
+# FLAGS
+
+ECFLAGS =
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+CECFLAGS =
+OFLAGS =
+LDFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+ifdef EXECUTABLE_TARGET
+CONSOLE = -mwindows
+endif
+
+# INCLUDES
+
+_CF_DIR = ../../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)include.mk
+
+# POST-INCLUDES VARIABLES
 
 OBJ = obj/$(CONFIG).$(PLATFORM)/
 
@@ -13,7 +44,8 @@ RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)jpeg$(A)
 
-OBJECTS = \
+_OBJECTS = $(_OBJECTS1) $(_OBJECTS2)
+_OBJECTS1 = \
 	$(OBJ)jcapimin.o \
 	$(OBJ)jcapistd.o \
 	$(OBJ)jccoefct.o \
@@ -44,7 +76,8 @@ OBJECTS = \
 	$(OBJ)jdmaster.o \
 	$(OBJ)jdmerge.o \
 	$(OBJ)jdphuff.o \
-	$(OBJ)jdpostct.o \
+	$(OBJ)jdpostct.o
+_OBJECTS2 = \
 	$(OBJ)jdsample.o \
 	$(OBJ)jdtrans.o \
 	$(OBJ)jerror.o \
@@ -64,13 +97,9 @@ OBJECTS = \
 	$(OBJ)jutils.o \
 	$(OBJ)transupp.o
 
-COBJECTS =
+OBJECTS = $(_OBJECTS)
 
-SYMBOLS =
-
-IMPORTS =
-
-SOURCES = \
+SOURCES = $(ECSOURCES) \
 	jcapimin.c \
 	jcapistd.c \
 	jccoefct.c \
@@ -123,27 +152,21 @@ SOURCES = \
 
 RESOURCES =
 
-ifndef DEBIAN_PACKAGE
-CFLAGS =
-endif
-OFLAGS =
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-# CROSS-PLATFORM MAGIC
+CFLAGS += \
+	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
 
-include ../../crossplatform.mk
-include ../../include.mk
 
-# FLAGS
 
-CFLAGS += -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w
 
-LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-UPXFLAGS = -9 -q
+CECFLAGS += -cpp $(call escspace,$(CPP))
 
-# HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX_TARGET
-OFLAGS += -Wl,--no-undefined
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS +=
+OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -311,10 +334,10 @@ $(OBJ)transupp.o: transupp.c
 
 clean: objdir
 	$(call rmq,$(TARGET))
-	$(call rmq,$(OBJECTS))
-	$(call rmq,$(COBJECTS))
+	$(call rmq,$(_OBJECTS1))
+	$(call rmq,$(_OBJECTS2))
 
-realclean:
+realclean: clean
 	$(call rmrq,$(OBJ))
 
 distclean:

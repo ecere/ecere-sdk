@@ -1,11 +1,42 @@
 .PHONY: all objdir clean realclean distclean
 
-# CONTENT
+# CORE VARIABLES
 
 MODULE := libz
 CONFIG := release
+ifndef COMPILER
 COMPILER := default
+endif
+
 TARGET_TYPE = staticlib
+
+# FLAGS
+
+ECFLAGS =
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+CECFLAGS =
+OFLAGS =
+LDFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+ifdef EXECUTABLE_TARGET
+CONSOLE = -mwindows
+endif
+
+# INCLUDES
+
+_CF_DIR = ../../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)include.mk
+
+# POST-INCLUDES VARIABLES
 
 OBJ = obj/$(CONFIG).$(PLATFORM)/
 
@@ -13,7 +44,7 @@ RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)z$(A)
 
-OBJECTS = \
+_OBJECTS = \
 	$(OBJ)adler32.o \
 	$(OBJ)compress.o \
 	$(OBJ)crc32.o \
@@ -27,13 +58,9 @@ OBJECTS = \
 	$(OBJ)uncompr.o \
 	$(OBJ)zutil.o
 
-COBJECTS =
+OBJECTS = $(_OBJECTS)
 
-SYMBOLS =
-
-IMPORTS =
-
-SOURCES = \
+SOURCES = $(ECSOURCES) \
 	adler32.c \
 	compress.c \
 	crc32.c \
@@ -49,27 +76,21 @@ SOURCES = \
 
 RESOURCES =
 
-ifndef DEBIAN_PACKAGE
-CFLAGS =
-endif
-OFLAGS =
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-# CROSS-PLATFORM MAGIC
+CFLAGS += \
+	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
 
-include ../../crossplatform.mk
-include ../../include.mk
 
-# FLAGS
 
-CFLAGS += -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w
 
-LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-UPXFLAGS = -9 -q
+CECFLAGS += -cpp $(call escspace,$(CPP))
 
-# HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX_TARGET
-OFLAGS += -Wl,--no-undefined
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS +=
+OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -126,10 +147,9 @@ $(OBJ)zutil.o: zutil.c
 
 clean: objdir
 	$(call rmq,$(TARGET))
-	$(call rmq,$(OBJECTS))
-	$(call rmq,$(COBJECTS))
+	$(call rmq,$(_OBJECTS))
 
-realclean:
+realclean: clean
 	$(call rmrq,$(OBJ))
 
 distclean:

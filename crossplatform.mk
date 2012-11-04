@@ -71,11 +71,30 @@ endif
 endif
 endif
 
+# CROSS_TARGET
+ifneq "$(TARGET_PLATFORM)" "$(HOST_PLATFORM)"
+   CROSS_TARGET := defined
+endif
+
+# TARGET_TYPE
+ifeq "$(TARGET_TYPE)" "staticlib"
+   STATIC_LIBRARY_TARGET := defined
+else
+ifeq "$(TARGET_TYPE)" "sharedlib"
+   SHARED_LIBRARY_TARGET := defined
+else
+ifeq "$(TARGET_TYPE)" "executable"
+   EXECUTABLE_TARGET := defined
+endif
+endif
+endif
+
 # DEBUG SUFFIX
 ifdef DEBUG
 DEBUG_SUFFIX := .debug
 endif
 
+# COMPILER SUFFIX
 ifdef COMPILER
 ifneq "$(COMPILER)" "default"
 COMPILER_SUFFIX := .$(COMPILER)
@@ -114,25 +133,9 @@ B := .bowl
 C := .c
 O := .o
 A := .a
-ifdef WINDOWS_TARGET
-   E := .exe
-ifeq "$(TARGET_TYPE)" "staticlib"
-   LP := lib
-else
-   LP :=
-endif
-   SO := .dll
-else
-ifdef OSX_TARGET
-   E :=
-   LP := lib
-   SO := .dylib
-else
-   E :=
-   LP := lib
-   SO := .so
-endif
-endif
+E := $(if $(WINDOWS_TARGET),.exe,)
+SO := $(if $(WINDOWS_TARGET),.dll,$(if $(OSX_TARGET),.dylib,.so))
+LP := $(if $(WINDOWS_TARGET),$(if $(STATIC_LIBRARY_TARGET),lib,),lib)
 
 # SUPER TOOLS
 ifdef CCACHE
@@ -169,67 +172,19 @@ else
 endif
 
 # COMPILER OPTIONS
-ifeq "$(TARGET_TYPE)" "sharedlib"
-   ECSLIBOPT := -dynamiclib
-else
-ifeq "$(TARGET_TYPE)" "staticlib"
-   ECSLIBOPT := -staticlib
-else
-   ECSLIBOPT :=
-endif
-endif
-ifdef WINDOWS_TARGET
-   FVISIBILITY :=
-   FPIC :=
-ifeq "$(TARGET_TYPE)" "executable"
-   EXECUTABLE := $(CONSOLE)
-else
-   EXECUTABLE :=
-endif
-else
-   FVISIBILITY := -fvisibility=hidden
-   FPIC := -fPIC
-   EXECUTABLE :=
-endif
-ifdef OSX
-ifeq "$(TARGET_TYPE)" "sharedlib"
-   INSTALLNAME := -install_name $(LP)$(MODULE)$(SO)
-else
-   INSTALLNAME :=
-endif
-else
-   INSTALLNAME :=
-endif
+ECSLIBOPT := $(if $(STATIC_LIBRARY_TARGET),-staticlib,$(if $(SHARED_LIBRARY_TARGET),-dynamiclib,))
+FVISIBILITY := $(if $(WINDOWS_TARGET),,-fvisibility=hidden)
+FPIC := $(if $(WINDOWS_TARGET),,-fPIC)
+EXECUTABLE := $(if $(WINDOWS_TARGET),$(if $(EXECUTABLE_TARGET),$(CONSOLE),),)
+INSTALLNAME := $(if $(OSX_TARGET),$(if $(STATIC_LIBRARY_TARGET),-install_name $(LP)$(MODULE)$(SO),),)
 
 # LINKER OPTIONS
-ifdef OSX
-ifeq "$(TARGET_TYPE)" "sharedlib"
-   SHAREDLIB := -dynamiclib -single_module -multiply_defined suppress
-   LINKOPT :=
-else
-   SHAREDLIB :=
-   LINKOPT :=
-endif
-ifeq "$(TARGET_TYPE)" "sharedlib"
-   STRIPOPT := -x
-else
-   STRIPOPT := -u -r
-endif
-else
-ifeq "$(TARGET_TYPE)" "sharedlib"
-   SHAREDLIB := -shared
-else
-   SHAREDLIB :=
-endif
-   LINKOPT :=
-   STRIPOPT := -x --strip-unneeded --remove-section=.comment --remove-section=.note
-endif
-ifdef WINDOWS_TARGET
-   SODESTDIR := obj/$(TARGET_PLATFORM)/bin/
-else
-   SODESTDIR := obj/$(TARGET_PLATFORM)/lib/
-endif
+SHAREDLIB := $(if $(SHARED_LIBRARY_TARGET),$(if $(OSX_TARGET),-dynamiclib -single_module -multiply_defined suppress,-shared),)
+LINKOPT :=
+STRIPOPT := $(if $(OSX_TARGET),$(if $(SHARED_LIBRARY_TARGET),-x, -u -r), -x --strip-unneeded --remove-section=.comment --remove-section=.note)
+SODESTDIR := $(if $(WINDOWS_TARGET),obj/$(TARGET_PLATFORM)/bin/,obj/$(TARGET_PLATFORM)/lib/)
 
+# EXCLUDED_LIBS TOOL
 _L = $(if $(filter $(1),$(EXCLUDED_LIBS)),,-l$(1))
 
 # DEBIAN
@@ -238,9 +193,7 @@ OFLAGS += $(LDFLAGS)
 endif
 
 # COMMON LIBRARIES DETECTION
-
 ifdef WINDOWS_TARGET
-
 ifdef OPENSSL_CONF
 _OPENSSL_CONF = $(call hidspace,$(call fixps,$(OPENSSL_CONF)))
 OPENSSL_INCLUDE_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/include,$(_OPENSSL_CONF)))
@@ -252,9 +205,6 @@ OPENSSL_INCLUDE_DIR = .
 OPENSSL_LIB_DIR = .
 OPENSSL_BIN_DIR = .
 endif
-
 else
-
 OFLAGS += -L/usr/lib/ec
-
 endif

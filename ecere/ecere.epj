@@ -263,6 +263,8 @@
       {
          "Name" : "Vanilla",
          "Options" : {
+            "Warnings" : "None",
+            "Debug" : false,
             "NoLineNumbers" : true,
             "Optimization" : "Size",
             "PreprocessorDefinitions" : [

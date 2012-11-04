@@ -1,51 +1,42 @@
 .PHONY: all objdir clean realclean distclean
 
-# CONTENT
+# CORE VARIABLES
 
 MODULE := ecs
 CONFIG := release
+ifndef COMPILER
 COMPILER := default
+endif
+
 TARGET_TYPE = executable
 
-OBJ = obj/$(CONFIG).$(PLATFORM)/
+# FLAGS
 
-RES = 
-
-CONSOLE = -mconsole
-
-TARGET = obj/$(CONFIG).$(PLATFORM)/ecs$(E)
-
-OBJECTS = \
-	$(OBJ)ecs.o \
-	$(OBJ)$(MODULE).main$(O)
-
-COBJECTS = \
-	$(OBJ)ecs.c
-
-SYMBOLS = \
-	$(OBJ)ecs.sym
-
-IMPORTS = \
-	$(OBJ)ecs.imp
-
-SOURCES = \
-	ecs.ec
-
-RESOURCES = \
-	locale/zh_CN/LC_MESSAGES/ecs.mo \
-	locale/es_ES/LC_MESSAGES/ecs.mo
-
+ECFLAGS =
 ifndef DEBIAN_PACKAGE
 CFLAGS =
 endif
+CECFLAGS =
 OFLAGS =
+LDFLAGS =
+LIBS =
 
-# CROSS-PLATFORM MAGIC
+ifdef DEBUG
+NOSTRIP := y
+endif
 
-include ../../crossplatform.mk
-include ../../include.mk
+ifdef EXECUTABLE_TARGET
+CONSOLE = -mconsole
+endif
 
-# TOOLCHAIN
+# INCLUDES
+
+_CF_DIR = ../../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)include.mk
+
+# CUSTOM TOOLCHAIN / COMPILER CONFIG
 
 export LD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
 export DYLD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
@@ -54,25 +45,64 @@ ECC := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecc)
 ECS := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecs)
 EAR := $(call psep,../../obj/$(PLATFORM)/bin/ear)
 
-# FLAGS
+# END OF CUSTOM TOOLCHAIN / COMPILER CONFIG
 
-CFLAGS += -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w
+# POST-INCLUDES VARIABLES
 
-CECFLAGS =
+OBJ = obj/$(CONFIG).$(PLATFORM)/
 
-ECFLAGS = -nolinenumbers
+RES = 
 
+TARGET = obj/$(CONFIG).$(PLATFORM)/ecs$(E)
+
+_ECSOURCES = \
+	ecs.ec
+
+ECSOURCES = $(call shwspace,$(_ECSOURCES))
+
+COBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES)))))
+
+SYMBOLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES)))))
+
+IMPORTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES)))))
+
+ECOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES)))))
+
+BOWLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES)))))
+
+OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+
+SOURCES = $(ECSOURCES)
+
+RESOURCES = \
+	locale/zh_CN/LC_MESSAGES/ecs.mo \
+	locale/es_ES/LC_MESSAGES/ecs.mo
+
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+
+ifndef STATIC_LIBRARY_TARGET
+LIBS += \
+	$(call _L,ecere)
+endif
+
+CFLAGS += \
+	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w
+
+
+ECFLAGS += \
+	 -nolinenumbers
+
+
+
+
+CECFLAGS += -cpp $(call escspace,$(CPP))
+
+ifndef STATIC_LIBRARY_TARGET
 OFLAGS += $(FORCE_32_BIT) \
 	 -L../../obj/$(PLATFORM)/bin \
 	 -L../../obj/$(PLATFORM)/lib
-
-LIBS = -lecere $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
-
-UPXFLAGS = -9 -q
-
-# HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX_TARGET
-OFLAGS += -Wl,--no-undefined
+OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -92,12 +122,16 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
+ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ecs.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/ecs.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) $(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ecs.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) $(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ecs.mo "locale/es_ES/LC_MESSAGES"
+else
+	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
+endif
 	$(call cpq,$(TARGET),../../obj/$(PLATFORM)/bin/)
 
 # SYMBOL RULES
@@ -110,24 +144,24 @@ $(OBJ)ecs.sym: ecs.ec
 $(OBJ)ecs.c: ecs.ec $(OBJ)ecs.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ecs.ec -o $(OBJ)ecs.c -symbols $(OBJ)
 
-# IMPLICIT OBJECT RULE
-
-$(OBJ)%$(O) : $(OBJ)%.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $< -o $@
-
 # OBJECT RULES
+
+$(OBJ)ecs.o: $(OBJ)ecs.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ecs.c -o $(OBJ)ecs.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 clean: objdir
-	$(call rmq,$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
-	$(call rmq,$(OBJECTS))
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
+	$(call rmq,$(_OBJECTS))
+	$(call rmq,$(ECOBJECTS))
 	$(call rmq,$(COBJECTS))
+	$(call rmq,$(BOWLS))
 	$(call rmq,$(IMPORTS))
 	$(call rmq,$(SYMBOLS))
 
-realclean:
+realclean: clean
 	$(call rmrq,$(OBJ))
 
 distclean:

@@ -1,25 +1,57 @@
-.PHONY: objdir clean cleantarget realclean distclean nores
+.PHONY: all objdir clean cleantarget realclean distclean nores
 
-# CONTENT
+# CORE VARIABLES
 
 MODULE := ecere
 CONFIG := release
+ifndef COMPILER
 COMPILER := default
+endif
+
 TARGET_TYPE = sharedlib
+
+# FLAGS
+
+ECFLAGS =
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+CECFLAGS =
+OFLAGS =
+LDFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+ifdef EXECUTABLE_TARGET
+CONSOLE = -mwindows
+endif
+
+# INCLUDES
+
+_CF_DIR = ../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)include.mk
+
+# CUSTOM TOOLCHAIN / COMPILER CONFIG
+
+export LD_LIBRARY_PATH=../obj/$(PLATFORM)/lib
+export DYLD_LIBRARY_PATH=../obj/$(PLATFORM)/lib
+ECP := $(call psep,../compiler/bootstrap/obj/bin.$(PLATFORM)/ecp$(E))
+ECC := $(call psep,../compiler/bootstrap/obj/bin.$(PLATFORM)/ecc$(E))
+ECS := $(call psep,../compiler/bootstrap/obj/bin.$(PLATFORM)/ecs$(E))
+EAR := $(call psep,../obj/$(PLATFORM)/bin/ear)
+
+# END OF CUSTOM TOOLCHAIN / COMPILER CONFIG
+
+# POST-INCLUDES VARIABLES
 
 OBJ = obj/$(CONFIG).$(PLATFORM)/
 
 RES = res/
-
-ifndef DEBIAN_PACKAGE
-CFLAGS =
-endif
-OFLAGS =
-
-# CROSS-PLATFORM MAGIC
-
-include ../crossplatform.mk
-include ../include.mk
 
 ifdef LINUX_TARGET
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)$(MODULE)$(SO).0.44
@@ -29,553 +61,8 @@ TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)$(MODULE)$(SO)
 SONAME =
 endif
 
-OBJECTS = $(OBJECTS1) $(OBJECTS2) $(OBJECTS3) $(OBJECTS4)
-OBJECTS1 = \
-	$(OBJ)Archive.o \
-	$(OBJ)BufferedFile.o \
-	$(OBJ)Date.o \
-	$(OBJ)DualPipe.o \
-	$(OBJ)EARArchive.o \
-	$(OBJ)File.o \
-	$(OBJ)FileMonitor.o \
-	$(OBJ)GlobalAppSettings.o \
-	$(OBJ)JSON.o \
-	$(OBJ)JSONGlobalSettings.o \
-	$(OBJ)memory.o \
-	$(OBJ)Mutex.o \
-	$(OBJ)Semaphore.o \
-	$(OBJ)System.o \
-	$(OBJ)TempFile.o \
-	$(OBJ)Thread.o \
-	$(OBJ)Time.o \
-	$(OBJ)unicode.o \
-	$(OBJ)units.o \
-	$(OBJ)File.c.o \
-	$(OBJ)DualPipe.c.o \
-	$(OBJ)System.c.o \
-	$(OBJ)i18n.o \
-	$(OBJ)Cube.o \
-	$(OBJ)SkyBox.o \
-	$(OBJ)Sphere.o \
-	$(OBJ)Object3DSFormat.o \
-	$(OBJ)Camera.o \
-	$(OBJ)Matrix.o \
-	$(OBJ)Mesh.o \
-	$(OBJ)Object.o \
-	$(OBJ)Plane.o \
-	$(OBJ)Quaternion.o \
-	$(OBJ)Vector3D.o \
-	$(OBJ)BMPFormat.o \
-	$(OBJ)GIFFormat.o \
-	$(OBJ)JPEGFormat.o \
-	$(OBJ)PCXFormat.o \
-	$(OBJ)PNGFormat.o \
-	$(OBJ)RGBFormat.o \
-	$(OBJ)harfbuzz-freetype.o \
-	$(OBJ)harfbuzz-unicode-tables.o \
-	$(OBJ)harfbuzz-unicode.o \
-	$(OBJ)harfbuzz-arabic.o \
-	$(OBJ)harfbuzz-buffer.o \
-	$(OBJ)harfbuzz-gdef.o \
-	$(OBJ)harfbuzz-gpos.o \
-	$(OBJ)harfbuzz-gsub.o \
-	$(OBJ)harfbuzz-hangul.o
-OBJECTS2 = \
-	$(OBJ)harfbuzz-hebrew.o \
-	$(OBJ)harfbuzz-indic.o \
-	$(OBJ)harfbuzz-khmer.o \
-	$(OBJ)harfbuzz-myanmar.o \
-	$(OBJ)harfbuzz-open.o \
-	$(OBJ)harfbuzz-shaper.o \
-	$(OBJ)harfbuzz-stream.o \
-	$(OBJ)harfbuzz-tibetan.o \
-	$(OBJ)harfbuzz-impl.o \
-	$(OBJ)harfbuzz-thai.o \
-	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D8DisplayDriver.o,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D9DisplayDriver.o,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)DirectDrawDisplayDriver.o,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)GDIDisplayDriver.o,) \
-	$(OBJ)lfbBlit.o \
-	$(OBJ)lfbConvert.o \
-	$(OBJ)LFBDisplayDriver.o \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesDisplayDriver.o,) \
-	$(if $(OSX_TARGET),,$(OBJ)OpenGLDisplayDriver.o) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32BitmapPrinterDisplayDriver.o,) \
-	$(if $(OSX),$(OBJ)CocoaOpenGLDisplayDriver.o,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleDisplayDriver.o,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32PrinterDisplayDriver.o,) \
-	$(if $(LINUX_TARGET),$(OBJ)XDisplayDriver.o,) \
-	$(OBJ)Bitmap.o \
-	$(OBJ)BitmapResource.o \
-	$(OBJ)Color.o \
-	$(OBJ)Display.o \
-	$(OBJ)DisplaySystem.o \
-	$(OBJ)FontResource.o \
-	$(OBJ)Resource.o \
-	$(OBJ)Surface.o \
-	$(OBJ)Button.o \
-	$(OBJ)CalendarControl.o \
-	$(OBJ)DataBox.o
-OBJECTS3 = \
-	$(OBJ)DropBox.o \
-	$(OBJ)EditBox.o \
-	$(OBJ)Label.o \
-	$(OBJ)ListBox.o \
-	$(OBJ)Menu.o \
-	$(OBJ)Picture.o \
-	$(OBJ)ProgressBar.o \
-	$(OBJ)ScrollBar.o \
-	$(OBJ)StatusBar.o \
-	$(OBJ)TabControl.o \
-	$(OBJ)PaneSplitter.o \
-	$(OBJ)Stacker.o \
-	$(OBJ)PathBox.o \
-	$(OBJ)ToolTip.o \
-	$(OBJ)SelectorBar.o \
-	$(OBJ)ColorPicker.o \
-	$(OBJ)FileDialog.o \
-	$(OBJ)FindDialog.o \
-	$(OBJ)GoToDialog.o \
-	$(OBJ)MessageBox.o \
-	$(OBJ)ReplaceDialog.o \
-	$(OBJ)WindowList.o \
-	$(if $(OSX_TARGET),$(OBJ)CocoaDispatch.o,) \
-	$(if $(OSX_TARGET),$(OBJ)CocoaEcereBridge.o,) \
-	$(if $(OSX_TARGET),$(OBJ)CocoaInterface.o,) \
-	$(if $(OSX_TARGET),$(OBJ)EcereView.o,) \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesInterface.o,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32Interface.o,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleInterface.o,) \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)XInterface.o,) \
-	$(OBJ)TVisionSkin.o \
-	$(OBJ)WindowsSkin.o \
-	$(OBJ)Anchor.o \
-	$(OBJ)ClipBoard.o \
-	$(OBJ)Cursor.o \
-	$(OBJ)Desktop3D.o \
-	$(OBJ)FormDesigner.o \
-	$(OBJ)GuiApplication.o \
-	$(OBJ)Interface.o \
-	$(OBJ)Key.o \
-	$(OBJ)Skin.o \
-	$(OBJ)Timer.o
-OBJECTS4 = \
-	$(OBJ)typeEdit.o \
-	$(OBJ)Window.o \
-	$(OBJ)dcom.o \
-	$(OBJ)HTTPFile.o \
-	$(OBJ)network.o \
-	$(OBJ)NetworkClientFile.o \
-	$(OBJ)Service.o \
-	$(OBJ)Socket.o \
-	$(OBJ)Array.o \
-	$(OBJ)AVLTree.o \
-	$(OBJ)BuiltInContainer.o \
-	$(OBJ)Container.o \
-	$(OBJ)CustomAVLTree.o \
-	$(OBJ)LinkList.o \
-	$(OBJ)List.o \
-	$(OBJ)Map.o \
-	$(OBJ)BinaryTree.o \
-	$(OBJ)BTNode.o \
-	$(OBJ)dataTypes.o \
-	$(OBJ)instance.o \
-	$(OBJ)String.o \
-	$(OBJ)OldList.o \
-	$(OBJ)instance.c.o \
-	$(OBJ)$(MODULE).main$(O)
-
-COBJECTS = $(COBJECTS1) $(COBJECTS2) $(COBJECTS3)
-COBJECTS1 = \
-	$(OBJ)Archive.c \
-	$(OBJ)BufferedFile.c \
-	$(OBJ)Date.c \
-	$(OBJ)DualPipe.c \
-	$(OBJ)EARArchive.c \
-	$(OBJ)File.c \
-	$(OBJ)FileMonitor.c \
-	$(OBJ)GlobalAppSettings.c \
-	$(OBJ)JSON.c \
-	$(OBJ)JSONGlobalSettings.c \
-	$(OBJ)memory.c \
-	$(OBJ)Mutex.c \
-	$(OBJ)Semaphore.c \
-	$(OBJ)System.c \
-	$(OBJ)TempFile.c \
-	$(OBJ)Thread.c \
-	$(OBJ)Time.c \
-	$(OBJ)unicode.c \
-	$(OBJ)units.c \
-	$(OBJ)i18n.c \
-	$(OBJ)Cube.c \
-	$(OBJ)SkyBox.c \
-	$(OBJ)Sphere.c \
-	$(OBJ)Object3DSFormat.c \
-	$(OBJ)Camera.c \
-	$(OBJ)Matrix.c \
-	$(OBJ)Mesh.c \
-	$(OBJ)Object.c \
-	$(OBJ)Plane.c \
-	$(OBJ)Quaternion.c \
-	$(OBJ)Vector3D.c \
-	$(OBJ)BMPFormat.c \
-	$(OBJ)GIFFormat.c \
-	$(OBJ)JPEGFormat.c \
-	$(OBJ)PCXFormat.c \
-	$(OBJ)PNGFormat.c \
-	$(OBJ)RGBFormat.c \
-	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D8DisplayDriver.c,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D9DisplayDriver.c,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)DirectDrawDisplayDriver.c,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)GDIDisplayDriver.c,) \
-	$(OBJ)lfbBlit.c \
-	$(OBJ)lfbConvert.c \
-	$(OBJ)LFBDisplayDriver.c \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesDisplayDriver.c,)
-COBJECTS2 = \
-	$(if $(OSX_TARGET),,$(OBJ)OpenGLDisplayDriver.c) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32BitmapPrinterDisplayDriver.c,) \
-	$(if $(OSX_TARGET),$(OBJ)CocoaOpenGLDisplayDriver.c,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleDisplayDriver.c,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32PrinterDisplayDriver.c,) \
-	$(if $(LINUX_TARGET),$(OBJ)XDisplayDriver.c,) \
-	$(OBJ)Bitmap.c \
-	$(OBJ)BitmapResource.c \
-	$(OBJ)Color.c \
-	$(OBJ)Display.c \
-	$(OBJ)DisplaySystem.c \
-	$(OBJ)FontResource.c \
-	$(OBJ)Resource.c \
-	$(OBJ)Surface.c \
-	$(OBJ)Button.c \
-	$(OBJ)CalendarControl.c \
-	$(OBJ)DataBox.c \
-	$(OBJ)DropBox.c \
-	$(OBJ)EditBox.c \
-	$(OBJ)Label.c \
-	$(OBJ)ListBox.c \
-	$(OBJ)Menu.c \
-	$(OBJ)Picture.c \
-	$(OBJ)ProgressBar.c \
-	$(OBJ)ScrollBar.c \
-	$(OBJ)StatusBar.c \
-	$(OBJ)TabControl.c \
-	$(OBJ)PaneSplitter.c \
-	$(OBJ)Stacker.c \
-	$(OBJ)PathBox.c \
-	$(OBJ)ToolTip.c \
-	$(OBJ)SelectorBar.c \
-	$(OBJ)ColorPicker.c \
-	$(OBJ)FileDialog.c \
-	$(OBJ)FindDialog.c \
-	$(OBJ)GoToDialog.c \
-	$(OBJ)MessageBox.c \
-	$(OBJ)ReplaceDialog.c \
-	$(OBJ)WindowList.c \
-	$(if $(OSX_TARGET),$(OBJ)CocoaDispatch.c,)
-COBJECTS3 = \
-	$(if $(OSX_TARGET),$(OBJ)CocoaInterface.c,) \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesInterface.c,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32Interface.c,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleInterface.c,) \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)XInterface.c,) \
-	$(OBJ)TVisionSkin.c \
-	$(OBJ)WindowsSkin.c \
-	$(OBJ)Anchor.c \
-	$(OBJ)ClipBoard.c \
-	$(OBJ)Cursor.c \
-	$(OBJ)Desktop3D.c \
-	$(OBJ)FormDesigner.c \
-	$(OBJ)GuiApplication.c \
-	$(OBJ)Interface.c \
-	$(OBJ)Key.c \
-	$(OBJ)Skin.c \
-	$(OBJ)Timer.c \
-	$(OBJ)typeEdit.c \
-	$(OBJ)Window.c \
-	$(OBJ)dcom.c \
-	$(OBJ)HTTPFile.c \
-	$(OBJ)network.c \
-	$(OBJ)NetworkClientFile.c \
-	$(OBJ)Service.c \
-	$(OBJ)Socket.c \
-	$(OBJ)Array.c \
-	$(OBJ)AVLTree.c \
-	$(OBJ)BuiltInContainer.c \
-	$(OBJ)Container.c \
-	$(OBJ)CustomAVLTree.c \
-	$(OBJ)LinkList.c \
-	$(OBJ)List.c \
-	$(OBJ)Map.c \
-	$(OBJ)BinaryTree.c \
-	$(OBJ)BTNode.c \
-	$(OBJ)dataTypes.c \
-	$(OBJ)instance.c \
-	$(OBJ)String.c \
-	$(OBJ)OldList.c
-
-SYMBOLS = $(SYMBOLS1) $(SYMBOLS2) $(SYMBOLS3) $(SYMBOLS4)
-SYMBOLS1 = \
-	$(OBJ)Archive.sym \
-	$(OBJ)BufferedFile.sym \
-	$(OBJ)Date.sym \
-	$(OBJ)DualPipe.sym \
-	$(OBJ)EARArchive.sym \
-	$(OBJ)File.sym \
-	$(OBJ)FileMonitor.sym \
-	$(OBJ)GlobalAppSettings.sym \
-	$(OBJ)JSON.sym \
-	$(OBJ)JSONGlobalSettings.sym \
-	$(OBJ)memory.sym \
-	$(OBJ)Mutex.sym \
-	$(OBJ)Semaphore.sym \
-	$(OBJ)System.sym \
-	$(OBJ)TempFile.sym \
-	$(OBJ)Thread.sym \
-	$(OBJ)Time.sym \
-	$(OBJ)unicode.sym \
-	$(OBJ)units.sym \
-	$(OBJ)i18n.sym \
-	$(OBJ)Cube.sym \
-	$(OBJ)SkyBox.sym \
-	$(OBJ)Sphere.sym \
-	$(OBJ)Object3DSFormat.sym \
-	$(OBJ)Camera.sym \
-	$(OBJ)Matrix.sym \
-	$(OBJ)Mesh.sym \
-	$(OBJ)Object.sym \
-	$(OBJ)Plane.sym \
-	$(OBJ)Quaternion.sym \
-	$(OBJ)Vector3D.sym \
-	$(OBJ)BMPFormat.sym \
-	$(OBJ)GIFFormat.sym \
-	$(OBJ)JPEGFormat.sym \
-	$(OBJ)PCXFormat.sym \
-	$(OBJ)PNGFormat.sym \
-	$(OBJ)RGBFormat.sym \
-	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D8DisplayDriver.sym,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D9DisplayDriver.sym,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)DirectDrawDisplayDriver.sym,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)GDIDisplayDriver.sym,) \
-	$(OBJ)lfbBlit.sym \
-	$(OBJ)lfbConvert.sym \
-	$(OBJ)LFBDisplayDriver.sym
-SYMBOLS2 = \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesDisplayDriver.sym,) \
-	$(if $(OSX_TARGET),,$(OBJ)OpenGLDisplayDriver.sym) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32BitmapPrinterDisplayDriver.sym,) \
-	$(if $(OSX_TARGET),$(OBJ)CocoaOpenGLDisplayDriver.sym,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleDisplayDriver.sym,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32PrinterDisplayDriver.sym,) \
-	$(if $(LINUX_TARGET),$(OBJ)XDisplayDriver.sym,) \
-	$(OBJ)Bitmap.sym \
-	$(OBJ)BitmapResource.sym \
-	$(OBJ)Color.sym \
-	$(OBJ)Display.sym \
-	$(OBJ)DisplaySystem.sym \
-	$(OBJ)FontResource.sym \
-	$(OBJ)Resource.sym \
-	$(OBJ)Surface.sym \
-	$(OBJ)Button.sym \
-	$(OBJ)CalendarControl.sym \
-	$(OBJ)DataBox.sym \
-	$(OBJ)DropBox.sym \
-	$(OBJ)EditBox.sym \
-	$(OBJ)Label.sym \
-	$(OBJ)ListBox.sym \
-	$(OBJ)Menu.sym \
-	$(OBJ)Picture.sym \
-	$(OBJ)ProgressBar.sym \
-	$(OBJ)ScrollBar.sym \
-	$(OBJ)StatusBar.sym \
-	$(OBJ)TabControl.sym \
-	$(OBJ)PaneSplitter.sym \
-	$(OBJ)Stacker.sym \
-	$(OBJ)PathBox.sym \
-	$(OBJ)ToolTip.sym \
-	$(OBJ)SelectorBar.sym \
-	$(OBJ)ColorPicker.sym \
-	$(OBJ)FileDialog.sym \
-	$(OBJ)FindDialog.sym \
-	$(OBJ)GoToDialog.sym
-SYMBOLS3 = \
-	$(OBJ)MessageBox.sym \
-	$(OBJ)ReplaceDialog.sym \
-	$(OBJ)WindowList.sym \
-	$(if $(OSX_TARGET),$(OBJ)CocoaDispatch.sym,) \
-	$(if $(OSX_TARGET),$(OBJ)CocoaInterface.sym,) \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesInterface.sym,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32Interface.sym,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleInterface.sym,) \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)XInterface.sym,) \
-	$(OBJ)TVisionSkin.sym \
-	$(OBJ)WindowsSkin.sym \
-	$(OBJ)Anchor.sym \
-	$(OBJ)ClipBoard.sym \
-	$(OBJ)Cursor.sym \
-	$(OBJ)Desktop3D.sym \
-	$(OBJ)FormDesigner.sym \
-	$(OBJ)GuiApplication.sym \
-	$(OBJ)Interface.sym \
-	$(OBJ)Key.sym \
-	$(OBJ)Skin.sym \
-	$(OBJ)Timer.sym \
-	$(OBJ)typeEdit.sym \
-	$(OBJ)Window.sym \
-	$(OBJ)dcom.sym \
-	$(OBJ)HTTPFile.sym \
-	$(OBJ)network.sym \
-	$(OBJ)NetworkClientFile.sym \
-	$(OBJ)Service.sym \
-	$(OBJ)Socket.sym \
-	$(OBJ)Array.sym \
-	$(OBJ)AVLTree.sym \
-	$(OBJ)BuiltInContainer.sym \
-	$(OBJ)Container.sym \
-	$(OBJ)CustomAVLTree.sym \
-	$(OBJ)LinkList.sym \
-	$(OBJ)List.sym \
-	$(OBJ)Map.sym \
-	$(OBJ)BinaryTree.sym \
-	$(OBJ)BTNode.sym \
-	$(OBJ)dataTypes.sym \
-	$(OBJ)instance.sym
-SYMBOLS4 = \
-	$(OBJ)String.sym \
-	$(OBJ)OldList.sym
-
-IMPORTS = $(IMPORTS1) $(IMPORTS2) $(IMPORTS3) $(IMPORTS4)
-IMPORTS1 = \
-	$(OBJ)Archive.imp \
-	$(OBJ)BufferedFile.imp \
-	$(OBJ)Date.imp \
-	$(OBJ)DualPipe.imp \
-	$(OBJ)EARArchive.imp \
-	$(OBJ)File.imp \
-	$(OBJ)FileMonitor.imp \
-	$(OBJ)GlobalAppSettings.imp \
-	$(OBJ)JSON.imp \
-	$(OBJ)JSONGlobalSettings.imp \
-	$(OBJ)memory.imp \
-	$(OBJ)Mutex.imp \
-	$(OBJ)Semaphore.imp \
-	$(OBJ)System.imp \
-	$(OBJ)TempFile.imp \
-	$(OBJ)Thread.imp \
-	$(OBJ)Time.imp \
-	$(OBJ)unicode.imp \
-	$(OBJ)units.imp \
-	$(OBJ)i18n.imp \
-	$(OBJ)Cube.imp \
-	$(OBJ)SkyBox.imp \
-	$(OBJ)Sphere.imp \
-	$(OBJ)Object3DSFormat.imp \
-	$(OBJ)Camera.imp \
-	$(OBJ)Matrix.imp \
-	$(OBJ)Mesh.imp \
-	$(OBJ)Object.imp \
-	$(OBJ)Plane.imp \
-	$(OBJ)Quaternion.imp \
-	$(OBJ)Vector3D.imp \
-	$(OBJ)BMPFormat.imp \
-	$(OBJ)GIFFormat.imp \
-	$(OBJ)JPEGFormat.imp \
-	$(OBJ)PCXFormat.imp \
-	$(OBJ)PNGFormat.imp \
-	$(OBJ)RGBFormat.imp \
-	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D8DisplayDriver.imp,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Direct3D9DisplayDriver.imp,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)DirectDrawDisplayDriver.imp,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)GDIDisplayDriver.imp,) \
-	$(OBJ)lfbBlit.imp \
-	$(OBJ)lfbConvert.imp \
-	$(OBJ)LFBDisplayDriver.imp
-IMPORTS2 = \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesDisplayDriver.imp,) \
-	$(if $(OSX_TARGET),,$(OBJ)OpenGLDisplayDriver.imp) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32BitmapPrinterDisplayDriver.imp,) \
-	$(if $(OSX_TARGET),$(OBJ)CocoaOpenGLDisplayDriver.imp,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleDisplayDriver.imp,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32PrinterDisplayDriver.imp,) \
-	$(if $(LINUX_TARGET),$(OBJ)XDisplayDriver.imp,) \
-	$(OBJ)Bitmap.imp \
-	$(OBJ)BitmapResource.imp \
-	$(OBJ)Color.imp \
-	$(OBJ)Display.imp \
-	$(OBJ)DisplaySystem.imp \
-	$(OBJ)FontResource.imp \
-	$(OBJ)Resource.imp \
-	$(OBJ)Surface.imp \
-	$(OBJ)Button.imp \
-	$(OBJ)CalendarControl.imp \
-	$(OBJ)DataBox.imp \
-	$(OBJ)DropBox.imp \
-	$(OBJ)EditBox.imp \
-	$(OBJ)Label.imp \
-	$(OBJ)ListBox.imp \
-	$(OBJ)Menu.imp \
-	$(OBJ)Picture.imp \
-	$(OBJ)ProgressBar.imp \
-	$(OBJ)ScrollBar.imp \
-	$(OBJ)StatusBar.imp \
-	$(OBJ)TabControl.imp \
-	$(OBJ)PaneSplitter.imp \
-	$(OBJ)Stacker.imp \
-	$(OBJ)PathBox.imp \
-	$(OBJ)ToolTip.imp \
-	$(OBJ)SelectorBar.imp \
-	$(OBJ)ColorPicker.imp \
-	$(OBJ)FileDialog.imp \
-	$(OBJ)FindDialog.imp \
-	$(OBJ)GoToDialog.imp
-IMPORTS3 = \
-	$(OBJ)MessageBox.imp \
-	$(OBJ)ReplaceDialog.imp \
-	$(OBJ)WindowList.imp \
-	$(if $(OSX_TARGET),$(OBJ)CocoaDispatch.imp,) \
-	$(if $(OSX_TARGET),$(OBJ)CocoaInterface.imp,) \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)NCursesInterface.imp,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32Interface.imp,) \
-	$(if $(WINDOWS_TARGET),$(OBJ)Win32ConsoleInterface.imp,) \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),$(OBJ)XInterface.imp,) \
-	$(OBJ)TVisionSkin.imp \
-	$(OBJ)WindowsSkin.imp \
-	$(OBJ)Anchor.imp \
-	$(OBJ)ClipBoard.imp \
-	$(OBJ)Cursor.imp \
-	$(OBJ)Desktop3D.imp \
-	$(OBJ)FormDesigner.imp \
-	$(OBJ)GuiApplication.imp \
-	$(OBJ)Interface.imp \
-	$(OBJ)Key.imp \
-	$(OBJ)Skin.imp \
-	$(OBJ)Timer.imp \
-	$(OBJ)typeEdit.imp \
-	$(OBJ)Window.imp \
-	$(OBJ)dcom.imp \
-	$(OBJ)HTTPFile.imp \
-	$(OBJ)network.imp \
-	$(OBJ)NetworkClientFile.imp \
-	$(OBJ)Service.imp \
-	$(OBJ)Socket.imp \
-	$(OBJ)Array.imp \
-	$(OBJ)AVLTree.imp \
-	$(OBJ)BuiltInContainer.imp \
-	$(OBJ)Container.imp \
-	$(OBJ)CustomAVLTree.imp \
-	$(OBJ)LinkList.imp \
-	$(OBJ)List.imp \
-	$(OBJ)Map.imp \
-	$(OBJ)BinaryTree.imp \
-	$(OBJ)BTNode.imp \
-	$(OBJ)dataTypes.imp \
-	$(OBJ)instance.imp
-IMPORTS4 = \
-	$(OBJ)String.imp \
-	$(OBJ)OldList.imp
-
-SOURCES = $(SOURCES1) $(SOURCES2) $(SOURCES3) $(SOURCES4)
-SOURCES1 = \
+_ECSOURCES = $(_ECSOURCES1) $(_ECSOURCES2) $(_ECSOURCES3)
+_ECSOURCES1 = \
 	src/sys/Archive.ec \
 	src/sys/BufferedFile.ec \
 	src/sys/Date.ec \
@@ -595,10 +82,8 @@ SOURCES1 = \
 	src/sys/Time.ec \
 	src/sys/unicode.ec \
 	src/sys/units.ec \
-	src/sys/File.c \
-	src/sys/DualPipe.c \
-	src/sys/System.c \
 	src/sys/i18n.ec \
+	src/sys/Condition.ec \
 	src/gfx/3D/meshes/Cube.ec \
 	src/gfx/3D/meshes/SkyBox.ec \
 	src/gfx/3D/meshes/Sphere.ec \
@@ -616,26 +101,6 @@ SOURCES1 = \
 	src/gfx/bitmaps/PCXFormat.ec \
 	src/gfx/bitmaps/PNGFormat.ec \
 	src/gfx/bitmaps/RGBFormat.ec \
-	src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c \
-	src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode-tables.c \
-	src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-arabic.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-buffer.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-gdef.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-gpos.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-gsub.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-hangul.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-hebrew.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-indic.c
-SOURCES2 = \
-	src/gfx/drivers/harfbuzz/harfbuzz-khmer.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-myanmar.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-open.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-shaper.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-stream.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-impl.c \
-	src/gfx/drivers/harfbuzz/harfbuzz-thai.c \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Direct3D8DisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Direct3D9DisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/DirectDrawDisplayDriver.ec,) \
@@ -645,7 +110,8 @@ SOURCES2 = \
 	src/gfx/drivers/LFBDisplayDriver.ec \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/NCursesDisplayDriver.ec,) \
 	$(if $(OSX_TARGET),,src/gfx/drivers/OpenGLDisplayDriver.ec) \
-	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec,) \
+	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec,)
+_ECSOURCES2 = \
 	$(if $(OSX_TARGET),src/gfx/drivers/CocoaOpenGLDisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32ConsoleDisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32PrinterDisplayDriver.ec,) \
@@ -662,8 +128,7 @@ SOURCES2 = \
 	src/gui/controls/CalendarControl.ec \
 	src/gui/controls/DataBox.ec \
 	src/gui/controls/DropBox.ec \
-	src/gui/controls/EditBox.ec
-SOURCES3 = \
+	src/gui/controls/EditBox.ec \
 	src/gui/controls/Label.ec \
 	src/gui/controls/ListBox.ec \
 	src/gui/controls/Menu.ec \
@@ -685,10 +150,9 @@ SOURCES3 = \
 	src/gui/dialogs/ReplaceDialog.ec \
 	src/gui/dialogs/WindowList.ec \
 	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaDispatch.ec,) \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
 	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaInterface.ec,) \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/EcereView.m,) \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/NCursesInterface.ec,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/NCursesInterface.ec,)
+_ECSOURCES3 = \
 	$(if $(WINDOWS_TARGET),src/gui/drivers/Win32Interface.ec,) \
 	$(if $(WINDOWS_TARGET),src/gui/drivers/Win32ConsoleInterface.ec,) \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/XInterface.ec,) \
@@ -709,8 +173,7 @@ SOURCES3 = \
 	src/net/dcom.ec \
 	src/net/HTTPFile.ec \
 	src/net/network.ec \
-	src/net/NetworkClientFile.ec
-SOURCES4 = \
+	src/net/NetworkClientFile.ec \
 	src/net/Service.ec \
 	src/net/Socket.ec \
 	src/com/containers/Array.ec \
@@ -726,7 +189,92 @@ SOURCES4 = \
 	src/com/dataTypes.ec \
 	src/com/instance.ec \
 	src/com/String.ec \
-	src/com/OldList.ec \
+	src/com/OldList.ec
+
+ECSOURCES = $(call shwspace,$(_ECSOURCES))
+ECSOURCES1 = $(call shwspace,$(_ECSOURCES1))
+ECSOURCES2 = $(call shwspace,$(_ECSOURCES2))
+ECSOURCES3 = $(call shwspace,$(_ECSOURCES3))
+
+COBJECTS = $(COBJECTS1) $(COBJECTS2) $(COBJECTS3)
+COBJECTS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES1)))))
+COBJECTS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES2)))))
+COBJECTS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES3)))))
+
+SYMBOLS = $(SYMBOLS1) $(SYMBOLS2) $(SYMBOLS3)
+SYMBOLS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES1)))))
+SYMBOLS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES2)))))
+SYMBOLS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES3)))))
+
+IMPORTS = $(IMPORTS1) $(IMPORTS2) $(IMPORTS3)
+IMPORTS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES1)))))
+IMPORTS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES2)))))
+IMPORTS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES3)))))
+
+ECOBJECTS = $(ECOBJECTS1) $(ECOBJECTS2) $(ECOBJECTS3)
+ECOBJECTS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES1)))))
+ECOBJECTS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES2)))))
+ECOBJECTS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES3)))))
+
+BOWLS = $(BOWLS1) $(BOWLS2) $(BOWLS3)
+BOWLS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES1)))))
+BOWLS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES2)))))
+BOWLS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES3)))))
+
+_OBJECTS = \
+	$(OBJ)File.c.o \
+	$(OBJ)DualPipe.c.o \
+	$(OBJ)System.c.o \
+	$(OBJ)harfbuzz-freetype.o \
+	$(OBJ)harfbuzz-unicode-tables.o \
+	$(OBJ)harfbuzz-unicode.o \
+	$(OBJ)harfbuzz-arabic.o \
+	$(OBJ)harfbuzz-buffer.o \
+	$(OBJ)harfbuzz-gdef.o \
+	$(OBJ)harfbuzz-gpos.o \
+	$(OBJ)harfbuzz-gsub.o \
+	$(OBJ)harfbuzz-hangul.o \
+	$(OBJ)harfbuzz-hebrew.o \
+	$(OBJ)harfbuzz-indic.o \
+	$(OBJ)harfbuzz-khmer.o \
+	$(OBJ)harfbuzz-myanmar.o \
+	$(OBJ)harfbuzz-open.o \
+	$(OBJ)harfbuzz-shaper.o \
+	$(OBJ)harfbuzz-stream.o \
+	$(OBJ)harfbuzz-tibetan.o \
+	$(OBJ)harfbuzz-impl.o \
+	$(OBJ)harfbuzz-thai.o \
+	$(if $(OSX_TARGET),$(OBJ)CocoaEcereBridge.o,) \
+	$(if $(OSX_TARGET),$(OBJ)EcereView.o,) \
+	$(OBJ)instance.c.o
+
+OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+
+SOURCES = $(ECSOURCES) \
+	src/sys/File.c \
+	src/sys/DualPipe.c \
+	src/sys/System.c \
+	src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c \
+	src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode-tables.c \
+	src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-arabic.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-buffer.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-gdef.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-gpos.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-gsub.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-hangul.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-hebrew.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-indic.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-khmer.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-myanmar.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-open.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-shaper.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-stream.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-impl.c \
+	src/gfx/drivers/harfbuzz/harfbuzz-thai.c \
+	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
+	$(if $(OSX_TARGET),src/gui/drivers/cocoa/EcereView.m,) \
 	src/com/instance.c
 
 RESOURCES = $(RESOURCES1) $(RESOURCES2) $(RESOURCES3)
@@ -742,6 +290,9 @@ RESOURCES1 = \
 	$(RES)actions/listRemove.png \
 	$(RES)actions/viewRefresh.png \
 	$(RES)actions/windowNew.png \
+	$(RES)actions/clean.png \
+	$(RES)actions/docSave.png \
+	$(RES)actions/docNew.png \
 	$(RES)constructs/class.png \
 	$(RES)constructs/data.png \
 	$(RES)constructs/dataPrivate.png \
@@ -777,10 +328,10 @@ RESOURCES1 = \
 	$(RES)cursors/sizeEastWest.png \
 	$(RES)cursors/sizeNortEastSouthWest.png \
 	$(RES)cursors/sizeNorthSouth.png \
-	$(RES)cursors/sizeNortWestSouthEast.png \
-	$(RES)devices/computer.png \
-	$(RES)devices/driveHardDisk.png
+	$(RES)cursors/sizeNortWestSouthEast.png
 RESOURCES2 = \
+	$(RES)devices/computer.png \
+	$(RES)devices/driveHardDisk.png \
 	$(RES)devices/driveRemovableMedia.png \
 	$(RES)devices/mediaFloppy.png \
 	$(RES)devices/mediaOptical.png \
@@ -820,10 +371,10 @@ RESOURCES2 = \
 	$(RES)mimeTypes/textEcereProject.png \
 	$(RES)mimeTypes/textEcereSource.png \
 	$(RES)mimeTypes/textEcereWorkspace.png \
-	$(RES)mimeTypes/textHyperTextMarkup.png \
-	$(RES)mimeTypes/brokenFile.png \
-	$(RES)places/driveRemote.png
+	$(RES)mimeTypes/textHyperTextMarkup.png
 RESOURCES3 = \
+	$(RES)mimeTypes/brokenFile.png \
+	$(RES)places/driveRemote.png \
 	$(RES)places/folder.png \
 	$(RES)places/folderRemote.png \
 	$(RES)places/networkServer.png \
@@ -835,96 +386,134 @@ RESOURCES3 = \
 	locale/zh_CN/LC_MESSAGES/ecere.mo \
 	locale/es_ES/LC_MESSAGES/ecere.mo
 
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-# TOOLCHAIN
-export LD_LIBRARY_PATH=../obj/$(PLATFORM)/lib
-export DYLD_LIBRARY_PATH=../obj/$(PLATFORM)/lib
-ECP := $(call psep,../compiler/bootstrap/obj/bin.$(PLATFORM)/ecp$(E))
-ECC := $(call psep,../compiler/bootstrap/obj/bin.$(PLATFORM)/ecc$(E))
-ECS := $(call psep,../compiler/bootstrap/obj/bin.$(PLATFORM)/ecs$(E))
-EAR := $(call psep,../obj/$(PLATFORM)/bin/ear)
-
-# FLAGS
-
-CFLAGS += -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w \
-	 -DBUILDING_ECERE_COM \
-	 -Isrc/gfx/drivers/harfbuzz
-
-CECFLAGS =
-
-ECFLAGS = -nolinenumbers -defaultns ecere
-
-OFLAGS += $(FORCE_32_BIT)
-
-LIBS = -ljpeg -lpng -lz -lfreetype $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
-
-UPXFLAGS = -9 -q
-
-# HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX_TARGET
-OFLAGS += -Wl,--no-undefined
+ifndef STATIC_LIBRARY_TARGET
+LIBS += \
+	$(call _L,jpeg) \
+	$(call _L,png) \
+	$(call _L,z) \
+	$(call _L,freetype)
 endif
 
-ifdef OSX
-OFLAGS += -framework cocoa -framework OpenGL
-endif
+# Careful to keep ../deps/glext as -isystem instead of generated -I
+CFLAGS += \
+	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+	 $(if $(WINDOWS_TARGET), \
+			 -isystem ../deps/glext \
+			 -I../deps/DirectX-9.0/include \
+			 -I../deps/freetype-2.3.12/include \
+			 -I../deps/jpeg-6b \
+			 -I../deps/libpng-1.4.0 \
+			 -I../deps/zlib \
+			 -I/usr/X11R6/include \
+			 -I/usr/X11R6/include/freetype2,) \
+	 $(if $(LINUX_TARGET), \
+			 -I/usr/include/freetype2 \
+			 -I/usr/X11R6/include \
+			 -I/usr/X11R6/include/freetype2,) \
+	 $(if $(OSX_TARGET), \
+			 -I../deps/jpeg-6b \
+			 -I../deps/libpng-1.4.0 \
+			 -I/usr/include/freetype2 \
+			 -I/usr/X11R6/include \
+			 -I/usr/X11R6/include/freetype2,) \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
+			 -DBUILDING_ECERE_COM \
+			 -I../deps/libungif-4.1.1/lib \
+			 -Isrc/gfx/drivers/harfbuzz
+
+CUSTOM1_CFLAGS = \
+			 -DECERE_COM_MODULE \
+	 $(CFLAGS)
+
+
+ECFLAGS += \
+	 -nolinenumbers -defaultns ecere
+
 
 # PLATFORM-SPECIFIC OPTIONS
 
 ifdef WINDOWS_TARGET
 
-CFLAGS += \
-	 -isystem ../deps/glext \
-	 -I../deps/DirectX-9.0/include \
-	 -I../deps/jpeg-6b \
-	 -I../deps/libpng-1.4.0 \
-	 -I../deps/libungif-4.1.1/lib \
-	 -I../deps/zlib \
-	 -I../deps/freetype-2.3.12/include
-
+ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L../deps/zlib/obj/release.$(PLATFORM) \
 	 -L../deps/jpeg-6b/obj/release.$(PLATFORM) \
 	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM) \
 	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM) \
 	 -L../deps/freetype-2.3.12/obj/release.$(PLATFORM)
-
-LIBS += -ldxguid -lddraw -ldinput -lwinmm -lopengl32 -lws2_32 -lkernel32 -luser32 -lgdi32 -lmpr -ladvapi32 -lshell32 -lwinspool -limm32 -lungif
+LIBS += \
+	$(call _L,dxguid) \
+	$(call _L,ddraw) \
+	$(call _L,dinput) \
+	$(call _L,winmm) \
+	$(call _L,opengl32) \
+	$(call _L,ws2_32) \
+	$(call _L,kernel32) \
+	$(call _L,user32) \
+	$(call _L,gdi32) \
+	$(call _L,mpr) \
+	$(call _L,advapi32) \
+	$(call _L,shell32) \
+	$(call _L,winspool) \
+	$(call _L,imm32) \
+	$(call _L,ungif)
+endif
 
 else
 ifdef LINUX_TARGET
 
-CFLAGS += \
-	 -I/usr/include/freetype2 \
-	 -I../deps/libungif-4.1.1/lib
-
+ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM) \
 	 -L/usr/X11R6/lib
-
-LIBS += -lncurses -lpthread -lm -ldl -lfontconfig -lungif -lX11 -lXext -lXrender -lGL
+LIBS += \
+	$(call _L,ncurses) \
+	$(call _L,pthread) \
+	$(call _L,m) \
+	$(call _L,dl) \
+	$(call _L,fontconfig) \
+	$(call _L,ungif) \
+	$(call _L,X11) \
+	$(call _L,Xext) \
+	$(call _L,Xrender) \
+	$(call _L,GL)
+endif
 
 else
 ifdef OSX_TARGET
 
-CFLAGS += \
-	 -I/usr/include/freetype2 \
-	 -I/usr/X11R6/include/freetype2 \
-	 -I/usr/X11R6/include \
-	 -I../deps/jpeg-6b \
-	 -I../deps/libpng-1.4.0 \
-	 -I../deps/libungif-4.1.1/lib
-
+ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L/usr/X11R6/lib \
 	 -L../deps/jpeg-6b/obj/release.$(PLATFORM) \
 	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM) \
 	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)
-
-LIBS += -lcurses -lpthread -lm -ldl -lfontconfig -lungif -lX11 -lXext -lXrender -lGL
+LIBS += \
+	$(call _L,curses) \
+	$(call _L,pthread) \
+	$(call _L,m) \
+	$(call _L,dl) \
+	$(call _L,fontconfig) \
+	$(call _L,ungif) \
+	$(call _L,X11) \
+	$(call _L,Xext) \
+	$(call _L,Xrender) \
+	$(call _L,GL)
+endif
 
 endif
 endif
+endif
+
+
+
+CECFLAGS += -cpp $(call escspace,$(CPP))
+
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS += $(FORCE_32_BIT)
+OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -945,6 +534,7 @@ $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 
 nores: $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
+ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
@@ -952,36 +542,43 @@ endif
 ifdef WINDOWS_TARGET
 	$(call cpq,$(TARGET),../compiler/bootstrap/obj/bin.$(PLATFORM)/)
 endif
+else
+	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
+endif
 	$(call cpq,$(TARGET),../$(SODESTDIR))
 ifdef LINUX_TARGET
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO)
-endif	
+endif
 
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
+ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(SONAME) $(INSTALLNAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) awq $(TARGET) $(RES)actions/editFind.png $(RES)actions/folderNew.png $(RES)actions/goDown.png $(RES)actions/goHome.png $(RES)actions/goNext.png $(RES)actions/goPrevious.png $(RES)actions/goUp.png $(RES)actions/listAdd.png $(RES)actions/listRemove.png $(RES)actions/viewRefresh.png "actions"
-	$(EAR) awq $(TARGET) $(RES)actions/windowNew.png "actions"
-	$(EAR) awq $(TARGET) $(RES)constructs/class.png $(RES)constructs/data.png $(RES)constructs/dataPrivate.png $(RES)constructs/dataType.png $(RES)constructs/enum.png $(RES)constructs/enumValue.png $(RES)constructs/event.png $(RES)constructs/library.png $(RES)constructs/method.png $(RES)constructs/methodPrivate.png "constructs"
-	$(EAR) awq $(TARGET) $(RES)constructs/namespace.png $(RES)constructs/property.png $(RES)constructs/propertyPrivate.png "constructs"
-	$(EAR) awq $(TARGET) $(RES)controls/button.png $(RES)controls/calendar.png $(RES)controls/checkBox.png $(RES)controls/dataBox.png $(RES)controls/dropBox.png $(RES)controls/editBox.png $(RES)controls/groupBox.png $(RES)controls/label.png $(RES)controls/listBox.png $(RES)controls/menu.png "controls"
-	$(EAR) awq $(TARGET) $(RES)controls/optionBox.png $(RES)controls/progressBar.png $(RES)controls/scrollBarHorizontal.png $(RES)controls/scrollBarVertical.png $(RES)controls/statusBar.png "controls"
-	$(EAR) awq $(TARGET) $(RES)cursors/arrow.png $(RES)cursors/cross.png $(RES)cursors/iBeam.png $(RES)cursors/move.png $(RES)cursors/sizeEastWest.png $(RES)cursors/sizeNortEastSouthWest.png $(RES)cursors/sizeNorthSouth.png $(RES)cursors/sizeNortWestSouthEast.png "cursors"
-	$(EAR) awq $(TARGET) $(RES)devices/computer.png $(RES)devices/driveHardDisk.png $(RES)devices/driveRemovableMedia.png $(RES)devices/mediaFloppy.png $(RES)devices/mediaOptical.png "devices"
-	$(EAR) awq $(TARGET) $(RES)elements/areaClose.png $(RES)elements/areaMaximize.png $(RES)elements/areaMinimize.png $(RES)elements/areaRestore.png $(RES)elements/arrowDown.png $(RES)elements/arrowLeft.png $(RES)elements/arrowRight.png $(RES)elements/arrowUp.png $(RES)elements/checkBoxChecked.png $(RES)elements/checkBoxDisabled.png "elements"
-	$(EAR) awq $(TARGET) $(RES)elements/checkBoxDisabledChecked.png $(RES)elements/checkBox.png $(RES)elements/optionBoxDisabled.png $(RES)elements/optionBoxDisabledSelected.png $(RES)elements/optionBoxDown.png $(RES)elements/optionBoxSelectedDown.png $(RES)elements/optionBoxSelectedUp.png $(RES)elements/optionBoxUp.png $(RES)elements/orderAscending.png $(RES)elements/orderCategorized.png "elements"
-	$(EAR) awq $(TARGET) $(RES)elements/orderDescending.png "elements"
-	$(EAR) awq $(TARGET) $(RES)emblems/unreadable.png "emblems"
-	$(EAR) awq $(TARGET) $(RES)mimeTypes/file.png $(RES)mimeTypes/image.png $(RES)mimeTypes/package.png $(RES)mimeTypes/packageOpticalDisc.png $(RES)mimeTypes/packageSoftware.png $(RES)mimeTypes/text.png $(RES)mimeTypes/textCHeader.png $(RES)mimeTypes/textCSource.png $(RES)mimeTypes/textC++Header.png $(RES)mimeTypes/textC++Source.png "mimeTypes"
-	$(EAR) awq $(TARGET) $(RES)mimeTypes/textEcereHeader.png $(RES)mimeTypes/textEcereProject.png $(RES)mimeTypes/textEcereSource.png $(RES)mimeTypes/textEcereWorkspace.png $(RES)mimeTypes/textHyperTextMarkup.png $(RES)mimeTypes/brokenFile.png "mimeTypes"
-	$(EAR) awq $(TARGET) $(RES)places/driveRemote.png $(RES)places/folder.png $(RES)places/folderRemote.png $(RES)places/networkServer.png $(RES)places/networkWorkgroup.png $(RES)places/brokenFolder.png "places"
-	$(EAR) awq $(TARGET) $(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png "status"
-	$(EAR) awq $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt "unicode"
-	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ecere.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/ecere.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)actions/editFind.png $(RES)actions/folderNew.png $(RES)actions/goDown.png $(RES)actions/goHome.png $(RES)actions/goNext.png $(RES)actions/goPrevious.png $(RES)actions/goUp.png $(RES)actions/listAdd.png $(RES)actions/listRemove.png $(RES)actions/viewRefresh.png "actions"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)actions/windowNew.png $(RES)actions/clean.png $(RES)actions/docSave.png $(RES)actions/docNew.png "actions"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)constructs/class.png $(RES)constructs/data.png $(RES)constructs/dataPrivate.png $(RES)constructs/dataType.png $(RES)constructs/enum.png $(RES)constructs/enumValue.png $(RES)constructs/event.png $(RES)constructs/library.png $(RES)constructs/method.png $(RES)constructs/methodPrivate.png "constructs"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)constructs/namespace.png $(RES)constructs/property.png $(RES)constructs/propertyPrivate.png "constructs"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)controls/button.png $(RES)controls/calendar.png $(RES)controls/checkBox.png $(RES)controls/dataBox.png $(RES)controls/dropBox.png $(RES)controls/editBox.png $(RES)controls/groupBox.png $(RES)controls/label.png $(RES)controls/listBox.png $(RES)controls/menu.png "controls"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)controls/optionBox.png $(RES)controls/progressBar.png $(RES)controls/scrollBarHorizontal.png $(RES)controls/scrollBarVertical.png $(RES)controls/statusBar.png "controls"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)cursors/arrow.png $(RES)cursors/cross.png $(RES)cursors/iBeam.png $(RES)cursors/move.png $(RES)cursors/sizeEastWest.png $(RES)cursors/sizeNortEastSouthWest.png $(RES)cursors/sizeNorthSouth.png $(RES)cursors/sizeNortWestSouthEast.png "cursors"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)devices/computer.png $(RES)devices/driveHardDisk.png $(RES)devices/driveRemovableMedia.png $(RES)devices/mediaFloppy.png $(RES)devices/mediaOptical.png "devices"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)elements/areaClose.png $(RES)elements/areaMaximize.png $(RES)elements/areaMinimize.png $(RES)elements/areaRestore.png $(RES)elements/arrowDown.png $(RES)elements/arrowLeft.png $(RES)elements/arrowRight.png $(RES)elements/arrowUp.png $(RES)elements/checkBoxChecked.png $(RES)elements/checkBoxDisabled.png "elements"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)elements/checkBoxDisabledChecked.png $(RES)elements/checkBox.png $(RES)elements/optionBoxDisabled.png $(RES)elements/optionBoxDisabledSelected.png $(RES)elements/optionBoxDown.png $(RES)elements/optionBoxSelectedDown.png $(RES)elements/optionBoxSelectedUp.png $(RES)elements/optionBoxUp.png $(RES)elements/orderAscending.png $(RES)elements/orderCategorized.png "elements"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)elements/orderDescending.png "elements"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)emblems/unreadable.png "emblems"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)mimeTypes/file.png $(RES)mimeTypes/image.png $(RES)mimeTypes/package.png $(RES)mimeTypes/packageOpticalDisc.png $(RES)mimeTypes/packageSoftware.png $(RES)mimeTypes/text.png $(RES)mimeTypes/textCHeader.png $(RES)mimeTypes/textCSource.png $(RES)mimeTypes/textC++Header.png $(RES)mimeTypes/textC++Source.png "mimeTypes"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)mimeTypes/textEcereHeader.png $(RES)mimeTypes/textEcereProject.png $(RES)mimeTypes/textEcereSource.png $(RES)mimeTypes/textEcereWorkspace.png $(RES)mimeTypes/textHyperTextMarkup.png $(RES)mimeTypes/brokenFile.png "mimeTypes"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)places/driveRemote.png $(RES)places/folder.png $(RES)places/folderRemote.png $(RES)places/networkServer.png $(RES)places/networkWorkgroup.png $(RES)places/brokenFolder.png "places"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png "status"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt "unicode"
+	$(EAR) $(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ecere.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) $(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ecere.mo "locale/es_ES/LC_MESSAGES"
+else
+	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
+endif
 	$(call cpq,$(TARGET),../$(SODESTDIR))
 ifdef LINUX_TARGET
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
@@ -1024,7 +621,7 @@ $(OBJ)memory.sym: src/sys/memory.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/memory.ec -o $(OBJ)memory.sym
 
 $(OBJ)Mutex.sym: src/sys/Mutex.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/Mutex.ec -o $(OBJ)Mutex.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/sys/Mutex.ec -o $(OBJ)Mutex.sym
 
 $(OBJ)Semaphore.sym: src/sys/Semaphore.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/Semaphore.ec -o $(OBJ)Semaphore.sym
@@ -1048,7 +645,10 @@ $(OBJ)units.sym: src/sys/units.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/units.ec -o $(OBJ)units.sym
 
 $(OBJ)i18n.sym: src/sys/i18n.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/i18n.ec -o $(OBJ)i18n.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/sys/i18n.ec -o $(OBJ)i18n.sym
+
+$(OBJ)Condition.sym: src/sys/Condition.ec
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/Condition.ec -o $(OBJ)Condition.sym
 
 $(OBJ)Cube.sym: src/gfx/3D/meshes/Cube.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/3D/meshes/Cube.ec -o $(OBJ)Cube.sym
@@ -1101,17 +701,33 @@ $(OBJ)PNGFormat.sym: src/gfx/bitmaps/PNGFormat.ec
 $(OBJ)RGBFormat.sym: src/gfx/bitmaps/RGBFormat.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/bitmaps/RGBFormat.ec -o $(OBJ)RGBFormat.sym
 
+ifdef WINDOWS_TARGET
+
 $(OBJ)Direct3D8DisplayDriver.sym: src/gfx/drivers/Direct3D8DisplayDriver.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/Direct3D8DisplayDriver.ec -o $(OBJ)Direct3D8DisplayDriver.sym
+
+endif
+
+ifdef WINDOWS_TARGET
 
 $(OBJ)Direct3D9DisplayDriver.sym: src/gfx/drivers/Direct3D9DisplayDriver.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/Direct3D9DisplayDriver.ec -o $(OBJ)Direct3D9DisplayDriver.sym
 
+endif
+
+ifdef WINDOWS_TARGET
+
 $(OBJ)DirectDrawDisplayDriver.sym: src/gfx/drivers/DirectDrawDisplayDriver.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/DirectDrawDisplayDriver.ec -o $(OBJ)DirectDrawDisplayDriver.sym
 
+endif
+
+ifdef WINDOWS_TARGET
+
 $(OBJ)GDIDisplayDriver.sym: src/gfx/drivers/GDIDisplayDriver.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/GDIDisplayDriver.ec -o $(OBJ)GDIDisplayDriver.sym
+
+endif
 
 $(OBJ)lfbBlit.sym: src/gfx/drivers/lfbBlit.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/lfbBlit.ec -o $(OBJ)lfbBlit.sym
@@ -1122,26 +738,50 @@ $(OBJ)lfbConvert.sym: src/gfx/drivers/lfbConvert.ec
 $(OBJ)LFBDisplayDriver.sym: src/gfx/drivers/LFBDisplayDriver.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/LFBDisplayDriver.ec -o $(OBJ)LFBDisplayDriver.sym
 
+ifdef LINUX_TARGET
+
 $(OBJ)NCursesDisplayDriver.sym: src/gfx/drivers/NCursesDisplayDriver.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/NCursesDisplayDriver.ec -o $(OBJ)NCursesDisplayDriver.sym
+
+endif
 
 $(OBJ)OpenGLDisplayDriver.sym: src/gfx/drivers/OpenGLDisplayDriver.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/OpenGLDisplayDriver.ec -o $(OBJ)OpenGLDisplayDriver.sym
 
+ifdef WINDOWS_TARGET
+
 $(OBJ)Win32BitmapPrinterDisplayDriver.sym: src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec -o $(OBJ)Win32BitmapPrinterDisplayDriver.sym
+
+endif
+
+ifdef OSX_TARGET
 
 $(OBJ)CocoaOpenGLDisplayDriver.sym: src/gfx/drivers/CocoaOpenGLDisplayDriver.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/CocoaOpenGLDisplayDriver.ec -o $(OBJ)CocoaOpenGLDisplayDriver.sym
 
+endif
+
+ifdef WINDOWS_TARGET
+
 $(OBJ)Win32ConsoleDisplayDriver.sym: src/gfx/drivers/Win32ConsoleDisplayDriver.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/Win32ConsoleDisplayDriver.ec -o $(OBJ)Win32ConsoleDisplayDriver.sym
+
+endif
+
+ifdef WINDOWS_TARGET
 
 $(OBJ)Win32PrinterDisplayDriver.sym: src/gfx/drivers/Win32PrinterDisplayDriver.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/Win32PrinterDisplayDriver.ec -o $(OBJ)Win32PrinterDisplayDriver.sym
 
+endif
+
+ifdef LINUX_TARGET
+
 $(OBJ)XDisplayDriver.sym: src/gfx/drivers/XDisplayDriver.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.sym
+
+endif
 
 $(OBJ)Bitmap.sym: src/gfx/Bitmap.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/Bitmap.ec -o $(OBJ)Bitmap.sym
@@ -1242,23 +882,43 @@ $(OBJ)ReplaceDialog.sym: src/gui/dialogs/ReplaceDialog.ec
 $(OBJ)WindowList.sym: src/gui/dialogs/WindowList.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/dialogs/WindowList.ec -o $(OBJ)WindowList.sym
 
+ifdef OSX_TARGET
+
 $(OBJ)CocoaDispatch.sym: src/gui/drivers/cocoa/CocoaDispatch.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/cocoa/CocoaDispatch.ec -o $(OBJ)CocoaDispatch.sym
 
 $(OBJ)CocoaInterface.sym: src/gui/drivers/cocoa/CocoaInterface.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/cocoa/CocoaInterface.ec -o $(OBJ)CocoaInterface.sym
 
+endif
+
+ifdef LINUX_TARGET
+
 $(OBJ)NCursesInterface.sym: src/gui/drivers/NCursesInterface.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/NCursesInterface.ec -o $(OBJ)NCursesInterface.sym
+
+endif
+
+ifdef WINDOWS_TARGET
 
 $(OBJ)Win32Interface.sym: src/gui/drivers/Win32Interface.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/Win32Interface.ec -o $(OBJ)Win32Interface.sym
 
+endif
+
+ifdef WINDOWS_TARGET
+
 $(OBJ)Win32ConsoleInterface.sym: src/gui/drivers/Win32ConsoleInterface.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/Win32ConsoleInterface.ec -o $(OBJ)Win32ConsoleInterface.sym
 
+endif
+
+ifdef LINUX_TARGET
+
 $(OBJ)XInterface.sym: src/gui/drivers/XInterface.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/XInterface.ec -o $(OBJ)XInterface.sym
+
+endif
 
 $(OBJ)TVisionSkin.sym: src/gui/skins/TVisionSkin.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/skins/TVisionSkin.ec -o $(OBJ)TVisionSkin.sym
@@ -1321,46 +981,46 @@ $(OBJ)Socket.sym: src/net/Socket.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/net/Socket.ec -o $(OBJ)Socket.sym
 
 $(OBJ)Array.sym: src/com/containers/Array.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/Array.ec -o $(OBJ)Array.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/Array.ec -o $(OBJ)Array.sym
 
 $(OBJ)AVLTree.sym: src/com/containers/AVLTree.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.sym
 
 $(OBJ)BuiltInContainer.sym: src/com/containers/BuiltInContainer.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.sym
 
 $(OBJ)Container.sym: src/com/containers/Container.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/Container.ec -o $(OBJ)Container.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/Container.ec -o $(OBJ)Container.sym
 
 $(OBJ)CustomAVLTree.sym: src/com/containers/CustomAVLTree.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.sym
 
 $(OBJ)LinkList.sym: src/com/containers/LinkList.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.sym
 
 $(OBJ)List.sym: src/com/containers/List.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/List.ec -o $(OBJ)List.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/List.ec -o $(OBJ)List.sym
 
 $(OBJ)Map.sym: src/com/containers/Map.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/containers/Map.ec -o $(OBJ)Map.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/Map.ec -o $(OBJ)Map.sym
 
 $(OBJ)BinaryTree.sym: src/com/BinaryTree.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.sym
 
 $(OBJ)BTNode.sym: src/com/BTNode.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/BTNode.ec -o $(OBJ)BTNode.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/BTNode.ec -o $(OBJ)BTNode.sym
 
 $(OBJ)dataTypes.sym: src/com/dataTypes.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/dataTypes.ec -o $(OBJ)dataTypes.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/dataTypes.ec -o $(OBJ)dataTypes.sym
 
 $(OBJ)instance.sym: src/com/instance.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/instance.ec -o $(OBJ)instance.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/instance.ec -o $(OBJ)instance.sym
 
 $(OBJ)String.sym: src/com/String.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/String.ec -o $(OBJ)String.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/String.ec -o $(OBJ)String.sym
 
 $(OBJ)OldList.sym: src/com/OldList.ec
-	$(ECP) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/com/OldList.ec -o $(OBJ)OldList.sym
+	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/OldList.ec -o $(OBJ)OldList.sym
 
 # C OBJECT RULES
 
@@ -1398,7 +1058,7 @@ $(OBJ)memory.c: src/sys/memory.ec $(OBJ)memory.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/memory.ec -o $(OBJ)memory.c -symbols $(OBJ)
 
 $(OBJ)Mutex.c: src/sys/Mutex.ec $(OBJ)Mutex.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/Mutex.ec -o $(OBJ)Mutex.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/sys/Mutex.ec -o $(OBJ)Mutex.c -symbols $(OBJ)
 
 $(OBJ)Semaphore.c: src/sys/Semaphore.ec $(OBJ)Semaphore.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/Semaphore.ec -o $(OBJ)Semaphore.c -symbols $(OBJ)
@@ -1422,7 +1082,10 @@ $(OBJ)units.c: src/sys/units.ec $(OBJ)units.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/units.ec -o $(OBJ)units.c -symbols $(OBJ)
 
 $(OBJ)i18n.c: src/sys/i18n.ec $(OBJ)i18n.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/i18n.ec -o $(OBJ)i18n.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/sys/i18n.ec -o $(OBJ)i18n.c -symbols $(OBJ)
+
+$(OBJ)Condition.c: src/sys/Condition.ec $(OBJ)Condition.sym | $(SYMBOLS)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/Condition.ec -o $(OBJ)Condition.c -symbols $(OBJ)
 
 $(OBJ)Cube.c: src/gfx/3D/meshes/Cube.ec $(OBJ)Cube.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/3D/meshes/Cube.ec -o $(OBJ)Cube.c -symbols $(OBJ)
@@ -1475,17 +1138,33 @@ $(OBJ)PNGFormat.c: src/gfx/bitmaps/PNGFormat.ec $(OBJ)PNGFormat.sym | $(SYMBOLS)
 $(OBJ)RGBFormat.c: src/gfx/bitmaps/RGBFormat.ec $(OBJ)RGBFormat.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/bitmaps/RGBFormat.ec -o $(OBJ)RGBFormat.c -symbols $(OBJ)
 
+ifdef WINDOWS_TARGET
+
 $(OBJ)Direct3D8DisplayDriver.c: src/gfx/drivers/Direct3D8DisplayDriver.ec $(OBJ)Direct3D8DisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/Direct3D8DisplayDriver.ec -o $(OBJ)Direct3D8DisplayDriver.c -symbols $(OBJ)
+
+endif
+
+ifdef WINDOWS_TARGET
 
 $(OBJ)Direct3D9DisplayDriver.c: src/gfx/drivers/Direct3D9DisplayDriver.ec $(OBJ)Direct3D9DisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/Direct3D9DisplayDriver.ec -o $(OBJ)Direct3D9DisplayDriver.c -symbols $(OBJ)
 
+endif
+
+ifdef WINDOWS_TARGET
+
 $(OBJ)DirectDrawDisplayDriver.c: src/gfx/drivers/DirectDrawDisplayDriver.ec $(OBJ)DirectDrawDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/DirectDrawDisplayDriver.ec -o $(OBJ)DirectDrawDisplayDriver.c -symbols $(OBJ)
 
+endif
+
+ifdef WINDOWS_TARGET
+
 $(OBJ)GDIDisplayDriver.c: src/gfx/drivers/GDIDisplayDriver.ec $(OBJ)GDIDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/GDIDisplayDriver.ec -o $(OBJ)GDIDisplayDriver.c -symbols $(OBJ)
+
+endif
 
 $(OBJ)lfbBlit.c: src/gfx/drivers/lfbBlit.ec $(OBJ)lfbBlit.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/lfbBlit.ec -o $(OBJ)lfbBlit.c -symbols $(OBJ)
@@ -1496,26 +1175,50 @@ $(OBJ)lfbConvert.c: src/gfx/drivers/lfbConvert.ec $(OBJ)lfbConvert.sym | $(SYMBO
 $(OBJ)LFBDisplayDriver.c: src/gfx/drivers/LFBDisplayDriver.ec $(OBJ)LFBDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/LFBDisplayDriver.ec -o $(OBJ)LFBDisplayDriver.c -symbols $(OBJ)
 
+ifdef LINUX_TARGET
+
 $(OBJ)NCursesDisplayDriver.c: src/gfx/drivers/NCursesDisplayDriver.ec $(OBJ)NCursesDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/NCursesDisplayDriver.ec -o $(OBJ)NCursesDisplayDriver.c -symbols $(OBJ)
+
+endif
 
 $(OBJ)OpenGLDisplayDriver.c: src/gfx/drivers/OpenGLDisplayDriver.ec $(OBJ)OpenGLDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/OpenGLDisplayDriver.ec -o $(OBJ)OpenGLDisplayDriver.c -symbols $(OBJ)
 
+ifdef WINDOWS_TARGET
+
 $(OBJ)Win32BitmapPrinterDisplayDriver.c: src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec $(OBJ)Win32BitmapPrinterDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec -o $(OBJ)Win32BitmapPrinterDisplayDriver.c -symbols $(OBJ)
+
+endif
+
+ifdef OSX_TARGET
 
 $(OBJ)CocoaOpenGLDisplayDriver.c: src/gfx/drivers/CocoaOpenGLDisplayDriver.ec $(OBJ)CocoaOpenGLDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/CocoaOpenGLDisplayDriver.ec -o $(OBJ)CocoaOpenGLDisplayDriver.c -symbols $(OBJ)
 
+endif
+
+ifdef WINDOWS_TARGET
+
 $(OBJ)Win32ConsoleDisplayDriver.c: src/gfx/drivers/Win32ConsoleDisplayDriver.ec $(OBJ)Win32ConsoleDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/Win32ConsoleDisplayDriver.ec -o $(OBJ)Win32ConsoleDisplayDriver.c -symbols $(OBJ)
+
+endif
+
+ifdef WINDOWS_TARGET
 
 $(OBJ)Win32PrinterDisplayDriver.c: src/gfx/drivers/Win32PrinterDisplayDriver.ec $(OBJ)Win32PrinterDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/Win32PrinterDisplayDriver.ec -o $(OBJ)Win32PrinterDisplayDriver.c -symbols $(OBJ)
 
+endif
+
+ifdef LINUX_TARGET
+
 $(OBJ)XDisplayDriver.c: src/gfx/drivers/XDisplayDriver.ec $(OBJ)XDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.c -symbols $(OBJ)
+
+endif
 
 $(OBJ)Bitmap.c: src/gfx/Bitmap.ec $(OBJ)Bitmap.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/Bitmap.ec -o $(OBJ)Bitmap.c -symbols $(OBJ)
@@ -1616,23 +1319,43 @@ $(OBJ)ReplaceDialog.c: src/gui/dialogs/ReplaceDialog.ec $(OBJ)ReplaceDialog.sym 
 $(OBJ)WindowList.c: src/gui/dialogs/WindowList.ec $(OBJ)WindowList.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/WindowList.ec -o $(OBJ)WindowList.c -symbols $(OBJ)
 
+ifdef OSX_TARGET
+
 $(OBJ)CocoaDispatch.c: src/gui/drivers/cocoa/CocoaDispatch.ec $(OBJ)CocoaDispatch.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/cocoa/CocoaDispatch.ec -o $(OBJ)CocoaDispatch.c -symbols $(OBJ)
 
 $(OBJ)CocoaInterface.c: src/gui/drivers/cocoa/CocoaInterface.ec $(OBJ)CocoaInterface.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/cocoa/CocoaInterface.ec -o $(OBJ)CocoaInterface.c -symbols $(OBJ)
 
+endif
+
+ifdef LINUX_TARGET
+
 $(OBJ)NCursesInterface.c: src/gui/drivers/NCursesInterface.ec $(OBJ)NCursesInterface.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/NCursesInterface.ec -o $(OBJ)NCursesInterface.c -symbols $(OBJ)
+
+endif
+
+ifdef WINDOWS_TARGET
 
 $(OBJ)Win32Interface.c: src/gui/drivers/Win32Interface.ec $(OBJ)Win32Interface.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/Win32Interface.ec -o $(OBJ)Win32Interface.c -symbols $(OBJ)
 
+endif
+
+ifdef WINDOWS_TARGET
+
 $(OBJ)Win32ConsoleInterface.c: src/gui/drivers/Win32ConsoleInterface.ec $(OBJ)Win32ConsoleInterface.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/Win32ConsoleInterface.ec -o $(OBJ)Win32ConsoleInterface.c -symbols $(OBJ)
 
+endif
+
+ifdef LINUX_TARGET
+
 $(OBJ)XInterface.c: src/gui/drivers/XInterface.ec $(OBJ)XInterface.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/XInterface.ec -o $(OBJ)XInterface.c -symbols $(OBJ)
+
+endif
 
 $(OBJ)TVisionSkin.c: src/gui/skins/TVisionSkin.ec $(OBJ)TVisionSkin.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/skins/TVisionSkin.ec -o $(OBJ)TVisionSkin.c -symbols $(OBJ)
@@ -1695,46 +1418,46 @@ $(OBJ)Socket.c: src/net/Socket.ec $(OBJ)Socket.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/net/Socket.ec -o $(OBJ)Socket.c -symbols $(OBJ)
 
 $(OBJ)Array.c: src/com/containers/Array.ec $(OBJ)Array.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/Array.ec -o $(OBJ)Array.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/Array.ec -o $(OBJ)Array.c -symbols $(OBJ)
 
 $(OBJ)AVLTree.c: src/com/containers/AVLTree.ec $(OBJ)AVLTree.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.c -symbols $(OBJ)
 
 $(OBJ)BuiltInContainer.c: src/com/containers/BuiltInContainer.ec $(OBJ)BuiltInContainer.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.c -symbols $(OBJ)
 
 $(OBJ)Container.c: src/com/containers/Container.ec $(OBJ)Container.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/Container.ec -o $(OBJ)Container.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/Container.ec -o $(OBJ)Container.c -symbols $(OBJ)
 
 $(OBJ)CustomAVLTree.c: src/com/containers/CustomAVLTree.ec $(OBJ)CustomAVLTree.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.c -symbols $(OBJ)
 
 $(OBJ)LinkList.c: src/com/containers/LinkList.ec $(OBJ)LinkList.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.c -symbols $(OBJ)
 
 $(OBJ)List.c: src/com/containers/List.ec $(OBJ)List.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/List.ec -o $(OBJ)List.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/List.ec -o $(OBJ)List.c -symbols $(OBJ)
 
 $(OBJ)Map.c: src/com/containers/Map.ec $(OBJ)Map.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/containers/Map.ec -o $(OBJ)Map.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/Map.ec -o $(OBJ)Map.c -symbols $(OBJ)
 
 $(OBJ)BinaryTree.c: src/com/BinaryTree.ec $(OBJ)BinaryTree.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.c -symbols $(OBJ)
 
 $(OBJ)BTNode.c: src/com/BTNode.ec $(OBJ)BTNode.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/BTNode.ec -o $(OBJ)BTNode.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/BTNode.ec -o $(OBJ)BTNode.c -symbols $(OBJ)
 
 $(OBJ)dataTypes.c: src/com/dataTypes.ec $(OBJ)dataTypes.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/dataTypes.ec -o $(OBJ)dataTypes.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/dataTypes.ec -o $(OBJ)dataTypes.c -symbols $(OBJ)
 
 $(OBJ)instance.c: src/com/instance.ec $(OBJ)instance.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/instance.ec -o $(OBJ)instance.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/instance.ec -o $(OBJ)instance.c -symbols $(OBJ)
 
 $(OBJ)String.c: src/com/String.ec $(OBJ)String.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/String.ec -o $(OBJ)String.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/String.ec -o $(OBJ)String.c -symbols $(OBJ)
 
 $(OBJ)OldList.c: src/com/OldList.ec $(OBJ)OldList.sym | $(SYMBOLS)
-	$(ECC) -DECERE_COM_MODULE $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/com/OldList.ec -o $(OBJ)OldList.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/OldList.ec -o $(OBJ)OldList.c -symbols $(OBJ)
 
 # OBJECT RULES
 
@@ -1772,7 +1495,7 @@ $(OBJ)memory.o: $(OBJ)memory.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)memory.c -o $(OBJ)memory.o
 
 $(OBJ)Mutex.o: $(OBJ)Mutex.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Mutex.c -o $(OBJ)Mutex.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)Mutex.c -o $(OBJ)Mutex.o
 
 $(OBJ)Semaphore.o: $(OBJ)Semaphore.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Semaphore.c -o $(OBJ)Semaphore.o
@@ -1805,7 +1528,10 @@ $(OBJ)System.c.o: src/sys/System.c
 	$(CC) $(CFLAGS) -c src/sys/System.c -o $(OBJ)System.c.o
 
 $(OBJ)i18n.o: $(OBJ)i18n.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)i18n.c -o $(OBJ)i18n.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)i18n.c -o $(OBJ)i18n.o
+
+$(OBJ)Condition.o: $(OBJ)Condition.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Condition.c -o $(OBJ)Condition.o
 
 $(OBJ)Cube.o: $(OBJ)Cube.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Cube.c -o $(OBJ)Cube.o
@@ -2056,6 +1782,8 @@ $(OBJ)ReplaceDialog.o: $(OBJ)ReplaceDialog.c
 $(OBJ)WindowList.o: $(OBJ)WindowList.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)WindowList.c -o $(OBJ)WindowList.o
 
+ifdef OSX_TARGET
+
 $(OBJ)CocoaDispatch.o: $(OBJ)CocoaDispatch.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CocoaDispatch.c -o $(OBJ)CocoaDispatch.o
 
@@ -2067,6 +1795,8 @@ $(OBJ)CocoaInterface.o: $(OBJ)CocoaInterface.c
 
 $(OBJ)EcereView.o: src/gui/drivers/cocoa/EcereView.m
 	$(CC) $(CFLAGS) -c src/gui/drivers/cocoa/EcereView.m -o $(OBJ)EcereView.o
+
+endif
 
 $(OBJ)NCursesInterface.o: $(OBJ)NCursesInterface.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)NCursesInterface.c -o $(OBJ)NCursesInterface.o
@@ -2141,49 +1871,49 @@ $(OBJ)Socket.o: $(OBJ)Socket.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Socket.c -o $(OBJ)Socket.o
 
 $(OBJ)Array.o: $(OBJ)Array.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Array.c -o $(OBJ)Array.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)Array.c -o $(OBJ)Array.o
 
 $(OBJ)AVLTree.o: $(OBJ)AVLTree.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)AVLTree.c -o $(OBJ)AVLTree.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)AVLTree.c -o $(OBJ)AVLTree.o
 
 $(OBJ)BuiltInContainer.o: $(OBJ)BuiltInContainer.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BuiltInContainer.c -o $(OBJ)BuiltInContainer.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)BuiltInContainer.c -o $(OBJ)BuiltInContainer.o
 
 $(OBJ)Container.o: $(OBJ)Container.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Container.c -o $(OBJ)Container.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)Container.c -o $(OBJ)Container.o
 
 $(OBJ)CustomAVLTree.o: $(OBJ)CustomAVLTree.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CustomAVLTree.c -o $(OBJ)CustomAVLTree.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)CustomAVLTree.c -o $(OBJ)CustomAVLTree.o
 
 $(OBJ)LinkList.o: $(OBJ)LinkList.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)LinkList.c -o $(OBJ)LinkList.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)LinkList.c -o $(OBJ)LinkList.o
 
 $(OBJ)List.o: $(OBJ)List.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)List.c -o $(OBJ)List.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)List.c -o $(OBJ)List.o
 
 $(OBJ)Map.o: $(OBJ)Map.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Map.c -o $(OBJ)Map.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)Map.c -o $(OBJ)Map.o
 
 $(OBJ)BinaryTree.o: $(OBJ)BinaryTree.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BinaryTree.c -o $(OBJ)BinaryTree.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)BinaryTree.c -o $(OBJ)BinaryTree.o
 
 $(OBJ)BTNode.o: $(OBJ)BTNode.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BTNode.c -o $(OBJ)BTNode.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)BTNode.c -o $(OBJ)BTNode.o
 
 $(OBJ)dataTypes.o: $(OBJ)dataTypes.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)dataTypes.c -o $(OBJ)dataTypes.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)dataTypes.c -o $(OBJ)dataTypes.o
 
 $(OBJ)instance.o: $(OBJ)instance.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)instance.c -o $(OBJ)instance.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)instance.c -o $(OBJ)instance.o
 
 $(OBJ)String.o: $(OBJ)String.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)String.c -o $(OBJ)String.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)String.c -o $(OBJ)String.o
 
 $(OBJ)OldList.o: $(OBJ)OldList.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) $(FVISIBILITY) -c $(OBJ)OldList.c -o $(OBJ)OldList.o
+	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)OldList.c -o $(OBJ)OldList.o
 
 $(OBJ)instance.c.o: src/com/instance.c
-	$(CC) -DECERE_COM_MODULE $(CFLAGS) -c src/com/instance.c -o $(OBJ)instance.c.o
+	$(CC) $(CUSTOM1_CFLAGS) -c src/com/instance.c -o $(OBJ)instance.c.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
@@ -2192,25 +1922,27 @@ cleantarget: objdir
 	$(call rmq,$(TARGET))
 
 clean: objdir
-	$(call rmq,$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
-	$(call rmq,$(OBJECTS1))
-	$(call rmq,$(OBJECTS2))
-	$(call rmq,$(OBJECTS3))
-	$(call rmq,$(OBJECTS4))
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
+	$(call rmq,$(_OBJECTS))
+	$(call rmq,$(ECOBJECTS1))
+	$(call rmq,$(ECOBJECTS2))
+	$(call rmq,$(ECOBJECTS3))
 	$(call rmq,$(COBJECTS1))
 	$(call rmq,$(COBJECTS2))
 	$(call rmq,$(COBJECTS3))
+	$(call rmq,$(BOWLS1))
+	$(call rmq,$(BOWLS2))
+	$(call rmq,$(BOWLS3))
 	$(call rmq,$(IMPORTS1))
 	$(call rmq,$(IMPORTS2))
 	$(call rmq,$(IMPORTS3))
-	$(call rmq,$(IMPORTS4))
 	$(call rmq,$(SYMBOLS1))
 	$(call rmq,$(SYMBOLS2))
 	$(call rmq,$(SYMBOLS3))
 	$(MAKE) -f Makefile.ecereCOM clean
 	$(MAKE) -f Makefile.vanilla clean
 
-realclean:
+realclean: clean
 	$(call rmrq,$(OBJ))
 	$(MAKE) -f Makefile.ecereCOM realclean
 	$(MAKE) -f Makefile.vanilla realclean

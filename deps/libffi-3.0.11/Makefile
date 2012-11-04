@@ -1,6 +1,6 @@
 .PHONY: all objdir clean realclean distclean
 
-# CONTENT
+# CORE VARIABLES
 
 MODULE := ffi
 CONFIG := release
@@ -8,62 +8,53 @@ ifndef COMPILER
 COMPILER := default
 endif
 
-_CF_DIR = $(CF_DIR)
-
-ifndef DEBUG
-OPTIMIZE := -O2 -ffast-math
-else
-OPTIMIZE := -g
-NOSTRIP := y
-endif
 TARGET_TYPE = staticlib
-
-ifeq "$(TARGET_TYPE)" "executable"
-CONSOLE = -mwindows
-endif
 
 # FLAGS
 
+ECFLAGS =
 ifndef DEBIAN_PACKAGE
 CFLAGS =
 endif
+CECFLAGS =
 OFLAGS =
+LDFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+ifdef EXECUTABLE_TARGET
+CONSOLE = -mwindows
+endif
 
 # INCLUDES
 
-include ../../crossplatform.mk
-include ../../include.mk
+_CF_DIR = ../../
 
-# VARIABLES
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)include.mk
+
+# POST-INCLUDES VARIABLES
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
-
-ifdef DEBUG
-CFLAGS += -D_DEBUG
-endif
 
 RES = 
 
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ffi$(A)
 
-OBJECTS = \
+_OBJECTS = \
 	$(OBJ)ffi.o \
-	$(OBJ)win32.o \
 	$(OBJ)prep_cif.o \
 	$(OBJ)raw_api.o \
 	$(OBJ)types.o \
 	$(OBJ)closures.o
 
-_ECSOURCES =
-
-ECSOURCES = $(call shwspace,$(_ECSOURCES))
-
-
-
+OBJECTS = $(_OBJECTS)
 
 SOURCES = $(ECSOURCES) \
 	src/x86/ffi.c \
-	src/x86/win32.S \
 	src/prep_cif.c \
 	src/raw_api.c \
 	src/types.c \
@@ -71,19 +62,24 @@ SOURCES = $(ECSOURCES) \
 
 RESOURCES =
 
-LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-CFLAGS += -fmessage-length=0 $(OPTIMIZE) $(FPIC) -Wall \
-	 -Iinclude \
-	 -Ii686-pc-mingw32/include \
-	 -Ii686-pc-mingw32
+CFLAGS += \
+	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall \
+			 -Ii686-pc-mingw32 \
+			 -Ii686-pc-mingw32/include \
+			 -Iinclude
 
-CECFLAGS =
 
-ECFLAGS =
 
-ifneq "$(TARGET_TYPE)" "staticlib"
+
+
+CECFLAGS += -cpp $(call escspace,$(CPP))
+
+ifndef STATIC_LIBRARY_TARGET
 OFLAGS +=
+OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -96,7 +92,7 @@ objdir:
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
-ifneq "$(TARGET_TYPE)" "staticlib"
+ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
@@ -131,7 +127,7 @@ $(OBJ)closures.o: src/closures.c
 
 clean: objdir
 	$(call rmq,$(TARGET))
-	$(call rmq,$(OBJECTS))
+	$(call rmq,$(_OBJECTS))
 
 realclean: clean
 	$(call rmrq,$(OBJ))

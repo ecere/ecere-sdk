@@ -3,11 +3,7 @@ export CC      = $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)gcc$(_SYSROOT)
 export CPP     = $(CCACHE_COMPILE) $(DISTCC_COMPILE) $(GCC_PREFIX)cpp$(_SYSROOT)
 export ECP     = ecp
 export ECC     = ecc
-ifeq "$(TARGET_PLATFORM)" "$(HOST_PLATFORM)"
-export ECS     = ecs
-else
-export ECS     = ecs -t $(PLATFORM)
-endif
+export ECS     = %s$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)
 export EAR     = ear
 export AS      = $(GCC_PREFIX)as
 export LD      = $(GCC_PREFIX)ld
@@ -27,3 +23,15 @@ else
 FORCE_64_BIT = -m64
 FORCE_32_BIT = -m32
 endif
+
+# HARD CODED PLATFORM-SPECIFIC OPTIONS
+LDFLAGS +=$(if $(LINUX_TARGET), -Wl,--no-undefined,)
+LDFLAGS +=$(if $(OSX_TARGET), -framework cocoa -framework OpenGL,)
+
+# FLAGS
+
+UPXFLAGS = -9 -q
+
+CFLAGS += -fmessage-length=0
+
+EARFLAGS = awq

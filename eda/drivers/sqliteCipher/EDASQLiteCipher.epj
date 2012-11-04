@@ -68,6 +68,8 @@
       {
          "Name" : "Release",
          "Options" : {
+            "Warnings" : "None",
+            "Debug" : false,
             "NoLineNumbers" : true,
             "Optimization" : "Speed",
             "LibraryDirs" : [

@@ -1,214 +1,61 @@
 .PHONY: all objdir clean realclean distclean
 
-# CONTENT
+# CORE VARIABLES
 
 MODULE := ide
 CONFIG := release
+ifndef COMPILER
 COMPILER := default
+endif
+
 TARGET_TYPE = executable
+
+# FLAGS
+
+ECFLAGS =
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+CECFLAGS =
+OFLAGS =
+LDFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+ifdef EXECUTABLE_TARGET
+CONSOLE = -mwindows
+endif
+
+# INCLUDES
+
+_CF_DIR = ../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)include.mk
+
+# CUSTOM TOOLCHAIN / COMPILER CONFIG
+
+export LD_LIBRARY_PATH=../obj/$(PLATFORM)/lib
+export DYLD_LIBRARY_PATH=../obj/$(PLATFORM)/lib
+ECP := $(call psep,../obj/$(PLATFORM)/bin/ecp)
+ECC := $(call psep,../obj/$(PLATFORM)/bin/ecc)
+ECS := $(call psep,../obj/$(PLATFORM)/bin/ecs)
+EAR := $(call psep,../obj/$(PLATFORM)/bin/ear)
+
+# END OF CUSTOM TOOLCHAIN / COMPILER CONFIG
+
+# POST-INCLUDES VARIABLES
 
 OBJ = obj/$(CONFIG).$(PLATFORM)/
 
 RES = res/
 
-CONSOLE = -mwindows
-
 TARGET = obj/$(CONFIG).$(PLATFORM)/ide$(E)
 
-OBJECTS = \
-	$(OBJ)FileSystemIterator.o \
-	$(OBJ)layout.o \
-	$(OBJ)StringsBox.o \
-	$(OBJ)DynamicString.o \
-	$(OBJ)ActiveCompilerDialog.o \
-	$(OBJ)CompilersDetectionDialog.o \
-	$(OBJ)FindInFilesDialog.o \
-	$(OBJ)GlobalSettingsDialog.o \
-	$(OBJ)NewProjectDialog.o \
-	$(OBJ)NodeProperties.o \
-	$(OBJ)ProjectActiveConfig.o \
-	$(OBJ)WorkspaceSettings.o \
-	$(OBJ)ProjectTabSettings.o \
-	$(OBJ)Project.o \
-	$(OBJ)ProjectConfig.o \
-	$(OBJ)ProjectNode.o \
-	$(OBJ)ProjectView.o \
-	$(OBJ)Workspace.o \
-	$(if $(WINDOWS_TARGET),$(OBJ)vsSupport.o,) \
-	$(OBJ)CodeEditor.o \
-	$(OBJ)CodeObject.o \
-	$(OBJ)Designer.o \
-	$(OBJ)findCtx.o \
-	$(OBJ)findExp.o \
-	$(OBJ)findParams.o \
-	$(OBJ)Sheet.o \
-	$(OBJ)ToolBox.o \
-	$(OBJ)debugFindCtx.o \
-	$(OBJ)Debugger.o \
-	$(OBJ)debugTools.o \
-	$(OBJ)GDBDialog.o \
-	$(OBJ)process.o \
-	$(OBJ)BreakpointsView.o \
-	$(OBJ)CallStackView.o \
-	$(OBJ)OutputView.o \
-	$(OBJ)ThreadsView.o \
-	$(OBJ)WatchesView.o \
-	$(OBJ)ModelView.o \
-	$(OBJ)PictureEdit.o \
-	$(OBJ)about.o \
-	$(OBJ)ide.o \
-	$(OBJ)IDESettings.o \
-	$(OBJ)OldIDESettings.o \
-	$(OBJ)ProjectSettings.o \
-	$(OBJ)licensing.o \
-	$(OBJ)$(MODULE).main$(O)
-
-COBJECTS = \
-	$(OBJ)FileSystemIterator.c \
-	$(OBJ)layout.c \
-	$(OBJ)StringsBox.c \
-	$(OBJ)DynamicString.c \
-	$(OBJ)ActiveCompilerDialog.c \
-	$(OBJ)CompilersDetectionDialog.c \
-	$(OBJ)FindInFilesDialog.c \
-	$(OBJ)GlobalSettingsDialog.c \
-	$(OBJ)NewProjectDialog.c \
-	$(OBJ)NodeProperties.c \
-	$(OBJ)ProjectActiveConfig.c \
-	$(OBJ)WorkspaceSettings.c \
-	$(OBJ)ProjectTabSettings.c \
-	$(OBJ)Project.c \
-	$(OBJ)ProjectConfig.c \
-	$(OBJ)ProjectNode.c \
-	$(OBJ)ProjectView.c \
-	$(OBJ)Workspace.c \
-	$(if $(WINDOWS_TARGET),$(OBJ)vsSupport.c,) \
-	$(OBJ)CodeEditor.c \
-	$(OBJ)CodeObject.c \
-	$(OBJ)Designer.c \
-	$(OBJ)findCtx.c \
-	$(OBJ)findExp.c \
-	$(OBJ)findParams.c \
-	$(OBJ)Sheet.c \
-	$(OBJ)ToolBox.c \
-	$(OBJ)debugFindCtx.c \
-	$(OBJ)Debugger.c \
-	$(OBJ)debugTools.c \
-	$(OBJ)GDBDialog.c \
-	$(OBJ)process.c \
-	$(OBJ)BreakpointsView.c \
-	$(OBJ)CallStackView.c \
-	$(OBJ)OutputView.c \
-	$(OBJ)ThreadsView.c \
-	$(OBJ)WatchesView.c \
-	$(OBJ)ModelView.c \
-	$(OBJ)PictureEdit.c \
-	$(OBJ)about.c \
-	$(OBJ)ide.c \
-	$(OBJ)IDESettings.c \
-	$(OBJ)OldIDESettings.c \
-	$(OBJ)ProjectSettings.c \
-	$(OBJ)licensing.c
-
-SYMBOLS = $(SYMBOLS1) $(SYMBOLS2)
-SYMBOLS1 = \
-	$(OBJ)FileSystemIterator.sym \
-	$(OBJ)layout.sym \
-	$(OBJ)StringsBox.sym \
-	$(OBJ)DynamicString.sym \
-	$(OBJ)ActiveCompilerDialog.sym \
-	$(OBJ)CompilersDetectionDialog.sym \
-	$(OBJ)FindInFilesDialog.sym \
-	$(OBJ)GlobalSettingsDialog.sym \
-	$(OBJ)NewProjectDialog.sym \
-	$(OBJ)NodeProperties.sym \
-	$(OBJ)ProjectActiveConfig.sym \
-	$(OBJ)WorkspaceSettings.sym \
-	$(OBJ)ProjectTabSettings.sym \
-	$(OBJ)Project.sym \
-	$(OBJ)ProjectConfig.sym \
-	$(OBJ)ProjectNode.sym \
-	$(OBJ)ProjectView.sym \
-	$(OBJ)Workspace.sym \
-	$(if $(WINDOWS_TARGET),$(OBJ)vsSupport.sym,) \
-	$(OBJ)CodeEditor.sym \
-	$(OBJ)CodeObject.sym \
-	$(OBJ)Designer.sym \
-	$(OBJ)findCtx.sym \
-	$(OBJ)findExp.sym \
-	$(OBJ)findParams.sym \
-	$(OBJ)Sheet.sym \
-	$(OBJ)ToolBox.sym \
-	$(OBJ)debugFindCtx.sym \
-	$(OBJ)Debugger.sym \
-	$(OBJ)debugTools.sym \
-	$(OBJ)GDBDialog.sym \
-	$(OBJ)process.sym \
-	$(OBJ)BreakpointsView.sym \
-	$(OBJ)CallStackView.sym \
-	$(OBJ)OutputView.sym \
-	$(OBJ)ThreadsView.sym \
-	$(OBJ)WatchesView.sym \
-	$(OBJ)ModelView.sym \
-	$(OBJ)PictureEdit.sym \
-	$(OBJ)about.sym \
-	$(OBJ)ide.sym \
-	$(OBJ)IDESettings.sym \
-	$(OBJ)OldIDESettings.sym
-SYMBOLS2 = \
-	$(OBJ)ProjectSettings.sym \
-	$(OBJ)licensing.sym
-
-IMPORTS = $(IMPORTS1) $(IMPORTS2)
-IMPORTS1 = \
-	$(OBJ)FileSystemIterator.imp \
-	$(OBJ)layout.imp \
-	$(OBJ)StringsBox.imp \
-	$(OBJ)DynamicString.imp \
-	$(OBJ)ActiveCompilerDialog.imp \
-	$(OBJ)CompilersDetectionDialog.imp \
-	$(OBJ)FindInFilesDialog.imp \
-	$(OBJ)GlobalSettingsDialog.imp \
-	$(OBJ)NewProjectDialog.imp \
-	$(OBJ)NodeProperties.imp \
-	$(OBJ)ProjectActiveConfig.imp \
-	$(OBJ)WorkspaceSettings.imp \
-	$(OBJ)ProjectTabSettings.imp \
-	$(OBJ)Project.imp \
-	$(OBJ)ProjectConfig.imp \
-	$(OBJ)ProjectNode.imp \
-	$(OBJ)ProjectView.imp \
-	$(OBJ)Workspace.imp \
-	$(if $(WINDOWS_TARGET),$(OBJ)vsSupport.imp,) \
-	$(OBJ)CodeEditor.imp \
-	$(OBJ)CodeObject.imp \
-	$(OBJ)Designer.imp \
-	$(OBJ)findCtx.imp \
-	$(OBJ)findExp.imp \
-	$(OBJ)findParams.imp \
-	$(OBJ)Sheet.imp \
-	$(OBJ)ToolBox.imp \
-	$(OBJ)debugFindCtx.imp \
-	$(OBJ)Debugger.imp \
-	$(OBJ)debugTools.imp \
-	$(OBJ)GDBDialog.imp \
-	$(OBJ)process.imp \
-	$(OBJ)BreakpointsView.imp \
-	$(OBJ)CallStackView.imp \
-	$(OBJ)OutputView.imp \
-	$(OBJ)ThreadsView.imp \
-	$(OBJ)WatchesView.imp \
-	$(OBJ)ModelView.imp \
-	$(OBJ)PictureEdit.imp \
-	$(OBJ)about.imp \
-	$(OBJ)ide.imp \
-	$(OBJ)IDESettings.imp \
-	$(OBJ)OldIDESettings.imp
-IMPORTS2 = \
-	$(OBJ)ProjectSettings.imp \
-	$(OBJ)licensing.imp
-
-SOURCES = \
+_ECSOURCES = \
 	../extras/FileSystemIterator.ec \
 	../extras/gui/layout.ec \
 	../extras/gui/controls/StringsBox.ec \
@@ -254,6 +101,22 @@ SOURCES = \
 	src/OldIDESettings.ec \
 	src/ProjectSettings.ec \
 	src/licensing.ec
+
+ECSOURCES = $(call shwspace,$(_ECSOURCES))
+
+COBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES)))))
+
+SYMBOLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES)))))
+
+IMPORTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES)))))
+
+ECOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES)))))
+
+BOWLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES)))))
+
+OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+
+SOURCES = $(ECSOURCES)
 
 RESOURCES = $(RESOURCES1) $(RESOURCES2)
 RESOURCES1 = \
@@ -314,69 +177,69 @@ RESOURCES2 = \
 	res/icon.png \
 	../crossplatform.mk
 
-ifndef DEBIAN_PACKAGE
-CFLAGS =
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+
+ifndef STATIC_LIBRARY_TARGET
+LIBS += \
+	$(call _L,ecere)
 endif
-OFLAGS =
 
-# CROSS-PLATFORM MAGIC
+CFLAGS += \
+	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+	 $(if $(LINUX_TARGET), \
+			 -I/usr/X11R6/include,) \
+	 $(if $(OSX_TARGET), \
+			 -I/usr/X11R6/include,) \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
+			 -DGDB_DEBUG_GUI
 
-include ../crossplatform.mk
-include ../include.mk
 
-# TOOLCHAIN
-export LD_LIBRARY_PATH = ../obj/$(PLATFORM)/lib/
-export DYLD_LIBRARY_PATH = ../obj/$(PLATFORM)/lib/
-ECP := $(call psep,../obj/$(PLATFORM)/bin/ecp)
-ECC := $(call psep,../obj/$(PLATFORM)/bin/ecc)
-ECS := $(call psep,../obj/$(PLATFORM)/bin/ecs)
-EAR := $(call psep,../obj/$(PLATFORM)/bin/ear)
 
-# FLAGS
+ECFLAGS += \
+	 -nolinenumbers
 
-CFLAGS += -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w
-
-CECFLAGS =
-
-ECFLAGS = -nolinenumbers
-
-OFLAGS += $(FORCE_32_BIT) \
-	 -L../obj/$(PLATFORM)/bin \
-	 -L../obj/$(PLATFORM)/lib
-
-LIBS = -lecere $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
-
-UPXFLAGS = -9 -q
-
-# HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX_TARGET
-OFLAGS += -Wl,--no-undefined
-endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
 ifdef WINDOWS_TARGET
 
+ifndef STATIC_LIBRARY_TARGET
 LIBS += obj/resources.o
+endif
 
 else
 ifdef LINUX_TARGET
 
+ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L/usr/X11R6/lib
-
-LIBS += -lX11
+LIBS += \
+	$(call _L,X11)
+endif
 
 else
 ifdef OSX_TARGET
 
+ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L/usr/X11R6/lib
-
-LIBS += -lX11
+LIBS += \
+	$(call _L,X11)
+endif
 
 endif
 endif
+endif
+
+
+
+CECFLAGS += -cpp $(call escspace,$(CPP))
+
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS += $(FORCE_32_BIT) \
+	 -L../obj/$(PLATFORM)/bin \
+	 -L../obj/$(PLATFORM)/lib
+OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -396,6 +259,7 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
+ifndef STATIC_LIBRARY_TARGET
 ifdef WINDOWS_TARGET
 $(TARGET): obj/resources.o
 endif
@@ -403,16 +267,19 @@ endif
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) awq $(TARGET) res/ecere.jpg res/ecereBack.jpg res/icon.png ../crossplatform.mk ""
-	$(EAR) awq $(TARGET) $(RES)actions/attach.png $(RES)actions/delete.png $(RES)actions/detach.png $(RES)actions/docNew.png $(RES)actions/editCopy.png $(RES)actions/editDelete.png $(RES)actions/delete2.png $(RES)actions/build.png $(RES)actions/clean.png $(RES)actions/debug.png "actions"
-	$(EAR) awq $(TARGET) $(RES)actions/docOpen.png $(RES)actions/docSave.png $(RES)actions/docSaveAll.png $(RES)actions/pause.png $(RES)actions/projAdd.png $(RES)actions/projNew.png $(RES)actions/projOpen.png $(RES)actions/rebuild.png $(RES)actions/regMakefile.png $(RES)actions/relink.png "actions"
-	$(EAR) awq $(TARGET) $(RES)actions/restart.png $(RES)actions/run.png $(RES)actions/skipBreaks.png $(RES)actions/stepInto.png $(RES)actions/stepOut.png $(RES)actions/stepOver.png $(RES)actions/stopDebug.png "actions"
-	$(EAR) awq $(TARGET) $(RES)codeMarks/breakpoint.png $(RES)codeMarks/breakpointDisabled.png $(RES)codeMarks/breakpointHalf.png $(RES)codeMarks/breakpointHalfDisabled.png $(RES)codeMarks/cursor.png $(RES)codeMarks/cursorError.png $(RES)codeMarks/topFrame.png $(RES)codeMarks/topFrameError.png $(RES)codeMarks/topFrameHalf.png $(RES)codeMarks/topFrameHalfError.png "codeMarks"
-	$(EAR) awq $(TARGET) $(RES)others/mousePointer.png "others"
-	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/ide.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/ide.mo "locale/es_ES/LC_MESSAGES"
-	$(EAR) awq $(TARGET) ../LICENSE ../extras/res/licenses/png.LICENSE ../extras/res/licenses/tango.COPYING ../extras/res/licenses/zlib.README ../extras/res/licenses/sqlite.LICENSE ../extras/res/licenses/jpg.LICENSE ../extras/res/licenses/ungif.LICENSE ../extras/res/licenses/freetype.LICENSE ../extras/res/licenses/harfbuzz.LICENSE ../extras/res/licenses/upx.LICENSE "licenses"
-	$(EAR) awq $(TARGET) ../extras/res/licenses/gpl.LICENSE "licenses"
+	$(EAR) $(EARFLAGS) $(TARGET) res/ecere.jpg res/ecereBack.jpg res/icon.png ../crossplatform.mk ""
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)actions/attach.png $(RES)actions/delete.png $(RES)actions/detach.png $(RES)actions/docNew.png $(RES)actions/editCopy.png $(RES)actions/editDelete.png $(RES)actions/delete2.png $(RES)actions/build.png $(RES)actions/clean.png $(RES)actions/debug.png "actions"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)actions/docOpen.png $(RES)actions/docSave.png $(RES)actions/docSaveAll.png $(RES)actions/pause.png $(RES)actions/projAdd.png $(RES)actions/projNew.png $(RES)actions/projOpen.png $(RES)actions/rebuild.png $(RES)actions/regMakefile.png $(RES)actions/relink.png "actions"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)actions/restart.png $(RES)actions/run.png $(RES)actions/skipBreaks.png $(RES)actions/stepInto.png $(RES)actions/stepOut.png $(RES)actions/stepOver.png $(RES)actions/stopDebug.png "actions"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)codeMarks/breakpoint.png $(RES)codeMarks/breakpointDisabled.png $(RES)codeMarks/breakpointHalf.png $(RES)codeMarks/breakpointHalfDisabled.png $(RES)codeMarks/cursor.png $(RES)codeMarks/cursorError.png $(RES)codeMarks/topFrame.png $(RES)codeMarks/topFrameError.png $(RES)codeMarks/topFrameHalf.png $(RES)codeMarks/topFrameHalfError.png "codeMarks"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)others/mousePointer.png "others"
+	$(EAR) $(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ide.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) $(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ide.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) $(EARFLAGS) $(TARGET) ../LICENSE ../extras/res/licenses/png.LICENSE ../extras/res/licenses/tango.COPYING ../extras/res/licenses/zlib.README ../extras/res/licenses/sqlite.LICENSE ../extras/res/licenses/jpg.LICENSE ../extras/res/licenses/ungif.LICENSE ../extras/res/licenses/freetype.LICENSE ../extras/res/licenses/harfbuzz.LICENSE ../extras/res/licenses/upx.LICENSE "licenses"
+	$(EAR) $(EARFLAGS) $(TARGET) ../extras/res/licenses/gpl.LICENSE "licenses"
+else
+	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
+endif
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
 
 ifdef WINDOWS_TARGET
@@ -476,8 +343,12 @@ $(OBJ)ProjectView.sym: src/project/ProjectView.ec
 $(OBJ)Workspace.sym: src/project/Workspace.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/project/Workspace.ec -o $(OBJ)Workspace.sym
 
+ifdef WINDOWS_TARGET
+
 $(OBJ)vsSupport.sym: src/project/vsSupport.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/project/vsSupport.ec -o $(OBJ)vsSupport.sym
+
+endif
 
 $(OBJ)CodeEditor.sym: src/designer/CodeEditor.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/designer/CodeEditor.ec -o $(OBJ)CodeEditor.sym
@@ -613,8 +484,12 @@ $(OBJ)ProjectView.c: src/project/ProjectView.ec $(OBJ)ProjectView.sym | $(SYMBOL
 $(OBJ)Workspace.c: src/project/Workspace.ec $(OBJ)Workspace.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/project/Workspace.ec -o $(OBJ)Workspace.c -symbols $(OBJ)
 
+ifdef WINDOWS_TARGET
+
 $(OBJ)vsSupport.c: src/project/vsSupport.ec $(OBJ)vsSupport.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/project/vsSupport.ec -o $(OBJ)vsSupport.c -symbols $(OBJ)
+
+endif
 
 $(OBJ)CodeEditor.c: src/designer/CodeEditor.ec $(OBJ)CodeEditor.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/designer/CodeEditor.ec -o $(OBJ)CodeEditor.c -symbols $(OBJ)
@@ -835,15 +710,15 @@ $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 clean: objdir
-	$(call rmq,$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
-	$(call rmq,$(OBJECTS))
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
+	$(call rmq,$(_OBJECTS))
+	$(call rmq,$(ECOBJECTS))
 	$(call rmq,$(COBJECTS))
-	$(call rmq,$(IMPORTS1))
-	$(call rmq,$(IMPORTS2))
-	$(call rmq,$(SYMBOLS1))
-	$(call rmq,$(SYMBOLS2))
+	$(call rmq,$(BOWLS))
+	$(call rmq,$(IMPORTS))
+	$(call rmq,$(SYMBOLS))
 
-realclean:
+realclean: clean
 	$(call rmrq,$(OBJ))
 
 distclean:

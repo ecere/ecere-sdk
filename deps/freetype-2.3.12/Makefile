@@ -1,11 +1,42 @@
 .PHONY: all objdir clean realclean distclean
 
-# CONTENT
+# CORE VARIABLES
 
 MODULE := libfreetype
 CONFIG := release
+ifndef COMPILER
 COMPILER := default
+endif
+
 TARGET_TYPE = staticlib
+
+# FLAGS
+
+ECFLAGS =
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+CECFLAGS =
+OFLAGS =
+LDFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+ifdef EXECUTABLE_TARGET
+CONSOLE = -mwindows
+endif
+
+# INCLUDES
+
+_CF_DIR = ../../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)include.mk
+
+# POST-INCLUDES VARIABLES
 
 OBJ = obj/$(CONFIG).$(PLATFORM)/
 
@@ -13,7 +44,8 @@ RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)freetype$(A)
 
-OBJECTS = \
+_OBJECTS = $(_OBJECTS1) $(_OBJECTS2)
+_OBJECTS1 = \
 	$(OBJ)afglobal.o \
 	$(OBJ)afindic.o \
 	$(OBJ)autofit.o \
@@ -45,7 +77,8 @@ OBJECTS = \
 	$(OBJ)gxvalid.o \
 	$(OBJ)ftgzip.o \
 	$(OBJ)ftlzw.o \
-	$(OBJ)otvalid.o \
+	$(OBJ)otvalid.o
+_OBJECTS2 = \
 	$(OBJ)pcf.o \
 	$(OBJ)pfr.o \
 	$(OBJ)psaux.o \
@@ -59,13 +92,9 @@ OBJECTS = \
 	$(OBJ)type42.o \
 	$(OBJ)winfnt.o
 
-COBJECTS =
+OBJECTS = $(_OBJECTS)
 
-SYMBOLS =
-
-IMPORTS =
-
-SOURCES = \
+SOURCES = $(ECSOURCES) \
 	src/autofit/afglobal.c \
 	src/autofit/afindic.c \
 	src/autofit/autofit.c \
@@ -113,33 +142,28 @@ SOURCES = \
 
 RESOURCES =
 
-ifndef DEBIAN_PACKAGE
-CFLAGS =
-endif
-OFLAGS =
-
-# CROSS-PLATFORM MAGIC
-
-include ../../crossplatform.mk
-include ../../include.mk
-
-# FLAGS
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 # Warning: Compiling with -O2 gives 0 font height with MinGW!!
-CFLAGS += -fmessage-length=0 $(FORCE_32_BIT) $(FPIC) -w \
-	 -DFT2_BUILD_LIBRARY -DFT_OPTION_AUTOFIT2 \
-	 -I../zlib \
-	 -Iinclude \
-	 -Iinclude/freetype \
-	 -Iinclude/freetype/internal
+CFLAGS += \
+	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+	 $(if $(DEBUG),-g) $(FPIC) -w \
+			 -DFT2_BUILD_LIBRARY \
+			 -DFT_OPTION_AUTOFIT2 \
+			 -I../zlib \
+			 -Iinclude \
+			 -Iinclude/freetype \
+			 -Iinclude/freetype/internal
 
-LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-UPXFLAGS = -9 -q
 
-# HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX_TARGET
-OFLAGS += -Wl,--no-undefined
+
+
+CECFLAGS += -cpp $(call escspace,$(CPP))
+
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS +=
+OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -292,10 +316,10 @@ $(OBJ)winfnt.o: src/winfonts/winfnt.c
 
 clean: objdir
 	$(call rmq,$(TARGET))
-	$(call rmq,$(OBJECTS))
-	$(call rmq,$(COBJECTS))
+	$(call rmq,$(_OBJECTS1))
+	$(call rmq,$(_OBJECTS2))
 
-realclean:
+realclean: clean
 	$(call rmrq,$(OBJ))
 
 distclean:

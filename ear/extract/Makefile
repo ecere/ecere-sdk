@@ -1,35 +1,78 @@
 .PHONY: all objdir clean realclean distclean
 
-# CONTENT
+# CORE VARIABLES
 
 MODULE := extract
 CONFIG := release
+ifndef COMPILER
 COMPILER := default
+endif
+
 TARGET_TYPE = executable
+
+# FLAGS
+
+ECFLAGS =
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+CECFLAGS =
+OFLAGS =
+LDFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+ifdef EXECUTABLE_TARGET
+CONSOLE = -mwindows
+endif
+
+# INCLUDES
+
+_CF_DIR = ../../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)include.mk
+
+# CUSTOM TOOLCHAIN / COMPILER CONFIG
+
+export LD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
+export DYLD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
+ECP := $(call psep,../../compiler/bootstrap/obj/bin.$(PLATFORM)/ecp)
+ECC := $(call psep,../../compiler/bootstrap/obj/bin.$(PLATFORM)/ecc)
+ECS := $(call psep,../../compiler/bootstrap/obj/bin.$(PLATFORM)/ecs)
+EAR := $(call psep,../../obj/$(PLATFORM)/bin/ear)
+
+# END OF CUSTOM TOOLCHAIN / COMPILER CONFIG
+
+# POST-INCLUDES VARIABLES
 
 OBJ = obj/$(CONFIG).$(PLATFORM)/
 
 RES = 
 
-CONSOLE = -mwindows
-
 TARGET = obj/$(CONFIG).$(PLATFORM)/extract$(E)
 
-OBJECTS = \
-	$(OBJ)extract.o \
-	$(OBJ)$(MODULE).main$(O)
-
-COBJECTS = \
-	$(OBJ)extract.c
-
-SYMBOLS = \
-	$(OBJ)extract.sym
-
-IMPORTS = \
-	$(OBJ)extract.imp
-
-SOURCES = \
+_ECSOURCES = \
 	extract.ec
+
+ECSOURCES = $(call shwspace,$(_ECSOURCES))
+
+COBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES)))))
+
+SYMBOLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES)))))
+
+IMPORTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES)))))
+
+ECOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES)))))
+
+BOWLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES)))))
+
+OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+
+SOURCES = $(ECSOURCES)
 
 RESOURCES = $(RESOURCES1) $(RESOURCES2)
 RESOURCES1 = \
@@ -63,70 +106,84 @@ RESOURCES1 = \
 RESOURCES2 = \
 	locale/es_ES/LC_MESSAGES/extract.mo
 
-ifndef DEBIAN_PACKAGE
-CFLAGS =
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+
+ifndef STATIC_LIBRARY_TARGET
+LIBS += \
+	$(call _L,ecereVanilla) \
+	$(call _L,z)
 endif
-OFLAGS =
 
-# CROSS-PLATFORM MAGIC
+CFLAGS += \
+	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+	 $(if $(DEBUG), -g, -Os) $(FORCE_32_BIT) $(FPIC) -w \
+			 -DECERE_STATIC
 
-include ../../crossplatform.mk
-include ../../include.mk
 
-# TOOLCHAIN
-export LD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
-export DYLD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
-ECP := $(call psep,../../compiler/bootstrap/obj/bin.$(PLATFORM)/ecp)
-ECC := $(call psep,../../compiler/bootstrap/obj/bin.$(PLATFORM)/ecc)
-ECS := $(call psep,../../compiler/bootstrap/obj/bin.$(PLATFORM)/ecs)
-EAR := $(call psep,../../obj/$(PLATFORM)/bin/ear)
+ECFLAGS += \
+	 -nolinenumbers
 
-# FLAGS
-
-CFLAGS += -fmessage-length=0 -Os $(FORCE_32_BIT) $(FPIC) -w \
-	 -DECERE_STATIC
-
-CECFLAGS =
-
-ECFLAGS = -nolinenumbers
-
-OFLAGS += $(FORCE_32_BIT) \
-	 -L../../ecere/obj/vanilla.$(PLATFORM) \
-	 -L../../deps/zlib/obj/release.$(PLATFORM)
-
-LIBS = -lecereVanilla -lz $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
-
-UPXFLAGS = -9 -q --no-progress --no-color
-
-# HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX_TARGET
-OFLAGS += -Wl,--no-undefined
-endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
 ifdef WINDOWS_TARGET
 
-LIBS += -lmpr -lwinmm -limm32
+ifndef STATIC_LIBRARY_TARGET
+LIBS += \
+	$(call _L,mpr) \
+	$(call _L,winmm) \
+	$(call _L,imm32)
+endif
 
 else
 ifdef LINUX_TARGET
 
+ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L/usr/X11R6/lib
-
-LIBS += -lfontconfig -lfreetype -lXrender -lXext -lncurses -lm -ldl -lpthread -lX11
+LIBS += \
+	$(call _L,fontconfig) \
+	$(call _L,freetype) \
+	$(call _L,Xrender) \
+	$(call _L,Xext) \
+	$(call _L,ncurses) \
+	$(call _L,m) \
+	$(call _L,dl) \
+	$(call _L,pthread) \
+	$(call _L,X11)
+endif
 
 else
 ifdef OSX_TARGET
 
+ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L/usr/X11R6/lib
-
-LIBS += -lfontconfig -lfreetype -lXrender -lXext -lncurses -lm -ldl -lpthread -lX11
+LIBS += \
+	$(call _L,fontconfig) \
+	$(call _L,freetype) \
+	$(call _L,Xrender) \
+	$(call _L,Xext) \
+	$(call _L,ncurses) \
+	$(call _L,m) \
+	$(call _L,dl) \
+	$(call _L,pthread) \
+	$(call _L,X11)
+endif
 
 endif
 endif
+endif
+
+
+
+CECFLAGS += -cpp $(call escspace,$(CPP))
+
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS += $(FORCE_32_BIT) \
+	 -L../../ecere/obj/vanilla.$(PLATFORM) \
+	 -L../../deps/zlib/obj/release.$(PLATFORM)
+OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -146,25 +203,29 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
+ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 ifndef WINDOWS_TARGET
-ifeq "$(TARGET_TYPE)" "executable"
+ifdef EXECUTABLE_TARGET
 	@-$(call psep,$(UPX) $(UPXFLAGS) $(TARGET)) || $(call echo,upx not installed; not compressing.)
 endif
 else
 	@-$(call psep,$(UPX) $(UPXFLAGS) $(TARGET)) || $(call echo,upx not installed; not compressing.)
 endif
-	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/actions/folderNew.png ../../ecere/res/vanilla/ecere/actions/goUp.png "ecere/actions"
-	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/devices/computer.png ../../ecere/res/vanilla/ecere/devices/driveHardDisk.png ../../ecere/res/vanilla/ecere/devices/driveRemovableMedia.png ../../ecere/res/vanilla/ecere/devices/mediaFloppy.png ../../ecere/res/vanilla/ecere/devices/mediaOptical.png "ecere/devices"
-	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/elements/areaClose.png ../../ecere/res/vanilla/ecere/elements/areaMaximize.png ../../ecere/res/vanilla/ecere/elements/areaMinimize.png ../../ecere/res/vanilla/ecere/elements/areaRestore.png ../../ecere/res/vanilla/ecere/elements/arrowDown.png ../../ecere/res/vanilla/ecere/elements/arrowLeft.png ../../ecere/res/vanilla/ecere/elements/arrowRight.png ../../ecere/res/vanilla/ecere/elements/arrowUp.png ../../ecere/res/vanilla/ecere/elements/optionBoxDisabledSelected.png ../../ecere/res/vanilla/ecere/elements/optionBoxDown.png "ecere/elements"
-	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/elements/optionBoxSelected.png ../../ecere/res/vanilla/ecere/elements/optionBoxSelectedDown.png ../../ecere/res/vanilla/ecere/elements/optionBoxUp.png "ecere/elements"
-	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/places/driveRemote.png ../../ecere/res/vanilla/ecere/places/folder.png ../../ecere/res/vanilla/ecere/places/folderRemote.png ../../ecere/res/vanilla/ecere/places/networkServer.png ../../ecere/res/vanilla/ecere/places/networkWorkgroup.png "ecere/places"
-	$(EAR) awq $(TARGET) ../../ecere/res/vanilla/ecere/status/folderOpen.png "ecere/status"
-	$(EAR) awq $(TARGET) locale/zh_CN/LC_MESSAGES/extract.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) awq $(TARGET) locale/es_ES/LC_MESSAGES/extract.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) $(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/actions/folderNew.png ../../ecere/res/vanilla/ecere/actions/goUp.png "ecere/actions"
+	$(EAR) $(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/devices/computer.png ../../ecere/res/vanilla/ecere/devices/driveHardDisk.png ../../ecere/res/vanilla/ecere/devices/driveRemovableMedia.png ../../ecere/res/vanilla/ecere/devices/mediaFloppy.png ../../ecere/res/vanilla/ecere/devices/mediaOptical.png "ecere/devices"
+	$(EAR) $(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/elements/areaClose.png ../../ecere/res/vanilla/ecere/elements/areaMaximize.png ../../ecere/res/vanilla/ecere/elements/areaMinimize.png ../../ecere/res/vanilla/ecere/elements/areaRestore.png ../../ecere/res/vanilla/ecere/elements/arrowDown.png ../../ecere/res/vanilla/ecere/elements/arrowLeft.png ../../ecere/res/vanilla/ecere/elements/arrowRight.png ../../ecere/res/vanilla/ecere/elements/arrowUp.png ../../ecere/res/vanilla/ecere/elements/optionBoxDisabledSelected.png ../../ecere/res/vanilla/ecere/elements/optionBoxDown.png "ecere/elements"
+	$(EAR) $(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/elements/optionBoxSelected.png ../../ecere/res/vanilla/ecere/elements/optionBoxSelectedDown.png ../../ecere/res/vanilla/ecere/elements/optionBoxUp.png "ecere/elements"
+	$(EAR) $(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/places/driveRemote.png ../../ecere/res/vanilla/ecere/places/folder.png ../../ecere/res/vanilla/ecere/places/folderRemote.png ../../ecere/res/vanilla/ecere/places/networkServer.png ../../ecere/res/vanilla/ecere/places/networkWorkgroup.png "ecere/places"
+	$(EAR) $(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/status/folderOpen.png "ecere/status"
+	$(EAR) $(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/extract.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) $(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/extract.mo "locale/es_ES/LC_MESSAGES"
+else
+	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
+endif
 
 # SYMBOL RULES
 
@@ -176,24 +237,24 @@ $(OBJ)extract.sym: extract.ec
 $(OBJ)extract.c: extract.ec $(OBJ)extract.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c extract.ec -o $(OBJ)extract.c -symbols $(OBJ)
 
-# IMPLICIT OBJECT RULE
-
-$(OBJ)%$(O) : $(OBJ)%.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $< -o $@
-
 # OBJECT RULES
+
+$(OBJ)extract.o: $(OBJ)extract.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)extract.c -o $(OBJ)extract.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 clean: objdir
-	$(call rmq,$(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
-	$(call rmq,$(OBJECTS))
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
+	$(call rmq,$(_OBJECTS))
+	$(call rmq,$(ECOBJECTS))
 	$(call rmq,$(COBJECTS))
+	$(call rmq,$(BOWLS))
 	$(call rmq,$(IMPORTS))
 	$(call rmq,$(SYMBOLS))
 
-realclean:
+realclean: clean
 	$(call rmrq,$(OBJ))
 
 distclean:

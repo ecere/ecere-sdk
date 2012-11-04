@@ -5,7 +5,8 @@
       "Debug" : false,
       "Optimization" : "None",
       "TargetType" : "StaticLibrary",
-      "TargetFileName" : "ungif"
+      "TargetFileName" : "ungif",
+      "BuildBitDepth" : "Bits32"
    },
    "Configurations" : [
       {
