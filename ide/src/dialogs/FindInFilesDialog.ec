@@ -384,7 +384,7 @@ private:
             MessageBox { type = ok, master = parent,
                   text = text, contents = $"You must specify a search location." }.Modal();
          }
-         else if(!FileExists(findPath))
+         else if(findIn.currentRow == inDirectoryRow && !FileExists(findPath))
          {
             findWhere.Activate();
             MessageBox { type = ok, master = parent,
