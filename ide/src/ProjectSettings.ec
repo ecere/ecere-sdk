@@ -1613,6 +1613,9 @@ class BuildTab : Tab
             compilerTab.profiling.visible = !newNodeRes;
             compilerTab.labelOptimization.visible = !newNodeRes;
             compilerTab.optimization.visible = !newNodeRes;
+            compilerTab.fastMath.visible = !newNodeRes;
+            compilerTab.m32.visible = !newNodeRes;
+            compilerTab.m64.visible = !newNodeRes;
             compilerTab.labelIncludeDirs.visible = !newNodeRes;
             compilerTab.includeDirs.visible = !newNodeRes;
          }
