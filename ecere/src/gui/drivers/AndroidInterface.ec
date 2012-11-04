@@ -105,10 +105,6 @@ private:
       destroyed = true;
       cond.Signal();
       mutex.Release();
-
-      delete __currentModule;
-
-      LOGV("THE END.");
    }
 
    AndroidPollSource cmdPollSource
@@ -350,6 +346,10 @@ static void onDestroy(ANativeActivity* activity)
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
    LOGV("Destroy: %p\n", activity);
    app.cleanup();
+   app.Wait();
+   delete androidActivity;
+   delete __currentModule;
+   LOGV("THE END.");
 }
 
 static void onStart(ANativeActivity* activity)
@@ -497,6 +497,7 @@ default dllexport void ANativeActivity_onCreate(ANativeActivity* activity, void*
 
    ANativeActivity_setWindowFlags(activity, AWINDOW_FLAG_FULLSCREEN|AWINDOW_FLAG_KEEP_SCREEN_ON, 0 );
    app = AndroidActivity { activity = activity, moduleName = moduleName };
+   incref app;
    app.setSavedState(savedState, savedStateSize);
    activity->callbacks->onDestroy = onDestroy;
    activity->callbacks->onStart = onStart;

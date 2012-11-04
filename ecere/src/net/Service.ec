@@ -1,3 +1,5 @@
+#define __statement __extension__   // To compile for Android/X86 (Need to add support to eC)
+                                    // Also had to add __extension__ to __swap16md macro in endian.h
 namespace net;
 
 #ifndef ECERE_NONET
