@@ -2299,6 +2299,7 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
             Array<String> strings = options ? *((Array<String>*)((byte *)options + option) : null;
             if(strings)
             {
+               int order = 0;
                Array<String> tempStrings = optionTempStrings[option];
                if(!tempStrings)
                   optionTempStrings[option] = tempStrings = { };
@@ -2306,8 +2307,9 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
                {
                   bool found = false;
                   char priorityMark[3];
+                  order++;
                   if(priority)
-                     sprintf(priorityMark, "%02d\n", priority);
+                     sprintf(priorityMark, "%04d\n", priority * 100 + order);
                   for(i : tempStrings; !(caseSensitive ? strcmp : strcmpi)(i, s)) { found = true; break; }
                   if(!found) tempStrings.Add(priority ? PrintString(priorityMark, s) : CopyString(s));
                }
