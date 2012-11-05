@@ -157,7 +157,7 @@ CFLAGS += \
 
 
 
-CECFLAGS += -cpp $(CPP)
+CECFLAGS += "-cpp $(CPP)"
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS +=

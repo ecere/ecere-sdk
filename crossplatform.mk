@@ -139,13 +139,13 @@ LP := $(if $(WINDOWS_TARGET),$(if $(STATIC_LIBRARY_TARGET),lib,),lib)
 
 # SUPER TOOLS
 ifdef CCACHE
-   CCACHE_COMPILE := ccache
+   CCACHE_COMPILE := ccache$(space)
 ifdef DISTCC
-   DISTCC_COMPILE := distcc
+   DISTCC_COMPILE := distcc$(space)
 endif
 else
 ifdef DISTCC
-   DISTCC_COMPILE := distcc
+   DISTCC_COMPILE := distcc$(space)
 endif
 endif
 
