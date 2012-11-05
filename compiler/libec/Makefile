@@ -42,8 +42,8 @@ export LD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
 export DYLD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
 endif
 ECP := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecp)
-ECC := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecc)
-ECS := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecs)
+ECC := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecc)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)
+ECS := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecs)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)
 EAR := $(call psep,../../obj/$(PLATFORM)/bin/ear)
 
 # BSL CFLAGS
