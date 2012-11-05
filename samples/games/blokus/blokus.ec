@@ -1473,6 +1473,10 @@ class CommunicationPanel : Window
                   EditBox log = blokus.chat.log;
                   char * format = (log.numLines > 1 || log.line.count) ?
                      "\n%s: %s" : "%s: %s";
+                  int len = strlen(msg);
+                  // Avoid buffer overflow...
+                  if(len >= MAX_F_STRING-100)
+                     msg[MAX_F_STRING-100] = 0;
                   blokus.chat.Log(format, name, msg);
                }
             };
