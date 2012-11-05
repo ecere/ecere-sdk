@@ -149,6 +149,8 @@ ifdef DISTCC
 endif
 endif
 
+_CPP = $(if $(findstring $(space),$(CPP)),"$(CPP)",$(CPP))
+
 # SHELL COMMANDS
 ifdef WINDOWS_HOST
 ifndef MSYSCON

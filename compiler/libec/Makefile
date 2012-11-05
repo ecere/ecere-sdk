@@ -133,7 +133,7 @@ ECFLAGS += \
 
 
 
-CECFLAGS += "-cpp $(CPP)"
+CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += $(FORCE_32_BIT) \

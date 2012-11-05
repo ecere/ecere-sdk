@@ -2051,7 +2051,7 @@ private:
             f.Printf("CC := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.ccCommand);
             f.Printf("CXX := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cxxCommand);
             f.Printf("ECP := %s\n", compiler.ecpCommand);
-            f.Printf("ECC := %s\n", compiler.eccCommand);
+            f.Printf("ECC := %s$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.eccCommand);
             f.Printf("ECS := %s$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.ecsCommand);
             f.Printf("EAR := %s\n", compiler.earCommand);
 
@@ -2521,7 +2521,7 @@ private:
          f.Puts("\n");
          f.Puts("\n");
 
-         f.Puts("CECFLAGS += -cpp \"$(CPP)\"");
+         f.Puts("CECFLAGS += -cpp $(_CPP)");
          f.Puts("\n");
          f.Puts("\n");
 
