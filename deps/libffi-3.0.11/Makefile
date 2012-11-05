@@ -46,6 +46,7 @@ TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ffi$(A)
 
 _OBJECTS = \
 	$(OBJ)ffi.o \
+	$(OBJ)win32.o \
 	$(OBJ)prep_cif.o \
 	$(OBJ)raw_api.o \
 	$(OBJ)types.o \
@@ -55,6 +56,7 @@ OBJECTS = $(_OBJECTS)
 
 SOURCES = $(ECSOURCES) \
 	src/x86/ffi.c \
+	src/x86/win32.S \
 	src/prep_cif.c \
 	src/raw_api.c \
 	src/types.c \
