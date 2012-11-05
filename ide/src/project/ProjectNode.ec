@@ -2306,7 +2306,7 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
                for(s : strings)
                {
                   bool found = false;
-                  char priorityMark[3];
+                  char priorityMark[10];
                   order++;
                   if(priority)
                      sprintf(priorityMark, "%04d\n", priority * 100 + order);
