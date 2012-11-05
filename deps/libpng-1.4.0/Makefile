@@ -61,7 +61,7 @@ _OBJECTS = \
 
 OBJECTS = $(_OBJECTS)
 
-SOURCES = $(ECSOURCES) \
+SOURCES = \
 	./png.c \
 	./pngerror.c \
 	./pngget.c \

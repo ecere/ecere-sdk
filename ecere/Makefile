@@ -403,23 +403,24 @@ CFLAGS += \
 			 -I../deps/freetype-2.3.12/include \
 			 -I../deps/jpeg-6b \
 			 -I../deps/libpng-1.4.0 \
+			 -I../deps/libungif-4.1.1/lib \
 			 -I../deps/zlib \
-			 -I/usr/X11R6/include \
-			 -I/usr/X11R6/include/freetype2,) \
+			 -I../deps/freetype-2.3.12/include,) \
 	 $(if $(LINUX_TARGET), \
 			 -I/usr/include/freetype2 \
-			 -I/usr/X11R6/include \
-			 -I/usr/X11R6/include/freetype2,) \
+			 -I../deps/libungif-4.1.1/lib,) \
 	 $(if $(OSX_TARGET), \
+			 -I/usr/include/freetype2 \
+			 -I/usr/X11R6/include/freetype2 \
+			 -I/usr/X11R6/include \
 			 -I../deps/jpeg-6b \
 			 -I../deps/libpng-1.4.0 \
-			 -I/usr/include/freetype2 \
-			 -I/usr/X11R6/include \
-			 -I/usr/X11R6/include/freetype2,) \
+			 -I../deps/libungif-4.1.1/lib,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
 			 -DBUILDING_ECERE_COM \
-			 -I../deps/libungif-4.1.1/lib \
-			 -Isrc/gfx/drivers/harfbuzz
+			 -Isrc/gfx/drivers/harfbuzz \
+			 -I/usr/X11R6/include \
+			 -I/usr/X11R6/include/freetype2
 
 CUSTOM1_CFLAGS = \
 			 -DECERE_COM_MODULE \

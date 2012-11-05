@@ -67,9 +67,9 @@ LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 CFLAGS += \
 	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall \
-			 -Ii686-pc-mingw32 \
+			 -Iinclude \
 			 -Ii686-pc-mingw32/include \
-			 -Iinclude
+			 -Ii686-pc-mingw32
 
 
 

@@ -97,7 +97,7 @@ _OBJECTS2 = \
 
 OBJECTS = $(_OBJECTS)
 
-SOURCES = $(ECSOURCES) \
+SOURCES = \
 	jcapimin.c \
 	jcapistd.c \
 	jccoefct.c \

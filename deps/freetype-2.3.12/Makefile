@@ -92,7 +92,7 @@ _OBJECTS2 = \
 
 OBJECTS = $(_OBJECTS)
 
-SOURCES = $(ECSOURCES) \
+SOURCES = \
 	src/autofit/afglobal.c \
 	src/autofit/afindic.c \
 	src/autofit/autofit.c \

@@ -353,30 +353,30 @@ CFLAGS += \
 	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
 	 $(if $(WINDOWS_TARGET), \
 			 -I../deps/DirectX-9.0/include \
-			 -I../deps/freetype-2.3.12/include \
-			 -I../deps/glext \
 			 -I../deps/jpeg-6b \
 			 -I../deps/libpng-1.4.0 \
+			 -I../deps/libungif-4.1.1/lib \
 			 -I../deps/zlib \
-			 -I/usr/X11R6/include \
-			 -I/usr/X11R6/include/freetype2,) \
+			 -I../deps/freetype-2.3.12/include \
+			 -I../deps/glext,) \
 	 $(if $(LINUX_TARGET), \
 			 -I/usr/include/freetype2 \
-			 -I/usr/X11R6/include \
-			 -I/usr/X11R6/include/freetype2,) \
+			 -I../deps/libungif-4.1.1/lib,) \
 	 $(if $(OSX_TARGET), \
+			 -I/usr/include/freetype2 \
+			 -I/usr/X11R6/include/freetype2 \
+			 -I/usr/X11R6/include \
 			 -I../deps/jpeg-6b \
 			 -I../deps/libpng-1.4.0 \
-			 -I/usr/include/freetype2 \
-			 -I/usr/X11R6/include \
-			 -I/usr/X11R6/include/freetype2,) \
+			 -I../deps/libungif-4.1.1/lib,) \
 	 $(if $(DEBUG), -g, -Os) $(FORCE_32_BIT) $(FPIC) -w \
 			 -DBUILDING_ECERE_COM \
 			 -DECERE_STATIC \
 			 -DECERE_VANILLA \
 			 -DNOBLENDING \
-			 -I../deps/libungif-4.1.1/lib \
-			 -Isrc/gfx/drivers/harfbuzz
+			 -Isrc/gfx/drivers/harfbuzz \
+			 -I/usr/X11R6/include \
+			 -I/usr/X11R6/include/freetype2
 
 CUSTOM1_CFLAGS = \
 			 -DECERE_COM_MODULE \
@@ -493,25 +493,25 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw $(TARGET) $(RES)actions/editFind.png $(RES)actions/folderNew.png $(RES)actions/goDown.png $(RES)actions/goHome.png $(RES)actions/goNext.png $(RES)actions/goPrevious.png $(RES)actions/goUp.png $(RES)actions/listAdd.png $(RES)actions/listRemove.png $(RES)actions/viewRefresh.png "actions"
-	$(EAR) aw $(TARGET) $(RES)actions/windowNew.png $(RES)actions/clean.png $(RES)actions/docSave.png $(RES)actions/docNew.png "actions"
-	$(EAR) aw $(TARGET) $(RES)constructs/class.png $(RES)constructs/data.png $(RES)constructs/dataPrivate.png $(RES)constructs/dataType.png $(RES)constructs/enum.png $(RES)constructs/enumValue.png $(RES)constructs/event.png $(RES)constructs/library.png $(RES)constructs/method.png $(RES)constructs/methodPrivate.png "constructs"
-	$(EAR) aw $(TARGET) $(RES)constructs/namespace.png $(RES)constructs/property.png $(RES)constructs/propertyPrivate.png "constructs"
-	$(EAR) aw $(TARGET) $(RES)controls/button.png $(RES)controls/calendar.png $(RES)controls/checkBox.png $(RES)controls/dataBox.png $(RES)controls/dropBox.png $(RES)controls/editBox.png $(RES)controls/groupBox.png $(RES)controls/label.png $(RES)controls/listBox.png $(RES)controls/menu.png "controls"
-	$(EAR) aw $(TARGET) $(RES)controls/optionBox.png $(RES)controls/progressBar.png $(RES)controls/scrollBarHorizontal.png $(RES)controls/scrollBarVertical.png $(RES)controls/statusBar.png "controls"
-	$(EAR) aw $(TARGET) $(RES)cursors/arrow.png $(RES)cursors/cross.png $(RES)cursors/iBeam.png $(RES)cursors/move.png $(RES)cursors/sizeEastWest.png $(RES)cursors/sizeNortEastSouthWest.png $(RES)cursors/sizeNorthSouth.png $(RES)cursors/sizeNortWestSouthEast.png "cursors"
-	$(EAR) aw $(TARGET) $(RES)devices/computer.png $(RES)devices/driveHardDisk.png $(RES)devices/driveRemovableMedia.png $(RES)devices/mediaFloppy.png $(RES)devices/mediaOptical.png "devices"
-	$(EAR) aw $(TARGET) $(RES)elements/areaClose.png $(RES)elements/areaMaximize.png $(RES)elements/areaMinimize.png $(RES)elements/areaRestore.png $(RES)elements/arrowDown.png $(RES)elements/arrowLeft.png $(RES)elements/arrowRight.png $(RES)elements/arrowUp.png $(RES)elements/checkBoxChecked.png $(RES)elements/checkBoxDisabled.png "elements"
-	$(EAR) aw $(TARGET) $(RES)elements/checkBoxDisabledChecked.png $(RES)elements/checkBox.png $(RES)elements/optionBoxDisabled.png $(RES)elements/optionBoxDisabledSelected.png $(RES)elements/optionBoxDown.png $(RES)elements/optionBoxSelectedDown.png $(RES)elements/optionBoxSelectedUp.png $(RES)elements/optionBoxUp.png $(RES)elements/orderAscending.png $(RES)elements/orderCategorized.png "elements"
-	$(EAR) aw $(TARGET) $(RES)elements/orderDescending.png "elements"
-	$(EAR) aw $(TARGET) $(RES)emblems/unreadable.png "emblems"
-	$(EAR) aw $(TARGET) $(RES)mimeTypes/file.png $(RES)mimeTypes/image.png $(RES)mimeTypes/package.png $(RES)mimeTypes/packageOpticalDisc.png $(RES)mimeTypes/packageSoftware.png $(RES)mimeTypes/text.png $(RES)mimeTypes/textCHeader.png $(RES)mimeTypes/textCSource.png $(RES)mimeTypes/textC++Header.png $(RES)mimeTypes/textC++Source.png "mimeTypes"
-	$(EAR) aw $(TARGET) $(RES)mimeTypes/textEcereHeader.png $(RES)mimeTypes/textEcereProject.png $(RES)mimeTypes/textEcereSource.png $(RES)mimeTypes/textEcereWorkspace.png $(RES)mimeTypes/textHyperTextMarkup.png $(RES)mimeTypes/brokenFile.png "mimeTypes"
-	$(EAR) aw $(TARGET) $(RES)places/driveRemote.png $(RES)places/folder.png $(RES)places/folderRemote.png $(RES)places/networkServer.png $(RES)places/networkWorkgroup.png $(RES)places/brokenFolder.png "places"
-	$(EAR) aw $(TARGET) $(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png "status"
-	$(EAR) aw $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt "unicode"
-	$(EAR) aw $(TARGET) locale/zh_CN/LC_MESSAGES/ecere.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) aw $(TARGET) locale/es_ES/LC_MESSAGES/ecere.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)actions/editFind.png $(RES)actions/folderNew.png $(RES)actions/goDown.png $(RES)actions/goHome.png $(RES)actions/goNext.png $(RES)actions/goPrevious.png $(RES)actions/goUp.png $(RES)actions/listAdd.png $(RES)actions/listRemove.png $(RES)actions/viewRefresh.png "actions"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)actions/windowNew.png $(RES)actions/clean.png $(RES)actions/docSave.png $(RES)actions/docNew.png "actions"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)constructs/class.png $(RES)constructs/data.png $(RES)constructs/dataPrivate.png $(RES)constructs/dataType.png $(RES)constructs/enum.png $(RES)constructs/enumValue.png $(RES)constructs/event.png $(RES)constructs/library.png $(RES)constructs/method.png $(RES)constructs/methodPrivate.png "constructs"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)constructs/namespace.png $(RES)constructs/property.png $(RES)constructs/propertyPrivate.png "constructs"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)controls/button.png $(RES)controls/calendar.png $(RES)controls/checkBox.png $(RES)controls/dataBox.png $(RES)controls/dropBox.png $(RES)controls/editBox.png $(RES)controls/groupBox.png $(RES)controls/label.png $(RES)controls/listBox.png $(RES)controls/menu.png "controls"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)controls/optionBox.png $(RES)controls/progressBar.png $(RES)controls/scrollBarHorizontal.png $(RES)controls/scrollBarVertical.png $(RES)controls/statusBar.png "controls"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)cursors/arrow.png $(RES)cursors/cross.png $(RES)cursors/iBeam.png $(RES)cursors/move.png $(RES)cursors/sizeEastWest.png $(RES)cursors/sizeNortEastSouthWest.png $(RES)cursors/sizeNorthSouth.png $(RES)cursors/sizeNortWestSouthEast.png "cursors"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)devices/computer.png $(RES)devices/driveHardDisk.png $(RES)devices/driveRemovableMedia.png $(RES)devices/mediaFloppy.png $(RES)devices/mediaOptical.png "devices"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)elements/areaClose.png $(RES)elements/areaMaximize.png $(RES)elements/areaMinimize.png $(RES)elements/areaRestore.png $(RES)elements/arrowDown.png $(RES)elements/arrowLeft.png $(RES)elements/arrowRight.png $(RES)elements/arrowUp.png $(RES)elements/checkBoxChecked.png $(RES)elements/checkBoxDisabled.png "elements"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)elements/checkBoxDisabledChecked.png $(RES)elements/checkBox.png $(RES)elements/optionBoxDisabled.png $(RES)elements/optionBoxDisabledSelected.png $(RES)elements/optionBoxDown.png $(RES)elements/optionBoxSelectedDown.png $(RES)elements/optionBoxSelectedUp.png $(RES)elements/optionBoxUp.png $(RES)elements/orderAscending.png $(RES)elements/orderCategorized.png "elements"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)elements/orderDescending.png "elements"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)emblems/unreadable.png "emblems"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)mimeTypes/file.png $(RES)mimeTypes/image.png $(RES)mimeTypes/package.png $(RES)mimeTypes/packageOpticalDisc.png $(RES)mimeTypes/packageSoftware.png $(RES)mimeTypes/text.png $(RES)mimeTypes/textCHeader.png $(RES)mimeTypes/textCSource.png $(RES)mimeTypes/textC++Header.png $(RES)mimeTypes/textC++Source.png "mimeTypes"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)mimeTypes/textEcereHeader.png $(RES)mimeTypes/textEcereProject.png $(RES)mimeTypes/textEcereSource.png $(RES)mimeTypes/textEcereWorkspace.png $(RES)mimeTypes/textHyperTextMarkup.png $(RES)mimeTypes/brokenFile.png "mimeTypes"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)places/driveRemote.png $(RES)places/folder.png $(RES)places/folderRemote.png $(RES)places/networkServer.png $(RES)places/networkWorkgroup.png $(RES)places/brokenFolder.png "places"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png "status"
+	$(EAR) $(EARFLAGS) $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt "unicode"
+	$(EAR) $(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ecere.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) $(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ecere.mo "locale/es_ES/LC_MESSAGES"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

@@ -49,7 +49,7 @@ _OBJECTS = \
 
 OBJECTS = $(_OBJECTS)
 
-SOURCES = $(ECSOURCES) \
+SOURCES = \
 	lib/dgif_lib.c \
 	lib/gif_err.c \
 	lib/gifalloc.c

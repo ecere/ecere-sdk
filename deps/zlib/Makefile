@@ -58,7 +58,7 @@ _OBJECTS = \
 
 OBJECTS = $(_OBJECTS)
 
-SOURCES = $(ECSOURCES) \
+SOURCES = \
 	adler32.c \
 	compress.c \
 	crc32.c \
