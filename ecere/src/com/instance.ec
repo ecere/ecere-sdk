@@ -4206,12 +4206,12 @@ public dllexport Method eClass_FindMethod(Class _class, char * name, Module modu
 }
 
 // Construct an instance
-static bool ConstructInstance(void * instance, Class _class)
+static bool ConstructInstance(void * instance, Class _class, Class from)
 {
    if(_class.templateClass) _class = _class.templateClass;
-   if(_class.base)
+   if(_class.base && from != _class.base)
    {
-      if(!ConstructInstance(instance, _class.base))
+      if(!ConstructInstance(instance, _class.base, from))
          return false;
    }
    if(_class.Initialize)
@@ -4267,7 +4267,7 @@ public dllexport void * eInstance_New(Class _class)
          // Copy the virtual table initially
          instance._vTbl = _class._vTbl;
       }
-      if(!ConstructInstance(instance, _class))
+      if(!ConstructInstance(instance, _class, null))
       {
          _free(instance);
          instance = null;
@@ -4284,6 +4284,7 @@ public dllexport void eInstance_Evolve(Instance * instancePtr, Class _class)
    {
       bool wasApp = false, wasGuiApp = false;
       Instance instance = (Instance)renew *instancePtr byte[_class.structSize];
+      Class fromClass = instance._class;
       *instancePtr = instance;
       memset(((byte *)instance) + instance._class.structSize, 0, _class.structSize - instance._class.structSize);
       // Fix pointers to application
@@ -4381,29 +4382,12 @@ public dllexport void eInstance_Evolve(Instance * instancePtr, Class _class)
       // Copy the virtual table initially
       instance._vTbl = _class._vTbl;
 
-      if(_class.Constructor)
-      {
-         if(!_class.Constructor(instance))
-         {
-            for(; _class; _class = _class.base)
-            {
-               if(_class.templateClass) _class = _class.templateClass;
-               if(_class.Destructor)
-                  _class.Destructor(instance);
-            }
-            _free(instance);
-            *instancePtr = null;
-         }
-      }
-      (_class.templateClass ? _class.templateClass : _class).count++;
       // We don't want to reconstruct the portion already constructed...
-      /*
-      if(!ConstructInstance(instance, _class))
+      if(!ConstructInstance(instance, _class, fromClass))
       {
          _free(instance);
          *instancePtr = null;
       }
-      */
    }
 }
 
