@@ -21,7 +21,7 @@ public int GetCurrentThreadID()
 #if defined(__WIN32__)
    return (int)GetCurrentThreadId();
 #else
-   return pthread_self();
+   return (int)pthread_self();
 #endif
 }
 

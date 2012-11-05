@@ -1218,7 +1218,11 @@ public:
                      if(!link) skin = null;
 
                      if(skin)
+#if !defined(__ANDROID__)
                         SelectSkin(skin.name);
+#else
+                        currentSkin = skin;
+#endif
                   }
                }
 

@@ -53,6 +53,12 @@ default:
 
 private:
 
+#if defined(__ANDROID__)
+#include <android/log.h>
+
+#define printf(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "ecere-app", __VA_ARGS__))
+#endif
+
 #undef property
 #undef bool
 #undef uint
@@ -2435,6 +2441,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
          if(totalSizeClass)
          {
             _class.data = renew _class.data byte[totalSizeClass];
+            // Class Data is often not inherited... e.g. Window::pureVtbl problem
             // memset(_class.data, 0, totalSizeClass);
             if(base && base.type != systemClass && base.type != enumClass)
                memcpy(_class.data, base.data, offsetClass);
@@ -4275,11 +4282,13 @@ public dllexport void eInstance_Evolve(Instance * instancePtr, Class _class)
 {
    if(_class && instancePtr && *instancePtr)
    {
+      bool wasApp = false, wasGuiApp = false;
       Instance instance = (Instance)renew *instancePtr byte[_class.structSize];
       *instancePtr = instance;
       memset(((byte *)instance) + instance._class.structSize, 0, _class.structSize - instance._class.structSize);
       // Fix pointers to application
-      if(!strcmp(instance._class.name, "Application"))
+      if((wasApp = !strcmp(instance._class.name, "Application")) ||
+         (wasGuiApp = !strcmp(instance._class.name, "GuiApplication")))
       {
          Module module;
          Application app = (Application) instance;
@@ -4344,6 +4353,21 @@ public dllexport void eInstance_Evolve(Instance * instancePtr, Class _class)
                template.module = _class.module;
             }
          }
+
+         for(module = app.allModules.first; module; module = module.next)
+         {
+            for(_class = module.classes.first; _class; _class = _class.next)
+            {
+               OldLink templateLink;
+               _class.module = module;
+               for(templateLink = _class.templatized.first; templateLink; templateLink = templateLink.next)
+               {
+                  Class template = templateLink.data;
+                  template.module = _class.module;
+               }
+            }
+         }
+
          app.application = app;
       }
 
@@ -4357,11 +4381,29 @@ public dllexport void eInstance_Evolve(Instance * instancePtr, Class _class)
       // Copy the virtual table initially
       instance._vTbl = _class._vTbl;
 
+      if(_class.Constructor)
+      {
+         if(!_class.Constructor(instance))
+         {
+            for(; _class; _class = _class.base)
+            {
+               if(_class.templateClass) _class = _class.templateClass;
+               if(_class.Destructor)
+                  _class.Destructor(instance);
+            }
+            _free(instance);
+            *instancePtr = null;
+         }
+      }
+      (_class.templateClass ? _class.templateClass : _class).count++;
+      // We don't want to reconstruct the portion already constructed...
+      /*
       if(!ConstructInstance(instance, _class))
       {
          _free(instance);
          *instancePtr = null;
       }
+      */
    }
 }
 
@@ -5951,6 +5993,21 @@ static void LoadCOM(Module module)
 public dllexport Application __ecere_COM_Initialize(bool guiApp, int argc, char * argv[])
 {
    Application app;
+
+   // Clean up global variables
+   memoryInitialized = false;
+   pools = null;
+#ifdef MEMINFO
+   memset(&memStacks, 0, sizeof(BinaryTree));
+   memoryErrorsCount = 0;
+   memset(&memBlocks, 0, sizeof(BinaryTree));
+   recurse = false;
+   blockID = 0;
+   allocateClass = null;
+   allocateInternal = false;
+   TOTAL_MEM = 0;
+   OUTSIDE_MEM = 0;
+#endif
 
 #ifdef _DEBUG
    // printf("Using debug ecere runtime library\n");

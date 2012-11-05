@@ -348,7 +348,7 @@ static void onDestroy(ANativeActivity* activity)
    app.cleanup();
    app.Wait();
    delete androidActivity;
-   delete __currentModule;
+   delete __androidCurrentModule;
    LOGV("THE END.");
 }
 
@@ -470,6 +470,8 @@ default dllexport void ANativeActivity_onCreate(ANativeActivity* activity, void*
    guiApp = null;
    desktopW = 0; desktopH = 0;
    clipBoardData = null;
+   __thisModule = null;
+   __androidCurrentModule = null;
 
    LOGV("Creating: %p\n", activity);
 
@@ -484,9 +486,10 @@ default dllexport void ANativeActivity_onCreate(ANativeActivity* activity, void*
    androidArgv[0] = moduleName;
 
    // Create a base Application class
-   __thisModule = __currentModule = __ecere_COM_Initialize(true, 1, androidArgv);
+   __androidCurrentModule = __ecere_COM_Initialize(true, 1, androidArgv);
    // Load up Ecere
-   eModule_Load(__currentModule, "ecere", publicAccess);
+   eModule_Load(__androidCurrentModule, "ecere", publicAccess);
+
 
    if(activity->internalDataPath) PrintLn("internalDataPath is ", activity->internalDataPath);
    if(activity->externalDataPath) PrintLn("externalDataPath is ", activity->externalDataPath);
@@ -535,7 +538,7 @@ extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonDo
 extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonUp;
 private:
 
-static Module __currentModule;
+static Module __androidCurrentModule;
 static char * androidArgv[1];
 
 static int desktopW, desktopH;
@@ -1011,8 +1014,7 @@ class AndroidActivity : AndroidAppGlue
          Module app;
           
          // Evolve the Application class into a GuiApplication
-         eInstance_Evolve((Instance *)&__currentModule, class(GuiApplication));
-         __thisModule = __currentModule;
+         eInstance_Evolve((Instance *)&__androidCurrentModule, class(GuiApplication));
 
          // Wait for the initWindow command:
          guiApp.interfaceDriver = class(AndroidInterface);
@@ -1023,7 +1025,7 @@ class AndroidActivity : AndroidAppGlue
          }
 
          // Invoke __ecereDll_Load() in lib[our package name].so
-         app = eModule_Load(__currentModule, moduleName, publicAccess);
+         app = eModule_Load(__androidCurrentModule, moduleName, publicAccess);
          if(app)
          {
             Class c;
@@ -1032,12 +1034,17 @@ class AndroidActivity : AndroidAppGlue
             if(!c) c = class(GuiApplication);
 
             // Evolve the Application into it
-            eInstance_Evolve((Instance *)&__currentModule, c);
-            __thisModule = __currentModule;
+            eInstance_Evolve((Instance *)&__androidCurrentModule, c);
+            guiApp = (GuiApplication)__androidCurrentModule;
 
+            {
+               String skin = guiApp.skin;
+               *&guiApp.currentSkin = null;
+               guiApp.SelectSkin(skin);
+            }
 
             // Call Main()
-            __currentModule._vTbl[12](__currentModule);
+            __androidCurrentModule._vTbl[12](__androidCurrentModule);
          }
 
          if(!destroyRequested)
