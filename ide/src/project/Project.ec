@@ -2263,9 +2263,10 @@ private:
          f.Puts("ifdef DEBUG\n" "NOSTRIP := y\n" "endif\n");
          f.Puts("\n");
 
-         f.Puts("ifdef EXECUTABLE_TARGET\n");
+         // Important: We cannot use this ifdef anymore, EXECUTABLE_TARGET is not yet defined. It's embedded in the crossplatform.mk EXECUTABLE
+         //f.Puts("ifdef EXECUTABLE_TARGET\n");
          f.Printf("CONSOLE = %s\n", GetConsole(config) ? "-mconsole" : "-mwindows");
-         f.Puts("endif\n");
+         //f.Puts("endif\n");
          f.Puts("\n");
 
          f.Puts("# INCLUDES\n\n");

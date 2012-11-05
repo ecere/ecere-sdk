@@ -25,9 +25,7 @@ ifdef DEBUG
 NOSTRIP := y
 endif
 
-ifdef EXECUTABLE_TARGET
 CONSOLE = -mwindows
-endif
 
 # INCLUDES
 
