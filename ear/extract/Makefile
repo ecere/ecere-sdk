@@ -132,7 +132,8 @@ ifndef STATIC_LIBRARY_TARGET
 LIBS += \
 	$(call _L,mpr) \
 	$(call _L,winmm) \
-	$(call _L,imm32)
+	$(call _L,imm32) \
+	$(call _L,gdi32)
 endif
 
 else
