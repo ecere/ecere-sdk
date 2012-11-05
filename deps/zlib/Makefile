@@ -86,7 +86,7 @@ CFLAGS += \
 
 
 
-CECFLAGS += -cpp $(call escspace,$(CPP))
+CECFLAGS += -cpp $(CPP)
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS +=

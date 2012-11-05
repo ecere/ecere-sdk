@@ -2520,7 +2520,7 @@ private:
          f.Puts("\n");
          f.Puts("\n");
 
-         f.Puts("CECFLAGS += -cpp $(call escspace,$(CPP))");
+         f.Puts("CECFLAGS += -cpp $(CPP)");
          f.Puts("\n");
          f.Puts("\n");
 
