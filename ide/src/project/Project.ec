@@ -2392,7 +2392,7 @@ private:
          f.Puts("\n");
 
          topNode.GenMakefilePrintNode(f, this, sources, null, listItems, config, null);
-         OutputFileList(f, "SOURCES", listItems, varStringLenDiffs, "$(ECSOURCES)");
+         OutputFileList(f, "SOURCES", listItems, varStringLenDiffs, numCObjects ? "$(ECSOURCES)" : null);
 
          if(!noResources)
             resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config, null);
