@@ -1373,21 +1373,18 @@ private:
       char * cxx = compiler.cxxCommand;
       char * cpp = compiler.cppCommand;
       char * strip = compiler.cppCommand;
-      sprintf(cppCommand, "%s%s%s%s%s ",
+      sprintf(cppCommand, "%s%s%s%s ",
             compiler.ccacheEnabled ? "ccache " : "",
-            compiler.ccacheEnabled && !compiler.distccEnabled ? " " : "",
             compiler.distccEnabled ? "distcc " : "",
             compiler.gccPrefix ? compiler.gccPrefix : "",
             compiler.cppCommand);
-      sprintf(ccCommand, "%s%s%s%s%s ",
+      sprintf(ccCommand, "%s%s%s%s ",
             compiler.ccacheEnabled ? "ccache " : "",
-            compiler.ccacheEnabled && !compiler.distccEnabled ? " " : "",
             compiler.distccEnabled ? "distcc " : "",
             compiler.gccPrefix ? compiler.gccPrefix : "",
             compiler.ccCommand);
-      sprintf(cxxCommand, "%s%s%s%s%s ",
+      sprintf(cxxCommand, "%s%s%s%s ",
             compiler.ccacheEnabled ? "ccache " : "",
-            compiler.ccacheEnabled && !compiler.distccEnabled ? " " : "",
             compiler.distccEnabled ? "distcc " : "",
             compiler.gccPrefix ? compiler.gccPrefix : "",
             compiler.cxxCommand);
