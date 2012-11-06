@@ -1,5 +1,5 @@
 #ifdef __WIN32__
-import "project"
+import "Project"
 
 static char indendation[MAX_F_STRING];
 

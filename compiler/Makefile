@@ -2,13 +2,14 @@
 .SILENT:
 
 CONFIG := release
-OBJ = libec/obj/$(CONFIG).$(PLATFORM)/
 PRECOMPILED_SOURCES = libec/precompiled/expression.c libec/precompiled/grammar.c libec/precompiled/type.c
 
 include ../crossplatform.mk
 include ../include.mk
 
 all: ecp ecc ecs
+
+OBJ = libec/obj/$(CONFIG).$(TARGET_PLATFORM)/
 
 libec:
 	@$(call echo,Building 2nd stage libec...)

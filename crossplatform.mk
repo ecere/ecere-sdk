@@ -136,6 +136,9 @@ A := .a
 E := $(if $(WINDOWS_TARGET),.exe,)
 SO := $(if $(WINDOWS_TARGET),.dll,$(if $(OSX_TARGET),.dylib,.so))
 LP := $(if $(WINDOWS_TARGET),$(if $(STATIC_LIBRARY_TARGET),lib,),lib)
+HOST_E := $(if $(WINDOWS_HOST),.exe,)
+HOST_SO := $(if $(WINDOWS_HOST),.dll,$(if $(OSX_HOST),.dylib,.so))
+HOST_LP := $(if $(WINDOWS_HOST),$(if $(STATIC_LIBRARY_TARGET),lib,),lib)
 
 # SUPER TOOLS
 ifdef CCACHE

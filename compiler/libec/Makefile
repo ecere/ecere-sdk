@@ -38,13 +38,13 @@ include $(_CF_DIR)include.mk
 # CUSTOM TOOLCHAIN / COMPILER CONFIG
 
 ifndef WINDOWS_TARGET
-export LD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
-export DYLD_LIBRARY_PATH = ../../obj/$(PLATFORM)/lib/
+export LD_LIBRARY_PATH = ../../obj/$(HOST_PLATFORM)/lib/
+export DYLD_LIBRARY_PATH = ../../obj/$(HOST_PLATFORM)/lib/
 endif
-ECP := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecp)
-ECC := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecc)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)
-ECS := $(call psep,../bootstrap/obj/bin.$(PLATFORM)/ecs)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)
-EAR := $(call psep,../../obj/$(PLATFORM)/bin/ear)
+ECP := $(call psep,../bootstrap/obj/bin.$(HOST_PLATFORM)/ecp$(HOST_E))
+ECC := $(call psep,../bootstrap/obj/bin.$(HOST_PLATFORM)/ecc$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)
+ECS := $(call psep,../bootstrap/obj/bin.$(HOST_PLATFORM)/ecs$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)
+EAR := $(call psep,../../obj/$(HOST_PLATFORM)/bin/ear$(HOST_E))
 
 # BSL CFLAGS
 BSL_CFLAGS = -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w
@@ -175,7 +175,9 @@ ifdef LINUX_TARGET
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../$(SODESTDIR)$(LP)$(MODULE)$(SO)
 endif	
 ifdef WINDOWS_TARGET
-	$(call cpq,$(TARGET),../../compiler/bootstrap/obj/bin.$(PLATFORM)/)
+ifndef CROSS_TARGET
+	$(call cpq,$(TARGET),../../compiler/bootstrap/obj/bin.$(HOST_PLATFORM)/)
+endif
 endif
 
 # SYMBOL RULES

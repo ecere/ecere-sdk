@@ -4,7 +4,19 @@
 include crossplatform.mk
 include include.mk
 
+ifdef CROSS_TARGET
+XBOOT = GCC_PREFIX= TARGET_PLATFORM=$(HOST_PLATFORM) PLATFORM=$(HOST_PLATFORM)
+else
+XBOOT =
+endif
+
 LIBVER := .0.44
+
+ifdef WINDOWS_HOST
+HOST_SOV := $(HOST_SO)
+else
+HOST_SOV := $(HOST_SO)$(LIBVER)
+endif
 
 ifdef WINDOWS_TARGET
 
@@ -109,6 +121,9 @@ endif
 OBJDIR := obj$(OBJALT)/
 OBJBINDIR := $(OBJDIR)$(PLATFORM)/bin/
 OBJLIBDIR := $(OBJDIR)$(PLATFORM)/lib/
+XOBJDIR := obj$(OBJALT)/
+XOBJBINDIR := $(OBJDIR)$(HOST_PLATFORM)/bin/
+XOBJLIBDIR := $(OBJDIR)$(HOST_PLATFORM)/lib/
 
 all: prepbinaries ide epj2make documentor eda codeguard
 	@$(call echo,The Ecere SDK is fully built.)
@@ -117,22 +132,42 @@ outputdirs:
 	$(if $(wildcard $(OBJDIR)),,$(call mkdirq,$(OBJDIR)))
 	$(if $(wildcard $(OBJBINDIR)),,$(call mkdirq,$(OBJBINDIR)))
 	$(if $(wildcard $(OBJLIBDIR)),,$(call mkdirq,$(OBJLIBDIR)))
+ifdef CROSS_TARGET
+	$(if $(wildcard $(XOBJDIR)),,$(call mkdirq,$(XOBJDIR)))
+	$(if $(wildcard $(XOBJBINDIR)),,$(call mkdirq,$(XOBJBINDIR)))
+	$(if $(wildcard $(XOBJLIBDIR)),,$(call mkdirq,$(XOBJLIBDIR)))
+endif
 
 bootstrap: outputdirs
-	cd compiler && $(MAKE) bootstrap
+	cd compiler && $(MAKE) $(XBOOT) bootstrap
 
 deps:
+ifdef CROSS_TARGET
+	@$(call echo,Building dependencies (host)...)
+	cd deps && $(MAKE) $(XBOOT)
+endif
 	@$(call echo,Building dependencies...)
 	cd deps && $(MAKE)
 
 ecere: bootstrap deps
+ifdef CROSS_TARGET
+	@$(call echo,Building 2nd stage ecere (host)...)
+else
 	@$(call echo,Building 2nd stage ecere...)
-	cd ecere && $(MAKE) nores
-	cd ear && $(MAKE) nores
+endif
+	cd ecere && $(MAKE) nores $(XBOOT)
+	cd ear && $(MAKE) nores $(XBOOT)
 	cd ecere && $(MAKE) cleantarget
+ifdef CROSS_TARGET
+	@$(call echo,Building 2nd stage ecere...)
+endif
 	cd ecere && $(MAKE)
 
 ecerecom: bootstrap
+ifdef CROSS_TARGET
+	@$(call echo,Building eC Core Runtime (host)...)
+	cd ecere && $(MAKE) -f Makefile.ecereCOM $(XBOOT)
+endif
 	@$(call echo,Building eC Core Runtime...)
 	cd ecere && $(MAKE) -f Makefile.ecereCOM
 
@@ -146,6 +181,10 @@ ear: ecere ecerevanilla
 	cd ear && $(MAKE)
 
 compiler: ecere ear
+ifdef CROSS_TARGET
+	@$(call echo,Building 2nd stage compiler (host))
+	cd compiler && $(MAKE) $(XBOOT)
+endif
 	@$(call echo,Building 2nd stage compiler)
 	cd compiler && $(MAKE)
 
@@ -178,6 +217,38 @@ endif
 	$(call cpq,compiler/ecc/obj/release.$(PLATFORM)/ecc$(E),$(OBJBINDIR))
 	$(call cpq,compiler/ecp/obj/release.$(PLATFORM)/ecp$(E),$(OBJBINDIR))
 	$(call cpq,compiler/ecs/obj/release.$(PLATFORM)/ecs$(E),$(OBJBINDIR))
+
+ifdef CROSS_TARGET
+
+ifdef WINDOWS_HOST
+	$(call cpq,ecere/obj/release.$(HOST_PLATFORM)/$(HOST_LP)ecere$(HOST_SOV),$(XOBJBINDIR))
+	$(call cpq,ecere/obj/ecereCOM.release.$(HOST_PLATFORM)/$(HOST_LP)ecereCOM$(HOST_SOV),$(XOBJBINDIR))
+	$(call cpq,compiler/libec/obj/release.$(HOST_PLATFORM)/$(HOST_LP)ec$(HOST_SOV),$(XOBJBINDIR))
+endif
+ifdef WINDOWS_HOST
+	$(call cpq,ecere/obj/release.$(HOST_PLATFORM)/$(HOST_LP)ecere$(HOST_SOV),$(XOBJLIBDIR))
+	$(call cpq,ecere/obj/ecereCOM.release.$(HOST_PLATFORM)/$(HOST_LP)ecereCOM$(HOST_SOV),$(XOBJLIBDIR))
+	$(call cpq,compiler/libec/obj/release.$(HOST_PLATFORM)/$(HOST_LP)ec$(HOST_SOV),$(XOBJLIBDIR))
+	ln -sf $(HOST_LP)ecere$(HOST_SOV) $(XOBJLIBDIR)$(LP)ecere$(HOST_SO).0
+	ln -sf $(HOST_LP)ecereCOM$(HOST_SOV) $(XOBJLIBDIR)$(LP)ecereCOM$(HOST_SO).0
+	ln -sf $(HOST_LP)ec$(HOST_SOV) $(XOBJLIBDIR)$(LP)ec$(HOST_SO).0
+	ln -sf $(HOST_LP)ecere$(HOST_SOV) $(XOBJLIBDIR)$(LP)ecere$(HOST_SO)
+	ln -sf $(HOST_LP)ecereCOM$(HOST_SOV) $(XOBJLIBDIR)$(LP)ecereCOM$(HOST_SO)
+	ln -sf $(HOST_LP)ec$(HOST_SOV) $(XOBJLIBDIR)$(LP)ec$(HOST_SO)
+endif
+ifndef WINDOWS_HOST
+ifndef LINUX_HOST
+	$(call cpq,ecere/obj/release.$(HOST_PLATFORM)/$(HOST_LP)ecere$(HOST_SO),$(XOBJLIBDIR))
+	$(call cpq,ecere/obj/ecereCOM.release.$(HOST_PLATFORM)/$(HOST_LP)ecereCOM$(HOST_SO),$(XOBJLIBDIR))
+	$(call cpq,compiler/libec/obj/release.$(HOST_PLATFORM)/$(HOST_LP)ec$(HOST_SO),$(XOBJLIBDIR))
+endif
+endif
+	$(call cpq,ear/cmd/obj/release.$(HOST_PLATFORM)/ear$(HOST_E),$(XOBJBINDIR))
+	$(call cpq,compiler/ecc/obj/release.$(HOST_PLATFORM)/ecc$(HOST_E),$(XOBJBINDIR))
+	$(call cpq,compiler/ecp/obj/release.$(HOST_PLATFORM)/ecp$(HOST_E),$(XOBJBINDIR))
+	$(call cpq,compiler/ecs/obj/release.$(HOST_PLATFORM)/ecs$(HOST_E),$(XOBJBINDIR))
+
+endif
 
 epj2make: prepbinaries
 	@$(call echo,Building epj2make...)
