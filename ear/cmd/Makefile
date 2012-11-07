@@ -91,7 +91,6 @@ ifndef STATIC_LIBRARY_TARGET
 OFLAGS += $(FORCE_32_BIT) \
 	 -L../../obj/$(PLATFORM)/bin \
 	 -L../../obj/$(PLATFORM)/lib
-OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS

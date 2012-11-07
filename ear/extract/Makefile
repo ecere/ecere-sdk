@@ -172,7 +172,6 @@ ifndef STATIC_LIBRARY_TARGET
 OFLAGS += $(FORCE_32_BIT) \
 	 -L../../ecere/obj/vanilla.$(PLATFORM) \
 	 -L../../deps/zlib/obj/release.$(PLATFORM)
-OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS

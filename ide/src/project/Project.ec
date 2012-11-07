@@ -2536,7 +2536,6 @@ private:
          if(options && options.libraryDirs)
             OutputListOption(f, "L", options.libraryDirs, lineEach, true);
          f.Puts("\n");
-         f.Puts("OFLAGS += $(LDFLAGS)\n");
          f.Puts("endif\n");
          f.Puts("\n");
 

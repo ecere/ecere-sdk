@@ -2127,7 +2127,8 @@ private:
                if(!isGreater)
                {
                   // absolutely common stuff outside of platform only, stuff that can't be changed by platform
-                  cflags.concatf(" \\\n\t $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,)");
+		  // This would normally go in crossplatform.mk (or compiler.cf if compiler-specific)
+                  // cflags.concatf(" \\\n\t $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,)");
                }
 
                for(platform = (Platform)1; platform < Platform::enumSize; platform++)
