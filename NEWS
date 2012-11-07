@@ -42,7 +42,7 @@ Ecere SDK 0.44 "Ryoanji" (March 13, 2012)
    * PPAs for Ubuntu working on both 32 and 64 bit machines, for Lucid Lynx, Maverick Meerkat, Natty Narwhal, Oneiric Ocelot and Precise Pangolin
    * Numerous tracked issues were resolved, see the complete list at: http://ecere.com/mantis/changelog_page.php
 ----------------------------------------
- ( May 2010 )
+ ( May 2011 )
 
    * We adopted Git as our version control system.
    * Our source repository is hosted on GitHub at http://github.com/ecere/sdk
