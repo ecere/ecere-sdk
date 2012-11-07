@@ -6,8 +6,6 @@
 *.sym
 *.main.ec
 *.bowl
-*.mk
-*.cf
 
 # Intermediate dirs
 #obj/**/*.c
@@ -15,6 +13,7 @@ obj/
 debug/
 release/
 dat/
+.configs/
 
 # CodeGuard files
 .codeguard/
