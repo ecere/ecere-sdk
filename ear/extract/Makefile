@@ -17,6 +17,7 @@ ifndef DEBIAN_PACKAGE
 CFLAGS =
 LDFLAGS =
 endif
+PRJ_CFLAGS =
 CECFLAGS =
 OFLAGS =
 LIBS =
@@ -102,7 +103,7 @@ LIBS += \
 	$(call _L,z)
 endif
 
-CFLAGS += \
+PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -Os) $(FORCE_32_BIT) $(FPIC) -w \
 			 -DECERE_STATIC
 
@@ -184,8 +185,8 @@ $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	$(ECS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
@@ -217,20 +218,20 @@ endif
 # SYMBOL RULES
 
 $(OBJ)extract.sym: extract.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c extract.ec -o $(OBJ)extract.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c extract.ec -o $(OBJ)extract.sym
 
 # C OBJECT RULES
 
 $(OBJ)extract.c: extract.ec $(OBJ)extract.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c extract.ec -o $(OBJ)extract.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c extract.ec -o $(OBJ)extract.c -symbols $(OBJ)
 
 # OBJECT RULES
 
 $(OBJ)extract.o: $(OBJ)extract.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)extract.c -o $(OBJ)extract.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)extract.c -o $(OBJ)extract.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 clean: objdir
 	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))

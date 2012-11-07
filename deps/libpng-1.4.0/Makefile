@@ -15,10 +15,11 @@ TARGET_TYPE = staticlib
 ECFLAGS =
 ifndef DEBIAN_PACKAGE
 CFLAGS =
+LDFLAGS =
 endif
+PRJ_CFLAGS =
 CECFLAGS =
 OFLAGS =
-LDFLAGS =
 LIBS =
 
 ifdef DEBUG
@@ -82,8 +83,7 @@ RESOURCES =
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-CFLAGS += \
-	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
 			 -I. \
 			 -I../zlib
@@ -96,7 +96,6 @@ CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS +=
-OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -116,49 +115,49 @@ $(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
 # OBJECT RULES
 
 $(OBJ)png.o: ./png.c
-	$(CC) $(CFLAGS) -c ./png.c -o $(OBJ)png.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./png.c -o $(OBJ)png.o
 
 $(OBJ)pngerror.o: ./pngerror.c
-	$(CC) $(CFLAGS) -c ./pngerror.c -o $(OBJ)pngerror.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngerror.c -o $(OBJ)pngerror.o
 
 $(OBJ)pngget.o: ./pngget.c
-	$(CC) $(CFLAGS) -c ./pngget.c -o $(OBJ)pngget.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngget.c -o $(OBJ)pngget.o
 
 $(OBJ)pngmem.o: ./pngmem.c
-	$(CC) $(CFLAGS) -c ./pngmem.c -o $(OBJ)pngmem.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngmem.c -o $(OBJ)pngmem.o
 
 $(OBJ)pngpread.o: ./pngpread.c
-	$(CC) $(CFLAGS) -c ./pngpread.c -o $(OBJ)pngpread.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngpread.c -o $(OBJ)pngpread.o
 
 $(OBJ)pngread.o: ./pngread.c
-	$(CC) $(CFLAGS) -c ./pngread.c -o $(OBJ)pngread.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngread.c -o $(OBJ)pngread.o
 
 $(OBJ)pngrio.o: ./pngrio.c
-	$(CC) $(CFLAGS) -c ./pngrio.c -o $(OBJ)pngrio.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngrio.c -o $(OBJ)pngrio.o
 
 $(OBJ)pngrtran.o: ./pngrtran.c
-	$(CC) $(CFLAGS) -c ./pngrtran.c -o $(OBJ)pngrtran.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngrtran.c -o $(OBJ)pngrtran.o
 
 $(OBJ)pngrutil.o: ./pngrutil.c
-	$(CC) $(CFLAGS) -c ./pngrutil.c -o $(OBJ)pngrutil.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngrutil.c -o $(OBJ)pngrutil.o
 
 $(OBJ)pngset.o: ./pngset.c
-	$(CC) $(CFLAGS) -c ./pngset.c -o $(OBJ)pngset.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngset.c -o $(OBJ)pngset.o
 
 $(OBJ)pngtrans.o: ./pngtrans.c
-	$(CC) $(CFLAGS) -c ./pngtrans.c -o $(OBJ)pngtrans.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngtrans.c -o $(OBJ)pngtrans.o
 
 $(OBJ)pngwio.o: ./pngwio.c
-	$(CC) $(CFLAGS) -c ./pngwio.c -o $(OBJ)pngwio.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngwio.c -o $(OBJ)pngwio.o
 
 $(OBJ)pngwrite.o: ./pngwrite.c
-	$(CC) $(CFLAGS) -c ./pngwrite.c -o $(OBJ)pngwrite.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngwrite.c -o $(OBJ)pngwrite.o
 
 $(OBJ)pngwtran.o: ./pngwtran.c
-	$(CC) $(CFLAGS) -c ./pngwtran.c -o $(OBJ)pngwtran.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngwtran.c -o $(OBJ)pngwtran.o
 
 $(OBJ)pngwutil.o: ./pngwutil.c
-	$(CC) $(CFLAGS) -c ./pngwutil.c -o $(OBJ)pngwutil.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngwutil.c -o $(OBJ)pngwutil.o
 
 clean: objdir
 	$(call rmq,$(TARGET))

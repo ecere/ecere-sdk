@@ -15,10 +15,11 @@ TARGET_TYPE = staticlib
 ECFLAGS =
 ifndef DEBIAN_PACKAGE
 CFLAGS =
+LDFLAGS =
 endif
+PRJ_CFLAGS =
 CECFLAGS =
 OFLAGS =
-LDFLAGS =
 LIBS =
 
 ifdef DEBUG
@@ -58,8 +59,7 @@ RESOURCES =
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-CFLAGS += \
-	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w $(FVISIBILITY)
 
 
@@ -89,13 +89,13 @@ $(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
 # OBJECT RULES
 
 $(OBJ)dgif_lib.o: lib/dgif_lib.c
-	$(CC) $(CFLAGS) -c lib/dgif_lib.c -o $(OBJ)dgif_lib.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c lib/dgif_lib.c -o $(OBJ)dgif_lib.o
 
 $(OBJ)gif_err.o: lib/gif_err.c
-	$(CC) $(CFLAGS) -c lib/gif_err.c -o $(OBJ)gif_err.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c lib/gif_err.c -o $(OBJ)gif_err.o
 
 $(OBJ)gifalloc.o: lib/gifalloc.c
-	$(CC) $(CFLAGS) -c lib/gifalloc.c -o $(OBJ)gifalloc.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c lib/gifalloc.c -o $(OBJ)gifalloc.o
 
 clean: objdir
 	$(call rmq,$(TARGET))

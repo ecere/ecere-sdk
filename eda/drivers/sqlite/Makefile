@@ -17,6 +17,7 @@ ifndef DEBIAN_PACKAGE
 CFLAGS =
 LDFLAGS =
 endif
+PRJ_CFLAGS =
 CECFLAGS =
 OFLAGS =
 LIBS =
@@ -83,12 +84,12 @@ LIBS += \
 	$(call _L,ffi)
 endif
 
-CFLAGS += \
+PRJ_CFLAGS += \
 	 $(if $(WINDOWS_TARGET), \
 			 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w
 
-CUSTOM1_CFLAGS = \
+CUSTOM1_PRJ_CFLAGS = \
 	 $(if $(WINDOWS_TARGET), \
 			 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
 	 $(if $(DEBUG), -g, -O2) $(FORCE_32_BIT) $(FPIC) -w
@@ -155,8 +156,8 @@ $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	$(ECS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
@@ -180,23 +181,23 @@ endif
 # SYMBOL RULES
 
 $(OBJ)EDASQLite.sym: EDASQLite.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c EDASQLite.ec -o $(OBJ)EDASQLite.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c EDASQLite.ec -o $(OBJ)EDASQLite.sym
 
 # C OBJECT RULES
 
 $(OBJ)EDASQLite.c: EDASQLite.ec $(OBJ)EDASQLite.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c EDASQLite.ec -o $(OBJ)EDASQLite.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c EDASQLite.ec -o $(OBJ)EDASQLite.c -symbols $(OBJ)
 
 # OBJECT RULES
 
 $(OBJ)sqlite3.o: sqlite3.c
-	$(CC) $(CUSTOM1_CFLAGS) -c sqlite3.c -o $(OBJ)sqlite3.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c sqlite3.c -o $(OBJ)sqlite3.o
 
 $(OBJ)EDASQLite.o: $(OBJ)EDASQLite.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)EDASQLite.c -o $(OBJ)EDASQLite.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)EDASQLite.c -o $(OBJ)EDASQLite.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 clean: objdir
 	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))

@@ -132,82 +132,82 @@ $(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
 # OBJECT RULES
 
 $(OBJ)BufferedFile.o: bootstrap/BufferedFile.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/BufferedFile.c -o $(OBJ)BufferedFile.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/BufferedFile.c -o $(OBJ)BufferedFile.o
 
 $(OBJ)DualPipe.o: bootstrap/DualPipe.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/DualPipe.c -o $(OBJ)DualPipe.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/DualPipe.c -o $(OBJ)DualPipe.o
 
 $(OBJ)File.o: bootstrap/File.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/File.c -o $(OBJ)File.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/File.c -o $(OBJ)File.o
 
 $(OBJ)memory.o: bootstrap/memory.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/memory.c -o $(OBJ)memory.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/memory.c -o $(OBJ)memory.o
 
 $(OBJ)System.o: bootstrap/System.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/System.c -o $(OBJ)System.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/System.c -o $(OBJ)System.o
 
 $(OBJ)TempFile.o: bootstrap/TempFile.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/TempFile.c -o $(OBJ)TempFile.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/TempFile.c -o $(OBJ)TempFile.o
 
 $(OBJ)File.c.o: ../../../ecere/src/sys/File.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/sys/File.c -o $(OBJ)File.c.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/sys/File.c -o $(OBJ)File.c.o
 
 $(OBJ)DualPipe.c.o: ../../../ecere/src/sys/DualPipe.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/sys/DualPipe.c -o $(OBJ)DualPipe.c.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/sys/DualPipe.c -o $(OBJ)DualPipe.c.o
 
 $(OBJ)System.c.o: ../../../ecere/src/sys/System.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/sys/System.c -o $(OBJ)System.c.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/sys/System.c -o $(OBJ)System.c.o
 
 $(OBJ)i18n.o: bootstrap/i18n.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/i18n.c -o $(OBJ)i18n.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/i18n.c -o $(OBJ)i18n.o
 
 $(OBJ)Array.o: bootstrap/Array.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/Array.c -o $(OBJ)Array.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/Array.c -o $(OBJ)Array.o
 
 $(OBJ)AVLTree.o: bootstrap/AVLTree.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/AVLTree.c -o $(OBJ)AVLTree.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/AVLTree.c -o $(OBJ)AVLTree.o
 
 $(OBJ)BuiltInContainer.o: bootstrap/BuiltInContainer.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/BuiltInContainer.c -o $(OBJ)BuiltInContainer.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/BuiltInContainer.c -o $(OBJ)BuiltInContainer.o
 
 $(OBJ)Container.o: bootstrap/Container.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/Container.c -o $(OBJ)Container.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/Container.c -o $(OBJ)Container.o
 
 $(OBJ)CustomAVLTree.o: bootstrap/CustomAVLTree.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/CustomAVLTree.c -o $(OBJ)CustomAVLTree.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/CustomAVLTree.c -o $(OBJ)CustomAVLTree.o
 
 $(OBJ)LinkList.o: bootstrap/LinkList.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/LinkList.c -o $(OBJ)LinkList.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/LinkList.c -o $(OBJ)LinkList.o
 
 $(OBJ)List.o: bootstrap/List.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/List.c -o $(OBJ)List.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/List.c -o $(OBJ)List.o
 
 $(OBJ)Map.o: bootstrap/Map.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/Map.c -o $(OBJ)Map.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/Map.c -o $(OBJ)Map.o
 
 $(OBJ)BinaryTree.o: bootstrap/BinaryTree.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/BinaryTree.c -o $(OBJ)BinaryTree.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/BinaryTree.c -o $(OBJ)BinaryTree.o
 
 $(OBJ)BTNode.o: bootstrap/BTNode.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/BTNode.c -o $(OBJ)BTNode.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/BTNode.c -o $(OBJ)BTNode.o
 
 $(OBJ)dataTypes.o: bootstrap/dataTypes.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/dataTypes.c -o $(OBJ)dataTypes.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/dataTypes.c -o $(OBJ)dataTypes.o
 
 $(OBJ)instance.o: bootstrap/instance.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/instance.c -o $(OBJ)instance.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/instance.c -o $(OBJ)instance.o
 
 $(OBJ)String.o: bootstrap/String.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/String.c -o $(OBJ)String.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/String.c -o $(OBJ)String.o
 
 $(OBJ)OldList.o: bootstrap/OldList.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/OldList.c -o $(OBJ)OldList.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/OldList.c -o $(OBJ)OldList.o
 
 $(OBJ)instance.c.o: ../../../ecere/src/com/instance.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/com/instance.c -o $(OBJ)instance.c.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/com/instance.c -o $(OBJ)instance.c.o
 
 $(OBJ)$(MODULE).main$(O): bootstrap/$(MODULE).main.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 clean: objdir
 	$(call rmq,$(TARGET))

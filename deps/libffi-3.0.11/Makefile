@@ -15,10 +15,11 @@ TARGET_TYPE = staticlib
 ECFLAGS =
 ifndef DEBIAN_PACKAGE
 CFLAGS =
+LDFLAGS =
 endif
+PRJ_CFLAGS =
 CECFLAGS =
 OFLAGS =
-LDFLAGS =
 LIBS =
 
 ifdef DEBUG
@@ -52,7 +53,7 @@ _OBJECTS = \
 
 OBJECTS = $(_OBJECTS)
 
-SOURCES = $(ECSOURCES) \
+SOURCES = \
 	src/x86/ffi.c \
 	src/x86/win32.S \
 	src/prep_cif.c \
@@ -64,8 +65,7 @@ RESOURCES =
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-CFLAGS += \
-	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall \
 			 -Iinclude \
 			 -Ii686-pc-mingw32/include \
@@ -79,7 +79,6 @@ CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS +=
-OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -108,22 +107,22 @@ endif
 # OBJECT RULES
 
 $(OBJ)ffi.o: src/x86/ffi.c
-	$(CC) $(CFLAGS) -c src/x86/ffi.c -o $(OBJ)ffi.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/x86/ffi.c -o $(OBJ)ffi.o
 
 $(OBJ)win32.o: src/x86/win32.S
-	$(CC) $(CFLAGS) -c src/x86/win32.S -o $(OBJ)win32.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/x86/win32.S -o $(OBJ)win32.o
 
 $(OBJ)prep_cif.o: src/prep_cif.c
-	$(CC) $(CFLAGS) -c src/prep_cif.c -o $(OBJ)prep_cif.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/prep_cif.c -o $(OBJ)prep_cif.o
 
 $(OBJ)raw_api.o: src/raw_api.c
-	$(CC) $(CFLAGS) -c src/raw_api.c -o $(OBJ)raw_api.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/raw_api.c -o $(OBJ)raw_api.o
 
 $(OBJ)types.o: src/types.c
-	$(CC) $(CFLAGS) -c src/types.c -o $(OBJ)types.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/types.c -o $(OBJ)types.o
 
 $(OBJ)closures.o: src/closures.c
-	$(CC) $(CFLAGS) -c src/closures.c -o $(OBJ)closures.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/closures.c -o $(OBJ)closures.o
 
 clean: objdir
 	$(call rmq,$(TARGET))

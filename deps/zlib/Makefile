@@ -15,10 +15,11 @@ TARGET_TYPE = staticlib
 ECFLAGS =
 ifndef DEBIAN_PACKAGE
 CFLAGS =
+LDFLAGS =
 endif
+PRJ_CFLAGS =
 CECFLAGS =
 OFLAGS =
-LDFLAGS =
 LIBS =
 
 ifdef DEBUG
@@ -76,8 +77,7 @@ RESOURCES =
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-CFLAGS += \
-	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
 
 
@@ -88,7 +88,6 @@ CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS +=
-OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -108,40 +107,40 @@ $(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
 # OBJECT RULES
 
 $(OBJ)adler32.o: adler32.c
-	$(CC) $(CFLAGS) -c adler32.c -o $(OBJ)adler32.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c adler32.c -o $(OBJ)adler32.o
 
 $(OBJ)compress.o: compress.c
-	$(CC) $(CFLAGS) -c compress.c -o $(OBJ)compress.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c compress.c -o $(OBJ)compress.o
 
 $(OBJ)crc32.o: crc32.c
-	$(CC) $(CFLAGS) -c crc32.c -o $(OBJ)crc32.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c crc32.c -o $(OBJ)crc32.o
 
 $(OBJ)deflate.o: deflate.c
-	$(CC) $(CFLAGS) -c deflate.c -o $(OBJ)deflate.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c deflate.c -o $(OBJ)deflate.o
 
 $(OBJ)gzio.o: gzio.c
-	$(CC) $(CFLAGS) -c gzio.c -o $(OBJ)gzio.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c gzio.c -o $(OBJ)gzio.o
 
 $(OBJ)infback.o: infback.c
-	$(CC) $(CFLAGS) -c infback.c -o $(OBJ)infback.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c infback.c -o $(OBJ)infback.o
 
 $(OBJ)inffast.o: inffast.c
-	$(CC) $(CFLAGS) -c inffast.c -o $(OBJ)inffast.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c inffast.c -o $(OBJ)inffast.o
 
 $(OBJ)inflate.o: inflate.c
-	$(CC) $(CFLAGS) -c inflate.c -o $(OBJ)inflate.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c inflate.c -o $(OBJ)inflate.o
 
 $(OBJ)inftrees.o: inftrees.c
-	$(CC) $(CFLAGS) -c inftrees.c -o $(OBJ)inftrees.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c inftrees.c -o $(OBJ)inftrees.o
 
 $(OBJ)trees.o: trees.c
-	$(CC) $(CFLAGS) -c trees.c -o $(OBJ)trees.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c trees.c -o $(OBJ)trees.o
 
 $(OBJ)uncompr.o: uncompr.c
-	$(CC) $(CFLAGS) -c uncompr.c -o $(OBJ)uncompr.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c uncompr.c -o $(OBJ)uncompr.o
 
 $(OBJ)zutil.o: zutil.c
-	$(CC) $(CFLAGS) -c zutil.c -o $(OBJ)zutil.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c zutil.c -o $(OBJ)zutil.o
 
 clean: objdir
 	$(call rmq,$(TARGET))

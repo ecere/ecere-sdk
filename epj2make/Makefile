@@ -17,6 +17,7 @@ ifndef DEBIAN_PACKAGE
 CFLAGS =
 LDFLAGS =
 endif
+PRJ_CFLAGS =
 CECFLAGS =
 OFLAGS =
 LIBS =
@@ -80,7 +81,7 @@ LIBS += \
 	$(call _L,ecere)
 endif
 
-CFLAGS += \
+PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
 			 -DMAKEFILE_GENERATOR
 
@@ -116,8 +117,8 @@ $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	$(ECS) -console $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
@@ -138,83 +139,83 @@ endif
 # SYMBOL RULES
 
 $(OBJ)Project.sym: ../ide/src/project/Project.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../ide/src/project/Project.ec -o $(OBJ)Project.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../ide/src/project/Project.ec -o $(OBJ)Project.sym
 
 $(OBJ)ProjectConfig.sym: ../ide/src/project/ProjectConfig.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../ide/src/project/ProjectConfig.ec -o $(OBJ)ProjectConfig.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../ide/src/project/ProjectConfig.ec -o $(OBJ)ProjectConfig.sym
 
 $(OBJ)ProjectNode.sym: ../ide/src/project/ProjectNode.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../ide/src/project/ProjectNode.ec -o $(OBJ)ProjectNode.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../ide/src/project/ProjectNode.ec -o $(OBJ)ProjectNode.sym
 
 $(OBJ)IDESettings.sym: ../ide/src/IDESettings.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../ide/src/IDESettings.ec -o $(OBJ)IDESettings.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../ide/src/IDESettings.ec -o $(OBJ)IDESettings.sym
 
 $(OBJ)OldIDESettings.sym: ../ide/src/OldIDESettings.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../ide/src/OldIDESettings.ec -o $(OBJ)OldIDESettings.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../ide/src/OldIDESettings.ec -o $(OBJ)OldIDESettings.sym
 
 $(OBJ)StringsBox.sym: ../extras/gui/controls/StringsBox.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.sym
 
 $(OBJ)DynamicString.sym: ../extras/types/DynamicString.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/types/DynamicString.ec -o $(OBJ)DynamicString.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../extras/types/DynamicString.ec -o $(OBJ)DynamicString.sym
 
 $(OBJ)epj2make.sym: epj2make.ec
-	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c epj2make.ec -o $(OBJ)epj2make.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c epj2make.ec -o $(OBJ)epj2make.sym
 
 # C OBJECT RULES
 
 $(OBJ)Project.c: ../ide/src/project/Project.ec $(OBJ)Project.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../ide/src/project/Project.ec -o $(OBJ)Project.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../ide/src/project/Project.ec -o $(OBJ)Project.c -symbols $(OBJ)
 
 $(OBJ)ProjectConfig.c: ../ide/src/project/ProjectConfig.ec $(OBJ)ProjectConfig.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../ide/src/project/ProjectConfig.ec -o $(OBJ)ProjectConfig.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../ide/src/project/ProjectConfig.ec -o $(OBJ)ProjectConfig.c -symbols $(OBJ)
 
 $(OBJ)ProjectNode.c: ../ide/src/project/ProjectNode.ec $(OBJ)ProjectNode.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../ide/src/project/ProjectNode.ec -o $(OBJ)ProjectNode.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../ide/src/project/ProjectNode.ec -o $(OBJ)ProjectNode.c -symbols $(OBJ)
 
 $(OBJ)IDESettings.c: ../ide/src/IDESettings.ec $(OBJ)IDESettings.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../ide/src/IDESettings.ec -o $(OBJ)IDESettings.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../ide/src/IDESettings.ec -o $(OBJ)IDESettings.c -symbols $(OBJ)
 
 $(OBJ)OldIDESettings.c: ../ide/src/OldIDESettings.ec $(OBJ)OldIDESettings.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../ide/src/OldIDESettings.ec -o $(OBJ)OldIDESettings.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../ide/src/OldIDESettings.ec -o $(OBJ)OldIDESettings.c -symbols $(OBJ)
 
 $(OBJ)StringsBox.c: ../extras/gui/controls/StringsBox.ec $(OBJ)StringsBox.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.c -symbols $(OBJ)
 
 $(OBJ)DynamicString.c: ../extras/types/DynamicString.ec $(OBJ)DynamicString.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/types/DynamicString.ec -o $(OBJ)DynamicString.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../extras/types/DynamicString.ec -o $(OBJ)DynamicString.c -symbols $(OBJ)
 
 $(OBJ)epj2make.c: epj2make.ec $(OBJ)epj2make.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c epj2make.ec -o $(OBJ)epj2make.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c epj2make.ec -o $(OBJ)epj2make.c -symbols $(OBJ)
 
 # OBJECT RULES
 
 $(OBJ)Project.o: $(OBJ)Project.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Project.c -o $(OBJ)Project.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)Project.c -o $(OBJ)Project.o
 
 $(OBJ)ProjectConfig.o: $(OBJ)ProjectConfig.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ProjectConfig.c -o $(OBJ)ProjectConfig.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)ProjectConfig.c -o $(OBJ)ProjectConfig.o
 
 $(OBJ)ProjectNode.o: $(OBJ)ProjectNode.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ProjectNode.c -o $(OBJ)ProjectNode.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)ProjectNode.c -o $(OBJ)ProjectNode.o
 
 $(OBJ)IDESettings.o: $(OBJ)IDESettings.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)IDESettings.c -o $(OBJ)IDESettings.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)IDESettings.c -o $(OBJ)IDESettings.o
 
 $(OBJ)OldIDESettings.o: $(OBJ)OldIDESettings.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)OldIDESettings.c -o $(OBJ)OldIDESettings.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)OldIDESettings.c -o $(OBJ)OldIDESettings.o
 
 $(OBJ)StringsBox.o: $(OBJ)StringsBox.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)StringsBox.c -o $(OBJ)StringsBox.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)StringsBox.c -o $(OBJ)StringsBox.o
 
 $(OBJ)DynamicString.o: $(OBJ)DynamicString.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DynamicString.c -o $(OBJ)DynamicString.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)DynamicString.c -o $(OBJ)DynamicString.o
 
 $(OBJ)epj2make.o: $(OBJ)epj2make.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)epj2make.c -o $(OBJ)epj2make.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)epj2make.c -o $(OBJ)epj2make.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 clean: objdir
 	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))

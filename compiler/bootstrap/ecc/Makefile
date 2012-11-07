@@ -105,10 +105,10 @@ endif
 # OBJECT RULES
 
 $(OBJ)ecc.o: bootstrap/ecc.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/ecc.c -o $(OBJ)ecc.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/ecc.c -o $(OBJ)ecc.o
 
 $(OBJ)ecc.main.o: bootstrap/ecc.main.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/ecc.main.c -o $(OBJ)ecc.main.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/ecc.main.c -o $(OBJ)ecc.main.o
 
 clean: objdir
 	$(call rmq,$(TARGET))
