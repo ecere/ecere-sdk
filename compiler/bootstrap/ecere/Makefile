@@ -17,6 +17,7 @@ ifndef DEBIAN_PACKAGE
 CFLAGS =
 LDFLAGS =
 endif
+PRJ_CFLAGS =
 CECFLAGS =
 OFLAGS =
 LIBS =
@@ -104,8 +105,8 @@ ifndef STATIC_LIBRARY_TARGET
 LIBS +=
 endif
 
-CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
+PRJ_CFLAGS += \
+	 $(if $(DEBUG),-g) $(FORCE_32_BIT) $(FPIC) -Wall \
 	 -DBUILDING_ECERE_COM -DECERE_STATIC -DECERE_BOOTSTRAP
 ECFLAGS += \
 	 -nolinenumbers -defaultns ecere
