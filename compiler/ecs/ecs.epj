@@ -5,8 +5,6 @@
       "Warnings" : "All",
       "TargetType" : "Executable",
       "TargetFileName" : "ecs",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "Console" : true
    },
    "Configurations" : [

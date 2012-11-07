@@ -1,17 +1,46 @@
 .PHONY: all objdir clean realclean distclean
 
-# CONTENT
+# CORE VARIABLES
 
 MODULE := ec
 CONFIG := bootstrap
+ifndef COMPILER
 COMPILER := default
+endif
+
 TARGET_TYPE = staticlib
 
-OBJ = obj/$(CONFIG).$(PLATFORM)/
+# FLAGS
+
+ECFLAGS =
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+CECFLAGS =
+OFLAGS =
+LDFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+CONSOLE = -mwindows
+
+# INCLUDES
+
+_CF_DIR = ../../../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)default.cf
+
+# POST-INCLUDES VARIABLES
+
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = 
 
-TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)ecBootstrap$(A)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecBootstrap$(A)
 
 OBJECTS = \
 	$(OBJ)ast.o \
@@ -59,28 +88,28 @@ SOURCES = \
 	bootstrap/type.c \
 	../bsl.c
 
-ifndef DEBIAN_PACKAGE
-CFLAGS =
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+
+ifndef STATIC_LIBRARY_TARGET
+LIBS +=
 endif
-OFLAGS =
 
-# CROSS-PLATFORM MAGIC
+CFLAGS += \
+	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
+			 -DECERE_STATIC
+ECFLAGS += \
+	 -nolinenumbers
 
-include ../../../crossplatform.mk
-include ../../../include.mk
 
-# FLAGS
 
-CFLAGS += -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w \
-	 -DYYTOKENTYPE -DECERE_STATIC
 
-CECFLAGS =
+CECFLAGS += -cpp $(_CPP)
 
-ECFLAGS = -nolinenumbers
-
-LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
-
-UPXFLAGS = -9 -q
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS += $(FORCE_32_BIT)
+OFLAGS += $(LDFLAGS)
+endif
 
 # TARGETS
 
@@ -91,6 +120,8 @@ objdir:
 
 $(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
+
+# OBJECT RULES
 
 $(OBJ)ast.o: bootstrap/ast.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/ast.c -o $(OBJ)ast.o
@@ -159,7 +190,7 @@ clean: objdir
 	$(call rmq,$(TARGET))
 	$(call rmq,$(OBJECTS))
 
-realclean:
+realclean: clean
 	$(call rmrq,$(OBJ))
 
 distclean:

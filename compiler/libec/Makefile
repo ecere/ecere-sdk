@@ -31,29 +31,14 @@ CONSOLE = -mwindows
 # INCLUDES
 
 _CF_DIR = ../../
+USE_BOOTSTRAP := defined
 
 include $(_CF_DIR)crossplatform.mk
-include $(_CF_DIR)include.mk
-
-# CUSTOM TOOLCHAIN / COMPILER CONFIG
-
-ifndef WINDOWS_TARGET
-export LD_LIBRARY_PATH = ../../obj/$(HOST_PLATFORM)/lib/
-export DYLD_LIBRARY_PATH = ../../obj/$(HOST_PLATFORM)/lib/
-endif
-ECP := $(call psep,../bootstrap/obj/bin.$(HOST_PLATFORM)/ecp$(HOST_E))
-ECC := $(call psep,../bootstrap/obj/bin.$(HOST_PLATFORM)/ecc$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)
-ECS := $(call psep,../bootstrap/obj/bin.$(HOST_PLATFORM)/ecs$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)
-EAR := $(call psep,../../obj/$(HOST_PLATFORM)/bin/ear$(HOST_E))
-
-# BSL CFLAGS
-BSL_CFLAGS = -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w
-
-# END OF CUSTOM TOOLCHAIN / COMPILER CONFIG
+include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(CONFIG).$(PLATFORM)/
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = 
 
@@ -61,7 +46,7 @@ ifdef LINUX_TARGET
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)ec$(SO).0.44
 SONAME = -Wl,-soname,libec.so.0
 else
-TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)ec$(SO)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SO)
 SONAME =
 endif
 
@@ -150,7 +135,7 @@ objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
-	$(ECS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM) -o $(OBJ)$(MODULE).main.ec
+	$(ECS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
@@ -255,7 +240,7 @@ $(OBJ)ecdefs.c: src/ecdefs.ec $(OBJ)ecdefs.sym | $(SYMBOLS)
 
 # $(OBJ)expression.sym dependency removed
 $(OBJ)expression.c: src/expression.ec | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/expression.ec -o $(OBJ)expression.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(CFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/expression.ec -o $(OBJ)expression.c -symbols $(OBJ)
 
 $(OBJ)firstPass.c: src/firstPass.ec $(OBJ)firstPass.sym | $(SYMBOLS)
 	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/firstPass.ec -o $(OBJ)firstPass.c -symbols $(OBJ)
@@ -361,7 +346,7 @@ $(OBJ)type.o: $(OBJ)type.c
 	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)type.c -o $(OBJ)type.o
 
 $(OBJ)bsl.o: ../bootstrap/bsl.c
-	$(CC) $(CFLAGS) -c ../bootstrap/bsl.c -o $(OBJ)bsl.o
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c ../bootstrap/bsl.c -o $(OBJ)bsl.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)

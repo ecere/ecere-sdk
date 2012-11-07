@@ -16,7 +16,7 @@ TARGET = $(OBJ)$(MODULE).main.c
 
 # CROSS-PLATFORM MAGIC
 
-include ../../include.mk
+include ../../default.cf
 
 COBJECTS = $(OBJ)ast.c $(OBJ)copy.c $(OBJ)dbpass.c $(OBJ)ecdefs.c $(OBJ)expression.c \
 	$(OBJ)firstPass.c $(OBJ)freeAst.c $(OBJ)grammar.c $(OBJ)lexer.c $(OBJ)loadSymbols.c \

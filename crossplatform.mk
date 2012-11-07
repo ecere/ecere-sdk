@@ -104,6 +104,7 @@ endif
 # MISC STRING TOOLS
 empty :=
 space := $(empty) $(empty)
+comma := ,
 escspace = $(subst $(space),\$(space),$(subst \$(space),$(space),$1))
 hidspace = $(subst $(space),,$(subst \$(space),,$1))
 shwspace = $(subst ,\$(space),$1)

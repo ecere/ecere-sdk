@@ -3371,13 +3371,13 @@ break;
 return (((void *)0));
 }
 
-static unsigned int __ecereNameSpace__ecere__com__ConstructInstance(void * instance, struct __ecereNameSpace__ecere__com__Class * _class)
+static unsigned int __ecereNameSpace__ecere__com__ConstructInstance(void * instance, struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__Class * from)
 {
 if(_class->templateClass)
 _class = _class->templateClass;
-if(_class->base)
+if(_class->base && from != _class->base)
 {
-if(!__ecereNameSpace__ecere__com__ConstructInstance(instance, _class->base))
+if(!__ecereNameSpace__ecere__com__ConstructInstance(instance, _class->base, from))
 return 0x0;
 }
 if(_class->Initialize)
@@ -3417,7 +3417,7 @@ if(_class->type == 0)
 ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class = _class;
 ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl = _class->_vTbl;
 }
-if(!__ecereNameSpace__ecere__com__ConstructInstance(instance, _class))
+if(!__ecereNameSpace__ecere__com__ConstructInstance(instance, _class, (((void *)0))))
 {
 __ecereNameSpace__ecere__com___free(instance);
 instance = (((void *)0));
@@ -3430,11 +3430,13 @@ void __ecereNameSpace__ecere__com__eInstance_Evolve(struct __ecereNameSpace__ece
 {
 if(_class && instancePtr && *instancePtr)
 {
+unsigned int wasApp = 0x0, wasGuiApp = 0x0;
 struct __ecereNameSpace__ecere__com__Instance * instance = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com__eSystem_Renew(*instancePtr, sizeof(unsigned char) * (_class->structSize));
+struct __ecereNameSpace__ecere__com__Class * fromClass = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class;
 
 *instancePtr = instance;
 memset(((unsigned char *)instance) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->structSize, (unsigned char)0, _class->structSize - ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->structSize);
-if(!strcmp(((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->name, "Application"))
+if((wasApp = !strcmp(((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->name, "Application")) || (wasGuiApp = !strcmp(((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->name, "GuiApplication")))
 {
 struct __ecereNameSpace__ecere__com__Instance * module;
 struct __ecereNameSpace__ecere__com__Instance * app = (struct __ecereNameSpace__ecere__com__Instance *)instance;
@@ -3512,6 +3514,21 @@ struct __ecereNameSpace__ecere__com__Class * template = templateLink->data;
 template->module = _class->module;
 }
 }
+for(module = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + 300)))->allModules.first; module; module = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->next)
+{
+for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->classes.first; _class; _class = _class->next)
+{
+struct __ecereNameSpace__ecere__sys__OldLink * templateLink;
+
+_class->module = module;
+for(templateLink = _class->templatized.first; templateLink; templateLink = templateLink->next)
+{
+struct __ecereNameSpace__ecere__com__Class * template = templateLink->data;
+
+template->module = _class->module;
+}
+}
+}
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)app + 12)))->application = app;
 }
 {
@@ -3522,7 +3539,7 @@ for(base = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->
 }
 ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class = _class;
 ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl = _class->_vTbl;
-if(!__ecereNameSpace__ecere__com__ConstructInstance(instance, _class))
+if(!__ecereNameSpace__ecere__com__ConstructInstance(instance, _class, fromClass))
 {
 __ecereNameSpace__ecere__com___free(instance);
 *instancePtr = (((void *)0));
@@ -5076,6 +5093,8 @@ struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com____
 {
 struct __ecereNameSpace__ecere__com__Instance * app;
 
+__ecereNameSpace__ecere__com__memoryInitialized = 0x0;
+__ecereNameSpace__ecere__com__pools = (((void *)0));
 app = __ecereNameSpace__ecere__com___calloc(1, 428);
 __ecereNameSpace__ecere__com__Module_Constructor(app);
 ((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + 300)))->systemNameSpace.classes.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;

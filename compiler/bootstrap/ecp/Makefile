@@ -1,19 +1,46 @@
 .PHONY: all objdir clean realclean distclean
 
-# CONTENT
+# CORE VARIABLES
 
 MODULE := ecp
 CONFIG := bootstrap
+ifndef COMPILER
 COMPILER := default
+endif
+
 TARGET_TYPE = executable
 
-OBJ = obj/$(CONFIG).$(PLATFORM)/
+# FLAGS
+
+ECFLAGS =
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+CECFLAGS =
+OFLAGS =
+LDFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+CONSOLE = -mconsole
+
+# INCLUDES
+
+_CF_DIR = ../../../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)default.cf
+
+# POST-INCLUDES VARIABLES
+
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = 
 
-CONSOLE = 
-
-TARGET = obj/$(CONFIG).$(PLATFORM)/ecp$(E)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(E)
 
 OBJECTS = \
 	$(OBJ)ecp.o \
@@ -23,55 +50,47 @@ SOURCES = \
 	bootstrap/ecp.c \
 	bootstrap/ecp.main.c
 
-ifndef DEBIAN_PACKAGE
-CFLAGS =
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+
+ifndef STATIC_LIBRARY_TARGET
+LIBS += \
+	$(call _L,ecereBootstrap) \
+	$(call _L,ecBootstrap)
 endif
-OFLAGS =
 
-# CROSS-PLATFORM MAGIC
-
-include ../../../crossplatform.mk
-include ../../../include.mk
-
-# FLAGS
-
-CFLAGS += -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w \
+CFLAGS += \
+	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
 	 -DECERE_STATIC
 
-CECFLAGS =
 
-ECFLAGS = -nolinenumbers
+ECFLAGS += \
+	 -nolinenumbers
 
-OFLAGS += $(FORCE_32_BIT) \
-	 -L../ecere/obj/bootstrap.$(PLATFORM) \
-	 -L../libec/obj/bootstrap.$(PLATFORM)
-
-LIBS = -lecereBootstrap -lecBootstrap $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
-
-UPXFLAGS = -9 -q
-
-# HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX_TARGET
-OFLAGS += -Wl,--no-undefined
-endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
-ifdef WINDOWS_TARGET
-
-else
 ifdef LINUX_TARGET
 
-LIBS += -lm -ldl
-
-else
-ifdef OSX_TARGET
-
-LIBS += -lm -ldl
+ifndef STATIC_LIBRARY_TARGET
+LIBS += \
+	$(call _L,m) \
+	$(call _L,dl)
+endif
 
 endif
+
+
+
+CECFLAGS += -cpp $(_CPP)
+
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS += $(FORCE_32_BIT) \
+	 -L../ecere/obj/bootstrap.$(PLATFORM) \
+	 -L../libec/obj/bootstrap.$(PLATFORM)
+OFLAGS += $(LDFLAGS)
 endif
-endif
+
 # TARGETS
 
 all: objdir $(TARGET)
@@ -85,6 +104,8 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 
+# OBJECT RULES
+
 $(OBJ)ecp.o: bootstrap/ecp.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/ecp.c -o $(OBJ)ecp.o
 
@@ -95,7 +116,7 @@ clean: objdir
 	$(call rmq,$(TARGET))
 	$(call rmq,$(OBJECTS))
 
-realclean:
+realclean: clean
 	$(call rmrq,$(OBJ))
 
 distclean:

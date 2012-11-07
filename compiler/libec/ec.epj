@@ -5,8 +5,6 @@
       "Warnings" : "All",
       "TargetType" : "SharedLibrary",
       "TargetFileName" : "ec",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "Libraries" : [
          "ecere"
       ]
@@ -79,9 +77,6 @@
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ECERE_STATIC"
-            ],
-            "IncludeDirs" : [
-               "../bootstrap/include"
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecBootstrap",

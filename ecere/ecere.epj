@@ -1283,6 +1283,17 @@
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "apple",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1554,6 +1565,19 @@
                                  "Options" : {
                                     "ExcludeFromBuild" : false
                                  }
+                              }
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "Bootstrap",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "apple",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -2023,6 +2047,14 @@
             "clean.png",
             "docSave.png",
             "docNew.png"
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Bootstrap",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
          ]
       },
       {
@@ -2041,6 +2073,14 @@
             "namespace.png",
             "property.png",
             "propertyPrivate.png"
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Bootstrap",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
          ]
       },
       {
@@ -2061,6 +2101,14 @@
             "scrollBarHorizontal.png",
             "scrollBarVertical.png",
             "statusBar.png"
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Bootstrap",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
          ]
       },
       {
@@ -2074,6 +2122,14 @@
             "sizeNortEastSouthWest.png",
             "sizeNorthSouth.png",
             "sizeNortWestSouthEast.png"
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Bootstrap",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
          ]
       },
       {
@@ -2084,6 +2140,14 @@
             "driveRemovableMedia.png",
             "mediaFloppy.png",
             "mediaOptical.png"
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Bootstrap",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
          ]
       },
       {
@@ -2110,12 +2174,28 @@
             "orderAscending.png",
             "orderCategorized.png",
             "orderDescending.png"
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Bootstrap",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
          ]
       },
       {
          "Folder" : "emblems",
          "Files" : [
             "unreadable.png"
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Bootstrap",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
          ]
       },
       {
@@ -2137,6 +2217,14 @@
             "textEcereWorkspace.png",
             "textHyperTextMarkup.png",
             "brokenFile.png"
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Bootstrap",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
          ]
       },
       {
@@ -2148,6 +2236,14 @@
             "networkServer.png",
             "networkWorkgroup.png",
             "brokenFolder.png"
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Bootstrap",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
          ]
       },
       {
@@ -2155,12 +2251,28 @@
          "Files" : [
             "audioVolumeHigh.png",
             "folderOpen.png"
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Bootstrap",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
          ]
       },
       {
          "Folder" : "unicode",
          "Files" : [
             "derivedGeneralCategoryStripped.txt"
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Bootstrap",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
          ]
       },
       {
@@ -2187,6 +2299,14 @@
                      ]
                   }
                ]
+            }
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Bootstrap",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
             }
          ]
       },

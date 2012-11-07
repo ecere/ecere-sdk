@@ -2076,7 +2076,7 @@ private:
             f.Puts("\n");
 
             f.Puts("# HARD CODED TARGET_PLATFORM-SPECIFIC OPTIONS\n");
-            f.Printf("LDFLAGS +=$(if $(%s), -Wl,--no-undefined,)\n", PlatformToMakefileTargetVariable(tux));
+            f.Printf("LDFLAGS +=$(if $(%s), -Wl$(comma)--no-undefined,)\n", PlatformToMakefileTargetVariable(tux));
             f.Puts("\n");
 
             // JF's
@@ -2759,7 +2759,6 @@ private:
 
          f.Puts("distclean:\n");
          f.Puts("\t$(call rmrq,obj/)\n");
-         f.Puts("\n");
 
          delete f;
 

@@ -2,13 +2,9 @@
 .SILENT:
 
 include crossplatform.mk
-include include.mk
+include default.cf
 
-ifdef CROSS_TARGET
-XBOOT = GCC_PREFIX= TARGET_PLATFORM=$(HOST_PLATFORM) PLATFORM=$(HOST_PLATFORM)
-else
-XBOOT =
-endif
+XBOOT := $(if $(CROSS_TARGET),GCC_PREFIX= TARGET_PLATFORM=$(HOST_PLATFORM) PLATFORM=$(HOST_PLATFORM),)
 
 LIBVER := .0.44
 

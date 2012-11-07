@@ -1,17 +1,46 @@
 .PHONY: all objdir clean realclean distclean
 
-# CONTENT
+# CORE VARIABLES
 
-MODULE := ecereBootstrap
+MODULE := ecere
 CONFIG := bootstrap
+ifndef COMPILER
 COMPILER := default
+endif
+
 TARGET_TYPE = staticlib
 
-OBJ = obj/$(CONFIG).$(PLATFORM)/
+# FLAGS
+
+ECFLAGS =
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+endif
+CECFLAGS =
+OFLAGS =
+LDFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+CONSOLE = -mwindows
+
+# INCLUDES
+
+_CF_DIR = ../../../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)default.cf
+
+# POST-INCLUDES VARIABLES
+
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = res/
 
-TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)ecereBootstrap$(A)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecereBootstrap$(A)
 
 OBJECTS = \
 	$(OBJ)Array.o \
@@ -69,32 +98,27 @@ SOURCES = \
 	../../../ecere/src/sys/File.c \
 	../../../ecere/src/sys/System.c
 
-ifndef DEBIAN_PACKAGE
-CFLAGS =
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+
+ifndef STATIC_LIBRARY_TARGET
+LIBS +=
 endif
-OFLAGS =
 
-# CROSS-PLATFORM MAGIC
-
-include ../../../crossplatform.mk
-include ../../../include.mk
-
-# FLAGS
-
-CFLAGS += -fmessage-length=0 -O2 -ffast-math $(FORCE_32_BIT) $(FPIC) -w \
+CFLAGS += \
+	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
 	 -DBUILDING_ECERE_COM -DECERE_STATIC -DECERE_BOOTSTRAP
+ECFLAGS += \
+	 -nolinenumbers -defaultns ecere
 
-CECFLAGS =
 
-ECFLAGS = -defaultns ecere -nolinenumbers
 
-LIBS = $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-UPXFLAGS = -9 -q
+CECFLAGS += -cpp $(_CPP)
 
-# HARD CODED PLATFORM-SPECIFIC OPTIONS
-ifdef LINUX_TARGET
-OFLAGS += -Wl,--no-undefined
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS += $(FORCE_32_BIT)
+OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -107,20 +131,43 @@ objdir:
 $(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 
+# OBJECT RULES
+
+$(OBJ)BufferedFile.o: bootstrap/BufferedFile.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/BufferedFile.c -o $(OBJ)BufferedFile.o
+
+$(OBJ)DualPipe.o: bootstrap/DualPipe.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/DualPipe.c -o $(OBJ)DualPipe.o
+
+$(OBJ)File.o: bootstrap/File.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/File.c -o $(OBJ)File.o
+
+$(OBJ)memory.o: bootstrap/memory.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/memory.c -o $(OBJ)memory.o
+
+$(OBJ)System.o: bootstrap/System.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/System.c -o $(OBJ)System.o
+
+$(OBJ)TempFile.o: bootstrap/TempFile.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/TempFile.c -o $(OBJ)TempFile.o
+
+$(OBJ)File.c.o: ../../../ecere/src/sys/File.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/sys/File.c -o $(OBJ)File.c.o
+
+$(OBJ)DualPipe.c.o: ../../../ecere/src/sys/DualPipe.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/sys/DualPipe.c -o $(OBJ)DualPipe.c.o
+
+$(OBJ)System.c.o: ../../../ecere/src/sys/System.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/sys/System.c -o $(OBJ)System.c.o
+
+$(OBJ)i18n.o: bootstrap/i18n.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/i18n.c -o $(OBJ)i18n.o
+
 $(OBJ)Array.o: bootstrap/Array.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/Array.c -o $(OBJ)Array.o
 
 $(OBJ)AVLTree.o: bootstrap/AVLTree.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/AVLTree.c -o $(OBJ)AVLTree.o
-
-$(OBJ)BinaryTree.o: bootstrap/BinaryTree.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/BinaryTree.c -o $(OBJ)BinaryTree.o
-
-$(OBJ)BTNode.o: bootstrap/BTNode.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/BTNode.c -o $(OBJ)BTNode.o
-
-$(OBJ)BufferedFile.o: bootstrap/BufferedFile.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/BufferedFile.c -o $(OBJ)BufferedFile.o
 
 $(OBJ)BuiltInContainer.o: bootstrap/BuiltInContainer.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/BuiltInContainer.c -o $(OBJ)BuiltInContainer.o
@@ -131,24 +178,6 @@ $(OBJ)Container.o: bootstrap/Container.c
 $(OBJ)CustomAVLTree.o: bootstrap/CustomAVLTree.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/CustomAVLTree.c -o $(OBJ)CustomAVLTree.o
 
-$(OBJ)dataTypes.o: bootstrap/dataTypes.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/dataTypes.c -o $(OBJ)dataTypes.o
-
-$(OBJ)DualPipe.o: bootstrap/DualPipe.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/DualPipe.c -o $(OBJ)DualPipe.o
-
-$(OBJ)ecere.main.o: bootstrap/ecere.main.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/ecere.main.c -o $(OBJ)ecere.main.o
-
-$(OBJ)File.o: bootstrap/File.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/File.c -o $(OBJ)File.o
-
-$(OBJ)instance.o: bootstrap/instance.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/instance.c -o $(OBJ)instance.o
-
-$(OBJ)i18n.o: bootstrap/i18n.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/i18n.c -o $(OBJ)i18n.o
-
 $(OBJ)LinkList.o: bootstrap/LinkList.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/LinkList.c -o $(OBJ)LinkList.o
 
@@ -158,38 +187,35 @@ $(OBJ)List.o: bootstrap/List.c
 $(OBJ)Map.o: bootstrap/Map.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/Map.c -o $(OBJ)Map.o
 
-$(OBJ)memory.o: bootstrap/memory.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/memory.c -o $(OBJ)memory.o
+$(OBJ)BinaryTree.o: bootstrap/BinaryTree.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/BinaryTree.c -o $(OBJ)BinaryTree.o
 
-$(OBJ)OldList.o: bootstrap/OldList.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/OldList.c -o $(OBJ)OldList.o
+$(OBJ)BTNode.o: bootstrap/BTNode.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/BTNode.c -o $(OBJ)BTNode.o
+
+$(OBJ)dataTypes.o: bootstrap/dataTypes.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/dataTypes.c -o $(OBJ)dataTypes.o
+
+$(OBJ)instance.o: bootstrap/instance.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/instance.c -o $(OBJ)instance.o
 
 $(OBJ)String.o: bootstrap/String.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/String.c -o $(OBJ)String.o
 
-$(OBJ)System.o: bootstrap/System.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/System.c -o $(OBJ)System.o
-
-$(OBJ)TempFile.o: bootstrap/TempFile.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/TempFile.c -o $(OBJ)TempFile.o
+$(OBJ)OldList.o: bootstrap/OldList.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/OldList.c -o $(OBJ)OldList.o
 
 $(OBJ)instance.c.o: ../../../ecere/src/com/instance.c
 	$(CC) $(CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/com/instance.c -o $(OBJ)instance.c.o
 
-$(OBJ)DualPipe.c.o: ../../../ecere/src/sys/DualPipe.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/sys/DualPipe.c -o $(OBJ)DualPipe.c.o
-
-$(OBJ)File.c.o: ../../../ecere/src/sys/File.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/sys/File.c -o $(OBJ)File.c.o
-
-$(OBJ)System.c.o: ../../../ecere/src/sys/System.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c ../../../ecere/src/sys/System.c -o $(OBJ)System.c.o
+$(OBJ)$(MODULE).main$(O): bootstrap/$(MODULE).main.c
+	$(CC) $(CFLAGS) $(FVISIBILITY) -c bootstrap/$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 clean: objdir
 	$(call rmq,$(TARGET))
 	$(call rmq,$(OBJECTS))
 
-realclean:
+realclean: clean
 	$(call rmrq,$(OBJ))
 
 distclean:

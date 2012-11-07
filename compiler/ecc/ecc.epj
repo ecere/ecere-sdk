@@ -5,8 +5,6 @@
       "Warnings" : "All",
       "TargetType" : "Executable",
       "TargetFileName" : "ecc",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "Console" : true
    },
    "Configurations" : [

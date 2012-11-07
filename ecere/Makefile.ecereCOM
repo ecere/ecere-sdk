@@ -30,18 +30,10 @@ CONSOLE = -mwindows
 # INCLUDES
 
 _CF_DIR = ../
+USE_BOOTSTRAP := defined
 
 include $(_CF_DIR)crossplatform.mk
-include $(_CF_DIR)include.mk
-
-# CUSTOM TOOLCHAIN / COMPILER CONFIG
-
-ECP := $(call psep,../compiler/bootstrap/obj/bin.$(HOST_PLATFORM)/ecp$(HOST_E))
-ECC := $(call psep,../compiler/bootstrap/obj/bin.$(HOST_PLATFORM)/ecc$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)
-ECS := $(call psep,../compiler/bootstrap/obj/bin.$(HOST_PLATFORM)/ecs$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)
-EAR := $(call psep,../obj/$(HOST_PLATFORM)/bin/ear$(HOST_E))
-
-# END OF CUSTOM TOOLCHAIN / COMPILER CONFIG
+include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 

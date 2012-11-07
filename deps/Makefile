@@ -4,7 +4,7 @@
 # CROSS-PLATFORM MAGIC
 
 include ../crossplatform.mk
-include ../include.mk
+include ../default.cf
 
 ifdef WINDOWS_TARGET
 all: freetype jpeg png gif ffi z

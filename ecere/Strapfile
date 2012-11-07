@@ -14,7 +14,7 @@ TARGET = $(OBJ)$(MODULE).main.c
 
 # CROSS-PLATFORM MAGIC
 
-include ../include.mk
+include ../default.cf
 
 OBJECTS = $(OBJ)BufferedFile.o $(OBJ)DualPipe.o $(OBJ)File.o $(OBJ)memory.o \
 	$(OBJ)System.o $(OBJ)TempFile.o $(OBJ)_File.o $(OBJ)_DualPipe.o $(OBJ)_System.o $(OBJ)Array.o \

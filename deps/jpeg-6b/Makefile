@@ -32,7 +32,7 @@ CONSOLE = -mwindows
 _CF_DIR = ../../
 
 include $(_CF_DIR)crossplatform.mk
-include $(_CF_DIR)include.mk
+include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 

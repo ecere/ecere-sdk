@@ -9,6 +9,9 @@
          "ecere"
       ]
    },
+   "Configurations" : [
+
+   ],
    "Files" : [
       {
          "Folder" : "compiler",
@@ -221,18 +224,8 @@
             "ExcludeFromBuild" : true
          }
       },
-      {
-         "FileName" : "include.mk",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      },
-      {
-         "FileName" : "Makefile",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      }
+      "default.cf",
+      "Makefile"
    ],
    "ResourcesPath" : "",
    "Resources" : [

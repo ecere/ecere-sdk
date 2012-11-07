@@ -286,11 +286,11 @@ msgstr "Document"
 msgid "Down"
 msgstr "Down"
 
-#: ./src/gui/GuiApplication.ec:99
+#: ./src/gui/GuiApplication.ec:100
 msgid "Driver/Mode switch failed"
 msgstr "Driver/Mode switch failed"
 
-#: ./src/gui/GuiApplication.ec:195
+#: ./src/gui/GuiApplication.ec:196
 msgid "ECERE Application"
 msgstr "ECERE Application"
 
@@ -302,7 +302,7 @@ msgstr "Edit"
 msgid "Entire Computer"
 msgstr "Entire Computer"
 
-#: ./src/gui/GuiApplication.ec:1260
+#: ./src/gui/GuiApplication.ec:1263
 msgid "Error falling back to previous video mode.\n"
 msgstr "Error falling back to previous video mode.\n"
 
@@ -394,7 +394,7 @@ msgstr "Go To Line..."
 msgid "Go To...\tCtrl+G"
 msgstr "Go To...\tCtrl+G"
 
-#: ./src/gui/GuiApplication.ec:95
+#: ./src/gui/GuiApplication.ec:96
 msgid "Graphics driver not supported by any user interface system"
 msgstr "Graphics driver not supported by any user interface system"
 
@@ -538,7 +538,7 @@ msgid "No"
 msgstr "No"
 
 #: ./src/sys/System.ec:106
-#: ./src/gui/GuiApplication.ec:94
+#: ./src/gui/GuiApplication.ec:95
 msgid "No error"
 msgstr "No error"
 
@@ -851,11 +851,11 @@ msgstr "Whole word only"
 msgid "Window Style"
 msgstr "Window Style"
 
-#: ./src/gui/GuiApplication.ec:96
+#: ./src/gui/GuiApplication.ec:97
 msgid "Window creation failed"
 msgstr "Window creation failed"
 
-#: ./src/gui/GuiApplication.ec:97
+#: ./src/gui/GuiApplication.ec:98
 msgid "Window graphics loading failed"
 msgstr "Window graphics loading failed"
 

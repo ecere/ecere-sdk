@@ -4,7 +4,7 @@
 OBJ = obj/bin.$(PLATFORM)/
 
 include ../../crossplatform.mk
-include ../../include.mk
+include ../../default.cf
 
 all: bindir ecere libec ecp ecc ecs
 	$(call cpq,ecp/obj/bootstrap.$(PLATFORM)/ecp$(E) ecc/obj/bootstrap.$(PLATFORM)/ecc$(E) ecs/obj/bootstrap.$(PLATFORM)/ecs$(E),$(OBJ))

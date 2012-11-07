@@ -32,18 +32,7 @@ CONSOLE = -mwindows
 _CF_DIR = ../
 
 include $(_CF_DIR)crossplatform.mk
-include $(_CF_DIR)include.mk
-
-# CUSTOM TOOLCHAIN / COMPILER CONFIG
-
-export LD_LIBRARY_PATH=../obj/$(HOST_PLATFORM)/lib
-export DYLD_LIBRARY_PATH=../obj/$(HOST_PLATFORM)/lib
-ECP := $(call psep,../obj/$(HOST_PLATFORM)/bin/ecp$(HOST_E))
-ECC := $(call psep,../obj/$(HOST_PLATFORM)/bin/ecc$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)
-ECS := $(call psep,../obj/$(HOST_PLATFORM)/bin/ecs$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)
-EAR := $(call psep,../obj/$(HOST_PLATFORM)/bin/ear$(HOST_E))
-
-# END OF CUSTOM TOOLCHAIN / COMPILER CONFIG
+include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 

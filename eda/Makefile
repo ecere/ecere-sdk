@@ -3,8 +3,10 @@
 
 # CROSS-PLATFORM MAGIC
 
-include ../crossplatform.mk
-include ../include.mk
+_CF_DIR = ../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)default.cf
 
 all:
 	@$(call echo,Building Ecere Data Access layer...)

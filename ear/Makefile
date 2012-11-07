@@ -4,7 +4,7 @@
 # CROSS-PLATFORM MAGIC
 
 include ../crossplatform.mk
-include ../include.mk
+include ../default.cf
 
 all:
 	@$(call echo,Building self-extract tool...)
