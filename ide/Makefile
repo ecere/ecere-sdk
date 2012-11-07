@@ -178,7 +178,7 @@ CFLAGS += \
 	 $(if $(OSX_TARGET), \
 			 -I/usr/X11R6/include,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
-			 -DGDB_DEBUG_GUI
+			 -DGDB_DEBUG_GUI $(FVISIBILITY)
 
 
 
@@ -241,7 +241,7 @@ $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
@@ -418,283 +418,283 @@ $(OBJ)licensing.sym: src/licensing.ec
 # C OBJECT RULES
 
 $(OBJ)FileSystemIterator.c: ../extras/FileSystemIterator.ec $(OBJ)FileSystemIterator.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/FileSystemIterator.ec -o $(OBJ)FileSystemIterator.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/FileSystemIterator.ec -o $(OBJ)FileSystemIterator.c -symbols $(OBJ)
 
 $(OBJ)layout.c: ../extras/gui/layout.ec $(OBJ)layout.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/layout.ec -o $(OBJ)layout.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/layout.ec -o $(OBJ)layout.c -symbols $(OBJ)
 
 $(OBJ)StringsBox.c: ../extras/gui/controls/StringsBox.ec $(OBJ)StringsBox.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.c -symbols $(OBJ)
 
 $(OBJ)DynamicString.c: ../extras/types/DynamicString.ec $(OBJ)DynamicString.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c ../extras/types/DynamicString.ec -o $(OBJ)DynamicString.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c ../extras/types/DynamicString.ec -o $(OBJ)DynamicString.c -symbols $(OBJ)
 
 $(OBJ)ActiveCompilerDialog.c: src/dialogs/ActiveCompilerDialog.ec $(OBJ)ActiveCompilerDialog.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/dialogs/ActiveCompilerDialog.ec -o $(OBJ)ActiveCompilerDialog.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/dialogs/ActiveCompilerDialog.ec -o $(OBJ)ActiveCompilerDialog.c -symbols $(OBJ)
 
 $(OBJ)CompilersDetectionDialog.c: src/dialogs/CompilersDetectionDialog.ec $(OBJ)CompilersDetectionDialog.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/dialogs/CompilersDetectionDialog.ec -o $(OBJ)CompilersDetectionDialog.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/dialogs/CompilersDetectionDialog.ec -o $(OBJ)CompilersDetectionDialog.c -symbols $(OBJ)
 
 $(OBJ)FindInFilesDialog.c: src/dialogs/FindInFilesDialog.ec $(OBJ)FindInFilesDialog.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/dialogs/FindInFilesDialog.ec -o $(OBJ)FindInFilesDialog.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/dialogs/FindInFilesDialog.ec -o $(OBJ)FindInFilesDialog.c -symbols $(OBJ)
 
 $(OBJ)GlobalSettingsDialog.c: src/dialogs/GlobalSettingsDialog.ec $(OBJ)GlobalSettingsDialog.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/dialogs/GlobalSettingsDialog.ec -o $(OBJ)GlobalSettingsDialog.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/dialogs/GlobalSettingsDialog.ec -o $(OBJ)GlobalSettingsDialog.c -symbols $(OBJ)
 
 $(OBJ)NewProjectDialog.c: src/dialogs/NewProjectDialog.ec $(OBJ)NewProjectDialog.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/dialogs/NewProjectDialog.ec -o $(OBJ)NewProjectDialog.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/dialogs/NewProjectDialog.ec -o $(OBJ)NewProjectDialog.c -symbols $(OBJ)
 
 $(OBJ)NodeProperties.c: src/dialogs/NodeProperties.ec $(OBJ)NodeProperties.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/dialogs/NodeProperties.ec -o $(OBJ)NodeProperties.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/dialogs/NodeProperties.ec -o $(OBJ)NodeProperties.c -symbols $(OBJ)
 
 $(OBJ)ProjectActiveConfig.c: src/dialogs/ProjectActiveConfig.ec $(OBJ)ProjectActiveConfig.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/dialogs/ProjectActiveConfig.ec -o $(OBJ)ProjectActiveConfig.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/dialogs/ProjectActiveConfig.ec -o $(OBJ)ProjectActiveConfig.c -symbols $(OBJ)
 
 $(OBJ)WorkspaceSettings.c: src/dialogs/WorkspaceSettings.ec $(OBJ)WorkspaceSettings.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/dialogs/WorkspaceSettings.ec -o $(OBJ)WorkspaceSettings.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/dialogs/WorkspaceSettings.ec -o $(OBJ)WorkspaceSettings.c -symbols $(OBJ)
 
 $(OBJ)ProjectTabSettings.c: src/dialogs/ProjectTabSettings.ec $(OBJ)ProjectTabSettings.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/dialogs/ProjectTabSettings.ec -o $(OBJ)ProjectTabSettings.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/dialogs/ProjectTabSettings.ec -o $(OBJ)ProjectTabSettings.c -symbols $(OBJ)
 
 $(OBJ)Project.c: src/project/Project.ec $(OBJ)Project.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/project/Project.ec -o $(OBJ)Project.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/project/Project.ec -o $(OBJ)Project.c -symbols $(OBJ)
 
 $(OBJ)ProjectConfig.c: src/project/ProjectConfig.ec $(OBJ)ProjectConfig.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/project/ProjectConfig.ec -o $(OBJ)ProjectConfig.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/project/ProjectConfig.ec -o $(OBJ)ProjectConfig.c -symbols $(OBJ)
 
 $(OBJ)ProjectNode.c: src/project/ProjectNode.ec $(OBJ)ProjectNode.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/project/ProjectNode.ec -o $(OBJ)ProjectNode.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/project/ProjectNode.ec -o $(OBJ)ProjectNode.c -symbols $(OBJ)
 
 $(OBJ)ProjectView.c: src/project/ProjectView.ec $(OBJ)ProjectView.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/project/ProjectView.ec -o $(OBJ)ProjectView.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/project/ProjectView.ec -o $(OBJ)ProjectView.c -symbols $(OBJ)
 
 $(OBJ)Workspace.c: src/project/Workspace.ec $(OBJ)Workspace.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/project/Workspace.ec -o $(OBJ)Workspace.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/project/Workspace.ec -o $(OBJ)Workspace.c -symbols $(OBJ)
 
 ifdef WINDOWS_TARGET
 
 $(OBJ)vsSupport.c: src/project/vsSupport.ec $(OBJ)vsSupport.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/project/vsSupport.ec -o $(OBJ)vsSupport.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/project/vsSupport.ec -o $(OBJ)vsSupport.c -symbols $(OBJ)
 
 endif
 
 $(OBJ)CodeEditor.c: src/designer/CodeEditor.ec $(OBJ)CodeEditor.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/designer/CodeEditor.ec -o $(OBJ)CodeEditor.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/designer/CodeEditor.ec -o $(OBJ)CodeEditor.c -symbols $(OBJ)
 
 $(OBJ)CodeObject.c: src/designer/CodeObject.ec $(OBJ)CodeObject.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/designer/CodeObject.ec -o $(OBJ)CodeObject.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/designer/CodeObject.ec -o $(OBJ)CodeObject.c -symbols $(OBJ)
 
 $(OBJ)Designer.c: src/designer/Designer.ec $(OBJ)Designer.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/designer/Designer.ec -o $(OBJ)Designer.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/designer/Designer.ec -o $(OBJ)Designer.c -symbols $(OBJ)
 
 $(OBJ)findCtx.c: src/designer/findCtx.ec $(OBJ)findCtx.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/designer/findCtx.ec -o $(OBJ)findCtx.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/designer/findCtx.ec -o $(OBJ)findCtx.c -symbols $(OBJ)
 
 $(OBJ)findExp.c: src/designer/findExp.ec $(OBJ)findExp.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/designer/findExp.ec -o $(OBJ)findExp.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/designer/findExp.ec -o $(OBJ)findExp.c -symbols $(OBJ)
 
 $(OBJ)findParams.c: src/designer/findParams.ec $(OBJ)findParams.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/designer/findParams.ec -o $(OBJ)findParams.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/designer/findParams.ec -o $(OBJ)findParams.c -symbols $(OBJ)
 
 $(OBJ)Sheet.c: src/designer/Sheet.ec $(OBJ)Sheet.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/designer/Sheet.ec -o $(OBJ)Sheet.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/designer/Sheet.ec -o $(OBJ)Sheet.c -symbols $(OBJ)
 
 $(OBJ)ToolBox.c: src/designer/ToolBox.ec $(OBJ)ToolBox.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/designer/ToolBox.ec -o $(OBJ)ToolBox.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/designer/ToolBox.ec -o $(OBJ)ToolBox.c -symbols $(OBJ)
 
 $(OBJ)debugFindCtx.c: src/debugger/debugFindCtx.ec $(OBJ)debugFindCtx.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/debugger/debugFindCtx.ec -o $(OBJ)debugFindCtx.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/debugger/debugFindCtx.ec -o $(OBJ)debugFindCtx.c -symbols $(OBJ)
 
 $(OBJ)Debugger.c: src/debugger/Debugger.ec $(OBJ)Debugger.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/debugger/Debugger.ec -o $(OBJ)Debugger.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/debugger/Debugger.ec -o $(OBJ)Debugger.c -symbols $(OBJ)
 
 $(OBJ)debugTools.c: src/debugger/debugTools.ec $(OBJ)debugTools.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/debugger/debugTools.ec -o $(OBJ)debugTools.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/debugger/debugTools.ec -o $(OBJ)debugTools.c -symbols $(OBJ)
 
 $(OBJ)GDBDialog.c: src/debugger/GDBDialog.ec $(OBJ)GDBDialog.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/debugger/GDBDialog.ec -o $(OBJ)GDBDialog.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/debugger/GDBDialog.ec -o $(OBJ)GDBDialog.c -symbols $(OBJ)
 
 $(OBJ)process.c: src/debugger/process.ec $(OBJ)process.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/debugger/process.ec -o $(OBJ)process.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/debugger/process.ec -o $(OBJ)process.c -symbols $(OBJ)
 
 $(OBJ)BreakpointsView.c: src/panels/BreakpointsView.ec $(OBJ)BreakpointsView.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/panels/BreakpointsView.ec -o $(OBJ)BreakpointsView.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/panels/BreakpointsView.ec -o $(OBJ)BreakpointsView.c -symbols $(OBJ)
 
 $(OBJ)CallStackView.c: src/panels/CallStackView.ec $(OBJ)CallStackView.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/panels/CallStackView.ec -o $(OBJ)CallStackView.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/panels/CallStackView.ec -o $(OBJ)CallStackView.c -symbols $(OBJ)
 
 $(OBJ)OutputView.c: src/panels/OutputView.ec $(OBJ)OutputView.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/panels/OutputView.ec -o $(OBJ)OutputView.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/panels/OutputView.ec -o $(OBJ)OutputView.c -symbols $(OBJ)
 
 $(OBJ)ThreadsView.c: src/panels/ThreadsView.ec $(OBJ)ThreadsView.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/panels/ThreadsView.ec -o $(OBJ)ThreadsView.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/panels/ThreadsView.ec -o $(OBJ)ThreadsView.c -symbols $(OBJ)
 
 $(OBJ)WatchesView.c: src/panels/WatchesView.ec $(OBJ)WatchesView.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/panels/WatchesView.ec -o $(OBJ)WatchesView.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/panels/WatchesView.ec -o $(OBJ)WatchesView.c -symbols $(OBJ)
 
 $(OBJ)ModelView.c: src/documents/ModelView.ec $(OBJ)ModelView.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/documents/ModelView.ec -o $(OBJ)ModelView.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/documents/ModelView.ec -o $(OBJ)ModelView.c -symbols $(OBJ)
 
 $(OBJ)PictureEdit.c: src/documents/PictureEdit.ec $(OBJ)PictureEdit.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/documents/PictureEdit.ec -o $(OBJ)PictureEdit.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/documents/PictureEdit.ec -o $(OBJ)PictureEdit.c -symbols $(OBJ)
 
 $(OBJ)about.c: src/about.ec $(OBJ)about.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/about.ec -o $(OBJ)about.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/about.ec -o $(OBJ)about.c -symbols $(OBJ)
 
 $(OBJ)ide.c: src/ide.ec $(OBJ)ide.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/ide.ec -o $(OBJ)ide.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/ide.ec -o $(OBJ)ide.c -symbols $(OBJ)
 
 $(OBJ)IDESettings.c: src/IDESettings.ec $(OBJ)IDESettings.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/IDESettings.ec -o $(OBJ)IDESettings.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/IDESettings.ec -o $(OBJ)IDESettings.c -symbols $(OBJ)
 
 $(OBJ)OldIDESettings.c: src/OldIDESettings.ec $(OBJ)OldIDESettings.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/OldIDESettings.ec -o $(OBJ)OldIDESettings.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/OldIDESettings.ec -o $(OBJ)OldIDESettings.c -symbols $(OBJ)
 
 $(OBJ)ProjectSettings.c: src/ProjectSettings.ec $(OBJ)ProjectSettings.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/ProjectSettings.ec -o $(OBJ)ProjectSettings.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/ProjectSettings.ec -o $(OBJ)ProjectSettings.c -symbols $(OBJ)
 
 $(OBJ)licensing.c: src/licensing.ec $(OBJ)licensing.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/licensing.ec -o $(OBJ)licensing.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/licensing.ec -o $(OBJ)licensing.c -symbols $(OBJ)
 
 # OBJECT RULES
 
 $(OBJ)FileSystemIterator.o: $(OBJ)FileSystemIterator.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)FileSystemIterator.c -o $(OBJ)FileSystemIterator.o
+	$(CC) $(CFLAGS) -c $(OBJ)FileSystemIterator.c -o $(OBJ)FileSystemIterator.o
 
 $(OBJ)layout.o: $(OBJ)layout.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)layout.c -o $(OBJ)layout.o
+	$(CC) $(CFLAGS) -c $(OBJ)layout.c -o $(OBJ)layout.o
 
 $(OBJ)StringsBox.o: $(OBJ)StringsBox.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)StringsBox.c -o $(OBJ)StringsBox.o
+	$(CC) $(CFLAGS) -c $(OBJ)StringsBox.c -o $(OBJ)StringsBox.o
 
 $(OBJ)DynamicString.o: $(OBJ)DynamicString.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DynamicString.c -o $(OBJ)DynamicString.o
+	$(CC) $(CFLAGS) -c $(OBJ)DynamicString.c -o $(OBJ)DynamicString.o
 
 $(OBJ)ActiveCompilerDialog.o: $(OBJ)ActiveCompilerDialog.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ActiveCompilerDialog.c -o $(OBJ)ActiveCompilerDialog.o
+	$(CC) $(CFLAGS) -c $(OBJ)ActiveCompilerDialog.c -o $(OBJ)ActiveCompilerDialog.o
 
 $(OBJ)CompilersDetectionDialog.o: $(OBJ)CompilersDetectionDialog.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CompilersDetectionDialog.c -o $(OBJ)CompilersDetectionDialog.o
+	$(CC) $(CFLAGS) -c $(OBJ)CompilersDetectionDialog.c -o $(OBJ)CompilersDetectionDialog.o
 
 $(OBJ)FindInFilesDialog.o: $(OBJ)FindInFilesDialog.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)FindInFilesDialog.c -o $(OBJ)FindInFilesDialog.o
+	$(CC) $(CFLAGS) -c $(OBJ)FindInFilesDialog.c -o $(OBJ)FindInFilesDialog.o
 
 $(OBJ)GlobalSettingsDialog.o: $(OBJ)GlobalSettingsDialog.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)GlobalSettingsDialog.c -o $(OBJ)GlobalSettingsDialog.o
+	$(CC) $(CFLAGS) -c $(OBJ)GlobalSettingsDialog.c -o $(OBJ)GlobalSettingsDialog.o
 
 $(OBJ)NewProjectDialog.o: $(OBJ)NewProjectDialog.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)NewProjectDialog.c -o $(OBJ)NewProjectDialog.o
+	$(CC) $(CFLAGS) -c $(OBJ)NewProjectDialog.c -o $(OBJ)NewProjectDialog.o
 
 $(OBJ)NodeProperties.o: $(OBJ)NodeProperties.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)NodeProperties.c -o $(OBJ)NodeProperties.o
+	$(CC) $(CFLAGS) -c $(OBJ)NodeProperties.c -o $(OBJ)NodeProperties.o
 
 $(OBJ)ProjectActiveConfig.o: $(OBJ)ProjectActiveConfig.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ProjectActiveConfig.c -o $(OBJ)ProjectActiveConfig.o
+	$(CC) $(CFLAGS) -c $(OBJ)ProjectActiveConfig.c -o $(OBJ)ProjectActiveConfig.o
 
 $(OBJ)WorkspaceSettings.o: $(OBJ)WorkspaceSettings.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)WorkspaceSettings.c -o $(OBJ)WorkspaceSettings.o
+	$(CC) $(CFLAGS) -c $(OBJ)WorkspaceSettings.c -o $(OBJ)WorkspaceSettings.o
 
 $(OBJ)ProjectTabSettings.o: $(OBJ)ProjectTabSettings.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ProjectTabSettings.c -o $(OBJ)ProjectTabSettings.o
+	$(CC) $(CFLAGS) -c $(OBJ)ProjectTabSettings.c -o $(OBJ)ProjectTabSettings.o
 
 $(OBJ)Project.o: $(OBJ)Project.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Project.c -o $(OBJ)Project.o
+	$(CC) $(CFLAGS) -c $(OBJ)Project.c -o $(OBJ)Project.o
 
 $(OBJ)ProjectConfig.o: $(OBJ)ProjectConfig.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ProjectConfig.c -o $(OBJ)ProjectConfig.o
+	$(CC) $(CFLAGS) -c $(OBJ)ProjectConfig.c -o $(OBJ)ProjectConfig.o
 
 $(OBJ)ProjectNode.o: $(OBJ)ProjectNode.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ProjectNode.c -o $(OBJ)ProjectNode.o
+	$(CC) $(CFLAGS) -c $(OBJ)ProjectNode.c -o $(OBJ)ProjectNode.o
 
 $(OBJ)ProjectView.o: $(OBJ)ProjectView.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ProjectView.c -o $(OBJ)ProjectView.o
+	$(CC) $(CFLAGS) -c $(OBJ)ProjectView.c -o $(OBJ)ProjectView.o
 
 $(OBJ)Workspace.o: $(OBJ)Workspace.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Workspace.c -o $(OBJ)Workspace.o
+	$(CC) $(CFLAGS) -c $(OBJ)Workspace.c -o $(OBJ)Workspace.o
 
 $(OBJ)vsSupport.o: $(OBJ)vsSupport.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)vsSupport.c -o $(OBJ)vsSupport.o
+	$(CC) $(CFLAGS) -c $(OBJ)vsSupport.c -o $(OBJ)vsSupport.o
 
 $(OBJ)CodeEditor.o: $(OBJ)CodeEditor.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CodeEditor.c -o $(OBJ)CodeEditor.o
+	$(CC) $(CFLAGS) -c $(OBJ)CodeEditor.c -o $(OBJ)CodeEditor.o
 
 $(OBJ)CodeObject.o: $(OBJ)CodeObject.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CodeObject.c -o $(OBJ)CodeObject.o
+	$(CC) $(CFLAGS) -c $(OBJ)CodeObject.c -o $(OBJ)CodeObject.o
 
 $(OBJ)Designer.o: $(OBJ)Designer.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Designer.c -o $(OBJ)Designer.o
+	$(CC) $(CFLAGS) -c $(OBJ)Designer.c -o $(OBJ)Designer.o
 
 $(OBJ)findCtx.o: $(OBJ)findCtx.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)findCtx.c -o $(OBJ)findCtx.o
+	$(CC) $(CFLAGS) -c $(OBJ)findCtx.c -o $(OBJ)findCtx.o
 
 $(OBJ)findExp.o: $(OBJ)findExp.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)findExp.c -o $(OBJ)findExp.o
+	$(CC) $(CFLAGS) -c $(OBJ)findExp.c -o $(OBJ)findExp.o
 
 $(OBJ)findParams.o: $(OBJ)findParams.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)findParams.c -o $(OBJ)findParams.o
+	$(CC) $(CFLAGS) -c $(OBJ)findParams.c -o $(OBJ)findParams.o
 
 $(OBJ)Sheet.o: $(OBJ)Sheet.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Sheet.c -o $(OBJ)Sheet.o
+	$(CC) $(CFLAGS) -c $(OBJ)Sheet.c -o $(OBJ)Sheet.o
 
 $(OBJ)ToolBox.o: $(OBJ)ToolBox.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ToolBox.c -o $(OBJ)ToolBox.o
+	$(CC) $(CFLAGS) -c $(OBJ)ToolBox.c -o $(OBJ)ToolBox.o
 
 $(OBJ)debugFindCtx.o: $(OBJ)debugFindCtx.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)debugFindCtx.c -o $(OBJ)debugFindCtx.o
+	$(CC) $(CFLAGS) -c $(OBJ)debugFindCtx.c -o $(OBJ)debugFindCtx.o
 
 $(OBJ)Debugger.o: $(OBJ)Debugger.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Debugger.c -o $(OBJ)Debugger.o
+	$(CC) $(CFLAGS) -c $(OBJ)Debugger.c -o $(OBJ)Debugger.o
 
 $(OBJ)debugTools.o: $(OBJ)debugTools.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)debugTools.c -o $(OBJ)debugTools.o
+	$(CC) $(CFLAGS) -c $(OBJ)debugTools.c -o $(OBJ)debugTools.o
 
 $(OBJ)GDBDialog.o: $(OBJ)GDBDialog.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)GDBDialog.c -o $(OBJ)GDBDialog.o
+	$(CC) $(CFLAGS) -c $(OBJ)GDBDialog.c -o $(OBJ)GDBDialog.o
 
 $(OBJ)process.o: $(OBJ)process.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)process.c -o $(OBJ)process.o
+	$(CC) $(CFLAGS) -c $(OBJ)process.c -o $(OBJ)process.o
 
 $(OBJ)BreakpointsView.o: $(OBJ)BreakpointsView.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BreakpointsView.c -o $(OBJ)BreakpointsView.o
+	$(CC) $(CFLAGS) -c $(OBJ)BreakpointsView.c -o $(OBJ)BreakpointsView.o
 
 $(OBJ)CallStackView.o: $(OBJ)CallStackView.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CallStackView.c -o $(OBJ)CallStackView.o
+	$(CC) $(CFLAGS) -c $(OBJ)CallStackView.c -o $(OBJ)CallStackView.o
 
 $(OBJ)OutputView.o: $(OBJ)OutputView.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)OutputView.c -o $(OBJ)OutputView.o
+	$(CC) $(CFLAGS) -c $(OBJ)OutputView.c -o $(OBJ)OutputView.o
 
 $(OBJ)ThreadsView.o: $(OBJ)ThreadsView.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ThreadsView.c -o $(OBJ)ThreadsView.o
+	$(CC) $(CFLAGS) -c $(OBJ)ThreadsView.c -o $(OBJ)ThreadsView.o
 
 $(OBJ)WatchesView.o: $(OBJ)WatchesView.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)WatchesView.c -o $(OBJ)WatchesView.o
+	$(CC) $(CFLAGS) -c $(OBJ)WatchesView.c -o $(OBJ)WatchesView.o
 
 $(OBJ)ModelView.o: $(OBJ)ModelView.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ModelView.c -o $(OBJ)ModelView.o
+	$(CC) $(CFLAGS) -c $(OBJ)ModelView.c -o $(OBJ)ModelView.o
 
 $(OBJ)PictureEdit.o: $(OBJ)PictureEdit.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)PictureEdit.c -o $(OBJ)PictureEdit.o
+	$(CC) $(CFLAGS) -c $(OBJ)PictureEdit.c -o $(OBJ)PictureEdit.o
 
 $(OBJ)about.o: $(OBJ)about.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)about.c -o $(OBJ)about.o
+	$(CC) $(CFLAGS) -c $(OBJ)about.c -o $(OBJ)about.o
 
 $(OBJ)ide.o: $(OBJ)ide.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ide.c -o $(OBJ)ide.o
+	$(CC) $(CFLAGS) -c $(OBJ)ide.c -o $(OBJ)ide.o
 
 $(OBJ)IDESettings.o: $(OBJ)IDESettings.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)IDESettings.c -o $(OBJ)IDESettings.o
+	$(CC) $(CFLAGS) -c $(OBJ)IDESettings.c -o $(OBJ)IDESettings.o
 
 $(OBJ)OldIDESettings.o: $(OBJ)OldIDESettings.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)OldIDESettings.c -o $(OBJ)OldIDESettings.o
+	$(CC) $(CFLAGS) -c $(OBJ)OldIDESettings.c -o $(OBJ)OldIDESettings.o
 
 $(OBJ)ProjectSettings.o: $(OBJ)ProjectSettings.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ProjectSettings.c -o $(OBJ)ProjectSettings.o
+	$(CC) $(CFLAGS) -c $(OBJ)ProjectSettings.c -o $(OBJ)ProjectSettings.o
 
 $(OBJ)licensing.o: $(OBJ)licensing.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)licensing.c -o $(OBJ)licensing.o
+	$(CC) $(CFLAGS) -c $(OBJ)licensing.c -o $(OBJ)licensing.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
+	$(CC) $(CFLAGS) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 clean: objdir
 	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
