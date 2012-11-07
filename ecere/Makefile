@@ -410,7 +410,7 @@ CFLAGS += \
 			 -DBUILDING_ECERE_COM \
 			 -Isrc/gfx/drivers/harfbuzz \
 			 -I/usr/X11R6/include \
-			 -I/usr/X11R6/include/freetype2
+			 -I/usr/X11R6/include/freetype2 $(FVISIBILITY)
 
 CUSTOM1_CFLAGS = \
 			 -DECERE_COM_MODULE \
@@ -517,7 +517,7 @@ $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
@@ -1014,498 +1014,498 @@ $(OBJ)OldList.sym: src/com/OldList.ec
 # C OBJECT RULES
 
 $(OBJ)Archive.c: src/sys/Archive.ec $(OBJ)Archive.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/Archive.ec -o $(OBJ)Archive.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/Archive.ec -o $(OBJ)Archive.c -symbols $(OBJ)
 
 $(OBJ)BufferedFile.c: src/sys/BufferedFile.ec $(OBJ)BufferedFile.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/BufferedFile.ec -o $(OBJ)BufferedFile.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/BufferedFile.ec -o $(OBJ)BufferedFile.c -symbols $(OBJ)
 
 $(OBJ)Date.c: src/sys/Date.ec $(OBJ)Date.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/Date.ec -o $(OBJ)Date.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/Date.ec -o $(OBJ)Date.c -symbols $(OBJ)
 
 $(OBJ)DualPipe.c: src/sys/DualPipe.ec $(OBJ)DualPipe.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/DualPipe.ec -o $(OBJ)DualPipe.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/DualPipe.ec -o $(OBJ)DualPipe.c -symbols $(OBJ)
 
 $(OBJ)EARArchive.c: src/sys/EARArchive.ec $(OBJ)EARArchive.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/EARArchive.ec -o $(OBJ)EARArchive.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/EARArchive.ec -o $(OBJ)EARArchive.c -symbols $(OBJ)
 
 $(OBJ)File.c: src/sys/File.ec $(OBJ)File.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/File.ec -o $(OBJ)File.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/File.ec -o $(OBJ)File.c -symbols $(OBJ)
 
 $(OBJ)FileMonitor.c: src/sys/FileMonitor.ec $(OBJ)FileMonitor.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/FileMonitor.ec -o $(OBJ)FileMonitor.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/FileMonitor.ec -o $(OBJ)FileMonitor.c -symbols $(OBJ)
 
 $(OBJ)GlobalAppSettings.c: src/sys/GlobalAppSettings.ec $(OBJ)GlobalAppSettings.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/GlobalAppSettings.ec -o $(OBJ)GlobalAppSettings.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/GlobalAppSettings.ec -o $(OBJ)GlobalAppSettings.c -symbols $(OBJ)
 
 $(OBJ)JSON.c: src/sys/JSON.ec $(OBJ)JSON.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/JSON.ec -o $(OBJ)JSON.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/JSON.ec -o $(OBJ)JSON.c -symbols $(OBJ)
 
 $(OBJ)JSONGlobalSettings.c: src/sys/JSONGlobalSettings.ec $(OBJ)JSONGlobalSettings.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/JSONGlobalSettings.ec -o $(OBJ)JSONGlobalSettings.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/JSONGlobalSettings.ec -o $(OBJ)JSONGlobalSettings.c -symbols $(OBJ)
 
 $(OBJ)memory.c: src/sys/memory.ec $(OBJ)memory.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/memory.ec -o $(OBJ)memory.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/memory.ec -o $(OBJ)memory.c -symbols $(OBJ)
 
 $(OBJ)Mutex.c: src/sys/Mutex.ec $(OBJ)Mutex.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/sys/Mutex.ec -o $(OBJ)Mutex.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/sys/Mutex.ec -o $(OBJ)Mutex.c -symbols $(OBJ)
 
 $(OBJ)Semaphore.c: src/sys/Semaphore.ec $(OBJ)Semaphore.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/Semaphore.ec -o $(OBJ)Semaphore.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/Semaphore.ec -o $(OBJ)Semaphore.c -symbols $(OBJ)
 
 $(OBJ)System.c: src/sys/System.ec $(OBJ)System.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/System.ec -o $(OBJ)System.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/System.ec -o $(OBJ)System.c -symbols $(OBJ)
 
 $(OBJ)TempFile.c: src/sys/TempFile.ec $(OBJ)TempFile.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/TempFile.ec -o $(OBJ)TempFile.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/TempFile.ec -o $(OBJ)TempFile.c -symbols $(OBJ)
 
 $(OBJ)Thread.c: src/sys/Thread.ec $(OBJ)Thread.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/Thread.ec -o $(OBJ)Thread.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/Thread.ec -o $(OBJ)Thread.c -symbols $(OBJ)
 
 $(OBJ)Time.c: src/sys/Time.ec $(OBJ)Time.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/Time.ec -o $(OBJ)Time.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/Time.ec -o $(OBJ)Time.c -symbols $(OBJ)
 
 $(OBJ)unicode.c: src/sys/unicode.ec $(OBJ)unicode.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/unicode.ec -o $(OBJ)unicode.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/unicode.ec -o $(OBJ)unicode.c -symbols $(OBJ)
 
 $(OBJ)units.c: src/sys/units.ec $(OBJ)units.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/units.ec -o $(OBJ)units.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/units.ec -o $(OBJ)units.c -symbols $(OBJ)
 
 $(OBJ)i18n.c: src/sys/i18n.ec $(OBJ)i18n.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/sys/i18n.ec -o $(OBJ)i18n.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/sys/i18n.ec -o $(OBJ)i18n.c -symbols $(OBJ)
 
 $(OBJ)Condition.c: src/sys/Condition.ec $(OBJ)Condition.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/sys/Condition.ec -o $(OBJ)Condition.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/sys/Condition.ec -o $(OBJ)Condition.c -symbols $(OBJ)
 
 $(OBJ)Cube.c: src/gfx/3D/meshes/Cube.ec $(OBJ)Cube.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/3D/meshes/Cube.ec -o $(OBJ)Cube.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/3D/meshes/Cube.ec -o $(OBJ)Cube.c -symbols $(OBJ)
 
 $(OBJ)SkyBox.c: src/gfx/3D/meshes/SkyBox.ec $(OBJ)SkyBox.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/3D/meshes/SkyBox.ec -o $(OBJ)SkyBox.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/3D/meshes/SkyBox.ec -o $(OBJ)SkyBox.c -symbols $(OBJ)
 
 $(OBJ)Sphere.c: src/gfx/3D/meshes/Sphere.ec $(OBJ)Sphere.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/3D/meshes/Sphere.ec -o $(OBJ)Sphere.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/3D/meshes/Sphere.ec -o $(OBJ)Sphere.c -symbols $(OBJ)
 
 $(OBJ)Object3DSFormat.c: src/gfx/3D/models/Object3DSFormat.ec $(OBJ)Object3DSFormat.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/3D/models/Object3DSFormat.ec -o $(OBJ)Object3DSFormat.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/3D/models/Object3DSFormat.ec -o $(OBJ)Object3DSFormat.c -symbols $(OBJ)
 
 $(OBJ)Camera.c: src/gfx/3D/Camera.ec $(OBJ)Camera.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/3D/Camera.ec -o $(OBJ)Camera.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/3D/Camera.ec -o $(OBJ)Camera.c -symbols $(OBJ)
 
 $(OBJ)Matrix.c: src/gfx/3D/Matrix.ec $(OBJ)Matrix.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/3D/Matrix.ec -o $(OBJ)Matrix.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/3D/Matrix.ec -o $(OBJ)Matrix.c -symbols $(OBJ)
 
 $(OBJ)Mesh.c: src/gfx/3D/Mesh.ec $(OBJ)Mesh.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/3D/Mesh.ec -o $(OBJ)Mesh.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/3D/Mesh.ec -o $(OBJ)Mesh.c -symbols $(OBJ)
 
 $(OBJ)Object.c: src/gfx/3D/Object.ec $(OBJ)Object.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/3D/Object.ec -o $(OBJ)Object.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/3D/Object.ec -o $(OBJ)Object.c -symbols $(OBJ)
 
 $(OBJ)Plane.c: src/gfx/3D/Plane.ec $(OBJ)Plane.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/3D/Plane.ec -o $(OBJ)Plane.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/3D/Plane.ec -o $(OBJ)Plane.c -symbols $(OBJ)
 
 $(OBJ)Quaternion.c: src/gfx/3D/Quaternion.ec $(OBJ)Quaternion.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/3D/Quaternion.ec -o $(OBJ)Quaternion.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/3D/Quaternion.ec -o $(OBJ)Quaternion.c -symbols $(OBJ)
 
 $(OBJ)Vector3D.c: src/gfx/3D/Vector3D.ec $(OBJ)Vector3D.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/3D/Vector3D.ec -o $(OBJ)Vector3D.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/3D/Vector3D.ec -o $(OBJ)Vector3D.c -symbols $(OBJ)
 
 $(OBJ)BMPFormat.c: src/gfx/bitmaps/BMPFormat.ec $(OBJ)BMPFormat.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/bitmaps/BMPFormat.ec -o $(OBJ)BMPFormat.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/bitmaps/BMPFormat.ec -o $(OBJ)BMPFormat.c -symbols $(OBJ)
 
 $(OBJ)GIFFormat.c: src/gfx/bitmaps/GIFFormat.ec $(OBJ)GIFFormat.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/bitmaps/GIFFormat.ec -o $(OBJ)GIFFormat.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/bitmaps/GIFFormat.ec -o $(OBJ)GIFFormat.c -symbols $(OBJ)
 
 $(OBJ)JPEGFormat.c: src/gfx/bitmaps/JPEGFormat.ec $(OBJ)JPEGFormat.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/bitmaps/JPEGFormat.ec -o $(OBJ)JPEGFormat.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/bitmaps/JPEGFormat.ec -o $(OBJ)JPEGFormat.c -symbols $(OBJ)
 
 $(OBJ)PCXFormat.c: src/gfx/bitmaps/PCXFormat.ec $(OBJ)PCXFormat.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/bitmaps/PCXFormat.ec -o $(OBJ)PCXFormat.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/bitmaps/PCXFormat.ec -o $(OBJ)PCXFormat.c -symbols $(OBJ)
 
 $(OBJ)PNGFormat.c: src/gfx/bitmaps/PNGFormat.ec $(OBJ)PNGFormat.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/bitmaps/PNGFormat.ec -o $(OBJ)PNGFormat.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/bitmaps/PNGFormat.ec -o $(OBJ)PNGFormat.c -symbols $(OBJ)
 
 $(OBJ)RGBFormat.c: src/gfx/bitmaps/RGBFormat.ec $(OBJ)RGBFormat.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/bitmaps/RGBFormat.ec -o $(OBJ)RGBFormat.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/bitmaps/RGBFormat.ec -o $(OBJ)RGBFormat.c -symbols $(OBJ)
 
 ifdef WINDOWS_TARGET
 
 $(OBJ)Direct3D8DisplayDriver.c: src/gfx/drivers/Direct3D8DisplayDriver.ec $(OBJ)Direct3D8DisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/Direct3D8DisplayDriver.ec -o $(OBJ)Direct3D8DisplayDriver.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/Direct3D8DisplayDriver.ec -o $(OBJ)Direct3D8DisplayDriver.c -symbols $(OBJ)
 
 endif
 
 ifdef WINDOWS_TARGET
 
 $(OBJ)Direct3D9DisplayDriver.c: src/gfx/drivers/Direct3D9DisplayDriver.ec $(OBJ)Direct3D9DisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/Direct3D9DisplayDriver.ec -o $(OBJ)Direct3D9DisplayDriver.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/Direct3D9DisplayDriver.ec -o $(OBJ)Direct3D9DisplayDriver.c -symbols $(OBJ)
 
 endif
 
 ifdef WINDOWS_TARGET
 
 $(OBJ)DirectDrawDisplayDriver.c: src/gfx/drivers/DirectDrawDisplayDriver.ec $(OBJ)DirectDrawDisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/DirectDrawDisplayDriver.ec -o $(OBJ)DirectDrawDisplayDriver.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/DirectDrawDisplayDriver.ec -o $(OBJ)DirectDrawDisplayDriver.c -symbols $(OBJ)
 
 endif
 
 ifdef WINDOWS_TARGET
 
 $(OBJ)GDIDisplayDriver.c: src/gfx/drivers/GDIDisplayDriver.ec $(OBJ)GDIDisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/GDIDisplayDriver.ec -o $(OBJ)GDIDisplayDriver.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/GDIDisplayDriver.ec -o $(OBJ)GDIDisplayDriver.c -symbols $(OBJ)
 
 endif
 
 $(OBJ)lfbBlit.c: src/gfx/drivers/lfbBlit.ec $(OBJ)lfbBlit.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/lfbBlit.ec -o $(OBJ)lfbBlit.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/lfbBlit.ec -o $(OBJ)lfbBlit.c -symbols $(OBJ)
 
 $(OBJ)lfbConvert.c: src/gfx/drivers/lfbConvert.ec $(OBJ)lfbConvert.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/lfbConvert.ec -o $(OBJ)lfbConvert.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/lfbConvert.ec -o $(OBJ)lfbConvert.c -symbols $(OBJ)
 
 $(OBJ)LFBDisplayDriver.c: src/gfx/drivers/LFBDisplayDriver.ec $(OBJ)LFBDisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/LFBDisplayDriver.ec -o $(OBJ)LFBDisplayDriver.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/LFBDisplayDriver.ec -o $(OBJ)LFBDisplayDriver.c -symbols $(OBJ)
 
 ifdef LINUX_TARGET
 
 $(OBJ)NCursesDisplayDriver.c: src/gfx/drivers/NCursesDisplayDriver.ec $(OBJ)NCursesDisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/NCursesDisplayDriver.ec -o $(OBJ)NCursesDisplayDriver.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/NCursesDisplayDriver.ec -o $(OBJ)NCursesDisplayDriver.c -symbols $(OBJ)
 
 endif
 
 $(OBJ)OpenGLDisplayDriver.c: src/gfx/drivers/OpenGLDisplayDriver.ec $(OBJ)OpenGLDisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/OpenGLDisplayDriver.ec -o $(OBJ)OpenGLDisplayDriver.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/OpenGLDisplayDriver.ec -o $(OBJ)OpenGLDisplayDriver.c -symbols $(OBJ)
 
 ifdef WINDOWS_TARGET
 
 $(OBJ)Win32BitmapPrinterDisplayDriver.c: src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec $(OBJ)Win32BitmapPrinterDisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec -o $(OBJ)Win32BitmapPrinterDisplayDriver.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec -o $(OBJ)Win32BitmapPrinterDisplayDriver.c -symbols $(OBJ)
 
 endif
 
 ifdef OSX_TARGET
 
 $(OBJ)CocoaOpenGLDisplayDriver.c: src/gfx/drivers/CocoaOpenGLDisplayDriver.ec $(OBJ)CocoaOpenGLDisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/CocoaOpenGLDisplayDriver.ec -o $(OBJ)CocoaOpenGLDisplayDriver.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/CocoaOpenGLDisplayDriver.ec -o $(OBJ)CocoaOpenGLDisplayDriver.c -symbols $(OBJ)
 
 endif
 
 ifdef WINDOWS_TARGET
 
 $(OBJ)Win32ConsoleDisplayDriver.c: src/gfx/drivers/Win32ConsoleDisplayDriver.ec $(OBJ)Win32ConsoleDisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/Win32ConsoleDisplayDriver.ec -o $(OBJ)Win32ConsoleDisplayDriver.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/Win32ConsoleDisplayDriver.ec -o $(OBJ)Win32ConsoleDisplayDriver.c -symbols $(OBJ)
 
 endif
 
 ifdef WINDOWS_TARGET
 
 $(OBJ)Win32PrinterDisplayDriver.c: src/gfx/drivers/Win32PrinterDisplayDriver.ec $(OBJ)Win32PrinterDisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/Win32PrinterDisplayDriver.ec -o $(OBJ)Win32PrinterDisplayDriver.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/Win32PrinterDisplayDriver.ec -o $(OBJ)Win32PrinterDisplayDriver.c -symbols $(OBJ)
 
 endif
 
 ifdef LINUX_TARGET
 
 $(OBJ)XDisplayDriver.c: src/gfx/drivers/XDisplayDriver.ec $(OBJ)XDisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.c -symbols $(OBJ)
 
 endif
 
 $(OBJ)Bitmap.c: src/gfx/Bitmap.ec $(OBJ)Bitmap.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/Bitmap.ec -o $(OBJ)Bitmap.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/Bitmap.ec -o $(OBJ)Bitmap.c -symbols $(OBJ)
 
 $(OBJ)BitmapResource.c: src/gfx/BitmapResource.ec $(OBJ)BitmapResource.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/BitmapResource.ec -o $(OBJ)BitmapResource.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/BitmapResource.ec -o $(OBJ)BitmapResource.c -symbols $(OBJ)
 
 $(OBJ)Color.c: src/gfx/Color.ec $(OBJ)Color.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/Color.ec -o $(OBJ)Color.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/Color.ec -o $(OBJ)Color.c -symbols $(OBJ)
 
 $(OBJ)Display.c: src/gfx/Display.ec $(OBJ)Display.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/Display.ec -o $(OBJ)Display.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/Display.ec -o $(OBJ)Display.c -symbols $(OBJ)
 
 $(OBJ)DisplaySystem.c: src/gfx/DisplaySystem.ec $(OBJ)DisplaySystem.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/DisplaySystem.ec -o $(OBJ)DisplaySystem.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/DisplaySystem.ec -o $(OBJ)DisplaySystem.c -symbols $(OBJ)
 
 $(OBJ)FontResource.c: src/gfx/FontResource.ec $(OBJ)FontResource.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/FontResource.ec -o $(OBJ)FontResource.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/FontResource.ec -o $(OBJ)FontResource.c -symbols $(OBJ)
 
 $(OBJ)Resource.c: src/gfx/Resource.ec $(OBJ)Resource.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/Resource.ec -o $(OBJ)Resource.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/Resource.ec -o $(OBJ)Resource.c -symbols $(OBJ)
 
 $(OBJ)Surface.c: src/gfx/Surface.ec $(OBJ)Surface.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gfx/Surface.ec -o $(OBJ)Surface.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gfx/Surface.ec -o $(OBJ)Surface.c -symbols $(OBJ)
 
 $(OBJ)Button.c: src/gui/controls/Button.ec $(OBJ)Button.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/Button.ec -o $(OBJ)Button.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/Button.ec -o $(OBJ)Button.c -symbols $(OBJ)
 
 $(OBJ)CalendarControl.c: src/gui/controls/CalendarControl.ec $(OBJ)CalendarControl.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/CalendarControl.ec -o $(OBJ)CalendarControl.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/CalendarControl.ec -o $(OBJ)CalendarControl.c -symbols $(OBJ)
 
 $(OBJ)DataBox.c: src/gui/controls/DataBox.ec $(OBJ)DataBox.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/DataBox.ec -o $(OBJ)DataBox.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/DataBox.ec -o $(OBJ)DataBox.c -symbols $(OBJ)
 
 $(OBJ)DropBox.c: src/gui/controls/DropBox.ec $(OBJ)DropBox.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/DropBox.ec -o $(OBJ)DropBox.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/DropBox.ec -o $(OBJ)DropBox.c -symbols $(OBJ)
 
 $(OBJ)EditBox.c: src/gui/controls/EditBox.ec $(OBJ)EditBox.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/EditBox.ec -o $(OBJ)EditBox.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/EditBox.ec -o $(OBJ)EditBox.c -symbols $(OBJ)
 
 $(OBJ)Label.c: src/gui/controls/Label.ec $(OBJ)Label.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/Label.ec -o $(OBJ)Label.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/Label.ec -o $(OBJ)Label.c -symbols $(OBJ)
 
 $(OBJ)ListBox.c: src/gui/controls/ListBox.ec $(OBJ)ListBox.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/ListBox.ec -o $(OBJ)ListBox.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/ListBox.ec -o $(OBJ)ListBox.c -symbols $(OBJ)
 
 $(OBJ)Menu.c: src/gui/controls/Menu.ec $(OBJ)Menu.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/Menu.ec -o $(OBJ)Menu.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/Menu.ec -o $(OBJ)Menu.c -symbols $(OBJ)
 
 $(OBJ)Picture.c: src/gui/controls/Picture.ec $(OBJ)Picture.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/Picture.ec -o $(OBJ)Picture.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/Picture.ec -o $(OBJ)Picture.c -symbols $(OBJ)
 
 $(OBJ)ProgressBar.c: src/gui/controls/ProgressBar.ec $(OBJ)ProgressBar.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/ProgressBar.ec -o $(OBJ)ProgressBar.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/ProgressBar.ec -o $(OBJ)ProgressBar.c -symbols $(OBJ)
 
 $(OBJ)ScrollBar.c: src/gui/controls/ScrollBar.ec $(OBJ)ScrollBar.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/ScrollBar.ec -o $(OBJ)ScrollBar.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/ScrollBar.ec -o $(OBJ)ScrollBar.c -symbols $(OBJ)
 
 $(OBJ)StatusBar.c: src/gui/controls/StatusBar.ec $(OBJ)StatusBar.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/StatusBar.ec -o $(OBJ)StatusBar.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/StatusBar.ec -o $(OBJ)StatusBar.c -symbols $(OBJ)
 
 $(OBJ)TabControl.c: src/gui/controls/TabControl.ec $(OBJ)TabControl.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/TabControl.ec -o $(OBJ)TabControl.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/TabControl.ec -o $(OBJ)TabControl.c -symbols $(OBJ)
 
 $(OBJ)PaneSplitter.c: src/gui/controls/PaneSplitter.ec $(OBJ)PaneSplitter.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/PaneSplitter.ec -o $(OBJ)PaneSplitter.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/PaneSplitter.ec -o $(OBJ)PaneSplitter.c -symbols $(OBJ)
 
 $(OBJ)Stacker.c: src/gui/controls/Stacker.ec $(OBJ)Stacker.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/Stacker.ec -o $(OBJ)Stacker.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/Stacker.ec -o $(OBJ)Stacker.c -symbols $(OBJ)
 
 $(OBJ)PathBox.c: src/gui/controls/PathBox.ec $(OBJ)PathBox.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/PathBox.ec -o $(OBJ)PathBox.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/PathBox.ec -o $(OBJ)PathBox.c -symbols $(OBJ)
 
 $(OBJ)ToolTip.c: src/gui/controls/ToolTip.ec $(OBJ)ToolTip.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/ToolTip.ec -o $(OBJ)ToolTip.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/ToolTip.ec -o $(OBJ)ToolTip.c -symbols $(OBJ)
 
 $(OBJ)SelectorBar.c: src/gui/controls/SelectorBar.ec $(OBJ)SelectorBar.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/controls/SelectorBar.ec -o $(OBJ)SelectorBar.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/controls/SelectorBar.ec -o $(OBJ)SelectorBar.c -symbols $(OBJ)
 
 $(OBJ)ColorPicker.c: src/gui/dialogs/ColorPicker.ec $(OBJ)ColorPicker.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/ColorPicker.ec -o $(OBJ)ColorPicker.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/dialogs/ColorPicker.ec -o $(OBJ)ColorPicker.c -symbols $(OBJ)
 
 $(OBJ)FileDialog.c: src/gui/dialogs/FileDialog.ec $(OBJ)FileDialog.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/FileDialog.ec -o $(OBJ)FileDialog.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/dialogs/FileDialog.ec -o $(OBJ)FileDialog.c -symbols $(OBJ)
 
 $(OBJ)FindDialog.c: src/gui/dialogs/FindDialog.ec $(OBJ)FindDialog.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/FindDialog.ec -o $(OBJ)FindDialog.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/dialogs/FindDialog.ec -o $(OBJ)FindDialog.c -symbols $(OBJ)
 
 $(OBJ)GoToDialog.c: src/gui/dialogs/GoToDialog.ec $(OBJ)GoToDialog.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/GoToDialog.ec -o $(OBJ)GoToDialog.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/dialogs/GoToDialog.ec -o $(OBJ)GoToDialog.c -symbols $(OBJ)
 
 $(OBJ)MessageBox.c: src/gui/dialogs/MessageBox.ec $(OBJ)MessageBox.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/MessageBox.ec -o $(OBJ)MessageBox.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/dialogs/MessageBox.ec -o $(OBJ)MessageBox.c -symbols $(OBJ)
 
 $(OBJ)ReplaceDialog.c: src/gui/dialogs/ReplaceDialog.ec $(OBJ)ReplaceDialog.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/ReplaceDialog.ec -o $(OBJ)ReplaceDialog.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/dialogs/ReplaceDialog.ec -o $(OBJ)ReplaceDialog.c -symbols $(OBJ)
 
 $(OBJ)WindowList.c: src/gui/dialogs/WindowList.ec $(OBJ)WindowList.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/WindowList.ec -o $(OBJ)WindowList.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/dialogs/WindowList.ec -o $(OBJ)WindowList.c -symbols $(OBJ)
 
 ifdef OSX_TARGET
 
 $(OBJ)CocoaDispatch.c: src/gui/drivers/cocoa/CocoaDispatch.ec $(OBJ)CocoaDispatch.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/cocoa/CocoaDispatch.ec -o $(OBJ)CocoaDispatch.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/cocoa/CocoaDispatch.ec -o $(OBJ)CocoaDispatch.c -symbols $(OBJ)
 
 $(OBJ)CocoaInterface.c: src/gui/drivers/cocoa/CocoaInterface.ec $(OBJ)CocoaInterface.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/cocoa/CocoaInterface.ec -o $(OBJ)CocoaInterface.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/cocoa/CocoaInterface.ec -o $(OBJ)CocoaInterface.c -symbols $(OBJ)
 
 endif
 
 ifdef LINUX_TARGET
 
 $(OBJ)NCursesInterface.c: src/gui/drivers/NCursesInterface.ec $(OBJ)NCursesInterface.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/NCursesInterface.ec -o $(OBJ)NCursesInterface.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/NCursesInterface.ec -o $(OBJ)NCursesInterface.c -symbols $(OBJ)
 
 endif
 
 ifdef WINDOWS_TARGET
 
 $(OBJ)Win32Interface.c: src/gui/drivers/Win32Interface.ec $(OBJ)Win32Interface.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/Win32Interface.ec -o $(OBJ)Win32Interface.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/Win32Interface.ec -o $(OBJ)Win32Interface.c -symbols $(OBJ)
 
 endif
 
 ifdef WINDOWS_TARGET
 
 $(OBJ)Win32ConsoleInterface.c: src/gui/drivers/Win32ConsoleInterface.ec $(OBJ)Win32ConsoleInterface.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/Win32ConsoleInterface.ec -o $(OBJ)Win32ConsoleInterface.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/Win32ConsoleInterface.ec -o $(OBJ)Win32ConsoleInterface.c -symbols $(OBJ)
 
 endif
 
 ifdef LINUX_TARGET
 
 $(OBJ)XInterface.c: src/gui/drivers/XInterface.ec $(OBJ)XInterface.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/drivers/XInterface.ec -o $(OBJ)XInterface.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/drivers/XInterface.ec -o $(OBJ)XInterface.c -symbols $(OBJ)
 
 endif
 
 $(OBJ)TVisionSkin.c: src/gui/skins/TVisionSkin.ec $(OBJ)TVisionSkin.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/skins/TVisionSkin.ec -o $(OBJ)TVisionSkin.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/skins/TVisionSkin.ec -o $(OBJ)TVisionSkin.c -symbols $(OBJ)
 
 $(OBJ)WindowsSkin.c: src/gui/skins/WindowsSkin.ec $(OBJ)WindowsSkin.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/skins/WindowsSkin.ec -o $(OBJ)WindowsSkin.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/skins/WindowsSkin.ec -o $(OBJ)WindowsSkin.c -symbols $(OBJ)
 
 $(OBJ)Anchor.c: src/gui/Anchor.ec $(OBJ)Anchor.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/Anchor.ec -o $(OBJ)Anchor.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/Anchor.ec -o $(OBJ)Anchor.c -symbols $(OBJ)
 
 $(OBJ)ClipBoard.c: src/gui/ClipBoard.ec $(OBJ)ClipBoard.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/ClipBoard.ec -o $(OBJ)ClipBoard.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/ClipBoard.ec -o $(OBJ)ClipBoard.c -symbols $(OBJ)
 
 $(OBJ)Cursor.c: src/gui/Cursor.ec $(OBJ)Cursor.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/Cursor.ec -o $(OBJ)Cursor.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/Cursor.ec -o $(OBJ)Cursor.c -symbols $(OBJ)
 
 $(OBJ)Desktop3D.c: src/gui/Desktop3D.ec $(OBJ)Desktop3D.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/Desktop3D.ec -o $(OBJ)Desktop3D.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/Desktop3D.ec -o $(OBJ)Desktop3D.c -symbols $(OBJ)
 
 $(OBJ)FormDesigner.c: src/gui/FormDesigner.ec $(OBJ)FormDesigner.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/FormDesigner.ec -o $(OBJ)FormDesigner.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/FormDesigner.ec -o $(OBJ)FormDesigner.c -symbols $(OBJ)
 
 $(OBJ)GuiApplication.c: src/gui/GuiApplication.ec $(OBJ)GuiApplication.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/GuiApplication.ec -o $(OBJ)GuiApplication.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/GuiApplication.ec -o $(OBJ)GuiApplication.c -symbols $(OBJ)
 
 $(OBJ)Interface.c: src/gui/Interface.ec $(OBJ)Interface.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/Interface.ec -o $(OBJ)Interface.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/Interface.ec -o $(OBJ)Interface.c -symbols $(OBJ)
 
 $(OBJ)Key.c: src/gui/Key.ec $(OBJ)Key.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/Key.ec -o $(OBJ)Key.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/Key.ec -o $(OBJ)Key.c -symbols $(OBJ)
 
 $(OBJ)Skin.c: src/gui/Skin.ec $(OBJ)Skin.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/Skin.ec -o $(OBJ)Skin.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/Skin.ec -o $(OBJ)Skin.c -symbols $(OBJ)
 
 $(OBJ)Timer.c: src/gui/Timer.ec $(OBJ)Timer.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/Timer.ec -o $(OBJ)Timer.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/Timer.ec -o $(OBJ)Timer.c -symbols $(OBJ)
 
 $(OBJ)typeEdit.c: src/gui/typeEdit.ec $(OBJ)typeEdit.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/typeEdit.ec -o $(OBJ)typeEdit.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/typeEdit.ec -o $(OBJ)typeEdit.c -symbols $(OBJ)
 
 $(OBJ)Window.c: src/gui/Window.ec $(OBJ)Window.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/gui/Window.ec -o $(OBJ)Window.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/gui/Window.ec -o $(OBJ)Window.c -symbols $(OBJ)
 
 $(OBJ)dcom.c: src/net/dcom.ec $(OBJ)dcom.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/net/dcom.ec -o $(OBJ)dcom.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/net/dcom.ec -o $(OBJ)dcom.c -symbols $(OBJ)
 
 $(OBJ)HTTPFile.c: src/net/HTTPFile.ec $(OBJ)HTTPFile.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/net/HTTPFile.ec -o $(OBJ)HTTPFile.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/net/HTTPFile.ec -o $(OBJ)HTTPFile.c -symbols $(OBJ)
 
 $(OBJ)network.c: src/net/network.ec $(OBJ)network.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/net/network.ec -o $(OBJ)network.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/net/network.ec -o $(OBJ)network.c -symbols $(OBJ)
 
 $(OBJ)NetworkClientFile.c: src/net/NetworkClientFile.ec $(OBJ)NetworkClientFile.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/net/NetworkClientFile.ec -o $(OBJ)NetworkClientFile.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/net/NetworkClientFile.ec -o $(OBJ)NetworkClientFile.c -symbols $(OBJ)
 
 $(OBJ)Service.c: src/net/Service.ec $(OBJ)Service.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/net/Service.ec -o $(OBJ)Service.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/net/Service.ec -o $(OBJ)Service.c -symbols $(OBJ)
 
 $(OBJ)Socket.c: src/net/Socket.ec $(OBJ)Socket.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/net/Socket.ec -o $(OBJ)Socket.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c src/net/Socket.ec -o $(OBJ)Socket.c -symbols $(OBJ)
 
 $(OBJ)Array.c: src/com/containers/Array.ec $(OBJ)Array.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/Array.ec -o $(OBJ)Array.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/Array.ec -o $(OBJ)Array.c -symbols $(OBJ)
 
 $(OBJ)AVLTree.c: src/com/containers/AVLTree.ec $(OBJ)AVLTree.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.c -symbols $(OBJ)
 
 $(OBJ)BuiltInContainer.c: src/com/containers/BuiltInContainer.ec $(OBJ)BuiltInContainer.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.c -symbols $(OBJ)
 
 $(OBJ)Container.c: src/com/containers/Container.ec $(OBJ)Container.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/Container.ec -o $(OBJ)Container.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/Container.ec -o $(OBJ)Container.c -symbols $(OBJ)
 
 $(OBJ)CustomAVLTree.c: src/com/containers/CustomAVLTree.ec $(OBJ)CustomAVLTree.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.c -symbols $(OBJ)
 
 $(OBJ)LinkList.c: src/com/containers/LinkList.ec $(OBJ)LinkList.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.c -symbols $(OBJ)
 
 $(OBJ)List.c: src/com/containers/List.ec $(OBJ)List.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/List.ec -o $(OBJ)List.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/List.ec -o $(OBJ)List.c -symbols $(OBJ)
 
 $(OBJ)Map.c: src/com/containers/Map.ec $(OBJ)Map.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/containers/Map.ec -o $(OBJ)Map.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/containers/Map.ec -o $(OBJ)Map.c -symbols $(OBJ)
 
 $(OBJ)BinaryTree.c: src/com/BinaryTree.ec $(OBJ)BinaryTree.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.c -symbols $(OBJ)
 
 $(OBJ)BTNode.c: src/com/BTNode.ec $(OBJ)BTNode.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/BTNode.ec -o $(OBJ)BTNode.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/BTNode.ec -o $(OBJ)BTNode.c -symbols $(OBJ)
 
 $(OBJ)dataTypes.c: src/com/dataTypes.ec $(OBJ)dataTypes.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/dataTypes.ec -o $(OBJ)dataTypes.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/dataTypes.ec -o $(OBJ)dataTypes.c -symbols $(OBJ)
 
 $(OBJ)instance.c: src/com/instance.ec $(OBJ)instance.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/instance.ec -o $(OBJ)instance.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/instance.ec -o $(OBJ)instance.c -symbols $(OBJ)
 
 $(OBJ)String.c: src/com/String.ec $(OBJ)String.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/String.ec -o $(OBJ)String.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/String.ec -o $(OBJ)String.c -symbols $(OBJ)
 
 $(OBJ)OldList.c: src/com/OldList.ec $(OBJ)OldList.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/com/OldList.ec -o $(OBJ)OldList.c -symbols $(OBJ)
+	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) -c src/com/OldList.ec -o $(OBJ)OldList.c -symbols $(OBJ)
 
 # OBJECT RULES
 
 $(OBJ)Archive.o: $(OBJ)Archive.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Archive.c -o $(OBJ)Archive.o
+	$(CC) $(CFLAGS) -c $(OBJ)Archive.c -o $(OBJ)Archive.o
 
 $(OBJ)BufferedFile.o: $(OBJ)BufferedFile.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BufferedFile.c -o $(OBJ)BufferedFile.o
+	$(CC) $(CFLAGS) -c $(OBJ)BufferedFile.c -o $(OBJ)BufferedFile.o
 
 $(OBJ)Date.o: $(OBJ)Date.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Date.c -o $(OBJ)Date.o
+	$(CC) $(CFLAGS) -c $(OBJ)Date.c -o $(OBJ)Date.o
 
 $(OBJ)DualPipe.o: $(OBJ)DualPipe.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DualPipe.c -o $(OBJ)DualPipe.o
+	$(CC) $(CFLAGS) -c $(OBJ)DualPipe.c -o $(OBJ)DualPipe.o
 
 $(OBJ)EARArchive.o: $(OBJ)EARArchive.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)EARArchive.c -o $(OBJ)EARArchive.o
+	$(CC) $(CFLAGS) -c $(OBJ)EARArchive.c -o $(OBJ)EARArchive.o
 
 $(OBJ)File.o: $(OBJ)File.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)File.c -o $(OBJ)File.o
+	$(CC) $(CFLAGS) -c $(OBJ)File.c -o $(OBJ)File.o
 
 $(OBJ)FileMonitor.o: $(OBJ)FileMonitor.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)FileMonitor.c -o $(OBJ)FileMonitor.o
+	$(CC) $(CFLAGS) -c $(OBJ)FileMonitor.c -o $(OBJ)FileMonitor.o
 
 $(OBJ)GlobalAppSettings.o: $(OBJ)GlobalAppSettings.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)GlobalAppSettings.c -o $(OBJ)GlobalAppSettings.o
+	$(CC) $(CFLAGS) -c $(OBJ)GlobalAppSettings.c -o $(OBJ)GlobalAppSettings.o
 
 $(OBJ)JSON.o: $(OBJ)JSON.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)JSON.c -o $(OBJ)JSON.o
+	$(CC) $(CFLAGS) -c $(OBJ)JSON.c -o $(OBJ)JSON.o
 
 $(OBJ)JSONGlobalSettings.o: $(OBJ)JSONGlobalSettings.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)JSONGlobalSettings.c -o $(OBJ)JSONGlobalSettings.o
+	$(CC) $(CFLAGS) -c $(OBJ)JSONGlobalSettings.c -o $(OBJ)JSONGlobalSettings.o
 
 $(OBJ)memory.o: $(OBJ)memory.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)memory.c -o $(OBJ)memory.o
+	$(CC) $(CFLAGS) -c $(OBJ)memory.c -o $(OBJ)memory.o
 
 $(OBJ)Mutex.o: $(OBJ)Mutex.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)Mutex.c -o $(OBJ)Mutex.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)Mutex.c -o $(OBJ)Mutex.o
 
 $(OBJ)Semaphore.o: $(OBJ)Semaphore.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Semaphore.c -o $(OBJ)Semaphore.o
+	$(CC) $(CFLAGS) -c $(OBJ)Semaphore.c -o $(OBJ)Semaphore.o
 
 $(OBJ)System.o: $(OBJ)System.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)System.c -o $(OBJ)System.o
+	$(CC) $(CFLAGS) -c $(OBJ)System.c -o $(OBJ)System.o
 
 $(OBJ)TempFile.o: $(OBJ)TempFile.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)TempFile.c -o $(OBJ)TempFile.o
+	$(CC) $(CFLAGS) -c $(OBJ)TempFile.c -o $(OBJ)TempFile.o
 
 $(OBJ)Thread.o: $(OBJ)Thread.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Thread.c -o $(OBJ)Thread.o
+	$(CC) $(CFLAGS) -c $(OBJ)Thread.c -o $(OBJ)Thread.o
 
 $(OBJ)Time.o: $(OBJ)Time.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Time.c -o $(OBJ)Time.o
+	$(CC) $(CFLAGS) -c $(OBJ)Time.c -o $(OBJ)Time.o
 
 $(OBJ)unicode.o: $(OBJ)unicode.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)unicode.c -o $(OBJ)unicode.o
+	$(CC) $(CFLAGS) -c $(OBJ)unicode.c -o $(OBJ)unicode.o
 
 $(OBJ)units.o: $(OBJ)units.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)units.c -o $(OBJ)units.o
+	$(CC) $(CFLAGS) -c $(OBJ)units.c -o $(OBJ)units.o
 
 $(OBJ)File.c.o: src/sys/File.c
 	$(CC) $(CFLAGS) -c src/sys/File.c -o $(OBJ)File.c.o
@@ -1517,61 +1517,61 @@ $(OBJ)System.c.o: src/sys/System.c
 	$(CC) $(CFLAGS) -c src/sys/System.c -o $(OBJ)System.c.o
 
 $(OBJ)i18n.o: $(OBJ)i18n.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)i18n.c -o $(OBJ)i18n.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)i18n.c -o $(OBJ)i18n.o
 
 $(OBJ)Condition.o: $(OBJ)Condition.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Condition.c -o $(OBJ)Condition.o
+	$(CC) $(CFLAGS) -c $(OBJ)Condition.c -o $(OBJ)Condition.o
 
 $(OBJ)Cube.o: $(OBJ)Cube.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Cube.c -o $(OBJ)Cube.o
+	$(CC) $(CFLAGS) -c $(OBJ)Cube.c -o $(OBJ)Cube.o
 
 $(OBJ)SkyBox.o: $(OBJ)SkyBox.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)SkyBox.c -o $(OBJ)SkyBox.o
+	$(CC) $(CFLAGS) -c $(OBJ)SkyBox.c -o $(OBJ)SkyBox.o
 
 $(OBJ)Sphere.o: $(OBJ)Sphere.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Sphere.c -o $(OBJ)Sphere.o
+	$(CC) $(CFLAGS) -c $(OBJ)Sphere.c -o $(OBJ)Sphere.o
 
 $(OBJ)Object3DSFormat.o: $(OBJ)Object3DSFormat.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Object3DSFormat.c -o $(OBJ)Object3DSFormat.o
+	$(CC) $(CFLAGS) -c $(OBJ)Object3DSFormat.c -o $(OBJ)Object3DSFormat.o
 
 $(OBJ)Camera.o: $(OBJ)Camera.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Camera.c -o $(OBJ)Camera.o
+	$(CC) $(CFLAGS) -c $(OBJ)Camera.c -o $(OBJ)Camera.o
 
 $(OBJ)Matrix.o: $(OBJ)Matrix.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Matrix.c -o $(OBJ)Matrix.o
+	$(CC) $(CFLAGS) -c $(OBJ)Matrix.c -o $(OBJ)Matrix.o
 
 $(OBJ)Mesh.o: $(OBJ)Mesh.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Mesh.c -o $(OBJ)Mesh.o
+	$(CC) $(CFLAGS) -c $(OBJ)Mesh.c -o $(OBJ)Mesh.o
 
 $(OBJ)Object.o: $(OBJ)Object.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Object.c -o $(OBJ)Object.o
+	$(CC) $(CFLAGS) -c $(OBJ)Object.c -o $(OBJ)Object.o
 
 $(OBJ)Plane.o: $(OBJ)Plane.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Plane.c -o $(OBJ)Plane.o
+	$(CC) $(CFLAGS) -c $(OBJ)Plane.c -o $(OBJ)Plane.o
 
 $(OBJ)Quaternion.o: $(OBJ)Quaternion.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Quaternion.c -o $(OBJ)Quaternion.o
+	$(CC) $(CFLAGS) -c $(OBJ)Quaternion.c -o $(OBJ)Quaternion.o
 
 $(OBJ)Vector3D.o: $(OBJ)Vector3D.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Vector3D.c -o $(OBJ)Vector3D.o
+	$(CC) $(CFLAGS) -c $(OBJ)Vector3D.c -o $(OBJ)Vector3D.o
 
 $(OBJ)BMPFormat.o: $(OBJ)BMPFormat.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BMPFormat.c -o $(OBJ)BMPFormat.o
+	$(CC) $(CFLAGS) -c $(OBJ)BMPFormat.c -o $(OBJ)BMPFormat.o
 
 $(OBJ)GIFFormat.o: $(OBJ)GIFFormat.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)GIFFormat.c -o $(OBJ)GIFFormat.o
+	$(CC) $(CFLAGS) -c $(OBJ)GIFFormat.c -o $(OBJ)GIFFormat.o
 
 $(OBJ)JPEGFormat.o: $(OBJ)JPEGFormat.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)JPEGFormat.c -o $(OBJ)JPEGFormat.o
+	$(CC) $(CFLAGS) -c $(OBJ)JPEGFormat.c -o $(OBJ)JPEGFormat.o
 
 $(OBJ)PCXFormat.o: $(OBJ)PCXFormat.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)PCXFormat.c -o $(OBJ)PCXFormat.o
+	$(CC) $(CFLAGS) -c $(OBJ)PCXFormat.c -o $(OBJ)PCXFormat.o
 
 $(OBJ)PNGFormat.o: $(OBJ)PNGFormat.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)PNGFormat.c -o $(OBJ)PNGFormat.o
+	$(CC) $(CFLAGS) -c $(OBJ)PNGFormat.c -o $(OBJ)PNGFormat.o
 
 $(OBJ)RGBFormat.o: $(OBJ)RGBFormat.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)RGBFormat.c -o $(OBJ)RGBFormat.o
+	$(CC) $(CFLAGS) -c $(OBJ)RGBFormat.c -o $(OBJ)RGBFormat.o
 
 $(OBJ)harfbuzz-freetype.o: src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c
 	$(CC) $(CFLAGS) -c src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c -o $(OBJ)harfbuzz-freetype.o
@@ -1631,156 +1631,156 @@ $(OBJ)harfbuzz-thai.o: src/gfx/drivers/harfbuzz/harfbuzz-thai.c
 	$(CC) $(CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-thai.c -o $(OBJ)harfbuzz-thai.o
 
 $(OBJ)Direct3D8DisplayDriver.o: $(OBJ)Direct3D8DisplayDriver.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Direct3D8DisplayDriver.c -o $(OBJ)Direct3D8DisplayDriver.o
+	$(CC) $(CFLAGS) -c $(OBJ)Direct3D8DisplayDriver.c -o $(OBJ)Direct3D8DisplayDriver.o
 
 $(OBJ)Direct3D9DisplayDriver.o: $(OBJ)Direct3D9DisplayDriver.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Direct3D9DisplayDriver.c -o $(OBJ)Direct3D9DisplayDriver.o
+	$(CC) $(CFLAGS) -c $(OBJ)Direct3D9DisplayDriver.c -o $(OBJ)Direct3D9DisplayDriver.o
 
 $(OBJ)DirectDrawDisplayDriver.o: $(OBJ)DirectDrawDisplayDriver.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DirectDrawDisplayDriver.c -o $(OBJ)DirectDrawDisplayDriver.o
+	$(CC) $(CFLAGS) -c $(OBJ)DirectDrawDisplayDriver.c -o $(OBJ)DirectDrawDisplayDriver.o
 
 $(OBJ)GDIDisplayDriver.o: $(OBJ)GDIDisplayDriver.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)GDIDisplayDriver.c -o $(OBJ)GDIDisplayDriver.o
+	$(CC) $(CFLAGS) -c $(OBJ)GDIDisplayDriver.c -o $(OBJ)GDIDisplayDriver.o
 
 $(OBJ)lfbBlit.o: $(OBJ)lfbBlit.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)lfbBlit.c -o $(OBJ)lfbBlit.o
+	$(CC) $(CFLAGS) -c $(OBJ)lfbBlit.c -o $(OBJ)lfbBlit.o
 
 $(OBJ)lfbConvert.o: $(OBJ)lfbConvert.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)lfbConvert.c -o $(OBJ)lfbConvert.o
+	$(CC) $(CFLAGS) -c $(OBJ)lfbConvert.c -o $(OBJ)lfbConvert.o
 
 $(OBJ)LFBDisplayDriver.o: $(OBJ)LFBDisplayDriver.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)LFBDisplayDriver.c -o $(OBJ)LFBDisplayDriver.o
+	$(CC) $(CFLAGS) -c $(OBJ)LFBDisplayDriver.c -o $(OBJ)LFBDisplayDriver.o
 
 $(OBJ)NCursesDisplayDriver.o: $(OBJ)NCursesDisplayDriver.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)NCursesDisplayDriver.c -o $(OBJ)NCursesDisplayDriver.o
+	$(CC) $(CFLAGS) -c $(OBJ)NCursesDisplayDriver.c -o $(OBJ)NCursesDisplayDriver.o
 
 $(OBJ)OpenGLDisplayDriver.o: $(OBJ)OpenGLDisplayDriver.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)OpenGLDisplayDriver.c -o $(OBJ)OpenGLDisplayDriver.o
+	$(CC) $(CFLAGS) -c $(OBJ)OpenGLDisplayDriver.c -o $(OBJ)OpenGLDisplayDriver.o
 
 $(OBJ)Win32BitmapPrinterDisplayDriver.o: $(OBJ)Win32BitmapPrinterDisplayDriver.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Win32BitmapPrinterDisplayDriver.c -o $(OBJ)Win32BitmapPrinterDisplayDriver.o
+	$(CC) $(CFLAGS) -c $(OBJ)Win32BitmapPrinterDisplayDriver.c -o $(OBJ)Win32BitmapPrinterDisplayDriver.o
 
 $(OBJ)CocoaOpenGLDisplayDriver.o: $(OBJ)CocoaOpenGLDisplayDriver.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CocoaOpenGLDisplayDriver.c -o $(OBJ)CocoaOpenGLDisplayDriver.o
+	$(CC) $(CFLAGS) -c $(OBJ)CocoaOpenGLDisplayDriver.c -o $(OBJ)CocoaOpenGLDisplayDriver.o
 
 $(OBJ)Win32ConsoleDisplayDriver.o: $(OBJ)Win32ConsoleDisplayDriver.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Win32ConsoleDisplayDriver.c -o $(OBJ)Win32ConsoleDisplayDriver.o
+	$(CC) $(CFLAGS) -c $(OBJ)Win32ConsoleDisplayDriver.c -o $(OBJ)Win32ConsoleDisplayDriver.o
 
 $(OBJ)Win32PrinterDisplayDriver.o: $(OBJ)Win32PrinterDisplayDriver.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Win32PrinterDisplayDriver.c -o $(OBJ)Win32PrinterDisplayDriver.o
+	$(CC) $(CFLAGS) -c $(OBJ)Win32PrinterDisplayDriver.c -o $(OBJ)Win32PrinterDisplayDriver.o
 
 $(OBJ)XDisplayDriver.o: $(OBJ)XDisplayDriver.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)XDisplayDriver.c -o $(OBJ)XDisplayDriver.o
+	$(CC) $(CFLAGS) -c $(OBJ)XDisplayDriver.c -o $(OBJ)XDisplayDriver.o
 
 $(OBJ)Bitmap.o: $(OBJ)Bitmap.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Bitmap.c -o $(OBJ)Bitmap.o
+	$(CC) $(CFLAGS) -c $(OBJ)Bitmap.c -o $(OBJ)Bitmap.o
 
 $(OBJ)BitmapResource.o: $(OBJ)BitmapResource.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)BitmapResource.c -o $(OBJ)BitmapResource.o
+	$(CC) $(CFLAGS) -c $(OBJ)BitmapResource.c -o $(OBJ)BitmapResource.o
 
 $(OBJ)Color.o: $(OBJ)Color.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Color.c -o $(OBJ)Color.o
+	$(CC) $(CFLAGS) -c $(OBJ)Color.c -o $(OBJ)Color.o
 
 $(OBJ)Display.o: $(OBJ)Display.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Display.c -o $(OBJ)Display.o
+	$(CC) $(CFLAGS) -c $(OBJ)Display.c -o $(OBJ)Display.o
 
 $(OBJ)DisplaySystem.o: $(OBJ)DisplaySystem.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DisplaySystem.c -o $(OBJ)DisplaySystem.o
+	$(CC) $(CFLAGS) -c $(OBJ)DisplaySystem.c -o $(OBJ)DisplaySystem.o
 
 $(OBJ)FontResource.o: $(OBJ)FontResource.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)FontResource.c -o $(OBJ)FontResource.o
+	$(CC) $(CFLAGS) -c $(OBJ)FontResource.c -o $(OBJ)FontResource.o
 
 $(OBJ)Resource.o: $(OBJ)Resource.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Resource.c -o $(OBJ)Resource.o
+	$(CC) $(CFLAGS) -c $(OBJ)Resource.c -o $(OBJ)Resource.o
 
 $(OBJ)Surface.o: $(OBJ)Surface.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Surface.c -o $(OBJ)Surface.o
+	$(CC) $(CFLAGS) -c $(OBJ)Surface.c -o $(OBJ)Surface.o
 
 $(OBJ)Button.o: $(OBJ)Button.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Button.c -o $(OBJ)Button.o
+	$(CC) $(CFLAGS) -c $(OBJ)Button.c -o $(OBJ)Button.o
 
 $(OBJ)CalendarControl.o: $(OBJ)CalendarControl.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CalendarControl.c -o $(OBJ)CalendarControl.o
+	$(CC) $(CFLAGS) -c $(OBJ)CalendarControl.c -o $(OBJ)CalendarControl.o
 
 $(OBJ)DataBox.o: $(OBJ)DataBox.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DataBox.c -o $(OBJ)DataBox.o
+	$(CC) $(CFLAGS) -c $(OBJ)DataBox.c -o $(OBJ)DataBox.o
 
 $(OBJ)DropBox.o: $(OBJ)DropBox.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)DropBox.c -o $(OBJ)DropBox.o
+	$(CC) $(CFLAGS) -c $(OBJ)DropBox.c -o $(OBJ)DropBox.o
 
 $(OBJ)EditBox.o: $(OBJ)EditBox.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)EditBox.c -o $(OBJ)EditBox.o
+	$(CC) $(CFLAGS) -c $(OBJ)EditBox.c -o $(OBJ)EditBox.o
 
 $(OBJ)Label.o: $(OBJ)Label.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Label.c -o $(OBJ)Label.o
+	$(CC) $(CFLAGS) -c $(OBJ)Label.c -o $(OBJ)Label.o
 
 $(OBJ)ListBox.o: $(OBJ)ListBox.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ListBox.c -o $(OBJ)ListBox.o
+	$(CC) $(CFLAGS) -c $(OBJ)ListBox.c -o $(OBJ)ListBox.o
 
 $(OBJ)Menu.o: $(OBJ)Menu.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Menu.c -o $(OBJ)Menu.o
+	$(CC) $(CFLAGS) -c $(OBJ)Menu.c -o $(OBJ)Menu.o
 
 $(OBJ)Picture.o: $(OBJ)Picture.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Picture.c -o $(OBJ)Picture.o
+	$(CC) $(CFLAGS) -c $(OBJ)Picture.c -o $(OBJ)Picture.o
 
 $(OBJ)ProgressBar.o: $(OBJ)ProgressBar.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ProgressBar.c -o $(OBJ)ProgressBar.o
+	$(CC) $(CFLAGS) -c $(OBJ)ProgressBar.c -o $(OBJ)ProgressBar.o
 
 $(OBJ)ScrollBar.o: $(OBJ)ScrollBar.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ScrollBar.c -o $(OBJ)ScrollBar.o
+	$(CC) $(CFLAGS) -c $(OBJ)ScrollBar.c -o $(OBJ)ScrollBar.o
 
 $(OBJ)StatusBar.o: $(OBJ)StatusBar.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)StatusBar.c -o $(OBJ)StatusBar.o
+	$(CC) $(CFLAGS) -c $(OBJ)StatusBar.c -o $(OBJ)StatusBar.o
 
 $(OBJ)TabControl.o: $(OBJ)TabControl.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)TabControl.c -o $(OBJ)TabControl.o
+	$(CC) $(CFLAGS) -c $(OBJ)TabControl.c -o $(OBJ)TabControl.o
 
 $(OBJ)PaneSplitter.o: $(OBJ)PaneSplitter.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)PaneSplitter.c -o $(OBJ)PaneSplitter.o
+	$(CC) $(CFLAGS) -c $(OBJ)PaneSplitter.c -o $(OBJ)PaneSplitter.o
 
 $(OBJ)Stacker.o: $(OBJ)Stacker.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Stacker.c -o $(OBJ)Stacker.o
+	$(CC) $(CFLAGS) -c $(OBJ)Stacker.c -o $(OBJ)Stacker.o
 
 $(OBJ)PathBox.o: $(OBJ)PathBox.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)PathBox.c -o $(OBJ)PathBox.o
+	$(CC) $(CFLAGS) -c $(OBJ)PathBox.c -o $(OBJ)PathBox.o
 
 $(OBJ)ToolTip.o: $(OBJ)ToolTip.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ToolTip.c -o $(OBJ)ToolTip.o
+	$(CC) $(CFLAGS) -c $(OBJ)ToolTip.c -o $(OBJ)ToolTip.o
 
 $(OBJ)SelectorBar.o: $(OBJ)SelectorBar.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)SelectorBar.c -o $(OBJ)SelectorBar.o
+	$(CC) $(CFLAGS) -c $(OBJ)SelectorBar.c -o $(OBJ)SelectorBar.o
 
 $(OBJ)ColorPicker.o: $(OBJ)ColorPicker.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ColorPicker.c -o $(OBJ)ColorPicker.o
+	$(CC) $(CFLAGS) -c $(OBJ)ColorPicker.c -o $(OBJ)ColorPicker.o
 
 $(OBJ)FileDialog.o: $(OBJ)FileDialog.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)FileDialog.c -o $(OBJ)FileDialog.o
+	$(CC) $(CFLAGS) -c $(OBJ)FileDialog.c -o $(OBJ)FileDialog.o
 
 $(OBJ)FindDialog.o: $(OBJ)FindDialog.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)FindDialog.c -o $(OBJ)FindDialog.o
+	$(CC) $(CFLAGS) -c $(OBJ)FindDialog.c -o $(OBJ)FindDialog.o
 
 $(OBJ)GoToDialog.o: $(OBJ)GoToDialog.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)GoToDialog.c -o $(OBJ)GoToDialog.o
+	$(CC) $(CFLAGS) -c $(OBJ)GoToDialog.c -o $(OBJ)GoToDialog.o
 
 $(OBJ)MessageBox.o: $(OBJ)MessageBox.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)MessageBox.c -o $(OBJ)MessageBox.o
+	$(CC) $(CFLAGS) -c $(OBJ)MessageBox.c -o $(OBJ)MessageBox.o
 
 $(OBJ)ReplaceDialog.o: $(OBJ)ReplaceDialog.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ReplaceDialog.c -o $(OBJ)ReplaceDialog.o
+	$(CC) $(CFLAGS) -c $(OBJ)ReplaceDialog.c -o $(OBJ)ReplaceDialog.o
 
 $(OBJ)WindowList.o: $(OBJ)WindowList.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)WindowList.c -o $(OBJ)WindowList.o
+	$(CC) $(CFLAGS) -c $(OBJ)WindowList.c -o $(OBJ)WindowList.o
 
 ifdef OSX_TARGET
 
 $(OBJ)CocoaDispatch.o: $(OBJ)CocoaDispatch.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CocoaDispatch.c -o $(OBJ)CocoaDispatch.o
+	$(CC) $(CFLAGS) -c $(OBJ)CocoaDispatch.c -o $(OBJ)CocoaDispatch.o
 
 $(OBJ)CocoaEcereBridge.o: src/gui/drivers/cocoa/CocoaEcereBridge.m
 	$(CC) $(CFLAGS) -c src/gui/drivers/cocoa/CocoaEcereBridge.m -o $(OBJ)CocoaEcereBridge.o
 
 $(OBJ)CocoaInterface.o: $(OBJ)CocoaInterface.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)CocoaInterface.c -o $(OBJ)CocoaInterface.o
+	$(CC) $(CFLAGS) -c $(OBJ)CocoaInterface.c -o $(OBJ)CocoaInterface.o
 
 $(OBJ)EcereView.o: src/gui/drivers/cocoa/EcereView.m
 	$(CC) $(CFLAGS) -c src/gui/drivers/cocoa/EcereView.m -o $(OBJ)EcereView.o
@@ -1788,124 +1788,124 @@ $(OBJ)EcereView.o: src/gui/drivers/cocoa/EcereView.m
 endif
 
 $(OBJ)NCursesInterface.o: $(OBJ)NCursesInterface.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)NCursesInterface.c -o $(OBJ)NCursesInterface.o
+	$(CC) $(CFLAGS) -c $(OBJ)NCursesInterface.c -o $(OBJ)NCursesInterface.o
 
 $(OBJ)Win32Interface.o: $(OBJ)Win32Interface.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Win32Interface.c -o $(OBJ)Win32Interface.o
+	$(CC) $(CFLAGS) -c $(OBJ)Win32Interface.c -o $(OBJ)Win32Interface.o
 
 $(OBJ)Win32ConsoleInterface.o: $(OBJ)Win32ConsoleInterface.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Win32ConsoleInterface.c -o $(OBJ)Win32ConsoleInterface.o
+	$(CC) $(CFLAGS) -c $(OBJ)Win32ConsoleInterface.c -o $(OBJ)Win32ConsoleInterface.o
 
 $(OBJ)XInterface.o: $(OBJ)XInterface.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)XInterface.c -o $(OBJ)XInterface.o
+	$(CC) $(CFLAGS) -c $(OBJ)XInterface.c -o $(OBJ)XInterface.o
 
 $(OBJ)TVisionSkin.o: $(OBJ)TVisionSkin.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)TVisionSkin.c -o $(OBJ)TVisionSkin.o
+	$(CC) $(CFLAGS) -c $(OBJ)TVisionSkin.c -o $(OBJ)TVisionSkin.o
 
 $(OBJ)WindowsSkin.o: $(OBJ)WindowsSkin.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)WindowsSkin.c -o $(OBJ)WindowsSkin.o
+	$(CC) $(CFLAGS) -c $(OBJ)WindowsSkin.c -o $(OBJ)WindowsSkin.o
 
 $(OBJ)Anchor.o: $(OBJ)Anchor.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Anchor.c -o $(OBJ)Anchor.o
+	$(CC) $(CFLAGS) -c $(OBJ)Anchor.c -o $(OBJ)Anchor.o
 
 $(OBJ)ClipBoard.o: $(OBJ)ClipBoard.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)ClipBoard.c -o $(OBJ)ClipBoard.o
+	$(CC) $(CFLAGS) -c $(OBJ)ClipBoard.c -o $(OBJ)ClipBoard.o
 
 $(OBJ)Cursor.o: $(OBJ)Cursor.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Cursor.c -o $(OBJ)Cursor.o
+	$(CC) $(CFLAGS) -c $(OBJ)Cursor.c -o $(OBJ)Cursor.o
 
 $(OBJ)Desktop3D.o: $(OBJ)Desktop3D.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Desktop3D.c -o $(OBJ)Desktop3D.o
+	$(CC) $(CFLAGS) -c $(OBJ)Desktop3D.c -o $(OBJ)Desktop3D.o
 
 $(OBJ)FormDesigner.o: $(OBJ)FormDesigner.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)FormDesigner.c -o $(OBJ)FormDesigner.o
+	$(CC) $(CFLAGS) -c $(OBJ)FormDesigner.c -o $(OBJ)FormDesigner.o
 
 $(OBJ)GuiApplication.o: $(OBJ)GuiApplication.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)GuiApplication.c -o $(OBJ)GuiApplication.o
+	$(CC) $(CFLAGS) -c $(OBJ)GuiApplication.c -o $(OBJ)GuiApplication.o
 
 $(OBJ)Interface.o: $(OBJ)Interface.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Interface.c -o $(OBJ)Interface.o
+	$(CC) $(CFLAGS) -c $(OBJ)Interface.c -o $(OBJ)Interface.o
 
 $(OBJ)Key.o: $(OBJ)Key.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Key.c -o $(OBJ)Key.o
+	$(CC) $(CFLAGS) -c $(OBJ)Key.c -o $(OBJ)Key.o
 
 $(OBJ)Skin.o: $(OBJ)Skin.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Skin.c -o $(OBJ)Skin.o
+	$(CC) $(CFLAGS) -c $(OBJ)Skin.c -o $(OBJ)Skin.o
 
 $(OBJ)Timer.o: $(OBJ)Timer.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Timer.c -o $(OBJ)Timer.o
+	$(CC) $(CFLAGS) -c $(OBJ)Timer.c -o $(OBJ)Timer.o
 
 $(OBJ)typeEdit.o: $(OBJ)typeEdit.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)typeEdit.c -o $(OBJ)typeEdit.o
+	$(CC) $(CFLAGS) -c $(OBJ)typeEdit.c -o $(OBJ)typeEdit.o
 
 $(OBJ)Window.o: $(OBJ)Window.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Window.c -o $(OBJ)Window.o
+	$(CC) $(CFLAGS) -c $(OBJ)Window.c -o $(OBJ)Window.o
 
 $(OBJ)dcom.o: $(OBJ)dcom.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)dcom.c -o $(OBJ)dcom.o
+	$(CC) $(CFLAGS) -c $(OBJ)dcom.c -o $(OBJ)dcom.o
 
 $(OBJ)HTTPFile.o: $(OBJ)HTTPFile.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)HTTPFile.c -o $(OBJ)HTTPFile.o
+	$(CC) $(CFLAGS) -c $(OBJ)HTTPFile.c -o $(OBJ)HTTPFile.o
 
 $(OBJ)network.o: $(OBJ)network.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)network.c -o $(OBJ)network.o
+	$(CC) $(CFLAGS) -c $(OBJ)network.c -o $(OBJ)network.o
 
 $(OBJ)NetworkClientFile.o: $(OBJ)NetworkClientFile.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)NetworkClientFile.c -o $(OBJ)NetworkClientFile.o
+	$(CC) $(CFLAGS) -c $(OBJ)NetworkClientFile.c -o $(OBJ)NetworkClientFile.o
 
 $(OBJ)Service.o: $(OBJ)Service.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Service.c -o $(OBJ)Service.o
+	$(CC) $(CFLAGS) -c $(OBJ)Service.c -o $(OBJ)Service.o
 
 $(OBJ)Socket.o: $(OBJ)Socket.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)Socket.c -o $(OBJ)Socket.o
+	$(CC) $(CFLAGS) -c $(OBJ)Socket.c -o $(OBJ)Socket.o
 
 $(OBJ)Array.o: $(OBJ)Array.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)Array.c -o $(OBJ)Array.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)Array.c -o $(OBJ)Array.o
 
 $(OBJ)AVLTree.o: $(OBJ)AVLTree.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)AVLTree.c -o $(OBJ)AVLTree.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)AVLTree.c -o $(OBJ)AVLTree.o
 
 $(OBJ)BuiltInContainer.o: $(OBJ)BuiltInContainer.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)BuiltInContainer.c -o $(OBJ)BuiltInContainer.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)BuiltInContainer.c -o $(OBJ)BuiltInContainer.o
 
 $(OBJ)Container.o: $(OBJ)Container.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)Container.c -o $(OBJ)Container.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)Container.c -o $(OBJ)Container.o
 
 $(OBJ)CustomAVLTree.o: $(OBJ)CustomAVLTree.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)CustomAVLTree.c -o $(OBJ)CustomAVLTree.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)CustomAVLTree.c -o $(OBJ)CustomAVLTree.o
 
 $(OBJ)LinkList.o: $(OBJ)LinkList.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)LinkList.c -o $(OBJ)LinkList.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)LinkList.c -o $(OBJ)LinkList.o
 
 $(OBJ)List.o: $(OBJ)List.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)List.c -o $(OBJ)List.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)List.c -o $(OBJ)List.o
 
 $(OBJ)Map.o: $(OBJ)Map.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)Map.c -o $(OBJ)Map.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)Map.c -o $(OBJ)Map.o
 
 $(OBJ)BinaryTree.o: $(OBJ)BinaryTree.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)BinaryTree.c -o $(OBJ)BinaryTree.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)BinaryTree.c -o $(OBJ)BinaryTree.o
 
 $(OBJ)BTNode.o: $(OBJ)BTNode.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)BTNode.c -o $(OBJ)BTNode.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)BTNode.c -o $(OBJ)BTNode.o
 
 $(OBJ)dataTypes.o: $(OBJ)dataTypes.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)dataTypes.c -o $(OBJ)dataTypes.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)dataTypes.c -o $(OBJ)dataTypes.o
 
 $(OBJ)instance.o: $(OBJ)instance.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)instance.c -o $(OBJ)instance.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)instance.c -o $(OBJ)instance.o
 
 $(OBJ)String.o: $(OBJ)String.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)String.c -o $(OBJ)String.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)String.c -o $(OBJ)String.o
 
 $(OBJ)OldList.o: $(OBJ)OldList.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)OldList.c -o $(OBJ)OldList.o
+	$(CC) $(CUSTOM1_CFLAGS) -c $(OBJ)OldList.c -o $(OBJ)OldList.o
 
 $(OBJ)instance.c.o: src/com/instance.c
 	$(CC) $(CUSTOM1_CFLAGS) -c src/com/instance.c -o $(OBJ)instance.c.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
-	$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
+	$(CC) $(CFLAGS) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 cleantarget: objdir
 	$(call rmq,$(TARGET))
