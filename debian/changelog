@@ -7,6 +7,7 @@ ecere-sdk (0.44.02-1) unstable; urgency=low
     Resolved target and host platform confusion in build system/makefiles
     Proper handling of __attribute__ in the compiler
     Resolved proper implementation of all per node settings in the build system
+    Promoting package to unstable
     Added support for a SYSROOT and GCC prefix in Compiler Settings
     Support for cross-compiling the tarball (e.g. Building for MinGW on Linux)
     Initial support for the Android platform
