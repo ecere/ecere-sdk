@@ -102,6 +102,13 @@ ifdef WINDOWS_TARGET
 
 endif
 
+ifdef LINUX_TARGET
+# To fix libffi build problem on Oneiric/amd64
+CFLAGS += \
+	 -I/usr/include/i686-linux-gnu
+
+endif
+
 
 
 CECFLAGS += -cpp $(_CPP)

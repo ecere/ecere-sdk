@@ -120,6 +120,10 @@ endif
 else
 ifdef LINUX_TARGET
 
+# To fix libffi build problem on Oneiric/amd64
+CFLAGS += \
+	 -I/usr/include/i686-linux-gnu
+
 ifndef STATIC_LIBRARY_TARGET
 LIBS += \
 	$(call _L,pthread) \
