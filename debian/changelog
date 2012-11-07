@@ -1,3 +1,18 @@
+ecere-sdk (0.44.02-0ubuntu1) raring; urgency=low
+
+  * Fixed issue with 'arch: all' packages preventing installing on 64 bit system
+    Fixed issue with GCC 4.7 whereas .bmp files would not load properly
+    Fixed build issues with ARM and big endian (PPC) builds
+    Various bug fixes
+    Resolved target and host platform confusion in build system/makefiles
+    Proper handling of __attribute__ in the compiler
+    Resolved proper implementation of all per node settings in the build system
+    Added support for a SYSROOT and GCC prefix in Compiler Settings
+    Support for cross-compiling the tarball (e.g. Building for MinGW on Linux)
+    Initial support for the Android platform
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Tue, 6 Nov 2012 11:59:00 -0500
+
 ecere-sdk (0.44.01-0ubuntu1) quantal; urgency=low
 
   * Initial packaging of Ecere SDK for Debian. (Closes: #665332, LP: #394998)

@@ -7,7 +7,7 @@ Files: *
 Copyright: 1996-2012 Jérôme Jacovella-St-Louis
            2005-2012 Ecere Corporation
 License: BSD-3-clause
- The Ecere SDK is Free Open Source Software. It is provided with NO WARRANTY 
+ The Ecere SDK is Free Open Source Software. It is provided with NO WARRANTY
  expressed or implied to the extent permitted by law.
  .
  Applications built with it can be distributed both commercially and non
@@ -40,7 +40,7 @@ License: BSD-3-clause
        this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
      * Neither the name of Ecere Corporation nor the names of its contributors
-       may be used to endorse or promote products derived from this software 
+       may be used to endorse or promote products derived from this software
        without specific prior written permission.
  .
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -57,15 +57,15 @@ License: BSD-3-clause
  .
  ===============================================================================
  .
- This software makes use of other software components whose licenses may also 
+ This software makes use of other software components whose licenses may also
  apply, which are found in their respective source directories (most under
  deps/).
  .
   Among them: zlib, libpng, libjpeg, giflib, harfbuzz, freetype, tango icons
  .
-  The IDE also communicates with GCC for compiling (MinGW on Windows), GDB for 
-  debugging, and UPX for optionally compressing executables. Each of these have 
-  their own license which can be found in their respective documentation folder 
+  The IDE also communicates with GCC for compiling (MinGW on Windows), GDB for
+  debugging, and UPX for optionally compressing executables. Each of these have
+  their own license which can be found in their respective documentation folder
   if distributed along with the SDK (in the case of the Windows version) or
   from wherever you obtained them.
 
@@ -74,16 +74,16 @@ Copyright: Copyright 1991-1992, RSA Data Security, Inc
 License:
  Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All rights reserved.
  .
- License to copy and use this software is granted provided that it is identified as the 
- "RSA Data Security, Inc. MD5 Message-Digest Algorithm" in all material mentioning or 
+ License to copy and use this software is granted provided that it is identified as the
+ "RSA Data Security, Inc. MD5 Message-Digest Algorithm" in all material mentioning or
  referencing this software or this function.
  .
- License is also granted to make and use derivative works provided that such works are 
- identified as "derived from the RSA Data Security, Inc. MD5 Message-Digest Algorithm" 
+ License is also granted to make and use derivative works provided that such works are
+ identified as "derived from the RSA Data Security, Inc. MD5 Message-Digest Algorithm"
  in all material mentioning or referencing the derived work.
  .
- RSA Data Security, Inc. makes no representations concerning either the merchantability 
- of this software or the suitability of this software for any particular purpose. It is 
+ RSA Data Security, Inc. makes no representations concerning either the merchantability
+ of this software or the suitability of this software for any particular purpose. It is
  provided "as is" without express or implied warranty of any kind.
  .
  These notices must be retained in any copies of any part of this documentation and/or software.
@@ -383,7 +383,7 @@ Files: deps/glext
 Copyright: 2007 The Khronos Group Inc.
 License: MIT
  ** Copyright (c) 2007 The Khronos Group Inc.
- ** 
+ **
  ** Permission is hereby granted, free of charge, to any person obtaining a
  ** copy of this software and/or associated documentation files (the
  ** "Materials"), to deal in the Materials without restriction, including
@@ -391,10 +391,10 @@ License: MIT
  ** distribute, sublicense, and/or sell copies of the Materials, and to
  ** permit persons to whom the Materials are furnished to do so, subject to
  ** the following conditions:
- ** 
+ **
  ** The above copyright notice and this permission notice shall be included
  ** in all copies or substantial portions of the Materials.
- ** 
+ **
  ** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  ** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  ** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -620,7 +620,7 @@ License: libpng
  .
  Also, the PNG logo (in PNG format, of course) is supplied in the
  files "pngbar.png" and "pngbar.jpg (88x31) and "pngnow.png" (98x31).
- . 
+ .
  Libpng is OSI Certified Open Source Software.  OSI Certified Open Source is a
  certification mark of the Open Source Initiative.
  .
