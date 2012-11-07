@@ -2616,9 +2616,9 @@ private:
             f.Puts("\n");
             // Main Module (Linking) for ECERE C modules
             f.Puts("$(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec\n");
-            f.Puts("\t$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(PRJ_CFLAGS)"
+            f.Puts("\t$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS)"
                   " -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)\n");
-            f.Puts("\t$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY)"
+            f.Puts("\t$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY)"
                   " -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)\n");
             f.Puts("\n");
          }
