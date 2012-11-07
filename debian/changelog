@@ -7,11 +7,12 @@ ecere-sdk (0.44.02-0ubuntu1) raring; urgency=low
     Resolved target and host platform confusion in build system/makefiles
     Proper handling of __attribute__ in the compiler
     Resolved proper implementation of all per node settings in the build system
+    Promoting package to unstable
     Added support for a SYSROOT and GCC prefix in Compiler Settings
     Support for cross-compiling the tarball (e.g. Building for MinGW on Linux)
     Initial support for the Android platform
 
- -- Jerome St-Louis <jerstlouis@gmail.com>  Tue, 6 Nov 2012 11:59:00 -0500
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Tue, 6 Nov 2012 23:59:00 -0500
 
 ecere-sdk (0.44.01-0ubuntu1) quantal; urgency=low
 
