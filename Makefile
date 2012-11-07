@@ -526,10 +526,12 @@ endif
 	install doc/ecere.eCdoc $(DOCDIR)/
 	install doc/ecereCOM.eCdoc $(DOCDIR)/
 	install doc/EDA.eCdoc $(DOCDIR)/
-	mkdir -p -m 777 $(SAMPLESDIR)
+	mkdir -p $(SAMPLESDIR)
 	cp -pRf samples/* $(SAMPLESDIR)
-	mkdir -p -m 777 $(EXTRASDIR)
+	find $(SAMPLESDIR) -type d -exec chmod 777 {} \;
+	mkdir -p $(EXTRASDIR)
 	cp -pRf extras/* $(EXTRASDIR)
+	chmod 777 $(EXTRASDIR)/audio
 endif
 
 ifndef OSX_TARGET
@@ -556,7 +558,7 @@ endif
 	ln -sf $(LP)ec$(SOV) $(LIBDIR)/$(LP)ec$(SO)
 	ln -sf $(LP)EDA$(SOV) $(LIBDIR)/$(LP)EDA$(SO)
 	ln -sf $(LP)EDASQLite$(SOV) $(LIBDIR)/$(LP)EDASQLite$(SO)
-	mkdir -p -m 777 $(DESTDIR)$(prefix)/lib/ec
+	mkdir -p $(DESTDIR)$(prefix)/lib/ec
 	ln -sf $(PREFIXLIBDIR)/$(LP)ecere$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)ecere$(SO)
 	ln -sf $(PREFIXLIBDIR)/$(LP)ecereCOM$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)ecereCOM$(SO)
 	ln -sf $(PREFIXLIBDIR)/$(LP)ec$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)ec$(SO)
@@ -593,31 +595,33 @@ endif
 	install -D -m 644 doc/ecere.eCdoc $(DOCDIR)/ecere.eCdoc
 	install -D -m 644 doc/ecereCOM.eCdoc $(DOCDIR)/ecereCOM.eCdoc
 	install -D -m 644 doc/EDA.eCdoc $(DOCDIR)/EDA.eCdoc
-	mkdir -p -m 777 $(MANDIR)/man1
+	mkdir -p $(MANDIR)/man1
 	cp -pRf share/man/man1/* $(MANDIR)/man1
-	mkdir -p -m 777 $(SAMPLESDIR)
+	mkdir -p $(SAMPLESDIR)
 	cp -pRf samples/* $(SAMPLESDIR)
-	mkdir -p -m 777 $(EXTRASDIR)
-	cp -pRf extras/* $(EXTRASDIR)
+	find $(SAMPLESDIR) -type d -exec chmod 777 {} \;
+	mkdir -p $(EXTRASDIR)
+	cp -dpRf extras/* $(EXTRASDIR)
+	chmod 777 $(EXTRASDIR)/audio
 ifdef DEBIAN_PACKAGE
-	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libecere0
+	mkdir -p $(DESTDIR)$(prefix)/share/doc/libecere0
 	install -D -m644 NEWS $(DESTDIR)$(prefix)/share/doc/libecere0/changelog
 	gzip -f -9 $(DESTDIR)$(prefix)/share/doc/libecere0/changelog
-	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/ecere-dev
+	mkdir -p $(DESTDIR)$(prefix)/share/doc/ecere-dev
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-dev/
-	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/ecere-extras
+	mkdir -p $(DESTDIR)$(prefix)/share/doc/ecere-extras
 	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-extras/
-	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/ecere-samples
+	mkdir -p $(DESTDIR)$(prefix)/share/doc/ecere-samples
 	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-samples/
-	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/ecere-sdk
+	mkdir -p $(DESTDIR)$(prefix)/share/doc/ecere-sdk
 	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-sdk/
-	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libec0
+	mkdir -p $(DESTDIR)$(prefix)/share/doc/libec0
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libec0/
-	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libecerecom0
+	mkdir -p $(DESTDIR)$(prefix)/share/doc/libecerecom0
 	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libecerecom0/
-	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libeda0
+	mkdir -p $(DESTDIR)$(prefix)/share/doc/libeda0
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libeda0/
-	mkdir -p -m 777 $(DESTDIR)$(prefix)/share/doc/libedasqlite0
+	mkdir -p $(DESTDIR)$(prefix)/share/doc/libedasqlite0
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libedasqlite0/
 endif
 endif
