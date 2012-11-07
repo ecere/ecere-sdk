@@ -2250,10 +2250,9 @@ private:
          f.Puts("# FLAGS\n\n");
 
          f.Puts("ECFLAGS =\n");
-         f.Puts("ifndef DEBIAN_PACKAGE\n" "CFLAGS =\n" "endif\n");
+         f.Puts("ifndef DEBIAN_PACKAGE\n" "CFLAGS =\n" "LDFLAGS =\n" "endif\n");
          f.Puts("CECFLAGS =\n");
          f.Puts("OFLAGS =\n");
-         f.Puts("LDFLAGS =\n");
          f.Puts("LIBS =\n");
          f.Puts("\n");
 
