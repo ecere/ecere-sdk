@@ -178,7 +178,7 @@ CFLAGS += \
 	 $(if $(OSX_TARGET), \
 			 -I/usr/X11R6/include,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
-			 -DGDB_DEBUG_GUI $(FVISIBILITY)
+			 $(FVISIBILITY)
 
 
 

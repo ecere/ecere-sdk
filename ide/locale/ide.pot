@@ -893,10 +893,6 @@ msgstr "GCC Prefix"
 msgid "GDB Command"
 msgstr "GDB Command"
 
-#: ./src/ide.ec:1261
-msgid "GDB Dialog"
-msgstr "GDB Dialog"
-
 #: ./src/documents/PictureEdit.ec:32
 msgid "GIF Image"
 msgstr "GIF Image"
