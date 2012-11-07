@@ -110,7 +110,7 @@ Description: EDA SQLite Driver
 
 Package: ecere-samples
 Architecture: all
-Multi-Arch: allowed
+Multi-Arch: foreign
 Depends: ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
 Description: Project samples for the Ecere SDK
  This package contains samples for
@@ -121,7 +121,7 @@ Description: Project samples for the Ecere SDK
 
 Package: ecere-extras
 Architecture: all
-Multi-Arch: allowed
+Multi-Arch: foreign
 Depends: ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
 Description: Extras for the Ecere SDK
  This package provides additional Ecere
