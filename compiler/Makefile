@@ -2,7 +2,7 @@
 .SILENT:
 
 CONFIG := release
-PRECOMPILED_SOURCES = libec/precompiled/expression.c libec/precompiled/grammar.c libec/precompiled/type.c
+PRECOMPILED_SOURCES = libec/precompiled/expression.c libec/precompiled/grammar.c libec/precompiled/grammar.bowl libec/precompiled/type.c
 
 include ../crossplatform.mk
 include ../default.cf
