@@ -2253,6 +2253,7 @@ private:
 
          f.Puts("ECFLAGS =\n");
          f.Puts("ifndef DEBIAN_PACKAGE\n" "CFLAGS =\n" "LDFLAGS =\n" "endif\n");
+         f.Puts("PRJ_CFLAGS =\n");
          f.Puts("CECFLAGS =\n");
          f.Puts("OFLAGS =\n");
          f.Puts("LIBS =\n");
@@ -2416,7 +2417,7 @@ private:
                cflagsVariations, nodeCFlagsMapping,
                ecflagsVariations, nodeECFlagsMapping, null);
 
-         GenMakePrintCustomFlags(f, "CFLAGS", false, cflagsVariations);
+         GenMakePrintCustomFlags(f, "PRJ_CFLAGS", false, cflagsVariations);
          GenMakePrintCustomFlags(f, "ECFLAGS", true, ecflagsVariations);
 
          if(platforms || (config && config.platforms))
@@ -2442,7 +2443,7 @@ private:
                   if((projectPlatformOptions && projectPlatformOptions.options.linkerOptions && projectPlatformOptions.options.linkerOptions.count) ||
                      (configPlatformOptions && configPlatformOptions.options.linkerOptions && configPlatformOptions.options.linkerOptions.count))
                   {
-                     f.Puts("CFLAGS +=");
+                     f.Puts("PRJ_CFLAGS +=");
                      // tocheck: does any of that -Wl stuff from linkerOptions have any business being in CFLAGS?
                      if(projectPlatformOptions && projectPlatformOptions.options.linkerOptions && projectPlatformOptions.options.linkerOptions.count)
                      {
@@ -2511,7 +2512,7 @@ private:
          // tocheck: does any of that -Wl stuff from linkerOptions have any business being in CFLAGS?
          if(options && options.linkerOptions && options.linkerOptions.count)
          {
-            f.Puts("CFLAGS +=");
+            f.Puts("PRJ_CFLAGS +=");
             f.Puts(" \\\n\t -Wl");
             for(s : options.linkerOptions)
                f.Printf(",%s", s);
@@ -2613,9 +2614,9 @@ private:
             f.Puts("\n");
             // Main Module (Linking) for ECERE C modules
             f.Puts("$(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec\n");
-            f.Puts("\t$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS)"
+            f.Puts("\t$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(PRJ_CFLAGS)"
                   " -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)\n");
-            f.Puts("\t$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(FVISIBILITY)"
+            f.Puts("\t$(ECC) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY)"
                   " -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)\n");
             f.Puts("\n");
          }
@@ -2876,7 +2877,7 @@ private:
       }
 #endif
 
-      f.Printf("\t$(CC) $(CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.%s -o $(OBJ)$(MODULE).main$(O)\n", extension);
+      f.Printf("\t$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.%s -o $(OBJ)$(MODULE).main$(O)\n", extension);
       f.Puts("\n");
    }
 

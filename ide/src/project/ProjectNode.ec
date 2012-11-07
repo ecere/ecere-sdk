@@ -1489,10 +1489,11 @@ private:
 
             f.Puts("\t$(ECP)");
 
+            f.Puts(" $(CFLAGS)");
             f.Puts(" $(CECFLAGS)"); // tocheck: what of this? should this stuff be per-file customized?
 
             GenMakePrintNodeFlagsVariable(this, nodeECFlagsMapping, "ECFLAGS", f);
-            GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "CFLAGS", f);
+            GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
 
             f.Printf(" -c %s%s.%s -o $(OBJ)%s.sym\n\n",
                modulePath, moduleName, extension, moduleName);
@@ -1573,9 +1574,10 @@ private:
 
             f.Puts("\t$(CPP)");
 
+            f.Puts(" $(CFLAGS)");
             //f.Puts(" $(CECFLAGS)");
             //GenMakePrintNodeFlagsVariable(this, nodeECFlagsMapping, "ECFLAGS", f);
-            GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "CFLAGS", f);
+            GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
 
             f.Printf(" -x c -E %s%s.%s -o $(OBJ)%s$(EC)\n\n",
                modulePath, moduleName, extension, moduleName);
@@ -1734,9 +1736,10 @@ private:
 
             f.Puts("\t$(ECC)");
 
+            f.Puts(" $(CFLAGS)");
             f.Puts(" $(CECFLAGS)"); // what of this? should this stuff be per-file customized?
             GenMakePrintNodeFlagsVariable(this, nodeECFlagsMapping, "ECFLAGS", f);
-            GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "CFLAGS", f);
+            GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
             f.Puts(" $(FVISIBILITY)");
 
             f.Printf(" -c %s%s.%s -o $(OBJ)%s.c -symbols $(OBJ)\n\n",
@@ -1912,7 +1915,8 @@ private:
             }
             f.Printf("\t$(%s)", (!strcmpi(extension, "cc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cxx")) ? "CXX" : "CC");
 
-            GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "CFLAGS", f);
+            f.Puts(" $(CFLAGS)");
+            GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
 
             if(!strcmpi(extension, "ec"))
                f.Printf(" $(FVISIBILITY) -c $(OBJ)%s.c -o $(OBJ)%s.o\n\n", moduleName, moduleName);
@@ -2124,13 +2128,6 @@ private:
 
             if(!isEqual)
             {
-               if(!isGreater)
-               {
-                  // absolutely common stuff outside of platform only, stuff that can't be changed by platform
-		  // This would normally go in crossplatform.mk (or compiler.cf if compiler-specific)
-                  // cflags.concatf(" \\\n\t $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,)");
-               }
-
                for(platform = (Platform)1; platform < Platform::enumSize; platform++)
                {
                   byFileConfigPlatformProjectOptions = isGreater ? additionsByPlatformOptions[platform] : byPlatformOptions[platform];
@@ -2161,7 +2158,7 @@ private:
                if(isGreater)
                {
                   cflags.concatf(" \\\n\t");
-                  DynStringPrintNodeFlagsVariable(parent, nodeCFlagsMapping, "CFLAGS", cflags);
+                  DynStringPrintNodeFlagsVariable(parent, nodeCFlagsMapping, "PRJ_CFLAGS", cflags);
                }
             }
 
