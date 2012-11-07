@@ -3,8 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Jerome St-Louis <jerome@ecere.com>
-Build-Depends: autotools-dev,
-               debhelper (>= 7.0.50~),
+Build-Depends: debhelper (>= 7.0.50~),
                gcc-multilib [amd64],
                ia32-libs [amd64],
                lib32ffi-dev [amd64],
