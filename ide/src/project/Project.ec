@@ -2127,6 +2127,8 @@ private:
             f.Puts("\n");
 
             delete f;
+
+            result = true;
          }
       }
       delete name;

@@ -586,8 +586,8 @@ class ProjectView : Window
 
    bool ProjectPrepareCompiler(Project project, CompilerConfig compiler)
    {
-      project.GenerateCrossPlatformMk();
-      project.GenerateCompilerCf(compiler);
+      if(!project.GenerateCrossPlatformMk() || !project.GenerateCompilerCf(compiler))
+         ide.outputView.buildBox.Logf($"Error generating compiler configuration (Is the project/config directory writable?)\n");
       return true;
    }
 
@@ -646,7 +646,8 @@ class ProjectView : Window
             //logBox.Logf("%s\n", makefileName);
             logBox.Logf($"%s - %s%smakefile for %s config...\n", makefileName, reason, action, GetConfigName(config));
 
-            project.GenerateMakefile(null, false, null, config);
+            if(!project.GenerateMakefile(null, false, null, config))
+               ide.outputView.buildBox.Logf($"Error generating makefile (Is the project directory writable?)\n");
 
             ide.statusBar.text = null;
             app.UpdateDisplay();
