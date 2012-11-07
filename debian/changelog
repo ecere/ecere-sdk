@@ -1,4 +1,4 @@
-ecere-sdk (0.44.02-1) experimental; urgency=low
+ecere-sdk (0.44.02-1) unstable; urgency=low
 
   * Fixed issue with 'arch: all' packages preventing installing on 64 bit system
     Fixed issue with GCC 4.7 whereas .bmp files would not load properly
@@ -11,7 +11,7 @@ ecere-sdk (0.44.02-1) experimental; urgency=low
     Support for cross-compiling the tarball (e.g. Building for MinGW on Linux)
     Initial support for the Android platform
 
- -- Jerome St-Louis <jerstlouis@gmail.com>  Tue, 6 Nov 2012 13:45:00 -0400
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Tue, 6 Nov 2012 23:59:00 -0500
 
 ecere-sdk (0.44.01-1) experimental; urgency=low
 
