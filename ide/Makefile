@@ -172,7 +172,6 @@ LIBS += \
 endif
 
 CFLAGS += \
-	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
 	 $(if $(LINUX_TARGET), \
 			 -I/usr/X11R6/include,) \
 	 $(if $(OSX_TARGET), \

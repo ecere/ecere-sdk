@@ -104,7 +104,6 @@ LIBS += \
 endif
 
 CFLAGS += \
-	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w
 
 CUSTOM1_CFLAGS = \

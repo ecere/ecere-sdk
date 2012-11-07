@@ -6,8 +6,6 @@
       "Optimization" : "None",
       "TargetType" : "SharedLibrary",
       "TargetFileName" : "EDASQLite",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "Libraries" : [
          "ecere",
          "ffi"

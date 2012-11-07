@@ -6,8 +6,6 @@
       "DefaultNameSpace" : "eda",
       "TargetType" : "SharedLibrary",
       "TargetFileName" : "EDA",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "Libraries" : [
          "ecere"
       ]

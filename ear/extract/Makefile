@@ -103,7 +103,6 @@ LIBS += \
 endif
 
 CFLAGS += \
-	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
 	 $(if $(DEBUG), -g, -Os) $(FORCE_32_BIT) $(FPIC) -w \
 			 -DECERE_STATIC
 

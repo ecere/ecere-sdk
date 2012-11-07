@@ -37,7 +37,7 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(CONFIG).$(PLATFORM)/
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = res/
 
@@ -45,7 +45,7 @@ ifdef LINUX_TARGET
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)$(MODULE)$(SO).0.44
 SONAME = -Wl,-soname,libecere.so.0
 else
-TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)$(MODULE)$(SO)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)$(MODULE)$(SO)
 SONAME =
 endif
 
@@ -386,7 +386,6 @@ endif
 
 # Careful to keep ../deps/glext as -isystem instead of generated -I
 CFLAGS += \
-	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
 	 $(if $(WINDOWS_TARGET), \
 			 -isystem ../deps/glext \
 			 -I../deps/DirectX-9.0/include \

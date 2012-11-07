@@ -36,7 +36,7 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(CONFIG).$(PLATFORM)/
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = 
 
@@ -44,7 +44,7 @@ ifdef LINUX_TARGET
 TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)EDASQLiteCipher$(SO).0.44
 SONAME = -Wl,-soname,$(LP)EDASQLiteCipher$(SO).0
 else
-TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)EDASQLiteCipher$(SO)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLiteCipher$(SO)
 SONAME =
 endif
 
@@ -85,7 +85,6 @@ LIBS += \
 endif
 
 CFLAGS += \
-	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
 	 $(if $(WINDOWS_TARGET), \
 			 -I$(OPENSSL_INCLUDE_DIR) \
 			 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
@@ -93,7 +92,6 @@ CFLAGS += \
 			 -DSQLITE_HAS_CODEC
 
 CUSTOM1_CFLAGS = \
-	 $(if $(DEBIAN_PACKAGE),$(CPPFLAGS),) $(if $(DEBUG), -D_DEBUG,) \
 	 $(if $(WINDOWS_TARGET), \
 			 -I$(OPENSSL_INCLUDE_DIR) \
 			 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
@@ -153,7 +151,6 @@ ifndef STATIC_LIBRARY_TARGET
 OFLAGS += $(FORCE_32_BIT) \
 	 -L../../../obj/$(PLATFORM)/bin \
 	 -L../../../obj/$(PLATFORM)/lib
-OFLAGS += $(LDFLAGS)
 endif
 
 # TARGETS
@@ -164,7 +161,7 @@ objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
-	$(ECS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM) -o $(OBJ)$(MODULE).main.ec
+	$(ECS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CECFLAGS) $(ECFLAGS) $(CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
