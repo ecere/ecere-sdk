@@ -196,7 +196,6 @@ _L = $(if $(filter $(1),$(EXCLUDED_LIBS)),,-l$(1))
 
 # DEBIAN
 ifdef DEBIAN_PACKAGE
-OFLAGS += $(LDFLAGS)
 CFLAGS += $(CPPFLAGS)
 endif
 

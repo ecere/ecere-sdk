@@ -2125,6 +2125,8 @@ private:
             f.Printf("\nFORCE_64_BIT := %s", compiler.supportsBitDepth ? "-m64" : "");
             f.Printf("\nFORCE_32_BIT := %s", compiler.supportsBitDepth ? "-m32" : "");
             f.Puts("\n");
+            f.Puts("\nOFLAGS += $(LDFLAGS)");
+            f.Puts("\n");
 
             delete f;
 
