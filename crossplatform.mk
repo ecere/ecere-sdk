@@ -188,6 +188,7 @@ INSTALLNAME := $(if $(OSX_TARGET),$(if $(STATIC_LIBRARY_TARGET),-install_name $(
 SHAREDLIB := $(if $(SHARED_LIBRARY_TARGET),$(if $(OSX_TARGET),-dynamiclib -single_module -multiply_defined suppress,-shared),)
 LINKOPT :=
 STRIPOPT := $(if $(OSX_TARGET),$(if $(SHARED_LIBRARY_TARGET),-x, -u -r), -x --strip-unneeded --remove-section=.comment --remove-section=.note)
+HOST_SODESTDIR := $(if $(WINDOWS_HOST),obj/$(HOST_PLATFORM)/bin/,obj/$(HOST_PLATFORM)/lib/)
 SODESTDIR := $(if $(WINDOWS_TARGET),obj/$(TARGET_PLATFORM)/bin/,obj/$(TARGET_PLATFORM)/lib/)
 
 # EXCLUDED_LIBS TOOL

@@ -13,9 +13,9 @@ export ECS := $(call psep,$(EC_BINS)ecs$(HOST_E))$(if $(CROSS_TARGET), -t $(TARG
 export EAR := $(call psep,$(_CF_DIR)obj/$(HOST_PLATFORM)/bin/ear$(HOST_E))
 UPX := upx
 
-ifndef WINDOWS_TARGET
-export LD_LIBRARY_PATH = ../../obj/$(HOST_PLATFORM)/lib/
-export DYLD_LIBRARY_PATH = ../../obj/$(HOST_PLATFORM)/lib/
+ifndef WINDOWS_HOST
+export LD_LIBRARY_PATH = $(_CF_DIR)obj/$(HOST_PLATFORM)/lib/
+export DYLD_LIBRARY_PATH = $(_CF_DIR)obj/$(HOST_PLATFORM)/lib/
 endif
 
 ifeq "$(HOST_ARCH)" "ARM"
