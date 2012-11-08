@@ -45,10 +45,12 @@ endif
 ifndef LIBDIR
 export LIBDIR=$(BINDIR)
 endif
+export DESTLIBDIR=$(LIBDIR)
 
 ifndef SLIBDIR
 export SLIBDIR=$(DESTDIR)$(prefix)/lib
 endif
+export DESTSLIBDIR=$(SLIBDIR)
 
 ifndef SAMPLESDIR
 export SAMPLESDIR=$(DESTDIR)$(prefix)/samples
@@ -97,11 +99,11 @@ endif
 
 endif
 
-LIBDIR := $(DESTDIR)$(PREFIXLIBDIR)
+DESTLIBDIR := $(DESTDIR)$(PREFIXLIBDIR)
 ifdef SLIBDIR
-SLIBDIR := $(DESTDIR)$(SLIBDIR)
+DESTSLIBDIR := $(DESTDIR)$(SLIBDIR)
 else
-SLIBDIR := $(LIBDIR)
+DESTSLIBDIR := $(DESTLIBDIR)
 endif
 
 ifndef SAMPLESDIR
@@ -475,15 +477,15 @@ copyonlyinstall: actualinstall
 actualinstall:
 ifdef WINDOWS_TARGET
 	$(call mkdirq,"$(BINDIR)/")
-	$(call mkdirq,"$(SLIBDIR)/")
+	$(call mkdirq,"$(DESTSLIBDIR)/")
 	$(call mkdirq,"$(DOCDIR)/")
-	$(call cpq,$(OBJBINDIR)$(LP)ecere$(SO),"$(LIBDIR)/")
-	$(call cpq,$(OBJBINDIR)$(LP)ecereCOM$(SO),"$(LIBDIR)/")
-	$(call cpq,$(OBJBINDIR)$(LP)ec$(SO),"$(LIBDIR)/")
-	$(call cpq,$(OBJBINDIR)$(LP)EDA$(SO),"$(LIBDIR)/")
-	$(call cpq,$(OBJBINDIR)$(LP)EDASQLite$(SO),"$(LIBDIR)/")
+	$(call cpq,$(OBJBINDIR)$(LP)ecere$(SO),"$(DESTLIBDIR)/")
+	$(call cpq,$(OBJBINDIR)$(LP)ecereCOM$(SO),"$(DESTLIBDIR)/")
+	$(call cpq,$(OBJBINDIR)$(LP)ec$(SO),"$(DESTLIBDIR)/")
+	$(call cpq,$(OBJBINDIR)$(LP)EDA$(SO),"$(DESTLIBDIR)/")
+	$(call cpq,$(OBJBINDIR)$(LP)EDASQLite$(SO),"$(DESTLIBDIR)/")
 ifdef EDASQLiteCipher
-	$(call cpq,$(OBJBINDIR)$(LP)EDASQLiteCipher$(SO),"$(LIBDIR)/")
+	$(call cpq,$(OBJBINDIR)$(LP)EDASQLiteCipher$(SO),"$(DESTLIBDIR)/")
 endif
 	$(call cpq,$(OBJBINDIR)ide$(E),"$(BINDIR)/")
 	$(call cpq,$(OBJBINDIR)ear$(E),"$(BINDIR)/")
@@ -495,7 +497,7 @@ endif
 ifdef CodeGuard
 	$(call cpq,$(OBJBINDIR)CodeGuard$(E),"$(BINDIR)/")
 endif
-	$(call cpq,$(OBJLIBDIR)libecereVanilla$(A),"$(SLIBDIR)/")
+	$(call cpq,$(OBJLIBDIR)libecereVanilla$(A),"$(DESTSLIBDIR)/")
 	$(call cpq,doc/tao.pdf,"$(DOCDIR)/Ecere Tao of Programming [work in progress].pdf") || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
 	$(call cpq,doc/ecere.eCdoc,"$(DOCDIR)/")
 	$(call cpq,doc/ecereCOM.eCdoc,"$(DOCDIR)/")
@@ -503,13 +505,13 @@ endif
 endif
 
 ifdef OSX_TARGET
-	install $(OBJLIBDIR)$(LP)ecere$(SO) $(LIBDIR)/
-	install $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(LIBDIR)/
-	install $(OBJLIBDIR)$(LP)ec$(SO) $(LIBDIR)/
-	install $(OBJLIBDIR)$(LP)EDA$(SO) $(LIBDIR)/
-	install $(OBJLIBDIR)$(LP)EDASQLite$(SO) $(LIBDIR)/
+	install $(OBJLIBDIR)$(LP)ecere$(SO) $(DESTLIBDIR)/
+	install $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(DESTLIBDIR)/
+	install $(OBJLIBDIR)$(LP)ec$(SO) $(DESTLIBDIR)/
+	install $(OBJLIBDIR)$(LP)EDA$(SO) $(DESTLIBDIR)/
+	install $(OBJLIBDIR)$(LP)EDASQLite$(SO) $(DESTLIBDIR)/
 ifdef EDASQLiteCipher
-	install $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO) $(LIBDIR)/
+	install $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO) $(DESTLIBDIR)/
 endif
 	install $(OBJBINDIR)ide$(E) $(BINDIR)/
 	install $(OBJBINDIR)ear$(E) $(BINDIR)/
@@ -521,7 +523,7 @@ endif
 ifdef CodeGuard
 	install $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/
 endif
-	install $(OBJLIBDIR)libecereVanilla$(A) $(SLIBDIR)/
+	install $(OBJLIBDIR)libecereVanilla$(A) $(DESTSLIBDIR)/
 	install -d $(DOCDIR)/
 	install doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf" >/dev/null 2>&1 || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
 	install doc/ecere.eCdoc $(DOCDIR)/
@@ -538,46 +540,46 @@ endif
 ifndef OSX_TARGET
 ifndef WINDOWS_TARGET
 ifdef LINUX_TARGET
-	install -D $(OBJLIBDIR)$(LP)ecere$(SOV) $(LIBDIR)/$(LP)ecere$(SOV)
-	install -D $(OBJLIBDIR)$(LP)ecereCOM$(SOV) $(LIBDIR)/$(LP)ecereCOM$(SOV)
-	install -D $(OBJLIBDIR)$(LP)ec$(SOV) $(LIBDIR)/$(LP)ec$(SOV)
-	install -D $(OBJLIBDIR)$(LP)EDA$(SOV) $(LIBDIR)/$(LP)EDA$(SOV)
-	install -D $(OBJLIBDIR)$(LP)EDASQLite$(SOV) $(LIBDIR)/$(LP)EDASQLite$(SOV)
+	install -D $(OBJLIBDIR)$(LP)ecere$(SOV) $(DESTLIBDIR)/$(LP)ecere$(SOV)
+	install -D $(OBJLIBDIR)$(LP)ecereCOM$(SOV) $(DESTLIBDIR)/$(LP)ecereCOM$(SOV)
+	install -D $(OBJLIBDIR)$(LP)ec$(SOV) $(DESTLIBDIR)/$(LP)ec$(SOV)
+	install -D $(OBJLIBDIR)$(LP)EDA$(SOV) $(DESTLIBDIR)/$(LP)EDA$(SOV)
+	install -D $(OBJLIBDIR)$(LP)EDASQLite$(SOV) $(DESTLIBDIR)/$(LP)EDASQLite$(SOV)
 ifdef EDASQLiteCipher
-	install -D $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SOV) $(LIBDIR)/$(LP)EDASQLiteCipher$(SOV)
+	install -D $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SOV) $(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SOV)
 endif
-	ln -sf $(LP)ecere$(SOV) $(LIBDIR)/$(LP)ecere$(SO).0
-	ln -sf $(LP)ecereCOM$(SOV) $(LIBDIR)/$(LP)ecereCOM$(SO).0
-	ln -sf $(LP)ec$(SOV) $(LIBDIR)/$(LP)ec$(SO).0
-	ln -sf $(LP)EDA$(SOV) $(LIBDIR)/$(LP)EDA$(SO).0
-	ln -sf $(LP)EDASQLite$(SOV) $(LIBDIR)/$(LP)EDASQLite$(SO).0
+	ln -sf $(LP)ecere$(SOV) $(DESTLIBDIR)/$(LP)ecere$(SO).0
+	ln -sf $(LP)ecereCOM$(SOV) $(DESTLIBDIR)/$(LP)ecereCOM$(SO).0
+	ln -sf $(LP)ec$(SOV) $(DESTLIBDIR)/$(LP)ec$(SO).0
+	ln -sf $(LP)EDA$(SOV) $(DESTLIBDIR)/$(LP)EDA$(SO).0
+	ln -sf $(LP)EDASQLite$(SOV) $(DESTLIBDIR)/$(LP)EDASQLite$(SO).0
 ifdef EDASQLiteCipher
-	ln -sf $(LP)EDASQLiteCipher$(SOV) $(LIBDIR)/$(LP)EDASQLiteCipher$(SO).0
+	ln -sf $(LP)EDASQLiteCipher$(SOV) $(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO).0
 endif
-	ln -sf $(LP)ecere$(SOV) $(LIBDIR)/$(LP)ecere$(SO)
-	ln -sf $(LP)ecereCOM$(SOV) $(LIBDIR)/$(LP)ecereCOM$(SO)
-	ln -sf $(LP)ec$(SOV) $(LIBDIR)/$(LP)ec$(SO)
-	ln -sf $(LP)EDA$(SOV) $(LIBDIR)/$(LP)EDA$(SO)
-	ln -sf $(LP)EDASQLite$(SOV) $(LIBDIR)/$(LP)EDASQLite$(SO)
-	mkdir -p $(DESTDIR)$(prefix)/lib/ec
-	ln -sf $(PREFIXLIBDIR)/$(LP)ecere$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)ecere$(SO)
-	ln -sf $(PREFIXLIBDIR)/$(LP)ecereCOM$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)ecereCOM$(SO)
-	ln -sf $(PREFIXLIBDIR)/$(LP)ec$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)ec$(SO)
-	ln -sf $(PREFIXLIBDIR)/$(LP)EDA$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)EDA$(SO)
-	ln -sf $(PREFIXLIBDIR)/$(LP)EDASQLite$(SOV) $(DESTDIR)$(prefix)/lib/ec/$(LP)EDASQLite$(SO)
+	ln -sf $(LP)ecere$(SOV) $(DESTLIBDIR)/$(LP)ecere$(SO)
+	ln -sf $(LP)ecereCOM$(SOV) $(DESTLIBDIR)/$(LP)ecereCOM$(SO)
+	ln -sf $(LP)ec$(SOV) $(DESTLIBDIR)/$(LP)ec$(SO)
+	ln -sf $(LP)EDA$(SOV) $(DESTLIBDIR)/$(LP)EDA$(SO)
+	ln -sf $(LP)EDASQLite$(SOV) $(DESTLIBDIR)/$(LP)EDASQLite$(SO)
+	mkdir -p $(DESTLIBDIR)/ec
+	ln -sf $(PREFIXLIBDIR)/$(LP)ecere$(SOV) $(DESTLIBDIR)/ec/$(LP)ecere$(SO)
+	ln -sf $(PREFIXLIBDIR)/$(LP)ecereCOM$(SOV) $(DESTLIBDIR)/ec/$(LP)ecereCOM$(SO)
+	ln -sf $(PREFIXLIBDIR)/$(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SO)
+	ln -sf $(PREFIXLIBDIR)/$(LP)EDA$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA$(SO)
+	ln -sf $(PREFIXLIBDIR)/$(LP)EDASQLite$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO)
 ifdef EDASQLiteCipher
-	ln -sf $(LP)EDASQLiteCipher$(SOV) $(LIBDIR)/$(LP)EDASQLiteCipher$(SO)
+	ln -sf $(LP)EDASQLiteCipher$(SOV) $(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO)
 endif
 	install -D -m 644 share/pixmaps/ecere.png $(DESTDIR)$(prefix)/share/pixmaps/ecere.png
 	install -D -m 644 share/applications/ecere.desktop $(DESTDIR)$(prefix)/share/applications/ecere.desktop
 else
-	install -D $(OBJLIBDIR)$(LP)ecere$(SO) $(LIBDIR)/$(LP)ecere$(SO)
-	install -D $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(LIBDIR)/$(LP)ecereCOM$(SO)
-	install -D $(OBJLIBDIR)$(LP)ec$(SO) $(LIBDIR)/$(LP)ec$(SO)
-	install -D $(OBJLIBDIR)$(LP)EDA$(SO) $(LIBDIR)/$(LP)EDA$(SO)
-	install -D $(OBJLIBDIR)$(LP)EDASQLite$(SO) $(LIBDIR)/$(LP)EDASQLite$(SO)
+	install -D $(OBJLIBDIR)$(LP)ecere$(SO) $(DESTLIBDIR)/$(LP)ecere$(SO)
+	install -D $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(DESTLIBDIR)/$(LP)ecereCOM$(SO)
+	install -D $(OBJLIBDIR)$(LP)ec$(SO) $(DESTLIBDIR)/$(LP)ec$(SO)
+	install -D $(OBJLIBDIR)$(LP)EDA$(SO) $(DESTLIBDIR)/$(LP)EDA$(SO)
+	install -D $(OBJLIBDIR)$(LP)EDASQLite$(SO) $(DESTLIBDIR)/$(LP)EDASQLite$(SO)
 ifdef EDASQLiteCipher
-	install -D $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO) $(LIBDIR)/$(LP)EDASQLiteCipher$(SO)
+	install -D $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO) $(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO)
 endif
 endif
 	install -D $(OBJBINDIR)ide$(E) $(BINDIR)/ide$(E)
@@ -590,7 +592,7 @@ endif
 ifdef CodeGuard
 	install -D $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/CodeGuard$(E)
 endif
-	install -D $(OBJLIBDIR)libecereVanilla$(A) $(SLIBDIR)/libecereVanilla$(A)
+	install -D $(OBJLIBDIR)libecereVanilla$(A) $(DESTSLIBDIR)/libecereVanilla$(A)
 	install -D -m 644 doc/EDA.eCdoc $(DOCDIR)/EDA.eCdoc
 	install -D -m 644 doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf" >/dev/null 2>&1 || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
 	install -D -m 644 doc/ecere.eCdoc $(DOCDIR)/ecere.eCdoc
@@ -607,7 +609,7 @@ endif
 ifdef DEBIAN_PACKAGE
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/libecere0
 	install -D -m644 NEWS $(DESTDIR)$(prefix)/share/doc/libecere0/changelog
-	gzip -f -9 $(DESTDIR)$(prefix)/share/doc/libecere0/changelog
+	gzip -n -f -9 $(DESTDIR)$(prefix)/share/doc/libecere0/changelog
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/ecere-dev
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-dev/
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/ecere-extras
@@ -629,13 +631,13 @@ endif
 endif
 
 uninstall:
-	$(call rmq,"$(LIBDIR)/$(LP)ecere$(SO)")
-	$(call rmq,"$(LIBDIR)/$(LP)ecereCOM$(SO)")
-	$(call rmq,"$(LIBDIR)/$(LP)ec$(SO)")
-	$(call rmq,"$(LIBDIR)/$(LP)EDA$(SO)")
-	$(call rmq,"$(LIBDIR)/$(LP)EDASQLite$(SO)")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)ecere$(SO)")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)ecereCOM$(SO)")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)ec$(SO)")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)EDA$(SO)")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)EDASQLite$(SO)")
 ifdef EDASQLiteCipher
-	$(call rmq,"$(LIBDIR)/$(LP)EDASQLiteCipher$(SO)")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO)")
 endif
 	$(call rmq,"$(BINDIR)/ide$(E)")
 	$(call rmq,"$(BINDIR)/ear$(E)")
@@ -647,34 +649,34 @@ endif
 ifdef CodeGuard
 	$(call rmq,"$(BINDIR)/CodeGuard$(E)")
 endif
-	$(call rmq,"$(SLIBDIR)/libecereVanilla$(A)")
+	$(call rmq,"$(DESTSLIBDIR)/libecereVanilla$(A)")
 	$(call rmq,"$(DOCDIR)/Ecere Tao of Programming [work in progress].pdf")
 	$(call rmq,"$(DOCDIR)/ecere.eCdoc")
 	$(call rmq,"$(DOCDIR)/ecereCOM.eCdoc")
 	$(call rmq,"$(DOCDIR)/EDA.eCdoc")
 ifdef LINUX_TARGET
-	$(call rmq,"$(LIBDIR)/$(LP)ecere$(SO).0")
-	$(call rmq,"$(LIBDIR)/$(LP)ecereCOM$(SO).0")
-	$(call rmq,"$(LIBDIR)/$(LP)ec$(SO).0")
-	$(call rmq,"$(LIBDIR)/$(LP)EDA$(SO).0")
-	$(call rmq,"$(LIBDIR)/$(LP)EDASQLite$(SO).0")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)ecere$(SO).0")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)ecereCOM$(SO).0")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)ec$(SO).0")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)EDA$(SO).0")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)EDASQLite$(SO).0")
 ifdef EDASQLiteCipher
-	$(call rmq,"$(LIBDIR)/$(LP)EDASQLiteCipher$(SO).0")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO).0")
 endif
-	$(call rmq,"$(LIBDIR)/$(LP)ecere$(SOV)")
-	$(call rmq,"$(LIBDIR)/$(LP)ecereCOM$(SOV)")
-	$(call rmq,"$(LIBDIR)/$(LP)ec$(SOV)")
-	$(call rmq,"$(LIBDIR)/$(LP)EDA$(SOV)")
-	$(call rmq,"$(LIBDIR)/$(LP)EDASQLite$(SOV)")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)ecere$(SOV)")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)ecereCOM$(SOV)")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)ec$(SOV)")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)EDA$(SOV)")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)EDASQLite$(SOV)")
 ifdef EDASQLiteCipher
-	$(call rmq,"$(LIBDIR)/$(LP)EDASQLiteCipher$(SOV)")
+	$(call rmq,"$(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SOV)")
 endif
 	$(call rmq,"$(DESTDIR)$(prefix)/share/pixmaps/ecere.png")
 	$(call rmq,"$(DESTDIR)$(prefix)/share/applications/ecere.desktop")
 endif
 	$(call rmdirq,"$(BINDIR)/")
-	$(call rmdirq,"$(LIBDIR)/")
-	$(call rmdirq,"$(SLIBDIR)/")
+	$(call rmdirq,"$(DESTLIBDIR)/")
+	$(call rmdirq,"$(DESTSLIBDIR)/")
 	$(call rmdirq,"$(DOCDIR)/")
 ifdef WINDOWS_TARGET
 	$(call rmdirq,"$(DESTDIR)/")

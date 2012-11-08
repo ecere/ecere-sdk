@@ -306,7 +306,12 @@ void * Instance_Module_Load(char * name, void ** Load, void ** Unload)
    library = dlopen(fileName, RTLD_LAZY);
    if(!library)
    {
+#ifdef DEB_HOST_MULTIARCH
+      strcpy(fileName, DEB_HOST_MULTIARCH);
+      strcat(fileName, "/ec/lib");
+#else
       strcpy(fileName, "/usr/lib/ec/lib");
+#endif
       strcat(fileName, name);
       GetExtension(fileName, extension);
       if(!extension[0])
