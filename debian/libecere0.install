@@ -1,0 +1,5 @@
+#!/usr/bin/dh-exec
+${LIBDIR}/libecere.so.0.44
+${LIBDIR}/libecere.so.0
+usr/lib/ec/libecere.so
+usr/share/doc/libecere0/changelog.gz

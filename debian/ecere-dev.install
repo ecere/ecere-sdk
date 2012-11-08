@@ -1,0 +1,10 @@
+#!/usr/bin/dh-exec
+usr/bin
+${LIBDIR}/libecereVanilla.a
+${LIBDIR}/libec.so
+${LIBDIR}/libecereCOM.so
+${LIBDIR}/libecere.so
+usr/share/applications
+usr/share/pixmaps
+usr/share/man
+usr/share/doc/ecere-dev/changelog.gz

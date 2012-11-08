@@ -1,31 +1,27 @@
 #!/usr/bin/make -f
 
 DEB_HOST_ARCH=$(shell dpkg-architecture -qDEB_HOST_ARCH)
+DEB_HOST_MULTIARCH=$(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 export DEBIAN_PACKAGE=1
 export DPKG_EXPORT_BUILDFLAGS=1
 include /usr/share/dpkg/buildflags.mk
 
+ifndef prefix
+prefix=/usr
+endif
+
+ifdef DEB_HOST_MULTIARCH
+export LIBDIR=$(prefix)/$(DEB_HOST_MULTIARCH)
+else
+ifeq ($(DEB_HOST_ARCH),amd64)
+export LIBDIR=$(prefix)/lib32
+else
+export LIBDIR=$(prefix)/lib
+endif
+
+endif
+
 %:
 	dh $@
-
-override_dh_install:
-ifeq ($(DEB_HOST_ARCH),amd64)
-	cp debian/libecere0.install.in64 debian/libecere0.install
-	cp debian/libecerecom0.install.in64 debian/libecerecom0.install
-	cp debian/libeda0.install.in64 debian/libeda0.install
-	cp debian/libedasqlite0.install.in64 debian/libedasqlite0.install
-	cp debian/libec0.install.in64 debian/libec0.install
-	cp debian/ecere-dev.install.in64 debian/ecere-dev.install
-endif
-
-ifeq ($(DEB_HOST_ARCH),i386)
-	cp debian/libecere0.install.in32 debian/libecere0.install
-	cp debian/libecerecom0.install.in32 debian/libecerecom0.install
-	cp debian/libeda0.install.in32 debian/libeda0.install
-	cp debian/libedasqlite0.install.in32 debian/libedasqlite0.install
-	cp debian/libec0.install.in32 debian/libec0.install
-	cp debian/ecere-dev.install.in32 debian/ecere-dev.install
-endif
-	dh_install
 
 override_dh_strip:
