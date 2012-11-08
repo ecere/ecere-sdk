@@ -1,2 +1,2 @@
 version=3
-https://github.com/ecere/sdk/tags .*/tarball/(\d[\d\.]+)
+https://github.com/ecere/sdk/tags .*/(\d[\d\.]+)\.tar\.gz

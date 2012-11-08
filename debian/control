@@ -26,14 +26,8 @@ Homepage: http://www.ecere.com/
 
 Package: ecere-sdk
 Architecture: armel armhf i386 powerpc
-Depends: ecere-dev,
-         ecere-extras,
-         ecere-samples,
-         libeda0,
-         libedasqlite0,
-         ${devel:Depends},
-         ${misc:Depends},
-         ${shlibs:Depends}
+Depends: ecere-dev, ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
+Recommends: ecere-extras, ecere-samples, libeda0, libedasqlite0
 Description: Ecere cross-platform SDK
  This package is a metapackage providing
  the entire Ecere cross-platform SDK
