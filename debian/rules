@@ -3,7 +3,6 @@
 DEB_HOST_ARCH=$(shell dpkg-architecture -qDEB_HOST_ARCH)
 export DEBIAN_PACKAGE=1
 export DPKG_EXPORT_BUILDFLAGS=1
-include /usr/share/dpkg/buildflags.mk
 
 %:
 	dh $@
