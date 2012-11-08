@@ -3,8 +3,8 @@ Section: devel
 Priority: optional
 Maintainer: Jerome St-Louis <jerstlouis@gmail.com>
 Build-Depends: debhelper (>= 9~),
-               dpkg-dev (>= 1.16.1~),
                dh-exec (>= 0.3~),
+               dpkg-dev (>= 1.16.1~),
                libffi-dev,
                libfontconfig1-dev,
                libfreetype6-dev,
@@ -26,14 +26,8 @@ Homepage: http://www.ecere.com/
 
 Package: ecere-sdk
 Architecture: armel armhf i386 powerpc
-Depends: ecere-dev,
-         ecere-extras,
-         ecere-samples,
-         libeda0,
-         libedasqlite0,
-         ${devel:Depends},
-         ${misc:Depends},
-         ${shlibs:Depends}
+Depends: ecere-dev, ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
+Recommends: ecere-extras, ecere-samples, libeda0, libedasqlite0
 Description: Ecere cross-platform SDK
  This package is a metapackage providing
  the entire Ecere cross-platform SDK
@@ -57,6 +51,7 @@ Description: Ecere SDK Development Tools
 Package: libecere0
 Section: libs
 Architecture: armel armhf i386 powerpc
+Multi-Arch: same
 Pre-Depends: multiarch-support
 Depends: ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
 Description: Ecere Runtime Library
@@ -70,6 +65,7 @@ Description: Ecere Runtime Library
 Package: libecerecom0
 Section: libs
 Architecture: armel armhf i386 powerpc
+Multi-Arch: same
 Pre-Depends: multiarch-support
 Depends: ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
 Description: eC Core Runtime Library
@@ -80,6 +76,7 @@ Description: eC Core Runtime Library
 Package: libec0
 Section: libs
 Architecture: armel armhf i386 powerpc
+Multi-Arch: same
 Pre-Depends: multiarch-support
 Depends: libecere0 (= ${binary:Version}),
          ${devel:Depends},
@@ -95,6 +92,7 @@ Description: eC Compiler Library
 Package: libeda0
 Section: libs
 Architecture: armel armhf i386 powerpc
+Multi-Arch: same
 Pre-Depends: multiarch-support
 Depends: libecere0, ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
 Description: Ecere Data Access
@@ -107,6 +105,7 @@ Description: Ecere Data Access
 Package: libedasqlite0
 Section: libs
 Architecture: armel armhf i386 powerpc
+Multi-Arch: same
 Pre-Depends: multiarch-support
 Depends: libeda0, ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
 Description: EDA SQLite Driver
