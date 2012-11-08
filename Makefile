@@ -85,22 +85,23 @@ endif
 
 HOSTTYPE := $(shell uname -m)
 
-ifndef LIBDIR
+ifdef LIBDIR
+export PREFIXLIBDIR=$(LIBDIR)
+else
+
 ifeq "$(HOSTTYPE)" "x86_64"
-export LIBDIR=$(DESTDIR)$(prefix)/lib32
 export PREFIXLIBDIR=$(prefix)/lib32
 else
-export LIBDIR=$(DESTDIR)$(prefix)/lib
 export PREFIXLIBDIR=$(prefix)/lib
 endif
+
 endif
 
-ifndef SLIBDIR
-ifeq "$(HOSTTYPE)" "x86_64"
-export SLIBDIR=$(DESTDIR)$(prefix)/lib32
+LIBDIR := $(DESTDIR)$(PREFIXLIBDIR)
+ifdef SLIBDIR
+SLIBDIR := $(DESTDIR)$(SLIBDIR)
 else
-export SLIBDIR=$(DESTDIR)$(prefix)/lib
-endif
+SLIBDIR := $(LIBDIR)
 endif
 
 ifndef SAMPLESDIR
