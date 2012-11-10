@@ -4,6 +4,19 @@ DEB_HOST_ARCH=$(shell dpkg-architecture -qDEB_HOST_ARCH)
 export DEBIAN_PACKAGE=1
 export DPKG_EXPORT_BUILDFLAGS=1
 
+ifndef prefix
+prefix=/usr
+endif
+
+ifeq ($(DEB_HOST_ARCH),amd64)
+export LIBDIR=$(prefix)/lib32
+else
+export LIBDIR=$(prefix)/lib
+endif
+
+export CPPFLAGS
+CPPFLAGS += -DDEB_HOST_MULTIARCH=\"$(LIBDIR)\"
+
 %:
 	dh $@
 
