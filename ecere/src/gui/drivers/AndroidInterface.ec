@@ -889,6 +889,124 @@ static AndroidActivity androidActivity;
 
 static bool gotInit;
 
+default float AMotionEvent_getAxisValue(const AInputEvent* motion_event,
+        int32_t axis, size_t pointer_index);
+
+static Key keyCodeTable[] =
+{
+    0, //AKEYCODE_UNKNOWN         = 0,
+    0, //AKEYCODE_SOFT_LEFT       = 1,
+    0, //AKEYCODE_SOFT_RIGHT      = 2,
+    0, //AKEYCODE_HOME            = 3,
+    0, //AKEYCODE_BACK            = 4,
+    0, //AKEYCODE_CALL            = 5,
+    0, //AKEYCODE_ENDCALL         = 6,
+    k0, //AKEYCODE_0               = 7,
+    k1, //AKEYCODE_1               = 8,
+    k2, //AKEYCODE_2               = 9,
+    k3, //AKEYCODE_3               = 10,
+    k4, //AKEYCODE_4               = 11,
+    k5, //AKEYCODE_5               = 12,
+    k6, //AKEYCODE_6               = 13,
+    k7, //AKEYCODE_7               = 14,
+    k8, //AKEYCODE_8               = 15,
+    k9, //AKEYCODE_9               = 16,
+    keyPadStar, //AKEYCODE_STAR            = 17,
+    Key { k3, shift = true }, //AKEYCODE_POUND           = 18,
+    wheelDown, //AKEYCODE_DPAD_UP         = 19,
+    wheelUp, //AKEYCODE_DPAD_DOWN       = 20,
+    wheelDown, //AKEYCODE_DPAD_LEFT       = 21,
+    wheelUp, //AKEYCODE_DPAD_RIGHT      = 22,
+    keyPad5, //AKEYCODE_DPAD_CENTER     = 23,
+    0, //AKEYCODE_VOLUME_UP       = 24,
+    0, //AKEYCODE_VOLUME_DOWN     = 25,
+    0, //AKEYCODE_POWER           = 26,
+    0, //AKEYCODE_CAMERA          = 27,
+    0, //AKEYCODE_CLEAR           = 28,
+    a, //AKEYCODE_A               = 29,
+    b, //AKEYCODE_B               = 30,
+    c, //AKEYCODE_C               = 31,
+    d, //AKEYCODE_D               = 32,
+    e, //AKEYCODE_E               = 33,
+    f, //AKEYCODE_F               = 34,
+    g, //AKEYCODE_G               = 35,
+    h, //AKEYCODE_H               = 36,
+    i, //AKEYCODE_I               = 37,
+    j, //AKEYCODE_J               = 38,
+    k, //AKEYCODE_K               = 39,
+    l, //AKEYCODE_L               = 40,
+    m, //AKEYCODE_M               = 41,
+    n, //AKEYCODE_N               = 42,
+    o, //AKEYCODE_O               = 43,
+    p, //AKEYCODE_P               = 44,
+    q, //AKEYCODE_Q               = 45,
+    r, //AKEYCODE_R               = 46,
+    s, //AKEYCODE_S               = 47,
+    t, //AKEYCODE_T               = 48,
+    u, //AKEYCODE_U               = 49,
+    v, //AKEYCODE_V               = 50,
+    w, //AKEYCODE_W               = 51,
+    x, //AKEYCODE_X               = 52,
+    y, //AKEYCODE_Y               = 53,
+    z, //AKEYCODE_Z               = 54,
+    comma, //AKEYCODE_COMMA           = 55,
+    period, //AKEYCODE_PERIOD          = 56,
+    Key { left, alt = true }, //AKEYCODE_ALT_LEFT        = 57,
+    Key { right, alt = true }, //AKEYCODE_ALT_RIGHT       = 58,
+    Key { left, shift = true }, //AKEYCODE_SHIFT_LEFT      = 59,
+    Key { right, shift = true }, //AKEYCODE_SHIFT_RIGHT     = 60,
+    tab, //AKEYCODE_TAB             = 61,
+    space, //AKEYCODE_SPACE           = 62,
+    0, //AKEYCODE_SYM             = 63,
+    0, //AKEYCODE_EXPLORER        = 64,
+    0, //AKEYCODE_ENVELOPE        = 65,
+    enter, //AKEYCODE_ENTER           = 66,
+    del, //AKEYCODE_DEL             = 67,
+    backQuote, //AKEYCODE_GRAVE           = 68,
+    minus, //AKEYCODE_MINUS           = 69,
+    plus, //AKEYCODE_EQUALS          = 70,
+    leftBracket, //AKEYCODE_LEFT_BRACKET    = 71,
+    rightBracket, //AKEYCODE_RIGHT_BRACKET   = 72,
+    backSlash, //AKEYCODE_BACKSLASH       = 73,
+    semicolon, //AKEYCODE_SEMICOLON       = 74,
+    quote, //AKEYCODE_APOSTROPHE      = 75,
+    slash, //AKEYCODE_SLASH           = 76,
+    Key { k2, shift = true }, //AKEYCODE_AT              = 77,
+    0, //AKEYCODE_NUM             = 78,
+    0, //AKEYCODE_HEADSETHOOK     = 79,
+    0, //AKEYCODE_FOCUS           = 80,   // *Camera* focus
+    keyPadPlus, //AKEYCODE_PLUS            = 81,
+    0, //AKEYCODE_MENU            = 82,
+    0, //AKEYCODE_NOTIFICATION    = 83,
+    0, //AKEYCODE_SEARCH          = 84,
+    0, //AKEYCODE_MEDIA_PLAY_PAUSE= 85,
+    0, //AKEYCODE_MEDIA_STOP      = 86,
+    0, //AKEYCODE_MEDIA_NEXT      = 87,
+    0, //AKEYCODE_MEDIA_PREVIOUS  = 88,
+    0, //AKEYCODE_MEDIA_REWIND    = 89,
+    0, //AKEYCODE_MEDIA_FAST_FORWARD = 90,
+    0, //AKEYCODE_MUTE            = 91,
+    0, //AKEYCODE_PAGE_UP         = 92,
+    0, //AKEYCODE_PAGE_DOWN       = 93,
+    0, //AKEYCODE_PICTSYMBOLS     = 94,
+    0, //AKEYCODE_SWITCH_CHARSET  = 95,
+    0, //AKEYCODE_BUTTON_A        = 96,
+    0, //AKEYCODE_BUTTON_B        = 97,
+    0, //AKEYCODE_BUTTON_C        = 98,
+    0, //AKEYCODE_BUTTON_X        = 99,
+    0, //AKEYCODE_BUTTON_Y        = 100,
+    0, //AKEYCODE_BUTTON_Z        = 101,
+    0, //AKEYCODE_BUTTON_L1       = 102,
+    0, //AKEYCODE_BUTTON_R1       = 103,
+    0, //AKEYCODE_BUTTON_L2       = 104,
+    0, //AKEYCODE_BUTTON_R2       = 105,
+    0, //AKEYCODE_BUTTON_THUMBL   = 106,
+    0, //AKEYCODE_BUTTON_THUMBR   = 107,
+    0, //AKEYCODE_BUTTON_START    = 108,
+    0, //AKEYCODE_BUTTON_SELECT   = 109,
+    0, //AKEYCODE_BUTTON_MODE     = 110,
+};
+
 class AndroidActivity : AndroidAppGlue
 {
    AndroidPollSource source;
@@ -909,6 +1027,7 @@ class AndroidActivity : AndroidAppGlue
       if(type == AINPUT_EVENT_TYPE_MOTION)
       {
          uint actionAndIndex = AMotionEvent_getAction(event);
+         uint source = AInputEvent_getSource(event);
          uint action = actionAndIndex & AMOTION_EVENT_ACTION_MASK;
          uint index  = (actionAndIndex & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
          uint flags = AMotionEvent_getFlags(event);
@@ -916,13 +1035,24 @@ class AndroidActivity : AndroidAppGlue
          uint edge = AMotionEvent_getEdgeFlags(event);
          int64 downTime = AMotionEvent_getDownTime(event);     // nanotime
          int64 eventTime = AMotionEvent_getDownTime(event);
+         //float axis;
          Modifiers keyFlags = 0;
          int x = (int)AMotionEvent_getX(event, 0);
          int y = (int)AMotionEvent_getY(event, 0);
+         //PrintLn("Got a motion input event: ", action);
+         /*
+         if(action == 8) //AMOTION_EVENT_ACTION_SCROLL)
+            axis = AMotionEvent_getAxisValue(event, 9, index); //AMOTION_EVENT_AXIS_VSCROLL); 
+         */
 
          AInputQueue_finishEvent(inputQueue, event, 1);
          switch(action)
          {
+            /*
+            case 8: //AMOTION_EVENT_ACTION_SCROLL:
+               window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, (axis < 0) ? wheelUp : wheelDown, 0);
+               break;
+               */
             case AMOTION_EVENT_ACTION_DOWN:
                window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown, x, y, &keyFlags, false, true);
                break;
@@ -947,8 +1077,20 @@ class AndroidActivity : AndroidAppGlue
          uint flags = AKeyEvent_getFlags(event);
          uint keyCode = AKeyEvent_getKeyCode(event);
          uint meta = AKeyEvent_getMetaState(event);
+         Key key = keyCodeTable[keyCode];
 
          AInputQueue_finishEvent(inputQueue, event, 1);
+
+         //PrintLn("Got a key: action = ", action, ", flags = ", flags, ", keyCode = ", keyCode, ", meta = ", meta, ": key = ", (int)key);
+
+         if(key)
+         {
+            if(action == AKEY_STATE_DOWN)
+            {
+               window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, key, 0);
+            }
+         }
+         return 1;
       }
       else
          AInputQueue_finishEvent(inputQueue, event, 0);
@@ -991,6 +1133,7 @@ class AndroidActivity : AndroidAppGlue
             break;
          case gainedFocus:
             androidActivity.animating = true;
+            guiApp.SetAppFocus(true);
             /*
             if(accelerometerSensor)
             {
@@ -1005,6 +1148,7 @@ class AndroidActivity : AndroidAppGlue
                ASensorEventQueue_disableSensor(sensorEventQueue, accelerometerSensor);
             */
             animating = false;
+            guiApp.SetAppFocus(false);
             guiApp.desktop.Update(null);
             break;
       }
