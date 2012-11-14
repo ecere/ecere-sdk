@@ -4,6 +4,14 @@
 include crossplatform.mk
 include default.cf
 
+ifdef BSD_HOST
+INSTALL_FLAGS :=
+CPFLAGS := -pRf
+else
+INSTALL_FLAGS := -D
+CPFLAGS := -dpRf
+endif
+
 XBOOT := $(if $(CROSS_TARGET),GCC_PREFIX= TARGET_PLATFORM=$(HOST_PLATFORM) PLATFORM=$(HOST_PLATFORM),)
 
 LIBVER := .0.44
@@ -540,13 +548,13 @@ endif
 ifndef OSX_TARGET
 ifndef WINDOWS_TARGET
 ifdef LINUX_TARGET
-	install -D $(OBJLIBDIR)$(LP)ecere$(SOV) $(DESTLIBDIR)/$(LP)ecere$(SOV)
-	install -D $(OBJLIBDIR)$(LP)ecereCOM$(SOV) $(DESTLIBDIR)/$(LP)ecereCOM$(SOV)
-	install -D $(OBJLIBDIR)$(LP)ec$(SOV) $(DESTLIBDIR)/$(LP)ec$(SOV)
-	install -D $(OBJLIBDIR)$(LP)EDA$(SOV) $(DESTLIBDIR)/$(LP)EDA$(SOV)
-	install -D $(OBJLIBDIR)$(LP)EDASQLite$(SOV) $(DESTLIBDIR)/$(LP)EDASQLite$(SOV)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecere$(SOV) $(DESTLIBDIR)/$(LP)ecere$(SOV)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecereCOM$(SOV) $(DESTLIBDIR)/$(LP)ecereCOM$(SOV)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ec$(SOV) $(DESTLIBDIR)/$(LP)ec$(SOV)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDA$(SOV) $(DESTLIBDIR)/$(LP)EDA$(SOV)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLite$(SOV) $(DESTLIBDIR)/$(LP)EDASQLite$(SOV)
 ifdef EDASQLiteCipher
-	install -D $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SOV) $(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SOV)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SOV) $(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SOV)
 endif
 	ln -sf $(LP)ecere$(SOV) $(DESTLIBDIR)/$(LP)ecere$(SO).0
 	ln -sf $(LP)ecereCOM$(SOV) $(DESTLIBDIR)/$(LP)ecereCOM$(SO).0
@@ -570,45 +578,47 @@ endif
 ifdef EDASQLiteCipher
 	ln -sf $(LP)EDASQLiteCipher$(SOV) $(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO)
 endif
-	install -D -m 644 share/pixmaps/ecere.png $(DESTDIR)$(prefix)/share/pixmaps/ecere.png
-	install -D -m 644 share/applications/ecere.desktop $(DESTDIR)$(prefix)/share/applications/ecere.desktop
+ifndef BSD_HOST
+	install $(INSTALL_FLAGS) -m 644 share/pixmaps/ecere.png $(DESTDIR)$(prefix)/share/pixmaps/ecere.png
+	install $(INSTALL_FLAGS) -m 644 share/applications/ecere.desktop $(DESTDIR)$(prefix)/share/applications/ecere.desktop
+endif
 else
-	install -D $(OBJLIBDIR)$(LP)ecere$(SO) $(DESTLIBDIR)/$(LP)ecere$(SO)
-	install -D $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(DESTLIBDIR)/$(LP)ecereCOM$(SO)
-	install -D $(OBJLIBDIR)$(LP)ec$(SO) $(DESTLIBDIR)/$(LP)ec$(SO)
-	install -D $(OBJLIBDIR)$(LP)EDA$(SO) $(DESTLIBDIR)/$(LP)EDA$(SO)
-	install -D $(OBJLIBDIR)$(LP)EDASQLite$(SO) $(DESTLIBDIR)/$(LP)EDASQLite$(SO)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecere$(SO) $(DESTLIBDIR)/$(LP)ecere$(SO)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(DESTLIBDIR)/$(LP)ecereCOM$(SO)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ec$(SO) $(DESTLIBDIR)/$(LP)ec$(SO)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDA$(SO) $(DESTLIBDIR)/$(LP)EDA$(SO)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLite$(SO) $(DESTLIBDIR)/$(LP)EDASQLite$(SO)
 ifdef EDASQLiteCipher
-	install -D $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO) $(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO) $(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO)
 endif
 endif
-	install -D $(OBJBINDIR)ide$(E) $(BINDIR)/ide$(E)
-	install -D $(OBJBINDIR)ear$(E) $(BINDIR)/ear$(E)
-	install -D $(OBJBINDIR)ecc$(E) $(BINDIR)/ecc$(E)
-	install -D $(OBJBINDIR)ecp$(E) $(BINDIR)/ecp$(E)
-	install -D $(OBJBINDIR)ecs$(E) $(BINDIR)/ecs$(E)
-	install -D $(OBJBINDIR)epj2make$(E) $(BINDIR)/epj2make$(E)
-	install -D $(OBJBINDIR)documentor$(E) $(BINDIR)/documentor$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)ide$(E) $(BINDIR)/ide$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)ear$(E) $(BINDIR)/ear$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)ecc$(E) $(BINDIR)/ecc$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)ecp$(E) $(BINDIR)/ecp$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)ecs$(E) $(BINDIR)/ecs$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)epj2make$(E) $(BINDIR)/epj2make$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)documentor$(E) $(BINDIR)/documentor$(E)
 ifdef CodeGuard
-	install -D $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/CodeGuard$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/CodeGuard$(E)
 endif
-	install -D $(OBJLIBDIR)libecereVanilla$(A) $(DESTSLIBDIR)/libecereVanilla$(A)
-	install -D -m 644 doc/EDA.eCdoc $(DOCDIR)/EDA.eCdoc
-	install -D -m 644 doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf" >/dev/null 2>&1 || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
-	install -D -m 644 doc/ecere.eCdoc $(DOCDIR)/ecere.eCdoc
-	install -D -m 644 doc/ecereCOM.eCdoc $(DOCDIR)/ecereCOM.eCdoc
-	install -D -m 644 doc/EDA.eCdoc $(DOCDIR)/EDA.eCdoc
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)libecereVanilla$(A) $(DESTSLIBDIR)/libecereVanilla$(A)
+	install $(INSTALL_FLAGS) -m 644 doc/EDA.eCdoc $(DOCDIR)/EDA.eCdoc
+	install $(INSTALL_FLAGS) -m 644 doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf" >/dev/null 2>&1 || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
+	install $(INSTALL_FLAGS) -m 644 doc/ecere.eCdoc $(DOCDIR)/ecere.eCdoc
+	install $(INSTALL_FLAGS) -m 644 doc/ecereCOM.eCdoc $(DOCDIR)/ecereCOM.eCdoc
+	install $(INSTALL_FLAGS) -m 644 doc/EDA.eCdoc $(DOCDIR)/EDA.eCdoc
 	mkdir -p $(MANDIR)/man1
 	cp -pRf share/man/man1/* $(MANDIR)/man1
 	mkdir -p $(SAMPLESDIR)
 	cp -pRf samples/* $(SAMPLESDIR)
 	find $(SAMPLESDIR) -type d -exec chmod 777 {} \;
 	mkdir -p $(EXTRASDIR)
-	cp -dpRf extras/* $(EXTRASDIR)
+	cp $(CPFLAGS) extras/* $(EXTRASDIR)
 	chmod 777 $(EXTRASDIR)/audio
 ifdef DEBIAN_PACKAGE
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/libecere0
-	install -D -m644 NEWS $(DESTDIR)$(prefix)/share/doc/libecere0/changelog
+	install $(INSTALL_FLAG) -m644 NEWS $(DESTDIR)$(prefix)/share/doc/libecere0/changelog
 	gzip -n -f -9 $(DESTDIR)$(prefix)/share/doc/libecere0/changelog
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/ecere-dev
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-dev/

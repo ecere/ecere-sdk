@@ -3558,12 +3558,7 @@ class ProgramThread : Thread
          }
          else
          {
-#ifdef BSD
-            // TODO: Fix on BSD 
-            fd = 0;
-#else
-            fd = fileno(fifoFile.input);
-#endif
+            fd = fileno((FILE *)fifoFile.input);
             //fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK);
          }
       }

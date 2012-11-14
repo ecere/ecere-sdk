@@ -30,6 +30,10 @@ endif
 LDFLAGS +=$(if $(LINUX_TARGET), -Wl$(comma)--no-undefined,)
 LDFLAGS +=$(if $(OSX_TARGET), -framework cocoa -framework OpenGL,)
 
+ifdef BSD_TARGET
+EXCLUDED_LIBS += $(space)dl
+endif
+
 OFLAGS += $(LDFLAGS)
 
 # FLAGS

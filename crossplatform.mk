@@ -6,7 +6,7 @@ else
 ifeq "$(OSTYPE)" "FreeBSD"
 # tocheck: temporarily using linux when on bsd
 #   HOST_PLATFORM := bsd
-#   BSD_HOST := defined
+   BSD_HOST := defined
    HOST_PLATFORM := linux
    LINUX_HOST := defined
 else
@@ -46,11 +46,14 @@ else
 ifdef OSX_HOST
    TARGET_PLATFORM := apple
 else
-ifdef BSD_HOST
-   TARGET_PLATFORM := bsd
-else
+#ifdef BSD_HOST
+#   TARGET_PLATFORM := bsd
+#else
    TARGET_PLATFORM := linux
+ifdef BSD_HOST
+   BSD_TARGET := defined
 endif
+#endif
 endif
 endif
 endif
@@ -63,11 +66,11 @@ else
 ifeq "$(TARGET_PLATFORM)" "apple"
    OSX_TARGET := defined
 else
-ifeq "$(TARGET_PLATFORM)" "bsd"
-   BSD_TARGET := defined
-else
+#ifeq "$(TARGET_PLATFORM)" "bsd"
+#   BSD_TARGET := defined
+#else
    LINUX_TARGET := defined
-endif
+#endif
 endif
 endif
 
