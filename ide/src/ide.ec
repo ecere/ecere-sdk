@@ -2434,7 +2434,7 @@ class IDEWorkSpace : Window
                            for(p : ide.workspace.projects)
                            {
                               node = projectView.GetNodeFromWindow(activeClient, p);
-                              if(node && projectView.Compile(node))
+                              if(node && projectView.Compile(node, mods.ctrl && mods.shift))
                               {
                                  result = true;
                                  break;

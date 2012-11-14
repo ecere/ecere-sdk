@@ -1695,7 +1695,7 @@ private:
       }
    }
 
-   bool Build(bool isARun, ProjectNode onlyNode, CompilerConfig compiler, ProjectConfig config)
+   bool Build(bool isARun, ProjectNode onlyNode, CompilerConfig compiler, ProjectConfig config, bool justPrint)
    {
       bool result = false;
       DualPipe f;
@@ -1743,14 +1743,12 @@ private:
             // Create object dir if it does not exist already
             if(!FileExists(objDirExp.dir).isDirectory)
             {
-               sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s objdir -C \"%s\" -f \"%s\"",
+               sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s objdir -C \"%s\"%s -f \"%s\"",
                      compiler.makeCommand, cfDir,
                      crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
-                     compilerName, topNode.path, makeFilePath);
-#ifdef _DEBUG
-               PrintLn(command);
-               ide.outputView.buildBox.Logf("command: %s\n", command);
-#endif
+                     compilerName, topNode.path, justPrint ? " -n" : "", makeFilePath);
+               if(justPrint)
+                  ide.outputView.buildBox.Logf("%s\n", command);
                Execute(command);
             }
 
@@ -1774,12 +1772,10 @@ private:
          GetWorkingDir(oldwd, sizeof(oldwd));
          ChangeWorkingDir(topNode.path);
 
+         // TODO: support justPrint
          sprintf(command, "%s /useenv /nologo /logcommands %s.sln %s|Win32", compiler.makeCommand, name, config.name);
-         ide.outputView.buildBox.Logf("command: %s\n", command);
-#ifdef _DEBUG
-         PrintLn(command);
-         ide.outputView.buildBox.Logf("command: %s\n", command);
-#endif
+         if(justPrint)
+            ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
             ProcessPipeOutputRaw(f);
@@ -1792,29 +1788,28 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s -j%d %s%s%s -C \"%s\" -f \"%s\"",
+         sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s -j%d %s%s%s -C \"%s\"%s -f \"%s\"",
                compiler.makeCommand, cfDir,
                crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
                compilerName, numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",
-               makeTarget, topNode.path, makeFilePath);
-#ifdef _DEBUG
-         PrintLn(command);
-         ide.outputView.buildBox.Logf("command: %s\n", command);
-#endif
+               makeTarget, topNode.path, justPrint ? " -n" : "", makeFilePath);
+         if(justPrint)
+            ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
-            result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNode, compiler, config);
+            if(justPrint)
+            {
+               ProcessPipeOutputRaw(f);
+               result = true;
+            }
+            else
+               result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNode, compiler, config);
             delete f;
          }
          else
-         {
             ide.outputView.buildBox.Logf($"Error executing make (%s) command\n", compiler.makeCommand);
-#ifndef _DEBUG
-            ide.outputView.buildBox.Logf("command: %s\n", command);
-#endif
-         }
       }
 
       delete pathBackup;
@@ -1823,7 +1818,7 @@ private:
       return result;
    }
 
-   void Clean(CompilerConfig compiler, ProjectConfig config, bool realclean)
+   void Clean(CompilerConfig compiler, ProjectConfig config, bool realclean, bool justPrint)
    {
       char makeFile[MAX_LOCATION];
       char makeFilePath[MAX_LOCATION];
@@ -1850,12 +1845,10 @@ private:
          GetWorkingDir(oldwd, sizeof(oldwd));
          ChangeWorkingDir(topNode.path);
          
+         // TODO: justPrint support
          sprintf(command, "%s /useenv /clean /nologo /logcommands %s.sln %s|Win32", compiler.makeCommand, name, config.name);
-         ide.outputView.buildBox.Logf("command: %s\n", command);
-#ifdef _DEBUG
-         PrintLn(command);
-         ide.outputView.buildBox.Logf("command: %s\n", command);
-#endif
+         if(justPrint)
+            ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
             ProcessPipeOutputRaw(f);
@@ -1869,18 +1862,19 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s %sclean -C \"%s\" -f \"%s\"",
+         sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s %sclean -C \"%s\"%s -f \"%s\"",
                compiler.makeCommand, cfDir,
                crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
-               compilerName, realclean ? "real" : "", topNode.path, makeFilePath);
-#ifdef _DEBUG
-         PrintLn(command);
-         ide.outputView.buildBox.Logf("command: %s\n", command);
-#endif
+               compilerName, realclean ? "real" : "", topNode.path, justPrint ? " -n": "", makeFilePath);
+         if(justPrint)
+            ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
          {
             ide.outputView.buildBox.Tell($"Deleting target and object files...");
-            ProcessCleanPipeOutput(f, compiler, config);
+            if(justPrint)
+               ProcessPipeOutputRaw(f);
+            else
+               ProcessCleanPipeOutput(f, compiler, config);
             delete f;
 
             ide.outputView.buildBox.Logf($"Target and object files deleted\n");
@@ -1898,7 +1892,7 @@ private:
       DirExpression targetDirExp = GetTargetDir(compiler, config);
       PathBackup pathBackup { };
 
-      // Build(project, ideMain, true, null);
+      // Build(project, ideMain, true, null, false);
 
    #if defined(__WIN32__)
       strcpy(target, topNode.path);
@@ -1941,9 +1935,9 @@ private:
       delete target;
    }
 
-   void Compile(ProjectNode node, CompilerConfig compiler, ProjectConfig config)
+   void Compile(ProjectNode node, CompilerConfig compiler, ProjectConfig config, bool justPrint)
    {
-      Build(false, node, compiler, config);
+      Build(false, node, compiler, config, justPrint);
    }
 #endif
 

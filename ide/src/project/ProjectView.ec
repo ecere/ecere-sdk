@@ -657,12 +657,12 @@ class ProjectView : Window
       return false;
    }
    
-   bool BuildInterrim(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config)
+   bool BuildInterrim(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config, bool justPrint)
    {
       if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
       {
          ide.outputView.buildBox.Logf($"Building project %s using the %s configuration...\n", prj.name, GetConfigName(config));
-         return Build(prj, buildType, compiler, config);
+         return Build(prj, buildType, compiler, config, justPrint);
       }
       return false;
    }
@@ -692,7 +692,7 @@ class ProjectView : Window
       return result;
    }
 
-   bool Build(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config)
+   bool Build(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config, bool justPrint)
    {
       bool result = true;
       Window document;
@@ -718,7 +718,7 @@ class ProjectView : Window
 
          // TODO: Disabled until problems fixed... is it fixed?
          if(buildType == rebuild || (config && config.compilingModified))
-            prj.Clean(compiler, config, false);
+            prj.Clean(compiler, config, false, justPrint);
          else
          {
             if(buildType == relink || (config && config.linkingModified))
@@ -757,7 +757,7 @@ class ProjectView : Window
          ide.AdjustBuildMenus();
          ide.AdjustDebugMenus();
 
-         result = prj.Build(buildType == run, null, compiler, config);
+         result = prj.Build(buildType == run, null, compiler, config, justPrint);
 
          if(config)
          {
@@ -806,7 +806,7 @@ class ProjectView : Window
       config = prj.config;
       if(/*prj != project || */!prj.GetConfigIsInDebugSession(config) || !ide.DontTerminateDebugSession($"Project Build"))
       {
-         BuildInterrim(prj, build, compiler, config);
+         BuildInterrim(prj, build, compiler, config, mods.ctrl && mods.shift);
       }
       delete compiler;
       return true;
@@ -838,7 +838,7 @@ class ProjectView : Window
             ide.outputView.buildBox.Logf($"Relinking project %s using the %s configuration...\n", prj.name, GetConfigName(config));
             if(config)
                config.linkingModified = true;
-            Build(prj, relink, compiler, config);
+            Build(prj, relink, compiler, config, mods.ctrl && mods.shift);
          }
       }
       delete compiler;
@@ -874,7 +874,7 @@ class ProjectView : Window
                config.compilingModified = true;
                config.makingModified = true;
             }*/ // -- should this still be used depite the new solution of BuildType?
-            Build(prj, rebuild, compiler, config);
+            Build(prj, rebuild, compiler, config, mods.ctrl && mods.shift);
          }
       }
       delete compiler;
@@ -910,7 +910,7 @@ class ProjectView : Window
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
 
-            prj.Clean(compiler, config, false);
+            prj.Clean(compiler, config, false, mods.ctrl && mods.shift);
             buildInProgress = none;
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
@@ -949,7 +949,7 @@ class ProjectView : Window
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
 
-            prj.Clean(compiler, config, true);
+            prj.Clean(compiler, config, true, mods.ctrl && mods.shift);
             buildInProgress = none;
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
@@ -985,7 +985,7 @@ class ProjectView : Window
       return true;
    }
 
-   bool Compile(ProjectNode node)
+   bool Compile(ProjectNode node, bool justPrint)
    {
       bool result = false;
       char fileName[MAX_LOCATION];
@@ -1063,7 +1063,7 @@ class ProjectView : Window
             else
                ide.outputView.buildBox.Logf($"Compiling single file %s in project %s...\n", node.name, prj.name);
 
-            prj.Compile(node, compiler, config);
+            prj.Compile(node, compiler, config, justPrint);
             buildInProgress = none;
             ide.AdjustBuildMenus();
 
@@ -1249,7 +1249,7 @@ class ProjectView : Window
       if(row)
       {
          ProjectNode node = (ProjectNode)row.tag;
-         if(!Compile(node))
+         if(!Compile(node, mods.ctrl && mods.shift))
             ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
       }
       return true;
@@ -1327,7 +1327,7 @@ class ProjectView : Window
          project.Run(args, compiler, config);
       /*else if(config.targetType == sharedLibrary || config.targetType == staticLibrary)
          MessageBox { master = ide, type = ok, text = "Run", contents = "Shared and static libraries cannot be run like executables." }.Modal();*/
-      else if(BuildInterrim(project, run, compiler, config))
+      else if(BuildInterrim(project, run, compiler, config, false))
          project.Run(args, compiler, config);
       delete args;
       delete compiler;
@@ -1347,7 +1347,7 @@ class ProjectView : Window
       else if(project.GetDebug(config) ||
          MessageBox { master = ide, type = okCancel, text = $"Starting Debug", contents = $"Attempting to debug non-debug configuration\nProceed anyways?" }.Modal() == ok)
       {
-         if(/*!IsProjectModified() ||*/ BuildInterrim(project, start, compiler, config))
+         if(/*!IsProjectModified() ||*/ BuildInterrim(project, start, compiler, config, false))
          {
             if(compiler.type.isVC)
             {
@@ -1362,7 +1362,6 @@ class ProjectView : Window
                ChangeWorkingDir(project.topNode.path);
 
                sprintf(command, "%s /useenv %s.sln /projectconfig \"%s|Win32\" /command \"%s\"" , "devenv", project.name, config.name, "Debug.Start");
-               //ide.outputView.buildBox.Logf("command: %s\n", command);
                Execute(command);
                ChangeWorkingDir(oldwd);
 
@@ -1600,7 +1599,7 @@ class ProjectView : Window
       ProjectConfig config = project.config;
 
       bool result = false;
-      if(/*!IsProjectModified() ||*/ BuildInterrim(project, restart, compiler, config))
+      if(/*!IsProjectModified() ||*/ BuildInterrim(project, restart, compiler, config, false))
       {
          // For Restart, compiler and config will only be used if for
          // whatever reason (if at all possible) the Debugger is in a
@@ -1636,7 +1635,7 @@ class ProjectView : Window
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config = project.config;
 
-      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config)))
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, false)))
          ide.debugger.StepInto(compiler, config);
       delete compiler;
       return true;
@@ -1647,7 +1646,7 @@ class ProjectView : Window
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config = project.config;
 
-      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config)))
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, false)))
          ide.debugger.StepOver(compiler, config, skip);
 
       delete compiler;
