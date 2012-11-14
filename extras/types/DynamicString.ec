@@ -11,13 +11,18 @@ class DynamicString : Array<char>
 
    property String
    {
-      get
-      {
-         return &(this[0]);
-      }
       set
       {
+         DynamicString s { };
+         if(value)
+         {
+            int len = strlen(value) + 1;
+            s.size = len;
+            memcpy(s.array, value, len);
+         }
+         return s;
       }
+      get { return array; }
    }
 
    void concat(String s)
@@ -34,7 +39,8 @@ class DynamicString : Array<char>
 
    void concatf(char * format, ...)
    {
-      char string[MAX_F_STRING*16];
+      // TODO: improve this to vsprinf directly in the Array<char> instead of calling concat
+      char string[MAX_F_STRING];
       va_list args;
       va_start(args, format);
       vsprintf(string, format, args);
@@ -44,7 +50,8 @@ class DynamicString : Array<char>
 
    void concatx(typed_object object, ...)
    {
-      char string[MAX_F_STRING*16];
+      // TODO: improve this to work directly on the Array<char> instead of calling PrintStdArgsToBuffer
+      char string[MAX_F_STRING];
       va_list args;
       int len;
       va_start(args, object);
