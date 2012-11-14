@@ -1770,7 +1770,7 @@ class OpenGLDisplayDriver : DisplayDriver
          oglDisplay.flipBufH = height;
          oglDisplay.flippingBuffer = renew oglDisplay.flippingBuffer ColorAlpha [width * height];
       }
-      if(oglDisplay.flippingBuffer)
+      if(oglDisplay.flippingBuffer || !width || !height)
          result = true;
          
       return result;
