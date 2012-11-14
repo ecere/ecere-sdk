@@ -1,5 +1,5 @@
 .SILENT:
-.PHONY: all nores clean realclean distclean
+.PHONY: all nores cleantarget clean realclean distclean
 
 # CROSS-PLATFORM MAGIC
 
@@ -15,6 +15,10 @@ all:
 nores:
 	@$(call echo,Building eAR command line tool...)
 	cd cmd && $(MAKE) nores
+
+cleantarget:
+	cd extract && $(MAKE) cleantarget
+	cd cmd && $(MAKE) cleantarget
 
 clean:
 	cd extract && $(MAKE) clean

@@ -1,4 +1,4 @@
-.PHONY: all objdir clean realclean distclean openssl_debug
+.PHONY: all objdir cleantarget clean realclean distclean openssl_debug
 
 # CORE VARIABLES
 
@@ -224,17 +224,20 @@ openssl_debug:
 	@$(call echo,OPENSSL_BIN_DIR $(OPENSSL_BIN_DIR))
 	@$(call echo,OPENSSL_LIB_DIR $(OPENSSL_LIB_DIR))
 
-clean: objdir
-	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
+cleantarget: objdir
+	$(call rmq,$(TARGET))
+
+clean: cleantarget
 	$(call rmq,$(_OBJECTS))
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
 	$(call rmq,$(ECOBJECTS))
 	$(call rmq,$(COBJECTS))
 	$(call rmq,$(BOWLS))
 	$(call rmq,$(IMPORTS))
 	$(call rmq,$(SYMBOLS))
 
-realclean: clean
+realclean: cleantarget
 	$(call rmrq,$(OBJ))
 
-distclean:
+distclean: cleantarget
 	$(call rmrq,obj/)

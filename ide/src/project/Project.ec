@@ -2230,7 +2230,7 @@ private:
 
          sameObjTargetDirs = !fstrcmp(objDirExpNoSpaces, targetDirExpNoSpaces);
 
-         f.Printf(".PHONY: all objdir%s clean realclean distclean\n\n", sameObjTargetDirs ? "" : " targetdir");
+         f.Printf(".PHONY: all objdir%s cleantarget clean realclean distclean\n\n", sameObjTargetDirs ? "" : " targetdir");
 
          f.Puts("# CORE VARIABLES\n\n");
 
@@ -2749,11 +2749,15 @@ private:
          if(numCObjects)
             GenMakefilePrintMainObjectRule(f, config);
 
-         f.Printf("clean: objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
-         f.Printf("\t$(call rmq,%s$(TARGET))\n", numCObjects ? "$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) " : "");
+         f.Printf("cleantarget: objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
+         f.Puts("\t$(call rmq,$(TARGET))\n");
+         f.Puts("\n");
+
+         f.Puts("clean: cleantarget\n");
          OutputCleanActions(f, "_OBJECTS", objectsParts);
          if(numCObjects)
          {
+            f.Printf("\t$(call rmq,%s)\n", "$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S)");
             OutputCleanActions(f, "ECOBJECTS", eCsourcesParts);
             OutputCleanActions(f, "COBJECTS", eCsourcesParts);
             OutputCleanActions(f, "BOWLS", eCsourcesParts);
@@ -2762,13 +2766,15 @@ private:
          }
          f.Puts("\n");
 
-         f.Puts("realclean: clean\n");
+         f.Puts("realclean: cleantarget\n");
          f.Puts("\t$(call rmrq,$(OBJ))\n");
          if(!sameObjTargetDirs)
             f.Printf("\t$(call rmdirq,%s)\n", targetDirExpNoSpaces);
          f.Puts("\n");
 
-         f.Puts("distclean:\n");
+         f.Puts("distclean: cleantarget\n");
+         if(!sameObjTargetDirs)
+            f.Printf("\t$(call rmdirq,%s)\n", targetDirExpNoSpaces);
          f.Puts("\t$(call rmrq,obj/)\n");
 
          delete f;

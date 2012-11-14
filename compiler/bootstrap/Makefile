@@ -1,4 +1,4 @@
-.PHONY: bindir ecere libec ecp ecc ecs clean realclean distclean
+.PHONY: bindir ecere libec ecp ecc ecs cleantarget clean realclean distclean
 .SILENT:
 
 OBJ = obj/bin.$(PLATFORM)/
@@ -13,18 +13,20 @@ all: bindir ecere libec ecp ecc ecs
 bindir:
 	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
 
-clean: bindir
-	cd ecere && $(MAKE) clean
-	cd libec && $(MAKE) clean
-	cd ecp && $(MAKE) clean
-	cd ecc && $(MAKE) clean
-	cd ecs && $(MAKE) clean
+cleantarget: bindir
 	$(call rmq,$(OBJ)ecp$(E) $(OBJ)ecc$(E) $(OBJ)ecs$(E))
 ifdef WINDOWS_TARGET
 	$(call rmq,$(OBJ)$(LP)ecere$(SO) $(OBJ)$(LP)ec$(SO))
 endif
 
-realclean:
+clean: cleantarget
+	cd ecere && $(MAKE) clean
+	cd libec && $(MAKE) clean
+	cd ecp && $(MAKE) clean
+	cd ecc && $(MAKE) clean
+	cd ecs && $(MAKE) clean
+
+realclean: cleantarget
 	$(call rmrq,$(OBJ))
 	cd ecere && $(MAKE) realclean
 	cd libec && $(MAKE) realclean
@@ -32,7 +34,7 @@ realclean:
 	cd ecc && $(MAKE) realclean
 	cd ecs && $(MAKE) realclean
 
-distclean:
+distclean: cleantarget
 	$(call rmrq,obj/)
 	cd ecere && $(MAKE) distclean
 	cd libec && $(MAKE) distclean

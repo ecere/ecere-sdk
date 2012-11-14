@@ -1,4 +1,4 @@
-.PHONY: all bootstrap clean realclean distclean libec ecp ecc ecs
+.PHONY: all bootstrap cleantarget clean realclean distclean libec ecp ecc ecs
 .SILENT:
 
 CONFIG := release
@@ -36,6 +36,13 @@ ecs: libec
 bootstrap:
 	@$(call echo,Bootstrapping eC compiling tools...)
 	cd bootstrap && $(MAKE)
+
+cleantarget:
+	cd bootstrap && $(MAKE) cleantarget
+	cd libec && $(MAKE) cleantarget
+	cd ecp && $(MAKE) cleantarget
+	cd ecc && $(MAKE) cleantarget
+	cd ecs && $(MAKE) cleantarget
 
 clean:
 	cd bootstrap && $(MAKE) clean

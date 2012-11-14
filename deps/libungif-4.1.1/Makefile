@@ -1,4 +1,4 @@
-.PHONY: all objdir clean realclean distclean
+.PHONY: all objdir cleantarget clean realclean distclean
 
 # CORE VARIABLES
 
@@ -97,12 +97,14 @@ $(OBJ)gif_err.o: lib/gif_err.c
 $(OBJ)gifalloc.o: lib/gifalloc.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c lib/gifalloc.c -o $(OBJ)gifalloc.o
 
-clean: objdir
+cleantarget: objdir
 	$(call rmq,$(TARGET))
+
+clean: cleantarget
 	$(call rmq,$(_OBJECTS))
 
-realclean: clean
+realclean: cleantarget
 	$(call rmrq,$(OBJ))
 
-distclean:
+distclean: cleantarget
 	$(call rmrq,obj/)

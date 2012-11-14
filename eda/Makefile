@@ -1,5 +1,5 @@
 .SILENT:
-.PHONY: all cmd clean realclean distclean
+.PHONY: all cmd cleantarget clean realclean distclean
 
 # CROSS-PLATFORM MAGIC
 
@@ -16,6 +16,13 @@ all:
 ifdef EDASQLiteCipher
 	@$(call echo,Building EDASQLiteCipher driver...)
 	cd drivers && cd sqliteCipher && $(MAKE)
+endif
+
+cleantarget:
+	cd libeda && $(MAKE) cleantarget
+	cd drivers && cd sqlite && $(MAKE) cleantarget
+ifdef EDASQLiteCipher
+	cd drivers && cd sqliteCipher && $(MAKE) cleantarget
 endif
 
 clean:

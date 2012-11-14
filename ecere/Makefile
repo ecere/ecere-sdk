@@ -1,4 +1,4 @@
-.PHONY: all objdir clean cleantarget realclean distclean nores
+.PHONY: all objdir cleaneceretarget cleantarget clean realclean distclean nores
 
 # CORE VARIABLES
 
@@ -1883,12 +1883,17 @@ $(OBJ)instance.c.o: src/com/instance.c
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
-cleantarget: objdir
+cleaneceretarget: objdir
 	$(call rmq,$(TARGET))
 
-clean: objdir
-	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
+cleantarget: objdir
+	$(call rmq,$(TARGET))
+	$(MAKE) -f Makefile.ecereCOM cleantarget
+	$(MAKE) -f Makefile.vanilla cleantarget
+
+clean: cleantarget
 	$(call rmq,$(_OBJECTS))
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
 	$(call rmq,$(ECOBJECTS1))
 	$(call rmq,$(ECOBJECTS2))
 	$(call rmq,$(ECOBJECTS3))
@@ -1907,10 +1912,10 @@ clean: objdir
 	$(MAKE) -f Makefile.ecereCOM clean
 	$(MAKE) -f Makefile.vanilla clean
 
-realclean: clean
+realclean: cleantarget
 	$(call rmrq,$(OBJ))
 	$(MAKE) -f Makefile.ecereCOM realclean
 	$(MAKE) -f Makefile.vanilla realclean
 
-distclean:
+distclean: cleantarget
 	$(call rmrq,obj/)

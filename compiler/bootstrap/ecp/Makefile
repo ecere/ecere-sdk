@@ -115,8 +115,8 @@ clean: objdir
 	$(call rmq,$(TARGET))
 	$(call rmq,$(OBJECTS))
 
-realclean: clean
+realclean: objdir
 	$(call rmrq,$(OBJ))
 
-distclean:
+distclean: objdir
 	$(call rmrq,obj/)

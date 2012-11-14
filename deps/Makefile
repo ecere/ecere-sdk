@@ -1,4 +1,4 @@
-.PHONY: freetype jpeg png gif z ffi clean realclean distclean
+.PHONY: freetype jpeg png gif z ffi cleantarget clean realclean distclean
 .SILENT:
 
 # CROSS-PLATFORM MAGIC
@@ -15,6 +15,14 @@ else
 all: gif
 endif
 endif
+
+cleantarget:
+	cd freetype-2.3.12 && $(MAKE) cleantarget
+	cd libpng-1.4.0 && $(MAKE) cleantarget
+	cd zlib && $(MAKE) cleantarget
+	cd jpeg-6b && $(MAKE) cleantarget
+	cd libungif-4.1.1 && $(MAKE) cleantarget
+	cd libffi-3.0.11 && $(MAKE) cleantarget
 
 clean:
 	cd freetype-2.3.12 && $(MAKE) clean

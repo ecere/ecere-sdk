@@ -173,7 +173,7 @@ else
 endif
 	cd ecere && $(MAKE) nores $(XBOOT)
 	cd ear && $(MAKE) nores $(XBOOT)
-	cd ecere && $(MAKE) cleantarget
+	cd ecere && $(MAKE) cleaneceretarget
 ifdef CROSS_TARGET
 	@$(call echo,Building 2nd stage ecere...)
 endif
@@ -360,7 +360,7 @@ endif
 	cd eda && $(MAKE) clean
 	@$(call echo,Done.)
 
-realclean:
+realclean: outputdirs
 	cd deps && $(MAKE) realclean
 	cd ecere && $(MAKE) realclean
 	cd compiler && $(MAKE) realclean
@@ -375,7 +375,7 @@ endif
 	$(call rmrq,obj/$(PLATFORM)/)
 	@$(call echo,Done.)
 
-distclean:
+distclean: outputdirs
 	cd deps && $(MAKE) distclean
 	cd ecere && $(MAKE) distclean
 	cd compiler && $(MAKE) distclean

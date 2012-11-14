@@ -1,4 +1,4 @@
-.PHONY: all objdir clean realclean distclean
+.PHONY: all objdir cleantarget clean realclean distclean
 
 # CORE VARIABLES
 
@@ -159,12 +159,14 @@ $(OBJ)pngwtran.o: ./pngwtran.c
 $(OBJ)pngwutil.o: ./pngwutil.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c ./pngwutil.c -o $(OBJ)pngwutil.o
 
-clean: objdir
+cleantarget: objdir
 	$(call rmq,$(TARGET))
+
+clean: cleantarget
 	$(call rmq,$(_OBJECTS))
 
-realclean: clean
+realclean: cleantarget
 	$(call rmrq,$(OBJ))
 
-distclean:
+distclean: cleantarget
 	$(call rmrq,obj/)

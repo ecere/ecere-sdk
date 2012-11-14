@@ -1,4 +1,4 @@
-.PHONY: all objdir clean realclean distclean
+.PHONY: all objdir cleantarget clean realclean distclean
 
 # CORE VARIABLES
 
@@ -124,12 +124,14 @@ $(OBJ)types.o: src/types.c
 $(OBJ)closures.o: src/closures.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/closures.c -o $(OBJ)closures.o
 
-clean: objdir
+cleantarget: objdir
 	$(call rmq,$(TARGET))
+
+clean: cleantarget
 	$(call rmq,$(_OBJECTS))
 
-realclean: clean
+realclean: cleantarget
 	$(call rmrq,$(OBJ))
 
-distclean:
+distclean: cleantarget
 	$(call rmrq,obj/)

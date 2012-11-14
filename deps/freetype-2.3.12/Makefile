@@ -1,4 +1,4 @@
-.PHONY: all objdir clean realclean distclean
+.PHONY: all objdir cleantarget clean realclean distclean
 
 # CORE VARIABLES
 
@@ -311,13 +311,15 @@ $(OBJ)type42.o: src/type42/type42.c
 $(OBJ)winfnt.o: src/winfonts/winfnt.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/winfonts/winfnt.c -o $(OBJ)winfnt.o
 
-clean: objdir
+cleantarget: objdir
 	$(call rmq,$(TARGET))
+
+clean: cleantarget
 	$(call rmq,$(_OBJECTS1))
 	$(call rmq,$(_OBJECTS2))
 
-realclean: clean
+realclean: cleantarget
 	$(call rmrq,$(OBJ))
 
-distclean:
+distclean: cleantarget
 	$(call rmrq,obj/)
