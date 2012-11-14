@@ -1359,43 +1359,49 @@ private:
       bool loggedALine = false;
       char * configName = config ? config.name : "Common";
       int lenMakeCommand = strlen(compiler.makeCommand);
+      int testLen = 0;
 
-      char cppCommand[MAX_LOCATION];
-      char ccCommand[MAX_LOCATION];
-      char cxxCommand[MAX_LOCATION];
-      char stripCommand[MAX_LOCATION];
-      char ecpCommand[MAX_LOCATION];
-      char eccCommand[MAX_LOCATION];
-      char ecsCommand[MAX_LOCATION];
-      char earCommand[MAX_LOCATION];
+      char * gccPrefix = compiler.gccPrefix ? compiler.gccPrefix : "";
 
-      char * cc = compiler.ccCommand;
-      char * cxx = compiler.cxxCommand;
-      char * cpp = compiler.cppCommand;
-      char * strip = compiler.cppCommand;
-      sprintf(cppCommand, "%s%s%s%s ",
+      DynamicString test { };
+      DynamicString ecp { };
+      DynamicString ecc { };
+      DynamicString ecs { };
+      DynamicString ear { };
+      DynamicString prefix { };
+      DynamicString cpp { };
+      DynamicString cc { };
+      DynamicString cxx { };
+      DynamicString strip { };
+      DynamicString ar { };
+
+      ecp.concatx(compiler.ecpCommand, " ");
+      ecc.concatx(compiler.eccCommand, " ");
+      ecs.concatx(compiler.ecsCommand, " ");
+      ear.concatx(compiler.earCommand, " ");
+
+      prefix.concatx(
             compiler.ccacheEnabled ? "ccache " : "",
             compiler.distccEnabled ? "distcc " : "",
-            compiler.gccPrefix ? compiler.gccPrefix : "",
-            compiler.cppCommand);
-      sprintf(ccCommand, "%s%s%s%s ",
-            compiler.ccacheEnabled ? "ccache " : "",
-            compiler.distccEnabled ? "distcc " : "",
-            compiler.gccPrefix ? compiler.gccPrefix : "",
-            compiler.ccCommand);
-      sprintf(cxxCommand, "%s%s%s%s ",
-            compiler.ccacheEnabled ? "ccache " : "",
-            compiler.distccEnabled ? "distcc " : "",
-            compiler.gccPrefix ? compiler.gccPrefix : "",
-            compiler.cxxCommand);
+            gccPrefix);
 
-      sprintf(stripCommand, "%sstrip ",
-            compiler.gccPrefix ? compiler.gccPrefix : "");
+      cpp.concatx((String)prefix, compiler.cppCommand, " ");
+      cc.concatx((String)prefix, compiler.ccCommand,  " ");
+      cxx.concatx((String)prefix, compiler.cxxCommand, " ");
 
-      sprintf(ecpCommand, "%s ", compiler.ecpCommand);
-      sprintf(eccCommand, "%s ", compiler.eccCommand);
-      sprintf(ecsCommand, "%s ", compiler.ecsCommand);
-      sprintf(earCommand, "%s ", compiler.earCommand);
+      strip.concatx(gccPrefix, "strip ");
+      ar.concatx(gccPrefix, "ar rcs");
+
+      testLen = Max(testLen, ecp.size);
+      testLen = Max(testLen, ecc.size);
+      testLen = Max(testLen, ecs.size);
+      testLen = Max(testLen, ear.size);
+      testLen = Max(testLen, cpp.size);
+      testLen = Max(testLen, cc.size);
+      testLen = Max(testLen, cxx.size);
+      testLen = Max(testLen, strip.size);
+      testLen = Max(testLen, ar.size);
+      testLen++;
 
       while(!f.Eof() && !ide.ShouldStopBuild())
       {
@@ -1408,6 +1414,7 @@ private:
             if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)))
             {
                char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
+               test.copyLenSingleBlankReplTrim(line, ' ', true, testLen);
                if(strstr(line, compiler.makeCommand) == line && line[lenMakeCommand] == ':')
                {
                   char * module = strstr(line, "No rule to make target `");
@@ -1430,21 +1437,21 @@ private:
                      //numErrors++;
                   //}
                }
-               else if(strstr(line, "ear ") == line);
-               else if(strstr(line, stripCommand) == line);
-               else if(strstr(line, ccCommand) == line || strstr(line, cxxCommand) == line || strstr(line, ecpCommand) == line || strstr(line, eccCommand) == line)
+               else if(strstr(test, ear) == test);
+               else if(strstr(test, strip) == test);
+               else if(strstr(test, cc) == test || strstr(test, cxx) == test || strstr(test, ecp) == test || strstr(test, ecc) == test)
                {
                   char moduleName[MAX_FILENAME];
                   byte * tokens[1];
                   char * module;
                   bool isPrecomp = false;
 
-                  if(strstr(line, ccCommand) == line || strstr(line, cxxCommand) == line)
+                  if(strstr(test, cc) == test || strstr(test, cxx) == test)
                   {
                      module = strstr(line, " -c ");
                      if(module) module += 4;
                   }
-                  else if(strstr(line, eccCommand) == line)
+                  else if(strstr(test, ecc) == test)
                   {
                      module = strstr(line, " -c ");
                      if(module) module += 4;
@@ -1452,7 +1459,7 @@ private:
                      // Don't show GCC warnings about generated C code because it does not compile clean yet...
                      compilingEC = 3;//2;
                   }
-                  else if(strstr(line, ecpCommand) == line)
+                  else if(strstr(test, ecp) == test)
                   {
                      // module = line + 8;
                      module = strstr(line, " -c ");
@@ -1495,9 +1502,9 @@ private:
 
                   if(compilingEC) compilingEC--;
                }
-               else if(strstr(line, "ar rcs") == line)
+               else if(strstr(test, ar) == test)
                   ide.outputView.buildBox.Logf($"Building library...\n");
-               else if(strstr(line, ecsCommand) == line)
+               else if(strstr(test, ecs) == test)
                   ide.outputView.buildBox.Logf($"Writing symbol loader...\n");
                else
                {
@@ -1637,6 +1644,19 @@ private:
                ide.outputView.buildBox.Logf($"no warning\n");
          }
       }
+
+      delete test;
+      delete ecp;
+      delete ecc;
+      delete ecs;
+      delete ear;
+      delete prefix;
+      delete cpp;
+      delete cc;
+      delete cxx;
+      delete strip;
+      delete ar;
+
       return numErrors == 0;
    }
 

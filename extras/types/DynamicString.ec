@@ -1,5 +1,7 @@
 #include <stdarg.h>
 
+extern int isblank(int c);
+
 class DynamicString : Array<char>
 {
    minAllocSize = 1024;
@@ -60,4 +62,41 @@ class DynamicString : Array<char>
       va_end(args);
    }
 
+   void copySingleBlankReplTrim(String s, char replace, bool trim)
+   {
+      privateCommonCopyLenSingleBlankReplTrim(s, replace, trim, strlen(s));
+   }
+
+   void copyLenSingleBlankReplTrim(String s, char replace, bool trim, int copyLen)
+   {
+      privateCommonCopyLenSingleBlankReplTrim(s, replace, trim, Min(strlen(s), copyLen));
+   }
+
+   void privateCommonCopyLenSingleBlankReplTrim(String s, char replace, bool trim, int len)
+   {
+      int c, d;
+      bool wasBlank = trim;
+      size = len + 1;
+      for(c = d = 0; c < len; c++)
+      {
+         if(isblank(s[c]))
+         {
+            if(!wasBlank)
+            {
+               wasBlank = true;
+               /*array*/this[d++] = replace ? replace : s[c];
+            }
+         }
+         else
+         {
+            /*array*/this[d++] = s[c];
+            if(wasBlank)
+               wasBlank = false;
+         }
+      }
+      if(!trim || (len && !isblank(/*array*/this[d])))
+         d++;
+      /*array*/this[d] = '\0';
+      size = d + 1;
+   }
 }
