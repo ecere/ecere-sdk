@@ -12,6 +12,10 @@ define pathListSep = ";";
 define pathListSep = ":";
 #endif
 
+#ifdef _DEBUG
+extern int getch(void);
+#endif
+
 void ParseDirList(char * string, Container<String> list)
 {
    int c;
@@ -396,7 +400,7 @@ class epj2makeApp : GuiApplication
 
       // CheckMemory();
       delete ideSettings;
-#ifdef _DEBUG      
+#ifdef _DEBUG
       getch();
 #endif
    }

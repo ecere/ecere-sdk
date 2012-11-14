@@ -10,83 +10,83 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./epj2make.ec:232
+#: ./epj2make.ec:236
 msgid "         [-cc <c compiler>]\n"
 msgstr "         [-cc <c compiler>]\n"
 
-#: ./epj2make.ec:231
+#: ./epj2make.ec:235
 msgid "         [-cpp <c preprocessor>]\n"
 msgstr "         [-cpp <c preprocessor>]\n"
 
-#: ./epj2make.ec:243
+#: ./epj2make.ec:247
 msgid "         [-d <intermediate objects directory>]\n"
 msgstr "         [-d <intermediate objects directory>]\n"
 
-#: ./epj2make.ec:236
+#: ./epj2make.ec:240
 msgid "         [-ear <Ecere Archiver>]\n"
 msgstr "         [-ear <Ecere Archiver>]\n"
 
-#: ./epj2make.ec:234
+#: ./epj2make.ec:238
 msgid "         [-ecc <eC compiler>]\n"
 msgstr "         [-ecc <eC compiler>]\n"
 
-#: ./epj2make.ec:233
+#: ./epj2make.ec:237
 msgid "         [-ecp <eC preprocessor>]\n"
 msgstr "         [-ecp <eC preprocessor>]\n"
 
-#: ./epj2make.ec:235
+#: ./epj2make.ec:239
 msgid "         [-ecs <eC symbol generator>]\n"
 msgstr "         [-ecs <eC symbol generator>]\n"
 
-#: ./epj2make.ec:238
+#: ./epj2make.ec:242
 msgid "         [-i <include dir[;inc dir[...]]>]\n"
 msgstr "         [-i <include dir[;inc dir[...]]>]\n"
 
-#: ./epj2make.ec:244
+#: ./epj2make.ec:248
 msgid "         [-includemk <crossplatform.mk path>]\n"
 msgstr "         [-includemk <crossplatform.mk path>]\n"
 
-#: ./epj2make.ec:239
+#: ./epj2make.ec:243
 msgid "         [-l <library dir[;lib dir[...]]>]\n"
 msgstr "         [-l <library dir[;lib dir[...]]>]\n"
 
-#: ./epj2make.ec:230
+#: ./epj2make.ec:234
 msgid "         [-make <make tool>]\n"
 msgstr "         [-make <make tool>]\n"
 
-#: ./epj2make.ec:241
+#: ./epj2make.ec:245
 msgid "         [-noglobalsettings]\n"
 msgstr "         [-noglobalsettings]\n"
 
-#: ./epj2make.ec:242
+#: ./epj2make.ec:246
 msgid "         [-noresources]\n"
 msgstr "         [-noresources]\n"
 
-#: ./epj2make.ec:237
+#: ./epj2make.ec:241
 msgid "      directories:\n"
 msgstr "      directories:\n"
 
-#: ./epj2make.ec:240
+#: ./epj2make.ec:244
 msgid "      options:\n"
 msgstr "      options:\n"
 
-#: ./epj2make.ec:229
+#: ./epj2make.ec:233
 msgid "      toolchain:\n"
 msgstr "      toolchain:\n"
 
-#: ./epj2make.ec:228
+#: ./epj2make.ec:232
 msgid "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
 msgstr "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
 
-#: ./epj2make.ec:378
+#: ./epj2make.ec:382
 msgid "Error: Input file (%s) does not exist.\n"
 msgstr "Error: Input file (%s) does not exist.\n"
 
-#: ./epj2make.ec:314
+#: ./epj2make.ec:318
 msgid "Error: Project configuration (%s) was not found.\n"
 msgstr "Error: Project configuration (%s) was not found.\n"
 
-#: ./epj2make.ec:374
+#: ./epj2make.ec:378
 msgid "Error: Unable to open project file (%s) due to unknown error.\n"
 msgstr "Error: Unable to open project file (%s) due to unknown error.\n"
 
@@ -106,7 +106,7 @@ msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
-#: ./epj2make.ec:330
+#: ./epj2make.ec:334
 msgid "Notice: Project configuration (%s) will be used.\n"
 msgstr "Notice: Project configuration (%s) will be used.\n"
 
@@ -114,7 +114,7 @@ msgstr "Notice: Project configuration (%s) will be used.\n"
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
-#: ./epj2make.ec:227
+#: ./epj2make.ec:231
 msgid "Syntax:\n"
 msgstr "Syntax:\n"
 
@@ -122,7 +122,7 @@ msgstr "Syntax:\n"
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 
-#: ./epj2make.ec:206
+#: ./epj2make.ec:210
 msgid "invalid option: %s\n"
 msgstr "invalid option: %s\n"
 
