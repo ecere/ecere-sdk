@@ -1,3 +1,9 @@
+#if defined(__ANDROID__)
+#include <android/log.h>
+
+#define printf(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "ecere-app", __VA_ARGS__))
+#endif
+
 namespace sys;
 
 #define _GNU_SOURCE
@@ -102,7 +108,16 @@ public:
          EnterCriticalSection(&mutex);
 #endif
 #else
+#ifdef _DEBUG
+         {
+            int e;
+            e = pthread_mutex_lock(&mutex);
+            if(e)
+               PrintLn("pthread_mutex_lock returned ", e);
+         }
+#else
          pthread_mutex_lock(&mutex);
+#endif
 #endif
 
 #ifdef _DEBUG
@@ -120,6 +135,10 @@ public:
          if(this == globalSystem.fileMonitorMutex)
             printf("[%d] Releasing Mutex %x\n", GetCurrentThreadID(), this);
          */
+#ifdef _DEBUG
+         if(lockCount && owningThread != GetCurrentThreadID())
+            PrintLn("WARNING: Not in owning thread!!");
+#endif
 
          if(!--lockCount)
 #ifdef _DEBUG
@@ -134,7 +153,20 @@ public:
          LeaveCriticalSection(&mutex);
 #endif
 #else
+#ifdef _DEBUG
+         {
+            int e;
+            e = pthread_mutex_unlock(&mutex);
+            if(e)
+               PrintLn("pthread_mutex_unlock returned ", e);
+         }
+#else
          pthread_mutex_unlock(&mutex);
+#endif
+#endif
+#ifdef _DEBUG
+         if(lockCount < 0)
+            PrintLn("WARNING: lockCount < 0");
 #endif
       }
    }

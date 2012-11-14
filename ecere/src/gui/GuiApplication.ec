@@ -224,7 +224,10 @@ public class GuiApplication : Application
          XUnlockDisplay(xGlobalDisplay);
 #endif
 
+#if !defined(__ANDROID__)
+      // Because destruction of app won't be from main thread
       lockMutex.Release();
+#endif
 
       if(interfaceDriver)
       {
@@ -730,6 +733,11 @@ public:
          }
       }
       Terminate();
+
+#if defined(__ANDROID__)
+      // Because destruction of GuiApp won't be from main thread
+      lockMutex.Release();
+#endif
    }
 
    void Wait(void)

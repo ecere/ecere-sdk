@@ -328,9 +328,11 @@
       {
          "Name" : "Android",
          "Options" : {
-            "Optimization" : "Speed",
+            "Debug" : true,
+            "Optimization" : "None",
             "PreprocessorDefinitions" : [
-               "ECERE_NOFONTCONFIG"
+               "ECERE_NOFONTCONFIG",
+               "_DEBUG"
             ],
             "IncludeDirs" : [
                "../deps/jpeg-6b",
@@ -2326,6 +2328,34 @@
       },
       {
          "FileName" : "C:/Windows/Fonts/tahomabd.ttf",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         },
+         "Configurations" : [
+            {
+               "Name" : "Android",
+               "Options" : {
+                  "ExcludeFromBuild" : false
+               }
+            }
+         ]
+      },
+      {
+         "FileName" : "C:/Windows/Fonts/arial.ttf",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         },
+         "Configurations" : [
+            {
+               "Name" : "Android",
+               "Options" : {
+                  "ExcludeFromBuild" : false
+               }
+            }
+         ]
+      },
+      {
+         "FileName" : "C:/Windows/Fonts/arialbd.ttf",
          "Options" : {
             "ExcludeFromBuild" : true
          },

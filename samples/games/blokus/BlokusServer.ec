@@ -28,7 +28,7 @@ public struct GameInfo
    }
 };
 
-class Player
+public class Player
 {
    ServerConnection connection;
    int id;
@@ -130,7 +130,7 @@ void EndGame()
 }
 
 //////////////////////////////////////////
-remote class ServerConnection
+public remote class ServerConnection
 {
 public:
    // Remote Functions

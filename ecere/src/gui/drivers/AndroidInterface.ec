@@ -133,7 +133,7 @@ private:
             if(AInputQueue_preDispatchEvent(inputQueue, event))
                return;
             handled = onInputEvent(event);
-            AInputQueue_finishEvent(inputQueue, event, handled);
+            //AInputQueue_finishEvent(inputQueue, event, handled);
          }
          else
             LOGE("Failure reading next input event: %s\n", strerror(errno));
@@ -150,7 +150,9 @@ private:
    void free_saved_state()
    {
       mutex.Wait();
-      free(savedState);
+      if(savedState)
+         free(savedState);
+      savedState = 0;
       savedStateSize = 0;
       mutex.Release();
    }
@@ -312,7 +314,9 @@ private:
 
    void setSavedState(void * state, uint size)
    {
-      free(savedState);
+      if(savedState)
+         free(savedState);
+      savedState = null;
       if(state)
       {
          savedState = malloc(size);
@@ -568,10 +572,13 @@ class AndroidInterface : Interface
       bool eventAvailable = false;
       if(androidActivity.ident >= 0)
       {
+         AndroidPollSource source = androidActivity.source;
          //PrintLn("androidActivity.ident >= 0");
          // Process this event.
-         if(androidActivity.source)
-            androidActivity.source.process(androidActivity.source.userData);
+         androidActivity.ident = 0;
+         androidActivity.source = null;
+         if(source)
+            source.process(source.userData);
 
          // If a sensor has data, process it now.
          /*
@@ -592,7 +599,7 @@ class AndroidInterface : Interface
             eventAvailable = true;
          }
       }
-      androidActivity.ident = 0;
+
       if(androidActivity.animating)
          guiApp.desktop.Update(null);
 
@@ -913,6 +920,7 @@ class AndroidActivity : AndroidAppGlue
          int x = (int)AMotionEvent_getX(event, 0);
          int y = (int)AMotionEvent_getY(event, 0);
 
+         AInputQueue_finishEvent(inputQueue, event, 1);
          switch(action)
          {
             case AMOTION_EVENT_ACTION_DOWN:
@@ -939,7 +947,11 @@ class AndroidActivity : AndroidAppGlue
          uint flags = AKeyEvent_getFlags(event);
          uint keyCode = AKeyEvent_getKeyCode(event);
          uint meta = AKeyEvent_getMetaState(event);
+
+         AInputQueue_finishEvent(inputQueue, event, 1);
       }
+      else
+         AInputQueue_finishEvent(inputQueue, event, 0);
       return 0;
    }
 
@@ -1020,8 +1032,9 @@ class AndroidActivity : AndroidAppGlue
          guiApp.interfaceDriver = class(AndroidInterface);
          while(!gotInit)
          {
-            guiApp.Wait();
-            guiApp.ProcessInput(true);
+            // Can't call the GuiApplication here, because GuiApplication::Initialize() has not been called yet
+            guiApp.interfaceDriver.Wait();
+            guiApp.interfaceDriver.ProcessInput(true);
          }
 
          // Invoke __ecereDll_Load() in lib[our package name].so
@@ -1051,8 +1064,8 @@ class AndroidActivity : AndroidAppGlue
             ANativeActivity_finish(activity);
          while(!destroyRequested)
          {
-            guiApp.Wait();
-            guiApp.ProcessInput(true);
+            guiApp.interfaceDriver.Wait();
+            guiApp.interfaceDriver.ProcessInput(true);
          }
       }
    }

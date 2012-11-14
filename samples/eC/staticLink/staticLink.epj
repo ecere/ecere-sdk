@@ -60,7 +60,7 @@
                      "z"
                   ],
                   "LibraryDirs" : [
-                     "../../deps/zlib/obj/release.$(PLATFORM)"
+                     "../../../deps/zlib/obj/release.$(PLATFORM)"
                   ]
                }
             }
