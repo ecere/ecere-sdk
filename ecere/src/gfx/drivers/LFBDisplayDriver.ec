@@ -3056,8 +3056,15 @@ public class LFBDisplayDriver : DisplayDriver
                         matrix.xy = (FT_Fixed)( 0.3 * 0x10000L );
                         matrix.yx = (FT_Fixed)( 0.0 * 0x10000L );
                         matrix.yy = (FT_Fixed)( 1.0 * 0x10000L );
-                        FT_Set_Transform(fontEntry.face, &matrix, &pen );
                      }
+                     else
+                     {
+                        matrix.xx = (FT_Fixed)( 1.0 * 0x10000L );
+                        matrix.xy = (FT_Fixed)( 0.0 * 0x10000L );
+                        matrix.yx = (FT_Fixed)( 0.0 * 0x10000L );
+                        matrix.yy = (FT_Fixed)( 1.0 * 0x10000L );
+                     }
+                     FT_Set_Transform(fontEntry.face, &matrix, &pen );
                      FaceSetCharSize(fontEntry.face, size);
                      font.height = ((fontEntry.face->size->metrics.height) >> 6); //* y_scale;
                      // printf("Font height is %d\n", font.height);
