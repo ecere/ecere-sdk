@@ -128,9 +128,9 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) $(EARFLAGS) $(TARGET) ../crossplatform.mk ""
-	$(EAR) $(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/epj2make.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) $(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/epj2make.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../crossplatform.mk ""
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/epj2make.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/epj2make.mo "locale/es_ES/LC_MESSAGES"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

@@ -2093,7 +2093,7 @@ private:
             f.Puts("UPXFLAGS = -9\n"); // TOFEAT: Compression Level Option? Other UPX Options?
             f.Puts("\n");
 
-            f.Puts("EARFLAGS = aw\n");
+            f.Puts("EARFLAGS = \n");
             f.Puts("\n");
 
             f.Puts("# HARD CODED TARGET_PLATFORM-SPECIFIC OPTIONS\n");

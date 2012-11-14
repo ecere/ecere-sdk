@@ -1985,7 +1985,7 @@ private:
 
                // $(EAR) aw%s --- /*quiet ? "q" : */""
                if(count == 0)
-                  f.Printf("\t%s$(EAR) $(EARFLAGS) $(TARGET)", ts.a);
+                  f.Printf("\t%s$(EAR) aw$(EARFLAGS) $(TARGET)", ts.a);
 
                tempPath[0] = '\0';
                if(eString_PathInsideOfMore(child.path, resourcesPath, tempPath))

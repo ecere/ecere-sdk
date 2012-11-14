@@ -48,4 +48,4 @@ UPXFLAGS = -9 -q
 
 CFLAGS += -fmessage-length=0
 
-EARFLAGS = awq
+EARFLAGS = q

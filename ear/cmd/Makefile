@@ -123,9 +123,9 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) $(EARFLAGS) $(TARGET) ../extract/obj/release.$(PLATFORM)/extract$(E) ""
-	$(EAR) $(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ear.mo "locale/es_ES/LC_MESSAGES"
-	$(EAR) $(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ear.mo "locale/zh_CN/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../extract/obj/release.$(PLATFORM)/extract$(E) ""
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ear.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ear.mo "locale/zh_CN/LC_MESSAGES"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
