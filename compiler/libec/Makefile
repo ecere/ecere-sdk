@@ -17,6 +17,7 @@ ifndef DEBIAN_PACKAGE
 CFLAGS =
 LDFLAGS =
 endif
+PRJ_CFLAGS =
 CECFLAGS =
 OFLAGS =
 LIBS =
@@ -102,12 +103,12 @@ LIBS += \
 	$(call _L,ecere)
 endif
 
-CFLAGS += \
+PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w
 
-CUSTOM1_CFLAGS = \
+CUSTOM1_PRJ_CFLAGS = \
 			 -I../bootstrap/include \
-	 $(CFLAGS)
+	 $(PRJ_CFLAGS)
 
 
 ECFLAGS += \
@@ -224,123 +225,123 @@ $(OBJ)type.sym: src/type.ec
 # C OBJECT RULES
 
 $(OBJ)ast.c: src/ast.ec $(OBJ)ast.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/ast.ec -o $(OBJ)ast.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/ast.ec -o $(OBJ)ast.c -symbols $(OBJ)
 
 $(OBJ)copy.c: src/copy.ec $(OBJ)copy.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/copy.ec -o $(OBJ)copy.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/copy.ec -o $(OBJ)copy.c -symbols $(OBJ)
 
 $(OBJ)dbpass.c: src/dbpass.ec $(OBJ)dbpass.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/dbpass.ec -o $(OBJ)dbpass.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/dbpass.ec -o $(OBJ)dbpass.c -symbols $(OBJ)
 
 $(OBJ)ecdefs.c: src/ecdefs.ec $(OBJ)ecdefs.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/ecdefs.ec -o $(OBJ)ecdefs.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/ecdefs.ec -o $(OBJ)ecdefs.c -symbols $(OBJ)
 
 # $(OBJ)expression.sym dependency removed
 $(OBJ)expression.c: src/expression.ec | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(CFLAGS) $(CFLAGS) $(FVISIBILITY) -c src/expression.ec -o $(OBJ)expression.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/expression.ec -o $(OBJ)expression.c -symbols $(OBJ)
 
 $(OBJ)firstPass.c: src/firstPass.ec $(OBJ)firstPass.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/firstPass.ec -o $(OBJ)firstPass.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/firstPass.ec -o $(OBJ)firstPass.c -symbols $(OBJ)
 
 $(OBJ)freeAst.c: src/freeAst.ec $(OBJ)freeAst.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/freeAst.ec -o $(OBJ)freeAst.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/freeAst.ec -o $(OBJ)freeAst.c -symbols $(OBJ)
 
 # $(OBJ)grammar.sym dependency removed
 $(OBJ)grammar.c: src/grammar.ec | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/grammar.ec -o $(OBJ)grammar.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/grammar.ec -o $(OBJ)grammar.c -symbols $(OBJ)
 
 $(OBJ)lexer.c: src/lexer.ec $(OBJ)lexer.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/lexer.ec -o $(OBJ)lexer.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/lexer.ec -o $(OBJ)lexer.c -symbols $(OBJ)
 
 $(OBJ)loadSymbols.c: src/loadSymbols.ec $(OBJ)loadSymbols.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/loadSymbols.ec -o $(OBJ)loadSymbols.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/loadSymbols.ec -o $(OBJ)loadSymbols.c -symbols $(OBJ)
 
 $(OBJ)output.c: src/output.ec $(OBJ)output.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/output.ec -o $(OBJ)output.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/output.ec -o $(OBJ)output.c -symbols $(OBJ)
 
 $(OBJ)pass0.c: src/pass0.ec $(OBJ)pass0.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/pass0.ec -o $(OBJ)pass0.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/pass0.ec -o $(OBJ)pass0.c -symbols $(OBJ)
 
 $(OBJ)pass1.c: src/pass1.ec $(OBJ)pass1.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/pass1.ec -o $(OBJ)pass1.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/pass1.ec -o $(OBJ)pass1.c -symbols $(OBJ)
 
 $(OBJ)pass15.c: src/pass15.ec $(OBJ)pass15.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/pass15.ec -o $(OBJ)pass15.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/pass15.ec -o $(OBJ)pass15.c -symbols $(OBJ)
 
 $(OBJ)pass16.c: src/pass16.ec $(OBJ)pass16.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/pass16.ec -o $(OBJ)pass16.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/pass16.ec -o $(OBJ)pass16.c -symbols $(OBJ)
 
 $(OBJ)pass2.c: src/pass2.ec $(OBJ)pass2.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/pass2.ec -o $(OBJ)pass2.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/pass2.ec -o $(OBJ)pass2.c -symbols $(OBJ)
 
 $(OBJ)pass3.c: src/pass3.ec $(OBJ)pass3.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/pass3.ec -o $(OBJ)pass3.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/pass3.ec -o $(OBJ)pass3.c -symbols $(OBJ)
 
 $(OBJ)shortcuts.c: src/shortcuts.ec $(OBJ)shortcuts.sym | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/shortcuts.ec -o $(OBJ)shortcuts.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/shortcuts.ec -o $(OBJ)shortcuts.c -symbols $(OBJ)
 
 # $(OBJ)type.sym dependency removed
 $(OBJ)type.c: src/type.ec | $(SYMBOLS)
-	$(ECC) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c src/type.ec -o $(OBJ)type.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/type.ec -o $(OBJ)type.c -symbols $(OBJ)
 
 # OBJECT RULES
 
 $(OBJ)ast.o: $(OBJ)ast.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)ast.c -o $(OBJ)ast.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)ast.c -o $(OBJ)ast.o
 
 $(OBJ)copy.o: $(OBJ)copy.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)copy.c -o $(OBJ)copy.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)copy.c -o $(OBJ)copy.o
 
 $(OBJ)dbpass.o: $(OBJ)dbpass.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)dbpass.c -o $(OBJ)dbpass.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)dbpass.c -o $(OBJ)dbpass.o
 
 $(OBJ)ecdefs.o: $(OBJ)ecdefs.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)ecdefs.c -o $(OBJ)ecdefs.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)ecdefs.c -o $(OBJ)ecdefs.o
 
 $(OBJ)expression.o: $(OBJ)expression.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)expression.c -o $(OBJ)expression.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)expression.c -o $(OBJ)expression.o
 
 $(OBJ)firstPass.o: $(OBJ)firstPass.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)firstPass.c -o $(OBJ)firstPass.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)firstPass.c -o $(OBJ)firstPass.o
 
 $(OBJ)freeAst.o: $(OBJ)freeAst.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)freeAst.c -o $(OBJ)freeAst.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)freeAst.c -o $(OBJ)freeAst.o
 
 $(OBJ)grammar.o: $(OBJ)grammar.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)grammar.c -o $(OBJ)grammar.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)grammar.c -o $(OBJ)grammar.o
 
 $(OBJ)lexer.o: $(OBJ)lexer.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)lexer.c -o $(OBJ)lexer.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)lexer.c -o $(OBJ)lexer.o
 
 $(OBJ)loadSymbols.o: $(OBJ)loadSymbols.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)loadSymbols.c -o $(OBJ)loadSymbols.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)loadSymbols.c -o $(OBJ)loadSymbols.o
 
 $(OBJ)output.o: $(OBJ)output.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)output.c -o $(OBJ)output.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)output.c -o $(OBJ)output.o
 
 $(OBJ)pass0.o: $(OBJ)pass0.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)pass0.c -o $(OBJ)pass0.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)pass0.c -o $(OBJ)pass0.o
 
 $(OBJ)pass1.o: $(OBJ)pass1.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)pass1.c -o $(OBJ)pass1.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)pass1.c -o $(OBJ)pass1.o
 
 $(OBJ)pass15.o: $(OBJ)pass15.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)pass15.c -o $(OBJ)pass15.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)pass15.c -o $(OBJ)pass15.o
 
 $(OBJ)pass16.o: $(OBJ)pass16.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)pass16.c -o $(OBJ)pass16.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)pass16.c -o $(OBJ)pass16.o
 
 $(OBJ)pass2.o: $(OBJ)pass2.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)pass2.c -o $(OBJ)pass2.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)pass2.c -o $(OBJ)pass2.o
 
 $(OBJ)pass3.o: $(OBJ)pass3.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)pass3.c -o $(OBJ)pass3.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)pass3.c -o $(OBJ)pass3.o
 
 $(OBJ)shortcuts.o: $(OBJ)shortcuts.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)shortcuts.c -o $(OBJ)shortcuts.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)shortcuts.c -o $(OBJ)shortcuts.o
 
 $(OBJ)type.o: $(OBJ)type.c
-	$(CC) $(CUSTOM1_CFLAGS) $(FVISIBILITY) -c $(OBJ)type.c -o $(OBJ)type.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)type.c -o $(OBJ)type.o
 
 $(OBJ)bsl.o: ../bootstrap/bsl.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../bootstrap/bsl.c -o $(OBJ)bsl.o
