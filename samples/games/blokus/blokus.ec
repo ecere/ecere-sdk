@@ -692,18 +692,27 @@ class Blokus : Window
       return true;
    }
 
+   bool OnSysKeyDown(Key key, unichar ch)
+   {
+      // Temporarily disable chat when dragging to get Android arrow keys
+      if(dragging)
+         chat.disabled = true;
+      return true;
+   }
+
    bool OnKeyHit(Key key, unichar ch)
    {
-      if(key == wheelDown || key == wheelUp)
+      if(key == wheelDown || key == down || key == left || key == wheelUp || key == up || key == right)
       {
          Piece * piece = &pieces[selectedPiece];
          int mx = drag.x - offset.x, my = drag.y - offset.y;
-
          int rx, ry;
          int x = squareDragged.x, y = squareDragged.y;
          int w,h;
+         bool isDown = key == wheelDown || key == right || key == down;
+         chat.disabled = false;
 
-         if(key == wheelDown)
+         if(isDown)
          {
             if(++direction == 4) direction = 0;
          }
@@ -716,7 +725,7 @@ class Blokus : Window
 
          offset.x += squareDragged.x * squareWidth;
          offset.y += squareDragged.y * squareWidth;
-         if(key == wheelDown)
+         if(isDown)
             squareDragged = { w-1-y, x };
          else
             squareDragged = { y, h-1-x };

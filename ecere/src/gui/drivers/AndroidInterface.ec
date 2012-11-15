@@ -892,6 +892,11 @@ static bool gotInit;
 default float AMotionEvent_getAxisValue(const AInputEvent* motion_event,
         int32_t axis, size_t pointer_index);
 
+
+static define AMETA_META_ON       = 0x00010000;
+static define AMETA_META_LEFT_ON  = 0x00020000;
+static define AMETA_META_RIGHT_ON = 0x00040000;
+
 static Key keyCodeTable[] =
 {
     0, //AKEYCODE_UNKNOWN         = 0,
@@ -913,10 +918,10 @@ static Key keyCodeTable[] =
     k9, //AKEYCODE_9               = 16,
     keyPadStar, //AKEYCODE_STAR            = 17,
     Key { k3, shift = true }, //AKEYCODE_POUND           = 18,
-    wheelDown, //AKEYCODE_DPAD_UP         = 19,
-    wheelUp, //AKEYCODE_DPAD_DOWN       = 20,
-    wheelDown, //AKEYCODE_DPAD_LEFT       = 21,
-    wheelUp, //AKEYCODE_DPAD_RIGHT      = 22,
+    up, //AKEYCODE_DPAD_UP         = 19,
+    down, //AKEYCODE_DPAD_DOWN       = 20,
+    left, //AKEYCODE_DPAD_LEFT       = 21,
+    right, //AKEYCODE_DPAD_RIGHT      = 22,
     keyPad5, //AKEYCODE_DPAD_CENTER     = 23,
     0, //AKEYCODE_VOLUME_UP       = 24,
     0, //AKEYCODE_VOLUME_DOWN     = 25,
@@ -951,17 +956,17 @@ static Key keyCodeTable[] =
     z, //AKEYCODE_Z               = 54,
     comma, //AKEYCODE_COMMA           = 55,
     period, //AKEYCODE_PERIOD          = 56,
-    Key { left, alt = true }, //AKEYCODE_ALT_LEFT        = 57,
-    Key { right, alt = true }, //AKEYCODE_ALT_RIGHT       = 58,
-    Key { left, shift = true }, //AKEYCODE_SHIFT_LEFT      = 59,
-    Key { right, shift = true }, //AKEYCODE_SHIFT_RIGHT     = 60,
+    leftAlt, //AKEYCODE_ALT_LEFT        = 57,
+    rightAlt, //AKEYCODE_ALT_RIGHT       = 58,
+    leftShift, //AKEYCODE_SHIFT_LEFT      = 59,
+    rightShift, //AKEYCODE_SHIFT_RIGHT     = 60,
     tab, //AKEYCODE_TAB             = 61,
     space, //AKEYCODE_SPACE           = 62,
     0, //AKEYCODE_SYM             = 63,
     0, //AKEYCODE_EXPLORER        = 64,
     0, //AKEYCODE_ENVELOPE        = 65,
     enter, //AKEYCODE_ENTER           = 66,
-    del, //AKEYCODE_DEL             = 67,
+    backSpace, //AKEYCODE_DEL             = 67,
     backQuote, //AKEYCODE_GRAVE           = 68,
     minus, //AKEYCODE_MINUS           = 69,
     plus, //AKEYCODE_EQUALS          = 70,
@@ -972,7 +977,7 @@ static Key keyCodeTable[] =
     quote, //AKEYCODE_APOSTROPHE      = 75,
     slash, //AKEYCODE_SLASH           = 76,
     Key { k2, shift = true }, //AKEYCODE_AT              = 77,
-    0, //AKEYCODE_NUM             = 78,
+    0, //AKEYCODE_NUM             = 78,      // Interpreted as an Alt
     0, //AKEYCODE_HEADSETHOOK     = 79,
     0, //AKEYCODE_FOCUS           = 80,   // *Camera* focus
     keyPadPlus, //AKEYCODE_PLUS            = 81,
@@ -1005,7 +1010,24 @@ static Key keyCodeTable[] =
     0, //AKEYCODE_BUTTON_START    = 108,
     0, //AKEYCODE_BUTTON_SELECT   = 109,
     0, //AKEYCODE_BUTTON_MODE     = 110,
+    escape, //AKEYCODE_BUTTON_ESCAPE     = 111,
+    del //AKEYCODE_BUTTON_ESCAPE     = 112,
+    leftControl, // = 113
+    rightControl, // = 114
+    capsLock, // = 115
+    scrollLock, // = 116
+    0, // = 117      KEYCODE_META_LEFT
+    0, // = 118      KEYCODE_META_RIGHT
+    0, // = 119      KEYCODE_FUNCTION
+    printScreen, // = 120      KEYCODE_SYSRQ
+    pauseBreak, // = 121
+    home, // = 122
+    end, // = 123
+    insert // = 124
 };
+
+// Why don't we have this in the NDK :(
+// default int32_t AKeyEvent_getUnichar(const AInputEvent* key_event);
 
 class AndroidActivity : AndroidAppGlue
 {
@@ -1039,6 +1061,13 @@ class AndroidActivity : AndroidAppGlue
          Modifiers keyFlags = 0;
          int x = (int)AMotionEvent_getX(event, 0);
          int y = (int)AMotionEvent_getY(event, 0);
+         bool shift = (meta & AMETA_SHIFT_ON) ? true : false;
+         bool alt = (meta & AMETA_ALT_ON) ? true : false;
+         bool sym = (meta & AMETA_SYM_ON) ? true : false;
+
+         keyFlags.shift = shift;
+         keyFlags.alt = alt;
+
          //PrintLn("Got a motion input event: ", action);
          /*
          if(action == 8) //AMOTION_EVENT_ACTION_SCROLL)
@@ -1078,17 +1107,35 @@ class AndroidActivity : AndroidAppGlue
          uint keyCode = AKeyEvent_getKeyCode(event);
          uint meta = AKeyEvent_getMetaState(event);
          Key key = keyCodeTable[keyCode];
+         bool shift = (meta & AMETA_SHIFT_ON) ? true : false;
+         bool alt = (meta & AMETA_ALT_ON || meta & AMETA_ALT_LEFT_ON || meta & AMETA_ALT_RIGHT_ON) ? true : false;
+         bool metaMeta = (meta & AMETA_META_ON || meta & AMETA_META_LEFT_ON || meta & AMETA_META_RIGHT_ON) ? true : false;
+         bool sym = (meta & AMETA_SYM_ON) ? true : false;
+         //unichar ch = AKeyEvent_getUnichar(event);
+         unichar ch = 0;
+
+         key.shift = shift;
+         key.alt = alt;
 
          AInputQueue_finishEvent(inputQueue, event, 1);
 
-         //PrintLn("Got a key: action = ", action, ", flags = ", flags, ", keyCode = ", keyCode, ", meta = ", meta, ": key = ", (int)key);
+         // PrintLn("Got a key: action = ", action, ", flags = ", flags, ", keyCode = ", keyCode, ", meta = ", meta, ": key = ", (int)key);
 
          if(key)
          {
-            if(action == AKEY_STATE_DOWN)
+            if(action == AKEY_EVENT_ACTION_DOWN || action == AKEY_EVENT_ACTION_MULTIPLE)
             {
-               window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, key, 0);
+               /*if(key == wheelDown || key == wheelUp)
+                  window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, key, ch);
+               else*/
+               {
+                  char c = Interface::TranslateKey(key.code, shift);
+                  if(c > 0) ch = c;
+                  window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown, key, ch);
+               }
             }
+            else if(action == AKEY_EVENT_ACTION_UP)
+               window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp, key, ch);
          }
          return 1;
       }

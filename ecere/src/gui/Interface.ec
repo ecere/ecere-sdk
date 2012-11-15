@@ -256,6 +256,7 @@ public:
 
    char ::TranslateKey(Key key, bool shift)
    {
-      return characters[shift][key];
+      int code = (int)key.code;
+      return (code <= 127) ? characters[shift][code] : 0;
    }
 };
