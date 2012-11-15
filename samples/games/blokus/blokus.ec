@@ -700,8 +700,18 @@ class Blokus : Window
       return true;
    }
 
+   bool OnKeyDown(Key key, unichar ch)
+   {
+      chat.disabled = false;
+      return true;
+   }
+
    bool OnKeyHit(Key key, unichar ch)
    {
+      if(key == space)
+      {
+         OnRightButtonDown(drag.x - offset.x, drag.y - offset.y, 0);
+      }
       if(key == wheelDown || key == down || key == left || key == wheelUp || key == up || key == right)
       {
          Piece * piece = &pieces[selectedPiece];
@@ -710,7 +720,6 @@ class Blokus : Window
          int x = squareDragged.x, y = squareDragged.y;
          int w,h;
          bool isDown = key == wheelDown || key == right || key == down;
-         chat.disabled = false;
 
          if(isDown)
          {
