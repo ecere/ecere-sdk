@@ -1156,7 +1156,6 @@ class AndroidActivity : AndroidAppGlue
             {
                int w, h;
                gotInit = true;
-               PrintLn("onAppCmd: initWindow");
                ANativeWindow_setBuffersGeometry(window, 0, 0, 0); //format);
                w = ANativeWindow_getWidth(window);
                h = ANativeWindow_getHeight(window);

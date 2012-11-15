@@ -397,9 +397,14 @@ static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
 #define glColor3f             glesColor3f
 #define glColor4ub            glesColor4ub
 #define glColor4fv            glesColor4fv
+#define glLineStipple         glesLineStipple
+#define glNormal3fv           glesNormal3fv
+#define glTexCoord2fv         glesTexCoord2fv
+#define glColorMaterial       glesColorMaterial
 
 #define glLoadMatrixd         glesLoadMatrixd
 #define glMultMatrixd         glesMultMatrixd
+#define glFrustum             glesFrustum
 #define glOrtho               glesOrtho
 #define glScaled              glesScaled
 #define glTranslated          glesTranslated
@@ -407,6 +412,7 @@ static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
 #define glVertex3d            glesVertex3d
 #define glVertex3f            glesVertex3f
 #define glVertex3fv           glesVertex3fv
+#define glLightModeli         glesLightModeli
 
 #define APIENTRY
 //#define GL_QUADS              0
@@ -438,6 +444,7 @@ static bool egl_init_display(ANativeWindow* window)
       EGL_BLUE_SIZE, 8,
       EGL_GREEN_SIZE, 8,
       EGL_RED_SIZE, 8,
+      EGL_DEPTH_SIZE, 24,
       EGL_NONE
    };
    EGLint w, h, dummy, format;
@@ -518,9 +525,12 @@ static void egl_term_display()
 // OpenGL Immediate Mode Porting Kit
 static int beginCount;
 static int vertexCount;
+static int normalCount;
 static float *vertexPointer;
+static float *normalPointer;
 static GLenum beginMode;
-static unsigned int beginBufferSize;
+static unsigned int beginBufferSize, normalBufferSize;
+static int numVertexCoords = 2;
 
 void glesRecti(int a, int b, int c, int d)
 {
@@ -539,8 +549,9 @@ void glesBegin(GLenum mode)
    vertexCount = 0;
    if(!vertexPointer)
    {
-      beginBufferSize = 1024;  // default number of vertices
-      vertexPointer = new float[beginBufferSize * 4];
+      normalBufferSize = beginBufferSize = 1024;  // default number of vertices
+      vertexPointer = new float[beginBufferSize * 5];
+      normalPointer = new float[normalBufferSize * 3];
    }
 }
 
@@ -548,35 +559,37 @@ void glesTexCoord2f(float x, float y)
 {
    int count = vertexCount;
 
-   if(vertexCount + 4 > beginBufferSize)
+   if(vertexCount + numVertexCoords > beginBufferSize)
    {
       beginBufferSize = beginBufferSize + beginBufferSize/2;
-      vertexPointer = renew vertexPointer float[beginBufferSize * 4];
+      vertexPointer = renew vertexPointer float[beginBufferSize * 5];
    }
 
-   vertexPointer[count*4  ] = x;
-   vertexPointer[count*4+1] = y;
+   vertexPointer[count*(2+numVertexCoords)  ] = x;
+   vertexPointer[count*(2+numVertexCoords)+1] = y;
    count++;
 
    if(beginMode == GL_QUADS && ((beginCount % 4) == 3))
    {
-      vertexPointer[count*4  ] = vertexPointer[(count-4)*4];
-      vertexPointer[count*4+1] = vertexPointer[(count-4)*4+1];
+      vertexPointer[count*(2+numVertexCoords)  ] = vertexPointer[(count-4)*(2+numVertexCoords)];
+      vertexPointer[count*(2+numVertexCoords)+1] = vertexPointer[(count-4)*(2+numVertexCoords)+1];
       count++;
-      vertexPointer[count*4  ] = vertexPointer[(count-3)*4];
-      vertexPointer[count*4+1] = vertexPointer[(count-3)*4+1];
+      vertexPointer[count*(2+numVertexCoords)  ] = vertexPointer[(count-3)*(2+numVertexCoords)];
+      vertexPointer[count*(2+numVertexCoords)+1] = vertexPointer[(count-3)*(2+numVertexCoords)+1];
       count++;
    }
 } 
 void glesTexCoord2i(int x, int y)       { glesTexCoord2f((float)x, (float)y); }
 void glesTexCoord2d(double x, double y) { glesTexCoord2f((float)x, (float)y); }
+void glesTexCoord2fv(float * a)         { glesTexCoord2f(a[0], a[1]); }
 
 void glesVertex2f(float x, float y)
 {
+   numVertexCoords = 2;
    if(vertexCount + 4 > beginBufferSize)
    {
       beginBufferSize = beginBufferSize + beginBufferSize/2;
-      vertexPointer = renew vertexPointer float[beginBufferSize * 4];
+      vertexPointer = renew vertexPointer float[beginBufferSize * 5];
    }
 
    vertexPointer[vertexCount*4+2] = x;
@@ -604,10 +617,19 @@ void glesEnd(void)
    else if(mode == GL_POLYGON) mode = GL_TRIANGLE_FAN;
    GLSelectVBO(0);
    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-   glTexCoordPointer(2, GL_FLOAT, 2*2*sizeof(float),vertexPointer);
-   glVertexPointer  (2, GL_FLOAT, 2*2*sizeof(float),vertexPointer+2);
+   glTexCoordPointer(numVertexCoords, GL_FLOAT, (numVertexCoords+2)*sizeof(float),vertexPointer);
+   glVertexPointer  (numVertexCoords, GL_FLOAT, (numVertexCoords+2)*sizeof(float),vertexPointer+2);
+   if(normalCount && normalCount == vertexCount)
+   {
+      glEnableClientState(GL_NORMAL_ARRAY);
+      glNormalPointer  (GL_FLOAT, 3*sizeof(float),normalPointer);
+   }
+
    glDrawArrays(mode, 0, vertexCount);
+   if(normalCount)
+      glDisableClientState(GL_NORMAL_ARRAY);
    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+   normalCount = 0;
 }
 
 // Vertex Pointer
@@ -742,10 +764,83 @@ void glesRotated( double a, double b, double c, double d ) { glRotatef((float)a,
 void glesScaled( double a, double b, double c ) { glScalef((float)a, (float)b, (float)c); }
 void glesTranslated( double a, double b, double c ) { glTranslatef((float)a, (float)b, (float)c); }
 
-void glesMultMatrixd( double * i ) { }
-void glesVertex3d( double x, double y, double z ) { }
-void glesVertex3f( float x, float y, float z ) { }
-void glesVertex3fv( float* coords ) { }
+void glesMultMatrixd( double * i )
+{
+   float m[16] =
+   {
+      (float)i[0], (float)i[1], (float)i[2], (float)i[3],
+      (float)i[4], (float)i[5], (float)i[6], (float)i[7],
+      (float)i[8], (float)i[9], (float)i[10], (float)i[11],
+      (float)i[12], (float)i[13], (float)i[14], (float)i[15]
+   };
+   glMultMatrixf(m);
+}
+
+// Need to do these...
+void glesVertex3f( float x, float y, float z )
+{
+   numVertexCoords = 3;
+   if(vertexCount + 4 > beginBufferSize)
+   {
+      beginBufferSize = beginBufferSize + beginBufferSize/2;
+      vertexPointer = renew vertexPointer float[beginBufferSize * 5];
+   }
+
+   vertexPointer[vertexCount*5+2] = x;
+   vertexPointer[vertexCount*5+3] = y;
+   vertexPointer[vertexCount*5+4] = z;
+   vertexCount++;
+
+   if(beginMode == GL_QUADS && ((beginCount % 4) == 3))
+   {
+      vertexPointer[vertexCount*5+2] = vertexPointer[(vertexCount-4)*5+2];
+      vertexPointer[vertexCount*5+3] = vertexPointer[(vertexCount-4)*5+3];
+      vertexPointer[vertexCount*5+4] = vertexPointer[(vertexCount-4)*5+4];
+      vertexCount++;
+      vertexPointer[vertexCount*5+2] = vertexPointer[(vertexCount-3)*5+2];
+      vertexPointer[vertexCount*5+3] = vertexPointer[(vertexCount-3)*5+3];
+      vertexPointer[vertexCount*5+4] = vertexPointer[(vertexCount-3)*5+4];
+      vertexCount++;
+   }
+   beginCount++;
+}
+
+void glesVertex3d( double x, double y, double z )  { glesVertex3f((float)x, (float)y, (float)z); }
+void glesVertex3fv( float* coords )                { glesVertex3f(coords[0], coords[1], coords[2]); }
+
+void glesNormal3f(float x, float y, float z)
+{
+   normalCount = vertexCount;
+   if(vertexCount + 4 > normalBufferSize)
+   {
+      normalBufferSize = normalBufferSize + normalBufferSize/2;
+      normalPointer = renew normalPointer float[normalBufferSize * 2];
+   }
+
+   normalPointer[normalCount*3+0] = x;
+   normalPointer[normalCount*3+1] = y;
+   normalPointer[normalCount*3+2] = z;
+   normalCount++;
+
+   if(beginMode == GL_QUADS && ((beginCount % 4) == 3))
+   {
+      normalPointer[normalCount*3+0] = normalPointer[(normalCount-4)*3+0];
+      normalPointer[normalCount*3+1] = normalPointer[(normalCount-4)*3+1];
+      normalPointer[normalCount*3+2] = normalPointer[(normalCount-4)*3+2];
+      normalCount++;
+      normalPointer[normalCount*3+0] = normalPointer[(normalCount-3)*3+0];
+      normalPointer[normalCount*3+1] = normalPointer[(normalCount-3)*3+1];
+      normalPointer[normalCount*3+2] = normalPointer[(normalCount-3)*3+2];
+      normalCount++;
+   }
+}
+void glesNormal3fd(double x, double y, double z)         { glesNormal3f((float)x, (float)y, (float)z); }
+void glesNormal3fv(float * coords)                       { glesNormal3f(coords[0], coords[1], coords[2]); }
+
+void glesColorMaterial(int a, int b)
+{
+   PrintLn("glColorMaterial stub");
+}
 
 void glesTerminate()
 {
@@ -762,31 +857,51 @@ void glesTerminate()
    shortBDSize = 0;
 }
 
-// *** TO DO ***
+// *** We don't support stipple yet... ***
+void glesLineStipple( int i, unsigned short j )
+{
+
+}
+
+void glesFrustum( double l, double r, double b, double t, double n, double f )
+{
+   float A = (float)((r + l) / (r - l));
+   float B = (float)((t + b) / (t - b));
+   float C = (float)(-(f + n) / (f - n));
+   float D = (float)(-2*f*n/(f-n));
+   float matrix[4][4] =
+   {
+      { (float)(2*n / (r - l)), 0, 0, 0 },
+      { 0, (float)(2*n / (t - b)), 0, 0 },
+      { A, B,             C,-1 },
+      { 0, 0,             D, 0 }
+   };
+   glMultMatrixf((float *)matrix);
+}
+
+void glesLightModeli( unsigned int pname, int param )
+{
+   if(pname == GL_LIGHT_MODEL_TWO_SIDE)
+      glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, param);
+}
+
+void glClearDepth( double depth ) { glClearDepthf((float)depth); }
+void glFogi( unsigned int pname, int param ) { }
+void glPolygonMode( unsigned int i, unsigned int j ) { }
+
+
+// *** Picking won't be supported for now ***
 void glPushName( unsigned int i ) { }
 void glLoadName( unsigned int i ) { }
 void glPopName() { }
-void glLineStipple( int i, unsigned short j ) { }
-void glPopAttrib() { }
-void glPushAttrib( unsigned int i ) { }
-void glBitmap( int w, int h, float xo, float yo, float xm, float ym, const unsigned int* bmp ) { }
-void glCallLists( int n, unsigned int type, const void* lists ) { }
-void glClearDepth( double depth ) { }
-void glFogi( unsigned int pname, int param ) { }
-void glFrustum( double a, double b, double c, double d, double e, double f ) { }
-void glLightModeli( unsigned int pname, int param ) { }
-void glListBase( unsigned int base ) { }
-void glPolygonMode( unsigned int i, unsigned int j ) { }
-void glRasterPos3f( float x, float y, float z ) { }
+
+// Probably replace by regular glBlendFunc ...
 void glBlendFuncSeparate(int a, int b, int c, int d) { }
+
+// For direct pixel blitting...
 void glRasterPos2d(double a, double b) { }
 void glPixelZoom(float a, float b) { }
 void glDrawPixels(int a, int b, int c, int d, void * e) { }
-void glColorMaterial(int a, int b) { }
-void glUnlockArraysEXT() { }
-void glLockArraysEXT(int a, int b) { }
-void glNormal3fv(float * a) { }
-void glTexCoord2fv(float * a) { }
 
 #else
 
@@ -3274,9 +3389,10 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       //Logf("SelectMesh\n");
 
+#ifndef __ANDROID__
       if(display.display3D.mesh && glUnlockArraysEXT)   
          glUnlockArraysEXT();
-      
+#endif
       if(mesh)
       {
          OGLDisplay oglDisplay = display.driverData;
@@ -3352,7 +3468,9 @@ class OpenGLDisplayDriver : DisplayDriver
                glDisableClientState(GL_COLOR_ARRAY);
          }
 
+#ifndef __ANDROID__
          if(glLockArraysEXT) glLockArraysEXT(0, mesh.nVertices);
+#endif
       }
       else if(glBindBufferARB)
          glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);

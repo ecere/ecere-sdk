@@ -45,7 +45,13 @@ static File EAROpenArchive(char * archive, EARHeader header)
    if(archive[0] == ':')
    {
       char moduleName[MAX_LOCATION];
-      if(LocateModule(archive + 1, moduleName))
+      char * name = archive + 1;
+#if defined(__ANDROID__)
+      if(!name[0])
+         name = ((SubModule)__thisModule.application.modules.first).next.module.name;
+#endif
+
+      if(LocateModule(name, moduleName))
          f = FileOpen(moduleName, read);
    }
    else
