@@ -445,6 +445,8 @@ static bool egl_init_display(ANativeWindow* window)
       EGL_GREEN_SIZE, 8,
       EGL_RED_SIZE, 8,
       EGL_DEPTH_SIZE, 24,
+      /*EGL_SAMPLE_BUFFERS, 1,
+      EGL_SAMPLES, 0, //2,*/
       EGL_NONE
    };
    EGLint w, h, dummy, format;
@@ -508,6 +510,11 @@ static bool egl_init_display(ANativeWindow* window)
 
 static void egl_term_display()
 {
+   if(stippleTexture)
+   {
+      glDeleteTextures(1, (int *)&stippleTexture);
+      stippleTexture = 0;
+   }
    if(eglDisplay != EGL_NO_DISPLAY)
    {
       eglMakeCurrent(eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
@@ -857,10 +864,34 @@ void glesTerminate()
    shortBDSize = 0;
 }
 
-// *** We don't support stipple yet... ***
+static int stippleTexture;
+static bool stippleEnabled;
+
 void glesLineStipple( int i, unsigned short j )
 {
-
+   uint texture[1*16];
+   int c;
+   int x;
+   for(x = 0; x < 16; x++)
+   {
+      bool v = (j & (1 << x)) != 0;
+      texture[x] = v ? 0xFFFFFFFF : 0;
+   }
+   if(!stippleTexture)
+      glGenTextures(1, &stippleTexture);
+   glBindTexture(GL_TEXTURE_2D, stippleTexture);
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 16, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
+   glEnable(GL_TEXTURE_2D);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+   glMatrixMode(GL_TEXTURE);
+   glLoadIdentity();
+   //glTranslated(1.0/backAttrib->texW/2.0f, 1.0/backAttrib->texH/2.0f, 0.0f);
+   glScaled(i/16.0, 1, 1.0f);
+   glTranslated(0.5, 0.5, 0);
+   glMatrixMode(GL_PROJECTION);
 }
 
 void glesFrustum( double l, double r, double b, double t, double n, double f )
@@ -896,7 +927,10 @@ void glLoadName( unsigned int i ) { }
 void glPopName() { }
 
 // Probably replace by regular glBlendFunc ...
-void glBlendFuncSeparate(int a, int b, int c, int d) { }
+void glBlendFuncSeparate(int a, int b, int c, int d)
+{
+   glBlendFunc(a, b);
+}
 
 // For direct pixel blitting...
 void glRasterPos2d(double a, double b) { }
@@ -2352,17 +2386,33 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLSurface oglSurface = surface.driverData;
       if(x1 == x2) { y2++; y1--; }
       else if(y1 == y2) { x2++; x1--; }
+      x1 += surface.offset.x;
+      y1 += surface.offset.y;
+      x2 += surface.offset.x;
+      y2 += surface.offset.y;
 
       //Logf("Line\n");
 
       glColor4fv(oglSurface.foreground);
       glBegin(GL_LINES);
-      /*
-      glVertex2i(x1+surface.offset.x, y1+surface.offset.y);
-      glVertex2i(x2+surface.offset.x, y2+surface.offset.y);
-      */
-      glVertex2f(x1+surface.offset.x + 0.5f, y1+surface.offset.y + 0.5f);
-      glVertex2f(x2+surface.offset.x + 0.5f, y2+surface.offset.y + 0.5f);
+#ifdef __ANDROID__
+      if(stippleEnabled)
+      {
+         glTexCoord2f(0.5f, 0);
+         glVertex2f(x1 + 0.5f, y1 + 0.5f);
+         glTexCoord2f(Max(x2-x1, y2-y1) + 0.5f, 0);
+         glVertex2f(x2 + 0.5f, y2 + 0.5f);
+      }
+      else
+#endif
+      {
+         /*
+         glVertex2i(x1, y1);
+         glVertex2i(x2, y2);
+         */
+         glVertex2f(x1 + 0.5f, y1 + 0.5f);
+         glVertex2f(x2 + 0.5f, y2 + 0.5f);
+      }
       
       glEnd();
    }
@@ -2370,22 +2420,54 @@ class OpenGLDisplayDriver : DisplayDriver
    void Rectangle(Display display, Surface surface,int x1,int y1,int x2,int y2)
    {
       OGLSurface oglSurface = surface.driverData;
+      x1 += surface.offset.x;
+      y1 += surface.offset.y;
+      x2 += surface.offset.x;
+      y2 += surface.offset.y;
 
       //Logf("Rectangle\n");
 
       glColor4fv(oglSurface.foreground);
-      glBegin(GL_LINE_LOOP);
-      /*
-      glVertex2i(x1+surface.offset.x, y1+surface.offset.y);
-      glVertex2i(x1+surface.offset.x, y2+surface.offset.y);
-      glVertex2i(x2+surface.offset.x, y2+surface.offset.y);
-      glVertex2i(x2+surface.offset.x, y1+surface.offset.y);
-      */
-      glVertex2f(x1+surface.offset.x + 0.5f, y1+surface.offset.y + 0.5f);
-      glVertex2f(x1+surface.offset.x + 0.5f, y2+surface.offset.y + 0.5f);
-      glVertex2f(x2+surface.offset.x + 0.5f, y2+surface.offset.y + 0.5f);
-      glVertex2f(x2+surface.offset.x + 0.5f, y1+surface.offset.y + 0.5f);
-      
+#ifdef __ANDROID__
+      if(stippleEnabled)
+      {
+         glBegin(GL_LINES);
+
+         glTexCoord2f(0.5f, 0);
+         glVertex2f(x1 + 0.5f, y1 + 0.5f);
+         glTexCoord2f(y2-y1 + 0.5f, 0);
+         glVertex2f(x1 + 0.5f, y2 + 0.5f);
+
+         glTexCoord2f(0.5f, 0);
+         glVertex2f(x1 + 0.5f, y2 + 0.5f);
+         glTexCoord2f(x2 - x1 + 0.5f, 0);
+         glVertex2f(x2 + 0.5f, y2 + 0.5f);
+
+         glTexCoord2f(0.5f, 0);
+         glVertex2f(x2 + 0.5f, y2 + 0.5f);
+         glTexCoord2f(y1 - y2 + 0.5f, 0);
+         glVertex2f(x2 + 0.5f, y1 + 0.5f);
+
+         glTexCoord2f(0.5f, 0);
+         glVertex2f(x2 + 0.5f, y1 + 0.5f);
+         glTexCoord2f(x1 - x2 + 0.5f, 0);
+         glVertex2f(x1 + 0.5f, y1 + 0.5f);
+      }
+      else
+#endif
+      {
+         glBegin(GL_LINE_LOOP);
+         /*
+         glVertex2i(x1, y1);
+         glVertex2i(x1, y2);
+         glVertex2i(x2, y2);
+         glVertex2i(x2, y1);
+         */
+         glVertex2f(x1 + 0.5f, y1 + 0.5f);
+         glVertex2f(x1 + 0.5f, y2 + 0.5f);
+         glVertex2f(x2 + 0.5f, y2 + 0.5f);
+         glVertex2f(x2 + 0.5f, y1 + 0.5f);
+      }
       glEnd();
    }
 
@@ -2813,11 +2895,26 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(stipple)
       {
+#if defined(__ANDROID__)
+         stippleEnabled = true;
+         glesLineStipple(1, (uint16)stipple);
+#else
          glLineStipple(1, (uint16)stipple);
          glEnable(GL_LINE_STIPPLE);
+#endif
       }
       else
+      {
+#if defined(__ANDROID__)
+         stippleEnabled = false;
+         glMatrixMode(GL_TEXTURE);
+         glLoadIdentity();
+         glMatrixMode(GL_PROJECTION);
+         glDisable(GL_TEXTURE_2D);
+#else
          glDisable(GL_LINE_STIPPLE);
+#endif
+      }
    }
 
    void SetRenderState(Display display, RenderState state, uint value)
