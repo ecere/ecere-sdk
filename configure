@@ -3,8 +3,14 @@ echo "The Ecere cross-platform SDK is pre-configured. Just type:
 		mingw32-make; if you're on Microsoft® Windows™
 				(You need MinGW: http://www.mingw.org/)
 
-		make;   if you're on Apple® Mac™ OS X™
-				(Leopard™/Xcode™ recommended)
+      If you're on Apple® Mac™ OS X™, first add your toolchain bin directory
+      to the path and set SYSROOT to the SDK directory. e.g. with Xcode 4.5.2:
+
+		export PATH=$PATH:/Applications/Xcode.app/Contents/Developer/usr/bin
+      export SYSROOT=/Applications/Xcode.app/Contents/Developer/SDKs/MacOSX10.7.sdk
+      make;
+				(Lion™/Xcode 4.5.2™ recommended)
+
 
 or simply	make;  if you are on GNU/Linux™
 

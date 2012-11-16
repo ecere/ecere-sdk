@@ -222,5 +222,7 @@ OPENSSL_LIB_DIR = .
 OPENSSL_BIN_DIR = .
 endif
 else
+ifndef OSX_TARGET
 OFLAGS += -L/usr/lib/ec
+endif
 endif
