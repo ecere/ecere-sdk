@@ -390,7 +390,7 @@ private:
          // e.g. ifneq "$(or $(or $(OSX_TARGET),$(LINUX_TARGET)),$(WINDOWS_TARGET))"
          int i = 0;
          f.Puts("ifneq \"");
-         for(i = 0; i < platforms.count - 1; i++)
+         for(i = 0; platforms.count && i < platforms.count - 1; i++)
             f.Puts("$(or ");
          i = 0;
          for(p : platforms)
@@ -2224,11 +2224,25 @@ private:
       Array<Platform> platforms { };
       Map<Platform, SetBool> exclusionInfo { };
       CollectExclusionInfo(exclusionInfo, prjConfig);
-      if(exclusionInfo[unknown] == true && exclusionInfo.count > 1)
-         for(mn : exclusionInfo; mn == false)
-            platforms.Add(&mn);
+
+      if(exclusionInfo[unknown] == true)
+      {
+         if(exclusionInfo.count > 1)
+            for(p : exclusionInfo; p == false)
+               platforms.Add(&p);
+      }
       else
-         platforms.Add(unknown);
+      {
+         if(exclusionInfo.count < 2)
+            platforms.Add(unknown);
+         else
+         {
+            Platform p;
+            for(p = unknown + 1; p < Platform::enumSize; p++)
+               if(exclusionInfo[p] != true)
+                  platforms.Add(p);
+         }
+      }
       delete exclusionInfo;
       return platforms;
    }
