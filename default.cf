@@ -2,7 +2,7 @@ EC_BINS := $(_CF_DIR)$(if $(USE_BOOTSTRAP),compiler/bootstrap/obj/bin.$(HOST_PLA
 
 # TOOLCHAIN
 export CC      = $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)gcc$(_SYSROOT)
-export CPP     = $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)cpp$(_SYSROOT)
+export CPP     = $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)gcc$(_SYSROOT)
 export AS      = $(GCC_PREFIX)as
 export LD      = $(GCC_PREFIX)ld
 export AR      = $(GCC_PREFIX)ar
@@ -34,6 +34,10 @@ ifdef BSD_TARGET
 EXCLUDED_LIBS += $(space)dl
 CFLAGS += -isystem /usr/local/include
 LDFLAGS += -L/usr/local/lib
+endif
+
+ifdef OSX_TARGET
+CFLAGS += -I$(SYSROOT)/usr/include/ffi
 endif
 
 OFLAGS += $(LDFLAGS)

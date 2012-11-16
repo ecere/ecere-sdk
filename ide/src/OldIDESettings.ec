@@ -24,7 +24,7 @@ define ecpDefaultCommand = "ecp";
 define eccDefaultCommand = "ecc";
 define ecsDefaultCommand = "ecs";
 define earDefaultCommand = "ear";
-define cppDefaultCommand = "gcc"; // As per #624 we decided to default to "gcc"... "cpp";
+define cppDefaultCommand = "gcc"; // As per #624 we decided to default to "gcc"...
 define ccDefaultCommand = "gcc";
 define cxxDefaultCommand = "g++";
 

@@ -27,8 +27,6 @@ import "Window"
 
 #define GL_CLAMP_TO_EDGE 0x812F
 
-static bool useSingleGLContext = false;
-
 class DisplayData : struct
 {
    ColorAlpha * flippingBuffer;
@@ -70,10 +68,12 @@ class IndexData : struct
    int nIndices;
 };
 
+#if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
 static int primitiveTypes[RenderPrimitiveType] =
 {
    GL_POINTS, GL_LINES, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS, GL_QUAD_STRIP, GL_LINE_STRIP
 };
+#endif
 
 int current;
 void *previous;
@@ -177,7 +177,9 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       glDisable(GL_MULTISAMPLE_ARB);
       CocoaGlAssert();
   
+#if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
       display.ambient = Color { 50,50,50 };
+#endif
 
       printf("CocoaOpenGLDisplayDriver:CreateDisplay %p %s:%i\n", display.window, __FILE__, __LINE__);
       return result;
@@ -1061,6 +1063,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       printf("glGetError():%i\n", glGetError());
    }
 
+#if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
    void SetRenderState(Display display, RenderState state, uint value)
    {
       printf("CocoaOpenGLDisplayDriver:SetRenderState STUB! %s:%i\n", __FILE__, __LINE__);
@@ -1598,8 +1601,8 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
    {
       printf("CocoaOpenGLDisplayDriver: STUB! %s:%i\n", __FILE__, __LINE__);
 
-      if(display.display3D.mesh && glUnlockArraysEXT)   
-         glUnlockArraysEXT();
+      /*if(display.display3D.mesh && glUnlockArraysEXT)
+         glUnlockArraysEXT();*/
       
       if(mesh)
       {
@@ -1681,7 +1684,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
                glDisableClientState(GL_COLOR_ARRAY);
          }
 
-         if(glLockArraysEXT) glLockArraysEXT(0, mesh.nVertices);
+         //if(glLockArraysEXT) glLockArraysEXT(0, mesh.nVertices);
       }
       else if(glBindBufferARB)
          glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
@@ -1780,11 +1783,5 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
 
       glMultMatrixd(matrix.array);
    }
+#endif
 }
-
-public void UseSingleGLContext(bool useSingle)
-{
-   printf("CocoaOpenGLDisplayDriver: STUB! %s:%i\n", __FILE__, __LINE__);
-   useSingleGLContext = useSingle;
-}
-

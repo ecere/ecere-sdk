@@ -91,6 +91,8 @@
          "Options" : {
             "IncludeDirs" : [
                "/usr/include/freetype2",
+               "$(SYSROOT)/usr/X11/include/freetype2",
+               "$(SYSROOT)/usr/X11/include",
                "/usr/X11R6/include/freetype2",
                "/usr/X11R6/include",
                "../deps/jpeg-6b",
@@ -110,6 +112,7 @@
                "GL"
             ],
             "LibraryDirs" : [
+               "$(SYSROOT)/usr/X11/lib",
                "/usr/X11R6/lib",
                "../deps/jpeg-6b/obj/release.$(PLATFORM)",
                "../deps/libpng-1.4.0/obj/release.$(PLATFORM)",

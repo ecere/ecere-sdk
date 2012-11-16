@@ -158,6 +158,8 @@ endif
 
 _CPP = $(if $(findstring $(space),$(CPP)),"$(CPP)",$(CPP))
 
+_SYSROOT = $(if $(SYSROOT),$(space)--sysroot=$(SYSROOT),)
+
 # SHELL COMMANDS
 ifdef WINDOWS_HOST
 ifndef MSYSCON

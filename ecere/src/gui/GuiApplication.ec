@@ -72,7 +72,9 @@ import "network"
 
 #if defined(__APPLE__)
 import "CocoaInterface"
-#elif defined(__unix__) && !defined(__ANDROID__)
+#endif
+
+#if defined(__unix__) && !defined(__ANDROID__)
 import "XInterface"
 #endif
 
@@ -585,7 +587,7 @@ public class GuiApplication : Application
             if (driver) {
                defaultDriver = driver;
             } else {
-               defaultDriver = "CocoaOpenGL";
+               defaultDriver = "X"; //"CocoaOpenGL";
             }
          }
    #elif defined(__ANDROID__)

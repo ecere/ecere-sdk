@@ -956,10 +956,12 @@ void glDrawPixels(int a, int b, int c, int d, void * e) { }
 
 #endif
 
+#if !defined(__APPLE__)
 void (APIENTRY * glBindBufferARB) (GLenum target, GLuint buffer);
 void (APIENTRY * glGenBuffersARB) (GLsizei n, GLuint *buffers);
 void (APIENTRY * glDeleteBuffersARB) (GLsizei n, const GLuint *buffers);
 void (APIENTRY * glBufferDataARB) (GLenum target, int size, const GLvoid *data, GLenum usage);
+#endif
 
 #endif
 
@@ -1071,10 +1073,12 @@ class OGLIndices : struct
    int nIndices;
 };
 
+#if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
 static int primitiveTypes[RenderPrimitiveType] =
 {
    GL_POINTS, GL_LINES, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS, GL_QUAD_STRIP, GL_LINE_STRIP
 };
+#endif
 
 int current;
 void * previous;
@@ -1541,7 +1545,9 @@ class OpenGLDisplayDriver : DisplayDriver
          glClearDepth(1.0);
          glDisable(GL_MULTISAMPLE_ARB);
       }
+#if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
       display.ambient = Color { 50,50,50 };
+#endif
 
    if(!useSingleGLContext)
    #if defined(__WIN32__)
@@ -2916,7 +2922,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
       }
    }
-
+#if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
    void SetRenderState(Display display, RenderState state, uint value)
    {
       OGLDisplay oglDisplay = display.driverData;
@@ -3486,7 +3492,7 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       //Logf("SelectMesh\n");
 
-#ifndef __ANDROID__
+#if !defined( __ANDROID__) && !defined(__APPLE__)
       if(display.display3D.mesh && glUnlockArraysEXT)   
          glUnlockArraysEXT();
 #endif
@@ -3565,7 +3571,7 @@ class OpenGLDisplayDriver : DisplayDriver
                glDisableClientState(GL_COLOR_ARRAY);
          }
 
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !defined(__APPLE__)
          if(glLockArraysEXT) glLockArraysEXT(0, mesh.nVertices);
 #endif
       }
@@ -3663,6 +3669,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       glMultMatrixd(matrix.array);
    }
+#endif
 }
 
 public void UseSingleGLContext(bool useSingle)

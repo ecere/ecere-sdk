@@ -317,7 +317,7 @@ static void RepositionDesktop(bool updateChildren)
       }
       //   printf("Work Area width: %d, height %d\n", w, h);
    }
-   
+
    if(desktopX != x || desktopY != y || desktopW != w || desktopH != h)
    {
       guiApp.SetDesktopPosition(x, y, w, h, updateChildren);
@@ -1685,15 +1685,15 @@ class XInterface : Interface
                         if(maxVert && maxHorz)
                         {
                            if(window.state != maximized)
-                              window.state = maximized;
+                              *&window.state = maximized;
                         }
                         else if(isMinimized)
                         {
                            if(window.state != minimized)
-                              window.state = minimized;
+                              *&window.state = minimized;
                         }
                         else if(window.state != normal)
-                           window.state = normal;
+                           *&window.state = normal;
                      }
                   }
                   {
@@ -1844,9 +1844,10 @@ class XInterface : Interface
                }
                case PropertyNotify:
                {
+                  XWindowData windowData = window.windowData;
                   XPropertyEvent * event = (XPropertyEvent *) thisEvent;
                   if(event->atom == atoms[_net_frame_extents] &&
-                    event->state == PropertyNewValue && window.windowData)
+                    event->state == PropertyNewValue && windowData)
                   {
                      int format, len, fill;
                      Atom type;
@@ -1858,7 +1859,6 @@ class XInterface : Interface
                          &fill, &data) == Success && data)
                      {
                         int *extents = (int *)data;
-                        XWindowData windowData = window.windowData;
                         bool hadFrameExtents = windowData.gotFrameExtents;
                         windowData.decor =
                         {
@@ -1882,6 +1882,8 @@ class XInterface : Interface
 
                         XFree(data);
                      }
+                     else
+                        windowData.gotFrameExtents = true; // Unsupported?
                   }
                   break;
                }
@@ -2126,7 +2128,7 @@ class XInterface : Interface
             }
 
             {
-#if defined(__APPLE__)
+#if 0 //defined(__APPLE__)
                Atom hints[2] =
                {
                   parentWindow ? atoms[_net_wm_window_type_popup_menu] : atoms[_net_wm_window_type_normal]
@@ -2329,7 +2331,10 @@ class XInterface : Interface
          if(window.nativeDecorations)
          {
             XWindowData windowData = window.windowData;
+#if !defined(__APPLE__)
+            // TODO: How to handle frame extents not supported?
             if(!windowData.gotFrameExtents || window.state == maximized) return;
+#endif
             w -= window.size.w - window.clientSize.w;
             h -= window.size.h - window.clientSize.h;
          }

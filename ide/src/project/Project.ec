@@ -2039,7 +2039,8 @@ private:
             if(compiler.sysroot && compiler.sysroot[0])
             {
                f.Printf("SYSROOT := %s\n", compiler.sysroot);
-               f.Puts("_SYSROOT := $(space)--sysroot=$(SYSROOT)\n");
+               // Moved this to crossplatform.mk
+               //f.Puts("_SYSROOT := $(space)--sysroot=$(SYSROOT)\n");
                f.Puts("\n");
             }
 

@@ -10,7 +10,7 @@ ifdef WINDOWS_TARGET
 all: freetype jpeg png gif ffi z
 else
 ifdef OSX_TARGET
-all: jpeg png gif
+all: jpeg gif
 else
 all: gif
 endif

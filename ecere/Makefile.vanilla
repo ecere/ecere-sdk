@@ -357,6 +357,8 @@ PRJ_CFLAGS += \
 			 -I../deps/libungif-4.1.1/lib,) \
 	 $(if $(OSX_TARGET), \
 			 -I/usr/include/freetype2 \
+                         -I$(SYSROOT)/usr/X11/include/freetype2 \
+                         -I$(SYSROOT)/usr/X11/include \
 			 -I/usr/X11R6/include/freetype2 \
 			 -I/usr/X11R6/include \
 			 -I../deps/jpeg-6b \

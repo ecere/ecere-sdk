@@ -71,7 +71,12 @@ endif
 
 else # WINDOWS_TARGET
 
+ifdef OSX_TARGET
+# TODO: OSX soname
+SOV := $(SO)
+else
 SOV := $(SO)$(LIBVER)
+endif
 
 ifndef DESTDIR
 export DESTDIR=
@@ -100,7 +105,11 @@ export PREFIXLIBDIR=$(LIBDIR)
 else
 
 ifeq "$(HOSTTYPE)" "x86_64"
+ifdef OSX_HOST
+export PREFIXLIBDIR=$(prefix)/lib
+else
 export PREFIXLIBDIR=$(prefix)/lib32
+endif
 else
 export PREFIXLIBDIR=$(prefix)/lib
 endif
