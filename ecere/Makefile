@@ -98,13 +98,13 @@ _ECSOURCES1 = \
 	src/gfx/drivers/lfbConvert.ec \
 	src/gfx/drivers/LFBDisplayDriver.ec \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/NCursesDisplayDriver.ec,) \
-	$(if $(OSX_TARGET),,src/gfx/drivers/OpenGLDisplayDriver.ec) \
+	src/gfx/drivers/OpenGLDisplayDriver.ec \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec,)
 _ECSOURCES2 = \
 	$(if $(OSX_TARGET),src/gfx/drivers/CocoaOpenGLDisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32ConsoleDisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32PrinterDisplayDriver.ec,) \
-	$(if $(LINUX_TARGET),src/gfx/drivers/XDisplayDriver.ec,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/XDisplayDriver.ec,) \
 	src/gfx/Bitmap.ec \
 	src/gfx/BitmapResource.ec \
 	src/gfx/Color.ec \
@@ -139,9 +139,9 @@ _ECSOURCES2 = \
 	src/gui/dialogs/ReplaceDialog.ec \
 	src/gui/dialogs/WindowList.ec \
 	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaDispatch.ec,) \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaInterface.ec,) \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/NCursesInterface.ec,)
+	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaInterface.ec,)
 _ECSOURCES3 = \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/NCursesInterface.ec,) \
 	$(if $(WINDOWS_TARGET),src/gui/drivers/Win32Interface.ec,) \
 	$(if $(WINDOWS_TARGET),src/gui/drivers/Win32ConsoleInterface.ec,) \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/XInterface.ec,) \
@@ -722,10 +722,8 @@ $(OBJ)NCursesDisplayDriver.sym: src/gfx/drivers/NCursesDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/NCursesDisplayDriver.ec -o $(OBJ)NCursesDisplayDriver.sym
 endif
 
-ifneq "$(or $(WINDOWS_TARGET),$(LINUX_TARGET))" ""
 $(OBJ)OpenGLDisplayDriver.sym: src/gfx/drivers/OpenGLDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/OpenGLDisplayDriver.ec -o $(OBJ)OpenGLDisplayDriver.sym
-endif
 
 ifneq "$(WINDOWS_TARGET)" ""
 $(OBJ)Win32BitmapPrinterDisplayDriver.sym: src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec
@@ -747,7 +745,7 @@ $(OBJ)Win32PrinterDisplayDriver.sym: src/gfx/drivers/Win32PrinterDisplayDriver.e
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/Win32PrinterDisplayDriver.ec -o $(OBJ)Win32PrinterDisplayDriver.sym
 endif
 
-ifneq "$(LINUX_TARGET)" ""
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)XDisplayDriver.sym: src/gfx/drivers/XDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.sym
 endif
@@ -1133,10 +1131,8 @@ $(OBJ)NCursesDisplayDriver.c: src/gfx/drivers/NCursesDisplayDriver.ec $(OBJ)NCur
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/NCursesDisplayDriver.ec -o $(OBJ)NCursesDisplayDriver.c -symbols $(OBJ)
 endif
 
-ifneq "$(or $(WINDOWS_TARGET),$(LINUX_TARGET))" ""
 $(OBJ)OpenGLDisplayDriver.c: src/gfx/drivers/OpenGLDisplayDriver.ec $(OBJ)OpenGLDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/OpenGLDisplayDriver.ec -o $(OBJ)OpenGLDisplayDriver.c -symbols $(OBJ)
-endif
 
 ifneq "$(WINDOWS_TARGET)" ""
 $(OBJ)Win32BitmapPrinterDisplayDriver.c: src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec $(OBJ)Win32BitmapPrinterDisplayDriver.sym | $(SYMBOLS)
@@ -1158,7 +1154,7 @@ $(OBJ)Win32PrinterDisplayDriver.c: src/gfx/drivers/Win32PrinterDisplayDriver.ec 
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/Win32PrinterDisplayDriver.ec -o $(OBJ)Win32PrinterDisplayDriver.c -symbols $(OBJ)
 endif
 
-ifneq "$(LINUX_TARGET)" ""
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)XDisplayDriver.c: src/gfx/drivers/XDisplayDriver.ec $(OBJ)XDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.c -symbols $(OBJ)
 endif
@@ -1610,10 +1606,8 @@ $(OBJ)NCursesDisplayDriver.o: $(OBJ)NCursesDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)NCursesDisplayDriver.c -o $(OBJ)NCursesDisplayDriver.o
 endif
 
-ifneq "$(or $(WINDOWS_TARGET),$(LINUX_TARGET))" ""
 $(OBJ)OpenGLDisplayDriver.o: $(OBJ)OpenGLDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)OpenGLDisplayDriver.c -o $(OBJ)OpenGLDisplayDriver.o
-endif
 
 ifneq "$(WINDOWS_TARGET)" ""
 $(OBJ)Win32BitmapPrinterDisplayDriver.o: $(OBJ)Win32BitmapPrinterDisplayDriver.c
@@ -1635,7 +1629,7 @@ $(OBJ)Win32PrinterDisplayDriver.o: $(OBJ)Win32PrinterDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)Win32PrinterDisplayDriver.c -o $(OBJ)Win32PrinterDisplayDriver.o
 endif
 
-ifneq "$(LINUX_TARGET)" ""
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)XDisplayDriver.o: $(OBJ)XDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)XDisplayDriver.c -o $(OBJ)XDisplayDriver.o
 endif

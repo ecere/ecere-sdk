@@ -88,7 +88,7 @@ void CocoaGlAssert()
     }
 }
 
-class OpenGLDisplayDriver : DisplayDriver
+class CocoaOpenGLDisplayDriver : DisplayDriver
 {
    class_property(name) = "CocoaOpenGL";
 

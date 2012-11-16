@@ -1164,7 +1164,7 @@
                               {
                                  "Name" : "apple",
                                  "Options" : {
-                                    "ExcludeFromBuild" : true
+                                    "ExcludeFromBuild" : false
                                  }
                               }
                            ],
@@ -1429,6 +1429,12 @@
                            "Platforms" : [
                               {
                                  "Name" : "linux",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              },
+                              {
+                                 "Name" : "apple",
                                  "Options" : {
                                     "ExcludeFromBuild" : false
                                  }
