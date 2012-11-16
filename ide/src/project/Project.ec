@@ -2711,32 +2711,19 @@ private:
 
          f.Puts("# SYMBOL RULES\n");
          f.Puts("\n");
-         {
-            Map<Platform, bool> excludedPlatforms { };
-            topNode.GenMakefilePrintSymbolRules(f, this, config, excludedPlatforms,
-                  nodeCFlagsMapping, nodeECFlagsMapping);
-            delete excludedPlatforms;
-         }
+
+         topNode.GenMakefilePrintSymbolRules(f, this, config, nodeCFlagsMapping, nodeECFlagsMapping);
 
          f.Puts("# C OBJECT RULES\n");
          f.Puts("\n");
-         {
-            Map<Platform, bool> excludedPlatforms { };
-            topNode.GenMakefilePrintCObjectRules(f, this, config, excludedPlatforms,
-                  nodeCFlagsMapping, nodeECFlagsMapping);
-            delete excludedPlatforms;
-         }
+
+         topNode.GenMakefilePrintCObjectRules(f, this, config, nodeCFlagsMapping, nodeECFlagsMapping);
 
          f.Puts("# OBJECT RULES\n");
          f.Puts("\n");
          // todo call this still but only generate rules whith specific options
          // see we-have-file-specific-options in ProjectNode.ec
-         {
-            Map<Platform, bool> excludedPlatforms { };
-            topNode.GenMakefilePrintObjectRules(f, this, namesInfo, config, excludedPlatforms,
-                  nodeCFlagsMapping, nodeECFlagsMapping);
-            delete excludedPlatforms;
-         }
+         topNode.GenMakefilePrintObjectRules(f, this, namesInfo, config, nodeCFlagsMapping, nodeECFlagsMapping);
 
          if(numCObjects)
             GenMakefilePrintMainObjectRule(f, config);
@@ -2874,13 +2861,12 @@ private:
          {
 #endif
             f.Puts("$(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c\n");
+            f.Printf("\t$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.%s -o $(OBJ)$(MODULE).main$(O)\n", extension);
+            f.Puts("\n");
 #if 0
          }
       }
 #endif
-
-      f.Printf("\t$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.%s -o $(OBJ)$(MODULE).main$(O)\n", extension);
-      f.Puts("\n");
    }
 
    void GenMakePrintCustomFlags(File f, String variableName, bool printNonCustom, Map<String, int> cflagsVariations)
