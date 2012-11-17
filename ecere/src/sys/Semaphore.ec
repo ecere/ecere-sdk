@@ -134,7 +134,7 @@ public:
          count = value;
 #else
          sem_destroy(&semaphore);
-         sem_init(&semaphore, false, initCount);
+         sem_init(&semaphore, 0, initCount);
 #endif
          initCount = value;
       }
