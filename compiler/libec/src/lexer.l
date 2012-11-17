@@ -468,7 +468,7 @@ int preprocessor()
    {
       char includeFile[MAX_LOCATION] = "";
 
-      strcpy(line, line+c);
+      memmove(line, line+c, strlen(line+c)+1);
       TrimLSpaces(line, line);
       if(line[0] == '\"')
       {
