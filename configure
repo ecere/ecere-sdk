@@ -7,7 +7,7 @@ echo "The Ecere cross-platform SDK is pre-configured. Just type:
       to the path and set SYSROOT to the SDK directory. e.g. with Xcode 4.5.2:
 
 		export PATH=$PATH:/Applications/Xcode.app/Contents/Developer/usr/bin
-      export SYSROOT=/Applications/Xcode.app/Contents/Developer/SDKs/MacOSX10.7.sdk
+      export SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk
       make;
 				(Lion™/Xcode 4.5.2™ recommended)
 

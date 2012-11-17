@@ -4,7 +4,7 @@
 namespace gfx::drivers;
 
 // OpenGL Extensions
-#if defined(__unix__)
+#if defined(__unix__) || defined(__APPLE__)
 
 #if !defined(__MINGW32__)
 #define GL_GLEXT_PROTOTYPES
@@ -86,7 +86,7 @@ namespace gfx::drivers;
 
 import "Display"
 
-#if defined(__unix__)
+#if defined(__unix__) || defined(__APPLE__)
 
 #ifndef __ANDROID__
 import "XInterface"
@@ -1093,7 +1093,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(useSingleGLContext) return true;
    #if defined(__WIN32__)
       wglMakeCurrent(oglSystem.hdc, oglSystem.glrc);
-   #elif defined(__unix__)
+   #elif defined(__unix__) || defined(__APPLE__)
       //if(previous) return true;
       // printf("Making SYSTEM current\n");
 /*#if defined(__APPLE__)
@@ -1114,7 +1114,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(useSingleGLContext) return;
    #if defined(__WIN32__)
       wglMakeCurrent(null, null);
-   #elif defined(__unix__)
+   #elif defined(__unix__) || defined(__APPLE__)
       // printf("Making NULL current\n");
       #if defined(__ANDROID__)
       #else
@@ -1132,7 +1132,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(useSingleGLContext) return true;
    #if defined(__WIN32__)
       wglMakeCurrent(oglDisplay.hdc, oglDisplay.glrc);
-   #elif defined(__unix__)
+   #elif defined(__unix__) || defined(__APPLE__)
       // if(previous) glXMakeCurrent(xGlobalDisplay, None, null);
       // printf("   Making DISPLAY current\n");
       #if defined(__ANDROID__)
@@ -1176,7 +1176,7 @@ class OpenGLDisplayDriver : DisplayDriver
          if(oglDisplay.memDC) DeleteDC(oglDisplay.memDC);
          if(oglDisplay.memBitmap) DeleteObject(oglDisplay.memBitmap); 
 
-   #elif defined(__unix__)
+   #elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__)
       #else
          if(oglDisplay.shapePixmap)
@@ -1341,7 +1341,7 @@ class OpenGLDisplayDriver : DisplayDriver
             }
          }
       }
-   #elif defined(__unix__)
+   #elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__)
          egl_init_display(guiApp.desktop.windowHandle);
          result = true;
@@ -1400,7 +1400,7 @@ class OpenGLDisplayDriver : DisplayDriver
          ReleaseDC(oglSystem.hwnd, oglSystem.hdc);
       DestroyWindow(oglSystem.hwnd);
 
-   #elif defined(__unix__)
+   #elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__)
          egl_term_display();
       #else
@@ -1446,7 +1446,7 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          else
             ReleaseDC(display.window, oglDisplay.hdc);
-   #elif defined(__unix__)
+   #elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__)
       #else
          XVisualInfo * visualInfo = null;
@@ -1552,7 +1552,7 @@ class OpenGLDisplayDriver : DisplayDriver
    if(!useSingleGLContext)
    #if defined(__WIN32__)
       wglMakeCurrent(null, null);
-   #elif defined(__unix__)
+   #elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__)
       result = true;
       #else
@@ -1728,7 +1728,7 @@ class OpenGLDisplayDriver : DisplayDriver
             }
             ReleaseDC(display.window, hdc);
          }
-#elif defined(__unix__)
+#elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__)
          result = true;
       #else
@@ -1892,7 +1892,7 @@ class OpenGLDisplayDriver : DisplayDriver
          CreateDisplay(display);
 #if defined(__WIN32__)
          wglMakeCurrent(oglDisplay.hdc, oglDisplay.glrc);
-#elif defined(__unix__)
+#elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__)
          width = eglWidth;
          height = eglHeight;
@@ -2024,7 +2024,7 @@ class OpenGLDisplayDriver : DisplayDriver
             */
 
             ReleaseDC(0, hdc);
-#elif defined(__unix__)
+#elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__)
       #else
             XTransform transform = 
@@ -2054,7 +2054,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__WIN32__)
          //wglSwapLayerBuffers(oglDisplay.hdc,WGL_SWAP_MAIN_PLANE); 
          SwapBuffers(oglDisplay.hdc);
-#elif defined(__unix__)
+#elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__)
          eglSwapBuffers(eglDisplay, eglSurface);
       #else

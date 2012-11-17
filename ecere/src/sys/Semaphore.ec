@@ -9,6 +9,12 @@ namespace sys;
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#elif defined(__APPLE__)
+#define set _set
+#include <mach/mach.h>
+#include <mach/task.h>
+#include <mach/semaphore.h>
+#undef set
 #else
 #include <semaphore.h>
 #endif
@@ -35,7 +41,7 @@ public class Semaphore : struct
 #if defined(__WIN32__)
       handle = CreateSemaphore(null, 0, 1, null);
 #elif defined(__APPLE__)
-      semaphore_create(current_task(), &semaphore, SYNC_POLICY_FIFO, 0);
+      semaphore_create(mach_task_self(), &semaphore, SYNC_POLICY_FIFO, 0);
 #else
       sem_init(&semaphore, 0, 0);
 #endif
@@ -48,7 +54,7 @@ public class Semaphore : struct
 #if defined(__WIN32__)
       if(handle) CloseHandle(handle);
 #elif defined(__APPLE__)
-      semaphore_destroy(current_task(), &semaphore);
+      semaphore_destroy(mach_task_self(), semaphore);
 #else
       sem_destroy(&semaphore);
 #endif
@@ -123,8 +129,8 @@ public:
          if(handle) CloseHandle(handle);
          handle = CreateSemaphore(null, initCount, value, null);
 #elif defined(__APPLE__)
-         semaphore_destroy(semaphore);
-         semaphore_create(current_task(), &semaphore, SYNC_POLICY_FIFO, 0);
+         semaphore_destroy(mach_task_self(), semaphore);
+         semaphore_create(mach_task_self(), &semaphore, SYNC_POLICY_FIFO, 0);
          count = value;
 #else
          sem_destroy(&semaphore);
