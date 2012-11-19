@@ -228,7 +228,8 @@ public class GuiApplication : Application
 
 #if !defined(__ANDROID__)
       // Because destruction of app won't be from main thread
-      lockMutex.Release();
+      if(guiApplicationInitialized)
+         lockMutex.Release();
 #endif
 
       if(interfaceDriver)
