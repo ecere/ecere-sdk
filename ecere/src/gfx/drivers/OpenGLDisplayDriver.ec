@@ -1096,14 +1096,14 @@ class OpenGLDisplayDriver : DisplayDriver
    #elif defined(__unix__) || defined(__APPLE__)
       //if(previous) return true;
       // printf("Making SYSTEM current\n");
-/*#if defined(__APPLE__)
-      //glXMakeCurrent(xGlobalDisplay, displaySystem.window, oglSystem.glContext);
-#else*/
+#if defined(__APPLE__)
+      glXMakeCurrent(xGlobalDisplay, displaySystem.window, oglSystem.glContext);
+#else
       #if defined(__ANDROID__)
       #else
       glXMakeCurrent(xGlobalDisplay, oglSystem.dummyGLXPixmap /*displaySystem.window /-*DefaultRootWindow(xGlobalDisplay)*/, oglSystem.glContext);
       #endif
-//#endif
+#endif
       //previous = oglSystem.glContext;
    #endif
       return true;
@@ -1360,15 +1360,21 @@ class OpenGLDisplayDriver : DisplayDriver
       if(oglSystem.visualInfo)
       {
          //printf("glXChooseVisual returnded a visual info\n");
+#if !defined(__APPLE__)
          oglSystem.dummyPixmap = XCreatePixmap(xGlobalDisplay, (uint)displaySystem.window, 1, 1, oglSystem.visualInfo->depth);
          oglSystem.dummyGLXPixmap = glXCreateGLXPixmap(xGlobalDisplay, oglSystem.visualInfo, oglSystem.dummyPixmap);
+#endif
          
          oglSystem.glContext = glXCreateContext(xGlobalDisplay, oglSystem.visualInfo, null, True);
          // printf("Creating system Context (%x)!\n", oglSystem.glContext);
          if(oglSystem.glContext)
          {
             //printf("Got a Context\n");
+#if defined(__APPLE__)
+            glXMakeCurrent(xGlobalDisplay, displaySystem.window, oglSystem.glContext);
+#else
             glXMakeCurrent(xGlobalDisplay, oglSystem.dummyGLXPixmap /*displaySystem.window /-*DefaultRootWindow(xGlobalDisplay)*/, oglSystem.glContext);
+#endif
 
             // Setup Extensions
 
@@ -1464,7 +1470,11 @@ class OpenGLDisplayDriver : DisplayDriver
          };
          */
          //visualInfo = glXChooseVisual(xGlobalDisplay, DefaultScreen(xGlobalDisplay), attrib);
+#if defined(__APPLE__)
+         visualInfo = oglSystem.visualInfo;
+#else
          visualInfo = ((XWindowData)display.windowDriverData).visual;
+#endif
 
          /*
          GLXFBConfig *fbconfigs, fbconfig;
@@ -1549,16 +1559,18 @@ class OpenGLDisplayDriver : DisplayDriver
       display.ambient = Color { 50,50,50 };
 #endif
 
-   if(!useSingleGLContext)
+      if(!useSingleGLContext)
+      {
    #if defined(__WIN32__)
-      wglMakeCurrent(null, null);
+         wglMakeCurrent(null, null);
    #elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__)
-      result = true;
+         result = true;
       #else
-      glXMakeCurrent(xGlobalDisplay, None, null);
+         glXMakeCurrent(xGlobalDisplay, None, null);
       #endif
    #endif
+      }
 
       return result;
    }
