@@ -1093,7 +1093,7 @@ private:
          }
       }
 
-      if(!exists && result && from == fromDropBox) // drive Drop Box
+      if(result && !exists && from == fromDropBox) // drive Drop Box
       {
          ListDrives();
       }
