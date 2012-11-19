@@ -388,7 +388,7 @@ static void MoveFileInArchive(Archive* archive, char * sourcePath, char * output
 
 static bool quiet;
 
-class EARApp : GuiApplication
+class EARApp : Application
 {
    void Main()
    {
