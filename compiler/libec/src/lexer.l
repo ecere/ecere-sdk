@@ -9,6 +9,7 @@ IDENT    {L}({L}|{D})*
 %{
 import "ecdefs"
 #define YYLTYPE Location
+#define YY_NEVER_INTERACTIVE 1    // Avoid calling isatty on eC File object
 
 #include "grammar.h"
 
