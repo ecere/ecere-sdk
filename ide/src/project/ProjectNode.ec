@@ -2320,7 +2320,7 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
                   char priorityMark[10];
                   order++;
                   if(priority)
-                     sprintf(priorityMark, "%04d\n", priority * 100 + order);
+                     sprintf(priorityMark, "%06d\n", priority * 1000 + order);
                   for(i : tempStrings; !(caseSensitive ? strcmp : strcmpi)(i, s)) { found = true; break; }
                   if(!found) tempStrings.Add(priority ? PrintString(priorityMark, s) : CopyString(s));
                }
@@ -2402,9 +2402,9 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
    {
       ProjectConfig nodeConfig = null;
       if(n.parent)
-         priority++;
+         priority = (priority / 10 + 1) * 10;
       else
-         priority = 99;
+         priority = 9990;
       if(projectConfig && n.configurations)
       {
          for(c : n.configurations; !strcmpi(c.name, projectConfig.name))
@@ -2443,7 +2443,7 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
                {
                   if(p.options && (u.mergeValues ? u.OptionCheck(p.options, o) : u.OptionSet(p.options, o)))
                   {
-                     u.LoadOption(p.options, o, o == includeDirsOption ? priority : 0, optionTempStrings, output);
+                     u.LoadOption(p.options, o, o == includeDirsOption ? priority + 1 : 0, optionTempStrings, output);
                      if(!u.mergeValues) { u.FinalizeLoading(o, optionTempStrings, output); optionDone[o] = true; }
                   }
                   break;
@@ -2461,12 +2461,12 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
             {
                if(n.options && (u.mergeValues ? u.OptionCheck(n.options, o) : u.OptionSet(n.options, o)))
                {
-                  u.LoadOption(n.options, o, o == includeDirsOption ? priority : 0, optionTempStrings, output);
+                  u.LoadOption(n.options, o, o == includeDirsOption ? priority + 1 : 0, optionTempStrings, output);
                   if(!u.mergeValues) { u.FinalizeLoading(o, optionTempStrings, output); optionDone[o] = true; }
                }
                else if(!n.parent)
                {
-                  u.LoadOption(null, o, o == includeDirsOption ? priority : 0, optionTempStrings, output);
+                  u.LoadOption(null, o, o == includeDirsOption ? priority + 1 : 0, optionTempStrings, output);
                   if(!u.mergeValues) { u.FinalizeLoading(o, optionTempStrings, output); optionDone[o] = true; }
                }
             }
