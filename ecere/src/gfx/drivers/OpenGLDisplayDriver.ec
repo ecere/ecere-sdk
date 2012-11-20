@@ -1043,6 +1043,7 @@ class OGLSystem : struct
    GLXContext glContext;
    Pixmap dummyPixmap;
    GLXPixmap dummyGLXPixmap;
+   X11Drawable glxDrawable;
 #endif
    bool loadingFont;
 };
@@ -1097,7 +1098,7 @@ class OpenGLDisplayDriver : DisplayDriver
       //if(previous) return true;
       // printf("Making SYSTEM current\n");
 #if defined(__APPLE__)
-      glXMakeCurrent(xGlobalDisplay, displaySystem.window, oglSystem.glContext);
+      glXMakeCurrent(xGlobalDisplay, oglSystem.glxDrawable, oglSystem.glContext);
 #else
       #if defined(__ANDROID__)
       #else
@@ -1346,17 +1347,30 @@ class OpenGLDisplayDriver : DisplayDriver
          egl_init_display(guiApp.desktop.windowHandle);
          result = true;
       #else
-      int attrList[] = 
       {
-   #ifndef ECERE_MINIGLX
-         GLX_USE_GL, GLX_DEPTH_SIZE, 1,
-   #endif
-         GLX_RGBA, 
-         GLX_RED_SIZE, 1, GLX_GREEN_SIZE, 1, GLX_BLUE_SIZE, 1,
-         GLX_DOUBLEBUFFER, 
-         None
-      };
-      oglSystem.visualInfo = glXChooseVisual(xGlobalDisplay, DefaultScreen(xGlobalDisplay), attrList);
+         X11Window root = RootWindow( xGlobaldisplay, DefaultScreen( xGlobaldisplay ) );
+         XSetWindowAttributes attr;
+         unsigned long mask;
+
+         int attrList[] =
+         {
+      #ifndef ECERE_MINIGLX
+            GLX_USE_GL, GLX_DEPTH_SIZE, 1,
+      #endif
+            GLX_RGBA, =
+            GLX_RED_SIZE, 1, GLX_GREEN_SIZE, 1, GLX_BLUE_SIZE, 1,
+            GLX_DOUBLEBUFFER,
+            None
+         };
+         oglSystem.visualInfo = glXChooseVisual( xGlobalDisplay,  DefaultScreen( xGlobalDisplay ), attrList );
+         attr.background_pixel = 0;
+         attr.border_pixel = 0;
+         attr.colormap = XCreateColormap( xGlobalDisplay, root, visualInfo->visual, AllocNone);
+         attr.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask;
+         mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
+
+         oglSystem.glxDrawable = XCreateWindow( xGlboalDisplay, root, 0, 0, 1, 1, 0, visualInfo->depth, InputOutput,visualInfo->visual, mask, &attr );
+      }
       if(oglSystem.visualInfo)
       {
          //printf("glXChooseVisual returnded a visual info\n");
@@ -1371,7 +1385,7 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             //printf("Got a Context\n");
 #if defined(__APPLE__)
-            glXMakeCurrent(xGlobalDisplay, displaySystem.window, oglSystem.glContext);
+            glXMakeCurrent(xGlobalDisplay, oglSystem.glxDrawable, oglSystem.glContext);
 #else
             glXMakeCurrent(xGlobalDisplay, oglSystem.dummyGLXPixmap /*displaySystem.window /-*DefaultRootWindow(xGlobalDisplay)*/, oglSystem.glContext);
 #endif
@@ -1471,7 +1485,14 @@ class OpenGLDisplayDriver : DisplayDriver
          */
          //visualInfo = glXChooseVisual(xGlobalDisplay, DefaultScreen(xGlobalDisplay), attrib);
 #if defined(__APPLE__)
-         visualInfo = oglSystem.visualInfo;
+         XVisualInfo template = { 0 };
+         XWindowAttributes winAttr;
+         int n;
+         XGetWindowAttributes(xGlobalDisplay, display.window, &winAttr);
+         template.visualid = XVisualIDFromVisual(winAttr.visual);
+         visualInfo = XGetVisualInfo(xGlobalDisplay, VisualIDMask, &template, &n);
+
+         // visualInfo = oglSystem.visualInfo;
 #else
          visualInfo = ((XWindowData)display.windowDriverData).visual;
 #endif
