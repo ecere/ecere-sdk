@@ -2117,14 +2117,12 @@ yy_flex_free((void *)(*b).yy_ch_buf);
 yy_flex_free((void *)b);
 }
 
-extern int isatty(int);
-
 void yy_init_buffer(YY_BUFFER_STATE b, FILE * file)
 {
 yy_flush_buffer(b);
 (*b).yy_input_file = file;
 (*b).yy_fill_buffer = 1;
-(*b).yy_is_interactive = file ? (isatty(fileno(file)) > 0) : 0;
+(*b).yy_is_interactive = 0;
 }
 
 void yy_flush_buffer(YY_BUFFER_STATE b)
@@ -2298,6 +2296,10 @@ extern char *  __ecereNameSpace__ecere__sys__TrimLSpaces(char *  string, char * 
 
 extern int strncmp(const char * , const char * , int n);
 
+extern void *  memmove(void * , const void * , unsigned int size);
+
+extern int strlen(const char * );
+
 extern char *  strncpy(char * , const char * , int n);
 
 extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
@@ -2392,7 +2394,7 @@ if(!strncmp(line, "include", c))
 {
 char includeFile[797] = "";
 
-strcpy(line, line + c);
+memmove(line, line + c, strlen(line + c) + 1);
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(line[0] == '\"')
 {
