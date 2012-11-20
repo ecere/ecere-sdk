@@ -1041,9 +1041,7 @@ class OGLSystem : struct
 #else
    XVisualInfo * visualInfo;
    GLXContext glContext;
-   Pixmap dummyPixmap;
-   GLXPixmap dummyGLXPixmap;
-   X11Drawable glxDrawable;
+   uint glxDrawable;
 #endif
    bool loadingFont;
 };
@@ -1097,13 +1095,8 @@ class OpenGLDisplayDriver : DisplayDriver
    #elif defined(__unix__) || defined(__APPLE__)
       //if(previous) return true;
       // printf("Making SYSTEM current\n");
-#if defined(__APPLE__)
-      glXMakeCurrent(xGlobalDisplay, oglSystem.glxDrawable, oglSystem.glContext);
-#else
-      #if defined(__ANDROID__)
-      #else
-      glXMakeCurrent(xGlobalDisplay, oglSystem.dummyGLXPixmap /*displaySystem.window /-*DefaultRootWindow(xGlobalDisplay)*/, oglSystem.glContext);
-      #endif
+#if !defined(__ANDROID__)
+      glXMakeCurrent(xGlobalDisplay, (uint)oglSystem.glxDrawable, oglSystem.glContext);
 #endif
       //previous = oglSystem.glContext;
    #endif
@@ -1348,7 +1341,7 @@ class OpenGLDisplayDriver : DisplayDriver
          result = true;
       #else
       {
-         X11Window root = RootWindow( xGlobaldisplay, DefaultScreen( xGlobaldisplay ) );
+         X11Window root = RootWindow( xGlobalDisplay, DefaultScreen( xGlobalDisplay ) );
          XSetWindowAttributes attr;
          unsigned long mask;
 
@@ -1357,7 +1350,7 @@ class OpenGLDisplayDriver : DisplayDriver
       #ifndef ECERE_MINIGLX
             GLX_USE_GL, GLX_DEPTH_SIZE, 1,
       #endif
-            GLX_RGBA, =
+            GLX_RGBA,
             GLX_RED_SIZE, 1, GLX_GREEN_SIZE, 1, GLX_BLUE_SIZE, 1,
             GLX_DOUBLEBUFFER,
             None
@@ -1365,35 +1358,21 @@ class OpenGLDisplayDriver : DisplayDriver
          oglSystem.visualInfo = glXChooseVisual( xGlobalDisplay,  DefaultScreen( xGlobalDisplay ), attrList );
          attr.background_pixel = 0;
          attr.border_pixel = 0;
-         attr.colormap = XCreateColormap( xGlobalDisplay, root, visualInfo->visual, AllocNone);
+         attr.colormap = XCreateColormap( xGlobalDisplay, root, oglSystem.visualInfo->visual, AllocNone);
          attr.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask;
          mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
 
-         oglSystem.glxDrawable = XCreateWindow( xGlboalDisplay, root, 0, 0, 1, 1, 0, visualInfo->depth, InputOutput,visualInfo->visual, mask, &attr );
+         oglSystem.glxDrawable = XCreateWindow( xGlobalDisplay, root, 0, 0, 1, 1, 0, oglSystem.visualInfo->depth, InputOutput,
+            oglSystem.visualInfo->visual, mask, &attr );
       }
       if(oglSystem.visualInfo)
       {
-         //printf("glXChooseVisual returnded a visual info\n");
-#if !defined(__APPLE__)
-         oglSystem.dummyPixmap = XCreatePixmap(xGlobalDisplay, (uint)displaySystem.window, 1, 1, oglSystem.visualInfo->depth);
-         oglSystem.dummyGLXPixmap = glXCreateGLXPixmap(xGlobalDisplay, oglSystem.visualInfo, oglSystem.dummyPixmap);
-#endif
-         
          oglSystem.glContext = glXCreateContext(xGlobalDisplay, oglSystem.visualInfo, null, True);
-         // printf("Creating system Context (%x)!\n", oglSystem.glContext);
          if(oglSystem.glContext)
          {
-            //printf("Got a Context\n");
-#if defined(__APPLE__)
             glXMakeCurrent(xGlobalDisplay, oglSystem.glxDrawable, oglSystem.glContext);
-#else
-            glXMakeCurrent(xGlobalDisplay, oglSystem.dummyGLXPixmap /*displaySystem.window /-*DefaultRootWindow(xGlobalDisplay)*/, oglSystem.glContext);
-#endif
-
             // Setup Extensions
-
             glXMakeCurrent(xGlobalDisplay, None, null);
-
             result = true;
          }
       }
@@ -1433,10 +1412,11 @@ class OpenGLDisplayDriver : DisplayDriver
    #endif
       }
 
-      if(oglSystem.dummyGLXPixmap)
-         glXDestroyGLXPixmap(xGlobalDisplay, oglSystem.dummyGLXPixmap);
-      if(oglSystem.dummyPixmap);
-         XFreePixmap(xGlobalDisplay, oglSystem.dummyPixmap);
+      if(oglSystem.glxDrawable)
+      {
+         XDestroyWindow(xGlobalDisplay, oglSystem.glxDrawable);
+         oglSystem.glxDrawable = 0;
+      }
       #endif
    #endif
       delete oglSystem;
@@ -1469,64 +1449,23 @@ class OpenGLDisplayDriver : DisplayDriver
    #elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__)
       #else
-         XVisualInfo * visualInfo = null;
+         XVisualInfo * visualInfo = ((XWindowData)display.windowDriverData).visual;
          /*
-         int attrib[] =
-         {
-            GLX_RENDER_TYPE, GLX_RGBA_BIT,
-            GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-            GLX_RED_SIZE, 1,
-            GLX_GREEN_SIZE, 1,
-            GLX_BLUE_SIZE, 1,
-            GLX_DOUBLEBUFFER, True,
-            GLX_DEPTH_SIZE, 24,
-            None
-         };
-         */
-         //visualInfo = glXChooseVisual(xGlobalDisplay, DefaultScreen(xGlobalDisplay), attrib);
 #if defined(__APPLE__)
          XVisualInfo template = { 0 };
          XWindowAttributes winAttr;
          int n;
-         XGetWindowAttributes(xGlobalDisplay, display.window, &winAttr);
+         XGetWindowAttributes(xGlobalDisplay, (uint)display.window, &winAttr);
          template.visualid = XVisualIDFromVisual(winAttr.visual);
          visualInfo = XGetVisualInfo(xGlobalDisplay, VisualIDMask, &template, &n);
-
-         // visualInfo = oglSystem.visualInfo;
-#else
-         visualInfo = ((XWindowData)display.windowDriverData).visual;
+#ifdef _DEBUG
+         printf("XGetVisualInfo visual ID = %d\n", template.visualid);
+         printf("visualInfo visual ID = %d\n", visualInfo->visualid);
+         printf("oglSystem.visualInfo visual ID = %d\n", oglSystem.visualInfo->visualid);
+         printf("((XWindowData)display.windowDriverData).visual visual ID = %d\n", ((XWindowData)display.windowDriverData).visual->visualid);
 #endif
-
-         /*
-         GLXFBConfig *fbconfigs, fbconfig;
-         int numfbconfigs;
-         fbconfigs = glXChooseFBConfig(xGlobalDisplay, DefaultScreen(xGlobalDisplay), attrib, &numfbconfigs);
-         if(fbconfigs)
-         {
-            int i;
-            for (i = 0; i < numfbconfigs; i++)
-            {
-               XRenderPictFormat * format;
-               visualInfo = glXGetVisualFromFBConfig(xGlobalDisplay, fbconfigs[i]);
-               if (!visualInfo) continue;
-               format = XRenderFindVisualFormat(xGlobalDisplay, visualInfo->visual);
-               if (!format) continue;
-
-               if(format->direct.alphaMask > 0)
-               {
-                  fbconfig = fbconfigs[i];
-                  break;
-               }
-               //XFree(visualInfo);
-            }
-
-            if (i == numfbconfigs)
-            {
-               fbconfig = fbconfigs[0];
-               visualInfo = glXGetVisualFromFBConfig(xGlobalDisplay, fbconfig);
-            }
-            XFree(fbconfigs);
-         }
+         // visualInfo = oglSystem.visualInfo;
+//#endif
          */
          if(visualInfo)
          {
