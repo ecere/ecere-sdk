@@ -56,7 +56,7 @@ msgstr "Expecting class specifier\n"
 msgid "Expression is not a container\n"
 msgstr "Expression is not a container\n"
 
-#: ./src/lexer.ec:498
+#: ./src/lexer.ec:499
 msgid "Includes nested too deeply"
 msgstr "Includes nested too deeply"
 

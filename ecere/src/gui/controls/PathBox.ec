@@ -324,18 +324,9 @@ public:
 
    opacity = 0;
 
-   virtual bool OnChangedDir(char ** directory)
-   {
-      return true;
-   }
-   virtual bool OnPrepareBrowseDir(char ** directory)
-   {
-      return true;
-   }
-   virtual bool OnBrowsedDir(char ** directory)
-   {
-      return true;
-   }
+   virtual bool OnChangedDir(char ** directory);
+   virtual bool OnPrepareBrowseDir(char ** directory);
+   virtual bool OnBrowsedDir(char ** directory);
 
    watch(foreground) { list.foreground = foreground; };
    watch(background) { list.background = background; };
@@ -485,6 +476,13 @@ public:
             char * dir = CopyString(directory);
             if(OnChangedDir(&dir))
             {
+               // Put this back to enable making Paths relative by overriding
+               // these DirectoriesBox virtual methods (from FileDialog only)
+               if(browsing)
+               {
+                  OnPrepareBrowseDir(&dir);
+                  OnBrowsedDir(&dir);
+               }
                listBox.SetData(null, dir);
                listBox.modifiedDocument = true;
                if(listBox.currentRow == listBox.lastRow && listBox.lastRow.string)
