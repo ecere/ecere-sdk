@@ -2258,6 +2258,7 @@ private:
    {
       if(type == file)
       {
+         //output.concat(" $(OBJ)");
          output.concat(" \"");
          output.concat(objDir);
          output.concat("/");

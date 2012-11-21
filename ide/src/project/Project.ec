@@ -1349,7 +1349,7 @@ private:
       }
    }
 
-   bool ProcessBuildPipeOutput(DualPipe f, DirExpression objDirExp, bool isARun, ProjectNode onlyNode,
+   bool ProcessBuildPipeOutput(DualPipe f, DirExpression objDirExp, bool isARun, List<ProjectNode> onlyNodes,
       CompilerConfig compiler, ProjectConfig config)
    {
       char line[65536];
@@ -1631,7 +1631,7 @@ private:
          }
          else
          {
-            if(!onlyNode)
+            if(!onlyNodes)
                ide.outputView.buildBox.Logf("\n%s (%s) - ", GetTargetFileName(config), configName);
             if(numErrors)
                ide.outputView.buildBox.Logf("%d %s, ", numErrors, (numErrors > 1) ? $"errors" : $"error");
@@ -1695,7 +1695,7 @@ private:
       }
    }
 
-   bool Build(bool isARun, ProjectNode onlyNode, CompilerConfig compiler, ProjectConfig config, bool justPrint)
+   bool Build(bool isARun, List<ProjectNode> onlyNodes, CompilerConfig compiler, ProjectConfig config, bool justPrint)
    {
       bool result = false;
       DualPipe f;
@@ -1710,7 +1710,7 @@ private:
       char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
 
       int numJobs = compiler.numJobs;
-      char command[MAX_LOCATION];
+      char command[MAX_F_STRING];
       char * compilerName;
 
       compilerName = CopyString(compiler.name);
@@ -1726,7 +1726,7 @@ private:
       PathCatSlash(makeFilePath, makeFile);
 
       // TODO: TEST ON UNIX IF \" around makeTarget is ok
-      if(onlyNode)
+      if(onlyNodes)
       {
          if(compiler.type.isVC)
          {
@@ -1754,7 +1754,16 @@ private:
 
             ChangeWorkingDir(pushD);
 
-            onlyNode.GetTargets(config, objDirExp.dir, makeTargets);
+            for(node : onlyNodes)
+            {
+               if(node.GetIsExcluded(config))
+                  ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
+               else
+               {
+                  node.DeleteIntermediateFiles(compiler, config);
+                  node.GetTargets(config, objDirExp.dir, makeTargets);
+               }
+            }
          }
       }
 
@@ -1798,7 +1807,7 @@ private:
                result = true;
             }
             else
-               result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNode, compiler, config);
+               result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNodes, compiler, config);
             delete f;
          }
          else
@@ -1929,9 +1938,9 @@ private:
       delete target;
    }
 
-   void Compile(ProjectNode node, CompilerConfig compiler, ProjectConfig config, bool justPrint)
+   void Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, bool justPrint)
    {
-      Build(false, node, compiler, config, justPrint);
+      Build(false, nodes, compiler, config, justPrint);
    }
 #endif
 

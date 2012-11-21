@@ -2435,8 +2435,14 @@ class IDEWorkSpace : Window
                            for(p : ide.workspace.projects)
                            {
                               node = projectView.GetNodeFromWindow(activeClient, p);
-                              if(node && projectView.Compile(node, mods.ctrl && mods.shift))
+                              //if(node && projectView.Compile(node.project, node, mods.ctrl && mods.shift))
+                              if(node)
                               {
+                                 List<ProjectNode> nodes { };
+                                 nodes.Add(node);
+                                 projectView.Compile(node.project, nodes, mods.ctrl && mods.shift);
+                                 delete nodes;
+
                                  result = true;
                                  break;
                               }
