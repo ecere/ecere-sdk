@@ -2253,6 +2253,97 @@ private:
       delete exclusionInfo;
       return platforms;
    }
+
+   void GetTargets(ProjectConfig prjConfig, char * objDir, DynamicString output)
+   {
+      if(type == file)
+      {
+         output.concat(" \"");
+         output.concat(objDir);
+         output.concat("/");
+         {
+            char fileName[MAX_FILENAME];
+            strcpy(fileName, name);
+            // TODO/NOTE: this will not be correct for file.o instead of file.c.o when whe have both a file.c and a file.ec in a project.
+            ChangeExtension(fileName, "o", fileName);
+            output.concat(fileName);
+         }
+         output.concat("\"");
+      }
+      else if(files)
+      {
+         for(child : files)
+         {
+            if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+               child.GetTargets(prjConfig, objDir, output);
+         }
+      }
+   }
+
+   void DeleteIntermediateFiles(CompilerConfig compiler, ProjectConfig prjConfig)
+   {
+      if(type == file)
+      {
+         char fileName[MAX_FILENAME];
+         char extension[MAX_EXTENSION];
+         Project prj = property::project;
+         DirExpression objDir = prj.GetObjDir(compiler, prjConfig);
+
+         strcpy(fileName, prj.topNode.path);
+         PathCatSlash(fileName, objDir.dir);
+         PathCatSlash(fileName, name);
+
+         // TODO/NOTE: this will not delete file.c.o when whe have both a file.c and a file.ec in a project.
+         ChangeExtension(fileName, "o", fileName);
+         if(FileExists(fileName))
+            DeleteFile(fileName);
+
+         GetExtension(name, extension);
+         if(!strcmp(extension, "ec"))
+         {
+            ChangeExtension(fileName, "c", fileName);
+            if(FileExists(fileName))
+               DeleteFile(fileName);
+
+            ChangeExtension(fileName, "sym", fileName);
+            if(FileExists(fileName))
+               DeleteFile(fileName);
+
+            ChangeExtension(fileName, "imp", fileName);
+            if(FileExists(fileName))
+               DeleteFile(fileName);
+
+            ChangeExtension(fileName, "bowl", fileName);
+            if(FileExists(fileName))
+               DeleteFile(fileName);
+         }
+
+         delete objDir;
+      }
+      else if(files)
+      {
+         for(child : files)
+         {
+            if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
+               child.DeleteIntermediateFiles(compiler, prjConfig);
+         }
+      }
+   }
+
+   bool IsInNode(ProjectNode node)
+   {
+      bool result = false;
+      ProjectNode n;
+      for(n = this; n; n = n.parent)
+      {
+         if(n == node)
+         {
+            result = true;
+            break;
+         }
+      }
+      return result;
+   }
 }
 
 // the code in this function is closely matched to OptionsBox::Load

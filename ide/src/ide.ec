@@ -1664,6 +1664,7 @@ class IDEWorkSpace : Window
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRealClean, 0);  if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRegenerate, 0); if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRemove, 0);     if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileClean, 0);         if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::FileCompile, 0);       if(menu) menu.disabled = unavailable;
          projectView.popupMenu.Update(null);
       }

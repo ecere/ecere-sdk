@@ -1700,7 +1700,7 @@ private:
       bool result = false;
       DualPipe f;
       char targetFileName[MAX_LOCATION] = "";
-      char makeTarget[MAX_LOCATION] = "";
+      DynamicString makeTargets { };
       char makeFile[MAX_LOCATION];
       char makeFilePath[MAX_LOCATION];
       char configName[MAX_LOCATION];
@@ -1754,14 +1754,7 @@ private:
 
             ChangeWorkingDir(pushD);
 
-            PathCatSlash(makeTarget+1, objDirExp.dir);
-            PathCatSlash(makeTarget+1, onlyNode.name);
-            StripExtension(makeTarget+1);
-            strcat(makeTarget+1, ".o");
-            makeTarget[0] = '\"';
-            len = strlen(makeTarget);
-            makeTarget[len++] = '\"';
-            makeTarget[len++] = '\0';
+            onlyNode.GetTargets(config, objDirExp.dir, makeTargets);
          }
       }
 
@@ -1794,7 +1787,7 @@ private:
                compilerName, numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",
-               makeTarget, topNode.path, justPrint ? " -n" : "", makeFilePath);
+               (String)makeTargets, topNode.path, justPrint ? " -n" : "", makeFilePath);
          if(justPrint)
             ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
@@ -1815,6 +1808,7 @@ private:
       delete pathBackup;
       delete objDirExp;
       delete compilerName;
+      delete makeTargets;
       return result;
    }
 

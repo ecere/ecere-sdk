@@ -259,6 +259,8 @@ class ProjectView : Window
                else if(node.type == file)
                {
                   MenuItem { popupContent, $"Open", o, NotifySelect = FileOpenFile };
+                  MenuDivider { popupContent };
+                  MenuItem { popupContent, $"Clean", l, NotifySelect = FileClean }.disabled = buildMenuUnavailable;
                   MenuItem { popupContent, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile }.disabled = buildMenuUnavailable;
                   MenuDivider { popupContent };
                   MenuItem { popupContent, $"Remove", r, NotifySelect = FileRemoveFile };
@@ -289,6 +291,9 @@ class ProjectView : Window
                      MenuItem { popupContent, $"Add New Form...", o, NotifySelect = ProjectAddNewForm };
                      MenuItem { popupContent, $"Add New Behavior Graph...", g, NotifySelect = ProjectAddNewGraph };
                   }
+                  MenuDivider { popupContent };
+                  MenuItem { popupContent, $"Clean", l, NotifySelect = FileClean }.disabled = buildMenuUnavailable;
+                  MenuItem { popupContent, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile }.disabled = buildMenuUnavailable;
                   MenuDivider { popupContent };
                   MenuItem { popupContent, $"Remove", r, NotifySelect = FileRemoveFile };
                   MenuDivider { popupContent };
@@ -987,90 +992,107 @@ class ProjectView : Window
 
    bool Compile(ProjectNode node, bool justPrint)
    {
-      bool result = false;
+      bool result = true;
       char fileName[MAX_LOCATION];
       Window document;
       Project prj = node.project;
       ProjectConfig config = prj.config;
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
 
       stopBuild = false;
 
-      // Check if we have to save
-      strcpy(fileName, prj.topNode.path);
-      PathCatSlash(fileName, node.path);
-      PathCatSlash(fileName, node.name);
       for(document = ide.firstChild; document; document = document.next)
       {
          if(document.modifiedDocument)
          {
-            char documentFileName[MAX_LOCATION];
-            if(!fstrcmp(GetSlashPathBuffer(documentFileName, document.fileName), fileName))
-               if(!document.MenuFileSave(null, 0))
-                  return result;
-         }
-      }
-
-      if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
-      {
-         if(!node.GetIsExcluded(config))
-         {
-            // Delete intermedaite files
+            ProjectNode n = GetNodeFromWindow(document, prj);
+            if(n && n.IsInNode(node) && !document.MenuFileSave(null, 0))
             {
-               char extension[MAX_EXTENSION];
-               DirExpression objDir = prj.GetObjDir(compiler, config);
-
-               strcpy(fileName, prj.topNode.path);
-               PathCatSlash(fileName, objDir.dir);
-               PathCatSlash(fileName, node.name);
-               StripExtension(fileName);
-               strcat(fileName, ".o");
-               if(FileExists(fileName))
-                  DeleteFile(fileName);
-
-               GetExtension(node.name, extension);
-               if(!strcmp(extension, "ec"))
-               {
-                  // Delete generated C file
-                  strcpy(fileName, prj.topNode.path);
-                  PathCat(fileName, objDir.dir);
-                  PathCat(fileName, node.name);
-                  StripExtension(fileName);
-                  strcat(fileName, ".c");
-                  if(FileExists(fileName))
-                     DeleteFile(fileName);
-
-                  // Delete symbol file
-                  strcpy(fileName, prj.topNode.path);
-                  PathCat(fileName, node.path);
-                  PathCat(fileName, node.name);
-                  StripExtension(fileName);
-                  strcat(fileName, ".sym");
-                  if(FileExists(fileName))
-                     DeleteFile(fileName);
-               }
-
-               delete objDir;
+               result = false;
+               break;
             }
-            buildInProgress = compilingFile;
-            ide.AdjustBuildMenus();
-
-            //ide.outputView.ShowClearSelectTab(build);
-            // this stuff doesn't even appear
-            //ide.outputView.buildBox.Logf($"%s Compiler\n", compiler.name);
-            if(config)
-               ide.outputView.buildBox.Logf($"Compiling single file %s in project %s using the %s configuration...\n", node.name, prj.name, config.name);
-            else
-               ide.outputView.buildBox.Logf($"Compiling single file %s in project %s...\n", node.name, prj.name);
-
-            prj.Compile(node, compiler, config, justPrint);
-            buildInProgress = none;
-            ide.AdjustBuildMenus();
-
-            result = true;
          }
       }
-      delete compiler;
+
+      if(result)
+      {
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         result = false;
+         if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+         {
+            if(!node.GetIsExcluded(config))
+            {
+               node.DeleteIntermediateFiles(compiler, config);
+
+               buildInProgress = compilingFile;
+               ide.AdjustBuildMenus();
+
+               //ide.outputView.ShowClearSelectTab(build);
+               // this stuff doesn't even appear
+               //ide.outputView.buildBox.Logf($"%s Compiler\n", compiler.name);
+               if(config)
+                  ide.outputView.buildBox.Logf($"Compiling %s %s in project %s using the %s configuration...\n",
+                        node.type == file ? $"single file" : $"folder", node.name, prj.name, config.name);
+               else
+                  ide.outputView.buildBox.Logf($"Compiling %s %s in project %s...\n",
+                        node.type == file ? $"single file" : $"folder", node.name, prj.name);
+
+               prj.Compile(node, compiler, config, justPrint);
+               buildInProgress = none;
+               ide.AdjustBuildMenus();
+
+               result = true;
+            }
+         }
+         delete compiler;
+      }
+      return result;
+   }
+
+   bool Clean(ProjectNode node, bool justPrint)
+   {
+      bool result = true;
+      char fileName[MAX_LOCATION];
+      Window document;
+      Project prj = node.project;
+      ProjectConfig config = prj.config;
+
+      stopBuild = false;
+
+      for(document = ide.firstChild; document; document = document.next)
+      {
+         if(document.modifiedDocument)
+         {
+            ProjectNode n = GetNodeFromWindow(document, prj);
+            if(n && n.IsInNode(node) && !document.MenuFileSave(null, 0))
+            {
+               result = false;
+               break;
+            }
+         }
+      }
+
+      if(result)
+      {
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         result = false;
+         if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+         {
+            if(!node.GetIsExcluded(config))
+            {
+               node.DeleteIntermediateFiles(compiler, config);
+
+               if(config)
+                  ide.outputView.buildBox.Logf($"Delete Intermediate Objects for %s %s in project %s using the %s configuration...\n",
+                        node.type == file ? $"single file" : $"folder", node.name, prj.name, config.name);
+               else
+                  ide.outputView.buildBox.Logf($"Delete Intermediate Objects for %s %s in project %s...\n",
+                        node.type == file ? $"single file" : $"folder", node.name, prj.name);
+
+               result = true;
+            }
+         }
+         delete compiler;
+      }
       return result;
    }
 
@@ -1250,6 +1272,18 @@ class ProjectView : Window
       {
          ProjectNode node = (ProjectNode)row.tag;
          if(!Compile(node, mods.ctrl && mods.shift))
+            ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
+      }
+      return true;
+   }
+
+   bool FileClean(MenuItem selection, Modifiers mods)
+   {
+      DataRow row = fileList.currentRow;
+      if(row)
+      {
+         ProjectNode node = (ProjectNode)row.tag;
+         if(!Clean(node, mods.ctrl && mods.shift))
             ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
       }
       return true;
