@@ -661,7 +661,7 @@ private:
          }
       app.Unlock();
       
-      if(replaceMode && contentReplace[0])
+      if(replaceMode)
       {
          replaceEdit = EditBox
          {
@@ -706,7 +706,7 @@ private:
                                  $"Searching %s for %s", relative ? fileRelative : stack[frame].fileList.path, contentCriteria);
                         app.Unlock();
 
-                        if(replaceMode && contentReplace[0])
+                        if(replaceMode)
                            ret = SearchFileContentAndReplace(stack[frame].fileList.path, relative, fileRelative, replaceEdit);
                         else
                            ret = SearchFileContent(stack[frame].fileList.path, relative, fileRelative);
@@ -826,7 +826,7 @@ private:
                                        contentCriteria);
                               app.Unlock();
 
-                              if(replaceMode && contentReplace[0])
+                              if(replaceMode)
                                  ret = SearchFileContentAndReplace(filePath, relative, fileRelative, replaceEdit);
                               else
                                  ret = SearchFileContent(filePath, relative, fileRelative);
