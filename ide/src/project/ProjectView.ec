@@ -223,6 +223,8 @@ class ProjectView : Window
                      MenuItem { popupContent, $"Regenerate Makefile", m, NotifySelect = ProjectRegenerate }.disabled = buildMenuUnavailable;
                      MenuDivider { popupContent };
                   }
+                  MenuItem { popupContent, $"Debug Generate Symbols", l, NotifySelect = FileDebugGenerateSymbols }.disabled = buildMenuUnavailable;
+                  MenuDivider { popupContent };
                   MenuItem { popupContent, $"New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
                   MenuItem { popupContent, $"New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
                   MenuItem { popupContent, $"Import Folder...", i, NotifySelect = ProjectImportFolder };
@@ -262,6 +264,9 @@ class ProjectView : Window
                   MenuDivider { popupContent };
                   MenuItem { popupContent, $"Clean", l, NotifySelect = FileClean }.disabled = buildMenuUnavailable;
                   MenuItem { popupContent, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile }.disabled = buildMenuUnavailable;
+                  MenuDivider { popupContent };
+                  MenuItem { popupContent, $"Debug Precompile", l, NotifySelect = FileDebugPrecompile }.disabled = buildMenuUnavailable;
+                  MenuItem { popupContent, $"Debug Compile", l, NotifySelect = FileDebugCompile }.disabled = buildMenuUnavailable;
                   MenuDivider { popupContent };
                   MenuItem { popupContent, $"Remove", r, NotifySelect = FileRemoveFile };
                   MenuDivider { popupContent };
@@ -762,7 +767,7 @@ class ProjectView : Window
          ide.AdjustBuildMenus();
          ide.AdjustDebugMenus();
 
-         result = prj.Build(buildType == run, null, compiler, config, justPrint);
+         result = prj.Build(buildType == run, null, compiler, config, justPrint, normal);
 
          if(config)
          {
@@ -990,7 +995,7 @@ class ProjectView : Window
       return true;
    }
 
-   bool Compile(Project project, List<ProjectNode> nodes, bool justPrint)
+   bool Compile(Project project, List<ProjectNode> nodes, bool justPrint, SingleFileCompileMode mode)
    {
       bool result = true;
       char fileName[MAX_LOCATION];
@@ -1023,15 +1028,15 @@ class ProjectView : Window
          if(ProjectPrepareForToolchain(project, normal, true, true, compiler, config))
          {
             if(config)
-               ide.outputView.buildBox.Logf($"Compiling specific file(s) in project %s using the %s configuration...\n",
-                     project.name, config.name);
+               ide.outputView.buildBox.Logf($"%s specific file(s) in project %s using the %s configuration...\n",
+                     mode == normal ? $"Compiling" : $"Debug compiling", project.name, config.name);
             else
-               ide.outputView.buildBox.Logf($"Compiling specific file(s) in project %s...\n",
-                     project.name);
+               ide.outputView.buildBox.Logf($"%s specific file(s) in project %s...\n",
+                     mode == normal ? $"Compiling" : $"Debug compiling", project.name);
 
             buildInProgress = compilingFile;
             ide.AdjustBuildMenus();
-            project.Compile(nodes, compiler, config, justPrint);
+            project.Compile(nodes, compiler, config, justPrint, mode);
             buildInProgress = none;
             ide.AdjustBuildMenus();
 
@@ -1289,7 +1294,7 @@ class ProjectView : Window
       }
       selectedRows.Free(null);
       if(project)
-         Compile(project, nodes, mods.ctrl && mods.shift);
+         Compile(project, nodes, mods.ctrl && mods.shift, normal);
       else
          ide.outputView.buildBox.Logf($"Please select files from a single project.\n");
       delete nodes;
@@ -1324,6 +1329,45 @@ class ProjectView : Window
          ide.outputView.buildBox.Logf($"Please select files from a single project.\n");
       delete nodes;
       return true;
+   }
+
+   bool FileDebugPrecompile(MenuItem selection, Modifiers mods)
+   {
+      DataRow row = fileList.currentRow;
+      ProjectNode node = row ? (ProjectNode)row.tag : null;
+      if(node)
+      {
+         List<ProjectNode> nodes { };
+         nodes.Add(node);
+         Compile(node.project, nodes, mods.ctrl && mods.shift, debugPrecompile);
+         delete nodes;
+      }
+   }
+
+   bool FileDebugCompile(MenuItem selection, Modifiers mods)
+   {
+      DataRow row = fileList.currentRow;
+      ProjectNode node = row ? (ProjectNode)row.tag : null;
+      if(node)
+      {
+         List<ProjectNode> nodes { };
+         nodes.Add(node);
+         Compile(node.project, nodes, mods.ctrl && mods.shift, debugCompile);
+         delete nodes;
+      }
+   }
+
+   bool FileDebugGenerateSymbols(MenuItem selection, Modifiers mods)
+   {
+      DataRow row = fileList.currentRow;
+      ProjectNode node = row ? (ProjectNode)row.tag : null;
+      if(node)
+      {
+         List<ProjectNode> nodes { };
+         nodes.Add(node);
+         Compile(node.project, nodes, mods.ctrl && mods.shift, debugGenerateSymbols);
+         delete nodes;
+      }
    }
 
    Project GetSelectedProject(bool useSelection)

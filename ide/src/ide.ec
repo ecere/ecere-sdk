@@ -1657,15 +1657,18 @@ class IDEWorkSpace : Window
       if(projectView && projectView.popupMenu && projectView.popupMenu.menu && projectView.popupMenu.created)
       {
          MenuItem menu;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectBuild, 0);      if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectLink, 0);       if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRebuild, 0);    if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectClean, 0);      if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRealClean, 0);  if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRegenerate, 0); if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRemove, 0);     if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileClean, 0);         if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileCompile, 0);       if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectBuild, 0);             if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectLink, 0);              if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRebuild, 0);           if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectClean, 0);             if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRealClean, 0);         if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRegenerate, 0);        if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRemove, 0);            if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileClean, 0);                if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileCompile, 0);              if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileDebugPrecompile, 0);      if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileDebugCompile, 0);         if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileDebugGenerateSymbols, 0); if(menu) menu.disabled = unavailable;
          projectView.popupMenu.Update(null);
       }
    }
@@ -2440,7 +2443,7 @@ class IDEWorkSpace : Window
                               {
                                  List<ProjectNode> nodes { };
                                  nodes.Add(node);
-                                 projectView.Compile(node.project, nodes, mods.ctrl && mods.shift);
+                                 projectView.Compile(node.project, nodes, mods.ctrl && mods.shift, normal);
                                  delete nodes;
 
                                  result = true;
@@ -2485,69 +2488,89 @@ class IDEWorkSpace : Window
    bool OnPostCreate()
    {
       int c;
+      bool passThrough = false;
+      bool debugStart = false;
+      DynamicString passArgs { };
       for(c = 1; c<app.argc; c++)
       {
-         char fullPath[MAX_LOCATION];
-         char parentPath[MAX_LOCATION];
-         char ext[MAX_EXTENSION];
-         bool isProject;
-         FileAttribs dirAttribs;
-         GetWorkingDir(fullPath, MAX_LOCATION);
-         PathCat(fullPath, app.argv[c]);
-         StripLastDirectory(fullPath, parentPath);
-         GetExtension(app.argv[c], ext);
-         isProject = !strcmpi(ext, "epj");
-
-         if(isProject && c > 1) continue;
-
-         // Create directory for projects (only)
-         if(((dirAttribs = FileExists(parentPath)) && dirAttribs.isDirectory) || isProject)
+         if(!strcmp(app.argv[c], "-debug-start"))
+            debugStart = true;
+         else if(!passThrough && !strcmp(app.argv[c], "-@"))
+            passThrough = true;
+         else if(passThrough)
          {
-            if(isProject && !FileExists(fullPath))
+            passArgs.concat(" ");
+            passArgs.concat(app.argv[c]);
+         }
+         else
+         {
+            char fullPath[MAX_LOCATION];
+            char parentPath[MAX_LOCATION];
+            char ext[MAX_EXTENSION];
+            bool isProject;
+            FileAttribs dirAttribs;
+            GetWorkingDir(fullPath, MAX_LOCATION);
+            PathCat(fullPath, app.argv[c]);
+            StripLastDirectory(fullPath, parentPath);
+            GetExtension(app.argv[c], ext);
+            isProject = !strcmpi(ext, "epj");
+
+            if(isProject && c > (debugStart ? 2 : 1)) continue;
+
+            // Create directory for projects (only)
+            if(((dirAttribs = FileExists(parentPath)) && dirAttribs.isDirectory) || isProject)
             {
-               // The NewProject will handle directory creation
-               /*if(!dirAttribs.isDirectory)
+               if(isProject && !FileExists(fullPath))
                {
-                  MakeDir(parentPath);
-                  dirAttribs = FileExists(parentPath);
-               }
-               if(dirAttribs.isDirectory)*/
-               {
-                  char name[MAX_LOCATION];
-                  NewProjectDialog newProjectDialog;
-
-                  if(projectView)
+                  // The NewProject will handle directory creation
+                  /*if(!dirAttribs.isDirectory)
                   {
-                     projectView.visible = false;
-                     if(!projectView.Destroy(0))
-                        return true;
+                     MakeDir(parentPath);
+                     dirAttribs = FileExists(parentPath);
                   }
-
-                  newProjectDialog = { master = this };
-
-                  strcpy(name, app.argv[c]);
-                  StripExtension(name);
-                  GetLastDirectory(name, name);
-                  newProjectDialog.projectName.contents = name;
-                  newProjectDialog.projectName.NotifyModified(newProjectDialog, newProjectDialog.projectName);
-                  newProjectDialog.locationEditBox.path = parentPath;
-                  newProjectDialog.NotifyModifiedLocation(newProjectDialog.locationEditBox);
-
-                  newProjectDialog.Modal();
-                  if(projectView)
+                  if(dirAttribs.isDirectory)*/
                   {
-                     ideSettings.AddRecentProject(projectView.fileName);
-                     ide.UpdateRecentMenus();
-                     settingsContainer.Save();
+                     char name[MAX_LOCATION];
+                     NewProjectDialog newProjectDialog;
+
+                     if(projectView)
+                     {
+                        projectView.visible = false;
+                        if(!projectView.Destroy(0))
+                           return true;
+                     }
+
+                     newProjectDialog = { master = this };
+
+                     strcpy(name, app.argv[c]);
+                     StripExtension(name);
+                     GetLastDirectory(name, name);
+                     newProjectDialog.projectName.contents = name;
+                     newProjectDialog.projectName.NotifyModified(newProjectDialog, newProjectDialog.projectName);
+                     newProjectDialog.locationEditBox.path = parentPath;
+                     newProjectDialog.NotifyModifiedLocation(newProjectDialog.locationEditBox);
+
+                     newProjectDialog.Modal();
+                     if(projectView)
+                     {
+                        ideSettings.AddRecentProject(projectView.fileName);
+                        ide.UpdateRecentMenus();
+                        settingsContainer.Save();
+                     }
                   }
+                  // Open only one project
+                  break;
                }
-               // Open only one project
-               break;
+               else
+                  ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
             }
-            else
-               ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
          }
       }
+      if(passThrough && projectView && projectView.project && workspace)
+         workspace.commandLineArgs = passArgs;
+      delete passArgs;
+      if(debugStart)
+         ;//MenuDebugStart(debugStartResumeItem, 0); // <-- how TODO this without getting into the app.Wait lock
       return true;
    }
 

@@ -696,6 +696,8 @@ char * GetConfigName(ProjectConfig config)
    return config ? config.name : "Common";
 }
 
+public enum SingleFileCompileMode { normal, debugPrecompile, debugCompile, debugGenerateSymbols };
+
 class Project : struct
 {
    class_no_expansion;  // To use Find on the Container<Project> in Workspace::projects
@@ -1695,7 +1697,7 @@ private:
       }
    }
 
-   bool Build(bool isARun, List<ProjectNode> onlyNodes, CompilerConfig compiler, ProjectConfig config, bool justPrint)
+   bool Build(bool isARun, List<ProjectNode> onlyNodes, CompilerConfig compiler, ProjectConfig config, bool justPrint, SingleFileCompileMode mode)
    {
       bool result = false;
       DualPipe f;
@@ -1790,25 +1792,49 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s -j%d %s%s%s -C \"%s\"%s -f \"%s\"",
-               compiler.makeCommand, cfDir,
+         sprintf(command, "%s %sCF_DIR=\"%s\"%s%s COMPILER=%s -j%d %s%s%s -C \"%s\"%s -f \"%s\"",
+               compiler.makeCommand,
+               mode == normal ? "" : (mode == debugPrecompile ? "ECP_DEBUG=y " : mode == debugCompile ? "ECC_DEBUG=y " : mode == debugGenerateSymbols ? "ECS_DEBUG=y " : ""),
+               cfDir,
                crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
                compilerName, numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",
-               (String)makeTargets, topNode.path, justPrint ? " -n" : "", makeFilePath);
+               (String)makeTargets, topNode.path, (justPrint || mode != normal) ? " -n" : "", makeFilePath);
          if(justPrint)
             ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
+            bool found = false;
             if(justPrint)
             {
                ProcessPipeOutputRaw(f);
                result = true;
             }
+            else if(mode != normal)
+            {
+               char line[65536];
+               while(!f.Eof())
+               {
+                  bool result = true;
+                  while(result)
+                  {
+                     if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)))
+                     {
+                        if(!found && strstr(line, "ide ") == line)
+                        {
+                           strcpy(command, line);
+                           found = true;
+                        }
+                     }
+                  }
+               }
+            }
             else
                result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNodes, compiler, config);
             delete f;
+            if(found)
+               Execute(command);
          }
          else
             ide.outputView.buildBox.Logf($"Error executing make (%s) command\n", compiler.makeCommand);
@@ -1938,9 +1964,9 @@ private:
       delete target;
    }
 
-   void Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, bool justPrint)
+   void Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, bool justPrint, SingleFileCompileMode mode)
    {
-      Build(false, nodes, compiler, config, justPrint);
+      Build(false, nodes, compiler, config, justPrint, mode);
    }
 #endif
 
@@ -2045,6 +2071,16 @@ private:
          File f = FileOpen(path, write);
          if(f)
          {
+            if(compiler.environmentVars && compiler.environmentVars.count)
+            {
+               f.Puts("# ENVIRONMENT VARIABLES\n");
+               f.Puts("\n");
+               for(e : compiler.environmentVars)
+               {
+                  f.Printf("export %s := %s\n", e.name, e.string);
+               }
+            }
+
             f.Puts("# TOOLCHAIN\n");
             f.Puts("\n");
 
@@ -2065,9 +2101,9 @@ private:
             f.Printf("CPP := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cppCommand);
             f.Printf("CC := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.ccCommand);
             f.Printf("CXX := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cxxCommand);
-            f.Printf("ECP := %s\n", compiler.ecpCommand);
-            f.Printf("ECC := %s$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.eccCommand);
-            f.Printf("ECS := %s$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.ecsCommand);
+            f.Printf("ECP := $(if $(ECP_DEBUG),ide -debug-start $(ECERE_SDK_SRC)/compiler/ecp/ecp.epj -@,%s)\n", compiler.ecpCommand);
+            f.Printf("ECC := $(if $(ECC_DEBUG),ide -debug-start $(ECERE_SDK_SRC)/compiler/ecc/ecc.epj -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.eccCommand);
+            f.Printf("ECS := $(if $(ECS_DEBUG),ide -debug-start $(ECERE_SDK_SRC)/compiler/ecs/ecs.epj -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.ecsCommand);
             f.Printf("EAR := %s\n", compiler.earCommand);
 
             f.Puts("AS := $(GCC_PREFIX)as\n");
@@ -2076,16 +2112,6 @@ private:
             f.Puts("STRIP := $(GCC_PREFIX)strip\n");
             f.Puts("UPX := upx\n");
             f.Puts("\n");
-
-            if(compiler.environmentVars && compiler.environmentVars.count)
-            {
-               f.Puts("# ENVIRONMENT VARIABLES\n");
-               f.Puts("\n");
-               for(e : compiler.environmentVars)
-               {
-                  f.Printf("export %s := %s\n", e.name, e.string);
-               }
-            }
 
             f.Puts("UPXFLAGS = -9\n"); // TOFEAT: Compression Level Option? Other UPX Options?
             f.Puts("\n");
