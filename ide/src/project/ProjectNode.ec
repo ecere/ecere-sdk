@@ -2233,7 +2233,14 @@ private:
       }
       else
       {
-         if(exclusionInfo.count < 2)
+         bool onlyOnknown = true;
+         for(p : exclusionInfo)
+            if(&p != unknown && p == true)
+            {
+               onlyOnknown = false;
+               break;
+            }
+         if(onlyOnknown)
             platforms.Add(unknown);
          else
          {

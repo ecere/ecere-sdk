@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./src/project/Project.ec:1422
+#: ./src/project/Project.ec:1429
 msgid "   %s: No such file or directory\n"
 msgstr "   %s: No such file or directory\n"
 
@@ -54,7 +54,7 @@ msgstr " configuration?"
 msgid " file is not part of any project.\n"
 msgstr " file is not part of any project.\n"
 
-#: ./src/project/ProjectView.ec:1799
+#: ./src/project/ProjectView.ec:1798
 msgid " was "
 msgstr " was "
 
@@ -188,7 +188,7 @@ msgstr "Active Configuration..."
 msgid "Add Files to Folder..."
 msgstr "Add Files to Folder..."
 
-#: ./src/project/ProjectView.ec:1744
+#: ./src/project/ProjectView.ec:1743
 msgid "Add Files to Project"
 msgstr "Add Files to Project"
 
@@ -209,7 +209,7 @@ msgstr "Add New Form..."
 msgid "Add Resources to Folder..."
 msgstr "Add Resources to Folder..."
 
-#: ./src/project/ProjectView.ec:1744
+#: ./src/project/ProjectView.ec:1743
 msgid "Add Resources to Project"
 msgstr "Add Resources to Project"
 
@@ -263,11 +263,11 @@ msgstr "All Debug Views"
 msgid "All files"
 msgstr "All files"
 
-#: ./src/project/ProjectView.ec:2034
+#: ./src/project/ProjectView.ec:2033
 msgid "Are you sure you want to remove the \"%s\" project\nfrom this workspace?"
 msgstr "Are you sure you want to remove the \"%s\" project\nfrom this workspace?"
 
-#: ./src/project/ProjectView.ec:2011
+#: ./src/project/ProjectView.ec:2010
 msgid "Are you sure you want to remove the folder \"%s\"\nand all of its contents from the project?"
 msgstr "Are you sure you want to remove the folder \"%s\"\nand all of its contents from the project?"
 
@@ -349,7 +349,7 @@ msgstr "Build project"
 msgid "Builder"
 msgstr "Builder"
 
-#: ./src/project/Project.ec:1499
+#: ./src/project/Project.ec:1506
 msgid "Building library...\n"
 msgstr "Building library...\n"
 
@@ -497,7 +497,7 @@ msgstr "Compiling single file %s in project %s using the %s configuration...\n"
 msgid "Compiling single file %s in project %s...\n"
 msgstr "Compiling single file %s in project %s...\n"
 
-#: ./src/project/Project.ec:1470
+#: ./src/project/Project.ec:1477
 msgid "Compiling...\n"
 msgstr "Compiling...\n"
 
@@ -530,7 +530,7 @@ msgstr "Console Application"
 msgid "Copy"
 msgstr "Copy"
 
-#: ./src/project/ProjectView.ec:1780
+#: ./src/project/ProjectView.ec:1779
 msgid "Couldn't create file."
 msgstr "Couldn't create file."
 
@@ -624,11 +624,11 @@ msgstr "Delete "
 msgid "Delete %s"
 msgstr "Delete %s"
 
-#: ./src/project/ProjectView.ec:2012
+#: ./src/project/ProjectView.ec:2011
 msgid "Delete Folder"
 msgstr "Delete Folder"
 
-#: ./src/project/Project.ec:1862
+#: ./src/project/Project.ec:1873
 msgid "Deleting target and object files..."
 msgstr "Deleting target and object files..."
 
@@ -719,7 +719,7 @@ msgstr "Environment Variables"
 msgid "Error creating directory"
 msgstr "Error creating directory"
 
-#: ./src/project/Project.ec:1793
+#: ./src/project/Project.ec:1812
 msgid "Error executing make (%s) command\n"
 msgstr "Error executing make (%s) command\n"
 
@@ -786,7 +786,7 @@ msgstr "Expression"
 msgid "Fast Math"
 msgstr "Fast Math"
 
-#: ./src/project/Project.ec:1623
+#: ./src/project/Project.ec:1630
 msgid "Fatal Error: child process terminated unexpectedly\n"
 msgstr "Fatal Error: child process terminated unexpectedly\n"
 
@@ -809,7 +809,7 @@ msgstr "File %s is excluded from current build configuration.\n"
 msgid "File doesn't exist."
 msgstr "File doesn't exist."
 
-#: ./src/project/ProjectView.ec:1769
+#: ./src/project/ProjectView.ec:1768
 #: ./src/ide.ec:2068
 msgid "File doesn't exist. Create?"
 msgstr "File doesn't exist. Create?"
@@ -930,7 +930,7 @@ msgstr "Generating Visual Studio Project..."
 msgid "Generating Visual Studio Solution..."
 msgstr "Generating Visual Studio Solution..."
 
-#: ./src/project/Project.ec:1475
+#: ./src/project/Project.ec:1482
 msgid "Generating symbols...\n"
 msgstr "Generating symbols...\n"
 
@@ -1081,7 +1081,7 @@ msgstr "License"
 msgid "Linker"
 msgstr "Linker"
 
-#: ./src/project/Project.ec:1535
+#: ./src/project/Project.ec:1542
 msgid "Linker Error"
 msgstr "Linker Error"
 
@@ -1089,7 +1089,7 @@ msgstr "Linker Error"
 msgid "Linker Options"
 msgstr "Linker Options"
 
-#: ./src/project/Project.ec:1488
+#: ./src/project/Project.ec:1495
 msgid "Linking...\n"
 msgstr "Linking...\n"
 
@@ -1185,7 +1185,7 @@ msgstr "NUM"
 msgid "Name"
 msgstr "Name"
 
-#: ./src/project/ProjectView.ec:1817
+#: ./src/project/ProjectView.ec:1816
 msgid "Name Conflict"
 msgstr "Name Conflict"
 
@@ -1561,7 +1561,7 @@ msgstr "Relinking project %s using the %s configuration...\n"
 msgid "Remove"
 msgstr "Remove"
 
-#: ./src/project/ProjectView.ec:2035
+#: ./src/project/ProjectView.ec:2034
 msgid "Remove Project"
 msgstr "Remove Project"
 
@@ -1852,7 +1852,7 @@ msgstr "Target Platform"
 msgid "Target Type"
 msgstr "Target Type"
 
-#: ./src/project/Project.ec:1866
+#: ./src/project/Project.ec:1880
 msgid "Target and object files deleted\n"
 msgstr "Target and object files deleted\n"
 
@@ -1890,7 +1890,7 @@ msgstr "The "
 msgid "The document %s was modified by another application.\nWould you like to reload it and lose your changes?"
 msgstr "The document %s was modified by another application.\nWould you like to reload it and lose your changes?"
 
-#: ./src/project/ProjectView.ec:1798
+#: ./src/project/ProjectView.ec:1797
 msgid "The following file"
 msgstr "The following file"
 
@@ -2103,7 +2103,7 @@ msgstr "Would you like to save changes made to the project options?"
 msgid "Would you like to save changes made to the workspace options?"
 msgstr "Would you like to save changes made to the workspace options?"
 
-#: ./src/project/Project.ec:1501
+#: ./src/project/Project.ec:1508
 msgid "Writing symbol loader...\n"
 msgstr "Writing symbol loader...\n"
 
@@ -2124,7 +2124,7 @@ msgid "You must specify a search location."
 msgstr "You must specify a search location."
 
 #: ./src/project/Project.ec:1347
-#: ./src/project/Project.ec:1615
+#: ./src/project/Project.ec:1622
 msgid "\nBuild cancelled by user.\n"
 msgstr "\nBuild cancelled by user.\n"
 
@@ -2168,11 +2168,11 @@ msgstr "err: Unable to create FIFO %s\n"
 msgid "err: Unable to open FIFO %s for read\n"
 msgstr "err: Unable to open FIFO %s for read\n"
 
-#: ./src/project/Project.ec:1630
+#: ./src/project/Project.ec:1637
 msgid "error"
 msgstr "error"
 
-#: ./src/project/Project.ec:1630
+#: ./src/project/Project.ec:1637
 msgid "errors"
 msgstr "errors"
 
@@ -2190,15 +2190,15 @@ msgstr "found"
 msgid "inside %s, %s\n"
 msgstr "inside %s, %s\n"
 
-#: ./src/project/Project.ec:1632
+#: ./src/project/Project.ec:1639
 msgid "no error, "
 msgstr "no error, "
 
-#: ./src/project/Project.ec:1637
+#: ./src/project/Project.ec:1644
 msgid "no warning\n"
 msgstr "no warning\n"
 
-#: ./src/project/ProjectView.ec:1801
+#: ./src/project/ProjectView.ec:1800
 msgid "not added because of identical file name conflict within the project.\n\n"
 msgstr "not added because of identical file name conflict within the project.\n\n"
 
@@ -2211,7 +2211,7 @@ msgstr "replaced"
 msgid "s"
 msgstr "s"
 
-#: ./src/project/ProjectView.ec:1800
+#: ./src/project/ProjectView.ec:1799
 msgid "s were "
 msgstr "s were "
 
@@ -2219,11 +2219,11 @@ msgstr "s were "
 msgid "unknown source\n"
 msgstr "unknown source\n"
 
-#: ./src/project/Project.ec:1635
+#: ./src/project/Project.ec:1642
 msgid "warning"
 msgstr "warning"
 
-#: ./src/project/Project.ec:1635
+#: ./src/project/Project.ec:1642
 msgid "warnings"
 msgstr "warnings"
 
