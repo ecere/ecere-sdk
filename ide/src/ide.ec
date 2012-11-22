@@ -2183,15 +2183,22 @@ class IDEWorkSpace : Window
       char completePath[MAX_LOCATION];
       int line = 0, col = 0;
       Project prj = null;
+      FileAttribs fileAttribs;
 
-      if(text[3] == '(')
+      if(colon && (colon[1] == '/' || colon[1] == '\\'))
       {
-         char * close = strchr(text, ')');
+         path = (colon - 1 > path) ? colon - 1 : path;
+         colon = strstr(colon + 1, ":");
+      }
+      while(isspace(*path)) path++;
+      if(*path == '(')
+      {
+         char * close = strchr(path, ')');
          if(close)
          {
             char name[256];
-            strncpy(name, &text[4], close - text - 4);
-            name[close - text - 4] = '\0';
+            strncpy(name, path+1, close - path - 1);
+            name[close - path - 1] = '\0';
             for(p : ide.workspace.projects)
             {
                if(!strcmp(p.name, name))
@@ -2205,12 +2212,6 @@ class IDEWorkSpace : Window
       }
       if(!prj)
          prj = project ? project : (dir ? null : ide.project);
-      if(colon && (colon[1] == '/' || colon[1] == '\\'))
-      {
-         path = (colon - 1 > path) ? colon - 1 : path;
-         colon = strstr(colon + 1, ":");
-      }
-      while(isspace(*path)) path++;
       if(colon)
       {
          strncpy(filePath, path, colon - path);
@@ -2220,7 +2221,7 @@ class IDEWorkSpace : Window
          if(colon)
             col = atoi(colon + 1);
       }
-      else if(path - 1 >= path && *(path - 1) == '\"')
+      else if(path - 1 >= text && *(path - 1) == '\"')
       {
          colon = strchr(path, '\"');
          if(colon)
@@ -2228,6 +2229,10 @@ class IDEWorkSpace : Window
             strncpy(filePath, path, colon - path);
             filePath[colon - path] = '\0';
          }
+      }
+      else if(path && !colon)
+      {
+         strcpy(filePath, path);
       }
 
       if(prj)
@@ -2238,7 +2243,8 @@ class IDEWorkSpace : Window
          completePath[0] = '\0';
       PathCat(completePath, filePath);
 
-      if(FileExists(completePath).isFile)
+      fileAttribs = FileExists(completePath);
+      if(fileAttribs.isFile)
       {
          CodeEditor codeEditor = (CodeEditor)OpenFile(completePath, normal, true, "", no, normal);
          if(codeEditor && line)
@@ -2248,6 +2254,8 @@ class IDEWorkSpace : Window
             editBox.GoToPosition(editBox.line, line - 1, col ? (col - 1) : 0);
          }
       }
+      else if(fileAttribs.isDirectory)
+         ShellOpen(completePath);
    }
 
    void OnRedraw(Surface surface)

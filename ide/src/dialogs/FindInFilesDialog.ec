@@ -180,8 +180,8 @@ private:
    DataRow inDirectoryRow;
    DataRow inWorkspaceRow;
    FindInFilesMode lastSelectionMode;
-   Project lastSelectionProject;
-   ProjectNode lastSelectionProjectNode;
+   String lastSelectionProject;
+   String lastSelectionProjectNode;
    bool replaceMode;
 
    FindInFilesDialog()
@@ -250,16 +250,23 @@ private:
          {
             Project prj;
             lastSelectionMode = mode;
-            lastSelectionProject = prj = lastSelectionMode == project ? (Project)row.tag : null;
+            prj = lastSelectionMode == project ? (Project)row.tag : null;
+            delete lastSelectionProject;
             if(prj)
             {
                DataRow r = null;
                ProjectNode node = prj.topNode;
+               char filePath[MAX_LOCATION];
+               prj.topNode.GetFullFilePath(filePath);
+               lastSelectionProject = CopyString(filePath);
                findWherePrjNode.Clear();
                ListProjectNodeFolders(node, null);
 
-               if(lastSelectionProjectNode && lastSelectionProjectNode.project == prj)
-                  node = lastSelectionProjectNode;
+               if(lastSelectionProjectNode && !(node = prj.topNode.FindByFullPath(lastSelectionProjectNode, false)))
+               {
+                  node = prj.topNode;
+                  delete lastSelectionProjectNode;
+               }
 
                for(r = findWherePrjNode.firstRow; r; r = r.next)
                   if((ProjectNode)r.tag == node)
@@ -303,7 +310,16 @@ private:
       bool NotifySelect(DropBox control, DataRow row, Modifiers mods)
       {
          if(row)
-            lastSelectionProjectNode = (ProjectNode)row.tag;
+         {
+            ProjectNode node = (ProjectNode)row.tag;
+            delete lastSelectionProjectNode;
+            if(node)
+            {
+               char filePath[MAX_LOCATION];
+               node.GetFullFilePath(filePath);
+               lastSelectionProjectNode = CopyString(filePath);
+            }
+         }
          return true;
       }
    };
@@ -444,12 +460,20 @@ private:
          if(lastSelectionProject)
          {
             for(row = findIn.firstRow; row; row = row.next)
-               if((Project)row.tag == lastSelectionProject)
-                  break;
+            {
+               char filePath[MAX_LOCATION];
+               Project p = (Project)row.tag;
+               if(p)
+               {
+                  p.topNode.GetFullFilePath(filePath);
+                  if(!fstrcmp(filePath, lastSelectionProject))
+                     break;
+               }
+            }
             if(row)
                findIn.SelectRow(row);
             else
-               lastSelectionProject = null;
+               delete lastSelectionProject;
          }
          if(!lastSelectionProject)
          {
@@ -624,7 +648,7 @@ private:
    unsigned int Main()
    {
       int frame, treeTop = 0;
-      int globalFindCount = 0, filesSearchedCount = 0, filesMatchedCount = 0;
+      int globalFindCount = 0, filesSearchedCount = 0, filesMatchedCount = 0, dirsMatchedCount = 0;
       //double lastTime = GetTime();
       SearchStackFrame stack[1024];
       FindInFilesMode mode = this.mode;
@@ -679,10 +703,17 @@ private:
          {
             if(stack[frame].fileList.Find())
             {
+               bool match = true;
+               if(nameCriteria[0])
+               {
+                  char name[MAX_LOCATION];
+                  GetLastDirectory(stack[frame].fileList.path, name);
+                  if(!(bool)SearchString(name, 0, nameCriteria, false, false))
+                     match = false;
+               }
                if(!stack[frame].fileList.stats.attribs.isDirectory)
                {
                   bool relative = false;
-                  bool match = true;
                   char fileRelative[MAX_LOCATION];
                   if(filter.ValidateFileName(stack[frame].fileList.name))
                   {
@@ -690,13 +721,6 @@ private:
                      relative = true;
                      
                      filesSearchedCount++;
-                     if(nameCriteria[0])
-                     {
-                        char name[MAX_LOCATION];
-                        GetLastDirectory(stack[frame].fileList.path, name);
-                        if(!(bool)SearchString(name, 0, nameCriteria, false, false))
-                           match = false;
-                     }
                      if(match && contentCriteria[0])
                      {
                         int ret;
@@ -721,7 +745,7 @@ private:
                         filesMatchedCount++;
                         app.Lock();
                            ide.outputView.findBox.Logf(
-                                 $"%s matches the file name criteria\n",
+                                 "%s\n",
                                  relative ? fileRelative : stack[frame].fileList.path);
                         app.Unlock();
                      }
@@ -734,6 +758,13 @@ private:
                   MakePathRelative(stack[frame].fileList.path, dir, fileRelative);
                   relative = true;
                   app.Lock();
+                     if(match && nameCriteria[0])
+                     {
+                        dirsMatchedCount++;
+                        ide.outputView.findBox.Logf(
+                              "%s\n",
+                              relative ? fileRelative : stack[frame].fileList.path);
+                     }
                      ide.outputView.findBox.Tellf(
                            $"Searching %s", relative ? fileRelative : stack[frame].fileList.path);
                   app.Unlock();
@@ -800,10 +831,12 @@ private:
                      bool relative = true;
                      char fileRelative[MAX_LOCATION];
                      char filePath[MAX_LOCATION];
-                     strcpy(filePath, prj.topNode.path);
+                     filePath[0] = '\0';
+                     PathCat(filePath, prj.topNode.path);
                      PathCat(filePath, stack[frame].path);
                      PathCat(filePath, stack[frame].name);
-                     strcpy(fileRelative, stack[frame].path);
+                     fileRelative[0] = '\0';
+                     PathCat(fileRelative, stack[frame].path);
                      PathCat(fileRelative, stack[frame].name);
                      if(relative && mode == workspace && prj != ide.project)
                      {
@@ -842,7 +875,6 @@ private:
                               app.Lock();
                                  ide.outputView.findBox.Logf(
                                        "%s\n", relative ? fileRelative : filePath);
-                                       /*" matches the file name criteria"*/
                               app.Unlock();
                            }
                         }
@@ -851,6 +883,29 @@ private:
                      break;
                   }
                   case folder:
+                  {
+                     bool relative = true;
+                     char fileRelative[MAX_LOCATION];
+                     char filePath[MAX_LOCATION];
+                     filePath[0] = '\0';
+                     PathCat(filePath, prj.topNode.path);
+                     PathCat(filePath, stack[frame].path);
+                     fileRelative[0] = '\0';
+                     PathCat(fileRelative, stack[frame].path);
+                     if(relative && mode == workspace && prj != ide.project)
+                     {
+                        char special[MAX_LOCATION];
+                        sprintf(special, "(%s)%s", prj.name, fileRelative);
+                        strcpy(fileRelative, special);
+                     }
+                     if(nameCriteria[0] && (bool)SearchString(stack[frame].name, 0, nameCriteria, false, false))
+                     {
+                        dirsMatchedCount++;
+                        app.Lock();
+                           ide.outputView.findBox.Logf(
+                                 "%s\n", relative ? fileRelative : filePath);
+                        app.Unlock();
+                     }
                      if((subDirs || firtIteration) && stack[frame].files && stack[frame].files.count)
                      {
                         int lastFrame = frame;
@@ -861,6 +916,7 @@ private:
                      else
                         stack[frame] = stack[frame].next;
                      break;
+                  }
                   case resources:
                      stack[frame] = stack[frame].next;
                      break;
@@ -889,6 +945,8 @@ private:
       app.Lock();
          if(filesSearchedCount)
          {
+            if(!contentCriteria[0] && (filesMatchedCount || dirsMatchedCount))
+               ide.outputView.findBox.Logf("\n");
             if(globalFindCount)
                ide.outputView.findBox.Logf(
                      $"%s search %s a total of %d match%s in %d out of the %d file%s searched\n",
