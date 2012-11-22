@@ -9,14 +9,12 @@ public import "ec"
 import "GlobalSettingsDialog"
 import "NewProjectDialog"
 import "FindInFilesDialog"
-import "ActiveCompilerDialog"
 
 #ifdef GDB_DEBUG_GUI
 import "GDBDialog"
 #endif
 
 import "Project"
-import "ProjectActiveConfig"
 import "ProjectConfig"
 import "ProjectNode"
 import "NodeProperties"
@@ -270,6 +268,60 @@ class IDEToolbar : ToolBar
    ToolButton buttonDebugStepOut { this, toolTip = $"Step Out", menuItemPtr = IDEItem(debugStepOutItem), disabled = true; };
    // Shift+F10
    ToolButton buttonDebugSkipStepOver { this, toolTip = $"Step Over Skipping Breakpoints", menuItemPtr = IDEItem(debugSkipStepOverItem), disabled = true; };
+
+   ToolSeparator separator5 { this };
+
+   Window spacer5 { this, size = { 4 } };
+
+   DropBox activeConfig
+   {
+      this, toolTip = $"Active Configuration(s)", size = { 160 };
+      bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
+      {
+         if(row)
+         {
+            for(prj : ide.workspace.projects)
+            {
+               for(cfg : prj.configurations)
+               {
+                  if(cfg.name && !strcmp(cfg.name, row.string))
+                  {
+                     prj.config = cfg;
+                     break;
+                  }
+               }
+            }
+            ide.UpdateToolBarActiveConfigs(true);
+            ide.projectView.Update(null);
+         }
+         return true;
+      }
+   };
+
+   Window spacer6 { this, size = { 4 } };
+
+   DropBox activeCompiler
+   {
+      this, toolTip = $"Active Compiler", size = { 160 };
+      bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
+      {
+         if(row && strcmp(row.string, ide.workspace.compiler))
+         {
+            CompilerConfig compiler = ideSettings.GetCompilerConfig(row.string);
+            ide.workspace.compiler = row.string;
+            ide.projectView.ShowOutputBuildLog(true);
+            ide.projectView.DisplayCompiler(compiler, false);
+            for(prj : ide.workspace.projects)
+               ide.projectView.ProjectPrepareCompiler(prj, compiler);
+            delete compiler;
+            ide.workspace.Save();
+         }
+         return true;
+      }
+   };
+
+   Window spacer7 { this, size = { 4 } };
+
 }
 
 class IDEMainFrame : Window
@@ -874,24 +926,6 @@ class IDEWorkSpace : Window
          }
       }
       MenuDivider { projectMenu };
-      MenuItem activeCompilerItem
-      {
-         projectMenu, $"Active Compiler...", g, /*altF5, */disabled = true;
-         bool NotifySelect(MenuItem selection, Modifiers mods)
-         {
-            projectView.MenuCompiler(null, mods);
-            return true;
-         }
-      }
-      MenuItem projectActiveConfigItem
-      {
-         projectMenu, $"Active Configuration...", g, altF5, disabled = true;
-         bool NotifySelect(MenuItem selection, Modifiers mods)
-         {
-            projectView.MenuConfig(projectView.active ? selection : null, mods);
-            return true;
-         }
-      }
       MenuItem projectSettingsItem
       {
          projectMenu, $"Settings...", s, altF7, disabled = true;
@@ -1572,6 +1606,7 @@ class IDEWorkSpace : Window
 
    void UpdateCompilerConfigs()
    {
+      UpdateToolBarActiveCompilers();
       if(workspace)
       {
          CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.compiler);
@@ -1583,6 +1618,96 @@ class IDEWorkSpace : Window
       }
    }
 
+   void UpdateToolBarActiveCompilers()
+   {
+      toolBar.activeCompiler.Clear();
+      for(compiler : ideSettings.compilerConfigs)
+      {
+         DataRow row = toolBar.activeCompiler.AddString(compiler.name);
+         if(workspace && workspace.compiler && !strcmp(compiler.name, workspace.compiler))
+            toolBar.activeCompiler.currentRow = row;
+      }
+      if(!toolBar.activeCompiler.currentRow)
+         toolBar.activeCompiler.currentRow = toolBar.activeCompiler.firstRow;
+      toolBar.activeCompiler.disabled = workspace == null;
+   }
+
+   void UpdateToolBarActiveConfigs(bool selectionOnly)
+   {
+      bool commonSelected = false;
+      DataRow row = toolBar.activeConfig.currentRow;
+      if(selectionOnly)
+         row = toolBar.activeConfig.FindRow(1);
+      else
+      {
+         toolBar.activeConfig.Clear();
+         row = toolBar.activeConfig.AddString("(Mixed)");
+         row.tag = 1;
+      }
+      if(workspace)
+      {
+         char * configName = null;
+         if(!selectionOnly)
+         {
+            Map<String, int> configs { }; // TOIMP: just need sort but using map until containers have sort
+            for(prj : workspace.projects)
+            {
+               for(cfg : prj.configurations)
+               {
+                  if(cfg.name)
+                     configs[cfg.name] = 1;
+               }
+            }
+            for(name : configs)
+            {
+               toolBar.activeConfig.AddString(&name);
+            }
+            delete configs;
+         }
+         if(projectView && projectView.project)
+         {
+            for(prj : workspace.projects)
+            {
+               if(prj.config && prj.config.name)
+               {
+                  configName = prj.config.name;
+                  break;
+               }
+            }
+            if(configName)
+            {
+               commonSelected = true;
+               for(prj : workspace.projects)
+               {
+                  if(prj.config && (!prj.config.name || strcmp(prj.config.name, configName)))
+                  {
+                     commonSelected = false;
+                     break;
+                  }
+               }
+            }
+         }
+         if(commonSelected)
+         {
+            commonSelected = false;
+            for(row = toolBar.activeConfig.firstRow; row; row = row.next)
+            {
+               if(!strcmp(row.string, configName))
+               {
+                  toolBar.activeConfig.currentRow = row;
+                  commonSelected = true;
+                  break;
+               }
+            }
+         }
+      }
+      if(!selectionOnly)
+         toolBar.activeConfig.Sort(null, 0);
+      if(!commonSelected)
+         toolBar.activeConfig.currentRow = row;
+      toolBar.activeConfig.disabled = workspace == null;
+   }
+
    void AdjustMenus()
    {
       bool unavailable = !project;
@@ -1590,8 +1715,6 @@ class IDEWorkSpace : Window
       projectAddItem.disabled             = unavailable;
       toolBar.buttonAddProject.disabled   = unavailable;
 
-      activeCompilerItem.disabled         = unavailable;
-      projectActiveConfigItem.disabled    = unavailable;
       projectSettingsItem.disabled        = unavailable;
 
       projectBrowseFolderItem.disabled    = unavailable;
@@ -2579,6 +2702,9 @@ class IDEWorkSpace : Window
       delete passArgs;
       if(debugStart)
          ;//MenuDebugStart(debugStartResumeItem, 0); // <-- how TODO this without getting into the app.Wait lock
+
+      UpdateToolBarActiveConfigs(false);
+      UpdateToolBarActiveCompilers();
       return true;
    }
 

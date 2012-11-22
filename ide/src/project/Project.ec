@@ -1312,6 +1312,7 @@ private:
          }
 
          property::config = cfg.data;
+         ide.UpdateToolBarActiveConfigs(true);
          ide.workspace.modified = true;
          ide.projectView.Update(null);
       }

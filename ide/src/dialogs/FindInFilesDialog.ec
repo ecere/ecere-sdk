@@ -183,6 +183,7 @@ private:
    String lastSelectionProject;
    String lastSelectionProjectNode;
    bool replaceMode;
+   SelectorButton starDir;
 
    FindInFilesDialog()
    {

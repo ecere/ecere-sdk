@@ -48,13 +48,11 @@ _ECSOURCES = \
 	../extras/gui/layout.ec \
 	../extras/gui/controls/StringsBox.ec \
 	../extras/types/DynamicString.ec \
-	src/dialogs/ActiveCompilerDialog.ec \
 	src/dialogs/CompilersDetectionDialog.ec \
 	src/dialogs/FindInFilesDialog.ec \
 	src/dialogs/GlobalSettingsDialog.ec \
 	src/dialogs/NewProjectDialog.ec \
 	src/dialogs/NodeProperties.ec \
-	src/dialogs/ProjectActiveConfig.ec \
 	src/dialogs/WorkspaceSettings.ec \
 	src/dialogs/ProjectTabSettings.ec \
 	src/project/Project.ec \
@@ -287,9 +285,6 @@ $(OBJ)StringsBox.sym: ../extras/gui/controls/StringsBox.ec
 $(OBJ)DynamicString.sym: ../extras/types/DynamicString.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../extras/types/DynamicString.ec -o $(OBJ)DynamicString.sym
 
-$(OBJ)ActiveCompilerDialog.sym: src/dialogs/ActiveCompilerDialog.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/dialogs/ActiveCompilerDialog.ec -o $(OBJ)ActiveCompilerDialog.sym
-
 $(OBJ)CompilersDetectionDialog.sym: src/dialogs/CompilersDetectionDialog.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/dialogs/CompilersDetectionDialog.ec -o $(OBJ)CompilersDetectionDialog.sym
 
@@ -304,9 +299,6 @@ $(OBJ)NewProjectDialog.sym: src/dialogs/NewProjectDialog.ec
 
 $(OBJ)NodeProperties.sym: src/dialogs/NodeProperties.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/dialogs/NodeProperties.ec -o $(OBJ)NodeProperties.sym
-
-$(OBJ)ProjectActiveConfig.sym: src/dialogs/ProjectActiveConfig.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/dialogs/ProjectActiveConfig.ec -o $(OBJ)ProjectActiveConfig.sym
 
 $(OBJ)WorkspaceSettings.sym: src/dialogs/WorkspaceSettings.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/dialogs/WorkspaceSettings.ec -o $(OBJ)WorkspaceSettings.sym
@@ -428,9 +420,6 @@ $(OBJ)StringsBox.c: ../extras/gui/controls/StringsBox.ec $(OBJ)StringsBox.sym | 
 $(OBJ)DynamicString.c: ../extras/types/DynamicString.ec $(OBJ)DynamicString.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../extras/types/DynamicString.ec -o $(OBJ)DynamicString.c -symbols $(OBJ)
 
-$(OBJ)ActiveCompilerDialog.c: src/dialogs/ActiveCompilerDialog.ec $(OBJ)ActiveCompilerDialog.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/dialogs/ActiveCompilerDialog.ec -o $(OBJ)ActiveCompilerDialog.c -symbols $(OBJ)
-
 $(OBJ)CompilersDetectionDialog.c: src/dialogs/CompilersDetectionDialog.ec $(OBJ)CompilersDetectionDialog.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/dialogs/CompilersDetectionDialog.ec -o $(OBJ)CompilersDetectionDialog.c -symbols $(OBJ)
 
@@ -445,9 +434,6 @@ $(OBJ)NewProjectDialog.c: src/dialogs/NewProjectDialog.ec $(OBJ)NewProjectDialog
 
 $(OBJ)NodeProperties.c: src/dialogs/NodeProperties.ec $(OBJ)NodeProperties.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/dialogs/NodeProperties.ec -o $(OBJ)NodeProperties.c -symbols $(OBJ)
-
-$(OBJ)ProjectActiveConfig.c: src/dialogs/ProjectActiveConfig.ec $(OBJ)ProjectActiveConfig.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/dialogs/ProjectActiveConfig.ec -o $(OBJ)ProjectActiveConfig.c -symbols $(OBJ)
 
 $(OBJ)WorkspaceSettings.c: src/dialogs/WorkspaceSettings.ec $(OBJ)WorkspaceSettings.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/dialogs/WorkspaceSettings.ec -o $(OBJ)WorkspaceSettings.c -symbols $(OBJ)
@@ -569,9 +555,6 @@ $(OBJ)StringsBox.o: $(OBJ)StringsBox.c
 $(OBJ)DynamicString.o: $(OBJ)DynamicString.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)DynamicString.c -o $(OBJ)DynamicString.o
 
-$(OBJ)ActiveCompilerDialog.o: $(OBJ)ActiveCompilerDialog.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)ActiveCompilerDialog.c -o $(OBJ)ActiveCompilerDialog.o
-
 $(OBJ)CompilersDetectionDialog.o: $(OBJ)CompilersDetectionDialog.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)CompilersDetectionDialog.c -o $(OBJ)CompilersDetectionDialog.o
 
@@ -586,9 +569,6 @@ $(OBJ)NewProjectDialog.o: $(OBJ)NewProjectDialog.c
 
 $(OBJ)NodeProperties.o: $(OBJ)NodeProperties.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)NodeProperties.c -o $(OBJ)NodeProperties.o
-
-$(OBJ)ProjectActiveConfig.o: $(OBJ)ProjectActiveConfig.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)ProjectActiveConfig.c -o $(OBJ)ProjectActiveConfig.o
 
 $(OBJ)WorkspaceSettings.o: $(OBJ)WorkspaceSettings.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)WorkspaceSettings.c -o $(OBJ)WorkspaceSettings.o

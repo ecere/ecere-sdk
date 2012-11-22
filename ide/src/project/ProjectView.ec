@@ -238,7 +238,6 @@ class ProjectView : Window
                      MenuItem { popupContent, $"Remove project from workspace", r, NotifySelect = ProjectRemove }.disabled = buildMenuUnavailable;
                      MenuDivider { popupContent };
                   }
-                  MenuItem { popupContent, $"Active Configuration...", s, Key { f5, alt = true } , NotifySelect = MenuConfig };
                   MenuItem { popupContent, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
                   MenuDivider { popupContent };
                   MenuItem { popupContent, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
@@ -1197,41 +1196,12 @@ class ProjectView : Window
    {
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
 
+      ide.UpdateToolBarActiveConfigs(false);
       for(config : project.configurations)
          ProjectPrepareMakefile(project, forceExists, compiler, config);
 
       ide.Update(null);
       delete compiler;
-      return true;
-   }
-
-   bool MenuConfig(MenuItem selection, Modifiers mods)
-   {
-      if(ProjectActiveConfig { master = parent, project = project }.Modal() == ok)
-         ide.AdjustMenus();
-      return true;
-   }
-
-   bool MenuCompiler(MenuItem selection, Modifiers mods)
-   {
-      ActiveCompilerDialog compilerDialog
-      {
-         master = parent;
-         ideSettings = ideSettings, workspaceActiveCompiler = ide.workspace.compiler;
-      };
-      incref compilerDialog;
-      if(compilerDialog.Modal() == ok && strcmp(compilerDialog.workspaceActiveCompiler, ide.workspace.compiler))
-      {
-         CompilerConfig compiler = ideSettings.GetCompilerConfig(compilerDialog.workspaceActiveCompiler);
-         ide.workspace.compiler = compilerDialog.workspaceActiveCompiler;
-         ide.projectView.ShowOutputBuildLog(true);
-         ide.projectView.DisplayCompiler(compiler, false);
-
-         for(prj : ide.workspace.projects)
-            ide.projectView.ProjectPrepareCompiler(prj, compiler);
-         delete compiler;
-      }
-      delete compilerDialog;
       return true;
    }
 

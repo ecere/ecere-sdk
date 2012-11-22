@@ -224,13 +224,11 @@
             {
                "Folder" : "dialogs",
                "Files" : [
-                  "ActiveCompilerDialog.ec",
                   "CompilersDetectionDialog.ec",
                   "FindInFilesDialog.ec",
                   "GlobalSettingsDialog.ec",
                   "NewProjectDialog.ec",
                   "NodeProperties.ec",
-                  "ProjectActiveConfig.ec",
                   "WorkspaceSettings.ec",
                   "ProjectTabSettings.ec"
                ]
