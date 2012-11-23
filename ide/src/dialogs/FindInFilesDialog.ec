@@ -1021,19 +1021,19 @@ private:
                f.Seek(-strlen(contentCriteria), current);*/
          }
          delete f;
+         if(findCount)
+         {
+            app.Lock();
+               ide.outputView.findBox.Logf(
+                     $"Found %d match%s in \"%s\"%s\n\n", findCount, (findCount > 1) ? "es" : "",
+                     relative ? fileRelative : filePath, abortNow ? $" before search was aborted" : "");
+            app.Unlock();
+         }
       }
       else
       {
          app.Lock();
             ide.outputView.findBox.Logf($"Unable to open file %s\n\n", filePath);
-         app.Unlock();
-      }
-      if(findCount)
-      {
-         app.Lock();
-            ide.outputView.findBox.Logf(
-                  $"Found %d match%s in \"%s\"%s\n\n", findCount, (findCount > 1) ? "es" : "",
-                  relative ? fileRelative : filePath, abortNow ? $" before search was aborted" : "");
          app.Unlock();
       }
       return findCount;
@@ -1107,19 +1107,19 @@ private:
                
          }
          delete f;
+         if(replaceCount)
+         {
+            app.Lock();
+               ide.outputView.findBox.Logf(
+                     $"Replaced %d match%s in \"%s\"%s\n\n", replaceCount, (replaceCount > 1) ? $"es" : "",
+                     relative ? fileRelative : filePath, abortNow ? $" before search was aborted" : "");
+            app.Unlock();
+         }
       }
       else
       {
          app.Lock();
             ide.outputView.findBox.Logf($"Unable to open file %s\n\n", filePath);
-         app.Unlock();
-      }
-      if(replaceCount)
-      {
-         app.Lock();
-            ide.outputView.findBox.Logf(
-                  $"Replaced %d match%s in \"%s\"%s\n\n", replaceCount, (replaceCount > 1) ? $"es" : "",
-                  relative ? fileRelative : filePath, abortNow ? $" before search was aborted" : "");
          app.Unlock();
       }
       return replaceCount;
