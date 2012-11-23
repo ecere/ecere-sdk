@@ -6523,6 +6523,9 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
    }
 }
 
+// *****
+// TODO: Add a max buffer size to avoid overflows. This function is used with static size char arrays.
+// *****
 void PrintType(Type type, char * string, bool printName, bool fullName)
 {
    Type funcType;

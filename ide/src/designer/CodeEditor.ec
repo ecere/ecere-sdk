@@ -364,7 +364,6 @@ bool Code_IsPropertyModified(Instance test, ObjectInfo selected, Property prop)
    if(prop.dataTypeString && (!prop.IsSet || prop.IsSet(selected.instance)))
    {
       Class dataType = prop.dataTypeClass;
-      char string[1024] = "";
 
       if(!dataType)
          dataType = prop.dataTypeClass = eSystem_FindClass(test._class.module, prop.dataTypeString);
@@ -915,7 +914,7 @@ class CodeEditor : Window
 
                      membersLoc.end.charPos += after.x - Max(membersLoc.start.charPos, before.x);
 
-                     for(c = membersLoc.start.charPos; c<membersLoc.end.charPos; c++)
+                     for(c = membersLoc.start.charPos; c<membersLoc.end.charPos && len < sizeof(string)-1; c++)
                      {
                         bool isSpace = (buffer[c] == ' ' || buffer[c] == '\t');
                         if(!isalnum(buffer[c]) && buffer[c] != '_' && (!isSpace || !firstChar)) //|| membersList.currentRow
@@ -1232,7 +1231,7 @@ class CodeEditor : Window
 
                   if(before.x >= membersLoc.start.charPos)
                   {
-                     for(c = membersLoc.start.charPos; c<before.x; c++)
+                     for(c = membersLoc.start.charPos; c<before.x && len < sizeof(string)-1; c++)
                      {
                         bool isSpace = (buffer[c] == ' ' || buffer[c] == '\t');
                         if(!isalnum(buffer[c]) && buffer[c] != '_' && (!isSpace || !firstChar))
@@ -1264,7 +1263,7 @@ class CodeEditor : Window
 
                   if(membersLoc.end.charPos >= after.x)
                   {
-                     for(c = after.x; c<membersLoc.end.charPos; c++)
+                     for(c = after.x; c<membersLoc.end.charPos && len < sizeof(string)-1; c++)
                      {
                         bool isSpace = (buffer[c] == ' ' || buffer[c] == '\t');
                         if(!isalnum(buffer[c]) && buffer[c] != '_' && (!isSpace || !firstChar))
@@ -2978,9 +2977,10 @@ class CodeEditor : Window
                                                    // MOVED THIS UP NOW THAT char * IS A NORMAL CLASS
                                                    else if(computed.type == stringExp && propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
                                                    {
-                                                      char temp[1024];
+                                                      String temp = new char[strlen(computed.string)+1];
                                                       ReadString(temp, computed.string);
                                                       prop.Set(instance, temp);
+                                                      delete temp;
                                                    }
                                                    else
                                                       propDef.variable = true;
@@ -3004,9 +3004,10 @@ class CodeEditor : Window
                                                       }
                                                       else if(computed.type == stringExp && propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
                                                       {
-                                                         char temp[1024];
+                                                         String temp = new char[strlen(computed.string)+1];
                                                          ReadString(temp, computed.string);
                                                          prop.Set(instance, temp);
+                                                         delete temp;
                                                       }
                                                    }
                                                    else
@@ -3265,9 +3266,10 @@ class CodeEditor : Window
                                                                               // MOVED THIS UP NOW THAT char * IS A NORMAL CLASS
                                                                               else if(computed.isConstant && computed.type == stringExp && propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
                                                                               {
-                                                                                 char temp[1024];
+                                                                                 String temp = new char[strlen(computed.string)+1];
                                                                                  ReadString(temp, computed.string);
                                                                                  prop.Set(control, temp);
+                                                                                 delete temp;
                                                                               }
                                                                               else
                                                                                  member.variable = true;
@@ -3294,9 +3296,10 @@ class CodeEditor : Window
                                                                                  }
                                                                                  else if(computed.type == stringExp  && propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
                                                                                  {
-                                                                                    char temp[1024];
+                                                                                    String temp = new char[strlen(computed.string)+1];
                                                                                     ReadString(temp, computed.string);
                                                                                     prop.Set(control, temp);
+                                                                                    delete temp;
                                                                                  }
                                                                               }
                                                                               else
