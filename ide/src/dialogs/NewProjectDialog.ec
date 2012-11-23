@@ -464,12 +464,36 @@ class QuickProjectDialog : Window
             Window document = null;
             for(document = ide.firstChild; document; document = document.next)
             {
-               char * fileName = document.fileName;
-               if(document.isDocument && document._class == class(CodeEditor) && document.created && fileName)
+               if(document.created && document.isDocument && document._class == class(CodeEditor))
                {
-                  CodeEditor codeEditor = (CodeEditor)document;
-                  ide.projectView.AddFile(project.topNode, fileName, false, false);
-                  codeEditor.DebugMenusDisabled();
+                  char * fileName = document.fileName;
+                  if(strstr(fileName, "http://") == fileName)
+                  {
+                     char name[MAX_LOCATION];
+                     char newFileName[MAX_LOCATION];
+                     GetLastDirectory(fileName, name);
+                     strcpy(newFileName, tempDir);
+                     PathCat(newFileName, name);
+
+                     // TODO: this should be in Windows::SaveAs(char* asFileName)
+                     // start
+                     //document.saving = true;
+                     if(document.OnSaveFile(newFileName))
+                     {
+                        document.fileName = newFileName;
+                        document.NotifySaved(document.master, /*this*/document, newFileName);
+                     }
+                     //document.saving = false;
+                     // end
+                     // TODO else MessageBox unable to save and cancel the whole project creation thing
+                     fileName = document.fileName;
+                  }
+                  if(fileName)
+                  {
+                     CodeEditor codeEditor = (CodeEditor)document;
+                     ide.projectView.AddFile(project.topNode, fileName, false, false);
+                     codeEditor.DebugMenusDisabled();
+                  }
                }
             }
          }

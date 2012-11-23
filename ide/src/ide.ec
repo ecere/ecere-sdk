@@ -867,7 +867,7 @@ class IDEWorkSpace : Window
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(!projectView)
-               QuickProjectDialog{ this }.Modal();
+               QuickProjectDialog { this }.Modal();
             return true;
          }
       }
@@ -2695,6 +2695,8 @@ class IDEWorkSpace : Window
                else
                   ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
             }
+            else if(strstr(fullPath, "http://") == fullPath)
+               ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
          }
       }
       if(passThrough && projectView && projectView.project && workspace)
