@@ -771,7 +771,7 @@ private:
                   app.Unlock();
                }
 
-               if(subDirs && stack[frame].fileList.stats.attribs.isDirectory)
+               if(subDirs && stack[frame].fileList.stats.attribs.isDirectory && strcmp(stack[frame].fileList.name, ".git"))
                {
                   int lastFrame = frame;
                   /*double thisTime = GetTime();
