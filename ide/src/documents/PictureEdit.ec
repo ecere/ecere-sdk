@@ -60,15 +60,18 @@ class PictureEdit : Window
             modeMenu, $"Indexed Color...", i, isRadio = true;
             bool NotifySelect(MenuItem selection, Modifiers mods)
             {
-               ColorAlpha * palette = bitmap.Quantize(0, 255);
-               /*
-               eBitmap_Convert(null, bitmap, PixelFormat8, palette);
-               bitmap.allocatePalette = true;
-               */               
-               
-               imageModeColorTableItem.disabled = false;
-               Update(null);
-               modifiedDocument = true;
+               if(bitmap)
+               {
+                  ColorAlpha * palette = bitmap.Quantize(0, 255);
+                  /*
+                  eBitmap_Convert(null, bitmap, PixelFormat8, palette);
+                  bitmap.allocatePalette = true;
+                  */
+
+                  imageModeColorTableItem.disabled = false;
+                  Update(null);
+                  modifiedDocument = true;
+               }
                return true;
             }
          };
@@ -91,9 +94,12 @@ class PictureEdit : Window
             modeMenu, $"Color Table", r;
             bool NotifySelect(MenuItem selection, Modifiers mods)
             {
-               PictureEditColorTable colorTable { master = this };
-               colorTable.Modal();
-               Update(null);
+               if(bitmap)
+               {
+                  PictureEditColorTable colorTable { master = this };
+                  colorTable.Modal();
+                  Update(null);
+               }
                return true;
             }
          };
@@ -104,9 +110,12 @@ class PictureEdit : Window
             imageMenu, $"Adjust Hue, Saturation, Value", h;
             bool NotifySelect(MenuItem selection, Modifiers mods)
             {
-               AdjustHSV adjustHSV { master = this };
-               adjustHSV.Modal();
-               Update(null);
+               if(bitmap)
+               {
+                  AdjustHSV adjustHSV { master = this };
+                  adjustHSV.Modal();
+                  Update(null);
+               }
                return true;
             }
          };
@@ -202,7 +211,7 @@ class PictureEdit : Window
       {
          case equal:
          case keyPadPlus:
-            if(zoomFactor < 25)
+            if(bitmap && zoomFactor < 25)
             {
                float x = 0.5f, y = 0.5f;
                if(bitmap.width * zoomFactor > clientSize.w) 
@@ -222,7 +231,7 @@ class PictureEdit : Window
             break;
          case minus:
          case keyPadMinus:
-            if(zoomFactor > 0.05)
+            if(bitmap && zoomFactor > 0.05)
             {
                float x = 0.5f, y = 0.5f;
                if(bitmap.width * zoomFactor > clientSize.w) 

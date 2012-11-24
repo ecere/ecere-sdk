@@ -417,7 +417,7 @@ msgstr "Cleaning project %s using the %s configuration...\n"
 msgid "Clear"
 msgstr "Clear"
 
-#: ./src/documents/PictureEdit.ec:279
+#: ./src/documents/PictureEdit.ec:288
 #: ./src/ide.ec:695
 #: ./src/ide.ec:905
 msgid "Close"
@@ -435,8 +435,8 @@ msgstr "Close IDE"
 msgid "Color Picker..."
 msgstr "Color Picker..."
 
-#: ./src/documents/PictureEdit.ec:91
-#: ./src/documents/PictureEdit.ec:273
+#: ./src/documents/PictureEdit.ec:94
+#: ./src/documents/PictureEdit.ec:282
 msgid "Color Table"
 msgstr "Color Table"
 
@@ -1514,7 +1514,7 @@ msgstr "Quick Project"
 msgid "Quick..."
 msgstr "Quick..."
 
-#: ./src/documents/PictureEdit.ec:77
+#: ./src/documents/PictureEdit.ec:80
 msgid "RGB Color"
 msgstr "RGB Color"
 
