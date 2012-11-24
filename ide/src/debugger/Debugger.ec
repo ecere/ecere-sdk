@@ -3,7 +3,9 @@ import "process"
 import "debugFindCtx"
 import "debugTools"
 
-//#define GDB_DEBUG_CONSOLE
+#ifdef _DEBUG
+#define GDB_DEBUG_CONSOLE
+#endif
 
 extern char * strrchr(char * s, char c);
 
@@ -35,8 +37,7 @@ public char * StripQuotes2(char * string, char * output)
          if(escaped || ch != '\"')
          {
             output[d++] = ch;
-            if(ch == '\\')
-               escaped ^= true;
+            escaped = !escaped && ch == '\\';
          }
          else
             quoted = false;
@@ -233,25 +234,28 @@ static int TokenizeList(char * string, const char seperator, Array<char *> token
 {
    uint level = 0;
    
-   bool quoted = false; //bool escaped = false;
-   char * start = string;
+   bool quoted = false, escaped = false;
+   char * start = string, ch;
    
-   for(; *string; string++)
+   for(; (ch = *string); string++)
    {
       if(!start)
          start = string;
+
       if(quoted)
       {
-         if(*string == '\"')
+         if(escaped || ch != '\"')
+            escaped = !escaped && ch == '\\';
+         else
             quoted = false;
       }
-      else if(*string == '\"')
+      else if(ch == '\"')
          quoted = true;
-      else if(*string == '{' || *string == '[' || *string == '(' || *string == '<')
+      else if(ch == '{' || ch == '[' || ch == '(' || ch == '<')
          level++;
-      else if(*string == '}' || *string == ']' || *string == ')' || *string == '>')
+      else if(ch == '}' || ch == ']' || ch == ')' || ch == '>')
          level--;
-      else if(*string == seperator && !level)
+      else if(ch == seperator && !level)
       {
          tokens.Add(start);
          *string = '\0';
