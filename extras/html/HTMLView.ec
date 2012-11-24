@@ -931,7 +931,8 @@ class HTMLView : Window
          surface.Area(0,0,clientSize.w,clientSize.h);
       else
          surface.Clear(colorBuffer);
-      surface.TextFont(html.defaultFont.font.font);
+      if(html.defaultFont.font) // TOFIX: Null! (No font set?)
+         surface.TextFont(html.defaultFont.font.font);
       surface.SetForeground(html.defaultFont.textColor);
 
       for(;block;)
@@ -1055,7 +1056,8 @@ class HTMLView : Window
       Surface surface = display.GetSurface(0,0,null);
       if(surface)
       {
-         surface.TextFont(html.defaultFont.font.font);
+         if(html.defaultFont.font) // TOFIX: Null! (No font set?)
+            surface.TextFont(html.defaultFont.font.font);
          for(;block;)
          {
             Block nextBlock;
