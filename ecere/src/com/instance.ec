@@ -5995,6 +5995,7 @@ public dllexport Application __ecere_COM_Initialize(bool guiApp, int argc, char 
 {
    Application app;
 
+#ifdef __ANDROID__
    // Clean up global variables
    memoryInitialized = false;
    pools = null;
@@ -6008,6 +6009,7 @@ public dllexport Application __ecere_COM_Initialize(bool guiApp, int argc, char 
    allocateInternal = false;
    TOTAL_MEM = 0;
    OUTSIDE_MEM = 0;
+#endif
 #endif
 
 #ifdef _DEBUG
