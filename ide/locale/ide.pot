@@ -74,19 +74,19 @@ msgstr "%s - %s%smakefile for %s config...\n"
 msgid "%s Compiler\n"
 msgstr "%s Compiler\n"
 
-#: ./src/debugger/Debugger.ec:2858
+#: ./src/debugger/Debugger.ec:2877
 msgid "%s Constructor, %s:%d\n"
 msgstr "%s Constructor, %s:%d\n"
 
-#: ./src/debugger/Debugger.ec:2860
+#: ./src/debugger/Debugger.ec:2879
 msgid "%s Destructor, %s:%d\n"
 msgstr "%s Destructor, %s:%d\n"
 
-#: ./src/debugger/Debugger.ec:2862
+#: ./src/debugger/Debugger.ec:2881
 msgid "%s Function, %s:%d\n"
 msgstr "%s Function, %s:%d\n"
 
-#: ./src/debugger/Debugger.ec:2854
+#: ./src/debugger/Debugger.ec:2873
 msgid "%s Method, %s:%d\n"
 msgstr "%s Method, %s:%d\n"
 
@@ -94,7 +94,7 @@ msgstr "%s Method, %s:%d\n"
 msgid "%s Project"
 msgstr "%s Project"
 
-#: ./src/debugger/Debugger.ec:2856
+#: ./src/debugger/Debugger.ec:2875
 msgid "%s Property, %s:%d\n"
 msgstr "%s Property, %s:%d\n"
 
@@ -526,7 +526,7 @@ msgstr "Copy"
 msgid "Couldn't create file."
 msgstr "Couldn't create file."
 
-#: ./src/debugger/Debugger.ec:2363
+#: ./src/debugger/Debugger.ec:2382
 msgid "Couldn't read memory"
 msgstr "Couldn't read memory"
 
@@ -573,23 +573,23 @@ msgstr "Debug compiling"
 msgid "Debuggable"
 msgstr "Debuggable"
 
-#: ./src/debugger/Debugger.ec:3309
+#: ./src/debugger/Debugger.ec:3334
 msgid "Debugger Error: No target process ID\n"
 msgstr "Debugger Error: No target process ID\n"
 
-#: ./src/debugger/Debugger.ec:1874
+#: ./src/debugger/Debugger.ec:1893
 msgid "Debugger Fatal Error: Couldn't get GDB process ID\n"
 msgstr "Debugger Fatal Error: Couldn't get GDB process ID\n"
 
-#: ./src/debugger/Debugger.ec:1863
+#: ./src/debugger/Debugger.ec:1882
 msgid "Debugger Fatal Error: Couldn't start GDB\n"
 msgstr "Debugger Fatal Error: Couldn't start GDB\n"
 
-#: ./src/debugger/Debugger.ec:2659
+#: ./src/debugger/Debugger.ec:2678
 msgid "Debugger Fatal Error: GDB lost\n"
 msgstr "Debugger Fatal Error: GDB lost\n"
 
-#: ./src/debugger/Debugger.ec:2286
+#: ./src/debugger/Debugger.ec:2305
 msgid "Debugger required for symbol evaluation in \"%s\""
 msgstr "Debugger required for symbol evaluation in \"%s\""
 
@@ -597,9 +597,9 @@ msgstr "Debugger required for symbol evaluation in \"%s\""
 msgid "Debugging compressed applications is not supported\n"
 msgstr "Debugging compressed applications is not supported\n"
 
-#: ./src/debugger/Debugger.ec:1979
-#: ./src/debugger/Debugger.ec:2660
-#: ./src/debugger/Debugger.ec:3326
+#: ./src/debugger/Debugger.ec:1998
+#: ./src/debugger/Debugger.ec:2679
+#: ./src/debugger/Debugger.ec:3351
 msgid "Debugging stopped\n"
 msgstr "Debugging stopped\n"
 
@@ -649,7 +649,7 @@ msgstr "Deleteing intermediate objects for %s %s in project %s...\n"
 msgid "Deleting target and object files..."
 msgstr "Deleting target and object files..."
 
-#: ./src/debugger/Debugger.ec:2280
+#: ./src/debugger/Debugger.ec:2299
 msgid "Dereference failure for \"%s\""
 msgstr "Dereference failure for \"%s\""
 
@@ -719,7 +719,7 @@ msgstr "Edit"
 msgid "Editor"
 msgstr "Editor"
 
-#: ./src/debugger/Debugger.ec:2359
+#: ./src/debugger/Debugger.ec:2378
 msgid "Empty string"
 msgstr "Empty string"
 
@@ -765,11 +765,11 @@ msgstr "Error opening project file"
 msgid "Error writing project file"
 msgstr "Error writing project file"
 
-#: ./src/debugger/Debugger.ec:2247
+#: ./src/debugger/Debugger.ec:2266
 msgid "Error: Struct member not found for \"%s\""
 msgstr "Error: Struct member not found for \"%s\""
 
-#: ./src/debugger/Debugger.ec:2471
+#: ./src/debugger/Debugger.ec:2490
 msgid "Evaluation failed for \"%s\" of type \"%s\""
 msgstr "Evaluation failed for \"%s\" of type \"%s\""
 
@@ -1032,7 +1032,7 @@ msgstr "Include Files"
 msgid "Include Subdirectories"
 msgstr "Include Subdirectories"
 
-#: ./src/debugger/Debugger.ec:2289
+#: ./src/debugger/Debugger.ec:2308
 msgid "Incorrect debugger state for symbol evaluation in \"%s\""
 msgstr "Incorrect debugger state for symbol evaluation in \"%s\""
 
@@ -1048,7 +1048,7 @@ msgstr "Initializing Debugger"
 msgid "Intermediate Objects Directory"
 msgstr "Intermediate Objects Directory"
 
-#: ./src/debugger/Debugger.ec:2381
+#: ./src/debugger/Debugger.ec:2400
 msgid "Invalid Enum Value"
 msgstr "Invalid Enum Value"
 
@@ -1059,11 +1059,11 @@ msgstr "Invalid Enum Value"
 msgid "Invalid Source Directory"
 msgstr "Invalid Source Directory"
 
-#: ./src/debugger/Debugger.ec:2443
+#: ./src/debugger/Debugger.ec:2462
 msgid "Invalid Unicode Keypoint (0x%08X)"
 msgstr "Invalid Unicode Keypoint (0x%08X)"
 
-#: ./src/debugger/Debugger.ec:2478
+#: ./src/debugger/Debugger.ec:2497
 msgid "Invalid expression: \"%s\""
 msgstr "Invalid expression: \"%s\""
 
@@ -1134,11 +1134,11 @@ msgstr "Makefile doesn't exist. "
 msgid "Match case"
 msgstr "Match case"
 
-#: ./src/debugger/Debugger.ec:2267
+#: ./src/debugger/Debugger.ec:2286
 msgid "Member \"%s\" not found in class \"%s\""
 msgstr "Member \"%s\" not found in class \"%s\""
 
-#: ./src/debugger/Debugger.ec:2277
+#: ./src/debugger/Debugger.ec:2296
 msgid "Memory can't be read at %s"
 msgstr "Memory can't be read at %s"
 
@@ -1179,7 +1179,7 @@ msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgid "Misc"
 msgstr "Misc"
 
-#: ./src/debugger/Debugger.ec:2469
+#: ./src/debugger/Debugger.ec:2488
 msgid "Missing property evaluation support for \"%s\""
 msgstr "Missing property evaluation support for \"%s\""
 
@@ -1256,7 +1256,7 @@ msgstr "No Line Numbers"
 msgid "No Source Directory Provided"
 msgstr "No Source Directory Provided"
 
-#: ./src/debugger/Debugger.ec:2072
+#: ./src/debugger/Debugger.ec:2091
 msgid "No source file found for selected frame"
 msgstr "No source file found for selected frame"
 
@@ -1273,11 +1273,11 @@ msgstr "Normal"
 msgid "Nothing to be found. Please specify at least one criteria."
 msgstr "Nothing to be found. Please specify at least one criteria."
 
-#: ./src/debugger/Debugger.ec:2324
+#: ./src/debugger/Debugger.ec:2343
 msgid "Null string"
 msgstr "Null string"
 
-#: ./src/debugger/Debugger.ec:2292
+#: ./src/debugger/Debugger.ec:2311
 msgid "Null type for \"%s\""
 msgstr "Null type for \"%s\""
 
@@ -1785,7 +1785,7 @@ msgstr "Starting Debug"
 #: ./src/debugger/Debugger.ec:870
 #: ./src/debugger/Debugger.ec:890
 #: ./src/debugger/Debugger.ec:934
-#: ./src/debugger/Debugger.ec:1819
+#: ./src/debugger/Debugger.ec:1838
 msgid "Starting debug mode\n"
 msgstr "Starting debug mode\n"
 
@@ -1832,7 +1832,7 @@ msgstr "Strict Name Spaces"
 msgid "Supports forcing bit depth"
 msgstr "Supports forcing bit depth"
 
-#: ./src/debugger/Debugger.ec:2243
+#: ./src/debugger/Debugger.ec:2262
 msgid "Symbol \"%s\" not found"
 msgstr "Symbol \"%s\" not found"
 
@@ -1873,7 +1873,7 @@ msgstr "Target Type"
 msgid "Target and object files deleted\n"
 msgstr "Target and object files deleted\n"
 
-#: ./src/debugger/Debugger.ec:2718
+#: ./src/debugger/Debugger.ec:2737
 msgid "Target doesn't contain debug information!\n"
 msgstr "Target doesn't contain debug information!\n"
 
@@ -2002,15 +2002,15 @@ msgstr "Unable to open file %s\n\n"
 msgid "Unable to save %s file.\n"
 msgstr "Unable to save %s file.\n"
 
-#: ./src/debugger/Debugger.ec:2283
+#: ./src/debugger/Debugger.ec:2302
 msgid "Unknown error for \"%s\""
 msgstr "Unknown error for \"%s\""
 
-#: ./src/debugger/Debugger.ec:3375
+#: ./src/debugger/Debugger.ec:3400
 msgid "Unknown output"
 msgstr "Unknown output"
 
-#: ./src/debugger/Debugger.ec:3353
+#: ./src/debugger/Debugger.ec:3378
 msgid "Unknown prompt"
 msgstr "Unknown prompt"
 
@@ -2182,11 +2182,11 @@ msgstr "eC/C/C++ Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *
 msgid "eC/C/C++ Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)"
 msgstr "eC/C/C++ Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)"
 
-#: ./src/debugger/Debugger.ec:3519
+#: ./src/debugger/Debugger.ec:3544
 msgid "err: Unable to create FIFO %s\n"
 msgstr "err: Unable to create FIFO %s\n"
 
-#: ./src/debugger/Debugger.ec:3520
+#: ./src/debugger/Debugger.ec:3545
 msgid "err: Unable to open FIFO %s for read\n"
 msgstr "err: Unable to open FIFO %s for read\n"
 
@@ -2213,7 +2213,7 @@ msgstr "folder"
 msgid "found"
 msgstr "found"
 
-#: ./src/debugger/Debugger.ec:2872
+#: ./src/debugger/Debugger.ec:2891
 msgid "inside %s, %s\n"
 msgstr "inside %s, %s\n"
 
@@ -2247,7 +2247,7 @@ msgstr "s were "
 msgid "single file"
 msgstr "single file"
 
-#: ./src/debugger/Debugger.ec:2878
+#: ./src/debugger/Debugger.ec:2897
 msgid "unknown source\n"
 msgstr "unknown source\n"
 

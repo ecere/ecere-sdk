@@ -302,5 +302,49 @@ int Process_GetChildExeProcessId(const int parentProcessId, const char * exeFile
       }
    }
    return 0;
+#else
+   // This is the current OS X implementation
+   uint pid = 0;
+   File f = DualPipeOpen({ output = true }, "ps -ajx");
+   if(f)
+   {
+      bool firstLine = true;
+      int pidColumn = -1;
+      int ppidColumn = -1;
+      while(!f.eof)
+      {
+         char line[1024];
+         char * tokens[128];
+         if(f.GetLine(line,sizeof(line)))
+         {
+            uint count = Tokenize(line, sizeof(tokens)/sizeof(tokens[0]), tokens,false);
+            int i;
+            if(firstLine)
+            {
+               for(i = 0; i < count; i++)
+               {
+                  if(!strcmpi(tokens[i], "pid"))
+                     pidColumn = i;
+                  else if(!strcmpi(tokens[i], "ppid"))
+                     ppidColumn = i;
+               }
+               if(pidColumn > 0 && ppidColumn > 0)
+                  firstLine = false;
+               else
+                  break;
+            }
+            else
+            {
+               if(count > pidColumn && count > ppidColumn && strtoul(tokens[ppidColumn], null, 0) == parentProcessId)
+               {
+                  pid = strtoul(tokens[pidColumn], null, 0);
+                  break;
+               }
+            }
+         }
+      }
+      delete f;
+   }
+   return pid;
 #endif
 }

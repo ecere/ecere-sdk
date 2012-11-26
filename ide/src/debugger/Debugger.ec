@@ -316,6 +316,7 @@ static DebugEvaluationData eval { };
 static int targetProcessId;
 
 static bool gdbReady;
+static bool breakpointError;
 
 class Debugger
 {
@@ -390,7 +391,6 @@ class Debugger
 #endif
             }
          }
-
          switch(breakType)
          {
             case restart:
@@ -500,7 +500,7 @@ class Debugger
                // Why was SelectFrame missing here?
                SelectFrame(activeFrameLevel);
                GoToStackFrameLine(activeFrameLevel, curEvent == signal || curEvent == stepEnd /*false*/);
-               ide.Activate();
+               ideMainFrame.Activate();   // TOFIX: ide.Activate() is not reliable (app inactive)
                ide.Update(null);
                if(curEvent == signal)
                   ide.outputView.Show();
@@ -1369,7 +1369,15 @@ class Debugger
                frame.line = atoi(item.value);
             else if(!strcmp(item.name, "fullname"))
             {
-               // New GDB is giving us a full name... Any reason why we coudln't figure it out ourselves?
+               // GDB 6.3 on OS X is giving "fullname" and "dir", all in absolute, but file name only in 'file'
+               String path = ide.workspace.GetPathWorkspaceRelativeOrAbsolute(item.value);
+               if(strcmp(frame.file, path))
+               {
+                  frame.file = path;
+                  delete frame.absoluteFile;
+                  frame.absoluteFile = ide.workspace.GetAbsolutePathFromRelative(frame.file);
+               }
+               delete path;
             }
             else
                DebuggerProtocolUnknown("Unknown frame member name", item.name);
@@ -1427,7 +1435,7 @@ class Debugger
 #endif
          strcat(string,"\n");
          gdbHandle.Puts(string);
-         
+
          if(focus)
             Process_ShowWindows(targetProcessId);
 
@@ -1439,7 +1447,7 @@ class Debugger
 
    bool ValidateBreakpoint(Breakpoint bp)
    {
-      if(modules)
+      if(modules && bp.bp)
       {
          if(bp.bp.line != bp.line)
          {
@@ -1566,7 +1574,17 @@ class Debugger
                   if(!ignoreBreakpoints && bp.enabled)
                   {
                      sentBreakInsert = true;
+                     breakpointError = false;
                      GdbCommand(false, "-break-insert %s:%d", bp.relativeFilePath, bp.line);
+                     // Improve, GdbCommand should return a success value?
+                     if(breakpointError)
+                     {
+                        char fileName[MAX_FILENAME];
+                        breakpointError = false;
+                        GetLastDirectory(bp.relativeFilePath, fileName);
+                        sentBreakInsert = true;
+                        GdbCommand(false, "-break-insert %s:%d", fileName, bp.line);
+                     }
                      bp.bp = bpItem;
                      bpItem = null;
                      bp.inserted = (bp.bp && bp.bp.number != 0);
@@ -1630,10 +1648,10 @@ class Debugger
       if(!frameCount)
          GdbCommand(false, "-stack-info-depth 192");
       if(frameCount && frameCount <= 192)
-         GdbCommand(false, "-stack-list-frames 0 191");
+         GdbCommand(false, "-stack-list-frames 0 %d", Min(frameCount-1, 191));
       else
       {
-         GdbCommand(false, "-stack-list-frames 0 95");
+         GdbCommand(false, "-stack-list-frames 0 %d", Min(frameCount-1, 95));
          GdbCommand(false, "-stack-list-frames %d %d", Max(frameCount - 96, 96), frameCount - 1);
       }
       GdbCommand(false, "");
@@ -1810,6 +1828,7 @@ class Debugger
       ChangeState(loaded);
       sentKill = false;
       sentBreakInsert = false;
+      breakpointError = false;
       symbols = true;
       targeted = false;
       modules = false;
@@ -2564,7 +2583,7 @@ class Debugger
    {
       bool conditionMet = true;
       Breakpoint bp = bpHit;
-      
+
       if(!bp && bpRunToCursor)
       {
          bp = bpRunToCursor;
@@ -2574,7 +2593,7 @@ class Debugger
       
       if(bp)
       {
-         if(bp.type == user && bp.line != stopItem.frame.line)
+         if(bp.type == user && stopItem.frame.line && bp.line != stopItem.frame.line)
          {
             bp.line = stopItem.frame.line;
             ide.breakpointsView.UpdateBreakpoint(bp.row);
@@ -2592,7 +2611,7 @@ class Debugger
                   // Why was SelectFrame missing here?
                   SelectFrame(activeFrameLevel);
                   GoToStackFrameLine(activeFrameLevel, true);
-                  ide.Activate();
+                  ideMainFrame.Activate();   // TOFIX: ide.Activate() is not reliable (app inactive)
                   ide.Update(null);
                }
                else
@@ -2617,7 +2636,7 @@ class Debugger
                      // Why was SelectFrame missing here?
                      SelectFrame(activeFrameLevel);
                      GoToStackFrameLine(activeFrameLevel, true);
-                     ide.Activate();
+                     ideMainFrame.Activate();   // TOFIX: ide.Activate() is not reliable (app inactive)
                      ide.Update(null);
                      if(bp.type == BreakpointType::runToCursor)
                      {
@@ -3003,6 +3022,7 @@ class Debugger
                if(sentBreakInsert)
                {
                   sentBreakInsert = false;
+                  breakpointError = true;
 #ifdef _DEBUG
                   if(bpItem)
                      printf("problem\n");
@@ -3108,175 +3128,180 @@ class Debugger
                }
                else if(!strcmp(outTokens[0], "*stopped"))
                {
+                  int tk;
                   ChangeState(stopped);
-                  
-                  if(outTokens.count > 1 && TokenizeListItem(outTokens[1], item))
+
+                  for(tk = 1; tk < outTokens.count; tk++)
                   {
-                     if(!strcmp(item.name, "reason"))
+                     if(TokenizeListItem(outTokens[tk], item))
                      {
-                        char * reason = item.value;
-                        StripQuotes(reason, reason);
-                        if(!strcmp(reason, "exited-normally") || !strcmp(reason, "exited") || !strcmp(reason, "exited-signalled"))
+                        if(!strcmp(item.name, "reason"))
                         {
-                           char * exitCode;
-                           if(outTokens.count > 2 && TokenizeListItem(outTokens[2], item2))
+                           char * reason = item.value;
+                           StripQuotes(reason, reason);
+                           if(!strcmp(reason, "exited-normally") || !strcmp(reason, "exited") || !strcmp(reason, "exited-signalled"))
                            {
-                              StripQuotes(item2.value, item2.value);
-                              if(!strcmp(item2.name, "exit-code"))
-                                 exitCode = item2.value;
+                              char * exitCode;
+                              if(outTokens.count > tk+1 && TokenizeListItem(outTokens[tk+1], item2))
+                              {
+                                 tk++;
+                                 StripQuotes(item2.value, item2.value);
+                                 if(!strcmp(item2.name, "exit-code"))
+                                    exitCode = item2.value;
+                                 else
+                                    exitCode = null;
+                              }
                               else
                                  exitCode = null;
+                              HandleExit(reason, exitCode);
                            }
+                           else if(!strcmp(reason, "breakpoint-hit"))
+                           {
+      #ifdef _DEBUG
+                              if(stopItem)
+                                 printf("problem\n");
+      #endif
+                              stopItem = GdbDataStop { };
+
+                              for(i = tk+1; i < outTokens.count; i++)
+                              {
+                                 TokenizeListItem(outTokens[i], item);
+                                 StripQuotes(item.value, item.value);
+                                 if(!strcmp(item.name, "bkptno"))
+                                    stopItem.bkptno = atoi(item.value);
+                                 else if(!strcmp(item.name, "thread-id"))
+                                    stopItem.threadid = atoi(item.value);
+                                 else if(!strcmp(item.name, "frame"))
+                                 {
+                                    item.value = StripCurlies(item.value);
+                                    ParseFrame(stopItem.frame, item.value);
+                                 }
+                                 else
+                                    DebuggerProtocolUnknown("Unknown breakpoint hit item name", item.name);
+                              }
+
+                              event = hit;
+                           }
+                           else if(!strcmp(reason, "end-stepping-range"))
+                           {
+      #ifdef _DEBUG
+                              if(stopItem)
+                                 printf("problem\n");
+      #endif
+                              stopItem = GdbDataStop { };
+
+                              for(i = tk+1; i < outTokens.count; i++)
+                              {
+                                 TokenizeListItem(outTokens[i], item);
+                                 StripQuotes(item.value, item.value);
+                                 if(!strcmp(item.name, "thread-id"))
+                                    stopItem.threadid = atoi(item.value);
+                                 else if(!strcmp(item.name, "frame"))
+                                 {
+                                    item.value = StripCurlies(item.value);
+                                    ParseFrame(stopItem.frame, item.value);
+                                 }
+                                 else if(!strcmp(item.name, "reason"))
+                                    ;
+                                 else if(!strcmp(item.name, "bkptno"))
+                                    ;
+                                 else
+                                    DebuggerProtocolUnknown("Unknown end of stepping range item name", item.name);
+                              }
+
+                              event = stepEnd;
+                              ide.Update(null);
+                           }
+                           else if(!strcmp(reason, "function-finished"))
+                           {
+      #ifdef _DEBUG
+                              if(stopItem)
+                                 printf("problem\n");
+      #endif
+                              stopItem = GdbDataStop { };
+                              stopItem.reason = CopyString(reason);
+
+                              for(i = tk+1; i < outTokens.count; i++)
+                              {
+                                 TokenizeListItem(outTokens[i], item);
+                                 StripQuotes(item.value, item.value);
+                                 if(!strcmp(item.name, "thread-id"))
+                                    stopItem.threadid = atoi(item.value);
+                                 else if(!strcmp(item.name, "frame"))
+                                 {
+                                    item.value = StripCurlies(item.value);
+                                    ParseFrame(stopItem.frame, item.value);
+                                 }
+                                 else if(!strcmp(item.name, "gdb-result-var"))
+                                    stopItem.gdbResultVar = CopyString(item.value);
+                                 else if(!strcmp(item.name, "return-value"))
+                                    stopItem.returnValue = CopyString(item.value);
+                                 else
+                                    DebuggerProtocolUnknown("Unknown function finished item name", item.name);
+                              }
+
+                              event = functionEnd;
+                              ide.Update(null);
+                           }
+                           else if(!strcmp(reason, "signal-received"))
+                           {
+      #ifdef _DEBUG
+                              if(stopItem)
+                                 printf("problem\n");
+      #endif
+                              stopItem = GdbDataStop { };
+                              stopItem.reason = CopyString(reason);
+
+                              for(i = tk+1; i < outTokens.count; i++)
+                              {
+                                 TokenizeListItem(outTokens[i], item);
+                                 StripQuotes(item.value, item.value);
+                                 if(!strcmp(item.name, "signal-name"))
+                                    stopItem.name = CopyString(item.value);
+                                 else if(!strcmp(item.name, "signal-meaning"))
+                                    stopItem.meaning = CopyString(item.value);
+                                 else if(!strcmp(item.name, "thread-id"))
+                                    stopItem.threadid = atoi(item.value);
+                                 else if(!strcmp(item.name, "frame"))
+                                 {
+                                    item.value = StripCurlies(item.value);
+                                    ParseFrame(stopItem.frame, item.value);
+                                 }
+                                 else
+                                    DebuggerProtocolUnknown("Unknown signal reveived item name", item.name);
+                              }
+                              if(!strcmp(stopItem.name, "SIGTRAP"))
+                              {
+                                 switch(breakType)
+                                 {
+                                    case internal:
+                                       breakType = none;
+                                       break;
+                                    case restart:
+                                    case stop:
+                                       break;
+                                    default:
+                                       event = breakEvent;
+                                 }
+                              }
+                              else
+                              {
+                                 event = signal;
+                              }
+                           }
+                           else if(!strcmp(reason, "watchpoint-trigger"))
+                              DebuggerProtocolUnknown("Reason watchpoint trigger not handled", "");
+                           else if(!strcmp(reason, "read-watchpoint-trigger"))
+                              DebuggerProtocolUnknown("Reason read watchpoint trigger not handled", "");
+                           else if(!strcmp(reason, "access-watchpoint-trigger"))
+                              DebuggerProtocolUnknown("Reason access watchpoint trigger not handled", "");
+                           else if(!strcmp(reason, "watchpoint-scope"))
+                              DebuggerProtocolUnknown("Reason watchpoint scope not handled", "");
+                           else if(!strcmp(reason, "location-reached"))
+                              DebuggerProtocolUnknown("Reason location reached not handled", "");
                            else
-                              exitCode = null;
-                           HandleExit(reason, exitCode);
+                              DebuggerProtocolUnknown("Unknown reason", reason);
                         }
-                        else if(!strcmp(reason, "breakpoint-hit"))
-                        {
-   #ifdef _DEBUG
-                           if(stopItem)
-                              printf("problem\n");
-   #endif
-                           stopItem = GdbDataStop { };
-
-                           for(i = 2; i < outTokens.count; i++)
-                           {
-                              TokenizeListItem(outTokens[i], item);
-                              StripQuotes(item.value, item.value);
-                              if(!strcmp(item.name, "bkptno"))
-                                 stopItem.bkptno = atoi(item.value);
-                              else if(!strcmp(item.name, "thread-id"))
-                                 stopItem.threadid = atoi(item.value);
-                              else if(!strcmp(item.name, "frame"))
-                              {
-                                 item.value = StripCurlies(item.value);
-                                 ParseFrame(stopItem.frame, item.value);
-                              }
-                              else
-                                 DebuggerProtocolUnknown("Unknown breakpoint hit item name", item.name);
-                           }
-
-                           event = hit;
-                        }
-                        else if(!strcmp(reason, "end-stepping-range"))
-                        {
-   #ifdef _DEBUG
-                           if(stopItem)
-                              printf("problem\n");
-   #endif
-                           stopItem = GdbDataStop { };
-
-                           for(i = 2; i < outTokens.count; i++)
-                           {
-                              TokenizeListItem(outTokens[i], item);
-                              StripQuotes(item.value, item.value);
-                              if(!strcmp(item.name, "thread-id"))
-                                 stopItem.threadid = atoi(item.value);
-                              else if(!strcmp(item.name, "frame"))
-                              {
-                                 item.value = StripCurlies(item.value);
-                                 ParseFrame(stopItem.frame, item.value);
-                              }
-                              else if(!strcmp(item.name, "reason"))
-                                 ;
-                              else if(!strcmp(item.name, "bkptno"))
-                                 ;
-                              else
-                                 DebuggerProtocolUnknown("Unknown end of stepping range item name", item.name);
-                           }
-
-                           event = stepEnd;
-                           ide.Update(null);
-                        }
-                        else if(!strcmp(reason, "function-finished"))
-                        {
-   #ifdef _DEBUG
-                           if(stopItem)
-                              printf("problem\n");
-   #endif
-                           stopItem = GdbDataStop { };
-                           stopItem.reason = CopyString(reason);
-
-                           for(i = 2; i < outTokens.count; i++)
-                           {
-                              TokenizeListItem(outTokens[i], item);
-                              StripQuotes(item.value, item.value);
-                              if(!strcmp(item.name, "thread-id"))
-                                 stopItem.threadid = atoi(item.value);
-                              else if(!strcmp(item.name, "frame"))
-                              {
-                                 item.value = StripCurlies(item.value);
-                                 ParseFrame(stopItem.frame, item.value);
-                              }
-                              else if(!strcmp(item.name, "gdb-result-var"))
-                                 stopItem.gdbResultVar = CopyString(item.value);
-                              else if(!strcmp(item.name, "return-value"))
-                                 stopItem.returnValue = CopyString(item.value);
-                              else
-                                 DebuggerProtocolUnknown("Unknown function finished item name", item.name);
-                           }
-
-                           event = functionEnd;
-                           ide.Update(null);
-                        }
-                        else if(!strcmp(reason, "signal-received"))
-                        {
-   #ifdef _DEBUG
-                           if(stopItem)
-                              printf("problem\n");
-   #endif
-                           stopItem = GdbDataStop { };
-                           stopItem.reason = CopyString(reason);
-
-                           for(i = 2; i < outTokens.count; i++)
-                           {
-                              TokenizeListItem(outTokens[i], item);
-                              StripQuotes(item.value, item.value);
-                              if(!strcmp(item.name, "signal-name"))
-                                 stopItem.name = CopyString(item.value);
-                              else if(!strcmp(item.name, "signal-meaning"))
-                                 stopItem.meaning = CopyString(item.value);
-                              else if(!strcmp(item.name, "thread-id"))
-                                 stopItem.threadid = atoi(item.value);
-                              else if(!strcmp(item.name, "frame"))
-                              {
-                                 item.value = StripCurlies(item.value);
-                                 ParseFrame(stopItem.frame, item.value);
-                              }
-                              else
-                                 DebuggerProtocolUnknown("Unknown signal reveived item name", item.name);
-                           }
-                           if(!strcmp(stopItem.name, "SIGTRAP"))
-                           {
-                              switch(breakType)
-                              {
-                                 case internal:
-                                    breakType = none;
-                                    break;
-                                 case restart:
-                                 case stop:
-                                    break;
-                                 default:
-                                    event = breakEvent;
-                              }
-                           }
-                           else
-                           {
-                              event = signal;
-                           }
-                        }
-                        else if(!strcmp(reason, "watchpoint-trigger"))
-                           DebuggerProtocolUnknown("Reason watchpoint trigger not handled", "");
-                        else if(!strcmp(reason, "read-watchpoint-trigger"))
-                           DebuggerProtocolUnknown("Reason read watchpoint trigger not handled", "");
-                        else if(!strcmp(reason, "access-watchpoint-trigger"))
-                           DebuggerProtocolUnknown("Reason access watchpoint trigger not handled", "");
-                        else if(!strcmp(reason, "watchpoint-scope"))
-                           DebuggerProtocolUnknown("Reason watchpoint scope not handled", "");
-                        else if(!strcmp(reason, "location-reached"))
-                           DebuggerProtocolUnknown("Reason location reached not handled", "");
-                        else
-                           DebuggerProtocolUnknown("Unknown reason", reason);
                      }
                   }
                   app.SignalEvent();
