@@ -2128,23 +2128,18 @@ class XInterface : Interface
             }
 
             {
-#if 0 //defined(__APPLE__)
-               Atom hints[2] =
-               {
-                  parentWindow ? atoms[_net_wm_window_type_popup_menu] : atoms[_net_wm_window_type_normal]
-               };
-               
-               XChangeProperty(xGlobalDisplay, windowHandle, atoms[_net_wm_window_type], XA_ATOM, 32,
-                  PropModeReplace, (unsigned char*)&hints, 1);
-#else
                Atom hints[2] =
                {
                   parentWindow ? atoms[_net_wm_window_type_menu] : atoms[_net_wm_window_type_normal],
                   parentWindow ? atoms[_net_wm_window_type_popup_menu] : 0
                };
-               XChangeProperty(xGlobalDisplay, windowHandle, atoms[_net_wm_window_type], XA_ATOM, 32,
-                  PropModeReplace, (unsigned char*)&hints, parentWindow ? 2 : 1);
+#if defined(__APPLE__)
+               // Don't set this on non-interim windows for OS X...
+               if(parentWindow && window.interim)
 #endif
+
+                  XChangeProperty(xGlobalDisplay, windowHandle, atoms[_net_wm_window_type], XA_ATOM, 32,
+                     PropModeReplace, (unsigned char*)&hints, parentWindow ? 2 : 1);
                {
                   XWMHints xwmHints;
                   xwmHints.flags = InputHint;
