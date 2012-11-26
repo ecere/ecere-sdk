@@ -546,6 +546,8 @@ endif
 	install doc/ecere.eCdoc $(DOCDIR)/
 	install doc/ecereCOM.eCdoc $(DOCDIR)/
 	install doc/EDA.eCdoc $(DOCDIR)/
+	mkdir -p $(MANDIR)/man1
+	cp -pRf share/man/man1/* $(MANDIR)/man1
 	mkdir -p $(SAMPLESDIR)
 	cp -pRf samples/* $(SAMPLESDIR)
 	find $(SAMPLESDIR) -type d -exec chmod 777 {} \;
