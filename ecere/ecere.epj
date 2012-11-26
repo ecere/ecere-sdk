@@ -1163,14 +1163,6 @@
                            "Options" : {
                               "ExcludeFromBuild" : false
                            },
-                           "Platforms" : [
-                              {
-                                 "Name" : "apple",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : false
-                                 }
-                              }
-                           ],
                            "Configurations" : [
                               {
                                  "Name" : "WSMS",
@@ -1287,7 +1279,15 @@
                                  "Name" : "Vanilla",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
-                                 }
+                                 },
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "apple",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               },
                               {
                                  "Name" : "Bootstrap",

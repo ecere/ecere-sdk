@@ -73,8 +73,6 @@ _ECSOURCES1 = \
 	src/gfx/drivers/lfbConvert.ec \
 	src/gfx/drivers/LFBDisplayDriver.ec \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/NCursesDisplayDriver.ec,) \
-	$(if $(OSX_TARGET),src/gfx/drivers/OpenGLDisplayDriver.ec,) \
-	$(if $(OSX_TARGET),src/gfx/drivers/CocoaOpenGLDisplayDriver.ec,) \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/XDisplayDriver.ec,) \
 	src/gfx/Bitmap.ec \
 	src/gfx/BitmapResource.ec \
@@ -96,12 +94,12 @@ _ECSOURCES1 = \
 	src/gui/controls/ProgressBar.ec \
 	src/gui/controls/ScrollBar.ec \
 	src/gui/controls/StatusBar.ec \
-	src/gui/controls/Stacker.ec
-_ECSOURCES2 = \
+	src/gui/controls/Stacker.ec \
 	src/gui/controls/PathBox.ec \
 	src/gui/controls/ToolTip.ec \
 	src/gui/controls/SelectorBar.ec \
-	src/gui/dialogs/ColorPicker.ec \
+	src/gui/dialogs/ColorPicker.ec
+_ECSOURCES2 = \
 	src/gui/dialogs/FileDialog.ec \
 	src/gui/dialogs/FindDialog.ec \
 	src/gui/dialogs/GoToDialog.ec \
@@ -357,8 +355,8 @@ PRJ_CFLAGS += \
 			 -I../deps/libungif-4.1.1/lib,) \
 	 $(if $(OSX_TARGET), \
 			 -I/usr/include/freetype2 \
-                         -I$(SYSROOT)/usr/X11/include/freetype2 \
-                         -I$(SYSROOT)/usr/X11/include \
+			 -I$(SYSROOT)/usr/X11/include/freetype2 \
+			 -I$(SYSROOT)/usr/X11/include \
 			 -I/usr/X11R6/include/freetype2 \
 			 -I/usr/X11R6/include \
 			 -I../deps/jpeg-6b \
@@ -436,6 +434,7 @@ ifdef OSX_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
+	 -L$(SYSROOT)/usr/X11/lib \
 	 -L/usr/X11R6/lib \
 	 -L../deps/jpeg-6b/obj/release.$(PLATFORM) \
 	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM) \
@@ -596,16 +595,6 @@ $(OBJ)LFBDisplayDriver.sym: src/gfx/drivers/LFBDisplayDriver.ec
 ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)NCursesDisplayDriver.sym: src/gfx/drivers/NCursesDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/NCursesDisplayDriver.ec -o $(OBJ)NCursesDisplayDriver.sym
-endif
-
-ifneq "$(OSX_TARGET)" ""
-$(OBJ)OpenGLDisplayDriver.sym: src/gfx/drivers/OpenGLDisplayDriver.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/OpenGLDisplayDriver.ec -o $(OBJ)OpenGLDisplayDriver.sym
-endif
-
-ifneq "$(OSX_TARGET)" ""
-$(OBJ)CocoaOpenGLDisplayDriver.sym: src/gfx/drivers/CocoaOpenGLDisplayDriver.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/CocoaOpenGLDisplayDriver.ec -o $(OBJ)CocoaOpenGLDisplayDriver.sym
 endif
 
 ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
@@ -896,16 +885,6 @@ $(OBJ)NCursesDisplayDriver.c: src/gfx/drivers/NCursesDisplayDriver.ec $(OBJ)NCur
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/NCursesDisplayDriver.ec -o $(OBJ)NCursesDisplayDriver.c -symbols $(OBJ)
 endif
 
-ifneq "$(OSX_TARGET)" ""
-$(OBJ)OpenGLDisplayDriver.c: src/gfx/drivers/OpenGLDisplayDriver.ec $(OBJ)OpenGLDisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/OpenGLDisplayDriver.ec -o $(OBJ)OpenGLDisplayDriver.c -symbols $(OBJ)
-endif
-
-ifneq "$(OSX_TARGET)" ""
-$(OBJ)CocoaOpenGLDisplayDriver.c: src/gfx/drivers/CocoaOpenGLDisplayDriver.ec $(OBJ)CocoaOpenGLDisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/CocoaOpenGLDisplayDriver.ec -o $(OBJ)CocoaOpenGLDisplayDriver.c -symbols $(OBJ)
-endif
-
 ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)XDisplayDriver.c: src/gfx/drivers/XDisplayDriver.ec $(OBJ)XDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.c -symbols $(OBJ)
@@ -1184,62 +1163,100 @@ $(OBJ)Condition.o: $(OBJ)Condition.c
 $(OBJ)BMPFormat.o: $(OBJ)BMPFormat.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)BMPFormat.c -o $(OBJ)BMPFormat.o
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-freetype.o: src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c -o $(OBJ)harfbuzz-freetype.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-unicode-tables.o: src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode-tables.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode-tables.c -o $(OBJ)harfbuzz-unicode-tables.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-unicode.o: src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/unicode/harfbuzz-unicode.c -o $(OBJ)harfbuzz-unicode.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-arabic.o: src/gfx/drivers/harfbuzz/harfbuzz-arabic.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-arabic.c -o $(OBJ)harfbuzz-arabic.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-buffer.o: src/gfx/drivers/harfbuzz/harfbuzz-buffer.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-buffer.c -o $(OBJ)harfbuzz-buffer.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-gdef.o: src/gfx/drivers/harfbuzz/harfbuzz-gdef.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-gdef.c -o $(OBJ)harfbuzz-gdef.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-gpos.o: src/gfx/drivers/harfbuzz/harfbuzz-gpos.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-gpos.c -o $(OBJ)harfbuzz-gpos.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-gsub.o: src/gfx/drivers/harfbuzz/harfbuzz-gsub.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-gsub.c -o $(OBJ)harfbuzz-gsub.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-hangul.o: src/gfx/drivers/harfbuzz/harfbuzz-hangul.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-hangul.c -o $(OBJ)harfbuzz-hangul.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-hebrew.o: src/gfx/drivers/harfbuzz/harfbuzz-hebrew.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-hebrew.c -o $(OBJ)harfbuzz-hebrew.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-indic.o: src/gfx/drivers/harfbuzz/harfbuzz-indic.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-indic.c -o $(OBJ)harfbuzz-indic.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-khmer.o: src/gfx/drivers/harfbuzz/harfbuzz-khmer.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-khmer.c -o $(OBJ)harfbuzz-khmer.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-myanmar.o: src/gfx/drivers/harfbuzz/harfbuzz-myanmar.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-myanmar.c -o $(OBJ)harfbuzz-myanmar.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-open.o: src/gfx/drivers/harfbuzz/harfbuzz-open.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-open.c -o $(OBJ)harfbuzz-open.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-shaper.o: src/gfx/drivers/harfbuzz/harfbuzz-shaper.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-shaper.c -o $(OBJ)harfbuzz-shaper.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-stream.o: src/gfx/drivers/harfbuzz/harfbuzz-stream.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-stream.c -o $(OBJ)harfbuzz-stream.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-tibetan.o: src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c -o $(OBJ)harfbuzz-tibetan.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-impl.o: src/gfx/drivers/harfbuzz/harfbuzz-impl.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-impl.c -o $(OBJ)harfbuzz-impl.o
+endif
 
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)harfbuzz-thai.o: src/gfx/drivers/harfbuzz/harfbuzz-thai.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-thai.c -o $(OBJ)harfbuzz-thai.o
+endif
 
 ifneq "$(WINDOWS_TARGET)" ""
 $(OBJ)GDIDisplayDriver.o: $(OBJ)GDIDisplayDriver.c
@@ -1258,16 +1275,6 @@ $(OBJ)LFBDisplayDriver.o: $(OBJ)LFBDisplayDriver.c
 ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)NCursesDisplayDriver.o: $(OBJ)NCursesDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)NCursesDisplayDriver.c -o $(OBJ)NCursesDisplayDriver.o
-endif
-
-ifneq "$(OSX_TARGET)" ""
-$(OBJ)OpenGLDisplayDriver.o: $(OBJ)OpenGLDisplayDriver.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)OpenGLDisplayDriver.c -o $(OBJ)OpenGLDisplayDriver.o
-endif
-
-ifneq "$(OSX_TARGET)" ""
-$(OBJ)CocoaOpenGLDisplayDriver.o: $(OBJ)CocoaOpenGLDisplayDriver.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)CocoaOpenGLDisplayDriver.c -o $(OBJ)CocoaOpenGLDisplayDriver.o
 endif
 
 ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
