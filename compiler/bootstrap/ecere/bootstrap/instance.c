@@ -1222,8 +1222,9 @@ _class->sizeClass = totalSizeClass;
 {
 struct __ecereNameSpace__ecere__com__Method * method, * next;
 struct __ecereNameSpace__ecere__com__Class * b;
+unsigned int needUpdate = (mod != (base->templateClass ? base->templateClass : base) || _class->vTblSize != mod->vTblSize);
 
-if(mod->base && mod->base->base && mod->base->vTblSize > baseClass->vTblSize && (mod != (base->templateClass ? base->templateClass : base) || _class->vTblSize != mod->vTblSize))
+if(mod->base && mod->base->base && mod->base->vTblSize > baseClass->vTblSize && needUpdate)
 {
 _class->vTblSize += mod->base->vTblSize - baseClass->vTblSize;
 _class->_vTbl = __ecereNameSpace__ecere__com__eSystem_Renew(_class->_vTbl, sizeof(void *) * (_class->vTblSize));
@@ -1262,7 +1263,7 @@ method->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(vMethod->dataT
 method->_class = vMethod->_class;
 }
 }
-else
+else if(needUpdate || _class->_vTbl[vMethod->vid] == b->_vTbl[vMethod->vid])
 _class->_vTbl[vMethod->vid] = _class->base->_vTbl[vMethod->vid];
 }
 }
@@ -5089,8 +5090,6 @@ struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com____
 {
 struct __ecereNameSpace__ecere__com__Instance * app;
 
-__ecereNameSpace__ecere__com__memoryInitialized = 0x0;
-__ecereNameSpace__ecere__com__pools = (((void *)0));
 app = __ecereNameSpace__ecere__com___calloc(1, 428);
 __ecereNameSpace__ecere__com__Module_Constructor(app);
 ((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + 300)))->systemNameSpace.classes.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;

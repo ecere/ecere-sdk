@@ -1990,9 +1990,9 @@ static void FixDerivativesBase(Class base, Class mod)
       {
          Method method, next;
          Class b;
+         bool needUpdate = (mod != (base.templateClass ? base.templateClass : base) || _class.vTblSize != mod.vTblSize;
 
-         if(mod.base && mod.base.base && mod.base.vTblSize > baseClass.vTblSize && 
-            (mod != (base.templateClass ? base.templateClass : base) || _class.vTblSize != mod.vTblSize))
+         if(mod.base && mod.base.base && mod.base.vTblSize > baseClass.vTblSize && needUpdate)
          {
             _class.vTblSize += mod.base.vTblSize - baseClass.vTblSize;
             _class._vTbl = renew _class._vTbl void *[_class.vTblSize];
@@ -2032,7 +2032,7 @@ static void FixDerivativesBase(Class base, Class mod)
                            method._class = vMethod._class;
                         }
                      }
-                     else
+                     else if(needUpdate || _class._vTbl[vMethod.vid] == b._vTbl[vMethod.vid])
                         _class._vTbl[vMethod.vid] = _class.base._vTbl[vMethod.vid];
                   }
                }
