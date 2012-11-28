@@ -88,6 +88,7 @@ class XMLParser
       byte characterData[CHARBUFSIZE];
       int charLen = 0;
       int oldDepth = xmlDepth;
+      tag[0] = 0;
       
       closingTag = false;
       
@@ -100,11 +101,15 @@ class XMLParser
          {
             if((ch == '-' && tagLen < 2) || (ch == '>' && tagLen == 2))
             {
+               tag[tagLen++] = ch;
+               tag[tagLen] = '\0';
                if(!strcmp(tag,  "-->"))
                {
                   commented = false;
                }
             }
+            else
+               tagLen = 0;
          }
          else if(insideTag)
          {
@@ -114,28 +119,52 @@ class XMLParser
             if(ch == '<')
             {
                insideTag++;
+               openingTag = true;
             }
             else if(ch == '>')
             {
                if(closingTag)
                   xmlDepth--;
-               else if(lastCh != '?' && lastCh != '/')
+               else if(lastCh != '?' && lastCh != '/' && tag[0] != '!')
                   xmlDepth++;
+               else
+               {
+                  closingTag = true;
+                  openingTag = true;
+               }
+
                insideTag--;
+               if(!insideTag)
+                  tag[tagLen] = '\0';
+               else
+               {
+                  tag[tagLen++] = ch;
+                  tag[tagLen] = '\0';
+               }
                closingTag = false;
             }
-            
+            else if(ch != '/' || lastCh != '<')
+            {
+               tag[tagLen++] = ch;
+               tag[tagLen] = '\0';
+            }
+            else
+               openingTag = false;
             if(!strcmp(tag, "!--"))
             {
                commented = true;
                insideTag = false;
+               tagLen = 0;
+               tag[tagLen] = '\0';
             }
          }
          else
          {
             if(ch == '<')
             {
+               openingTag = true;
                insideTag = true;
+               tagLen = 0;
             }
          }
          lastCh = ch;
@@ -153,6 +182,7 @@ class XMLParser
       insideTag = false;
       closingTag = false;
       openingTag = false;
+      tag[0] = 0;
 
       // Parse entire file
       for(stringPos = 0; stringPos < count; stringPos++)
@@ -186,7 +216,7 @@ class XMLParser
             {
                if(closingTag)
                   xmlDepth--;
-               else if(lastCh != '?' && lastCh != '/')
+               else if(lastCh != '?' && lastCh != '/' && tag[0] != '!')
                   xmlDepth++;
                else
                {
