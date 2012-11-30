@@ -17,12 +17,18 @@ namespace gui::skins;
 #define TOP          4
 #define BOTTOM       4
 #define CORNER       (BORDER * 2)
+#if defined(__ANDROID__)
+#define BUTTON_SIZE  45
+#define CAPTION      60
+#else
+#define BUTTON_SIZE  15
 #define CAPTION      20
+#endif
 #define DEAD_BORDER  3
 #define MIN_WIDTH    60
 #define MIN_HEIGHT   3
 #define BUTTON_OFFSET   2
-#define NAME_OFFSET   2
+#define NAME_OFFSET   12
 #define NAME_OFFSETX  4
 
 #define SB_WIDTH  16
@@ -122,12 +128,20 @@ class WindowsSkin : Skin
 
    FontResource ::SystemFont()
    {
+#if defined(__ANDROID__)
+      return FontResource { faceName = $"Tahoma", size = 18.25f };
+#else
       return FontResource { faceName = $"Tahoma", size = 8.25f };
+#endif
    }
 
    FontResource ::CaptionFont()
    {
+#if defined(__ANDROID__)
+      return FontResource { faceName = $"Tahoma", size = 18.25f, bold = true };
+#else
       return FontResource { faceName = $"Tahoma", size = 8.25f, bold = true };
+#endif
    }
 
    char * ::CursorsBitmaps(uint id, int * hotSpotX, int *hotSpotY, byte ** paletteShades)
@@ -386,7 +400,7 @@ public class WindowsSkin_Window : Window
          if(name)
          {
             int buttonsSize = border +
-               ((hasMaximize || hasMinimize) ? 52 : 18);
+               ((hasMaximize || hasMinimize) ? (BUTTON_SIZE*3)+7 : (BUTTON_SIZE+3));
             surface.WriteTextDots(left, border + NAME_OFFSETX, top + NAME_OFFSET, 
                size.w - (buttonsSize + border + 4), name, strlen(name));
          }
@@ -417,7 +431,7 @@ public class WindowsSkin_Window : Window
       bool result = false;
       if(nativeDecorations && rootWindow == this && windowHandle) return false;
 
-      if(((BorderBits\)borderStyle).fixed && (state != maximized || !GetParentMenuBar()))
+      if(((BorderBits)borderStyle).fixed && (state != maximized || !GetParentMenuBar()))
       {
          int corner = 0, border = 0, top = 0;
          if(((BorderBits)borderStyle).sizable && isNormal)
@@ -546,16 +560,16 @@ public class WindowsSkin_Window : Window
       {
          if(sysButtons[0])
          {
-            sysButtons[0].anchor = { right = 35 + border, top = top + BUTTON_OFFSET };
-            sysButtons[0].size = { 15, 15 };
+            sysButtons[0].anchor = { right = 2+(2*BUTTON_SIZE+3) + border, top = top + BUTTON_OFFSET };
+            sysButtons[0].size = { BUTTON_SIZE, BUTTON_SIZE };
             sysButtons[0].bevel = true;
             sysButtons[0].bitmap = { skinBitmaps[(state == minimized) ? restore : minimize] };
             sysButtons[0].visible = true;
          }
          if(sysButtons[1])
          {
-            sysButtons[1].anchor = { right = 20 + border, top = top + BUTTON_OFFSET };
-            sysButtons[1].size = { 15, 15 };
+            sysButtons[1].anchor = { right = 2+(BUTTON_SIZE+3) + border, top = top + BUTTON_OFFSET };
+            sysButtons[1].size = { BUTTON_SIZE, BUTTON_SIZE };
             sysButtons[1].bevel = true;
             sysButtons[1].bitmap = { skinBitmaps[(state == maximized) ? restore : maximize] };
             sysButtons[1].visible = true;
@@ -563,7 +577,7 @@ public class WindowsSkin_Window : Window
          if(sysButtons[2])
          {
             sysButtons[2].anchor = { right = 2 + border, top = top + BUTTON_OFFSET };
-            sysButtons[2].size = { 15, 15 };
+            sysButtons[2].size = { BUTTON_SIZE, BUTTON_SIZE };
             sysButtons[2].bevel = true;
             sysButtons[2].bitmap = { skinBitmaps[close] };
             sysButtons[2].visible = true;

@@ -425,7 +425,7 @@ class Blokus : Window
    hasMaximize = true;
    hasMinimize = true;
    hasClose = true;
-   size = { 1280, 728 };
+   clientSize = { 1276, 708 };
    nativeDecorations = true;
    font = { "Arial", 12, bold = true };
    FontResource yourTurnFont { "Arial", 12, bold = true, italic = true, window = this };
@@ -1259,7 +1259,7 @@ class CommunicationPanel : Window
    borderStyle = fixed;
    hasClose = true;
    tabCycle = true;
-   size = { 400, 300 };
+   clientSize = { 430, 300 };
    anchor = { horz = -3, vert = -7 };
    nativeDecorations = true;
 
