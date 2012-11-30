@@ -28,7 +28,11 @@ namespace gui::skins;
 #define MIN_WIDTH    60
 #define MIN_HEIGHT   3
 #define BUTTON_OFFSET   2
+#if defined(__ANDROID__)
 #define NAME_OFFSET   12
+#else
+#define NAME_OFFSET   2
+#endif
 #define NAME_OFFSETX  4
 
 #define SB_WIDTH  16
