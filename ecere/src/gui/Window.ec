@@ -7720,8 +7720,14 @@ public:
    }
    virtual void ShowDecorations(Font captionFont, Surface surface, char * name, bool active, bool moving);
    virtual void PreShowDecorations(Font captionFont, Surface surface, char * name, bool active, bool moving);
-   virtual bool IsMouseMoving(int x, int y, int w, int h);
-   virtual bool IsMouseResizing(int x, int y, int w, int h, bool *resizeX, bool *resizeY, bool *resizeEndX, bool *resizeEndY);
+   virtual bool IsMouseMoving(int x, int y, int w, int h)
+   {
+      return false;
+   }
+   virtual bool IsMouseResizing(int x, int y, int w, int h, bool *resizeX, bool *resizeY, bool *resizeEndX, bool *resizeEndY)
+   {
+      return false;
+   }
    virtual void UpdateNonClient();
    virtual void SetBox(Box box);
    virtual bool IsInside(int x, int y)
