@@ -2490,8 +2490,7 @@ private:
                   if((projectPlatformOptions && projectPlatformOptions.options.linkerOptions && projectPlatformOptions.options.linkerOptions.count) ||
                      (configPlatformOptions && configPlatformOptions.options.linkerOptions && configPlatformOptions.options.linkerOptions.count))
                   {
-                     f.Puts("PRJ_CFLAGS +=");
-                     // tocheck: does any of that -Wl stuff from linkerOptions have any business being in CFLAGS?
+                     f.Puts("OFLAGS +=");
                      if(projectPlatformOptions && projectPlatformOptions.options.linkerOptions && projectPlatformOptions.options.linkerOptions.count)
                      {
                         f.Puts(" \\\n\t -Wl");
@@ -2556,13 +2555,21 @@ private:
             f.Puts("\n");
          }
 
-         // tocheck: does any of that -Wl stuff from linkerOptions have any business being in CFLAGS?
-         if(options && options.linkerOptions && options.linkerOptions.count)
+         if((config && config.options && config.options.linkerOptions && config.options.linkerOptions.count) ||
+               (options && options.linkerOptions && options.linkerOptions.count))
          {
-            f.Puts("PRJ_CFLAGS +=");
+            f.Puts("OFLAGS +=");
             f.Puts(" \\\n\t -Wl");
-            for(s : options.linkerOptions)
-               f.Printf(",%s", s);
+            if(config && config.options && config.options.linkerOptions && config.options.linkerOptions.count)
+            {
+               for(s : config.options.linkerOptions)
+                  f.Printf(",%s", s);
+            }
+            if(options && options.linkerOptions && options.linkerOptions.count)
+            {
+               for(s : options.linkerOptions)
+                  f.Printf(",%s", s);
+            }
          }
          f.Puts("\n");
          f.Puts("\n");
