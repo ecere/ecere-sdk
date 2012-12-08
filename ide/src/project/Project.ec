@@ -373,6 +373,36 @@ define PEEK_RESOLUTION = (18.2 * 10);
 #define SEPS    "/"
 #define SEP     '/'
 
+static Array<String> notLinkerOptions
+{ [
+   "-static-libgcc",
+   "-shared",
+   "-static",
+   "-s",
+   "-shared-libgcc",
+   "-nostartfiles",
+   "-nodefaultlibs",
+   "-nostdlib",
+   "-pie",
+   "-rdynamic",
+   "-static-libasan",
+   "-static-libtsan",
+   "-static libstdc++",
+   "-symbolic",
+   "-Wl,"
+   //"-T ",
+   //"-Xlinker ",
+   //"-u "
+] };
+
+static bool IsLinkerOption(String s)
+{
+   for(i : notLinkerOptions)
+      if(strstr(s, "-Wl,") || !strcmp(s, i))
+         return false;
+   return true;
+}
+
 static byte epjSignature[] = { 'E', 'P', 'J', 0x04, 0x01, 0x12, 0x03, 0x12 };
 
 enum GenMakefilePrintTypes { objects, cObjects, symbols, imports, sources, resources, eCsources };
@@ -2493,15 +2523,41 @@ private:
                      f.Puts("OFLAGS +=");
                      if(projectPlatformOptions && projectPlatformOptions.options.linkerOptions && projectPlatformOptions.options.linkerOptions.count)
                      {
-                        f.Puts(" \\\n\t -Wl");
+                        bool needWl = false;
+                        f.Puts(" \\\n\t ");
                         for(s : projectPlatformOptions.options.linkerOptions)
-                           f.Printf(",%s", s);
+                        {
+                           if(!IsLinkerOption(s))
+                              f.Printf(" %s", s);
+                           else
+                              needWl = true;
+                        }
+                        if(needWl)
+                        {
+                           f.Puts(" -Wl");
+                           for(s : projectPlatformOptions.options.linkerOptions)
+                              if(IsLinkerOption(s))
+                                 f.Printf(",%s", s);
+                        }
                      }
                      if(configPlatformOptions && configPlatformOptions.options.linkerOptions && configPlatformOptions.options.linkerOptions.count)
                      {
-                        f.Puts(" \\\n\t -Wl");
+                        bool needWl = false;
+                        f.Puts(" \\\n\t ");
                         for(s : configPlatformOptions.options.linkerOptions)
-                           f.Printf(",%s", s);
+                        {
+                           if(IsLinkerOption(s))
+                              f.Printf(" %s", s);
+                           else
+                              needWl = true;
+                        }
+                        if(needWl)
+                        {
+                           f.Puts(" -Wl");
+                           for(s : configPlatformOptions.options.linkerOptions)
+                              if(!IsLinkerOption(s))
+                                 f.Printf(",%s", s);
+                        }
                      }
                      f.Puts("\n");
                      f.Puts("\n");
@@ -2559,16 +2615,43 @@ private:
                (options && options.linkerOptions && options.linkerOptions.count))
          {
             f.Puts("OFLAGS +=");
-            f.Puts(" \\\n\t -Wl");
+            f.Puts(" \\\n\t");
+
             if(config && config.options && config.options.linkerOptions && config.options.linkerOptions.count)
             {
+               bool needWl = false;
                for(s : config.options.linkerOptions)
-                  f.Printf(",%s", s);
+               {
+                  if(!IsLinkerOption(s))
+                     f.Printf(" %s", s);
+                  else
+                     needWl = true;
+               }
+               if(needWl)
+               {
+                  f.Puts(" -Wl");
+                  for(s : config.options.linkerOptions)
+                     if(IsLinkerOption(s))
+                        f.Printf(",%s", s);
+               }
             }
             if(options && options.linkerOptions && options.linkerOptions.count)
             {
+               bool needWl = false;
                for(s : options.linkerOptions)
-                  f.Printf(",%s", s);
+               {
+                  if(!IsLinkerOption(s))
+                     f.Printf(" %s", s);
+                  else
+                     needWl = true;
+               }
+               if(needWl)
+               {
+                  f.Puts(" -Wl");
+                  for(s : options.linkerOptions)
+                     if(IsLinkerOption(s))
+                        f.Printf(",%s", s);
+               }
             }
          }
          f.Puts("\n");
