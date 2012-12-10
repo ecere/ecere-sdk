@@ -81,7 +81,7 @@ class PNGFormat : BitmapFormat
 
                png_read_info(png_ptr, info_ptr);
                channels = png_get_channels(png_ptr, info_ptr);
-               if(channels == 3 || channels == 4 || channels == 1)
+               if(channels == 3 || channels == 4 || channels == 1 || channels == 2)
                {            
                   png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
                       &interlace_type, null, null);
@@ -125,6 +125,32 @@ class PNGFormat : BitmapFormat
                                     byte b = (rowPtr[offset] & mask) ? 255 : 0;
                                     destPtr[x] = ColorRGBA { b, b, b, 255 };
                                  }
+                              }
+                           }
+                        }
+                        delete rowPtr;
+                        result = true;
+                     }
+                     else if(channels == 2)
+                     {
+                        byte * rowPtr = new byte[width * 2 * ((bit_depth == 16) ? 2 : 1)];
+                        for (pass = 0; pass < numPasses; pass++)
+                        {
+                           uint y;
+                           for (y = 0; y < height; y++)
+                           {
+                              uint x;
+                              ColorRGBA * destPtr = ((ColorRGBA *)bitmap.picture) + y * bitmap.stride;
+                              png_read_rows(png_ptr, &rowPtr, null, 1);
+                              if(bit_depth == 16)
+                              {
+                                 for(x = 0; x<width; x++)
+                                    destPtr[x] = ColorRGBA { rowPtr[x*4], rowPtr[x*4], rowPtr[x*4], rowPtr[x*4+2] };
+                              }
+                              else if(bit_depth == 8)
+                              {
+                                 for(x = 0; x<width; x++)
+                                    destPtr[x] = ColorRGBA { rowPtr[x*2], rowPtr[x*2], rowPtr[x*2], rowPtr[x*2+1] };
                               }
                            }
                         }
