@@ -2116,7 +2116,6 @@ class ProjectView : Window
          {
             OpenNode(node, noParsing);
             result = true;
-            break;
          }
       }
       selection.Free(null);
