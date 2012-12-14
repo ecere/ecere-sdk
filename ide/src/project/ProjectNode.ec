@@ -2146,17 +2146,23 @@ private:
                s = { };
                GenCFlagsFromProjectOptions(platformsCommonOptions, prjWithEcFiles, true, isGreater, s);
                if(s.count > 1)
-                  cflags.concatf(isGreater ? "%s" : " \\\n\t%s", (String)s);
+               {
+                  if(!isGreater) cflags.concat(" \\\n\t");
+                  cflags.concat(s);
+               }
                delete s;
                s = { };
                GenECFlagsFromProjectOptions(platformsCommonOptions, prjWithEcFiles, s);
                if(s.count > 1)
-                  ecflags.concatf(" \\\n\t%s", (String)s);
+               {
+                  ecflags.concat(" \\\n\t");
+                  ecflags.concat(s);
+               }
                delete s;
 
                if(isGreater)
                {
-                  cflags.concatf(" \\\n\t");
+                  cflags.concat(" \\\n\t");
                   DynStringPrintNodeFlagsVariable(parent, nodeCFlagsMapping, "PRJ_CFLAGS", cflags);
                }
             }
@@ -2871,36 +2877,36 @@ static void GenCFlagsFromProjectOptions(ProjectOptions options, bool prjWithEcFi
          {
             if(options.debug != true)
             {
-               s.concatf(" $(if $(DEBUG),");
-               s.concatf(" -g");
-               s.concatf(",");
+               s.concat(" $(if $(DEBUG),");
+               s.concat(" -g");
+               s.concat(",");
             }
             switch(options.optimization)
             {
-               case speed: s.concatf(" -O2"); break;
-               case size: s.concatf(" -Os"); break;
+               case speed: s.concat(" -O2"); break;
+               case size: s.concat(" -Os"); break;
             }
             if(options.fastMath == true)
-               s.concatf(" -ffast-math");
+               s.concat(" -ffast-math");
             if(options.debug == true)
-               s.concatf(" -g");
+               s.concat(" -g");
             if(options.debug != true)
-               s.concatf(")");
+               s.concat(")");
          }
          else if(commonOptions)
-            s.concatf(" $(if $(DEBUG),-g)");
+            s.concat(" $(if $(DEBUG),-g)");
          if(options.buildBitDepth || (commonOptions && prjWithEcFiles))
             s.concatf(" %s", (!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? "$(FORCE_32_BIT)" : "$(FORCE_64_BIT)");
          if(commonOptions)
-            s.concatf(" $(FPIC)");
+            s.concat(" $(FPIC)");
       }
       switch(options.warnings)
       {
-         case all: s.concatf(" -Wall"); break;
-         case none: s.concatf(" -w"); break;
+         case all: s.concat(" -Wall"); break;
+         case none: s.concat(" -w"); break;
       }
       if(options.profile)
-         s.concatf(" -pg");
+         s.concat(" -pg");
    }
 
    if(options && options.preprocessorDefinitions)
@@ -2927,7 +2933,10 @@ static void ListOptionToDynamicString(char * option, Array<String> list, bool pr
    if(list.count)
    {
       if(method == newLine)
-         s.concatf(" \\\n%s", newLineStart);
+      {
+         s.concat(" \\\n");
+         s.concat(newLineStart);
+      }
       if(prioritize)
       {
          Map<String, int> sortedList { };
@@ -2938,8 +2947,12 @@ static void ListOptionToDynamicString(char * option, Array<String> list, bool pr
          {
             char * start = strstr(mn.key, "\n");
             if(method == lineEach)
-               s.concatf(" \\\n%s", newLineStart);
-            s.concatf(" -%s", option);
+            {
+               s.concat(" \\\n");
+               s.concat(newLineStart);
+            }
+            s.concat(" -");
+            s.concat(option);
             if(noSpace)
                StringNoSpaceToDynamicString(s, start ? start+1 : mn.key);
             else
@@ -2952,8 +2965,12 @@ static void ListOptionToDynamicString(char * option, Array<String> list, bool pr
          for(item : list)
          {
             if(method == lineEach)
-               s.concatf(" \\\n%s", newLineStart);
-            s.concatf(" -%s", option);
+            {
+               s.concat(" \\\n");
+               s.concat(newLineStart);
+            }
+            s.concat(" -");
+            s.concat(option);
             if(noSpace)
                StringNoSpaceToDynamicString(s, item);
             else
