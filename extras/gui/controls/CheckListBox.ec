@@ -168,7 +168,13 @@ class CheckListBox : ListBox
    void UncheckBoxes(DataRow row)
    {
       CheckListBoxButton button = buttonMaps[(int)row];
-      if(button) { button.checked = false; button.buttonState = up; }
+      if(button)
+      {
+         bool wasChecked = button.checked;
+         button.checked = false;
+         button.buttonState = up;
+         if(wasChecked) NotifyChanged(master, this, row);
+      }
       if(!row.collapsed)
       {
          DataRow r;
@@ -181,7 +187,13 @@ class CheckListBox : ListBox
    {
       DataRow r;
       CheckListBoxButton button = buttonMaps[(int)row];
-      if(button) { button.checked = true; button.buttonState = up; }
+      if(button)
+      {
+         bool wasChecked = button.checked;
+         button.checked = true;
+         button.buttonState = up;
+         if(!wasChecked) NotifyChanged(master, this, row);
+      }
 
       for(r = row.firstRow; r; r = r.next)
       {
@@ -207,17 +219,18 @@ class CheckListBox : ListBox
          // NotifyChanged(master, this, row);
          if(checked)
          {
+            DataRow rr = row;
             // Check if all siblings are checked, if so go up until we reach a row not fully checked
-            while(row)
+            while(rr)
             {
                DataRow r;
-               for(r = row.parent.firstRow; r; r = r.next)
+               for(r = rr.parent.firstRow; r; r = r.next)
                {
-                  if(r != row && !rowChecks.Find(r))
+                  if(r != rr && !rowChecks.Find(r))
                      break;
                }
                if(r || !row.parent) break;
-               row = row.parent;
+               rr = rr.parent;
             }
 
             // Take out all children from rowChecks, checking them all
