@@ -5967,9 +5967,11 @@ public:
       if(this)
       {
          Copy();
-         DelSel(null);
-         SetViewToCursor(true);
-         Modified();
+         if(DelSel(null))
+         {
+            SetViewToCursor(true);
+            Modified();
+         }
       }
    }
 
