@@ -1196,6 +1196,7 @@ class ProjectView : Window
    {
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
 
+      // This call really does not belong here:
       ide.UpdateToolBarActiveConfigs(false);
       for(config : project.configurations)
          ProjectPrepareMakefile(project, forceExists, compiler, config);

@@ -200,6 +200,8 @@ class NewProjectDialog : Window
             projectWindow.ProjectPrepareCompiler(project, compiler);
             projectWindow.ProjectPrepareMakefile(project, force, compiler, config);
             delete compiler;
+
+            ide.UpdateToolBarActiveConfigs(false);
          }
 
          Destroy(0);

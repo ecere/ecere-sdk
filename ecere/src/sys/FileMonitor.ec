@@ -143,6 +143,7 @@ private:
    {
       FileAttribs exists = FileExists(filePath);
       FileStats stats;
+      String oldFileName = fileName;
 
       //incref this;
       globalSystem.fileMonitorMutex.Wait();
@@ -153,8 +154,8 @@ private:
       if(!active && !toBeFreed)
          globalSystem.fileMonitors.Add(this);
       this.exists = exists && !exists.isDirectory;
-      delete fileName;
       fileName = CopyString(filePath);
+      delete oldFileName;
       this.watchFor = watchFor;
 
       if(FileGetStats(filePath, stats))
@@ -184,6 +185,7 @@ private:
    void MonitorDirectory(char * filePath)
    {
       FileStats stats;
+      String oldFileName = fileName;
 
       //incref this;
       globalSystem.fileMonitorMutex.Wait();
@@ -197,8 +199,8 @@ private:
       exists = FileExists(filePath).isDirectory;
 
       this.watchFor = watchFor;
-      delete fileName;
       fileName = CopyString(filePath);
+      delete oldFileName;
 
       if(FileGetStats(fileName, stats))
       {
