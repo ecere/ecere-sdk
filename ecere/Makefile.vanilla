@@ -106,8 +106,6 @@ _ECSOURCES2 = \
 	src/gui/dialogs/MessageBox.ec \
 	src/gui/dialogs/ReplaceDialog.ec \
 	src/gui/dialogs/WindowList.ec \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaDispatch.ec,) \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaInterface.ec,) \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/NCursesInterface.ec,) \
 	$(if $(WINDOWS_TARGET),src/gui/drivers/Win32Interface.ec,) \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/XInterface.ec,) \
@@ -187,14 +185,11 @@ _OBJECTS1 = \
 _OBJECTS2 = \
 	$(if $(WINDOWS_TARGET),,$(OBJ)harfbuzz-impl.o) \
 	$(if $(WINDOWS_TARGET),,$(OBJ)harfbuzz-thai.o) \
-	$(if $(OSX_TARGET),$(OBJ)CocoaEcereBridge.o,) \
-	$(if $(OSX_TARGET),$(OBJ)EcereView.o,) \
 	$(OBJ)instance.c.o
 
 OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 
-SOURCES = $(ECSOURCES) $(SOURCES1) $(SOURCES2)
-SOURCES1 = \
+SOURCES = $(ECSOURCES) \
 	src/sys/File.c \
 	src/sys/DualPipe.c \
 	src/sys/System.c \
@@ -217,9 +212,6 @@ SOURCES1 = \
 	$(if $(WINDOWS_TARGET),,src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c) \
 	$(if $(WINDOWS_TARGET),,src/gfx/drivers/harfbuzz/harfbuzz-impl.c) \
 	$(if $(WINDOWS_TARGET),,src/gfx/drivers/harfbuzz/harfbuzz-thai.c) \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/EcereView.m,)
-SOURCES2 = \
 	src/com/instance.c
 
 RESOURCES = $(RESOURCES1) $(RESOURCES2) $(RESOURCES3)
@@ -695,16 +687,6 @@ $(OBJ)ReplaceDialog.sym: src/gui/dialogs/ReplaceDialog.ec
 $(OBJ)WindowList.sym: src/gui/dialogs/WindowList.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/dialogs/WindowList.ec -o $(OBJ)WindowList.sym
 
-ifneq "$(OSX_TARGET)" ""
-$(OBJ)CocoaDispatch.sym: src/gui/drivers/cocoa/CocoaDispatch.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/cocoa/CocoaDispatch.ec -o $(OBJ)CocoaDispatch.sym
-endif
-
-ifneq "$(OSX_TARGET)" ""
-$(OBJ)CocoaInterface.sym: src/gui/drivers/cocoa/CocoaInterface.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/cocoa/CocoaInterface.ec -o $(OBJ)CocoaInterface.sym
-endif
-
 ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)NCursesInterface.sym: src/gui/drivers/NCursesInterface.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/NCursesInterface.ec -o $(OBJ)NCursesInterface.sym
@@ -982,16 +964,6 @@ $(OBJ)ReplaceDialog.c: src/gui/dialogs/ReplaceDialog.ec $(OBJ)ReplaceDialog.sym 
 
 $(OBJ)WindowList.c: src/gui/dialogs/WindowList.ec $(OBJ)WindowList.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gui/dialogs/WindowList.ec -o $(OBJ)WindowList.c -symbols $(OBJ)
-
-ifneq "$(OSX_TARGET)" ""
-$(OBJ)CocoaDispatch.c: src/gui/drivers/cocoa/CocoaDispatch.ec $(OBJ)CocoaDispatch.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gui/drivers/cocoa/CocoaDispatch.ec -o $(OBJ)CocoaDispatch.c -symbols $(OBJ)
-endif
-
-ifneq "$(OSX_TARGET)" ""
-$(OBJ)CocoaInterface.c: src/gui/drivers/cocoa/CocoaInterface.ec $(OBJ)CocoaInterface.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gui/drivers/cocoa/CocoaInterface.ec -o $(OBJ)CocoaInterface.c -symbols $(OBJ)
-endif
 
 ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)NCursesInterface.c: src/gui/drivers/NCursesInterface.ec $(OBJ)NCursesInterface.sym | $(SYMBOLS)
@@ -1374,26 +1346,6 @@ $(OBJ)ReplaceDialog.o: $(OBJ)ReplaceDialog.c
 
 $(OBJ)WindowList.o: $(OBJ)WindowList.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)WindowList.c -o $(OBJ)WindowList.o
-
-ifneq "$(OSX_TARGET)" ""
-$(OBJ)CocoaDispatch.o: $(OBJ)CocoaDispatch.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)CocoaDispatch.c -o $(OBJ)CocoaDispatch.o
-endif
-
-ifneq "$(OSX_TARGET)" ""
-$(OBJ)CocoaEcereBridge.o: src/gui/drivers/cocoa/CocoaEcereBridge.m
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/cocoa/CocoaEcereBridge.m -o $(OBJ)CocoaEcereBridge.o
-endif
-
-ifneq "$(OSX_TARGET)" ""
-$(OBJ)CocoaInterface.o: $(OBJ)CocoaInterface.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)CocoaInterface.c -o $(OBJ)CocoaInterface.o
-endif
-
-ifneq "$(OSX_TARGET)" ""
-$(OBJ)EcereView.o: src/gui/drivers/cocoa/EcereView.m
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/cocoa/EcereView.m -o $(OBJ)EcereView.o
-endif
 
 ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)NCursesInterface.o: $(OBJ)NCursesInterface.c

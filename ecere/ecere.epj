@@ -1589,6 +1589,17 @@
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Vanilla",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "apple",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
