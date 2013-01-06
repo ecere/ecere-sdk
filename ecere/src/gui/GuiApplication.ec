@@ -70,11 +70,11 @@ typedef struct in_addr IN_ADDR;
 import "network"
 #endif
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) && !defined(ECERE_VANILLA)
 import "CocoaInterface"
 #endif
 
-#if defined(__unix__) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
 import "XInterface"
 #endif
 
@@ -221,7 +221,7 @@ public class GuiApplication : Application
       delete desktop;
       customCursors.Clear();
 
-#if defined(__unix__) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
       if(xGlobalDisplay)
          XUnlockDisplay(xGlobalDisplay);
 #endif
@@ -551,7 +551,7 @@ public class GuiApplication : Application
          errorLevel = 2;
 
          lockMutex.Wait();
-#if defined(__unix__) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
          if(xGlobalDisplay)
             XLockDisplay(xGlobalDisplay);
 #endif
@@ -631,7 +631,7 @@ public class GuiApplication : Application
          #endif
 
          #if defined(__APPLE__)
-               SwitchMode(true, "CocoaOpenGL", 0, 0, 0, null, true);
+               SwitchMode(true, "X" /*"CocoaOpenGL"*/, 0, 0, 0, null, true);
          #endif
 
          #if defined(__unix__)
@@ -718,7 +718,7 @@ public:
                   Wait();
                else
                {
-#if defined(__unix__) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
                   if(xGlobalDisplay)
                      XUnlockDisplay(xGlobalDisplay);
 #endif
@@ -726,7 +726,7 @@ public:
                   lockMutex.Release();
                   lockMutex.Wait();
 
-#if defined(__unix__) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
                   if(xGlobalDisplay)
                      XLockDisplay(xGlobalDisplay);
 #endif
@@ -745,7 +745,7 @@ public:
 
    void Wait(void)
    {
-#if defined(__unix__) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
       if(xGlobalDisplay)
          XUnlockDisplay(xGlobalDisplay);
 #endif
@@ -761,7 +761,7 @@ public:
 
       lockMutex.Wait();
 
-#if defined(__unix__) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
       if(xGlobalDisplay)
          XLockDisplay(xGlobalDisplay);
 #endif
@@ -1348,7 +1348,7 @@ public:
    void Lock(void)
    {
       lockMutex.Wait();
-#if defined(__unix__) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
       if(xGlobalDisplay)
          XLockDisplay(xGlobalDisplay);
 #endif
@@ -1356,7 +1356,7 @@ public:
 
    void Unlock(void)
    {
-#if defined(__unix__) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
       if(xGlobalDisplay)
          XUnlockDisplay(xGlobalDisplay);
 #endif
