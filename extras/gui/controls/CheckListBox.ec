@@ -77,7 +77,8 @@ class CheckListBox : ListBox
       for(r = row.GetNextRow(); r; r = r.GetNextRow())
       {
          Button checkBox = listBox.buttonMaps[(int)r];
-         checkBox.position.y = 1 + (r.index + listBox.hasHeader) * listBox.rowHeight;
+         if(checkBox)
+            checkBox.position.y = 1 + (r.index + listBox.hasHeader) * listBox.rowHeight;
       }
       return true;
    }
@@ -200,11 +201,12 @@ class CheckListBox : ListBox
       for(r = row.firstRow; r; r = r.next)
       {
          Iterator<DataRow> it { rowChecks };
+
          if(it.Find(r))
             it.Remove();
          UnsetChildren(r);
+         NotifyChanged(master, this, r);
       }      
-      NotifyChanged(master, this, row);
    }
    
    void SetCheck(DataRow row, bool checked)
@@ -243,12 +245,14 @@ class CheckListBox : ListBox
 
             for(parent = row.parent; parent; parent = parent.parent)
             {
-               DataRow r;
                CheckListBoxButton button = buttonMaps[(int)parent];
                if(button)
                {
+                  // Partial Check
                   button.checked = true;
                   button.buttonState = down;
+
+                  NotifyChanged(master, this, parent);
                }
             }
          }
@@ -292,6 +296,8 @@ class CheckListBox : ListBox
                      button.checked = false;
                      button.buttonState = up;
                   }
+
+                  NotifyChanged(master, this, parent);
                }
             }
          }
@@ -333,8 +339,12 @@ class CheckListBox : ListBox
 public:
    bool IsChecked(DataRow row)
    {
+      CheckListBoxButton button = buttonMaps[(int)row];
       DataRow parent;
       for(parent = row; parent; parent = parent.parent) if(rowChecks.Find(parent)) return true;
+      // For partially checked because of children:
+      if(button && button.checked)
+         return true;
       return false;
    }
 
