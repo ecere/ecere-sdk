@@ -209,7 +209,7 @@ void Network_Terminate()
    if(network.networkInitialized)
    {
 #if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
-      Service service, next;
+      Service service;
       Socket socket;
 
       guiApp.PauseNetworkEvents();

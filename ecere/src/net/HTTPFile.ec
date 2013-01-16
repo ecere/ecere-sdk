@@ -61,7 +61,6 @@ static ServerNameCache serverNameCache { };
 static char * GetString(char * string, char * what, int count)
 {
    int c;
-   bool result = true;
    for(c = 0; what[c]; c++)
    {
       if((count && c >= count) || (string[c] != what[c] && tolower(string[c]) != tolower(what[c])))
@@ -337,7 +336,7 @@ public:
          {
             incref connection;
             reuse = true;
-            
+
             connection.file = this;
          }
 

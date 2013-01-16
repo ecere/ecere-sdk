@@ -252,16 +252,8 @@ public:
             disconnected = true;
             if(!service)
             {
-               if(_connected == -1/* != 1*/)
-               {
-                  network.connectSockets.Remove(this);
-                  _connected = 0;
-               }
-               else if(_connected)
-               {
-                  network.sockets.Remove(this);
-                  _connected = 0;
-               }
+               if(_connected)
+                  ((_connected == -1) ? network.connectSockets : network.sockets).Remove(this);
             }
             else
             {
@@ -447,18 +439,10 @@ private:
       SOCKET s = this.s;
 
       if(mustLock) network.mutex.Wait();
-      if(!service)
+      if(!service && _connected)
       {
-         if(_connected == -1/* != 1*/)
-         {
-            network.connectSockets.Remove(this);
-            _connected = 0;
-         }
-         else if(_connected)
-         {
-            network.sockets.Remove(this);
-            _connected = 0;
-         }
+         (_connected == -1 ? network.connectSockets : network.sockets).Remove(this);
+         _connected = 0;
       }
 
       if(!disconnected)

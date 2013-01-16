@@ -79,7 +79,6 @@ public:
          {
             if(!listen(s,5))
             {
-               // Fix up the links/offsets here...
                network.mutex.Wait();
                network.services.Add(this);
                this.s = s;
@@ -87,6 +86,7 @@ public:
                destroyed = false;
                sockets.Clear();
 
+               // Fix up the links/offsets here...
                sockets.offset = (uint)&((Socket)0).prev;
 
                FD_SET(s, &network.readSet);
