@@ -538,6 +538,8 @@ class CompilerApp : Application
                         output.Printf("#define __ENDIAN_PAD(x) 0\n");
                      output.Printf("#endif\n");
 
+                     // NOTE: If anything is changed up there, the start outputLine must be updated in libec's output.c or Debugging lines will be wrong
+
                      if(ast)
                         OutputTree(ast, output);
                      delete output;
