@@ -34,7 +34,7 @@ struct __ecereNameSpace__ecere__sys__BTNode * root;
 int count;
 int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, unsigned int a, unsigned int b);
 void (*  FreeKey)(void *  key);
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldList;
 
@@ -45,7 +45,7 @@ void *  last;
 int count;
 unsigned int offset;
 unsigned int circ;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Method;
 
@@ -64,7 +64,7 @@ void *  symbol;
 char *  dataTypeString;
 struct Type * dataType;
 int memberAccess;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
@@ -92,7 +92,7 @@ char *  category;
 unsigned int compiled;
 unsigned int selfWatchable;
 unsigned int isWatchable;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_CodePosition;
 
@@ -102,7 +102,7 @@ int line;
 int charPos;
 int pos;
 unsigned int included;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Location;
 
@@ -110,7 +110,7 @@ struct Location
 {
 struct CodePosition start;
 struct CodePosition end;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
 
@@ -165,8 +165,8 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-};
-};
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
 
@@ -280,7 +280,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument *  templateArgs;
 struct __ecereNameSpace__ecere__com__Class * templateClass;
 struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -289,7 +289,7 @@ struct __ecereNameSpace__ecere__com__Instance
 int (* *  _vTbl)();
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataMember;
 
@@ -312,7 +312,7 @@ struct __ecereNameSpace__ecere__sys__OldList members;
 struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
 int memberOffset;
 int structAlignment;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__SerialBuffer;
 
@@ -322,7 +322,7 @@ unsigned char *  _buffer;
 unsigned int count;
 unsigned int _size;
 unsigned int pos;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassTemplateArgument;
 
@@ -334,7 +334,7 @@ struct
 {
 char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-};
+} __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
@@ -344,10 +344,10 @@ union
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
 struct __ecereNameSpace__ecere__com__Method * method;
-};
-};
-};
-};
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Instance * __currentModule;
 
@@ -529,7 +529,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree nameSpaces;
 struct __ecereNameSpace__ecere__sys__BinaryTree classes;
 struct __ecereNameSpace__ecere__sys__BinaryTree defines;
 struct __ecereNameSpace__ecere__sys__BinaryTree functions;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
@@ -549,7 +549,7 @@ int importType;
 int origImportType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
-};
+} __attribute__ ((gcc_struct));
 
 extern void __ecereNameSpace__ecere__UnloadTranslatedStrings(struct __ecereNameSpace__ecere__com__Instance * module);
 
@@ -564,7 +564,7 @@ unsigned int isGUIApp;
 struct __ecereNameSpace__ecere__sys__OldList allModules;
 char *  parsedCommand;
 struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
-};
+} __attribute__ ((gcc_struct));
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 

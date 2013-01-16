@@ -1013,7 +1013,7 @@ static void OutputSpecifier(Specifier spec, File f)
                //OutputDeclaration(decl, f);
                OutputClassDef(def, f);
             }
-            f.Puts("}");
+            f.Puts("} __attribute__ ((gcc_struct))");
          }
          break;
       }
