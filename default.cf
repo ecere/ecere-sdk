@@ -32,7 +32,7 @@ LDFLAGS +=$(if $(OSX_TARGET), -framework cocoa -framework OpenGL,)
 
 ifdef BSD_TARGET
 EXCLUDED_LIBS += $(space)dl
-CFLAGS += -isystem /usr/local/include
+CFLAGS += -isystem /usr/local/include -isystem /usr/local/include/freetype2
 LDFLAGS += -L/usr/local/lib
 endif
 
