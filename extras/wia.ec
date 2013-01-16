@@ -27,10 +27,10 @@ WINOLEAPI PropVariantClear ( PROPVARIANT * pvar );
 
 #undef bool
 #undef uint
-#undef Method _Method
-#undef Array _Array
-#undef byte _byte
-#undef int64 _int64
+#undef Method
+#undef Array
+#undef byte
+#undef int64
 
 #if defined(ECERE_STATIC)
 public import static "ecere"
