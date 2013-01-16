@@ -1405,7 +1405,7 @@ class IDEWorkSpace : Window
    bool NotifySelectDisplayDriver(MenuItem selection, Modifiers mods)
    {
       //app.driver = app.drivers[selection.id];
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
       app.driver = selection.id ? "OpenGL" : "X";
 #else
       app.driver = selection.id ? "OpenGL" : "GDI";
