@@ -3518,6 +3518,9 @@ public class LFBDisplayDriver : DisplayDriver
                   else if(delta.x) delta.x += 64 - (delta.x % 64);
                   *x += delta.x * glyph->scale;
                }
+               else
+                  FaceSetCharSize(curFontEntry.face, font.size);
+
                previousGlyph = glyph->glyphNo;
                previousFace = curFontEntry.face;
 
