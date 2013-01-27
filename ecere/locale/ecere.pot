@@ -54,14 +54,14 @@ msgstr "Alt+"
 #: ./src/gui/controls/Picture.ec:19
 #: ./src/gui/controls/Picture.ec:39
 #: ./src/gui/controls/ScrollBar.ec:82
-#: ./src/gui/Window.ec:8015
-#: ./src/gui/Window.ec:8062
-#: ./src/gui/Window.ec:8079
-#: ./src/gui/Window.ec:8090
-#: ./src/gui/Window.ec:8103
-#: ./src/gui/Window.ec:8486
-#: ./src/gui/Window.ec:9187
-#: ./src/gui/Window.ec:9508
+#: ./src/gui/Window.ec:8021
+#: ./src/gui/Window.ec:8068
+#: ./src/gui/Window.ec:8085
+#: ./src/gui/Window.ec:8096
+#: ./src/gui/Window.ec:8109
+#: ./src/gui/Window.ec:8492
+#: ./src/gui/Window.ec:9193
+#: ./src/gui/Window.ec:9514
 msgid "Appearance"
 msgstr "Appearance"
 
@@ -133,30 +133,30 @@ msgstr "August"
 #: ./src/gui/controls/ScrollBar.ec:127
 #: ./src/gui/controls/ScrollBar.ec:128
 #: ./src/gui/controls/ScrollBar.ec:129
-#: ./src/gui/Window.ec:7971
-#: ./src/gui/Window.ec:8034
-#: ./src/gui/Window.ec:8216
-#: ./src/gui/Window.ec:8263
-#: ./src/gui/Window.ec:8270
-#: ./src/gui/Window.ec:8277
-#: ./src/gui/Window.ec:8284
-#: ./src/gui/Window.ec:8291
-#: ./src/gui/Window.ec:8298
-#: ./src/gui/Window.ec:8305
-#: ./src/gui/Window.ec:8760
-#: ./src/gui/Window.ec:8787
-#: ./src/gui/Window.ec:8794
-#: ./src/gui/Window.ec:9038
-#: ./src/gui/Window.ec:9058
+#: ./src/gui/Window.ec:7977
+#: ./src/gui/Window.ec:8040
+#: ./src/gui/Window.ec:8222
+#: ./src/gui/Window.ec:8269
+#: ./src/gui/Window.ec:8276
+#: ./src/gui/Window.ec:8283
+#: ./src/gui/Window.ec:8290
+#: ./src/gui/Window.ec:8297
+#: ./src/gui/Window.ec:8304
+#: ./src/gui/Window.ec:8311
+#: ./src/gui/Window.ec:8766
+#: ./src/gui/Window.ec:8793
+#: ./src/gui/Window.ec:8800
+#: ./src/gui/Window.ec:9044
 #: ./src/gui/Window.ec:9064
-#: ./src/gui/Window.ec:9071
-#: ./src/gui/Window.ec:9081
-#: ./src/gui/Window.ec:9092
-#: ./src/gui/Window.ec:9099
-#: ./src/gui/Window.ec:9107
-#: ./src/gui/Window.ec:9180
-#: ./src/gui/Window.ec:9213
-#: ./src/gui/Window.ec:9229
+#: ./src/gui/Window.ec:9070
+#: ./src/gui/Window.ec:9077
+#: ./src/gui/Window.ec:9087
+#: ./src/gui/Window.ec:9098
+#: ./src/gui/Window.ec:9105
+#: ./src/gui/Window.ec:9113
+#: ./src/gui/Window.ec:9186
+#: ./src/gui/Window.ec:9219
+#: ./src/gui/Window.ec:9235
 msgid "Behavior"
 msgstr "Behavior"
 
@@ -223,7 +223,7 @@ msgstr "Cut\tCtrl+X"
 #: ./src/gui/controls/EditBox.ec:755
 #: ./src/gui/controls/ProgressBar.ec:13
 #: ./src/gui/controls/ProgressBar.ec:14
-#: ./src/gui/Window.ec:9142
+#: ./src/gui/Window.ec:9148
 msgid "Data"
 msgstr "Data"
 
@@ -252,11 +252,11 @@ msgstr "Deleting control with children"
 msgid "Deleting control with code"
 msgstr "Deleting control with code"
 
-#: ./src/gui/Window.ec:9332
+#: ./src/gui/Window.ec:9338
 msgid "Deprecated"
 msgstr "Deprecated"
 
-#: ./src/gui/Window.ec:9199
+#: ./src/gui/Window.ec:9205
 msgid "Design"
 msgstr "Design"
 
@@ -276,9 +276,9 @@ msgstr "Directory doesn't exist"
 msgid "Directory:"
 msgstr "Directory:"
 
-#: ./src/gui/Window.ec:8974
-#: ./src/gui/Window.ec:9114
-#: ./src/gui/Window.ec:9149
+#: ./src/gui/Window.ec:8980
+#: ./src/gui/Window.ec:9120
+#: ./src/gui/Window.ec:9155
 msgid "Document"
 msgstr "Document"
 
@@ -446,16 +446,16 @@ msgstr "Jun"
 msgid "June"
 msgstr "June"
 
-#: ./src/gui/Window.ec:7747
-#: ./src/gui/Window.ec:8129
-#: ./src/gui/Window.ec:8136
-#: ./src/gui/Window.ec:8204
-#: ./src/gui/Window.ec:8543
-#: ./src/gui/Window.ec:8579
-#: ./src/gui/Window.ec:8616
-#: ./src/gui/Window.ec:8648
-#: ./src/gui/Window.ec:8715
-#: ./src/gui/Window.ec:9245
+#: ./src/gui/Window.ec:7753
+#: ./src/gui/Window.ec:8135
+#: ./src/gui/Window.ec:8142
+#: ./src/gui/Window.ec:8210
+#: ./src/gui/Window.ec:8549
+#: ./src/gui/Window.ec:8585
+#: ./src/gui/Window.ec:8622
+#: ./src/gui/Window.ec:8654
+#: ./src/gui/Window.ec:8721
+#: ./src/gui/Window.ec:9251
 msgid "Layout"
 msgstr "Layout"
 
@@ -774,8 +774,8 @@ msgstr "T"
 
 #: ./src/gui/skins/TVisionSkin.ec:37
 #: ./src/gui/skins/TVisionSkin.ec:43
-#: ./src/gui/skins/WindowsSkin.ec:125
-#: ./src/gui/skins/WindowsSkin.ec:130
+#: ./src/gui/skins/WindowsSkin.ec:138
+#: ./src/gui/skins/WindowsSkin.ec:147
 msgid "Tahoma"
 msgstr "Tahoma"
 
@@ -836,18 +836,18 @@ msgstr "Whole File"
 msgid "Whole word only"
 msgstr "Whole word only"
 
-#: ./src/gui/Window.ec:8143
-#: ./src/gui/Window.ec:8164
-#: ./src/gui/Window.ec:8185
-#: ./src/gui/Window.ec:8334
-#: ./src/gui/Window.ec:8341
-#: ./src/gui/Window.ec:8377
-#: ./src/gui/Window.ec:8398
-#: ./src/gui/Window.ec:8451
-#: ./src/gui/Window.ec:8981
-#: ./src/gui/Window.ec:8988
-#: ./src/gui/Window.ec:9013
-#: ./src/gui/Window.ec:9173
+#: ./src/gui/Window.ec:8149
+#: ./src/gui/Window.ec:8170
+#: ./src/gui/Window.ec:8191
+#: ./src/gui/Window.ec:8340
+#: ./src/gui/Window.ec:8347
+#: ./src/gui/Window.ec:8383
+#: ./src/gui/Window.ec:8404
+#: ./src/gui/Window.ec:8457
+#: ./src/gui/Window.ec:8987
+#: ./src/gui/Window.ec:8994
+#: ./src/gui/Window.ec:9019
+#: ./src/gui/Window.ec:9179
 msgid "Window Style"
 msgstr "Window Style"
 
