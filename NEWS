@@ -1,3 +1,8 @@
+Ecere SDK 0.44.03 (January 27, 2013)
+
+   * Renaming libec0 Debian package to libecc0 to solve conflict with "Library for modular symbols and elliptic curves over Q" in Sid
+   * Various bug fixes
+----------------------------------------
 Ecere SDK 0.44.02 (November 6, 2012)
 
    * Fixed issue with 'arch: all' packages preventing installing on 64 bit system
