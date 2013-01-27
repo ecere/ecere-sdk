@@ -1,3 +1,11 @@
+ecere-sdk (0.44.03-0ubuntu1) raring; urgency=low
+
+  * Resolved libec0 conflict with "Library for modular symbols and elliptic
+    curves over Q"
+    Various bug fixes
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Sun, 27 Jan 2013 00:47:00 -0500
+
 ecere-sdk (0.44.02-0ubuntu1) raring; urgency=low
 
   * Fixed issue with 'arch: all' packages preventing installing on 64 bit system
