@@ -1,0 +1,5 @@
+#!/usr/bin/dh-exec
+${LIBDIR}/ec/libec.so.0.44
+${LIBDIR}/ec/libec.so.0
+${LIBDIR}/ec/libec.so
+usr/share/doc/libecc0/changelog.gz

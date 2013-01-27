@@ -37,7 +37,7 @@ Description: Ecere cross-platform SDK
 Package: ecere-dev
 Architecture: armel armhf i386 powerpc
 Recommends: fonts-freefont-ttf
-Depends: libec0 (= ${binary:Version}),
+Depends: libecc0 (= ${binary:Version}),
          libecerecom0 (= ${binary:Version}),
          ${devel:Depends},
          ${misc:Depends},
@@ -73,10 +73,12 @@ Description: eC Core Runtime Library
  runtime library for applications
  written in eC.
 
-Package: libec0
+Package: libecc0
 Section: libs
 Architecture: armel armhf i386 powerpc
 Multi-Arch: same
+Replaces: libec0 (<= 0.44.02-1)
+Breaks: libec0 (<= 0.44.02-1)
 Pre-Depends: multiarch-support
 Depends: libecere0 (= ${binary:Version}),
          ${devel:Depends},
