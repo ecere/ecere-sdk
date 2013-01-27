@@ -136,7 +136,7 @@ private:
 
    void OnRedraw(Surface surface)
    {
-      if(type && (!editor || !editor.created))
+      if(type && (!editor || !editor.created || editor.anchor.left)) // ColorDropBox lets part of the DataBox show
       {
          char tempString[1024];
          if(type._vTbl[__ecereVMethodID_class_OnDisplay] == class(Instance)._vTbl[__ecereVMethodID_class_OnDisplay])

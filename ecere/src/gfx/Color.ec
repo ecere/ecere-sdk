@@ -36,13 +36,13 @@ public:
       return dropBox.Save();
    }
 
-   Window OnEdit(Window listBox, Window master, int x, int y, int w, int h, Window control)
+   Window OnEdit(Window dataBox, Window master, int x, int y, int w, int h, Window control)
    {
       Size size = { 0 };
       char * string = "";
       ColorDropBox colorDropBox 
       {
-         listBox, master = master, editText = true, //position = Point { x + 24, y }, /*clientSize.h = */size.h = h, size.w = w - 24,
+         dataBox, master = master, editText = true, //position = Point { x + 24, y }, /*clientSize.h = */size.h = h, size.w = w - 24,
          anchor = { left = 24, top = 0, right = 0, bottom = 0 },
          color = this, control = control
       };
