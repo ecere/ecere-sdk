@@ -559,9 +559,10 @@ endif
 ifndef OSX_TARGET
 ifndef WINDOWS_TARGET
 ifdef LINUX_TARGET
+	mkdir -p $(DESTLIBDIR)/ec
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecere$(SOV) $(DESTLIBDIR)/$(LP)ecere$(SOV)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecereCOM$(SOV) $(DESTLIBDIR)/$(LP)ecereCOM$(SOV)
-	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ec$(SOV) $(DESTLIBDIR)/$(LP)ec$(SOV)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SOV)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDA$(SOV) $(DESTLIBDIR)/$(LP)EDA$(SOV)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLite$(SOV) $(DESTLIBDIR)/$(LP)EDASQLite$(SOV)
 ifdef EDASQLiteCipher
@@ -569,7 +570,7 @@ ifdef EDASQLiteCipher
 endif
 	ln -sf $(LP)ecere$(SOV) $(DESTLIBDIR)/$(LP)ecere$(SO).0
 	ln -sf $(LP)ecereCOM$(SOV) $(DESTLIBDIR)/$(LP)ecereCOM$(SO).0
-	ln -sf $(LP)ec$(SOV) $(DESTLIBDIR)/$(LP)ec$(SO).0
+	ln -sf $(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SO).0
 	ln -sf $(LP)EDA$(SOV) $(DESTLIBDIR)/$(LP)EDA$(SO).0
 	ln -sf $(LP)EDASQLite$(SOV) $(DESTLIBDIR)/$(LP)EDASQLite$(SO).0
 ifdef EDASQLiteCipher
@@ -577,13 +578,12 @@ ifdef EDASQLiteCipher
 endif
 	ln -sf $(LP)ecere$(SOV) $(DESTLIBDIR)/$(LP)ecere$(SO)
 	ln -sf $(LP)ecereCOM$(SOV) $(DESTLIBDIR)/$(LP)ecereCOM$(SO)
-	ln -sf $(LP)ec$(SOV) $(DESTLIBDIR)/$(LP)ec$(SO)
+	ln -sf $(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SO)
 	ln -sf $(LP)EDA$(SOV) $(DESTLIBDIR)/$(LP)EDA$(SO)
 	ln -sf $(LP)EDASQLite$(SOV) $(DESTLIBDIR)/$(LP)EDASQLite$(SO)
-	mkdir -p $(DESTLIBDIR)/ec
 	ln -sf $(PREFIXLIBDIR)/$(LP)ecere$(SOV) $(DESTLIBDIR)/ec/$(LP)ecere$(SO)
 	ln -sf $(PREFIXLIBDIR)/$(LP)ecereCOM$(SOV) $(DESTLIBDIR)/ec/$(LP)ecereCOM$(SO)
-	ln -sf $(PREFIXLIBDIR)/$(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SO)
+#	ln -sf $(PREFIXLIBDIR)/ec/$(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SO)
 	ln -sf $(PREFIXLIBDIR)/$(LP)EDA$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA$(SO)
 	ln -sf $(PREFIXLIBDIR)/$(LP)EDASQLite$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO)
 ifdef EDASQLiteCipher
