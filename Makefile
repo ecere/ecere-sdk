@@ -639,8 +639,8 @@ ifdef DEBIAN_PACKAGE
 	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-samples/
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/ecere-sdk
 	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-sdk/
-	mkdir -p $(DESTDIR)$(prefix)/share/doc/libec0
-	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libec0/
+	mkdir -p $(DESTDIR)$(prefix)/share/doc/libecc0
+	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libecc0/
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/libecerecom0
 	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libecerecom0/
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/libeda0
