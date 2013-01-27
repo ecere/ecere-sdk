@@ -36,7 +36,7 @@ public void SetInPreCompiler(bool b) {inPreCompiler = b; }
 OldList * precompDefines;
 public void SetPrecompDefines(OldList * list) { precompDefines = list; }
 
-bool DummyMethod()
+public bool DummyMethod()
 {
    return true;
 }

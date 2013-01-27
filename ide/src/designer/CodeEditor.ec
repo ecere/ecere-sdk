@@ -6165,7 +6165,10 @@ class CodeEditor : Window
 
          f.Printf("\n");
 
-         if(!_class || (isInstance ? _class : _class.base)._vTbl[method.vid] == moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad]) // Temp Check for DefaultFunction
+         if(!_class || 
+            (
+               (isInstance ? _class : _class.base)._vTbl[method.vid] == moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad] ||
+               (isInstance ? _class : _class.base)._vTbl[method.vid] == DummyMethod)) // Temp Check for DefaultFunction
          {
             if(returnType && returnType.kind == classType && !strcmp(returnType._class.string, "bool"))
             {
