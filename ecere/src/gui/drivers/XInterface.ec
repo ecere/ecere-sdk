@@ -1240,10 +1240,10 @@ class XInterface : Interface
       XCloseDisplay(xGlobalDisplay);
       xGlobalDisplay = null;
 
-      if(joystickFD[0]) close(joystickFD[0]);
-      if(joystickFD[1]) close(joystickFD[1]);
-      if(joystickFD[2]) close(joystickFD[2]);
-      if(joystickFD[3]) close(joystickFD[3]);
+      if(joystickFD[0] != -1) close(joystickFD[0]);
+      if(joystickFD[1] != -1) close(joystickFD[1]);
+      if(joystickFD[2] != -1) close(joystickFD[2]);
+      if(joystickFD[3] != -1) close(joystickFD[3]);
    }
 
    #define DBLCLICK_DELAY  300   // 0.3 second
