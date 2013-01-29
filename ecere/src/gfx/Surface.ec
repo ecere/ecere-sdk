@@ -416,7 +416,7 @@ public:
          float inc = 1.0f/(height-1);
          float percent = 0;
          int start;
-         ColorAlpha color;
+         ColorAlpha color = 0;
          int firstPixel = (direction == horizontal) ? x1 : y1;
          int lastPixel = (direction == horizontal) ? x2 : y2;
          int boxLeft = (direction == horizontal) ? box.left : box.top;
