@@ -242,7 +242,7 @@ static void ReplaceClassMembers(Expression exp, Class _class)
          Property prop = eClass_FindProperty(_class, id.string, privateModule);
          Method method = null;
          DataMember member = null;
-         ClassProperty classProp;
+         ClassProperty classProp = null;
          if(!prop)
          {
             method = eClass_FindMethod(_class, id.string, privateModule);

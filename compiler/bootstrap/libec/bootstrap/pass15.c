@@ -1487,7 +1487,7 @@ if(!symbol && ((!id->_class || (id->_class->name && !strcmp(id->_class->name, "p
 struct __ecereNameSpace__ecere__com__Property * prop = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, id->string, privateModule);
 struct __ecereNameSpace__ecere__com__Method * method = (((void *)0));
 struct __ecereNameSpace__ecere__com__DataMember * member = (((void *)0));
-struct __ecereNameSpace__ecere__com__ClassProperty * classProp;
+struct __ecereNameSpace__ecere__com__ClassProperty * classProp = (((void *)0));
 
 if(!prop)
 {
