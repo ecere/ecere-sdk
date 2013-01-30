@@ -1384,13 +1384,14 @@ static FileDesc FileFind(char * path, char * extensions)
                }
                strcpy(file.name,de->d_name);
                strcat(file.path, file.name);
-               stat(file.path, &s);
-               file.stats.attribs = (s.st_mode&S_IFDIR) ? FileAttribs { isDirectory = true } : FileAttribs { isFile = true };
-               file.stats.size = s.st_size;
-               file.stats.accessed = s.st_atime;
-               file.stats.modified = s.st_mtime;
-               file.stats.created = s.st_ctime;
-          
+               if(!stat(file.path, &s))
+               {
+                  file.stats.attribs = (s.st_mode&S_IFDIR) ? FileAttribs { isDirectory = true } : FileAttribs { isFile = true };
+                  file.stats.size = s.st_size;
+                  file.stats.accessed = s.st_atime;
+                  file.stats.modified = s.st_mtime;
+                  file.stats.created = s.st_ctime;
+               }
                strcpy(d.name, path);
 
                result = file;
@@ -1658,13 +1659,15 @@ private class FileDesc : struct
                if(d.name[0] && d.name[1])
                   strcat(path, DIR_SEPS);
                strcat(path, name);
-               stat(path, &s);
-               stats.attribs = FileAttribs { };
-               stats.attribs = (s.st_mode&S_IFDIR) ? FileAttribs { isDirectory = true } : FileAttribs { isFile = true };
-               stats.size = s.st_size;
-               stats.accessed = s.st_atime;
-               stats.modified = s.st_mtime;
-               stats.created = s.st_ctime;
+               if(!stat(path, &s))
+               {
+                  stats.attribs = FileAttribs { };
+                  stats.attribs = (s.st_mode&S_IFDIR) ? FileAttribs { isDirectory = true } : FileAttribs { isFile = true };
+                  stats.size = s.st_size;
+                  stats.accessed = s.st_atime;
+                  stats.modified = s.st_mtime;
+                  stats.created = s.st_ctime;
+               }
                result = this;
             }
             else

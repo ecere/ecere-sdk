@@ -783,7 +783,7 @@ private:
    bool SelectFile(char * fileName, FileDialogSelectFrom from, bool isOK)
    {
       bool result = true;
-      FileAttribs exists;
+      FileAttribs exists = 0;
       char * wildcardPointer = strstr(fileName, "*");
       
       if(wildcardPointer)
