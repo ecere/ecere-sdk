@@ -719,8 +719,8 @@ class Debugger
             {
                char * s;
                char title[MAX_LOCATION];
-
-               sprintf(title, $"Provide source file location for %s", (s = CopySystemPath(frame.file)));
+               title[sizeof(title)-1] = 0;
+               snprintf(title, sizeof(title), $"Provide source file location for %s", (s = CopySystemPath(frame.file)));
                delete s;
                if(SourceDirDialog(title, ide.workspace.projectDir, frame.file, sourceDir))
                {
@@ -789,12 +789,13 @@ class Debugger
    {
       bool returnedExitCode = false;
       char verboseExitCode[128];
+      verboseExitCode[sizeof(verboseExitCode)-1] = 0;
       
       ChangeState(loaded); // this state change seems to be superfluous, might be in case of gdb crash
       targetProcessId = 0;
 
       if(code)
-         sprintf(verboseExitCode, $" with exit code %s", code);
+         snprintf(verboseExitCode, sizeof(verboseExitCode), $" with exit code %s", code);
       else
          verboseExitCode[0] = '\0';
       
@@ -1202,8 +1203,9 @@ class Debugger
          {
             char title[MAX_LOCATION];
             char directory[MAX_LOCATION];
+            title[sizeof(title)-1] = 0;
             StripLastDirectory(absolutePath, directory);
-            sprintf(title, $"Provide source files location directory for %s", absolutePath);
+            snprintf(title, sizeof(title), $"Provide source files location directory for %s", absolutePath);
             while(true)
             {
                String srcDir = null;
@@ -1413,10 +1415,10 @@ class Debugger
       {
          // TODO: Improve this limit
          static char string[MAX_F_STRING*3];
-         
          va_list args;
+         string[sizeof(string)-1] = 0;
          va_start(args, format);
-         vsprintf(string, format, args);
+         vsnprintf(string, sizeof(string), format, args);
          va_end(args);
          
          gdbReady = false;
@@ -1512,8 +1514,9 @@ class Debugger
                      int lineNumber;
                      bool moduleLoadBlock = false;
                      File f;
+                     name[sizeof(name)-1] = 0;
                      ReplaceSpaces(fixedModuleName, ide.project.moduleName);
-                     sprintf(name, "%s.main.ec", fixedModuleName);
+                     snprintf(name, sizeof(name),"%s.main.ec", fixedModuleName);
                      strcpy(path, ide.workspace.projectDir);
                      PathCatSlash(path, objDir.dir);
                      PathCatSlash(path, name);
@@ -1874,7 +1877,7 @@ class Debugger
          SetEnvironment(e.name, e.string);
       }
 
-      sprintf(command, "gdb -n -silent --interpreter=mi2"); //-async //\"%s\"
+      strcpy(command, "gdb -n -silent --interpreter=mi2"); //-async //\"%s\"
       gdbTimer.Start();
       gdbHandle = DualPipeOpen(PipeOpenMode { output = 1, error = 2, input = 1 }, command);
       if(!gdbHandle)
@@ -2087,6 +2090,7 @@ class Debugger
       if(wh.expression)
       {
          char watchmsg[MAX_F_STRING];
+         watchmsg[sizeof(watchmsg)-1] = 0;
          if(state == stopped && !codeEditor)
             wh.value = CopyString($"No source file found for selected frame");
          //if(codeEditor && state == stopped || state != stopped)
@@ -2259,11 +2263,11 @@ class Debugger
                switch(exp.type)
                {
                   case symbolErrorExp:
-                     sprintf(watchmsg, $"Symbol \"%s\" not found", exp.identifier.string);
+                     snprintf(watchmsg, sizeof(watchmsg), $"Symbol \"%s\" not found", exp.identifier.string);
                      break;
                   case structMemberSymbolErrorExp:
                      // todo get info as in next case (ExpClassMemberSymbolError)
-                     sprintf(watchmsg, $"Error: Struct member not found for \"%s\"", wh.expression);
+                     snprintf(watchmsg, sizeof(watchmsg), $"Error: Struct member not found for \"%s\"", wh.expression);
                      break;
                   case classMemberSymbolErrorExp:
                      {
@@ -2283,32 +2287,32 @@ class Debugger
                               _class = classSym ? classSym.registered : null;
                            }
                            if(_class)
-                              sprintf(watchmsg, $"Member \"%s\" not found in class \"%s\"", memberID ? memberID.string : "", _class.name);
+                              snprintf(watchmsg, sizeof(watchmsg), $"Member \"%s\" not found in class \"%s\"", memberID ? memberID.string : "", _class.name);
                            else
-                              sprintf(watchmsg, "Member \"%s\" not found in unregistered class? (Should never get this message)", memberID ? memberID.string : "");
+                              snprintf(watchmsg, sizeof(watchmsg), "Member \"%s\" not found in unregistered class? (Should never get this message)", memberID ? memberID.string : "");
                         }
                         else
-                           sprintf(watchmsg, "Member \"%s\" not found in no type? (Should never get this message)", memberID ? memberID.string : "");
+                           snprintf(watchmsg, sizeof(watchmsg), "Member \"%s\" not found in no type? (Should never get this message)", memberID ? memberID.string : "");
                      }
                      break;
                   case memoryErrorExp:
                      // Need to ensure when set to memoryErrorExp, constant is set
-                     sprintf(watchmsg, $"Memory can't be read at %s", /*(exp.type == constantExp) ? */exp.constant /*: null*/);
+                     snprintf(watchmsg, sizeof(watchmsg), $"Memory can't be read at %s", /*(exp.type == constantExp) ? */exp.constant /*: null*/);
                      break;
                   case dereferenceErrorExp:
-                     sprintf(watchmsg, $"Dereference failure for \"%s\"", wh.expression);
+                     snprintf(watchmsg, sizeof(watchmsg), $"Dereference failure for \"%s\"", wh.expression);
                      break;
                   case unknownErrorExp:
-                     sprintf(watchmsg, $"Unknown error for \"%s\"", wh.expression);
+                     snprintf(watchmsg, sizeof(watchmsg), $"Unknown error for \"%s\"", wh.expression);
                      break;
                   case noDebuggerErrorExp:
-                     sprintf(watchmsg, $"Debugger required for symbol evaluation in \"%s\"", wh.expression);
+                     snprintf(watchmsg, sizeof(watchmsg), $"Debugger required for symbol evaluation in \"%s\"", wh.expression);
                      break;
                   case debugStateErrorExp:
-                     sprintf(watchmsg, $"Incorrect debugger state for symbol evaluation in \"%s\"", wh.expression);
+                     snprintf(watchmsg, sizeof(watchmsg), $"Incorrect debugger state for symbol evaluation in \"%s\"", wh.expression);
                      break;
                   case 0:
-                     sprintf(watchmsg, $"Null type for \"%s\"", wh.expression);
+                     snprintf(watchmsg, sizeof(watchmsg), $"Null type for \"%s\"", wh.expression);
                      break;
                   case constantExp:
                   case stringExp:
@@ -2329,6 +2333,7 @@ class Debugger
                            //char temp[MAX_F_STRING * 32];
 
                            ExpressionType evalError = dummyExp;
+                           value[sizeof(value)-1] = 0;
                            /*if(exp.expType.kind == arrayType)
                               sprintf(temp, "(char*)0x%x", exp.address);
                            else
@@ -2337,7 +2342,7 @@ class Debugger
                            //evaluation = Debugger::EvaluateExpression(temp, &evalError);
                            address = strtoul(exp.constant, null, 0);
                            //printf("%x\n", address);
-                           sprintf(value, "0x%08x ", address);
+                           snprintf(value, sizeof(value), "0x%08x ", address);
                            
                            if(!address)
                               strcat(value, $"Null string");
@@ -2407,6 +2412,7 @@ class Debugger
                         int signedValue;
                         char charString[5];
                         char string[256];
+                        string[sizeof(string)-1] = 0;
 
                         if(exp.constant[0] == '\'')
                         {
@@ -2447,24 +2453,24 @@ class Debugger
                         charString[0] = 0;
                         UTF32toUTF8Len(&value, 1, charString, 5);
                         if(value == '\0')
-                           sprintf(string, "\'\\0' (0)");
+                           snprintf(string, sizeof(string), "\'\\0' (0)");
                         else if(value == '\t')
-                           sprintf(string, "\'\\t' (%d)", value);
+                           snprintf(string, sizeof(string), "\'\\t' (%d)", value);
                         else if(value == '\n')
-                           sprintf(string, "\'\\n' (%d)", value);
+                           snprintf(string, sizeof(string), "\'\\n' (%d)", value);
                         else if(value == '\r')
-                           sprintf(string, "\'\\r' (%d)", value);
+                           snprintf(string, sizeof(string), "\'\\r' (%d)", value);
                         else if(wh.type.kind == charType && wh.type.isSigned)
-                           sprintf(string, "\'%s\' (%d)", charString, signedValue);
+                           snprintf(string, sizeof(string), "\'%s\' (%d)", charString, signedValue);
                         else if(value > 256 || wh.type.kind != charType)
                         {
                            if(value > 0x10FFFF || !GetCharCategory(value))
-                              sprintf(string, $"Invalid Unicode Keypoint (0x%08X)", value);
+                              snprintf(string, sizeof(string), $"Invalid Unicode Keypoint (0x%08X)", value);
                            else
-                              sprintf(string, "\'%s\' (U+%04X)", charString, value);
+                              snprintf(string, sizeof(string), "\'%s\' (U+%04X)", charString, value);
                         }
                         else
-                           sprintf(string, "\'%s\' (%d)", charString, value);
+                           snprintf(string, sizeof(string), "\'%s\' (%d)", charString, value);
                         
                         wh.value = CopyString(string);
                         result = true;
@@ -2485,16 +2491,16 @@ class Debugger
                      {
                         char tempString[256];
                         if(exp.member.memberType == propertyMember)
-                           sprintf(watchmsg, $"Missing property evaluation support for \"%s\"", wh.expression);
+                           snprintf(watchmsg, sizeof(watchmsg), $"Missing property evaluation support for \"%s\"", wh.expression);
                         else
-                           sprintf(watchmsg, $"Evaluation failed for \"%s\" of type \"%s\"", wh.expression, 
+                           snprintf(watchmsg, sizeof(watchmsg), $"Evaluation failed for \"%s\" of type \"%s\"", wh.expression, 
                                  exp.type.OnGetString(tempString, null, null));
                      }
                      break;
                }
             }
             else
-               sprintf(watchmsg, $"Invalid expression: \"%s\"", wh.expression);
+               snprintf(watchmsg, sizeof(watchmsg), $"Invalid expression: \"%s\"", wh.expression);
             if(exp) FreeExpression(exp);
 
             
@@ -3791,7 +3797,8 @@ class Breakpoint : struct
    char * LocationToString()
    {
       char location[MAX_LOCATION+20];
-      sprintf(location, "%s:%d", relativeFilePath, line);
+      location[sizeof(location)-1] = 0;
+      snprintf(location, sizeof(location), "%s:%d", relativeFilePath, line);
 #if defined(__WIN32__)
       ChangeCh(location, '/', '\\');
 #endif

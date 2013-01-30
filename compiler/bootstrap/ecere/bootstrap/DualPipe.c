@@ -443,7 +443,7 @@ struct __ecereNameSpace__ecere__sys__DualPipe * __ecerePointer___ecereNameSpace_
 DualPipe_Wait(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp);
 }
 
-extern int vsprintf(char * , const char * , __builtin_va_list);
+extern int vsnprintf(char * , int, const char * , __builtin_va_list);
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpen(unsigned int mode, char *  commandLine);
 
@@ -452,8 +452,9 @@ struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__Du
 char commandLine[1025];
 va_list args;
 
+commandLine[sizeof commandLine - 1] = (char)0;
 __builtin_va_start(args, command);
-vsprintf(commandLine, command, args);
+vsnprintf(commandLine, sizeof commandLine, command, args);
 __builtin_va_end(args);
 return __ecereNameSpace__ecere__sys__DualPipeOpen(mode, commandLine);
 }
@@ -478,8 +479,9 @@ struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__Du
 char commandLine[1025];
 va_list args;
 
+commandLine[sizeof commandLine - 1] = (char)0;
 __builtin_va_start(args, command);
-vsprintf(commandLine, command, args);
+vsnprintf(commandLine, sizeof commandLine, command, args);
 __builtin_va_end(args);
 return __ecereNameSpace__ecere__sys__DualPipeOpenEnv(mode, env, commandLine);
 }

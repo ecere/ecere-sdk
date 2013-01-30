@@ -287,6 +287,10 @@ size_t fread(void * ptr, size_t size, size_t nmemb, FILE * stream);
 
 size_t fwrite(const void * ptr, size_t size, size_t nmemb, FILE * stream);
 
+int vsnprintf(char *, size_t, const char *, ...);
+
+int snprintf(char * str, size_t, const char * format, ...);
+
 int fseek(FILE * stream, long offset, int whence);
 
 long ftell(FILE * stream);
@@ -447,8 +451,6 @@ void __ecereNameSpace__ecere__sys__GetFreeSpace(char * path, struct __ecereNameS
 System_GetFreeSpace(path, size);
 }
 
-extern int vsprintf(char * , const char * , __builtin_va_list);
-
 void __ecereNameSpace__ecere__sys__Log(char *  text);
 
 void __ecereNameSpace__ecere__sys__Logf(char * format, ...)
@@ -456,8 +458,9 @@ void __ecereNameSpace__ecere__sys__Logf(char * format, ...)
 va_list args;
 char string[1025];
 
+string[sizeof string - 1] = (char)0;
 __builtin_va_start(args, format);
-vsprintf(string, format, args);
+vsnprintf(string, sizeof string, format, args);
 __ecereNameSpace__ecere__sys__Log(string);
 __builtin_va_end(args);
 }

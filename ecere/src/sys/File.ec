@@ -571,8 +571,9 @@ public:
       {
          char text[MAX_F_STRING];
          va_list args;
+         text[sizeof(text)-1] = 0;
          va_start(args, format);
-         vsprintf(text, format, args);
+         vsnprintf(text, sizeof(text), format, args);
          if(Puts(text))
             result = strlen(text);
          va_end(args);

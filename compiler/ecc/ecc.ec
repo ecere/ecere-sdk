@@ -311,7 +311,7 @@ class CompilerApp : Application
          DualPipe cppOutput;
          // TODO: Improve this
          char command[MAX_F_STRING*3];
-
+         command[sizeof(command)-1] = 0;
          SetGlobalData(&globalData);
          SetExcludedSymbols(&_excludedSymbols);
          SetGlobalContext(globalContext);
@@ -338,8 +338,7 @@ class CompilerApp : Application
             globalData.functions.Add((BTNode)data);
          }
 
-         sprintf(command, "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
-
+         snprintf(command, sizeof(command), "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
          if((cppOutput = DualPipeOpen({ output = true }, command)))
          {
             char impFile[MAX_LOCATION];

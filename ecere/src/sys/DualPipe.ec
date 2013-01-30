@@ -58,8 +58,9 @@ public DualPipe DualPipeOpenf(PipeOpenMode mode, char * command, ...)
 {
    char commandLine[MAX_F_STRING];
    va_list args;
+   commandLine[sizeof(commandLine)-1] = 0;
    va_start(args, command);
-   vsprintf(commandLine, command, args);
+   vsnprintf(commandLine, sizeof(commandLine), command, args);
    va_end(args);
    return DualPipeOpen(mode, commandLine);
 }
@@ -77,8 +78,9 @@ public DualPipe DualPipeOpenEnvf(PipeOpenMode mode, char * env, char * command, 
 {
    char commandLine[MAX_F_STRING];
    va_list args;
+   commandLine[sizeof(commandLine)-1] = 0;
    va_start(args, command);
-   vsprintf(commandLine, command, args);
+   vsnprintf(commandLine, sizeof(commandLine), command, args);
    va_end(args);
    return DualPipeOpenEnv(mode, env, commandLine);
 }

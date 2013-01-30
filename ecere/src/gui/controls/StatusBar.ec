@@ -211,21 +211,17 @@ public:
    {
       if(this)
       {
+         delete text;
          if(format)
          {
             char tempText[MAX_F_STRING];
-            int len;
             va_list args;
+            tempText[sizeof(tempText)-1] = 0;
             va_start(args, format);
-            vsprintf(tempText, format, args);
+            vsnprintf(tempText, sizeof(tempText), format, args);
             va_end(args);
-            len = strlen(tempText);
-
-            text = renew text char[len + 1];
-            CopyBytes(text, tempText, len + 1);
+            text = CopyString(tempText);
          }
-         else
-            delete text;
          if(_statusBar)
             _statusBar.Update(null);
       }

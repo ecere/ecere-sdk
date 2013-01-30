@@ -6959,13 +6959,12 @@ public:
          {
             char caption[MAX_F_STRING];
             va_list args;
+            caption[sizeof(caption)-1] = 0;
             va_start(args, format);
-            vsprintf(caption, format, args);
+            vsnprintf(caption, sizeof(caption), format, args);
             va_end(args);
 
-            this.caption = new char[strlen(caption)+1];
-            if(this.caption)
-               strcpy(this.caption, caption);
+            this.caption = CopyString(caption);
          }
          if(created)
             UpdateCaption();

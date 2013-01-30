@@ -694,7 +694,7 @@ char *  fullName;
 char __ecere_padding[20];
 } __attribute__ ((gcc_struct));
 
-extern int sprintf(char * , char * , ...);
+extern int snprintf(char * , int, char * , ...);
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpen(unsigned int mode, char *  commandLine);
 
@@ -1006,6 +1006,7 @@ else
 struct __ecereNameSpace__ecere__com__Instance * cppOutput;
 char command[3075LL];
 
+command[sizeof command - 1] = (char)0;
 SetGlobalData(&globalData);
 SetExcludedSymbols(&_excludedSymbols);
 SetGlobalContext(globalContext);
@@ -1029,7 +1030,7 @@ struct GlobalData * data = (data = __ecereNameSpace__ecere__com__eInstance_New(_
 data->key = (unsigned int)data->fullName;
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalData.functions, (struct __ecereNameSpace__ecere__sys__BTNode *)data);
 }
-sprintf(command, "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
+snprintf(command, sizeof command, "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
 if((cppOutput = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(0x1))), command)))
 {
 char impFile[797];

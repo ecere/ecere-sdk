@@ -29,7 +29,7 @@ default extern Platform runtimePlatform;
 public define DIR_SEP   = (GetRuntimePlatform() == win32) ? '\\' : '/';
 public define DIR_SEPS  = (GetRuntimePlatform() == win32) ? "\\" : "/";
 
-// Maximum length for a vsprintf string
+// Maximum length for a vsnprintf string
 public define MAX_F_STRING = 1025;
 
 // Maximum length for a directories and filenames strings

@@ -206,8 +206,9 @@ public void Logf(char * format, ...)
 {
    va_list args;
    char string[MAX_F_STRING];
+   string[sizeof(string)-1] = 0;
    va_start(args, format);
-   vsprintf(string,format,args);
+   vsnprintf(string, sizeof(string), format, args);
    Log(string);
    va_end(args);
 }

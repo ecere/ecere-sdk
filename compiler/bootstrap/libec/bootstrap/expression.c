@@ -1023,6 +1023,10 @@ size_t fread(void * ptr, size_t size, size_t nmemb, FILE * stream);
 
 size_t fwrite(const void * ptr, size_t size, size_t nmemb, FILE * stream);
 
+int vsnprintf(char *, size_t, const char *, ...);
+
+int snprintf(char * str, size_t, const char * format, ...);
+
 int fseek(FILE * stream, long offset, int whence);
 
 long ftell(FILE * stream);

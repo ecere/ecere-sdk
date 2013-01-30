@@ -287,6 +287,10 @@ size_t fread(void * ptr, size_t size, size_t nmemb, FILE * stream);
 
 size_t fwrite(const void * ptr, size_t size, size_t nmemb, FILE * stream);
 
+int vsnprintf(char *, size_t, const char *, ...);
+
+int snprintf(char * str, size_t, const char * format, ...);
+
 int fseek(FILE * stream, long offset, int whence);
 
 long ftell(FILE * stream);
@@ -670,8 +674,6 @@ struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ece
 return ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int type, uint64 start, uint64 length, unsigned int wait))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Lock])(this, 0, start, length, wait);
 }
 
-extern int vsprintf(char * , const char * , __builtin_va_list);
-
 extern int strlen(const char * );
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
@@ -686,8 +688,9 @@ if(format)
 char text[1025];
 va_list args;
 
+text[sizeof text - 1] = (char)0;
 __builtin_va_start(args, format);
-vsprintf(text, format, args);
+vsnprintf(text, sizeof text, format, args);
 if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(this, text))
 result = strlen(text);
 __builtin_va_end(args);

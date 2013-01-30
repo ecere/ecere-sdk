@@ -286,6 +286,10 @@ size_t fread(void * ptr, size_t size, size_t nmemb, FILE * stream);
 
 size_t fwrite(const void * ptr, size_t size, size_t nmemb, FILE * stream);
 
+int vsnprintf(char *, size_t, const char *, ...);
+
+int snprintf(char * str, size_t, const char * format, ...);
+
 int fseek(FILE * stream, long offset, int whence);
 
 long ftell(FILE * stream);
@@ -5073,8 +5077,10 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strncpy", "char * strncp
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("memcpy", "void * memcpy(void *, const void *, uint size)", memcpy, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("memmove", "void * memmove(void *, const void *, uint size)", memmove, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("sprintf", "int sprintf(char *, char *, ...)", sprintf, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("snprintf", "int sprintf(char *, int, char *, ...)", snprintf, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("printf", "int printf(char *, ...)", printf, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("vsprintf", "int vsprintf(char*, const char*, __builtin_va_list)", vsprintf, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("vsnprintf", "int vsnprintf(char*, int, const char*, __builtin_va_list)", vsnprintf, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("puts", "int puts(char *)", puts, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("fputs", "int fputs(char *, void * stream)", fputs, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isalnum", "int isalnum(int c)", isalnum, module, 4);

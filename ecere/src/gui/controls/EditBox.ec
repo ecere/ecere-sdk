@@ -5304,8 +5304,9 @@ public:
       {
          char temp[MAX_F_STRING];
          va_list args;
+         temp[sizeof(temp)-1] = 0;
          va_start(args, format);
-         vsprintf(temp, format, args);
+         vsnprintf(temp, sizeof(temp), format, args);
          va_end(args);
          PutS(temp);
       }
@@ -5321,8 +5322,9 @@ public:
          {
             char temp[MAX_F_STRING];
             va_list args;
+            temp[sizeof(temp)-1] = 0;
             va_start(args, format);
-            vsprintf(temp, format, args);
+            vsnprintf(temp, sizeof(temp), format, args);
             va_end(args);
 
             AddS(temp);

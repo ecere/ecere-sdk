@@ -5975,8 +5975,12 @@ static void LoadCOM(Module module)
 
    // --- Stdio ---
    eSystem_RegisterFunction("sprintf", "int sprintf(char *, char *, ...)", sprintf, module, baseSystemAccess);
+   // TODO: Replace int with size_t when eC recognizes it for 64 bit port
+   eSystem_RegisterFunction("snprintf", "int sprintf(char *, int, char *, ...)", snprintf, module, baseSystemAccess);
    eSystem_RegisterFunction("printf", "int printf(char *, ...)", printf, module, baseSystemAccess);
    eSystem_RegisterFunction("vsprintf", "int vsprintf(char*, const char*, __builtin_va_list)", vsprintf, module, baseSystemAccess);
+   // TODO: Replace int with size_t when eC recognizes it for 64 bit port
+   eSystem_RegisterFunction("vsnprintf", "int vsnprintf(char*, int, const char*, __builtin_va_list)", vsnprintf, module, baseSystemAccess);
    eSystem_RegisterFunction("puts", "int puts(char *)", puts, module, baseSystemAccess);
    eSystem_RegisterFunction("fputs", "int fputs(char *, void * stream)", fputs, module, baseSystemAccess);
 

@@ -44,8 +44,9 @@ class DynamicString : Array<char>
       // TODO: improve this to vsprinf directly in the Array<char> instead of calling concat
       char string[MAX_F_STRING];
       va_list args;
+      string[sizeof(string)-1] = 0;
       va_start(args, format);
-      vsprintf(string, format, args);
+      vsnprintf(string, sizeof(string), format, args);
       va_end(args);
       concat(string);
    }

@@ -303,8 +303,9 @@ bool System_Execute(char * env, char * command, va_list args)
 {
    bool result = false;
    char commandLine[MAX_F_STRING];
+   commandLine[sizeof(commandLine)-1] = 0;
+   vsnprintf(commandLine, sizeof(commandLine)-1, command, args);
 
-   vsprintf(commandLine, command, args);
 #ifndef __WIN32__
    {
       strcat(commandLine, "&");
@@ -332,13 +333,14 @@ bool System_ShellOpen(char * fileName, va_list args)
    bool result = false;
    char filePath[MAX_F_STRING];
    int len;
-   
+   filePath[sizeof(filePath)-1] = 0;
 #if defined(__WIN32__)
    filePath[0] = '"';
-   vsprintf(filePath+1, fileName, args);
+   vsnprintf(filePath+1, sizeof(filePath)-2,fileName, args);
 #else
-   vsprintf(filePath, fileName, args);
+   vsnprintf(filePath, sizeof(filePath), fileName, args);
 #endif
+
    len = strlen(filePath);
 #if defined(__WIN32__)
    filePath[len] = '"';

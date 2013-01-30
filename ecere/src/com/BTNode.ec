@@ -6,6 +6,7 @@ import "instance"
 
 public enum TreePrintStyle { inOrder, postOrder, preOrder, depthOrder };
 
+// WARNING: This function has no boundary check!
 public void strcatf(char * string, char * format, ...)
 {
    va_list args;
