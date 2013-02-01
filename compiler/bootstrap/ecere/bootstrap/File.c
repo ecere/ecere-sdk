@@ -688,9 +688,9 @@ if(format)
 char text[1025];
 va_list args;
 
-text[sizeof text - 1] = (char)0;
 __builtin_va_start(args, format);
 vsnprintf(text, sizeof text, format, args);
+text[sizeof text - 1] = (char)0;
 if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(this, text))
 result = strlen(text);
 __builtin_va_end(args);

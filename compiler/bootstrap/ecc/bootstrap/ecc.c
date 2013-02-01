@@ -1006,7 +1006,6 @@ else
 struct __ecereNameSpace__ecere__com__Instance * cppOutput;
 char command[3075LL];
 
-command[sizeof command - 1] = (char)0;
 SetGlobalData(&globalData);
 SetExcludedSymbols(&_excludedSymbols);
 SetGlobalContext(globalContext);
@@ -1031,6 +1030,7 @@ data->key = (unsigned int)data->fullName;
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalData.functions, (struct __ecereNameSpace__ecere__sys__BTNode *)data);
 }
 snprintf(command, sizeof command, "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
+command[sizeof command - 1] = (char)0;
 if((cppOutput = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(0x1))), command)))
 {
 char impFile[797];

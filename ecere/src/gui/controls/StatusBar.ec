@@ -216,9 +216,9 @@ public:
          {
             char tempText[MAX_F_STRING];
             va_list args;
-            tempText[sizeof(tempText)-1] = 0;
             va_start(args, format);
             vsnprintf(tempText, sizeof(tempText), format, args);
+            tempText[sizeof(tempText)-1] = 0;
             va_end(args);
             text = CopyString(tempText);
          }

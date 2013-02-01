@@ -6959,9 +6959,9 @@ public:
          {
             char caption[MAX_F_STRING];
             va_list args;
-            caption[sizeof(caption)-1] = 0;
             va_start(args, format);
             vsnprintf(caption, sizeof(caption), format, args);
+            caption[sizeof(caption)-1] = 0;
             va_end(args);
 
             this.caption = CopyString(caption);

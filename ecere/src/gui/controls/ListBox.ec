@@ -760,9 +760,9 @@ public:
          DataRow row;
          char string[MAX_F_STRING];
          va_list args;
-         string[sizeof(string)-1] = 0;
          va_start(args, format);
          vsnprintf(string, sizeof(string), format, args);
+         string[sizeof(string)-1] = 0;
          va_end(args);
 
          row = AddRow();
@@ -1450,10 +1450,10 @@ public:
 
          char string[MAX_F_STRING];
          va_list args;
-         string[sizeof(string)-1] = 0;
 
          va_start(args, format);
          vsnprintf(string, sizeof(string), format ? format : "", args);
+         string[sizeof(string)-1] = 0;
          va_end(args);
 
          row = AddRow();

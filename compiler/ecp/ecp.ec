@@ -1461,7 +1461,6 @@ class PrecompApp : Application
          // TODO: Improve this
          char command[MAX_F_STRING*3];
          DualPipe cppOutput;
-         command[sizeof(command)-1] = 0;
          
          SetGlobalContext(globalContext);
          SetTopContext(globalContext);
@@ -1491,6 +1490,7 @@ class PrecompApp : Application
          }
          
          snprintf(command, sizeof(command), "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
+         command[sizeof(command)-1] = 0;
 
          if((cppOutput = DualPipeOpen({ output = true }, command)))
          {

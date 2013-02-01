@@ -458,9 +458,9 @@ void __ecereNameSpace__ecere__sys__Logf(char * format, ...)
 va_list args;
 char string[1025];
 
-string[sizeof string - 1] = (char)0;
 __builtin_va_start(args, format);
 vsnprintf(string, sizeof string, format, args);
+string[sizeof string - 1] = (char)0;
 __ecereNameSpace__ecere__sys__Log(string);
 __builtin_va_end(args);
 }

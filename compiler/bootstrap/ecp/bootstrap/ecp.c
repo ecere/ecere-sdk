@@ -2648,7 +2648,6 @@ else
 char command[3075LL];
 struct __ecereNameSpace__ecere__com__Instance * cppOutput;
 
-command[sizeof command - 1] = (char)0;
 SetGlobalContext(globalContext);
 SetTopContext(globalContext);
 SetCurrentContext(globalContext);
@@ -2674,6 +2673,7 @@ if(__ecereNameSpace__ecere__sys__FileExists(outputFilePath))
 __ecereNameSpace__ecere__sys__DeleteFile(outputFilePath);
 }
 snprintf(command, sizeof command, "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
+command[sizeof command - 1] = (char)0;
 if((cppOutput = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(0x1))), command)))
 {
 int exitCode;

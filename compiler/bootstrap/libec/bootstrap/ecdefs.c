@@ -1650,7 +1650,6 @@ if(!parsingType)
 va_list args;
 char string[10000];
 
-string[sizeof string - 1] = (char)0;
 if(yylloc.start.included)
 {
 __ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof string);
@@ -1665,6 +1664,7 @@ printf(string);
 printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, ":%d:%d: error: ", (((void *)0))), yylloc.start.line, yylloc.start.charPos);
 __builtin_va_start(args, format);
 vsnprintf(string, sizeof string, format, args);
+string[sizeof string - 1] = (char)0;
 __builtin_va_end(args);
 fputs(string, (bsl_stdout()));
 ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application + 300)))->exitCode = 1;
@@ -1690,7 +1690,6 @@ if(inCompiler)
 va_list args;
 char string[10000];
 
-string[sizeof string - 1] = (char)0;
 if(yylloc.start.included)
 {
 __ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof string);
@@ -1705,6 +1704,7 @@ printf(string);
 printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, ":%d:%d: warning: ", (((void *)0))), yylloc.start.line, yylloc.start.charPos);
 __builtin_va_start(args, format);
 vsnprintf(string, sizeof string, format, args);
+string[sizeof string - 1] = (char)0;
 __builtin_va_end(args);
 fputs(string, (bsl_stdout()));
 numWarnings++;

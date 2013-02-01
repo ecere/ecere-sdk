@@ -294,9 +294,9 @@ class LogBox : EditBox
    {
       char string[MAX_F_STRING*10];
       va_list args;
-      string[sizeof(string)-1] = 0;
       va_start(args, format);
       vsnprintf(string, sizeof(string), format, args);
+      string[sizeof(string)-1] = 0;
       va_end(args);
 
       LogRaw(string);
@@ -369,9 +369,9 @@ class LogBox : EditBox
    {
       char string[MAX_F_STRING*10];
       va_list args;
-      string[sizeof(string)-1] = 0;
       va_start(args, format);
       vsnprintf(string, sizeof(string), format, args);
+      string[sizeof(string)-1] = 0;
       va_end(args);
 
       Tell(string);

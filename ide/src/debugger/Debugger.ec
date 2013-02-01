@@ -719,8 +719,8 @@ class Debugger
             {
                char * s;
                char title[MAX_LOCATION];
-               title[sizeof(title)-1] = 0;
                snprintf(title, sizeof(title), $"Provide source file location for %s", (s = CopySystemPath(frame.file)));
+               title[sizeof(title)-1] = 0;
                delete s;
                if(SourceDirDialog(title, ide.workspace.projectDir, frame.file, sourceDir))
                {
@@ -789,13 +789,15 @@ class Debugger
    {
       bool returnedExitCode = false;
       char verboseExitCode[128];
-      verboseExitCode[sizeof(verboseExitCode)-1] = 0;
       
       ChangeState(loaded); // this state change seems to be superfluous, might be in case of gdb crash
       targetProcessId = 0;
 
       if(code)
+      {
          snprintf(verboseExitCode, sizeof(verboseExitCode), $" with exit code %s", code);
+         verboseExitCode[sizeof(verboseExitCode)-1] = 0;
+      }
       else
          verboseExitCode[0] = '\0';
       
@@ -1203,9 +1205,9 @@ class Debugger
          {
             char title[MAX_LOCATION];
             char directory[MAX_LOCATION];
-            title[sizeof(title)-1] = 0;
             StripLastDirectory(absolutePath, directory);
             snprintf(title, sizeof(title), $"Provide source files location directory for %s", absolutePath);
+            title[sizeof(title)-1] = 0;
             while(true)
             {
                String srcDir = null;
@@ -1416,9 +1418,9 @@ class Debugger
          // TODO: Improve this limit
          static char string[MAX_F_STRING*3];
          va_list args;
-         string[sizeof(string)-1] = 0;
          va_start(args, format);
          vsnprintf(string, sizeof(string), format, args);
+         string[sizeof(string)-1] = 0;
          va_end(args);
          
          gdbReady = false;
@@ -1514,9 +1516,9 @@ class Debugger
                      int lineNumber;
                      bool moduleLoadBlock = false;
                      File f;
-                     name[sizeof(name)-1] = 0;
                      ReplaceSpaces(fixedModuleName, ide.project.moduleName);
                      snprintf(name, sizeof(name),"%s.main.ec", fixedModuleName);
+                     name[sizeof(name)-1] = 0;
                      strcpy(path, ide.workspace.projectDir);
                      PathCatSlash(path, objDir.dir);
                      PathCatSlash(path, name);
@@ -2090,7 +2092,6 @@ class Debugger
       if(wh.expression)
       {
          char watchmsg[MAX_F_STRING];
-         watchmsg[sizeof(watchmsg)-1] = 0;
          if(state == stopped && !codeEditor)
             wh.value = CopyString($"No source file found for selected frame");
          //if(codeEditor && state == stopped || state != stopped)
@@ -2333,7 +2334,6 @@ class Debugger
                            //char temp[MAX_F_STRING * 32];
 
                            ExpressionType evalError = dummyExp;
-                           value[sizeof(value)-1] = 0;
                            /*if(exp.expType.kind == arrayType)
                               sprintf(temp, "(char*)0x%x", exp.address);
                            else
@@ -2343,6 +2343,7 @@ class Debugger
                            address = strtoul(exp.constant, null, 0);
                            //printf("%x\n", address);
                            snprintf(value, sizeof(value), "0x%08x ", address);
+                           value[sizeof(value)-1] = 0;
                            
                            if(!address)
                               strcat(value, $"Null string");
@@ -2412,7 +2413,6 @@ class Debugger
                         int signedValue;
                         char charString[5];
                         char string[256];
-                        string[sizeof(string)-1] = 0;
 
                         if(exp.constant[0] == '\'')
                         {
@@ -2471,6 +2471,7 @@ class Debugger
                         }
                         else
                            snprintf(string, sizeof(string), "\'%s\' (%d)", charString, value);
+                        string[sizeof(string)-1] = 0;
                         
                         wh.value = CopyString(string);
                         result = true;
@@ -2513,6 +2514,7 @@ class Debugger
          //else 
          //   wh.value = CopyString("No source file found for selected frame");
          
+         watchmsg[sizeof(watchmsg)-1] = 0;
          if(!wh.value)
             wh.value = CopyString(watchmsg);
       }
@@ -3797,8 +3799,8 @@ class Breakpoint : struct
    char * LocationToString()
    {
       char location[MAX_LOCATION+20];
-      location[sizeof(location)-1] = 0;
       snprintf(location, sizeof(location), "%s:%d", relativeFilePath, line);
+      location[sizeof(location)-1] = 0;
 #if defined(__WIN32__)
       ChangeCh(location, '/', '\\');
 #endif

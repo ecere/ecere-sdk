@@ -293,9 +293,9 @@ public:
       {
          char text[MAX_F_STRING];
          va_list args;
-         text[sizeof(text)-1] = 0;
          va_start(args, format);
          vsnprintf(text, sizeof(text), format, args);
+         text[sizeof(text)-1] = 0;
          driver.WriteText(display, this, x,y, text, strlen(text));
          va_end(args);
       }
@@ -309,9 +309,9 @@ public:
          va_list args;
          int len;
          int w, h;
-         text[sizeof(text)-1] = 0;
          va_start(args, format);
          vsnprintf(text, sizeof(text), format, args);
+         text[sizeof(text)-1] = 0;
          len = strlen(text);
 
          driver.TextExtent(display, this, text, len, &w, &h);
@@ -367,9 +367,9 @@ public:
       {
          char text[MAX_F_STRING];
          va_list args;
-         text[sizeof(text)-1] = 0;
          va_start(args, format);
          vsnprintf(text, sizeof(text), format, args);
+         text[sizeof(text)-1] = 0;
          WriteTextDots(alignment, x,y, width, text, strlen(text));
          va_end(args);
       }
