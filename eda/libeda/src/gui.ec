@@ -974,7 +974,7 @@ public:
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         EditSave(editRow);
+         EditSave();
          return true;
       }
    };
@@ -985,7 +985,7 @@ public:
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         EditLoad(editRow);
+         EditLoad();
          return true;
       }
    };
