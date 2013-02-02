@@ -1965,7 +1965,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetEcereImported", "void
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetEcereImported", "bool GetEcereImported(void)", GetEcereImported, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetInPreCompiler", "void SetInPreCompiler(bool b)", SetInPreCompiler, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetPrecompDefines", "void SetPrecompDefines(ecere::sys::OldList * list)", SetPrecompDefines, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DummyMethod", "bool DummyMethod(void)", DummyMethod, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DummyMethod", "bool DummyMethod(void)", DummyMethod, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("LoadSymbols", "bool LoadSymbols(char * fileName, ecere::com::ImportType importType, bool loadDllOnly)", LoadSymbols, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ImportModule", "void ImportModule(char * name, ecere::com::ImportType importType, ecere::com::AccessMode importAccess, bool loadDllOnly)", ImportModule, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindIncludeFileID", "int FindIncludeFileID(char * includeFile)", FindIncludeFileID, module, 2);
