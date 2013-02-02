@@ -4479,7 +4479,7 @@ private:
                      case tab: case shiftTab:
                      {
                         Window cycleParent = this;
-                        if(this == guiApp.interimWindow && !master.style.interim && !cycleParent.style.tabCycle)
+                        if(this == guiApp.interimWindow && master && !master.style.interim && !cycleParent.style.tabCycle && master.parent)
                            cycleParent = master.parent;
                         
                         if(!guiApp.windowCaptured && cycleParent.style.tabCycle)
