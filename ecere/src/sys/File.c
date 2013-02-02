@@ -210,7 +210,7 @@ bool FILE_Lock(FILE * input, FILE * output, FileLock type, uint64 start, uint64 
 
 void FILE_set_buffered(FILE * input, FILE * output, bool value)
 {
-#if !defined(__WIN32__)
+#if !defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
    if(input)
       setvbuf(input, null, value ? _IOFBF : _IONBF, 0);
    if(output && output != input)

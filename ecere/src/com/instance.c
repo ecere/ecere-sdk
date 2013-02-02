@@ -240,7 +240,7 @@ bool Instance_LocateModule(char * name, char * fileName)
 
 void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int * argcPtr, char *** argvPtr)
 {
-#if !defined(__WIN32__)
+#if !defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
    // Disable stdout buffering on Unix
    setvbuf(stdout, null, _IONBF, 0);
 #endif
