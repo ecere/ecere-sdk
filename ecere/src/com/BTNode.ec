@@ -19,7 +19,7 @@ public class BTNode : struct
 {
    class_fixed
 public:
-   uint key;
+   uintptr key;
    BTNode parent, left, right;
    int depth;
 
@@ -130,7 +130,7 @@ private:
 
    bool Add(BinaryTree tree, BTNode node)
    {
-      uint newKey = node.key;
+      uintptr newKey = node.key;
       while(true)
       {
          //int result = (newKey > key) ? 1 : ((newKey < key) ? - 1 : 0);
@@ -200,7 +200,7 @@ private:
       return false;
    }
 
-   BTNode Find(BinaryTree tree, uint key)
+   BTNode Find(BinaryTree tree, uintptr key)
    {
       while(this)
       {
@@ -273,7 +273,7 @@ private:
       return subString;
    }
 
-   BTNode FindAll(uint key)
+   BTNode FindAll(uintptr key)
    {
       BTNode result = null;
       if(this.key == key) result = this;

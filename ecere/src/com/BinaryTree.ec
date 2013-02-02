@@ -23,7 +23,7 @@ public struct BinaryTree
       count = root ? root.count : 0;
    }
 
-   int CompareInt(uint a, uint b)
+   int CompareInt(uintptr a, uintptr b)
    {
       return (a > b) ? 1 : ((a < b) ? - 1 : 0);
    }
@@ -38,7 +38,7 @@ public struct BinaryTree
       delete string;
    }
 
-   int (*CompareKey)(BinaryTree tree, uint a, uint b);
+   int (*CompareKey)(BinaryTree tree, uintptr a, uintptr b);
    void (*FreeKey)(void * key);
    
    void Free()
@@ -63,7 +63,7 @@ public struct BinaryTree
    	return true;
    }
 
-   BTNode Find(uint key)
+   BTNode Find(uintptr key)
    {
       if(!CompareKey) CompareKey = CompareInt;
       // Check();
@@ -80,7 +80,7 @@ public struct BinaryTree
       return root ? root.FindPrefix(key) : null;
    }
 
-   BTNode FindAll(uint key)
+   BTNode FindAll(uintptr key)
    {
       return root ? root.FindAll(key) : null;
    }

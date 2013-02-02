@@ -639,7 +639,7 @@ static char * keyWords1[] =
    "virtual", "thisclass","unichar", "dbtable", "dbindex", "database_open", "dbfield",
 
    // Types
-   "uint", "uint32", "uint16", "uint64", "bool", "byte", "int64",
+   "uint", "uint32", "uint16", "uint64", "bool", "byte", "int64", "uintptr", "intptr",
 
    // Values
    "this", "true", "false", "null", "value",
