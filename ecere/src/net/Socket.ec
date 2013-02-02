@@ -375,7 +375,7 @@ public:
    bool DatagramHost(int port)
    {
       SOCKET s = socket(AF_INET,SOCK_DGRAM,0);
-      if(s != -1)
+      if(s != -1 && !_connected)
       {
          SOCKADDR_IN a;
          bool val = true;
