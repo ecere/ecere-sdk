@@ -117,10 +117,10 @@ static void hb_getAdvances(HB_Font font, const HB_Glyph * glyphs, uint numGlyphs
       uint packNo = glyphNo & 0xFFFFFF80;
       if(packNo != lastPack)
       {
-         pack = (GlyphPack)glFont.glyphPacks.Find(packNo);
+         pack = (GlyphPack)glFont.glyphPacks.Find((uintptr)packNo);
          if(!pack)
          {
-            glFont.glyphPacks.Add((pack = GlyphPack { key = packNo }));
+            glFont.glyphPacks.Add((pack = GlyphPack { key = (uintptr)packNo }));
             pack.Render(glFont, fontEntryNum, glFont.displaySystem);
             pack.bitmap.alphaBlend = true;
          }
@@ -203,10 +203,10 @@ static void hb_getGlyphMetrics(HB_Font font, HB_Glyph theGlyph, HB_GlyphMetrics 
       uint packNo = glyphNo & 0xFFFFFF80;
       if(packNo != lastPack)
       {
-         pack = (GlyphPack)glFont.glyphPacks.Find(packNo);
+         pack = (GlyphPack)glFont.glyphPacks.Find((uintptr)packNo);
          if(!pack)
          {
-            pack = { key = packNo };
+            pack = { key = (uintptr)packNo };
             glFont.glyphPacks.Add(pack);
             pack.Render(glFont, fontEntryNum, glFont.displaySystem);
             pack.bitmap.alphaBlend = true;
@@ -356,8 +356,8 @@ class GlyphPack : BTNode
       FontEntry fontEntry = null;
       FT_Face faces[128];
       float scales[128];
-      bool isGlyph = key & 0x80000000;
-      int curScript = (key & 0x7F000000) >> 24;
+      bool isGlyph = (uint)key & 0x80000000;
+      int curScript = ((uint)key & 0x7F000000) >> 24;
       unichar testChar = 0;
       /*
       if(isGlyph)
@@ -433,7 +433,7 @@ class GlyphPack : BTNode
          int entry = 0;
          if(isGlyph)
          {
-            uint glyph = (key | c) & 0xFFFFFF;
+            uint glyph = ((uint)key | c) & 0xFFFFFF;
             for(entry = startFontEntry; entry < MAX_FONT_LINK_ENTRIES; entry++)
             {
                fontEntry = font.fontEntries[entry];
@@ -453,7 +453,7 @@ class GlyphPack : BTNode
             {
                uint glyph;
                fontEntry = font.fontEntries[entry];
-               if((glyph = FT_Get_Char_Index(fontEntry.face, (key | c) & 0xFFFFFF)) || entry == MAX_FONT_LINK_ENTRIES-1 || !font.fontEntries[entry+1])
+               if((glyph = FT_Get_Char_Index(fontEntry.face, ((uint)key | c) & 0xFFFFFF)) || entry == MAX_FONT_LINK_ENTRIES-1 || !font.fontEntries[entry+1])
                {
                   if(!FT_Load_Glyph(fontEntry.face, glyph, FT_LOAD_DEFAULT /*FT_LOAD_NO_HINTING*/) || entry == MAX_FONT_LINK_ENTRIES-1 || !font.fontEntries[entry+1])
                      break;
@@ -492,7 +492,7 @@ class GlyphPack : BTNode
             //double x_scale = faces[c]->size->metrics.x_ppem / em_size;
             double y_scale = em_size ? (faces[c]->size->metrics.y_ppem / em_size) : 1;
             double ascender = faces[c]->ascender * y_scale;
-            int glyphNo = isGlyph ? ((key | c) & 0x00FFFFFF) : FT_Get_Char_Index(faces[c], key | c);
+            int glyphNo = isGlyph ? (((uint)key | c) & 0x00FFFFFF) : FT_Get_Char_Index(faces[c], (uint)key | c);
 
             FT_Load_Glyph(faces[c], glyphNo, /*FT_LOAD_DEFAULT | FT_LOAD_FORCE_AUTOHINT*/ FT_LOAD_DEFAULT /*FT_LOAD_NO_HINTING*/); // FT_LOAD_RENDER // FT_LOAD_NO_HINTING
             
@@ -3002,7 +3002,7 @@ public class LFBDisplayDriver : DisplayDriver
                      if(!ftLibrary)
                         FT_Init_FreeType( &ftLibrary );
 
-                     fontEntry = FontEntry { key = (uint)CopyString(fileName) };
+                     fontEntry = FontEntry { key = (uintptr)CopyString(fileName) };
                      fontEntry.stream = stream;
 
                      /*
@@ -3414,7 +3414,7 @@ public class LFBDisplayDriver : DisplayDriver
                            if(!ftLibrary)
                               FT_Init_FreeType( &ftLibrary );
 
-                           fontEntry = FontEntry { key = (uint)CopyString(fileName) };
+                           fontEntry = FontEntry { key = (uintptr)CopyString(fileName) };
                            fontEntry.stream = stream;
                                                 
                            //args.num_params = 1;
@@ -3488,10 +3488,10 @@ public class LFBDisplayDriver : DisplayDriver
                   pack = font.asciiPack;
                else
                {
-                  pack = (GlyphPack)font.glyphPacks.Find(packNo);
+                  pack = (GlyphPack)font.glyphPacks.Find((uintptr)packNo);
                   if(!pack)
                   {
-                     pack = GlyphPack { key = packNo };
+                     pack = GlyphPack { key = (uintptr)packNo };
                      font.glyphPacks.Add(pack);
                      pack.Render(font, fontEntryNum, displaySystem);
                   }

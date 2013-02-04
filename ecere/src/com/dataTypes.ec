@@ -1,5 +1,3 @@
-#include <stdint.h>
-
 namespace com;
 
 #if defined(ECERE_BOOTSTRAP)
@@ -1473,8 +1471,8 @@ static void RegisterClass_Integer(Module module)
    delete integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("uintptr_t");
    integerClass.structSize = 0;
-   integerClass.typeSize = sizeof(uintptr_t);
-   if(sizeof(uintptr_t) == 8)
+   integerClass.typeSize = sizeof(uintptr);
+   if(sizeof(uintptr) == 8)
    {
       eClass_AddMethod(integerClass, "OnGetString", null, UInt64_OnGetString, publicAccess);
       eClass_AddMethod(integerClass, "OnSerialize", null, Int64_OnSerialize, publicAccess);
@@ -1495,8 +1493,8 @@ static void RegisterClass_Integer(Module module)
    delete integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("intptr_t");
    integerClass.structSize = 0;
-   integerClass.typeSize = sizeof(intptr_t);
-   if(sizeof(uintptr_t) == 8)
+   integerClass.typeSize = sizeof(intptr);
+   if(sizeof(intptr) == 8)
    {
       eClass_AddMethod(integerClass, "OnGetString", null, Int64_OnGetString, publicAccess);
       eClass_AddMethod(integerClass, "OnSerialize", null, Int64_OnSerialize, publicAccess);

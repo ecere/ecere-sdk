@@ -22,6 +22,7 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#include <stdint.h>
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -32,7 +33,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree
 {
 struct __ecereNameSpace__ecere__sys__BTNode * root;
 int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, unsigned int a, unsigned int b);
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
 void (*  FreeKey)(void *  key);
 } __attribute__ ((gcc_struct));
 
@@ -1115,12 +1116,12 @@ spec->addNameSpace = 0x0;
 }
 else if(_class)
 {
-if((_class->type != 1000 || !strcmp(_class->fullName, "enum") || !strcmp(_class->fullName, "ecere::com::Instance") || (_class->dataTypeString && !strcmp(_class->dataTypeString, "char *")) || !strcmp(_class->fullName, "uint64") || !strcmp(_class->fullName, "uint32") || !strcmp(_class->fullName, "uint16") || !strcmp(_class->fullName, "uint") || !strcmp(_class->fullName, "byte")))
+if((_class->type != 1000 || !strcmp(_class->fullName, "enum") || !strcmp(_class->fullName, "ecere::com::Instance") || (_class->dataTypeString && !strcmp(_class->dataTypeString, "char *")) || !strcmp(_class->fullName, "uint64") || !strcmp(_class->fullName, "uint32") || !strcmp(_class->fullName, "uint16") || !strcmp(_class->fullName, "uintptr") || !strcmp(_class->fullName, "intptr") || !strcmp(_class->fullName, "uint") || !strcmp(_class->fullName, "byte")))
 {
 (__ecereNameSpace__ecere__com__eSystem_Delete(spec->name), spec->name = 0);
 if(_class->dataTypeString)
 {
-if(!strcmp(_class->dataTypeString, "uint64") || !strcmp(_class->dataTypeString, "uint32") || !strcmp(_class->dataTypeString, "uint16") || !strcmp(_class->dataTypeString, "uint") || !strcmp(_class->dataTypeString, "byte"))
+if(!strcmp(_class->dataTypeString, "uint64") || !strcmp(_class->dataTypeString, "uint32") || !strcmp(_class->dataTypeString, "uint16") || !strcmp(_class->dataTypeString, "uintptr") || !strcmp(_class->dataTypeString, "intptr") || !strcmp(_class->dataTypeString, "uint") || !strcmp(_class->dataTypeString, "byte"))
 {
 if(!_class->dataType)
 _class->dataType = ProcessTypeString(_class->dataTypeString, 0x0);

@@ -1387,7 +1387,7 @@ static void * _malloc(unsigned int size)
       if(!recurse && !stack.recurse)
       {
          stack.recurse = true;
-         block = MemInfo { size = size, key = (uint)((byte *)pointer + REDZONE), id = blockID++ };
+         block = MemInfo { size = size, key = (uintptr)((byte *)pointer + REDZONE), id = blockID++ };
          memcpy(block.allocLoc, stack.frames + stack.pos - Min(stack.pos, MAX_MEMORY_LOC), Min(stack.pos, MAX_MEMORY_LOC) * sizeof(char *));
          memBlocks.Add(block);
          stack.recurse = false;
@@ -1443,7 +1443,7 @@ static void * _calloc(int n, unsigned int size)
       MemInfo block;
       
       stack.recurse = true;
-      block = MemInfo { size = size, key = (uint)((byte *)pointer + REDZONE), _class = allocateClass, internal = allocateInternal, id = blockID++ };
+      block = MemInfo { size = size, key = (uintptr)((byte *)pointer + REDZONE), _class = allocateClass, internal = allocateInternal, id = blockID++ };
       memcpy(block.allocLoc, stack.frames + stack.pos - Min(stack.pos, MAX_MEMORY_LOC), Min(stack.pos, MAX_MEMORY_LOC) * sizeof(char *));
       memBlocks.Add(block);
       stack.recurse = false;
@@ -1534,7 +1534,7 @@ static void * _realloc(void * pointer, unsigned int size)
    {
       MemInfo block;
       stack.recurse = true;
-      block = MemInfo { size = size, key = (uint)((byte *)pointer + REDZONE), id = blockID++ };
+      block = MemInfo { size = size, key = (uintptr)((byte *)pointer + REDZONE), id = blockID++ };
       memcpy(block.allocLoc, stack.frames + stack.pos - Min(stack.pos, MAX_MEMORY_LOC), Min(stack.pos, MAX_MEMORY_LOC) * sizeof(char *));
       memBlocks.Add(block);
       stack.recurse = false;
@@ -1622,7 +1622,7 @@ static void * _crealloc(void * pointer, unsigned int size)
    {
       MemInfo block;
       stack.recurse = true;
-      block = MemInfo { size = size, key = (uint)((byte *)pointer + REDZONE), id = blockID++ };
+      block = MemInfo { size = size, key = (uintptr)((byte *)pointer + REDZONE), id = blockID++ };
       memcpy(block.allocLoc, stack.frames + stack.pos - Min(stack.pos, MAX_MEMORY_LOC), Min(stack.pos, MAX_MEMORY_LOC) * sizeof(char *));
       memBlocks.Add(block);
       stack.recurse = false;
@@ -2877,7 +2877,7 @@ public dllexport void eClass_Unregister(Class _class)
 static BTNamedLink ScanNameSpace(NameSpace nameSpace, char * name, void * listOffset)
 {
    BinaryTree * tree = (BinaryTree *)((byte *)nameSpace + (uint)listOffset);
-   BTNamedLink link = (BTNamedLink)tree->Find((uint)name);
+   BTNamedLink link = (BTNamedLink)tree->Find((uintptr)name);
    NameSpace * child;
    if(!link)
    {

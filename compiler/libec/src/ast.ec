@@ -139,7 +139,7 @@ public TemplateParameter MkTypeTemplateParameter(Identifier identifier, Template
    if(identifier.string)
    {
       TemplateParameter param { type = TemplateParameterType::type, identifier = identifier, dataType = baseTplDatatype, defaultArgument = defaultArgument };
-      TemplatedType type { key = (uint)identifier.string, param = param };
+      TemplatedType type { key = (uintptr)identifier.string, param = param };
       if(!curContext.templateTypes.Add((BTNode)type))
          delete type;
       return param;
@@ -1660,7 +1660,7 @@ void SetupBaseSpecs(Symbol symbol, OldList baseSpecs)
                         dataTypeString = p.dataTypeString /*, dataType = { specs, decl }*/
                      };
                   }
-                  type = TemplatedType { key = (uint)p.name, param = param };
+                  type = TemplatedType { key = (uintptr)p.name, param = param };
                   if(!curContext.templateTypes.Add((BTNode)type))
                      delete type;
                }

@@ -22,6 +22,7 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#include <stdint.h>
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -32,7 +33,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree
 {
 struct __ecereNameSpace__ecere__sys__BTNode * root;
 int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, unsigned int a, unsigned int b);
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
 void (*  FreeKey)(void *  key);
 } __attribute__ ((gcc_struct));
 
@@ -1525,6 +1526,8 @@ double d;
 unsigned char *  p;
 long long i64;
 uint64 ui64;
+intptr_t iptr;
+uintptr_t uiptr;
 } __attribute__ ((gcc_struct));
 struct OpTable ops;
 } __attribute__ ((gcc_struct));

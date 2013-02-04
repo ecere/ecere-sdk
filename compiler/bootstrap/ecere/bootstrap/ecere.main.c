@@ -22,6 +22,7 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#include <stdint.h>
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -32,7 +33,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree
 {
 struct __ecereNameSpace__ecere__sys__BTNode * root;
 int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, unsigned int a, unsigned int b);
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
 void (*  FreeKey)(void *  key);
 } __attribute__ ((gcc_struct));
 
@@ -551,6 +552,8 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint64;
 
+struct __ecereNameSpace__ecere__com__Class * __ecereClass_uintptr;
+
 void __ecereRegisterModule_BufferedFile(struct __ecereNameSpace__ecere__com__Instance * module);
 
 void __ecereUnregisterModule_BufferedFile(struct __ecereNameSpace__ecere__com__Instance * module);
@@ -1034,6 +1037,7 @@ __ecereClass___ecereNameSpace__ecere__sys__TempFile = __ecereNameSpace__ecere__c
 __ecereClass_int = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int");
 __ecereClass_uint = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "uint");
 __ecereClass_uint64 = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "uint64");
+__ecereClass_uintptr = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "uintptr");
 __ecereCreateModuleInstances_i18n();
 __ecereNameSpace__ecere__LoadTranslatedStrings(module, "ecere");
 }

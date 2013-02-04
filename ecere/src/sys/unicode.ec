@@ -491,10 +491,10 @@ static class UnicodeDatabase
                         if(category)
                         {
                            Range range { start, end, category };
-                           BTNode node { key = (uint) &range };
+                           BTNode node { key = (uintptr) &range };
                            if(categories.Add(node))
                            {
-                              node.key = (uint)new Range[1];
+                              node.key = (uintptr)new Range[1];
                               *(Range *)node.key = range;
                            } 
                            else
@@ -553,7 +553,7 @@ public CharCategory GetCharCategory(unichar ch)
    {
       CharCategory category = none;
       Range range { ch, ch };
-      BTNode node = dataBase.categories.Find((uint) &range);
+      BTNode node = dataBase.categories.Find((uintptr) &range);
       if(node)
          category = ((Range *)node.key)->category;
       return category;

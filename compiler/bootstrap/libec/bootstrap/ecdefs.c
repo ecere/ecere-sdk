@@ -22,6 +22,7 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#include <stdint.h>
 struct __ecereNameSpace__ecere__sys__BTNode;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
@@ -32,7 +33,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree
 {
 struct __ecereNameSpace__ecere__sys__BTNode * root;
 int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, unsigned int a, unsigned int b);
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
 void (*  FreeKey)(void *  key);
 } __attribute__ ((gcc_struct));
 
@@ -1134,7 +1135,7 @@ outputLineNumbers = value;
 
 struct GlobalData
 {
-unsigned int key;
+uintptr_t key;
 struct __ecereNameSpace__ecere__sys__BTNode * parent;
 struct __ecereNameSpace__ecere__sys__BTNode * left;
 struct __ecereNameSpace__ecere__sys__BTNode * right;
@@ -1150,7 +1151,7 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass_GlobalData;
 
 struct TemplatedType
 {
-unsigned int key;
+uintptr_t key;
 struct __ecereNameSpace__ecere__sys__BTNode * parent;
 struct __ecereNameSpace__ecere__sys__BTNode * left;
 struct __ecereNameSpace__ecere__sys__BTNode * right;
@@ -1565,6 +1566,8 @@ double d;
 unsigned char * p;
 long long i64;
 uint64 ui64;
+intptr_t iptr;
+uintptr_t uiptr;
 } __attribute__ ((gcc_struct));
 struct OpTable ops;
 } __attribute__ ((gcc_struct));
@@ -2642,6 +2645,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "dummyType", 18);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "subClassType", 19);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "templateType", 20);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "thisClassType", 21);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "intPtrType", 22);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Type", 0, sizeof(struct Type), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
 __ecereClass_Type = class;
@@ -2732,6 +2736,8 @@ __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "d", "double", 
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "p", "byte *", 4, 4, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "i64", "int64", 8, 8, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "ui64", "uint64", 8, 8, 1);
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "iptr", "intptr", 4, 4, 1);
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "uiptr", "uintptr", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "ops", "OpTable", 140, 4, 1);

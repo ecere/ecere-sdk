@@ -22,9 +22,10 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#include <stdint.h>
 struct __ecereNameSpace__ecere__sys__BTNode
 {
-unsigned int key;
+uintptr_t key;
 struct __ecereNameSpace__ecere__sys__BTNode * parent, * left, * right;
 int depth;
 } __attribute__ ((gcc_struct));
@@ -37,7 +38,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree
 {
 struct __ecereNameSpace__ecere__sys__BTNode * root;
 int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, unsigned int a, unsigned int b);
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
 void (*  FreeKey)(void *  key);
 } __attribute__ ((gcc_struct));
 
@@ -275,6 +276,8 @@ void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(struct __ec
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_bool;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_uintptr;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint;
 
 void __ecereMethod___ecereNameSpace__ecere__sys__BTNode_OnSerialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__sys__BTNode * this, struct __ecereNameSpace__ecere__com__Instance * channel)
@@ -284,7 +287,7 @@ if((struct __ecereNameSpace__ecere__sys__BTNode *)this)
 unsigned int truth = 0x1;
 
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_bool, &truth);
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_uint, &this->key);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_uintptr, &this->key);
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, this->left);
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, this->right);
 }
@@ -312,7 +315,7 @@ __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ece
 if(truth)
 {
 (*(this)) = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__BTNode);
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_uint, &(*(this))->key);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_uintptr, &(*(this))->key);
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, &(*(this))->left);
 if((*(this))->left)
 {
@@ -409,7 +412,7 @@ FreeKey((void *)this->key);
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Add(struct __ecereNameSpace__ecere__sys__BTNode * this, struct __ecereNameSpace__ecere__sys__BinaryTree * tree, struct __ecereNameSpace__ecere__sys__BTNode * node)
 {
-unsigned int newKey = node->key;
+uintptr_t newKey = node->key;
 
 while(0x1)
 {
@@ -483,7 +486,7 @@ return 0x1;
 return 0x0;
 }
 
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Find(struct __ecereNameSpace__ecere__sys__BTNode * this, struct __ecereNameSpace__ecere__sys__BinaryTree * tree, unsigned int key)
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Find(struct __ecereNameSpace__ecere__sys__BTNode * this, struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t key)
 {
 while(this)
 {
@@ -561,7 +564,7 @@ break;
 return subString;
 }
 
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindAll(struct __ecereNameSpace__ecere__sys__BTNode * this, unsigned int key)
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindAll(struct __ecereNameSpace__ecere__sys__BTNode * this, uintptr_t key)
 {
 struct __ecereNameSpace__ecere__sys__BTNode * result = (((void *)0));
 
@@ -1104,7 +1107,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnSerialize", 0, __ecereM
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnUnserialize", 0, __ecereMethod___ecereNameSpace__ecere__sys__BTNode_OnUnserialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "FindPrefix", "ecere::sys::BTNode FindPrefix(char * key)", __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindPrefix, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "FindString", "ecere::sys::BTNode FindString(char * key)", __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindString, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "key", "uint", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "key", "uintptr", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "parent", "ecere::sys::BTNode", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "left", "ecere::sys::BTNode", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "right", "ecere::sys::BTNode", 4, 4, 1);

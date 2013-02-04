@@ -22,6 +22,7 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#include <stdint.h>
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -32,7 +33,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree
 {
 struct __ecereNameSpace__ecere__sys__BTNode * root;
 int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, unsigned int a, unsigned int b);
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
 void (*  FreeKey)(void *  key);
 } __attribute__ ((gcc_struct));
 
@@ -1373,6 +1374,7 @@ case 1:
 case 2:
 case 3:
 case 4:
+case 22:
 if(type1->passAsTemplate && !type2->passAsTemplate)
 return 0x1;
 return type1->isSigned != type2->isSigned;
@@ -1734,6 +1736,8 @@ double d;
 unsigned char *  p;
 long long i64;
 uint64 ui64;
+intptr_t iptr;
+uintptr_t uiptr;
 } __attribute__ ((gcc_struct));
 struct OpTable ops;
 } __attribute__ ((gcc_struct));
@@ -1752,6 +1756,10 @@ if(op2.kind == 4 && op2.type->isSigned)
 *value2 = (int)op2.i64;
 else if(op2.kind == 4)
 *value2 = (int)op2.ui64;
+else if(op2.kind == 22 && op2.type->isSigned)
+*value2 = (int)op2.iptr;
+else if(op2.kind == 22)
+*value2 = (int)op2.uiptr;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (int)op2.s;
 else if(op2.kind == 2)
@@ -1783,6 +1791,10 @@ if(op2.kind == 4 && op2.type->isSigned)
 *value2 = (unsigned int)op2.i64;
 else if(op2.kind == 4)
 *value2 = (unsigned int)op2.ui64;
+else if(op2.kind == 22 && op2.type->isSigned)
+*value2 = (unsigned int)op2.iptr;
+else if(op2.kind == 22)
+*value2 = (unsigned int)op2.uiptr;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (unsigned int)op2.s;
 else if(op2.kind == 2)
@@ -1814,6 +1826,10 @@ if(op2.kind == 4 && op2.type->isSigned)
 *value2 = op2.i64;
 else if(op2.kind == 4)
 *value2 = (long long)op2.ui64;
+else if(op2.kind == 22 && op2.type->isSigned)
+*value2 = (long long)op2.iptr;
+else if(op2.kind == 22)
+*value2 = (long long)op2.uiptr;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (long long)op2.s;
 else if(op2.kind == 2)
@@ -1845,6 +1861,10 @@ if(op2.kind == 4 && op2.type->isSigned)
 *value2 = (uint64)op2.i64;
 else if(op2.kind == 4)
 *value2 = op2.ui64;
+else if(op2.kind == 22 && op2.type->isSigned)
+*value2 = (uint64)op2.iptr;
+else if(op2.kind == 22)
+*value2 = (uint64)op2.uiptr;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (uint64)op2.s;
 else if(op2.kind == 2)
@@ -1864,6 +1884,76 @@ return 0x0;
 return 0x1;
 }
 
+unsigned int GetIntPtr(struct Expression * exp, intptr_t * value2)
+{
+struct Operand op2 = GetOperand(exp);
+
+if(op2.kind == 3 && op2.type->isSigned)
+*value2 = (intptr_t)op2.i;
+else if(op2.kind == 3)
+*value2 = (intptr_t)op2.ui;
+if(op2.kind == 4 && op2.type->isSigned)
+*value2 = (intptr_t)op2.i64;
+else if(op2.kind == 4)
+*value2 = (intptr_t)op2.ui64;
+else if(op2.kind == 22 && op2.type->isSigned)
+*value2 = op2.iptr;
+else if(op2.kind == 22)
+*value2 = (intptr_t)op2.uiptr;
+else if(op2.kind == 2 && op2.type->isSigned)
+*value2 = (intptr_t)op2.s;
+else if(op2.kind == 2)
+*value2 = (intptr_t)op2.us;
+else if(op2.kind == 1 && op2.type->isSigned)
+*value2 = (intptr_t)op2.c;
+else if(op2.kind == 1)
+*value2 = (intptr_t)op2.uc;
+else if(op2.kind == 6)
+*value2 = (intptr_t)op2.f;
+else if(op2.kind == 7)
+*value2 = (intptr_t)op2.d;
+else if(op2.kind == 13)
+*value2 = (intptr_t)op2.ui;
+else
+return 0x0;
+return 0x1;
+}
+
+unsigned int GetUIntPtr(struct Expression * exp, uintptr_t * value2)
+{
+struct Operand op2 = GetOperand(exp);
+
+if(op2.kind == 3 && op2.type->isSigned)
+*value2 = (uintptr_t)op2.i;
+else if(op2.kind == 3)
+*value2 = (uintptr_t)op2.ui;
+if(op2.kind == 4 && op2.type->isSigned)
+*value2 = (uintptr_t)op2.i64;
+else if(op2.kind == 4)
+*value2 = (uintptr_t)op2.ui64;
+else if(op2.kind == 22 && op2.type->isSigned)
+*value2 = (uintptr_t)op2.iptr;
+else if(op2.kind == 22)
+*value2 = op2.uiptr;
+else if(op2.kind == 2 && op2.type->isSigned)
+*value2 = (uintptr_t)op2.s;
+else if(op2.kind == 2)
+*value2 = (uintptr_t)op2.us;
+else if(op2.kind == 1 && op2.type->isSigned)
+*value2 = (uintptr_t)op2.c;
+else if(op2.kind == 1)
+*value2 = (uintptr_t)op2.uc;
+else if(op2.kind == 6)
+*value2 = (uintptr_t)op2.f;
+else if(op2.kind == 7)
+*value2 = (uintptr_t)op2.d;
+else if(op2.kind == 13)
+*value2 = (uintptr_t)op2.ui;
+else
+return 0x0;
+return 0x1;
+}
+
 unsigned int GetShort(struct Expression * exp, short * value2)
 {
 struct Operand op2 = GetOperand(exp);
@@ -1876,6 +1966,10 @@ if(op2.kind == 4 && op2.type->isSigned)
 *value2 = (short)op2.i64;
 else if(op2.kind == 4)
 *value2 = (short)op2.ui64;
+else if(op2.kind == 22 && op2.type->isSigned)
+*value2 = (short)op2.iptr;
+else if(op2.kind == 22)
+*value2 = (short)op2.uiptr;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = op2.s;
 else if(op2.kind == 2)
@@ -1907,6 +2001,10 @@ if(op2.kind == 4 && op2.type->isSigned)
 *value2 = (unsigned short)op2.i64;
 else if(op2.kind == 4)
 *value2 = (unsigned short)op2.ui64;
+else if(op2.kind == 22 && op2.type->isSigned)
+*value2 = (unsigned short)op2.iptr;
+else if(op2.kind == 22)
+*value2 = (unsigned short)op2.uiptr;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (unsigned short)op2.s;
 else if(op2.kind == 2)
@@ -1938,6 +2036,10 @@ if(op2.kind == 4 && op2.type->isSigned)
 *value2 = (char)op2.i64;
 else if(op2.kind == 4)
 *value2 = (char)op2.ui64;
+else if(op2.kind == 22 && op2.type->isSigned)
+*value2 = (char)op2.iptr;
+else if(op2.kind == 22)
+*value2 = (char)op2.uiptr;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (char)op2.s;
 else if(op2.kind == 2)
@@ -1969,6 +2071,10 @@ if(op2.kind == 4 && op2.type->isSigned)
 *value2 = (unsigned char)op2.i64;
 else if(op2.kind == 4)
 *value2 = (unsigned char)op2.ui64;
+else if(op2.kind == 22 && op2.type->isSigned)
+*value2 = (unsigned char)op2.iptr;
+else if(op2.kind == 22)
+*value2 = (unsigned char)op2.uiptr;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (unsigned char)op2.s;
 else if(op2.kind == 2)
@@ -2000,6 +2106,10 @@ if(op2.kind == 4 && op2.type->isSigned)
 *value2 = (float)(float)op2.i64;
 else if(op2.kind == 4)
 *value2 = (float)(float)op2.ui64;
+else if(op2.kind == 22 && op2.type->isSigned)
+*value2 = (float)op2.iptr;
+else if(op2.kind == 22)
+*value2 = (float)op2.uiptr;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (float)(float)op2.s;
 else if(op2.kind == 2)
@@ -2031,6 +2141,10 @@ if(op2.kind == 4 && op2.type->isSigned)
 *value2 = (double)(double)op2.i64;
 else if(op2.kind == 4)
 *value2 = (double)(double)op2.ui64;
+else if(op2.kind == 22 && op2.type->isSigned)
+*value2 = (double)op2.iptr;
+else if(op2.kind == 22)
+*value2 = (double)op2.uiptr;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (double)(double)op2.s;
 else if(op2.kind == 2)
@@ -2415,6 +2529,9 @@ type->alignment = size = sizeof(int);
 break;
 case 4:
 type->alignment = size = sizeof(long long);
+break;
+case 22:
+type->alignment = size = sizeof(intptr_t);
 break;
 case 5:
 type->alignment = size = sizeof(long);
@@ -3781,7 +3898,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplatedType;
 
 struct TemplatedType
 {
-unsigned int key;
+uintptr_t key;
 struct __ecereNameSpace__ecere__sys__BTNode * parent;
 struct __ecereNameSpace__ecere__sys__BTNode * left;
 struct __ecereNameSpace__ecere__sys__BTNode * right;
@@ -3805,7 +3922,7 @@ for(; param; param = param->next)
 {
 if(param->type == 0 && param->identifier)
 {
-struct TemplatedType * type = (type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplatedType), type->key = (unsigned int)param->identifier->string, type->param = param, type);
+struct TemplatedType * type = (type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplatedType), type->key = (uintptr_t)param->identifier->string, type->param = param, type);
 
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->templateTypes, (struct __ecereNameSpace__ecere__sys__BTNode *)type);
 }
@@ -3830,7 +3947,7 @@ if(!param)
 {
 p->param = param = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplateParameter), ((struct TemplateParameter *)__ecereTemp1)->identifier = MkIdentifier(p->name), ((struct TemplateParameter *)__ecereTemp1)->type = p->type, ((struct TemplateParameter *)__ecereTemp1)->dataTypeString = p->dataTypeString, ((struct TemplateParameter *)__ecereTemp1));
 }
-type = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplatedType), ((struct TemplatedType *)__ecereTemp1)->key = (unsigned int)p->name, ((struct TemplatedType *)__ecereTemp1)->param = param, ((struct TemplatedType *)__ecereTemp1));
+type = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplatedType), ((struct TemplatedType *)__ecereTemp1)->key = (uintptr_t)p->name, ((struct TemplatedType *)__ecereTemp1)->param = param, ((struct TemplatedType *)__ecereTemp1));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->templateTypes, (struct __ecereNameSpace__ecere__sys__BTNode *)type);
 }
 }
@@ -4309,7 +4426,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_GlobalData;
 
 struct GlobalData
 {
-unsigned int key;
+uintptr_t key;
 struct __ecereNameSpace__ecere__sys__BTNode * parent;
 struct __ecereNameSpace__ecere__sys__BTNode * left;
 struct __ecereNameSpace__ecere__sys__BTNode * right;
@@ -4599,9 +4716,11 @@ else if(dest->kind == 3 && (source->kind == 2 || source->kind == 1))
 return 0x1;
 else if(dest->kind == 4 && (source->kind == 2 || source->kind == 1 || source->kind == 3))
 return 0x1;
-else if(source->kind == 15 && (dest->kind == 3 || dest->kind == 2 || dest->kind == 1 || dest->kind == 5 || dest->kind == 4))
+else if(dest->kind == 22 && (source->kind == 2 || source->kind == 1 || source->kind == 3))
 return 0x1;
-else if(dest->kind == 15 && (source->kind == 3 || source->kind == 2 || source->kind == 1 || source->kind == 5 || dest->kind == 4))
+else if(source->kind == 15 && (dest->kind == 3 || dest->kind == 2 || dest->kind == 1 || dest->kind == 5 || dest->kind == 4 || dest->kind == 22))
+return 0x1;
+else if(dest->kind == 15 && (source->kind == 3 || source->kind == 2 || source->kind == 1 || source->kind == 5 || source->kind == 4 || source->kind == 22))
 return 0x1;
 else if((dest->kind == 11 || (dest->kind == 13 && dest->type->kind == 11) || dest->kind == 16) && ((source->kind == 11 || (source->kind == 13 && source->type->kind == 11) || source->kind == 16)))
 {
@@ -9230,6 +9349,19 @@ op.ops = uintOps;
 }
 op.kind = 3;
 break;
+case 22:
+if(type->isSigned)
+{
+op.iptr = (intptr_t)_strtoi64(exp->constant, (((void *)0)), 0);
+op.ops = intOps;
+}
+else
+{
+op.uiptr = (uintptr_t)_strtoui64(exp->constant, (((void *)0)), 0);
+op.ops = uintOps;
+}
+op.kind = 3;
+break;
 case 6:
 op.f = (float)strtod(exp->constant, (((void *)0)));
 op.ops = floatOps;
@@ -9354,6 +9486,13 @@ exp->constant = PrintInt64(*(long long *)ptr);
 exp->type = 2;
 break;
 }
+case 22:
+{
+FreeExpContents(exp);
+exp->constant = PrintInt64((long long)*(intptr_t *)ptr);
+exp->type = 2;
+break;
+}
 default:
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Unhandled type populating instance\n", (((void *)0))));
 }
@@ -9456,6 +9595,12 @@ break;
 case 4:
 {
 exp->constant = PrintInt64(*(long long *)ptr);
+exp->type = 2;
+break;
+}
+case 22:
+{
+exp->constant = PrintInt64((long long)*(intptr_t *)ptr);
 exp->type = 2;
 break;
 }
@@ -9646,6 +9791,11 @@ case 4:
 GetInt64(value, (long long *)ptr);
 break;
 }
+case 22:
+{
+GetIntPtr(value, (intptr_t *)ptr);
+break;
+}
 case 6:
 {
 GetFloat(value, (float *)ptr);
@@ -9712,6 +9862,13 @@ case 4:
 void (* Set)(void *, long long) = (void *)prop->Set;
 
 Set(inst->data, _strtoi64(value->constant, (((void *)0)), 0));
+break;
+}
+case 22:
+{
+void (* Set)(void *, intptr_t) = (void *)prop->Set;
+
+Set(inst->data, (intptr_t)_strtoi64(value->constant, (((void *)0)), 0));
 break;
 }
 }
@@ -9825,6 +9982,12 @@ if(type->isSigned)
 bits |= ((long long)part << bitMember->pos);
 else
 bits |= ((uint64)part << bitMember->pos);
+break;
+case 22:
+if(type->isSigned)
+bits |= ((intptr_t)part << bitMember->pos);
+else
+bits |= ((uintptr_t)part << bitMember->pos);
 break;
 }
 }
@@ -10287,6 +10450,21 @@ Set(exp->instance->data, intValue);
 PopulateInstance(exp->instance);
 break;
 }
+case 22:
+{
+intptr_t intValue;
+void (* Set)(void *, intptr_t) = (void *)prop->Set;
+
+exp->instance = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Instantiation);
+exp->instance->data = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(unsigned char) * (_class->structSize));
+exp->instance->_class = MkSpecifierName(_class->fullName);
+exp->instance->loc = exp->loc;
+exp->type = 1;
+GetIntPtr(value, &intValue);
+Set(exp->instance->data, intValue);
+PopulateInstance(exp->instance);
+break;
+}
 case 7:
 {
 double doubleValue;
@@ -10559,6 +10737,26 @@ uint64 value;
 GetUInt64(e, &value);
 FreeExpContents(exp);
 exp->constant = PrintUInt64(value);
+exp->type = 2;
+}
+break;
+case 22:
+if(type->isSigned)
+{
+intptr_t value;
+
+GetIntPtr(e, &value);
+FreeExpContents(exp);
+exp->constant = PrintInt64((long long)value);
+exp->type = 2;
+}
+else
+{
+uintptr_t value;
+
+GetUIntPtr(e, &value);
+FreeExpContents(exp);
+exp->constant = PrintUInt64((uint64)value);
 exp->type = 2;
 }
 break;
@@ -11045,7 +11243,7 @@ return symbol;
 
 static void GetTypeSpecs(struct Type * type, struct __ecereNameSpace__ecere__sys__OldList * specs)
 {
-if(!type->isSigned)
+if(!type->isSigned && type->kind != 22)
 ListAdd(specs, MkSpecifier(UNSIGNED));
 switch(type->kind)
 {
@@ -11073,6 +11271,9 @@ ListAdd(specs, MkSpecifier(SHORT));
 break;
 case 4:
 ListAdd(specs, MkSpecifier(INT64));
+break;
+case 22:
+ListAdd(specs, MkSpecifierName(type->isSigned ? "intptr" : "uintptr"));
 break;
 case 3:
 default:
@@ -11121,6 +11322,9 @@ strcat(string, type->isSigned ? "int" : "uint");
 break;
 case 4:
 strcat(string, type->isSigned ? "int64" : "uint64");
+break;
+case 22:
+strcat(string, type->isSigned ? "intptr" : "uintptr");
 break;
 case 1:
 strcat(string, type->isSigned ? "char" : "byte");
@@ -12364,7 +12568,7 @@ if(exp->op.exp2->destType && exp->op.op != '=')
 exp->op.exp2->destType->count--;
 if(assign && type1 && type1->kind == 13 && exp->op.exp2->expType)
 {
-if(exp->op.exp2->expType->kind == 4 || exp->op.exp2->expType->kind == 3 || exp->op.exp2->expType->kind == 2 || exp->op.exp2->expType->kind == 1)
+if(exp->op.exp2->expType->kind == 22 || exp->op.exp2->expType->kind == 4 || exp->op.exp2->expType->kind == 3 || exp->op.exp2->expType->kind == 2 || exp->op.exp2->expType->kind == 1)
 {
 if(exp->op.op != '=' && type1->type->kind == 0)
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "void *: unknown size\n", (((void *)0))));
@@ -12480,7 +12684,7 @@ ProcessExpressionType(exp->op.exp2);
 }
 }
 }
-if(!boolResult && ((type1->kind == 13 || type1->kind == 12 || (type1->kind == 8 && !strcmp(type1->_class->string, "String"))) && (type2->kind == 4 || type2->kind == 3 || type2->kind == 2 || type2->kind == 1)))
+if(!boolResult && ((type1->kind == 13 || type1->kind == 12 || (type1->kind == 8 && !strcmp(type1->_class->string, "String"))) && (type2->kind == 22 || type2->kind == 4 || type2->kind == 3 || type2->kind == 2 || type2->kind == 1)))
 {
 if(type1->kind != 8 && type1->type->kind == 0)
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "void *: unknown size\n", (((void *)0))));
@@ -12488,7 +12692,7 @@ exp->expType = type1;
 if(type1)
 type1->refCount++;
 }
-else if(!boolResult && ((type2->kind == 13 || type2->kind == 12 || (type2->kind == 8 && !strcmp(type2->_class->string, "String"))) && (type1->kind == 4 || type1->kind == 3 || type1->kind == 2 || type1->kind == 1)))
+else if(!boolResult && ((type2->kind == 13 || type2->kind == 12 || (type2->kind == 8 && !strcmp(type2->_class->string, "String"))) && (type1->kind == 22 || type1->kind == 4 || type1->kind == 3 || type1->kind == 2 || type1->kind == 1)))
 {
 if(type2->kind != 8 && type2->type->kind == 0)
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "void *: unknown size\n", (((void *)0))));
@@ -16161,6 +16365,8 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetInt", "bool GetInt(Ex
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetUInt", "bool GetUInt(Expression exp, uint * value2)", GetUInt, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetInt64", "bool GetInt64(Expression exp, int64 * value2)", GetInt64, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetUInt64", "bool GetUInt64(Expression exp, uint64 * value2)", GetUInt64, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetIntPtr", "bool GetIntPtr(Expression exp, intptr * value2)", GetIntPtr, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetUIntPtr", "bool GetUIntPtr(Expression exp, uintptr * value2)", GetUIntPtr, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetShort", "bool GetShort(Expression exp, short * value2)", GetShort, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetUShort", "bool GetUShort(Expression exp, uint16 * value2)", GetUShort, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetChar", "bool GetChar(Expression exp, char * value2)", GetChar, module, 1);

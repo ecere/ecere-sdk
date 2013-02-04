@@ -22,6 +22,7 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#include <stdint.h>
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -32,7 +33,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree
 {
 struct __ecereNameSpace__ecere__sys__BTNode * root;
 int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, unsigned int a, unsigned int b);
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
 void (*  FreeKey)(void *  key);
 } __attribute__ ((gcc_struct));
 
@@ -1082,7 +1083,7 @@ struct Expression * exp = *expPtr;
 
 *memberExpPtr = (((void *)0));
 newExp = CopyExpression(exp);
-*(struct Expression **)((unsigned char *)newExp + ((unsigned char *)memberExpPtr - (unsigned char *)exp)) = memberExp;
+*(struct Expression **)((unsigned char *)newExp + (unsigned int)((unsigned char *)memberExpPtr - (unsigned char *)exp)) = memberExp;
 memberExp->member.exp = idExp;
 exp->type = 5;
 exp->list = bracketExp->list;
@@ -1100,7 +1101,7 @@ struct Expression * exp = *expPtr;
 
 *memberExpPtr = (((void *)0));
 newExp = CopyExpression(exp);
-*(struct Expression **)((unsigned char *)newExp + ((unsigned char *)memberExpPtr - (unsigned char *)exp)) = (*memberExp->list).last;
+*(struct Expression **)((unsigned char *)newExp + (unsigned int)((unsigned char *)memberExpPtr - (unsigned char *)exp)) = (*memberExp->list).last;
 exp->type = 5;
 exp->list = memberExp->list;
 memberExp->list = (((void *)0));
@@ -1140,7 +1141,7 @@ if(type->kind == 8)
 {
 struct __ecereNameSpace__ecere__com__Class * _class = type->_class ? type->_class->registered : (((void *)0));
 
-if(_class && (_class->type == 1 || _class->type == 5 || (_class->type == 1000 && _class->base && strcmp(_class->fullName, "ecere::com::Instance") && strcmp(_class->fullName, "ecere::com::Class") && strcmp(_class->dataTypeString, "char *"))))
+if(_class && (_class->type == 1 || _class->type == 5 || (_class->type == 1000 && _class->base && strcmp(_class->fullName, "uintptr") && strcmp(_class->fullName, "intptr") && strcmp(_class->fullName, "ecere::com::Instance") && strcmp(_class->fullName, "ecere::com::Class") && strcmp(_class->dataTypeString, "char *"))))
 {
 if(wantReference != (e->byReference || isPointer))
 {

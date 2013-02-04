@@ -333,7 +333,7 @@ class CompilerApp : Application
 
          {
             GlobalData data { fullName = CopyString("__thisModule"), dataTypeString = CopyString("Module"), module = privateModule };
-            data.key = (uint)data.fullName;
+            data.key = (uintptr)data.fullName;
             globalData.functions.Add((BTNode)data);
          }
 

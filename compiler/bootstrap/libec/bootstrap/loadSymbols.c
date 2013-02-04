@@ -22,6 +22,7 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#include <stdint.h>
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -32,7 +33,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree
 {
 struct __ecereNameSpace__ecere__sys__BTNode * root;
 int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, unsigned int a, unsigned int b);
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
 void (*  FreeKey)(void *  key);
 } __attribute__ ((gcc_struct));
 
@@ -848,6 +849,8 @@ double d;
 unsigned char *  p;
 long long i64;
 uint64 ui64;
+intptr_t iptr;
+uintptr_t uiptr;
 } __attribute__ ((gcc_struct));
 struct OpTable ops;
 } __attribute__ ((gcc_struct));
@@ -916,7 +919,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_GlobalData;
 
 struct GlobalData
 {
-unsigned int key;
+uintptr_t key;
 struct __ecereNameSpace__ecere__sys__BTNode * parent;
 struct __ecereNameSpace__ecere__sys__BTNode * left;
 struct __ecereNameSpace__ecere__sys__BTNode * right;
@@ -1496,7 +1499,7 @@ data = (struct GlobalData *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTr
 if(!data)
 {
 data = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_GlobalData), ((struct GlobalData *)__ecereTemp1)->fullName = __ecereNameSpace__ecere__sys__CopyString(name), ((struct GlobalData *)__ecereTemp1)->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(line), ((struct GlobalData *)__ecereTemp1)->module = privateModule, ((struct GlobalData *)__ecereTemp1));
-data->key = (unsigned int)(data->fullName + start);
+data->key = (uintptr_t)(data->fullName + start);
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(*nameSpace).functions, (struct __ecereNameSpace__ecere__sys__BTNode *)data);
 }
 else if(strcmp(data->dataTypeString, line))

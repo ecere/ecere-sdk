@@ -30,6 +30,7 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#include <stdint.h>
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -40,7 +41,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree
 {
 struct __ecereNameSpace__ecere__sys__BTNode * root;
 int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, unsigned int a, unsigned int b);
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
 void (*  FreeKey)(void *  key);
 } __attribute__ ((gcc_struct));
 
@@ -2048,12 +2049,12 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->templatePara
 __ecereNameSpace__ecere__com___free(_class);
 }
 
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Find(struct __ecereNameSpace__ecere__sys__BinaryTree * this, unsigned int key);
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Find(struct __ecereNameSpace__ecere__sys__BinaryTree * this, uintptr_t key);
 
 static struct __ecereNameSpace__ecere__com__BTNamedLink * __ecereNameSpace__ecere__com__ScanNameSpace(struct __ecereNameSpace__ecere__com__NameSpace * nameSpace, char * name, void * listOffset)
 {
 struct __ecereNameSpace__ecere__sys__BinaryTree * tree = (struct __ecereNameSpace__ecere__sys__BinaryTree *)((unsigned char *)nameSpace + (unsigned int)listOffset);
-struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Find((&*tree), (unsigned int)name);
+struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Find((&*tree), (uintptr_t)name);
 struct __ecereNameSpace__ecere__com__NameSpace * child;
 
 if(!link)

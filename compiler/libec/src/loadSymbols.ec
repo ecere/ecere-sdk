@@ -661,7 +661,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                                  dataTypeString = CopyString(line),
                                  module = privateModule
                               };
-                              data.key = (uint)(data.fullName + start);
+                              data.key = (uintptr)(data.fullName + start);
                               // Reusing functions here...
                               nameSpace->functions.Add((BTNode)data);
                            }

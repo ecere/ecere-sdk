@@ -45,7 +45,7 @@ static class ServerNameCache
       server = (ServerNode)servers.FindString(host);
       if(!server)
       {
-         server = ServerNode { key = (uint)CopyString(host) };
+         server = ServerNode { key = (uintptr)CopyString(host) };
          servers.Add(server);
          server.resolved = GetAddressFromName(host, server.address);
       }
