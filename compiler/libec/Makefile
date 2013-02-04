@@ -119,8 +119,10 @@ ECFLAGS += \
 
 CECFLAGS += -cpp $(_CPP)
 
+OFLAGS += $(FORCE_32_BIT)
+
 ifndef STATIC_LIBRARY_TARGET
-OFLAGS += $(FORCE_32_BIT) \
+OFLAGS += \
 	 -L../../obj/$(PLATFORM)/bin \
 	 -L../../obj/$(PLATFORM)/lib
 endif

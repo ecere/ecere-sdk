@@ -2157,25 +2157,34 @@ public Type ProcessType(OldList specs, Declarator decl)
                }
                else if(spec.type == nameSpecifier)
                {
-                  Symbol symbol = spec.name ? FindType(curContext, spec.name) : null;
-                  if(symbol && symbol.type)
+                  if(spec.name && (!strcmp(spec.name, "intptr") || !strcmp(spec.name, "uintptr")))
                   {
-                     // Free Type Contents:
-                     Type dummy { };
-                     *dummy = *specType;
-                     FreeType(dummy);
-
-                     CopyTypeInto(specType, symbol.type);
-                     specType.typeName = CopyString(symbol.type.name);
+                     specType.kind = intPtrType;
+                     if(!strcmp(spec.name, "uintptr"))
+                        specType.isSigned = false;
                   }
-                  else if(!isTypedef) // !specType.kind)    // TESTING THIS FOR enum / typedef problem
+                  else
                   {
-                     // key.sym enum values need FindClass:
-                     specType._class = spec.name ? FindClass(spec.name) : null;
-                     // specType._class = spec.symbol; 
-                     specType.kind = classType;
-                     if(!specType._class)
-                        specType.kind = intType;
+                     Symbol symbol = spec.name ? FindType(curContext, spec.name) : null;
+                     if(symbol && symbol.type)
+                     {
+                        // Free Type Contents:
+                        Type dummy { };
+                        *dummy = *specType;
+                        FreeType(dummy);
+
+                        CopyTypeInto(specType, symbol.type);
+                        specType.typeName = CopyString(symbol.type.name);
+                     }
+                     else if(!isTypedef) // !specType.kind)    // TESTING THIS FOR enum / typedef problem
+                     {
+                        // key.sym enum values need FindClass:
+                        specType._class = spec.name ? FindClass(spec.name) : null;
+                        // specType._class = spec.symbol; 
+                        specType.kind = classType;
+                        if(!specType._class)
+                           specType.kind = intType;
+                     }
                   }
                }
                else if(spec.type == enumSpecifier)

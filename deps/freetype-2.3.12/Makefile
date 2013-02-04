@@ -159,10 +159,6 @@ PRJ_CFLAGS += \
 
 CECFLAGS += -cpp $(_CPP)
 
-ifndef STATIC_LIBRARY_TARGET
-OFLAGS +=
-endif
-
 # TARGETS
 
 all: objdir $(TARGET)

@@ -3639,6 +3639,14 @@ specType->kind = 21;
 }
 else if(spec->type == 1)
 {
+if(spec->name && (!strcmp(spec->name, "intptr") || !strcmp(spec->name, "uintptr")))
+{
+specType->kind = 22;
+if(!strcmp(spec->name, "uintptr"))
+specType->isSigned = 0x0;
+}
+else
+{
 struct Symbol * symbol = spec->name ? FindType(curContext, spec->name) : (((void *)0));
 
 if(symbol && symbol->type)
@@ -3656,6 +3664,7 @@ specType->_class = spec->name ? FindClass(spec->name) : (((void *)0));
 specType->kind = 8;
 if(!specType->_class)
 specType->kind = 3;
+}
 }
 }
 else if(spec->type == 2)

@@ -2661,21 +2661,30 @@ private:
          f.Puts("\n");
          f.Puts("\n");
 
-         f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
-         f.Puts("OFLAGS +=");
          forceBitDepth = (options && options.buildBitDepth) || numCObjects;
-         if(forceBitDepth)
-            f.Puts((!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? " $(FORCE_32_BIT)" : " $(FORCE_64_BIT) \\\n");
+         if(forceBitDepth || GetProfile(config))
+         {
+            f.Puts("OFLAGS +=");
+            if(forceBitDepth)
+               f.Puts((!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? " $(FORCE_32_BIT)" : " $(FORCE_64_BIT)");
+            if(GetProfile(config))
+               f.Puts(" -pg");
+            f.Puts("\n");
+            f.Puts("\n");
+         }
 
-         if(GetProfile(config))
-            f.Puts(" -pg");
-         if(config && config.options && config.options.libraryDirs)
-            OutputListOption(f, "L", config.options.libraryDirs, lineEach, true);
-         if(options && options.libraryDirs)
-            OutputListOption(f, "L", options.libraryDirs, lineEach, true);
-         f.Puts("\n");
-         f.Puts("endif\n");
-         f.Puts("\n");
+         if((config && config.options && config.options.libraryDirs) || (options && options.libraryDirs))
+         {
+            f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
+            f.Puts("OFLAGS +=");
+            if(config && config.options && config.options.libraryDirs)
+               OutputListOption(f, "L", config.options.libraryDirs, lineEach, true);
+            if(options && options.libraryDirs)
+               OutputListOption(f, "L", options.libraryDirs, lineEach, true);
+            f.Puts("\n");
+            f.Puts("endif\n");
+            f.Puts("\n");
+         }
 
          f.Puts("# TARGETS\n");
          f.Puts("\n");

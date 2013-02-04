@@ -500,7 +500,7 @@ public class StringList
 
    bool Add(String string)
    {
-      BTNode node { key = (uint)CopyString(string) };
+      BTNode node { key = (uintptr)CopyString(string) };
       if(strings.Add(node))
          return true;
       else

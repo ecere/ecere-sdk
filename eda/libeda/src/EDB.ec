@@ -1186,23 +1186,23 @@ static class EDBRow : DriverRow
             {
                case first:
                   node = index.tree.first;
-                  num = node ? node.key : 0;
+                  num = node ? (uint)node.key : 0;
                   return _num != 0;
                case next:
                   node = node ? node.next : index.tree.first;
-                  num = node ? node.key : 0;
+                  num = node ? (uint)node.key : 0;
                   return _num != 0;
                case last:
                   node = index.tree.last;
-                  num = node ? node.key : 0;
+                  num = node ? (uint)node.key : 0;
                   return _num != 0;
                case previous:
                   node = node ? node.prev : index.tree.last;
-                  num = node ? node.key : 0;
+                  num = node ? (uint)node.key : 0;
                   return _num != 0;
                case middle:
                   node = index.tree.root;
-                  num = node ? node.key : 0;
+                  num = node ? (uint)node.key : 0;
                   return _num != 0;
                case nil:
                   num = 0;
@@ -1313,7 +1313,7 @@ static class EDBRow : DriverRow
                      node = node ? node.next : null;
                   else
                      move = next;
-                  result = node ? order * CompareRowNum(node.key, field, data) : 1;
+                  result = node ? order * CompareRowNum((uint)node.key, field, data) : 1;
                   // We won't find this on our right
                   if(result > 0)
                   {
@@ -1325,14 +1325,14 @@ static class EDBRow : DriverRow
                   else if(result == 0)
                   {
                      this.node = node;
-                     num = node.key;
+                     num = (uint)node.key;
                      return true;                  
                   }
                }
                else if(move == previous)
                {
                   node = node ? node.prev : null;
-                  result = node ? order * CompareRowNum(node.key, field, data) : -1;
+                  result = node ? order * CompareRowNum((uint)node.key, field, data) : -1;
                   // We won't find this on our left
                   if(result < 0)
                   {
@@ -1344,7 +1344,7 @@ static class EDBRow : DriverRow
                   else if(result == 0)
                   {
                      this.node = node;
-                     num = node.key;
+                     num = (uint)node.key;
                      return true;                  
                   }
                }
@@ -1355,8 +1355,8 @@ static class EDBRow : DriverRow
                   while(node)
                   {
                      BTNode max = node.maximum, min = node.minimum;
-                     int maxResult = order * CompareRowNum(max.key, field, data);
-                     int minResult = order * CompareRowNum(min.key, field, data);
+                     int maxResult = order * CompareRowNum((uint)max.key, field, data);
+                     int minResult = order * CompareRowNum((uint)min.key, field, data);
                      if(maxResult >= 0 && minResult <= 0) break;
                      node = node.parent;
                   }
@@ -1368,7 +1368,7 @@ static class EDBRow : DriverRow
                   while(node)
                   {
                      BTNode max = node.maximum;
-                     result = order * CompareRowNum(max.key, field, data);
+                     result = order * CompareRowNum((uint)max.key, field, data);
                      if(result >= 0) break;
                      node = node.parent;
                   }
@@ -1379,7 +1379,7 @@ static class EDBRow : DriverRow
                   while(node)
                   {
                      BTNode min = node.minimum;
-                     result = order * CompareRowNum(min.key, field, data);
+                     result = order * CompareRowNum((uint)min.key, field, data);
                      if(result <= 0) break;
                      node = node.parent;
                   }
@@ -1390,7 +1390,7 @@ static class EDBRow : DriverRow
                // Go down
                while(node)
                {
-                  result = order * CompareRowNum(node.key, field, data);
+                  result = order * CompareRowNum((uint)node.key, field, data);
                   if(!result) break;
                   node = (result < 0) ? node.right : node.left;
                }
@@ -1400,10 +1400,10 @@ static class EDBRow : DriverRow
                {
                   lastNode = node;
                   node = (move == last || move == previous) ? node.next : node.prev;
-                  if(node) result = order * CompareRowNum(node.key, field, data);
+                  if(node) result = order * CompareRowNum((uint)node.key, field, data);
                }
                this.node = lastNode;
-               num = lastNode ? lastNode.key : 0;
+               num = lastNode ? (uint)lastNode.key : 0;
                return lastNode ? true : false;
             }
             else
@@ -1534,7 +1534,7 @@ static class EDBRow : DriverRow
                      node = node ? node.next : null;
                   else
                      move = next;
-                  result = node ? MultipleCompareRowNum(node.key, findData, numFields) : 1;
+                  result = node ? MultipleCompareRowNum((uint)node.key, findData, numFields) : 1;
                   // We won't find this on our right
                   if(result > 0)
                   {
@@ -1546,14 +1546,14 @@ static class EDBRow : DriverRow
                   else if(result == 0)
                   {
                      this.node = node;
-                     num = node.key;
+                     num = (uint)node.key;
                      return true;                  
                   }
                }
                else if(move == previous)
                {
                   node = node ? node.prev : null;
-                  result = node ? MultipleCompareRowNum(node.key, findData, numFields) : -1;
+                  result = node ? MultipleCompareRowNum((uint)node.key, findData, numFields) : -1;
                   // We won't find this on our left
                   if(result < 0)
                   {
@@ -1565,7 +1565,7 @@ static class EDBRow : DriverRow
                   else if(result == 0)
                   {
                      this.node = node;
-                     num = node.key;
+                     num = (uint)node.key;
                      return true;                  
                   }
                }
@@ -1578,7 +1578,7 @@ static class EDBRow : DriverRow
                   while(node)
                   {
                      BTNode max = node.maximum;
-                     result = MultipleCompareRowNum(max.key, findData, numFields);
+                     result = MultipleCompareRowNum((uint)max.key, findData, numFields);
                      if(result >= 0) break;
                      node = node.parent;
                   }
@@ -1589,7 +1589,7 @@ static class EDBRow : DriverRow
                   while(node)
                   {
                      BTNode min = node.minimum;
-                     result = MultipleCompareRowNum(min.key, findData, numFields);
+                     result = MultipleCompareRowNum((uint)min.key, findData, numFields);
                      if(result <= 0) break;
                      node = node.parent;
                   }
@@ -1600,7 +1600,7 @@ static class EDBRow : DriverRow
                // Go down
                while(node)
                {
-                  result = MultipleCompareRowNum(node.key, findData, numFields);
+                  result = MultipleCompareRowNum((uint)node.key, findData, numFields);
                   if(!result) break;
                   node = (result < 0) ? node.right : node.left;
                }
@@ -1610,10 +1610,10 @@ static class EDBRow : DriverRow
                {
                   lastNode = node;
                   node = (move == last || move == previous) ? node.next : node.prev;
-                  if(node) result = MultipleCompareRowNum(node.key, findData, numFields);
+                  if(node) result = MultipleCompareRowNum((uint)node.key, findData, numFields);
                }
                this.node = lastNode;
-               num = lastNode ? lastNode.key : 0;
+               num = lastNode ? (uint)lastNode.key : 0;
                return lastNode ? true : false;
             }
             else

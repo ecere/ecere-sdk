@@ -1083,7 +1083,7 @@ struct Expression * exp = *expPtr;
 
 *memberExpPtr = (((void *)0));
 newExp = CopyExpression(exp);
-*(struct Expression **)((unsigned char *)newExp + (unsigned int)((unsigned char *)memberExpPtr - (unsigned char *)exp)) = memberExp;
+*(struct Expression **)((unsigned char *)newExp + ((unsigned char *)memberExpPtr - (unsigned char *)exp)) = memberExp;
 memberExp->member.exp = idExp;
 exp->type = 5;
 exp->list = bracketExp->list;
@@ -1101,7 +1101,7 @@ struct Expression * exp = *expPtr;
 
 *memberExpPtr = (((void *)0));
 newExp = CopyExpression(exp);
-*(struct Expression **)((unsigned char *)newExp + (unsigned int)((unsigned char *)memberExpPtr - (unsigned char *)exp)) = (*memberExp->list).last;
+*(struct Expression **)((unsigned char *)newExp + ((unsigned char *)memberExpPtr - (unsigned char *)exp)) = (*memberExp->list).last;
 exp->type = 5;
 exp->list = memberExp->list;
 memberExp->list = (((void *)0));
