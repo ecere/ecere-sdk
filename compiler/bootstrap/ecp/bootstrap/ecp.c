@@ -2506,7 +2506,7 @@ char * cppCommand = (((void *)0));
 char * cppOptions = (((void *)0));
 int cppOptionsLen = 0;
 int targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
-int targetBits = (sizeof(uintptr_t) == 8) ? 64 : 32;
+int targetBits = GetHostBits();
 
 for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)
 {

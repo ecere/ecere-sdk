@@ -16275,6 +16275,22 @@ thisClass = (((void *)0));
 }
 }
 
+void DeclareFunctionUtil(char * s)
+{
+struct __ecereNameSpace__ecere__com__GlobalFunction * function = __ecereNameSpace__ecere__com__eSystem_FindFunction(privateModule, s);
+
+if(function)
+{
+char name[1024];
+
+name[0] = (char)0;
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)function->module + 12)))->importType != 1 && (!function->dataType || !function->dataType->dllExport))
+strcpy(name, "__ecereFunction_");
+FullClassNameCat(name, s, 0x0);
+DeclareFunction(function, name);
+}
+}
+
 extern struct __ecereNameSpace__ecere__com__Instance * GetPrivateModule(void);
 
 void ComputeDataTypes()
@@ -16288,6 +16304,10 @@ containerClass = __ecereNameSpace__ecere__com__eSystem_FindClass(GetPrivateModul
 temp->symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->id = -1000, ((struct Symbol *)__ecereTemp1)->idCode = -1000, ((struct Symbol *)__ecereTemp1));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*ast), (((void *)0)), temp);
 curExternal = temp;
+DeclareFunctionUtil("eSystem_New");
+DeclareFunctionUtil("eSystem_New0");
+DeclareFunctionUtil("eSystem_Renew");
+DeclareFunctionUtil("eSystem_Renew0");
 DeclareStruct("ecere::com::Class", 0x0);
 DeclareStruct("ecere::com::Instance", 0x0);
 DeclareStruct("ecere::com::Property", 0x0);
@@ -16417,6 +16437,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ParseExpressionString", 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReplaceExpContents", "void ReplaceExpContents(Expression checkedExp, Expression newExp)", ReplaceExpContents, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ApplyAnyObjectLogic", "void ApplyAnyObjectLogic(Expression e)", ApplyAnyObjectLogic, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessExpressionType", "void ProcessExpressionType(Expression exp)", ProcessExpressionType, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareFunctionUtil", "void DeclareFunctionUtil(String s)", DeclareFunctionUtil, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeDataTypes", "void ComputeDataTypes(void)", ComputeDataTypes, module, 1);
 }
 

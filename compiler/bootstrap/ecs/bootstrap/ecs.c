@@ -492,7 +492,7 @@ static unsigned int i18n;
 
 static int targetPlatform;
 
-static int targetBits = (sizeof(uintptr_t) == 8) ? 64 : 32;
+static int targetBits;
 
 static unsigned int isConsole;
 
@@ -2318,6 +2318,7 @@ unsigned int valid = 0x1;
 char * output = (((void *)0));
 
 targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
+targetBits = GetHostBits();
 for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)
 {
 char * arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c];

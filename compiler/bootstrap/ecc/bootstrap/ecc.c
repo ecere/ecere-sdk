@@ -849,7 +849,7 @@ int c;
 unsigned int valid = 0x1;
 char defaultOutputFile[797];
 int targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
-int targetBits = (sizeof(uintptr_t) == 8) ? 64 : 32;
+int targetBits = GetHostBits();
 
 SetSymbolsDir("");
 for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)

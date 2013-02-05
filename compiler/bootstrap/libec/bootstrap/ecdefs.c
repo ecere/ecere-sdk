@@ -1730,6 +1730,43 @@ return 0;
 
 int targetPlatform;
 
+extern char *  getenv(const char *  name);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpen(unsigned int mode, char *  commandLine);
+
+extern int strcmp(const char * , const char * );
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(struct __ecereNameSpace__ecere__com__Instance * this, char *  s, int max);
+
+extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+int GetHostBits()
+{
+int hostBits = (sizeof(uintptr_t) == 8) ? 64 : 32;
+char * hostType = getenv("HOSTTYPE");
+char host[256];
+
+if(!hostType)
+{
+struct __ecereNameSpace__ecere__com__Instance * f = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(0x1))), "uname -m");
+
+if(f)
+{
+if(__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, host, sizeof host))
+hostType = host;
+(__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
+}
+}
+if(hostType)
+{
+if(!strcmp(hostType, "x86_64"))
+hostBits = 64;
+else if(!strcmp(hostType, "i386") || !strcmp(hostType, "i686"))
+hostBits = 32;
+}
+return hostBits;
+}
+
 void SetTargetPlatform(int platform)
 {
 targetPlatform = platform;
@@ -2791,6 +2828,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("Compiler_Error", "void C
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetNumWarnings", "int GetNumWarnings(void)", GetNumWarnings, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("Compiler_Warning", "void Compiler_Warning(char * format, ...)", Compiler_Warning, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("yyerror", "int yyerror(char * s)", yyerror, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetHostBits", "int GetHostBits(void)", GetHostBits, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetTargetPlatform", "void SetTargetPlatform(ecere::com::Platform platform)", SetTargetPlatform, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetTargetBits", "void SetTargetBits(int bits)", SetTargetBits, module, 1);
 }
