@@ -5898,7 +5898,7 @@ static void LoadCOM(Module module)
    moduleClass.count++;
    
    // Create Application class
-   applicationClass = eSystem_RegisterClass(normalClass, "ecere::com::Application", "Module", force64Bits ? (32 + 32 + 8 + 32) : sizeof(struct Application), 0, null, (void *)Application_Destructor, module, baseSystemAccess, publicAccess);
+   applicationClass = eSystem_RegisterClass(normalClass, "ecere::com::Application", "Module", force64Bits ? (8+8+8+8 + 32 + 8 + 176) : sizeof(struct Application), 0, null, (void *)Application_Destructor, module, baseSystemAccess, publicAccess);
    eClass_AddVirtualMethod(applicationClass, "Main", "void()", null, publicAccess);
    eClass_AddDataMember(applicationClass, "argc", "int", sizeof(int), 4, publicAccess);
    eClass_AddDataMember(applicationClass, "argv", "char **", pointerSize, pointerSize, publicAccess);

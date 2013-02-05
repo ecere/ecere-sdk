@@ -5023,7 +5023,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "privateNameSpac
 __ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "publicNameSpace", "NameSpace", force64Bits ? (32 + 8 + 8 + 4 * 32) : sizeof(struct __ecereNameSpace__ecere__com__NameSpace), pointerSize, 1);
 moduleClass->fixed = 0x1;
 moduleClass->count++;
-applicationClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Application", "Module", force64Bits ? (32 + 32 + 8 + 32) : sizeof(struct __ecereNameSpace__ecere__com__Application), 0, (((void *)0)), (void *)__ecereNameSpace__ecere__com__Application_Destructor, module, 4, 1);
+applicationClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Application", "Module", force64Bits ? (8 + 8 + 8 + 8 + 32 + 8 + 176) : sizeof(struct __ecereNameSpace__ecere__com__Application), 0, (((void *)0)), (void *)__ecereNameSpace__ecere__com__Application_Destructor, module, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(applicationClass, "Main", "void()", (((void *)0)), 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "argc", "int", sizeof(int), 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "argv", "char **", pointerSize, pointerSize, 1);

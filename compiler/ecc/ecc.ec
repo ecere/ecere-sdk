@@ -164,13 +164,17 @@ class CompilerApp : Application
          {
             if(!strcmp(arg + 1, "m32") || !strcmp(arg + 1, "m64"))
             {
-               int argLen = strlen(arg);
-               int newLen = cppOptionsLen + 1 + argLen;
-               cppOptions = renew cppOptions char[newLen + 1];
-               cppOptions[cppOptionsLen] = ' ';
-               strcpy(cppOptions + cppOptionsLen + 1, arg); 
-               cppOptionsLen = newLen;
-
+#if defined(__WIN32__)
+               if(strcmp(arg + 1, "m64"))    // Until we set up MinGW-w64
+#endif
+               {
+                  int argLen = strlen(arg);
+                  int newLen = cppOptionsLen + 1 + argLen;
+                  cppOptions = renew cppOptions char[newLen + 1];
+                  cppOptions[cppOptionsLen] = ' ';
+                  strcpy(cppOptions + cppOptionsLen + 1, arg);
+                  cppOptionsLen = newLen;
+               }
                targetBits = !strcmp(arg + 1, "m32") ? 32 : 64;
             }
             else if(arg[1] == 'D')
