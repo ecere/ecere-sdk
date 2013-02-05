@@ -512,11 +512,6 @@ msgstr "Condition"
 msgid "Configurations: "
 msgstr "Configurations: "
 
-#: ./src/designer/CodeEditor.ec:38
-#: ./src/designer/CodeEditor.ec:39
-msgid "Consolas"
-msgstr "Consolas"
-
 #: ./src/ProjectSettings.ec:2117
 msgid "Console Application"
 msgstr "Console Application"
@@ -534,6 +529,11 @@ msgstr "Couldn't create file."
 #: ./src/debugger/Debugger.ec:2388
 msgid "Couldn't read memory"
 msgstr "Couldn't read memory"
+
+#: ./src/designer/CodeEditor.ec:35
+#: ./src/designer/CodeEditor.ec:36
+msgid "Courier New"
+msgstr "Courier New"
 
 #: ./src/dialogs/NewProjectDialog.ec:219
 msgid "Create Form"

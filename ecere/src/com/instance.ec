@@ -1089,7 +1089,7 @@ static uint NextFibonacci(uint number)
 static uint log1_5i(uint number)
 {
    uint pos;
-   uint64 current = 4;
+   uint64 current = sizeof(void *);
    
    for(pos=0; pos < NUM_POOLS; pos++)
    {
@@ -1104,7 +1104,7 @@ static uint log1_5i(uint number)
 static uint pow1_5(uint number)
 {
    uint pos;
-   uint64 current = 4;
+   uint64 current = sizeof(void *);
    for(pos=0; pos < number; pos++)
    {
       current = current * 3 / 2;
@@ -1116,7 +1116,7 @@ static uint pow1_5(uint number)
 static uint pow1_5i(uint number)
 {
    uint pos;
-   uint64 current = 4;
+   uint64 current = sizeof(void *);
    
    for(pos=0; pos < NUM_POOLS; pos++)
    {
@@ -1155,8 +1155,8 @@ static void InitMemory()
       int expansion;
       
       pools[c].blockSize = NTH_SIZE(c);
-      if(pools[c].blockSize % 4)
-         pools[c].blockSize += 4 - (pools[c].blockSize % 4);
+      if(pools[c].blockSize % sizeof(void *))
+         pools[c].blockSize += sizeof(void *) - (pools[c].blockSize % sizeof(void *));
       pools[c].blockSpace = pools[c].blockSize;
       pools[c].blockSpace += sizeof(class MemBlock);      
       // pools[c].Expand(initNumBlocks[c]);
@@ -1242,8 +1242,8 @@ static void * _myrealloc(void * pointer, unsigned int size)
       {
          // if((1 << pool) >= size && (pool - SIZE_POSITION(size)) <= 1)
          uint ns = NEXT_SIZE(size);
-         uint mod = ns % 4;
-         if(mod) ns += 4-mod;
+         uint mod = ns % sizeof(void *);
+         if(mod) ns += sizeof(void *)-mod;
          if(ns == pool->blockSize)
          {
             newPointer = pointer;
@@ -1290,8 +1290,8 @@ static void * _mycrealloc(void * pointer, unsigned int size)
       {
          // if((1 << pool) >= size && (pool - SIZE_POSITION(size)) <= 1)
          uint ns = NEXT_SIZE(size);
-         uint mod = ns % 4;
-         if(mod) ns += 4-mod;
+         uint mod = ns % sizeof(void *);
+         if(mod) ns += sizeof(void *)-mod;
          if(ns == pool->blockSize)
          {
             int extra = size - block.size;
@@ -1483,7 +1483,7 @@ static void * _realloc(void * pointer, unsigned int size)
 
    if(!recurse && !stack.recurse && pointer)
    {
-      block = (MemInfo)memBlocks.Find((uint)pointer);
+      block = (MemInfo)memBlocks.Find((uintptr)pointer);
       if(!block)
       {
          printf("Reallocating Bad Memory\n");
@@ -1571,7 +1571,7 @@ static void * _crealloc(void * pointer, unsigned int size)
 
    if(!recurse && !stack.recurse && pointer)
    {
-      block = (MemInfo)memBlocks.Find((uint)pointer);
+      block = (MemInfo)memBlocks.Find((uintptr)pointer);
       if(!block)
       {
          printf("Reallocating Bad Memory\n");
@@ -1662,7 +1662,7 @@ static void _free(void * pointer)
       {
          MemInfo block;
          stack.recurse = true;
-         block = (MemInfo)memBlocks.Find((uint)pointer);
+         block = (MemInfo)memBlocks.Find((uintptr)pointer);
          if(!block)
          {
             int c;
@@ -5838,7 +5838,6 @@ static void LoadCOM(Module module)
       instanceClass.memberID = -3;
       instanceClass.startMemberID = -3;
 
-      // eClass_AddDataMember(instanceClass, "_vTbl", "void **", sizeof(int (**)()), 4, publicAccess);
       eClass_AddDataMember(instanceClass, "_vTbl", "int (**)()", pointerSize, pointerSize, publicAccess);
       eClass_AddDataMember(instanceClass, "_class", "ecere::com::Class", pointerSize, pointerSize, publicAccess);
       eClass_AddDataMember(instanceClass, "_refCount", "int", sizeof(int), sizeof(int), publicAccess);
