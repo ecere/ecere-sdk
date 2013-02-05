@@ -1325,6 +1325,32 @@ int yyerror(char * s)
 
 Platform targetPlatform;
 
+public int GetHostBits()
+{
+   // Default to runtime platform in case we fail to determine host
+   int hostBits = (sizeof(uintptr) == 8) ? 64 : 32;
+   String hostType = getenv("HOSTTYPE");
+   char host[256];
+   if(!hostType)
+   {
+      DualPipe f = DualPipeOpen({ output = true }, "uname -m");
+      if(f)
+      {
+         if(f.GetLine(host, sizeof(host)))
+            hostType = host;
+         delete f;
+      }
+   }
+   if(hostType)
+   {
+      if(!strcmp(hostType, "x86_64"))
+         hostBits = 64;
+      else if(!strcmp(hostType, "i386") || !strcmp(hostType, "i686"))
+         hostBits = 32;
+   }
+   return hostBits;
+}
+
 public void SetTargetPlatform(Platform platform) { targetPlatform = platform; };
 
 int targetBits;

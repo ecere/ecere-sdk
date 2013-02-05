@@ -12151,6 +12151,20 @@ static void ProcessClass(OldList definitions, Symbol symbol)
    }
 }
 
+void DeclareFunctionUtil(String s)
+{
+   GlobalFunction function = eSystem_FindFunction(privateModule, s);
+   if(function)
+   {
+      char name[1024];
+      name[0] = 0;
+      if(function.module.importType != staticImport && (!function.dataType || !function.dataType.dllExport))
+         strcpy(name, "__ecereFunction_");
+      FullClassNameCat(name, s, false); // Why is this using FullClassNameCat ?
+      DeclareFunction(function, name);
+   }
+}
+
 void ComputeDataTypes()
 {
    External external;
@@ -12166,6 +12180,11 @@ void ComputeDataTypes()
    ast->Insert(null, temp);
 
    curExternal = temp;
+
+   DeclareFunctionUtil("eSystem_New");
+   DeclareFunctionUtil("eSystem_New0");
+   DeclareFunctionUtil("eSystem_Renew");
+   DeclareFunctionUtil("eSystem_Renew0");
 
    DeclareStruct("ecere::com::Class", false);
    DeclareStruct("ecere::com::Instance", false);

@@ -10,7 +10,7 @@ static define localeDir = "locale";
 static bool i18n;
 
 static Platform targetPlatform;
-static int targetBits = (sizeof(uintptr) == 8) ? 64 : 32;
+static int targetBits;
 
 static bool isConsole;
 static bool isDynamicLibrary;
@@ -1617,6 +1617,7 @@ class SymbolgenApp : Application
       char * output = null;
 
       targetPlatform = GetRuntimePlatform();
+      targetBits = GetHostBits();
 
       /*
       for(c = 0; c<this.argc; c++)

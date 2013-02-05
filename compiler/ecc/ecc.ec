@@ -128,7 +128,7 @@ class CompilerApp : Application
       char defaultOutputFile[MAX_LOCATION];
 
       Platform targetPlatform = GetRuntimePlatform();
-      int targetBits = (sizeof(uintptr) == 8) ? 64 : 32;
+      int targetBits = GetHostBits();
 
       SetSymbolsDir("");
 
