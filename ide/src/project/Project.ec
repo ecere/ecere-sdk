@@ -2755,7 +2755,7 @@ private:
             // Main Module (Linking) for ECERE C modules
             f.Puts("$(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)\n");
             // use of objDirExpNoSpaces used instead of $(OBJ) to prevent problematic joining of arguments in ecs
-            f.Printf("\t$(ECS)%s $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols %s -o $(OBJ)$(MODULE).main.ec\n", 
+            f.Printf("\t$(ECS)%s $(FORCE_32_BIT) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols %s -o $(OBJ)$(MODULE).main.ec\n", 
                GetConsole(config) ? " -console" : "", objDirExpNoSpaces);
             f.Puts("\n");
             // Main Module (Linking) for ECERE C modules
