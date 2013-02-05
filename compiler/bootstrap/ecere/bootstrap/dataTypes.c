@@ -23,6 +23,14 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -2055,8 +2063,6 @@ return (char *)(this ? this->string : (((void *)0)));
 void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnFree(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this)
 {
 }
-
-extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 static void __ecereNameSpace__ecere__com__String_OnCopy(struct __ecereNameSpace__ecere__com__Class * _class, char ** data, char * newData)
 {

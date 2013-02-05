@@ -23,6 +23,14 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
+
 struct __ecereNameSpace__ecere__sys__BTNode
 {
 uintptr_t key;

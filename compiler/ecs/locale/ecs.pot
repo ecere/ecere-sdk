@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./ecs.ec:1709
+#: ./ecs.ec:1710
 msgid "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n"
 msgstr "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n"
 
