@@ -786,7 +786,7 @@ return current;
 static unsigned int __ecereNameSpace__ecere__com__log1_5i(unsigned int number)
 {
 unsigned int pos;
-uint64 current = 4;
+uint64 current = sizeof(void *);
 
 for(pos = 0; pos < 31; pos++)
 {
@@ -802,7 +802,7 @@ return pos;
 static unsigned int __ecereNameSpace__ecere__com__pow1_5(unsigned int number)
 {
 unsigned int pos;
-uint64 current = 4;
+uint64 current = sizeof(void *);
 
 for(pos = 0; pos < number; pos++)
 {
@@ -816,7 +816,7 @@ return (unsigned int)current;
 static unsigned int __ecereNameSpace__ecere__com__pow1_5i(unsigned int number)
 {
 unsigned int pos;
-uint64 current = 4;
+uint64 current = sizeof(void *);
 
 for(pos = 0; pos < 31; pos++)
 {
@@ -857,8 +857,8 @@ for(c = 0; c < 31; c++)
 int expansion;
 
 __ecereNameSpace__ecere__com__pools[c].blockSize = __ecereNameSpace__ecere__com__pow1_5(c);
-if(__ecereNameSpace__ecere__com__pools[c].blockSize % 4)
-__ecereNameSpace__ecere__com__pools[c].blockSize += 4 - (__ecereNameSpace__ecere__com__pools[c].blockSize % 4);
+if(__ecereNameSpace__ecere__com__pools[c].blockSize % sizeof(void *))
+__ecereNameSpace__ecere__com__pools[c].blockSize += sizeof(void *) - (__ecereNameSpace__ecere__com__pools[c].blockSize % sizeof(void *));
 __ecereNameSpace__ecere__com__pools[c].blockSpace = __ecereNameSpace__ecere__com__pools[c].blockSize;
 __ecereNameSpace__ecere__com__pools[c].blockSpace += sizeof(struct __ecereNameSpace__ecere__com__MemBlock);
 expansion = (__ecereNameSpace__ecere__com__pools[c].blockSize < 128) ? 1024 : (131072 / __ecereNameSpace__ecere__com__pools[c].blockSize);
@@ -944,10 +944,10 @@ if(block)
 if(pool)
 {
 unsigned int ns = __ecereNameSpace__ecere__com__pow1_5i(size);
-unsigned int mod = ns % 4;
+unsigned int mod = ns % sizeof(void *);
 
 if(mod)
-ns += 4 - mod;
+ns += sizeof(void *) - mod;
 if(ns == (*pool).blockSize)
 {
 newPointer = pointer;
@@ -993,10 +993,10 @@ if(block)
 if(pool)
 {
 unsigned int ns = __ecereNameSpace__ecere__com__pow1_5i(size);
-unsigned int mod = ns % 4;
+unsigned int mod = ns % sizeof(void *);
 
 if(mod)
-ns += 4 - mod;
+ns += sizeof(void *) - mod;
 if(ns == (*pool).blockSize)
 {
 int extra = size - block->size;
@@ -1413,6 +1413,7 @@ struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSyst
 void * __ecereTemp1;
 int start = 0, c;
 struct __ecereNameSpace__ecere__com__NameSpace * nameSpace = (((void *)0));
+unsigned int force64Bits = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application + 300)))->isGUIApp & 2) ? 0x1 : 0x0;
 
 {
 nameSpace = (declMode == 1) ? &((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->publicNameSpace : &((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->privateNameSpace;
@@ -1746,7 +1747,7 @@ id++;
 }
 _class->memberID = _class->startMemberID = (base && (type == 0 || type == 5 || type == 1)) ? base->memberID : 0;
 if(type == 0 || type == 5)
-_class->offset = (base && base->structSize && base->type != 1000) ? base->structSize : ((type == 5) ? 0 : 12);
+_class->offset = (base && base->structSize && base->type != 1000) ? base->structSize : ((type == 5) ? 0 : (force64Bits ? 24 : 12));
 if(type == 1)
 {
 _class->memberOffset = (base && base->structSize && base->type != 1000) ? base->structSize : 0;
