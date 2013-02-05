@@ -229,9 +229,8 @@ public:
 
             itemString[0] = '\0';
             
-            result = (char *)Dclass._vTbl[__ecereVMethodID_class_OnGetString](Dclass,
-               (Dclass.type == systemClass || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data, 
-                  itemString, 0);
+            result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnGetString])(Dclass,
+               (Dclass.type == systemClass || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data, itemString, null, null);
             if(!first) strcat(tempString, ", ");
 
             strcat(tempString, result);         

@@ -439,7 +439,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
    else if(_class.type == unitClass)
    {
       Class dataType = eSystem_FindClass(module, _class.dataTypeString);
-      return (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, data, tempString, fieldData, needClass);
+      return ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, data, tempString, fieldData, needClass);
    }
    else
    {
@@ -485,7 +485,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                         if(value.f)
                         {
                            bool needClass = true;
-                           char * result = (char *)memberType._vTbl[__ecereVMethodID_class_OnGetString](memberType, &value, memberString, null, &needClass);
+                           char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, null, &needClass);
                            if(result && result != memberString)
                               strcpy(memberString, result);
                            // TESTING THIS HERE
@@ -499,7 +499,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                         if(value.i || prop.IsSet)
                         {
                            bool needClass = true;
-                           char * result = (char *)memberType._vTbl[__ecereVMethodID_class_OnGetString](memberType, 
+                           char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, 
                               (memberType.type == normalClass) ? value.p : &value, memberString, null, &needClass);
                            if(result && result != memberString)
                               strcpy(memberString, result);
@@ -525,9 +525,9 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                         bool needClass = true;
                         char * result;
                         if(memberType.type == normalClass)
-                           result = (char *)memberType._vTbl[__ecereVMethodID_class_OnGetString](memberType, *(Instance *)memberData, internalMemberString, null, &needClass);
+                           result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, *(Instance *)memberData, internalMemberString, null, &needClass);
                         else
-                           result = (char *)memberType._vTbl[__ecereVMethodID_class_OnGetString](memberType, memberData, internalMemberString, null, &needClass);
+                           result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, memberData, internalMemberString, null, &needClass);
                         if(needClass)
                         {
                            //strcpy(memberString, memberType.name);
@@ -554,7 +554,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                         {
                            bool needClass = true;
                            char internalMemberString[1024];
-                           char * result = (char *)memberType._vTbl[__ecereVMethodID_class_OnGetString](memberType, &value, internalMemberString, null, &needClass);
+                           char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, internalMemberString, null, &needClass);
 
                            if(needClass && memberType.type != systemClass && memberType.type != enumClass && memberType.type != unitClass)
                            {
@@ -580,7 +580,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                            if(value.i)
                            {
                               bool needClass = true;
-                              char * result = (char *)memberType._vTbl[__ecereVMethodID_class_OnGetString](memberType, &value, memberString, null, &needClass);
+                              char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, null, &needClass);
                               if(result && memberString != result)
                                  strcpy(memberString, result);
                            }
@@ -588,7 +588,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                         else
                         {
                            bool needClass = true;
-                           char * result = (char *)memberType._vTbl[__ecereVMethodID_class_OnGetString](memberType, ((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset)), memberString, null, &needClass);
+                           char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, ((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset)), memberString, null, &needClass);
                            if(result && memberString != result)
                               strcpy(memberString, result);
                         }
@@ -600,7 +600,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                      byte * memberData = ((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset));
                      bool needClass = true;
                      char * result;
-                     result = (char *)memberType._vTbl[__ecereVMethodID_class_OnGetString](memberType, memberData, internalMemberString, null, &needClass);
+                     result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, memberData, internalMemberString, null, &needClass);
                      if(needClass)
                      {
                         //strcpy(memberString, memberType.name);
@@ -1898,7 +1898,7 @@ public int PrintStdArgsToBuffer(char * buffer, int maxLen, typed_object object, 
       if(data)
       {
          // TOFIX: OnGetString will need a maxLen as well
-         result = (char *)_class._vTbl[__ecereVMethodID_class_OnGetString](_class, data, buffer + len, null, null);
+         result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, buffer + len, null, null);
          if(result)
          {
             int newLen = strlen(result);
