@@ -749,7 +749,7 @@ else if(_class->type == 3)
 {
 struct __ecereNameSpace__ecere__com__Class * dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, _class->dataTypeString);
 
-return (char *)dataType->_vTbl[__ecereVMethodID_class_OnGetString](dataType, data, tempString, fieldData, needClass);
+return ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnGetString])(dataType, data, tempString, fieldData, needClass);
 }
 else
 {
@@ -798,7 +798,7 @@ value.f = ((float (*)())(void *)prop->Get)(data);
 if(value.f)
 {
 unsigned int needClass = 0x1;
-char * result = (char *)memberType->_vTbl[__ecereVMethodID_class_OnGetString](memberType, &value, memberString, (((void *)0)), &needClass);
+char * result = ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, (((void *)0)), &needClass);
 
 if(result && result != memberString)
 strcpy(memberString, result);
@@ -812,7 +812,7 @@ value.i = prop->Get(data);
 if(value.i || prop->IsSet)
 {
 unsigned int needClass = 0x1;
-char * result = (char *)memberType->_vTbl[__ecereVMethodID_class_OnGetString](memberType, (memberType->type == 0) ? value.p : &value, memberString, (((void *)0)), &needClass);
+char * result = ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, (memberType->type == 0) ? value.p : &value, memberString, (((void *)0)), &needClass);
 
 if(result && result != memberString)
 strcpy(memberString, result);
@@ -840,9 +840,9 @@ unsigned int needClass = 0x1;
 char * result;
 
 if(memberType->type == 0)
-result = (char *)memberType->_vTbl[__ecereVMethodID_class_OnGetString](memberType, *(struct __ecereNameSpace__ecere__com__Instance **)memberData, internalMemberString, (((void *)0)), &needClass);
+result = ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, *(struct __ecereNameSpace__ecere__com__Instance **)memberData, internalMemberString, (((void *)0)), &needClass);
 else
-result = (char *)memberType->_vTbl[__ecereVMethodID_class_OnGetString](memberType, memberData, internalMemberString, (((void *)0)), &needClass);
+result = ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, memberData, internalMemberString, (((void *)0)), &needClass);
 if(needClass)
 {
 strcat(memberString, "{ ");
@@ -870,7 +870,7 @@ if(value.ui64)
 {
 unsigned int needClass = 0x1;
 char internalMemberString[1024];
-char * result = (char *)memberType->_vTbl[__ecereVMethodID_class_OnGetString](memberType, &value, internalMemberString, (((void *)0)), &needClass);
+char * result = ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, internalMemberString, (((void *)0)), &needClass);
 
 if(needClass && memberType->type != 1000 && memberType->type != 4 && memberType->type != 3)
 {
@@ -891,7 +891,7 @@ value.i = *(int *)((unsigned char *)data + (((member->_class->type == 0) ? membe
 if(value.i)
 {
 unsigned int needClass = 0x1;
-char * result = (char *)memberType->_vTbl[__ecereVMethodID_class_OnGetString](memberType, &value, memberString, (((void *)0)), &needClass);
+char * result = ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, (((void *)0)), &needClass);
 
 if(result && memberString != result)
 strcpy(memberString, result);
@@ -900,7 +900,7 @@ strcpy(memberString, result);
 else
 {
 unsigned int needClass = 0x1;
-char * result = (char *)memberType->_vTbl[__ecereVMethodID_class_OnGetString](memberType, ((unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset)), memberString, (((void *)0)), &needClass);
+char * result = ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, ((unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset)), memberString, (((void *)0)), &needClass);
 
 if(result && memberString != result)
 strcpy(memberString, result);
@@ -2301,7 +2301,7 @@ break;
 data = __builtin_va_arg(args, void *);
 if(data)
 {
-result = (char *)_class->_vTbl[__ecereVMethodID_class_OnGetString](_class, data, buffer + len, (((void *)0)), (((void *)0)));
+result = ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)_class->_vTbl[__ecereVMethodID_class_OnGetString])(_class, data, buffer + len, (((void *)0)), (((void *)0)));
 if(result)
 {
 int newLen = strlen(result);

@@ -587,7 +587,7 @@ uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, stru
 char * result;
 
 itemString[0] = '\0';
-result = (char *)Dclass->_vTbl[__ecereVMethodID_class_OnGetString](Dclass, (Dclass->type == 1000 || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? ((char *)&data + __ENDIAN_PAD((class->templateArgs[2].dataTypeClass->type == 1 || class->templateArgs[2].dataTypeClass->type == 0 || class->templateArgs[2].dataTypeClass->type == 5) ? sizeof(void *) : class->templateArgs[2].dataTypeClass->typeSize)) : (void *)data, itemString, 0);
+result = ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnGetString])(Dclass, (Dclass->type == 1000 || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? ((char *)&data + __ENDIAN_PAD((class->templateArgs[2].dataTypeClass->type == 1 || class->templateArgs[2].dataTypeClass->type == 0 || class->templateArgs[2].dataTypeClass->type == 5) ? sizeof(void *) : class->templateArgs[2].dataTypeClass->typeSize)) : (void *)data, itemString, (((void *)0)), (((void *)0)));
 if(!first)
 strcat(tempString, ", ");
 strcat(tempString, result);
