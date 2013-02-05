@@ -2412,6 +2412,8 @@ extern void SetInPreCompiler(unsigned int b);
 
 extern void SetTargetPlatform(int platform);
 
+extern void SetTargetBits(int bits);
+
 extern void SetEchoOn(unsigned int b);
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com____ecere_COM_Initialize(unsigned int guiApp, int argc, char *  argv[]);
@@ -2504,6 +2506,7 @@ char * cppCommand = (((void *)0));
 char * cppOptions = (((void *)0));
 int cppOptionsLen = 0;
 int targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
+int targetBits = (sizeof(uintptr_t) == 8) ? 64 : 32;
 
 for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)
 {
@@ -2511,7 +2514,7 @@ char * arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this
 
 if(arg[0] == '-')
 {
-if(!strcmp(arg + 1, "m32"))
+if(!strcmp(arg + 1, "m32") || !strcmp(arg + 1, "m64"))
 {
 int argLen = strlen(arg);
 int newLen = cppOptionsLen + 1 + argLen;
@@ -2520,6 +2523,7 @@ cppOptions = __ecereNameSpace__ecere__com__eSystem_Renew(cppOptions, sizeof(char
 cppOptions[cppOptionsLen] = ' ';
 strcpy(cppOptions + cppOptionsLen + 1, arg);
 cppOptionsLen = newLen;
+targetBits = !strcmp(arg + 1, "m32") ? 32 : 64;
 }
 else if(arg[1] == 'D')
 {
@@ -2661,8 +2665,9 @@ SetImports(&imports);
 SetPrecompDefines(&precompDefines);
 SetInPreCompiler(0x1);
 SetTargetPlatform(targetPlatform);
+SetTargetBits(targetBits);
 SetEchoOn(0x0);
-privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize(0x1, 1, (((void *)0)));
+privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize(0x1 | ((targetBits == 64) ? (unsigned int)2 : (unsigned int)0), 1, (((void *)0)));
 SetPrivateModule(privateModule);
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uint"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned int", 0x0), ((struct Symbol *)__ecereTemp1)));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uint64"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned int64", 0x0), ((struct Symbol *)__ecereTemp1)));

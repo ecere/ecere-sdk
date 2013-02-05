@@ -5813,6 +5813,8 @@ public bool LocateModule(char * name, char * fileName)
 
 static void LoadCOM(Module module)
 {
+   bool force64Bits = (module.application.isGUIApp & 2) ? true : false;
+   int pointerSize = force64Bits ? 8 : sizeof(void *);
    Class applicationClass;
    Class enumClass, structClass, boolClass;
    Class moduleClass;
@@ -5837,15 +5839,15 @@ static void LoadCOM(Module module)
       instanceClass.startMemberID = -3;
 
       // eClass_AddDataMember(instanceClass, "_vTbl", "void **", sizeof(int (**)()), 4, publicAccess);
-      eClass_AddDataMember(instanceClass, "_vTbl", "int (**)()", sizeof(int (**)()), 4, publicAccess);
-      eClass_AddDataMember(instanceClass, "_class", "ecere::com::Class", sizeof(Class), 4, publicAccess);
-      eClass_AddDataMember(instanceClass, "_refCount", "int", sizeof(int (**)()), 4, publicAccess);
+      eClass_AddDataMember(instanceClass, "_vTbl", "int (**)()", pointerSize, pointerSize, publicAccess);
+      eClass_AddDataMember(instanceClass, "_class", "ecere::com::Class", pointerSize, pointerSize, publicAccess);
+      eClass_AddDataMember(instanceClass, "_refCount", "int", sizeof(int), sizeof(int), publicAccess);
    }
 
    InitializeDataTypes1(module);
 
    // Create Enum class
-   enumClass = eSystem_RegisterClass(normalClass, "enum", null, 0, sizeof(class EnumClassData), null, null, module, baseSystemAccess, publicAccess);
+   enumClass = eSystem_RegisterClass(normalClass, "enum", null, 0, force64Bits ? 32 : sizeof(class EnumClassData), null, null, module, baseSystemAccess, publicAccess);
    eClass_AddClassProperty(enumClass, "enumSize", "int", null, GetEnumSize).constant = true;
    enumClass.type = systemClass;
    
@@ -5872,38 +5874,39 @@ static void LoadCOM(Module module)
    eEnum_AddFixedValue(boolClass, "false", bool::false);
 
    // Create Module class
-   moduleClass = eSystem_RegisterClass(normalClass, "ecere::com::Module", null, sizeof(struct Module), 0, (void *)Module_Constructor, (void *)Module_Destructor, module, baseSystemAccess, publicAccess);
+   moduleClass = eSystem_RegisterClass(normalClass, "ecere::com::Module", null, force64Bits ? 8 + 8 + 32 + 32 + 32 + 32 + 8 + 8 + 8 + 8 + 8 + 8 + (32 + 8 + 8 + 4*32) + (32 + 8 + 8 + 4*32)
+                                                                                           : sizeof(struct Module), 0, (void *)Module_Constructor, (void *)Module_Destructor, module, baseSystemAccess, publicAccess);
    eClass_AddVirtualMethod(moduleClass, "OnLoad", "bool()", null, publicAccess);
    eClass_AddVirtualMethod(moduleClass, "OnUnload", "void()", null, publicAccess);
    eClass_AddMethod(moduleClass, "Load", "Module(char * name, AccessMode importAccess)", eModule_Load, publicAccess);
    eClass_AddMethod(moduleClass, "Unload", "void(Module module)", eModule_Unload, publicAccess);
-   eClass_AddDataMember(moduleClass, "application", "Application", sizeof(Application), 4, publicAccess);
-   eClass_AddDataMember(moduleClass, "classes", "OldList", sizeof(OldList), 4, publicAccess);
-   eClass_AddDataMember(moduleClass, "defines", "OldList", sizeof(OldList), 4, publicAccess);
-   eClass_AddDataMember(moduleClass, "functions", "OldList", sizeof(OldList), 4, publicAccess);
-   eClass_AddDataMember(moduleClass, "modules", "OldList", sizeof(OldList), 4, publicAccess);
-   eClass_AddDataMember(moduleClass, "prev", "Module", sizeof(Module), 4, publicAccess);
-   eClass_AddDataMember(moduleClass, "next", "Module", sizeof(Module), 4, publicAccess);
-   eClass_AddDataMember(moduleClass, "name", "char *", sizeof(char *), 4, publicAccess);
-   eClass_AddDataMember(moduleClass, "library", "void *", sizeof(void *), 4, publicAccess);
-   eClass_AddDataMember(moduleClass, "Unload", "void *", sizeof(void *), 4, publicAccess);
+   eClass_AddDataMember(moduleClass, "application", "Application", pointerSize, pointerSize, publicAccess);
+   eClass_AddDataMember(moduleClass, "classes", "OldList", force64Bits ? 32 : sizeof(OldList), pointerSize, publicAccess);
+   eClass_AddDataMember(moduleClass, "defines", "OldList", force64Bits ? 32 : sizeof(OldList), pointerSize, publicAccess);
+   eClass_AddDataMember(moduleClass, "functions", "OldList", force64Bits ? 32 : sizeof(OldList), pointerSize, publicAccess);
+   eClass_AddDataMember(moduleClass, "modules", "OldList", force64Bits ? 32 : sizeof(OldList), pointerSize, publicAccess);
+   eClass_AddDataMember(moduleClass, "prev", "Module", pointerSize, pointerSize, publicAccess);
+   eClass_AddDataMember(moduleClass, "next", "Module", pointerSize, pointerSize, publicAccess);
+   eClass_AddDataMember(moduleClass, "name", "char *", pointerSize, pointerSize, publicAccess);
+   eClass_AddDataMember(moduleClass, "library", "void *", pointerSize, pointerSize, publicAccess);
+   eClass_AddDataMember(moduleClass, "Unload", "void *", pointerSize, pointerSize, publicAccess);
    eClass_AddDataMember(moduleClass, "importType", "ImportType", sizeof(ImportType), 4, publicAccess);
    eClass_AddDataMember(moduleClass, "origImportType", "ImportType", sizeof(ImportType), 4, publicAccess);
-   eClass_AddDataMember(moduleClass, "privateNameSpace", "NameSpace", sizeof(NameSpace), 4, publicAccess);
-   eClass_AddDataMember(moduleClass, "publicNameSpace", "NameSpace", sizeof(NameSpace), 4, publicAccess);
+   eClass_AddDataMember(moduleClass, "privateNameSpace", "NameSpace", force64Bits ? (32 + 8 + 8 + 4*32) : sizeof(NameSpace), pointerSize, publicAccess);
+   eClass_AddDataMember(moduleClass, "publicNameSpace", "NameSpace", force64Bits ? (32 + 8 + 8 + 4*32) : sizeof(NameSpace), pointerSize, publicAccess);
    moduleClass.fixed = true;
    moduleClass.count++;
    
    // Create Application class
-   applicationClass = eSystem_RegisterClass(normalClass, "ecere::com::Application", "Module", sizeof(struct Application), 0, null, (void *)Application_Destructor, module, baseSystemAccess, publicAccess);
+   applicationClass = eSystem_RegisterClass(normalClass, "ecere::com::Application", "Module", force64Bits ? (32 + 32 + 8 + 32) : sizeof(struct Application), 0, null, (void *)Application_Destructor, module, baseSystemAccess, publicAccess);
    eClass_AddVirtualMethod(applicationClass, "Main", "void()", null, publicAccess);
    eClass_AddDataMember(applicationClass, "argc", "int", sizeof(int), 4, publicAccess);
-   eClass_AddDataMember(applicationClass, "argv", "char **", sizeof(char **), 4, publicAccess);
+   eClass_AddDataMember(applicationClass, "argv", "char **", pointerSize, pointerSize, publicAccess);
    eClass_AddDataMember(applicationClass, "exitCode", "int", sizeof(int), 4, publicAccess);
    eClass_AddDataMember(applicationClass, "isGUIApp", "bool", sizeof(bool), 4, publicAccess);
-   eClass_AddDataMember(applicationClass, "allModules", "OldList", sizeof(OldList), 4, publicAccess);
-   eClass_AddDataMember(applicationClass, "parsedCommand", "char *", sizeof(char *), 4, publicAccess);
-   eClass_AddDataMember(applicationClass, "systemNameSpace", "NameSpace", sizeof(NameSpace), 4, publicAccess);
+   eClass_AddDataMember(applicationClass, "allModules", "OldList", force64Bits ? 32: sizeof(OldList), pointerSize, publicAccess);
+   eClass_AddDataMember(applicationClass, "parsedCommand", "char *", pointerSize, pointerSize, publicAccess);
+   eClass_AddDataMember(applicationClass, "systemNameSpace", "NameSpace", force64Bits ? (32 + 8 + 8 + 4*32) : sizeof(NameSpace), pointerSize, publicAccess);
    applicationClass.fixed = true;
    applicationClass.count++;
 

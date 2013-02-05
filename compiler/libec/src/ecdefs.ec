@@ -1326,3 +1326,7 @@ int yyerror(char * s)
 Platform targetPlatform;
 
 public void SetTargetPlatform(Platform platform) { targetPlatform = platform; };
+
+int targetBits;
+
+public void SetTargetBits(int bits) { targetBits = bits; };

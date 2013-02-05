@@ -2502,6 +2502,8 @@ for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 
 ComputeClassMembers(_class, 0x0);
 }
 
+extern int targetBits;
+
 extern unsigned int inCompiler;
 
 extern void Compiler_Error(char *  format, ...);
@@ -2531,7 +2533,7 @@ case 4:
 type->alignment = size = sizeof(long long);
 break;
 case 22:
-type->alignment = size = sizeof(intptr_t);
+type->alignment = size = targetBits / 8;
 break;
 case 5:
 type->alignment = size = sizeof(long);
@@ -2564,12 +2566,12 @@ _class->dataType = ProcessTypeString(_class->dataTypeString, 0x0);
 size = type->alignment = ComputeTypeSize(_class->dataType);
 }
 else
-size = type->alignment = sizeof(struct __ecereNameSpace__ecere__com__Instance **);
+size = type->alignment = targetBits / 8;
 break;
 }
 case 13:
 case 19:
-size = type->alignment = sizeof(void *);
+size = type->alignment = targetBits / 8;
 break;
 case 12:
 if(type->arraySizeExp)
@@ -2668,7 +2670,7 @@ break;
 }
 case 21:
 {
-size = sizeof(void *);
+size = targetBits / 8;
 break;
 }
 }

@@ -492,6 +492,8 @@ static unsigned int i18n;
 
 static int targetPlatform;
 
+static int targetBits = (sizeof(uintptr_t) == 8) ? 64 : 32;
+
 static unsigned int isConsole;
 
 static unsigned int isDynamicLibrary;
@@ -2173,6 +2175,8 @@ extern void SetCurrentContext(struct Context * context);
 
 extern void SetTargetPlatform(int platform);
 
+extern void SetTargetBits(int bits);
+
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com____ecere_COM_Initialize(unsigned int guiApp, int argc, char *  argv[]);
 
 extern void SetPrivateModule(struct __ecereNameSpace__ecere__com__Instance * module);
@@ -2320,7 +2324,11 @@ char * arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this
 
 if(arg[0] == '-')
 {
-if(!strcmp(arg + 1, "o"))
+if(!strcmp(arg + 1, "m32") || !strcmp(arg + 1, "m64"))
+{
+targetBits = !strcmp(arg + 1, "m32") ? 32 : 64;
+}
+else if(!strcmp(arg + 1, "o"))
 {
 if(!output && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
 {
@@ -2388,7 +2396,8 @@ SetGlobalContext(theGlobalContext);
 SetTopContext(theGlobalContext);
 SetCurrentContext(theGlobalContext);
 SetTargetPlatform(targetPlatform);
-privateModule = __ecereNameSpace__ecere__com____ecere_COM_Initialize(0x1, 1, (((void *)0)));
+SetTargetBits(targetBits);
+privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize(0x1 | ((targetBits == 64) ? (unsigned int)2 : (unsigned int)0), 1, (((void *)0)));
 SetPrivateModule(privateModule);
 mainModule = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleImport);
 SetMainModule(mainModule);

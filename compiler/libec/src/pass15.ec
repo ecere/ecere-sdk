@@ -763,7 +763,7 @@ public int ComputeTypeSize(Type type)
          case charType: type.alignment = size = sizeof(char); break;
          case intType: type.alignment = size = sizeof(int); break;
          case int64Type: type.alignment = size = sizeof(int64); break;
-         case intPtrType: type.alignment = size = sizeof(intptr); break;
+         case intPtrType: type.alignment = size = targetBits / 8; break;
          case longType: type.alignment = size = sizeof(long); break;
          case shortType: type.alignment = size = sizeof(short); break;
          case floatType: type.alignment = size = sizeof(float); break;
@@ -791,10 +791,10 @@ public int ComputeTypeSize(Type type)
                size = type.alignment = ComputeTypeSize(_class.dataType);
             }
             else
-               size = type.alignment = sizeof(Instance *);
+               size = type.alignment = targetBits / 8; // sizeof(Instance *);
             break;
          }
-         case pointerType: case subClassType: size = type.alignment = sizeof(void *); break;
+         case pointerType: case subClassType: size = type.alignment = targetBits / 8; /*sizeof(void *); */break;
          case arrayType: 
             if(type.arraySizeExp)
             {
@@ -896,7 +896,7 @@ public int ComputeTypeSize(Type type)
          }
          case thisClassType:
          {
-            size = sizeof(void *);
+            size = targetBits / 8; //sizeof(void *);
             break;
          }
       }

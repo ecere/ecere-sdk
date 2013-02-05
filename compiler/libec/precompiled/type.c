@@ -22,6 +22,7 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#include <stdint.h>
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -32,9 +33,9 @@ struct __ecereNameSpace__ecere__sys__BinaryTree
 {
 struct __ecereNameSpace__ecere__sys__BTNode * root;
 int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, unsigned int a, unsigned int b);
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
 void (*  FreeKey)(void *  key);
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldList;
 
@@ -45,7 +46,7 @@ void *  last;
 int count;
 unsigned int offset;
 unsigned int circ;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Method;
 
@@ -64,7 +65,7 @@ void *  symbol;
 char *  dataTypeString;
 struct Type * dataType;
 int memberAccess;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
@@ -92,7 +93,7 @@ char *  category;
 unsigned int compiled;
 unsigned int selfWatchable;
 unsigned int isWatchable;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_CodePosition;
 
@@ -102,7 +103,7 @@ int line;
 int charPos;
 int pos;
 unsigned int included;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Location;
 
@@ -110,7 +111,7 @@ struct Location
 {
 struct CodePosition start;
 struct CodePosition end;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
 
@@ -119,7 +120,7 @@ struct Attrib
 struct Location loc;
 int type;
 struct __ecereNameSpace__ecere__sys__OldList *  attribs;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
 
@@ -144,7 +145,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree templateTypes;
 struct ClassDefinition * classDef;
 unsigned int templateTypesOnly;
 unsigned int hasNameSpace;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Instantiation;
 
@@ -163,7 +164,7 @@ unsigned char *  data;
 struct Location nameLoc;
 struct Location insideLoc;
 unsigned int built;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Declaration;
 
@@ -179,18 +180,18 @@ struct
 {
 struct __ecereNameSpace__ecere__sys__OldList *  specifiers;
 struct __ecereNameSpace__ecere__sys__OldList *  declarators;
-};
+} __attribute__ ((gcc_struct));
 struct Instantiation * inst;
 struct
 {
 struct Identifier * id;
 struct Expression * exp;
-};
-};
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
 struct Specifier * extStorage;
 struct Symbol * symbol;
 int declMode;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Statement;
 
@@ -207,51 +208,51 @@ struct
 {
 struct Identifier * id;
 struct Statement * stmt;
-} labeled;
+} __attribute__ ((gcc_struct)) labeled;
 struct
 {
 struct Expression * exp;
 struct Statement * stmt;
-} caseStmt;
+} __attribute__ ((gcc_struct)) caseStmt;
 struct
 {
 struct __ecereNameSpace__ecere__sys__OldList * declarations;
 struct __ecereNameSpace__ecere__sys__OldList * statements;
 struct Context * context;
 unsigned int isSwitch;
-} compound;
+} __attribute__ ((gcc_struct)) compound;
 struct
 {
 struct __ecereNameSpace__ecere__sys__OldList * exp;
 struct Statement * stmt;
 struct Statement * elseStmt;
-} ifStmt;
+} __attribute__ ((gcc_struct)) ifStmt;
 struct
 {
 struct __ecereNameSpace__ecere__sys__OldList * exp;
 struct Statement * stmt;
-} switchStmt;
+} __attribute__ ((gcc_struct)) switchStmt;
 struct
 {
 struct __ecereNameSpace__ecere__sys__OldList * exp;
 struct Statement * stmt;
-} whileStmt;
+} __attribute__ ((gcc_struct)) whileStmt;
 struct
 {
 struct __ecereNameSpace__ecere__sys__OldList * exp;
 struct Statement * stmt;
-} doWhile;
+} __attribute__ ((gcc_struct)) doWhile;
 struct
 {
 struct Statement * init;
 struct Statement * check;
 struct __ecereNameSpace__ecere__sys__OldList * increment;
 struct Statement * stmt;
-} forStmt;
+} __attribute__ ((gcc_struct)) forStmt;
 struct
 {
 struct Identifier * id;
-} gotoStmt;
+} __attribute__ ((gcc_struct)) gotoStmt;
 struct
 {
 struct Specifier * spec;
@@ -259,23 +260,23 @@ char * statements;
 struct __ecereNameSpace__ecere__sys__OldList * inputFields;
 struct __ecereNameSpace__ecere__sys__OldList * outputFields;
 struct __ecereNameSpace__ecere__sys__OldList * clobberedFields;
-} asmStmt;
+} __attribute__ ((gcc_struct)) asmStmt;
 struct
 {
 struct Expression * watcher;
 struct Expression * object;
 struct __ecereNameSpace__ecere__sys__OldList * watches;
-} _watch;
+} __attribute__ ((gcc_struct)) _watch;
 struct
 {
 struct Identifier * id;
 struct __ecereNameSpace__ecere__sys__OldList * exp;
 struct __ecereNameSpace__ecere__sys__OldList * filter;
 struct Statement * stmt;
-} forEachStmt;
+} __attribute__ ((gcc_struct)) forEachStmt;
 struct Declaration * decl;
-};
-};
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TypeName;
 
@@ -288,7 +289,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  qualifiers;
 struct Declarator * declarator;
 int classObjectType;
 struct Expression * bitCount;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Initializer;
 
@@ -302,9 +303,9 @@ union
 {
 struct Expression * exp;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
-};
+} __attribute__ ((gcc_struct));
 unsigned int isConstant;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataValue;
 
@@ -323,8 +324,8 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-};
-};
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
 
@@ -340,7 +341,7 @@ struct
 {
 char *  constant;
 struct Identifier * identifier;
-};
+} __attribute__ ((gcc_struct));
 struct Statement * compound;
 struct Instantiation * instance;
 char *  string;
@@ -349,80 +350,80 @@ struct
 {
 struct __ecereNameSpace__ecere__sys__OldList * specifiers;
 struct Declarator * decl;
-} _classExp;
+} __attribute__ ((gcc_struct)) _classExp;
 struct
 {
 struct Identifier * id;
-} classData;
+} __attribute__ ((gcc_struct)) classData;
 struct
 {
 struct Expression * exp;
 struct __ecereNameSpace__ecere__sys__OldList * arguments;
 struct Location argLoc;
-} call;
+} __attribute__ ((gcc_struct)) call;
 struct
 {
 struct Expression * exp;
 struct __ecereNameSpace__ecere__sys__OldList * index;
-} index;
+} __attribute__ ((gcc_struct)) index;
 struct
 {
 struct Expression * exp;
 struct Identifier * member;
 int memberType;
 unsigned int thisPtr;
-} member;
+} __attribute__ ((gcc_struct)) member;
 struct
 {
 int op;
 struct Expression * exp1;
 struct Expression * exp2;
-} op;
+} __attribute__ ((gcc_struct)) op;
 struct TypeName * typeName;
 struct Specifier * _class;
 struct
 {
 struct TypeName * typeName;
 struct Expression * exp;
-} cast;
+} __attribute__ ((gcc_struct)) cast;
 struct
 {
 struct Expression * cond;
 struct __ecereNameSpace__ecere__sys__OldList * exp;
 struct Expression * elseExp;
-} cond;
+} __attribute__ ((gcc_struct)) cond;
 struct
 {
 struct TypeName * typeName;
 struct Expression * size;
-} _new;
+} __attribute__ ((gcc_struct)) _new;
 struct
 {
 struct TypeName * typeName;
 struct Expression * size;
 struct Expression * exp;
-} _renew;
+} __attribute__ ((gcc_struct)) _renew;
 struct
 {
 char * table;
 struct Identifier * id;
-} db;
+} __attribute__ ((gcc_struct)) db;
 struct
 {
 struct Expression * ds;
 struct Expression * name;
-} dbopen;
+} __attribute__ ((gcc_struct)) dbopen;
 struct
 {
 struct TypeName * typeName;
 struct Initializer * initializer;
-} initializer;
+} __attribute__ ((gcc_struct)) initializer;
 struct
 {
 struct Expression * exp;
 struct TypeName * typeName;
-} vaArg;
-};
+} __attribute__ ((gcc_struct)) vaArg;
+} __attribute__ ((gcc_struct));
 unsigned int debugValue;
 struct __ecereNameSpace__ecere__com__DataValue val;
 unsigned int address;
@@ -436,7 +437,7 @@ unsigned int isConstant;
 unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
 
@@ -444,7 +445,7 @@ struct TemplateDatatype
 {
 struct __ecereNameSpace__ecere__sys__OldList *  specifiers;
 struct Declarator * decl;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateArgument;
 
@@ -460,8 +461,8 @@ union
 struct Expression * expression;
 struct Identifier * identifier;
 struct TemplateDatatype * templateDatatype;
-};
-};
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateParameter;
 
@@ -484,7 +485,7 @@ struct ExtDecl * extDecl;
 char *  name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
-};
+} __attribute__ ((gcc_struct));
 struct
 {
 struct Identifier * id;
@@ -493,12 +494,12 @@ struct __ecereNameSpace__ecere__sys__OldList *  baseSpecs;
 struct __ecereNameSpace__ecere__sys__OldList *  definitions;
 unsigned int addNameSpace;
 struct Context * ctx;
-};
+} __attribute__ ((gcc_struct));
 struct Expression * expression;
 struct Specifier * _class;
 struct TemplateParameter * templateParameter;
-};
-};
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Identifier;
 
@@ -511,7 +512,7 @@ struct Symbol * classSym;
 struct Specifier * _class;
 char *  string;
 struct Identifier * badID;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Pointer;
 
@@ -535,26 +536,26 @@ struct
 struct Expression * exp;
 struct Expression * posExp;
 struct Attrib * attrib;
-} structDecl;
+} __attribute__ ((gcc_struct)) structDecl;
 struct
 {
 struct Expression * exp;
 struct Specifier * enumClass;
-} array;
+} __attribute__ ((gcc_struct)) array;
 struct
 {
 struct __ecereNameSpace__ecere__sys__OldList * parameters;
-} function;
+} __attribute__ ((gcc_struct)) function;
 struct
 {
 struct Pointer * pointer;
-} pointer;
+} __attribute__ ((gcc_struct)) pointer;
 struct
 {
 struct ExtDecl * extended;
-} extended;
-};
-};
+} __attribute__ ((gcc_struct)) extended;
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_FunctionDefinition;
 
@@ -640,7 +641,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument *  templateArgs;
 struct __ecereNameSpace__ecere__com__Class * templateClass;
 struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -649,7 +650,7 @@ struct __ecereNameSpace__ecere__com__Instance
 int (* *  _vTbl)();
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataMember;
 
@@ -672,7 +673,7 @@ struct __ecereNameSpace__ecere__sys__OldList members;
 struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
 int memberOffset;
 int structAlignment;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__SerialBuffer;
 
@@ -682,7 +683,7 @@ unsigned char *  _buffer;
 unsigned int count;
 unsigned int _size;
 unsigned int pos;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassTemplateArgument;
 
@@ -694,7 +695,7 @@ struct
 {
 char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-};
+} __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
@@ -704,10 +705,10 @@ union
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
 struct __ecereNameSpace__ecere__com__Method * method;
-};
-};
-};
-};
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
 
 enum yytokentype
 {
@@ -754,7 +755,7 @@ struct TemplateDatatype * templateDatatype;
 struct DBTableEntry * dbtableEntry;
 struct DBIndexItem * dbindexItem;
 struct DBTableDef * dbtableDef;
-} YYSTYPE;
+} __attribute__ ((gcc_struct)) YYSTYPE;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Enumerator;
 
@@ -769,7 +770,7 @@ struct InitDeclarator * next;
 struct Location loc;
 struct Declarator * declarator;
 struct Initializer * initializer;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_AsmField;
 
@@ -784,7 +785,7 @@ struct Attribute * next;
 struct Location loc;
 char * attr;
 struct Expression * exp;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassFunction;
 
@@ -808,7 +809,7 @@ unsigned int isDestructor;
 unsigned int dontMangle;
 int id;
 int idCode;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_MembersInit;
 
@@ -822,8 +823,8 @@ union
 {
 struct __ecereNameSpace__ecere__sys__OldList *  dataMembers;
 struct ClassFunction * function;
-};
-};
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_MemberInit;
 
@@ -838,7 +839,7 @@ struct Initializer * initializer;
 unsigned int used;
 unsigned int variable;
 unsigned int takeOutExp;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyDef;
 
@@ -857,7 +858,7 @@ struct Symbol * symbol;
 unsigned int conversion;
 unsigned int isWatchable;
 struct Expression * category;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
 
@@ -884,11 +885,11 @@ struct
 {
 struct Identifier * id;
 struct Initializer * initializer;
-};
-};
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
 int memberAccess;
 void *  object;
-};
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBTableEntry;
 
@@ -931,7 +932,7 @@ union yyalloc
 yytype_int16 yyss_alloc;
 YYSTYPE yyvs_alloc;
 struct Location yyls_alloc;
-};
+} __attribute__ ((gcc_struct));
 
 static const yytype_uint8 yytranslate[] = 
 {
@@ -1050,6 +1051,10 @@ int fputc(int c, FILE * stream);
 size_t fread(void * ptr, size_t size, size_t nmemb, FILE * stream);
 
 size_t fwrite(const void * ptr, size_t size, size_t nmemb, FILE * stream);
+
+int vsnprintf(char *, size_t, const char *, ...);
+
+int snprintf(char * str, size_t, const char * format, ...);
 
 int fseek(FILE * stream, long offset, int whence);
 

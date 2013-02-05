@@ -1292,6 +1292,7 @@ class PrecompApp : Application
       int argc = 0;*/
 
       Platform targetPlatform = GetRuntimePlatform();
+      int targetBits = (sizeof(uintptr) == 8) ? 64 : 32;
       /*
       for(c = 0; c<this.argc; c++)
       {
@@ -1323,7 +1324,7 @@ class PrecompApp : Application
          char * arg = argv[c];
          if(arg[0] == '-')
          {
-            if(!strcmp(arg + 1, "m32"))
+            if(!strcmp(arg + 1, "m32") || !strcmp(arg + 1, "m64"))
             {
                int argLen = strlen(arg);
                int newLen = cppOptionsLen + 1 + argLen;
@@ -1331,6 +1332,8 @@ class PrecompApp : Application
                cppOptions[cppOptionsLen] = ' ';
                strcpy(cppOptions + cppOptionsLen + 1, arg); 
                cppOptionsLen = newLen;
+
+               targetBits = !strcmp(arg + 1, "m32") ? 32 : 64;
             }
             else if(arg[1] == 'D')
             {
@@ -1472,9 +1475,10 @@ class PrecompApp : Application
          SetPrecompDefines(&precompDefines);
          SetInPreCompiler(true);
          SetTargetPlatform(targetPlatform);
+         SetTargetBits(targetBits);
          SetEchoOn(false);
 
-         privateModule = (Module)__ecere_COM_Initialize(true, 1, null);
+         privateModule = (Module)__ecere_COM_Initialize(true | ((targetBits == 64)?2:0), 1, null);
          SetPrivateModule(privateModule);
 
          globalContext.types.Add((BTNode)Symbol { string = CopyString("uint"), type = ProcessTypeString("unsigned int", false) });

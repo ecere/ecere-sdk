@@ -578,7 +578,7 @@ public class GuiApplication : Application
          {
             if(driver)
                defaultDriver = driver;
-            else if(this.isGUIApp && !textMode)
+            else if((this.isGUIApp & 1) && !textMode)
                defaultDriver = "GDI";
             else
                defaultDriver = "Win32Console";
@@ -599,7 +599,7 @@ public class GuiApplication : Application
                defaultDriver = "OpenGL";
          }
    #else
-         if(this.isGUIApp && !textMode)
+         if((this.isGUIApp & 1) && !textMode)
          {
             char * display = getenv("DISPLAY");
 

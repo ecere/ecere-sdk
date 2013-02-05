@@ -10,6 +10,7 @@ static define localeDir = "locale";
 static bool i18n;
 
 static Platform targetPlatform;
+static int targetBits = (sizeof(uintptr) == 8) ? 64 : 32;
 
 static bool isConsole;
 static bool isDynamicLibrary;
@@ -1649,7 +1650,11 @@ class SymbolgenApp : Application
          char * arg = argv[c];
          if(arg[0] == '-')
          {
-            if(!strcmp(arg+1, "o"))
+            if(!strcmp(arg + 1, "m32") || !strcmp(arg + 1, "m64"))
+            {
+               targetBits = !strcmp(arg + 1, "m32") ? 32 : 64;
+            }
+            else if(!strcmp(arg+1, "o"))
             {
                if(!output && c + 1 < argc)
                {
@@ -1718,8 +1723,9 @@ class SymbolgenApp : Application
          SetTopContext(theGlobalContext);
          SetCurrentContext(theGlobalContext);
          SetTargetPlatform(targetPlatform);
+         SetTargetBits(targetBits);
 
-         privateModule = __ecere_COM_Initialize(true, 1, null);
+         privateModule = (Module)__ecere_COM_Initialize(true | ((targetBits == 64)?2:0), 1, null);
          SetPrivateModule(privateModule);
          mainModule = ModuleImport { };
          SetMainModule(mainModule);
