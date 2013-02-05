@@ -2738,7 +2738,11 @@ extern struct Statement * MkExpressionStmt(struct __ecereNameSpace__ecere__sys__
 
 extern void Compiler_Error(char *  format, ...);
 
-extern __declspec(dllexport) char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+extern
+#if defined(__WIN32__)
+__declspec(dllexport)
+#endif
+char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
 
 extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
