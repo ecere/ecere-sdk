@@ -10,6 +10,8 @@ typedef unsigned long long uint64;
 #define strcasecmp stricmp
 #define strncasecmp strnicmp
 #define __declspec(x) __attribute__((x))
+#else
+#define __declspec(x)
 #endif
 typedef long long int64;
 typedef unsigned long long uint64;

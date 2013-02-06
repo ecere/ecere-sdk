@@ -10,6 +10,8 @@ typedef unsigned long long uint64;
 #define strcasecmp stricmp
 #define strncasecmp strnicmp
 #define __declspec(x) __attribute__((x))
+#else
+#define __declspec(x)
 #endif
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -2746,11 +2748,7 @@ extern struct Statement * MkExpressionStmt(struct __ecereNameSpace__ecere__sys__
 
 extern void Compiler_Error(char *  format, ...);
 
-extern
-#if defined(__WIN32__)
-__declspec(dllexport)
-#endif
-char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
+extern __declspec(dllexport) char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
 
 extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 

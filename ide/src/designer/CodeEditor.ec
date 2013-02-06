@@ -2665,6 +2665,7 @@ class CodeEditor : Window
       printf("classes.count: %d\n", globalContext.classes.count);
 #endif
 
+      if(ide.workspace)
       {
          CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
          SetTargetBits(compiler.supportsBitDepth ? 32 : GetHostBits());

@@ -524,6 +524,8 @@ class CompilerApp : Application
                            output.Printf("#define strcasecmp stricmp\n");
                            output.Printf("#define strncasecmp strnicmp\n");
                            output.Printf("#define __declspec(x) __attribute__((x))\n");
+                        output.Printf("#else\n");
+                           output.Printf("#define __declspec(x)\n");
                         output.Printf("#endif\n");
                         output.Printf("typedef long long int64;\n");
                         output.Printf("typedef unsigned long long uint64;\n");

@@ -10,6 +10,8 @@ typedef unsigned long long uint64;
 #define strcasecmp stricmp
 #define strncasecmp strnicmp
 #define __declspec(x) __attribute__((x))
+#else
+#define __declspec(x)
 #endif
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -2685,7 +2687,7 @@ void OutputTree(struct __ecereNameSpace__ecere__sys__OldList * ast, struct __ece
 {
 struct External * external;
 
-outputLine = 26;
+outputLine = 28;
 for(external = ast->first; external; external = external->next)
 {
 switch(external->type)

@@ -17,6 +17,7 @@ typedef unsigned long long uint64;
 #define __declspec(x) __attribute__((x))
 #define stdcall __attribute__((__stdcall__))
 #else
+#define __declspec(x)
 #define stdcall
 #endif
 typedef long long int64;
