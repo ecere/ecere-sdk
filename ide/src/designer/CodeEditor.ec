@@ -2665,6 +2665,11 @@ class CodeEditor : Window
       printf("classes.count: %d\n", globalContext.classes.count);
 #endif
 
+      {
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         SetTargetBits(compiler.supportsBitDepth ? 32 : GetHostBits());
+         delete compiler;
+      }
       this.privateModule = __ecere_COM_Initialize(false, 1, null);
 
       SetPrivateModule(privateModule);
