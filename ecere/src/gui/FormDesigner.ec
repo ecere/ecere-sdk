@@ -583,45 +583,52 @@ class FormDesigner : ClassDesignerBase
             if(parent)
             {
                ObjectInfo object;
-               Window control = (Window)eInstance_New(eSystem_FindClass(form._class.module, objectClass));
-
-               activeDesigner.CodeAddObject(control, &object);
-
-               while(!parent.name) 
+               Window control;
+               Class c = eSystem_FindClass(form._class.module, objectClass);
+               if(!c)
+                  c = eSystem_FindClass(form._class.module.application, objectClass);
+               if(c)
                {
-                  x += parent.position.x + parent.clientStart.x;
-                  y += parent.position.y + parent.clientStart.y;
-                  parent = parent.parent;
+                  control = (Window)eInstance_New(c);
+
+                  activeDesigner.CodeAddObject(control, &object);
+
+                  while(!parent.name) 
+                  {
+                     x += parent.position.x + parent.clientStart.x;
+                     y += parent.position.y + parent.clientStart.y;
+                     parent = parent.parent;
+                  }
+
+                  control.object = object;
+
+                  control.parent = parent;
+                  control.master = form;
+
+                  x -= x % GridSnap;
+                  y -= y % GridSnap;
+
+                  control.position.x = x;
+                  control.position.y = y;
+                  control.caption = object.name;
+
+                  LockControls(control, control);
+
+                  control.Create();
+                  if(parent == form)
+                  {  
+                     ObjectInfo previous = control.object;
+                     while((previous = previous.prev) && ((Window)previous.instance).parent != form);
+                     if(previous)
+                        control.parent.children.Move(control, (Window)previous.instance);
+                  }
+
+                  activeDesigner.SheetAddObject(object);
+
+                  //selected = control;
+                  //activeDesigner.Update(null);
+                  Update(null);
                }
-
-               control.object = object;
-
-               control.parent = parent;
-               control.master = form;
-
-               x -= x % GridSnap;
-               y -= y % GridSnap;
-
-               control.position.x = x;
-               control.position.y = y;
-               control.caption = object.name;
-
-               LockControls(control, control);
-
-               control.Create();
-               if(parent == form)
-               {  
-                  ObjectInfo previous = control.object;
-                  while((previous = previous.prev) && ((Window)previous.instance).parent != form);
-                  if(previous)
-                     control.parent.children.Move(control, (Window)previous.instance);
-               }
-
-               activeDesigner.SheetAddObject(object);
-
-               //selected = control;
-               //activeDesigner.Update(null);
-               Update(null);
             }
          }
       }
