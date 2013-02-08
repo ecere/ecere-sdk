@@ -10,7 +10,9 @@ default:
 #if !defined(ECERE_BOOTSTRAP) // quick fix for now
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
+#define String _String
 #include <windows.h>
+#undef String
 #else
 #include <unistd.h>
 #endif

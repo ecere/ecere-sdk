@@ -10,6 +10,7 @@ namespace sys;
 // Platform includes
 #define uint _uint
 #define set _set
+#define String _String
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -18,6 +19,7 @@ namespace sys;
 #endif
 #undef uint
 #undef set
+#undef String
 
 import "instance"
 
