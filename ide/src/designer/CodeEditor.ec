@@ -3488,7 +3488,7 @@ class CodeEditor : Window
          if(prop && prop.isProperty && !prop.conversion && eClass_FindProperty(object.instance._class, prop.name, privateModule))
          {
             if(prop.Set && prop.Get && prop.dataTypeString && strcmp(prop.name, "name") && !Code_IsPropertyDisabled(object, prop.name) &&
-               (!prop.IsSet || prop.IsSet(control)))
+               prop.compiled && (!prop.IsSet || prop.IsSet(control)))
             {
                Class dataType = prop.dataTypeClass;
                if(!dataType)
