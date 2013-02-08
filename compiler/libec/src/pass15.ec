@@ -12185,6 +12185,7 @@ void ComputeDataTypes()
    DeclareFunctionUtil("eSystem_New0");
    DeclareFunctionUtil("eSystem_Renew");
    DeclareFunctionUtil("eSystem_Renew0");
+   DeclareFunctionUtil("eClass_GetProperty");
 
    DeclareStruct("ecere::com::Class", false);
    DeclareStruct("ecere::com::Instance", false);

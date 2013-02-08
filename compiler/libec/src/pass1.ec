@@ -1677,7 +1677,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   OldList * args = MkList();
                   ListAdd(args, MkExpIdentifier(MkIdentifier("class")));
                   ListAdd(args, MkExpString(QMkString(def.id.string)));
-                  ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT)), null), def.initializer.exp));
+                  ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), null), def.initializer.exp));
 
                   def.initializer.exp = null;
 

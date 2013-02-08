@@ -710,7 +710,7 @@ static void ProcessExpression(Expression exp)
                               exp.call.arguments = MkList();
                               ListAdd(exp.call.arguments, classExp);
                               ListAdd(exp.call.arguments, MkExpString(QMkString(id.string)));
-                              ListAdd(exp.call.arguments, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT)), null), value));
+                              ListAdd(exp.call.arguments, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), null), value));
 
                               FreeIdentifier(id);
 
@@ -2163,7 +2163,7 @@ static void ProcessExpression(Expression exp)
                   (exp.call.exp.expType && exp.call.exp.expType.kind == functionType && exp.call.exp.expType.params.last && 
                    ((Type)exp.call.exp.expType.params.last).kind == ellipsisType))
                {
-                  exp.call.arguments->Insert(exp.call.arguments->last, MkExpConstant("0"));
+                  exp.call.arguments->Insert(exp.call.arguments->last, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null),null)),MkExpConstant("0")));
                }
             }
          }
