@@ -443,7 +443,7 @@ class XDisplayDriver : DisplayDriver
 
       if(display)
       {
-         xDisplay.windowGC = XCreateGC(xGlobalDisplay, (int)display.window, 0, null);
+         xDisplay.windowGC = XCreateGC(xGlobalDisplay, (X11Window)display.window, 0, null);
          XSetGraphicsExposures(xGlobalDisplay, xDisplay.windowGC, False);
          result = true;
       }
@@ -594,12 +594,12 @@ class XDisplayDriver : DisplayDriver
             }
 
             if(!xDisplay.pixmap && format)
-               xDisplay.pixmap = XCreatePixmap(xGlobalDisplay, (int)display.window, width, height, format->depth);
+               xDisplay.pixmap = XCreatePixmap(xGlobalDisplay, (X11Window)display.window, width, height, format->depth);
             if(display.alphaBlend && !xDisplay.shapePixmap)
-               xDisplay.shapePixmap = XCreatePixmap(xGlobalDisplay, (int)display.window, width, height, 1);
+               xDisplay.shapePixmap = XCreatePixmap(xGlobalDisplay, (X11Window)display.window, width, height, 1);
             if(!xDisplay.gc)
             {
-               xDisplay.gc = XCreateGC(xGlobalDisplay, (int)xDisplay.pixmap, 0, null);
+               xDisplay.gc = XCreateGC(xGlobalDisplay, (Pixmap)xDisplay.pixmap, 0, null);
                XSetGraphicsExposures(xGlobalDisplay, xDisplay.gc, False);
             }
 
@@ -660,11 +660,11 @@ class XDisplayDriver : DisplayDriver
       //bitmap.Convert(null, pixelFormatRGBA, null);
       //bitmap.Convert(null, pixelFormat888, null);
       xBitmap.pixmap = 
-         XCreatePixmap(xGlobalDisplay, confineWindow /*(int)display.window*/, bitmap.width, bitmap.height, 
+         XCreatePixmap(xGlobalDisplay, confineWindow /*(X11Window)display.window*/, bitmap.width, bitmap.height, 
             (bitmap.pixelFormat == pixelFormatAlpha) ? 8 : (bitmap.alphaBlend ? 32 : ((bitmap.pixelFormat == pixelFormat888) ? 24 : xSystemDepth)));
       if(bitmap.transparent)
          xBitmap.mask = 
-            XCreatePixmap(xGlobalDisplay, confineWindow /*(int)display.window*/, bitmap.width, bitmap.height, 1);
+            XCreatePixmap(xGlobalDisplay, confineWindow /*(X11Window)display.window*/, bitmap.width, bitmap.height, 1);
 
       {
          XRenderPictureAttributes attributes = { 0 };
@@ -677,7 +677,7 @@ class XDisplayDriver : DisplayDriver
             xBitmap.maskPicture = XRenderCreatePicture(xGlobalDisplay, xBitmap.mask, XRenderFindStandardFormat(xGlobalDisplay, PictStandardA1), CPComponentAlpha, &attributes);
       }
 
-      gc = XCreateGC(xGlobalDisplay, (int)xBitmap.pixmap, 0, null);
+      gc = XCreateGC(xGlobalDisplay, (Pixmap)xBitmap.pixmap, 0, null);
 
       XSetGraphicsExposures(xGlobalDisplay, gc, False);
 
@@ -737,7 +737,7 @@ class XDisplayDriver : DisplayDriver
          }
       }
 
-      XPutImage(xGlobalDisplay, (int)xBitmap.pixmap, gc, &image, 
+      XPutImage(xGlobalDisplay, (Pixmap)xBitmap.pixmap, gc, &image, 
          0, 0, 0, 0, bitmap.width,bitmap.height);
 
       if(bitmap.transparent && !bitmap.alphaBlend && bitmap.pixelFormat != pixelFormatAlpha)
@@ -809,7 +809,7 @@ class XDisplayDriver : DisplayDriver
          xSurface.pixmap = xDisplay.pixmap;
          xSurface.picture = xDisplay.picture;
 
-         xSurface.colorPixmap = XCreatePixmap(xGlobalDisplay, (int)confineWindow /*display.window*/, 1, 1, /*(xSystemDepth == 16) ? 16 : */32);
+         xSurface.colorPixmap = XCreatePixmap(xGlobalDisplay, (X11Window)confineWindow /*display.window*/, 1, 1, /*(xSystemDepth == 16) ? 16 : */32);
 
          rectangle.x = (short)(clip.left + x);
          rectangle.y = (short)(clip.top + y);
@@ -984,7 +984,7 @@ class XDisplayDriver : DisplayDriver
       if(xSurface.foreground.a < 255)
          DrawLine(display, surface, x,y,x,y);
       else
-         XDrawPoint(xGlobalDisplay, (int)xDisplay.pixmap, xDisplay.gc,
+         XDrawPoint(xGlobalDisplay, (Pixmap)xDisplay.pixmap, xDisplay.gc,
             x + surface.offset.x,
             y + surface.offset.y);
    }
@@ -1145,7 +1145,7 @@ class XDisplayDriver : DisplayDriver
          XRenderCompositeTrapezoids(xGlobalDisplay, PictOpOver, xSurface.colorPicture, xSurface.picture, None, 0, 0, traps, nTraps);
       }
       else
-         XDrawLine(xGlobalDisplay, (int)xDisplay.pixmap, xDisplay.gc,
+         XDrawLine(xGlobalDisplay, (Pixmap)xDisplay.pixmap, xDisplay.gc,
             x1 + surface.offset.x,
             y1 + surface.offset.y,
             x2 + surface.offset.x,
@@ -1165,7 +1165,7 @@ class XDisplayDriver : DisplayDriver
          DrawLine(display, surface,x1,y1+1,x1,y2-1);
       }
       else
-         XDrawRectangle(xGlobalDisplay, (int)xDisplay.pixmap, xDisplay.gc,
+         XDrawRectangle(xGlobalDisplay, (Pixmap)xDisplay.pixmap, xDisplay.gc,
             x1 + surface.offset.x,
             y1 + surface.offset.y,
             x2 - x1, y2 - y1);
@@ -1194,7 +1194,7 @@ class XDisplayDriver : DisplayDriver
       {
          XSetForeground(xGlobalDisplay, xDisplay.gc, (xSystemPixelFormat == pixelFormat888) ? xSurface.background : 
             ((xSystemPixelFormat == pixelFormat565) ? ((Color565)xSurface.background) : ((Color555)xSurface.background)));
-         XFillRectangle(xGlobalDisplay, (int) xDisplay.pixmap, xDisplay.gc,
+         XFillRectangle(xGlobalDisplay, (Pixmap) xDisplay.pixmap, xDisplay.gc,
             x1 + surface.offset.x,
             y1 + surface.offset.y,
             x2 - x1 + 1, y2 - y1 + 1);
@@ -1325,7 +1325,7 @@ class XDisplayDriver : DisplayDriver
                XRenderComposite(xGlobalDisplay, PictOpOver, xBitmap.picture, xBitmap.maskPicture, xSurface.picture, sx, sy, sx, sy, dx, dy, w, h);
          }
          else
-            XCopyArea(xGlobalDisplay, (int)xBitmap.pixmap, (int)xSurface.pixmap, xDisplay.gc, 
+            XCopyArea(xGlobalDisplay, (Pixmap)xBitmap.pixmap, (Pixmap)xSurface.pixmap, xDisplay.gc, 
                sx, sy, w, h, dx, dy);
 
          if(xSurface.xOffset)
@@ -1434,7 +1434,7 @@ class XDisplayDriver : DisplayDriver
          image.data = src.picture;
          XInitImage(&image);
 
-         XPutImage(xGlobalDisplay, (int)xSurface.pixmap, xDisplay.gc, &image, 
+         XPutImage(xGlobalDisplay, (Pixmap)xSurface.pixmap, xDisplay.gc, &image, 
             sx, sy, dx + surface.offset.x, dy + surface.offset.y, w,h);
       }
       else
@@ -1460,7 +1460,7 @@ class XDisplayDriver : DisplayDriver
          if(!src.transparent)
          {
             // printf("Stride: %d, dx: %d, dy: %d, w: %d, h: %d, %d\n", temp.stride, dx + surface.offset.x, dy + surface.offset.y, w,h, xSystemDepth);
-            XPutImage(xGlobalDisplay, (int)xSurface.pixmap, xDisplay.gc, &image, 
+            XPutImage(xGlobalDisplay, (Pixmap)xSurface.pixmap, xDisplay.gc, &image, 
                0, 0, dx + surface.offset.x, dy + surface.offset.y, w,h);
          }
          else
@@ -1469,8 +1469,8 @@ class XDisplayDriver : DisplayDriver
             GC maskGC = 0, gc = 0;
             Pixmap pixmap, mask;
 
-            pixmap = XCreatePixmap(xGlobalDisplay, (int)confineWindow /*display.window*/, w, h, xSystemDepth /*24*/);
-            mask = XCreatePixmap(xGlobalDisplay, (int)confineWindow /*display.window*/, w, h, 1);
+            pixmap = XCreatePixmap(xGlobalDisplay, (X11Window)confineWindow /*display.window*/, w, h, xSystemDepth /*24*/);
+            mask = XCreatePixmap(xGlobalDisplay, (X11Window)confineWindow /*display.window*/, w, h, 1);
 
             gc = XCreateGC(xGlobalDisplay, pixmap, 0, null);
             maskGC = XCreateGC(xGlobalDisplay, mask, 0, null);
@@ -1523,8 +1523,8 @@ class XDisplayDriver : DisplayDriver
          GC gc = 0;
             Pixmap pixmap, mask;
 
-            pixmap = XCreatePixmap(xGlobalDisplay, (int)confineWindow /*display.window*/, w, h, xSystemDepth /*24*/);
-            mask = XCreatePixmap(xGlobalDisplay, (int)confineWindow /*display.window*/, w, h, 1);
+            pixmap = XCreatePixmap(xGlobalDisplay, (X11Window)confineWindow /*display.window*/, w, h, xSystemDepth /*24*/);
+            mask = XCreatePixmap(xGlobalDisplay, (X11Window)confineWindow /*display.window*/, w, h, 1);
 
             gc = XCreateGC(xGlobalDisplay, pixmap, 0, null);
             XSetGraphicsExposures(xGlobalDisplay, gc, False);
@@ -1536,7 +1536,7 @@ class XDisplayDriver : DisplayDriver
 
             XSetClipMask(xGlobalDisplay, xDisplay.gc, mask);
             XSetClipOrigin(xGlobalDisplay, xDisplay.gc, dx + surface.offset.x, dy + surface.offset.y);
-            XCopyArea(xGlobalDisplay, pixmap, (int)xSurface.pixmap, xDisplay.gc, 0, 0, w, h, dx + surface.offset.x, dy + surface.offset.y);
+            XCopyArea(xGlobalDisplay, pixmap, (Pixmap)xSurface.pixmap, xDisplay.gc, 0, 0, w, h, dx + surface.offset.x, dy + surface.offset.y);
             XSetClipOrigin(xGlobalDisplay, xDisplay.gc, 0, 0);
             {
                XRectangle rectangle;
@@ -1585,7 +1585,7 @@ class XDisplayDriver : DisplayDriver
          XInitImage(&image);
          
          // printf("Blitting DI\n");
-         XPutImage(xGlobalDisplay, (int)xSurface.pixmap, xDisplay.gc, &image, 
+         XPutImage(xGlobalDisplay, (Pixmap)xSurface.pixmap, xDisplay.gc, &image, 
             0, 0, dx + surface.offset.x, dy + surface.offset.y, w,h);
 
          delete s;
@@ -1620,7 +1620,7 @@ class XDisplayDriver : DisplayDriver
          XInitImage(&image);
          
          // printf("Blitting DI\n");
-         XPutImage(xGlobalDisplay, (int)xSurface.pixmap, xDisplay.gc, &image, 
+         XPutImage(xGlobalDisplay, (Pixmap)xSurface.pixmap, xDisplay.gc, &image, 
             0, 0, dx + surface.offset.x, dy + surface.offset.y, w,h);
 
          delete s;
@@ -1667,7 +1667,7 @@ class XDisplayDriver : DisplayDriver
 #if 0
          XSetForeground(xGlobalDisplay, xDisplay.gc, xSurface.background);
 
-         XFillRectangle(xGlobalDisplay, (int)xDisplay.pixmap, xDisplay.gc,
+         XFillRectangle(xGlobalDisplay, (Pixmap)xDisplay.pixmap, xDisplay.gc,
             x + surface.offset.x, y + surface.offset.y,
             tw /*len * CHAR_WIDTH*/, th /*CHAR_HEIGHT*/);
 
@@ -1686,7 +1686,7 @@ class XDisplayDriver : DisplayDriver
             x + surface.offset.x, y + surface.offset.y, tw, th);
       }
       /*
-      XDrawString(xGlobalDisplay, (int)xDisplay.pixmap, xDisplay.gc, 
+      XDrawString(xGlobalDisplay, (Pixmap)xDisplay.pixmap, xDisplay.gc, 
          x + surface.offset.x, y + surface.offset.y + 12, text, len);
       */
 
@@ -1800,7 +1800,7 @@ class XDisplayDriver : DisplayDriver
          XRenderComposite(xGlobalDisplay, PictOpSrc, xDisplay.picture, None, xDisplay.windowPicture, box->left, box->top, 0, 0, box->left, box->top, 
             box->right - box->left + 1, box->bottom - box->top + 1);
       else*/
-         XCopyArea(xGlobalDisplay, (int)xDisplay.pixmap, (int)display.window, xDisplay.gc /*windowGC*/, 
+         XCopyArea(xGlobalDisplay, (Pixmap)xDisplay.pixmap, (X11Window)display.window, xDisplay.gc /*windowGC*/, 
             box->left, box->top, 
             box->right - box->left + 1, 
             box->bottom - box->top + 1,
@@ -1812,9 +1812,9 @@ class XDisplayDriver : DisplayDriver
          XRenderComposite(xGlobalDisplay, PictOpSrc, xDisplay.picture, None, xDisplay.shapePicture, box->left, box->top, 0, 0, box->left, box->top, 
             box->right - box->left + 1, box->bottom - box->top + 1);
          #if !defined(__APPLE__) && !defined(__OLDX__)
-         XShapeCombineMask(xGlobalDisplay, (uint)display.window, ShapeInput, 0, 0, xDisplay.shapePixmap, ShapeSet);
+         XShapeCombineMask(xGlobalDisplay, (X11Window)display.window, ShapeInput, 0, 0, xDisplay.shapePixmap, ShapeSet);
          #else
-         XShapeCombineMask(xGlobalDisplay, (uint)display.window, 2, 0, 0, xDisplay.shapePixmap, ShapeSet);
+         XShapeCombineMask(xGlobalDisplay, (X11Window)display.window, 2, 0, 0, xDisplay.shapePixmap, ShapeSet);
          #endif
       }
 

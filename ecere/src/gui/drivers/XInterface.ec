@@ -912,7 +912,7 @@ static void WaitForViewableWindow(Window window)
    {
       XWindowAttributes attributes = { 0 };
       int result;
-      if(!XGetWindowAttributes(xGlobalDisplay, (int)window.windowHandle, &attributes))
+      if(!XGetWindowAttributes(xGlobalDisplay, (X11Window)window.windowHandle, &attributes))
          break;
       if(attributes.map_state == IsViewable)
          break;
@@ -1528,7 +1528,7 @@ class XInterface : Interface
                   XFocusChangeEvent *event = (XFocusChangeEvent *) thisEvent;
                   Window modalRoot = window.FindModal();
                   XWindowData windowData;
-                  activeWindow = (uint)window.windowHandle;
+                  activeWindow = (X11Window)window.windowHandle;
 
                   if(window.parent && window == window.parent.activeChild) break;
                   incref window;
@@ -1562,7 +1562,7 @@ class XInterface : Interface
                      break;
                   }
                   if(thisEvent->window == activeWindow)
-                     activeWindow = (uint)null;
+                     activeWindow = (X11Window)null;
 #if 0
                   if(XCheckTypedEvent(xGlobalDisplay, FocusIn, (XEvent *)thisEvent))
                   {
@@ -1665,7 +1665,7 @@ class XInterface : Interface
                      int format, len, fill;
                      Atom type;
                      char * data = null;
-                     if(XGetWindowProperty(xGlobalDisplay, (uint)window.systemHandle, atoms[_net_wm_state], 0, 32, False,
+                     if(XGetWindowProperty(xGlobalDisplay, (X11Window)window.systemHandle, atoms[_net_wm_state], 0, 32, False,
                             XA_ATOM, &type, &format, &len, &fill, &data) == Success)
                      {
                         bool maxVert = false, maxHorz = false, isMinimized = false;
@@ -1746,7 +1746,7 @@ class XInterface : Interface
                      Window modalRoot;
                      XWindowData windowData;
                      bool laterFocus;
-                     activeWindow = (uint)window.windowHandle;
+                     activeWindow = (X11Window)window.windowHandle;
 
                      timeStamp = event->data.l[1];
                      
@@ -1793,7 +1793,7 @@ class XInterface : Interface
                         {
                            if(modalRoot)
                            {
-                              XRaiseWindow(xGlobalDisplay, (int)modalRoot.windowHandle);
+                              XRaiseWindow(xGlobalDisplay, (X11Window)modalRoot.windowHandle);
                               WaitForViewableWindow(modalRoot);
                               if(atoms[_net_active_window])
                               {
@@ -1802,7 +1802,7 @@ class XInterface : Interface
                                  event.message_type = atoms[_net_active_window];
                                  event.display = xGlobalDisplay;
                                  event.serial = 0;
-                                 event.window = (uint)modalRoot.windowHandle;
+                                 event.window = (X11Window)modalRoot.windowHandle;
                                  event.send_event = 1;
                                  event.format = 32;
                                  event.data.l[0] = 0;
@@ -1816,7 +1816,7 @@ class XInterface : Interface
 #endif
 
                                  XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false, SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
-                                 XSetInputFocus(xGlobalDisplay, (int)modalRoot.windowHandle, RevertToPointerRoot, (uint)timeStamp);
+                                 XSetInputFocus(xGlobalDisplay, (X11Window)modalRoot.windowHandle, RevertToPointerRoot, (uint)timeStamp);
 
                                  //XFlush(xGlobalDisplay);
                                  //printf("Done.\n");
@@ -1824,7 +1824,7 @@ class XInterface : Interface
                            }
                            else
                            {
-                              XSetInputFocus(xGlobalDisplay, (int)window.windowHandle, RevertToPointerRoot, (uint)timeStamp);
+                              XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToPointerRoot, (uint)timeStamp);
                               window.ExternalActivate(true, true, window, null); // lastActive); 
                               if(windowData && windowData.ic)
                               {
@@ -1853,7 +1853,7 @@ class XInterface : Interface
                      Atom type;
                      char * data = null;
 
-                     if(XGetWindowProperty(xGlobalDisplay, (uint)window.windowHandle,
+                     if(XGetWindowProperty(xGlobalDisplay, (X11Window)window.windowHandle,
                         atoms[_net_frame_extents], 0, 4,
                          False, XA_CARDINAL, &type, &format, &len,
                          &fill, &data) == Success && data)
@@ -2097,22 +2097,22 @@ class XInterface : Interface
       else
       {
          if(window.windowHandle)
-            windowHandle = (int)window.windowHandle;
+            windowHandle = (X11Window)window.windowHandle;
          else
          {
-            X11Window parentWindow = (uint)null;
+            X11Window parentWindow = (X11Window)null;
 
             if(window.master.rootWindow && window.master.rootWindow != guiApp.desktop && (window._isModal || window.style.interim))
             {
                Window master = window.master;
                Window rootWindow = master.rootWindow;
 
-               parentWindow = rootWindow.is3D ? (uint)rootWindow.parent.windowHandle : (uint)rootWindow.windowHandle;
+               parentWindow = rootWindow.is3D ? (X11Window)rootWindow.parent.windowHandle : (X11Window)rootWindow.windowHandle;
 
                // parentWindow = window.master.rootWindow.is3D ? window.master.rootWindow.parent.windowHandle : window.master.rootWindow.windowHandle;
             }
             if(window.style.showInTaskBar)
-               parentWindow = (uint)null;
+               parentWindow = (X11Window)null;
 
             windowHandle = XCreateWindow(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), 
                0,0,1,1,0, depth, InputOutput, visual ? visual : CopyFromParent, 
@@ -2186,7 +2186,7 @@ class XInterface : Interface
          if(ic)
             setICPosition = true;
          else
-            ic = XCreateIC(im, XNInputStyle, XIMStatusNothing | XIMPreeditNothing, XNClientWindow, windowHandle, XNFocusWindow, windowHandle, 0);
+            ic = XCreateIC(im, XNInputStyle, XIMStatusNothing | XIMPreeditNothing, XNClientWindow, windowHandle, XNFocusWindow, windowHandle, null);
       }
       if(ic)
       {
@@ -2198,7 +2198,7 @@ class XInterface : Interface
 
       if(capturedWindow == None && !restrictedWindow)
       {
-         XGrabPointer(xGlobalDisplay, (int)windowHandle, False, ButtonPressMask | ButtonReleaseMask | PointerMotionMask, GrabModeAsync,
+         XGrabPointer(xGlobalDisplay, (X11Window)windowHandle, False, ButtonPressMask | ButtonReleaseMask | PointerMotionMask, GrabModeAsync,
             GrabModeAsync, restrictedWindow ? confineWindow : None, fullScreenMode ? nullCursor : None, CurrentTime);
          XUngrabPointer(xGlobalDisplay, CurrentTime);
       }
@@ -2248,7 +2248,7 @@ class XInterface : Interface
 
       if(capturedWindow == None && !restrictedWindow)
       {
-         XGrabPointer(xGlobalDisplay, (int)windowHandle, False, ButtonPressMask | ButtonReleaseMask | PointerMotionMask, GrabModeAsync,
+         XGrabPointer(xGlobalDisplay, (X11Window)windowHandle, False, ButtonPressMask | ButtonReleaseMask | PointerMotionMask, GrabModeAsync,
             GrabModeAsync, restrictedWindow ? confineWindow : None, fullScreenMode ? nullCursor : None, CurrentTime);
          XUngrabPointer(xGlobalDisplay, CurrentTime);
       }
@@ -2261,7 +2261,7 @@ class XInterface : Interface
          event.message_type = atoms[_net_request_frame_extents];
          event.display = xGlobalDisplay;
          event.serial = 0;
-         event.window = (uint)windowHandle;
+         event.window = (X11Window)windowHandle;
          event.send_event = 1;
          window.windowHandle = (void *)windowHandle;
          event.format = 32;
@@ -2276,10 +2276,10 @@ class XInterface : Interface
       XEvent event;
 
       XDeleteContext(xGlobalDisplay, (XID)window, windowContext); 
-      XSaveContext(xGlobalDisplay, (int)window.windowHandle, windowContext, null);
-      XDestroyWindow(xGlobalDisplay, (int)window.windowHandle);
+      XSaveContext(xGlobalDisplay, (X11Window)window.windowHandle, windowContext, null);
+      XDestroyWindow(xGlobalDisplay, (X11Window)window.windowHandle);
       XSync(xGlobalDisplay, 0);
-      while(XCheckWindowEvent(xGlobalDisplay, (int)window.windowHandle, 0xFFFFFFFF, &event));
+      while(XCheckWindowEvent(xGlobalDisplay, (X11Window)window.windowHandle, 0xFFFFFFFF, &event));
       window.windowHandle = null;
       if(window.windowData)
       {
@@ -2301,9 +2301,9 @@ class XInterface : Interface
    {
       if(window.windowHandle)
       {
-         XChangeProperty(xGlobalDisplay, (int)window.windowHandle, atoms[_net_wm_name],
+         XChangeProperty(xGlobalDisplay, (X11Window)window.windowHandle, atoms[_net_wm_name],
             atoms[utf8_string], 8, PropModeReplace, (byte *)name, name ? strlen(name) : 0);
-         XChangeProperty(xGlobalDisplay, (int)window.windowHandle, atoms[wm_name],
+         XChangeProperty(xGlobalDisplay, (X11Window)window.windowHandle, atoms[wm_name],
             atoms[utf8_string], 8, PropModeReplace, (byte *)name, name ? strlen(name) : 0);
       }   
    }
@@ -2317,7 +2317,7 @@ class XInterface : Interface
          bool visible = window.visible;
          if(window.visible)
          {
-            XMapWindow(xGlobalDisplay, (int)window.windowHandle);
+            XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
             WaitForViewableWindow(window);
          }
 #endif
@@ -2334,14 +2334,14 @@ class XInterface : Interface
             h -= window.size.h - window.clientSize.h;
          }
          if(move && resize)
-            XMoveResizeWindow(xGlobalDisplay, (int)window.windowHandle, x + desktopX, y + desktopY, w, h);
+            XMoveResizeWindow(xGlobalDisplay, (X11Window)window.windowHandle, x + desktopX, y + desktopY, w, h);
          else if(move)
-            XMoveWindow(xGlobalDisplay, (int)window.windowHandle, x + desktopX, y + desktopY);
+            XMoveWindow(xGlobalDisplay, (X11Window)window.windowHandle, x + desktopX, y + desktopY);
          else if(resize)
-            XResizeWindow(xGlobalDisplay, (int)window.windowHandle, w, h);
+            XResizeWindow(xGlobalDisplay, (X11Window)window.windowHandle, w, h);
 #if defined(__APPLE__)
 //         if(window.created && !visible)
-  //          XUnmapWindow(xGlobalDisplay, (int)window.windowHandle);
+  //          XUnmapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
 #endif
       }
    }
@@ -2391,7 +2391,7 @@ class XInterface : Interface
          //Logf("Set root window state %d %s\n", state, window.name);
          if(visible)
          {
-            XMapWindow(xGlobalDisplay, (int)window.windowHandle);
+            XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
 #if defined(__APPLE__)
             WaitForViewableWindow(window);
 #endif
@@ -2436,7 +2436,7 @@ class XInterface : Interface
                */
 
                // printf("Attempting to minimize %s\n", window._class.name);
-               XIconifyWindow(xGlobalDisplay, (uint)window.windowHandle, DefaultScreen(xGlobalDisplay));
+               XIconifyWindow(xGlobalDisplay, (X11Window)window.windowHandle, DefaultScreen(xGlobalDisplay));
             }
             else
             {
@@ -2445,7 +2445,7 @@ class XInterface : Interface
                   // With native decorations, we do it the first time
                   // or the WM (Gnome) is sticking it to the top/right!
                   XMoveResizeWindow(xGlobalDisplay, 
-                     (int)window.windowHandle,
+                     (X11Window)window.windowHandle,
                      window.position.x + desktopX,
                      window.position.y + desktopY,
                      window.nativeDecorations ? window.clientSize.w : window.size.w,
@@ -2460,7 +2460,7 @@ class XInterface : Interface
                   event.message_type = atoms[_net_wm_state];
                   event.display = xGlobalDisplay;
                   event.serial = 0;
-                  event.window = (uint)window.windowHandle;
+                  event.window = (X11Window)window.windowHandle;
                   event.send_event = 1;
                   event.format = 32;
                   event.data.l[0] = (state == maximized) ? 1 : 0;
@@ -2472,7 +2472,7 @@ class XInterface : Interface
             }
          }
          else
-            XUnmapWindow(xGlobalDisplay, (int)window.windowHandle);
+            XUnmapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
          //XFlush(xGlobalDisplay);
       }
    }
@@ -2485,7 +2485,7 @@ class XInterface : Interface
       event.message_type = atoms[_net_wm_state];
       event.display = xGlobalDisplay;
       event.serial = 0;
-      event.window = (uint)window.windowHandle;
+      event.window = (X11Window)window.windowHandle;
       event.send_event = 1;
       event.format = 32;
       event.data.l[0] = 1;
@@ -2500,8 +2500,8 @@ class XInterface : Interface
          if(!window.style.hidden && window.created)
          {
             //printf("Activate root window %s\n", window._class.name);
-            XRaiseWindow(xGlobalDisplay, (int)window.windowHandle);
-            XMapWindow(xGlobalDisplay, (int)window.windowHandle);
+            XRaiseWindow(xGlobalDisplay, (X11Window)window.windowHandle);
+            XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
             WaitForViewableWindow(window);
             if(atoms[_net_active_window])
             {
@@ -2510,7 +2510,7 @@ class XInterface : Interface
                event.message_type = atoms[_net_active_window];
                event.display = xGlobalDisplay;
                event.serial = 0;
-               event.window = (uint)window.windowHandle;
+               event.window = (X11Window)window.windowHandle;
                event.send_event = 1;
                event.format = 32;
                event.data.l[0] = 0;
@@ -2528,11 +2528,11 @@ class XInterface : Interface
                
                XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false, SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
 //#if defined(__APPLE__)
-               XSetInputFocus(xGlobalDisplay, (int)window.windowHandle, RevertToPointerRoot, CurrentTime);
+               XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToPointerRoot, CurrentTime);
 //#endif
             }
             else
-               XSetInputFocus(xGlobalDisplay, (int)window.windowHandle, RevertToPointerRoot, CurrentTime);
+               XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToPointerRoot, CurrentTime);
          }
       }
    }
@@ -2584,7 +2584,7 @@ class XInterface : Interface
             if(!restrictedWindow)
                XMapWindow(xGlobalDisplay, confineWindow);
 
-            XGrabPointer(xGlobalDisplay, (int) window.rootWindow.windowHandle, False,
+            XGrabPointer(xGlobalDisplay, (X11Window) window.rootWindow.windowHandle, False,
                ButtonPressMask | ButtonReleaseMask | PointerMotionMask, GrabModeAsync,
                GrabModeAsync, confineWindow, fullScreenMode ? nullCursor : None, CurrentTime);
 
@@ -2595,7 +2595,7 @@ class XInterface : Interface
       {
          if(capturedWindow != None)
          {
-            XGrabPointer(xGlobalDisplay, (int)capturedWindow,
+            XGrabPointer(xGlobalDisplay, (X11Window)capturedWindow,
                False, ButtonPressMask | ButtonReleaseMask | PointerMotionMask, GrabModeAsync,
                GrabModeAsync, None, fullScreenMode ? nullCursor : None, CurrentTime);
          }
@@ -2618,7 +2618,7 @@ class XInterface : Interface
       {
          if(!window.parent || !window.parent.display)
          {
-            XGrabPointer(xGlobalDisplay, (int)window.windowHandle,
+            XGrabPointer(xGlobalDisplay, (X11Window)window.windowHandle,
                False, ButtonPressMask | ButtonReleaseMask | PointerMotionMask, GrabModeAsync,
                GrabModeAsync, restrictedWindow ? confineWindow : None, fullScreenMode ? nullCursor : None, CurrentTime);
 
@@ -2628,7 +2628,7 @@ class XInterface : Interface
       else if(capturedWindow != None)
       {
          if(restrictedWindow)
-            XGrabPointer(xGlobalDisplay, (int) restrictedWindow.rootWindow.windowHandle, False, 
+            XGrabPointer(xGlobalDisplay, (X11Window) restrictedWindow.rootWindow.windowHandle, False, 
                ButtonPressMask | ButtonReleaseMask | PointerMotionMask, GrabModeAsync,
                GrabModeAsync, confineWindow, fullScreenMode ? nullCursor : None, CurrentTime);
          else
@@ -2645,7 +2645,7 @@ class XInterface : Interface
       //*XLockDisplay(xGlobalDisplay);
       if(cursor == -1)
       {
-         XDefineCursor(xGlobalDisplay, (int) guiApp.desktop.windowHandle, nullCursor);
+         XDefineCursor(xGlobalDisplay, (X11Window) guiApp.desktop.windowHandle, nullCursor);
       }
       //*XUnlockDisplay(xGlobalDisplay);
    }
@@ -2708,7 +2708,7 @@ class XInterface : Interface
             delete clipBoardData;
          else if(rootWindow)
       	   XSetSelectionOwner(xGlobalDisplay, atoms[clipboard], 
-               (int) rootWindow.windowHandle, CurrentTime);
+               (X11Window) rootWindow.windowHandle, CurrentTime);
          clipBoardData = clipBoard.text;
          clipBoard.text = null;
          result = true;
@@ -2749,7 +2749,7 @@ class XInterface : Interface
                for(atom = atoms[utf8_string]; atom; atom = ((atom == atoms[utf8_string]) ? XA_STRING : 0))
                {
                   XEvent e;
-                  XConvertSelection(xGlobalDisplay, selAtom, atom, atoms[app_selection] /*None*/, (int) rootWindow.windowHandle, CurrentTime);
+                  XConvertSelection(xGlobalDisplay, selAtom, atom, atoms[app_selection] /*None*/, (X11Window) rootWindow.windowHandle, CurrentTime);
                   XIfEvent(xGlobalDisplay, (XEvent *) &e, EventChecker, (void *)SelectionNotify);
                   if(e.type == SelectionNotify)
                   {
@@ -2759,10 +2759,10 @@ class XInterface : Interface
                      uint len, size = 0, dummy;
                      Atom type;
             	     int format;
-                     XGetWindowProperty(xGlobalDisplay, (int) rootWindow.windowHandle, selection->_property ? selection->_property : atom, 0, 0, 0, AnyPropertyType, &type, &format, &len, &size, &data);
+                     XGetWindowProperty(xGlobalDisplay, (X11Window) rootWindow.windowHandle, selection->_property ? selection->_property : atom, 0, 0, 0, AnyPropertyType, &type, &format, &len, &size, &data);
                      if(size > 0)
                      {
-                        if(XGetWindowProperty(xGlobalDisplay, (int) rootWindow.windowHandle, selection->_property ? selection->_property : atom, 0,size,0,
+                        if(XGetWindowProperty(xGlobalDisplay, (X11Window) rootWindow.windowHandle, selection->_property ? selection->_property : atom, 0,size,0,
                               AnyPropertyType, &type,&format,&len, &dummy, &data) == Success)
                         {
                            clipBoard.text = new char[size+1];

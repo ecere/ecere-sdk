@@ -561,8 +561,8 @@ public:
    char * name;
    ClassProperty parent, left, right;
    int depth;
-   void (*Set)(Class, int);
-   int (*Get)(Class);
+   void (*Set)(Class, int64);
+   int64 (*Get)(Class);
    char * dataTypeString;
    Type dataType;
    bool constant;
@@ -4095,7 +4095,7 @@ static void SetDelayedCPValues(Class _class, ClassProperty _property)
       if(!strcmp(value.name, _property.name))
       {
          // eClass_SetProperty(_class, _property.name, value.data);
-         _property.Set(_class, (int)value.data);
+         _property.Set(_class, (int64)value.data);
          _class.delayedCPValues.Delete(value);
       }
    }
@@ -4164,24 +4164,25 @@ public dllexport ClassProperty eClass_FindClassProperty(Class _class, char * nam
    return _property;
 }
 
-public dllexport int eClass_GetProperty(Class _class, char * name)
+public dllexport int64 eClass_GetProperty(Class _class, char * name)
 {
    ClassProperty _property = eClass_FindClassProperty(_class, name);
+   char * propName = _property.name;
    if(_property && _property.Get && _property.Get != (void *)1)
    {
-      int result = _property.Get(_class);
+      int64 result = _property.Get(_class);
       return result;
    }
    return 0;
 }
 
-public dllexport void eClass_SetProperty(Class _class, char * name, int value)
+public dllexport void eClass_SetProperty(Class _class, char * name, int64 value)
 {
    ClassProperty _property = eClass_FindClassProperty(_class, name);
    if(_property)
    {
       if(_property.Set)
-         _property.Set(_class, value);
+         ((void(*)(void *, int64))_property.Set)(_class, value);
    }
    else
    {
