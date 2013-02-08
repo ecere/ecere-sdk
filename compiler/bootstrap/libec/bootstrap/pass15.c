@@ -1,6 +1,9 @@
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
+#ifndef _WIN32
+#define __declspec(x)
+#endif
 #elif defined(__TINYC__)
 #include <stdarg.h>
 #define __builtin_va_list va_list

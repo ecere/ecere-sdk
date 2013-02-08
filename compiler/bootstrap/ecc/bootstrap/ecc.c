@@ -1,6 +1,9 @@
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
+#ifndef _WIN32
+#define __declspec(x)
+#endif
 #elif defined(__TINYC__)
 #include <stdarg.h>
 #define __builtin_va_list va_list
@@ -1148,6 +1151,9 @@ if(output)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(__GNUC__)\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef long long int64;\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef unsigned long long uint64;\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#ifndef _WIN32\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __declspec(x)\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#elif defined(__TINYC__)\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#include <stdarg.h>\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __builtin_va_list va_list\n");

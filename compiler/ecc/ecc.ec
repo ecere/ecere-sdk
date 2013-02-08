@@ -489,27 +489,12 @@ class CompilerApp : Application
                   File output = FileOpen(GetOutputFile(), write);
                   if(output)
                   {
-                     //output.Printf("#include <ecereCOM.h>\n\n");
-
-                     // Temporary patch, fix with defines or something...
-                     /*
-                     if(!strstr(GetSourceFile(), "instance.ec"))
-                     {
-                        output.Printf("#if defined(__GNUC__) && defined(__WIN32__)\n");
-                        output.Printf("#include <x87inline.h>\n");
-                        output.Printf("#endif\n");
-                     }
-                     */
-                     /*output.Printf("#if defined(__GNUC__) \n");
-                        output.Printf("typedef long long int64;\n");
-                        output.Printf("typedef unsigned long long uint64;\n");
-                     output.Printf("#else\n");
-                        output.Printf("typedef __int64 int64;\n");
-                        output.Printf("typedef unsigned __int64 uint64;\n");
-                     output.Printf("#endif\n");*/
                      output.Printf("#if defined(__GNUC__)\n");
                         output.Printf("typedef long long int64;\n");
                         output.Printf("typedef unsigned long long uint64;\n");
+                        output.Printf("#ifndef _WIN32\n");
+                           output.Printf("#define __declspec(x)\n");
+                        output.Printf("#endif\n");
                      output.Printf("#elif defined(__TINYC__)\n");
                         output.Printf("#include <stdarg.h>\n");
                         output.Printf("#define __builtin_va_list va_list\n");
@@ -528,20 +513,11 @@ class CompilerApp : Application
                         output.Printf("typedef __int64 int64;\n");
                         output.Printf("typedef unsigned __int64 uint64;\n");
                      output.Printf("#endif\n");
-                     /*output.Printf("#if defined(__GNUC__) || defined(__TINYC__)\n");
-                        output.Printf("typedef long long int64;\n");
-                        output.Printf("typedef unsigned long long uint64;\n");
-                     output.Printf("#elif defined(__TINYC__)\n");
-                     output.Printf("#else\n");
-                        output.Printf("typedef __int64 int64;\n");
-                        output.Printf("typedef unsigned __int64 uint64;\n");
-                     output.Printf("#endif\n");*/
                      output.Printf("#ifdef __BIG_ENDIAN__\n");
                         output.Printf("#define __ENDIAN_PAD(x) (8 - (x))\n");
                      output.Printf("#else\n");
                         output.Printf("#define __ENDIAN_PAD(x) 0\n");
                      output.Printf("#endif\n");
-
                      output.Printf("#ifdef __MINGW32__\n");
                      output.Printf("#ifdef _WIN64\n");
                      output.Printf("typedef unsigned long long int uintptr_t;\n");

@@ -1,6 +1,9 @@
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
+#ifndef _WIN32
+#define __declspec(x)
+#endif
 #elif defined(__TINYC__)
 #include <stdarg.h>
 #define __builtin_va_list va_list
@@ -24,7 +27,17 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#ifdef __MINGW32__
+#ifdef _WIN64
+typedef unsigned long long int uintptr_t;
+typedef long long int intptr_t;
+#else
+typedef unsigned int uintptr_t;
+typedef int intptr_t;
+#endif
+#else
 #include <stdint.h>
+#endif
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
