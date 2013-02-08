@@ -266,6 +266,7 @@ Specifier CopySpecifier(Specifier spec)
             Identifier id = CopyIdentifier(spec.id);
             OldList * list = null;
             ClassDef def;
+            Specifier s;
             if(spec.definitions)
             {
                list = MkList();
@@ -275,7 +276,9 @@ Specifier CopySpecifier(Specifier spec)
                      ListAdd(list, CopyClassDef(def));
                }
             }
-            return MkStructOrUnion(spec.type, id, list);
+            s = MkStructOrUnion(spec.type, id, list);
+            s.extDeclStruct = CopyExtDecl(spec.extDeclStruct);
+            return s;
          }
          case nameSpecifier:
          {

@@ -435,7 +435,7 @@ static void CheckMembersDefinitions(Class regClass, DataMember member, OldList d
    }
 }
 
-static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol, OldList baseSpecs, OldList enumValues, Location loc, OldList defs, void * after, OldList initDeclarators)
+static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol, OldList baseSpecs, OldList enumValues, Location loc, OldList defs, void * after, OldList initDeclarators, ExtDecl extDecl)
 {
    char structName[1024];
    char className[1024];
@@ -758,8 +758,12 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          strcpy(structName, symbol.string);
          symbol.structName = CopyString(structName);
 
-         ListAdd(specs, MkStructOrUnion(structSpecifier, MkIdentifier(structName), 
-            isUnion ? MkListOne(MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkStructOrUnion(unionSpecifier, null, list)), null, null))) : list));
+         {
+            Specifier spec = MkStructOrUnion(structSpecifier, MkIdentifier(structName), 
+               isUnion ? MkListOne(MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkStructOrUnion(unionSpecifier, null, list)), null, null))) : list);
+            spec.extDeclStruct = extDecl;
+            ListAdd(specs, spec);
+         }
 
          external.symbol = symbol;
          // TOFIX : Fix this...
@@ -1499,7 +1503,7 @@ public void PreProcessClassDefinitions()
             ClassDefinition _class = external._class;
             if(_class.definitions)
             {
-               ProcessClass(normalClass, _class.definitions, _class.symbol, _class.baseSpecs, null, _class.loc, ast, external.prev, null);
+               ProcessClass(normalClass, _class.definitions, _class.symbol, _class.baseSpecs, null, _class.loc, ast, external.prev, null, null);
             }
          }
          else if(external.type == declarationExternal)
@@ -1519,6 +1523,8 @@ public void PreProcessClassDefinitions()
                         if(symbol)
                         {
                            OldList * initDeclarators = null;
+                           ExtDecl extDecl = specifier.extDeclStruct;
+                           specifier.extDeclStruct = null;
                            if(inCompiler)
                            {
                               // Give the declarators away to ProcessClass
@@ -1528,7 +1534,7 @@ public void PreProcessClassDefinitions()
                            }
                            ProcessClass((specifier.type == unionSpecifier) ? unionClass : normalClass, specifier.definitions,
                               symbol, specifier.baseSpecs, specifier.list, specifier.loc, ast, external.prev,
-                              initDeclarators);
+                              initDeclarators, extDecl);
                         }
                      }
                   }

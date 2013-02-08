@@ -19,11 +19,11 @@ msgstr "%s expected to be derived from method class\n"
 msgid "%s undefined; assuming extern returning int\n"
 msgstr "%s undefined; assuming extern returning int\n"
 
-#: ./src/ecdefs.ec:1260
+#: ./src/ecdefs.ec:1261
 msgid ":%d:%d: error: "
 msgstr ":%d:%d: error: "
 
-#: ./src/ecdefs.ec:1301
+#: ./src/ecdefs.ec:1302
 msgid ":%d:%d: warning: "
 msgstr ":%d:%d: warning: "
 
@@ -298,7 +298,7 @@ msgstr "redefinition of constructor for class %s\n"
 msgid "redefinition of destructor for class %s\n"
 msgstr "redefinition of destructor for class %s\n"
 
-#: ./src/ecdefs.ec:1321
+#: ./src/ecdefs.ec:1322
 #: ./src/grammar.ec:3128
 #: ./src/grammar.ec:3129
 #: ./src/grammar.ec:3130

@@ -552,6 +552,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  baseSpecs;
 struct __ecereNameSpace__ecere__sys__OldList *  definitions;
 unsigned int addNameSpace;
 struct Context * ctx;
+struct ExtDecl * extDeclStruct;
 } __attribute__ ((gcc_struct));
 struct Expression * expression;
 struct Specifier * _class;
@@ -1388,6 +1389,8 @@ if(spec->definitions)
 FreeList(spec->definitions, FreeClassDef);
 if(spec->baseSpecs)
 FreeList(spec->baseSpecs, FreeSpecifier);
+if(spec->extDeclStruct)
+FreeExtDecl(spec->extDeclStruct);
 if(spec->ctx)
 {
 FreeContext(spec->ctx);

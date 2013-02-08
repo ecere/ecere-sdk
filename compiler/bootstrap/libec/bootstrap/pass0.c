@@ -506,6 +506,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  baseSpecs;
 struct __ecereNameSpace__ecere__sys__OldList *  definitions;
 unsigned int addNameSpace;
 struct Context * ctx;
+struct ExtDecl * extDeclStruct;
 } __attribute__ ((gcc_struct));
 struct Expression * expression;
 struct Specifier * _class;
@@ -1693,7 +1694,7 @@ void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(struct __ecereNameS
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(struct __ecereNameSpace__ecere__sys__OldList * this);
 
-static void ProcessClass(int classType, struct __ecereNameSpace__ecere__sys__OldList * definitions, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * baseSpecs, struct __ecereNameSpace__ecere__sys__OldList * enumValues, struct Location * loc, struct __ecereNameSpace__ecere__sys__OldList * defs, void * after, struct __ecereNameSpace__ecere__sys__OldList * initDeclarators)
+static void ProcessClass(int classType, struct __ecereNameSpace__ecere__sys__OldList * definitions, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * baseSpecs, struct __ecereNameSpace__ecere__sys__OldList * enumValues, struct Location * loc, struct __ecereNameSpace__ecere__sys__OldList * defs, void * after, struct __ecereNameSpace__ecere__sys__OldList * initDeclarators, struct ExtDecl * extDecl)
 {
 void * __ecereTemp1;
 char structName[1024];
@@ -1915,7 +1916,12 @@ struct __ecereNameSpace__ecere__sys__OldList * specs = MkList(), * declarators =
 initDeclarators = (((void *)0));
 strcpy(structName, symbol->string);
 symbol->structName = __ecereNameSpace__ecere__sys__CopyString(structName);
-ListAdd(specs, MkStructOrUnion(3, MkIdentifier(structName), isUnion ? MkListOne(MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkStructOrUnion(4, (((void *)0)), list)), (((void *)0)), (((void *)0))))) : list));
+{
+struct Specifier * spec = MkStructOrUnion(3, MkIdentifier(structName), isUnion ? MkListOne(MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkStructOrUnion(4, (((void *)0)), list)), (((void *)0)), (((void *)0))))) : list);
+
+spec->extDeclStruct = extDecl;
+ListAdd(specs, spec);
+}
 external->symbol = symbol;
 symbol->structExternal = external;
 external->declaration = MkDeclaration(specs, declarators);
@@ -2442,7 +2448,7 @@ struct ClassDefinition * _class = external->_class;
 
 if(_class->definitions)
 {
-ProcessClass(0, _class->definitions, _class->symbol, _class->baseSpecs, (((void *)0)), &_class->loc, ast, external->prev, (((void *)0)));
+ProcessClass(0, _class->definitions, _class->symbol, _class->baseSpecs, (((void *)0)), &_class->loc, ast, external->prev, (((void *)0)), (((void *)0)));
 }
 }
 else if(external->type == 1)
@@ -2464,13 +2470,15 @@ struct Symbol * symbol = FindClass(specifier->id->string);
 if(symbol)
 {
 struct __ecereNameSpace__ecere__sys__OldList * initDeclarators = (((void *)0));
+struct ExtDecl * extDecl = specifier->extDeclStruct;
 
+specifier->extDeclStruct = (((void *)0));
 if(inCompiler)
 {
 initDeclarators = declaration->declarators;
 declaration->declarators = (((void *)0));
 }
-ProcessClass((specifier->type == 4) ? 6 : 0, specifier->definitions, symbol, specifier->baseSpecs, specifier->list, &specifier->loc, ast, external->prev, initDeclarators);
+ProcessClass((specifier->type == 4) ? 6 : 0, specifier->definitions, symbol, specifier->baseSpecs, specifier->list, &specifier->loc, ast, external->prev, initDeclarators, extDecl);
 }
 }
 }

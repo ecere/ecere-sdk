@@ -2272,12 +2272,27 @@ struct_entry:
          $$.ctx = PushContext();
          FreeSpecifier($2);
       }
+   | struct_or_union ext_decl identifier 
+      {
+         $$ = MkStructOrUnion($1, $3, null);
+         $$.extDeclStruct = $2;
+         $$.addNameSpace = true;
+         $$.ctx = PushContext();
+      }
+   | struct_or_union ext_decl base_strict_type
+      {
+         $$ = MkStructOrUnion($1, MkIdentifier($3.name), null);
+         $$.extDeclStruct = $2;
+         $$.ctx = PushContext();
+         FreeSpecifier($3);
+      }
    ;
 
 struct_or_union_specifier_compound:
      struct_or_union_specifier_compound_error '}' { $$ = $1; $$.loc = @$; }
    | struct_entry '{' '}'                 { $$ = $1; $$.loc = @$; POP_DEFAULT_ACCESS PopContext(curContext); }
    | struct_or_union '{' '}'              { $$ = MkStructOrUnion($1, null, null); $$.loc = @$; POP_DEFAULT_ACCESS }
+   | struct_or_union ext_decl '{' '}'              { $$ = MkStructOrUnion($1, null, null); $$.extDeclStruct = $2; $$.loc = @$; POP_DEFAULT_ACCESS }
 	;
 
 struct_or_union_specifier_compound_error:
@@ -2288,6 +2303,10 @@ struct_or_union_specifier_compound_error:
 	| struct_or_union '{' struct_declaration_list               { $$ = MkStructOrUnion($1, null, $3); POP_DEFAULT_ACCESS }
    | struct_or_union '{' struct_declaration_list_error               { $$ = MkStructOrUnion($1, null, $3); POP_DEFAULT_ACCESS }
    | struct_or_union '{' error              { $$ = MkStructOrUnion($1, null, null); POP_DEFAULT_ACCESS }
+
+	| struct_or_union ext_decl '{' struct_declaration_list               { $$ = MkStructOrUnion($1, null, $4); $$.extDeclStruct = $2; POP_DEFAULT_ACCESS }
+   | struct_or_union ext_decl '{' struct_declaration_list_error               { $$ = MkStructOrUnion($1, null, $4); $$.extDeclStruct = $2; POP_DEFAULT_ACCESS }
+   | struct_or_union ext_decl '{' error              { $$ = MkStructOrUnion($1, null, null); $$.extDeclStruct = $2; POP_DEFAULT_ACCESS }
 	;
 
 struct_or_union_specifier_nocompound:

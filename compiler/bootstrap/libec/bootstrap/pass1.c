@@ -523,6 +523,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  baseSpecs;
 struct __ecereNameSpace__ecere__sys__OldList *  definitions;
 unsigned int addNameSpace;
 struct Context * ctx;
+struct ExtDecl * extDeclStruct;
 } __attribute__ ((gcc_struct));
 struct Expression * expression;
 struct Specifier * _class;

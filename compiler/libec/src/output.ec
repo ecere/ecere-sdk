@@ -998,6 +998,11 @@ static void OutputSpecifier(Specifier spec, File f)
       case unionSpecifier:
       {
          f.Puts((spec.type == structSpecifier) ? "struct" : "union");
+         if(spec.extDeclStruct)
+         {
+            f.Puts(" ");
+            OutputExtDecl(spec.extDeclStruct, f);
+         }
          if(spec.id)
          {
             f.Puts(" ");

@@ -298,6 +298,8 @@ void FreeSpecifier(Specifier spec)
                FreeList(spec.definitions, FreeClassDef);
             if(spec.baseSpecs)
                FreeList(spec.baseSpecs, FreeSpecifier);
+            if(spec.extDeclStruct)
+               FreeExtDecl(spec.extDeclStruct);
             if(spec.ctx)
             {
                FreeContext(spec.ctx);

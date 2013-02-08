@@ -325,6 +325,7 @@ public:
          OldList * definitions;
          bool addNameSpace;
          Context ctx;
+         ExtDecl extDeclStruct;
       };
       Expression expression;
       Specifier _class;

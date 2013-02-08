@@ -13,7 +13,7 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
          if(def.type == declarationClassDef)
          {
             Declaration decl = def.decl;
-            DataMember dataMember;
+            DataMember dataMember = null;
             Type dataType;
 
             if(decl.type == structDeclaration)
@@ -96,7 +96,7 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                                  if(!dataMember)
                                     Compiler_Error($"Member with same name already exists %s in member %s\n", declId.string, member.name);
                               }
-                              else
+                              else if(regClass)
                               {
                                  dataMember = eClass_AddDataMember(regClass, declId.string, 
                                     typeString, 0, 0 /*ComputeTypeSize(dataType)*/, def.memberAccess);

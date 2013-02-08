@@ -436,6 +436,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  baseSpecs;
 struct __ecereNameSpace__ecere__sys__OldList *  definitions;
 unsigned int addNameSpace;
 struct Context * ctx;
+struct ExtDecl * extDeclStruct;
 } __attribute__ ((gcc_struct));
 struct Expression * expression;
 struct Specifier * _class;
@@ -1036,7 +1037,7 @@ for(def = definitions->first; def; def = def->next)
 if(def->type == 2)
 {
 struct Declaration * decl = def->decl;
-struct __ecereNameSpace__ecere__com__DataMember * dataMember;
+struct __ecereNameSpace__ecere__com__DataMember * dataMember = (((void *)0));
 struct Type * dataType;
 
 if(decl->type == 0)
@@ -1108,7 +1109,7 @@ dataMember = __ecereNameSpace__ecere__com__eMember_AddDataMember(member, declId-
 if(!dataMember)
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Member with same name already exists %s in member %s\n", (((void *)0))), declId->string, member->name);
 }
-else
+else if(regClass)
 {
 dataMember = __ecereNameSpace__ecere__com__eClass_AddDataMember(regClass, declId->string, typeString, 0, 0, def->memberAccess);
 if(!dataMember)

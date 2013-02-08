@@ -493,6 +493,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  baseSpecs;
 struct __ecereNameSpace__ecere__sys__OldList *  definitions;
 unsigned int addNameSpace;
 struct Context * ctx;
+struct ExtDecl * extDeclStruct;
 } __attribute__ ((gcc_struct));
 struct Expression * expression;
 struct Specifier * _class;
@@ -1176,13 +1177,13 @@ extern struct Specifier * MkEnum(struct Identifier * id, struct __ecereNameSpace
 
 extern struct Specifier * MkStructOrUnion(int type, struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * definitions);
 
+struct ExtDecl * CopyExtDecl(struct ExtDecl * extDecl);
+
 extern char *  __ecereNameSpace__ecere__sys__CopyString(char *  string);
 
 extern struct Specifier * MkSpecifierSubClass(struct Specifier * _class);
 
 extern struct Specifier * MkSpecifierExtended(struct ExtDecl * extDecl);
-
-struct ExtDecl * CopyExtDecl(struct ExtDecl * extDecl);
 
 struct Specifier * CopySpecifier(struct Specifier * spec)
 {
@@ -1212,6 +1213,7 @@ case 4:
 struct Identifier * id = CopyIdentifier(spec->id);
 struct __ecereNameSpace__ecere__sys__OldList * list = (((void *)0));
 struct ClassDef * def;
+struct Specifier * s;
 
 if(spec->definitions)
 {
@@ -1222,7 +1224,9 @@ for(def = (*spec->list).first; def; def = def->next)
 ListAdd(list, CopyClassDef(def));
 }
 }
-return MkStructOrUnion(spec->type, id, list);
+s = MkStructOrUnion(spec->type, id, list);
+s->extDeclStruct = CopyExtDecl(spec->extDeclStruct);
+return s;
 }
 case 1:
 {

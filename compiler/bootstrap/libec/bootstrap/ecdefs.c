@@ -534,6 +534,7 @@ struct __ecereNameSpace__ecere__sys__OldList * baseSpecs;
 struct __ecereNameSpace__ecere__sys__OldList * definitions;
 unsigned int addNameSpace;
 struct Context * ctx;
+struct ExtDecl * extDeclStruct;
 } __attribute__ ((gcc_struct));
 struct Expression * expression;
 struct Specifier * _class;
@@ -2090,6 +2091,7 @@ __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "baseSpecs", "e
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "definitions", "ecere::sys::OldList *", 4, 4, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "addNameSpace", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "ctx", "Context", 4, 4, 1);
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "extDeclStruct", "ExtDecl", 4, 4, 1);
 __ecereNameSpace__ecere__com__eMember_AddMember(dataMember0, dataMember1);
 }
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "expression", "Expression", 4, 4, 1);
