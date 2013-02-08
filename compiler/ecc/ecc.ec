@@ -164,17 +164,12 @@ class CompilerApp : Application
          {
             if(!strcmp(arg + 1, "m32") || !strcmp(arg + 1, "m64"))
             {
-#if defined(__WIN32__)
-               if(strcmp(arg + 1, "m64"))    // Until we set up MinGW-w64
-#endif
-               {
-                  int argLen = strlen(arg);
-                  int newLen = cppOptionsLen + 1 + argLen;
-                  cppOptions = renew cppOptions char[newLen + 1];
-                  cppOptions[cppOptionsLen] = ' ';
-                  strcpy(cppOptions + cppOptionsLen + 1, arg);
-                  cppOptionsLen = newLen;
-               }
+               int argLen = strlen(arg);
+               int newLen = cppOptionsLen + 1 + argLen;
+               cppOptions = renew cppOptions char[newLen + 1];
+               cppOptions[cppOptionsLen] = ' ';
+               strcpy(cppOptions + cppOptionsLen + 1, arg);
+               cppOptionsLen = newLen;
                targetBits = !strcmp(arg + 1, "m32") ? 32 : 64;
             }
             else if(arg[1] == 'D')
@@ -546,7 +541,18 @@ class CompilerApp : Application
                      output.Printf("#else\n");
                         output.Printf("#define __ENDIAN_PAD(x) 0\n");
                      output.Printf("#endif\n");
+
+                     output.Printf("#ifdef __MINGW32__\n");
+                     output.Printf("#ifdef _WIN64\n");
+                     output.Printf("typedef unsigned long long int uintptr_t;\n");
+                     output.Printf("typedef long long int intptr_t;\n");
+                     output.Printf("#else\n");
+                     output.Printf("typedef unsigned int uintptr_t;\n");
+                     output.Printf("typedef int intptr_t;\n");
+                     output.Printf("#endif\n");
+                     output.Printf("#else\n");
                      output.Printf("#include <stdint.h>\n");
+                     output.Printf("#endif\n");
 
                      // NOTE: If anything is changed up there, the start outputLine must be updated in libec's output.c or Debugging lines will be wrong
 

@@ -10,6 +10,8 @@ typedef unsigned long long uint64;
 #define strcasecmp stricmp
 #define strncasecmp strnicmp
 #define __declspec(x) __attribute__((x))
+#else
+#define __declspec(x)
 #endif
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -22,7 +24,17 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#ifdef __MINGW32__
+#ifdef _WIN64
+typedef unsigned long long int uintptr_t;
+typedef long long int intptr_t;
+#else
+typedef unsigned int uintptr_t;
+typedef int intptr_t;
+#endif
+#else
 #include <stdint.h>
+#endif
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1145,6 +1157,8 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#ifdef _WIN32\n
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define strcasecmp stricmp\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define strncasecmp strnicmp\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __declspec(x) __attribute__((x))\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __declspec(x)\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef long long int64;\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef unsigned long long uint64;\n");
@@ -1157,7 +1171,17 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __ENDIA
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __ENDIAN_PAD(x) 0\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#ifdef __MINGW32__\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#ifdef _WIN64\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef unsigned long long int uintptr_t;\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef long long int intptr_t;\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef unsigned int uintptr_t;\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef int intptr_t;\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#include <stdint.h>\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
 if(ast)
 OutputTree(ast, output);
 (__ecereNameSpace__ecere__com__eInstance_DecRef(output), output = 0);
