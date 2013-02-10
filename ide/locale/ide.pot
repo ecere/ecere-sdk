@@ -286,8 +286,8 @@ msgstr "Arrange Icons"
 msgid "Attach"
 msgstr "Attach"
 
-#: ./src/designer/CodeEditor.ec:5156
-#: ./src/designer/CodeEditor.ec:5197
+#: ./src/designer/CodeEditor.ec:5162
+#: ./src/designer/CodeEditor.ec:5203
 msgid "Attach %s"
 msgstr "Attach %s"
 
@@ -389,7 +389,7 @@ msgstr "Call Stack"
 #: ./src/dialogs/GlobalSettingsDialog.ec:55
 #: ./src/dialogs/NewProjectDialog.ec:214
 #: ./src/dialogs/NewProjectDialog.ec:560
-#: ./src/designer/CodeEditor.ec:5228
+#: ./src/designer/CodeEditor.ec:5234
 #: ./src/ProjectSettings.ec:172
 msgid "Cancel"
 msgstr "Cancel"
@@ -512,6 +512,11 @@ msgstr "Condition"
 msgid "Configurations: "
 msgstr "Configurations: "
 
+#: ./src/designer/CodeEditor.ec:38
+#: ./src/designer/CodeEditor.ec:39
+msgid "Consolas"
+msgstr "Consolas"
+
 #: ./src/ProjectSettings.ec:2117
 msgid "Console Application"
 msgstr "Console Application"
@@ -529,11 +534,6 @@ msgstr "Couldn't create file."
 #: ./src/debugger/Debugger.ec:2388
 msgid "Couldn't read memory"
 msgstr "Couldn't read memory"
-
-#: ./src/designer/CodeEditor.ec:35
-#: ./src/designer/CodeEditor.ec:36
-msgid "Courier New"
-msgstr "Courier New"
 
 #: ./src/dialogs/NewProjectDialog.ec:219
 msgid "Create Form"
@@ -1146,8 +1146,8 @@ msgstr "Memory can't be read at %s"
 msgid "MemoryGuard"
 msgstr "MemoryGuard"
 
-#: ./src/designer/CodeEditor.ec:5157
-#: ./src/designer/CodeEditor.ec:5199
+#: ./src/designer/CodeEditor.ec:5163
+#: ./src/designer/CodeEditor.ec:5205
 msgid "Method is unused. Move method inside instance?"
 msgstr "Method is unused. Move method inside instance?"
 
@@ -1207,7 +1207,7 @@ msgstr "Name"
 msgid "Name Conflict"
 msgstr "Name Conflict"
 
-#: ./src/designer/CodeEditor.ec:5224
+#: ./src/designer/CodeEditor.ec:5230
 msgid "Name detached method"
 msgstr "Name detached method"
 
@@ -1289,7 +1289,7 @@ msgstr "Number of parallel build jobs"
 #: ./src/dialogs/GlobalSettingsDialog.ec:63
 #: ./src/dialogs/NewProjectDialog.ec:34
 #: ./src/dialogs/NewProjectDialog.ec:351
-#: ./src/designer/CodeEditor.ec:5233
+#: ./src/designer/CodeEditor.ec:5239
 #: ./src/about.ec:34
 #: ./src/ProjectSettings.ec:211
 msgid "OK"

@@ -828,6 +828,8 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 } __attribute__ ((gcc_struct));
 
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -1178,6 +1180,9 @@ symid += 2;
 {
 function = MkFunction(func->specifiers, func->declarator, (((void *)0)));
 function->propSet = func->propSet;
+function->type = func->type;
+if(func->type)
+func->type->refCount++;
 ProcessFunctionBody(function, func->body);
 external = MkExternalFunction(function);
 external->symbol = func->declarator->symbol;
@@ -1507,8 +1512,8 @@ struct __ecereNameSpace__ecere__com__ClassProperty * parent;
 struct __ecereNameSpace__ecere__com__ClassProperty * left;
 struct __ecereNameSpace__ecere__com__ClassProperty * right;
 int depth;
-void (*  Set)(struct __ecereNameSpace__ecere__com__Class *, int);
-int (*  Get)(struct __ecereNameSpace__ecere__com__Class *);
+void (*  Set)(struct __ecereNameSpace__ecere__com__Class *, long long);
+long long (*  Get)(struct __ecereNameSpace__ecere__com__Class *);
 char *  dataTypeString;
 struct Type * dataType;
 unsigned int constant;
@@ -2726,7 +2731,7 @@ struct __ecereNameSpace__ecere__sys__OldList * args = MkList();
 
 ListAdd(args, MkExpIdentifier(MkIdentifier("class")));
 ListAdd(args, MkExpString(QMkString(def->id->string)));
-ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT)), (((void *)0))), def->initializer->exp));
+ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), (((void *)0))), def->initializer->exp));
 def->initializer->exp = (((void *)0));
 stmt = MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eClass_SetProperty")), args)));
 ListAdd(registerModuleBody->compound.statements, stmt);

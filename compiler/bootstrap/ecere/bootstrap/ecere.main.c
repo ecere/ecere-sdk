@@ -129,6 +129,8 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 } __attribute__ ((gcc_struct));
 
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -560,6 +562,8 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_QuerySize;
 int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_Stats;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink64;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldLink;
 
@@ -1053,6 +1057,7 @@ method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Stats", module
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_Stats = method->vid;
 __ecereClass___ecereNameSpace__ecere__sys__NamedLink = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::NamedLink");
+__ecereClass___ecereNameSpace__ecere__sys__NamedLink64 = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::NamedLink64");
 __ecereClass___ecereNameSpace__ecere__sys__OldLink = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::OldLink");
 __ecereClass___ecereNameSpace__ecere__sys__OldList = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::OldList");
 __ecereClass___ecereNameSpace__ecere__sys__StringBTNode = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::StringBTNode");

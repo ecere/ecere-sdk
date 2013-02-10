@@ -811,6 +811,8 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 } __attribute__ ((gcc_struct));
 
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -1679,6 +1681,18 @@ extern struct __ecereNameSpace__ecere__sys__OldList *  ast;
 
 extern int sprintf(char * , char * , ...);
 
+extern struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
+
+extern struct Context * curContext;
+
+extern struct Initializer * MkInitializerAssignment(struct Expression * exp);
+
+extern struct Expression * MkExpCast(struct TypeName * typeName, struct Expression * expression);
+
+extern struct Declarator * CopyDeclarator(struct Declarator * declarator);
+
+extern void FreeType(struct Type * type);
+
 extern struct Declarator * GetFuncDecl(struct Declarator * decl);
 
 extern void ProcessMethodType(struct __ecereNameSpace__ecere__com__Method * method);
@@ -2328,16 +2342,9 @@ strcat(name, propertyDef->id->string);
 MangleClassName(name);
 params = MkList();
 declId = MkDeclaratorIdentifier(MkIdentifier(name));
-if(propertyDef->symbol->type && propertyDef->symbol->type->kind == 8 && propertyDef->symbol->type->_class && propertyDef->symbol->type->_class->registered && propertyDef->symbol->type->_class->registered->type == 1)
-{
-ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), MkDeclaratorIdentifier(MkIdentifier("value"))));
-decl = PlugDeclarator(propertyDef->declarator, MkDeclaratorFunction(declId, params));
-func = MkClassFunction(MkListOne(MkSpecifier(VOID)), (((void *)0)), decl, (((void *)0)));
-}
-else
 {
 decl = PlugDeclarator(propertyDef->declarator, MkDeclaratorFunction(declId, params));
-func = MkClassFunction(CopyList(propertyDef->specifiers, CopySpecifier), (((void *)0)), decl, (((void *)0)));
+func = MkClassFunction(MkListOne(MkSpecifierName("uint64")), (((void *)0)), decl, (((void *)0)));
 }
 ProcessClassFunctionBody(func, propertyDef->getStmt);
 func->declarator->symbol = propertyDef->symbol;
@@ -2346,6 +2353,9 @@ func->dontMangle = 0x1;
 newDef = MkClassDefFunction(func);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(definitions, after, newDef);
 after = newDef;
+func->type = ProcessType(propertyDef->specifiers, MkDeclaratorFunction(propertyDef->declarator, (((void *)0))));
+if(func->type->returnType->kind == 8 && func->type->returnType->_class && func->type->returnType->_class->registered && func->type->returnType->_class->registered->type == 1)
+func->type->returnType->byReference = 0x1;
 if(inCompiler)
 propertyDef->getStmt = (((void *)0));
 else
@@ -2353,7 +2363,10 @@ func->body = (((void *)0));
 }
 if(propertyDef->setStmt && propertyDef->id)
 {
+struct Context * prevCurContext;
 struct __ecereNameSpace__ecere__sys__OldList * specifiers = MkList();
+struct Statement * body = propertyDef->setStmt;
+struct Declarator * ptrDecl;
 
 strcpy(name, "class::__ecereClassProp_");
 FullClassNameCat(name, symbol->string, 0x0);
@@ -2361,8 +2374,25 @@ strcat(name, "_Set_");
 strcat(name, propertyDef->id->string);
 MangleClassName(name);
 params = MkList();
-ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value")))));
+prevCurContext = curContext;
+curContext = body->compound.context;
+ListAdd(params, MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorIdentifier(MkIdentifier("_value"))));
 decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(name)), params);
+if(!body->compound.declarations)
+body->compound.declarations = MkList();
+if(propertyDef->symbol->type && propertyDef->symbol->type->kind == 8 && propertyDef->symbol->type->_class && propertyDef->symbol->type->_class->registered && propertyDef->symbol->type->_class->registered->type == 1)
+ptrDecl = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value"))));
+else
+ptrDecl = PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value")));
+ListAdd(body->compound.declarations, MkDeclaration(CopyList(propertyDef->specifiers, CopySpecifier), MkListOne(MkInitDeclarator(ptrDecl, MkInitializerAssignment(MkExpCast(MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), CopyDeclarator(propertyDef->declarator)), MkExpIdentifier(MkIdentifier("_value"))))))));
+curContext = prevCurContext;
+{
+struct Symbol * sym = ptrDecl->symbol;
+
+sym->isParam = 0x1;
+FreeType(sym->type);
+sym->type = ProcessType(propertyDef->specifiers, propertyDef->declarator);
+}
 ListAdd(specifiers, MkSpecifier(VOID));
 func = MkClassFunction(specifiers, (((void *)0)), decl, (((void *)0)));
 ProcessClassFunctionBody(func, propertyDef->setStmt);
@@ -2431,8 +2461,6 @@ if(method->symbol)
 if(initDeclarators != (((void *)0)))
 FreeList(initDeclarators, FreeInitDeclarator);
 }
-
-extern struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
 
 void PreProcessClassDefinitions()
 {

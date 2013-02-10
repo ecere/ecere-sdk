@@ -60,7 +60,7 @@ msgstr "Expression is not a container\n"
 msgid "Includes nested too deeply"
 msgstr "Includes nested too deeply"
 
-#: ./src/pass1.ec:141
+#: ./src/pass1.ec:143
 msgid "Incompatible virtual function %s\n"
 msgstr "Incompatible virtual function %s\n"
 
@@ -111,7 +111,7 @@ msgstr "No set defined for property %s\n"
 msgid "Non-static %s making use of a static class\n"
 msgstr "Non-static %s making use of a static class\n"
 
-#: ./src/pass1.ec:1035
+#: ./src/pass1.ec:1037
 #: ./src/pass15.ec:11500
 #: ./src/pass15.ec:11572
 #: ./src/pass15.ec:11661

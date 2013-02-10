@@ -550,8 +550,8 @@ struct __ecereNameSpace__ecere__com__ClassProperty
 char * name;
 struct __ecereNameSpace__ecere__com__ClassProperty * parent, * left, * right;
 int depth;
-void (* Set)(struct __ecereNameSpace__ecere__com__Class *, int);
-int (* Get)(struct __ecereNameSpace__ecere__com__Class *);
+void (* Set)(struct __ecereNameSpace__ecere__com__Class *, long long);
+long long (* Get)(struct __ecereNameSpace__ecere__com__Class *);
 char * dataTypeString;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
 unsigned int constant;
@@ -3266,17 +3266,27 @@ __ecereNameSpace__ecere__com__FixDerivativeProperty(_class, _property);
 return _property;
 }
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink64;
+
+struct __ecereNameSpace__ecere__sys__NamedLink64
+{
+struct __ecereNameSpace__ecere__sys__NamedLink64 * prev;
+struct __ecereNameSpace__ecere__sys__NamedLink64 * next;
+char *  name;
+long long data;
+} __attribute__ ((gcc_struct));
+
 static void __ecereNameSpace__ecere__com__SetDelayedCPValues(struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__ClassProperty * _property)
 {
 struct __ecereNameSpace__ecere__sys__OldLink * deriv;
-struct __ecereNameSpace__ecere__sys__NamedLink * value, * next;
+struct __ecereNameSpace__ecere__sys__NamedLink64 * value, * next;
 
 for(value = _class->delayedCPValues.first; value; value = next)
 {
 next = value->next;
 if(!strcmp(value->name, _property->name))
 {
-_property->Set(_class, (int)value->data);
+_property->Set(_class, value->data);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->delayedCPValues, value);
 }
 }
@@ -3323,20 +3333,21 @@ _property = __ecereNameSpace__ecere__com__eClass_FindClassProperty(enumClass, na
 return _property;
 }
 
-int __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char * name)
+long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char * name)
 {
 struct __ecereNameSpace__ecere__com__ClassProperty * _property = __ecereNameSpace__ecere__com__eClass_FindClassProperty(_class, name);
+char * propName = _property->name;
 
 if(_property && _property->Get && _property->Get != (void *)1)
 {
-int result = _property->Get(_class);
+long long result = _property->Get(_class);
 
 return result;
 }
 return 0;
 }
 
-void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char * name, int value)
+void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char * name, long long value)
 {
 void * __ecereTemp1;
 struct __ecereNameSpace__ecere__com__ClassProperty * _property = __ecereNameSpace__ecere__com__eClass_FindClassProperty(_class, name);
@@ -3344,11 +3355,11 @@ struct __ecereNameSpace__ecere__com__ClassProperty * _property = __ecereNameSpac
 if(_property)
 {
 if(_property->Set)
-_property->Set(_class, value);
+((void (*)(void *, long long))_property->Set)(_class, value);
 }
 else
 {
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->delayedCPValues, (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(16), ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)->name = name, ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)->data = (void *)value, ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->delayedCPValues, (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(24), ((struct __ecereNameSpace__ecere__sys__NamedLink64 *)__ecereTemp1)->name = name, ((struct __ecereNameSpace__ecere__sys__NamedLink64 *)__ecereTemp1)->data = value, ((struct __ecereNameSpace__ecere__sys__NamedLink64 *)__ecereTemp1)));
 }
 }
 
@@ -6205,8 +6216,8 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "parent", "ecere::com:
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "left", "ecere::com::ClassProperty", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "right", "ecere::com::ClassProperty", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "depth", "int", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "Set", "void( *)(ecere::com::Class, int)", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "Get", "int( *)(ecere::com::Class)", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "Set", "void( *)(ecere::com::Class, int64)", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "Get", "int64( *)(ecere::com::Class)", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dataTypeString", "char *", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dataType", "Type", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "constant", "bool", 4, 4, 1);
@@ -6285,8 +6296,8 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_AddVi
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_AddProperty", "ecere::com::Property ecere::com::eClass_AddProperty(ecere::com::Class _class, char * name, char * dataType, void * setStmt, void * getStmt, ecere::com::AccessMode declMode)", __ecereNameSpace__ecere__com__eClass_AddProperty, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_AddClassProperty", "ecere::com::ClassProperty ecere::com::eClass_AddClassProperty(ecere::com::Class _class, char * name, char * dataType, void * setStmt, void * getStmt)", __ecereNameSpace__ecere__com__eClass_AddClassProperty, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_FindClassProperty", "ecere::com::ClassProperty ecere::com::eClass_FindClassProperty(ecere::com::Class _class, char * name)", __ecereNameSpace__ecere__com__eClass_FindClassProperty, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_GetProperty", "int ecere::com::eClass_GetProperty(ecere::com::Class _class, char * name)", __ecereNameSpace__ecere__com__eClass_GetProperty, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_SetProperty", "void ecere::com::eClass_SetProperty(ecere::com::Class _class, char * name, int value)", __ecereNameSpace__ecere__com__eClass_SetProperty, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_GetProperty", "int64 ecere::com::eClass_GetProperty(ecere::com::Class _class, char * name)", __ecereNameSpace__ecere__com__eClass_GetProperty, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_SetProperty", "void ecere::com::eClass_SetProperty(ecere::com::Class _class, char * name, int64 value)", __ecereNameSpace__ecere__com__eClass_SetProperty, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_FindMethod", "ecere::com::Method ecere::com::eClass_FindMethod(ecere::com::Class _class, char * name, ecere::com::Module module)", __ecereNameSpace__ecere__com__eClass_FindMethod, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eInstance_New", "void * ecere::com::eInstance_New(ecere::com::Class _class)", __ecereNameSpace__ecere__com__eInstance_New, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eInstance_Evolve", "void ecere::com::eInstance_Evolve(ecere::com::Instance * instancePtr, ecere::com::Class _class)", __ecereNameSpace__ecere__com__eInstance_Evolve, module, 4);

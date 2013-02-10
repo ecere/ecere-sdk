@@ -128,6 +128,8 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 } __attribute__ ((gcc_struct));
 
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -305,6 +307,15 @@ void * data;
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink;
+
+struct __ecereNameSpace__ecere__sys__NamedLink64
+{
+struct __ecereNameSpace__ecere__sys__NamedLink64 * prev, * next;
+char * name;
+long long data;
+} __attribute__ ((gcc_struct));
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink64;
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(struct __ecereNameSpace__ecere__sys__OldList * this);
 
@@ -763,6 +774,15 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "ecere::sys::N
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "ecere::sys::NamedLink", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "name", "char *", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "data", "void *", 4, 4, 1);
+if(class)
+class->fixed = (unsigned int)1;
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::NamedLink64", 0, sizeof(struct __ecereNameSpace__ecere__sys__NamedLink64), 0, 0, 0, module, 4, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+__ecereClass___ecereNameSpace__ecere__sys__NamedLink64 = class;
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "ecere::sys::NamedLink64", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "ecere::sys::NamedLink64", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "name", "char *", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "data", "int64", 8, 8, 1);
 if(class)
 class->fixed = (unsigned int)1;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::sys::OldList", 0, sizeof(struct __ecereNameSpace__ecere__sys__OldList), 0, 0, 0, module, 4, 1);

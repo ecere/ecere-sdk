@@ -176,11 +176,11 @@ msgstr "Cancel"
 msgid "Close"
 msgstr "Close"
 
-#: ./src/gui/FormDesigner.ec:833
+#: ./src/gui/FormDesigner.ec:840
 msgid "Control contains code. Delete anyways?"
 msgstr "Control contains code. Delete anyways?"
 
-#: ./src/gui/FormDesigner.ec:849
+#: ./src/gui/FormDesigner.ec:856
 msgid "Control contains other controls. Delete control and children?"
 msgstr "Control contains other controls. Delete control and children?"
 
@@ -189,7 +189,7 @@ msgstr "Control contains other controls. Delete control and children?"
 msgid "Copy\tCtrl+C"
 msgstr "Copy\tCtrl+C"
 
-#: ./src/sys/System.ec:113
+#: ./src/sys/System.ec:115
 msgid "Couldn't write to file"
 msgstr "Couldn't write to file"
 
@@ -244,11 +244,11 @@ msgstr "Defined"
 msgid "Delete\tDel"
 msgstr "Delete\tDel"
 
-#: ./src/gui/FormDesigner.ec:849
+#: ./src/gui/FormDesigner.ec:856
 msgid "Deleting control with children"
 msgstr "Deleting control with children"
 
-#: ./src/gui/FormDesigner.ec:833
+#: ./src/gui/FormDesigner.ec:840
 msgid "Deleting control with code"
 msgstr "Deleting control with code"
 
@@ -286,11 +286,11 @@ msgstr "Document"
 msgid "Down"
 msgstr "Down"
 
-#: ./src/gui/GuiApplication.ec:102
+#: ./src/gui/GuiApplication.ec:104
 msgid "Driver/Mode switch failed"
 msgstr "Driver/Mode switch failed"
 
-#: ./src/gui/GuiApplication.ec:198
+#: ./src/gui/GuiApplication.ec:200
 msgid "ECERE Application"
 msgstr "ECERE Application"
 
@@ -302,7 +302,7 @@ msgstr "Edit"
 msgid "Entire Computer"
 msgstr "Entire Computer"
 
-#: ./src/gui/GuiApplication.ec:1274
+#: ./src/gui/GuiApplication.ec:1276
 msgid "Error falling back to previous video mode.\n"
 msgstr "Error falling back to previous video mode.\n"
 
@@ -311,7 +311,7 @@ msgstr "Error falling back to previous video mode.\n"
 msgid "Error writing file"
 msgstr "Error writing file"
 
-#: ./src/sys/File.ec:311
+#: ./src/sys/File.ec:313
 msgid "Exp"
 msgstr "Exp"
 
@@ -337,7 +337,7 @@ msgstr "File Already Exists"
 msgid "File Name:"
 msgstr "File Name:"
 
-#: ./src/sys/System.ec:111
+#: ./src/sys/System.ec:113
 msgid "File not found"
 msgstr "File not found"
 
@@ -394,11 +394,11 @@ msgstr "Go To Line..."
 msgid "Go To...\tCtrl+G"
 msgstr "Go To...\tCtrl+G"
 
-#: ./src/gui/GuiApplication.ec:98
+#: ./src/gui/GuiApplication.ec:100
 msgid "Graphics driver not supported by any user interface system"
 msgstr "Graphics driver not supported by any user interface system"
 
-#: ./src/sys/System.ec:109
+#: ./src/sys/System.ec:111
 msgid "Identic string identifier already exists"
 msgstr "Identic string identifier already exists"
 
@@ -410,11 +410,11 @@ msgstr "Image"
 msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 msgstr "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 
-#: ./src/sys/File.ec:287
+#: ./src/sys/File.ec:289
 msgid "Imp"
 msgstr "Imp"
 
-#: ./src/sys/System.ec:108
+#: ./src/sys/System.ec:110
 msgid "Inexistant string identifier specified"
 msgstr "Inexistant string identifier specified"
 
@@ -499,7 +499,7 @@ msgctxt "ShortMonthNames"
 msgid "May"
 msgstr "May"
 
-#: ./src/sys/System.ec:107
+#: ./src/sys/System.ec:109
 msgid "Memory allocation failed"
 msgstr "Memory allocation failed"
 
@@ -537,8 +537,8 @@ msgstr "New Directory"
 msgid "No"
 msgstr "No"
 
-#: ./src/sys/System.ec:106
-#: ./src/gui/GuiApplication.ec:97
+#: ./src/sys/System.ec:108
+#: ./src/gui/GuiApplication.ec:99
 msgid "No error"
 msgstr "No error"
 
@@ -692,7 +692,7 @@ msgstr "Select All\tCtrl+A"
 msgid "Select Color"
 msgstr "Select Color"
 
-#: ./src/sys/File.ec:205
+#: ./src/sys/File.ec:207
 msgid "Select File"
 msgstr "Select File"
 
@@ -733,7 +733,7 @@ msgstr "Sep"
 msgid "September"
 msgstr "September"
 
-#: ./src/sys/System.ec:110
+#: ./src/sys/System.ec:112
 msgid "Shared library loading failed"
 msgstr "Shared library loading failed"
 
@@ -774,8 +774,8 @@ msgstr "T"
 
 #: ./src/gui/skins/TVisionSkin.ec:37
 #: ./src/gui/skins/TVisionSkin.ec:43
-#: ./src/gui/skins/WindowsSkin.ec:138
-#: ./src/gui/skins/WindowsSkin.ec:147
+#: ./src/gui/skins/WindowsSkin.ec:140
+#: ./src/gui/skins/WindowsSkin.ec:149
 msgid "Tahoma"
 msgstr "Tahoma"
 
@@ -851,11 +851,11 @@ msgstr "Whole word only"
 msgid "Window Style"
 msgstr "Window Style"
 
-#: ./src/gui/GuiApplication.ec:99
+#: ./src/gui/GuiApplication.ec:101
 msgid "Window creation failed"
 msgstr "Window creation failed"
 
-#: ./src/gui/GuiApplication.ec:100
+#: ./src/gui/GuiApplication.ec:102
 msgid "Window graphics loading failed"
 msgstr "Window graphics loading failed"
 
@@ -868,29 +868,29 @@ msgstr "Windows"
 msgid "Yes"
 msgstr "Yes"
 
-#: ./src/sys/System.ec:350
+#: ./src/sys/System.ec:352
 msgid "\n\nWould you like to view the error log?"
 msgstr "\n\nWould you like to view the error log?"
 
 #: ./src/sys/Date.ec:121
-#: ./src/sys/Time.ec:783
+#: ./src/sys/Time.ec:785
 msgid "now"
 msgstr "now"
 
 #: ./src/sys/Date.ec:120
-#: ./src/sys/Time.ec:782
+#: ./src/sys/Time.ec:784
 msgid "today"
 msgstr "today"
 
 #: ./src/sys/Date.ec:122
 #: ./src/sys/Date.ec:126
-#: ./src/sys/Time.ec:785
+#: ./src/sys/Time.ec:787
 msgid "tomorrow"
 msgstr "tomorrow"
 
 #: ./src/sys/Date.ec:123
 #: ./src/sys/Date.ec:131
-#: ./src/sys/Time.ec:792
+#: ./src/sys/Time.ec:794
 msgid "yesterday"
 msgstr "yesterday"
 

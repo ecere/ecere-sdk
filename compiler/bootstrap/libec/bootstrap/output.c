@@ -838,6 +838,8 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 } __attribute__ ((gcc_struct));
 
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -1932,8 +1934,6 @@ static void OutputExtDecl(struct ExtDecl * extDecl, struct __ecereNameSpace__ece
 extern void ProcessExpressionType(struct Expression * exp);
 
 extern void ComputeExpression(struct Expression * exp);
-
-extern int __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
 static void OutputDeclarator(struct Declarator * decl, struct __ecereNameSpace__ecere__com__Instance * f)
 {

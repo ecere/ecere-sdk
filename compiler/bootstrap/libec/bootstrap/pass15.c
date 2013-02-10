@@ -857,6 +857,8 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 } __attribute__ ((gcc_struct));
 
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -1438,8 +1440,8 @@ struct __ecereNameSpace__ecere__com__ClassProperty * parent;
 struct __ecereNameSpace__ecere__com__ClassProperty * left;
 struct __ecereNameSpace__ecere__com__ClassProperty * right;
 int depth;
-void (*  Set)(struct __ecereNameSpace__ecere__com__Class *, int);
-int (*  Get)(struct __ecereNameSpace__ecere__com__Class *);
+void (*  Set)(struct __ecereNameSpace__ecere__com__Class *, long long);
+long long (*  Get)(struct __ecereNameSpace__ecere__com__Class *);
 char *  dataTypeString;
 struct Type * dataType;
 unsigned int constant;
@@ -2536,8 +2538,6 @@ extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSp
 
 extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
-extern int __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
-
 int ComputeTypeSize(struct Type * type)
 {
 unsigned int size = type ? type->size : 0;
@@ -2621,7 +2621,7 @@ else if(type->enumClass)
 {
 if(type->enumClass && type->enumClass->registered && type->enumClass->registered->type == 4)
 {
-type->arraySize = __ecereNameSpace__ecere__com__eClass_GetProperty(type->enumClass->registered, "enumSize");
+type->arraySize = (int)__ecereNameSpace__ecere__com__eClass_GetProperty(type->enumClass->registered, "enumSize");
 }
 else
 type->arraySize = 0;
@@ -14532,7 +14532,7 @@ ListAdd(structInitializers, MkInitializerAssignment(MkExpConstant("0")));
 ProcessExpressionType(((struct Initializer *)(*structInitializers).last)->exp);
 ListAdd(structInitializers, MkInitializerAssignment(MkExpExtensionInitializer(MkTypeName(specs, MkDeclaratorArray(decl, (((void *)0)))), MkInitializerList(initializers))));
 ProcessExpressionType(((struct Initializer *)(*structInitializers).last)->exp);
-ListAdd(structInitializers, MkInitializerAssignment((__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 2, ((struct Expression *)__ecereTemp1)->constant = __ecereNameSpace__ecere__com__PrintString(__ecereClass_int, &(*initializers).count, 0), ((struct Expression *)__ecereTemp1))));
+ListAdd(structInitializers, MkInitializerAssignment((__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 2, ((struct Expression *)__ecereTemp1)->constant = __ecereNameSpace__ecere__com__PrintString(__ecereClass_int, &(*initializers).count, (void *)0), ((struct Expression *)__ecereTemp1))));
 ProcessExpressionType(((struct Initializer *)(*structInitializers).last)->exp);
 ListAdd(structInitializers, MkInitializerAssignment(MkExpClass(CopyList(specs, CopySpecifier), CopyDeclarator(decl))));
 ProcessExpressionType(((struct Initializer *)(*structInitializers).last)->exp);
@@ -16332,6 +16332,7 @@ DeclareFunctionUtil("eSystem_New");
 DeclareFunctionUtil("eSystem_New0");
 DeclareFunctionUtil("eSystem_Renew");
 DeclareFunctionUtil("eSystem_Renew0");
+DeclareFunctionUtil("eClass_GetProperty");
 DeclareStruct("ecere::com::Class", 0x0);
 DeclareStruct("ecere::com::Instance", 0x0);
 DeclareStruct("ecere::com::Property", 0x0);

@@ -811,6 +811,8 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 } __attribute__ ((gcc_struct));
 
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -1360,8 +1362,8 @@ struct __ecereNameSpace__ecere__com__ClassProperty * parent;
 struct __ecereNameSpace__ecere__com__ClassProperty * left;
 struct __ecereNameSpace__ecere__com__ClassProperty * right;
 int depth;
-void (*  Set)(struct __ecereNameSpace__ecere__com__Class *, int);
-int (*  Get)(struct __ecereNameSpace__ecere__com__Class *);
+void (*  Set)(struct __ecereNameSpace__ecere__com__Class *, long long);
+long long (*  Get)(struct __ecereNameSpace__ecere__com__Class *);
 char *  dataTypeString;
 struct Type * dataType;
 unsigned int constant;
@@ -1916,7 +1918,7 @@ exp->call.exp = MkExpIdentifier(MkIdentifier("ecere::com::eClass_SetProperty"));
 exp->call.arguments = MkList();
 ListAdd(exp->call.arguments, classExp);
 ListAdd(exp->call.arguments, MkExpString(QMkString(id->string)));
-ListAdd(exp->call.arguments, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT)), (((void *)0))), value));
+ListAdd(exp->call.arguments, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), (((void *)0))), value));
 FreeIdentifier(id);
 ProcessExpression(exp);
 return ;
@@ -2954,7 +2956,7 @@ if(ellipsisDestType)
 {
 if(usedEllipsis || (exp->call.exp->expType && exp->call.exp->expType->kind == 11 && exp->call.exp->expType->params.last && ((struct Type *)exp->call.exp->expType->params.last)->kind == 14))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (*exp->call.arguments).last, MkExpConstant("0"));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (*exp->call.arguments).last, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpConstant("0")));
 }
 }
 }
@@ -3719,6 +3721,8 @@ if(stmt->expressions)
 for(exp = (*stmt->expressions).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
+if(!exp->next && exp->destType && exp->destType->byReference)
+FixReference(exp, 0x1);
 }
 }
 break;

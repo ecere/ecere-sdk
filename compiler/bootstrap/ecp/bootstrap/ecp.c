@@ -737,6 +737,8 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 } __attribute__ ((gcc_struct));
 
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -1210,8 +1212,8 @@ struct __ecereNameSpace__ecere__com__ClassProperty * parent;
 struct __ecereNameSpace__ecere__com__ClassProperty * left;
 struct __ecereNameSpace__ecere__com__ClassProperty * right;
 int depth;
-void (*  Set)(struct __ecereNameSpace__ecere__com__Class *, int);
-int (*  Get)(struct __ecereNameSpace__ecere__com__Class *);
+void (*  Set)(struct __ecereNameSpace__ecere__com__Class *, long long);
+long long (*  Get)(struct __ecereNameSpace__ecere__com__Class *);
 char *  dataTypeString;
 struct Type * dataType;
 unsigned int constant;
