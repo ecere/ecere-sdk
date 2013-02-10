@@ -6,10 +6,12 @@ import "instance"
 
 #define WIN32_LEAN_AND_MEAN
 #define Method _Method
+#define String _String
 #include <windows.h>
 #include <mmsystem.h>
 
 #undef Method
+#undef String
 
 import "Display"
 

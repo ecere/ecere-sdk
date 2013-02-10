@@ -35,7 +35,9 @@ namespace gui;
 #if defined(__WIN32__)
 
 #define WIN32_LEAN_AND_MEAN
+#define String _String
 #include <winsock.h>
+#undef String
 static WSADATA wsaData;
 
 #elif defined(__unix__) || defined(__APPLE__)

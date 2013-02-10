@@ -3,7 +3,9 @@ namespace sys;
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #define UNICODE
+#define String String_
 #include <windows.h>
+#undef String
 #endif
 
 import "System"

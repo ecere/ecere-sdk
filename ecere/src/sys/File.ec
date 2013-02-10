@@ -40,7 +40,9 @@ default:
 
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
+#define String String_
 #include <windows.h>
+#undef String
 #include <io.h>
 
 BOOL WINAPI GetVolumePathName(LPCTSTR lpszFileName,LPTSTR lpszVolumePathName,DWORD cchBufferLength);

@@ -8,9 +8,11 @@ import "instance"
 #define WIN32_LEAN_AND_MEAN
 #define UNICODE
 #define Method _Method
+#define String _String
 #include <windows.h>
 #include <winspool.h>
 #undef Method
+#undef String
 
 default wchar_t *wcstok(wchar_t *strToken,const wchar_t *strDelimit);
 

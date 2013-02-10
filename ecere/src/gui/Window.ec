@@ -4965,7 +4965,7 @@ private:
             }
             */
 
-            captionFont = guiApp.currentSkin.CaptionFont();
+            captionFont = guiApp.currentSkin ? guiApp.currentSkin.CaptionFont() : null;
             AddResource(captionFont);
 
             if(OnLoadGraphics())

@@ -4,7 +4,7 @@ import "Display"
 
 #include <setjmp.h>
 
-typedef uint size_t;
+typedef uintptr size_t; // For now, until we add uintsize
 
 #include "jpeglib.h"
 #include "jerror.h"

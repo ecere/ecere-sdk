@@ -5,7 +5,9 @@ namespace net;
 #if defined(__WIN32__)
 
 #define WIN32_LEAN_AND_MEAN
+#define String _String
 #include <winsock.h>
+#undef String
 static WSADATA wsaData;
 
 #elif defined(__unix__) || defined(__APPLE__)
@@ -133,21 +135,21 @@ void Network_DetermineMaxSocket()
    network.ns = 0;
    for(socket = network.sockets.first; socket; socket = socket.next)
       if(!socket.processAlone && !socket.destroyed && socket.s >= network.ns)
-         network.ns = socket.s + 1;
+         network.ns = (int)(socket.s + 1);
    for(socket = network.connectSockets.first; socket; socket = socket.next)
       if(!socket.destroyed && socket.s >= network.ns)
-         network.ns = socket.s + 1;
+         network.ns = (int)(socket.s + 1);
 
    for(service = network.services.first; service; service = service.next)
    {
       if(!service.destroyed && !service.processAlone)
       {
          if(service.s >= network.ns)
-            network.ns = service.s + 1;
+            network.ns = (int)(service.s + 1);
       }
       for(socket = service.sockets.first; socket; socket = socket.next)
          if(!socket.destroyed && !socket.processAlone && socket.s >= network.ns)
-            network.ns = socket.s + 1;
+            network.ns = (int)(socket.s + 1);
    }
    network.mutex.Release();
 }

@@ -283,8 +283,13 @@ void * Instance_Module_Load(char * name, void ** Load, void ** Unload)
    }
    if(library)
    {
+#ifdef _WIN64
+      *Load = (void *)GetProcAddress(library, "__ecereDll_Load");
+      *Unload = (void *)GetProcAddress(library, "__ecereDll_Unload");
+#else
       *Load = (void *)GetProcAddress(library, "__ecereDll_Load@4");
       *Unload = (void *)GetProcAddress(library, "__ecereDll_Unload@4");
+#endif
       if(!*Load)
          FreeLibrary(library);
    }

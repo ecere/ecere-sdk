@@ -9,10 +9,12 @@ import "instance"
 #define _WIN32_WINNT 0x0500
 #define WIN32_LEAN_AND_MEAN
 #define Method _Method
+#define String _String
 
 #include <windows.h>
 
 #undef Method
+#undef String
 
 import "Display"
 import "Win32Interface"

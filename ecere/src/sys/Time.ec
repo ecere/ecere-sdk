@@ -17,7 +17,9 @@ namespace sys;
 
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
+#define String String_
 #include <windows.h>
+#undef String
 #include <mmsystem.h>
 #elif defined(__unix__) || defined(__APPLE__)
 #include <sys/time.h>

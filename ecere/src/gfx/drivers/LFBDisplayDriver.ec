@@ -17,7 +17,9 @@ namespace gfx::drivers;
 
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
+#define String _String
 #include <windows.h>
+#undef String
 #elif !defined(ECERE_NOTRUETYPE) && !defined(ECERE_NOFONTCONFIG)
 #define set _set
 #include <fontconfig/fontconfig.h>

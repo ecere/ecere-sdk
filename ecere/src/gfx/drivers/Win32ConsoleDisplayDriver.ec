@@ -6,7 +6,9 @@ import "instance"
 
 #define WIN32_LEAN_AND_MEAN
 #define Method _Method
+#define String _String
 #include <windows.h>
+#undef String
 #undef Method
 
 import "Display"

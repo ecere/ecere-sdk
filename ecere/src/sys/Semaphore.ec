@@ -8,7 +8,9 @@ namespace sys;
 // Platform includes
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
+#define String String_
 #include <windows.h>
+#undef String
 #elif defined(__APPLE__)
 #define set _set
 #include <mach/mach.h>

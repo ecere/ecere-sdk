@@ -7,7 +7,9 @@ namespace net;
 #if defined(__WIN32__)
 
 #define WIN32_LEAN_AND_MEAN
+#define String _String
 #include <winsock.h>
+#undef String
 static WSADATA wsaData;
 
 #elif defined(__unix__) || defined(__APPLE__)
@@ -93,7 +95,7 @@ public:
                FD_SET(s, &network.exceptSet);
                if(s >= network.ns) 
                {
-                  network.ns = s+1;
+                  network.ns = (int)(s+1);
                   network.socketsSemaphore.Release();
                }
                network.mutex.Release();
@@ -157,7 +159,7 @@ public:
          //FD_SET(s, &ws);
          FD_SET(s, &es);
 
-         selectResult = select(s+1, &rs, &ws, &es, &tvTO);
+         selectResult = select((int)(s+1), &rs, &ws, &es, &tvTO);
          if(selectResult > 0)
          {
             if(FD_ISSET(s, &rs))

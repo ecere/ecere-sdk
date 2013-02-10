@@ -4,21 +4,22 @@ import "instance"
 
 #if defined(__WIN32__)
 
-#if defined(__MINGW32__)
-
-#undef DECLARE_INTERFACE
-#  define DECLARE_INTERFACE(i) \
-   interface i { CONST_VTABLE struct i##Vtbl *lpVtbl; }; \
-   typedef CONST_VTABLE struct i##Vtbl i##Vtbl; \
-   CONST_VTABLE struct i##Vtbl
-
-#endif
-
-// #define HRESULT int
 #define Method _Method
 #define uint _uint
 #define byte _byte
 #define int64 _int64
+#define String _String
+#define Mutex _Mutex
+#define Size _Size
+#define Platform _Platform
+
+#if defined(__MINGW32__) && !defined(_W64)
+#undef DECLARE_INTERFACE
+#define DECLARE_INTERFACE(i) \
+   interface i { CONST_VTABLE struct i##Vtbl *lpVtbl; }; \
+   typedef CONST_VTABLE struct i##Vtbl i##Vtbl; \
+   CONST_VTABLE struct i##Vtbl
+#endif
 
 #define UNICODE
 
@@ -28,6 +29,10 @@ import "instance"
 #undef uint
 #undef byte
 #undef int64
+#undef String
+#undef Mutex
+#undef Size
+#undef Platform
 
 import "Display"
 

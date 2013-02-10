@@ -10,10 +10,14 @@ import "instance"
 #define uint _uint
 #define byte _byte
 #define int64 _int64
+#define String _String
+#define Mutex _Mutex
+#define Size _Size
+#define Platform _Platform
 
 #include <windows.h>
 
-#if defined(__MINGW32__)
+#if defined(__MINGW32__) && !defined(_W64)
 #undef DECLARE_INTERFACE
 #define DECLARE_INTERFACE(i) \
    interface i { CONST_VTABLE struct i##Vtbl *lpVtbl; }; \
@@ -22,10 +26,15 @@ import "instance"
 #endif
 
 #include <d3d9.h>
+
 #undef Method
 #undef uint
 #undef byte
 #undef int64
+#undef String
+#undef Mutex
+#undef Size
+#undef Platform
 
 import "Display"
 

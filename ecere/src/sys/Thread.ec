@@ -5,7 +5,11 @@ namespace sys;
 // Platform includes
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
+#define String String_
+#define Thread Thread_
 #include <windows.h>
+#undef String
+#undef Thread
 #else
 #include <pthread.h>
 #ifndef __ANDROID__

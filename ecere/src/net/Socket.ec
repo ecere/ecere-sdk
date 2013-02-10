@@ -5,7 +5,9 @@ namespace net;
 #if defined(__WIN32__)
 
 #define WIN32_LEAN_AND_MEAN
+#define String _String
 #include <winsock.h>
+#undef String
 static WSADATA wsaData;
 
 #elif defined(__unix__) || defined(__APPLE__)
@@ -79,7 +81,7 @@ static class SocketConnectThread : Thread
                socket.inetPort = ntohs(socket.a.sin_port); 
                network.mutex.Release();
 
-               if(socket.OnEstablishConnection(socket.s))
+               if(socket.OnEstablishConnection((int)socket.s))
                {
                   network.mutex.Wait();
                   result = true;
@@ -164,7 +166,7 @@ public:
                FD_SET(s, &network.readSet);
                if(s >= network.ns) 
                {
-                  network.ns = s+1;
+                  network.ns = (int)(s+1);
                   network.socketsSemaphore.Release();
                }
                network.mutex.Release();
@@ -344,7 +346,7 @@ public:
 
    bool SendString(char * string)
    {
-      return Send(string, strlen(string));
+      return Send(string, (int)strlen(string));
    }
 
    bool Sendf(char * format, ...)
@@ -355,7 +357,7 @@ public:
       va_start(args, format);
       vsnprintf(string, sizeof(string), format, args);
       string[sizeof(string)-1] = 0;
-      result = Send(string, strlen(string));
+      result = Send(string, (int)strlen(string));
       va_end(args);
       return result;
    }
@@ -399,7 +401,7 @@ public:
             FD_SET(s, &network.exceptSet);
             if(s >= network.ns) 
             {
-               network.ns = s+1;
+               network.ns = (int)(s+1);
                network.socketsSemaphore.Release();
             }
             network.mutex.Release();
@@ -530,7 +532,7 @@ private:
          FD_SET(s, &network.writeSet);
          if(s >= network.ns && !processAlone) 
          {
-            network.ns = s+1;
+            network.ns = (int)(s+1);
             network.socketsSemaphore.Release();
          }
          connectThread = SocketConnectThread { socket = this };
@@ -722,7 +724,7 @@ private:
       //FD_SET(s, &ws);
       FD_SET(s, &es);
 
-      selectResult = select(s+1, &rs, &ws, &es, leftOver ? &tv : (timeOut ? &tvTO : null));
+      selectResult = select((int)(s+1), &rs, &ws, &es, leftOver ? &tv : (timeOut ? &tvTO : null));
       mutex.Wait();
       if(s != -1 && _refCount && (leftOver || selectResult))
       {

@@ -15,7 +15,9 @@ default:
 #define WIN32_LEAN_AND_MEAN
 #define UNICODE
 #define GetFreeSpace _GetFreeSpace
+#define String String_
 #include <windows.h>
+#undef String
 #undef GetFreeSpace
 
 #elif defined(__unix__) || defined(__APPLE__)

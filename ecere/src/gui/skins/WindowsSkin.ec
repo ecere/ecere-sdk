@@ -1,8 +1,10 @@
 #if defined(WIN32)
 #define WIN32_LEAN_AND_MEAN
+#define String _String
 #define Method _Method
 #include <windows.h>
 #undef Method
+#undef String
 #endif
 
 import "Window"

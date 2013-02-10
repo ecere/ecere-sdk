@@ -18,6 +18,9 @@ import "instance"
 #define Method _Method
 #define byte _byte
 #define int64 _int64
+#define String _String
+#define Mutex _Mutex
+#define Platform _Platform
 #include <windows.h>
 #include <wincon.h>
 #include <shellapi.h>
@@ -82,6 +85,9 @@ SetLayeredWindowAttributes(
 #undef Method
 #undef byte
 #undef int64
+#undef String
+#undef Mutex
+#undef Platform
 
 import "Window"
 
@@ -244,7 +250,7 @@ class Win32Interface : Interface
       if(time - lastAutoHideCheck > 1)
       {
          APPBARDATA appBarData = { 0 };
-         newTaskBarState = SHAppBarMessage(ABM_GETSTATE, &appBarData);
+         newTaskBarState = (int)SHAppBarMessage(ABM_GETSTATE, &appBarData);
          lastAutoHideCheck = time;
       }
 
@@ -430,7 +436,11 @@ class Win32Interface : Interface
    // --- Window procedure ---
    DWORD CALLBACK ::ApplicationWindow(HWND windowHandle, UINT msg, WPARAM wParam, LPARAM lParam)
    {
+#ifdef _WIN64
+      Window window = (Window)GetWindowLongPtr(windowHandle, GWLP_USERDATA);
+#else
       Window window = (Window)GetWindowLong(windowHandle, GWL_USERDATA);
+#endif
       static Point lastPos;
       if(window)
       {
@@ -470,21 +480,25 @@ class Win32Interface : Interface
                   {
                      HWND foreground;
                      DWORD id;
-                     uint windowLong;
+                     void * windowLong;
                      foreground = GetForegroundWindow();
                      if(foreground == windowHandle && lParam)
                         foreground = (HWND)lParam;
 
                      GetWindowThreadProcessId(foreground, &id);
 
-                     windowLong = GetWindowLong(foreground, GWL_WNDPROC);
+#ifdef _WIN64
+                     windowLong = (void*)GetWindowLongPtr(foreground, GWLP_WNDPROC);
+#else
+                     windowLong = (void*)GetWindowLong(foreground, GWL_WNDPROC);
+#endif
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
                      // The != ApplicationWindow check is for not recognizing the Console window as an Ecere Window
                      // That check causes a problem with the OpenGL driver which seems to popup a window of a different class
                      if(window.displaySystem && window.displaySystem.driver == class(OpenGLDisplayDriver))
-                        windowLong = (uint)ApplicationWindow;
+                        windowLong = (void *)ApplicationWindow;
 #endif
-                     if(id != GetCurrentProcessId() || windowLong != (LPARAM)ApplicationWindow)
+                     if(id != GetCurrentProcessId() || windowLong != (void *)ApplicationWindow)
                         window.ExternalActivate(false, true, window, null);
                      // DefWindowProc for WM_NCACTIVATE draws the decorations, make sure it's drawn in the right state
                      return (uint)DefWindowProc(windowHandle, msg, window.active, lParam);
@@ -540,11 +554,11 @@ class Win32Interface : Interface
                               SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOMOVE|SWP_NOSIZE); //|SWP_NOREDRAW); 
                         */ 
                      }
-                     guiApp.SetAppFocus(wParam);
+                     guiApp.SetAppFocus((bool)wParam);
                   }
                }
                else 
-                  guiApp.SetAppFocus(wParam);
+                  guiApp.SetAppFocus((bool)wParam);
                break;
             case WM_PAINT:
             {
@@ -594,8 +608,8 @@ class Win32Interface : Interface
                static int lastRes = 0;
                if(lastBits != wParam || lastRes != lParam)
                {
-                  lastBits = wParam;
-                  lastRes = lParam;
+                  lastBits = (int)wParam;
+                  lastRes = (int)lParam;
                
                   externalDisplayChange = true;
                   if(guiApp.desktop.DisplayModeChanged())
@@ -638,7 +652,7 @@ class Win32Interface : Interface
                incref window;
                if(msg == WM_CHAR || msg == WM_DEADCHAR || PeekMessage(&charMsg, windowHandle, min, max, PM_REMOVE))
                {
-                  ch = (msg == WM_CHAR || msg == WM_DEADCHAR) ? wParam : (unichar)charMsg.wParam;
+                  ch = (msg == WM_CHAR || msg == WM_DEADCHAR) ? (unichar)wParam : (unichar)charMsg.wParam;
                   // TOCHECK: What is this for again? Fixing some obscure activation status?
                   // -- I believe this was somehow allowing 'unmaximizing', but was causing problems
                   // as there was no way to prevent AltEnter from doing so (e.g. when it is used for a node property)
@@ -714,7 +728,7 @@ class Win32Interface : Interface
                      font.lfOutPrecision = OUT_DEFAULT_PRECIS;
                      font.lfClipPrecision = CLIP_DEFAULT_PRECIS;
                      font.lfQuality = DEFAULT_QUALITY;
-                     font.lfPitchAndFamily = (byte)DEFAULT_PITCH|FF_DONTCARE; // TODO: Fix compiler 0 | 0 to produce byte, not int
+                     font.lfPitchAndFamily = (byte)(DEFAULT_PITCH|FF_DONTCARE); // TODO: Fix compiler 0 | 0 to produce byte, not int
                      UTF8toUTF16Buffer(res.faceName, font.lfFaceName, LF_FACESIZE);
 
                      ImmSetCompositionFont(ctx, &font);
@@ -1133,7 +1147,11 @@ class Win32Interface : Interface
       /// DRIVER IMPLEMENTATION /////////////
    ****************************************************************************/
 
+#ifdef _WIN64
+   void CALLBACK ::TimerProc(UINT uTimerID, UINT uMsg, uint64 dwUser, uint64 dw1, uint64 dw2)
+#else
    void CALLBACK ::TimerProc(UINT uTimerID, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2)
+#endif
    {
       guiApp.SignalEvent();
    }
@@ -1391,7 +1409,11 @@ class Win32Interface : Interface
          }
       }
       delete text;
+#ifdef _WIN64
+      SetWindowLongPtr(windowHandle, GWLP_USERDATA, (int64)window);
+#else
       SetWindowLong(windowHandle, GWL_USERDATA, (DWORD)window);
+#endif
 
       return windowHandle;
    }
@@ -1404,12 +1426,20 @@ class Win32Interface : Interface
          guiApp.lockMutex.Release();
 
       oldIcon = (HICON)SendMessage(window.windowHandle, WM_GETICON, ICON_BIG, 0);
+#ifdef _WIN64
+      if(oldIcon && oldIcon != (HICON)GetClassLongPtr(window.windowHandle, GCLP_HICON))
+#else
       if(oldIcon && oldIcon != (HICON)GetClassLong(window.windowHandle, GCL_HICON))
+#endif
          DestroyIcon(oldIcon);
 
    	ShowWindow(window.windowHandle, SW_HIDE);
 
+#ifdef _WIN64
+      SetWindowLongPtr(window.windowHandle, GWLP_USERDATA, (int64)null);
+#else
       SetWindowLong(window.windowHandle, GWL_USERDATA, 0);
+#endif
       DestroyWindow(window.windowHandle);
 
       for(c = 0; c < lockCount; c++)
@@ -1819,7 +1849,11 @@ class Win32Interface : Interface
          }
       }
 
+#ifdef _WIN64
+      if(oldIcon && oldIcon != (HICON)GetClassLongPtr(window.windowHandle, GCLP_HICON))
+#else
       if(oldIcon && oldIcon != (HICON)GetClassLong(window.windowHandle, GCL_HICON))
+#endif
       {
          DestroyIcon(oldIcon);
       }
