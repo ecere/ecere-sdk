@@ -41,6 +41,15 @@ public:
    void * data;
 };
 
+public class NamedLink64 : struct
+{
+public:
+   class_fixed
+   NamedLink64 prev, next;
+   char * name;
+   int64 data;
+};
+
 public struct OldList
 {
 private:

@@ -4087,7 +4087,7 @@ public dllexport Property eClass_AddProperty(Class _class, char * name, char * d
 static void SetDelayedCPValues(Class _class, ClassProperty _property)
 {
    OldLink deriv;
-   NamedLink value, next;
+   NamedLink64 value, next;
 
    for(value = _class.delayedCPValues.first; value; value = next)
    {
@@ -4095,7 +4095,7 @@ static void SetDelayedCPValues(Class _class, ClassProperty _property)
       if(!strcmp(value.name, _property.name))
       {
          // eClass_SetProperty(_class, _property.name, value.data);
-         _property.Set(_class, (int64)value.data);
+         _property.Set(_class, value.data);
          _class.delayedCPValues.Delete(value);
       }
    }
@@ -4186,7 +4186,7 @@ public dllexport void eClass_SetProperty(Class _class, char * name, int64 value)
    }
    else
    {
-      _class.delayedCPValues.Add(NamedLink { name = name, (void *)value });
+      _class.delayedCPValues.Add(NamedLink64 { name = name, value });
    }
 }
 
