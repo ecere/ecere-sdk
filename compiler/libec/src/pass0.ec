@@ -1219,7 +1219,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      propertyDef.symbol.externalSet = (External)func;
                      if(!propertyDef.conversion && regClass.type == normalClass)
                         func.propSet = propertyDef.symbol;
-                     
+
                      /*
 
                      func.declarator.symbol = Symbol { id = propertyDef.symbol.id + 1 };
@@ -1259,7 +1259,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      func.declarator.symbol = propertyDef.symbol;
                      //func.declarator.propSymbol = propertyDef.symbol;
                      propertyDef.symbol.externalIsSet = (External)func;
-                     
+
                      /*
 
                      func.declarator.symbol = Symbol { id = propertyDef.symbol,id + 1, external = (External)func };
@@ -1357,27 +1357,55 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
 
                      declId = MkDeclaratorIdentifier(MkIdentifier(name));
                   
-                     if(propertyDef.symbol.type && propertyDef.symbol.type.kind == TypeKind::classType && propertyDef.symbol.type._class && propertyDef.symbol.type._class.registered && 
+                     // Class properties returns a uint64 even for struct types
+                     /*if(propertyDef.symbol.type && propertyDef.symbol.type.kind == TypeKind::classType && propertyDef.symbol.type._class && propertyDef.symbol.type._class.registered && 
                         propertyDef.symbol.type._class.registered.type == structClass)
                      {
-                        ListAdd(params, MkTypeName(CopyList(propertyDef.specifiers, CopySpecifier), MkDeclaratorIdentifier(MkIdentifier("value"))));
-                        decl = PlugDeclarator(propertyDef.declarator, MkDeclaratorFunction(declId, params));
+                        // ListAdd(params, MkTypeName(CopyList(propertyDef.specifiers, CopySpecifier), MkDeclaratorIdentifier(MkIdentifier("value"))));
+                        //decl = PlugDeclarator(propertyDef.declarator, MkDeclaratorFunction(declId, params));
+                        decl = MkDeclaratorFunction(declId, params);
+                        ListAdd(params, MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorIdentifier(MkIdentifier("_value"))));
+
                         func = MkClassFunction(MkListOne(MkSpecifier(VOID)), null, decl, null);
+                        {
+                           Declarator ptrDecl;
+                           Statement body = propertyDef.getStmt;
+                           decl = PlugDeclarator(propertyDef.declarator, MkDeclaratorFunction(declId, params));
+                           if(!body.compound.declarations)
+                              body.compound.declarations = MkList();
+                           ListAdd(body.compound.declarations,
+                              MkDeclaration(CopyList(propertyDef.specifiers, CopySpecifier), MkListOne(MkInitDeclarator(
+                                 ptrDecl = MkDeclaratorPointer(MkPointer(null, null), MkDeclaratorIdentifier(MkIdentifier("value"))), MkInitializerAssignment(MkExpCast(MkTypeName(CopyList(propertyDef.specifiers, CopySpecifier), CopyDeclarator(propertyDef.declarator)), 
+                                    MkExpIdentifier(MkIdentifier("_value"))))))));
+                           {
+                              Symbol sym = ptrDecl.symbol;
+                              sym.isParam = true;
+                              FreeType(sym.type);
+                              sym.type = ProcessType(propertyDef.specifiers, propertyDef.declarator);
+                           }
+                        }
                      }
                      else
+                     */
                      {
                         decl = PlugDeclarator(propertyDef.declarator, MkDeclaratorFunction(declId, params));
-                        func = MkClassFunction(CopyList(propertyDef.specifiers, CopySpecifier), null, decl, null);
+                        //func = MkClassFunction(CopyList(propertyDef.specifiers, CopySpecifier), null, decl, null);
+                        func = MkClassFunction(MkListOne(MkSpecifierName("uint64")), null, decl, null);
                      }
-                  
+
                      ProcessClassFunctionBody(func, propertyDef.getStmt);
                      func.declarator.symbol = propertyDef.symbol;
                      propertyDef.symbol.externalGet = (External)func;
-               
+
                      func.dontMangle = true;
+
                      newDef = MkClassDefFunction(func);
                      definitions.Insert(after, newDef);
                      after = newDef;
+
+                     func.type = ProcessType(propertyDef.specifiers, MkDeclaratorFunction(propertyDef.declarator, null));
+                     if(func.type.returnType.kind == TypeKind::classType && func.type.returnType._class && func.type.returnType._class.registered && func.type.returnType._class.registered.type == structClass)
+                        func.type.returnType.byReference = true;
 
                      if(inCompiler) 
                         propertyDef.getStmt = null;
@@ -1386,7 +1414,10 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   }
                   if(propertyDef.setStmt && propertyDef.id)
                   {
+                     Context prevCurContext;
                      OldList * specifiers = MkList();
+                     Statement body = propertyDef.setStmt;
+                     Declarator ptrDecl;
 
                      strcpy(name, "class::__ecereClassProp_");
                      FullClassNameCat(name, symbol.string, false);
@@ -1395,13 +1426,40 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      MangleClassName(name);
 
                      params = MkList();
-
+                     /*
                      ListAdd(params, MkTypeName(CopyList(propertyDef.specifiers, CopySpecifier), 
                         PlugDeclarator(propertyDef.declarator, 
                            MkDeclaratorIdentifier(MkIdentifier("value")))));
+                     */
+
+                     prevCurContext = curContext;
+                     curContext = body.compound.context;
+
+                     ListAdd(params, MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorIdentifier(MkIdentifier("_value"))));
 
                      decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(name)), params);
+                     if(!body.compound.declarations)
+                        body.compound.declarations = MkList();
 
+                     if(propertyDef.symbol.type && propertyDef.symbol.type.kind == TypeKind::classType && propertyDef.symbol.type._class && propertyDef.symbol.type._class.registered &&
+                        propertyDef.symbol.type._class.registered.type == structClass)
+                        ptrDecl = MkDeclaratorPointer(MkPointer(null, null), PlugDeclarator(propertyDef.declarator, MkDeclaratorIdentifier(MkIdentifier("value"))));
+                     else
+                        ptrDecl = PlugDeclarator(propertyDef.declarator, MkDeclaratorIdentifier(MkIdentifier("value")));
+
+                     ListAdd(body.compound.declarations,
+                        MkDeclaration(CopyList(propertyDef.specifiers, CopySpecifier), MkListOne(MkInitDeclarator(ptrDecl,
+                              MkInitializerAssignment(MkExpCast(MkTypeName(CopyList(propertyDef.specifiers, CopySpecifier), CopyDeclarator(propertyDef.declarator)),
+                              MkExpIdentifier(MkIdentifier("_value"))))))));
+
+                     curContext = prevCurContext;
+
+                     {
+                        Symbol sym = ptrDecl.symbol;
+                        sym.isParam = true;
+                        FreeType(sym.type);
+                        sym.type = ProcessType(propertyDef.specifiers, propertyDef.declarator);
+                     }
                      ListAdd(specifiers, MkSpecifier(VOID));
 
                      func = MkClassFunction(specifiers, null, decl, null);
@@ -1418,6 +1476,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                         propertyDef.setStmt = null;
                      else
                         func.body = null;
+
                   }
                }
             }

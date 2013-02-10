@@ -826,7 +826,7 @@ public int ComputeTypeSize(Type type)
             {
                if(type.enumClass && type.enumClass.registered && type.enumClass.registered.type == enumClass)
                {
-                  type.arraySize = eClass_GetProperty(type.enumClass.registered, "enumSize");
+                  type.arraySize = (int)eClass_GetProperty(type.enumClass.registered, "enumSize");
                }
                else
                   type.arraySize = 0;

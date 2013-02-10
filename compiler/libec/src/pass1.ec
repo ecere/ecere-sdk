@@ -64,6 +64,8 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
       {
          /*FunctionDefinition*/ function = MkFunction(func.specifiers, func.declarator, null);
          function.propSet = func.propSet;
+         function.type = func.type;
+         if(func.type) func.type.refCount++;
          ProcessFunctionBody(function, func.body);
          external = MkExternalFunction(function);
          

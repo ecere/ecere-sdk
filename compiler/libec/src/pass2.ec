@@ -3036,6 +3036,9 @@ static void ProcessStatement(Statement stmt)
             for(exp = stmt.expressions->first; exp; exp = exp.next)
             {
                ProcessExpression(exp);
+               // TOCHECK: This was added 2013/02/09 as part of 64 bit port for structs in class properties to automatically be returned by reference
+               if(!exp.next && exp.destType && exp.destType.byReference)
+                  FixReference(exp, true);
             }
          }
          break;
