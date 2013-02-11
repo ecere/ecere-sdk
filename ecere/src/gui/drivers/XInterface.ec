@@ -275,7 +275,7 @@ static void RepositionDesktop(bool updateChildren)
       
       if(data)
       {
-         current = *(int *)data;
+         current = *(long *)data;
          XFree(data);
          data = null;
 
@@ -284,7 +284,7 @@ static void RepositionDesktop(bool updateChildren)
    }   
    if(atoms[_net_workarea] != None)
    {
-      int *workareas;
+      long *workareas;
 
       if(XGetWindowProperty(xGlobalDisplay, x_root, atoms[_net_workarea], 0, (4 * 32),
                             False, AnyPropertyType, &type, &format, &len,
@@ -306,7 +306,7 @@ static void RepositionDesktop(bool updateChildren)
   
       if(data)
       {
-         workareas = (int *)data;
+         workareas = (long *)data;
      
          x = workareas[current * 4];
          y = workareas[current * 4 + 1];
@@ -895,11 +895,11 @@ static int MyXIOErrorHandler(X11Display * display)
 
 struct MWM_Hints
 {
-  uint flags;
-  uint functions;
-  uint decorations;
-  int inputMode;
-  uint status;
+  unsigned long flags;
+  unsigned long functions;
+  unsigned long decorations;
+  long inputMode;
+  unsigned long status;
 };
 
 static void WaitForViewableWindow(Window window)
@@ -2218,7 +2218,7 @@ class XInterface : Interface
                 0, 0, 0
             };
             XChangeProperty(xGlobalDisplay, windowHandle, atoms[_motif_wm_hints], atoms[_motif_wm_hints], 32,
-               PropModeReplace, (unsigned char*)&hints, sizeof(hints)/4);
+               PropModeReplace, (unsigned char*)&hints, 5);
          }
          if(atoms[_net_wm_pid] != None)
          {

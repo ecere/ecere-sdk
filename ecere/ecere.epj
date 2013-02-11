@@ -43,7 +43,7 @@
                "GL"
             ],
             "LibraryDirs" : [
-               "../deps/libungif-4.1.1/obj/release.$(PLATFORM)",
+               "../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "/usr/X11R6/lib"
             ]
          }
