@@ -255,7 +255,7 @@ static void RepositionDesktop(bool updateChildren)
       if(data)
       {
          int desktops = 0;
-         desktops = *(int *)data;
+         desktops = *(long *)data;
 
          //printf("_NET_NUMBER_OF_DESKTOPS is %d\n", desktops);
 
@@ -1053,7 +1053,7 @@ class XInterface : Interface
             {
                XVisualInfo vinfo;
                XVisualInfo *vinfo_ret;
-               int numitems;
+               long numitems;
               
                vinfo.visualid = XVisualIDFromVisual(xSystemVisual);
                vinfo_ret = XGetVisualInfo(xGlobalDisplay, VisualIDMask, &vinfo, &numitems);
@@ -1662,7 +1662,7 @@ class XInterface : Interface
                   // TODO: Support _NET_REQUEST_FRAME_EXTENTS message / _NET_FRAME_EXTENTS property for decoration size awareness
                   if(window.nativeDecorations)
                   {
-                     int format, len, fill;
+                     long format, len, fill;
                      Atom type;
                      char * data = null;
                      if(XGetWindowProperty(xGlobalDisplay, (X11Window)window.systemHandle, atoms[_net_wm_state], 0, 32, False,
@@ -1704,7 +1704,7 @@ class XInterface : Interface
                      //if(event->send_event)
                      {
                         X11Window rootChild;
-                        int rootX, rootY;
+                        long rootX, rootY;
                         XTranslateCoordinates(xGlobalDisplay, event->window,
                            RootWindow(xGlobalDisplay, DefaultScreen(xGlobalDisplay)), 0, 0, 
                            &rootX, &rootY, &rootChild);
@@ -1849,7 +1849,7 @@ class XInterface : Interface
                   if(event->atom == atoms[_net_frame_extents] &&
                     event->state == PropertyNewValue && windowData)
                   {
-                     int format, len, fill;
+                     long format, len, fill;
                      Atom type;
                      char * data = null;
 
@@ -1858,7 +1858,7 @@ class XInterface : Interface
                          False, XA_CARDINAL, &type, &format, &len,
                          &fill, &data) == Success && data)
                      {
-                        int *extents = (int *)data;
+                        long *extents = (long *)data;
                         bool hadFrameExtents = windowData.gotFrameExtents;
                         windowData.decor =
                         {
@@ -2058,7 +2058,7 @@ class XInterface : Interface
       }
       if(!visualInfo)
       {
-         int attrList[] = 
+         long attrList[] = 
          {
             GLX_USE_GL, GLX_DEPTH_SIZE, 1,
             GLX_RGBA, 
@@ -2745,7 +2745,7 @@ class XInterface : Interface
             int owner = XGetSelectionOwner(xGlobalDisplay, selAtom);
             if(owner != None)
             {
-               int atom;
+               long atom;
                for(atom = atoms[utf8_string]; atom; atom = ((atom == atoms[utf8_string]) ? XA_STRING : 0))
                {
                   XEvent e;
@@ -2756,9 +2756,9 @@ class XInterface : Interface
                      XSelectionEvent * selection = (XSelectionEvent *) &e;
                      //printf("Got a SelectionNotify with %d (%s)\n", selection->_property, XGetAtomName(xGlobalDisplay, selection->_property));
                      byte *data;
-                     uint len, size = 0, dummy;
+                     unsigned long len, size = 0, dummy;
                      Atom type;
-            	     int format;
+                     long format;
                      XGetWindowProperty(xGlobalDisplay, (X11Window) rootWindow.windowHandle, selection->_property ? selection->_property : atom, 0, 0, 0, AnyPropertyType, &type, &format, &len, &size, &data);
                      if(size > 0)
                      {
@@ -2848,7 +2848,7 @@ class XInterface : Interface
          Bitmap bitmap { };
          if(bitmap.Load(resource.fileName, null, null))
          {
-            uint * icon = new uint[2 + bitmap.width * bitmap.height];
+            unsigned long * icon = new unsigned long[2 + bitmap.width * bitmap.height];
             bitmap.Convert(null, pixelFormat888, null);
             icon[0] = bitmap.width;
             icon[1] = bitmap.height;
