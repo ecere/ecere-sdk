@@ -2554,6 +2554,22 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
          _class.memberID = _class.startMemberID = (base && (type == normalClass || type == noHeadClass || type == structClass)) ? base.memberID : 0;
          if(type == normalClass || type == noHeadClass)
             _class.offset = (base && base.structSize && base.type != systemClass) ? base.structSize : ((type == noHeadClass) ? 0 : (force64Bits ? 24 : sizeof(class Instance)));
+         if(force64Bits)
+         {
+            // For 64 bit cross-compiling from 32 bit library:
+                 if(!strcmp(name, "ecere::com::Class"))           size = 0; // 616
+            else if(!strcmp(name, "ecere::com::ClassProperty"))   size = 0; // 80
+            else if(!strcmp(name, "ecere::sys::BufferedFile"))    size = 0;
+            else if(!strcmp(name, "ecere::sys::BTNode"))          size = 0;
+            else if(!strcmp(name, "ecere::sys::StringBTNode"))    size = 0;
+            else if(!strcmp(name, "ecere::sys::OldList"))         size = 0; // 32
+            else if(!strcmp(name, "ecere::sys::Item"))            size = 0;
+            else if(!strcmp(name, "ecere::sys::NamedLink"))       size = 0;
+            else if(!strcmp(name, "ecere::sys::OldLink"))         size = 0;
+            else if(!strcmp(name, "ecere::sys::NamedItem"))       size = 0;
+            else if(!strcmp(name, "ecere::sys::NamedItem64"))     size = 0;
+            else if(!strcmp(name, "ecere::sys::BinaryTree"))      size = 0;
+         }
          if(type == structClass)
          {
             _class.memberOffset = (base && base.structSize && base.type != systemClass) ? base.structSize : 0;
@@ -4167,7 +4183,6 @@ public dllexport ClassProperty eClass_FindClassProperty(Class _class, char * nam
 public dllexport int64 eClass_GetProperty(Class _class, char * name)
 {
    ClassProperty _property = eClass_FindClassProperty(_class, name);
-   char * propName = _property.name;
    if(_property && _property.Get && _property.Get != (void *)1)
    {
       int64 result = _property.Get(_class);

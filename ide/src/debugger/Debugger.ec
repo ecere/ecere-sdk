@@ -7,7 +7,7 @@ import "debugTools"
 #define GDB_DEBUG_CONSOLE
 #endif
 
-extern char * strrchr(char * s, char c);
+extern char * strrchr(const char * s, int c);
 
 #define uint _uint
 #include <stdarg.h>

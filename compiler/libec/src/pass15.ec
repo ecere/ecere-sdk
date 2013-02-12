@@ -466,11 +466,14 @@ void ComputeClassMembers(Class _class, bool isMember)
    DataMember member = isMember ? (DataMember) _class : null;
    Context context = isMember ? null : SetupTemplatesContext(_class);
    if(member || ((_class.type == bitClass || _class.type == normalClass || _class.type == structClass || _class.type == noHeadClass) && 
-                 (_class.type == bitClass || _class.structSize == _class.offset) && _class.computeSize))
+                 (_class.type == bitClass || (!_class.structSize || _class.structSize == _class.offset)) && _class.computeSize))
    {
       int c;
       int unionMemberOffset = 0;
       int bitFields = 0;
+
+      if(!member && (_class.type == structClass || _class.type == normalClass || _class.type == noHeadClass) && _class.memberOffset && _class.memberOffset > _class.base.structSize)
+         _class.memberOffset = (_class.base && _class.base.type != systemClass) ? _class.base.structSize : 0;
 
       if(!member && _class.destructionWatchOffset)
          _class.memberOffset += sizeof(OldList);
@@ -699,7 +702,13 @@ void ComputeClassMembers(Class _class, bool isMember)
 
          if(_class.type != bitClass)
          {
-            _class.structSize = (_class.base ? (_class.base.templateClass ? _class.base.templateClass.structSize : _class.base.structSize) : 0) + _class.memberOffset;
+            int extra = 0;
+            if(_class.structAlignment)
+            {
+               if(_class.memberOffset % _class.structAlignment)
+                  extra += _class.structAlignment - (_class.memberOffset % _class.structAlignment);
+            }
+            _class.structSize = (_class.base ? (_class.base.templateClass ? _class.base.templateClass.structSize : _class.base.structSize) : 0) + _class.memberOffset + extra;
             if(!member)
             {
                Property prop;
@@ -1009,11 +1018,17 @@ public int ComputeTypeSize(Type type)
    }
    else if(totalSize < maxSize && _class.type != systemClass)
    {
-      char sizeString[50];
-      sprintf(sizeString, "%d", maxSize - totalSize);
-      ListAdd(declarations, 
-         MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(CHAR)), 
-         MkListOne(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__ecere_padding")), MkExpConstant(sizeString))), null)));
+      int autoPadding = 0;
+      if(!isMember && _class.structAlignment && totalSize % _class.structAlignment)
+         autoPadding = _class.structAlignment - (totalSize % _class.structAlignment);
+      if(totalSize + autoPadding < maxSize)
+      {
+         char sizeString[50];
+         sprintf(sizeString, "%d", maxSize - totalSize);
+         ListAdd(declarations, 
+            MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(CHAR)), 
+            MkListOne(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__ecere_padding")), MkExpConstant(sizeString))), null)));
+      }
    }
    if(context)
       FinishTemplatesContext(context);

@@ -160,7 +160,6 @@ class Command : struct
 public:
    Command prev, next;
    char * command;
-   //char * output;
    OldList outputs;
    class_fixed
 

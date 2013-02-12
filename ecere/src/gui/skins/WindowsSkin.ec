@@ -593,7 +593,7 @@ public class WindowsSkin_Window : Window
 }
 
 
-#define PUREVTBL(c)     ((int (**)())*(void **)((byte *)class(c).data + 4))
+#define PUREVTBL(c)     ((int (**)())*(void **)((byte *)class(c).data + sizeof(uintptr)))
 #define CAPTION_DISTANCE   18
 
 default:

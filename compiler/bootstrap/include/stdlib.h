@@ -1,7 +1,7 @@
 #ifndef BSL_STDLIB_H
 #define BSL_STDLIB_H
 
-typedef unsigned int size_t;
+typedef uintptr size_t; // For now, until we add uintsize
 
 /*
 #include <stddef.h>

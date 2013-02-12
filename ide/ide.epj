@@ -7,9 +7,7 @@
          "GDB_DEBUG_GUI"
       ],
       "TargetType" : "Executable",
-      "TargetFileName" : "ide",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)"
+      "TargetFileName" : "ide"
    },
    "Platforms" : [
       {

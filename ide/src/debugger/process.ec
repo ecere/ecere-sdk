@@ -1,5 +1,6 @@
 default:
 #define uint _uint
+#define String String_
 
 #include <unistd.h>
 #ifdef __WIN32__
@@ -41,6 +42,7 @@ default:
 
 #endif
 #undef uint
+#undef String
 
 private:
 
