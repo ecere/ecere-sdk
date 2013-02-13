@@ -333,6 +333,8 @@ class CompilerApp : Application
          globalContext.types.Add((BTNode)Symbol { string = CopyString("uint32"), type = ProcessTypeString("unsigned int", false) });
          globalContext.types.Add((BTNode)Symbol { string = CopyString("uint16"), type = ProcessTypeString("unsigned short", false) });
          globalContext.types.Add((BTNode)Symbol { string = CopyString("byte"), type = ProcessTypeString("unsigned char", false) });
+         globalContext.types.Add((BTNode)Symbol { string = CopyString("intptr_t"), type = ProcessTypeString("intptr", false) });
+         globalContext.types.Add((BTNode)Symbol { string = CopyString("uintptr_t"), type = ProcessTypeString("uintptr", false) });
 
          {
             GlobalData data { fullName = CopyString("__thisModule"), dataTypeString = CopyString("Module"), module = privateModule };
@@ -340,7 +342,7 @@ class CompilerApp : Application
             globalData.functions.Add((BTNode)data);
          }
 
-         snprintf(command, sizeof(command), "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
+         snprintf(command, sizeof(command), "%s%s -x c -E -D_INTPTR_T_DEFINED -D_UINTPTR_T_DEFINED \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
          command[sizeof(command)-1] = 0;
          if((cppOutput = DualPipeOpen({ output = true }, command)))
          {
