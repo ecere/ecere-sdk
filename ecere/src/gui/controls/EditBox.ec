@@ -4463,7 +4463,7 @@ private:
                         ComputeColumn();
                      }
                      // Insert spaces
-                     start = this.x;
+                     start = Min(this.x, this.selX);
                      for(c=start; ((c == start) || ((c) % this.tabSize)); c++)
                      {
                         addString[len++] = ' ';
