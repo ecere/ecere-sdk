@@ -8,8 +8,6 @@
       ],
       "TargetType" : "Executable",
       "TargetFileName" : "epj2make",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "Libraries" : [
          "ecere"
       ],
