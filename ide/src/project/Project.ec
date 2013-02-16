@@ -1248,7 +1248,7 @@ private:
       char temp[MAX_LOCATION];
       bool result = false;
       strcpy(cfDir, topNode.path);
-      if(ideSettings.compilerConfigsDir && ideSettings.compilerConfigsDir[0])
+      if(ideSettings && ideSettings.compilerConfigsDir && ideSettings.compilerConfigsDir[0])
       {
          PathCatSlash(cfDir, ideSettings.compilerConfigsDir);
          result = true;
