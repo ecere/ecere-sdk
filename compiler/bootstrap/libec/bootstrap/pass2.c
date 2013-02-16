@@ -2692,7 +2692,10 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*parentExp->list), 
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*parentExp->list), newExp);
 }
 else if(parentExp && parentExp->type == 11)
+{
 parentExp->cast.exp = newExp;
+parentExp->cast.typeName->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), parentExp->cast.typeName->declarator);
+}
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), parentExp ? parentExp : newExp);
 }
 else

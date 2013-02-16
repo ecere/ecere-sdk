@@ -1058,14 +1058,13 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("byte"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned char", 0x0), ((struct Symbol *)__ecereTemp1)));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("intptr_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("intptr", 0x0), ((struct Symbol *)__ecereTemp1)));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uintptr_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("uintptr", 0x0), ((struct Symbol *)__ecereTemp1)));
-
 {
 struct GlobalData * data = (data = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_GlobalData), data->fullName = __ecereNameSpace__ecere__sys__CopyString("__thisModule"), data->dataTypeString = __ecereNameSpace__ecere__sys__CopyString("Module"), data->module = privateModule, data);
 
 data->key = (uintptr_t)data->fullName;
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalData.functions, (struct __ecereNameSpace__ecere__sys__BTNode *)data);
 }
-snprintf(command, sizeof command, "%s%s -x c -D_INTPTR_T_DEFINED -D_UINTPTR_T_DEFINED -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
+snprintf(command, sizeof command, "%s%s -x c -E -D_INTPTR_T_DEFINED -D_UINTPTR_T_DEFINED \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
 command[sizeof command - 1] = (char)0;
 if((cppOutput = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(0x1))), command)))
 {

@@ -1838,8 +1838,11 @@ static void ProcessExpression(Expression exp)
                               parentExp.list->Add(newExp);
                            }
                            else if(parentExp && parentExp.type == castExp)
+                           {
                               parentExp.cast.exp = newExp;
-
+                              // Add a dereference level here
+                              parentExp.cast.typeName.declarator = MkDeclaratorPointer(MkPointer(null, null), parentExp.cast.typeName.declarator);
+                           }
                            exp.call.arguments->Insert(null, parentExp ? parentExp : newExp);
                         }
                         else

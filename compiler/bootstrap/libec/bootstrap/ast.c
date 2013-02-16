@@ -3090,7 +3090,6 @@ int memberType;
 } __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument defaultArg;
 void *  param;
-char __ecere_padding[4];
 } __attribute__ ((gcc_struct));
 
 void SetupBaseSpecs(struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * baseSpecs)

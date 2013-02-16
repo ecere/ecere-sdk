@@ -1760,6 +1760,33 @@ id++;
 _class->memberID = _class->startMemberID = (base && (type == 0 || type == 5 || type == 1)) ? base->memberID : 0;
 if(type == 0 || type == 5)
 _class->offset = (base && base->structSize && base->type != 1000) ? base->structSize : ((type == 5) ? 0 : (force64Bits ? 24 : 12));
+if(force64Bits)
+{
+if(!strcmp(name, "ecere::com::Class"))
+size = 0;
+else if(!strcmp(name, "ecere::com::ClassProperty"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::BufferedFile"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::BTNode"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::StringBTNode"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::OldList"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::Item"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::NamedLink"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::OldLink"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::NamedItem"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::NamedItem64"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::BinaryTree"))
+size = 0;
+}
 if(type == 1)
 {
 _class->memberOffset = (base && base->structSize && base->type != 1000) ? base->structSize : 0;
@@ -3336,7 +3363,6 @@ return _property;
 long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char * name)
 {
 struct __ecereNameSpace__ecere__com__ClassProperty * _property = __ecereNameSpace__ecere__com__eClass_FindClassProperty(_class, name);
-char * propName = _property->name;
 
 if(_property && _property->Get && _property->Get != (void *)1)
 {
@@ -5154,7 +5180,7 @@ for(param = _class->templateParams.first; param; param = param->next)
 if(!strcmp(param->name, name))
 return param;
 }
-param = (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(36), ((struct __ecereNameSpace__ecere__com__ClassTemplateParameter *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(name), ((struct __ecereNameSpace__ecere__com__ClassTemplateParameter *)__ecereTemp1)->type = type, ((struct __ecereNameSpace__ecere__com__ClassTemplateParameter *)__ecereTemp1)->dataTypeString = (type == 1) ? info : __ecereNameSpace__ecere__sys__CopyString(info), ((struct __ecereNameSpace__ecere__com__ClassTemplateParameter *)__ecereTemp1));
+param = (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(40), ((struct __ecereNameSpace__ecere__com__ClassTemplateParameter *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(name), ((struct __ecereNameSpace__ecere__com__ClassTemplateParameter *)__ecereTemp1)->type = type, ((struct __ecereNameSpace__ecere__com__ClassTemplateParameter *)__ecereTemp1)->dataTypeString = (type == 1) ? info : __ecereNameSpace__ecere__sys__CopyString(info), ((struct __ecereNameSpace__ecere__com__ClassTemplateParameter *)__ecereTemp1));
 if(defaultArg != (((void *)0)))
 {
 param->defaultArg = *defaultArg;

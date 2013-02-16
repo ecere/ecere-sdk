@@ -925,7 +925,7 @@ struct __ecereNameSpace__ecere__com__Method * method;
 } __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 
-typedef unsigned int size_t;
+typedef uintptr_t size_t;
 
 void exit(int status);
 

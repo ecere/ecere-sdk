@@ -1575,7 +1575,6 @@ int memberType;
 } __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument defaultArg;
 void *  param;
-char __ecere_padding[4];
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__ClassTemplateParameter * __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, int type, void *  info, struct __ecereNameSpace__ecere__com__ClassTemplateArgument * defaultArg);
@@ -2702,6 +2701,8 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uint32"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned int", 0x0), ((struct Symbol *)__ecereTemp1)));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uint16"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned short", 0x0), ((struct Symbol *)__ecereTemp1)));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("byte"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned char", 0x0), ((struct Symbol *)__ecereTemp1)));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("intptr_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("intptr", 0x0), ((struct Symbol *)__ecereTemp1)));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uintptr_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("uintptr", 0x0), ((struct Symbol *)__ecereTemp1)));
 {
 char * outputFilePath = GetOutputFile();
 

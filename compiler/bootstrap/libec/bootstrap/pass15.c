@@ -926,7 +926,7 @@ struct __ecereNameSpace__ecere__com__Method * method;
 } __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 
-typedef unsigned int size_t;
+typedef uintptr_t size_t;
 
 void exit(int status);
 
@@ -1466,7 +1466,6 @@ int memberType;
 } __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument defaultArg;
 void *  param;
-char __ecere_padding[4];
 } __attribute__ ((gcc_struct));
 
 extern struct Expression * GetTemplateArgExpByName(char *  paramName, struct __ecereNameSpace__ecere__com__Class * curClass, int tplType);
@@ -2232,12 +2231,14 @@ void ComputeClassMembers(struct __ecereNameSpace__ecere__com__Class * _class, un
 struct __ecereNameSpace__ecere__com__DataMember * member = isMember ? (struct __ecereNameSpace__ecere__com__DataMember *)_class : (((void *)0));
 struct Context * context = isMember ? (((void *)0)) : SetupTemplatesContext(_class);
 
-if(member || ((_class->type == 2 || _class->type == 0 || _class->type == 1 || _class->type == 5) && (_class->type == 2 || _class->structSize == _class->offset) && _class->computeSize))
+if(member || ((_class->type == 2 || _class->type == 0 || _class->type == 1 || _class->type == 5) && (_class->type == 2 || (!_class->structSize || _class->structSize == _class->offset)) && _class->computeSize))
 {
 int c;
 int unionMemberOffset = 0;
 int bitFields = 0;
 
+if(!member && (_class->type == 1 || _class->type == 0 || _class->type == 5) && _class->memberOffset && _class->memberOffset > _class->base->structSize)
+_class->memberOffset = (_class->base && _class->base->type != 1000) ? _class->base->structSize : 0;
 if(!member && _class->destructionWatchOffset)
 _class->memberOffset += sizeof(struct __ecereNameSpace__ecere__sys__OldList);
 {
@@ -2444,7 +2445,14 @@ if(!isMember)
 {
 if(_class->type != 2)
 {
-_class->structSize = (_class->base ? (_class->base->templateClass ? _class->base->templateClass->structSize : _class->base->structSize) : 0) + _class->memberOffset;
+int extra = 0;
+
+if(_class->structAlignment)
+{
+if(_class->memberOffset % _class->structAlignment)
+extra += _class->structAlignment - (_class->memberOffset % _class->structAlignment);
+}
+_class->structSize = (_class->base ? (_class->base->templateClass ? _class->base->templateClass->structSize : _class->base->structSize) : 0) + _class->memberOffset + extra;
 if(!member)
 {
 struct __ecereNameSpace__ecere__com__Property * prop;
@@ -2818,10 +2826,17 @@ else
 }
 else if(totalSize < maxSize && _class->type != 1000)
 {
+int autoPadding = 0;
+
+if(!isMember && _class->structAlignment && totalSize % _class->structAlignment)
+autoPadding = _class->structAlignment - (totalSize % _class->structAlignment);
+if(totalSize + autoPadding < maxSize)
+{
 char sizeString[50];
 
 sprintf(sizeString, "%d", maxSize - totalSize);
 ListAdd(declarations, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(CHAR)), MkListOne(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__ecere_padding")), MkExpConstant(sizeString))), (((void *)0)))));
+}
 }
 if(context)
 FinishTemplatesContext(context);

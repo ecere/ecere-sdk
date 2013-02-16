@@ -1,7 +1,16 @@
 #ifndef BSL_STDLIB_H
 #define BSL_STDLIB_H
 
-typedef uintptr size_t; // For now, until we add uintsize
+// For now, until we add uintsize
+#ifdef __MINGW32__
+#ifdef _WIN64
+typedef long long unsigned int size_t;
+#else
+typedef unsigned int size_t;
+#endif
+#else
+typedef uintptr size_t;
+#endif
 
 /*
 #include <stddef.h>
