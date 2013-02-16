@@ -1227,12 +1227,15 @@ _class->sizeClass = totalSizeClass;
 struct __ecereNameSpace__ecere__com__Method * method, * next;
 struct __ecereNameSpace__ecere__com__Class * b;
 unsigned int needUpdate = (mod != (base->templateClass ? base->templateClass : base) || _class->vTblSize != mod->vTblSize);
+int updateStart = -1, updateEnd = -1;
 
 if(mod->base && mod->base->base && mod->base->vTblSize > baseClass->vTblSize && needUpdate)
 {
 _class->vTblSize += mod->base->vTblSize - baseClass->vTblSize;
 _class->_vTbl = __ecereNameSpace__ecere__com__eSystem_Renew(_class->_vTbl, sizeof(void *) * (_class->vTblSize));
 memmove(_class->_vTbl + mod->base->vTblSize, _class->_vTbl + baseClass->vTblSize, (_class->vTblSize - mod->vTblSize) * sizeof(void *));
+updateStart = baseClass->vTblSize;
+updateEnd = updateStart + mod->base->vTblSize - baseClass->vTblSize;
 for(method = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->methods); method; method = next)
 {
 next = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)method));
@@ -1267,7 +1270,7 @@ method->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(vMethod->dataT
 method->_class = vMethod->_class;
 }
 }
-else if(needUpdate || _class->_vTbl[vMethod->vid] == b->_vTbl[vMethod->vid])
+else if((vMethod->vid >= updateStart && vMethod->vid < updateEnd) || _class->_vTbl[vMethod->vid] == b->_vTbl[vMethod->vid])
 _class->_vTbl[vMethod->vid] = _class->base->_vTbl[vMethod->vid];
 }
 }

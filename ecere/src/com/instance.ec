@@ -1991,6 +1991,7 @@ static void FixDerivativesBase(Class base, Class mod)
          Method method, next;
          Class b;
          bool needUpdate = (mod != (base.templateClass ? base.templateClass : base) || _class.vTblSize != mod.vTblSize;
+         int updateStart = -1, updateEnd = -1;
 
          if(mod.base && mod.base.base && mod.base.vTblSize > baseClass.vTblSize && needUpdate)
          {
@@ -1998,6 +1999,9 @@ static void FixDerivativesBase(Class base, Class mod)
             _class._vTbl = renew _class._vTbl void *[_class.vTblSize];
             // memmove(_class._vTbl + mod.base.vTblSize, _class._vTbl + baseClass.vTblSize, (mod.base.vTblSize - baseClass.vTblSize) * sizeof(void *));
             memmove(_class._vTbl + mod.base.vTblSize, _class._vTbl + baseClass.vTblSize, (_class.vTblSize - mod.vTblSize) * sizeof(void *));
+
+            updateStart = baseClass.vTblSize;
+            updateEnd = updateStart + mod.base.vTblSize - baseClass.vTblSize;
 
             for(method = (Method)_class.methods.first; method; method = next)
             {
@@ -2032,7 +2036,7 @@ static void FixDerivativesBase(Class base, Class mod)
                            method._class = vMethod._class;
                         }
                      }
-                     else if(needUpdate || _class._vTbl[vMethod.vid] == b._vTbl[vMethod.vid])
+                     else if((vMethod.vid >= updateStart && vMethod.vid < updateEnd ) || _class._vTbl[vMethod.vid] == b._vTbl[vMethod.vid])
                         _class._vTbl[vMethod.vid] = _class.base._vTbl[vMethod.vid];
                   }
                }
