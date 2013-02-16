@@ -248,6 +248,8 @@ int DualPipe_GetExitCode(_DualPipe * dp)
    //return __WEXITSTATUS(status);
 #else
    int exitCode = 0;
+   // NOTE: This was inconsistent with Linux version waiting... Testing Suite would not return proper values
+   WaitForSingleObject(dp->hProcess, INFINITE);
    GetExitCodeProcess(dp->hProcess, (DWORD *)&exitCode);
    return exitCode;
 #endif
