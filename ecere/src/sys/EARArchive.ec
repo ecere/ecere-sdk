@@ -534,7 +534,11 @@ class EARArchive : Archive
                   if(compressed)
                   {
                      if(f.Read(compressed, 1, entry.cSize) == entry.cSize)
-                        uncompress(uncompressed, (uint *)&entry.size, compressed, entry.cSize);
+                     {
+                        unsigned long destLen = entry.size;
+                        uncompress(uncompressed, &destLen, compressed, entry.cSize);
+                        entry.size = destLen;
+                     }
                      delete compressed;
                   }
 
@@ -581,7 +585,11 @@ class EARArchive : Archive
             if(compressed)
             {
                if(f.Read(compressed, 1, entry.cSize) == entry.cSize)
-                  uncompress(uncompressed, (uint *)&entry.size, compressed, entry.cSize);
+               {
+                  unsigned long destLen = entry.size;
+                  uncompress(uncompressed, &destLen, compressed, entry.cSize);
+                  entry.size = destLen;
+               }
                delete compressed;
             }
 
@@ -712,7 +720,11 @@ class EARArchiveDir : ArchiveDir
                   if(compressed)
                   {
                      if(archive.f.Read(compressed, 1, entry.cSize) == entry.cSize)
-                        uncompress(uncompressed, (uint *)&entry.size, compressed, entry.cSize);
+                     {
+                        unsigned long destLen = entry.size;
+                        uncompress(uncompressed, &destLen, compressed, entry.cSize);
+                        entry.size = destLen;
+                     }
                      delete compressed;
                   }
 
@@ -1109,11 +1121,14 @@ class EARArchiveDir : ArchiveDir
             {
                if(input.Read(uncompressed, 1, entry.size) == entry.size)
                {
-                  entry.cSize = entry.size + entry.size / 1000 + 12;
+                  unsigned long destLen = entry.size + entry.size / 1000 + 12;
 
-                  compressed = new byte[entry.cSize];
+                  compressed = new byte[destLen];
                   if(compressed)
-                     compress2(compressed, (uint *)&entry.cSize, uncompressed, entry.size, compression);
+                  {
+                     compress2(compressed, &destLen, uncompressed, entry.size, compression);
+                     entry.cSize = destLen;
+                  }
                }
                delete uncompressed;
             }
@@ -1370,7 +1385,11 @@ class EARFileSystem : FileSystem
                         if(compressed)
                         {
                            if(f.Read(compressed, 1, entry.cSize) == entry.cSize)
-                              uncompress(uncompressed, (uint *)&entry.size, compressed, entry.cSize);
+                           {
+                              unsigned long destLen = entry.size;
+                              uncompress(uncompressed, &destLen, compressed, entry.cSize);
+                              entry.size = destLen;
+                           }
                            delete compressed;
                         }
 
