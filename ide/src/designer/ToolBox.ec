@@ -160,7 +160,7 @@ class ToolBox : Window
          anchor = Anchor { left = 5, top = *y, right = 5 };
          alignment = left;
          bitmap = { bitmapFile };
-         id = (int)id;
+         id = (int64)id;
 
          bool NotifyPushed(Button control, int x, int y, Modifiers mods)
          {

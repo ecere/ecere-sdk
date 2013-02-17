@@ -149,7 +149,7 @@ static bool ProcessInstMembers_SimpleMemberEnsure(DataMember parentMember, Insta
                            }
 
                            /*
-                           BTNamedLink link = parentMember.membersAlpha.Find((uint)firstID.string);
+                           BTNamedLink link = parentMember.membersAlpha.Find((uintptr)firstID.string);
                            if(link)
                            {
                               curMember = link.data;
@@ -1655,7 +1655,7 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
                            subMemberStackPos = _subMemberStackPos;
                         }
                         /*
-                        BTNamedLink link = parentMember.membersAlpha.Find((uint)firstID.string);
+                        BTNamedLink link = parentMember.membersAlpha.Find((uintptr)firstID.string);
                         if(link)
                         {
                            curMember = link.data;

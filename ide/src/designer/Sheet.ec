@@ -513,7 +513,7 @@ class Sheet : Window
                for(compatible = object.compatible.first; compatible; compatible = compatible.next)
                {
                   ClassFunction function = compatible.data;
-                  MenuItem { attachMenu, function.declarator.symbol.string, id = (int)function, NotifySelect = AttachMethodSelected };
+                  MenuItem { attachMenu, function.declarator.symbol.string, id = (int64)function, NotifySelect = AttachMethodSelected };
                }
             }
          }
@@ -536,7 +536,7 @@ class Sheet : Window
                   ClassFunction function = compatible.data;
                   if(function != object.function)
                   {
-                     MenuItem { attachMenu, function.declarator.symbol.string, id = (int)function, NotifySelect = ReattachMethodSelected };
+                     MenuItem { attachMenu, function.declarator.symbol.string, id = (int64)function, NotifySelect = ReattachMethodSelected };
                   }
                }
             }
@@ -819,13 +819,13 @@ class Sheet : Window
 
                         if(clear)
                         {
-                           row = categorized ? category.row.FindRow((int)prop) : properties.FindRow((int)prop);
+                           row = categorized ? category.row.FindRow((int64)prop) : properties.FindRow((int64)prop);
                            if(!row)
                               row = categorized ? category.row.AddRow() : properties.AddRow();
-                           row.tag = (int)prop;
+                           row.tag = (int64)prop;
                         }
                         else
-                           row = categorized ? category.row.FindRow((int)prop) : properties.FindRow((int)prop);
+                           row = categorized ? category.row.FindRow((int64)prop) : properties.FindRow((int64)prop);
 
                         row.SetData(propertyName, prop.name);
                         row.SetData(propertyValue, info);
@@ -853,10 +853,10 @@ class Sheet : Window
                                     if(clear)
                                     {
                                        subRow = row.AddRow();
-                                       subRow.tag = (int)subProp;
+                                       subRow.tag = (int64)subProp;
                                     }
                                     else
-                                       subRow = row.FindRow((int)subProp);
+                                       subRow = row.FindRow((int64)subProp);
                                     
                                     subRow.SetData(propertyName, subProp.name);
                                     subRow.SetData(propertyValue, info);
@@ -869,10 +869,10 @@ class Sheet : Window
                                  if(clear)
                                  {
                                     subRow = row.AddRow();
-                                    subRow.tag = (int)member;
+                                    subRow.tag = (int64)member;
                                  }
                                  else
-                                    subRow = row.FindRow((int)member);
+                                    subRow = row.FindRow((int64)member);
 
                                  subRow.SetData(propertyName, member.name);
                                  subRow.SetData(propertyValue, info);
@@ -887,10 +887,10 @@ class Sheet : Window
                                     if(clear)
                                     {
                                        subRow = row.AddRow();
-                                       subRow.tag = (int)subMember;
+                                       subRow.tag = (int64)subMember;
                                     }
                                     else
-                                       subRow = row.FindRow((int)subMember);
+                                       subRow = row.FindRow((int64)subMember);
 
                                     subRow.SetData(propertyName, subMember.name);
                                     subRow.SetData(propertyValue, info);
@@ -925,7 +925,7 @@ class Sheet : Window
                            DataRow row;
                            char * name = prop.category ? prop.category : $"Misc";
                            Category category = categories.FindName(name, false);
-                           row = category ? (categorized ? category.row.FindRow((int)prop) : properties.FindRow((int)prop)) : null;
+                           row = category ? (categorized ? category.row.FindRow((int64)prop) : properties.FindRow((int64)prop)) : null;
                            properties.currentRow = row;
                            found = true;
                            break;                                                                                                                              
@@ -967,7 +967,7 @@ class Sheet : Window
 
       row = (DataRow)dropBox.AddRowAfter(after);
       
-      row.tag = (int)object;
+      row.tag = (int64)object;
 
       codeObject = 
       {
@@ -997,7 +997,7 @@ class Sheet : Window
 
    void DeleteObject(ObjectInfo object)
    {
-      DataRow row = dropBox.FindRow((int)object);
+      DataRow row = dropBox.FindRow((int64)object);
       if(row)
       {
          CodeObject codeObject = row.GetData(null);
@@ -1012,7 +1012,7 @@ class Sheet : Window
    {
       if(this)
       {
-         DataRow row = dropBox.FindRow((int)object);
+         DataRow row = dropBox.FindRow((int64)object);
          this.object = object ? object.instance : null;
          propertyValue.userData = object ? (void *)object.instance : null;
          dropBox.SelectRow(row);
@@ -1021,7 +1021,7 @@ class Sheet : Window
 
    void RenameObject(ObjectInfo object, char * name)
    {
-      DataRow row = dropBox.FindRow((int)object);
+      DataRow row = dropBox.FindRow((int64)object);
       CodeObject codeObject = row.GetData(null);
       // Isn't this useless? Shouldn't it be after?
       codeObject.name = name;
@@ -1254,7 +1254,7 @@ class Sheet : Window
                bitmap = { ":actions/delete.png", alphaBlend = true },
                anchor = { right = 16, top = y },
                size = { 16, h },
-               id = (int)row;
+               id = (int64)row;
 
                bool NotifyClicked(Button button, int x, int y, Modifiers mods)
                {
@@ -1307,7 +1307,7 @@ class Sheet : Window
                bitmap = { ":actions/detach.png" },
                anchor = { right = 0, top = y },
                size = { 16, h },
-               id = (int)row;
+               id = (int64)row;
 
                bool NotifyClicked(Button button, int x, int y, Modifiers mods)
                {
@@ -1333,7 +1333,7 @@ class Sheet : Window
                bitmap = { ":actions/attach.png" },
                anchor = { right = 0, top = y },
                size = { 16, h },
-               id = (int)row;
+               id = (int64)row;
 
                bool NotifyPushed(Button button, int x, int y, Modifiers mods)
                {
@@ -1348,7 +1348,7 @@ class Sheet : Window
                   for(compatible = object.compatible.first; compatible; compatible = compatible.next)
                   {
                      ClassFunction function = compatible.data;
-                     MenuItem { menu, function.declarator.symbol.string, id = (int)function, NotifySelect = AttachMethodSelected };
+                     MenuItem { menu, function.declarator.symbol.string, id = (int64)function, NotifySelect = AttachMethodSelected };
                   }
                   attachMethod = object.method;
 

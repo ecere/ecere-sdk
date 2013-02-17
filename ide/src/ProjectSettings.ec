@@ -276,7 +276,7 @@ class OptionBox<class Z> : CommonControl
    }
 
    property bool visible { set { editor.visible = value; } get { return editor.visible; } }
-   property Window parent { set { editor.parent = value; Window::parent = value; master = value; editor.id = (int)this; } }
+   property Window parent { set { editor.parent = value; Window::parent = value; master = value; editor.id = (int64)this; } }
    property Point position { set { editor.position = value; } }
    property Size size { set { editor.size = value; } }
    property Anchor anchor { set { editor.anchor = value; } }
@@ -1098,7 +1098,7 @@ class DropOptionBox : OptionBox
    {
       DropBox dropBox = (DropBox)editor;
       Z value = options ? *(Z*)((byte *)options + option) : (Z)0;
-      dropBox.currentRow = value ? dropBox.FindRow((int)value) : dropBox.firstRow;
+      dropBox.currentRow = value ? dropBox.FindRow((int64)value) : dropBox.firstRow;
    }
 
    void RetrieveOption(ProjectOptions options, bool isCfgOrPlt)
@@ -1325,7 +1325,7 @@ class BuildTab : Tab
 
          button =
          {
-            configSelector, renameable = true, master = this, text = config.name, id = (int)config;
+            configSelector, renameable = true, master = this, text = config.name, id = (int64)config;
             NotifyClicked = ConfigClicked, OnRename = ConfigOnRename;
          };
 
@@ -1377,7 +1377,7 @@ class BuildTab : Tab
                   }
                }
                */
-               SelectorButton button = configSelector.FindButtonByID((int)configToDelete);
+               SelectorButton button = configSelector.FindButtonByID((int64)configToDelete);
                if(button)
                   configSelector.RemoveButton(button);
 
@@ -1581,13 +1581,13 @@ class BuildTab : Tab
          }
          else
          {
-            compilerTab.rightPaneHeader.id = (int)node;
+            compilerTab.rightPaneHeader.id = (int64)node;
             compilerTab.rightPaneHeader.Update(null);
             compilerTab.rightPaneHeader.visible = true;
          }
 
          {
-            DataRow row = compilerTab.fileList.FindSubRow((int)currentNode);
+            DataRow row = compilerTab.fileList.FindSubRow((int64)currentNode);
             if(row)
             {
                compilerTab.fileList.currentRow = row;
@@ -1662,7 +1662,7 @@ class BuildTab : Tab
       // Create Config Buttons
       commonButton = SelectorButton
       {
-         configSelector, master = this, text = $"Common", id = (int)null; font = { font.faceName, font.size, true };
+         configSelector, master = this, text = $"Common", id = (int64)null; font = { font.faceName, font.size, true };
          checked = true;
          NotifyClicked = ConfigClicked;
       };
@@ -1675,7 +1675,7 @@ class BuildTab : Tab
          {
             EditableSelectorButton button
             {
-               configSelector, master = this, renameable = true, text = c.name, id = (int)c;
+               configSelector, master = this, renameable = true, text = c.name, id = (int64)c;
                NotifyClicked = ConfigClicked, OnRename = ConfigOnRename;
             };
          }
@@ -1705,7 +1705,7 @@ class BuildTab : Tab
       {
          SelectorButton button
          {
-            platformSelector, master = this, text = p.OnGetString(0,0,0), id = (int)p; 
+            platformSelector, master = this, text = p.OnGetString(0,0,0), id = (int64)p; 
             NotifyClicked = PlatformClicked;
          };
       }
@@ -2028,7 +2028,7 @@ class CompilerTab : Tab
    {
       DataRow row = addTo ? addTo.AddRow() : fileList.AddRow();
 
-      row.tag = (int)node;
+      row.tag = (int64)node;
 
       row.SetData(null, node);
 

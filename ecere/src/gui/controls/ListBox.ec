@@ -258,7 +258,7 @@ public class DataRow
    bool skipCheck;
 #endif
 public:
-   property int tag { set { tag = value; } get { return tag; } };
+   property int64 tag { set { tag = value; } get { return tag; } };
    property DataRow previous { get { return prev; } };
    property DataRow next { get { return next; } };
    property int index { get { return (this && (!parent || parent.IsExpanded())) ? index : -1; } };
@@ -650,7 +650,7 @@ public:
       }
    }
 
-   DataRow FindRow(int tag)
+   DataRow FindRow(int64 tag)
    {
       DataRow row = null;
       for(row = subRows.first; row; row = row.next)
@@ -661,7 +661,7 @@ public:
       return row;
    }
 
-   DataRow FindSubRow(int tag)
+   DataRow FindSubRow(int64 tag)
    {
       DataRow row = null;
       for(row = subRows.first; row; row = row.next)
@@ -942,7 +942,7 @@ private:
 
    DataRow prev, next;
    OldList cells;
-   int tag;
+   int64 tag;
    SelectedFlag selectedFlag;
    ListBox listBox;
    bool header;
@@ -1160,7 +1160,7 @@ public:
                stayOnTop = true;
                inactive = true;
                dontScrollVert = true;
-               id = (uint)addedField;
+               id = (uint64)addedField;
                text = addedField.header;
                bevel = (!guiApp.textMode && !style.clearHeader);
                ellipsis = true;
@@ -1547,7 +1547,7 @@ public:
       }
    }
 
-   DataRow FindRow(int tag)
+   DataRow FindRow(int64 tag)
    {
       if(this)
       {
@@ -1716,7 +1716,7 @@ public:
       return null;
    }
 
-   DataRow FindSubRow(int tag)
+   DataRow FindSubRow(int64 tag)
    {
       if(this)
       {
@@ -1840,7 +1840,7 @@ public:
       return (void *)currentRow.GetData(field);
    }
 
-   int GetTag()
+   int64 GetTag()
    {
       return currentRow ? currentRow.tag : 0;
    }

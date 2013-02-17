@@ -161,7 +161,7 @@ class CompilersDetectionDialog : Window
                if(FileExists(compilerPath).isFile)
                {
                   DataRow row = compilersList.AddString(compilerType.longName);
-                  row.tag = (int)compilerType;
+                  row.tag = (int64)compilerType;
                   // maybe try to read this line in vsvars32.bat instead of hard coded compiler names or not
                   // @echo Setting environment for using Microsoft Visual Studio 2005 x86 tools.
                }

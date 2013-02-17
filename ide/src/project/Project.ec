@@ -2265,10 +2265,10 @@ private:
          bool forceBitDepth = false;
 
          Map<String, int> cflagsVariations { };
-         Map<int, int> nodeCFlagsMapping { };
+         Map<intptr, int> nodeCFlagsMapping { };
 
          Map<String, int> ecflagsVariations { };
-         Map<int, int> nodeECFlagsMapping { };
+         Map<intptr, int> nodeECFlagsMapping { };
 
          ReplaceSpaces(objDirNoSpaces, objDirExp);
          strcpy(targetDir, GetTargetDirExpression(config));

@@ -143,7 +143,7 @@ public:
          DataRow row;
          sprintf(label, $"%s Project", project.name);
          row = findIn.AddString(label);
-         row.tag = (uint)project;
+         row.tag = (int64)project;
       }
    }
 
@@ -287,7 +287,7 @@ private:
          row = findWherePrjNode/*parentRow*/.AddRow();
       else
          row = findWherePrjNode.AddRow();
-      row.tag = (int)node;
+      row.tag = (int64)node;
       row.SetData(null, node);
       if(node.files)
       {
@@ -339,7 +339,7 @@ private:
 
       bool NotifySelect(DropBox control, DataRow row, Modifiers mods)
       {
-         fileFilter = row ? row.tag : 0;
+         fileFilter = (int)(row ? row.tag : 0);
          //ListFiles();
          return true;
       }

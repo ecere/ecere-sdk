@@ -283,7 +283,7 @@ public:
    }
 
    // Convenience function using current rows
-   int GetTag()
+   int64 GetTag()
    {
       return currentRow.tag;
    }

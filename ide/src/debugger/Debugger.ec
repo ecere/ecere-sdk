@@ -1041,7 +1041,7 @@ class Debugger
       else if(expression)
       {
          wh = Watch { };
-         row.tag = (int)wh;
+         row.tag = (int64)wh;
          ide.workspace.watches.Add(wh);
          wh.row = row;
          wh.expression = CopyString(expression);

@@ -211,19 +211,19 @@ static void PlaceButton(TabButton button, TabsPlacement placement, bool selected
    {
       case top:
          button.size = selected ? { 74, 25 } : { 70, 22 };
-         button.anchor = Anchor { left = buttonsOffset + button.tab.id * 70 + 2*of, bottom = 0 };
+         button.anchor = Anchor { left = buttonsOffset + (int)button.tab.id * 70 + 2*of, bottom = 0 };
          break;
       case bottom:
          button.size = selected ? { 74, 25 } : { 70, 22 };
-         button.anchor = Anchor { left = buttonsOffset + button.tab.id * 70 + 2*of, top = 0 };
+         button.anchor = Anchor { left = buttonsOffset + (int)button.tab.id * 70 + 2*of, top = 0 };
          break;
       case left:
          button.size = selected ? { 73, 26 } : { 70, 22 };
-         button.anchor = Anchor { top = buttonsOffset + button.tab.id * 22 + 2*of, right = 0 };
+         button.anchor = Anchor { top = buttonsOffset + (int)button.tab.id * 22 + 2*of, right = 0 };
          break;
       case right:
          button.size = selected ? { 73, 26 } : { 70, 22 };
-         button.anchor = Anchor { top = buttonsOffset + button.tab.id * 22 + 2*of, left = 0 };
+         button.anchor = Anchor { top = buttonsOffset + (int)button.tab.id * 22 + 2*of, left = 0 };
          break;
    }
 }
@@ -381,7 +381,7 @@ public class TabControl : Window
       if(curButton)
       {
          Box box;
-         int id = curTab ? curTab.id : 0;
+         //int id = curTab ? (int)curTab.id : 0;
          Button button = curButton;
          int x = button.position.x;
          int y = button.position.y;
@@ -581,7 +581,7 @@ public class TabControl : Window
       {
          parent = tabButtons,
          master = this, stayDown = true,
-         text = tab.text, id = (uint)tab, NotifyClicked = NotifyClicked,
+         text = tab.text, id = (int64)tab, NotifyClicked = NotifyClicked,
          tab = tab,
          background = background;
       };
@@ -622,7 +622,7 @@ public class TabControl : Window
          if(child._class == class(TabButton))
          {
             TabButton button = (TabButton)child;
-            if(button.id == (uint)tab)
+            if(button.id == (int64)tab)
             {
                if(button.created)
                   button.Destroy(0);

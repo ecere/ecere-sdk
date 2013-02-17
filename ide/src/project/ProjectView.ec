@@ -1602,7 +1602,7 @@ class ProjectView : Window
    {
       DataRow row = addTo ? addTo.AddRow() : fileList.AddRow();
 
-      row.tag = (int)node;
+      row.tag = (int64)node;
       node.row = row;
 
       if(node.type == resources)
@@ -1802,7 +1802,7 @@ class ProjectView : Window
             }
             Update(null);
             folderNode.row = parentNode.row.AddRowAfter(after ? after.row : null);
-            folderNode.row.tag = (int)folderNode;
+            folderNode.row.tag = (int64)folderNode;
                
             folderNode.row.SetData(null, folderNode);
             fileList.currentRow = folderNode.row;
@@ -1931,7 +1931,7 @@ class ProjectView : Window
          }
          Update(null);
          result.row = parentNode.row.AddRowAfter(after ? after.row : null);
-         result.row.tag = (int)result;
+         result.row.tag = (int64)result;
          result.row.SetData(null, result);
       }
       return result;
@@ -1973,7 +1973,7 @@ class ProjectView : Window
          Update(null);
          project.ModifiedAllConfigs(true, false, false, true);
          projectNode.row = parentNode.row.AddRowAfter(after ? after.row : null);
-         projectNode.row.tag =(int)projectNode;
+         projectNode.row.tag =(int64)projectNode;
             
          projectNode.row.SetData(null, projectNode);
          fileList.currentRow = projectNode.row;

@@ -168,7 +168,7 @@ public:
    property bool checkable { set { checkable = value; } };
    property bool isRadio { set { radio = value; } };
 
-   property uint id { set { id = value; } get { return id; } };
+   property uint64 id { set { id = value; } get { return id; } };
    property BitmapResource bitmap
    {
       set
@@ -210,7 +210,7 @@ private:
    bool isDivider;
    bool placement;
 
-   uint id;
+   uint64 id;
    Key hotKey;
    Key accelerator;
    char * text;
@@ -402,7 +402,7 @@ public:
       }
    }
    
-   MenuItem FindItem(bool (* Window::notifySelect)(MenuItem selection, Modifiers mods), uint id)
+   MenuItem FindItem(bool (* Window::notifySelect)(MenuItem selection, Modifiers mods), uint64 id)
    {
       ItemPtr ptr;
       

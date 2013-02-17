@@ -460,7 +460,7 @@ class CompilersTab : GlobalSettingsSubTab
             String msg = PrintString($"Are you sure you wish to delete the ", compilerToDelete.name, $" compiler configuration?");
             if(MessageBox { type = okCancel, text = title, contents = msg }.Modal() == ok)
             {
-               SelectorButton button = compilerSelector.FindButtonByID((int)compilerToDelete);
+               SelectorButton button = compilerSelector.FindButtonByID((int64)compilerToDelete);
                if(button)
                   compilerSelector.RemoveButton(button);
                //DeleteCompiler(compilerToDelete);
@@ -485,7 +485,7 @@ class CompilersTab : GlobalSettingsSubTab
       {
          SelectorButton button
          {
-            compilerSelector, master = this, text = compiler.name, id = (int)compiler;
+            compilerSelector, master = this, text = compiler.name, id = (int64)compiler;
             NotifyClicked = CompilerClicked;
          };
          selectButton = button;
@@ -494,7 +494,7 @@ class CompilersTab : GlobalSettingsSubTab
       {
          EditableSelectorButton button
          {
-            compilerSelector, master = this, renameable = true, text = compiler.name, id = (int)compiler;
+            compilerSelector, master = this, renameable = true, text = compiler.name, id = (int64)compiler;
             NotifyClicked = CompilerClicked;
 
             bool OnRename(EditableSelectorButton button, char ** oldName, char ** newName)

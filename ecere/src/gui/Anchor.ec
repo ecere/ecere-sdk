@@ -281,7 +281,7 @@ private class AnchorButton : Button
       Anchor anchor = anchorDropBox.anchorValue;
       Window control = anchorDropBox.control;
       DataBox dropMaster = (DataBox)anchorDropBox.master;
-      int id = button.id;
+      int64 id = button.id;
 
       switch(id)
       {
@@ -403,7 +403,7 @@ private class AnchorRelButton : Button
       Anchor anchor = anchorDropBox.anchorValue;
       Window control = anchorDropBox.control;
       DataBox dropMaster = (DataBox)anchorDropBox.master;
-      int id = button.id;
+      int64 id = button.id;
 
       if((id == 0 || id == 2) && ((!anchor.left.type && !anchor.right.type) || anchor.left.type == middleRelative))
       {

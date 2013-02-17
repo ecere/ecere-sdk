@@ -111,7 +111,7 @@ class ThreadsView : Window
 
    bool MenuEditFind(MenuItem selection, Modifiers mods)
    {
-      int id = selection.id;
+      int64 id = selection.id;
       char * searchString = findDialog.searchString;
       if(id != 2 && searchString[0])
       {

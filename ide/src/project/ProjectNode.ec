@@ -1406,7 +1406,7 @@ private:
 
    void GenMakefilePrintSymbolRules(File f, Project project,
          ProjectConfig prjConfig, //Map<Platform, bool> parentExcludedPlatforms,
-         Map<int, int> nodeCFlagsMapping, Map<int, int> nodeECFlagsMapping)
+         Map<intptr, int> nodeCFlagsMapping, Map<intptr, int> nodeECFlagsMapping)
    {
       int ifCount = 0;
       Array<Platform> platforms = GetPlatformsArrayFromExclusionInfo(prjConfig);
@@ -1554,7 +1554,7 @@ private:
 
    void GenMakefilePrintPrepecsRules(File f, Project project,
          ProjectConfig prjConfig, /*Map<Platform, bool> parentExcludedPlatforms,*/
-         Map<int, int> nodeCFlagsMapping, Map<int, int> nodeECFlagsMapping)
+         Map<intptr, int> nodeCFlagsMapping, Map<intptr, int> nodeECFlagsMapping)
    {
       int ifCount = 0;
       ProjectConfig config = GetMatchingNodeConfig(prjConfig);
@@ -1631,7 +1631,7 @@ private:
 
    void GenMakefilePrintCObjectRules(File f, Project project,
       ProjectConfig prjConfig, /*Map<Platform, bool> parentExcludedPlatforms,*/
-      Map<int, int> nodeCFlagsMapping, Map<int, int> nodeECFlagsMapping)
+      Map<intptr, int> nodeCFlagsMapping, Map<intptr, int> nodeECFlagsMapping)
    {
       int ifCount = 0;
       ProjectConfig config = GetMatchingNodeConfig(prjConfig);
@@ -1789,7 +1789,7 @@ private:
       Map<String, NameCollisionInfo> namesInfo,
       ProjectConfig prjConfig,
       //Map<Platform, bool> parentExcludedPlatforms,
-      Map<int, int> nodeCFlagsMapping, Map<int, int> nodeECFlagsMapping)
+      Map<intptr, int> nodeCFlagsMapping, Map<intptr, int> nodeECFlagsMapping)
    {
       int ifCount = 0;
       ProjectConfig config = GetMatchingNodeConfig(prjConfig);
@@ -2041,8 +2041,8 @@ private:
    }
 
    void GenMakeCollectAssignNodeFlags(ProjectConfig prjConfig, bool prjWithEcFiles,
-         Map<String, int> cflagsVariations, Map<int, int> nodeCFlagsMapping,
-         Map<String, int> ecflagsVariations, Map<int, int> nodeECFlagsMapping,
+         Map<String, int> cflagsVariations, Map<intptr, int> nodeCFlagsMapping,
+         Map<String, int> ecflagsVariations, Map<intptr, int> nodeECFlagsMapping,
          Map<Platform, ProjectOptions> parentByPlatformOptions)
    {
       Map<Platform, ProjectOptions> byPlatformOptions = parentByPlatformOptions;
@@ -2174,8 +2174,8 @@ private:
             {
                if(isEqual)
                {
-                  nodeCFlagsMapping[(int)this] = nodeCFlagsMapping[(int)parent];
-                  nodeECFlagsMapping[(int)this] = nodeECFlagsMapping[(int)parent];
+                  nodeCFlagsMapping[(intptr)this] = nodeCFlagsMapping[(intptr)parent];
+                  nodeECFlagsMapping[(intptr)this] = nodeECFlagsMapping[(intptr)parent];
                }
                else
                {
@@ -2185,12 +2185,12 @@ private:
                   variationNum = 1;
                   if((s = cflags) && s[0] && !(variationNum = cflagsVariations[s]))
                      cflagsVariations[s] = variationNum = cflagsVariations.count;
-                  nodeCFlagsMapping[(int)this] = variationNum;
+                  nodeCFlagsMapping[(intptr)this] = variationNum;
 
                   variationNum = 1;
                   if((s = ecflags) && s[0] && !(variationNum = ecflagsVariations[s]))
                      ecflagsVariations[s] = variationNum = ecflagsVariations.count;
-                  nodeECFlagsMapping[(int)this] = variationNum;
+                  nodeECFlagsMapping[(intptr)this] = variationNum;
                }
             }
 
@@ -2201,8 +2201,8 @@ private:
          {
             // output
             {
-               nodeCFlagsMapping[(int)this] = nodeCFlagsMapping[(int)parent];
-               nodeECFlagsMapping[(int)this] = nodeECFlagsMapping[(int)parent];
+               nodeCFlagsMapping[(intptr)this] = nodeCFlagsMapping[(intptr)parent];
+               nodeECFlagsMapping[(intptr)this] = nodeECFlagsMapping[(intptr)parent];
             }
          }
 
@@ -2846,20 +2846,20 @@ static void RemovePlatformsCommonStrings(Map<String, bool> common, Array<String>
    }
 }
 
-static void GenMakePrintNodeFlagsVariable(ProjectNode node, Map<int, int> nodeFlagsMapping, String variableName, File f)
+static void GenMakePrintNodeFlagsVariable(ProjectNode node, Map<intptr, int> nodeFlagsMapping, String variableName, File f)
 {
    int customFlags;
-   customFlags = nodeFlagsMapping[(int)node];
+   customFlags = nodeFlagsMapping[(intptr)node];
    if(customFlags > 1)
       f.Printf(" $(CUSTOM%d_%s)", customFlags-1, variableName);
    else
       f.Printf(" $(%s)", variableName);
 }
 
-static void DynStringPrintNodeFlagsVariable(ProjectNode node, Map<int, int> nodeFlagsMapping, String variableName, DynamicString s)
+static void DynStringPrintNodeFlagsVariable(ProjectNode node, Map<intptr, int> nodeFlagsMapping, String variableName, DynamicString s)
 {
    int customFlags;
-   customFlags = nodeFlagsMapping[(int)node];
+   customFlags = nodeFlagsMapping[(intptr)node];
    if(customFlags > 1)
       s.concatf(" $(CUSTOM%d_%s)", customFlags-1, variableName);
    else

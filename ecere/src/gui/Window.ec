@@ -44,7 +44,7 @@ define statusBarHeight = 18;
 
 default extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown;
 
-public enum DialogResult { cancel, yes, no, ok };
+public enum DialogResult : int64 { cancel, yes, no, ok };
 
 public class MouseButtons
 {
@@ -5303,7 +5303,7 @@ private:
       return result;
    }
 
-   bool DestroyEx(int returnCode)
+   bool DestroyEx(int64 returnCode)
    {
       OldLink slave;
       Timer timer, nextTimer;
@@ -5797,7 +5797,7 @@ private:
          if(child.cycle && !child.style.nonClient && child.style.isActiveClient && child.visible)
          {
             DataRow row = listBox.AddRow();
-            row.tag = (int)child;
+            row.tag = (int64)child;
             child.FigureCaption(caption);
             row.SetData(null, caption);
          }
@@ -6385,7 +6385,7 @@ public:
       return result;
    }
 
-   bool Destroy(int code)
+   bool Destroy(int64 code)
    {
       //if(created)
       if(this)
@@ -7486,7 +7486,7 @@ public:
    bool MenuWindowSelectWindow(MenuItem selection, Modifiers mods)
    {
       Window document;
-      int id = selection.id;
+      int64 id = selection.id;
       OldLink cycle = activeClient.cycle;
       int c = 0;
       //for(c = 0, cycle = activeChild.cycle; c<id; cycle = cycle.next, c++);
@@ -9141,7 +9141,7 @@ public:
       get { return fileName; }
    };
 
-   property int id
+   property int64 id
    {
       property_category $"Data"
       set { id = value; }
@@ -9375,7 +9375,7 @@ private:
    int numPositions;
    Menu menu;
    ScrollFlags scrollFlags;// Window Scrollbar Flags
-   int id;                 // Control ID
+   int64 id;                 // Control ID
    int documentID;
    ColorAlpha background;  // Background color used to draw the window area
    Color foreground;

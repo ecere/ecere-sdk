@@ -87,7 +87,7 @@ public:
       button.Destroy(0);
    }
 
-   SelectorButton FindButtonByID(int id)
+   SelectorButton FindButtonByID(int64 id)
    {
       SelectorButton button = null;
       Iterator<Window> it { controls };

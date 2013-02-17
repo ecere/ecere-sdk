@@ -202,7 +202,7 @@ class BreakpointsView : Window
    {
       char string[32];
       DataRow row = listBox.AddRow();
-      row.tag = (int)bp;
+      row.tag = (int64)bp;
       bp.row = row;
       UpdateBreakpoint(row);
       ide.callStackView.Update(null);
