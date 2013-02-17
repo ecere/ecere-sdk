@@ -115,7 +115,7 @@ class ThreadsView : Window
       char * searchString = findDialog.searchString;
       if(id != 2 && searchString[0])
       {
-         editBox.Find(searchString, findDialog.wholeWord, findDialog.matchCase, id);
+         editBox.Find(searchString, findDialog.wholeWord, findDialog.matchCase, (bool)id);
          return true;
       }
       findDialog.Create();

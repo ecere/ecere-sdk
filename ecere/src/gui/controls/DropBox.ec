@@ -374,7 +374,7 @@ public:
       }
    }
 
-   DataRow FindRow(int tag)
+   DataRow FindRow(int64 tag)
    {
       if(this)
       {
