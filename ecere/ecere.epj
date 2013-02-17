@@ -494,39 +494,9 @@
                   "Time.ec",
                   "unicode.ec",
                   "units.ec",
-                  {
-                     "FileName" : "File.c",
-                     "Configurations" : [
-                        {
-                           "Name" : "Bootstrap",
-                           "Options" : {
-                              "ExcludeFromBuild" : false
-                           }
-                        }
-                     ]
-                  },
-                  {
-                     "FileName" : "DualPipe.c",
-                     "Configurations" : [
-                        {
-                           "Name" : "Bootstrap",
-                           "Options" : {
-                              "ExcludeFromBuild" : false
-                           }
-                        }
-                     ]
-                  },
-                  {
-                     "FileName" : "System.c",
-                     "Configurations" : [
-                        {
-                           "Name" : "Bootstrap",
-                           "Options" : {
-                              "ExcludeFromBuild" : false
-                           }
-                        }
-                     ]
-                  },
+                  "File.c",
+                  "DualPipe.c",
+                  "System.c",
                   {
                      "FileName" : "i18n.ec",
                      "Options" : {
@@ -2039,7 +2009,17 @@
                   },
                   "String.ec",
                   "OldList.ec",
-                  "instance.c"
+                  {
+                     "FileName" : "instance.c",
+                     "Configurations" : [
+                        {
+                           "Name" : "Bootstrap",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  }
                ],
                "Options" : {
                   "PreprocessorDefinitions" : [

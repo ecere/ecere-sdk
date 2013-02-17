@@ -2238,7 +2238,7 @@ typedef __builtin_va_list __gnuc_va_list;
 
 typedef __gnuc_va_list va_list;
 
-typedef unsigned int size_t;
+typedef uintptr_t size_t;
 
 void exit(int status);
 

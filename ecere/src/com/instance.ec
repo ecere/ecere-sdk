@@ -2569,6 +2569,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
             else if(!strcmp(name, "ecere::sys::NamedItem"))       size = 0;
             else if(!strcmp(name, "ecere::sys::NamedItem64"))     size = 0;
             else if(!strcmp(name, "ecere::sys::BinaryTree"))      size = 0;
+            else if(!strcmp(name, "ecere::sys::FileListing"))     size = 3*8;
          }
          if(type == structClass)
          {

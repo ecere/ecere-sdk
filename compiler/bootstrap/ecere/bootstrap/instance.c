@@ -251,7 +251,7 @@ struct __ecereNameSpace__ecere__com__Method * method;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassTemplateArgument;
 
-typedef unsigned int size_t;
+typedef uintptr_t size_t;
 
 void exit(int status);
 
@@ -1786,6 +1786,8 @@ else if(!strcmp(name, "ecere::sys::NamedItem64"))
 size = 0;
 else if(!strcmp(name, "ecere::sys::BinaryTree"))
 size = 0;
+else if(!strcmp(name, "ecere::sys::FileListing"))
+size = 3 * 8;
 }
 if(type == 1)
 {

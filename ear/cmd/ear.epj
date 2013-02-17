@@ -4,8 +4,6 @@
    "Options" : {
       "TargetType" : "Executable",
       "TargetFileName" : "ear",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "Libraries" : [
          "ecere"
       ],
