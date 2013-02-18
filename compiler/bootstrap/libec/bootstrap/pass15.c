@@ -13197,7 +13197,14 @@ if(exp->call.exp->type == 0)
 struct Expression * idExp = exp->call.exp;
 struct Identifier * id = idExp->identifier;
 
-if(!strcmp(id->string, "__ENDIAN_PAD"))
+if(!strcmp(id->string, "__builtin_frame_address"))
+{
+exp->expType = ProcessTypeString("void *", 0x1);
+if(exp->call.arguments && (*exp->call.arguments).first)
+ProcessExpressionType((*exp->call.arguments).first);
+break;
+}
+else if(!strcmp(id->string, "__ENDIAN_PAD"))
 {
 exp->expType = ProcessTypeString("int", 0x1);
 if(exp->call.arguments && (*exp->call.arguments).first)

@@ -8574,7 +8574,14 @@ void ProcessExpressionType(Expression exp)
          {
             Expression idExp = exp.call.exp;
             Identifier id = idExp.identifier;
-            if(!strcmp(id.string, "__ENDIAN_PAD"))
+            if(!strcmp(id.string, "__builtin_frame_address"))
+            {
+               exp.expType = ProcessTypeString("void *", true);
+               if(exp.call.arguments && exp.call.arguments->first)
+                  ProcessExpressionType(exp.call.arguments->first);
+               break;
+            }
+            else if(!strcmp(id.string, "__ENDIAN_PAD"))
             {
                exp.expType = ProcessTypeString("int", true);
                if(exp.call.arguments && exp.call.arguments->first)
