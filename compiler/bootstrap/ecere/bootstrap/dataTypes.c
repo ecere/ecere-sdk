@@ -288,8 +288,6 @@ int __ecereVMethodID_class_OnSaveEdit;
 
 int __ecereVMethodID_class_OnEdit;
 
-int __ecereVMethodID_class_OnDisplay;
-
 int __ecereVMethodID_class_OnGetDataFromString;
 
 static void __ecereNameSpace__ecere__com__UnusedFunction()
@@ -301,8 +299,7 @@ int a;
 ((void (*)(struct __ecereNameSpace__ecere__com__Class *, void *, void * newData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCopy])(__ecereClass_int, &a, (((void *)0)));
 ((int (*)(struct __ecereNameSpace__ecere__com__Class *, void *, void * object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCompare])(__ecereClass_int, &a, (((void *)0)));
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, void *, struct __ecereNameSpace__ecere__com__Instance * window, void *  object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnSaveEdit])(__ecereClass_int, &a, (((void *)0)), 0);
-((struct __ecereNameSpace__ecere__com__Instance * (*)(struct __ecereNameSpace__ecere__com__Class *, void *, struct __ecereNameSpace__ecere__com__Instance * dataBox, struct __ecereNameSpace__ecere__com__Instance * obsolete, int x, int y, int w, int h, void *  userData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnEdit])(__ecereClass_int, &a, (((void *)0)), (((void *)0)), 0, 0, 0, 0, 0);
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, void *, struct __ecereNameSpace__ecere__com__Instance * surface, int x, int y, int width, void *  fieldData, struct __ecereNameSpace__ecere__com__Instance * alignment, struct __ecereNameSpace__ecere__com__Instance * displayFlags))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnDisplay])(__ecereClass_int, &a, (((void *)0)), 0, 0, 0, 0, (((void *)0)), (((void *)0)));
+((struct __ecereNameSpace__ecere__com__Instance * (*)(struct __ecereNameSpace__ecere__com__Class *, void *, struct __ecereNameSpace__ecere__com__Instance * dataBox, struct __ecereNameSpace__ecere__com__Instance * obsolete, int x, int y, int w, int h, void *  userData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnEdit])(__ecereClass_int, &a, (((void *)0)), (((void *)0)), 0, 0, 0, 20, 0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, void *, char *  string))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(__ecereClass_int, &a, (((void *)0)));
 }
 
@@ -559,7 +556,7 @@ if(!memberType)
 memberType = member->dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int");
 if(memberType->type == 1 || memberType->type == 0 || memberType->type == 5)
 {
-memberResult = memberType->_vTbl[__ecereVMethodID_class_OnCompare](memberType, (unsigned char *)data1 + member->offset, (unsigned char *)data2 + member->offset);
+memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, (unsigned char *)data1 + member->offset, (unsigned char *)data2 + member->offset);
 if(memberResult)
 return memberResult;
 }
@@ -569,7 +566,7 @@ struct __ecereNameSpace__ecere__com__DataValue value1, value2;
 
 value1.i = *(int *)((unsigned char *)data1 + member->offset);
 value2.i = *(int *)((unsigned char *)data2 + member->offset);
-memberResult = memberType->_vTbl[__ecereVMethodID_class_OnCompare](memberType, &value1, &value2);
+memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, &value1, &value2);
 if(memberResult)
 return memberResult;
 }
@@ -629,10 +626,10 @@ if(memberType->type == 1 || memberType->type == 0 || memberType->type == 5)
 {
 if(!strcmp(memberType->dataTypeString, "char *"))
 {
-char * a = ((char * (*)())(void *)prop->Get)(data1);
-char * b = ((char * (*)())(void *)prop->Get)(data2);
+char * a = ((char * (*)(void *))(void *)prop->Get)(data1);
+char * b = ((char * (*)(void *))(void *)prop->Get)(data2);
 
-memberResult = memberType->_vTbl[__ecereVMethodID_class_OnCompare](memberType, a, b);
+memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, a, b);
 }
 }
 else
@@ -641,15 +638,15 @@ struct __ecereNameSpace__ecere__com__DataValue value1, value2;
 
 if(!strcmp(memberType->dataTypeString, "float"))
 {
-value1.f = ((float (*)())(void *)prop->Get)(data1);
-value2.f = ((float (*)())(void *)prop->Get)(data2);
+value1.f = ((float (*)(void *))(void *)prop->Get)(data1);
+value2.f = ((float (*)(void *))(void *)prop->Get)(data2);
 }
 else
 {
-value1.i = prop->Get(data1);
-value2.i = prop->Get(data2);
+value1.i = ((int (*)(void *))(void *)prop->Get)(data1);
+value2.i = ((int (*)(void *))(void *)prop->Get)(data2);
 }
-memberResult = memberType->_vTbl[__ecereVMethodID_class_OnCompare](memberType, &value1, &value2);
+memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, &value1, &value2);
 }
 }
 }
@@ -659,11 +656,11 @@ if(memberType->type == 1 || memberType->type == 0 || memberType->type == 5)
 {
 if(memberType->type == 0 || memberType->type == 5)
 {
-memberResult = memberType->_vTbl[__ecereVMethodID_class_OnCompare](memberType, *(void **)((unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset)), *(void **)((unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset)));
+memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, *(void **)((unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset)), *(void **)((unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset)));
 }
 else
 {
-memberResult = memberType->_vTbl[__ecereVMethodID_class_OnCompare](memberType, (unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset), (unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
+memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, (unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset), (unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
 }
 }
 else
@@ -680,7 +677,7 @@ else
 value1.i = *(int *)((unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
 value2.i = *(int *)((unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
 }
-memberResult = memberType->_vTbl[__ecereVMethodID_class_OnCompare](memberType, &value1, &value2);
+memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, &value1, &value2);
 }
 }
 }
@@ -706,7 +703,7 @@ else if(_class->type == 3)
 {
 struct __ecereNameSpace__ecere__com__Class * dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, _class->dataTypeString);
 
-return dataType->_vTbl[__ecereVMethodID_class_OnCompare](dataType, data1, data2);
+return ((int (*)(void *, void *, void *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnCompare])(dataType, data1, data2);
 }
 else
 {
@@ -998,7 +995,7 @@ else if(_class->type == 3)
 {
 struct __ecereNameSpace__ecere__com__Class * dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, _class->dataTypeString);
 
-return (unsigned int)dataType->_vTbl[__ecereVMethodID_class_OnGetDataFromString](dataType, data, string);
+return ((unsigned int (*)(void *, void *, const char *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(dataType, data, string);
 }
 else if(!string[0] && _class->type == 0)
 {
@@ -1161,7 +1158,7 @@ if(memberType->type == 1)
 {
 if(thisMember)
 {
-if(!memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString](memberType, (unsigned char *)data + (((thisMember->_class->type == 0) ? thisMember->_class->offset : 0) + memberOffset), memberString))
+if(!((unsigned int (*)(void *, void *, const char *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, (unsigned char *)data + (((thisMember->_class->type == 0) ? thisMember->_class->offset : 0) + memberOffset), memberString))
 result = 0x0;
 }
 }
@@ -1177,7 +1174,7 @@ if(memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString] == _class->_vTb
 if(!__ecereNameSpace__ecere__com__OnGetDataFromString(memberType, &value, memberString))
 result = 0x0;
 }
-else if(!memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString](memberType, &value, memberString))
+else if(!((unsigned int (*)(void *, void *, const char *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, &value, memberString))
 result = 0x0;
 if(thisMember && !thisMember->isProperty)
 {
@@ -1210,7 +1207,7 @@ if(_class->type == 3 || _class->type == 2 || _class->type == 4)
 struct __ecereNameSpace__ecere__com__Class * dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, _class->dataTypeString);
 
 if(dataType)
-dataType->_vTbl[__ecereVMethodID_class_OnCopy](dataType, data, newData);
+((void (*)(void *, void *, void *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnCopy])(dataType, data, newData);
 }
 else if(_class->type != 1 && _class->type != 1000)
 {
@@ -1239,14 +1236,14 @@ if(!memberType)
 memberType = member->dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int");
 if(memberType->type == 1 || memberType->type == 0 || memberType->type == 5)
 {
-memberType->_vTbl[__ecereVMethodID_class_OnSerialize](memberType, (unsigned char *)data + member->offset, channel);
+((void (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnSerialize])(memberType, (unsigned char *)data + member->offset, channel);
 }
 else
 {
 struct __ecereNameSpace__ecere__com__DataValue value;
 
 value.i = *(int *)((unsigned char *)data + member->offset);
-memberType->_vTbl[__ecereVMethodID_class_OnSerialize](memberType, &value);
+((void (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnSerialize])(memberType, &value, channel);
 }
 }
 else
@@ -1266,7 +1263,7 @@ if(_class->type == 3 || _class->type == 2 || _class->type == 4)
 struct __ecereNameSpace__ecere__com__Class * dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, _class->dataTypeString);
 
 if(dataType)
-dataType->_vTbl[__ecereVMethodID_class_OnSerialize](dataType, data, channel);
+((void (*)(void *, void *, void *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnSerialize])(dataType, data, channel);
 }
 else if(_class->type == 0 || _class->type == 5 || _class->type == 1)
 {
@@ -1297,10 +1294,10 @@ else
 {
 if(!strcmp(memberType->name, "String") || memberType->type == 0 || memberType->type == 5)
 {
-memberType->_vTbl[__ecereVMethodID_class_OnSerialize](memberType, data ? (*(void **)((unsigned char *)data + member->_class->offset + member->offset)) : (((void *)0)), channel);
+((void (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnSerialize])(memberType, data ? (*(void **)((unsigned char *)data + member->_class->offset + member->offset)) : (((void *)0)), channel);
 }
 else
-memberType->_vTbl[__ecereVMethodID_class_OnSerialize](memberType, data ? (((unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset))) : (((void *)0)), channel);
+((void (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnSerialize])(memberType, data ? (((unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset))) : (((void *)0)), channel);
 }
 }
 else
@@ -1334,13 +1331,13 @@ if(!memberType)
 memberType = member->dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int");
 if(memberType->type == 1 || memberType->type == 0 || memberType->type == 5)
 {
-memberType->_vTbl[__ecereVMethodID_class_OnUnserialize](memberType, (unsigned char *)data + member->offset, channel);
+((void (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnUnserialize])(memberType, (unsigned char *)data + member->offset, channel);
 }
 else
 {
 struct __ecereNameSpace__ecere__com__DataValue value;
 
-memberType->_vTbl[__ecereVMethodID_class_OnUnserialize](memberType, &value, channel);
+((void (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnUnserialize])(memberType, &value, channel);
 *(int *)((unsigned char *)data + member->offset) = value.i;
 }
 }
@@ -1361,7 +1358,7 @@ if(_class->type == 3 || _class->type == 2 || _class->type == 4)
 struct __ecereNameSpace__ecere__com__Class * dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, _class->dataTypeString);
 
 if(dataType)
-dataType->_vTbl[__ecereVMethodID_class_OnUnserialize](dataType, data, channel);
+((void (*)(void *, void *, void *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnUnserialize])(dataType, data, channel);
 }
 else if(_class->type == 0 || _class->type == 5 || _class->type == 1)
 {
@@ -1398,7 +1395,7 @@ if(member->isProperty)
 {
 }
 else
-memberType->_vTbl[__ecereVMethodID_class_OnUnserialize](memberType, (unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset), channel);
+((void (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnUnserialize])(memberType, (unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset), channel);
 }
 else
 {

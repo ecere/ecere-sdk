@@ -479,10 +479,10 @@ struct __ecereNameSpace__ecere__com__Class * Tclass = ((struct __ecereNameSpace_
 
 if(Tclass->type == 1000 || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3)
 {
-Tclass->_vTbl[__ecereVMethodID_class_OnCopy](Tclass, (((unsigned char *)&newNode->key) + __ENDIAN_PAD(Tclass->typeSize)), (((unsigned char *)&newNode->key) + __ENDIAN_PAD(Tclass->typeSize)));
+((void (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCopy])(Tclass, (((unsigned char *)&newNode->key) + __ENDIAN_PAD(Tclass->typeSize)), (((unsigned char *)&newNode->key) + __ENDIAN_PAD(Tclass->typeSize)));
 }
 else
-Tclass->_vTbl[__ecereVMethodID_class_OnCopy](Tclass, (((unsigned char *)&newNode->key) + __ENDIAN_PAD(sizeof(void *))), (void *)(uint64)(__ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(newNode)));
+((void (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCopy])(Tclass, (((unsigned char *)&newNode->key) + __ENDIAN_PAD(sizeof(void *))), (void *)(uint64)(__ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(newNode)));
 ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__ecereClass___ecereNameSpace__ecere__com__CustomAVLTree->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(this, (uint64)newNode);
 return newNode;
 }
@@ -505,7 +505,7 @@ if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->temp
 {
 struct __ecereNameSpace__ecere__com__Class * Tclass = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass;
 
-Tclass->_vTbl[__ecereVMethodID_class_OnFree](Tclass, (((unsigned char *)&node->key) + __ENDIAN_PAD(sizeof(void *))));
+((void (*)(void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnFree])(Tclass, (((unsigned char *)&node->key) + __ENDIAN_PAD(sizeof(void *))));
 }
 else
 (((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(node)), __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_key(node, 0));
@@ -563,10 +563,10 @@ node = (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(32), __ecerePr
 }
 if(Tclass->type == 1000 || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3)
 {
-Tclass->_vTbl[__ecereVMethodID_class_OnCopy](Tclass, (((unsigned char *)&node->key) + __ENDIAN_PAD(Tclass->typeSize)), (((unsigned char *)&pos) + __ENDIAN_PAD(Tclass->typeSize)));
+((void (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCopy])(Tclass, (((unsigned char *)&node->key) + __ENDIAN_PAD(Tclass->typeSize)), (((unsigned char *)&pos) + __ENDIAN_PAD(Tclass->typeSize)));
 }
 else
-Tclass->_vTbl[__ecereVMethodID_class_OnCopy](Tclass, (((unsigned char *)&node->key) + __ENDIAN_PAD(sizeof(void *))), (void *)pos);
+((void (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCopy])(Tclass, (((unsigned char *)&node->key) + __ENDIAN_PAD(sizeof(void *))), (void *)pos);
 ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__ecereClass___ecereNameSpace__ecere__com__CustomAVLTree->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(this, (uint64)node);
 }
 return node;

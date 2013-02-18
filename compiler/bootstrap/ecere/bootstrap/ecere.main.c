@@ -277,8 +277,6 @@ int __ecereVMethodID_class_OnCompare;
 
 int __ecereVMethodID_class_OnCopy;
 
-int __ecereVMethodID_class_OnDisplay;
-
 int __ecereVMethodID_class_OnEdit;
 
 int __ecereVMethodID_class_OnFree;
@@ -724,9 +722,6 @@ __ecereVMethodID_class_OnCompare = method->vid;
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "OnCopy", module);
 if(method)
 __ecereVMethodID_class_OnCopy = method->vid;
-method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "OnDisplay", module);
-if(method)
-__ecereVMethodID_class_OnDisplay = method->vid;
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "OnEdit", module);
 if(method)
 __ecereVMethodID_class_OnEdit = method->vid;

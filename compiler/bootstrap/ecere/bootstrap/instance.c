@@ -2598,7 +2598,7 @@ if(!expClass)
 expClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + 12)))->application, curParam->dataTypeString);
 if(expClass)
 {
-expClass->_vTbl[__ecereVMethodID_class_OnGetDataFromString](expClass, &argument.expression, value);
+((unsigned int (*)(void *, void *, const char *))(void *)expClass->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(expClass, &argument.expression, value);
 }
 else if(value[0] == '\"')
 {
