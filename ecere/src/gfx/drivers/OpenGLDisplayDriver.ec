@@ -1043,7 +1043,7 @@ class OGLSystem : struct
 #else
    XVisualInfo * visualInfo;
    GLXContext glContext;
-   uint glxDrawable;
+   GLXDrawable glxDrawable;
 #endif
    bool loadingFont;
 };
@@ -1098,7 +1098,7 @@ class OpenGLDisplayDriver : DisplayDriver
       //if(previous) return true;
       // printf("Making SYSTEM current\n");
 #if !defined(__ANDROID__)
-      glXMakeCurrent(xGlobalDisplay, (uint)oglSystem.glxDrawable, oglSystem.glContext);
+      glXMakeCurrent(xGlobalDisplay, (GLXDrawable)oglSystem.glxDrawable, oglSystem.glContext);
 #endif
       //previous = oglSystem.glContext;
    #endif
@@ -1457,7 +1457,7 @@ class OpenGLDisplayDriver : DisplayDriver
          XVisualInfo template = { 0 };
          XWindowAttributes winAttr;
          int n;
-         XGetWindowAttributes(xGlobalDisplay, (uint)display.window, &winAttr);
+         XGetWindowAttributes(xGlobalDisplay, (X11Window)display.window, &winAttr);
          template.visualid = XVisualIDFromVisual(winAttr.visual);
          visualInfo = XGetVisualInfo(xGlobalDisplay, VisualIDMask, &template, &n);
 #ifdef _DEBUG
@@ -2013,7 +2013,7 @@ class OpenGLDisplayDriver : DisplayDriver
             XRenderComposite(xGlobalDisplay, PictOpSrc, oglDisplay.pixmapPicture, None, oglDisplay.shapePicture, 0, 0, 0, 0, 0, 0, display.width, display.height);
             XRenderComposite(xGlobalDisplay, PictOpSrc, oglDisplay.pixmapPicture, None, oglDisplay.windowPicture, 0, 0, 0, 0, 0, 0, display.width, display.height);
             #if !defined(__APPLE__) && !defined(__OLDX__)
-            XShapeCombineMask(xGlobalDisplay, (uint)display.window, ShapeInput, 0, 0, oglDisplay.shapePixmap, ShapeSet);
+            XShapeCombineMask(xGlobalDisplay, (X11Window)display.window, ShapeInput, 0, 0, oglDisplay.shapePixmap, ShapeSet);
             #else
             XShapeCombineMask(xGlobalDisplay, display.window, 2, 0, 0, oglDisplay.shapePixmap, ShapeSet);
             #endif

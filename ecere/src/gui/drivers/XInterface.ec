@@ -2058,7 +2058,7 @@ class XInterface : Interface
       }
       if(!visualInfo)
       {
-         long attrList[] = 
+         int attrList[] = 
          {
             GLX_USE_GL, GLX_DEPTH_SIZE, 1,
             GLX_RGBA, 
