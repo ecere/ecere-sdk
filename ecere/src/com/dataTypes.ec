@@ -62,8 +62,8 @@ static void UnusedFunction()
    a.OnCopy(null);
    a.OnCompare(null);
    a.OnSaveEdit(null,0);
-   a.OnEdit(null,null,0,0,0,0,0);
-   a.OnDisplay(null,0,0,0,0,null,null);
+   a.OnEdit(null,null,0,0,0,20,0);
+   a.OnDisplay(null,0,0,0,0,0,0);
    a.OnGetDataFromString(null);
 }
 
@@ -253,7 +253,7 @@ static int DataMember_OnCompare(DataMember parentMember, void * data1, void * da
 
          if(memberType.type == structClass || memberType.type == normalClass || memberType.type == noHeadClass)
          {
-            memberResult = memberType._vTbl[__ecereVMethodID_class_OnCompare](memberType, 
+            memberResult = ((int (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCompare])(memberType, 
                (byte *)data1 + member.offset, 
                (byte *)data2 + member.offset);
             if(memberResult)
@@ -264,7 +264,7 @@ static int DataMember_OnCompare(DataMember parentMember, void * data1, void * da
             DataValue value1, value2;
             value1.i = *(int *)((byte *)data1 + member.offset);
             value2.i = *(int *)((byte *)data2 + member.offset);
-            memberResult = memberType._vTbl[__ecereVMethodID_class_OnCompare](memberType, &value1, &value2);
+            memberResult = ((int (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCompare])(memberType, &value1, &value2);
             if(memberResult)
                return memberResult;
          }
@@ -326,9 +326,9 @@ static int OnCompare(Class _class, void * data1, void * data2)
                            {
                               if(!strcmp(memberType.dataTypeString, "char *"))
                               {
-                                 String a = ((String(*)())(void *)prop.Get)(data1);
-                                 String b = ((String(*)())(void *)prop.Get)(data2);
-                                 memberResult = memberType._vTbl[__ecereVMethodID_class_OnCompare](memberType, a, b);
+                                 String a = ((String(*)(void *))(void *)prop.Get)(data1);
+                                 String b = ((String(*)(void *))(void *)prop.Get)(data2);
+                                 memberResult = ((int (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCompare])(memberType, a, b);
                               }
                            }
                            else
@@ -336,15 +336,15 @@ static int OnCompare(Class _class, void * data1, void * data2)
                               DataValue value1, value2;
                               if(!strcmp(memberType.dataTypeString, "float"))
                               {
-                                 value1.f = ((float(*)())(void *)prop.Get)(data1);
-                                 value2.f = ((float(*)())(void *)prop.Get)(data2);
+                                 value1.f = ((float(*)(void *))(void *)prop.Get)(data1);
+                                 value2.f = ((float(*)(void *))(void *)prop.Get)(data2);
                               }
                               else
                               {
-                                 value1.i = prop.Get(data1);
-                                 value2.i = prop.Get(data2);
+                                 value1.i = ((int(*)(void*))(void *)prop.Get)(data1);
+                                 value2.i = ((int(*)(void*))(void *)prop.Get)(data2);
                               }
-                              memberResult = memberType._vTbl[__ecereVMethodID_class_OnCompare](memberType, &value1, &value2);
+                              memberResult = ((int (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCompare])(memberType, &value1, &value2);
                            }
                         }
                      }
@@ -355,13 +355,13 @@ static int OnCompare(Class _class, void * data1, void * data2)
                            if(memberType.type == normalClass || memberType.type == noHeadClass)
                            {
                               // TESTING THIS!
-                              memberResult = memberType._vTbl[__ecereVMethodID_class_OnCompare](memberType, 
+                              memberResult = ((int (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCompare])(memberType, 
                                  *(void **)((byte *)data1 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset)), 
                                  *(void **)((byte *)data2 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset)));
                            }
                            else
                            {
-                              memberResult = memberType._vTbl[__ecereVMethodID_class_OnCompare](memberType, 
+                              memberResult = ((int (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCompare])(memberType, 
                                  (byte *)data1 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset), 
                                  (byte *)data2 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset));
                            }
@@ -379,7 +379,7 @@ static int OnCompare(Class _class, void * data1, void * data2)
                               value1.i = *(int *)((byte *)data1 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset));
                               value2.i = *(int *)((byte *)data2 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset));
                            }
-                           memberResult = memberType._vTbl[__ecereVMethodID_class_OnCompare](memberType, &value1, &value2);
+                           memberResult = ((int (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCompare])(memberType, &value1, &value2);
                         }
                      }
                   }
@@ -407,7 +407,7 @@ static int OnCompare(Class _class, void * data1, void * data2)
    else if(_class.type == unitClass)
    {
       Class dataType = eSystem_FindClass(module, _class.dataTypeString);
-      return dataType._vTbl[__ecereVMethodID_class_OnCompare](dataType, data1, data2);
+      return ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, data1, data2);
    }
    else
    {

@@ -171,7 +171,7 @@ public:
          for(i = GetFirst(); i; i = GetNext(i))
          {
             D data = GetData(i);
-            int result = Dclass._vTbl[__ecereVMethodID_class_OnCompare](Dclass, &value,&data);
+            int result = ((int (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare])(Dclass, &value,&data);
             if(!result)
                return i;
          }
@@ -181,7 +181,7 @@ public:
          for(i = GetFirst(); i; i = GetNext(i))
          {
             D data = GetData(i);
-            int result = Dclass._vTbl[__ecereVMethodID_class_OnCompare](Dclass, (void *)value, (void *)data);
+            int result = ((int (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare])(Dclass, (void *)value, (void *)data);
             if(!result)
                return i;
          }

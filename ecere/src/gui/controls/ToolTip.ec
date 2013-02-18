@@ -282,8 +282,13 @@ public class ToolButton : Button
          {
             MenuItem menuItem = this.menuItem;
             BitmapResource bmp;
+
             if(menuItem && (bmp = menuItem.bitmap))
-               bitmap = bmp;
+            {
+               //bitmap = bmp;
+               // We cannot reuse the same BitmapResource object here, as a BitmapResource is meant to be added with AddResource to a single Window
+               bitmap = { fileName = bmp.fileName, grayed = bmp.grayed, monochrome = bmp.monochrome, transparent = bmp.transparent, alphaBlend = bmp.alphaBlend, keepData = bmp.keepData };
+            }
          }
       }
    };
@@ -303,7 +308,7 @@ public:
    {
       get
       {
-         MenuItem menuItem = menuItemPtr ? *(MenuItem *)((byte *)master + (uint)menuItemPtr) : null;
+         MenuItem menuItem = menuItemPtr ? *(MenuItem *)((byte *)master + (uintptr)menuItemPtr) : null;
          return menuItem;
       }
    }

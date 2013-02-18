@@ -445,7 +445,7 @@ public:
                               {
                                  if(!strcmp(type.dataTypeString, "char *"))
                                  {
-                                    ((void (*)(void *, int))(void *)prop.Set)(*object, value.i);
+                                    ((void (*)(void *, void *))(void *)prop.Set)(*object, value.p);
                                     delete value.p;
                                  }
                                  // TOFIX: How to swiftly handle classes with base data type?

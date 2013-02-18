@@ -2852,7 +2852,14 @@ class XInterface : Interface
             bitmap.Convert(null, pixelFormat888, null);
             icon[0] = bitmap.width;
             icon[1] = bitmap.height;
-            memcpy(icon + 2, bitmap.picture, bitmap.width * bitmap.height * 4);
+            if(sizeof(long) != sizeof(uint32))
+            {
+               int c;
+               for(c = 0; c < bitmap.width * bitmap.height; c++)
+                  icon[c+2] = ((uint32 *)bitmap.picture)[c];
+            }
+            else
+               memcpy(icon + 2, bitmap.picture, bitmap.width * bitmap.height * sizeof(uint32));
             XChangeProperty(xGlobalDisplay, (X11Window)window.windowHandle, atoms[_net_wm_icon],
    			  XA_CARDINAL,32,PropModeReplace, (byte *)icon, 2+bitmap.width*bitmap.height);
            delete icon;

@@ -88,7 +88,7 @@ static void OnDisplay(Class _class, void * data, Surface surface, int x, int y, 
    int w, h;
 
    tempString[0] = '\0';
-   string = (char *)_class._vTbl[__ecereVMethodID_class_OnGetString](_class, data, tempString, fieldData, &needClass);
+   string = ((char * (*)(void *, void *, void *, void *, void *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, tempString, fieldData, &needClass);
    len = string ? strlen(string) : 0;
 
    //surface.TextOpacity(false);

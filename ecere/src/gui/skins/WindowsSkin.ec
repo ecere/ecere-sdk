@@ -593,7 +593,7 @@ public class WindowsSkin_Window : Window
 }
 
 
-#define PUREVTBL(c)     ((int (**)())*(void **)((byte *)class(c).data + sizeof(uintptr)))
+#define PUREVTBL(c)     (*(void ***)((byte *)class(c).data + sizeof(uintptr)))
 #define CAPTION_DISTANCE   18
 
 default:
@@ -614,7 +614,7 @@ public class WindowsSkin_Button : Button
    {
       if(isRadio)
       {
-         PUREVTBL(Button)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw](this, surface);
+         ((void (*)(Window, Surface))PUREVTBL(Button)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw])(this, surface);
          return;
       }
       // if(bevel)

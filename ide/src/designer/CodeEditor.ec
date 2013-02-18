@@ -3520,7 +3520,7 @@ class CodeEditor : Window
                   
                         prop.Set(test, dataForm);
                   
-                        string = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, dataForm, tempString, null, &needClass);
+                        string = ((char * (*)(void *, void *, void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, dataForm, tempString, null, &needClass);
                         
                         eClass_FindNextMember(_class, curClass, curMember, null, null);
                         if(*curMember != (DataMember)prop)
@@ -3585,7 +3585,7 @@ class CodeEditor : Window
                                  if(!object)
                                  {
                                     bool needClass = true;
-                                    string = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, dataForm, tempString, null, &needClass);
+                                    string = ((char * (*)(void *, void *, void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, dataForm, tempString, null, &needClass);
                                     f.Printf("%s", string);
                                  }
                               }
@@ -3594,7 +3594,7 @@ class CodeEditor : Window
                         else
                         {
                            bool needClass = true;
-                           string = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, dataForm, tempString, null, &needClass);
+                           string = ((char * (*)(void *, void *, void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, dataForm, tempString, null, &needClass);
 
                            if(!strcmp(dataType.dataTypeString, "char *"))
                            {
@@ -3644,7 +3644,7 @@ class CodeEditor : Window
                               }
                            }
                            else
-                              string = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, &dataForm, tempString, null, &needClass);
+                              string = ((char * (*)(void *, void *, void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, &dataForm, tempString, null, &needClass);
                      
                            if(string && string[0])
                            {
@@ -3676,7 +3676,7 @@ class CodeEditor : Window
                            *curMember = (DataMember)prop;
                            *curClass = curMember->_class;
 
-                           string = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, &dataForm.ui, tempString, null, &needClass);
+                           string = ((char * (*)(void *, void *, void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, &dataForm.ui, tempString, null, &needClass);
                            if(needClass)
                               f.Printf("%c %s %c", /*dataType.name, */OpenBracket, string, CloseBracket);
                            else
@@ -4262,7 +4262,7 @@ class CodeEditor : Window
                   {
                      bool needClass = true;
                      
-                     string = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, dataForm, tempString, null, &needClass);
+                     string = ((char * (*)(void *, void *, void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, dataForm, tempString, null, &needClass);
                      prop.Set(test, dataForm);
                      if(needClass)
                         f.Printf("\n   %s%s = %c %s %c;", specify ? "property::" : "", prop.name, /*dataType.name, */OpenBracket, string, CloseBracket);
@@ -4294,7 +4294,7 @@ class CodeEditor : Window
                      {
                         bool needClass = true;
 
-                        string = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, dataForm, tempString, null, &needClass);
+                        string = ((char * (*)(void *, void *, void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, dataForm, tempString, null, &needClass);
 
                         if(!strcmp(dataType.dataTypeString, "char *"))
                         {
@@ -4322,7 +4322,7 @@ class CodeEditor : Window
                      if(dataType.type == bitClass)
                      {
                         bool needClass = true;
-                        string = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, &dataForm, tempString, null, &needClass);
+                        string = ((char * (*)(void *, void *, void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, &dataForm, tempString, null, &needClass);
                         if(needClass)
                            f.Printf("\n   %s%s = %c %s %c;", specify ? "property::" : "", prop.name, /*dataType.name, */OpenBracket, string, CloseBracket);
                         else if(string[0])
@@ -4347,7 +4347,7 @@ class CodeEditor : Window
                            }
                         }
                         else
-                           string = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, &dataForm, tempString, null, &needClass);
+                           string = ((char * (*)(void *, void *, void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, &dataForm, tempString, null, &needClass);
                         if(!strcmp(dataType.dataTypeString, "float") && strchr(string, '.'))
                            f.Printf("\n   %s%s = %sf;", specify ? "property::" : "", prop.name, string);
                         else if(string[0])
