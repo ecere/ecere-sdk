@@ -62,7 +62,7 @@ public:
             }
             else if(type && type.type == enumClass)
             {
-               if(type._vTbl[__ecereVMethodID_class_OnGetDataFromString](type, &value.i, string))
+               if(((bool (*)(void *, void *, const char *))(void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(type, &value.i, string))
                   result = success;
                else
                   result = typeMismatch;
@@ -77,7 +77,7 @@ public:
             }
             else if(type && (type.type == structClass))
             {
-               if(type._vTbl[__ecereVMethodID_class_OnGetDataFromString](type, value.p, string))
+               if(((bool (*)(void *, void *, const char *))(void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(type, value.p, string))
                   result = success;
                else
                   result = typeMismatch;
@@ -124,7 +124,7 @@ public:
             else
             {
                result = typeMismatch;
-               type._vTbl[__ecereVMethodID_class_OnFree](object);
+               ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, object);
             }
          }
       }
@@ -641,25 +641,25 @@ bool WriteNumber(File f, Class type, DataValue value, int indent)
    bool needClass = false;
    buffer[0] = 0;
    if(type == class(double) || !strcmp(type.dataTypeString, "double"))
-      type._vTbl[__ecereVMethodID_class_OnGetString](type, &value.d, buffer, 0, &needClass);
+      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.d, buffer, 0, &needClass);
    else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
-      type._vTbl[__ecereVMethodID_class_OnGetString](type, &value.f, buffer, null, &needClass);
+      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.f, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "int64"))
-      type._vTbl[__ecereVMethodID_class_OnGetString](type, &value.i64, buffer, null, &needClass);
+      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.i64, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64") || type.typeSize == sizeof(int64))
-      type._vTbl[__ecereVMethodID_class_OnGetString](type, &value.ui64, buffer, null, &needClass);
+      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui64, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "int"))
-      type._vTbl[__ecereVMethodID_class_OnGetString](type, &value.i, buffer, null, &needClass);
+      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.i, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint") || type.typeSize == sizeof(int))
-      type._vTbl[__ecereVMethodID_class_OnGetString](type, &value.ui, buffer, null, &needClass);
+      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "short") || !strcmp(type.dataTypeString, "int16"))
-      type._vTbl[__ecereVMethodID_class_OnGetString](type, &value.s, buffer, null, &needClass);
+      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.s, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") || type.typeSize == sizeof(short int))
-      type._vTbl[__ecereVMethodID_class_OnGetString](type, &value.us, buffer, null, &needClass);
+      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.us, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "char"))
-      type._vTbl[__ecereVMethodID_class_OnGetString](type, &value.c, buffer, null, &needClass);
+      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.c, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte") || type.typeSize == sizeof(byte))
-      type._vTbl[__ecereVMethodID_class_OnGetString](type, &value.uc, buffer, null, &needClass);
+      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.uc, buffer, null, &needClass);
    f.Puts(buffer);
    return true;
 }

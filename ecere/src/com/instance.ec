@@ -3381,7 +3381,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
                   if(expClass)
                   {
                      //if(expClass.type == 
-                     expClass._vTbl[__ecereVMethodID_class_OnGetDataFromString](expClass, &argument.expression, value);
+                     ((bool (*)(void *, void *, const char *))(void *)expClass._vTbl[__ecereVMethodID_class_OnGetDataFromString])(expClass, &argument.expression, value);
                   }
                   // Expression should be pre simplified here
                   else if(value[0] == '\"')

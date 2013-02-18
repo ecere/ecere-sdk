@@ -122,7 +122,7 @@ public class OldArray
       if(type.type == normalClass || type.type == noHeadClass)
       {
          for(c = 0; c<size; c++)
-            type._vTbl[__ecereVMethodID_class_OnFree](type, array[c]);
+            ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, array[c]);
       }
       // TODO: Call OnFree for structClass
       delete ((ArrayImpl)this).array;

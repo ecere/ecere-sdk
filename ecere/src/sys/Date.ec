@@ -490,7 +490,7 @@ class DateDropBox : DropBox
          char tempString[1024] = "";
          bool needClass = false;
          // char * string = date.OnGetString(tempString, null, &needClass);
-         char * string = (char *)type._vTbl[__ecereVMethodID_class_OnGetString](type, &date, tempString, null, &needClass);
+         char * string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &date, tempString, null, &needClass);
          dropBox.contents = string;
       }
       return true;

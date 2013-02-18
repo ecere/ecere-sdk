@@ -150,13 +150,13 @@ static bool class_OnSaveEdit(Class _class, void ** data, Window editControl, voi
       {
          if(_class.type == normalClass || _class.type == noHeadClass)
          {
-            _class._vTbl[__ecereVMethodID_class_OnFree](_class, *data);
-            changed = _class._vTbl[__ecereVMethodID_class_OnGetDataFromString](_class, data, editBox.line.text);
+            ((void (*)(void *, void *))(void *)_class._vTbl[__ecereVMethodID_class_OnFree])(_class, *data);
+            changed = ((bool (*)(void *, void *, const char *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetDataFromString])(_class, data, editBox.line.text);
          }
          else
          {
-            _class._vTbl[__ecereVMethodID_class_OnFree](_class, data);
-            changed = _class._vTbl[__ecereVMethodID_class_OnGetDataFromString](_class, data, editBox.line.text);
+            ((void (*)(void *, void *))(void *)_class._vTbl[__ecereVMethodID_class_OnFree])(_class, data);
+            changed = ((bool (*)(void *, void *, const char *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetDataFromString])(_class, data, editBox.line.text);
          }
          //changed = true;
       }
@@ -201,7 +201,7 @@ static Window OnEdit(Class _class, void * data, Window window, Window master,
       if(data)
       {
          bool needClass = false;
-         char * result = (char *)_class._vTbl[__ecereVMethodID_class_OnGetString](_class, data, tempString, fieldData, &needClass);
+         char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, tempString, fieldData, &needClass);
          if(result)
             string = result;
       }

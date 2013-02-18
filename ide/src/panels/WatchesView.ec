@@ -266,7 +266,7 @@ class WatchMultiLineString : String
             else actualString[len++] = ch;
          }
          actualString[len] = 0;
-         class(String)._vTbl[__ecereVMethodID_class_OnDisplay](class(String), actualString, surface, x, y, width, null, alignment, displayFlags);
+         ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)class(String)._vTbl[__ecereVMethodID_class_OnDisplay])(class(String), actualString, surface, x, y, width, null, alignment, displayFlags);
       }
    }
 };

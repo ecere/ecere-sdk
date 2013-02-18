@@ -102,7 +102,7 @@ public:
    {
       IteratorPointer i;
       for(i = GetFirst(); i; i = GetNext(i))
-         type._vTbl[__ecereVMethodID_class_OnFree](type, GetData(i));
+         ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, GetData(i));
    }
 
    virtual void Delete(IteratorPointer it) { }

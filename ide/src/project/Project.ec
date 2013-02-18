@@ -3745,13 +3745,13 @@ void CombineIdenticalConfigOptions(Project project)
                         
                         if(type.type == noHeadClass || type.type == normalClass)
                         {
-                           result = type._vTbl[__ecereVMethodID_class_OnCompare](type, 
+                           result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
                               *(void **)((byte *)firstConfig.options + member.offset + member._class.offset),
                               *(void **)((byte *)cfg.options         + member.offset + member._class.offset));
                         }
                         else
                         {
-                           result = type._vTbl[__ecereVMethodID_class_OnCompare](type, 
+                           result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
                               (byte *)firstConfig.options + member.offset + member._class.offset,
                               (byte *)cfg.options         + member.offset + member._class.offset);
                         }
@@ -3767,14 +3767,14 @@ void CombineIdenticalConfigOptions(Project project)
                {
                   if(type.type == noHeadClass || type.type == normalClass)
                   {
-                     if(!type._vTbl[__ecereVMethodID_class_OnCompare](type, 
+                     if(!((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
                         *(void **)((byte *)firstConfig.options + member.offset + member._class.offset),
                         *(void **)((byte *)nullOptions         + member.offset + member._class.offset)))
                         continue;
                   }
                   else
                   {
-                     if(!type._vTbl[__ecereVMethodID_class_OnCompare](type, 
+                     if(!((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
                         (byte *)firstConfig.options + member.offset + member._class.offset,
                         (byte *)nullOptions         + member.offset + member._class.offset))
                         continue;
@@ -3784,7 +3784,7 @@ void CombineIdenticalConfigOptions(Project project)
                   
                   /*if(type.type == noHeadClass || type.type == normalClass)
                   {
-                     type._vTbl[__ecereVMethodID_class_OnCopy](type, 
+                     ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCopy])(type, 
                         (byte *)project.options + member.offset + member._class.offset,
                         *(void **)((byte *)firstConfig.options + member.offset + member._class.offset));
                   }
@@ -3792,7 +3792,7 @@ void CombineIdenticalConfigOptions(Project project)
                   {
                      void * address = (byte *)firstConfig.options + member.offset + member._class.offset;
                      // TOFIX: ListBox::SetData / OnCopy mess
-                     type._vTbl[__ecereVMethodID_class_OnCopy](type, 
+                     ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCopy])(type, 
                         (byte *)project.options + member.offset + member._class.offset,
                         (type.typeSize > 4) ? address : 
                            ((type.typeSize == 4) ? (void *)*(uint32 *)address : 
@@ -3811,13 +3811,13 @@ void CombineIdenticalConfigOptions(Project project)
                         
                         if(type.type == noHeadClass || type.type == normalClass)
                         {
-                           result = type._vTbl[__ecereVMethodID_class_OnCompare](type, 
+                           result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
                               *(void **)((byte *)firstConfig.options + member.offset + member._class.offset),
                               *(void **)((byte *)cfg.options         + member.offset + member._class.offset));
                         }
                         else
                         {
-                           result = type._vTbl[__ecereVMethodID_class_OnCompare](type, 
+                           result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
                               (byte *)firstConfig.options + member.offset + member._class.offset,
                               (byte *)cfg.options         + member.offset + member._class.offset);
                         }
@@ -3828,12 +3828,12 @@ void CombineIdenticalConfigOptions(Project project)
                      {
                         if(type.type == noHeadClass || type.type == normalClass)
                         {
-                           type._vTbl[__ecereVMethodID_class_OnFree](type, 
+                           ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, 
                               *(void **)((byte *)cfg.options + member.offset + member._class.offset));
                         }
                         else
                         {
-                           type._vTbl[__ecereVMethodID_class_OnFree](type, 
+                           ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, 
                               (byte *)cfg.options + member.offset + member._class.offset);
                         }
                         memset((byte *)cfg.options + member.offset + member._class.offset, 0, type.typeSize);

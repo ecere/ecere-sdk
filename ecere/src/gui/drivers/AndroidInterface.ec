@@ -1247,7 +1247,7 @@ class AndroidActivity : AndroidAppGlue
             }
 
             // Call Main()
-            __androidCurrentModule._vTbl[12](__androidCurrentModule);
+            ((void (*)(void *))(void *)__androidCurrentModule._vTbl[12])(__androidCurrentModule);
          }
 
          if(!destroyRequested)

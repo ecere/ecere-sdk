@@ -1904,8 +1904,8 @@ class CompilerTab : Tab
          if(id)
          {
             ide.projectView.drawingInProjectSettingsDialogHeader = true;
-            class(ProjectNode)._vTbl[__ecereVMethodID_class_OnDisplay](class(ProjectNode),
-               id, surface, 8, 2, clientSize.w, ide.projectView, Alignment::left, DataDisplayFlags { selected = true });
+            ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)class(ProjectNode)._vTbl[__ecereVMethodID_class_OnDisplay])(class(ProjectNode),
+               (void *)id, surface, 8, 2, clientSize.w, ide.projectView, Alignment::left, DataDisplayFlags { selected = true });
             ide.projectView.drawingInProjectSettingsDialogHeader = false;
          }
       }

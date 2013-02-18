@@ -374,7 +374,7 @@ class DCOMClientThread : Thread
             incref object;
 
             // TOFIX: Hardcoded VTBL ID
-            object._vTbl[10](object, methodID, buffer);
+            ((void (*)(void *, uint, SerialBuffer))(void *)object._vTbl[10])(object, methodID, buffer);
 
             if(hasReturnValue)
             {
@@ -610,7 +610,7 @@ public:
       bool result = false;
       if(Socket::Connect(server, port))
       {
-         int len = strlen(_class.name) + 4 - strlen("DCOMClient_");
+         int len = (int)(strlen(_class.name) + 4 - strlen("DCOMClient_"));
          unsigned int size = sizeof(class CreateInstancePacket) + len;
          CreateInstancePacket packet = (CreateInstancePacket)new0 byte[size];
          packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_CreateInstance);
@@ -702,7 +702,7 @@ public:
                   buffer.WriteData(callMethod.args, callMethod.argsSize);
 
                   // TOFIX: Hardcoded VTBL ID
-                  _vTbl[17](this, callMethod.methodID, buffer);
+                  ((void (*)(void *, uint, SerialBuffer))(void *)_vTbl[17])(this, callMethod.methodID, buffer);
 
                   // WARNING: callMethod packet is invalidated !!!
 

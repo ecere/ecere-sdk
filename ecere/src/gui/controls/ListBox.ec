@@ -184,9 +184,9 @@ public:
                String string;
                int tw = 0;
                if(dataType.type == normalClass || dataType.type == noHeadClass)
-                  string = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, cell.data[0], tempString, userData, null);
+                  string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, cell.data[0], tempString, userData, null);
                else
-                  string = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, cell.data, tempString, userData, null);
+                  string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, cell.data, tempString, userData, null);
                if(string)
                   display.FontExtent(row.header ? boldFont : font, string, strlen(string), &tw, null);
                else
@@ -595,18 +595,18 @@ public:
                if(dataType.type == normalClass || dataType.type == noHeadClass)
                {
                   if(cell.data[0] && field.freeData)
-                     dataType._vTbl[__ecereVMethodID_class_OnFree](dataType, cell.data[0]);
+                     ((void (*)(void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnFree])(dataType, cell.data[0]);
 
                   if(eClass_IsDerived(dataType, class(char *)) && field.freeData)
-                     dataType._vTbl[__ecereVMethodID_class_OnCopy](dataType, cell.data, newData);
+                     ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCopy])(dataType, cell.data, newData);
                   else
                      cell.data[0] = (void *)newData;
                }
                else
                {
                   // Free old data first
-                  dataType._vTbl[__ecereVMethodID_class_OnFree](dataType, cell.data);
-                  dataType._vTbl[__ecereVMethodID_class_OnCopy](dataType, cell.data, newData);
+                  ((void (*)(void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnFree])(dataType, cell.data);
+                  ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCopy])(dataType, cell.data, newData);
                }
             }
             cell.isSet = true;
@@ -635,13 +635,13 @@ public:
                if(dataType.type == normalClass || dataType.type == noHeadClass)
                {
                   if(cell.data[0] && field.freeData)
-                     dataType._vTbl[__ecereVMethodID_class_OnFree](dataType, cell.data[0]);
+                     ((void (*)(void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnFree])(dataType, cell.data[0]);
                   cell.data[0] = null;
                }
                else
                {
                   // Free old data first
-                  dataType._vTbl[__ecereVMethodID_class_OnFree](dataType, cell.data);
+                  ((void (*)(void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnFree])(dataType, cell.data);
                }
             }
             cell.isSet = false;
@@ -816,10 +816,10 @@ private:
                if(field.dataType.type == normalClass || field.dataType.type == noHeadClass)
                {
                   if(cell.data[0] && field.freeData)
-                     field.dataType._vTbl[__ecereVMethodID_class_OnFree](field.dataType, cell.data[0]);
+                     ((void (*)(void *, void *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnFree])(field.dataType, cell.data[0]);
                }
                else
-                  field.dataType._vTbl[__ecereVMethodID_class_OnFree](field.dataType, cell.data);
+                  ((void (*)(void *, void *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnFree])(field.dataType, cell.data);
             }
          }
          next = cell.next;
@@ -1247,10 +1247,10 @@ public:
                      if(field.dataType.type == normalClass || field.dataType.type == noHeadClass)
                      {
                         if(cell.data[0] && field.freeData)
-                           field.dataType._vTbl[__ecereVMethodID_class_OnFree](field.dataType, cell.data[0]);
+                           ((void (*)(void *, void *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnFree])(field.dataType, cell.data[0]);
                      }
                      else
-                        field.dataType._vTbl[__ecereVMethodID_class_OnFree](field.dataType, cell.data);
+                        ((void (*)(void *, void *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnFree])(field.dataType, cell.data);
                   }
 
                   row.cells.Remove(cell);
@@ -1580,7 +1580,7 @@ public:
                   void * data = row.GetData(field);
                   char tempString[1024] = "";
                   bool needClass = false;
-                  char * string = (char *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString](field.dataType, data, tempString, null, &needClass);
+                  char * string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
 
                   if(string && string[0])
                      checkNextField = false;
@@ -1614,7 +1614,7 @@ public:
                      void * data = row.GetData(field);
                      char tempString[1024] = "";
                      bool needClass = false;
-                     char * string = (char *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString](field.dataType, data, tempString, null, &needClass);
+                     char * string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
 
                      if(string && string[0])
                         checkNextField = false;
@@ -1652,7 +1652,7 @@ public:
                      void * data = row.GetData(field);
                      char tempString[1024] = "";
                      bool needClass = false;
-                     char * string = (char *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString](field.dataType, data, tempString, null, &needClass);
+                     char * string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
 
                      if(string && string[0])
                         checkNextField = false;
@@ -1701,7 +1701,7 @@ public:
                      void * data = row.GetData(field);
                      char tempString[1024] = "";
                      bool needClass = false;
-                     char * string = (char *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString](field.dataType, data, tempString, null, &needClass);
+                     char * string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
 
                      if(string && string[0])
                         checkNextField = false;
@@ -2406,7 +2406,7 @@ private:
             surface.SetForeground(foreground);
             surface.SetBackground(background);
 
-            class(String)._vTbl[__ecereVMethodID_class_OnDisplay](class(String), "(none)", surface, x, y - 1 + (rowHeight - fontH)/2, width - EXTRA_SPACE/2, null, Alignment::left, dataDisplayFlags);
+            ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)class(String)._vTbl[__ecereVMethodID_class_OnDisplay])(class(String), "(none)", surface, x, y - 1 + (rowHeight - fontH)/2, width - EXTRA_SPACE/2, null, Alignment::left, dataDisplayFlags);
          }
          else
          {
@@ -2460,9 +2460,9 @@ private:
                   surface.SetBackground(background);
 
                   if(field.dataType.type == noHeadClass || field.dataType.type == normalClass)
-                     field.dataType._vTbl[__ecereVMethodID_class_OnDisplay](field.dataType, cell.data[0], surface, x, y - 1 + (rowHeight - fontH)/2, width - EXTRA_SPACE/2, field.userData, field.alignment, dataDisplayFlags);
+                     ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnDisplay])(field.dataType, cell.data[0], surface, x, y - 1 + (rowHeight - fontH)/2, width - EXTRA_SPACE/2, field.userData, field.alignment, dataDisplayFlags);
                   else
-                     field.dataType._vTbl[__ecereVMethodID_class_OnDisplay](field.dataType, cell.data, surface, x, y - 1 + (rowHeight - fontH)/2, width - EXTRA_SPACE/2, field.userData, field.alignment, dataDisplayFlags);
+                     ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnDisplay])(field.dataType, cell.data, surface, x, y - 1 + (rowHeight - fontH)/2, width - EXTRA_SPACE/2, field.userData, field.alignment, dataDisplayFlags);
                }
 
                if(!isActive && dataDisplayFlags.selected && style.alwaysEdit && field.editable)
@@ -3048,9 +3048,9 @@ private:
                         char * string;
                         int tw, th;
                         if(field.dataType.type == normalClass || field.dataType.type == noHeadClass)
-                           string = (char *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString](field.dataType, cell.data[0], tempString, field.userData, null);
+                           string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, cell.data[0], tempString, field.userData, null);
                         else
-                           string = (char *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString](field.dataType, cell.data, tempString, field.userData, null);
+                           string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, cell.data, tempString, field.userData, null);
                         /* GCC-4.4 Bug!
 			if(!string) string = "";
                         display.FontExtent(row.header ? boldFont : font, string, strlen(string), &tw, &th);
@@ -4029,7 +4029,7 @@ private:
                void * data = row.GetData(field);
                char tempString[1024] = "";
                bool needClass = false;
-               char * string = data ? (char *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString](field.dataType, data, tempString, null, &needClass) : null;
+               char * string = data ? ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass) : null;
 
                if(string && string[0])
                   checkNextField = false;

@@ -30,7 +30,7 @@ public class FilePath : String
       if(pathBox.modifiedDocument)
       {
          String::OnFree();
-         changed = _class._vTbl[__ecereVMethodID_class_OnGetDataFromString](_class, &this, pathBox.systemPath);
+         changed = ((bool (*)(void *, void *, const char *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetDataFromString])(_class, &this, pathBox.systemPath);
       }
       return changed;
    }

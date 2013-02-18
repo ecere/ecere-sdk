@@ -376,7 +376,7 @@ bool Code_IsPropertyModified(Instance test, ObjectInfo selected, Property prop)
          prop.Get(selected.instance, dataForm);
          prop.Get(test, dataTest);
 
-         if((prop.IsSet && !prop.IsSet(test)) || dataType._vTbl[__ecereVMethodID_class_OnCompare](dataType, dataForm, dataTest))
+         if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
          {
             prop.Set(test, dataForm);
             result = true;
@@ -391,7 +391,7 @@ bool Code_IsPropertyModified(Instance test, ObjectInfo selected, Property prop)
          dataForm = (void *)prop.Get(selected.instance);
          dataTest = (void *)prop.Get(test);
    
-         if((prop.IsSet && !prop.IsSet(test)) || dataType._vTbl[__ecereVMethodID_class_OnCompare](dataType, dataForm, dataTest))
+         if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
          {
             prop.Set(test, dataForm);
             result = true;
@@ -404,7 +404,7 @@ bool Code_IsPropertyModified(Instance test, ObjectInfo selected, Property prop)
          GetProperty(prop, selected.instance, &dataForm);
          GetProperty(prop, test, &dataTest);
    
-         if((prop.IsSet && !prop.IsSet(test)) || dataType._vTbl[__ecereVMethodID_class_OnCompare](dataType, &dataForm, &dataTest))
+         if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, &dataForm, &dataTest))
          {
             SetProperty(prop, test, dataForm);
 
@@ -412,7 +412,7 @@ bool Code_IsPropertyModified(Instance test, ObjectInfo selected, Property prop)
             if(strcmp(prop.name, "name"))
             {
                GetProperty(prop, selected.instance, &dataTest);
-               if(dataType._vTbl[__ecereVMethodID_class_OnCompare](dataType, &dataForm, &dataTest))
+               if(((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, &dataForm, &dataTest))
                   SetProperty(prop, selected.instance, dataForm);
             }
             result = true;
@@ -3510,7 +3510,7 @@ class CodeEditor : Window
                      ((void (*)())(void *)prop.Get)(control, dataForm);
                      prop.Get(test, dataTest);
                
-                     if((prop.IsSet && !prop.IsSet(test)) || dataType._vTbl[__ecereVMethodID_class_OnCompare](dataType, dataForm, dataTest))
+                     if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                      {
                         char tempString[1024] = "";
                         char * string = "";
@@ -3546,7 +3546,7 @@ class CodeEditor : Window
                      dataForm = (void *)prop.Get(control);
                      dataTest = (void *)prop.Get(test);
                
-                     if((prop.IsSet && !prop.IsSet(test)) || dataType._vTbl[__ecereVMethodID_class_OnCompare](dataType, dataForm, dataTest))
+                     if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                      {
                         char tempString[1024] = "";
                         char * string = "";
@@ -3618,7 +3618,7 @@ class CodeEditor : Window
                      GetProperty(prop, control, &dataForm);
                      GetProperty(prop, test, &dataTest);
                
-                     if((prop.IsSet && !prop.IsSet(test)) || dataType._vTbl[__ecereVMethodID_class_OnCompare](dataType, &dataForm, &dataTest))
+                     if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, &dataForm, &dataTest))
                      {
                         char * string;
                         char tempString[1024] = "";
@@ -4258,7 +4258,7 @@ class CodeEditor : Window
                   prop.Get(classObject.instance, dataForm);
                   prop.Get(test, dataTest);
 
-                  if(dataType._vTbl[__ecereVMethodID_class_OnCompare](dataType, dataForm, dataTest))
+                  if(((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                   {
                      bool needClass = true;
                      
@@ -4279,7 +4279,7 @@ class CodeEditor : Window
                   dataForm = (void *)prop.Get(classObject.instance);
                   dataTest = (void *)prop.Get(test);
                
-                  if(dataType._vTbl[__ecereVMethodID_class_OnCompare](dataType, dataForm, dataTest))
+                  if(((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                   {
                      char tempString[1024] = "";
                      char * string;
@@ -4316,7 +4316,7 @@ class CodeEditor : Window
                   GetProperty(prop, classObject.instance, &dataForm);
                   GetProperty(prop, test, &dataTest);
                
-                  if(dataType._vTbl[__ecereVMethodID_class_OnCompare](dataType, &dataForm, &dataTest))
+                  if(((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, &dataForm, &dataTest))
                   {
                      SetProperty(prop, test, dataForm);
                      if(dataType.type == bitClass)

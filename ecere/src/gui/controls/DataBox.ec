@@ -36,21 +36,21 @@ public:
 
    virtual void SetData(any_object newData, bool closingDropDown)
    {
-      //type._vTbl[__ecereVMethodID_class_OnCopy](type, data, newData);
+      //((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCopy])(type, data, newData);
       needUpdate = true;
       if(type)
       {
          if(type.type == normalClass || type.type == noHeadClass)
          {
             if(((void **)data)[0])
-               type._vTbl[__ecereVMethodID_class_OnFree](type, ((void **)data)[0]);
+               ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, ((void **)data)[0]);
             ((void **)data)[0] = newData;
          }
          else
          {
             // Free old data first
-            type._vTbl[__ecereVMethodID_class_OnFree](type, data);
-            type._vTbl[__ecereVMethodID_class_OnCopy](type, data, newData);
+            ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, data);
+            ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCopy])(type, data, newData);
          }
       }
       if(created)
@@ -60,7 +60,7 @@ public:
 
    bool SaveData()      // TODO: Clear this up, along with Saving DataBox
    {
-      if(editor && type._vTbl[__ecereVMethodID_class_OnSaveEdit](type, data, editor, null))
+      if(editor && ((bool (*)(void *, void *, Window, void *))(void *)type._vTbl[__ecereVMethodID_class_OnSaveEdit])(type, data, editor, null))
       {
          Refresh();
          NotifyChanged(master, false);
@@ -104,7 +104,7 @@ private:
          (type.type == normalClass || type.type == noHeadClass || data))
       {
          // IMPORTANT FIX: If keepEditor is true, we were passing editor rather than the editor's current master
-         editor = (Window)type._vTbl[__ecereVMethodID_class_OnEdit](type, 
+         editor = ((Window (*)(void *, void *, DataBox, void *, int, int, int, int, void*))(void *)type._vTbl[__ecereVMethodID_class_OnEdit])(type, 
             (type.type == normalClass || type.type == noHeadClass) ? (data ? (*(void **)data) : null) : data, 
             this, (keepEditor && editor) ? editor.master : this, 0, 0, clientSize.w, clientSize.h, fieldData);// null);
          if(editor)
@@ -145,21 +145,21 @@ private:
             {
                String s;
                if(type.type == noHeadClass || type.type == normalClass)
-                  s = (String)type._vTbl[__ecereVMethodID_class_OnGetString](type, *(void **)this.data, tempString, fieldData, null);
+                  s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, *(void **)this.data, tempString, fieldData, null);
                else
-                  s = (String)type._vTbl[__ecereVMethodID_class_OnGetString](type, this.data, tempString, fieldData, null);
+                  s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, this.data, tempString, fieldData, null);
                delete stringValue;
                stringValue = CopyString(s);
                needUpdate = false;
             }
-            class(String)._vTbl[__ecereVMethodID_class_OnDisplay](class(String), stringValue, surface, 3, 1, clientSize.w, fieldData, type.defaultAlignment, 0);
+            ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)class(String)._vTbl[__ecereVMethodID_class_OnDisplay])(class(String), stringValue, surface, 3, 1, clientSize.w, fieldData, type.defaultAlignment, 0);
          }
          else
          {
             if(type.type == noHeadClass || type.type == normalClass)
-               type._vTbl[__ecereVMethodID_class_OnDisplay](type, *(void **)this.data, surface, 3, 1, clientSize.w, fieldData, type.defaultAlignment, 0);
+               ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)type._vTbl[__ecereVMethodID_class_OnDisplay])(type, *(void **)this.data, surface, 3, 1, clientSize.w, fieldData, type.defaultAlignment, 0);
             else
-               type._vTbl[__ecereVMethodID_class_OnDisplay](type, this.data, surface, 3, 1, clientSize.w, fieldData, type.defaultAlignment, 0);
+               ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)type._vTbl[__ecereVMethodID_class_OnDisplay])(type, this.data, surface, 3, 1, clientSize.w, fieldData, type.defaultAlignment, 0);
          }
       }
    }

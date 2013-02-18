@@ -1092,7 +1092,7 @@ class Sheet : Window
                   }
                }
 
-               if(data) dataType._vTbl[__ecereVMethodID_class_OnFree](dataType,&data);
+               if(data) ((void (*)(void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnFree])(dataType,&data);
                delete data;
             }
          }
@@ -1130,7 +1130,7 @@ class Sheet : Window
                   prop.Set(object, data);
                }
 
-               if(data) dataType._vTbl[__ecereVMethodID_class_OnFree](dataType,&data);
+               if(data) ((void (*)(void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnFree])(dataType,&data);
                delete data;
             }
          }
@@ -1414,7 +1414,7 @@ static void CopyInstanceData(Class dataType, Instance propObject, Instance curre
          {
             if(memberType)
                // TOCHECK: I have serious doubts this works in many cases.
-               memberType._vTbl[__ecereVMethodID_class_OnCopy](memberType, (byte *)propObject + member.offset, (byte *)current + member.offset);
+               ((void (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCopy])(memberType, (byte *)propObject + member.offset, (byte *)current + member.offset);
             else if(member.memberOffset)
                memcpy((byte *)propObject + member.offset, (byte *)current + member.offset, member.memberOffset);
          }
@@ -1521,7 +1521,7 @@ public:
             }
 
             if(dataType)
-               dataType._vTbl[__ecereVMethodID_class_OnDisplay](dataType, dataPtr, surface, x, y, width, null, alignment, displayFlags);
+               ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)dataType._vTbl[__ecereVMethodID_class_OnDisplay])(dataType, dataPtr, surface, x, y, width, null, alignment, displayFlags);
 
             delete data;
             delete subData;
@@ -1531,7 +1531,7 @@ public:
 
    Window OnEdit(DataBox dataBox, Window obsolete, int x, int y, int w, int h, void * unused)
    {
-      EditBox editData = null;
+      Window editData = null;
       Property prop = this.prop;
       
       dataBox.SetData = Sheet::EditSetData;
@@ -1613,7 +1613,7 @@ public:
             }
 
             if(dataType)
-               editData = (void *)dataType._vTbl[__ecereVMethodID_class_OnEdit](dataType, dataPtr, dataBox, obsolete,  x, y, w, h, object /*unused*/);
+               editData = ((Window (*)(void *, void *, DataBox, void *, int, int, int, int, void*))(void *)dataType._vTbl[__ecereVMethodID_class_OnEdit])(dataType, dataPtr, dataBox, obsolete,  x, y, w, h, object /*unused*/);
 
             delete data;
             delete subData;
@@ -1777,7 +1777,7 @@ public:
 
          if(dataType)
          {
-            if(dataType._vTbl[__ecereVMethodID_class_OnSaveEdit](dataType, dataPtr, editControl, null))
+            if(((bool (*)(void *, void *, Window, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnSaveEdit])(dataType, dataPtr, editControl, null))
             {
                if(mainDataType.type == bitClass && this.subMember)
                {
@@ -1825,8 +1825,8 @@ public:
 
                result = true;
             }
-            if(data == dataPtr)     dataType._vTbl[__ecereVMethodID_class_OnFree](dataType, &data);
-            if(subData == dataPtr)  dataType._vTbl[__ecereVMethodID_class_OnFree](dataType, &subData);
+            if(data == dataPtr)     ((void (*)(void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnFree])(dataType, &data);
+            if(subData == dataPtr)  ((void (*)(void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnFree])(dataType, &subData);
          }
          delete data;
          delete subData;

@@ -263,7 +263,7 @@ public:
       for(i = GetFirst(); i; i = GetNext(i))
       {
          D data = GetData(i);
-         Dclass._vTbl[__ecereVMethodID_class_OnSerialize](Dclass, 
+         ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnSerialize])(Dclass, 
             (Dclass.type == systemClass || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data, channel);
       }
    }
@@ -278,7 +278,7 @@ public:
       for(c = 0; c < count; c++)
       {
          D data;
-         Dclass._vTbl[__ecereVMethodID_class_OnUnserialize](Dclass, &data, channel);
+         ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, &data, channel);
          container.Add(data);
       }
       this = container;

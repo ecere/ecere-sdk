@@ -674,7 +674,7 @@ static bool OnGetDataFromString(Class _class, void ** data, char * string)
    else if(_class.type == unitClass)
    {
       Class dataType = eSystem_FindClass(module, _class.dataTypeString);
-      return dataType._vTbl[__ecereVMethodID_class_OnGetDataFromString](dataType, data, string);
+      return ((bool (*)(void *, void *, const char *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetDataFromString])(dataType, data, string);
    }
    else if(!string[0] && _class.type == normalClass)
    {
@@ -854,7 +854,7 @@ static bool OnGetDataFromString(Class _class, void ** data, char * string)
             {
                if(thisMember)
                {
-                  if(!memberType._vTbl[__ecereVMethodID_class_OnGetDataFromString](memberType, 
+                  if(!((bool (*)(void *, void *, const char *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, 
                      (byte *)data + (((thisMember._class.type == normalClass) ? thisMember._class.offset : 0) + memberOffset), memberString))
                      result = false;
                }
@@ -870,7 +870,7 @@ static bool OnGetDataFromString(Class _class, void ** data, char * string)
                   if(!OnGetDataFromString(memberType, &value, memberString))
                      result = false;
                }
-               else if(!memberType._vTbl[__ecereVMethodID_class_OnGetDataFromString](memberType, &value, memberString))
+               else if(!((bool (*)(void *, void *, const char *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, &value, memberString))
                   result = false;
                if(thisMember && !thisMember.isProperty)
                {
@@ -904,7 +904,7 @@ static void OnCopy(Class _class, void ** data, void * newData)
    {
       Class dataType = eSystem_FindClass(_class.module, _class.dataTypeString);
       if(dataType)
-         dataType._vTbl[__ecereVMethodID_class_OnCopy](dataType, data, newData);
+         ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCopy])(dataType, data, newData);
    }
    else if(_class.type != structClass && _class.type != systemClass)
    {
@@ -934,13 +934,13 @@ static int DataMember_OnSerialize(DataMember parentMember, void * data, IOChanne
 
          if(memberType.type == structClass || memberType.type == normalClass || memberType.type == noHeadClass)
          {
-            memberType._vTbl[__ecereVMethodID_class_OnSerialize](memberType, (byte *)data + member.offset, channel);
+            ((void (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnSerialize])(memberType, (byte *)data + member.offset, channel);
          }
          else
          {
             DataValue value;
             value.i = *(int *)((byte *)data + member.offset);
-            memberType._vTbl[__ecereVMethodID_class_OnSerialize](memberType, &value);
+            ((void (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnSerialize])(memberType, &value, channel);
          }
       }
       else
@@ -959,7 +959,7 @@ static void OnSerialize(Class _class, void * data, IOChannel channel)
    {
       Class dataType = eSystem_FindClass(module, _class.dataTypeString);
       if(dataType)
-         dataType._vTbl[__ecereVMethodID_class_OnSerialize](dataType, data, channel);
+         ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnSerialize])(dataType, data, channel);
    }
    else if(_class.type == normalClass || _class.type == noHeadClass || _class.type == structClass)
    {
@@ -1002,7 +1002,7 @@ static void OnSerialize(Class _class, void * data, IOChannel channel)
                               {
                                  value.i = prop.Get(data);
                               }
-                              memberType._vTbl[__ecereVMethodID_class_OnSerialize](memberType, &value, channel);
+                              ((void (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnSerialize])(memberType, &value, channel);
                            }
                         }*/
                      }
@@ -1010,10 +1010,10 @@ static void OnSerialize(Class _class, void * data, IOChannel channel)
                      {
                         if(!strcmp(memberType.name, "String") || memberType.type == normalClass || memberType.type == noHeadClass)
                         {
-                           memberType._vTbl[__ecereVMethodID_class_OnSerialize](memberType, data ? (*(void **)((byte *)data + member._class.offset + member.offset)) : null, channel);
+                           ((void (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnSerialize])(memberType, data ? (*(void **)((byte *)data + member._class.offset + member.offset)) : null, channel);
                         }
                         else
-                           memberType._vTbl[__ecereVMethodID_class_OnSerialize](memberType, data ? (((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset))) : null, channel);
+                           ((void (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnSerialize])(memberType, data ? (((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset))) : null, channel);
                      }
                   }
                   else
@@ -1048,12 +1048,12 @@ static int DataMember_OnUnserialize(DataMember parentMember, void * data, IOChan
 
          if(memberType.type == structClass || memberType.type == normalClass || memberType.type == noHeadClass)
          {
-            memberType._vTbl[__ecereVMethodID_class_OnUnserialize](memberType, (byte *)data + member.offset, channel);
+            ((void (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnUnserialize])(memberType, (byte *)data + member.offset, channel);
          }
          else
          {
             DataValue value;
-            memberType._vTbl[__ecereVMethodID_class_OnUnserialize](memberType, &value, channel);  // channel was missing here?
+            ((void (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnUnserialize])(memberType, &value, channel);
             *(int *)((byte *)data + member.offset) = value.i;
          }
       }
@@ -1072,7 +1072,7 @@ static void OnUnserialize(Class _class, void ** data, IOChannel channel)
    {
       Class dataType = eSystem_FindClass(module, _class.dataTypeString);
       if(dataType)
-         dataType._vTbl[__ecereVMethodID_class_OnUnserialize](dataType, data, channel);
+         ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnUnserialize])(dataType, data, channel);
    }
    else if(_class.type == normalClass || _class.type == noHeadClass || _class.type == structClass)
    {
@@ -1117,13 +1117,13 @@ static void OnUnserialize(Class _class, void ** data, IOChannel channel)
                            else
                            {
                               DataValue value;
-                              memberType._vTbl[__ecereVMethodID_class_OnUnserialize](memberType, &value, channel);
+                              ((void (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnUnserialize])(memberType, &value, channel);
                               prop.Set(data, value.i);
                            }
                         }*/
                      }
                      else
-                        memberType._vTbl[__ecereVMethodID_class_OnUnserialize](memberType, 
+                        ((void (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnUnserialize])(memberType, 
                            (byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset), channel);
                   }
                   else

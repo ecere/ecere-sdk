@@ -105,7 +105,7 @@ public:
             {
                char tempString[4096];
                if(currentRow)
-                  editBox.contents = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, currentRow.GetData(null), tempString, null, null);
+                  editBox.contents = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
                else
                   editBox.contents = "";
             }                  
@@ -402,7 +402,7 @@ public:
          {
             char tempString[4096];
             if(currentRow)
-               editBox.contents = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, currentRow.GetData(null), tempString, null, null);
+               editBox.contents = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
             else
                editBox.contents = "";
          }                  
@@ -578,7 +578,7 @@ private:
                {
                   char tempString[4096];
                   if(currentRow)
-                     editBox.contents = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, currentRow.GetData(null), tempString, null, null);
+                     editBox.contents = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
                   else
                      editBox.contents = "";
                }                  
@@ -639,7 +639,7 @@ private:
          if(currentRow)
          {
             DataDisplayFlags displayFlags { active = active, current = true, dropBox = true, selected = true, fullRow = true };
-            dataType._vTbl[__ecereVMethodID_class_OnDisplay](dataType, currentRow.GetData(null), surface, 3, 
+            ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)dataType._vTbl[__ecereVMethodID_class_OnDisplay])(dataType, currentRow.GetData(null), surface, 3, 
                1+(clientSize.h - listBox.rowHeight) / 2, clientSize.w - (button.visible ? button.size.w : 0) - 3, 
                field.userData, alignment, displayFlags);
          }
@@ -875,7 +875,7 @@ private:
          {
             char tempString[4096];
             if(currentRow)
-               editBox.contents = (char *)dataType._vTbl[__ecereVMethodID_class_OnGetString](dataType, currentRow.GetData(null), tempString, null, null);
+               editBox.contents = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
             else
                editBox.contents = "";
             if(active)
