@@ -875,14 +875,14 @@ public class ListSection : Group
       }
    };
 
-   public virtual void Window::NotifySelectListRow(ListSection listSection, uint id);
+   public virtual void Window::NotifySelectListRow(ListSection listSection, uint64 id);
    
    public void SelectListRow(DataRow row)
    {
       // Time startTime = GetTime();
       if(row)
       {
-         uint id = row.tag;
+         uint64 id = row.tag;
          lastRow = row;
 
          if(list.currentRow != row)

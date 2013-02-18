@@ -148,7 +148,7 @@ static boolean JPEG_EmptyOutputBuffer(j_compress_ptr cinfo)
 static void JPEG_TermDestination(j_compress_ptr cinfo)
 {
    DestinationManager * dest = (DestinationManager *) cinfo->dest;
-   uint datacount = OUTPUT_BUF_SIZE - dest->pub.free_in_buffer;
+   uint datacount = (uint)(OUTPUT_BUF_SIZE - dest->pub.free_in_buffer);
    
    if (datacount > 0)
    {

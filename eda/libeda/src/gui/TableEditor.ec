@@ -824,7 +824,8 @@ public:
       DebugLn("TableEditor::SelectListRow");
       if(row)
       {
-         selectedId = row.tag;
+         // TOFIX: Id is still 32-bit; Also the warning without this cast seems wrong (It says row.tag is of type eda::Id, while it is int64)
+         selectedId = (Id)row.tag;
          lastRow = row;
 
          if(list.currentRow != row)

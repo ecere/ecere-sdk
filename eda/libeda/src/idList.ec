@@ -68,7 +68,8 @@ public class Id : uint
 
                bool DataBox::NotifySelect(DropBox control, DataRow row, Modifiers mods)
                {
-                  uint id = row ? row.tag : 0;
+                  // TOFIX: Id is still 32 bit
+                  uint id = (uint)(row ? row.tag : 0);
                   SetData(&id, mods.closingDropDown);
                   return true;
                }

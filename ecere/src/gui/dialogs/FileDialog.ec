@@ -1171,7 +1171,7 @@ private:
       
       bool NotifySelect(DropBox control, DataRow row, Modifiers mods)
       {
-         fileFilter = row ? row.tag : 0;
+         fileFilter = (int)(row ? row.tag : 0);
          ListFiles();
          return true;
       }
@@ -1190,7 +1190,7 @@ private:
       bool NotifySelect(DropBox control, DataRow row, Modifiers mods)
       {
          char * selectedFileName = null;
-         fileType = row ? row.tag : 0;
+         fileType = (int)(row ? row.tag : 0);
          if(style == save && types && types[fileType].typeExtension)
          {
             if(getNameFromListBox)
