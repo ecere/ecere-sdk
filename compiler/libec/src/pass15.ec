@@ -319,15 +319,15 @@ public char * PrintDouble(double result)
       else if(op2.kind == intType) *value2 = (t) op2.ui;                 \
       if(op2.kind == int64Type && op2.type.isSigned) *value2 = (t) op2.i64; \
       else if(op2.kind == int64Type) *value2 = (t) op2.ui64;                 \
-      else if(op2.kind == intPtrType && op2.type.isSigned) *value2 = (t) op2.iptr; \
-      else if(op2.kind == intPtrType) *value2 = (t) op2.uiptr;                 \
+      else if(op2.kind == intPtrType && op2.type.isSigned) *value2 = (t) op2.i64; \
+      else if(op2.kind == intPtrType) *value2 = (t) op2.ui64;                 \
       else if(op2.kind == shortType && op2.type.isSigned) *value2 = (t) op2.s;   \
       else if(op2.kind == shortType) *value2 = (t) op2.us;                        \
       else if(op2.kind == charType && op2.type.isSigned) *value2 = (t) op2.c;    \
       else if(op2.kind == charType) *value2 = (t) op2.uc;                         \
       else if(op2.kind == floatType) *value2 = (t) op2.f;                         \
       else if(op2.kind == doubleType) *value2 = (t) op2.d;                        \
-      else if(op2.kind == pointerType) *value2 = (t) op2.uiptr;                    \
+      else if(op2.kind == pointerType) *value2 = (t) op2.ui64;                    \
       else                                                                          \
          return false;                                                              \
       return true;                                                                  \
@@ -4171,12 +4171,12 @@ public Operand GetOperand(Expression exp)
             case intPtrType:
                if(type.isSigned)
                {
-                  op.iptr = (intptr)_strtoi64(exp.constant, null, 0);
+                  op.i64 = (int64)_strtoi64(exp.constant, null, 0);
                   op.ops = intOps;
                }
                else
                {
-                  op.uiptr = (uintptr)_strtoui64(exp.constant, null, 0);
+                  op.ui64 = (uint64)_strtoui64(exp.constant, null, 0);
                   op.ops = uintOps;
                }
                op.kind = intType;
@@ -4195,7 +4195,7 @@ public Operand GetOperand(Expression exp)
             case arrayType:
             case pointerType:
             case classType:
-               op.p = (byte *)_strtoui64(exp.constant, null, 0);
+               op.ui64 = _strtoui64(exp.constant, null, 0);
                op.kind = pointerType;
                op.ops = uintOps;
                // op.ptrSize = 

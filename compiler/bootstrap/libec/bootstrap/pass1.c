@@ -104,9 +104,9 @@ struct __ecereNameSpace__ecere__com__Class * _class;
 char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct Type * dataType;
-void (*  Set)();
-int (*  Get)();
-unsigned int (*  IsSet)();
+void (*  Set)(void * , int);
+int (*  Get)(void * );
+unsigned int (*  IsSet)(void * );
 void *  data;
 void *  symbol;
 int vid;
@@ -443,7 +443,7 @@ struct TypeName * typeName;
 } __attribute__ ((gcc_struct));
 unsigned int debugValue;
 struct __ecereNameSpace__ecere__com__DataValue val;
-unsigned int address;
+uint64 address;
 unsigned int hasAddress;
 struct Type * expType;
 struct Type * destType;
@@ -1539,7 +1539,7 @@ unsigned int lastOffset = 0;
 int privateID = 0;
 unsigned int privateMembers = 0x0;
 
-sprintf(dataMemberSize, "%d", sizeof(struct __ecereNameSpace__ecere__com__DataMember *));
+sprintf(dataMemberSize, "%d", (int)sizeof(struct __ecereNameSpace__ecere__com__DataMember *));
 if(!isMember)
 {
 for(prop = regClass->conversions.first; prop; prop = prop->next)
@@ -2037,11 +2037,8 @@ int i;
 unsigned int ui;
 float f;
 double d;
-unsigned char *  p;
 long long i64;
 uint64 ui64;
-intptr_t iptr;
-uintptr_t uiptr;
 } __attribute__ ((gcc_struct));
 struct OpTable ops;
 } __attribute__ ((gcc_struct));
@@ -2578,7 +2575,7 @@ ListAdd(args, MkExpString(string));
 {
 char temp[1024];
 
-sprintf(temp, "%d", value->data);
+sprintf(temp, "%d", (int)value->data);
 ListAdd(args, MkExpConstant(temp));
 }
 stmt = MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("eEnum_AddFixedValue")), args)));

@@ -467,7 +467,7 @@ struct TypeName * typeName;
 } __attribute__ ((gcc_struct));
 unsigned int debugValue;
 struct __ecereNameSpace__ecere__com__DataValue val;
-unsigned int address;
+uint64 address;
 unsigned int hasAddress;
 struct Type * expType;
 struct Type * destType;
@@ -1236,134 +1236,6 @@ string[count] = '\0';
 }
 }
 
-extern int isspace(int c);
-
-long long _strtoi64(char * string, char ** endString, int base)
-{
-long long value = 0;
-int sign = 1;
-int c;
-char ch;
-
-for(c = 0; (ch = string[c]) && isspace(ch); c++)
-;
-if(ch == '+')
-c++;
-else if(ch == '-')
-{
-sign = -1;
-c++;
-}
-;
-if(!base)
-{
-if(ch == (char)0 && string[c + 1] == 'x')
-{
-base = 16;
-c += 2;
-}
-else if(ch == '0')
-{
-base = 8;
-c++;
-}
-else
-base = 10;
-}
-for(; (ch = string[c]); c++)
-{
-if(ch == '0')
-ch = (char)0;
-else if(ch >= '1' && ch <= '9')
-ch -= '1';
-else if(ch >= 'a' && ch <= 'z')
-ch -= 'a';
-else if(ch >= 'A' && ch <= 'Z')
-ch -= 'A';
-else
-{
-if(endString)
-*endString = string + c;
-break;
-}
-if(ch < base)
-{
-value *= base;
-value += ch;
-}
-else
-{
-if(endString)
-*endString = string + c;
-break;
-}
-}
-return sign * value;
-}
-
-uint64 _strtoui64(char * string, char ** endString, int base)
-{
-uint64 value = 0;
-int sign = 1;
-int c;
-char ch;
-
-for(c = 0; (ch = string[c]) && isspace(ch); c++)
-;
-if(ch == '+')
-c++;
-else if(ch == '-')
-{
-sign = -1;
-c++;
-}
-;
-if(!base)
-{
-if(ch == (char)0 && string[c + 1] == 'x')
-{
-base = 16;
-c += 2;
-}
-else if(ch == '0')
-{
-base = 8;
-c++;
-}
-else
-base = 10;
-}
-for(; (ch = string[c]); c++)
-{
-if(ch == '0')
-ch = (char)0;
-else if(ch >= '1' && ch <= '9')
-ch -= '1';
-else if(ch >= 'a' && ch <= 'z')
-ch -= 'a';
-else if(ch >= 'A' && ch <= 'Z')
-ch -= 'A';
-else
-{
-if(endString)
-*endString = string + c;
-break;
-}
-if(ch < base)
-{
-value *= base;
-value += ch;
-}
-else
-{
-if(endString)
-*endString = string + c;
-break;
-}
-}
-return sign * value;
-}
-
 extern struct Type * ProcessTypeString(char *  string, unsigned int staticMethod);
 
 extern struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
@@ -1758,11 +1630,8 @@ int i;
 unsigned int ui;
 float f;
 double d;
-unsigned char *  p;
 long long i64;
 uint64 ui64;
-intptr_t iptr;
-uintptr_t uiptr;
 } __attribute__ ((gcc_struct));
 struct OpTable ops;
 } __attribute__ ((gcc_struct));
@@ -1782,9 +1651,9 @@ if(op2.kind == 4 && op2.type->isSigned)
 else if(op2.kind == 4)
 *value2 = (int)op2.ui64;
 else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (int)op2.iptr;
+*value2 = (int)op2.i64;
 else if(op2.kind == 22)
-*value2 = (int)op2.uiptr;
+*value2 = (int)op2.ui64;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (int)op2.s;
 else if(op2.kind == 2)
@@ -1798,7 +1667,7 @@ else if(op2.kind == 6)
 else if(op2.kind == 7)
 *value2 = (int)op2.d;
 else if(op2.kind == 13)
-*value2 = (int)op2.ui;
+*value2 = (int)op2.ui64;
 else
 return 0x0;
 return 0x1;
@@ -1817,9 +1686,9 @@ if(op2.kind == 4 && op2.type->isSigned)
 else if(op2.kind == 4)
 *value2 = (unsigned int)op2.ui64;
 else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (unsigned int)op2.iptr;
+*value2 = (unsigned int)op2.i64;
 else if(op2.kind == 22)
-*value2 = (unsigned int)op2.uiptr;
+*value2 = (unsigned int)op2.ui64;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (unsigned int)op2.s;
 else if(op2.kind == 2)
@@ -1833,7 +1702,7 @@ else if(op2.kind == 6)
 else if(op2.kind == 7)
 *value2 = (unsigned int)op2.d;
 else if(op2.kind == 13)
-*value2 = op2.ui;
+*value2 = (unsigned int)op2.ui64;
 else
 return 0x0;
 return 0x1;
@@ -1852,9 +1721,9 @@ if(op2.kind == 4 && op2.type->isSigned)
 else if(op2.kind == 4)
 *value2 = (long long)op2.ui64;
 else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (long long)op2.iptr;
+*value2 = op2.i64;
 else if(op2.kind == 22)
-*value2 = (long long)op2.uiptr;
+*value2 = (long long)op2.ui64;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (long long)op2.s;
 else if(op2.kind == 2)
@@ -1868,7 +1737,7 @@ else if(op2.kind == 6)
 else if(op2.kind == 7)
 *value2 = (long long)op2.d;
 else if(op2.kind == 13)
-*value2 = (long long)op2.ui;
+*value2 = (long long)op2.ui64;
 else
 return 0x0;
 return 0x1;
@@ -1887,9 +1756,9 @@ if(op2.kind == 4 && op2.type->isSigned)
 else if(op2.kind == 4)
 *value2 = op2.ui64;
 else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (uint64)op2.iptr;
+*value2 = (uint64)op2.i64;
 else if(op2.kind == 22)
-*value2 = (uint64)op2.uiptr;
+*value2 = op2.ui64;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (uint64)op2.s;
 else if(op2.kind == 2)
@@ -1903,7 +1772,7 @@ else if(op2.kind == 6)
 else if(op2.kind == 7)
 *value2 = (uint64)op2.d;
 else if(op2.kind == 13)
-*value2 = (uint64)op2.ui;
+*value2 = op2.ui64;
 else
 return 0x0;
 return 0x1;
@@ -1922,9 +1791,9 @@ if(op2.kind == 4 && op2.type->isSigned)
 else if(op2.kind == 4)
 *value2 = (intptr_t)op2.ui64;
 else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = op2.iptr;
+*value2 = (intptr_t)op2.i64;
 else if(op2.kind == 22)
-*value2 = (intptr_t)op2.uiptr;
+*value2 = (intptr_t)op2.ui64;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (intptr_t)op2.s;
 else if(op2.kind == 2)
@@ -1938,7 +1807,7 @@ else if(op2.kind == 6)
 else if(op2.kind == 7)
 *value2 = (intptr_t)op2.d;
 else if(op2.kind == 13)
-*value2 = (intptr_t)op2.ui;
+*value2 = (intptr_t)op2.ui64;
 else
 return 0x0;
 return 0x1;
@@ -1957,9 +1826,9 @@ if(op2.kind == 4 && op2.type->isSigned)
 else if(op2.kind == 4)
 *value2 = (uintptr_t)op2.ui64;
 else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (uintptr_t)op2.iptr;
+*value2 = (uintptr_t)op2.i64;
 else if(op2.kind == 22)
-*value2 = op2.uiptr;
+*value2 = (uintptr_t)op2.ui64;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (uintptr_t)op2.s;
 else if(op2.kind == 2)
@@ -1973,7 +1842,7 @@ else if(op2.kind == 6)
 else if(op2.kind == 7)
 *value2 = (uintptr_t)op2.d;
 else if(op2.kind == 13)
-*value2 = (uintptr_t)op2.ui;
+*value2 = (uintptr_t)op2.ui64;
 else
 return 0x0;
 return 0x1;
@@ -1992,9 +1861,9 @@ if(op2.kind == 4 && op2.type->isSigned)
 else if(op2.kind == 4)
 *value2 = (short)op2.ui64;
 else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (short)op2.iptr;
+*value2 = (short)op2.i64;
 else if(op2.kind == 22)
-*value2 = (short)op2.uiptr;
+*value2 = (short)op2.ui64;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = op2.s;
 else if(op2.kind == 2)
@@ -2008,7 +1877,7 @@ else if(op2.kind == 6)
 else if(op2.kind == 7)
 *value2 = (short)op2.d;
 else if(op2.kind == 13)
-*value2 = (short)op2.ui;
+*value2 = (short)op2.ui64;
 else
 return 0x0;
 return 0x1;
@@ -2027,9 +1896,9 @@ if(op2.kind == 4 && op2.type->isSigned)
 else if(op2.kind == 4)
 *value2 = (unsigned short)op2.ui64;
 else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (unsigned short)op2.iptr;
+*value2 = (unsigned short)op2.i64;
 else if(op2.kind == 22)
-*value2 = (unsigned short)op2.uiptr;
+*value2 = (unsigned short)op2.ui64;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (unsigned short)op2.s;
 else if(op2.kind == 2)
@@ -2043,7 +1912,7 @@ else if(op2.kind == 6)
 else if(op2.kind == 7)
 *value2 = (unsigned short)op2.d;
 else if(op2.kind == 13)
-*value2 = (unsigned short)op2.ui;
+*value2 = (unsigned short)op2.ui64;
 else
 return 0x0;
 return 0x1;
@@ -2062,9 +1931,9 @@ if(op2.kind == 4 && op2.type->isSigned)
 else if(op2.kind == 4)
 *value2 = (char)op2.ui64;
 else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (char)op2.iptr;
+*value2 = (char)op2.i64;
 else if(op2.kind == 22)
-*value2 = (char)op2.uiptr;
+*value2 = (char)op2.ui64;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (char)op2.s;
 else if(op2.kind == 2)
@@ -2078,7 +1947,7 @@ else if(op2.kind == 6)
 else if(op2.kind == 7)
 *value2 = (char)op2.d;
 else if(op2.kind == 13)
-*value2 = (char)op2.ui;
+*value2 = (char)op2.ui64;
 else
 return 0x0;
 return 0x1;
@@ -2097,9 +1966,9 @@ if(op2.kind == 4 && op2.type->isSigned)
 else if(op2.kind == 4)
 *value2 = (unsigned char)op2.ui64;
 else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (unsigned char)op2.iptr;
+*value2 = (unsigned char)op2.i64;
 else if(op2.kind == 22)
-*value2 = (unsigned char)op2.uiptr;
+*value2 = (unsigned char)op2.ui64;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (unsigned char)op2.s;
 else if(op2.kind == 2)
@@ -2113,7 +1982,7 @@ else if(op2.kind == 6)
 else if(op2.kind == 7)
 *value2 = (unsigned char)op2.d;
 else if(op2.kind == 13)
-*value2 = (unsigned char)op2.ui;
+*value2 = (unsigned char)op2.ui64;
 else
 return 0x0;
 return 0x1;
@@ -2132,9 +2001,9 @@ if(op2.kind == 4 && op2.type->isSigned)
 else if(op2.kind == 4)
 *value2 = (float)(float)op2.ui64;
 else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (float)op2.iptr;
+*value2 = (float)(float)op2.i64;
 else if(op2.kind == 22)
-*value2 = (float)op2.uiptr;
+*value2 = (float)(float)op2.ui64;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (float)(float)op2.s;
 else if(op2.kind == 2)
@@ -2148,7 +2017,7 @@ else if(op2.kind == 6)
 else if(op2.kind == 7)
 *value2 = (float)op2.d;
 else if(op2.kind == 13)
-*value2 = (float)(float)op2.ui;
+*value2 = (float)(float)op2.ui64;
 else
 return 0x0;
 return 0x1;
@@ -2167,9 +2036,9 @@ if(op2.kind == 4 && op2.type->isSigned)
 else if(op2.kind == 4)
 *value2 = (double)(double)op2.ui64;
 else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (double)op2.iptr;
+*value2 = (double)(double)op2.i64;
 else if(op2.kind == 22)
-*value2 = (double)op2.uiptr;
+*value2 = (double)(double)op2.ui64;
 else if(op2.kind == 2 && op2.type->isSigned)
 *value2 = (double)(double)op2.s;
 else if(op2.kind == 2)
@@ -2183,7 +2052,7 @@ else if(op2.kind == 6)
 else if(op2.kind == 7)
 *value2 = (double)op2.d;
 else if(op2.kind == 13)
-*value2 = (double)(double)op2.ui;
+*value2 = (double)(double)op2.ui64;
 else
 return 0x0;
 return 0x1;
@@ -2908,9 +2777,9 @@ struct External * external = (((void *)0));
 struct Symbol * classSym = FindClass(name);
 
 if(!inCompiler || !classSym)
-return (((void *)0));
+return ;
 if(classSym->registered && (classSym->registered->type == 2 || classSym->registered->type == 3 || classSym->registered->type == 4))
-return (((void *)0));
+return ;
 if(classSym->registered && classSym->imported && !classSym->declaredStructSym)
 {
 struct Declaration * decl;
@@ -2927,7 +2796,7 @@ if(classSym->registered->templateClass)
 DeclareStruct(classSym->registered->templateClass->fullName, skipNoHead);
 classSym->declaring--;
 }
-return (((void *)0));
+return ;
 }
 DeclareMembers(classSym->registered, 0x0);
 structName[0] = (char)0;
@@ -9308,6 +9177,10 @@ output[d++] = ch;
 output[d] = '\0';
 }
 
+extern long long __ecereNameSpace__ecere__com___strtoi64(char *  string, char * *  endString, int base);
+
+extern uint64 __ecereNameSpace__ecere__com___strtoui64(char *  string, char * *  endString, int base);
+
 extern double strtod(char * , char * * );
 
 struct Operand GetOperand(struct Expression * exp)
@@ -9380,12 +9253,12 @@ break;
 case 4:
 if(type->isSigned)
 {
-op.i64 = _strtoi64(exp->constant, (((void *)0)), 0);
+op.i64 = __ecereNameSpace__ecere__com___strtoi64(exp->constant, (((void *)0)), 0);
 op.ops = intOps;
 }
 else
 {
-op.ui64 = _strtoui64(exp->constant, (((void *)0)), 0);
+op.ui64 = __ecereNameSpace__ecere__com___strtoui64(exp->constant, (((void *)0)), 0);
 op.ops = uintOps;
 }
 op.kind = 3;
@@ -9393,12 +9266,12 @@ break;
 case 22:
 if(type->isSigned)
 {
-op.iptr = (intptr_t)_strtoi64(exp->constant, (((void *)0)), 0);
+op.i64 = __ecereNameSpace__ecere__com___strtoi64(exp->constant, (((void *)0)), 0);
 op.ops = intOps;
 }
 else
 {
-op.uiptr = (uintptr_t)_strtoui64(exp->constant, (((void *)0)), 0);
+op.ui64 = __ecereNameSpace__ecere__com___strtoui64(exp->constant, (((void *)0)), 0);
 op.ops = uintOps;
 }
 op.kind = 3;
@@ -9414,7 +9287,7 @@ break;
 case 12:
 case 13:
 case 8:
-op.p = (unsigned char *)strtoul(exp->constant, (((void *)0)), 0);
+op.ui64 = __ecereNameSpace__ecere__com___strtoui64(exp->constant, (((void *)0)), 0);
 op.kind = 13;
 op.ops = uintOps;
 break;
@@ -9902,14 +9775,14 @@ case 4:
 {
 void (* Set)(void *, long long) = (void *)prop->Set;
 
-Set(inst->data, _strtoi64(value->constant, (((void *)0)), 0));
+Set(inst->data, __ecereNameSpace__ecere__com___strtoi64(value->constant, (((void *)0)), 0));
 break;
 }
 case 22:
 {
 void (* Set)(void *, intptr_t) = (void *)prop->Set;
 
-Set(inst->data, (intptr_t)_strtoi64(value->constant, (((void *)0)), 0));
+Set(inst->data, (intptr_t)__ecereNameSpace__ecere__com___strtoi64(value->constant, (((void *)0)), 0));
 break;
 }
 }
@@ -16414,8 +16287,6 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetYydebug", "void SetYy
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetThisClass", "void SetThisClass(ecere::com::Class c)", SetThisClass, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetThisClass", "ecere::com::Class GetThisClass(void)", GetThisClass, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PrintExpression", "void PrintExpression(Expression exp, char * string)", PrintExpression, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("_strtoi64", "int64 _strtoi64(char * string, char * * endString, int base)", _strtoi64, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("_strtoui64", "uint64 _strtoui64(char * string, char * * endString, int base)", _strtoui64, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessTemplateParameterType", "Type ProcessTemplateParameterType(TemplateParameter param)", ProcessTemplateParameterType, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("NeedCast", "bool NeedCast(Type type1, Type type2)", NeedCast, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PrintInt", "char * PrintInt(int64 result)", PrintInt, module, 1);

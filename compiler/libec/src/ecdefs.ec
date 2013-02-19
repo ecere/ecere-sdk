@@ -1153,11 +1153,11 @@ public:
       unsigned int ui;
       float f;
       double d;
-      unsigned char * p;
+      // unsigned char * p; // Now always storing addresses in ui64
       int64 i64;
       uint64 ui64;
-      intptr iptr;
-      uintptr uiptr;
+      // intptr iptr;
+      // uintptr uiptr;
    };
    OpTable ops;
 };

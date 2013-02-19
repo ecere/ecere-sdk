@@ -358,7 +358,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, char * classNam
    int privateID = 0;
    bool privateMembers = false;
 
-   sprintf(dataMemberSize, "%d", sizeof(DataMember));
+   sprintf(dataMemberSize, "%d", (int)sizeof(DataMember));
    if(!isMember)
    {
       for(prop = regClass.conversions.first; prop; prop = prop.next)
@@ -1486,7 +1486,8 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                // uint value
                {
                   char temp[1024];
-                  sprintf(temp, "%d", value.data);
+                  // TODO: Support 64 bit enums
+                  sprintf(temp, "%d", (int)value.data);
                   ListAdd(args, MkExpConstant(temp));
                }
 
