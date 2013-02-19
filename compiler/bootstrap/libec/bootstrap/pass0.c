@@ -2343,7 +2343,7 @@ MangleClassName(name);
 params = MkList();
 declId = MkDeclaratorIdentifier(MkIdentifier(name));
 {
-decl = PlugDeclarator(propertyDef->declarator, MkDeclaratorFunction(declId, params));
+decl = MkDeclaratorFunction(declId, params);
 func = MkClassFunction(MkListOne(MkSpecifierName("uint64")), (((void *)0)), decl, (((void *)0)));
 }
 ProcessClassFunctionBody(func, propertyDef->getStmt);

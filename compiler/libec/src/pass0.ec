@@ -1388,7 +1388,8 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      else
                      */
                      {
-                        decl = PlugDeclarator(propertyDef.declarator, MkDeclaratorFunction(declId, params));
+                        //decl = PlugDeclarator(propertyDef.declarator, MkDeclaratorFunction(declId, params));
+                        decl = MkDeclaratorFunction(declId, params);
                         //func = MkClassFunction(CopyList(propertyDef.specifiers, CopySpecifier), null, decl, null);
                         func = MkClassFunction(MkListOne(MkSpecifierName("uint64")), null, decl, null);
                      }
