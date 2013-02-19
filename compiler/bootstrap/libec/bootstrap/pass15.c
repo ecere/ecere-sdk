@@ -104,9 +104,9 @@ struct __ecereNameSpace__ecere__com__Class * _class;
 char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct Type * dataType;
-void (*  Set)();
-int (*  Get)();
-unsigned int (*  IsSet)();
+void (*  Set)(void * , int);
+int (*  Get)(void * );
+unsigned int (*  IsSet)(void * );
 void *  data;
 void *  symbol;
 int vid;
@@ -9919,7 +9919,7 @@ else if(value->type == 3)
 char temp[1024];
 
 ReadString(temp, value->string);
-prop->Set(inst->data, temp);
+((void (*)(void *, void *))(void *)prop->Set)(inst->data, temp);
 }
 }
 }
@@ -11714,7 +11714,7 @@ else
 char constant[256];
 
 exp->type = 2;
-sprintf(constant, "%d", classProp->Get(_class));
+sprintf(constant, "%d", (int)classProp->Get(_class));
 exp->constant = __ecereNameSpace__ecere__sys__CopyString(constant);
 }
 }

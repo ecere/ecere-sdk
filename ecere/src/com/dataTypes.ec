@@ -413,10 +413,20 @@ static int OnCompare(Class _class, void * data1, void * data2)
       int result = 0;
       if(data1 && data2)
       {
-         if(*(void **)data1 > *(void **)data2)
-            result = 1;
-         else if(*(void **)data1 < *(void **)data2)
-            result = -1;
+         if(_class.typeSize == 8)
+         {
+            if(*(uint64 *)data1 > *(uint64 *)data2)
+               result = 1;
+            else if(*(uint64 *)data1 < *(uint64 *)data2)
+               result = -1;
+         }
+         else
+         {
+            if(*(uint *)data1 > *(uint *)data2)
+               result = 1;
+            else if(*(uint *)data1 < *(uint *)data2)
+               result = -1;
+         }
       }
       else if(!data1 && data2)
          return 1;
@@ -480,7 +490,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                      DataValue value = { 0 };
                      if(!strcmp(prop.dataTypeString, "float"))
                      {
-                        value.f = ((float(*)())(void *)prop.Get)(data);
+                        value.f = ((float(*)(void *))(void *)prop.Get)(data);
                         if(value.f)
                         {
                            bool needClass = true;
@@ -492,14 +502,25 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                               strcat(memberString, "f");
                         }
                      }
-                     else
+                     else if(memberType.type == normalClass || memberType.type == noHeadClass)
                      {
-                        value.i = prop.Get(data);
-                        if(value.i || prop.IsSet)
+                        value.p = ((void *(*)(void *))(void *)prop.Get)(data);
+                        if(value.p || prop.IsSet)
                         {
                            bool needClass = true;
                            char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, 
                               (memberType.type == normalClass) ? value.p : &value, memberString, null, &needClass);
+                           if(result && result != memberString)
+                              strcpy(memberString, result);
+                        }
+                     }
+                     else
+                     {
+                        value.i = ((int(*)(void *))(void *)prop.Get)(data);
+                        if(value.i || prop.IsSet)
+                        {
+                           bool needClass = true;
+                           char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, null, &needClass);
                            if(result && result != memberString)
                               strcpy(memberString, result);
                         }
@@ -884,7 +905,12 @@ static bool OnGetDataFromString(Class _class, void ** data, char * string)
                      *(int *)((byte *)data + (((thisMember._class.type == normalClass) ? thisMember._class.offset : 0) + thisMember.offset)) = value.i;
                }
                else if(thisMember.isProperty && ((Property)thisMember).Set)
-                  ((Property)thisMember).Set(data, value.i);
+               {
+                  if(memberType.type == noHeadClass || memberType.type == normalClass || memberType.type == structClass)
+                     ((void (*)(void *, void *))(void *)((Property)thisMember).Set)(data, value.p);
+                  else
+                     ((void (*)(void *, int))(void *)((Property)thisMember).Set)(data, value.i);
+               }
             }
          }
          else

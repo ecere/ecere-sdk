@@ -373,12 +373,12 @@ bool Code_IsPropertyModified(Instance test, ObjectInfo selected, Property prop)
          void * dataForm = new0 byte[dataType.structSize];
          void * dataTest = new0 byte[dataType.structSize];
    
-         prop.Get(selected.instance, dataForm);
-         prop.Get(test, dataTest);
+         ((void (*)(void *, void *))(void *)prop.Get)(selected.instance, dataForm);
+         ((void (*)(void *, void *))(void *)prop.Get)(test, dataTest);
 
          if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
          {
-            prop.Set(test, dataForm);
+            ((void (*)(void *, void *))(void *)prop.Set)(test, dataForm);
             result = true;
          }
          delete dataForm;
@@ -388,12 +388,12 @@ bool Code_IsPropertyModified(Instance test, ObjectInfo selected, Property prop)
       {
          void * dataForm, * dataTest;
    
-         dataForm = (void *)prop.Get(selected.instance);
-         dataTest = (void *)prop.Get(test);
+         dataForm = ((void *(*)(void *))(void *)prop.Get)(selected.instance);
+         dataTest = ((void *(*)(void *))(void *)prop.Get)(test);
    
          if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
          {
-            prop.Set(test, dataForm);
+            ((void (*)(void *, void *))(void *)prop.Set)(test, dataForm);
             result = true;
          }
       }
@@ -2972,7 +2972,7 @@ class CodeEditor : Window
                                                             computed.instance._class.symbol.registered && 
                                                             eClass_IsDerived(computed.instance._class.symbol.registered, propertyClass))
                                                          {
-                                                            prop.Set(instance, computed.instance.data);
+                                                            ((void (*)(void *, void *))(void *)prop.Set)(instance, computed.instance.data);
 
                                                             // This was saved in the control and shouldn't be freed by FreeExpression...
                                                             if(propertyClass.type == normalClass)
@@ -2985,7 +2985,7 @@ class CodeEditor : Window
                                                    {
                                                       String temp = new char[strlen(computed.string)+1];
                                                       ReadString(temp, computed.string);
-                                                      prop.Set(instance, temp);
+                                                      ((void (*)(void *, void *))(void *)prop.Set)(instance, temp);
                                                       delete temp;
                                                    }
                                                    else
@@ -3012,7 +3012,7 @@ class CodeEditor : Window
                                                       {
                                                          String temp = new char[strlen(computed.string)+1];
                                                          ReadString(temp, computed.string);
-                                                         prop.Set(instance, temp);
+                                                         ((void (*)(void *, void *))(void *)prop.Set)(instance, temp);
                                                          delete temp;
                                                       }
                                                    }
@@ -3191,7 +3191,7 @@ class CodeEditor : Window
                                                                                        computed.instance._class.symbol.registered && 
                                                                                        eClass_IsDerived(computed.instance._class.symbol.registered, propertyClass))
                                                                                     {
-                                                                                       prop.Set(control, computed.instance.data);
+                                                                                       ((void (*)(void *, void *))(void *)prop.Set)(control, computed.instance.data);
 
                                                                                        // This was saved in the control and shouldn't be freed by FreeExpression...
                                                                                        if(propertyClass.type == normalClass)
@@ -3210,7 +3210,7 @@ class CodeEditor : Window
                                                                                     if(!strcmp(name, "this"))
                                                                                     {
                                                                                        if(prop.Set)
-                                                                                          prop.Set(control, instance);
+                                                                                          ((void (*)(void *, void *))(void *)prop.Set)(control, instance);
                                                                                        member.variable = false;
                                                                                     }
                                                                                     else
@@ -3220,7 +3220,7 @@ class CodeEditor : Window
                                                                                           if(check.name && !strcmp(name, check.name))
                                                                                           {
                                                                                              if(prop.Set)
-                                                                                                prop.Set(control, check.instance);
+                                                                                                ((void (*)(void *, void *))(void *)prop.Set)(control, check.instance);
                                                                                              member.variable = false;
                                                                                              break;
                                                                                           }
@@ -3242,7 +3242,7 @@ class CodeEditor : Window
                                                                                              if(check.name && !strcmp(name, check.name))
                                                                                              {
                                                                                                 if(prop.Set)
-                                                                                                   prop.Set(control, check.instance);
+                                                                                                   ((void (*)(void *, void *))(void *)prop.Set)(control, check.instance);
                                                                                                 member.variable = false;
                                                                                                 break;
                                                                                              }
@@ -3274,7 +3274,7 @@ class CodeEditor : Window
                                                                               {
                                                                                  String temp = new char[strlen(computed.string)+1];
                                                                                  ReadString(temp, computed.string);
-                                                                                 prop.Set(control, temp);
+                                                                                 ((void (*)(void *, void *))(void *)prop.Set)(control, temp);
                                                                                  delete temp;
                                                                               }
                                                                               else
@@ -3298,13 +3298,13 @@ class CodeEditor : Window
                                                                                     else if(!strcmp(propertyClass.dataTypeString, "double"))
                                                                                        ((void (*)(void *, double))(void *)prop.Set)(control, strtod(computed.constant, null));
                                                                                     else
-                                                                                       prop.Set(control, strtol(computed.constant, null, 0));
+                                                                                       ((void (*)(void *, int))(void *)prop.Set)(control, strtol(computed.constant, null, 0));
                                                                                  }
                                                                                  else if(computed.type == stringExp  && propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
                                                                                  {
                                                                                     String temp = new char[strlen(computed.string)+1];
                                                                                     ReadString(temp, computed.string);
-                                                                                    prop.Set(control, temp);
+                                                                                    ((void (*)(void *, void *))(void *)prop.Set)(control, temp);
                                                                                     delete temp;
                                                                                  }
                                                                               }
@@ -3507,8 +3507,8 @@ class CodeEditor : Window
                      void * dataForm = new0 byte[dataType.structSize];
                      void * dataTest = new0 byte[dataType.structSize];
                
-                     ((void (*)())(void *)prop.Get)(control, dataForm);
-                     prop.Get(test, dataTest);
+                     ((void (*)(void *, void *))(void *)prop.Get)(control, dataForm);
+                     ((void (*)(void *, void *))(void *)prop.Get)(test, dataTest);
                
                      if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                      {
@@ -3518,7 +3518,7 @@ class CodeEditor : Window
                         if(*prev)
                            f.Printf(", ");
                   
-                        prop.Set(test, dataForm);
+                        ((void (*)(void *, void *))(void *)prop.Set)(test, dataForm);
                   
                         string = ((char * (*)(void *, void *, void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, dataForm, tempString, null, &needClass);
                         
@@ -3543,8 +3543,8 @@ class CodeEditor : Window
                   {
                      void * dataForm, * dataTest;
                
-                     dataForm = (void *)prop.Get(control);
-                     dataTest = (void *)prop.Get(test);
+                     dataForm = ((void *(*)(void *))(void *)prop.Get)(control);
+                     dataTest = ((void *(*)(void *))(void *)prop.Get)(test);
                
                      if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                      {
@@ -3553,7 +3553,7 @@ class CodeEditor : Window
                         if(*prev)
                            f.Printf(", ");
                   
-                        prop.Set(test, dataForm);
+                        ((void (*)(void *, void *))(void *)prop.Set)(test, dataForm);
                   
                         eClass_FindNextMember(_class, curClass, curMember, null, null);
                         if(*curMember != (DataMember)prop)
@@ -4255,15 +4255,15 @@ class CodeEditor : Window
                   void * dataForm = new0 byte[dataType.structSize];
                   void * dataTest = new0 byte[dataType.structSize];
                
-                  prop.Get(classObject.instance, dataForm);
-                  prop.Get(test, dataTest);
+                  ((void (*)(void *, void *))(void *)prop.Get)(classObject.instance, dataForm);
+                  ((void (*)(void *, void *))(void *)prop.Get)(test, dataTest);
 
                   if(((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                   {
                      bool needClass = true;
                      
                      string = ((char * (*)(void *, void *, void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, dataForm, tempString, null, &needClass);
-                     prop.Set(test, dataForm);
+                     ((void (*)(void *, void *))(void *)prop.Set)(test, dataForm);
                      if(needClass)
                         f.Printf("\n   %s%s = %c %s %c;", specify ? "property::" : "", prop.name, /*dataType.name, */OpenBracket, string, CloseBracket);
                      else
@@ -4276,14 +4276,14 @@ class CodeEditor : Window
                {
                   void * dataForm, * dataTest;
                
-                  dataForm = (void *)prop.Get(classObject.instance);
-                  dataTest = (void *)prop.Get(test);
+                  dataForm = ((void *(*)(void *))(void *)prop.Get)(classObject.instance);
+                  dataTest = ((void *(*)(void *))(void *)prop.Get)(test);
                
                   if(((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                   {
                      char tempString[1024] = "";
                      char * string;
-                     prop.Set(test, dataForm);
+                     ((void (*)(void *, void *))(void *)prop.Set)(test, dataForm);
                   
                      if(eClass_IsDerived(classObject.instance._class, dataType) && classObject.instance == dataForm)
                      {

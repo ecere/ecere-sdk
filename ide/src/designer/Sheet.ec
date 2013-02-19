@@ -39,7 +39,7 @@ void SetPropValue(Property prop, void * object, any_object value)
 
    if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
    {
-      prop.Set(object, value);
+      ((void (*)(void *, void *))(void *)prop.Set)(object, value);
    }
    // TOFIX: How to swiftly handle classes with base data type?
    else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
@@ -89,33 +89,33 @@ any_object GetPropValue(Property prop, Instance object)
       // TOFIX: How to swiftly handle classes with base data type?
       else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
       {
-         double d = ((double(*)())(void *)prop.Get)(object);
+         double d = ((double(*)(void *))(void *)prop.Get)(object);
          return d;
       }
       else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
       {
-         float f =((float(*)())(void *)prop.Get)(object);
+         float f =((float(*)(void *))(void *)prop.Get)(object);
          return f;
       }
       else if(type.typeSize == sizeof(int64))// || !strcmp(type.dataTypeString, "int64") || !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
       {
-         return ((int64(*)())(void *)prop.Get)(object);
+         return ((int64(*)(void *))(void *)prop.Get)(object);
       }
       else if(type.typeSize == sizeof(int))// || !strcmp(type.dataTypeString, "int") || !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
       {
-         return ((int(*)())(void *)prop.Get)(object);
+         return ((int(*)(void *))(void *)prop.Get)(object);
       }
       else if(type.typeSize == sizeof(short int)) // || !strcmp(type.dataTypeString, "short") || !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||  !strcmp(type.dataTypeString, "int16"))
       {
-         return ((short(*)())(void *)prop.Get)(object);
+         return ((short(*)(void *))(void *)prop.Get)(object);
       }
       else if(type.typeSize == sizeof(byte))// || !strcmp(type.dataTypeString, "char") || !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
       {
-         return ((byte(*)())(void *)prop.Get)(object);
+         return ((byte(*)(void *))(void *)prop.Get)(object);
       }
       else
       {
-         return prop.Get(object);
+         return ((int (*)(void *))(void *)prop.Get)(object);
       }
    }
    else
@@ -131,43 +131,43 @@ void CopyProperty(Property prop, Instance dest, Instance src)
    if(type.type == structClass)
    {
       void * propData = new0 byte[type.structSize];
-      prop.Get(src, propData);
-      prop.Set(dest, propData);
+      ((void (*)(void *, void *))(void *)prop.Get)(src, propData);
+      ((void (*)(void *, void *))(void *)prop.Set)(dest, propData);
       delete propData;
    }
    else if(type.type == normalClass || type.type == noHeadClass)
    {
       // TOCHECK: Why was there a return here?
-      /*return */prop.Set(dest, ((void*(*)())(void *)prop.Get)(src));
+      /*return */((void (*)(void *, void *))(void *)prop.Set)(dest, ((void*(*)(void *))(void *)prop.Get)(src));
    }
    // TOFIX: How to swiftly handle classes with base data type?
    else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
    {
-      ((void (*)(void *, double))(void *)prop.Set)(dest, ((double(*)())(void *)prop.Get)(src));
+      ((void (*)(void *, double))(void *)prop.Set)(dest, ((double(*)(void *))(void *)prop.Get)(src));
    }
    else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
    {
-      ((void (*)(void *, float))(void *)prop.Set)(dest, ((float(*)())(void *)prop.Get)(src));
+      ((void (*)(void *, float))(void *)prop.Set)(dest, ((float(*)(void *))(void *)prop.Get)(src));
    }
    else if(type.typeSize == sizeof(int64))// || !strcmp(type.dataTypeString, "int64") || !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
    {
-      ((void (*)(void *, int64))(void *)prop.Set)(dest, ((int64(*)())(void *)prop.Get)(src));
+      ((void (*)(void *, int64))(void *)prop.Set)(dest, ((int64(*)(void *))(void *)prop.Get)(src));
    }
    else if(type.typeSize == sizeof(int))// || !strcmp(type.dataTypeString, "int") || !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
    {
-      ((void (*)(void *, int))(void *)prop.Set)(dest, ((int(*)())(void *)prop.Get)(src));
+      ((void (*)(void *, int))(void *)prop.Set)(dest, ((int(*)(void *))(void *)prop.Get)(src));
    }
    else if(type.typeSize == sizeof(short int)) // || !strcmp(type.dataTypeString, "short") || !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||  !strcmp(type.dataTypeString, "int16"))
    {
-      ((void (*)(void *, short))(void *)prop.Set)(dest, ((short(*)())(void *)prop.Get)(src));
+      ((void (*)(void *, short))(void *)prop.Set)(dest, ((short(*)(void *))(void *)prop.Get)(src));
    }
    else if(type.typeSize == sizeof(byte))// || !strcmp(type.dataTypeString, "char") || !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
    {
-      ((void (*)(void *, byte))(void *)prop.Set)(dest, ((byte(*)())(void *)prop.Get)(src));
+      ((void (*)(void *, byte))(void *)prop.Set)(dest, ((byte(*)(void *))(void *)prop.Get)(src));
    }
    else
    {
-      prop.Set(dest, prop.Get(src));
+      ((void (*)(void *, int))(void *)prop.Set)(dest, ((int (*)(void *))(void *)prop.Get)(src));
    }
 }
 
@@ -188,36 +188,36 @@ void GetProperty(Property prop, Instance object, DataValue value)
 
       if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
       {
-         value.p = ((void*(*)())(void *)prop.Get)(object);
+         value.p = ((void*(*)(void *))(void *)prop.Get)(object);
       }
       // TOFIX: How to swiftly handle classes with base data type?
       else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
       {
-         value.d = ((double(*)())(void *)prop.Get)(object);
+         value.d = ((double(*)(void *))(void *)prop.Get)(object);
       }
       else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
       {
-         value.f = ((float(*)())(void *)prop.Get)(object);
+         value.f = ((float(*)(void *))(void *)prop.Get)(object);
       }
       else if(type.typeSize == sizeof(int64))// || !strcmp(type.dataTypeString, "int64") || !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
       {
-         value.i64 = ((int64(*)())(void *)prop.Get)(object);
+         value.i64 = ((int64(*)(void *))(void *)prop.Get)(object);
       }
       else if(type.typeSize == sizeof(int))// || !strcmp(type.dataTypeString, "int") || !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
       {
-         value.i = ((int(*)())(void *)prop.Get)(object);
+         value.i = ((int(*)(void *))(void *)prop.Get)(object);
       }
       else if(type.typeSize == sizeof(short int)) // || !strcmp(type.dataTypeString, "short") || !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||  !strcmp(type.dataTypeString, "int16"))
       {
-         value.s = ((short(*)())(void *)prop.Get)(object);
+         value.s = ((short(*)(void *))(void *)prop.Get)(object);
       }
       else if(type.typeSize == sizeof(byte))// || !strcmp(type.dataTypeString, "char") || !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
       {
-         value.uc = ((byte(*)())(void *)prop.Get)(object);
+         value.uc = ((byte(*)(void *))(void *)prop.Get)(object);
       }
       else
       {
-         value.i = prop.Get(object);
+         value.i = ((int (*)(void *))(void *)prop.Get)(object);
       }
    }
    else
@@ -234,7 +234,7 @@ void SetProperty(Property prop, Instance object, DataValue value)
 
       if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
       {
-         prop.Set(object, value);
+         ((void (*)(void *, void *))(void *)prop.Set)(object, value);
       }
       // TOFIX: How to swiftly handle classes with base data type?
       else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
@@ -1059,10 +1059,10 @@ class Sheet : Window
                if(dataType.type == structClass)
                {
                   data = new0 byte[dataType.structSize];
-                  prop.Get(object, data);
+                  ((void (*)(void *, void *))(void *)prop.Get)(object, data);
                   // CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, &setValue, subDataType.size);
                   CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, (void *)setValue, subDataType.dataType.size);
-                  prop.Set(object, data);
+                  ((void (*)(void *, void *))(void *)prop.Set)(object, data);
                }
                else if(dataType.type == normalClass || dataType.type == noHeadClass)
                {
@@ -1075,20 +1075,21 @@ class Sheet : Window
                      if(subDataType)
                      {
                         DataValue value = { 0 };
-                        value.ui = prop.Get(object);
+                        value.ui = ((uint (*)(void *))(void *)prop.Get)(object);
                         value.ui &= ~ (uint)bitMember.mask;
                         value.ui |= *(uint32 *)setValue << bitMember.pos;
-                        prop.Set(object, value.ui);
+                        ((void (*)(void *, uint))(void *)prop.Set)(object, value.ui);
                      }
                   }
                   else
                   {
+                     // TODO: What does this handle?
                      data = dataType.typeSize ? new0 byte[dataType.typeSize] : null;
-                     prop.Get(object, data);
+                     ((void (*)(void *, void *))(void *)prop.Get)(object, data);
                      // CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, &setValue, subDataType.typeSize);
                      CopyBytes((byte *)data + member.offset + propertyPtr.extraOffset, (void *)setValue, subDataType.dataType.size);
                      // TODO: Support non 32 bit datatypes here
-                     prop.Set(object, data);
+                     ((void (*)(void *, void *))(void *)prop.Set)(object, data);
                   }
                }
 
@@ -1109,25 +1110,25 @@ class Sheet : Window
                if(dataType.type == structClass)
                {
                   data = new0 byte[dataType.structSize];
-                  prop.Get(object, data);
-                  subProperty.Set(data, *(uint32 *)setValue);
-                  prop.Set(object, data);
+                  ((void (*)(void *, void *))(void *)prop.Get)(object, data);
+                  ((void (*)(void *, uint))(void *)subProperty.Set)(data, *(uint32 *)setValue);
+                  ((void (*)(void *, void *))(void *)prop.Set)(object, data);
                }
                else if(dataType.type == normalClass || dataType.type == noHeadClass)
                {
-                  Instance current = (Instance)prop.Get(object);
+                  Instance current = (Instance)((void *(*)(void *))(void *)prop.Get)(object);
                   Instance propObject = eInstance_New(dataType);
                   CopyInstanceData(dataType, propObject, current);
-                  subProperty.Set(propObject, (uint32)setValue);
-                  prop.Set(object, propObject);
+                  ((void (*)(void *, uint))(void *)subProperty.Set)(propObject, (uint32)setValue);
+                  ((void (*)(void *, void *))(void *)prop.Set)(object, propObject);
                }
                else
                {
                   data = dataType.typeSize ? new0 byte[dataType.typeSize] : null;
-                  prop.Get(object, data);
-                  subProperty.Set(data, (uint32)setValue);
+                  ((void (*)(void *, void *))(void *)prop.Get)(object, data);
+                  ((void (*)(void *, uint))(void *)subProperty.Set)(data, (uint32)setValue);
                   // TODO: Support not 32 bit data types here
-                  prop.Set(object, data);
+                  ((void (*)(void *, void *))(void *)prop.Set)(object, data);
                }
 
                if(data) ((void (*)(void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnFree])(dataType,&data);
@@ -1460,7 +1461,7 @@ public:
             if(dataType.type == structClass)
             {
                data = new0 byte[dataType.structSize];
-               prop.Get(object, data);
+               ((void (*)(void *, void *))(void *)prop.Get)(object, data);
                dataPtr = data;
             }
             else
@@ -1505,7 +1506,7 @@ public:
                   if(subDataType.type == structClass)
                   {
                      subData = new0 byte[subDataType.structSize];
-                     subProperty.Get(dataPtr, subData);
+                     ((void (*)(void *, void *))(void *)subProperty.Get)(dataPtr, subData);
                      dataPtr = subData;
                   }
                   else
@@ -1553,7 +1554,7 @@ public:
             if(dataType.type == structClass)
             {
                data = new0 byte[dataType.structSize];
-               prop.Get(object, data);
+               ((void (*)(void *, void *))(void *)prop.Get)(object, data);
                dataPtr = data;
             }
             else
@@ -1597,7 +1598,7 @@ public:
                   if(subDataType.type == structClass)
                   {
                      subData = new0 byte[subDataType.structSize];
-                     subProperty.Get(dataPtr, subData);
+                     ((void (*)(void *, void *))(void *)subProperty.Get)(dataPtr, subData);
                      dataPtr = subData;
                   }
                   else
@@ -1711,7 +1712,7 @@ public:
          {
             data = new0 byte[dataType.structSize];
             if(this.subMember || this.subProperty)
-               prop.Get(object, data);
+               ((void (*)(void *, void *))(void *)prop.Get)(object, data);
             dataPtr = data;
             propObject = data;
          }
@@ -1722,7 +1723,7 @@ public:
             if(this.subMember || this.subProperty)
             {
                Class _class;
-               Instance current = (Instance)prop.Get(object);
+               Instance current = (Instance)((void *(*)(void *))(void *)prop.Get)(object);
                propObject = valueData.p = eInstance_New(dataType);
                CopyInstanceData(dataType, propObject, current);
             }
@@ -1788,7 +1789,7 @@ public:
                if(this.subProperty)
                {
                   if(dataType.type == structClass)
-                     this.subProperty.Set(propObject, subData);
+                     ((void (*)(void *, void *))(void *)this.subProperty.Set)(propObject, subData);
                   else if(dataType.type == unitClass || dataType.type == enumClass || dataType.type == bitClass)
                   {
                      if(!strcmp(dataType.dataTypeString, "float"))
@@ -1800,13 +1801,13 @@ public:
                      else if(!strcmp(dataType.dataTypeString, "uint16"))
                         ((void(*)(void *,uint16))(void *)this.subProperty.Set)(propObject, valueSubData.us);
                      else 
-                        this.subProperty.Set(propObject, valueSubData.ui);
+                        ((void (*)(void *, uint))(void *)this.subProperty.Set)(propObject, valueSubData.ui);
                   }
                   else
-                     this.subProperty.Set(propObject, valueSubData.ui);
+                     ((void (*)(void *, uint))(void *)this.subProperty.Set)(propObject, valueSubData.ui);
                }
                if(mainDataType.type == structClass)
-                  prop.Set(object, data);
+                  ((void (*)(void *, void *))(void *)prop.Set)(object, data);
                else if(mainDataType.type == unitClass || mainDataType.type == enumClass || mainDataType.type == bitClass)
                {
                   if(!strcmp(mainDataType.dataTypeString, "float"))
@@ -1818,10 +1819,10 @@ public:
                   else if(!strcmp(mainDataType.dataTypeString, "uint16"))
                      ((void(*)(void *,uint16))(void *)prop.Set)(object, valueData.us);
                   else
-                     prop.Set(object, valueData.ui);
+                     ((void (*)(void *, uint))(void *)prop.Set)(object, valueData.ui);
                }
                else
-                  prop.Set(object, valueData.ui);
+                  ((void (*)(void *, uint))(void *)prop.Set)(object, valueData.ui);
 
                result = true;
             }

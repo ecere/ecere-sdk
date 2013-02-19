@@ -4808,7 +4808,7 @@ void ComputeInstantiation(Expression exp)
                               {
                                  char temp[1024];
                                  ReadString(temp, value.string);
-                                 prop.Set(inst.data, temp);
+                                 ((void (*)(void *, void *))(void *)prop.Set)(inst.data, temp);
                               }
                            }
                         }
@@ -6822,7 +6822,7 @@ static bool ResolveIdWithClass(Expression exp, Class _class, bool skipIDClassChe
          {
             char constant[256];
             exp.type = constantExp;
-            sprintf(constant, "%d",classProp.Get(_class));
+            sprintf(constant, "%d", (int)classProp.Get(_class));
             exp.constant = CopyString(constant);
          }
       }

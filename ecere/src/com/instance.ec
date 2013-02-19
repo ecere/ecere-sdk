@@ -121,9 +121,9 @@ public:
    Class dataTypeClass;
    Type dataType;
 
-   void (*Set)();
-   int (*Get)();
-   bool (*IsSet)();
+   void (*Set)(void *, int);
+   int (*Get)(void *);
+   bool (*IsSet)(void *);
    void * data;
    void * symbol;
    int vid;
