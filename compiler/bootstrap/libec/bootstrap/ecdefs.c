@@ -1802,6 +1802,11 @@ void SetTargetBits(int bits)
 targetBits = bits;
 }
 
+int GetTargetBits()
+{
+return targetBits;
+}
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, char *  string, int value);
@@ -2852,6 +2857,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("yyerror", "int yyerror(c
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetHostBits", "int GetHostBits(void)", GetHostBits, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetTargetPlatform", "void SetTargetPlatform(ecere::com::Platform platform)", SetTargetPlatform, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetTargetBits", "void SetTargetBits(int bits)", SetTargetBits, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetTargetBits", "int GetTargetBits(void)", GetTargetBits, module, 1);
 }
 
 void __ecereUnregisterModule_ecdefs(struct __ecereNameSpace__ecere__com__Instance * module)

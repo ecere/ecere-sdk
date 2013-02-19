@@ -1426,6 +1426,8 @@ void * __ecereTemp1;
 int start = 0, c;
 struct __ecereNameSpace__ecere__com__NameSpace * nameSpace = (((void *)0));
 unsigned int force64Bits = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application + 300)))->isGUIApp & 2) ? 0x1 : 0x0;
+unsigned int force32Bits = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application + 300)))->isGUIApp & 4) ? 0x1 : 0x0;
+unsigned int forceX = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application + 300)))->isGUIApp & 8) ? 0x1 : 0x0;
 
 {
 nameSpace = (declMode == 1) ? &((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->publicNameSpace : &((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->privateNameSpace;
@@ -1759,12 +1761,14 @@ id++;
 }
 _class->memberID = _class->startMemberID = (base && (type == 0 || type == 5 || type == 1)) ? base->memberID : 0;
 if(type == 0 || type == 5)
-_class->offset = (base && base->structSize && base->type != 1000) ? base->structSize : ((type == 5) ? 0 : (force64Bits ? 24 : 12));
-if(force64Bits)
+_class->offset = (base && base->structSize && base->type != 1000) ? base->structSize : ((type == 5) ? 0 : (force64Bits ? 24 : force32Bits ? 12 : 12));
+if(force64Bits || force32Bits || forceX)
 {
 if(!strcmp(name, "ecere::com::Class"))
 size = 0;
 else if(!strcmp(name, "ecere::com::ClassProperty"))
+size = 0;
+else if(!strcmp(name, "ecere::com::NameSpace"))
 size = 0;
 else if(!strcmp(name, "ecere::sys::BufferedFile"))
 size = 0;
@@ -1787,7 +1791,7 @@ size = 0;
 else if(!strcmp(name, "ecere::sys::BinaryTree"))
 size = 0;
 else if(!strcmp(name, "ecere::sys::FileListing"))
-size = 3 * 8;
+size = 3 * (force32Bits ? 4 : 8);
 }
 if(type == 1)
 {
@@ -2217,6 +2221,7 @@ else if(ch >= 'A' && ch <= 'Z')
 ch -= ('A' - 10);
 else
 {
+if(endString)
 *endString = string + c;
 break;
 }
@@ -2227,6 +2232,7 @@ value += ch;
 }
 else
 {
+if(endString)
 *endString = string + c;
 break;
 }
@@ -2276,6 +2282,7 @@ else if(ch >= 'A' && ch <= 'Z')
 ch -= ('A' - 10);
 else
 {
+if(endString)
 *endString = string + c;
 break;
 }
@@ -5010,7 +5017,9 @@ extern int isprint(int c);
 static void __ecereNameSpace__ecere__com__LoadCOM(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 unsigned int force64Bits = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application + 300)))->isGUIApp & 2) ? 0x1 : 0x0;
-int pointerSize = force64Bits ? 8 : sizeof(void *);
+unsigned int force32Bits = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application + 300)))->isGUIApp & 4) ? 0x1 : 0x0;
+unsigned int forceX = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application + 300)))->isGUIApp & 8) ? 0x1 : 0x0;
+int pointerSize = force64Bits ? 8 : (forceX | force32Bits) ? 4 : sizeof(void *);
 struct __ecereNameSpace__ecere__com__Class * applicationClass;
 struct __ecereNameSpace__ecere__com__Class * enumClass, * structClass, * boolClass;
 struct __ecereNameSpace__ecere__com__Class * moduleClass;
@@ -5035,7 +5044,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(instanceClass, "_class", "ece
 __ecereNameSpace__ecere__com__eClass_AddDataMember(instanceClass, "_refCount", "int", sizeof(int), sizeof(int), 1);
 }
 __ecereNameSpace__ecere__com__InitializeDataTypes1(module);
-enumClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "enum", (((void *)0)), 0, force64Bits ? 32 : sizeof(struct __ecereNameSpace__ecere__com__EnumClassData), (((void *)0)), (((void *)0)), module, 4, 1);
+enumClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "enum", (((void *)0)), 0, force64Bits ? 40 : force32Bits ? 24 : sizeof(struct __ecereNameSpace__ecere__com__EnumClassData), (((void *)0)), (((void *)0)), module, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddClassProperty(enumClass, "enumSize", "int", (((void *)0)), __ecereNameSpace__ecere__com__GetEnumSize)->constant = 0x1;
 enumClass->type = 1000;
 (__ecereNameSpace__ecere__com__eSystem_Delete(enumClass->dataTypeString), enumClass->dataTypeString = 0);
@@ -5050,16 +5059,16 @@ __ecereNameSpace__ecere__com__InitializeDataTypes(module);
 boolClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "bool", "uint", 0, 0, (((void *)0)), (((void *)0)), module, 4, 1);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(boolClass, "true", (unsigned int)0x1);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(boolClass, "false", (unsigned int)0x0);
-moduleClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Module", (((void *)0)), force64Bits ? 8 + 8 + 32 + 32 + 32 + 32 + 8 + 8 + 8 + 8 + 8 + 8 + (32 + 8 + 8 + 4 * 32) + (32 + 8 + 8 + 4 * 32) : sizeof(struct __ecereNameSpace__ecere__com__Module), 0, (void *)__ecereNameSpace__ecere__com__Module_Constructor, (void *)__ecereNameSpace__ecere__com__Module_Destructor, module, 4, 1);
+moduleClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Module", (((void *)0)), force64Bits ? 8 + 32 + 32 + 32 + 32 + 8 + 8 + 8 + 8 + 8 + 4 + 4 + (32 + 8 + 8 + 4 * 32) + (32 + 8 + 8 + 4 * 32) : force32Bits ? 4 + 20 + 20 + 20 + 20 + 4 + 4 + 4 + 4 + 4 + 4 + 4 + (16 + 4 + 4 + 4 * 16) + (16 + 4 + 4 + 4 * 16) : sizeof(struct __ecereNameSpace__ecere__com__Module), 0, (void *)__ecereNameSpace__ecere__com__Module_Constructor, (void *)__ecereNameSpace__ecere__com__Module_Destructor, module, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(moduleClass, "OnLoad", "bool()", (((void *)0)), 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(moduleClass, "OnUnload", "void()", (((void *)0)), 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(moduleClass, "Load", "Module(char * name, AccessMode importAccess)", __ecereNameSpace__ecere__com__eModule_Load, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(moduleClass, "Unload", "void(Module module)", __ecereNameSpace__ecere__com__eModule_Unload, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "application", "Application", pointerSize, pointerSize, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "classes", "OldList", force64Bits ? 32 : sizeof(struct __ecereNameSpace__ecere__sys__OldList), pointerSize, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "defines", "OldList", force64Bits ? 32 : sizeof(struct __ecereNameSpace__ecere__sys__OldList), pointerSize, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "functions", "OldList", force64Bits ? 32 : sizeof(struct __ecereNameSpace__ecere__sys__OldList), pointerSize, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "modules", "OldList", force64Bits ? 32 : sizeof(struct __ecereNameSpace__ecere__sys__OldList), pointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "classes", "OldList", force64Bits ? 32 : force32Bits ? 20 : sizeof(struct __ecereNameSpace__ecere__sys__OldList), pointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "defines", "OldList", force64Bits ? 32 : force32Bits ? 20 : sizeof(struct __ecereNameSpace__ecere__sys__OldList), pointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "functions", "OldList", force64Bits ? 32 : force32Bits ? 20 : sizeof(struct __ecereNameSpace__ecere__sys__OldList), pointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "modules", "OldList", force64Bits ? 32 : force32Bits ? 20 : sizeof(struct __ecereNameSpace__ecere__sys__OldList), pointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "prev", "Module", pointerSize, pointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "next", "Module", pointerSize, pointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "name", "char *", pointerSize, pointerSize, 1);
@@ -5067,19 +5076,19 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "library", "void
 __ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "Unload", "void *", pointerSize, pointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "importType", "ImportType", sizeof(int), 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "origImportType", "ImportType", sizeof(int), 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "privateNameSpace", "NameSpace", force64Bits ? (32 + 8 + 8 + 4 * 32) : sizeof(struct __ecereNameSpace__ecere__com__NameSpace), pointerSize, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "publicNameSpace", "NameSpace", force64Bits ? (32 + 8 + 8 + 4 * 32) : sizeof(struct __ecereNameSpace__ecere__com__NameSpace), pointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "privateNameSpace", "NameSpace", force64Bits ? (32 + 8 + 8 + 4 * 32) : force32Bits ? (16 + 4 + 4 + 4 * 16) : sizeof(struct __ecereNameSpace__ecere__com__NameSpace), pointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "publicNameSpace", "NameSpace", force64Bits ? (32 + 8 + 8 + 4 * 32) : force32Bits ? (16 + 4 + 4 + 4 * 16) : sizeof(struct __ecereNameSpace__ecere__com__NameSpace), pointerSize, 1);
 moduleClass->fixed = 0x1;
 moduleClass->count++;
-applicationClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Application", "Module", force64Bits ? (8 + 8 + 8 + 8 + 32 + 8 + 176) : sizeof(struct __ecereNameSpace__ecere__com__Application), 0, (((void *)0)), (void *)__ecereNameSpace__ecere__com__Application_Destructor, module, 4, 1);
+applicationClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Application", "Module", force64Bits ? (8 + 8 + 4 + 4 + 32 + 8 + 176) : force32Bits ? (4 + 4 + 4 + 4 + 20 + 4 + 88) : sizeof(struct __ecereNameSpace__ecere__com__Application), 0, (((void *)0)), (void *)__ecereNameSpace__ecere__com__Application_Destructor, module, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(applicationClass, "Main", "void()", (((void *)0)), 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "argc", "int", sizeof(int), 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "argv", "char **", pointerSize, pointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "exitCode", "int", sizeof(int), 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "isGUIApp", "bool", sizeof(unsigned int), 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "allModules", "OldList", force64Bits ? 32 : sizeof(struct __ecereNameSpace__ecere__sys__OldList), pointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "allModules", "OldList", force64Bits ? 32 : force32Bits ? 20 : sizeof(struct __ecereNameSpace__ecere__sys__OldList), pointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "parsedCommand", "char *", pointerSize, pointerSize, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "systemNameSpace", "NameSpace", force64Bits ? (32 + 8 + 8 + 4 * 32) : sizeof(struct __ecereNameSpace__ecere__com__NameSpace), pointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "systemNameSpace", "NameSpace", force64Bits ? (32 + 8 + 8 + 4 * 32) : force32Bits ? (16 + 4 + 4 + 4 * 16) : sizeof(struct __ecereNameSpace__ecere__com__NameSpace), pointerSize, 1);
 applicationClass->fixed = 0x1;
 applicationClass->count++;
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("sin", "double sin(Angle number)", sin, module, 4);
