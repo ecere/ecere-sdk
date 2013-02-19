@@ -1308,6 +1308,30 @@ static char * UInt64_OnGetString(Class _class, uint64 * data, char * string, voi
    return string;
 }
 
+static bool Int64_OnGetDataFromString(Class _class, uint64 * data, char * string)
+{
+   char * end;
+   uint64 result = _strtoi64(string, &end, 0);
+   if(end > string)
+   {
+      *data = result;
+      return true;
+   }
+   return false;
+}
+
+static bool UInt64_OnGetDataFromString(Class _class, uint64 * data, char * string)
+{
+   char * end;
+   uint64 result = _strtoui64(string, &end, 0);
+   if(end > string)
+   {
+      *data = result;
+      return true;
+   }
+   return false;
+}
+
 /*static */void Byte_OnSerialize(Class _class, byte * data, IOChannel channel)
 {
    channel.WriteData(data, 1);
@@ -1391,7 +1415,7 @@ static void RegisterClass_Integer(Module module)
    integerClass.dataTypeString = CopyString("int64");
    eClass_AddMethod(integerClass, "OnGetString", null, Int64_OnGetString, publicAccess);
    eClass_AddMethod(integerClass, "OnCompare", null, Int64_OnCompare, publicAccess);
-   // eClass_AddMethod(integerClass, "OnGetDataFromString", null, Integer64_OnGetDataFromString, publicAccess);
+   eClass_AddMethod(integerClass, "OnGetDataFromString", null, Int64_OnGetDataFromString, publicAccess);
    eClass_AddMethod(integerClass, "OnSerialize", null, Int64_OnSerialize, publicAccess);
    eClass_AddMethod(integerClass, "OnUnserialize", null, Int64_OnUnserialize, publicAccess);
 
@@ -1463,9 +1487,10 @@ static void RegisterClass_Integer(Module module)
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(uint64);
    eClass_AddMethod(integerClass, "OnGetString", null, UInt64_OnGetString, publicAccess);
+   eClass_AddMethod(integerClass, "OnGetDataFromString", null, UInt64_OnGetDataFromString, publicAccess);
    eClass_AddMethod(integerClass, "OnSerialize", null, Int64_OnSerialize, publicAccess);
    eClass_AddMethod(integerClass, "OnUnserialize", null, Int64_OnUnserialize, publicAccess);
-   eClass_AddMethod(integerClass, "OnCompare", null, Int64_OnCompare, publicAccess);
+   eClass_AddMethod(integerClass, "OnCompare", null, UInt64_OnCompare, publicAccess);
 
    integerClass = eSystem_RegisterClass(normalClass, "byte", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
@@ -1500,6 +1525,7 @@ static void RegisterClass_Integer(Module module)
    if(sizeof(uintptr) == 8)
    {
       eClass_AddMethod(integerClass, "OnGetString", null, UInt64_OnGetString, publicAccess);
+      eClass_AddMethod(integerClass, "OnGetDataFromString", null, UInt64_OnGetDataFromString, publicAccess);
       eClass_AddMethod(integerClass, "OnSerialize", null, Int64_OnSerialize, publicAccess);
       eClass_AddMethod(integerClass, "OnUnserialize", null, Int64_OnUnserialize, publicAccess);
       eClass_AddMethod(integerClass, "OnCompare", null, UInt64_OnCompare, publicAccess);
@@ -1522,6 +1548,7 @@ static void RegisterClass_Integer(Module module)
    if(sizeof(intptr) == 8)
    {
       eClass_AddMethod(integerClass, "OnGetString", null, Int64_OnGetString, publicAccess);
+      eClass_AddMethod(integerClass, "OnGetDataFromString", null, Int64_OnGetDataFromString, publicAccess);
       eClass_AddMethod(integerClass, "OnSerialize", null, Int64_OnSerialize, publicAccess);
       eClass_AddMethod(integerClass, "OnUnserialize", null, Int64_OnUnserialize, publicAccess);
       eClass_AddMethod(integerClass, "OnCompare", null, Int64_OnCompare, publicAccess);

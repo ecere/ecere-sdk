@@ -45,8 +45,8 @@ static char GetGdbFormatChar(Type type)
          //return 'c';
       case shortType:
       case intType:
-      case int64Type:
       case longType:
+      case int64Type:
          if(type.isSigned)
             return 'd';
          else
@@ -60,9 +60,6 @@ static char GetGdbFormatChar(Type type)
       case functionType:
       case arrayType:
          return 'u';
-      case classType:
-      case pointerType:
-         return 'x';
       case ellipsisType:
       case enumType:
       case methodType:
@@ -70,6 +67,9 @@ static char GetGdbFormatChar(Type type)
       // case TypeTypedObject, TypeAnyObject, TypeClassPointer:
       case dummyType:
          break;
+      case classType:
+      case pointerType:
+         return 'x';
    }
    return 'x';
 }
@@ -102,7 +102,7 @@ void DebugComputeExpression(Expression exp)
          Type dataType = exp.expType;
          
          char temp[1024];
-         uint address;
+         uint64 address;
          bool hasAddress;
          bool isPointer = false;
          
@@ -157,7 +157,7 @@ void DebugComputeExpression(Expression exp)
             evaluation = Debugger::EvaluateExpression(temp, &evalError);
             if(evaluation)
             {
-               address = (unsigned int)strtoul(evaluation, null, 0);
+               address = _strtoui64(evaluation, null, 0);
                //delete evaluation;
                //evaluation = null;
             }
@@ -190,7 +190,7 @@ void DebugComputeExpression(Expression exp)
                else
                {
                   exp.type = evalError;
-                  exp.constant = PrintHexUInt(address);
+                  exp.constant = PrintHexUInt64(address);
                }
                break;
             case shortType:
@@ -207,10 +207,10 @@ void DebugComputeExpression(Expression exp)
                {
                   if(kind == pointerType)
                   {
-                     uint value;
-                     value = (unsigned int)strtoul(evaluation, null, 0);
+                     uint64 value;
+                     value = _strtoui64(evaluation, null, 0);
                      delete evaluation;
-                     evaluation = PrintHexUInt(value);
+                     evaluation = PrintHexUInt64(value);
                   }
                }
                else
@@ -364,7 +364,7 @@ void DebugComputeExpression(Expression exp)
                }
                //else
                {
-                  uint address;
+                  uint64 address;
                   int size;
                   char format;
                   if(exp.op.op == '*')
@@ -434,7 +434,7 @@ void DebugComputeExpression(Expression exp)
                         {
                            char * temp;
                            //sprintf(temp, "%u", exp1.address);
-                           temp = PrintHexUInt(exp1.address);
+                           temp = PrintHexUInt64(exp1.address);
                            expNew = ParseExpressionString(temp);
                            delete temp;
                            //expNew.address = exp1.address;
@@ -457,17 +457,17 @@ void DebugComputeExpression(Expression exp)
                      }
                      else if(exp.op.op == '*')
                      {
-                        uint address;
+                        uint64 address;
                         int size;
                         char format;
-                        GetUInt(exp1, &address);
+                        GetUInt64(exp1, &address);
                         size = ComputeTypeSize(exp.expType); //exp.expType.arrayType.size;
                         format = GetGdbFormatChar(exp.expType);
                         evaluation = Debugger::ReadMemory(address, size, format, &evalError);
                         if(evalError != dummyExp)
                         {
                            exp1.type = evalError;
-                           exp1.constant = PrintHexUInt(address);
+                           exp1.constant = PrintHexUInt64(address);
                            expError = exp1;
                         }
                         else
@@ -520,7 +520,7 @@ void DebugComputeExpression(Expression exp)
                      CallOperator(exp, exp1, exp2, op1, op2);
                      if(exp.type == constantExp)
                      {
-                        exp.address = (unsigned int)strtoul(exp.constant, null, 0);
+                        exp.address = _strtoui64(exp.constant, null, 0);
                         exp.address *= size;
                      } 
                   }
@@ -616,7 +616,7 @@ void DebugComputeExpression(Expression exp)
                if(exp.index.index && exp.index.index->last && ((Expression)exp.index.index->last) && ((Expression)exp.index.index->last).expType &&
                   ((Expression)exp.index.index->last).expType.kind == intType)
                {
-                  uint address, offset;
+                  uint64 address, offset;
                   Expression expNew, last = (Expression)exp.index.index->last;
                   //GetUInt(exp.index.exp, &address);
 
@@ -624,9 +624,9 @@ void DebugComputeExpression(Expression exp)
                   if(exp.index.exp.hasAddress && (exp.index.exp.expType.kind == arrayType))
                      address = exp.index.exp.address;
                   else if(exp.index.exp.type == constantExp)
-                     GetUInt(exp.index.exp, &address);               
-                     
-                  GetUInt(last, &offset);
+                     GetUInt64(exp.index.exp, &address);
+
+                  GetUInt64(last, &offset);
                   //size = ComputeTypeSize(exp.expType.arrayType); //exp.expType.arrayType.size;
                   address += offset * size;
                   evaluation = Debugger::ReadMemory(address, size, format, &evalError);
@@ -885,7 +885,7 @@ void DebugComputeExpression(Expression exp)
                         {
                            if(_class.type == bitClass)
                            {
-                              unsigned int value;
+                              uint value;
                               GetUInt(memberExp, &value);
 
                               switch(type.kind)
@@ -1009,7 +1009,7 @@ void DebugComputeExpression(Expression exp)
                      {
                         char * evaluation = null;
                         ExpressionType evalError = dummyExp;
-                        uint address;
+                        uint64 address;
                         Expression prev = exp.prev, next = exp.next;
                         char format; 
                         int size;
@@ -1047,11 +1047,11 @@ void DebugComputeExpression(Expression exp)
                            if(memberExp.hasAddress && (_class.type != normalClass && _class.type != noHeadClass && _class.type != systemClass))
                               address = memberExp.address;
                            else if(memberExp.type == constantExp)
-                              GetUInt(memberExp, &address);
+                              GetUInt64(memberExp, &address);
                            else
                            {
                               address = 0;
-                              GetUInt(memberExp, &address);
+                              GetUInt64(memberExp, &address);
                               //printf("Unhandled !!\n");
                               
                               //printf("memberExp.hasAddress = %d\n", memberExp.hasAddress);
@@ -1069,7 +1069,7 @@ void DebugComputeExpression(Expression exp)
                               if(evalError != dummyExp)
                               {
                                  exp.type = evalError;
-                                 exp.constant = PrintHexUInt(address);
+                                 exp.constant = PrintHexUInt64(address);
                               }
                               else if(evaluation)
                               {
@@ -1099,7 +1099,7 @@ void DebugComputeExpression(Expression exp)
                            {
                               // TESTING THIS HERE...
                               exp.type = constantExp;
-                              exp.constant = PrintHexUInt(address);
+                              exp.constant = PrintHexUInt64(address);
 
                               exp.address = address;
                               exp.hasAddress = true;
@@ -1125,7 +1125,7 @@ void DebugComputeExpression(Expression exp)
                      {                        
                         char * evaluation = null;
                         ExpressionType evalError = dummyExp;
-                        uint address;
+                        uint64 address;
                         Expression prev = exp.prev, next = exp.next;
                         char format; 
                         int size = memberType.size;
@@ -1142,7 +1142,7 @@ void DebugComputeExpression(Expression exp)
                         if(memberExp.hasAddress)
                            address = memberExp.address;
                         else if(memberExp.type == constantExp)
-                           GetUInt(memberExp, &address);
+                           GetUInt64(memberExp, &address);
                      
                         address += offset;
                   
@@ -1154,7 +1154,7 @@ void DebugComputeExpression(Expression exp)
                            if(evalError != dummyExp)
                            {
                               exp.type = evalError;
-                              exp.constant = PrintHexUInt(address);
+                              exp.constant = PrintHexUInt64(address);
                            }
                            else if(evaluation)
                            {
@@ -1183,7 +1183,7 @@ void DebugComputeExpression(Expression exp)
                         {
                            // TESTING THIS HERE...
                            exp.type = constantExp;
-                           exp.constant = PrintHexUInt(address);
+                           exp.constant = PrintHexUInt64(address);
 
                            exp.address = address;
                            exp.hasAddress = true;
@@ -1301,9 +1301,7 @@ void DebugComputeExpression(Expression exp)
                      }
                      break;
                   case intType:
-                  case pointerType:
-                  case classType:
-                     if(type.kind == intType && type.isSigned)
+                     if(type.isSigned)
                      {
                         int value;
                         GetInt(exp.cast.exp, &value);
@@ -1317,10 +1315,7 @@ void DebugComputeExpression(Expression exp)
                         unsigned int value;
                         GetUInt(exp.cast.exp, &value);
                         FreeExpContents(exp);
-                        if(type.kind == pointerType || type.kind == classType)
-                           exp.constant = PrintHexUInt(value);
-                        else
-                           exp.constant = PrintUInt(value);
+                        exp.constant = PrintUInt(value);
                         exp.type = constantExp;
                         exp.isConstant = true;
                      }
@@ -1345,6 +1340,20 @@ void DebugComputeExpression(Expression exp)
                         exp.isConstant = true;
                      }
                      break;
+                  case pointerType:
+                  case classType:
+                  {
+                     uint64 value;
+                     GetUInt64(exp.cast.exp, &value);
+                     FreeExpContents(exp);
+                     if(type.kind == pointerType || type.kind == classType)
+                        exp.constant = PrintHexUInt64(value);
+                     else
+                        exp.constant = PrintUInt64(value);
+                     exp.type = constantExp;
+                     exp.isConstant = true;
+                     break;
+                  }
                   case floatType:
                   {
                      float value;

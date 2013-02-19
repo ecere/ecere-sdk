@@ -467,7 +467,7 @@ public:
 
    DataValue val;
 
-   uint address;
+   uint64 address;
    bool hasAddress;
 
    // *** COMPILING DATA ***

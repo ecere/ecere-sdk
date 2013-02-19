@@ -2327,7 +2327,7 @@ class Debugger
 
                         if(exp.expType.kind != arrayType || exp.hasAddress)
                         {
-                           uint address;
+                           uint64 address;
                            char * string;
                            char value[4196];
                            int len;
@@ -2340,9 +2340,15 @@ class Debugger
                               sprintf(temp, "(char*)%s", exp.constant);*/
 
                            //evaluation = Debugger::EvaluateExpression(temp, &evalError);
-                           address = strtoul(exp.constant, null, 0);
+                           // address = strtoul(exp.constant, null, 0);
+                           address = _strtoui64(exp.constant, null, 0);
                            //printf("%x\n", address);
-                           snprintf(value, sizeof(value), "0x%08x ", address);
+                           // snprintf(value, sizeof(value), "0x%08x ", address);
+
+                           if(address > 0xFFFFFFFFLL)
+                              snprintf(value, sizeof(value), (GetRuntimePlatform() == win32) ? "0x%016I64x" : "0x%016llx ", address);
+                           else
+                              snprintf(value, sizeof(value), (GetRuntimePlatform() == win32) ? "0x%08I64x" : "0x%08llx ", address);
                            value[sizeof(value)-1] = 0;
                            
                            if(!address)
@@ -2485,7 +2491,7 @@ class Debugger
                   default:
                      if(exp.hasAddress)
                      {
-                        wh.value = PrintHexUInt(exp.address);
+                        wh.value = PrintHexUInt64(exp.address);
                         result = (bool)exp.address;
                      }
                      else
@@ -2539,7 +2545,7 @@ class Debugger
    }
 
    // to be removed... use GdbReadMemory that returns a byte array instead
-   char * ::GdbReadMemoryString(uint address, int size, char format, int rows, int cols)
+   char * ::GdbReadMemoryString(uint64 address, int size, char format, int rows, int cols)
    {
       eval.active = true;
       eval.error = none;
@@ -2547,17 +2553,25 @@ class Debugger
       if(!size)
          printf("GdbReadMemoryString called with size = 0!\n");
 #endif
-      GdbCommand(false, "-data-read-memory 0x%08x %c, %d, %d, %d", address, format, size, rows, cols);
+      // GdbCommand(false, "-data-read-memory 0x%08x %c, %d, %d, %d", address, format, size, rows, cols);
+      if(GetRuntimePlatform() == win32)
+         GdbCommand(false, "-data-read-memory 0x%016I64x %c, %d, %d, %d", address, format, size, rows, cols);
+      else
+         GdbCommand(false, "-data-read-memory 0x%016llx %c, %d, %d, %d", address, format, size, rows, cols);
       if(eval.active)
          ide.outputView.debugBox.Logf("Debugger Error: GdbReadMemoryString\n");
       return eval.result;
    }
 
-   byte * ::GdbReadMemory(uint address, int bytes)
+   byte * ::GdbReadMemory(uint64 address, int bytes)
    {
       eval.active = true;
       eval.error = none;
-      GdbCommand(false, "-data-read-memory 0x%08x %c, 1, 1, %d", address, 'u', bytes);
+      //GdbCommand(false, "-data-read-memory 0x%08x %c, 1, 1, %d", address, 'u', bytes);
+      if(GetRuntimePlatform() == win32)
+         GdbCommand(false, "-data-read-memory 0x%016I64x %c, 1, 1, %d", address, 'u', bytes);
+      else
+         GdbCommand(false, "-data-read-memory 0x%016llx %c, 1, 1, %d", address, 'u', bytes);
 #ifdef _DEBUG
       if(!bytes)
          printf("GdbReadMemory called with bytes = 0!\n");
@@ -2976,7 +2990,7 @@ class Debugger
                            else if(!strcmp(item.name, "next-row"))
                            {
                               StripQuotes(item.value, item.value);
-                              eval.nextBlockAddress = strtoul(item.value, null, 0);
+                              eval.nextBlockAddress = _strtoui64(item.value, null, 0);
                            }
                            else if(!strcmp(item.name, "memory"))
                            {
@@ -3469,7 +3483,7 @@ class Debugger
       return result;
    }
 
-   char * ::ReadMemory(uint address, int size, char format, ExpressionType * error)
+   char * ::ReadMemory(uint64 address, int size, char format, ExpressionType * error)
    {
       // check for state
       char * result = GdbReadMemoryString(address, size, format, 1, 1);
@@ -3879,7 +3893,7 @@ struct DebugEvaluationData
    bool active;
    char * result;
    int bytes;
-   uint nextBlockAddress;
+   uint64 nextBlockAddress;
 
    DebuggerEvaluationError error;
 };

@@ -58,119 +58,6 @@ Time findSymbolTotalTime;
    }
 }
 
-int64 _strtoi64(char * string, char ** endString, int base)
-{
-   int64 value = 0;
-   int sign = 1;
-   int c;
-   char ch;
-   for(c = 0; (ch = string[c]) && isspace(ch); c++);
-   if(ch =='+') c++;
-   else if(ch == '-') { sign = -1; c++; };
-   if(!base)
-   {
-      if(ch == 0 && string[c+1] == 'x')
-      {
-         base = 16;
-         c+=2;
-      }
-      else if(ch == '0')
-      {
-         base = 8;
-         c++;
-      }
-      else
-         base = 10;
-   }
-   for( ;(ch = string[c]); c++)
-   {
-      if(ch == '0')
-         ch = 0;
-      else if(ch >= '1' && ch <= '9')
-         ch -= '1';
-      else if(ch >= 'a' && ch <= 'z') 
-         ch -= 'a'; 
-      else if(ch >= 'A' && ch <= 'Z') 
-         ch -= 'A';
-      else
-      {
-         if(endString)
-            *endString = string + c;
-         // Invalid character
-         break;
-      }
-      if(ch < base)
-      {
-         value *= base;
-         value += ch;
-      }
-      else
-      {
-         if(endString)
-            *endString = string + c;
-         // Invalid character
-         break;
-      }
-   }
-   return sign*value;
-}
-
-uint64 _strtoui64(char * string, char ** endString, int base)
-{
-   uint64 value = 0;
-   int sign = 1;
-   int c;
-   char ch;
-   for(c = 0; (ch = string[c]) && isspace(ch); c++);
-   if(ch =='+') c++;
-   else if(ch == '-') { sign = -1; c++; };
-   if(!base)
-   {
-      if(ch == 0 && string[c+1] == 'x')
-      {
-         base = 16;
-         c+=2;
-      }
-      else if(ch == '0')
-      {
-         base = 8;
-         c++;
-      }
-      else
-         base = 10;
-   }
-   for( ;(ch = string[c]); c++)
-   {
-      if(ch == '0')
-         ch = 0;
-      else if(ch >= '1' && ch <= '9')
-         ch -= '1';
-      else if(ch >= 'a' && ch <= 'z') 
-         ch -= 'a'; 
-      else if(ch >= 'A' && ch <= 'Z') 
-         ch -= 'A';
-      else
-      {
-         if(endString) *endString = string + c;
-         // Invalid character
-         break;
-      }
-      if(ch < base)
-      {
-         value *= base;
-         value += ch;
-      }
-      else
-      {
-         if(endString)
-            *endString = string + c;
-         // Invalid character
-         break;
-      }
-   }
-   return sign*value;
-}
-
 Type ProcessTemplateParameterType(TemplateParameter param)
 {
    if(param && param.type == TemplateParameterType::type && (param.dataType || param.dataTypeString))
@@ -440,7 +327,7 @@ public char * PrintDouble(double result)
       else if(op2.kind == charType) *value2 = (t) op2.uc;                         \
       else if(op2.kind == floatType) *value2 = (t) op2.f;                         \
       else if(op2.kind == doubleType) *value2 = (t) op2.d;                        \
-      else if(op2.kind == pointerType) *value2 = (t) op2.ui;                        \
+      else if(op2.kind == pointerType) *value2 = (t) op2.uiptr;                    \
       else                                                                          \
          return false;                                                              \
       return true;                                                                  \
@@ -1084,12 +971,12 @@ void DeclareStruct(char * name, bool skipNoHead)
    External external = null;
    Symbol classSym = FindClass(name);
 
-   if(!inCompiler || !classSym) return null;
+   if(!inCompiler || !classSym) return;
 
    // We don't need any declaration for bit classes...
    if(classSym.registered && 
       (classSym.registered.type == bitClass || classSym.registered.type == unitClass || classSym.registered.type == enumClass))
-      return null;
+      return;
 
    /*if(classSym.registered.templateClass)
       return DeclareStruct(classSym.registered.templateClass.fullName, skipNoHead);
@@ -1117,7 +1004,7 @@ void DeclareStruct(char * name, bool skipNoHead)
             DeclareStruct(classSym.registered.templateClass.fullName, skipNoHead);
             classSym.declaring--;
          }
-         return null;
+         return;
       }
       
       //if(!skipNoHead)
@@ -4308,7 +4195,7 @@ public Operand GetOperand(Expression exp)
             case arrayType:
             case pointerType:
             case classType:
-               op.p = (unsigned char *)strtoul(exp.constant, null, 0);
+               op.p = (byte *)_strtoui64(exp.constant, null, 0);
                op.kind = pointerType;
                op.ops = uintOps;
                // op.ptrSize = 

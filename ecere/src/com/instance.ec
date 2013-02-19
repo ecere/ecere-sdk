@@ -2980,7 +2980,7 @@ public int64 _strtoi64(char * string, char ** endString, int base)
    else if(ch == '-') { sign = -1; c++; };
    if(!base)
    {
-      if(ch == 0 && string[c+1] == 'x')
+      if(ch == '0' && string[c+1] == 'x')
       {
          base = 16;
          c+=2;
@@ -2995,14 +2995,12 @@ public int64 _strtoi64(char * string, char ** endString, int base)
    }
    for( ;(ch = string[c]); c++)
    {
-      if(ch == '0')
-         ch = 0;
-      else if(ch >= '1' && ch <= '9')
-         ch -= '1';
+      if(ch >= '0' && ch <= '9')
+         ch -= '0';
       else if(ch >= 'a' && ch <= 'z') 
-         ch -= 'a'; 
+         ch -= ('a' - 10); 
       else if(ch >= 'A' && ch <= 'Z') 
-         ch -= 'A';
+         ch -= ('A'- 10);
       else
       {
          *endString = string + c;
@@ -3035,7 +3033,7 @@ public uint64 _strtoui64(char * string, char ** endString, int base)
    else if(ch == '-') { sign = -1; c++; };
    if(!base)
    {
-      if(ch == 0 && string[c+1] == 'x')
+      if(ch == '0' && string[c+1] == 'x')
       {
          base = 16;
          c+=2;
@@ -3050,14 +3048,12 @@ public uint64 _strtoui64(char * string, char ** endString, int base)
    }
    for( ;(ch = string[c]); c++)
    {
-      if(ch == '0')
-         ch = 0;
-      else if(ch >= '1' && ch <= '9')
-         ch -= '1';
+      if(ch >= '0' && ch <= '9')
+         ch -= '0';
       else if(ch >= 'a' && ch <= 'z') 
-         ch -= 'a'; 
+         ch -= ('a' - 10); 
       else if(ch >= 'A' && ch <= 'Z') 
-         ch -= 'A';
+         ch -= ('A' - 10);
       else
       {
          *endString = string + c;
@@ -3071,7 +3067,8 @@ public uint64 _strtoui64(char * string, char ** endString, int base)
       }
       else
       {
-         *endString = string + c;
+         if(endString)
+            *endString = string + c;
          // Invalid character
          break;
       }
