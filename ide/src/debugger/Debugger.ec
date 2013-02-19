@@ -2346,9 +2346,9 @@ class Debugger
                            // snprintf(value, sizeof(value), "0x%08x ", address);
 
                            if(address > 0xFFFFFFFFLL)
-                              snprintf(value, sizeof(value), (GetRuntimePlatform() == win32) ? "0x%016I64x" : "0x%016llx ", address);
+                              snprintf(value, sizeof(value), (GetRuntimePlatform() == win32) ? "0x%016I64x " : "0x%016llx ", address);
                            else
-                              snprintf(value, sizeof(value), (GetRuntimePlatform() == win32) ? "0x%08I64x" : "0x%08llx ", address);
+                              snprintf(value, sizeof(value), (GetRuntimePlatform() == win32) ? "0x%08I64x " : "0x%08llx ", address);
                            value[sizeof(value)-1] = 0;
                            
                            if(!address)
