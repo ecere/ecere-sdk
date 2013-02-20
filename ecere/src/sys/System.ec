@@ -35,6 +35,9 @@ default:
 #undef set
 
 default:
+FILE *eC_stdout(void);
+FILE *eC_stderr(void);
+
 // IMPLEMENTED IN _System.c
 bool System_MoveFile(char * source, char * dest);
 bool System_RenameFile(char * oldName, char * newName);
@@ -229,12 +232,12 @@ public void Log(char * text)
       }
 #endif
       case stdOut: 
-         fputs(text, stdout);
-         fflush(stdout);
+         fputs(text, eC_stdout());
+         fflush(eC_stdout());
          break;
       case stdErr:
-         fputs(text, stderr);
-         fflush(stderr);
+         fputs(text, eC_stderr());
+         fflush(eC_stderr());
          break;
       case logFile:
       {

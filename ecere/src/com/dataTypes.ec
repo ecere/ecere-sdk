@@ -66,7 +66,11 @@ static void UnusedFunction()
    a.OnGetDataFromString(null);
 }
 
+#include <stdio.h>
 default:
+FILE *eC_stdout(void);
+FILE *eC_stderr(void);
+
 extern int __ecereVMethodID_class_OnGetString;
 extern int __ecereVMethodID_class_OnGetDataFromString;
 extern int __ecereVMethodID_class_OnCompare;
@@ -2043,5 +2047,5 @@ public void Print(typed_object object, ...)
    va_start(args, object);
    PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
    va_end(args);
-   fputs(buffer, stdout);
+   fputs(buffer, eC_stdout());
 }

@@ -327,6 +327,10 @@ int ferror(FILE * stream);
 
 int fileno(FILE * stream);
 
+FILE * eC_stdout(void);
+
+FILE * eC_stderr(void);
+
 unsigned int System_MoveFile(char * source, char * dest);
 
 unsigned int System_RenameFile(char * oldName, char * newName);
@@ -526,12 +530,12 @@ switch(__ecereNameSpace__ecere__sys__globalSystem.errorLoggingMode)
 {
 case 3:
 case 1:
-fputs(text, (bsl_stdout()));
-fflush((bsl_stdout()));
+fputs(text, eC_stdout());
+fflush(eC_stdout());
 break;
 case 2:
-fputs(text, (bsl_stderr()));
-fflush((bsl_stderr()));
+fputs(text, eC_stderr());
+fflush(eC_stderr());
 break;
 case 4:
 {

@@ -44,6 +44,10 @@ typedef unsigned long long uint64;
 #define MAX_FILENAME 274
 #define MAX_EXTENSION 17
 
+FILE *eC_stdin(void)  { return stdin; }
+FILE *eC_stdout(void) { return stdout; }
+FILE *eC_stderr(void) { return stderr; }
+
 void __ecereNameSpace__ecere__com__eSystem_Delete(void * memory);
 void * __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
 void * __ecereNameSpace__ecere__com__eSystem_Renew(void * memory, unsigned int size);

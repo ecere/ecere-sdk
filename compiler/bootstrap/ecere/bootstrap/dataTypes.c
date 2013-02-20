@@ -303,6 +303,72 @@ int a;
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, void *, char *  string))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(__ecereClass_int, &a, (((void *)0)));
 }
 
+typedef uintptr_t size_t;
+
+void exit(int status);
+
+void * calloc(size_t nmemb, size_t size);
+
+void free(void * ptr);
+
+void * malloc(size_t size);
+
+void * realloc(void * ptr, size_t size);
+
+long int strtol(const char * nptr, char ** endptr, int base);
+
+long long int strtoll(const char * nptr, char ** endptr, int base);
+
+unsigned long long int strtoull(const char * nptr, char ** endptr, int base);
+
+typedef __builtin_va_list __gnuc_va_list;
+
+typedef __gnuc_va_list va_list;
+
+typedef void FILE;
+
+FILE * bsl_stdin(void);
+
+FILE * bsl_stdout(void);
+
+FILE * bsl_stderr(void);
+
+char * fgets(char * s, int size, FILE * stream);
+
+FILE * fopen(const char * path, const char * mode);
+
+int fclose(FILE * fp);
+
+int fflush(FILE * stream);
+
+int fgetc(FILE * stream);
+
+int fprintf(FILE * stream, const char * format, ...);
+
+int fputc(int c, FILE * stream);
+
+size_t fread(void * ptr, size_t size, size_t nmemb, FILE * stream);
+
+size_t fwrite(const void * ptr, size_t size, size_t nmemb, FILE * stream);
+
+int vsnprintf(char *, size_t, const char *, ...);
+
+int snprintf(char * str, size_t, const char * format, ...);
+
+int fseek(FILE * stream, long offset, int whence);
+
+long ftell(FILE * stream);
+
+int feof(FILE * stream);
+
+int ferror(FILE * stream);
+
+int fileno(FILE * stream);
+
+FILE * eC_stdout(void);
+
+FILE * eC_stderr(void);
+
 extern int __ecereVMethodID_class_OnGetString;
 
 extern int __ecereVMethodID_class_OnGetDataFromString;
@@ -1463,8 +1529,6 @@ sprintf(string, "%d", *data);
 return string;
 }
 
-long int strtol(const char * nptr, char ** endptr, int base);
-
 static unsigned int __ecereNameSpace__ecere__com__Integer_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * _class, int * data, char * string)
 {
 char * end;
@@ -2292,66 +2356,6 @@ __ecereNameSpace__ecere__com__RegisterClass_Double(module);
 __ecereNameSpace__ecere__com__RegisterClass_String(module);
 }
 
-typedef __builtin_va_list __gnuc_va_list;
-
-typedef __gnuc_va_list va_list;
-
-typedef uintptr_t size_t;
-
-void exit(int status);
-
-void * calloc(size_t nmemb, size_t size);
-
-void free(void * ptr);
-
-void * malloc(size_t size);
-
-void * realloc(void * ptr, size_t size);
-
-long long int strtoll(const char * nptr, char ** endptr, int base);
-
-unsigned long long int strtoull(const char * nptr, char ** endptr, int base);
-
-typedef void FILE;
-
-FILE * bsl_stdin(void);
-
-FILE * bsl_stdout(void);
-
-FILE * bsl_stderr(void);
-
-char * fgets(char * s, int size, FILE * stream);
-
-FILE * fopen(const char * path, const char * mode);
-
-int fclose(FILE * fp);
-
-int fflush(FILE * stream);
-
-int fgetc(FILE * stream);
-
-int fprintf(FILE * stream, const char * format, ...);
-
-int fputc(int c, FILE * stream);
-
-size_t fread(void * ptr, size_t size, size_t nmemb, FILE * stream);
-
-size_t fwrite(const void * ptr, size_t size, size_t nmemb, FILE * stream);
-
-int vsnprintf(char *, size_t, const char *, ...);
-
-int snprintf(char * str, size_t, const char * format, ...);
-
-int fseek(FILE * stream, long offset, int whence);
-
-long ftell(FILE * stream);
-
-int feof(FILE * stream);
-
-int ferror(FILE * stream);
-
-int fileno(FILE * stream);
-
 int __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(char * buffer, int maxLen, struct __ecereNameSpace__ecere__com__Class * class, void * object, va_list args)
 {
 int len = 0;
@@ -2472,7 +2476,7 @@ char buffer[4096];
 __builtin_va_start(args, object);
 __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof buffer, class, object, args);
 __builtin_va_end(args);
-fputs(buffer, (bsl_stdout()));
+fputs(buffer, eC_stdout());
 }
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DefinedExpression;

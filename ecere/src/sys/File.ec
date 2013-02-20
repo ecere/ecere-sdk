@@ -84,6 +84,9 @@ import "dataTypes"
 // IMPLEMENTATION OF THESE IS IN _File.c
 default:
 
+FILE *eC_stdin(void);
+FILE *eC_stdout(void);
+
 uint FILE_GetSize(FILE * input);
 bool FILE_Lock(FILE * input, FILE * output, FileLock type, uint64 start, uint64 length, bool wait);
 void FILE_set_buffered(FILE * input, FILE * output, bool value);
@@ -818,8 +821,8 @@ public:
 
 public class ConsoleFile : File
 {
-   input = stdin;
-   output = stdout;
+   input = eC_stdin();
+   output = eC_stdout();
    ~ConsoleFile()
    {
       input = null;

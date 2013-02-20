@@ -327,6 +327,10 @@ int ferror(FILE * stream);
 
 int fileno(FILE * stream);
 
+FILE * eC_stdin(void);
+
+FILE * eC_stdout(void);
+
 unsigned int FILE_GetSize(FILE * input);
 
 unsigned int FILE_Lock(FILE * input, FILE * output, int type, uint64 start, uint64 length, unsigned int wait);
@@ -1000,8 +1004,8 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 unsigned int __ecereConstructor___ecereNameSpace__ecere__sys__ConsoleFile(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-__ecereProp___ecereNameSpace__ecere__sys__File_Set_input(this, (bsl_stdin()));
-__ecereProp___ecereNameSpace__ecere__sys__File_Set_output(this, (bsl_stdout()));
+__ecereProp___ecereNameSpace__ecere__sys__File_Set_input(this, eC_stdin());
+__ecereProp___ecereNameSpace__ecere__sys__File_Set_output(this, eC_stdout());
 return 0x1;
 }
 
