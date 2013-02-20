@@ -269,6 +269,9 @@ private:
          EditLine line1, line2;
          int sel1X, sel1Y, sel2X, sel2Y;
 
+         EditLine bakLine1, bakLine2;
+         int bakSel1X, bakSel1Y, bakSel2X, bakSel2Y;
+
          bool selectionOnly = selection.checked;
          bool wholeWord = this.wholeWord.checked;
          bool matchCase = this.matchCase.checked;
@@ -280,6 +283,8 @@ private:
          {
             wrapped = 0;
             entriesReplaced = entriesFound = 0;
+
+            editBox.GetSelPos(&bakLine1, &bakSel1Y, &bakSel1X, &bakLine2, &bakSel2Y, &bakSel2X, true);
 
             // If in selection mode, the end of the selection is the end point of the replace
             if(selectionOnly)
@@ -351,9 +356,14 @@ private:
             MessageBox { type = ok, master = this, text = $"Search Finished", contents = contents }.Modal();
          }
 
-         selection.disabled = true;
-         wholeFile.checked = true;
-         continued = false;
+         if(!continued)
+            editBox.Select(bakLine2, bakSel2Y, bakSel2X, bakLine1, bakSel1Y, bakSel1X);
+         else
+         {
+            selection.disabled = true;
+            wholeFile.checked = true;
+            continued = false;
+         }
          findNext.isDefault = true;
          return true;
       }
