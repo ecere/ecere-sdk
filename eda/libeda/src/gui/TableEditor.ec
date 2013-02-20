@@ -499,6 +499,11 @@ public:
          property::masterEditor = (TableEditor)master;
    };
 
+   watch(modifiedDocument)
+   {
+      NotifyModifiedDocument();
+   };
+
    void CreateRow()
    {
       DebugLn("TableEditor::CreateRow");
