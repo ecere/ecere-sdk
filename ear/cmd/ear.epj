@@ -69,6 +69,6 @@
             }
          ]
       },
-      "../extract/obj/release.$(PLATFORM)/extract$(E)"
+      "../extract/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)/extract$(E)"
    ]
 }

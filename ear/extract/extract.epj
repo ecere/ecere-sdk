@@ -5,11 +5,9 @@
       "Warnings" : "All",
       "TargetType" : "Executable",
       "TargetFileName" : "extract",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "LibraryDirs" : [
-         "../../ecere/obj/vanilla.$(PLATFORM)",
-         "../../deps/zlib/obj/release.$(PLATFORM)"
+         "../../ecere/obj/vanilla.$(PLATFORM)$(COMPILER_SUFFIX)",
+         "../../deps/zlib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
       ]
    },
    "Platforms" : [

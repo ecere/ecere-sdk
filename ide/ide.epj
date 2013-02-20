@@ -61,17 +61,7 @@
             ],
             "Console" : true,
             "FastMath" : false
-         },
-         "Platforms" : [
-            {
-               "Name" : "Win32",
-               "Options" : {
-                  "Libraries" : [
-
-                  ]
-               }
-            }
-         ]
+         }
       },
       {
          "Name" : "Release",
@@ -92,14 +82,6 @@
             ]
          },
          "Platforms" : [
-            {
-               "Name" : "Win32",
-               "Options" : {
-                  "Libraries" : [
-
-                  ]
-               }
-            },
             {
                "Name" : "linux",
                "Options" : {
@@ -132,17 +114,7 @@
             ],
             "Console" : true,
             "FastMath" : false
-         },
-         "Platforms" : [
-            {
-               "Name" : "Win32",
-               "Options" : {
-                  "Libraries" : [
-
-                  ]
-               }
-            }
-         ]
+         }
       },
       {
          "Name" : "Profile",

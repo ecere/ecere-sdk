@@ -3,8 +3,6 @@
    "ModuleName" : "documentor",
    "Options" : {
       "TargetFileName" : "documentor",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
       "Libraries" : [
          "ecere"
       ]

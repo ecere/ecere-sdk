@@ -142,7 +142,13 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       MapNode<MT, V> node;
       while(node = root)
       {
-         delete node.value;
+         MapNode<MT, V> n = node;
+
+         // Adjust node pointer for non-standard AVLNode
+         if(class(MT).type == structClass)
+            n = (MapNode<MT, V>)(((byte *) node) + class(MT).structSize - sizeof(node.AVLNode::key));
+
+         delete n.value;
          Remove(node);
       }
    }
