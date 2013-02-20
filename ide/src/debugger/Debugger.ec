@@ -974,7 +974,7 @@ class Debugger
       else
       {
          *error = signalOn && activeThread == signalThread;
-         *lineCursor = activeFrameLevel + 1;
+         *lineCursor = activeFrameLevel - ((frameCount > 192 && activeFrameLevel > 191) ? frameCount - 192 - 1 : 0) + 1;
          *lineTopFrame = activeFrameLevel ? 1 : 0;
       }
    }
