@@ -430,7 +430,7 @@ private:
 
    public void DestroyChildren()
    {
-      // This is not required and will jam if the Stacker is destroyed
+      // This safe loop with 'left' will jam if the Stacker is destroyed
       if(!destroyed && created)
       {
          bool left = true;
@@ -446,6 +446,18 @@ private:
                   break;
                }
             }
+         }
+      }
+      else
+      {
+         // If the stacker is already destroyed, just clear everything
+         Iterator<Window> it { controls };
+         while(it.pointer = null, it.Next())
+         {
+            Window w = it.data;
+            it.Remove();
+            w.Destroy(0);
+            delete w;
          }
       }
    }
