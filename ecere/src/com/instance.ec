@@ -284,7 +284,7 @@ public:
    int typeSize;
    int defaultAlignment;
    void (*Initialize)();
-   int memberOffset;
+   int memberOffset;       // For structs, this includes all base classes structSize. Otherwise it restarts at for each class hierarchy level.
    OldList selfWatchers;
    char * designerClass;
    bool noExpansion;
@@ -2157,7 +2157,8 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
    NameSpace * nameSpace = null;
    bool force64Bits = (module.application.isGUIApp & 2) ? true : false;
    bool force32Bits = (module.application.isGUIApp & 4) ? true : false;
-   bool forceX = (module.application.isGUIApp & 8) ? true : false;
+   bool inCompiler = (module.application.isGUIApp & 8) ? true : false;
+   bool crossBits = force32Bits || force64Bits;
 
    {
       nameSpace = (declMode == publicAccess) ? &module.publicNameSpace : &module.privateNameSpace;
@@ -2552,24 +2553,43 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
          }
          _class.memberID = _class.startMemberID = (base && (type == normalClass || type == noHeadClass || type == structClass)) ? base.memberID : 0;
          if(type == normalClass || type == noHeadClass)
-            _class.offset = (base && base.structSize && base.type != systemClass) ? base.structSize : ((type == noHeadClass) ? 0 : (force64Bits ? 24 : (force32Bits) ? 12 : sizeof(class Instance)));
-         if(force64Bits || forceX /*force32Bits*/)
+            _class.offset = (base && base.structSize && base.type != systemClass) ? base.structSize : ((type == noHeadClass) ? 0 : (force64Bits ? 24 : (force32Bits && inCompiler) ? 12 : sizeof(class Instance)));
+
+         // For cross-bitness-compiling
+         if(crossBits)
          {
-            // For 64 bit cross-compiling from 32 bit library:
-                 if(!strcmp(name, "ecere::com::Class"))           size = 0; // 616
-            else if(!strcmp(name, "ecere::com::ClassProperty"))   size = 0; // 80
-            else if(!strcmp(name, "ecere::com::NameSpace"))       size = 0; // 176
-            else if(!strcmp(name, "ecere::sys::BufferedFile"))    size = 0;
-            else if(!strcmp(name, "ecere::sys::BTNode"))          size = 0;
-            else if(!strcmp(name, "ecere::sys::StringBTNode"))    size = 0;
-            else if(!strcmp(name, "ecere::sys::OldList"))         size = 0; // 32
-            else if(!strcmp(name, "ecere::sys::Item"))            size = 0;
-            else if(!strcmp(name, "ecere::sys::NamedLink"))       size = 0;
-            else if(!strcmp(name, "ecere::sys::OldLink"))         size = 0;
-            else if(!strcmp(name, "ecere::sys::NamedItem"))       size = 0;
-            else if(!strcmp(name, "ecere::sys::NamedItem64"))     size = 0;
-            else if(!strcmp(name, "ecere::sys::BinaryTree"))      size = 0;
-            else if(!strcmp(name, "ecere::sys::FileListing"))     size = 3*(force32Bits ? 4 : 8);
+            // Ideally, the running library should be aware of the struct size of both 32 and 64 bit, since the compiler has no knowledge whatsoever of private members
+            if(strstr(name, "ecere::sys::EARHeader") ||
+               strstr(name, "AnchorValue") ||
+               !strcmp(name, "ecere::com::CustomAVLTree") ||
+               !strcmp(name, "ecere::sys::Mutex"));   // Never recompute these, they're always problematic (errors, crashes)
+            else
+            {
+               if(!strcmp(name, "ecere::sys::FileListing"))
+               {
+                  size = 3*(force32Bits ? 4 : 8);
+                  _class.structAlignment = force32Bits ? 4 : 8;   // FileListing is problematic because it is a struct with private data that the user allocates
+               }
+               // These we want to recompute inside the IDE to help the debugger
+               else if(!strcmp(name, "ecere::com::Class"))           size = 0; // 616
+               else if(!strcmp(name, "ecere::com::ClassProperty"))   size = 0; // 80
+               else if(!strcmp(name, "ecere::com::NameSpace"))       size = 0; // 176
+               else if(!strcmp(name, "ecere::sys::BufferedFile"))    size = 0;
+               else if(!strcmp(name, "ecere::sys::BTNode"))          size = 0;
+               else if(!strcmp(name, "ecere::sys::StringBTNode"))    size = 0;
+               else if(!strcmp(name, "ecere::sys::OldList"))         size = 0; // 32
+               else if(!strcmp(name, "ecere::sys::Item"))            size = 0;
+               else if(!strcmp(name, "ecere::sys::NamedLink"))       size = 0;
+               else if(!strcmp(name, "ecere::sys::OldLink"))         size = 0;
+               else if(!strcmp(name, "ecere::sys::NamedItem"))       size = 0;
+               else if(!strcmp(name, "ecere::sys::NamedItem64"))     size = 0;
+               else if(!strcmp(name, "ecere::sys::BinaryTree"))      size = 0;
+               else if(module != module.application && inCompiler)
+               {
+                  // These we only want to recompute inside the compiler
+                  size = 0;
+               }
+            }
          }
          if(type == structClass)
          {
@@ -4295,7 +4315,18 @@ public dllexport void * eInstance_New(Class _class)
 #endif
 
 #endif
-      instance = _calloc(1, _class.structSize);   
+      {
+         int size = _class.structSize;
+         if(_class.module != __thisModule)
+         {
+            int flags = _class.module.application.isGUIApp;
+            bool force32Bits = (flags & 4) ? true : false;
+            bool inCompiler = (flags & 8) ? true : false;
+            if(force32Bits && inCompiler && !strcmp(_class.name, "Module"))
+               size = 12 + 8 + 32 + 32 + 32 + 32 + 8 + 8 + 8 + 8 + 8 + 4 + 4 + (32 + 8 + 8 + 4*32) + (32 + 8 + 8 + 4*32);
+         }
+         instance = _calloc(1, size);
+      }
 #ifdef MEMINFO
       allocateClass = null;
    memMutex.Release();
@@ -5833,8 +5864,8 @@ static void LoadCOM(Module module)
 {
    bool force64Bits = (module.application.isGUIApp & 2) ? true : false;
    bool force32Bits = (module.application.isGUIApp & 4) ? true : false;
-   bool forceX = (module.application.isGUIApp & 8) ? true : false;
-   int pointerSize = force64Bits ? 8 : (forceX|force32Bits) ? 4 : sizeof(void *);
+   bool inCompiler = (module.application.isGUIApp & 8) ? true : false;
+   int pointerSize = force64Bits ? 8 : force32Bits ? 4 : sizeof(void *);
    Class applicationClass;
    Class enumClass, structClass, boolClass;
    Class moduleClass;
@@ -5866,7 +5897,7 @@ static void LoadCOM(Module module)
    InitializeDataTypes1(module);
 
    // Create Enum class
-   enumClass = eSystem_RegisterClass(normalClass, "enum", null, 0, force64Bits ? 40 : force32Bits ? 24 : sizeof(class EnumClassData), null, null, module, baseSystemAccess, publicAccess);
+   enumClass = eSystem_RegisterClass(normalClass, "enum", null, 0, force64Bits ? 40 : sizeof(class EnumClassData), null, null, module, baseSystemAccess, publicAccess);
    eClass_AddClassProperty(enumClass, "enumSize", "int", null, GetEnumSize).constant = true;
    enumClass.type = systemClass;
    
@@ -5894,7 +5925,6 @@ static void LoadCOM(Module module)
 
    // Create Module class
    moduleClass = eSystem_RegisterClass(normalClass, "ecere::com::Module", null, force64Bits ? 8 + 32 + 32 + 32 + 32 + 8 + 8 + 8 + 8 + 8 + 4 + 4 + (32 + 8 + 8 + 4*32) + (32 + 8 + 8 + 4*32) :
-                                                                                force32Bits ? 4 + 20 + 20 + 20 + 20 + 4 + 4 + 4 + 4 + 4 + 4 + 4 + (16 + 4 + 4 + 4*16) + (16 + 4 + 4 + 4*16) :
                                                                                 sizeof(struct Module), 0, (void *)Module_Constructor, (void *)Module_Destructor, module, baseSystemAccess, publicAccess);
    eClass_AddVirtualMethod(moduleClass, "OnLoad", "bool()", null, publicAccess);
    eClass_AddVirtualMethod(moduleClass, "OnUnload", "void()", null, publicAccess);
@@ -5916,9 +5946,16 @@ static void LoadCOM(Module module)
    eClass_AddDataMember(moduleClass, "publicNameSpace", "NameSpace",  force64Bits ? (32 + 8 + 8 + 4*32) : force32Bits ? (16 + 4 + 4 + 4*16) : sizeof(NameSpace), pointerSize, publicAccess);
    moduleClass.fixed = true;
    moduleClass.count++;
+   if(inCompiler && force32Bits)
+      moduleClass.structSize = 12 + 4 + 20 + 20 + 20 + 20 + 4 + 4 + 4 + 4 + 4 + 4 + 4 + (16 + 4 + 4 + 4*16) + (16 + 4 + 4 + 4*16);
    
    // Create Application class
-   applicationClass = eSystem_RegisterClass(normalClass, "ecere::com::Application", "Module", force64Bits ? (8+8+4+4 + 32 + 8 + 176) : force32Bits ? (4+4+4+4 + 20 + 4 + 88) : sizeof(struct Application), 0, null, (void *)Application_Destructor, module, baseSystemAccess, publicAccess);
+   applicationClass = eSystem_RegisterClass(normalClass, "ecere::com::Application", "Module", force64Bits ? (8+8+4+4 + 32 + 8 + 176) : sizeof(struct Application), 0, null, (void *)Application_Destructor, module, baseSystemAccess, publicAccess);
+   if(inCompiler && force32Bits)
+   {
+      applicationClass.offset = 12 + 4 + 20 + 20 + 20 + 20 + 4 + 4 + 4 + 4 + 4 + 4 + 4 + (16 + 4 + 4 + 4*16) + (16 + 4 + 4 + 4*16);
+      applicationClass.structSize = applicationClass.offset + (4+4+4+4 + 20 + 4 + 88);
+   }
    eClass_AddVirtualMethod(applicationClass, "Main", "void()", null, publicAccess);
    eClass_AddDataMember(applicationClass, "argc", "int", sizeof(int), 4, publicAccess);
    eClass_AddDataMember(applicationClass, "argv", "char **", pointerSize, pointerSize, publicAccess);

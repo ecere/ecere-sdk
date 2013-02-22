@@ -1174,12 +1174,12 @@ output[len++] = ch;
 output[len++] = (char)0;
 }
 
-extern int AddMembers(struct __ecereNameSpace__ecere__sys__OldList *  declarations, struct __ecereNameSpace__ecere__com__Class * _class, unsigned int isMember, unsigned int *  retSize, struct __ecereNameSpace__ecere__com__Class * topClass);
+extern int AddMembers(struct __ecereNameSpace__ecere__sys__OldList *  declarations, struct __ecereNameSpace__ecere__com__Class * _class, unsigned int isMember, unsigned int *  retSize, struct __ecereNameSpace__ecere__com__Class * topClass, unsigned int *  addedPadding);
 
 static void AddSimpleBaseMembers(struct __ecereNameSpace__ecere__sys__OldList * list, struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__Class * topClass)
 {
 if(_class->type != 1000)
-AddMembers(list, _class, 0x0, (((void *)0)), topClass);
+AddMembers(list, _class, 0x0, (((void *)0)), topClass, (((void *)0)));
 }
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;

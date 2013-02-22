@@ -1201,16 +1201,11 @@ unsigned int thisClassParams = 0x1;
 
 unsigned int internalValueCounter;
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
-
-struct __ecereNameSpace__ecere__sys__TempFile
-{
-char __ecere_padding[24];
-} __attribute__ ((gcc_struct));
-
 extern void OutputExpression(struct Expression * exp, struct __ecereNameSpace__ecere__com__Instance * f);
 
 extern int strlen(const char * );
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
 
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
@@ -2062,6 +2057,8 @@ void ComputeExpression(struct Expression * exp);
 
 struct Context * SetupTemplatesContext(struct __ecereNameSpace__ecere__com__Class * _class);
 
+extern int targetBits;
+
 int ComputeTypeSize(struct Type * type);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__BitMember;
@@ -2106,8 +2103,16 @@ int c;
 int unionMemberOffset = 0;
 int bitFields = 0;
 
-if(!member && (_class->type == 1 || _class->type == 0 || _class->type == 5) && _class->memberOffset && _class->memberOffset > _class->base->structSize)
-_class->memberOffset = (_class->base && _class->base->type != 1000) ? _class->base->structSize : 0;
+if(member)
+{
+member->memberOffset = 0;
+if(targetBits < sizeof(void *) * 8)
+member->structAlignment = 0;
+}
+else if(targetBits < sizeof(void *) * 8)
+_class->structAlignment = 0;
+if(!member && ((_class->type == 0 || _class->type == 5) || (_class->type == 1 && _class->memberOffset && _class->memberOffset > _class->base->structSize)))
+_class->memberOffset = (_class->base && _class->type == 1) ? _class->base->structSize : 0;
 if(!member && _class->destructionWatchOffset)
 _class->memberOffset += sizeof(struct __ecereNameSpace__ecere__sys__OldList);
 {
@@ -2243,24 +2248,38 @@ _class->memberOffset += size;
 }
 else
 {
+int alignment;
+
 ComputeClassMembers((struct __ecereNameSpace__ecere__com__Class *)dataMember, 0x1);
+alignment = dataMember->structAlignment;
 if(isMember)
 {
-int __simpleStruct2;
-int __simpleStruct0, __simpleStruct1;
+int __simpleStruct0;
 
-member->structAlignment = (__simpleStruct0 = member->structAlignment, __simpleStruct1 = dataMember->structAlignment, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
+if(alignment)
+{
+int __simpleStruct0;
+
+if(member->memberOffset % alignment)
+member->memberOffset += alignment - (member->memberOffset % alignment);
+member->structAlignment = (__simpleStruct0 = member->structAlignment, (__simpleStruct0 > alignment) ? __simpleStruct0 : alignment);
+}
 dataMember->offset = member->memberOffset;
 if(member->type == 1)
-unionMemberOffset = (__simpleStruct2 = dataMember->memberOffset, (unionMemberOffset > __simpleStruct2) ? unionMemberOffset : __simpleStruct2);
+unionMemberOffset = (__simpleStruct0 = dataMember->memberOffset, (unionMemberOffset > __simpleStruct0) ? unionMemberOffset : __simpleStruct0);
 else
 member->memberOffset += dataMember->memberOffset;
 }
 else
 {
-int __simpleStruct0, __simpleStruct1;
+if(alignment)
+{
+int __simpleStruct0;
 
-_class->structAlignment = (__simpleStruct0 = _class->structAlignment, __simpleStruct1 = dataMember->structAlignment, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
+if(_class->memberOffset % alignment)
+_class->memberOffset += alignment - (_class->memberOffset % alignment);
+_class->structAlignment = (__simpleStruct0 = _class->structAlignment, (__simpleStruct0 > alignment) ? __simpleStruct0 : alignment);
+}
 dataMember->offset = _class->memberOffset;
 _class->memberOffset += dataMember->memberOffset;
 }
@@ -2404,8 +2423,6 @@ ComputeModuleClasses(subModule->data);
 for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->classes.first; _class; _class = _class->next)
 ComputeClassMembers(_class, 0x0);
 }
-
-extern int targetBits;
 
 extern unsigned int inCompiler;
 
@@ -2556,14 +2573,17 @@ struct TemplateParameter * param = type->templateParameter;
 struct Type * baseType = ProcessTemplateParameterType(param);
 
 if(baseType)
+{
 size = ComputeTypeSize(baseType);
+type->alignment = baseType->alignment;
+}
 else
-size = sizeof(uint64);
+type->alignment = size = sizeof(uint64);
 break;
 }
 case 15:
 {
-size = sizeof(enum
+type->alignment = size = sizeof(enum
 {
 test
 });
@@ -2571,7 +2591,7 @@ break;
 }
 case 21:
 {
-size = targetBits / 8;
+type->alignment = size = targetBits / 8;
 break;
 }
 }
@@ -2607,7 +2627,7 @@ extern struct Declarator * MkDeclaratorArray(struct Declarator * declarator, str
 
 extern struct Expression * MkExpConstant(char *  string);
 
-int AddMembers(struct __ecereNameSpace__ecere__sys__OldList * declarations, struct __ecereNameSpace__ecere__com__Class * _class, unsigned int isMember, unsigned int * retSize, struct __ecereNameSpace__ecere__com__Class * topClass)
+int AddMembers(struct __ecereNameSpace__ecere__sys__OldList * declarations, struct __ecereNameSpace__ecere__com__Class * _class, unsigned int isMember, unsigned int * retSize, struct __ecereNameSpace__ecere__com__Class * topClass, unsigned int * addedPadding)
 {
 struct __ecereNameSpace__ecere__com__DataMember * topMember = isMember ? (struct __ecereNameSpace__ecere__com__DataMember *)_class : (((void *)0));
 unsigned int totalSize = 0;
@@ -2616,12 +2636,14 @@ int alignment, size;
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct Context * context = isMember ? (((void *)0)) : SetupTemplatesContext(_class);
 
+if(addedPadding)
+*addedPadding = 0x0;
 if(!isMember && _class->base)
 {
 maxSize = _class->structSize;
 {
 if(_class->type == 1 || _class->type == 5)
-AddMembers(declarations, _class->base, 0x0, &totalSize, topClass);
+AddMembers(declarations, _class->base, 0x0, &totalSize, topClass, (((void *)0)));
 else
 maxSize -= _class->base->templateClass ? _class->base->templateClass->structSize : _class->base->structSize;
 }
@@ -2669,7 +2691,7 @@ case 2:
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList(), * list = MkList();
 
 size = 0;
-AddMembers(list, (struct __ecereNameSpace__ecere__com__Class *)member, 0x1, &size, topClass);
+AddMembers(list, (struct __ecereNameSpace__ecere__com__Class *)member, 0x1, &size, topClass, (((void *)0)));
 ListAdd(specs, MkStructOrUnion((member->type == 1) ? 4 : 3, (((void *)0)), list));
 ListAdd(declarations, MkClassDefDeclaration(MkStructDeclaration(specs, (((void *)0)), (((void *)0)))));
 alignment = member->structAlignment;
@@ -2705,6 +2727,8 @@ char sizeString[50];
 
 sprintf(sizeString, "%d", maxSize - totalSize);
 ListAdd(declarations, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(CHAR)), MkListOne(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__ecere_padding")), MkExpConstant(sizeString))), (((void *)0)))));
+if(addedPadding)
+*addedPadding = 0x1;
 }
 }
 if(context)
@@ -2757,6 +2781,8 @@ extern void FullClassNameCat(char *  output, char *  className, unsigned int inc
 
 extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (* )(void * ));
 
+extern void FreeClassDef(struct ClassDef * def);
+
 extern struct External * MkExternalDeclaration(struct Declaration * declaration);
 
 extern struct Declaration * MkDeclaration(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct __ecereNameSpace__ecere__sys__OldList * initDeclarators);
@@ -2803,12 +2829,14 @@ structName[0] = (char)0;
 FullClassNameCat(structName, name, 0x0);
 if(!skipNoHead)
 {
+unsigned int addedPadding = 0x0;
+
 classSym->declaredStructSym = 0x1;
 declarations = MkList();
-AddMembers(declarations, classSym->registered, 0x0, (((void *)0)), classSym->registered);
-if(!(*declarations).count)
+AddMembers(declarations, classSym->registered, 0x0, (((void *)0)), classSym->registered, &addedPadding);
+if(!(*declarations).count || ((*declarations).count == 1 && addedPadding))
 {
-FreeList(declarations, (((void *)0)));
+FreeList(declarations, FreeClassDef);
 declarations = (((void *)0));
 }
 }
@@ -16316,7 +16344,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetDouble", "bool GetDou
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeClassMembers", "void ComputeClassMembers(ecere::com::Class _class, bool isMember)", ComputeClassMembers, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeModuleClasses", "void ComputeModuleClasses(ecere::com::Module module)", ComputeModuleClasses, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeTypeSize", "int ComputeTypeSize(Type type)", ComputeTypeSize, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("AddMembers", "int AddMembers(ecere::sys::OldList * declarations, ecere::com::Class _class, bool isMember, uint * retSize, ecere::com::Class topClass)", AddMembers, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("AddMembers", "int AddMembers(ecere::sys::OldList * declarations, ecere::com::Class _class, bool isMember, uint * retSize, ecere::com::Class topClass, bool * addedPadding)", AddMembers, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareStruct", "void DeclareStruct(char * name, bool skipNoHead)", DeclareStruct, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareProperty", "void DeclareProperty(ecere::com::Property prop, char * setName, char * getName)", DeclareProperty, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("Dereference", "Type Dereference(Type source)", Dereference, module, 1);

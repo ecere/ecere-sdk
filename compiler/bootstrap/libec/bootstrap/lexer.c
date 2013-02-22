@@ -690,11 +690,11 @@ expression_yylloc.end.charPos += yyleng;
 expression_yylloc.end.pos += yyleng;
 }
 
-YY_BUFFER_STATE include_stack[10];
+YY_BUFFER_STATE include_stack[30];
 
-struct __ecereNameSpace__ecere__com__Instance * fileStack[10];
+struct __ecereNameSpace__ecere__com__Instance * fileStack[30];
 
-char sourceFileStack[10][797];
+char sourceFileStack[30][797];
 
 extern char *  strcpy(char * , const char * );
 
@@ -703,9 +703,9 @@ void SetSomeSourceFileStack(char * fileName, int index)
 strcpy(sourceFileStack[index], fileName);
 }
 
-struct Location locStack[10];
+struct Location locStack[30];
 
-int declModeStack[10];
+int declModeStack[30];
 
 int include_stack_ptr = 0;
 
@@ -2448,7 +2448,7 @@ includeFile[c - 1] = '\0';
 break;
 }
 }
-if(include_stack_ptr >= (10))
+if(include_stack_ptr >= (30))
 {
 fprintf((bsl_stderr()), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Includes nested too deeply", (((void *)0))));
 exit(1);

@@ -560,7 +560,7 @@ globalData = nameSpace;
 
 struct __ecereNameSpace__ecere__sys__OldList dataRedefinitions;
 
-extern char sourceFileStack[10][797];
+extern char sourceFileStack[30][797];
 
 extern int include_stack_ptr;
 

@@ -2849,7 +2849,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "Sma", "bool( *)(Expre
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "GrtEqu", "bool( *)(Expression, Operand, Operand)", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "SmaEqu", "bool( *)(Expression, Operand, Operand)", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "Cond", "bool( *)(Expression, Operand, Operand, Operand)", 4, 4, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterDefine("MAX_INCLUDE_DEPTH", "10", module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterDefine("MAX_INCLUDE_DEPTH", "30", module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("Compiler_Error", "void Compiler_Error(char * format, ...)", Compiler_Error, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetNumWarnings", "int GetNumWarnings(void)", GetNumWarnings, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("Compiler_Warning", "void Compiler_Warning(char * format, ...)", Compiler_Warning, module, 2);

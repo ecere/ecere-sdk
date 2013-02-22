@@ -337,7 +337,7 @@ link = (struct __ecereNameSpace__ecere__com__Link *)__ecereNameSpace__ecere__com
 memcpy((void *)&link->data, (void *)value, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].dataTypeClass->structSize);
 }
 else
-link = (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(24), ((struct __ecereNameSpace__ecere__com__Link *)__ecereTemp1)->data = value, ((struct __ecereNameSpace__ecere__com__Link *)__ecereTemp1));
+link = (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(16), ((struct __ecereNameSpace__ecere__com__Link *)__ecereTemp1)->data = value, ((struct __ecereNameSpace__ecere__com__Link *)__ecereTemp1));
 ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * after, uint64 value))__ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert])(this, after, (void *)link);
 return link;
 }

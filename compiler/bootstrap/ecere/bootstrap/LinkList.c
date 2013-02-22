@@ -586,8 +586,8 @@ struct __ecereNameSpace__ecere__com__Class * class;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::com::LinkElement", 0, sizeof(struct __ecereNameSpace__ecere__com__LinkElement), 0, 0, 0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__LinkElement = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "T", 4, 0, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "T", 4, 0, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "T", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "T", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "T", 0, "void *", (((void *)0)));
 __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(class);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::ListItem", "ecere::com::IteratorPointer", sizeof(struct __ecereNameSpace__ecere__com__ListItem), 0, 0, 0, module, 4, 1);
@@ -596,12 +596,12 @@ __ecereClass___ecereNameSpace__ecere__com__ListItem = class;
 {
 struct __ecereNameSpace__ecere__com__DataMember * dataMember0 = __ecereNameSpace__ecere__com__eMember_New(1, 1);
 
-__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "link", "ecere::com::LinkElement<thisclass>", 8, 0, 1);
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "link", "ecere::com::LinkElement<thisclass>", 8, 4, 1);
 {
 struct __ecereNameSpace__ecere__com__DataMember * dataMember1 = __ecereNameSpace__ecere__com__eMember_New(2, 1);
 
-__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "prev", "thisclass", 4, 0, 1);
-__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "next", "thisclass", 4, 0, 1);
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "prev", "thisclass", 4, 4, 1);
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "next", "thisclass", 4, 4, 1);
 __ecereNameSpace__ecere__com__eMember_AddMember(dataMember0, dataMember1);
 }
 __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
@@ -625,8 +625,8 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Move", 0, __ecereMethod__
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Find", 0, __ecereMethod___ecereNameSpace__ecere__com__LinkList_Find, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Free", 0, __ecereMethod___ecereNameSpace__ecere__com__LinkList_Free, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Delete", 0, __ecereMethod___ecereNameSpace__ecere__com__LinkList_Delete, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "first", "LT", 4, 0, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "last", "LT", 4, 0, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "first", "LT", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "last", "LT", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "count", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "LT", 0, "void *", &__simpleStruct0);
 __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "circ", 2, "bool", &__simpleStruct1);

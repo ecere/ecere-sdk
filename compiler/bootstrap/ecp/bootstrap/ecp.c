@@ -1549,11 +1549,8 @@ int i;
 unsigned int ui;
 float f;
 double d;
-unsigned char *  p;
 long long i64;
 uint64 ui64;
-intptr_t iptr;
-uintptr_t uiptr;
 } __attribute__ ((gcc_struct));
 struct OpTable ops;
 } __attribute__ ((gcc_struct));
@@ -2457,13 +2454,6 @@ extern int snprintf(char * , int, char * , ...);
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpen(unsigned int mode, char *  commandLine);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
-
-struct __ecereNameSpace__ecere__sys__TempFile
-{
-char __ecere_padding[24];
-} __attribute__ ((gcc_struct));
-
 extern void SetFileInput(struct __ecereNameSpace__ecere__com__Instance * file);
 
 extern void SetMainModule(struct ModuleImport * moduleImport);
@@ -2491,6 +2481,8 @@ extern void FreeTypeData(struct __ecereNameSpace__ecere__com__Instance * private
 extern void FreeIncludeFiles(void);
 
 extern void FreeGlobalData(struct __ecereNameSpace__ecere__com__NameSpace * globalDataList);
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
 
@@ -2694,7 +2686,7 @@ SetInPreCompiler(0x1);
 SetTargetPlatform(targetPlatform);
 SetTargetBits(targetBits);
 SetEchoOn(0x0);
-privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize(0x1 | ((targetBits == 64) ? (unsigned int)2 : (unsigned int)0), 1, (((void *)0)));
+privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize(0x1 | (targetBits == sizeof(uintptr_t) * 8 ? (unsigned int)0 : targetBits == 64 ? (unsigned int)2 : targetBits == 32 ? (unsigned int)4 : (unsigned int)0) | (unsigned int)8, 1, (((void *)0)));
 SetPrivateModule(privateModule);
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uint"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned int", 0x0), ((struct Symbol *)__ecereTemp1)));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uint64"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned int64", 0x0), ((struct Symbol *)__ecereTemp1)));

@@ -529,7 +529,11 @@ n = (struct __ecereNameSpace__ecere__com__MapNode *)(((unsigned char *)node) + (
 
 void __ecereMethod___ecereNameSpace__ecere__com__Map_Delete(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__MapNode * node)
 {
-(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].dataTypeClass, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value(node)), __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value(node, 0));
+struct __ecereNameSpace__ecere__com__MapNode * n = node;
+
+if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass->type == 1)
+n = (struct __ecereNameSpace__ecere__com__MapNode *)(((unsigned char *)node) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass->structSize - sizeof node->key);
+(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].dataTypeClass, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value(n)), __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value(n, 0));
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, node);
 }
 
@@ -700,7 +704,7 @@ __ecereProp___ecereNameSpace__ecere__com__MapNode_key = __ecerePropM___ecereName
 __ecerePropM___ecereNameSpace__ecere__com__MapNode_value = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "value", "V", __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
 __ecereProp___ecereNameSpace__ecere__com__MapNode_value = __ecerePropM___ecereNameSpace__ecere__com__MapNode_value, __ecerePropM___ecereNameSpace__ecere__com__MapNode_value = (void *)0;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "value", "V", 8, 0, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "value", "V", 8, 8, 1);
 __ecerePropM___ecereNameSpace__ecere__com__MapNode_prev = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "prev", "thisclass", 0, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_prev, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
 __ecereProp___ecereNameSpace__ecere__com__MapNode_prev = __ecerePropM___ecereNameSpace__ecere__com__MapNode_prev, __ecerePropM___ecereNameSpace__ecere__com__MapNode_prev = (void *)0;

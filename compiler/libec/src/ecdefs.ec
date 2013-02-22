@@ -1222,7 +1222,7 @@ public:
    bool (* Cond)(Expression, Operand, Operand, Operand);
 };
 
-define MAX_INCLUDE_DEPTH = 10;
+define MAX_INCLUDE_DEPTH = 30;
 
 #include <stdarg.h>
 

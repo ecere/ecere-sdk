@@ -359,8 +359,23 @@ void ComputeClassMembers(Class _class, bool isMember)
       int unionMemberOffset = 0;
       int bitFields = 0;
 
+      /*
       if(!member && (_class.type == structClass || _class.type == normalClass || _class.type == noHeadClass) && _class.memberOffset && _class.memberOffset > _class.base.structSize)
          _class.memberOffset = (_class.base && _class.base.type != systemClass) ? _class.base.structSize : 0;
+      */
+
+      if(member)
+      {
+         member.memberOffset = 0;
+         if(targetBits < sizeof(void *) * 8)
+            member.structAlignment = 0;
+      }
+      else if(targetBits < sizeof(void *) * 8)
+         _class.structAlignment = 0;
+
+      // Confusion here: non struct classes seem to have their memberOffset restart at 0 at each hierarchy level
+      if(!member && ((_class.type == normalClass || _class.type == noHeadClass) || (_class.type == structClass && _class.memberOffset && _class.memberOffset > _class.base.structSize)))
+         _class.memberOffset = (_class.base && _class.type == structClass) ? _class.base.structSize : 0;
 
       if(!member && _class.destructionWatchOffset)
          _class.memberOffset += sizeof(OldList);
@@ -376,8 +391,6 @@ void ComputeClassMembers(Class _class, bool isMember)
             {
                if(dataMember.type == normalMember && dataMember.dataTypeString && !dataMember.dataType)
                {
-                  /*if(dataMember.dataType)
-                     printf("");*/
                   dataMember.dataType = ProcessTypeString(dataMember.dataTypeString, false);
                   /*if(!dataMember.dataType)
                      dataMember.dataType = ProcessTypeString(dataMember.dataTypeString, false);
@@ -474,12 +487,6 @@ void ComputeClassMembers(Class _class, bool isMember)
                      alignment = dataMember.dataType.alignment;
                   }
 
-#ifdef _DEBUG
-                  if(!size)
-                  {
-                     // printf("");
-                  }
-#endif
                   if(isMember)
                   {
                      // TESTING THIS PADDING CODE
@@ -516,12 +523,20 @@ void ComputeClassMembers(Class _class, bool isMember)
                }
                else
                {
+                  int alignment;
+
                   ComputeClassMembers((Class)dataMember, true);
+                  alignment = dataMember.structAlignment;
 
                   if(isMember)
                   {
-                     // THERE WASN'T A MAX HERE ? member.structAlignment = dataMember.structAlignment;
-                     member.structAlignment = Max(member.structAlignment, dataMember.structAlignment);
+                     if(alignment)
+                     {
+                        if(member.memberOffset % alignment)
+                           member.memberOffset += alignment - (member.memberOffset % alignment);
+
+                        member.structAlignment = Max(member.structAlignment, alignment);
+                     }
                      dataMember.offset = member.memberOffset;
                      if(member.type == unionMember)
                         unionMemberOffset = Max(unionMemberOffset, dataMember.memberOffset);
@@ -530,7 +545,12 @@ void ComputeClassMembers(Class _class, bool isMember)
                   }
                   else
                   {
-                     _class.structAlignment = Max(_class.structAlignment, dataMember.structAlignment);
+                     if(alignment)
+                     {
+                        if(_class.memberOffset % alignment)
+                           _class.memberOffset += alignment - (_class.memberOffset % alignment);
+                        _class.structAlignment = Max(_class.structAlignment, alignment);
+                     }
                      dataMember.offset = _class.memberOffset;
                      _class.memberOffset += dataMember.memberOffset;
                   }
@@ -711,12 +731,6 @@ public int ComputeTypeSize(Type type)
                   yylloc = oldLoc;
                }
                GetInt(type.arraySizeExp, &type.arraySize);
-#ifdef _DEBUG
-               if(!type.arraySize)
-               {
-                  printf("");
-               }
-#endif
             }
             else if(type.enumClass)
             {
@@ -780,19 +794,22 @@ public int ComputeTypeSize(Type type)
             TemplateParameter param = type.templateParameter;
             Type baseType = ProcessTemplateParameterType(param);
             if(baseType)
+            {
                size = ComputeTypeSize(baseType);
+               type.alignment = baseType.alignment;
+            }
             else
-               size = sizeof(uint64);
+               type.alignment = size = sizeof(uint64);
             break;
          }
          case enumType:
          {
-            size = sizeof(enum { test });
+            type.alignment = size = sizeof(enum { test });
             break;
          }
          case thisClassType:
          {
-            size = targetBits / 8; //sizeof(void *);
+            type.alignment = size = targetBits / 8; //sizeof(void *);
             break;
          }
       }
@@ -803,7 +820,7 @@ public int ComputeTypeSize(Type type)
 }
 
 
-/*static */int AddMembers(OldList * declarations, Class _class, bool isMember, uint * retSize, Class topClass)
+/*static */int AddMembers(OldList * declarations, Class _class, bool isMember, uint * retSize, Class topClass, bool *addedPadding)
 {
    // This function is in need of a major review when implementing private members etc.
    DataMember topMember = isMember ? (DataMember) _class : null;
@@ -812,6 +829,8 @@ public int ComputeTypeSize(Type type)
    int alignment, size;
    DataMember member;
    Context context = isMember ? null : SetupTemplatesContext(_class);
+   if(addedPadding)
+      *addedPadding = false;
 
    if(!isMember && _class.base)
    {
@@ -820,7 +839,7 @@ public int ComputeTypeSize(Type type)
       {
          // DANGER: Testing this noHeadClass here...
          if(_class.type == structClass || _class.type == noHeadClass)
-            /*totalSize = */AddMembers(declarations, _class.base, false, &totalSize, topClass);
+            /*totalSize = */AddMembers(declarations, _class.base, false, &totalSize, topClass, null);
          else
             maxSize -= _class.base.templateClass ? _class.base.templateClass.structSize : _class.base.structSize;
       }
@@ -879,7 +898,7 @@ public int ComputeTypeSize(Type type)
                OldList * specs = MkList(), * list = MkList();
                
                size = 0;
-               AddMembers(list, (Class)member, true, &size, topClass);
+               AddMembers(list, (Class)member, true, &size, topClass, null);
                ListAdd(specs, 
                   MkStructOrUnion((member.type == unionMember)?unionSpecifier:structSpecifier, null, list));
                ListAdd(declarations, MkClassDefDeclaration(MkStructDeclaration(specs, null, null)));
@@ -915,6 +934,8 @@ public int ComputeTypeSize(Type type)
          ListAdd(declarations, 
             MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(CHAR)), 
             MkListOne(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__ecere_padding")), MkExpConstant(sizeString))), null)));
+         if(addedPadding)
+            *addedPadding = true;
       }
    }
    if(context)
@@ -1018,18 +1039,19 @@ void DeclareStruct(char * name, bool skipNoHead)
 
       if(!skipNoHead)
       {
+         bool addedPadding = false;
          classSym.declaredStructSym = true;
 
          declarations = MkList();
 
-         AddMembers(declarations, classSym.registered, false, null, classSym.registered);
+         AddMembers(declarations, classSym.registered, false, null, classSym.registered, &addedPadding);
 
          //ListAdd(specifiers, MkSpecifier(TYPEDEF));
          //ListAdd(specifiers, MkStructOrUnion(structSpecifier, null, declarations));
 
-         if(!declarations->count)
+         if(!declarations->count || (declarations->count == 1 && addedPadding))
          {
-            FreeList(declarations, null);
+            FreeList(declarations, FreeClassDef);
             declarations = null;
          }
       }
@@ -6393,12 +6415,6 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                      strcat(string, name);
                   }
                }
-#ifdef _DEBUG
-               else
-               {
-                  printf("");
-               }
-#endif
             }
 
             if(printFunction)
@@ -6502,10 +6518,6 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
          case vaListType:
          strcat(string, "__builtin_va_list");
             break;
-#ifdef _DEBUG
-         default:
-            printf("");
-#endif
       }
       if(type.name && printName && type.kind != functionType && (type.kind != pointerType || type.type.kind != functionType))
       {
@@ -6531,14 +6543,7 @@ void PrintType(Type type, char * string, bool printName, bool fullName)
       strcat(string, "(");
       _PrintType(type, string, printName, false, fullName);
       strcat(string, ")");
-      /*
-      if(type.name)
-         strcat(string, type.name);
-      else
-      {
-         printf("");
-      }
-      */
+
       strcat(string, "(");
       for(param = funcType.params.first; param; param = param.next)
       {
@@ -7382,12 +7387,6 @@ void ProcessExpressionType(Expression exp)
             {
                exp.instance._class = MkSpecifierName(exp.destType._class.string);
             }
-#ifdef _DEBUG
-            else 
-            {
-               printf("");               
-            }
-#endif
          }
 
          //classSym = FindClass(exp.instance._class.fullName);

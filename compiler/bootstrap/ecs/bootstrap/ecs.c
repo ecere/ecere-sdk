@@ -1466,13 +1466,6 @@ return appClass;
 return (((void *)0));
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
-
-struct __ecereNameSpace__ecere__sys__TempFile
-{
-char __ecere_padding[24];
-} __attribute__ ((gcc_struct));
-
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldLink;
 
 struct __ecereNameSpace__ecere__sys__OldLink
@@ -1503,6 +1496,8 @@ extern void OutputTypeName(struct TypeName * type, struct __ecereNameSpace__ecer
 extern char *  strcat(char * , const char * );
 
 extern void DeclareMethod(struct __ecereNameSpace__ecere__com__Method * method, char *  name);
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
 
 static void BindDCOMClient()
 {
@@ -2425,7 +2420,7 @@ SetTopContext(theGlobalContext);
 SetCurrentContext(theGlobalContext);
 SetTargetPlatform(targetPlatform);
 SetTargetBits(targetBits);
-privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize(0x1 | ((targetBits == 64) ? (unsigned int)2 : (unsigned int)0), 1, (((void *)0)));
+privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize(0x1 | (targetBits == sizeof(uintptr_t) * 8 ? (unsigned int)0 : targetBits == 64 ? (unsigned int)2 : targetBits == 32 ? (unsigned int)4 : (unsigned int)0) | (unsigned int)8, 1, (((void *)0)));
 SetPrivateModule(privateModule);
 mainModule = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleImport);
 SetMainModule(mainModule);

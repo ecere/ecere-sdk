@@ -917,7 +917,7 @@ if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->app
 __ecereClass___ecereNameSpace__ecere__com__AVLNode = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Find", "thisclass Find(ecere::com::Class Tclass, T key)", __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Find, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "__ecerePrivateData0", "byte[16]", 16, 1, 2);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "key", "T", 8, 0, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "key", "T", 8, 8, 1);
 __ecerePropM___ecereNameSpace__ecere__com__AVLNode_prev = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "prev", "thisclass", 0, __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_prev, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
 __ecereProp___ecereNameSpace__ecere__com__AVLNode_prev = __ecerePropM___ecereNameSpace__ecere__com__AVLNode_prev, __ecerePropM___ecereNameSpace__ecere__com__AVLNode_prev = (void *)0;
@@ -957,7 +957,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Remove", 0, __ecereMethod
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Find", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Find, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Free", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Free, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Delete", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Delete, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "root", "BT", 4, 0, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "root", "BT", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "count", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "BT", 0, "ecere::com::AVLNode", (((void *)0)));
 __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "KT", 0, 0, &__simpleStruct0);

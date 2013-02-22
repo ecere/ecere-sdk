@@ -127,7 +127,7 @@ static void AddSimpleBaseMembers(OldList list, Class _class, Class topClass)
    /*if(_class.base && _class.type != CLASS_SYSTEM)
       AddSimpleBaseMembers(list, _class.base, topClass);*/
    if(_class.type != systemClass)
-      AddMembers(list, _class, false, null, topClass);
+      AddMembers(list, _class, false, null, topClass, null);
 }
 
 static bool NameSpaceContained(NameSpace * ns, NameSpace * parent)
