@@ -2399,8 +2399,8 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
       mergeValues = true;
       caseSensitive = true;
       bool OptionCheck(ProjectOptions options, int option) {
-         String string = *(String*)((byte *)options + option);
-         return string && string[0];
+         Array<String> strings = *(Array<String>*)((byte *)options + option);
+         return strings && strings.count;
       }
       bool OptionSet(ProjectOptions options, int option) {
          Array<String> strings = *(Array<String>*)((byte *)options + option);
