@@ -32,17 +32,7 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
-#ifdef __MINGW32__
-#ifdef _WIN64
-typedef unsigned long long int uintptr_t;
-typedef long long int intptr_t;
-#else
-typedef unsigned int uintptr_t;
-typedef int intptr_t;
-#endif
-#else
 #include <stdint.h>
-#endif
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;

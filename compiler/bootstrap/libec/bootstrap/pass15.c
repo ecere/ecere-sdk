@@ -27,17 +27,7 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
-#ifdef __MINGW32__
-#ifdef _WIN64
-typedef unsigned long long int uintptr_t;
-typedef long long int intptr_t;
-#else
-typedef unsigned int uintptr_t;
-typedef int intptr_t;
-#endif
-#else
 #include <stdint.h>
-#endif
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -16245,11 +16235,48 @@ void ComputeDataTypes()
 void * __ecereTemp1;
 struct External * external;
 struct External * temp = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_External);
+struct External * after = (((void *)0));
 
 currentClass = (((void *)0));
 containerClass = __ecereNameSpace__ecere__com__eSystem_FindClass(GetPrivateModule(), "Container");
+for(external = (*ast).first; external; external = external->next)
+{
+if(external->type == 1)
+{
+struct Declaration * decl = external->declaration;
+
+if(decl)
+{
+struct __ecereNameSpace__ecere__sys__OldList * decls = decl->declarators;
+
+if(decls)
+{
+struct InitDeclarator * initDecl = (*decls).first;
+
+if(initDecl)
+{
+struct Declarator * declarator = initDecl->declarator;
+
+if(declarator && declarator->type == 1)
+{
+struct Identifier * id = declarator->identifier;
+
+if(id && id->string)
+{
+if(!strcmp(id->string, "uintptr_t") || !strcmp(id->string, "intptr_t"))
+{
+external->symbol->id = -1001, external->symbol->idCode = -1001;
+after = external;
+}
+}
+}
+}
+}
+}
+}
+}
 temp->symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->id = -1000, ((struct Symbol *)__ecereTemp1)->idCode = -1000, ((struct Symbol *)__ecereTemp1));
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*ast), (((void *)0)), temp);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*ast), after, temp);
 curExternal = temp;
 DeclareFunctionUtil("eSystem_New");
 DeclareFunctionUtil("eSystem_New0");

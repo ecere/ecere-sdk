@@ -4,6 +4,7 @@ import "instance"
 
 #if defined(__WIN32__)
 
+#undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0500
 #define WIN32_LEAN_AND_MEAN
 #define UNICODE

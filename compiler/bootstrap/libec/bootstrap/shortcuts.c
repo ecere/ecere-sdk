@@ -27,17 +27,7 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
-#ifdef __MINGW32__
-#ifdef _WIN64
-typedef unsigned long long int uintptr_t;
-typedef long long int intptr_t;
-#else
-typedef unsigned int uintptr_t;
-typedef int intptr_t;
-#endif
-#else
 #include <stdint.h>
-#endif
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -621,13 +611,6 @@ unsigned int parseTypeError;
 
 extern struct __ecereNameSpace__ecere__com__Instance * fileInput;
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
-
-struct __ecereNameSpace__ecere__sys__TempFile
-{
-char __ecere_padding[24];
-} __attribute__ ((gcc_struct));
-
 extern int strlen(const char * );
 
 extern int declMode;
@@ -643,6 +626,8 @@ extern void Compiler_Warning(char *  format, ...);
 extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
 
 extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
 
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 

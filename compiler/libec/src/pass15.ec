@@ -12077,16 +12077,46 @@ void ComputeDataTypes()
 {
    External external;
    External temp { };
+   External after = null;
+
    currentClass = null;
 
    containerClass = eSystem_FindClass(GetPrivateModule(), "Container");
 
+   for(external = ast->first; external; external = external.next)
+   {
+      if(external.type == declarationExternal)
+      {
+         Declaration decl = external.declaration;
+         if(decl)
+         {
+            OldList * decls = decl.declarators;
+            if(decls)
+            {
+               InitDeclarator initDecl = decls->first;
+               if(initDecl)
+               {
+                  Declarator declarator = initDecl.declarator;
+                  if(declarator && declarator.type == identifierDeclarator)
+                  {
+                     Identifier id = declarator.identifier;
+                     if(id && id.string)
+                     {
+                        if(!strcmp(id.string, "uintptr_t") || !strcmp(id.string, "intptr_t"))
+                        {
+                           external.symbol.id = -1001, external.symbol.idCode = -1001;
+                           after = external;
+                        }
+                     }
+                  }
+               }
+            }
+         }
+       }
+   }
+
    temp.symbol = Symbol { id = -1000, idCode = -1000 };
-
-   // WHERE SHOULD THIS GO?
-   // curExternal = ast->first;
-   ast->Insert(null, temp);
-
+   ast->Insert(after, temp);
    curExternal = temp;
 
    DeclareFunctionUtil("eSystem_New");

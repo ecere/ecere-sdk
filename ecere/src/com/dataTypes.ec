@@ -66,7 +66,11 @@ static void UnusedFunction()
    a.OnGetDataFromString(null);
 }
 
+#define uint _uint
+#include <stdarg.h>
 #include <stdio.h>
+#undef uint
+
 default:
 FILE *eC_stdout(void);
 FILE *eC_stderr(void);
@@ -1925,11 +1929,6 @@ void InitializeDataTypes(Module module)
    RegisterClass_Double(module);
    RegisterClass_String(module);
 }
-
-#define uint _uint
-#include <stdarg.h>
-#include <stdio.h>
-#undef uint
 
 public int PrintStdArgsToBuffer(char * buffer, int maxLen, typed_object object, va_list args)
 {

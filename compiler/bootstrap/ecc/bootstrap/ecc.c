@@ -27,13 +27,7 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
-#if defined(_WIN64) || WORDSIZE == 64
-typedef unsigned long long int uintptr_t;
-typedef long long int intptr_t;
-#else
-typedef unsigned int uintptr_t;
-typedef int intptr_t;
-#endif
+#include <stdint.h>
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -866,6 +860,7 @@ int cppOptionsLen = 0;
 int c;
 unsigned int valid = 0x1;
 char defaultOutputFile[797];
+unsigned int buildingBootStrap = 0x0;
 int targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
 int targetBits = GetHostBits();
 
@@ -900,6 +895,8 @@ if(!strcmp(arg, "-DBUILDING_ECERE_COM"))
 SetBuildingEcereCom(0x1);
 else if(!strcmp(arg, "-DECERE_COM_MODULE"))
 SetBuildingEcereComModule(0x1);
+else if(!strcmp(arg, "-DECERE_BOOTSTRAP"))
+buildingBootStrap = 0x1;
 }
 else if(arg[1] == 'I')
 {
@@ -1047,15 +1044,18 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uint32"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned int", 0x0), ((struct Symbol *)__ecereTemp1)));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uint16"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned short", 0x0), ((struct Symbol *)__ecereTemp1)));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("byte"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned char", 0x0), ((struct Symbol *)__ecereTemp1)));
+if(buildingBootStrap)
+{
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("intptr_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("intptr", 0x0), ((struct Symbol *)__ecereTemp1)));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uintptr_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("uintptr", 0x0), ((struct Symbol *)__ecereTemp1)));
+}
 {
 struct GlobalData * data = (data = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_GlobalData), data->fullName = __ecereNameSpace__ecere__sys__CopyString("__thisModule"), data->dataTypeString = __ecereNameSpace__ecere__sys__CopyString("Module"), data->module = privateModule, data);
 
 data->key = (uintptr_t)data->fullName;
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalData.functions, (struct __ecereNameSpace__ecere__sys__BTNode *)data);
 }
-snprintf(command, sizeof command, "%s%s -x c -E -D_INTPTR_T_DEFINED -D_UINTPTR_T_DEFINED \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
+snprintf(command, sizeof command, "%s%s -x c -E %s\"%s\"", cppCommand, cppOptions ? cppOptions : "", buildingBootStrap ? "" : "-include stdint.h ", GetSourceFile());
 command[sizeof command - 1] = (char)0;
 if((cppOutput = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(0x1))), command)))
 {
@@ -1172,13 +1172,10 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __ENDIA
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __ENDIAN_PAD(x) 0\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(_WIN64) || WORDSIZE == 64\n");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef unsigned long long int uintptr_t;\n");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef long long int intptr_t;\n");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef unsigned int uintptr_t;\n");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef int intptr_t;\n");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
+if(buildingBootStrap)
+{
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#include <stdint.h>\n");
+}
 if(ast)
 OutputTree(ast, output);
 (__ecereNameSpace__ecere__com__eInstance_DecRef(output), output = 0);

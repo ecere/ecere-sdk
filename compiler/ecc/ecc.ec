@@ -126,6 +126,7 @@ class CompilerApp : Application
       int c;
       bool valid = true;
       char defaultOutputFile[MAX_LOCATION];
+      bool buildingBootStrap = false;
 
       Platform targetPlatform = GetRuntimePlatform();
       int targetBits = GetHostBits();
@@ -184,6 +185,8 @@ class CompilerApp : Application
                   SetBuildingEcereCom(true);
                else if(!strcmp(arg, "-DECERE_COM_MODULE"))
                   SetBuildingEcereComModule(true);
+               else if(!strcmp(arg, "-DECERE_BOOTSTRAP"))
+                  buildingBootStrap = true;
             }
             else if(arg[1] == 'I')
             {
@@ -333,8 +336,12 @@ class CompilerApp : Application
          globalContext.types.Add((BTNode)Symbol { string = CopyString("uint32"), type = ProcessTypeString("unsigned int", false) });
          globalContext.types.Add((BTNode)Symbol { string = CopyString("uint16"), type = ProcessTypeString("unsigned short", false) });
          globalContext.types.Add((BTNode)Symbol { string = CopyString("byte"), type = ProcessTypeString("unsigned char", false) });
-         globalContext.types.Add((BTNode)Symbol { string = CopyString("intptr_t"), type = ProcessTypeString("intptr", false) });
-         globalContext.types.Add((BTNode)Symbol { string = CopyString("uintptr_t"), type = ProcessTypeString("uintptr", false) });
+         if(buildingBootStrap)
+         {
+            // Do not define this when we pre-include stdint.h or the eC compiler will be confused when parsing these types (External prioritization in pass15.ec will fail)
+            globalContext.types.Add((BTNode)Symbol { string = CopyString("intptr_t"), type = ProcessTypeString("intptr", false) });
+            globalContext.types.Add((BTNode)Symbol { string = CopyString("uintptr_t"), type = ProcessTypeString("uintptr", false) });
+         }
 
          {
             GlobalData data { fullName = CopyString("__thisModule"), dataTypeString = CopyString("Module"), module = privateModule };
@@ -342,7 +349,7 @@ class CompilerApp : Application
             globalData.functions.Add((BTNode)data);
          }
 
-         snprintf(command, sizeof(command), "%s%s -x c -E -D_INTPTR_T_DEFINED -D_UINTPTR_T_DEFINED \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
+         snprintf(command, sizeof(command), "%s%s -x c -E %s\"%s\"", cppCommand, cppOptions ? cppOptions : "", buildingBootStrap ? "" : "-include stdint.h ", GetSourceFile());
          command[sizeof(command)-1] = 0;
          if((cppOutput = DualPipeOpen({ output = true }, command)))
          {
@@ -520,18 +527,23 @@ class CompilerApp : Application
                      output.Printf("#else\n");
                         output.Printf("#define __ENDIAN_PAD(x) 0\n");
                      output.Printf("#endif\n");
-                     //output.Printf("#ifdef __MINGW32__\n");
-                     //output.Printf("#ifdef _WIN64\n");
-                     output.Printf("#if defined(_WIN64) || WORDSIZE == 64\n");
-                     output.Printf("typedef unsigned long long int uintptr_t;\n");
-                     output.Printf("typedef long long int intptr_t;\n");
-                     output.Printf("#else\n");
-                     output.Printf("typedef unsigned int uintptr_t;\n");
-                     output.Printf("typedef int intptr_t;\n");
-                     output.Printf("#endif\n");
-                     //output.Printf("#else\n");
-                     //output.Printf("#include <stdint.h>\n");
-                     //output.Printf("#endif\n");
+                     if(buildingBootStrap)
+                     {
+                        //output.Printf("#ifdef __MINGW32__\n");
+                        //output.Printf("#ifdef _WIN64\n");
+                        /*
+                        output.Printf("#if defined(_WIN64) || WORDSIZE == 64\n");
+                        output.Printf("typedef unsigned long long int uintptr_t;\n");
+                        output.Printf("typedef long long int intptr_t;\n");
+                        output.Printf("#else\n");
+                        output.Printf("typedef unsigned int uintptr_t;\n");
+                        output.Printf("typedef int intptr_t;\n");
+                        output.Printf("#endif\n");
+                        */
+                        //output.Printf("#else\n");
+                        output.Printf("#include <stdint.h>\n");
+                        //output.Printf("#endif\n");
+                     }
 
                      // NOTE: If anything is changed up there, the start outputLine must be updated in libec's output.c or Debugging lines will be wrong
 

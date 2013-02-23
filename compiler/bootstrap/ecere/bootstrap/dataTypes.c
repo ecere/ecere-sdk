@@ -27,17 +27,7 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
-#ifdef __MINGW32__
-#ifdef _WIN64
-typedef unsigned long long int uintptr_t;
-typedef long long int intptr_t;
-#else
-typedef unsigned int uintptr_t;
-typedef int intptr_t;
-#endif
-#else
 #include <stdint.h>
-#endif
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -303,6 +293,10 @@ int a;
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, void *, char *  string))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(__ecereClass_int, &a, (((void *)0)));
 }
 
+typedef __builtin_va_list __gnuc_va_list;
+
+typedef __gnuc_va_list va_list;
+
 typedef uintptr_t size_t;
 
 void exit(int status);
@@ -320,10 +314,6 @@ long int strtol(const char * nptr, char ** endptr, int base);
 long long int strtoll(const char * nptr, char ** endptr, int base);
 
 unsigned long long int strtoull(const char * nptr, char ** endptr, int base);
-
-typedef __builtin_va_list __gnuc_va_list;
-
-typedef __gnuc_va_list va_list;
 
 typedef void FILE;
 

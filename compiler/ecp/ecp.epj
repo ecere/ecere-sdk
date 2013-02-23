@@ -63,7 +63,8 @@
             "NoLineNumbers" : true,
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
-               "ECERE_STATIC"
+               "ECERE_STATIC",
+               "ECERE_BOOTSTRAP"
             ],
             "Libraries" : [
                "ecBootstrap",
