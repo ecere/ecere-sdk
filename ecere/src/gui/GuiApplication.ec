@@ -1011,7 +1011,8 @@ public:
                         // printf("Calling OnConnect on %s\n", socket._class.name);
                         socket.OnConnect();
                         network.mutex.Wait();
-                        network.sockets.Add(socket);
+                        if(socket._connected)
+                           network.sockets.Add(socket);
                      }
                      gotEvent |= true;
                      goOn = true;
