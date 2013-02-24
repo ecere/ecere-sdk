@@ -534,53 +534,54 @@ class IDEWorkSpace : Window
 
       void OnRedraw(Surface surface)
       {
-         bool error;
-         int lineCursor, lineTopFrame, activeThread, hitThread;
-         int lineH, scrollY, boxH;
-         BitmapResource bmp;
-         Breakpoint bp = null;
          Debugger debugger = ide.debugger;
          Frame activeFrame = debugger.activeFrame;
-
-         boxH = clientSize.h;
-         scrollY = editBox.scroll.y;
-         displaySystem.FontExtent(editBox.font.font, " ", 1, null, &lineH);
-
-         activeThread = debugger.activeThread;
-         hitThread = debugger.hitThread;
-         debugger.GetCallStackCursorLine(&error, &lineCursor, &lineTopFrame);
-
-         if(activeFrame && activeFrame.absoluteFile)
+         if(activeFrame)
          {
-            for(i : ide.workspace.breakpoints; i.type == user)
+            bool error;
+            int lineCursor, lineTopFrame, activeThread, hitThread;
+            int lineH, scrollY, boxH;
+            BitmapResource bmp;
+            Breakpoint bp = null;
+
+            boxH = clientSize.h;
+            scrollY = editBox.scroll.y;
+            displaySystem.FontExtent(editBox.font.font, " ", 1, null, &lineH);
+            activeThread = debugger.activeThread;
+            hitThread = debugger.hitThread;
+            debugger.GetCallStackCursorLine(&error, &lineCursor, &lineTopFrame);
+
+            // TODO: improve bp drawing... it should be visible even if it's not on the activeFrame
+            if(activeFrame.absoluteFile)
             {
-               if(i.absoluteFilePath && i.absoluteFilePath[0] && 
-                  !fstrcmp(i.absoluteFilePath, activeFrame.absoluteFile) &&
-                  activeFrame.line == i.line)
+               for(i : ide.workspace.breakpoints; i.type == user)
                {
-                  bp = i;
-                  break;
+                  if(i.absoluteFilePath && i.absoluteFilePath[0] &&
+                     !fstrcmp(i.absoluteFilePath, activeFrame.absoluteFile) &&
+                     activeFrame.line == i.line)
+                  {
+                     bp = i;
+                     break;
+                  }
                }
             }
+            if(bp)
+               DrawLineMarginIcon(surface,
+                     /*(lineCursor == 1 || lineTopFrame == 1) ? */ide.bmpBpHalf/* : ide.bmpBp*/,
+                     lineCursor /*1*/, lineH, scrollY, boxH);
+            /*
+            if(activeThread && activeThread == hitThread && debugger.bpHit && debugger.bpHit.type == user)
+               DrawLineMarginIcon(surface,
+                     (lineCursor == 1 || lineTopFrame == 1) ? ide.bmpBpHalf : ide.bmpBp,
+                     1, lineH, scrollY, boxH);
+            */
+            DrawLineMarginIcon(surface, error ? ide.bmpCursorError : ide.bmpCursor, lineCursor, lineH, scrollY, boxH);
+            if(bp && lineCursor == 1) //activeThread && activeThread == hitThread && debugger.bpHit && debugger.bpHit.type == user)
+               bmp = error ? ide.bmpTopFrameHalfError : ide.bmpTopFrameHalf;
+            else
+               bmp = error ? ide.bmpTopFrameError : ide.bmpTopFrame;
+            DrawLineMarginIcon(surface, bmp, lineTopFrame, lineH, scrollY, boxH);
          }
-
-         if(bp)
-            DrawLineMarginIcon(surface,
-                  /*(lineCursor == 1 || lineTopFrame == 1) ? */ide.bmpBpHalf/* : ide.bmpBp*/,
-                  lineCursor /*1*/, lineH, scrollY, boxH);
-
-         /*
-         if(activeThread && activeThread == hitThread && debugger.bpHit && debugger.bpHit.type == user)
-            DrawLineMarginIcon(surface,
-                  (lineCursor == 1 || lineTopFrame == 1) ? ide.bmpBpHalf : ide.bmpBp,
-                  1, lineH, scrollY, boxH);
-         */
-         DrawLineMarginIcon(surface, error ? ide.bmpCursorError : ide.bmpCursor, lineCursor, lineH, scrollY, boxH);
-         if(bp && lineCursor == 1) //activeThread && activeThread == hitThread && debugger.bpHit && debugger.bpHit.type == user)
-            bmp = error ? ide.bmpTopFrameHalfError : ide.bmpTopFrameHalf;
-         else
-            bmp = error ? ide.bmpTopFrameError : ide.bmpTopFrame;
-         DrawLineMarginIcon(surface, bmp, lineTopFrame, lineH, scrollY, boxH);
          if(editBox.horzScroll && editBox.horzScroll.visible)
          {
             surface.SetBackground(control);
