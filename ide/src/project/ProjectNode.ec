@@ -2264,21 +2264,32 @@ private:
       return platforms;
    }
 
-   void GetTargets(ProjectConfig prjConfig, char * objDir, DynamicString output)
+   void GetTargets(ProjectConfig prjConfig, Map<String, NameCollisionInfo> namesInfo, char * objDir, DynamicString output)
    {
       if(type == file)
       {
-         //output.concat(" $(OBJ)");
+         bool collision;
+         char extension[MAX_EXTENSION];
+         char moduleName[MAX_FILENAME];
+         NameCollisionInfo info;
+         Project prj = property::project;
+
+         GetExtension(name, extension);
+         ReplaceSpaces(moduleName, name);
+         StripExtension(moduleName);
+         info = namesInfo[moduleName];
+         collision = info ? info.IsExtensionColliding(extension) : false;
+
          output.concat(" \"");
-         output.concat(objDir);
+         output.concat(objDir); //.concat(" $(OBJ)");
          output.concat("/");
+         if(collision)
          {
-            char fileName[MAX_FILENAME];
-            strcpy(fileName, name);
-            // TODO/NOTE: this will not be correct for file.o instead of file.c.o when whe have both a file.c and a file.ec in a project.
-            ChangeExtension(fileName, "o", fileName);
-            output.concat(fileName);
+            strcat(moduleName, ".");
+            strcat(moduleName, extension);
          }
+         strcat(moduleName, ".o");
+         output.concat(moduleName);
          output.concat("\"");
       }
       else if(files)
@@ -2286,48 +2297,51 @@ private:
          for(child : files)
          {
             if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-               child.GetTargets(prjConfig, objDir, output);
+               child.GetTargets(prjConfig, namesInfo, objDir, output);
          }
       }
    }
 
-   void DeleteIntermediateFiles(CompilerConfig compiler, ProjectConfig prjConfig)
+   void DeleteIntermediateFiles(CompilerConfig compiler, ProjectConfig prjConfig, Map<String, NameCollisionInfo> namesInfo)
    {
       if(type == file)
       {
-         char fileName[MAX_FILENAME];
+         bool collision;
          char extension[MAX_EXTENSION];
+         char fileName[MAX_FILENAME];
+         char moduleName[MAX_FILENAME];
+         NameCollisionInfo info;
          Project prj = property::project;
          DirExpression objDir = prj.GetObjDir(compiler, prjConfig);
+
+         GetExtension(name, extension);
+         ReplaceSpaces(moduleName, name);
+         StripExtension(moduleName);
+         info = namesInfo[moduleName];
+         collision = info ? info.IsExtensionColliding(extension) : false;
 
          strcpy(fileName, prj.topNode.path);
          PathCatSlash(fileName, objDir.dir);
          PathCatSlash(fileName, name);
 
-         // TODO/NOTE: this will not delete file.c.o when whe have both a file.c and a file.ec in a project.
-         ChangeExtension(fileName, "o", fileName);
-         if(FileExists(fileName))
-            DeleteFile(fileName);
-
-         GetExtension(name, extension);
          if(!strcmp(extension, "ec"))
          {
             ChangeExtension(fileName, "c", fileName);
-            if(FileExists(fileName))
-               DeleteFile(fileName);
-
+            if(FileExists(fileName)) DeleteFile(fileName);
             ChangeExtension(fileName, "sym", fileName);
-            if(FileExists(fileName))
-               DeleteFile(fileName);
-
+            if(FileExists(fileName)) DeleteFile(fileName);
             ChangeExtension(fileName, "imp", fileName);
-            if(FileExists(fileName))
-               DeleteFile(fileName);
-
+            if(FileExists(fileName)) DeleteFile(fileName);
             ChangeExtension(fileName, "bowl", fileName);
-            if(FileExists(fileName))
-               DeleteFile(fileName);
+            if(FileExists(fileName)) DeleteFile(fileName);
+            ChangeExtension(fileName, "ec", fileName);
          }
+
+         if(collision)
+            strcat(fileName, ".o");
+         else
+            ChangeExtension(fileName, "o", fileName);
+         if(FileExists(fileName)) DeleteFile(fileName);
 
          delete objDir;
       }
@@ -2336,7 +2350,7 @@ private:
          for(child : files)
          {
             if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-               child.DeleteIntermediateFiles(compiler, prjConfig);
+               child.DeleteIntermediateFiles(compiler, prjConfig, namesInfo);
          }
       }
    }

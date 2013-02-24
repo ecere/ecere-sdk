@@ -1079,6 +1079,8 @@ class ProjectView : Window
          result = false;
          if(ProjectPrepareForToolchain(project, normal, true, true, compiler, config))
          {
+            Map<String, NameCollisionInfo> namesInfo { };
+            project.topNode.GenMakefileGetNameCollisionInfo(namesInfo, config);
             for(node : nodes)
             {
                if(node.GetIsExcluded(config))
@@ -1092,10 +1094,12 @@ class ProjectView : Window
                      ide.outputView.buildBox.Logf($"Deleteing intermediate objects for %s %s in project %s...\n",
                            node.type == file ? $"single file" : $"folder", node.name, project.name);
 
-                  node.DeleteIntermediateFiles(compiler, config);
+                  node.DeleteIntermediateFiles(compiler, config, namesInfo);
                   result = true;
                }
             }
+            namesInfo.Free();
+            delete namesInfo;
          }
          delete compiler;
       }

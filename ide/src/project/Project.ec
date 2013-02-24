@@ -1775,6 +1775,7 @@ private:
             int len;
             char pushD[MAX_LOCATION];
             char cfDir[MAX_LOCATION];
+            Map<String, NameCollisionInfo> namesInfo { };
             GetIDECompilerConfigsDir(cfDir, true, true);
             GetWorkingDir(pushD, sizeof(pushD));
             ChangeWorkingDir(topNode.path);
@@ -1792,16 +1793,19 @@ private:
 
             ChangeWorkingDir(pushD);
 
+            topNode.GenMakefileGetNameCollisionInfo(namesInfo, config);
             for(node : onlyNodes)
             {
                if(node.GetIsExcluded(config))
                   ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
                else
                {
-                  node.DeleteIntermediateFiles(compiler, config);
-                  node.GetTargets(config, objDirExp.dir, makeTargets);
+                  node.DeleteIntermediateFiles(compiler, config, namesInfo);
+                  node.GetTargets(config, namesInfo, objDirExp.dir, makeTargets);
                }
             }
+            namesInfo.Free();
+            delete namesInfo;
          }
       }
 
