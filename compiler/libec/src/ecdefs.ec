@@ -1329,11 +1329,7 @@ Platform targetPlatform;
 public int GetHostBits()
 {
    // Default to runtime platform in case we fail to determine host
-#if defined(__WIN32__)
-   int hostBits = 64;   // For now 32 bit compiler has 'forced bit depth'
-#else
    int hostBits = (sizeof(uintptr) == 8) ? 64 : 32;
-#endif
    String hostType = getenv("HOSTTYPE");
    char host[256];
    if(!hostType)

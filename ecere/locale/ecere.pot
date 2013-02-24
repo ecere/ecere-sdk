@@ -189,7 +189,7 @@ msgstr "Control contains other controls. Delete control and children?"
 msgid "Copy\tCtrl+C"
 msgstr "Copy\tCtrl+C"
 
-#: ./src/sys/System.ec:115
+#: ./src/sys/System.ec:118
 msgid "Couldn't write to file"
 msgstr "Couldn't write to file"
 
@@ -302,7 +302,7 @@ msgstr "Edit"
 msgid "Entire Computer"
 msgstr "Entire Computer"
 
-#: ./src/gui/GuiApplication.ec:1276
+#: ./src/gui/GuiApplication.ec:1277
 msgid "Error falling back to previous video mode.\n"
 msgstr "Error falling back to previous video mode.\n"
 
@@ -311,7 +311,7 @@ msgstr "Error falling back to previous video mode.\n"
 msgid "Error writing file"
 msgstr "Error writing file"
 
-#: ./src/sys/File.ec:313
+#: ./src/sys/File.ec:316
 msgid "Exp"
 msgstr "Exp"
 
@@ -337,7 +337,7 @@ msgstr "File Already Exists"
 msgid "File Name:"
 msgstr "File Name:"
 
-#: ./src/sys/System.ec:113
+#: ./src/sys/System.ec:116
 msgid "File not found"
 msgstr "File not found"
 
@@ -398,7 +398,7 @@ msgstr "Go To...\tCtrl+G"
 msgid "Graphics driver not supported by any user interface system"
 msgstr "Graphics driver not supported by any user interface system"
 
-#: ./src/sys/System.ec:111
+#: ./src/sys/System.ec:114
 msgid "Identic string identifier already exists"
 msgstr "Identic string identifier already exists"
 
@@ -410,11 +410,11 @@ msgstr "Image"
 msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 msgstr "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 
-#: ./src/sys/File.ec:289
+#: ./src/sys/File.ec:292
 msgid "Imp"
 msgstr "Imp"
 
-#: ./src/sys/System.ec:110
+#: ./src/sys/System.ec:113
 msgid "Inexistant string identifier specified"
 msgstr "Inexistant string identifier specified"
 
@@ -499,7 +499,7 @@ msgctxt "ShortMonthNames"
 msgid "May"
 msgstr "May"
 
-#: ./src/sys/System.ec:109
+#: ./src/sys/System.ec:112
 msgid "Memory allocation failed"
 msgstr "Memory allocation failed"
 
@@ -537,7 +537,7 @@ msgstr "New Directory"
 msgid "No"
 msgstr "No"
 
-#: ./src/sys/System.ec:108
+#: ./src/sys/System.ec:111
 #: ./src/gui/GuiApplication.ec:99
 msgid "No error"
 msgstr "No error"
@@ -692,7 +692,7 @@ msgstr "Select All\tCtrl+A"
 msgid "Select Color"
 msgstr "Select Color"
 
-#: ./src/sys/File.ec:207
+#: ./src/sys/File.ec:210
 msgid "Select File"
 msgstr "Select File"
 
@@ -733,7 +733,7 @@ msgstr "Sep"
 msgid "September"
 msgstr "September"
 
-#: ./src/sys/System.ec:112
+#: ./src/sys/System.ec:115
 msgid "Shared library loading failed"
 msgstr "Shared library loading failed"
 
@@ -868,7 +868,7 @@ msgstr "Windows"
 msgid "Yes"
 msgstr "Yes"
 
-#: ./src/sys/System.ec:352
+#: ./src/sys/System.ec:355
 msgid "\n\nWould you like to view the error log?"
 msgstr "\n\nWould you like to view the error log?"
 
