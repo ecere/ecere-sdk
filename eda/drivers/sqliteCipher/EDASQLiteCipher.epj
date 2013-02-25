@@ -5,7 +5,8 @@
       "Warnings" : "All",
       "Optimization" : "None",
       "PreprocessorDefinitions" : [
-         "SQLITE_HAS_CODEC"
+         "SQLITE_HAS_CODEC",
+         "SQLITE_DEFAULT_LOCKING_MODE=1"
       ],
       "TargetType" : "SharedLibrary",
       "TargetFileName" : "EDASQLiteCipher",

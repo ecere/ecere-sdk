@@ -198,11 +198,22 @@ class SQLiteDataSource : DataSourceDriver
          }
          else
          {
+            bool success = true;
             char command[1024];
             sprintf(command, "CREATE TABLE eda_table_fields(Table_Name TEXT, Name TEXT, Type TEXT, Length INT);");
-            sqlite3_exec(db, command, null, null, null);
-
-            result = SQLiteDatabase { db = db };
+            if(sqlite3_exec(db, command, null, null, null))
+            {
+               if(createOptions != readOnly)
+               {
+                  sqlite3_exec(db, "DELETE FROM eda_table_fields WHERE Name = 'lockDummy'", null, null, null);
+                  if(sqlite3_exec(db, "INSERT INTO eda_table_fields (Table_Name, Name, Type, Length) VALUES ('lockDummy', 'lockDummy', 'lockDummy', 'lockDummy')", null, null, null))
+                     success = false;
+                  else
+                     sqlite3_exec(db, "DELETE FROM eda_table_fields WHERE Name = 'lockDummy'", null, null, null); 
+               }
+            }
+            if(success)
+               result = SQLiteDatabase { db = db };
          }
          delete path;
       }
