@@ -44,10 +44,17 @@
                   "win32.S"
                ]
             },
+            {
+               "Folder" : "x64",
+               "Files" : [
+                  "src/x86/win64.S"
+               ]
+            },
             "prep_cif.c",
             "raw_api.c",
             "types.c",
-            "closures.c"
+            "closures.c",
+            "i686-pc-mingw32/include/ffi.h"
          ]
       }
    ],
