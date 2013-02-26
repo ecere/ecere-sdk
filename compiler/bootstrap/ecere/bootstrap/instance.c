@@ -324,7 +324,7 @@ unsigned int Instance_LocateModule(char * name, char * fileName);
 
 void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int * argcPtr, char *** argvPtr);
 
-void * Instance_Module_Load(char * name, void ** Load, void ** Unload);
+void * Instance_Module_Load(const char * libLocation, const char * name, void ** Load, void ** Unload);
 
 void Instance_Module_Free(void * library);
 
@@ -4239,7 +4239,9 @@ Unload = __ecereDll_Unload_ecere;
 }
 else
 {
-library = Instance_Module_Load(name, &Load, &Unload);
+char * libLocation = (((void *)0));
+
+library = Instance_Module_Load(libLocation, name, &Load, &Unload);
 }
 if(Load)
 {
