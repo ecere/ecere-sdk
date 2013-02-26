@@ -7,6 +7,7 @@
 namespace sys;
 
 #define _GNU_SOURCE
+#define __USE_UNIX98
 // Platform includes
 #define uint _uint
 #define set _set
