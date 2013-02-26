@@ -885,7 +885,7 @@ struct SavedState
     int y;
 };
 
-static AndroidActivity androidActivity;
+/*static */AndroidActivity androidActivity;
 
 static bool gotInit;
 

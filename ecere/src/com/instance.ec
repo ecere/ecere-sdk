@@ -54,7 +54,10 @@ default:
 private:
 
 #if defined(__ANDROID__)
+
+import "AndroidInterface"
 #include <android/log.h>
+#include <android/native_activity.h>
 
 #define printf(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "ecere-app", __VA_ARGS__))
 #endif
@@ -83,7 +86,7 @@ extern int __ecereVMethodID_class_OnGetDataFromString;
 // IMPLEMENTATION FOR THESE IN _instance.c:
 bool Instance_LocateModule(char * name, char * fileName);
 void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int * argcPtr, char *** argvPtr);
-void * Instance_Module_Load(char * name, void ** Load, void ** Unload);
+void * Instance_Module_Load(const char * libLocation, const char * name, void ** Load, void ** Unload);
 void Instance_Module_Free(void * library);
 
 private:
@@ -5134,7 +5137,16 @@ static Module Module_Load(Module fromModule, char * name, AccessMode importAcces
       }
       else
       {
-         library = Instance_Module_Load(name, &Load, &Unload);
+         char * libLocation = null;
+#if defined(__ANDROID__)
+         char loc[MAX_LOCATION];
+         if(androidActivity)
+         {
+            sprintf(loc, "/data/data/com.ecere.%s/lib/lib", androidActivity.moduleName);
+            libLocation = loc;
+         }
+#endif
+         library = Instance_Module_Load(libLocation, name, &Load, &Unload);
       }
       if(Load)
       {

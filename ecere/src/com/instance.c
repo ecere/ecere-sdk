@@ -265,7 +265,7 @@ void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int 
 #endif
 }
 
-void * Instance_Module_Load(char * name, void ** Load, void ** Unload)
+void * Instance_Module_Load(const char * libLocation, const char * name, void ** Load, void ** Unload)
 {
    char fileName[MAX_LOCATION];
    char extension[MAX_EXTENSION];
@@ -298,11 +298,10 @@ void * Instance_Module_Load(char * name, void ** Load, void ** Unload)
          FreeLibrary(library);
    }
 #elif defined(__unix__) || defined(__APPLE__)
-#if defined(__ANDROID__)
-   sprintf(fileName, "/data/data/com.ecere.%s/lib/lib", name);
-#else
-   strcpy(fileName, "lib");
-#endif
+   if(libLocation)
+      strcpy(fileName, libLocation);
+   else
+      strcpy(fileName, "lib");
    strcat(fileName, name);
    GetExtension(fileName, extension);
    if(!extension[0])
