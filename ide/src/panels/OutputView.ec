@@ -83,7 +83,7 @@ class OutputView : Window
 
    void SelectTab(OutputViewTab tab)
    {
-      Button activeBtn;
+      Button activeBtn = null;
       if(tab == build)
          activeBtn = buildBtn, activeBox = buildBox;
       else if(tab == debug)
@@ -94,24 +94,27 @@ class OutputView : Window
       else if(tab == gdb)
          activeBtn = gdbBtn, activeBox = gdbBox;
 #endif
-
-      activeBtn.checked = true;
-      activeBtn.font = { $"Tahoma", 8.25f, bold = true };
-      if(buildBtn != activeBtn) buildBtn.font = null;
-      if(debugBtn != activeBtn) debugBtn.font = null;
-      if(findBtn != activeBtn) findBtn.font = null;
+      if(activeBtn && activeBox)
+      {
+         activeBtn.checked = true;
+         activeBtn.font = { $"Tahoma", 8.25f, bold = true };
+         if(buildBtn != activeBtn) buildBtn.font = null;
+         if(debugBtn != activeBtn) debugBtn.font = null;
+         if(findBtn != activeBtn) findBtn.font = null;
 #ifdef GDB_DEBUG_OUTPUT
-      if(gdbBtn != activeBtn) gdbBtn.font = null;
+         if(gdbBtn != activeBtn) gdbBtn.font = null;
 #endif
 
-      activeBox.visible = false;
-      activeBtn.Activate();      // Ensure proper cycling (until tab order?)
-      activeBox.visible = true;
-      activeBox.Activate();
-      findDialog.editBox = activeBox;
+         activeBox.visible = false;
+         activeBtn.Activate();      // Ensure proper cycling (until tab order?)
+         activeBox.visible = true;
+         activeBox.Activate();
+         findDialog.editBox = activeBox;
+      }
    }
 
    EditBox activeBox;
+   activeBox = buildBox;
    
    LogBox buildBox
    {
@@ -267,7 +270,7 @@ class OutputView : Window
          }
          case tab:
          {
-            OutputViewTab switchTo;
+            OutputViewTab switchTo = debug;
             if(activeBox == buildBox)
                switchTo = debug;
             else if(activeBox == debugBox)
