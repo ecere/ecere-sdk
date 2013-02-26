@@ -55,7 +55,8 @@ private:
 
 #if defined(__ANDROID__)
 
-import "AndroidInterface"
+default const char * AndroidInterface_GetLibLocation();
+
 #include <android/log.h>
 #include <android/native_activity.h>
 
@@ -5139,12 +5140,7 @@ static Module Module_Load(Module fromModule, char * name, AccessMode importAcces
       {
          char * libLocation = null;
 #if defined(__ANDROID__)
-         char loc[MAX_LOCATION];
-         if(androidActivity)
-         {
-            sprintf(loc, "/data/data/com.ecere.%s/lib/lib", androidActivity.moduleName);
-            libLocation = loc;
-         }
+         libLocation = AndroidInterface_GetLibLocation();
 #endif
          library = Instance_Module_Load(libLocation, name, &Load, &Unload);
       }

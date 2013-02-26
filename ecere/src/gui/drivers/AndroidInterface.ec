@@ -885,7 +885,18 @@ struct SavedState
     int y;
 };
 
-/*static */AndroidActivity androidActivity;
+static AndroidActivity androidActivity;
+
+default const char * AndroidInterface_GetLibLocation()
+{
+   if(androidActivity)
+   {
+      static char loc[MAX_LOCATION];
+      sprintf(loc, "/data/data/com.ecere.%s/lib/lib", androidActivity.moduleName);
+      return loc;
+   }
+   return null;
+}
 
 static bool gotInit;
 

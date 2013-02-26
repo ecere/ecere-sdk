@@ -6,6 +6,8 @@
 
 namespace sys;
 
+#undef _GNU_SOURCE
+#undef __USE_UNIX98
 #define _GNU_SOURCE
 #define __USE_UNIX98
 // Platform includes
