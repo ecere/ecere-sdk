@@ -594,7 +594,7 @@ class AndroidInterface : Interface
             }
          }
          */
-         if(gotInit)
+         if(gotInit && androidActivity.window)
          {
             int w = ANativeWindow_getWidth(androidActivity.window);
             int h = ANativeWindow_getHeight(androidActivity.window);
