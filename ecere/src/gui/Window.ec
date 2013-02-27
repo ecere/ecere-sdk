@@ -501,6 +501,7 @@ private:
       bool switchMode = true;
 #if defined(__ANDROID__)
       switchMode = false;
+      fullRender = true;
 #endif
       if(guiApp)
          guiApp.Initialize(switchMode);

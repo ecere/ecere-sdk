@@ -32,7 +32,7 @@ import "Condition"
 #endif
 
 // *** NATIVE APP GLUE ********
-enum LooperID : byte { main = 1, input = 2, user = 3 };
+enum LooperID { main = 1, input = 2, user = 3 };
 enum AppCommand : byte
 {
    error = 0, inputChanged, initWindow, termWindow, windowResized, windowRedrawNeeded,
@@ -547,6 +547,7 @@ static char * androidArgv[1];
 
 static int desktopW, desktopH;
 static char * clipBoardData;
+static int mouseX, mouseY;
 
 class AndroidInterface : Interface
 {
@@ -570,12 +571,13 @@ class AndroidInterface : Interface
    bool ProcessInput(bool processAll)
    {
       bool eventAvailable = false;
-      if(androidActivity.ident >= 0)
+
+      if(androidActivity.ident < 0)
+         androidActivity.ident = (LooperID)ALooper_pollAll(0, null, &androidActivity.events, (void**)&androidActivity.source);
+      while(androidActivity.ident >= 0)
       {
          AndroidPollSource source = androidActivity.source;
-         //PrintLn("androidActivity.ident >= 0");
-         // Process this event.
-         androidActivity.ident = 0;
+
          androidActivity.source = null;
          if(source)
             source.process(source.userData);
@@ -592,25 +594,24 @@ class AndroidInterface : Interface
             }
          }
          */
-         // eventAvailable = true;
+         eventAvailable = true;
          if(androidActivity.destroyRequested)
          {
             guiApp.desktop.Destroy(0);
             eventAvailable = true;
+            androidActivity.ident = (LooperID)-1;
          }
+         else if(processAll)
+            androidActivity.ident = (LooperID)ALooper_pollAll(0, null, &androidActivity.events, (void**)&androidActivity.source);
+         else
+            androidActivity.ident = (LooperID)-1;
       }
-
-      if(androidActivity.animating)
-         guiApp.desktop.Update(null);
-
-      if(!eventAvailable)
-         return false;
-      return true;
+      return eventAvailable;
    }
 
    void Wait()
    {
-      androidActivity.ident = (LooperID)ALooper_pollAll(androidActivity.animating ? 0 : -1, null, &androidActivity.events, (void**)&androidActivity.source);
+      androidActivity.ident = (LooperID)ALooper_pollAll((int)(1000/18.2f), null, &androidActivity.events, (void**)&androidActivity.source);
       // guiApp.WaitEvent();
    }
 
@@ -742,11 +743,15 @@ class AndroidInterface : Interface
       int rootWindow, childWindow;
       int mx, my;
       unsigned int state;
+
+      *x = mouseX;
+      *y = mouseY;
    }
 
    void SetMousePosition(int x, int y)
    {
-
+      mouseX = x;
+      mouseY = y;
    }
 
    void SetMouseRange(Window window, Box box)
@@ -1050,7 +1055,6 @@ class AndroidActivity : AndroidAppGlue
    const ASensor* accelerometerSensor;
    ASensorEventQueue* sensorEventQueue;
    */
-   bool animating;
    SavedState state;
 
    int onInputEvent(AInputEvent* event)
@@ -1094,12 +1098,15 @@ class AndroidActivity : AndroidAppGlue
                break;
                */
             case AMOTION_EVENT_ACTION_DOWN:
+               mouseX = x, mouseY = y;
                window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown, x, y, &keyFlags, false, true);
                break;
             case AMOTION_EVENT_ACTION_UP:
+               mouseX = x, mouseY = y;
                window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp, x, y, &keyFlags, false, true);
                break;
             case AMOTION_EVENT_ACTION_MOVE:
+               mouseX = x, mouseY = y;
                window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove, x, y, &keyFlags, false, true);
                break;
             case AMOTION_EVENT_ACTION_CANCEL: break;
@@ -1107,8 +1114,6 @@ class AndroidActivity : AndroidAppGlue
             case AMOTION_EVENT_ACTION_POINTER_DOWN: break;
             case AMOTION_EVENT_ACTION_POINTER_UP: break;
          }
-
-         animating = true;
          return 1;
       }
       else if(type == AINPUT_EVENT_TYPE_KEY)
@@ -1185,11 +1190,10 @@ class AndroidActivity : AndroidAppGlue
             }
             break;
          case termWindow:
-            animating = false;
             guiApp.desktop.UnloadGraphics(false);
             break;
          case gainedFocus:
-            androidActivity.animating = true;
+            guiApp.desktop.Update(null);
             guiApp.SetAppFocus(true);
             /*
             if(accelerometerSensor)
@@ -1204,9 +1208,22 @@ class AndroidActivity : AndroidAppGlue
             if(accelerometerSensor)
                ASensorEventQueue_disableSensor(sensorEventQueue, accelerometerSensor);
             */
-            animating = false;
             guiApp.SetAppFocus(false);
             guiApp.desktop.Update(null);
+            break;
+         case configChanged:
+            if(window)
+            {
+               int w = ANativeWindow_getWidth(window);
+               int h = ANativeWindow_getHeight(window);
+               if(desktopW != w || desktopH != h)
+               {
+                  guiApp.SetDesktopPosition(0, 0, w, h, true);
+                  desktopW = w;
+                  desktopH = h;
+               }
+               guiApp.desktop.Update(null);
+            }
             break;
       }
    }
