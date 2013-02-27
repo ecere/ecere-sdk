@@ -508,6 +508,8 @@ static bool egl_init_display(ANativeWindow* window)
    glViewport(0,0,w,h);
    glLoadIdentity();
    glOrtho(0,w,h,0,0.0,1.0);
+
+   currentVertexBuffer = 0;
    return true;
 }  
 

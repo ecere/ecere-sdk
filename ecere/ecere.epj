@@ -331,8 +331,7 @@
       {
          "Name" : "Android",
          "Options" : {
-            "Debug" : true,
-            "Optimization" : "None",
+            "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ECERE_NOFONTCONFIG",
                "_DEBUG"
@@ -345,7 +344,7 @@
                "../deps/freetype-2.3.12/include",
                "../deps/glext"
             ],
-            "FastMath" : false
+            "FastMath" : true
          },
          "Platforms" : [
             {

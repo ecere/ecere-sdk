@@ -72,7 +72,7 @@ private:
 
    bool OnResizing(int * w, int * h)
    {
-      *h = Max(*h, 18);
+      *h = Max(*h, statusBarHeight);
       if(!*w) *w = 80;
       return true;
    }
@@ -81,7 +81,7 @@ private:
    {
       StatusField field;
       int position = Max(clientSize.w, MIN_INFO_WIDTH + width)-1-2;
-      Box clip { 2, 2, MIN_INFO_WIDTH, 17 };
+      Box clip { 2, 2, MIN_INFO_WIDTH, statusBarHeight-1 };
       Window parent = this.parent;
 
       if(!guiApp.textMode)
@@ -94,7 +94,7 @@ private:
          surface.SetBackground(white);
          if(!guiApp.textMode)
          {
-            surface.ThinBevel(true, x - 2, 2, field.width + 4, 16);
+            surface.ThinBevel(true, x - 2, 2, field.width + 4, statusBarHeight-2);
             surface.SetForeground(field.colorSet ? field.color : foreground);
          }
          else
@@ -106,7 +106,7 @@ private:
          }
          if(field.text)
          {
-            Box clip { x, 2, x + field.width - 1, 17 };
+            Box clip { x, 2, x + field.width - 1, statusBarHeight-1 };
             int tw;
             surface.Clip(clip);
             surface.TextExtent(field.text, strlen(field.text), &tw, null);

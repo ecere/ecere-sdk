@@ -594,6 +594,19 @@ class AndroidInterface : Interface
             }
          }
          */
+         if(gotInit)
+         {
+            int w = ANativeWindow_getWidth(androidActivity.window);
+            int h = ANativeWindow_getHeight(androidActivity.window);
+            if(desktopW != w || desktopH != h)
+            {
+               guiApp.SetDesktopPosition(0, 0, w, h, true);
+               desktopW = w;
+               desktopH = h;
+               guiApp.desktop.Update(null);
+            }
+         }
+
          eventAvailable = true;
          if(androidActivity.destroyRequested)
          {
@@ -1213,17 +1226,7 @@ class AndroidActivity : AndroidAppGlue
             break;
          case configChanged:
             if(window)
-            {
-               int w = ANativeWindow_getWidth(window);
-               int h = ANativeWindow_getHeight(window);
-               if(desktopW != w || desktopH != h)
-               {
-                  guiApp.SetDesktopPosition(0, 0, w, h, true);
-                  desktopW = w;
-                  desktopH = h;
-               }
-               guiApp.desktop.Update(null);
-            }
+               guiApp.desktop.UpdateDisplay();
             break;
       }
    }

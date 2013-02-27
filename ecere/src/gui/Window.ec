@@ -39,8 +39,13 @@ import "WindowList"
 import "i18n"
 
 // Had to define this here for native decorations support, because the menu bar is part of total decoration's size, but not part of the system decorations
+#ifdef __ANDROID__
+define skinMenuHeight = 40;
+define statusBarHeight = 30;
+#else
 define skinMenuHeight = 25;
 define statusBarHeight = 18;
+#endif
 
 default extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown;
 
