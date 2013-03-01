@@ -48,7 +48,7 @@
             ],
             "LibraryDirs" : [
                "$(OPENSSL_LIB_DIR)",
-               "../../../deps/libffi-3.0.11/obj/release.$(PLATFORM)"
+               "../../../deps/libffi-3.0.11/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
             ]
          }
       }
