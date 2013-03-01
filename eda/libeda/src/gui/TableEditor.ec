@@ -120,7 +120,7 @@ public:
       buffer.buffer = ptr;
       buffer.count = MAXINT;
       buffer.pos = 0;
-      class(NT)._vTbl[__ecereVMethodID_class_OnUnserialize](class(NT), &pn, buffer);
+      ((void (*)(void *, void *, void *))(void *)class(NT)._vTbl[__ecereVMethodID_class_OnUnserialize])(class(NT), &pn, buffer);
       result = NoCaseAccent::function((pn && pn.name) ? pn.name : null);
       delete pn;
       buffer.buffer = null;
@@ -585,10 +585,10 @@ public:
                               data = &dataHolder;
                            }*/
                            if(data)
-                              dataType._vTbl[__ecereVMethodID_class_OnGetDataFromString](dataType, data, newText);
+                              ((bool (*)(void *, void *, const char *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetDataFromString])(dataType, data, newText);
 
 
-                           /*dataType._vTbl[__ecereVMethodID_class_OnFree](dataType, dataHolder);
+                           /*((void (*)(void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnFree])(dataType, dataHolder);
                            if(dataType.type == structClass)
                            {
                               void * dataPtr = (void *)dataHolder;
@@ -1056,7 +1056,7 @@ private:
                               if(strstr(sf.field.type.name, "PersonName"))
                               {
                                  void * pn;
-                                 sf.field.type._vTbl[__ecereVMethodID_class_OnGetDataFromString](sf.field.type, &pn, searchCI.array);
+                                 ((bool (*)(void *, void *, const char *))(void *)sf.field.type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(sf.field.type, &pn, searchCI.array);
                                  row.SetQueryParamObject(++bindId, pn, sf.field.type);
                                  bindId++;
                                  delete pn;
@@ -1255,6 +1255,7 @@ private:
                      char tempString[MAX_F_STRING];
                      int64 data = 0;
                      Class type = field.type;
+                     String s;
                      if(type.type == unitClass && !type.typeSize)
                      {
                         Class dataType = eSystem_FindClass(type.module, type.dataTypeString);
@@ -1266,15 +1267,15 @@ private:
                      ((bool (*)())(void *)row.GetData)(row, field, type, (type.type == structClass) ? (void *)data : &data);
 
                      if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
-                        field.type._vTbl[__ecereVMethodID_class_OnGetString](field.type, &data, tempString, null, null);
+                        s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.type._vTbl[__ecereVMethodID_class_OnGetString])(field.type, &data, tempString, null, null);
                      else
-                        field.type._vTbl[__ecereVMethodID_class_OnGetString](field.type, (void *)data, tempString, null, null);
+                        s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.type._vTbl[__ecereVMethodID_class_OnGetString])(field.type, (void *)data, tempString, null, null);
 
-                     if(tempString[0])
-                        ProcessWordListString(tempString, method, id);
+                     if(s && s[0])
+                        ProcessWordListString(s, method, id);
 
                      if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
-                        type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+                        ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
                      if(type.type == structClass)
                         delete data;
                   }
@@ -1571,7 +1572,7 @@ private:
                s = lf.CustomLookup((int)data);
                listRow.SetData(lf.dataField, s);
                if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
-                  type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+                  ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
                if(type.type == structClass)
                   delete data;
                delete s; // ?
@@ -1582,6 +1583,7 @@ private:
                char tempString[MAX_F_STRING];
                int64 data = 0;
                Class type = lf.field.type;
+               String s;
                if(type.type == unitClass && !type.typeSize)
                {
                   Class dataType = eSystem_FindClass(type.module, type.dataTypeString);
@@ -1592,14 +1594,14 @@ private:
                   data = (int64)new0 byte[type.structSize];
                ((bool (*)())(void *)dbRow.GetData)(dbRow, lf.field, type, (type.type == structClass) ? (void *)data : &data);
                if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
-                  lf.field.type._vTbl[__ecereVMethodID_class_OnGetString](lf.field.type, &data, tempString, null, null);
+                  s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)lf.field.type._vTbl[__ecereVMethodID_class_OnGetString])(lf.field.type, &data, tempString, null, null);
                else
-                  lf.field.type._vTbl[__ecereVMethodID_class_OnGetString](lf.field.type, (void*)data, tempString, null, null);
+                  s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)lf.field.type._vTbl[__ecereVMethodID_class_OnGetString])(lf.field.type, (void*)data, tempString, null, null);
 
-               listRow.SetData(lf.dataField, tempString);
+               listRow.SetData(lf.dataField, s);
 
                if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
-                  type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+                  ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
                if(type.type == structClass)
                   delete data;
             }
@@ -1623,7 +1625,7 @@ private:
                else
                   listRow.SetData(lf.dataField, (void *)data);
                if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
-                  type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+                  ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
                if(type.type == structClass)
                   delete data;
             }

@@ -471,7 +471,7 @@ static void Button::Close_OnRedraw(Surface surface)
    }
 }*/
 
-#define PUREVTBL(c)     ((int (**)())*(void **)((byte *)class(c).data + 4))
+#define PUREVTBL(c)     ((int (**)())*(void **)((byte *)class(c).data + sizeof(void *)))
 
 extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnApplyGraphics;
 extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw;
@@ -495,7 +495,7 @@ class SimSkin_Button : Button
    void OnRedraw(Surface surface)
    {
       int isDefault = (int)this.isDefault;
-      PUREVTBL(Button)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw](this, surface);
+      ((void (*)(Window, Surface))(void *)PUREVTBL(Button)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw])(this, surface);
       if(bevel || (bevelOver && (buttonState == down || buttonState == over || checked)))
       {
          Color c = steelBlue;
@@ -581,7 +581,7 @@ class SimSkin_Button : Button
    {
       if(isRadio)
       {
-         PUREVTBL(Button)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw](this, surface);
+         ((void (*)(Window, Surface))(void *)PUREVTBL(Button)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw])(this, surface);
          return;
       }
       // if(bevel)
@@ -841,7 +841,7 @@ class SimSkin_ScrollBar : ScrollBar
 {
    void OnApplyGraphics()
    {
-      PUREVTBL(ScrollBar)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnApplyGraphics](this);
+      ((void (*)(Window))(void *)PUREVTBL(ScrollBar)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnApplyGraphics])(this);
 
       //background = { skinBackground.r * 9 / 6, skinBackground.g * 9 / 6, skinBackground.b * 9 / 6 };
 /*
@@ -857,7 +857,7 @@ class SimSkin_ScrollBar : ScrollBar
 {
    void OnApplyGraphics()
    {
-      PUREVTBL(DropBox)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnApplyGraphics](this);
+      ((void (*)(Window))(void *)PUREVTBL(DropBox)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnApplyGraphics])(this);
       button.bitmap = { "<:ecere>elements/arrowDown.png", monochrome = true };
       background = skinBackground;
       foreground = skinForeground;
@@ -869,7 +869,7 @@ class SimSkin_ScrollBar : ScrollBar
 {
    void OnApplyGraphics()
    {
-      PUREVTBL(ListBox)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnApplyGraphics](this);
+      ((void (*)(Window))(void *)PUREVTBL(ListBox)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnApplyGraphics])(this);
       background = skinBackground;
       foreground = skinForeground;
       selectionColor = skinMainColor;

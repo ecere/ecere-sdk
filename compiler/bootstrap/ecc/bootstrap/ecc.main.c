@@ -633,7 +633,7 @@ _class = __ecereNameSpace__ecere__com__eSystem_FindClass(__currentModule, "Compi
 __ecereNameSpace__ecere__com__eInstance_Evolve((struct __ecereNameSpace__ecere__com__Instance **)&__currentModule, _class);
 __thisModule = __currentModule;
 __ecereCreateModuleInstances_ecc();
-((struct __ecereNameSpace__ecere__com__Instance *)(char *)__currentModule)->_vTbl[12](__currentModule);
+((void (*)(void *))(void *)((struct __ecereNameSpace__ecere__com__Instance *)(char *)__currentModule)->_vTbl[12])(__currentModule);
 __ecereDestroyModuleInstances_ecc();
 __ecereNameSpace__ecere__UnloadTranslatedStrings(__currentModule);
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(__currentModule, "ecere::com::Application");

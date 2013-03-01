@@ -49,10 +49,10 @@ int CollationCompare(Class type, int count1, void * data1, int count2, void * da
       SerialBuffer buffer1 { size = count1, count = count1, buffer = data1 };
       SerialBuffer buffer2 { size = count2, count = count2, buffer = data2 };
 
-      type._vTbl[__ecereVMethodID_class_OnUnserialize](type, &inst1, buffer1);
-      type._vTbl[__ecereVMethodID_class_OnUnserialize](type, &inst2, buffer2);
+      ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, &inst1, buffer1);
+      ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, &inst2, buffer2);
 
-      result = type._vTbl[__ecereVMethodID_class_OnCompare](type, inst1, inst2);
+      result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, inst1, inst2);
      
       buffer1.buffer = null;
       buffer2.buffer = null;
@@ -71,10 +71,10 @@ int CollationCompare(Class type, int count1, void * data1, int count2, void * da
 
       inst1 = new0 byte[type.structSize];
       inst2 = new0 byte[type.structSize];
-      type._vTbl[__ecereVMethodID_class_OnUnserialize](type, inst1, buffer1);
-      type._vTbl[__ecereVMethodID_class_OnUnserialize](type, inst2, buffer2);
+      ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, inst1, buffer1);
+      ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, inst2, buffer2);
 
-      result = type._vTbl[__ecereVMethodID_class_OnCompare](type, inst1, inst2);
+      result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, inst1, inst2);
      
       buffer1.buffer = null;
       buffer2.buffer = null;
@@ -85,7 +85,7 @@ int CollationCompare(Class type, int count1, void * data1, int count2, void * da
       return result;
    }
    else
-      return type._vTbl[__ecereVMethodID_class_OnCompare](type, data1, data2);
+      return ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, data1, data2);
 }
 
 public class SQLiteStaticLink { }   // Until .imp generation is fixed
@@ -672,7 +672,7 @@ void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** va
                buffer._buffer = sqlite3_value_text(values[i]);
                //buffer._buffer = sqlite3_value_blob(curStatement);
                buffer.count = buffer._size;
-               a._vTbl[__ecereVMethodID_class_OnUnserialize](a, data, buffer);
+               ((void (*)(void *, void *, void *))(void *)a._vTbl[__ecereVMethodID_class_OnUnserialize])(a, data, buffer);
                buffer._buffer = null;
                //delete buffer;
             }
@@ -775,12 +775,12 @@ void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** va
             else
             {
                SerialBuffer buffer { };
-               r._vTbl[__ecereVMethodID_class_OnSerialize](r, data, buffer);
+               ((void (*)(void *, void *, void *))(void *)r._vTbl[__ecereVMethodID_class_OnSerialize])(r, data, buffer);
                sqlite3_result_text(context, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
                delete buffer;
 
                // Avoid destroying Strings for now... (Returning memory owned by the Custom Function)
-               r._vTbl[__ecereVMethodID_class_OnFree](r, data);
+               ((void (*)(void *, void *))(void *)r._vTbl[__ecereVMethodID_class_OnFree])(r, data);
             }
 
             if(r.type == structClass)
@@ -840,7 +840,7 @@ void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** va
    {
       // Free instance
       void * data = *(void **)arg.data;
-      type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+      ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, data);
       // Free arg holder
       data = arg.data;
       delete data;
@@ -1433,7 +1433,7 @@ class SQLiteRow : DriverRow
             if((void *)data)
             {
                buffer = SerialBuffer { };
-               dataType._vTbl[__ecereVMethodID_class_OnSerialize](dataType, data, buffer);
+               ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnSerialize])(dataType, data, buffer);
                result = sqlite3_bind_text(statement, pos, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
             }
             else
@@ -1534,7 +1534,7 @@ class SQLiteRow : DriverRow
                else
                   ((bool (*)())(void *)this.BindData)(this, stmt, (*bindId)++, fld, type, dataPtr, null);
 
-               type._vTbl[__ecereVMethodID_class_OnFree](type, dataPtr);
+               ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, dataPtr);
             }
             // delete dataRow;
          }
@@ -1878,7 +1878,7 @@ class SQLiteRow : DriverRow
             buffer._buffer = sqlite3_column_text(curStatement, num);
             buffer.count = buffer._size;
 
-            dataType._vTbl[__ecereVMethodID_class_OnUnserialize](dataType, data, buffer);
+            ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnUnserialize])(dataType, data, buffer);
            
             buffer._buffer = null;
             delete buffer;
@@ -1989,7 +1989,7 @@ class SQLiteRow : DriverRow
       sqlite3_reset(queryStatement);
       {
          SerialBuffer buffer { };
-         type._vTbl[__ecereVMethodID_class_OnSerialize](type, data, buffer);
+         ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnSerialize])(type, data, buffer);
          result = sqlite3_bind_text(queryStatement, paramID, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
          delete buffer;
       }

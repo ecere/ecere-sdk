@@ -1268,7 +1268,7 @@ if(isDynamicLibrary)
 }
 if(!isDynamicLibrary && thisAppClass)
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __currentModule._vTbl[12](__currentModule);\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   ((void(*)(void *))(void *)__currentModule._vTbl[12])(__currentModule);\n");
 }
 if(isDynamicLibrary)
 {

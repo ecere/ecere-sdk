@@ -372,7 +372,7 @@ public:
                   dr.SetData(df, (void *)data);
 
                // Is this missing some frees here? strings? Probably not: freeData = true?
-               // type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+               // ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, data);
                if(type.type == structClass)
                {
                   void * dataPtr = (void *)data;

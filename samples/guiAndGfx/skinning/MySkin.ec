@@ -91,7 +91,7 @@ BitmapResource bmpTopRightBorder { ":topRightBorder.png", alphaBlend = true };
 BitmapResource bmpBottomLeftBorder { ":bottomLeftBorder.png", alphaBlend = true };
 BitmapResource bmpBottomRightBorder { ":bottomRightBorder.png", alphaBlend = true };
 
-#define PUREVTBL(c)     ((int (**)())*(void **)((byte *)class(c).data + 4))
+#define PUREVTBL(c)     ((int (**)())*(void **)((byte *)class(c).data + sizeof(void *)))
 
 default:
 
@@ -168,7 +168,7 @@ public class MySkin_ScrollBar : ScrollBar
 
    bool OnPostCreate()
    {
-      bool result = PUREVTBL(ScrollBar)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnPostCreate](this);
+      bool result = ((bool (*)(Window))(void *)PUREVTBL(ScrollBar)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnPostCreate])(this);
 
       AddResource(bmpScrollUp);
       AddResource(bmpScrollDown);
@@ -211,7 +211,7 @@ public class MySkin_Button : Button
 {
    bool OnResizing(int *width, int *height)
    {
-      bool result = PUREVTBL(Button)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnResizing](this, width, height);
+      bool result = ((bool (*)(Window, int*, int*))(void *)PUREVTBL(Button)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnResizing])(this, width, height);
       if(!bitmap)
       {
          int w;
@@ -286,7 +286,7 @@ public class MySkin_Button : Button
    {  
       if(bitmap)
       {
-         return PUREVTBL(Button)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw](this, surface);
+         ((void (*)(Window, Surface))(void *)PUREVTBL(Button)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw])(this, surface);
       }
       else
       {

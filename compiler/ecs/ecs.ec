@@ -687,7 +687,7 @@ static void WriteMain(char * fileName)
       }
       if(!isDynamicLibrary && thisAppClass)
       {
-         f.Printf("   __currentModule._vTbl[12](__currentModule);\n");
+         f.Printf("   ((void(*)(void *))(void *)__currentModule._vTbl[12])(__currentModule);\n");
       }
 
       if(isDynamicLibrary)

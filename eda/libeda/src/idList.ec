@@ -209,13 +209,14 @@ public class Id : uint
                   ((bool (*)())(void *)r.GetData)(r, *nameField, type, (type.type == structClass) ? (void *)data : &data);
 
                   if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
-                     name = (String)type._vTbl[__ecereVMethodID_class_OnGetString](type, (void *)&data, tempString, null, null);
+                     name = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, (void *)&data, tempString, null, null);
                   else
-                     name = (String)type._vTbl[__ecereVMethodID_class_OnGetString](type, (void *)data, tempString, null, null);
+                     name = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, (void *)data, tempString, null, null);
 
-                  strcpy(tempString, name ? name : "");
+                  if(name && name != tempString)
+                     strcpy(tempString, name ? name : "");
                   if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
-                     type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+                     ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
                }
                else
                {
@@ -354,12 +355,13 @@ public:
          {
             char tempString[256];
             Class type = class_data(type);
+            String s;
             if(c) strcat(stringOutput, ", ");
 
             if(type)
-               type._vTbl[__ecereVMethodID_class_OnGetString](type, &ids[c], tempString, null, null);
+               s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &ids[c], tempString, null, null);
             // strcatf(stringOutput, "%d", ids[c]);
-            strcat(stringOutput, tempString);
+            strcat(stringOutput, s);
          }
       }
       return stringOutput;
@@ -865,7 +867,7 @@ public struct DataList : OldList
          {
             if(type.type == structClass)
                link.data = new0 byte[type.structSize];
-            type._vTbl[__ecereVMethodID_class_OnUnserialize](type, (type.type == structClass) ? link.data : &link.data, channel);
+            ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, (type.type == structClass) ? link.data : &link.data, channel);
          }
          Add(link);
       }
@@ -886,9 +888,9 @@ public struct DataList : OldList
          {
             channel.Serialize(truth);
             if(type.type == bitClass || type.type == unitClass || (type.type == systemClass && type.typeSize))
-               type._vTbl[__ecereVMethodID_class_OnSerialize](type, &node.data, channel);
+               ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnSerialize])(type, &node.data, channel);
             else
-               type._vTbl[__ecereVMethodID_class_OnSerialize](type, node.data, channel);
+               ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnSerialize])(type, node.data, channel);
             node = node.next;
          }
          else
@@ -912,7 +914,7 @@ public struct DataList : OldList
          else
          {
             Class type = class_data(type);
-            result = type._vTbl[__ecereVMethodID_class_OnCompare](type, 
+            result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
                (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &nodeA.data : (void *)nodeA.data,
                (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &nodeB.data : (void *)nodeB.data);
             if(result) return result;
@@ -1167,7 +1169,7 @@ public struct DataList : OldList
             else if(type.type == structClass)
                delete node.data;
             else
-               type._vTbl[__ecereVMethodID_class_OnFree](type, node.data);
+               ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, node.data);
          }
          Delete(node);
       }

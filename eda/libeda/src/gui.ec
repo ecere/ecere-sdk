@@ -93,8 +93,8 @@ String GetNameString(Row r, Field nameField)
       if(type.type == structClass)
          data = (int64)new0 byte[type.structSize];
       ((bool (*)())(void *)r.GetData)(r, nameField, type, (type.type == structClass) ? (void *)data : &data);
-      s = CopyString((String)type._vTbl[__ecereVMethodID_class_OnGetString](type, (void *)data, tempString, null, null));
-      type._vTbl[__ecereVMethodID_class_OnFree](type, data);
+      s = CopyString(((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, (void *)data, tempString, null, null));
+      ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
       if(type.type == structClass)
       {
          void * _data = (void *)data;
@@ -387,7 +387,7 @@ public class FieldDataBox : DataBox
 
          if(dataHolder)
          {
-            type._vTbl[__ecereVMethodID_class_OnFree](type, dataHolder);
+            ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)dataHolder);
             if(type.type == structClass)
             {
                void * dataPtr = (void *)dataHolder;
@@ -535,7 +535,7 @@ public class FieldDataBox : DataBox
 
       if(dataHolder)
       {
-         type._vTbl[__ecereVMethodID_class_OnFree](type, dataHolder);
+         ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)dataHolder);
          if(type.type == structClass)
          {
             void * dataPtr = (void *)dataHolder;

@@ -71,7 +71,7 @@ public class FieldBox : DataBox
 
          if(dataHolder)
          {
-            type._vTbl[__ecereVMethodID_class_OnFree](type, dataHolder);
+            ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)dataHolder);
             if(type.type == structClass)
             {
                void * dataPtr = (void *)dataHolder;
@@ -225,7 +225,7 @@ public class FieldBox : DataBox
 
       if(dataHolder)
       {
-         type._vTbl[__ecereVMethodID_class_OnFree](type, dataHolder);
+         ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)dataHolder);
          if(type.type == structClass)
          {
             void * dataPtr = (void *)dataHolder;

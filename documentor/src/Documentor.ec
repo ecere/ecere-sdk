@@ -887,6 +887,8 @@ class APIPageClass : APIPage
                bool needClass = true;
                Class dataClass;
                Class base = cl;
+               char tempString[1024];
+               String s;
                while(base.type == enumClass) base = base.base;
 
                if(base.type == systemClass ||
@@ -915,14 +917,14 @@ class APIPageClass : APIPage
                if(dataClass.type == systemClass)
                {
                   needClass = false;
-                  dataClass._vTbl[__ecereVMethodID_class_OnGetString](dataClass, &item.data, string, sizeof(string), &needClass);
+                  s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataClass._vTbl[__ecereVMethodID_class_OnGetString])(dataClass, &item.data, tempString, null, &needClass);
                }
                else
-                  eSystem_FindClass(componentsApp, "class")._vTbl[__ecereVMethodID_class_OnGetString](dataClass, &item.data, string, sizeof(string), &needClass);
+                  s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)eSystem_FindClass(componentsApp, "class")._vTbl[__ecereVMethodID_class_OnGetString])(dataClass, &item.data, tempString, null, &needClass);
                if(needClass)
-                  f.Printf("<TD valign=top height=22 nowrap=1>%s { %s }</TD>", dataClass.name, string);
+                  f.Printf("<TD valign=top height=22 nowrap=1>%s { %s }</TD>", dataClass.name, s);
                else
-                  f.Printf("<TD valign=top height=22 nowrap=1>%s</TD>", string);
+                  f.Printf("<TD valign=top height=22 nowrap=1>%s</TD>", s);
                if(desc)
                {
                   if(editing)
