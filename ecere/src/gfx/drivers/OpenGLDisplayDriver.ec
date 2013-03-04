@@ -97,6 +97,8 @@ import "XInterface"
 
 #endif
 
+static double nearPlane = 1;
+
 #define glLoadMatrix glLoadMatrixd
 #define glMultMatrix glMultMatrixd
 #define glGetMatrix  glGetDoublev
@@ -359,6 +361,11 @@ static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
 
 #if defined(__ANDROID__)
 
+// Our own matrix stack
+static Matrix matrixStack[3][32];
+static int matrixIndex[3];
+static int curStack = 0;
+
 // OpenGL ES Porting Kit
 
 #define glBindFramebuffer        glBindFramebufferOES
@@ -492,9 +499,13 @@ static bool egl_init_display(ANativeWindow* window)
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glEnable(GL_BLEND);
 
-   glMatrixMode(GL_MODELVIEW);
-   glScalef(1.0f, 1.0f, -1.0f);
-   glMatrixMode(GL_PROJECTION);
+   matrixStack[0][0].Identity();
+   matrixStack[1][0].Identity();
+   matrixStack[2][0].Identity();
+
+   glesMatrixMode(GL_MODELVIEW);
+   glScaled(1.0, 1.0, -1.0);
+   glesMatrixMode(GL_PROJECTION);
    glShadeModel(GL_FLAT);
 
    glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
@@ -506,7 +517,7 @@ static bool egl_init_display(ANativeWindow* window)
    glDisable(GL_MULTISAMPLE_ARB);
 
    glViewport(0,0,w,h);
-   glLoadIdentity();
+   glesLoadIdentity();
    glOrtho(0,w,h,0,0.0,1.0);
 
    currentVertexBuffer = 0;
@@ -747,7 +758,143 @@ void glesBufferDatai(int target, int size, void * data, int usage)
    glBufferData(target, numElems*sizeof(unsigned short), shortBDBuffer, usage);
 }
 
-/// *** These might require an implementation to get things working ***
+// *** Our Custom Matrix Stack ***
+
+static void LoadCurMatrix()
+{
+   double * i = matrixStack[curStack][matrixIndex[curStack]].array;
+   float m[16] =
+   {
+      (float)i[0],(float)i[1],(float)i[2],(float)i[3],
+      (float)i[4],(float)i[5],(float)i[6],(float)i[7],
+      (float)i[8],(float)i[9],(float)i[10],(float)i[11],
+      (float)i[12],(float)i[13],(float)i[14],(float)i[15]
+   };
+   glLoadMatrixf(m);
+}
+
+void glesLoadIdentity()
+{
+   matrixStack[curStack][matrixIndex[curStack]].Identity();
+   LoadCurMatrix();
+}
+
+void glesPushMatrix()
+{
+   if(matrixIndex[curStack] + 1 < sizeof(matrixStack[0]) / sizeof(Matrix))
+   {
+      matrixIndex[curStack]++;
+      memcpy(matrixStack[curStack][matrixIndex[curStack]].array, matrixStack[curStack][matrixIndex[curStack]-1].array, sizeof(Matrix));
+   }
+}
+
+void glesPopMatrix()
+{
+   if(matrixIndex[curStack] > 0)
+   {
+      matrixIndex[curStack]--;
+      LoadCurMatrix();
+   }
+}
+
+void glesLoadMatrixd(double * i)
+{
+   memcpy(matrixStack[curStack][matrixIndex[curStack]].array, i, sizeof(Matrix));
+   LoadCurMatrix();
+}
+
+void glesOrtho( double l, double r, double b, double t, double n, double f )
+{
+   Matrix m =
+   { {
+      (2 / (r - l)), 0, 0, 0,
+      0, (2 / (t - b)), 0, 0,
+      0, 0, (-2 / (f - n)), 0,
+      (-(r + l) / (r - l)), (-(t + b) / (t - b)), (-(f + n) / (f - n)), 1
+   } }, res;
+   res.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
+   matrixStack[curStack][matrixIndex[curStack]] = res;
+   LoadCurMatrix();
+}
+
+void glesFrustum( double l, double r, double b, double t, double n, double f )
+{
+   nearPlane = n;
+   n = 1;
+   l /= nearPlane;
+   r /= nearPlane;
+   b /= nearPlane;
+   t /= nearPlane;
+   f /= nearPlane;
+   {
+      double A = ((r + l) / (r - l));
+      double B = ((t + b) / (t - b));
+      double C = (-(f + n) / (f - n));
+      double D = (-2*f*n/(f-n));
+      Matrix m =
+      { {
+         (2.0*n / (r - l)), 0, 0, 0,
+         0, (2.0*n / (t - b)), 0, 0,
+         A, B,             C,-1,
+         0, 0,             D, 0
+      } }, res;
+      res.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
+      matrixStack[curStack][matrixIndex[curStack]] = res;
+      LoadCurMatrix();
+   }
+}
+
+void glesRotated( double a, double b, double c, double d )
+{
+   Matrix m;
+   Quaternion q;
+   q.RotationAxis({(float)b,(float)-c,(float)d}, a );
+   m.RotationQuaternion(q);
+   matrixStack[curStack][matrixIndex[curStack]].Rotate(q);
+   LoadCurMatrix();
+}
+void glesScaled( double a, double b, double c )
+{
+   Matrix m, r;
+
+   m.Identity();
+   m.Scale(a,b,c);
+   r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
+   matrixStack[curStack][matrixIndex[curStack]] = r;
+   LoadCurMatrix();
+}
+
+void glesTranslated( double a, double b, double c )
+{
+   Matrix m, r;
+
+   m.Identity();
+   m.Translate(a,b,c);
+   r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
+   matrixStack[curStack][matrixIndex[curStack]] = r;
+   LoadCurMatrix();
+}
+
+void glesMultMatrixd( double * i )
+{
+   Matrix r;
+   r.Multiply((Matrix *)i, matrixStack[curStack][matrixIndex[curStack]]);
+   matrixStack[curStack][matrixIndex[curStack]] = r;
+   LoadCurMatrix();
+}
+
+void glesMatrixMode(int mode)
+{
+   curStack = mode == GL_MODELVIEW ? 0 : mode == GL_PROJECTION ? 1 : 2;
+   glMatrixMode(mode);
+}
+
+#define glPushMatrix          glesPushMatrix
+#define glPopMatrix           glesPopMatrix
+#define glLoadIdentity        glesLoadIdentity
+#define glMatrixMode          glesMatrixMode
+
+/* Using the built-in matrix stack
 void glesLoadMatrixd( double * i )
 {
    float m[16] =
@@ -772,6 +919,22 @@ void glesOrtho( double l, double r, double b, double t, double n, double f )
    glMultMatrixf((float *)matrix);
 }
 
+void glesFrustum( double l, double r, double b, double t, double n, double f )
+{
+   float A = (float)((r + l) / (r - l));
+   float B = (float)((t + b) / (t - b));
+   float C = (float)(-(f + n) / (f - n));
+   float D = (float)(-2*f*n/(f-n));
+   float matrix[4][4] =
+   {
+      { (float)(2*n / (r - l)), 0, 0, 0 },
+      { 0, (float)(2*n / (t - b)), 0, 0 },
+      { A, B,             C,-1 },
+      { 0, 0,             D, 0 }
+   };
+   glMultMatrixf((float *)matrix);
+}
+
 void glesRotated( double a, double b, double c, double d ) { glRotatef((float)a, (float)b, (float)c, (float)d); }
 void glesScaled( double a, double b, double c ) { glScalef((float)a, (float)b, (float)c); }
 void glesTranslated( double a, double b, double c ) { glTranslatef((float)a, (float)b, (float)c); }
@@ -787,6 +950,7 @@ void glesMultMatrixd( double * i )
    };
    glMultMatrixf(m);
 }
+*/
 
 // Need to do these...
 void glesVertex3f( float x, float y, float z )
@@ -897,22 +1061,6 @@ void glesLineStipple( int i, unsigned short j )
    glScaled(i/16.0, 1, 1.0f);
    glTranslated(0.5, 0.5, 0);
    glMatrixMode(GL_PROJECTION);
-}
-
-void glesFrustum( double l, double r, double b, double t, double n, double f )
-{
-   float A = (float)((r + l) / (r - l));
-   float B = (float)((t + b) / (t - b));
-   float C = (float)(-(f + n) / (f - n));
-   float D = (float)(-2*f*n/(f-n));
-   float matrix[4][4] =
-   {
-      { (float)(2*n / (r - l)), 0, 0, 0 },
-      { 0, (float)(2*n / (t - b)), 0, 0 },
-      { A, B,             C,-1 },
-      { 0, 0,             D, 0 }
-   };
-   glMultMatrixf((float *)matrix);
 }
 
 void glesLightModeli( unsigned int pname, int param )
@@ -1505,7 +1653,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glEnable(GL_BLEND);
 
          glMatrixMode(GL_MODELVIEW);
-         glScalef(1.0f, 1.0f, -1.0f);
+         glScaled(1.0, 1.0, -1.0);
          // glTranslatef(0.375f, 0.375f, 0.0f);
          // glTranslatef(-0.625f, -0.625f, 0.0f);
          glMatrixMode(GL_PROJECTION);
@@ -2511,7 +2659,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glColor4fv(oglSurface.bitmapMult);
       }
       else if(oglSurface.xOffset)
-         glTranslatef(oglSurface.xOffset / 64.0f/*-0.375f*/, 0.0f, 0.0f);
+         glTranslated(oglSurface.xOffset / 64.0/*-0.375*/, 0.0, 0.0);
          
       glBindTexture(GL_TEXTURE_2D, (uint)bitmap.driverData);
       glBegin(GL_QUADS);
@@ -2555,10 +2703,10 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          glDisable(GL_TEXTURE_2D);
 
-         //glTranslatef(0.375f, 0.375f, 0.0f);
+         //glTranslate(0.375, 0.375, 0.0);
       }
       else if(oglSurface.xOffset)
-         glTranslatef(-oglSurface.xOffset / 64.0f/*+0.375f*/, 0.0f, 0.0f);
+         glTranslated(-oglSurface.xOffset / 64.0/*+0.375*/, 0.0, 0.0);
 
 #if !defined(__OLDX__)
          /*if(glBlendFuncSeparate && !oglSurface.writingText)
@@ -2570,7 +2718,7 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       OGLSurface oglSurface = surface.driverData;
 
-      //glTranslatef(-0.375f, -0.375f, 0.0f);
+      //glTranslate(-0.375, -0.375, 0.0);
 
       //Logf("Stretch\n");
 
@@ -2619,7 +2767,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       glDisable(GL_TEXTURE_2D);
 
-      //glTranslatef(0.375f, 0.375f, 0.0f);
+      //glTranslate(0.375, 0.375, 0.0);
 #if !defined(__OLDX__)
       /*if(glBlendFuncSeparate)
          glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);*/
@@ -2822,7 +2970,7 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLSystem oglSystem = display.displaySystem.driverData;
       oglSystem.loadingFont = true;
 
-      //glTranslatef(-0.375f, -0.375f, 0.0f);
+      //glTranslated(-0.375, -0.375, 0.0);
 
       //Logf("Blit\n");
 
@@ -2844,7 +2992,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       glDisable(GL_TEXTURE_2D);
 
-      //glTranslatef(0.375f, 0.375f, 0.0f);
+      //glTranslated(0.375, 0.375, 0.0);
    }
 
    void TextFont(Display display, Surface surface, Font font)
@@ -2930,6 +3078,7 @@ class OpenGLDisplayDriver : DisplayDriver
             break;
          }
          case fogDensity:
+            value *= nearPlane;
             glFogf(GL_FOG_DENSITY, *(float *)(void *)&value);
             break;
          case blend:
@@ -3170,7 +3319,8 @@ class OpenGLDisplayDriver : DisplayDriver
             glPushMatrix();
 
          glLoadIdentity();
-         glScalef(1.0f, 1.0f, -1.0f);
+
+         glScaled(1.0/nearPlane, 1.0/nearPlane, -1.0/nearPlane);
 
          // *** View Matrix ***
          glMultMatrixd(camera.viewMatrix.array);
@@ -3625,7 +3775,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(viewSpace)
       {
          glLoadIdentity();
-         glScalef(1.0f, 1.0f, -1.0f);
+         glScaled(1.0/nearPlane, 1.0/nearPlane, -1.0/nearPlane);
       }
       else if(camera)
       {
