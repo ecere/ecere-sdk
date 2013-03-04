@@ -89,6 +89,9 @@ bool Instance_LocateModule(char * name, char * fileName);
 void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int * argcPtr, char *** argvPtr);
 void * Instance_Module_Load(const char * libLocation, const char * name, void ** Load, void ** Unload);
 void Instance_Module_Free(void * library);
+#if defined(_DEBUG)
+void InternalModuleLoadBreakpoint();
+#endif
 
 private:
 
@@ -5207,6 +5210,9 @@ static Module Module_Load(Module fromModule, char * name, AccessMode importAcces
       }
       incref module;
    }
+#if defined(_DEBUG)
+   InternalModuleLoadBreakpoint();
+#endif
    return module;
 }
 

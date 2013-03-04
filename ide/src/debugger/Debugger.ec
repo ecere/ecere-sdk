@@ -305,7 +305,7 @@ char progFifoDir[MAX_LOCATION];
 enum DebuggerState { none, prompt, loaded, running, stopped, terminated };
 enum DebuggerEvent { none, hit, breakEvent, signal, stepEnd, functionEnd, exit };
 enum DebuggerAction { none, internal, restart, stop, selectFrame }; //, bpValidation
-enum BreakpointType { none, internalMain, internalWinMain, internalModulesLoaded, user, runToCursor };
+enum BreakpointType { none, internalMain, internalWinMain, internalModulesLoaded, user, runToCursor, internalModuleLoad };
 enum DebuggerEvaluationError { none, symbolNotFound, memoryCantBeRead, unknown };
 
 FileDialog debuggerFileDialog { type = selectDir };
@@ -456,7 +456,8 @@ class Debugger
                   bpHit = bp;
                   
                   if(!(!userBreakOnInternBreak && 
-                        bp && (bp.type == internalMain || bp.type == internalWinMain || bp.type == internalModulesLoaded)))
+                        bp && (bp.type == internalMain || bp.type == internalWinMain ||
+                        bp.type == internalModulesLoaded || bp.type == internalModuleLoad)))
                      monitor = true;
                   hitThread = stopItem.threadid;
                }
@@ -607,7 +608,7 @@ class Debugger
       sysBPs.Add(Breakpoint { type = internalWinMain, enabled = true, level = -1 });
 #endif
       sysBPs.Add(Breakpoint { type = internalModulesLoaded, enabled = true, level = -1 });
-      
+      sysBPs.Add(Breakpoint { type = internalModuleLoad, enabled = true, level = -1 });
    }
 
    ~Debugger()
@@ -1551,11 +1552,40 @@ class Debugger
                            bp.bp = bpItem;
                            bpItem = null;
                            bp.inserted = (bp.bp && bp.bp.number != 0);
-                           ValidateBreakpoint(bp);
                         }
                         delete f;
                      }
-                     break;
+                  }
+                  else if(bp.type == internalModuleLoad && modules)
+                  {
+                     Project ecerePrj = null;
+                     for(p : ide.workspace.projects)
+                     {
+                        if(!strcmp(p.topNode.name, "ecere.epj"))
+                        {
+                           ecerePrj = p;
+                           break;
+                        }
+                     }
+                     if(ecerePrj)
+                     {
+                        ProjectNode node = ecerePrj.topNode.Find("instance.c", false);
+                        if(node)
+                        {
+                           char path[MAX_LOCATION];
+                           char relative[MAX_LOCATION];
+                           node.GetFullFilePath(path);
+                           bp.absoluteFilePath = CopyString(path);
+                           MakePathRelative(path, ecerePrj.topNode.path, relative);
+                           delete bp.relativeFilePath;
+                           bp.relativeFilePath = CopyString(relative);
+                           sentBreakInsert = true;
+                           GdbCommand(false, "-break-insert %s:InternalModuleLoadBreakpoint", bp.relativeFilePath);
+                           bp.bp = bpItem;
+                           bpItem = null;
+                           bp.inserted = (bp.bp && bp.bp.number != 0);
+                        }
+                     }
                   }
                }
             }
@@ -2641,6 +2671,11 @@ class Debugger
                break;
             case internalModulesLoaded:
                modules = true;
+               GdbInsertInternalBreakpoint();
+               GdbBreakpointsInsert();
+               GdbExecContinue(false);
+               break;
+            case internalModuleLoad:
                GdbBreakpointsInsert();
                GdbExecContinue(false);
                break;

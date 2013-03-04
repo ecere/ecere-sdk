@@ -394,3 +394,9 @@ void Instance_Module_Free(void * library)
       dlclose(library);
 #endif
 }
+
+#if defined(_DEBUG)
+   void InternalModuleLoadBreakpoint()
+   {
+   }
+#endif
