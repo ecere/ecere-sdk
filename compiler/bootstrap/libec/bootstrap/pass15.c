@@ -13280,7 +13280,7 @@ struct Location oldyylloc = yylloc;
 
 if(!type)
 emptyParams = 0x1;
-if(functionType->extraParam && e)
+if(functionType->extraParam && e && functionType->thisClass)
 {
 e->destType = MkClassType(functionType->thisClass->string);
 e = e->next;

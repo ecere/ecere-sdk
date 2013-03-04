@@ -8691,7 +8691,7 @@ void ProcessExpressionType(Expression exp)
             if(!type) emptyParams = true;
 
             // WORKING ON THIS:
-            if(functionType.extraParam && e)
+            if(functionType.extraParam && e && functionType.thisClass)
             {
                e.destType = MkClassType(functionType.thisClass.string);
                e = e.next;
