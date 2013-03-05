@@ -2516,10 +2516,28 @@ class IDEWorkSpace : Window
          completePath[0] = '\0';
       PathCat(completePath, filePath);
 
-      fileAttribs = FileExists(completePath);
+      if((fileAttribs = FileExists(completePath)))
+         CodeLocationGoTo(completePath, fileAttribs, line, col);
+      else
+      {
+         for(p : ide.workspace.projects)
+         {
+            strcpy(completePath, p.topNode.path);
+            PathCat(completePath, filePath);
+            if((fileAttribs = FileExists(completePath)))
+            {
+               CodeLocationGoTo(completePath, fileAttribs, line, col);
+               break;
+            }
+         }
+      }
+   }
+
+   void CodeLocationGoTo(const char * path, const FileAttribs fileAttribs, int line, int col)
+   {
       if(fileAttribs.isFile)
       {
-         CodeEditor codeEditor = (CodeEditor)OpenFile(completePath, normal, true, "", no, normal, false);
+         CodeEditor codeEditor = (CodeEditor)OpenFile(path, normal, true, "", no, normal, false);
          if(codeEditor && line)
          {
             EditBox editBox = codeEditor.editBox;
@@ -2528,7 +2546,7 @@ class IDEWorkSpace : Window
          }
       }
       else if(fileAttribs.isDirectory)
-         ShellOpen(completePath);
+         ShellOpen(path);
    }
 
    void OnRedraw(Surface surface)
