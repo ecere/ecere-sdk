@@ -28,6 +28,18 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+#define structSize_Module                 (_64BIT ? 560 : 300)
+#define structSize_OldList                (_64BIT ? 32 : 20)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -954,10 +966,6 @@ void *  object;
 extern YYSTYPE yylval;
 
 extern struct Location yylloc;
-
-typedef __builtin_va_list __gnuc_va_list;
-
-typedef __gnuc_va_list va_list;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Definition;
 
@@ -2517,9 +2525,9 @@ int cppOptionsLen = 0;
 int targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
 int targetBits = GetHostBits();
 
-for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)
+for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)
 {
-char * arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c];
+char * arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c];
 
 if(arg[0] == '-')
 {
@@ -2561,23 +2569,23 @@ cppOptionsLen = newLen;
 }
 else if(!strcmp(arg + 1, "t"))
 {
-if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
-targetPlatform = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c]);
+if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
+targetPlatform = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c]);
 else
 valid = 0x0;
 }
 else if(!strcmp(arg + 1, "cpp"))
 {
-if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
-cppCommand = __ecereNameSpace__ecere__sys__CopyString(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c]);
+if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
+cppCommand = __ecereNameSpace__ecere__sys__CopyString(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c]);
 else
 valid = 0x0;
 }
 else if(!strcmp(arg + 1, "o"))
 {
-if(!GetOutputFile() && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+if(!GetOutputFile() && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 {
-SetOutputFile(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
+SetOutputFile(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1]);
 c++;
 }
 else
@@ -2585,9 +2593,9 @@ valid = 0x0;
 }
 else if(!strcmp(arg + 1, "c"))
 {
-if(!GetSourceFile() && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+if(!GetSourceFile() && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 {
-SetSourceFile(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
+SetSourceFile(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1]);
 c++;
 }
 else
@@ -2595,10 +2603,10 @@ valid = 0x0;
 }
 else if(!strcmp(arg + 1, "isystem") || !strcmp(arg + 1, "isysroot"))
 {
-if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 {
 int argLen = strlen(arg);
-int arg1Len = strlen(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
+int arg1Len = strlen(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1]);
 int newLen = cppOptionsLen + argLen + arg1Len + 4;
 
 cppOptions = __ecereNameSpace__ecere__com__eSystem_Renew(cppOptions, sizeof(char) * (newLen + 1));
@@ -2606,7 +2614,7 @@ cppOptions[cppOptionsLen] = ' ';
 strcpy(cppOptions + cppOptionsLen + 1, arg);
 cppOptions[cppOptionsLen + argLen + 1] = ' ';
 cppOptions[cppOptionsLen + argLen + 2] = '"';
-arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[++c];
+arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[++c];
 strcpy(cppOptions + cppOptionsLen + argLen + 3, arg);
 cppOptions[newLen - 1] = '\"';
 cppOptions[newLen] = '\0';
@@ -2617,9 +2625,9 @@ valid = 0x0;
 }
 else if(!strcmp(arg + 1, "symbols"))
 {
-if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 {
-SetSymbolsDir(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
+SetSymbolsDir(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1]);
 c++;
 }
 else
@@ -2627,9 +2635,9 @@ valid = 0x0;
 }
 else if(!strcmp(arg + 1, "defaultns"))
 {
-if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 {
-SetDefaultNameSpace(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
+SetDefaultNameSpace(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1]);
 c++;
 }
 else
@@ -2727,11 +2735,11 @@ if(ast)
 ProcessDBTableDefinitions();
 PreCompPreProcessClassDefinitions();
 }
-if(!((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->exitCode)
+if(!((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->exitCode)
 OutputSymbols(GetOutputFile());
 }
 else
-((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->exitCode = exitCode;
+((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->exitCode = exitCode;
 if(ast)
 {
 FreeASTTree(ast);
@@ -2783,37 +2791,37 @@ void __ecereRegisterModule_ecp(struct __ecereNameSpace__ecere__com__Instance * m
 struct __ecereNameSpace__ecere__com__Class * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassDefine", "Definition", sizeof(struct ClassDefine), 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ClassDefine = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "base", "char *", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "propertiesAndMembers", "ecere::sys::OldList", 20, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "classProperties", "ecere::sys::OldList", 20, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "methods", "ecere::sys::OldList", 20, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "base", "char *", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "propertiesAndMembers", "ecere::sys::OldList", structSize_OldList, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "classProperties", "ecere::sys::OldList", structSize_OldList, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "methods", "ecere::sys::OldList", structSize_OldList, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isRemote", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isWatchable", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "fixed", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isStatic", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "noExpansion", "bool", 4, 4, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Define", "Definition", sizeof(struct Define), 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Define = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "exp", "Expression", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "exp", "Expression", arch_PointerSize, arch_PointerSize, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "FunctionDefine", "Definition", sizeof(struct FunctionDefine), 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_FunctionDefine = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dataType", "char *", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dataType", "char *", arch_PointerSize, arch_PointerSize, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DataDefine", "Definition", sizeof(struct DataDefine), 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_DataDefine = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dataType", "char *", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dataType", "char *", arch_PointerSize, arch_PointerSize, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "MethodDefine", 0, sizeof(struct MethodDefine), 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_MethodDefine = class;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "PropertyDefine", 0, sizeof(struct PropertyDefine), 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_PropertyDefine = class;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DataMemberDefine", 0, sizeof(struct DataMemberDefine), 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_DataMemberDefine = class;
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeMethodDefine", "void FreeMethodDefine(MethodDefine method)", FreeMethodDefine, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeDataMemberDefine", "void FreeDataMemberDefine(DataMemberDefine dataMember)", FreeDataMemberDefine, module, 2);
@@ -2821,7 +2829,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeDataDefine", "void F
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeDefinition", "void FreeDefinition(Definition definition)", FreeDefinition, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PreCompPreProcessClassDefinitions", "void PreCompPreProcessClassDefinitions(void)", PreCompPreProcessClassDefinitions, module, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "PrecompApp", "ecere::com::Application", 0, 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_PrecompApp = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Main", 0, __ecereMethod_PrecompApp_Main, 1);
 }

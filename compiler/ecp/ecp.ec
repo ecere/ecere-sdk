@@ -13,7 +13,7 @@ import "ec"
 #define ACCESS_CLASSDATA(_class, baseClass) \
    (_class ? ((void *)(((char *)_class.data) + baseClass.offsetClass)) : null)
 
-#include <stdarg.h>
+// #include <stdarg.h>
 
 // WARNING: PropertyDefine, ClassDefine and DataMemberDefine must remain compatible 
 struct ClassDefine : Definition

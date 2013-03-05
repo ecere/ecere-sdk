@@ -28,6 +28,16 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -387,9 +397,7 @@ long long int strtoll(const char * nptr, char ** endptr, int base);
 
 unsigned long long int strtoull(const char * nptr, char ** endptr, int base);
 
-typedef __builtin_va_list __gnuc_va_list;
-
-typedef __gnuc_va_list va_list;
+typedef __builtin_va_list va_list;
 
 typedef void FILE;
 
@@ -2550,11 +2558,11 @@ void __ecereRegisterModule_lexer(struct __ecereNameSpace__ecere__com__Instance *
 struct __ecereNameSpace__ecere__com__Class * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "yy_buffer_state", 0, sizeof(struct yy_buffer_state), 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_yy_buffer_state = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_input_file", "void *", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_ch_buf", "char *", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_buf_pos", "char *", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_input_file", "void *", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_ch_buf", "char *", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_buf_pos", "char *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_buf_size", "uint", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_n_chars", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_is_our_buffer", "int", 4, 4, 1);

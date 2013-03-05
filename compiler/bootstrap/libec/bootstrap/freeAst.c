@@ -28,6 +28,17 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+#define structSize_Module                 (_64BIT ? 560 : 300)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -2386,7 +2397,7 @@ void FreeModuleData(struct __ecereNameSpace__ecere__com__Instance * module)
 struct __ecereNameSpace__ecere__com__Class * _class;
 struct __ecereNameSpace__ecere__com__GlobalFunction * function;
 
-for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->classes.first; _class; _class = _class->next)
+for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->classes.first; _class; _class = _class->next)
 {
 struct __ecereNameSpace__ecere__com__DataMember * dataMember;
 struct __ecereNameSpace__ecere__com__Method * method;
@@ -2455,7 +2466,7 @@ param->param = (((void *)0));
 }
 }
 }
-for(function = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->functions.first; function; function = function->next)
+for(function = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->functions.first; function; function = function->next)
 {
 if(function->dataType)
 FreeType(function->dataType);
@@ -2486,7 +2497,7 @@ break;
 }
 if(found)
 {
-if(((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)list + 12)))->count == 1)
+if(((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)list + structSize_Instance)))->count == 1)
 {
 struct __ecereNameSpace__ecere__com__Instance * mod = (__extension__ ({
 struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
@@ -2526,7 +2537,7 @@ void FreeTypeData(struct __ecereNameSpace__ecere__com__Instance * privateModule)
 {
 struct __ecereNameSpace__ecere__com__Instance * m;
 
-for(m = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)privateModule + 12)))->application + 300)))->allModules.first; m; m = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)m + 12)))->next)
+for(m = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)privateModule + structSize_Instance)))->application + structSize_Module)))->allModules.first; m; m = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)m + structSize_Instance)))->next)
 {
 FreeModuleData(m);
 }

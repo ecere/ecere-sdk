@@ -688,6 +688,9 @@ clean: cleantarget
 	$(call rmq,$(BOWLS))
 	$(call rmq,$(IMPORTS))
 	$(call rmq,$(SYMBOLS))
+ifdef WINDOWS_TARGET
+	$(call rmq,obj/resources.o)
+endif
 
 realclean: cleantarget
 	$(call rmrq,$(OBJ))

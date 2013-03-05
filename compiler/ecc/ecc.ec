@@ -6,7 +6,7 @@ import "ecere"
 import "ec"
 #endif
 
-#include <stdarg.h>
+//#include <stdarg.h>
 
 static Context globalContext { };
 static Module privateModule;

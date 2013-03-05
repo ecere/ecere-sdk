@@ -43,9 +43,15 @@ RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ffi$(A)
 
+ifeq "$(HOST_ARCH)" "X64"
+PLATFORM_OBJ  := win64
+else
+PLATFORM_OBJ  := win32
+endif
+
 _OBJECTS = \
 	$(OBJ)ffi.o \
-	$(OBJ)win32.o \
+	$(OBJ)$(PLATFORM_OBJ).o \
 	$(OBJ)prep_cif.o \
 	$(OBJ)raw_api.o \
 	$(OBJ)types.o \
@@ -55,7 +61,7 @@ OBJECTS = $(_OBJECTS)
 
 SOURCES = \
 	src/x86/ffi.c \
-	src/x86/win32.S \
+	src/x86/$(PLATFORM_OBJ).S \
 	src/prep_cif.c \
 	src/raw_api.c \
 	src/types.c \
@@ -105,8 +111,8 @@ endif
 $(OBJ)ffi.o: src/x86/ffi.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/x86/ffi.c -o $(OBJ)ffi.o
 
-$(OBJ)win32.o: src/x86/win32.S
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/x86/win32.S -o $(OBJ)win32.o
+$(OBJ)$(PLATFORM_OBJ).o: src/x86/$(PLATFORM_OBJ).S
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/x86/$(PLATFORM_OBJ).S -o $(OBJ)$(PLATFORM_OBJ).o
 
 $(OBJ)prep_cif.o: src/prep_cif.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/prep_cif.c -o $(OBJ)prep_cif.o

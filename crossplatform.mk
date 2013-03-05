@@ -2,6 +2,12 @@
 ifeq "$(OS)" "Windows_NT"
    HOST_PLATFORM := win32
    WINDOWS_HOST := defined
+   DUMPMACHINE := $(shell gcc -dumpmachine)
+   ifneq ($(filter x86_64%,$(DUMPMACHINE)),)
+      HOST_ARCH = X64
+   else
+      HOST_ARCH = X86
+   endif
 else
 ifeq "$(OSTYPE)" "FreeBSD"
 # tocheck: temporarily using linux when on bsd

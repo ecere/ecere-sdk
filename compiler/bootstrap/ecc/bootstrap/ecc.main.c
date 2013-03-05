@@ -28,6 +28,17 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+#define structSize_Module                 (_64BIT ? 560 : 300)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -637,7 +648,7 @@ __ecereCreateModuleInstances_ecc();
 __ecereDestroyModuleInstances_ecc();
 __ecereNameSpace__ecere__UnloadTranslatedStrings(__currentModule);
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(__currentModule, "ecere::com::Application");
-exitCode = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Instance *)__currentModule) + 300)))->exitCode;
+exitCode = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Instance *)__currentModule) + structSize_Module)))->exitCode;
 (__ecereNameSpace__ecere__com__eInstance_DecRef(__currentModule), __currentModule = 0);
 return exitCode;
 }

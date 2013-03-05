@@ -28,6 +28,17 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+#define structSize_Module                 (_64BIT ? 560 : 300)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1441,13 +1452,13 @@ static struct __ecereNameSpace__ecere__com__Class * SearchAppClass_Module(struct
 struct __ecereNameSpace__ecere__com__Class * appClass;
 struct __ecereNameSpace__ecere__com__SubModule * subModule;
 
-appClass = FindAppClass(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->publicNameSpace, 0x0);
+appClass = FindAppClass(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->publicNameSpace, 0x0);
 if(appClass)
 return appClass;
-appClass = FindAppClass(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->privateNameSpace, 0x0);
+appClass = FindAppClass(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->privateNameSpace, 0x0);
 if(appClass)
 return appClass;
-for(subModule = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->modules.first; subModule; subModule = subModule->next)
+for(subModule = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->modules.first; subModule; subModule = subModule->next)
 {
 appClass = SearchAppClass_Module(subModule->module);
 if(appClass)
@@ -1834,7 +1845,7 @@ static void BindDCOMServer()
 unsigned int mutexDeclared = 0x0;
 struct __ecereNameSpace__ecere__com__Class * _class;
 
-for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)privateModule + 12)))->classes.first; _class; _class = _class->next)
+for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)privateModule + structSize_Instance)))->classes.first; _class; _class = _class->next)
 {
 if(_class->isRemote == (unsigned int)3)
 break;
@@ -1847,7 +1858,7 @@ if(!dcomSymbols)
 dcomSymbols = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__TempFile);
 f = dcomSymbols;
 DeclareClass(FindClass("ecere::net::DCOMServerObject"), "__ecereClass___ecereNameSpace__ecere__net__DCOMServerObject");
-for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)privateModule + 12)))->classes.first; _class; _class = _class->next)
+for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)privateModule + structSize_Instance)))->classes.first; _class; _class = _class->next)
 {
 if(_class->isRemote == (unsigned int)3)
 {
@@ -2331,9 +2342,9 @@ char * output = (((void *)0));
 
 targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
 targetBits = GetHostBits();
-for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)
+for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)
 {
-char * arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c];
+char * arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c];
 
 if(arg[0] == '-')
 {
@@ -2343,9 +2354,9 @@ targetBits = !strcmp(arg + 1, "m32") ? 32 : 64;
 }
 else if(!strcmp(arg + 1, "o"))
 {
-if(!output && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+if(!output && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 {
-output = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1];
+output = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1];
 c++;
 }
 else
@@ -2353,9 +2364,9 @@ valid = 0x0;
 }
 else if(!strcmp(arg, "-name"))
 {
-if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 {
-strcpy(projectName, ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
+strcpy(projectName, ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1]);
 c++;
 }
 else
@@ -2363,8 +2374,8 @@ valid = 0x0;
 }
 else if(!strcmp(arg, "-t"))
 {
-if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
-targetPlatform = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c]);
+if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
+targetPlatform = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c]);
 else
 valid = 0x0;
 }
@@ -2379,9 +2390,9 @@ isStaticLibrary = 0x1;
 }
 else if(!strcmp(arg, "-symbols"))
 {
-if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 {
-SetSymbolsDir(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
+SetSymbolsDir(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1]);
 c++;
 }
 else
@@ -2421,9 +2432,9 @@ unsigned int outputPot = symbolsDir && __ecereNameSpace__ecere__sys__SearchStrin
 struct __ecereNameSpace__ecere__com__Instance * intlStrings = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_String___);
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, intlStrings), it);
 
-for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)
+for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)
 {
-char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c];
+char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c];
 
 if(file[0] == '-')
 {
@@ -2439,9 +2450,9 @@ if(!strcmp(ext, "imp"))
 LoadImports(file);
 }
 }
-for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)
+for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)
 {
-char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c];
+char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c];
 
 if(file[0] == '-')
 {
@@ -2449,9 +2460,9 @@ if(!strcmp(file, "-c"))
 c++;
 }
 }
-for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)
+for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)
 {
-char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c];
+char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c];
 
 if(file[0] == '-')
 {
@@ -2593,7 +2604,7 @@ if(!isDynamicLibrary)
 thisAppClass = SearchAppClass_Module(privateModule);
 }
 WriteMain(output);
-if(outputPot && ((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)intlStrings + 12)))->count)
+if(outputPot && ((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)intlStrings + structSize_Instance)))->count)
 {
 struct __ecereNameSpace__ecere__com__Instance * potFile;
 char potFileName[797];
@@ -2679,10 +2690,10 @@ void __ecereRegisterModule_ecs(struct __ecereNameSpace__ecere__com__Instance * m
 struct __ecereNameSpace__ecere__com__Class * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ModuleInfo", 0, sizeof(struct ModuleInfo), 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ModuleInfo = class;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "SymbolgenApp", "ecere::com::Application", 0, 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_SymbolgenApp = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Main", 0, __ecereMethod_SymbolgenApp_Main, 1);
 }

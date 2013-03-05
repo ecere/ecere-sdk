@@ -28,6 +28,17 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+#define structSize_Module                 (_64BIT ? 560 : 300)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1255,9 +1266,9 @@ Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Non-s
 }
 else if(access == 1)
 {
-if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + 12)))->application + 300)))->systemNameSpace))
+if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + structSize_Instance)))->application + structSize_Module)))->systemNameSpace))
 {
-if(NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + 12)))->privateNameSpace) || !ModuleAccess(privateModule, regClass->module))
+if(NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + structSize_Instance)))->privateNameSpace) || !ModuleAccess(privateModule, regClass->module))
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Public %s making use of a private class\n", (((void *)0))), word);
 }
 }
@@ -1729,7 +1740,7 @@ classType = regClass->type;
 if(inCompiler)
 {
 yylloc = *loc;
-if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + 12)))->privateNameSpace) && regClass->inheritanceAccess == 1)
+if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + structSize_Instance)))->privateNameSpace) && regClass->inheritanceAccess == 1)
 {
 if(!regClass->base->symbol)
 regClass->base->symbol = FindClass(regClass->base->fullName);
@@ -1787,7 +1798,7 @@ if(definitions != (((void *)0)))
 {
 if(inCompiler)
 {
-if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + 12)))->privateNameSpace))
+if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + structSize_Instance)))->privateNameSpace))
 CheckMembersDefinitions(regClass, (((void *)0)), definitions, 1);
 else if(!symbol->isStatic)
 CheckMembersDefinitions(regClass, (((void *)0)), definitions, 2);
@@ -2160,7 +2171,7 @@ struct ClassDef * newDef;
 if(inCompiler)
 {
 yylloc = propertyDef->loc;
-if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + 12)))->privateNameSpace) && def->memberAccess == 1)
+if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + structSize_Instance)))->privateNameSpace) && def->memberAccess == 1)
 CheckPublicDataType(propertyDef->symbol->type, 1, "class property");
 else if(!symbol->isStatic)
 CheckPublicDataType(propertyDef->symbol->type, 2, "class property");
@@ -2310,7 +2321,7 @@ struct ClassDef * newDef;
 if(inCompiler)
 {
 yylloc = propertyDef->loc;
-if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + 12)))->privateNameSpace))
+if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + structSize_Instance)))->privateNameSpace))
 CheckPublicDataType(propertyDef->symbol->type, 1, "classwide property");
 else if(!symbol->isStatic)
 CheckPublicDataType(propertyDef->symbol->type, 2, "classwide property");
@@ -2427,7 +2438,7 @@ char * newId = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (strlen(
 newId[0] = '\0';
 ProcessMethodType(method);
 yylloc = def->loc;
-if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + 12)))->privateNameSpace) && method->memberAccess == 1)
+if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + structSize_Instance)))->privateNameSpace) && method->memberAccess == 1)
 CheckPublicDataType(method->dataType, 1, "class method");
 strcpy(newId, "__ecereMethod_");
 FullClassNameCat(newId, symbol->string, 0x0);

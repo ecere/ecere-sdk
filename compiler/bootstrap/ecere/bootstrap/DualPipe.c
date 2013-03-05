@@ -28,6 +28,16 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -255,9 +265,7 @@ struct __ecereNameSpace__ecere__com__Method * method;
 } __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 
-typedef __builtin_va_list __gnuc_va_list;
-
-typedef __gnuc_va_list va_list;
+typedef __builtin_va_list va_list;
 
 void DualPipe_Destructor(struct __ecereNameSpace__ecere__com__Instance ** dp);
 
@@ -572,13 +580,13 @@ void __ecereRegisterModule_DualPipe(struct __ecereNameSpace__ecere__com__Instanc
 struct __ecereNameSpace__ecere__com__Class * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(2, "ecere::sys::PipeOpenMode", 0, 0, 0, 0, 0, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__PipeOpenMode = class;
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "output", "bool", 1, 0, 1);
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "error", "bool", 1, 1, 1);
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "input", "bool", 1, 2, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::sys::DualPipe", "ecere::sys::File", sizeof(struct __ecereNameSpace__ecere__sys__DualPipe), 0, 0, __ecereDestructor___ecereNameSpace__ecere__sys__DualPipe, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__DualPipe = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Seek", 0, __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Seek, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Tell", 0, __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Tell, 1);

@@ -28,6 +28,16 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -273,9 +283,7 @@ long long int strtoll(const char * nptr, char ** endptr, int base);
 
 unsigned long long int strtoull(const char * nptr, char ** endptr, int base);
 
-typedef __builtin_va_list __gnuc_va_list;
-
-typedef __gnuc_va_list va_list;
+typedef __builtin_va_list va_list;
 
 typedef void FILE;
 
@@ -316,6 +324,8 @@ int feof(FILE * stream);
 int ferror(FILE * stream);
 
 int fileno(FILE * stream);
+
+typedef __builtin_va_list va_list;
 
 FILE * eC_stdin(void);
 
@@ -1262,19 +1272,19 @@ void __ecereRegisterModule_File(struct __ecereNameSpace__ecere__com__Instance * 
 struct __ecereNameSpace__ecere__com__Class * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(3, "ecere::sys::FileSize", "uint", 0, 0, 0, 0, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__FileSize = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnCompare", 0, __ecereMethod___ecereNameSpace__ecere__sys__FileSize_OnCompare, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetString", 0, __ecereMethod___ecereNameSpace__ecere__sys__FileSize_OnGetString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetDataFromString", 0, __ecereMethod___ecereNameSpace__ecere__sys__FileSize_OnGetDataFromString, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(3, "ecere::sys::FileSize64", "uint64", 0, 0, 0, 0, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__FileSize64 = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnCompare", 0, __ecereMethod___ecereNameSpace__ecere__sys__FileSize64_OnCompare, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetString", 0, __ecereMethod___ecereNameSpace__ecere__sys__FileSize64_OnGetString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetDataFromString", 0, __ecereMethod___ecereNameSpace__ecere__sys__FileSize64_OnGetDataFromString, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::sys::FileSystem", 0, 0, 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__FileSystem = class;
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Open", "ecere::sys::File ::Open(char * archive, char * name, ecere::sys::FileOpenMode mode)", 0, 2);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Exists", "ecere::sys::FileAttribs ::Exists(char * archive, char * fileName)", 0, 2);
@@ -1287,7 +1297,7 @@ __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "CloseDir", "void :
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "OpenArchive", "Archive ::OpenArchive(char * fileName, ArchiveOpenFlags create)", 0, 2);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "QuerySize", "bool ::QuerySize(char * fileName, ecere::sys::FileSize * size)", 0, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::FileOpenMode", 0, 0, 0, 0, 0, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__FileOpenMode = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "read", 1);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "write", 2);
@@ -1296,19 +1306,19 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "readWrite", 4);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "writeRead", 5);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "appendRead", 6);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::FileSeekMode", 0, 0, 0, 0, 0, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__FileSeekMode = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "start", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "current", 1);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "end", 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::FileLock", 0, 0, 0, 0, 0, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__FileLock = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "unlocked", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "shared", 1);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "exclusive", 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::sys::File", "ecere::com::IOChannel", sizeof(struct __ecereNameSpace__ecere__sys__File), 0, 0, __ecereDestructor___ecereNameSpace__ecere__sys__File, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__File = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetString", 0, __ecereMethod___ecereNameSpace__ecere__sys__File_OnGetString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetDataFromString", 0, __ecereMethod___ecereNameSpace__ecere__sys__File_OnGetDataFromString, 1);
@@ -1342,22 +1352,22 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Print", "void Print(typed
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "PrintLn", "void PrintLn(typed_object object, ...)", __ecereMethod___ecereNameSpace__ecere__sys__File_PrintLn, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Printf", "int Printf(char * format, ...)", __ecereMethod___ecereNameSpace__ecere__sys__File_Printf, 1);
 __ecerePropM___ecereNameSpace__ecere__sys__File_input = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "input", "void *", __ecereProp___ecereNameSpace__ecere__sys__File_Set_input, __ecereProp___ecereNameSpace__ecere__sys__File_Get_input, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__sys__File_input = __ecerePropM___ecereNameSpace__ecere__sys__File_input, __ecerePropM___ecereNameSpace__ecere__sys__File_input = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__sys__File_output = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "output", "void *", __ecereProp___ecereNameSpace__ecere__sys__File_Set_output, __ecereProp___ecereNameSpace__ecere__sys__File_Get_output, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__sys__File_output = __ecerePropM___ecereNameSpace__ecere__sys__File_output, __ecerePropM___ecereNameSpace__ecere__sys__File_output = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__sys__File_buffered = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "buffered", "bool", __ecereProp___ecereNameSpace__ecere__sys__File_Set_buffered, 0, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__sys__File_buffered = __ecerePropM___ecereNameSpace__ecere__sys__File_buffered, __ecerePropM___ecereNameSpace__ecere__sys__File_buffered = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__sys__File_eof = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "eof", "bool", 0, __ecereProp___ecereNameSpace__ecere__sys__File_Get_eof, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__sys__File_eof = __ecerePropM___ecereNameSpace__ecere__sys__File_eof, __ecerePropM___ecereNameSpace__ecere__sys__File_eof = (void *)0;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::sys::ConsoleFile", "ecere::sys::File", 0, 0, __ecereConstructor___ecereNameSpace__ecere__sys__ConsoleFile, __ecereDestructor___ecereNameSpace__ecere__sys__ConsoleFile, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__ConsoleFile = class;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(2, "ecere::sys::FileAttribs", "bool", 0, 0, 0, 0, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__FileAttribs = class;
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "isFile", "bool", 1, 0, 1);
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "isArchive", "bool", 1, 1, 1);
@@ -1373,13 +1383,13 @@ __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "isRemovable", "bool", 
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "isServer", "bool", 1, 11, 1);
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "isShare", "bool", 1, 12, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::sys::FileStats", 0, sizeof(struct __ecereNameSpace__ecere__sys__FileStats), 0, 0, 0, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__FileStats = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "attribs", "ecere::sys::FileAttribs", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "size", "ecere::sys::FileSize", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "accessed", "SecSince1970", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "modified", "SecSince1970", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "created", "SecSince1970", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "accessed", "SecSince1970", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "modified", "SecSince1970", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "created", "SecSince1970", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FileExists", "ecere::sys::FileAttribs ecere::sys::FileExists(char * fileName)", __ecereNameSpace__ecere__sys__FileExists, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FileOpen", "ecere::sys::File ecere::sys::FileOpen(char * fileName, ecere::sys::FileOpenMode mode)", __ecereNameSpace__ecere__sys__FileOpen, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FileFixCase", "void ecere::sys::FileFixCase(char * file)", __ecereNameSpace__ecere__sys__FileFixCase, module, 1);

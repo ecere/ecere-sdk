@@ -28,6 +28,17 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+#define structSize_Module                 (_64BIT ? 560 : 300)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -458,10 +469,6 @@ struct __ecereNameSpace__ecere__com__Method * method;
 } __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 
-typedef __builtin_va_list __gnuc_va_list;
-
-typedef __gnuc_va_list va_list;
-
 static struct Context * globalContext;
 
 static struct __ecereNameSpace__ecere__com__Instance * privateModule;
@@ -711,7 +718,6 @@ char *  dataTypeString;
 struct Type * dataType;
 void *  symbol;
 char *  fullName;
-char __ecere_padding[20];
 } __attribute__ ((gcc_struct));
 
 extern int snprintf(char * , int, char * , ...);
@@ -865,9 +871,9 @@ int targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
 int targetBits = GetHostBits();
 
 SetSymbolsDir("");
-for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc; c++)
+for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)
 {
-char * arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c];
+char * arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c];
 
 if(arg[0] == '-')
 {
@@ -915,23 +921,23 @@ cppOptionsLen = newLen;
 }
 else if(!strcmp(arg + 1, "t"))
 {
-if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
-targetPlatform = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c]);
+if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
+targetPlatform = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c]);
 else
 valid = 0x0;
 }
 else if(!strcmp(arg + 1, "cpp"))
 {
-if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
-cppCommand = __ecereNameSpace__ecere__sys__CopyString(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c]);
+if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
+cppCommand = __ecereNameSpace__ecere__sys__CopyString(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c]);
 else
 valid = 0x0;
 }
 else if(!strcmp(arg + 1, "o"))
 {
-if(!GetOutputFile() && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+if(!GetOutputFile() && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 {
-SetOutputFile(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
+SetOutputFile(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1]);
 c++;
 }
 else
@@ -939,9 +945,9 @@ valid = 0x0;
 }
 else if(!strcmp(arg + 1, "c"))
 {
-if(!GetSourceFile() && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+if(!GetSourceFile() && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 {
-SetSourceFile(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
+SetSourceFile(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1]);
 c++;
 }
 else
@@ -949,10 +955,10 @@ valid = 0x0;
 }
 else if(!strcmp(arg + 1, "isystem") || !strcmp(arg + 1, "isysroot"))
 {
-if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 {
 int argLen = strlen(arg);
-int arg1Len = strlen(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
+int arg1Len = strlen(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1]);
 int newLen = cppOptionsLen + argLen + arg1Len + 4;
 
 cppOptions = __ecereNameSpace__ecere__com__eSystem_Renew(cppOptions, sizeof(char) * (newLen + 1));
@@ -960,7 +966,7 @@ cppOptions[cppOptionsLen] = ' ';
 strcpy(cppOptions + cppOptionsLen + 1, arg);
 cppOptions[cppOptionsLen + argLen + 1] = ' ';
 cppOptions[cppOptionsLen + argLen + 2] = '"';
-arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[++c];
+arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[++c];
 strcpy(cppOptions + cppOptionsLen + argLen + 3, arg);
 cppOptions[newLen - 1] = '\"';
 cppOptions[newLen] = '\0';
@@ -971,9 +977,9 @@ valid = 0x0;
 }
 else if(!strcmp(arg + 1, "symbols"))
 {
-if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 {
-SetSymbolsDir(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
+SetSymbolsDir(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1]);
 c++;
 }
 else
@@ -985,9 +991,9 @@ SetMemoryGuard(0x1);
 }
 else if(!strcmp(arg + 1, "defaultns"))
 {
-if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argc)
+if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 {
-SetDefaultNameSpace(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->argv[c + 1]);
+SetDefaultNameSpace(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1]);
 c++;
 }
 else
@@ -1137,7 +1143,7 @@ __ecereNameSpace__ecere__sys__ChangeExtension(impFile, "imp", impFile);
 }
 if(imports.first)
 OutputImports(impFile);
-if(!((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->exitCode)
+if(!((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->exitCode)
 {
 struct __ecereNameSpace__ecere__com__Instance * output = __ecereNameSpace__ecere__sys__FileOpen(GetOutputFile(), 2);
 
@@ -1183,7 +1189,7 @@ OutputTree(ast, output);
 }
 }
 else
-((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + 300)))->exitCode = exitCode;
+((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->exitCode = exitCode;
 if(ast)
 {
 FreeASTTree(ast);
@@ -1233,7 +1239,7 @@ void __ecereRegisterModule_ecc(struct __ecereNameSpace__ecere__com__Instance * m
 struct __ecereNameSpace__ecere__com__Class * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "CompilerApp", "ecere::com::Application", 0, 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_CompilerApp = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Main", 0, __ecereMethod_CompilerApp_Main, 1);
 }

@@ -18,13 +18,13 @@ export LD_LIBRARY_PATH = $(_CF_DIR)obj/$(HOST_PLATFORM)/lib/
 export DYLD_LIBRARY_PATH = $(_CF_DIR)obj/$(HOST_PLATFORM)/lib/
 endif
 
-ifeq "$(HOST_ARCH)" "ARM"
+# ifeq "$(HOST_ARCH)" "ARM"
 FORCE_64_BIT =
 FORCE_32_BIT =
-else
-FORCE_64_BIT = -m64
-FORCE_32_BIT = -m32
-endif
+# else
+# FORCE_64_BIT = -m64
+# FORCE_32_BIT = -m32
+# endif
 
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
 LDFLAGS +=$(if $(LINUX_TARGET), -Wl$(comma)--no-undefined,)

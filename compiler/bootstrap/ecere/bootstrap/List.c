@@ -28,6 +28,17 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+#define structSize_Link                   (_64BIT ? 24 : 16)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -327,7 +338,7 @@ link = (struct __ecereNameSpace__ecere__com__Link *)__ecereNameSpace__ecere__com
 memcpy((void *)&link->data, (void *)value, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].dataTypeClass->structSize);
 }
 else
-link = (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(16), ((struct __ecereNameSpace__ecere__com__Link *)__ecereTemp1)->data = value, ((struct __ecereNameSpace__ecere__com__Link *)__ecereTemp1));
+link = (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_Link), ((struct __ecereNameSpace__ecere__com__Link *)__ecereTemp1)->data = value, ((struct __ecereNameSpace__ecere__com__Link *)__ecereTemp1));
 ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * after, uint64 value))__ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert])(this, after, (void *)link);
 return link;
 }
@@ -341,7 +352,7 @@ int count;
 
 struct __ecereNameSpace__ecere__com__Link * __ecereMethod___ecereNameSpace__ecere__com__List_Add(struct __ecereNameSpace__ecere__com__Instance * this, uint64 value)
 {
-return (struct __ecereNameSpace__ecere__com__Link *)((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * after, uint64 value))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert])(this, ((struct __ecereNameSpace__ecere__com__Link *)((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 12)))->last), value);
+return (struct __ecereNameSpace__ecere__com__Link *)((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * after, uint64 value))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert])(this, ((struct __ecereNameSpace__ecere__com__Link *)((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + structSize_Instance)))->last), value);
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
@@ -370,7 +381,7 @@ void __ecereMethod___ecereNameSpace__ecere__com__List_Free(struct __ecereNameSpa
 {
 void * item;
 
-while(item = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 12)))->first)
+while(item = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + structSize_Instance)))->first)
 {
 uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, item);
 
@@ -445,13 +456,13 @@ void __ecereRegisterModule_List(struct __ecereNameSpace__ecere__com__Instance * 
 struct __ecereNameSpace__ecere__com__Class * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::Link", "ecere::com::ListItem", sizeof(struct __ecereNameSpace__ecere__com__Link), 0, 0, 0, module, 4, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__Link = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "data", "uint64", 8, 8, 1);
 if(class)
 class->fixed = (unsigned int)1;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::List", "ecere::com::LinkList<ecere::com::Link, T = LLT, D = LLT>", 0, 0, 0, 0, module, 4, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__List = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetData", 0, __ecereMethod___ecereNameSpace__ecere__com__List_GetData, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "SetData", 0, __ecereMethod___ecereNameSpace__ecere__com__List_SetData, 1);

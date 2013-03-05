@@ -939,8 +939,6 @@ typedef unsigned short int yytype_uint16;
 
 typedef short int yytype_int16;
 
-void * malloc(unsigned int);
-
 void free(void *);
 
 union yyalloc
@@ -1038,9 +1036,7 @@ long long int strtoll(const char * nptr, char ** endptr, int base);
 
 unsigned long long int strtoull(const char * nptr, char ** endptr, int base);
 
-typedef __builtin_va_list __gnuc_va_list;
-
-typedef __gnuc_va_list va_list;
+typedef __builtin_va_list va_list;
 
 typedef void FILE;
 

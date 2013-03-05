@@ -28,6 +28,16 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -380,8 +390,8 @@ if(dot)
 *dot = (char)0;
 locale = language;
 }
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->name)
-sprintf(fileName, "<:%s>locale/%s/LC_MESSAGES/%s.mo", ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->name, locale, name);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name)
+sprintf(fileName, "<:%s>locale/%s/LC_MESSAGES/%s.mo", ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name, locale, name);
 else
 sprintf(fileName, ":locale/%s/LC_MESSAGES/%s.mo", locale, name);
 f = __ecereNameSpace__ecere__sys__FileOpen(fileName, 1);
@@ -433,7 +443,7 @@ __ecereNameSpace__ecere__moduleMaps = __ecereNameSpace__ecere__com__eInstance_Ne
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, __ecereNameSpace__ecere__moduleMaps), it);
 
-if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->name), 0x0))
+if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name), 0x0))
 (__ecereNameSpace__ecere__com__eInstance_DecRef(__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it)), __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&it, 0));
 }
 __extension__ ({
@@ -442,7 +452,7 @@ struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 __ecereNameSpace__ecere__moduleMaps, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (uint64)(((uint64)(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->name))), 0x1);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (uint64)(((uint64)(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name))), 0x1);
 __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, textMap = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__String_));
 });
 for(c = 0; c < numStrings; c++)
@@ -508,7 +518,7 @@ void __ecereNameSpace__ecere__UnloadTranslatedStrings(struct __ecereNameSpace__e
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, __ecereNameSpace__ecere__moduleMaps), it);
 
-if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->name), 0x0))
+if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name), 0x0))
 {
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *))((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it))->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it)));
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * i))__ecereNameSpace__ecere__moduleMaps->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Delete])(__ecereNameSpace__ecere__moduleMaps, it.pointer);
@@ -523,7 +533,7 @@ struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 __ecereNameSpace__ecere__moduleMaps, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (uint64)(((uint64)(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->name))), 0x0);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (uint64)(((uint64)(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name))), 0x0);
 ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&__internalIterator));
 })) : (((void *)0));
 char * result = textMap ? (__extension__ ({

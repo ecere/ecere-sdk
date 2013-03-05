@@ -28,6 +28,18 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+#define structSize_Module                 (_64BIT ? 560 : 300)
+#define structSize_NamedLink              (_64BIT ? 32 : 16)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -2408,9 +2420,9 @@ void ComputeModuleClasses(struct __ecereNameSpace__ecere__com__Instance * module
 struct __ecereNameSpace__ecere__com__Class * _class;
 struct __ecereNameSpace__ecere__sys__OldLink * subModule;
 
-for(subModule = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->modules.first; subModule; subModule = subModule->next)
+for(subModule = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->modules.first; subModule; subModule = subModule->next)
 ComputeModuleClasses(subModule->data);
-for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->classes.first; _class; _class = _class->next)
+for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->classes.first; _class; _class = _class->next)
 ComputeClassMembers(_class, 0x0);
 }
 
@@ -2988,7 +3000,7 @@ if(classSym)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&classSym->_import->properties, symbol->_import);
 }
 imported = 0x1;
-if(prop->_class->module != privateModule && ((struct __ecereNameSpace__ecere__com__Module *)(((char *)prop->_class->module + 12)))->importType != 1)
+if(prop->_class->module != privateModule && ((struct __ecereNameSpace__ecere__com__Module *)(((char *)prop->_class->module + structSize_Instance)))->importType != 1)
 dllImport = 0x1;
 }
 if(!symbol->type)
@@ -3971,7 +3983,7 @@ if(!classSym->_import)
 {
 struct ModuleImport * module;
 
-if(method->_class->module && ((struct __ecereNameSpace__ecere__com__Module *)(((char *)method->_class->module + 12)))->name)
+if(method->_class->module && ((struct __ecereNameSpace__ecere__com__Module *)(((char *)method->_class->module + structSize_Instance)))->name)
 module = FindModule(method->_class->module);
 else
 module = mainModule;
@@ -3997,7 +4009,7 @@ symbol->type->refCount++;
 if(!method->dataType->dllExport)
 {
 imported = 0x1;
-if(method->_class->module != privateModule && ((struct __ecereNameSpace__ecere__com__Module *)(((char *)method->_class->module + 12)))->importType != 1)
+if(method->_class->module != privateModule && ((struct __ecereNameSpace__ecere__com__Module *)(((char *)method->_class->module + structSize_Instance)))->importType != 1)
 dllImport = 0x1;
 }
 }
@@ -4273,7 +4285,7 @@ symbol->type->staticMethod = 0x1;
 }
 }
 imported = symbol->_import ? 0x1 : 0x0;
-if(imported && function->module != privateModule && ((struct __ecereNameSpace__ecere__com__Module *)(((char *)function->module + 12)))->importType != 1)
+if(imported && function->module != privateModule && ((struct __ecereNameSpace__ecere__com__Module *)(((char *)function->module + structSize_Instance)))->importType != 1)
 dllImport = 0x1;
 }
 DeclareType(function->dataType, 0x1, 0x1);
@@ -4294,7 +4306,7 @@ d = MkDeclaratorIdentifier(MkIdentifier(imported ? name : function->name));
 if(dllImport)
 d = MkDeclaratorBrackets(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), d));
 d = SpecDeclFromString(function->dataTypeString, specifiers, d);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)function->module + 12)))->importType == 1)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)function->module + structSize_Instance)))->importType == 1)
 {
 struct Specifier * spec;
 
@@ -4347,7 +4359,7 @@ if(curExternal)
 symbol->id = curExternal->symbol->idCode;
 }
 }
-return (symbol && symbol->_import && function->module != privateModule && ((struct __ecereNameSpace__ecere__com__Module *)(((char *)function->module + 12)))->importType != 1) ? 0x1 : 0x0;
+return (symbol && symbol->_import && function->module != privateModule && ((struct __ecereNameSpace__ecere__com__Module *)(((char *)function->module + structSize_Instance)))->importType != 1) ? 0x1 : 0x0;
 }
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_GlobalData;
@@ -4959,9 +4971,9 @@ struct __ecereNameSpace__ecere__com__SubModule * subModule;
 
 if(searchFor == searchIn)
 return 0x1;
-for(subModule = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)searchIn + 12)))->modules.first; subModule; subModule = subModule->next)
+for(subModule = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)searchIn + structSize_Instance)))->modules.first; subModule; subModule = subModule->next)
 {
-if(subModule->importMode == 1 || searchIn == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)searchIn + 12)))->application)
+if(subModule->importMode == 1 || searchIn == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)searchIn + structSize_Instance)))->application)
 {
 if(ModuleVisibility(subModule->module, searchFor))
 return 0x1;
@@ -4987,15 +4999,15 @@ unsigned int MatchWithEnums_Module(struct __ecereNameSpace__ecere__com__Instance
 {
 struct __ecereNameSpace__ecere__com__Instance * module;
 
-if(MatchWithEnums_NameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)mainModule + 12)))->application + 300)))->systemNameSpace, sourceExp, dest, string, conversions))
+if(MatchWithEnums_NameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)mainModule + structSize_Instance)))->application + structSize_Module)))->systemNameSpace, sourceExp, dest, string, conversions))
 return 0x1;
-if(MatchWithEnums_NameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)mainModule + 12)))->application + 12)))->privateNameSpace, sourceExp, dest, string, conversions))
+if(MatchWithEnums_NameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)mainModule + structSize_Instance)))->application + structSize_Instance)))->privateNameSpace, sourceExp, dest, string, conversions))
 return 0x1;
-if(MatchWithEnums_NameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)mainModule + 12)))->application + 12)))->publicNameSpace, sourceExp, dest, string, conversions))
+if(MatchWithEnums_NameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)mainModule + structSize_Instance)))->application + structSize_Instance)))->publicNameSpace, sourceExp, dest, string, conversions))
 return 0x1;
-for(module = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)mainModule + 12)))->application + 300)))->allModules.first; module; module = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->next)
+for(module = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)mainModule + structSize_Instance)))->application + structSize_Module)))->allModules.first; module; module = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->next)
 {
-if(ModuleVisibility(mainModule, module) && MatchWithEnums_NameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->publicNameSpace, sourceExp, dest, string, conversions))
+if(ModuleVisibility(mainModule, module) && MatchWithEnums_NameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->publicNameSpace, sourceExp, dest, string, conversions))
 return 0x1;
 }
 return 0x0;
@@ -12195,7 +12207,7 @@ char name[1024];
 (__ecereNameSpace__ecere__com__eSystem_Delete(id->string), id->string = 0);
 id->string = __ecereNameSpace__ecere__sys__CopyString(function->name);
 name[0] = (char)0;
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)function->module + 12)))->importType != 1 && (!function->dataType || !function->dataType->dllExport))
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)function->module + structSize_Instance)))->importType != 1 && (!function->dataType || !function->dataType->dllExport))
 strcpy(name, "__ecereFunction_");
 FullClassNameCat(name, id->string, 0x0);
 if(DeclareFunction(function, name))
@@ -14493,7 +14505,7 @@ struct __ecereNameSpace__ecere__sys__NamedLink * member;
 
 for(member = symbol->type->members.first; member; member = member->next)
 {
-struct __ecereNameSpace__ecere__sys__NamedLink * value = (value = __ecereNameSpace__ecere__com__eSystem_New0(16), value->name = __ecereNameSpace__ecere__sys__CopyString(member->name), value);
+struct __ecereNameSpace__ecere__sys__NamedLink * value = (value = __ecereNameSpace__ecere__com__eSystem_New0(structSize_NamedLink), value->name = __ecereNameSpace__ecere__sys__CopyString(member->name), value);
 
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&exp->expType->members, value);
 }
@@ -16221,7 +16233,7 @@ if(function)
 char name[1024];
 
 name[0] = (char)0;
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)function->module + 12)))->importType != 1 && (!function->dataType || !function->dataType->dllExport))
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)function->module + structSize_Instance)))->importType != 1 && (!function->dataType || !function->dataType->dllExport))
 strcpy(name, "__ecereFunction_");
 FullClassNameCat(name, s, 0x0);
 DeclareFunction(function, name);
@@ -16389,7 +16401,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReplaceThisClassSpecifie
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareFunction", "bool DeclareFunction(ecere::com::GlobalFunction function, char * name)", DeclareFunction, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareGlobalData", "void DeclareGlobalData(GlobalData data)", DeclareGlobalData, module, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Conversion", 0, sizeof(struct Conversion), 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Conversion = class;
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchTypes", "bool MatchTypes(Type source, Type dest, ecere::sys::OldList conversions, ecere::com::Class owningClassSource, ecere::com::Class owningClassDest, bool doConversion, bool enumBaseType, bool acceptReversedParams, bool isConversionExploration)", MatchTypes, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchWithEnums_NameSpace", "bool MatchWithEnums_NameSpace(ecere::com::NameSpace nameSpace, Expression sourceExp, Type dest, char * string, ecere::sys::OldList conversions)", MatchWithEnums_NameSpace, module, 2);

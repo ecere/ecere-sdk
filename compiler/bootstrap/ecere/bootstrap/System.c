@@ -28,6 +28,17 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+#define structSize_OldList                (_64BIT ? 32 : 20)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -255,9 +266,7 @@ struct __ecereNameSpace__ecere__com__Method * method;
 } __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 
-typedef __builtin_va_list __gnuc_va_list;
-
-typedef __gnuc_va_list va_list;
+typedef __builtin_va_list va_list;
 
 typedef uintptr_t size_t;
 
@@ -276,6 +285,8 @@ long int strtol(const char * nptr, char ** endptr, int base);
 long long int strtoll(const char * nptr, char ** endptr, int base);
 
 unsigned long long int strtoull(const char * nptr, char ** endptr, int base);
+
+typedef __builtin_va_list va_list;
 
 typedef void FILE;
 
@@ -564,9 +575,9 @@ void __ecereNameSpace__ecere__sys__LogErrorCode(unsigned int errorCode, char * d
 if(((int)((errorCode & 0x3000) >> 12)) <= __ecereNameSpace__ecere__sys__globalSystem.errorLevel)
 {
 if(details)
-__ecereNameSpace__ecere__sys__Logf("System Error [%d]: %s (%s).\n", ((int)((errorCode & 0x3000) >> 12)), ((char **)((struct __ecereNameSpace__ecere__com__Array *)(((char *)__ecereNameSpace__ecere__sys__errorMessages + 12)))->array)[((unsigned int)((errorCode & 0xFFF) >> 0))], details);
+__ecereNameSpace__ecere__sys__Logf("System Error [%d]: %s (%s).\n", ((int)((errorCode & 0x3000) >> 12)), ((char **)((struct __ecereNameSpace__ecere__com__Array *)(((char *)__ecereNameSpace__ecere__sys__errorMessages + structSize_Instance)))->array)[((unsigned int)((errorCode & 0xFFF) >> 0))], details);
 else
-__ecereNameSpace__ecere__sys__Logf("System Error [%d]: %s.\n", ((int)((errorCode & 0x3000) >> 12)), ((char **)((struct __ecereNameSpace__ecere__com__Array *)(((char *)__ecereNameSpace__ecere__sys__errorMessages + 12)))->array)[((unsigned int)((errorCode & 0xFFF) >> 0))]);
+__ecereNameSpace__ecere__sys__Logf("System Error [%d]: %s.\n", ((int)((errorCode & 0x3000) >> 12)), ((char **)((struct __ecereNameSpace__ecere__com__Array *)(((char *)__ecereNameSpace__ecere__sys__errorMessages + structSize_Instance)))->array)[((unsigned int)((errorCode & 0xFFF) >> 0))]);
 }
 __ecereNameSpace__ecere__sys__globalSystem.lastErrorCode = errorCode;
 }
@@ -688,7 +699,7 @@ void __ecereRegisterModule_System(struct __ecereNameSpace__ecere__com__Instance 
 struct __ecereNameSpace__ecere__com__Class * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::LoggingMode", 0, 0, 0, 0, 0, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__LoggingMode = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "noLogging", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "stdOut", 1);
@@ -698,7 +709,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "logFile", 4);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "msgBox", 5);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "buffer", 6);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::ErrorLevel", 0, 0, 0, 0, 0, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__ErrorLevel = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "veryFatal", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "fatal", 1);
@@ -706,12 +717,12 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "major", 2);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "minor", 3);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::AllErrors", "ecere::sys::ErrorLevel::Minor", module, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(2, "ecere::sys::ErrorCode", 0, 0, 0, 0, 0, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__ErrorCode = class;
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "level", "ecere::sys::ErrorLevel", 2, 12, 2);
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "code", "uint", 12, 0, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::SysErrorCode", "ecere::sys::ErrorCode", 0, 0, 0, 0, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__SysErrorCode = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "allocationFailed", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "nameInexistant", 1);
@@ -742,18 +753,18 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ResetError",
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SetErrorLevel", "void ecere::sys::SetErrorLevel(ecere::sys::ErrorLevel level)", __ecereNameSpace__ecere__sys__SetErrorLevel, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SetLoggingMode", "void ecere::sys::SetLoggingMode(ecere::sys::LoggingMode mode, void * where)", __ecereNameSpace__ecere__sys__SetLoggingMode, module, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::sys::System", 0, sizeof(struct __ecereNameSpace__ecere__sys__System), 0, 0, 0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__System = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "errorLoggingMode", "ecere::sys::LoggingMode", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "errorBuffer", "char *", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "errorBuffer", "char *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "errorBufferSize", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "logFile", "char[MAX_LOCATION]", 797, 1, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "lastErrorCode", "ecere::sys::ErrorCode", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "errorLevel", "ecere::sys::ErrorLevel", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "eventSemaphore", "Semaphore", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "fileMonitors", "ecere::sys::OldList", 20, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "fileMonitorMutex", "Mutex", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "fileMonitorThread", "Thread", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "eventSemaphore", "Semaphore", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "fileMonitors", "ecere::sys::OldList", structSize_OldList, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "fileMonitorMutex", "Mutex", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "fileMonitorThread", "Thread", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "systemTerminate", "bool", 4, 4, 1);
 }
 

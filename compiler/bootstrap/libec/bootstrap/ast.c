@@ -28,6 +28,18 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+#define structSize_OldLink                (_64BIT ? 24 : 12)
+#define structSize_NamedLink              (_64BIT ? 32 : 16)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -2664,7 +2676,7 @@ if(!symbol && spec->symbol)
 symbol = _DeclClass((((int)0x7fffffff)), templateString);
 }
 if(spec->symbol)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&spec->symbol->templatedClasses, (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(12), ((struct __ecereNameSpace__ecere__sys__OldLink *)__ecereTemp1)->data = symbol, ((struct __ecereNameSpace__ecere__sys__OldLink *)__ecereTemp1)));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&spec->symbol->templatedClasses, (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_OldLink), ((struct __ecereNameSpace__ecere__sys__OldLink *)__ecereTemp1)->data = symbol, ((struct __ecereNameSpace__ecere__sys__OldLink *)__ecereTemp1)));
 (__ecereNameSpace__ecere__com__eSystem_Delete(spec->name), spec->name = 0);
 spec->symbol = symbol;
 spec->name = __ecereNameSpace__ecere__sys__CopyString(symbol ? symbol->string : templateString);
@@ -3353,7 +3365,7 @@ struct __ecereNameSpace__ecere__com__SubModule * subModule;
 
 if(searchFor == searchIn)
 return 0x1;
-for(subModule = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)searchIn + 12)))->modules.first; subModule; subModule = subModule->next)
+for(subModule = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)searchIn + structSize_Instance)))->modules.first; subModule; subModule = subModule->next)
 {
 if(subModule->importMode == 1)
 {
@@ -3373,14 +3385,14 @@ struct ModuleImport * FindModule(struct __ecereNameSpace__ecere__com__Instance *
 void * __ecereTemp1;
 struct ModuleImport * module;
 
-if(!((struct __ecereNameSpace__ecere__com__Module *)(((char *)moduleToFind + 12)))->name)
+if(!((struct __ecereNameSpace__ecere__com__Module *)(((char *)moduleToFind + structSize_Instance)))->name)
 return mainModule;
 for(module = (*imports).first; module; module = module->next)
-if(module->name && !strcmp(module->name, ((struct __ecereNameSpace__ecere__com__Module *)(((char *)moduleToFind + 12)))->name))
+if(module->name && !strcmp(module->name, ((struct __ecereNameSpace__ecere__com__Module *)(((char *)moduleToFind + structSize_Instance)))->name))
 break;
 if(!module)
 {
-module = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleImport), ((struct ModuleImport *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(((struct __ecereNameSpace__ecere__com__Module *)(((char *)moduleToFind + 12)))->name), ((struct ModuleImport *)__ecereTemp1)->importType = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)moduleToFind + 12)))->importType, ((struct ModuleImport *)__ecereTemp1)->importAccess = ModuleAccess(privateModule, moduleToFind) ? 1 : 2, ((struct ModuleImport *)__ecereTemp1));
+module = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleImport), ((struct ModuleImport *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(((struct __ecereNameSpace__ecere__com__Module *)(((char *)moduleToFind + structSize_Instance)))->name), ((struct ModuleImport *)__ecereTemp1)->importType = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)moduleToFind + structSize_Instance)))->importType, ((struct ModuleImport *)__ecereTemp1)->importAccess = ModuleAccess(privateModule, moduleToFind) ? 1 : 2, ((struct ModuleImport *)__ecereTemp1));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*imports), module);
 }
 return module;
@@ -3493,7 +3505,7 @@ struct __ecereNameSpace__ecere__sys__NamedLink * member;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(&type->members);
 for(member = src->members.first; member; member = member->next)
 {
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&type->members, (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(16), ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(member->name), ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)->data = member->data, ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&type->members, (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_NamedLink), ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(member->name), ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)->data = member->data, ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)));
 }
 }
 else if(src->kind == 9 || src->kind == 10)
@@ -3693,7 +3705,7 @@ int nextValue = 0;
 
 for(e = (*spec->list).first; e; e = e->next)
 {
-struct __ecereNameSpace__ecere__sys__NamedLink * i = (i = __ecereNameSpace__ecere__com__eSystem_New0(16), i->name = __ecereNameSpace__ecere__sys__CopyString(e->id->string), i);
+struct __ecereNameSpace__ecere__sys__NamedLink * i = (i = __ecereNameSpace__ecere__com__eSystem_New0(structSize_NamedLink), i->name = __ecereNameSpace__ecere__sys__CopyString(e->id->string), i);
 
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&specType->members, i);
 }
@@ -3740,7 +3752,7 @@ struct __ecereNameSpace__ecere__sys__NamedLink * member;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(&specType->members);
 for(member = symbol->type->members.first; member; member = member->next)
 {
-struct __ecereNameSpace__ecere__sys__NamedLink * item = (item = __ecereNameSpace__ecere__com__eSystem_New0(16), item->name = __ecereNameSpace__ecere__sys__CopyString(member->name), item->data = member->data, item);
+struct __ecereNameSpace__ecere__sys__NamedLink * item = (item = __ecereNameSpace__ecere__com__eSystem_New0(structSize_NamedLink), item->name = __ecereNameSpace__ecere__sys__CopyString(member->name), item->data = member->data, item);
 
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&specType->members, item);
 }
@@ -4412,7 +4424,7 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
 void OutputIntlStrings()
 {
-if(((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)intlStrings + 12)))->count)
+if(((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)intlStrings + structSize_Instance)))->count)
 {
 char * srcFile = GetSourceFile();
 char * objFile = GetOutputFile();
@@ -4515,12 +4527,12 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpDummy", "Expression
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpConstant", "Expression MkExpConstant(char * string)", MkExpConstant, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpString", "Expression MkExpString(char * string)", MkExpString, module, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ContextStringPair", 0, sizeof(struct ContextStringPair), 0, 0, 0, module, 1, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ContextStringPair = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnCompare", 0, __ecereMethod_ContextStringPair_OnCompare, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnFree", 0, __ecereMethod_ContextStringPair_OnFree, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "string", "String", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "context", "String", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "string", "String", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "context", "String", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIntlString", "Expression MkExpIntlString(char * string, char * context)", MkExpIntlString, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpOp", "Expression MkExpOp(Expression exp1, int op, Expression exp2)", MkExpOp, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpBrackets", "Expression MkExpBrackets(ecere::sys::OldList expressions)", MkExpBrackets, module, 2);

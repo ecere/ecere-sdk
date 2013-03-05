@@ -28,6 +28,16 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -260,9 +270,7 @@ struct __ecereNameSpace__ecere__com__Method * method;
 } __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 
-typedef __builtin_va_list __gnuc_va_list;
-
-typedef __gnuc_va_list va_list;
+typedef __builtin_va_list va_list;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TreePrintStyle;
 
@@ -1108,7 +1116,7 @@ void __ecereRegisterModule_BTNode(struct __ecereNameSpace__ecere__com__Instance 
 struct __ecereNameSpace__ecere__com__Class * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::TreePrintStyle", 0, 0, 0, 0, 0, module, 4, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__TreePrintStyle = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "inOrder", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "postOrder", 1);
@@ -1116,49 +1124,49 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "preOrder", 2);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "depthOrder", 3);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::strcatf", "void ecere::sys::strcatf(char * string, char * format, ...)", __ecereNameSpace__ecere__sys__strcatf, module, 4);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::BTNode", 0, sizeof(struct __ecereNameSpace__ecere__sys__BTNode), 0, 0, 0, module, 4, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__BTNode = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnSerialize", 0, __ecereMethod___ecereNameSpace__ecere__sys__BTNode_OnSerialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnUnserialize", 0, __ecereMethod___ecereNameSpace__ecere__sys__BTNode_OnUnserialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "FindPrefix", "ecere::sys::BTNode FindPrefix(char * key)", __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindPrefix, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "FindString", "ecere::sys::BTNode FindString(char * key)", __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindString, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "key", "uintptr", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "parent", "ecere::sys::BTNode", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "left", "ecere::sys::BTNode", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "right", "ecere::sys::BTNode", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "key", "uintptr", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "parent", "ecere::sys::BTNode", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "left", "ecere::sys::BTNode", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "right", "ecere::sys::BTNode", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "depth", "int", 4, 4, 1);
 __ecerePropM___ecereNameSpace__ecere__sys__BTNode_prev = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "prev", "ecere::sys::BTNode", 0, __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_prev, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__sys__BTNode_prev = __ecerePropM___ecereNameSpace__ecere__sys__BTNode_prev, __ecerePropM___ecereNameSpace__ecere__sys__BTNode_prev = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__sys__BTNode_next = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "next", "ecere::sys::BTNode", 0, __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__sys__BTNode_next = __ecerePropM___ecereNameSpace__ecere__sys__BTNode_next, __ecerePropM___ecereNameSpace__ecere__sys__BTNode_next = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__sys__BTNode_minimum = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "minimum", "ecere::sys::BTNode", 0, __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_minimum, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__sys__BTNode_minimum = __ecerePropM___ecereNameSpace__ecere__sys__BTNode_minimum, __ecerePropM___ecereNameSpace__ecere__sys__BTNode_minimum = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__sys__BTNode_maximum = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "maximum", "ecere::sys::BTNode", 0, __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_maximum, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__sys__BTNode_maximum = __ecerePropM___ecereNameSpace__ecere__sys__BTNode_maximum, __ecerePropM___ecereNameSpace__ecere__sys__BTNode_maximum = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__sys__BTNode_count = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "count", "int", 0, __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_count, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__sys__BTNode_count = __ecerePropM___ecereNameSpace__ecere__sys__BTNode_count, __ecerePropM___ecereNameSpace__ecere__sys__BTNode_count = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__sys__BTNode_depthProp = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "depthProp", "int", 0, __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_depthProp, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__sys__BTNode_depthProp = __ecerePropM___ecereNameSpace__ecere__sys__BTNode_depthProp, __ecerePropM___ecereNameSpace__ecere__sys__BTNode_depthProp = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__sys__BTNode_balanceFactor = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "balanceFactor", "int", 0, __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_balanceFactor, 2);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__sys__BTNode_balanceFactor = __ecerePropM___ecereNameSpace__ecere__sys__BTNode_balanceFactor, __ecerePropM___ecereNameSpace__ecere__sys__BTNode_balanceFactor = (void *)0;
 if(class)
 class->fixed = (unsigned int)1;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::StringBTNode", 0, sizeof(struct __ecereNameSpace__ecere__sys__StringBTNode), 0, 0, 0, module, 4, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__StringBTNode = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnSerialize", 0, __ecereMethod___ecereNameSpace__ecere__sys__StringBTNode_OnSerialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnUnserialize", 0, __ecereMethod___ecereNameSpace__ecere__sys__StringBTNode_OnUnserialize, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "key", "String", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "parent", "ecere::sys::StringBTNode", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "left", "ecere::sys::StringBTNode", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "right", "ecere::sys::StringBTNode", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "key", "String", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "parent", "ecere::sys::StringBTNode", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "left", "ecere::sys::StringBTNode", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "right", "ecere::sys::StringBTNode", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "depth", "int", 4, 4, 1);
 if(class)
 class->fixed = (unsigned int)1;

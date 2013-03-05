@@ -28,6 +28,16 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -496,7 +506,7 @@ void __ecereRegisterModule_BinaryTree(struct __ecereNameSpace__ecere__com__Insta
 struct __ecereNameSpace__ecere__com__Class * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::sys::BinaryTree", 0, sizeof(struct __ecereNameSpace__ecere__sys__BinaryTree), 0, 0, 0, module, 4, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__BinaryTree = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnSerialize", 0, __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_OnSerialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnUnserialize", 0, __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_OnUnserialize, 1);
@@ -513,18 +523,18 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Free", "void Free()", __e
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "FreeString", "void ::FreeString(char * string)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FreeString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Print", "char * Print(char * output, ecere::sys::TreePrintStyle tps)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Print, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Remove", "void Remove(ecere::sys::BTNode node)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "root", "ecere::sys::BTNode", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "root", "ecere::sys::BTNode", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "count", "int", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "CompareKey", "int( *)(ecere::sys::BinaryTree tree, uintptr a, uintptr b)", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "FreeKey", "void( *)(void * key)", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "CompareKey", "int( *)(ecere::sys::BinaryTree tree, uintptr a, uintptr b)", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "FreeKey", "void( *)(void * key)", arch_PointerSize, arch_PointerSize, 1);
 __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_first = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "first", "ecere::sys::BTNode", 0, __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first = __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_first, __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_first = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_last = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "last", "ecere::sys::BTNode", 0, __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_last, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_last = __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_last, __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_last = (void *)0;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::sys::StringBinaryTree", "ecere::sys::BinaryTree", sizeof(struct __ecereNameSpace__ecere__sys__StringBinaryTree) - sizeof(struct __ecereNameSpace__ecere__sys__BinaryTree), 0, 0, 0, module, 4, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__StringBinaryTree = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnSerialize", 0, __ecereMethod___ecereNameSpace__ecere__sys__StringBinaryTree_OnSerialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnUnserialize", 0, __ecereMethod___ecereNameSpace__ecere__sys__StringBinaryTree_OnUnserialize, 1);

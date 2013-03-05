@@ -27,6 +27,16 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+
 #include <stdint.h>
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
@@ -737,7 +747,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 =
 struct __ecereNameSpace__ecere__com__Class * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::com::Iterator", 0, sizeof(struct __ecereNameSpace__ecere__com__Iterator), 0, 0, 0, module, 4, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__Iterator = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Find", "bool Find(T value)", __ecereMethod___ecereNameSpace__ecere__com__Iterator_Find, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Free", "void Free()", __ecereMethod___ecereNameSpace__ecere__com__Iterator_Free, 1);
@@ -747,16 +757,16 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Next", "bool Next()", __e
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Prev", "bool Prev()", __ecereMethod___ecereNameSpace__ecere__com__Iterator_Prev, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Remove", "void Remove()", __ecereMethod___ecereNameSpace__ecere__com__Iterator_Remove, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "SetData", "bool SetData(T value)", __ecereMethod___ecereNameSpace__ecere__com__Iterator_SetData, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "container", "ecere::com::Container<T, IT>", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "pointer", "ecere::com::IteratorPointer", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "container", "ecere::com::Container<T, IT>", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "pointer", "ecere::com::IteratorPointer", arch_PointerSize, arch_PointerSize, 1);
 __ecerePropM___ecereNameSpace__ecere__com__Iterator_data = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "data", "T", __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data, __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__com__Iterator_data = __ecerePropM___ecereNameSpace__ecere__com__Iterator_data, __ecerePropM___ecereNameSpace__ecere__com__Iterator_data = (void *)0;
 __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "T", 0, 0, (((void *)0)));
 __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "IT", 0, 0, &__simpleStruct0);
 __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(class);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Container", 0, 0, 0, 0, __ecereDestructor___ecereNameSpace__ecere__com__Container, module, 4, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__Container = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnCopy", 0, __ecereMethod___ecereNameSpace__ecere__com__Container_OnCopy, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnFree", 0, __ecereMethod___ecereNameSpace__ecere__com__Container_OnFree, 1);
@@ -783,13 +793,13 @@ __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Free", "void Free(
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Delete", "void Delete(ecere::com::IteratorPointer i)", __ecereMethod___ecereNameSpace__ecere__com__Container_Delete, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "TakeOut", "void TakeOut(D d)", __ecereMethod___ecereNameSpace__ecere__com__Container_TakeOut, 1);
 __ecerePropM___ecereNameSpace__ecere__com__Container_copySrc = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "copySrc", "ecere::com::Container<T>", __ecereProp___ecereNameSpace__ecere__com__Container_Set_copySrc, 0, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__com__Container_copySrc = __ecerePropM___ecereNameSpace__ecere__com__Container_copySrc, __ecerePropM___ecereNameSpace__ecere__com__Container_copySrc = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__com__Container_firstIterator = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "firstIterator", "ecere::com::Iterator<T>", 0, __ecereProp___ecereNameSpace__ecere__com__Container_Get_firstIterator, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__com__Container_firstIterator = __ecerePropM___ecereNameSpace__ecere__com__Container_firstIterator, __ecerePropM___ecereNameSpace__ecere__com__Container_firstIterator = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__com__Container_lastIterator = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "lastIterator", "ecere::com::Iterator<T>", 0, __ecereProp___ecereNameSpace__ecere__com__Container_Get_lastIterator, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 12)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 12)))->application)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__com__Container_lastIterator = __ecerePropM___ecereNameSpace__ecere__com__Container_lastIterator, __ecerePropM___ecereNameSpace__ecere__com__Container_lastIterator = (void *)0;
 __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "T", 0, 0, (((void *)0)));
 __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "I", 0, 0, &__simpleStruct1);

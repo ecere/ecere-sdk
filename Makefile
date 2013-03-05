@@ -28,14 +28,22 @@ SOV := $(SO)
 
 ifndef DESTDIR
 
-ifdef ProgramFiles(x86)
-export DESTDIR=${ProgramFiles(x86)}/Ecere SDK
+ifeq "$(HOST_ARCH)" "X64"
+   ifeq "$(wildcard $(SystemDrive)/Program Files )" ""
+      export DESTDIR=$(SystemDrive)/Program Files/Ecere SDK
+   else
+      export DESTDIR=$(SystemDrive)/Ecere SDK
+   endif
 else
-ifdef ProgramFiles
-export DESTDIR=$(ProgramFiles)/Ecere SDK
-else
-export DESTDIR=$(SystemDrive)/Ecere SDK
-endif
+   ifdef ProgramFiles(x86)
+      export DESTDIR=${ProgramFiles(x86)}/Ecere SDK
+   else
+      ifdef ProgramFiles
+         export DESTDIR=$(ProgramFiles)/Ecere SDK
+      else
+         export DESTDIR=$(SystemDrive)/Ecere SDK
+      endif
+   endif
 endif
 
 endif # DESTDIR
@@ -733,3 +741,5 @@ troubleshoot:
 	@$(call echo,AR=$(AR))
 	@$(call echo,STRIP=$(STRIP))
 	@$(call echo,UPX=$(UPX))
+	@$(call echo,HOST_ARCH=$(HOST_ARCH))
+	@$(call echo,DESTDIR=$(DESTDIR))
