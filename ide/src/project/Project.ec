@@ -726,7 +726,7 @@ char * GetConfigName(ProjectConfig config)
    return config ? config.name : "Common";
 }
 
-public enum SingleFileCompileMode { normal, debugPrecompile, debugCompile, debugGenerateSymbols };
+public enum SingleFileCompileMode { normal, debugPrecompile, debugCompile, debugGenerateSymbols, cObject };
 
 class Project : struct
 {
@@ -1800,7 +1800,7 @@ private:
                   ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
                else
                {
-                  node.DeleteIntermediateFiles(compiler, config, namesInfo);
+                  node.DeleteIntermediateFiles(compiler, config, namesInfo, mode == cObject ? true : false);
                   node.GetTargets(config, namesInfo, objDirExp.dir, makeTargets);
                }
             }
@@ -1834,13 +1834,13 @@ private:
          GetIDECompilerConfigsDir(cfDir, true, true);
          sprintf(command, "%s %sCF_DIR=\"%s\"%s%s COMPILER=%s -j%d %s%s%s -C \"%s\"%s -f \"%s\"",
                compiler.makeCommand,
-               mode == normal ? "" : (mode == debugPrecompile ? "ECP_DEBUG=y " : mode == debugCompile ? "ECC_DEBUG=y " : mode == debugGenerateSymbols ? "ECS_DEBUG=y " : ""),
+               mode == debugPrecompile ? "ECP_DEBUG=y " : mode == debugCompile ? "ECC_DEBUG=y " : mode == debugGenerateSymbols ? "ECS_DEBUG=y " : "",
                cfDir,
                crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
                compilerName, numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",
-               (String)makeTargets, topNode.path, (justPrint || mode != normal) ? " -n" : "", makeFilePath);
+               (String)makeTargets, topNode.path, (justPrint || (mode != normal && mode != cObject)) ? " -n" : "", makeFilePath);
          if(justPrint)
             ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
@@ -1851,7 +1851,7 @@ private:
                ProcessPipeOutputRaw(f);
                result = true;
             }
-            else if(mode != normal)
+            else if(mode != normal && mode != cObject)
             {
                char line[65536];
                while(!f.Eof())

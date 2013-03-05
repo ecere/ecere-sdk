@@ -2302,7 +2302,7 @@ private:
       }
    }
 
-   void DeleteIntermediateFiles(CompilerConfig compiler, ProjectConfig prjConfig, Map<String, NameCollisionInfo> namesInfo)
+   void DeleteIntermediateFiles(CompilerConfig compiler, ProjectConfig prjConfig, Map<String, NameCollisionInfo> namesInfo, bool onlyCObject)
    {
       if(type == file)
       {
@@ -2324,7 +2324,7 @@ private:
          PathCatSlash(fileName, objDir.dir);
          PathCatSlash(fileName, name);
 
-         if(!strcmp(extension, "ec"))
+         if(!onlyCObject && !strcmp(extension, "ec"))
          {
             ChangeExtension(fileName, "c", fileName);
             if(FileExists(fileName)) DeleteFile(fileName);
@@ -2350,7 +2350,7 @@ private:
          for(child : files)
          {
             if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-               child.DeleteIntermediateFiles(compiler, prjConfig, namesInfo);
+               child.DeleteIntermediateFiles(compiler, prjConfig, namesInfo, onlyCObject);
          }
       }
    }

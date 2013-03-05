@@ -2552,11 +2552,17 @@ class IDEWorkSpace : Window
 
             if(projectView && projectView.project)
             {
-               ProjectNode node = projectView.GetNodeFromWindow(client, null);
+               bool isCObject = false;
+               ProjectNode node = projectView.GetNodeFromWindow(client, null, false);
+               if(!node && (node = projectView.GetNodeFromWindow(client, null, true)))
+                  isCObject = true;
                if(node)
                {
-                  char name[1024];
-                  sprintf(name, $"Compile %s", node.name);
+                  char nodeName[MAX_FILENAME];
+                  char name[MAX_FILENAME+96];
+                  if(isCObject)
+                     ChangeExtension(node.name, "c", nodeName);
+                  sprintf(name, $"Compile %s", isCObject ? nodeName : node.name);
                   projectCompileItem = 
                   {
                      copyText = true, text = name, c, ctrlF7, disabled = projectView.buildInProgress;
@@ -2566,16 +2572,19 @@ class IDEWorkSpace : Window
                         if(projectView)
                         {
                            bool result = false;
+                           bool isCObject = false;
                            ProjectNode node = null;
                            for(p : ide.workspace.projects)
                            {
-                              node = projectView.GetNodeFromWindow(activeClient, p);
+                              node = projectView.GetNodeFromWindow(activeClient, p, false);
                               //if(node && projectView.Compile(node.project, node, mods.ctrl && mods.shift))
+                              if(!node && (node = projectView.GetNodeFromWindow(activeClient, null, true)))
+                                 isCObject = true;
                               if(node)
                               {
                                  List<ProjectNode> nodes { };
                                  nodes.Add(node);
-                                 projectView.Compile(node.project, nodes, mods.ctrl && mods.shift, normal);
+                                 projectView.Compile(node.project, nodes, mods.ctrl && mods.shift, isCObject ? cObject : normal);
                                  delete nodes;
 
                                  result = true;

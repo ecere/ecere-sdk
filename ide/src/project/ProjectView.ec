@@ -547,19 +547,36 @@ class ProjectView : Window
       return project.GetRelativePath(filePath, relativePath);
    }
 
-   ProjectNode GetNodeFromWindow(Window document, Project project)
+   ProjectNode GetNodeFromWindow(Window document, Project project, bool isCObject)
    {
       if(document.fileName)
       {
          char winFileName[MAX_LOCATION];
          char * documentFileName = GetSlashPathBuffer(winFileName, document.fileName);
-         for(p : ide.workspace.projects)
+         ProjectNode node;
+         Project prj;
+         if(isCObject)
          {
-            Project prj = project ? project : p;
-            ProjectNode node;
-            if((node = prj.topNode.FindByFullPath(documentFileName, false)))
-               return node;
-            if(project) break;
+            char name[MAX_FILENAME];
+            GetLastDirectory(documentFileName, name);
+            ChangeExtension(name, "ec", name);
+            for(p : ide.workspace.projects)
+            {
+               prj = project ? project : p;
+               if((node = prj.topNode.Find(name, false)))
+                  return node;
+               if(project) break;
+            }
+         }
+         else
+         {
+            for(p : ide.workspace.projects)
+            {
+               prj = project ? project : p;
+               if((node = prj.topNode.FindByFullPath(documentFileName, false)))
+                  return node;
+               if(project) break;
+            }
          }
       }
       return null;
@@ -712,7 +729,7 @@ class ProjectView : Window
       {
          if(document.modifiedDocument)
          {
-            ProjectNode node = GetNodeFromWindow(document, prj);
+            ProjectNode node = GetNodeFromWindow(document, prj, false);
             if(node && !document.MenuFileSave(null, 0))
             {
                result = false;
@@ -809,7 +826,7 @@ class ProjectView : Window
       }
       else
       {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
          if(node)
             prj = node.project;
       }
@@ -835,7 +852,7 @@ class ProjectView : Window
       }
       else
       {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
          if(node)
             prj = node.project;
       }
@@ -868,7 +885,7 @@ class ProjectView : Window
       }
       else
       {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
          if(node)
             prj = node.project;
       }
@@ -904,7 +921,7 @@ class ProjectView : Window
       }
       else
       {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
          if(node)
             prj = node.project;
       }
@@ -943,7 +960,7 @@ class ProjectView : Window
       }
       else
       {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
          if(node)
             prj = node.project;
       }
@@ -983,7 +1000,7 @@ class ProjectView : Window
       }
       else
       {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null);
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
          if(node)
             prj = node.project;
       }
@@ -1008,7 +1025,7 @@ class ProjectView : Window
       {
          if(document.modifiedDocument)
          {
-            ProjectNode n = GetNodeFromWindow(document, project);
+            ProjectNode n = GetNodeFromWindow(document, project, mode == cObject ? true : false);
             for(node : nodes)
             {
                if(n && n.IsInNode(node) && !document.MenuFileSave(null, 0))
@@ -1060,7 +1077,7 @@ class ProjectView : Window
       {
          if(document.modifiedDocument)
          {
-            ProjectNode n = GetNodeFromWindow(document, project);
+            ProjectNode n = GetNodeFromWindow(document, project, false);
             for(node : nodes)
             {
                if(n && n.IsInNode(node) && !document.MenuFileSave(null, 0))
@@ -1094,7 +1111,7 @@ class ProjectView : Window
                      ide.outputView.buildBox.Logf($"Deleteing intermediate objects for %s %s in project %s...\n",
                            node.type == file ? $"single file" : $"folder", node.name, project.name);
 
-                  node.DeleteIntermediateFiles(compiler, config, namesInfo);
+                  node.DeleteIntermediateFiles(compiler, config, namesInfo, false);
                   result = true;
                }
             }
