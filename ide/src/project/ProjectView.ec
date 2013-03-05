@@ -70,6 +70,7 @@ static char * iconNames[] =
    "<:ecere>status/folderOpen.png",                /*openFolder*/
    "<:ecere>mimeTypes/textEcereSource.png",        /*ecFile*/
    "<:ecere>mimeTypes/textEcereHeader.png",        /*ehFile*/
+   "<:ecere>mimeTypes/textCSource.png",            /*sFile*/ // TODO: change sFile icon to differentiate from cFile icon
    "<:ecere>mimeTypes/textCSource.png",            /*cFile*/
    "<:ecere>mimeTypes/textCHeader.png",            /*hFile*/
    "<:ecere>mimeTypes/textC++Source.png",          /*cppFile*/

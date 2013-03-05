@@ -43,7 +43,7 @@ enum NodeTypes { project, file, folder, resources, folderOpen };
 enum NodeIcons
 {
    genFile, ewsFile, epjFile, folder, openFolder, ecFile, ehFile,
-   cFile, hFile, cppFile, hppFile, textFile, webFile, pictureFile, soundFile,
+   sFile, cFile, hFile, cppFile, hppFile, textFile, webFile, pictureFile, soundFile,
    archiveFile, packageFile, opticalMediaImageFile, mFile;
 
    NodeIcons ::SelectFileIcon(char * filePath)
@@ -69,6 +69,8 @@ enum NodeIcons
             else if(!strcmpi(extension, "hpp") || !strcmpi(extension, "hh") ||
                   !strcmpi(extension, "hxx"))
                icon = hppFile;
+            else if(!strcmpi(extension, "s"))
+               icon = sFile;
             else if(!strcmpi(extension, "c"))
                icon = cFile;
             else if(!strcmpi(extension, "h"))
@@ -1274,7 +1276,7 @@ private:
       {
          char extension[MAX_EXTENSION];
          GetExtension(name, extension);
-         if(!strcmpi(extension, "ec") || !strcmpi(extension, "c") ||
+         if(!strcmpi(extension, "ec") || !strcmpi(extension, "s") || !strcmpi(extension, "c") ||
                !strcmpi(extension, "cpp") || !strcmpi(extension, "cc") ||
                !strcmpi(extension, "cxx") || !strcmpi(extension, "m"))
          {
@@ -1288,6 +1290,8 @@ private:
             info.count++; // += 1; unless this is for a bug?
             if(!strcmpi(extension, "ec"))
                info.ec = true;
+            else if(!strcmpi(extension, "s"))
+               info.s = true;
             else if(!strcmpi(extension, "c"))
                info.c = true;
             else if(!strcmpi(extension, "cpp"))
@@ -1347,7 +1351,7 @@ private:
          }
          else if(printType == sources)
          {
-            if(!strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
+            if(!strcmpi(extension, "s") || !strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
                   !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
                   !strcmpi(extension, "m"))
             {
@@ -1372,7 +1376,7 @@ private:
                count++;
             }
          }
-         else if(!strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
+         else if(!strcmpi(extension, "s") || !strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
                !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
                !strcmpi(extension, "m"))
          {
@@ -1809,7 +1813,7 @@ private:
          /*if(!strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
                !strcmpi(extension, "ec") || !strcmpi(extension, "cc") ||
                !strcmpi(extension, "cxx"))*/
-         if(!strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
+         if(!strcmpi(extension, "s") || !strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
                !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
                !strcmpi(extension, "m") || !strcmpi(extension, "ec"))
          {
@@ -3008,6 +3012,7 @@ class StringArrayOptionTools : GenericOptionTools<Array<String>>
 class NameCollisionInfo
 {
    bool ec;
+   bool s;
    bool c;
    bool cpp;
    bool cc;
@@ -3018,11 +3023,13 @@ class NameCollisionInfo
    bool IsExtensionColliding(char * extension)
    {
       bool colliding;
-      if(count > 1 && ((!strcmpi(extension, "c") && ec) ||
-            (!strcmpi(extension, "cpp") && (ec || c)) ||
-            (!strcmpi(extension, "cc") && (ec || c || cpp)) ||
-            (!strcmpi(extension, "cxx") && (ec || c || cpp || cc)) ||
-            !strcmpi(extension, "m")))
+      if(count > 1 &&
+            ((!strcmpi(extension, "c")   && ec) ||
+             (!strcmpi(extension, "s")   && (ec || c)) ||
+             (!strcmpi(extension, "cpp") && (ec || c || s)) ||
+             (!strcmpi(extension, "cc")  && (ec || c || s || cpp)) ||
+             (!strcmpi(extension, "cxx") && (ec || c || s || cpp || cc)) ||
+              !strcmpi(extension, "m")))
          colliding = true;
       else
          colliding = false;
