@@ -113,11 +113,11 @@ export PREFIXLIBDIR=$(LIBDIR)
 else
 
 ifeq "$(HOSTTYPE)" "x86_64"
-ifdef OSX_HOST
+#ifdef OSX_HOST
 export PREFIXLIBDIR=$(prefix)/lib
-else
-export PREFIXLIBDIR=$(prefix)/lib32
-endif
+#else
+#export PREFIXLIBDIR=$(prefix)/lib32
+#endif
 else
 export PREFIXLIBDIR=$(prefix)/lib
 endif
