@@ -1461,6 +1461,7 @@ private:
             //printf("Peeking and GetLine...\n");
             if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)))
             {
+               char * message = null;
                char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
                test.copyLenSingleBlankReplTrim(line, ' ', true, testLen);
                if(strstr(line, compiler.makeCommand) == line && line[lenMakeCommand] == ':')
@@ -1586,8 +1587,13 @@ private:
                         GetLastDirectory(moduleName, temp);
                         if(linking && (!strcmp(temp, "ld") || !strcmp(temp, "ld.exe")))
                         {
-                           numErrors++;
-                           strcpy(moduleName, $"Linker Error");
+                           if(strstr(colon, "skipping incompatible"))
+                              message = $"Linker Message";
+                           else
+                           {
+                              numErrors++;
+                              message = $"Linker Error";
+                           }
                         }
                         else
                         {
@@ -1596,7 +1602,7 @@ private:
                            MakePathRelative(temp, topNode.path, moduleName);
                         }
                         if(strstr(line, "error:"))
-                           numErrors ++;
+                           numErrors++;
                         else
                         {
                            // Silence warnings for compiled EC
@@ -1611,7 +1617,7 @@ private:
                                  strncat(moduleName, colon, pointer - colon);
                                  strcat(moduleName, "error: ");
                                  colon = pointer;
-                                 numErrors ++;
+                                 numErrors++;
                               }
                            }
                            else if((pointer = strstr(line, "No such file")))
@@ -1619,7 +1625,7 @@ private:
                               strncat(moduleName, colon, pointer - colon);
                               strcat(moduleName, "error: ");
                               colon = pointer;
-                              numErrors ++;
+                              numErrors++;
                            }
                            else if(compilingEC == 1 || (objDir && objDir == moduleName))
                               continue;
@@ -1628,7 +1634,9 @@ private:
                               numWarnings++;
                            }
                         }
-                        if(this == ide.workspace.projects.firstIterator.data)
+                        if(message)
+                           ide.outputView.buildBox.Logf("   %s: %s\n", message, line);
+                        else if(this == ide.workspace.projects.firstIterator.data)
                            ide.outputView.buildBox.Logf("   %s%s\n", moduleName, colon);
                         else
                         {
