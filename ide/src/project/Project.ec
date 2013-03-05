@@ -1394,7 +1394,7 @@ private:
       int lenMakeCommand = strlen(compiler.makeCommand);
       int testLen = 0;
 
-      char * gccPrefix = compiler.gccPrefix ? compiler.gccPrefix : "";
+      char * gnuToolchainPrefix = compiler.gnuToolchainPrefix ? compiler.gnuToolchainPrefix : "";
 
       DynamicString test { };
       DynamicString ecp { };
@@ -1416,14 +1416,14 @@ private:
       prefix.concatx(
             compiler.ccacheEnabled ? "ccache " : "",
             compiler.distccEnabled ? "distcc " : "",
-            gccPrefix);
+            gnuToolchainPrefix);
 
       cpp.concatx((String)prefix, compiler.cppCommand, " ");
       cc.concatx((String)prefix, compiler.ccCommand,  " ");
       cxx.concatx((String)prefix, compiler.cxxCommand, " ");
 
-      strip.concatx(gccPrefix, "strip ");
-      ar.concatx(gccPrefix, "ar rcs");
+      strip.concatx(gnuToolchainPrefix, "strip ");
+      ar.concatx(gnuToolchainPrefix, "ar rcs");
 
       testLen = Max(testLen, ecp.size);
       testLen = Max(testLen, ecc.size);
@@ -1954,6 +1954,7 @@ private:
    {   
       String target = new char[maxPathLen];
       char oldDirectory[MAX_LOCATION];
+      char * executableLauncher = compiler.executableLauncher;
       DirExpression targetDirExp = GetTargetDir(compiler, config);
       PathBackup pathBackup { };
 
@@ -1980,11 +1981,11 @@ private:
          ChangeWorkingDir(topNode.path);
       // ChangeWorkingDir(topNode.path);
       SetPath(true, compiler, config);
-      if(compiler.execPrefixCommand)
+      if(executableLauncher)
       {
-         char * prefixedTarget = new char[strlen(compiler.execPrefixCommand) + strlen(target) + 2];
+         char * prefixedTarget = new char[strlen(executableLauncher) + strlen(target) + 2];
          prefixedTarget[0] = '\0';
-         strcat(prefixedTarget, compiler.execPrefixCommand);
+         strcat(prefixedTarget, executableLauncher);
          strcat(prefixedTarget, " ");
          strcat(prefixedTarget, target);
          Execute(prefixedTarget);
@@ -2080,6 +2081,7 @@ private:
       char * name;
       char * compilerName;
       bool gccCompiler = compiler.ccCommand && (strstr(compiler.ccCommand, "gcc") != null || strstr(compiler.ccCommand, "g++") != null);
+      char * gnuToolchainPrefix = compiler.gnuToolchainPrefix ? compiler.gnuToolchainPrefix : "";
       Platform platform = compiler.targetPlatform;
 
       compilerName = CopyString(compiler.name);
@@ -2120,9 +2122,9 @@ private:
             f.Puts("# TOOLCHAIN\n");
             f.Puts("\n");
 
-            if(compiler.gccPrefix && compiler.gccPrefix[0])
+            if(gnuToolchainPrefix && gnuToolchainPrefix[0])
             {
-               f.Printf("GCC_PREFIX := %s\n", compiler.gccPrefix);
+               f.Printf("GCC_PREFIX := %s\n", gnuToolchainPrefix);
                f.Puts("\n");
             }
             if(compiler.sysroot && compiler.sysroot[0])

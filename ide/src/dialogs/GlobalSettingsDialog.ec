@@ -682,71 +682,74 @@ class CompilerToolchainTab : CompilersSubTab
    background = formColor;
    text = $"Toolchain";
 
+   int margin;
+   margin = 130;
+
    Label ecpLabel { this, position = { 8, 12 }, labeledWindow = ecp, tabCycle = false, inactive = true };
    PathBox ecp
    {
-      this, anchor = { left = 120, top = 8, right = 8 };
+      this, anchor = { left = margin, top = 8, right = 8 };
       text = $"eC Precompiler", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label eccLabel { this, position = { 8, 38 }, labeledWindow = ecc, tabCycle = false, inactive = true };
    PathBox ecc
    {
-      this, anchor = { left = 120, top = 34, right = 8 };
+      this, anchor = { left = margin, top = 34, right = 8 };
       text = $"eC Compiler", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label ecsLabel { this, position = { 8, 64 }, labeledWindow = ecs, tabCycle = false, inactive = true };
    PathBox ecs
    {
-      this, anchor = { left = 120, top = 60, right = 8 };
+      this, anchor = { left = margin, top = 60, right = 8 };
       text = $"eC Symbol Loader", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label earLabel { this, position = { 8, 90 }, labeledWindow = ear, tabCycle = false, inactive = true };
    PathBox ear
    {
-      this, anchor = { left = 120, top = 86, right = 8 };
+      this, anchor = { left = margin, top = 86, right = 8 };
       text = $"Ecere Archiver", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label cppLabel { this, position = { 8, 116 }, labeledWindow = cpp, tabCycle = false, inactive = true };
    PathBox cpp
    {
-      this, anchor = { left = 120, top = 112, right = 8 };
+      this, anchor = { left = margin, top = 112, right = 8 };
       text = $"C Preprocessor", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label ccLabel { this, position = { 8, 142 }, labeledWindow = cc, tabCycle = false, inactive = true };
    PathBox cc
    {
-      this, anchor = { left = 120, top = 138, right = 8 };
+      this, anchor = { left = margin, top = 138, right = 8 };
       text = $"C Compiler", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label cxxLabel { this, position = { 8, 168 }, labeledWindow = cxx, tabCycle = false, inactive = true };
    PathBox cxx
    {
-      this, anchor = { left = 120, top = 164, right = 8 };
+      this, anchor = { left = margin, top = 164, right = 8 };
       text = $"C++ Compiler", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label makeLabel { this, position = { 8, 194 }, labeledWindow = make, tabCycle = false, inactive = true };
    PathBox make
    {
-      this, anchor = { left = 120, top = 190, right = 8 };
+      this, anchor = { left = margin, top = 190, right = 8 };
       text = $"GNU Make", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
-   Label execPrefixLabel { this, position = { 8, 220 }, labeledWindow = execPrefix, tabCycle = false, inactive = true };
-   PathBox execPrefix
+   Label gnuToolchainPrefixLabel { this, position = { 8, 220 }, labeledWindow = gnuToolchainPrefix, tabCycle = false, inactive = true };
+   PathBox gnuToolchainPrefix
    {
-      this, anchor = { left = 120, top = 216, right = 8 };
-      text = $"Execution Prefix", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      this, anchor = { left = margin, top = 216, right = 8 };
+      text = $"GNU Toolchain Prefix", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
-   Label gccPrefixLabel { this, position = { 8, 246 }, labeledWindow = gccPrefix, tabCycle = false, inactive = true };
-   PathBox gccPrefix
-   {
-      this, anchor = { left = 120, top = 242, right = 8 };
-      text = $"GCC Prefix", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
-   };
-   Label sysrootLabel { this, position = { 8, 272 }, labeledWindow = sysroot, tabCycle = false, inactive = true };
+   Label sysrootLabel { this, position = { 8, 246 }, labeledWindow = sysroot, tabCycle = false, inactive = true };
    PathBox sysroot
    {
-      this, anchor = { left = 120, top = 268, right = 8 };
+      this, anchor = { left = margin, top = 242, right = 8 };
       text = $"SYSROOT", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+   };
+   Label executableLauncherLabel { this, position = { 8, 272 }, labeledWindow = executableLauncher, tabCycle = false, inactive = true };
+   PathBox executableLauncher
+   {
+      this, anchor = { left = margin, top = 268, right = 8 };
+      text = $"Executable Launcher", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
 
    bool NotifyModifiedDocument(PathBox pathBox)
@@ -770,9 +773,9 @@ class CompilerToolchainTab : CompilersSubTab
             compiler.cxxCommand = pathBox.slashPath;
          else if(pathBox == make)
             compiler.makeCommand = pathBox.slashPath;
-         else if(pathBox == execPrefix)
+         else if(pathBox == executableLauncher)
             compiler.execPrefixCommand = pathBox.slashPath;
-         else if(pathBox == gccPrefix)
+         else if(pathBox == gnuToolchainPrefix)
             compiler.gccPrefix = pathBox.slashPath;
          else if(pathBox == sysroot)
             compiler.sysroot = pathBox.slashPath;
@@ -797,8 +800,8 @@ class CompilerToolchainTab : CompilersSubTab
          cc.path = compiler.ccCommand;
          cxx.path = compiler.cxxCommand;
          make.path = compiler.makeCommand;
-         execPrefix.path = compiler.execPrefixCommand;
-         gccPrefix.path = compiler.gccPrefix;
+         executableLauncher.path = compiler.executableLauncher;
+         gnuToolchainPrefix.path = compiler.gnuToolchainPrefix;
          sysroot.path = compiler.sysroot;
 
          ecpLabel.disabled = ecp.disabled = disabled;
@@ -809,8 +812,8 @@ class CompilerToolchainTab : CompilersSubTab
          cxxLabel.disabled = cxx.disabled = isVC || disabled;
          ccLabel.disabled = cc.disabled = isVC || disabled;
          makeLabel.disabled = make.disabled = disabled;
-         execPrefixLabel.disabled = execPrefix.disabled = disabled;
-         gccPrefixLabel.disabled = gccPrefix.disabled = disabled;
+         executableLauncherLabel.disabled = executableLauncher.disabled = disabled;
+         gnuToolchainPrefixLabel.disabled = gnuToolchainPrefix.disabled = disabled;
          sysrootLabel.disabled = sysroot.disabled = disabled;
       }
       modifiedDocument = false;

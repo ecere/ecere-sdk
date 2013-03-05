@@ -756,11 +756,11 @@ public:
       get { return cxxCommand; }
       isset { return cxxCommand && cxxCommand[0]; }
    }
-   property char * execPrefixCommand
+   property char * execPrefixCommand // <-- old name for json ide settings file compatibility
    {
-      set { delete execPrefixCommand; if(value && value[0]) execPrefixCommand = CopyString(value); }
-      get { return execPrefixCommand; }
-      isset { return execPrefixCommand && execPrefixCommand[0]; }
+      set { delete executableLauncher; if(value && value[0]) executableLauncher = CopyString(value); }
+      get { return executableLauncher; }
+      isset { return executableLauncher && executableLauncher[0]; }
    }
    bool ccacheEnabled;
    bool distccEnabled;
@@ -777,11 +777,11 @@ public:
       get { return distccHosts; }
       isset { return distccHosts && distccHosts[0]; }
    }
-   property char * gccPrefix
+   property char * gccPrefix // <-- old name for json ide settings file compatibility
    {
-      set { delete gccPrefix; if(value && value[0]) gccPrefix = CopyString(value); }
-      get { return gccPrefix; }
-      isset { return gccPrefix && gccPrefix[0]; }
+      set { delete gnuToolchainPrefix; if(value && value[0]) gnuToolchainPrefix = CopyString(value); }
+      get { return gnuToolchainPrefix; }
+      isset { return gnuToolchainPrefix && gnuToolchainPrefix[0]; }
    }
    property char * sysroot
    {
@@ -906,10 +906,10 @@ private:
    char * cppCommand;
    char * ccCommand;
    char * cxxCommand;
-   char * execPrefixCommand;
+   char * executableLauncher;
    char * distccHosts;
    bool supportsBitDepth;
-   char * gccPrefix;
+   char * gnuToolchainPrefix;
    char * sysroot;
    /*union
    {
@@ -928,9 +928,9 @@ private:
       delete ccCommand;
       delete cxxCommand;
       delete makeCommand;
-      delete execPrefixCommand;
+      delete executableLauncher;
       delete distccHosts;
-      delete gccPrefix;
+      delete gnuToolchainPrefix;
       delete sysroot;
       if(environmentVars) environmentVars.Free();
       if(includeDirs) { includeDirs.Free(); }
@@ -957,12 +957,12 @@ private:
          cppCommand,
          ccCommand,
          cxxCommand,
-         execPrefixCommand,
+         executableLauncher,
          ccacheEnabled,
          distccEnabled,
          supportsBitDepth,
          distccHosts,
-         gccPrefix,
+         gnuToolchainPrefix,
          sysroot
       };
       for(s : includeDirs) copy.includeDirs.Add(CopyString(s));
