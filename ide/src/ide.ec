@@ -2517,23 +2517,44 @@ class IDEWorkSpace : Window
             completePath[0] = '\0';
          PathCat(completePath, filePath);
 
+         if((fileAttribs = FileExists(completePath)))
+            CodeLocationGoTo(completePath, fileAttribs, line, col);
+         else
+         {
+            for(p : ide.workspace.projects)
+            {
+               strcpy(completePath, p.topNode.path);
+               PathCat(completePath, filePath);
+               if((fileAttribs = FileExists(completePath)))
+               {
+                  CodeLocationGoTo(completePath, fileAttribs, line, col);
+                  break;
+               }
+            }
+         }
+      }
+   }
 
-         fileAttribs = FileExists(completePath);
-         if(fileAttribs.isFile)
+   void CodeLocationGoTo(const char * path, const FileAttribs fileAttribs, int line, int col)
+   {
+      if(fileAttribs.isFile)
+      {
+         CodeEditor codeEditor = (CodeEditor)OpenFile(path, normal, true, "", no, normal, false);
+         if(codeEditor && line)
          {
             char ext[MAX_EXTENSION];
-            GetExtension(completePath, ext);
+            GetExtension(path, ext);
             if(!strcmp(ext, "mp3") || !strcmp(ext, "flac") || !strcmp(ext, "ogg") || !strcmp(ext, "avi") || !strcmp(ext, "mkv"))
-               ShellOpen(completePath);
+               ShellOpen(path);
             else if(!strcmp(ext, "a") || !strcmp(ext, "o") || !strcmp(ext, "lib") || !strcmp(ext, "dll") || !strcmp(ext, "exe"))
             {
                char dirPath[MAX_LOCATION];
-               StripLastDirectory(completePath, dirPath);
+               StripLastDirectory(path, dirPath);
                ShellOpen(dirPath);
             }
             else
             {
-               CodeEditor codeEditor = (CodeEditor)OpenFile(completePath, normal, true, "", no, normal, false);
+               CodeEditor codeEditor = (CodeEditor)OpenFile(path, normal, true, "", no, normal, false);
                if(codeEditor && line)
                {
                   EditBox editBox = codeEditor.editBox;
@@ -2543,7 +2564,7 @@ class IDEWorkSpace : Window
             }
          }
          else if(fileAttribs.isDirectory)
-            ShellOpen(completePath);
+            ShellOpen(path);
       }
    }
 
