@@ -10,9 +10,9 @@ prefix=/usr
 endif
 
 ifeq ($(DEB_HOST_ARCH),amd64)
-export LIBDIR=$(prefix)/lib/x86_64-gnu-linux
+export LIBDIR=$(prefix)/lib/x86_64-linux-gnu
 else
-export LIBDIR=$(prefix)/lib/i386-gnu-linux
+export LIBDIR=$(prefix)/lib/i386-linux-gnu
 endif
 
 %:
