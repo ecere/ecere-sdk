@@ -81,6 +81,16 @@ endif
 endif
 endif
 
+ifeq "$(GCC_PREFIX)" "i586-mingw32msvc-"
+export ARCH
+ARCH := x32
+endif
+
+ifeq "$(GCC_PREFIX)" "i686-w64-mingw32-"
+export ARCH
+ARCH := x32
+endif
+
 # Accept different things for ARCH but standardize on x32/x64
 # This will be used for object directories
 ifdef ARCH
