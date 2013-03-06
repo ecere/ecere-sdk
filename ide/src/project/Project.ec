@@ -554,6 +554,18 @@ int OutputFileList(File f, char * name, Array<String> list, Map<String, int> var
    return numOfBreaks;
 }
 
+void OutputLinkObjectActions(File f, char * name, int parts)
+{
+   if(parts > 1)
+   {
+      int c;
+      for(c=0; c<parts; c++)
+         f.Printf("\t@$(call echo,$(%s%d)) >> $(OBJ)linkobjects.lst\n", name, c+1);
+   } else {
+      f.Printf("\t@$(call echo,$(%s)) >> $(OBJ)linkobjects.lst\n", name);
+   }
+}
+
 void OutputCleanActions(File f, char * name, int parts)
 {
    if(parts > 1)
@@ -2820,8 +2832,17 @@ private:
          // This alone was breaking the tarball, object directory does not get created first (order-only rules happen last it seems!)
          f.Printf("$(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
 
+         f.Printf("\t@$(call rmq,$(OBJ)linkobjects.lst)\n");
+         f.Printf("\t@$(call touch,$(OBJ)linkobjects.lst)\n");
+         OutputLinkObjectActions(f, "_OBJECTS", objectsParts);
+         if(numCObjects)
+         {
+            f.Printf("\t@$(call echo,$(OBJ)$(MODULE).main$(O)) >> $(OBJ)linkobjects.lst\n");
+            OutputLinkObjectActions(f, "ECOBJECTS", eCsourcesParts);
+         }
+
          f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
-         f.Printf("\t@$(call echo,$(OBJECTS)) > $(OBJ)linkobjects.lst\n");
+
          f.Printf("\t$(%s) $(OFLAGS) @$(OBJ)linkobjects.lst $(LIBS) %s-o $(TARGET) $(INSTALLNAME)\n", containsCXX ? "CXX" : "CC", containsCXX ? "-lstdc++ " : "");
          if(!GetDebug(config))
          {
@@ -2843,7 +2864,7 @@ private:
          if(resNode.files && resNode.files.count && !noResources)
             resNode.GenMakefileAddResources(f, resNode.path, config);
          f.Puts("else\n");
-         f.Puts("\t$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)\n");
+         f.Puts("\t$(AR) rcs $(TARGET) @$(OBJ)linkobjects.lst $(LIBS)\n");
          f.Puts("endif\n");
          f.Puts("ifdef SHARED_LIBRARY_TARGET\n");
          f.Puts("ifdef LINUX_TARGET\n");
@@ -2933,10 +2954,11 @@ private:
          f.Puts("\n");
 
          f.Puts("clean: cleantarget\n");
+         f.Printf("\t$(call rmq,$(OBJ)linkobjects.lst)\n");
          OutputCleanActions(f, "_OBJECTS", objectsParts);
          if(numCObjects)
          {
-            f.Printf("\t$(call rmq,%s)\n", "$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(OBJ)linkobjects.lst");
+            f.Printf("\t$(call rmq,%s)\n", "$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S)");
             OutputCleanActions(f, "ECOBJECTS", eCsourcesParts);
             OutputCleanActions(f, "COBJECTS", eCsourcesParts);
             OutputCleanActions(f, "BOWLS", eCsourcesParts);
