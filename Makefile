@@ -621,6 +621,9 @@ ifdef CodeGuard
 	install $(INSTALL_FLAGS) $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/CodeGuard$(E)
 endif
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)libecereVanilla$(A) $(DESTSLIBDIR)/libecereVanilla$(A)
+ifdef BSD_HOST
+	install $(INSTALL_FLAGS) -d $(DOCDIR)
+endif
 	install $(INSTALL_FLAGS) -m 644 doc/EDA.eCdoc $(DOCDIR)/EDA.eCdoc
 	install $(INSTALL_FLAGS) -m 644 doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf" >/dev/null 2>&1 || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
 	install $(INSTALL_FLAGS) -m 644 doc/ecere.eCdoc $(DOCDIR)/ecere.eCdoc
