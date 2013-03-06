@@ -2150,6 +2150,17 @@ private:
             f.Puts("EARFLAGS = \n");
             f.Puts("\n");
 
+            f.Puts("ifndef ARCH\n");
+            f.Puts("TARGET_ARCH :=$(shell $(CC) -dumpmachine)\n");
+            f.Puts(" ifdef WINDOWS_HOST\n");
+            f.Puts("  ifneq ($(filter x86_64%,$(TARGET_ARCH)),)\n");
+            f.Puts("     TARGET_ARCH := x86_64\n");
+            f.Puts("  else\n");
+            f.Puts("     TARGET_ARCH := i386\n");
+            f.Puts("  endif\n");
+            f.Puts(" endif\n");
+            f.Puts("endif\n\n");
+
             f.Puts("# HARD CODED TARGET_PLATFORM-SPECIFIC OPTIONS\n");
             f.Printf("LDFLAGS +=$(if $(%s), -Wl$(comma)--no-undefined,)\n", PlatformToMakefileTargetVariable(tux));
             f.Puts("\n");
@@ -2197,11 +2208,13 @@ private:
                OutputListOption(f, "Wl,", compiler.linkerFlags, inPlace, true);
                f.Puts("\n");
             }
-            f.Printf("\nFORCE_64_BIT := %s", compiler.supportsBitDepth ? "-m64" : "");
-            f.Printf("\nFORCE_32_BIT := %s", compiler.supportsBitDepth ? "-m32" : "");
             f.Puts("\n");
             f.Puts("\nOFLAGS += $(LDFLAGS)");
             f.Puts("\n");
+            f.Puts("ifdef ARCH_FLAGS\n");
+            f.Puts("CFLAGS += $(ARCH_FLAGS)\n");
+            f.Puts("OFLAGS += $(ARCH_FLAGS)\n");
+            f.Puts("endif\n");
 
             delete f;
 
@@ -2661,17 +2674,8 @@ private:
          f.Puts("\n");
          f.Puts("\n");
 
-         forceBitDepth = (options && options.buildBitDepth) || numCObjects;
-         if(forceBitDepth || GetProfile(config))
-         {
-            f.Puts("OFLAGS +=");
-            if(forceBitDepth)
-               f.Puts((!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? " $(FORCE_32_BIT)" : " $(FORCE_64_BIT)");
-            if(GetProfile(config))
-               f.Puts(" -pg");
-            f.Puts("\n");
-            f.Puts("\n");
-         }
+         if(GetProfile(config))
+            f.Puts("OFLAGS += -pg\n\n");
 
          if((config && config.options && config.options.libraryDirs) || (options && options.libraryDirs))
          {
@@ -2755,7 +2759,7 @@ private:
             // Main Module (Linking) for ECERE C modules
             f.Puts("$(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)\n");
             // use of objDirExpNoSpaces used instead of $(OBJ) to prevent problematic joining of arguments in ecs
-            f.Printf("\t$(ECS)%s $(FORCE_32_BIT) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols %s -o $(OBJ)$(MODULE).main.ec\n", 
+            f.Printf("\t$(ECS)%s $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols %s -o $(OBJ)$(MODULE).main.ec\n", 
                GetConsole(config) ? " -console" : "", objDirExpNoSpaces);
             f.Puts("\n");
             // Main Module (Linking) for ECERE C modules
