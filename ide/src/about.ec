@@ -6,6 +6,12 @@ import "ecere"
 
 import "licensing"
 
+#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define X64STRING " (64 bit)"
+#else
+#define X64STRING " (32 bit)"
+#endif
+
 class AboutIDE : Window
 {
    borderStyle = sizable;
@@ -14,9 +20,9 @@ class AboutIDE : Window
    text = $"About the Ecere SDK";
    tabCycle = true;
 
-   Label { this, text = "Ecere Software Development Kit   v0.44 \"Ryōan-ji\"", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 128 } };
-   Label { this, text = "Copyright © 2005-2012 Ecere Corporation",         font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 144 } };
-   Label { this, text = "Copyright © 1996-2012 Jérôme Jacovella-St-Louis", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 160 } };
+   Label { this, text = "Ecere Software Development Kit   v0.44.04 \"Ryōan-ji\"" X64STRING, font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 128 } };
+   Label { this, text = "Copyright © 2005-2013 Ecere Corporation",         font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 144 } };
+   Label { this, text = "Copyright © 1996-2013 Jérôme Jacovella-St-Louis", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 160 } };
    Label { this, text = $"Lead Architect and Developer", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 188 } };
    Label { this, text = "Jérôme Jacovella-St-Louis", position = { 220, 188 } };
    Label { this, text = $"With contributions from...", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 208 } };
@@ -50,6 +56,9 @@ class AboutIDE : Window
          "   Most of the additional programming on the IDE\n"
          "   Initial EDA design\n"
          "   Cross-platform and cross-compiler Makefile build system\n"
+         "\n"
+         "Niraj Kulkarni\n"
+         "   EditBox fixes\n"
          "\n"
          "Juan Sánchez\n"
          "   Oracle EDA driver\n"
@@ -124,9 +133,11 @@ class AboutIDE : Window
          "\n"
          "   All the guys on #ecere for moral support\n"
          "\n"
+         "   Dmitrijs Ledkovs for sponsoring the SDK into Debian/Ubuntu\n"
+         "\n"
          "   #launchpad, #ubuntu-packaging,\n"
-         "      #ubuntu-motu (tumbleweed, jtaylor...)\n"
-         "      For help to finally resolve these PPA issues!\n"
+         "      #ubuntu-motu (tumbleweed, jtaylor, micahg...)\n"
+         "      For help with Debian/Ubuntu packaging\n"
          "\n"
          "   freebyte.com\n"
          "\n"

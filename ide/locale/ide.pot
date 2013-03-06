@@ -158,7 +158,7 @@ msgstr "API Reference"
 msgid "Aborted"
 msgstr "Aborted"
 
-#: ./src/about.ec:14
+#: ./src/about.ec:20
 msgid "About the Ecere SDK"
 msgstr "About the Ecere SDK"
 
@@ -1079,7 +1079,7 @@ msgstr "JPG Image"
 msgid "Keep caret visible (move along) when scrolling"
 msgstr "Keep caret visible (move along) when scrolling"
 
-#: ./src/about.ec:20
+#: ./src/about.ec:26
 msgid "Lead Architect and Developer"
 msgstr "Lead Architect and Developer"
 
@@ -1290,7 +1290,7 @@ msgstr "Number of parallel build jobs"
 #: ./src/dialogs/NewProjectDialog.ec:34
 #: ./src/dialogs/NewProjectDialog.ec:351
 #: ./src/designer/CodeEditor.ec:5239
-#: ./src/about.ec:34
+#: ./src/about.ec:40
 #: ./src/ProjectSettings.ec:211
 msgid "OK"
 msgstr "OK"
@@ -1843,11 +1843,11 @@ msgstr "Symbol \"%s\" not found"
 #: ./src/designer/Sheet.ec:597
 #: ./src/panels/OutputView.ec:34
 #: ./src/panels/OutputView.ec:100
-#: ./src/about.ec:17
-#: ./src/about.ec:18
-#: ./src/about.ec:19
-#: ./src/about.ec:20
-#: ./src/about.ec:22
+#: ./src/about.ec:23
+#: ./src/about.ec:24
+#: ./src/about.ec:25
+#: ./src/about.ec:26
+#: ./src/about.ec:28
 msgid "Tahoma"
 msgstr "Tahoma"
 
@@ -2091,7 +2091,7 @@ msgstr "Window"
 msgid "Windows..."
 msgstr "Windows..."
 
-#: ./src/about.ec:22
+#: ./src/about.ec:28
 msgid "With contributions from..."
 msgstr "With contributions from..."
 

@@ -51,13 +51,11 @@ Daily-built Ubuntu Debian packages are available from our Ubuntu PPA:
 To build from source, simply type make (mingw32-make on Windows).
 
 It should build fine on Linux, on Windows with MinGW,
-and on Mac OS X with a bit of luck.
+and on Mac OS X with Xcode command line tools installed.
 
 To install, type make install (mingw32-make install on Windows).
 
-Please note that at this time eC and the Ecere SDK only support 32 bit.
-However, you should still be able to use the 32 bit version on a 64 bit machine.
-64-bit support is planned for the future.
+64-bit is now supported.
 
  * DOCUMENTATION *
 
