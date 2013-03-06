@@ -15,6 +15,12 @@ class NewProjectDialog : Window
    char path[MAX_LOCATION];
    char name[MAX_FILENAME];
 
+   Project project;
+   Workspace workspace;
+
+   char projectLocation[MAX_LOCATION];
+   bool createFormOption;
+
    PathBox locationEditBox
    {
       this, position = { 10, 80 }, size = { 120, 22 }, anchor = { left = 10, top = 80, right = 10 };
@@ -34,52 +40,22 @@ class NewProjectDialog : Window
       parent = this, isDefault = true, disabled = true, position = { 170, 130 }, size = { 60 }, text = $"OK";
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         char * location = locationEditBox.slashPath;
          char * prjName = projectName.contents;
          char filePath[MAX_LOCATION];
-         char fileName[MAX_LOCATION];  // Windows Friendly path
          char extension[MAX_EXTENSION];
-         FileAttribs exists;
-         Project project;
-         Workspace workspace;
-         ProjectView projectWindow;
          ProjectConfig debug, release;
-         
-         if(!FileExists(location).isDirectory)
-         {
-            if(MessageBox { type = yesNo, master = this, 
-                  text = $"Directory doesn't exist", contents = $"Create directory?" }.Modal() == yes)
-            {
-               if(!MakeDir(location))
-               {
-                  MessageBox { type = ok, master = this, text = location, contents = $"Error creating directory" }.Modal();
-                  return true;
-               }
-            }
-            else
-               return true;
-         }
 
-         strcpy(filePath, location);
+         strcpy(projectLocation, locationEditBox.slashPath);
+         strcpy(filePath, projectLocation);
          PathCatSlash(filePath, prjName);
          GetExtension(filePath, extension);
          //if(!extension[0])
             ChangeExtension(filePath, ProjectExtension, filePath);
 
-         GetSystemPathBuffer(fileName, filePath);
-         exists = FileExists(filePath);
-
-         if(exists)
-         {
-            if(MessageBox { type = yesNo, master = this, 
-                  text = $"Project Already Exists", contents = $"Replace existing project?" }.Modal() == no)
-               return true;
-         }
-
          debug = ProjectConfig
          {
             name = CopyString("Debug");
-            options = 
+            options =
             {
                optimization = none;
                fastMath = false;
@@ -105,11 +81,11 @@ class NewProjectDialog : Window
             linkingModified = true;
          };
 
-         /* error: too few arguments to function ‘__ecereProp_DirExpression_Set_char__PTR_’ -- debug.objDir = "debug";*/ 
+         /* error: too few arguments to function ‘__ecereProp_DirExpression_Set_char__PTR_’ -- debug.objDir = "debug";*/
 
          project = Project
          {
-            filePath = filePath;
+            property::filePath = filePath;
             moduleName = CopyString(name);
             topNode.type = NodeTypes::project;
             config = debug;
@@ -126,89 +102,122 @@ class NewProjectDialog : Window
             project.options.libraries = { [ CopyString("ecere") ] };
          }
 
-         {
-            char workspaceFile[MAX_LOCATION];
-            strcpy(workspaceFile, filePath);
-            ChangeExtension(workspaceFile, WorkspaceExtension, workspaceFile);
-            workspace = Workspace { compiler = ideSettings.defaultCompiler, workspaceFile = workspaceFile };
-         } 
-         workspace.projects.Add(project);
-
          project.topNode.configurations = /*project.configurations = */{ [ debug, release ] };
          project.resNode = project.topNode.Add(project, "Resources", null, resources, archiveFile, false);
 
-         if(!project.Save(filePath))
-         {
-            MessageBox { type = ok, master = this, text = filePath, contents = $"Error writing project file" }.Modal();
-            delete project;
-            return true;
-         }
+         createFormOption = createForm.checked;
 
-         projectWindow = ide.CreateProjectView(workspace, fileName);
-         
-         {
-            char newWorkingDir[MAX_LOCATION];
-            StripLastDirectory(filePath, newWorkingDir);
-
-            ide.ChangeFileDialogsDirectory(newWorkingDir, false);
-            
-            StripLastDirectory(newWorkingDir, newWorkingDir);
-            ide.ChangeProjectFileDialogDirectory(newWorkingDir);
-         }
-
-         if(createForm.checked)
-         {
-            char className[256];
-            char varName[256];
-            CodeEditor codeEditor = projectWindow.CreateNew("Form", "form", "Window", className);
-            EditBox editBox = codeEditor.editBox;
-            strcpy(varName, className);
-            if(islower(varName[0]))
-            {
-               memmove(varName+1, varName, strlen(varName)+1);
-               varName[0] = '_';
-            }
-            else
-               varName[0] = (char)tolower(varName[0]);
-
-            editBox.End();
-            editBox.Printf("\n%s %s {};\n", className, varName);
-
-            codeEditor.EnsureUpToDate();
-
-            project.Save(filePath);
-
-            projectWindow.modifiedDocument = false;
-            project.topNode.modified = false;
-
-            /*
-            editBox.Printf("class FormApplication : GuiApplication\n");
-            editBox.Printf("{\n");
-            editBox.Printf("   %s %s {};\n", className, varName);
-            editBox.Printf("}\n");
-            editBox.Home();
-            */
-         }
-         project.StartMonitoring();
-
-         if(project && projectWindow)
-         {
-            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-            ProjectConfig config = project.config;
-            projectWindow.ShowOutputBuildLog(true);
-            projectWindow.DisplayCompiler(compiler, false);
-            projectWindow.ProjectPrepareCompiler(project, compiler, false);
-            projectWindow.ProjectPrepareMakefile(project, force, compiler, config);
-            delete compiler;
-
-            ide.UpdateToolBarActiveConfigs(false);
-         }
-
-         Destroy(0);
+         Destroy(DialogResult::ok);
          return true;
       }
    };
-   
+
+   void CreateNewProject()
+   {
+      char fileName[MAX_LOCATION];  // Windows Friendly path
+      ProjectView projectWindow;
+      Project prj = project;
+
+      if(!FileExists(projectLocation).isDirectory)
+      {
+         if(MessageBox { type = yesNo, master = ide,
+               text = $"Directory doesn't exist", contents = $"Create directory?" }.Modal() == yes)
+         {
+            if(!MakeDir(projectLocation))
+            {
+               MessageBox { type = ok, master = ide, text = projectLocation, contents = $"Error creating directory" }.Modal();
+               return;
+            }
+         }
+         else
+            return;
+      }
+
+      GetSystemPathBuffer(fileName, prj.filePath);
+
+      if(FileExists(prj.filePath))
+      {
+         if(MessageBox { type = yesNo, master = ide,
+               text = $"Project Already Exists", contents = $"Replace existing project?" }.Modal() == no)
+            return;
+      }
+
+      {
+         char workspaceFile[MAX_LOCATION];
+         strcpy(workspaceFile, prj.filePath);
+         ChangeExtension(workspaceFile, WorkspaceExtension, workspaceFile);
+         workspace = Workspace { compiler = ideSettings.defaultCompiler, workspaceFile = workspaceFile };
+      }
+      workspace.projects.Add(prj);
+
+      if(!prj.Save(prj.filePath))
+      {
+         MessageBox { type = ok, master = this, text = prj.filePath, contents = $"Error writing project file" }.Modal();
+         delete prj;
+         return;
+      }
+
+      projectWindow = ide.CreateProjectView(workspace, fileName);
+
+      {
+         char newWorkingDir[MAX_LOCATION];
+         StripLastDirectory(prj.filePath, newWorkingDir);
+
+         ide.ChangeFileDialogsDirectory(newWorkingDir, false);
+
+         StripLastDirectory(newWorkingDir, newWorkingDir);
+         ide.ChangeProjectFileDialogDirectory(newWorkingDir);
+      }
+
+      if(createFormOption)
+      {
+         char className[256];
+         char varName[256];
+         CodeEditor codeEditor = projectWindow.CreateNew("Form", "form", "Window", className);
+         EditBox editBox = codeEditor.editBox;
+         strcpy(varName, className);
+         if(islower(varName[0]))
+         {
+            memmove(varName+1, varName, strlen(varName)+1);
+            varName[0] = '_';
+         }
+         else
+            varName[0] = (char)tolower(varName[0]);
+
+         editBox.End();
+         editBox.Printf("\n%s %s {};\n", className, varName);
+
+         codeEditor.EnsureUpToDate();
+
+         prj.Save(prj.filePath);
+
+         projectWindow.modifiedDocument = false;
+         prj.topNode.modified = false;
+
+         /*
+         editBox.Printf("class FormApplication : GuiApplication\n");
+         editBox.Printf("{\n");
+         editBox.Printf("   %s %s {};\n", className, varName);
+         editBox.Printf("}\n");
+         editBox.Home();
+         */
+      }
+      prj.StartMonitoring();
+
+      if(prj && projectWindow)
+      {
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         ProjectConfig config = prj.config;
+         projectWindow.ShowOutputBuildLog(true);
+         projectWindow.DisplayCompiler(compiler, false);
+         projectWindow.ProjectPrepareCompiler(prj, compiler, false);
+         projectWindow.ProjectPrepareMakefile(prj, force, compiler, config);
+         delete compiler;
+
+         ide.UpdateToolBarActiveConfigs(false);
+      }
+   }
+
    Button
    {
       parent = this, position = { 240, 130 }, size = { 60 }, hotKey = escape, text = $"Cancel";

@@ -2090,13 +2090,15 @@ class ProjectView : Window
          {
             codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, false, null, whatever, normal, false);
          }
+         ide.sheet.visible = true;
+         ide.sheet.Activate();
          if(codeEditor)
          {
             codeEditor.ViewDesigner();
             codeEditor.codeModified = true;
          }
       }
-      visible = false;
+      //visible = false;
       return codeEditor;   
    }
 
