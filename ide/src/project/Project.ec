@@ -1665,7 +1665,12 @@ private:
          else
          {
             if(!onlyNodes)
-               ide.outputView.buildBox.Logf("\n%s (%s) - ", GetTargetFileName(config), configName);
+            {
+               char targetFileName[MAX_LOCATION];
+               targetFileName[0] = '\0';
+               CatTargetFileName(targetFileName, compiler, config);
+               ide.outputView.buildBox.Logf("\n%s (%s) - ", targetFileName, configName);
+            }
             if(numErrors)
                ide.outputView.buildBox.Logf("%d %s, ", numErrors, (numErrors > 1) ? $"errors" : $"error");
             else

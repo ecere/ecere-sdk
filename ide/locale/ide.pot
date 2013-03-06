@@ -645,7 +645,7 @@ msgstr "Deleteing intermediate objects for %s %s in project %s using the %s conf
 msgid "Deleteing intermediate objects for %s %s in project %s...\n"
 msgstr "Deleteing intermediate objects for %s %s in project %s...\n"
 
-#: ./src/project/Project.ec:1933
+#: ./src/project/Project.ec:1938
 msgid "Deleting target and object files..."
 msgstr "Deleting target and object files..."
 
@@ -736,7 +736,7 @@ msgstr "Environment Variables"
 msgid "Error creating directory"
 msgstr "Error creating directory"
 
-#: ./src/project/Project.ec:1871
+#: ./src/project/Project.ec:1876
 msgid "Error executing make (%s) command\n"
 msgstr "Error executing make (%s) command\n"
 
@@ -816,7 +816,7 @@ msgstr "Fatal Error: child process terminated unexpectedly\n"
 msgid "File"
 msgstr "File"
 
-#: ./src/project/Project.ec:1793
+#: ./src/project/Project.ec:1798
 #: ./src/project/ProjectView.ec:1084
 #: ./src/ide.ec:2585
 msgid "File %s is excluded from current build configuration.\n"
@@ -1869,7 +1869,7 @@ msgstr "Target Platform"
 msgid "Target Type"
 msgstr "Target Type"
 
-#: ./src/project/Project.ec:1940
+#: ./src/project/Project.ec:1945
 msgid "Target and object files deleted\n"
 msgstr "Target and object files deleted\n"
 
@@ -2190,11 +2190,11 @@ msgstr "err: Unable to create FIFO %s\n"
 msgid "err: Unable to open FIFO %s for read\n"
 msgstr "err: Unable to open FIFO %s for read\n"
 
-#: ./src/project/Project.ec:1670
+#: ./src/project/Project.ec:1675
 msgid "error"
 msgstr "error"
 
-#: ./src/project/Project.ec:1670
+#: ./src/project/Project.ec:1675
 msgid "errors"
 msgstr "errors"
 
@@ -2217,11 +2217,11 @@ msgstr "found"
 msgid "inside %s, %s\n"
 msgstr "inside %s, %s\n"
 
-#: ./src/project/Project.ec:1672
+#: ./src/project/Project.ec:1677
 msgid "no error, "
 msgstr "no error, "
 
-#: ./src/project/Project.ec:1677
+#: ./src/project/Project.ec:1682
 msgid "no warning\n"
 msgstr "no warning\n"
 
@@ -2251,11 +2251,11 @@ msgstr "single file"
 msgid "unknown source\n"
 msgstr "unknown source\n"
 
-#: ./src/project/Project.ec:1675
+#: ./src/project/Project.ec:1680
 msgid "warning"
 msgstr "warning"
 
-#: ./src/project/Project.ec:1675
+#: ./src/project/Project.ec:1680
 msgid "warnings"
 msgstr "warnings"
 
