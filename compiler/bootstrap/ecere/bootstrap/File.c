@@ -325,8 +325,6 @@ int ferror(FILE * stream);
 
 int fileno(FILE * stream);
 
-typedef __builtin_va_list va_list;
-
 FILE * eC_stdin(void);
 
 FILE * eC_stdout(void);

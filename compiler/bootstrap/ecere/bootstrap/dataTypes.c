@@ -323,8 +323,6 @@ long long int strtoll(const char * nptr, char ** endptr, int base);
 
 unsigned long long int strtoull(const char * nptr, char ** endptr, int base);
 
-typedef __builtin_va_list va_list;
-
 typedef void FILE;
 
 FILE * bsl_stdin(void);

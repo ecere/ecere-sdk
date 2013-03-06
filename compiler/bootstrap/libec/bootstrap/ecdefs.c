@@ -1602,9 +1602,6 @@ struct OpTable ops;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Operand;
 
-
-typedef __builtin_va_list va_list;
-
 extern unsigned int parsingType;
 
 extern struct Location yylloc;
