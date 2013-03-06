@@ -310,7 +310,7 @@ $(OBJ)OldList.o: $(OBJ)OldList.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)OldList.c -o $(OBJ)OldList.o
 
 $(OBJ)instance.c.o: src/com/instance.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/com/instance.c -o $(OBJ)instance.c.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/com/instance.c -o $(OBJ)instance.c.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
