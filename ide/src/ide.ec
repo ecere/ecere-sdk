@@ -307,12 +307,14 @@ class IDEToolbar : ToolBar
       {
          if(row && strcmp(row.string, ide.workspace.compiler))
          {
+            bool silent = ide.projectView.buildInProgress == none ? false : true;
             CompilerConfig compiler = ideSettings.GetCompilerConfig(row.string);
             ide.workspace.compiler = row.string;
-            ide.projectView.ShowOutputBuildLog(true);
-            ide.projectView.DisplayCompiler(compiler, false);
+            ide.projectView.ShowOutputBuildLog(!silent);
+            if(!silent)
+               ide.projectView.DisplayCompiler(compiler, false);
             for(prj : ide.workspace.projects)
-               ide.projectView.ProjectPrepareCompiler(prj, compiler);
+               ide.projectView.ProjectPrepareCompiler(prj, compiler, silent);
             delete compiler;
             ide.workspace.Save();
          }
@@ -1614,7 +1616,7 @@ class IDEWorkSpace : Window
          projectView.ShowOutputBuildLog(true);
          projectView.DisplayCompiler(compiler, false);
          for(prj : workspace.projects)
-            projectView.ProjectPrepareCompiler(prj, compiler);
+            projectView.ProjectPrepareCompiler(prj, compiler, false);
          delete compiler;
       }
    }

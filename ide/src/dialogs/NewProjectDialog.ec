@@ -197,7 +197,7 @@ class NewProjectDialog : Window
             ProjectConfig config = project.config;
             projectWindow.ShowOutputBuildLog(true);
             projectWindow.DisplayCompiler(compiler, false);
-            projectWindow.ProjectPrepareCompiler(project, compiler);
+            projectWindow.ProjectPrepareCompiler(project, compiler, false);
             projectWindow.ProjectPrepareMakefile(project, force, compiler, config);
             delete compiler;
 
@@ -543,7 +543,7 @@ class QuickProjectDialog : Window
             ProjectConfig config = project.config;
             projectWindow.ShowOutputBuildLog(true);
             projectWindow.DisplayCompiler(compiler, false);
-            projectWindow.ProjectPrepareCompiler(project, compiler);
+            projectWindow.ProjectPrepareCompiler(project, compiler, false);
             projectWindow.ProjectPrepareMakefile(project, force, compiler, config);
             delete compiler;
          }

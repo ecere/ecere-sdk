@@ -607,14 +607,14 @@ class ProjectView : Window
       if(displayCompiler)
          DisplayCompiler(compiler, false);
 
-      ProjectPrepareCompiler(project, compiler);
+      ProjectPrepareCompiler(project, compiler, false);
       ProjectPrepareMakefile(project, method, compiler, config);
       return true;
    }
 
-   bool ProjectPrepareCompiler(Project project, CompilerConfig compiler)
+   bool ProjectPrepareCompiler(Project project, CompilerConfig compiler, bool silent)
    {
-      if(!project.GenerateCrossPlatformMk(app.includeFile) || !project.GenerateCompilerCf(compiler))
+      if((!project.GenerateCrossPlatformMk(app.includeFile) || !project.GenerateCompilerCf(compiler)) && !silent)
          ide.outputView.buildBox.Logf($"Error generating compiler configuration (Is the project/config directory writable?)\n");
       return true;
    }
@@ -1040,7 +1040,7 @@ class ProjectView : Window
       }
 
       DisplayCompiler(compiler, false);
-      ProjectPrepareCompiler(project, compiler);
+      ProjectPrepareCompiler(project, compiler, false);
       ProjectPrepareMakefile(prj, force, compiler, prj.config);
       delete compiler;
       return true;
