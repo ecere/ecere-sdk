@@ -2179,7 +2179,7 @@ class XInterface : Interface
          ic = XCreateIC(im, XNInputStyle,
             XIMStatusNothing | XIMPreeditPosition,
             XNPreeditAttributes, argList,
-            XNClientWindow, windowHandle, XNFocusWindow, windowHandle, 0);
+            XNClientWindow, windowHandle, XNFocusWindow, windowHandle, NULL);
          XFree(argList);
          // Should we free the fontset or not?
          // XFreeFontSet(xGlobalDisplay, fontset);
