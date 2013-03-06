@@ -2033,7 +2033,7 @@ private:
       }
    }
 
-   bool GenerateCrossPlatformMk()
+   bool GenerateCrossPlatformMk(File altCrossPlatformMk)
    {
       bool result = false;
       char path[MAX_LOCATION];
@@ -2056,12 +2056,13 @@ private:
       if(FileExists(path))
          DeleteFile(path);
       {
-         File include = FileOpen(":crossplatform.mk", read);
+         File include = altCrossPlatformMk ? altCrossPlatformMk : FileOpen(":crossplatform.mk", read);
          if(include)
          {
             File f = FileOpen(path, write);
             if(f)
             {
+               include.Seek(0, start);
                for(; !include.Eof(); )
                {
                   char buffer[4096];
@@ -2072,7 +2073,8 @@ private:
 
                result = true;
             }
-            delete include;
+            if(!altCrossPlatformMk)
+               delete include;
          }
       }
       return result;

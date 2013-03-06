@@ -613,7 +613,7 @@ class ProjectView : Window
 
    bool ProjectPrepareCompiler(Project project, CompilerConfig compiler)
    {
-      if(!project.GenerateCrossPlatformMk() || !project.GenerateCompilerCf(compiler))
+      if(!project.GenerateCrossPlatformMk(app.includeFile) || !project.GenerateCompilerCf(compiler))
          ide.outputView.buildBox.Logf($"Error generating compiler configuration (Is the project/config directory writable?)\n");
       return true;
    }

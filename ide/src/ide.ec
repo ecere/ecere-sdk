@@ -3047,6 +3047,9 @@ class IDEApp : GuiApplication
    // driver = "OpenGL";
    // skin = "Aqua";
    //skin = "TVision";
+
+   TempFile includeFile { };
+
    bool Init()
    {
       SetLoggingMode(stdOut, null);
@@ -3073,7 +3076,33 @@ class IDEApp : GuiApplication
          ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
       }
       */
+
+      if(!LoadIncludeFile())
+         PrintLn("error: unable to load :crossplatform.mk file inside ide binary.");
+
       return true;
+   }
+
+   bool LoadIncludeFile()
+   {
+      bool result = false;
+      File include = FileOpen(":crossplatform.mk", read);
+      if(include)
+      {
+         File f = includeFile;
+         if(f)
+         {
+            for(; !include.Eof(); )
+            {
+               char buffer[4096];
+               int count = include.Read(buffer, 1, 4096);
+               f.Write(buffer, 1, count);
+            }
+            result = true;
+         }
+         delete include;
+      }
+      return result;
    }
 }
 

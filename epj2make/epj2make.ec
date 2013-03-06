@@ -360,7 +360,7 @@ class epj2makeApp : GuiApplication
                   if(valid)
                   {
                      project.GenerateCompilerCf(defaultCompiler);
-                     project.GenerateCrossPlatformMk();
+                     project.GenerateCrossPlatformMk(null);
                      if(project.GenerateMakefile(makePath, noResources, includemkPath, project.config))
                      {
                         if(makePath)
