@@ -189,7 +189,7 @@ ECFLAGS += \
 ifdef WINDOWS_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
-LIBS += obj/resources.o
+LIBS += $(OBJ)/resources.o
 endif
 
 else
@@ -245,7 +245,7 @@ $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 ifndef STATIC_LIBRARY_TARGET
 ifdef WINDOWS_TARGET
-$(TARGET): obj/resources.o
+$(TARGET): $(OBJ)/resources.o
 endif
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 ifndef NOSTRIP
@@ -267,8 +267,8 @@ endif
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/)
 
 ifdef WINDOWS_TARGET
-obj/resources.o: src/icon2.ico src/resources.rc | objdir
-	$(GCC_PREFIX)windres src/resources.rc obj/resources.o
+$(OBJ)/resources.o: src/icon2.ico src/resources.rc | objdir
+	$(GCC_PREFIX)windres src/resources.rc $(OBJ)/resources.o
 endif
 
 # SYMBOL RULES
@@ -687,7 +687,7 @@ clean: cleantarget
 	$(call rmq,$(IMPORTS))
 	$(call rmq,$(SYMBOLS))
 ifdef WINDOWS_TARGET
-	$(call rmq,obj/resources.o)
+	$(call rmq,$(OBJ)/resources.o)
 endif
 
 realclean: cleantarget
