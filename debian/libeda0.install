@@ -1,5 +1,5 @@
 #!/usr/bin/dh-exec
-${LIBDIR}/libEDA.so.0.44
-${LIBDIR}/libEDA.so.0
+${LIBDIR}/ec/libEDA.so.0.44
+${LIBDIR}/ec/libEDA.so.0
 ${LIBDIR}/ec/libEDA.so
 usr/share/doc/libeda0/changelog.gz

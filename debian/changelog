@@ -1,3 +1,10 @@
+ecere-sdk (0.44.04-1) unstable; urgency=low
+
+  * 64 Bit Support
+  * Basic Android Support
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Sun, 06 Mar 2013 06:00:00 -0500
+
 ecere-sdk (0.44.03-1) unstable; urgency=low
 
   * Resolved libec0 conflict with "Library for modular symbols and elliptic

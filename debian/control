@@ -25,7 +25,7 @@ Standards-Version: 3.9.3
 Homepage: http://www.ecere.com/
 
 Package: ecere-sdk
-Architecture: armel armhf i386 powerpc
+Architecture: any
 Depends: ecere-dev, ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
 Recommends: ecere-extras, ecere-samples, libeda0, libedasqlite0
 Description: Ecere cross-platform SDK
@@ -35,7 +35,7 @@ Description: Ecere cross-platform SDK
  libeda0, libedasqlite0).
 
 Package: ecere-dev
-Architecture: armel armhf i386 powerpc
+Architecture: any
 Recommends: fonts-freefont-ttf
 Depends: libecc0 (= ${binary:Version}),
          libecerecom0 (= ${binary:Version}),
@@ -50,7 +50,7 @@ Description: Ecere SDK Development Tools
 
 Package: libecere0
 Section: libs
-Architecture: armel armhf i386 powerpc
+Architecture: any
 Multi-Arch: same
 Pre-Depends: multiarch-support
 Depends: ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
@@ -64,7 +64,7 @@ Description: Ecere Runtime Library
 
 Package: libecerecom0
 Section: libs
-Architecture: armel armhf i386 powerpc
+Architecture: any
 Multi-Arch: same
 Pre-Depends: multiarch-support
 Depends: ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
@@ -75,7 +75,7 @@ Description: eC Core Runtime Library
 
 Package: libecc0
 Section: libs
-Architecture: armel armhf i386 powerpc
+Architecture: any
 Multi-Arch: same
 Replaces: libec0 (<= 0.44.02-1)
 Breaks: libec0 (<= 0.44.02-1)
@@ -93,7 +93,7 @@ Description: eC Compiler Library
 
 Package: libeda0
 Section: libs
-Architecture: armel armhf i386 powerpc
+Architecture: any
 Multi-Arch: same
 Pre-Depends: multiarch-support
 Depends: libecere0, ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
@@ -106,7 +106,7 @@ Description: Ecere Data Access
 
 Package: libedasqlite0
 Section: libs
-Architecture: armel armhf i386 powerpc
+Architecture: any
 Multi-Arch: same
 Pre-Depends: multiarch-support
 Depends: libeda0, ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}

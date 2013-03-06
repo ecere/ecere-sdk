@@ -15,12 +15,7 @@ export LIBDIR=$(prefix)/lib/$(DEB_HOST_MULTIARCH)
 export CPPFLAGS
 CPPFLAGS += -DDEB_HOST_MULTIARCH=\"$(LIBDIR)\"
 else
-ifeq ($(DEB_HOST_ARCH),amd64)
-export LIBDIR=$(prefix)/lib32
-else
 export LIBDIR=$(prefix)/lib
-endif
-
 endif
 
 %:
