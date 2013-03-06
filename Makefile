@@ -714,7 +714,7 @@ endif
 troubleshoot:
 	@$(call echo,Printing values of some variables.)
 	@$(call echo,HOST_PLATFORM=$(HOST_PLATFORM))
-	@$(call echo,TARGET_PLATFORM=$(HOST_PLATFORM))
+	@$(call echo,TARGET_PLATFORM=$(TARGET_PLATFORM))
 	@$(call echo,PLATFORM=$(PLATFORM))
 	@$(call echo,LINUX_HOST=$(LINUX_HOST))
 	@$(call echo,LINUX_TARGET=$(LINUX_TARGET))
