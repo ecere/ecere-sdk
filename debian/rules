@@ -8,36 +8,9 @@ ifndef prefix
 prefix=/usr
 endif
 
-ifeq ($(DEB_HOST_ARCH),amd64)
-export LIBDIR=$(prefix)/lib32
-else
 export LIBDIR=$(prefix)/lib
-endif
-
-export CPPFLAGS
-CPPFLAGS += -DDEB_HOST_MULTIARCH=\"$(LIBDIR)\"
 
 %:
 	dh $@
-
-override_dh_install:
-ifeq ($(DEB_HOST_ARCH),amd64)
-	cp debian/libecere0.install.in64 debian/libecere0.install
-	cp debian/libecerecom0.install.in64 debian/libecerecom0.install
-	cp debian/libeda0.install.in64 debian/libeda0.install
-	cp debian/libedasqlite0.install.in64 debian/libedasqlite0.install
-	cp debian/libecc0.install.in64 debian/libecc0.install
-	cp debian/ecere-dev.install.in64 debian/ecere-dev.install
-endif
-
-ifeq ($(DEB_HOST_ARCH),i386)
-	cp debian/libecere0.install.in32 debian/libecere0.install
-	cp debian/libecerecom0.install.in32 debian/libecerecom0.install
-	cp debian/libeda0.install.in32 debian/libeda0.install
-	cp debian/libedasqlite0.install.in32 debian/libedasqlite0.install
-	cp debian/libecc0.install.in32 debian/libecc0.install
-	cp debian/ecere-dev.install.in32 debian/ecere-dev.install
-endif
-	dh_install
 
 override_dh_strip:

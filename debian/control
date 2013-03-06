@@ -4,16 +4,9 @@ Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Jerome St-Louis <jerome@ecere.com>
 Build-Depends: debhelper (>= 7.0.50~),
-               gcc-multilib [amd64],
-               ia32-libs [amd64],
-               lib32ffi-dev [amd64],
-               lib32ncurses5-dev [amd64],
-               lib32z1-dev [amd64],
-               libc6-dev-i386 [amd64],
                libffi-dev,
                libfontconfig1-dev,
                libfreetype6-dev,
-               libgif-dev,
                libgl1-mesa-dev,
                libgl1-mesa-glx,
                libjpeg62-dev,
