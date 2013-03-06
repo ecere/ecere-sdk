@@ -850,26 +850,30 @@ class IDEWorkSpace : Window
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(!DontTerminateDebugSession($"New Project"))
-               if(MenuWindowCloseAll(null, 0))
+            {
+               DialogResult result;
+               NewProjectDialog newProjectDialog { master = this };
+               result = newProjectDialog.Modal();
+               if(result == ok)
                {
-                  NewProjectDialog newProjectDialog;
-
-                  if(projectView)
+                  if(MenuWindowCloseAll(null, 0))
                   {
-                     projectView.visible = false;
-                     if(!projectView.Destroy(0))
-                        return true;
-                  }
-                  
-                  newProjectDialog = { master = this };
-                  newProjectDialog.Modal();
-                  if(projectView)
-                  {
-                     ideSettings.AddRecentProject(projectView.fileName);
-                     ide.UpdateRecentMenus();
-                     settingsContainer.Save();
+                     if(projectView)
+                     {
+                        projectView.visible = false;
+                        if(!projectView.Destroy(0))
+                           return true;
+                     }
+                     newProjectDialog.CreateNewProject();
+                     if(projectView)
+                     {
+                        ideSettings.AddRecentProject(projectView.fileName);
+                        ide.UpdateRecentMenus();
+                        settingsContainer.Save();
+                     }
                   }
                }
+            }
             return true;
          }
       }
@@ -2825,42 +2829,35 @@ class IDEWorkSpace : Window
             {
                if(isProject && !FileExists(fullPath))
                {
-                  // The NewProject will handle directory creation
-                  /*if(!dirAttribs.isDirectory)
+                  char name[MAX_LOCATION];
+                  NewProjectDialog newProjectDialog;
+
+                  if(projectView)
                   {
-                     MakeDir(parentPath);
-                     dirAttribs = FileExists(parentPath);
+                     projectView.visible = false;
+                     if(!projectView.Destroy(0))
+                        return true;
                   }
-                  if(dirAttribs.isDirectory)*/
+
+                  newProjectDialog = { master = this };
+
+                  strcpy(name, app.argv[c]);
+                  StripExtension(name);
+                  GetLastDirectory(name, name);
+                  newProjectDialog.projectName.contents = name;
+                  newProjectDialog.projectName.NotifyModified(newProjectDialog, newProjectDialog.projectName);
+                  newProjectDialog.locationEditBox.path = parentPath;
+                  newProjectDialog.NotifyModifiedLocation(newProjectDialog.locationEditBox);
+
+                  incref newProjectDialog;
+                  newProjectDialog.Modal();
+                  if(projectView)
                   {
-                     char name[MAX_LOCATION];
-                     NewProjectDialog newProjectDialog;
-
-                     if(projectView)
-                     {
-                        projectView.visible = false;
-                        if(!projectView.Destroy(0))
-                           return true;
-                     }
-
-                     newProjectDialog = { master = this };
-
-                     strcpy(name, app.argv[c]);
-                     StripExtension(name);
-                     GetLastDirectory(name, name);
-                     newProjectDialog.projectName.contents = name;
-                     newProjectDialog.projectName.NotifyModified(newProjectDialog, newProjectDialog.projectName);
-                     newProjectDialog.locationEditBox.path = parentPath;
-                     newProjectDialog.NotifyModifiedLocation(newProjectDialog.locationEditBox);
-
-                     newProjectDialog.Modal();
-                     if(projectView)
-                     {
-                        ideSettings.AddRecentProject(projectView.fileName);
-                        ide.UpdateRecentMenus();
-                        settingsContainer.Save();
-                     }
+                     ideSettings.AddRecentProject(projectView.fileName);
+                     ide.UpdateRecentMenus();
+                     settingsContainer.Save();
                   }
+                  delete newProjectDialog;
                   // Open only one project
                   break;
                }
