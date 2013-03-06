@@ -2797,7 +2797,8 @@ private:
          f.Printf("$(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
 
          f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
-         f.Printf("\t$(%s) $(OFLAGS) $(OBJECTS) $(LIBS) %s-o $(TARGET) $(INSTALLNAME)\n", containsCXX ? "CXX" : "CC", containsCXX ? "-lstdc++ " : "");
+         f.Printf("\t@$(call echo,$(OBJECTS)) > $(OBJ)linkobjects.lst\n");
+         f.Printf("\t$(%s) $(OFLAGS) @$(OBJ)linkobjects.lst $(LIBS) %s-o $(TARGET) $(INSTALLNAME)\n", containsCXX ? "CXX" : "CC", containsCXX ? "-lstdc++ " : "");
          if(!GetDebug(config))
          {
             f.Puts("ifndef NOSTRIP\n");
@@ -2897,7 +2898,7 @@ private:
          OutputCleanActions(f, "_OBJECTS", objectsParts);
          if(numCObjects)
          {
-            f.Printf("\t$(call rmq,%s)\n", "$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S)");
+            f.Printf("\t$(call rmq,%s)\n", "$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(OBJ)linkobjects.lst");
             OutputCleanActions(f, "ECOBJECTS", eCsourcesParts);
             OutputCleanActions(f, "COBJECTS", eCsourcesParts);
             OutputCleanActions(f, "BOWLS", eCsourcesParts);
