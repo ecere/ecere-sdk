@@ -3,14 +3,16 @@ ifeq "$(OS)" "Windows_NT"
    HOST_PLATFORM := win32
    WINDOWS_HOST := defined
 else
- ifeq "$(OSTYPE)" "FreeBSD"
- # tocheck: temporarily using linux when on bsd
+ _UNAME := $(shell uname)
+ UNAME_P := $(shell uname -p)
+ ifeq "$(_UNAME)" "FreeBSD"
+ # Using Linux platform for Unix OSes for now 
  #   HOST_PLATFORM := bsd
     BSD_HOST := defined
     HOST_PLATFORM := linux
     LINUX_HOST := defined
  else
-  ifeq "$(shell uname)" "Darwin"
+  ifeq "$(_UNAME)" "Darwin"
      HOST_PLATFORM := apple
      OSX_HOST := defined
   else
@@ -18,7 +20,6 @@ else
      LINUX_HOST := defined
   endif
  endif
- UNAME_P := $(shell uname -p)
  HOST_ARCH := $(UNAME_P)
 endif
 
