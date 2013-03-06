@@ -50,8 +50,12 @@ Daily-built Ubuntu Debian packages are available from our Ubuntu PPA:
 
 To build from source, simply type make (mingw32-make on Windows).
 
-It should build fine on Linux, on Windows with MinGW,
-and on Mac OS X with Xcode command line tools installed.
+It should build fine on Linux, on Windows with MinGW or MinGW-w64,
+on Mac OS X with Xcode command line tools installed or on FreeBSD.
+
+Executables can also be deployed to the Android platform using the Android NDK.
+
+   Please refer to http://ecere.com/wiki/index.php?title=Android
 
 To install, type make install (mingw32-make install on Windows).
 
