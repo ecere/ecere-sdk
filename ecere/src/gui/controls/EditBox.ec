@@ -4933,6 +4933,7 @@ private:
       }
       if(addCharAction)
       {
+         addCharAction.x -= addedTabs * (tabSize-1);
          addCharAction.addedSpaces = addedSpaces;
          addCharAction.addedTabs = addedTabs;
       }
@@ -5277,6 +5278,7 @@ public:
          }  
          if(addCharAction)
          {
+            addCharAction.x -= addedTabs * (tabSize-1);
             addCharAction.addedSpaces = addedSpaces;
             addCharAction.addedTabs = addedTabs;
          }
