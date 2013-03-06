@@ -87,6 +87,7 @@ static char * iconNames[] =
 
 enum PrepareMakefileMethod { normal, force, forceExists };
 
+enum CleanType { clean, realClean, cleanTarget };
 enum BuildType { build, rebuild, relink, run, start, restart, clean };
 enum BuildState
 {
@@ -745,19 +746,11 @@ class ProjectView : Window
 
          // TODO: Disabled until problems fixed... is it fixed?
          if(buildType == rebuild || (config && config.compilingModified))
-            prj.Clean(compiler, config, false, justPrint);
+            prj.Clean(compiler, config, clean, justPrint);
          else
          {
             if(buildType == relink || (config && config.linkingModified))
-            {
-               char target[MAX_LOCATION];
-
-               strcpy(target, prj.topNode.path);
-               PathCat(target, targetDir.dir);
-               prj.CatTargetFileName(target, compiler, config);
-               if(FileExists(target))
-                  DeleteFile(target);
-            }
+               prj.Clean(compiler, config, cleanTarget, false);
             if(config && config.symbolGenModified)
             {
                DirExpression objDir = prj.GetObjDir(compiler, config);
@@ -908,6 +901,47 @@ class ProjectView : Window
       return true;
    }
 
+#if 0
+   bool ProjectCleanTarget(MenuItem selection, Modifiers mods)
+   {
+      Project prj = project;
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      ProjectConfig config;
+      if(selection || !ide.activeClient)
+      {
+         DataRow row = fileList.currentRow;
+         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         if(node) prj = node.project;
+      }
+      else
+      {
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
+         if(node)
+            prj = node.project;
+      }
+      config = prj.config;
+      if(!prj.GetConfigIsInDebugSession(config) ||
+            (!ide.DontTerminateDebugSession($"Project Clean Target") && DebugStopForMake(prj, clean, compiler, config)))
+      {
+         if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+         {
+            ide.outputView.buildBox.Logf($"Cleaning target for project %s using the %s configuration...\n", prj.name, GetConfigName(config));
+
+            buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
+            ide.AdjustBuildMenus();
+            ide.AdjustDebugMenus();
+
+            prj.Clean(compiler, config, cleanTarget, mods.ctrl && mods.shift);
+            buildInProgress = none;
+            ide.AdjustBuildMenus();
+            ide.AdjustDebugMenus();
+         }
+      }
+      delete compiler;
+      return true;
+   }
+#endif
+
    bool ProjectClean(MenuItem selection, Modifiers mods)
    {
       Project prj = project;
@@ -937,7 +971,7 @@ class ProjectView : Window
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
 
-            prj.Clean(compiler, config, false, mods.ctrl && mods.shift);
+            prj.Clean(compiler, config, clean, mods.ctrl && mods.shift);
             buildInProgress = none;
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
@@ -976,7 +1010,7 @@ class ProjectView : Window
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
 
-            prj.Clean(compiler, config, true, mods.ctrl && mods.shift);
+            prj.Clean(compiler, config, realClean, mods.ctrl && mods.shift);
             buildInProgress = none;
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();

@@ -188,6 +188,9 @@ HOST_E := $(if $(WINDOWS_HOST),.exe,)
 HOST_SO := $(if $(WINDOWS_HOST),.dll,$(if $(OSX_HOST),.dylib,.so))
 HOST_LP := $(if $(WINDOWS_HOST),$(if $(STATIC_LIBRARY_TARGET),lib,),lib)
 
+# VERSIONING
+VER := $(if $(VERSION),.$(VERSION),)
+
 # SUPER TOOLS
 ifdef CCACHE
    CCACHE_COMPILE := ccache$(space)

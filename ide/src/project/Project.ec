@@ -793,6 +793,13 @@ public:
       isset { return compilerConfigsDir && compilerConfigsDir[0]; }
    }
 
+   property char * moduleVersion
+   {
+      set { delete moduleVersion; if(value && value[0]) moduleVersion = CopyString(value); } // TODO: use CopyString function that filters chars
+      get { return moduleVersion ? moduleVersion : ""; }                                     //       version number should only use digits and dots
+      isset { return moduleVersion != null && moduleVersion[0]; }                            //       add leading/trailing 0 if value start/ends with dot(s)
+   }
+
 private:
    // topNode.name holds the file name (.epj)
    ProjectOptions options;
@@ -809,6 +816,8 @@ private:
    String description;
    String license;
    String compilerConfigsDir;
+   String moduleVersion;
+
 #ifndef MAKEFILE_GENERATOR
    FileMonitor fileMonitor
    {
@@ -893,6 +902,7 @@ private:
       delete license;
       delete compilerConfigsDir;
       delete moduleName;
+      delete moduleVersion;
       delete filePath;
       delete topNode;
       delete name;
@@ -1206,6 +1216,11 @@ private:
                strcat(string, ".dylib");
             else
                strcat(string, ".so");
+            if(compiler.targetPlatform != win32 && moduleVersion && moduleVersion[0])
+            {
+               strcat(string, ".");
+               strcat(string, moduleVersion);
+            }
             break;
          case staticLibrary:
             strcat(string, ".a");
@@ -1887,7 +1902,7 @@ private:
       return result;
    }
 
-   void Clean(CompilerConfig compiler, ProjectConfig config, bool realclean, bool justPrint)
+   void Clean(CompilerConfig compiler, ProjectConfig config, CleanType cleanType, bool justPrint)
    {
       char makeFile[MAX_LOCATION];
       char makeFilePath[MAX_LOCATION];
@@ -1931,10 +1946,11 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s %sclean -C \"%s\"%s -f \"%s\"",
+         sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s %sclean%s -C \"%s\"%s -f \"%s\"",
                compiler.makeCommand, cfDir,
-               crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
-               compilerName, realclean ? "real" : "", topNode.path, justPrint ? " -n": "", makeFilePath);
+               crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform, compilerName,
+               cleanType == realClean ? "real" : "", cleanType == cleanTarget ? "target" : "",
+               topNode.path, justPrint ? " -n": "", makeFilePath);
          if(justPrint)
             ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
@@ -2315,7 +2331,7 @@ private:
          f.Puts("# CORE VARIABLES\n\n");
 
          f.Printf("MODULE := %s\n", fixedModuleName);
-         //f.Printf("VERSION = %s\n", version);
+         f.Printf("VERSION := %s\n", property::moduleVersion);
          f.Printf("CONFIG := %s\n", fixedConfigName);
          f.Puts("ifndef COMPILER\n" "COMPILER := default\n" "endif\n");
          f.Puts("\n");
@@ -2432,7 +2448,7 @@ private:
             strcpy(targetNoSpaces, targetDir);
             PathCatSlash(targetNoSpaces, target);
             ReplaceSpaces(targetNoSpaces, targetNoSpaces);
-            f.Printf("TARGET = %s\n", targetNoSpaces);
+            f.Printf("TARGET = %s$(VER)\n", targetNoSpaces);
 
             if(test)
             {
@@ -2821,6 +2837,13 @@ private:
          f.Puts("else\n");
          f.Puts("\t$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)\n");
          f.Puts("endif\n");
+         f.Puts("ifdef SHARED_LIBRARY_TARGET\n");
+         f.Puts("ifdef LINUX_TARGET\n");
+         // TODO?: support symlinks for longer version numbers
+         f.Puts("\t$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)\n");
+         f.Puts("\t$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)\n");
+         f.Puts("endif\n");
+         f.Puts("endif\n");
 
          //f.Puts("# POST-BUILD COMMANDS\n");
          if(options && options.postbuildCommands)
@@ -2892,6 +2915,13 @@ private:
 
          f.Printf("cleantarget: objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
          f.Puts("\t$(call rmq,$(TARGET))\n");
+         f.Puts("ifdef SHARED_LIBRARY_TARGET\n");
+         f.Puts("ifdef LINUX_TARGET\n");
+         // TODO?: support symlinks for longer version numbers
+         f.Puts("\t$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))\n");
+         f.Puts("\t$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))\n");
+         f.Puts("endif\n");
+         f.Puts("endif\n");
          f.Puts("\n");
 
          f.Puts("clean: cleantarget\n");

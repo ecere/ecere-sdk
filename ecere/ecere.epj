@@ -2432,5 +2432,6 @@ debugging, and UPX for optionally compressing executables. Each of these have
 their own license which can be found in their respective documentation folder 
 if distributed along with the SDK (in the case of the Windows version) or
 from wherever you obtained them.
-"
+",
+   "ModuleVersion" : "0.44"
 }
