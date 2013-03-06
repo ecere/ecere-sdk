@@ -1,5 +1,12 @@
 EC_BINS := $(_CF_DIR)$(if $(USE_BOOTSTRAP),compiler/bootstrap/obj/bin.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG)/,obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG)/bin/)
 
+ifdef WINDOWS_HOST
+ # Auto-Select MinGW-w64 when asking for 64 bit
+ ifeq "$(ARCH)" "x64"
+  GCC_PREFIX=x86_64-w64-mingw32-
+ endif
+endif
+
 # TOOLCHAIN
 export CC      = $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)gcc$(_SYSROOT)
 export CPP     = $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)gcc$(_SYSROOT)

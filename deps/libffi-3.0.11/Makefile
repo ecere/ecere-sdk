@@ -43,7 +43,7 @@ RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)/$(LP)ffi$(A)
 
-ifeq "$(HOST_ARCH)" "X64"
+ifeq "$(TARGET_ARCH)" "x86_64"
 PLATFORM_OBJ  := win64
 else
 PLATFORM_OBJ  := win32
