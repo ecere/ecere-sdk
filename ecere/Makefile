@@ -36,6 +36,10 @@ USE_BOOTSTRAP := defined
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 
+ifdef PREFIXLIBDIR
+CFLAGS += -DDEB_HOST_MULTIARCH=\"$(PREFIXLIBDIR)\"
+endif
+
 # POST-INCLUDES VARIABLES
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
@@ -43,7 +47,7 @@ OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 RES = res/
 
 ifdef LINUX_TARGET
-TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)$(MODULE)$(SO).0.44
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)$(MODULE)$(SO).0.44
 SONAME = -Wl,-soname,libecere.so.0
 else
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)$(MODULE)$(SO)
@@ -407,7 +411,7 @@ PRJ_CFLAGS += \
 			 -I../deps/jpeg-6b \
 			 -I../deps/libpng-1.4.0 \
 			 -I../deps/libungif-4.1.1/lib,) \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
 			 -DBUILDING_ECERE_COM \
 			 -Isrc/gfx/drivers/harfbuzz \
 			 -I/usr/X11R6/include \
@@ -428,11 +432,11 @@ ifdef WINDOWS_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../deps/zlib/obj/release.$(PLATFORM) \
-	 -L../deps/jpeg-6b/obj/release.$(PLATFORM) \
-	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM) \
-	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM) \
-	 -L../deps/freetype-2.3.12/obj/release.$(PLATFORM)
+	 -L../deps/zlib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
 LIBS += \
 	$(call _L,dxguid) \
 	$(call _L,ddraw) \
@@ -456,7 +460,7 @@ ifdef LINUX_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM) \
+	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L/usr/X11R6/lib
 LIBS += \
 	$(call _L,ncurses) \
@@ -478,9 +482,9 @@ ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L$(SYSROOT)/usr/X11/lib \
 	 -L/usr/X11R6/lib \
-	 -L../deps/jpeg-6b/obj/release.$(PLATFORM) \
-	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM) \
-	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)
+	 -L../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
 LIBS += \
 	$(call _L,curses) \
 	$(call _L,pthread) \
@@ -502,8 +506,6 @@ endif
 
 CECFLAGS += -cpp $(_CPP)
 
-OFLAGS += $(FORCE_32_BIT)
-
 # TARGETS
 
 all: objdir $(TARGET)
@@ -512,7 +514,7 @@ objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
-	$(ECS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
+	$(ECS) $(ECSLIBOPT) $(ARCH_FLAGS) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
@@ -528,7 +530,7 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 ifdef WINDOWS_TARGET
-	$(call cpq,$(TARGET),../compiler/bootstrap/obj/bin.$(PLATFORM)/)
+	$(call cpq,$(TARGET),../compiler/bootstrap/obj/bin.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/)
 endif
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)

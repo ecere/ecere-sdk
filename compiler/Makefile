@@ -9,7 +9,7 @@ include ../default.cf
 
 all: ecp ecc ecs
 
-OBJ = libec/obj/$(CONFIG).$(TARGET_PLATFORM)/
+OBJ = libec/obj/$(CONFIG).$(TARGET_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 libec:
 	@$(call echo,Building 2nd stage libec...)

@@ -1,13 +1,13 @@
 .PHONY: bindir ecere libec ecp ecc ecs cleantarget clean realclean distclean
 .SILENT:
 
-OBJ = obj/bin.$(PLATFORM)/
+OBJ = obj/bin.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 include ../../crossplatform.mk
 include ../../default.cf
 
 all: bindir ecere libec ecp ecc ecs
-	$(call cpq,ecp/obj/bootstrap.$(PLATFORM)/ecp$(E) ecc/obj/bootstrap.$(PLATFORM)/ecc$(E) ecs/obj/bootstrap.$(PLATFORM)/ecs$(E),$(OBJ))
+	$(call cpq,ecp/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(E) ecc/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(E) ecs/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(E),$(OBJ))
 	@$(call echo,All done!)
 
 bindir:

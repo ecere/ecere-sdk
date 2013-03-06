@@ -96,7 +96,7 @@ LIBS +=
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
 			 -DECERE_STATIC
 ECFLAGS += \
 	 -nolinenumbers
@@ -105,8 +105,6 @@ ECFLAGS += \
 
 
 CECFLAGS += -cpp $(_CPP)
-
-OFLAGS += $(FORCE_32_BIT)
 
 # TARGETS
 

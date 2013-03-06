@@ -38,11 +38,11 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(CONFIG).$(PLATFORM)/
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = 
 
-TARGET = obj/$(CONFIG).$(PLATFORM)/extract$(E)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/extract$(E)
 
 _ECSOURCES = \
 	extract.ec
@@ -104,7 +104,7 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -Os) $(FORCE_32_BIT) $(FPIC) -w \
+	 $(if $(DEBUG), -g, -Os) $(FPIC) -w \
 			 -DECERE_STATIC
 
 
@@ -168,12 +168,10 @@ endif
 
 CECFLAGS += -cpp $(_CPP)
 
-OFLAGS += $(FORCE_32_BIT)
-
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../../ecere/obj/vanilla.$(PLATFORM) \
-	 -L../../deps/zlib/obj/release.$(PLATFORM)
+	 -L../../ecere/obj/vanilla.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) \
+	 -L../../deps/zlib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
 endif
 
 # TARGETS
@@ -184,7 +182,7 @@ objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
-	$(ECS) $(FORCE_32_BIT) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM) -o $(OBJ)$(MODULE).main.ec
+	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)

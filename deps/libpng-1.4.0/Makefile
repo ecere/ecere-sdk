@@ -37,11 +37,11 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(CONFIG).$(PLATFORM)/
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)/
 
 RES = 
 
-TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)png$(A)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)/$(LP)png$(A)
 
 _OBJECTS = \
 	$(OBJ)png.o \

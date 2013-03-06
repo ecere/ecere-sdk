@@ -106,7 +106,7 @@ LIBS +=
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG),-g) $(FORCE_32_BIT) $(FPIC) -w \
+	 $(if $(DEBUG),-g) $(FPIC) -w \
 	 -DBUILDING_ECERE_COM -DECERE_STATIC -DECERE_BOOTSTRAP
 ECFLAGS += \
 	 -nolinenumbers -defaultns ecere
@@ -115,8 +115,6 @@ ECFLAGS += \
 
 
 CECFLAGS += -cpp $(_CPP)
-
-OFLAGS += $(FORCE_32_BIT)
 
 # TARGETS
 

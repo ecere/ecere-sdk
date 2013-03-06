@@ -37,11 +37,11 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(CONFIG).$(PLATFORM)/
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = 
 
-TARGET = obj/$(CONFIG).$(PLATFORM)/documentor$(E)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/documentor$(E)
 
 _ECSOURCES = \
 	../extras/html/htmlParser.ec \
@@ -83,7 +83,7 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
 
 
 ECFLAGS += \
@@ -95,9 +95,9 @@ ECFLAGS += \
 CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
-OFLAGS += $(FORCE_32_BIT) \
-	 -L../obj/$(PLATFORM)/bin \
-	 -L../obj/$(PLATFORM)/lib
+OFLAGS += \
+	 -L../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
+	 -L../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
 endif
 
 # TARGETS
@@ -108,7 +108,7 @@ objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
-	$(ECS) $(FORCE_32_BIT) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM) -o $(OBJ)$(MODULE).main.ec
+	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
@@ -128,7 +128,7 @@ endif
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
-	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
+	$(call cpq,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/)
 
 # SYMBOL RULES
 

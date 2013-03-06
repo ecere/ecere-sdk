@@ -43,7 +43,7 @@ OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 RES = 
 
 ifdef LINUX_TARGET
-TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)ec$(SO).0.44
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SO).0.44
 SONAME = -Wl,-soname,libec.so.0
 else
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SO)
@@ -104,7 +104,7 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
 
 CUSTOM1_PRJ_CFLAGS = \
 			 -I../bootstrap/include \
@@ -119,12 +119,10 @@ ECFLAGS += \
 
 CECFLAGS += -cpp $(_CPP)
 
-OFLAGS += $(FORCE_32_BIT)
-
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../../obj/$(PLATFORM)/bin \
-	 -L../../obj/$(PLATFORM)/lib
+	 -L../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
+	 -L../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
 endif
 
 # TARGETS
@@ -135,7 +133,7 @@ objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
-	$(ECS) $(FORCE_32_BIT) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
+	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
@@ -161,7 +159,7 @@ ifdef LINUX_TARGET
 endif	
 ifdef WINDOWS_TARGET
 ifndef CROSS_TARGET
-	$(call cpq,$(TARGET),../../compiler/bootstrap/obj/bin.$(HOST_PLATFORM)/)
+	$(call cpq,$(TARGET),../../compiler/bootstrap/obj/bin.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/)
 endif
 endif
 

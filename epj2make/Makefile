@@ -37,11 +37,11 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(CONFIG).$(PLATFORM)/
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = 
 
-TARGET = obj/$(CONFIG).$(PLATFORM)/epj2make$(E)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/epj2make$(E)
 
 _ECSOURCES = \
 	../ide/src/project/Project.ec \
@@ -82,7 +82,7 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
 			 -DMAKEFILE_GENERATOR
 
 
@@ -100,12 +100,10 @@ endif
 
 CECFLAGS += -cpp $(_CPP)
 
-OFLAGS += $(FORCE_32_BIT)
-
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../obj/$(PLATFORM)/bin \
-	 -L../obj/$(PLATFORM)/lib
+	 -L../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
+	 -L../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
 endif
 
 # TARGETS
@@ -116,7 +114,7 @@ objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
-	$(ECS) -console $(FORCE_32_BIT) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM) -o $(OBJ)$(MODULE).main.ec
+	$(ECS) -console $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
@@ -136,7 +134,7 @@ endif
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
-	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
+	$(call cpq,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/)
 
 # SYMBOL RULES
 

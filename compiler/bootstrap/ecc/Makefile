@@ -60,7 +60,7 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
 			 -DECERE_STATIC
 
 
@@ -84,12 +84,10 @@ endif
 
 CECFLAGS += -cpp $(_CPP)
 
-OFLAGS += $(FORCE_32_BIT)
-
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../ecere/obj/bootstrap.$(PLATFORM) \
-	 -L../libec/obj/bootstrap.$(PLATFORM)
+	 -L../ecere/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) \
+	 -L../libec/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)
 endif
 
 # TARGETS

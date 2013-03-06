@@ -270,6 +270,10 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
    char fileName[MAX_LOCATION];
    char extension[MAX_EXTENSION];
    void * library = null;
+#if defined(__unix__) || defined(__APPLE__)
+   int attempts = 0;
+   char * paths[] = { null, "/usr/lib/ec/lib", "/usr/lib32/ec/lib" };
+#endif
 
    *Load = null;
    *Unload = null;
@@ -312,14 +316,20 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
 #endif
 
    library = dlopen(fileName, RTLD_LAZY);
-   if(!library)
+   while(!library && attempts < sizeof(paths)/sizeof(paths[0]))
    {
+      if(paths[attempts])
+         strcpy(fileName, paths[attempts++]);
+      else
+      {
+         attempts++;
 #ifdef DEB_HOST_MULTIARCH
-      strcpy(fileName, DEB_HOST_MULTIARCH);
-      strcat(fileName, "/ec/lib");
+         strcpy(fileName, DEB_HOST_MULTIARCH);
+         strcat(fileName, "/ec/lib");
 #else
-      strcpy(fileName, "/usr/lib/ec/lib");
+         continue;
 #endif
+      }
       strcat(fileName, name);
       GetExtension(fileName, extension);
       if(!extension[0])

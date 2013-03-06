@@ -37,11 +37,11 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(CONFIG).$(PLATFORM)/
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)/
 
 RES = 
 
-TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)ungif$(A)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)/$(LP)ungif$(A)
 
 _OBJECTS = \
 	$(OBJ)dgif_lib.o \
@@ -60,17 +60,13 @@ RESOURCES =
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w $(FVISIBILITY)
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w $(FVISIBILITY)
 
 
 
 
 
 CECFLAGS += -cpp $(_CPP)
-
-ifndef STATIC_LIBRARY_TARGET
-OFLAGS += $(FORCE_32_BIT)
-endif
 
 # TARGETS
 

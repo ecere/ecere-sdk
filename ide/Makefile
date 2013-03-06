@@ -37,11 +37,11 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(CONFIG).$(PLATFORM)/
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = res/
 
-TARGET = obj/$(CONFIG).$(PLATFORM)/ide$(E)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ide$(E)
 
 _ECSOURCES = \
 	../extras/FileSystemIterator.ec \
@@ -175,7 +175,7 @@ PRJ_CFLAGS += \
 			 -I/usr/X11R6/include,) \
 	 $(if $(OSX_TARGET), \
 			 -I/usr/X11R6/include,) \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FORCE_32_BIT) $(FPIC) -w \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
 			 $(FVISIBILITY)
 
 
@@ -220,12 +220,10 @@ endif
 
 CECFLAGS += -cpp $(_CPP)
 
-OFLAGS += $(FORCE_32_BIT)
-
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../obj/$(PLATFORM)/bin \
-	 -L../obj/$(PLATFORM)/lib
+	 -L../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
+	 -L../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
 endif
 
 # TARGETS
@@ -236,7 +234,7 @@ objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
-	$(ECS) $(FORCE_32_BIT) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM) -o $(OBJ)$(MODULE).main.ec
+	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
@@ -266,7 +264,7 @@ endif
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
-	$(call cpq,$(TARGET),../obj/$(PLATFORM)/bin/)
+	$(call cpq,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/)
 
 ifdef WINDOWS_TARGET
 obj/resources.o: src/icon2.ico src/resources.rc | objdir

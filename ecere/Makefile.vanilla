@@ -36,6 +36,10 @@ USE_BOOTSTRAP := defined
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 
+ifdef PREFIXLIBDIR
+CFLAGS += -DDEB_HOST_MULTIARCH=\"$(PREFIXLIBDIR)\"
+endif
+
 # POST-INCLUDES VARIABLES
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
@@ -354,7 +358,7 @@ PRJ_CFLAGS += \
 			 -I../deps/jpeg-6b \
 			 -I../deps/libpng-1.4.0 \
 			 -I../deps/libungif-4.1.1/lib,) \
-	 $(if $(DEBUG), -g, -Os) $(FORCE_32_BIT) $(FPIC) -w \
+	 $(if $(DEBUG), -g, -Os) $(FPIC) -w \
 			 -DBUILDING_ECERE_COM \
 			 -DECERE_STATIC \
 			 -DECERE_VANILLA \
@@ -378,11 +382,11 @@ ifdef WINDOWS_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../deps/zlib/obj/release.$(PLATFORM) \
-	 -L../deps/jpeg-6b/obj/release.$(PLATFORM) \
-	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM) \
-	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM) \
-	 -L../deps/freetype-2.3.12/obj/release.$(PLATFORM)
+	 -L../deps/zlib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
 LIBS += \
 	$(call _L,dxguid) \
 	$(call _L,ddraw) \
@@ -406,7 +410,7 @@ ifdef LINUX_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM) \
+	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L/usr/X11R6/lib
 LIBS += \
 	$(call _L,ncurses) \
@@ -428,9 +432,9 @@ ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L$(SYSROOT)/usr/X11/lib \
 	 -L/usr/X11R6/lib \
-	 -L../deps/jpeg-6b/obj/release.$(PLATFORM) \
-	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM) \
-	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)
+	 -L../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
 LIBS += \
 	$(call _L,curses) \
 	$(call _L,pthread) \
@@ -452,8 +456,6 @@ endif
 
 CECFLAGS += -cpp $(_CPP)
 
-OFLAGS += $(FORCE_32_BIT)
-
 # TARGETS
 
 all: objdir $(TARGET)
@@ -462,7 +464,7 @@ objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
-	$(ECS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
+	$(ECS) $(ECSLIBOPT) $(ARCH_FLAGS) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
@@ -498,7 +500,7 @@ endif
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
-	$(call cpq,$(TARGET),../obj/$(PLATFORM)/lib/)
+	$(call cpq,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/)
 
 # SYMBOL RULES
 

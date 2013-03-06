@@ -37,11 +37,11 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(CONFIG).$(PLATFORM)/
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)/
 
 RES = 
 
-TARGET = obj/$(CONFIG).$(PLATFORM)/$(LP)jpeg$(A)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)/$(LP)jpeg$(A)
 
 _OBJECTS = $(_OBJECTS1) $(_OBJECTS2)
 _OBJECTS1 = \
@@ -154,7 +154,7 @@ RESOURCES =
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w $(FORCE_32_BIT)
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
 
 
 
