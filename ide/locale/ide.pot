@@ -517,7 +517,7 @@ msgid "Console Application"
 msgstr "Console Application"
 
 #: ./src/panels/CallStackView.ec:81
-#: ./src/panels/OutputView.ec:196
+#: ./src/panels/OutputView.ec:199
 #: ./src/panels/ThreadsView.ec:100
 msgid "Copy"
 msgstr "Copy"
@@ -709,7 +709,7 @@ msgstr "Ecere IDE Workspace"
 
 #: ./src/designer/Sheet.ec:446
 #: ./src/panels/CallStackView.ec:76
-#: ./src/panels/OutputView.ec:191
+#: ./src/panels/OutputView.ec:194
 #: ./src/panels/ThreadsView.ec:95
 #: ./src/ide.ec:813
 msgid "Edit"
@@ -860,7 +860,7 @@ msgstr "Filter:"
 #: ./src/dialogs/FindInFilesDialog.ec:393
 #: ./src/panels/CallStackView.ec:23
 #: ./src/panels/CallStackView.ec:91
-#: ./src/panels/OutputView.ec:206
+#: ./src/panels/OutputView.ec:209
 #: ./src/panels/ThreadsView.ec:110
 msgid "Find"
 msgstr "Find"
@@ -875,13 +875,13 @@ msgid "Find In Files..."
 msgstr "Find In Files..."
 
 #: ./src/panels/CallStackView.ec:90
-#: ./src/panels/OutputView.ec:205
+#: ./src/panels/OutputView.ec:208
 #: ./src/panels/ThreadsView.ec:109
 msgid "Find Next"
 msgstr "Find Next"
 
 #: ./src/panels/CallStackView.ec:89
-#: ./src/panels/OutputView.ec:204
+#: ./src/panels/OutputView.ec:207
 #: ./src/panels/ThreadsView.ec:108
 msgid "Find Previous"
 msgstr "Find Previous"
@@ -1842,7 +1842,7 @@ msgstr "Symbol \"%s\" not found"
 #: ./src/designer/Sheet.ec:427
 #: ./src/designer/Sheet.ec:597
 #: ./src/panels/OutputView.ec:34
-#: ./src/panels/OutputView.ec:99
+#: ./src/panels/OutputView.ec:100
 #: ./src/about.ec:17
 #: ./src/about.ec:18
 #: ./src/about.ec:19
