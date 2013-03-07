@@ -1621,7 +1621,7 @@ private:
                            MakePathRelative(temp, topNode.path, moduleName);
                         }
                         error = strstr(line, "error:");
-                        if(error && error < colon)
+                        if(error && error > colon)
                            numErrors++;
                         else
                         {
