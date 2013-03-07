@@ -561,7 +561,7 @@ void OutputLinkObjectActions(File f, char * name, int parts)
       int c;
       for(c=0; c<parts; c++)
          f.Printf("\t@$(call echo,$(%s%d)) >> $(OBJ)linkobjects.lst\n", name, c+1);
-   } else {
+   } else if(parts) {
       f.Printf("\t@$(call echo,$(%s)) >> $(OBJ)linkobjects.lst\n", name);
    }
 }
