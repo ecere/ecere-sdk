@@ -15,6 +15,9 @@
 #define bool _bool
 #include <utime.h>
 #include <dlfcn.h>
+#if defined(__FreeBSD__)
+#include <sys/sysctl.h>
+#endif
 #undef bool
 #endif
 
@@ -319,12 +322,30 @@ bool Instance_LocateModule(char * name, char * fileName)
 #endif
    if(!name || !name[0])
    {
+      char * env;
+#if defined(__FreeBSD__)
+      {
+         int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
+         size_t cb = MAX_LOCATION;
+         fileName[0] = 0;
+         sysctl(mib, 4, fileName, &cb, null, 0);
+         if(fileName[0])
+            return true;
+      }  
+#endif
 #if !defined(__linux__)
       if(!access("/proc/curproc/file", F_OK))
+      {
          strcpy(fileName, "/proc/curproc/file");
-      else
+         return true;
+      }
+      if((env = getenv("_")))
+      {
+         strcpy(fileName, env);
+         return true;
+      }
 #endif
-         strcpy(fileName, exeLocation);
+      strcpy(fileName, exeLocation);
       return true;
    }
 #endif
