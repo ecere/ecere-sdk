@@ -90,10 +90,11 @@ typedef enum { unknown, win32, tux, apple } Platform;
 Platform runtimePlatform = win32;
 #elif defined(__APPLE__)
 Platform runtimePlatform = apple;
-#elif defined(__linux__)
+#else //if defined(__linux__)
 Platform runtimePlatform = tux;
-#else
-Platform runtimePlatform = unknown;
+/*#else
+Platform runtimePlatform = unknown;    // 'linux' is used as a catch all UNIX platform for now
+*/
 #endif
 
 #if !defined(ECERE_NOFILE) && defined(__unix__)
