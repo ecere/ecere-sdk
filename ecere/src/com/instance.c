@@ -103,22 +103,23 @@ typedef struct _DualPipe _DualPipe;
 void DualPipe_Destructor(_DualPipe * dp);
 bool DualPipe_Getc(_DualPipe * dp, char * ch);
 bool DualPipe_Eof(_DualPipe * dp);
+void DualPipe_Wait(_DualPipe * dp);
 
-_DualPipe * _DualPipeOpen(PipeOpenMode mode, char * commandLine, char * env, void ** inputPtr, void ** outputPtr);
+_DualPipe * _DualPipeOpen(int mode, char * commandLine, char * env, void ** inputPtr, void ** outputPtr);
 
-static bool DualPipe_GetLine(_DualPipe * p, char *s, int max)
+static bool DualPipe_GetLine(FILE * p, char *s, int max)
 {
    int c = 0;
    bool result = true;
    s[c]=0;
-   if(DualPipe_Eof())
+   if(feof(p))
       result = false;
    else
    {
       while(c<max-1)
       {
-         char ch = 0;
-         if(!DualPipe_Getc(p, &ch))
+         int ch = 0;
+         if((ch = fgetc(p)) == EOF)
          {
             result = false;
             break;
@@ -126,7 +127,7 @@ static bool DualPipe_GetLine(_DualPipe * p, char *s, int max)
          if(ch =='\n') 
             break;
          if(ch !='\r')
-            s[c++]=ch;
+            s[c++]=(char)ch;
       }
    }
    s[c]=0;
@@ -272,16 +273,21 @@ bool Instance_LocateModule(char * name, char * fileName)
       }
       fclose(f);
    }
-#ifndef ECERE_NOFILE
+#if !defined(ECERE_NOFILE) && !defined(__linux__)
    if(name && name[0])
    {
-      FILE * in , * out;
-      _DualPipe * p = _DualPipeOpen(1, "ldd /proc/curproc/file", null, null, &in, &out);
+      // Couldn't locate libraries with /proc/curmap/map, attempt with ldd
+      FILE * in = null, * out = null;
+      _DualPipe * p;
+      char command[MAX_LOCATION];
+      snprintf(command, sizeof(command), "ldd /proc/%d/file", (int)getpid());
+      p  = _DualPipeOpen(1, command, null, &in, &out);
       if(p)
       {
+         bool result = false;
          char line[1025];
          int nameLen = strlen(name);
-         while(DualPipe_GetLine(p, line, sizeof(line))
+         while(DualPipe_GetLine(in, line, sizeof(line)))
          {
             char * path = strstr(line, "/");
             if(path)
@@ -292,19 +298,21 @@ bool Instance_LocateModule(char * name, char * fileName)
                subStr = RSearchString(path, name, pathLen, false, false);
                if(subStr)
                {
-                  if(( *(sudfdsdbStr-1) == '/' || !strncmp(subStr - 4, "/lib", 4)) &&
+                  if(( *(subStr-1) == '/' || !strncmp(subStr - 4, "/lib", 4)) &&
                      (!subStr[nameLen] || !strncmp(subStr + nameLen, ".so", 3)))
                   {
                      char * space = strchr(path, ' ');
                      if(space) *space = 0;
                      strcpy(fileName, path);
-                     fclose(f);
-                     return true;
+                     result = true;
                   }
                }
             }
          }
+         DualPipe_Wait(p);
+         fclose(in);
          DualPipe_Destructor(p);
+         return result;
       }
    }
 #endif
