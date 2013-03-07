@@ -2579,19 +2579,17 @@ class IDEWorkSpace : Window
                            for(p : ide.workspace.projects)
                            {
                               node = projectView.GetNodeFromWindow(activeClient, p, false);
-                              //if(node && projectView.Compile(node.project, node, mods.ctrl && mods.shift))
-                              if(!node && (node = projectView.GetNodeFromWindow(activeClient, null, true)))
-                                 isCObject = true;
-                              if(node)
-                              {
-                                 List<ProjectNode> nodes { };
-                                 nodes.Add(node);
-                                 projectView.Compile(node.project, nodes, mods.ctrl && mods.shift, isCObject ? cObject : normal);
-                                 delete nodes;
-
-                                 result = true;
-                                 break;
-                              }
+                              if(node) break;
+                           }
+                           if(!node && (node = projectView.GetNodeFromWindow(activeClient, null, true)))
+                              isCObject = true;
+                           if(node)
+                           {
+                              List<ProjectNode> nodes { };
+                              nodes.Add(node);
+                              projectView.Compile(node.project, nodes, mods.ctrl && mods.shift, isCObject ? cObject : normal);
+                              delete nodes;
+                              result = true;
                            }
                            if(!result && node)
                               ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
