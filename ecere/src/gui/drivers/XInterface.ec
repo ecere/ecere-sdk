@@ -2133,7 +2133,7 @@ class XInterface : Interface
                   parentWindow ? atoms[_net_wm_window_type_menu] : atoms[_net_wm_window_type_normal],
                   parentWindow ? atoms[_net_wm_window_type_popup_menu] : 0
                };
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(__FreeBSD__)
                // Don't set this on non-interim windows for OS X...
                if(parentWindow && window.interim)
 #endif
@@ -2313,7 +2313,7 @@ class XInterface : Interface
       //Logf("Position root window %s\n", window.name);
       if(window.windowHandle && (!window.parent || !window.parent.display))
       {
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(__FreeBSD__)
          bool visible = window.visible;
          if(window.visible)
          {
@@ -2326,7 +2326,7 @@ class XInterface : Interface
          if(window.nativeDecorations)
          {
             XWindowData windowData = window.windowData;
-#if !defined(__APPLE__)
+#if !defined(__APPLE__) && !defined(__FreeBSD__)
             // TODO: How to handle frame extents not supported?
             if(!windowData.gotFrameExtents || window.state == maximized) return;
 #endif
@@ -2392,7 +2392,7 @@ class XInterface : Interface
          if(visible)
          {
             XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(__FreeBSD__)
             WaitForViewableWindow(window);
 #endif
             if(window.creationActivation == activate && state != minimized)
