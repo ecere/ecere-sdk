@@ -2553,7 +2553,7 @@ class XInterface : Interface
 
    void GetMousePosition(int *x, int *y)
    {
-      int rootWindow, childWindow;
+      long rootWindow, childWindow;
       int mx, my;
       unsigned int state;
       ((GuiApplication)__thisModule.application).Lock();
