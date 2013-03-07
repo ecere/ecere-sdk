@@ -96,6 +96,45 @@ Platform runtimePlatform = tux;
 Platform runtimePlatform = unknown;
 #endif
 
+#if !defined(ECERE_NOFILE) && defined(__unix__)
+
+typedef struct _DualPipe _DualPipe;
+
+void DualPipe_Destructor(_DualPipe * dp);
+bool DualPipe_Getc(_DualPipe * dp, char * ch);
+bool DualPipe_Eof(_DualPipe * dp);
+
+_DualPipe * _DualPipeOpen(PipeOpenMode mode, char * commandLine, char * env, void ** inputPtr, void ** outputPtr);
+
+static bool DualPipe_GetLine(_DualPipe * p, char *s, int max)
+{
+   int c = 0;
+   bool result = true;
+   s[c]=0;
+   if(DualPipe_Eof())
+      result = false;
+   else
+   {
+      while(c<max-1)
+      {
+         char ch = 0;
+         if(!DualPipe_Getc(p, &ch))
+         {
+            result = false;
+            break;
+         }
+         if(ch =='\n') 
+            break;
+         if(ch !='\r')
+            s[c++]=ch;
+      }
+   }
+   s[c]=0;
+   return result || c > 1;
+}
+
+#endif
+
 bool Instance_LocateModule(char * name, char * fileName)
 {
 #if defined(__WIN32__)
@@ -233,6 +272,42 @@ bool Instance_LocateModule(char * name, char * fileName)
       }
       fclose(f);
    }
+#ifndef ECERE_NOFILE
+   if(name && name[0])
+   {
+      FILE * in , * out;
+      _DualPipe * p = _DualPipeOpen(1, "ldd /proc/curproc/file", null, null, &in, &out);
+      if(p)
+      {
+         char line[1025];
+         int nameLen = strlen(name);
+         while(DualPipe_GetLine(p, line, sizeof(line))
+         {
+            char * path = strstr(line, "/");
+            if(path)
+            {
+               int pathLen = strlen(path);
+               char * subStr;
+               path[--pathLen] = 0;
+               subStr = RSearchString(path, name, pathLen, false, false);
+               if(subStr)
+               {
+                  if(( *(sudfdsdbStr-1) == '/' || !strncmp(subStr - 4, "/lib", 4)) &&
+                     (!subStr[nameLen] || !strncmp(subStr + nameLen, ".so", 3)))
+                  {
+                     char * space = strchr(path, ' ');
+                     if(space) *space = 0;
+                     strcpy(fileName, path);
+                     fclose(f);
+                     return true;
+                  }
+               }
+            }
+         }
+         DualPipe_Destructor(p);
+      }
+   }
+#endif
    if(!name || !name[0])
    {
 #if !defined(__linux__)
