@@ -1613,7 +1613,8 @@ private:
                            PathCatSlash(temp, moduleName);
                            MakePathRelative(temp, topNode.path, moduleName);
                         }
-                        if(strstr(line, "error:"))
+                        error = strstr(line, "error:");
+                        if(error && error < colon)
                            numErrors++;
                         else
                         {
