@@ -1506,11 +1506,13 @@ private:
                   byte * tokens[1];
                   char * module;
                   bool isPrecomp = false;
+                  bool gotCC = false;
 
                   if(strstr(test, cc) == test || strstr(test, cxx) == test)
                   {
                      module = strstr(line, " -c ");
                      if(module) module += 4;
+                     gotCC = true;
                   }
                   else if(strstr(test, ecc) == test)
                   {
@@ -1519,6 +1521,7 @@ private:
                      //module = line + 3;
                      // Don't show GCC warnings about generated C code because it does not compile clean yet...
                      compilingEC = 3;//2;
+                     gotCC = true;
                   }
                   else if(strstr(test, ecp) == test)
                   {
@@ -1527,6 +1530,7 @@ private:
                      if(module) module += 4;
                      isPrecomp = true;
                      compilingEC = 0;
+                     gotCC = true;
                   }
 
                   loggedALine = true;
@@ -1558,7 +1562,10 @@ private:
                   else
                   {
                      ide.outputView.buildBox.Logf("%s\n", line);
-                     numErrors++;
+                     if(strstr(line, "warning:") || strstr(line, "note:"))
+                        numWarnings++;
+                     else if(!gotCC && !strstr(line, "At top level") && !strstr(line, "In file included from"))
+                        numErrors++;
                   }
 
                   if(compilingEC) compilingEC--;
