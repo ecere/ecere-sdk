@@ -19,7 +19,12 @@ define projectOptions = "Project Options";
 define defaultTargetDir = "Default Target Directory";
 define defaultIntermediateObjDir = "Default Intermediate Objects Directory";
 
-define makeDefaultCommand = (GetRuntimePlatform() == win32) ? "mingw32-make" : "make";
+define makeDefaultCommand = (GetRuntimePlatform() == win32) ? "mingw32-make" : 
+#ifdef BSD
+   "gmake";
+#else
+   "make";
+#endif
 define ecpDefaultCommand = "ecp";
 define eccDefaultCommand = "ecc";
 define ecsDefaultCommand = "ecs";
