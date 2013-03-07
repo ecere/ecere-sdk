@@ -20,7 +20,7 @@ define defaultTargetDir = "Default Target Directory";
 define defaultIntermediateObjDir = "Default Intermediate Objects Directory";
 
 define makeDefaultCommand = (GetRuntimePlatform() == win32) ? "mingw32-make" : 
-#ifdef BSD
+#ifdef __FreeBSD__
    "gmake";
 #else
    "make";
