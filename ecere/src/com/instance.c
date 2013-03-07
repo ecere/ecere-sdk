@@ -235,7 +235,12 @@ bool Instance_LocateModule(char * name, char * fileName)
    }
    if(!name || !name[0])
    {
-      strcpy(fileName, exeLocation);
+#if !defined(__linux__)
+      if(!access("/proc/curproc/file", F_OK))
+         strcpy(fileName, "/proc/curproc/file");
+      else
+#endif
+         strcpy(fileName, exeLocation);
       return true;
    }
 #endif
