@@ -1228,7 +1228,7 @@ private:
                strcat(string, ".dylib");
             else
                strcat(string, ".so");
-            if(compiler.targetPlatform != win32 && moduleVersion && moduleVersion[0])
+            if(compiler.targetPlatform == tux && GetRuntimePlatform() == tux && moduleVersion && moduleVersion[0])
             {
                strcat(string, ".");
                strcat(string, moduleVersion);
@@ -2876,9 +2876,11 @@ private:
          f.Puts("endif\n");
          f.Puts("ifdef SHARED_LIBRARY_TARGET\n");
          f.Puts("ifdef LINUX_TARGET\n");
+         f.Puts("ifdef LINUX_HOST\n");
          // TODO?: support symlinks for longer version numbers
          f.Puts("\t$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)\n");
          f.Puts("\t$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)\n");
+         f.Puts("endif\n");
          f.Puts("endif\n");
          f.Puts("endif\n");
 
@@ -2954,9 +2956,11 @@ private:
          f.Puts("\t$(call rmq,$(TARGET))\n");
          f.Puts("ifdef SHARED_LIBRARY_TARGET\n");
          f.Puts("ifdef LINUX_TARGET\n");
+         f.Puts("ifdef LINUX_HOST\n");
          // TODO?: support symlinks for longer version numbers
          f.Puts("\t$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))\n");
          f.Puts("\t$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))\n");
+         f.Puts("endif\n");
          f.Puts("endif\n");
          f.Puts("endif\n");
          f.Puts("\n");
