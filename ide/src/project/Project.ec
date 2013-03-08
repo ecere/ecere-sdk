@@ -2069,7 +2069,7 @@ private:
             strcat(fileName, "$(E)");
             break;
          case sharedLibrary:
-            strcat(fileName, "$(SO)");
+            strcat(fileName, "$(SO)$(VER)");
             break;
          case staticLibrary:
             strcat(fileName, "$(A)");
@@ -2476,7 +2476,7 @@ private:
             strcpy(targetNoSpaces, targetDir);
             PathCatSlash(targetNoSpaces, target);
             ReplaceSpaces(targetNoSpaces, targetNoSpaces);
-            f.Printf("TARGET = %s$(VER)\n", targetNoSpaces);
+            f.Printf("TARGET = %s\n", targetNoSpaces);
 
             if(test)
             {
