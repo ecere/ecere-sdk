@@ -177,6 +177,8 @@ class TwoStrings : struct
    }
 }
 
+enum IntermediateFileType { none, c, sym, imp, bowl, o };
+
 class ProjectNode : ListItem
 {
 public:
@@ -474,6 +476,44 @@ private:
          strcpy(buffer, root.path);
          PathCatSlash(buffer, path);
          PathCatSlash(buffer, name);
+      }
+      return buffer;
+   }
+
+   char * GetObjectFileName(char * buffer, Map<String, NameCollisionInfo> namesInfo, IntermediateFileType type)
+   {
+      if(this.type == file && buffer)
+      {
+         bool collision;
+         char extension[MAX_EXTENSION];
+         char moduleName[MAX_FILENAME];
+         NameCollisionInfo info;
+
+         GetExtension(name, extension);
+         ReplaceSpaces(moduleName, name);
+         StripExtension(moduleName);
+         info = namesInfo[moduleName];
+         collision = info ? info.IsExtensionColliding(extension) : false;
+
+         strcpy(buffer, name);
+         if(!strcmp(extension, "ec"))
+         {
+            if(type == c)
+               ChangeExtension(buffer, "c", buffer);
+            else if(type == sym)
+               ChangeExtension(buffer, "sym", buffer);
+            else if(type == imp)
+               ChangeExtension(buffer, "imp", buffer);
+            else if(type == bowl)
+               ChangeExtension(buffer, "bowl", buffer);
+         }
+         if(type == o)
+         {
+            if(collision)
+               strcat(buffer, ".o");
+            else
+               ChangeExtension(buffer, "o", buffer);
+         }
       }
       return buffer;
    }
@@ -991,6 +1031,34 @@ private:
                   break;
                }
             }
+         }
+      }
+      return result;
+   }
+
+   ProjectNode FindByObjectFileName(char * fileName, IntermediateFileType type, Map<String, NameCollisionInfo> namesInfo)
+   {
+      ProjectNode result = null;
+      if(files)
+      {
+         for(child : files; child.type != resources)
+         {
+            if(child.type != file && (result = child.FindByObjectFileName(fileName, type, namesInfo)))
+               break;
+            else if(child.type == file && child.name)
+            {
+               char p[MAX_LOCATION];
+               child.GetObjectFileName(p, namesInfo, type);
+               if(!strcmpi(p, fileName))
+               {
+                  result = child;
+                  break;
+               }
+            }
+            if(recursive)
+               result = child.FindSpecial(name, recursive, includeResources, includeFolders);
+            if(result)
+               break;
          }
       }
       return result;

@@ -1603,6 +1603,58 @@ class ProjectView : Window
                   PathCatSlash(moduleName, node.name);
                }
                else
+               {
+                  char extension[MAX_EXTENSION];
+                  IntermediateFileType type = none;
+                  ProjectConfig config;
+                  GetExtension(moduleName, extension);
+                  if(extension && extension[0])
+                  {
+                     if(!strcmp(extension, "c"))
+                        type = c;
+                     else if(!strcmp(extension, "sym"))
+                        type = sym;
+                     else if(!strcmp(extension, "imp"))
+                        type = imp;
+                     else if(!strcmp(extension, "bowl"))
+                        type = bowl;
+                     else if(!strcmp(extension, "o"))
+                        type = o;
+                     if(type)
+                     {
+                        if((config = project.GetConfig(project.lastBuildConfigName)))
+                           node = project.FindNodeByObjectFileName(moduleName, type, config);
+                        if(!node)
+                        {
+                           for(prj : ide.workspace.projects)
+                           {
+                              if(config = project.GetConfig(prj.lastBuildConfigName))
+                                 node = prj.FindNodeByObjectFileName(moduleName, type, config);
+                              if(node)
+                                 break;
+                           }
+                        }
+                     }
+                  }
+                  if(node)
+                  {
+                     char name[MAX_FILENAME];
+                     Project project = node.project;
+                     CompilerConfig compiler = ideSettings.GetCompilerConfig(project.lastBuildCompilerName);
+                     if(compiler)
+                     {
+                        int bitDepth = ide.workspace.bitDepth;
+                        DirExpression objDir = project.GetObjDir(compiler, config, bitDepth);
+                        strcpy(moduleName, project.topNode.path);
+                        PathCatSlash(moduleName, objDir.dir);
+                        node.GetObjectFileName(name, project.lastBuildNamesInfo, type);
+                        PathCatSlash(moduleName, name);
+                        delete objDir;
+                     }
+                     delete compiler;
+                  }
+               }
+               if(!node)
                   moduleName[0] = '\0';
             }
             GetExtension(moduleName, ext);
