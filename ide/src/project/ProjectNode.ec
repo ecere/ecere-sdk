@@ -177,6 +177,8 @@ class TwoStrings : struct
    }
 }
 
+enum IntermediateFileType { none, ec, c, sym, imp, bowl, o };
+
 class ProjectNode : ListItem
 {
 public:
@@ -474,6 +476,51 @@ private:
          strcpy(buffer, root.path);
          PathCatSlash(buffer, path);
          PathCatSlash(buffer, name);
+      }
+      return buffer;
+   }
+
+   char * GetObjectFileName(char * buffer, Map<String, NameCollisionInfo> namesInfo, IntermediateFileType type, bool dotMain)
+   {
+      if(buffer && (this.type == file || (this.type == project && dotMain == true)))
+      {
+         bool collision;
+         char extension[MAX_EXTENSION];
+         char moduleName[MAX_FILENAME];
+         NameCollisionInfo info;
+
+         GetExtension(name, extension);
+         ReplaceSpaces(moduleName, name);
+         StripExtension(moduleName);
+         info = namesInfo[moduleName];
+         collision = info ? info.IsExtensionColliding(extension) : false;
+
+         if(dotMain)
+         {
+            strcpy(buffer, project.moduleName);
+            StripExtension(buffer);
+            strcat(buffer, ".main.ec");
+         }
+         else
+            strcpy(buffer, name);
+         if(!strcmp(extension, "ec") || dotMain)
+         {
+            if(type == c)
+               ChangeExtension(buffer, "c", buffer);
+            else if(type == sym)
+               ChangeExtension(buffer, "sym", buffer);
+            else if(type == imp)
+               ChangeExtension(buffer, "imp", buffer);
+            else if(type == bowl)
+               ChangeExtension(buffer, "bowl", buffer);
+         }
+         if(type == o)
+         {
+            if(collision)
+               strcat(buffer, ".o");
+            else
+               ChangeExtension(buffer, "o", buffer);
+         }
       }
       return buffer;
    }
@@ -1014,6 +1061,36 @@ private:
                }
                if(result)
                   break;
+            }
+         }
+      }
+      return result;
+   }
+
+   ProjectNode FindByObjectFileName(char * fileName, IntermediateFileType type, bool dotMain, Map<String, NameCollisionInfo> namesInfo)
+   {
+      char p[MAX_LOCATION];
+      ProjectNode result = null;
+      if(dotMain == true && this.type == project)
+      {
+         GetObjectFileName(p, namesInfo, type, dotMain);
+         if(!strcmpi(p, fileName))
+            result = this;
+      }
+      else if(files)
+      {
+         for(child : files; child.type != resources)
+         {
+            if(child.type != file && (result = child.FindByObjectFileName(fileName, type, dotMain, namesInfo)))
+               break;
+            else if(child.type == file && child.name)
+            {
+               child.GetObjectFileName(p, namesInfo, type, dotMain);
+               if(!strcmpi(p, fileName))
+               {
+                  result = child;
+                  break;
+               }
             }
          }
       }

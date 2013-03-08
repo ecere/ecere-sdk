@@ -848,6 +848,11 @@ private:
    String compilerConfigsDir;
    String moduleVersion;
 
+   String lastBuildConfigName;
+   String lastBuildCompilerName;
+
+   Map<String, NameCollisionInfo> lastBuildNamesInfo;
+
 #ifndef MAKEFILE_GENERATOR
    FileMonitor fileMonitor
    {
@@ -951,6 +956,9 @@ private:
       delete filePath;
       delete topNode;
       delete name;
+      delete lastBuildConfigName;
+      delete lastBuildCompilerName;
+      if(lastBuildNamesInfo) { lastBuildNamesInfo.Free(); delete lastBuildNamesInfo; }
    }
 
    ~Project()
@@ -972,6 +980,7 @@ private:
          topNode.info = CopyString(GetConfigName(config));
       }
    }
+
    property char * filePath
    {
       set
@@ -994,6 +1003,29 @@ private:
       }
    }
 
+   ProjectConfig GetConfig(char * configName)
+   {
+      ProjectConfig result = null;
+      if(configName && configName[0] && configurations.count)
+      {
+         for(cfg : configurations; !strcmpi(cfg.name, configName))
+         {
+            result = cfg;
+            break;
+         }
+      }
+      return result;
+   }
+
+   ProjectNode FindNodeByObjectFileName(char * fileName, IntermediateFileType type, bool dotMain, ProjectConfig config)
+   {
+      ProjectNode result;
+      if(!lastBuildNamesInfo)
+         ProjectLoadLastBuildNamesInfo(this, config);
+      result = topNode.FindByObjectFileName(fileName, type, dotMain, lastBuildNamesInfo);
+      return result;
+   }
+
    TargetTypes GetTargetType(ProjectConfig config)
    {
       TargetTypes targetType = localTargetType;
@@ -1012,7 +1044,6 @@ private:
       }
       return false;
    }
-
 
    char * GetObjDirExpression(ProjectConfig config)
    {
@@ -1455,7 +1486,6 @@ private:
       int compilingEC = 0;
       int numErrors = 0, numWarnings = 0;
       bool loggedALine = false;
-      char * configName = config ? config.name : "Common";
       int lenMakeCommand = strlen(compiler.makeCommand);
       int testLen = 0;
       char * t;
@@ -1885,7 +1915,7 @@ private:
                char targetFileName[MAX_LOCATION];
                targetFileName[0] = '\0';
                CatTargetFileName(targetFileName, compiler, config);
-               ide.outputView.buildBox.Logf("\n%s (%s) - ", targetFileName, configName);
+               ide.outputView.buildBox.Logf("\n%s (%s) - ", targetFileName, lastBuildConfigName);
             }
             if(numErrors)
                ide.outputView.buildBox.Logf("%d %s, ", numErrors, (numErrors > 1) ? $"errors" : $"error");
@@ -1968,9 +1998,14 @@ private:
       bool singleProjectOnlyNode = onlyNodes && onlyNodes.count == 1 && onlyNodes[0].type == project;
       int numJobs = compiler.numJobs;
       char command[MAX_F_STRING*4];
-      char * compilerName;
+      char * compilerName = CopyString(compiler.name);
 
-      compilerName = CopyString(compiler.name);
+      delete lastBuildConfigName;
+      lastBuildConfigName = CopyString(config ? config.name : "Common");
+      delete lastBuildCompilerName;
+      lastBuildCompilerName = CopyString(compiler.name);
+      ProjectLoadLastBuildNamesInfo(this, config);
+
       CamelCase(compilerName);
 
       strcpy(configName, config ? config.name : "Common");
@@ -1994,7 +2029,6 @@ private:
             int len;
             char pushD[MAX_LOCATION];
             char cfDir[MAX_LOCATION];
-            Map<String, NameCollisionInfo> namesInfo { };
             GetIDECompilerConfigsDir(cfDir, true, true);
             GetWorkingDir(pushD, sizeof(pushD));
             ChangeWorkingDir(topNode.path);
@@ -2016,7 +2050,6 @@ private:
 
             ChangeWorkingDir(pushD);
 
-            topNode.GenMakefileGetNameCollisionInfo(namesInfo, config);
             for(node : onlyNodes)
             {
                if(node.GetIsExcluded(config))
@@ -2024,12 +2057,10 @@ private:
                else
                {
                   if(!eC_Debug)
-                     node.DeleteIntermediateFiles(compiler, config, bitDepth, namesInfo, mode == cObject ? true : false);
-                  node.GetTargets(config, namesInfo, objDirExp.dir, makeTargets);
+                     node.DeleteIntermediateFiles(compiler, config, bitDepth, lastBuildNamesInfo, mode == cObject ? true : false);
+                  node.GetTargets(config, lastBuildNamesInfo, objDirExp.dir, makeTargets);
                }
             }
-            namesInfo.Free();
-            delete namesInfo;
          }
       }
 
@@ -3486,6 +3517,17 @@ private:
    }
 }
 
+static inline void ProjectLoadLastBuildNamesInfo(Project prj, ProjectConfig cfg)
+{
+   if(prj.lastBuildNamesInfo)
+   {
+      prj.lastBuildNamesInfo.Free();
+      delete prj.lastBuildNamesInfo;
+   }
+   prj.lastBuildNamesInfo = { };
+   prj.topNode.GenMakefileGetNameCollisionInfo(prj.lastBuildNamesInfo, cfg);
+}
+
 Project LegacyBinaryLoadProject(File f, char * filePath)
 {
    Project project = null;
@@ -4354,16 +4396,7 @@ Project LoadProject(char * filePath, char * activeConfigName)
       {
          if(!project.options) project.options = { };
          if(activeConfigName && activeConfigName[0] && project.configurations)
-         {
-            for(cfg : project.configurations)
-            {
-               if(!strcmpi(cfg.name, activeConfigName))
-               {
-                  project.config = cfg;
-                  break;
-               }
-            }
-         }
+            project.config = project.GetConfig(activeConfigName);
          if(!project.config && project.configurations)
             project.config = project.configurations.firstIterator.data;
 
