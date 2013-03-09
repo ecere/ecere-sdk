@@ -15,6 +15,9 @@
 #define bool _bool
 #include <utime.h>
 #include <dlfcn.h>
+#if defined(__APPLE__)
+#include <mach-o/dyld.h>
+#endif
 #if defined(__FreeBSD__)
 #include <sys/sysctl.h>
 #endif

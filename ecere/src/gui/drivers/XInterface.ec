@@ -85,8 +85,8 @@ static Semaphore xSemaphore { };
 static Mutex xMutex { };
 static bool fullScreenMode;
 static int desktopX = 0, desktopY = 0, desktopW = 0, desktopH = 0;
-int confineWindow;
-static int nullCursor;
+X11Window confineWindow;
+static X11Cursor nullCursor;
 static X11Window capturedWindow = None;
 static Window restrictedWindow = null;
 static bool gotAnXEvent = false;
@@ -103,8 +103,7 @@ static enum AtomIdents
    _net_wm_window_type_desktop, _net_wm_window_type_dialog, _net_wm_window_type_dock, _net_wm_window_type_dropdown_menu,
    _net_wm_window_type_menu, _net_wm_window_type_normal, _net_wm_window_type_popup_menu, _net_wm_window_type_splash,
    _net_wm_window_type_toolbar, _net_wm_window_type_utility, _net_workarea, _net_frame_extents, _net_request_frame_extents,
-   _net_wm_state_maximized_vert, _net_wm_state_maximized_horz, _net_wm_state_hidden,
-   app_selection
+   _net_wm_state_maximized_vert, _net_wm_state_maximized_horz, app_selection
 };
 
 static Atom atoms[AtomIdents];
@@ -148,7 +147,6 @@ static const char *atomNames[AtomIdents] = {
    "_NET_REQUEST_FRAME_EXTENTS", // _net_request_frame_extents
    "_NET_WM_STATE_MAXIMIZED_VERT", // _net_wm_state_maximized_vert
    "_NET_WM_STATE_MAXIMIZED_HORZ", // _net_wm_state_maximized_horz
-   "_NET_WM_STATE_HIDDEN", // _net_wm_state_hidden
    "APP_SELECTION"
 };
 
@@ -236,7 +234,8 @@ static void RepositionDesktop(bool updateChildren)
    X11Window x_root;
    int current = 0;   
    char *data = null;
-   int format, len, fill;
+   int format;
+   unsigned long len, fill;
    Atom type;
 
    w = XDisplayWidth(xGlobalDisplay, DefaultScreen(xGlobalDisplay));
@@ -369,12 +368,12 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
    KeySym keysym = NoSymbol;
    Status status;
    int buflength = 0;
-   static int bufsize = 16;
+   static long bufsize = 16;
    static char *buf = NULL;
    XWindowData windowData = window.windowData;
    Key key = 0;
 
-   if(window.destroyed) return;
+   if(window.destroyed) return result;
 
    // Logf("Got 0x%x (%d)\n", keyCode, key);
 
@@ -792,7 +791,7 @@ static Bool EventChecker(void *display, XEvent *event, char * data)
 
 static Bool ConfigureNotifyChecker(void *display, XConfigureEvent *event, char * data)
 {
-   return (!data || ((event->window == (int) data)) && event->type == ConfigureNotify;
+   return ((!data || (event->window == (int) data)) && event->type == ConfigureNotify;
 }
 
 static uint timerDelay = MAXINT;
@@ -806,8 +805,8 @@ static uint XTimerThread(Thread thread)
    */
    for(;;)
    {
-      int result;
-      bool waitSemaphore = false;
+      //int result;
+      //bool waitSemaphore = false;
       fd_set readSet, writeSet, exceptSet;
       struct timeval tv = { (timerDelay == MAXINT) ? 0 : (timerDelay / 1000000), (timerDelay == MAXINT) ? (int)(1000000 / 18.2) : (timerDelay % 1000000) };
       
@@ -1449,7 +1448,7 @@ class XInterface : Interface
                   // if(event->time - lastTime > 15)
                   {
                      Modifiers keyFlags = 0;
-                     int x = event->x_root, y = event->y_root;
+                     // int x = event->x_root, y = event->y_root;
 
                      if(event->state & ShiftMask)     keyFlags.shift = true;
                      if(event->state & ControlMask)   keyFlags.ctrl = true;
@@ -1662,7 +1661,8 @@ class XInterface : Interface
                   // TODO: Support _NET_REQUEST_FRAME_EXTENTS message / _NET_FRAME_EXTENTS property for decoration size awareness
                   if(window.nativeDecorations)
                   {
-                     long format, len, fill;
+                     int format;
+                     unsigned long len, fill;
                      Atom type;
                      char * data = null;
                      if(XGetWindowProperty(xGlobalDisplay, (X11Window)window.systemHandle, atoms[_net_wm_state], 0, 32, False,
@@ -1849,7 +1849,8 @@ class XInterface : Interface
                   if(event->atom == atoms[_net_frame_extents] &&
                     event->state == PropertyNewValue && windowData)
                   {
-                     long format, len, fill;
+                     int format;
+                     unsigned long len, fill;
                      Atom type;
                      char * data = null;
 
@@ -1964,7 +1965,7 @@ class XInterface : Interface
       int depth;
       Visual * visual;
       XIC ic = null;
-      unsigned int mask = EVENT_MASK;
+      unsigned long mask = EVENT_MASK;
 
       attributes.override_redirect = window.interim ? True : False;
       attributes.event_mask = EVENT_MASK;
@@ -2553,7 +2554,7 @@ class XInterface : Interface
 
    void GetMousePosition(int *x, int *y)
    {
-      long rootWindow, childWindow;
+      X11Window rootWindow, childWindow;
       int mx, my;
       unsigned int state;
       ((GuiApplication)__thisModule.application).Lock();
@@ -2741,11 +2742,11 @@ class XInterface : Interface
          }
          if(rootWindow)
          {
-            int selAtom = atoms[clipboard];
-            int owner = XGetSelectionOwner(xGlobalDisplay, selAtom);
+            Atom selAtom = atoms[clipboard];
+            X11Window owner = XGetSelectionOwner(xGlobalDisplay, selAtom);
             if(owner != None)
             {
-               long atom;
+               Atom atom;
                for(atom = atoms[utf8_string]; atom; atom = ((atom == atoms[utf8_string]) ? XA_STRING : 0))
                {
                   XEvent e;
@@ -2758,11 +2759,11 @@ class XInterface : Interface
                      byte *data;
                      unsigned long len, size = 0, dummy;
                      Atom type;
-                     long format;
-                     XGetWindowProperty(xGlobalDisplay, (X11Window) rootWindow.windowHandle, selection->_property ? selection->_property : atom, 0, 0, 0, AnyPropertyType, &type, &format, &len, &size, &data);
+                     int format;
+                     XGetWindowProperty(xGlobalDisplay, (X11Window) rootWindow.windowHandle, selection->_property ? selection->_property : atom, 0, 0, False, AnyPropertyType, &type, &format, &len, &size, &data);
                      if(size > 0)
                      {
-                        if(XGetWindowProperty(xGlobalDisplay, (X11Window) rootWindow.windowHandle, selection->_property ? selection->_property : atom, 0,size,0,
+                        if(XGetWindowProperty(xGlobalDisplay, (X11Window) rootWindow.windowHandle, selection->_property ? selection->_property : atom, 0, size, False,
                               AnyPropertyType, &type,&format,&len, &dummy, &data) == Success)
                         {
                            clipBoard.text = new char[size+1];
