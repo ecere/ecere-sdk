@@ -425,9 +425,6 @@ class IDEWorkSpace : Window
                if(!ide.findInFilesDialog || !ide.findInFilesDialog.SearchAbort())
                   ide.ShowCodeEditor(); 
                break;
-            case ctrlS:
-               ide.projectView.stopBuild = true;
-               break;
             default:
             {
                OutputView::OnKeyDown(key, ch);
@@ -968,7 +965,12 @@ class IDEWorkSpace : Window
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
-               projectView.ProjectBuild(projectView.active ? selection : null, mods);
+            {
+               if(projectView.buildInProgress == none)
+                  projectView.ProjectBuild(projectView.active ? selection : null, mods);
+               else
+                  projectView.stopBuild = true;
+            }
             return true;
          }
       }
@@ -1074,6 +1076,8 @@ class IDEWorkSpace : Window
          bitmap = { ":actions/pause.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
+            if(projectView && projectView.buildInProgress != none)
+               return true;
             if(projectView)
                projectView.DebugBreak();
             return true;
@@ -1766,8 +1770,11 @@ class IDEWorkSpace : Window
 
       projectRunItem.disabled    = unavailable || project.GetTargetType(project.config) != executable;
       toolBar.buttonRun.disabled = unavailable || project.GetTargetType(project.config) != executable;
-      projectBuildItem.disabled                 = unavailable;
-      toolBar.buttonBuild.disabled              = unavailable;
+
+      projectBuildItem.disabled = false;
+      projectBuildItem.text     = unavailable ? $"Stop Build" : $"Build";
+      projectBuildItem.accelerator = unavailable ? Key { pauseBreak, ctrl = true } : f7;
+
       projectLinkItem.disabled                  = unavailable;
       toolBar.buttonReLink.disabled             = unavailable;
       projectRebuildItem.disabled               = unavailable;
@@ -1780,10 +1787,24 @@ class IDEWorkSpace : Window
       toolBar.buttonRegenerateMakefile.disabled = unavailable;
       projectCompileItem.disabled               = unavailable;
 
+      AdjustPopupBuildMenus();
+   }
+
+   void AdjustPopupBuildMenus()
+   {
+      bool unavailable = !project || projectView.buildInProgress;
+
       if(projectView && projectView.popupMenu && projectView.popupMenu.menu && projectView.popupMenu.created)
       {
          MenuItem menu;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectBuild, 0);             if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectBuild, 0);
+         if(menu)
+         {
+            menu.disabled = false;
+            menu.text   = unavailable ? $"Stop Build" : $"Build";
+            menu.accelerator = unavailable ? f7 : Key { pauseBreak, ctrl = true };
+         }
+
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectLink, 0);              if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRebuild, 0);           if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectClean, 0);             if(menu) menu.disabled = unavailable;
