@@ -103,7 +103,7 @@ Platform runtimePlatform = unknown;    // 'linux' is used as a catch all UNIX pl
 */
 #endif
 
-#if !defined(ECERE_NOFILE) && defined(__unix__)
+#if !defined(ECERE_NOFILE) && defined(__unix__) && !defined(__linux__)
 
 typedef struct _DualPipe _DualPipe;
 
@@ -325,7 +325,6 @@ bool Instance_LocateModule(char * name, char * fileName)
 #endif
    if(!name || !name[0])
    {
-      char * env;
 #if defined(__FreeBSD__)
       {
          int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
@@ -337,15 +336,18 @@ bool Instance_LocateModule(char * name, char * fileName)
       }  
 #endif
 #if !defined(__linux__)
-      if(!access("/proc/curproc/file", F_OK))
       {
-         strcpy(fileName, "/proc/curproc/file");
-         return true;
-      }
-      if((env = getenv("_")))
-      {
-         strcpy(fileName, env);
-         return true;
+         char * env;
+         if(!access("/proc/curproc/file", F_OK))
+         {
+            strcpy(fileName, "/proc/curproc/file");
+            return true;
+         }
+         if((env = getenv("_")))
+         {
+            strcpy(fileName, env);
+            return true;
+         }
       }
 #endif
       strcpy(fileName, exeLocation);

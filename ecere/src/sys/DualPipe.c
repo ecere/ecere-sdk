@@ -331,17 +331,23 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, char * commandLine, char * env, voi
             close(hInput[PIPE_READ]);
          }
          
-         numTokens = __ecereNameSpace__ecere__sys__Tokenize(commandLineCopy, 128, tokens, false);
+         numTokens = __ecereNameSpace__ecere__sys__Tokenize(commandLineCopy, sizeof(tokens) / sizeof(tokens[0]) - 1, tokens, false);
          tokens[numTokens] = null;
          if(env)
          {
-            // TOFIX: env must be split into separate strings!!
-            if(execve(tokens[0], (char **)tokens, env) < 0)
+            char * envTokens[129];
+            char * envCopy = __ecereNameSpace__ecere__sys__CopyString(env);
+            int numEnvTokens = __ecereNameSpace__ecere__sys__Tokenize(envCopy, sizeof(envTokens) / sizeof(envTokens[0]) - 1, envTokens, false);
+            envTokens[numEnvTokens] = null;
+
+            if(execve(tokens[0], tokens, envTokens) < 0)
             {
                __ecereNameSpace__ecere__com__eSystem_Delete(commandLineCopy);
+               __ecereNameSpace__ecere__com__eSystem_Delete(envCopy);
                exit(1);
             }
             __ecereNameSpace__ecere__com__eSystem_Delete(commandLineCopy);
+            __ecereNameSpace__ecere__com__eSystem_Delete(envCopy);
             exit(0);
          }
          else
