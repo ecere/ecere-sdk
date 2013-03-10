@@ -383,7 +383,7 @@ public:
       return null;
    }
 
-   DataRow FindSubRow(int tag)
+   DataRow FindSubRow(int64 tag)
    {
       if(this)
       {
