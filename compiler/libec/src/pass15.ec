@@ -8919,8 +8919,16 @@ void ProcessExpressionType(Expression exp)
                }
                else
                {
-                  e.destType = type;
-                  if(type) type.refCount++;
+                  if(type && type.kind == ellipsisType && type.prev && type.prev.kind == classType && type.prev.classObjectType)
+                  {
+                     e.destType = type.prev;
+                     e.destType.refCount++;
+                  }
+                  else
+                  {
+                     e.destType = type;
+                     if(type) type.refCount++;
+                  }
                }
                // Don't reach the end for the ellipsis
                if(type && type.kind != ellipsisType)

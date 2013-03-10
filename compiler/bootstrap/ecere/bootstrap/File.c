@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -265,8 +266,6 @@ struct __ecereNameSpace__ecere__com__Method * method;
 } __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 
-typedef uintptr_t size_t;
-
 void exit(int status);
 
 void * calloc(size_t nmemb, size_t size);
@@ -373,7 +372,7 @@ return string;
 
 extern double strtod(char * , char * * );
 
-extern char *  strstr(char * , const char * );
+extern char *  strstr(const char * , const char * );
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__FileSize_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * class, unsigned int * this, char * string)
 {
@@ -702,7 +701,7 @@ struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ece
 return ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int type, uint64 start, uint64 length, unsigned int wait))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Lock])(this, 0, start, length, wait);
 }
 
-extern int strlen(const char * );
+extern size_t strlen(const char * );
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
@@ -1323,7 +1322,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetDataFromString", 0, 
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "WriteData", 0, __ecereMethod___ecereNameSpace__ecere__sys__File_WriteData, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "ReadData", 0, __ecereMethod___ecereNameSpace__ecere__sys__File_ReadData, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Seek", "bool Seek(int pos, ecere::sys::FileSeekMode mode)", __ecereMethod___ecereNameSpace__ecere__sys__File_Seek, 1);
-__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Tell", "unsigned int Tell(void)", __ecereMethod___ecereNameSpace__ecere__sys__File_Tell, 1);
+__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Tell", "uint Tell(void)", __ecereMethod___ecereNameSpace__ecere__sys__File_Tell, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Read", "int Read(void * buffer, unsigned int size, unsigned int count)", __ecereMethod___ecereNameSpace__ecere__sys__File_Read, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Write", "int Write(void * buffer, unsigned int size, unsigned int count)", __ecereMethod___ecereNameSpace__ecere__sys__File_Write, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Getc", "bool Getc(char * ch)", __ecereMethod___ecereNameSpace__ecere__sys__File_Getc, 1);
@@ -1331,7 +1330,7 @@ __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Putc", "bool Putc(
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Puts", "bool Puts(const char * string)", __ecereMethod___ecereNameSpace__ecere__sys__File_Puts, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Eof", "bool Eof(void)", __ecereMethod___ecereNameSpace__ecere__sys__File_Eof, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Truncate", "bool Truncate(ecere::sys::FileSize size)", __ecereMethod___ecereNameSpace__ecere__sys__File_Truncate, 1);
-__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "GetSize", "unsigned int GetSize(void)", __ecereMethod___ecereNameSpace__ecere__sys__File_GetSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "GetSize", "uint GetSize(void)", __ecereMethod___ecereNameSpace__ecere__sys__File_GetSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "CloseInput", "void CloseInput(void)", __ecereMethod___ecereNameSpace__ecere__sys__File_CloseInput, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "CloseOutput", "void CloseOutput(void)", __ecereMethod___ecereNameSpace__ecere__sys__File_CloseOutput, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Lock", "bool Lock(ecere::sys::FileLock type, uint64 start, uint64 length, bool wait)", __ecereMethod___ecereNameSpace__ecere__sys__File_Lock, 1);

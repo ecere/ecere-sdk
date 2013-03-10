@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -255,8 +256,6 @@ struct __ecereNameSpace__ecere__com__Method * method;
 } __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 
-typedef uintptr_t size_t;
-
 void exit(int status);
 
 void * calloc(size_t nmemb, size_t size);
@@ -282,7 +281,7 @@ extern int runtimePlatform;
 
 
 
-extern int strlen(const char * );
+extern size_t strlen(const char * );
 
 extern char *  strcpy(char * , const char * );
 
@@ -311,7 +310,7 @@ return output;
 
 extern int strcmp(const char * , const char * );
 
-extern void *  memmove(void * , const void * , unsigned int size);
+extern void *  memmove(void * , const void * , size_t size);
 
 extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
 
@@ -415,7 +414,7 @@ output[len - 1] = '\0';
 return output;
 }
 
-extern char *  strncpy(char * , const char * , int n);
+extern char *  strncpy(char * , const char * , size_t n);
 
 unsigned int __ecereNameSpace__ecere__sys__SplitArchivePath(char * fileName, char * archiveName, char ** archiveFile)
 {
@@ -442,7 +441,7 @@ return 0x1;
 return 0x0;
 }
 
-extern char *  strstr(char * , const char * );
+extern char *  strstr(const char * , const char * );
 
 extern int toupper(int);
 
@@ -986,9 +985,9 @@ else
 sprintf(string, "%.0f B", size);
 }
 
-extern int strncmp(const char * , const char * , int n);
+extern int strncmp(const char * , const char * , size_t n);
 
-extern int strncasecmp(const char * , const char * , int n);
+extern int strncasecmp(const char * , const char * , size_t n);
 
 extern int tolower(int);
 
@@ -1120,7 +1119,7 @@ tokens[count++] = start;
 return count;
 }
 
-extern char *  strchr(char * , int);
+extern char *  strchr(const char * , int);
 
 int __ecereNameSpace__ecere__sys__TokenizeWith(char * string, int maxTokens, char * tokens[], char * tokenizers, unsigned int escapeBackSlashes)
 {
@@ -1233,7 +1232,7 @@ string[c] = ch;
 string[c] = (char)0;
 }
 
-extern void *  memcpy(void * , const void * , unsigned int size);
+extern void *  memcpy(void * , const void * , size_t size);
 
 char * __ecereNameSpace__ecere__sys__CopyString(char * string)
 {

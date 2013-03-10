@@ -13640,9 +13640,17 @@ type->refCount++;
 }
 else
 {
+if(type && type->kind == 14 && type->prev && type->prev->kind == 8 && type->prev->classObjectType)
+{
+e->destType = type->prev;
+e->destType->refCount++;
+}
+else
+{
 e->destType = type;
 if(type)
 type->refCount++;
+}
 }
 if(type && type->kind != 14)
 {

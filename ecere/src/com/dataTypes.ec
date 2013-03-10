@@ -455,7 +455,57 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
    }
    else if(_class.type == unitClass)
    {
-      Class dataType = eSystem_FindClass(module, _class.dataTypeString);
+      Class dataType;
+      Property prop;
+      for(prop = _class.conversions.first; prop; prop = prop.next)
+      {
+         bool refProp = false;
+         Class c;
+         if(!strcmp(prop.name, _class.base.fullName))
+            refProp = true;
+         else if( (c = eSystem_FindClass(_class.module, prop.name) ) )
+         {
+            Property p;
+            for(p = c.conversions.first; p; p = p.next)
+            {
+               if(!strcmp(p.name, _class.base.fullName) && !p.Set && !p.Get)
+               {
+                  refProp = true;
+                  break;
+               }
+            }
+         }
+         if(refProp)
+         {
+            if(prop.Set && prop.Get)
+            {
+               String dts = _class.base.dataTypeString;
+               if(!strcmp(dts, "double"))
+               {
+                  double d = ((double(*)(double))(void *)prop.Set)(*(double *)data);
+                  return ((char *(*)(void *, void *, char *, void *, bool *))(void *)class(double)._vTbl[__ecereVMethodID_class_OnGetString])(class(double), &d, tempString, fieldData, needClass);
+               }
+               else if(!strcmp(dts, "float"))
+               {
+                  float d = ((float(*)(float))(void *)prop.Set)(*(float *)data);
+                  return ((char *(*)(void *, void *, char *, void *, bool *))(void *)class(float)._vTbl[__ecereVMethodID_class_OnGetString])(class(float), &d, tempString, fieldData, needClass);
+               }
+               else if(!strcmp(dts, "int"))
+               {
+                  int d = ((int(*)(int))(void *)prop.Set)(*(int *)data);
+                  return ((char *(*)(void *, void *, char *, void *, bool *))(void *)class(int)._vTbl[__ecereVMethodID_class_OnGetString])(class(int), &d, tempString, fieldData, needClass);
+               }
+               else if(!strcmp(dts, "int64"))
+               {
+                  int64 d = ((int64(*)(int64))(void *)prop.Set)(*(int64 *)data);
+                  return ((char *(*)(void *, void *, char *, void *, bool *))(void *)class(int64)._vTbl[__ecereVMethodID_class_OnGetString])(class(int64), &d, tempString, fieldData, needClass);
+               }
+            }
+            else
+               break;
+         }
+      }
+      dataType = eSystem_FindClass(module, _class.dataTypeString);
       return ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, data, tempString, fieldData, needClass);
    }
    else
@@ -702,7 +752,65 @@ static bool OnGetDataFromString(Class _class, void ** data, char * string)
       result = Enum_OnGetDataFromString(_class, (int *)data, string);
    else if(_class.type == unitClass)
    {
-      Class dataType = eSystem_FindClass(module, _class.dataTypeString);
+      Class dataType;
+      Property prop;
+      for(prop = _class.conversions.first; prop; prop = prop.next)
+      {
+         bool refProp = false;
+         Class c;
+         if(!strcmp(prop.name, _class.base.fullName))
+            refProp = true;
+         else if( (c = eSystem_FindClass(_class.module, prop.name) ) )
+         {
+            Property p;
+            for(p = c.conversions.first; p; p = p.next)
+            {
+               if(!strcmp(p.name, _class.base.fullName) && !p.Set && !p.Get)
+               {
+                  refProp = true;
+                  break;
+               }
+            }
+         }
+         if(refProp)
+         {
+            if(prop.Set && prop.Get)
+            {
+               String dts = _class.base.dataTypeString;
+               if(!strcmp(dts, "double"))
+               {
+                  double d;
+                  bool result = ((bool (*)(void *, void *, const char *))(void *)class(double)._vTbl[__ecereVMethodID_class_OnGetDataFromString])(class(double), &d, string);
+                  *(double *)data =((double(*)(double))(void *)prop.Get)(d);
+                  return result;
+               }
+               else if(!strcmp(dts, "float"))
+               {
+                  float d;
+                  bool result = ((bool (*)(void *, void *, const char *))(void *)class(float)._vTbl[__ecereVMethodID_class_OnGetDataFromString])(class(float), &d, string);
+                  *(float *)data = ((float(*)(float))(void *)prop.Get)(d);
+                  return result;
+               }
+               else if(!strcmp(dts, "int"))
+               {
+                  int d;
+                  bool result = ((bool (*)(void *, void *, const char *))(void *)class(int)._vTbl[__ecereVMethodID_class_OnGetDataFromString])(class(int), &d, string);
+                  *(int *)data = ((int(*)(int))(void *)prop.Get)(d);
+                  return result;
+               }
+               else if(!strcmp(dts, "int64"))
+               {
+                  int64 d;
+                  bool result = ((bool (*)(void *, void *, const char *))(void *)class(int64)._vTbl[__ecereVMethodID_class_OnGetDataFromString])(class(int64), &d, string);
+                  *(int64 *)data = ((int64(*)(int64))(void *)prop.Get)(d);
+                  return result;
+               }
+            }
+            else
+               break;
+         }
+      }
+      dataType = eSystem_FindClass(module, _class.dataTypeString);
       return ((bool (*)(void *, void *, const char *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetDataFromString])(dataType, data, string);
    }
    else if(!string[0] && _class.type == normalClass)

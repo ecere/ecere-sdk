@@ -824,6 +824,12 @@ uint64 mask;
 
 extern size_t strlen(const char * );
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_double;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_float;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_int64;
+
 static char * __ecereNameSpace__ecere__com__OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, void * data, char * tempString, void * fieldData, unsigned int * needClass)
 {
 struct __ecereNameSpace__ecere__com__Instance * module = _class->templateClass ? _class->templateClass->module : _class->module;
@@ -834,8 +840,65 @@ return __ecereNameSpace__ecere__com__Enum_OnGetString(_class, data, tempString, 
 }
 else if(_class->type == 3)
 {
-struct __ecereNameSpace__ecere__com__Class * dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, _class->dataTypeString);
+struct __ecereNameSpace__ecere__com__Class * dataType;
+struct __ecereNameSpace__ecere__com__Property * prop;
 
+for(prop = _class->conversions.first; prop; prop = prop->next)
+{
+unsigned int refProp = 0x0;
+struct __ecereNameSpace__ecere__com__Class * c;
+
+if(!strcmp(prop->name, _class->base->fullName))
+refProp = 0x1;
+else if((c = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, prop->name)))
+{
+struct __ecereNameSpace__ecere__com__Property * p;
+
+for(p = c->conversions.first; p; p = p->next)
+{
+if(!strcmp(p->name, _class->base->fullName) && !p->Set && !p->Get)
+{
+refProp = 0x1;
+break;
+}
+}
+}
+if(refProp)
+{
+if(prop->Set && prop->Get)
+{
+char * dts = _class->base->dataTypeString;
+
+if(!strcmp(dts, "double"))
+{
+double d = ((double (*)(double))(void *)prop->Set)(*(double *)data);
+
+return ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)__ecereClass_double->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_double, &d, tempString, fieldData, needClass);
+}
+else if(!strcmp(dts, "float"))
+{
+float d = ((float (*)(float))(void *)prop->Set)(*(float *)data);
+
+return ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)__ecereClass_float->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_float, &d, tempString, fieldData, needClass);
+}
+else if(!strcmp(dts, "int"))
+{
+int d = ((int (*)(int))(void *)prop->Set)(*(int *)data);
+
+return ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, &d, tempString, fieldData, needClass);
+}
+else if(!strcmp(dts, "int64"))
+{
+long long d = ((long long (*)(long long))(void *)prop->Set)(*(long long *)data);
+
+return ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)__ecereClass_int64->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int64, &d, tempString, fieldData, needClass);
+}
+}
+else
+break;
+}
+}
+dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, _class->dataTypeString);
 return ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnGetString])(dataType, data, tempString, fieldData, needClass);
 }
 else
@@ -1078,8 +1141,73 @@ if(_class->type == 4)
 result = __ecereNameSpace__ecere__com__Enum_OnGetDataFromString(_class, (int *)data, string);
 else if(_class->type == 3)
 {
-struct __ecereNameSpace__ecere__com__Class * dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, _class->dataTypeString);
+struct __ecereNameSpace__ecere__com__Class * dataType;
+struct __ecereNameSpace__ecere__com__Property * prop;
 
+for(prop = _class->conversions.first; prop; prop = prop->next)
+{
+unsigned int refProp = 0x0;
+struct __ecereNameSpace__ecere__com__Class * c;
+
+if(!strcmp(prop->name, _class->base->fullName))
+refProp = 0x1;
+else if((c = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, prop->name)))
+{
+struct __ecereNameSpace__ecere__com__Property * p;
+
+for(p = c->conversions.first; p; p = p->next)
+{
+if(!strcmp(p->name, _class->base->fullName) && !p->Set && !p->Get)
+{
+refProp = 0x1;
+break;
+}
+}
+}
+if(refProp)
+{
+if(prop->Set && prop->Get)
+{
+char * dts = _class->base->dataTypeString;
+
+if(!strcmp(dts, "double"))
+{
+double d;
+unsigned int result = ((unsigned int (*)(void *, void *, const char *))(void *)__ecereClass_double->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(__ecereClass_double, &d, string);
+
+*(double *)data = ((double (*)(double))(void *)prop->Get)(d);
+return result;
+}
+else if(!strcmp(dts, "float"))
+{
+float d;
+unsigned int result = ((unsigned int (*)(void *, void *, const char *))(void *)__ecereClass_float->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(__ecereClass_float, &d, string);
+
+*(float *)data = ((float (*)(float))(void *)prop->Get)(d);
+return result;
+}
+else if(!strcmp(dts, "int"))
+{
+int d;
+unsigned int result = ((unsigned int (*)(void *, void *, const char *))(void *)__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(__ecereClass_int, &d, string);
+
+*(int *)data = ((int (*)(int))(void *)prop->Get)(d);
+return result;
+}
+else if(!strcmp(dts, "int64"))
+{
+long long d;
+unsigned int result = ((unsigned int (*)(void *, void *, const char *))(void *)__ecereClass_int64->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(__ecereClass_int64, &d, string);
+
+*(long long *)data = ((long long (*)(long long))(void *)prop->Get)(d);
+return result;
+}
+}
+else
+break;
+}
+}
+dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, _class->dataTypeString);
 return ((unsigned int (*)(void *, void *, const char *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(dataType, data, string);
 }
 else if(!string[0] && _class->type == 0)
@@ -1914,7 +2042,7 @@ integerClass->type = 1000;
 integerClass->dataTypeString = __ecereNameSpace__ecere__sys__CopyString("ssize_t");
 integerClass->structSize = 0;
 integerClass->typeSize = sizeof(ssize_t);
-if(sizeof(size_t) == 8)
+if(sizeof(ssize_t) == 8)
 {
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetString", (((void *)0)), __ecereNameSpace__ecere__com__Int64_OnGetString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetDataFromString", (((void *)0)), __ecereNameSpace__ecere__com__Int64_OnGetDataFromString, 1);
@@ -2596,8 +2724,8 @@ __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64U", "(
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::IOChannel", 0, 0, 0, 0, 0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__IOChannel = class;
-__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "WriteData", "unsigned int WriteData(byte * data, unsigned int numBytes)", 0, 1);
-__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "ReadData", "unsigned int ReadData(byte * data, unsigned int numBytes)", 0, 1);
+__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "WriteData", "uint WriteData(byte * data, unsigned int numBytes)", 0, 1);
+__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "ReadData", "uint ReadData(byte * data, unsigned int numBytes)", 0, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Get", "void Get(typed_object * data)", __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Put", "void Put(typed_object data)", __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Put, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Serialize", "void Serialize(typed_object data)", __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize, 1);
@@ -2615,7 +2743,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "pos", "uint", 4, 4, 1
 __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_buffer = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "buffer", "byte *", __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Set_buffer, __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Get_buffer, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_buffer = __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_buffer, __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_buffer = (void *)0;
-__ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "size", "unsigned int", __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Set_size, __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Get_size, 1);
+__ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "size", "uint", __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Set_size, __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Get_size, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_size = __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size, __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size = (void *)0;
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnGetString", "char * ecere::com::Enum_OnGetString(ecere::com::Class _class, int * data, char * tempString, void * fieldData, bool * needClass)", __ecereNameSpace__ecere__com__Enum_OnGetString, module, 4);
