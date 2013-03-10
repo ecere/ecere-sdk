@@ -2701,7 +2701,7 @@ void OutputTree(struct __ecereNameSpace__ecere__sys__OldList * ast, struct __ece
 {
 struct External * external;
 
-outputLine = 28;
+outputLine = 30;
 for(external = ast->first; external; external = external->next)
 {
 switch(external->type)
