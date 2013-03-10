@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -280,6 +281,8 @@ int __ecereVMethodID_class_OnSaveEdit;
 int __ecereVMethodID_class_OnSerialize;
 
 int __ecereVMethodID_class_OnUnserialize;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass_double;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__AVLNode;
 
@@ -561,7 +564,11 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecer
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
 
+struct __ecereNameSpace__ecere__com__Class * __ecereClass_float;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass_int64;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint;
 
@@ -733,6 +740,7 @@ __ecereVMethodID_class_OnSerialize = method->vid;
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "OnUnserialize", module);
 if(method)
 __ecereVMethodID_class_OnUnserialize = method->vid;
+__ecereClass_double = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "double");
 __ecereClass___ecereNameSpace__ecere__com__AVLNode = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::AVLNode");
 __ecereProp___ecereNameSpace__ecere__com__AVLNode_maximum = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__AVLNode, "maximum", module);
 __ecereProp___ecereNameSpace__ecere__com__AVLNode_minimum = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__AVLNode, "minimum", module);
@@ -1047,7 +1055,9 @@ __ecereClass___ecereNameSpace__ecere__sys__OldLink = __ecereNameSpace__ecere__co
 __ecereClass___ecereNameSpace__ecere__sys__OldList = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::OldList");
 __ecereClass___ecereNameSpace__ecere__sys__StringBTNode = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::StringBTNode");
 __ecereClass___ecereNameSpace__ecere__sys__TempFile = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::TempFile");
+__ecereClass_float = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "float");
 __ecereClass_int = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int");
+__ecereClass_int64 = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int64");
 __ecereClass_uint = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "uint");
 __ecereClass_uint64 = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "uint64");
 __ecereClass_uintptr = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "uintptr");
