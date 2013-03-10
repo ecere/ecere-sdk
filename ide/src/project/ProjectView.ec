@@ -217,9 +217,9 @@ class ProjectView : Window
                {
                   //if(node == ((Project)workspace.projects.first).topNode)
                   {
-                     MenuItem { popupContent, $"Build", b, NotifySelect = ProjectBuild }.disabled = buildMenuUnavailable;
+                     MenuItem { popupContent, $"Build", b, f7, NotifySelect = ProjectBuild }.disabled = buildMenuUnavailable;
                      MenuItem { popupContent, $"Relink", l, NotifySelect = ProjectLink }.disabled = buildMenuUnavailable;
-                     MenuItem { popupContent, $"Rebuild", r, NotifySelect = ProjectRebuild }.disabled = buildMenuUnavailable;
+                     MenuItem { popupContent, $"Rebuild", r, shiftF7, NotifySelect = ProjectRebuild }.disabled = buildMenuUnavailable;
                      MenuItem { popupContent, $"Clean", c, NotifySelect = ProjectClean }.disabled = buildMenuUnavailable;
                      MenuItem { popupContent, $"Real Clean", d, NotifySelect = ProjectRealClean }.disabled = buildMenuUnavailable;
                      MenuItem { popupContent, $"Regenerate Makefile", m, NotifySelect = ProjectRegenerate }.disabled = buildMenuUnavailable;
@@ -322,6 +322,7 @@ class ProjectView : Window
                   }
                };
                popupMenu.Create();
+               ide.AdjustPopupBuildMenus();
             }
          }
          return true;
@@ -808,27 +809,32 @@ class ProjectView : Window
 
    bool ProjectBuild(MenuItem selection, Modifiers mods)
    {
-      Project prj = project;
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      ProjectConfig config;
-      if(selection || !ide.activeClient)
+      if(buildInProgress == none)
       {
-         DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
-         if(node) prj = node.project;
+         Project prj = project;
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         ProjectConfig config;
+         if(selection || !ide.activeClient)
+         {
+            DataRow row = fileList.currentRow;
+            ProjectNode node = row ? (ProjectNode)row.tag : null;
+            if(node) prj = node.project;
+         }
+         else
+         {
+            ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
+            if(node)
+               prj = node.project;
+         }
+         config = prj.config;
+         if(/*prj != project || */!prj.GetConfigIsInDebugSession(config) || !ide.DontTerminateDebugSession($"Project Build"))
+         {
+            BuildInterrim(prj, build, compiler, config, mods.ctrl && mods.shift);
+         }
+         delete compiler;
       }
       else
-      {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
-         if(node)
-            prj = node.project;
-      }
-      config = prj.config;
-      if(/*prj != project || */!prj.GetConfigIsInDebugSession(config) || !ide.DontTerminateDebugSession($"Project Build"))
-      {
-         BuildInterrim(prj, build, compiler, config, mods.ctrl && mods.shift);
-      }
-      delete compiler;
+         stopBuild = true;
       return true;
    }
 

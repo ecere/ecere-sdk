@@ -1802,7 +1802,7 @@ class IDEWorkSpace : Window
          {
             menu.disabled = false;
             menu.text   = unavailable ? $"Stop Build" : $"Build";
-            menu.accelerator = unavailable ? f7 : Key { pauseBreak, ctrl = true };
+            menu.accelerator = unavailable ? Key { pauseBreak, ctrl = true } : f7;
          }
 
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectLink, 0);              if(menu) menu.disabled = unavailable;
