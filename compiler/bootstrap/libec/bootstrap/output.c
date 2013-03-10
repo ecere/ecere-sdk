@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);

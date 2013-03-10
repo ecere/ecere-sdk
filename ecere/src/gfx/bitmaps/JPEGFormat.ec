@@ -4,8 +4,6 @@ import "Display"
 
 #include <setjmp.h>
 
-typedef uintptr size_t; // For now, until we add uintsize
-
 #include "jpeglib.h"
 #include "jerror.h"
 
@@ -55,7 +53,7 @@ static boolean JPEG_FillInputBuffer (j_decompress_ptr cinfo)
    }
    
    src->pub.next_input_byte = src->buffer;
-   src->pub.bytes_in_buffer = (size_t)nbytes;
+   src->pub.bytes_in_buffer = nbytes;
    src->startOfFile = FALSE;
    
    return TRUE;

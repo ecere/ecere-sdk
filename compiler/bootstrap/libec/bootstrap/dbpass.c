@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1134,9 +1135,9 @@ static void ProcessIdentifier(struct Identifier * id)
 
 static void ProcessInstance(struct Instantiation * inst);
 
-extern int strlen(const char * );
+extern size_t strlen(const char * );
 
-extern void *  memcpy(void * , const void * , unsigned int size);
+extern void *  memcpy(void * , const void * , size_t size);
 
 extern void __ecereNameSpace__ecere__sys__ChangeCh(char *  string, char ch1, char ch2);
 

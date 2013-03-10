@@ -51,7 +51,7 @@ char * __ecereNameSpace__ecere__sys__UTF16toUTF8(uint16 * source);
 
 #if defined(__WIN32__) || defined(__WATCOMC__)
 #include <direct.h>
-BOOL WINAPI GetVolumePathName(LPCTSTR lpszFileName,LPTSTR lpszVolumePathName,DWORD cchBufferLength);
+__declspec(dllimport) BOOL WINAPI GetVolumePathName(LPCTSTR lpszFileName,LPTSTR lpszVolumePathName,DWORD cchBufferLength);
 #else
 #include <dirent.h>
 #endif
@@ -259,7 +259,7 @@ FileAttribs FILE_FileExists(char * fileName)
                {
                   if(returnCode == WN_SUCCESS)
                   {
-                     if(!wcscmpi(buffer->lpRemoteName, _wfileName))
+                     if(!_wcsicmp(buffer->lpRemoteName, _wfileName))
                         result = (FileAttribs)( isDirectory | isServer );
                   }
                   break;

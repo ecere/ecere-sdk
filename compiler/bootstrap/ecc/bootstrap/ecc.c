@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -640,7 +641,7 @@ extern void SetSymbolsDir(char *  s);
 
 extern int strcmp(const char * , const char * );
 
-extern int strlen(const char * );
+extern size_t strlen(const char * );
 
 extern char *  strcpy(char * , const char * );
 
@@ -720,7 +721,7 @@ void *  symbol;
 char *  fullName;
 } __attribute__ ((gcc_struct));
 
-extern int snprintf(char * , int, char * , ...);
+extern int snprintf(char * , size_t, char * , ...);
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpen(unsigned int mode, char *  commandLine);
 
@@ -1054,6 +1055,8 @@ if(buildingBootStrap)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("intptr_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("intptr", 0x0), ((struct Symbol *)__ecereTemp1)));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uintptr_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("uintptr", 0x0), ((struct Symbol *)__ecereTemp1)));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("ssize_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("intsize", 0x0), ((struct Symbol *)__ecereTemp1)));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("size_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("uintsize", 0x0), ((struct Symbol *)__ecereTemp1)));
 }
 {
 struct GlobalData * data = (data = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_GlobalData), data->fullName = __ecereNameSpace__ecere__sys__CopyString("__thisModule"), data->dataTypeString = __ecereNameSpace__ecere__sys__CopyString("Module"), data->module = privateModule, data);
@@ -1061,7 +1064,7 @@ struct GlobalData * data = (data = __ecereNameSpace__ecere__com__eInstance_New(_
 data->key = (uintptr_t)data->fullName;
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalData.functions, (struct __ecereNameSpace__ecere__sys__BTNode *)data);
 }
-snprintf(command, sizeof command, "%s%s -x c -E %s\"%s\"", cppCommand, cppOptions ? cppOptions : "", buildingBootStrap ? "" : "-include stdint.h ", GetSourceFile());
+snprintf(command, sizeof command, "%s%s -x c -E %s\"%s\"", cppCommand, cppOptions ? cppOptions : "", buildingBootStrap ? "" : "-include stdint.h -include sys/types.h ", GetSourceFile());
 command[sizeof command - 1] = (char)0;
 if((cppOutput = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(0x1))), command)))
 {
@@ -1181,6 +1184,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
 if(buildingBootStrap)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#include <stdint.h>\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#include <sys/types.h>\n");
 }
 if(ast)
 OutputTree(ast, output);

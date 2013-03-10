@@ -6,6 +6,7 @@ import "ecere"
 import "ec"
 #endif
 
+
 //#include <stdarg.h>
 
 static Context globalContext { };
@@ -341,6 +342,8 @@ class CompilerApp : Application
             // Do not define this when we pre-include stdint.h or the eC compiler will be confused when parsing these types (External prioritization in pass15.ec will fail)
             globalContext.types.Add((BTNode)Symbol { string = CopyString("intptr_t"), type = ProcessTypeString("intptr", false) });
             globalContext.types.Add((BTNode)Symbol { string = CopyString("uintptr_t"), type = ProcessTypeString("uintptr", false) });
+            globalContext.types.Add((BTNode)Symbol { string = CopyString("ssize_t"), type = ProcessTypeString("intsize", false) });
+            globalContext.types.Add((BTNode)Symbol { string = CopyString("size_t"), type = ProcessTypeString("uintsize", false) });
          }
 
          {
@@ -349,7 +352,7 @@ class CompilerApp : Application
             globalData.functions.Add((BTNode)data);
          }
 
-         snprintf(command, sizeof(command), "%s%s -x c -E %s\"%s\"", cppCommand, cppOptions ? cppOptions : "", buildingBootStrap ? "" : "-include stdint.h ", GetSourceFile());
+         snprintf(command, sizeof(command), "%s%s -x c -E %s\"%s\"", cppCommand, cppOptions ? cppOptions : "", buildingBootStrap ? "" : "-include stdint.h -include sys/types.h ", GetSourceFile());
          command[sizeof(command)-1] = 0;
          if((cppOutput = DualPipeOpen({ output = true }, command)))
          {
@@ -542,6 +545,7 @@ class CompilerApp : Application
                         */
                         //output.Printf("#else\n");
                         output.Printf("#include <stdint.h>\n");
+                        output.Printf("#include <sys/types.h>\n");
                         //output.Printf("#endif\n");
                      }
 

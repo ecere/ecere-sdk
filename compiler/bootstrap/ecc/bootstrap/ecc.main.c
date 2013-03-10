@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1

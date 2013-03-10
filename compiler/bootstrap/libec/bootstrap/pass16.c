@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1217,7 +1218,7 @@ extern struct __ecereNameSpace__ecere__com__Instance * privateModule;
 
 extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_FindDataMember(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, struct __ecereNameSpace__ecere__com__Instance * module, struct __ecereNameSpace__ecere__com__DataMember **  subMemberStack, int *  subMemberStackPos);
 
-extern void *  memcpy(void * , const void * , unsigned int size);
+extern void *  memcpy(void * , const void * , size_t size);
 
 extern void __ecereNameSpace__ecere__com__eClass_FindNextMember(struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__Class **  curClass, struct __ecereNameSpace__ecere__com__DataMember **  curMember, struct __ecereNameSpace__ecere__com__DataMember **  subMemberStack, int *  subMemberStackPos);
 

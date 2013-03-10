@@ -2,9 +2,11 @@
 #define WIN32_LEAN_AND_MEAN
 #define String _String
 #define Method _Method
+#define strlen _strlen
 #include <windows.h>
 #undef Method
 #undef String
+#undef strlen
 #endif
 
 import "Window"

@@ -1,9 +1,6 @@
 #ifndef BSL_STDLIB_H
 #define BSL_STDLIB_H
 
-// For now, until we add uintsize
-typedef uintptr size_t;
-
 /*
 #include <stddef.h>
 #define EAGAIN    1002

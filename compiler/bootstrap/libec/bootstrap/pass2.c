@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1157,7 +1158,7 @@ if(type->kind == 8)
 {
 struct __ecereNameSpace__ecere__com__Class * _class = type->_class ? type->_class->registered : (((void *)0));
 
-if(_class && (_class->type == 1 || _class->type == 5 || (_class->type == 1000 && _class->base && strcmp(_class->fullName, "uintptr") && strcmp(_class->fullName, "intptr") && strcmp(_class->fullName, "ecere::com::Instance") && strcmp(_class->fullName, "ecere::com::Class") && strcmp(_class->dataTypeString, "char *"))))
+if(_class && (_class->type == 1 || _class->type == 5 || (_class->type == 1000 && _class->base && strcmp(_class->fullName, "uintptr") && strcmp(_class->fullName, "intptr") && strcmp(_class->fullName, "uintsize") && strcmp(_class->fullName, "intsize") && strcmp(_class->fullName, "ecere::com::Instance") && strcmp(_class->fullName, "ecere::com::Class") && strcmp(_class->dataTypeString, "char *"))))
 {
 if(wantReference != (e->byReference || isPointer))
 {

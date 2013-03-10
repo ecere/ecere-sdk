@@ -93,6 +93,7 @@ bool NeedCast(Type type1, Type type2)
          case intType:
          case int64Type:
          case intPtrType:
+         case intSizeType:
             if(type1.passAsTemplate && !type2.passAsTemplate)
                return true;
             return type1.isSigned != type2.isSigned;
@@ -317,8 +318,10 @@ public char * PrintDouble(double result)
       Operand op2 = GetOperand(exp);                        \
       if(op2.kind == intType && op2.type.isSigned) *value2 = (t) op2.i; \
       else if(op2.kind == intType) *value2 = (t) op2.ui;                 \
-      if(op2.kind == int64Type && op2.type.isSigned) *value2 = (t) op2.i64; \
+      else if(op2.kind == int64Type && op2.type.isSigned) *value2 = (t) op2.i64; \
       else if(op2.kind == int64Type) *value2 = (t) op2.ui64;                 \
+      else if(op2.kind == intSizeType && op2.type.isSigned) *value2 = (t) op2.i64; \
+      else if(op2.kind == intSizeType) *value2 = (t) op2.ui64; \
       else if(op2.kind == intPtrType && op2.type.isSigned) *value2 = (t) op2.i64; \
       else if(op2.kind == intPtrType) *value2 = (t) op2.ui64;                 \
       else if(op2.kind == shortType && op2.type.isSigned) *value2 = (t) op2.s;   \
@@ -339,6 +342,8 @@ GETVALUE(Int64, int64);
 GETVALUE(UInt64, uint64);
 GETVALUE(IntPtr, intptr);
 GETVALUE(UIntPtr, uintptr);
+GETVALUE(IntSize, intsize);
+GETVALUE(UIntSize, uintsize);
 GETVALUE(Short, short);
 GETVALUE(UShort, unsigned short);
 GETVALUE(Char, char);
@@ -680,6 +685,7 @@ public int ComputeTypeSize(Type type)
          case intType: type.alignment = size = sizeof(int); break;
          case int64Type: type.alignment = size = sizeof(int64); break;
          case intPtrType: type.alignment = size = targetBits / 8; break;
+         case intSizeType: type.alignment = size = targetBits / 8; break;
          case longType: type.alignment = size = sizeof(long); break;
          case shortType: type.alignment = size = sizeof(short); break;
          case floatType: type.alignment = size = sizeof(float); break;
@@ -3104,17 +3110,19 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
          return true;
       else if(dest.kind == shortType && source.kind == charType)
          return true;
-      else if(dest.kind == intType && (source.kind == shortType || source.kind == charType))
+      else if(dest.kind == intType && (source.kind == shortType || source.kind == charType || source.kind == intSizeType /* Exception here for size_t */))
          return true;
-      else if(dest.kind == int64Type && (source.kind == shortType || source.kind == charType || source.kind == intType))
+      else if(dest.kind == int64Type && (source.kind == shortType || source.kind == charType || source.kind == intType || source.kind == intPtrType || source.kind == intSizeType))
          return true;
-      else if(dest.kind == intPtrType && (source.kind == shortType || source.kind == charType || source.kind == intType))
+      else if(dest.kind == intPtrType && (source.kind == shortType || source.kind == charType || source.kind == intType || source.kind == intSizeType || source.kind == int64Type))
+         return true;
+      else if(dest.kind == intSizeType && (source.kind == shortType || source.kind == charType || source.kind == intType || source.kind == int64Type || source.kind == intPtrType))
          return true;
       else if(source.kind == enumType &&
-         (dest.kind == intType || dest.kind == shortType || dest.kind == charType || dest.kind == longType || dest.kind == int64Type || dest.kind == intPtrType))
+         (dest.kind == intType || dest.kind == shortType || dest.kind == charType || dest.kind == longType || dest.kind == int64Type || dest.kind == intPtrType || dest.kind == intSizeType))
           return true;
       else if(dest.kind == enumType &&
-         (source.kind == intType || source.kind == shortType || source.kind == charType || source.kind == longType || source.kind == int64Type || source.kind == intPtrType))
+         (source.kind == intType || source.kind == shortType || source.kind == charType || source.kind == longType || source.kind == int64Type || source.kind == intPtrType || source.kind == intSizeType))
           return true;
       else if((dest.kind == functionType || (dest.kind == pointerType && dest.type.kind == functionType) || dest.kind == methodType) && 
               ((source.kind == functionType || (source.kind == pointerType && source.type.kind == functionType) || source.kind == methodType)))
@@ -4203,6 +4211,19 @@ public Operand GetOperand(Expression exp)
                }
                op.kind = intType;
                break;
+            case intSizeType:
+               if(type.isSigned)
+               {
+                  op.i64 = (int64)_strtoi64(exp.constant, null, 0);
+                  op.ops = intOps;
+               }
+               else
+               {
+                  op.ui64 = (uint64)_strtoui64(exp.constant, null, 0);
+                  op.ops = uintOps;
+               }
+               op.kind = intType;
+               break;
             case floatType:
                op.f = (float)strtod(exp.constant, null);
                op.ops = floatOps;
@@ -4330,7 +4351,15 @@ static void PopulateInstanceProcessMember(Instantiation inst, OldList * memberLi
                case intPtrType:
                {
                   FreeExpContents(exp);
-
+                  // TODO: This should probably use proper type
+                  exp.constant = PrintInt64((int64)*(intptr*)ptr);
+                  exp.type = constantExp;
+                  break;
+               }
+               case intSizeType:
+               {
+                  FreeExpContents(exp);
+                  // TODO: This should probably use proper type
                   exp.constant = PrintInt64((int64)*(intptr*)ptr);
                   exp.type = constantExp;
                   break;
@@ -4643,6 +4672,11 @@ void ComputeInstantiation(Expression exp)
                                        GetIntPtr(value, (intptr*)ptr);
                                        break;
                                     }
+                                    case intSizeType:
+                                    {
+                                       GetIntSize(value, (intsize*)ptr);
+                                       break;
+                                    }
                                     case floatType:
                                     {
                                        GetFloat(value, (float*)ptr);
@@ -4709,6 +4743,12 @@ void ComputeInstantiation(Expression exp)
                                     {
                                        void (*Set)(void *, intptr) = (void *)prop.Set;
                                        Set(inst.data, (intptr)_strtoi64(value.constant, null, 0));
+                                       break;
+                                    }
+                                    case intSizeType:
+                                    {
+                                       void (*Set)(void *, intsize) = (void *)prop.Set;
+                                       Set(inst.data, (intsize)_strtoi64(value.constant, null, 0));
                                        break;
                                     }
                                  }
@@ -4827,6 +4867,12 @@ void ComputeInstantiation(Expression exp)
                                        bits |= ((intptr)part << bitMember.pos);
                                     else
                                        bits |= ((uintptr)part << bitMember.pos);
+                                    break;
+                                 case intSizeType:
+                                    if(type.isSigned)
+                                       bits |= ((ssize_t)(intsize)part << bitMember.pos);
+                                    else
+                                       bits |= ((size_t) (uintsize)part << bitMember.pos);
                                     break;
                               }
                            }
@@ -5447,6 +5493,24 @@ void ComputeExpression(Expression exp)
                                  PopulateInstance(exp.instance);
                                  break;
                               }
+                              case intSizeType:
+                              {
+                                 // TOFIX:
+                                 ssize_t /*intsize */intValue;
+                                 void (*Set)(void *, intsize) = (void *)prop.Set;
+
+                                 exp.instance = Instantiation { };
+                                 exp.instance.data = new0 byte[_class.structSize];
+                                 exp.instance._class = MkSpecifierName/*MkClassName*/(_class.fullName);
+                                 exp.instance.loc = exp.loc;
+                                 exp.type = instanceExp;
+
+                                 GetIntSize(value, &intValue);
+
+                                 Set(exp.instance.data, intValue);
+                                 PopulateInstance(exp.instance);
+                                 break;
+                              }
                               case doubleType:
                               {
                                  double doubleValue;
@@ -5749,6 +5813,24 @@ void ComputeExpression(Expression exp)
                   {
                      uintptr value;
                      GetUIntPtr(e, &value);
+                     FreeExpContents(exp);
+                     exp.constant = PrintUInt64((uint64)value);
+                     exp.type = constantExp;
+                  }
+                  break;
+               case intSizeType:
+                  if(type.isSigned)
+                  {
+                     intsize value;
+                     GetIntSize(e, &value);
+                     FreeExpContents(exp);
+                     exp.constant = PrintInt64((int64)value);
+                     exp.type = constantExp;
+                  }
+                  else
+                  {
+                     uintsize value;
+                     GetUIntSize(e, &value);
                      FreeExpContents(exp);
                      exp.constant = PrintUInt64((uint64)value);
                      exp.type = constantExp;
@@ -6243,7 +6325,7 @@ static void ProcessDeclaration(Declaration decl);
 
 static void GetTypeSpecs(Type type, OldList * specs)
 {
-   if(!type.isSigned && type.kind != intPtrType) ListAdd(specs, MkSpecifier(UNSIGNED));
+   if(!type.isSigned && type.kind != intPtrType && type.kind != intSizeType) ListAdd(specs, MkSpecifier(UNSIGNED));
    switch(type.kind)
    {
       case classType: 
@@ -6262,6 +6344,7 @@ static void GetTypeSpecs(Type type, OldList * specs)
       case shortType: ListAdd(specs, MkSpecifier(SHORT)); break;
       case int64Type: ListAdd(specs, MkSpecifier(INT64)); break;
       case intPtrType: ListAdd(specs, MkSpecifierName(type.isSigned ? "intptr" : "uintptr")); break;
+      case intSizeType: ListAdd(specs, MkSpecifierName(type.isSigned ? "intsize" : "uintsize")); break;
       case intType: 
       default:
          ListAdd(specs, MkSpecifier(INT)); break;
@@ -6332,6 +6415,7 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
          case intType:  strcat(string, type.isSigned ? "int" : "uint"); break;
          case int64Type:  strcat(string, type.isSigned ? "int64" : "uint64"); break;
          case intPtrType:  strcat(string, type.isSigned ? "intptr" : "uintptr"); break;
+         case intSizeType:  strcat(string, type.isSigned ? "intsize" : "uintsize"); break;
          case charType: strcat(string, type.isSigned ? "char" : "byte"); break;
          case shortType: strcat(string, type.isSigned ? "short" : "uint16"); break;
          case floatType: strcat(string, "float"); break;
@@ -7747,7 +7831,7 @@ void ProcessExpressionType(Expression exp)
 
             if(assign && type1 && type1.kind == pointerType && exp.op.exp2.expType)
             {
-               if(exp.op.exp2.expType.kind == intPtrType || exp.op.exp2.expType.kind == int64Type || exp.op.exp2.expType.kind == intType || exp.op.exp2.expType.kind == shortType || exp.op.exp2.expType.kind == charType)
+               if(exp.op.exp2.expType.kind == intSizeType || exp.op.exp2.expType.kind == intPtrType || exp.op.exp2.expType.kind == int64Type || exp.op.exp2.expType.kind == intType || exp.op.exp2.expType.kind == shortType || exp.op.exp2.expType.kind == charType)
                {
                   if(exp.op.op != '=' && type1.type.kind == voidType) 
                      Compiler_Error($"void *: unknown size\n");
@@ -7904,14 +7988,14 @@ void ProcessExpressionType(Expression exp)
                      }
                   }
                   
-                  if(!boolResult && ((type1.kind == pointerType || type1.kind == arrayType || (type1.kind == classType && !strcmp(type1._class.string, "String"))) && (type2.kind == intPtrType || type2.kind == int64Type || type2.kind == intType || type2.kind == shortType || type2.kind == charType)))
+                  if(!boolResult && ((type1.kind == pointerType || type1.kind == arrayType || (type1.kind == classType && !strcmp(type1._class.string, "String"))) && (type2.kind == intSizeType || type2.kind == intPtrType || type2.kind == int64Type || type2.kind == intType || type2.kind == shortType || type2.kind == charType)))
                   {
                      if(type1.kind != classType && type1.type.kind == voidType) 
                         Compiler_Error($"void *: unknown size\n");
                      exp.expType = type1;
                      if(type1) type1.refCount++;
                   }
-                  else if(!boolResult && ((type2.kind == pointerType || type2.kind == arrayType || (type2.kind == classType && !strcmp(type2._class.string, "String"))) && (type1.kind == intPtrType || type1.kind == int64Type || type1.kind == intType || type1.kind == shortType || type1.kind == charType)))
+                  else if(!boolResult && ((type2.kind == pointerType || type2.kind == arrayType || (type2.kind == classType && !strcmp(type2._class.string, "String"))) && (type1.kind == intSizeType || type1.kind == intPtrType || type1.kind == int64Type || type1.kind == intType || type1.kind == shortType || type1.kind == charType)))
                   {
                      if(type2.kind != classType && type2.type.kind == voidType) 
                         Compiler_Error($"void *: unknown size\n");
@@ -12102,7 +12186,7 @@ void ComputeDataTypes()
                      Identifier id = declarator.identifier;
                      if(id && id.string)
                      {
-                        if(!strcmp(id.string, "uintptr_t") || !strcmp(id.string, "intptr_t"))
+                        if(!strcmp(id.string, "uintptr_t") || !strcmp(id.string, "intptr_t") || !strcmp(id.string, "size_t") || !strcmp(id.string, "ssize_t"))
                         {
                            external.symbol.id = -1001, external.symbol.idCode = -1001;
                            after = external;

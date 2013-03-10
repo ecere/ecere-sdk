@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -378,8 +379,6 @@ struct __ecereNameSpace__ecere__com__Method * method;
 } __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
-
-typedef uintptr_t size_t;
 
 void exit(int status);
 
@@ -2322,13 +2321,13 @@ extern int GetIncludeFileID(char *  includeFile);
 
 extern char *  __ecereNameSpace__ecere__sys__TrimLSpaces(char *  string, char *  output);
 
-extern int strncmp(const char * , const char * , int n);
+extern int strncmp(const char * , const char * , size_t n);
 
-extern void *  memmove(void * , const void * , unsigned int size);
+extern void *  memmove(void * , const void * , size_t size);
 
-extern int strlen(const char * );
+extern size_t strlen(const char * );
 
-extern char *  strncpy(char * , const char * , int n);
+extern char *  strncpy(char * , const char * , size_t n);
 
 extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
 

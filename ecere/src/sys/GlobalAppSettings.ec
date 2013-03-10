@@ -4,8 +4,10 @@ namespace sys;
 #define WIN32_LEAN_AND_MEAN
 #define UNICODE
 #define String String_
+#define strlen _strlen
 #include <windows.h>
 #undef String
+#undef strlen
 #endif
 
 import "System"

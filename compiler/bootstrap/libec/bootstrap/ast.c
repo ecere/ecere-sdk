@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -1192,7 +1193,7 @@ char * defaultNameSpace;
 
 int defaultNameSpaceLen;
 
-extern int strlen(const char * );
+extern size_t strlen(const char * );
 
 void SetDefaultNameSpace(char * s)
 {
@@ -1260,7 +1261,7 @@ if(item)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(list, (((void *)0)), item);
 }
 
-extern void *  memcpy(void * , const void * , unsigned int size);
+extern void *  memcpy(void * , const void * , size_t size);
 
 extern int strcmp(const char * , const char * );
 
@@ -1766,7 +1767,7 @@ return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_
 
 struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
 
-extern char *  strstr(char * , const char * );
+extern char *  strstr(const char * , const char * );
 
 extern void FreeSymbol(struct Symbol * symbol);
 
@@ -2523,7 +2524,7 @@ external->symbol->methodExternal = external;
 return external;
 }
 
-extern char *  strncpy(char * , const char * , int n);
+extern char *  strncpy(char * , const char * , size_t n);
 
 extern void ImportModule(char *  name, int importType, int importAccess, unsigned int loadDllOnly);
 
@@ -2686,7 +2687,7 @@ else
 FreeList(templateArgs, FreeTemplateArgument);
 }
 
-extern int strncmp(const char * , const char * , int n);
+extern int strncmp(const char * , const char * , size_t n);
 
 struct Specifier * _MkSpecifierName(char * name, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * templateArgs)
 {
@@ -3033,7 +3034,7 @@ name[len] = (char)0;
 return _DeclClass(symbolID, name);
 }
 
-extern char *  strchr(char * , int);
+extern char *  strchr(const char * , int);
 
 struct Symbol * DeclClass(int symbolID, char * name)
 {
@@ -3670,6 +3671,12 @@ if(spec->name && (!strcmp(spec->name, "intptr") || !strcmp(spec->name, "uintptr"
 {
 specType->kind = 22;
 if(!strcmp(spec->name, "uintptr"))
+specType->isSigned = 0x0;
+}
+else if(spec->name && (!strcmp(spec->name, "uintsize") || !strcmp(spec->name, "intsize")))
+{
+specType->kind = 23;
+if(!strcmp(spec->name, "uintsize"))
 specType->isSigned = 0x0;
 }
 else

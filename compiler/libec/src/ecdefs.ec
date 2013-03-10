@@ -1054,7 +1054,7 @@ public enum TypeKind
    voidType, charType, shortType, intType, int64Type, longType, floatType,
    doubleType, classType, structType, unionType, functionType, arrayType, pointerType,
    ellipsisType, enumType, methodType, vaListType, /*typedObjectType, anyObjectType, classPointerType, */ dummyType,
-   subClassType, templateType, thisClassType, intPtrType
+   subClassType, templateType, thisClassType, intPtrType, intSizeType
 };
 
 public class Type : struct

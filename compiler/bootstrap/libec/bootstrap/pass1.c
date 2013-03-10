@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -2089,7 +2090,7 @@ void *  data;
 
 extern char *  StringFromSpecDecl(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
 
-extern int strlen(const char * );
+extern size_t strlen(const char * );
 
 extern struct MemberInit * MkMemberInit(struct __ecereNameSpace__ecere__sys__OldList * ids, struct Initializer * initializer);
 

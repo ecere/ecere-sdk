@@ -121,6 +121,8 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
                !strcmp(_class.fullName, "uint16") ||
                !strcmp(_class.fullName, "uintptr") ||
                !strcmp(_class.fullName, "intptr") ||
+               !strcmp(_class.fullName, "uintsize") ||
+               !strcmp(_class.fullName, "intsize") ||
                !strcmp(_class.fullName, "uint") ||
                !strcmp(_class.fullName, "byte")))
             {
@@ -132,6 +134,8 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
                      !strcmp(_class.dataTypeString, "uint16") ||
                      !strcmp(_class.dataTypeString, "uintptr") ||
                      !strcmp(_class.dataTypeString, "intptr") ||
+                     !strcmp(_class.dataTypeString, "uintsize") ||
+                     !strcmp(_class.dataTypeString, "intsize") ||
                      !strcmp(_class.dataTypeString, "uint") ||
                      !strcmp(_class.dataTypeString, "byte"))
                   {

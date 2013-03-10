@@ -401,7 +401,7 @@ public:
 #endif
             }
 
-            if(value.IsExpanded(this))
+            if(value.IsExpanded())
             {
                DataRow search;
 
@@ -709,7 +709,7 @@ public:
                }
             }
 
-            if(IsExpanded(this))
+            if(IsExpanded())
             {
                DataRow search;
 

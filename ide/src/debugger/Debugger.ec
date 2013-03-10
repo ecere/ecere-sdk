@@ -10,6 +10,7 @@ import "debugTools"
 extern char * strrchr(const char * s, int c);
 
 #define uint _uint
+#define strlen _strlen
 #include <stdarg.h>
 #include <unistd.h>
 
@@ -22,7 +23,7 @@ extern char * strrchr(const char * s, int c);
 #include <sys/time.h> // Required on Apple...
 #endif
 #undef uint
-
+#undef strlen
 
 public char * StripQuotes2(char * string, char * output)
 {

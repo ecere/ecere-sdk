@@ -1524,6 +1524,52 @@ static void RegisterClass_Integer(Module module)
    eClass_AddMethod(integerClass, "OnSerialize", null, Byte_OnSerialize, publicAccess);
    eClass_AddMethod(integerClass, "OnUnserialize", null, Byte_OnUnserialize, publicAccess);
 
+   integerClass = eSystem_RegisterClass(normalClass, "intsize", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
+   integerClass.type = systemClass;
+   delete integerClass.dataTypeString;
+   integerClass.dataTypeString = CopyString("ssize_t");
+   integerClass.structSize = 0;
+   integerClass.typeSize = sizeof(intsize);
+   if(sizeof(intsize) == 8)
+   {
+      eClass_AddMethod(integerClass, "OnGetString", null, Int64_OnGetString, publicAccess);
+      eClass_AddMethod(integerClass, "OnGetDataFromString", null, Int64_OnGetDataFromString, publicAccess);
+      eClass_AddMethod(integerClass, "OnSerialize", null, Int64_OnSerialize, publicAccess);
+      eClass_AddMethod(integerClass, "OnUnserialize", null, Int64_OnUnserialize, publicAccess);
+      eClass_AddMethod(integerClass, "OnCompare", null, Int64_OnCompare, publicAccess);
+   }
+   else
+   {
+      eClass_AddMethod(integerClass, "OnCompare", null, Integer_OnCompare, publicAccess);
+      eClass_AddMethod(integerClass, "OnGetString", null, Integer_OnGetString, publicAccess);
+      eClass_AddMethod(integerClass, "OnGetDataFromString", null, Integer_OnGetDataFromString, publicAccess);
+      eClass_AddMethod(integerClass, "OnSerialize", null, Int_OnSerialize, publicAccess);
+      eClass_AddMethod(integerClass, "OnUnserialize", null, Int_OnUnserialize, publicAccess);
+   }
+
+   integerClass = eSystem_RegisterClass(normalClass, "uintsize", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
+   integerClass.type = systemClass;
+   delete integerClass.dataTypeString;
+   integerClass.dataTypeString = CopyString("size_t");
+   integerClass.structSize = 0;
+   integerClass.typeSize = sizeof(uintsize);
+   if(sizeof(uintsize) == 8)
+   {
+      eClass_AddMethod(integerClass, "OnGetString", null, UInt64_OnGetString, publicAccess);
+      eClass_AddMethod(integerClass, "OnGetDataFromString", null, UInt64_OnGetDataFromString, publicAccess);
+      eClass_AddMethod(integerClass, "OnSerialize", null, Int64_OnSerialize, publicAccess);
+      eClass_AddMethod(integerClass, "OnUnserialize", null, Int64_OnUnserialize, publicAccess);
+      eClass_AddMethod(integerClass, "OnCompare", null, UInt64_OnCompare, publicAccess);
+   }
+   else
+   {
+      eClass_AddMethod(integerClass, "OnCompare", null, UInteger_OnCompare, publicAccess);
+      eClass_AddMethod(integerClass, "OnGetString", null, UInteger_OnGetString, publicAccess);
+      eClass_AddMethod(integerClass, "OnGetDataFromString", null, UInteger_OnGetDataFromString, publicAccess);
+      eClass_AddMethod(integerClass, "OnSerialize", null, Int_OnSerialize, publicAccess);
+      eClass_AddMethod(integerClass, "OnUnserialize", null, Int_OnUnserialize, publicAccess);
+   }
+
    integerClass = eSystem_RegisterClass(normalClass, "uintptr", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
    delete integerClass.dataTypeString;

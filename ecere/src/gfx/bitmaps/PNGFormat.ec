@@ -41,13 +41,13 @@ static void swap32s(uint32 n[], uint count) {
 static void ReadData(png_structp png, png_bytep bytes, png_size_t size)
 {
    File f = png_get_io_ptr(png);
-   f.Read(bytes, 1, size);
+   f.Read(bytes, 1, (uint)size);
 }
 
 static void WriteData(png_structp png, png_bytep bytes, png_size_t size)
 {
    File f = png_get_io_ptr(png);
-   f.Write(bytes, 1, size);
+   f.Write(bytes, 1, (uint)size);
 }
 
 static char * extensions[] = { "png", null };

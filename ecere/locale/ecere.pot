@@ -11,7 +11,7 @@ msgstr ""
 "X-Poedit-Basepath: ../\n"
 
 #: ./src/gui/dialogs/ReplaceDialog.ec:158
-#: ./src/gui/dialogs/ReplaceDialog.ec:350
+#: ./src/gui/dialogs/ReplaceDialog.ec:355
 msgid "%d occurences found, %d replaced"
 msgstr "%d occurences found, %d replaced"
 
@@ -166,7 +166,7 @@ msgstr "Behavior"
 #: ./src/gui/dialogs/FindDialog.ec:73
 #: ./src/gui/dialogs/MessageBox.ec:88
 #: ./src/gui/dialogs/MessageBox.ec:107
-#: ./src/gui/dialogs/ReplaceDialog.ec:364
+#: ./src/gui/dialogs/ReplaceDialog.ec:374
 #: ./src/gui/dialogs/WindowList.ec:35
 msgid "Cancel"
 msgstr "Cancel"
@@ -311,7 +311,7 @@ msgstr "Error falling back to previous video mode.\n"
 msgid "Error writing file"
 msgstr "Error writing file"
 
-#: ./src/sys/File.ec:316
+#: ./src/sys/File.ec:318
 msgid "Exp"
 msgstr "Exp"
 
@@ -364,7 +364,7 @@ msgid "Find Previous\tShift-F3"
 msgstr "Find Previous\tShift-F3"
 
 #: ./src/gui/dialogs/FindDialog.ec:85
-#: ./src/gui/dialogs/ReplaceDialog.ec:369
+#: ./src/gui/dialogs/ReplaceDialog.ec:379
 msgid "Find what:"
 msgstr "Find what:"
 
@@ -410,7 +410,7 @@ msgstr "Image"
 msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 msgstr "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 
-#: ./src/sys/File.ec:292
+#: ./src/sys/File.ec:294
 msgid "Imp"
 msgstr "Imp"
 
@@ -668,14 +668,14 @@ msgstr "Save\tCtrl+S"
 
 #: ./src/gui/dialogs/ReplaceDialog.ec:159
 #: ./src/gui/dialogs/ReplaceDialog.ec:162
-#: ./src/gui/dialogs/ReplaceDialog.ec:341
-#: ./src/gui/dialogs/ReplaceDialog.ec:351
+#: ./src/gui/dialogs/ReplaceDialog.ec:346
+#: ./src/gui/dialogs/ReplaceDialog.ec:356
 msgid "Search Finished"
 msgstr "Search Finished"
 
 #: ./src/gui/dialogs/FindDialog.ec:61
 #: ./src/gui/dialogs/ReplaceDialog.ec:162
-#: ./src/gui/dialogs/ReplaceDialog.ec:341
+#: ./src/gui/dialogs/ReplaceDialog.ec:346
 msgid "Search string not found."
 msgstr "Search string not found."
 
@@ -692,7 +692,7 @@ msgstr "Select All\tCtrl+A"
 msgid "Select Color"
 msgstr "Select Color"
 
-#: ./src/sys/File.ec:210
+#: ./src/sys/File.ec:212
 msgid "Select File"
 msgstr "Select File"
 
@@ -774,8 +774,8 @@ msgstr "T"
 
 #: ./src/gui/skins/TVisionSkin.ec:37
 #: ./src/gui/skins/TVisionSkin.ec:43
-#: ./src/gui/skins/WindowsSkin.ec:140
-#: ./src/gui/skins/WindowsSkin.ec:149
+#: ./src/gui/skins/WindowsSkin.ec:142
+#: ./src/gui/skins/WindowsSkin.ec:151
 msgid "Tahoma"
 msgstr "Tahoma"
 

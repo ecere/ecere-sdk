@@ -6,6 +6,7 @@ namespace gfx::drivers;
 
 #undef __BLOCKS__
 #define uint _uint
+#define strlen _strlen
 #if !defined(ECERE_NOTRUETYPE)
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -29,6 +30,7 @@ static FcConfig * fcConfig;
 
 #endif
 #undef uint
+#undef strlen
 
 #ifdef __MSC__
 #pragma warning(disable:4244)

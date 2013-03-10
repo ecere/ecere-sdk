@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -764,7 +765,7 @@ extern struct Symbol * FindClass(char *  name);
 
 extern char *  sourceFile;
 
-extern char *  strstr(char * , const char * );
+extern char *  strstr(const char * , const char * );
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
@@ -785,9 +786,9 @@ extern struct ModuleImport * FindModule(struct __ecereNameSpace__ecere__com__Ins
 
 extern struct ModuleImport * mainModule;
 
-extern char *  strchr(char * , int);
+extern char *  strchr(const char * , int);
 
-extern void *  memcpy(void * , const void * , unsigned int size);
+extern void *  memcpy(void * , const void * , size_t size);
 
 extern char *  __ecereNameSpace__ecere__sys__TrimRSpaces(char *  string, char *  output);
 
@@ -919,7 +920,7 @@ struct __ecereNameSpace__ecere__com__GlobalFunction;
 
 extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(char *  name, char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
-extern char *  strncpy(char * , const char * , int n);
+extern char *  strncpy(char * , const char * , size_t n);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
 
@@ -1604,7 +1605,7 @@ unsigned int dllOnly;
 int importAccess;
 } __attribute__ ((gcc_struct));
 
-extern int strlen(const char * );
+extern size_t strlen(const char * );
 
 extern char *  __ecereNameSpace__ecere__sys__GetExtension(char *  string, char *  output);
 

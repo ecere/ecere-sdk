@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -2386,7 +2387,7 @@ extern int GetHostBits(void);
 
 extern int strcmp(const char * , const char * );
 
-extern int strlen(const char * );
+extern size_t strlen(const char * );
 
 extern char *  GetOutputFile(void);
 
@@ -2448,7 +2449,7 @@ extern unsigned int __ecereNameSpace__ecere__sys__FileExists(char *  fileName);
 
 extern unsigned int __ecereNameSpace__ecere__sys__DeleteFile(char *  fileName);
 
-extern int snprintf(char * , int, char * , ...);
+extern int snprintf(char * , size_t, char * , ...);
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpen(unsigned int mode, char *  commandLine);
 
@@ -2693,6 +2694,8 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("byte"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned char", 0x0), ((struct Symbol *)__ecereTemp1)));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("intptr_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("intptr", 0x0), ((struct Symbol *)__ecereTemp1)));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uintptr_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("uintptr", 0x0), ((struct Symbol *)__ecereTemp1)));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("ssize_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("intsize", 0x0), ((struct Symbol *)__ecereTemp1)));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("size_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("uintsize", 0x0), ((struct Symbol *)__ecereTemp1)));
 {
 char * outputFilePath = GetOutputFile();
 

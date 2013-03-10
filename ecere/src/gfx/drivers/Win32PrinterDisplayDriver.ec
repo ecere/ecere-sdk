@@ -10,10 +10,12 @@ import "instance"
 #define UNICODE
 #define Method _Method
 #define String _String
+#define strlen _strlen
 #include <windows.h>
 #include <winspool.h>
 #undef Method
 #undef String
+#undef strlen
 
 default wchar_t *wcstok(wchar_t *strToken,const wchar_t *strDelimit);
 

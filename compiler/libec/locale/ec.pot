@@ -10,12 +10,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./src/pass15.ec:3176
-#: ./src/pass15.ec:3202
+#: ./src/pass15.ec:3184
+#: ./src/pass15.ec:3210
 msgid "%s expected to be derived from method class\n"
 msgstr "%s expected to be derived from method class\n"
 
-#: ./src/pass15.ec:8855
+#: ./src/pass15.ec:8939
 msgid "%s undefined; assuming extern returning int\n"
 msgstr "%s undefined; assuming extern returning int\n"
 
@@ -27,16 +27,16 @@ msgstr ":%d:%d: error: "
 msgid ":%d:%d: warning: "
 msgstr ":%d:%d: warning: "
 
-#: ./src/pass15.ec:730
+#: ./src/pass15.ec:736
 msgid "Array size not constant int (%s)\n"
 msgstr "Array size not constant int (%s)\n"
 
-#: ./src/pass15.ec:10362
+#: ./src/pass15.ec:10446
 msgid "Assigning list initializer to non list\n"
 msgstr "Assigning list initializer to non list\n"
 
-#: ./src/pass15.ec:10026
-#: ./src/pass15.ec:11073
+#: ./src/pass15.ec:10110
+#: ./src/pass15.ec:11157
 msgid "Couldn't determine type of array elements\n"
 msgstr "Couldn't determine type of array elements\n"
 
@@ -52,7 +52,7 @@ msgstr "Couldn't open %s\n"
 msgid "Expecting class specifier\n"
 msgstr "Expecting class specifier\n"
 
-#: ./src/pass15.ec:11231
+#: ./src/pass15.ec:11315
 msgid "Expression is not a container\n"
 msgstr "Expression is not a container\n"
 
@@ -64,12 +64,12 @@ msgstr "Includes nested too deeply"
 msgid "Incompatible virtual function %s\n"
 msgstr "Incompatible virtual function %s\n"
 
-#: ./src/pass15.ec:11505
-#: ./src/pass15.ec:11580
+#: ./src/pass15.ec:11589
+#: ./src/pass15.ec:11664
 msgid "Invalid object specified and not inside a class\n"
 msgstr "Invalid object specified and not inside a class\n"
 
-#: ./src/pass15.ec:11413
+#: ./src/pass15.ec:11497
 msgid "Invalid watched object\n"
 msgstr "Invalid watched object\n"
 
@@ -94,11 +94,11 @@ msgstr "Multiple field index requires a name\n"
 msgid "No database table defined in this module or database_open already used.\n"
 msgstr "No database table defined in this module or database_open already used.\n"
 
-#: ./src/pass15.ec:11426
+#: ./src/pass15.ec:11510
 msgid "No observer specified and not inside a _class\n"
 msgstr "No observer specified and not inside a _class\n"
 
-#: ./src/pass15.ec:11583
+#: ./src/pass15.ec:11667
 msgid "No observer specified and not inside a class\n"
 msgstr "No observer specified and not inside a class\n"
 
@@ -112,9 +112,9 @@ msgid "Non-static %s making use of a static class\n"
 msgstr "Non-static %s making use of a static class\n"
 
 #: ./src/pass1.ec:1037
-#: ./src/pass15.ec:11408
-#: ./src/pass15.ec:11480
-#: ./src/pass15.ec:11569
+#: ./src/pass15.ec:11492
+#: ./src/pass15.ec:11564
+#: ./src/pass15.ec:11653
 msgid "Property %s not found in class %s\n"
 msgstr "Property %s not found in class %s\n"
 
@@ -122,7 +122,7 @@ msgstr "Property %s not found in class %s\n"
 msgid "Public %s making use of a private class\n"
 msgstr "Public %s making use of a private class\n"
 
-#: ./src/pass15.ec:7306
+#: ./src/pass15.ec:7390
 msgid "Recursion in defined expression %s\n"
 msgstr "Recursion in defined expression %s\n"
 
@@ -138,34 +138,34 @@ msgstr "Redefinition of %s ignored\n"
 msgid "Redefinition of method %s in class %s\n"
 msgstr "Redefinition of method %s in class %s\n"
 
-#: ./src/pass15.ec:4339
-#: ./src/pass15.ec:4446
+#: ./src/pass15.ec:4368
+#: ./src/pass15.ec:4475
 msgid "Unhandled type populating instance\n"
 msgstr "Unhandled type populating instance\n"
 
-#: ./src/pass15.ec:7042
+#: ./src/pass15.ec:7126
 msgid "Unspecified type\n"
 msgstr "Unspecified type\n"
 
-#: ./src/pass15.ec:8870
+#: ./src/pass15.ec:8954
 msgid "callable object undefined; extern assuming returning int\n"
 msgstr "callable object undefined; extern assuming returning int\n"
 
-#: ./src/pass15.ec:8680
+#: ./src/pass15.ec:8764
 msgid "called object %s is not a function\n"
 msgstr "called object %s is not a function\n"
 
-#: ./src/pass15.ec:7762
-#: ./src/pass15.ec:7768
-#: ./src/pass15.ec:7932
+#: ./src/pass15.ec:7846
+#: ./src/pass15.ec:7852
+#: ./src/pass15.ec:8016
 msgid "cannot add two pointers\n"
 msgstr "cannot add two pointers\n"
 
-#: ./src/pass15.ec:1501
+#: ./src/pass15.ec:1507
 msgid "cannot dereference type\n"
 msgstr "cannot dereference type\n"
 
-#: ./src/pass2.ec:2238
+#: ./src/pass2.ec:2240
 msgid "cannot obtain address of property\n"
 msgstr "cannot obtain address of property\n"
 
@@ -183,101 +183,101 @@ msgstr "class data member"
 msgid "class member instance"
 msgstr "class member instance"
 
-#: ./src/pass15.ec:10101
+#: ./src/pass15.ec:10185
 msgid "couldn't determine type of %s; expected %s\n"
 msgstr "couldn't determine type of %s; expected %s\n"
 
-#: ./src/pass15.ec:8309
-#: ./src/pass15.ec:8321
-#: ./src/pass15.ec:10113
-#: ./src/pass15.ec:10189
+#: ./src/pass15.ec:8393
+#: ./src/pass15.ec:8405
+#: ./src/pass15.ec:10197
+#: ./src/pass15.ec:10273
 msgid "couldn't determine type of %s\n"
 msgstr "couldn't determine type of %s\n"
 
-#: ./src/pass15.ec:1873
-#: ./src/pass15.ec:9335
+#: ./src/pass15.ec:1879
+#: ./src/pass15.ec:9419
 msgid "couldn't find member %s in class %s\n"
 msgstr "couldn't find member %s in class %s\n"
 
-#: ./src/pass15.ec:1869
-#: ./src/pass15.ec:1978
+#: ./src/pass15.ec:1875
+#: ./src/pass15.ec:1984
 msgid "couldn't find virtual method %s in class %s\n"
 msgstr "couldn't find virtual method %s in class %s\n"
 
-#: ./src/pass15.ec:7924
+#: ./src/pass15.ec:8008
 msgid "different levels of indirection\n"
 msgstr "different levels of indirection\n"
 
-#: ./src/pass15.ec:7780
-#: ./src/pass15.ec:10144
+#: ./src/pass15.ec:7864
+#: ./src/pass15.ec:10228
 msgid "incompatible expression %s (%s); expected %s\n"
 msgstr "incompatible expression %s (%s); expected %s\n"
 
-#: ./src/pass15.ec:8041
-#: ./src/pass15.ec:8201
+#: ./src/pass15.ec:8125
+#: ./src/pass15.ec:8285
 msgid "incompatible expressions %s (%s) and %s (%s)\n"
 msgstr "incompatible expressions %s (%s) and %s (%s)\n"
 
-#: ./src/pass15.ec:1825
+#: ./src/pass15.ec:1831
 msgid "incompatible instance method %s\n"
 msgstr "incompatible instance method %s\n"
 
-#: ./src/pass15.ec:3275
+#: ./src/pass15.ec:3283
 msgid "incompatible parameter %s (expected %s)\n"
 msgstr "incompatible parameter %s (expected %s)\n"
 
-#: ./src/pass15.ec:3215
+#: ./src/pass15.ec:3223
 msgid "incompatible return type for function\n"
 msgstr "incompatible return type for function\n"
 
-#: ./src/pass15.ec:9149
+#: ./src/pass15.ec:9233
 msgid "invalid class specifier %s for object of class %s\n"
 msgstr "invalid class specifier %s for object of class %s\n"
 
-#: ./src/pass15.ec:9619
+#: ./src/pass15.ec:9703
 msgid "member operator on non-structure type expression %s\n"
 msgstr "member operator on non-structure type expression %s\n"
 
-#: ./src/pass15.ec:3150
-#: ./src/pass15.ec:3165
-#: ./src/pass15.ec:3191
+#: ./src/pass15.ec:3158
+#: ./src/pass15.ec:3173
+#: ./src/pass15.ec:3199
 msgid "method class must be derived from %s\n"
 msgstr "method class must be derived from %s\n"
 
-#: ./src/pass15.ec:3152
+#: ./src/pass15.ec:3160
 msgid "method class should not take an object\n"
 msgstr "method class should not take an object\n"
 
-#: ./src/pass2.ec:2240
 #: ./src/pass2.ec:2242
+#: ./src/pass2.ec:2244
 msgid "no get defined for property %s of class %s\n"
 msgstr "no get defined for property %s of class %s\n"
 
-#: ./src/pass2.ec:880
+#: ./src/pass2.ec:882
 msgid "no set defined for property %s of class %s\n"
 msgstr "no set defined for property %s of class %s\n"
 
-#: ./src/pass15.ec:8829
+#: ./src/pass15.ec:8913
 msgid "not enough arguments for function %s (%d given, expected %d)\n"
 msgstr "not enough arguments for function %s (%d given, expected %d)\n"
 
-#: ./src/pass15.ec:8825
+#: ./src/pass15.ec:8909
 msgid "not enough arguments for method %s::%s (%d given, expected %d)\n"
 msgstr "not enough arguments for method %s::%s (%d given, expected %d)\n"
 
-#: ./src/pass15.ec:3226
+#: ./src/pass15.ec:3234
 msgid "not enough parameters\n"
 msgstr "not enough parameters\n"
 
-#: ./src/pass15.ec:7867
+#: ./src/pass15.ec:7951
 msgid "operating on %s and %s with an untyped result, assuming %s\n"
 msgstr "operating on %s and %s with an untyped result, assuming %s\n"
 
-#: ./src/pass15.ec:7692
+#: ./src/pass15.ec:7776
 msgid "operator %s illegal on pointer\n"
 msgstr "operator %s illegal on pointer\n"
 
-#: ./src/pass15.ec:3178
+#: ./src/pass15.ec:3186
 msgid "overriding class expected to be derived from method class\n"
 msgstr "overriding class expected to be derived from method class\n"
 
@@ -309,46 +309,46 @@ msgstr "redefinition of destructor for class %s\n"
 msgid "syntax error\n"
 msgstr "syntax error\n"
 
-#: ./src/pass15.ec:8748
+#: ./src/pass15.ec:8832
 msgid "too many arguments for function %s (%d given, expected %d)\n"
 msgstr "too many arguments for function %s (%d given, expected %d)\n"
 
-#: ./src/pass15.ec:8744
+#: ./src/pass15.ec:8828
 msgid "too many arguments for method %s::%s (%d given, expected %d)\n"
 msgstr "too many arguments for method %s::%s (%d given, expected %d)\n"
 
-#: ./src/pass15.ec:1879
+#: ./src/pass15.ec:1885
 msgid "too many initializers for instantiation of class %s\n"
 msgstr "too many initializers for instantiation of class %s\n"
 
-#: ./src/pass15.ec:3289
+#: ./src/pass15.ec:3297
 msgid "too many parameters\n"
 msgstr "too many parameters\n"
 
-#: ./src/pass15.ec:9602
+#: ./src/pass15.ec:9686
 msgid "undefined class %s\n"
 msgstr "undefined class %s\n"
 
-#: ./src/pass15.ec:10180
+#: ./src/pass15.ec:10264
 msgid "unresolved identifier %s::%s\n"
 msgstr "unresolved identifier %s::%s\n"
 
-#: ./src/pass15.ec:10099
+#: ./src/pass15.ec:10183
 msgid "unresolved identifier %s; expected %s\n"
 msgstr "unresolved identifier %s; expected %s\n"
 
-#: ./src/pass15.ec:10111
-#: ./src/pass15.ec:10182
+#: ./src/pass15.ec:10195
+#: ./src/pass15.ec:10266
 msgid "unresolved identifier %s\n"
 msgstr "unresolved identifier %s\n"
 
-#: ./src/pass15.ec:1819
+#: ./src/pass15.ec:1825
 msgid "unresolved symbol used as an instance method %s\n"
 msgstr "unresolved symbol used as an instance method %s\n"
 
-#: ./src/pass15.ec:7753
-#: ./src/pass15.ec:7910
-#: ./src/pass15.ec:7917
+#: ./src/pass15.ec:7837
+#: ./src/pass15.ec:7994
+#: ./src/pass15.ec:8001
 msgid "void *: unknown size\n"
 msgstr "void *: unknown size\n"
 

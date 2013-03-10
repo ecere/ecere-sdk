@@ -33,6 +33,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -270,8 +271,6 @@ struct __ecereNameSpace__ecere__com__Method * method;
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassTemplateArgument;
-
-typedef uintptr_t size_t;
 
 void exit(int status);
 
@@ -930,14 +929,14 @@ block->part = (((void *)0));
 return block ? ((struct __ecereNameSpace__ecere__com__MemBlock *)block + 1) : (((void *)0));
 }
 
-extern void memset(void *  area, unsigned char value, unsigned int count);
+extern void *  memset(void *  area, int value, size_t count);
 
 static void * __ecereNameSpace__ecere__com___mycalloc(int n, unsigned int size)
 {
 void * pointer = __ecereNameSpace__ecere__com___mymalloc(size);
 
 if(pointer)
-memset(pointer, (unsigned char)0, size);
+memset(pointer, 0, size);
 return pointer;
 }
 
@@ -960,7 +959,7 @@ free(block);
 }
 }
 
-extern void *  memcpy(void * , const void * , unsigned int size);
+extern void *  memcpy(void * , const void * , size_t size);
 
 static void * __ecereNameSpace__ecere__com___myrealloc(void * pointer, unsigned int size)
 {
@@ -1034,7 +1033,7 @@ int extra = size - block->size;
 newPointer = pointer;
 (*pool).usedSpace += extra;
 if(extra > 0)
-memset((unsigned char *)pointer + block->size, (unsigned char)0, extra);
+memset((unsigned char *)pointer + block->size, 0, extra);
 block->size = size;
 }
 }
@@ -1050,7 +1049,7 @@ __ecereNameSpace__ecere__com__TOTAL_MEM += extra;
 __ecereNameSpace__ecere__com__OUTSIDE_MEM += extra;
 newPointer = ((struct __ecereNameSpace__ecere__com__MemBlock *)newBlock + 1);
 if(extra > 0)
-memset((unsigned char *)newPointer + newBlock->size, (unsigned char)0, extra);
+memset((unsigned char *)newPointer + newBlock->size, 0, extra);
 newBlock->size = size;
 }
 }
@@ -1066,11 +1065,11 @@ unsigned int __simpleStruct0;
 
 memcpy(newPointer, pointer, (__simpleStruct0 = block->size, (size < __simpleStruct0) ? size : __simpleStruct0));
 if(size > block->size)
-memset((unsigned char *)newPointer + block->size, (unsigned char)0, size - block->size);
+memset((unsigned char *)newPointer + block->size, 0, size - block->size);
 __ecereNameSpace__ecere__com___myfree(pointer);
 }
 else
-memset((unsigned char *)newPointer, (unsigned char)0, size);
+memset((unsigned char *)newPointer, 0, size);
 }
 }
 return newPointer;
@@ -1145,7 +1144,7 @@ void __ecereNameSpace__ecere__com__CheckMemory()
 
 static void __ecereNameSpace__ecere__com__ComputeClassParameters(struct __ecereNameSpace__ecere__com__Class * templatedClass, char *  templateParams, struct __ecereNameSpace__ecere__com__Instance * findModule);
 
-extern char *  strchr(char * , int);
+extern char *  strchr(const char * , int);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldLink;
 
@@ -1158,7 +1157,7 @@ void *  data;
 
 extern char *  __ecereNameSpace__ecere__sys__CopyString(char *  string);
 
-extern void *  memmove(void * , const void * , unsigned int size);
+extern void *  memmove(void * , const void * , size_t size);
 
 static void __ecereNameSpace__ecere__com__SetDelayedCPValues(struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__ClassProperty * _property);
 
@@ -1250,7 +1249,7 @@ memmove((unsigned char *)_class->data + mod->offsetClass, (unsigned char *)_clas
 if(base->type != 1000 && base->type != 4)
 memcpy((unsigned char *)_class->data, (unsigned char *)base->data, totalSizeClass - _class->sizeClass);
 else
-memset((unsigned char *)_class->data, (unsigned char)0, totalSizeClass - _class->sizeClass);
+memset((unsigned char *)_class->data, 0, totalSizeClass - _class->sizeClass);
 }
 _class->offsetClass = offsetClass;
 _class->sizeClass = totalSizeClass;
@@ -1410,7 +1409,7 @@ char *  parsedCommand;
 struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
 } __attribute__ ((gcc_struct));
 
-extern char *  strncpy(char * , const char * , int n);
+extern char *  strncpy(char * , const char * , size_t n);
 
 extern int strcmp(const char * , const char * );
 
@@ -1428,7 +1427,7 @@ static void __ecereNameSpace__ecere__com__FreeTemplateArgs(struct __ecereNameSpa
 
 static void __ecereNameSpace__ecere__com__CopyTemplateArg(struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param, struct __ecereNameSpace__ecere__com__ClassTemplateArgument * arg);
 
-extern char *  strstr(char * , const char * );
+extern char *  strstr(const char * , const char * );
 
 int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char *  a, char *  b);
 
@@ -2336,7 +2335,7 @@ return sign * value;
 
 extern char *  strcat(char * , const char * );
 
-extern int strlen(const char * );
+extern size_t strlen(const char * );
 
 struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, char * name)
 {
@@ -5018,7 +5017,7 @@ extern double floor(double number);
 
 extern double exp(double number);
 
-extern void qsort(void * , unsigned int, unsigned int, int (* )(void * , void * ));
+extern void qsort(void * , size_t, size_t, int (* )(void * , void * ));
 
 extern int system(const char * );
 
@@ -5036,13 +5035,13 @@ extern char *  getenv(const char *  name);
 
 extern int rename(const char *  oldpath, const char *  newpath);
 
-extern char *  strncat(char * , const char * , int n);
+extern char *  strncat(char * , const char * , size_t n);
 
 extern int strcasecmp(const char * , const char * );
 
-extern int strncasecmp(const char * , const char * , int n);
+extern int strncasecmp(const char * , const char * , size_t n);
 
-extern int strncmp(const char * , const char * , int n);
+extern int strncmp(const char * , const char * , size_t n);
 
 extern int vsprintf(char * , const char * , __builtin_va_list);
 
@@ -5163,7 +5162,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("log10", "double log10(do
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ceil", "double ceil(double number)", ceil, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("floor", "double floor(double number)", floor, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("exp", "double exp(double number)", exp, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("qsort", "void qsort(void *, uint, uint, int (*)(void *, void *))", qsort, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("qsort", "void qsort(void *, uintsize, uintsize, int (*)(void *, void *))", qsort, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strtod", "double strtod(char*, char**)", strtod, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strtol", "int strtol(char*, char**, int base)", strtol, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("system", "int system(const char*)", system, module, 4);
@@ -5172,32 +5171,32 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("atof", "float atof(const
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("tolower", "int tolower(int)", tolower, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("toupper", "int toupper(int)", toupper, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isdigit", "bool isdigit(int)", isdigit, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("memset", "void memset(void * area, byte value, uint count)", memset, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("memset", "void * memset(void * area, int value, uintsize count)", memset, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("getenv", "char * getenv(const char * name)", getenv, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("rename", "int rename(const char *oldpath, const char *newpath)", rename, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strlen", "int strlen(const char *)", strlen, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strlen", "uintsize strlen(const char *)", strlen, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strcat", "char * strcat(char *, const char *)", strcat, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strncat", "char * strncat(char *, const char *, int n)", strncat, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strchr", "char * strchr(char *, int)", strchr, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strstr", "char * strstr(char *, const char *)", strstr, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strncat", "char * strncat(char *, const char *, uintsize n)", strncat, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strchr", "char * strchr(const char *, int)", strchr, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strstr", "char * strstr(const char *, const char *)", strstr, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("fstrcmp", "(GetRuntimePlatform() == win32) ? strcmpi : strcmp", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("strcmpi", "strcasecmp", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("strnicmp", "strncasecmp", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strcasecmp", "int strcasecmp(const char *, const char *)", strcasecmp, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strncasecmp", "int strncasecmp(const char *, const char *, int n)", strncasecmp, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strncasecmp", "int strncasecmp(const char *, const char *, uintsize n)", strncasecmp, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strcmp", "int strcmp(const char *, const char *)", strcmp, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strncmp", "int strncmp(const char *, const char *, int n)", strncmp, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strncmp", "int strncmp(const char *, const char *, uintsize n)", strncmp, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strlwr", "char * strlwr(char *)", strlwr, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strupr", "char * strupr(char *)", strupr, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strcpy", "char * strcpy(char *, const char *)", strcpy, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strncpy", "char * strncpy(char *, const char *, int n)", strncpy, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("memcpy", "void * memcpy(void *, const void *, uint size)", memcpy, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("memmove", "void * memmove(void *, const void *, uint size)", memmove, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strncpy", "char * strncpy(char *, const char *, uintsize n)", strncpy, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("memcpy", "void * memcpy(void *, const void *, uintsize size)", memcpy, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("memmove", "void * memmove(void *, const void *, uintsize size)", memmove, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("sprintf", "int sprintf(char *, char *, ...)", sprintf, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("snprintf", "int sprintf(char *, int, char *, ...)", snprintf, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("snprintf", "int sprintf(char *, uintsize, char *, ...)", snprintf, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("printf", "int printf(char *, ...)", printf, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("vsprintf", "int vsprintf(char*, const char*, __builtin_va_list)", vsprintf, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("vsnprintf", "int vsnprintf(char*, int, const char*, __builtin_va_list)", vsnprintf, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("vsnprintf", "int vsnprintf(char*, uintsize, const char*, __builtin_va_list)", vsnprintf, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("puts", "int puts(char *)", puts, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("fputs", "int fputs(char *, void * stream)", fputs, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isalnum", "int isalnum(int c)", isalnum, module, 4);

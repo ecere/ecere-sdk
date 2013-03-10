@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -1112,7 +1113,7 @@ output[d] = (char)0;
 
 extern char *  strcat(char * , const char * );
 
-extern int strlen(const char * );
+extern size_t strlen(const char * );
 
 void FullClassNameCat(char * output, char * className, unsigned int includeTemplateParams)
 {
@@ -1624,7 +1625,7 @@ extern void FreeExternal(struct External * external);
 
 extern int declMode;
 
-extern char *  strstr(char * , const char * );
+extern char *  strstr(const char * , const char * );
 
 extern char *  sourceFile;
 

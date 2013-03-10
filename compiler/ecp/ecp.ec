@@ -1487,6 +1487,8 @@ class PrecompApp : Application
          globalContext.types.Add((BTNode)Symbol { string = CopyString("byte"), type = ProcessTypeString("unsigned char", false) });
          globalContext.types.Add((BTNode)Symbol { string = CopyString("intptr_t"), type = ProcessTypeString("intptr", false) });
          globalContext.types.Add((BTNode)Symbol { string = CopyString("uintptr_t"), type = ProcessTypeString("uintptr", false) });
+         globalContext.types.Add((BTNode)Symbol { string = CopyString("ssize_t"), type = ProcessTypeString("intsize", false) });
+         globalContext.types.Add((BTNode)Symbol { string = CopyString("size_t"), type = ProcessTypeString("uintsize", false) });
          
          {
             char * outputFilePath = GetOutputFile();

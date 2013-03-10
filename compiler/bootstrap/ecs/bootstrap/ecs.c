@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -2228,9 +2229,9 @@ extern void CheckDataRedefinitions(void);
 
 extern char *  __ecereNameSpace__ecere__sys__ChangeExtension(char *  string, char *  ext, char *  output);
 
-extern char *  strstr(char * , const char * );
+extern char *  strstr(const char * , const char * );
 
-extern int strlen(const char * );
+extern size_t strlen(const char * );
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ContextStringPair;
 

@@ -4,6 +4,7 @@ default:
 #define set _set
 #define uint _uint
 #define File _File
+#define strlen _strlen
 #undef __BLOCKS__
 #include <stdio.h>
 #include <stdarg.h>
@@ -72,6 +73,7 @@ private:
 #undef set
 #undef uint
 #undef File
+#undef strlen
 
 import "System"
 

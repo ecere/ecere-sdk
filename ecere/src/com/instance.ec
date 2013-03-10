@@ -6006,7 +6006,7 @@ static void LoadCOM(Module module)
    eSystem_RegisterFunction("exp", "double exp(double number)", exp, module, baseSystemAccess);
 
    // --- Stdlib ---
-   eSystem_RegisterFunction("qsort", "void qsort(void *, uint, uint, int (*)(void *, void *))", qsort, module, baseSystemAccess);
+   eSystem_RegisterFunction("qsort", "void qsort(void *, uintsize, uintsize, int (*)(void *, void *))", qsort, module, baseSystemAccess);
    eSystem_RegisterFunction("strtod", "double strtod(char*, char**)", strtod, module, baseSystemAccess);
    eSystem_RegisterFunction("strtol", "int strtol(char*, char**, int base)", strtol, module, baseSystemAccess);
    eSystem_RegisterFunction("system", "int system(const char*)", system, module, baseSystemAccess);
@@ -6015,16 +6015,16 @@ static void LoadCOM(Module module)
    eSystem_RegisterFunction("tolower", "int tolower(int)", tolower, module, baseSystemAccess);
    eSystem_RegisterFunction("toupper", "int toupper(int)", toupper, module, baseSystemAccess);
    eSystem_RegisterFunction("isdigit", "bool isdigit(int)", isdigit, module, baseSystemAccess);
-   eSystem_RegisterFunction("memset", "void memset(void * area, byte value, uint count)", memset, module, baseSystemAccess);
+   eSystem_RegisterFunction("memset", "void * memset(void * area, int value, uintsize count)", memset, module, baseSystemAccess);
    eSystem_RegisterFunction("getenv", "char * getenv(const char * name)", getenv, module, baseSystemAccess);
    eSystem_RegisterFunction("rename", "int rename(const char *oldpath, const char *newpath)", rename, module, baseSystemAccess);
 
    // --- String --- (These might move to the string class)
-   eSystem_RegisterFunction("strlen", "int strlen(const char *)", strlen, module, baseSystemAccess);
+   eSystem_RegisterFunction("strlen", "uintsize strlen(const char *)", strlen, module, baseSystemAccess);
    eSystem_RegisterFunction("strcat", "char * strcat(char *, const char *)", strcat, module, baseSystemAccess);
-   eSystem_RegisterFunction("strncat", "char * strncat(char *, const char *, int n)", strncat, module, baseSystemAccess);
-   eSystem_RegisterFunction("strchr", "char * strchr(char *, int)", strchr, module, baseSystemAccess);
-   eSystem_RegisterFunction("strstr", "char * strstr(char *, const char *)", strstr, module, baseSystemAccess);
+   eSystem_RegisterFunction("strncat", "char * strncat(char *, const char *, uintsize n)", strncat, module, baseSystemAccess);
+   eSystem_RegisterFunction("strchr", "char * strchr(const char *, int)", strchr, module, baseSystemAccess);
+   eSystem_RegisterFunction("strstr", "char * strstr(const char *, const char *)", strstr, module, baseSystemAccess);
 
    eSystem_RegisterDefine("fstrcmp", "(GetRuntimePlatform() == win32) ? strcmpi : strcmp", module, baseSystemAccess);
 
@@ -6032,7 +6032,7 @@ static void LoadCOM(Module module)
    eSystem_RegisterDefine("strcmpi", "strcasecmp", module, baseSystemAccess);
    eSystem_RegisterDefine("strnicmp", "strncasecmp", module, baseSystemAccess);
    eSystem_RegisterFunction("strcasecmp", "int strcasecmp(const char *, const char *)", strcmpi, module, baseSystemAccess);
-   eSystem_RegisterFunction("strncasecmp", "int strncasecmp(const char *, const char *, int n)", strnicmp, module, baseSystemAccess);
+   eSystem_RegisterFunction("strncasecmp", "int strncasecmp(const char *, const char *, uintsize n)", strnicmp, module, baseSystemAccess);
 /*
 #else
    eSystem_RegisterDefine("strcasecmp", "strcmpi", module, baseSystemAccess);
@@ -6043,22 +6043,20 @@ static void LoadCOM(Module module)
 */
 
    eSystem_RegisterFunction("strcmp", "int strcmp(const char *, const char *)", strcmp, module, baseSystemAccess);
-   eSystem_RegisterFunction("strncmp", "int strncmp(const char *, const char *, int n)", strncmp, module, baseSystemAccess);
+   eSystem_RegisterFunction("strncmp", "int strncmp(const char *, const char *, uintsize n)", strncmp, module, baseSystemAccess);
    eSystem_RegisterFunction("strlwr", "char * strlwr(char *)", strlwr, module, baseSystemAccess);
    eSystem_RegisterFunction("strupr", "char * strupr(char *)", strupr, module, baseSystemAccess);
    eSystem_RegisterFunction("strcpy", "char * strcpy(char *, const char *)", strcpy, module, baseSystemAccess);
-   eSystem_RegisterFunction("strncpy", "char * strncpy(char *, const char *, int n)", strncpy, module, baseSystemAccess);
-   eSystem_RegisterFunction("memcpy", "void * memcpy(void *, const void *, uint size)", memcpy, module, baseSystemAccess);
-   eSystem_RegisterFunction("memmove", "void * memmove(void *, const void *, uint size)", memmove, module, baseSystemAccess);
+   eSystem_RegisterFunction("strncpy", "char * strncpy(char *, const char *, uintsize n)", strncpy, module, baseSystemAccess);
+   eSystem_RegisterFunction("memcpy", "void * memcpy(void *, const void *, uintsize size)", memcpy, module, baseSystemAccess);
+   eSystem_RegisterFunction("memmove", "void * memmove(void *, const void *, uintsize size)", memmove, module, baseSystemAccess);
 
    // --- Stdio ---
    eSystem_RegisterFunction("sprintf", "int sprintf(char *, char *, ...)", sprintf, module, baseSystemAccess);
-   // TODO: Replace int with size_t when eC recognizes it for 64 bit port
-   eSystem_RegisterFunction("snprintf", "int sprintf(char *, int, char *, ...)", snprintf, module, baseSystemAccess);
+   eSystem_RegisterFunction("snprintf", "int sprintf(char *, uintsize, char *, ...)", snprintf, module, baseSystemAccess);
    eSystem_RegisterFunction("printf", "int printf(char *, ...)", printf, module, baseSystemAccess);
    eSystem_RegisterFunction("vsprintf", "int vsprintf(char*, const char*, __builtin_va_list)", vsprintf, module, baseSystemAccess);
-   // TODO: Replace int with size_t when eC recognizes it for 64 bit port
-   eSystem_RegisterFunction("vsnprintf", "int vsnprintf(char*, int, const char*, __builtin_va_list)", vsnprintf, module, baseSystemAccess);
+   eSystem_RegisterFunction("vsnprintf", "int vsnprintf(char*, uintsize, const char*, __builtin_va_list)", vsnprintf, module, baseSystemAccess);
    eSystem_RegisterFunction("puts", "int puts(char *)", puts, module, baseSystemAccess);
    eSystem_RegisterFunction("fputs", "int fputs(char *, void * stream)", fputs, module, baseSystemAccess);
 

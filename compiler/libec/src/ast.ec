@@ -2163,6 +2163,12 @@ public Type ProcessType(OldList specs, Declarator decl)
                      if(!strcmp(spec.name, "uintptr"))
                         specType.isSigned = false;
                   }
+                  else if(spec.name && (!strcmp(spec.name, "uintsize") || !strcmp(spec.name, "intsize")))
+                  {
+                     specType.kind = intSizeType;
+                     if(!strcmp(spec.name, "uintsize"))
+                        specType.isSigned = false;
+                  }
                   else
                   {
                      Symbol symbol = spec.name ? FindType(curContext, spec.name) : null;

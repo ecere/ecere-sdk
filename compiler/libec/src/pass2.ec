@@ -100,6 +100,8 @@ static Expression FixReference(Expression e, bool wantReference)
            (_class.type == systemClass && _class.base && 
            strcmp(_class.fullName, "uintptr") && 
            strcmp(_class.fullName, "intptr") && 
+           strcmp(_class.fullName, "uintsize") && 
+           strcmp(_class.fullName, "intsize") && 
            strcmp(_class.fullName, "ecere::com::Instance") && 
            strcmp(_class.fullName, "ecere::com::Class") && 
            strcmp(_class.dataTypeString, "char *"))))

@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -932,8 +933,6 @@ struct __ecereNameSpace__ecere__com__Method * method;
 } __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 
-typedef uintptr_t size_t;
-
 void exit(int status);
 
 void * calloc(size_t nmemb, size_t size);
@@ -1601,6 +1600,7 @@ struct OpTable ops;
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Operand;
+
 
 extern unsigned int parsingType;
 
@@ -2723,6 +2723,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "subClassType", 19);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "templateType", 20);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "thisClassType", 21);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "intPtrType", 22);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "intSizeType", 23);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Type", 0, sizeof(struct Type), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Type = class;

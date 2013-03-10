@@ -2,6 +2,7 @@ namespace sys;
 
 #define set _set
 #define uint _uint
+#define strlen _strlen
 
 default:
 
@@ -20,6 +21,7 @@ default:
 
 #undef uint
 #undef set
+#undef strlen
 private:
 
 import "instance"
