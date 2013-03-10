@@ -6,6 +6,7 @@ private:
 
 public class FieldBox : DataBox
 {
+   class_no_expansion
    size = { 100, 22 };
    borderStyle = deep;
 
@@ -22,7 +23,7 @@ public class FieldBox : DataBox
          {
             if(editor.table == field.table)
                result = editor.editRow;
-            else
+            else if(editor.lookups)
             {
                Lookup lookup = editor.lookups[field.table]; // Map<Table, Lookup> limits to single lookup per table
                if(lookup.valueField && lookup.findField && lookup.row && !lookup.row.nil)

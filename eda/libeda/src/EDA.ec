@@ -254,7 +254,7 @@ Mutex idRowCacheMutex { };
 
 public class Table
 {
-   class_no_expansion;
+   class_no_expansion
    Table prev, next;
    Database db;
    OldList listRows { offset = (uint)&((Row)0).prev };
@@ -423,7 +423,7 @@ public:
 
 public class Row
 {
-   class_no_expansion;
+   class_no_expansion
    DriverRow row;
    Row prev, next;
    Table tbl;
