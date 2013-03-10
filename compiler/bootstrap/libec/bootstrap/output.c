@@ -1225,7 +1225,7 @@ break;
 }
 }
 
-static void OutputSpecifier(struct Specifier * spec, struct __ecereNameSpace__ecere__com__Instance * f);
+static void OutputSpecifier(struct Specifier * spec, struct __ecereNameSpace__ecere__com__Instance * f, unsigned int typeName);
 
 static void OutputDeclarator(struct Declarator * decl, struct __ecereNameSpace__ecere__com__Instance * f);
 
@@ -1237,7 +1237,7 @@ struct Specifier * spec;
 
 for(spec = (*type->qualifiers).first; spec; spec = spec->next)
 {
-OutputSpecifier(spec, f);
+OutputSpecifier(spec, f, 0x0);
 if(spec->next)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
 }
@@ -1271,7 +1271,7 @@ struct Specifier * spec;
 
 for(spec = (*exp->_classExp.specifiers).first; spec; spec = spec->next)
 {
-OutputSpecifier(spec, f);
+OutputSpecifier(spec, f, 0x0);
 if(spec->next)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
 }
@@ -1847,7 +1847,7 @@ struct AsmField * field;
 
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "__asm__ ");
 if(stmt->asmStmt.spec)
-OutputSpecifier(stmt->asmStmt.spec, f);
+OutputSpecifier(stmt->asmStmt.spec, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "(");
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, stmt->asmStmt.statements);
 if(stmt->asmStmt.inputFields || stmt->asmStmt.outputFields || stmt->asmStmt.clobberedFields)
@@ -1907,7 +1907,7 @@ struct Specifier * spec;
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
 for(spec = (*ptr->qualifiers).first; spec; spec = spec->next)
 {
-OutputSpecifier(spec, f);
+OutputSpecifier(spec, f, 0x0);
 if(spec->next)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
 }
@@ -2086,7 +2086,7 @@ extern struct Symbol * FindClass(char *  name);
 
 static void OutputClassDef(struct ClassDef * def, struct __ecereNameSpace__ecere__com__Instance * f);
 
-static void OutputSpecifier(struct Specifier * spec, struct __ecereNameSpace__ecere__com__Instance * f)
+static void OutputSpecifier(struct Specifier * spec, struct __ecereNameSpace__ecere__com__Instance * f, unsigned int typeName)
 {
 switch(spec->type)
 {
@@ -2127,10 +2127,10 @@ case INT:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "int");
 break;
 case UINT:
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "unsigned int");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, typeName ? "uint" : "unsigned int");
 break;
 case INT64:
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "long long");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, typeName ? "int64" : "long long");
 break;
 case VALIST:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "__builtin_va_list");
@@ -2247,7 +2247,7 @@ OutputExpression(spec->expression, f);
 break;
 case 7:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "subclass(");
-OutputSpecifier(spec->_class, f);
+OutputSpecifier(spec->_class, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")");
 break;
 case 8:
@@ -2362,9 +2362,13 @@ break;
 }
 if(decl->specifiers)
 {
+unsigned int inTypeDef = 0x0;
+
 for(spec = (*decl->specifiers).first; spec; spec = spec->next)
 {
-OutputSpecifier(spec, f);
+if(spec->type == 0 && spec->specifier == TYPEDEF)
+inTypeDef = 0x1;
+OutputSpecifier(spec, f, inTypeDef && !spec->next);
 if(spec->next)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
 }
@@ -2387,7 +2391,7 @@ if(decl->specifiers)
 {
 for(spec = (*decl->specifiers).first; spec; spec = spec->next)
 {
-OutputSpecifier(spec, f);
+OutputSpecifier(spec, f, 0x0);
 if(spec->next)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
 }
@@ -2407,7 +2411,7 @@ if(d->next)
 if(decl->extStorage)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputSpecifier(decl->extStorage, f);
+OutputSpecifier(decl->extStorage, f, 0x0);
 }
 break;
 }
@@ -2444,7 +2448,7 @@ struct Specifier * spec;
 
 for(spec = (*func->specifiers).first; spec; spec = spec->next)
 {
-OutputSpecifier(spec, f);
+OutputSpecifier(spec, f, 0x0);
 if(spec->next)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
 }
@@ -2551,7 +2555,7 @@ break;
 static void OutputInstance(struct Instantiation * inst, struct __ecereNameSpace__ecere__com__Instance * f)
 {
 if(inst->_class)
-OutputSpecifier(inst->_class, f);
+OutputSpecifier(inst->_class, f, 0x0);
 if(inst->exp)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
@@ -2594,7 +2598,7 @@ struct Specifier * spec;
 
 for(spec = (*func->specifiers).first; spec; spec = spec->next)
 {
-OutputSpecifier(spec, f);
+OutputSpecifier(spec, f, 0x0);
 if(spec->next)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
 }
@@ -2665,7 +2669,7 @@ break;
 static void OutputClass(struct ClassDefinition * _class, struct __ecereNameSpace__ecere__com__Instance * f)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "class ");
-OutputSpecifier(_class->_class, f);
+OutputSpecifier(_class->_class, f, 0x0);
 if(_class->baseSpecs)
 {
 struct Specifier * spec;
@@ -2673,7 +2677,7 @@ struct Specifier * spec;
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " : ");
 for(spec = (*_class->baseSpecs).first; spec; spec = spec->next)
 {
-OutputSpecifier(spec, f);
+OutputSpecifier(spec, f, 0x0);
 }
 }
 if(_class->definitions)

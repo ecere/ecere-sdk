@@ -87,7 +87,7 @@ public void OutputTypeName(TypeName type, File f)
       Specifier spec;
       for(spec = type.qualifiers->first; spec; spec = spec.next)
       {
-         OutputSpecifier(spec, f);
+         OutputSpecifier(spec, f, false);
          if(spec.next) f.Puts(" ");
       }
    }
@@ -113,7 +113,7 @@ public void OutputExpression(Expression exp, File f)
             Specifier spec;
             for(spec = exp._classExp.specifiers->first; spec; spec = spec.next)
             {
-               OutputSpecifier(spec, f);
+               OutputSpecifier(spec, f, false);
                if(spec.next) f.Puts(" ");
             }
             if(exp._classExp.decl) 
@@ -646,7 +646,7 @@ static void OutputStatement(Statement stmt, File f)
          AsmField field;
          f.Puts("__asm__ ");
          if(stmt.asmStmt.spec)
-            OutputSpecifier(stmt.asmStmt.spec, f);
+            OutputSpecifier(stmt.asmStmt.spec, f, false);
          f.Puts("(");
          f.Puts(stmt.asmStmt.statements);
 
@@ -704,7 +704,7 @@ static void OutputPointer(Pointer ptr, File f)
       f.Puts(" ");
       for(spec = ptr.qualifiers->first; spec; spec = spec.next)
       {
-         OutputSpecifier(spec, f);
+         OutputSpecifier(spec, f, false);
          if(spec.next) f.Puts(" ");
       }
    }
@@ -862,7 +862,7 @@ static void OutputExtDecl(ExtDecl extDecl, File f)
       OutputAttrib(extDecl.attr, f);
 }
 
-static void OutputSpecifier(Specifier spec, File f)
+static void OutputSpecifier(Specifier spec, File f, bool typeName)
 {
    switch(spec.type)
    {
@@ -908,12 +908,12 @@ static void OutputSpecifier(Specifier spec, File f)
                f.Puts("int");
                break;
             case UINT:
-               f.Puts("unsigned int");
+               f.Puts(typeName ? "uint" : "unsigned int");
                break;
             case INT64:
                //f.Puts("__int64");
                //f.Puts("int64");
-               f.Puts("long long");
+               f.Puts(typeName ? "int64" : "long long");
                break;
             case VALIST:
                f.Puts("__builtin_va_list");
@@ -1029,7 +1029,7 @@ static void OutputSpecifier(Specifier spec, File f)
          break;
       case subClassSpecifier:
          f.Puts("subclass(");
-         OutputSpecifier(spec._class, f);
+         OutputSpecifier(spec._class, f, false);
          f.Puts(")");                  
          break;
       case templateTypeSpecifier:
@@ -1175,9 +1175,12 @@ static void OutputDeclaration(Declaration decl, File f)
 
          if(decl.specifiers)
          {
+            bool inTypeDef = false;
             for(spec = decl.specifiers->first; spec; spec = spec.next)
             {
-               OutputSpecifier(spec, f);
+               if(spec.type == baseSpecifier && spec.specifier == TYPEDEF)
+                  inTypeDef = true;
+               OutputSpecifier(spec, f, inTypeDef && !spec.next);
                if(spec.next) f.Puts(" ");
             }
          }
@@ -1199,7 +1202,7 @@ static void OutputDeclaration(Declaration decl, File f)
          {
             for(spec = decl.specifiers->first; spec; spec = spec.next)
             {
-               OutputSpecifier(spec, f);
+               OutputSpecifier(spec, f, false);
                if(spec.next) f.Puts(" ");
             }
          }
@@ -1217,7 +1220,7 @@ static void OutputDeclaration(Declaration decl, File f)
          if(decl.extStorage)
          {
             f.Puts(" ");
-            OutputSpecifier(decl.extStorage, f);
+            OutputSpecifier(decl.extStorage, f, false);
          }
          break;
       }
@@ -1250,7 +1253,7 @@ static void OutputFunction(FunctionDefinition func, File f)
       Specifier spec;
       for(spec = func.specifiers->first; spec; spec = spec.next)
       {
-         OutputSpecifier(spec, f);
+         OutputSpecifier(spec, f, false);
          if(spec.next) f.Puts(" ");
       }
       f.Puts(" ");
@@ -1354,7 +1357,7 @@ static void OutputMembersInit(MembersInit init, File f)
 static void OutputInstance(Instantiation inst, File f)
 {
    if(inst._class)
-      OutputSpecifier(inst._class, f);
+      OutputSpecifier(inst._class, f, false);
    if(inst.exp)
    {
       f.Puts(" ");
@@ -1395,7 +1398,7 @@ static void OutputClassFunction(ClassFunction func, File f)
       Specifier spec;
       for(spec = func.specifiers->first; spec; spec = spec.next)
       {
-         OutputSpecifier(spec, f);
+         OutputSpecifier(spec, f, false);
          if(spec.next) f.Puts(" ");
       }
       f.Puts(" ");
@@ -1404,7 +1407,7 @@ static void OutputClassFunction(ClassFunction func, File f)
    {
       //if(func.class != (void *)-1)
       if(func.class)
-         OutputSpecifier(func.class, f);
+         OutputSpecifier(func.class, f, false);
       f.Puts("::");
    }*/
    if(func.declarator) OutputDeclarator(func.declarator, f);
@@ -1468,7 +1471,7 @@ static void OutputClassDef(ClassDef def, File f)
 static void OutputClass(ClassDefinition _class, File f)
 {
    f.Puts("class ");
-   OutputSpecifier(_class._class, f);
+   OutputSpecifier(_class._class, f, false);
    if(_class.baseSpecs)
    {
       Specifier spec;
@@ -1476,7 +1479,7 @@ static void OutputClass(ClassDefinition _class, File f)
       f.Puts(" : ");
       for(spec = _class.baseSpecs->first; spec; spec = spec.next)
       {
-         OutputSpecifier(spec, f);
+         OutputSpecifier(spec, f, false);
       }
    }
    if(_class.definitions)
