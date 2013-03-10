@@ -1,3 +1,12 @@
+Ecere SDK 0.44.04 (March 10, 2013)
+
+   * Various Bug Fixes
+   * MinGW-w64 Support
+   * 64 Bit Support
+   * Basic Android Support
+   * Improved FreeBSD Support
+   * Improved OS X Support
+----------------------------------------
 Ecere SDK 0.44.03 (January 27, 2013)
 
    * Renaming libec0 Debian package to libecc0 to solve conflict with "Library for modular symbols and elliptic curves over Q" in Sid
