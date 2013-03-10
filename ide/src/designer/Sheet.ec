@@ -776,7 +776,7 @@ class Sheet : Window
                {
                   Property prop = eClass_FindProperty(selected.instance._class, propIt.name, GetPrivateModule());
                   
-                  if(prop && prop.Set && prop.Get && prop.compiled)
+                  if(prop && prop.Set && prop.Get && prop.compiled && (!prop.category || strcmpi(prop.category, $"Deprecated")))
                   {
                      bool disabled = Code_IsPropertyDisabled(selected, prop.name);
                      bool bold;
