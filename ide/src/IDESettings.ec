@@ -160,6 +160,8 @@ class IDESettingsContainer : GlobalSettings
    char moduleLocation[MAX_LOCATION];
 
 private:
+   FileSize settingsFileSize;
+
    IDESettingsContainer()
    {
       char path[MAX_LOCATION];
@@ -208,12 +210,31 @@ private:
 
    void OnAskReloadSettings()
    {
-      /*if(MessageBox { type = YesNo, master = this, 
-            text = "Global Settings Modified Externally", 
+      /*if(MessageBox { type = YesNo, master = this,
+            text = "Global Settings Modified Externally",
             contents = "The global settings were modified by another instance.\n"
             "Would you like to reload them?" }.Modal() == Yes)*/
       {
-         Load();
+         double o, n;
+         FileSize newSettingsFileSize;
+         FileGetSize(settingsFilePath, &newSettingsFileSize);
+         o = settingsFileSize;
+         n = newSettingsFileSize;
+         if(o - n < 2048)
+            Load();
+         else
+         {
+            GuiApplication app = ((GuiApplication)__thisModule.application);
+            Window w;
+            for(w = app.desktop.firstChild; w && (!w.created || !w.visible); w = w.next);
+            MessageBox { master = w, type = ok,
+                  text = "Global Settings Modified Externally",
+                  contents = "The global settings were modified by another process and a drastic shrinking of the settings file was detected.\n"
+                  "The new settings will not be loaded to prevent loss of your ide settings.\n"
+                  "Please check your settings file and make sure to save this IDE's global settings if your settings file has been compromised."
+                  }.Create();
+            //Save();
+         }
       }
    }
 
@@ -280,6 +301,7 @@ private:
       defaultCompiler._refCount = 0;
 
       CloseAndMonitor();
+      FileGetSize(settingsFilePath, &settingsFileSize);
       if(data.compilerConfigs)
       {
          for(c : data.compilerConfigs)
@@ -313,6 +335,7 @@ private:
       if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
          data.ManagePortablePaths(moduleLocation, true);
       CloseAndMonitor();
+      FileGetSize(settingsFilePath, &settingsFileSize);
       return result;
    }
 }
