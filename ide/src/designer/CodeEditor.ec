@@ -784,7 +784,7 @@ class CodeEditor : Window
       textVertScroll = true, multiLine = true, /*lineNumbers = ideSettings.showLineNumbers,*/
       freeCaret = ideSettings.useFreeCaret, caretFollowsScrolling = ideSettings.caretFollowsScrolling, 
       tabKey = true, smartHome = true;
-      tabSelection = true, maxLineSize = 65536, parent = this, hasHorzScroll = true, hasVertScroll = true;
+      tabSelection = true, /*maxLineSize = 65536, */parent = this, hasHorzScroll = true, hasVertScroll = true;
       selectionColor = selectionColor, selectionText = selectionText,
       background = codeEditorBG, foreground = codeEditorFG, syntaxColorScheme = colorScheme,
       font = font, borderStyle = none;

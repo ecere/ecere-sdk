@@ -691,7 +691,7 @@ private:
          replaceEdit = EditBox
          {
             multiLine = true,textHorzScroll = true,textVertScroll = true, 
-            text = $"Replacing Editbox", size = Size { 640,480 },maxLineSize = 65536
+            text = $"Replacing Editbox", size = Size { 640,480 }/*,maxLineSize = 65536*/
          };
       }
 
