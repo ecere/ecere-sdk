@@ -158,7 +158,7 @@ public:
          CallVirtualMethodPacket packet = (CallVirtualMethodPacket)new0 byte[size];
          VirtualCallAck ack = null;
 
-         if(currentThreadID == serverSocket.thread.id)
+         if(currentThreadID == (int64)serverSocket.thread.id)
             processingSocket = serverSocket;
          else
          {
@@ -172,7 +172,7 @@ public:
                {
                   next = processingSocket.next;
                   if(processingSocket.connected && 
-                     processingSocket.thread.id == currentThreadID)
+                     (int64)processingSocket.thread.id == currentThreadID)
                      break;
                }
             }
@@ -486,7 +486,7 @@ class DCOMClientThread : Thread
       guiApp.Lock();
       thread.connected = false;
       guiApp.Unlock();
-      if(thread.started && GetCurrentThreadID() != thread.id)
+      if(thread.started && GetCurrentThreadID() != (int64)thread.id)
          thread.Wait();
    }
 
@@ -536,7 +536,7 @@ public class DCOMService : Service
    };
    ~DCOMService()
    {
-      if(thread.started && GetCurrentThreadID() != thread.id)
+      if(thread.started && GetCurrentThreadID() != (int64)thread.id)
          thread.Wait();
    }
 
@@ -557,7 +557,7 @@ public class DCOMService : Service
       DCOMServerSocket socket;
       thread.connected = false;
       result = Service::Stop();
-      if(thread.started && GetCurrentThreadID() != thread.id)
+      if(thread.started && GetCurrentThreadID() != (int64)thread.id)
          thread.Wait();
    }
 
@@ -630,7 +630,7 @@ public:
             //guiApp.ProcessNetworkEvents();
             // Process();
 
-            if(GetCurrentThreadID() == thread.id)
+            if(GetCurrentThreadID() == (int64)thread.id)
                Process();
             else
                thread.semaphore.Wait();
@@ -767,7 +767,7 @@ public:
             //guiApp.WaitNetworkEvent();
             //guiApp.ProcessNetworkEvents();
             //Process();
-            if(GetCurrentThreadID() == thread.id)
+            if(GetCurrentThreadID() == (int64)thread.id)
                ProcessTimeOut(0.01);
             else
                ecere::sys::Sleep(0.01);//thread.semaphore.Wait();
@@ -790,7 +790,7 @@ public:
    {
       if(thread.started)
       {
-         if(GetCurrentThreadID() != thread.id)
+         if(GetCurrentThreadID() != (int64)thread.id)
             thread.Wait();
       }
       acks.Free();
