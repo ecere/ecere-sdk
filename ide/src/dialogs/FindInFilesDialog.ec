@@ -166,7 +166,7 @@ public:
    void Show()
    {
       if(!created)
-         Create();
+         Modal();
       else
          Activate();
    }

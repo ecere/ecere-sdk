@@ -1390,7 +1390,7 @@ class IDEWorkSpace : Window
 
    FindInFilesDialog findInFilesDialog
    {
-      master = this, parent = this;
+      master = this,
       filters = findInFilesFileFilters.array, sizeFilters = findInFilesFileFilters.count * sizeof(FileFilter);
       filter = 1;
    };
