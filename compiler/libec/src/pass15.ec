@@ -336,20 +336,23 @@ public char * PrintDouble(double result)
       return true;                                                                  \
    }
 
-GETVALUE(Int, int);
-GETVALUE(UInt, unsigned int);
-GETVALUE(Int64, int64);
-GETVALUE(UInt64, uint64);
-GETVALUE(IntPtr, intptr);
-GETVALUE(UIntPtr, uintptr);
-GETVALUE(IntSize, intsize);
-GETVALUE(UIntSize, uintsize);
-GETVALUE(Short, short);
-GETVALUE(UShort, unsigned short);
-GETVALUE(Char, char);
-GETVALUE(UChar, unsigned char);
-GETVALUE(Float, float);
-GETVALUE(Double, double);
+// To help the deubugger currently not preprocessing...
+#define HELP(x) x
+
+GETVALUE(Int, HELP(int));
+GETVALUE(UInt, HELP(unsigned int));
+GETVALUE(Int64, HELP(int64));
+GETVALUE(UInt64, HELP(uint64));
+GETVALUE(IntPtr, HELP(intptr));
+GETVALUE(UIntPtr, HELP(uintptr));
+GETVALUE(IntSize, HELP(intsize));
+GETVALUE(UIntSize, HELP(uintsize));
+GETVALUE(Short, HELP(short));
+GETVALUE(UShort, HELP(unsigned short));
+GETVALUE(Char, HELP(char));
+GETVALUE(UChar, HELP(unsigned char));
+GETVALUE(Float, HELP(float));
+GETVALUE(Double, HELP(double));
 
 void ComputeExpression(Expression exp);
 
@@ -4864,15 +4867,23 @@ void ComputeInstantiation(Expression exp)
                                     break;
                                  case intPtrType:
                                     if(type.isSigned)
+                                    {
                                        bits |= ((intptr)part << bitMember.pos);
+                                    }
                                     else
+                                    {
                                        bits |= ((uintptr)part << bitMember.pos);
+                                    }
                                     break;
                                  case intSizeType:
                                     if(type.isSigned)
+                                    {
                                        bits |= ((ssize_t)(intsize)part << bitMember.pos);
+                                    }
                                     else
+                                    {
                                        bits |= ((size_t) (uintsize)part << bitMember.pos);
+                                    }
                                     break;
                               }
                            }
@@ -5496,7 +5507,7 @@ void ComputeExpression(Expression exp)
                               case intSizeType:
                               {
                                  // TOFIX:
-                                 ssize_t /*intsize */intValue;
+                                 intsize intValue;
                                  void (*Set)(void *, intsize) = (void *)prop.Set;
 
                                  exp.instance = Instantiation { };
