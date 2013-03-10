@@ -169,7 +169,7 @@ GlobalSettingsDialog globalSettingsDialog
             break;
          case compilerSettings:
          {
-            ide.UpdateCompilerConfigs();
+            ide.UpdateCompilerConfigs(true);
             break;
          }
       }
@@ -275,7 +275,7 @@ class IDEToolbar : ToolBar
 
    DropBox activeConfig
    {
-      this, toolTip = $"Active Configuration(s)", size = { 160 };
+      this, toolTip = $"Active Configuration(s)", size = { 160 }, disabled = true;
       bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
       {
          if(row)
@@ -302,10 +302,10 @@ class IDEToolbar : ToolBar
 
    DropBox activeCompiler
    {
-      this, toolTip = $"Active Compiler", size = { 160 };
+      this, toolTip = $"Active Compiler", size = { 160 }, disabled = true;
       bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
       {
-         if(row && strcmp(row.string, ide.workspace.compiler))
+         if(ide.workspace && ide.projectView && row && strcmp(row.string, ide.workspace.compiler))
          {
             bool silent = ide.projectView.buildInProgress == none ? false : true;
             CompilerConfig compiler = ideSettings.GetCompilerConfig(row.string);
@@ -952,6 +952,7 @@ class IDEWorkSpace : Window
                      findInFilesDialog.currentDirectory = workingDir;
                      ideMainFrame.text = titleECEREIDE;
                   }
+                  ide.AdjustMenus();
                }
             }
             return true;
@@ -1643,16 +1644,20 @@ class IDEWorkSpace : Window
       }
    }
 
-   void UpdateCompilerConfigs()
+   void UpdateCompilerConfigs(bool mute)
    {
       UpdateToolBarActiveCompilers();
       if(workspace)
       {
+         bool silent = mute || (ide.projectView.buildInProgress == none ? false : true);
          CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.compiler);
-         projectView.ShowOutputBuildLog(true);
-         projectView.DisplayCompiler(compiler, false);
+         if(!silent)
+         {
+            projectView.ShowOutputBuildLog(true);
+            projectView.DisplayCompiler(compiler, false);
+         }
          for(prj : workspace.projects)
-            projectView.ProjectPrepareCompiler(prj, compiler, false);
+            projectView.ProjectPrepareCompiler(prj, compiler, silent);
          delete compiler;
       }
    }
@@ -1666,9 +1671,8 @@ class IDEWorkSpace : Window
          if(workspace && workspace.compiler && !strcmp(compiler.name, workspace.compiler))
             toolBar.activeCompiler.currentRow = row;
       }
-      if(!toolBar.activeCompiler.currentRow)
-         toolBar.activeCompiler.currentRow = toolBar.activeCompiler.firstRow;
-      toolBar.activeCompiler.disabled = workspace == null;
+      if(!toolBar.activeCompiler.currentRow && toolBar.activeCompiler.firstRow)
+         toolBar.activeCompiler.SelectRow(toolBar.activeCompiler.firstRow);
    }
 
    void UpdateToolBarActiveConfigs(bool selectionOnly)
@@ -1744,7 +1748,6 @@ class IDEWorkSpace : Window
          toolBar.activeConfig.Sort(null, 0);
       if(!commonSelected)
          toolBar.activeConfig.currentRow = row;
-      toolBar.activeConfig.disabled = workspace == null;
    }
 
    void AdjustMenus()
@@ -2058,7 +2061,7 @@ class IDEWorkSpace : Window
                            ide.projectView.DisplayCompiler(compiler, false);
                            delete compiler;
                         }
-                        UpdateCompilerConfigs();
+                        UpdateCompilerConfigs(false);
                         UpdateMakefiles();
                         {
                            char newWorkingDir[MAX_LOCATION];

@@ -1765,6 +1765,8 @@ class BuildTab : Tab
             }
          }
       }
+      if(!project.config && project.topNode.configurations.count)
+         project.config = project.topNode.configurations[0];
    }
 
    void RevertChanges()

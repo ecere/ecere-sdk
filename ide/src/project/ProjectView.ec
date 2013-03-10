@@ -1281,7 +1281,7 @@ class ProjectView : Window
       Project prj = node ? node.project : project;
       projectSettingsDialog = ProjectSettings { master = parent, project = prj, projectNode = node };
       projectSettingsDialog.Modal();
-
+      ide.UpdateToolBarActiveConfigs(false);
       Update(null);
       ide.AdjustMenus();
       return true;

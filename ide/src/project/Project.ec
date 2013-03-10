@@ -46,6 +46,7 @@ IDESettingsContainer settingsContainer
 #ifndef MAKEFILE_GENERATOR
       globalSettingsDialog.ideSettings = settings;
       ide.UpdateRecentMenus();
+      ide.UpdateCompilerConfigs(true);
 #endif
    }
 };

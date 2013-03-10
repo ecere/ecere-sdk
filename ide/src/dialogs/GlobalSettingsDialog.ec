@@ -88,7 +88,6 @@ class GlobalSettingsDialog : Window
             
             if(compilersTab.modifiedDocument)
             {
-               bool foundActive = false;
                Workspace workspace = ide.workspace;
                if(strcmp(compilersTab.compilerConfigsDir.path, ideSettings.compilerConfigsDir))
                   ideSettings.compilerConfigsDir = compilersTab.compilerConfigsDir.path;
@@ -96,11 +95,7 @@ class GlobalSettingsDialog : Window
                for(compiler : compilersTab.compilerConfigs)
                {
                   ideSettings.compilerConfigs.Add(compiler.Copy());
-                  if(!foundActive && workspace && workspace.compiler && !strcmp(workspace.compiler, compiler.name))
-                     foundActive = true;
                }
-               if(workspace && !foundActive)
-                  workspace.compiler = defaultCompilerName;
 
                compilerSettingsChanged = true;
             }
