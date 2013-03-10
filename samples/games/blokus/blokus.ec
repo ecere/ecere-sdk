@@ -33,7 +33,7 @@ define boardSize = 20; //10;
 define boardSize = 20;
 #endif
 
-#if defined(__ANDROID__)
+#if defined(HIGH_DPI)
 define squareWidth = 60;
 define boardStartX = 20;
 define boardStartY = 30;
@@ -47,7 +47,7 @@ define squareWidth = 28;
 define blockOffset0 = 2;
 define blockOffset1 = 5;
 define blockOffset2 = 15;
-define blockOffset2 = 18;
+define blockOffset3 = 18;
 define boardStartX = 20;
 define boardStartY = 30;
 define piecesY = 20;

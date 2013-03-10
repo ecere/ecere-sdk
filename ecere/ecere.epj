@@ -335,7 +335,7 @@
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ECERE_NOFONTCONFIG",
-               "_DEBUG"
+               "HIGH_DPI"
             ],
             "IncludeDirs" : [
                "../deps/jpeg-6b",

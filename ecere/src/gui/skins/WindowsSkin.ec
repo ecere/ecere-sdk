@@ -21,7 +21,7 @@ namespace gui::skins;
 #define TOP          4
 #define BOTTOM       4
 #define CORNER       (BORDER * 2)
-#if defined(__ANDROID__)
+#if defined(HIGH_DPI)
 #define BUTTON_SIZE  45
 #define CAPTION      60
 #else
@@ -32,7 +32,7 @@ namespace gui::skins;
 #define MIN_WIDTH    60
 #define MIN_HEIGHT   3
 #define BUTTON_OFFSET   2
-#if defined(__ANDROID__)
+#if defined(HIGH_DPI)
 #define NAME_OFFSET   12
 #else
 #define NAME_OFFSET   2
@@ -136,7 +136,7 @@ class WindowsSkin : Skin
 
    FontResource ::SystemFont()
    {
-#if defined(__ANDROID__)
+#if defined(HIGH_DPI)
       return FontResource { faceName = $"Tahoma", size = 18.25f };
 #else
       return FontResource { faceName = $"Tahoma", size = 8.25f };
@@ -145,7 +145,7 @@ class WindowsSkin : Skin
 
    FontResource ::CaptionFont()
    {
-#if defined(__ANDROID__)
+#if defined(HIGH_DPI)
       return FontResource { faceName = $"Tahoma", size = 18.25f, bold = true };
 #else
       return FontResource { faceName = $"Tahoma", size = 8.25f, bold = true };

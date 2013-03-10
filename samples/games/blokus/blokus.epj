@@ -46,6 +46,9 @@
          "Options" : {
             "Debug" : true,
             "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "HIGH_DPI"
+            ],
             "TargetType" : "SharedLibrary",
             "PostbuildCommands" : [
                "$(call mkdirq,$(OBJ)apk/lib/x86)",

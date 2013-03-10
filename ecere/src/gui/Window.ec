@@ -39,7 +39,7 @@ import "WindowList"
 import "i18n"
 
 // Had to define this here for native decorations support, because the menu bar is part of total decoration's size, but not part of the system decorations
-#ifdef __ANDROID__
+#ifdef HIGH_DPI
 define skinMenuHeight = 40;
 define statusBarHeight = 30;
 #else
