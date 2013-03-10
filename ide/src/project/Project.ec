@@ -871,26 +871,41 @@ private:
             ProjectView projectView = ide.projectView;
             DataRow prev = topNode.row ? topNode.row.previous : null;
             FileMonitor fm = fileMonitor;
-
-            if(projectView) projectView.DeleteNode(topNode);
-
-            *this = *project;
-            delete fileMonitor;
-            fileMonitor = fm;
-            topNode.project = this;
+            bool confirmation = true;
 
             if(projectView)
             {
-               CompilerConfig compiler = ideSettings.GetCompilerConfig(projectView.workspace.compiler);
-               projectView.AddNode(topNode, null);
-               topNode.row.Move(prev);
-
-               projectView.ShowOutputBuildLog(true);
-               projectView.DisplayCompiler(compiler, false);
-               projectView.ProjectUpdateMakefileForAllConfigs(this);
-               delete compiler;
+               if(projectView.projectSettingsDialog)
+               {
+                  confirmation = projectView.projectSettingsDialog.CloseConfirmation(true);
+                  if(confirmation)
+                     projectView.projectSettingsDialog.Destroy(0);
+               }
+               if(confirmation)
+                  projectView.DeleteNode(topNode);
             }
-            eSystem_Delete(project);
+            if(confirmation)
+            {
+               *this = *project;
+               delete fileMonitor;
+               fileMonitor = fm;
+               topNode.project = this;
+
+               if(projectView)
+               {
+                  CompilerConfig compiler = ideSettings.GetCompilerConfig(projectView.workspace.compiler);
+                  projectView.AddNode(topNode, null);
+                  topNode.row.Move(prev);
+
+                  projectView.ShowOutputBuildLog(true);
+                  projectView.DisplayCompiler(compiler, false);
+                  projectView.ProjectUpdateMakefileForAllConfigs(this);
+                  delete compiler;
+               }
+               eSystem_Delete(project);
+            }
+            else
+               delete project;
          }
          return true;
       }

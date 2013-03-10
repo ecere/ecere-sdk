@@ -1280,7 +1280,9 @@ class ProjectView : Window
       ProjectNode node = GetSelectedNode(true);
       Project prj = node ? node.project : project;
       projectSettingsDialog = ProjectSettings { master = parent, project = prj, projectNode = node };
+      incref projectSettingsDialog;
       projectSettingsDialog.Modal();
+      delete projectSettingsDialog;
       ide.UpdateToolBarActiveConfigs(false);
       Update(null);
       ide.AdjustMenus();
