@@ -58,7 +58,8 @@ extern "C" {
 #endif
 
 /* Specify which architecture libffi is configured for. */
-#ifdef _W64
+#if defined(__MINGW32__)
+#if defined(__x86_64__)
 
 #ifndef X86_WIN64
 #define X86_WIN64
@@ -70,6 +71,7 @@ extern "C" {
 #define X86_WIN32
 #endif
 
+#endif
 #endif
 
 /* ---- System configuration information --------------------------------- */
