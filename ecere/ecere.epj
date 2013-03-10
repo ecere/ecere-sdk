@@ -189,6 +189,7 @@
             ],
             "FastMath" : true,
             "PostbuildCommands" : [
+               "$(call mkdirq,../$(SODESTDIR))",
                "$(call cpq,$(TARGET),../$(SODESTDIR))"
             ]
          }
