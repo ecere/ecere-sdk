@@ -1615,8 +1615,6 @@ class BuildTab : Tab
             compilerTab.labelOptimization.visible = !newNodeRes;
             compilerTab.optimization.visible = !newNodeRes;
             compilerTab.fastMath.visible = !newNodeRes;
-            compilerTab.m32.visible = !newNodeRes;
-            compilerTab.m64.visible = !newNodeRes;
             compilerTab.labelIncludeDirs.visible = !newNodeRes;
             compilerTab.includeDirs.visible = !newNodeRes;
          }
@@ -1974,12 +1972,6 @@ class CompilerTab : Tab
       text = $"Optimization", hotKey = altO, option = OPTION(optimization);
    };
 
-   BuildBitDepthOptionBox m32
-   {
-      rightPane, this, position = { 348, 154 };
-      text = $"32bit", hotKey = alt3, option = OPTION(buildBitDepth), enumValue = bits32;
-   };
-
    BoolOptionBox debug
    {
       rightPane, this, position = { 8, 188 };
@@ -1996,12 +1988,6 @@ class CompilerTab : Tab
    {
       rightPane, this, position = { 220, 188 };
       text = $"No Line Numbers", hotKey = altN, option = OPTION(noLineNumbers);
-   };
-
-   BuildBitDepthOptionBox m64
-   {
-      rightPane, this, position = { 348, 188 };
-      text = $"64bit", hotKey = alt6, option = OPTION(buildBitDepth), enumValue = bits64;
    };
 
    Label labelIncludeDirs { includeDirs.editor, labeledWindow = includeDirs, position = { 0, 6 }; };

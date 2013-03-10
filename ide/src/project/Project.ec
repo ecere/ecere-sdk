@@ -990,11 +990,11 @@ private:
       return expression;
    }
 
-   DirExpression GetObjDir(CompilerConfig compiler, ProjectConfig config)
+   DirExpression GetObjDir(CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
       char * expression = GetObjDirExpression(config);
       DirExpression objDir { type = intermediateObjectsDir };
-      objDir.Evaluate(expression, this, compiler, config);
+      objDir.Evaluate(expression, this, compiler, config, bitDepth);
       return objDir;
    }
 
@@ -1007,11 +1007,11 @@ private:
       return expression;
    }
 
-   DirExpression GetTargetDir(CompilerConfig compiler, ProjectConfig config)
+   DirExpression GetTargetDir(CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
       char * expression = GetTargetDirExpression(config);
       DirExpression targetDir { type = DirExpressionType::targetDir /*intermediateObjectsDir*/};
-      targetDir.Evaluate(expression, this, compiler, config);
+      targetDir.Evaluate(expression, this, compiler, config, bitDepth);
       return targetDir;
    }
 
@@ -1104,10 +1104,10 @@ private:
 #endif
    }
 
-   void SetPath(bool projectsDirs, CompilerConfig compiler, ProjectConfig config)
+   void SetPath(bool projectsDirs, CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
 #ifndef MAKEFILE_GENERATOR
-      ide.SetPath(projectsDirs, compiler, config);
+      ide.SetPath(projectsDirs, compiler, config, bitDepth);
 #endif
    }
 
@@ -1165,6 +1165,7 @@ private:
             DirExpression objDirExp;
             CompilerConfig compiler = ide.debugger.currentCompiler;
             ProjectConfig config = ide.debugger.prjConfig;
+            int bitDepth = ide.debugger.bitDepth;
             // This is not perfect, as multiple source files exist for the symbol loader module...
             // We try to set it in the debug config object directory.
             if(!compiler || !config)
@@ -1182,7 +1183,7 @@ private:
                   }
                }
             }
-            objDirExp = GetObjDir(compiler, config);
+            objDirExp = GetObjDir(compiler, config, bitDepth);
             strcpy(objDir, objDirExp.dir);
             delete objDirExp;
             ChangeCh(objDir, '\\', '/'); // TODO: this is a hack, paths should never include win32 path seperators - fix this in ProjectSettings and ProjectLoad instead
@@ -1410,7 +1411,7 @@ private:
    }
 
    bool ProcessBuildPipeOutput(DualPipe f, DirExpression objDirExp, bool isARun, List<ProjectNode> onlyNodes,
-      CompilerConfig compiler, ProjectConfig config)
+      CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
       char line[65536];
       bool compiling = false, linking = false, precompiling = false;
@@ -1434,6 +1435,11 @@ private:
       DynamicString cxx { };
       DynamicString strip { };
       DynamicString ar { };
+
+      if(bitDepth == 64 && compiler.targetPlatform == win32) 
+         gnuToolchainPrefix = "x86_64-w64-mingw32-";
+      else if(bitDepth == 32 && compiler.targetPlatform == win32)
+         gnuToolchainPrefix = "i686-w64-mingw32-";
 
       ecp.concatx(compiler.ecpCommand, " ");
       ecc.concatx(compiler.eccCommand, " ");
@@ -1606,7 +1612,7 @@ private:
                         GetLastDirectory(moduleName, temp);
                         if(linking && (!strcmp(temp, "ld") || !strcmp(temp, "ld.exe")))
                         {
-                           if(strstr(colon, "skipping incompatible"))
+                           if(strstr(colon, "skipping incompatible") || strstr(colon, "Recognised but unhandled"))
                               message = $"Linker Message";
                            else
                            {
@@ -1776,7 +1782,7 @@ private:
       }
    }
 
-   bool Build(bool isARun, List<ProjectNode> onlyNodes, CompilerConfig compiler, ProjectConfig config, bool justPrint, SingleFileCompileMode mode)
+   bool Build(bool isARun, List<ProjectNode> onlyNodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, SingleFileCompileMode mode)
    {
       bool result = false;
       DualPipe f;
@@ -1785,7 +1791,7 @@ private:
       char makeFile[MAX_LOCATION];
       char makeFilePath[MAX_LOCATION];
       char configName[MAX_LOCATION];
-      DirExpression objDirExp = GetObjDir(compiler, config);
+      DirExpression objDirExp = GetObjDir(compiler, config, bitDepth);
       PathBackup pathBackup { };
       bool crossCompiling = (compiler.targetPlatform != GetRuntimePlatform());
       char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
@@ -1799,7 +1805,7 @@ private:
 
       strcpy(configName, config ? config.name : "Common");
 
-      SetPath(false, compiler, config); //true
+      SetPath(false, compiler, config, bitDepth); //true
       CatTargetFileName(targetFileName, compiler, config);
 
       strcpy(makeFilePath, topNode.path);
@@ -1825,9 +1831,13 @@ private:
             // Create object dir if it does not exist already
             if(!FileExists(objDirExp.dir).isDirectory)
             {
-               sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s objdir -C \"%s\"%s -f \"%s\"",
+               sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s COMPILER=%s objdir -C \"%s\"%s -f \"%s\"",
                      compiler.makeCommand, cfDir,
-                     crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
+                     crossCompiling ? " TARGET_PLATFORM=" : "",
+                     targetPlatform,
+                     bitDepth ? " ARCH=" : "", bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
+                     (bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" : "",
+
                      compilerName, topNode.path, justPrint ? " -n" : "", makeFilePath);
                if(justPrint)
                   ide.outputView.buildBox.Logf("%s\n", command);
@@ -1843,7 +1853,7 @@ private:
                   ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
                else
                {
-                  node.DeleteIntermediateFiles(compiler, config, namesInfo, mode == cObject ? true : false);
+                  node.DeleteIntermediateFiles(compiler, config, bitDepth, namesInfo, mode == cObject ? true : false);
                   node.GetTargets(config, namesInfo, objDirExp.dir, makeTargets);
                }
             }
@@ -1875,11 +1885,15 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s %sCF_DIR=\"%s\"%s%s COMPILER=%s -j%d %s%s%s -C \"%s\"%s -f \"%s\"",
+         sprintf(command, "%s %sCF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s -j%d %s%s%s -C \"%s\"%s -f \"%s\"",
                compiler.makeCommand,
                mode == debugPrecompile ? "ECP_DEBUG=y " : mode == debugCompile ? "ECC_DEBUG=y " : mode == debugGenerateSymbols ? "ECS_DEBUG=y " : "",
                cfDir,
-               crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
+               crossCompiling ? " TARGET_PLATFORM=" : "",
+               targetPlatform,
+               bitDepth ? " ARCH=" : "",
+               bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
+               (bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" : "",
                compilerName, numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",
@@ -1914,7 +1928,7 @@ private:
                }
             }
             else
-               result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNodes, compiler, config);
+               result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNodes, compiler, config, bitDepth);
             delete f;
             if(found)
                Execute(command);
@@ -1930,7 +1944,7 @@ private:
       return result;
    }
 
-   void Clean(CompilerConfig compiler, ProjectConfig config, CleanType cleanType, bool justPrint)
+   void Clean(CompilerConfig compiler, ProjectConfig config, int bitDepth, CleanType cleanType, bool justPrint)
    {
       char makeFile[MAX_LOCATION];
       char makeFilePath[MAX_LOCATION];
@@ -1944,7 +1958,7 @@ private:
       compilerName = CopyString(compiler.name);
       CamelCase(compilerName);
 
-      SetPath(false, compiler, config);
+      SetPath(false, compiler, config, bitDepth);
 
       strcpy(makeFilePath, topNode.path);
       CatMakeFileName(makeFile, config);
@@ -1974,9 +1988,11 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s CF_DIR=\"%s\"%s%s COMPILER=%s %sclean%s -C \"%s\"%s -f \"%s\"",
+         sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s COMPILER=%s %sclean%s -C \"%s\"%s -f \"%s\"",
                compiler.makeCommand, cfDir,
-               crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform, compilerName,
+               crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
+               bitDepth ? " ARCH=" : "", bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
+               compilerName,
                cleanType == realClean ? "real" : "", cleanType == cleanTarget ? "target" : "",
                topNode.path, justPrint ? " -n": "", makeFilePath);
          if(justPrint)
@@ -1998,12 +2014,12 @@ private:
       delete compilerName;
    }
 
-   void Run(char * args, CompilerConfig compiler, ProjectConfig config)
+   void Run(char * args, CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {   
       String target = new char[maxPathLen];
       char oldDirectory[MAX_LOCATION];
       char * executableLauncher = compiler.executableLauncher;
-      DirExpression targetDirExp = GetTargetDir(compiler, config);
+      DirExpression targetDirExp = GetTargetDir(compiler, config, bitDepth);
       PathBackup pathBackup { };
 
       // Build(project, ideMain, true, null, false);
@@ -2028,7 +2044,7 @@ private:
       else
          ChangeWorkingDir(topNode.path);
       // ChangeWorkingDir(topNode.path);
-      SetPath(true, compiler, config);
+      SetPath(true, compiler, config, bitDepth);
       if(executableLauncher)
       {
          char * prefixedTarget = new char[strlen(executableLauncher) + strlen(target) + 2];
@@ -2049,9 +2065,9 @@ private:
       delete target;
    }
 
-   void Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, bool justPrint, SingleFileCompileMode mode)
+   void Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, SingleFileCompileMode mode)
    {
-      Build(false, nodes, compiler, config, justPrint, mode);
+      Build(false, nodes, compiler, config, bitDepth, justPrint, mode);
    }
 #endif
 
@@ -2332,7 +2348,6 @@ private:
          Array<String> listItems { };
          Map<String, int> varStringLenDiffs { };
          Map<String, NameCollisionInfo> namesInfo { };
-         bool forceBitDepth = false;
 
          Map<String, int> cflagsVariations { };
          Map<intptr, int> nodeCFlagsMapping { };

@@ -7,10 +7,9 @@ import "debugTools"
 #define GDB_DEBUG_CONSOLE
 #endif
 
-extern char * strrchr(const char * s, int c);
+extern char * strrchr(char * s, char c);
 
 #define uint _uint
-#define strlen _strlen
 #include <stdarg.h>
 #include <unistd.h>
 
@@ -23,7 +22,7 @@ extern char * strrchr(const char * s, int c);
 #include <sys/time.h> // Required on Apple...
 #endif
 #undef uint
-#undef strlen
+
 
 public char * StripQuotes2(char * string, char * output)
 {
@@ -306,7 +305,7 @@ char progFifoDir[MAX_LOCATION];
 enum DebuggerState { none, prompt, loaded, running, stopped, terminated };
 enum DebuggerEvent { none, hit, breakEvent, signal, stepEnd, functionEnd, exit };
 enum DebuggerAction { none, internal, restart, stop, selectFrame }; //, bpValidation
-enum BreakpointType { none, internalMain, internalWinMain, internalModulesLoaded, user, runToCursor, internalModuleLoad };
+enum BreakpointType { none, internalMain, internalWinMain, internalModulesLoaded, user, runToCursor };
 enum DebuggerEvaluationError { none, symbolNotFound, memoryCantBeRead, unknown };
 
 FileDialog debuggerFileDialog { type = selectDir };
@@ -317,7 +316,6 @@ static DebugEvaluationData eval { };
 static int targetProcessId;
 
 static bool gdbReady;
-static bool breakpointError;
 
 class Debugger
 {
@@ -364,7 +362,6 @@ class Debugger
 
    CompilerConfig currentCompiler;
    ProjectConfig prjConfig;
-   int bitDepth;
 
    CodeEditor codeEditor;
 
@@ -393,11 +390,12 @@ class Debugger
 #endif
             }
          }
+
          switch(breakType)
          {
             case restart:
                breakType = none;
-               Restart(currentCompiler, prjConfig, bitDepth);
+               Restart(currentCompiler, prjConfig);
                break;
             case stop:
                breakType = none;
@@ -458,8 +456,7 @@ class Debugger
                   bpHit = bp;
                   
                   if(!(!userBreakOnInternBreak && 
-                        bp && (bp.type == internalMain || bp.type == internalWinMain ||
-                        bp.type == internalModulesLoaded || bp.type == internalModuleLoad)))
+                        bp && (bp.type == internalMain || bp.type == internalWinMain || bp.type == internalModulesLoaded)))
                      monitor = true;
                   hitThread = stopItem.threadid;
                }
@@ -503,7 +500,7 @@ class Debugger
                // Why was SelectFrame missing here?
                SelectFrame(activeFrameLevel);
                GoToStackFrameLine(activeFrameLevel, curEvent == signal || curEvent == stepEnd /*false*/);
-               ideMainFrame.Activate();   // TOFIX: ide.Activate() is not reliable (app inactive)
+               ide.Activate();
                ide.Update(null);
                if(curEvent == signal)
                   ide.outputView.Show();
@@ -610,7 +607,7 @@ class Debugger
       sysBPs.Add(Breakpoint { type = internalWinMain, enabled = true, level = -1 });
 #endif
       sysBPs.Add(Breakpoint { type = internalModulesLoaded, enabled = true, level = -1 });
-      sysBPs.Add(Breakpoint { type = internalModuleLoad, enabled = true, level = -1 });
+      
    }
 
    ~Debugger()
@@ -658,7 +655,7 @@ class Debugger
       }
    }
 
-   void Restart(CompilerConfig compiler, ProjectConfig config, int bitDepth)
+   void Restart(CompilerConfig compiler, ProjectConfig config)
    {
       switch(state)
       {
@@ -673,7 +670,7 @@ class Debugger
             GdbAbortExec();
          case none:
          case terminated:
-            if(!GdbInit(compiler, config, bitDepth))
+            if(!GdbInit(compiler, config))
                break;
          case loaded:
             GdbExecRun();
@@ -722,8 +719,8 @@ class Debugger
             {
                char * s;
                char title[MAX_LOCATION];
-               snprintf(title, sizeof(title), $"Provide source file location for %s", (s = CopySystemPath(frame.file)));
-               title[sizeof(title)-1] = 0;
+
+               sprintf(title, $"Provide source file location for %s", (s = CopySystemPath(frame.file)));
                delete s;
                if(SourceDirDialog(title, ide.workspace.projectDir, frame.file, sourceDir))
                {
@@ -797,10 +794,7 @@ class Debugger
       targetProcessId = 0;
 
       if(code)
-      {
-         snprintf(verboseExitCode, sizeof(verboseExitCode), $" with exit code %s", code);
-         verboseExitCode[sizeof(verboseExitCode)-1] = 0;
-      }
+         sprintf(verboseExitCode, $" with exit code %s", code);
       else
          verboseExitCode[0] = '\0';
       
@@ -848,14 +842,14 @@ class Debugger
       ide.Update(null);
    }
       
-   void Start(CompilerConfig compiler, ProjectConfig config, int bitDepth)
+   void Start(CompilerConfig compiler, ProjectConfig config)
    {
       ide.outputView.debugBox.Clear();
       switch(state)
       {
          case none:
          case terminated:
-            if(!GdbInit(compiler, config, bitDepth))
+            if(!GdbInit(compiler, config))
                break;
          case loaded:
             GdbExecRun();
@@ -863,13 +857,13 @@ class Debugger
       }
    }
 
-   void StepInto(CompilerConfig compiler, ProjectConfig config, int bitDepth)
+   void StepInto(CompilerConfig compiler, ProjectConfig config)
    {
       switch(state)
       {
          case none:
          case terminated:
-            if(!GdbInit(compiler, config, bitDepth)) 
+            if(!GdbInit(compiler, config)) 
                break;
          case loaded:
             ide.outputView.ShowClearSelectTab(debug);
@@ -883,13 +877,13 @@ class Debugger
       }
    }
 
-   void StepOver(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool ignoreBkpts)
+   void StepOver(CompilerConfig compiler, ProjectConfig config, bool ignoreBkpts)
    {
       switch(state)
       {
          case none:
          case terminated:
-            if(!GdbInit(compiler, config, bitDepth)) 
+            if(!GdbInit(compiler, config)) 
                break;
          case loaded:
             ide.outputView.ShowClearSelectTab(debug);
@@ -918,7 +912,7 @@ class Debugger
       }
    }
 
-   void RunToCursor(CompilerConfig compiler, ProjectConfig config, int bitDepth, char * absoluteFilePath, int lineNumber, bool ignoreBkpts)
+   void RunToCursor(CompilerConfig compiler, ProjectConfig config, char * absoluteFilePath, int lineNumber, bool ignoreBkpts)
    {
       char relativeFilePath[MAX_LOCATION];
       DebuggerState oldState = state;
@@ -929,7 +923,7 @@ class Debugger
       {
          case none:
          case terminated:
-            Start(compiler, config, bitDepth);
+            Start(compiler, config);
          case stopped:
          case loaded:
             if(symbols)
@@ -976,7 +970,7 @@ class Debugger
       else
       {
          *error = signalOn && activeThread == signalThread;
-         *lineCursor = activeFrameLevel - ((frameCount > 192 && activeFrameLevel > 191) ? frameCount - 192 - 1 : 0) + 1;
+         *lineCursor = activeFrameLevel + 1;
          *lineTopFrame = activeFrameLevel ? 1 : 0;
       }
    }
@@ -1044,7 +1038,7 @@ class Debugger
       else if(expression)
       {
          wh = Watch { };
-         row.tag = (int64)wh;
+         row.tag = (int)wh;
          ide.workspace.watches.Add(wh);
          wh.row = row;
          wh.expression = CopyString(expression);
@@ -1209,8 +1203,7 @@ class Debugger
             char title[MAX_LOCATION];
             char directory[MAX_LOCATION];
             StripLastDirectory(absolutePath, directory);
-            snprintf(title, sizeof(title), $"Provide source files location directory for %s", absolutePath);
-            title[sizeof(title)-1] = 0;
+            sprintf(title, $"Provide source files location directory for %s", absolutePath);
             while(true)
             {
                String srcDir = null;
@@ -1376,15 +1369,7 @@ class Debugger
                frame.line = atoi(item.value);
             else if(!strcmp(item.name, "fullname"))
             {
-               // GDB 6.3 on OS X is giving "fullname" and "dir", all in absolute, but file name only in 'file'
-               String path = ide.workspace.GetPathWorkspaceRelativeOrAbsolute(item.value);
-               if(strcmp(frame.file, path))
-               {
-                  frame.file = path;
-                  delete frame.absoluteFile;
-                  frame.absoluteFile = ide.workspace.GetAbsolutePathFromRelative(frame.file);
-               }
-               delete path;
+               // New GDB is giving us a full name... Any reason why we coudln't figure it out ourselves?
             }
             else
                DebuggerProtocolUnknown("Unknown frame member name", item.name);
@@ -1420,10 +1405,10 @@ class Debugger
       {
          // TODO: Improve this limit
          static char string[MAX_F_STRING*3];
+         
          va_list args;
          va_start(args, format);
-         vsnprintf(string, sizeof(string), format, args);
-         string[sizeof(string)-1] = 0;
+         vsprintf(string, format, args);
          va_end(args);
          
          gdbReady = false;
@@ -1442,7 +1427,7 @@ class Debugger
 #endif
          strcat(string,"\n");
          gdbHandle.Puts(string);
-
+         
          if(focus)
             Process_ShowWindows(targetProcessId);
 
@@ -1454,7 +1439,7 @@ class Debugger
 
    bool ValidateBreakpoint(Breakpoint bp)
    {
-      if(modules && bp.bp)
+      if(modules)
       {
          if(bp.bp.line != bp.line)
          {
@@ -1487,7 +1472,7 @@ class Debugger
       {
          //if(!breakpointsInserted)
          {
-            DirExpression objDir = ide.project.GetObjDir(currentCompiler, prjConfig, bitDepth);
+            DirExpression objDir = ide.project.GetObjDir(currentCompiler, prjConfig);
             for(bp : sysBPs)
             {
                if(!bp.inserted)
@@ -1520,8 +1505,7 @@ class Debugger
                      bool moduleLoadBlock = false;
                      File f;
                      ReplaceSpaces(fixedModuleName, ide.project.moduleName);
-                     snprintf(name, sizeof(name),"%s.main.ec", fixedModuleName);
-                     name[sizeof(name)-1] = 0;
+                     sprintf(name, "%s.main.ec", fixedModuleName);
                      strcpy(path, ide.workspace.projectDir);
                      PathCatSlash(path, objDir.dir);
                      PathCatSlash(path, name);
@@ -1554,40 +1538,11 @@ class Debugger
                            bp.bp = bpItem;
                            bpItem = null;
                            bp.inserted = (bp.bp && bp.bp.number != 0);
+                           ValidateBreakpoint(bp);
                         }
                         delete f;
                      }
-                  }
-                  else if(bp.type == internalModuleLoad && modules)
-                  {
-                     Project ecerePrj = null;
-                     for(p : ide.workspace.projects)
-                     {
-                        if(!strcmp(p.topNode.name, "ecere.epj"))
-                        {
-                           ecerePrj = p;
-                           break;
-                        }
-                     }
-                     if(ecerePrj)
-                     {
-                        ProjectNode node = ecerePrj.topNode.Find("instance.c", false);
-                        if(node)
-                        {
-                           char path[MAX_LOCATION];
-                           char relative[MAX_LOCATION];
-                           node.GetFullFilePath(path);
-                           bp.absoluteFilePath = CopyString(path);
-                           MakePathRelative(path, ecerePrj.topNode.path, relative);
-                           delete bp.relativeFilePath;
-                           bp.relativeFilePath = CopyString(relative);
-                           sentBreakInsert = true;
-                           GdbCommand(false, "-break-insert %s:InternalModuleLoadBreakpoint", bp.relativeFilePath);
-                           bp.bp = bpItem;
-                           bpItem = null;
-                           bp.inserted = (bp.bp && bp.bp.number != 0);
-                        }
-                     }
+                     break;
                   }
                }
             }
@@ -1611,17 +1566,7 @@ class Debugger
                   if(!ignoreBreakpoints && bp.enabled)
                   {
                      sentBreakInsert = true;
-                     breakpointError = false;
                      GdbCommand(false, "-break-insert %s:%d", bp.relativeFilePath, bp.line);
-                     // Improve, GdbCommand should return a success value?
-                     if(breakpointError)
-                     {
-                        char fileName[MAX_FILENAME];
-                        breakpointError = false;
-                        GetLastDirectory(bp.relativeFilePath, fileName);
-                        sentBreakInsert = true;
-                        GdbCommand(false, "-break-insert %s:%d", fileName, bp.line);
-                     }
                      bp.bp = bpItem;
                      bpItem = null;
                      bp.inserted = (bp.bp && bp.bp.number != 0);
@@ -1685,10 +1630,10 @@ class Debugger
       if(!frameCount)
          GdbCommand(false, "-stack-info-depth 192");
       if(frameCount && frameCount <= 192)
-         GdbCommand(false, "-stack-list-frames 0 %d", Min(frameCount-1, 191));
+         GdbCommand(false, "-stack-list-frames 0 191");
       else
       {
-         GdbCommand(false, "-stack-list-frames 0 %d", Min(frameCount-1, 95));
+         GdbCommand(false, "-stack-list-frames 0 95");
          GdbCommand(false, "-stack-list-frames %d %d", Max(frameCount - 96, 96), frameCount - 1);
       }
       GdbCommand(false, "");
@@ -1844,14 +1789,14 @@ class Debugger
       return true;
    }
 
-   bool GdbInit(CompilerConfig compiler, ProjectConfig config, int bitDepth)
+   bool GdbInit(CompilerConfig compiler, ProjectConfig config)
    {
       bool result = true;
       char oldDirectory[MAX_LOCATION];
       char tempPath[MAX_LOCATION];
       char command[MAX_LOCATION];
       Project project = ide.project;
-      DirExpression targetDirExp = project.GetTargetDir(compiler, config, bitDepth);
+      DirExpression targetDirExp = project.GetTargetDir(compiler, config);
       PathBackup pathBackup { };
 
       if(currentCompiler != compiler)
@@ -1861,12 +1806,10 @@ class Debugger
          incref currentCompiler;
       }
       prjConfig = config;
-      this.bitDepth = bitDepth;
 
       ChangeState(loaded);
       sentKill = false;
       sentBreakInsert = false;
-      breakpointError = false;
       symbols = true;
       targeted = false;
       modules = false;
@@ -1901,7 +1844,7 @@ class Debugger
       else
          ChangeWorkingDir(ide.workspace.projectDir);
       
-      ide.SetPath(true, compiler, config, bitDepth);
+      ide.SetPath(true, compiler, config);
 
       // TODO: This pollutes the environment, but at least it works
       // It shouldn't really affect the IDE as the PATH gets restored and other variables set for testing will unlikely cause problems
@@ -1912,11 +1855,7 @@ class Debugger
          SetEnvironment(e.name, e.string);
       }
 
-      strcpy(command,
-         (compiler.targetPlatform == win32 && bitDepth == 64) ? "x86_64-w64-mingw32-gdb" :
-         (compiler.targetPlatform == win32 && bitDepth == 32) ? "i686-w64-mingw32-gdb" :
-         "gdb");
-      strcat(command, " -n -silent --interpreter=mi2"); //-async //\"%s\"
+      sprintf(command, "gdb -n -silent --interpreter=mi2"); //-async //\"%s\"
       gdbTimer.Start();
       gdbHandle = DualPipeOpen(PipeOpenMode { output = 1, error = 2, input = 1 }, command);
       if(!gdbHandle)
@@ -2301,11 +2240,11 @@ class Debugger
                switch(exp.type)
                {
                   case symbolErrorExp:
-                     snprintf(watchmsg, sizeof(watchmsg), $"Symbol \"%s\" not found", exp.identifier.string);
+                     sprintf(watchmsg, $"Symbol \"%s\" not found", exp.identifier.string);
                      break;
                   case structMemberSymbolErrorExp:
                      // todo get info as in next case (ExpClassMemberSymbolError)
-                     snprintf(watchmsg, sizeof(watchmsg), $"Error: Struct member not found for \"%s\"", wh.expression);
+                     sprintf(watchmsg, $"Error: Struct member not found for \"%s\"", wh.expression);
                      break;
                   case classMemberSymbolErrorExp:
                      {
@@ -2325,32 +2264,32 @@ class Debugger
                               _class = classSym ? classSym.registered : null;
                            }
                            if(_class)
-                              snprintf(watchmsg, sizeof(watchmsg), $"Member \"%s\" not found in class \"%s\"", memberID ? memberID.string : "", _class.name);
+                              sprintf(watchmsg, $"Member \"%s\" not found in class \"%s\"", memberID ? memberID.string : "", _class.name);
                            else
-                              snprintf(watchmsg, sizeof(watchmsg), "Member \"%s\" not found in unregistered class? (Should never get this message)", memberID ? memberID.string : "");
+                              sprintf(watchmsg, "Member \"%s\" not found in unregistered class? (Should never get this message)", memberID ? memberID.string : "");
                         }
                         else
-                           snprintf(watchmsg, sizeof(watchmsg), "Member \"%s\" not found in no type? (Should never get this message)", memberID ? memberID.string : "");
+                           sprintf(watchmsg, "Member \"%s\" not found in no type? (Should never get this message)", memberID ? memberID.string : "");
                      }
                      break;
                   case memoryErrorExp:
                      // Need to ensure when set to memoryErrorExp, constant is set
-                     snprintf(watchmsg, sizeof(watchmsg), $"Memory can't be read at %s", /*(exp.type == constantExp) ? */exp.constant /*: null*/);
+                     sprintf(watchmsg, $"Memory can't be read at %s", /*(exp.type == constantExp) ? */exp.constant /*: null*/);
                      break;
                   case dereferenceErrorExp:
-                     snprintf(watchmsg, sizeof(watchmsg), $"Dereference failure for \"%s\"", wh.expression);
+                     sprintf(watchmsg, $"Dereference failure for \"%s\"", wh.expression);
                      break;
                   case unknownErrorExp:
-                     snprintf(watchmsg, sizeof(watchmsg), $"Unknown error for \"%s\"", wh.expression);
+                     sprintf(watchmsg, $"Unknown error for \"%s\"", wh.expression);
                      break;
                   case noDebuggerErrorExp:
-                     snprintf(watchmsg, sizeof(watchmsg), $"Debugger required for symbol evaluation in \"%s\"", wh.expression);
+                     sprintf(watchmsg, $"Debugger required for symbol evaluation in \"%s\"", wh.expression);
                      break;
                   case debugStateErrorExp:
-                     snprintf(watchmsg, sizeof(watchmsg), $"Incorrect debugger state for symbol evaluation in \"%s\"", wh.expression);
+                     sprintf(watchmsg, $"Incorrect debugger state for symbol evaluation in \"%s\"", wh.expression);
                      break;
                   case 0:
-                     snprintf(watchmsg, sizeof(watchmsg), $"Null type for \"%s\"", wh.expression);
+                     sprintf(watchmsg, $"Null type for \"%s\"", wh.expression);
                      break;
                   case constantExp:
                   case stringExp:
@@ -2364,7 +2303,7 @@ class Debugger
 
                         if(exp.expType.kind != arrayType || exp.hasAddress)
                         {
-                           uint64 address;
+                           uint address;
                            char * string;
                            char value[4196];
                            int len;
@@ -2377,16 +2316,9 @@ class Debugger
                               sprintf(temp, "(char*)%s", exp.constant);*/
 
                            //evaluation = Debugger::EvaluateExpression(temp, &evalError);
-                           // address = strtoul(exp.constant, null, 0);
-                           address = _strtoui64(exp.constant, null, 0);
+                           address = strtoul(exp.constant, null, 0);
                            //printf("%x\n", address);
-                           // snprintf(value, sizeof(value), "0x%08x ", address);
-
-                           if(address > 0xFFFFFFFFLL)
-                              snprintf(value, sizeof(value), (GetRuntimePlatform() == win32) ? "0x%016I64x " : "0x%016llx ", address);
-                           else
-                              snprintf(value, sizeof(value), (GetRuntimePlatform() == win32) ? "0x%08I64x " : "0x%08llx ", address);
-                           value[sizeof(value)-1] = 0;
+                           sprintf(value, "0x%08x ", address);
                            
                            if(!address)
                               strcat(value, $"Null string");
@@ -2496,25 +2428,24 @@ class Debugger
                         charString[0] = 0;
                         UTF32toUTF8Len(&value, 1, charString, 5);
                         if(value == '\0')
-                           snprintf(string, sizeof(string), "\'\\0' (0)");
+                           sprintf(string, "\'\\0' (0)");
                         else if(value == '\t')
-                           snprintf(string, sizeof(string), "\'\\t' (%d)", value);
+                           sprintf(string, "\'\\t' (%d)", value);
                         else if(value == '\n')
-                           snprintf(string, sizeof(string), "\'\\n' (%d)", value);
+                           sprintf(string, "\'\\n' (%d)", value);
                         else if(value == '\r')
-                           snprintf(string, sizeof(string), "\'\\r' (%d)", value);
+                           sprintf(string, "\'\\r' (%d)", value);
                         else if(wh.type.kind == charType && wh.type.isSigned)
-                           snprintf(string, sizeof(string), "\'%s\' (%d)", charString, signedValue);
+                           sprintf(string, "\'%s\' (%d)", charString, signedValue);
                         else if(value > 256 || wh.type.kind != charType)
                         {
                            if(value > 0x10FFFF || !GetCharCategory(value))
-                              snprintf(string, sizeof(string), $"Invalid Unicode Keypoint (0x%08X)", value);
+                              sprintf(string, $"Invalid Unicode Keypoint (0x%08X)", value);
                            else
-                              snprintf(string, sizeof(string), "\'%s\' (U+%04X)", charString, value);
+                              sprintf(string, "\'%s\' (U+%04X)", charString, value);
                         }
                         else
-                           snprintf(string, sizeof(string), "\'%s\' (%d)", charString, value);
-                        string[sizeof(string)-1] = 0;
+                           sprintf(string, "\'%s\' (%d)", charString, value);
                         
                         wh.value = CopyString(string);
                         result = true;
@@ -2528,23 +2459,23 @@ class Debugger
                   default:
                      if(exp.hasAddress)
                      {
-                        wh.value = PrintHexUInt64(exp.address);
+                        wh.value = PrintHexUInt(exp.address);
                         result = (bool)exp.address;
                      }
                      else
                      {
                         char tempString[256];
                         if(exp.member.memberType == propertyMember)
-                           snprintf(watchmsg, sizeof(watchmsg), $"Missing property evaluation support for \"%s\"", wh.expression);
+                           sprintf(watchmsg, $"Missing property evaluation support for \"%s\"", wh.expression);
                         else
-                           snprintf(watchmsg, sizeof(watchmsg), $"Evaluation failed for \"%s\" of type \"%s\"", wh.expression, 
+                           sprintf(watchmsg, $"Evaluation failed for \"%s\" of type \"%s\"", wh.expression, 
                                  exp.type.OnGetString(tempString, null, null));
                      }
                      break;
                }
             }
             else
-               snprintf(watchmsg, sizeof(watchmsg), $"Invalid expression: \"%s\"", wh.expression);
+               sprintf(watchmsg, $"Invalid expression: \"%s\"", wh.expression);
             if(exp) FreeExpression(exp);
 
             
@@ -2557,7 +2488,6 @@ class Debugger
          //else 
          //   wh.value = CopyString("No source file found for selected frame");
          
-         watchmsg[sizeof(watchmsg)-1] = 0;
          if(!wh.value)
             wh.value = CopyString(watchmsg);
       }
@@ -2582,7 +2512,7 @@ class Debugger
    }
 
    // to be removed... use GdbReadMemory that returns a byte array instead
-   char * ::GdbReadMemoryString(uint64 address, int size, char format, int rows, int cols)
+   char * ::GdbReadMemoryString(uint address, int size, char format, int rows, int cols)
    {
       eval.active = true;
       eval.error = none;
@@ -2590,25 +2520,17 @@ class Debugger
       if(!size)
          printf("GdbReadMemoryString called with size = 0!\n");
 #endif
-      // GdbCommand(false, "-data-read-memory 0x%08x %c, %d, %d, %d", address, format, size, rows, cols);
-      if(GetRuntimePlatform() == win32)
-         GdbCommand(false, "-data-read-memory 0x%016I64x %c, %d, %d, %d", address, format, size, rows, cols);
-      else
-         GdbCommand(false, "-data-read-memory 0x%016llx %c, %d, %d, %d", address, format, size, rows, cols);
+      GdbCommand(false, "-data-read-memory 0x%08x %c, %d, %d, %d", address, format, size, rows, cols);
       if(eval.active)
          ide.outputView.debugBox.Logf("Debugger Error: GdbReadMemoryString\n");
       return eval.result;
    }
 
-   byte * ::GdbReadMemory(uint64 address, int bytes)
+   byte * ::GdbReadMemory(uint address, int bytes)
    {
       eval.active = true;
       eval.error = none;
-      //GdbCommand(false, "-data-read-memory 0x%08x %c, 1, 1, %d", address, 'u', bytes);
-      if(GetRuntimePlatform() == win32)
-         GdbCommand(false, "-data-read-memory 0x%016I64x %c, 1, 1, %d", address, 'u', bytes);
-      else
-         GdbCommand(false, "-data-read-memory 0x%016llx %c, 1, 1, %d", address, 'u', bytes);
+      GdbCommand(false, "-data-read-memory 0x%08x %c, 1, 1, %d", address, 'u', bytes);
 #ifdef _DEBUG
       if(!bytes)
          printf("GdbReadMemory called with bytes = 0!\n");
@@ -2642,7 +2564,7 @@ class Debugger
    {
       bool conditionMet = true;
       Breakpoint bp = bpHit;
-
+      
       if(!bp && bpRunToCursor)
       {
          bp = bpRunToCursor;
@@ -2652,7 +2574,7 @@ class Debugger
       
       if(bp)
       {
-         if(bp.type == user && stopItem.frame.line && bp.line != stopItem.frame.line)
+         if(bp.type == user && bp.line != stopItem.frame.line)
          {
             bp.line = stopItem.frame.line;
             ide.breakpointsView.UpdateBreakpoint(bp.row);
@@ -2670,7 +2592,7 @@ class Debugger
                   // Why was SelectFrame missing here?
                   SelectFrame(activeFrameLevel);
                   GoToStackFrameLine(activeFrameLevel, true);
-                  ideMainFrame.Activate();   // TOFIX: ide.Activate() is not reliable (app inactive)
+                  ide.Activate();
                   ide.Update(null);
                }
                else
@@ -2678,11 +2600,6 @@ class Debugger
                break;
             case internalModulesLoaded:
                modules = true;
-               GdbInsertInternalBreakpoint();
-               GdbBreakpointsInsert();
-               GdbExecContinue(false);
-               break;
-            case internalModuleLoad:
                GdbBreakpointsInsert();
                GdbExecContinue(false);
                break;
@@ -2700,7 +2617,7 @@ class Debugger
                      // Why was SelectFrame missing here?
                      SelectFrame(activeFrameLevel);
                      GoToStackFrameLine(activeFrameLevel, true);
-                     ideMainFrame.Activate();   // TOFIX: ide.Activate() is not reliable (app inactive)
+                     ide.Activate();
                      ide.Update(null);
                      if(bp.type == BreakpointType::runToCursor)
                      {
@@ -3032,13 +2949,12 @@ class Debugger
                            else if(!strcmp(item.name, "next-row"))
                            {
                               StripQuotes(item.value, item.value);
-                              eval.nextBlockAddress = _strtoui64(item.value, null, 0);
+                              eval.nextBlockAddress = strtoul(item.value, null, 0);
                            }
                            else if(!strcmp(item.name, "memory"))
                            {
                               int j;
                               //int value;
-                              //StripQuotes(item.value, item.value);
                               item.value = StripBrackets(item.value);
                               // this should be treated as a list...
                               item.value = StripCurlies(item.value);
@@ -3086,7 +3002,6 @@ class Debugger
                if(sentBreakInsert)
                {
                   sentBreakInsert = false;
-                  breakpointError = true;
 #ifdef _DEBUG
                   if(bpItem)
                      printf("problem\n");
@@ -3192,180 +3107,175 @@ class Debugger
                }
                else if(!strcmp(outTokens[0], "*stopped"))
                {
-                  int tk;
                   ChangeState(stopped);
-
-                  for(tk = 1; tk < outTokens.count; tk++)
+                  
+                  if(outTokens.count > 1 && TokenizeListItem(outTokens[1], item))
                   {
-                     if(TokenizeListItem(outTokens[tk], item))
+                     if(!strcmp(item.name, "reason"))
                      {
-                        if(!strcmp(item.name, "reason"))
+                        char * reason = item.value;
+                        StripQuotes(reason, reason);
+                        if(!strcmp(reason, "exited-normally") || !strcmp(reason, "exited") || !strcmp(reason, "exited-signalled"))
                         {
-                           char * reason = item.value;
-                           StripQuotes(reason, reason);
-                           if(!strcmp(reason, "exited-normally") || !strcmp(reason, "exited") || !strcmp(reason, "exited-signalled"))
+                           char * exitCode;
+                           if(outTokens.count > 2 && TokenizeListItem(outTokens[2], item2))
                            {
-                              char * exitCode;
-                              if(outTokens.count > tk+1 && TokenizeListItem(outTokens[tk+1], item2))
-                              {
-                                 tk++;
-                                 StripQuotes(item2.value, item2.value);
-                                 if(!strcmp(item2.name, "exit-code"))
-                                    exitCode = item2.value;
-                                 else
-                                    exitCode = null;
-                              }
+                              StripQuotes(item2.value, item2.value);
+                              if(!strcmp(item2.name, "exit-code"))
+                                 exitCode = item2.value;
                               else
                                  exitCode = null;
-                              HandleExit(reason, exitCode);
                            }
-                           else if(!strcmp(reason, "breakpoint-hit"))
+                           else
+                              exitCode = null;
+                           HandleExit(reason, exitCode);
+                        }
+                        else if(!strcmp(reason, "breakpoint-hit"))
+                        {
+   #ifdef _DEBUG
+                           if(stopItem)
+                              printf("problem\n");
+   #endif
+                           stopItem = GdbDataStop { };
+
+                           for(i = 2; i < outTokens.count; i++)
                            {
-      #ifdef _DEBUG
-                              if(stopItem)
-                                 printf("problem\n");
-      #endif
-                              stopItem = GdbDataStop { };
-
-                              for(i = tk+1; i < outTokens.count; i++)
+                              TokenizeListItem(outTokens[i], item);
+                              StripQuotes(item.value, item.value);
+                              if(!strcmp(item.name, "bkptno"))
+                                 stopItem.bkptno = atoi(item.value);
+                              else if(!strcmp(item.name, "thread-id"))
+                                 stopItem.threadid = atoi(item.value);
+                              else if(!strcmp(item.name, "frame"))
                               {
-                                 TokenizeListItem(outTokens[i], item);
-                                 StripQuotes(item.value, item.value);
-                                 if(!strcmp(item.name, "bkptno"))
-                                    stopItem.bkptno = atoi(item.value);
-                                 else if(!strcmp(item.name, "thread-id"))
-                                    stopItem.threadid = atoi(item.value);
-                                 else if(!strcmp(item.name, "frame"))
-                                 {
-                                    item.value = StripCurlies(item.value);
-                                    ParseFrame(stopItem.frame, item.value);
-                                 }
-                                 else
-                                    DebuggerProtocolUnknown("Unknown breakpoint hit item name", item.name);
-                              }
-
-                              event = hit;
-                           }
-                           else if(!strcmp(reason, "end-stepping-range"))
-                           {
-      #ifdef _DEBUG
-                              if(stopItem)
-                                 printf("problem\n");
-      #endif
-                              stopItem = GdbDataStop { };
-
-                              for(i = tk+1; i < outTokens.count; i++)
-                              {
-                                 TokenizeListItem(outTokens[i], item);
-                                 StripQuotes(item.value, item.value);
-                                 if(!strcmp(item.name, "thread-id"))
-                                    stopItem.threadid = atoi(item.value);
-                                 else if(!strcmp(item.name, "frame"))
-                                 {
-                                    item.value = StripCurlies(item.value);
-                                    ParseFrame(stopItem.frame, item.value);
-                                 }
-                                 else if(!strcmp(item.name, "reason"))
-                                    ;
-                                 else if(!strcmp(item.name, "bkptno"))
-                                    ;
-                                 else
-                                    DebuggerProtocolUnknown("Unknown end of stepping range item name", item.name);
-                              }
-
-                              event = stepEnd;
-                              ide.Update(null);
-                           }
-                           else if(!strcmp(reason, "function-finished"))
-                           {
-      #ifdef _DEBUG
-                              if(stopItem)
-                                 printf("problem\n");
-      #endif
-                              stopItem = GdbDataStop { };
-                              stopItem.reason = CopyString(reason);
-
-                              for(i = tk+1; i < outTokens.count; i++)
-                              {
-                                 TokenizeListItem(outTokens[i], item);
-                                 StripQuotes(item.value, item.value);
-                                 if(!strcmp(item.name, "thread-id"))
-                                    stopItem.threadid = atoi(item.value);
-                                 else if(!strcmp(item.name, "frame"))
-                                 {
-                                    item.value = StripCurlies(item.value);
-                                    ParseFrame(stopItem.frame, item.value);
-                                 }
-                                 else if(!strcmp(item.name, "gdb-result-var"))
-                                    stopItem.gdbResultVar = CopyString(item.value);
-                                 else if(!strcmp(item.name, "return-value"))
-                                    stopItem.returnValue = CopyString(item.value);
-                                 else
-                                    DebuggerProtocolUnknown("Unknown function finished item name", item.name);
-                              }
-
-                              event = functionEnd;
-                              ide.Update(null);
-                           }
-                           else if(!strcmp(reason, "signal-received"))
-                           {
-      #ifdef _DEBUG
-                              if(stopItem)
-                                 printf("problem\n");
-      #endif
-                              stopItem = GdbDataStop { };
-                              stopItem.reason = CopyString(reason);
-
-                              for(i = tk+1; i < outTokens.count; i++)
-                              {
-                                 TokenizeListItem(outTokens[i], item);
-                                 StripQuotes(item.value, item.value);
-                                 if(!strcmp(item.name, "signal-name"))
-                                    stopItem.name = CopyString(item.value);
-                                 else if(!strcmp(item.name, "signal-meaning"))
-                                    stopItem.meaning = CopyString(item.value);
-                                 else if(!strcmp(item.name, "thread-id"))
-                                    stopItem.threadid = atoi(item.value);
-                                 else if(!strcmp(item.name, "frame"))
-                                 {
-                                    item.value = StripCurlies(item.value);
-                                    ParseFrame(stopItem.frame, item.value);
-                                 }
-                                 else
-                                    DebuggerProtocolUnknown("Unknown signal reveived item name", item.name);
-                              }
-                              if(!strcmp(stopItem.name, "SIGTRAP"))
-                              {
-                                 switch(breakType)
-                                 {
-                                    case internal:
-                                       breakType = none;
-                                       break;
-                                    case restart:
-                                    case stop:
-                                       break;
-                                    default:
-                                       event = breakEvent;
-                                 }
+                                 item.value = StripCurlies(item.value);
+                                 ParseFrame(stopItem.frame, item.value);
                               }
                               else
+                                 DebuggerProtocolUnknown("Unknown breakpoint hit item name", item.name);
+                           }
+
+                           event = hit;
+                        }
+                        else if(!strcmp(reason, "end-stepping-range"))
+                        {
+   #ifdef _DEBUG
+                           if(stopItem)
+                              printf("problem\n");
+   #endif
+                           stopItem = GdbDataStop { };
+
+                           for(i = 2; i < outTokens.count; i++)
+                           {
+                              TokenizeListItem(outTokens[i], item);
+                              StripQuotes(item.value, item.value);
+                              if(!strcmp(item.name, "thread-id"))
+                                 stopItem.threadid = atoi(item.value);
+                              else if(!strcmp(item.name, "frame"))
                               {
-                                 event = signal;
+                                 item.value = StripCurlies(item.value);
+                                 ParseFrame(stopItem.frame, item.value);
+                              }
+                              else if(!strcmp(item.name, "reason"))
+                                 ;
+                              else if(!strcmp(item.name, "bkptno"))
+                                 ;
+                              else
+                                 DebuggerProtocolUnknown("Unknown end of stepping range item name", item.name);
+                           }
+
+                           event = stepEnd;
+                           ide.Update(null);
+                        }
+                        else if(!strcmp(reason, "function-finished"))
+                        {
+   #ifdef _DEBUG
+                           if(stopItem)
+                              printf("problem\n");
+   #endif
+                           stopItem = GdbDataStop { };
+                           stopItem.reason = CopyString(reason);
+
+                           for(i = 2; i < outTokens.count; i++)
+                           {
+                              TokenizeListItem(outTokens[i], item);
+                              StripQuotes(item.value, item.value);
+                              if(!strcmp(item.name, "thread-id"))
+                                 stopItem.threadid = atoi(item.value);
+                              else if(!strcmp(item.name, "frame"))
+                              {
+                                 item.value = StripCurlies(item.value);
+                                 ParseFrame(stopItem.frame, item.value);
+                              }
+                              else if(!strcmp(item.name, "gdb-result-var"))
+                                 stopItem.gdbResultVar = CopyString(item.value);
+                              else if(!strcmp(item.name, "return-value"))
+                                 stopItem.returnValue = CopyString(item.value);
+                              else
+                                 DebuggerProtocolUnknown("Unknown function finished item name", item.name);
+                           }
+
+                           event = functionEnd;
+                           ide.Update(null);
+                        }
+                        else if(!strcmp(reason, "signal-received"))
+                        {
+   #ifdef _DEBUG
+                           if(stopItem)
+                              printf("problem\n");
+   #endif
+                           stopItem = GdbDataStop { };
+                           stopItem.reason = CopyString(reason);
+
+                           for(i = 2; i < outTokens.count; i++)
+                           {
+                              TokenizeListItem(outTokens[i], item);
+                              StripQuotes(item.value, item.value);
+                              if(!strcmp(item.name, "signal-name"))
+                                 stopItem.name = CopyString(item.value);
+                              else if(!strcmp(item.name, "signal-meaning"))
+                                 stopItem.meaning = CopyString(item.value);
+                              else if(!strcmp(item.name, "thread-id"))
+                                 stopItem.threadid = atoi(item.value);
+                              else if(!strcmp(item.name, "frame"))
+                              {
+                                 item.value = StripCurlies(item.value);
+                                 ParseFrame(stopItem.frame, item.value);
+                              }
+                              else
+                                 DebuggerProtocolUnknown("Unknown signal reveived item name", item.name);
+                           }
+                           if(!strcmp(stopItem.name, "SIGTRAP"))
+                           {
+                              switch(breakType)
+                              {
+                                 case internal:
+                                    breakType = none;
+                                    break;
+                                 case restart:
+                                 case stop:
+                                    break;
+                                 default:
+                                    event = breakEvent;
                               }
                            }
-                           else if(!strcmp(reason, "watchpoint-trigger"))
-                              DebuggerProtocolUnknown("Reason watchpoint trigger not handled", "");
-                           else if(!strcmp(reason, "read-watchpoint-trigger"))
-                              DebuggerProtocolUnknown("Reason read watchpoint trigger not handled", "");
-                           else if(!strcmp(reason, "access-watchpoint-trigger"))
-                              DebuggerProtocolUnknown("Reason access watchpoint trigger not handled", "");
-                           else if(!strcmp(reason, "watchpoint-scope"))
-                              DebuggerProtocolUnknown("Reason watchpoint scope not handled", "");
-                           else if(!strcmp(reason, "location-reached"))
-                              DebuggerProtocolUnknown("Reason location reached not handled", "");
                            else
-                              DebuggerProtocolUnknown("Unknown reason", reason);
+                           {
+                              event = signal;
+                           }
                         }
+                        else if(!strcmp(reason, "watchpoint-trigger"))
+                           DebuggerProtocolUnknown("Reason watchpoint trigger not handled", "");
+                        else if(!strcmp(reason, "read-watchpoint-trigger"))
+                           DebuggerProtocolUnknown("Reason read watchpoint trigger not handled", "");
+                        else if(!strcmp(reason, "access-watchpoint-trigger"))
+                           DebuggerProtocolUnknown("Reason access watchpoint trigger not handled", "");
+                        else if(!strcmp(reason, "watchpoint-scope"))
+                           DebuggerProtocolUnknown("Reason watchpoint scope not handled", "");
+                        else if(!strcmp(reason, "location-reached"))
+                           DebuggerProtocolUnknown("Reason location reached not handled", "");
+                        else
+                           DebuggerProtocolUnknown("Unknown reason", reason);
                      }
                   }
                   app.SignalEvent();
@@ -3525,7 +3435,7 @@ class Debugger
       return result;
    }
 
-   char * ::ReadMemory(uint64 address, int size, char format, ExpressionType * error)
+   char * ::ReadMemory(uint address, int size, char format, ExpressionType * error)
    {
       // check for state
       char * result = GdbReadMemoryString(address, size, format, 1, 1);
@@ -3855,8 +3765,7 @@ class Breakpoint : struct
    char * LocationToString()
    {
       char location[MAX_LOCATION+20];
-      snprintf(location, sizeof(location), "%s:%d", relativeFilePath, line);
-      location[sizeof(location)-1] = 0;
+      sprintf(location, "%s:%d", relativeFilePath, line);
 #if defined(__WIN32__)
       ChangeCh(location, '/', '\\');
 #endif
@@ -3935,7 +3844,7 @@ struct DebugEvaluationData
    bool active;
    char * result;
    int bytes;
-   uint64 nextBlockAddress;
+   uint nextBlockAddress;
 
    DebuggerEvaluationError error;
 };

@@ -177,6 +177,7 @@ public:
 
 private:
    String compiler;
+   int bitDepth;
 
 public:
    void Save()
@@ -220,6 +221,7 @@ public:
          file.Printf("\nVersion 0.02\n");
          file.Printf("\nWorkspace\n");
          file.Printf("\n   Active Compiler = %s\n", compiler ? compiler : defaultCompilerName);
+         file.Printf("\n   Active Bit Depth = %d\n", bitDepth);
          
          if(projects.first)
          {
@@ -967,6 +969,14 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
                         else
                            workspace.compiler = equal;
                         delete compiler;
+                     }
+                     if(!strcmpi(buffer, "Active Bit Depth"))
+                     {
+                        int bitDepth = atoi(equal);
+                        if(!(bitDepth == 32 || bitDepth == 64))
+                           bitDepth = 0;
+                        workspace.bitDepth = bitDepth;
+                        ide.toolBar.activeBitDepth.SelectRow(ide.toolBar.activeBitDepth.FindRow(bitDepth));
                      }
                   }
                   else if(!strcmpi(section, "Execution Data"))

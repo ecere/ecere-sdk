@@ -322,7 +322,39 @@ class IDEToolbar : ToolBar
       }
    };
 
+   DropBox activeBitDepth
+   {
+      this, toolTip = $"Active Bit Depth", size = { 60 }, disabled = true;
+      bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
+      {
+         if(ide.workspace && ide.projectView && row)
+         {
+            bool silent = ide.projectView.buildInProgress == none ? false : true;
+            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+            ide.workspace.bitDepth = (int)row.tag;
+            ide.projectView.ShowOutputBuildLog(!silent);
+            if(!silent)
+               ide.projectView.DisplayCompiler(compiler, false);
+            for(prj : ide.workspace.projects)
+               ide.projectView.ProjectPrepareCompiler(prj, compiler, silent);
+            delete compiler;
+            ide.workspace.Save();
+         }
+         return true;
+      }
+   };
+
    Window spacer7 { this, size = { 4 } };
+
+   void IDEToolbar()
+   {
+      DataRow row;
+      row = activeBitDepth.AddString("Auto");
+      row.tag = 0;
+      activeBitDepth.AddString("32 bit").tag = 32;
+      activeBitDepth.AddString("64 bit").tag = 64;
+      activeBitDepth.currentRow = row;
+   }
 
 }
 
@@ -1728,6 +1760,10 @@ class IDEWorkSpace : Window
 
       viewProjectItem.disabled            = unavailable;
 
+      toolBar.activeConfig.disabled       = unavailable;
+      toolBar.activeCompiler.disabled     = unavailable;
+      toolBar.activeBitDepth.disabled     = unavailable;
+
       AdjustFileMenus();
       AdjustBuildMenus();
       AdjustDebugMenus();
@@ -2756,7 +2792,7 @@ class IDEWorkSpace : Window
 #endif
    }
 
-   void SetPath(bool projectsDirs, CompilerConfig compiler, ProjectConfig config)
+   void SetPath(bool projectsDirs, CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
       int c, len, count;
       char * newList;
@@ -2785,7 +2821,7 @@ class IDEWorkSpace : Window
             //       To go with the initial state, e.g. when F5 was pressed,
             //       we nould need to keep a list of all project's active
             //       config upon startup.
-            targetDirExp = prj.GetTargetDir(compiler, prj.config);
+            targetDirExp = prj.GetTargetDir(compiler, prj.config, bitDepth);
 
             /*if(prj.config.targetType == sharedLibrary && prj.config.debug)
                cfg = prj.config;

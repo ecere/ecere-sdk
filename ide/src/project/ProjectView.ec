@@ -631,7 +631,7 @@ class ProjectView : Window
          //GenerateVSSolutionFile(project, compiler);
          ide.statusBar.text = $"Generating Visual Studio Project...";
          app.UpdateDisplay();
-         //GenerateVCProjectFile(project, compiler);
+         //GenerateVCProjectFile(project, compiler, bitDepth);
          ide.statusBar.text = null;
          app.UpdateDisplay();
          return true;
@@ -686,12 +686,12 @@ class ProjectView : Window
       return false;
    }
    
-   bool BuildInterrim(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config, bool justPrint)
+   bool BuildInterrim(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint)
    {
       if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
       {
          ide.outputView.buildBox.Logf($"Building project %s using the %s configuration...\n", prj.name, GetConfigName(config));
-         return Build(prj, buildType, compiler, config, justPrint);
+         return Build(prj, buildType, compiler, config, bitDepth, justPrint);
       }
       return false;
    }
@@ -721,7 +721,7 @@ class ProjectView : Window
       return result;
    }
 
-   bool Build(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config, bool justPrint)
+   bool Build(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint)
    {
       bool result = true;
       Window document;
@@ -741,20 +741,20 @@ class ProjectView : Window
       }
       if(result)
       {
-         DirExpression targetDir = prj.GetTargetDir(compiler, config);
+         DirExpression targetDir = prj.GetTargetDir(compiler, config, bitDepth);
 
          DebugStopForMake(prj, buildType, compiler, config);
 
          // TODO: Disabled until problems fixed... is it fixed?
          if(buildType == rebuild || (config && config.compilingModified))
-            prj.Clean(compiler, config, clean, justPrint);
+            prj.Clean(compiler, config, bitDepth, clean, justPrint);
          else
          {
             if(buildType == relink || (config && config.linkingModified))
-               prj.Clean(compiler, config, cleanTarget, false);
+               prj.Clean(compiler, config, bitDepth, cleanTarget, false);
             if(config && config.symbolGenModified)
             {
-               DirExpression objDir = prj.GetObjDir(compiler, config);
+               DirExpression objDir = prj.GetObjDir(compiler, config, bitDepth);
                char fileName[MAX_LOCATION];
                char moduleName[MAX_FILENAME];
                strcpy(fileName, prj.topNode.path);
@@ -778,7 +778,7 @@ class ProjectView : Window
          ide.AdjustBuildMenus();
          ide.AdjustDebugMenus();
 
-         result = prj.Build(buildType == run, null, compiler, config, justPrint, normal);
+         result = prj.Build(buildType == run, null, compiler, config, bitDepth, justPrint, normal);
 
          if(config)
          {
@@ -813,6 +813,7 @@ class ProjectView : Window
       {
          Project prj = project;
          CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         int bitDepth = ide.workspace.bitDepth;
          ProjectConfig config;
          if(selection || !ide.activeClient)
          {
@@ -829,7 +830,7 @@ class ProjectView : Window
          config = prj.config;
          if(/*prj != project || */!prj.GetConfigIsInDebugSession(config) || !ide.DontTerminateDebugSession($"Project Build"))
          {
-            BuildInterrim(prj, build, compiler, config, mods.ctrl && mods.shift);
+            BuildInterrim(prj, build, compiler, config, bitDepth, mods.ctrl && mods.shift);
          }
          delete compiler;
       }
@@ -842,6 +843,7 @@ class ProjectView : Window
    {
       Project prj = project;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      int bitDepth = ide.workspace.bitDepth;
       ProjectConfig config;
       if(selection || !ide.activeClient)
       {
@@ -864,7 +866,7 @@ class ProjectView : Window
             ide.outputView.buildBox.Logf($"Relinking project %s using the %s configuration...\n", prj.name, GetConfigName(config));
             if(config)
                config.linkingModified = true;
-            Build(prj, relink, compiler, config, mods.ctrl && mods.shift);
+            Build(prj, relink, compiler, config, bitDepth, mods.ctrl && mods.shift);
          }
       }
       delete compiler;
@@ -874,6 +876,7 @@ class ProjectView : Window
    bool ProjectRebuild(MenuItem selection, Modifiers mods)
    {
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      int bitDepth = ide.workspace.bitDepth;
       Project prj = project;
       ProjectConfig config;
       if(selection || !ide.activeClient)
@@ -900,7 +903,7 @@ class ProjectView : Window
                config.compilingModified = true;
                config.makingModified = true;
             }*/ // -- should this still be used depite the new solution of BuildType?
-            Build(prj, rebuild, compiler, config, mods.ctrl && mods.shift);
+            Build(prj, rebuild, compiler, config, bitDepth, mods.ctrl && mods.shift);
          }
       }
       delete compiler;
@@ -953,6 +956,7 @@ class ProjectView : Window
       Project prj = project;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config;
+      int bitDepth = ide.workspace.bitDepth;
       if(selection || !ide.activeClient)
       {
          DataRow row = fileList.currentRow;
@@ -977,7 +981,7 @@ class ProjectView : Window
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
 
-            prj.Clean(compiler, config, clean, mods.ctrl && mods.shift);
+            prj.Clean(compiler, config, bitDepth, clean, mods.ctrl && mods.shift);
             buildInProgress = none;
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
@@ -992,6 +996,7 @@ class ProjectView : Window
       Project prj = project;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config;
+      int bitDepth = ide.workspace.bitDepth;
       if(selection || !ide.activeClient)
       {
          DataRow row = fileList.currentRow;
@@ -1016,7 +1021,7 @@ class ProjectView : Window
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
 
-            prj.Clean(compiler, config, realClean, mods.ctrl && mods.shift);
+            prj.Clean(compiler, config, bitDepth, realClean, mods.ctrl && mods.shift);
             buildInProgress = none;
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
@@ -1081,6 +1086,7 @@ class ProjectView : Window
       if(result)
       {
          CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         int bitDepth = ide.workspace.bitDepth;
          result = false;
          if(ProjectPrepareForToolchain(project, normal, true, true, compiler, config))
          {
@@ -1093,7 +1099,7 @@ class ProjectView : Window
 
             buildInProgress = compilingFile;
             ide.AdjustBuildMenus();
-            project.Compile(nodes, compiler, config, justPrint, mode);
+            project.Compile(nodes, compiler, config, bitDepth, justPrint, mode);
             buildInProgress = none;
             ide.AdjustBuildMenus();
 
@@ -1133,6 +1139,7 @@ class ProjectView : Window
       if(result)
       {
          CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         int bitDepth = ide.workspace.bitDepth;
          result = false;
          if(ProjectPrepareForToolchain(project, normal, true, true, compiler, config))
          {
@@ -1151,7 +1158,7 @@ class ProjectView : Window
                      ide.outputView.buildBox.Logf($"Deleteing intermediate objects for %s %s in project %s...\n",
                            node.type == file ? $"single file" : $"folder", node.name, project.name);
 
-                  node.DeleteIntermediateFiles(compiler, config, namesInfo, false);
+                  node.DeleteIntermediateFiles(compiler, config, bitDepth, namesInfo, false);
                   result = true;
                }
             }
@@ -1466,17 +1473,18 @@ class ProjectView : Window
    {
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config = project.config;
+      int bitDepth = ide.workspace.bitDepth;
       String args = new char[maxPathLen];
       args[0] = '\0';
       if(ide.workspace.commandLineArgs)
          //ide.debugger.GetCommandLineArgs(args);
          strcpy(args, ide.workspace.commandLineArgs);
       if(ide.debugger.isActive)
-         project.Run(args, compiler, config);
+         project.Run(args, compiler, config, bitDepth);
       /*else if(config.targetType == sharedLibrary || config.targetType == staticLibrary)
          MessageBox { master = ide, type = ok, text = "Run", contents = "Shared and static libraries cannot be run like executables." }.Modal();*/
-      else if(BuildInterrim(project, run, compiler, config, false))
-         project.Run(args, compiler, config);
+      else if(BuildInterrim(project, run, compiler, config, bitDepth, false))
+         project.Run(args, compiler, config, bitDepth);
       delete args;
       delete compiler;
       return true;
@@ -1487,6 +1495,7 @@ class ProjectView : Window
       bool result = false;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config = project.config;
+      int bitDepth = ide.workspace.bitDepth;
       TargetTypes targetType = project.GetTargetType(config);
       if(targetType == sharedLibrary || targetType == staticLibrary)
          MessageBox { master = ide, type = ok, text = $"Run", contents = $"Shared and static libraries cannot be run like executables." }.Modal();
@@ -1495,7 +1504,7 @@ class ProjectView : Window
       else if(project.GetDebug(config) ||
          MessageBox { master = ide, type = okCancel, text = $"Starting Debug", contents = $"Attempting to debug non-debug configuration\nProceed anyways?" }.Modal() == ok)
       {
-         if(/*!IsProjectModified() ||*/ BuildInterrim(project, start, compiler, config, false))
+         if(/*!IsProjectModified() ||*/ BuildInterrim(project, start, compiler, config, bitDepth, false))
          {
             if(compiler.type.isVC)
             {
@@ -1504,7 +1513,7 @@ class ProjectView : Window
                PathBackup pathBackup { };
                char command[MAX_LOCATION];
 
-               ide.SetPath(false, compiler, config);
+               ide.SetPath(false, compiler, config, bitDepth);
                
                GetWorkingDir(oldwd, sizeof(oldwd));
                ChangeWorkingDir(project.topNode.path);
@@ -1517,7 +1526,7 @@ class ProjectView : Window
             }
             else
             {
-               ide.debugger.Start(compiler, config);
+               ide.debugger.Start(compiler, config, bitDepth);
                result = true;
             }
          }
@@ -1745,14 +1754,15 @@ class ProjectView : Window
    {
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config = project.config;
+      int bitDepth = ide.workspace.bitDepth;
 
       bool result = false;
-      if(/*!IsProjectModified() ||*/ BuildInterrim(project, restart, compiler, config, false))
+      if(/*!IsProjectModified() ||*/ BuildInterrim(project, restart, compiler, config, bitDepth, false))
       {
          // For Restart, compiler and config will only be used if for
          // whatever reason (if at all possible) the Debugger is in a
          // 'terminated' or 'none' state
-         ide.debugger.Restart(compiler, config);
+         ide.debugger.Restart(compiler, config, bitDepth);
          result = true;
       }
 
@@ -1782,9 +1792,10 @@ class ProjectView : Window
    {
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config = project.config;
+      int bitDepth = ide.workspace.bitDepth;
 
-      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, false)))
-         ide.debugger.StepInto(compiler, config);
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, false)))
+         ide.debugger.StepInto(compiler, config, bitDepth);
       delete compiler;
       return true;
    }
@@ -1793,9 +1804,10 @@ class ProjectView : Window
    {
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config = project.config;
+      int bitDepth = ide.workspace.bitDepth;
 
-      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, false)))
-         ide.debugger.StepOver(compiler, config, skip);
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, false)))
+         ide.debugger.StepOver(compiler, config, skip, bitDepth);
 
       delete compiler;
       return true;

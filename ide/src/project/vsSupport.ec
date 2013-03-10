@@ -105,7 +105,7 @@ void GenerateVSSolutionFile(Project project, CompilerConfig compiler)
    }
 }
 
-void GenerateVCProjectFile(Project project, CompilerConfig compiler)
+void GenerateVCProjectFile(Project project, CompilerConfig compiler, int bitDepth)
 {
    char filePath[MAX_LOCATION];
    char slnFileName[MAX_LOCATION];
@@ -159,7 +159,7 @@ void GenerateVCProjectFile(Project project, CompilerConfig compiler)
             IndentPush();
 
          for(config : project.configurations)
-            PrintConfiguration(f, project, compiler, config, usePrecompiledHeaders);
+            PrintConfiguration(f, project, compiler, config, bitDepth, usePrecompiledHeaders);
 
          IndentPop();
          f.Print(tagIndent, "</Configurations>", tagLine);
@@ -217,7 +217,7 @@ void GenerateVCProjectFile(Project project, CompilerConfig compiler)
    }
 }
 
-void PrintConfiguration(File f, Project project, CompilerConfig compiler, ProjectConfig config, bool usePrecompiledHeaders)
+void PrintConfiguration(File f, Project project, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool usePrecompiledHeaders)
 {
    ProjectOptions options = project.options;
    SetBool consoleSet = localConsole;
@@ -235,10 +235,10 @@ void PrintConfiguration(File f, Project project, CompilerConfig compiler, Projec
 
    if(!objDirExpr)
       objDirExpr = settingsObjectsDirectory;
-   objDir.Evaluate(objDirExpr, project, compiler, config);
+   objDir.Evaluate(objDirExpr, project, compiler, config, bitDepth);
    if(!targetDirExpr)
       targetDirExpr = settingsTargetDirectory;
-   targetDir.Evaluate(targetDirExpr, project, compiler, config);
+   targetDir.Evaluate(targetDirExpr, project, compiler, config, bitDepth);
 
    f.Print(tagIndent, "<Configuration", attribSep);
       IndentPush();

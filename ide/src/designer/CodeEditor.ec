@@ -1898,7 +1898,8 @@ class CodeEditor : Window
             {
                CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
                ProjectConfig config = projectView.project.config;
-               ide.debugger.RunToCursor(compiler, config, fileName, line, false);
+               int bitDepth = ide.workspace.bitDepth;
+               ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, false);
                delete compiler;
             }
          }
@@ -1916,7 +1917,8 @@ class CodeEditor : Window
          {
             CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
             ProjectConfig config = projectView.project.config;
-            ide.debugger.RunToCursor(compiler, config, fileName, line, true);
+            int bitDepth = ide.workspace.bitDepth;
+            ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, true);
             delete compiler;
          }
          return true;
@@ -2670,7 +2672,7 @@ class CodeEditor : Window
       if(ide.workspace)
       {
          CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-         SetTargetBits(compiler.supportsBitDepth ? 32 : GetHostBits());
+         SetTargetBits(ide.workspace.bitDepth ? ide.workspace.bitDepth : GetHostBits());
          delete compiler;
       }
       this.privateModule = __ecere_COM_Initialize(false | ((GetTargetBits() == sizeof(uintptr) *8) ? 0 : GetTargetBits() == 64 ? 2 : 4), 1, null);
@@ -2724,7 +2726,8 @@ class CodeEditor : Window
       {
          CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
          ProjectConfig config = project.config;
-         DirExpression objDir = project.GetObjDir(compiler, config);
+         int bitDepth = ide.workspace.bitDepth;
+         DirExpression objDir = project.GetObjDir(compiler, config, bitDepth);
          SetSymbolsDir(objDir.dir);
          delete objDir;
          delete compiler;

@@ -692,7 +692,6 @@ class CompilerConfig
    class_no_expansion;
 
    numJobs = 1;
-   supportsBitDepth = true;
 public:
    property char * name
    {
@@ -764,12 +763,8 @@ public:
    }
    bool ccacheEnabled;
    bool distccEnabled;
-   property bool supportsBitDepth
-   {
-      set { supportsBitDepth = value; }
-      get { return supportsBitDepth; }
-      isset { return !supportsBitDepth; }
-   }
+   // deprecated
+   property bool supportsBitDepth { set { } get { } isset { return false; } }
 
    property char * distccHosts
    {
@@ -908,7 +903,6 @@ private:
    char * cxxCommand;
    char * executableLauncher;
    char * distccHosts;
-   bool supportsBitDepth;
    char * gnuToolchainPrefix;
    char * sysroot;
    /*union
@@ -960,7 +954,7 @@ private:
          executableLauncher,
          ccacheEnabled,
          distccEnabled,
-         supportsBitDepth,
+         false,
          distccHosts,
          gnuToolchainPrefix,
          sysroot

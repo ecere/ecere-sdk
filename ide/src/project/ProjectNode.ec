@@ -2302,7 +2302,7 @@ private:
       }
    }
 
-   void DeleteIntermediateFiles(CompilerConfig compiler, ProjectConfig prjConfig, Map<String, NameCollisionInfo> namesInfo, bool onlyCObject)
+   void DeleteIntermediateFiles(CompilerConfig compiler, ProjectConfig prjConfig, int bitDepth, Map<String, NameCollisionInfo> namesInfo, bool onlyCObject)
    {
       if(type == file)
       {
@@ -2312,7 +2312,7 @@ private:
          char moduleName[MAX_FILENAME];
          NameCollisionInfo info;
          Project prj = property::project;
-         DirExpression objDir = prj.GetObjDir(compiler, prjConfig);
+         DirExpression objDir = prj.GetObjDir(compiler, prjConfig, bitDepth);
 
          GetExtension(name, extension);
          ReplaceSpaces(moduleName, name);
@@ -2350,7 +2350,7 @@ private:
          for(child : files)
          {
             if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-               child.DeleteIntermediateFiles(compiler, prjConfig, namesInfo, onlyCObject);
+               child.DeleteIntermediateFiles(compiler, prjConfig, bitDepth, namesInfo, onlyCObject);
          }
       }
    }
@@ -2488,16 +2488,6 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
          *(OptimizationStrategy*)((byte *)output + option) = value;
       }
    };
-   GenericOptionTools<BuildBitDepth>        utilBuildBitDepth {
-      bool OptionCheck(ProjectOptions options, int option) {
-         BuildBitDepth value = *(BuildBitDepth*)((byte *)options + option);
-         return value && value != all;
-      }
-      void LoadOption(ProjectOptions options, int option, int priority, Array<Array<String>> optionTempStrings, ProjectOptions output) {
-         BuildBitDepth value = options ? *(BuildBitDepth*)((byte *)options + option) : (BuildBitDepth)0;
-         *(BuildBitDepth*)((byte *)output + option) = value;
-      }
-   };
 
    Map<int, GenericOptionTools> ot { };
 
@@ -2518,8 +2508,6 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
    ot[OPTION(warnings)] =                utilWarningsOption;
 
    ot[OPTION(optimization)] =            utilOptimizationStrategy;
-
-   ot[OPTION(buildBitDepth)] =           utilBuildBitDepth;
 
    for(n = node; n; n = n.parent)
    {
@@ -2613,7 +2601,6 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
    delete utilStringArrays;
    delete utilWarningsOption;
    delete utilOptimizationStrategy;
-   delete utilBuildBitDepth;
 
    delete ot;
 
@@ -2662,8 +2649,6 @@ static void CollectPlatformsCommonOptions(Map<Platform, ProjectOptions> byPlatfo
             commonOptions.warnings = unset;
          if(commonOptions.optimization && options.optimization != commonOptions.optimization)
             commonOptions.optimization = unset;
-         if(commonOptions.buildBitDepth && options.buildBitDepth != commonOptions.buildBitDepth)
-            commonOptions.buildBitDepth = all;
 
          if(commonOptions.defaultNameSpace && strcmp(options.defaultNameSpace, commonOptions.defaultNameSpace))
             delete commonOptions.defaultNameSpace;
@@ -2697,8 +2682,6 @@ static void CollectPlatformsCommonOptions(Map<Platform, ProjectOptions> byPlatfo
          options.warnings = unset;
       if(options.optimization && options.optimization == commonOptions.optimization)
          options.optimization = unset;
-      if(options.buildBitDepth && options.buildBitDepth == commonOptions.buildBitDepth)
-         options.buildBitDepth = all;
 
       if(options.defaultNameSpace && !strcmp(options.defaultNameSpace, commonOptions.defaultNameSpace))
          delete options.defaultNameSpace;
@@ -2913,8 +2896,6 @@ static void GenCFlagsFromProjectOptions(ProjectOptions options, bool prjWithEcFi
          }
          else if(commonOptions)
             s.concat(" $(if $(DEBUG),-g)");
-         if(options.buildBitDepth || (commonOptions && prjWithEcFiles))
-            s.concatf(" %s", (!options || !options.buildBitDepth || options.buildBitDepth == bits32) ? "$(FORCE_32_BIT)" : "$(FORCE_64_BIT)");
          if(commonOptions)
             s.concat(" $(FPIC)");
       }

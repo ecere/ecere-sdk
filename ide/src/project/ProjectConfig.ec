@@ -32,7 +32,7 @@ class DirExpression : struct
       }
    }
 
-   void Evaluate(char * expression, Project project, CompilerConfig compiler, ProjectConfig config)
+   void Evaluate(char * expression, Project project, CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
       int len;
       char * expr = expression;
@@ -109,17 +109,28 @@ class DirExpression : struct
                         }
                         else if(!strnicmp(&expr[c + 2], "Compiler_Suffix", n))
                         {
-                           if(compilerName[0] && strcmpi(compilerName, "default"))
+                           if(bitDepth || (compilerName[0] && strcmpi(compilerName, "default")))
                            {
-                              buffer[d] = '.';
-                              buffer[d+1] = '\0';
-                              strcat(buffer, compilerName);
-                              CamelCase(&buffer[d]);
-                              d += strlen(compilerName)+1;
-                              c = i;
+                              if(compilerName[0] && strcmpi(compilerName, "default"))
+                              {
+                                 buffer[d] = '.';
+                                 buffer[d+1] = '\0';
+                                 strcat(buffer, compilerName);
+                                 CamelCase(&buffer[d]);
+                                 d += strlen(compilerName)+1;
+                              }
+                              if(bitDepth == 32)
+                              {
+                                 strcat(buffer, ".x32");
+                                 d += 4;
+                              }
+                              else if(bitDepth == 64)
+                              {
+                                 strcat(buffer, ".x64");
+                                 d += 4;
+                              }
                            }
-                           else
-                              c = i;
+                           c = i;
                         }
                         else
                         {
@@ -341,7 +352,6 @@ public:
          console = console,
          compress = compress,
          excludeFromBuild = excludeFromBuild,
-         buildBitDepth = buildBitDepth,
          fastMath = fastMath,
          preprocessorDefinitions = CopyArrayString(preprocessorDefinitions),
          includeDirs = CopyArrayString(includeDirs),
@@ -366,7 +376,6 @@ public:
       //...
       //PrintLn("dddddddd:", dddddddd);
 
-      PrintLn("buildBitDepth:", buildBitDepth);
       PrintLn("fastMath:", fastMath);
 
       PrintLn("preprocessorDefinitions:", preprocessorDefinitions);
@@ -426,7 +435,6 @@ private:
             console == unset &&
             compress == unset &&
             excludeFromBuild == unset &&
-            buildBitDepth == all &&
             fastMath == unset &&
             (!prebuildCommands || !prebuildCommands.count) &&
             (!postbuildCommands || !postbuildCommands.count) )
