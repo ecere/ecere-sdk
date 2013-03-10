@@ -465,7 +465,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
 #ifdef __APPLE__
          case XK_Help:     key = insert; break;
 #endif
-         // case XK_Break:
+         case XK_Break:    key = Key { pauseBreak, ctrl = true }; break;
 #ifdef __APPLE__
          case XK_Mode_switch: key = leftAlt; break;
 #endif
