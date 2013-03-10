@@ -75,7 +75,7 @@ static void OutputOperator(int op, File f)
    }
 }
 
-public void OutputTypeName(TypeName type, File f)
+public void OutputTypeName(TypeName type, File f, bool typeName)
 {
    /*if(type.typedObject) 
    {
@@ -87,7 +87,7 @@ public void OutputTypeName(TypeName type, File f)
       Specifier spec;
       for(spec = type.qualifiers->first; spec; spec = spec.next)
       {
-         OutputSpecifier(spec, f, false);
+         OutputSpecifier(spec, f, typeName);
          if(spec.next) f.Puts(" ");
       }
    }
@@ -132,7 +132,7 @@ public void OutputExpression(Expression exp, File f)
       case newExp:
          f.Puts("new ");
          f.Puts(" ");
-         OutputTypeName(exp._renew.typeName, f);
+         OutputTypeName(exp._renew.typeName, f, false);
          f.Puts("[");
          OutputExpression(exp._renew.size, f);
          f.Puts("]");
@@ -140,7 +140,7 @@ public void OutputExpression(Expression exp, File f)
       case new0Exp:
          f.Puts("new0 ");
          f.Puts(" ");
-         OutputTypeName(exp._renew.typeName, f);
+         OutputTypeName(exp._renew.typeName, f, false);
          f.Puts("[");
          OutputExpression(exp._renew.size, f);
          f.Puts("]");
@@ -149,7 +149,7 @@ public void OutputExpression(Expression exp, File f)
          f.Puts("renew ");
          OutputExpression(exp._renew.exp, f);
          f.Puts(" ");
-         OutputTypeName(exp._renew.typeName, f);
+         OutputTypeName(exp._renew.typeName, f, false);
          f.Puts("[");
          OutputExpression(exp._renew.size, f);
          f.Puts("]");
@@ -158,7 +158,7 @@ public void OutputExpression(Expression exp, File f)
          f.Puts("renew0 ");
          OutputExpression(exp._renew.exp, f);
          f.Puts(" ");
-         OutputTypeName(exp._renew.typeName, f);
+         OutputTypeName(exp._renew.typeName, f, false);
          f.Puts("[");
          OutputExpression(exp._renew.size, f);
          f.Puts("]");
@@ -259,25 +259,25 @@ public void OutputExpression(Expression exp, File f)
          break;
       case typeSizeExp:
          f.Puts("sizeof(");
-         OutputTypeName(exp.typeName, f);
+         OutputTypeName(exp.typeName, f, false);
          f.Puts(")");
          break;
       case typeAlignExp:
          f.Puts("__alignof__(");
-         OutputTypeName(exp.typeName, f);
+         OutputTypeName(exp.typeName, f, false);
          f.Puts(")");
          break;
       case extensionInitializerExp:
          f.Puts("__extension__ (");
          if(exp.initializer.typeName)
-            OutputTypeName(exp.initializer.typeName, f);
+            OutputTypeName(exp.initializer.typeName, f, false);
          f.Puts(")");
          if(exp.initializer.initializer)
             OutputInitializer(exp.initializer.initializer, f);
          break;
       case castExp:
          f.Puts("(");
-         OutputTypeName(exp.cast.typeName, f);
+         OutputTypeName(exp.cast.typeName, f, false);
          f.Puts(")");
          if(exp.cast.exp)
             OutputExpression(exp.cast.exp, f);
@@ -300,7 +300,7 @@ public void OutputExpression(Expression exp, File f)
          f.Puts("__builtin_va_arg(");
          OutputExpression(exp.vaArg.exp, f);
          f.Puts(", ");
-         OutputTypeName(exp.vaArg.typeName, f);
+         OutputTypeName(exp.vaArg.typeName, f, false);
          f.Puts(")");
          break;
       case arrayExp:
@@ -603,7 +603,7 @@ static void OutputStatement(Statement stmt, File f)
 
                typeName = MkTypeName(specs, decl);
                InstDeclPassTypeName(typeName, false);
-               OutputTypeName(typeName, f);
+               OutputTypeName(typeName, f, false);
                f.Printf(";");
                FreeTypeName(typeName);
             }
@@ -793,7 +793,7 @@ static void OutputDeclarator(Declarator decl, File f)
          {
             for(param = decl.function.parameters->first; param; param = param.next)
             {
-               OutputTypeName(param, f);
+               OutputTypeName(param, f, false);
                if(param.next)
                   f.Puts(", ");
             }
@@ -1537,7 +1537,7 @@ public char * StringFromSpecDecl(OldList specs, Declarator decl)
    typeName.qualifiers = specs;
    typeName.declarator = decl;
 
-   OutputTypeName(typeName, f);
+   OutputTypeName(typeName, f, true);
 
    delete typeName;
 

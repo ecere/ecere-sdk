@@ -1229,7 +1229,7 @@ static void OutputSpecifier(struct Specifier * spec, struct __ecereNameSpace__ec
 
 static void OutputDeclarator(struct Declarator * decl, struct __ecereNameSpace__ecere__com__Instance * f);
 
-void OutputTypeName(struct TypeName * type, struct __ecereNameSpace__ecere__com__Instance * f)
+void OutputTypeName(struct TypeName * type, struct __ecereNameSpace__ecere__com__Instance * f, unsigned int typeName)
 {
 if(type->qualifiers)
 {
@@ -1237,7 +1237,7 @@ struct Specifier * spec;
 
 for(spec = (*type->qualifiers).first; spec; spec = spec->next)
 {
-OutputSpecifier(spec, f, 0x0);
+OutputSpecifier(spec, f, typeName);
 if(spec->next)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
 }
@@ -1291,7 +1291,7 @@ break;
 case 13:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "new ");
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputTypeName(exp->_renew.typeName, f);
+OutputTypeName(exp->_renew.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "[");
 OutputExpression(exp->_renew.size, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "]");
@@ -1299,7 +1299,7 @@ break;
 case 28:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "new0 ");
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputTypeName(exp->_renew.typeName, f);
+OutputTypeName(exp->_renew.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "[");
 OutputExpression(exp->_renew.size, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "]");
@@ -1308,7 +1308,7 @@ case 14:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "renew ");
 OutputExpression(exp->_renew.exp, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputTypeName(exp->_renew.typeName, f);
+OutputTypeName(exp->_renew.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "[");
 OutputExpression(exp->_renew.size, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "]");
@@ -1317,7 +1317,7 @@ case 29:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "renew0 ");
 OutputExpression(exp->_renew.exp, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputTypeName(exp->_renew.typeName, f);
+OutputTypeName(exp->_renew.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "[");
 OutputExpression(exp->_renew.size, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "]");
@@ -1424,25 +1424,25 @@ OutputIdentifier(exp->member.member, f);
 break;
 case 10:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "sizeof(");
-OutputTypeName(exp->typeName, f);
+OutputTypeName(exp->typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")");
 break;
 case 38:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "__alignof__(");
-OutputTypeName(exp->typeName, f);
+OutputTypeName(exp->typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")");
 break;
 case 35:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "__extension__ (");
 if(exp->initializer.typeName)
-OutputTypeName(exp->initializer.typeName, f);
+OutputTypeName(exp->initializer.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")");
 if(exp->initializer.initializer)
 OutputInitializer(exp->initializer.initializer, f);
 break;
 case 11:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "(");
-OutputTypeName(exp->cast.typeName, f);
+OutputTypeName(exp->cast.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")");
 if(exp->cast.exp)
 OutputExpression(exp->cast.exp, f);
@@ -1467,7 +1467,7 @@ case 36:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "__builtin_va_arg(");
 OutputExpression(exp->vaArg.exp, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ", ");
-OutputTypeName(exp->vaArg.typeName, f);
+OutputTypeName(exp->vaArg.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")");
 break;
 case 37:
@@ -1804,7 +1804,7 @@ decl = SpecDeclFromString(string, specs, MkDeclaratorIdentifier(MkIdentifier("__
 }
 typeName = MkTypeName(specs, decl);
 InstDeclPassTypeName(typeName, 0x0);
-OutputTypeName(typeName, f);
+OutputTypeName(typeName, f, 0x0);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";");
 FreeTypeName(typeName);
 }
@@ -2005,7 +2005,7 @@ if(decl->function.parameters && (*decl->function.parameters).first)
 {
 for(param = (*decl->function.parameters).first; param; param = param->next)
 {
-OutputTypeName(param, f);
+OutputTypeName(param, f, 0x0);
 if(param->next)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ", ");
 }
@@ -2748,7 +2748,7 @@ unsigned int size;
 
 typeName->qualifiers = specs;
 typeName->declarator = decl;
-OutputTypeName(typeName, f);
+OutputTypeName(typeName, f, 0x1);
 ((typeName ? (__ecereClass_TypeName->Destructor ? __ecereClass_TypeName->Destructor(typeName) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(typeName)) : 0), typeName = 0);
 size = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize])(f);
 string = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (size + 1));
@@ -2772,7 +2772,7 @@ struct __ecereNameSpace__ecere__com__Class * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetMemoryGuard", "void SetMemoryGuard(bool b)", SetMemoryGuard, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetMemoryGuard", "bool GetMemoryGuard(void)", GetMemoryGuard, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputTypeName", "void OutputTypeName(TypeName type, ecere::sys::File f)", OutputTypeName, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputTypeName", "void OutputTypeName(TypeName type, ecere::sys::File f, bool typeName)", OutputTypeName, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputExpression", "void OutputExpression(Expression exp, ecere::sys::File f)", OutputExpression, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputTree", "void OutputTree(ecere::sys::OldList ast, ecere::sys::File f)", OutputTree, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("StringFromSpecDecl", "char * StringFromSpecDecl(ecere::sys::OldList specs, Declarator decl)", StringFromSpecDecl, module, 1);

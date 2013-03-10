@@ -3438,6 +3438,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
 {
    Type source = sourceExp.expType;
    Type realDest = dest;
+   Type backupSourceExpType = null;
 
    if(dest.kind == pointerType && sourceExp.type == constantExp && !strtoul(sourceExp.constant, null, 0))
       return true;
@@ -3500,6 +3501,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
             {
                Type tempType { };
                Type tempDest, tempSource;
+               bool result = true;
 
                for(; _class.base.type != systemClass; _class = _class.base);
                tempSource = dest;
@@ -3512,11 +3514,16 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                tempType._class = _class.symbol;
                tempType.truth = dest.truth;
                if(tempType._class)
-                  MatchTypes(tempSource, tempDest, conversions, null, null, true, true, false, false);
+                  result = MatchTypes(tempSource, tempDest, conversions, null, null, true, true, false, false);
 
-               FreeType(sourceExp.expType);
+               // NOTE: To handle bad warnings on int64 vs 32 bit Id incompatibilities
+               // I was not sure whether only setting expType when result is true would cause problems
+               // where this new expression type gets converted by the checks below, so I opted for a 'revert' solution
+               if(result)
+                  FreeType(sourceExp.expType);
+               else
+                  backupSourceExpType = sourceExp.expType;
                sourceExp.expType = dest; dest.refCount++;
-
                //sourceExp.expType = MkClassType(_class.fullName);
                flag = true;            
 
@@ -3582,6 +3589,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
 
             FreeType(source);
             FreeType(dest);
+            if(backupSourceExpType) FreeType(backupSourceExpType);
             return true;
          }
       }
@@ -3718,6 +3726,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                FreeType(source);
                if(inCompiler) FreeType(dest);
 
+               if(backupSourceExpType) FreeType(backupSourceExpType);
                return true;
             }
 
@@ -3773,6 +3782,12 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
          {
             FreeType(source);
             FreeType(dest);
+            if(backupSourceExpType)
+            {
+               // Failed to convert: revert previous exp type
+               if(sourceExp.expType) FreeType(sourceExp.expType);
+               sourceExp.expType = backupSourceExpType;
+            }
             return false;
          }
       }
@@ -3822,6 +3837,12 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
       {
          FreeType(source);
          FreeType(dest);
+         if(backupSourceExpType)
+         {
+            // Failed to convert: revert previous exp type
+            if(sourceExp.expType) FreeType(sourceExp.expType);
+            sourceExp.expType = backupSourceExpType;
+         }
          return false;
       }
 
@@ -3858,6 +3879,8 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
 
       FreeType(dest);
       FreeType(source);
+      if(backupSourceExpType) FreeType(backupSourceExpType);
+
       return true;
    }
    else

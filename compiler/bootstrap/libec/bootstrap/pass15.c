@@ -5159,6 +5159,7 @@ unsigned int MatchTypeExpression(struct Expression * sourceExp, struct Type * de
 void * __ecereTemp1;
 struct Type * source = sourceExp->expType;
 struct Type * realDest = dest;
+struct Type * backupSourceExpType = (((void *)0));
 
 if(dest->kind == 13 && sourceExp->type == 2 && !strtoul(sourceExp->constant, (((void *)0)), 0))
 return 0x1;
@@ -5213,6 +5214,7 @@ if(source->kind != 8)
 {
 struct Type * tempType = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
 struct Type * tempDest, * tempSource;
+unsigned int result = 0x1;
 
 for(; _class->base->type != 1000; _class = _class->base)
 ;
@@ -5224,8 +5226,11 @@ _class->symbol = FindClass(_class->fullName);
 tempType->_class = _class->symbol;
 tempType->truth = dest->truth;
 if(tempType->_class)
-MatchTypes(tempSource, tempDest, conversions, (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0);
+result = MatchTypes(tempSource, tempDest, conversions, (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0);
+if(result)
 FreeType(sourceExp->expType);
+else
+backupSourceExpType = sourceExp->expType;
 sourceExp->expType = dest;
 dest->refCount++;
 flag = 0x1;
@@ -5261,6 +5266,8 @@ sourceExp->expType = dest;
 dest->refCount++;
 FreeType(source);
 FreeType(dest);
+if(backupSourceExpType)
+FreeType(backupSourceExpType);
 return 0x1;
 }
 }
@@ -5354,6 +5361,8 @@ sourceExp->expType = dest;
 FreeType(source);
 if(inCompiler)
 FreeType(dest);
+if(backupSourceExpType)
+FreeType(backupSourceExpType);
 return 0x1;
 }
 if(!_class->dataType)
@@ -5402,6 +5411,12 @@ else
 {
 FreeType(source);
 FreeType(dest);
+if(backupSourceExpType)
+{
+if(sourceExp->expType)
+FreeType(sourceExp->expType);
+sourceExp->expType = backupSourceExpType;
+}
 return 0x0;
 }
 }
@@ -5449,6 +5464,12 @@ else
 {
 FreeType(source);
 FreeType(dest);
+if(backupSourceExpType)
+{
+if(sourceExp->expType)
+FreeType(sourceExp->expType);
+sourceExp->expType = backupSourceExpType;
+}
 return 0x0;
 }
 if(!flag)
@@ -5484,6 +5505,8 @@ else
 FreeList(specs, FreeSpecifier);
 FreeType(dest);
 FreeType(source);
+if(backupSourceExpType)
+FreeType(backupSourceExpType);
 return 0x1;
 }
 else
@@ -10092,15 +10115,23 @@ bits |= ((uint64)part << bitMember->pos);
 break;
 case 22:
 if(type->isSigned)
+{
 bits |= ((intptr_t)part << bitMember->pos);
+}
 else
+{
 bits |= ((uintptr_t)part << bitMember->pos);
+}
 break;
 case 23:
 if(type->isSigned)
+{
 bits |= ((ssize_t)part << bitMember->pos);
+}
 else
+{
 bits |= ((size_t)part << bitMember->pos);
+}
 break;
 }
 }

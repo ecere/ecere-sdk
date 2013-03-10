@@ -1493,7 +1493,7 @@ extern struct Identifier * MkIdentifier(char *  string);
 
 extern struct TypeName * MkTypeName(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Declarator * declarator);
 
-extern void OutputTypeName(struct TypeName * type, struct __ecereNameSpace__ecere__com__Instance * f);
+extern void OutputTypeName(struct TypeName * type, struct __ecereNameSpace__ecere__com__Instance * f, unsigned int typeName);
 
 extern char *  strcat(char * , const char * );
 
@@ -1576,7 +1576,7 @@ PrintType(method->dataType->returnType, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
 resultType = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            ");
-OutputTypeName(resultType, f);
+OutputTypeName(resultType, f, 0x0);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n");
 }
 for(param = method->dataType->params.first; param; param = param->next)
@@ -1612,7 +1612,7 @@ PrintType(param, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier(param->name)));
 paramTypeName = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            ");
-OutputTypeName(paramTypeName, f);
+OutputTypeName(paramTypeName, f, 0x0);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n");
 }
 }
@@ -1744,7 +1744,7 @@ PrintType(method->dataType->returnType, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
 resultType = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      ");
-OutputTypeName(resultType, f);
+OutputTypeName(resultType, f, 0x0);
 if(method->dataType->returnType->kind == 9)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, " = { 0 }");
 else if(method->dataType->returnType->kind == 8 && method->dataType->returnType->_class->registered && method->dataType->returnType->_class->registered->type == 1)
@@ -1910,7 +1910,7 @@ PrintType(method->dataType->returnType, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
 resultType = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            ");
-OutputTypeName(resultType, f);
+OutputTypeName(resultType, f, 0x0);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n");
 }
 for(param = method->dataType->params.first; param; param = param->next)
@@ -1946,7 +1946,7 @@ PrintType(param, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier(param->name)));
 paramTypeName = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            ");
-OutputTypeName(paramTypeName, f);
+OutputTypeName(paramTypeName, f, 0x0);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n");
 }
 }
@@ -2061,7 +2061,7 @@ PrintType(method->dataType->returnType, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
 resultType = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      ");
-OutputTypeName(resultType, f);
+OutputTypeName(resultType, f, 0x0);
 if(method->dataType->returnType->kind == 9)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, " = { 0 }");
 else if(method->dataType->returnType->kind == 8 && method->dataType->returnType->_class->registered && method->dataType->returnType->_class->registered->type == 1)
