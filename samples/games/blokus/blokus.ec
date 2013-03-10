@@ -32,10 +32,26 @@ define boardSize = 20; //10;
 #else
 define boardSize = 20;
 #endif
-define squareWidth = 28;
+
+#if defined(__ANDROID__)
+define squareWidth = 60;
 define boardStartX = 20;
 define boardStartY = 30;
 define piecesY = 20;
+define blockOffset0 = 4;
+define blockOffset1 = 10;
+define blockOffset2 = 30;
+define blockOffset3 = 36;
+#else
+define squareWidth = 28;
+define blockOffset0 = 2;
+define blockOffset1 = 5;
+define blockOffset2 = 15;
+define blockOffset2 = 18;
+define boardStartX = 20;
+define boardStartY = 30;
+define piecesY = 20;
+#endif
 
 struct Piece
 {
@@ -420,15 +436,19 @@ class Blokus : Window
 {
    caption = "Ecere Blokus";
    background = black;
-   borderStyle = sizable;
    minClientSize = { 1068 /*800*/, 700 };
+#ifdef __ANDROID__
+   anchor = { 0, 0, 0, 0 };
+#else
+   borderStyle = sizable;
    hasMaximize = true;
    hasMinimize = true;
    hasClose = true;
    clientSize = { 1276, 708 };
-   nativeDecorations = true;
+#endif
    font = { "Arial", 12, bold = true };
    FontResource yourTurnFont { "Arial", 12, bold = true, italic = true, window = this };
+   icon = { ":ollie.png" };
 
    ServerConnection server;
 
@@ -590,10 +610,10 @@ class Blokus : Window
       surface.background = colors[shade][color];
       surface.Area(x+1, y+1, x + squareWidth-1, y + squareWidth-1);
       surface.foreground = lightGray;
-      surface.VLine(y+5, y + 15, x + 5);
-      surface.HLine(x+5, x + 18, y + 5);
+      surface.VLine(y+blockOffset1, y + blockOffset2, x + blockOffset1);
+      surface.HLine(x+blockOffset1, x + blockOffset3, y + blockOffset1);
       surface.foreground = white;
-      surface.Rectangle(x + 2,y+2, x + squareWidth-2, y + squareWidth - 2);
+      surface.Rectangle(x + blockOffset0,y+blockOffset0, x + squareWidth-blockOffset0, y + squareWidth - blockOffset0);
    }
 
    bool OnClose(bool parentClosing)
@@ -1074,7 +1094,7 @@ class BlokusScores : Window
    caption = "Blokus Final Scores";
    clientSize = { 580, 210 };
    font = { "Arial", 12, bold = true };
-
+   icon = { ":ollie.png" };
    void OnRedraw(Surface surface)
    {
       PlayerColor p;
@@ -1220,6 +1240,7 @@ Blokus blokus { };
 
 class BlokusApp : GuiApplication
 {
+   //fullScreen = true;
    bool Init()
    {
       blokus.Create();
@@ -1260,8 +1281,10 @@ class CommunicationPanel : Window
    hasClose = true;
    tabCycle = true;
    clientSize = { 430, 300 };
-   anchor = { horz = -3, vert = -7 };
-   nativeDecorations = true;
+#ifdef __ANDROID__
+   anchor = { right = 0, bottom = 0 };
+#endif
+   icon = { ":ollie.png" };
 
    // Other player info
    char playerNames[MaxPlayers][256];
@@ -1626,7 +1649,7 @@ class CommunicationPanel : Window
          DataRow row = listPlayers.currentRow;
          if(row)
          {
-            int id = row.tag;
+            int id = (int)row.tag;
             char msg[1024];
             sprintf(msg, "Kick %s?", serverPlayers[id].name);
             if(MessageBox { type = okCancel, caption = "Ecere Blokus",

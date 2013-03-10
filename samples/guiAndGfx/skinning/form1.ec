@@ -10,6 +10,7 @@ class Form1 : Window
    hasMinimize = true;
    hasClose = true;
    size = { 640, 480 };
+   nativeDecorations = false;
 
    Button button1 { this, text = "button1", position = { 440, 152 } };
    DropBox dropBox1 { this, text = "dropBox1", position = { 208, 88 } };

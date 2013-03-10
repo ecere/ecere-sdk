@@ -27,9 +27,58 @@
             "Optimization" : "Speed",
             "FastMath" : true
          }
+      },
+      {
+         "Name" : "Android",
+         "Options" : {
+            "Optimization" : "Speed",
+            "TargetType" : "SharedLibrary",
+            "TargetFileName" : "Test3D",
+            "FastMath" : true,
+            "PostbuildCommands" : [
+               "$(call mkdirq,$(OBJ)apk/lib/x86)",
+               "$(call mkdirq,$(OBJ)apk/lib/armeabi)",
+               "$(call cpq,/sdk/ecere/obj/android.linux.$(COMPILER)/libecere.so,$(OBJ)apk/lib/armeabi)",
+               "$(call cpq,$(TARGET),$(OBJ)apk/lib/armeabi)",
+               "aapt package -v -f -m -M android/AndroidManifest.xml -F $(OBJ)$(MODULE)-unsigned.apk -I C:/android-sdk/platforms/android-16/android.jar -S android/res $(OBJ)apk",
+               "jarsigner -storepass mypassword -sigalg MD5withRSA -digestalg SHA1 $(OBJ)$(MODULE)-unsigned.apk mykey -signedjar $(OBJ)$(MODULE).apk",
+               "adb uninstall com.ecere.$(MODULE)",
+               "adb install $(OBJ)$(MODULE).apk",
+               "adb shell am start -a android.intent.action.MAIN -n com.ecere.$(MODULE)/android.app.NativeActivity"
+            ]
+         }
       }
    ],
    "Files" : [
+      {
+         "Folder" : "android",
+         "Files" : [
+            {
+               "Folder" : "res",
+               "Files" : [
+                  {
+                     "Folder" : "drawable",
+                     "Files" : [
+                        "icon.png"
+                     ]
+                  },
+                  {
+                     "Folder" : "drawable-xhdpi",
+                     "Files" : [
+
+                     ]
+                  },
+                  {
+                     "Folder" : "values",
+                     "Files" : [
+                        "strings.xml"
+                     ]
+                  }
+               ]
+            },
+            "AndroidManifest.xml"
+         ]
+      },
       "Test3D.ec"
    ],
    "ResourcesPath" : "",
