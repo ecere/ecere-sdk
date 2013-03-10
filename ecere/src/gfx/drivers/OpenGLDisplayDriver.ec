@@ -387,6 +387,9 @@ static int curStack = 0;
 #define GL_LIGHT_MODEL_LOCAL_VIEWER 0xFFFF
 #define glDrawElementsi(type, count, start)  glDrawElements(type, count, GL_UNSIGNED_SHORT, start)
 
+#define GL_UNSIGNED_INT                         0x1405
+#define GL_DOUBLE                               0x140A
+
 #define GL_POLYGON      9
 #define GL_QUADS        7
 
@@ -427,8 +430,8 @@ static int curStack = 0;
 #define APIENTRY
 //#define GL_QUADS              0
 #define GL_QUAD_STRIP         0
-#define GL_DOUBLE             0
-#define GL_UNSIGNED_INT       0
+//#define GL_DOUBLE             0
+//#define GL_UNSIGNED_INT       0
 //#define GL_FILL               0
 //#define GL_LINE               0
 //#define GL_LINE_STIPPLE       0
@@ -1131,18 +1134,57 @@ bool GLSelectVBO(uint vbo)
    return false;
 }
 
+void GLGenBuffers(int count, uint * buffer)
+{
+#ifdef __ANDROID__
+   glGenBuffers(count, buffer);
+#else
+   if(glGenBuffersARB)
+      glGenBuffersARB(count, buffer);
+#endif
+}
+
+void GLDeleteBuffers(int count, uint * buffer)
+{
+#ifdef __ANDROID__
+   glDeleteBuffers(count, buffer);
+#else
+   if(glDeleteBuffersARB)
+      glDeleteBuffersARB(count, buffer);
+#endif
+}
+
 void GLBindBuffer(int target, uint buffer)
 {
 #ifdef __ANDROID__
    glBindBuffer(target, buffer);
 #else
-   glBindBufferARB(target, buffer);
+   if(glBindBufferARB)
+      glBindBufferARB(target, buffer);
+#endif
+}
+
+void GLBufferData(int type, GLenum target, int size, const GLvoid *data, GLenum usage)
+{
+#ifdef __ANDROID__
+   if(type == GL_DOUBLE)
+      glesBufferDatad(target, size, data, usage);
+   else if(type == GL_UNSIGNED_INT)
+      glesBufferDatai(target, size, data, usage);
+   else
+      glBufferData(target, size, data, usage);
+#else
+   if(glBufferDataARB)
+      glBufferDataARB(target, size, data, usage);
+
 #endif
 }
 
 static int displayWidth, displayHeight;
 
 #define GL_CLAMP_TO_EDGE 0x812F
+
+static bool vboAvailable;
 
 static bool useSingleGLContext = false;
 class OGLDisplay : struct
@@ -1423,6 +1465,8 @@ class OpenGLDisplayDriver : DisplayDriver
 
                wglSwapIntervalEXT = (void *)wglGetProcAddress("wglSwapIntervalEXT");
 
+               vboAvailable = glBindBufferARB != null;
+
                // eSystem_LoggingMode(LOG_MSGBOX, null);
 
                if(wglChoosePixelFormatARB)
@@ -1489,6 +1533,7 @@ class OpenGLDisplayDriver : DisplayDriver
          }
       }
    #elif defined(__unix__) || defined(__APPLE__)
+      vboAvailable = true;
       #if defined(__ANDROID__)
          egl_init_display(guiApp.desktop.windowHandle);
          result = true;
@@ -2036,7 +2081,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(!result)
          return false;
          
-      result = false;           
+      result = false;
 
       glViewport(0,0,width,height);
       glLoadIdentity();
@@ -3358,8 +3403,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glPopMatrix();
       }
 
-      if(glBindBufferARB)
-         glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+      GLBindBuffer(GL_ARRAY_BUFFER_ARB, 0);
    }
 
    void ApplyMaterial(Display display, Material material, Mesh mesh)
@@ -3443,7 +3487,7 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             if(oglMesh.vertices)
             {
-               glDeleteBuffersARB(1, &oglMesh.vertices);
+               GLDeleteBuffers(1, &oglMesh.vertices);
                oglMesh.vertices = 0;
             }
             delete mesh.vertices;
@@ -3452,7 +3496,7 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             if(oglMesh.normals)
             {
-               glDeleteBuffersARB(1, &oglMesh.normals);
+               GLDeleteBuffers(1, &oglMesh.normals);
                oglMesh.normals = 0;
             }
             delete mesh.normals;
@@ -3461,7 +3505,7 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             if(oglMesh.texCoords)
             {
-               glDeleteBuffersARB(1, &oglMesh.texCoords);
+               GLDeleteBuffers(1, &oglMesh.texCoords);
                oglMesh.texCoords = 0;
             }
             delete mesh.texCoords;
@@ -3470,7 +3514,7 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             if(oglMesh.texCoords2)
             {
-               glDeleteBuffersARB(1, &oglMesh.texCoords2);
+               GLDeleteBuffers(1, &oglMesh.texCoords2);
                oglMesh.texCoords2 = 0;
             }
             /*
@@ -3481,7 +3525,7 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             if(oglMesh.colors)
             {
-               glDeleteBuffersARB(1, &oglMesh.colors);
+               GLDeleteBuffers(1, &oglMesh.colors);
                oglMesh.colors = 0;
             }
          }
@@ -3506,25 +3550,21 @@ class OpenGLDisplayDriver : DisplayDriver
          if(mesh.flags.vertices && !oglMesh.vertices && !mesh.vertices)
          {
             mesh.vertices = mesh.flags.doubleVertices ? (Vector3Df *)new Vector3D[mesh.nVertices] : new Vector3Df[mesh.nVertices];
-            if(glGenBuffersARB)
-               glGenBuffersARB(1, &oglMesh.vertices);
+            GLGenBuffers(1, &oglMesh.vertices);
          }
          if(mesh.flags.normals && !oglMesh.normals && !mesh.normals)
          {
-            if(glGenBuffersARB)
-               glGenBuffersARB( 1, &oglMesh.normals);
+            GLGenBuffers( 1, &oglMesh.normals);
             mesh.normals = mesh.flags.doubleNormals ? (Vector3Df *)new Vector3D[mesh.nVertices] : new Vector3Df[mesh.nVertices];
          }
          if(mesh.flags.texCoords1 && !oglMesh.texCoords && !mesh.texCoords)
          {
-            if(glGenBuffersARB)
-               glGenBuffersARB( 1, &oglMesh.texCoords);
+            GLGenBuffers( 1, &oglMesh.texCoords);
             mesh.texCoords = new Pointf[mesh.nVertices];
          }
          if(mesh.flags.colors && !oglMesh.colors && !mesh.colors)
          {
-            if(glGenBuffersARB)
-               glGenBuffersARB( 1, &oglMesh.colors);
+            GLGenBuffers( 1, &oglMesh.colors);
             mesh.colors = new ColorRGBAf[mesh.nVertices];
          }
          result = true;
@@ -3537,33 +3577,33 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLMesh oglMesh = mesh.data;
       if(!flags) flags = mesh.flags;
       
-      if(glGenBuffersARB)
+      if(vboAvailable)
       {
          if(!(flags.vertices) || oglMesh.vertices)
          {
-            glBindBufferARB( GL_ARRAY_BUFFER_ARB, oglMesh.vertices);
-            glBufferDataARB( GL_ARRAY_BUFFER_ARB, mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices, GL_STATIC_DRAW_ARB );
+            GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.vertices);
+            GLBufferData( mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices, GL_STATIC_DRAW_ARB );
          }
 
          if(!(flags.normals) || oglMesh.normals)
          {
-            glBindBufferARB( GL_ARRAY_BUFFER_ARB, oglMesh.normals);
-            glBufferDataARB( GL_ARRAY_BUFFER_ARB, mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals, GL_STATIC_DRAW_ARB );
+            GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.normals);
+            GLBufferData( mesh.flags.doubleNormals ? GL_DOUBLE : GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals, GL_STATIC_DRAW_ARB );
          }
 
          if(!(flags.texCoords1) || oglMesh.texCoords)
          {
-            glBindBufferARB( GL_ARRAY_BUFFER_ARB, oglMesh.texCoords);
-            glBufferDataARB( GL_ARRAY_BUFFER_ARB, mesh.nVertices * sizeof(Pointf), mesh.texCoords, GL_STATIC_DRAW_ARB );
+            GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.texCoords);
+            GLBufferData( GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * sizeof(Pointf), mesh.texCoords, GL_STATIC_DRAW_ARB );
          }
 
          if(!(flags.colors) || oglMesh.colors)
          {
-            glBindBufferARB( GL_ARRAY_BUFFER_ARB, oglMesh.colors);
-            glBufferDataARB( GL_ARRAY_BUFFER_ARB, mesh.nVertices * sizeof(ColorRGBAf), mesh.colors, GL_STATIC_DRAW_ARB );
+            GLBindBuffer( GL_ARRAY_BUFFER_ARB, oglMesh.colors);
+            GLBufferData( GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * sizeof(ColorRGBAf), mesh.colors, GL_STATIC_DRAW_ARB );
          }
 
-         glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0);
+         GLBindBuffer( GL_ARRAY_BUFFER_ARB, 0);
       }
    }
 
@@ -3579,7 +3619,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(oglIndices)
       {
          if(oglIndices.buffer) 
-            glDeleteBuffersARB(1, &oglIndices.buffer);
+            GLDeleteBuffers(1, &oglIndices.buffer);
          delete oglIndices.indices;
          delete oglIndices;
       }
@@ -3591,8 +3631,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(oglIndices)
       {
          oglIndices.indices = (void *)(indices32bit ? new uint32[nIndices] : new uint16[nIndices]);
-         if(glGenBuffersARB)
-            glGenBuffersARB( 1, &oglIndices.buffer);
+         GLGenBuffers( 1, &oglIndices.buffer);
          oglIndices.nIndices = nIndices;
       }
       return oglIndices;
@@ -3600,12 +3639,12 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void UnlockIndices(DisplaySystem displaySystem, OGLIndices oglIndices, bool indices32bit, int nIndices)
    {
-      if(glGenBuffersARB)
+      if(vboAvailable)
       {
-         glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, oglIndices.buffer);
-         glBufferDataARB( GL_ELEMENT_ARRAY_BUFFER_ARB, nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)), 
+         GLBindBuffer( GL_ELEMENT_ARRAY_BUFFER_ARB, oglIndices.buffer);
+         GLBufferData( indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, GL_ELEMENT_ARRAY_BUFFER_ARB, nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)), 
             oglIndices.indices, GL_STATIC_DRAW_ARB);
-         glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+         GLBindBuffer( GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
       }
    }
 
@@ -3632,17 +3671,15 @@ class OpenGLDisplayDriver : DisplayDriver
          glEnableClientState(GL_VERTEX_ARRAY);
          if(!display.display3D.collectingHits && oglMesh)
          {
-            if(glBindBufferARB)
-               glBindBufferARB(GL_ARRAY_BUFFER_ARB, oglMesh.vertices );
-            glVertexPointer(3, mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT, 0, glBindBufferARB ? null : mesh.vertices);
+            GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.vertices );
+            glVertexPointer(3, mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT, 0, vboAvailable ? null : mesh.vertices);
 
             // *** Normals Stream ***
             if(mesh.normals)
             {
                glEnableClientState(GL_NORMAL_ARRAY);
-               if(glBindBufferARB)
-                  glBindBufferARB(GL_ARRAY_BUFFER_ARB, oglMesh.normals);
-               glNormalPointer(mesh.flags.doubleNormals ? GL_DOUBLE : GL_FLOAT, 0, glBindBufferARB ? null : mesh.normals);
+               GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.normals);
+               glNormalPointer(mesh.flags.doubleNormals ? GL_DOUBLE : GL_FLOAT, 0, vboAvailable ? null : mesh.normals);
             }
             else
                glDisableClientState(GL_NORMAL_ARRAY);
@@ -3651,9 +3688,8 @@ class OpenGLDisplayDriver : DisplayDriver
             if(mesh.texCoords)
             {
                glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-               if(glBindBufferARB)
-                  glBindBufferARB( GL_ARRAY_BUFFER_ARB, oglMesh.texCoords);
-               glTexCoordPointer(2, GL_FLOAT, 0, glBindBufferARB ? null : mesh.texCoords);
+               GLBindBuffer( GL_ARRAY_BUFFER_ARB, oglMesh.texCoords);
+               glTexCoordPointer(2, GL_FLOAT, 0, vboAvailable ? null : mesh.texCoords);
             }
             else
                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -3662,9 +3698,8 @@ class OpenGLDisplayDriver : DisplayDriver
             if(mesh.colors)
             {
                glEnableClientState(GL_COLOR_ARRAY);
-               if(glBindBufferARB)
-                  glBindBufferARB( GL_ARRAY_BUFFER_ARB, oglMesh.colors);
-               glColorPointer(4, GL_FLOAT, 0, glBindBufferARB ? null : mesh.colors);
+               GLBindBuffer( GL_ARRAY_BUFFER_ARB, oglMesh.colors);
+               glColorPointer(4, GL_FLOAT, 0, vboAvailable ? null : mesh.colors);
             }
             else
                glDisableClientState(GL_COLOR_ARRAY);
@@ -3672,8 +3707,7 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          else
          {
-            if(glBindBufferARB)
-               glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0);
+            GLBindBuffer( GL_ARRAY_BUFFER_ARB, 0);
             glVertexPointer(3,mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT,0,mesh.vertices);
             if(mesh.normals && !display.display3D.collectingHits)
             {
@@ -3702,8 +3736,8 @@ class OpenGLDisplayDriver : DisplayDriver
          if(glLockArraysEXT) glLockArraysEXT(0, mesh.nVertices);
 #endif
       }
-      else if(glBindBufferARB)
-         glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+      else
+         GLBindBuffer(GL_ARRAY_BUFFER_ARB, 0);
    }
 
    void DrawPrimitives(Display display, PrimitiveSingle * primitive, Mesh mesh)
@@ -3717,6 +3751,8 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          //    *** Hoping the data won't be uploaded at all (Won't really work if another group of the mesh is using the mesh ) *** 
          // HACK TO SPEED THINGS UP...
+#ifndef __ANDROID__
+         GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
          if(primitive->nIndices < (mesh.nVertices >> 2) && !primitive->type.indices32bit)
          {
             int c;
@@ -3737,22 +3773,20 @@ class OpenGLDisplayDriver : DisplayDriver
             glEnd();
          }
          else
+#endif
          {
             OGLIndices oglIndices = primitive->data;
 
-            if(!display.display3D.collectingHits && glBindBufferARB && oglIndices)
+            if(!display.display3D.collectingHits && vboAvailable && oglIndices)
             {
-               glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, oglIndices.buffer);
+               GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, oglIndices.buffer);
                glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, 
                   primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, 0);
-               glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+               GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
             }
-            else if(oglIndices)
-               glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, 
-                  primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, oglIndices.indices);
             else
                glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, 
-                  primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, primitive->indices);
+                  primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, oglIndices ? oglIndices.indices : primitive->indices);
          }
       }
    }
