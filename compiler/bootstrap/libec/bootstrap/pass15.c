@@ -5214,7 +5214,6 @@ if(source->kind != 8)
 {
 struct Type * tempType = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
 struct Type * tempDest, * tempSource;
-unsigned int result = 0x1;
 
 for(; _class->base->type != 1000; _class = _class->base)
 ;
@@ -5226,10 +5225,7 @@ _class->symbol = FindClass(_class->fullName);
 tempType->_class = _class->symbol;
 tempType->truth = dest->truth;
 if(tempType->_class)
-result = MatchTypes(tempSource, tempDest, conversions, (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0);
-if(result)
-FreeType(sourceExp->expType);
-else
+MatchTypes(tempSource, tempDest, conversions, (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0);
 backupSourceExpType = sourceExp->expType;
 sourceExp->expType = dest;
 dest->refCount++;

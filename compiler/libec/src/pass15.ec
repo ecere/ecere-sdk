@@ -3501,7 +3501,6 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
             {
                Type tempType { };
                Type tempDest, tempSource;
-               bool result = true;
 
                for(; _class.base.type != systemClass; _class = _class.base);
                tempSource = dest;
@@ -3514,15 +3513,10 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                tempType._class = _class.symbol;
                tempType.truth = dest.truth;
                if(tempType._class)
-                  result = MatchTypes(tempSource, tempDest, conversions, null, null, true, true, false, false);
+                  MatchTypes(tempSource, tempDest, conversions, null, null, true, true, false, false);
 
-               // NOTE: To handle bad warnings on int64 vs 32 bit Id incompatibilities
-               // I was not sure whether only setting expType when result is true would cause problems
-               // where this new expression type gets converted by the checks below, so I opted for a 'revert' solution
-               if(result)
-                  FreeType(sourceExp.expType);
-               else
-                  backupSourceExpType = sourceExp.expType;
+               // NOTE: To handle bad warnings on int64 vs 32 bit eda::Id incompatibilities
+               backupSourceExpType = sourceExp.expType;
                sourceExp.expType = dest; dest.refCount++;
                //sourceExp.expType = MkClassType(_class.fullName);
                flag = true;            
