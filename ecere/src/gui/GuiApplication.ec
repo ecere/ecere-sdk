@@ -187,7 +187,7 @@ public class GuiApplication : Application
    Size virtualScreen;   
    Point virtualScreenPos;
 
-   int mainThread;
+   int64 mainThread;
 
    GuiApplication()
    {
@@ -1287,7 +1287,7 @@ public:
       
       // Reentrant FileNotification is asking for trouble since each monitor is spawning a Modal() MessageBox
       if(reentrant) return false;
-      // printf("[%d] Waiting in ProcessFileNotifications for fileMonitor Mutex %x...\n", GetCurrentThreadID(), globalSystem.fileMonitorMutex);
+      // printf("[%d] Waiting in ProcessFileNotifications for fileMonitor Mutex %x...\n", (int)GetCurrentThreadID(), globalSystem.fileMonitorMutex);
       globalSystem.fileMonitorMutex.Wait();
       reentrant++;
       for(monitor = globalSystem.fileMonitors.first; monitor; monitor = next)
@@ -1343,7 +1343,7 @@ public:
                monitor.FreeMonitor();
          }
       }
-      // printf("[%d] Releasing in ProcessFileNotifications fileMonitor Mutex %x...\n", GetCurrentThreadID(), globalSystem.fileMonitorMutex);
+      // printf("[%d] Releasing in ProcessFileNotifications fileMonitor Mutex %x...\n", (int)GetCurrentThreadID(), globalSystem.fileMonitorMutex);
       globalSystem.fileMonitorMutex.Release();
       return activity;
    }

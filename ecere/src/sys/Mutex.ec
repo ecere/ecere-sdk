@@ -27,12 +27,12 @@ namespace sys;
 import "instance"
 
 // Moved this here from Thread.ec to make compiling ecereCOM in Debug easier
-public int GetCurrentThreadID()
+public int64 GetCurrentThreadID()
 {
 #if defined(__WIN32__)
-   return (int)GetCurrentThreadId();
+   return (int64)GetCurrentThreadId();
 #else
-   return (int)pthread_self();
+   return (int64)pthread_self();
 #endif
 }
 
@@ -50,7 +50,7 @@ public class Mutex : struct
 #endif
 
 #ifdef _DEBUG
-   int owningThread;
+   int64 owningThread;
 #endif
    int lockCount;
 
@@ -103,7 +103,7 @@ public:
       {
          /*
          if(this == globalSystem.fileMonitorMutex)
-            printf("[%d] Waiting on Mutex %x\n", GetCurrentThreadID(), this);
+            printf("[%d] Waiting on Mutex %x\n", (int)GetCurrentThreadID(), this);
          */
 #if defined(__WIN32__)
 #ifdef _DEBUG
@@ -138,7 +138,7 @@ public:
       {
          /*
          if(this == globalSystem.fileMonitorMutex)
-            printf("[%d] Releasing Mutex %x\n", GetCurrentThreadID(), this);
+            printf("[%d] Releasing Mutex %x\n", (int)GetCurrentThreadID(), this);
          */
 #ifdef _DEBUG
          if(lockCount && owningThread != GetCurrentThreadID())

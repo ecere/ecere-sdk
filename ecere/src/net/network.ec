@@ -65,7 +65,7 @@ private struct NetworkData
    bool leftOverBytes;
    Mutex processMutex;
    Mutex mutex;
-   int mainThreadID;
+   int64 mainThreadID;
    OldList mtSemaphores;
 };
 

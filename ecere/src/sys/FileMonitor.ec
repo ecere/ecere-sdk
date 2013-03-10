@@ -303,7 +303,7 @@ static class MonitorThread : Thread
             bool fileActivity = false;
             lastTime = currentTime;
 
-            // printf("[%d] Waiting in MonitorThread for fileMonitor Mutex %x...\n", GetCurrentThreadID(), globalSystem.fileMonitorMutex);
+            // printf("[%d] Waiting in MonitorThread for fileMonitor Mutex %x...\n", (int)GetCurrentThreadID(), globalSystem.fileMonitorMutex);
             globalSystem.fileMonitorMutex.Wait();
 
             for(monitor = globalSystem.fileMonitors.first; monitor; monitor = monitor.next)
@@ -417,15 +417,15 @@ static class MonitorThread : Thread
             }
             if(fileActivity)
             {
-               // printf("[%d] Signaling Event...\n", GetCurrentThreadID());
+               // printf("[%d] Signaling Event...\n", (int)GetCurrentThreadID());
                guiApp.SignalEvent();
             }
 
-            // printf("[%d] Releasing Mutex...\n", GetCurrentThreadID());
+            // printf("[%d] Releasing Mutex...\n", (int)GetCurrentThreadID());
             globalSystem.fileMonitorMutex.Release();
          }
          
-         // printf("[%d] Sleeping...\n", GetCurrentThreadID());
+         // printf("[%d] Sleeping...\n", (int)GetCurrentThreadID());
          Sleep(1.0 / 18.2);
       }
       return 0;

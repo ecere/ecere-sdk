@@ -150,7 +150,7 @@ public:
 
       if(serverSocket && serverSocket.connected)
       {
-         int currentThreadID = GetCurrentThreadID();
+         int64 currentThreadID = GetCurrentThreadID();
          int callID = nextCallID++;
          DCOMServerSocket socket = serverSocket;
          DCOMServerSocket processingSocket;
