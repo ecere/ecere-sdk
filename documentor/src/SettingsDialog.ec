@@ -40,8 +40,7 @@ class SettingsDialog : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         delete settings.docDir;
-         settings.docDir = CopyString(pathEditBox.contents); // Store the path entered into the edit box
+         settings.docDir = pathEditBox.contents; // Store the path entered into the edit box
          settingsContainer.Save(); // write that path to the ini file
          Destroy(0); // close the window
          return true;
