@@ -131,7 +131,7 @@ msgid "Bit Collection"
 msgstr "Bit Collection"
 
 #: ./src/Documentor.ec:2194
-#: ./src/SettingsDialog.ec:53
+#: ./src/SettingsDialog.ec:52
 msgid "Cancel"
 msgstr "Cancel"
 

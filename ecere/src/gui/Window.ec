@@ -4730,7 +4730,7 @@ private:
 
       // Setup relationship with outside world (bb root || !bb)
       if((!guiApp.fullScreenMode && parent == guiApp.desktop) || this == guiApp.desktop || 
-         (_displayDriver && dispDriver != parent.dispDriver))
+         (_displayDriver && parent.dispDriver && dispDriver != parent.dispDriver))
       {
          rootWindow = this;
          if(!tempExtents)

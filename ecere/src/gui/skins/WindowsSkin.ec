@@ -284,7 +284,7 @@ public class WindowsSkin_Window : Window
          *x += client00.x - rcWindow.left;
          *y += client00.y - rcWindow.top;
 #else
-         Box widths;
+         Box widths = { 0 };
 #if !defined(__ANDROID__)
          XGetBorderWidths(this, widths);
 #endif

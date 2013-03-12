@@ -312,6 +312,7 @@ msgid "Error writing file"
 msgstr "Error writing file"
 
 #: ./src/sys/File.ec:318
+msgctxt "Export"
 msgid "Exp"
 msgstr "Exp"
 
@@ -411,6 +412,7 @@ msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 msgstr "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 
 #: ./src/sys/File.ec:294
+msgctxt "Import"
 msgid "Imp"
 msgstr "Imp"
 
