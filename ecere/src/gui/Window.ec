@@ -4762,7 +4762,7 @@ private:
       bool result = false;
       Window child;
 
-      if((!guiApp.fullScreenMode && parent == guiApp.desktop) || (guiApp.fullScreenMode && (this == guiApp.desktop || (_displayDriver && dispDriver != parent.dispDriver))))
+      if((!guiApp.fullScreenMode && parent == guiApp.desktop) || (guiApp.fullScreenMode && (this == guiApp.desktop || (_displayDriver && parent.dispDriver && dispDriver != parent.dispDriver))))
       {
          subclass(DisplayDriver) dDriver = (dispDriver && !formDesigner) ? dispDriver : GetDisplayDriver(guiApp.defaultDisplayDriver);
          DisplaySystem displaySystem = dDriver ? dDriver.displaySystem : null;
