@@ -14,7 +14,6 @@ class FindInFilesDialog : Window
    tabCycle = true;
    size = { 440, 208 };
    autoCreate = false;
-   stayOnTop = true;
    
 public:
    property char * searchString { set { findContent.contents = value; } get { return findContent.contents; } };
