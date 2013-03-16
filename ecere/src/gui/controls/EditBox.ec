@@ -1668,7 +1668,7 @@ private:
                         }
                         else if(wordLen == 1 && word[0] == '*')
                         {
-                           if(!c || word[-1] != '/')
+                           if(c < 2 || word[-1] != '/')
                               lastWasStar = true;
                         }
                         else if(!inSingleLineComment && !inMultiLineComment && !inQuotes && wordLen == 1 && word[0] == '\"')
