@@ -1205,9 +1205,9 @@ static void * _mymalloc(unsigned int size)
 
 static void * _mycalloc(int n, unsigned int size)
 {
-   void * pointer = _mymalloc(size);
+   void * pointer = _mymalloc(n*size);
    if(pointer)
-      memset(pointer, 0, size);
+      memset(pointer, 0, n*size);
    return pointer;
 }
 
@@ -1363,8 +1363,9 @@ static void * _malloc(unsigned int size)
    memMutex.Wait();
 #endif
 
-   pointer = malloc(size + 2 * REDZONE);
+   pointer = size ? malloc(size + 2 * REDZONE) : null;
 #ifdef MEMINFO
+   if(pointer)
    {
       MemInfo block;
       MemStack stack = (MemStack)memStacks.Find(GetCurrentThreadID());
@@ -1405,11 +1406,14 @@ static void * _malloc(unsigned int size)
 #endif
 
 #if REDZONE
-   memset(pointer, 0xEC, REDZONE);
-   memset((byte *)pointer + REDZONE + size, 0xEC, REDZONE);
-   // ((byte *)pointer)[0] = 0x00;
+   if(pointer)
+   {
+      memset(pointer, 0xAB, REDZONE);
+      memset((byte *)pointer + REDZONE + size, 0xAB, REDZONE);
+      // ((byte *)pointer)[0] = 0x00;
+   }
 #endif
-   return (byte*)pointer + REDZONE;
+   return pointer ? ((byte*)pointer + REDZONE) : null;
 }
 
 static void * _calloc(int n, unsigned int size)
@@ -1419,39 +1423,41 @@ static void * _calloc(int n, unsigned int size)
    memMutex.Wait();
 #endif
 
-   pointer = calloc(n, size + 2 * REDZONE);
+   pointer = (n*size) ? calloc(1, n*size + 2 * REDZONE) : null;
 #ifdef MEMINFO
-{
-   MemStack stack;
-   stack = (MemStack)memStacks.Find(GetCurrentThreadID());
-   if(!stack)
+   if(pointer)
    {
-      stack = (MemStack)calloc(1, sizeof(class MemStack));
-      stack.key = GetCurrentThreadID();
-      memStacks.Add(stack);
-   }
-   if(!pointer)
-   {
-      int c;
-      printf("Memory allocation of %d bytes failed\n", size);
-      printf("Current Stack:\n");
-      for(c = 0; c<stack.pos; c++)
-         if(stack.frames[c])
-            printf("      %s\n", stack.frames[c]);
-      memoryErrorsCount++;
-      memMutex.Release();
-      return null;
-   }
+      MemStack stack;
+      stack = (MemStack)memStacks.Find(GetCurrentThreadID());
+      if(!stack)
+      {
+         stack = (MemStack)calloc(1, sizeof(class MemStack));
+         stack.key = GetCurrentThreadID();
+         memStacks.Add(stack);
+      }
+      if(!pointer)
+      {
+         int c;
+         printf("Memory allocation of %d bytes failed\n", size);
+         printf("Current Stack:\n");
+         for(c = 0; c<stack.pos; c++)
+            if(stack.frames[c])
+               printf("      %s\n", stack.frames[c]);
+         memoryErrorsCount++;
+         memMutex.Release();
+         return null;
+      }
 
-   if(!recurse && !stack.recurse)
-   {
-      MemInfo block;
-      
-      stack.recurse = true;
-      block = MemInfo { size = size, key = (uintptr)((byte *)pointer + REDZONE), _class = allocateClass, internal = allocateInternal, id = blockID++ };
-      memcpy(block.allocLoc, stack.frames + stack.pos - Min(stack.pos, MAX_MEMORY_LOC), Min(stack.pos, MAX_MEMORY_LOC) * sizeof(char *));
-      memBlocks.Add(block);
-      stack.recurse = false;
+      if(!recurse && !stack.recurse)
+      {
+         MemInfo block;
+
+         stack.recurse = true;
+         block = MemInfo { (unsigned int)n*size = size, key = (uintptr)((byte *)pointer + REDZONE), _class = allocateClass, internal = allocateInternal, id = blockID++ };
+         memcpy(block.allocLoc, stack.frames + stack.pos - Min(stack.pos, MAX_MEMORY_LOC), Min(stack.pos, MAX_MEMORY_LOC) * sizeof(char *));
+         memBlocks.Add(block);
+         stack.recurse = false;
+      }
    }
 }
 #endif
@@ -1461,10 +1467,13 @@ static void * _calloc(int n, unsigned int size)
 #endif
 
 #if REDZONE
-   memset(pointer, 0xEC, REDZONE);
-   memset((byte *)pointer + REDZONE + size, 0xEC, REDZONE);
+   if(pointer)
+   {
+      memset(pointer, 0xAB, REDZONE);
+      memset((byte *)pointer + REDZONE + (unsigned int)n*size, 0xAB, REDZONE);
+   }
 #endif
-   return (byte*)pointer + REDZONE;
+   return pointer ? ((byte*)pointer + REDZONE) : null;
 }
 
 static void * _realloc(void * pointer, unsigned int size)
@@ -1515,8 +1524,8 @@ static void * _realloc(void * pointer, unsigned int size)
       memMutex.Release();
       return null;
    }
-   memset(pointer, 0xEC, REDZONE);
-   memset((byte *)pointer + REDZONE + size, 0xEC, REDZONE);
+   memset(pointer, 0xAB, REDZONE);
+   memset((byte *)pointer + REDZONE + size, 0xAB, REDZONE);
 
    if(block)
    {
@@ -1528,8 +1537,12 @@ static void * _realloc(void * pointer, unsigned int size)
       {
          memcpy(block.freeLoc, stack.frames + stack.pos - Min(stack.pos, MAX_MEMORY_LOC), Min(stack.pos, MAX_MEMORY_LOC) * sizeof(char *));
          memcpy((byte *)pointer + REDZONE, (byte *)block.key, Min(block.size, size));
-         block.oldmem = (byte *)malloc(block.size + REDZONE * 2) + REDZONE;
-         memcpy(block.oldmem - REDZONE, (byte *)block.key - REDZONE, block.size + 2 * REDZONE);
+         block.oldmem = (byte *)malloc(block.size + REDZONE * 2);
+         if(block.oldmem)
+         {
+            block.oldmem += REDZONE;
+            memcpy(block.oldmem - REDZONE, (byte *)block.key - REDZONE, block.size + 2 * REDZONE);
+         }
          memset((byte *)block.key - REDZONE, 0xEC, block.size + REDZONE * 2);
          block.freed = true;
       }
@@ -1552,7 +1565,7 @@ static void * _realloc(void * pointer, unsigned int size)
 #if !defined(ECERE_BOOTSTRAP)
    memMutex.Release();
 #endif
-   return (byte *)pointer + REDZONE;
+   return pointer ? ((byte *)pointer + REDZONE) : null;
 }
 
 static void * _crealloc(void * pointer, unsigned int size)
@@ -1603,8 +1616,8 @@ static void * _crealloc(void * pointer, unsigned int size)
       memMutex.Release();
       return null;
    }
-   memset(pointer, 0xEC, REDZONE);
-   memset((byte *)pointer + REDZONE + size, 0xEC, REDZONE);
+   memset(pointer, 0xAB, REDZONE);
+   memset((byte *)pointer + REDZONE + size, 0xAB, REDZONE);
 
    if(block)
    {
@@ -1616,8 +1629,12 @@ static void * _crealloc(void * pointer, unsigned int size)
       {
          memcpy(block.freeLoc, stack.frames + stack.pos - Min(stack.pos, MAX_MEMORY_LOC), Min(stack.pos, MAX_MEMORY_LOC) * sizeof(char *));
          memcpy((byte *)pointer + REDZONE, (byte *)block.key, Min(block.size, size));
-         block.oldmem = (byte *)malloc(block.size + REDZONE * 2) + REDZONE;
-         memcpy(block.oldmem - REDZONE, (byte *)block.key - REDZONE, block.size + 2 * REDZONE);
+         block.oldmem = (byte *)malloc(block.size + REDZONE * 2);
+         if(block.oldmem)
+         {
+            block.oldmem += REDZONE;
+            memcpy(block.oldmem - REDZONE, (byte *)block.key - REDZONE, block.size + 2 * REDZONE);
+         }
          memset((byte *)block.key - REDZONE, 0xEC, block.size + REDZONE * 2);
          block.freed = true;
       }
@@ -1640,7 +1657,7 @@ static void * _crealloc(void * pointer, unsigned int size)
 #if !defined(ECERE_BOOTSTRAP)
    memMutex.Release();
 #endif
-   return (byte *)pointer + REDZONE;
+   return pointer ? ((byte *)pointer + REDZONE) : null;
 }
 
 static void _free(void * pointer)
@@ -1718,13 +1735,13 @@ static void _free(void * pointer)
                address = (byte *)block.key;
                for(c = 0; c<REDZONE; c++)
                {
-                  if(address[-c-1] != 0xEC)
+                  if(address[-c-1] != 0xAB)
                   {
                      printf("Buffer Underrun\n");
                      memoryErrorsCount++;
                      block.OutputStacks(block.freed);
                   }
-                  if(address[c + size] != 0xEC)
+                  if(address[c + size] != 0xAB)
                   {
                      printf("Buffer Overrun\n");
                      memoryErrorsCount++;
@@ -1734,8 +1751,12 @@ static void _free(void * pointer)
             }
 
             block.freed = true;
-            block.oldmem = (byte *)malloc(block.size + REDZONE * 2) + REDZONE;
-            memcpy(block.oldmem - REDZONE, (byte *)block.key - REDZONE, block.size + REDZONE * 2);
+            block.oldmem = (byte *)malloc(block.size + REDZONE * 2);
+            if(block.oldmem)
+            {
+               block.oldmem += REDZONE;
+               memcpy(block.oldmem - REDZONE, (byte *)block.key - REDZONE, block.size + REDZONE * 2);
+            }
             memset((byte *)block.key - REDZONE, 0xEC, block.size + REDZONE * 2);
 
             memcpy(block.freeLoc, stack.frames + stack.pos - Min(stack.pos, MAX_MEMORY_LOC), Min(stack.pos, MAX_MEMORY_LOC) * sizeof(char *));
@@ -1856,13 +1877,13 @@ public void CheckMemory()
       address = (byte *)block.key;
       for(c = 0; c<REDZONE; c++)
       {
-         if(address[-c-1] != 0xEC)
+         if(address[-c-1] != 0xAB)
          {
             printf("Buffer Underrun\n");
             memoryErrorsCount++;
             block.OutputStacks(block.freed);
          }
-         if(address[c + size] != 0xEC)
+         if(address[c + size] != 0xAB)
          {
             printf("Buffer Overrun\n");
             memoryErrorsCount++;
