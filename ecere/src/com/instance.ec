@@ -2760,6 +2760,7 @@ static void FreeTemplate(Class template)
    delete template.fullName;
    delete template.name;
    delete template.templateArgs;
+   delete template.dataTypeString;
 
    while((deriv = template.derivatives.first))
    {
@@ -2783,6 +2784,7 @@ static void FreeTemplates(Class _class)
    //if(_class.templateArgs)
       //printf("Deleting  Template args for %s\n", _class.name);
    delete _class.templateArgs;
+   delete _class.dataTypeString;
 
    while((template = _class.templatized.first))
    {
@@ -3157,6 +3159,7 @@ public dllexport Class eSystem_FindClass(Module module, char * name)
                templatedClass.templateClass = _class;
                //templatedClass.fullName = CopyString(name);
                templatedClass.fullName = CopyString(className);
+               templatedClass.dataTypeString = CopyString(_class.dataTypeString);
                templatedClass.name = CopyString(templatedClass.fullName + strlen(_class.fullName) - strlen(_class.name));
                templatedClass.nameSpace->classes.Add((BTNode)BTNamedLink { name = templatedClass.name, data = templatedClass });
                templatedClass.templateArgs = null;
