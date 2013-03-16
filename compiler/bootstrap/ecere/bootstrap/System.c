@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -267,8 +268,6 @@ struct __ecereNameSpace__ecere__com__Method * method;
 } __attribute__ ((gcc_struct));
 
 typedef __builtin_va_list va_list;
-
-typedef uintptr_t size_t;
 
 void exit(int status);
 

@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -335,7 +336,7 @@ struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSp
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle);
 }
 
-extern void *  memcpy(void * , const void * , unsigned int size);
+extern void *  memcpy(void * , const void * , size_t size);
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
@@ -504,7 +505,7 @@ int written = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void * 
 return written != 0;
 }
 
-extern int strlen(const char * );
+extern size_t strlen(const char * );
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Puts(struct __ecereNameSpace__ecere__com__Instance * this, char * string)
 {

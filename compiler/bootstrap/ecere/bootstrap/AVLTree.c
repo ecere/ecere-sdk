@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -284,7 +285,7 @@ uint64 __ecereMethod___ecereNameSpace__ecere__com__AVLTree_GetData(struct __ecer
 return node ? ((((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass->type == 1) ? (uint64)(((unsigned char *)&node->key) + __ENDIAN_PAD(sizeof(void *))) : node->key) : (uint64)0;
 }
 
-extern void *  memcpy(void * , const void * , unsigned int size);
+extern void *  memcpy(void * , const void * , size_t size);
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Find;
 

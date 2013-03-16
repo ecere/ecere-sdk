@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -271,7 +272,7 @@ struct __ecereNameSpace__ecere__sys__Item * prev, * next;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__Item;
 
-extern void *  memcpy(void * , const void * , unsigned int size);
+extern void *  memcpy(void * , const void * , size_t size);
 
 void __ecereMethod___ecereNameSpace__ecere__sys__Item_Copy(struct __ecereNameSpace__ecere__sys__Item * this, struct __ecereNameSpace__ecere__sys__Item * src, int size)
 {

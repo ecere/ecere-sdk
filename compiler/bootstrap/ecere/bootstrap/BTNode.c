@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -276,7 +277,7 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 extern int vsprintf(char * , const char * , __builtin_va_list);
 
-extern int strlen(const char * );
+extern size_t strlen(const char * );
 
 void __ecereNameSpace__ecere__sys__strcatf(char * string, char * format, ...)
 {
@@ -551,7 +552,7 @@ break;
 return this;
 }
 
-extern int strncmp(const char * , const char * , int n);
+extern int strncmp(const char * , const char * , size_t n);
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindPrefix(struct __ecereNameSpace__ecere__sys__BTNode * this, char * key)
 {

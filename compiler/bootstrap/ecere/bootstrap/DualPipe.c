@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -467,7 +468,7 @@ struct __ecereNameSpace__ecere__sys__DualPipe * __ecerePointer___ecereNameSpace_
 DualPipe_Wait(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp);
 }
 
-extern int vsnprintf(char * , int, const char * , __builtin_va_list);
+extern int vsnprintf(char * , size_t, const char * , __builtin_va_list);
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpen(unsigned int mode, char *  commandLine);
 

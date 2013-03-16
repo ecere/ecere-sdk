@@ -923,6 +923,7 @@ if(block)
 __ecereNameSpace__ecere__com__TOTAL_MEM += sizeof(struct __ecereNameSpace__ecere__com__MemBlock) + size;
 __ecereNameSpace__ecere__com__OUTSIDE_MEM += sizeof(struct __ecereNameSpace__ecere__com__MemBlock) + size;
 block->part = (((void *)0));
+block->size = size;
 }
 }
 }
@@ -933,10 +934,10 @@ extern void *  memset(void *  area, int value, size_t count);
 
 static void * __ecereNameSpace__ecere__com___mycalloc(int n, unsigned int size)
 {
-void * pointer = __ecereNameSpace__ecere__com___mymalloc(size);
+void * pointer = __ecereNameSpace__ecere__com___mymalloc(n * size);
 
 if(pointer)
-memset(pointer, 0, size);
+memset(pointer, 0, n * size);
 return pointer;
 }
 
@@ -1079,16 +1080,16 @@ static void * __ecereNameSpace__ecere__com___malloc(unsigned int size)
 {
 void * pointer;
 
-pointer = __ecereNameSpace__ecere__com___mymalloc(size + 2 * 0);
-return (unsigned char *)pointer + 0;
+pointer = size ? __ecereNameSpace__ecere__com___mymalloc(size + 2 * 0) : (((void *)0));
+return pointer ? ((unsigned char *)pointer + 0) : (((void *)0));
 }
 
 static void * __ecereNameSpace__ecere__com___calloc(int n, unsigned int size)
 {
 void * pointer;
 
-pointer = __ecereNameSpace__ecere__com___mycalloc(n, size + 2 * 0);
-return (unsigned char *)pointer + 0;
+pointer = (n * size) ? __ecereNameSpace__ecere__com___mycalloc(1, n * size + 2 * 0) : (((void *)0));
+return pointer ? ((unsigned char *)pointer + 0) : (((void *)0));
 }
 
 static void __ecereNameSpace__ecere__com___free(void *  pointer);
@@ -1101,7 +1102,7 @@ __ecereNameSpace__ecere__com___free(pointer);
 return (((void *)0));
 }
 pointer = __ecereNameSpace__ecere__com___myrealloc(pointer, size);
-return (unsigned char *)pointer + 0;
+return pointer ? ((unsigned char *)pointer + 0) : (((void *)0));
 }
 
 static void * __ecereNameSpace__ecere__com___crealloc(void * pointer, unsigned int size)
@@ -1109,7 +1110,7 @@ static void * __ecereNameSpace__ecere__com___crealloc(void * pointer, unsigned i
 if(!size)
 return (((void *)0));
 pointer = __ecereNameSpace__ecere__com___mycrealloc(pointer, size);
-return (unsigned char *)pointer + 0;
+return pointer ? ((unsigned char *)pointer + 0) : (((void *)0));
 }
 
 static void __ecereNameSpace__ecere__com___free(void * pointer)
@@ -1699,8 +1700,8 @@ _class->data = __ecereNameSpace__ecere__com__eSystem_Renew(_class->data, sizeof(
 if(base && base->type != 1000 && base->type != 4)
 memcpy(_class->data, base->data, offsetClass);
 else
-memset(_class->data, (unsigned char)0, offsetClass);
-memset((unsigned char *)_class->data + offsetClass, (unsigned char)0, sizeClass);
+memset(_class->data, 0, offsetClass);
+memset((unsigned char *)_class->data + offsetClass, 0, sizeClass);
 }
 (__ecereNameSpace__ecere__com__eSystem_Delete(_class->dataTypeString), _class->dataTypeString = 0);
 _class->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(dataTypeString);
@@ -1991,6 +1992,7 @@ __ecereNameSpace__ecere__com__FreeTemplateArgs(template);
 (__ecereNameSpace__ecere__com__eSystem_Delete(template->fullName), template->fullName = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(template->name), template->name = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(template->templateArgs), template->templateArgs = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete(template->dataTypeString), template->dataTypeString = 0);
 while((deriv = template->derivatives.first))
 {
 ((struct __ecereNameSpace__ecere__com__Class *)deriv->data)->base = (((void *)0));
@@ -2009,6 +2011,7 @@ __ecereNameSpace__ecere__com__FreeTemplates(deriv->data);
 }
 __ecereNameSpace__ecere__com__FreeTemplateArgs(_class);
 (__ecereNameSpace__ecere__com__eSystem_Delete(_class->templateArgs), _class->templateArgs = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete(_class->dataTypeString), _class->dataTypeString = 0);
 while((template = _class->templatized.first))
 {
 __ecereNameSpace__ecere__com__FreeTemplates(template->data);
@@ -2394,6 +2397,7 @@ templatedClass = __ecereNameSpace__ecere__com__eSystem_New0(structSize_Class);
 *templatedClass = *_class;
 templatedClass->templateClass = _class;
 templatedClass->fullName = __ecereNameSpace__ecere__sys__CopyString(className);
+templatedClass->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(_class->dataTypeString);
 templatedClass->name = __ecereNameSpace__ecere__sys__CopyString(templatedClass->fullName + strlen(_class->fullName) - strlen(_class->name));
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(*templatedClass->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_BTNamedLink), ((struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereTemp1)->name = templatedClass->name, ((struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereTemp1)->data = templatedClass, ((struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereTemp1)));
 templatedClass->templateArgs = (((void *)0));
@@ -3511,8 +3515,13 @@ int flags = (unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(
 unsigned int force32Bits = (flags & 4) ? 0x1 : 0x0;
 unsigned int inCompiler = (flags & 8) ? 0x1 : 0x0;
 
-if(force32Bits && inCompiler && !strcmp(_class->name, "Module"))
-size = 12 + 8 + 32 + 32 + 32 + 32 + 8 + 8 + 8 + 8 + 8 + 4 + 4 + (32 + 8 + 8 + 4 * 32) + (32 + 8 + 8 + 4 * 32);
+if(force32Bits && inCompiler)
+{
+if(!strcmp(_class->name, "Module"))
+size = 560;
+else if(_class->templateClass && !strcmp(_class->templateClass->name, "Map"))
+size = 40;
+}
 }
 instance = __ecereNameSpace__ecere__com___calloc(1, size);
 }
@@ -3539,7 +3548,7 @@ struct __ecereNameSpace__ecere__com__Instance * instance = (struct __ecereNameSp
 struct __ecereNameSpace__ecere__com__Class * fromClass = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class;
 
 *instancePtr = instance;
-memset(((unsigned char *)instance) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->structSize, (unsigned char)0, _class->structSize - ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->structSize);
+memset(((unsigned char *)instance) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->structSize, 0, _class->structSize - ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->structSize);
 if((wasApp = !strcmp(((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->name, "Application")) || (wasGuiApp = !strcmp(((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->name, "GuiApplication")))
 {
 struct __ecereNameSpace__ecere__com__Instance * module;

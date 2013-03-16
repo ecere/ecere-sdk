@@ -28,6 +28,7 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -347,7 +348,7 @@ __ecerePointer___ecereNameSpace__ecere__com__Array->count = (int)pos + 1;
 return ((int)pos < __ecerePointer___ecereNameSpace__ecere__com__Array->count && __ecerePointer___ecereNameSpace__ecere__com__Array->array) ? (struct __ecereNameSpace__ecere__com__IteratorPointer *)(((unsigned char *)__ecerePointer___ecereNameSpace__ecere__com__Array->array) + ((int)pos * ((((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 5 || ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 0) ? sizeof(void *) : ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->typeSize))) : (((void *)0));
 }
 
-extern void *  memmove(void * , const void * , unsigned int size);
+extern void *  memmove(void * , const void * , size_t size);
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__Array_Insert(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * ip, uint64 value)
 {
@@ -420,7 +421,7 @@ struct __ecereNameSpace__ecere__com__Array * __ecerePointer___ecereNameSpace__ec
 return __ecerePointer___ecereNameSpace__ecere__com__Array->count;
 }
 
-extern void memset(void *  area, unsigned char value, unsigned int count);
+extern void *  memset(void *  area, int value, size_t count);
 
 void __ecereProp___ecereNameSpace__ecere__com__Array_Set_size(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int value)
 {
@@ -471,7 +472,7 @@ struct __ecereNameSpace__ecere__com__Class * type;
 
 extern unsigned int __ecereNameSpace__ecere__com__eClass_IsDerived(struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__Class * from);
 
-extern void *  memcpy(void * , const void * , unsigned int size);
+extern void *  memcpy(void * , const void * , size_t size);
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetCount;
 
@@ -607,10 +608,10 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Delete", 0, __ecereMethod
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "array", "T *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "count", "uint", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "minAllocSize", "uint", 4, 4, 1);
-__ecerePropM___ecereNameSpace__ecere__com__Array_size = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "size", "unsigned int", __ecereProp___ecereNameSpace__ecere__com__Array_Set_size, __ecereProp___ecereNameSpace__ecere__com__Array_Get_size, 1);
+__ecerePropM___ecereNameSpace__ecere__com__Array_size = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "size", "uint", __ecereProp___ecereNameSpace__ecere__com__Array_Set_size, __ecereProp___ecereNameSpace__ecere__com__Array_Get_size, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__com__Array_size = __ecerePropM___ecereNameSpace__ecere__com__Array_size, __ecerePropM___ecereNameSpace__ecere__com__Array_size = (void *)0;
-__ecerePropM___ecereNameSpace__ecere__com__Array_minAllocSize = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "minAllocSize", "unsigned int", __ecereProp___ecereNameSpace__ecere__com__Array_Set_minAllocSize, __ecereProp___ecereNameSpace__ecere__com__Array_Get_minAllocSize, 1);
+__ecerePropM___ecereNameSpace__ecere__com__Array_minAllocSize = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "minAllocSize", "uint", __ecereProp___ecereNameSpace__ecere__com__Array_Set_minAllocSize, __ecereProp___ecereNameSpace__ecere__com__Array_Get_minAllocSize, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__com__Array_minAllocSize = __ecerePropM___ecereNameSpace__ecere__com__Array_minAllocSize, __ecerePropM___ecereNameSpace__ecere__com__Array_minAllocSize = (void *)0;
 if(class)

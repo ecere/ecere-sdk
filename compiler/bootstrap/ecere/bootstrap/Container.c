@@ -27,6 +27,8 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#include <stdint.h>
+#include <sys/types.h>
 
 #if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define _64BIT 1
@@ -37,7 +39,6 @@ typedef unsigned __int64 uint64;
 #define arch_PointerSize                  sizeof(void *)
 #define structSize_Instance               (_64BIT ? 24 : 12)
 
-#include <stdint.h>
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
