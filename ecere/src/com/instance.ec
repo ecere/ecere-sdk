@@ -4332,8 +4332,14 @@ public dllexport void * eInstance_New(Class _class)
             int flags = _class.module.application.isGUIApp;
             bool force32Bits = (flags & 4) ? true : false;
             bool inCompiler = (flags & 8) ? true : false;
-            if(force32Bits && inCompiler && !strcmp(_class.name, "Module"))
-               size = 12 + 8 + 32 + 32 + 32 + 32 + 8 + 8 + 8 + 8 + 8 + 4 + 4 + (32 + 8 + 8 + 4*32) + (32 + 8 + 8 + 4*32);
+            if(force32Bits && inCompiler)
+            {
+               // Allocate 64 bit sizes for these when cross-compiling for 32 bit to allow loaded libraries to work properly
+               if(!strcmp(_class.name, "Module"))
+                  size = 560;
+               else if(_class.templateClass && !strcmp(_class.templateClass.name, "Map"))
+                  size = 40;
+            }
          }
          instance = _calloc(1, size);
       }
