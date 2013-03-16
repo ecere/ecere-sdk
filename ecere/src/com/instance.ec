@@ -1196,6 +1196,7 @@ static void * _mymalloc(unsigned int size)
             TOTAL_MEM += sizeof(class MemBlock) + size;
             OUTSIDE_MEM += sizeof(class MemBlock) + size;
             block.part = null;
+            block.size = size;
          }
       }
    }
