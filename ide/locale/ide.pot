@@ -27,18 +27,18 @@ msgstr " Configuration"
 msgid " Properties"
 msgstr " Properties"
 
-#: ./src/dialogs/FindInFilesDialog.ec:675
-#: ./src/dialogs/FindInFilesDialog.ec:681
-#: ./src/dialogs/FindInFilesDialog.ec:685
+#: ./src/dialogs/FindInFilesDialog.ec:674
+#: ./src/dialogs/FindInFilesDialog.ec:680
+#: ./src/dialogs/FindInFilesDialog.ec:684
 msgid " and"
 msgstr " and"
 
-#: ./src/dialogs/FindInFilesDialog.ec:674
+#: ./src/dialogs/FindInFilesDialog.ec:673
 msgid " and its sub directories"
 msgstr " and its sub directories"
 
-#: ./src/dialogs/FindInFilesDialog.ec:1029
-#: ./src/dialogs/FindInFilesDialog.ec:1115
+#: ./src/dialogs/FindInFilesDialog.ec:1028
+#: ./src/dialogs/FindInFilesDialog.ec:1114
 msgid " before search was aborted"
 msgstr " before search was aborted"
 
@@ -62,7 +62,7 @@ msgstr " was "
 msgid " with exit code %s"
 msgstr " with exit code %s"
 
-#: ./src/dialogs/FindInFilesDialog.ec:666
+#: ./src/dialogs/FindInFilesDialog.ec:665
 msgid " with file name matching \"%s\""
 msgstr " with file name matching \"%s\""
 
@@ -90,7 +90,7 @@ msgstr "%s Function, %s:%d\n"
 msgid "%s Method, %s:%d\n"
 msgstr "%s Method, %s:%d\n"
 
-#: ./src/dialogs/FindInFilesDialog.ec:144
+#: ./src/dialogs/FindInFilesDialog.ec:143
 msgid "%s Project"
 msgstr "%s Project"
 
@@ -98,19 +98,19 @@ msgstr "%s Project"
 msgid "%s Property, %s:%d\n"
 msgstr "%s Property, %s:%d\n"
 
-#: ./src/dialogs/FindInFilesDialog.ec:953
+#: ./src/dialogs/FindInFilesDialog.ec:952
 msgid "%s search %s a total of %d match%s in %d out of the %d file%s searched\n"
 msgstr "%s search %s a total of %d match%s in %d out of the %d file%s searched\n"
 
-#: ./src/dialogs/FindInFilesDialog.ec:968
+#: ./src/dialogs/FindInFilesDialog.ec:967
 msgid "%s search did not find any file\n"
 msgstr "%s search did not find any file\n"
 
-#: ./src/dialogs/FindInFilesDialog.ec:963
+#: ./src/dialogs/FindInFilesDialog.ec:962
 msgid "%s search did not find any match in the %d files searched\n"
 msgstr "%s search did not find any match in the %d files searched\n"
 
-#: ./src/dialogs/FindInFilesDialog.ec:958
+#: ./src/dialogs/FindInFilesDialog.ec:957
 msgid "%s search found a total of %d match%s in the %d file%s searched\n"
 msgstr "%s search found a total of %d match%s in the %d file%s searched\n"
 
@@ -143,10 +143,10 @@ msgstr "3D Studio Model Files (*.3ds)"
 msgid "API Reference"
 msgstr "API Reference"
 
-#: ./src/dialogs/FindInFilesDialog.ec:954
-#: ./src/dialogs/FindInFilesDialog.ec:959
-#: ./src/dialogs/FindInFilesDialog.ec:964
-#: ./src/dialogs/FindInFilesDialog.ec:968
+#: ./src/dialogs/FindInFilesDialog.ec:953
+#: ./src/dialogs/FindInFilesDialog.ec:958
+#: ./src/dialogs/FindInFilesDialog.ec:963
+#: ./src/dialogs/FindInFilesDialog.ec:967
 msgid "Aborted"
 msgstr "Aborted"
 
@@ -243,7 +243,7 @@ msgstr "All"
 msgid "All Debug Views"
 msgstr "All Debug Views"
 
-#: ./src/dialogs/FindInFilesDialog.ec:60
+#: ./src/dialogs/FindInFilesDialog.ec:59
 #: ./src/project/ProjectView.ec:41
 #: ./src/project/ProjectView.ec:49
 #: ./src/designer/CodeEditor.ec:85
@@ -383,7 +383,7 @@ msgid "Call Stack"
 msgstr "Call Stack"
 
 #: ./src/dialogs/CompilersDetectionDialog.ec:142
-#: ./src/dialogs/FindInFilesDialog.ec:428
+#: ./src/dialogs/FindInFilesDialog.ec:427
 #: ./src/dialogs/GlobalSettingsDialog.ec:55
 #: ./src/dialogs/NewProjectDialog.ec:214
 #: ./src/dialogs/NewProjectDialog.ec:560
@@ -491,10 +491,10 @@ msgstr "Compiling"
 msgid "Compiling...\n"
 msgstr "Compiling...\n"
 
-#: ./src/dialogs/FindInFilesDialog.ec:954
-#: ./src/dialogs/FindInFilesDialog.ec:959
-#: ./src/dialogs/FindInFilesDialog.ec:964
-#: ./src/dialogs/FindInFilesDialog.ec:968
+#: ./src/dialogs/FindInFilesDialog.ec:953
+#: ./src/dialogs/FindInFilesDialog.ec:958
+#: ./src/dialogs/FindInFilesDialog.ec:963
+#: ./src/dialogs/FindInFilesDialog.ec:967
 msgid "Completed"
 msgstr "Completed"
 
@@ -672,7 +672,7 @@ msgstr "Detach"
 msgid "Directories"
 msgstr "Directories"
 
-#: ./src/dialogs/FindInFilesDialog.ec:454
+#: ./src/dialogs/FindInFilesDialog.ec:453
 msgid "Directory"
 msgstr "Directory"
 
@@ -834,7 +834,7 @@ msgstr "File doesn't exist."
 msgid "File doesn't exist. Create?"
 msgstr "File doesn't exist. Create?"
 
-#: ./src/dialogs/FindInFilesDialog.ec:351
+#: ./src/dialogs/FindInFilesDialog.ec:350
 msgid "File name:"
 msgstr "File name:"
 
@@ -854,12 +854,12 @@ msgstr "File%s not found"
 msgid "Files"
 msgstr "Files"
 
-#: ./src/dialogs/FindInFilesDialog.ec:338
+#: ./src/dialogs/FindInFilesDialog.ec:337
 msgid "Filter:"
 msgstr "Filter:"
 
-#: ./src/dialogs/FindInFilesDialog.ec:126
-#: ./src/dialogs/FindInFilesDialog.ec:393
+#: ./src/dialogs/FindInFilesDialog.ec:125
+#: ./src/dialogs/FindInFilesDialog.ec:392
 #: ./src/panels/CallStackView.ec:23
 #: ./src/panels/CallStackView.ec:91
 #: ./src/panels/OutputView.ec:209
@@ -868,7 +868,7 @@ msgid "Find"
 msgstr "Find"
 
 #: ./src/dialogs/FindInFilesDialog.ec:8
-#: ./src/dialogs/FindInFilesDialog.ec:129
+#: ./src/dialogs/FindInFilesDialog.ec:128
 msgid "Find In Files"
 msgstr "Find In Files"
 
@@ -888,16 +888,16 @@ msgstr "Find Next"
 msgid "Find Previous"
 msgstr "Find Previous"
 
-#: ./src/dialogs/FindInFilesDialog.ec:232
+#: ./src/dialogs/FindInFilesDialog.ec:231
 msgid "Find in:"
 msgstr "Find in:"
 
-#: ./src/dialogs/FindInFilesDialog.ec:362
+#: ./src/dialogs/FindInFilesDialog.ec:361
 msgid "Find what:"
 msgstr "Find what:"
 
-#: ./src/dialogs/FindInFilesDialog.ec:302
-#: ./src/dialogs/FindInFilesDialog.ec:307
+#: ./src/dialogs/FindInFilesDialog.ec:301
+#: ./src/dialogs/FindInFilesDialog.ec:306
 msgid "Find where:"
 msgstr "Find where:"
 
@@ -909,7 +909,7 @@ msgstr "For Size (-Os)"
 msgid "For Speed (-O2)"
 msgstr "For Speed (-O2)"
 
-#: ./src/dialogs/FindInFilesDialog.ec:1028
+#: ./src/dialogs/FindInFilesDialog.ec:1027
 msgid "Found %d match%s in \"%s\"%s\n\n"
 msgstr "Found %d match%s in \"%s\"%s\n\n"
 
@@ -1030,7 +1030,7 @@ msgstr "Import Folder..."
 msgid "Include Files"
 msgstr "Include Files"
 
-#: ./src/dialogs/FindInFilesDialog.ec:332
+#: ./src/dialogs/FindInFilesDialog.ec:331
 msgid "Include Subdirectories"
 msgstr "Include Subdirectories"
 
@@ -1136,7 +1136,7 @@ msgstr "Lose Changes?"
 msgid "Makefile doesn't exist. "
 msgstr "Makefile doesn't exist. "
 
-#: ./src/dialogs/FindInFilesDialog.ec:376
+#: ./src/dialogs/FindInFilesDialog.ec:375
 msgid "Match case"
 msgstr "Match case"
 
@@ -1279,7 +1279,7 @@ msgstr "None"
 msgid "Normal"
 msgstr "Normal"
 
-#: ./src/dialogs/FindInFilesDialog.ec:414
+#: ./src/dialogs/FindInFilesDialog.ec:413
 msgid "Nothing to be found. Please specify at least one criteria."
 msgstr "Nothing to be found. Please specify at least one criteria."
 
@@ -1600,11 +1600,11 @@ msgstr "Remove project from workspace"
 msgid "Removing intermediate objects directory for project %s using the %s configuration...\n"
 msgstr "Removing intermediate objects directory for project %s using the %s configuration...\n"
 
-#: ./src/dialogs/FindInFilesDialog.ec:126
+#: ./src/dialogs/FindInFilesDialog.ec:125
 msgid "Replace"
 msgstr "Replace"
 
-#: ./src/dialogs/FindInFilesDialog.ec:129
+#: ./src/dialogs/FindInFilesDialog.ec:128
 msgid "Replace In Files"
 msgstr "Replace In Files"
 
@@ -1616,15 +1616,15 @@ msgstr "Replace In Files..."
 msgid "Replace existing project?"
 msgstr "Replace existing project?"
 
-#: ./src/dialogs/FindInFilesDialog.ec:368
+#: ./src/dialogs/FindInFilesDialog.ec:367
 msgid "Replace with:"
 msgstr "Replace with:"
 
-#: ./src/dialogs/FindInFilesDialog.ec:1114
+#: ./src/dialogs/FindInFilesDialog.ec:1113
 msgid "Replaced %d match%s in \"%s\"%s\n\n"
 msgstr "Replaced %d match%s in \"%s\"%s\n\n"
 
-#: ./src/dialogs/FindInFilesDialog.ec:694
+#: ./src/dialogs/FindInFilesDialog.ec:693
 msgid "Replacing Editbox"
 msgstr "Replacing Editbox"
 
@@ -1702,35 +1702,35 @@ msgstr "Save changes to workspace options?"
 msgid "Save file"
 msgstr "Save file"
 
-#: ./src/dialogs/FindInFilesDialog.ec:408
+#: ./src/dialogs/FindInFilesDialog.ec:407
 msgid "Search location does not exist. Please provide a valid location."
 msgstr "Search location does not exist. Please provide a valid location."
 
-#: ./src/dialogs/FindInFilesDialog.ec:770
+#: ./src/dialogs/FindInFilesDialog.ec:769
 msgid "Searching %s"
 msgstr "Searching %s"
 
-#: ./src/dialogs/FindInFilesDialog.ec:731
+#: ./src/dialogs/FindInFilesDialog.ec:730
 msgid "Searching %s for %s"
 msgstr "Searching %s for %s"
 
-#: ./src/dialogs/FindInFilesDialog.ec:859
+#: ./src/dialogs/FindInFilesDialog.ec:858
 msgid "Searching %s for \"%s\""
 msgstr "Searching %s for \"%s\""
 
-#: ./src/dialogs/FindInFilesDialog.ec:673
+#: ./src/dialogs/FindInFilesDialog.ec:672
 msgid "Searching \"%s\"%s for %s%s%s containing \"%s\"\n\n"
 msgstr "Searching \"%s\"%s for %s%s%s containing \"%s\"\n\n"
 
-#: ./src/dialogs/FindInFilesDialog.ec:684
+#: ./src/dialogs/FindInFilesDialog.ec:683
 msgid "Searching project %s files for files%s%s containing \"%s\"\n\n"
 msgstr "Searching project %s files for files%s%s containing \"%s\"\n\n"
 
-#: ./src/dialogs/FindInFilesDialog.ec:680
+#: ./src/dialogs/FindInFilesDialog.ec:679
 msgid "Searching workspace files for files%s%s containing \"%s\"\n\n"
 msgstr "Searching workspace files for files%s%s containing \"%s\"\n\n"
 
-#: ./src/dialogs/FindInFilesDialog.ec:439
+#: ./src/dialogs/FindInFilesDialog.ec:438
 msgid "Select Search Location..."
 msgstr "Select Search Location..."
 
@@ -2003,8 +2003,8 @@ msgstr "Type"
 msgid "Unable to locate source file.\nWould you like to try again?"
 msgstr "Unable to locate source file.\nWould you like to try again?"
 
-#: ./src/dialogs/FindInFilesDialog.ec:1036
-#: ./src/dialogs/FindInFilesDialog.ec:1122
+#: ./src/dialogs/FindInFilesDialog.ec:1035
+#: ./src/dialogs/FindInFilesDialog.ec:1121
 msgid "Unable to open file %s\n\n"
 msgstr "Unable to open file %s\n\n"
 
@@ -2090,7 +2090,7 @@ msgstr "Watches"
 msgid "Web files (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)"
 msgstr "Web files (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)"
 
-#: ./src/dialogs/FindInFilesDialog.ec:373
+#: ./src/dialogs/FindInFilesDialog.ec:372
 msgid "Whole word only"
 msgstr "Whole word only"
 
@@ -2106,7 +2106,7 @@ msgstr "Windows..."
 msgid "With contributions from..."
 msgstr "With contributions from..."
 
-#: ./src/dialogs/FindInFilesDialog.ec:458
+#: ./src/dialogs/FindInFilesDialog.ec:457
 #: ./src/dialogs/GlobalSettingsDialog.ec:1146
 #: ./src/dialogs/WorkspaceSettings.ec:6
 msgid "Workspace"
@@ -2152,7 +2152,7 @@ msgstr "You must provide a source directory in order to place a breakpoint in th
 msgid "You must provide a valid source directory in order to place a breakpoint in this file.\nWould you like to try again?"
 msgstr "You must provide a valid source directory in order to place a breakpoint in this file.\nWould you like to try again?"
 
-#: ./src/dialogs/FindInFilesDialog.ec:402
+#: ./src/dialogs/FindInFilesDialog.ec:401
 msgid "You must specify a search location."
 msgstr "You must specify a search location."
 
@@ -2209,9 +2209,9 @@ msgstr "error"
 msgid "errors"
 msgstr "errors"
 
-#: ./src/dialogs/FindInFilesDialog.ec:954
-#: ./src/dialogs/FindInFilesDialog.ec:959
-#: ./src/dialogs/FindInFilesDialog.ec:1114
+#: ./src/dialogs/FindInFilesDialog.ec:953
+#: ./src/dialogs/FindInFilesDialog.ec:958
+#: ./src/dialogs/FindInFilesDialog.ec:1113
 msgid "es"
 msgstr "es"
 
@@ -2220,7 +2220,7 @@ msgstr "es"
 msgid "folder"
 msgstr "folder"
 
-#: ./src/dialogs/FindInFilesDialog.ec:954
+#: ./src/dialogs/FindInFilesDialog.ec:953
 msgid "found"
 msgstr "found"
 
@@ -2240,12 +2240,12 @@ msgstr "no warning\n"
 msgid "not added because of identical file name conflict within the project.\n\n"
 msgstr "not added because of identical file name conflict within the project.\n\n"
 
-#: ./src/dialogs/FindInFilesDialog.ec:954
+#: ./src/dialogs/FindInFilesDialog.ec:953
 msgid "replaced"
 msgstr "replaced"
 
-#: ./src/dialogs/FindInFilesDialog.ec:955
-#: ./src/dialogs/FindInFilesDialog.ec:960
+#: ./src/dialogs/FindInFilesDialog.ec:954
+#: ./src/dialogs/FindInFilesDialog.ec:959
 msgid "s"
 msgstr "s"
 
