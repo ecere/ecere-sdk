@@ -3508,7 +3508,9 @@ if(_class)
 {
 {
 int size = _class->structSize;
-int flags = (unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + 12)))->application + 300)))->isGUIApp;
+struct __ecereNameSpace__ecere__com__Instance * module = _class->module;
+struct __ecereNameSpace__ecere__com__Instance * application = module ? ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application : (((void *)0));
+int flags = application ? (unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)application + structSize_Module)))->isGUIApp : 0;
 unsigned int inCompiler = (flags & 8) ? 0x1 : 0x0;
 
 if(inCompiler)

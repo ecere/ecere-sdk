@@ -4349,7 +4349,9 @@ public dllexport void * eInstance_New(Class _class)
 #endif
       {
          int size = _class.structSize;
-         int flags = _class.module.application.isGUIApp;
+         Module module = _class.module;
+         Application application = module ? module.application : null;
+         int flags = application ? application.isGUIApp : 0;
          bool inCompiler = (flags & 8) ? true : false;
          if(inCompiler)
          {
