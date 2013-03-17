@@ -2201,6 +2201,8 @@ extern void SetTargetPlatform(int platform);
 
 extern void SetTargetBits(int bits);
 
+extern void SetInSymbolGen(unsigned int b);
+
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com____ecere_COM_Initialize(unsigned int guiApp, int argc, char *  argv[]);
 
 extern void SetPrivateModule(struct __ecereNameSpace__ecere__com__Instance * module);
@@ -2422,6 +2424,7 @@ SetTopContext(theGlobalContext);
 SetCurrentContext(theGlobalContext);
 SetTargetPlatform(targetPlatform);
 SetTargetBits(targetBits);
+SetInSymbolGen(0x1);
 privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize(0x1 | (targetBits == sizeof(uintptr_t) * 8 ? (unsigned int)0 : targetBits == 64 ? (unsigned int)2 : targetBits == 32 ? (unsigned int)4 : (unsigned int)0) | (unsigned int)8, 1, (((void *)0)));
 SetPrivateModule(privateModule);
 mainModule = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleImport);

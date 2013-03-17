@@ -33,6 +33,8 @@ bool ecereImported;
 public void SetEcereImported(bool b) { ecereImported = b; } public bool GetEcereImported() { return ecereImported; }
 bool inPreCompiler = false;
 public void SetInPreCompiler(bool b) {inPreCompiler = b; }
+bool inSymbolGen = false;
+public void SetInSymbolGen(bool b) {inSymbolGen = b; }
 OldList * precompDefines;
 public void SetPrecompDefines(OldList * list) { precompDefines = list; }
 
@@ -787,7 +789,7 @@ public void ImportModule(char * name, ImportType importType, AccessMode importAc
 
                // Load an extra instance of any shared module to ensure freeing up a 
                // module loaded in another file will not invalidate our objects.
-               if(!inCompiler)
+               if(!inCompiler && !inPreCompiler && !inSymbolGen)
                {
                   MapIterator<String, List<Module> > it { map = loadedModules };
                   if(!it.Index(file, false))

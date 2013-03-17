@@ -1906,6 +1906,8 @@ public void CheckMemory()
 #endif
 }
 
+static int insideCrossBuild32;
+
 static void FixDerivativesBase(Class base, Class mod)
 {
    OldLink derivative;
@@ -2591,6 +2593,8 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
             if(strstr(name, "ecere::sys::EARHeader") ||
                strstr(name, "AnchorValue") ||
                !strcmp(name, "ecere::com::CustomAVLTree") ||
+               !strcmp(name, "ecere::com::Array") ||
+               !strcmp(name, "ecere::gui::Window") ||
                !strcmp(name, "ecere::sys::Mutex"));   // Never recompute these, they're always problematic (errors, crashes)
             else
             {
@@ -4349,21 +4353,15 @@ public dllexport void * eInstance_New(Class _class)
 #endif
       {
          int size = _class.structSize;
-         Module module = _class.module;
-         Application application = module ? module.application : null;
-         int flags = application ? application.isGUIApp : 0;
-         bool inCompiler = (flags & 8) ? true : false;
-         if(inCompiler)
+         if(insideCrossBuild32)
          {
-            bool force32Bits = (flags & 4) ? true : false;
-            if(force32Bits)
-            {
-               // Allocate 64 bit sizes for these when cross-compiling for 32 bit to allow loaded libraries to work properly
-               if(!strcmp(_class.name, "Module"))
-                  size = 560;
-               else if(_class.templateClass && !strcmp(_class.templateClass.name, "Map"))
-                  size = 40;
-            }
+            // Allocate 64 bit sizes for these when cross-compiling for 32 bit to allow loaded libraries to work properly
+            if(!strcmp(_class.name, "Module"))
+               size = 560;
+            else if(_class.templateClass && !strcmp(_class.templateClass.name, "Map"))
+               size = 40;
+            else
+               size *= 3;
          }
          instance = _calloc(1, size);
       }
@@ -5149,6 +5147,10 @@ static Module Module_Load(Module fromModule, char * name, AccessMode importAcces
    bool (stdcall * Load)(Module module) = null;
    bool (stdcall * Unload)(Module module) = null;
    Module module;
+   int flags = fromModule.application.isGUIApp;
+   bool inCompiler = (flags & 8) ? true : false;
+   bool force32Bits = (flags & 4) ? true : false;
+   bool setInsideCrossBuild32 = force32Bits && inCompiler;
 
    for(module = fromModule.application.allModules.first; module; module = module.next)
    {
@@ -5182,17 +5184,24 @@ static Module Module_Load(Module fromModule, char * name, AccessMode importAcces
       }
       if(Load)
       {
+         if(setInsideCrossBuild32)
+            insideCrossBuild32++;
+
          module = (Module)eInstance_New(eSystem_FindClass(fromModule, "Module"));
          module.application = fromModule.application;
          module.library = library;
          module.name = CopyString(name);
          module.Unload = Unload;
          module.origImportType = normalImport;
+
          if(!Load(module))
          {
             eInstance_Delete((Instance)module);
             module = null;
          }
+
+         if(setInsideCrossBuild32)
+            insideCrossBuild32--;
       }
       fromModule.application.allModules.Add(module);
    }
@@ -5213,16 +5222,23 @@ static Module Module_Load(Module fromModule, char * name, AccessMode importAcces
             Load = COM_LOAD_FUNCTION;
             Unload = COM_UNLOAD_FUNCTION;
 
+            if(setInsideCrossBuild32)
+               insideCrossBuild32++;
+
             module = (Module)eInstance_New(eSystem_FindClass(fromModule, "Module"));
             module.application = fromModule.application;
             module.library = null;
             module.name = CopyString(name);
             module.Unload = Unload;
+
             if(!Load(module))
             {
                eInstance_Delete((Instance)module);
                module = null;
             }
+
+            if(setInsideCrossBuild32)
+               insideCrossBuild32--;
             fromModule.application.allModules.Add(module);
          }
          if(module)
@@ -5764,13 +5780,16 @@ public dllexport void eInstance_FireWatchers(Instance instance, Property _proper
 {
    if(instance && _property && _property.isWatchable)
    {
-      OldList * watchers = (OldList *)((byte *)instance + _property.watcherOffset);
-      Watcher watcher, next;
-
-      for(watcher = watchers->first; watcher; watcher = next)
+      if(!insideCrossBuild32)
       {
-         next = watcher.next;
-         watcher.callback(watcher.object, instance);
+         OldList * watchers = (OldList *)((byte *)instance + _property.watcherOffset);
+         Watcher watcher, next;
+
+         for(watcher = watchers->first; watcher; watcher = next)
+         {
+            next = watcher.next;
+            watcher.callback(watcher.object, instance);
+         }
       }
    }
 }

@@ -614,6 +614,13 @@ void SetInPreCompiler(unsigned int b)
 inPreCompiler = b;
 }
 
+unsigned int inSymbolGen = 0x0;
+
+void SetInSymbolGen(unsigned int b)
+{
+inSymbolGen = b;
+}
+
 struct __ecereNameSpace__ecere__sys__OldList * precompDefines;
 
 void SetPrecompDefines(struct __ecereNameSpace__ecere__sys__OldList * list)
@@ -1735,7 +1742,7 @@ char file[274];
 
 strcpy(file, name);
 __ecereNameSpace__ecere__sys__StripExtension(file);
-if(!inCompiler)
+if(!inCompiler && !inPreCompiler && !inSymbolGen)
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, loadedModules), it);
 
@@ -1990,6 +1997,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetSysIncludeDirs", "voi
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetEcereImported", "void SetEcereImported(bool b)", SetEcereImported, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetEcereImported", "bool GetEcereImported(void)", GetEcereImported, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetInPreCompiler", "void SetInPreCompiler(bool b)", SetInPreCompiler, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetInSymbolGen", "void SetInSymbolGen(bool b)", SetInSymbolGen, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetPrecompDefines", "void SetPrecompDefines(ecere::sys::OldList * list)", SetPrecompDefines, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("DummyMethod", "bool DummyMethod(void)", DummyMethod, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("LoadSymbols", "bool LoadSymbols(char * fileName, ecere::com::ImportType importType, bool loadDllOnly)", LoadSymbols, module, 1);

@@ -1725,6 +1725,7 @@ class SymbolgenApp : Application
          SetCurrentContext(theGlobalContext);
          SetTargetPlatform(targetPlatform);
          SetTargetBits(targetBits);
+         SetInSymbolGen(true);
 
          privateModule = (Module)__ecere_COM_Initialize(true | (targetBits == sizeof(uintptr)*8 ? 0 : targetBits == 64 ? 2 : targetBits==32 ? 4 : 0) | 8, 1, null);
          SetPrivateModule(privateModule);

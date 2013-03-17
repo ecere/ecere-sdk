@@ -1143,6 +1143,8 @@ void __ecereNameSpace__ecere__com__CheckMemory()
 {
 }
 
+static int __ecereNameSpace__ecere__com__insideCrossBuild32;
+
 static void __ecereNameSpace__ecere__com__ComputeClassParameters(struct __ecereNameSpace__ecere__com__Class * templatedClass, char *  templateParams, struct __ecereNameSpace__ecere__com__Instance * findModule);
 
 extern char *  strchr(const char * , int);
@@ -1785,7 +1787,7 @@ if(type == 0 || type == 5)
 _class->offset = (base && base->structSize && base->type != 1000) ? base->structSize : ((type == 5) ? 0 : (force64Bits ? 24 : (force32Bits && inCompiler) ? 12 : structSize_Instance));
 if(crossBits)
 {
-if(strstr(name, "ecere::sys::EARHeader") || strstr(name, "AnchorValue") || !strcmp(name, "ecere::com::CustomAVLTree") || !strcmp(name, "ecere::sys::Mutex"))
+if(strstr(name, "ecere::sys::EARHeader") || strstr(name, "AnchorValue") || !strcmp(name, "ecere::com::CustomAVLTree") || !strcmp(name, "ecere::gui::Window") || !strcmp(name, "ecere::sys::Mutex"))
 ;
 else
 {
@@ -3508,22 +3510,15 @@ if(_class)
 {
 {
 int size = _class->structSize;
-struct __ecereNameSpace__ecere__com__Instance * module = _class->module;
-struct __ecereNameSpace__ecere__com__Instance * application = module ? ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application : (((void *)0));
-int flags = application ? (unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)application + structSize_Module)))->isGUIApp : 0;
-unsigned int inCompiler = (flags & 8) ? 0x1 : 0x0;
 
-if(inCompiler)
-{
-unsigned int force32Bits = (flags & 4) ? 0x1 : 0x0;
-
-if(force32Bits)
+if(__ecereNameSpace__ecere__com__insideCrossBuild32)
 {
 if(!strcmp(_class->name, "Module"))
 size = 560;
 else if(_class->templateClass && !strcmp(_class->templateClass->name, "Map"))
 size = 40;
-}
+else
+size *= 3;
 }
 instance = __ecereNameSpace__ecere__com___calloc(1, size);
 }
@@ -4252,6 +4247,10 @@ void * __ecereTemp1;
 unsigned int (stdcall * Load)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
 unsigned int (stdcall * Unload)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
 struct __ecereNameSpace__ecere__com__Instance * module;
+int flags = (unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)fromModule + structSize_Instance)))->application + structSize_Module)))->isGUIApp;
+unsigned int inCompiler = (flags & 8) ? 0x1 : 0x0;
+unsigned int force32Bits = (flags & 4) ? 0x1 : 0x0;
+unsigned int setInsideCrossBuild32 = force32Bits && inCompiler;
 
 for(module = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)fromModule + structSize_Instance)))->application + structSize_Module)))->allModules.first; module; module = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->next)
 {
@@ -4283,6 +4282,8 @@ library = Instance_Module_Load(libLocation, name, &Load, &Unload);
 }
 if(Load)
 {
+if(setInsideCrossBuild32)
+__ecereNameSpace__ecere__com__insideCrossBuild32++;
 module = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com__eInstance_New(__ecereNameSpace__ecere__com__eSystem_FindClass(fromModule, "Module"));
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)fromModule + structSize_Instance)))->application;
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->library = library;
@@ -4294,6 +4295,8 @@ if(!Load(module))
 __ecereNameSpace__ecere__com__eInstance_Delete((struct __ecereNameSpace__ecere__com__Instance *)module);
 module = (((void *)0));
 }
+if(setInsideCrossBuild32)
+__ecereNameSpace__ecere__com__insideCrossBuild32--;
 }
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)fromModule + structSize_Instance)))->application + structSize_Module)))->allModules, module);
 }
@@ -4313,6 +4316,8 @@ if(!module)
 {
 Load = __ecereDll_Load_ecere;
 Unload = __ecereDll_Unload_ecere;
+if(setInsideCrossBuild32)
+__ecereNameSpace__ecere__com__insideCrossBuild32++;
 module = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com__eInstance_New(__ecereNameSpace__ecere__com__eSystem_FindClass(fromModule, "Module"));
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)fromModule + structSize_Instance)))->application;
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->library = (((void *)0));
@@ -4323,6 +4328,8 @@ if(!Load(module))
 __ecereNameSpace__ecere__com__eInstance_Delete((struct __ecereNameSpace__ecere__com__Instance *)module);
 module = (((void *)0));
 }
+if(setInsideCrossBuild32)
+__ecereNameSpace__ecere__com__insideCrossBuild32--;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)fromModule + structSize_Instance)))->application + structSize_Module)))->allModules, module);
 }
 if(module)
@@ -4836,6 +4843,8 @@ void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpac
 {
 if(instance && _property && _property->isWatchable)
 {
+if(!__ecereNameSpace__ecere__com__insideCrossBuild32)
+{
 struct __ecereNameSpace__ecere__sys__OldList * watchers = (struct __ecereNameSpace__ecere__sys__OldList *)((unsigned char *)instance + _property->watcherOffset);
 struct __ecereNameSpace__ecere__com__Watcher * watcher, * next;
 
@@ -4843,6 +4852,7 @@ for(watcher = (*watchers).first; watcher; watcher = next)
 {
 next = watcher->next;
 watcher->callback(watcher->object, instance);
+}
 }
 }
 }

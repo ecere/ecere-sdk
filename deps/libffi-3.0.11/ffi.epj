@@ -39,8 +39,6 @@
             {
                "Folder" : "x86",
                "Files" : [
-                  "ffi.c",
-                  "ffitarget.h",
                   "win32.S"
                ]
             },
@@ -54,7 +52,9 @@
             "raw_api.c",
             "types.c",
             "closures.c",
-            "i686-pc-mingw32/include/ffi.h"
+            "i686-pc-mingw32/include/ffi.h",
+            "src/x86/ffi.c",
+            "src/x86/ffitarget.h"
          ]
       }
    ],
