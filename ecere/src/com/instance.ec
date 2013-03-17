@@ -4349,12 +4349,12 @@ public dllexport void * eInstance_New(Class _class)
 #endif
       {
          int size = _class.structSize;
-         if(_class.module != __thisModule)
+         int flags = _class.module.application.isGUIApp;
+         bool inCompiler = (flags & 8) ? true : false;
+         if(inCompiler)
          {
-            int flags = _class.module.application.isGUIApp;
             bool force32Bits = (flags & 4) ? true : false;
-            bool inCompiler = (flags & 8) ? true : false;
-            if(force32Bits && inCompiler)
+            if(force32Bits)
             {
                // Allocate 64 bit sizes for these when cross-compiling for 32 bit to allow loaded libraries to work properly
                if(!strcmp(_class.name, "Module"))

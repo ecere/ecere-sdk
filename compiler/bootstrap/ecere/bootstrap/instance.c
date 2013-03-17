@@ -3508,14 +3508,14 @@ if(_class)
 {
 {
 int size = _class->structSize;
-
-if(_class->module != __thisModule)
-{
-int flags = (unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + structSize_Instance)))->application + structSize_Module)))->isGUIApp;
-unsigned int force32Bits = (flags & 4) ? 0x1 : 0x0;
+int flags = (unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + 12)))->application + 300)))->isGUIApp;
 unsigned int inCompiler = (flags & 8) ? 0x1 : 0x0;
 
-if(force32Bits && inCompiler)
+if(inCompiler)
+{
+unsigned int force32Bits = (flags & 4) ? 0x1 : 0x0;
+
+if(force32Bits)
 {
 if(!strcmp(_class->name, "Module"))
 size = 560;
