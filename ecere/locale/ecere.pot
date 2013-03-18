@@ -41,7 +41,7 @@ msgstr "Alt+"
 #: ./src/gui/controls/DropBox.ec:71
 #: ./src/gui/controls/DropBox.ec:85
 #: ./src/gui/controls/DropBox.ec:168
-#: ./src/gui/controls/EditBox.ec:739
+#: ./src/gui/controls/EditBox.ec:759
 #: ./src/gui/controls/Label.ec:47
 #: ./src/gui/controls/ListBox.ec:986
 #: ./src/gui/controls/ListBox.ec:1019
@@ -97,23 +97,23 @@ msgstr "August"
 #: ./src/gui/controls/DropBox.ec:131
 #: ./src/gui/controls/DropBox.ec:167
 #: ./src/gui/controls/DropBox.ec:172
-#: ./src/gui/controls/EditBox.ec:714
-#: ./src/gui/controls/EditBox.ec:715
-#: ./src/gui/controls/EditBox.ec:719
-#: ./src/gui/controls/EditBox.ec:728
-#: ./src/gui/controls/EditBox.ec:729
-#: ./src/gui/controls/EditBox.ec:730
-#: ./src/gui/controls/EditBox.ec:731
-#: ./src/gui/controls/EditBox.ec:732
-#: ./src/gui/controls/EditBox.ec:733
 #: ./src/gui/controls/EditBox.ec:734
 #: ./src/gui/controls/EditBox.ec:735
-#: ./src/gui/controls/EditBox.ec:736
-#: ./src/gui/controls/EditBox.ec:737
-#: ./src/gui/controls/EditBox.ec:738
-#: ./src/gui/controls/EditBox.ec:740
-#: ./src/gui/controls/EditBox.ec:741
-#: ./src/gui/controls/EditBox.ec:742
+#: ./src/gui/controls/EditBox.ec:739
+#: ./src/gui/controls/EditBox.ec:748
+#: ./src/gui/controls/EditBox.ec:749
+#: ./src/gui/controls/EditBox.ec:750
+#: ./src/gui/controls/EditBox.ec:751
+#: ./src/gui/controls/EditBox.ec:752
+#: ./src/gui/controls/EditBox.ec:753
+#: ./src/gui/controls/EditBox.ec:754
+#: ./src/gui/controls/EditBox.ec:755
+#: ./src/gui/controls/EditBox.ec:756
+#: ./src/gui/controls/EditBox.ec:757
+#: ./src/gui/controls/EditBox.ec:758
+#: ./src/gui/controls/EditBox.ec:760
+#: ./src/gui/controls/EditBox.ec:761
+#: ./src/gui/controls/EditBox.ec:762
 #: ./src/gui/controls/Label.ec:18
 #: ./src/gui/controls/ListBox.ec:968
 #: ./src/gui/controls/ListBox.ec:1007
@@ -184,8 +184,8 @@ msgstr "Control contains code. Delete anyways?"
 msgid "Control contains other controls. Delete control and children?"
 msgstr "Control contains other controls. Delete control and children?"
 
-#: ./src/gui/controls/EditBox.ec:946
-#: ./src/gui/controls/EditBox.ec:3066
+#: ./src/gui/controls/EditBox.ec:966
+#: ./src/gui/controls/EditBox.ec:3086
 msgid "Copy\tCtrl+C"
 msgstr "Copy\tCtrl+C"
 
@@ -214,13 +214,13 @@ msgstr "Ctrl+"
 msgid "Custom"
 msgstr "Custom"
 
-#: ./src/gui/controls/EditBox.ec:935
-#: ./src/gui/controls/EditBox.ec:3065
+#: ./src/gui/controls/EditBox.ec:955
+#: ./src/gui/controls/EditBox.ec:3085
 msgid "Cut\tCtrl+X"
 msgstr "Cut\tCtrl+X"
 
 #: ./src/gui/controls/DropBox.ec:127
-#: ./src/gui/controls/EditBox.ec:755
+#: ./src/gui/controls/EditBox.ec:775
 #: ./src/gui/controls/ProgressBar.ec:13
 #: ./src/gui/controls/ProgressBar.ec:14
 #: ./src/gui/Window.ec:9153
@@ -239,8 +239,8 @@ msgstr "December"
 msgid "Defined"
 msgstr "Defined"
 
-#: ./src/gui/controls/EditBox.ec:967
-#: ./src/gui/controls/EditBox.ec:3068
+#: ./src/gui/controls/EditBox.ec:987
+#: ./src/gui/controls/EditBox.ec:3088
 msgid "Delete\tDel"
 msgstr "Delete\tDel"
 
@@ -294,7 +294,7 @@ msgstr "Driver/Mode switch failed"
 msgid "ECERE Application"
 msgstr "ECERE Application"
 
-#: ./src/gui/controls/EditBox.ec:932
+#: ./src/gui/controls/EditBox.ec:952
 msgid "Edit"
 msgstr "Edit"
 
@@ -356,11 +356,11 @@ msgstr "Find"
 msgid "Find Next"
 msgstr "Find Next"
 
-#: ./src/gui/controls/EditBox.ec:1026
+#: ./src/gui/controls/EditBox.ec:1046
 msgid "Find Next\tF3"
 msgstr "Find Next\tF3"
 
-#: ./src/gui/controls/EditBox.ec:1013
+#: ./src/gui/controls/EditBox.ec:1033
 msgid "Find Previous\tShift-F3"
 msgstr "Find Previous\tShift-F3"
 
@@ -369,7 +369,7 @@ msgstr "Find Previous\tShift-F3"
 msgid "Find what:"
 msgstr "Find what:"
 
-#: ./src/gui/controls/EditBox.ec:1039
+#: ./src/gui/controls/EditBox.ec:1059
 msgid "Find...\tCtrl+F"
 msgstr "Find...\tCtrl+F"
 
@@ -381,7 +381,7 @@ msgstr "Fri"
 msgid "Friday"
 msgstr "Friday"
 
-#: ./src/gui/controls/EditBox.ec:670
+#: ./src/gui/controls/EditBox.ec:690
 #: ./src/gui/dialogs/GoToDialog.ec:29
 #: ./src/gui/dialogs/GoToDialog.ec:35
 msgid "Go To"
@@ -391,7 +391,7 @@ msgstr "Go To"
 msgid "Go To Line..."
 msgstr "Go To Line..."
 
-#: ./src/gui/controls/EditBox.ec:1100
+#: ./src/gui/controls/EditBox.ec:1120
 msgid "Go To...\tCtrl+G"
 msgstr "Go To...\tCtrl+G"
 
@@ -420,7 +420,7 @@ msgstr "Imp"
 msgid "Inexistant string identifier specified"
 msgstr "Inexistant string identifier specified"
 
-#: ./src/gui/controls/EditBox.ec:1113
+#: ./src/gui/controls/EditBox.ec:1133
 msgid "Insert Tabs"
 msgstr "Insert Tabs"
 
@@ -578,8 +578,8 @@ msgstr "October"
 msgid "Open"
 msgstr "Open"
 
-#: ./src/gui/controls/EditBox.ec:956
-#: ./src/gui/controls/EditBox.ec:3067
+#: ./src/gui/controls/EditBox.ec:976
+#: ./src/gui/controls/EditBox.ec:3087
 msgid "Paste\tCtrl+V"
 msgstr "Paste\tCtrl+V"
 
@@ -592,7 +592,7 @@ msgstr "Please enter a name."
 msgid "Private"
 msgstr "Private"
 
-#: ./src/gui/controls/EditBox.ec:1001
+#: ./src/gui/controls/EditBox.ec:1021
 msgid "Redo\tCtrl+Y"
 msgstr "Redo\tCtrl+Y"
 
@@ -617,7 +617,7 @@ msgstr "Replace existing file?"
 msgid "Replace with:"
 msgstr "Replace with:"
 
-#: ./src/gui/controls/EditBox.ec:1066
+#: ./src/gui/controls/EditBox.ec:1086
 msgid "Replace...\tCtrl+R"
 msgstr "Replace...\tCtrl+R"
 
@@ -685,8 +685,8 @@ msgstr "Search string not found."
 msgid "Select"
 msgstr "Select"
 
-#: ./src/gui/controls/EditBox.ec:979
-#: ./src/gui/controls/EditBox.ec:3070
+#: ./src/gui/controls/EditBox.ec:999
+#: ./src/gui/controls/EditBox.ec:3090
 msgid "Select All\tCtrl+A"
 msgstr "Select All\tCtrl+A"
 
@@ -801,7 +801,7 @@ msgstr "Tuesday"
 msgid "Type"
 msgstr "Type"
 
-#: ./src/gui/controls/EditBox.ec:990
+#: ./src/gui/controls/EditBox.ec:1010
 msgid "Undo\tCtrl+Z"
 msgstr "Undo\tCtrl+Z"
 

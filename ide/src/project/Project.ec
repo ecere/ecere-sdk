@@ -1451,12 +1451,12 @@ private:
       DynamicString cxx { };
       DynamicString strip { };
       DynamicString ar { };
-
+      /*
       if(bitDepth == 64 && compiler.targetPlatform == win32) 
          gnuToolchainPrefix = "x86_64-w64-mingw32-";
       else if(bitDepth == 32 && compiler.targetPlatform == win32)
          gnuToolchainPrefix = "i686-w64-mingw32-";
-
+      */
       ecp.concatx(compiler.ecpCommand, " ");
       ecc.concatx(compiler.eccCommand, " ");
       ecs.concatx(compiler.ecsCommand, " ");
@@ -1852,7 +1852,7 @@ private:
                      crossCompiling ? " TARGET_PLATFORM=" : "",
                      targetPlatform,
                      bitDepth ? " ARCH=" : "", bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
-                     (bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" : "",
+                     /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" : */"",
 
                      compilerName, topNode.path, justPrint ? " -n" : "", makeFilePath);
                if(justPrint)
@@ -1909,7 +1909,7 @@ private:
                targetPlatform,
                bitDepth ? " ARCH=" : "",
                bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
-               (bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" : "",
+               /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" :*/ "",
                compilerName, numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",

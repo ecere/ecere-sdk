@@ -6,7 +6,7 @@ import "ecere"
 
 import "licensing"
 
-#if defined(_W64) || (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#if /*defined(_W64) || */(defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define X64STRING " (64 bit)"
 #else
 #define X64STRING " (32 bit)"
