@@ -1,3 +1,9 @@
+ecere-sdk (0.44.05-1) unstable; urgency=low
+
+  * Fixed memory corruption bugs
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Mon, 18 Mar 2013 04:36:00 -0400
+
 ecere-sdk (0.44.04-1) unstable; urgency=low
 
   * Various Bug Fixes
