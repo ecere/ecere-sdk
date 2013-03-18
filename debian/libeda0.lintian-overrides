@@ -6,3 +6,15 @@
 # rather define its own prototypes, fortify functions
 # is not supported in eC.
 libeda0 binary: hardening-no-fortify-functions
+
+# The libEDA library is installed under the ec/ subdirectory
+# and managed by the eC dynamic library import mechanism.
+# debhelper is somehow calling ldconfig even though
+# no configuration is required.
+libeda0 binary: postrm-has-useless-call-to-ldconfig
+
+# The libEDA library is installed under the ec/ subdirectory
+# and managed by the eC dynamic library import mechanism.
+# debhelper is somehow calling ldconfig even though
+# no configuration is required.
+libeda0 binary: postinst-has-useless-call-to-ldconfig
