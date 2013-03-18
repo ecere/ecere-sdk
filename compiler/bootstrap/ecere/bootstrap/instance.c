@@ -5739,7 +5739,7 @@ unsigned int ch;
 unsigned char b = ((unsigned char *)string)[0];
 int i;
 unsigned char mask = (unsigned char)0x7F;
-int nb = 1;
+int nb = b ? 1 : 0;
 
 ch = 0;
 if(b & (unsigned char)0x80)

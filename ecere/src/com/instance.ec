@@ -6641,7 +6641,7 @@ public unichar UTF8GetChar(char * string, int * numBytes)
    byte b = ((byte *)string)[0];
    int i;
    byte mask = 0x7F;
-   int nb = 1;
+   int nb = b ? 1 : 0;
    ch = 0;
    if(b & 0x80)
    {

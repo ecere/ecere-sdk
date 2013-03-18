@@ -47,28 +47,48 @@ public:
       byte b = (string)[0]; \
       int i; \
       byte mask = 0x7F; \
-      numBytes = 1; \
+      numBytes = b ? 1 : 0; \
       ch = 0; \
-      if(b & 0x80 && b & 0x40) \
+      if(b & 0x80) \
       { \
-         mask >>= 2; \
-         numBytes++; \
-         if(b & 0x20) \
+         if(b & 0x40) \
          { \
+            mask >>= 2; \
             numBytes++; \
-            mask >>= 1; \
-            if(b & 0x10) \
+            if(b & 0x20) \
             { \
                numBytes++; \
                mask >>= 1; \
+               if(b & 0x10) \
+               { \
+                  if(b & 0x08) { numBytes = 0; } \
+                  numBytes++; \
+                  mask >>= 1; \
+               } \
             } \
          } \
+         else \
+            numBytes = 0; \
       } \
       for(i = 0; i<numBytes; i++) \
       { \
          ch <<= 6; \
-         ch |= (string)[i] & mask; \
+         ch |= (b = (string)[i]) & mask; \
          mask = 0x3F; \
+         if(i > 1 && (!(b & 0x80) || (b & 0x40))) \
+         { \
+            numBytes = 0; \
+            ch = 0; \
+         } \
+      } \
+      if(i < numBytes || \
+         ch > 0x10FFFF || (ch >= 0xD800 && ch <= 0xDFFF) || \
+        (ch < 0x80 && numBytes > 1) || \
+        (ch < 0x800 && numBytes > 2) || \
+        (ch < 0x10000 && numBytes > 3))\
+      { \
+         ch = 0; \
+         numBytes = 0; \
       } \
       ch; \
    })
