@@ -6635,6 +6635,7 @@ public int UTF16toUTF8Buffer(uint16 * source, byte * dest, int max)
    return d;
 }
 
+// NOTE: UTF8GetChar now returns 0 into numBytes for the null-terminating character ('\0')
 public unichar UTF8GetChar(char * string, int * numBytes)
 {
    unichar ch;

@@ -2024,9 +2024,8 @@ private:
       int c, position = 0;
       unichar ch;
       int nb;
-      for(c = 0; c<this.line.count && c<this.x; c+= nb)
+      for(c = 0; c<this.line.count && c<this.x && (ch = UTF8_GET_CHAR(this.line.buffer + c, nb)); c+= nb)
       {
-         ch = UTF8_GET_CHAR(this.line.buffer + c, nb);
          // TODO: MIGHT WANT TO RETHINK WHAT COLUMN SHOULD BE REGARDING TABS
          if(ch == '\t')
             position += this.tabSize - (position % this.tabSize);
@@ -3369,7 +3368,7 @@ private:
             for(c = start; c<line.count; c += numBytes)
             {
                unichar ch = UTF8_GET_CHAR(line.buffer + c, numBytes);
-               if(!IS_ALUNDER(ch))
+               if(!ch || !IS_ALUNDER(ch))
                   break;
             }
             SelDirty();
@@ -3811,9 +3810,9 @@ private:
                      int start = (line == this.line) ? this.x : 0;
                      int c;
                      int numBytes;
-                     for(c = start; c < line.count; c += numBytes)
+                     unichar ch;
+                     for(c = start; c < line.count && (ch = UTF8_GET_CHAR(line.buffer + c, numBytes)); c += numBytes)
                      {
-                        unichar ch = UTF8_GET_CHAR(line.buffer + c, numBytes);
                         if(IS_ALUNDER(ch))
                         {
                            foundAlpha = true;
@@ -3860,9 +3859,9 @@ private:
                      int start = (line == this.line) ? this.x : 0;
                      int c;
                      int numBytes;
-                     for(c = start; c < line.count; c += numBytes)
+                     unichar ch;
+                     for(c = start; c < line.count && (ch = UTF8_GET_CHAR(line.buffer + c, numBytes)); c += numBytes)
                      {
-                        unichar ch = UTF8_GET_CHAR(line.buffer + c, numBytes);
                         if(!IS_ALUNDER(ch))
                            foundAlpha = true;
                         else if(foundAlpha)
