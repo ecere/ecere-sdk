@@ -62,8 +62,8 @@ public class Id : uint
             dataBox, borderStyle = 0, anchor = { 0, 0, 0, 0 }, 
             modifyVirtualArea = false, activeStipple = false;
             showNone = true;
-            nameField = *class_data(nameField);
-            table = *class_data(table);
+            nameField = class_data(nameField) ? *class_data(nameField) : null;
+            table = class_data(table) ? *class_data(table) : null;
 
             bool DataBox::NotifySelect(DropBox control, DataRow row, Modifiers mods)
             {
@@ -170,65 +170,73 @@ public class Id : uint
       if(&this)
       {
          // FIXME
-         Table tbl = *class_data(table);
-         Field idField = tbl.FindField(defaultIdField);
-         Row r;
-         idRowCacheMutex.Wait();
-         if(!tbl.cachedIdRow)
+         Table tbl = class_data(table) ? *class_data(table) : null;
+         if(tbl)
          {
-            tbl.cachedIdRow = Row { tbl };
-            incref tbl.cachedIdRow;
-         }
-         r = tbl.cachedIdRow;
-
-         if(this)
-         {
-            if(r.Find(idField, middle, nil, this))
+            Field idField = tbl.FindField(defaultIdField);
+            Row r;
+            idRowCacheMutex.Wait();
+            if(!tbl.cachedIdRow)
             {
-               String name = null;
-               Field * nameField = class_data(nameField);
-               if(nameField)
+               tbl.cachedIdRow = Row { tbl };
+               incref tbl.cachedIdRow;
+            }
+            r = tbl.cachedIdRow;
+
+            if(this)
+            {
+               if(r.Find(idField, middle, nil, this))
                {
-#ifdef _DEBUG
-                  char * fn = nameField->name;
-#endif
-                  // Get name data from row
-                  int64 data = 0;
-                  Class type = nameField->type;
-                  if(type.type == unitClass && !type.typeSize)
+                  String name = null;
+                  Field * nameField = class_data(nameField);
+                  if(nameField)
                   {
-                     Class dataType = eSystem_FindClass(type.module, type.dataTypeString);
-                     if(dataType)
-                        type = dataType;
+   #ifdef _DEBUG
+                     char * fn = nameField->name;
+   #endif
+                     // Get name data from row
+                     int64 data = 0;
+                     Class type = nameField->type;
+                     if(type.type == unitClass && !type.typeSize)
+                     {
+                        Class dataType = eSystem_FindClass(type.module, type.dataTypeString);
+                        if(dataType)
+                           type = dataType;
+                     }
+                     if(type.type == structClass)
+                        data = (int64)new0 byte[type.structSize];
+                     ((bool (*)())(void *)r.GetData)(r, *nameField, type, (type.type == structClass) ? (void *)data : &data);
+
+                     if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
+                        name = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, (void *)&data, tempString, null, null);
+                     else
+                        name = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, (void *)data, tempString, null, null);
+
+                     if(name && name != tempString)
+                        strcpy(tempString, name ? name : "");
+                     if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
+                        ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
                   }
-                  if(type.type == structClass)
-                     data = (int64)new0 byte[type.structSize];
-                  ((bool (*)())(void *)r.GetData)(r, *nameField, type, (type.type == structClass) ? (void *)data : &data);
-
-                  if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
-                     name = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, (void *)&data, tempString, null, null);
                   else
-                     name = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, (void *)data, tempString, null, null);
-
-                  if(name && name != tempString)
-                     strcpy(tempString, name ? name : "");
-                  if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
-                     ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
+                  {
+                     PrintLn("Id::OnGetString -- data type"/*, this._class.name, */" has no class_data(nameField)");
+                  }
                }
                else
-               {
-                  PrintLn("Id::OnGetString -- data type"/*, this._class.name, */" has no class_data(nameField)");
-               }
+                  sprintf(tempString, "(Invalid %s entry: %d)", tbl.name, this);
             }
             else
-               sprintf(tempString, "(Invalid %s entry: %d)", tbl.name, this);
+            {
+               sprintf(tempString, $"(Click to add a new %s...)", $"item"/*class_data(addText)*/);
+            }
+            // delete r;
+            idRowCacheMutex.Release();
          }
          else
          {
-            sprintf(tempString, $"(Click to add a new %s...)", $"item"/*class_data(addText)*/);
+            uint id = this;
+            id.OnGetString(tempString, null, null);
          }
-         // delete r;
-         idRowCacheMutex.Release();
       }
       return tempString;
    }
