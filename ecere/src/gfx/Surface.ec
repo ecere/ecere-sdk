@@ -111,20 +111,22 @@ public enum AlphaWriteMode
 
 public class Surface
 {
-   public int width, height;
+public:
+   int width, height;
+   Point offset;
+   Box box, unclippedBox;
+   void * driverData;
 
+private:
    subclass(DisplayDriver) driver;
    DisplaySystem displaySystem;
    Display display;
 
-   public Point offset;
-   public Box box, unclippedBox;
 
    // States
    Font font;
    ColorAlpha foreground, background;
    bool textOpacity;
-   public void * driverData;
    AlphaWriteMode alphaWrite;
    bool blend;
    bool writeColor;

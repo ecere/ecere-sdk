@@ -2776,7 +2776,14 @@ maxSize = _class->structSize;
 if(_class->type == 1 || _class->type == 5)
 AddMembers(declarations, _class->base, 0x0, &totalSize, topClass, (((void *)0)));
 else
-maxSize -= _class->base->templateClass ? _class->base->templateClass->structSize : _class->base->structSize;
+{
+unsigned int baseSize = _class->base->templateClass ? _class->base->templateClass->structSize : _class->base->structSize;
+
+if(maxSize > baseSize)
+maxSize -= baseSize;
+else
+maxSize = 0;
+}
 }
 }
 for(member = isMember ? topMember->members.first : _class->membersAndProperties.first; member; member = member->next)

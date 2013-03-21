@@ -1118,16 +1118,17 @@ public:
    property void * systemWindow { get { return window; } };
    property DisplaySystem displaySystem { get { return displaySystem; } };
 
+   int width, height;
+   void * driverData;
+
 private:
 
    DisplaySystem displaySystem;
    void * window;
-   public int width, height;
 
    Mutex mutex { };
    int current;
 
-   public void * driverData;
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
    Display3D display3D;
 #endif

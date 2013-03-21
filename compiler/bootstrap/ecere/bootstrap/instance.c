@@ -1449,7 +1449,17 @@ unsigned int force64Bits = ((unsigned int)((struct __ecereNameSpace__ecere__com_
 unsigned int force32Bits = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 4) ? 0x1 : 0x0;
 unsigned int inCompiler = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 8) ? 0x1 : 0x0;
 unsigned int crossBits = force32Bits || force64Bits;
+unsigned int fixed = 0x0;
 
+if(inCompiler && crossBits)
+{
+struct __ecereNameSpace__ecere__com__Class * c = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application, name);
+
+if(c && c->fixed)
+fixed = 0x1;
+else if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 24)))->name && !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->name, "ecereCOM"))
+fixed = 0x1;
+}
 {
 nameSpace = (declMode == 1) ? &((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->publicNameSpace : &((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->privateNameSpace;
 if(declMode == 4)
@@ -1782,10 +1792,10 @@ id++;
 }
 _class->memberID = _class->startMemberID = (base && (type == 0 || type == 5 || type == 1)) ? base->memberID : 0;
 if(type == 0 || type == 5)
-_class->offset = (base && base->structSize && base->type != 1000) ? base->structSize : ((type == 5) ? 0 : (force64Bits ? 24 : (force32Bits && inCompiler) ? 12 : structSize_Instance));
+_class->offset = (base && base->structSize && base->type != 1000) ? base->structSize : ((type == 5) ? 0 : ((force64Bits && inCompiler && fixed) ? 24 : (force32Bits && inCompiler && fixed) ? 12 : structSize_Instance));
 if(crossBits)
 {
-if(strstr(name, "ecere::sys::EARHeader") || strstr(name, "AnchorValue") || !strcmp(name, "ecere::com::CustomAVLTree") || !strcmp(name, "ecere::gui::Window") || !strcmp(name, "ecere::sys::Mutex"))
+if(strstr(name, "ecere::sys::EARHeader") || strstr(name, "AnchorValue") || !strcmp(name, "ecere::com::CustomAVLTree") || !strcmp(name, "ecere::com::Array") || !strcmp(name, "ecere::gui::Window") || !strcmp(name, "ecere::sys::Mutex"))
 ;
 else
 {
@@ -1822,6 +1832,7 @@ else if(!strcmp(name, "ecere::sys::BinaryTree"))
 size = 0;
 else if(module != ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application && inCompiler)
 {
+if(fixed || type == 1)
 size = 0;
 }
 }

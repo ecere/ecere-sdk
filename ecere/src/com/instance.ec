@@ -2188,6 +2188,15 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
    bool force32Bits = (module.application.isGUIApp & 4) ? true : false;
    bool inCompiler = (module.application.isGUIApp & 8) ? true : false;
    bool crossBits = force32Bits || force64Bits;
+   bool fixed = false;
+   if(inCompiler && crossBits)
+   {
+      Class c = eSystem_FindClass(__thisModule.application, name);
+      if(c && c.fixed)
+         fixed = true;
+      else if(__thisModule.name && !strcmp(__thisModule.name, "ecereCOM"))
+         fixed = true;
+   }
 
    {
       nameSpace = (declMode == publicAccess) ? &module.publicNameSpace : &module.privateNameSpace;
@@ -2582,7 +2591,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
          }
          _class.memberID = _class.startMemberID = (base && (type == normalClass || type == noHeadClass || type == structClass)) ? base.memberID : 0;
          if(type == normalClass || type == noHeadClass)
-            _class.offset = (base && base.structSize && base.type != systemClass) ? base.structSize : ((type == noHeadClass) ? 0 : (force64Bits ? 24 : (force32Bits && inCompiler) ? 12 : sizeof(class Instance)));
+            _class.offset = (base && base.structSize && base.type != systemClass) ? base.structSize : ((type == noHeadClass) ? 0 : ((force64Bits && inCompiler && fixed) ? 24 : (force32Bits && inCompiler && fixed) ? 12 : sizeof(class Instance)));
 
          // For cross-bitness-compiling
          if(crossBits)
@@ -2618,7 +2627,8 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
                else if(module != module.application && inCompiler)
                {
                   // These we only want to recompute inside the compiler
-                  size = 0;
+                  if(fixed || type == structClass)
+                     size = 0;
                }
             }
          }

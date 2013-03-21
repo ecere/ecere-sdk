@@ -850,7 +850,13 @@ public int ComputeTypeSize(Type type)
          if(_class.type == structClass || _class.type == noHeadClass)
             /*totalSize = */AddMembers(declarations, _class.base, false, &totalSize, topClass, null);
          else
-            maxSize -= _class.base.templateClass ? _class.base.templateClass.structSize : _class.base.structSize;
+         {
+            uint baseSize = _class.base.templateClass ? _class.base.templateClass.structSize : _class.base.structSize;
+            if(maxSize > baseSize)
+               maxSize -= baseSize;
+            else
+               maxSize = 0;
+         }
       }
    }
 
