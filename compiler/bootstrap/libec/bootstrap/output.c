@@ -1989,7 +1989,7 @@ struct Symbol * _class = decl->array.enumClass->symbol;
 
 if(_class && _class->registered)
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%d", __ecereNameSpace__ecere__com__eClass_GetProperty(_class->registered, "enumSize"));
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%d", (int)__ecereNameSpace__ecere__com__eClass_GetProperty(_class->registered, "enumSize"));
 }
 }
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "]");

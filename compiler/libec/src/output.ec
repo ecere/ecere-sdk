@@ -777,7 +777,7 @@ static void OutputDeclarator(Declarator decl, File f)
             Symbol _class = decl.array.enumClass.symbol; // FindClass(decl.array.enumClass.name);
             if(_class && _class.registered)
             {
-               f.Printf("%d", eClass_GetProperty(_class.registered, "enumSize"));
+               f.Printf("%d", (int)eClass_GetProperty(_class.registered, "enumSize"));
             }            
          }
          f.Puts("]");

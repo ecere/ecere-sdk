@@ -4626,7 +4626,7 @@ __ecereNameSpace__ecere__com__NameSpace_Free(&((struct __ecereNameSpace__ecere__
 Instance_Module_Free(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->library);
 }
 
-static int __ecereNameSpace__ecere__com__GetEnumSize(struct __ecereNameSpace__ecere__com__Class * _class)
+static long long __ecereNameSpace__ecere__com__GetEnumSize(struct __ecereNameSpace__ecere__com__Class * _class)
 {
 struct __ecereNameSpace__ecere__com__EnumClassData * data = (struct __ecereNameSpace__ecere__com__EnumClassData *)_class->data;
 

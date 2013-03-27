@@ -5540,7 +5540,7 @@ static void Module_Destructor(Module module)
 #endif
 }
 
-static int GetEnumSize(Class _class)
+static int64 GetEnumSize(Class _class)
 {
    EnumClassData data = (EnumClassData)_class.data;
    return data.largest+1;
