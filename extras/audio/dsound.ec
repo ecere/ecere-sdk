@@ -7,6 +7,7 @@
 #define WIN32_LEAN_AND_MEAN
 #define MessageBox _MessageBox
 #define Array _Array
+#define String _String
 
 #include <windows.h>
 
@@ -18,6 +19,7 @@
 #undef Method
 #undef Function
 #undef int64
+#undef String
 
 import "audio"
 
