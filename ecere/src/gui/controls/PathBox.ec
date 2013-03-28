@@ -411,7 +411,7 @@ public:
          return true;
       }
    };
-   Button up
+   RepButton up
    {
       parent = this, bevelOver = true, inactive = true;
       position = { 315, 0 }, size = { 22, 22 };
@@ -436,7 +436,7 @@ public:
          return true;
       }
    };
-   Button down
+   RepButton down
    {
       parent = this, bevelOver = true, inactive = true;
       position = { 340, 0 }, size = { 22, 22 };
