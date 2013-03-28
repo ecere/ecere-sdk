@@ -1,3 +1,24 @@
+ecere-sdk (0.44.06-0ubuntu1) raring; urgency=low
+
+  * Fixed bugs causing build to fail on PowerPC
+  * Fixed cross-bitness compiling issues
+  * Fixed UTF8 text processing issues
+  * Fixed serialization/unserialization of Map container objects
+  * Fixed ListBox row moving bug
+  * Fixed ColorPicker in IDE to be consistent with other dialogs
+  * Enabled holding up/down buttons down to reorder directories
+    in compiler settings
+  * Relying on giflib rather than bundled libungif, taking out deps folder
+    for Debian packages (Resolves Debian #703444)
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Thu, 28 Mar 2013 01:00:00 -0400
+
+ecere-sdk (0.44.05-0ubuntu1) raring; urgency=low
+
+  * Fixed memory corruption bugs
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Mon, 18 Mar 2013 04:36:00 -0400
+
 ecere-sdk (0.44.04-0ubuntu1) raring; urgency=low
 
   * Various Bug Fixes
