@@ -6,6 +6,8 @@ import "CustomAVLTree"
 default:
 extern int __ecereVMethodID_class_OnCopy;
 extern int __ecereVMethodID_class_OnFree;
+extern int __ecereVMethodID_class_OnSerialize;
+extern int __ecereVMethodID_class_OnUnserialize;
 private:
 
 public class MapNode<class KT, class V> : private AVLNode<KT>
@@ -235,5 +237,48 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
             }
          }
       }
+   }
+
+   void OnSerialize(IOChannel channel)
+   {
+      uint count = GetCount();
+      IteratorPointer i;
+      Class Kclass = class(MT);
+      Class Dclass = class(V);
+
+      channel.Put(count);
+      for(i = GetFirst(); i; i = GetNext(i))
+      {
+         MapNode<MT, V> srcNode = (MapNode<MT, V>)i;
+         MT key = GetKey((MapNode<KT, V>)srcNode);
+         D data = GetData(srcNode);
+
+         ((void (*)(void *, void *, void *))(void *)Kclass._vTbl[__ecereVMethodID_class_OnSerialize])(Kclass,
+            (Kclass.type == systemClass || Kclass.type == bitClass || Kclass.type == enumClass || Kclass.type == unitClass) ? &key : (void *)key, channel);
+         ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnSerialize])(Dclass,
+            (Dclass.type == systemClass || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data, channel);
+      }
+   }
+
+   void OnUnserialize(IOChannel channel)
+   {
+      uint c, count;
+      thisclass container = eInstance_New(_class.fullName);
+      IteratorPointer i;
+      Class Kclass = class(MT);
+      Class Dclass = class(V);
+
+      channel.Get(count);
+      for(c = 0; c < count; c++)
+      {
+         MapNode<MT, V> destNode;
+         MT key;
+         D data;
+         ((void (*)(void *, void *, void *))(void *)Kclass._vTbl[__ecereVMethodID_class_OnUnserialize])(Kclass, &key, channel);
+         ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, &data, channel);
+         destNode = (MapNode<MT, V>)container.GetAtPosition(key, true);
+         container.SetData(destNode, data);
+      }
+      this = container;
    }
 }
