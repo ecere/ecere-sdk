@@ -11,8 +11,8 @@
       "DefaultNameSpace" : "ecere",
       "TargetType" : "SharedLibrary",
       "TargetFileName" : "ecereCOM",
-      "TargetDirectory" : "obj/$(MODULE).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)",
-      "ObjectsDirectory" : "obj/$(MODULE).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)"
+      "TargetDirectory" : "obj/$(MODULE).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)",
+      "ObjectsDirectory" : "obj/$(MODULE).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)"
    },
    "Platforms" : [
       {

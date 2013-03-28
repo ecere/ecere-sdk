@@ -3,6 +3,7 @@
 # CORE VARIABLES
 
 MODULE := ecere
+VERSION := 0.44
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -46,11 +47,10 @@ OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = res/
 
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecere$(SO)$(VER)
 ifdef LINUX_TARGET
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)$(MODULE)$(SO).0.44
 SONAME = -Wl,-soname,libecere.so.0
 else
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)$(MODULE)$(SO)
 SONAME =
 endif
 
@@ -400,8 +400,7 @@ PRJ_CFLAGS += \
 			 -I../deps/zlib \
 			 -I../deps/freetype-2.3.12/include,) \
 	 $(if $(LINUX_TARGET), \
-			 -I/usr/include/freetype2 \
-			 -I../deps/libungif-4.1.1/lib,) \
+			 -I/usr/include/freetype2,) \
 	 $(if $(OSX_TARGET), \
 			 -I/usr/include/freetype2 \
 			 -I$(SYSROOT)/usr/X11/include/freetype2 \
@@ -460,7 +459,6 @@ ifdef LINUX_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L/usr/X11R6/lib
 LIBS += \
 	$(call _L,ncurses) \
@@ -468,7 +466,7 @@ LIBS += \
 	$(call _L,m) \
 	$(call _L,dl) \
 	$(call _L,fontconfig) \
-	$(call _L,ungif) \
+	$(call _L,gif) \
 	$(call _L,X11) \
 	$(call _L,Xext) \
 	$(call _L,Xrender) \
@@ -514,7 +512,7 @@ objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
-	$(ECS) $(ECSLIBOPT) $(ARCH_FLAGS) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
+	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
@@ -536,9 +534,11 @@ else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
 	$(call cpq,$(TARGET),../$(HOST_SODESTDIR))
-ifdef LINUX_TARGET
-	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
-	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO)
+ifdef SHARED_LIBRARY_TARGET
+ifdef LINUX_HOST
+	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) ../$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
+	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) ../$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO),)
+endif
 endif
 
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
@@ -569,11 +569,18 @@ endif
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
+	$(call mkdirq,../$(SODESTDIR))
 	$(call cpq,$(TARGET),../$(SODESTDIR))
+ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_TARGET
-	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
-	ln -sf $(LP)$(MODULE)$(SO).0.44 ../$(SODESTDIR)$(LP)$(MODULE)$(SO)
+ifdef LINUX_HOST
+	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
+	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
+	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) ../$(SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
+	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) ../$(SODESTDIR)$(LP)$(MODULE)$(SO),)
 endif	
+endif
+endif
 
 # SYMBOL RULES
 
@@ -1889,6 +1896,14 @@ cleaneceretarget: objdir
 
 cleantarget: objdir
 	$(call rmq,$(TARGET))
+ifdef SHARED_LIBRARY_TARGET
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))
+endif
+endif
+endif
 	$(MAKE) -f Makefile.ecereCOM cleantarget
 	$(MAKE) -f Makefile.vanilla cleantarget
 

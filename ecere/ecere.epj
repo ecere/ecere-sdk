@@ -27,8 +27,7 @@
          "Name" : "Linux",
          "Options" : {
             "IncludeDirs" : [
-               "/usr/include/freetype2",
-               "../deps/libungif-4.1.1/lib"
+               "/usr/include/freetype2"
             ],
             "Libraries" : [
                "ncurses",
@@ -36,14 +35,13 @@
                "m",
                "dl",
                "fontconfig",
-               "ungif",
+               "gif",
                "X11",
                "Xext",
                "Xrender",
                "GL"
             ],
             "LibraryDirs" : [
-               "../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "/usr/X11R6/lib"
             ]
          }
@@ -114,9 +112,9 @@
             "LibraryDirs" : [
                "$(SYSROOT)/usr/X11/lib",
                "/usr/X11R6/lib",
-               "../deps/jpeg-6b/obj/release.$(PLATFORM)",
-               "../deps/libpng-1.4.0/obj/release.$(PLATFORM)",
-               "../deps/libungif-4.1.1/obj/release.$(PLATFORM)"
+               "../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
+               "../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
+               "../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
             ]
          }
       }
@@ -281,7 +279,7 @@
             "TargetFileName" : "ecereVanilla",
             "FastMath" : false,
             "PostbuildCommands" : [
-               "$(call cpq,$(TARGET),../obj/$(PLATFORM)/lib/)"
+               "$(call cpq,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/)"
             ]
          }
       },

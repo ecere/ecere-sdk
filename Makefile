@@ -169,11 +169,15 @@ bootstrap: outputdirs
 
 deps:
 ifdef CROSS_TARGET
+ifndef LINUX_HOST
 	@$(call echo,Building dependencies (host)...)
 	cd deps && $(MAKE) $(XBOOT)
 endif
+endif
+ifndef LINUX_TARGET
 	@$(call echo,Building dependencies...)
 	cd deps && $(MAKE)
+endif
 
 ecere: bootstrap deps
 ifdef CROSS_TARGET
@@ -357,7 +361,9 @@ ifdef EDASQLiteCipher
 endif
 
 clean: emptyoutput
+ifndef LINUX_TARGET
 	cd deps && $(MAKE) clean
+endif
 	cd ecere && $(MAKE) clean
 	cd compiler && $(MAKE) clean
 	cd ear && $(MAKE) clean
@@ -371,7 +377,9 @@ endif
 	@$(call echo,Done.)
 
 realclean: outputdirs
+ifndef LINUX_TARGET
 	cd deps && $(MAKE) realclean
+endif
 	cd ecere && $(MAKE) realclean
 	cd compiler && $(MAKE) realclean
 	cd ear && $(MAKE) realclean
@@ -386,7 +394,9 @@ endif
 	@$(call echo,Done.)
 
 distclean: outputdirs
+ifndef LINUX_TARGET
 	cd deps && $(MAKE) distclean
+endif
 	cd ecere && $(MAKE) distclean
 	cd compiler && $(MAKE) distclean
 	cd ear && $(MAKE) distclean

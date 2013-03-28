@@ -3,6 +3,7 @@
 # CORE VARIABLES
 
 MODULE := ecere
+VERSION := 0.44
 CONFIG := vanilla
 ifndef COMPILER
 COMPILER := default
@@ -347,8 +348,7 @@ PRJ_CFLAGS += \
 			 -I../deps/freetype-2.3.12/include \
 			 -I../deps/glext,) \
 	 $(if $(LINUX_TARGET), \
-			 -I/usr/include/freetype2 \
-			 -I../deps/libungif-4.1.1/lib,) \
+			 -I/usr/include/freetype2,) \
 	 $(if $(OSX_TARGET), \
 			 -I/usr/include/freetype2 \
 			 -I$(SYSROOT)/usr/X11/include/freetype2 \
@@ -410,7 +410,6 @@ ifdef LINUX_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L/usr/X11R6/lib
 LIBS += \
 	$(call _L,ncurses) \
@@ -418,7 +417,7 @@ LIBS += \
 	$(call _L,m) \
 	$(call _L,dl) \
 	$(call _L,fontconfig) \
-	$(call _L,ungif) \
+	$(call _L,gif) \
 	$(call _L,X11) \
 	$(call _L,Xext) \
 	$(call _L,Xrender) \
@@ -464,7 +463,7 @@ objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
-	$(ECS) $(ECSLIBOPT) $(ARCH_FLAGS) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
+	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
