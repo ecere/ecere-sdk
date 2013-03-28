@@ -1346,8 +1346,8 @@ class IDEWorkSpace : Window
          viewMenu, $"Color Picker...", c, Key { c, ctrl = true , shift = true };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
-            ColorPicker colorPicker { master = this, parent = this, stayOnTop = true };
-            colorPicker.Create();
+            ColorPicker colorPicker { master = this };
+            colorPicker.Modal();
             return true;
          }
       }

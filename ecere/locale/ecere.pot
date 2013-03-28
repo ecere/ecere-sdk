@@ -43,14 +43,14 @@ msgstr "Alt+"
 #: ./src/gui/controls/DropBox.ec:168
 #: ./src/gui/controls/EditBox.ec:759
 #: ./src/gui/controls/Label.ec:47
-#: ./src/gui/controls/ListBox.ec:986
-#: ./src/gui/controls/ListBox.ec:1019
-#: ./src/gui/controls/ListBox.ec:1020
-#: ./src/gui/controls/ListBox.ec:1024
+#: ./src/gui/controls/ListBox.ec:984
+#: ./src/gui/controls/ListBox.ec:1017
+#: ./src/gui/controls/ListBox.ec:1018
+#: ./src/gui/controls/ListBox.ec:1022
+#: ./src/gui/controls/ListBox.ec:1050
+#: ./src/gui/controls/ListBox.ec:1051
 #: ./src/gui/controls/ListBox.ec:1052
 #: ./src/gui/controls/ListBox.ec:1053
-#: ./src/gui/controls/ListBox.ec:1054
-#: ./src/gui/controls/ListBox.ec:1055
 #: ./src/gui/controls/Picture.ec:19
 #: ./src/gui/controls/Picture.ec:39
 #: ./src/gui/controls/ScrollBar.ec:82
@@ -115,17 +115,17 @@ msgstr "August"
 #: ./src/gui/controls/EditBox.ec:761
 #: ./src/gui/controls/EditBox.ec:762
 #: ./src/gui/controls/Label.ec:18
-#: ./src/gui/controls/ListBox.ec:968
-#: ./src/gui/controls/ListBox.ec:1007
+#: ./src/gui/controls/ListBox.ec:966
+#: ./src/gui/controls/ListBox.ec:1005
+#: ./src/gui/controls/ListBox.ec:1013
+#: ./src/gui/controls/ListBox.ec:1014
 #: ./src/gui/controls/ListBox.ec:1015
 #: ./src/gui/controls/ListBox.ec:1016
-#: ./src/gui/controls/ListBox.ec:1017
-#: ./src/gui/controls/ListBox.ec:1018
-#: ./src/gui/controls/ListBox.ec:1050
-#: ./src/gui/controls/ListBox.ec:1051
-#: ./src/gui/controls/ListBox.ec:1056
-#: ./src/gui/controls/ListBox.ec:1057
-#: ./src/gui/controls/ListBox.ec:1061
+#: ./src/gui/controls/ListBox.ec:1048
+#: ./src/gui/controls/ListBox.ec:1049
+#: ./src/gui/controls/ListBox.ec:1054
+#: ./src/gui/controls/ListBox.ec:1055
+#: ./src/gui/controls/ListBox.ec:1059
 #: ./src/gui/controls/ScrollBar.ec:84
 #: ./src/gui/controls/ScrollBar.ec:88
 #: ./src/gui/controls/ScrollBar.ec:99
@@ -588,7 +588,7 @@ msgid "Please enter a name."
 msgstr "Please enter a name."
 
 #: ./src/gui/controls/DropBox.ec:98
-#: ./src/gui/controls/ListBox.ec:969
+#: ./src/gui/controls/ListBox.ec:967
 msgid "Private"
 msgstr "Private"
 
