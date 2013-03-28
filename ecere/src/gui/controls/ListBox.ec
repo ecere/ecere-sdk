@@ -522,10 +522,8 @@ public:
             {
                DataRow nextRow = GetNextRow();
                if(this == listBox.firstRowShown)
-               {
                   listBox.firstRowShown = nextRow;
-                  index = after ? (after.index + 1) : 0;
-               }
+               index = after.index;
 
                // All rows between ROW (exclusive) and AFTER (inclusive) are decremented by one
                // ROW is equal to AFTER's index
