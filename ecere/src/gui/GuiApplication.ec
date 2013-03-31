@@ -47,6 +47,7 @@ default:
 #define set _set
 #include <sys/time.h>
 #include <unistd.h>
+#include <sys/select.h>
 
 #include <netinet/in.h>
 #include <netdb.h>

@@ -24,6 +24,7 @@ default:
 #include <malloc.h>
 #endif
 #include <unistd.h>
+#include <sys/select.h>
 
 //#include <stdio.h>
 //#include <stdlib.h>
@@ -43,8 +44,10 @@ default:
 #include <X11/Xutil.h>
 #include <X11/XKBlib.h>
 #include <X11/keysym.h>
-#include <sys/fcntl.h>
+#include <fcntl.h>
+#if !defined(ECERE_NO3D)
 #include <GL/glx.h>
+#endif
 #include <X11/extensions/Xrender.h>
 #include <X11/extensions/XShm.h>
 
@@ -958,7 +961,7 @@ default:
 
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include <sys/signal.h>
+#include <signal.h>
 #include <locale.h>
 
 

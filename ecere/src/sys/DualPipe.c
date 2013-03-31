@@ -3,6 +3,7 @@
 #define UNICODE
 #include <windows.h>
 #else
+#include <sys/select.h>
 #include <signal.h>
 #include <unistd.h>
 #include <sys/wait.h>

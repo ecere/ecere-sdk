@@ -13,7 +13,7 @@ namespace sys;
 #else
 #include <pthread.h>
 #ifndef __ANDROID__
-#include <sys/signal.h>
+#include <signal.h>
 #endif
 #endif
 #undef uint
