@@ -701,7 +701,6 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpenBuffered(char * fileName, int mode)
 {
-void * __ecereTemp1;
 struct __ecereNameSpace__ecere__com__Instance * result = (((void *)0));
 
 {

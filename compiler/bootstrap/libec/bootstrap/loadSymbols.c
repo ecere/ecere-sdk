@@ -998,7 +998,6 @@ extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpa
 
 unsigned int LoadSymbols(char * fileName, int importType, unsigned int loadDllOnly)
 {
-void * __ecereTemp1;
 struct __ecereNameSpace__ecere__com__Instance * f = __ecereNameSpace__ecere__sys__FileOpenBuffered(fileName, 1);
 unsigned int globalInstance = 0x0;
 
@@ -1528,7 +1527,11 @@ if(c - start)
 data = (struct GlobalData *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*nameSpace).functions, name + start);
 if(!data)
 {
-data = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_GlobalData), ((struct GlobalData *)__ecereTemp1)->fullName = __ecereNameSpace__ecere__sys__CopyString(name), ((struct GlobalData *)__ecereTemp1)->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(line), ((struct GlobalData *)__ecereTemp1)->module = privateModule, ((struct GlobalData *)__ecereTemp1));
+data = __extension__ ({
+struct GlobalData * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_GlobalData);
+
+__ecereInstance1->fullName = __ecereNameSpace__ecere__sys__CopyString(name), __ecereInstance1->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(line), __ecereInstance1->module = privateModule, __ecereInstance1;
+});
 data->key = (uintptr_t)(data->fullName + start);
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(*nameSpace).functions, (struct __ecereNameSpace__ecere__sys__BTNode *)data);
 }
@@ -1696,7 +1699,6 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
 
 void ImportModule(char * name, int importType, int importAccess, unsigned int loadDllOnly)
 {
-void * __ecereTemp1;
 struct ImportedModule * module = (((void *)0));
 char moduleName[274];
 
@@ -1727,10 +1729,18 @@ if(!module)
 {
 if(precompDefines)
 {
-module = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ImportedModule), ((struct ImportedModule *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(moduleName), ((struct ImportedModule *)__ecereTemp1)->type = 0, ((struct ImportedModule *)__ecereTemp1)->importType = importType, ((struct ImportedModule *)__ecereTemp1)->importAccess = importAccess, ((struct ImportedModule *)__ecereTemp1));
+module = __extension__ ({
+struct ImportedModule * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ImportedModule);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(moduleName), __ecereInstance1->type = 0, __ecereInstance1->importType = importType, __ecereInstance1->importAccess = importAccess, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*precompDefines), module);
 }
-module = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ImportedModule), ((struct ImportedModule *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(moduleName), ((struct ImportedModule *)__ecereTemp1)->type = 0, ((struct ImportedModule *)__ecereTemp1)->importType = importType, ((struct ImportedModule *)__ecereTemp1)->importAccess = importAccess, ((struct ImportedModule *)__ecereTemp1));
+module = __extension__ ({
+struct ImportedModule * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ImportedModule);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(moduleName), __ecereInstance1->type = 0, __ecereInstance1->importType = importType, __ecereInstance1->importAccess = importAccess, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName((&*defines), module);
 }
 module->dllOnly = loadDllOnly;
@@ -1791,10 +1801,18 @@ if(!module)
 {
 if(precompDefines)
 {
-module = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ImportedModule), ((struct ImportedModule *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(moduleName), ((struct ImportedModule *)__ecereTemp1)->type = 0, ((struct ImportedModule *)__ecereTemp1)->importType = importType, ((struct ImportedModule *)__ecereTemp1)->importAccess = importAccess, ((struct ImportedModule *)__ecereTemp1));
+module = __extension__ ({
+struct ImportedModule * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ImportedModule);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(moduleName), __ecereInstance1->type = 0, __ecereInstance1->importType = importType, __ecereInstance1->importAccess = importAccess, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*precompDefines), module);
 }
-module = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ImportedModule), ((struct ImportedModule *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(moduleName), ((struct ImportedModule *)__ecereTemp1)->type = 0, ((struct ImportedModule *)__ecereTemp1)->importType = importType, ((struct ImportedModule *)__ecereTemp1)->importAccess = importAccess, ((struct ImportedModule *)__ecereTemp1));
+module = __extension__ ({
+struct ImportedModule * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ImportedModule);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(moduleName), __ecereInstance1->type = 0, __ecereInstance1->importType = importType, __ecereInstance1->importAccess = importAccess, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName((&*defines), module);
 }
 module->dllOnly = loadDllOnly;

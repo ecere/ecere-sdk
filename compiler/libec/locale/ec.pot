@@ -102,8 +102,8 @@ msgstr "No observer specified and not inside a _class\n"
 msgid "No observer specified and not inside a class\n"
 msgstr "No observer specified and not inside a class\n"
 
-#: ./src/pass16.ec:1910
-#: ./src/pass16.ec:1981
+#: ./src/pass16.ec:1894
+#: ./src/pass16.ec:1965
 msgid "No set defined for property %s\n"
 msgstr "No set defined for property %s\n"
 

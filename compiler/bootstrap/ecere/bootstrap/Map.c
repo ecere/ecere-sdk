@@ -554,7 +554,6 @@ return (struct __ecereNameSpace__ecere__com__MapNode *)((struct __ecereNameSpace
 
 struct __ecereNameSpace__ecere__com__MapNode * __ecereMethod___ecereNameSpace__ecere__com__Map_GetAtPosition(struct __ecereNameSpace__ecere__com__Instance * this, uint64 pos, unsigned int create)
 {
-void * __ecereTemp1;
 struct __ecereNameSpace__ecere__com__MapNode * node = ((struct __ecereNameSpace__ecere__com__MapNode *)((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + structSize_Instance)))->root) ? __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Find(((struct __ecereNameSpace__ecere__com__MapNode *)((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + structSize_Instance)))->root), ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass, pos) : (((void *)0));
 
 if(!node && create)
@@ -573,7 +572,11 @@ node = (struct __ecereNameSpace__ecere__com__MapNode *)__ecereNameSpace__ecere__
 }
 else
 {
-node = (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_MapNode), __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_key(((struct __ecereNameSpace__ecere__com__MapNode *)__ecereTemp1), pos), ((struct __ecereNameSpace__ecere__com__MapNode *)__ecereTemp1));
+node = __extension__ ({
+struct __ecereNameSpace__ecere__com__MapNode * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_MapNode);
+
+__ecereProp___ecereNameSpace__ecere__com__MapNode_Set_key(__ecereInstance1, pos), __ecereInstance1;
+});
 }
 if(Tclass->type == 1000 || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3)
 {

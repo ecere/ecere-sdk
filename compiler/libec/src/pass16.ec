@@ -1089,7 +1089,7 @@ static void ProcessExpression(Expression exp)
                      char ecereTemp[100];
                      MembersInit members;
                      int tempCount = exp.tempCount;
-                     Expression tmpExp;
+                     OldList * expList;
                
                      // Check if members use temp count...
                      for(members = inst.members->first; members; members = members.next)
@@ -1108,53 +1108,36 @@ static void ProcessExpression(Expression exp)
                         }
                      }
                      if(curDecl)
-                     {
                         tempCount = Max(tempCount, declTempCount);
-                     }
                
                      tempCount++;
                      curExternal.function.tempCount = Max(curExternal.function.tempCount, tempCount);
-                     sprintf(ecereTemp, "__ecereTemp%d", tempCount);
+                     sprintf(ecereTemp, "__ecereInstance%d", tempCount);
+                     exp.type = extensionCompoundExp;
+                     exp.compound = MkCompoundStmt(null, null);
+                     exp.compound.compound.context = PushContext();
+                     exp.compound.compound.context.simpleID = exp.compound.compound.context.parent.simpleID;
+                     exp.compound.compound.declarations = MkListOne(QMkDeclaration(inst._class.name, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(ecereTemp)), 
+                        MkInitializerAssignment(newCall))));
+                     exp.compound.compound.statements = MkListOne(MkExpressionStmt((expList = MkList())));
 
-                     // (__ecereTemp = eInstance_New(_class), __ecerePropclass_Set( ), __ecereTemp)
-               
-                     /*
-                     instExp = MkExpBrackets(MkListOne(MkExpCast(QMkClass(inst._class.name, null), (tmpExp = QMkExpId(ecereTemp), tmpExp.byReference = true, tmpExp))));
-                     //instExp = QMkExpId(ecereTemp);
+                     instExp = QMkExpId(ecereTemp);
                      instExp.tempCount = tempCount;
-
-                     exp.type = bracketsExp;
-                     exp.list = MkList();
-
-                     ListAdd(exp.list, MkExpOp(instExp, '=', newCall));
-                     */
-
-                     instExp = MkExpBrackets(MkListOne(MkExpCast(QMkClass(inst._class.name, null), (tmpExp = QMkExpId(ecereTemp), tmpExp.byReference = true, tmpExp))));
-
-                     instExp.tempCount = tempCount;
-                     exp.type = bracketsExp;
-                     exp.list = MkList();
-
-                     ListAdd(exp.list,           MkExpOp((tmpExp = QMkExpId(ecereTemp), tmpExp.byReference = true, tmpExp), '=', newCall));
-
                      instExp.expType = MkClassType(inst._class.name);
-
-                     ProcessInstMembers(inst, instExp, exp.list, false);
-                  
+                     instExp.byReference = true;
+                     ProcessInstMembers(inst, instExp, expList, false);
                      FreeExpression(instExp);
 
-                     ProcessExpression(tmpExp);
-
-                     // TEST: exp.tempCount = Max(exp.tempCount, instExp.tempCount);
-
                      if(exp.usage)
-                        //ListAdd(exp.list, QMkExpId(ecereTemp));
-                        ListAdd(exp.list, MkExpBrackets(MkListOne(MkExpCast(QMkClass(inst._class.name, null), (tmpExp = QMkExpId(ecereTemp), tmpExp.byReference = true, tmpExp)))));
+                     {
+                        Expression tmpExp = QMkExpId(ecereTemp);
+                        tmpExp.byReference = true;
+                        ListAdd(expList, tmpExp);
+                     }
                      exp.tempCount = tempCount;
                      if(curDecl)
-                     {
                         declTempCount = Max(declTempCount, tempCount);
-                     }
+                     PopContext(exp.compound.compound.context);
                   }
                   else
                   {
@@ -1518,6 +1501,7 @@ static void ProcessExpression(Expression exp)
       {
          if(exp.compound.compound.statements &&
          ((Statement)exp.compound.compound.statements->last).type == expressionStmt && 
+         ((Statement)exp.compound.compound.statements->last).expressions &&
          ((Statement)exp.compound.compound.statements->last).expressions->last)
          {
             ((Expression)((Statement)exp.compound.compound.statements->last).expressions->last).usage = exp.usage;

@@ -3082,26 +3082,7 @@ static void ProcessStatement(Statement stmt)
 static void ProcessFunction(FunctionDefinition function)
 {
    if(function.body)
-   {
       ProcessStatement(function.body);
-      if(function.tempCount)
-      {
-         Statement stmt = function.body;
-         int c;
-         // Declare ecereTemp here, we need it!
-         if(!stmt.compound.declarations)
-            stmt.compound.declarations = MkList();
-         curContext = stmt.compound.context;
-         for(c = 1; c<=function.tempCount; c++)
-         {
-            char ecereTemp[100];
-            sprintf(ecereTemp, "__ecereTemp%d", c);
-            stmt.compound.declarations->Insert(null,
-               QMkDeclarationBase(VOID, MkInitDeclarator(QMkPtrDecl(ecereTemp), null)));
-         }
-         curContext = stmt.compound.context.parent;
-      }
-   }
 }
 
 static void ProcessMemberInitData(MemberInit member)

@@ -314,7 +314,6 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLTree_Add(struct __ecereNameSpace__ecere__com__Instance * this, uint64 value)
 {
-void * __ecereTemp1;
 struct __ecereNameSpace__ecere__com__AVLNode * node;
 
 if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass->type == 1)
@@ -323,7 +322,11 @@ node = (struct __ecereNameSpace__ecere__com__AVLNode *)__ecereNameSpace__ecere__
 memcpy((void *)(((unsigned char *)&node->key) + __ENDIAN_PAD(sizeof(void *))), (void *)value, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass->structSize);
 }
 else
-node = (struct __ecereNameSpace__ecere__com__AVLNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_AVLNode), ((struct __ecereNameSpace__ecere__com__AVLNode *)__ecereTemp1)->key = value, ((struct __ecereNameSpace__ecere__com__AVLNode *)__ecereTemp1));
+node = (struct __ecereNameSpace__ecere__com__AVLNode *)__extension__ ({
+struct __ecereNameSpace__ecere__com__AVLNode * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_AVLNode);
+
+__ecereInstance1->key = value, __ecereInstance1;
+});
 if(!((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__ecereClass___ecereNameSpace__ecere__com__CustomAVLTree->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(this, (uint64)node))
 ((node ? (__ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor(node) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor(node) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(node)) : 0), node = 0);
 return node;

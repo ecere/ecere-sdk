@@ -1183,8 +1183,6 @@ extern struct Specifier * MkSpecifierExtended(struct ExtDecl * extDecl);
 
 struct Specifier * CopySpecifier(struct Specifier * spec)
 {
-void * __ecereTemp1;
-
 if(spec)
 switch(spec->type)
 {
@@ -1233,7 +1231,11 @@ return copy;
 case 7:
 return MkSpecifierSubClass(CopySpecifier(spec->_class));
 case 8:
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier), ((struct Specifier *)__ecereTemp1)->loc = spec->loc, ((struct Specifier *)__ecereTemp1)->type = 8, ((struct Specifier *)__ecereTemp1)->templateParameter = spec->templateParameter, ((struct Specifier *)__ecereTemp1));
+return __extension__ ({
+struct Specifier * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier);
+
+__ecereInstance1->loc = spec->loc, __ecereInstance1->type = 8, __ecereInstance1->templateParameter = spec->templateParameter, __ecereInstance1;
+});
 case 5:
 return MkSpecifierExtended(CopyExtDecl(spec->extDecl));
 }

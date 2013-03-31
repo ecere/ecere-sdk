@@ -1201,8 +1201,6 @@ void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(struct __ecereNameS
 
 static void ProcessExpression(struct Expression * exp)
 {
-void * __ecereTemp1;
-
 switch(exp->type)
 {
 case 13:
@@ -1347,7 +1345,11 @@ struct Statement * ifDBStmt;
 struct __ecereNameSpace__ecere__sys__OldList * args;
 char numIndexesString[16];
 
-databaseOpenStmt->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = curContext, ((struct Context *)__ecereTemp1));
+databaseOpenStmt->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = curContext, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*databaseOpenStmt->compound.declarations), MkDeclaration(MkListOne(MkSpecifierName("Database")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("db")), (((void *)0))))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*databaseOpenStmt->compound.declarations), MkDeclaration(MkListOne(MkSpecifierName("bool")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("createNow")), MkInitializerAssignment(MkExpIdentifier(MkIdentifier("false")))))));
 args = MkList();
@@ -1361,7 +1363,11 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), CopyExpression
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier("no")));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*databaseOpenStmt->compound.statements), MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("db")), '=', MkExpCall(MkExpMember(CopyExpression(exp->dbopen.ds), MkIdentifier("OpenDatabase")), args)))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*databaseOpenStmt->compound.statements), MkIfStmt(MkListOne(MkExpOp((((void *)0)), '!', MkExpIdentifier(MkIdentifier("db")))), compound = MkCompoundStmt((((void *)0)), MkList()), (((void *)0))));
-compound->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = databaseOpenStmt->compound.context, ((struct Context *)__ecereTemp1));
+compound->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = databaseOpenStmt->compound.context, __ecereInstance1;
+});
 args = MkList();
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), exp->dbopen.name);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier("create")));
@@ -1370,14 +1376,30 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*compound->compound.st
 exp->dbopen.name = (((void *)0));
 exp->dbopen.ds = (((void *)0));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*databaseOpenStmt->compound.statements), MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("db"))), ifDBStmt = MkCompoundStmt(MkList(), MkList()), (((void *)0))));
-ifDBStmt->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = databaseOpenStmt->compound.context, ((struct Context *)__ecereTemp1));
+ifDBStmt->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = databaseOpenStmt->compound.context, __ecereInstance1;
+});
 sprintf(numIndexesString, "%d", numIndexes);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*ifDBStmt->compound.declarations), MkDeclaration(MkListOne(MkSpecifierName("FieldIndex")), MkListOne(MkInitDeclarator(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("indexes")), MkExpConstant(numIndexesString)), MkInitializerList(MkListOne(MkInitializerList(MkListOne(MkInitializerAssignment(MkExpIdentifier(MkIdentifier("null")))))))))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*ifDBStmt->compound.statements), compound = MkCompoundStmt((((void *)0)), tableStatements));
-compound->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = ifDBStmt->compound.context, ((struct Context *)__ecereTemp1));
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*ifDBStmt->compound.statements), (compound = MkCompoundStmt((((void *)0)), addFieldStatements), compound->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = ifDBStmt->compound.context, ((struct Context *)__ecereTemp1)), compound));
+compound->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = ifDBStmt->compound.context, __ecereInstance1;
+});
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*ifDBStmt->compound.statements), (compound = MkCompoundStmt((((void *)0)), addFieldStatements), compound->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = ifDBStmt->compound.context, __ecereInstance1;
+}), compound));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*ifDBStmt->compound.statements), compound = MkCompoundStmt((((void *)0)), indexStatements));
-compound->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = ifDBStmt->compound.context, ((struct Context *)__ecereTemp1));
+compound->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = ifDBStmt->compound.context, __ecereInstance1;
+});
 exp->type = 25;
 exp->compound = databaseOpenStmt;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*databaseOpenStmt->compound.statements), MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier("db")))));
@@ -1845,7 +1867,6 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(struct _
 
 static void ProcessDBTable(struct DBTableDef * table)
 {
-void * __ecereTemp1;
 struct __ecereNameSpace__ecere__sys__OldList * rowClassDefs = MkList(), * idClassDefs = (((void *)0));
 char tableName[1024];
 char rowClassName[1024];
@@ -1937,7 +1958,11 @@ numIndexes = ((numIndexes > 1) ? numIndexes : 1);
 isIndex = 0x1;
 indexed = 0x1;
 sprintf(name, "_%s", entry->id->string);
-curContext = rowSet->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = globalContext, ((struct Context *)__ecereTemp1));
+curContext = rowSet->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = globalContext, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowSet->compound.statements), MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("Find")), args = MkList()))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier(fieldID)));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier("middle")));
@@ -1955,7 +1980,11 @@ if(rowClassDefs)
 struct Statement * rowSet = MkCompoundStmt(MkList(), MkList()), * rowGet = MkCompoundStmt(MkList(), MkList());
 struct ClassDef * def;
 
-curContext = rowGet->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = globalContext, ((struct Context *)__ecereTemp1));
+curContext = rowGet->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = globalContext, __ecereInstance1;
+});
 if(spec->type == 1 && spec->symbol && spec->symbol->registered && spec->symbol->registered->type == 1)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowGet->compound.declarations), MkDeclarationInst(MkInstantiation(MkSpecifierName(spec->name), MkExpIdentifier(MkIdentifier("d")), (((void *)0)))));
@@ -1965,7 +1994,11 @@ else
 struct Expression * exp;
 
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowGet->compound.declarations), MkDeclaration(CopyList(entry->dataType->qualifiers, CopySpecifier), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("d")), MkInitializerAssignment(exp = MkExpConstant("0"))))));
-exp->destType = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->kind = 3, ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
+exp->destType = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->kind = 3, __ecereInstance1->refCount = 1, __ecereInstance1;
+});
 }
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowGet->compound.statements), MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("GetData")), args = MkList()))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier(fieldID)));
@@ -1976,7 +2009,11 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowGet->compound.stat
 }
 else
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowGet->compound.statements), MkReturnStmt(MkListOne(MkExpIdentifier(MkIdentifier("d")))));
-curContext = rowSet->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = globalContext, ((struct Context *)__ecereTemp1));
+curContext = rowSet->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = globalContext, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowSet->compound.statements), MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("SetData")), args = MkList()))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier(fieldID)));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier("value")));
@@ -2059,7 +2096,11 @@ if(idClassDefs && spec)
 struct Statement * idSet = MkCompoundStmt(MkList(), MkList()), * idGet = MkCompoundStmt(MkList(), MkList());
 struct ClassDef * def;
 
-curContext = idGet->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = globalContext, ((struct Context *)__ecereTemp1));
+curContext = idGet->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = globalContext, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*idGet->compound.declarations), MkDeclarationInst(MkInstantiation(MkSpecifierName(rowClassName), MkExpIdentifier(MkIdentifier("r")), MkListOne(MkMembersInitList(MkListOne(MkMemberInit((((void *)0)), MkInitializerAssignment(MkExpIdentifier(MkIdentifier("this"))))))))));
 if(spec->type == 1 && spec->symbol && spec->symbol->registered && spec->symbol->registered->type == 1)
 {
@@ -2070,7 +2111,11 @@ else
 struct Expression * exp;
 
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*idGet->compound.declarations), MkDeclaration(CopyList(entry->dataType->qualifiers, CopySpecifier), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("d")), MkInitializerAssignment(exp = MkExpConstant("0"))))));
-exp->destType = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->kind = 3, ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
+exp->destType = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->kind = 3, __ecereInstance1->refCount = 1, __ecereInstance1;
+});
 }
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*idGet->compound.statements), MkExpressionStmt(MkListOne(MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("r")), MkIdentifier("GetData")), args = MkList()))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier(fieldID)));
@@ -2082,7 +2127,11 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*idGet->compound.state
 }
 else
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*idGet->compound.statements), MkReturnStmt(MkListOne(MkExpIdentifier(MkIdentifier("d")))));
-curContext = idSet->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = globalContext, ((struct Context *)__ecereTemp1));
+curContext = idSet->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = globalContext, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*idSet->compound.declarations), MkDeclarationInst(MkInstantiation(MkSpecifierName(rowClassName), MkExpIdentifier(MkIdentifier("r")), MkListOne(MkMembersInitList(MkListOne(MkMemberInit((((void *)0)), MkInitializerAssignment(MkExpIdentifier(MkIdentifier("this"))))))))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*idSet->compound.statements), MkExpressionStmt(MkListOne(MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("r")), MkIdentifier("SetData")), args = MkList()))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier(fieldID)));

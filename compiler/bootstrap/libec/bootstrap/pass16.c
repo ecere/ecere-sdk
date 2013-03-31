@@ -1136,8 +1136,6 @@ extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpa
 
 static void CreateInstancesBody()
 {
-void * __ecereTemp1;
-
 if(inCompiler && !createInstancesBody)
 {
 char registerName[1024], moduleName[274];
@@ -1145,7 +1143,11 @@ struct __ecereNameSpace__ecere__sys__OldList * specifiers;
 struct Declarator * declarator;
 
 createInstancesBody = MkCompoundStmt((((void *)0)), MkList());
-createInstancesBody->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = globalContext, ((struct Context *)__ecereTemp1));
+createInstancesBody->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = globalContext, __ecereInstance1;
+});
 specifiers = MkList();
 ListAdd(specifiers, MkSpecifier(VOID));
 __ecereNameSpace__ecere__sys__GetLastDirectory(outputFile, moduleName);
@@ -1162,7 +1164,11 @@ ProcessFunctionBody(function, createInstancesBody);
 ListAdd(ast, MkExternalFunction(function));
 }
 destroyInstancesBody = MkCompoundStmt((((void *)0)), MkList());
-destroyInstancesBody->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = globalContext, ((struct Context *)__ecereTemp1));
+destroyInstancesBody->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = globalContext, __ecereInstance1;
+});
 specifiers = MkList();
 ListAdd(specifiers, MkSpecifier(VOID));
 sprintf(registerName, "__ecereDestroyModuleInstances_%s", moduleName);
@@ -1842,8 +1848,6 @@ void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Move(struct __ecereName
 
 void DeclareClass(struct Symbol * classSym, char * className)
 {
-void * __ecereTemp1;
-
 if(classSym && classSym->id == (((int)0x7fffffff)))
 {
 struct Declaration * decl;
@@ -1856,7 +1860,11 @@ if(!classSym->module)
 classSym->module = mainModule;
 if(!classSym->module)
 return ;
-classSym->_import = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassImport), ((struct ClassImport *)__ecereTemp1)->isRemote = classSym->registered ? classSym->registered->isRemote : 0x0, ((struct ClassImport *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(classSym->string), ((struct ClassImport *)__ecereTemp1));
+classSym->_import = __extension__ ({
+struct ClassImport * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassImport);
+
+__ecereInstance1->isRemote = classSym->registered ? classSym->registered->isRemote : 0x0, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(classSym->string), __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&classSym->module->classes, classSym->_import);
 }
 classSym->_import->itself = 0x1;
@@ -1922,6 +1930,16 @@ extern void MangleClassName(char *  className);
 static struct Declaration * curDecl;
 
 static int declTempCount;
+
+extern struct Context * PushContext(void);
+
+extern struct Declaration * QMkDeclaration(char *  name, struct InitDeclarator * initDecl);
+
+extern struct Initializer * MkInitializerAssignment(struct Expression * exp);
+
+extern struct Statement * MkExpressionStmt(struct __ecereNameSpace__ecere__sys__OldList * expressions);
+
+extern void PopContext(struct Context * ctx);
 
 extern void FreeInstance(struct Instantiation * inst);
 
@@ -2178,7 +2196,7 @@ int __simpleStruct0;
 char ecereTemp[100];
 struct MembersInit * members;
 int tempCount = exp->tempCount;
-struct Expression * tmpExp;
+struct __ecereNameSpace__ecere__sys__OldList * expList;
 
 for(members = (*inst->members).first; members; members = members->next)
 {
@@ -2199,28 +2217,33 @@ tempCount = (__simpleStruct0 = member->initializer->exp->tempCount, (tempCount >
 }
 }
 if(curDecl)
-{
 tempCount = ((tempCount > declTempCount) ? tempCount : declTempCount);
-}
 tempCount++;
 curExternal->function->tempCount = (__simpleStruct0 = curExternal->function->tempCount, (__simpleStruct0 > tempCount) ? __simpleStruct0 : tempCount);
-sprintf(ecereTemp, "__ecereTemp%d", tempCount);
-instExp = MkExpBrackets(MkListOne(MkExpCast(QMkClass(inst->_class->name, (((void *)0))), (tmpExp = QMkExpId(ecereTemp), tmpExp->byReference = 0x1, tmpExp))));
+sprintf(ecereTemp, "__ecereInstance%d", tempCount);
+exp->type = 25;
+exp->compound = MkCompoundStmt((((void *)0)), (((void *)0)));
+exp->compound->compound.context = PushContext();
+exp->compound->compound.context->simpleID = exp->compound->compound.context->parent->simpleID;
+exp->compound->compound.declarations = MkListOne(QMkDeclaration(inst->_class->name, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(ecereTemp)), MkInitializerAssignment(newCall))));
+exp->compound->compound.statements = MkListOne(MkExpressionStmt((expList = MkList())));
+instExp = QMkExpId(ecereTemp);
 instExp->tempCount = tempCount;
-exp->type = 5;
-exp->list = MkList();
-ListAdd(exp->list, MkExpOp((tmpExp = QMkExpId(ecereTemp), tmpExp->byReference = 0x1, tmpExp), '=', newCall));
 instExp->expType = MkClassType(inst->_class->name);
-ProcessInstMembers(inst, instExp, exp->list, 0x0);
+instExp->byReference = 0x1;
+ProcessInstMembers(inst, instExp, expList, 0x0);
 FreeExpression(instExp);
-ProcessExpression(tmpExp);
 if(exp->usage)
-ListAdd(exp->list, MkExpBrackets(MkListOne(MkExpCast(QMkClass(inst->_class->name, (((void *)0))), (tmpExp = QMkExpId(ecereTemp), tmpExp->byReference = 0x1, tmpExp)))));
+{
+struct Expression * tmpExp = QMkExpId(ecereTemp);
+
+tmpExp->byReference = 0x1;
+ListAdd(expList, tmpExp);
+}
 exp->tempCount = tempCount;
 if(curDecl)
-{
 declTempCount = ((declTempCount > tempCount) ? declTempCount : tempCount);
-}
+PopContext(exp->compound->compound.context);
 }
 else
 {
@@ -2513,7 +2536,7 @@ break;
 }
 case 25:
 {
-if(exp->compound->compound.statements && ((struct Statement *)(*exp->compound->compound.statements).last)->type == 3 && (*((struct Statement *)(*exp->compound->compound.statements).last)->expressions).last)
+if(exp->compound->compound.statements && ((struct Statement *)(*exp->compound->compound.statements).last)->type == 3 && ((struct Statement *)(*exp->compound->compound.statements).last)->expressions && (*((struct Statement *)(*exp->compound->compound.statements).last)->expressions).last)
 {
 ((struct Expression *)(*((struct Statement *)(*exp->compound->compound.statements).last)->expressions).last)->usage = exp->usage;
 }
@@ -2600,8 +2623,6 @@ extern struct Specifier * _MkSpecifierName(char *  name, struct Symbol * symbol,
 extern struct Identifier * CopyIdentifier(struct Identifier * id);
 
 extern struct MemberInit * MkMemberInit(struct __ecereNameSpace__ecere__sys__OldList * ids, struct Initializer * initializer);
-
-extern struct Initializer * MkInitializerAssignment(struct Expression * exp);
 
 extern int strcmp(const char * , const char * );
 
@@ -3024,8 +3045,6 @@ member->initializer = (((void *)0));
 recursionCount--;
 return 0x1;
 }
-
-extern struct Statement * MkExpressionStmt(struct __ecereNameSpace__ecere__sys__OldList * expressions);
 
 extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (* )(void * ));
 

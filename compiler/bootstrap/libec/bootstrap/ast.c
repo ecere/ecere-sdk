@@ -1293,7 +1293,6 @@ extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpa
 
 struct Identifier * MkIdentifier(char * string)
 {
-void * __ecereTemp1;
 struct Identifier * id = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Identifier);
 int c;
 
@@ -1345,7 +1344,11 @@ struct TemplatedType * templatedType = FindTemplateTypeParameter(curContext, nam
 
 if(templatedType)
 {
-id->_class = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier), ((struct Specifier *)__ecereTemp1)->type = 8, ((struct Specifier *)__ecereTemp1)->templateParameter = templatedType->param, ((struct Specifier *)__ecereTemp1));
+id->_class = __extension__ ({
+struct Specifier * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier);
+
+__ecereInstance1->type = 8, __ecereInstance1->templateParameter = templatedType->param, __ecereInstance1;
+});
 id->string = __ecereNameSpace__ecere__sys__CopyString(namePart);
 }
 else
@@ -1442,30 +1445,38 @@ return argument;
 
 struct Expression * MkExpExtensionCompound(struct Statement * compound)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 25, ((struct Expression *)__ecereTemp1)->compound = compound, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 25, __ecereInstance1->compound = compound, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpExtensionExpression(struct __ecereNameSpace__ecere__sys__OldList * expressions)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 34, ((struct Expression *)__ecereTemp1)->list = expressions, ((struct Expression *)__ecereTemp1)->loc = yylloc, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 34, __ecereInstance1->list = expressions, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpExtensionInitializer(struct TypeName * typeName, struct Initializer * initializer)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 35, ((struct Expression *)__ecereTemp1)->initializer.typeName = typeName, ((struct Expression *)__ecereTemp1)->initializer.initializer = initializer, ((struct Expression *)__ecereTemp1)->loc = yylloc, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 35, __ecereInstance1->initializer.typeName = typeName, __ecereInstance1->initializer.initializer = initializer, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpIdentifier(struct Identifier * id)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 0, ((struct Expression *)__ecereTemp1)->identifier = id, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 0, __ecereInstance1->identifier = id, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpDummy()
@@ -1477,16 +1488,20 @@ return exp;
 
 struct Expression * MkExpConstant(char * string)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 2, ((struct Expression *)__ecereTemp1)->constant = __ecereNameSpace__ecere__sys__CopyString(string), ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 2, __ecereInstance1->constant = __ecereNameSpace__ecere__sys__CopyString(string), __ecereInstance1;
+});
 }
 
 struct Expression * MkExpString(char * string)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 3, ((struct Expression *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(string), ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 3, __ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(string), __ecereInstance1;
+});
 }
 
 struct ContextStringPair
@@ -1641,128 +1656,164 @@ return exp;
 
 struct Expression * MkExpIndex(struct Expression * expression, struct __ecereNameSpace__ecere__sys__OldList * index)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 6, ((struct Expression *)__ecereTemp1)->index.exp = expression, ((struct Expression *)__ecereTemp1)->index.index = index, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 6, __ecereInstance1->index.exp = expression, __ecereInstance1->index.index = index, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpCall(struct Expression * expression, struct __ecereNameSpace__ecere__sys__OldList * arguments)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 7, ((struct Expression *)__ecereTemp1)->call.exp = expression, ((struct Expression *)__ecereTemp1)->call.arguments = arguments, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 7, __ecereInstance1->call.exp = expression, __ecereInstance1->call.arguments = arguments, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpMember(struct Expression * expression, struct Identifier * member)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 8, ((struct Expression *)__ecereTemp1)->member.exp = expression, ((struct Expression *)__ecereTemp1)->member.member = member, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 8, __ecereInstance1->member.exp = expression, __ecereInstance1->member.member = member, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpPointer(struct Expression * expression, struct Identifier * member)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 9, ((struct Expression *)__ecereTemp1)->member.exp = expression, ((struct Expression *)__ecereTemp1)->member.member = member, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 9, __ecereInstance1->member.exp = expression, __ecereInstance1->member.member = member, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpTypeSize(struct TypeName * typeName)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 10, ((struct Expression *)__ecereTemp1)->typeName = typeName, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 10, __ecereInstance1->typeName = typeName, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpTypeAlign(struct TypeName * typeName)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 38, ((struct Expression *)__ecereTemp1)->typeName = typeName, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 38, __ecereInstance1->typeName = typeName, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpClassSize(struct Specifier * _class)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 15, ((struct Expression *)__ecereTemp1)->_class = _class, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 15, __ecereInstance1->_class = _class, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpCast(struct TypeName * typeName, struct Expression * expression)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 11, ((struct Expression *)__ecereTemp1)->cast.typeName = typeName, ((struct Expression *)__ecereTemp1)->cast.exp = expression, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 11, __ecereInstance1->cast.typeName = typeName, __ecereInstance1->cast.exp = expression, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpCondition(struct Expression * cond, struct __ecereNameSpace__ecere__sys__OldList * expressions, struct Expression * elseExp)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 12, ((struct Expression *)__ecereTemp1)->cond.cond = cond, ((struct Expression *)__ecereTemp1)->cond.exp = expressions, ((struct Expression *)__ecereTemp1)->cond.elseExp = elseExp, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 12, __ecereInstance1->cond.cond = cond, __ecereInstance1->cond.exp = expressions, __ecereInstance1->cond.elseExp = elseExp, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpRenew(struct Expression * memExp, struct TypeName * type, struct Expression * size)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 14, ((struct Expression *)__ecereTemp1)->_renew.exp = memExp, ((struct Expression *)__ecereTemp1)->_renew.typeName = type, ((struct Expression *)__ecereTemp1)->_renew.size = size, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 14, __ecereInstance1->_renew.exp = memExp, __ecereInstance1->_renew.typeName = type, __ecereInstance1->_renew.size = size, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpRenew0(struct Expression * memExp, struct TypeName * type, struct Expression * size)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 29, ((struct Expression *)__ecereTemp1)->_renew.exp = memExp, ((struct Expression *)__ecereTemp1)->_renew.typeName = type, ((struct Expression *)__ecereTemp1)->_renew.size = size, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 29, __ecereInstance1->_renew.exp = memExp, __ecereInstance1->_renew.typeName = type, __ecereInstance1->_renew.size = size, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpNew(struct TypeName * type, struct Expression * size)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 13, ((struct Expression *)__ecereTemp1)->_new.typeName = type, ((struct Expression *)__ecereTemp1)->_new.size = size, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 13, __ecereInstance1->_new.typeName = type, __ecereInstance1->_new.size = size, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpNew0(struct TypeName * type, struct Expression * size)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 28, ((struct Expression *)__ecereTemp1)->_new.typeName = type, ((struct Expression *)__ecereTemp1)->_new.size = size, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 28, __ecereInstance1->_new.typeName = type, __ecereInstance1->_new.size = size, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpVaArg(struct Expression * exp, struct TypeName * type)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 36, ((struct Expression *)__ecereTemp1)->vaArg.exp = exp, ((struct Expression *)__ecereTemp1)->vaArg.typeName = type, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 36, __ecereInstance1->vaArg.exp = exp, __ecereInstance1->vaArg.typeName = type, __ecereInstance1;
+});
 }
 
 struct Specifier * MkSpecifier(int specifier)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Specifier * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier), ((struct Specifier *)__ecereTemp1)->type = 0, ((struct Specifier *)__ecereTemp1)->specifier = specifier, ((struct Specifier *)__ecereTemp1));
+__ecereInstance1->type = 0, __ecereInstance1->specifier = specifier, __ecereInstance1;
+});
 }
 
 struct Specifier * MkSpecifierTypeOf(struct Expression * expression)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Specifier * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier), ((struct Specifier *)__ecereTemp1)->type = 6, ((struct Specifier *)__ecereTemp1)->expression = expression, ((struct Specifier *)__ecereTemp1));
+__ecereInstance1->type = 6, __ecereInstance1->expression = expression, __ecereInstance1;
+});
 }
 
 struct Specifier * MkSpecifierSubClass(struct Specifier * _class)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Specifier * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier), ((struct Specifier *)__ecereTemp1)->type = 7, ((struct Specifier *)__ecereTemp1)->_class = _class, ((struct Specifier *)__ecereTemp1));
+__ecereInstance1->type = 7, __ecereInstance1->_class = _class, __ecereInstance1;
+});
 }
 
 struct Specifier * MkSpecifierExtended(struct ExtDecl * extDecl)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Specifier * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier), ((struct Specifier *)__ecereTemp1)->type = 5, ((struct Specifier *)__ecereTemp1)->extDecl = extDecl, ((struct Specifier *)__ecereTemp1));
+__ecereInstance1->type = 5, __ecereInstance1->extDecl = extDecl, __ecereInstance1;
+});
 }
 
 struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
@@ -1817,7 +1868,6 @@ struct Symbol * FindType(struct Context * ctx, char *  name);
 
 struct Specifier * MkStructOrUnion(int type, struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * definitions)
 {
-void * __ecereTemp1;
 struct Specifier * spec = (spec = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier), spec->type = type, spec->id = id, spec);
 
 if(id && FindType(curContext, id->string))
@@ -1832,7 +1882,11 @@ struct __ecereNameSpace__ecere__sys__OldList specs =
 struct Symbol * symbol;
 
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&specs, spec);
-symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(id->string), ((struct Symbol *)__ecereTemp1)->type = ProcessType(&specs, (((void *)0))), ((struct Symbol *)__ecereTemp1)->isStruct = 0x1, ((struct Symbol *)__ecereTemp1));
+symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(id->string), __ecereInstance1->type = ProcessType(&specs, (((void *)0))), __ecereInstance1->isStruct = 0x1, __ecereInstance1;
+});
 if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->structSymbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
 FreeSymbol(symbol);
 }
@@ -1841,8 +1895,6 @@ return spec;
 
 void AddStructDefinitions(struct Specifier * spec, struct __ecereNameSpace__ecere__sys__OldList * definitions)
 {
-void * __ecereTemp1;
-
 spec->definitions = definitions;
 if(definitions && spec->id && !declMode)
 {
@@ -1853,7 +1905,11 @@ struct __ecereNameSpace__ecere__sys__OldList specs =
 };
 
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&specs, spec);
-symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(spec->id->string), ((struct Symbol *)__ecereTemp1)->type = ProcessType(&specs, (((void *)0))), ((struct Symbol *)__ecereTemp1)->isStruct = 0x1, ((struct Symbol *)__ecereTemp1));
+symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(spec->id->string), __ecereInstance1->type = ProcessType(&specs, (((void *)0))), __ecereInstance1->isStruct = 0x1, __ecereInstance1;
+});
 if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->parent->structSymbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
 FreeSymbol(symbol);
 }
@@ -1861,135 +1917,173 @@ FreeSymbol(symbol);
 
 struct Attribute * MkAttribute(char * attr, struct Expression * exp)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Attribute * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Attribute);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Attribute), ((struct Attribute *)__ecereTemp1)->attr = attr, ((struct Attribute *)__ecereTemp1)->exp = exp, ((struct Attribute *)__ecereTemp1));
+__ecereInstance1->attr = attr, __ecereInstance1->exp = exp, __ecereInstance1;
+});
 }
 
 struct Attrib * MkAttrib(int type, struct __ecereNameSpace__ecere__sys__OldList * attribs)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Attrib * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Attrib);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Attrib), ((struct Attrib *)__ecereTemp1)->type = type, ((struct Attrib *)__ecereTemp1)->attribs = attribs, ((struct Attrib *)__ecereTemp1));
+__ecereInstance1->type = type, __ecereInstance1->attribs = attribs, __ecereInstance1;
+});
 }
 
 struct ExtDecl * MkExtDeclString(char * s)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ExtDecl * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ExtDecl);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ExtDecl), ((struct ExtDecl *)__ecereTemp1)->type = 0, ((struct ExtDecl *)__ecereTemp1)->s = s, ((struct ExtDecl *)__ecereTemp1));
+__ecereInstance1->type = 0, __ecereInstance1->s = s, __ecereInstance1;
+});
 }
 
 struct ExtDecl * MkExtDeclAttrib(struct Attrib * attr)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ExtDecl * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ExtDecl);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ExtDecl), ((struct ExtDecl *)__ecereTemp1)->type = 1, ((struct ExtDecl *)__ecereTemp1)->attr = attr, ((struct ExtDecl *)__ecereTemp1));
+__ecereInstance1->type = 1, __ecereInstance1->attr = attr, __ecereInstance1;
+});
 }
 
 struct Declarator * MkDeclaratorIdentifier(struct Identifier * id)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Declarator * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator), ((struct Declarator *)__ecereTemp1)->type = 1, ((struct Declarator *)__ecereTemp1)->identifier = id, ((struct Declarator *)__ecereTemp1));
+__ecereInstance1->type = 1, __ecereInstance1->identifier = id, __ecereInstance1;
+});
 }
 
 struct Declarator * MkDeclaratorFunction(struct Declarator * declarator, struct __ecereNameSpace__ecere__sys__OldList * parameters)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Declarator * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator), ((struct Declarator *)__ecereTemp1)->type = 4, ((struct Declarator *)__ecereTemp1)->declarator = declarator, ((struct Declarator *)__ecereTemp1)->function.parameters = parameters, ((struct Declarator *)__ecereTemp1));
+__ecereInstance1->type = 4, __ecereInstance1->declarator = declarator, __ecereInstance1->function.parameters = parameters, __ecereInstance1;
+});
 }
 
 struct Declarator * MkDeclaratorExtended(struct ExtDecl * extended, struct Declarator * declarator)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Declarator * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator), ((struct Declarator *)__ecereTemp1)->type = 6, ((struct Declarator *)__ecereTemp1)->declarator = declarator, ((struct Declarator *)__ecereTemp1)->extended.extended = extended, ((struct Declarator *)__ecereTemp1));
+__ecereInstance1->type = 6, __ecereInstance1->declarator = declarator, __ecereInstance1->extended.extended = extended, __ecereInstance1;
+});
 }
 
 struct Declarator * MkDeclaratorExtendedEnd(struct ExtDecl * extended, struct Declarator * declarator)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Declarator * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator), ((struct Declarator *)__ecereTemp1)->type = 7, ((struct Declarator *)__ecereTemp1)->declarator = declarator, ((struct Declarator *)__ecereTemp1)->extended.extended = extended, ((struct Declarator *)__ecereTemp1));
+__ecereInstance1->type = 7, __ecereInstance1->declarator = declarator, __ecereInstance1->extended.extended = extended, __ecereInstance1;
+});
 }
 
 struct Declarator * MkStructDeclarator(struct Declarator * declarator, struct Expression * exp)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Declarator * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator), ((struct Declarator *)__ecereTemp1)->type = 0, ((struct Declarator *)__ecereTemp1)->declarator = declarator, ((struct Declarator *)__ecereTemp1)->structDecl.exp = exp, ((struct Declarator *)__ecereTemp1));
+__ecereInstance1->type = 0, __ecereInstance1->declarator = declarator, __ecereInstance1->structDecl.exp = exp, __ecereInstance1;
+});
 }
 
 struct Declarator * MkDeclaratorBrackets(struct Declarator * declarator)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Declarator * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator), ((struct Declarator *)__ecereTemp1)->type = 2, ((struct Declarator *)__ecereTemp1)->declarator = declarator, ((struct Declarator *)__ecereTemp1));
+__ecereInstance1->type = 2, __ecereInstance1->declarator = declarator, __ecereInstance1;
+});
 }
 
 struct Declarator * MkDeclaratorArray(struct Declarator * declarator, struct Expression * exp)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Declarator * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator), ((struct Declarator *)__ecereTemp1)->type = 3, ((struct Declarator *)__ecereTemp1)->declarator = declarator, ((struct Declarator *)__ecereTemp1)->array.exp = exp, ((struct Declarator *)__ecereTemp1));
+__ecereInstance1->type = 3, __ecereInstance1->declarator = declarator, __ecereInstance1->array.exp = exp, __ecereInstance1;
+});
 }
 
 struct Declarator * MkDeclaratorEnumArray(struct Declarator * declarator, struct Specifier * _class)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Declarator * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator), ((struct Declarator *)__ecereTemp1)->type = 3, ((struct Declarator *)__ecereTemp1)->declarator = declarator, ((struct Declarator *)__ecereTemp1)->array.enumClass = _class, ((struct Declarator *)__ecereTemp1));
+__ecereInstance1->type = 3, __ecereInstance1->declarator = declarator, __ecereInstance1->array.enumClass = _class, __ecereInstance1;
+});
 }
 
 struct Declarator * MkDeclaratorPointer(struct Pointer * pointer, struct Declarator * declarator)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Declarator * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declarator), ((struct Declarator *)__ecereTemp1)->type = 5, ((struct Declarator *)__ecereTemp1)->declarator = declarator, ((struct Declarator *)__ecereTemp1)->pointer.pointer = pointer, ((struct Declarator *)__ecereTemp1));
+__ecereInstance1->type = 5, __ecereInstance1->declarator = declarator, __ecereInstance1->pointer.pointer = pointer, __ecereInstance1;
+});
 }
 
 struct Enumerator * MkEnumerator(struct Identifier * id, struct Expression * exp)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Enumerator * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Enumerator);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Enumerator), ((struct Enumerator *)__ecereTemp1)->id = id, ((struct Enumerator *)__ecereTemp1)->exp = exp, ((struct Enumerator *)__ecereTemp1));
+__ecereInstance1->id = id, __ecereInstance1->exp = exp, __ecereInstance1;
+});
 }
 
 struct Pointer * MkPointer(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Pointer * pointer)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Pointer * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Pointer);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Pointer), ((struct Pointer *)__ecereTemp1)->qualifiers = qualifiers, ((struct Pointer *)__ecereTemp1)->pointer = pointer, ((struct Pointer *)__ecereTemp1));
+__ecereInstance1->qualifiers = qualifiers, __ecereInstance1->pointer = pointer, __ecereInstance1;
+});
 }
 
 struct Initializer * MkInitializerAssignment(struct Expression * exp)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Initializer * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Initializer);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Initializer), ((struct Initializer *)__ecereTemp1)->type = 0, ((struct Initializer *)__ecereTemp1)->exp = exp, ((struct Initializer *)__ecereTemp1)->loc = yylloc, ((struct Initializer *)__ecereTemp1));
+__ecereInstance1->type = 0, __ecereInstance1->exp = exp, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Initializer * MkInitializerList(struct __ecereNameSpace__ecere__sys__OldList * list)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Initializer * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Initializer);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Initializer), ((struct Initializer *)__ecereTemp1)->type = 1, ((struct Initializer *)__ecereTemp1)->list = list, ((struct Initializer *)__ecereTemp1)->loc = yylloc, ((struct Initializer *)__ecereTemp1));
+__ecereInstance1->type = 1, __ecereInstance1->list = list, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct InitDeclarator * MkInitDeclarator(struct Declarator * declarator, struct Initializer * initializer)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct InitDeclarator * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_InitDeclarator);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_InitDeclarator), ((struct InitDeclarator *)__ecereTemp1)->declarator = declarator, ((struct InitDeclarator *)__ecereTemp1)->initializer = initializer, ((struct InitDeclarator *)__ecereTemp1));
+__ecereInstance1->declarator = declarator, __ecereInstance1->initializer = initializer, __ecereInstance1;
+});
 }
 
 struct TypeName * MkTypeName(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Declarator * declarator)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct TypeName * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName), ((struct TypeName *)__ecereTemp1)->qualifiers = qualifiers, ((struct TypeName *)__ecereTemp1)->declarator = declarator, ((struct TypeName *)__ecereTemp1));
+__ecereInstance1->qualifiers = qualifiers, __ecereInstance1->declarator = declarator, __ecereInstance1;
+});
 }
 
 struct Identifier * GetDeclId(struct Declarator * decl)
@@ -2001,9 +2095,11 @@ return decl ? decl->identifier : (((void *)0));
 
 struct Declaration * MkDeclarationClassInst(struct Instantiation * inst)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Declaration * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declaration);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declaration), ((struct Declaration *)__ecereTemp1)->type = 2, ((struct Declaration *)__ecereTemp1)->inst = inst, ((struct Declaration *)__ecereTemp1)->loc = yylloc, ((struct Declaration *)__ecereTemp1));
+__ecereInstance1->type = 2, __ecereInstance1->inst = inst, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 extern struct Context * globalContext;
@@ -2014,7 +2110,6 @@ extern struct __ecereNameSpace__ecere__sys__OldList *  excludedSymbols;
 
 struct Declaration * MkDeclarationInst(struct Instantiation * inst)
 {
-void * __ecereTemp1;
 struct Declaration * decl = (decl = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declaration), decl->type = 2, decl->inst = inst, decl->loc = yylloc, decl);
 struct Symbol * symbol;
 
@@ -2044,7 +2139,11 @@ name[len] = (char)0;
 (__ecereNameSpace__ecere__com__eSystem_Delete(inst->exp->identifier->string), inst->exp->identifier->string = 0);
 inst->exp->identifier->string = __ecereNameSpace__ecere__sys__CopyString(name);
 }
-symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = (inst->exp->type == 0) ? __ecereNameSpace__ecere__sys__CopyString(inst->exp->identifier->string) : (((void *)0)), ((struct Symbol *)__ecereTemp1)->type = MkClassTypeSymbol(inst->_class->symbol), ((struct Symbol *)__ecereTemp1));
+symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = (inst->exp->type == 0) ? __ecereNameSpace__ecere__sys__CopyString(inst->exp->identifier->string) : (((void *)0)), __ecereInstance1->type = MkClassTypeSymbol(inst->_class->symbol), __ecereInstance1;
+});
 symbol->idCode = symbol->id = curContext->nextID++;
 if(strstr(symbol->string, "::"))
 curContext->hasNameSpace = 0x1;
@@ -2120,7 +2219,6 @@ struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ec
 
 struct Declaration * MkDeclaration(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct __ecereNameSpace__ecere__sys__OldList * initDeclarators)
 {
-void * __ecereTemp1;
 struct Declaration * decl = (decl = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declaration), decl->type = 1, decl->declarators = initDeclarators, decl->specifiers = specifiers, decl->loc = yylloc, decl);
 unsigned int variable = 0x1;
 
@@ -2214,7 +2312,11 @@ id->string = __ecereNameSpace__ecere__sys__CopyString(name);
 symbol = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(curContext->templateTypesOnly ? curContext->parent : curContext)->symbols, id->string);
 if(!symbol)
 {
-symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(id->string), ((struct Symbol *)__ecereTemp1)->type = ProcessType(specifiers, d->declarator), ((struct Symbol *)__ecereTemp1));
+symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(id->string), __ecereInstance1->type = ProcessType(specifiers, d->declarator), __ecereInstance1;
+});
 if(strstr(symbol->string, "::"))
 curContext->hasNameSpace = 0x1;
 if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(curContext->templateTypesOnly ? curContext->parent : curContext)->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
@@ -2270,123 +2372,157 @@ return decl;
 
 struct Declaration * MkStructDeclaration(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct __ecereNameSpace__ecere__sys__OldList * declarators, struct Specifier * extStorage)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Declaration * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declaration);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declaration), ((struct Declaration *)__ecereTemp1)->type = 0, ((struct Declaration *)__ecereTemp1)->declarators = declarators, ((struct Declaration *)__ecereTemp1)->specifiers = specifiers, ((struct Declaration *)__ecereTemp1)->extStorage = extStorage, ((struct Declaration *)__ecereTemp1)->loc = yylloc, ((struct Declaration *)__ecereTemp1));
+__ecereInstance1->type = 0, __ecereInstance1->declarators = declarators, __ecereInstance1->specifiers = specifiers, __ecereInstance1->extStorage = extStorage, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkLabeledStmt(struct Identifier * id, struct Statement * statement)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 0, ((struct Statement *)__ecereTemp1)->labeled.id = id, ((struct Statement *)__ecereTemp1)->labeled.stmt = statement, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 0, __ecereInstance1->labeled.id = id, __ecereInstance1->labeled.stmt = statement, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkCaseStmt(struct Expression * exp, struct Statement * statement)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 1, ((struct Statement *)__ecereTemp1)->caseStmt.exp = exp, ((struct Statement *)__ecereTemp1)->caseStmt.stmt = statement, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 1, __ecereInstance1->caseStmt.exp = exp, __ecereInstance1->caseStmt.stmt = statement, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkCompoundStmt(struct __ecereNameSpace__ecere__sys__OldList * declarations, struct __ecereNameSpace__ecere__sys__OldList * statements)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 2, ((struct Statement *)__ecereTemp1)->compound.declarations = declarations, ((struct Statement *)__ecereTemp1)->compound.statements = statements, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 2, __ecereInstance1->compound.declarations = declarations, __ecereInstance1->compound.statements = statements, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkExpressionStmt(struct __ecereNameSpace__ecere__sys__OldList * expressions)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 3, ((struct Statement *)__ecereTemp1)->expressions = expressions, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 3, __ecereInstance1->expressions = expressions, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkBadDeclStmt(struct Declaration * decl)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 14, ((struct Statement *)__ecereTemp1)->decl = decl, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 14, __ecereInstance1->decl = decl, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkIfStmt(struct __ecereNameSpace__ecere__sys__OldList * exp, struct Statement * statement, struct Statement * elseStmt)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 4, ((struct Statement *)__ecereTemp1)->ifStmt.exp = exp, ((struct Statement *)__ecereTemp1)->ifStmt.stmt = statement, ((struct Statement *)__ecereTemp1)->ifStmt.elseStmt = elseStmt, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 4, __ecereInstance1->ifStmt.exp = exp, __ecereInstance1->ifStmt.stmt = statement, __ecereInstance1->ifStmt.elseStmt = elseStmt, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkSwitchStmt(struct __ecereNameSpace__ecere__sys__OldList * exp, struct Statement * statement)
 {
-void * __ecereTemp1;
-
 if(statement)
 statement->compound.isSwitch = 0x1;
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 5, ((struct Statement *)__ecereTemp1)->switchStmt.exp = exp, ((struct Statement *)__ecereTemp1)->switchStmt.stmt = statement, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
+
+__ecereInstance1->type = 5, __ecereInstance1->switchStmt.exp = exp, __ecereInstance1->switchStmt.stmt = statement, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkWhileStmt(struct __ecereNameSpace__ecere__sys__OldList * exp, struct Statement * statement)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 6, ((struct Statement *)__ecereTemp1)->whileStmt.exp = exp, ((struct Statement *)__ecereTemp1)->whileStmt.stmt = statement, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 6, __ecereInstance1->whileStmt.exp = exp, __ecereInstance1->whileStmt.stmt = statement, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkDoWhileStmt(struct Statement * statement, struct __ecereNameSpace__ecere__sys__OldList * exp)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 7, ((struct Statement *)__ecereTemp1)->doWhile.exp = exp, ((struct Statement *)__ecereTemp1)->doWhile.stmt = statement, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 7, __ecereInstance1->doWhile.exp = exp, __ecereInstance1->doWhile.stmt = statement, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkForStmt(struct Statement * init, struct Statement * check, struct __ecereNameSpace__ecere__sys__OldList * inc, struct Statement * statement)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 8, ((struct Statement *)__ecereTemp1)->forStmt.init = init, ((struct Statement *)__ecereTemp1)->forStmt.check = check, ((struct Statement *)__ecereTemp1)->forStmt.increment = inc, ((struct Statement *)__ecereTemp1)->forStmt.stmt = statement, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 8, __ecereInstance1->forStmt.init = init, __ecereInstance1->forStmt.check = check, __ecereInstance1->forStmt.increment = inc, __ecereInstance1->forStmt.stmt = statement, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkForEachStmt(struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * exp, struct __ecereNameSpace__ecere__sys__OldList * filter, struct Statement * statement)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 18, ((struct Statement *)__ecereTemp1)->forEachStmt.id = id, ((struct Statement *)__ecereTemp1)->forEachStmt.exp = exp, ((struct Statement *)__ecereTemp1)->forEachStmt.filter = filter, ((struct Statement *)__ecereTemp1)->forEachStmt.stmt = statement, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 18, __ecereInstance1->forEachStmt.id = id, __ecereInstance1->forEachStmt.exp = exp, __ecereInstance1->forEachStmt.filter = filter, __ecereInstance1->forEachStmt.stmt = statement, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkGotoStmt(struct Identifier * id)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 9, ((struct Statement *)__ecereTemp1)->gotoStmt.id = id, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 9, __ecereInstance1->gotoStmt.id = id, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkContinueStmt()
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 10, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 10, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkBreakStmt()
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 11, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 11, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct Statement * MkReturnStmt(struct __ecereNameSpace__ecere__sys__OldList * exp)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 12, ((struct Statement *)__ecereTemp1)->expressions = exp, ((struct Statement *)__ecereTemp1)->loc = yylloc, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 12, __ecereInstance1->expressions = exp, __ecereInstance1->loc = yylloc, __ecereInstance1;
+});
 }
 
 struct FunctionDefinition * MkFunction(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Declarator * declarator, struct __ecereNameSpace__ecere__sys__OldList * declarationList)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct FunctionDefinition * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_FunctionDefinition);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_FunctionDefinition), ((struct FunctionDefinition *)__ecereTemp1)->specifiers = specifiers, ((struct FunctionDefinition *)__ecereTemp1)->declarator = declarator, ((struct FunctionDefinition *)__ecereTemp1)->declarations = declarationList, ((struct FunctionDefinition *)__ecereTemp1));
+__ecereInstance1->specifiers = specifiers, __ecereInstance1->declarator = declarator, __ecereInstance1->declarations = declarationList, __ecereInstance1;
+});
 }
 
 extern struct Declarator * GetFuncDecl(struct Declarator * decl);
@@ -2403,7 +2539,6 @@ void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(struct __ecereNa
 
 void ProcessFunctionBody(struct FunctionDefinition * func, struct Statement * body)
 {
-void * __ecereTemp1;
 struct Declarator * declarator = func->declarator;
 struct Declarator * funcDecl = GetFuncDecl(declarator);
 struct Symbol * symbol;
@@ -2429,7 +2564,11 @@ if(!strcmp(symbol->string, string))
 break;
 if(!symbol && id)
 {
-symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(id->string), ((struct Symbol *)__ecereTemp1)->type = ProcessType(param->qualifiers, param->declarator), ((struct Symbol *)__ecereTemp1)->isParam = 0x1, ((struct Symbol *)__ecereTemp1));
+symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(id->string), __ecereInstance1->type = ProcessType(param->qualifiers, param->declarator), __ecereInstance1->isParam = 0x1, __ecereInstance1;
+});
 if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&context->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
 symbol->id = context->nextID++;
@@ -2469,7 +2608,11 @@ name[len] = (char)0;
 (__ecereNameSpace__ecere__com__eSystem_Delete(id->string), id->string = 0);
 id->string = __ecereNameSpace__ecere__sys__CopyString(name);
 }
-symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(id->string), ((struct Symbol *)__ecereTemp1)->type = ProcessType(func->specifiers, declarator), ((struct Symbol *)__ecereTemp1));
+symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(id->string), __ecereInstance1->type = ProcessType(func->specifiers, declarator), __ecereInstance1;
+});
 symbol->idCode = symbol->id = globalContext->nextID++;
 if(strstr(symbol->string, "::"))
 globalContext->hasNameSpace = 0x1;
@@ -2604,8 +2747,6 @@ void *  data;
 
 void SetClassTemplateArgs(struct Specifier * spec, struct __ecereNameSpace__ecere__sys__OldList * templateArgs)
 {
-void * __ecereTemp1;
-
 if(spec->type == 1)
 {
 struct Symbol * symbol = spec->symbol;
@@ -2677,7 +2818,11 @@ if(!symbol && spec->symbol)
 symbol = _DeclClass((((int)0x7fffffff)), templateString);
 }
 if(spec->symbol)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&spec->symbol->templatedClasses, (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_OldLink), ((struct __ecereNameSpace__ecere__sys__OldLink *)__ecereTemp1)->data = symbol, ((struct __ecereNameSpace__ecere__sys__OldLink *)__ecereTemp1)));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&spec->symbol->templatedClasses, __extension__ ({
+struct __ecereNameSpace__ecere__sys__OldLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_OldLink);
+
+__ecereInstance1->data = symbol, __ecereInstance1;
+}));
 (__ecereNameSpace__ecere__com__eSystem_Delete(spec->name), spec->name = 0);
 spec->symbol = symbol;
 spec->name = __ecereNameSpace__ecere__sys__CopyString(symbol ? symbol->string : templateString);
@@ -2744,9 +2889,11 @@ return _MkSpecifierName(name, (((void *)0)), templateArgs);
 
 struct ClassFunction * MkClassFunction(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Specifier * _class, struct Declarator * decl, struct __ecereNameSpace__ecere__sys__OldList * declList)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ClassFunction * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassFunction);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassFunction), ((struct ClassFunction *)__ecereTemp1)->specifiers = specifiers, ((struct ClassFunction *)__ecereTemp1)->declarator = decl, ((struct ClassFunction *)__ecereTemp1)->declarations = declList, ((struct ClassFunction *)__ecereTemp1));
+__ecereInstance1->specifiers = specifiers, __ecereInstance1->declarator = decl, __ecereInstance1->declarations = declList, __ecereInstance1;
+});
 }
 
 extern struct Specifier * CopySpecifier(struct Specifier * spec);
@@ -2755,7 +2902,6 @@ extern void FreeSpecifier(struct Specifier * spec);
 
 void ProcessClassFunctionBody(struct ClassFunction * func, struct Statement * body)
 {
-void * __ecereTemp1;
 struct Symbol * symbol;
 struct Declarator * decl = func->declarator;
 struct Declarator * funcDecl = GetFuncDecl(func->declarator);
@@ -2784,7 +2930,11 @@ symbol = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree
 }
 if(!symbol && id)
 {
-symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(id->string), ((struct Symbol *)__ecereTemp1)->type = ProcessType(param->qualifiers, param->declarator), ((struct Symbol *)__ecereTemp1)->isParam = 0x1, ((struct Symbol *)__ecereTemp1));
+symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(id->string), __ecereInstance1->type = ProcessType(param->qualifiers, param->declarator), __ecereInstance1->isParam = 0x1, __ecereInstance1;
+});
 symbol->idCode = symbol->id = context->nextID++;
 if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&context->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
@@ -2842,9 +2992,11 @@ return list;
 
 struct MemberInit * MkMemberInit(struct __ecereNameSpace__ecere__sys__OldList * ids, struct Initializer * initializer)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct MemberInit * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_MemberInit);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_MemberInit), ((struct MemberInit *)__ecereTemp1)->identifiers = ids, ((struct MemberInit *)__ecereTemp1)->initializer = initializer, ((struct MemberInit *)__ecereTemp1));
+__ecereInstance1->identifiers = ids, __ecereInstance1->initializer = initializer, __ecereInstance1;
+});
 }
 
 extern void FreeExpression(struct Expression * exp);
@@ -2870,23 +3022,29 @@ return init;
 
 struct MembersInit * MkMembersInitList(struct __ecereNameSpace__ecere__sys__OldList * dataMembers)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct MembersInit * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_MembersInit);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_MembersInit), ((struct MembersInit *)__ecereTemp1)->type = 0, ((struct MembersInit *)__ecereTemp1)->dataMembers = dataMembers, ((struct MembersInit *)__ecereTemp1));
+__ecereInstance1->type = 0, __ecereInstance1->dataMembers = dataMembers, __ecereInstance1;
+});
 }
 
 struct MembersInit * MkMembersInitMethod(struct ClassFunction * function)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct MembersInit * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_MembersInit);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_MembersInit), ((struct MembersInit *)__ecereTemp1)->type = 1, ((struct MembersInit *)__ecereTemp1)->function = function, ((struct MembersInit *)__ecereTemp1));
+__ecereInstance1->type = 1, __ecereInstance1->function = function, __ecereInstance1;
+});
 }
 
 struct Instantiation * MkInstantiation(struct Specifier * _class, struct Expression * exp, struct __ecereNameSpace__ecere__sys__OldList * members)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Instantiation * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Instantiation);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Instantiation), ((struct Instantiation *)__ecereTemp1)->_class = _class, ((struct Instantiation *)__ecereTemp1)->exp = exp, ((struct Instantiation *)__ecereTemp1)->members = members, ((struct Instantiation *)__ecereTemp1));
+__ecereInstance1->_class = _class, __ecereInstance1->exp = exp, __ecereInstance1->members = members, __ecereInstance1;
+});
 }
 
 extern void Compiler_Error(char *  format, ...);
@@ -2918,65 +3076,83 @@ return inst;
 
 struct ClassDef * MkClassDefAccessOverride(int access, struct Identifier * id)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef), ((struct ClassDef *)__ecereTemp1)->type = 13, ((struct ClassDef *)__ecereTemp1)->id = id, ((struct ClassDef *)__ecereTemp1)->memberAccess = access, ((struct ClassDef *)__ecereTemp1));
+__ecereInstance1->type = 13, __ecereInstance1->id = id, __ecereInstance1->memberAccess = access, __ecereInstance1;
+});
 }
 
 struct ClassDef * MkClassDefMemberAccess()
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef), ((struct ClassDef *)__ecereTemp1)->type = 12, ((struct ClassDef *)__ecereTemp1));
+__ecereInstance1->type = 12, __ecereInstance1;
+});
 }
 
 struct ClassDef * MkClassDefDeclaration(struct Declaration * decl)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef), ((struct ClassDef *)__ecereTemp1)->type = 2, ((struct ClassDef *)__ecereTemp1)->decl = decl, ((struct ClassDef *)__ecereTemp1));
+__ecereInstance1->type = 2, __ecereInstance1->decl = decl, __ecereInstance1;
+});
 }
 
 struct ClassDef * MkClassDefClassData(struct Declaration * decl)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef), ((struct ClassDef *)__ecereTemp1)->type = 9, ((struct ClassDef *)__ecereTemp1)->decl = decl, ((struct ClassDef *)__ecereTemp1));
+__ecereInstance1->type = 9, __ecereInstance1->decl = decl, __ecereInstance1;
+});
 }
 
 struct ClassDef * MkClassDefDesigner(char * designer)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef), ((struct ClassDef *)__ecereTemp1)->type = 5, ((struct ClassDef *)__ecereTemp1)->designer = __ecereNameSpace__ecere__sys__CopyString(designer), ((struct ClassDef *)__ecereTemp1));
+__ecereInstance1->type = 5, __ecereInstance1->designer = __ecereNameSpace__ecere__sys__CopyString(designer), __ecereInstance1;
+});
 }
 
 struct ClassDef * MkClassDefNoExpansion()
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef), ((struct ClassDef *)__ecereTemp1)->type = 6, ((struct ClassDef *)__ecereTemp1));
+__ecereInstance1->type = 6, __ecereInstance1;
+});
 }
 
 struct ClassDef * MkClassDefFixed()
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef), ((struct ClassDef *)__ecereTemp1)->type = 7, ((struct ClassDef *)__ecereTemp1));
+__ecereInstance1->type = 7, __ecereInstance1;
+});
 }
 
 struct ClassDef * MkClassDefDesignerDefaultProperty(struct Identifier * id)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef), ((struct ClassDef *)__ecereTemp1)->type = 8, ((struct ClassDef *)__ecereTemp1)->defaultProperty = id, ((struct ClassDef *)__ecereTemp1));
+__ecereInstance1->type = 8, __ecereInstance1->defaultProperty = id, __ecereInstance1;
+});
 }
 
 struct ClassDef * MkClassDefDefaultProperty(struct __ecereNameSpace__ecere__sys__OldList * defProperties)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef), ((struct ClassDef *)__ecereTemp1)->type = 1, ((struct ClassDef *)__ecereTemp1)->defProperties = defProperties, ((struct ClassDef *)__ecereTemp1));
+__ecereInstance1->type = 1, __ecereInstance1->defProperties = defProperties, __ecereInstance1;
+});
 }
 
 extern void FreeClassFunction(struct ClassFunction * func);
@@ -3046,14 +3222,17 @@ return DeclClassAddNameSpace(symbolID, name);
 
 struct Symbol * _DeclClass(int symbolID, char * name)
 {
-void * __ecereTemp1;
 struct Symbol * symbol = FindClass(name);
 
 if(!symbol)
 {
 if(name[0] == ':' && name[1] == ':')
 name += 2;
-symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(name), ((struct Symbol *)__ecereTemp1)->idCode = symbolID, ((struct Symbol *)__ecereTemp1)->id = symbolID, ((struct Symbol *)__ecereTemp1));
+symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(name), __ecereInstance1->idCode = symbolID, __ecereInstance1->id = symbolID, __ecereInstance1;
+});
 if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->classes, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
 {
@@ -3097,8 +3276,6 @@ void *  param;
 
 void SetupBaseSpecs(struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * baseSpecs)
 {
-void * __ecereTemp1;
-
 if(baseSpecs && baseSpecs->first && ((struct Specifier *)baseSpecs->first)->type == 1)
 {
 char name[1024];
@@ -3139,9 +3316,17 @@ struct TemplatedType * type;
 
 if(!param)
 {
-p->param = param = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplateParameter), ((struct TemplateParameter *)__ecereTemp1)->identifier = MkIdentifier(p->name), ((struct TemplateParameter *)__ecereTemp1)->type = p->type, ((struct TemplateParameter *)__ecereTemp1)->dataTypeString = p->dataTypeString, ((struct TemplateParameter *)__ecereTemp1));
+p->param = param = __extension__ ({
+struct TemplateParameter * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplateParameter);
+
+__ecereInstance1->identifier = MkIdentifier(p->name), __ecereInstance1->type = p->type, __ecereInstance1->dataTypeString = p->dataTypeString, __ecereInstance1;
+});
 }
-type = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplatedType), ((struct TemplatedType *)__ecereTemp1)->key = (uintptr_t)p->name, ((struct TemplatedType *)__ecereTemp1)->param = param, ((struct TemplatedType *)__ecereTemp1));
+type = __extension__ ({
+struct TemplatedType * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplatedType);
+
+__ecereInstance1->key = (uintptr_t)p->name, __ecereInstance1->param = param, __ecereInstance1;
+});
 if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->templateTypes, (struct __ecereNameSpace__ecere__sys__BTNode *)type))
 ((type ? (__ecereClass_TemplatedType->Destructor ? __ecereClass_TemplatedType->Destructor(type) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor(type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
 }
@@ -3159,7 +3344,6 @@ extern void FreeContext(struct Context * context);
 
 struct ClassDefinition * MkClass(struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * baseSpecs, struct __ecereNameSpace__ecere__sys__OldList * definitions)
 {
-void * __ecereTemp1;
 struct ClassDefinition * classDef;
 
 SetupBaseSpecs(symbol, baseSpecs);
@@ -3185,30 +3369,37 @@ FreeContext(symbol->ctx);
 ((symbol->ctx ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor(symbol->ctx) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(symbol->ctx)) : 0), symbol->ctx = 0);
 }
 symbol->ctx = curContext;
-classDef = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDefinition), ((struct ClassDefinition *)__ecereTemp1)->symbol = symbol, ((struct ClassDefinition *)__ecereTemp1)->_class = MkSpecifierName(symbol->string), ((struct ClassDefinition *)__ecereTemp1)->baseSpecs = baseSpecs, ((struct ClassDefinition *)__ecereTemp1)->definitions = definitions, ((struct ClassDefinition *)__ecereTemp1)->nameLoc = symbol->nameLoc, ((struct ClassDefinition *)__ecereTemp1));
+classDef = __extension__ ({
+struct ClassDefinition * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDefinition);
+
+__ecereInstance1->symbol = symbol, __ecereInstance1->_class = MkSpecifierName(symbol->string), __ecereInstance1->baseSpecs = baseSpecs, __ecereInstance1->definitions = definitions, __ecereInstance1->nameLoc = symbol->nameLoc, __ecereInstance1;
+});
 curContext->classDef = classDef;
 return classDef;
 }
 
 struct Expression * MkExpInstance(struct Instantiation * inst)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 1, ((struct Expression *)__ecereTemp1)->instance = inst, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 1, __ecereInstance1->instance = inst, __ecereInstance1;
+});
 }
 
 struct External * MkExternalClass(struct ClassDefinition * _class)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct External * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_External);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_External), ((struct External *)__ecereTemp1)->type = 2, ((struct External *)__ecereTemp1)->_class = _class, ((struct External *)__ecereTemp1)->symbol = _class->symbol, ((struct External *)__ecereTemp1));
+__ecereInstance1->type = 2, __ecereInstance1->_class = _class, __ecereInstance1->symbol = _class->symbol, __ecereInstance1;
+});
 }
 
 extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 
 struct PropertyDef * MkProperty(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl, struct Identifier * id, struct Statement * setStmt, struct Statement * getStmt)
 {
-void * __ecereTemp1;
 struct PropertyDef * prop = (prop = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_PropertyDef), prop->specifiers = specs, prop->declarator = decl, prop->setStmt = setStmt, prop->getStmt = getStmt, prop);
 struct Symbol * symbol;
 struct Type * type = ProcessType(specs, decl);
@@ -3223,7 +3414,11 @@ id = MkIdentifier(typeString);
 prop->conversion = 0x1;
 }
 prop->id = id;
-symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(id->string), ((struct Symbol *)__ecereTemp1)->type = type, ((struct Symbol *)__ecereTemp1));
+symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(id->string), __ecereInstance1->type = type, __ecereInstance1;
+});
 symbol->idCode = symbol->id = globalContext->nextID++;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
 globalContext->nextID++;
@@ -3234,23 +3429,29 @@ return prop;
 
 struct ClassDef * MkClassDefProperty(struct PropertyDef * propertyDef)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef), ((struct ClassDef *)__ecereTemp1)->type = 3, ((struct ClassDef *)__ecereTemp1)->propertyDef = propertyDef, ((struct ClassDef *)__ecereTemp1));
+__ecereInstance1->type = 3, __ecereInstance1->propertyDef = propertyDef, __ecereInstance1;
+});
 }
 
 struct ClassDef * MkClassDefClassProperty(struct PropertyDef * propertyDef)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef), ((struct ClassDef *)__ecereTemp1)->type = 10, ((struct ClassDef *)__ecereTemp1)->propertyDef = propertyDef, ((struct ClassDef *)__ecereTemp1));
+__ecereInstance1->type = 10, __ecereInstance1->propertyDef = propertyDef, __ecereInstance1;
+});
 }
 
 struct ClassDef * MkClassDefClassPropertyValue(struct Identifier * id, struct Initializer * initializer)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef), ((struct ClassDef *)__ecereTemp1)->type = 11, ((struct ClassDef *)__ecereTemp1)->id = id, ((struct ClassDef *)__ecereTemp1)->initializer = initializer, ((struct ClassDef *)__ecereTemp1));
+__ecereInstance1->type = 11, __ecereInstance1->id = id, __ecereInstance1->initializer = initializer, __ecereInstance1;
+});
 }
 
 int CheckType(char * text)
@@ -3383,7 +3584,6 @@ extern struct __ecereNameSpace__ecere__sys__OldList *  imports;
 
 struct ModuleImport * FindModule(struct __ecereNameSpace__ecere__com__Instance * moduleToFind)
 {
-void * __ecereTemp1;
 struct ModuleImport * module;
 
 if(!((struct __ecereNameSpace__ecere__com__Module *)(((char *)moduleToFind + structSize_Instance)))->name)
@@ -3393,7 +3593,11 @@ if(module->name && !strcmp(module->name, ((struct __ecereNameSpace__ecere__com__
 break;
 if(!module)
 {
-module = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleImport), ((struct ModuleImport *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(((struct __ecereNameSpace__ecere__com__Module *)(((char *)moduleToFind + structSize_Instance)))->name), ((struct ModuleImport *)__ecereTemp1)->importType = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)moduleToFind + structSize_Instance)))->importType, ((struct ModuleImport *)__ecereTemp1)->importAccess = ModuleAccess(privateModule, moduleToFind) ? 1 : 2, ((struct ModuleImport *)__ecereTemp1));
+module = __extension__ ({
+struct ModuleImport * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleImport);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(((struct __ecereNameSpace__ecere__com__Module *)(((char *)moduleToFind + structSize_Instance)))->name), __ecereInstance1->importType = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)moduleToFind + structSize_Instance)))->importType, __ecereInstance1->importAccess = ModuleAccess(privateModule, moduleToFind) ? 1 : 2, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*imports), module);
 }
 return module;
@@ -3403,7 +3607,6 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com
 
 struct Symbol * FindClass(char * name)
 {
-void * __ecereTemp1;
 struct Symbol * cl = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * _class;
 unsigned int global = 0x0;
@@ -3461,7 +3664,11 @@ name = _class->fullName;
 cl = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&globalContext->classes, name);
 if(!cl)
 {
-cl = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(name), ((struct Symbol *)__ecereTemp1)->registered = _class, ((struct Symbol *)__ecereTemp1)->id = (((int)0x7fffffff)), ((struct Symbol *)__ecereTemp1)->idCode = (((int)0x7fffffff)), ((struct Symbol *)__ecereTemp1)->imported = 0x1, ((struct Symbol *)__ecereTemp1));
+cl = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(name), __ecereInstance1->registered = _class, __ecereInstance1->id = (((int)0x7fffffff)), __ecereInstance1->idCode = (((int)0x7fffffff)), __ecereInstance1->imported = 0x1, __ecereInstance1;
+});
 _class->symbol = cl;
 if(_class->module)
 cl->module = FindModule(_class->module);
@@ -3493,8 +3700,6 @@ void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(struct __ecereNam
 
 void CopyTypeInto(struct Type * type, struct Type * src)
 {
-void * __ecereTemp1;
-
 *type = *src;
 type->name = __ecereNameSpace__ecere__sys__CopyString(src->name);
 type->enumName = __ecereNameSpace__ecere__sys__CopyString(src->enumName);
@@ -3506,7 +3711,11 @@ struct __ecereNameSpace__ecere__sys__NamedLink * member;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(&type->members);
 for(member = src->members.first; member; member = member->next)
 {
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&type->members, (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_NamedLink), ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(member->name), ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)->data = member->data, ((struct __ecereNameSpace__ecere__sys__NamedLink *)__ecereTemp1)));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&type->members, __extension__ ({
+struct __ecereNameSpace__ecere__sys__NamedLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_NamedLink);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(member->name), __ecereInstance1->data = member->data, __ecereInstance1;
+}));
 }
 }
 else if(src->kind == 9 || src->kind == 10)
@@ -3545,7 +3754,6 @@ extern struct Symbol * FindSymbol(char *  name, struct Context * startContext, s
 
 struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl)
 {
-void * __ecereTemp1;
 struct Type * type = (((void *)0));
 unsigned int isTypedef = 0x0;
 
@@ -3558,7 +3766,11 @@ unsigned int dllExport = 0x0;
 specType->kind = 3;
 specType->isSigned = 0x1;
 specType->refCount = 1;
-type = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
+type = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1;
+});
 while(decl && (decl->type == 0 || decl->type == 6 || decl->type == 7))
 {
 if(decl->type == 0 && decl->structDecl.exp)
@@ -3599,7 +3811,11 @@ specType->keepCast = 0x1;
 if(spec->specifier != CONST && (specType->kind == 9 || specType->kind == 10))
 {
 FreeType(specType);
-specType = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->kind = 3, ((struct Type *)__ecereTemp1)->isSigned = 0x1, ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
+specType = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->kind = 3, __ecereInstance1->isSigned = 0x1, __ecereInstance1->refCount = 1, __ecereInstance1;
+});
 }
 if(spec->type == 0)
 {
@@ -3865,16 +4081,28 @@ ptrType->kind = 13;
 pointer = pointer->pointer;
 if(pointer)
 {
-ptrType->type = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
+ptrType->type = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1;
+});
 ptrType = ptrType->type;
 }
 }
-ptrType->type = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
+ptrType->type = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1;
+});
 *ptrType->type = *specType;
 }
 else
 {
-funcType->returnType = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
+funcType->returnType = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1;
+});
 *funcType->returnType = *specType;
 }
 while(d && (d->type == 2 || d->type == 6 || d->type == 7))
@@ -3920,7 +4148,11 @@ ptrType->kind = 13;
 pointer = pointer->pointer;
 if(pointer)
 {
-ptrType->type = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
+ptrType->type = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1;
+});
 ptrType = ptrType->type;
 }
 }
@@ -3934,7 +4166,11 @@ ptrType = type;
 while(pointer)
 {
 ptrType->kind = 13;
-ptrType->type = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
+ptrType->type = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1;
+});
 pointer = pointer->pointer;
 if(pointer)
 ptrType = ptrType->type;
@@ -4044,7 +4280,11 @@ ptrType->kind = 13;
 pointer = pointer->pointer;
 if(pointer)
 {
-ptrType->type = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
+ptrType->type = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1;
+});
 ptrType = ptrType->type;
 }
 }
@@ -4071,7 +4311,11 @@ ptrType->kind = 13;
 pointer = pointer->pointer;
 if(pointer)
 {
-ptrType->type = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
+ptrType->type = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1;
+});
 ptrType = ptrType->type;
 }
 }
@@ -4186,142 +4430,182 @@ return (((void *)0));
 
 struct AsmField * MkAsmField(char * command, struct Expression * expression)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct AsmField * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_AsmField);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_AsmField), ((struct AsmField *)__ecereTemp1)->command = command, ((struct AsmField *)__ecereTemp1)->expression = expression, ((struct AsmField *)__ecereTemp1));
+__ecereInstance1->command = command, __ecereInstance1->expression = expression, __ecereInstance1;
+});
 }
 
 struct Statement * MkAsmStmt(struct Specifier * spec, char * statements, struct __ecereNameSpace__ecere__sys__OldList * inputFields, struct __ecereNameSpace__ecere__sys__OldList * outputFields, struct __ecereNameSpace__ecere__sys__OldList * clobberedFields)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 13, ((struct Statement *)__ecereTemp1)->asmStmt.spec = spec, ((struct Statement *)__ecereTemp1)->asmStmt.statements = statements, ((struct Statement *)__ecereTemp1)->asmStmt.inputFields = inputFields, ((struct Statement *)__ecereTemp1)->asmStmt.outputFields = outputFields, ((struct Statement *)__ecereTemp1)->asmStmt.clobberedFields = clobberedFields, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 13, __ecereInstance1->asmStmt.spec = spec, __ecereInstance1->asmStmt.statements = statements, __ecereInstance1->asmStmt.inputFields = inputFields, __ecereInstance1->asmStmt.outputFields = outputFields, __ecereInstance1->asmStmt.clobberedFields = clobberedFields, __ecereInstance1;
+});
 }
 
 struct ClassDef * MkClassDefPropertyWatch(struct PropertyWatch * watcher)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef), ((struct ClassDef *)__ecereTemp1)->type = 4, ((struct ClassDef *)__ecereTemp1)->propertyWatch = watcher, ((struct ClassDef *)__ecereTemp1));
+__ecereInstance1->type = 4, __ecereInstance1->propertyWatch = watcher, __ecereInstance1;
+});
 }
 
 struct Statement * MkFireWatchersStmt(struct Expression * object, struct __ecereNameSpace__ecere__sys__OldList * watches)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 15, ((struct Statement *)__ecereTemp1)->_watch.object = object, ((struct Statement *)__ecereTemp1)->_watch.watches = watches, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 15, __ecereInstance1->_watch.object = object, __ecereInstance1->_watch.watches = watches, __ecereInstance1;
+});
 }
 
 struct Statement * MkStopWatchingStmt(struct Expression * watcher, struct Expression * object, struct __ecereNameSpace__ecere__sys__OldList * watches)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 16, ((struct Statement *)__ecereTemp1)->_watch.watcher = watcher, ((struct Statement *)__ecereTemp1)->_watch.object = object, ((struct Statement *)__ecereTemp1)->_watch.watches = watches, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 16, __ecereInstance1->_watch.watcher = watcher, __ecereInstance1->_watch.object = object, __ecereInstance1->_watch.watches = watches, __ecereInstance1;
+});
 }
 
 struct Statement * MkWatchStmt(struct Expression * watcher, struct Expression * object, struct __ecereNameSpace__ecere__sys__OldList * watches)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Statement * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Statement), ((struct Statement *)__ecereTemp1)->type = 17, ((struct Statement *)__ecereTemp1)->_watch.watcher = watcher, ((struct Statement *)__ecereTemp1)->_watch.object = object, ((struct Statement *)__ecereTemp1)->_watch.watches = watches, ((struct Statement *)__ecereTemp1));
+__ecereInstance1->type = 17, __ecereInstance1->_watch.watcher = watcher, __ecereInstance1->_watch.object = object, __ecereInstance1->_watch.watches = watches, __ecereInstance1;
+});
 }
 
 struct PropertyWatch * MkDeleteWatch(struct Statement * compound)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct PropertyWatch * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_PropertyWatch);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_PropertyWatch), ((struct PropertyWatch *)__ecereTemp1)->compound = compound, ((struct PropertyWatch *)__ecereTemp1)->deleteWatch = 0x1, ((struct PropertyWatch *)__ecereTemp1));
+__ecereInstance1->compound = compound, __ecereInstance1->deleteWatch = 0x1, __ecereInstance1;
+});
 }
 
 struct PropertyWatch * MkPropertyWatch(struct __ecereNameSpace__ecere__sys__OldList * properties, struct Statement * compound)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct PropertyWatch * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_PropertyWatch);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_PropertyWatch), ((struct PropertyWatch *)__ecereTemp1)->compound = compound, ((struct PropertyWatch *)__ecereTemp1)->properties = properties, ((struct PropertyWatch *)__ecereTemp1));
+__ecereInstance1->compound = compound, __ecereInstance1->properties = properties, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpClass(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Declarator * decl)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 26, ((struct Expression *)__ecereTemp1)->_classExp.specifiers = specifiers, ((struct Expression *)__ecereTemp1)->_classExp.decl = decl, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 26, __ecereInstance1->_classExp.specifiers = specifiers, __ecereInstance1->_classExp.decl = decl, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpClassData(struct Identifier * id)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 27, ((struct Expression *)__ecereTemp1)->classData.id = id, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 27, __ecereInstance1->classData.id = id, __ecereInstance1;
+});
 }
 
 struct External * MkExternalDBTable(struct DBTableDef * table)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct External * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_External);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_External), ((struct External *)__ecereTemp1)->type = 5, ((struct External *)__ecereTemp1)->table = table, ((struct External *)__ecereTemp1));
+__ecereInstance1->type = 5, __ecereInstance1->table = table, __ecereInstance1;
+});
 }
 
 struct DBTableDef * MkDBTableDef(char * name, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * definitions)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct DBTableDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DBTableDef);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DBTableDef), ((struct DBTableDef *)__ecereTemp1)->name = name, ((struct DBTableDef *)__ecereTemp1)->symbol = symbol, ((struct DBTableDef *)__ecereTemp1)->definitions = definitions, ((struct DBTableDef *)__ecereTemp1));
+__ecereInstance1->name = name, __ecereInstance1->symbol = symbol, __ecereInstance1->definitions = definitions, __ecereInstance1;
+});
 }
 
 struct DBTableEntry * MkDBFieldEntry(struct TypeName * type, struct Identifier * id, char * name)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct DBTableEntry * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DBTableEntry);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DBTableEntry), ((struct DBTableEntry *)__ecereTemp1)->type = 0, ((struct DBTableEntry *)__ecereTemp1)->dataType = type, ((struct DBTableEntry *)__ecereTemp1)->id = id, ((struct DBTableEntry *)__ecereTemp1)->name = name, ((struct DBTableEntry *)__ecereTemp1));
+__ecereInstance1->type = 0, __ecereInstance1->dataType = type, __ecereInstance1->id = id, __ecereInstance1->name = name, __ecereInstance1;
+});
 }
 
 struct DBIndexItem * MkDBIndexItem(struct Identifier * id, int order)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct DBIndexItem * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DBIndexItem);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DBIndexItem), ((struct DBIndexItem *)__ecereTemp1)->id = id, ((struct DBIndexItem *)__ecereTemp1)->order = order, ((struct DBIndexItem *)__ecereTemp1));
+__ecereInstance1->id = id, __ecereInstance1->order = order, __ecereInstance1;
+});
 }
 
 struct DBTableEntry * MkDBIndexEntry(struct __ecereNameSpace__ecere__sys__OldList * items, struct Identifier * id)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct DBTableEntry * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DBTableEntry);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DBTableEntry), ((struct DBTableEntry *)__ecereTemp1)->type = 1, ((struct DBTableEntry *)__ecereTemp1)->items = items, ((struct DBTableEntry *)__ecereTemp1)->id = id, ((struct DBTableEntry *)__ecereTemp1));
+__ecereInstance1->type = 1, __ecereInstance1->items = items, __ecereInstance1->id = id, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpDBOpen(struct Expression * ds, struct Expression * dbName)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 30, ((struct Expression *)__ecereTemp1)->dbopen.ds = ds, ((struct Expression *)__ecereTemp1)->dbopen.name = dbName, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 30, __ecereInstance1->dbopen.ds = ds, __ecereInstance1->dbopen.name = dbName, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpDBField(char * table, struct Identifier * id)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 31, ((struct Expression *)__ecereTemp1)->db.table = table, ((struct Expression *)__ecereTemp1)->db.id = id, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 31, __ecereInstance1->db.table = table, __ecereInstance1->db.id = id, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpDBIndex(char * table, struct Identifier * id)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 33, ((struct Expression *)__ecereTemp1)->db.table = table, ((struct Expression *)__ecereTemp1)->db.id = id, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 33, __ecereInstance1->db.table = table, __ecereInstance1->db.id = id, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpDBTable(char * table)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 32, ((struct Expression *)__ecereTemp1)->db.table = table, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 32, __ecereInstance1->db.table = table, __ecereInstance1;
+});
 }
 
 struct Expression * MkExpArray(struct __ecereNameSpace__ecere__sys__OldList * expressions)
 {
-void * __ecereTemp1;
+return __extension__ ({
+struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression), ((struct Expression *)__ecereTemp1)->type = 37, ((struct Expression *)__ecereTemp1)->list = expressions, ((struct Expression *)__ecereTemp1));
+__ecereInstance1->type = 37, __ecereInstance1->list = expressions, __ecereInstance1;
+});
 }
 
 extern struct External * curExternal;

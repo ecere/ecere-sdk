@@ -9971,8 +9971,8 @@ void ProcessExpressionType(Expression exp)
                   exp.destType.refCount++;
             }
             ProcessStatement(exp.compound);
-            exp.expType = ((Expression)last.expressions->last).expType;
-            if(((Expression)last.expressions->last).expType)
+            exp.expType = (last.expressions && last.expressions->last) ? ((Expression)last.expressions->last).expType : null;
+            if(exp.expType)
                exp.expType.refCount++;
          }
          break;

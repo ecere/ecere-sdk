@@ -1715,7 +1715,6 @@ void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(struct __ecereNam
 
 static void ProcessClass(int classType, struct __ecereNameSpace__ecere__sys__OldList * definitions, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * baseSpecs, struct __ecereNameSpace__ecere__sys__OldList * enumValues, struct Location * loc, struct __ecereNameSpace__ecere__sys__OldList * defs, void * after, struct __ecereNameSpace__ecere__sys__OldList * initDeclarators, struct ExtDecl * extDecl)
 {
-void * __ecereTemp1;
 char structName[1024];
 char className[1024];
 char constructorName[1024];
@@ -2038,7 +2037,11 @@ body = MkCompoundStmt(declarations, statements);
 PopContext(context);
 body->compound.context = context;
 decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(destructorName)), (((void *)0)));
-decl->symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->id = symbol->id, ((struct Symbol *)__ecereTemp1)->idCode = symbol->idCode, ((struct Symbol *)__ecereTemp1));
+decl->symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->id = symbol->id, __ecereInstance1->idCode = symbol->idCode, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), decl->symbol);
 function = MkClassFunction(specs, (((void *)0)), decl, (((void *)0)));
 ProcessClassFunctionBody(function, body);

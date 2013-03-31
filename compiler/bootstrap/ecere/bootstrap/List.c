@@ -330,7 +330,6 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Link * __ecereMethod___ecereNameSpace__ecere__com__List_Insert(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Link * after, uint64 value)
 {
-void * __ecereTemp1;
 struct __ecereNameSpace__ecere__com__Link * link;
 
 if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].dataTypeClass && ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].dataTypeClass->type == 1)
@@ -339,7 +338,11 @@ link = (struct __ecereNameSpace__ecere__com__Link *)__ecereNameSpace__ecere__com
 memcpy((void *)&link->data, (void *)value, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].dataTypeClass->structSize);
 }
 else
-link = (__ecereTemp1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_Link), ((struct __ecereNameSpace__ecere__com__Link *)__ecereTemp1)->data = value, ((struct __ecereNameSpace__ecere__com__Link *)__ecereTemp1));
+link = __extension__ ({
+struct __ecereNameSpace__ecere__com__Link * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_Link);
+
+__ecereInstance1->data = value, __ecereInstance1;
+});
 ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * after, uint64 value))__ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert])(this, after, (void *)link);
 return link;
 }

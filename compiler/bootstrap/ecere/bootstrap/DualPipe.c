@@ -488,12 +488,15 @@ extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpa
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpen(unsigned int mode, char * commandLine)
 {
-void * __ecereTemp1;
 void * input, * output;
 void * f = _DualPipeOpen(mode, commandLine, (((void *)0)), &input, &output);
 
 if(f)
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__DualPipe), ((struct __ecereNameSpace__ecere__sys__DualPipe *)(((char *)((struct __ecereNameSpace__ecere__com__Instance *)__ecereTemp1) + __ecereClass___ecereNameSpace__ecere__sys__DualPipe->offset)))->dp = f, __ecereProp___ecereNameSpace__ecere__sys__File_Set_input(((struct __ecereNameSpace__ecere__com__Instance *)__ecereTemp1), input), __ecereProp___ecereNameSpace__ecere__sys__File_Set_output(((struct __ecereNameSpace__ecere__com__Instance *)__ecereTemp1), output), ((struct __ecereNameSpace__ecere__com__Instance *)__ecereTemp1));
+return __extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__DualPipe);
+
+((struct __ecereNameSpace__ecere__sys__DualPipe *)(((char *)__ecereInstance1 + __ecereClass___ecereNameSpace__ecere__sys__DualPipe->offset)))->dp = f, __ecereProp___ecereNameSpace__ecere__sys__File_Set_input(__ecereInstance1, input), __ecereProp___ecereNameSpace__ecere__sys__File_Set_output(__ecereInstance1, output), __ecereInstance1;
+});
 return (((void *)0));
 }
 
@@ -513,12 +516,15 @@ return __ecereNameSpace__ecere__sys__DualPipeOpenEnv(mode, env, commandLine);
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpenEnv(unsigned int mode, char * env, char * commandLine)
 {
-void * __ecereTemp1;
 void * input, * output;
 void * f = _DualPipeOpen(mode, commandLine, env, &input, &output);
 
 if(f)
-return (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__DualPipe), ((struct __ecereNameSpace__ecere__sys__DualPipe *)(((char *)((struct __ecereNameSpace__ecere__com__Instance *)__ecereTemp1) + __ecereClass___ecereNameSpace__ecere__sys__DualPipe->offset)))->dp = f, __ecereProp___ecereNameSpace__ecere__sys__File_Set_input(((struct __ecereNameSpace__ecere__com__Instance *)__ecereTemp1), input), __ecereProp___ecereNameSpace__ecere__sys__File_Set_output(((struct __ecereNameSpace__ecere__com__Instance *)__ecereTemp1), output), ((struct __ecereNameSpace__ecere__com__Instance *)__ecereTemp1));
+return __extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__DualPipe);
+
+((struct __ecereNameSpace__ecere__sys__DualPipe *)(((char *)__ecereInstance1 + __ecereClass___ecereNameSpace__ecere__sys__DualPipe->offset)))->dp = f, __ecereProp___ecereNameSpace__ecere__sys__File_Set_input(__ecereInstance1, input), __ecereProp___ecereNameSpace__ecere__sys__File_Set_output(__ecereInstance1, output), __ecereInstance1;
+});
 return (((void *)0));
 }
 

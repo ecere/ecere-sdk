@@ -1022,8 +1022,6 @@ extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpa
 
 static void AddDefinitions(struct __ecereNameSpace__ecere__com__Class * regClass, struct __ecereNameSpace__ecere__com__DataMember * member, struct __ecereNameSpace__ecere__sys__OldList * definitions)
 {
-void * __ecereTemp1;
-
 if(definitions != (((void *)0)))
 {
 struct ClassDef * def;
@@ -1219,7 +1217,11 @@ if(prop)
 if(inCompiler)
 prop->IsSet = (void *)propertyDef->issetStmt;
 prop->compiled = 0x0;
-prop->symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(propertyDef->symbol->string), ((struct Symbol *)__ecereTemp1)->id = propertyDef->symbol->id, ((struct Symbol *)__ecereTemp1)->type = propertyDef->symbol->type, ((struct Symbol *)__ecereTemp1));
+prop->symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(propertyDef->symbol->string), __ecereInstance1->id = propertyDef->symbol->id, __ecereInstance1->type = propertyDef->symbol->type, __ecereInstance1;
+});
 ((struct Symbol *)prop->symbol)->propCategory = propertyDef->category;
 propertyDef->category = (((void *)0));
 if(propertyDef->isWatchable)
@@ -1346,7 +1348,6 @@ void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(struct __ecereNameS
 
 static void ProcessClass(int classType, struct __ecereNameSpace__ecere__sys__OldList * definitions, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * baseSpecs, struct __ecereNameSpace__ecere__sys__OldList * enumValues, struct Location * loc, struct __ecereNameSpace__ecere__sys__OldList * defs, void * after, struct __ecereNameSpace__ecere__sys__OldList * initDeclarators, int declMode)
 {
-void * __ecereTemp1;
 struct __ecereNameSpace__ecere__com__Class * regClass;
 struct ClassDef * def;
 unsigned int redefinition = 0x0;
@@ -1496,7 +1497,11 @@ Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Redef
 }
 if(method && (method->type != 1 || method->_class == regClass))
 {
-method->symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(func->declarator->symbol->string), ((struct Symbol *)__ecereTemp1)->id = func->declarator->symbol->id, ((struct Symbol *)__ecereTemp1)->type = func->declarator->symbol->type, ((struct Symbol *)__ecereTemp1)->method = method, ((struct Symbol *)__ecereTemp1));
+method->symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(func->declarator->symbol->string), __ecereInstance1->id = func->declarator->symbol->id, __ecereInstance1->type = func->declarator->symbol->type, __ecereInstance1->method = method, __ecereInstance1;
+});
 if(func->declarator->symbol->type)
 func->declarator->symbol->type->refCount++;
 func->declarator->symbol->method = method;

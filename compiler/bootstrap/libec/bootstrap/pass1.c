@@ -1365,8 +1365,6 @@ extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpa
 
 void CreateRegisterModuleBody()
 {
-void * __ecereTemp1;
-
 if(!registerModuleBody && inCompiler)
 {
 char registerName[1024], moduleName[274];
@@ -1375,7 +1373,11 @@ struct Declarator * declarator;
 struct TypeName * moduleParam;
 
 registerModuleBody = MkCompoundStmt(MkList(), MkList());
-registerModuleBody->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = globalContext, ((struct Context *)__ecereTemp1));
+registerModuleBody->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = globalContext, __ecereInstance1;
+});
 ListAdd(registerModuleBody->compound.declarations, MkDeclaration(MkListOne(MkSpecifierName("ecere::com::Class")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("class")), (((void *)0))))));
 specifiers = MkList();
 ListAdd(specifiers, MkSpecifier(VOID));
@@ -1405,7 +1407,11 @@ struct Declarator * declarator;
 struct TypeName * moduleParam;
 
 unregisterModuleBody = MkCompoundStmt(MkList(), MkList());
-unregisterModuleBody->compound.context = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context), ((struct Context *)__ecereTemp1)->parent = globalContext, ((struct Context *)__ecereTemp1));
+unregisterModuleBody->compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = globalContext, __ecereInstance1;
+});
 specifiers = MkList();
 ListAdd(specifiers, MkSpecifier(VOID));
 moduleParam = MkTypeName(MkListOne(MkSpecifierName("Module")), MkDeclaratorIdentifier(MkIdentifier("module")));
@@ -2108,7 +2114,6 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 static void ProcessClass(int classType, struct __ecereNameSpace__ecere__sys__OldList * definitions, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * baseSpecs, struct __ecereNameSpace__ecere__sys__OldList * enumValues, struct __ecereNameSpace__ecere__sys__OldList * defs, struct External * external, int declMode)
 {
-void * __ecereTemp1;
 struct ClassDef * def;
 struct __ecereNameSpace__ecere__com__Class * regClass = symbol->registered;
 
@@ -2185,7 +2190,11 @@ strcat(watcherName, propID->string);
 decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(watcherName)), MkListOne(MkTypeName(MkListOne(MkSpecifier(VOID)), (((void *)0)))));
 func = MkClassFunction(MkListOne(MkSpecifier(VOID)), (((void *)0)), decl, (((void *)0)));
 ProcessClassFunctionBody(func, propWatch->compound);
-decl->symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->id = symbol->id, ((struct Symbol *)__ecereTemp1)->idCode = symbol->idCode, ((struct Symbol *)__ecereTemp1));
+decl->symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->id = symbol->id, __ecereInstance1->idCode = symbol->idCode, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), decl->symbol);
 func->id = symbol->id;
 func->idCode = symbol->idCode;
@@ -2428,7 +2437,11 @@ ListAdd(args, MkExpString(string));
 ListAdd(args, MkExpConstant("0"));
 ListAdd(args, (exp = MkExpIdentifier(MkIdentifier(id->string))));
 ListAdd(args, MkExpIdentifier(MkIdentifier("publicAccess")));
-exp->expType = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
+exp->expType = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1;
+});
 stmt = MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("eClass_AddMethod")), args)));
 ListAdd(registerModuleBody->compound.statements, stmt);
 }
@@ -2465,7 +2478,11 @@ ListAdd(args, MkExpString(string));
 if(id && external->function->body)
 {
 ListAdd(args, (exp = MkExpIdentifier(MkIdentifier(id->string))));
-exp->expType = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
+exp->expType = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1;
+});
 }
 else
 {
@@ -2522,7 +2539,11 @@ ListAdd(args, MkExpString(string));
 if(id && external->function->body)
 {
 ListAdd(args, (exp = MkExpIdentifier(MkIdentifier(id->string))));
-exp->expType = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), ((struct Type *)__ecereTemp1)->refCount = 1, ((struct Type *)__ecereTemp1));
+exp->expType = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1;
+});
 }
 else
 {
