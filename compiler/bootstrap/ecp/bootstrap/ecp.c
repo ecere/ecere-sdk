@@ -1230,8 +1230,6 @@ void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(struct __ecereNameS
 
 static void AddDefinitions(struct ClassDefine * classDefine, struct DataMemberDefine * parentMemberDefine, struct __ecereNameSpace__ecere__com__Class * regClass, struct __ecereNameSpace__ecere__com__DataMember * member, struct __ecereNameSpace__ecere__sys__OldList * definitions)
 {
-void * __ecereTemp1;
-
 if(definitions != (((void *)0)))
 {
 struct ClassDef * def;
@@ -1256,7 +1254,11 @@ for(d = (*decl->declarators).first; d; d = d->next)
 {
 struct Identifier * declId = GetDeclId(d);
 
-dataMemberDefine = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataMemberDefine), ((struct DataMemberDefine *)__ecereTemp1)->isProperty = 3, ((struct DataMemberDefine *)__ecereTemp1)->memberType = 0, ((struct DataMemberDefine *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(declId->string), ((struct DataMemberDefine *)__ecereTemp1));
+dataMemberDefine = __extension__ ({
+struct DataMemberDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataMemberDefine);
+
+__ecereInstance1->isProperty = 3, __ecereInstance1->memberType = 0, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(declId->string), __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&parentMemberDefine->dataMembers, dataMemberDefine);
 if(regClass && regClass->type == 2)
 {
@@ -1331,7 +1333,11 @@ if(spec->definitions && !spec->id)
 {
 struct __ecereNameSpace__ecere__com__DataMember * dataMember = __ecereNameSpace__ecere__com__eMember_New((spec->type == 4) ? 1 : 2, def->memberAccess);
 
-dataMemberDefine = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataMemberDefine), ((struct DataMemberDefine *)__ecereTemp1)->isProperty = 3, ((struct DataMemberDefine *)__ecereTemp1)->memberType = (spec->type == 4) ? 1 : 2, ((struct DataMemberDefine *)__ecereTemp1));
+dataMemberDefine = __extension__ ({
+struct DataMemberDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataMemberDefine);
+
+__ecereInstance1->isProperty = 3, __ecereInstance1->memberType = (spec->type == 4) ? 1 : 2, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&parentMemberDefine->dataMembers, dataMemberDefine);
 AddDefinitions((((void *)0)), dataMemberDefine, (((void *)0)), dataMember, spec->definitions);
 if(member)
@@ -1382,7 +1388,11 @@ dataMember = __ecereNameSpace__ecere__com__eClass_AddDataMember(regClass, string
 if(dataMember)
 dataMember->dataType = dataType;
 }
-dataMemberDefine = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataMemberDefine), ((struct DataMemberDefine *)__ecereTemp1)->isProperty = 3, ((struct DataMemberDefine *)__ecereTemp1)->memberType = 0, ((struct DataMemberDefine *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(string), ((struct DataMemberDefine *)__ecereTemp1)->type = __ecereNameSpace__ecere__sys__CopyString(inst->_class->name), ((struct DataMemberDefine *)__ecereTemp1));
+dataMemberDefine = __extension__ ({
+struct DataMemberDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataMemberDefine);
+
+__ecereInstance1->isProperty = 3, __ecereInstance1->memberType = 0, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(string), __ecereInstance1->type = __ecereNameSpace__ecere__sys__CopyString(inst->_class->name), __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&parentMemberDefine->dataMembers, dataMemberDefine);
 }
 }
@@ -1409,10 +1419,18 @@ prop->compiled = 0x0;
 }
 if(prop)
 {
-prop->symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(propertyDef->symbol->string), ((struct Symbol *)__ecereTemp1)->id = propertyDef->symbol->id, ((struct Symbol *)__ecereTemp1)->type = propertyDef->symbol->type, ((struct Symbol *)__ecereTemp1));
+prop->symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(propertyDef->symbol->string), __ecereInstance1->id = propertyDef->symbol->id, __ecereInstance1->type = propertyDef->symbol->type, __ecereInstance1;
+});
 if(propertyDef->symbol->type)
 propertyDef->symbol->type->refCount++;
-propDefine = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_PropertyDefine), ((struct PropertyDefine *)__ecereTemp1)->isProperty = 1, ((struct PropertyDefine *)__ecereTemp1)->name = prop->conversion ? (((void *)0)) : __ecereNameSpace__ecere__sys__CopyString(prop->name), ((struct PropertyDefine *)__ecereTemp1)->type = __ecereNameSpace__ecere__sys__CopyString(prop->dataTypeString), ((struct PropertyDefine *)__ecereTemp1)->isVirtual = 0x0, ((struct PropertyDefine *)__ecereTemp1)->memberAccess = def->memberAccess, ((struct PropertyDefine *)__ecereTemp1)->hasSet = propertyDef->setStmt ? 0x1 : 0x0, ((struct PropertyDefine *)__ecereTemp1)->hasGet = propertyDef->getStmt ? 0x1 : 0x0, ((struct PropertyDefine *)__ecereTemp1)->isWatchable = propertyDef->isWatchable, ((struct PropertyDefine *)__ecereTemp1));
+propDefine = __extension__ ({
+struct PropertyDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_PropertyDefine);
+
+__ecereInstance1->isProperty = 1, __ecereInstance1->name = prop->conversion ? (((void *)0)) : __ecereNameSpace__ecere__sys__CopyString(prop->name), __ecereInstance1->type = __ecereNameSpace__ecere__sys__CopyString(prop->dataTypeString), __ecereInstance1->isVirtual = 0x0, __ecereInstance1->memberAccess = def->memberAccess, __ecereInstance1->hasSet = propertyDef->setStmt ? 0x1 : 0x0, __ecereInstance1->hasGet = propertyDef->getStmt ? 0x1 : 0x0, __ecereInstance1->isWatchable = propertyDef->isWatchable, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&classDefine->propertiesAndMembers, propDefine);
 }
 }
@@ -1433,7 +1451,11 @@ prop = __ecereNameSpace__ecere__com__eClass_AddClassProperty(regClass, propertyD
 }
 if(prop)
 {
-propDefine = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_PropertyDefine), ((struct PropertyDefine *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(prop->name), ((struct PropertyDefine *)__ecereTemp1)->type = __ecereNameSpace__ecere__sys__CopyString(prop->dataTypeString), ((struct PropertyDefine *)__ecereTemp1)->hasSet = propertyDef->setStmt ? 0x1 : 0x0, ((struct PropertyDefine *)__ecereTemp1)->hasGet = propertyDef->getStmt ? 0x1 : 0x0, ((struct PropertyDefine *)__ecereTemp1));
+propDefine = __extension__ ({
+struct PropertyDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_PropertyDefine);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(prop->name), __ecereInstance1->type = __ecereNameSpace__ecere__sys__CopyString(prop->dataTypeString), __ecereInstance1->hasSet = propertyDef->setStmt ? 0x1 : 0x0, __ecereInstance1->hasGet = propertyDef->getStmt ? 0x1 : 0x0, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&classDefine->classProperties, propDefine);
 }
 }
@@ -1459,7 +1481,11 @@ struct PropertyDefine * propDefine;
 prop = __ecereNameSpace__ecere__com__eClass_AddProperty(regClass, def->id->string, (((void *)0)), (((void *)0)), (((void *)0)), def->memberAccess);
 if(prop)
 {
-propDefine = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_PropertyDefine), ((struct PropertyDefine *)__ecereTemp1)->isProperty = 1, ((struct PropertyDefine *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(prop->name), ((struct PropertyDefine *)__ecereTemp1)->memberAccess = def->memberAccess, ((struct PropertyDefine *)__ecereTemp1));
+propDefine = __extension__ ({
+struct PropertyDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_PropertyDefine);
+
+__ecereInstance1->isProperty = 1, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(prop->name), __ecereInstance1->memberAccess = def->memberAccess, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&classDefine->propertiesAndMembers, propDefine);
 }
 }
@@ -1468,7 +1494,11 @@ else if((member = __ecereNameSpace__ecere__com__eClass_FindDataMember(regClass, 
 struct DataMemberDefine * dataMemberDefine;
 
 member = __ecereNameSpace__ecere__com__eClass_AddDataMember(regClass, def->id->string, (((void *)0)), 0, 0, def->memberAccess);
-dataMemberDefine = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataMemberDefine), ((struct DataMemberDefine *)__ecereTemp1)->isProperty = 3, ((struct DataMemberDefine *)__ecereTemp1)->memberType = 0, ((struct DataMemberDefine *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(def->id->string), ((struct DataMemberDefine *)__ecereTemp1)->memberAccess = def->memberAccess, ((struct DataMemberDefine *)__ecereTemp1));
+dataMemberDefine = __extension__ ({
+struct DataMemberDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataMemberDefine);
+
+__ecereInstance1->isProperty = 3, __ecereInstance1->memberType = 0, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(def->id->string), __ecereInstance1->memberAccess = def->memberAccess, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&parentMemberDefine->dataMembers, dataMemberDefine);
 }
 }
@@ -1577,7 +1607,6 @@ extern struct __ecereNameSpace__ecere__com__ClassTemplateParameter * __ecereName
 
 static void ProcessClass(int classType, struct __ecereNameSpace__ecere__sys__OldList * definitions, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * baseSpecs, struct __ecereNameSpace__ecere__sys__OldList * enumValues, unsigned int isWatchable, int declMode)
 {
-void * __ecereTemp1;
 struct __ecereNameSpace__ecere__com__Class * regClass;
 struct ClassDef * def;
 struct ClassDefine * classDefine;
@@ -1663,14 +1692,22 @@ classType = 4;
 regClass = symbol->registered = __ecereNameSpace__ecere__com__eSystem_RegisterClass((classType == 6) ? 1 : classType, symbol->string, baseName[0] ? baseName : (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), privateModule, 1, inheritanceAccess);
 if(regClass)
 regClass->symbol = symbol;
-classDefine = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDefine), ((struct ClassDefine *)__ecereTemp1)->type = 1, ((struct ClassDefine *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(symbol->string), ((struct ClassDefine *)__ecereTemp1)->base = baseName[0] ? __ecereNameSpace__ecere__sys__CopyString(baseName) : (((void *)0)), ((struct ClassDefine *)__ecereTemp1)->isStatic = declMode == 3, ((struct ClassDefine *)__ecereTemp1)->isRemote = symbol->isRemote, ((struct ClassDefine *)__ecereTemp1)->isWatchable = isWatchable, ((struct ClassDefine *)__ecereTemp1));
+classDefine = __extension__ ({
+struct ClassDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDefine);
+
+__ecereInstance1->type = 1, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(symbol->string), __ecereInstance1->base = baseName[0] ? __ecereNameSpace__ecere__sys__CopyString(baseName) : (((void *)0)), __ecereInstance1->isStatic = declMode == 3, __ecereInstance1->isRemote = symbol->isRemote, __ecereInstance1->isWatchable = isWatchable, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&precompDefines, classDefine);
 if(classType == 6)
 {
 struct __ecereNameSpace__ecere__com__DataMember * unionMember = __ecereNameSpace__ecere__com__eMember_New(1, 1);
 struct DataMemberDefine * unionDefine;
 
-unionDefine = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataMemberDefine), ((struct DataMemberDefine *)__ecereTemp1)->isProperty = 3, ((struct DataMemberDefine *)__ecereTemp1)->memberType = 1, ((struct DataMemberDefine *)__ecereTemp1));
+unionDefine = __extension__ ({
+struct DataMemberDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataMemberDefine);
+
+__ecereInstance1->isProperty = 3, __ecereInstance1->memberType = 1, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&classDefine->propertiesAndMembers, unionDefine);
 AddDefinitions(classDefine, unionDefine, regClass, unionMember, definitions);
 __ecereNameSpace__ecere__com__eClass_AddMember(regClass, unionMember);
@@ -1702,14 +1739,22 @@ method = __ecereNameSpace__ecere__com__eClass_AddMethod(regClass, id->string, da
 }
 if(method)
 {
-method->symbol = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString(func->declarator->symbol->string), ((struct Symbol *)__ecereTemp1)->id = func->declarator->symbol->id, ((struct Symbol *)__ecereTemp1)->type = func->declarator->symbol->type, ((struct Symbol *)__ecereTemp1));
+method->symbol = __extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(func->declarator->symbol->string), __ecereInstance1->id = func->declarator->symbol->id, __ecereInstance1->type = func->declarator->symbol->type, __ecereInstance1;
+});
 if(func->declarator->symbol->type)
 func->declarator->symbol->type->refCount++;
 ((struct Symbol *)method->symbol)->method = method;
 func->declarator->symbol = (((void *)0));
 if(method->type != 1 || method->_class == regClass)
 {
-methodDefine = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_MethodDefine), ((struct MethodDefine *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(method->name), ((struct MethodDefine *)__ecereTemp1)->type = __ecereNameSpace__ecere__sys__CopyString(method->dataTypeString), ((struct MethodDefine *)__ecereTemp1)->memberAccess = def->memberAccess, ((struct MethodDefine *)__ecereTemp1)->isVirtual = method->type == 1, ((struct MethodDefine *)__ecereTemp1));
+methodDefine = __extension__ ({
+struct MethodDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_MethodDefine);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(method->name), __ecereInstance1->type = __ecereNameSpace__ecere__sys__CopyString(method->dataTypeString), __ecereInstance1->memberAccess = def->memberAccess, __ecereInstance1->isVirtual = method->type == 1, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&classDefine->methods, methodDefine);
 }
 }
@@ -1724,7 +1769,11 @@ if((method = __ecereNameSpace__ecere__com__eClass_FindMethod(regClass, def->id->
 struct MethodDefine * methodDefine;
 
 method = __ecereNameSpace__ecere__com__eClass_AddMethod(regClass, def->id->string, (((void *)0)), (((void *)0)), def->memberAccess);
-methodDefine = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_MethodDefine), ((struct MethodDefine *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(method->name), ((struct MethodDefine *)__ecereTemp1)->memberAccess = def->memberAccess, ((struct MethodDefine *)__ecereTemp1));
+methodDefine = __extension__ ({
+struct MethodDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_MethodDefine);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(method->name), __ecereInstance1->memberAccess = def->memberAccess, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&classDefine->methods, methodDefine);
 }
 }
@@ -1862,7 +1911,6 @@ extern void ComputeModuleClasses(struct __ecereNameSpace__ecere__com__Instance *
 
 void PreCompPreProcessClassDefinitions()
 {
-void * __ecereTemp1;
 struct __ecereNameSpace__ecere__sys__OldList * ast = GetAST();
 struct External * external, * next;
 
@@ -1933,7 +1981,11 @@ char typeString[1024];
 
 typeString[0] = '\0';
 PrintType(symbol->type, typeString, 0x0, 0x1);
-dataDefine = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataDefine), ((struct DataDefine *)__ecereTemp1)->type = 4, ((struct DataDefine *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(symbol->string), ((struct DataDefine *)__ecereTemp1)->dataType = __ecereNameSpace__ecere__sys__CopyString(typeString), ((struct DataDefine *)__ecereTemp1));
+dataDefine = __extension__ ({
+struct DataDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataDefine);
+
+__ecereInstance1->type = 4, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(symbol->string), __ecereInstance1->dataType = __ecereNameSpace__ecere__sys__CopyString(typeString), __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&precompDefines, dataDefine);
 }
 }
@@ -1955,7 +2007,11 @@ char typeString[1024];
 
 typeString[0] = '\0';
 PrintType(symbol->type, typeString, 0x0, 0x1);
-dataDefine = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataDefine), ((struct DataDefine *)__ecereTemp1)->type = 4, ((struct DataDefine *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(symbol->string), ((struct DataDefine *)__ecereTemp1)->dataType = __ecereNameSpace__ecere__sys__CopyString(typeString), ((struct DataDefine *)__ecereTemp1));
+dataDefine = __extension__ ({
+struct DataDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataDefine);
+
+__ecereInstance1->type = 4, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(symbol->string), __ecereInstance1->dataType = __ecereNameSpace__ecere__sys__CopyString(typeString), __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&precompDefines, dataDefine);
 }
 }
@@ -1979,7 +2035,11 @@ char typeString[1024];
 
 typeString[0] = '\0';
 PrintType(function->declarator->symbol->type, typeString, 0x1, 0x1);
-functionDefine = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_FunctionDefine), ((struct FunctionDefine *)__ecereTemp1)->type = 3, ((struct FunctionDefine *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(function->declarator->symbol->string), ((struct FunctionDefine *)__ecereTemp1)->dataType = __ecereNameSpace__ecere__sys__CopyString(typeString), ((struct FunctionDefine *)__ecereTemp1));
+functionDefine = __extension__ ({
+struct FunctionDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_FunctionDefine);
+
+__ecereInstance1->type = 3, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(function->declarator->symbol->string), __ecereInstance1->dataType = __ecereNameSpace__ecere__sys__CopyString(typeString), __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&precompDefines, functionDefine);
 }
 else if(external->type == 4)
@@ -2516,7 +2576,6 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
 void __ecereMethod_PrecompApp_Main(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-void * __ecereTemp1;
 int c;
 unsigned int valid = 0x1;
 char defaultSymFile[797];
@@ -2687,15 +2746,51 @@ SetTargetBits(targetBits);
 SetEchoOn(0x0);
 privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize(0x1 | (targetBits == sizeof(uintptr_t) * 8 ? (unsigned int)0 : targetBits == 64 ? (unsigned int)2 : targetBits == 32 ? (unsigned int)4 : (unsigned int)0) | (unsigned int)8, 1, (((void *)0)));
 SetPrivateModule(privateModule);
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uint"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned int", 0x0), ((struct Symbol *)__ecereTemp1)));
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uint64"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned int64", 0x0), ((struct Symbol *)__ecereTemp1)));
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uint32"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned int", 0x0), ((struct Symbol *)__ecereTemp1)));
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uint16"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned short", 0x0), ((struct Symbol *)__ecereTemp1)));
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("byte"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("unsigned char", 0x0), ((struct Symbol *)__ecereTemp1)));
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("intptr_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("intptr", 0x0), ((struct Symbol *)__ecereTemp1)));
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("uintptr_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("uintptr", 0x0), ((struct Symbol *)__ecereTemp1)));
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("ssize_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("intsize", 0x0), ((struct Symbol *)__ecereTemp1)));
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)(__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), ((struct Symbol *)__ecereTemp1)->string = __ecereNameSpace__ecere__sys__CopyString("size_t"), ((struct Symbol *)__ecereTemp1)->type = ProcessTypeString("uintsize", 0x0), ((struct Symbol *)__ecereTemp1)));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("uint"), __ecereInstance1->type = ProcessTypeString("unsigned int", 0x0), __ecereInstance1;
+}));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("uint64"), __ecereInstance1->type = ProcessTypeString("unsigned int64", 0x0), __ecereInstance1;
+}));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("uint32"), __ecereInstance1->type = ProcessTypeString("unsigned int", 0x0), __ecereInstance1;
+}));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("uint16"), __ecereInstance1->type = ProcessTypeString("unsigned short", 0x0), __ecereInstance1;
+}));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("byte"), __ecereInstance1->type = ProcessTypeString("unsigned char", 0x0), __ecereInstance1;
+}));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("intptr_t"), __ecereInstance1->type = ProcessTypeString("intptr", 0x0), __ecereInstance1;
+}));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("uintptr_t"), __ecereInstance1->type = ProcessTypeString("uintptr", 0x0), __ecereInstance1;
+}));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("ssize_t"), __ecereInstance1->type = ProcessTypeString("intsize", 0x0), __ecereInstance1;
+}));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("size_t"), __ecereInstance1->type = ProcessTypeString("uintsize", 0x0), __ecereInstance1;
+}));
 {
 char * outputFilePath = GetOutputFile();
 

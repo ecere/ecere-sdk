@@ -629,7 +629,6 @@ extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpa
 
 static void LoadImports(char * fileName)
 {
-void * __ecereTemp1;
 struct __ecereNameSpace__ecere__com__Instance * f = __ecereNameSpace__ecere__sys__FileOpen(fileName, 1);
 
 if(f)
@@ -722,7 +721,11 @@ if(line[0] != '[')
 {
 if(!(method = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&_class->methods, line, 0x0)))
 {
-method = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_MethodImport), ((struct MethodImport *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(line), ((struct MethodImport *)__ecereTemp1));
+method = __extension__ ({
+struct MethodImport * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_MethodImport);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(line), __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(&_class->methods, method);
 }
 }
@@ -745,7 +748,11 @@ if(line[0] != '[')
 {
 if(!(prop = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&_class->properties, line, 0x0)))
 {
-prop = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_PropertyImport), ((struct PropertyImport *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(line), ((struct PropertyImport *)__ecereTemp1));
+prop = __extension__ ({
+struct PropertyImport * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_PropertyImport);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(line), __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(&_class->properties, prop);
 }
 }
@@ -762,7 +769,11 @@ else
 {
 if(!(_class = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&module->classes, line, 0x0)))
 {
-_class = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassImport), ((struct ClassImport *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(line), ((struct ClassImport *)__ecereTemp1));
+_class = __extension__ ({
+struct ClassImport * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassImport);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(line), __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(&module->classes, _class);
 }
 }
@@ -784,7 +795,11 @@ else
 {
 if(!(function = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&module->functions, line, 0x0)))
 {
-function = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_FunctionImport), ((struct FunctionImport *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(line), ((struct FunctionImport *)__ecereTemp1));
+function = __extension__ ({
+struct FunctionImport * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_FunctionImport);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(line), __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(&module->functions, function);
 }
 }
@@ -810,7 +825,11 @@ module->name = __ecereNameSpace__ecere__sys__CopyString("ecere");
 }
 if(!module)
 {
-module = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleImport), ((struct ModuleImport *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(line), ((struct ModuleImport *)__ecereTemp1));
+module = __extension__ ({
+struct ModuleImport * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleImport);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(line), __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(&_imports, module);
 }
 }
@@ -2338,7 +2357,6 @@ void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(struct __ecereName
 
 void __ecereMethod_SymbolgenApp_Main(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-void * __ecereTemp1;
 int c;
 unsigned int valid = 0x1;
 char * output = (((void *)0));
@@ -2501,7 +2519,11 @@ if(importedModule)
 module->globalInstance = importedModule->globalInstance;
 else
 {
-importedModule = (__ecereTemp1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ImportedModule), ((struct ImportedModule *)__ecereTemp1)->name = __ecereNameSpace__ecere__sys__CopyString(module->name), ((struct ImportedModule *)__ecereTemp1)->type = 0, ((struct ImportedModule *)__ecereTemp1)->importType = 0, ((struct ImportedModule *)__ecereTemp1));
+importedModule = __extension__ ({
+struct ImportedModule * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ImportedModule);
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(module->name), __ecereInstance1->type = 0, __ecereInstance1->importType = 0, __ecereInstance1;
+});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(&_defines, importedModule);
 module->globalInstance = LoadSymbols(file, 0, 0x0);
 CheckDataRedefinitions();
