@@ -6,8 +6,8 @@
       "Optimization" : "None",
       "TargetType" : "Executable",
       "TargetFileName" : "sqlite3",
-      "TargetDirectory" : "obj/$(CONFIG).$(PLATFORM)",
-      "ObjectsDirectory" : "obj/$(CONFIG).$(PLATFORM)",
+      "TargetDirectory" : "obj/$(MODULE).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)",
+      "ObjectsDirectory" : "obj/$(MODULE).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)",
       "Console" : true
    },
    "Platforms" : [
@@ -57,7 +57,12 @@
             "FastMath" : false
          }
       },
-      "sqlite3.c",
+      {
+         "FileName" : "sqlite3.c",
+         "Options" : {
+            "FastMath" : false
+         }
+      },
       "sqlite3.h"
    ],
    "ResourcesPath" : "",
