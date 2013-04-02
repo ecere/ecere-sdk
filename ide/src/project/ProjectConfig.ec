@@ -332,6 +332,27 @@ public:
       get { return postbuildCommands; }
       isset { return  postbuildCommands && postbuildCommands.count; }
    }
+   property Array<String> installCommands
+   {
+      set
+      {
+         if(installCommands)
+            installCommands.Free();
+         if(value && value.count)
+         {
+            if(!installCommands)
+               installCommands = { };
+            for(s : value)
+               installCommands.Add(CopyValidateMakefilePath(s));
+            value.Free();
+            delete value;
+         }
+         else
+            delete installCommands;
+      }
+      get { return installCommands; }
+      isset { return  installCommands && installCommands.count; }
+   }
 
    ProjectOptions Copy()
    {
@@ -361,7 +382,8 @@ public:
          linkerOptions = CopyArrayString(linkerOptions),
          libraryDirs = CopyArrayString(libraryDirs),
          prebuildCommands = CopyArrayString(prebuildCommands),
-         postbuildCommands = CopyArrayString(postbuildCommands)
+         postbuildCommands = CopyArrayString(postbuildCommands),
+         installCommands = CopyArrayString(installCommands)
       };
    }
 
@@ -406,6 +428,7 @@ public:
       if(libraryDirs) { libraryDirs.Free(); delete libraryDirs; }
       if(prebuildCommands) { prebuildCommands.Free(); delete prebuildCommands; }
       if(postbuildCommands) { postbuildCommands.Free(); delete postbuildCommands; }
+      if(installCommands) { installCommands.Free(); delete installCommands; }
    }
 private:
    Array<String> includeDirs;
@@ -415,6 +438,7 @@ private:
    Array<String> libraryDirs;
    Array<String> prebuildCommands;
    Array<String> postbuildCommands;
+   Array<String> installCommands;
 
    property bool isEmpty
    {
@@ -443,7 +467,8 @@ private:
             excludeFromBuild == unset &&
             fastMath == unset &&
             (!prebuildCommands || !prebuildCommands.count) &&
-            (!postbuildCommands || !postbuildCommands.count) )
+            (!postbuildCommands || !postbuildCommands.count) &&
+            (!installCommands || !installCommands.count))
             return true;
          return false;          
       }

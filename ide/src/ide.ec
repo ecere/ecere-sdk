@@ -246,6 +246,9 @@ class IDEToolbar : ToolBar
    // Compile actual file
    // Execute
    ToolButton buttonRun { this, toolTip = $"Run", menuItemPtr = IDEItem(projectRunItem), disabled = true; };
+#ifdef IDE_SHOW_INSTALL_MENU_BUTTON
+   ToolButton buttonInstall { this, toolTip = $"Install", menuItemPtr = IDEItem(projectInstallItem), disabled = true; };
+#endif
 
    ToolSeparator separator4 { this };
 
@@ -1040,6 +1043,19 @@ class IDEWorkSpace : Window
          {
             if(projectView)
                projectView.ProjectRegenerate(projectView.active ? selection : null, mods);
+            return true;
+         }
+      }
+      MenuItem projectInstallItem
+      {
+#ifdef IDE_SHOW_INSTALL_MENU_BUTTON
+         projectMenu, $"Install", t, disabled = true;
+#endif
+         bitmap = { ":status/software-update-available.png" };
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            if(projectView)
+               projectView.ProjectInstall(projectView.active ? selection : null, mods);
             return true;
          }
       }
@@ -1865,6 +1881,10 @@ class IDEWorkSpace : Window
       // toolBar.buttonRealClean.disabled          = unavailable;
       projectRegenerateItem.disabled            = unavailable;
       toolBar.buttonRegenerateMakefile.disabled = unavailable;
+#ifdef IDE_SHOW_INSTALL_MENU_BUTTON
+      projectInstallItem.disabled               = unavailable;
+      toolBar.buttonInstall.disabled            = unavailable;
+#endif
       projectCompileItem.disabled               = unavailable;
 
       AdjustPopupBuildMenus();
@@ -1891,6 +1911,7 @@ class IDEWorkSpace : Window
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectClean, 0);             if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRealClean, 0);         if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRegenerate, 0);        if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectInstall, 0);           if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRemove, 0);            if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::FileClean, 0);                if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::FileCompile, 0);              if(menu) menu.disabled = unavailable;

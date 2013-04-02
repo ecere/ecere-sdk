@@ -95,7 +95,7 @@ static char * iconNames[] =
 enum PrepareMakefileMethod { normal, force, forceExists };
 
 enum CleanType { clean, realClean, cleanTarget };
-enum BuildType { build, rebuild, relink, run, start, restart, clean };
+enum BuildType { build, rebuild, relink, run, start, restart, clean, install };
 enum BuildState
 {
    none, buildingMainProject, buildingSecondaryProject, compilingFile;
@@ -215,7 +215,11 @@ class ProjectView : Window
          if(row)
          {
             bool showDebuggingMenuItems = mods.ctrl && mods.shift;
+            bool showInstallMenuItem = mods.ctrl && mods.shift;
             ProjectNode node = (ProjectNode)row.tag;
+#ifdef IDE_SHOW_INSTALL_MENU_BUTTON
+            showInstallMenuItem = true;
+#endif
             if(node.type == NodeTypes::project || node.type == resources || node.type == file || node.type == folder)
             {
                bool na = buildInProgress; // N/A - buildMenuUnavailable
@@ -232,7 +236,11 @@ class ProjectView : Window
                   MenuItem { pop, $"Clean"              , c         , NotifySelect = ProjectClean      , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRealCleanItem;
                   MenuItem { pop, $"Real Clean"                     , NotifySelect = ProjectRealClean  , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRegenerateItem;
                   MenuItem { pop, $"Regenerate Makefile", m         , NotifySelect = ProjectRegenerate , bitmap = mi.bitmap }.disabled = na;
-
+                  if(showInstallMenuItem)
+                  {
+                     mi = ide.projectInstallItem;
+                     MenuItem { pop, $"Install"            , t         , NotifySelect = ProjectInstall    , bitmap = mi.bitmap }.disabled = na;
+                  }
                   if(showDebuggingMenuItems && node.ContainsFilesWithExtension("ec"))
                   {
                      MenuDivider { pop };
@@ -797,7 +805,7 @@ class ProjectView : Window
          ide.AdjustBuildMenus();
          ide.AdjustDebugMenus();
 
-         result = prj.Build(buildType == run, null, compiler, config, bitDepth, justPrint, normal);
+         result = prj.Build(buildType, null, compiler, config, bitDepth, justPrint, normal);
 
          if(config)
          {
@@ -855,6 +863,39 @@ class ProjectView : Window
       }
       else
          stopBuild = true;
+      return true;
+   }
+
+   bool ProjectInstall(MenuItem selection, Modifiers mods)
+   {
+      Project prj = project;
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      int bitDepth = ide.workspace.bitDepth;
+      ProjectConfig config;
+      if(selection || !ide.activeClient)
+      {
+         DataRow row = fileList.currentRow;
+         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         if(node) prj = node.project;
+      }
+      else
+      {
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
+         if(node)
+            prj = node.project;
+      }
+      config = prj.config;
+      if(!prj.GetConfigIsInDebugSession(config) ||
+            (!ide.DontTerminateDebugSession($"Project Install") && DebugStopForMake(prj, relink, compiler, config)))
+      {
+         BuildInterrim(prj, build, compiler, config, bitDepth, mods.ctrl && mods.shift);
+         if(ProjectPrepareForToolchain(prj, normal, false, false, compiler, config))
+         {
+            ide.outputView.buildBox.Logf($"\nInstalling project %s using the %s configuration...\n", prj.name, GetConfigName(config));
+            Build(prj, install, compiler, config, bitDepth, mods.ctrl && mods.shift);
+         }
+      }
+      delete compiler;
       return true;
    }
 

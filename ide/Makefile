@@ -159,6 +159,7 @@ RESOURCES1 = \
 	$(RES)codeMarks/topFrameHalf.png \
 	$(RES)codeMarks/topFrameHalfError.png \
 	$(RES)others/mousePointer.png \
+	$(RES)status/software-update-available.png \
 	locale/zh_CN/LC_MESSAGES/ide.mo \
 	locale/es_ES/LC_MESSAGES/ide.mo \
 	../LICENSE \
@@ -261,6 +262,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)actions/restart.png $(RES)actions/run.png $(RES)actions/skipBreaks.png $(RES)actions/stepInto.png $(RES)actions/stepOut.png $(RES)actions/stepOver.png $(RES)actions/stopDebug.png "actions"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)codeMarks/breakpoint.png $(RES)codeMarks/breakpointDisabled.png $(RES)codeMarks/breakpointHalf.png $(RES)codeMarks/breakpointHalfDisabled.png $(RES)codeMarks/cursor.png $(RES)codeMarks/cursorError.png $(RES)codeMarks/topFrame.png $(RES)codeMarks/topFrameError.png $(RES)codeMarks/topFrameHalf.png $(RES)codeMarks/topFrameHalfError.png "codeMarks"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)others/mousePointer.png "others"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)status/software-update-available.png "status"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ide.mo "locale/zh_CN/LC_MESSAGES"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ide.mo "locale/es_ES/LC_MESSAGES"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../LICENSE ../extras/res/licenses/png.LICENSE ../extras/res/licenses/tango.COPYING ../extras/res/licenses/zlib.README ../extras/res/licenses/sqlite.LICENSE ../extras/res/licenses/jpg.LICENSE ../extras/res/licenses/ungif.LICENSE ../extras/res/licenses/freetype.LICENSE ../extras/res/licenses/harfbuzz.LICENSE ../extras/res/licenses/upx.LICENSE "licenses"

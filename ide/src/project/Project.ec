@@ -1517,7 +1517,7 @@ private:
       return !ide.projectView.stopBuild;
    }
 
-   bool ProcessBuildPipeOutput(DualPipe f, DirExpression objDirExp, bool isARun, List<ProjectNode> onlyNodes,
+   bool ProcessBuildPipeOutput(DualPipe f, DirExpression objDirExp, BuildType buildType, List<ProjectNode> onlyNodes,
       CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
       char line[65536];
@@ -1948,14 +1948,14 @@ private:
          ide.outputView.buildBox.Logf($"\nBuild cancelled by user.\n", line);
          f.Terminate();
       }
-      else if(loggedALine || !isARun)
+      else if(loggedALine || buildType != run)
       {
          if(f.GetExitCode() && !numErrors)
          {
             bool result = f.GetLine(line, sizeof(line)-1);
             ide.outputView.buildBox.Logf($"Fatal Error: child process terminated unexpectedly\n");
          }
-         else
+         else if(buildType != install)
          {
             if(!onlyNodes)
             {
@@ -2027,7 +2027,7 @@ private:
       }
    }
 
-   bool Build(bool isARun, List<ProjectNode> onlyNodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, SingleFileCompileMode mode)
+   bool Build(BuildType buildType, List<ProjectNode> onlyNodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, SingleFileCompileMode mode)
    {
       bool result = false;
       DualPipe f;
@@ -2065,7 +2065,9 @@ private:
       PathCatSlash(makeFilePath, makeFile);
 
       // TODO: TEST ON UNIX IF \" around makeTarget is ok
-      if(onlyNodes)
+      if(buildType == install)
+         makeTargets.concat(" install");
+      else if(onlyNodes)
       {
          if(compiler.type.isVC)
          {
@@ -2138,7 +2140,12 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s %sCF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s %s-j%d %s%s%s -C \"%s\"%s -f \"%s\"",
+         sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s %s-j%d %s%s%s -C \"%s\"%s -f \"%s\"",
+#if defined(__WIN32__)
+               "",
+#else
+               buildType == install ? "pkexec --user root " : "",
+#endif
                compiler.makeCommand,
                mode == debugPrecompile ? "ECP_DEBUG=y " : mode == debugCompile ? "ECC_DEBUG=y " : mode == debugGenerateSymbols ? "ECS_DEBUG=y " : "",
                cfDir,
@@ -2191,7 +2198,7 @@ private:
             else if(justPrint)
                result = ProcessPipeOutputRaw(f);
             else
-               result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNodes, compiler, config, bitDepth);
+               result = ProcessBuildPipeOutput(f, objDirExp, buildType, onlyNodes, compiler, config, bitDepth);
             delete f;
             if(error)
                ide.outputView.buildBox.Logf("%s\n", command);
@@ -2333,7 +2340,7 @@ private:
 
    bool Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, SingleFileCompileMode mode)
    {
-      return Build(false, nodes, compiler, config, bitDepth, justPrint, mode);
+      return Build(build, nodes, compiler, config, bitDepth, justPrint, mode);
    }
 #endif
 
@@ -3343,6 +3350,74 @@ private:
             }
          }
          f.Puts("\n");
+
+         test = false;
+         if(platforms || (config && config.platforms))
+         {
+            for(platform = (Platform)1; platform < Platform::enumSize; platform++)
+            {
+               PlatformOptions projectPOs, configPOs;
+               MatchProjectAndConfigPlatformOptions(config, platform, &projectPOs, &configPOs);
+
+               if((projectPOs && projectPOs.options.installCommands && projectPOs.options.installCommands.count) ||
+                     (configPOs && configPOs.options.installCommands && configPOs.options.installCommands.count))
+               {
+                  test = true;
+                  break;
+               }
+            }
+         }
+         if(test || (options && options.installCommands) ||
+               (config && config.options && config.options.installCommands))
+         {
+            f.Puts("install:\n");
+            if(options && options.installCommands)
+            {
+               for(s : options.installCommands)
+                  if(s && s[0]) f.Printf("\t%s\n", s);
+            }
+            if(config && config.options && config.options.installCommands)
+            {
+               for(s : config.options.installCommands)
+                  if(s && s[0]) f.Printf("\t%s\n", s);
+            }
+            if(platforms || (config && config.platforms))
+            {
+               ifCount = 0;
+               for(platform = (Platform)1; platform < Platform::enumSize; platform++)
+               {
+                  PlatformOptions projectPOs, configPOs;
+                  MatchProjectAndConfigPlatformOptions(config, platform, &projectPOs, &configPOs);
+
+                  if((projectPOs && projectPOs.options.installCommands && projectPOs.options.installCommands.count) ||
+                        (configPOs && configPOs.options.installCommands && configPOs.options.installCommands.count))
+                  {
+                     if(ifCount)
+                        f.Puts("else\n");
+                     ifCount++;
+                     f.Printf("ifdef %s\n", PlatformToMakefileTargetVariable(platform));
+
+                     if(projectPOs && projectPOs.options.installCommands && projectPOs.options.installCommands.count)
+                     {
+                        for(s : projectPOs.options.installCommands)
+                           if(s && s[0]) f.Printf("\t%s\n", s);
+                     }
+                     if(configPOs && configPOs.options.installCommands && configPOs.options.installCommands.count)
+                     {
+                        for(s : configPOs.options.installCommands)
+                           if(s && s[0]) f.Printf("\t%s\n", s);
+                     }
+                  }
+               }
+               if(ifCount)
+               {
+                  int c;
+                  for(c = 0; c < ifCount; c++)
+                     f.Puts("endif\n");
+               }
+            }
+            f.Puts("\n");
+         }
 
          f.Puts("# SYMBOL RULES\n");
          f.Puts("\n");

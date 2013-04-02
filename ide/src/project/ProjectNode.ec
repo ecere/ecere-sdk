@@ -2570,9 +2570,10 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
    ProjectNode n;
    char * platformName = platform ? platform.OnGetString(0,0,0) : null;
 
-   Array<bool> optionConfigXplatformSet   { size = OPTION(postbuildCommands) };
-   Array<bool> optionDone                 { size = OPTION(postbuildCommands) };
-   Array<Array<String>> optionTempStrings { size = OPTION(postbuildCommands) };
+   // OPTION(ProjectOptions' last member) for size
+   Array<bool> optionConfigXplatformSet   { size = OPTION(installCommands) };
+   Array<bool> optionDone                 { size = OPTION(installCommands) };
+   Array<Array<String>> optionTempStrings { size = OPTION(installCommands) };
 
    GenericOptionTools<SetBool>              utilSetBool {
       bool OptionCheck(ProjectOptions options, int option) {
