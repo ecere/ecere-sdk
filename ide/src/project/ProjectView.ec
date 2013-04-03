@@ -208,9 +208,12 @@ class ProjectView : Window
          if(row)
          {
             ProjectNode node = (ProjectNode)row.tag;
+            char extension[MAX_EXTENSION];
+            GetExtension(node.name, extension);
             if(node.type == NodeTypes::project || node.type == resources || node.type == file || node.type == folder)
             {
                bool buildMenuUnavailable = buildInProgress;
+               bool isECFile = strcmpi(extension, "ec");
                Menu popupContent { };
                
                if(node.type == NodeTypes::project)
@@ -266,7 +269,8 @@ class ProjectView : Window
                   MenuItem { popupContent, $"Clean", l, NotifySelect = FileClean }.disabled = buildMenuUnavailable;
                   MenuItem { popupContent, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile }.disabled = buildMenuUnavailable;
                   MenuDivider { popupContent };
-                  MenuItem { popupContent, $"Debug Precompile", l, NotifySelect = FileDebugPrecompile }.disabled = buildMenuUnavailable;
+                  if(isECFile)
+                     MenuItem { popupContent, $"Debug Precompile", l, NotifySelect = FileDebugPrecompile }.disabled = buildMenuUnavailable;
                   MenuItem { popupContent, $"Debug Compile", l, NotifySelect = FileDebugCompile }.disabled = buildMenuUnavailable;
                   MenuDivider { popupContent };
                   MenuItem { popupContent, $"Remove", r, NotifySelect = FileRemoveFile };
