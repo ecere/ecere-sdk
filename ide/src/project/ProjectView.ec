@@ -212,110 +212,111 @@ class ProjectView : Window
             GetExtension(node.name, extension);
             if(node.type == NodeTypes::project || node.type == resources || node.type == file || node.type == folder)
             {
-               bool buildMenuUnavailable = buildInProgress;
+               bool na = buildInProgress; // N/A - buildMenuUnavailable
                bool isECFile = strcmpi(extension, "ec");
-               Menu popupContent { };
+               Menu pop { };
                
                if(node.type == NodeTypes::project)
                {
                   //if(node == ((Project)workspace.projects.first).topNode)
                   {
-                     MenuItem { popupContent, $"Build", b, f7, NotifySelect = ProjectBuild }.disabled = buildMenuUnavailable;
-                     MenuItem { popupContent, $"Relink", l, NotifySelect = ProjectLink }.disabled = buildMenuUnavailable;
-                     MenuItem { popupContent, $"Rebuild", r, shiftF7, NotifySelect = ProjectRebuild }.disabled = buildMenuUnavailable;
-                     MenuItem { popupContent, $"Clean", c, NotifySelect = ProjectClean }.disabled = buildMenuUnavailable;
-                     MenuItem { popupContent, $"Real Clean", d, NotifySelect = ProjectRealClean }.disabled = buildMenuUnavailable;
-                     MenuItem { popupContent, $"Regenerate Makefile", m, NotifySelect = ProjectRegenerate }.disabled = buildMenuUnavailable;
-                     MenuDivider { popupContent };
+                     MenuItem { pop, $"Build", b, f7, NotifySelect = ProjectBuild }.disabled = na;
+                     MenuItem { pop, $"Relink", l, NotifySelect = ProjectLink }.disabled = na;
+                     MenuItem { pop, $"Rebuild", r, shiftF7, NotifySelect = ProjectRebuild }.disabled = na;
+                     MenuItem { pop, $"Clean", c, NotifySelect = ProjectClean }.disabled = na;
+                     MenuItem { pop, $"Real Clean", d, NotifySelect = ProjectRealClean }.disabled = na;
+                     MenuItem { pop, $"Regenerate Makefile", m, NotifySelect = ProjectRegenerate }.disabled = na;
+                     MenuDivider { pop };
                   }
-                  MenuItem { popupContent, $"Debug Generate Symbols", l, NotifySelect = FileDebugGenerateSymbols }.disabled = buildMenuUnavailable;
-                  MenuDivider { popupContent };
-                  MenuItem { popupContent, $"New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
-                  MenuItem { popupContent, $"New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
-                  MenuItem { popupContent, $"Import Folder...", i, NotifySelect = ProjectImportFolder };
-                  MenuItem { popupContent, $"Add Files to Project...", f, NotifySelect = ProjectAddFiles };
-                  MenuDivider { popupContent };
-                  MenuItem { popupContent, $"Add New Form...", o, NotifySelect = ProjectAddNewForm };
-                  // MenuItem { popupContent, "Add New Behavior Graph...", g, NotifySelect = ProjectAddNewGraph };
-                  MenuDivider { popupContent };
+                  MenuDivider { pop };
+                  MenuItem { pop, $"Debug Generate Symbols", l, NotifySelect = FileDebugGenerateSymbols }.disabled = na;
+                  MenuDivider { pop };
+                  MenuItem { pop, $"New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
+                  MenuItem { pop, $"New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
+                  MenuItem { pop, $"Import Folder...", i, NotifySelect = ProjectImportFolder };
+                  MenuItem { pop, $"Add Files to Project...", f, NotifySelect = ProjectAddFiles };
+                  MenuDivider { pop };
+                  MenuItem { pop, $"Add New Form...", o, NotifySelect = ProjectAddNewForm };
+                  // MenuItem { pop, "Add New Behavior Graph...", g, NotifySelect = ProjectAddNewGraph };
+                  MenuDivider { pop };
                   if(node != ((Project)workspace.projects.first).topNode)
                   {
-                     MenuItem { popupContent, $"Remove project from workspace", r, NotifySelect = ProjectRemove }.disabled = buildMenuUnavailable;
-                     MenuDivider { popupContent };
+                     MenuItem { pop, $"Remove project from workspace", r, NotifySelect = ProjectRemove }.disabled = na;
+                     MenuDivider { pop };
                   }
-                  MenuItem { popupContent, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
-                  MenuDivider { popupContent };
-                  MenuItem { popupContent, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
-                  MenuDivider { popupContent };
-                  MenuItem { popupContent, $"Save", v, Key { s, ctrl = true }, NotifySelect = ProjectSave }.disabled = !node.modified;
-                  MenuDivider { popupContent };
-                  MenuItem { popupContent, $"Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
+                  MenuItem { pop, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
+                  MenuDivider { pop };
+                  MenuItem { pop, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
+                  MenuDivider { pop };
+                  MenuItem { pop, $"Save", v, Key { s, ctrl = true }, NotifySelect = ProjectSave }.disabled = !node.modified;
+                  MenuDivider { pop };
+                  MenuItem { pop, $"Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
                }
                else if(node.type == resources)
                {
-                  MenuItem { popupContent, $"New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
-                  MenuItem { popupContent, $"New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
-                  MenuItem { popupContent, $"Import Folder...", i, NotifySelect = ProjectImportFolder };
-                  MenuItem { popupContent, $"Add Resources to Project...", f, NotifySelect = ResourcesAddFiles };
-                  MenuItem { popupContent, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
-                  MenuDivider { popupContent };
-                  MenuItem { popupContent, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
-                  MenuItem { popupContent, $"Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
+                  MenuItem { pop, $"New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
+                  MenuItem { pop, $"New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
+                  MenuItem { pop, $"Import Folder...", i, NotifySelect = ProjectImportFolder };
+                  MenuItem { pop, $"Add Resources to Project...", f, NotifySelect = ResourcesAddFiles };
+                  MenuItem { pop, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
+                  MenuDivider { pop };
+                  MenuItem { pop, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
+                  MenuItem { pop, $"Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
                }
                else if(node.type == file)
                {
-                  MenuItem { popupContent, $"Open", o, NotifySelect = FileOpenFile };
-                  MenuDivider { popupContent };
-                  MenuItem { popupContent, $"Clean", l, NotifySelect = FileClean }.disabled = buildMenuUnavailable;
-                  MenuItem { popupContent, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile }.disabled = buildMenuUnavailable;
-                  MenuDivider { popupContent };
+                  MenuItem { pop, $"Open", o, NotifySelect = FileOpenFile };
+                  MenuDivider { pop };
+                  MenuItem { pop, $"Clean", l, NotifySelect = FileClean }.disabled = na;
+                  MenuItem { pop, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile }.disabled = na;
+                  MenuDivider { pop };
                   if(isECFile)
-                     MenuItem { popupContent, $"Debug Precompile", l, NotifySelect = FileDebugPrecompile }.disabled = buildMenuUnavailable;
-                  MenuItem { popupContent, $"Debug Compile", l, NotifySelect = FileDebugCompile }.disabled = buildMenuUnavailable;
-                  MenuDivider { popupContent };
-                  MenuItem { popupContent, $"Remove", r, NotifySelect = FileRemoveFile };
-                  MenuDivider { popupContent };
-                  MenuItem { popupContent, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
-                  MenuDivider { popupContent };
-                  MenuItem { popupContent, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
-                  MenuItem { popupContent, $"Properties..", p, Key { enter, alt = true }, NotifySelect = FileProperties };
+                     MenuItem { pop, $"Debug Precompile", l, NotifySelect = FileDebugPrecompile }.disabled = na;
+                  MenuItem { pop, $"Debug Compile", l, NotifySelect = FileDebugCompile }.disabled = na;
+                  MenuDivider { pop };
+                  MenuItem { pop, $"Remove", r, NotifySelect = FileRemoveFile };
+                  MenuDivider { pop };
+                  MenuItem { pop, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
+                  MenuDivider { pop };
+                  MenuItem { pop, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
+                  MenuItem { pop, $"Properties..", p, Key { enter, alt = true }, NotifySelect = FileProperties };
                }
                else if(node.type == folder)
                {
                   bool isInResources = node.isInResources;
 
-                  MenuItem { popupContent, $"New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
-                  MenuItem { popupContent, $"New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
-                  MenuItem { popupContent, $"Import Folder...", i, NotifySelect = ProjectImportFolder };
+                  MenuItem { pop, $"New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
+                  MenuItem { pop, $"New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
+                  MenuItem { pop, $"Import Folder...", i, NotifySelect = ProjectImportFolder };
                   if(isInResources)
                   {
-                     MenuItem { popupContent, $"Add Resources to Folder...", f, NotifySelect = ResourcesAddFiles };
+                     MenuItem { pop, $"Add Resources to Folder...", f, NotifySelect = ResourcesAddFiles };
                   }
                   else
                   {
-                     MenuItem { popupContent, $"Add Files to Folder...", f, NotifySelect = ProjectAddFiles };
+                     MenuItem { pop, $"Add Files to Folder...", f, NotifySelect = ProjectAddFiles };
                   }
                   if(!isInResources)
                   {
-                     MenuDivider { popupContent };
-                     MenuItem { popupContent, $"Add New Form...", o, NotifySelect = ProjectAddNewForm };
-                     MenuItem { popupContent, $"Add New Behavior Graph...", g, NotifySelect = ProjectAddNewGraph };
+                     MenuDivider { pop };
+                     MenuItem { pop, $"Add New Form...", o, NotifySelect = ProjectAddNewForm };
+                     MenuItem { pop, $"Add New Behavior Graph...", g, NotifySelect = ProjectAddNewGraph };
                   }
-                  MenuDivider { popupContent };
-                  MenuItem { popupContent, $"Clean", l, NotifySelect = FileClean }.disabled = buildMenuUnavailable;
-                  MenuItem { popupContent, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile }.disabled = buildMenuUnavailable;
-                  MenuDivider { popupContent };
-                  MenuItem { popupContent, $"Remove", r, NotifySelect = FileRemoveFile };
-                  MenuDivider { popupContent };
-                  MenuItem { popupContent, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
-                  MenuDivider { popupContent };
-                  MenuItem { popupContent, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
-                  MenuItem { popupContent, $"Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
+                  MenuDivider { pop };
+                  MenuItem { pop, $"Clean", l, NotifySelect = FileClean }.disabled = na;
+                  MenuItem { pop, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile }.disabled = na;
+                  MenuDivider { pop };
+                  MenuItem { pop, $"Remove", r, NotifySelect = FileRemoveFile };
+                  MenuDivider { pop };
+                  MenuItem { pop, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
+                  MenuDivider { pop };
+                  MenuItem { pop, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
+                  MenuItem { pop, $"Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
                }
 
                popupMenu = 
                {
-                  master = this, menu = popupContent;
+                  master = this, menu = pop;
                   position = {
                      x + clientStart.x + absPosition.x - app.desktop.position.x, 
                      y + clientStart.y + absPosition.y - app.desktop.position.y };
