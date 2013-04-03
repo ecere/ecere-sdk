@@ -54,7 +54,7 @@ msgstr " configuration?"
 msgid " file is not part of any project.\n"
 msgstr " file is not part of any project.\n"
 
-#: ./src/project/ProjectView.ec:1960
+#: ./src/project/ProjectView.ec:1972
 msgid " was "
 msgstr " was "
 
@@ -66,11 +66,11 @@ msgstr " with exit code %s"
 msgid " with file name matching \"%s\""
 msgstr " with file name matching \"%s\""
 
-#: ./src/project/ProjectView.ec:676
+#: ./src/project/ProjectView.ec:688
 msgid "%s - %s%smakefile for %s config...\n"
 msgstr "%s - %s%smakefile for %s config...\n"
 
-#: ./src/project/ProjectView.ec:595
+#: ./src/project/ProjectView.ec:607
 msgid "%s Compiler\n"
 msgstr "%s Compiler\n"
 
@@ -114,11 +114,11 @@ msgstr "%s search did not find any match in the %d files searched\n"
 msgid "%s search found a total of %d match%s in the %d file%s searched\n"
 msgstr "%s search found a total of %d match%s in the %d file%s searched\n"
 
-#: ./src/project/ProjectView.ec:1094
+#: ./src/project/ProjectView.ec:1106
 msgid "%s specific file(s) in project %s using the %s configuration...\n"
 msgstr "%s specific file(s) in project %s using the %s configuration...\n"
 
-#: ./src/project/ProjectView.ec:1097
+#: ./src/project/ProjectView.ec:1109
 msgid "%s specific file(s) in project %s...\n"
 msgstr "%s specific file(s) in project %s...\n"
 
@@ -174,36 +174,36 @@ msgstr "Active Compiler"
 msgid "Active Configuration(s)"
 msgstr "Active Configuration(s)"
 
-#: ./src/project/ProjectView.ec:292
+#: ./src/project/ProjectView.ec:304
 msgid "Add Files to Folder..."
 msgstr "Add Files to Folder..."
 
-#: ./src/project/ProjectView.ec:1905
+#: ./src/project/ProjectView.ec:1917
 msgid "Add Files to Project"
 msgstr "Add Files to Project"
 
-#: ./src/project/ProjectView.ec:233
+#: ./src/project/ProjectView.ec:237
 msgid "Add Files to Project..."
 msgstr "Add Files to Project..."
 
-#: ./src/project/ProjectView.ec:298
+#: ./src/project/ProjectView.ec:310
 msgid "Add New Behavior Graph..."
 msgstr "Add New Behavior Graph..."
 
-#: ./src/project/ProjectView.ec:235
-#: ./src/project/ProjectView.ec:297
+#: ./src/project/ProjectView.ec:239
+#: ./src/project/ProjectView.ec:309
 msgid "Add New Form..."
 msgstr "Add New Form..."
 
-#: ./src/project/ProjectView.ec:288
+#: ./src/project/ProjectView.ec:300
 msgid "Add Resources to Folder..."
 msgstr "Add Resources to Folder..."
 
-#: ./src/project/ProjectView.ec:1905
+#: ./src/project/ProjectView.ec:1917
 msgid "Add Resources to Project"
 msgstr "Add Resources to Project"
 
-#: ./src/project/ProjectView.ec:256
+#: ./src/project/ProjectView.ec:260
 msgid "Add Resources to Project..."
 msgstr "Add Resources to Project..."
 
@@ -253,11 +253,11 @@ msgstr "All Debug Views"
 msgid "All files"
 msgstr "All files"
 
-#: ./src/project/ProjectView.ec:2195
+#: ./src/project/ProjectView.ec:2207
 msgid "Are you sure you want to remove the \"%s\" project\nfrom this workspace?"
 msgstr "Are you sure you want to remove the \"%s\" project\nfrom this workspace?"
 
-#: ./src/project/ProjectView.ec:2172
+#: ./src/project/ProjectView.ec:2184
 msgid "Are you sure you want to remove the folder \"%s\"\nand all of its contents from the project?"
 msgstr "Are you sure you want to remove the folder \"%s\"\nand all of its contents from the project?"
 
@@ -287,7 +287,7 @@ msgstr "Attach"
 msgid "Attach %s"
 msgstr "Attach %s"
 
-#: ./src/project/ProjectView.ec:1507
+#: ./src/project/ProjectView.ec:1519
 msgid "Attempting to debug non-debug configuration\nProceed anyways?"
 msgstr "Attempting to debug non-debug configuration\nProceed anyways?"
 
@@ -314,10 +314,10 @@ msgstr "Breakpoints"
 msgid "Breaks"
 msgstr "Breaks"
 
-#: ./src/project/ProjectView.ec:245
-#: ./src/project/ProjectView.ec:257
-#: ./src/project/ProjectView.ec:274
-#: ./src/project/ProjectView.ec:306
+#: ./src/project/ProjectView.ec:249
+#: ./src/project/ProjectView.ec:261
+#: ./src/project/ProjectView.ec:286
+#: ./src/project/ProjectView.ec:318
 msgid "Browse Folder"
 msgstr "Browse Folder"
 
@@ -325,7 +325,7 @@ msgstr "Browse Folder"
 msgid "Browse Project Folder"
 msgstr "Browse Project Folder"
 
-#: ./src/project/ProjectView.ec:220
+#: ./src/project/ProjectView.ec:221
 #: ./src/ide.ec:996
 #: ./src/ide.ec:1814
 #: ./src/ide.ec:1843
@@ -345,7 +345,7 @@ msgstr "Builder"
 msgid "Building library...\n"
 msgstr "Building library...\n"
 
-#: ./src/project/ProjectView.ec:693
+#: ./src/project/ProjectView.ec:705
 msgid "Building project %s using the %s configuration...\n"
 msgstr "Building project %s using the %s configuration...\n"
 
@@ -396,9 +396,9 @@ msgstr "Cancel"
 msgid "Cascade"
 msgstr "Cascade"
 
-#: ./src/project/ProjectView.ec:223
-#: ./src/project/ProjectView.ec:266
-#: ./src/project/ProjectView.ec:301
+#: ./src/project/ProjectView.ec:224
+#: ./src/project/ProjectView.ec:270
+#: ./src/project/ProjectView.ec:313
 #: ./src/ide.ec:1034
 msgid "Clean"
 msgstr "Clean"
@@ -407,7 +407,7 @@ msgstr "Clean"
 msgid "Clean project"
 msgstr "Clean project"
 
-#: ./src/project/ProjectView.ec:978
+#: ./src/project/ProjectView.ec:990
 msgid "Cleaning project %s using the %s configuration...\n"
 msgstr "Cleaning project %s using the %s configuration...\n"
 
@@ -451,8 +451,8 @@ msgstr "Command:"
 msgid "Common"
 msgstr "Common"
 
-#: ./src/project/ProjectView.ec:267
-#: ./src/project/ProjectView.ec:302
+#: ./src/project/ProjectView.ec:271
+#: ./src/project/ProjectView.ec:314
 msgid "Compile"
 msgstr "Compile"
 
@@ -482,8 +482,8 @@ msgstr "Compilers"
 msgid "Compilers Detection"
 msgstr "Compilers Detection"
 
-#: ./src/project/ProjectView.ec:1095
-#: ./src/project/ProjectView.ec:1098
+#: ./src/project/ProjectView.ec:1107
+#: ./src/project/ProjectView.ec:1110
 msgid "Compiling"
 msgstr "Compiling"
 
@@ -520,7 +520,7 @@ msgstr "Console Application"
 msgid "Copy"
 msgstr "Copy"
 
-#: ./src/project/ProjectView.ec:1941
+#: ./src/project/ProjectView.ec:1953
 msgid "Couldn't create file."
 msgstr "Couldn't create file."
 
@@ -546,15 +546,15 @@ msgstr "Create directory?"
 msgid "Debug"
 msgstr "Debug"
 
-#: ./src/project/ProjectView.ec:270
+#: ./src/project/ProjectView.ec:280
 msgid "Debug Compile"
 msgstr "Debug Compile"
 
-#: ./src/project/ProjectView.ec:228
+#: ./src/project/ProjectView.ec:231
 msgid "Debug Generate Symbols"
 msgstr "Debug Generate Symbols"
 
-#: ./src/project/ProjectView.ec:269
+#: ./src/project/ProjectView.ec:279
 msgid "Debug Precompile"
 msgstr "Debug Precompile"
 
@@ -562,8 +562,8 @@ msgstr "Debug Precompile"
 msgid "Debug Working Directory"
 msgstr "Debug Working Directory"
 
-#: ./src/project/ProjectView.ec:1095
-#: ./src/project/ProjectView.ec:1098
+#: ./src/project/ProjectView.ec:1107
+#: ./src/project/ProjectView.ec:1110
 msgid "Debug compiling"
 msgstr "Debug compiling"
 
@@ -591,7 +591,7 @@ msgstr "Debugger Fatal Error: GDB lost\n"
 msgid "Debugger required for symbol evaluation in \"%s\""
 msgstr "Debugger required for symbol evaluation in \"%s\""
 
-#: ./src/project/ProjectView.ec:1505
+#: ./src/project/ProjectView.ec:1517
 msgid "Debugging compressed applications is not supported\n"
 msgstr "Debugging compressed applications is not supported\n"
 
@@ -631,15 +631,15 @@ msgstr "Delete "
 msgid "Delete %s"
 msgstr "Delete %s"
 
-#: ./src/project/ProjectView.ec:2173
+#: ./src/project/ProjectView.ec:2185
 msgid "Delete Folder"
 msgstr "Delete Folder"
 
-#: ./src/project/ProjectView.ec:1155
+#: ./src/project/ProjectView.ec:1167
 msgid "Deleteing intermediate objects for %s %s in project %s using the %s configuration...\n"
 msgstr "Deleteing intermediate objects for %s %s in project %s using the %s configuration...\n"
 
-#: ./src/project/ProjectView.ec:1158
+#: ./src/project/ProjectView.ec:1170
 msgid "Deleteing intermediate objects for %s %s in project %s...\n"
 msgstr "Deleteing intermediate objects for %s %s in project %s...\n"
 
@@ -742,11 +742,11 @@ msgstr "Error creating directory"
 msgid "Error executing make (%s) command\n"
 msgstr "Error executing make (%s) command\n"
 
-#: ./src/project/ProjectView.ec:619
+#: ./src/project/ProjectView.ec:631
 msgid "Error generating compiler configuration (Is the project/config directory writable?)\n"
 msgstr "Error generating compiler configuration (Is the project/config directory writable?)\n"
 
-#: ./src/project/ProjectView.ec:679
+#: ./src/project/ProjectView.ec:691
 msgid "Error generating makefile (Is the project directory writable?)\n"
 msgstr "Error generating makefile (Is the project directory writable?)\n"
 
@@ -809,7 +809,7 @@ msgstr "Fast Math"
 msgid "Fatal Error: child process terminated unexpectedly\n"
 msgstr "Fatal Error: child process terminated unexpectedly\n"
 
-#: ./src/project/ProjectView.ec:463
+#: ./src/project/ProjectView.ec:475
 #: ./src/designer/CodeEditor.ec:1900
 #: ./src/designer/Designer.ec:150
 #: ./src/documents/PictureEdit.ec:53
@@ -819,7 +819,7 @@ msgid "File"
 msgstr "File"
 
 #: ./src/project/Project.ec:1869
-#: ./src/project/ProjectView.ec:1151
+#: ./src/project/ProjectView.ec:1163
 #: ./src/ide.ec:2655
 msgid "File %s is excluded from current build configuration.\n"
 msgstr "File %s is excluded from current build configuration.\n"
@@ -829,7 +829,7 @@ msgstr "File %s is excluded from current build configuration.\n"
 msgid "File doesn't exist."
 msgstr "File doesn't exist."
 
-#: ./src/project/ProjectView.ec:1930
+#: ./src/project/ProjectView.ec:1942
 #: ./src/ide.ec:2258
 msgid "File doesn't exist. Create?"
 msgstr "File doesn't exist. Create?"
@@ -933,20 +933,20 @@ msgstr "GNU Make"
 msgid "GNU Toolchain Prefix"
 msgstr "GNU Toolchain Prefix"
 
-#: ./src/project/ProjectView.ec:661
+#: ./src/project/ProjectView.ec:673
 msgid "Generating "
 msgstr "Generating "
 
 #: ./src/project/ProjectView.ec:141
-#: ./src/project/ProjectView.ec:657
+#: ./src/project/ProjectView.ec:669
 msgid "Generating Makefile & Dependencies..."
 msgstr "Generating Makefile & Dependencies..."
 
-#: ./src/project/ProjectView.ec:632
+#: ./src/project/ProjectView.ec:644
 msgid "Generating Visual Studio Project..."
 msgstr "Generating Visual Studio Project..."
 
-#: ./src/project/ProjectView.ec:629
+#: ./src/project/ProjectView.ec:641
 msgid "Generating Visual Studio Solution..."
 msgstr "Generating Visual Studio Solution..."
 
@@ -1016,13 +1016,13 @@ msgstr "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png,*.gif)"
 msgstr "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png,*.gif)"
 
-#: ./src/project/ProjectView.ec:448
+#: ./src/project/ProjectView.ec:460
 msgid "Import Folder"
 msgstr "Import Folder"
 
-#: ./src/project/ProjectView.ec:232
-#: ./src/project/ProjectView.ec:255
-#: ./src/project/ProjectView.ec:285
+#: ./src/project/ProjectView.ec:236
+#: ./src/project/ProjectView.ec:259
+#: ./src/project/ProjectView.ec:297
 msgid "Import Folder..."
 msgstr "Import Folder..."
 
@@ -1132,7 +1132,7 @@ msgstr "Location"
 msgid "Lose Changes?"
 msgstr "Lose Changes?"
 
-#: ./src/project/ProjectView.ec:669
+#: ./src/project/ProjectView.ec:681
 msgid "Makefile doesn't exist. "
 msgstr "Makefile doesn't exist. "
 
@@ -1213,7 +1213,7 @@ msgstr "NUM"
 msgid "Name"
 msgstr "Name"
 
-#: ./src/project/ProjectView.ec:1978
+#: ./src/project/ProjectView.ec:1990
 msgid "Name Conflict"
 msgstr "Name Conflict"
 
@@ -1225,15 +1225,15 @@ msgstr "Name detached method"
 msgid "New"
 msgstr "New"
 
-#: ./src/project/ProjectView.ec:230
-#: ./src/project/ProjectView.ec:253
-#: ./src/project/ProjectView.ec:283
+#: ./src/project/ProjectView.ec:234
+#: ./src/project/ProjectView.ec:257
+#: ./src/project/ProjectView.ec:295
 msgid "New File..."
 msgstr "New File..."
 
-#: ./src/project/ProjectView.ec:231
-#: ./src/project/ProjectView.ec:254
-#: ./src/project/ProjectView.ec:284
+#: ./src/project/ProjectView.ec:235
+#: ./src/project/ProjectView.ec:258
+#: ./src/project/ProjectView.ec:296
 msgid "New Folder..."
 msgstr "New Folder..."
 
@@ -1310,7 +1310,7 @@ msgid "OVR"
 msgstr "OVR"
 
 #: ./src/dialogs/GlobalSettingsDialog.ec:9
-#: ./src/project/ProjectView.ec:264
+#: ./src/project/ProjectView.ec:268
 #: ./src/designer/CodeEditor.ec:132
 #: ./src/ide.ec:131
 msgid "Open"
@@ -1387,8 +1387,8 @@ msgstr "Path"
 msgid "Platforms: "
 msgstr "Platforms: "
 
-#: ./src/project/ProjectView.ec:1341
-#: ./src/project/ProjectView.ec:1371
+#: ./src/project/ProjectView.ec:1353
+#: ./src/project/ProjectView.ec:1383
 msgid "Please select files from a single project.\n"
 msgstr "Please select files from a single project.\n"
 
@@ -1438,11 +1438,11 @@ msgstr "Project"
 msgid "Project Already Exists"
 msgstr "Project Already Exists"
 
-#: ./src/project/ProjectView.ec:831
+#: ./src/project/ProjectView.ec:843
 msgid "Project Build"
 msgstr "Project Build"
 
-#: ./src/project/ProjectView.ec:974
+#: ./src/project/ProjectView.ec:986
 msgid "Project Clean"
 msgstr "Project Clean"
 
@@ -1459,7 +1459,7 @@ msgstr "Project File"
 msgid "Project Files (*.epj)"
 msgstr "Project Files (*.epj)"
 
-#: ./src/project/ProjectView.ec:862
+#: ./src/project/ProjectView.ec:874
 msgid "Project Link"
 msgstr "Project Link"
 
@@ -1467,11 +1467,11 @@ msgstr "Project Link"
 msgid "Project Name"
 msgstr "Project Name"
 
-#: ./src/project/ProjectView.ec:1014
+#: ./src/project/ProjectView.ec:1026
 msgid "Project Real Clean"
 msgstr "Project Real Clean"
 
-#: ./src/project/ProjectView.ec:896
+#: ./src/project/ProjectView.ec:908
 msgid "Project Rebuild"
 msgstr "Project Rebuild"
 
@@ -1487,7 +1487,7 @@ msgstr "Project View"
 msgid "Project has been modified"
 msgstr "Project has been modified"
 
-#: ./src/project/ProjectView.ec:671
+#: ./src/project/ProjectView.ec:683
 msgid "Project has been modified. "
 msgstr "Project has been modified. "
 
@@ -1498,13 +1498,13 @@ msgstr "Project has been modified. "
 msgid "Properties"
 msgstr "Properties"
 
-#: ./src/project/ProjectView.ec:277
+#: ./src/project/ProjectView.ec:289
 msgid "Properties.."
 msgstr "Properties.."
 
-#: ./src/project/ProjectView.ec:249
-#: ./src/project/ProjectView.ec:260
-#: ./src/project/ProjectView.ec:309
+#: ./src/project/ProjectView.ec:253
+#: ./src/project/ProjectView.ec:264
+#: ./src/project/ProjectView.ec:321
 msgid "Properties..."
 msgstr "Properties..."
 
@@ -1528,7 +1528,7 @@ msgstr "Quick..."
 msgid "RGB Color"
 msgstr "RGB Color"
 
-#: ./src/project/ProjectView.ec:224
+#: ./src/project/ProjectView.ec:225
 #: ./src/ide.ec:1048
 msgid "Real Clean"
 msgstr "Real Clean"
@@ -1537,7 +1537,7 @@ msgstr "Real Clean"
 msgid "Reattach"
 msgstr "Reattach"
 
-#: ./src/project/ProjectView.ec:222
+#: ./src/project/ProjectView.ec:223
 #: ./src/ide.ec:1023
 msgid "Rebuild"
 msgstr "Rebuild"
@@ -1546,7 +1546,7 @@ msgstr "Rebuild"
 msgid "Rebuild project"
 msgstr "Rebuild project"
 
-#: ./src/project/ProjectView.ec:900
+#: ./src/project/ProjectView.ec:912
 msgid "Rebuilding project %s using the %s configuration...\n"
 msgstr "Rebuilding project %s using the %s configuration...\n"
 
@@ -1560,17 +1560,17 @@ msgstr "Recent Files"
 msgid "Recent Projects"
 msgstr "Recent Projects"
 
-#: ./src/project/ProjectView.ec:225
+#: ./src/project/ProjectView.ec:226
 #: ./src/ide.ec:245
 #: ./src/ide.ec:1062
 msgid "Regenerate Makefile"
 msgstr "Regenerate Makefile"
 
-#: ./src/project/ProjectView.ec:663
+#: ./src/project/ProjectView.ec:675
 msgid "Regenerating "
 msgstr "Regenerating "
 
-#: ./src/project/ProjectView.ec:221
+#: ./src/project/ProjectView.ec:222
 #: ./src/ide.ec:1012
 msgid "Relink"
 msgstr "Relink"
@@ -1579,24 +1579,24 @@ msgstr "Relink"
 msgid "Relink project"
 msgstr "Relink project"
 
-#: ./src/project/ProjectView.ec:866
+#: ./src/project/ProjectView.ec:878
 msgid "Relinking project %s using the %s configuration...\n"
 msgstr "Relinking project %s using the %s configuration...\n"
 
-#: ./src/project/ProjectView.ec:272
-#: ./src/project/ProjectView.ec:304
+#: ./src/project/ProjectView.ec:284
+#: ./src/project/ProjectView.ec:316
 msgid "Remove"
 msgstr "Remove"
 
-#: ./src/project/ProjectView.ec:2196
+#: ./src/project/ProjectView.ec:2208
 msgid "Remove Project"
 msgstr "Remove Project"
 
-#: ./src/project/ProjectView.ec:240
+#: ./src/project/ProjectView.ec:244
 msgid "Remove project from workspace"
 msgstr "Remove project from workspace"
 
-#: ./src/project/ProjectView.ec:1018
+#: ./src/project/ProjectView.ec:1030
 msgid "Removing intermediate objects directory for project %s using the %s configuration...\n"
 msgstr "Removing intermediate objects directory for project %s using the %s configuration...\n"
 
@@ -1638,7 +1638,7 @@ msgstr "Restart"
 msgid "Resume"
 msgstr "Resume"
 
-#: ./src/project/ProjectView.ec:1503
+#: ./src/project/ProjectView.ec:1515
 #: ./src/ide.ec:248
 #: ./src/ide.ec:985
 msgid "Run"
@@ -1662,8 +1662,8 @@ msgstr "SYSROOT"
 msgid "Same Project"
 msgstr "Same Project"
 
-#: ./src/project/ProjectView.ec:247
-#: ./src/project/ProjectView.ec:464
+#: ./src/project/ProjectView.ec:251
+#: ./src/project/ProjectView.ec:476
 #: ./src/designer/CodeEditor.ec:1901
 #: ./src/designer/Designer.ec:153
 #: ./src/documents/PictureEdit.ec:54
@@ -1742,10 +1742,10 @@ msgstr "Select directory"
 msgid "Select project directory"
 msgstr "Select project directory"
 
-#: ./src/project/ProjectView.ec:243
-#: ./src/project/ProjectView.ec:259
-#: ./src/project/ProjectView.ec:276
-#: ./src/project/ProjectView.ec:308
+#: ./src/project/ProjectView.ec:247
+#: ./src/project/ProjectView.ec:263
+#: ./src/project/ProjectView.ec:288
+#: ./src/project/ProjectView.ec:320
 #: ./src/ide.ec:964
 msgid "Settings..."
 msgstr "Settings..."
@@ -1756,7 +1756,7 @@ msgstr "Settings..."
 msgid "Shared Library"
 msgstr "Shared Library"
 
-#: ./src/project/ProjectView.ec:1503
+#: ./src/project/ProjectView.ec:1515
 msgid "Shared and static libraries cannot be run like executables."
 msgstr "Shared and static libraries cannot be run like executables."
 
@@ -1787,8 +1787,8 @@ msgstr "Stack Depth"
 msgid "Start"
 msgstr "Start"
 
-#: ./src/project/ProjectView.ec:1505
-#: ./src/project/ProjectView.ec:1507
+#: ./src/project/ProjectView.ec:1517
+#: ./src/project/ProjectView.ec:1519
 msgid "Starting Debug"
 msgstr "Starting Debug"
 
@@ -1918,7 +1918,7 @@ msgstr "The "
 msgid "The document %s was modified by another application.\nWould you like to reload it and lose your changes?"
 msgstr "The document %s was modified by another application.\nWould you like to reload it and lose your changes?"
 
-#: ./src/project/ProjectView.ec:1959
+#: ./src/project/ProjectView.ec:1971
 msgid "The following file"
 msgstr "The following file"
 
@@ -2008,8 +2008,8 @@ msgstr "Unable to locate source file.\nWould you like to try again?"
 msgid "Unable to open file %s\n\n"
 msgstr "Unable to open file %s\n\n"
 
-#: ./src/project/ProjectView.ec:1078
-#: ./src/project/ProjectView.ec:1131
+#: ./src/project/ProjectView.ec:1090
+#: ./src/project/ProjectView.ec:1143
 msgid "Unable to save %s file.\n"
 msgstr "Unable to save %s file.\n"
 
@@ -2025,12 +2025,12 @@ msgstr "Unknown output"
 msgid "Unknown prompt"
 msgstr "Unknown prompt"
 
-#: ./src/project/ProjectView.ec:1185
+#: ./src/project/ProjectView.ec:1197
 #: ./src/designer/CodeEditor.ec:2437
 msgid "Untitled %d"
 msgstr "Untitled %d"
 
-#: ./src/project/ProjectView.ec:665
+#: ./src/project/ProjectView.ec:677
 msgid "Updating "
 msgstr "Updating "
 
@@ -2140,7 +2140,7 @@ msgstr "Would you like to save changes made to the workspace options?"
 msgid "Writing symbol loader...\n"
 msgstr "Writing symbol loader...\n"
 
-#: ./src/project/ProjectView.ec:482
+#: ./src/project/ProjectView.ec:494
 msgid "You have modified projects.\nSave changes to "
 msgstr "You have modified projects.\nSave changes to "
 
@@ -2215,8 +2215,8 @@ msgstr "errors"
 msgid "es"
 msgstr "es"
 
-#: ./src/project/ProjectView.ec:1156
-#: ./src/project/ProjectView.ec:1159
+#: ./src/project/ProjectView.ec:1168
+#: ./src/project/ProjectView.ec:1171
 msgid "folder"
 msgstr "folder"
 
@@ -2236,7 +2236,7 @@ msgstr "no error, "
 msgid "no warning\n"
 msgstr "no warning\n"
 
-#: ./src/project/ProjectView.ec:1962
+#: ./src/project/ProjectView.ec:1974
 msgid "not added because of identical file name conflict within the project.\n\n"
 msgstr "not added because of identical file name conflict within the project.\n\n"
 
@@ -2249,12 +2249,12 @@ msgstr "replaced"
 msgid "s"
 msgstr "s"
 
-#: ./src/project/ProjectView.ec:1961
+#: ./src/project/ProjectView.ec:1973
 msgid "s were "
 msgstr "s were "
 
-#: ./src/project/ProjectView.ec:1156
-#: ./src/project/ProjectView.ec:1159
+#: ./src/project/ProjectView.ec:1168
+#: ./src/project/ProjectView.ec:1171
 msgid "single file"
 msgstr "single file"
 
@@ -2270,7 +2270,7 @@ msgstr "warning"
 msgid "warnings"
 msgstr "warnings"
 
-#: ./src/project/ProjectView.ec:595
+#: ./src/project/ProjectView.ec:607
 msgid "{problem with compiler selection}"
 msgstr "{problem with compiler selection}"
 
