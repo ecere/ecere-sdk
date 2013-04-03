@@ -218,16 +218,15 @@ class ProjectView : Window
                
                if(node.type == NodeTypes::project)
                {
-                  //if(node == ((Project)workspace.projects.first).topNode)
-                  {
-                     MenuItem { pop, $"Build", b, f7, NotifySelect = ProjectBuild }.disabled = na;
-                     MenuItem { pop, $"Relink", l, NotifySelect = ProjectLink }.disabled = na;
-                     MenuItem { pop, $"Rebuild", r, shiftF7, NotifySelect = ProjectRebuild }.disabled = na;
-                     MenuItem { pop, $"Clean", c, NotifySelect = ProjectClean }.disabled = na;
-                     MenuItem { pop, $"Real Clean", d, NotifySelect = ProjectRealClean }.disabled = na;
-                     MenuItem { pop, $"Regenerate Makefile", m, NotifySelect = ProjectRegenerate }.disabled = na;
-                     MenuDivider { pop };
-                  }
+                  MenuItem mi;
+                                                                                                                                            mi = ide.projectBuildItem;
+                  MenuItem { pop, $"Build"              , b, f7     , NotifySelect = ProjectBuild     , bitmap = mi.bitmap }.disabled = na; mi = ide.projectLinkItem;
+                  MenuItem { pop, $"Relink"             , l         , NotifySelect = ProjectLink      , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRebuildItem;
+                  MenuItem { pop, $"Rebuild"            , r, shiftF7, NotifySelect = ProjectRebuild   , bitmap = mi.bitmap }.disabled = na; mi = ide.projectCleanItem;
+                  MenuItem { pop, $"Clean"              , c         , NotifySelect = ProjectClean     , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRealCleanItem;
+                  MenuItem { pop, $"Real Clean"         , d         , NotifySelect = ProjectRealClean , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRegenerateItem;
+                  MenuItem { pop, $"Regenerate Makefile", m         , NotifySelect = ProjectRegenerate, bitmap = mi.bitmap }.disabled = na;
+
                   MenuDivider { pop };
                   MenuItem { pop, $"Debug Generate Symbols", l, NotifySelect = FileDebugGenerateSymbols }.disabled = na;
                   MenuDivider { pop };
