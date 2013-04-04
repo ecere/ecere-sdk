@@ -126,8 +126,10 @@ default:
 %type <enumerator> enumerator
 %type <declarator> declarator direct_declarator direct_abstract_declarator abstract_declarator
                    direct_abstract_declarator_noarray abstract_declarator_noarray
-                   struct_declarator direct_declarator_function direct_declarator_function_start declarator_function_error direct_declarator_function_error declarator_function direct_declarator_nofunction
-                   declarator_nofunction
+                   struct_declarator direct_declarator_function direct_declarator_function_start declarator_function_error direct_declarator_function_error declarator_function direct_declarator_nofunction // declarator_nofunction
+                   direct_declarator_function_type_ok declarator_nofunction_type_ok direct_declarator_nofunction_type_ok declarator_function_type_ok direct_declarator_function_error_type_ok
+                   direct_declarator_function_start_type_ok direct_declarator_type_ok declarator_type_ok declarator_function_error_type_ok
+                   // tricky_declarator
 %type <pointer> pointer
 %type <initializer> initializer initializer_error initializer_condition initializer_condition_error
 %type <initDeclarator> init_declarator init_declarator_error
@@ -212,7 +214,7 @@ default:
 %destructor { FreeDeclarator($$); } declarator direct_declarator direct_abstract_declarator abstract_declarator
                                     direct_abstract_declarator_noarray abstract_declarator_noarray
                                     struct_declarator direct_declarator_function direct_declarator_function_start declarator_function_error direct_declarator_function_error declarator_function direct_declarator_nofunction
-                                    declarator_nofunction
+                                    //declarator_nofunction
 
 %destructor { FreeInitializer($$); } initializer initializer_error initializer_condition initializer_condition_error
 %destructor { FreeInitDeclarator($$); } init_declarator init_declarator_error
@@ -518,7 +520,7 @@ strict_type:
    ;
 
 class_function_definition_start:
-   guess_declaration_specifiers declarator_function
+   guess_declaration_specifiers declarator_function_type_ok
       { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
    | declarator_function
       { $$ = MkClassFunction(null, null, $1, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
@@ -535,21 +537,21 @@ destructor_function_definition_start:
    ;
 
 virtual_class_function_definition_start:
-     VIRTUAL guess_declaration_specifiers declarator_function
+     VIRTUAL guess_declaration_specifiers declarator_function_type_ok
       { $$ = MkClassFunction($2, null, $3, null); $$.isVirtual = true; $$.loc = @$; $$.id = ++globalContext.nextID; }
    | VIRTUAL declarator_function
       { $$ = MkClassFunction(null, null, $2, null); $$.isVirtual = true; $$.loc = @$; $$.id = ++globalContext.nextID; }
       ;
 
 class_function_definition_start_error:
-     guess_declaration_specifiers declarator_function_error
+     guess_declaration_specifiers declarator_function_error_type_ok
       { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
    | declarator_function_error
       { $$ = MkClassFunction(null, null, $1, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
    ;
 
 virtual_class_function_definition_start_error:
-     VIRTUAL guess_declaration_specifiers declarator_function_error
+     VIRTUAL guess_declaration_specifiers declarator_function_error_type_ok
       { $$ = MkClassFunction($2, null, $3, null); $$.isVirtual = true; $$.loc = @$; $$.id = ++globalContext.nextID; }
    | VIRTUAL declarator_function_error
       { $$ = MkClassFunction(null, null, $2, null); $$.isVirtual = true; $$.loc = @$; $$.id = ++globalContext.nextID; }
@@ -587,14 +589,14 @@ class_function_definition_error:
 
 // In Instances, return type is required to distinguish from calling the function
 instance_class_function_definition_start:
-   declaration_specifiers declarator_function
+   declaration_specifiers declarator_function_type_ok
       { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
-   |  declaration_specifiers declarator_nofunction
+   |  declaration_specifiers declarator_nofunction_type_ok
       { $$ = MkClassFunction($1, null, MkDeclaratorFunction($2, null), null); $$.loc = @$; $$.id = ++globalContext.nextID; }
       ; 
 
 instance_class_function_definition_start_error:
-   declaration_specifiers declarator_function_error
+   declaration_specifiers declarator_function_error_type_ok
       { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
       ;
 
@@ -2232,25 +2234,25 @@ strict_type_specifier:
 // TESTING declarator_nofunction here... For function declarations
 
 struct_declarator:
-	  declarator_nofunction
+	  declarator_nofunction_type_ok
       { $$ = MkStructDeclarator($1, null); $$.loc = @$; }
-	| declarator_nofunction attrib
+	| declarator_nofunction_type_ok attrib
       { $$ = MkStructDeclarator($1, null); $$.structDecl.attrib = $2; $$.loc = @$; }  
 	| ':' constant_expression
       { $$ = MkStructDeclarator(null, $2);  $$.loc = @$; }
-	| declarator_nofunction ':' constant_expression
+	| declarator_nofunction_type_ok ':' constant_expression
       { $$ = MkStructDeclarator($1, $3);  $$.loc = @$; }
-   | declarator_nofunction ':' constant_expression ':' constant_expression
+   | declarator_nofunction_type_ok ':' constant_expression ':' constant_expression
       { $$ = MkStructDeclarator($1, $3); $$.structDecl.posExp = $5; $$.loc = @$; }
 	| ':' constant_expression_error
       { $$ = MkStructDeclarator(null, $2);  $$.loc = @$; }
-	| declarator_nofunction ':' constant_expression_error
+	| declarator_nofunction_type_ok ':' constant_expression_error
       { $$ = MkStructDeclarator($1, $3);  $$.loc = @$; }
-   | declarator_nofunction ':' constant_expression ':' constant_expression_error
+   | declarator_nofunction_type_ok ':' constant_expression ':' constant_expression_error
       { $$ = MkStructDeclarator($1, $3); $$.structDecl.posExp = $5; $$.loc = @$; }
-   | declarator_nofunction ':' constant_expression_error ':' constant_expression_error
+   | declarator_nofunction_type_ok ':' constant_expression_error ':' constant_expression_error
       { $$ = MkStructDeclarator($1, $3); $$.structDecl.posExp = $5; $$.loc = @$; }
-   | declarator_nofunction ':' constant_expression_error ':' constant_expression
+   | declarator_nofunction_type_ok ':' constant_expression_error ':' constant_expression
       { $$ = MkStructDeclarator($1, $3); $$.structDecl.posExp = $5; $$.loc = @$; }
    ;
 
@@ -2681,9 +2683,50 @@ identifier_list:
    | parameter_list_error ',' identifier    { $$ = $1; ListAdd($1, MkTypeName(null, MkDeclaratorIdentifier($3))); }
 	;
 
+/*
+tricky_declarator:
+   base_strict_type
+   {
+      $$ = MkDeclaratorIdentifier(MkIdentifier($1.name));
+      FreeSpecifier($1);
+   }
+   ;
+*/
+direct_declarator_nofunction_type_ok:
+     direct_declarator_nofunction
+   | base_strict_type
+   {
+      char * colon = RSearchString($1.name, "::", strlen($1.name), true, false);
+      String s = colon ? colon + 2 : $1.name;
+      FreeSpecifier($1);
+      $$ = MkDeclaratorIdentifier(MkIdentifier(s));
+   }
+   | UINT { $$ = MkDeclaratorIdentifier(MkIdentifier("uint")); }
+	| base_strict_type '[' constant_expression ']'
+      {
+         Declarator decl;
+         char * colon = RSearchString($1.name, "::", strlen($1.name), true, false);
+         String s = colon ? colon + 2 : $1.name;
+         decl = MkDeclaratorIdentifier(MkIdentifier(s));
+         FreeSpecifier($1);
+         $$ = MkDeclaratorArray(decl, $3);
+      }
+   | base_strict_type '[' constant_expression_error ']' { $$ = MkDeclaratorArray($1, $3); }
+	| base_strict_type '[' type ']' { $$ = MkDeclaratorEnumArray($1, $3); }
+	| base_strict_type '[' ']'                     { $$ = MkDeclaratorArray($1, null); }
+
+	| direct_declarator_nofunction_type_ok '[' constant_expression ']' { $$ = MkDeclaratorArray($1, $3); }
+   | direct_declarator_nofunction_type_ok '[' constant_expression_error ']' { $$ = MkDeclaratorArray($1, $3); }
+	| direct_declarator_nofunction_type_ok '[' type ']' { $$ = MkDeclaratorEnumArray($1, $3); }
+	| direct_declarator_nofunction_type_ok '[' ']'                     { $$ = MkDeclaratorArray($1, null); }
+  	;
+
 direct_declarator_nofunction:
 	  identifier                                                   { $$ = MkDeclaratorIdentifier($1); }
 	| '(' declarator ')'                            { $$ = MkDeclaratorBrackets($2); }
+   | '(' ext_decl declarator ')'                            { $$ = MkDeclaratorBrackets(MkDeclaratorExtended($2, $3)); }
+	| '(' declarator_type_ok ')'                            { $$ = MkDeclaratorBrackets($2); }
+   | '(' ext_decl declarator_type_ok ')'                            { $$ = MkDeclaratorBrackets(MkDeclaratorExtended($2, $3)); }
 	| direct_declarator_nofunction '[' constant_expression ']' { $$ = MkDeclaratorArray($1, $3); }
    | direct_declarator_nofunction '[' constant_expression_error ']' { $$ = MkDeclaratorArray($1, $3); }
 	| direct_declarator_nofunction '[' type ']' { $$ = MkDeclaratorEnumArray($1, $3); }
@@ -2747,12 +2790,79 @@ direct_declarator_function_error:
 direct_declarator:
      direct_declarator_function
    | direct_declarator_nofunction
+/*
    | ext_decl direct_declarator_function
       { $$ = MkDeclaratorExtended($1, $2); }
    | ext_decl direct_declarator_nofunction
       { $$ = MkDeclaratorExtended($1, $2); }
+*/
    ;
 
+
+direct_declarator_function_start_type_ok:
+     direct_declarator_nofunction_type_ok '('
+   ;
+
+direct_declarator_function_type_ok:
+	  direct_declarator_function_start_type_ok parameter_type_list ')' { $$ = MkDeclaratorFunction($1, $2); }
+   | direct_declarator_function_start_type_ok parameter_type_list_error ')' { $$ = MkDeclaratorFunction($1, $2); }
+	| direct_declarator_function_start_type_ok identifier_list ')'     { $$ = MkDeclaratorFunction($1, $2); }
+   | direct_declarator_function_start_type_ok identifier_list_error ')'     { $$ = MkDeclaratorFunction($1, $2); }
+	| direct_declarator_function_start_type_ok ')'                     { $$ = MkDeclaratorFunction($1, null); }
+  	;
+
+// Tricky stuff here for overriding...
+direct_declarator_function_error_type_ok:
+   direct_declarator_function_start_type_ok identifier_list_error
+      {
+         $$ = MkDeclaratorFunction($1, $2); 
+         fileInput.Seek(@1.end.pos, start); 
+         yyclearin;
+         resetScannerPos(&@1.end);
+         @$.start = @1.start;
+         @$.end = @1.end;
+      }
+   | direct_declarator_function_start_type_ok error
+      { 
+         $$ = MkDeclaratorFunction($1, null); 
+         fileInput.Seek(@1.end.pos, start); 
+         yyclearin;
+         resetScannerPos(&@1.end);
+         @$.start = @1.start;
+         @$.end = @1.end;
+      }
+   | direct_declarator_function_start_type_ok parameter_list '('
+      { 
+         $$ = MkDeclaratorFunction($1, $2); 
+         fileInput.Seek(@1.end.pos, start); 
+         yyclearin;
+         resetScannerPos(&@1.end);
+         @$.start = @1.start;
+         @$.end = @1.end;
+      }
+   | direct_declarator_function_start_type_ok guess_declaration_specifiers identifier '('
+      { 
+         $$ = MkDeclaratorFunction($1, null); 
+         fileInput.Seek(@1.end.pos, start); 
+         yyclearin;
+         resetScannerPos(&@1.end);
+         @$.start = @1.start;
+         @$.end = @1.end;
+         FreeList($2, FreeSpecifier);
+         FreeIdentifier($3);
+      }
+  	;
+
+direct_declarator_type_ok:
+     direct_declarator_function_type_ok
+   | direct_declarator_nofunction_type_ok
+/*
+   | ext_decl direct_declarator_function_type_ok
+      { $$ = MkDeclaratorExtended($1, $2); }
+   | ext_decl direct_declarator_nofunction_type_ok
+      { $$ = MkDeclaratorExtended($1, $2); }
+*/
+   ;
 /*
 asm_start:
     ASM '(' STRING_LITERAL { $<string>$ = CopyString(yytext); } STRING_LITERAL { $<string>$ = CopyString(yytext); }
@@ -2839,53 +2949,33 @@ attrib:
    ;
 
 direct_abstract_declarator:
-	  '(' abstract_declarator ')'
-                                 { $$ = MkDeclaratorBrackets($2); }
-	| '[' ']'
-                                 { $$ = MkDeclaratorArray(null, null); }
-   | '[' constant_expression ']'
-                                 { $$ = MkDeclaratorArray(null, $2); }
-	| '[' constant_expression_error ']'
-                                 { $$ = MkDeclaratorArray(null, $2); }
-   | '[' type ']'
-                                 { $$ = MkDeclaratorEnumArray(null, $2); }
-	| direct_abstract_declarator '[' ']'
-                                 { $$ = MkDeclaratorArray($1, null); }
-	| direct_abstract_declarator '[' constant_expression ']'
-                                 { $$ = MkDeclaratorArray($1, $3); }
-	| direct_abstract_declarator '[' type']'
-                                 { $$ = MkDeclaratorEnumArray($1, $3); }
-	| direct_abstract_declarator '[' constant_expression_error ']'
-                                 { $$ = MkDeclaratorArray($1, $3); }
-	| '(' ')'
-                                 { $$ = MkDeclaratorFunction(null, null); }
-	| '(' parameter_type_list ')'
-                                 { $$ = MkDeclaratorFunction(null, $2); }
-	| '(' parameter_type_list_error ')'
-                                 { $$ = MkDeclaratorFunction(null, $2); }
-	| direct_abstract_declarator '(' ')'
-                                 { $$ = MkDeclaratorFunction($1, null); }
-	| direct_abstract_declarator '(' parameter_type_list ')'
-                                 { $$ = MkDeclaratorFunction($1, $3); }
-	| direct_abstract_declarator '(' parameter_type_list_error ')'
-                                 { $$ = MkDeclaratorFunction($1, $3); }
+	  '(' abstract_declarator ')'               { $$ = MkDeclaratorBrackets($2); }
+	| '(' ext_decl abstract_declarator ')'               { $$ = MkDeclaratorBrackets(MkDeclaratorExtended($2, $3)); }
+	| '[' ']'                                   { $$ = MkDeclaratorArray(null, null); }
+   | '[' constant_expression ']'               { $$ = MkDeclaratorArray(null, $2); }
+	| '[' constant_expression_error ']'         { $$ = MkDeclaratorArray(null, $2); }
+   | '[' type ']'                              { $$ = MkDeclaratorEnumArray(null, $2); }
+	| direct_abstract_declarator '[' ']'        { $$ = MkDeclaratorArray($1, null); }
+	| direct_abstract_declarator '[' constant_expression ']'        { $$ = MkDeclaratorArray($1, $3); }
+	| direct_abstract_declarator '[' type']'                        { $$ = MkDeclaratorEnumArray($1, $3); }
+	| direct_abstract_declarator '[' constant_expression_error ']'  { $$ = MkDeclaratorArray($1, $3); }
+	| '(' ')'                                   { $$ = MkDeclaratorFunction(null, null); }
+	| '(' parameter_type_list ')'               { $$ = MkDeclaratorFunction(null, $2); }
+	| '(' parameter_type_list_error ')'         { $$ = MkDeclaratorFunction(null, $2); }
+	| direct_abstract_declarator '(' ')'        { $$ = MkDeclaratorFunction($1, null); }
+	| direct_abstract_declarator '(' parameter_type_list ')'         { $$ = MkDeclaratorFunction($1, $3); }
+	| direct_abstract_declarator '(' parameter_type_list_error ')'   { $$ = MkDeclaratorFunction($1, $3); }
 	;
 
 direct_abstract_declarator_noarray:
-	  '(' abstract_declarator_noarray ')'
-                                 { $$ = MkDeclaratorBrackets($2); }
-	| '(' ')'
-                                 { $$ = MkDeclaratorFunction(null, null); }
-	| '(' parameter_type_list ')'
-                                 { $$ = MkDeclaratorFunction(null, $2); }
-	| '(' parameter_type_list_error ')'
-                                 { $$ = MkDeclaratorFunction(null, $2); }
-	| direct_abstract_declarator_noarray '(' ')'
-                                 { $$ = MkDeclaratorFunction($1, null); }
-	| direct_abstract_declarator_noarray '(' parameter_type_list ')'
-                                 { $$ = MkDeclaratorFunction($1, $3); }
-	| direct_abstract_declarator_noarray '(' parameter_type_list_error ')'
-                                 { $$ = MkDeclaratorFunction($1, $3); }
+	  '(' abstract_declarator_noarray ')'          { $$ = MkDeclaratorBrackets($2); }
+	| '(' ext_decl abstract_declarator_noarray ')' { $$ = MkDeclaratorBrackets(MkDeclaratorExtended($2, $3)); }
+	| '(' ')'                                      { $$ = MkDeclaratorFunction(null, null); }
+	| '(' parameter_type_list ')'                  { $$ = MkDeclaratorFunction(null, $2); }
+   	| '(' parameter_type_list_error ')'         { $$ = MkDeclaratorFunction(null, $2); }
+	| direct_abstract_declarator_noarray '(' ')'   { $$ = MkDeclaratorFunction($1, null); }
+	| direct_abstract_declarator_noarray '(' parameter_type_list ')'       { $$ = MkDeclaratorFunction($1, $3); }
+	| direct_abstract_declarator_noarray '(' parameter_type_list_error ')' { $$ = MkDeclaratorFunction($1, $3); }
 	;
 
 pointer:
@@ -2900,7 +2990,7 @@ abstract_declarator:
 	| direct_abstract_declarator
 	| pointer direct_abstract_declarator   { $$ = MkDeclaratorPointer($1, $2); }
    | ext_decl pointer { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, null)); }
-   | ext_decl direct_abstract_declarator { $$ = MkDeclaratorExtended($1, $2); }
+//   | ext_decl direct_abstract_declarator { $$ = MkDeclaratorExtended($1, $2); }
 	| ext_decl pointer direct_abstract_declarator { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
 	;
 
@@ -2909,8 +2999,8 @@ abstract_declarator_noarray:
 	| direct_abstract_declarator_noarray
 	| pointer direct_abstract_declarator_noarray   { $$ = MkDeclaratorPointer($1, $2); }
    | ext_decl pointer { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, null)); }
-   | ext_decl direct_abstract_declarator_noarray { $$ = MkDeclaratorExtended($1, $2); }
-	| ext_decl pointer direct_abstract_declarator_noarray { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
+//   | ext_decl direct_abstract_declarator_noarray { $$ = MkDeclaratorExtended($1, $2); }
+   | ext_decl pointer direct_abstract_declarator_noarray { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
 	;
 
 declarator:
@@ -2921,12 +3011,24 @@ declarator:
       { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
    | declarator ext_decl
       { $$ = MkDeclaratorExtendedEnd($2, $1); }  
+   | declarator_nofunction_type_ok ext_decl
+      { $$ = MkDeclaratorExtendedEnd($2, $1); }  
+   ;
+
+declarator_type_ok:
+	  direct_declarator_type_ok
+	| pointer direct_declarator_type_ok
+      { $$ = MkDeclaratorPointer($1, $2); }
+  | ext_decl pointer direct_declarator_type_ok
+      { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
+   | declarator_type_ok ext_decl
+      { $$ = MkDeclaratorExtendedEnd($2, $1); }  
    ;
 
 declarator_function:
      direct_declarator_function
 	| pointer direct_declarator_function      { $$ = MkDeclaratorPointer($1, $2); }
-   | ext_decl direct_declarator_function { $$ = MkDeclaratorExtended($1, $2); }
+//   | ext_decl direct_declarator_function { $$ = MkDeclaratorExtended($1, $2); }
 	| ext_decl pointer direct_declarator_function { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
 	| pointer ext_decl direct_declarator_function { $$ = MkDeclaratorPointer($1, MkDeclaratorExtended($2, $3)); }
    ;
@@ -2934,17 +3036,43 @@ declarator_function:
 declarator_function_error:
 	  direct_declarator_function_error
 	| pointer direct_declarator_function_error      { $$ = MkDeclaratorPointer($1, $2); }
-   | ext_decl direct_declarator_function_error { $$ = MkDeclaratorExtended($1, $2); }
+//   | ext_decl direct_declarator_function_error { $$ = MkDeclaratorExtended($1, $2); }
 	| ext_decl pointer direct_declarator_function_error { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
 	| pointer ext_decl direct_declarator_function_error { $$ = MkDeclaratorPointer($1, MkDeclaratorExtended($2, $3)); }
    ;
 
+/*
 declarator_nofunction:
 	  direct_declarator_nofunction
 	| pointer direct_declarator_nofunction      { $$ = MkDeclaratorPointer($1, $2); }
-   | ext_decl direct_declarator_nofunction { $$ = MkDeclaratorExtended($1, $2); }
+//   | ext_decl direct_declarator_nofunction { $$ = MkDeclaratorExtended($1, $2); }
 	| ext_decl pointer direct_declarator_nofunction { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
 	| pointer ext_decl direct_declarator_nofunction { $$ = MkDeclaratorPointer($1, MkDeclaratorExtended($2, $3)); }
+   ;
+*/
+
+declarator_function_type_ok:
+     direct_declarator_function_type_ok
+	| pointer direct_declarator_function_type_ok      { $$ = MkDeclaratorPointer($1, $2); }
+//   | ext_decl direct_declarator_function_type_ok { $$ = MkDeclaratorExtended($1, $2); }
+	| ext_decl pointer direct_declarator_function_type_ok { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
+	| pointer ext_decl direct_declarator_function_type_ok { $$ = MkDeclaratorPointer($1, MkDeclaratorExtended($2, $3)); }
+   ;
+
+declarator_function_error_type_ok:
+	  direct_declarator_function_error_type_ok
+	| pointer direct_declarator_function_error_type_ok      { $$ = MkDeclaratorPointer($1, $2); }
+//   | ext_decl direct_declarator_function_error_type_ok { $$ = MkDeclaratorExtended($1, $2); }
+	| ext_decl pointer direct_declarator_function_error_type_ok { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
+	| pointer ext_decl direct_declarator_function_error_type_ok { $$ = MkDeclaratorPointer($1, MkDeclaratorExtended($2, $3)); }
+   ;
+
+declarator_nofunction_type_ok:
+	  direct_declarator_nofunction_type_ok
+	| pointer direct_declarator_nofunction_type_ok      { $$ = MkDeclaratorPointer($1, $2); }
+//   | ext_decl direct_declarator_nofunction_type_ok { $$ = MkDeclaratorExtended($1, $2); }
+	| ext_decl pointer direct_declarator_nofunction_type_ok { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
+	| pointer ext_decl direct_declarator_nofunction_type_ok { $$ = MkDeclaratorPointer($1, MkDeclaratorExtended($2, $3)); }
    ;
 
 initializer:
@@ -3021,6 +3149,7 @@ initializer_list:
 
 init_declarator:
 	  declarator                     { $$ = MkInitDeclarator($1, null); $$.loc = @$; }
+   | declarator_type_ok             { $$ = MkInitDeclarator($1, null); $$.loc = @$; }
 	| declarator '=' initializer     { $$ = MkInitDeclarator($1, $3); $$.loc = @$; $$.initializer.loc.start = @2.end; }
 	;
 
@@ -3035,7 +3164,23 @@ init_declarator_error:
 init_declarator_list:
 	  init_declarator                            { $$ = MkList(); ListAdd($$, $1); }
 	| init_declarator_list ',' init_declarator   { $$ = $1; ListAdd($1, $3); }
+	| UINT ',' init_declarator                  { $$ = MkList(); ListAdd($$, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("uint")), null)); ListAdd($$, $3); }
+   | INT64 ',' init_declarator                  { $$ = MkList(); ListAdd($$, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("int64")), null)); ListAdd($$, $3); }
+	| base_strict_type ',' init_declarator
+   {
+      char * colon = RSearchString($1.name, "::", strlen($1.name), true, false);
+      String s = colon ? colon + 2 : $1.name;
+      FreeSpecifier($1);
+      $$ = MkList();
+      ListAdd($$, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(s)), null));
+      ListAdd($$, $3);
+   }
    | init_declarator_list_error ',' init_declarator   { $$ = $1; ListAdd($1, $3); }
+   /*| base_strict_type ',' init_declarator
+      {
+         $$ = MkList();
+         ListAdd($1, $3);
+      }*/
 	;
 
 init_declarator_list_error:
@@ -3057,11 +3202,11 @@ guess_type_name:
 
 /*** PARAMETERS **********************************************************************/
 parameter_declaration:
-     guess_declaration_specifiers declarator          { $$ = MkTypeName($1, $2); }
+     guess_declaration_specifiers declarator_type_ok          { $$ = MkTypeName($1, $2); }
    | guess_declaration_specifiers abstract_declarator { $$ = MkTypeName($1, $2); }
    | guess_declaration_specifiers '&'                 { $$ = MkTypeName($1, MkDeclaratorPointer(MkPointer(null,null), null)); }
-   | guess_declaration_specifiers '&' declarator      { $$ = MkTypeName($1, MkDeclaratorPointer(MkPointer(null,null), $3)); }
-	| guess_declaration_specifiers                     { $$ = MkTypeName($1, null); }
+   | guess_declaration_specifiers '&' declarator_type_ok      { $$ = MkTypeName($1, MkDeclaratorPointer(MkPointer(null,null), $3)); }
+	| guess_declaration_specifiers                     { $$ = MkTypeNameGuessDecl($1, null); }
    | CLASS
       { $$ = MkTypeName(MkListOne(MkSpecifier(CLASS)), null); }
 /*
@@ -3081,7 +3226,7 @@ parameter_declaration:
 	;
 
 parameter_declaration_error:
-	  guess_declaration_specifiers declarator error          { $$ = MkTypeName($1, $2); }
+	  guess_declaration_specifiers declarator_type_ok error          { $$ = MkTypeName($1, $2); }
 	| guess_declaration_specifiers abstract_declarator error { $$ = MkTypeName($1, $2); }
 	;
 
@@ -3401,6 +3546,9 @@ function_definition:
 	  external_guess_declaration_specifiers declarator_function declaration_list compound_statement      { $$ = MkFunction($1, $2, $3); ProcessFunctionBody($$, $4); $$.loc = @$; }
 	| external_guess_declaration_specifiers declarator_function compound_statement                       
        { $$ = MkFunction($1, $2, null); ProcessFunctionBody($$, $3); $$.loc = @$; }
+	| external_guess_declaration_specifiers declarator_function_type_ok declaration_list compound_statement      { $$ = MkFunction($1, $2, $3); ProcessFunctionBody($$, $4); $$.loc = @$; }
+	| external_guess_declaration_specifiers declarator_function_type_ok compound_statement                       
+       { $$ = MkFunction($1, $2, null); ProcessFunctionBody($$, $3); $$.loc = @$; }
 
 	| declarator_function declaration_list compound_statement                             { $$ = MkFunction(null, $1, $2); ProcessFunctionBody($$, $3); $$.loc = @$; }
 	| declarator_function compound_statement                                              { $$ = MkFunction(null, $1, null); ProcessFunctionBody($$, $2); $$.loc = @$;}
@@ -3408,6 +3556,8 @@ function_definition:
 function_definition_error:
      external_guess_declaration_specifiers declarator_function declaration_list compound_statement_error      { $$ = MkFunction($1, $2, $3); ProcessFunctionBody($$, $4); $$.loc = @$; $$.loc.end = $4.loc.end; }
 	| external_guess_declaration_specifiers declarator_function compound_statement_error                       { $$ = MkFunction($1, $2, null); ProcessFunctionBody($$, $3); $$.loc = @$; $$.loc.end = $3.loc.end; }
+   | external_guess_declaration_specifiers declarator_function_type_ok declaration_list compound_statement_error      { $$ = MkFunction($1, $2, $3); ProcessFunctionBody($$, $4); $$.loc = @$; $$.loc.end = $4.loc.end; }
+	| external_guess_declaration_specifiers declarator_function_type_ok compound_statement_error                       { $$ = MkFunction($1, $2, null); ProcessFunctionBody($$, $3); $$.loc = @$; $$.loc.end = $3.loc.end; }
 	| declarator_function declaration_list compound_statement_error                             { $$ = MkFunction(null, $1, $2); ProcessFunctionBody($$, $3); $$.loc = @$; $$.loc.end = $3.loc.end; }
 	| declarator_function compound_statement_error                                              { $$ = MkFunction(null, $1, null); ProcessFunctionBody($$, $2); $$.loc = @$; $$.loc.end = $2.loc.end; }
    ;

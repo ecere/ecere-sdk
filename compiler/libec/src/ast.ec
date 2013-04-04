@@ -611,6 +611,46 @@ public TypeName MkTypeName(OldList qualifiers, Declarator declarator)
    return { qualifiers = qualifiers, declarator = declarator };
 }
 
+public TypeName MkTypeNameGuessDecl(OldList qualifiers, Declarator declarator)
+{
+   TypeName typeName { qualifiers = qualifiers, declarator = declarator };
+   if(qualifiers != null)
+   {
+      bool gotType = false;
+      bool gotFullType = false;
+      Specifier spec;
+      for(spec = qualifiers.first; spec; spec = spec.next)
+      {
+         if(gotType && !declarator && ((spec.type == nameSpecifier && spec.name) || (spec.type == baseSpecifier && gotFullType)))
+         {
+            String s = null;
+            if(spec.type == nameSpecifier)
+            {
+               char * colon = RSearchString(spec.name, "::", strlen(spec.name), true, false);
+               s = colon ? colon + 2 : spec.name;
+            }
+            else if(spec.type == baseSpecifier)
+            {
+               if(spec.specifier == INT64) s = "int64";
+            }
+            if(s)
+            {
+               typeName.declarator = declarator = MkDeclaratorIdentifier(MkIdentifier(CopyString(s)));
+               qualifiers.Remove(spec);
+               FreeSpecifier(spec);
+            }
+         }
+         if(spec.type != extendedSpecifier)
+         {
+            if(spec.type != baseSpecifier || (spec.specifier != UNSIGNED && spec.specifier != SIGNED && spec.specifier != LONG))
+               gotFullType = true;
+            gotType = true;
+         }
+      }
+   }
+   return typeName;
+}
+
 public Identifier GetDeclId(Declarator decl)
 {
    while(decl && decl.type != identifierDeclarator)
@@ -716,6 +756,7 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
    
    if(specifiers != null)
    {
+      bool gotType = false;
       Specifier spec;
       for(spec = specifiers.first; spec; spec = spec.next)
       {
@@ -744,20 +785,32 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
             }
             else if(spec.next)
             {
-               for(; spec; spec = spec.next)
+               //for(spec = spec.next; spec; spec = spec.next)
+               spec = specifiers.last;
                {
-                  if(spec.type == nameSpecifier && spec.name)
+                  if((spec.type == nameSpecifier && spec.name) || spec.type == baseSpecifier)
                   {
-                     Symbol type
+                     String s = null;
+                     if(spec.type == nameSpecifier)
                      {
-                        string = CopyString(spec.name);
-                        type = ProcessType(specifiers, null);
-                     };
-                     type.id = type.idCode = curContext.nextID++;
-                     if(!(curContext.templateTypesOnly ? curContext.parent : curContext).types.Add((BTNode)type))
-                        excludedSymbols->Add(type);
-
-                     decl.symbol = type;
+                        char * colon = RSearchString(spec.name, "::", strlen(spec.name), true, false);
+                        s = colon ? colon + 2 : spec.name;
+                     }
+                     else if(spec.type == baseSpecifier)
+                     {
+                        if(spec.specifier == INT64) s = "int64";
+                     }
+                     if(s)
+                     {
+                        Symbol type { string = CopyString(s), type = ProcessType(specifiers, null) };
+                        type.id = type.idCode = curContext.nextID++;
+                        decl.symbol = type;
+                        decl.declarators = initDeclarators = MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(CopyString(s))), null));
+                        specifiers.Remove(spec);
+                        FreeSpecifier(spec);
+                        if(!(curContext.templateTypesOnly ? curContext.parent : curContext).types.Add((BTNode)type))
+                           excludedSymbols->Add(type);
+                     }
                   }
                }
             }
@@ -767,6 +820,30 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
          else if(spec.type == baseSpecifier && 
             (spec.specifier == STRUCT || spec.specifier == UNION))
             variable = false;
+         else
+         {
+            if(gotType && initDeclarators == null && !spec.next && ((spec.type == nameSpecifier && spec.name) || spec.type == baseSpecifier))
+            {
+               String s = null;
+               if(spec.type == nameSpecifier)
+               {
+                  char * colon = RSearchString(spec.name, "::", strlen(spec.name), true, false);
+                  s = colon ? colon + 2 : spec.name;
+               }
+               else if(spec.type == baseSpecifier)
+               {
+                  if(spec.specifier == INT64) s = "int64";
+               }
+               if(s)
+               {
+                  decl.declarators = initDeclarators = MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(CopyString(s))), null));
+                  specifiers.Remove(spec);
+                  FreeSpecifier(spec);
+               }
+            }
+         }
+         if(spec.type != extendedSpecifier)
+            gotType = true;
       }
    }
    if(variable && initDeclarators)
@@ -869,7 +946,37 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
 
 Declaration MkStructDeclaration(OldList specifiers, OldList declarators, Specifier extStorage)
 {
-   return { type = structDeclaration, declarators = declarators, specifiers = specifiers, extStorage = extStorage, loc = yylloc };
+   Declaration decl { type = structDeclaration, declarators = declarators, specifiers = specifiers, extStorage = extStorage, loc = yylloc };
+   if(specifiers != null)
+   {
+      bool gotType = false;
+      Specifier spec;
+      for(spec = specifiers.first; spec; spec = spec.next)
+      {
+         if(gotType && declarators == null && ((spec.type == nameSpecifier && spec.name) || spec.type == baseSpecifier))
+         {
+            String s = null;
+            if(spec.type == nameSpecifier)
+            {
+               char * colon = RSearchString(spec.name, "::", strlen(spec.name), true, false);
+               s = colon ? colon + 2 : spec.name;
+            }
+            else if(spec.type == baseSpecifier)
+            {
+               if(spec.specifier == INT64) s = "int64";
+            }
+            if(s)
+            {
+               decl.declarators = declarators = MkListOne(MkDeclaratorIdentifier(MkIdentifier(CopyString(s))));
+               specifiers.Remove(spec);
+               FreeSpecifier(spec);
+            }
+         }
+         if(spec.type != extendedSpecifier)
+            gotType = true;
+      }
+   }
+   return decl;
 }
 
 Statement MkLabeledStmt(Identifier id, Statement statement)
@@ -1814,7 +1921,13 @@ Symbol FindType(Context ctx, char * name)
    Symbol type = null;
    if(curContext)
    {
+      //char output[8192];
       type = (Symbol)ctx.types.FindString(name);
+      /*if(!strcmp(name, "intptr_t") && !type)
+      {
+         ctx.types.Print(output, depthOrder);
+         puts(output);
+      }*/
       if(!type && ctx.parent)
          type = FindType(ctx.parent, name);
    }

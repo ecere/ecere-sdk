@@ -48,7 +48,7 @@ msgstr "Couldn't find member %s to override\n"
 msgid "Couldn't open %s\n"
 msgstr "Couldn't open %s\n"
 
-#: ./src/ast.ec:1463
+#: ./src/ast.ec:1570
 msgid "Expecting class specifier\n"
 msgstr "Expecting class specifier\n"
 
@@ -130,7 +130,7 @@ msgstr "Recursion in defined expression %s\n"
 msgid "Redefinition of %s (defining as %s, already defined as %s)\n"
 msgstr "Redefinition of %s (defining as %s, already defined as %s)\n"
 
-#: ./src/ast.ec:708
+#: ./src/ast.ec:748
 msgid "Redefinition of %s ignored\n"
 msgstr "Redefinition of %s ignored\n"
 
@@ -299,13 +299,13 @@ msgid "redefinition of destructor for class %s\n"
 msgstr "redefinition of destructor for class %s\n"
 
 #: ./src/ecdefs.ec:1322
-#: ./src/grammar.ec:3128
-#: ./src/grammar.ec:3129
-#: ./src/grammar.ec:3130
-#: ./src/grammar.ec:3131
-#: ./src/grammar.ec:3132
-#: ./src/grammar.ec:3133
-#: ./src/grammar.ec:3134
+#: ./src/grammar.ec:3292
+#: ./src/grammar.ec:3293
+#: ./src/grammar.ec:3294
+#: ./src/grammar.ec:3295
+#: ./src/grammar.ec:3296
+#: ./src/grammar.ec:3297
+#: ./src/grammar.ec:3298
 msgid "syntax error\n"
 msgstr "syntax error\n"
 

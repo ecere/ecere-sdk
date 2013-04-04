@@ -266,26 +266,38 @@ static void InstDeclPassSpecifier(Specifier spec)
          break;
       }
       case extendedSpecifier:
-         if(spec.extDecl && spec.extDecl.type == extDeclString && spec.extDecl.s && !strcmp(spec.extDecl.s, "dllexport"))
+         if(spec.extDecl && spec.extDecl.type == extDeclString && spec.extDecl.s)
          {
-            Specifier prevSpec;
-            delete spec.extDecl.s;
-            for(prevSpec = spec.prev; prevSpec; prevSpec = prevSpec.prev)
-               if(prevSpec.type == baseSpecifier && prevSpec.specifier == EXTERN)
-                  break;
-            if(prevSpec)
+            if(!strcmp(spec.extDecl.s, "dllexport"))
             {
-               if(targetPlatform == win32)
-                  spec.extDecl.s = CopyString("__declspec(dllexport)");
+               Specifier prevSpec;
+               delete spec.extDecl.s;
+               for(prevSpec = spec.prev; prevSpec; prevSpec = prevSpec.prev)
+                  if(prevSpec.type == baseSpecifier && prevSpec.specifier == EXTERN)
+                     break;
+               if(prevSpec)
+               {
+                  if(targetPlatform == win32)
+                     spec.extDecl.s = CopyString("__declspec(dllexport)");
+                  else
+                     spec.extDecl.s = CopyString("__attribute__ ((visibility(\"default\")))");
+               }
                else
-                  spec.extDecl.s = CopyString("__attribute__ ((visibility(\"default\")))");
+               {
+                  if(targetPlatform == win32)
+                     spec.extDecl.s = CopyString("extern __declspec(dllexport)");
+                  else
+                     spec.extDecl.s = CopyString("extern __attribute__ ((visibility(\"default\")))");
+               }
             }
-            else
+            else if(!strcmp(spec.extDecl.s, "stdcall") || !strcmp(spec.extDecl.s, "_stdcall") || 
+               !strcmp(spec.extDecl.s, "__stdcall") || !strcmp(spec.extDecl.s, "__stdcall__"))
             {
+               delete spec.extDecl.s;
                if(targetPlatform == win32)
-                  spec.extDecl.s = CopyString("extern __declspec(dllexport)");
+                  spec.extDecl.s = CopyString("__attribute__((__stdcall__))");
                else
-                  spec.extDecl.s = CopyString("extern __attribute__ ((visibility(\"default\")))");
+                  spec.extDecl.s = CopyString("");
             }
          }
          break;
