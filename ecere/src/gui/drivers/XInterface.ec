@@ -18,11 +18,7 @@ default:
 #include <linux/joystick.h>
 #endif
 #include <sys/param.h>
-#ifdef BSD
 #include <stdlib.h>
-#else
-#include <malloc.h>
-#endif
 #include <unistd.h>
 #include <sys/select.h>
 

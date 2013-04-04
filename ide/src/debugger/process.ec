@@ -27,7 +27,7 @@ default:
 #include <X11/Xlib.h>
 #include <X11/Xresource.h>
 #include <X11/Xutil.h>
-#include <sys/fcntl.h>
+#include <fcntl.h>
 
 #undef Window
 #undef Cursor
