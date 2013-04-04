@@ -1,6 +1,7 @@
 {
    "Version" : 0.2,
    "ModuleName" : "EDA",
+   "ModuleVersion" : "0.44",
    "Options" : {
       "Warnings" : "All",
       "DefaultNameSpace" : "eda",
@@ -154,6 +155,5 @@
             }
          ]
       }
-   ],
-   "ModuleVersion" : "0.44"
+   ]
 }

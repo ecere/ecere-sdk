@@ -750,6 +750,34 @@ public:
    float version;
    String moduleName;
 
+   property char * moduleVersion
+   {
+      set { delete moduleVersion; if(value && value[0]) moduleVersion = CopyString(value); } // TODO: use CopyString function that filters chars
+      get { return moduleVersion ? moduleVersion : ""; }                                     //       version number should only use digits and dots
+      isset { return moduleVersion != null && moduleVersion[0]; }                            //       add leading/trailing 0 if value start/ends with dot(s)
+   }
+
+   property char * description
+   {
+      set { delete description; if(value && value[0]) description = CopyString(value); }
+      get { return description ? description : ""; }
+      isset { return description != null && description[0]; }
+   }
+
+   property char * license
+   {
+      set { delete license; if(value && value[0]) license = CopyString(value); }
+      get { return license ? license : ""; }
+      isset { return license != null && license[0]; }
+   }
+
+   property char * compilerConfigsDir
+   {
+      set { delete compilerConfigsDir; if(value && value[0]) compilerConfigsDir = CopyString(value); }
+      get { return compilerConfigsDir ? compilerConfigsDir : ""; }
+      isset { return compilerConfigsDir && compilerConfigsDir[0]; }
+   }
+
    property ProjectOptions options { get { return options; } set { options = value; } isset { return options && !options.isEmpty; } }
    property Array<PlatformOptions> platforms
    {
@@ -784,34 +812,6 @@ public:
    LinkList<ProjectNode> files;
    String resourcesPath;
    LinkList<ProjectNode> resources;
-
-   property char * description
-   {
-      set { delete description; if(value && value[0]) description = CopyString(value); }
-      get { return description ? description : ""; }
-      isset { return description != null && description[0]; }
-   }
-
-   property char * license
-   {
-      set { delete license; if(value && value[0]) license = CopyString(value); }
-      get { return license ? license : ""; }
-      isset { return license != null && license[0]; }
-   }
-
-   property char * compilerConfigsDir
-   {
-      set { delete compilerConfigsDir; if(value && value[0]) compilerConfigsDir = CopyString(value); }
-      get { return compilerConfigsDir ? compilerConfigsDir : ""; }
-      isset { return compilerConfigsDir && compilerConfigsDir[0]; }
-   }
-
-   property char * moduleVersion
-   {
-      set { delete moduleVersion; if(value && value[0]) moduleVersion = CopyString(value); } // TODO: use CopyString function that filters chars
-      get { return moduleVersion ? moduleVersion : ""; }                                     //       version number should only use digits and dots
-      isset { return moduleVersion != null && moduleVersion[0]; }                            //       add leading/trailing 0 if value start/ends with dot(s)
-   }
 
 private:
    // topNode.name holds the file name (.epj)
