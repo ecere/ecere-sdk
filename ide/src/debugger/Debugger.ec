@@ -1206,22 +1206,25 @@ class Debugger
 
       Link bpLink, next;
       //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::MoveIcons()");
-      for(bpLink = ide.workspace.breakpoints.first; bpLink; bpLink = next)
+      if(ide.workspace.breakpoints)
       {
-         Breakpoint bp = (Breakpoint)(intptr)bpLink.data;
-         next = bpLink.next;
-
-         if(bp.type == user && bp.absoluteFilePath && !fstrcmp(bp.absoluteFilePath, absoluteFilePath))
+         for(bpLink = ide.workspace.breakpoints.first; bpLink; bpLink = next)
          {
-            if(bp.line > lineNumber || (bp.line == lineNumber && start))
+            Breakpoint bp = (Breakpoint)(intptr)bpLink.data;
+            next = bpLink.next;
+
+            if(bp.type == user && bp.absoluteFilePath && !fstrcmp(bp.absoluteFilePath, absoluteFilePath))
             {
-               if(move < 0 && (bp.line < lineNumber - move))
-                  ide.workspace.RemoveBreakpoint(bp);
-               else
+               if(bp.line > lineNumber || (bp.line == lineNumber && start))
                {
-                  bp.line += move;
-                  ide.breakpointsView.UpdateBreakpoint(bp.row);
-                  ide.workspace.Save();
+                  if(move < 0 && (bp.line < lineNumber - move))
+                     ide.workspace.RemoveBreakpoint(bp);
+                  else
+                  {
+                     bp.line += move;
+                     ide.breakpointsView.UpdateBreakpoint(bp.row);
+                     ide.workspace.Save();
+                  }
                }
             }
          }
@@ -1317,8 +1320,6 @@ class Debugger
    {
       char absolutePath[MAX_LOCATION];
       Breakpoint bp = null;
-
-      _dpcl(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::ToggleBreakpoint(", fileName, ":", lineNumber, ")");
 
       GetSlashPathBuffer(absolutePath, fileName);
       for(i : ide.workspace.breakpoints; i.type == user && i.absoluteFilePath && !fstrcmp(i.absoluteFilePath, absolutePath) && i.line == lineNumber)
@@ -4771,21 +4772,26 @@ class Breakpoint : struct
 {
    class_no_expansion;
 
-   char * function;
-   property const char * function { set { delete function; if(value) function = CopyString(value); } }
-   char * relativeFilePath;
-   property const char * relativeFilePath { set { delete relativeFilePath; if(value) relativeFilePath = CopyString(value); } }
-   char * absoluteFilePath;
+public:
+   property const char * function { set { delete function; if(value) function = CopyString(value); } get { return function; } isset { return function && *function; } }
+   property const char * relativeFilePath { set { delete relativeFilePath; if(value) relativeFilePath = CopyString(value); } get { return relativeFilePath; } isset { return relativeFilePath && *relativeFilePath; } }
    property const char * absoluteFilePath { set { delete absoluteFilePath; if(value) absoluteFilePath = CopyString(value); } }
-   char * location;
-   property const char * location { set { delete location; if(value) location = CopyString(value); } }
+   property bool disabled { set { enabled = !value; } get { return !enabled; } isset { return !enabled; } }
+   property int ignore { set { ignore = value; } get { return ignore; } isset { return ignore > 0; } }
+   property int level { set { level = value; } get { return level; } isset { return level > -1; } }
    int line;
+   Watch condition;
+
+private:
+   char * function;
+   char * relativeFilePath;
+   char * absoluteFilePath;
    bool enabled;
-   int hits;
-   int breaks;
    int ignore;
    int level;
-   Watch condition;
+   char * location;
+   int hits;
+   int breaks;
    bool inserted;
    BreakpointType type;
    DataRow row;
@@ -4793,6 +4799,8 @@ class Breakpoint : struct
    Project project;
    char * address;
    property const char * address { set { delete address; if(value) address = CopyString(value); } }
+
+   enabled = true;
 
    void ParseLocation()
    {
@@ -4944,8 +4952,11 @@ class Watch : struct
 {
    class_no_expansion;
 
-   Type type;
+public:
    char * expression;
+
+private:
+   Type type;
    char * value;
    DataRow row;
 
