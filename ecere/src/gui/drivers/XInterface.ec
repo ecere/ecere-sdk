@@ -312,6 +312,8 @@ static void RepositionDesktop(bool updateChildren)
          h = workareas[current * 4 + 3];   
 
          //printf("_NET_WORKAREA is x = %d, y = %d, w = %d, h = %d\n", x, y, w, h);
+         XFree(data);
+         data = null;
       }
       //   printf("Work Area width: %d, height %d\n", w, h);
    }
@@ -2755,11 +2757,16 @@ class XInterface : Interface
                   {
                      XSelectionEvent * selection = (XSelectionEvent *) &e;
                      //printf("Got a SelectionNotify with %d (%s)\n", selection->_property, XGetAtomName(xGlobalDisplay, selection->_property));
-                     byte *data;
+                     byte *data = null;
                      unsigned long len, size = 0, dummy;
                      Atom type;
                      int format;
                      XGetWindowProperty(xGlobalDisplay, (X11Window) rootWindow.windowHandle, selection->_property ? selection->_property : atom, 0, 0, False, AnyPropertyType, &type, &format, &len, &size, &data);
+                     if(data)
+                     {
+                        XFree(data);
+                        data = null;
+                     }
                      if(size > 0)
                      {
                         if(XGetWindowProperty(xGlobalDisplay, (X11Window) rootWindow.windowHandle, selection->_property ? selection->_property : atom, 0, size, False,
