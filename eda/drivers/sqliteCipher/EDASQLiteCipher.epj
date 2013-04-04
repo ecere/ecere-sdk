@@ -1,6 +1,7 @@
 {
    "Version" : 0.2,
    "ModuleName" : "EDASQLiteCipher",
+   "ModuleVersion" : "0.44",
    "Options" : {
       "Warnings" : "All",
       "Optimization" : "None",
@@ -133,6 +134,5 @@
             }
          ]
       }
-   ],
-   "ModuleVersion" : "0.44"
+   ]
 }

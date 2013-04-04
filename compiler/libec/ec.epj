@@ -1,6 +1,7 @@
 {
    "Version" : 0.2,
    "ModuleName" : "ec",
+   "ModuleVersion" : "0.44",
    "Options" : {
       "Warnings" : "All",
       "TargetType" : "SharedLibrary",
@@ -154,6 +155,5 @@
             }
          ]
       }
-   ],
-   "ModuleVersion" : "0.44"
+   ]
 }

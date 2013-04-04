@@ -1,6 +1,7 @@
 {
    "Version" : 0.2,
    "ModuleName" : "ecereCOM",
+   "ModuleVersion" : "0.44",
    "Options" : {
       "Warnings" : "All",
       "PreprocessorDefinitions" : [
@@ -115,6 +116,5 @@
    "ResourcesPath" : "",
    "Resources" : [
 
-   ],
-   "ModuleVersion" : "0.44"
+   ]
 }

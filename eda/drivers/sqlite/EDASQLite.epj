@@ -1,6 +1,7 @@
 {
    "Version" : 0.2,
    "ModuleName" : "EDASQLite",
+   "ModuleVersion" : "0.44",
    "Options" : {
       "Warnings" : "All",
       "Optimization" : "None",
@@ -156,6 +157,5 @@
             }
          ]
       }
-   ],
-   "ModuleVersion" : "0.44"
+   ]
 }
