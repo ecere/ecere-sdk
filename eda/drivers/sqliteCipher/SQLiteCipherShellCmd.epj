@@ -62,7 +62,10 @@
          "Options" : {
             "NoLineNumbers" : true,
             "Optimization" : "Speed",
-            "FastMath" : true
+            "FastMath" : true,
+            "InstallCommands" : [
+               "$(if $(WINDOWS_HOST),$(call cpq,$(TARGET),\"$(BINDIR)/\"),install $(INSTALL_FLAGS) $(TARGET) $(BINDIR)/$(MODULE)$(E))"
+            ]
          }
       }
    ],

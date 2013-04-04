@@ -255,6 +255,11 @@ from wherever you obtained them.
             "PostbuildCommands" : [
                "$(call mkdirq,../$(SODESTDIR))",
                "$(call cpq,$(TARGET),../$(SODESTDIR))"
+            ],
+            "InstallCommands" : [
+               "$(call cpq,$(TARGET),\"$(DESTLIBDIR)/\")",
+               "$(if $(WINDOWS_HOST),,ln -sf $(LP)$(MODULE)$(SOV) $(DESTLIBDIR)/$(LP)$(MODULE)$(SO).0)",
+               "$(if $(WINDOWS_HOST),,ln -sf $(LP)$(MODULE)$(SOV) $(DESTLIBDIR)/$(LP)$(MODULE)$(SO))"
             ]
          }
       },
@@ -346,6 +351,9 @@ from wherever you obtained them.
             "FastMath" : false,
             "PostbuildCommands" : [
                "$(call cpq,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/)"
+            ],
+            "InstallCommands" : [
+               "$(if $(WINDOWS_HOST),$(call cpq,$(TARGET),\"$(DESTSLIBDIR)/\"),install $(INSTALL_FLAGS) $(TARGET) $(DESTSLIBDIR)/$(MODULE)$(A))"
             ]
          }
       },

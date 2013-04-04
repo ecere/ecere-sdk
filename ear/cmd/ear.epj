@@ -33,6 +33,9 @@
             "FastMath" : true,
             "PostbuildCommands" : [
                "$(call cpq,$(TARGET),../../obj/$(PLATFORM)/bin/)"
+            ],
+            "InstallCommands" : [
+               "$(if $(WINDOWS_HOST),$(call cpq,$(TARGET),\"$(BINDIR)/\"),install $(INSTALL_FLAGS) $(TARGET) $(BINDIR)/$(MODULE)$(E))"
             ]
          }
       }
