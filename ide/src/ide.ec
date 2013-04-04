@@ -303,11 +303,11 @@ class IDEToolbar : ToolBar
       this, toolTip = $"Active Compiler", size = { 160 }, disabled = true;
       bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
       {
-         if(ide.workspace && ide.projectView && row && strcmp(row.string, ide.workspace.compiler))
+         if(ide.workspace && ide.projectView && row && strcmp(row.string, ide.workspace.activeCompiler))
          {
             bool silent = ide.projectView.buildInProgress == none ? false : true;
             CompilerConfig compiler = ideSettings.GetCompilerConfig(row.string);
-            ide.workspace.compiler = row.string;
+            ide.workspace.activeCompiler = row.string;
             ide.projectView.ShowOutputBuildLog(!silent);
             if(!silent)
                ide.projectView.DisplayCompiler(compiler, false);
@@ -328,7 +328,7 @@ class IDEToolbar : ToolBar
          if(ide.workspace && ide.projectView && row)
          {
             bool silent = ide.projectView.buildInProgress == none ? false : true;
-            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
             ide.workspace.bitDepth = (int)row.tag;
             ide.projectView.ShowOutputBuildLog(!silent);
             if(!silent)
@@ -441,14 +441,14 @@ class IDEWorkSpace : Window
 
       void OnGotoError(const char * line, bool noParsing)
       {
-         CompilerConfig compiler = ide.workspace ? ideSettings.GetCompilerConfig(ide.workspace.compiler) : null;
+         CompilerConfig compiler = ide.workspace ? ideSettings.GetCompilerConfig(ide.workspace.activeCompiler) : null;
          const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
          ide.GoToError(line, noParsing, objectFileExt);
       }
 
       void OnCodeLocationParseAndGoTo(const char * line)
       {
-         CompilerConfig compiler = ide.workspace ? ideSettings.GetCompilerConfig(ide.workspace.compiler) : null;
+         CompilerConfig compiler = ide.workspace ? ideSettings.GetCompilerConfig(ide.workspace.activeCompiler) : null;
          const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
          ide.CodeLocationParseAndGoTo(line, ide.findInFilesDialog.findProject, ide.findInFilesDialog.findDir, objectFileExt);
       }
@@ -725,8 +725,8 @@ class IDEWorkSpace : Window
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             globalSettingsDialog.master = this;
-            if(ide.workspace && ide.workspace.compiler)
-               globalSettingsDialog.workspaceActiveCompiler = ide.workspace.compiler;
+            if(ide.workspace && ide.workspace.activeCompiler)
+               globalSettingsDialog.workspaceActiveCompiler = ide.workspace.activeCompiler;
             else if(ideSettings.defaultCompiler)
                globalSettingsDialog.workspaceActiveCompiler = ideSettings.defaultCompiler;
             globalSettingsDialog.Modal();
@@ -1859,7 +1859,7 @@ class IDEWorkSpace : Window
    {
       if(workspace)
       {
-         CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.compiler);
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.activeCompiler);
          for(prj : workspace.projects)
             projectView.ProjectUpdateMakefileForAllConfigs(prj);
          delete compiler;
@@ -1872,7 +1872,7 @@ class IDEWorkSpace : Window
       if(workspace)
       {
          bool silent = mute || (ide.projectView.buildInProgress == none ? false : true);
-         CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.compiler);
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.activeCompiler);
          if(!silent)
          {
             projectView.ShowOutputBuildLog(true);
@@ -1890,7 +1890,7 @@ class IDEWorkSpace : Window
       for(compiler : ideSettings.compilerConfigs)
       {
          DataRow row = toolBar.activeCompiler.AddString(compiler.name);
-         if(workspace && workspace.compiler && !strcmp(compiler.name, workspace.compiler))
+         if(workspace && workspace.activeCompiler && !strcmp(compiler.name, workspace.activeCompiler))
             toolBar.activeCompiler.currentRow = row;
       }
       if(!toolBar.activeCompiler.currentRow && toolBar.activeCompiler.firstRow)
@@ -2329,7 +2329,7 @@ class IDEWorkSpace : Window
 
                         ide.projectView.ShowOutputBuildLog(true);
                         {
-                           CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+                           CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
                            ide.projectView.DisplayCompiler(compiler, false);
                            delete compiler;
                         }
@@ -2348,23 +2348,8 @@ class IDEWorkSpace : Window
                         // this crashes on starting ide with epj file, solution please?
                         // app.UpdateDisplay();
 
+                        workspace.OpenPreviouslyOpenedFiles(noParsing);
                         workspace.holdTracking = true;
-                        for(ofi : workspace.openedFiles)
-                        {
-                           if(ofi.state != closed)
-                           {
-                              Window file = OpenFile(ofi.path, false, true, null, no, normal, noParsing);
-                              if(file)
-                              {
-                                 char fileName[MAX_LOCATION];
-                                 ProjectNode node;
-                                 GetLastDirectory(ofi.path, fileName);
-                                 node = projectView.project.topNode.Find(fileName, true);
-                                 if(node)
-                                    node.EnsureVisible();
-                              }
-                           }
-                        }
                         ide.RepositionWindows(false);
                         workspace.holdTracking = false;
 
@@ -2447,9 +2432,9 @@ class IDEWorkSpace : Window
                   if(prj)
                   {
                      const char * activeConfigName = null;
-                     CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.compiler);
+                     CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.activeCompiler);
                      prj.StartMonitoring();
-                     workspace.projects.Add(prj);
+                     workspace.AddProject(prj, null);
                      if(toolBar.activeConfig.currentRow && toolBar.activeConfig.currentRow != toolBar.activeConfig.firstRow &&
                            toolBar.activeConfig.currentRow.string && toolBar.activeConfig.currentRow.string[0])
                         activeConfigName = toolBar.activeConfig.currentRow.string;
@@ -2572,21 +2557,7 @@ class IDEWorkSpace : Window
       if(document)
       {
          if(projectView && document._class == class(CodeEditor) && workspace)
-         {
-            int lineNumber, position;
-            Point scroll;
-            CodeEditor editor = (CodeEditor)document;
-            editor.openedFileInfo = workspace.UpdateOpenedFileInfo(filePath, opened);
-            editor.openedFileInfo.holdTracking = true;
-            lineNumber = Max(editor.openedFileInfo.lineNumber - 1, 0);
-            position = Max(editor.openedFileInfo.position - 1, 0);
-            if(editor.editBox.GoToLineNum(lineNumber))
-               editor.editBox.GoToPosition(editor.editBox.line, lineNumber, position);
-            scroll.x = Max(editor.openedFileInfo.scroll.x, 0);
-            scroll.y = Max(editor.openedFileInfo.scroll.y, 0);
-            editor.editBox.scroll = scroll;
-            editor.openedFileInfo.holdTracking = false;
-         }
+            workspace.RestorePreviouslyOpenedFileState((CodeEditor)document);
 
          if(needFileModified)
             document.OnFileModified = OnFileModified;

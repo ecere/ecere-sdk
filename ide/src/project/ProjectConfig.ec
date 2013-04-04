@@ -419,18 +419,12 @@ public:
       //PrintLn("noLineNumbers:", noLineNumbers);
       PrintLn("optimization:", optimization);
 
-      //...
-      //PrintLn("dddddddd:", dddddddd);
-
       PrintLn("fastMath:", fastMath);
 
       PrintLn("preprocessorDefinitions:", preprocessorDefinitions);
       PrintLn("compilerOptions:", compilerOptions);
       PrintLn("linkerOptions:", linkerOptions);
       PrintLn("includeDirs:", includeDirs);
-
-      //...
-      //PrintLn("dddddddd:", dddddddd);
 
       PrintLn("");
    }

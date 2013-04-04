@@ -2050,7 +2050,7 @@ class CodeEditor : Window
          int line = editBox.lineNumber + 1;
          if(projectView)
          {
-            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
             ProjectConfig config = projectView.project.config;
             int bitDepth = ide.workspace.bitDepth;
             bool useValgrind = ide.workspace.useValgrind;
@@ -2853,7 +2853,7 @@ class CodeEditor : Window
 
       if(ide.workspace)
       {
-         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
          SetTargetBits(ide.workspace.bitDepth ? ide.workspace.bitDepth : GetHostBits());
          delete compiler;
       }
@@ -2906,7 +2906,7 @@ class CodeEditor : Window
       // TODO: Get symbolsDir from project settings instead...
       if(ide.projectView)
       {
-         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
          ProjectConfig config = project.config;
          int bitDepth = ide.workspace.bitDepth;
          DirExpression objDir = project.GetObjDir(compiler, config, bitDepth);

@@ -929,7 +929,7 @@ class ProjectView : Window
       if(buildInProgress == none)
       {
          Project prj = project;
-         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
          int bitDepth = ide.workspace.bitDepth;
          ProjectConfig config;
          if(selection || !ide.activeClient)
@@ -959,7 +959,7 @@ class ProjectView : Window
    bool ProjectInstall(MenuItem selection, Modifiers mods)
    {
       Project prj = project;
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
       int bitDepth = ide.workspace.bitDepth;
       BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       ProjectConfig config;
@@ -993,7 +993,7 @@ class ProjectView : Window
    bool ProjectLink(MenuItem selection, Modifiers mods)
    {
       Project prj = project;
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
       int bitDepth = ide.workspace.bitDepth;
       BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       ProjectConfig config;
@@ -1027,7 +1027,7 @@ class ProjectView : Window
 
    bool ProjectRebuild(MenuItem selection, Modifiers mods)
    {
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
       int bitDepth = ide.workspace.bitDepth;
       Project prj = project;
       BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
@@ -1088,7 +1088,7 @@ class ProjectView : Window
    {
       Project prj = project;
       Array<Project> projects { };
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
       int bitDepth = ide.workspace.bitDepth;
       if(selection)
       {
@@ -1148,7 +1148,7 @@ class ProjectView : Window
    bool ProjectRegenerate(MenuItem selection, Modifiers mods)
    {
       Project prj = project;
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
       ShowOutputBuildLog(true);
       if(selection || !ide.activeClient)
       {
@@ -1198,7 +1198,7 @@ class ProjectView : Window
 
       if(result)
       {
-         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
          int bitDepth = ide.workspace.bitDepth;
          result = false;
          if(ProjectPrepareForToolchain(project, normal, true, true, compiler, config))
@@ -1248,7 +1248,7 @@ class ProjectView : Window
 
       if(result)
       {
-         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
          int bitDepth = ide.workspace.bitDepth;
          result = false;
          if(ProjectPrepareForToolchain(project, normal, true, true, compiler, config))
@@ -1374,7 +1374,7 @@ class ProjectView : Window
 
    bool ProjectUpdateMakefileForAllConfigs(Project project)
    {
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
 
       // This call really does not belong here:
       ide.UpdateToolBarActiveConfigs(false);
@@ -1609,7 +1609,7 @@ class ProjectView : Window
 
    bool Run(MenuItem selection, Modifiers mods)
    {
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
       ProjectConfig config = project.config;
       int bitDepth = ide.workspace.bitDepth;
       String args = new char[maxPathLen];
@@ -1631,7 +1631,7 @@ class ProjectView : Window
    bool DebugStart()
    {
       bool result = false;
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
       ProjectConfig config = project.config;
       int bitDepth = ide.workspace.bitDepth;
       bool useValgrind = ide.workspace.useValgrind;
@@ -2049,7 +2049,7 @@ class ProjectView : Window
 
    bool DebugRestart()
    {
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
       ProjectConfig config = project.config;
       int bitDepth = ide.workspace.bitDepth;
       bool useValgrind = ide.workspace.useValgrind;
@@ -2088,7 +2088,7 @@ class ProjectView : Window
 
    bool DebugStepInto()
    {
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
       ProjectConfig config = project.config;
       int bitDepth = ide.workspace.bitDepth;
       bool useValgrind = ide.workspace.useValgrind;
@@ -2101,7 +2101,7 @@ class ProjectView : Window
 
    bool DebugStepOver(bool skip)
    {
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
       ProjectConfig config = project.config;
       int bitDepth = ide.workspace.bitDepth;
       bool useValgrind = ide.workspace.useValgrind;
@@ -2115,7 +2115,7 @@ class ProjectView : Window
 
    bool DebugStepUntil(bool skip)
    {
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
       ProjectConfig config = project.config;
       int bitDepth = ide.workspace.bitDepth;
       bool useValgrind = ide.workspace.useValgrind;

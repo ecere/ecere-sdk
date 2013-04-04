@@ -146,9 +146,10 @@ class NewProjectDialog : Window
          char workspaceFile[MAX_LOCATION];
          strcpy(workspaceFile, prj.filePath);
          ChangeExtension(workspaceFile, WorkspaceExtension, workspaceFile);
-         workspace = Workspace { compiler = ideSettings.defaultCompiler, workspaceFile = workspaceFile };
+         workspace = Workspace { activeCompiler = ideSettings.defaultCompiler, workspaceFile = workspaceFile };
+         workspace.Init();
       }
-      workspace.projects.Add(prj);
+      workspace.AddProject(prj, null);
       ide.findInFilesDialog.AddProjectItem(prj);
       ide.findInFilesDialog.mode = FindInFilesMode::project;
       ide.findInFilesDialog.currentDirectory = prj.topNode.path;
@@ -210,7 +211,7 @@ class NewProjectDialog : Window
 
       if(prj && projectWindow)
       {
-         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
          ProjectConfig config = prj.config;
          projectWindow.ShowOutputBuildLog(true);
          projectWindow.DisplayCompiler(compiler, false);
@@ -456,10 +457,10 @@ class QuickProjectDialog : Window
             char workspaceFile[MAX_LOCATION];
             strcpy(workspaceFile, filePath);
             ChangeExtension(workspaceFile, WorkspaceExtension, workspaceFile);
-            workspace = Workspace { compiler = ideSettings.defaultCompiler, workspaceFile = workspaceFile };
+            workspace = Workspace { activeCompiler = ideSettings.defaultCompiler, workspaceFile = workspaceFile };
          }
 
-         workspace.projects.Add(project);
+         workspace.AddProject(project, null);
          ide.findInFilesDialog.AddProjectItem(project);
          ide.findInFilesDialog.mode = FindInFilesMode::project;
          ide.findInFilesDialog.currentDirectory = project.topNode.path;
@@ -559,7 +560,7 @@ class QuickProjectDialog : Window
 
          if(project && projectWindow)
          {
-            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
             ProjectConfig config = project.config;
             projectWindow.ShowOutputBuildLog(true);
             projectWindow.DisplayCompiler(compiler, false);
