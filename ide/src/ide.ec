@@ -799,14 +799,18 @@ class IDEWorkSpace : Window
          {
             if(id == selection.id)
             {
+               bool isProjectFile;
+               char extension[MAX_EXTENSION] = "";
+               GetExtension(file, extension);
+               isProjectFile = (!strcmpi(extension, "epj") || !strcmpi(extension, "ews"));
                if(mods.ctrl)
                {
-                  char * command = PrintString("ide ", file);
+                  char * command = PrintString("ide ", isProjectFile ? "-t " : "", file);
                   Execute(command);
                   delete command;
                }
                else
-                  OpenFile(file, normal, true, null, no, normal);
+                  OpenFile(file, normal, true, isProjectFile ? "txt" : null, no, normal);
                break;
             }
             id++;
@@ -2691,7 +2695,9 @@ class IDEWorkSpace : Window
       DynamicString passArgs { };
       for(c = 1; c<app.argc; c++)
       {
-         if(!strcmp(app.argv[c], "-debug-start"))
+         if(!strcmp(app.argv[c], "-t"))
+            openAsText = true;
+         else if(!strcmp(app.argv[c], "-debug-start"))
             debugStart = true;
          else if(!strcmp(app.argv[c], "-debug-work-dir"))
             debugWorkDir = true;
@@ -2719,7 +2725,7 @@ class IDEWorkSpace : Window
             PathCat(fullPath, app.argv[c]);
             StripLastDirectory(fullPath, parentPath);
             GetExtension(app.argv[c], ext);
-            isProject = !strcmpi(ext, "epj");
+            isProject = !openAsText && !strcmpi(ext, "epj");
 
             if(isProject && c > (debugStart ? 2 : 1)) continue;
 
@@ -2768,10 +2774,10 @@ class IDEWorkSpace : Window
                   break;
                }
                else
-                  ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
+                  ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, openAsText ? "txt" : null, yes, normal);
             }
             else if(strstr(fullPath, "http://") == fullPath)
-               ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
+               ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, openAsText ? "txt" : null, yes, normal);
          }
       }
       if(passThrough && projectView && projectView.project && workspace)
