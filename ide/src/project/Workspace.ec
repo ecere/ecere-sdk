@@ -1,26 +1,5 @@
 import "ide"
 
-/*static void ParseListValue(List<String> list, char * equal)
-{
-   char * start, * comma;
-   char * string;
-   string = CopyString(equal);
-   start = string;
-   while(start)
-   {
-      comma = strstr(start, ",");
-      if(comma)
-         comma[0] = '\0';
-      list.Add(CopyString(start));
-      if(comma)
-         comma++;
-      if(comma)
-         comma++;
-      start = comma;
-   }
-   delete string;
-}*/
-
 enum OpenedFileState { unknown, opened, closed };
 enum ValgrindLeakCheck
 {
@@ -46,15 +25,19 @@ enum ValgrindLeakCheck
 };
 static const char * valgrindLeakCheckNames[ValgrindLeakCheck] = { "no", "summary", "yes", "full" };
 
-class OpenedFileInfo
+class OpenedFileInfo : struct
 {
    class_no_expansion;
-//public:
+public:
 //   class_fixed
    char * path;
    OpenedFileState state;
-   int lineNumber, position;
+   int lineNumber;
+   int position;
    Point scroll;
+   TimeStamp modified;
+
+private:
    bool holdTracking;
 
    property bool trackingAllowed
@@ -88,49 +71,172 @@ class OpenedFileInfo
       {
          List<OpenedFileInfo> files = ide.workspace.openedFiles;
          Iterator<OpenedFileInfo> it { files };
-         if(it.Find(this) && it.pointer != files.GetLast())
+         IteratorPointer last;
+         if(it.Find(this) && it.pointer != (last = files.GetLast()))
          {
-            files.Move(it.pointer, files.GetPrev(files.GetLast()));
+            files.Move(it.pointer, last);
             ide.workspace.modified = true;
          }
+         modified = GetLocalTimeStamp();
       }
    }
+
+   void SetCodeEditorState(CodeEditor editor)
+   {
+      int num = Max(lineNumber - 1, 0);
+      Point scrl;
+      holdTracking = true;
+      if(editor.editBox.GoToLineNum(num))
+      {
+         int pos = Max(Min(editor.editBox.line.count, position - 1), 0);
+         editor.editBox.GoToPosition(editor.editBox.line, num, pos);
+      }
+      scrl.x = Max(scroll.x, 0);
+      scrl.y = Max(scroll.y, 0);
+      editor.editBox.scroll = scrl;
+      holdTracking = false;
+   }
+
    ~OpenedFileInfo()
    {
       delete path;
    }
 };
 
-class Workspace
+class WorkspaceFile : struct
 {
+   class_no_expansion;
 public:
+   property const char * format
+   {
+      set { }
+      get { return "Ecere IDE Workspace File"; }
+      isset { return true; }
+   }
+   property const char * version
+   {
+      set { }
+      get { return "0.1"; }
+      isset { return true; }
+   }
+   Workspace workspace;
+}
+
+class AddedProjectInfo : struct
+{
+   class_no_expansion;
+public:
+   property const char * path
+   {
+      set { delete path; if(value && value[0]) path = CopyString(value); }
+      get { return path && path[0] ? path : null; }
+      isset { return path != null; }
+   }
+   property const char * activeConfig
+   {
+      set { delete activeConfig; if(value && value[0]) activeConfig = CopyString(value); }
+      get
+      {
+         char * config;
+         if(project && project.config)
+            config = project.config.name;
+         else
+            config = activeConfig;
+         return config && config[0] ? config : null;
+      }
+      isset { return property::activeConfig != null; }
+   }
+private:
+   char * path;
+   char * activeConfig;
+   Project project;
+
+   void Free()
+   {
+      delete path;
+      delete activeConfig;
+   }
+
+   void OnFree()
+   {
+      Free();
+      class::OnFree();
+   }
+
+   ~AddedProjectInfo()
+   {
+      Free();
+   }
+}
+
+class Workspace : struct
+{
+   class_no_expansion;
+public:
+   property const char * name
+   {
+      set { delete name; if(value && value[0]) name = CopyString(value); }
+      get { return name && name[0] ? name : null; }
+      isset { return name != null; }
+   }
+   property const char * activeCompiler
+   {
+      set { delete activeCompiler; if(value && value[0]) activeCompiler = CopyString(value); }
+      get { return activeCompiler && activeCompiler[0] ? activeCompiler : null; }
+      isset { return activeCompiler != null; }
+   }
+   int bitDepth;
+   property const char * commandLineArgs
+   {
+      set { delete commandLineArgs; if(value && value[0]) commandLineArgs = CopyString(value); }
+      get { return commandLineArgs && commandLineArgs[0] ? commandLineArgs : null; }
+      isset { return commandLineArgs != null; }
+   }
+   property const char * debugDir
+   {
+      set { delete debugDir; if(value && value[0]) debugDir = CopyString(value); }
+      get { return debugDir && debugDir[0] ? debugDir : null; }
+      isset { return debugDir != null; }
+   }
+
+   property List<AddedProjectInfo> addedProjects { set { addedProjects = value; } get { return addedProjects; } isset { return addedProjects && addedProjects.count; } }
+   property List<String> sourceDirs { set { sourceDirs = value; } get { return sourceDirs; } isset { return sourceDirs && sourceDirs.count; } }
+   property Array<NamedString> environmentVars { set { environmentVars = value; } get { return environmentVars; } isset { return environmentVars && environmentVars.count; } }
+   property List<Breakpoint> breakpoints { set { breakpoints = value; } get { return breakpoints; } isset { return breakpoints && breakpoints.count; } }
+   property List<Watch> watches { set { watches = value; } get { return watches; } isset { return watches && watches.count; } }
+   property List<OpenedFileInfo> openedFiles { set { openedFiles = value; } get { return openedFiles; } isset { return openedFiles && openedFiles.count; } }
+
+   bool useValgrind;
+   ValgrindLeakCheck vgLeakCheck;
+   bool vgTrackOrigins;
+   int vgRedzoneSize;
+
+private:
    char * name;
+   char * activeCompiler;
+   char * commandLineArgs;
+   char * debugDir;
+
+   List<AddedProjectInfo> addedProjects;
+   List<String> sourceDirs;
+   Array<NamedString> environmentVars;
+   List<Breakpoint> breakpoints;
+   List<Watch> watches;
+   List<OpenedFileInfo> openedFiles;
+
    char * workspaceFile;
    char * workspaceDir;
-   char * commandLineArgs;
-   property const char * commandLineArgs { set { delete commandLineArgs; if(value) commandLineArgs = CopyString(value); } }
-   char * debugDir;
-   property const char * debugDir { set { delete debugDir; if(value) debugDir = CopyString(value); } }
 
    int bpCount;
 
-   property const char * compiler
-   {
-      set { delete compiler; if(value && value[0]) compiler = CopyString(value); }
-      get { return compiler && compiler[0] ? compiler : null; }
-   }
-
-   List<String> sourceDirs { };
-   Array<NamedString> environmentVars { };
-   List<Breakpoint> breakpoints { };
-   List<Watch> watches { };
-   List<OpenedFileInfo> openedFiles { };
    List<Project> projects { };
-
    //Project project;
 
    bool modified;
    bool holdTracking;
+
+   vgRedzoneSize = -1;
+   vgLeakCheck = summary;
 
    Timer timer
    {
@@ -151,6 +257,26 @@ public:
          return true;
       }
    };
+
+   void AddProject(Project project, AddedProjectInfo addedProject)
+   {
+      if(addedProject)
+      {
+         ProjectConfig activeConfig = project.GetConfig(addedProject.activeConfig);
+         if(activeConfig)
+            project.config = activeConfig;
+         addedProject.project = project;
+      }
+      else
+      {
+         char location[MAX_LOCATION];
+         GetRelativePathForProject(location, project);
+         if(!addedProjects)
+            addedProjects = { };
+         addedProjects.Add(AddedProjectInfo { path = location, project = project });
+      }
+      projects.Add(project);
+   }
 
    property const char * workspaceFile
    {
@@ -207,163 +333,20 @@ public:
       get { return project; }
    }*/
 
-private:
-   String compiler;
-   int bitDepth;
-   // TODO: save these new settings when json format is ready
-   bool useValgrind;
-   ValgrindLeakCheck vgLeakCheck;
-   bool vgTrackOrigins;
-   int vgRedzoneSize;
-
-   vgRedzoneSize = -1;
-   vgLeakCheck = summary;
-
 public:
    void Save()
    {
-      bool bkpts = false;
-      File file;
-
-      file = FileOpen(workspaceFile, write);
-      if(file)
+      if(workspaceFile && workspaceFile[0])
       {
-         /*
-         for(bp : breakpoints)
+         File file = FileOpen(workspaceFile, write);
+         if(file)
          {
-            if(bp.type == user)
-            {
-               if(bp.enabled)
-                  file.Printf("Breakpoint=1,%d,%s,%s\n", bp.line, bp.absoluteFilePath, bp.relativeFilePath);
-               else
-                  file.Printf("Breakpoint=0,%d,%s,%s\n", bp.line, bp.absoluteFilePath, bp.relativeFilePath);
-            }
+            WorkspaceFile wf { workspace = this };
+            WriteECONObject(file, class(WorkspaceFile), wf, 0);
+            delete wf;
+            delete file;
+            modified = false;
          }
-
-         for(wh : watches)
-            file.Printf("Watch=%s\n", wh.expression);
-
-         for(dir : sourceDirs)
-            file.Printf("SourceDir=%s\n", dir);
-
-         if(debugDir && debugDir[0])
-            file.Printf("DebugDir=%s\n", debugDir);
-
-         if(commandLineArgs && commandLineArgs[0])
-            file.Printf("CommandLineArgs=%s\n", commandLineArgs);
-         */
-
-         /*
-         char indentation[128*3];
-         char path[MAX_LOCATION];
-         */
-         file.Printf("\nECERE Workspace File\n");
-         file.Printf("\nVersion 0.02\n");
-         file.Printf("\nWorkspace\n");
-         file.Printf("\n   Active Compiler = %s\n", compiler ? compiler : defaultCompilerName);
-         file.Printf("\n   Active Bit Depth = %d\n", bitDepth);
-
-         if(projects.first)
-         {
-            file.Printf("\n   Projects\n\n");
-            for(prj : projects)
-            {
-               char location[MAX_LOCATION];
-               MakePathRelative(prj.topNode.path, workspaceDir, location);
-               MakeSlashPath(location);
-               PathCatSlash(location, prj.topNode.name);
-               //strcat(location, ".epj");
-
-               file.Printf("    %s %s\n", "-", location);
-
-               if(prj.config)
-                  file.Printf("         Active Configuration = %s\n", prj.config.name);
-               for(cfg : prj.configurations)
-               {
-                  if(cfg.compilingModified)
-                     file.Printf("         Modified Compiler Config = %s\n", cfg.name);
-                  else if(cfg.linkingModified)
-                     file.Printf("         Modified Linker Config = %s\n", cfg.name);
-               }
-            }
-         }
-
-         file.Printf("\n   Execution Data\n");
-         if(commandLineArgs && commandLineArgs[0])
-         {
-            file.Printf("\n      Command Line Arguments = ");
-            file.Puts(commandLineArgs);
-            file.Printf("\n");
-         }
-
-         if(environmentVars.count)
-         {
-            file.Printf("\n      Environment Variables\n\n");
-            for(v : environmentVars)
-            {
-               file.Printf("       ~ ");
-               file.Puts(v.name);
-               file.Printf(" = ");
-               file.Puts(v.string);
-               file.Printf("\n");
-            }
-         }
-
-         file.Printf("\n   Debugger Data\n");
-         // This really belonged in Execution Data...
-         if(debugDir && debugDir[0])
-            file.Printf("\n      Debug Working Directory = %s\n", debugDir);
-         if(sourceDirs.count)
-         {
-            file.Printf("\n      Source Directories\n");
-            for(dir : sourceDirs)
-               file.Printf("       = %s\n", dir);
-         }
-
-         for(bp : breakpoints)
-         {
-            if(bp.type == user)
-            {
-               if(!bkpts)
-               {
-                  bkpts = true;
-                  file.Printf("\n   Breakpoints\n\n");
-               }
-               bp.Save(file);
-            }
-         }
-
-         if(watches.count)
-         {
-            file.Printf("\n   Watches\n\n");
-            for(wh : watches)
-               wh.Save(file);
-         }
-
-         if(openedFiles.count)
-         {
-            file.Printf("\n   Opened Files\n\n");
-            for(ofi : openedFiles)
-            {
-               char * location;
-               char chr[2];
-               char relativePath[MAX_LOCATION];
-               if(IsPathInsideOf(ofi.path, workspaceDir))
-               {
-                  MakePathRelative(ofi.path, workspaceDir, relativePath);
-                  MakeSlashPath(relativePath);
-                  location = relativePath;
-               }
-               else
-                  location = ofi.path;
-               strcpy(chr, "=");
-
-               file.Printf("    %s %s:%d:%d:%d:%d:%s\n", chr, ofi.state == closed ? "C" : "O", ofi.lineNumber, ofi.position, ofi.scroll.x, ofi.scroll.y, location);
-            }
-         }
-
-         modified = false;
-         delete file;
       }
    }
 
@@ -553,25 +536,21 @@ public:
 
    OpenedFileInfo UpdateOpenedFileInfo(const char * fileName, OpenedFileState state)
    {
-      char filePath[MAX_LOCATION];
-      OpenedFileInfo ofi = null;
-      GetSlashPathBuffer(filePath, fileName);
-      for(item : openedFiles)
-      {
-         if(!fstrcmp(item.path, filePath))
-         {
-            ofi = item;
-            break;
-         }
-      }
+      char absolutePath[MAX_LOCATION];
+      char relativePath[MAX_LOCATION];
+      OpenedFileInfo ofi;
+      GetSlashPathBuffer(absolutePath, fileName);
+      MakeRelativePath(relativePath, fileName);
+      ofi = FindOpenedFileInfo(relativePath, absolutePath);
       if(state)
       {
          if(!ofi)
          {
-            ofi = OpenedFileInfo { path = CopyString(filePath) };
+            ofi = OpenedFileInfo { path = CopyString(relativePath) };
             openedFiles.Add(ofi);
          }
          ofi.state = state;
+         ofi.modified = GetLocalTimeStamp();
          if(!holdTracking)
             modified = true;
       }
@@ -584,6 +563,84 @@ public:
             modified = true;
       }
       return ofi;
+   }
+
+   void LoadOpenedFileInfo(const char * path, OpenedFileState state, int lineNumber, int position, Point scroll, TimeStamp modified, Array<String> openedFilesNotFound)
+   {
+      char absolutePath[MAX_LOCATION];
+      char relativePath[MAX_LOCATION];
+      TimeStamp stamp = modified;
+      bool exists;
+      strcpy(absolutePath, workspaceDir);
+      PathCatSlash(absolutePath, path);
+      MakeRelativePath(relativePath, absolutePath);
+      if(!(exists = FileExists(absolutePath)))
+         stamp -= 60*60*24*20; // Days { 20 };
+      if(stamp > GetLocalTimeStamp() - 60*60*24*384) // Days { 384 });
+      {
+         if(state == closed || exists)
+         {
+            OpenedFileInfo ofi = FindOpenedFileInfo(relativePath, absolutePath);
+            if(!ofi)
+               openedFiles.Add(OpenedFileInfo { CopyString(relativePath), state, lineNumber, position, scroll, stamp });
+            // else silently drop duplicates if they should ever occur;
+         }
+         else
+            openedFilesNotFound.Add(CopyString(absolutePath));
+      }
+      // else silently discarding old or broken OpenedFileInfo entries;
+   }
+
+   void OpenPreviouslyOpenedFiles(bool noParsing)
+   {
+      holdTracking = true;
+      for(ofi : openedFiles)
+      {
+         if(ofi.state != closed)
+         {
+            Window file;
+            char absolutePath[MAX_LOCATION];
+            strcpy(absolutePath, workspaceDir);
+            PathCatSlash(absolutePath, ofi.path);
+            file = ide.OpenFile(absolutePath, false, true, null, no, normal, noParsing);
+            if(file)
+            {
+               for(prj : projects)
+               {
+                  ProjectNode node = prj.topNode.FindByFullPath(absolutePath, true);
+                  if(node)
+                     node.EnsureVisible();
+               }
+            }
+         }
+      }
+      holdTracking = false;
+   }
+
+   OpenedFileInfo FindOpenedFileInfo(const char * relativePath, const char * absolutePath)
+   {
+      OpenedFileInfo result = null;
+      for(e : openedFiles)
+      {
+         bool switchToRelative;
+         if((switchToRelative = !fstrcmp(absolutePath, e.path)) || !fstrcmp(relativePath, e.path))
+         {
+            result = e;
+            if(switchToRelative)
+            {
+               delete result.path;
+               result.path = CopyString(relativePath);
+            }
+            break;
+         }
+      }
+      return result;
+   }
+
+   void RestorePreviouslyOpenedFileState(CodeEditor editor)
+   {
+      if((editor.openedFileInfo = UpdateOpenedFileInfo(editor.fileName, opened)))
+         editor.openedFileInfo.SetCodeEditorState(editor);
    }
 
    void UpdateSourceDirsArray(Array<String> dirs)
@@ -600,11 +657,17 @@ public:
 
    void RemoveProject(Project project)
    {
-      Iterator<Project> it { projects };
-      if(it.Find(project))
-         it.Remove();
+      Iterator<AddedProjectInfo> it { addedProjects };
+      while(it.Next())
+      {
+         if(it.data.project == project)
+         {
+            addedProjects.Remove(it.pointer);
+            break;
+         }
+      }
+      projects.TakeOut(project);
 
-      for(bp : breakpoints)
       DropInvalidBreakpoints(project);
       modified = true;
       ide.findInFilesDialog.RemoveProjectItem(project);
@@ -672,8 +735,9 @@ public:
          if(strcmp(location, currentLoc))
          {
             char * newLoc;
-            bp.location = location;
+            bp.location = CopyString(location);
             bp.ParseLocation();
+            delete bp.location;
             newLoc = bp.CopyUserLocationString();
             if(strcmp(newLoc, currentLoc))
             {
@@ -785,20 +849,20 @@ public:
       for(bp : breakpoints; bp.location)
       {
          bp.ParseLocation();
+         delete bp.location;
          ide.breakpointsView.UpdateBreakpoint(bp.row);
       }
    }
 
-   void DropInvalidBreakpoints(Project removedProject)
-   {
-      Link bpLink, next;
-      for(bpLink = breakpoints.first; bpLink; bpLink = next)
+   void DropInvalidBreakpoints(Project removedProject) // think about not dropping BPs that are past end of file but simply disable them
+   {                                                   // why? when using a scm/vcs you might be alternating between two version of a file
+      if(breakpoints)                                  // and anoyingly keep loosing breakpoints in the version of the file you are working on
       {
-         Breakpoint bp = (Breakpoint)(intptr)bpLink.data;
-         next = bpLink.next;
-
-         if(bp.type == user)
+         Link bpLink, next;
+         for(bpLink = breakpoints.first; bpLink; bpLink = next)
          {
+            Breakpoint bp = (Breakpoint)(intptr)bpLink.data;
+            next = bpLink.next;
             if(removedProject)
             {
                if(bp.project == removedProject)
@@ -853,8 +917,18 @@ public:
                }
             }
          }
+         ide.breakpointsView.Update(null);
       }
-      ide.breakpointsView.Update(null);
+   }
+
+   void Init()
+   {
+      if(!addedProjects) addedProjects = { };
+      if(!sourceDirs) sourceDirs = { };
+      if(!environmentVars) environmentVars = { };
+      if(!breakpoints) breakpoints = { };
+      if(!watches) watches = { };
+      if(!openedFiles) openedFiles = { };
    }
 
    void Free()
@@ -863,12 +937,18 @@ public:
       delete workspaceDir;
       delete commandLineArgs;
       delete debugDir;
+      delete activeCompiler;
 
       //project = null;
 
+      if(addedProjects) { addedProjects.Free(); delete addedProjects; }
+      if(sourceDirs) { sourceDirs.Free(); delete sourceDirs; }
+      if(environmentVars) { environmentVars.Free(); delete environmentVars; }
+      if(breakpoints) { breakpoints.Free(); delete breakpoints; }
+      if(watches) { watches.Free(); delete watches; }
+      if(openedFiles) { openedFiles.Free(); delete openedFiles; }
+
       projects.Free();
-      breakpoints.Free();
-      watches.Free();
    }
 
    Workspace()
@@ -890,17 +970,208 @@ public:
       Save();
       timer.Stop();
 
-      sourceDirs.Free();
-      environmentVars.Free();
       SetSourceDirs(null);
       Free();
-      openedFiles.Free();
-      delete compiler;
    }
 
 }
 
 Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
+{
+   File f;
+   Workspace workspace = null;
+
+   f = FileOpen(filePath, read);
+   if(f)
+   {
+      Array<String> openedFilesNotFound { };
+      JSONResult result;
+      WorkspaceFile wf = null;
+      {
+         JSONParser parser { f = f };
+         f.Seek(0, start);
+         result = parser.GetObject(class(WorkspaceFile), &wf);
+         if(result != success)
+            delete wf;
+         delete parser;
+      }
+      if(!wf)
+         workspace = LoadLegacyWorkspace(filePath, openedFilesNotFound);
+      else if(wf.workspace)
+      {
+         workspace = wf.workspace;
+         //incref workspace;
+         workspace.workspaceFile = filePath;
+         {
+            char absolutePath[MAX_LOCATION];
+            bool done = false;
+            bool ahead = false;
+            Iterator<AddedProjectInfo> it { workspace.addedProjects };
+            while(!done && (ahead || !(done = !it.Next())))
+            {
+               // TODO: implement some type of time based pruning of "dea" added projects instead of just dropping them on the spot
+               //         TimeStamp modified; modified = GetLocalTimeStamp();
+               //               TimeStamp stamp = modified; if(stamp > GetLocalTimeStamp() - 60*60*24*20) // Days { 20 });
+               AddedProjectInfo addedPrj = it.data;
+               strcpy(absolutePath, workspace.workspaceDir);
+               PathCatSlash(absolutePath, addedPrj.path);
+               if(FileExists(absolutePath))
+               {
+                  Project loadedProject = LoadProject(absolutePath, null);
+                  if(loadedProject)
+                  {
+                     workspace.AddProject(loadedProject, addedPrj);
+                     loadedProject.StartMonitoring();
+                  }
+                  else if(workspace.projects.count == 0)
+                  {
+                     delete workspace;
+                     break;
+                  }
+                  else
+                  {
+                     // TODO: (#524) show message or something when added project fails to load;
+                  }
+                  ahead = false;
+               }
+               else
+               {
+                  IteratorPointer notFound = it.pointer;
+                  done = !it.Next();
+                  workspace.addedProjects.Delete(notFound);
+                  ahead = true;
+               }
+            }
+            if(workspace)
+            {
+               for(bp : workspace.breakpoints)
+               {
+                  char * path = workspace.CopyAbsolutePathFromRelative(bp.relativeFilePath);
+                  bp.type = user;
+                  if(path)
+                  {
+                     bp.absoluteFilePath = path;
+                     delete path;
+                  }
+                  else
+                     bp.absoluteFilePath = "";
+               }
+               if(workspace.openedFiles && workspace.openedFiles.count)
+               {
+                  List<OpenedFileInfo> openedFiles = workspace.openedFiles;
+                  workspace.openedFiles = { };
+                  for(of : openedFiles)
+                  {
+                     workspace.LoadOpenedFileInfo(of.path, of.state, of.lineNumber, of.position, of.scroll, of.modified, openedFilesNotFound);
+                  }
+                  openedFiles.Free();
+                  delete openedFiles;
+               }
+            }
+         }
+      }
+
+      if(workspace)
+      {
+         workspace.Init();
+         if(!workspace.projects.first)
+         {
+            Project project;
+            if(fromProjectFile)
+               project = LoadProject(fromProjectFile /*projectFilePath*/, null);
+            else
+            {
+               char projectFilePath[MAX_LOCATION];
+               strcpy(projectFilePath, workspace.workspaceFile);
+               ChangeExtension(projectFilePath, ProjectExtension, projectFilePath);
+               project = LoadProject(projectFilePath, null);
+            }
+            if(project)
+            {
+               project.StartMonitoring();
+               workspace.AddProject(project, null);
+               workspace.name = CopyString(project.name);
+            }
+            else
+            {
+               MessageBox { type = ok, master = ide, contents = $"Workspace load file failed", text = $"Workspace Load File Error" }.Modal();
+               delete workspace;
+               return null;
+            }
+         }
+
+         if(openedFilesNotFound.count)
+         {
+            int c = 0;
+            char s[2] = "";
+            String files = new char[MAX_LOCATION * 16];
+            char title[512];
+            String msg = new char[MAX_LOCATION * 16 + 2048];
+            strcpy(files,"\n");
+
+            if(openedFilesNotFound.count > 1)
+               strcpy(s, "s");
+
+            for(item : openedFilesNotFound)
+            {
+               c++;
+               if(c == 16)
+               {
+                  strcat(files, "\n...");
+                  break;
+               }
+               strcat(files, "\n");
+               strcat(files, item);
+            }
+
+            sprintf(title, $"File%s not found", s);
+            sprintf(msg, $"The following file%s could not be re-opened.%s", s, files);
+
+            MessageBox { type = ok, master = ide, contents = msg, text = title }.Modal();
+
+            delete files;
+            delete msg;
+         }
+      }
+      openedFilesNotFound.Free();
+      delete openedFilesNotFound;
+      delete wf;
+      delete f;
+   }
+   else if(fromProjectFile)
+   {
+      //MessageBox { type = Ok, master = ide, contents = "Worspace load file failed", text = "Worspace Load File Error" }.Modal();
+
+      //char projectFile[MAX_LOCATION];
+      Project newProject;
+
+      //strcpy(projectFile, filePath);
+      //ChangeExtension(projectFile, ProjectExtension, projectFile);
+      newProject = LoadProject(fromProjectFile /*projectFile*/, null);
+
+      if(newProject)
+      {
+         newProject.StartMonitoring();
+         workspace = Workspace { property::workspaceFile = filePath };
+
+         workspace.Init();
+         workspace.AddProject(newProject, null);
+         workspace.Save();
+      }
+   }
+
+   if(workspace)
+   {
+      ide.ChangeFileDialogsDirectory(workspace.workspaceDir, false);
+
+      if(!workspace.activeCompiler || !workspace.activeCompiler[0])
+         workspace.activeCompiler = defaultCompilerName;
+   }
+
+   return workspace;
+}
+
+Workspace LoadLegacyWorkspace(const char * filePath, Array<String> openedFilesNotFound)
 {
    File file;
    Workspace workspace = null;
@@ -908,12 +1179,12 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
    file = FileOpen(filePath, read);
    if(file)
    {
-      OldList openedFilesNotFound { };
       double version = 0;
       char section[128];
       char subSection[128];
 
-      workspace = Workspace { compiler = ideSettings.defaultCompiler, workspaceFile = filePath };
+      workspace = Workspace { activeCompiler = ideSettings.defaultCompiler, property::workspaceFile = filePath };
+      workspace.Init();
 
       file.Seek(0, start);
       while(!file.Eof())
@@ -937,6 +1208,7 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
                if(!strcmpi(section, "Debugger Data") && !strcmpi(subSection, "Watches"))
                {
                   wh = Watch { };
+                  if(!workspace.watches) workspace.watches = { };
                   workspace.watches.Add(wh);
                   wh.expression = CopyString(equal);
                }
@@ -1025,6 +1297,8 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
                      line = atoi(strLine);
 
                      bp = { type = user, enabled = enabled, ignore = ignore, level = level, line = line };
+                     if(!workspace.breakpoints)
+                        workspace.breakpoints = { };
                      workspace.breakpoints.Add(bp);
                      bp.location = strFile;
                   }
@@ -1043,8 +1317,6 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
                   int lineNumber = 0;
                   int position = 0;
                   Point scroll { };
-                  char absolutePath[MAX_LOCATION];
-                  strcpy(absolutePath, workspace.workspaceDir);
                   if(version == 0.01)
                   {
                      char * comma = strchr(equal, ',');
@@ -1099,12 +1371,7 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
                         }
                      }
                   }
-                  PathCatSlash(absolutePath, equal);
-
-                  if(state == closed || FileExists(absolutePath))
-                     workspace.openedFiles.Add(OpenedFileInfo { path = CopyString(absolutePath), state = state, lineNumber = lineNumber, position = position, scroll = scroll });
-                  else
-                     openedFilesNotFound.Add(NamedItem { name = CopyString(equal) });
+                  workspace.LoadOpenedFileInfo(equal, state, lineNumber, position, scroll, GetLocalTimeStamp(), openedFilesNotFound);
                }
                else if(!strcmpi(section, "Projects"))
                {
@@ -1115,7 +1382,7 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
                   newProject = LoadProject(projectFilePath, null);
                   if(newProject)
                   {
-                     workspace.projects.Add(newProject);
+                     workspace.AddProject(newProject, null);
                      newProject.StartMonitoring();
                   }
                   else if(workspace.projects.count == 0)
@@ -1125,8 +1392,7 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
                   }
                   else
                   {
-                     // TODO: show message or something when added project fails to load
-                     // http://ecere.com/mantis/view.php?id=524
+                     // TODO: (#524) show message or something when added project fails to load;
                   }
                }
             }
@@ -1152,7 +1418,10 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
             else if(!strcmpi(buffer, "Environment Variables"))
                strcpy(subSection, buffer);
             else if(!strcmpi(buffer, "Opened Files"))
+            {
                strcpy(section, buffer);
+               if(!workspace.openedFiles) workspace.openedFiles = { };
+            }
             else if(!strcmpi(buffer, ""))      // | These two lines were commented out
                strcpy(subSection, buffer);     // | Do they serve a purpose? They were there for copy paste when adding a new subsection
             else
@@ -1170,9 +1439,9 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
                      {
                         CompilerConfig compiler = ideSettings.GetCompilerConfig(equal);
                         if(!compiler)
-                           workspace.compiler = defaultCompilerName;
+                           workspace.activeCompiler = defaultCompilerName;
                         else
-                           workspace.compiler = equal;
+                           workspace.activeCompiler = equal;
                         delete compiler;
                      }
                      if(!strcmpi(buffer, "Active Bit Depth"))
@@ -1311,102 +1580,16 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
             }
          }
       }
-
       delete file;
-
-      if(workspace)
-      {
-         if(!workspace.projects.first)
-         {
-            Project project;
-            if(fromProjectFile)
-               project = LoadProject(fromProjectFile /*projectFilePath*/, null);
-            else
-            {
-               char projectFilePath[MAX_LOCATION];
-               strcpy(projectFilePath, workspace.workspaceFile);
-               ChangeExtension(projectFilePath, ProjectExtension, projectFilePath);
-               project = LoadProject(projectFilePath, null);
-            }
-            if(project)
-            {
-               project.StartMonitoring();
-               workspace.projects.Add(project);
-               workspace.name = CopyString(project.name);
-            }
-            else
-            {
-               MessageBox { type = ok, master = ide, contents = $"Workspace load file failed", text = $"Workspace Load File Error" }.Modal();
-               delete workspace;
-               return null;
-            }
-         }
-
-         if(openedFilesNotFound.first)
-         {
-            int c = 0;
-            char s[2] = "";
-            String files = new char[MAX_LOCATION * 16];
-            char title[512];
-            String msg = new char[MAX_LOCATION * 16 + 2048];
-            NamedItem item;
-            strcpy(files,"\n");
-
-            item = openedFilesNotFound.first;
-            if(item.next)
-               strcpy(s, "s");
-
-            for(item = openedFilesNotFound.first; item; item = item.next)
-            {
-               c++;
-               if(c == 16)
-               {
-                  strcat(files, "\n...");
-                  break;
-               }
-               strcat(files, "\n");
-               strcat(files, item.name);
-            }
-
-            sprintf(title, $"File%s not found", s);
-            sprintf(msg, $"The following file%s could not be re-opened.%s", s, files);
-
-            MessageBox { type = ok, master = ide, contents = msg, text = title }.Modal();
-
-            delete files;
-            delete msg;
-         }
-         openedFilesNotFound.Free(OldLink::Free);
-      }
-      else
-         openedFilesNotFound.Free(OldLink::Free);
-   }
-   else if(fromProjectFile)
-   {
-      //MessageBox { type = Ok, master = ide, contents = "Worspace load file failed", text = "Worspace Load File Error" }.Modal();
-      //char projectFile[MAX_LOCATION];
-      Project newProject;
-
-      //strcpy(projectFile, filePath);
-      //ChangeExtension(projectFile, ProjectExtension, projectFile);
-      newProject = LoadProject(fromProjectFile /*projectFile*/, null);
-
-      if(newProject)
-      {
-         newProject.StartMonitoring();
-         workspace = Workspace { workspaceFile = filePath };
-
-         workspace.projects.Add(newProject);
-         workspace.Save();
-      }
-   }
-
-   if(workspace)
-   {
-      ide.ChangeFileDialogsDirectory(workspace.workspaceDir, false);
-
-      if(!workspace.compiler || !workspace.compiler[0])
-         workspace.compiler = defaultCompilerName;
    }
    return workspace;
+}
+
+TimeStamp GetLocalTimeStamp()
+{
+   TimeStamp now;
+   DateTime time { };
+   time.GetLocalTime();
+   now = time;
+   return now;
 }

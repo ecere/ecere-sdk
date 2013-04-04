@@ -682,7 +682,7 @@ CompilerConfig GetCompilerConfig()
 #ifndef MAKEFILE_GENERATOR
    CompilerConfig compiler = null;
    if(ide && ide.workspace)
-      compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
    return compiler;
 #else
    incref defaultCompiler;
@@ -695,7 +695,7 @@ int GetBitDepth()
 #ifdef MAKEFILE_GENERATOR
    return 0; // todo: improve this somehow? add bit depth command line option?
 #else
-   return ide.workspace.bitDepth;
+   return ide.workspace ? ide.workspace.bitDepth : 0;
 #endif
 }
 
@@ -945,7 +945,7 @@ private:
 
                if(projectView)
                {
-                  CompilerConfig compiler = ideSettings.GetCompilerConfig(projectView.workspace.compiler);
+                  CompilerConfig compiler = ideSettings.GetCompilerConfig(projectView.workspace.activeCompiler);
                   projectView.AddNode(topNode, null);
                   topNode.row.Move(prev);
 
@@ -1219,9 +1219,6 @@ private:
    bool Save(const char * fileName)
    {
       File f;
-      /*char output[MAX_LOCATION];
-       ChangeExtension(fileName, "json", output);
-      f = FileOpen(output, write);*/
       f = FileOpen(fileName, write);
       if(f)
       {
@@ -2386,7 +2383,7 @@ private:
       sprintf(target, "%s %s", target, args);
       GetWorkingDir(oldDirectory, MAX_LOCATION);
 
-      if(strlen(ide.workspace.debugDir))
+      if(ide.workspace.debugDir && strlen(ide.workspace.debugDir))
       {
          char temp[MAX_LOCATION];
          strcpy(temp, topNode.path);
