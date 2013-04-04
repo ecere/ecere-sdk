@@ -3,20 +3,18 @@ ifneq "$V" "1"
 .SILENT:
 endif
 
+LIBVER := .0.44
+
 include crossplatform.mk
 include default.cf
 
 ifdef BSD_HOST
-INSTALL_FLAGS :=
 CPFLAGS := -pRf
 else
-INSTALL_FLAGS := -D
 CPFLAGS := -dpRf
 endif
 
 XBOOT := $(if $(CROSS_TARGET),GCC_PREFIX= TARGET_PLATFORM=$(HOST_PLATFORM) PLATFORM=$(HOST_PLATFORM),)
-
-LIBVER := .0.44
 
 ifdef WINDOWS_HOST
 HOST_SOV := $(HOST_SO)
@@ -26,49 +24,9 @@ endif
 
 ifdef WINDOWS_TARGET
 
-SOV := $(SO)
-
-ifndef DESTDIR
-
-ifeq "$(TARGET_ARCH)" "x86_64"
-   ifneq "$(wildcard $(SystemDrive)/Program\ Files )" ""
-      export DESTDIR=$(SystemDrive)/Program Files/Ecere SDK
-   else
-      export DESTDIR=$(SystemDrive)/Ecere SDK
-   endif
-else
-   ifdef ProgramFiles(x86)
-      export DESTDIR=${ProgramFiles(x86)}/Ecere SDK
-   else
-      ifdef ProgramFiles
-         export DESTDIR=$(ProgramFiles)/Ecere SDK
-      else
-         export DESTDIR=$(SystemDrive)/Ecere SDK
-      endif
-   endif
-endif
-
-endif # DESTDIR
-
-export prefix=
-
 ifndef DOCDIR
 export DOCDIR=$(DESTDIR)$(prefix)/doc
 endif
-
-ifndef BINDIR
-export BINDIR=$(DESTDIR)$(prefix)/bin
-endif
-
-ifndef LIBDIR
-export LIBDIR=$(BINDIR)
-endif
-export DESTLIBDIR=$(LIBDIR)
-
-ifndef SLIBDIR
-export SLIBDIR=$(DESTDIR)$(prefix)/lib
-endif
-export DESTSLIBDIR=$(SLIBDIR)
 
 ifndef SAMPLESDIR
 export SAMPLESDIR=$(DESTDIR)$(prefix)/samples
@@ -78,23 +36,7 @@ ifndef EXTRASDIR
 export EXTRASDIR=$(DESTDIR)$(prefix)/extras
 endif
 
-
 else # WINDOWS_TARGET
-
-ifdef OSX_TARGET
-# TODO: OSX soname
-SOV := $(SO)
-else
-SOV := $(SO)$(LIBVER)
-endif
-
-ifndef DESTDIR
-export DESTDIR=
-endif
-
-ifndef prefix
-export prefix=/usr
-endif
 
 ifndef DOCDIR
 export DOCDIR=$(DESTDIR)$(prefix)/share/ecere/doc
@@ -104,36 +46,8 @@ ifndef MANDIR
 export MANDIR=$(DESTDIR)$(prefix)/share/man/
 endif
 
-ifndef BINDIR
-export BINDIR=$(DESTDIR)$(prefix)/bin
-endif
-
-ifdef LIBDIR
- export PREFIXLIBDIR=$(LIBDIR)
-else
- export PREFIXLIBDIR=$(prefix)/lib/$(TARGET_ARCH)
-
- ifeq "$(wildcard $(prefix)/lib/$(TARGET_ARCH) )" ""
-  export PREFIXLIBDIR=$(prefix)/lib
-
-  ifeq "$(TARGET_ARCH)" "i386-linux-gnu"
-   ifneq "$(wildcard $(prefix)/lib32 )" ""
-    export PREFIXLIBDIR=$(prefix)/lib32
-   endif
-  endif
-
- endif
-endif
-
 export CPPFLAGS
 CPPFLAGS += -DDEB_HOST_MULTIARCH=\"$(call escspace,$(PREFIXLIBDIR))\"
-
-DESTLIBDIR := $(DESTDIR)$(PREFIXLIBDIR)
-ifdef SLIBDIR
-DESTSLIBDIR := $(DESTDIR)$(SLIBDIR)
-else
-DESTSLIBDIR := $(DESTLIBDIR)
-endif
 
 ifndef SAMPLESDIR
 export SAMPLESDIR=$(DESTDIR)$(prefix)/share/ecere/samples
@@ -143,8 +57,8 @@ ifndef EXTRASDIR
 export EXTRASDIR=$(DESTDIR)$(prefix)/share/ecere/extras
 endif
 
+endif # WINDOWS_TARGET
 
-endif
 
 OBJDIR := obj$(OBJALT)/
 OBJBINDIR := $(OBJDIR)$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/

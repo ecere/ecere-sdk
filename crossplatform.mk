@@ -277,3 +277,108 @@ ifdef WINDOWS_TARGET
   OPENSSL_BIN_DIR = .
  endif
 endif
+
+# INSTALL_FLAGS
+ifdef BSD_HOST
+INSTALL_FLAGS :=
+else
+INSTALL_FLAGS := -D
+endif
+
+# DESTDIR
+ifdef WINDOWS_TARGET
+
+SOV := $(SO)
+
+ifndef DESTDIR
+
+ifeq "$(TARGET_ARCH)" "x86_64"
+   ifneq "$(wildcard $(SystemDrive)/Program\ Files )" ""
+      export DESTDIR=$(SystemDrive)/Program Files/Ecere SDK
+   else
+      export DESTDIR=$(SystemDrive)/Ecere SDK
+   endif
+else
+   ifdef ProgramFiles(x86)
+      export DESTDIR=${ProgramFiles(x86)}/Ecere SDK
+   else
+      ifdef ProgramFiles
+         export DESTDIR=$(ProgramFiles)/Ecere SDK
+      else
+         export DESTDIR=$(SystemDrive)/Ecere SDK
+      endif
+   endif
+endif
+
+endif # DESTDIR
+
+export prefix=
+
+ifndef BINDIR
+export BINDIR=$(DESTDIR)$(prefix)/bin
+endif
+
+ifndef LIBDIR
+export LIBDIR=$(BINDIR)
+endif
+export DESTLIBDIR=$(LIBDIR)
+
+ifndef SLIBDIR
+export SLIBDIR=$(DESTDIR)$(prefix)/lib
+endif
+export DESTSLIBDIR=$(SLIBDIR)
+
+else # WINDOWS_TARGET
+
+ifdef OSX_TARGET
+# TODO: OSX soname
+SOV := $(SO)
+else
+ifdef LIBVER
+SOV := $(SO)$(LIBVER)
+else
+ifdef VERSION
+SOV := $(SO).$(VERSION)
+else
+SOV := $(SO)
+endif
+endif
+endif
+
+ifndef DESTDIR
+export DESTDIR=
+endif
+
+ifndef prefix
+export prefix=/usr
+endif
+
+ifndef BINDIR
+export BINDIR=$(DESTDIR)$(prefix)/bin
+endif
+
+ifdef LIBDIR
+ export PREFIXLIBDIR=$(LIBDIR)
+else
+ export PREFIXLIBDIR=$(prefix)/lib/$(TARGET_ARCH)
+
+ ifeq "$(wildcard $(prefix)/lib/$(TARGET_ARCH) )" ""
+  export PREFIXLIBDIR=$(prefix)/lib
+
+  ifeq "$(TARGET_ARCH)" "i386-linux-gnu"
+   ifneq "$(wildcard $(prefix)/lib32 )" ""
+    export PREFIXLIBDIR=$(prefix)/lib32
+   endif
+  endif
+
+ endif
+endif
+
+DESTLIBDIR := $(DESTDIR)$(PREFIXLIBDIR)
+ifdef SLIBDIR
+DESTSLIBDIR := $(DESTDIR)$(SLIBDIR)
+else
+DESTSLIBDIR := $(DESTLIBDIR)
+endif
+
+endif # WINDOWS_TARGET
