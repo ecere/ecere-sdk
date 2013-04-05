@@ -178,6 +178,8 @@ public:
 private:
    String compiler;
    int bitDepth;
+   bool useValgrind;
+   bool vgFullLeakCheck;
 
 public:
    void Save()

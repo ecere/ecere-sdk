@@ -319,6 +319,9 @@ enum DebuggerEvaluationError { none, symbolNotFound, memoryCantBeRead, unknown }
 
 FileDialog debuggerFileDialog { type = selectDir };
 
+static DualPipe vgTargetHandle;
+static File vgLogFile;
+static char vgLogPath[MAX_LOCATION];
 static DualPipe gdbHandle;
 static DebugEvaluationData eval { };
 
@@ -341,6 +344,7 @@ class Debugger
    bool userBreakOnInternBreak;
    bool signalOn;
    //bool watchesInit;
+   bool usingValgrind;
 
    int ideProcessId;
    int gdbProcessId;
@@ -376,6 +380,8 @@ class Debugger
 
    CodeEditor codeEditor;
 
+   ValgrindLogThread vgLogThread { debugger = this };
+   ValgrindTargetThread vgTargetThread { debugger = this };
    GdbThread gdbThread { debugger = this };
    Timer gdbTimer
    {
@@ -405,7 +411,7 @@ class Debugger
          {
             case restart:
                breakType = none;
-               Restart(currentCompiler, prjConfig, bitDepth);
+               Restart(currentCompiler, prjConfig, bitDepth, usingValgrind);
                break;
             case stop:
                breakType = none;
@@ -671,7 +677,7 @@ class Debugger
       }
    }
 
-   void Restart(CompilerConfig compiler, ProjectConfig config, int bitDepth)
+   void Restart(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind)
    {
       switch(state)
       {
@@ -686,7 +692,7 @@ class Debugger
             GdbAbortExec();
          case none:
          case terminated:
-            if(!GdbInit(compiler, config, bitDepth))
+            if(!GdbInit(compiler, config, bitDepth, useValgrind))
                break;
          case loaded:
             GdbExecRun();
@@ -833,15 +839,18 @@ class Debugger
       }
 
 #if defined(__unix__)
-      progThread.terminate = true;
-      if(fifoFile)
+      if(!usingValgrind)
       {
-         fifoFile.CloseInput();
-         app.Unlock();
-         progThread.Wait();
-         app.Lock();
-         delete fifoFile;
-      }         
+         progThread.terminate = true;
+         if(fifoFile)
+         {
+            fifoFile.CloseInput();
+            app.Unlock();
+            progThread.Wait();
+            app.Lock();
+            delete fifoFile;
+         }
+      }
 #endif
 
       {
@@ -861,14 +870,14 @@ class Debugger
       ide.Update(null);
    }
       
-   void Start(CompilerConfig compiler, ProjectConfig config, int bitDepth)
+   void Start(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind)
    {
       ide.outputView.debugBox.Clear();
       switch(state)
       {
          case none:
          case terminated:
-            if(!GdbInit(compiler, config, bitDepth))
+            if(!GdbInit(compiler, config, bitDepth, useValgrind))
                break;
          case loaded:
             GdbExecRun();
@@ -876,13 +885,13 @@ class Debugger
       }
    }
 
-   void StepInto(CompilerConfig compiler, ProjectConfig config, int bitDepth)
+   void StepInto(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind)
    {
       switch(state)
       {
          case none:
          case terminated:
-            if(!GdbInit(compiler, config, bitDepth)) 
+            if(!GdbInit(compiler, config, bitDepth, useValgrind))
                break;
          case loaded:
             ide.outputView.ShowClearSelectTab(debug);
@@ -896,13 +905,13 @@ class Debugger
       }
    }
 
-   void StepOver(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool ignoreBkpts)
+   void StepOver(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, bool ignoreBkpts)
    {
       switch(state)
       {
          case none:
          case terminated:
-            if(!GdbInit(compiler, config, bitDepth)) 
+            if(!GdbInit(compiler, config, bitDepth, useValgrind))
                break;
          case loaded:
             ide.outputView.ShowClearSelectTab(debug);
@@ -931,7 +940,7 @@ class Debugger
       }
    }
 
-   void RunToCursor(CompilerConfig compiler, ProjectConfig config, int bitDepth, char * absoluteFilePath, int lineNumber, bool ignoreBkpts, bool atSameLevel)
+   void RunToCursor(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, char * absoluteFilePath, int lineNumber, bool ignoreBkpts, bool atSameLevel)
    {
       char relativeFilePath[MAX_LOCATION];
       DebuggerState oldState = state;
@@ -942,7 +951,7 @@ class Debugger
       {
          case none:
          case terminated:
-            Start(compiler, config, bitDepth);
+            Start(compiler, config, bitDepth, useValgrind);
          case stopped:
          case loaded:
             if(symbols)
@@ -1727,17 +1736,25 @@ class Debugger
          if(!symbols)
             return true;
 
+         if(usingValgrind)
+         {
+            const char *vgdbCommand = "/usr/bin/vgdb"; // TODO: vgdb command config option
+            //GdbCommand(false, "-target-select remote | %s --pid=%d", "vgdb", targetProcessId);
+            printf("target remote | %s --pid=%d\n", vgdbCommand, targetProcessId);
+            GdbCommand(false, "target remote | %s --pid=%d", vgdbCommand, targetProcessId); // TODO: vgdb command config option
+         }
+
          for(prj : ide.workspace.projects)
          {
             if(prj == ide.workspace.projects.firstIterator.data)
                continue;
             GdbCommand(false, "-environment-directory \"%s\"", prj.topNode.path);
          }
-
          for(dir : ide.workspace.sourceDirs)
          {
             GdbCommand(false, "-environment-directory \"%s\"", dir);
          }
+
          GdbInsertInternalBreakpoints();
          targeted = true;
       }
@@ -1782,7 +1799,10 @@ class Debugger
       GdbTargetSet();
       GdbExecCommon();
       ShowDebuggerViews();
-      GdbCommand(true, "-exec-run");
+      if(usingValgrind)
+         GdbCommand(true, "-exec-continue");
+      else
+         GdbCommand(true, "-exec-run");
    }
 
    void GdbExecContinue(bool focus)
@@ -1863,12 +1883,13 @@ class Debugger
       return true;
    }
 
-   bool GdbInit(CompilerConfig compiler, ProjectConfig config, int bitDepth)
+   bool GdbInit(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind)
    {
       bool result = true;
       char oldDirectory[MAX_LOCATION];
       char tempPath[MAX_LOCATION];
-      char command[MAX_LOCATION];
+      char command[MAX_F_STRING*4];
+      bool vgFullLeakCheck = ide.workspace.vgFullLeakCheck;
       Project project = ide.project;
       DirExpression targetDirExp = project.GetTargetDir(compiler, config, bitDepth);
       PathBackup pathBackup { };
@@ -1881,6 +1902,7 @@ class Debugger
       }
       prjConfig = config;
       this.bitDepth = bitDepth;
+      usingValgrind = useValgrind;
 
       ChangeState(loaded);
       sentKill = false;
@@ -1931,17 +1953,67 @@ class Debugger
          SetEnvironment(e.name, e.string);
       }
 
-      strcpy(command,
-         (compiler.targetPlatform == win32 && bitDepth == 64) ? "x86_64-w64-mingw32-gdb" :
-         (compiler.targetPlatform == win32 && bitDepth == 32) ? "i686-w64-mingw32-gdb" :
-         "gdb");
-      strcat(command, " -n -silent --interpreter=mi2"); //-async //\"%s\"
-      gdbTimer.Start();
-      gdbHandle = DualPipeOpen(PipeOpenMode { output = 1, error = 2, input = 1 }, command);
-      if(!gdbHandle)
+      if(usingValgrind)
       {
-         ide.outputView.debugBox.Logf($"Debugger Fatal Error: Couldn't start GDB\n");
-         result = false;
+         char * clArgs = ide.workspace.commandLineArgs;
+         const char *valgrindCommand = "valgrind"; // TODO: valgrind command config option //TODO: valgrind options
+         vgLogFile = CreateTemporaryFile(vgLogPath, "ecereidevglog");
+         if(vgLogFile)
+         {
+            incref vgLogFile;
+            vgLogThread.Create();
+         }
+         else
+         {
+            ide.outputView.debugBox.Logf($"Debugger Fatal Error: Couldn't open temporary log file for Valgrind output\n");
+            result = false;
+         }
+         if(result)
+         {
+            sprintf(command, "%s --vgdb=yes --vgdb-error=0 --log-file=%s%s %s%s%s",
+                  valgrindCommand, vgLogPath, vgFullLeakCheck ? " --leak-check=full" : "", targetFile, clArgs ? " " : "", clArgs ? clArgs : "");
+            vgTargetHandle = DualPipeOpen(PipeOpenMode { output = 1, error = 2, input = 1 }, command);
+            if(!vgTargetHandle)
+            {
+               ide.outputView.debugBox.Logf($"Debugger Fatal Error: Couldn't start Valgrind\n");
+               result = false;
+            }
+         }
+         if(result)
+         {
+            incref vgTargetHandle;
+            vgTargetThread.Create();
+
+            targetProcessId = vgTargetHandle.GetProcessID();
+            waitingForPID = false;
+            if(!targetProcessId)
+            {
+               ide.outputView.debugBox.Logf($"Debugger Fatal Error: Couldn't get Valgrind process ID\n");
+               result = false;
+            }
+         }
+         if(result)
+         {
+            app.Unlock();
+            serialSemaphore.Wait();
+            app.Lock();
+         }
+      }
+
+      if(result)
+      {
+         strcpy(command,
+            (compiler.targetPlatform == win32 && bitDepth == 64) ? "x86_64-w64-mingw32-gdb" :
+            (compiler.targetPlatform == win32 && bitDepth == 32) ? "i686-w64-mingw32-gdb" :
+            "gdb");
+         strcat(command, " -n -silent --interpreter=mi2"); //-async //\"%s\"
+         gdbTimer.Start();
+         gdbHandle = DualPipeOpen(PipeOpenMode { output = 1, error = 2, input = 1 }, command);
+         if(!gdbHandle)
+         {
+            ide.outputView.debugBox.Logf($"Debugger Fatal Error: Couldn't start GDB\n");
+            result = false;
+         }
       }
       if(result)
       {
@@ -1954,66 +2026,70 @@ class Debugger
             ide.outputView.debugBox.Logf($"Debugger Fatal Error: Couldn't get GDB process ID\n");
             result = false;
          }
-         if(result)
+      }
+      if(result)
+      {
+         app.Unlock();
+         serialSemaphore.Wait();
+         app.Lock();
+
+         if(!GdbTargetSet())
          {
-            app.Unlock();
-            serialSemaphore.Wait();
-            app.Lock();
-
-            if(!GdbTargetSet())
+            //ChangeState(terminated);
+            result = false;
+         }
+      }
+      if(result)
+      {
+#if defined(__unix__)
+         {
+            CreateTemporaryDir(progFifoDir, "ecereide");
+            strcpy(progFifoPath, progFifoDir);
+            PathCat(progFifoPath, "ideprogfifo");
+            if(!mkfifo(progFifoPath, 0600))
             {
-               //ChangeState(terminated);
-               result = false;
+               //fileCreated = true;
             }
-
-            if(result)
+            else
             {
-#if defined(__unix__)
-               {
-                  CreateTemporaryDir(progFifoDir, "ecereide");
-                  strcpy(progFifoPath, progFifoDir);
-                  PathCat(progFifoPath, "ideprogfifo");
-                  if(!mkfifo(progFifoPath, 0600))
-                  {
-                     //fileCreated = true;
-                  }
-                  else
-                  {
-                     //app.Lock();
-                     ide.outputView.debugBox.Logf(createFIFOMsg, progFifoPath);
-                     //app.Unlock();
-                  }
-               }
-
-               progThread.terminate = false;
-               progThread.Create();
-#endif
-      
-#if defined(__WIN32__)
-               GdbCommand(false, "-gdb-set new-console on");
-#endif
-         
-               GdbCommand(false, "-gdb-set verbose off");
-               //GdbCommand(false, "-gdb-set exec-done-display on");
-               GdbCommand(false, "-gdb-set step-mode off");
-               GdbCommand(false, "-gdb-set unwindonsignal on");
-               //GdbCommand(false, "-gdb-set shell on");
-               GdbCommand(false, "set print elements 992");
-               GdbCommand(false, "-gdb-set backtrace limit 100000");
-
-#if defined(__unix__)
-               GdbCommand(false, "-inferior-tty-set %s", progFifoPath);
-#endif
-
-               GdbCommand(false, "-gdb-set args %s", ide.workspace.commandLineArgs ? ide.workspace.commandLineArgs : "");
-               /*
-               for(e : ide.workspace.environmentVars)
-               {
-                  GdbCommand(false, "set environment %s=%s", e.name, e.string);
-               }
-               */
+               //app.Lock();
+               ide.outputView.debugBox.Logf(createFIFOMsg, progFifoPath);
+               //app.Unlock();
             }
          }
+
+         if(!usingValgrind)
+         {
+            progThread.terminate = false;
+            progThread.Create();
+         }
+#endif
+
+#if defined(__WIN32__)
+         GdbCommand(false, "-gdb-set new-console on");
+#endif
+
+         GdbCommand(false, "-gdb-set verbose off");
+         //GdbCommand(false, "-gdb-set exec-done-display on");
+         GdbCommand(false, "-gdb-set step-mode off");
+         GdbCommand(false, "-gdb-set unwindonsignal on");
+         //GdbCommand(false, "-gdb-set shell on");
+         GdbCommand(false, "set print elements 992");
+         GdbCommand(false, "-gdb-set backtrace limit 100000");
+
+#if defined(__unix__)
+         if(!usingValgrind)
+            GdbCommand(false, "-inferior-tty-set %s", progFifoPath);
+#endif
+
+         if(!usingValgrind)
+            GdbCommand(false, "-gdb-set args %s", ide.workspace.commandLineArgs ? ide.workspace.commandLineArgs : "");
+         /*
+         for(e : ide.workspace.environmentVars)
+         {
+            GdbCommand(false, "set environment %s=%s", e.name, e.string);
+         }
+         */
       }
 
       ChangeWorkingDir(oldDirectory);
@@ -2061,7 +2137,7 @@ class Debugger
       ide.Update(null);
 
 #if defined(__unix__)
-      if(FileExists(progFifoPath)) //fileCreated)
+      if(!usingValgrind && FileExists(progFifoPath)) //fileCreated)
       {
          progThread.terminate = true;
          if(fifoFile)
@@ -2749,6 +2825,17 @@ class Debugger
       }
    }
 
+   void ValgrindTargetThreadExit()
+   {
+      ide.outputView.debugBox.Logf($"ValgrindTargetThreadExit\n");
+      if(vgTargetHandle)
+      {
+         vgTargetHandle.Wait();
+         delete vgTargetHandle;
+      }
+      HandleExit(null, null);
+   }
+
    void GdbThreadExit()
    {
       if(state != terminated)
@@ -2757,6 +2844,8 @@ class Debugger
          targetProcessId = 0;
          ClearBreakDisplay();
 
+         if(vgLogFile)
+            delete vgLogFile;
          if(gdbHandle)
          {
             serialSemaphore.Release();
@@ -3392,6 +3481,10 @@ class Debugger
                            else
                               DebuggerProtocolUnknown("Unknown reason", reason);
                         }
+                        else
+                        {
+                           PrintLn(output);
+                        }
                      }
                   }
                   app.SignalEvent();
@@ -3410,7 +3503,7 @@ class Debugger
                   int oldProcessID = targetProcessId;
                   GetLastDirectory(targetFile, exeFile);
 
-                  while(true)
+                  while(!targetProcessId/*true*/)
                   {
                      targetProcessId = Process_GetChildExeProcessId(gdbProcessId, exeFile);
                      if(targetProcessId || gdbHandle.Peek()) break;
@@ -3442,7 +3535,7 @@ class Debugger
                      ClearBreakDisplay();
 
                #if defined(__unix__)
-                     if(FileExists(progFifoPath)) //fileCreated)
+                     if(!usingValgrind && FileExists(progFifoPath)) //fileCreated)
                      {
                         progThread.terminate = true;
                         if(fifoFile)
@@ -3645,6 +3738,149 @@ class Debugger
       else
          *error = DebugEvalExpTypeError(result);
       return result;
+   }
+}
+
+class ValgrindLogThread : Thread
+{
+   Debugger debugger;
+
+   unsigned int Main()
+   {
+      static char output[4096];
+      Array<char> dynamicBuffer { minAllocSize = 4096 };
+      File oldValgrindHandle = vgLogFile;
+      incref oldValgrindHandle;
+
+      app.Lock();
+      while(debugger.state != terminated && vgLogFile)
+      {
+         int result;
+         app.Unlock();
+         result = vgLogFile.Read(output, 1, sizeof(output));
+         app.Lock();
+         if(debugger.state == terminated || !vgLogFile/* || vgLogFile.Eof()*/)
+            break;
+         if(result)
+         {
+            int c;
+            int start = 0;
+
+            for(c = 0; c<result; c++)
+            {
+               if(output[c] == '\n')
+               {
+                  int pos = dynamicBuffer.size;
+                  dynamicBuffer.size += c - start;
+                  memcpy(&dynamicBuffer[pos], output + start, c - start);
+                  if(dynamicBuffer.count && dynamicBuffer[dynamicBuffer.count - 1] != '\r')
+                  // COMMENTED OUT DUE TO ISSUE #135, FIXED
+                  //if(dynamicBuffer.array[dynamicBuffer.count - 1] != '\r')
+                     dynamicBuffer.size++;
+                  dynamicBuffer[dynamicBuffer.count - 1] = '\0';
+#ifdef _DEBUG
+                  // printf("%s\n", dynamicBuffer.array);
+#endif
+                  if(strstr(&dynamicBuffer[0], "vgdb me"))
+                     debugger.serialSemaphore.Release();
+                  ide.outputView.debugBox.Logf("%s\n", &dynamicBuffer[0]);
+                  dynamicBuffer.size = 0;
+                  start = c + 1;
+               }
+            }
+            if(c == result)
+            {
+               int pos = dynamicBuffer.size;
+               dynamicBuffer.size += c - start;
+               memcpy(&dynamicBuffer[pos], output + start, c - start);
+            }
+         }
+         else if(debugger.state == stopped)
+         {
+/*#ifdef _DEBUG
+            printf("Got end of file from GDB!\n");
+#endif*/
+            app.Unlock();
+            Sleep(0.2);
+            app.Lock();
+         }
+      }
+      delete dynamicBuffer;
+      ide.outputView.debugBox.Logf($"ValgrindLogThreadExit\n");
+      //if(oldValgrindHandle == vgLogFile)
+         debugger.GdbThreadExit/*ValgrindLogThreadExit*/();
+      delete oldValgrindHandle;
+      app.Unlock();
+      return 0;
+   }
+}
+
+class ValgrindTargetThread : Thread
+{
+   Debugger debugger;
+
+   unsigned int Main()
+   {
+      static char output[4096];
+      Array<char> dynamicBuffer { minAllocSize = 4096 };
+      DualPipe oldValgrindHandle = vgTargetHandle;
+      incref oldValgrindHandle;
+
+      app.Lock();
+      while(debugger.state != terminated && vgTargetHandle && !vgTargetHandle.Eof())
+      {
+         int result;
+         app.Unlock();
+         result = vgTargetHandle.Read(output, 1, sizeof(output));
+         app.Lock();
+         if(debugger.state == terminated || !vgTargetHandle || vgTargetHandle.Eof())
+            break;
+         if(result)
+         {
+            int c;
+            int start = 0;
+
+            for(c = 0; c<result; c++)
+            {
+               if(output[c] == '\n')
+               {
+                  int pos = dynamicBuffer.size;
+                  dynamicBuffer.size += c - start;
+                  memcpy(&dynamicBuffer[pos], output + start, c - start);
+                  if(dynamicBuffer.count && dynamicBuffer[dynamicBuffer.count - 1] != '\r')
+                  // COMMENTED OUT DUE TO ISSUE #135, FIXED
+                  //if(dynamicBuffer.array[dynamicBuffer.count - 1] != '\r')
+                     dynamicBuffer.size++;
+                  dynamicBuffer[dynamicBuffer.count - 1] = '\0';
+#ifdef _DEBUG
+                  // printf("%s\n", dynamicBuffer.array);
+#endif
+                  ide.outputView.debugBox.Logf("%s\n", &dynamicBuffer[0]);
+
+                  dynamicBuffer.size = 0;
+                  start = c + 1;
+               }
+            }
+            if(c == result)
+            {
+               int pos = dynamicBuffer.size;
+               dynamicBuffer.size += c - start;
+               memcpy(&dynamicBuffer[pos], output + start, c - start);
+            }
+         }
+         else
+         {
+#ifdef _DEBUG
+            printf("Got end of file from GDB!\n");
+#endif
+         }
+      }
+      delete dynamicBuffer;
+      //if(oldValgrindHandle == vgTargetHandle)
+         debugger.ValgrindTargetThreadExit();
+      delete oldValgrindHandle;
+      app.Unlock();
+      return 0;
    }
 }
 

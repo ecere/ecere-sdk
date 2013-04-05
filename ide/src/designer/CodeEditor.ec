@@ -1922,7 +1922,8 @@ class CodeEditor : Window
                CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
                ProjectConfig config = projectView.project.config;
                int bitDepth = ide.workspace.bitDepth;
-               ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, false, false);
+               bool useValgrind = ide.workspace.useValgrind;
+               ide.debugger.RunToCursor(compiler, config, bitDepth, useValgrind, fileName, line, false, false);
                delete compiler;
             }
          }
@@ -1941,7 +1942,8 @@ class CodeEditor : Window
             CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
             ProjectConfig config = projectView.project.config;
             int bitDepth = ide.workspace.bitDepth;
-            ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, true, false);
+            bool useValgrind = ide.workspace.useValgrind;
+            ide.debugger.RunToCursor(compiler, config, bitDepth, useValgrind, fileName, line, true, false);
             delete compiler;
          }
          return true;
@@ -1959,7 +1961,8 @@ class CodeEditor : Window
             CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
             ProjectConfig config = projectView.project.config;
             int bitDepth = ide.workspace.bitDepth;
-            ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, true, true);
+            bool useValgrind = ide.workspace.useValgrind;
+            ide.debugger.RunToCursor(compiler, config, bitDepth, useValgrind, fileName, line, true, true);
             delete compiler;
          }
          return true;

@@ -191,16 +191,76 @@ class GDBDialog : Window
    hasMinimize = true;
    hasClose = true;
    stayOnTop = true;
-   size = { 424, 294 };
+   size = { 800, 600 };
    autoCreate = false;
 
    Command lastCommand;
    OldList commands;
 
-   Label commandLabel { this, position = { 8, 12 }, labeledWindow = command };
+   Stacker bg
+   {
+      this, direction = horizontal, gap = 0;
+      isActiveClient = true;
+      background = darkGray;//formColor
+      anchor = { left = 0, top = 0, right = 0, bottom = 0 };
+      flipSpring = true;
+      flipper = rightCol;
+   };
+
+   Stacker leftCol
+   {
+      bg, this, gap = 4, margin = 4 ;
+      isActiveClient = true;
+      background = darkGray;
+      size = { 200, 100 };
+      anchor = { top = 0, bottom = 0 };
+      flipSpring = true;
+      flipper = history;
+   };
+
+   PaneSplitter splitter
+   {
+      this, leftPane = leftCol, rightPane = rightCol, split = 200;
+   };
+
+   Stacker rightCol
+   {
+      bg, this, gap = 4, margin = 4;
+      isActiveClient = true;
+      background = darkGray;
+      size = { 800, 600 };
+      anchor = { top = 0, bottom = 0 };
+      flipSpring = true;
+      flipper = tree;
+   };
+
+   Label lhistory { leftCol, this, position = { 4, 4 }, labeledWindow = history };
+   ListBox history
+   {
+      leftCol, this, borderStyle = deep, hasVertScroll = true, hasHorzScroll = true;
+      // selectionColor = unfocusedSelectorColor;
+      fullRowSelect = true, alwaysHighLight = true;
+
+      size = { 180 };
+      anchor = { left = leftCol.margin, right = leftCol.margin };
+      text = $"Command History";
+
+      bool NotifySelect(ListBox listBox, DataRow row, Modifiers mods)
+      {
+         if(row)
+         {
+            lastCommand = (Command)row.tag;
+            command.contents = lastCommand.command;
+            UpdateOutput();
+         }
+         return true;
+      }
+   };
+
+   Label commandLabel { rightCol, this, position = { 4, 4 }, labeledWindow = command };
    EditBox command
    {
-      this, text = $"Command:", size = { 328, 19 }, anchor = { left = 80, top = 8, right = 8 };
+      rightCol, this, text = $"Command:", size = { 328, 19 }, anchor = { left = rightCol.margin, right = rightCol.margin };
 
       bool NotifyKeyDown(EditBox editBox, Key key, unichar ch)
       {
@@ -230,11 +290,20 @@ class GDBDialog : Window
       }
    };
 
-   TagButton infoLibs { this, text = "libs", tag = "info shared", anchor = { left = 80, top = 35 }, NotifyClicked = QuickCommandNotifyClicked; };
-   TagButton infoPaths { this, text = "paths", tag = "-environment-path", anchor = { left = 120, top = 35 }, NotifyClicked = QuickCommandNotifyClicked; };
-   TagButton infoWorkDir { this, text = "wd", tag = "-environment-pwd", anchor = { left = 170, top = 35 }, NotifyClicked = QuickCommandNotifyClicked; };
-   TagButton infoDirs { this, text = "pths", tag = "-environment-directory", anchor = { left = 200, top = 35 }, NotifyClicked = QuickCommandNotifyClicked; };
-   TagButton infoTemp { this, text = "pths", tag = "-environment-temp", anchor = { left = 200, top = 35 }, NotifyClicked = QuickCommandNotifyClicked; };
+   Stacker toolBar
+   {
+      rightCol, this, direction = horizontal, gap = 4;
+      isActiveClient = true;
+      background = darkGray;
+      size = { 200, 30 };
+      anchor = { left = rightCol.margin, right = rightCol.margin };
+   };
+
+   TagButton infoLibs { toolBar, this, text = "libs", tag = "info shared", NotifyClicked = QuickCommandNotifyClicked; };
+   TagButton infoPaths { toolBar, this, text = "paths", tag = "-environment-path", NotifyClicked = QuickCommandNotifyClicked; };
+   TagButton infoWorkDir { toolBar, this, text = "wd", tag = "-environment-pwd", NotifyClicked = QuickCommandNotifyClicked; };
+   TagButton infoDirs { toolBar, this, text = "pths", tag = "-environment-directory", NotifyClicked = QuickCommandNotifyClicked; };
+   TagButton infoTemp { toolBar, this, text = "pths", tag = "-environment-temp", NotifyClicked = QuickCommandNotifyClicked; };
 
    bool QuickCommandNotifyClicked(Button button, int x, int y, Modifiers mods)
    {
@@ -243,21 +312,22 @@ class GDBDialog : Window
       return true;
    }
 
-   Label treeLabel { this, position = { 8, 69 }, labeledWindow = tree };
-   ListBox tree
+   Label outputLabel { rightCol, this, position = { 4, 4 }, labeledWindow = output };
+   EditBox output
    {
-      this, text = $"Tree:";
-      multiSelect = false, fullRowSelect = false, hasVertScroll = true, hasHorzScroll = true;
-      borderStyle = deep, collapseControl = true, treeBranches = true;
-      anchor = Anchor { left = 80, right = 8, top = 65, bottom = 100 };
+      rightCol, this, text = $"Output:", multiLine = true, hasVertScroll = true, hasHorzScroll = true;
+      size = { 328, 80 };
+      anchor = { left = rightCol.margin, right = rightCol.margin };
       font = { panelFont.faceName, panelFont.size };
    };
 
-   Label outputLabel { this, position = { 8, 39 }, anchor = { left = 8, bottom = 73 }, labeledWindow = output };
-   EditBox output
+   Label treeLabel { rightCol, this, position = { 4, 4 }, labeledWindow = tree };
+   ListBox tree
    {
-      this, text = $"Output:", multiLine = true, hasVertScroll = true, hasHorzScroll = true;
-      size = { 328, 84 }, anchor = { left = 80, bottom = 8, right = 8 };
+      rightCol, this, text = $"Tree:";
+      multiSelect = false, fullRowSelect = false, hasVertScroll = true, hasHorzScroll = true;
+      borderStyle = deep, collapseControl = true, treeBranches = true;
+      anchor = { left = rightCol.margin, right = rightCol.margin };
       font = { panelFont.faceName, panelFont.size };
    };
 
@@ -583,7 +653,9 @@ class GDBDialog : Window
    {
       if(string && strlen(string))
       {
-         commands.Add(Command { command = CopyString(string) });
+         Command cmd = Command { command = CopyString(string) };
+         commands.Add(cmd);
+         history.AddString(string).tag = (uint64)cmd;
          lastCommand = commands.last;
 
          if(created)

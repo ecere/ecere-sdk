@@ -2316,11 +2316,10 @@ private:
       }
       else
          ChangeWorkingDir(topNode.path);
-      // ChangeWorkingDir(topNode.path);
       SetPath(true, compiler, config, bitDepth);
       if(executableLauncher)
       {
-         char * prefixedTarget = new char[strlen(executableLauncher) + strlen(target) + 2];
+         char * prefixedTarget = new char[strlen(executableLauncher) + strlen(target) + 8];
          prefixedTarget[0] = '\0';
          strcat(prefixedTarget, executableLauncher);
          strcat(prefixedTarget, " ");

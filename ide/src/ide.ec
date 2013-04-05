@@ -1119,6 +1119,34 @@ class IDEWorkSpace : Window
          }
       }
       MenuDivider { debugMenu };
+      MenuItem debugUseValgrindItem
+      {
+         debugMenu, $"Use Valgrind", d, disabled = true, checkable = true;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            if(ide.workspace)
+            {
+               ide.workspace.useValgrind = selection.checked;
+               ide.workspace.Save();
+            }
+            ide.AdjustValgrindChecks();
+            return true;
+         }
+      }
+      MenuItem debugValgrindFullLeakCheckItem
+      {
+         debugMenu, $"Valgrind: Full Leak Check", d, disabled = true, checkable = true;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            if(ide.workspace)
+            {
+               ide.workspace.vgFullLeakCheck = selection.checked;
+               ide.workspace.Save();
+            }
+            return true;
+         }
+      }
+      MenuDivider { debugMenu };
       MenuItem debugStepIntoItem
       {
          debugMenu, $"Step Into", i, f11, disabled = true;
@@ -1175,7 +1203,7 @@ class IDEWorkSpace : Window
          }
       }
       MenuPlacement debugSkipRunToCursorItem { debugMenu, $"Run To Cursor Skipping Breakpoints", u };
-      MenuPlacement debugSkipRunToCursorAtSameLevelItem { debugMenu, $"Run To Cursor At Same Level Skipping Breakpoints", s };
+      MenuPlacement debugSkipRunToCursorAtSameLevelItem { debugMenu, $"Run To Cursor At Same Level Skipping Breakpoints", l };
       //MenuDivider { debugMenu };
       //MenuPlacement debugToggleBreakpoint { debugMenu, "Toggle Breakpoint", t };
    MenuPlacement imageMenu { menu, $"Image", i };
@@ -1485,7 +1513,7 @@ class IDEWorkSpace : Window
    GDBDialog gdbDialog
    {
       master = this, parent = this;
-      anchor = { left = 100, top = 100, right = 100, bottom = 100 };
+      //anchor = { left = 100, top = 100, right = 100, bottom = 100 };
 
       void OnCommand(char * string)
       {
@@ -1822,10 +1850,18 @@ class IDEWorkSpace : Window
       toolBar.activeConfig.disabled       = unavailable;
       toolBar.activeCompiler.disabled     = unavailable;
       toolBar.activeBitDepth.disabled     = unavailable;
+      debugUseValgrindItem.disabled       = unavailable;
 
+      AdjustValgrindChecks();
       AdjustFileMenus();
       AdjustBuildMenus();
       AdjustDebugMenus();
+   }
+
+   void AdjustValgrindChecks()
+   {
+      bool unavailable = !project || !debugUseValgrindItem.checked;
+      debugValgrindFullLeakCheckItem.disabled    = unavailable;
    }
 
    property bool hasOpenedCodeEditors
@@ -1852,6 +1888,7 @@ class IDEWorkSpace : Window
    void AdjustBuildMenus()
    {
       bool unavailable = project && projectView.buildInProgress;
+      bool naForRun = unavailable || !project || project.GetTargetType(project.config) != executable;
 
       projectNewItem.disabled             = unavailable;
       toolBar.buttonNewProject.disabled   = unavailable;
@@ -1863,8 +1900,8 @@ class IDEWorkSpace : Window
       projectCloseItem.disabled           = unavailable;
       // toolBar.buttonCloseProject.disabled = unavailable;
 
-      projectRunItem.disabled    = unavailable || project.GetTargetType(project.config) != executable;
-      toolBar.buttonRun.disabled = unavailable || project.GetTargetType(project.config) != executable;
+      projectRunItem.disabled    = naForRun;
+      toolBar.buttonRun.disabled = naForRun;
 
       projectBuildItem.disabled = false;
       projectBuildItem.text     = unavailable ? $"Stop Build" : $"Build";
@@ -2116,7 +2153,7 @@ class IDEWorkSpace : Window
                            return null;
                         //project = LoadProject(filePath, null);
                      }
-                     
+
                      if(workspace)
                      {
                         char absolutePath[MAX_LOCATION];

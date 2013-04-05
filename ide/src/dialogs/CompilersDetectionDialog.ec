@@ -109,7 +109,7 @@ class CompilersDetectionDialog : Window
       // multiSelect = true, selectionColor = unfocusedSelectorColor;
       fullRowSelect = true;
       alwaysHighLight = true;
-      
+
       size = { 180 };
       anchor = Anchor { left = 8, top = 24, right = 8, bottom = 36 };
       text = $"Compilers";

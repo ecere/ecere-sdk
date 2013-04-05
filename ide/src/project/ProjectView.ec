@@ -1508,6 +1508,7 @@ class ProjectView : Window
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config = project.config;
       int bitDepth = ide.workspace.bitDepth;
+      bool useValgrind = ide.workspace.useValgrind;
       TargetTypes targetType = project.GetTargetType(config);
       if(targetType == sharedLibrary || targetType == staticLibrary)
          MessageBox { master = ide, type = ok, text = $"Run", contents = $"Shared and static libraries cannot be run like executables." }.Modal();
@@ -1538,7 +1539,7 @@ class ProjectView : Window
             }
             else
             {
-               ide.debugger.Start(compiler, config, bitDepth);
+               ide.debugger.Start(compiler, config, bitDepth, useValgrind);
                result = true;
             }
          }
@@ -1909,6 +1910,7 @@ class ProjectView : Window
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config = project.config;
       int bitDepth = ide.workspace.bitDepth;
+      bool useValgrind = ide.workspace.useValgrind;
 
       bool result = false;
       if(/*!IsProjectModified() ||*/ BuildInterrim(project, restart, compiler, config, bitDepth, false))
@@ -1916,7 +1918,7 @@ class ProjectView : Window
          // For Restart, compiler and config will only be used if for
          // whatever reason (if at all possible) the Debugger is in a
          // 'terminated' or 'none' state
-         ide.debugger.Restart(compiler, config, bitDepth);
+         ide.debugger.Restart(compiler, config, bitDepth, useValgrind);
          result = true;
       }
 
@@ -1947,9 +1949,10 @@ class ProjectView : Window
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config = project.config;
       int bitDepth = ide.workspace.bitDepth;
+      bool useValgrind = ide.workspace.useValgrind;
 
       if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, false)))
-         ide.debugger.StepInto(compiler, config, bitDepth);
+         ide.debugger.StepInto(compiler, config, bitDepth, useValgrind);
       delete compiler;
       return true;
    }
@@ -1959,9 +1962,10 @@ class ProjectView : Window
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config = project.config;
       int bitDepth = ide.workspace.bitDepth;
+      bool useValgrind = ide.workspace.useValgrind;
 
       if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, false)))
-         ide.debugger.StepOver(compiler, config, bitDepth, skip);
+         ide.debugger.StepOver(compiler, config, bitDepth, useValgrind, skip);
 
       delete compiler;
       return true;
