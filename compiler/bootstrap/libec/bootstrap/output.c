@@ -750,25 +750,26 @@ struct Symbol * enumClass;
 struct Type * type;
 struct TemplateParameter * templateParameter;
 } __attribute__ ((gcc_struct));
-unsigned int isSigned;
 int kind;
-unsigned int constant;
 unsigned int size;
 char *  name;
 char *  typeName;
-unsigned int count;
-unsigned int truth;
 int classObjectType;
-unsigned int byReference;
-unsigned int extraParam;
 int alignment;
-unsigned int directClassAccess;
-unsigned int computing;
-unsigned int dllExport;
 unsigned int offset;
-unsigned int keepCast;
-unsigned int passAsTemplate;
 int bitFieldCount;
+int count;
+unsigned int isSigned : 1;
+unsigned int constant : 1;
+unsigned int truth : 1;
+unsigned int byReference : 1;
+unsigned int extraParam : 1;
+unsigned int directClassAccess : 1;
+unsigned int computing : 1;
+unsigned int keepCast : 1;
+unsigned int passAsTemplate : 1;
+unsigned int dllExport : 1;
+unsigned int attrStdcall : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -1523,7 +1524,7 @@ extern struct Declarator * MkDeclaratorIdentifier(struct Identifier * id);
 
 extern struct Identifier * MkIdentifier(char *  string);
 
-extern struct __ecereNameSpace__ecere__sys__OldList *  CopyList(struct __ecereNameSpace__ecere__sys__OldList *  source, void *  (* )(void * ));
+extern struct __ecereNameSpace__ecere__sys__OldList *  CopyList(struct __ecereNameSpace__ecere__sys__OldList *  source, void *  (*  CopyFunction)(void * ));
 
 extern struct Specifier * CopySpecifier(struct Specifier * spec);
 
@@ -1533,7 +1534,7 @@ extern void ListAdd(struct __ecereNameSpace__ecere__sys__OldList * list, void * 
 
 extern struct Specifier * MkSpecifierName(char *  name);
 
-extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
+extern void PrintTypeNoConst(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 
 extern struct TypeName * MkTypeName(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Declarator * declarator);
 
@@ -1569,6 +1570,9 @@ outputLine += 2;
 }
 switch(stmt->type)
 {
+case 14:
+OutputDeclaration(stmt->decl, f);
+break;
 case 0:
 OutputIdentifier(stmt->labeled.id, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ":\n");
@@ -1799,7 +1803,7 @@ decl = MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal"));
 }
 else
 {
-PrintType(exp->expType, string, 0x1, 0x1);
+PrintTypeNoConst(exp->expType, string, exp->expType->kind == 18 ? 0x1 : 0x0, 0x1);
 decl = SpecDeclFromString(string, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
 }
 typeName = MkTypeName(specs, decl);

@@ -740,25 +740,26 @@ struct Symbol * enumClass;
 struct Type * type;
 struct TemplateParameter * templateParameter;
 } __attribute__ ((gcc_struct));
-unsigned int isSigned;
 int kind;
-unsigned int constant;
 unsigned int size;
 char *  name;
 char *  typeName;
-unsigned int count;
-unsigned int truth;
 int classObjectType;
-unsigned int byReference;
-unsigned int extraParam;
 int alignment;
-unsigned int directClassAccess;
-unsigned int computing;
-unsigned int dllExport;
 unsigned int offset;
-unsigned int keepCast;
-unsigned int passAsTemplate;
 int bitFieldCount;
+int count;
+unsigned int isSigned : 1;
+unsigned int constant : 1;
+unsigned int truth : 1;
+unsigned int byReference : 1;
+unsigned int extraParam : 1;
+unsigned int directClassAccess : 1;
+unsigned int computing : 1;
+unsigned int keepCast : 1;
+unsigned int passAsTemplate : 1;
+unsigned int dllExport : 1;
+unsigned int attrStdcall : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -1123,7 +1124,7 @@ extern struct __ecereNameSpace__ecere__sys__OldList *  excludedSymbols;
 
 extern struct Declarator * CopyDeclarator(struct Declarator * declarator);
 
-extern struct __ecereNameSpace__ecere__sys__OldList *  CopyList(struct __ecereNameSpace__ecere__sys__OldList *  source, void *  (* )(void * ));
+extern struct __ecereNameSpace__ecere__sys__OldList *  CopyList(struct __ecereNameSpace__ecere__sys__OldList *  source, void *  (*  CopyFunction)(void * ));
 
 extern struct Specifier * CopySpecifier(struct Specifier * spec);
 
@@ -1681,7 +1682,7 @@ MangleClassName(name);
 stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier(nameM)), MkIdentifier("IsSet")), '=', MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpIdentifier(MkIdentifier(name))))));
 ListAdd(registerModuleBody->compound.statements, stmt);
 }
-if(((struct Symbol *)prop->symbol)->propCategory)
+if(prop->symbol && ((struct Symbol *)prop->symbol)->propCategory)
 {
 stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier(nameM)), MkIdentifier("category")), '=', CopyExpression(((struct Symbol *)prop->symbol)->propCategory))));
 ListAdd(registerModuleBody->compound.statements, stmt);
@@ -2784,8 +2785,13 @@ FreeExternal(external);
 }
 else if(external->type == 0)
 {
-if(external->symbol && !external->symbol->type->thisClass)
+unsigned int setStaticMethod = 0x0;
+
+if(external->symbol && !external->symbol->type->thisClass && !external->symbol->type->staticMethod)
+{
 external->symbol->type->staticMethod = 0x1;
+setStaticMethod = 0x1;
+}
 if(inCompiler)
 {
 struct FunctionDefinition * function = external->function;
@@ -2815,7 +2821,11 @@ ListAdd(args, MkExpString(string));
 char * string;
 char type[1024] = "";
 
+if(setStaticMethod)
+function->declarator->symbol->type->staticMethod = 0x0;
 PrintType(function->declarator->symbol->type, type, 0x1, 0x1);
+if(setStaticMethod)
+function->declarator->symbol->type->staticMethod = 0x1;
 string = QMkString(type);
 ListAdd(args, MkExpString(string));
 (__ecereNameSpace__ecere__com__eSystem_Delete(string), string = 0);

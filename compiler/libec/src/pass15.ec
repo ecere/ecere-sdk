@@ -269,7 +269,7 @@ public char * PrintUShort(unsigned short result)
    if(result > 32767)
       sprintf(temp, "0x%X", (int)result);
    else
-      sprintf(temp, "%d", result);
+      sprintf(temp, "%d", (int)result);
    return CopyString(temp);
 }
 
@@ -279,7 +279,7 @@ public char * PrintChar(char result)
    if(result > 0 && isprint(result))
       sprintf(temp, "'%c'", result);
    else if(result < 0)
-      sprintf(temp, "%d", result);
+      sprintf(temp, "%d", (int)result);
    else
       //sprintf(temp, "%#X", result);
       sprintf(temp, "0x%X", (unsigned char)result);
@@ -757,7 +757,8 @@ public int ComputeTypeSize(Type type)
             }
 
             size = ComputeTypeSize(type.type) * type.arraySize;
-            type.alignment = type.type.alignment;
+            if(type.type)
+               type.alignment = type.type.alignment;
             
             break;
          case structType:
@@ -1572,7 +1573,7 @@ void ProcessMemberInitData(MemberInit member, Class _class, Class * curClass, Da
          {
             *curMember = thisMember;
             *curClass = thisMember._class;
-            memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+            memcpy(subMemberStack, _subMemberStack, sizeof(DataMember) * _subMemberStackPos);
             *subMemberStackPos = _subMemberStackPos;
          }
          found = true;
@@ -2868,14 +2869,25 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
          if(type) dest = type;
       }
 
-      if((dest.classObjectType == typedObject && source.classObjectType != anyObject) || (dest.classObjectType == anyObject && source.classObjectType != typedObject))
+      if(dest.classObjectType == typedObject)
       {
-         return true;
+         if(source.classObjectType != anyObject)
+            return true;
+         else
+         {
+            // If either the source or the destination defines the class, accepts any_object as compatible for a typed_object
+            if((dest._class && strcmp(dest._class.string, "class")) || (source._class && strcmp(source._class.string, "class")))
+            {
+               return true;
+            }
+         }
       }
-      
-      if(source.classObjectType == anyObject && dest.classObjectType != typedObject)
+      else
       {
-         return true;
+         if(source.classObjectType == anyObject)
+            return true;
+         if(dest.classObjectType == anyObject && source.classObjectType != typedObject)
+            return true;
       }
       
       if((dest.kind == structType && source.kind == structType) ||
@@ -3373,9 +3385,9 @@ bool MatchWithEnums_NameSpace(NameSpace nameSpace, Expression sourceExp, Type de
                         char constant[256];
                         sourceExp.type = constantExp;
                         if(!strcmp(baseClass.dataTypeString, "int"))
-                           sprintf(constant, "%d",value.data);
+                           sprintf(constant, "%d",(int)value.data);
                         else
-                           sprintf(constant, "0x%X",value.data);
+                           sprintf(constant, "0x%X",(int)value.data);
                         sourceExp.constant = CopyString(constant);
                         //for(;baseClass.base && baseClass.base.type != systemClass; baseClass = baseClass.base);
                      }
@@ -3918,9 +3930,9 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                            char constant[256];
                            sourceExp.type = constantExp;
                            if(/*_class && */_class.dataTypeString && !strcmp(_class.dataTypeString, "int")) // _class cannot be null here!
-                              sprintf(constant, "%d",value.data);
+                              sprintf(constant, "%d", (int) value.data);
                            else
-                              sprintf(constant, "0x%X",value.data);
+                              sprintf(constant, "0x%X", (int) value.data);
                            sourceExp.constant = CopyString(constant);
                            //for(;_class.base && _class.base.type != systemClass; _class = _class.base);
                         }
@@ -4598,7 +4610,7 @@ void ComputeInstantiation(Expression exp)
                               {
                                  curMember = dataMember;
                                  curClass = dataMember._class;
-                                 memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+                                 memcpy(subMemberStack, _subMemberStack, sizeof(DataMember) * _subMemberStackPos);
                                  subMemberStackPos = _subMemberStackPos;
                               }
                            }
@@ -5377,7 +5389,7 @@ void ComputeExpression(Expression exp)
                char string[256];
                Symbol classSym;
                string[0] = '\0';
-               PrintType(type, string, false, true);
+               PrintTypeNoConst(type, string, false, true);
                classSym = FindClass(string);
                _class = classSym ? classSym.registered : null;
             }
@@ -6385,64 +6397,44 @@ static void GetTypeSpecs(Type type, OldList * specs)
    }
 }
 
+static void PrintArraySize(Type arrayType, char * string)
+{
+   char size[256];
+   size[0] = '\0';
+   strcat(size, "[");
+   if(arrayType.enumClass)
+      strcat(size, arrayType.enumClass.string);
+   else if(arrayType.arraySizeExp)
+      PrintExpression(arrayType.arraySizeExp, size);
+   strcat(size, "]");
+   strcat(string, size);
+}
+
 // WARNING : This function expects a null terminated string since it recursively concatenate...
-static void _PrintType(Type type, char * string, bool printName, bool printFunction, bool fullName)
+static void PrintTypeSpecs(Type type, char * string, bool fullName, bool printConst)
 {
    if(type)
    {
+      if(printConst && type.constant)
+         strcat(string, "const ");
       switch(type.kind)
       {
          case classType:
-            if(type._class && type._class.string)
-            {
-               // TODO: typed_object does not fully qualify the type, as it may have taken up an actual class (Stored in _class) from overriding
-               //       look into merging with thisclass ?
-               if(type.classObjectType == typedObject)
-                  strcat(string, "typed_object");
-               else if(fullName)
-                  strcat(string, type._class.string);
-               else
-               {
-                  if(type._class.registered)
-                     strcat(string, type._class.registered.name);
-                  else
-                     strcat(string, type._class.string);                     
-               }
-            }
-            break;
-         case pointerType:
          {
-            /*Type funcType;
-            for(funcType = type; funcType && (funcType.kind == pointerType || funcType.kind == arrayType); funcType = funcType.type);
-            if(funcType && funcType.kind == functionType)
+            Symbol c = type._class;
+            // TODO: typed_object does not fully qualify the type, as it may have taken up an actual class (Stored in _class) from overriding
+            //       look into merging with thisclass ?
+            if(type.classObjectType == typedObject)
+               strcat(string, "typed_object");
+            else if(type.classObjectType == anyObject)
+               strcat(string, "any_object");
+            else
             {
-               Type param;
-               PrintType(funcType.returnType, string, false, fullName);
-               strcat(string, "(*");
-               if(printName || funcType.thisClass)
-               {
-                  strcat(string, " ");
-                  if(funcType.thisClass)
-                  {
-                     strcat(string, funcType.thisClass.string);
-                     strcat(string, "::");
-                  }
-                  if(type.name)
-                     strcat(string, type.name);
-               }
-               strcat(string, ")(");
-               for(param = funcType.params.first; param; param = param.next)
-               {
-                  PrintType(param, string, false, fullName);
-                  if(param.next) strcat(string, ", ");
-               }
-               strcat(string, ")");               
+               if(c && c.string)
+                  strcat(string, (fullName || !c.registered) ? c.string : c.registered.name);
             }
-            else*/
-            {
-               _PrintType(type.type, string, false /*printName*/, printFunction, fullName);
-               strcat(string, " *");
-            }
+            if(type.byReference)
+               strcat(string, " &");
             break;
          }
          case voidType: strcat(string, "void"); break;
@@ -6461,17 +6453,11 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                strcat(string, type.enumName);
             }
             else if(type.typeName)
-            {
                strcat(string, type.typeName);
-            }
             else
             {
-               /*
-               strcat(string, "struct ");
-               strcat(string,"(unnamed)");
-               */
                Type member;
-               strcat(string, "struct {");
+               strcat(string, "struct { ");
                for(member = type.members.first; member; member = member.next)
                {
                   PrintType(member, string, true, fullName);
@@ -6487,9 +6473,7 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                strcat(string, type.enumName);
             }
             else if(type.typeName)
-            {
                strcat(string, type.typeName);
-            }
             else
             {
                strcat(string, "union ");
@@ -6503,124 +6487,12 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                strcat(string, type.enumName);
             }
             else if(type.typeName)
-            {
                strcat(string, type.typeName);
-            }
             else
-               strcat(string, "enum");
+               strcat(string, "int"); // "enum");
             break;
-         case functionType:
-         {
-            if(printFunction)
-            {
-               if(type.dllExport)
-                  strcat(string, "dllexport ");
-               PrintType(type.returnType, string, false, fullName);
-               strcat(string, " ");
-            }
-            
-            // DANGER: Testing This
-            if(printName)
-            {
-               if(type.name)
-               {
-                  if(fullName)
-                     strcat(string, type.name);
-                  else
-                  {
-                     char * name = RSearchString(type.name, "::", strlen(type.name), true, false);
-                     if(name) name += 2; else name = type.name;
-                     strcat(string, name);
-                  }
-               }
-            }
-
-            if(printFunction)
-            {
-               Type param;
-               strcat(string, "(");
-               for(param = type.params.first; param; param = param.next)
-               {
-                  PrintType(param, string, true, fullName);
-                  if(param.next) strcat(string, ", ");
-               }
-               strcat(string, ")");
-            }
-            break;
-         }
-         case arrayType:
-         {
-            /*Type funcType;
-            for(funcType = type; funcType && (funcType.kind == pointerType || funcType.kind == arrayType); funcType = funcType.type);
-            if(funcType && funcType.kind == functionType)
-            {
-               Type param;
-               PrintType(funcType.returnType, string, false, fullName);
-               strcat(string, "(*");
-               if(printName || funcType.thisClass)
-               {
-                  strcat(string, " ");
-                  if(funcType.thisClass)
-                  {
-                     strcat(string, funcType.thisClass.string);
-                     strcat(string, "::");
-                  }
-                  if(type.name)
-                     strcat(string, type.name);
-               }
-               strcat(string, ")(");
-               for(param = funcType.params.first; param; param = param.next)
-               {
-                  PrintType(param, string, false, fullName);
-                  if(param.next) strcat(string, ", ");
-               }
-               strcat(string, ")");               
-            }
-            else*/
-            {
-               char baseType[1024], size[256];
-               Type arrayType = type;
-               baseType[0] = '\0';
-               size[0] = '\0';
-
-               while(arrayType.kind == TypeKind::arrayType)
-               {
-                  strcat(size, "[");
-                  if(arrayType.enumClass)
-                     strcat(size, arrayType.enumClass.string);
-                  else if(arrayType.arraySizeExp)
-                     PrintExpression(arrayType.arraySizeExp, size);
-                  //sprintf(string, "%s[%s]", baseType, size); 
-                  strcat(size, "]");
-
-                  arrayType = arrayType.arrayType;
-               }
-               _PrintType(arrayType, baseType, printName, printFunction, fullName);
-               strcat(string, baseType);
-               strcat(string, size);
-            }
-
-            /*
-               PrintType(type.arrayType, baseType, printName, fullName);
-               if(type.enumClass)
-                  strcpy(size, type.enumClass.string);
-               else if(type.arraySizeExp)
-                  PrintExpression(type.arraySizeExp, size);
-               //sprintf(string, "%s[%s]", baseType, size); 
-               strcat(string, baseType);
-               strcat(string, "[");
-               strcat(string, size); 
-               strcat(string, "]");
-               */
-
-            printName = false;
-            break;
-         }
          case ellipsisType:
             strcat(string, "...");
-            break;
-         case methodType:
-            _PrintType(type.method.dataType, string, false, printFunction, fullName);
             break;
          case subClassType:
             strcat(string, "subclass(");
@@ -6634,50 +6506,141 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
             strcat(string, "thisclass");
             break;
          case vaListType:
-         strcat(string, "__builtin_va_list");
+            strcat(string, "__builtin_va_list");
             break;
-      }
-      if(type.name && printName && type.kind != functionType && (type.kind != pointerType || type.type.kind != functionType))
-      {
-         strcat(string, " ");
-         strcat(string, type.name);
       }
    }
 }
 
-// *****
-// TODO: Add a max buffer size to avoid overflows. This function is used with static size char arrays.
-// *****
-void PrintType(Type type, char * string, bool printName, bool fullName)
+static void PrintName(Type type, char * string, bool fullName)
 {
-   Type funcType;
-   for(funcType = type; funcType && (funcType.kind == pointerType || funcType.kind == arrayType); funcType = funcType.type);
-   if(funcType && funcType.kind == functionType && type != funcType)
+   if(type.name && type.name[0])
    {
-      char typeString[1024];
-      Type param;
+      if(fullName)
+         strcat(string, type.name);
+      else
+      {
+         char * name = RSearchString(type.name, "::", strlen(type.name), true, false);
+         if(name) name += 2; else name = type.name;
+         strcat(string, name);
+      }
+   }
+}
 
-      PrintType(funcType.returnType, string, false, fullName);
-      strcat(string, "(");
-      _PrintType(type, string, printName, false, fullName);
+static void PrintAttribs(Type type, char * string)
+{
+   if(type)
+   {
+      if(type.dllExport)   strcat(string, "dllexport ");
+      if(type.attrStdcall) strcat(string, "stdcall ");
+   }
+}
+
+static void PrePrintType(Type type, char * string, bool fullName, Type parentType, bool printConst)
+{
+   if(type.kind == arrayType || type.kind == pointerType || type.kind == functionType || type.kind == methodType)
+   {
+      Type attrType = null;
+      if((type.kind == functionType || type.kind == methodType) && (!parentType || parentType.kind != pointerType))
+         PrintAttribs(type, string);
+      if(printConst && type.constant && (type.kind == functionType || type.kind == methodType))
+         strcat(string, " const");
+      PrePrintType(type.kind == methodType ? type.method.dataType : type.type, string, fullName, type, printConst);
+      if(type.kind == pointerType && (type.type.kind == arrayType || type.type.kind == functionType || type.type.kind == methodType))
+         strcat(string, " (");
+      if(type.kind == pointerType)
+      {
+         if(type.type.kind == functionType || type.type.kind == methodType)
+            PrintAttribs(type.type, string);
+      }
+      if(type.kind == pointerType)
+      {
+         if(type.type.kind == functionType || type.type.kind == methodType || type.type.kind == arrayType)
+            strcat(string, "*");
+         else
+            strcat(string, " *");
+      }
+      if(printConst && type.constant && type.kind == pointerType)
+         strcat(string, " const");
+   }
+   else
+      PrintTypeSpecs(type, string, fullName, printConst);
+}
+
+static void PostPrintType(Type type, char * string, bool fullName)
+{
+   if(type.kind == pointerType && (type.type.kind == arrayType || type.type.kind == functionType || type.type.kind == methodType))
       strcat(string, ")");
-
+   if(type.kind == arrayType)
+      PrintArraySize(type, string);
+   else if(type.kind == functionType)
+   {
+      Type param;
       strcat(string, "(");
-      for(param = funcType.params.first; param; param = param.next)
+      for(param = type.params.first; param; param = param.next)
       {
          PrintType(param, string, true, fullName);
          if(param.next) strcat(string, ", ");
       }
       strcat(string, ")");
    }
-   else
-      _PrintType(type, string, printName, true, fullName);
+   if(type.kind == arrayType || type.kind == pointerType || type.kind == functionType || type.kind == methodType)
+      PostPrintType(type.kind == methodType ? type.method.dataType : type.type, string, fullName);
+}
+
+// *****
+// TODO: Add a max buffer size to avoid overflows. This function is used with static size char arrays.
+// *****
+static void _PrintType(Type type, char * string, bool printName, bool fullName, bool printConst)
+{
+   PrePrintType(type, string, fullName, null, printConst);
+
+   if(type.thisClass || (printName && type.name && type.name[0]))
+      strcat(string, " ");
+   if(/*(type.kind == methodType || type.kind == functionType) && */(type.thisClass || type.staticMethod))
+   {
+      Symbol _class = type.thisClass;
+      if((type.classObjectType == typedObject || type.classObjectType == classPointer) || (_class && !strcmp(_class.string, "class")))
+      {
+         if(type.classObjectType == classPointer)
+            strcat(string, "class");
+         else
+            strcat(string, type.byReference ? "typed_object&" : "typed_object");
+      }
+      else if(_class && _class.string)
+      {
+         String s = _class.string;
+         if(fullName)
+            strcat(string, s);
+         else
+         {
+            char * name = RSearchString(s, "::", strlen(s), true, false);
+            if(name) name += 2; else name = s;
+            strcat(string, name);
+         }
+      }
+      strcat(string, "::");
+   }
+
+   if(printName && type.name)
+      PrintName(type, string, fullName);
+   PostPrintType(type, string, fullName);
    if(type.bitFieldCount)
    {
       char count[100];
       sprintf(count, ":%d", type.bitFieldCount);
       strcat(string, count);
    }
+}
+
+void PrintType(Type type, char * string, bool printName, bool fullName)
+{
+   _PrintType(type, string, printName, fullName, true);
+}
+
+void PrintTypeNoConst(Type type, char * string, bool printName, bool fullName)
+{
+   _PrintType(type, string, printName, fullName, false);
 }
 
 static Type FindMember(Type type, char * string)
@@ -6767,9 +6730,9 @@ static bool ResolveIdWithClass(Expression exp, Class _class, bool skipIDClassChe
                exp.type = constantExp;
                exp.isConstant = true;
                if(!strcmp(baseClass.dataTypeString, "int"))
-                  sprintf(constant, "%d",value.data);
+                  sprintf(constant, "%d",(int)value.data);
                else
-                  sprintf(constant, "0x%X",value.data);
+                  sprintf(constant, "0x%X",(int)value.data);
                exp.constant = CopyString(constant);
                //for(;_class.base && _class.base.type != systemClass; _class = _class.base);
                exp.expType = MkClassType(baseClass.fullName);
@@ -6940,7 +6903,7 @@ void ApplyAnyObjectLogic(Expression e)
             char string[1024] = "";
             Symbol classSym;
 
-            PrintType(type, string, false, true);
+            PrintTypeNoConst(type, string, false, true);
             classSym = FindClass(string);
             if(classSym) _class = classSym.registered;
          }
@@ -7017,7 +6980,7 @@ void ApplyAnyObjectLogic(Expression e)
                         newExp.next = null;
                         newExp.expType = null;
 
-                        PrintType(e.expType, typeString, false, true);
+                        PrintTypeNoConst(e.expType, typeString, false, true);
                         decl = SpecDeclFromString(typeString, specs, null);
                         newExp.destType = ProcessType(specs, decl);
 
@@ -7107,7 +7070,7 @@ void ApplyAnyObjectLogic(Expression e)
       (e.expType.byReference || (e.expType.kind == classType && e.expType._class && e.expType._class.registered &&
          (e.expType._class.registered.type == bitClass || e.expType._class.registered.type == enumClass || e.expType._class.registered.type == unitClass ) )))
    {
-      if(e.expType.kind == classType && e.expType._class && e.expType._class.registered && !strcmp(e.expType._class.registered.name, "class"))
+      if(e.expType.classObjectType && destType && destType.classObjectType) //e.expType.kind == classType && e.expType._class && e.expType._class.registered && !strcmp(e.expType._class.registered.name, "class"))
       {
          return;  // LEAVE THIS CASE (typed_object & :: methods 's this) TO PASS 2 FOR NOW
       }
@@ -7121,7 +7084,7 @@ void ApplyAnyObjectLogic(Expression e)
          e.Clear();
 
          e.type = bracketsExp;
-         e.list = MkListOne(MkExpOp(null, '*', MkExpBrackets(MkListOne(thisExp))));
+         e.list = MkListOne(MkExpOp(null, '*', thisExp.type == identifierExp ? thisExp : MkExpBrackets(MkListOne(thisExp))));
          if(thisExp.expType.kind == classType && thisExp.expType._class && thisExp.expType._class.registered && thisExp.expType._class.registered.type == noHeadClass)
             ((Expression)e.list->first).byReference = true;
 
@@ -7168,6 +7131,7 @@ void ApplyAnyObjectLogic(Expression e)
          char typeString[1024]; // Watch buffer overruns
          Type type;
          ClassObjectType backupClassObjectType;
+         bool backupByReference;
 
          if(e.expType.kind == classType && e.expType._class && e.expType._class.registered && strcmp(e.expType._class.registered.name, "class"))
             type = e.expType;
@@ -7175,14 +7139,17 @@ void ApplyAnyObjectLogic(Expression e)
             type = destType;            
 
          backupClassObjectType = type.classObjectType;
+         backupByReference = type.byReference;
 
          type.classObjectType = none;
+         type.byReference = false;
 
          typeString[0] = '\0';
          PrintType(type, typeString, false, true);
          decl = SpecDeclFromString(typeString, specs, null);
 
          type.classObjectType = backupClassObjectType;
+         type.byReference = backupByReference;
 
          *thisExp = *e;
          thisExp.prev = null;
@@ -8747,7 +8714,13 @@ void ProcessExpressionType(Expression exp)
             {
                char typeString[1024];
                typeString[0] = '\0';
-               PrintType(functionType, typeString, true, true);
+               {
+                  Symbol back = functionType.thisClass;
+                  // Do not output class specifier here (thisclass was added to this)
+                  functionType.thisClass = null;
+                  PrintType(functionType, typeString, true, true);
+                  functionType.thisClass = back;
+               }
                if(strstr(typeString, "thisclass"))
                {
                   OldList * specs = MkList();
@@ -8976,7 +8949,14 @@ void ProcessExpressionType(Expression exp)
                   Location oldyylloc = yylloc;
 
                   yylloc = exp.call.exp.identifier.loc;
-                  if(strstr(string, "__builtin_") == string);
+                  if(strstr(string, "__builtin_") == string)
+                  {
+                     if(exp.destType)
+                     {
+                        functionType.returnType = exp.destType;
+                        exp.destType.refCount++;
+                     }
+                  }
                   else
                      Compiler_Warning($"%s undefined; assuming extern returning int\n", string);
                   symbol = Symbol { string = CopyString(string), type = ProcessTypeString("int()", true) };
@@ -9241,7 +9221,7 @@ void ProcessExpressionType(Expression exp)
                type = ProcessTemplateParameterType(type.templateParameter);
             }
          }
-
+         // TODO: *** This seems to be where we should add method support for all basic types ***
          if(type && (type.kind == templateType));
          else if(type && (type.kind == classType || type.kind == subClassType || type.kind == intType || type.kind == enumType))
          {
@@ -9323,7 +9303,7 @@ void ProcessExpressionType(Expression exp)
                      }
                   }
                }
-               if(!prop && !member)
+               if(!prop && !member && !method)     // NOTE: Recently added the !method here, causes private methods to unprioritized
                   method = eClass_FindMethod(_class, id.string, privateModule);
                if(!prop && !member && !method)
                {
@@ -9899,8 +9879,6 @@ void ProcessExpressionType(Expression exp)
       case extensionInitializerExp:
       {
          Type type = ProcessType(exp.initializer.typeName.qualifiers, exp.initializer.typeName.declarator);
-         type.refCount++;
-
          // We have yet to support this... ( { } initializers are currently processed inside ProcessDeclaration()'s initDeclaration case statement
          // ProcessInitializer(exp.initializer.initializer, type);
          exp.expType = type;
@@ -9910,7 +9888,6 @@ void ProcessExpressionType(Expression exp)
       {
          Type type = ProcessType(exp.vaArg.typeName.qualifiers, exp.vaArg.typeName.declarator);
          ProcessExpressionType(exp.vaArg.exp);
-         type.refCount++;
          exp.expType = type;
          break;
       }

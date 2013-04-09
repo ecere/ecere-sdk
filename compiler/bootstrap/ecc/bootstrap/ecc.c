@@ -501,8 +501,6 @@ struct __ecereNameSpace__ecere__sys__BinaryTree functions;
 
 static struct __ecereNameSpace__ecere__com__NameSpace globalData;
 
-static struct __ecereNameSpace__ecere__sys__OldList _precompDefines;
-
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(char *  fileName, int mode);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_MethodImport;

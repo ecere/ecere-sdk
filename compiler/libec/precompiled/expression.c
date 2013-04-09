@@ -1107,7 +1107,7 @@ extern void FreeIdentifier(struct Identifier * id);
 
 extern void FreeExpression(struct Expression * exp);
 
-extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (* )(void * ));
+extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (*  FreeFunction)(void * ));
 
 extern void FreeDeclaration(struct Declaration * decl);
 

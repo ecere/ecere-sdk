@@ -149,9 +149,14 @@ char * QMkString(char * source)
 
 public Declarator GetFuncDecl(Declarator decl)
 {
-   while(decl && decl.type != functionDeclarator && decl.type != identifierDeclarator)
+   Declarator funcDecl = null;
+   while(decl && decl.type != identifierDeclarator)
+   {
+      if(decl.type == functionDeclarator)
+         funcDecl = decl;
       decl = decl.declarator;
-   return (decl && decl.type == functionDeclarator) ? decl : null;
+   }
+   return funcDecl;
 }
 
 bool parseTypeError;

@@ -732,25 +732,26 @@ struct Symbol * enumClass;
 struct Type * type;
 struct TemplateParameter * templateParameter;
 } __attribute__ ((gcc_struct));
-unsigned int isSigned;
 int kind;
-unsigned int constant;
 unsigned int size;
 char *  name;
 char *  typeName;
-unsigned int count;
-unsigned int truth;
 int classObjectType;
-unsigned int byReference;
-unsigned int extraParam;
 int alignment;
-unsigned int directClassAccess;
-unsigned int computing;
-unsigned int dllExport;
 unsigned int offset;
-unsigned int keepCast;
-unsigned int passAsTemplate;
 int bitFieldCount;
+int count;
+unsigned int isSigned : 1;
+unsigned int constant : 1;
+unsigned int truth : 1;
+unsigned int byReference : 1;
+unsigned int extraParam : 1;
+unsigned int directClassAccess : 1;
+unsigned int computing : 1;
+unsigned int keepCast : 1;
+unsigned int passAsTemplate : 1;
+unsigned int dllExport : 1;
+unsigned int attrStdcall : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -1292,7 +1293,7 @@ if(thisMember && thisMember->memberAccess == 1)
 {
 curMember = thisMember;
 curClass = curMember->_class;
-memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+memcpy(subMemberStack, _subMemberStack, sizeof(struct __ecereNameSpace__ecere__com__DataMember *) * _subMemberStackPos);
 subMemberStackPos = _subMemberStackPos;
 }
 if(!firstID->next && thisMember == dataMember)
@@ -1447,7 +1448,7 @@ if(thisMember && thisMember->memberAccess == 1)
 {
 curMember = thisMember;
 curClass = curMember->_class;
-memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+memcpy(subMemberStack, _subMemberStack, sizeof(struct __ecereNameSpace__ecere__com__DataMember *) * _subMemberStackPos);
 subMemberStackPos = _subMemberStackPos;
 }
 if(thisMember == bitMember)
@@ -1657,7 +1658,7 @@ if(thisMember->memberAccess == 1)
 {
 curMember = thisMember;
 curClass = curMember->_class;
-memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+memcpy(subMemberStack, _subMemberStack, sizeof(struct __ecereNameSpace__ecere__com__DataMember *) * _subMemberStackPos);
 subMemberStackPos = _subMemberStackPos;
 }
 if(!firstID->next && curMember == dataMember)
@@ -1749,7 +1750,7 @@ if(thisMember->memberAccess == 1)
 {
 curMember = thisMember;
 curClass = curMember->_class;
-memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+memcpy(subMemberStack, _subMemberStack, sizeof(struct __ecereNameSpace__ecere__com__DataMember *) * _subMemberStackPos);
 subMemberStackPos = _subMemberStackPos;
 }
 }
@@ -2676,7 +2677,7 @@ if(thisMember && thisMember->memberAccess == 1)
 {
 curMember = thisMember;
 curClass = curMember->_class;
-memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+memcpy(subMemberStack, _subMemberStack, sizeof(struct __ecereNameSpace__ecere__com__DataMember *) * _subMemberStackPos);
 subMemberStackPos = _subMemberStackPos;
 }
 if(dataMember == thisMember)
@@ -2885,7 +2886,7 @@ if(thisMember)
 {
 curMember = thisMember;
 curClass = curMember->_class;
-memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+memcpy(subMemberStack, _subMemberStack, sizeof(struct __ecereNameSpace__ecere__com__DataMember *) * _subMemberStackPos);
 subMemberStackPos = _subMemberStackPos;
 }
 if(curMember == dataMember)
@@ -3046,7 +3047,7 @@ recursionCount--;
 return 0x1;
 }
 
-extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (* )(void * ));
+extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (*  FreeFunction)(void * ));
 
 static void ProcessDeclaration(struct Declaration * decl)
 {

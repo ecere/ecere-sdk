@@ -781,25 +781,26 @@ struct Symbol * enumClass;
 struct Type * type;
 struct TemplateParameter * templateParameter;
 } __attribute__ ((gcc_struct));
-unsigned int isSigned;
 int kind;
-unsigned int constant;
 unsigned int size;
 char *  name;
 char *  typeName;
-unsigned int count;
-unsigned int truth;
 int classObjectType;
-unsigned int byReference;
-unsigned int extraParam;
 int alignment;
-unsigned int directClassAccess;
-unsigned int computing;
-unsigned int dllExport;
 unsigned int offset;
-unsigned int keepCast;
-unsigned int passAsTemplate;
 int bitFieldCount;
+int count;
+unsigned int isSigned : 1;
+unsigned int constant : 1;
+unsigned int truth : 1;
+unsigned int byReference : 1;
+unsigned int extraParam : 1;
+unsigned int directClassAccess : 1;
+unsigned int computing : 1;
+unsigned int keepCast : 1;
+unsigned int passAsTemplate : 1;
+unsigned int dllExport : 1;
+unsigned int attrStdcall : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -1526,7 +1527,7 @@ char temp[100];
 if(result > (unsigned short)32767)
 sprintf(temp, "0x%X", (int)result);
 else
-sprintf(temp, "%d", result);
+sprintf(temp, "%d", (int)result);
 return __ecereNameSpace__ecere__sys__CopyString(temp);
 }
 
@@ -1539,7 +1540,7 @@ char temp[100];
 if(result > (char)0 && isprint(result))
 sprintf(temp, "'%c'", result);
 else if(result < (char)0)
-sprintf(temp, "%d", result);
+sprintf(temp, "%d", (int)result);
 else
 sprintf(temp, "0x%X", (unsigned char)result);
 return __ecereNameSpace__ecere__sys__CopyString(temp);
@@ -2656,6 +2657,7 @@ else
 type->arraySize = 0;
 }
 size = ComputeTypeSize(type->type) * type->arraySize;
+if(type->type)
 type->alignment = type->type->alignment;
 break;
 case 9:
@@ -2917,7 +2919,7 @@ extern char *  strchr(const char * , int);
 
 extern void FullClassNameCat(char *  output, char *  className, unsigned int includeTemplateParams);
 
-extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (* )(void * ));
+extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (*  FreeFunction)(void * ));
 
 extern void FreeClassDef(struct ClassDef * def);
 
@@ -3430,7 +3432,7 @@ if(curMember && thisMember->memberAccess == 1)
 {
 *curMember = thisMember;
 *curClass = thisMember->_class;
-memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+memcpy(subMemberStack, _subMemberStack, sizeof(struct __ecereNameSpace__ecere__com__DataMember *) * _subMemberStackPos);
 *subMemberStackPos = _subMemberStackPos;
 }
 found = 0x1;
@@ -3740,7 +3742,7 @@ extern void FreeSpecifier(struct Specifier * spec);
 
 static void ProcessFunction(struct FunctionDefinition * function);
 
-extern struct __ecereNameSpace__ecere__sys__OldList *  CopyList(struct __ecereNameSpace__ecere__sys__OldList *  source, void *  (* )(void * ));
+extern struct __ecereNameSpace__ecere__sys__OldList *  CopyList(struct __ecereNameSpace__ecere__sys__OldList *  source, void *  (*  CopyFunction)(void * ));
 
 extern struct Specifier * CopySpecifier(struct Specifier * spec);
 
@@ -4622,12 +4624,23 @@ struct Type * type = ProcessTemplateParameterType(dest->templateParameter);
 if(type)
 dest = type;
 }
-if((dest->classObjectType == 2 && source->classObjectType != 3) || (dest->classObjectType == 3 && source->classObjectType != 2))
+if(dest->classObjectType == 2)
+{
+if(source->classObjectType != 3)
+return 0x1;
+else
+{
+if((dest->_class && strcmp(dest->_class->string, "class")) || (source->_class && strcmp(source->_class->string, "class")))
 {
 return 0x1;
 }
-if(source->classObjectType == 3 && dest->classObjectType != 2)
+}
+}
+else
 {
+if(source->classObjectType == 3)
+return 0x1;
+if(dest->classObjectType == 3 && source->classObjectType != 2)
 return 0x1;
 }
 if((dest->kind == 9 && source->kind == 9) || (dest->kind == 10 && source->kind == 10))
@@ -5094,9 +5107,9 @@ char constant[256];
 
 sourceExp->type = 2;
 if(!strcmp(baseClass->dataTypeString, "int"))
-sprintf(constant, "%d", value->data);
+sprintf(constant, "%d", (int)value->data);
 else
-sprintf(constant, "0x%X", value->data);
+sprintf(constant, "0x%X", (int)value->data);
 sourceExp->constant = __ecereNameSpace__ecere__sys__CopyString(constant);
 }
 while(converts.first)
@@ -5583,9 +5596,9 @@ char constant[256];
 
 sourceExp->type = 2;
 if(_class->dataTypeString && !strcmp(_class->dataTypeString, "int"))
-sprintf(constant, "%d", value->data);
+sprintf(constant, "%d", (int)value->data);
 else
-sprintf(constant, "0x%X", value->data);
+sprintf(constant, "0x%X", (int)value->data);
 sourceExp->constant = __ecereNameSpace__ecere__sys__CopyString(constant);
 }
 return 0x1;
@@ -9854,7 +9867,7 @@ if(dataMember->memberAccess == 1)
 {
 curMember = dataMember;
 curClass = dataMember->_class;
-memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+memcpy(subMemberStack, _subMemberStack, sizeof(struct __ecereNameSpace__ecere__com__DataMember *) * _subMemberStackPos);
 subMemberStackPos = _subMemberStackPos;
 }
 }
@@ -10388,6 +10401,8 @@ break;
 }
 }
 
+void PrintTypeNoConst(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
+
 extern struct Expression * MkExpIdentifier(struct Identifier * id);
 
 void ComputeExpression(struct Expression * exp)
@@ -10500,7 +10515,7 @@ char string[256];
 struct Symbol * classSym;
 
 string[0] = '\0';
-PrintType(type, string, 0x0, 0x1);
+PrintTypeNoConst(type, string, 0x0, 0x1);
 classSym = FindClass(string);
 _class = classSym ? classSym->registered : (((void *)0));
 }
@@ -11500,36 +11515,43 @@ break;
 }
 }
 
-extern char *  __ecereNameSpace__ecere__sys__RSearchString(char *  buffer, char *  subStr, int maxLen, unsigned int matchCase, unsigned int matchWord);
+static void PrintArraySize(struct Type * arrayType, char * string)
+{
+char size[256];
 
-static void _PrintType(struct Type * type, char * string, unsigned int printName, unsigned int printFunction, unsigned int fullName)
+size[0] = '\0';
+strcat(size, "[");
+if(arrayType->enumClass)
+strcat(size, arrayType->enumClass->string);
+else if(arrayType->arraySizeExp)
+PrintExpression(arrayType->arraySizeExp, size);
+strcat(size, "]");
+strcat(string, size);
+}
+
+static void PrintTypeSpecs(struct Type * type, char * string, unsigned int fullName, unsigned int printConst)
 {
 if(type)
 {
+if(printConst && type->constant)
+strcat(string, "const ");
 switch(type->kind)
 {
 case 8:
-if(type->_class && type->_class->string)
 {
+struct Symbol * c = type->_class;
+
 if(type->classObjectType == 2)
 strcat(string, "typed_object");
-else if(fullName)
-strcat(string, type->_class->string);
+else if(type->classObjectType == 3)
+strcat(string, "any_object");
 else
 {
-if(type->_class->registered)
-strcat(string, type->_class->registered->name);
-else
-strcat(string, type->_class->string);
+if(c && c->string)
+strcat(string, (fullName || !c->registered) ? c->string : c->registered->name);
 }
-}
-break;
-case 13:
-{
-{
-_PrintType(type->type, string, 0x0, printFunction, fullName);
-strcat(string, " *");
-}
+if(type->byReference)
+strcat(string, " &");
 break;
 }
 case 0:
@@ -11566,14 +11588,12 @@ strcat(string, "struct ");
 strcat(string, type->enumName);
 }
 else if(type->typeName)
-{
 strcat(string, type->typeName);
-}
 else
 {
 struct Type * member;
 
-strcat(string, "struct {");
+strcat(string, "struct { ");
 for(member = type->members.first; member; member = member->next)
 {
 PrintType(member, string, 0x1, fullName);
@@ -11589,9 +11609,7 @@ strcat(string, "union ");
 strcat(string, type->enumName);
 }
 else if(type->typeName)
-{
 strcat(string, type->typeName);
-}
 else
 {
 strcat(string, "union ");
@@ -11605,84 +11623,12 @@ strcat(string, "enum ");
 strcat(string, type->enumName);
 }
 else if(type->typeName)
-{
 strcat(string, type->typeName);
-}
 else
-strcat(string, "enum");
+strcat(string, "int");
 break;
-case 11:
-{
-if(printFunction)
-{
-if(type->dllExport)
-strcat(string, "dllexport ");
-PrintType(type->returnType, string, 0x0, fullName);
-strcat(string, " ");
-}
-if(printName)
-{
-if(type->name)
-{
-if(fullName)
-strcat(string, type->name);
-else
-{
-char * name = __ecereNameSpace__ecere__sys__RSearchString(type->name, "::", strlen(type->name), 0x1, 0x0);
-
-if(name)
-name += 2;
-else
-name = type->name;
-strcat(string, name);
-}
-}
-}
-if(printFunction)
-{
-struct Type * param;
-
-strcat(string, "(");
-for(param = type->params.first; param; param = param->next)
-{
-PrintType(param, string, 0x1, fullName);
-if(param->next)
-strcat(string, ", ");
-}
-strcat(string, ")");
-}
-break;
-}
-case 12:
-{
-{
-char baseType[1024], size[256];
-struct Type * arrayType = type;
-
-baseType[0] = '\0';
-size[0] = '\0';
-while(arrayType->kind == 12)
-{
-strcat(size, "[");
-if(arrayType->enumClass)
-strcat(size, arrayType->enumClass->string);
-else if(arrayType->arraySizeExp)
-PrintExpression(arrayType->arraySizeExp, size);
-strcat(size, "]");
-arrayType = arrayType->arrayType;
-}
-_PrintType(arrayType, baseType, printName, printFunction, fullName);
-strcat(string, baseType);
-strcat(string, size);
-}
-printName = 0x0;
-break;
-}
 case 14:
 strcat(string, "...");
-break;
-case 16:
-_PrintType(type->method->dataType, string, 0x0, printFunction, fullName);
 break;
 case 19:
 strcat(string, "subclass(");
@@ -11699,31 +11645,85 @@ case 17:
 strcat(string, "__builtin_va_list");
 break;
 }
-if(type->name && printName && type->kind != 11 && (type->kind != 13 || type->type->kind != 11))
+}
+}
+
+extern char *  __ecereNameSpace__ecere__sys__RSearchString(char *  buffer, char *  subStr, int maxLen, unsigned int matchCase, unsigned int matchWord);
+
+static void PrintName(struct Type * type, char * string, unsigned int fullName)
 {
-strcat(string, " ");
+if(type->name && type->name[0])
+{
+if(fullName)
 strcat(string, type->name);
+else
+{
+char * name = __ecereNameSpace__ecere__sys__RSearchString(type->name, "::", strlen(type->name), 0x1, 0x0);
+
+if(name)
+name += 2;
+else
+name = type->name;
+strcat(string, name);
 }
 }
 }
 
-void PrintType(struct Type * type, char * string, unsigned int printName, unsigned int fullName)
+static void PrintAttribs(struct Type * type, char * string)
 {
-struct Type * funcType;
+if(type)
+{
+if(type->dllExport)
+strcat(string, "dllexport ");
+if(type->attrStdcall)
+strcat(string, "stdcall ");
+}
+}
 
-for(funcType = type; funcType && (funcType->kind == 13 || funcType->kind == 12); funcType = funcType->type)
-;
-if(funcType && funcType->kind == 11 && type != funcType)
+static void PrePrintType(struct Type * type, char * string, unsigned int fullName, struct Type * parentType, unsigned int printConst)
 {
-char typeString[1024];
+if(type->kind == 12 || type->kind == 13 || type->kind == 11 || type->kind == 16)
+{
+struct Type * attrType = (((void *)0));
+
+if((type->kind == 11 || type->kind == 16) && (!parentType || parentType->kind != 13))
+PrintAttribs(type, string);
+if(printConst && type->constant && (type->kind == 11 || type->kind == 16))
+strcat(string, " const");
+PrePrintType(type->kind == 16 ? type->method->dataType : type->type, string, fullName, type, printConst);
+if(type->kind == 13 && (type->type->kind == 12 || type->type->kind == 11 || type->type->kind == 16))
+strcat(string, " (");
+if(type->kind == 13)
+{
+if(type->type->kind == 11 || type->type->kind == 16)
+PrintAttribs(type->type, string);
+}
+if(type->kind == 13)
+{
+if(type->type->kind == 11 || type->type->kind == 16 || type->type->kind == 12)
+strcat(string, "*");
+else
+strcat(string, " *");
+}
+if(printConst && type->constant && type->kind == 13)
+strcat(string, " const");
+}
+else
+PrintTypeSpecs(type, string, fullName, printConst);
+}
+
+static void PostPrintType(struct Type * type, char * string, unsigned int fullName)
+{
+if(type->kind == 13 && (type->type->kind == 12 || type->type->kind == 11 || type->type->kind == 16))
+strcat(string, ")");
+if(type->kind == 12)
+PrintArraySize(type, string);
+else if(type->kind == 11)
+{
 struct Type * param;
 
-PrintType(funcType->returnType, string, 0x0, fullName);
 strcat(string, "(");
-_PrintType(type, string, printName, 0x0, fullName);
-strcat(string, ")");
-strcat(string, "(");
-for(param = funcType->params.first; param; param = param->next)
+for(param = type->params.first; param; param = param->next)
 {
 PrintType(param, string, 0x1, fullName);
 if(param->next)
@@ -11731,8 +11731,48 @@ strcat(string, ", ");
 }
 strcat(string, ")");
 }
+if(type->kind == 12 || type->kind == 13 || type->kind == 11 || type->kind == 16)
+PostPrintType(type->kind == 16 ? type->method->dataType : type->type, string, fullName);
+}
+
+static void _PrintType(struct Type * type, char * string, unsigned int printName, unsigned int fullName, unsigned int printConst)
+{
+PrePrintType(type, string, fullName, (((void *)0)), printConst);
+if(type->thisClass || (printName && type->name && type->name[0]))
+strcat(string, " ");
+if((type->thisClass || type->staticMethod))
+{
+struct Symbol * _class = type->thisClass;
+
+if((type->classObjectType == 2 || type->classObjectType == 1) || (_class && !strcmp(_class->string, "class")))
+{
+if(type->classObjectType == 1)
+strcat(string, "class");
 else
-_PrintType(type, string, printName, 0x1, fullName);
+strcat(string, type->byReference ? "typed_object&" : "typed_object");
+}
+else if(_class && _class->string)
+{
+char * s = _class->string;
+
+if(fullName)
+strcat(string, s);
+else
+{
+char * name = __ecereNameSpace__ecere__sys__RSearchString(s, "::", strlen(s), 0x1, 0x0);
+
+if(name)
+name += 2;
+else
+name = s;
+strcat(string, name);
+}
+}
+strcat(string, "::");
+}
+if(printName && type->name)
+PrintName(type, string, fullName);
+PostPrintType(type, string, fullName);
 if(type->bitFieldCount)
 {
 char count[100];
@@ -11740,6 +11780,16 @@ char count[100];
 sprintf(count, ":%d", type->bitFieldCount);
 strcat(string, count);
 }
+}
+
+void PrintType(struct Type * type, char * string, unsigned int printName, unsigned int fullName)
+{
+_PrintType(type, string, printName, fullName, 0x1);
+}
+
+void PrintTypeNoConst(struct Type * type, char * string, unsigned int printName, unsigned int fullName)
+{
+_PrintType(type, string, printName, fullName, 0x0);
 }
 
 static struct Type * FindMember(struct Type * type, char * string)
@@ -11839,9 +11889,9 @@ FreeExpContents(exp);
 exp->type = 2;
 exp->isConstant = 0x1;
 if(!strcmp(baseClass->dataTypeString, "int"))
-sprintf(constant, "%d", value->data);
+sprintf(constant, "%d", (int)value->data);
 else
-sprintf(constant, "0x%X", value->data);
+sprintf(constant, "0x%X", (int)value->data);
 exp->constant = __ecereNameSpace__ecere__sys__CopyString(constant);
 exp->expType = MkClassType(baseClass->fullName);
 break;
@@ -12013,7 +12063,7 @@ else
 char string[1024] = "";
 struct Symbol * classSym;
 
-PrintType(type, string, 0x0, 0x1);
+PrintTypeNoConst(type, string, 0x0, 0x1);
 classSym = FindClass(string);
 if(classSym)
 _class = classSym->registered;
@@ -12074,7 +12124,7 @@ typeString[0] = '\0';
 newExp->prev = (((void *)0));
 newExp->next = (((void *)0));
 newExp->expType = (((void *)0));
-PrintType(e->expType, typeString, 0x0, 0x1);
+PrintTypeNoConst(e->expType, typeString, 0x0, 0x1);
 decl = SpecDeclFromString(typeString, specs, (((void *)0)));
 newExp->destType = ProcessType(specs, decl);
 curContext = context;
@@ -12144,7 +12194,7 @@ checkedExp->op.exp2 = operand;
 }
 if((!destType || destType->kind == 14 || destType->kind == 0) && e->expType && (e->expType->classObjectType == 3 || e->expType->classObjectType == 2) && (e->expType->byReference || (e->expType->kind == 8 && e->expType->_class && e->expType->_class->registered && (e->expType->_class->registered->type == 2 || e->expType->_class->registered->type == 4 || e->expType->_class->registered->type == 3))))
 {
-if(e->expType->kind == 8 && e->expType->_class && e->expType->_class->registered && !strcmp(e->expType->_class->registered->name, "class"))
+if(e->expType->classObjectType && destType && destType->classObjectType)
 {
 return ;
 }
@@ -12157,7 +12207,7 @@ thisExp->prev = (((void *)0));
 thisExp->next = (((void *)0));
 __ecereMethod_Expression_Clear(e);
 e->type = 5;
-e->list = MkListOne(MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(thisExp))));
+e->list = MkListOne(MkExpOp((((void *)0)), '*', thisExp->type == 0 ? thisExp : MkExpBrackets(MkListOne(thisExp))));
 if(thisExp->expType->kind == 8 && thisExp->expType->_class && thisExp->expType->_class->registered && thisExp->expType->_class->registered->type == 5)
 ((struct Expression *)(*e->list).first)->byReference = 0x1;
 {
@@ -12187,17 +12237,21 @@ struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
 char typeString[1024];
 struct Type * type;
 int backupClassObjectType;
+unsigned int backupByReference;
 
 if(e->expType->kind == 8 && e->expType->_class && e->expType->_class->registered && strcmp(e->expType->_class->registered->name, "class"))
 type = e->expType;
 else
 type = destType;
 backupClassObjectType = type->classObjectType;
+backupByReference = type->byReference;
 type->classObjectType = 0;
+type->byReference = 0x0;
 typeString[0] = '\0';
 PrintType(type, typeString, 0x0, 0x1);
 decl = SpecDeclFromString(typeString, specs, (((void *)0)));
 type->classObjectType = backupClassObjectType;
+type->byReference = backupByReference;
 *thisExp = *e;
 thisExp->prev = (((void *)0));
 thisExp->next = (((void *)0));
@@ -12622,7 +12676,7 @@ struct Type * type1 = (((void *)0)), * type2 = (((void *)0));
 unsigned int useDestType = 0x0, useSideType = 0x0;
 struct Location oldyylloc = yylloc;
 unsigned int useSideUnit = 0x0;
-struct Type * dummy = (dummy = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), dummy->count = (unsigned int)1, dummy->refCount = 1, dummy);
+struct Type * dummy = (dummy = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), dummy->count = 1, dummy->refCount = 1, dummy);
 
 switch(exp->op.op)
 {
@@ -13513,7 +13567,7 @@ break;
 }
 }
 {
-struct Type * dummy = (dummy = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), dummy->count = (unsigned int)1, dummy->refCount = 1, dummy);
+struct Type * dummy = (dummy = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), dummy->count = 1, dummy->refCount = 1, dummy);
 
 if(!exp->call.exp->destType)
 {
@@ -13538,7 +13592,13 @@ if(exp->call.exp->expType->usedClass)
 char typeString[1024];
 
 typeString[0] = '\0';
+{
+struct Symbol * back = functionType->thisClass;
+
+functionType->thisClass = (((void *)0));
 PrintType(functionType, typeString, 0x1, 0x1);
+functionType->thisClass = back;
+}
 if(strstr(typeString, "thisclass"))
 {
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
@@ -13755,7 +13815,13 @@ struct Location oldyylloc = yylloc;
 
 yylloc = exp->call.exp->identifier->loc;
 if(strstr(string, "__builtin_") == string)
-;
+{
+if(exp->destType)
+{
+functionType->returnType = exp->destType;
+exp->destType->refCount++;
+}
+}
 else
 Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "%s undefined; assuming extern returning int\n", (((void *)0))), string);
 symbol = __extension__ ({
@@ -14061,7 +14127,7 @@ member = (((void *)0));
 }
 }
 }
-if(!prop && !member)
+if(!prop && !member && !method)
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, id->string, privateModule);
 if(!prop && !member && !method)
 {
@@ -14547,12 +14613,12 @@ case 11:
 {
 struct Type * type = ProcessType(exp->cast.typeName->qualifiers, exp->cast.typeName->declarator);
 
-type->count = (unsigned int)1;
+type->count = 1;
 FreeType(exp->cast.exp->destType);
 exp->cast.exp->destType = type;
 type->refCount++;
 ProcessExpressionType(exp->cast.exp);
-type->count = (unsigned int)0;
+type->count = 0;
 exp->expType = type;
 if(!exp->cast.exp->needCast && !NeedCast(exp->cast.exp->expType, type))
 {
@@ -14584,7 +14650,6 @@ case 35:
 {
 struct Type * type = ProcessType(exp->initializer.typeName->qualifiers, exp->initializer.typeName->declarator);
 
-type->refCount++;
 exp->expType = type;
 break;
 }
@@ -14593,7 +14658,6 @@ case 36:
 struct Type * type = ProcessType(exp->vaArg.typeName->qualifiers, exp->vaArg.typeName->declarator);
 
 ProcessExpressionType(exp->vaArg.exp);
-type->refCount++;
 exp->expType = type;
 break;
 }
@@ -16703,7 +16767,7 @@ thisNameSpace = (((void *)0));
 
 extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(char *  name, char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 void __ecereRegisterModule_pass15(struct __ecereNameSpace__ecere__com__Instance * module)
 {
@@ -16778,6 +16842,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeExpression", "voi
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CheckTemplateTypes", "void CheckTemplateTypes(Expression exp)", CheckTemplateTypes, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindSymbol", "Symbol FindSymbol(char * name, Context startContext, Context endContext, bool isStruct, bool globalNameSpace)", FindSymbol, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PrintType", "void PrintType(Type type, char * string, bool printName, bool fullName)", PrintType, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("PrintTypeNoConst", "void PrintTypeNoConst(Type type, char * string, bool printName, bool fullName)", PrintTypeNoConst, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindMemberAndOffset", "Type FindMemberAndOffset(Type type, char * string, uint * offset)", FindMemberAndOffset, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ParseExpressionString", "Expression ParseExpressionString(char * expression)", ParseExpressionString, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReplaceExpContents", "void ReplaceExpContents(Expression checkedExp, Expression newExp)", ReplaceExpContents, module, 1);

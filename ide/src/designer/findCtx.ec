@@ -844,7 +844,7 @@ static Identifier FindCtxInstance(Instantiation inst, int line, int charPos)
                      {
                         curMember = thisMember;
                         curClass = thisMember._class;
-                        memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+                        memcpy(subMemberStack, _subMemberStack, sizeof(DataMember) * _subMemberStackPos);
                         subMemberStackPos = _subMemberStackPos;
                      }
                   }

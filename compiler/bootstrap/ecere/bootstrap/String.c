@@ -1420,7 +1420,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::MAX_DIRECTORY"
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::MAX_LOCATION", "797", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetExtension", "char * ecere::sys::GetExtension(char * string, char * output)", __ecereNameSpace__ecere__sys__GetExtension, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::StripLastDirectory", "char * ecere::sys::StripLastDirectory(char * string, char * output)", __ecereNameSpace__ecere__sys__StripLastDirectory, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SplitDirectory", "char * ecere::sys::SplitDirectory(char * string, char * part, char * rest)", __ecereNameSpace__ecere__sys__SplitDirectory, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SplitDirectory", "char * ecere::sys::SplitDirectory(const char * string, char * part, char * rest)", __ecereNameSpace__ecere__sys__SplitDirectory, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetLastDirectory", "char * ecere::sys::GetLastDirectory(char * string, char * output)", __ecereNameSpace__ecere__sys__GetLastDirectory, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SplitArchivePath", "bool ecere::sys::SplitArchivePath(char * fileName, char * archiveName, char * * archiveFile)", __ecereNameSpace__ecere__sys__SplitArchivePath, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PathCatSlash", "char * ecere::sys::PathCatSlash(char * string, char * addedPath)", __ecereNameSpace__ecere__sys__PathCatSlash, module, 4);

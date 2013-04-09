@@ -897,7 +897,7 @@ static void BindDCOMClient()
                               classSym = method.dataType.returnType._class; // VERIFY THIS FindClass(method.dataType.returnType._class.string);
                            else
                            {
-                              PrintType(method.dataType.returnType, type, false, true);
+                              PrintTypeNoConst(method.dataType.returnType, type, false, true);
                               classSym = FindClass(type);
                               type[0] = 0;
                            }
@@ -938,7 +938,7 @@ static void BindDCOMClient()
                                  classSym = param._class; // VERIFY THIS FindClass(param._class.string);
                               else
                               {
-                                 PrintType(param, type, false, true);
+                                 PrintTypeNoConst(param, type, false, true);
                                  classSym = FindClass(type);
                                  type[0] = 0;
                               }
@@ -1090,7 +1090,7 @@ static void BindDCOMClient()
                         classSym = method.dataType.returnType._class; // VERIFY THIS FindClass(method.dataType.returnType._class.string);
                      else
                      {
-                        PrintType(method.dataType.returnType, type, false, true);
+                        PrintTypeNoConst(method.dataType.returnType, type, false, true);
                         classSym = FindClass(type);
                         type[0] = 0;
                      }
@@ -1126,7 +1126,7 @@ static void BindDCOMClient()
                         classSym = param._class; // VERIFY THIS FindClass(param._class.string);
                      else
                      {
-                        PrintType(param, type, false, true);
+                        PrintTypeNoConst(param, type, false, true);
                         classSym = FindClass(type);
                         type[0] = 0;
                      }
@@ -1285,7 +1285,7 @@ static void BindDCOMServer()
                            classSym = method.dataType.returnType._class; // VERIFY THIS FindClass(method.dataType.returnType._class.string);
                         else
                         {
-                           PrintType(method.dataType.returnType, type, false, true);
+                           PrintTypeNoConst(method.dataType.returnType, type, false, true);
                            classSym = FindClass(type);
                            type[0] = 0;
                         }
@@ -1326,7 +1326,7 @@ static void BindDCOMServer()
                               classSym = param._class; // VERIFY THIS FindClass(param._class.string);
                            else
                            {
-                              PrintType(param, type, false, true);
+                              PrintTypeNoConst(param, type, false, true);
                               classSym = FindClass(type);
                               type[0] = 0;
                            }
@@ -1468,7 +1468,7 @@ static void BindDCOMServer()
                               classSym = method.dataType.returnType._class; // VERIFY THIS FindClass(method.dataType.returnType._class.string);
                            else
                            {
-                              PrintType(method.dataType.returnType, type, false, true);
+                              PrintTypeNoConst(method.dataType.returnType, type, false, true);
                               classSym = FindClass(type);
                               type[0] = 0;
                            }
@@ -1508,7 +1508,7 @@ static void BindDCOMServer()
                               classSym = param._class; // VERIFY THIS FindClass(param._class.string);
                            else
                            {
-                              PrintType(param, type, false, true);
+                              PrintTypeNoConst(param, type, false, true);
                               classSym = FindClass(type);
                               type[0] = 0;
                            }

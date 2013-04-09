@@ -21,7 +21,6 @@ static NameSpace globalData
    functions.CompareKey = (void *)BinaryTree::CompareString;
    nameSpaces.CompareKey = (void *)BinaryTree::CompareString;
 };
-static OldList _precompDefines;
 
 static void OutputImports(char * fileName)
 {
@@ -114,6 +113,122 @@ static void OutputImports(char * fileName)
    }
    delete f;
 }
+
+#ifdef _DEBUG
+static bool TestType(String string, String expected)
+{
+   bool result = true;
+   char typeString[1024] = { 0 };
+   Type type = ProcessTypeString(string, false);
+   PrintType(type, typeString, true, false);//true);
+   if(strcmp(typeString, expected ? expected : string))
+   {
+      PrintLn("FAILED: ", string, " -> ", typeString);
+      result = false;
+   }
+   return result;
+}
+
+static void TestTypes()
+{
+   int succeeded = 0, count = 0;
+
+   count++, succeeded += TestType("dllexport void (dllexport * Module::signal(int, void (*)(int)))(int)", null);
+   count++, succeeded += TestType("int (* f[8])[10]", null);
+   count++, succeeded += TestType("void (* signal(int, void (*)(int)))(int)", null);
+   count++, succeeded += TestType("void (* signal(double))()", null);
+   count++, succeeded += TestType("void (* bla)(int)", null);
+   count++, succeeded += TestType("int f(void (*[10])())", null);
+   count++, succeeded += TestType("void (*[10])()", null);
+   count++, succeeded += TestType("void (* converters_table[10])()", null);
+   count++, succeeded += TestType("int (* f[8])[10]", null);
+   
+   count++, succeeded += TestType("int f[8][10]", null);
+   count++, succeeded += TestType("int f[10]", null);
+   count++, succeeded += TestType("void *", null);
+   count++, succeeded += TestType("char * x", "char * x");
+   count++, succeeded += TestType("char * x", null);
+   count++, succeeded += TestType("char (* x[3])()", null);
+   count++, succeeded += TestType("char (*(* x[3])())", "char * (* x[3])()");
+   count++, succeeded += TestType("char (* x())", "char * x()");
+   count++, succeeded += TestType("char (* (* x[3])())[5]", null);
+   count++, succeeded += TestType("char (* f())[5]", null);
+   count++, succeeded += TestType("char * (* f())[5]", null);
+   count++, succeeded += TestType("char * (* * f())[5][2][3]", null);
+   count++, succeeded += TestType("char * (* * (* f)())[5][2][3]", null);
+   count++, succeeded += TestType("char * (* (* * (* f)())[5][2])[3]", null);
+   count++, succeeded += TestType("void (* (* bar)[5])()", null);
+   count++, succeeded += TestType("const int * (* const f)(char[10])", null);
+   count++, succeeded += TestType("const int", null);
+   count++, succeeded += TestType("int * const *", null);
+   count++, succeeded += TestType("int * const", null);
+   count++, succeeded += TestType("const int *", null);
+   
+   count++, succeeded += TestType("char * const (* (* const bar)[5])(int)", null);
+   count++, succeeded += TestType("char * const (* (* (* const bar)[5][6])(int))[2]", null);
+   count++, succeeded += TestType("int * * a", null);
+
+   count++, succeeded += TestType("char * const (* bar)()", null);
+
+   count++, succeeded += TestType("char * const (* const (* const bar)[5])(int)", null);
+   
+   count++, succeeded += TestType("char * (* const (* bar)[5])(int)", null);
+   count++, succeeded += TestType("void (* * const bar[5])()", null);
+   count++, succeeded += TestType("void (* * const bar)()", null);
+   count++, succeeded += TestType("void (* const * bar)()", null);
+   count++, succeeded += TestType("const int * * foo", null); // this prevents you from doing: **foo = 0;
+   count++, succeeded += TestType("int * const * bar", null); // this prevents you from doing: *bar = 0;
+   count++, succeeded += TestType("int * * const two", null); // this prevents you from doing: two = 0;
+   count++, succeeded += TestType("dllexport int TestFunction()", null);
+   count++, succeeded += TestType("dllexport int (* TestFunction())[3]", null);
+
+
+   count++, succeeded += TestType("int dllexport TestFunction()", "dllexport int TestFunction()");
+   count++, succeeded += TestType("bool (stdcall * Load)(Module module)", null);
+
+   count++, succeeded += TestType("bool (__attribute__((stdcall)) * Load)(Module module)", "bool (stdcall * Load)(Module module)");
+   count++, succeeded += TestType("int (dllexport * Load)()", null);
+   count++, succeeded += TestType("int (* Load)(Module module)", null);
+   count++, succeeded += TestType("bool (__declspec(dllexport) * Load)(Module module)", "bool (dllexport * Load)(Module module)");
+   count++, succeeded += TestType("__declspec(dllexport) int TestFunction()", "dllexport int TestFunction()");
+   count++, succeeded += TestType("int __declspec(dllexport) TestFunction()", "dllexport int TestFunction()");
+   count++, succeeded += TestType("int __attribute__((dllexport)) TestFunction()", "dllexport int TestFunction()");
+   count++, succeeded += TestType("bool (__attribute__((dllexport)) * Load)(Module module)", "bool (dllexport * Load)(Module module)");
+   count++, succeeded += TestType("any_object TestFunction(any_object, typed_object param)", null);
+   count++, succeeded += TestType("void typed_object::OnDisplay(Surface surface, int x, int y, int width, void * fieldData, Alignment alignment, DataDisplayFlags displayFlags)", null);
+   count++, succeeded += TestType("int typed_object::OnCompare(any_object object)", null);
+   count++, succeeded += TestType("char * typed_object::OnGetString(char * tempString, void * fieldData, bool * needClass)", null);
+   count++, succeeded += TestType("void typed_object&::OnCopy(any_object newData)", null);
+   count++, succeeded += TestType("void typed_object::OnFree(void)", null);
+   count++, succeeded += TestType("bool typed_object&::OnGetDataFromString(char * string)", null);
+   count++, succeeded += TestType("Window typed_object::OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)", null);
+   count++, succeeded += TestType("void typed_object::OnSerialize(IOChannel channel)", null);
+   count++, succeeded += TestType("void typed_object&::OnUnserialize(IOChannel channel)", null);
+   count++, succeeded += TestType("bool typed_object&::OnSaveEdit(Window window, void * object)", null);
+   count++, succeeded += TestType("void ::StaticMethod(IOChannel channel)", null);
+
+   count++, succeeded += TestType("void PrintLn(typed_object object, ...)", null);
+   count++, succeeded += TestType("void PrintLn(typed_object object, ...)", null);
+
+   count++, succeeded += TestType("thisclass RemoveSwapRight()", null);
+   count++, succeeded += TestType("struct { thisclass prev; thisclass next; }", null);
+
+   count++, succeeded += TestType("LinkElement<thisclass>", null);
+
+   count++, succeeded += TestType("void (dllexport * converters_table[10])()", null);
+
+   count++, succeeded += TestType("bool (stdcall * * Load)(Module module)", null);
+
+   count++, succeeded += TestType("int stdcall TestFunction()", "stdcall int TestFunction()");
+   count++, succeeded += TestType("dllexport stdcall void test()", null);
+
+   count++, succeeded += TestType("bool (* Module::notifySelect)(MenuItem selection, Modifiers mods)", null);
+
+   count++, succeeded += TestType("typed_object &", null);
+
+   PrintLn("\n", succeeded, " / ", count, " tests succeeded.");
+}
+#endif
 
 class CompilerApp : Application
 {
@@ -345,6 +460,10 @@ class CompilerApp : Application
             globalContext.types.Add((BTNode)Symbol { string = CopyString("ssize_t"), type = ProcessTypeString("intsize", false) });
             globalContext.types.Add((BTNode)Symbol { string = CopyString("size_t"), type = ProcessTypeString("uintsize", false) });
          }
+
+#ifdef _DEBUG
+         // TestTypes();
+#endif
 
          {
             GlobalData data { fullName = CopyString("__thisModule"), dataTypeString = CopyString("Module"), module = privateModule };

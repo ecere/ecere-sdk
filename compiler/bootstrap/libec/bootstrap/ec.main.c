@@ -402,6 +402,8 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass_Declaration;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_Declarator;
 
+struct __ecereNameSpace__ecere__com__Class * __ecereClass_DeclaratorType;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_Definition;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_Enumerator;
@@ -467,6 +469,8 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplatedType;
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_TypeName;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
 
 int __ecereVMethodID_class_OnGetString;
 
@@ -670,7 +674,7 @@ void __ecereRegisterModule_type(struct __ecereNameSpace__ecere__com__Instance * 
 
 void __ecereUnregisterModule_type(struct __ecereNameSpace__ecere__com__Instance * module);
 
-extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_LoadStatic(struct __ecereNameSpace__ecere__com__Instance * fromModule, char *  name, int importAccess, unsigned int (* )(struct __ecereNameSpace__ecere__com__Instance * module), unsigned int (* )(struct __ecereNameSpace__ecere__com__Instance * module));
+extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_LoadStatic(struct __ecereNameSpace__ecere__com__Instance * fromModule, char *  name, int importAccess, unsigned int (*  Load)(struct __ecereNameSpace__ecere__com__Instance * module), unsigned int (*  Unload)(struct __ecereNameSpace__ecere__com__Instance * module));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
 
@@ -727,6 +731,7 @@ __ecereClass_DBTableEntry = __ecereNameSpace__ecere__com__eSystem_FindClass(modu
 __ecereClass_DataRedefinition = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "DataRedefinition");
 __ecereClass_Declaration = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Declaration");
 __ecereClass_Declarator = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Declarator");
+__ecereClass_DeclaratorType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "DeclaratorType");
 __ecereClass_Definition = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Definition");
 __ecereClass_Enumerator = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Enumerator");
 __ecereClass_Expression = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Expression");
@@ -760,6 +765,7 @@ __ecereClass_TemplateParameter = __ecereNameSpace__ecere__com__eSystem_FindClass
 __ecereClass_TemplatedType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "TemplatedType");
 __ecereClass_Type = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Type");
 __ecereClass_TypeName = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "TypeName");
+__ecereClass_char__PTR_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "char *");
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "class");
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "OnGetString", module);
 if(method)

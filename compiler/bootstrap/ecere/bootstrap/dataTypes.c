@@ -1928,7 +1928,7 @@ else
 *data = (unsigned short)0;
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern char *  __ecereNameSpace__ecere__sys__CopyString(char *  string);
 
@@ -2344,9 +2344,9 @@ if(this)
 int c;
 unsigned int size;
 
-for(c = 0; ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, &(*(this)).string[c], 1) && (*(this)).string[c]; c++)
+for(c = 0; ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, &(*this).string[c], 1) && (*this).string[c]; c++)
 ;
-(*(this)).string[c++] = '\0';
+(*this).string[c++] = '\0';
 }
 }
 

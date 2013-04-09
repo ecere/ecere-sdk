@@ -645,6 +645,10 @@ static void InstDeclPassStatement(Statement stmt)
 {
    switch(stmt.type)
    {
+      case badDeclarationStmt:
+         if(stmt.decl)
+            InstDeclPassDeclaration(stmt.decl);
+         break;
       case labeledStmt:
          InstDeclPassStatement(stmt.labeled.stmt);
          break;

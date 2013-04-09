@@ -723,25 +723,26 @@ struct Symbol * enumClass;
 struct Type * type;
 struct TemplateParameter * templateParameter;
 } __attribute__ ((gcc_struct));
-unsigned int isSigned;
 int kind;
-unsigned int constant;
 unsigned int size;
 char *  name;
 char *  typeName;
-unsigned int count;
-unsigned int truth;
 int classObjectType;
-unsigned int byReference;
-unsigned int extraParam;
 int alignment;
-unsigned int directClassAccess;
-unsigned int computing;
-unsigned int dllExport;
 unsigned int offset;
-unsigned int keepCast;
-unsigned int passAsTemplate;
 int bitFieldCount;
+int count;
+unsigned int isSigned : 1;
+unsigned int constant : 1;
+unsigned int truth : 1;
+unsigned int byReference : 1;
+unsigned int extraParam : 1;
+unsigned int directClassAccess : 1;
+unsigned int computing : 1;
+unsigned int keepCast : 1;
+unsigned int passAsTemplate : 1;
+unsigned int dllExport : 1;
+unsigned int attrStdcall : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -1408,7 +1409,7 @@ extern void ProcessExpressionType(struct Expression * exp);
 
 extern struct Expression * MkExpCondition(struct Expression * cond, struct __ecereNameSpace__ecere__sys__OldList * expressions, struct Expression * elseExp);
 
-extern struct __ecereNameSpace__ecere__sys__OldList *  CopyList(struct __ecereNameSpace__ecere__sys__OldList *  source, void *  (* )(void * ));
+extern struct __ecereNameSpace__ecere__sys__OldList *  CopyList(struct __ecereNameSpace__ecere__sys__OldList *  source, void *  (*  CopyFunction)(void * ));
 
 extern struct Expression * GetTemplateArgExp(struct TemplateParameter * param, struct __ecereNameSpace__ecere__com__Class * curClass, unsigned int pointer);
 
@@ -1442,7 +1443,7 @@ extern void FinishTemplatesContext(struct Context * context);
 
 extern struct Specifier * MkStructOrUnion(int type, struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * definitions);
 
-extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
+extern void PrintTypeNoConst(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 
 extern int ComputeTypeSize(struct Type * type);
 
@@ -1462,7 +1463,7 @@ extern void FreeSpecifier(struct Specifier * spec);
 
 static void ProcessStatement(struct Statement * stmt);
 
-extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (* )(void * ));
+extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (*  FreeFunction)(void * ));
 
 extern void FreeDeclarator(struct Declarator * decl);
 
@@ -2655,9 +2656,22 @@ if(!exp->call.arguments)
 exp->call.arguments = MkList();
 if(typedObject && memberExp->member.exp && memberExp->member.exp->expType)
 {
-if((argClass && (argClass->type == 4 || argClass->type == 3 || argClass->type == 2 || argClass->type == 1000) && strcmp(argClass->fullName, "class") && strcmp(argClass->fullName, "ecere::com::Class")) || (!memberExp->member.exp->expType->classObjectType && ((((memberExp->member.exp->expType->kind != 13 && (memberExp->member.exp->expType->kind != 8 || !memberExp->member.exp->expType->_class || !memberExp->member.exp->expType->_class->registered || memberExp->member.exp->expType->_class->registered->type == 1)))) || method->dataType->byReference)))
+unsigned int changeReference = 0x0;
+
+if(argClass && (argClass->type == 4 || argClass->type == 3 || argClass->type == 2 || argClass->type == 1000) && strcmp(argClass->fullName, "class") && strcmp(argClass->fullName, "ecere::com::Class"))
+changeReference = 0x1;
+if(!memberExp->member.exp->expType->classObjectType && ((((memberExp->member.exp->expType->kind != 13 && (memberExp->member.exp->expType->kind != 8 || !memberExp->member.exp->expType->_class || !memberExp->member.exp->expType->_class->registered || memberExp->member.exp->expType->_class->registered->type == 1)))) || method->dataType->byReference))
+changeReference = 0x1;
+if(typedObject && memberExp->member.exp->expType->classObjectType && memberExp->member.exp->expType->byReference != method->dataType->byReference)
+changeReference = 0x1;
+if(changeReference)
 {
-if(memberExp->member.exp->type == 4 && memberExp->member.exp->op.op == '*' && !memberExp->member.exp->op.exp1)
+if(memberExp->member.exp->type == 5 && memberExp->member.exp->list && (*memberExp->member.exp->list).count == 1 && ((struct Expression *)(*memberExp->member.exp->list).first)->type == 4 && ((struct Expression *)(*memberExp->member.exp->list).first)->op.op == '*' && !((struct Expression *)(*memberExp->member.exp->list).first)->op.exp1)
+{
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), ((struct Expression *)(*memberExp->member.exp->list).first)->op.exp2);
+((struct Expression *)(*memberExp->member.exp->list).first)->op.exp2 = (((void *)0));
+}
+else if(memberExp->member.exp->type == 4 && memberExp->member.exp->op.op == '*' && !memberExp->member.exp->op.exp1)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), memberExp->member.exp->op.exp2);
 memberExp->member.exp->op.exp2 = (((void *)0));
@@ -2756,7 +2770,7 @@ else
 char string[1024] = "";
 struct Symbol * classSym;
 
-PrintType(type, string, 0x0, 0x1);
+PrintTypeNoConst(type, string, 0x0, 0x1);
 classSym = FindClass(string);
 if(classSym)
 _class = classSym->registered;
@@ -2852,7 +2866,7 @@ exp->destType->refCount++;
 newExp->prev = (((void *)0));
 newExp->next = (((void *)0));
 newExp->expType = (((void *)0));
-PrintType(e->expType, typeString, 0x0, 0x1);
+PrintTypeNoConst(e->expType, typeString, 0x0, 0x1);
 decl = SpecDeclFromString(typeString, specs, (((void *)0)));
 newExp->destType = ProcessType(specs, decl);
 curContext = context;
@@ -2989,7 +3003,7 @@ if(!_class)
 char string[2048] = "";
 struct Symbol * classSym;
 
-PrintType(type, string, 0x0, 0x1);
+PrintTypeNoConst(type, string, 0x0, 0x1);
 classSym = FindClass(string);
 _class = classSym ? classSym->registered : (((void *)0));
 }
@@ -3756,9 +3770,7 @@ break;
 static void ProcessFunction(struct FunctionDefinition * function)
 {
 if(function->body)
-{
 ProcessStatement(function->body);
-}
 }
 
 static void ProcessMemberInitData(struct MemberInit * member)

@@ -688,7 +688,7 @@ void DebugComputeExpression(Expression exp)
             {
                char string[256] = "";
                Symbol classSym;
-               PrintType(type, string, false, true);
+               PrintTypeNoConst(type, string, false, true);
                classSym = FindClass(string);
                _class = classSym ? classSym.registered : null;
             }

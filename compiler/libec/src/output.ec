@@ -370,6 +370,9 @@ static void OutputStatement(Statement stmt, File f)
 
    switch(stmt.type)
    {
+      case badDeclarationStmt:
+         OutputDeclaration(stmt.decl, f);
+         break;
       case labeledStmt:
          OutputIdentifier(stmt.labeled.id, f);
          f.Puts(":\n");
@@ -597,7 +600,8 @@ static void OutputStatement(Statement stmt, File f)
                }
                else
                {
-                  PrintType(exp.expType, string, true, true);
+                  // Printing 'name' as a hack when we're dealing with typedefs with extended attributes
+                  PrintTypeNoConst(exp.expType, string, exp.expType.kind == dummyType ? true : false, true);
                   decl = SpecDeclFromString(string, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
                }
 

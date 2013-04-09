@@ -211,6 +211,9 @@ static Statement CopyStatement(Statement stmt)
          case expressionStmt:
             result = MkExpressionStmt(CopyList(stmt.expressions, CopyExpression));
             break;
+         case badDeclarationStmt:
+            result = MkBadDeclStmt(CopyDeclaration(stmt.decl));
+            break;
       }
    }
    if(result)

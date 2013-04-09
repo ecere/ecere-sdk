@@ -366,25 +366,26 @@ struct Symbol * enumClass;
 struct Type * type;
 struct TemplateParameter * templateParameter;
 } __attribute__ ((gcc_struct));
-unsigned int isSigned;
 int kind;
-unsigned int constant;
 unsigned int size;
 char *  name;
 char *  typeName;
-unsigned int count;
-unsigned int truth;
 int classObjectType;
-unsigned int byReference;
-unsigned int extraParam;
 int alignment;
-unsigned int directClassAccess;
-unsigned int computing;
-unsigned int dllExport;
 unsigned int offset;
-unsigned int keepCast;
-unsigned int passAsTemplate;
 int bitFieldCount;
+int count;
+unsigned int isSigned : 1;
+unsigned int constant : 1;
+unsigned int truth : 1;
+unsigned int byReference : 1;
+unsigned int extraParam : 1;
+unsigned int directClassAccess : 1;
+unsigned int computing : 1;
+unsigned int keepCast : 1;
+unsigned int passAsTemplate : 1;
+unsigned int dllExport : 1;
+unsigned int attrStdcall : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -1502,6 +1503,8 @@ extern struct Symbol * FindClass(char *  name);
 
 extern struct __ecereNameSpace__ecere__sys__OldList *  MkList(void);
 
+extern void PrintTypeNoConst(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
+
 extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 
 extern struct Declarator * SpecDeclFromString(char *  string, struct __ecereNameSpace__ecere__sys__OldList *  specs, struct Declarator * baseDecl);
@@ -1583,7 +1586,7 @@ if(method->dataType->returnType->kind == 8)
 classSym = method->dataType->returnType->_class;
 else
 {
-PrintType(method->dataType->returnType, type, 0x0, 0x1);
+PrintTypeNoConst(method->dataType->returnType, type, 0x0, 0x1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
@@ -1619,7 +1622,7 @@ if(param->kind == 8)
 classSym = param->_class;
 else
 {
-PrintType(param, type, 0x0, 0x1);
+PrintTypeNoConst(param, type, 0x0, 0x1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
@@ -1751,7 +1754,7 @@ if(method->dataType->returnType->kind == 8)
 classSym = method->dataType->returnType->_class;
 else
 {
-PrintType(method->dataType->returnType, type, 0x0, 0x1);
+PrintTypeNoConst(method->dataType->returnType, type, 0x0, 0x1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
@@ -1783,7 +1786,7 @@ if(param->kind == 8)
 classSym = param->_class;
 else
 {
-PrintType(param, type, 0x0, 0x1);
+PrintTypeNoConst(param, type, 0x0, 0x1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
@@ -1917,7 +1920,7 @@ if(method->dataType->returnType->kind == 8)
 classSym = method->dataType->returnType->_class;
 else
 {
-PrintType(method->dataType->returnType, type, 0x0, 0x1);
+PrintTypeNoConst(method->dataType->returnType, type, 0x0, 0x1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
@@ -1953,7 +1956,7 @@ if(param->kind == 8)
 classSym = param->_class;
 else
 {
-PrintType(param, type, 0x0, 0x1);
+PrintTypeNoConst(param, type, 0x0, 0x1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
@@ -2068,7 +2071,7 @@ if(method->dataType->returnType->kind == 8)
 classSym = method->dataType->returnType->_class;
 else
 {
-PrintType(method->dataType->returnType, type, 0x0, 0x1);
+PrintTypeNoConst(method->dataType->returnType, type, 0x0, 0x1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
@@ -2101,7 +2104,7 @@ if(param->kind == 8)
 classSym = param->_class;
 else
 {
-PrintType(param, type, 0x0, 0x1);
+PrintTypeNoConst(param, type, 0x0, 0x1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }

@@ -593,10 +593,31 @@ void FreePropertyWatch(PropertyWatch watcher)
    delete watcher;
 }
 
+void FreeAsmField(AsmField field)
+{
+   if(field.expression)
+      FreeExpression(field.expression);
+   delete field.command;
+   delete field;
+}
+
 void FreeStatement(Statement stmt)
 {
    switch(stmt.type)
    {
+      case asmStmt:
+      {
+         if(stmt.asmStmt.spec)
+            FreeSpecifier(stmt.asmStmt.spec);
+         if(stmt.asmStmt.inputFields)
+            FreeList(stmt.asmStmt.inputFields, FreeAsmField);
+         if(stmt.asmStmt.outputFields)
+            FreeList(stmt.asmStmt.outputFields, FreeAsmField);
+         if(stmt.asmStmt.clobberedFields)
+            FreeList(stmt.asmStmt.clobberedFields, FreeAsmField);
+         delete stmt.asmStmt.statements;
+         break;
+      }
       case labeledStmt:
          if(stmt.labeled.stmt)
             FreeStatement(stmt.labeled.stmt);
@@ -608,7 +629,8 @@ void FreeStatement(Statement stmt)
             FreeStatement(stmt.caseStmt.stmt);
          break;
       case badDeclarationStmt:
-         FreeDeclaration(stmt.decl);
+         if(stmt.decl)
+            FreeDeclaration(stmt.decl);
          break;
       case compoundStmt:
       {

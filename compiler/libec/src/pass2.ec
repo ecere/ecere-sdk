@@ -1805,16 +1805,30 @@ static void ProcessExpression(Expression exp)
                   
                   if(typedObject && memberExp.member.exp && memberExp.member.exp.expType)
                   {
-                     if(
-                        (argClass && (argClass.type == enumClass || argClass.type == unitClass || argClass.type == bitClass || argClass.type == systemClass) && strcmp(argClass.fullName, "class") && strcmp(argClass.fullName, "ecere::com::Class")) || // Patched so that class isn't considered SYSTEM...
-                        (!memberExp.member.exp.expType.classObjectType && 
+                     bool changeReference = false;
+
+                     // Patched so that class isn't considered SYSTEM...
+                     if(argClass && (argClass.type == enumClass || argClass.type == unitClass || argClass.type == bitClass || argClass.type == systemClass) && strcmp(argClass.fullName, "class") && 
+                        strcmp(argClass.fullName, "ecere::com::Class"))
+                        changeReference = true;
+                     if(!memberExp.member.exp.expType.classObjectType && 
                         (((
-                           (memberExp.member.exp.expType.kind != pointerType && (memberExp.member.exp.expType.kind != classType || !memberExp.member.exp.expType._class || 
-                           !memberExp.member.exp.expType._class.registered ||
-                           memberExp.member.exp.expType._class.registered.type == structClass)))) ||
-                           method.dataType.byReference)))      // ADDED THIS FOR OnGetDataFromString
+                           (memberExp.member.exp.expType.kind != pointerType && 
+                              (memberExp.member.exp.expType.kind != classType || !memberExp.member.exp.expType._class || 
+                               !memberExp.member.exp.expType._class.registered || memberExp.member.exp.expType._class.registered.type == structClass)))) ||
+                           method.dataType.byReference)) // ADDED THIS FOR OnGetDataFromString
+                        changeReference = true;
+                     if(typedObject && memberExp.member.exp.expType.classObjectType && memberExp.member.exp.expType.byReference != method.dataType.byReference)
+                        changeReference = true;
+                     if(changeReference)
                      {
-                        if(memberExp.member.exp.type == opExp && memberExp.member.exp.op.op == '*' && !memberExp.member.exp.op.exp1)
+                        if(memberExp.member.exp.type == bracketsExp && memberExp.member.exp.list && memberExp.member.exp.list->count == 1 && 
+                           ((Expression)memberExp.member.exp.list->first).type == opExp && ((Expression)memberExp.member.exp.list->first).op.op == '*' && !((Expression)memberExp.member.exp.list->first).op.exp1)
+                        {
+                           exp.call.arguments->Insert(null, ((Expression)memberExp.member.exp.list->first).op.exp2);
+                           ((Expression)memberExp.member.exp.list->first).op.exp2 = null;
+                        }
+                        else if(memberExp.member.exp.type == opExp && memberExp.member.exp.op.op == '*' && !memberExp.member.exp.op.exp1)
                         {
                            exp.call.arguments->Insert(null, memberExp.member.exp.op.exp2);
                            memberExp.member.exp.op.exp2 = null;
@@ -1920,8 +1934,7 @@ static void ProcessExpression(Expression exp)
                      {
                         char string[1024] = "";
                         Symbol classSym;
-
-                        PrintType(type, string, false, true);
+                        PrintTypeNoConst(type, string, false, true);
                         classSym = FindClass(string);
                         if(classSym) _class = classSym.registered;
                         // if(!class) _class = eSystem_FindClass(privateModule, "int");
@@ -2047,7 +2060,7 @@ static void ProcessExpression(Expression exp)
                                     newExp.next = null;
                                     newExp.expType = null;
 
-                                    PrintType(e.expType, typeString, false, true);
+                                    PrintTypeNoConst(e.expType, typeString, false, true);
                                     decl = SpecDeclFromString(typeString, specs, null);
                                     newExp.destType = ProcessType(specs, decl);
 
@@ -2206,7 +2219,7 @@ static void ProcessExpression(Expression exp)
                // DANGER: Buffer overflow
                char string[2048] = "";
                Symbol classSym;
-               PrintType(type, string, false, true);
+               PrintTypeNoConst(type, string, false, true);
                classSym = FindClass(string);
                _class = classSym ? classSym.registered : null;
             }

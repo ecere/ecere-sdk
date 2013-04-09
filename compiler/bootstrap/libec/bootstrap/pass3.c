@@ -709,25 +709,26 @@ struct Symbol * enumClass;
 struct Type * type;
 struct TemplateParameter * templateParameter;
 } __attribute__ ((gcc_struct));
-unsigned int isSigned;
 int kind;
-unsigned int constant;
 unsigned int size;
 char *  name;
 char *  typeName;
-unsigned int count;
-unsigned int truth;
 int classObjectType;
-unsigned int byReference;
-unsigned int extraParam;
 int alignment;
-unsigned int directClassAccess;
-unsigned int computing;
-unsigned int dllExport;
 unsigned int offset;
-unsigned int keepCast;
-unsigned int passAsTemplate;
 int bitFieldCount;
+int count;
+unsigned int isSigned : 1;
+unsigned int constant : 1;
+unsigned int truth : 1;
+unsigned int byReference : 1;
+unsigned int extraParam : 1;
+unsigned int directClassAccess : 1;
+unsigned int computing : 1;
+unsigned int keepCast : 1;
+unsigned int passAsTemplate : 1;
+unsigned int dllExport : 1;
+unsigned int attrStdcall : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -1008,7 +1009,7 @@ extern struct Declarator * SpecDeclFromString(char *  string, struct __ecereName
 
 extern struct Specifier * CopySpecifier(struct Specifier * spec);
 
-extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (* )(void * ));
+extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (*  FreeFunction)(void * ));
 
 extern void FreeSpecifier(struct Specifier * spec);
 
@@ -1279,7 +1280,9 @@ InstDeclPassIdentifier(spec->id);
 break;
 }
 case 5:
-if(spec->extDecl && spec->extDecl->type == 0 && spec->extDecl->s && !strcmp(spec->extDecl->s, "dllexport"))
+if(spec->extDecl && spec->extDecl->type == 0 && spec->extDecl->s)
+{
+if(!strcmp(spec->extDecl->s, "dllexport"))
 {
 struct Specifier * prevSpec;
 
@@ -1300,6 +1303,15 @@ if(targetPlatform == 1)
 spec->extDecl->s = __ecereNameSpace__ecere__sys__CopyString("extern __declspec(dllexport)");
 else
 spec->extDecl->s = __ecereNameSpace__ecere__sys__CopyString("extern __attribute__ ((visibility(\"default\")))");
+}
+}
+else if(!strcmp(spec->extDecl->s, "stdcall") || !strcmp(spec->extDecl->s, "_stdcall") || !strcmp(spec->extDecl->s, "__stdcall") || !strcmp(spec->extDecl->s, "__stdcall__"))
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete(spec->extDecl->s), spec->extDecl->s = 0);
+if(targetPlatform == 1)
+spec->extDecl->s = __ecereNameSpace__ecere__sys__CopyString("__attribute__((__stdcall__))");
+else
+spec->extDecl->s = __ecereNameSpace__ecere__sys__CopyString("");
 }
 }
 break;
@@ -1683,6 +1695,10 @@ static void InstDeclPassStatement(struct Statement * stmt)
 {
 switch(stmt->type)
 {
+case 14:
+if(stmt->decl)
+InstDeclPassDeclaration(stmt->decl);
+break;
 case 0:
 InstDeclPassStatement(stmt->labeled.stmt);
 break;

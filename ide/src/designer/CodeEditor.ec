@@ -3150,7 +3150,7 @@ class CodeEditor : Window
                                                                   {
                                                                      curMember = thisMember;
                                                                      curClass = curMember._class;
-                                                                     memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+                                                                     memcpy(subMemberStack, _subMemberStack, sizeof(DataMember) * _subMemberStackPos);
                                                                      subMemberStackPos = _subMemberStackPos;
                                                                      found = true;
                                                                   }

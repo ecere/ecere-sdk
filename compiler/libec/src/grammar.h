@@ -157,7 +157,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1685 of yacc.c  */
-#line 35 "grammar.y"
+#line 37 "grammar.y"
 
    SpecifierType specifierType;
    int i;

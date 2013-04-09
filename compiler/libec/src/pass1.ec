@@ -541,7 +541,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, char * classNam
                   MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null,null), null)), MkExpIdentifier(MkIdentifier(name))))));
                ListAdd(registerModuleBody.compound.statements, stmt);
             }
-            if(((Symbol)prop.symbol).propCategory)
+            if(prop.symbol && ((Symbol)prop.symbol).propCategory)
             {
                stmt = MkExpressionStmt(MkListOne(
                   MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier(nameM)), MkIdentifier("category")), '=',
@@ -1722,9 +1722,14 @@ public void ProcessClassDefinitions()
          }
          else if(external.type == functionExternal)
          {
+            bool setStaticMethod = false;
             // Mark
-            if(external.symbol && !external.symbol.type.thisClass)
+            if(external.symbol && !external.symbol.type.thisClass && !external.symbol.type.staticMethod)
+            {
+               // TOCHECK: Where do we actually need this to be set?
                external.symbol.type.staticMethod = true;
+               setStaticMethod = true;
+            }
 
             if(inCompiler)
             {
@@ -1759,7 +1764,12 @@ public void ProcessClassDefinitions()
                {
                   char * string;
                   char type[1024] = "";
+                  // We don't want functions to be marked as static methods
+                  if(setStaticMethod)
+                     function.declarator.symbol.type.staticMethod = false;
                   PrintType(function.declarator.symbol.type, type, true, true);
+                  if(setStaticMethod)
+                     function.declarator.symbol.type.staticMethod = true;
                   string = QMkString(type);
                   ListAdd(args, MkExpString(string));
                   delete string;

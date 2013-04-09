@@ -216,8 +216,8 @@ private:
          Load();
       }
    }
-
-   void Load()
+   // These must be public as they are not virtual
+   public SettingsIOResult Load()
    {
       SettingsIOResult result = GlobalSettings::Load();
       IDESettings data = (IDESettings)this.data;
@@ -233,7 +233,7 @@ private:
             bool loaded;
             OldIDESettings oldSettings { };
             Close();
-            loaded = oldSettings.Load();
+            loaded = oldSettings.Load() == success;
             oldSettings.Close();
             if(loaded)
             {
@@ -295,9 +295,10 @@ private:
          data.ManagePortablePaths(moduleLocation, true);
       data.ForcePathSeparatorStyle(true);
       OnLoad(data);
+      return result;
    }
 
-   void Save()
+   public void Save()
    {
       IDESettings data = (IDESettings)this.data;
       Platform runtimePlatform = GetRuntimePlatform();

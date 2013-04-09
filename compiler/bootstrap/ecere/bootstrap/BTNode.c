@@ -338,22 +338,22 @@ unsigned int truth;
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_bool, &truth);
 if(truth)
 {
-(*(this)) = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__BTNode);
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_uintptr, &(*(this))->key);
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, &(*(this))->left);
-if((*(this))->left)
+(*this) = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__BTNode);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_uintptr, &(*this)->key);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, &(*this)->left);
+if((*this)->left)
 {
-(*(this))->left->parent = (void *)*(struct __ecereNameSpace__ecere__sys__BTNode **)this;
+(*this)->left->parent = *(struct __ecereNameSpace__ecere__sys__BTNode **)this;
 }
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, &(*(this))->right);
-if((*(this))->right)
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, &(*this)->right);
+if((*this)->right)
 {
-(*(this))->right->parent = (void *)*(struct __ecereNameSpace__ecere__sys__BTNode **)this;
+(*this)->right->parent = *(struct __ecereNameSpace__ecere__sys__BTNode **)this;
 }
-(*(this))->depth = __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_depthProp(((struct __ecereNameSpace__ecere__sys__BTNode *)(void *)*(struct __ecereNameSpace__ecere__sys__BTNode **)this));
+(*this)->depth = __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_depthProp((*(struct __ecereNameSpace__ecere__sys__BTNode **)this));
 }
 else
-(*(this)) = (((void *)0));
+(*this) = (((void *)0));
 }
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_maximum(struct __ecereNameSpace__ecere__sys__BTNode * this);
@@ -1040,25 +1040,25 @@ unsigned int truth;
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_bool, &truth);
 if(truth)
 {
-(*(this)) = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__StringBTNode);
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_String, &(*(this))->key);
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__StringBTNode, &(*(this))->left);
-if((*(this))->left)
+(*this) = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__StringBTNode);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_String, &(*this)->key);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__StringBTNode, &(*this)->left);
+if((*this)->left)
 {
-(*(this))->left->parent = (void *)*(struct __ecereNameSpace__ecere__sys__StringBTNode **)this;
+(*this)->left->parent = *(struct __ecereNameSpace__ecere__sys__StringBTNode **)this;
 }
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__StringBTNode, &(*(this))->right);
-if((*(this))->right)
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__StringBTNode, &(*this)->right);
+if((*this)->right)
 {
-(*(this))->right->parent = (void *)*(struct __ecereNameSpace__ecere__sys__StringBTNode **)this;
+(*this)->right->parent = *(struct __ecereNameSpace__ecere__sys__StringBTNode **)this;
 }
-(*(this))->depth = __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_depthProp(((struct __ecereNameSpace__ecere__sys__BTNode *)((void *)*(struct __ecereNameSpace__ecere__sys__StringBTNode **)this)));
+(*this)->depth = __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_depthProp(((struct __ecereNameSpace__ecere__sys__BTNode *)*(struct __ecereNameSpace__ecere__sys__StringBTNode **)(*(struct __ecereNameSpace__ecere__sys__StringBTNode **)this)));
 }
 else
-(*(this)) = (((void *)0));
+(*this) = (((void *)0));
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
 

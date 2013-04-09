@@ -779,6 +779,7 @@ storage_class_specifier:
 
 ext_decl:
      EXT_DECL { $$ = MkExtDeclString(CopyString(yytext)); }
+   | EXT_STORAGE { $$ = MkExtDeclString(CopyString(yytext)); }
    | attrib { $$ = MkExtDeclAttrib($1); }
    ;
 
@@ -814,8 +815,7 @@ attrib:
    ;   
 
 ext_storage:
-     EXT_STORAGE  { $$ = MkSpecifierExtended(MkExtDeclString(CopyString(yytext))); }
-   | ext_decl   { $$ = MkSpecifierExtended($1); }
+   ext_decl   { $$ = MkSpecifierExtended($1); }
    ;
 
 type_qualifier:
@@ -842,9 +842,12 @@ type_specifier:
 	| struct_or_union_specifier_nocompound
 	| enum_specifier_nocompound
 	| type
+   | TYPEOF '(' assignment_expression ')' { $$ = MkSpecifierTypeOf($3); }
    | SUBCLASS '(' type ')'                { $$ = MkSpecifierSubClass($3); }
-   | SUBCLASS '(' identifier ')'          { DeclClass(0, $3.string); $$ = MkSpecifierSubClass(MkSpecifierName($3.string)); FreeIdentifier($3); }
+   | SUBCLASS '(' identifier ')'          { _DeclClass(0, $3.string); $$ = MkSpecifierSubClass(MkSpecifierName($3.string)); FreeIdentifier($3); }
    | THISCLASS       { $$ = MkSpecifier(THISCLASS); }
+   | TYPED_OBJECT    { $$ = MkSpecifier(TYPED_OBJECT); }
+   | ANY_OBJECT      { $$ = MkSpecifier(ANY_OBJECT); }
 	;
 
 strict_type_specifier:
@@ -860,11 +863,13 @@ strict_type_specifier:
 	| DOUBLE          { $$ = MkSpecifier(DOUBLE); }
 	| SIGNED          { $$ = MkSpecifier(SIGNED); }
 	| UNSIGNED        { $$ = MkSpecifier(UNSIGNED); }
+   | EXTENSION       { $$ = MkSpecifier(EXTENSION); }
 	| struct_or_union_specifier_nocompound
 	| enum_specifier_nocompound
 	| strict_type
+   | TYPEOF '(' assignment_expression ')' { $$ = MkSpecifierTypeOf($3); }
    | SUBCLASS '(' type ')'                { $$ = MkSpecifierSubClass($3); }
-   | SUBCLASS '(' identifier ')'          { DeclClass(0, $3.string); $$ = MkSpecifierSubClass(MkSpecifierName($3.string)); FreeIdentifier($3); }
+   | SUBCLASS '(' identifier ')'          { _DeclClass(0, $3.string); $$ = MkSpecifierSubClass(MkSpecifierName($3.string)); FreeIdentifier($3); }
    | THISCLASS       { $$ = MkSpecifier(THISCLASS); }
 	;
 
@@ -1281,6 +1286,8 @@ parameter_list:
 parameter_declaration:
 	  guess_declaration_specifiers declarator          { $$ = MkTypeName($1, $2); }
 	| guess_declaration_specifiers abstract_declarator { $$ = MkTypeName($1, $2); }
+   | guess_declaration_specifiers '&'                 { $$ = MkTypeName($1, MkDeclaratorPointer(MkPointer(null,null), null)); }
+   | guess_declaration_specifiers '&' declarator      { $$ = MkTypeName($1, MkDeclaratorPointer(MkPointer(null,null), $3)); }
    | real_guess_declaration_specifiers                { $$ = MkTypeName($1, null); }
 /*
    | CLASS                                            
@@ -1294,6 +1301,7 @@ parameter_declaration:
 */
    | CLASS
       { $$ = MkTypeName(MkListOne(MkSpecifier(CLASS)), null); }
+/*
    | TYPED_OBJECT                                            
       { $$ = MkTypeName(MkListOne(MkSpecifier(TYPED_OBJECT)), null); }
    | TYPED_OBJECT '&'                                        
@@ -1312,6 +1320,7 @@ parameter_declaration:
    | error declarator             { $$ = MkTypeName(MkListOne(MkSpecifier(INT)), $2); }
    //| error struct_declarator             { $$ = MkTypeName(MkListOne(MkSpecifier(INT)), $2); }
    | error abstract_declarator          { $$ = MkTypeName(MkListOne(MkSpecifier(INT)), $2); }  
+*/
 	;
 
 identifier_list:

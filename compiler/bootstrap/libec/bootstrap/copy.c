@@ -622,25 +622,26 @@ struct Symbol * enumClass;
 struct Type * type;
 struct TemplateParameter * templateParameter;
 } __attribute__ ((gcc_struct));
-unsigned int isSigned;
 int kind;
-unsigned int constant;
 unsigned int size;
 char *  name;
 char *  typeName;
-unsigned int count;
-unsigned int truth;
 int classObjectType;
-unsigned int byReference;
-unsigned int extraParam;
 int alignment;
-unsigned int directClassAccess;
-unsigned int computing;
-unsigned int dllExport;
 unsigned int offset;
-unsigned int keepCast;
-unsigned int passAsTemplate;
 int bitFieldCount;
+int count;
+unsigned int isSigned : 1;
+unsigned int constant : 1;
+unsigned int truth : 1;
+unsigned int byReference : 1;
+unsigned int extraParam : 1;
+unsigned int directClassAccess : 1;
+unsigned int computing : 1;
+unsigned int keepCast : 1;
+unsigned int passAsTemplate : 1;
+unsigned int dllExport : 1;
+unsigned int attrStdcall : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -1070,6 +1071,8 @@ struct Declaration * CopyDeclaration(struct Declaration * decl);
 
 extern struct Statement * MkExpressionStmt(struct __ecereNameSpace__ecere__sys__OldList * expressions);
 
+extern struct Statement * MkBadDeclStmt(struct Declaration * decl);
+
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
 static struct Statement * CopyStatement(struct Statement * stmt)
@@ -1086,6 +1089,9 @@ result->compound.context = __ecereNameSpace__ecere__com__eInstance_New(__ecereCl
 break;
 case 3:
 result = MkExpressionStmt(CopyList(stmt->expressions, CopyExpression));
+break;
+case 14:
+result = MkBadDeclStmt(CopyDeclaration(stmt->decl));
 break;
 }
 }
@@ -1462,7 +1468,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyAttrib", "Attrib Cop
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyDeclarator", "Declarator CopyDeclarator(Declarator declarator)", CopyDeclarator, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyInitDeclarator", "InitDeclarator CopyInitDeclarator(InitDeclarator initDecl)", CopyInitDeclarator, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyDeclaration", "Declaration CopyDeclaration(Declaration decl)", CopyDeclaration, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyList", "ecere::sys::OldList * CopyList(ecere::sys::OldList * source, void *( *)(void *))", CopyList, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyList", "ecere::sys::OldList * CopyList(ecere::sys::OldList * source, void * (* CopyFunction)(void *))", CopyList, module, 2);
 }
 
 void __ecereUnregisterModule_copy(struct __ecereNameSpace__ecere__com__Instance * module)

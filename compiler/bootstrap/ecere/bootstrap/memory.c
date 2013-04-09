@@ -315,10 +315,10 @@ void __ecereRegisterModule_memory(struct __ecereNameSpace__ecere__com__Instance 
 {
 struct __ecereNameSpace__ecere__com__Class * class;
 
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::MoveBytes", "void ecere::sys::MoveBytes(void * dest, void * source, uint count)", __ecereNameSpace__ecere__sys__MoveBytes, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopyBytes", "void ecere::sys::CopyBytes(void * dest, void * source, uint count)", __ecereNameSpace__ecere__sys__CopyBytes, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopyBytesBy2", "void ecere::sys::CopyBytesBy2(void * dest, void * source, uint count)", __ecereNameSpace__ecere__sys__CopyBytesBy2, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopyBytesBy4", "void ecere::sys::CopyBytesBy4(void * dest, void * source, uint count)", __ecereNameSpace__ecere__sys__CopyBytesBy4, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::MoveBytes", "void ecere::sys::MoveBytes(void * dest, const void * source, uint count)", __ecereNameSpace__ecere__sys__MoveBytes, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopyBytes", "void ecere::sys::CopyBytes(void * dest, const void * source, uint count)", __ecereNameSpace__ecere__sys__CopyBytes, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopyBytesBy2", "void ecere::sys::CopyBytesBy2(void * dest, const void * source, uint count)", __ecereNameSpace__ecere__sys__CopyBytesBy2, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopyBytesBy4", "void ecere::sys::CopyBytesBy4(void * dest, const void * source, uint count)", __ecereNameSpace__ecere__sys__CopyBytesBy4, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FillBytes", "void ecere::sys::FillBytes(void * area, byte value, uint count)", __ecereNameSpace__ecere__sys__FillBytes, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FillBytesBy2", "void ecere::sys::FillBytesBy2(void * area, uint16 value, uint count)", __ecereNameSpace__ecere__sys__FillBytesBy2, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FillBytesBy4", "void ecere::sys::FillBytesBy4(void * area, uint value, uint count)", __ecereNameSpace__ecere__sys__FillBytesBy4, module, 1);

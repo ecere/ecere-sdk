@@ -803,25 +803,26 @@ struct Symbol * enumClass;
 struct Type * type;
 struct TemplateParameter * templateParameter;
 } __attribute__ ((gcc_struct));
-unsigned int isSigned;
 int kind;
-unsigned int constant;
 unsigned int size;
 char *  name;
 char *  typeName;
-unsigned int count;
-unsigned int truth;
 int classObjectType;
-unsigned int byReference;
-unsigned int extraParam;
 int alignment;
-unsigned int directClassAccess;
-unsigned int computing;
-unsigned int dllExport;
 unsigned int offset;
-unsigned int keepCast;
-unsigned int passAsTemplate;
 int bitFieldCount;
+int count;
+unsigned int isSigned : 1;
+unsigned int constant : 1;
+unsigned int truth : 1;
+unsigned int byReference : 1;
+unsigned int extraParam : 1;
+unsigned int directClassAccess : 1;
+unsigned int computing : 1;
+unsigned int keepCast : 1;
+unsigned int passAsTemplate : 1;
+unsigned int dllExport : 1;
+unsigned int attrStdcall : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -1320,7 +1321,7 @@ memcpy(name, string, c + 1);
 name[c + 1] = '\0';
 if(!strcmp(name, "typed_object"))
 {
-id->_class = MkSpecifierName("class");
+id->_class = MkSpecifierName("typed_object");
 id->string = __ecereNameSpace__ecere__sys__CopyString(namePart);
 }
 else if(!strcmp(name, "property"))
@@ -2086,6 +2087,59 @@ __ecereInstance1->qualifiers = qualifiers, __ecereInstance1->declarator = declar
 });
 }
 
+extern char *  __ecereNameSpace__ecere__sys__RSearchString(char *  buffer, char *  subStr, int maxLen, unsigned int matchCase, unsigned int matchWord);
+
+extern void FreeSpecifier(struct Specifier * spec);
+
+void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
+
+struct TypeName * MkTypeNameGuessDecl(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Declarator * declarator)
+{
+struct TypeName * typeName = (typeName = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName), typeName->qualifiers = qualifiers, typeName->declarator = declarator, typeName);
+
+if(qualifiers != (((void *)0)))
+{
+unsigned int gotType = 0x0;
+unsigned int gotFullType = 0x0;
+struct Specifier * spec, * next;
+
+for(spec = qualifiers->first; spec; spec = next)
+{
+next = spec->next;
+if(gotType && !declarator && ((spec->type == 1 && spec->name) || (spec->type == 0 && gotFullType)))
+{
+char * s = (((void *)0));
+
+if(spec->type == 1)
+{
+char * colon = __ecereNameSpace__ecere__sys__RSearchString(spec->name, "::", strlen(spec->name), 0x1, 0x0);
+
+s = colon ? colon + 2 : spec->name;
+}
+else if(spec->type == 0)
+{
+if(spec->specifier == INT64)
+s = "int64";
+}
+if(s)
+{
+typeName->declarator = declarator = MkDeclaratorIdentifier(MkIdentifier(s));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(qualifiers, spec);
+FreeSpecifier(spec);
+spec = (((void *)0));
+}
+}
+if(spec && spec->type != 5)
+{
+if(spec->type != 0 || (spec->specifier != UNSIGNED && spec->specifier != SIGNED && spec->specifier != LONG))
+gotFullType = 0x1;
+gotType = 0x1;
+}
+}
+}
+return typeName;
+}
+
 struct Identifier * GetDeclId(struct Declarator * decl)
 {
 while(decl && decl->type != 1)
@@ -2224,10 +2278,12 @@ unsigned int variable = 0x1;
 
 if(specifiers != (((void *)0)))
 {
-struct Specifier * spec;
+unsigned int gotType = 0x0;
+struct Specifier * spec, * next;
 
-for(spec = specifiers->first; spec; spec = spec->next)
+for(spec = specifiers->first; spec; spec = next)
 {
+next = spec->next;
 if(spec->type == 0 && spec->specifier == TYPEDEF)
 {
 if(initDeclarators != (((void *)0)))
@@ -2249,16 +2305,35 @@ decl->symbol = d->declarator->symbol = type;
 }
 else if(spec->next)
 {
-for(; spec; spec = spec->next)
+spec = specifiers->last;
 {
-if(spec->type == 1 && spec->name)
+if((spec->type == 1 && spec->name) || spec->type == 0)
 {
-struct Symbol * type = (type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), type->string = __ecereNameSpace__ecere__sys__CopyString(spec->name), type->type = ProcessType(specifiers, (((void *)0))), type);
+char * s = (((void *)0));
+
+if(spec->type == 1)
+{
+char * colon = __ecereNameSpace__ecere__sys__RSearchString(spec->name, "::", strlen(spec->name), 0x1, 0x0);
+
+s = colon ? colon + 2 : spec->name;
+}
+else if(spec->type == 0)
+{
+if(spec->specifier == INT64)
+s = "int64";
+}
+if(s)
+{
+struct Symbol * type = (type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), type->string = __ecereNameSpace__ecere__sys__CopyString(s), type->type = ProcessType(specifiers, (((void *)0))), type);
 
 type->id = type->idCode = curContext->nextID++;
+decl->symbol = type;
+decl->declarators = initDeclarators = MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(s)), (((void *)0))));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(specifiers, spec);
+FreeSpecifier(spec);
 if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(curContext->templateTypesOnly ? curContext->parent : curContext)->types, (struct __ecereNameSpace__ecere__sys__BTNode *)type))
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), type);
-decl->symbol = type;
+}
 }
 }
 }
@@ -2267,6 +2342,34 @@ break;
 }
 else if(spec->type == 0 && (spec->specifier == STRUCT || spec->specifier == UNION))
 variable = 0x0;
+else
+{
+if(gotType && initDeclarators == (((void *)0)) && !spec->next && ((spec->type == 1 && spec->name) || spec->type == 0))
+{
+char * s = (((void *)0));
+
+if(spec->type == 1)
+{
+char * colon = __ecereNameSpace__ecere__sys__RSearchString(spec->name, "::", strlen(spec->name), 0x1, 0x0);
+
+s = colon ? colon + 2 : spec->name;
+}
+else if(spec->type == 0)
+{
+if(spec->specifier == INT64)
+s = "int64";
+}
+if(s)
+{
+decl->declarators = initDeclarators = MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(s)), (((void *)0))));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(specifiers, spec);
+FreeSpecifier(spec);
+spec = (((void *)0));
+}
+}
+}
+if(spec && spec->type != 5)
+gotType = 0x1;
 }
 }
 if(variable && initDeclarators)
@@ -2372,11 +2475,44 @@ return decl;
 
 struct Declaration * MkStructDeclaration(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct __ecereNameSpace__ecere__sys__OldList * declarators, struct Specifier * extStorage)
 {
-return __extension__ ({
-struct Declaration * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declaration);
+struct Declaration * decl = (decl = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Declaration), decl->type = 0, decl->declarators = declarators, decl->specifiers = specifiers, decl->extStorage = extStorage, decl->loc = yylloc, decl);
 
-__ecereInstance1->type = 0, __ecereInstance1->declarators = declarators, __ecereInstance1->specifiers = specifiers, __ecereInstance1->extStorage = extStorage, __ecereInstance1->loc = yylloc, __ecereInstance1;
-});
+if(specifiers != (((void *)0)))
+{
+unsigned int gotType = 0x0;
+struct Specifier * spec, * next;
+
+for(spec = specifiers->first; spec; spec = next)
+{
+next = spec->next;
+if(gotType && declarators == (((void *)0)) && ((spec->type == 1 && spec->name) || spec->type == 0))
+{
+char * s = (((void *)0));
+
+if(spec->type == 1)
+{
+char * colon = __ecereNameSpace__ecere__sys__RSearchString(spec->name, "::", strlen(spec->name), 0x1, 0x0);
+
+s = colon ? colon + 2 : spec->name;
+}
+else if(spec->type == 0)
+{
+if(spec->specifier == INT64)
+s = "int64";
+}
+if(s)
+{
+decl->declarators = declarators = MkListOne(MkDeclaratorIdentifier(MkIdentifier(s)));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(specifiers, spec);
+FreeSpecifier(spec);
+spec = (((void *)0));
+}
+}
+if(spec && spec->type != 5)
+gotType = 0x1;
+}
+}
+return decl;
 }
 
 struct Statement * MkLabeledStmt(struct Identifier * id, struct Statement * statement)
@@ -2534,8 +2670,6 @@ extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameS
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(struct __ecereNameSpace__ecere__sys__BTNode * this);
 
 extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
-
-void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
 
 void ProcessFunctionBody(struct FunctionDefinition * func, struct Statement * body)
 {
@@ -2732,7 +2866,7 @@ extern char *  StringFromSpecDecl(struct __ecereNameSpace__ecere__sys__OldList *
 
 struct Symbol * _DeclClass(int symbolID, char *  name);
 
-extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (* )(void * ));
+extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (*  FreeFunction)(void * ));
 
 extern void FreeTemplateArgument(struct TemplateArgument * arg);
 
@@ -2897,8 +3031,6 @@ __ecereInstance1->specifiers = specifiers, __ecereInstance1->declarator = decl, 
 }
 
 extern struct Specifier * CopySpecifier(struct Specifier * spec);
-
-extern void FreeSpecifier(struct Specifier * spec);
 
 void ProcessClassFunctionBody(struct ClassFunction * func, struct Statement * body)
 {
@@ -3396,7 +3528,7 @@ __ecereInstance1->type = 2, __ecereInstance1->_class = _class, __ecereInstance1-
 });
 }
 
-extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
+extern void PrintTypeNoConst(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 
 struct PropertyDef * MkProperty(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl, struct Identifier * id, struct Statement * setStmt, struct Statement * getStmt)
 {
@@ -3409,7 +3541,7 @@ if(!id)
 char typeString[1024];
 
 typeString[0] = '\0';
-PrintType(type, typeString, 0x0, 0x1);
+PrintTypeNoConst(type, typeString, 0x0, 0x1);
 id = MkIdentifier(typeString);
 prop->conversion = 0x1;
 }
@@ -3702,7 +3834,6 @@ void CopyTypeInto(struct Type * type, struct Type * src)
 {
 *type = *src;
 type->name = __ecereNameSpace__ecere__sys__CopyString(src->name);
-type->enumName = __ecereNameSpace__ecere__sys__CopyString(src->enumName);
 type->refCount = 1;
 if(src->kind == 15)
 {
@@ -3717,6 +3848,7 @@ struct __ecereNameSpace__ecere__sys__NamedLink * __ecereInstance1 = __ecereNameS
 __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(member->name), __ecereInstance1->data = member->data, __ecereInstance1;
 }));
 }
+type->enumName = __ecereNameSpace__ecere__sys__CopyString(src->enumName);
 }
 else if(src->kind == 9 || src->kind == 10)
 {
@@ -3724,6 +3856,7 @@ struct Type * member;
 
 for(member = type->members.first; member; member = member->next)
 member->refCount++;
+type->enumName = __ecereNameSpace__ecere__sys__CopyString(src->enumName);
 }
 else if(src->kind == 11)
 {
@@ -3744,69 +3877,56 @@ type->arraySizeExp = CopyExpression(type->arraySizeExp);
 }
 }
 
-extern void ProcessExpressionType(struct Expression * exp);
-
-extern void ComputeExpression(struct Expression * exp);
-
-extern unsigned long strtoul(const char *  nptr, char * *  endptr, int base);
-
 extern struct Symbol * FindSymbol(char *  name, struct Context * startContext, struct Context * endContext, unsigned int isStruct, unsigned int globalNameSpace);
 
-struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl)
+static struct Type * ProcessTypeSpecs(struct __ecereNameSpace__ecere__sys__OldList * specs, unsigned int assumeEllipsis, unsigned int keepTypeName)
 {
-struct Type * type = (((void *)0));
-unsigned int isTypedef = 0x0;
-
-if(!specs || specs->first)
-{
-struct Declarator * funcDecl = GetFuncDecl(decl);
-struct Type * specType = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
-unsigned int dllExport = 0x0;
-
-specType->kind = 3;
-specType->isSigned = 0x1;
-specType->refCount = 1;
-type = __extension__ ({
-struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
-
-__ecereInstance1->refCount = 1, __ecereInstance1;
-});
-while(decl && (decl->type == 0 || decl->type == 6 || decl->type == 7))
-{
-if(decl->type == 0 && decl->structDecl.exp)
-{
-ProcessExpressionType(decl->structDecl.exp);
-ComputeExpression(decl->structDecl.exp);
-if(decl->structDecl.exp->type == 2)
-specType->bitFieldCount = strtoul(decl->structDecl.exp->constant, (((void *)0)), 0);
-}
-if((decl->type == 6 || decl->type == 7) && decl->extended.extended && decl->extended.extended->type == 0 && decl->extended.extended->s && (!strcmp(decl->extended.extended->s, "__declspec(dllexport)") || !strcmp(decl->extended.extended->s, "dllexport")))
-{
-dllExport = 0x1;
-}
-if((decl->type == 6 || decl->type == 7) && decl->extended.extended && decl->extended.extended->type == 1)
-{
-specType->keepCast = 0x1;
-}
-decl = decl->declarator;
-}
-if(funcDecl || !decl || decl->type == 1)
-{
-struct Specifier * spec;
+struct Type * specType = (specType = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), specType->refCount = 1, specType->kind = 3, specType->isSigned = 0x1, specType);
 
 if(specs != (((void *)0)))
 {
+unsigned int isTypedef = 0x0;
+struct Specifier * spec;
 unsigned int isLong = 0x0;
 
 for(spec = specs->first; spec; spec = spec->next)
 {
-if(spec->type == 5 && spec->extDecl && spec->extDecl->type == 0 && spec->extDecl->s && (!strcmp(spec->extDecl->s, "__declspec(dllexport)") || !strcmp(spec->extDecl->s, "dllexport")))
+if(spec->type == 5)
 {
-dllExport = 0x1;
+struct ExtDecl * extDecl = spec->extDecl;
+
+if(extDecl->type == 0)
+{
+char * s = spec->extDecl->s;
+
+if(!strcmp(spec->extDecl->s, "__declspec(dllexport)") || !strcmp(spec->extDecl->s, "dllexport"))
+specType->dllExport = 0x1;
+else if(!strcmp(spec->extDecl->s, "__declspec(stdcall)") || !strcmp(spec->extDecl->s, "stdcall"))
+specType->attrStdcall = 0x1;
 }
-if(spec->type == 5 && spec->extDecl->type == 1)
+else if(extDecl->type == 1)
 {
+struct __ecereNameSpace__ecere__sys__OldList * attribs = extDecl->attr->attribs;
+
+if(attribs)
+{
+struct Attribute * attr;
+
+for(attr = (*attribs).first; attr; attr = attr->next)
+{
+char * s = attr->attr;
+
+if(s)
+{
+if(!strcmp(s, "dllexport"))
+specType->dllExport = 0x1;
+else if(!strcmp(s, "stdcall"))
+specType->attrStdcall = 0x1;
+}
+}
+}
 specType->keepCast = 0x1;
+}
 }
 if(spec->specifier != CONST && (specType->kind == 9 || specType->kind == 10))
 {
@@ -3817,7 +3937,12 @@ struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__e
 __ecereInstance1->kind = 3, __ecereInstance1->isSigned = 0x1, __ecereInstance1->refCount = 1, __ecereInstance1;
 });
 }
-if(spec->type == 0)
+if(isTypedef && keepTypeName)
+{
+specType->kind = 18;
+return specType;
+}
+else if(spec->type == 0)
 {
 if(spec->specifier == TYPEDEF)
 isTypedef = 0x1;
@@ -3860,21 +3985,20 @@ else if(spec->specifier == UNSIGNED)
 specType->isSigned = 0x0;
 else if(spec->specifier == CONST)
 specType->constant = 0x1;
-else if(spec->specifier == TYPED_OBJECT)
+else if(spec->specifier == TYPED_OBJECT || spec->specifier == ANY_OBJECT || spec->specifier == CLASS)
 {
+switch(spec->specifier)
+{
+case TYPED_OBJECT:
 specType->classObjectType = 2;
-specType->kind = 8;
-specType->_class = FindClass("class");
-}
-else if(spec->specifier == ANY_OBJECT)
-{
+break;
+case ANY_OBJECT:
 specType->classObjectType = 3;
-specType->kind = 8;
-specType->_class = FindClass("class");
-}
-else if(spec->specifier == CLASS)
-{
+break;
+case CLASS:
 specType->classObjectType = 1;
+break;
+}
 specType->kind = 8;
 specType->_class = FindClass("class");
 }
@@ -4050,332 +4174,234 @@ specType->_class = spec->_class->symbol;
 }
 }
 }
-else if(!decl)
+else if(assumeEllipsis)
 specType->kind = 14;
+return specType;
 }
-if(funcDecl)
+
+extern void ProcessExpressionType(struct Expression * exp);
+
+extern void ComputeExpression(struct Expression * exp);
+
+extern unsigned long strtoul(const char *  nptr, char * *  endptr, int base);
+
+extern void __ecereNameSpace__ecere__com__PrintLn(struct __ecereNameSpace__ecere__com__Class * class, void * object, ...);
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_DeclaratorType;
+
+static struct Type * ProcessTypeDecls(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl, struct Type * parentType)
 {
-struct Declarator * d = funcDecl->declarator;
-struct Type * funcType = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+struct Type * type = parentType;
+struct Declarator * subDecl = decl ? decl->declarator : (((void *)0));
+
+if(!parentType)
+type = ProcessTypeSpecs(specs, decl == (((void *)0)), (decl && decl->type == 7) ? 0x1 : 0x0);
+if(decl)
+{
+switch(decl->type)
+{
+case 2:
+break;
+case 6:
+case 7:
+{
+struct ExtDecl * extDecl = decl->extended.extended;
+
+if(extDecl)
+{
+switch(extDecl->type)
+{
+case 0:
+{
+char * s = extDecl->s;
+
+if(s)
+{
+if(!strcmp(s, "__declspec(dllexport)") || !strcmp(s, "dllexport"))
+type->dllExport = 0x1;
+else if(!strcmp(s, "__declspec(stdcall)") || !strcmp(s, "stdcall"))
+type->attrStdcall = 0x1;
+}
+break;
+}
+case 1:
+{
+struct __ecereNameSpace__ecere__sys__OldList * attribs = extDecl->attr->attribs;
+
+if(attribs)
+{
+struct Attribute * attr;
+
+for(attr = (*attribs).first; attr; attr = attr->next)
+{
+char * s = attr->attr;
+
+if(s)
+{
+if(!strcmp(s, "dllexport"))
+type->dllExport = 0x1;
+else if(!strcmp(s, "stdcall"))
+type->attrStdcall = 0x1;
+}
+}
+}
+type->keepCast = 0x1;
+break;
+}
+}
+}
+break;
+}
+case 0:
+{
+struct Expression * exp = decl->structDecl.exp;
+
+if(exp)
+{
+ProcessExpressionType(exp);
+ComputeExpression(exp);
+if(exp->type == 2)
+type->bitFieldCount = strtoul(exp->constant, (((void *)0)), 0);
+}
+break;
+}
+case 4:
+{
+type = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1->kind = 11, __ecereInstance1->returnType = type, __ecereInstance1->dllExport = type->dllExport, __ecereInstance1->attrStdcall = type->attrStdcall, __ecereInstance1;
+});
+if(decl->function.parameters)
+{
 struct TypeName * param;
 
-funcType->kind = 11;
-funcType->refCount = 1;
-if(funcDecl->function.parameters)
-{
-for(param = (*funcDecl->function.parameters).first; param; param = param->next)
-{
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&funcType->params, ProcessType(param->qualifiers, param->declarator));
+for(param = (*decl->function.parameters).first; param; param = param->next)
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&type->params, ProcessType(param->qualifiers, param->declarator));
 }
+break;
 }
-if(decl->type == 5)
+case 3:
+{
+type = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1->kind = 12, __ecereInstance1->arraySizeExp = CopyExpression(decl->array.exp), __ecereInstance1->freeExp = 0x1, __ecereInstance1->type = type, __ecereInstance1->dllExport = type->dllExport, __ecereInstance1->attrStdcall = type->attrStdcall, __ecereInstance1;
+});
+if(decl->array.enumClass)
+type->enumClass = decl->array.enumClass->symbol;
+break;
+}
+case 5:
 {
 struct Pointer * pointer = decl->pointer.pointer;
-struct Type * ptrType = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
 
-funcType->returnType = ptrType;
-funcType->returnType->refCount = 1;
 while(pointer)
 {
-ptrType->kind = 13;
+struct __ecereNameSpace__ecere__sys__OldList * qualifiers = pointer->qualifiers;
+
+if(type->classObjectType)
+type->byReference = 0x1;
+else
+type = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1->kind = 13, __ecereInstance1->type = type, __ecereInstance1->dllExport = type->dllExport, __ecereInstance1->attrStdcall = type->attrStdcall, __ecereInstance1;
+});
+if(qualifiers)
+{
+struct Specifier * spec;
+
+for(spec = (*qualifiers).first; spec; spec = spec->next)
+{
+if(spec->type == 0 && spec->specifier == CONST)
+type->constant = 0x1;
+}
+}
 pointer = pointer->pointer;
-if(pointer)
+}
+break;
+}
+case 1:
 {
-ptrType->type = __extension__ ({
-struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+struct Identifier * id = decl->identifier;
+struct Specifier * _class = id->_class;
 
-__ecereInstance1->refCount = 1, __ecereInstance1;
-});
-ptrType = ptrType->type;
-}
-}
-ptrType->type = __extension__ ({
-struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
-
-__ecereInstance1->refCount = 1, __ecereInstance1;
-});
-*ptrType->type = *specType;
-}
-else
-{
-funcType->returnType = __extension__ ({
-struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
-
-__ecereInstance1->refCount = 1, __ecereInstance1;
-});
-*funcType->returnType = *specType;
-}
-while(d && (d->type == 2 || d->type == 6 || d->type == 7))
-{
-if((d->type == 6 || d->type == 7) && d->extended.extended && d->extended.extended->type == 0 && d->extended.extended->s && (!strcmp(d->extended.extended->s, "__declspec(dllexport)") || !strcmp(d->extended.extended->s, "dllexport")))
-{
-dllExport = 0x1;
-}
-d = d->declarator;
-}
-funcType->dllExport = dllExport;
-if(d && d->type == 5)
-{
-struct Type * ptrType;
-struct Identifier * id;
-
-if(d->declarator && d->declarator->type == 3)
-{
-struct Pointer * pointer = d->pointer.pointer;
-
-type->kind = 12;
-type->arraySizeExp = CopyExpression(d->declarator->array.exp);
-type->freeExp = 0x1;
-if(d->declarator->array.enumClass)
-type->enumClass = d->declarator->array.enumClass->symbol;
-if(d->declarator->declarator && d->declarator->declarator->type == 3)
-{
-struct Type * tmpType = type;
-struct Type * inType;
-
-type = ProcessType((((void *)0)), d->declarator->declarator);
-inType = type->type;
-type->type = tmpType;
-tmpType->type = inType;
-}
-else
-type->type = ProcessType((((void *)0)), d->declarator->declarator);
-for(ptrType = type->type; ptrType && ptrType->kind && ptrType->type; ptrType = ptrType->type)
-;
-while(pointer)
-{
-ptrType->kind = 13;
-pointer = pointer->pointer;
-if(pointer)
-{
-ptrType->type = __extension__ ({
-struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
-
-__ecereInstance1->refCount = 1, __ecereInstance1;
-});
-ptrType = ptrType->type;
-}
-}
-ptrType->type = ProcessType(specs, (((void *)0)));
-}
-else
-{
-struct Pointer * pointer = d->pointer.pointer;
-
-ptrType = type;
-while(pointer)
-{
-ptrType->kind = 13;
-ptrType->type = __extension__ ({
-struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
-
-__ecereInstance1->refCount = 1, __ecereInstance1;
-});
-pointer = pointer->pointer;
-if(pointer)
-ptrType = ptrType->type;
-}
-}
-*ptrType->type = *funcType;
-id = GetDeclId(d);
-if(id)
-{
-if(id->_class && !id->_class->name)
-ptrType->type->staticMethod = 0x1;
-else
-{
-if(!id->classSym)
-{
-if(id->_class && id->_class->name)
-{
-id->classSym = id->_class->symbol;
-}
-}
-ptrType->type->thisClass = id->classSym;
-if(ptrType->type->thisClass && strcmp(ptrType->type->thisClass->string, "class"))
-ptrType->type->extraParam = 0x1;
-else if(id->_class && id->_class->name && !strcmp(id->_class->name, "any_object"))
-{
-ptrType->type->extraParam = 0x1;
-ptrType->type->thisClass = FindClass("class");
-}
-}
+(__ecereNameSpace__ecere__com__eSystem_Delete(type->name), type->name = 0);
 type->name = __ecereNameSpace__ecere__sys__CopyString(id->string);
-}
-}
-else if(!d || d->type == 1)
+if(_class)
 {
-*type = *funcType;
-if(d)
+if(_class->type == 8)
 {
-if(d->identifier->_class && d->identifier->_class->type == 8)
-{
-type->thisClassTemplate = d->identifier->_class->templateParameter;
+type->thisClassTemplate = _class->templateParameter;
 type->extraParam = 0x1;
 }
 else
 {
-if(d->identifier->_class && !d->identifier->_class->name)
+char * name = _class->name;
+
+if(!name)
 type->staticMethod = 0x1;
 else
 {
-if(d->identifier->_class && d->identifier->_class->name && d->identifier->_class->name[strlen(d->identifier->_class->name) - 1] == '&')
+if(!id->classSym)
+id->classSym = _class->symbol;
+if(name[strlen(name) - 1] == '&')
 {
 type->thisClass = FindClass("class");
 type->byReference = 0x1;
 }
 else
-type->thisClass = d->identifier->_class ? d->identifier->_class->symbol : (((void *)0));
+type->thisClass = _class->symbol;
 if(type->thisClass && strcmp(type->thisClass->string, "class"))
-{
 type->extraParam = 0x1;
-}
-else if(d->identifier->_class && d->identifier->_class->name && !strcmp(d->identifier->_class->name, "any_object"))
+else if(!strcmp(name, "any_object"))
 {
 type->extraParam = 0x1;
 type->thisClass = FindClass("class");
 }
-else if(d->identifier->_class && d->identifier->_class->name && !strcmp(d->identifier->_class->name, "class"))
+else if(!strcmp(name, "class"))
 {
 type->thisClass = FindClass("class");
 type->classObjectType = 1;
 }
-}
-}
-type->name = __ecereNameSpace__ecere__sys__CopyString(d->identifier->string);
-}
-}
-((funcType ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor(funcType) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(funcType)) : 0), funcType = 0);
-}
-else if(decl && decl->type == 5)
+else if(!strcmp(name, "typed_object") || !strcmp(name, "typed_object&"))
 {
-if(decl->declarator && decl->declarator->type == 3)
+type->thisClass = FindClass("class");
+type->classObjectType = 2;
+}
+}
+}
+}
+break;
+}
+default:
+__ecereNameSpace__ecere__com__PrintLn(__ecereClass_char__PTR_, "Unhandled Declarator Type: ", __ecereClass_DeclaratorType, &decl->type, (void *)0);
+}
+}
+if(subDecl)
 {
-struct Identifier * id;
-struct Pointer * pointer = decl->pointer.pointer;
-struct Type * ptrType;
+struct Type * curType = type;
 
-type->kind = 12;
-type->arraySizeExp = CopyExpression(decl->declarator->array.exp);
-type->freeExp = 0x1;
-if(decl->declarator->array.enumClass)
-type->enumClass = decl->declarator->array.enumClass->symbol;
-if(decl->declarator->declarator && decl->declarator->declarator->type == 3)
+type = ProcessTypeDecls((((void *)0)), subDecl, type);
+if(curType && type->kind != 11)
 {
-struct Type * tmpType = type;
-struct Type * inType;
-
-type = ProcessType((((void *)0)), decl->declarator->declarator);
-inType = type->type;
-type->type = tmpType;
-tmpType->type = inType;
+curType->thisClassTemplate = type->thisClassTemplate;
+curType->extraParam = type->extraParam;
+curType->staticMethod = type->staticMethod;
+curType->thisClass = type->thisClass;
+curType->byReference = type->byReference;
+curType->classObjectType = type->classObjectType;
 }
-else
-type->type = ProcessType((((void *)0)), decl->declarator->declarator);
-for(ptrType = type->type; ptrType && ptrType->kind && ptrType->type; ptrType = ptrType->type)
-;
-while(pointer)
-{
-ptrType->kind = 13;
-pointer = pointer->pointer;
-if(pointer)
-{
-ptrType->type = __extension__ ({
-struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
-
-__ecereInstance1->refCount = 1, __ecereInstance1;
-});
-ptrType = ptrType->type;
-}
-}
-ptrType->type = ProcessType(specs, (((void *)0)));
-id = GetDeclId(decl);
-if(id)
-type->name = __ecereNameSpace__ecere__sys__CopyString(id->string);
-}
-else
-{
-struct Identifier * id;
-struct Pointer * pointer = decl->pointer.pointer;
-struct Type * ptrType = type;
-
-if(type->classObjectType)
-{
-type->byReference = 0x1;
-}
-else
-{
-while(pointer)
-{
-ptrType->kind = 13;
-pointer = pointer->pointer;
-if(pointer)
-{
-ptrType->type = __extension__ ({
-struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
-
-__ecereInstance1->refCount = 1, __ecereInstance1;
-});
-ptrType = ptrType->type;
-}
-}
-ptrType->type = ProcessType(specs, decl->declarator);
-if(type->type->classObjectType)
-{
-struct Type * subType = type->type;
-
-type->classObjectType = subType->classObjectType;
-type->kind = subType->kind;
-type->_class = subType->_class;
-type->byReference = 0x1;
-FreeType(subType);
-}
-id = GetDeclId(decl);
-if(id)
-type->name = __ecereNameSpace__ecere__sys__CopyString(id->string);
-}
-}
-}
-else if(decl && decl->type == 3)
-{
-struct Identifier * id;
-
-type->kind = 12;
-type->arraySizeExp = CopyExpression(decl->array.exp);
-type->freeExp = 0x1;
-if(decl->array.enumClass)
-type->enumClass = decl->array.enumClass->symbol;
-id = GetDeclId(decl);
-if(decl->declarator && decl->declarator->type == 3)
-{
-struct Type * tmpType = type;
-struct Type * inType;
-
-type = ProcessType(specs, decl->declarator);
-inType = type->type;
-type->type = tmpType;
-tmpType->type = inType;
-}
-else
-type->type = ProcessType(specs, decl->declarator);
-if(id)
-{
-(__ecereNameSpace__ecere__com__eSystem_Delete(type->name), type->name = 0);
-type->name = __ecereNameSpace__ecere__sys__CopyString(id->string);
-}
-}
-else
-{
-if(!decl || decl->type == 1)
-{
-*type = *specType;
-(__ecereNameSpace__ecere__com__eSystem_Delete(type->name), type->name = 0);
-type->name = decl ? __ecereNameSpace__ecere__sys__CopyString(decl->identifier->string) : (((void *)0));
-}
-}
-((specType ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor(specType) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(specType)) : 0), specType = 0);
 }
 return type;
+}
+
+struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl)
+{
+return ProcessTypeDecls(specs, decl, (((void *)0)));
 }
 
 extern struct Declarator * SpecDeclFromString(char *  string, struct __ecereNameSpace__ecere__sys__OldList *  specs, struct Declarator * baseDecl);
@@ -4783,7 +4809,7 @@ struct __ecereNameSpace__ecere__com__GlobalFunction;
 
 extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(char *  name, char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
 
@@ -4867,6 +4893,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkInitializerAssignment"
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkInitializerList", "Initializer MkInitializerList(ecere::sys::OldList list)", MkInitializerList, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkInitDeclarator", "InitDeclarator MkInitDeclarator(Declarator declarator, Initializer initializer)", MkInitDeclarator, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkTypeName", "TypeName MkTypeName(ecere::sys::OldList qualifiers, Declarator declarator)", MkTypeName, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkTypeNameGuessDecl", "TypeName MkTypeNameGuessDecl(ecere::sys::OldList qualifiers, Declarator declarator)", MkTypeNameGuessDecl, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetDeclId", "Identifier GetDeclId(Declarator decl)", GetDeclId, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkDeclarationClassInst", "Declaration MkDeclarationClassInst(Instantiation inst)", MkDeclarationClassInst, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkDeclarationInst", "Declaration MkDeclarationInst(Instantiation inst)", MkDeclarationInst, module, 2);

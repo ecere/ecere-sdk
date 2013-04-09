@@ -603,9 +603,15 @@ return string;
 
 struct Declarator * GetFuncDecl(struct Declarator * decl)
 {
-while(decl && decl->type != 4 && decl->type != 1)
+struct Declarator * funcDecl = (((void *)0));
+
+while(decl && decl->type != 1)
+{
+if(decl->type == 4)
+funcDecl = decl;
 decl = decl->declarator;
-return (decl && decl->type == 4) ? decl : (((void *)0));
+}
+return funcDecl;
 }
 
 unsigned int parseTypeError;

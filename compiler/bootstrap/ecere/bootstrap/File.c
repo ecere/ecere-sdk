@@ -352,11 +352,11 @@ int __ecereMethod___ecereNameSpace__ecere__sys__FileSize_OnCompare(struct __ecer
 {
 int result = 0;
 
-if(&(*(this)) && &(*(data2)))
+if(&(*this) && &(*data2))
 {
-if((*(this)) > (*(data2)))
+if((*this) > (*data2))
 result = 1;
-else if((*(this)) < (*(data2)))
+else if((*this) < (*data2))
 result = -1;
 }
 return result;
@@ -386,7 +386,7 @@ else if(strstr(end, "MB") || strstr(end, "mb"))
 multiplier = (unsigned int)1024 * 1024;
 else if(strstr(end, "KB") || strstr(end, "kb"))
 multiplier = 1024;
-(*(this)) = (unsigned int)((double)multiplier * value);
+(*this) = (unsigned int)((double)multiplier * value);
 return 0x1;
 }
 
@@ -396,11 +396,11 @@ int __ecereMethod___ecereNameSpace__ecere__sys__FileSize64_OnCompare(struct __ec
 {
 int result = 0;
 
-if(&(*(this)) && &(*(data2)))
+if(&(*this) && &(*data2))
 {
-if((*(this)) > (*(data2)))
+if((*this) > (*data2))
 result = 1;
-else if((*(this)) < (*(data2)))
+else if((*this) < (*data2))
 result = -1;
 }
 return result;
@@ -430,7 +430,7 @@ else if(strstr(end, "MB") || strstr(end, "mb"))
 multiplier = (uint64)1024 * 1024;
 else if(strstr(end, "KB") || strstr(end, "kb"))
 multiplier = 1024;
-(*(this)) = (uint64)((double)multiplier * value);
+(*this) = (uint64)((double)multiplier * value);
 return 0x1;
 }
 
@@ -523,7 +523,7 @@ struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ece
 
 if(!string[0])
 {
-(*(this)) = (((void *)0));
+(*this) = (((void *)0));
 return 0x1;
 }
 else
@@ -532,13 +532,13 @@ struct __ecereNameSpace__ecere__com__Instance * f = __ecereNameSpace__ecere__sys
 
 if(f)
 {
-(*(this)) = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__TempFile);
+(*this) = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__TempFile);
 while(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(f))
 {
 unsigned char buffer[4096];
 unsigned int read = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, buffer, 1, sizeof buffer);
 
-((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))((*(this)))->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])((*(this)), buffer, 1, read);
+((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))((*this))->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])((*this), buffer, 1, read);
 }
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 return 0x1;
@@ -1202,7 +1202,7 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Unlock;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Close;
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
 

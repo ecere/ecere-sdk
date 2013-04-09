@@ -138,7 +138,7 @@ static bool ProcessInstMembers_SimpleMemberEnsure(DataMember parentMember, Insta
                               {
                                  curMember = thisMember;
                                  curClass = curMember._class;
-                                 memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+                                 memcpy(subMemberStack, _subMemberStack, sizeof(DataMember) * _subMemberStackPos);
                                  subMemberStackPos = _subMemberStackPos;
                               }
                               if(!firstID.next && thisMember == dataMember)
@@ -277,7 +277,7 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
                            {
                               curMember = thisMember;
                               curClass = curMember._class;
-                              memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+                              memcpy(subMemberStack, _subMemberStack, sizeof(DataMember) * _subMemberStackPos);
                               subMemberStackPos = _subMemberStackPos;
                            }
                            if(thisMember == bitMember)
@@ -502,7 +502,7 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
                                        {
                                           curMember = thisMember;
                                           curClass = curMember._class;
-                                          memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+                                          memcpy(subMemberStack, _subMemberStack, sizeof(DataMember) * _subMemberStackPos);
                                           subMemberStackPos = _subMemberStackPos;
                                        }
                                        if(!firstID.next && curMember == dataMember)
@@ -599,7 +599,7 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
                         {
                            curMember = thisMember;
                            curClass = curMember._class;
-                           memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+                           memcpy(subMemberStack, _subMemberStack, sizeof(DataMember) * _subMemberStackPos);
                            subMemberStackPos = _subMemberStackPos;
                         }
                      }
@@ -1635,7 +1635,7 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
                         {
                            curMember = thisMember;
                            curClass = curMember._class;
-                           memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+                           memcpy(subMemberStack, _subMemberStack, sizeof(DataMember) * _subMemberStackPos);
                            subMemberStackPos = _subMemberStackPos;
                         }
                         /*
@@ -1881,7 +1881,7 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                            {
                               curMember = thisMember;
                               curClass = curMember._class;
-                              memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
+                              memcpy(subMemberStack, _subMemberStack, sizeof(DataMember) * _subMemberStackPos);
                               subMemberStackPos = _subMemberStackPos;
                            }
 

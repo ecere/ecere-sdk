@@ -519,11 +519,11 @@ if((struct __ecereNameSpace__ecere__com__Instance *)source)
 struct __ecereNameSpace__ecere__com__Instance * container = __ecereNameSpace__ecere__com__eInstance_New(((struct __ecereNameSpace__ecere__com__Instance *)(char *)source)->_class);
 
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__Instance * source))container->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Copy])(container, (struct __ecereNameSpace__ecere__com__Instance *)source);
-*(void **)*(struct __ecereNameSpace__ecere__com__Instance **)this = container;
+(*this) = container;
 }
 else
 {
-*(void **)*(struct __ecereNameSpace__ecere__com__Instance **)this = (((void *)0));
+(*this) = (((void *)0));
 }
 }
 
@@ -668,14 +668,14 @@ uint64 data;
 ((void (*)(void *, void *, void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, ((char *)&data + __ENDIAN_PAD((class->templateArgs[2].dataTypeClass->type == 1 || class->templateArgs[2].dataTypeClass->type == 0 || class->templateArgs[2].dataTypeClass->type == 5) ? sizeof(void *) : class->templateArgs[2].dataTypeClass->typeSize)), channel);
 ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))container->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(container, data);
 }
-(*(this)) = container;
+(*this) = container;
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Move;
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
 

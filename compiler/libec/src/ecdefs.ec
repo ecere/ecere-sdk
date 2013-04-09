@@ -1100,27 +1100,28 @@ public:
       Type type;
       TemplateParameter templateParameter;
    };
-   bool isSigned;
    TypeKind kind;
-   bool constant;
    uint size;
    char * name;
    char * typeName;
-   bool count;
-   bool truth;
 
    ClassObjectType classObjectType;
-   bool byReference;
-
-   bool extraParam;
    int alignment;
-   bool directClassAccess;
-   bool computing;
-   bool dllExport;
    uint offset;
-   bool keepCast;
-   bool passAsTemplate;
    int bitFieldCount;
+   int count;
+
+   bool isSigned:1;
+   bool constant:1;
+   bool truth:1;
+   bool byReference:1;
+   bool extraParam:1;
+   bool directClassAccess:1;
+   bool computing:1;
+   bool keepCast:1;
+   bool passAsTemplate:1;
+   bool dllExport:1;
+   bool attrStdcall:1;
 
    char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {

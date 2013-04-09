@@ -294,8 +294,8 @@ extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameS
 
 void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, &(*(this)).root);
-(*(this)).count = (*(this)).root ? __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_count((*(this)).root) : 0;
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, &(*this).root);
+(*this).count = (*this).root ? __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_count((*this).root) : 0;
 }
 
 int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareInt(struct __ecereNameSpace__ecere__sys__BinaryTree * this, uintptr_t a, uintptr_t b)
@@ -452,11 +452,11 @@ void __ecereMethod___ecereNameSpace__ecere__sys__StringBinaryTree_OnUnserialize(
 struct __ecereNameSpace__ecere__sys__StringBTNode * root = (((void *)0));
 
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__StringBTNode, &root);
-(*(this)).root = (struct __ecereNameSpace__ecere__sys__BTNode *)root;
-(*(this)).count = root ? __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_count((*(this)).root) : 0;
+(*this).root = (struct __ecereNameSpace__ecere__sys__BTNode *)root;
+(*this).count = root ? __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_count((*this).root) : 0;
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
 
@@ -526,8 +526,8 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Print", "char * Print(cha
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Remove", "void Remove(ecere::sys::BTNode node)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "root", "ecere::sys::BTNode", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "count", "int", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "CompareKey", "int( *)(ecere::sys::BinaryTree tree, uintptr a, uintptr b)", arch_PointerSize, arch_PointerSize, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "FreeKey", "void( *)(void * key)", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "CompareKey", "int (*)(ecere::sys::BinaryTree tree, uintptr a, uintptr b)", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "FreeKey", "void (*)(void * key)", arch_PointerSize, arch_PointerSize, 1);
 __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_first = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "first", "ecere::sys::BTNode", 0, __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first = __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_first, __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_first = (void *)0;

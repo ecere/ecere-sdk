@@ -81,7 +81,7 @@ public Identifier MkIdentifier(char * string)
          // TODO: Do these better, keep in string?
          if(!strcmp(name, "typed_object"))
          {
-            id._class = MkSpecifierName("class");
+            id._class = MkSpecifierName("typed_object"); //"class");
             id.string = CopyString(namePart);
          }
          else if(!strcmp(name, "property"))
@@ -618,9 +618,10 @@ public TypeName MkTypeNameGuessDecl(OldList qualifiers, Declarator declarator)
    {
       bool gotType = false;
       bool gotFullType = false;
-      Specifier spec;
-      for(spec = qualifiers.first; spec; spec = spec.next)
+      Specifier spec, next;
+      for(spec = qualifiers.first; spec; spec = next)
       {
+         next = spec.next;
          if(gotType && !declarator && ((spec.type == nameSpecifier && spec.name) || (spec.type == baseSpecifier && gotFullType)))
          {
             String s = null;
@@ -635,12 +636,13 @@ public TypeName MkTypeNameGuessDecl(OldList qualifiers, Declarator declarator)
             }
             if(s)
             {
-               typeName.declarator = declarator = MkDeclaratorIdentifier(MkIdentifier(CopyString(s)));
+               typeName.declarator = declarator = MkDeclaratorIdentifier(MkIdentifier(s));
                qualifiers.Remove(spec);
                FreeSpecifier(spec);
+               spec = null;
             }
          }
-         if(spec.type != extendedSpecifier)
+         if(spec && spec.type != extendedSpecifier)
          {
             if(spec.type != baseSpecifier || (spec.specifier != UNSIGNED && spec.specifier != SIGNED && spec.specifier != LONG))
                gotFullType = true;
@@ -757,9 +759,10 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
    if(specifiers != null)
    {
       bool gotType = false;
-      Specifier spec;
-      for(spec = specifiers.first; spec; spec = spec.next)
+      Specifier spec, next;
+      for(spec = specifiers.first; spec; spec = next)
       {
+         next = spec.next;
          if(spec.type == baseSpecifier && spec.specifier == TYPEDEF)
          {
             if(initDeclarators != null)
@@ -805,7 +808,7 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                         Symbol type { string = CopyString(s), type = ProcessType(specifiers, null) };
                         type.id = type.idCode = curContext.nextID++;
                         decl.symbol = type;
-                        decl.declarators = initDeclarators = MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(CopyString(s))), null));
+                        decl.declarators = initDeclarators = MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(s)), null));
                         specifiers.Remove(spec);
                         FreeSpecifier(spec);
                         if(!(curContext.templateTypesOnly ? curContext.parent : curContext).types.Add((BTNode)type))
@@ -836,13 +839,14 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                }
                if(s)
                {
-                  decl.declarators = initDeclarators = MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(CopyString(s))), null));
+                  decl.declarators = initDeclarators = MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(s)), null));
                   specifiers.Remove(spec);
                   FreeSpecifier(spec);
+                  spec = null;
                }
             }
          }
-         if(spec.type != extendedSpecifier)
+         if(spec && spec.type != extendedSpecifier)
             gotType = true;
       }
    }
@@ -950,9 +954,10 @@ Declaration MkStructDeclaration(OldList specifiers, OldList declarators, Specifi
    if(specifiers != null)
    {
       bool gotType = false;
-      Specifier spec;
-      for(spec = specifiers.first; spec; spec = spec.next)
+      Specifier spec, next;
+      for(spec = specifiers.first; spec; spec = next)
       {
+         next = spec.next;
          if(gotType && declarators == null && ((spec.type == nameSpecifier && spec.name) || spec.type == baseSpecifier))
          {
             String s = null;
@@ -967,12 +972,13 @@ Declaration MkStructDeclaration(OldList specifiers, OldList declarators, Specifi
             }
             if(s)
             {
-               decl.declarators = declarators = MkListOne(MkDeclaratorIdentifier(MkIdentifier(CopyString(s))));
+               decl.declarators = declarators = MkListOne(MkDeclaratorIdentifier(MkIdentifier(s)));
                specifiers.Remove(spec);
                FreeSpecifier(spec);
+               spec = null;
             }
          }
-         if(spec.type != extendedSpecifier)
+         if(spec && spec.type != extendedSpecifier)
             gotType = true;
       }
    }
@@ -1833,7 +1839,7 @@ PropertyDef MkProperty(OldList specs, Declarator decl, Identifier id, Statement 
    {
       char typeString[1024];
       typeString[0] = '\0';
-      PrintType(type, typeString, false, true);
+      PrintTypeNoConst(type, typeString, false, true);
       id = MkIdentifier(typeString);
       prop.conversion = true;
    }
@@ -2127,7 +2133,6 @@ void CopyTypeInto(Type type, Type src)
 {
    type = *src;
    type.name = CopyString(src.name);
-   type.enumName = CopyString(src.enumName);
    type.refCount = 1;
 
    if(src.kind == enumType)
@@ -2140,6 +2145,7 @@ void CopyTypeInto(Type type, Type src)
       {
          type.members.Add(NamedLink { name = CopyString(member.name), data = member.data });
       }
+      type.enumName = CopyString(src.enumName);
    }
    else if(src.kind == structType || src.kind == unionType)
    {
@@ -2147,6 +2153,7 @@ void CopyTypeInto(Type type, Type src)
       // Tricky stuff... will be removed from list only when ref count reaches 0
       for(member = type.members.first; member; member = member.next)
          member.refCount++;
+      type.enumName = CopyString(src.enumName);
    }
    else if(src.kind == functionType)
    {
@@ -2167,659 +2174,459 @@ void CopyTypeInto(Type type, Type src)
    }
 }
 
-public Type ProcessType(OldList specs, Declarator decl)
+static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeName)
 {
-   Type type = null;
-   bool isTypedef = false;
-   if(!specs || specs.first)
+   Type specType { refCount = 1, kind = intType, isSigned = true };
+   if(specs != null)
    {
-      Declarator funcDecl = GetFuncDecl(decl);
-      Type specType { };
-      bool dllExport = false;
-
-      specType.kind = intType;
-      specType.isSigned = true;   
-      specType.refCount = 1;
-
-      type = Type { refCount = 1 };
-
-      while(decl && (decl.type == structDeclarator || decl.type == extendedDeclarator || decl.type == extendedDeclaratorEnd))
+      bool isTypedef = false;
+      Specifier spec;
+      bool isLong = false;
+      for(spec = specs.first; spec; spec = spec.next)
       {
-         if(decl.type == structDeclarator && decl.structDecl.exp)
+         if(spec.type == extendedSpecifier)
          {
-            ProcessExpressionType(decl.structDecl.exp);
-            ComputeExpression(decl.structDecl.exp);
-            if(decl.structDecl.exp.type == constantExp)
-               specType.bitFieldCount = strtoul(decl.structDecl.exp.constant, null, 0);
-         }
-         if((decl.type == extendedDeclarator || decl.type == extendedDeclaratorEnd) && decl.extended.extended && decl.extended.extended.type == extDeclString &&
-            decl.extended.extended.s && (!strcmp(decl.extended.extended.s, "__declspec(dllexport)") || !strcmp(decl.extended.extended.s, "dllexport")))
-         {
-            dllExport = true;
-         }
-         if((decl.type == extendedDeclarator || decl.type == extendedDeclaratorEnd) && decl.extended.extended && decl.extended.extended.type == extDeclAttrib)
-         {
-            specType.keepCast = true;
-         }
-         decl = decl.declarator;
-      }
-
-      // If we'll be using the specType
-      if(funcDecl || !decl || decl.type == identifierDeclarator)
-      {
-         Specifier spec;
-         if(specs != null)
-         {
-            bool isLong = false;
-            for(spec = specs.first; spec; spec = spec.next)
+            ExtDecl extDecl = spec.extDecl;
+            if(extDecl.type == extDeclString)
             {
-               if(spec.type == extendedSpecifier && spec.extDecl && spec.extDecl.type == extDeclString && spec.extDecl.s && (!strcmp(spec.extDecl.s, "__declspec(dllexport)") || !strcmp(spec.extDecl.s, "dllexport")))
-               {
-                  dllExport = true;
-               }
-               if(spec.type == extendedSpecifier && spec.extDecl.type == extDeclAttrib)
-               {
-                  specType.keepCast = true;
-               }
-
-               if(spec.specifier != CONST && (specType.kind == structType || specType.kind == unionType))
-               {
-                  FreeType(specType);
-                  specType = { kind = intType, isSigned = true, refCount = 1 };
-               }
-
-               if(spec.type == baseSpecifier)
-               {
-                  if(spec.specifier == TYPEDEF) isTypedef = true;
-                  else if(spec.specifier == VOID) specType.kind = voidType;
-                  else if(spec.specifier == CHAR) specType.kind = charType;
-                  else if(spec.specifier == INT) { if(specType.kind != shortType && specType.kind != longType) specType.kind = intType; }
-                  else if(spec.specifier == UINT) { if(specType.kind != shortType && specType.kind != longType) specType.kind = intType; specType.isSigned = false; }
-                  else if(spec.specifier == INT64) specType.kind = int64Type;
-                  else if(spec.specifier == VALIST) 
-                     specType.kind = vaListType;
-                  else if(spec.specifier == SHORT) specType.kind = shortType;
-                  else if(spec.specifier == LONG) 
-                  {
-                     if(isLong)
-                        specType.kind = int64Type;
-                     else
-                        specType.kind = intType;
-                     isLong = true;
-                     // specType.kind = longType;
-                  }
-                  else if(spec.specifier == FLOAT) specType.kind = floatType;
-                  else if(spec.specifier == DOUBLE) specType.kind = doubleType;
-                  else if(spec.specifier == SIGNED) specType.isSigned = true;
-                  else if(spec.specifier == UNSIGNED) specType.isSigned = false;
-                  else if(spec.specifier == CONST) specType.constant = true;
-                  else if(spec.specifier == TYPED_OBJECT) 
-                  { 
-                     specType.classObjectType = typedObject; specType.kind = classType; specType._class = FindClass("class"); 
-                  }
-                  else if(spec.specifier == ANY_OBJECT) 
-                  { 
-                     specType.classObjectType = anyObject; specType.kind = classType; specType._class = FindClass("class"); 
-                  }
-                  else if(spec.specifier == CLASS)
-                  {
-                     specType.classObjectType = classPointer; specType.kind = classType; specType._class = FindClass("class");
-                  }
-                  else if(spec.specifier == THISCLASS)
-                     specType.kind = thisClassType;
-               }
-               else if(spec.type == nameSpecifier)
-               {
-                  if(spec.name && (!strcmp(spec.name, "intptr") || !strcmp(spec.name, "uintptr")))
-                  {
-                     specType.kind = intPtrType;
-                     if(!strcmp(spec.name, "uintptr"))
-                        specType.isSigned = false;
-                  }
-                  else if(spec.name && (!strcmp(spec.name, "uintsize") || !strcmp(spec.name, "intsize")))
-                  {
-                     specType.kind = intSizeType;
-                     if(!strcmp(spec.name, "uintsize"))
-                        specType.isSigned = false;
-                  }
-                  else
-                  {
-                     Symbol symbol = spec.name ? FindType(curContext, spec.name) : null;
-                     if(symbol && symbol.type)
-                     {
-                        // Free Type Contents:
-                        Type dummy { };
-                        *dummy = *specType;
-                        FreeType(dummy);
-
-                        CopyTypeInto(specType, symbol.type);
-                        specType.typeName = CopyString(symbol.type.name);
-                     }
-                     else if(!isTypedef) // !specType.kind)    // TESTING THIS FOR enum / typedef problem
-                     {
-                        // key.sym enum values need FindClass:
-                        specType._class = spec.name ? FindClass(spec.name) : null;
-                        // specType._class = spec.symbol; 
-                        specType.kind = classType;
-                        if(!specType._class)
-                           specType.kind = intType;
-                     }
-                  }
-               }
-               else if(spec.type == enumSpecifier)
-               {
-
-                  specType.kind = enumType;
-                  specType.enumName = spec.id ? CopyString(spec.id.string) : null;
-
-                  if(spec.list)
-                  {
-                     Enumerator e;
-                     int nextValue = 0;
-                     for(e = spec.list->first; e; e = e.next)
-                     {
-                        // TOFIX: NamedItem i { } causes cryptic error, bad .c!
-                        NamedLink i { name = CopyString(e.id.string) };
-                        specType.members.Add(i);
-                        /*
-                        if(e.exp && ComputeExpression(e.exp), e.exp.isConstant && e.exp.expType.kind == intType)
-                           value.data = (void *) nextValue = strtol(e.exp.string, null, 0);
-                        else
-                           value.data = (void *)nextValue++;
-                        */
-                     }
-                  }
-                  /*
-                  if(spec.list)
-                  {
-                     Declaration decl;
-                     for(enumerator = spec.list->first; enumerator; enumerator = enumerator.next)
-                        if(decl.declarators)
-                        {
-                           Declarator d;
-                           for(d = decl.declarators.first; d; d = d.next)
-                           {
-                              Type memberType = ProcessType(decl.specifiers, d);
-                              specType.members.Add(memberType);
-                           }
-                        }
-                        else if(decl.specifiers)
-                        {
-                           Type memberType = ProcessType(decl.specifiers, null);
-                           specType.members.Add(memberType);
-                        }
-                  }
-                  */
-               }
-               else if(spec.type == templateTypeSpecifier)
-               {
-                  /*
-                  printf("spec %x\n", spec);
-                  printf("template param %x\n", spec.templateParameter);
-                  printf("identifier %x\n", spec.templateParameter.identifier);
-                  printf("string %x\n", spec.templateParameter.identifier.string);
-                  */
-                  specType.kind = templateType;
-                  specType.templateParameter = spec.templateParameter;
-               }
-               else if(spec.type == structSpecifier || spec.type == unionSpecifier)
-               {
-                  Symbol _class = spec.id ? FindClass(spec.id.string) : null;
-                  if(_class)
-                  {
-                     if(!_class.registered || _class.registered.type != structClass)
-                        specType.directClassAccess = true;
-                     specType._class = _class;
-                     specType.kind = classType;
-                     break;
-                  }
-                  if(spec.type == structSpecifier)
-                     specType.kind = structType;
-                  else if(spec.type == unionSpecifier)
-                     specType.kind = unionType;
-                  if(spec.id)
-                  {
-                     // TESTING THIS HERE... Had 0 type size 
-                     if(!spec.definitions && !isTypedef)
-                     {
-                        Symbol symbol = spec.id.string ? FindSymbol(spec.id.string, curContext, globalContext, true, false) : null;
-                        if(symbol && symbol.type)
-                        {
-                           specType = *symbol.type;
-                           specType.name = CopyString(symbol.type.name);
-                           specType.typeName = CopyString(spec.name);
-                           specType.enumName = CopyString(symbol.type.enumName);
-                           specType.refCount = 1;
-
-                           if(symbol.type.kind == enumType)
-                           {
-                              NamedLink member;
-
-                              specType.members.Clear();
-                              for(member = symbol.type.members.first; member; member = member.next)
-                              {
-                                 NamedLink item { name = CopyString(member.name), data = member.data };
-                                 specType.members.Add(item);
-                              }
-                           }
-                           else if(symbol.type.kind == structType || symbol.type.kind == unionType)
-                           {
-                              Type member;
-                              // Tricky stuff... will be removed from list only when ref count reaches 0
-                              for(member = specType.members.first; member; member = member.next)
-                                 member.refCount++;
-                           }
-                           else if(symbol.type.kind == functionType)
-                           {
-                              Type param;
-                              specType.returnType.refCount++;
-                              for(param = specType.params.first; param; param = param.next)
-                                 param.refCount++;
-                           }
-                           else if(symbol.type.kind == pointerType || symbol.type.kind == arrayType)
-                           {
-                              specType.type.refCount++;
-                              if(symbol.type.kind == arrayType)
-                              {
-                                 if(specType.arraySizeExp)
-                                    specType.arraySizeExp = CopyExpression(specType.arraySizeExp);
-                              }
-
-                           }
-                        }
-                        else
-                           specType.enumName = CopyString(spec.id.string);
-                     }
-                     else
-                        specType.enumName = CopyString(spec.id.string);
-                  }
-
-                  if(spec.definitions)
-                  {
-                     ClassDef def;
-                     for(def = spec.definitions->first; def; def = def.next)
-                     {
-                        if(def.type == declarationClassDef && def.decl.type == structDeclaration)
-                        {
-                           Declaration decl = def.decl;
-                           if(decl.declarators)
-                           {
-                              Declarator d;
-                              for(d = decl.declarators->first; d; d = d.next)
-                              {
-                                 Type memberType = ProcessType(decl.specifiers, d);
-                                 specType.members.Add(memberType);
-                              }
-                           }
-                           else if(decl.specifiers)
-                           {
-                              Type memberType = ProcessType(decl.specifiers, null);
-                              specType.members.Add(memberType);
-                           }
-                        }
-                     }
-                  }
-                  break;
-               }
-               else if(spec.type == subClassSpecifier)
-               {
-                  specType.kind = specType.kind = subClassType;
-                  specType._class = spec._class.symbol; // FindClass(spec._class.name);
-               }
-               /*
-               else if(spec.type == classSpecifier)
-               {
-                  specType._class = FindClass(spec.name);
-                  specType.kind = classType;
-               }
-               */
+               String s = spec.extDecl.s;
+               if(!strcmp(spec.extDecl.s, "__declspec(dllexport)") || !strcmp(spec.extDecl.s, "dllexport"))
+                  specType.dllExport = true;
+               else if(!strcmp(spec.extDecl.s, "__declspec(stdcall)") || !strcmp(spec.extDecl.s, "stdcall"))
+                  specType.attrStdcall = true;
             }
-         }
-         else if(!decl)
-            specType.kind = ellipsisType;
-      }
-
-      if(funcDecl)
-      {
-         Declarator d = funcDecl.declarator;
-         Type funcType { };
-         TypeName param;
-
-         funcType.kind = functionType;
-         funcType.refCount = 1;
-         if(funcDecl.function.parameters)
-         {
-            for(param = funcDecl.function.parameters->first; param; param = param.next)
+            else if(extDecl.type == extDeclAttrib)
             {
-               /*
-               if(param.typedObject)
+               OldList * attribs = extDecl.attr.attribs;
+               if(attribs)
                {
-                  Type typedObjectType
+                  Attribute attr;
+                  for(attr = attribs->first; attr; attr = attr.next)
                   {
-                     refCount = 1;
-                     byReference = param.byReference;
-                     kind = TypeTypedObject;
-                  };
-                  funcType.params.Add(typedObjectType);
+                     String s = attr.attr;
+                     if(s)
+                     {
+                        if(!strcmp(s, "dllexport"))
+                           specType.dllExport = true;
+                        else if(!strcmp(s, "stdcall"))
+                           specType.attrStdcall = true;
+                     }
+                  }
                }
-               else*/
-                  funcType.params.Add(ProcessType(param.qualifiers, param.declarator));
+               specType.keepCast = true;
             }
          }
 
-         // Function returning a pointer...
-         if(decl.type == pointerDeclarator)
+         if(spec.specifier != CONST && (specType.kind == structType || specType.kind == unionType))
          {
-            Pointer pointer = decl.pointer.pointer;
-            Type ptrType { };
-            funcType.returnType = ptrType;
-            funcType.returnType.refCount = 1;
-            while(pointer)
-            {
-               ptrType.kind = pointerType;
-               pointer = pointer.pointer;
-               if(pointer)
-               {
-                  ptrType.type = Type { refCount = 1 };
-                  ptrType = ptrType.type;
-               }
-            }
-            ptrType.type = Type { refCount = 1 };
-            *ptrType.type = specType;
-         }
-         else
-         {
-            funcType.returnType = Type { refCount = 1 };
-            *funcType.returnType = specType;
+            FreeType(specType);
+            specType = { kind = intType, isSigned = true, refCount = 1 };
          }
 
-         // TESTING: Added extendedDeclarator here
-         while(d && (d.type == bracketsDeclarator || d.type == extendedDeclarator || d.type == extendedDeclaratorEnd))
+         if(isTypedef && keepTypeName)
          {
-            if((d.type == extendedDeclarator || d.type == extendedDeclaratorEnd) && d.extended.extended && d.extended.extended.type == extDeclString &&
-               d.extended.extended.s && (!strcmp(d.extended.extended.s, "__declspec(dllexport)") || !strcmp(d.extended.extended.s, "dllexport")))
-            {
-               dllExport = true;            
-            }
-            d = d.declarator;
+            specType.kind = dummyType;
+            return specType;
          }
-
-         funcType.dllExport = dllExport;
-
-         if(d && d.type == pointerDeclarator)
+         else if(spec.type == baseSpecifier)
          {
-            Type ptrType;
-            Identifier id;
-
-            if(d.declarator && d.declarator.type == arrayDeclarator)
+            if(spec.specifier == TYPEDEF)
+               isTypedef = true;
+            else if(spec.specifier == VOID) specType.kind = voidType;
+            else if(spec.specifier == CHAR) specType.kind = charType;
+            else if(spec.specifier == INT) { if(specType.kind != shortType && specType.kind != longType) specType.kind = intType; }
+            else if(spec.specifier == UINT) { if(specType.kind != shortType && specType.kind != longType) specType.kind = intType; specType.isSigned = false; }
+            else if(spec.specifier == INT64) specType.kind = int64Type;
+            else if(spec.specifier == VALIST) 
+               specType.kind = vaListType;
+            else if(spec.specifier == SHORT) specType.kind = shortType;
+            else if(spec.specifier == LONG) 
             {
-               // Arrays of pointers to functions (extremely tricky :()
-               Pointer pointer = d.pointer.pointer;
-
-               // TO WORK ON: Fixed the order for the array...
-               type.kind = arrayType;
-               type.arraySizeExp = CopyExpression(d.declarator.array.exp);
-               type.freeExp = true;
-               if(d.declarator.array.enumClass)
-                  type.enumClass = d.declarator.array.enumClass.symbol; // FindClass(d.declarator.array.enumClass.name);
-               if(d.declarator.declarator && d.declarator.declarator.type == arrayDeclarator)
-               {
-                  Type tmpType = type;
-                  Type inType;
-                  type = ProcessType(null, d.declarator.declarator);
-                  inType = type.type;
-                  type.type = tmpType;
-                  tmpType.type = inType;
-               }
+               if(isLong)
+                  specType.kind = int64Type;
                else
-                  type.type = ProcessType(null, d.declarator.declarator);
-
-               for(ptrType = type.type; ptrType && ptrType.kind && ptrType.type; ptrType = ptrType.type);
-
-               while(pointer)
+                  specType.kind = intType;
+               isLong = true;
+            }
+            else if(spec.specifier == FLOAT) specType.kind = floatType;
+            else if(spec.specifier == DOUBLE) specType.kind = doubleType;
+            else if(spec.specifier == SIGNED) specType.isSigned = true;
+            else if(spec.specifier == UNSIGNED) specType.isSigned = false;
+            else if(spec.specifier == CONST)
+               specType.constant = true;
+            else if(spec.specifier == TYPED_OBJECT || spec.specifier == ANY_OBJECT || spec.specifier == CLASS)
+            { 
+               switch(spec.specifier)
                {
-                  ptrType.kind = pointerType;
-                  pointer = pointer.pointer;
-                  if(pointer)
-                  {
-                     ptrType.type = Type { refCount = 1 };
-                     ptrType = ptrType.type;
-                  }
+                  case TYPED_OBJECT:   specType.classObjectType = typedObject;   break;
+                  case ANY_OBJECT:     specType.classObjectType = anyObject;     break;
+                  case CLASS:          specType.classObjectType = classPointer;  break;
                }
-               ptrType.type = ProcessType(specs, null);
+               specType.kind = classType;
+               specType._class = FindClass("class");
+            }
+            else if(spec.specifier == THISCLASS)
+               specType.kind = thisClassType;
+         }
+         else if(spec.type == nameSpecifier)
+         {
+            if(spec.name && (!strcmp(spec.name, "intptr") || !strcmp(spec.name, "uintptr")))
+            {
+               specType.kind = intPtrType;
+               if(!strcmp(spec.name, "uintptr"))
+                  specType.isSigned = false;
+            }
+            else if(spec.name && (!strcmp(spec.name, "uintsize") || !strcmp(spec.name, "intsize")))
+            {
+               specType.kind = intSizeType;
+               if(!strcmp(spec.name, "uintsize"))
+                  specType.isSigned = false;
             }
             else
             {
-               // WARNING: Not caring if this declarator contains a declarator between
-               //          the pointer and the function other than brackets (like in the case of array of pointers to functions)...
-               // *********** Could it ever go in here???  Yes: void (* converters_table[10]) (); ***********
-               Pointer pointer = d.pointer.pointer;
-
-               ptrType = type;
-               while(pointer)
+               Symbol symbol = spec.name ? FindType(curContext, spec.name) : null;
+               if(symbol && symbol.type)
                {
-                  ptrType.kind = pointerType;
-                  ptrType.type = Type { refCount = 1 };
-                  pointer = pointer.pointer;
-                  if(pointer)
-                     ptrType = ptrType.type;
-               }
-            }
+                  // Free Type Contents:
+                  Type dummy { };
+                  *dummy = *specType;
+                  FreeType(dummy);
 
-            *ptrType.type = funcType;
-            id = GetDeclId(d);
-            if(id)
-            {
-               if(id._class && !id._class.name)
-                  ptrType.type.staticMethod =  true;
-               else 
+                  CopyTypeInto(specType, symbol.type);
+                  specType.typeName = CopyString(symbol.type.name);
+               }
+               else if(!isTypedef) // !specType.kind)    // TESTING THIS FOR enum / typedef problem
                {
-                  // TODO : Ensure classSym has been resolved here... (Is this gonna cause problems? Supposed to do this later...)
-                  if(!id.classSym)
-                  {
-                     if(id._class && id._class.name)
-                     {
-                        id.classSym = id._class.symbol; // FindClass(id._class.name);
-                        /* TODO: Name Space Fix ups
-                        if(!id.classSym)
-                           id.nameSpace = eSystem_FindNameSpace(privateModule, id._class.name);
-                        */
-                     }
-                  }
-
-                  ptrType.type.thisClass = id.classSym;
-                  if(ptrType.type.thisClass && strcmp(ptrType.type.thisClass.string, "class"))
-                     ptrType.type.extraParam = true;
-                  else if(id._class && id._class.name && !strcmp(id._class.name, "any_object"))
-                  {
-                     ptrType.type.extraParam = true;
-                     ptrType.type.thisClass = FindClass("class");
-                  }
+                  // key.sym enum values need FindClass:
+                  specType._class = spec.name ? FindClass(spec.name) : null;
+                  specType.kind = classType;
+                  if(!specType._class)
+                     specType.kind = intType;
                }
-
-               type.name = CopyString(id.string);
             }
          }
-         else if(!d || d.type == identifierDeclarator)
+         else if(spec.type == enumSpecifier)
          {
+            specType.kind = enumType;
+            specType.enumName = spec.id ? CopyString(spec.id.string) : null;
 
-            *type = funcType;
-            if(d)
+            if(spec.list)
             {
-               if(d.identifier._class && d.identifier._class.type == templateTypeSpecifier)
+               Enumerator e;
+               int nextValue = 0;
+               for(e = spec.list->first; e; e = e.next)
                {
-                  type.thisClassTemplate = d.identifier._class.templateParameter;
+                  // TOFIX: NamedItem i { } causes cryptic error, bad .c!
+                  NamedLink i { name = CopyString(e.id.string) };
+                  specType.members.Add(i);
+               }
+            }
+         }
+         else if(spec.type == templateTypeSpecifier)
+         {
+            specType.kind = templateType;
+            specType.templateParameter = spec.templateParameter;
+         }
+         else if(spec.type == structSpecifier || spec.type == unionSpecifier)
+         {
+            Symbol _class = spec.id ? FindClass(spec.id.string) : null;
+            if(_class)
+            {
+               if(!_class.registered || _class.registered.type != structClass)
+                  specType.directClassAccess = true;
+               specType._class = _class;
+               specType.kind = classType;
+               break;
+            }
+            if(spec.type == structSpecifier)
+               specType.kind = structType;
+            else if(spec.type == unionSpecifier)
+               specType.kind = unionType;
+            if(spec.id)
+            {
+               // TESTING THIS HERE... Had 0 type size 
+               if(!spec.definitions && !isTypedef)
+               {
+                  Symbol symbol = spec.id.string ? FindSymbol(spec.id.string, curContext, globalContext, true, false) : null;
+                  if(symbol && symbol.type)
+                  {
+                     specType = *symbol.type;
+                     specType.name = CopyString(symbol.type.name);
+                     specType.typeName = CopyString(spec.name);
+                     specType.enumName = CopyString(symbol.type.enumName);
+                     specType.refCount = 1;
+
+                     if(symbol.type.kind == enumType)
+                     {
+                        NamedLink member;
+
+                        specType.members.Clear();
+                        for(member = symbol.type.members.first; member; member = member.next)
+                        {
+                           NamedLink item { name = CopyString(member.name), data = member.data };
+                           specType.members.Add(item);
+                        }
+                     }
+                     else if(symbol.type.kind == structType || symbol.type.kind == unionType)
+                     {
+                        Type member;
+                        // Tricky stuff... will be removed from list only when ref count reaches 0
+                        for(member = specType.members.first; member; member = member.next)
+                           member.refCount++;
+                     }
+                     else if(symbol.type.kind == functionType)
+                     {
+                        Type param;
+                        specType.returnType.refCount++;
+                        for(param = specType.params.first; param; param = param.next)
+                           param.refCount++;
+                     }
+                     else if(symbol.type.kind == pointerType || symbol.type.kind == arrayType)
+                     {
+                        specType.type.refCount++;
+                        if(symbol.type.kind == arrayType)
+                        {
+                           if(specType.arraySizeExp)
+                              specType.arraySizeExp = CopyExpression(specType.arraySizeExp);
+                        }
+
+                     }
+                  }
+                  else
+                     specType.enumName = CopyString(spec.id.string);
+               }
+               else
+                  specType.enumName = CopyString(spec.id.string);
+            }
+
+            if(spec.definitions)
+            {
+               ClassDef def;
+               for(def = spec.definitions->first; def; def = def.next)
+               {
+                  if(def.type == declarationClassDef && def.decl.type == structDeclaration)
+                  {
+                     Declaration decl = def.decl;
+                     if(decl.declarators)
+                     {
+                        Declarator d;
+                        for(d = decl.declarators->first; d; d = d.next)
+                        {
+                           Type memberType = ProcessType(decl.specifiers, d);
+                           specType.members.Add(memberType);
+                        }
+                     }
+                     else if(decl.specifiers)
+                     {
+                        Type memberType = ProcessType(decl.specifiers, null);
+                        specType.members.Add(memberType);
+                     }
+                  }
+               }
+            }
+            break;
+         }
+         else if(spec.type == subClassSpecifier)
+         {
+            specType.kind = specType.kind = subClassType;
+            specType._class = spec._class.symbol;
+         }
+      }
+   }
+   else if(assumeEllipsis)
+      specType.kind = ellipsisType;
+   return specType;     
+}
+
+static Type ProcessTypeDecls(OldList specs, Declarator decl, Type parentType)
+{
+   Type type = parentType;
+   Declarator subDecl = decl ? decl.declarator : null;
+   if(!parentType)
+      type = ProcessTypeSpecs(specs, decl == null, (decl && decl.type == extendedDeclaratorEnd) ? true : false);
+   if(decl)
+   {
+      switch(decl.type)
+      {
+         case bracketsDeclarator: break;
+         case extendedDeclarator:
+         case extendedDeclaratorEnd:
+         {
+            ExtDecl extDecl = decl.extended.extended;
+            if(extDecl)
+            {
+               switch(extDecl.type)
+               {
+                  case extDeclString:
+                  {
+                     String s = extDecl.s;
+                     if(s)
+                     {
+                        if(!strcmp(s, "__declspec(dllexport)") || !strcmp(s, "dllexport"))
+                           type.dllExport = true;
+                        else if(!strcmp(s, "__declspec(stdcall)") || !strcmp(s, "stdcall"))
+                           type.attrStdcall = true;
+                     }
+                     break;
+                  }
+                  case extDeclAttrib:
+                  {
+                     OldList * attribs = extDecl.attr.attribs;
+                     if(attribs)
+                     {
+                        Attribute attr;
+                        for(attr = attribs->first; attr; attr = attr.next)
+                        {
+                           String s = attr.attr;
+                           if(s)
+                           {
+                              if(!strcmp(s, "dllexport"))
+                                 type.dllExport = true;
+                              else if(!strcmp(s, "stdcall"))
+                                 type.attrStdcall = true;
+                           }
+                        }
+                     }
+                     type.keepCast = true;
+                     break;
+                  }
+               }
+            }
+            break;
+         }
+         case structDeclarator:
+         {
+            Expression exp = decl.structDecl.exp;
+            if(exp)
+            {
+               ProcessExpressionType(exp);
+               ComputeExpression(exp);
+               if(exp.type == constantExp)
+                  type.bitFieldCount = strtoul(exp.constant, null, 0);
+            }
+            break;
+         }
+         case functionDeclarator:
+         {
+            type = { refCount = 1, kind = functionType, returnType = type, dllExport = type.dllExport, attrStdcall = type.attrStdcall };
+            if(decl.function.parameters)
+            {
+               TypeName param;
+               for(param = decl.function.parameters->first; param; param = param.next)
+                  type.params.Add(ProcessType(param.qualifiers, param.declarator));
+            }
+            break;
+         }
+         case arrayDeclarator:
+         {
+            type = { refCount = 1, kind = arrayType, arraySizeExp = CopyExpression(decl.array.exp), freeExp = true, type = type, dllExport = type.dllExport, attrStdcall = type.attrStdcall };
+            if(decl.array.enumClass)
+               type.enumClass = decl.array.enumClass.symbol; 
+            break;
+         }
+         case pointerDeclarator:
+         {
+            Pointer pointer = decl.pointer.pointer;
+            while(pointer)
+            {
+               OldList * qualifiers = pointer.qualifiers;
+               if(type.classObjectType)
+                  type.byReference = true;
+               else
+                  type = { refCount = 1, kind = pointerType, type = type, dllExport = type.dllExport, attrStdcall = type.attrStdcall };
+               if(qualifiers)
+               {
+                  Specifier spec;
+                  for(spec = qualifiers->first; spec; spec = spec.next)
+                  {
+                     if(spec.type == baseSpecifier && spec.specifier == CONST)
+                        type.constant = true;
+                  }
+               }
+               pointer = pointer.pointer;
+            }
+            break;
+         }
+         case identifierDeclarator:
+         {
+            Identifier id = decl.identifier;
+            Specifier _class = id._class;
+            delete type.name;
+            type.name = CopyString(id.string);
+            if(_class)
+            {
+               if(_class.type == templateTypeSpecifier)
+               {
+                  type.thisClassTemplate = _class.templateParameter;
                   type.extraParam = true;
                }
                else
                {
-                  if(d.identifier._class && !d.identifier._class.name)
+                  String name = _class.name;
+                  if(!name)
                      type.staticMethod = true;
                   else
                   {
-                     if(d.identifier._class && d.identifier._class.name && d.identifier._class.name[strlen(d.identifier._class.name)-1] == '&')
+                     if(!id.classSym)
+                        id.classSym = _class.symbol; // FindClass(_class.name);
+                     /* TODO: Name Space Fix ups
+                        id.nameSpace = eSystem_FindNameSpace(privateModule, _class.name);
+                     */
+
+                     if(name[strlen(name)-1] == '&')
                      {
                         type.thisClass = FindClass("class");
                         type.byReference = true;
                      }
                      else
-                        type.thisClass = d.identifier._class ? d.identifier._class.symbol /*FindClass(d.identifier._class.name)*/ : null;
+                        type.thisClass = _class.symbol;
+
                      if(type.thisClass && strcmp(type.thisClass.string, "class"))
-                     {
                         type.extraParam = true;
-                     }
-                     else if(d.identifier._class && d.identifier._class.name && !strcmp(d.identifier._class.name, "any_object"))
+                     else if(!strcmp(name, "any_object"))
                      {
                         type.extraParam = true;
                         type.thisClass = FindClass("class");
                      }
-                     else if(d.identifier._class && d.identifier._class.name && !strcmp(d.identifier._class.name, "class"))
+                     else if(!strcmp(name, "class"))
                      {
-                        //type.extraParam = true;
                         type.thisClass = FindClass("class");
-                        type.classObjectType = classPointer;
+                        type.classObjectType = classPointer;   // This is used for class properties
+                     }
+                     else if(!strcmp(name, "typed_object") || !strcmp(name, "typed_object&"))
+                     {
+                        type.thisClass = FindClass("class");
+                        type.classObjectType = typedObject;
                      }
                   }
                }
-               type.name = CopyString(d.identifier.string);
             }
+            break;
          }
-         delete funcType;
+         default:
+            PrintLn("Unhandled Declarator Type: ", decl.type);
       }
-      else if(decl && decl.type == pointerDeclarator)
+   }
+   if(subDecl)
+   {
+      Type curType = type;
+      type = ProcessTypeDecls(null, subDecl, type);
+      if(curType && type.kind != functionType)
       {
-         if(decl.declarator && decl.declarator.type == arrayDeclarator)
-         {
-            // Arrays of pointers (tricky :))
-            Identifier id;
-            Pointer pointer = decl.pointer.pointer;
-            Type ptrType;
-
-            // TO WORK ON: Fixed the order for the array...
-            type.kind = arrayType;
-            type.arraySizeExp = CopyExpression(decl.declarator.array.exp);
-            type.freeExp = true;
-            if(decl.declarator.array.enumClass)
-               type.enumClass = decl.declarator.array.enumClass.symbol; // FindClass(decl.declarator.array.enumClass.name);
-            if(decl.declarator.declarator && decl.declarator.declarator.type == arrayDeclarator)
-            {
-               Type tmpType = type;
-               Type inType;
-               type = ProcessType(null, decl.declarator.declarator);
-               inType = type.type;
-               type.type = tmpType;
-               tmpType.type = inType;
-            }
-            else
-               type.type = ProcessType(null, decl.declarator.declarator);
-            /*
-            type.type = ProcessType(null, decl.declarator.declarator);
-            type.kind = arrayType;
-            type.arraySizeExp = CopyExpression(decl.declarator.array.exp);
-            type.arraySizeExp.freeExp = true;
-            if(decl.array.enumClass)
-               type.enumClass = FindClass(decl.array.enumClass.name);
-            */
-
-            for(ptrType = type.type; ptrType && ptrType.kind && ptrType.type; ptrType = ptrType.type);
-
-            while(pointer)
-            {
-               ptrType.kind = pointerType;
-               pointer = pointer.pointer;
-               if(pointer)
-               {
-                  ptrType.type = Type { refCount = 1 };
-                  ptrType = ptrType.type;
-               }
-            }
-            ptrType.type = ProcessType(specs, null);
-            id = GetDeclId(decl);
-            if(id) type.name = CopyString(id.string);
-         }
-         else
-         {
-            Identifier id;
-            Pointer pointer = decl.pointer.pointer;
-            Type ptrType = type;
-
-            if(type.classObjectType)
-            {
-               type.byReference = true;
-            }
-            else
-            {
-               while(pointer)
-               {
-                  ptrType.kind = pointerType;
-                  pointer = pointer.pointer;
-                  if(pointer)
-                  {
-                     ptrType.type = Type { refCount = 1 };
-                     ptrType = ptrType.type;
-                  }
-               }
-               ptrType.type = ProcessType(specs, decl.declarator);
-
-               if(type.type.classObjectType)
-               {
-                  Type subType = type.type;
-                  type.classObjectType = subType.classObjectType;
-                  type.kind = subType.kind;
-                  type._class = subType._class;
-                  type.byReference = true;
-
-                  FreeType(subType);
-               }
-               id = GetDeclId(decl);
-               if(id) type.name = CopyString(id.string);
-            }
-         }
+         curType.thisClassTemplate = type.thisClassTemplate;
+         curType.extraParam = type.extraParam;
+         curType.staticMethod = type.staticMethod;
+         curType.thisClass = type.thisClass;
+         curType.byReference = type.byReference;
+         curType.classObjectType = type.classObjectType;
       }
-      else if(decl && decl.type == arrayDeclarator)
-      {
-         Identifier id;
-
-         type.kind = arrayType;
-         
-         type.arraySizeExp = CopyExpression(decl.array.exp);
-         type.freeExp = true;
-         if(decl.array.enumClass)
-            type.enumClass = decl.array.enumClass.symbol; // FindClass(decl.array.enumClass.name);
-         id = GetDeclId(decl);
-
-         // TO WORK ON: Fixed the order for the array...
-         if(decl.declarator && decl.declarator.type == arrayDeclarator)
-         {
-            Type tmpType = type;
-            Type inType;
-            type = ProcessType(specs, decl.declarator);
-            inType = type.type;
-            type.type = tmpType;
-            tmpType.type = inType;
-         }
-         else
-            type.type = ProcessType(specs, decl.declarator);
-
-         if(id)
-         {
-            delete type.name;
-            type.name = CopyString(id.string);
-         }
-      }
-      else
-      {
-         if(!decl || decl.type == identifierDeclarator)
-         {
-            *type = specType;
-            delete type.name;
-            type.name = decl ? CopyString(decl.identifier.string) : null;
-
-         }   
-      }
-      delete specType;
    }
    return type;
+}
+
+public Type ProcessType(OldList specs, Declarator decl)
+{
+   return ProcessTypeDecls(specs, decl, null);
 }
 
 public Type ProcessTypeString(char * string, bool staticMethod)

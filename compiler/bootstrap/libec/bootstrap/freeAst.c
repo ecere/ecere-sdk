@@ -811,25 +811,26 @@ struct Symbol * enumClass;
 struct Type * type;
 struct TemplateParameter * templateParameter;
 } __attribute__ ((gcc_struct));
-unsigned int isSigned;
 int kind;
-unsigned int constant;
 unsigned int size;
 char *  name;
 char *  typeName;
-unsigned int count;
-unsigned int truth;
 int classObjectType;
-unsigned int byReference;
-unsigned int extraParam;
 int alignment;
-unsigned int directClassAccess;
-unsigned int computing;
-unsigned int dllExport;
 unsigned int offset;
-unsigned int keepCast;
-unsigned int passAsTemplate;
 int bitFieldCount;
+int count;
+unsigned int isSigned : 1;
+unsigned int constant : 1;
+unsigned int truth : 1;
+unsigned int byReference : 1;
+unsigned int extraParam : 1;
+unsigned int directClassAccess : 1;
+unsigned int computing : 1;
+unsigned int keepCast : 1;
+unsigned int passAsTemplate : 1;
+unsigned int dllExport : 1;
+unsigned int attrStdcall : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -1701,12 +1702,44 @@ FreeStatement(watcher->compound);
 ((watcher ? (__ecereClass_PropertyWatch->Destructor ? __ecereClass_PropertyWatch->Destructor(watcher) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(watcher)) : 0), watcher = 0);
 }
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_AsmField;
+
+struct AsmField
+{
+struct AsmField * prev;
+struct AsmField * next;
+struct Location loc;
+char *  command;
+struct Expression * expression;
+} __attribute__ ((gcc_struct));
+
+void FreeAsmField(struct AsmField * field)
+{
+if(field->expression)
+FreeExpression(field->expression);
+(__ecereNameSpace__ecere__com__eSystem_Delete(field->command), field->command = 0);
+((field ? (__ecereClass_AsmField->Destructor ? __ecereClass_AsmField->Destructor(field) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(field)) : 0), field = 0);
+}
+
 void FreeDeclaration(struct Declaration * decl);
 
 void FreeStatement(struct Statement * stmt)
 {
 switch(stmt->type)
 {
+case 13:
+{
+if(stmt->asmStmt.spec)
+FreeSpecifier(stmt->asmStmt.spec);
+if(stmt->asmStmt.inputFields)
+FreeList(stmt->asmStmt.inputFields, FreeAsmField);
+if(stmt->asmStmt.outputFields)
+FreeList(stmt->asmStmt.outputFields, FreeAsmField);
+if(stmt->asmStmt.clobberedFields)
+FreeList(stmt->asmStmt.clobberedFields, FreeAsmField);
+(__ecereNameSpace__ecere__com__eSystem_Delete(stmt->asmStmt.statements), stmt->asmStmt.statements = 0);
+break;
+}
 case 0:
 if(stmt->labeled.stmt)
 FreeStatement(stmt->labeled.stmt);
@@ -1718,6 +1751,7 @@ if(stmt->caseStmt.stmt)
 FreeStatement(stmt->caseStmt.stmt);
 break;
 case 14:
+if(stmt->decl)
 FreeDeclaration(stmt->decl);
 break;
 case 2:
@@ -2551,7 +2585,7 @@ void __ecereRegisterModule_freeAst(struct __ecereNameSpace__ecere__com__Instance
 {
 struct __ecereNameSpace__ecere__com__Class * class;
 
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeList", "void FreeList(ecere::sys::OldList list, void( *)(void *))", FreeList, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeList", "void FreeList(ecere::sys::OldList list, void (* FreeFunction)(void *))", FreeList, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeType", "void FreeType(Type type)", FreeType, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeSymbol", "void FreeSymbol(Symbol symbol)", FreeSymbol, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeMethodImport", "void FreeMethodImport(MethodImport imp)", FreeMethodImport, module, 2);
@@ -2578,6 +2612,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeAttribute", "void Fr
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeExtDecl", "void FreeExtDecl(ExtDecl extDecl)", FreeExtDecl, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeDeclarator", "void FreeDeclarator(Declarator decl)", FreeDeclarator, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreePropertyWatch", "void FreePropertyWatch(PropertyWatch watcher)", FreePropertyWatch, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeAsmField", "void FreeAsmField(AsmField field)", FreeAsmField, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeStatement", "void FreeStatement(Statement stmt)", FreeStatement, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeInitializer", "void FreeInitializer(Initializer initializer)", FreeInitializer, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeInitDeclarator", "void FreeInitDeclarator(InitDeclarator decl)", FreeInitDeclarator, module, 2);
