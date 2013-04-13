@@ -2098,7 +2098,7 @@ private:
                            strcpy(command, line+5);
                            error = true;
                         }
-                        if(!error && (singleProjectOnlyNode || !found) && strstr(line, "ide ") == line)
+                        if(!error && (singleProjectOnlyNode || !found) && strstr(line, "ecere-ide ") == line)
                         {
                            strcpy(command, line);
                            found = true;
@@ -2397,9 +2397,9 @@ private:
             f.Printf("CPP := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cppCommand);
             f.Printf("CC := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.ccCommand);
             f.Printf("CXX := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cxxCommand);
-            f.Printf("ECP := $(if $(ECP_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)\n", compiler.ecpCommand);
-            f.Printf("ECC := $(if $(ECC_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecc/ecc.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.eccCommand);
-            f.Printf("ECS := $(if $(ECS_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT),-outputpot,)\n", compiler.ecsCommand);
+            f.Printf("ECP := $(if $(ECP_DEBUG),ecere-ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)\n", compiler.ecpCommand);
+            f.Printf("ECC := $(if $(ECC_DEBUG),ecere-ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecc/ecc.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.eccCommand);
+            f.Printf("ECS := $(if $(ECS_DEBUG),ecere-ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT),-outputpot,)\n", compiler.ecsCommand);
             f.Printf("EAR := %s\n", compiler.earCommand);
 
             f.Puts("AS := $(GCC_PREFIX)as\n");

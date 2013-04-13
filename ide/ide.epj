@@ -7,7 +7,7 @@
          "GDB_DEBUG_GUI"
       ],
       "TargetType" : "Executable",
-      "TargetFileName" : "ide"
+      "TargetFileName" : "ecere-ide"
    },
    "Platforms" : [
       {
