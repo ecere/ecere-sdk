@@ -1,6 +1,6 @@
 {
    "Version" : 0.2,
-   "ModuleName" : "ide",
+   "ModuleName" : "ecere-ide",
    "Options" : {
       "Warnings" : "All",
       "PreprocessorDefinitions" : [
@@ -10,7 +10,7 @@
          "../extras/include"
       ],
       "TargetType" : "Executable",
-      "TargetFileName" : "ide",
+      "TargetFileName" : "ecere-ide",
       "Libraries" : [
          "ecere"
       ]
