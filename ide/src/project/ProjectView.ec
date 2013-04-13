@@ -1809,7 +1809,7 @@ class ProjectView : Window
       int bitDepth = ide.workspace.bitDepth;
 
       if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, false)))
-         ide.debugger.StepOver(compiler, config, skip, bitDepth);
+         ide.debugger.StepOver(compiler, config, bitDepth, skip);
 
       delete compiler;
       return true;
