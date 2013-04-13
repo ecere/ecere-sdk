@@ -759,7 +759,7 @@ class IDEWorkSpace : Window
                isProjectFile = (!strcmpi(extension, "epj") || !strcmpi(extension, "ews"));
                if(mods.ctrl)
                {
-                  char * command = PrintString("ide ", isProjectFile ? "-t " : "", file);
+                  char * command = PrintString("ecere-ide ", isProjectFile ? "-t " : "", file);
                   Execute(command);
                   delete command;
                }
@@ -784,7 +784,7 @@ class IDEWorkSpace : Window
             {
                if(mods.ctrl)
                {
-                  char * command = PrintString("ide ", file);
+                  char * command = PrintString("ecere-ide ", file);
                   Execute(command);
                   delete command;
                }

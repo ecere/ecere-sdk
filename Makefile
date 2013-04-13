@@ -394,7 +394,7 @@ endif
 	$(call rm,$(OBJBINDIR)ecp$(E))
 	$(call rm,$(OBJBINDIR)ecs$(E))
 	$(call rm,$(OBJBINDIR)epj2make$(E))
-	$(call rm,$(OBJBINDIR)ide$(E))
+	$(call rm,$(OBJBINDIR)ecere-ide$(E))
 	$(call rm,$(OBJBINDIR)documentor$(E))
 ifdef CodeGuard
 	$(call rm,$(OBJBINDIR)CodeGuard$(E))
@@ -488,7 +488,7 @@ BINARIES = \
 	ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(E) \
 	epj2make/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/epj2make$(E) \
 	documentor/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/documentor$(E) \
-	ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ide$(E) \
+	ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(E) \
 	eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV) \
 	eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SOV)
 
@@ -575,7 +575,7 @@ endif
 endif
 endif
 
-	$(call cp,ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ide$(E),$(OBJBINDIR))
+	$(call cp,ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(E),$(OBJBINDIR))
 	$(call cp,ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(E),$(OBJBINDIR))
 	$(call cp,compiler/ecc/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(E),$(OBJBINDIR))
 	$(call cp,compiler/ecp/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(E),$(OBJBINDIR))
@@ -610,7 +610,7 @@ endif
 ifneq ($(ECERE_AUDIO),n)
 	$(call cp,$(OBJBINDIR)$(LP)EcereAudio$(SO),"$(DESTLIBDIR)/")
 endif
-	$(call cp,$(OBJBINDIR)ide$(E),"$(BINDIR)/")
+	$(call cp,$(OBJBINDIR)ecere-ide$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)ear$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)ecc$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)ecp$(E),"$(BINDIR)/")
@@ -639,7 +639,7 @@ endif
 ifneq ($(ECERE_AUDIO),n)
 	install $(OBJLIBDIR)$(LP)EcereAudio$(SO) $(DESTLIBDIR)/
 endif
-	install $(OBJBINDIR)ide$(E) $(BINDIR)/
+	install $(OBJBINDIR)ecere-ide$(E) $(BINDIR)/
 	install $(OBJBINDIR)ear$(E) $(BINDIR)/
 	install $(OBJBINDIR)ecc$(E) $(BINDIR)/
 	install $(OBJBINDIR)ecp$(E) $(BINDIR)/
@@ -713,7 +713,7 @@ else
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecere$(SO) $(DESTLIBDIR)/$(LP)ecere$(SO)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(DESTLIBDIR)/$(LP)ecereCOM$(SO)
 endif
-	install $(INSTALL_FLAGS) $(OBJBINDIR)ide$(E) $(BINDIR)/ide$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)ecere-ide$(E) $(BINDIR)/ecere-ide$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ear$(E) $(BINDIR)/ear$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ecc$(E) $(BINDIR)/ecc$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ecp$(E) $(BINDIR)/ecp$(E)
@@ -788,7 +788,7 @@ ifneq ($(ECERE_AUDIO),n)
 	$(call rm,"$(DESTLIBDIR)/$(LP)EcereAudio$(SO)")
 endif
 endif
-	$(call rm,"$(BINDIR)/ide$(E)")
+	$(call rm,"$(BINDIR)/ecere-ide$(E)")
 	$(call rm,"$(BINDIR)/ear$(E)")
 	$(call rm,"$(BINDIR)/ecc$(E)")
 	$(call rm,"$(BINDIR)/ecp$(E)")

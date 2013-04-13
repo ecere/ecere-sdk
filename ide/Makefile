@@ -2,7 +2,7 @@
 
 # CORE VARIABLES
 
-MODULE := ide
+MODULE := ecere-ide
 VERSION := 
 CONFIG := release
 ifndef COMPILER
@@ -42,7 +42,7 @@ OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = res/
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ide$(E)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(E)
 
 _ECSOURCES = \
 	../extras/FileSystemIterator.ec \
