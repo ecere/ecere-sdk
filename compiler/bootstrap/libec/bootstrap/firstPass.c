@@ -1049,7 +1049,8 @@ if(declId)
 {
 if(regClass && regClass->type == 2)
 {
-struct Expression * sizeExp = d->structDecl.exp, * posExp = d->structDecl.posExp;
+struct Expression * sizeExp = (d->type == 0) ? d->structDecl.exp : (((void *)0));
+struct Expression * posExp = (d->type == 0) ? d->structDecl.posExp : (((void *)0));
 int bitSize = 0, bitPos = -1;
 char dataTypeString[1024] = "";
 
@@ -1069,8 +1070,11 @@ if(posExp->isConstant)
 bitPos = strtol(posExp->constant, (((void *)0)), 0);
 FreeExpression(posExp);
 }
+if(d->type == 0)
+{
 d->structDecl.posExp = (((void *)0));
 d->structDecl.exp = (((void *)0));
+}
 dataType = ProcessType(decl->specifiers, d);
 PrintType(dataType, dataTypeString, 0x0, 0x1);
 {

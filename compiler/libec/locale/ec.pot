@@ -73,16 +73,16 @@ msgstr "Invalid object specified and not inside a class\n"
 msgid "Invalid watched object\n"
 msgstr "Invalid watched object\n"
 
-#: ./src/firstPass.ec:79
-#: ./src/firstPass.ec:104
-#: ./src/firstPass.ec:165
-#: ./src/firstPass.ec:207
+#: ./src/firstPass.ec:83
+#: ./src/firstPass.ec:108
+#: ./src/firstPass.ec:169
+#: ./src/firstPass.ec:211
 msgid "Member with same name already exists %s in class %s\n"
 msgstr "Member with same name already exists %s in class %s\n"
 
-#: ./src/firstPass.ec:97
-#: ./src/firstPass.ec:158
-#: ./src/firstPass.ec:200
+#: ./src/firstPass.ec:101
+#: ./src/firstPass.ec:162
+#: ./src/firstPass.ec:204
 msgid "Member with same name already exists %s in member %s\n"
 msgstr "Member with same name already exists %s in member %s\n"
 
@@ -134,7 +134,7 @@ msgstr "Redefinition of %s (defining as %s, already defined as %s)\n"
 msgid "Redefinition of %s ignored\n"
 msgstr "Redefinition of %s ignored\n"
 
-#: ./src/firstPass.ec:440
+#: ./src/firstPass.ec:444
 msgid "Redefinition of method %s in class %s\n"
 msgstr "Redefinition of method %s in class %s\n"
 
@@ -286,7 +286,7 @@ msgstr "overriding class expected to be derived from method class\n"
 msgid "parsing type %s\n"
 msgstr "parsing type %s\n"
 
-#: ./src/firstPass.ec:306
+#: ./src/firstPass.ec:310
 msgid "redefinition of class %s\n"
 msgstr "redefinition of class %s\n"
 

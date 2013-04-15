@@ -29,7 +29,8 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                      {
                         if(regClass && regClass.type == bitClass)
                         {
-                           Expression sizeExp = d.structDecl.exp, posExp = d.structDecl.posExp;
+                           Expression sizeExp = (d.type == structDeclarator) ? d.structDecl.exp : null;
+                           Expression posExp = (d.type == structDeclarator) ? d.structDecl.posExp : null;
                            int bitSize = 0, bitPos = -1;
                            char dataTypeString[1024] = "";
                         
@@ -55,8 +56,11 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                               FreeExpression(posExp);
                            }
 
-                           d.structDecl.posExp = null;
-                           d.structDecl.exp = null;
+                           if(d.type == structDeclarator)
+                           {
+                              d.structDecl.posExp = null;
+                              d.structDecl.exp = null;
+                           }
 
                            dataType = ProcessType(decl.specifiers, d);
                            PrintType(dataType, dataTypeString, false, true);
