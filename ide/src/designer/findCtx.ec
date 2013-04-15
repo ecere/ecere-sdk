@@ -1023,7 +1023,7 @@ static Identifier FindCtxClassDef(ClassDef def, int line, int charPos)
    switch(def.type)
    {
       case declarationClassDef:
-         if(Inside(&def.decl.loc, line, charPos))
+         if(InsideEndIncl(&def.decl.loc, line, charPos))
          {
             idResult = FindCtxDeclaration(def.decl, line, charPos);
             if(idResult)
@@ -1102,10 +1102,12 @@ static Identifier FindCtxClass(ClassDefinition _class, int line, int charPos)
             idResult = FindCtxClassDef(def, line, charPos);
             if(idResult)
                return idResult;
+            else
+               insideSomething = false;
          }
       }
    }
-   if(!insideSomething)
+   if(!insideSomething && line > _class.blockStart.start.line || (line == _class.blockStart.start.line && charPos >= _class.blockStart.start.charPos) )
    {
       insideClass = _class.symbol.registered;
       return (void *)-1;

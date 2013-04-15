@@ -229,9 +229,26 @@ void OutputType(File f, Type type, bool outputName)
             f.Printf("double");
             break;
          case classType:
-            // ADD CODE TO DECIDE WHETHER TO OUTPUT FULLY QUAlIFIED OR NOT:
-            f.Printf(type._class.shortName ? type._class.shortName : type._class.string);
+         {
+            if(type._class && !strcmp(type._class.string, "class"))
+            {
+               switch(type.classObjectType)
+               {
+                  case anyObject:
+                     f.Printf("any_object");
+                     break;
+                  default:
+                     f.Printf("typed_object");
+                     break;
+               }
+               if(type.byReference)
+                  f.Printf(" &");
+            }
+            else
+               // ADD CODE TO DECIDE WHETHER TO OUTPUT FULLY QUAlIFIED OR NOT:
+               f.Printf(type._class.shortName ? type._class.shortName : type._class.string);
             break;
+         }
          case structType:
             break;
          case unionType:
@@ -5633,11 +5650,11 @@ class CodeEditor : Window
       }
    }
 
-   void ListClassPropertiesAndVirtual(Class whatClass)
+   void ListClassPropertiesAndVirtual(Class whatClass, String curString)
    {
       Class _class;
       bool isPrivate = false;
-      for(_class = whatClass; _class && _class.type != systemClass; _class = _class.base)
+      for(_class = whatClass; _class /*&& _class.type != systemClass*/; _class = _class.base)
       {
          Method method;
          Property prop;
@@ -5675,7 +5692,7 @@ class CodeEditor : Window
                      row.icon = icons[(member.memberAccess == publicAccess && !isPrivate) ? typeProperty : typePropertyPrivate];
                   }
                }
-               else if(member.name)
+               else if(member.name && (!curString || strcmp(curString, member.name)))
                {
                   DataRow row = membersList.AddString(member.name);
                
@@ -5959,7 +5976,7 @@ class CodeEditor : Window
          ListEnumValues(destType._class.registered);
 
          if(insideClass)
-            ListClassPropertiesAndVirtual(insideClass);
+            ListClassPropertiesAndVirtual(insideClass, null);
 
          listedEnums = true;
       }
@@ -5974,13 +5991,13 @@ class CodeEditor : Window
          }
 
          if(insideClass)
-            ListClassPropertiesAndVirtual(insideClass);
+            ListClassPropertiesAndVirtual(insideClass, null);
 
          listedEnums = true;
       }
       else if(insideClass && !enumOnly)
       {
-         ListClassPropertiesAndVirtual(insideClass);
+         ListClassPropertiesAndVirtual(insideClass, string);
       }
 
       if(listedEnums && string && string[0])
