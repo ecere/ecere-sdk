@@ -699,6 +699,9 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
    if(file)
    {
       OldList openedFilesNotFound { };
+      double version = 0;
+      char section[128];
+      char subSection[128];
 
       workspace = Workspace { compiler = ideSettings.defaultCompiler, workspaceFile = filePath };
 
@@ -706,10 +709,6 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
       while(!file.Eof())
       {
          char buffer[65536];
-         char section[128];
-         char subSection[128];
-         //char version[16];
-         float version;
          char * equal;
          int len;
          
@@ -840,7 +839,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
                   Point scroll { };
                   char absolutePath[MAX_LOCATION];
                   strcpy(absolutePath, workspace.workspaceDir);
-                  if(version == 0.01f)
+                  if(version == 0.01)
                   {
                      char * comma = strchr(equal, ',');
                      if(comma)
@@ -850,7 +849,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
                         equal = comma + 1;
                      }
                   }
-                  else if(version >= 0.02f)
+                  else if(version >= 0.02)
                   {
                      char * column = strchr(equal, ':');
                      if(column)
@@ -927,7 +926,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
             }
             else if(!strcmpi(buffer, "ECERE Workspace File"));
             else if(!strcmpi(buffer, "Version 0a"))
-               version = 0.0f;
+               version = 0;
             else if(!strncmp(buffer, "Version ", 8))
                version = atof(&buffer[8]);
             else if(!strcmpi(buffer, "Workspace"))
