@@ -399,7 +399,20 @@ public:
                               if(member)
                               {
                                  // TOFIX: How to swiftly handle classes with base data type?
-                                 if(type == class(double) || !strcmp(type.dataTypeString, "double"))
+                                 if(type.type == structClass)
+                                    ; // Unhandled
+                                 else if(type.type == normalClass || type.type == noHeadClass)
+                                 {
+                                    void ** ptr = (void**)((byte *)*object + member._class.offset + member.offset);
+                                    if(eClass_IsDerived(type, class(Container)) && *ptr)
+                                    {
+                                       Container container = (Container)*ptr;
+                                       container.Free();
+                                       delete container;
+                                    }
+                                    *ptr = value.p;
+                                 }
+                                 else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
                                  {
                                     *(double *)((byte *)*object + member._class.offset + member.offset) = value.d;
                                  }
@@ -415,15 +428,7 @@ public:
                                  else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") || 
                                     !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
                                  {
-                                    int * ptr = (int *)((byte *)*object + member._class.offset + member.offset);
-                                    // TODO: Fix Me Up 64 bit pointer here
-                                    if(eClass_IsDerived(type, class(Container)) && *ptr)
-                                    {
-                                       Container container = (Container)*ptr;
-                                       container.Free();
-                                       delete container;
-                                    }
-                                    *ptr = value.i;
+                                    *(int *)((byte *)*object + member._class.offset + member.offset) = value.i;
                                  }
                                  else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") || 
                                     !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") || 
@@ -436,7 +441,7 @@ public:
                                  {
                                     *(char *)((byte *)*object + member._class.offset + member.offset) = value.c;
                                  }
-                                 else if(type.type != structClass)
+                                 else
                                  {
                                     *(void **)((byte *)*object + member._class.offset + member.offset) = value.p;
                                  }
