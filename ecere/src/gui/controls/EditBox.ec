@@ -126,15 +126,13 @@ private:
 
 static class ArrayImpl
 {
-   uint size;
    Class type;
+   uint size;
    byte * array;
 };
 
 public class OldArray
 {
-   uint size;
-
    ~OldArray()
    {
       int c;
@@ -173,6 +171,8 @@ public:
          memcpy(((ArrayImpl)this).array, value, type.typeSize * size);
       }
    }
+private:
+   uint size;
 };
 
 public class UndoAction : struct
