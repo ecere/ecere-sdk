@@ -305,7 +305,7 @@ public:
          fd_set ws, es;
 
          if(s != -1 && ((type == tcp && (count = SendData(buffer, size, 0))) ||
-            (type == udp && (count = sendto(s, buffer, size,0, (SOCKADDR *)&a, sizeof(a))))))
+            (type == udp && (count = (int)sendto(s, buffer, size,0, (SOCKADDR *)&a, sizeof(a))))))
          {
    #if defined(__WIN32__)
             int error = WSAGetLastError();
@@ -618,7 +618,7 @@ private:
             else
             {
                int len = sizeof(a);
-               count = recvfrom(s, recvBuffer + recvBytes, 
+               count = (int)recvfrom(s, recvBuffer + recvBytes, 
                   recvBufferSize - recvBytes, 0, (SOCKADDR *)&a, &len);
                strcpy(inetAddress, inet_ntoa(this.a.sin_addr));
                inetPort = ntohs((uint16)a.sin_port);

@@ -159,7 +159,7 @@ static HB_Error hb_getSFntTable(void *font, HB_Tag tableTag, HB_Byte *buffer, HB
         return HB_Err_Invalid_Argument;
 
     error = FT_Load_Sfnt_Table(face, tableTag, 0, buffer, &ftlen);
-    *length = ftlen;
+    *length = (uint)ftlen;
     return (HB_Error)error;
 }
 
@@ -183,8 +183,8 @@ static HB_Error hb_getPointInOutline(HB_Font font, HB_Glyph glyph, int flags, hb
     if (point > *nPoints)
         return (HB_Error)HB_Err_Invalid_SubTable;
 
-    *xpos = face->glyph->outline.points[point].x;
-    *ypos = face->glyph->outline.points[point].y;
+    *xpos = (int)face->glyph->outline.points[point].x;
+    *ypos = (int)face->glyph->outline.points[point].y;
 
     return HB_Err_Ok;
 }
@@ -246,11 +246,11 @@ static HB_FontClass hb_fontClass =
    hb_getPointInOutline, hb_getGlyphMetrics, hb_getFontMetric
 };
 
-static uint FT_stream_load(FT_Stream stream, uint offset, byte * buffer, uint count)
+static uint FT_stream_load(FT_Stream stream, long offset, byte * buffer, long count)
 {
     File f = stream->descriptor.pointer;
-    f.Seek(offset, start);
-    return count ? f.Read(buffer, 1, count) : 0;
+    f.Seek((int)offset, start);
+    return count ? f.Read(buffer, 1, (uint)count) : 0;
 }
 
 static void FT_stream_close(FT_Stream stream)
@@ -426,8 +426,8 @@ class GlyphPack : BTNode
 
             fontEntry.hbFont.x_ppem  = fontEntry.face->size->metrics.x_ppem;
             fontEntry.hbFont.y_ppem  = fontEntry.face->size->metrics.y_ppem;
-            fontEntry.hbFont.x_scale = fontEntry.face->size->metrics.x_scale;
-            fontEntry.hbFont.y_scale = fontEntry.face->size->metrics.y_scale;
+            fontEntry.hbFont.x_scale = (int)fontEntry.face->size->metrics.x_scale;
+            fontEntry.hbFont.y_scale = (int)fontEntry.face->size->metrics.y_scale;
          }
       }
 
@@ -521,7 +521,7 @@ class GlyphPack : BTNode
             //glyph->top = (int)(ascender - slot->bitmap_top); // + ((faces[c]->size->metrics.height >> 6) - (faces[0]->size->metrics.height >> 6)) + (font.height - (faces[c]->size->metrics.height >> 6));
             
             //glyph->top = (int)(ascender - slot->bitmap_top);// + (font.height - maxHeight);
-            glyph->top = (int)(ascender - slot->bitmap_top) + (font.height - (faces[c]->size->metrics.height >> 6)) / 2;
+            glyph->top = (int)(ascender - slot->bitmap_top) + (int)(font.height - (faces[c]->size->metrics.height >> 6)) / 2;
 
             // printf("[char: %d] mode: %d, width: %d, height: %d, pitch: %d\n", key + c, slot->bitmap.pixel_mode, slot->bitmap.width, slot->bitmap.rows, slot->bitmap.pitch);
             xMax = x + slot->bitmap.width;
@@ -574,12 +574,12 @@ class GlyphPack : BTNode
             glyph->w = slot->bitmap.width;
             glyph->h = slot->bitmap.rows;
             glyph->glyphNo = glyphNo;
-            glyph->bx = faces[c]->glyph->metrics.horiBearingX;
-            glyph->by = faces[c]->glyph->metrics.horiBearingY;
+            glyph->bx = (int)faces[c]->glyph->metrics.horiBearingX;
+            glyph->by = (int)faces[c]->glyph->metrics.horiBearingY;
             glyph->scale = scales[c];
 
-            glyph->ax = slot->advance.x;
-            glyph->ay = slot->advance.y + (64 - slot->advance.y % 64);
+            glyph->ax = (int)slot->advance.x;
+            glyph->ay = (int)(slot->advance.y + (64 - slot->advance.y % 64));
          }
          #if 0
          {
@@ -3070,7 +3070,7 @@ public class LFBDisplayDriver : DisplayDriver
                      }
                      FT_Set_Transform(fontEntry.face, &matrix, &pen );
                      FaceSetCharSize(fontEntry.face, size);
-                     font.height = ((fontEntry.face->size->metrics.height) >> 6); //* y_scale;
+                     font.height = (int)((fontEntry.face->size->metrics.height) >> 6); //* y_scale;
                      // printf("Font height is %d\n", font.height);
                      font.fakeItalic = fakeItalic;
                      font.size = size;

@@ -253,7 +253,7 @@ static void RepositionDesktop(bool updateChildren)
       if(data)
       {
          int desktops = 0;
-         desktops = *(long *)data;
+         desktops = (int)*(long *)data;
 
          //printf("_NET_NUMBER_OF_DESKTOPS is %d\n", desktops);
 
@@ -273,7 +273,7 @@ static void RepositionDesktop(bool updateChildren)
       
       if(data)
       {
-         current = *(long *)data;
+         current = (int)*(long *)data;
          XFree(data);
          data = null;
 
@@ -306,10 +306,10 @@ static void RepositionDesktop(bool updateChildren)
       {
          workareas = (long *)data;
      
-         x = workareas[current * 4];
-         y = workareas[current * 4 + 1];
-         w = workareas[current * 4 + 2];
-         h = workareas[current * 4 + 3];   
+         x = (int)workareas[current * 4];
+         y = (int)workareas[current * 4 + 1];
+         w = (int)workareas[current * 4 + 2];
+         h = (int)workareas[current * 4 + 3];
 
          //printf("_NET_WORKAREA is x = %d, y = %d, w = %d, h = %d\n", x, y, w, h);
          XFree(data);
@@ -408,14 +408,14 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
 */
 
    if(!buf)
-      buf = malloc(bufsize);
+      buf = malloc((uint)bufsize);
    if(windowData && windowData.ic)
    { 
-      buflength = XmbLookupString(windowData.ic, event, buf, bufsize, &keysym, &status);
+      buflength = XmbLookupString(windowData.ic, event, buf, (int)bufsize, &keysym, &status);
       if (status == XBufferOverflow)
       {
-         buf = realloc(buf, (bufsize = buflength));
-         buflength = XmbLookupString(windowData.ic, event, buf, bufsize, &keysym, &status);
+         buf = realloc(buf, (uint)(bufsize = buflength));
+         buflength = XmbLookupString(windowData.ic, event, buf, (int)bufsize, &keysym, &status);
       }
       if(status != XLookupKeySym && status != XLookupBoth && release == 1)
          keysym = XLookupKeysym(event, 0);
@@ -1053,7 +1053,7 @@ class XInterface : Interface
             {
                XVisualInfo vinfo;
                XVisualInfo *vinfo_ret;
-               long numitems;
+               int numitems = 0;
               
                vinfo.visualid = XVisualIDFromVisual(xSystemVisual);
                vinfo_ret = XGetVisualInfo(xGlobalDisplay, VisualIDMask, &vinfo, &numitems);
@@ -1463,7 +1463,7 @@ class XInterface : Interface
                         event->x_root, event->y_root, &keyFlags, false, false);
                      delete window;
                      //*if(xGlobalDisplay) XLockDisplay(xGlobalDisplay);
-                     lastTime = event->time;
+                     lastTime = (uint)event->time;
                   }
                   break;
                }
@@ -1705,7 +1705,7 @@ class XInterface : Interface
                      //if(event->send_event)
                      {
                         X11Window rootChild;
-                        long rootX, rootY;
+                        int rootX, rootY;
                         XTranslateCoordinates(xGlobalDisplay, event->window,
                            RootWindow(xGlobalDisplay, DefaultScreen(xGlobalDisplay)), 0, 0, 
                            &rootX, &rootY, &rootChild);
@@ -1749,7 +1749,7 @@ class XInterface : Interface
                      bool laterFocus;
                      activeWindow = (X11Window)window.windowHandle;
 
-                     timeStamp = event->data.l[1];
+                     timeStamp = (int)event->data.l[1];
                      
                      windowData = window.windowData;
                      laterFocus = windowData.laterFocus;
@@ -1864,8 +1864,8 @@ class XInterface : Interface
                         bool hadFrameExtents = windowData.gotFrameExtents;
                         windowData.decor =
                         {
-                           left = extents[0], right  = extents[1],
-                           top  = extents[2], bottom = extents[3]
+                           left = (int)extents[0], right  = (int)extents[1],
+                           top  = (int)extents[2], bottom = (int)extents[3]
                         };
                         windowData.gotFrameExtents = true;
                         {

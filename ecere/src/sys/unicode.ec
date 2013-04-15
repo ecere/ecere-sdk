@@ -409,10 +409,10 @@ static class UnicodeDatabase
             if(line[0] && line[0] != '#')
             {
                char * endPtr;
-               uint start = strtoul(line, &endPtr, 16);
+               uint start = (uint)strtoul(line, &endPtr, 16);
                if(endPtr)
                {
-                  uint end = (endPtr && *endPtr == '.') ? strtoul(endPtr + 2, &endPtr, 16) : start;
+                  uint end = (endPtr && *endPtr == '.') ? (uint)strtoul(endPtr + 2, &endPtr, 16) : start;
                   if(endPtr)
                   {
                      endPtr = strchr(endPtr, ';');

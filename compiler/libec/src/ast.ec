@@ -2234,7 +2234,7 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
                isTypedef = true;
             else if(spec.specifier == VOID) specType.kind = voidType;
             else if(spec.specifier == CHAR) specType.kind = charType;
-            else if(spec.specifier == INT) { if(specType.kind != shortType && specType.kind != longType) specType.kind = intType; }
+            else if(spec.specifier == INT) { if(specType.kind != shortType && specType.kind != longType && !isLong) specType.kind = intType; }
             else if(spec.specifier == UINT) { if(specType.kind != shortType && specType.kind != longType) specType.kind = intType; specType.isSigned = false; }
             else if(spec.specifier == INT64) specType.kind = int64Type;
             else if(spec.specifier == VALIST) 
@@ -2242,7 +2242,7 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
             else if(spec.specifier == SHORT) specType.kind = shortType;
             else if(spec.specifier == LONG) 
             {
-               if(isLong)
+               if(isLong || (targetBits == 64 && targetPlatform != win32))
                   specType.kind = int64Type;
                else
                   specType.kind = intType;

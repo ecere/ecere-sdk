@@ -3466,7 +3466,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
                   }
                   else if(!strcmp(curParam.dataTypeString, "uint"))
                   {
-                     argument.expression.ui = strtoul(value, null, 0);
+                     argument.expression.ui = (uint)strtoul(value, null, 0);
                   }
                   else if(!strcmp(curParam.dataTypeString, "char"))
                   {
@@ -3502,7 +3502,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
                   }
                   else // if(!strcmp(curParam.dataTypeString, "int"))
                   {
-                     argument.expression.i = strtol(value, null, 0);
+                     argument.expression.i = (int)strtol(value, null, 0);
                   }
                   break;
                } 

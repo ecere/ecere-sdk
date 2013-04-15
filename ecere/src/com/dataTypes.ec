@@ -1334,7 +1334,7 @@ static char * UInteger_OnGetString(Class _class, unsigned int * data, char * str
 static bool UInteger_OnGetDataFromString(Class _class, unsigned int * data, char * string)
 {
    char * end;
-   uint result = strtoul(string, &end, 0);
+   uint result = (uint)strtoul(string, &end, 0);
    if(end > string)
    {
       *data = result;

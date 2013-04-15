@@ -470,7 +470,7 @@ public:
 
    virtual uint Tell(void)
    {
-      return input ? ftell(input) : ftell(output);
+      return (uint)(input ? ftell(input) : ftell(output));
    }
 
    virtual int Read(void * buffer, uint size, uint count)
@@ -703,7 +703,7 @@ public:
    {
       char string[32];
       GetString(string, sizeof(string));
-      return strtoul(string, null, 16);
+      return (uint)strtoul(string, null, 16);
    }
 
    float GetFloat(void)
@@ -1395,7 +1395,7 @@ static FileDesc FileFind(char * path, char * extensions)
                if(!stat(file.path, &s))
                {
                   file.stats.attribs = (s.st_mode&S_IFDIR) ? FileAttribs { isDirectory = true } : FileAttribs { isFile = true };
-                  file.stats.size = s.st_size;
+                  file.stats.size = (FileSize)s.st_size;
                   file.stats.accessed = s.st_atime;
                   file.stats.modified = s.st_mtime;
                   file.stats.created = s.st_ctime;
@@ -1671,7 +1671,7 @@ private class FileDesc : struct
                {
                   stats.attribs = FileAttribs { };
                   stats.attribs = (s.st_mode&S_IFDIR) ? FileAttribs { isDirectory = true } : FileAttribs { isFile = true };
-                  stats.size = s.st_size;
+                  stats.size = (FileSize)s.st_size;
                   stats.accessed = s.st_atime;
                   stats.modified = s.st_mtime;
                   stats.created = s.st_ctime;

@@ -514,7 +514,7 @@ public:
                      case integer:
                      {
                         int * integer = value;
-                        *integer = strtoul(string, null, 0);
+                        *integer = (int)strtol(string, null, 0);
                         break;
                      }
                   }

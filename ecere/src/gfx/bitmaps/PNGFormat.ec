@@ -89,7 +89,7 @@ class PNGFormat : BitmapFormat
                      png_set_tRNS_to_alpha(png_ptr);
                   numPasses = png_set_interlace_handling(png_ptr);
 
-                  if((result = bitmap.Allocate(null, width, height, 0, pixelFormatRGBA, false)))
+                  if((result = bitmap.Allocate(null, (uint)width, (uint)height, 0, pixelFormatRGBA, false)))
                   {
                      int pass;
 

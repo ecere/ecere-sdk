@@ -1060,7 +1060,7 @@ public uint GetHexValue(char ** buffer)
 {
    char string[20];
    GetString(buffer,string,20);
-   return strtoul(string, null, 16);
+   return (uint)strtoul(string, null, 16);
 }
 
 public char * StripQuotes(char * string, char * output)

@@ -537,7 +537,7 @@ class EARArchive : Archive
                      {
                         unsigned long destLen = entry.size;
                         uncompress(uncompressed, &destLen, compressed, entry.cSize);
-                        entry.size = destLen;
+                        entry.size = (FileSize)destLen;  // TODO: Support 64 bit file sizes
                      }
                      delete compressed;
                   }
@@ -588,7 +588,7 @@ class EARArchive : Archive
                {
                   unsigned long destLen = entry.size;
                   uncompress(uncompressed, &destLen, compressed, entry.cSize);
-                  entry.size = destLen;
+                  entry.size = (FileSize)destLen;
                }
                delete compressed;
             }
@@ -723,7 +723,7 @@ class EARArchiveDir : ArchiveDir
                      {
                         unsigned long destLen = entry.size;
                         uncompress(uncompressed, &destLen, compressed, entry.cSize);
-                        entry.size = destLen;
+                        entry.size = (FileSize)destLen;
                      }
                      delete compressed;
                   }
@@ -1127,7 +1127,7 @@ class EARArchiveDir : ArchiveDir
                   if(compressed)
                   {
                      compress2(compressed, &destLen, uncompressed, entry.size, compression);
-                     entry.cSize = destLen;
+                     entry.cSize = (FileSize)destLen;
                   }
                }
                delete uncompressed;
@@ -1388,7 +1388,7 @@ class EARFileSystem : FileSystem
                            {
                               unsigned long destLen = entry.size;
                               uncompress(uncompressed, &destLen, compressed, entry.cSize);
-                              entry.size = destLen;
+                              entry.size = (FileSize)destLen;
                            }
                            delete compressed;
                         }

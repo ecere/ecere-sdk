@@ -685,10 +685,10 @@ private:
       bool NotifyModified(EditBox control)
       {
          ColorRGB rgb;
-         int value = strtoul(control.contents, null, 16);
+         uint value = (uint)strtoul(control.contents, null, 16);
          if(strlen(control.contents) <= 6)
             value |= 0xFF000000;
-         argb = (unsigned int)value;
+         argb = value;
          rgb = argb;
          cmyk = rgb;
          hsv = rgb;
