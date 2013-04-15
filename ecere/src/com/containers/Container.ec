@@ -154,11 +154,12 @@ public:
          Container<T> container = eInstance_New(source._class);
          // See WARNING in Copy()
          container.Copy(source);
-         *(void **)this = container;
+         //*(void **)this = container;
+         this = container;
       }
       else
       {
-         *(void **)this = null;
+         this = null;
       }
    }
 

@@ -50,10 +50,10 @@ public:
          this = eInstance_New(class(BTNode));
          channel.Unserialize(key);
          channel.Unserialize(left);
-         if(left) { left.parent = (void *)this; }
+         if(left) { left.parent = this; }
          channel.Unserialize(right);
-         if(right) { right.parent = (void *)this; }
-         depth = ((BTNode)(void *)this).depthProp;
+         if(right) { right.parent = this; }
+         depth = ((BTNode)this).depthProp;
       }
       else
          this = null;
@@ -693,12 +693,12 @@ public:
          this = eInstance_New(class(StringBTNode));
          channel.Unserialize(key);
          channel.Unserialize(left);
-         if(left) { left.parent = (void *)this; }
+         if(left) { left.parent = this; }
          channel.Unserialize(right);
-         if(right) { right.parent = (void *)this; }
+         if(right) { right.parent = this; }
 
          // TODO: Precomp errors without extra brackets
-         depth = ((BTNode)((void *)this)).depthProp;
+         depth = ((BTNode)(this)).depthProp;
       }
       else
          this = null;
