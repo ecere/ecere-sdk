@@ -14818,7 +14818,7 @@ e->expType = (((void *)0));
 if(type)
 {
 typeStringBuf[0] = '\0';
-PrintType(type, typeStringBuf, 0x0, 0x1);
+PrintTypeNoConst(type, typeStringBuf, 0x0, 0x1);
 typeString = typeStringBuf;
 FreeType(type);
 type = (((void *)0));
@@ -15845,7 +15845,7 @@ FreeType(type);
 }
 decl = SpecDeclFromString(typeString, specs, MkDeclaratorIdentifier(id));
 stmt->compound.declarations = MkListOne(MkDeclaration(CopyList(specs, CopySpecifier), MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), decl), (((void *)0))))));
-ListAdd(stmt->compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorArray(PlugDeclarator(decl, MkDeclaratorIdentifier(MkIdentifier("__internalArray"))), (((void *)0))), MkInitializerList(initializers)))));
+ListAdd(stmt->compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(PlugDeclarator(decl, MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__internalArray")), (((void *)0)))), MkInitializerList(initializers)))));
 FreeList(exp, FreeExpression);
 }
 else

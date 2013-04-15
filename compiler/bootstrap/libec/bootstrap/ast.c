@@ -3877,6 +3877,10 @@ type->arraySizeExp = CopyExpression(type->arraySizeExp);
 }
 }
 
+extern int targetBits;
+
+extern int targetPlatform;
+
 extern struct Symbol * FindSymbol(char *  name, struct Context * startContext, struct Context * endContext, unsigned int isStruct, unsigned int globalNameSpace);
 
 static struct Type * ProcessTypeSpecs(struct __ecereNameSpace__ecere__sys__OldList * specs, unsigned int assumeEllipsis, unsigned int keepTypeName)
@@ -3952,7 +3956,7 @@ else if(spec->specifier == CHAR)
 specType->kind = 1;
 else if(spec->specifier == INT)
 {
-if(specType->kind != 2 && specType->kind != 5)
+if(specType->kind != 2 && specType->kind != 5 && !isLong)
 specType->kind = 3;
 }
 else if(spec->specifier == UINT)
@@ -3969,7 +3973,7 @@ else if(spec->specifier == SHORT)
 specType->kind = 2;
 else if(spec->specifier == LONG)
 {
-if(isLong)
+if(isLong || (targetBits == 64 && targetPlatform != 1))
 specType->kind = 4;
 else
 specType->kind = 3;

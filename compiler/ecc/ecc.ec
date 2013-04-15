@@ -247,6 +247,10 @@ class CompilerApp : Application
       Platform targetPlatform = GetRuntimePlatform();
       int targetBits = GetHostBits();
 
+#ifdef _DEBUG
+      // buildingBootStrap = true;
+#endif
+
       SetSymbolsDir("");
 
       /*for(c = 0; c<this.argc; c++)

@@ -36,7 +36,7 @@ msgid "Assigning list initializer to non list\n"
 msgstr "Assigning list initializer to non list\n"
 
 #: ./src/pass15.ec:10129
-#: ./src/pass15.ec:11176
+#: ./src/pass15.ec:11177
 msgid "Couldn't determine type of array elements\n"
 msgstr "Couldn't determine type of array elements\n"
 
@@ -52,7 +52,7 @@ msgstr "Couldn't open %s\n"
 msgid "Expecting class specifier\n"
 msgstr "Expecting class specifier\n"
 
-#: ./src/pass15.ec:11334
+#: ./src/pass15.ec:11335
 msgid "Expression is not a container\n"
 msgstr "Expression is not a container\n"
 
@@ -64,12 +64,12 @@ msgstr "Includes nested too deeply"
 msgid "Incompatible virtual function %s\n"
 msgstr "Incompatible virtual function %s\n"
 
-#: ./src/pass15.ec:11608
-#: ./src/pass15.ec:11683
+#: ./src/pass15.ec:11609
+#: ./src/pass15.ec:11684
 msgid "Invalid object specified and not inside a class\n"
 msgstr "Invalid object specified and not inside a class\n"
 
-#: ./src/pass15.ec:11516
+#: ./src/pass15.ec:11517
 msgid "Invalid watched object\n"
 msgstr "Invalid watched object\n"
 
@@ -94,11 +94,11 @@ msgstr "Multiple field index requires a name\n"
 msgid "No database table defined in this module or database_open already used.\n"
 msgstr "No database table defined in this module or database_open already used.\n"
 
-#: ./src/pass15.ec:11529
+#: ./src/pass15.ec:11530
 msgid "No observer specified and not inside a _class\n"
 msgstr "No observer specified and not inside a _class\n"
 
-#: ./src/pass15.ec:11686
+#: ./src/pass15.ec:11687
 msgid "No observer specified and not inside a class\n"
 msgstr "No observer specified and not inside a class\n"
 
@@ -112,9 +112,9 @@ msgid "Non-static %s making use of a static class\n"
 msgstr "Non-static %s making use of a static class\n"
 
 #: ./src/pass1.ec:1037
-#: ./src/pass15.ec:11511
-#: ./src/pass15.ec:11583
-#: ./src/pass15.ec:11672
+#: ./src/pass15.ec:11512
+#: ./src/pass15.ec:11584
+#: ./src/pass15.ec:11673
 msgid "Property %s not found in class %s\n"
 msgstr "Property %s not found in class %s\n"
 

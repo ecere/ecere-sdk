@@ -10056,7 +10056,7 @@ void ProcessExpressionType(Expression exp)
             if(type)
             {
                typeStringBuf[0] = '\0';
-               PrintType(type, typeStringBuf, false, true);
+               PrintTypeNoConst(type, typeStringBuf, false, true);
                typeString = typeStringBuf;
                FreeType(type);
                type = null;
@@ -11165,9 +11165,10 @@ static void ProcessStatement(Statement stmt)
                   stmt.compound.declarations = MkListOne(MkDeclaration(CopyList(specs, CopySpecifier), 
                      MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null), /*CopyDeclarator(*/decl/*)*/), null))));
 
-                  ListAdd(stmt.compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorArray(PlugDeclarator(
-                     /*CopyDeclarator(*/decl/*)*/, MkDeclaratorIdentifier(MkIdentifier("__internalArray"))), null), MkInitializerList(initializers)))));
-                  
+                  ListAdd(stmt.compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(
+                     PlugDeclarator(
+                        /*CopyDeclarator(*/decl/*)*/, MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__internalArray")), null)
+                        ), MkInitializerList(initializers)))));
                   FreeList(exp, FreeExpression);
                }
                else
