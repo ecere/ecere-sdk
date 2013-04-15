@@ -19,8 +19,12 @@ import "Mutex"
 #endif
 
 // #define MEMINFO
-
-// #define REDZONE   256
+/*
+#ifdef MEMINFO
+ #undef REDZONE
+ #define REDZONE   256
+#endif
+*/
 #ifndef REDZONE
 #define REDZONE 0
 #endif
@@ -1453,13 +1457,12 @@ static void * _calloc(int n, unsigned int size)
          MemInfo block;
 
          stack.recurse = true;
-         block = MemInfo { (unsigned int)n*size = size, key = (uintptr)((byte *)pointer + REDZONE), _class = allocateClass, internal = allocateInternal, id = blockID++ };
+         block = MemInfo { size = (unsigned int)n*size, key = (uintptr)((byte *)pointer + REDZONE), _class = allocateClass, internal = allocateInternal, id = blockID++ };
          memcpy(block.allocLoc, stack.frames + stack.pos - Min(stack.pos, MAX_MEMORY_LOC), Min(stack.pos, MAX_MEMORY_LOC) * sizeof(char *));
          memBlocks.Add(block);
          stack.recurse = false;
       }
    }
-}
 #endif
 
 #if !defined(ECERE_BOOTSTRAP)
