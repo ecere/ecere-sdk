@@ -2996,7 +2996,7 @@ private:
    {
       if(rows.first)
       {
-         if(!initSize.w && (!anchor.left.type || !anchor.right.type) /**w*/)
+         if(!initSize.w && (!anchor.left.type || !anchor.right.type) && !*w)
          {
             // Use widest item
             DataRow row;
