@@ -299,13 +299,13 @@ msgid "redefinition of destructor for class %s\n"
 msgstr "redefinition of destructor for class %s\n"
 
 #: ./src/ecdefs.ec:1323
-#: ./src/grammar.ec:3265
-#: ./src/grammar.ec:3266
-#: ./src/grammar.ec:3267
-#: ./src/grammar.ec:3268
-#: ./src/grammar.ec:3269
-#: ./src/grammar.ec:3270
-#: ./src/grammar.ec:3271
+#: ./src/grammar.ec:3128
+#: ./src/grammar.ec:3129
+#: ./src/grammar.ec:3130
+#: ./src/grammar.ec:3131
+#: ./src/grammar.ec:3132
+#: ./src/grammar.ec:3133
+#: ./src/grammar.ec:3134
 msgid "syntax error\n"
 msgstr "syntax error\n"
 

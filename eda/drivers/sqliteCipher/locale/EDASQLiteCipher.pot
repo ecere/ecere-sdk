@@ -10,15 +10,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./../sqlite/EDASQLite.ec:457
+#: ./../sqlite/EDASQLite.ec:474
 msgid "BEGIN FAILED!"
 msgstr "BEGIN FAILED!"
 
-#: ./../sqlite/EDASQLite.ec:468
+#: ./../sqlite/EDASQLite.ec:485
 msgid "COMMIT FAILED!"
 msgstr "COMMIT FAILED!"
 
-#: ./EDASQLiteCipher.ec:45
+#: ./EDASQLiteCipher.ec:68
+msgid "Can't open database (%s): %s -- password may be incorrect\n"
+msgstr "Can't open database (%s): %s -- password may be incorrect\n"
+
+#: ./EDASQLiteCipher.ec:44
 msgid "Can't open database (%s): %s\n"
 msgstr "Can't open database (%s): %s\n"
 
@@ -26,19 +30,15 @@ msgstr "Can't open database (%s): %s\n"
 msgid "EDASQLite: Can't open database (%s): %s\n"
 msgstr "EDASQLite: Can't open database (%s): %s\n"
 
-#: ./EDASQLiteCipher.ec:61
-msgid "EDASQLiteCipher: incorrect password!"
-msgstr "EDASQLiteCipher: incorrect password!"
+#: ./EDASQLiteCipher.ec:56
+msgid "EDASQLiteCipher: database (%s) format not recognized, disabling cipher_use_hmac to support version 1.1.x databases\n"
+msgstr "EDASQLiteCipher: database (%s) format not recognized, disabling cipher_use_hmac to support version 1.1.x databases\n"
 
-#: ./EDASQLiteCipher.ec:57
-msgid "EDASQLiteCipher: password is correct, database has been initialized"
-msgstr "EDASQLiteCipher: password is correct, database has been initialized"
-
-#: ./../sqlite/EDASQLite.ec:933
+#: ./../sqlite/EDASQLite.ec:971
 msgid "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 msgstr "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 
-#: ./../sqlite/EDASQLite.ec:894
+#: ./../sqlite/EDASQLite.ec:932
 msgid "WARNING: Table not yet created for class "
 msgstr "WARNING: Table not yet created for class "
 

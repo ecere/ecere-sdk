@@ -765,7 +765,7 @@ public:
    bool ccacheEnabled;
    bool distccEnabled;
    // deprecated
-   property bool supportsBitDepth { set { } get { } isset { return false; } }
+   property bool supportsBitDepth { set { } get { return true; } isset { return false; } }
 
    property char * distccHosts
    {

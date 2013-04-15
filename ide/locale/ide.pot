@@ -50,7 +50,7 @@ msgstr " compiler configuration?"
 msgid " configuration?"
 msgstr " configuration?"
 
-#: ./src/designer/CodeEditor.ec:1381
+#: ./src/designer/CodeEditor.ec:1398
 msgid " file is not part of any project.\n"
 msgstr " file is not part of any project.\n"
 
@@ -282,8 +282,8 @@ msgstr "Arrange Icons"
 msgid "Attach"
 msgstr "Attach"
 
-#: ./src/designer/CodeEditor.ec:5167
-#: ./src/designer/CodeEditor.ec:5208
+#: ./src/designer/CodeEditor.ec:5184
+#: ./src/designer/CodeEditor.ec:5225
 msgid "Attach %s"
 msgstr "Attach %s"
 
@@ -387,7 +387,7 @@ msgstr "Call Stack"
 #: ./src/dialogs/GlobalSettingsDialog.ec:55
 #: ./src/dialogs/NewProjectDialog.ec:214
 #: ./src/dialogs/NewProjectDialog.ec:560
-#: ./src/designer/CodeEditor.ec:5239
+#: ./src/designer/CodeEditor.ec:5256
 #: ./src/ProjectSettings.ec:172
 msgid "Cancel"
 msgstr "Cancel"
@@ -541,7 +541,7 @@ msgstr "Create Form"
 msgid "Create directory?"
 msgstr "Create directory?"
 
-#: ./src/designer/CodeEditor.ec:1887
+#: ./src/designer/CodeEditor.ec:1904
 #: ./src/ide.ec:1072
 msgid "Debug"
 msgstr "Debug"
@@ -688,7 +688,7 @@ msgstr "Do you want to quickly create a temporary project?"
 msgid "Do you want to terminate the debugging session in progress?"
 msgstr "Do you want to terminate the debugging session in progress?"
 
-#: ./src/designer/CodeEditor.ec:2196
+#: ./src/designer/CodeEditor.ec:2213
 #: ./src/ide.ec:1614
 msgid "Document has been modified"
 msgstr "Document has been modified"
@@ -810,7 +810,7 @@ msgid "Fatal Error: child process terminated unexpectedly\n"
 msgstr "Fatal Error: child process terminated unexpectedly\n"
 
 #: ./src/project/ProjectView.ec:463
-#: ./src/designer/CodeEditor.ec:1883
+#: ./src/designer/CodeEditor.ec:1900
 #: ./src/designer/Designer.ec:150
 #: ./src/documents/PictureEdit.ec:53
 #: ./src/ide.ec:678
@@ -838,7 +838,7 @@ msgstr "File doesn't exist. Create?"
 msgid "File name:"
 msgstr "File name:"
 
-#: ./src/designer/CodeEditor.ec:1383
+#: ./src/designer/CodeEditor.ec:1400
 msgid "File not in project error"
 msgstr "File not in project error"
 
@@ -921,7 +921,7 @@ msgstr "GDB Command"
 msgid "GIF Image"
 msgstr "GIF Image"
 
-#: ./src/IDESettings.ec:627
+#: ./src/IDESettings.ec:628
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
@@ -1069,7 +1069,7 @@ msgstr "Invalid Unicode Keypoint (0x%08X)"
 msgid "Invalid expression: \"%s\""
 msgstr "Invalid expression: \"%s\""
 
-#: ./src/designer/CodeEditor.ec:1382
+#: ./src/designer/CodeEditor.ec:1399
 msgid "It can't be compiled."
 msgstr "It can't be compiled."
 
@@ -1117,8 +1117,8 @@ msgstr "Linker Options"
 msgid "Linking...\n"
 msgstr "Linking...\n"
 
-#: ./src/designer/CodeEditor.ec:677
-#: ./src/designer/CodeEditor.ec:714
+#: ./src/designer/CodeEditor.ec:694
+#: ./src/designer/CodeEditor.ec:731
 msgid "Ln %d, Col %d"
 msgstr "Ln %d, Col %d"
 
@@ -1152,8 +1152,8 @@ msgstr "Memory can't be read at %s"
 msgid "MemoryGuard"
 msgstr "MemoryGuard"
 
-#: ./src/designer/CodeEditor.ec:5168
-#: ./src/designer/CodeEditor.ec:5210
+#: ./src/designer/CodeEditor.ec:5185
+#: ./src/designer/CodeEditor.ec:5227
 msgid "Method is unused. Move method inside instance?"
 msgstr "Method is unused. Move method inside instance?"
 
@@ -1166,15 +1166,15 @@ msgstr "Method still contains code. Are you sure you want to delete it?"
 msgid "Methods"
 msgstr "Methods"
 
-#: ./src/IDESettings.ec:630
+#: ./src/IDESettings.ec:631
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
 
-#: ./src/IDESettings.ec:631
+#: ./src/IDESettings.ec:632
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 
-#: ./src/IDESettings.ec:633
+#: ./src/IDESettings.ec:634
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
@@ -1217,7 +1217,7 @@ msgstr "Name"
 msgid "Name Conflict"
 msgstr "Name Conflict"
 
-#: ./src/designer/CodeEditor.ec:5235
+#: ./src/designer/CodeEditor.ec:5252
 msgid "Name detached method"
 msgstr "Name detached method"
 
@@ -1299,7 +1299,7 @@ msgstr "Number of parallel build jobs"
 #: ./src/dialogs/GlobalSettingsDialog.ec:63
 #: ./src/dialogs/NewProjectDialog.ec:34
 #: ./src/dialogs/NewProjectDialog.ec:351
-#: ./src/designer/CodeEditor.ec:5244
+#: ./src/designer/CodeEditor.ec:5261
 #: ./src/about.ec:40
 #: ./src/ProjectSettings.ec:211
 msgid "OK"
@@ -1396,7 +1396,7 @@ msgstr "Please select files from a single project.\n"
 msgid "Pointer"
 msgstr "Pointer"
 
-#: ./src/IDESettings.ec:629
+#: ./src/IDESettings.ec:630
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
@@ -1644,12 +1644,12 @@ msgstr "Resume"
 msgid "Run"
 msgstr "Run"
 
-#: ./src/designer/CodeEditor.ec:1890
+#: ./src/designer/CodeEditor.ec:1907
 #: ./src/ide.ec:1164
 msgid "Run To Cursor"
 msgstr "Run To Cursor"
 
-#: ./src/designer/CodeEditor.ec:1911
+#: ./src/designer/CodeEditor.ec:1928
 #: ./src/ide.ec:1186
 msgid "Run To Cursor Skipping Breakpoints"
 msgstr "Run To Cursor Skipping Breakpoints"
@@ -1664,7 +1664,7 @@ msgstr "Same Project"
 
 #: ./src/project/ProjectView.ec:247
 #: ./src/project/ProjectView.ec:464
-#: ./src/designer/CodeEditor.ec:1884
+#: ./src/designer/CodeEditor.ec:1901
 #: ./src/designer/Designer.ec:153
 #: ./src/documents/PictureEdit.ec:54
 #: ./src/ide.ec:731
@@ -1675,7 +1675,7 @@ msgstr "Save"
 msgid "Save All"
 msgstr "Save All"
 
-#: ./src/designer/CodeEditor.ec:1885
+#: ./src/designer/CodeEditor.ec:1902
 #: ./src/designer/Designer.ec:161
 #: ./src/documents/PictureEdit.ec:55
 #: ./src/ide.ec:742
@@ -1694,7 +1694,7 @@ msgstr "Save changes to project options?"
 msgid "Save changes to project settings?"
 msgstr "Save changes to project settings?"
 
-#: ./src/dialogs/WorkspaceSettings.ec:91
+#: ./src/dialogs/WorkspaceSettings.ec:95
 msgid "Save changes to workspace options?"
 msgstr "Save changes to workspace options?"
 
@@ -1847,8 +1847,8 @@ msgstr "Strict Name Spaces"
 msgid "Symbol \"%s\" not found"
 msgstr "Symbol \"%s\" not found"
 
-#: ./src/designer/CodeEditor.ec:655
-#: ./src/designer/CodeEditor.ec:656
+#: ./src/designer/CodeEditor.ec:672
+#: ./src/designer/CodeEditor.ec:673
 #: ./src/designer/Sheet.ec:398
 #: ./src/designer/Sheet.ec:427
 #: ./src/designer/Sheet.ec:597
@@ -1909,11 +1909,11 @@ msgstr "Text files (*.txt)"
 msgid "Text files (*.txt, *.text, *.nfo, *.info)"
 msgstr "Text files (*.txt, *.text, *.nfo, *.info)"
 
-#: ./src/designer/CodeEditor.ec:1381
+#: ./src/designer/CodeEditor.ec:1398
 msgid "The "
 msgstr "The "
 
-#: ./src/designer/CodeEditor.ec:2195
+#: ./src/designer/CodeEditor.ec:2212
 #: ./src/ide.ec:1612
 msgid "The document %s was modified by another application.\nWould you like to reload it and lose your changes?"
 msgstr "The document %s was modified by another application.\nWould you like to reload it and lose your changes?"
@@ -1971,11 +1971,11 @@ msgstr "Tile Horizontally"
 msgid "Tile Vertically"
 msgstr "Tile Vertically"
 
-#: ./src/IDESettings.ec:628
+#: ./src/IDESettings.ec:629
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 
-#: ./src/designer/CodeEditor.ec:1930
+#: ./src/designer/CodeEditor.ec:1947
 msgid "Toggle Breakpoint"
 msgstr "Toggle Breakpoint"
 
@@ -2026,7 +2026,7 @@ msgid "Unknown prompt"
 msgstr "Unknown prompt"
 
 #: ./src/project/ProjectView.ec:1185
-#: ./src/designer/CodeEditor.ec:2420
+#: ./src/designer/CodeEditor.ec:2437
 msgid "Untitled %d"
 msgstr "Untitled %d"
 
@@ -2132,7 +2132,7 @@ msgstr "Would you like to save changes made to the build options?"
 msgid "Would you like to save changes made to the project options?"
 msgstr "Would you like to save changes made to the project options?"
 
-#: ./src/dialogs/WorkspaceSettings.ec:93
+#: ./src/dialogs/WorkspaceSettings.ec:97
 msgid "Would you like to save changes made to the workspace options?"
 msgstr "Would you like to save changes made to the workspace options?"
 

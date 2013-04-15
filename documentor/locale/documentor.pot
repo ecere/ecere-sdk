@@ -130,7 +130,7 @@ msgstr "Basic Data Type"
 msgid "Bit Collection"
 msgstr "Bit Collection"
 
-#: ./src/Documentor.ec:2194
+#: ./src/Documentor.ec:2195
 #: ./src/SettingsDialog.ec:52
 msgid "Cancel"
 msgstr "Cancel"
@@ -175,7 +175,7 @@ msgstr "Enumeration Values"
 msgid "Events"
 msgstr "Events"
 
-#: ./src/Documentor.ec:2035
+#: ./src/Documentor.ec:2036
 msgid "Exit"
 msgstr "Exit"
 
@@ -187,7 +187,7 @@ msgstr "File"
 msgid "Functions"
 msgstr "Functions"
 
-#: ./../ide/src/IDESettings.ec:627
+#: ./../ide/src/IDESettings.ec:628
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
@@ -195,15 +195,15 @@ msgstr "GNU Compiler Collection (GCC) / GNU Make"
 msgid "Methods"
 msgstr "Methods"
 
-#: ./../ide/src/IDESettings.ec:630
+#: ./../ide/src/IDESettings.ec:631
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:631
+#: ./../ide/src/IDESettings.ec:632
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:633
+#: ./../ide/src/IDESettings.ec:634
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
@@ -211,14 +211,14 @@ msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 #: ./src/Documentor.ec:808
 #: ./src/Documentor.ec:1259
 #: ./src/Documentor.ec:1481
-msgid "Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
-msgstr "Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgid "Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgstr "Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 
 #: ./src/Documentor.ec:810
 #: ./src/Documentor.ec:1261
 #: ./src/Documentor.ec:1484
-msgid "Namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
-msgstr "Namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgid "Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgstr "Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 
 #: ./src/Documentor.ec:846
 msgid "None"
@@ -229,10 +229,10 @@ msgid "Open..."
 msgstr "Open..."
 
 #: ./src/Documentor.ec:607
-msgid "Parent namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
-msgstr "Parent namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgid "Parent namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgstr "Parent namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 
-#: ./../ide/src/IDESettings.ec:629
+#: ./../ide/src/IDESettings.ec:630
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
@@ -244,7 +244,7 @@ msgstr "Properties"
 msgid "Save"
 msgstr "Save"
 
-#: ./src/Documentor.ec:2190
+#: ./src/Documentor.ec:2191
 msgid "Save Changes"
 msgstr "Save Changes"
 
@@ -268,7 +268,7 @@ msgstr "Structure"
 msgid "Tahoma"
 msgstr "Tahoma"
 
-#: ./../ide/src/IDESettings.ec:628
+#: ./../ide/src/IDESettings.ec:629
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 
@@ -285,8 +285,8 @@ msgid "Virtual Methods"
 msgstr "Virtual Methods"
 
 #: ./src/Documentor.ec:555
-#: ./src/Documentor.ec:2280
-#: ./src/Documentor.ec:2688
+#: ./src/Documentor.ec:2281
+#: ./src/Documentor.ec:2689
 msgid "[Add Text]"
 msgstr "[Add Text]"
 
@@ -300,8 +300,8 @@ msgstr "eC Symbol files (*.sym)"
 
 #: ./src/Documentor.ec:1269
 #: ./src/Documentor.ec:1491
-msgid "this pointer class: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
-msgstr "this pointer class: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgid "this pointer class: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgstr "this pointer class: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 
 #: ./src/Documentor.ec:1265
 msgid "this pointer class: None<br>\n"
