@@ -4768,7 +4768,7 @@ void ComputeInstantiation(Expression exp)
                                     case intType:
                                     {
                                        void (*Set)(void *, int) = (void *)prop.Set;
-                                       Set(inst.data, strtol(value.constant, null, 0));
+                                       Set(inst.data, (int)strtol(value.constant, null, 0));
                                        break;
                                     }
                                     case int64Type:

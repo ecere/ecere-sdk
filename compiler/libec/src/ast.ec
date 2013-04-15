@@ -2502,7 +2502,7 @@ static Type ProcessTypeDecls(OldList specs, Declarator decl, Type parentType)
                ProcessExpressionType(exp);
                ComputeExpression(exp);
                if(exp.type == constantExp)
-                  type.bitFieldCount = strtoul(exp.constant, null, 0);
+                  type.bitFieldCount = (uint)strtoul(exp.constant, null, 0);
             }
             break;
          }
