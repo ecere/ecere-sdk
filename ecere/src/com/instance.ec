@@ -3995,8 +3995,8 @@ public dllexport Method eClass_AddMethod(Class _class, char * name, char * type,
             {
                OldLink deriv;
                void * oldFunction = _class._vTbl[method.vid];
-               if(method.vid > _class.vTblSize)
-                  printf("error");
+               if(method.vid >= _class.vTblSize)
+                  printf("error: virtual methods overriding failure\n");
                else
                   _class._vTbl[method.vid] = function ? function : DefaultFunction;
                for(deriv = _class.derivatives.first; deriv; deriv = deriv.next)
@@ -4063,7 +4063,12 @@ public dllexport Method eClass_AddVirtualMethod(Class _class, char * name, char 
          {
             // If this overides a virtual method
             if(method.type == virtualMethod)
-               _class._vTbl[method.vid] = function ? function : DefaultFunction;
+            {
+               if(method.vid >= _class.vTblSize)
+                  printf("error: virtual methods overriding failure\n");
+               else
+                  _class._vTbl[method.vid] = function ? function : DefaultFunction;
+            }
             else
                base = null;
             return method;
