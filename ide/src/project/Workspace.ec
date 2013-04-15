@@ -990,6 +990,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
 
                      if(!strcmpi(buffer, "Environment Variables"))
                      {
+                        workspace.environmentVars.Free();
                         delete workspace.environmentVars;
                         workspace.environmentVars = { };
                      }

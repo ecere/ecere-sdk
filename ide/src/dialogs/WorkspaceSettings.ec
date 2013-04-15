@@ -73,7 +73,11 @@ class WorkspaceTab : Tab
       if(commandLineArgs.modifiedDocument)
          ide.workspace.commandLineArgs = commandLineArgs.line.text;
       if(environmentVars.modifiedDocument)
+      {
+         ide.workspace.environmentVars.Free();
+         delete ide.workspace.environmentVars;
          ide.workspace.environmentVars = environmentVars.namedStrings;
+      }
       if(sourceDirs.modifiedDocument)
          ide.workspace.UpdateSourceDirsArray(sourceDirs.strings);
 

@@ -417,8 +417,8 @@ class NamedStringsBox : CommonControl
          return true;
       }
    };
-   DataField nameField { dataType = class(char *), editable = true, freeData = false, width = 120 };
-   DataField stringField { dataType = class(char *), editable = true, freeData = false };
+   DataField nameField { dataType = class(char *), editable = true, width = 120 };
+   DataField stringField { dataType = class(char *), editable = true };
    
    NamedStringsBox()
    {
