@@ -2645,7 +2645,7 @@ class HelpView : HTMLView
    {
       if(!strncmp(href, "api://", 6))
       {
-         int tag = strtoul(href + 6, null, 16);
+         int tag = (uint)strtoul(href + 6, null, 16);
          DataRow row = mainForm.browser.FindSubRow(tag);
          if(row)
          {

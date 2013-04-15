@@ -2489,7 +2489,7 @@ class Debugger
                            }
                            else
                            {
-                              value = strtoul(exp.constant, null, 0);
+                              value = (uint)strtoul(exp.constant, null, 0);
                               signedValue = (int)value;
                            }
                         }
@@ -3670,7 +3670,7 @@ class ProgramThread : Thread
          selectResult = select(fd + 1, &rs, null, null, &time);
          if(FD_ISSET(fd, &rs))
          {
-            int result = read(fd, output, sizeof(output)-1);
+            int result = (int)read(fd, output, sizeof(output)-1);
             if(!result || (result < 0 && errno != EAGAIN))
                break;
             if(result > 0)
