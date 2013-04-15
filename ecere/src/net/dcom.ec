@@ -113,7 +113,7 @@ public:
    SerialBuffer buffer { };
 }
 
-class CallAck : strict
+class CallAck : struct
 {
 public:
    int objectID;
@@ -168,7 +168,7 @@ public:
                Socket next;
                for(processingSocket = serverSocket.service.sockets.first;
                    processingSocket;
-                   processingSocket = (DCOMServerSocket)processingSocket.next)
+                   processingSocket = (DCOMServerSocket)next)
                {
                   next = processingSocket.next;
                   if(processingSocket.connected && 
@@ -553,12 +553,13 @@ public class DCOMService : Service
 
    public bool Stop()
    {
-      bool result;
+      bool result = true;
       DCOMServerSocket socket;
       thread.connected = false;
       result = Service::Stop();
       if(thread.started && GetCurrentThreadID() != (int64)thread.id)
          thread.Wait();
+      return result;
    }
 
    void OnAccept()

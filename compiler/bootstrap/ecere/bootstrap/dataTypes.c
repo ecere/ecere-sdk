@@ -1882,6 +1882,26 @@ else
 *data = 0;
 }
 
+void __ecereNameSpace__ecere__com__Enum_OnSerialize(struct __ecereNameSpace__ecere__com__Class * _class, int * data, struct __ecereNameSpace__ecere__com__Instance * channel)
+{
+struct __ecereNameSpace__ecere__com__Class * dataType = strcmp(_class->dataTypeString, "int") ? __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, _class->dataTypeString) : (((void *)0));
+
+if(dataType)
+((void (*)(void *, void *, void *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnSerialize])(dataType, data, channel);
+else
+__ecereNameSpace__ecere__com__Int_OnSerialize(_class, data, channel);
+}
+
+void __ecereNameSpace__ecere__com__Enum_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, int * data, struct __ecereNameSpace__ecere__com__Instance * channel)
+{
+struct __ecereNameSpace__ecere__com__Class * dataType = strcmp(_class->dataTypeString, "int") ? __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, _class->dataTypeString) : (((void *)0));
+
+if(dataType)
+((void (*)(void *, void *, void *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnUnserialize])(dataType, data, channel);
+else
+__ecereNameSpace__ecere__com__Int_OnUnserialize(_class, data, channel);
+}
+
 void __ecereNameSpace__ecere__com__Int64_OnSerialize(struct __ecereNameSpace__ecere__com__Class * _class, long long * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 unsigned char bytes[8];
@@ -2517,8 +2537,8 @@ void __ecereNameSpace__ecere__com__InitializeDataTypes(struct __ecereNameSpace__
 {
 struct __ecereNameSpace__ecere__com__Class * enumClass = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "enum");
 
-__ecereNameSpace__ecere__com__eClass_AddMethod(enumClass, "OnSerialize", (((void *)0)), __ecereNameSpace__ecere__com__Int_OnSerialize, 1);
-__ecereNameSpace__ecere__com__eClass_AddMethod(enumClass, "OnUnserialize", (((void *)0)), __ecereNameSpace__ecere__com__Int_OnUnserialize, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(enumClass, "OnSerialize", (((void *)0)), __ecereNameSpace__ecere__com__Enum_OnSerialize, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(enumClass, "OnUnserialize", (((void *)0)), __ecereNameSpace__ecere__com__Enum_OnUnserialize, 1);
 __ecereNameSpace__ecere__com__RegisterClass_Integer(module);
 __ecereNameSpace__ecere__com__RegisterClass_Float(module);
 __ecereNameSpace__ecere__com__RegisterClass_Double(module);
@@ -2752,6 +2772,8 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Byte_OnSeria
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Byte_OnUnserialize", "void ecere::com::Byte_OnUnserialize(ecere::com::Class _class, byte * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Byte_OnUnserialize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int_OnSerialize", "void ecere::com::Int_OnSerialize(ecere::com::Class _class, int * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Int_OnSerialize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int_OnUnserialize", "void ecere::com::Int_OnUnserialize(ecere::com::Class _class, int * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Int_OnUnserialize, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnSerialize", "void ecere::com::Enum_OnSerialize(ecere::com::Class _class, int * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Enum_OnSerialize, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnUnserialize", "void ecere::com::Enum_OnUnserialize(ecere::com::Class _class, int * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Enum_OnUnserialize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int64_OnSerialize", "void ecere::com::Int64_OnSerialize(ecere::com::Class _class, int64 * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Int64_OnSerialize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int64_OnUnserialize", "void ecere::com::Int64_OnUnserialize(ecere::com::Class _class, int64 * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Int64_OnUnserialize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Word_OnSerialize", "void ecere::com::Word_OnSerialize(ecere::com::Class _class, uint16 * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Word_OnSerialize, module, 4);

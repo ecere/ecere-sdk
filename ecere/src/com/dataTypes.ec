@@ -1476,6 +1476,24 @@ static bool UInt64_OnGetDataFromString(Class _class, uint64 * data, char * strin
       *data = 0;
 }
 
+/*static */void Enum_OnSerialize(Class _class, int * data, IOChannel channel)
+{
+   Class dataType = strcmp(_class.dataTypeString, "int") ? eSystem_FindClass(_class.module, _class.dataTypeString) : null;
+   if(dataType)
+      ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnSerialize])(dataType, data, channel);
+   else
+      Int_OnSerialize(_class, data, channel);
+}
+
+/*static */void Enum_OnUnserialize(Class _class, int * data, IOChannel channel)
+{
+   Class dataType = strcmp(_class.dataTypeString, "int") ? eSystem_FindClass(_class.module, _class.dataTypeString) : null;
+   if(dataType)
+      ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnUnserialize])(dataType, data, channel);
+   else
+      Int_OnUnserialize(_class, data, channel);
+}
+
 /*static */void Int64_OnSerialize(Class _class, int64 * data, IOChannel channel)
 {
    byte bytes[8];
@@ -2074,8 +2092,8 @@ void InitializeDataTypes(Module module)
 {
    Class enumClass = eSystem_FindClass(module, "enum");
 
-   eClass_AddMethod(enumClass, "OnSerialize", null, Int_OnSerialize, publicAccess);
-   eClass_AddMethod(enumClass, "OnUnserialize", null, Int_OnUnserialize, publicAccess);
+   eClass_AddMethod(enumClass, "OnSerialize", null, Enum_OnSerialize, publicAccess);
+   eClass_AddMethod(enumClass, "OnUnserialize", null, Enum_OnUnserialize, publicAccess);
 
    // Data Types
    RegisterClass_Integer(module);
