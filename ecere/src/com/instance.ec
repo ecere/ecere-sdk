@@ -6072,7 +6072,7 @@ static void LoadCOM(Module module)
    eSystem_RegisterFunction("strtol", "int strtol(char*, char**, int base)", strtol, module, baseSystemAccess);
    eSystem_RegisterFunction("system", "int system(const char*)", system, module, baseSystemAccess);
    eSystem_RegisterFunction("atoi", "int atoi(const char*)", atoi, module, baseSystemAccess);
-   eSystem_RegisterFunction("atof", "float atof(const char*)", atof, module, baseSystemAccess);
+   eSystem_RegisterFunction("atof", "double atof(const char*)", atof, module, baseSystemAccess);
    eSystem_RegisterFunction("tolower", "int tolower(int)", tolower, module, baseSystemAccess);
    eSystem_RegisterFunction("toupper", "int toupper(int)", toupper, module, baseSystemAccess);
    eSystem_RegisterFunction("isdigit", "bool isdigit(int)", isdigit, module, baseSystemAccess);
