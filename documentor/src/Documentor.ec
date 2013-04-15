@@ -67,8 +67,8 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                {
                   if(type._class.registered)
                   {
-                     char hex[10];
-                     sprintf(hex, "%08x", type._class.registered);
+                     char hex[20];
+                     sprintf(hex, "%p", type._class.registered);
                      strcat(string, "<a href=\"api://");
                      strcat(string, hex);
                      strcat(string, "\" style=\"text-decoration: none;\">");
@@ -585,7 +585,7 @@ class APIPageNameSpace : APIPage
       {
          f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", nsName );
          tag = (uint)nameSpace;
-         f.Printf($"Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
+         f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       }
       else
       {
@@ -604,7 +604,7 @@ class APIPageNameSpace : APIPage
          ns = ns->parent;
       }
       if(nsName[0]) 
-         f.Printf($"Parent namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", nameSpace->parent, nsName);
+         f.Printf($"Parent namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", nameSpace->parent, nsName);
 
       f.Printf("<br>");
       {
@@ -639,7 +639,7 @@ class APIPageNameSpace : APIPage
                first = false;
             }
             f.Printf("<TR>");
-            f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a></TD>", iconNames[typeNameSpace], ns, ns->name);
+            f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a></TD>", iconNames[typeNameSpace], ns, ns->name);
             if(desc)
             {
                if(editing)
@@ -679,7 +679,7 @@ class APIPageNameSpace : APIPage
 
                f.Printf("<TR>");
 
-               f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a></TD>", (cl.type == enumClass || cl.type == unitClass || cl.type == systemClass) ? iconNames[typeDataType] : iconNames[typeClass], cl, cl.name);
+               f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a></TD>", (cl.type == enumClass || cl.type == unitClass || cl.type == systemClass) ? iconNames[typeDataType] : iconNames[typeClass], cl, cl.name);
                if(desc)
                {
                   if(editing)
@@ -717,7 +717,7 @@ class APIPageNameSpace : APIPage
                first = false;
             }
             f.Printf("<TR>");
-            f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a></TD>", iconNames[typeMethod], function, name);
+            f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a></TD>", iconNames[typeMethod], function, name);
             if(desc)
             {
                if(editing)
@@ -752,7 +752,7 @@ class APIPageNameSpace : APIPage
                first = false;
             }
             f.Printf("<TR>");
-            f.Printf("<TD valign=top height=22 nowrap=1><a name=%08x></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", def, iconNames[typeData], def.name);
+            f.Printf("<TD valign=top height=22 nowrap=1><a name=%p></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", def, iconNames[typeData], def.name);
             f.Printf("<TD valign=top height=22>%s</TD>", def.value);
             if(desc)
             {
@@ -805,9 +805,9 @@ class APIPageClass : APIPage
       f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
       f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", name);
 
-      f.Printf($"Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
+      f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       if(nsName[0]) 
-         f.Printf($"Namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", cl.nameSpace, nsName);
+         f.Printf($"Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", cl.nameSpace, nsName);
 
       {
          char * classType = null;
@@ -848,7 +848,7 @@ class APIPageClass : APIPage
          else if(cl.type == enumClass && !strcmp(cl.base.name, "enum"))
             f.Printf("%s", cl.dataTypeString);
          else
-            f.Printf("<a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a>", cl.base, cl.base.name);
+            f.Printf("<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a>", cl.base.templateClass ? cl.base.templateClass : cl.base, cl.base.name);
          f.Printf("<br>\n");
       }
 
@@ -913,7 +913,7 @@ class APIPageClass : APIPage
                   dataClass = base;                  
                
                f.Printf("<TR>");
-               f.Printf("<TD valign=top height=22 nowrap=1><a name=%08x></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", item, iconNames[typeEnumValue], item.name);
+               f.Printf("<TD valign=top height=22 nowrap=1><a name=%p></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", item, iconNames[typeEnumValue], item.name);
                if(dataClass.type == systemClass)
                {
                   needClass = false;
@@ -965,7 +965,7 @@ class APIPageClass : APIPage
                string[0] = 0;
                DocPrintType(type, string, true, false);
                
-               f.Printf("<TD valign=top height=22 nowrap=1><a name=%08x></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", prop, iconNames[typeDataType], string);
+               f.Printf("<TD valign=top height=22 nowrap=1><a name=%p></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", prop, iconNames[typeDataType], string);
                if(desc)
                {
                   if(editing)
@@ -1013,7 +1013,7 @@ class APIPageClass : APIPage
                   string[0] = 0;
                   DocPrintType(prop.dataType, string, true, false);
 
-                  f.Printf("<TD valign=top height=22 nowrap=1><a name=%08x></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", prop, iconNames[typeProperty], prop.name);
+                  f.Printf("<TD valign=top height=22 nowrap=1><a name=%p></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", prop, iconNames[typeProperty], prop.name);
                   f.Printf("<TD valign=top height=22 nowrap=1>%s</TD>", string);
                   if(desc)
                   {
@@ -1060,7 +1060,7 @@ class APIPageClass : APIPage
                   ProcessMethodType(method);
 
                f.Printf("<TR>");
-               f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a></TD>", method.dataType.thisClass ? iconNames[typeEvent] : iconNames[typeMethod], method, method.name);
+               f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a></TD>", method.dataType.thisClass ? iconNames[typeEvent] : iconNames[typeMethod], method, method.name);
                if(desc)
                {
                   if(editing)
@@ -1099,7 +1099,7 @@ class APIPageClass : APIPage
                   ProcessMethodType(method);
 
                f.Printf("<TR>");
-               f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a></TD>", iconNames[typeMethod], method, method.name);
+               f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a></TD>", iconNames[typeMethod], method, method.name);
                if(desc)
                {
                   if(editing)
@@ -1202,7 +1202,7 @@ class APIPageClass : APIPage
                }
                else
                   f.Printf(", ");
-               f.Printf("<a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a>", deriv, deriv.name);
+               f.Printf("<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a>", deriv, deriv.name);
              }            
          }
          if(!first)
@@ -1256,17 +1256,17 @@ class APIPageMethod : APIPage
       f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
       f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", name);
 
-      f.Printf($"Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
+      f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       if(nsName[0])
-         f.Printf($"Namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", cl.nameSpace, nsName);
-      f.Printf("Class: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", cl, cl.name);
+         f.Printf($"Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", cl.nameSpace, nsName);
+      f.Printf("Class: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", cl, cl.name);
       if(method.dataType.staticMethod)
       {
          f.Printf($"this pointer class: None<br>\n");
       }
       else if(method.dataType.thisClass && method.dataType.thisClass.registered && (method.dataType.thisClass.registered != method._class || method.type == virtualMethod))
       {
-         f.Printf($"this pointer class: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", method.dataType.thisClass.registered, method.dataType.thisClass.registered.name);
+         f.Printf($"this pointer class: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", method.dataType.thisClass.registered, method.dataType.thisClass.registered.name);
       }
 
       // Generate Method Page
@@ -1478,17 +1478,17 @@ class APIPageFunction : APIPage
       f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
       f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", name);
 
-      f.Printf($"Module: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
+      f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
 
       if(nsName[0])
-         f.Printf($"Namespace: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", function.nameSpace, nsName);
+         f.Printf($"Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", function.nameSpace, nsName);
 
       if(!function.dataType)
          function.dataType = ProcessTypeString(function.dataTypeString, false);
 
       if(function.dataType.thisClass && function.dataType.thisClass.registered)
       {
-         f.Printf($"this pointer class: <a href=\"api://%08x\" style=\"text-decoration: none;\">%s</a><br>\n", function.dataType.thisClass.registered, function.dataType.thisClass.registered.name);
+         f.Printf($"this pointer class: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", function.dataType.thisClass.registered, function.dataType.thisClass.registered.name);
       }
 
       // Generate Method Page
@@ -1805,7 +1805,7 @@ static void AddDataMemberToPage(File f, DataMember member, int indent, bool show
    string[0] = 0;
    DocPrintType(member.dataType, string, true, false);
 
-   f.Printf("<TD valign=top height=22 nowrap=1><a name=%08x></a>", member);
+   f.Printf("<TD valign=top height=22 nowrap=1><a name=%p></a>", member);
    for(c = 0; c<indent; c++)
       f.Printf("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
    f.Printf("<img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", iconNames[typeData], member.name ? member.name : ((member.type == structMember) ? "(struct)" : "(union)"));
@@ -2029,6 +2029,7 @@ class MainForm : Window
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
          SettingsDialog { master = this }.Modal(); // Open the settings dialog to allow the user to change the directory for the eCdoc files
+         return true;
       }
    };
    MenuDivider { fileMenu };
@@ -2127,8 +2128,8 @@ class MainForm : Window
                   case 8: view.GoToAnchor("EnumerationValues"); break;
                   default:
                   {
-                     char hex[10];
-                     sprintf(hex, "%08x", row.tag);
+                     char hex[20];
+                     sprintf(hex, "%p", row.tag);
                      view.GoToAnchor(hex);
                   }
                }
