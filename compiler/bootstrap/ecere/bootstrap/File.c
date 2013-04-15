@@ -585,7 +585,7 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_Tell(struct __ecer
 {
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 
-return __ecerePointer___ecereNameSpace__ecere__sys__File->input ? ftell(__ecerePointer___ecereNameSpace__ecere__sys__File->input) : ftell(__ecerePointer___ecereNameSpace__ecere__sys__File->output);
+return (unsigned int)(__ecerePointer___ecereNameSpace__ecere__sys__File->input ? ftell(__ecerePointer___ecereNameSpace__ecere__sys__File->input) : ftell(__ecerePointer___ecereNameSpace__ecere__sys__File->output));
 }
 
 int __ecereMethod___ecereNameSpace__ecere__sys__File_Read(struct __ecereNameSpace__ecere__com__Instance * this, void * buffer, unsigned int size, unsigned int count)

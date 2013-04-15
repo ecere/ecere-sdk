@@ -198,7 +198,7 @@ public enum KeyCode : Key
    keyPadDelete      = 0x53,
    // KeyPadLess        = 0x56,
 
-   // F10-F12
+   // F11-F12
    f11               = 0x57,
    f12               = 0x58,
 
