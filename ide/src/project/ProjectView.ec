@@ -1092,10 +1092,10 @@ class ProjectView : Window
          {
             if(config)
                ide.outputView.buildBox.Logf($"%s specific file(s) in project %s using the %s configuration...\n",
-                     mode == normal ? $"Compiling" : $"Debug compiling", project.name, config.name);
+                     (mode == normal || mode == cObject) ? $"Compiling" : $"Debug compiling", project.name, config.name);
             else
                ide.outputView.buildBox.Logf($"%s specific file(s) in project %s...\n",
-                     mode == normal ? $"Compiling" : $"Debug compiling", project.name);
+                     (mode == normal || mode == cObject) ? $"Compiling" : $"Debug compiling", project.name);
 
             buildInProgress = compilingFile;
             ide.AdjustBuildMenus();
