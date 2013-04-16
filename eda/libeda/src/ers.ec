@@ -248,7 +248,9 @@ public:
                         // TESTING THIS HERE... (UNCOMMENTED AND ADDED CHECK FOR size == 1)
                         if(report.groupings.size == 1 && report.groupings[level].footer)
                         {
-                           if(AddDetailToPage(destination, eInstance_New(report.groupings[level].footer)))
+                           Detail groupFooter = eInstance_New(report.groupings[level].footer);
+                           groupFooter.level = level;
+                           if(AddDetailToPage(destination, groupFooter))
                            {
                               //dontAdvance = true;
                               loop = false;
@@ -303,6 +305,7 @@ public:
                      if(report.groupings[level].footer)
                      {
                         Detail groupEnd = eInstance_New(report.groupings[level].footer);
+                        groupEnd.level = level;
                         if(AddDetailToPage(destination, groupEnd))
                         {
                            //dontAdvance = true;
