@@ -1395,6 +1395,8 @@ extern struct TypeName * QMkClass(char *  spec, struct Declarator * decl);
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_FindMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, struct __ecereNameSpace__ecere__com__Instance * module);
 
+extern void FreeExpression(struct Expression * exp);
+
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(struct __ecereNameSpace__ecere__sys__OldList * this);
 
 static unsigned int ProcessInstMembers(struct Instantiation * inst, struct Expression * instExp, struct __ecereNameSpace__ecere__sys__OldList * list, unsigned int zeroOut)
@@ -1777,6 +1779,7 @@ ident = MkIdentifier(thisMember->name);
 if(ident)
 {
 struct Expression * memberExp;
+unsigned int freeMemberExp = 0x0;
 
 if(thisMember && thisMember->isProperty && ((struct __ecereNameSpace__ecere__com__Property *)thisMember)->conversion)
 convert = 0x1;
@@ -1798,6 +1801,10 @@ member->initializer->exp = (((void *)0));
 FreeInitializer(member->initializer);
 member->initializer = (((void *)0));
 }
+else
+{
+freeMemberExp = 0x1;
+}
 memberExp->loc = inst->loc;
 if(member->identifiers)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear((&*member->identifiers));
@@ -1813,6 +1820,8 @@ ProcessExpressionType(setExp);
 ProcessExpression(setExp);
 ListAdd(list, setExp);
 }
+if(freeMemberExp)
+FreeExpression(memberExp);
 }
 }
 }
@@ -1899,8 +1908,6 @@ void ProcessExpressionInstPass(struct Expression * exp)
 {
 ProcessExpression(exp);
 }
-
-extern void FreeExpression(struct Expression * exp);
 
 extern struct Context * curContext;
 
@@ -2982,13 +2989,14 @@ struct __ecereNameSpace__ecere__sys__OldList * subList = MkList();
 
 ProcessBracketInst(member->initializer->exp->instance, subList);
 FreeExpression(member->initializer->exp);
+member->initializer->exp = (((void *)0));
 ListAdd(list, MkInitializerList(subList));
 }
 else
 {
 member->initializer->exp->usage = (member->initializer->exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
 ProcessExpression(member->initializer->exp);
-ListAdd(list, MkInitializerAssignment(member->initializer->exp));
+ListAdd(list, MkInitializerAssignment(CopyExpression(member->initializer->exp)));
 }
 member->takeOutExp = 0x1;
 }
@@ -3035,7 +3043,6 @@ for(member = (*members->dataMembers).first; member; member = member->next)
 {
 if(member->takeOutExp)
 {
-member->initializer->exp = (((void *)0));
 FreeInitializer(member->initializer);
 member->initializer = (((void *)0));
 }

@@ -628,6 +628,7 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
                      if(ident)
                      {
                         Expression memberExp;
+                        bool freeMemberExp = false;
 
                         if(thisMember && thisMember.isProperty && ((Property)thisMember).conversion)
                            convert = true;
@@ -652,8 +653,12 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
                            FreeInitializer(member.initializer);
                            member.initializer = null;
                         }
+                        else
+                        {
+                           freeMemberExp = true;
+                           // TOCHECK: WHat happens in here?
+                        }
                         // TODO: list initializer not working...
-
                         memberExp.loc = inst.loc;
 
                         if(member.identifiers)
@@ -674,6 +679,8 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
 
                            ListAdd(list, setExp);
                         }
+                        if(freeMemberExp)
+                           FreeExpression(memberExp);
                      }
                   }
                }
@@ -1988,13 +1995,14 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                   OldList * subList = MkList();
                   ProcessBracketInst(member.initializer.exp.instance, subList);
                   FreeExpression(member.initializer.exp);
+                  member.initializer.exp = null;
                   ListAdd(list, MkInitializerList(subList));
                }
                else
                {
                   member.initializer.exp.usage.usageGet = true;
                   ProcessExpression(member.initializer.exp);
-                  ListAdd(list, MkInitializerAssignment(member.initializer.exp));
+                  ListAdd(list, MkInitializerAssignment(CopyExpression(member.initializer.exp)));
                }
 
                // Take this out
@@ -2045,7 +2053,6 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
             {
                if(member.takeOutExp)
                {
-                  member.initializer.exp = null;
                   FreeInitializer(member.initializer);
                   member.initializer = null;
                }
