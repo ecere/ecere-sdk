@@ -258,7 +258,7 @@ class WatchMultiLineString : String
          char * string = this;
          char actualString[8196];
          int c, len = 0;
-         for(c = 0; (ch = string[c]); c++)
+         for(c = 0; (ch = string[c]) && len < sizeof(actualString)-1; c++)
          {
             if(ch == '\t') { actualString[len++] = '\\'; actualString[len++] = 't'; }
             else if(ch == '\r') { actualString[len++] = '\\'; actualString[len++] = 'r'; }

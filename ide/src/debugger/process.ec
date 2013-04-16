@@ -339,7 +339,7 @@ int Process_GetChildExeProcessId(const int parentProcessId, const char * exeFile
             {
                if(count > pidColumn && count > ppidColumn && strtoul(tokens[ppidColumn], null, 0) == parentProcessId)
                {
-                  pid = strtoul(tokens[pidColumn], null, 0);
+                  pid = (uint)strtoul(tokens[pidColumn], null, 0);
                   break;
                }
             }

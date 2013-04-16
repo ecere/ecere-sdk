@@ -1397,7 +1397,7 @@ class CodeEditor : Window
                   char * s;
                   s = PrintString($"The ", fileName, $" file is not part of any project.\n", 
                      $"It can't be compiled.");
-                  MessageBox { type = ok, parent = ide, master = ide, text = $"File not in project error", contents = s }.Modal();
+                  MessageBox { type = ok, /*parent = ide, */master = ide, text = $"File not in project error", contents = s }.Modal();
                   delete s;
                   return false;
                }
