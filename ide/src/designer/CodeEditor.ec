@@ -683,6 +683,8 @@ class CodeEditor : Window
 
    Designer designer { codeEditor = this, visible = false, saveDialog = codeEditorFormFileDialog };
 
+   bool noParsing;
+
    void ProcessCaretMove(EditBox editBox, int line, int charPos)
    {
       char temp[512];
@@ -2360,7 +2362,7 @@ class CodeEditor : Window
       if(fileName)
       {
          GetExtension(fileName, ext);
-         if(!strcmpi(ext, "ec"))
+         if(!noParsing && !(noParsing = ide.noParsing) && !strcmpi(ext, "ec"))
          {
             codeModified = true;
             EnsureUpToDate();
@@ -4396,6 +4398,7 @@ class CodeEditor : Window
    void UpdateFormCode()
    {
       if(!this) return;
+      if(noParsing) return;
          
       updatingCode++;
       if(codeModified)

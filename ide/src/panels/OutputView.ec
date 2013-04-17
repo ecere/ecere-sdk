@@ -21,7 +21,7 @@ class OutputView : Window
    size.h = 240;
    background = formColor;
 
-   virtual void OnGotoError(char * line);
+   virtual void OnGotoError(char * line, bool noParsing);
    virtual void OnCodeLocationParseAndGoTo(char * line);
 
    FindDialog findDialog { master = this, editBox = buildBox, isModal = true, autoCreate = false, text = "Find" };
@@ -128,15 +128,15 @@ class OutputView : Window
       
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
-         OnGotoError(editBox.line.text);
+         OnGotoError(editBox.line.text, mods.ctrl && mods.shift);
          return false; //true; // why not use true here? 
       }
 
       bool NotifyKeyDown(EditBox editBox, Key key, unichar ch)
       {
-         if((SmartKey)key == enter)
+         if(key.code == enter || key.code == keyPadEnter)
          {
-            OnGotoError(editBox.line.text);
+            OnGotoError(editBox.line.text, key.ctrl && key.shift);
             return false;
          }
          return true;
