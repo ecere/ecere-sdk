@@ -683,6 +683,10 @@ class CodeEditor : Window
 
    Designer designer { codeEditor = this, visible = false, saveDialog = codeEditorFormFileDialog };
 
+   bool noParsing;
+
+   property bool parsing { get { return !noParsing && !ide.noParsing; } };
+
    void ProcessCaretMove(EditBox editBox, int line, int charPos)
    {
       char temp[512];
@@ -2360,7 +2364,7 @@ class CodeEditor : Window
       if(fileName)
       {
          GetExtension(fileName, ext);
-         if(!strcmpi(ext, "ec"))
+         if(parsing && !strcmpi(ext, "ec"))
          {
             codeModified = true;
             EnsureUpToDate();
@@ -4396,6 +4400,7 @@ class CodeEditor : Window
    void UpdateFormCode()
    {
       if(!this) return;
+      if(!parsing) return;
          
       updatingCode++;
       if(codeModified)
@@ -5357,7 +5362,7 @@ class CodeEditor : Window
 
    void EnsureUpToDate()
    {
-      if(sheet && codeModified)
+      if(sheet && codeModified && parsing)
          ParseCode();
    }
 
@@ -6264,6 +6269,7 @@ class CodeEditor : Window
       Expression memberExp = null;
       Identifier realIdentifier = null;
 
+      if(!parsing) return true;
       if(!privateModule) return !didOverride;
 
       insideFunction = null;
@@ -6637,6 +6643,8 @@ class CodeEditor : Window
       Expression exp = null;
       EditLine l1, l2;
       int x1,y1, x2,y2;
+
+      if(!parsing) return;
 
       charPos = editBox.charPos + 1;
       EnsureUpToDate();
