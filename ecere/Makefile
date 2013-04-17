@@ -102,7 +102,7 @@ _ECSOURCES1 = \
 	src/gfx/drivers/lfbConvert.ec \
 	src/gfx/drivers/LFBDisplayDriver.ec \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/NCursesDisplayDriver.ec,) \
-	src/gfx/drivers/OpenGLDisplayDriver.ec \
+	$(if $(DISABLE_GL),,src/gfx/drivers/OpenGLDisplayDriver.ec) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec,)
 _ECSOURCES2 = \
 	$(if $(OSX_TARGET),src/gfx/drivers/CocoaOpenGLDisplayDriver.ec,) \
@@ -470,7 +470,7 @@ LIBS += \
 	$(call _L,X11) \
 	$(call _L,Xext) \
 	$(call _L,Xrender) \
-	$(call _L,GL)
+	$(if $(DISABLE_GL),,$(call _L,GL))
 endif
 
 else
