@@ -270,8 +270,8 @@ class ProjectView : Window
                {
                   MenuItem { pop, $"Open", o, NotifySelect = FileOpenFile };
                   MenuDivider { pop };
-                  MenuItem { pop, $"Clean", l, NotifySelect = FileClean }.disabled = na;
-                  MenuItem { pop, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile }.disabled = na;
+                  MenuItem { pop, $"Clean", l, NotifySelect = FileClean, bitmap = ide.projectCleanItem.bitmap }.disabled = na;
+                  MenuItem { pop, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile, bitmap = ide.projectBuildItem.bitmap }.disabled = na;
                   if(showDebuggingMenuItems)
                   {
                      MenuDivider { pop };
@@ -309,8 +309,8 @@ class ProjectView : Window
                      MenuItem { pop, $"Add New Behavior Graph...", g, NotifySelect = ProjectAddNewGraph };
                   }
                   MenuDivider { pop };
-                  MenuItem { pop, $"Clean", l, NotifySelect = FileClean }.disabled = na;
-                  MenuItem { pop, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile }.disabled = na;
+                  MenuItem { pop, $"Clean", l, NotifySelect = FileClean, bitmap = ide.projectCleanItem.bitmap }.disabled = na;
+                  MenuItem { pop, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile, bitmap = ide.projectBuildItem.bitmap }.disabled = na;
                   MenuDivider { pop };
                   MenuItem { pop, $"Remove", r, NotifySelect = FileRemoveFile };
                   MenuDivider { pop };
