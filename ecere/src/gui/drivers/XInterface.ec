@@ -1,6 +1,9 @@
 namespace gui::drivers;
 
 import "instance"
+#ifdef ECERE_NOGL
+#define ECERE_NO3D
+#endif
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
 import "OpenGLDisplayDriver"
 #endif

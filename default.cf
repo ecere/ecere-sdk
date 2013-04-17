@@ -66,3 +66,8 @@ endif
 CFLAGS += -fmessage-length=0
 
 EARFLAGS = q
+
+ifdef DISABLE_GL
+CFLAGS += -DECERE_NOGL
+endif
+
