@@ -200,7 +200,7 @@ class ProjectView : Window
       bool NotifyDoubleClick(ListBox listBox, int x, int y, Modifiers mods)
       {
          // Prevent the double click from reactivating the project view (returns false if we opened something)
-         return !OpenSelectedNodes();
+         return !OpenSelectedNodes(mods.ctrl && mods.shift);
       }
 
       bool NotifyRightClick(ListBox listBox, int x, int y, Modifiers mods)
@@ -437,8 +437,10 @@ class ProjectView : Window
          }
          switch(key)
          {
-            case enter: case keyPadEnter:  OpenSelectedNodes();   break;
-            case del:                      RemoveSelectedNodes(); break;
+            case Key { enter, true, true }:        OpenSelectedNodes(true);   break;
+            case Key { keyPadEnter, true, true }:  OpenSelectedNodes(true);   break;
+            case enter: case keyPadEnter:          OpenSelectedNodes(false);  break;
+            case del:                              RemoveSelectedNodes();     break;
             case escape:                      
             {
                Window activeClient = ide.activeClient;
@@ -1252,7 +1254,7 @@ class ProjectView : Window
 
    bool FileOpenFile(MenuItem selection, Modifiers mods)
    {
-      OpenSelectedNodes();
+      OpenSelectedNodes(mods.ctrl && mods.shift);
       return true;
    }
 
@@ -1503,7 +1505,7 @@ class ProjectView : Window
       return result;      
    }
 
-   void GoToError(const char * line)
+   void GoToError(const char * line, const bool noParsing)
    {
       char * colon;
       
@@ -1606,12 +1608,12 @@ class ProjectView : Window
                strcpy(filePath, project.topNode.path);
                PathCatSlash(filePath, moduleName);
       
-               codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal);
+               codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal, noParsing);
                if(!codeEditor && !strcmp(ext, "c"))
                {
                   char ecName[MAX_LOCATION];
                   ChangeExtension(filePath, "ec", ecName);
-                  codeEditor = (CodeEditor)ide.OpenFile(ecName, normal, true, null, no, normal);
+                  codeEditor = (CodeEditor)ide.OpenFile(ecName, normal, true, null, no, normal, noParsing);
                }
                if(!codeEditor)
                {
@@ -1629,7 +1631,7 @@ class ProjectView : Window
                            strcpy(filePath, prj.topNode.path);
                            PathCatSlash(filePath, node.path);
                            PathCatSlash(filePath, node.name);
-                           codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal);
+                           codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal, noParsing);
                            if(codeEditor)
                               break;
                         }
@@ -1644,7 +1646,7 @@ class ProjectView : Window
                               strcpy(filePath, prj.topNode.path);
                               PathCatSlash(filePath, node.path);
                               PathCatSlash(filePath, node.name);
-                              codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal);
+                              codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal, noParsing);
                               if(codeEditor)
                                  break;
                            }
@@ -1663,11 +1665,11 @@ class ProjectView : Window
       }
    }
 
-   bool OpenNode(ProjectNode node)
+   bool OpenNode(ProjectNode node, bool noParsing)
    {
       char filePath[MAX_LOCATION];
       node.GetFullFilePath(filePath);
-      return ide.OpenFile(filePath, normal, true/*false Why was it opening hidden?*/, null, something, normal) ? true : false;
+      return ide.OpenFile(filePath, normal, true/*false Why was it opening hidden?*/, null, something, normal, noParsing) ? true : false;
    }
 
    void AddNode(ProjectNode node, DataRow addTo)
@@ -2064,7 +2066,7 @@ class ProjectView : Window
             subclass(ClassDesignerBase) designerClass = eClass_GetDesigner(baseClass);
             if(designerClass)
             {
-               codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, false, null, whatever, normal);
+               codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, false, null, whatever, normal, false);
                strcpy(name, projectNode.name);
                sprintf(name, "%s%d", upper, c);
                if(className)
@@ -2080,7 +2082,7 @@ class ProjectView : Window
          }
          else // TODO: fix no symbols generated when ommiting {} for following else
          {
-            codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, false, null, whatever, normal);
+            codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, false, null, whatever, normal, false);
          }
          if(codeEditor)
          {
@@ -2093,7 +2095,7 @@ class ProjectView : Window
    }
 
    // Returns true if we opened something
-   bool OpenSelectedNodes()
+   bool OpenSelectedNodes(bool noParsing)
    {
       bool result = false;
       OldList selection;
@@ -2106,7 +2108,7 @@ class ProjectView : Window
          ProjectNode node = (ProjectNode)row.tag;
          if(node.type == file)
          {
-            OpenNode(node);
+            OpenNode(node, noParsing);
             result = true;
             break;
          }
