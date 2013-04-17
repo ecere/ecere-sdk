@@ -1,5 +1,7 @@
 .PHONY: all bootstrap cleantarget clean realclean distclean libec ecp ecc ecs
+ifneq "$V" "1"
 .SILENT:
+endif
 
 CONFIG := release
 PRECOMPILED_SOURCES = libec/precompiled/expression.c libec/precompiled/grammar.c libec/precompiled/grammar.bowl libec/precompiled/type.c

@@ -1,5 +1,7 @@
 .PHONY: all clean realclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make ide documentor eda prepcodeguard codeguard
+ifneq "$V" "1"
 .SILENT:
+endif
 
 include crossplatform.mk
 include default.cf

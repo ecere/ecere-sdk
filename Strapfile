@@ -1,5 +1,7 @@
 .PHONY: ecere ec precomp compiler symbolgen
+ifneq "$V" "1"
 .SILENT:
+endif
 
 MAKE = make -f Makefile.bootstrap
 
