@@ -1023,6 +1023,20 @@ class IDEWorkSpace : Window
             return true;
          }
       }
+      MenuItem projectCleanTargetItem
+      {
+         projectMenu, $"Clean Target", g, disabled = true;
+         bitmap = { ":actions/clean.png" };
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            if(projectView)
+            {
+               debugger.Stop();
+               projectView.ProjectCleanTarget(projectView.active ? selection : null, mods);
+            }
+            return true;
+         }
+      }
       MenuItem projectCleanItem
       {
          projectMenu, $"Clean", e, disabled = true;
@@ -1809,6 +1823,7 @@ class IDEWorkSpace : Window
       toolBar.buttonRebuild.disabled            = unavailable;
       projectCleanItem.disabled                 = unavailable;
       toolBar.buttonClean.disabled              = unavailable;
+      projectCleanTargetItem.disabled           = unavailable;
       projectRealCleanItem.disabled             = unavailable;
       // toolBar.buttonRealClean.disabled          = unavailable;
       projectRegenerateItem.disabled            = unavailable;
@@ -1835,6 +1850,7 @@ class IDEWorkSpace : Window
 
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectLink, 0);              if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRebuild, 0);           if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectCleanTarget, 0);       if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectClean, 0);             if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRealClean, 0);         if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRegenerate, 0);        if(menu) menu.disabled = unavailable;
