@@ -2163,14 +2163,17 @@ private:
             ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
          {
-            ide.outputView.buildBox.Tell($"Deleting target and object files...");
+            ide.outputView.buildBox.Tellf($"Deleting %s%s...",
+                  cleanType == realClean ? $"intermediate objects directory" : $"target",
+                  cleanType == clean ? $"and object files" : "");
             if(justPrint)
                ProcessPipeOutputRaw(f);
             else
                ProcessCleanPipeOutput(f, compiler, config);
+            ide.outputView.buildBox.Logf($"%s%s deleted\n",
+                  cleanType == realClean ? $"Intermediate objects directory" : $"Target",
+                  cleanType == clean ? $"and object files" : "");
             delete f;
-
-            ide.outputView.buildBox.Logf($"Target and object files deleted\n");
          }
       }
 
