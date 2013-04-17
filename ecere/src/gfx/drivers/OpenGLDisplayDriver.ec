@@ -1267,6 +1267,9 @@ class OGLIndices : struct
    int nIndices;
 };
 
+#ifdef ECERE_NOGL
+#define ECERE_NO3D
+#endif
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
 static int primitiveTypes[RenderPrimitiveType] =
 {
