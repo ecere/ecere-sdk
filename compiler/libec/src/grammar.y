@@ -2697,6 +2697,7 @@ direct_declarator_nofunction_type_ok:
       $$ = MkDeclaratorIdentifier(MkIdentifier(s));
    }
    | UINT { $$ = MkDeclaratorIdentifier(MkIdentifier("uint")); }
+   // These rules need to be reviewed in lights of prototypes with types only...
 	| base_strict_type '[' constant_expression ']'
       {
          Declarator decl;
@@ -2706,10 +2707,33 @@ direct_declarator_nofunction_type_ok:
          FreeSpecifier($1);
          $$ = MkDeclaratorArray(decl, $3);
       }
-   | base_strict_type '[' constant_expression_error ']' { $$ = MkDeclaratorArray($1, $3); }
-	| base_strict_type '[' type ']' { $$ = MkDeclaratorEnumArray($1, $3); }
-	| base_strict_type '[' ']'                     { $$ = MkDeclaratorArray($1, null); }
-
+   | base_strict_type '[' constant_expression_error ']'
+      {
+         Declarator decl;
+         char * colon = RSearchString($1.name, "::", strlen($1.name), true, false);
+         String s = colon ? colon + 2 : $1.name;
+         decl = MkDeclaratorIdentifier(MkIdentifier(s));
+         FreeSpecifier($1);
+         $$ = MkDeclaratorArray(decl, $3);
+      }
+	| base_strict_type '[' type ']'
+      {
+         Declarator decl;
+         char * colon = RSearchString($1.name, "::", strlen($1.name), true, false);
+         String s = colon ? colon + 2 : $1.name;
+         decl = MkDeclaratorIdentifier(MkIdentifier(s));
+         FreeSpecifier($1);
+         $$ = MkDeclaratorEnumArray(decl, $3);
+      }
+	| base_strict_type '[' ']'
+      {
+         Declarator decl;
+         char * colon = RSearchString($1.name, "::", strlen($1.name), true, false);
+         String s = colon ? colon + 2 : $1.name;
+         decl = MkDeclaratorIdentifier(MkIdentifier(s));
+         FreeSpecifier($1);
+         $$ = MkDeclaratorEnumArray(decl, null);
+      }
 	| direct_declarator_nofunction_type_ok '[' constant_expression ']' { $$ = MkDeclaratorArray($1, $3); }
    | direct_declarator_nofunction_type_ok '[' constant_expression_error ']' { $$ = MkDeclaratorArray($1, $3); }
 	| direct_declarator_nofunction_type_ok '[' type ']' { $$ = MkDeclaratorEnumArray($1, $3); }

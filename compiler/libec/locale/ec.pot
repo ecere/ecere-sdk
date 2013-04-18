@@ -48,7 +48,7 @@ msgstr "Couldn't find member %s to override\n"
 msgid "Couldn't open %s\n"
 msgstr "Couldn't open %s\n"
 
-#: ./src/ast.ec:1576
+#: ./src/ast.ec:1649
 msgid "Expecting class specifier\n"
 msgstr "Expecting class specifier\n"
 
@@ -130,7 +130,7 @@ msgstr "Recursion in defined expression %s\n"
 msgid "Redefinition of %s (defining as %s, already defined as %s)\n"
 msgstr "Redefinition of %s (defining as %s, already defined as %s)\n"
 
-#: ./src/ast.ec:750
+#: ./src/ast.ec:794
 msgid "Redefinition of %s ignored\n"
 msgstr "Redefinition of %s ignored\n"
 

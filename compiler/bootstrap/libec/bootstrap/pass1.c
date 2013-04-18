@@ -1090,7 +1090,7 @@ extern struct Specifier * MkSpecifier(int specifier);
 
 extern void ReplaceThisClassSpecifiers(struct __ecereNameSpace__ecere__sys__OldList * specs, struct __ecereNameSpace__ecere__com__Class * _class);
 
-extern struct FunctionDefinition * MkFunction(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Declarator * declarator, struct __ecereNameSpace__ecere__sys__OldList * declarationList);
+extern struct FunctionDefinition * _MkFunction(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Declarator * declarator, struct __ecereNameSpace__ecere__sys__OldList * declarationList, unsigned int errorOnOmit);
 
 extern void ProcessFunctionBody(struct FunctionDefinition * func, struct Statement * body);
 
@@ -1170,7 +1170,7 @@ func->declarator->symbol = (((void *)0));
 symid += 2;
 }
 {
-function = MkFunction(func->specifiers, func->declarator, (((void *)0)));
+function = _MkFunction(func->specifiers, func->declarator, (((void *)0)), 0x0);
 function->propSet = func->propSet;
 function->type = func->type;
 if(func->type)
@@ -1391,7 +1391,7 @@ __ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
 sprintf(registerName, "__ecereRegisterModule_%s", moduleName);
 declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), MkListOne(moduleParam));
 {
-struct FunctionDefinition * function = MkFunction(specifiers, declarator, (((void *)0)));
+struct FunctionDefinition * function = _MkFunction(specifiers, declarator, (((void *)0)), 0x0);
 
 ProcessFunctionBody(function, registerModuleBody);
 function->declMode = 0;
@@ -1424,7 +1424,7 @@ __ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
 sprintf(registerName, "__ecereUnregisterModule_%s", moduleName);
 declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), MkListOne(moduleParam));
 {
-struct FunctionDefinition * function = MkFunction(specifiers, declarator, (((void *)0)));
+struct FunctionDefinition * function = _MkFunction(specifiers, declarator, (((void *)0)), 0x0);
 
 ProcessFunctionBody(function, unregisterModuleBody);
 function->declMode = 0;

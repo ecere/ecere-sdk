@@ -608,12 +608,44 @@ InitDeclarator MkInitDeclarator(Declarator declarator, Initializer initializer)
 
 public TypeName MkTypeName(OldList qualifiers, Declarator declarator)
 {
+   if(qualifiers != null)
+   {
+      Declarator parentDecl = declarator;
+      Declarator decl = declarator;
+      while(decl && decl.type == arrayDeclarator)
+         decl = decl.declarator;
+      if(decl && decl.type == identifierDeclarator && decl.identifier.string && CheckType(decl.identifier.string) == TYPE_NAME)
+      {
+         Specifier spec;
+         // Check if we're missing a real type specifier here
+         for(spec = qualifiers.first; spec; spec = spec.next)
+         {
+            if(spec.type == baseSpecifier)
+            {
+               if(spec.specifier == CONST || spec.specifier == VOLATILE ||
+                  spec.specifier == EXTERN || spec.specifier == STATIC ||
+                  spec.specifier == AUTO || spec.specifier == REGISTER)
+                  continue;
+               break;
+            }
+            else if(spec.type != extendedSpecifier)
+               break;
+         }
+         if(!spec)
+         {
+            // This is actually a type
+            ListAdd(qualifiers, MkSpecifierName(decl.identifier.string));
+            decl.identifier.string = null;
+            FreeDeclarator(decl);
+            parentDecl.declarator = null;
+         }
+      }
+   }
    return { qualifiers = qualifiers, declarator = declarator };
 }
 
 public TypeName MkTypeNameGuessDecl(OldList qualifiers, Declarator declarator)
 {
-   TypeName typeName { qualifiers = qualifiers, declarator = declarator };
    if(qualifiers != null)
    {
       bool gotType = false;
@@ -636,7 +668,7 @@ public TypeName MkTypeNameGuessDecl(OldList qualifiers, Declarator declarator)
             }
             if(s)
             {
-               typeName.declarator = declarator = MkDeclaratorIdentifier(MkIdentifier(s));
+               declarator = MkDeclaratorIdentifier(MkIdentifier(s));
                qualifiers.Remove(spec);
                FreeSpecifier(spec);
                spec = null;
@@ -644,13 +676,25 @@ public TypeName MkTypeNameGuessDecl(OldList qualifiers, Declarator declarator)
          }
          if(spec && spec.type != extendedSpecifier)
          {
-            if(spec.type != baseSpecifier || (spec.specifier != UNSIGNED && spec.specifier != SIGNED && spec.specifier != LONG))
+            if(spec.type == baseSpecifier)
+            {
+               if(spec.specifier == CONST || spec.specifier == VOLATILE ||
+                  spec.specifier == EXTERN || spec.specifier == STATIC ||
+                  spec.specifier == AUTO || spec.specifier == REGISTER)
+                  continue;
+               else if(spec.specifier != UNSIGNED && spec.specifier != SIGNED && spec.specifier != LONG)
+                  gotFullType = true;
+               gotType = true;
+            }
+            else
+            {
                gotFullType = true;
-            gotType = true;
+               gotType = true;
+            }
          }
       }
    }
-   return typeName;
+   return { qualifiers = qualifiers, declarator = declarator };
 }
 
 public Identifier GetDeclId(Declarator decl)
@@ -1065,6 +1109,35 @@ Statement MkReturnStmt(OldList exp)
 
 FunctionDefinition MkFunction(OldList specifiers, Declarator declarator, OldList declarationList)
 {
+   _MkFunction(specifiers, declarator, declarationList, true);
+}
+
+FunctionDefinition _MkFunction(OldList specifiers, Declarator declarator, OldList declarationList, bool errorOnOmit)
+{
+   if(errorOnOmit)
+   {
+      Declarator funcDecl = GetFuncDecl(declarator);
+      if(funcDecl && funcDecl.function.parameters)
+      {
+         TypeName tn;
+         for(tn = funcDecl.function.parameters->first; tn; tn = tn.next)
+         {
+            if(tn.qualifiers || tn.declarator)
+            {
+               Identifier declID = tn.declarator ? GetDeclId(tn.declarator) : null;
+               if(!declID)
+               {
+                  // Check for (void)
+                  Specifier spec = tn.qualifiers ? tn.qualifiers->first : null;
+                  if(!tn.declarator && !tn.prev && !tn.next && spec && !spec.next && spec.type == baseSpecifier && spec.specifier == VOID);
+                  else
+                     Compiler_Error("parameter name omitted\n");
+                  break;
+               }
+            }
+         }
+      }
+   }
    return { specifiers = specifiers, declarator = declarator, declarations = declarationList };
 }
 

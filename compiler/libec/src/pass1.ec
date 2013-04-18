@@ -62,7 +62,7 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
 
       //if(inCompiler)
       {
-         /*FunctionDefinition*/ function = MkFunction(func.specifiers, func.declarator, null);
+         /*FunctionDefinition*/ function = _MkFunction(func.specifiers, func.declarator, null, false);
          function.propSet = func.propSet;
          function.type = func.type;
          if(func.type) func.type.refCount++;
@@ -298,7 +298,7 @@ void CreateRegisterModuleBody()
          MkListOne(moduleParam));
 
       {
-         FunctionDefinition function = MkFunction(specifiers, declarator, null);
+         FunctionDefinition function = _MkFunction(specifiers, declarator, null, false);
          ProcessFunctionBody(function, registerModuleBody);
          function.declMode = defaultAccess;
          if(!ast) ast = MkList();
@@ -336,7 +336,7 @@ void CreateRegisterModuleBody()
          MkListOne(moduleParam));
 
       {
-         FunctionDefinition function = MkFunction(specifiers, declarator, null);
+         FunctionDefinition function = _MkFunction(specifiers, declarator, null, false);
          ProcessFunctionBody(function, unregisterModuleBody);
          function.declMode = defaultAccess;
          if(!ast) ast = MkList();

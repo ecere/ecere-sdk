@@ -2078,8 +2078,43 @@ __ecereInstance1->declarator = declarator, __ecereInstance1->initializer = initi
 });
 }
 
+int CheckType(char *  text);
+
+extern void FreeDeclarator(struct Declarator * decl);
+
 struct TypeName * MkTypeName(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Declarator * declarator)
 {
+if(qualifiers != (((void *)0)))
+{
+struct Declarator * parentDecl = declarator;
+struct Declarator * decl = declarator;
+
+while(decl && decl->type == 3)
+decl = decl->declarator;
+if(decl && decl->type == 1 && decl->identifier->string && CheckType(decl->identifier->string) == TYPE_NAME)
+{
+struct Specifier * spec;
+
+for(spec = qualifiers->first; spec; spec = spec->next)
+{
+if(spec->type == 0)
+{
+if(spec->specifier == CONST || spec->specifier == VOLATILE || spec->specifier == EXTERN || spec->specifier == STATIC || spec->specifier == AUTO || spec->specifier == REGISTER)
+continue;
+break;
+}
+else if(spec->type != 5)
+break;
+}
+if(!spec)
+{
+ListAdd(qualifiers, MkSpecifierName(decl->identifier->string));
+decl->identifier->string = (((void *)0));
+FreeDeclarator(decl);
+parentDecl->declarator = (((void *)0));
+}
+}
+}
 return __extension__ ({
 struct TypeName * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName);
 
@@ -2095,8 +2130,6 @@ void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(struct __ecereNa
 
 struct TypeName * MkTypeNameGuessDecl(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Declarator * declarator)
 {
-struct TypeName * typeName = (typeName = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName), typeName->qualifiers = qualifiers, typeName->declarator = declarator, typeName);
-
 if(qualifiers != (((void *)0)))
 {
 unsigned int gotType = 0x0;
@@ -2123,7 +2156,7 @@ s = "int64";
 }
 if(s)
 {
-typeName->declarator = declarator = MkDeclaratorIdentifier(MkIdentifier(s));
+declarator = MkDeclaratorIdentifier(MkIdentifier(s));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(qualifiers, spec);
 FreeSpecifier(spec);
 spec = (((void *)0));
@@ -2131,13 +2164,27 @@ spec = (((void *)0));
 }
 if(spec && spec->type != 5)
 {
-if(spec->type != 0 || (spec->specifier != UNSIGNED && spec->specifier != SIGNED && spec->specifier != LONG))
+if(spec->type == 0)
+{
+if(spec->specifier == CONST || spec->specifier == VOLATILE || spec->specifier == EXTERN || spec->specifier == STATIC || spec->specifier == AUTO || spec->specifier == REGISTER)
+continue;
+else if(spec->specifier != UNSIGNED && spec->specifier != SIGNED && spec->specifier != LONG)
+gotFullType = 0x1;
+gotType = 0x1;
+}
+else
+{
 gotFullType = 0x1;
 gotType = 0x1;
 }
 }
 }
-return typeName;
+}
+return __extension__ ({
+struct TypeName * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName);
+
+__ecereInstance1->qualifiers = qualifiers, __ecereInstance1->declarator = declarator, __ecereInstance1;
+});
 }
 
 struct Identifier * GetDeclId(struct Declarator * decl)
@@ -2652,16 +2699,53 @@ __ecereInstance1->type = 12, __ecereInstance1->expressions = exp, __ecereInstanc
 });
 }
 
+struct FunctionDefinition * _MkFunction(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Declarator * declarator, struct __ecereNameSpace__ecere__sys__OldList * declarationList, unsigned int errorOnOmit);
+
 struct FunctionDefinition * MkFunction(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Declarator * declarator, struct __ecereNameSpace__ecere__sys__OldList * declarationList)
 {
+_MkFunction(specifiers, declarator, declarationList, 0x1);
+}
+
+extern struct Declarator * GetFuncDecl(struct Declarator * decl);
+
+extern void Compiler_Error(char *  format, ...);
+
+struct FunctionDefinition * _MkFunction(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Declarator * declarator, struct __ecereNameSpace__ecere__sys__OldList * declarationList, unsigned int errorOnOmit)
+{
+if(errorOnOmit)
+{
+struct Declarator * funcDecl = GetFuncDecl(declarator);
+
+if(funcDecl && funcDecl->function.parameters)
+{
+struct TypeName * tn;
+
+for(tn = (*funcDecl->function.parameters).first; tn; tn = tn->next)
+{
+if(tn->qualifiers || tn->declarator)
+{
+struct Identifier * declID = tn->declarator ? GetDeclId(tn->declarator) : (((void *)0));
+
+if(!declID)
+{
+struct Specifier * spec = tn->qualifiers ? (*tn->qualifiers).first : (((void *)0));
+
+if(!tn->declarator && !tn->prev && !tn->next && spec && !spec->next && spec->type == 0 && spec->specifier == VOID)
+;
+else
+Compiler_Error("parameter name omitted\n");
+break;
+}
+}
+}
+}
+}
 return __extension__ ({
 struct FunctionDefinition * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_FunctionDefinition);
 
 __ecereInstance1->specifiers = specifiers, __ecereInstance1->declarator = declarator, __ecereInstance1->declarations = declarationList, __ecereInstance1;
 });
 }
-
-extern struct Declarator * GetFuncDecl(struct Declarator * decl);
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(struct __ecereNameSpace__ecere__sys__BinaryTree * this);
 
@@ -3178,8 +3262,6 @@ struct Instantiation * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstanc
 __ecereInstance1->_class = _class, __ecereInstance1->exp = exp, __ecereInstance1->members = members, __ecereInstance1;
 });
 }
-
-extern void Compiler_Error(char *  format, ...);
 
 struct Instantiation * MkInstantiationNamed(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Expression * exp, struct __ecereNameSpace__ecere__sys__OldList * members)
 {
@@ -4410,8 +4492,6 @@ return ProcessTypeDecls(specs, decl, (((void *)0)));
 
 extern struct Declarator * SpecDeclFromString(char *  string, struct __ecereNameSpace__ecere__sys__OldList *  specs, struct Declarator * baseDecl);
 
-extern void FreeDeclarator(struct Declarator * decl);
-
 struct Type * ProcessTypeString(char * string, unsigned int staticMethod)
 {
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
@@ -4920,6 +5000,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkContinueStmt", "Statem
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkBreakStmt", "Statement MkBreakStmt(void)", MkBreakStmt, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkReturnStmt", "Statement MkReturnStmt(ecere::sys::OldList exp)", MkReturnStmt, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkFunction", "FunctionDefinition MkFunction(ecere::sys::OldList specifiers, Declarator declarator, ecere::sys::OldList declarationList)", MkFunction, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("_MkFunction", "FunctionDefinition _MkFunction(ecere::sys::OldList specifiers, Declarator declarator, ecere::sys::OldList declarationList, bool errorOnOmit)", _MkFunction, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessFunctionBody", "void ProcessFunctionBody(FunctionDefinition func, Statement body)", ProcessFunctionBody, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExternalFunction", "External MkExternalFunction(FunctionDefinition function)", MkExternalFunction, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExternalImport", "External MkExternalImport(char * name, ecere::com::ImportType importType, ecere::com::AccessMode importAccess)", MkExternalImport, module, 2);

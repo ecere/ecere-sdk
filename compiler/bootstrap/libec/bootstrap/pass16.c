@@ -1125,7 +1125,7 @@ extern struct Declarator * MkDeclaratorIdentifier(struct Identifier * id);
 
 extern struct Identifier * MkIdentifier(char *  string);
 
-extern struct FunctionDefinition * MkFunction(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Declarator * declarator, struct __ecereNameSpace__ecere__sys__OldList * declarationList);
+extern struct FunctionDefinition * _MkFunction(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Declarator * declarator, struct __ecereNameSpace__ecere__sys__OldList * declarationList, unsigned int errorOnOmit);
 
 extern void ProcessFunctionBody(struct FunctionDefinition * func, struct Statement * body);
 
@@ -1159,7 +1159,7 @@ __ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
 sprintf(registerName, "__ecereCreateModuleInstances_%s", moduleName);
 declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), (((void *)0)));
 {
-struct FunctionDefinition * function = MkFunction(specifiers, declarator, (((void *)0)));
+struct FunctionDefinition * function = _MkFunction(specifiers, declarator, (((void *)0)), 0x0);
 
 ProcessFunctionBody(function, createInstancesBody);
 ListAdd(ast, MkExternalFunction(function));
@@ -1175,7 +1175,7 @@ ListAdd(specifiers, MkSpecifier(VOID));
 sprintf(registerName, "__ecereDestroyModuleInstances_%s", moduleName);
 declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), (((void *)0)));
 {
-struct FunctionDefinition * function = MkFunction(specifiers, declarator, (((void *)0)));
+struct FunctionDefinition * function = _MkFunction(specifiers, declarator, (((void *)0)), 0x0);
 
 ProcessFunctionBody(function, destroyInstancesBody);
 ListAdd(ast, MkExternalFunction(function));

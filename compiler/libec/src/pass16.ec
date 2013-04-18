@@ -33,7 +33,7 @@ static void CreateInstancesBody()
       declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), null);
 
       {
-         FunctionDefinition function = MkFunction(specifiers, declarator, null);
+         FunctionDefinition function = _MkFunction(specifiers, declarator, null, false);
          ProcessFunctionBody(function, createInstancesBody);
          ListAdd(ast, MkExternalFunction(function));
       }
@@ -50,7 +50,7 @@ static void CreateInstancesBody()
       declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), null);
 
       {
-         FunctionDefinition function = MkFunction(specifiers, declarator, null);
+         FunctionDefinition function = _MkFunction(specifiers, declarator, null, false);
          ProcessFunctionBody(function, destroyInstancesBody);
          ListAdd(ast, MkExternalFunction(function));
       }
