@@ -2109,7 +2109,6 @@ break;
 if(!spec)
 {
 ListAdd(qualifiers, MkSpecifierName(decl->identifier->string));
-decl->identifier->string = (((void *)0));
 FreeDeclarator(decl);
 parentDecl->declarator = (((void *)0));
 }
@@ -2703,7 +2702,7 @@ struct FunctionDefinition * _MkFunction(struct __ecereNameSpace__ecere__sys__Old
 
 struct FunctionDefinition * MkFunction(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Declarator * declarator, struct __ecereNameSpace__ecere__sys__OldList * declarationList)
 {
-_MkFunction(specifiers, declarator, declarationList, 0x1);
+return _MkFunction(specifiers, declarator, declarationList, 0x1);
 }
 
 extern struct Declarator * GetFuncDecl(struct Declarator * decl);

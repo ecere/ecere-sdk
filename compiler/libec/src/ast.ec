@@ -635,7 +635,6 @@ public TypeName MkTypeName(OldList qualifiers, Declarator declarator)
          {
             // This is actually a type
             ListAdd(qualifiers, MkSpecifierName(decl.identifier.string));
-            decl.identifier.string = null;
             FreeDeclarator(decl);
             parentDecl.declarator = null;
          }
@@ -1109,7 +1108,7 @@ Statement MkReturnStmt(OldList exp)
 
 FunctionDefinition MkFunction(OldList specifiers, Declarator declarator, OldList declarationList)
 {
-   _MkFunction(specifiers, declarator, declarationList, true);
+   return _MkFunction(specifiers, declarator, declarationList, true);
 }
 
 FunctionDefinition _MkFunction(OldList specifiers, Declarator declarator, OldList declarationList, bool errorOnOmit)
