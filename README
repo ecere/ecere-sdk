@@ -77,7 +77,7 @@ On Windows they get installed in %APPDATA%\Ecere SDK\Samples
 On Linux/Unix they get installed in /usr/share/ecere/samples/
 You can also find the latest versions on GitHub:
 
-   http://github.com/ecere/sdk/tree/master/samples
+   http://github.com/ecere/ecere-sdk/tree/master/samples
    http://github.com/ecere/fractals
    http://github.com/ecere/chess
 
@@ -89,7 +89,7 @@ descriptive info has been added yet.
 
  * COMMUNITY *
 
-Git Repository @ http://github.com/ecere/sdk/  ( git://github.com/ecere/sdk.git )
+Git Repository @ http://github.com/ecere/ecere-sdk/  ( git://github.com/ecere/ecere-sdk.git )
 Support forums @ http://ecere.com/forums
 Bug tracker    @ http://ecere.com/mantis
 IRC            @ #ecere on irc.freenode.net
