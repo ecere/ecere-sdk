@@ -113,11 +113,11 @@ class DirExpression : struct
                            {
                               if(compilerName[0] && strcmpi(compilerName, "default"))
                               {
-                                 buffer[d] = '.';
-                                 buffer[d+1] = '\0';
+                                 buffer[d++] = '.';
+                                 buffer[d] = '\0';
                                  strcat(buffer, compilerName);
                                  CamelCase(&buffer[d]);
-                                 d += strlen(compilerName)+1;
+                                 d += strlen(compilerName);
                               }
                               if(bitDepth == 32)
                               {
