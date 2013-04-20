@@ -376,6 +376,8 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
 
                         for(d = decl.declarators->first; d; d = d.next)
                         {
+                           if(d.type != structDeclarator)
+                              continue; // This should always be a structDeclarator (There's a bug somewhere else if it's not)
                            if(d.structDecl.exp)
                            {
                               classType = bitClass;
@@ -427,7 +429,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
             {
                Declarator funcDecl = GetFuncDecl(func.declarator);
                Identifier id = GetDeclId(funcDecl);
-               Method method;               
+               Method method;
                         
                if(func.isVirtual)
                {

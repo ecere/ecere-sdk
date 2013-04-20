@@ -1015,7 +1015,7 @@ Declaration MkStructDeclaration(OldList specifiers, OldList declarators, Specifi
             }
             if(s)
             {
-               decl.declarators = declarators = MkListOne(MkDeclaratorIdentifier(MkIdentifier(s)));
+               decl.declarators = declarators = MkListOne(MkStructDeclarator(MkDeclaratorIdentifier(MkIdentifier(s)), null));
                specifiers.Remove(spec);
                FreeSpecifier(spec);
                spec = null;

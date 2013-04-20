@@ -1920,6 +1920,7 @@ static void FixDerivativesBase(Class base, Class mod)
    {
       Class _class = derivative.data;
       ClassType type = _class.type;
+      ClassType oldType = type;
       int size = _class.structSize - _class.offset;
       int oldSizeClass = _class.sizeClass;
       int sizeClass = _class.sizeClass - _class.offsetClass;
@@ -2129,13 +2130,27 @@ static void FixDerivativesBase(Class base, Class mod)
          }
          // if(mod.base.memberID)
          {
-            for(member = _class.membersAndProperties.first; member; member = member.next)
+            DataMember next;
+            for(member = _class.membersAndProperties.first; member; member = next)
             {
                int offsetDiff = _class.offset - offsetBefore;
-               if(!member.isProperty && offsetDiff > 0)
+               next = member.next;
+               if(!member.isProperty)
                {
-                  member.offset += offsetDiff;
-                  member.memberOffset += offsetDiff;
+                  if(oldType == bitClass && type != bitClass)
+                  {
+                     DataMember prev = member.prev;
+                     // Correcting a bitClass to be a non-bit class (This should really never be required)
+                     _class.membersAndProperties.Remove(member);
+                     member = (DataMember)renew0 member byte[sizeof (class DataMember)];
+                     _class.membersAndProperties.Insert(prev, member);
+                  }
+
+                  if(offsetDiff > 0)
+                  {
+                     member.offset += offsetDiff;
+                     member.memberOffset += offsetDiff;
+                  }
                }
                member.id += mod.base.memberID;
             }

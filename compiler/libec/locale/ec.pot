@@ -134,7 +134,7 @@ msgstr "Redefinition of %s (defining as %s, already defined as %s)\n"
 msgid "Redefinition of %s ignored\n"
 msgstr "Redefinition of %s ignored\n"
 
-#: ./src/firstPass.ec:444
+#: ./src/firstPass.ec:446
 msgid "Redefinition of method %s in class %s\n"
 msgstr "Redefinition of method %s in class %s\n"
 

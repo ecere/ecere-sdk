@@ -2469,14 +2469,14 @@ class CodeEditor : Window
    ****************************************************************************/
    void FreeParser()
    {
-      this.defines.Free(FreeModuleDefine);
-      this.imports.Free(FreeModuleImport);
-      
       if(ast != null)
       {
          FreeASTTree(ast);
          ast = null;
       }
+      this.defines.Free(FreeModuleDefine);
+      this.imports.Free(FreeModuleImport);   // Moved this after FreeAST because Debug printing causes ModuleImports to be created
+
       FreeExcludedSymbols(this.excludedSymbols);
       FreeContext(this.globalContext);
       FreeIncludeFiles();
