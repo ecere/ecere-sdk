@@ -93,7 +93,7 @@ class ShowProcessWindowsThread : Thread
 extern void * __attribute__((stdcall)) IS_XGetDisplay();
 static Atom xa_NET_WM_PID, xa_activeWindow;
 
-static void WaitForViewableWindow(X11Display * xGlobalDisplay, X11Window * window)
+static void WaitForViewableWindow(X11Display * xGlobalDisplay, X11Window window)
 {
    int c;
    XFlush(xGlobalDisplay);
@@ -101,7 +101,7 @@ static void WaitForViewableWindow(X11Display * xGlobalDisplay, X11Window * windo
    // while(true)
    {
       XWindowAttributes attributes = { 0 };
-      XGetWindowAttributes(xGlobalDisplay, (uint)window, &attributes);
+      XGetWindowAttributes(xGlobalDisplay, window, &attributes);
       if(attributes.map_state == IsViewable)
          break;
       else
@@ -112,17 +112,18 @@ static void WaitForViewableWindow(X11Display * xGlobalDisplay, X11Window * windo
 static void EnumWindowBringToTop(X11Display * xGlobalDisplay, X11Window window, int processId)
 {
    Atom xa_type;
-   X11Window * root = null, * parent = null, ** children = null;
-   int numWindows = 0;
-   int format, len, fill;
+   X11Window root = 0, parent = 0, * children = null;
+   uint numWindows = 0;
+   int format;
+   unsigned long len, fill;
 
-   if(XQueryTree(xGlobalDisplay, window, (uint *)&root, (uint *)&parent, (uint **)&children, &numWindows))
+   if(XQueryTree(xGlobalDisplay, window, &root, &parent, &children, &numWindows))
    {
       int c;
       for(c = 0; c<numWindows; c++)
       {
          byte * data;
-         if(XGetWindowProperty(xGlobalDisplay, (uint)children[c], xa_NET_WM_PID, 0, 1, False,
+         if(XGetWindowProperty(xGlobalDisplay, children[c], xa_NET_WM_PID, 0, 1, False,
                                XA_CARDINAL, &xa_type, &format, &len, &fill,
                                &data) != Success)
          {
@@ -138,7 +139,7 @@ static void EnumWindowBringToTop(X11Display * xGlobalDisplay, X11Window window, 
             {
                // printf("Found one window with processID\n");
                {
-                  XRaiseWindow(xGlobalDisplay, (uint)children[c]);
+                  XRaiseWindow(xGlobalDisplay, children[c]);
                   WaitForViewableWindow(xGlobalDisplay, children[c]);
                   if(xa_activeWindow)
                   {
@@ -147,7 +148,7 @@ static void EnumWindowBringToTop(X11Display * xGlobalDisplay, X11Window window, 
                      event.message_type = xa_activeWindow;
                      event.display = xGlobalDisplay;
                      event.serial = 0;
-                     event.window = (uint)children[c];
+                     event.window = children[c];
                      event.send_event = 1;
                      event.format = 32;
                      event.data.l[0] = 0;
@@ -155,12 +156,12 @@ static void EnumWindowBringToTop(X11Display * xGlobalDisplay, X11Window window, 
                      XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false, SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
                   }
                   else
-                     XSetInputFocus(xGlobalDisplay, (uint)children[c], RevertToPointerRoot, CurrentTime);
+                     XSetInputFocus(xGlobalDisplay, children[c], RevertToPointerRoot, CurrentTime);
                }
             }
          }
          else
-            EnumWindowBringToTop(xGlobalDisplay, (uint)children[c], processId);
+            EnumWindowBringToTop(xGlobalDisplay, children[c], processId);
       }
    }
    if(children)
