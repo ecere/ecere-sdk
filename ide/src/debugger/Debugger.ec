@@ -610,7 +610,7 @@ class Debugger
       sysBPs.Add(Breakpoint { type = internalWinMain, enabled = true, level = -1 });
 #endif
       sysBPs.Add(Breakpoint { type = internalModulesLoaded, enabled = true, level = -1 });
-      sysBPs.Add(Breakpoint { type = internalModuleLoad, enabled = true, level = -1 });
+      // sysBPs.Add(Breakpoint { type = internalModuleLoad, enabled = true, level = -1 });
    }
 
    ~Debugger()
