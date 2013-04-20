@@ -1437,6 +1437,8 @@ struct Declarator * d;
 
 for(d = (*decl->declarators).first; d; d = d->next)
 {
+if(d->type != 0)
+continue;
 if(d->structDecl.exp)
 {
 classType = 2;

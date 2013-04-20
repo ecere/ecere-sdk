@@ -2548,7 +2548,7 @@ s = "int64";
 }
 if(s)
 {
-decl->declarators = declarators = MkListOne(MkDeclaratorIdentifier(MkIdentifier(s)));
+decl->declarators = declarators = MkListOne(MkStructDeclarator(MkDeclaratorIdentifier(MkIdentifier(s)), (((void *)0))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(specifiers, spec);
 FreeSpecifier(spec);
 spec = (((void *)0));

@@ -1176,6 +1176,10 @@ void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(struct __ecer
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
 
+void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(struct __ecereNameSpace__ecere__sys__OldList * this, void *  prevItem, void *  item);
+
 static void __ecereNameSpace__ecere__com__FixDerivativesBase(struct __ecereNameSpace__ecere__com__Class * base, struct __ecereNameSpace__ecere__com__Class * mod)
 {
 struct __ecereNameSpace__ecere__sys__OldLink * derivative;
@@ -1186,6 +1190,7 @@ for(derivative = base->derivatives.first; derivative; derivative = derivative->n
 {
 struct __ecereNameSpace__ecere__com__Class * _class = derivative->data;
 int type = _class->type;
+int oldType = type;
 int size = _class->structSize - _class->offset;
 int oldSizeClass = _class->sizeClass;
 int sizeClass = _class->sizeClass - _class->offsetClass;
@@ -1346,14 +1351,28 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->membersAndPr
 }
 }
 {
-for(member = _class->membersAndProperties.first; member; member = member->next)
+struct __ecereNameSpace__ecere__com__DataMember * next;
+
+for(member = _class->membersAndProperties.first; member; member = next)
 {
 int offsetDiff = _class->offset - offsetBefore;
 
-if(!member->isProperty && offsetDiff > 0)
+next = member->next;
+if(!member->isProperty)
+{
+if(oldType == 2 && type != 2)
+{
+struct __ecereNameSpace__ecere__com__DataMember * prev = member->prev;
+
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&_class->membersAndProperties, member);
+member = (struct __ecereNameSpace__ecere__com__DataMember *)__ecereNameSpace__ecere__com__eSystem_Renew0(member, sizeof(unsigned char) * (sizeof(struct __ecereNameSpace__ecere__com__DataMember)));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(&_class->membersAndProperties, prev, member);
+}
+if(offsetDiff > 0)
 {
 member->offset += offsetDiff;
 member->memberOffset += offsetDiff;
+}
 }
 member->id += mod->base->memberID;
 }
@@ -1433,8 +1452,6 @@ extern char *  strstr(const char * , const char * );
 int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char *  a, char *  b);
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node);
-
-void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
 
 struct __ecereNameSpace__ecere__sys__OldLink * __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindLink(struct __ecereNameSpace__ecere__sys__OldList * this, void *  data);
 
