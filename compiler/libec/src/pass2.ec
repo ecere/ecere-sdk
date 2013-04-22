@@ -38,7 +38,7 @@ static void _FixRefExp(Expression * expPtr, Expression * memberExpPtr)
          exp.list->Add(newExp);
          FreeExpression(bracketExp);
 
-         *expPtr = newExp; //FixRefExp(newExp);
+         *expPtr = exp; //FixRefExp(newExp);      // TESTING THIS: exp was not used!
       }
    }
    else if(*expPtr && (*expPtr).type == opExp && (*expPtr).op.op == '&' && !(*expPtr).op.exp1 &&

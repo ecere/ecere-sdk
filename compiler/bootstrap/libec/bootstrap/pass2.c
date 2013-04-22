@@ -1109,7 +1109,7 @@ bracketExp->list = (((void *)0));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*exp->list), idExp);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*exp->list), newExp);
 FreeExpression(bracketExp);
-*expPtr = newExp;
+*expPtr = exp;
 }
 }
 else if(*expPtr && (*expPtr)->type == 4 && (*expPtr)->op.op == '&' && !(*expPtr)->op.exp1 && memberExp && (memberExp->type == 5 || memberExp->type == 34) && memberExp->list && (*memberExp->list).count > 1)
