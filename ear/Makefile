@@ -1,4 +1,6 @@
+ifneq "$V" "1"
 .SILENT:
+endif
 .PHONY: all nores cleantarget clean realclean distclean
 
 # CROSS-PLATFORM MAGIC
