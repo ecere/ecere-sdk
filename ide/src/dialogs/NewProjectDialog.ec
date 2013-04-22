@@ -579,4 +579,10 @@ class QuickProjectDialog : Window
 
       targetType.currentRow = targetType.FindRow(TargetTypes::executable);
    }
+
+   bool OnPostCreate()
+   {
+      okBtn.Activate();
+      return true;
+   }
 }

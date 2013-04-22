@@ -2199,6 +2199,7 @@ private:
                {
                   f.Printf("export %s := %s\n", e.name, e.string);
                }
+               f.Puts("\n");
             }
 
             f.Puts("# TOOLCHAIN\n");
