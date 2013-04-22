@@ -610,7 +610,7 @@ class Debugger
       sysBPs.Add(Breakpoint { type = internalWinMain, enabled = true, level = -1 });
 #endif
       sysBPs.Add(Breakpoint { type = internalModulesLoaded, enabled = true, level = -1 });
-      // sysBPs.Add(Breakpoint { type = internalModuleLoad, enabled = true, level = -1 });
+      sysBPs.Add(Breakpoint { type = internalModuleLoad, enabled = true, level = -1 });
    }
 
    ~Debugger()
@@ -1481,7 +1481,7 @@ class Debugger
       return true;
    }
 
-   static void GdbInsertInternalBreakpoint()
+   static void GdbInsertInternalBreakpoints()
    {
       if(symbols)
       {
@@ -1657,6 +1657,15 @@ class Debugger
       //breakpointsInserted = false;
       if(symbols)
       {
+         for(bp : sysBPs)
+         {
+            if(bp.bp)
+               GdbCommand(false, "-break-delete %d", bp.bp.number);
+            bp.inserted = false;
+            bp.bp = bpItem;
+            //check here (reply form -break-delete, returns bpitem?)
+            bpItem = null;
+         }
          for(bp : ide.workspace.breakpoints)
          {
             if(bp.bp)
@@ -1720,7 +1729,7 @@ class Debugger
             GdbCommand(false, "-environment-directory \"%s\"", dir);
             //GdbCommand(false, ""); // why this empty GDB command
          }
-         GdbInsertInternalBreakpoint();
+         GdbInsertInternalBreakpoints();
          targeted = true;
       }
       return true;
@@ -1794,6 +1803,7 @@ class Debugger
    void GdbExecCommon()
    {
       ClearBreakDisplay();
+      GdbInsertInternalBreakpoints();
       GdbBreakpointsInsert();
    }
 
@@ -2678,7 +2688,7 @@ class Debugger
                break;
             case internalModulesLoaded:
                modules = true;
-               GdbInsertInternalBreakpoint();
+               GdbInsertInternalBreakpoints();
                GdbBreakpointsInsert();
                GdbExecContinue(false);
                break;
