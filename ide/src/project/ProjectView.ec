@@ -209,12 +209,9 @@ class ProjectView : Window
          {
             bool showDebuggingMenuItems = mods.ctrl && mods.shift;
             ProjectNode node = (ProjectNode)row.tag;
-            char extension[MAX_EXTENSION];
-            GetExtension(node.name, extension);
             if(node.type == NodeTypes::project || node.type == resources || node.type == file || node.type == folder)
             {
                bool na = buildInProgress; // N/A - buildMenuUnavailable
-               bool isECFile = strcmpi(extension, "ec");
                Menu pop { };
                
                if(node.type == NodeTypes::project)
@@ -230,8 +227,11 @@ class ProjectView : Window
 
                   if(showDebuggingMenuItems)
                   {
-                     MenuDivider { pop };
-                     MenuItem { pop, $"Debug Generate Symbols", l, NotifySelect = FileDebugGenerateSymbols }.disabled = na;
+                     if(node.project.topNode.ContainsFilesWithExtension("ec"))
+                     {
+                        MenuDivider { pop };
+                        MenuItem { pop, $"Debug Generate Symbols", l, NotifySelect = FileDebugGenerateSymbols }.disabled = na;
+                     }
                   }
                   MenuDivider { pop };
                   MenuItem { pop, $"New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
@@ -274,10 +274,14 @@ class ProjectView : Window
                   MenuItem { pop, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile, bitmap = ide.projectBuildItem.bitmap }.disabled = na;
                   if(showDebuggingMenuItems)
                   {
-                     MenuDivider { pop };
-                     if(isECFile)
+                     char extension[MAX_EXTENSION];
+                     GetExtension(node.name, extension);
+                     if(!strcmpi(extension, "ec"))
+                     {
+                        MenuDivider { pop };
                         MenuItem { pop, $"Debug Precompile", l, NotifySelect = FileDebugPrecompile }.disabled = na;
-                     MenuItem { pop, $"Debug Compile", l, NotifySelect = FileDebugCompile }.disabled = na;
+                        MenuItem { pop, $"Debug Compile", l, NotifySelect = FileDebugCompile }.disabled = na;
+                     }
                   }
                   MenuDivider { pop };
                   MenuItem { pop, $"Remove", r, NotifySelect = FileRemoveFile };
