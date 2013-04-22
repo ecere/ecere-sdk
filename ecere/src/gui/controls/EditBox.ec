@@ -1921,12 +1921,12 @@ private:
             if(x > selX)
             {
                if(x > line.count)
-                  width = Max(line.length + (x - line.count) * space.w, maxLength);
+                  width = Max(line.length + (x - line.count) * space.w, maxLength + XOFFSET);
             }
             else
             {
                if(selX > selLine.count)
-                  width = Max(selLine.length + (selX - selLine.count) * space.w, maxLength);
+                  width = Max(selLine.length + (selX - selLine.count) * space.w, maxLength + XOFFSET);
             }
          }
 
@@ -4909,14 +4909,14 @@ private:
             this.line = line;
             this.x = 0;
             this.col = 0;
-
-            ComputeLength(this.line);
+            line.count = length;
 
 #ifdef _DEBUG
       if(length > 4000 || length < 0)
          printf("Warning");
 #endif
-            line.count = length;
+            ComputeLength(this.line);
+
             DirtyEnd(this.y);
             this.y++;
             this.lineCount++;
