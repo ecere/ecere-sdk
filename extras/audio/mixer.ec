@@ -72,6 +72,8 @@ public:
    Sound sound;
    double volume, balance, pitch;
    int pos;
+   bool looped;
+   int loopStart, loopEnd;
 }
 
 public class Mixer
@@ -153,6 +155,8 @@ public class Mixer
             int s = v.pos;
             byte sampleL = sBuffer[s];
             byte sampleR = (chn == 2) ? sBuffer[s+1] : sampleL;
+            bool looped = v.looped;
+            int loopStart = v.loopStart, loopEnd = v.loopEnd;
 
             for(c = 0; c < numSamples; c++)
             {
@@ -178,6 +182,8 @@ public class Mixer
                   do
                   {
                      s += chn;
+                     if(looped && s >= loopEnd)
+                        s = loopStart;
                      se -= frequency;
                   } while(se >= frequency);
                   if(s < sound.length)
@@ -273,8 +279,43 @@ public:
       Voice voice { sound, volume, balance, pitch };
       mutex.Wait();
       voices.Add(voice);
-      mutex.Release();
       incref voice;
+      mutex.Release();
       return voice;
+   }
+
+   void Wait()
+   {
+      mutex.Wait();
+   }
+
+   void Release()
+   {
+      mutex.Release();
+   }
+
+   void PlayInVoice(Voice voice, Sound sound, double volume, double balance, double pitch)
+   {
+      bool found = false;
+      mutex.Wait();
+      for(v : voices)
+      {
+         if(v == voice)
+         {
+            found = true;
+            break;
+         }
+      }
+      if(!found)
+      {
+         voices.Add(voice);
+         incref voice;
+      }
+      voice.sound = sound;
+      voice.volume = volume;
+      voice.balance = balance;
+      voice.pitch = pitch;
+      voice.pos = 0;
+      mutex.Release();
    }
 }
