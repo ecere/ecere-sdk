@@ -4137,7 +4137,7 @@ private:
          return true;   // We want to pick up the OnKeyHit to replace contents, but skip GoToLetter
       }
       
-      if(ch != 128 && !key.alt && !key.ctrl && GoToLetter(ch, false))
+      if(ch >=32 && ch != 128 && !key.alt && !key.ctrl && GoToLetter(ch, false))
       {
          /*if(inactive && window.state != Hidden)
             NotifyHighlight(master, this, currentRow, 0);
@@ -4434,7 +4434,7 @@ private:
       if(!NotifyKeyHit(master, this, currentRow, key, ch))
          return false;
 
-      if(ch != 128 && !key.alt && !key.ctrl && GoToLetter(ch, true))
+      if(ch >=32 && ch != 128 && !key.alt && !key.ctrl && GoToLetter(ch, true))
       {
          /*if(inactive && window.state != Hidden)
             return NotifyHighlight(master, this, currentRow, 0);
