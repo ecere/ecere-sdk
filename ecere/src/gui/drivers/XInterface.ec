@@ -1,7 +1,7 @@
 namespace gui::drivers;
 
 import "instance"
-#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL)
 import "OpenGLDisplayDriver"
 #endif
 
@@ -41,7 +41,7 @@ default:
 #include <X11/XKBlib.h>
 #include <X11/keysym.h>
 #include <fcntl.h>
-#if !defined(ECERE_NO3D)
+#if !defined(ECERE_NO3D) && !defined(ECERE_NOGL)
 #include <GL/glx.h>
 #endif
 #include <X11/extensions/Xrender.h>
@@ -1971,7 +1971,7 @@ class XInterface : Interface
       attributes.override_redirect = window.interim ? True : False;
       attributes.event_mask = EVENT_MASK;
       //printf("%s\n", guiApp.defaultDisplayDriver);
-#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL)
       if(window.dispDriver == class(OpenGLDisplayDriver) || !strcmp(guiApp.defaultDisplayDriver, "OpenGL"))
       {
          int samples;
