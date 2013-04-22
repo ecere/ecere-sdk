@@ -139,7 +139,7 @@ msgstr "3D Studio Model"
 msgid "3D Studio Model Files (*.3ds)"
 msgstr "3D Studio Model Files (*.3ds)"
 
-#: ./src/ide.ec:1386
+#: ./src/ide.ec:1380
 msgid "API Reference"
 msgstr "API Reference"
 
@@ -154,7 +154,7 @@ msgstr "Aborted"
 msgid "About the Ecere SDK"
 msgstr "About the Ecere SDK"
 
-#: ./src/ide.ec:1396
+#: ./src/ide.ec:1390
 msgid "About..."
 msgstr "About..."
 
@@ -186,10 +186,6 @@ msgstr "Add Files to Project"
 msgid "Add Files to Project..."
 msgstr "Add Files to Project..."
 
-#: ./src/project/ProjectView.ec:310
-msgid "Add New Behavior Graph..."
-msgstr "Add New Behavior Graph..."
-
 #: ./src/project/ProjectView.ec:239
 #: ./src/project/ProjectView.ec:309
 msgid "Add New Form..."
@@ -207,7 +203,7 @@ msgstr "Add Resources to Project"
 msgid "Add Resources to Project..."
 msgstr "Add Resources to Project..."
 
-#: ./src/ide.ec:924
+#: ./src/ide.ec:918
 msgid "Add a different project?"
 msgstr "Add a different project?"
 
@@ -215,7 +211,7 @@ msgstr "Add a different project?"
 msgid "Add project to workspace"
 msgstr "Add project to workspace"
 
-#: ./src/ide.ec:908
+#: ./src/ide.ec:902
 msgid "Add project to workspace..."
 msgstr "Add project to workspace..."
 
@@ -239,7 +235,7 @@ msgstr "Additional Linker flags:"
 msgid "All"
 msgstr "All"
 
-#: ./src/ide.ec:1320
+#: ./src/ide.ec:1314
 msgid "All Debug Views"
 msgstr "All Debug Views"
 
@@ -274,7 +270,7 @@ msgstr "Are you sure you wish to discard changes made to the build options?"
 msgid "Are you sure you wish to discard changes?"
 msgstr "Are you sure you wish to discard changes?"
 
-#: ./src/ide.ec:1380
+#: ./src/ide.ec:1374
 msgid "Arrange Icons"
 msgstr "Arrange Icons"
 
@@ -301,12 +297,12 @@ msgid "Based on extension"
 msgstr "Based on extension"
 
 #: ./src/ide.ec:258
-#: ./src/ide.ec:1108
+#: ./src/ide.ec:1102
 msgid "Break"
 msgstr "Break"
 
 #: ./src/panels/BreakpointsView.ec:9
-#: ./src/ide.ec:1302
+#: ./src/ide.ec:1296
 msgid "Breakpoints"
 msgstr "Breakpoints"
 
@@ -321,14 +317,14 @@ msgstr "Breaks"
 msgid "Browse Folder"
 msgstr "Browse Folder"
 
-#: ./src/ide.ec:974
+#: ./src/ide.ec:968
 msgid "Browse Project Folder"
 msgstr "Browse Project Folder"
 
 #: ./src/project/ProjectView.ec:221
-#: ./src/ide.ec:996
-#: ./src/ide.ec:1814
-#: ./src/ide.ec:1843
+#: ./src/ide.ec:990
+#: ./src/ide.ec:1808
+#: ./src/ide.ec:1837
 #: ./src/ProjectSettings.ec:1205
 msgid "Build"
 msgstr "Build"
@@ -373,12 +369,12 @@ msgstr "C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *
 msgid "C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)"
 msgstr "C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)"
 
-#: ./src/ide.ec:2604
+#: ./src/ide.ec:2598
 msgid "CAPS"
 msgstr "CAPS"
 
 #: ./src/panels/CallStackView.ec:13
-#: ./src/ide.ec:1311
+#: ./src/ide.ec:1305
 msgid "Call Stack"
 msgstr "Call Stack"
 
@@ -392,14 +388,14 @@ msgstr "Call Stack"
 msgid "Cancel"
 msgstr "Cancel"
 
-#: ./src/ide.ec:1377
+#: ./src/ide.ec:1371
 msgid "Cascade"
 msgstr "Cascade"
 
 #: ./src/project/ProjectView.ec:224
 #: ./src/project/ProjectView.ec:270
 #: ./src/project/ProjectView.ec:313
-#: ./src/ide.ec:1034
+#: ./src/ide.ec:1028
 msgid "Clean"
 msgstr "Clean"
 
@@ -417,19 +413,19 @@ msgstr "Clear"
 
 #: ./src/documents/PictureEdit.ec:288
 #: ./src/ide.ec:727
-#: ./src/ide.ec:937
+#: ./src/ide.ec:931
 msgid "Close"
 msgstr "Close"
 
-#: ./src/ide.ec:1372
+#: ./src/ide.ec:1366
 msgid "Close All"
 msgstr "Close All"
 
-#: ./src/ide.ec:2676
+#: ./src/ide.ec:2670
 msgid "Close IDE"
 msgstr "Close IDE"
 
-#: ./src/ide.ec:1346
+#: ./src/ide.ec:1340
 msgid "Color Picker..."
 msgstr "Color Picker..."
 
@@ -456,7 +452,7 @@ msgstr "Common"
 msgid "Compile"
 msgstr "Compile"
 
-#: ./src/ide.ec:2627
+#: ./src/ide.ec:2621
 msgid "Compile %s"
 msgstr "Compile %s"
 
@@ -542,7 +538,7 @@ msgid "Create directory?"
 msgstr "Create directory?"
 
 #: ./src/designer/CodeEditor.ec:1904
-#: ./src/ide.ec:1072
+#: ./src/ide.ec:1066
 msgid "Debug"
 msgstr "Debug"
 
@@ -684,16 +680,16 @@ msgstr "Directory doesn't exist"
 msgid "Do you want to quickly create a temporary project?"
 msgstr "Do you want to quickly create a temporary project?"
 
-#: ./src/ide.ec:1957
+#: ./src/ide.ec:1951
 msgid "Do you want to terminate the debugging session in progress?"
 msgstr "Do you want to terminate the debugging session in progress?"
 
 #: ./src/designer/CodeEditor.ec:2213
-#: ./src/ide.ec:1614
+#: ./src/ide.ec:1608
 msgid "Document has been modified"
 msgstr "Document has been modified"
 
-#: ./src/ide.ec:3175
+#: ./src/ide.ec:3169
 msgid "ECERE IDE"
 msgstr "ECERE IDE"
 
@@ -713,7 +709,7 @@ msgstr "Ecere IDE Workspace"
 #: ./src/panels/CallStackView.ec:76
 #: ./src/panels/OutputView.ec:194
 #: ./src/panels/ThreadsView.ec:95
-#: ./src/ide.ec:845
+#: ./src/ide.ec:839
 msgid "Edit"
 msgstr "Edit"
 
@@ -754,11 +750,11 @@ msgstr "Error generating makefile (Is the project directory writable?)\n"
 msgid "Error opening file"
 msgstr "Error opening file"
 
-#: ./src/ide.ec:2118
+#: ./src/ide.ec:2112
 msgid "Error opening project"
 msgstr "Error opening project"
 
-#: ./src/ide.ec:923
+#: ./src/ide.ec:917
 msgid "Error opening project file"
 msgstr "Error opening project file"
 
@@ -814,23 +810,23 @@ msgstr "Fatal Error: child process terminated unexpectedly\n"
 #: ./src/designer/Designer.ec:150
 #: ./src/documents/PictureEdit.ec:53
 #: ./src/ide.ec:678
-#: ./src/ide.ec:3044
+#: ./src/ide.ec:3038
 msgid "File"
 msgstr "File"
 
 #: ./src/project/Project.ec:1869
 #: ./src/project/ProjectView.ec:1163
-#: ./src/ide.ec:2655
+#: ./src/ide.ec:2649
 msgid "File %s is excluded from current build configuration.\n"
 msgstr "File %s is excluded from current build configuration.\n"
 
-#: ./src/ide.ec:2198
-#: ./src/ide.ec:2210
+#: ./src/ide.ec:2192
+#: ./src/ide.ec:2204
 msgid "File doesn't exist."
 msgstr "File doesn't exist."
 
 #: ./src/project/ProjectView.ec:1942
-#: ./src/ide.ec:2258
+#: ./src/ide.ec:2252
 msgid "File doesn't exist. Create?"
 msgstr "File doesn't exist. Create?"
 
@@ -967,7 +963,7 @@ msgstr "Global Settings..."
 msgid "Go to"
 msgstr "Go to"
 
-#: ./src/ide.ec:1369
+#: ./src/ide.ec:1363
 msgid "Graphics Driver"
 msgstr "Graphics Driver"
 
@@ -981,7 +977,7 @@ msgstr "Header Files for C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)"
 msgid "Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)"
 msgstr "Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)"
 
-#: ./src/ide.ec:1383
+#: ./src/ide.ec:1377
 msgid "Help"
 msgstr "Help"
 
@@ -1003,7 +999,7 @@ msgstr "Ignore Count"
 
 #: ./src/documents/PictureEdit.ec:56
 #: ./src/ide.ec:105
-#: ./src/ide.ec:1189
+#: ./src/ide.ec:1183
 msgid "Image"
 msgstr "Image"
 
@@ -1205,7 +1201,7 @@ msgstr "Module Version"
 msgid "Move code editor caret freely past end of line"
 msgstr "Move code editor caret freely past end of line"
 
-#: ./src/ide.ec:2610
+#: ./src/ide.ec:2604
 msgid "NUM"
 msgstr "NUM"
 
@@ -1238,7 +1234,7 @@ msgid "New Folder..."
 msgstr "New Folder..."
 
 #: ./src/dialogs/NewProjectDialog.ec:13
-#: ./src/ide.ec:854
+#: ./src/ide.ec:848
 msgid "New Project"
 msgstr "New Project"
 
@@ -1250,11 +1246,11 @@ msgstr "New file"
 msgid "New project"
 msgstr "New project"
 
-#: ./src/ide.ec:850
+#: ./src/ide.ec:844
 msgid "New..."
 msgstr "New..."
 
-#: ./src/ide.ec:1374
+#: ./src/ide.ec:1368
 msgid "Next"
 msgstr "Next"
 
@@ -1305,7 +1301,7 @@ msgstr "Number of parallel build jobs"
 msgid "OK"
 msgstr "OK"
 
-#: ./src/ide.ec:2607
+#: ./src/ide.ec:2601
 msgid "OVR"
 msgstr "OVR"
 
@@ -1322,7 +1318,7 @@ msgstr "Open Additional Project"
 
 #: ./src/designer/CodeEditor.ec:139
 #: ./src/ide.ec:135
-#: ./src/ide.ec:2015
+#: ./src/ide.ec:2009
 msgid "Open Project"
 msgstr "Open Project"
 
@@ -1330,7 +1326,7 @@ msgstr "Open Project"
 msgid "Open a different file?"
 msgstr "Open a different file?"
 
-#: ./src/ide.ec:2118
+#: ./src/ide.ec:2112
 msgid "Open a different project?"
 msgstr "Open a different project?"
 
@@ -1343,7 +1339,7 @@ msgid "Open project"
 msgstr "Open project"
 
 #: ./src/ide.ec:692
-#: ./src/ide.ec:880
+#: ./src/ide.ec:874
 msgid "Open..."
 msgstr "Open..."
 
@@ -1359,7 +1355,7 @@ msgstr "Options"
 msgid "Other methods are still attached to this method. Are you sure you want to delete it?"
 msgstr "Other methods are still attached to this method. Are you sure you want to delete it?"
 
-#: ./src/ide.ec:1275
+#: ./src/ide.ec:1269
 msgid "Output"
 msgstr "Output"
 
@@ -1416,7 +1412,7 @@ msgstr "Preprocessor Definitions"
 msgid "Preprocessor directives:"
 msgstr "Preprocessor directives:"
 
-#: ./src/ide.ec:1375
+#: ./src/ide.ec:1369
 msgid "Previous"
 msgstr "Previous"
 
@@ -1424,7 +1420,7 @@ msgstr "Previous"
 msgid "Profiling Data"
 msgstr "Profiling Data"
 
-#: ./src/ide.ec:847
+#: ./src/ide.ec:841
 msgctxt "Menu"
 msgid "Project"
 msgstr "Project"
@@ -1446,7 +1442,7 @@ msgstr "Project Build"
 msgid "Project Clean"
 msgstr "Project Clean"
 
-#: ./src/ide.ec:942
+#: ./src/ide.ec:936
 msgid "Project Close"
 msgstr "Project Close"
 
@@ -1479,7 +1475,7 @@ msgstr "Project Rebuild"
 msgid "Project Settings"
 msgstr "Project Settings"
 
-#: ./src/ide.ec:1193
+#: ./src/ide.ec:1187
 msgid "Project View"
 msgstr "Project View"
 
@@ -1520,7 +1516,7 @@ msgstr "Provide source files location directory for %s"
 msgid "Quick Project"
 msgstr "Quick Project"
 
-#: ./src/ide.ec:898
+#: ./src/ide.ec:892
 msgid "Quick..."
 msgstr "Quick..."
 
@@ -1529,7 +1525,7 @@ msgid "RGB Color"
 msgstr "RGB Color"
 
 #: ./src/project/ProjectView.ec:225
-#: ./src/ide.ec:1048
+#: ./src/ide.ec:1042
 msgid "Real Clean"
 msgstr "Real Clean"
 
@@ -1538,7 +1534,7 @@ msgid "Reattach"
 msgstr "Reattach"
 
 #: ./src/project/ProjectView.ec:223
-#: ./src/ide.ec:1023
+#: ./src/ide.ec:1017
 msgid "Rebuild"
 msgstr "Rebuild"
 
@@ -1551,18 +1547,18 @@ msgid "Rebuilding project %s using the %s configuration...\n"
 msgstr "Rebuilding project %s using the %s configuration...\n"
 
 #: ./src/ide.ec:781
-#: ./src/ide.ec:3045
+#: ./src/ide.ec:3039
 msgid "Recent Files"
 msgstr "Recent Files"
 
 #: ./src/ide.ec:782
-#: ./src/ide.ec:3046
+#: ./src/ide.ec:3040
 msgid "Recent Projects"
 msgstr "Recent Projects"
 
 #: ./src/project/ProjectView.ec:226
 #: ./src/ide.ec:245
-#: ./src/ide.ec:1062
+#: ./src/ide.ec:1056
 msgid "Regenerate Makefile"
 msgstr "Regenerate Makefile"
 
@@ -1571,7 +1567,7 @@ msgid "Regenerating "
 msgstr "Regenerating "
 
 #: ./src/project/ProjectView.ec:222
-#: ./src/ide.ec:1012
+#: ./src/ide.ec:1006
 msgid "Relink"
 msgstr "Relink"
 
@@ -1629,28 +1625,28 @@ msgid "Replacing Editbox"
 msgstr "Replacing Editbox"
 
 #: ./src/ide.ec:256
-#: ./src/ide.ec:1097
+#: ./src/ide.ec:1091
 msgid "Restart"
 msgstr "Restart"
 
-#: ./src/ide.ec:1871
-#: ./src/ide.ec:1876
+#: ./src/ide.ec:1865
+#: ./src/ide.ec:1870
 msgid "Resume"
 msgstr "Resume"
 
 #: ./src/project/ProjectView.ec:1515
 #: ./src/ide.ec:248
-#: ./src/ide.ec:985
+#: ./src/ide.ec:979
 msgid "Run"
 msgstr "Run"
 
 #: ./src/designer/CodeEditor.ec:1907
-#: ./src/ide.ec:1164
+#: ./src/ide.ec:1158
 msgid "Run To Cursor"
 msgstr "Run To Cursor"
 
 #: ./src/designer/CodeEditor.ec:1928
-#: ./src/ide.ec:1186
+#: ./src/ide.ec:1180
 msgid "Run To Cursor Skipping Breakpoints"
 msgstr "Run To Cursor Skipping Breakpoints"
 
@@ -1658,7 +1654,7 @@ msgstr "Run To Cursor Skipping Breakpoints"
 msgid "SYSROOT"
 msgstr "SYSROOT"
 
-#: ./src/ide.ec:2152
+#: ./src/ide.ec:2146
 msgid "Same Project"
 msgstr "Same Project"
 
@@ -1746,7 +1742,7 @@ msgstr "Select project directory"
 #: ./src/project/ProjectView.ec:263
 #: ./src/project/ProjectView.ec:288
 #: ./src/project/ProjectView.ec:320
-#: ./src/ide.ec:964
+#: ./src/ide.ec:958
 msgid "Settings..."
 msgstr "Settings..."
 
@@ -1781,9 +1777,9 @@ msgid "Stack Depth"
 msgstr "Stack Depth"
 
 #: ./src/ide.ec:254
-#: ./src/ide.ec:1075
-#: ./src/ide.ec:1871
-#: ./src/ide.ec:1876
+#: ./src/ide.ec:1069
+#: ./src/ide.ec:1865
+#: ./src/ide.ec:1870
 msgid "Start"
 msgstr "Start"
 
@@ -1806,36 +1802,36 @@ msgid "Static Library"
 msgstr "Static Library"
 
 #: ./src/ide.ec:264
-#: ./src/ide.ec:1133
+#: ./src/ide.ec:1127
 msgid "Step Into"
 msgstr "Step Into"
 
 #: ./src/ide.ec:268
-#: ./src/ide.ec:1155
+#: ./src/ide.ec:1149
 msgid "Step Out"
 msgstr "Step Out"
 
-#: ./src/ide.ec:1177
+#: ./src/ide.ec:1171
 msgid "Step Out Skipping Breakpoints"
 msgstr "Step Out Skipping Breakpoints"
 
 #: ./src/ide.ec:266
-#: ./src/ide.ec:1144
+#: ./src/ide.ec:1138
 msgid "Step Over"
 msgstr "Step Over"
 
 #: ./src/ide.ec:270
-#: ./src/ide.ec:1167
+#: ./src/ide.ec:1161
 msgid "Step Over Skipping Breakpoints"
 msgstr "Step Over Skipping Breakpoints"
 
 #: ./src/ide.ec:260
-#: ./src/ide.ec:1121
+#: ./src/ide.ec:1115
 msgid "Stop"
 msgstr "Stop"
 
-#: ./src/ide.ec:1814
-#: ./src/ide.ec:1843
+#: ./src/ide.ec:1808
+#: ./src/ide.ec:1837
 msgid "Stop Build"
 msgstr "Stop Build"
 
@@ -1914,7 +1910,7 @@ msgid "The "
 msgstr "The "
 
 #: ./src/designer/CodeEditor.ec:2212
-#: ./src/ide.ec:1612
+#: ./src/ide.ec:1606
 msgid "The document %s was modified by another application.\nWould you like to reload it and lose your changes?"
 msgstr "The document %s was modified by another application.\nWould you like to reload it and lose your changes?"
 
@@ -1951,7 +1947,7 @@ msgstr "The project %s was modified by another application.\nWould you like to r
 msgid "This is the project directory.\nWould you like to try again?"
 msgstr "This is the project directory.\nWould you like to try again?"
 
-#: ./src/ide.ec:2153
+#: ./src/ide.ec:2147
 msgid "This project is already present in workspace."
 msgstr "This project is already present in workspace."
 
@@ -1959,15 +1955,15 @@ msgstr "This project is already present in workspace."
 msgid "This source directory is already specified.\nWould you like to try again?"
 msgstr "This source directory is already specified.\nWould you like to try again?"
 
-#: ./src/ide.ec:1293
+#: ./src/ide.ec:1287
 msgid "Threads"
 msgstr "Threads"
 
-#: ./src/ide.ec:1378
+#: ./src/ide.ec:1372
 msgid "Tile Horizontally"
 msgstr "Tile Horizontally"
 
-#: ./src/ide.ec:1379
+#: ./src/ide.ec:1373
 msgid "Tile Vertically"
 msgstr "Tile Vertically"
 
@@ -2048,32 +2044,32 @@ msgstr "Value"
 
 #: ./src/designer/Sheet.ec:447
 #: ./src/designer/ToolBox.ec:36
-#: ./src/ide.ec:1190
+#: ./src/ide.ec:1184
 msgid "View"
 msgstr "View"
 
-#: ./src/ide.ec:1205
-#: ./src/ide.ec:1227
+#: ./src/ide.ec:1199
+#: ./src/ide.ec:1221
 msgid "View Code"
 msgstr "View Code"
 
+#: ./src/ide.ec:1198
 #: ./src/ide.ec:1204
-#: ./src/ide.ec:1210
 msgid "View Designer"
 msgstr "View Designer"
 
-#: ./src/ide.ec:1207
-#: ./src/ide.ec:1254
+#: ./src/ide.ec:1201
+#: ./src/ide.ec:1248
 msgid "View Methods"
 msgstr "View Methods"
 
-#: ./src/ide.ec:1206
-#: ./src/ide.ec:1243
+#: ./src/ide.ec:1200
+#: ./src/ide.ec:1237
 msgid "View Properties"
 msgstr "View Properties"
 
 #: ./src/designer/ToolBox.ec:37
-#: ./src/ide.ec:1265
+#: ./src/ide.ec:1259
 msgid "View Toolbox"
 msgstr "View Toolbox"
 
@@ -2082,7 +2078,7 @@ msgid "Warnings"
 msgstr "Warnings"
 
 #: ./src/panels/WatchesView.ec:6
-#: ./src/ide.ec:1284
+#: ./src/ide.ec:1278
 msgid "Watches"
 msgstr "Watches"
 
@@ -2094,11 +2090,11 @@ msgstr "Web files (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xm
 msgid "Whole word only"
 msgstr "Whole word only"
 
-#: ./src/ide.ec:1371
+#: ./src/ide.ec:1365
 msgid "Window"
 msgstr "Window"
 
-#: ./src/ide.ec:1382
+#: ./src/ide.ec:1376
 msgid "Windows..."
 msgstr "Windows..."
 

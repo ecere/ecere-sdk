@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./src/idList.ec:228
+#: ./src/idList.ec:230
 msgid "(Click to add a new %s...)"
 msgstr "(Click to add a new %s...)"
 
@@ -103,8 +103,8 @@ msgstr "Table Editor"
 msgid "Unable to detect if table exists!\n"
 msgstr "Unable to detect if table exists!\n"
 
-#: ./src/gui/TableEditor.ec:887
-#: ./src/gui/TableEditor.ec:906
+#: ./src/gui/TableEditor.ec:892
+#: ./src/gui/TableEditor.ec:911
 msgid "WordList match cannot be found in database."
 msgstr "WordList match cannot be found in database."
 
@@ -126,7 +126,7 @@ msgstr "You have modified this entry. Would you like to save it before proceedin
 msgid "[New]"
 msgstr "[New]"
 
-#: ./src/idList.ec:228
+#: ./src/idList.ec:230
 msgid "item"
 msgstr "item"
 
