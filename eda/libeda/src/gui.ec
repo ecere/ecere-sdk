@@ -27,7 +27,8 @@ public class Group : Window
    tabCycle = true;
    //inactive = true; // TOFIX causes problems...
 
-   public Label title { this, font = { $"Arial", 10, bold = true }, position = { 16, 2 } };
+public:
+   Label title { this, font = { $"Arial", 10, bold = true }, position = { 16, 2 } };
 
    bool OnCreate()
    {
@@ -56,7 +57,6 @@ public class CheckBool : bool
 {
    Window OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)
    {
-      if(this || !this) {     // FIXME
       Button button = dataBox.keepEditor ? (Button)obsolete : null;
       if(!button)
       {
@@ -77,8 +77,6 @@ public class CheckBool : bool
       button.checked = this;
       button.Create();
       return button;
-      }
-      return null;
    }
 }
 
@@ -111,14 +109,15 @@ public class TableDropBox : DropBox
    anchor = { left = 130, top = 180, right = shadowS + sgs * 2 };
    borderStyle = deep;
 
-   public uint filter;
-   public bool filtered;
-   public Field nameField;
-   public uint exclusion;
-   public Table table;
-   public Field filterField;
+public:
+   uint filter;
+   bool filtered;
+   Field nameField;
+   uint exclusion;
+   Table table;
+   Field filterField;
 
-   public property uint filter
+   property uint filter
    {
       set
       {
@@ -127,11 +126,11 @@ public class TableDropBox : DropBox
       }
       get { return filter; }
    }
-   public property Field nameField { set { nameField = value; } }
-   public property uint exclusion { set { exclusion = value; } }
-   public property Table table { set { table = value; if(!nameField && value) nameField = value.FindField(defaultNameField); } }
+   property Field nameField { set { nameField = value; } }
+   property uint exclusion { set { exclusion = value; } }
+   property Table table { set { table = value; if(!nameField && value) nameField = value.FindField(defaultNameField); } }
 
-   public virtual void Refill()
+   virtual void Refill()
    {
       Clear();
       if(table)
@@ -224,7 +223,7 @@ public class TableDropBox : DropBox
       Sort(null, 1);
    }
 
-   public property Field filterField { set { filterField = value; } }
+   property Field filterField { set { filterField = value; } }
 
    bool OnKeyHit(Key key, unichar ch)
    {
@@ -251,13 +250,13 @@ public class TableDropBox : DropBox
       return true;
    }
 
-   public void EditNotifyCharsAdded()
+   void EditNotifyCharsAdded()
    {
       if(!editBox.NotifyUpdate || editBox.NotifyUpdate == EditBox::NotifyUpdate)
          editBox.NotifyUpdate = EditNotifyUpdate;
    }
 
-   public void EditNotifyUpdate(EditBox editBox)
+   void EditNotifyUpdate(EditBox editBox)
    {
       DataRow row;
       char * contents = editBox.contents;
@@ -292,24 +291,19 @@ public class DropDataBox : DataBox
    size.h = 24;
    keepEditor = true;
    borderStyle = deep;
-
-   Field nameField;
-   Field filterField;
-   uint exclusion;
-   uint filter;
-   bool filtered;
-   bool showNone;
    showNone = false; //true;
 
-   public property uint filter { set { filtered = true; filter = value; } get { return filter; } }
-   public property bool filtered { set { filtered = value; } }
-   public property uint exclusion { set { exclusion = value; } }
-   public property Field filterField { set { filterField = value; } }
-   public property Field nameField { set { nameField = value; } }
-   public virtual void TableDropBox::RefillFunction();
-   public property bool showNone { set { showNone = value; } }
+public:
 
-   public void Refill()
+   property uint filter { set { filtered = true; filter = value; } get { return filter; } }
+   property bool filtered { set { filtered = value; } }
+   property uint exclusion { set { exclusion = value; } }
+   property Field filterField { set { filterField = value; } }
+   property Field nameField { set { nameField = value; } }
+   virtual void TableDropBox::RefillFunction();
+   property bool showNone { set { showNone = value; } }
+
+   void Refill()
    {
       if(editor)
       {
@@ -340,6 +334,14 @@ public class DropDataBox : DataBox
       dropBox.exclusion = exclusion;
       dropBox.showNone = showNone;
    }
+
+private:
+   Field nameField;
+   Field filterField;
+   uint exclusion;
+   uint filter;
+   bool filtered;
+   bool showNone;
 }
 
 public class EditDropDataBox : DropDataBox
@@ -358,16 +360,13 @@ public class FieldDataBox : DataBox
    anchor = { left = 110, right = shadowS + sgs * 2 };
    borderStyle = deep;
 
-   Field field;
-   int64 dataHolder; // THERE SEEMS TO BE A BUG WHEN ACCESSING row ACROSS .so
-   Row row;
-
-   public property Row row
+public:
+   property Row row
    {
       set { row = value; }
       get { return row; }
    }
-   public property EditSection editor
+   property EditSection editor
    {
       set
       {
@@ -378,7 +377,7 @@ public class FieldDataBox : DataBox
       }
    };
 
-   public property Field field
+   property Field field
    {
       set
       {
@@ -423,7 +422,7 @@ public class FieldDataBox : DataBox
       }
    }
 
-   public void Clear()
+   void Clear()
    {
       if(visible)
       {
@@ -444,7 +443,7 @@ public class FieldDataBox : DataBox
       }
    }
 
-   public void Load()
+   void Load()
    {
       if(visible && field && row)
       {
@@ -467,7 +466,7 @@ public class FieldDataBox : DataBox
       }
    }
 
-   public virtual void Save()
+   virtual void Save()
    {
       bool result;
       if(visible && field && row)
@@ -481,7 +480,7 @@ public class FieldDataBox : DataBox
       }
    }
 
-   public void Init()
+   void Init()
    {
       if(visible && created)
          Refresh();
@@ -516,13 +515,13 @@ public class FieldDataBox : DataBox
       return DataBox::OnKeyHit(key, ch);
    }
 
-   public bool Window::NotifyChanged(bool closingDropDown)
+   bool Window::NotifyChanged(bool closingDropDown)
    {
       modifiedDocument = true;
       return true;
    }
 
-   public bool Window::NotifyModified()
+   bool Window::NotifyModified()
    {
       modifiedDocument = true;
       return true;
@@ -544,6 +543,11 @@ public class FieldDataBox : DataBox
          dataHolder = 0;
       }
    }
+
+private:
+   Field field;
+   int64 dataHolder; // THERE SEEMS(ED?) TO BE A BUG WHEN ACCESSING row ACROSS .so
+   Row row;
 }
 
 public class FieldCheckButton : FieldDataBox
@@ -558,24 +562,18 @@ public class FieldDropDataBox : FieldDataBox
 {
    size.h = 24;
    keepEditor = true;
-
-   Field nameField;
-   Field filterField;
-   uint exclusion;
-   uint filter;
-   bool filtered;
-   bool showNone;
    showNone = true;
 
-   public property uint filter { set { filtered = true; filter = value; } get { return filter; } }
-   public property bool filtered { set { filtered = value; } }
-   public property uint exclusion { set { exclusion = value; } }
-   public property Field filterField { set { filterField = value; } }
-   public property Field nameField { set { nameField = value; } }
-   public virtual void TableDropBox::RefillFunction();
-   public property bool showNone { set { showNone = value; } }
+public:
+   property uint filter { set { filtered = true; filter = value; } get { return filter; } }
+   property bool filtered { set { filtered = value; } }
+   property uint exclusion { set { exclusion = value; } }
+   property Field filterField { set { filterField = value; } }
+   property Field nameField { set { nameField = value; } }
+   virtual void TableDropBox::RefillFunction();
+   property bool showNone { set { showNone = value; } }
 
-   public void Refill()
+   void Refill()
    {
       if(editor)
       {
@@ -599,12 +597,20 @@ public class FieldDropDataBox : FieldDataBox
       dropBox.exclusion = exclusion;
       dropBox.showNone = showNone;
    }
+
+private:
+   Field nameField;
+   Field filterField;
+   uint exclusion;
+   uint filter;
+   bool filtered;
+   bool showNone;
 }
 
 public class EditFieldDropDataBox : FieldDropDataBox
 {
    // showNone = false;
-
+public:
    void OnConfigure(TableDropBox dropBox)
    {
       FieldDropDataBox::OnConfigure(dropBox);
@@ -630,7 +636,7 @@ public class EditFieldDropDataBox : FieldDropDataBox
       FieldDataBox::Save();
    }
 
-   public virtual bool OnAddTextEntry(Row row, TableDropBox dropBox, char * entry)
+   virtual bool OnAddTextEntry(Row row, TableDropBox dropBox, char * entry)
    {
       row.Add();
       row.SetData(dropBox.nameField, entry);
@@ -643,10 +649,8 @@ public class ListSection : Group
    text = $"List";
    size = { 710, 287 };
    anchor = { left = sgs, top = 32 + sgs * 3, bottom = 55 + sgs * 3 };
-
-   EditSection editor;
-
-   public property EditSection editor
+public:
+   property EditSection editor
    {
       set
       {
@@ -655,7 +659,7 @@ public class ListSection : Group
       }
    }
 
-   public property Table table
+   property Table table
    {
       set
       {
@@ -680,10 +684,9 @@ public class ListSection : Group
          }
       }
    }
-   Table table;
-   public Field fldId, fldName, fldActive;
+   Field fldId, fldName, fldActive;
 
-   public virtual DialogResult Window::NotifySaveConfirmation(ListSection listSection)
+   virtual DialogResult Window::NotifySaveConfirmation(ListSection listSection)
    {
       return MessageBox { master = this, type = yesNoCancel, text = $"List Editor", contents = $"You have modified this entry. Would you like to save it before proceeding?" }.Modal();
    }
@@ -706,7 +709,7 @@ public class ListSection : Group
       return true;
    }
 
-   public void RefillList()
+   void RefillList()
    {
       list.Clear();
       //if(fldId && fldName)
@@ -719,7 +722,7 @@ public class ListSection : Group
       editor.modifiedDocument = false;
    }
 
-   public virtual void Window::NotifyRefillList(ListSection listSection, Row r)
+   virtual void Window::NotifyRefillList(ListSection listSection, Row r)
    {
       if(listSection.fldId && listSection.fldName)
       {
@@ -739,9 +742,9 @@ public class ListSection : Group
       }
    }
 
-   public virtual bool Window::NotifyNew(ListSection listSection, Row r);
+   virtual bool Window::NotifyNew(ListSection listSection, Row r);
 
-   public ButtonStyle btnNew
+   ButtonStyle btnNew
    {
       this, anchor = { right = shadowS + sgs * 2, top = 24 }, hotKey = altW, text = $"New";
 
@@ -793,7 +796,7 @@ public class ListSection : Group
       }
    };
 
-   public virtual bool Window::NotifyDeleteConfirmation(ListSection listSection)
+   virtual bool Window::NotifyDeleteConfirmation(ListSection listSection)
    {
       return MessageBox {  master = this, type = yesNo, text = $"List Editor", 
                            contents =  $"You are about to delete an entry.\n"
@@ -801,10 +804,10 @@ public class ListSection : Group
                   }.Modal() == yes;
    }
 
-   public virtual void Window::NotifyDeleting(ListSection listSection);
-   public virtual void Window::NotifyDeleted(ListSection listSection);
+   virtual void Window::NotifyDeleting(ListSection listSection);
+   virtual void Window::NotifyDeleted(ListSection listSection);
 
-   public ButtonStyle btnDelete
+   ButtonStyle btnDelete
    {
       this, anchor = { right = shadowS + sgs * 2, top = 24 }, hotKey = altD, text = $"Delete";
 
@@ -830,7 +833,7 @@ public class ListSection : Group
       }
    };
 
-   public bool FilterNotifyChanged(bool closeDropDown)
+   bool FilterNotifyChanged(bool closeDropDown)
    {
       editor.EditClear();
       RefillList();
@@ -840,8 +843,7 @@ public class ListSection : Group
       return true;
    }
 
-   DataRow lastRow;
-   public ListBox list
+   ListBox list
    {
       this, anchor = { left = sgs * 2, top = 22 + 22 + sgs * 4, right = shadowS + sgs * 2, bottom = shadowS + sgs * 2 };
       alwaysHighLight = true;
@@ -875,9 +877,9 @@ public class ListSection : Group
       }
    };
 
-   public virtual void Window::NotifySelectListRow(ListSection listSection, uint64 id);
+   virtual void Window::NotifySelectListRow(ListSection listSection, uint64 id);
    
-   public void SelectListRow(DataRow row)
+   void SelectListRow(DataRow row)
    {
       // Time startTime = GetTime();
       if(row)
@@ -897,14 +899,14 @@ public class ListSection : Group
       // Logf("SelectListRow took %f seconds\n", GetTime() - startTime);
    }
 
-   public void SelectFirst()
+   void SelectFirst()
    {
       if(list.firstRow)
          SelectListRow(list.firstRow);
       RefreshState();
    }
 
-   public void RefreshState()
+   void RefreshState()
    {
       if(editor)
       {
@@ -932,6 +934,10 @@ public class ListSection : Group
       return Window::OnPostCreate();
    }
 
+private:
+   EditSection editor;
+   Table table;
+   DataRow lastRow;
 }
 
 public class EditSection : Group
@@ -966,9 +972,9 @@ public:
    DataRow listRow;
    OldList editBoxes { };
 
-   public Window editArea { this, borderStyle = deep, tabCycle = true, anchor = { left = 8, top = 54, right = 10, bottom = 10 }, hasVertScroll = true, dontHideScroll = true };
+   Window editArea { this, borderStyle = deep, tabCycle = true, anchor = { left = 8, top = 54, right = 10, bottom = 10 }, hasVertScroll = true, dontHideScroll = true };
    
-   public ButtonStyle btnSave
+   ButtonStyle btnSave
    {
       this, anchor = { right = shadowS + sgs * 2, top = 24 }, hotKey = altV, text = $"Save";
 
@@ -979,7 +985,7 @@ public:
       }
    };
 
-   public ButtonStyle btnReload
+   ButtonStyle btnReload
    {
       this, anchor = { left = 10, top = 24 }, hotKey = altV, text = $"Revert";
 

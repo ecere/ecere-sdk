@@ -875,24 +875,24 @@ msgid "\n\nWould you like to view the error log?"
 msgstr "\n\nWould you like to view the error log?"
 
 #: ./src/sys/Date.ec:121
-#: ./src/sys/Time.ec:785
+#: ./src/sys/Time.ec:777
 msgid "now"
 msgstr "now"
 
 #: ./src/sys/Date.ec:120
-#: ./src/sys/Time.ec:784
+#: ./src/sys/Time.ec:776
 msgid "today"
 msgstr "today"
 
 #: ./src/sys/Date.ec:122
 #: ./src/sys/Date.ec:126
-#: ./src/sys/Time.ec:787
+#: ./src/sys/Time.ec:779
 msgid "tomorrow"
 msgstr "tomorrow"
 
 #: ./src/sys/Date.ec:123
 #: ./src/sys/Date.ec:131
-#: ./src/sys/Time.ec:794
+#: ./src/sys/Time.ec:786
 msgid "yesterday"
 msgstr "yesterday"
 

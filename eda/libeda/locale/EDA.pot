@@ -10,21 +10,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./src/idList.ec:231
+#: ./src/idList.ec:228
 msgid "(Click to add a new %s...)"
 msgstr "(Click to add a new %s...)"
 
-#: ./src/ers.ec:564
+#: ./src/ers.ec:566
 msgid "All files"
 msgstr "All files"
 
 #: ./src/ers.ec:28
 #: ./src/gui.ec:20
-#: ./src/gui.ec:30
+#: ./src/gui.ec:31
 msgid "Arial"
 msgstr "Arial"
 
-#: ./src/ers.ec:561
+#: ./src/ers.ec:563
 msgid "Comma Separated Values Spreadsheet (*.csv)"
 msgstr "Comma Separated Values Spreadsheet (*.csv)"
 
@@ -36,11 +36,11 @@ msgstr "Database file (%s) could not be created.\n"
 msgid "Database file (%s) could not be opened.\n"
 msgstr "Database file (%s) could not be opened.\n"
 
-#: ./src/gui.ec:809
+#: ./src/gui.ec:812
 msgid "Delete"
 msgstr "Delete"
 
-#: ./src/gui.ec:940
+#: ./src/gui.ec:946
 msgid "Entry"
 msgstr "Entry"
 
@@ -48,7 +48,7 @@ msgstr "Entry"
 msgid "Error reading field"
 msgstr "Error reading field"
 
-#: ./src/ers.ec:617
+#: ./src/ers.ec:619
 msgid "Export as Spreadsheet (CSV)"
 msgstr "Export as Spreadsheet (CSV)"
 
@@ -56,17 +56,17 @@ msgstr "Export as Spreadsheet (CSV)"
 msgid "Invalid, corrupted or in use (%s) database file.\n"
 msgstr "Invalid, corrupted or in use (%s) database file.\n"
 
-#: ./src/gui.ec:643
+#: ./src/gui.ec:649
 msgid "List"
 msgstr "List"
 
-#: ./src/gui.ec:688
-#: ./src/gui.ec:798
+#: ./src/gui.ec:691
+#: ./src/gui.ec:801
 msgid "List Editor"
 msgstr "List Editor"
 
 #: ./src/gui/TableEditor.ec:25
-#: ./src/gui.ec:746
+#: ./src/gui.ec:749
 msgid "New"
 msgstr "New"
 
@@ -78,11 +78,11 @@ msgstr "New|id="
 msgid "Please wait while the report is being generated..."
 msgstr "Please wait while the report is being generated..."
 
-#: ./src/gui.ec:984
+#: ./src/gui.ec:990
 msgid "Revert"
 msgstr "Revert"
 
-#: ./src/gui.ec:973
+#: ./src/gui.ec:979
 msgid "Save"
 msgstr "Save"
 
@@ -108,7 +108,7 @@ msgstr "Unable to detect if table exists!\n"
 msgid "WordList match cannot be found in database."
 msgstr "WordList match cannot be found in database."
 
-#: ./src/gui.ec:801
+#: ./src/gui.ec:804
 msgid "You are about to delete an entry.\nDo you wish to continue?"
 msgstr "You are about to delete an entry.\nDo you wish to continue?"
 
@@ -117,16 +117,16 @@ msgid "You are about to permanently remove an entry.\nDo you wish to continue?"
 msgstr "You are about to permanently remove an entry.\nDo you wish to continue?"
 
 #: ./src/gui/TableEditor.ec:340
-#: ./src/gui.ec:688
+#: ./src/gui.ec:691
 msgid "You have modified this entry. Would you like to save it before proceeding?"
 msgstr "You have modified this entry. Would you like to save it before proceeding?"
 
-#: ./src/gui.ec:777
-#: ./src/gui.ec:783
+#: ./src/gui.ec:780
+#: ./src/gui.ec:786
 msgid "[New]"
 msgstr "[New]"
 
-#: ./src/idList.ec:231
+#: ./src/idList.ec:228
 msgid "item"
 msgstr "item"
 

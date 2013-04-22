@@ -70,7 +70,6 @@ public class Page : Window
 {
    background = white;
 
-   Orientation orientation;
 public:
    property Orientation orientation
    {
@@ -94,12 +93,15 @@ public:
 
    int headerHeight;
    
+private:
+   Orientation orientation;
 }
 
 public class ReportRender
 {
-   public virtual void Render(ReportDestination destination, Report report);
-   public virtual int GetPageNumber();
+public:
+   virtual void Render(ReportDestination destination, Report report);
+   virtual int GetPageNumber();
 }
 
 static ReportRenderNormal ersCurrentReport;
@@ -468,10 +470,6 @@ private:
 
 public class ReportDestination : Window
 {
-
-   int pageCount;
-
-   List<PreviewPage> pages { };
 public:
    Report report;
 
@@ -483,6 +481,10 @@ public:
 
    virtual void AddPage(Page page);
    virtual Report GetReport() { return null; }
+private:
+   int pageCount;
+
+   List<PreviewPage> pages { };
 }
 
 public class PrintedReport : ReportDestination
@@ -872,7 +874,6 @@ public:
       }
    }
 
-private:   
    ~Report()
    {
       groupings.Free();

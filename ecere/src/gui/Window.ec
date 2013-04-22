@@ -9367,7 +9367,7 @@ private:
    Size scrollArea;        // Virtual Scroll area size
    Size reqScrollArea;     // Requested virtual area size
    Point scroll;           // Virtual area scrolling position
-   public ScrollBar sbh, sbv;        // Scrollbar window handles
+   ScrollBar sbh, sbv;        // Scrollbar window handles
    Cursor cursor;        // Mouse cursor used for this window
    WindowState state;
    PopupMenu menuBar;

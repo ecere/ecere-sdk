@@ -41,131 +41,128 @@ public class Id : uint
 
    Window OnEdit(DataBox dataBox, void * obsolete, int x, int y, int w, int h, void * userData)
    {
-      if(this || !this) {     // FIXME
-         TableDropBox dropBox = dataBox.keepEditor ? (TableDropBox)dataBox.editor /*obsolete*/ : null;
-         if(!dropBox)
-         {
+      TableDropBox dropBox = dataBox.keepEditor ? (TableDropBox)dataBox.editor /*obsolete*/ : null;
+      if(!dropBox)
+      {
 /*
-            if(eClass_IsDerived(dataBox._class, class(FieldDropBox)))
-            {
-               FieldDropBox fieldDropBox = (FieldDropBox)dataBox;
+         if(eClass_IsDerived(dataBox._class, class(FieldDropBox)))
+         {
+            FieldDropBox fieldDropBox = (FieldDropBox)dataBox;
 
-            }
-            else if(eClass_IsDerived(dataBox._class, class(FieldBox)))
-            {
-               FieldBox fieldBox = (FieldBox)dataBox;
+         }
+         else if(eClass_IsDerived(dataBox._class, class(FieldBox)))
+         {
+            FieldBox fieldBox = (FieldBox)dataBox;
 
-            }
+         }
 */
 
-            dropBox = TableDropBox
+         dropBox = TableDropBox
+         {
+            dataBox, borderStyle = 0, anchor = { 0, 0, 0, 0 }, 
+            modifyVirtualArea = false, activeStipple = false;
+            showNone = true;
+            nameField = *class_data(nameField);
+            table = *class_data(table);
+
+            bool DataBox::NotifySelect(DropBox control, DataRow row, Modifiers mods)
             {
-               dataBox, borderStyle = 0, anchor = { 0, 0, 0, 0 }, 
-               modifyVirtualArea = false, activeStipple = false;
-               showNone = true;
-               nameField = *class_data(nameField);
-               table = *class_data(table);
+               // TOFIX: Id is still 32 bit
+               uint id = (uint)(row ? row.tag : 0);
+               SetData(&id, mods.closingDropDown);
+               return true;
+            }
 
-               bool DataBox::NotifySelect(DropBox control, DataRow row, Modifiers mods)
+            bool DataBox::NotifyTextEntry(DropBox _dropBox, char * string, bool confirmed)
+            {
+               TableDropBox dropBox = (TableDropBox)_dropBox;
+               //Table tbl = dropBox.table.db.OpenTable(dropBox.table.name, { tableRows });
+               //if(tbl)
                {
-                  // TOFIX: Id is still 32 bit
-                  uint id = (uint)(row ? row.tag : 0);
-                  SetData(&id, mods.closingDropDown);
-                  return true;
-               }
+                  /*FieldIndex indexedFields[1];
+                  Row r { };*/
+                  char * trimmed = new char[strlen(string) + 1];
+                  /*indexedFields[0] = { dropBox.nameField };
+                  tbl.GenerateIndex(1, indexedFields, false);
+                  r.tbl = tbl;*/
+                  DataRow row = null;
 
-               bool DataBox::NotifyTextEntry(DropBox _dropBox, char * string, bool confirmed)
-               {
-                  TableDropBox dropBox = (TableDropBox)_dropBox;
-                  //Table tbl = dropBox.table.db.OpenTable(dropBox.table.name, { tableRows });
-                  //if(tbl)
+                  TrimLSpaces(string, trimmed);
+                  TrimRSpaces(trimmed, trimmed);
+
+                  /*if(r.Find(dropBox.nameField, middle, nil, trimmed))
                   {
-                     /*FieldIndex indexedFields[1];
-                     Row r { };*/
-                     char * trimmed = new char[strlen(string) + 1];
-                     /*indexedFields[0] = { dropBox.nameField };
-                     tbl.GenerateIndex(1, indexedFields, false);
-                     r.tbl = tbl;*/
-                     DataRow row = null;
-
-                     TrimLSpaces(string, trimmed);
-                     TrimRSpaces(trimmed, trimmed);
-
-                     /*if(r.Find(dropBox.nameField, middle, nil, trimmed))
+                     if(dropBox.filterField)
                      {
-                        if(dropBox.filterField)
+                        // TODO: Improve this... Multi field?
+                        while(true)
                         {
-                           // TODO: Improve this... Multi field?
-                           while(true)
-                           {
-                              DataRow row;
-                              Id id = 0;
-                              Field fldId = dropBox.table.FindField(defaultIdField);
-                              r.GetData(fldId, id);
-                              row = dropBox.FindSubRow(id);
-                              if(row)
-                              {
-                                 dropBox.SelectRow(row);
-                                 break;
-                              }
-                              //if(!r.Find(dropBox.nameField, next, nil, trimmed))
-                              if(!r.Next())
-                                 break;
-                           }
-                        }
-                        else
-                        {
+                           DataRow row;
                            Id id = 0;
                            Field fldId = dropBox.table.FindField(defaultIdField);
                            r.GetData(fldId, id);
-                           dropBox.SelectRow(dropBox.FindSubRow(id));
-                        }
-                     }
-                     */
-
-                     {
-                        for(row = dropBox.firstRow; row; row = row.next)
-                        {
-                           char * string = row.string;
-                           if(string && !strcmp(trimmed, string))
+                           row = dropBox.FindSubRow(id);
+                           if(row)
+                           {
+                              dropBox.SelectRow(row);
+                              break;
+                           }
+                           //if(!r.Find(dropBox.nameField, next, nil, trimmed))
+                           if(!r.Next())
                               break;
                         }
                      }
-                     if(row)
-                     {
-                        dropBox.SelectRow(row);
-                     }
                      else
                      {
-                        dropBox.changeContents = false;
-                        dropBox.contents = trimmed;
-                        dropBox.SelectRow(null);
-                        dropBox.changeContents = true;
+                        Id id = 0;
+                        Field fldId = dropBox.table.FindField(defaultIdField);
+                        r.GetData(fldId, id);
+                        dropBox.SelectRow(dropBox.FindSubRow(id));
                      }
-                     //delete r;
                   }
-                  return true;
-               }
-            };
-            if(class_data(Refill))
-               dropBox.Refill = class_data(Refill);
+                  */
 
-            // dropBox.Refill();
-         }
-         dataBox.OnConfigure(dropBox);
-         dropBox.Create();
-         dropBox.currentRow = dropBox.FindSubRow(this);
-         if(!dropBox.currentRow && this)
-            dataBox.SetData((uint *)&this, false);
-         {
-            DataRow r = dropBox.currentRow;
-            if(r)
-               for(r = r.parent; r; r = r.parent)
-                  r.collapsed = false;
-         }
-         return dropBox;
+                  {
+                     for(row = dropBox.firstRow; row; row = row.next)
+                     {
+                        char * string = row.string;
+                        if(string && !strcmp(trimmed, string))
+                           break;
+                     }
+                  }
+                  if(row)
+                  {
+                     dropBox.SelectRow(row);
+                  }
+                  else
+                  {
+                     dropBox.changeContents = false;
+                     dropBox.contents = trimmed;
+                     dropBox.SelectRow(null);
+                     dropBox.changeContents = true;
+                  }
+                  //delete r;
+               }
+               return true;
+            }
+         };
+         if(class_data(Refill))
+            dropBox.Refill = class_data(Refill);
+
+         // dropBox.Refill();
       }
-      return null;
+      dataBox.OnConfigure(dropBox);
+      dropBox.Create();
+      dropBox.currentRow = dropBox.FindSubRow(this);
+      if(!dropBox.currentRow && this)
+         dataBox.SetData((uint *)&this, false);
+      {
+         DataRow r = dropBox.currentRow;
+         if(r)
+            for(r = r.parent; r; r = r.parent)
+               r.collapsed = false;
+      }
+      return dropBox;
    }
 
    char * OnGetString(char * tempString, void * fieldData, bool * needClass)
@@ -249,7 +246,7 @@ public:
       get { return class_data(type); }
    };
 
-   public void Clear()
+   void Clear()
    {
       if(this)
       {
@@ -258,7 +255,7 @@ public:
       }
    }
    
-   public bool Includes(Id id)
+   bool Includes(Id id)
    {
       if(this)
       {
@@ -270,7 +267,7 @@ public:
       return false;
    }
 
-   public bool Add(Id id)
+   bool Add(Id id)
    {
       int c;
       for(c = 0; c < count; c++)
@@ -285,7 +282,7 @@ public:
       return false;
    }
 
-   public bool Delete(Id id)
+   bool Delete(Id id)
    {
       int c;
       for(c = 0; c < count; c++)
@@ -435,7 +432,6 @@ public:
       /*if(!this)
          this = eInstance_New(_class);
          */
-      if(this || !this)    // FIXME
       {
          Class type = class_data(type);
          list.AddField({ type, editable = true });
@@ -648,10 +644,7 @@ public class StringList
       }
       */
 
-      if(this || !this)    // FIXME
-      {
       list.AddField({ class(char *), editable = true });
-      }
       for(node = strings.first; node; node = node.next)
       {
          r = list.AddRow();
