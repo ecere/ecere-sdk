@@ -49,9 +49,10 @@ typedef struct
    HANDLE hProcess;
 #else
    FILE * input, * output;
+   int exitCode;
 #endif
    int pid;
-   bool eof;
+   bool eof:1, gotExitCode:1;
 } _DualPipe;
 
 void DualPipe_Destructor(_DualPipe * dp)
@@ -237,14 +238,19 @@ void DualPipe_Terminate(_DualPipe * dp)
 int DualPipe_GetExitCode(_DualPipe * dp)
 {
 #if !defined(__WIN32__)
-   int status = 0;
-   waitpid(dp->pid, &status, 0);
+   if(!dp->gotExitCode)
+   {
+      int status = 0;
+      waitpid(dp->pid, &status, 0);
+      dp->exitCode = WEXITSTATUS(status);
+      dp->gotExitCode = true;
+   }
    /*#if defined(__linux__)
       // Until we support this _extension_ syntax: (moved this to a C file...)
       // return (((( _extension_   (((union { __typeof(status) __in; int __i; }) { .__in = (status) }).__i))) & 0xff00) >> 8);
       // return ((__extension__({ union { __typeof(status) __in;  int __i; } __u; __u.__in = (status); __u.__i; }) ) & 0xFF00) >> 8;
    #else*/
-      return WEXITSTATUS(status);
+   return dp->exitCode;
    //#endif
    //return __WEXITSTATUS(status);
 #else
@@ -269,7 +275,12 @@ void DualPipe_Wait(_DualPipe * dp)
    WaitForSingleObject(dp->hProcess, INFINITE);
 #else
    if(dp->pid)
-      waitpid(dp->pid, 0, 0);
+   {
+      int status = 0;
+      waitpid(dp->pid, &status, 0);
+      dp->exitCode = WEXITSTATUS(status);
+      dp->gotExitCode = true;
+   }
 #endif   
 }
 
