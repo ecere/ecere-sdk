@@ -8546,7 +8546,7 @@
                ]
             },
             {
-               "Folder" : "coursework",
+               "Folder" : "coursework/coursework",
                "Files" : [
                   {
                      "Folder" : "Chapter 1 - Getting Started",
@@ -8554,19 +8554,19 @@
                         {
                            "Folder" : "Lab1.1",
                            "Files" : [
-                              "coursework/Chapter 1 - Getting Started/Lab1.1/helloWorld.ec",
-                              "coursework/Chapter 1 - Getting Started/Lab1.1/HelloWorld.epj"
+                              "helloWorld.ec",
+                              "HelloWorld.epj"
                            ]
                         },
                         {
                            "Folder" : "Lab1.2",
                            "Files" : [
-                              "coursework/Chapter 1 - Getting Started/Lab1.2/form1.ec",
-                              "coursework/Chapter 1 - Getting Started/Lab1.2/HelloForm.epj"
+                              "form1.ec",
+                              "HelloForm.epj"
                            ]
                         },
-                        "coursework/Chapter 1 - Getting Started/answers - chapter 1.odt",
-                        "coursework/Chapter 1 - Getting Started/exercises - chapter 1.odt"
+                        "answers - chapter 1.odt",
+                        "exercises - chapter 1.odt"
                      ]
                   },
                   {
@@ -8575,19 +8575,19 @@
                         {
                            "Folder" : "Lab2.4",
                            "Files" : [
-                              "coursework/Chapter 2 - Variables and Data Types/Lab2.4/lab2.ec",
-                              "coursework/Chapter 2 - Variables and Data Types/Lab2.4/Lab2.epj"
+                              "lab2.ec",
+                              "Lab2.epj"
                            ]
                         },
                         {
                            "Folder" : "Lab2.5",
                            "Files" : [
-                              "coursework/Chapter 2 - Variables and Data Types/Lab2.5/variables.ec",
-                              "coursework/Chapter 2 - Variables and Data Types/Lab2.5/VariablesApp.epj"
+                              "variables.ec",
+                              "VariablesApp.epj"
                            ]
                         },
-                        "coursework/Chapter 2 - Variables and Data Types/answers - chapter 2.odt",
-                        "coursework/Chapter 2 - Variables and Data Types/exercises - chapter 2.odt"
+                        "answers - chapter 2.odt",
+                        "exercises - chapter 2.odt"
                      ]
                   },
                   {
@@ -8596,12 +8596,12 @@
                         {
                            "Folder" : "Lab3",
                            "Files" : [
-                              "coursework/Chapter 3 - Operators/Lab3/lab3.ec",
-                              "coursework/Chapter 3 - Operators/Lab3/Lab3.epj"
+                              "lab3.ec",
+                              "Lab3.epj"
                            ]
                         },
-                        "coursework/Chapter 3 - Operators/answers - chapter 3.odt",
-                        "coursework/Chapter 3 - Operators/exercises - chapter 3.odt"
+                        "answers - chapter 3.odt",
+                        "exercises - chapter 3.odt"
                      ]
                   },
                   {
@@ -8610,12 +8610,12 @@
                         {
                            "Folder" : "Lab4",
                            "Files" : [
-                              "coursework/Chapter 4 - Flow Control/Lab4/lab4.ec",
-                              "coursework/Chapter 4 - Flow Control/Lab4/Lab4.epj"
+                              "lab4.ec",
+                              "Lab4.epj"
                            ]
                         },
-                        "coursework/Chapter 4 - Flow Control/answers - chapter 4.odt",
-                        "coursework/Chapter 4 - Flow Control/exercises - chapter 4.odt"
+                        "answers - chapter 4.odt",
+                        "exercises - chapter 4.odt"
                      ]
                   },
                   {
@@ -8627,21 +8627,21 @@
                               {
                                  "Folder" : "colors",
                                  "Files" : [
-                                    "coursework/Chapter 5 - Structures and Enumerations/Lab5/colors/lab5colors.ec",
-                                    "coursework/Chapter 5 - Structures and Enumerations/Lab5/colors/lab5colors.epj"
+                                    "lab5colors.ec",
+                                    "lab5colors.epj"
                                  ]
                               },
                               {
                                  "Folder" : "vectors",
                                  "Files" : [
-                                    "coursework/Chapter 5 - Structures and Enumerations/Lab5/vectors/lab5vectors.ec",
-                                    "coursework/Chapter 5 - Structures and Enumerations/Lab5/vectors/lab5vectors.epj"
+                                    "lab5vectors.ec",
+                                    "lab5vectors.epj"
                                  ]
                               }
                            ]
                         },
-                        "coursework/Chapter 5 - Structures and Enumerations/answers - chapter 5.odt",
-                        "coursework/Chapter 5 - Structures and Enumerations/exercises - chapter 5.odt"
+                        "answers - chapter 5.odt",
+                        "exercises - chapter 5.odt"
                      ]
                   },
                   {
@@ -8650,12 +8650,12 @@
                         {
                            "Folder" : "Lab6",
                            "Files" : [
-                              "coursework/Chapter 6 - Classes, Methods and Instances/Lab6/lab6.ec",
-                              "coursework/Chapter 6 - Classes, Methods and Instances/Lab6/lab6.epj"
+                              "lab6.ec",
+                              "lab6.epj"
                            ]
                         },
-                        "coursework/Chapter 6 - Classes, Methods and Instances/answers - chapter 6.odt",
-                        "coursework/Chapter 6 - Classes, Methods and Instances/exercises - chapter 6.odt"
+                        "answers - chapter 6.odt",
+                        "exercises - chapter 6.odt"
                      ]
                   }
                ]
