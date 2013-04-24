@@ -31,14 +31,9 @@ class StringListBox : EditBox
             bool first = true;
             for(item : value)
             {
-               bool quoted = strchr(item, ' ') != null;
                if(!first)
                   AddS(" ");
-               if(quoted)
-                  AddS("\"");
                AddS(item);
-               if(quoted)
-                  AddS("\"");
                first = false;
             }
          }
@@ -62,17 +57,9 @@ class StringListBox : EditBox
             else if(ch == '\"')
             {
                if(quoted)
-               {
-                  if(c - start)
-                     array.Add(MakeString(contents + start, c - start));
                   quoted = false;
-                  start = c + 1;
-               }
                else
-               {
                   quoted = true;
-                  start = c + 1;
-               }
             }
          }
          if(c - start)

@@ -64,6 +64,7 @@ class ProjectTab : Tab
          project.compilerConfigsDir = compilerConfigsDir.path;
          
          project.topNode.modified = true;
+         project.ModifiedAllConfigs(true, false, true, false);
          ide.projectView.modifiedDocument = true;
          ide.projectView.Update(null);
       }
