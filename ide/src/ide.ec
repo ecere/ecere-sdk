@@ -454,7 +454,7 @@ class IDEWorkSpace : Window
          switch(key)
          {
             case escape: 
-               if(!ide.findInFilesDialog || !ide.findInFilesDialog.SearchAbort())
+               if(activeBox != findBox || !ide.findInFilesDialog || !ide.findInFilesDialog.SearchAbort())
                   ide.ShowCodeEditor(); 
                break;
             default:
