@@ -412,6 +412,7 @@ define WorkspaceExtension = "ews";
 define ProjectExtension = "epj";
 
 define stringInFileIncludedFrom = "In file included from ";
+define stringFrom =               "                 from ";
 
 void ReplaceSpaces(char * output, char * source)
 {
@@ -1340,6 +1341,10 @@ private:
          if(c && ((c.options && cfg.options && cfg.options.console != c.options.console) ||
                (!c.options || !cfg.options)))
             cfg.symbolGenModified = true;
+         if(c && ((c.options && cfg.options && 
+               ( (cfg.options.libraries && c.options.libraries && cfg.options.libraries.OnCompare(c.options.libraries)) || (!cfg.options.libraries || !c.options.libraries)) ) 
+            || (!c.options || !cfg.options)))
+            cfg.linkingModified = true;
 
          cfg.makingModified = true;
       }
@@ -1497,6 +1502,7 @@ private:
             {
                char * message = null;
                char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
+               char * from = strstr(line, stringFrom);
                test.copyLenSingleBlankReplTrim(line, ' ', true, testLen);
                if(strstr(line, compiler.makeCommand) == line && line[lenMakeCommand] == ':')
                {
@@ -1586,7 +1592,7 @@ private:
                      ide.outputView.buildBox.Logf("%s\n", line);
                      if(strstr(line, "warning:") || strstr(line, "note:"))
                         numWarnings++;
-                     else if(!gotCC && !strstr(line, "At top level") && !strstr(line, "In file included from"))
+                     else if(!gotCC && !strstr(line, "At top level") && !strstr(line, "In file included from") && !strstr(line, stringFrom))
                         numErrors++;
                   }
 
@@ -1605,11 +1611,13 @@ private:
                         colon = strstr(colon + 1, ":");
                      if(colon)
                      {
+                        char * sayError = "";
                         char moduleName[MAX_LOCATION], temp[MAX_LOCATION];
                         char * pointer;
                         char * error;
-                        char * start = inFileIncludedFrom ? line + strlen(stringInFileIncludedFrom) : line;
+                        char * start = inFileIncludedFrom ? inFileIncludedFrom + strlen(stringInFileIncludedFrom) : from ? from + strlen(stringFrom) : line;
                         int len = (int)(colon - start);
+                        char ext[MAX_EXTENSION];
                         len = Min(len, MAX_LOCATION-1);
                         // Don't be mistaken by the drive letter colon
                         // Cut module name
@@ -1626,14 +1634,51 @@ private:
                         //if(bracket) *bracket = '\0';
 
                         GetLastDirectory(moduleName, temp);
+                        GetExtension(temp, ext);
+
+                        if(linking && (!strcmp(ext, "o") || !strcmp(ext, "a") || !strcmp(ext, "lib")))
+                        {
+                           char * cColon = strstr(colon+1, ":");
+                           if(cColon && (cColon[1] == '/' || cColon[1] == '\\'))
+                              cColon = strstr(cColon + 1, ":");
+                           if(cColon)
+                           {
+                              int len = (int)(cColon - (colon+1));
+                              char mName[MAX_LOCATION];
+                              len = Min(len, MAX_LOCATION-1);
+                              strncpy(mName, colon+1, len);
+                              mName[len] = '\0';
+                              GetLastDirectory(mName, temp);
+                              GetExtension(temp, ext);
+                              if(!strcmp(ext, "c") || !strcmp(ext, "cpp") || !strcmp(ext, "cxx") || !strcmp(ext, "ec"))
+                              {
+                                 colon = cColon;
+                                 strcpy(moduleName, mName);
+                              }
+                           }
+                        }
                         if(linking && (!strcmp(temp, "ld") || !strcmp(temp, "ld.exe")))
                         {
+                           moduleName[0] = 0;
                            if(strstr(colon, "skipping incompatible") || strstr(colon, "Recognised but unhandled"))
-                              message = $"Linker Message";
+                           {
+                              message = $"Linker Message: ";
+                              colon = line;
+                           }
                            else
                            {
                               numErrors++;
                               message = $"Linker Error";
+                           }
+                        }
+                        else if(linking && (!strcmp(ext, "") || !strcmp(ext, "exe")))
+                        {
+                           moduleName[0] = 0;
+                           colon = line;
+                           if(!strstr(line, "error:"))
+                           {
+                              message = $"Linker Error: ";
+                              numErrors++;
                            }
                         }
                         else
@@ -1643,21 +1688,22 @@ private:
                            MakePathRelative(temp, topNode.path, moduleName);
                         }
                         error = strstr(line, "error:");
-                        if(error && error > colon)
+                        if(!message && error && error > colon)
                            numErrors++;
                         else
                         {
-                           // Silence warnings for compiled EC
+                           // Silence warnings for compiled eC
                            char * objDir = strstr(moduleName, objDirExp.dir);
                         
                            if(linking)
                            {
                               if((pointer = strstr(line, "undefined"))  ||
+                                   (pointer = strstr(line, "multiple definition")) ||
                                    (pointer = strstr(line, "No such file")) ||
                                    (pointer = strstr(line, "token")))
                               {
                                  strncat(moduleName, colon, pointer - colon);
-                                 strcat(moduleName, "error: ");
+                                 sayError = "error: ";
                                  colon = pointer;
                                  numErrors++;
                               }
@@ -1665,7 +1711,7 @@ private:
                            else if((pointer = strstr(line, "No such file")))
                            {
                               strncat(moduleName, colon, pointer - colon);
-                              strcat(moduleName, "error: ");
+                              sayError = "error: ";
                               colon = pointer;
                               numErrors++;
                            }
@@ -1677,17 +1723,87 @@ private:
                            }
                         }
                         if(message)
-                           ide.outputView.buildBox.Logf("   %s: %s\n", message, line);
-                        else if(this == ide.workspace.projects.firstIterator.data)
-                           ide.outputView.buildBox.Logf("   %s%s\n", moduleName, colon);
+                           ide.outputView.buildBox.Logf("   %s%s\n", message, colon);
+                        /*else if(this == ide.workspace.projects.firstIterator.data)
+                           ide.outputView.buildBox.Logf("   %s%s%s\n", moduleName, sayError, colon);*/
                         else
                         {
                            char fullModuleName[MAX_LOCATION];
-                           strcpy(fullModuleName, topNode.path);
-                           PathCat(fullModuleName, moduleName);
-                           MakePathRelative(fullModuleName, ide.workspace.projects.firstIterator.data.topNode.path, fullModuleName);
-                           MakeSystemPath(fullModuleName);
-                           ide.outputView.buildBox.Logf("   %s%s%s\n", inFileIncludedFrom ? stringInFileIncludedFrom : "", fullModuleName, colon);
+                           FileAttribs found = 0;
+                           Project foundProject = this;
+                           if(moduleName[0])
+                           {
+                              char * loc = strstr(moduleName, ":");
+                              if(loc) *loc = 0;
+                              strcpy(fullModuleName, topNode.path);
+                              PathCat(fullModuleName, moduleName);
+                              found = FileExists(fullModuleName);
+                              if(!found && !strcmp(ext, "c"))
+                              {
+                                 char ecName[MAX_LOCATION];
+                                 ChangeExtension(fullModuleName, "ec", ecName);
+                                 found = FileExists(ecName);
+                              }
+                              if(!found)
+                              {
+                                 char path[MAX_LOCATION];
+                                 if(ide && ide.workspace)
+                                 {
+                                    for(prj : ide.workspace.projects)
+                                    {
+                                       ProjectNode node;
+                                       MakePathRelative(fullModuleName, prj.topNode.path, path);
+
+                                       if((node = prj.topNode.FindWithPath(path, false)))
+                                       {
+                                          strcpy(fullModuleName, prj.topNode.path);
+                                          PathCatSlash(fullModuleName, node.path);
+                                          PathCatSlash(fullModuleName, node.name);
+                                          found = FileExists(fullModuleName);
+                                          if(found)
+                                          {
+                                             foundProject = prj;
+                                             break;
+                                          }
+                                       }
+                                    }
+                                    if(!found && !strchr(moduleName, '/') && !strchr(moduleName, '\\'))
+                                    {
+                                       for(prj : ide.workspace.projects)
+                                       {
+                                          ProjectNode node;
+                                          if((node = prj.topNode.Find(moduleName, false)))
+                                          {
+                                             strcpy(fullModuleName, prj.topNode.path);
+                                             PathCatSlash(fullModuleName, node.path);
+                                             PathCatSlash(fullModuleName, node.name);
+                                             found = FileExists(fullModuleName);
+                                             if(found)
+                                             {
+                                                foundProject = prj;
+                                                break;
+                                             }
+                                          }
+                                       }
+                                    }
+                                 }
+                              }
+                              if(found)
+                              {
+                                 MakePathRelative(fullModuleName, ide.workspace.projects.firstIterator.data.topNode.path, fullModuleName);
+                                 MakeSystemPath(fullModuleName);
+                              }
+                              else
+                                 strcpy(fullModuleName, moduleName);
+                              if(loc)
+                              {
+                                 strcat(fullModuleName, ":");
+                                 strcat(fullModuleName, loc + 1);
+                              }
+                           }
+                           else
+                              fullModuleName[0] = 0;
+                           ide.outputView.buildBox.Logf("   %s%s%s%s\n", inFileIncludedFrom ? stringInFileIncludedFrom : from ? stringFrom : "", fullModuleName, sayError, colon);
                         }
                      }
                      else
@@ -1916,6 +2032,7 @@ private:
                (String)makeTargets, topNode.path, (justPrint || (mode != normal && mode != cObject)) ? " -n" : "", makeFilePath);
          if(justPrint)
             ide.outputView.buildBox.Logf("%s\n", command);
+
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
             bool found = false;

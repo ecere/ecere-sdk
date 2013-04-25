@@ -1396,6 +1396,7 @@ class ProjectView : Window
          Compile(node.project, nodes, mods.ctrl && mods.shift, debugPrecompile);
          delete nodes;
       }
+      return true;
    }
 
    bool FileDebugCompile(MenuItem selection, Modifiers mods)
@@ -1409,6 +1410,7 @@ class ProjectView : Window
          Compile(node.project, nodes, mods.ctrl && mods.shift, debugCompile);
          delete nodes;
       }
+      return true;
    }
 
    bool FileDebugGenerateSymbols(MenuItem selection, Modifiers mods)
@@ -1422,6 +1424,7 @@ class ProjectView : Window
          Compile(node.project, nodes, mods.ctrl && mods.shift, debugGenerateSymbols);
          delete nodes;
       }
+      return true;
    }
 
    Project GetSelectedProject(bool useSelection)
@@ -1606,11 +1609,13 @@ class ProjectView : Window
          
          {
             char moduleName[MAX_LOCATION], filePath[MAX_LOCATION];
+            char ext[MAX_EXTENSION];
             char * bracket;
             if(colon)
             {
                char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
-               char * start = inFileIncludedFrom ? line + strlen(stringInFileIncludedFrom) : line;
+               char * from = strstr(line, "from ");
+               char * start = inFileIncludedFrom ? inFileIncludedFrom + strlen(stringInFileIncludedFrom) : from ? from + strlen("from ") : line;
                int len = (int)(colon - start);
                len = Min(len, MAX_LOCATION-1);
                // Cut module name
@@ -1639,6 +1644,9 @@ class ProjectView : Window
                else
                   moduleName[0] = '\0';
             }
+            GetExtension(moduleName, ext);
+            if(!strcmp(ext, "a") || !strcmp(ext, "o") || !strcmp(ext, "lib") || !strcmp(ext, "dll"))
+               moduleName[0] = 0;    // Avoid opening binary files
             if(moduleName[0])
             {
                CodeEditor codeEditor;
@@ -1646,21 +1654,47 @@ class ProjectView : Window
                PathCatSlash(filePath, moduleName);
       
                codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal);
+               if(!codeEditor && !strcmp(ext, "c"))
+               {
+                  char ecName[MAX_LOCATION];
+                  ChangeExtension(filePath, "ec", ecName);
+                  codeEditor = (CodeEditor)ide.OpenFile(ecName, normal, true, null, no, normal);
+               }
                if(!codeEditor)
                {
-                  char name[MAX_LOCATION];
+                  char path[MAX_LOCATION];
                   // TOFIX: Improve on this, don't use only filename, make a function
                   if(ide && ide.workspace)
                   {
                      for(prj : ide.workspace.projects)
                      {
-                        if(prj.topNode.FindWithPath(moduleName, false))
+                        ProjectNode node;
+                        MakePathRelative(filePath, prj.topNode.path, path);
+
+                        if((node = prj.topNode.FindWithPath(path, false)))
                         {
                            strcpy(filePath, prj.topNode.path);
-                           PathCatSlash(filePath, moduleName);
+                           PathCatSlash(filePath, node.path);
+                           PathCatSlash(filePath, node.name);
                            codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal);
                            if(codeEditor)
                               break;
+                        }
+                     }
+                     if(!codeEditor && !strchr(moduleName, '/') && !strchr(moduleName, '\\'))
+                     {
+                        for(prj : ide.workspace.projects)
+                        {
+                           ProjectNode node;
+                           if((node = prj.topNode.Find(moduleName, false)))
+                           {
+                              strcpy(filePath, prj.topNode.path);
+                              PathCatSlash(filePath, node.path);
+                              PathCatSlash(filePath, node.name);
+                              codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal);
+                              if(codeEditor)
+                                 break;
+                           }
                         }
                      }
                   }
