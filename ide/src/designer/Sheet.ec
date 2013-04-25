@@ -1146,9 +1146,9 @@ class Sheet : Window
          codeEditor.designer.Update(null);
          codeEditor.Update(null);   // patch for redraw bug if on top
 
+         dataBox.editor.font = { propertyPtr.font.faceName, propertyPtr.font.size, propertyPtr.font.bold };
          ListProperties(false);
 
-         dataBox.editor.font = { propertyPtr.font.faceName, propertyPtr.font.size, propertyPtr.font.bold };
          codeEditor.ModifyCode();
       }
    }
