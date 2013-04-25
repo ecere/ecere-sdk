@@ -14,6 +14,15 @@ static define app = ((GuiApplication)__thisModule);
 
 #define OPTION(x) ((uint)(&((ProjectOptions)0).x))
 
+static void OutputLog(char * string)
+{
+#ifdef MAKEFILE_GENERATOR
+   printf(string);
+#else
+   ide.outputView.buildBox.Log(string);
+#endif
+}
+
 bool eString_PathInsideOfMore(char * path, char * of, char * pathRest)
 {
    if(!path[0] || !of[0])
@@ -44,7 +53,7 @@ enum NodeIcons
 {
    genFile, ewsFile, epjFile, folder, openFolder, ecFile, ehFile,
    sFile, cFile, hFile, cppFile, hppFile, textFile, webFile, pictureFile, soundFile,
-   archiveFile, packageFile, opticalMediaImageFile, mFile;
+   archiveFile, packageFile, opticalMediaImageFile, mFile, mmFile;
 
    NodeIcons ::SelectFileIcon(char * filePath)
    {
@@ -77,6 +86,8 @@ enum NodeIcons
                icon = hFile;
             else if(!strcmpi(extension, "m"))
                icon = mFile;
+            else if(!strcmpi(extension, "mm"))
+               icon = mmFile;
             else if(!strcmpi(extension, "txt") || !strcmpi(extension, "text") ||
                   !strcmpi(extension, "nfo") || !strcmpi(extension, "info"))
                icon = textFile;
@@ -1278,7 +1289,7 @@ private:
          GetExtension(name, extension);
          if(!strcmpi(extension, "ec") || !strcmpi(extension, "s") || !strcmpi(extension, "c") ||
                !strcmpi(extension, "cpp") || !strcmpi(extension, "cc") ||
-               !strcmpi(extension, "cxx") || !strcmpi(extension, "m"))
+               !strcmpi(extension, "cxx") || !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
          {
             char moduleName[MAX_FILENAME];
             NameCollisionInfo info;
@@ -1302,6 +1313,8 @@ private:
                info.cxx = true;
             else if(!strcmpi(extension, "m"))
                info.m = true;
+            else if(!strcmpi(extension, "mm"))
+               info.mm = true;
             namesInfo[moduleName] = info;
          }
       }
@@ -1353,7 +1366,7 @@ private:
          {
             if(!strcmpi(extension, "s") || !strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
                   !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
-                  !strcmpi(extension, "m"))
+                  !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
             {
                char modulePath[MAX_LOCATION];
 
@@ -1378,7 +1391,7 @@ private:
          }
          else if(!strcmpi(extension, "s") || !strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
                !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
-               !strcmpi(extension, "m"))
+               !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
          {
             if(printType == objects)
             {
@@ -1815,7 +1828,7 @@ private:
                !strcmpi(extension, "cxx"))*/
          if(!strcmpi(extension, "s") || !strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
                !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
-               !strcmpi(extension, "m") || !strcmpi(extension, "ec"))
+               !strcmpi(extension, "m") || !strcmpi(extension, "mm") || !strcmpi(extension, "ec"))
          {
             DualPipe dep;
             char command[2048];
@@ -2268,11 +2281,13 @@ private:
    {
       if(type == file)
       {
+         bool headerAltFailed = false;
          bool collision;
          char extension[MAX_EXTENSION];
          char moduleName[MAX_FILENAME];
          NameCollisionInfo info;
          Project prj = property::project;
+         Map<String, String> headerToSource { [ { "eh", "ec" }, { "h", "c" }, { "hh", "cc" }, { "hpp", "cpp" }, { "hxx", "cxx" } ] };
 
          GetExtension(name, extension);
          ReplaceSpaces(moduleName, name);
@@ -2280,17 +2295,47 @@ private:
          info = namesInfo[moduleName];
          collision = info ? info.IsExtensionColliding(extension) : false;
 
-         output.concat(" \"");
-         output.concat(objDir); //.concat(" $(OBJ)");
-         output.concat("/");
-         if(collision)
+         for(h2s : headerToSource)
          {
-            strcat(moduleName, ".");
-            strcat(moduleName, extension);
+            if(!strcmpi(extension, &h2s))
+            {
+               char filePath[MAX_LOCATION];
+               GetFullFilePath(filePath);
+               OutputLog($"No compilation required for header file "); OutputLog(filePath); OutputLog("\n");
+               ChangeExtension(moduleName, h2s, moduleName);
+               if(prj.topNode.Find(moduleName, false))
+               {
+                  strcpy(extension, h2s);
+                  collision = info ? info.IsExtensionColliding(extension) : false;
+                  ChangeExtension(filePath, h2s, filePath);
+                  OutputLog($"Compiling source file "); OutputLog(filePath); OutputLog($" instead\n");
+                  StripExtension(moduleName);
+               }
+               else
+               {
+                  headerAltFailed = true;
+                  OutputLog($"Unable to locate source file "); OutputLog(moduleName); OutputLog($" to compile instead of "); OutputLog(filePath); OutputLog($"\n");
+                  StripExtension(moduleName);
+               }
+               break;
+            }
          }
-         strcat(moduleName, ".o");
-         output.concat(moduleName);
-         output.concat("\"");
+
+         if(!headerAltFailed)
+         {
+            output.concat(" \"");
+            output.concat(objDir); //.concat(" $(OBJ)");
+            output.concat("/");
+
+            if(collision)
+            {
+               strcat(moduleName, ".");
+               strcat(moduleName, extension);
+            }
+            strcat(moduleName, ".o");
+            output.concat(moduleName);
+            output.concat("\"");
+         }
       }
       else if(files)
       {
@@ -3013,6 +3058,7 @@ class NameCollisionInfo
    bool cc;
    bool cxx;
    bool m;
+   bool mm;
    byte count;
 
    bool IsExtensionColliding(char * extension)
@@ -3024,7 +3070,8 @@ class NameCollisionInfo
              (!strcmpi(extension, "cpp") && (ec || c || s)) ||
              (!strcmpi(extension, "cc")  && (ec || c || s || cpp)) ||
              (!strcmpi(extension, "cxx") && (ec || c || s || cpp || cc)) ||
-              !strcmpi(extension, "m")))
+             (!strcmpi(extension, "m")   && (ec || c || s || cpp || cc || m)) ||
+              !strcmpi(extension, "mm")))
          colliding = true;
       else
          colliding = false;

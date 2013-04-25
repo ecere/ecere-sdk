@@ -2014,6 +2014,10 @@ private:
          }
          ChangeWorkingDir(oldwd);
       }
+      else if(onlyNodes && strlen(makeTargets) == 0)
+      {
+         ide.outputView.buildBox.Log("No targets to compile.\n");
+      }
       else
       {
          char cfDir[MAX_LOCATION];

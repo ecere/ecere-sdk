@@ -82,7 +82,8 @@ static char * iconNames[] =
    "<:ecere>mimeTypes/package.png",                /*archiveFile*/
    "<:ecere>mimeTypes/packageSoftware.png",        /*packageFile*/
    "<:ecere>mimeTypes/packageOpticalDisc.png",     /*opticalMediaImageFile*/
-   "<:ecere>mimeTypes/file.png"                    /*mFile*/ //TODO: create icon for mfile
+   "<:ecere>mimeTypes/file.png",                   /*mFile*/ //TODO: create icon for .m file
+   "<:ecere>mimeTypes/file.png"                    /*mmFile*/ //TODO: create icon for .mm file
 };
 
 enum PrepareMakefileMethod { normal, force, forceExists };
