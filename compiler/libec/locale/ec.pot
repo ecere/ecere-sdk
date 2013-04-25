@@ -44,7 +44,7 @@ msgstr "Couldn't determine type of array elements\n"
 msgid "Couldn't find member %s to override\n"
 msgstr "Couldn't find member %s to override\n"
 
-#: ./src/loadSymbols.ec:718
+#: ./src/loadSymbols.ec:720
 msgid "Couldn't open %s\n"
 msgstr "Couldn't open %s\n"
 
@@ -126,7 +126,7 @@ msgstr "Public %s making use of a private class\n"
 msgid "Recursion in defined expression %s\n"
 msgstr "Recursion in defined expression %s\n"
 
-#: ./src/loadSymbols.ec:1002
+#: ./src/loadSymbols.ec:1004
 msgid "Redefinition of %s (defining as %s, already defined as %s)\n"
 msgstr "Redefinition of %s (defining as %s, already defined as %s)\n"
 

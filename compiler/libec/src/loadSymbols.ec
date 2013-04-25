@@ -715,7 +715,9 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
    }
    else if(importType != comCheckImport)
    {
-      Compiler_Error($"Couldn't open %s\n", fileName);
+      char sysFileName[MAX_LOCATION];
+      GetSystemPathBuffer(sysFileName, fileName);
+      Compiler_Error($"Couldn't open %s\n", sysFileName);
    }
    return globalInstance;
 }
