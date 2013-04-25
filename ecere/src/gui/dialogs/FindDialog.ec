@@ -89,7 +89,7 @@ private:
 
    bool OnKeyHit(Key key, unichar ch)
    {
-      if(ch)
+      if(ch && !key.alt && !key.ctrl && !key.shift && (matchCase.active || wholeWord.active))
       {
          findWhat.Activate();
          return findWhat.OnKeyHit(key, ch);

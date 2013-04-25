@@ -594,7 +594,7 @@ private:
 
    bool OnKeyHit(Key key, unichar ch)
    {
-      if(ch)
+      if(ch && !key.alt && !key.ctrl && !key.shift && (contentMatchCase.active || contentWholeWord.active))
       {
          findContent.Activate();
          return findContent.OnKeyHit(key, ch);
