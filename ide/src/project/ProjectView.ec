@@ -1616,8 +1616,10 @@ class ProjectView : Window
                char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
                char * from = strstr(line, "from ");
                char * start = inFileIncludedFrom ? inFileIncludedFrom + strlen(stringInFileIncludedFrom) : from ? from + strlen("from ") : line;
-               int len = (int)(colon - start);
-               len = Min(len, MAX_LOCATION-1);
+               int len;
+               if(colon < start)
+                  start = line;
+               len = Min((int)(colon - start), MAX_LOCATION-1);
                // Cut module name
                strncpy(moduleName, start, len);
                moduleName[len] = '\0';
