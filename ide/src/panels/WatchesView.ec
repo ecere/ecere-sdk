@@ -155,6 +155,11 @@ class WatchesView : Window
       row.SetData(expressionField, null);
       row.SetData(typeField, null);
       row.SetData(valueField, null);
+      if(ide.workspace)
+      {
+         for(w : ide.workspace.watches)
+            w.row = null;
+      }
    }
 }
 
