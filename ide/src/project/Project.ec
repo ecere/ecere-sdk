@@ -414,6 +414,7 @@ define ProjectExtension = "epj";
 define stringInFileIncludedFrom = "In file included from ";
 define stringFrom =               "                 from ";
 
+// This function cannot accept same pointer for source and output
 void ReplaceSpaces(char * output, char * source)
 {
    int c, dc;
@@ -434,6 +435,7 @@ void ReplaceSpaces(char * output, char * source)
    output[dc] = '\0';
 }
 
+// This function cannot accept same pointer for source and output
 void ReplaceUnwantedMakeChars(char * output, char * source)
 {
    int c, dc;
@@ -1204,8 +1206,7 @@ private:
             strcpy(objDir, objDirExp.dir);
             delete objDirExp;
             ChangeCh(objDir, '\\', '/'); // TODO: this is a hack, paths should never include win32 path seperators - fix this in ProjectSettings and ProjectLoad instead
-            ReplaceSpaces(objDir, objDir);
-            strcpy(relativePath, objDir);
+            ReplaceSpaces(relativePath, objDir);
             *sl = '.';
             PathCatSlash(relativePath, moduleName);
             return true;
@@ -2495,7 +2496,11 @@ private:
 
          strcpy(objDirExpNoSpaces, GetObjDirExpression(config));
          ChangeCh(objDirExpNoSpaces, '\\', '/'); // TODO: this is a hack, paths should never include win32 path seperators - fix this in ProjectSettings and ProjectLoad instead
-         ReplaceSpaces(objDirExpNoSpaces, objDirExpNoSpaces);
+         {
+            char temp[MAX_LOCATION];
+            ReplaceSpaces(temp, objDirExpNoSpaces);
+            strcpy(objDirExpNoSpaces, temp);
+         }
          ReplaceSpaces(resDirNoSpaces, resNode.path ? resNode.path : "");
          ReplaceSpaces(fixedModuleName, moduleName);
          ReplaceSpaces(fixedConfigName, GetConfigName(config));
@@ -2598,7 +2603,7 @@ private:
          // test = GetTargetTypeIsSetByPlatform(config);
          {
             char target[MAX_LOCATION];
-            char targetNoSpaces[MAX_LOCATION];
+            char temp[MAX_LOCATION];
             if(test)
             {
                TargetTypes type;
@@ -2613,19 +2618,19 @@ private:
                      f.Printf("ifeq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(type));
 
                      GetMakefileTargetFileName(type, target, config);
-                     strcpy(targetNoSpaces, targetDir);
-                     PathCatSlash(targetNoSpaces, target);
-                     ReplaceSpaces(targetNoSpaces, targetNoSpaces);
-                     f.Printf("TARGET = %s\n", targetNoSpaces);
+                     strcpy(temp, targetDir);
+                     PathCatSlash(temp, target);
+                     ReplaceSpaces(target, temp);
+                     f.Printf("TARGET = %s\n", target);
                   }
                }
                f.Puts("else\n");
             }
             GetMakefileTargetFileName(targetType, target, config);
-            strcpy(targetNoSpaces, targetDir);
-            PathCatSlash(targetNoSpaces, target);
-            ReplaceSpaces(targetNoSpaces, targetNoSpaces);
-            f.Printf("TARGET = %s\n", targetNoSpaces);
+            strcpy(temp, targetDir);
+            PathCatSlash(temp, target);
+            ReplaceSpaces(target, temp);
+            f.Printf("TARGET = %s\n", target);
 
             if(test)
             {
