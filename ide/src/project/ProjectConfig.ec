@@ -259,6 +259,7 @@ public:
       isset { return objectsDirectory != null/*&& objectsDirectory[0]*/; }
    }
    Array<String> libraries;
+   Array<String> compilerOptions;
    Array<String> linkerOptions;
    property Array<String> libraryDirs
    {
@@ -356,6 +357,7 @@ public:
          preprocessorDefinitions = CopyArrayString(preprocessorDefinitions),
          includeDirs = CopyArrayString(includeDirs),
          libraries = CopyArrayString(libraries),
+         compilerOptions = CopyArrayString(compilerOptions),
          linkerOptions = CopyArrayString(linkerOptions),
          libraryDirs = CopyArrayString(libraryDirs),
          prebuildCommands = CopyArrayString(prebuildCommands),
@@ -379,6 +381,8 @@ public:
       PrintLn("fastMath:", fastMath);
 
       PrintLn("preprocessorDefinitions:", preprocessorDefinitions);
+      PrintLn("compilerOptions:", compilerOptions);
+      PrintLn("linkerOptions:", linkerOptions);
       PrintLn("includeDirs:", includeDirs);
 
       //...
@@ -397,6 +401,7 @@ public:
       delete targetDirectory;
       delete objectsDirectory;
       if(libraries) { libraries.Free(); delete libraries; }
+      if(compilerOptions) { compilerOptions.Free(); delete compilerOptions; }
       if(linkerOptions) { linkerOptions.Free(); delete linkerOptions; }
       if(libraryDirs) { libraryDirs.Free(); delete libraryDirs; }
       if(prebuildCommands) { prebuildCommands.Free(); delete prebuildCommands; }
@@ -430,6 +435,7 @@ private:
             !targetDirectory &&
             !objectsDirectory &&
             !libraries &&
+            !compilerOptions &&
             !linkerOptions &&
             (!libraryDirs || !libraryDirs.count) &&
             console == unset &&

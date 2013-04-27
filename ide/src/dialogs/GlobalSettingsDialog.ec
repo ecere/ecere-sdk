@@ -994,11 +994,30 @@ class CompilerOptionsTab : CompilersSubTab
       }
    }
 
-   Label lblLinkerFlags { this, position = { 8, 152 }, labeledWindow = linkerFlags };
+   Label lblCompilerFlags { this, position = { 8, 152 }, labeledWindow = compilerFlags };
+   StringListBox compilerFlags
+   {
+      this, text = $"Additional compiler flags:", hotKey = altL;
+      position = { 148, 152 }, size = { 300 };
+
+      bool NotifyModified(EditBox editBox)
+      {
+         if(loadedCompiler)
+         {
+            CompilerConfig compiler = loadedCompiler;
+            compiler.compilerFlags = ((StringListBox)editBox).strings;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   }
+
+   Label lblLinkerFlags { this, position = { 8, 180 }, labeledWindow = linkerFlags };
    StringListBox linkerFlags
    {
-      this, text = $"Additional Linker flags:", hotKey = altL;
-      position = { 148, 152 }, size = { 300 };
+      this, text = $"Additional linker flags:", hotKey = altL;
+      position = { 148, 180 }, size = { 300 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -1013,11 +1032,11 @@ class CompilerOptionsTab : CompilersSubTab
       }
    }
 
-   Label lblExcludedLibraries { this, position = { 8, 180 }, labeledWindow = excludedLibraries };
+   Label lblExcludedLibraries { this, position = { 8, 208 }, labeledWindow = excludedLibraries };
    StringListBox excludedLibraries
    {
       this, text = $"Libraries to exclude:", hotKey = altX;
-      position = { 148, 180 }, size = { 300 };
+      position = { 148, 208 }, size = { 300 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -1059,6 +1078,7 @@ class CompilerOptionsTab : CompilersSubTab
          distccHosts.contents = compiler.distccHosts;
          prepDefs.strings = compiler.prepDirectives;
          excludedLibraries.strings = compiler.excludeLibs;
+         compilerFlags.strings = compiler.compilerFlags;
          linkerFlags.strings = compiler.linkerFlags;
          
          labelTargetPlatform.disabled = disabled;

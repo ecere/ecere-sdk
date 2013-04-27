@@ -2414,6 +2414,12 @@ private:
                   f.Puts(l);
                }
             }
+            if(compiler.compilerFlags && compiler.compilerFlags.count)
+            {
+               f.Puts("\nCFLAGS +=");
+               OutputListOption(f, "", compiler.compilerFlags, inPlace, true);
+               f.Puts("\n");
+            }
             if(compiler.linkerFlags && compiler.linkerFlags.count)
             {
                f.Puts("\nLDFLAGS +=");
@@ -2744,6 +2750,30 @@ private:
                   ifCount++;
                   f.Printf("ifdef %s\n", PlatformToMakefileTargetVariable(platform));
                   f.Puts("\n");
+
+                  if((projectPlatformOptions && projectPlatformOptions.options.compilerOptions && projectPlatformOptions.options.compilerOptions.count) ||
+                     (configPlatformOptions && configPlatformOptions.options.compilerOptions && configPlatformOptions.options.compilerOptions.count))
+                  {
+                     f.Puts("CFLAGS +=");
+                     if(projectPlatformOptions && projectPlatformOptions.options.compilerOptions && projectPlatformOptions.options.compilerOptions.count)
+                     {
+                        f.Puts(" \\\n\t ");
+                        for(s : projectPlatformOptions.options.compilerOptions)
+                        {
+                           f.Printf(" %s", s);
+                        }
+                     }
+                     if(configPlatformOptions && configPlatformOptions.options.compilerOptions && configPlatformOptions.options.compilerOptions.count)
+                     {
+                        f.Puts(" \\\n\t ");
+                        for(s : configPlatformOptions.options.compilerOptions)
+                        {
+                           f.Printf(" %s", s);
+                        }
+                     }
+                     f.Puts("\n");
+                     f.Puts("\n");
+                  }
 
                   if((projectPlatformOptions && projectPlatformOptions.options.linkerOptions && projectPlatformOptions.options.linkerOptions.count) ||
                      (configPlatformOptions && configPlatformOptions.options.linkerOptions && configPlatformOptions.options.linkerOptions.count))

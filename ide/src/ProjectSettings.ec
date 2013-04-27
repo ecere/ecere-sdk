@@ -76,10 +76,10 @@ class ProjectSettings : Window
    text = dialogTitle;
    background = formColor;
    borderStyle = sizable;
-   minClientSize = { 650, 490 };
+   minClientSize = { 650, 520 };
    hasClose = true;
    tabCycle = true;
-   size = { 650, 490 };
+   size = { 650, 520 };
 
    property Project project
    {
@@ -1984,10 +1984,18 @@ class CompilerTab : Tab
       text = $"No Line Numbers", hotKey = altN, option = OPTION(noLineNumbers);
    };
 
+   Label labelCompilerOptions { rightPane, this, position = { 8, 208 }, labeledWindow = compilerOptions };
+   StringArrayOptionBox compilerOptions
+   {
+      rightPane, this, size = { 290, 22 }, anchor = { left = 8, top = 224, right = 8 };
+      text = $"Compiler Options", hotKey = altO, option = OPTION(compilerOptions);
+      configReplaces = true;
+   };
+
    Label labelIncludeDirs { includeDirs.editor, labeledWindow = includeDirs, position = { 0, 6 }; };
    DirsArrayOptionBox includeDirs
    {
-      rightPane, this, size = { 290, 22 }, anchor = { left = 8, top = 208, right = 8, bottom = 8 };
+      rightPane, this, size = { 290, 22 }, anchor = { left = 8, top = 250, right = 8, bottom = 8 };
       text = $"Additional Include Directories", hotKey = altI, option = OPTION(includeDirs);
    };
 
