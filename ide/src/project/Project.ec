@@ -2056,12 +2056,8 @@ private:
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
             bool found = false;
-            if(justPrint)
-            {
-               ProcessPipeOutputRaw(f);
-               result = true;
-            }
-            else if(mode != normal && mode != cObject)
+            bool error = false;
+            if(mode != normal && mode != cObject)
             {
                char line[65536];
                while(!f.Eof())
@@ -2071,7 +2067,12 @@ private:
                   {
                      if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)))
                      {
-                        if(!found && strstr(line, "ide ") == line)
+                        if(!error && !found && strstr(line, "echo ") == line)
+                        {
+                           strcpy(command, line+5);
+                           error = true;
+                        }
+                        if(!error && !found && strstr(line, "ide ") == line)
                         {
                            strcpy(command, line);
                            found = true;
@@ -2079,11 +2080,20 @@ private:
                      }
                   }
                }
+               if(found)
+                  result = true;
+            }
+            else if(justPrint)
+            {
+               ProcessPipeOutputRaw(f);
+               result = true;
             }
             else
                result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNodes, compiler, config, bitDepth);
             delete f;
-            if(found)
+            if(error || (justPrint && found))
+               ide.outputView.buildBox.Logf("%s\n", command);
+            else if(found)
                Execute(command);
          }
          else
@@ -2359,9 +2369,9 @@ private:
             f.Printf("CPP := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cppCommand);
             f.Printf("CC := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.ccCommand);
             f.Printf("CXX := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cxxCommand);
-            f.Printf("ECP := $(if $(ECP_DEBUG),ide -debug-start $(ECERE_SDK_SRC)/compiler/ecp/ecp.epj -@,%s)\n", compiler.ecpCommand);
-            f.Printf("ECC := $(if $(ECC_DEBUG),ide -debug-start $(ECERE_SDK_SRC)/compiler/ecc/ecc.epj -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.eccCommand);
-            f.Printf("ECS := $(if $(ECS_DEBUG),ide -debug-start $(ECERE_SDK_SRC)/compiler/ecs/ecs.epj -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.ecsCommand);
+            f.Printf("ECP := $(if $(ECP_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)\n", compiler.ecpCommand);
+            f.Printf("ECC := $(if $(ECC_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecc/ecc.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.eccCommand);
+            f.Printf("ECS := $(if $(ECS_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.ecsCommand);
             f.Printf("EAR := %s\n", compiler.earCommand);
 
             f.Puts("AS := $(GCC_PREFIX)as\n");
@@ -3007,6 +3017,10 @@ private:
 
          f.Puts("objdir:\n");
             f.Puts("\t$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))\n");
+            f.Puts("\t$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)/crossplatform.mk) location.)),)\n");
+            f.Puts("\t$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG),))\n");
+            f.Puts("\t$(if $(ECERE_SDK_SRC),,$(if $(ECC_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECC_DEBUG),))\n");
+            f.Puts("\t$(if $(ECERE_SDK_SRC),,$(if $(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECS_DEBUG),))\n");
          //f.Puts("# PRE-BUILD COMMANDS\n");
          if(options && options.prebuildCommands)
          {
