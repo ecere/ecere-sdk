@@ -1764,8 +1764,12 @@ class BuildTab : Tab
             }
          }
       }
-      if(!project.config && project.topNode.configurations.count)
-         project.config = project.topNode.configurations[0];
+      if(!project.config)
+      {
+         List<ProjectConfig> configs = project.topNode.configurations;
+         if(configs && configs.count)
+            project.config = configs[0];
+      }
 
       ide.UpdateToolBarActiveConfigs(false);
    }
