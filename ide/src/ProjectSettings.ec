@@ -219,7 +219,6 @@ class ProjectSettings : Window
             project.topNode.modified = true;
             project.MarkChanges(buildTab.backupNode);
             ide.projectView.modifiedDocument = true;
-            ide.UpdateToolBarActiveConfigs(false);
             ide.projectView.Update(null);
          }
          if(prjTabControl.curTab == workspaceTab && workspaceTab.modifiedDocument)
@@ -1767,6 +1766,8 @@ class BuildTab : Tab
       }
       if(!project.config && project.topNode.configurations.count)
          project.config = project.topNode.configurations[0];
+
+      ide.UpdateToolBarActiveConfigs(false);
    }
 
    void RevertChanges()
