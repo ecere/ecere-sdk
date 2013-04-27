@@ -215,6 +215,7 @@ endif
 endif
 ifdef WIN_SHELL_COMMANDS
    echo = $(if $(1),echo $(1))
+   touch = $(if $(1),@type nul >> $(1) & @copy $(call psep,$(1)+,,) > nul 2>&1)
    cpq = $(if $(1),@cmd /c for %%I in ($(call psep,$(1))) do @copy /y %%I $(call psep,$(2)) > nul 2>&1)
    rmq = $(if $(1),-@del /f /q $(call psep,$(1)) > nul 2>&1)
    rmrq = $(if $(1),-@rmdir /q /s $(call psep,$(1)) > nul 2>&1)
@@ -222,6 +223,7 @@ ifdef WIN_SHELL_COMMANDS
    rmdirq = $(if $(1),-@rmdir /q $(call psep,$(1)) > nul 2>&1)
 else
    echo = $(if $(1),echo "$(1)")
+   touch = $(if $(1),@touch $(1))
    cpq = $(if $(1),@cp $(1) $(2))
    rmq = $(if $(1),-@rm -f $(1))
    rmrq = $(if $(1),-@rm -f -r $(1))
