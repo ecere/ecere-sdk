@@ -1793,7 +1793,7 @@ public:
                {
                   if(dataType.type == structClass)
                      ((void (*)(void *, void *))(void *)this.subProperty.Set)(propObject, subData);
-                  else if(dataType.type == unitClass || dataType.type == enumClass || dataType.type == bitClass)
+                  else if(dataType.type == unitClass || dataType.type == enumClass || dataType.type == bitClass || dataType.type == systemClass)
                   {
                      if(!strcmp(dataType.dataTypeString, "float"))
                         ((void(*)(void *,float))(void *)this.subProperty.Set)(propObject, valueSubData.f);
@@ -1811,7 +1811,7 @@ public:
                }
                if(mainDataType.type == structClass)
                   ((void (*)(void *, void *))(void *)prop.Set)(object, data);
-               else if(mainDataType.type == unitClass || mainDataType.type == enumClass || mainDataType.type == bitClass)
+               else if(mainDataType.type == unitClass || mainDataType.type == enumClass || mainDataType.type == bitClass || dataType.type == systemClass)
                {
                   if(!strcmp(mainDataType.dataTypeString, "float"))
                      ((void(*)(void *,float))(void *)prop.Set)(object, valueData.f);
