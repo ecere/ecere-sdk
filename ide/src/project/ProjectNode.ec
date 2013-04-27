@@ -1288,7 +1288,7 @@ private:
          char extension[MAX_EXTENSION];
          GetExtension(name, extension);
          if(!strcmpi(extension, "ec") || !strcmpi(extension, "s") || !strcmpi(extension, "c") ||
-               !strcmpi(extension, "cpp") || !strcmpi(extension, "cc") ||
+               !strcmpi(extension, "rc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cc") ||
                !strcmpi(extension, "cxx") || !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
          {
             char moduleName[MAX_FILENAME];
@@ -1305,6 +1305,8 @@ private:
                info.s = true;
             else if(!strcmpi(extension, "c"))
                info.c = true;
+            else if(!strcmpi(extension, "rc"))
+               info.rc = true;
             else if(!strcmpi(extension, "cpp"))
                info.cpp = true;
             else if(!strcmpi(extension, "cc"))
@@ -1369,7 +1371,6 @@ private:
                   !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
             {
                char modulePath[MAX_LOCATION];
-
                ReplaceSpaces(modulePath, path);
                ReplaceSpaces(moduleName, name);
                sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
@@ -1381,7 +1382,18 @@ private:
             if(!strcmpi(extension, "ec"))
             {
                char modulePath[MAX_LOCATION];
-
+               ReplaceUnwantedMakeChars(modulePath, path);
+               ReplaceUnwantedMakeChars(moduleName, name);
+               sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
+               items.Add(CopyString(s));
+               count++;
+            }
+         }
+         else if(printType == rcSources)
+         {
+            if(!strcmpi(extension, "rc"))
+            {
+               char modulePath[MAX_LOCATION];
                ReplaceUnwantedMakeChars(modulePath, path);
                ReplaceUnwantedMakeChars(moduleName, name);
                sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
@@ -1602,7 +1614,6 @@ private:
             OpenRulesPlatformExclusionIfs(f, &ifCount, platforms);
             f.Printf("$(OBJ)%s$(EC): %s%s.%s\n",
                moduleName, modulePath, moduleName, extension);
-            //$(CPP) -x c -E ../extras/gui/controls/DirectoriesBox.ec -o $(OBJ)DirectoriesBox$(EC)
             /*f.Printf("\t$(CPP) %s%s.%s %s$(S)\n\n",
                modulePath, moduleName, extension, moduleName);*/
 
@@ -1823,11 +1834,8 @@ private:
          char moduleName[MAX_FILENAME];
 
          GetExtension(name, extension);
-         /*if(!strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
-               !strcmpi(extension, "ec") || !strcmpi(extension, "cc") ||
-               !strcmpi(extension, "cxx"))*/
-         if(!strcmpi(extension, "s") || !strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
-               !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
+         if(!strcmpi(extension, "s") || !strcmpi(extension, "c") || !strcmpi(extension, "rc") ||
+               !strcmpi(extension, "cpp") || !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
                !strcmpi(extension, "m") || !strcmpi(extension, "mm") || !strcmpi(extension, "ec"))
          {
             DualPipe dep;
@@ -1843,6 +1851,8 @@ private:
             ReplaceSpaces(modulePath, path);
             if(modulePath[0]) strcat(modulePath, SEPS);
 
+            /*
+#if 0
             // *** Dependency command ***
             if(!strcmpi(extension, "ec"))
                sprintf(command, "%s -MT $(OBJ)%s.o -MM $(OBJ)%s.c", "$(CPP)", moduleName, moduleName);
@@ -1850,9 +1860,6 @@ private:
                sprintf(command, "%s -MT $(OBJ)%s.o -MM %s%s.%s", (!strcmpi(extension, "cc") || !strcmpi(extension, "cxx") || !strcmpi(extension, "cpp")) ? "$(CXX)" : "$(CC)",
                   moduleName, modulePath, moduleName, extension);
 
-            OpenRulesPlatformExclusionIfs(f, &ifCount, platforms);
-            /*
-#if 0
             if(!strcmpi(extension, "ec"))
             {
                f.Printf("$(OBJ)%s.o: $(OBJ)%s.c\n", moduleName, moduleName);
@@ -1930,23 +1937,38 @@ private:
             }
 #endif
          */
+            if(!strcmpi(extension, "rc"))
+            {
+               ifCount++;
+               f.Puts("ifdef WINDOWS_TARGET\n\n");
+            }
+            else
+               OpenRulesPlatformExclusionIfs(f, &ifCount, platforms);
+
             if(!strcmpi(extension, "ec"))
                f.Printf("$(OBJ)%s.o: $(OBJ)%s.c\n", moduleName, moduleName);
             else
                f.Printf("$(OBJ)%s%s%s.o: %s%s.%s\n", moduleName, 
                      collision ? "." : "", collision ? extension : "", modulePath, moduleName, extension);
-            f.Printf("\t$(%s)", (!strcmpi(extension, "cc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cxx")) ? "CXX" : "CC");
-
-            f.Puts(" $(CFLAGS)");
-            GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
-
-            if(!strcmpi(extension, "ec"))
-               f.Printf(" $(FVISIBILITY) -c $(OBJ)%s.c -o $@\n", moduleName, moduleName);
+            if(!strcmpi(extension, "cc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cxx"))
+               f.Printf("\t$(CXX)");
+            else if(!strcmpi(extension, "rc"))
+               f.Printf("\t$(GCC_PREFIX)windres $< $@\n"); //$(WINDRES) // TODO: implement CompilerConfig::windresCommand
             else
-               f.Printf(" -c %s%s.%s -o $@\n",
-                     modulePath, moduleName, !strcmpi(extension, "ec") ? "c" : extension, moduleName,
-                     collision ? "." : "", collision ? extension : "");
+               f.Printf("\t$(CC)");
 
+            if(strcmpi(extension, "rc") != 0)
+            {
+               f.Puts(" $(CFLAGS)");
+               GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
+
+               if(!strcmpi(extension, "ec"))
+                  f.Printf(" $(FVISIBILITY) -c $(OBJ)%s.c -o $@\n", moduleName, moduleName);
+               else
+                  f.Printf(" -c %s%s.%s -o $@\n",
+                        modulePath, moduleName, !strcmpi(extension, "ec") ? "c" : extension, moduleName,
+                        collision ? "." : "", collision ? extension : "");
+            }
             if(ifCount) f.Puts("endif\n");
             f.Puts("\n");
          }
@@ -3054,6 +3076,7 @@ class NameCollisionInfo
    bool ec;
    bool s;
    bool c;
+   bool rc;
    bool cpp;
    bool cc;
    bool cxx;
@@ -3066,11 +3089,12 @@ class NameCollisionInfo
       bool colliding;
       if(count > 1 &&
             ((!strcmpi(extension, "c")   && ec) ||
-             (!strcmpi(extension, "s")   && (ec || c)) ||
-             (!strcmpi(extension, "cpp") && (ec || c || s)) ||
-             (!strcmpi(extension, "cc")  && (ec || c || s || cpp)) ||
-             (!strcmpi(extension, "cxx") && (ec || c || s || cpp || cc)) ||
-             (!strcmpi(extension, "m")   && (ec || c || s || cpp || cc || m)) ||
+             (!strcmpi(extension, "rc")  && (ec || c)) ||
+             (!strcmpi(extension, "s")   && (ec || c || rc)) ||
+             (!strcmpi(extension, "cpp") && (ec || c || rc || s)) ||
+             (!strcmpi(extension, "cc")  && (ec || c || rc || s || cpp)) ||
+             (!strcmpi(extension, "cxx") && (ec || c || rc || s || cpp || cc)) ||
+             (!strcmpi(extension, "m")   && (ec || c || rc || s || cpp || cc || m)) ||
               !strcmpi(extension, "mm")))
          colliding = true;
       else

@@ -37,14 +37,6 @@
                "/usr/X11R6/lib"
             ]
          }
-      },
-      {
-         "Name" : "win32",
-         "Options" : {
-            "Libraries" : [
-               "obj/resources.o"
-            ]
-         }
       }
    ],
    "Configurations" : [
@@ -272,7 +264,8 @@
             "IDESettings.ec",
             "OldIDESettings.ec",
             "ProjectSettings.ec",
-            "licensing.ec"
+            "licensing.ec",
+            "resources.rc"
          ]
       }
    ],

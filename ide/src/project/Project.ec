@@ -406,7 +406,7 @@ static bool IsLinkerOption(String s)
 
 static byte epjSignature[] = { 'E', 'P', 'J', 0x04, 0x01, 0x12, 0x03, 0x12 };
 
-enum GenMakefilePrintTypes { objects, cObjects, symbols, imports, sources, resources, eCsources };
+enum GenMakefilePrintTypes { objects, cObjects, symbols, imports, sources, resources, eCsources, rcSources };
 
 define WorkspaceExtension = "ews";
 define ProjectExtension = "epj";
@@ -1457,6 +1457,7 @@ private:
       DynamicString cxx { };
       DynamicString strip { };
       DynamicString ar { };
+      DynamicString windres { };
       /*
       if(bitDepth == 64 && compiler.targetPlatform == win32) 
          gnuToolchainPrefix = "x86_64-w64-mingw32-";
@@ -1479,6 +1480,7 @@ private:
 
       strip.concatx(gnuToolchainPrefix, "strip ");
       ar.concatx(gnuToolchainPrefix, "ar rcs");
+      windres.concatx(gnuToolchainPrefix, "windres ");
 
       testLen = Max(testLen, ecp.size);
       testLen = Max(testLen, ecc.size);
@@ -1489,6 +1491,7 @@ private:
       testLen = Max(testLen, cxx.size);
       testLen = Max(testLen, strip.size);
       testLen = Max(testLen, ar.size);
+      testLen = Max(testLen, windres.size);
       testLen++;
 
       while(!f.Eof() && !ide.ShouldStopBuild())
@@ -1598,6 +1601,18 @@ private:
                   }
 
                   if(compilingEC) compilingEC--;
+               }
+               else if(strstr(test, windres) == test)
+               {
+                  char moduleName[MAX_FILENAME];
+                  char * module;
+                  module = strstr(line, " ");
+                  if(module) module = strstr(module+1, " ");
+                  if(module)
+                  {
+                     GetLastDirectory(module, moduleName);
+                     ide.outputView.buildBox.Logf("%s\n", moduleName);
+                  }
                }
                else if(strstr(test, ar) == test)
                   ide.outputView.buildBox.Logf($"Building library...\n");
@@ -2483,13 +2498,16 @@ private:
          // We'll have to be careful with this when merging configs where eC files can be excluded in some configs and included in others
          int numCObjects = 0;
          int numObjects = 0;
+         int numRCObjects = 0;
          bool containsCXX = false; // True if the project contains a C++ file
          bool sameObjTargetDirs;
          String objDirExp = GetObjDirExpression(config);
          TargetTypes targetType = GetTargetType(config);
 
          char cfDir[MAX_LOCATION];
-         int objectsParts = 0, eCsourcesParts = 0;
+         int objectsParts = 0;
+         int eCsourcesParts = 0;
+         int rcSourcesParts = 0;
          Array<String> listItems { };
          Map<String, int> varStringLenDiffs { };
          Map<String, NameCollisionInfo> namesInfo { };
@@ -2695,14 +2713,60 @@ private:
             }
          }
 
+         numRCObjects = topNode.GenMakefilePrintNode(f, this, rcSources, namesInfo, listItems, config, null);
+         if(numRCObjects)
+         {
+            f.Puts("ifdef WINDOWS_TARGET\n\n");
+
+            rcSourcesParts = OutputFileList(f, "_RCSOURCES", listItems, varStringLenDiffs, null);
+
+            f.Puts("RCSOURCES = $(call shwspace,$(_RCSOURCES))\n");
+            if(rcSourcesParts > 1)
+            {
+               for(c = 1; c <= rcSourcesParts; c++)
+                  f.Printf("RCSOURCES%d = $(call shwspace,$(_RCSOURCES%d))\n", c, c);
+            }
+            f.Puts("\n");
+            if(rcSourcesParts > 1)
+            {
+               int n;
+               f.Printf("%s =", "RCOBJECTS");
+               for(n = 1; n <= rcSourcesParts; n++)
+                  f.Printf(" $(%s%d)", "RCOBJECTS", n);
+               f.Puts("\n");
+               for(n = 1; n <= rcSourcesParts; n++)
+                  f.Printf("%s%d = $(call shwspace,$(addprefix $(OBJ),$(patsubst %%.rc,%%$(%s),$(notdir $(_RCSOURCES%d)))))\n", "RCOBJECTS", n, "O", n);
+            }
+            else if(rcSourcesParts == 1)
+               f.Printf("%s = $(call shwspace,$(addprefix $(OBJ),$(patsubst %%.rc,%%$(%s),$(notdir $(_RCSOURCES)))))\n", "RCOBJECTS", "O");
+            f.Puts("\n");
+
+            f.Puts("else\n");
+            f.Puts("RCSOURCES =\n");
+            f.Puts("RCOBJECTS =\n");
+            f.Puts("endif\n\n");
+         }
+
          numObjects = topNode.GenMakefilePrintNode(f, this, objects, namesInfo, listItems, config, &containsCXX);
          if(numObjects)
             objectsParts = OutputFileList(f, "_OBJECTS", listItems, varStringLenDiffs, null);
-         f.Printf("OBJECTS =%s%s%s\n", numObjects ? " $(_OBJECTS)" : "", numCObjects ? " $(ECOBJECTS)" : "", numCObjects ? " $(OBJ)$(MODULE).main$(O)" : "");
+         f.Printf("OBJECTS =%s%s%s%s\n",
+               numObjects ? " $(_OBJECTS)" : "", numCObjects ? " $(ECOBJECTS)" : "",
+               numCObjects ? " $(OBJ)$(MODULE).main$(O)" : "",
+               numRCObjects ? " $(RCOBJECTS)" : "");
          f.Puts("\n");
 
          topNode.GenMakefilePrintNode(f, this, sources, null, listItems, config, null);
-         OutputFileList(f, "SOURCES", listItems, varStringLenDiffs, numCObjects ? "$(ECSOURCES)" : null);
+         {
+            char * prefix;
+            if(numCObjects && numRCObjects)
+               prefix = "$(ECSOURCES) $(RCSOURCES)";
+            else if(numCObjects)
+               prefix = "$(ECSOURCES)";
+            else
+               prefix = null;
+            OutputFileList(f, "SOURCES", listItems, varStringLenDiffs, prefix);
+         }
 
          if(!noResources)
             resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config, null);
@@ -3026,11 +3090,18 @@ private:
          f.Puts("$(OBJECTS): | objdir\n");
 
          // This alone was breaking the tarball, object directory does not get created first (order-only rules happen last it seems!)
-         f.Printf("$(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
+         f.Printf("$(TARGET): $(SOURCES)%s $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir%s\n",
+               rcSourcesParts ? " $(RCSOURCES)" : "", sameObjTargetDirs ? "" : " targetdir");
 
          f.Printf("\t@$(call rmq,$(OBJ)linkobjects.lst)\n");
          f.Printf("\t@$(call touch,$(OBJ)linkobjects.lst)\n");
          OutputLinkObjectActions(f, "_OBJECTS", objectsParts);
+         if(rcSourcesParts)
+         {
+            f.Puts("ifdef WINDOWS_TARGET\n");
+            OutputLinkObjectActions(f, "RCOBJECTS", rcSourcesParts);
+            f.Puts("endif\n");
+         }
          if(numCObjects)
          {
             f.Printf("\t@$(call echo,$(OBJ)$(MODULE).main$(O)) >> $(OBJ)linkobjects.lst\n");
@@ -3156,6 +3227,12 @@ private:
          f.Puts("clean: cleantarget\n");
          f.Printf("\t$(call rmq,$(OBJ)linkobjects.lst)\n");
          OutputCleanActions(f, "_OBJECTS", objectsParts);
+         if(rcSourcesParts)
+         {
+            f.Puts("ifdef WINDOWS_TARGET\n");
+            OutputCleanActions(f, "RCOBJECTS", rcSourcesParts);
+            f.Puts("endif\n");
+         }
          if(numCObjects)
          {
             f.Printf("\t$(call rmq,%s)\n", "$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S)");
