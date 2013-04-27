@@ -4,23 +4,14 @@ ifneq "$V" "1"
 endif
 
 CONFIG := release
-PRECOMPILED_SOURCES = libec/precompiled/expression.c libec/precompiled/grammar.c libec/precompiled/grammar.bowl libec/precompiled/type.c
 
 include ../crossplatform.mk
 include ../default.cf
 
 all: ecp ecc ecs
 
-OBJ = libec/obj/$(CONFIG).$(TARGET_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
-
 libec:
 	@$(call echo,Building 2nd stage libec...)
-ifeq "$(wildcard libec/precompiled)" "libec/precompiled"
-ifneq "$(wildcard $(OBJ))" "$(OBJ)"
-	$(call mkdirq,$(OBJ))
-endif
-	$(call cpq,$(PRECOMPILED_SOURCES),$(OBJ))
-endif
 	cd libec && $(MAKE)
 
 ecp: libec
