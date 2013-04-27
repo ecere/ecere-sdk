@@ -1,4 +1,4 @@
-.PHONY: all objdir cleantarget clean realclean distclean
+.PHONY: all objdir cleantarget clean realclean distclean fixprecompile
 
 # CORE VARIABLES
 
@@ -95,6 +95,7 @@ SOURCES = $(ECSOURCES) \
 # PRECOMPILED: added precompiled files list
 
 PRECOMPILED_LIST = expression.c grammar.c grammar.bowl type.c
+PRECOMPILED_SOURCES = $(addprefix precompiled/,$(PRECOMPILED_LIST))
 PRECOMPILED_OBJECTS = $(addprefix $(OBJ),$(PRECOMPILED_LIST))
 
 RESOURCES = \
@@ -171,6 +172,10 @@ endif
 
 
 # PRECOMPILED: added file copy rules
+
+fixprecompile:
+	$(call touch,$(PRECOMPILED_SOURCES))
+	@$(call echo,Done.)
 
 $(OBJ)expression.c:: $(if $(wildcard precompiled/expression.c),precompiled/expression.c,) | objdir
 	$(if $(wildcard precompiled/expression.c),$(call cpq,precompiled/expression.c,$@),)

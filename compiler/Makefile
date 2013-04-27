@@ -1,4 +1,4 @@
-.PHONY: all bootstrap cleantarget clean realclean distclean libec ecp ecc ecs
+.PHONY: all bootstrap cleantarget clean realclean distclean libec ecp ecc ecs fixprecompile
 ifneq "$V" "1"
 .SILENT:
 endif
@@ -9,6 +9,9 @@ include ../crossplatform.mk
 include ../default.cf
 
 all: ecp ecc ecs
+
+fixprecompile:
+	cd libec && $(MAKE) fixprecompile
 
 libec:
 	@$(call echo,Building 2nd stage libec...)

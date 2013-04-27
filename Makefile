@@ -1,4 +1,4 @@
-.PHONY: all clean realclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make ide documentor eda prepcodeguard codeguard
+.PHONY: all clean realclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make ide documentor eda prepcodeguard codeguard fixprecompile
 ifneq "$V" "1"
 .SILENT:
 endif
@@ -211,6 +211,9 @@ ear: ecere ecerevanilla
 	@$(call echo,Building ear...)
 	cd ear && cd cmd && $(MAKE) cleantarget
 	cd ear && $(MAKE)
+
+fixprecompile:
+	cd compiler && $(MAKE) fixprecompile
 
 compiler: ecere ear
 ifdef CROSS_TARGET
