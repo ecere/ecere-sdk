@@ -6,6 +6,7 @@
 *.sym
 *.main.ec
 *.bowl
+linkobjects.lst
 
 # Intermediate dirs
 #obj/**/*.c
