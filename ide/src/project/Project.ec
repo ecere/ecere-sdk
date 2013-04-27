@@ -3004,7 +3004,7 @@ private:
             // Main Module (Linking) for ECERE C modules
             f.Puts("$(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)\n");
             // use of objDirExpNoSpaces used instead of $(OBJ) to prevent problematic joining of arguments in ecs
-            f.Printf("\t$(ECS)%s $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols %s -o $(OBJ)$(MODULE).main.ec\n", 
+            f.Printf("\t$(ECS)%s $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols %s -o $@\n",
                GetConsole(config) ? " -console" : "", objDirExpNoSpaces);
             f.Puts("\n");
             // Main Module (Linking) for ECERE C modules
@@ -3012,7 +3012,7 @@ private:
             f.Puts("\t$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS)"
                   " -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)\n");
             f.Puts("\t$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY)"
-                  " -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.c -symbols $(OBJ)\n");
+                  " -c $(OBJ)$(MODULE).main.ec -o $@ -symbols $(OBJ)\n");
             f.Puts("\n");
          }
 
@@ -3289,7 +3289,7 @@ private:
          {
 #endif
             f.Puts("$(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c\n");
-            f.Printf("\t$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.%s -o $(OBJ)$(MODULE).main$(O)\n", extension);
+            f.Printf("\t$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.%s -o $@\n", extension);
             f.Puts("\n");
 #if 0
          }
