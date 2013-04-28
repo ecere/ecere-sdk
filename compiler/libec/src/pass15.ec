@@ -10295,16 +10295,14 @@ void ProcessExpressionType(Expression exp)
    // Let's try to support any_object & typed_object here:
    ApplyAnyObjectLogic(exp);
 
+   // Mark nohead classes as by reference, unless we're casting them to an integral type
    if(!notByReference && exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered &&
-      exp.expType._class.registered.type == noHeadClass)
+      exp.expType._class.registered.type == noHeadClass && (!exp.destType || 
+         (exp.destType.kind != intType && exp.destType.kind != int64Type && exp.destType.kind != intPtrType && exp.destType.kind != intSizeType && 
+          exp.destType.kind != longType && exp.destType.kind != shortType && exp.destType.kind != charType)))
    {
       exp.byReference = true;
    }
-   /*else if(!notByReference && exp.destType && exp.destType.kind == classType && exp.destType._class && exp.destType._class.registered &&
-      exp.destType._class.registered.type == noHeadClass)
-   {
-      exp.byReference = true;
-   }*/
    yylloc = oldyylloc;
 }
 
