@@ -1930,6 +1930,12 @@ static void ProcessExpression(Expression exp)
                      {
                         _class = FindClass("char *").registered;
                      }
+                     else if(type.kind == pointerType)
+                     {
+                        _class = eSystem_FindClass(privateModule, "uintptr");
+                        FreeType(e.expType);
+                        e.expType = ProcessTypeString("uintptr", false);
+                     }
                      else
                      {
                         char string[1024] = "";
