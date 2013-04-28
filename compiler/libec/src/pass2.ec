@@ -1862,7 +1862,7 @@ static void ProcessExpression(Expression exp)
                               else if(checkedExp.type == castExp)
                                  checkedExp = checkedExp.cast.exp;
                            }
-                           newExp = MkExpOp(null, '&', checkedExp);
+                           newExp = (typedObject && !memberExp.member.exp.expType.classObjectType) ? checkedExp : MkExpOp(null, '&', checkedExp);
                            if(parentExp && (parentExp.type == bracketsExp || parentExp.type == extensionExpressionExp))
                            {
                               parentExp.list->Remove(checkedExp);
@@ -1873,6 +1873,13 @@ static void ProcessExpression(Expression exp)
                               parentExp.cast.exp = newExp;
                               // Add a dereference level here
                               parentExp.cast.typeName.declarator = MkDeclaratorPointer(MkPointer(null, null), parentExp.cast.typeName.declarator);
+                           }
+                           if(typedObject && !memberExp.member.exp.expType.classObjectType)
+                           {
+                              Type destType { refCount = 1, kind = classType, classObjectType = ClassObjectType::anyObject };
+                              (parentExp ? parentExp : newExp).expType = checkedExp.expType;
+                              (parentExp ? parentExp : newExp).destType = destType;
+                              if(checkedExp.expType) checkedExp.expType.refCount++;
                            }
                            exp.call.arguments->Insert(null, parentExp ? parentExp : newExp);
                         }
@@ -1950,6 +1957,8 @@ static void ProcessExpression(Expression exp)
                         _class = eSystem_FindClass(privateModule, "uintptr");
                         FreeType(e.expType);
                         e.expType = ProcessTypeString("uintptr", false);
+                        // Assume null pointers means 'no object' rather than an object holding a null pointer
+                        e.byReference = e.isConstant ? true : false;
                      }
                      else
                      {

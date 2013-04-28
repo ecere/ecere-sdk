@@ -9223,7 +9223,9 @@ void ProcessExpressionType(Expression exp)
          }
          // TODO: *** This seems to be where we should add method support for all basic types ***
          if(type && (type.kind == templateType));
-         else if(type && (type.kind == classType || type.kind == subClassType || type.kind == intType || type.kind == enumType))
+         else if(type && (type.kind == classType || type.kind == subClassType || type.kind == intType || type.kind == enumType ||
+                          type.kind == int64Type || type.kind == shortType || type.kind == longType || type.kind == charType ||
+                          type.kind == intPtrType || type.kind == intSizeType || type.kind == floatType || type.kind == doubleType))
          {
             Identifier id = exp.member.member;
             TypeKind typeKind = type.kind;
@@ -9234,8 +9236,37 @@ void ProcessExpressionType(Expression exp)
                typeKind = classType;
             }
 
-            if(id && (typeKind == intType || typeKind == enumType))
-               _class = eSystem_FindClass(privateModule, "int");
+            if(id)
+            {
+               if(typeKind == intType || typeKind == enumType)
+                  _class = eSystem_FindClass(privateModule, "int");
+               else if(!_class)
+               {
+                  if(type.kind == classType && type._class && type._class.registered)
+                  {
+                     _class = type._class.registered;
+                  }
+                  else if((type.kind == arrayType || type.kind == pointerType) && type.type && type.type.kind == charType)
+                  {
+                     _class = FindClass("char *").registered;
+                  }
+                  else if(type.kind == pointerType)
+                  {
+                     _class = eSystem_FindClass(privateModule, "uintptr");
+                     FreeType(exp.expType);
+                     exp.expType = ProcessTypeString("uintptr", false);
+                     exp.byReference = false;
+                  }
+                  else
+                  {
+                     char string[1024] = "";
+                     Symbol classSym;
+                     PrintTypeNoConst(type, string, false, true);
+                     classSym = FindClass(string);
+                     if(classSym) _class = classSym.registered;
+                  }
+               }
+            }
 
             if(_class && id)
             {
