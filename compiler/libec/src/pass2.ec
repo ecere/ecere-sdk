@@ -1668,23 +1668,38 @@ static void ProcessExpression(Expression exp)
                // Added !exp.call.exp.expType.methodClass
                if(memberExp && memberExp.member.exp.expType)
                {
-                  if(memberExp.member.exp.expType.kind == classType && memberExp.member.exp.expType._class && memberExp.member.exp.expType._class.registered)
+                  Type type = memberExp.member.exp.expType;
+
+                  if(type.kind == classType && type._class && type._class.registered)
                   {
-                     ClassType type = memberExp.member.exp.expType._class.registered.type;
-                     if(type != normalClass || (method.dataType.byReference))// TESTING THIS OUT: && !memberExp.member.exp.expType.classObjectType)
-                        argClass = memberExp.member.exp.expType._class.registered;
+                     ClassType classType = memberExp.member.exp.expType._class.registered.type;
+                     if(classType != normalClass || (method.dataType.byReference))// TESTING THIS OUT: && !memberExp.member.exp.expType.classObjectType)
+                        argClass = type._class.registered;
+                  }
+                  else if(type.kind == subClassType)
+                  {
+                     argClass = FindClass("ecere::com::Class").registered;
+                  }
+                  else if((type.kind == arrayType || type.kind == pointerType) && type.type && type.type.kind == charType)
+                  {
+                     argClass = FindClass("char *").registered;
+                  }
+                  else if(type.kind == pointerType)
+                  {
+                     argClass = eSystem_FindClass(privateModule, "uintptr");
+                     FreeType(memberExp.member.exp.expType);
+                     memberExp.member.exp.expType = ProcessTypeString("uintptr", false);
+                     memberExp.member.exp.byReference = false;
                   }
                   else
                   {
-                     switch(memberExp.member.exp.expType.kind)
-                     {
-                        case intType:
-                        {
-                           argClass = eSystem_FindClass(privateModule, "int");
-                           break;
-                        }
-                     }
+                     char string[1024] = "";
+                     Symbol classSym;
+                     PrintTypeNoConst(type, string, false, true);
+                     classSym = FindClass(string);
+                     if(classSym) argClass = classSym.registered;
                   }
+
                   /*
                   if(!_class && argClass && strcmp(argClass.fullName, "class"))
                      _class = argClass;
