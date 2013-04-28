@@ -59,8 +59,8 @@ static void UnusedFunction()
    int a;
    a.OnGetString(0,0,0);
    a.OnFree();
-   a.OnCopy(null);
-   a.OnCompare(null);
+   a.OnCopy(0);
+   a.OnCompare(0);
    a.OnSaveEdit(null,0);
    a.OnEdit(null,null,0,0,0,20,0);
    a.OnGetDataFromString(null);

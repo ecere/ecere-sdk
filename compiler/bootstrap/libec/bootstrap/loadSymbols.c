@@ -974,6 +974,8 @@ char type2[1024];
 
 void ImportModule(char *  name, int importType, int importAccess, unsigned int loadDllOnly);
 
+extern char *  __ecereNameSpace__ecere__sys__GetSystemPathBuffer(char *  d, char *  p);
+
 extern void Compiler_Error(char *  format, ...);
 
 extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
@@ -1590,7 +1592,10 @@ importAccess = 1;
 }
 else if(importType != 4)
 {
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Couldn't open %s\n", (((void *)0))), fileName);
+char sysFileName[797];
+
+__ecereNameSpace__ecere__sys__GetSystemPathBuffer(sysFileName, fileName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Couldn't open %s\n", (((void *)0))), sysFileName);
 }
 return globalInstance;
 }

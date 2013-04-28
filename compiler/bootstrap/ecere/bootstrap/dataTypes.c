@@ -293,12 +293,20 @@ int __ecereVMethodID_class_OnGetDataFromString;
 
 static void __ecereNameSpace__ecere__com__UnusedFunction()
 {
+int __internalValue001;
+int __internalValue000;
 int a;
 
 ((char *  (*)(struct __ecereNameSpace__ecere__com__Class *, void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, &a, 0, 0, 0);
 ((void (*)(struct __ecereNameSpace__ecere__com__Class *, void *))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnFree])(__ecereClass_int, &a);
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, void *, void * newData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCopy])(__ecereClass_int, &a, (((void *)0)));
-((int (*)(struct __ecereNameSpace__ecere__com__Class *, void *, void * object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCompare])(__ecereClass_int, &a, (((void *)0)));
+((void (*)(struct __ecereNameSpace__ecere__com__Class *, void *, void * newData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCopy])(__ecereClass_int, &a, __extension__ ({
+__internalValue000 = 0;
+&__internalValue000;
+}));
+((int (*)(struct __ecereNameSpace__ecere__com__Class *, void *, void * object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCompare])(__ecereClass_int, &a, __extension__ ({
+__internalValue001 = 0;
+&__internalValue001;
+}));
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, void *, struct __ecereNameSpace__ecere__com__Instance * window, void *  object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnSaveEdit])(__ecereClass_int, &a, (((void *)0)), 0);
 ((struct __ecereNameSpace__ecere__com__Instance * (*)(struct __ecereNameSpace__ecere__com__Class *, void *, struct __ecereNameSpace__ecere__com__Instance * dataBox, struct __ecereNameSpace__ecere__com__Instance * obsolete, int x, int y, int w, int h, void *  userData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnEdit])(__ecereClass_int, &a, (((void *)0)), (((void *)0)), 0, 0, 0, 20, 0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, void *, char *  string))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(__ecereClass_int, &a, (((void *)0)));
@@ -1690,6 +1698,12 @@ sprintf(string, "%u", *data);
 return string;
 }
 
+static char * __ecereNameSpace__ecere__com__UIntegerHex_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, unsigned int * data, char * string, void * fieldData, unsigned int * needClass)
+{
+sprintf(string, "%x", *data);
+return string;
+}
+
 extern unsigned long strtoul(const char *  nptr, char * *  endptr, int base);
 
 static unsigned int __ecereNameSpace__ecere__com__UInteger_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * _class, unsigned int * data, char * string)
@@ -1812,6 +1826,12 @@ return string;
 static char * __ecereNameSpace__ecere__com__UInt64_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, uint64 * data, char * string, void * fieldData, unsigned int * needClass)
 {
 sprintf(string, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "%I64u" : "%llu"), *data);
+return string;
+}
+
+static char * __ecereNameSpace__ecere__com__UInt64Hex_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, uint64 * data, char * string, void * fieldData, unsigned int * needClass)
+{
+sprintf(string, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), *data);
 return string;
 }
 
@@ -2086,7 +2106,7 @@ integerClass->structSize = 0;
 integerClass->typeSize = sizeof(size_t);
 if(sizeof(size_t) == 8)
 {
-__ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetString", (((void *)0)), __ecereNameSpace__ecere__com__UInt64_OnGetString, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetString", (((void *)0)), __ecereNameSpace__ecere__com__UInt64Hex_OnGetString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetDataFromString", (((void *)0)), __ecereNameSpace__ecere__com__UInt64_OnGetDataFromString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnSerialize", (((void *)0)), __ecereNameSpace__ecere__com__Int64_OnSerialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnUnserialize", (((void *)0)), __ecereNameSpace__ecere__com__Int64_OnUnserialize, 1);
@@ -2094,11 +2114,11 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnCompare", (((voi
 }
 else
 {
-__ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnCompare", (((void *)0)), __ecereNameSpace__ecere__com__UInteger_OnCompare, 1);
-__ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetString", (((void *)0)), __ecereNameSpace__ecere__com__UInteger_OnGetString, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetString", (((void *)0)), __ecereNameSpace__ecere__com__UIntegerHex_OnGetString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetDataFromString", (((void *)0)), __ecereNameSpace__ecere__com__UInteger_OnGetDataFromString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnSerialize", (((void *)0)), __ecereNameSpace__ecere__com__Int_OnSerialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnUnserialize", (((void *)0)), __ecereNameSpace__ecere__com__Int_OnUnserialize, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnCompare", (((void *)0)), __ecereNameSpace__ecere__com__UInteger_OnCompare, 1);
 }
 integerClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "uintptr", (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), module, 4, 1);
 integerClass->type = 1000;
@@ -2108,7 +2128,7 @@ integerClass->structSize = 0;
 integerClass->typeSize = sizeof(uintptr_t);
 if(sizeof(uintptr_t) == 8)
 {
-__ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetString", (((void *)0)), __ecereNameSpace__ecere__com__UInt64_OnGetString, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetString", (((void *)0)), __ecereNameSpace__ecere__com__UInt64Hex_OnGetString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetDataFromString", (((void *)0)), __ecereNameSpace__ecere__com__UInt64_OnGetDataFromString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnSerialize", (((void *)0)), __ecereNameSpace__ecere__com__Int64_OnSerialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnUnserialize", (((void *)0)), __ecereNameSpace__ecere__com__Int64_OnUnserialize, 1);
@@ -2117,7 +2137,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnCompare", (((voi
 else
 {
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnCompare", (((void *)0)), __ecereNameSpace__ecere__com__UInteger_OnCompare, 1);
-__ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetString", (((void *)0)), __ecereNameSpace__ecere__com__UInteger_OnGetString, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetString", (((void *)0)), __ecereNameSpace__ecere__com__UIntegerHex_OnGetString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetDataFromString", (((void *)0)), __ecereNameSpace__ecere__com__UInteger_OnGetDataFromString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnSerialize", (((void *)0)), __ecereNameSpace__ecere__com__Int_OnSerialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnUnserialize", (((void *)0)), __ecereNameSpace__ecere__com__Int_OnUnserialize, 1);

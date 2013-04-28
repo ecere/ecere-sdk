@@ -14059,7 +14059,7 @@ type = ProcessTemplateParameterType(type->templateParameter);
 }
 if(type && (type->kind == 20))
 ;
-else if(type && (type->kind == 8 || type->kind == 19 || type->kind == 3 || type->kind == 15))
+else if(type && (type->kind == 8 || type->kind == 19 || type->kind == 3 || type->kind == 15 || type->kind == 4 || type->kind == 2 || type->kind == 5 || type->kind == 1 || type->kind == 22 || type->kind == 23 || type->kind == 6 || type->kind == 7))
 {
 struct Identifier * id = exp->member.member;
 int typeKind = type->kind;
@@ -14070,8 +14070,39 @@ if(typeKind == 19 && exp->member.exp->type == 26)
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "ecere::com::Class");
 typeKind = 8;
 }
-if(id && (typeKind == 3 || typeKind == 15))
+if(id)
+{
+if(typeKind == 3 || typeKind == 15)
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "int");
+else if(!_class)
+{
+if(type->kind == 8 && type->_class && type->_class->registered)
+{
+_class = type->_class->registered;
+}
+else if((type->kind == 12 || type->kind == 13) && type->type && type->type->kind == 1)
+{
+_class = FindClass("char *")->registered;
+}
+else if(type->kind == 13)
+{
+_class = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "uintptr");
+FreeType(exp->expType);
+exp->expType = ProcessTypeString("uintptr", 0x0);
+exp->byReference = 0x0;
+}
+else
+{
+char string[1024] = "";
+struct Symbol * classSym;
+
+PrintTypeNoConst(type, string, 0x0, 0x1);
+classSym = FindClass(string);
+if(classSym)
+_class = classSym->registered;
+}
+}
+}
 if(_class && id)
 {
 struct __ecereNameSpace__ecere__com__Property * prop = (((void *)0));
@@ -15042,7 +15073,7 @@ __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "couldn't determine type of %s\n", (((void *)0))), expString);
 }
 ApplyAnyObjectLogic(exp);
-if(!notByReference && exp->expType && exp->expType->kind == 8 && exp->expType->_class && exp->expType->_class->registered && exp->expType->_class->registered->type == 5)
+if(!notByReference && exp->expType && exp->expType->kind == 8 && exp->expType->_class && exp->expType->_class->registered && exp->expType->_class->registered->type == 5 && (!exp->destType || (exp->destType->kind != 3 && exp->destType->kind != 4 && exp->destType->kind != 22 && exp->destType->kind != 23 && exp->destType->kind != 5 && exp->destType->kind != 2 && exp->destType->kind != 1)))
 {
 exp->byReference = 0x1;
 }

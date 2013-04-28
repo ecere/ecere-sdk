@@ -1443,6 +1443,8 @@ extern void FinishTemplatesContext(struct Context * context);
 
 extern struct Specifier * MkStructOrUnion(int type, struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * definitions);
 
+extern struct Type * ProcessTypeString(char *  string, unsigned int staticMethod);
+
 extern void PrintTypeNoConst(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 
 extern int ComputeTypeSize(struct Type * type);
@@ -2579,23 +2581,39 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*funcDecl->function
 typeName = MkTypeName(specs, decl);
 if(memberExp && memberExp->member.exp->expType)
 {
-if(memberExp->member.exp->expType->kind == 8 && memberExp->member.exp->expType->_class && memberExp->member.exp->expType->_class->registered)
-{
-int type = memberExp->member.exp->expType->_class->registered->type;
+struct Type * type = memberExp->member.exp->expType;
 
-if(type != 0 || method->dataType->byReference)
-argClass = memberExp->member.exp->expType->_class->registered;
+if(type->kind == 8 && type->_class && type->_class->registered)
+{
+int classType = memberExp->member.exp->expType->_class->registered->type;
+
+if(classType != 0 || method->dataType->byReference)
+argClass = type->_class->registered;
+}
+else if(type->kind == 19)
+{
+argClass = FindClass("ecere::com::Class")->registered;
+}
+else if((type->kind == 12 || type->kind == 13) && type->type && type->type->kind == 1)
+{
+argClass = FindClass("char *")->registered;
+}
+else if(type->kind == 13)
+{
+argClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "uintptr");
+FreeType(memberExp->member.exp->expType);
+memberExp->member.exp->expType = ProcessTypeString("uintptr", 0x0);
+memberExp->member.exp->byReference = 0x0;
 }
 else
 {
-switch(memberExp->member.exp->expType->kind)
-{
-case 3:
-{
-argClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "int");
-break;
-}
-}
+char string[1024] = "";
+struct Symbol * classSym;
+
+PrintTypeNoConst(type, string, 0x0, 0x1);
+classSym = FindClass(string);
+if(classSym)
+argClass = classSym->registered;
 }
 }
 if(!exp->call.exp->expType->methodClass && (!memberExp || !_class) && memberExp->member.exp->expType && memberExp->member.exp->expType->classObjectType)
@@ -2690,7 +2708,7 @@ checkedExp = (*checkedExp->list).last;
 else if(checkedExp->type == 11)
 checkedExp = checkedExp->cast.exp;
 }
-newExp = MkExpOp((((void *)0)), '&', checkedExp);
+newExp = (typedObject && !memberExp->member.exp->expType->classObjectType) ? checkedExp : MkExpOp((((void *)0)), '&', checkedExp);
 if(parentExp && (parentExp->type == 5 || parentExp->type == 34))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*parentExp->list), checkedExp);
@@ -2700,6 +2718,15 @@ else if(parentExp && parentExp->type == 11)
 {
 parentExp->cast.exp = newExp;
 parentExp->cast.typeName->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), parentExp->cast.typeName->declarator);
+}
+if(typedObject && !memberExp->member.exp->expType->classObjectType)
+{
+struct Type * destType = (destType = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), destType->refCount = 1, destType->kind = 8, destType->classObjectType = 3, destType);
+
+(parentExp ? parentExp : newExp)->expType = checkedExp->expType;
+(parentExp ? parentExp : newExp)->destType = destType;
+if(checkedExp->expType)
+checkedExp->expType->refCount++;
 }
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), parentExp ? parentExp : newExp);
 }
@@ -2764,6 +2791,13 @@ _class = FindClass("ecere::com::Class")->registered;
 else if((type->kind == 12 || type->kind == 13) && type->type && type->type->kind == 1)
 {
 _class = FindClass("char *")->registered;
+}
+else if(type->kind == 13)
+{
+_class = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "uintptr");
+FreeType(e->expType);
+e->expType = ProcessTypeString("uintptr", 0x0);
+e->byReference = e->isConstant ? 0x1 : 0x0;
 }
 else
 {
