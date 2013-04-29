@@ -9877,6 +9877,7 @@ if(found && member->initializer && member->initializer->type == 0)
 {
 struct Expression * value = member->initializer->exp;
 struct Type * type = (((void *)0));
+unsigned int deepMember = 0x0;
 
 if(prop)
 {
@@ -9890,6 +9891,7 @@ type = dataMember->dataType;
 }
 if(ident && ident->next)
 {
+deepMember = 0x1;
 for(ident = ident->next; ident && type; ident = ident->next)
 {
 if(type->kind == 8)
@@ -9927,7 +9929,7 @@ if(type)
 type->refCount++;
 ComputeExpression(value);
 }
-if(value && (_class->type == 1 || _class->type == 0 || _class->type == 5))
+if(!deepMember && type && value && (_class->type == 1 || _class->type == 0 || _class->type == 5))
 {
 if(type->kind == 8)
 {
@@ -9999,10 +10001,18 @@ else if(prop)
 {
 if(value->type == 1 && value->instance->data)
 {
+if(type->kind == 8)
+{
+struct __ecereNameSpace__ecere__com__Class * _class = type->_class->registered;
+
+if(_class && (_class->type != 0 || __ecereNameSpace__ecere__com__eClass_IsDerived(((struct __ecereNameSpace__ecere__com__Instance *)(char *)((struct __ecereNameSpace__ecere__com__Instance *)value->instance->data))->_class, _class)))
+{
 void (* Set)(void *, void *) = (void *)prop->Set;
 
 Set(inst->data, value->instance->data);
 PopulateInstance(inst);
+}
+}
 }
 else if(value->type == 2)
 {
@@ -10061,7 +10071,7 @@ ReadString(temp, value->string);
 }
 }
 }
-else if(_class->type == 3)
+else if(!deepMember && type && _class->type == 3)
 {
 if(prop)
 {
@@ -10104,7 +10114,7 @@ break;
 }
 }
 }
-else if(_class->type == 2)
+else if(!deepMember && type && _class->type == 2)
 {
 if(prop)
 {

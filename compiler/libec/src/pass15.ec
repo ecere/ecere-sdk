@@ -4621,6 +4621,7 @@ void ComputeInstantiation(Expression exp)
                      {
                         Expression value = member.initializer.exp;
                         Type type = null;
+                        bool deepMember = false;
                         if(prop)
                         {
                            type = prop.dataType;
@@ -4635,6 +4636,8 @@ void ComputeInstantiation(Expression exp)
 
                         if(ident && ident.next)
                         {
+                           deepMember = true;
+
                            // for(; ident && type; ident = ident.next)
                            for(ident = ident.next; ident && type; ident = ident.next)
                            {
@@ -4673,7 +4676,7 @@ void ComputeInstantiation(Expression exp)
                            if(type) type.refCount++;
                            ComputeExpression(value);
                         }
-                        if(value && (_class.type == structClass || _class.type == normalClass || _class.type == noHeadClass /*&& value.expType.kind == type.kind*/))
+                        if(!deepMember && type && value && (_class.type == structClass || _class.type == normalClass || _class.type == noHeadClass /*&& value.expType.kind == type.kind*/))
                         {
                            if(type.kind == classType)
                            {
@@ -4745,9 +4748,16 @@ void ComputeInstantiation(Expression exp)
                            {
                               if(value.type == instanceExp && value.instance.data)
                               {
-                                 void (*Set)(void *, void *) = (void *)prop.Set;
-                                 Set(inst.data, value.instance.data);
-                                 PopulateInstance(inst);
+                                 if(type.kind == classType)
+                                 {
+                                    Class _class = type._class.registered;
+                                    if(_class && (_class.type != normalClass || eClass_IsDerived(((Instance)value.instance.data)._class, _class)))
+                                    {
+                                       void (*Set)(void *, void *) = (void *)prop.Set;
+                                       Set(inst.data, value.instance.data);
+                                       PopulateInstance(inst);
+                                    }
+                                 }
                               }
                               else if(value.type == constantExp)
                               {
@@ -4799,7 +4809,7 @@ void ComputeInstantiation(Expression exp)
                               }
                            }
                         }
-                        else if(_class.type == unitClass)
+                        else if(!deepMember && type && _class.type == unitClass)
                         {
                            if(prop)
                            {
@@ -4841,7 +4851,7 @@ void ComputeInstantiation(Expression exp)
                               }
                            }
                         }
-                        else if(_class.type == bitClass)
+                        else if(!deepMember && type && _class.type == bitClass)
                         {
                            if(prop)
                            {
