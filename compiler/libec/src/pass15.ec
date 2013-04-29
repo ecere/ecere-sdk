@@ -4420,7 +4420,11 @@ void PopulateInstance(Instantiation inst)
    Class _class = classSym.registered;
    DataMember dataMember;
    OldList * memberList = MkList();
-   inst.members = MkListOne(MkMembersInitList(memberList));
+   // Added this check and ->Add to prevent memory leaks on bad code
+   if(!inst.members)
+      inst.members = MkListOne(MkMembersInitList(memberList));
+   else
+      inst.members->Add(MkMembersInitList(memberList));
    for(dataMember = _class.membersAndProperties.first; dataMember; dataMember = dataMember.next)
    {
       if(!dataMember.isProperty)

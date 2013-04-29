@@ -9680,7 +9680,10 @@ struct __ecereNameSpace__ecere__com__Class * _class = classSym->registered;
 struct __ecereNameSpace__ecere__com__DataMember * dataMember;
 struct __ecereNameSpace__ecere__sys__OldList * memberList = MkList();
 
+if(!inst->members)
 inst->members = MkListOne(MkMembersInitList(memberList));
+else
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*inst->members), MkMembersInitList(memberList));
 for(dataMember = _class->membersAndProperties.first; dataMember; dataMember = dataMember->next)
 {
 if(!dataMember->isProperty)

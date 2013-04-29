@@ -2481,6 +2481,8 @@ class CodeEditor : Window
       FreeContext(this.globalContext);
       FreeIncludeFiles();
       FreeGlobalData(&this.globalData);
+      FindCtx_Terminate();
+      FindParams_Terminate();
 
       if(GetGlobalContext() == globalContext)
       {
@@ -2560,8 +2562,8 @@ class CodeEditor : Window
 
       editBox.GetSelPos(&l1, &y1, &x1, &l2, &y2, &x2, false);
 
-      defines.Free(FreeModuleDefine);
-      imports.Free(FreeModuleImport);
+      FindCtx_Terminate();
+      FindParams_Terminate();
 
       SetGlobalData(&globalData);
       SetGlobalContext(globalContext);
@@ -2601,6 +2603,8 @@ class CodeEditor : Window
 
       // TOCHECK: COULDN'T WE CALL FreeParser here?
       // Clear everything
+      FreeType(this.functionType);
+      FreeType(this.instanceType);
       this.functionType = null;
       this.instanceType = null;
 
@@ -2666,6 +2670,8 @@ class CodeEditor : Window
          ast = null;
          //SetAST(null);
       }
+      defines.Free(FreeModuleDefine);
+      imports.Free(FreeModuleImport);
 
       FreeContext(this.globalContext);
       FreeExcludedSymbols(this.excludedSymbols);
