@@ -216,8 +216,8 @@ private:
          Load();
       }
    }
-   // These must be public as they are not virtual
-   public SettingsIOResult Load()
+
+   SettingsIOResult Load()
    {
       SettingsIOResult result = GlobalSettings::Load();
       IDESettings data = (IDESettings)this.data;
@@ -298,18 +298,22 @@ private:
       return result;
    }
 
-   public void Save()
+   SettingsIOResult Save()
    {
+      SettingsIOResult result;
+
       IDESettings data = (IDESettings)this.data;
       Platform runtimePlatform = GetRuntimePlatform();
       if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
          data.ManagePortablePaths(moduleLocation, false);
       data.ForcePathSeparatorStyle(true);
-      if(!GlobalSettings::Save())
+      result = GlobalSettings::Save();
+      if(result != success)
          PrintLn("Error saving IDE settings");
       if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
          data.ManagePortablePaths(moduleLocation, true);
       CloseAndMonitor();
+      return result;
    }
 }
 

@@ -115,8 +115,7 @@ class OldIDESettings : GlobalAppSettings
       }
    }
 
-   // These must be public as they are not virtual
-   public SettingsIOResult Load()
+   SettingsIOResult Load()
    {
       SettingsIOResult result = GlobalAppSettings::Load();
       if(result == success)
@@ -214,9 +213,10 @@ class OldIDESettings : GlobalAppSettings
       return result;
    }
 
-   public void Save()
+   SettingsIOResult Save()
    {
-      if(GlobalAppSettings::Save())
+      SettingsIOResult result = GlobalAppSettings::Save();
+      if(result == success)
       {
          Array<String> configNames { };
          CompilerConfig compiler = compilerConfigs.firstIterator.data;
@@ -278,5 +278,6 @@ class OldIDESettings : GlobalAppSettings
          
          CloseAndMonitor();
       }
+      return result;
    }
 }

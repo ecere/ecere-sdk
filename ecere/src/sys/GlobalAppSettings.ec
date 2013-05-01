@@ -325,7 +325,7 @@ private:
 public:
    virtual void OnAskReloadSettings();
 
-   SettingsIOResult Load()
+   virtual SettingsIOResult Load()
    {
       SettingsIOResult result = fileNotFound;
       if(!f)
@@ -389,7 +389,7 @@ public:
       return result;
    }
 
-   SettingsIOResult Save()
+   virtual SettingsIOResult Save()
    {
       SettingsIOResult result = error;
       if(!f)
