@@ -6956,7 +6956,7 @@ public:
       }
    }
 
-   void SetText(char * format, ...)
+   private void _SetCaption(char * format, va_list args)
    {
       if(this)
       {
@@ -6964,19 +6964,32 @@ public:
          if(format)
          {
             char caption[MAX_F_STRING];
-            va_list args;
-            va_start(args, format);
             vsnprintf(caption, sizeof(caption), format, args);
             caption[sizeof(caption)-1] = 0;
-            va_end(args);
 
             this.caption = CopyString(caption);
          }
          if(created)
             UpdateCaption();
 
-         firewatchers text;
+         firewatchers caption;
       }
+   }
+
+   /*deprecated*/ void SetText(char * format, ...)
+   {
+      va_list args;
+      va_start(args, format);
+      _SetCaption(format, args);
+      va_end(args);
+   }
+
+   void SetCaption(char * format, ...)
+   {
+      va_list args;
+      va_start(args, format);
+      _SetCaption(format, args);
+      va_end(args);
    }
 
    bool Grab(Bitmap bitmap, Box box, bool decorations)
