@@ -2519,6 +2519,7 @@ class CodeEditor : Window
       char * fileName;
       ImportedModule module;
       char extension[MAX_EXTENSION];
+      PathBackup pathBackup { };
 #ifdef _TIMINGS
       Time parseCodeStart = GetTime();
       Time startTime, startFindClass;
@@ -2752,6 +2753,8 @@ class CodeEditor : Window
          int bitDepth = ide.workspace.bitDepth;
          DirExpression objDir = project.GetObjDir(compiler, config, bitDepth);
          SetSymbolsDir(objDir.dir);
+         ide.SetPath(true, compiler, config, bitDepth);
+
          delete objDir;
          delete compiler;
          // SetIncludeDirs(ide.projectView.project.config.includeDirs);
@@ -3504,6 +3507,8 @@ class CodeEditor : Window
 #endif
       if(inUseDebug && ide.projectView)
          ide.debugger.EvaluateWatches();
+
+      delete pathBackup;
    }
 
    void UpdateInstanceCodeClass(Class _class, ObjectInfo object, EditBoxStream f, Instance test, bool * prev, bool * lastIsMethod, DataMember * curMember, Class * curClass)
