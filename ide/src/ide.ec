@@ -2815,7 +2815,6 @@ class IDEWorkSpace : Window
             }
             fixSpacing[d] = '\0';
          }
-         delete passArgs;
          workspace.commandLineArgs = fixSpacing;
       }
       if(passDebugWorkDir)
@@ -2828,6 +2827,7 @@ class IDEWorkSpace : Window
 
       UpdateToolBarActiveConfigs(false);
       UpdateToolBarActiveCompilers();
+      delete passArgs;
       return true;
    }
 
