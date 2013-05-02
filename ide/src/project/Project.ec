@@ -2001,7 +2001,8 @@ private:
                   ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
                else
                {
-                  node.DeleteIntermediateFiles(compiler, config, bitDepth, namesInfo, mode == cObject ? true : false);
+                  if(mode == cObject || mode == normal)
+                     node.DeleteIntermediateFiles(compiler, config, bitDepth, namesInfo, mode == cObject ? true : false);
                   node.GetTargets(config, namesInfo, objDirExp.dir, makeTargets);
                }
             }
@@ -2037,7 +2038,7 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s %sCF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s -j%d %s%s%s -C \"%s\"%s -f \"%s\"",
+         sprintf(command, "%s %sCF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s %s-j%d %s%s%s -C \"%s\"%s -f \"%s\"",
                compiler.makeCommand,
                mode == debugPrecompile ? "ECP_DEBUG=y " : mode == debugCompile ? "ECC_DEBUG=y " : mode == debugGenerateSymbols ? "ECS_DEBUG=y " : "",
                cfDir,
@@ -2046,7 +2047,7 @@ private:
                bitDepth ? " ARCH=" : "",
                bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
                /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" :*/ "",
-               compilerName, numJobs,
+               compilerName, (mode == debugCompile || mode == debugGenerateSymbols || mode == debugPrecompile) ? "--always-make " : "", numJobs,
                compiler.ccacheEnabled ? "CCACHE=y " : "",
                compiler.distccEnabled ? "DISTCC=y " : "",
                (String)makeTargets, topNode.path, (justPrint || (mode != normal && mode != cObject)) ? " -n" : "", makeFilePath);
