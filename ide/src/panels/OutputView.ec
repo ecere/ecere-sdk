@@ -316,27 +316,27 @@ class LogBox : EditBox
    {
       // Cut the line longer than 1024 because Logf prints to a buffer (and we don't want to output crazy long lines either)
       //if(len > 1023) line[1023] = '\0';
-      int len = strlen(entry);
+      /* Fixed, but disabled this ... Not sure if there's any reason to keep it? The EditBox should be fine with long lines
+         and it's easier to copy commands and go to errors */
+      /*int len = strlen(entry);
       if(len > 1023)
       {
-         char backup[4];
          char * newStart, * start = entry;
          
          while(len > 1023)
          {
+            char backup[3];
             newStart = start + 1020;
-            strncpy(backup, newStart, 4);
-            strncpy(newStart, " \\ \0", 4);
+            strncpy(backup, newStart, 3);
+            strncpy(newStart, "\n ", 3);
             Log(start);
-            strncpy(newStart, backup, 4);
+            strncpy(newStart, backup, 3);
             start = newStart;
             len = strlen(start);
          }
-         
-         //while((len = strlen(start)) > 1023)
-         
+         Log(start);
       }
-      else
+      else*/
          Log(entry);
    }
 
