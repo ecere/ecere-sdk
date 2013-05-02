@@ -1677,7 +1677,7 @@ class CodeEditor : Window
             surface.WriteText(x, y, "(", 1);
             x += parW;
 
-            if(methodType && !methodType.staticMethod)
+            if(methodType && !methodType.staticMethod && methodType.methodClass)
             {
                int tw = 0, width;
 
@@ -1724,7 +1724,7 @@ class CodeEditor : Window
                id ++;
             }
 
-            if(!methodType || methodType.staticMethod || !type.params.first || ((Type)type.params.first).kind != voidType || type.params.count > 1)
+            if(!methodType || (methodType.staticMethod || !methodType.methodClass) || !type.params.first || ((Type)type.params.first).kind != voidType || type.params.count > 1)
             {
                for(param = type.params.first; param; param = param.next)
                {

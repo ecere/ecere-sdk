@@ -2458,7 +2458,7 @@ member = __ecereNameSpace__ecere__com__eClass_FindDataMember(_class, exp->member
 }
 }
 }
-if(!prop && !member)
+if(!prop && !member && !method)
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, exp->member.member->string, privateModule);
 if(!prop && !member && !method)
 {

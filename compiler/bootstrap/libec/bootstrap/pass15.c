@@ -14254,7 +14254,6 @@ exp->expType = MkClassType(revConvert->_class->fullName);
 }
 else if(method)
 {
-if(inCompiler)
 {
 exp->member.memberType = 2;
 }

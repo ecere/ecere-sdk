@@ -1418,7 +1418,7 @@ static void ProcessExpression(Expression exp)
                      }
                   }
                }
-               if(!prop && !member)
+               if(!prop && !member && !method)     // NOTE: Recently added the !method here, causes private methods to unprioritized
                   method = eClass_FindMethod(_class, exp.member.member.string, privateModule);
                if(!prop && !member && !method)
                {

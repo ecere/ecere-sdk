@@ -9442,7 +9442,7 @@ void ProcessExpressionType(Expression exp)
                }
                else if(method)
                {
-                  if(inCompiler)
+                  //if(inCompiler)
                   {
                      /*if(id._class)
                      {

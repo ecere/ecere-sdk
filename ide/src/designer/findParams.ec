@@ -191,6 +191,8 @@ Identifier FindParamsExpression(Expression exp, int line, int charPos)
             {
                int c;
                Type param;
+               if(type.kind == methodType)
+                  type = type.method.dataType;
 
                paramsInsideExp = exp;
                functionType = type;
