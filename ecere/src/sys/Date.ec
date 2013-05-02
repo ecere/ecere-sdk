@@ -542,7 +542,7 @@ public:
       button.pressing = true;
       button.NotifyClicked(this, button, x, y, mods);
       button.timer.Start();
-      return true;
+      return false; //true;
    }
 
    bool NotifyMouseLeave(RepButton button, Modifiers mods)

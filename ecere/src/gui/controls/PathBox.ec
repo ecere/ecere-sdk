@@ -507,8 +507,27 @@ public:
          return true;
       }
 
+      bool NotifyKeyHit(ListBox listBox, DataRow row, Key key, unichar ch)
+      {
+         // Prioritize row moving Ctrl-Up/Down over scrollbar scrolling
+         if(key == ctrlUp || key == ctrlDown)
+         {
+            Button btn = (key == ctrlUp) ? up : down;
+            btn.OnKeyHit(hotKey, 0);
+            return false;
+         }
+         return true;
+      }
+
       bool NotifyKeyDown(ListBox listBox, DataRow row, Key key, unichar ch)
       {
+         // Prioritize row moving Ctrl-Up/Down over scrollbar scrolling
+         if(key == ctrlUp || key == ctrlDown)
+         {
+            Button btn = (key == ctrlUp) ? up : down;
+            btn.OnKeyDown(hotKey, 0);
+            return false;
+         }
          if(key == del)
          {
             listBox.StopEditing(true);
