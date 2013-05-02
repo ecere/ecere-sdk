@@ -1419,7 +1419,7 @@ class Debugger
       if(gdbHandle)
       {
          // TODO: Improve this limit
-         static char string[MAX_F_STRING*3];
+         static char string[MAX_F_STRING*4];
          va_list args;
          va_start(args, format);
          vsnprintf(string, sizeof(string), format, args);

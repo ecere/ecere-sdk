@@ -2301,12 +2301,12 @@ private:
 
    void GetTargets(ProjectConfig prjConfig, Map<String, NameCollisionInfo> namesInfo, char * objDir, DynamicString output)
    {
+      char moduleName[MAX_FILENAME];
       if(type == file)
       {
          bool headerAltFailed = false;
          bool collision;
          char extension[MAX_EXTENSION];
-         char moduleName[MAX_FILENAME];
          NameCollisionInfo info;
          Project prj = property::project;
          Map<String, String> headerToSource { [ { "eh", "ec" }, { "h", "c" }, { "hh", "cc" }, { "hpp", "cpp" }, { "hxx", "cxx" } ] };
@@ -2358,6 +2358,32 @@ private:
             output.concat(moduleName);
             output.concat("\"");
          }
+      }
+      else if(type == project && ContainsFilesWithExtension("ec"))
+      {
+         Project prj = property::project;
+
+         strcpy(moduleName, prj.moduleName);
+         strcat(moduleName, ".main.ec");
+         output.concat(" \"");
+         output.concat(objDir);
+         output.concat("/");
+         output.concat(moduleName);
+         output.concat("\"");
+
+         ChangeExtension(moduleName, "c", moduleName);
+         output.concat(" \"");
+         output.concat(objDir);
+         output.concat("/");
+         output.concat(moduleName);
+         output.concat("\"");
+
+         ChangeExtension(moduleName, "o", moduleName);
+         output.concat(" \"");
+         output.concat(objDir);
+         output.concat("/");
+         output.concat(moduleName);
+         output.concat("\"");
       }
       else if(files)
       {

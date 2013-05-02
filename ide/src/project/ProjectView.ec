@@ -230,6 +230,8 @@ class ProjectView : Window
                   {
                      MenuDivider { pop };
                      MenuItem { pop, $"Debug Generate Symbols", l, NotifySelect = FileDebugGenerateSymbols }.disabled = na;
+                     MenuItem { pop, $"Debug Precompile", l, NotifySelect = FileDebugPrecompile }.disabled = na;
+                     MenuItem { pop, $"Debug Compile", l, NotifySelect = FileDebugCompile }.disabled = na;
                   }
                   MenuDivider { pop };
                   MenuItem { pop, $"New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
@@ -796,7 +798,7 @@ class ProjectView : Window
          if(config)
          {
             config.compilingModified = false;
-            if(!ide.ShouldStopBuild())
+            if(!stopBuild)
                config.linkingModified = false;
 
             config.symbolGenModified = false;
@@ -1112,11 +1114,9 @@ class ProjectView : Window
 
             buildInProgress = compilingFile;
             ide.AdjustBuildMenus();
-            project.Compile(nodes, compiler, config, bitDepth, justPrint, mode);
+            result = project.Compile(nodes, compiler, config, bitDepth, justPrint, mode);
             buildInProgress = none;
             ide.AdjustBuildMenus();
-
-            result = true;
          }
          delete compiler;
       }
@@ -1394,7 +1394,11 @@ class ProjectView : Window
       {
          List<ProjectNode> nodes { };
          nodes.Add(node);
-         Compile(node.project, nodes, mods.ctrl && mods.shift, debugPrecompile);
+         if(node.type == project)
+            ProjectBuild(selection, mods);
+         ide.Update(null);
+         if(!stopBuild)
+            Compile(node.project, nodes, mods.ctrl && mods.shift, debugPrecompile);
          delete nodes;
       }
       return true;
@@ -1408,7 +1412,12 @@ class ProjectView : Window
       {
          List<ProjectNode> nodes { };
          nodes.Add(node);
-         Compile(node.project, nodes, mods.ctrl && mods.shift, debugCompile);
+         if(node.type == project)
+            ProjectBuild(selection, mods);
+         else
+            Compile(node.project, nodes, mods.ctrl && mods.shift, normal);
+         if(!stopBuild)
+            Compile(node.project, nodes, mods.ctrl && mods.shift, debugCompile);
          delete nodes;
       }
       return true;
@@ -1422,7 +1431,12 @@ class ProjectView : Window
       {
          List<ProjectNode> nodes { };
          nodes.Add(node);
-         Compile(node.project, nodes, mods.ctrl && mods.shift, debugGenerateSymbols);
+         if(node.type == project)
+            ProjectBuild(selection, mods);
+         else
+            Compile(node.project, nodes, mods.ctrl && mods.shift, normal);
+         if(!stopBuild)
+            Compile(node.project, nodes, mods.ctrl && mods.shift, debugGenerateSymbols);
          delete nodes;
       }
       return true;

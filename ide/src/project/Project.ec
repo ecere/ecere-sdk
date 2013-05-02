@@ -742,7 +742,12 @@ char * GetConfigName(ProjectConfig config)
    return config ? config.name : "Common";
 }
 
-public enum SingleFileCompileMode { normal, debugPrecompile, debugCompile, debugGenerateSymbols, cObject };
+public enum SingleFileCompileMode
+{
+   normal, debugPrecompile, debugCompile, debugGenerateSymbols, cObject;
+
+   property bool eC_ToolsDebug { get { return this == debugCompile || this == debugGenerateSymbols || this == debugPrecompile; } }
+};
 
 class Project : struct
 {
@@ -1398,10 +1403,10 @@ private:
       }
    }
 
-   void ProcessPipeOutputRaw(DualPipe f)
+   bool ProcessPipeOutputRaw(DualPipe f)
    {
       char line[65536];
-      while(!f.Eof() && !ide.ShouldStopBuild())
+      while(!f.Eof() && !ide.projectView.stopBuild)
       {
          bool result = true;
          double lastTime = GetTime();
@@ -1425,11 +1430,12 @@ private:
          }
          //if(!result) Sleep(1.0 / PEEK_RESOLUTION);
       }
-      if(ide.ShouldStopBuild())
+      if(ide.projectView.stopBuild)
       {
          ide.outputView.buildBox.Logf($"\nBuild cancelled by user.\n", line);
          f.Terminate();
       }
+      return !ide.projectView.stopBuild;
    }
 
    bool ProcessBuildPipeOutput(DualPipe f, DirExpression objDirExp, bool isARun, List<ProjectNode> onlyNodes,
@@ -1495,7 +1501,7 @@ private:
       testLen = Max(testLen, windres.size);
       testLen++;
 
-      while(!f.Eof() && !ide.ShouldStopBuild())
+      while(!f.Eof() && !ide.projectView.stopBuild)
       {
          bool result = true;
          double lastTime = GetTime();
@@ -1848,7 +1854,7 @@ private:
          }
          //if(!result) Sleep(1.0 / PEEK_RESOLUTION);
       }
-      if(ide.ShouldStopBuild())
+      if(ide.projectView.stopBuild)
       {
          ide.outputView.buildBox.Logf($"\nBuild cancelled by user.\n", line);
          f.Terminate();
@@ -1893,7 +1899,7 @@ private:
       delete strip;
       delete ar;
 
-      return numErrors == 0;
+      return numErrors == 0 && !ide.projectView.stopBuild;
    }
 
    void ProcessCleanPipeOutput(DualPipe f, CompilerConfig compiler, ProjectConfig config)
@@ -1945,6 +1951,8 @@ private:
       bool crossCompiling = (compiler.targetPlatform != GetRuntimePlatform());
       char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
 
+      bool eC_Debug = mode.eC_ToolsDebug;
+      bool singleProjectOnlyNode = onlyNodes && onlyNodes.count == 1 && onlyNodes[0].type == project;
       int numJobs = compiler.numJobs;
       char command[MAX_F_STRING*4];
       char * compilerName;
@@ -2002,7 +2010,7 @@ private:
                   ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
                else
                {
-                  if(mode == cObject || mode == normal)
+                  if(!eC_Debug)
                      node.DeleteIntermediateFiles(compiler, config, bitDepth, namesInfo, mode == cObject ? true : false);
                   node.GetTargets(config, namesInfo, objDirExp.dir, makeTargets);
                }
@@ -2048,10 +2056,10 @@ private:
                bitDepth ? " ARCH=" : "",
                bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
                /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" :*/ "",
-               compilerName, (mode == debugCompile || mode == debugGenerateSymbols || mode == debugPrecompile) ? "--always-make " : "", numJobs,
-               compiler.ccacheEnabled ? "CCACHE=y " : "",
-               compiler.distccEnabled ? "DISTCC=y " : "",
-               (String)makeTargets, topNode.path, (justPrint || (mode != normal && mode != cObject)) ? " -n" : "", makeFilePath);
+               compilerName, eC_Debug ? "--always-make " : "", numJobs,
+               (compiler.ccacheEnabled && !eC_Debug) ? "CCACHE=y " : "",
+               (compiler.distccEnabled && !eC_Debug) ? "DISTCC=y " : "",
+               (String)makeTargets, topNode.path, (justPrint || eC_Debug) ? " -n" : "", makeFilePath);
          if(justPrint)
             ide.outputView.buildBox.Logf("%s\n", command);
 
@@ -2059,9 +2067,11 @@ private:
          {
             bool found = false;
             bool error = false;
-            if(mode != normal && mode != cObject)
+            if(eC_Debug)
             {
                char line[65536];
+               if(justPrint)
+                  ide.outputView.buildBox.Logf($"\nMake outputs the following list of commands to choose from:\n");
                while(!f.Eof())
                {
                   bool result = true;
@@ -2069,12 +2079,14 @@ private:
                   {
                      if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)))
                      {
+                        if(justPrint)
+                           ide.outputView.buildBox.Logf("%s\n", line);
                         if(!error && !found && strstr(line, "echo ") == line)
                         {
                            strcpy(command, line+5);
                            error = true;
                         }
-                        if(!error && !found && strstr(line, "ide ") == line)
+                        if(!error && (singleProjectOnlyNode || !found) && strstr(line, "ide ") == line)
                         {
                            strcpy(command, line);
                            found = true;
@@ -2086,15 +2098,14 @@ private:
                   result = true;
             }
             else if(justPrint)
-            {
-               ProcessPipeOutputRaw(f);
-               result = true;
-            }
+               result = ProcessPipeOutputRaw(f);
             else
                result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNodes, compiler, config, bitDepth);
             delete f;
-            if(error || (justPrint && found))
+            if(error)
                ide.outputView.buildBox.Logf("%s\n", command);
+            else if(justPrint && found)
+               ide.outputView.buildBox.Logf($"\nThe following command was chosen to be executed:\n%s\n", command);
             else if(found)
                Execute(command);
          }
@@ -2230,9 +2241,9 @@ private:
       delete target;
    }
 
-   void Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, SingleFileCompileMode mode)
+   bool Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, SingleFileCompileMode mode)
    {
-      Build(false, nodes, compiler, config, bitDepth, justPrint, mode);
+      return Build(false, nodes, compiler, config, bitDepth, justPrint, mode);
    }
 #endif
 
@@ -3032,9 +3043,7 @@ private:
          f.Puts("objdir:\n");
             f.Puts("\t$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))\n");
             f.Puts("\t$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)/crossplatform.mk) location.)),)\n");
-            f.Puts("\t$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG),))\n");
-            f.Puts("\t$(if $(ECERE_SDK_SRC),,$(if $(ECC_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECC_DEBUG),))\n");
-            f.Puts("\t$(if $(ECERE_SDK_SRC),,$(if $(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECS_DEBUG),))\n");
+            f.Puts("\t$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))\n");
          //f.Puts("# PRE-BUILD COMMANDS\n");
          if(options && options.prebuildCommands)
          {
