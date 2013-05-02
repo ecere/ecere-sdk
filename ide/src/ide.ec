@@ -1586,11 +1586,6 @@ class IDEWorkSpace : Window
       return false;
    }
 
-   bool ShouldStopBuild()
-   {
-      return projectView.stopBuild;
-   }
-
    void DocumentSaved(Window document, char * fileName)
    {
       ideSettings.AddRecentFile(fileName);
