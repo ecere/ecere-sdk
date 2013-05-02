@@ -1945,7 +1945,7 @@ private:
       char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
 
       int numJobs = compiler.numJobs;
-      char command[MAX_F_STRING];
+      char command[MAX_F_STRING*4];
       char * compilerName;
 
       compilerName = CopyString(compiler.name);

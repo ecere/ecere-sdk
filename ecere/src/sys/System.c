@@ -302,7 +302,7 @@ void System_UnsetEnvironment(char * envName)
 bool System_Execute(char * env, char * command, va_list args)
 {
    bool result = false;
-   char commandLine[MAX_F_STRING];
+   char commandLine[MAX_F_STRING*4];
    vsnprintf(commandLine, sizeof(commandLine)-1, command, args);
    commandLine[sizeof(commandLine)-1] = 0;
 
@@ -331,7 +331,7 @@ bool System_Execute(char * env, char * command, va_list args)
 bool System_ShellOpen(char * fileName, va_list args)
 {
    bool result = false;
-   char filePath[MAX_F_STRING];
+   char filePath[MAX_F_STRING*4];
    int len;
 #if defined(__WIN32__)
    filePath[0] = '"';
