@@ -31,12 +31,12 @@ msgstr ":%d:%d: warning: "
 msgid "Array size not constant int (%s)\n"
 msgstr "Array size not constant int (%s)\n"
 
-#: ./src/pass15.ec:10508
+#: ./src/pass15.ec:10509
 msgid "Assigning list initializer to non list\n"
 msgstr "Assigning list initializer to non list\n"
 
 #: ./src/pass15.ec:10174
-#: ./src/pass15.ec:11220
+#: ./src/pass15.ec:11221
 msgid "Couldn't determine type of array elements\n"
 msgstr "Couldn't determine type of array elements\n"
 
@@ -52,7 +52,7 @@ msgstr "Couldn't open %s\n"
 msgid "Expecting class specifier\n"
 msgstr "Expecting class specifier\n"
 
-#: ./src/pass15.ec:11378
+#: ./src/pass15.ec:11379
 msgid "Expression is not a container\n"
 msgstr "Expression is not a container\n"
 
@@ -64,12 +64,12 @@ msgstr "Includes nested too deeply"
 msgid "Incompatible virtual function %s\n"
 msgstr "Incompatible virtual function %s\n"
 
-#: ./src/pass15.ec:11652
-#: ./src/pass15.ec:11727
+#: ./src/pass15.ec:11653
+#: ./src/pass15.ec:11728
 msgid "Invalid object specified and not inside a class\n"
 msgstr "Invalid object specified and not inside a class\n"
 
-#: ./src/pass15.ec:11560
+#: ./src/pass15.ec:11561
 msgid "Invalid watched object\n"
 msgstr "Invalid watched object\n"
 
@@ -94,11 +94,11 @@ msgstr "Multiple field index requires a name\n"
 msgid "No database table defined in this module or database_open already used.\n"
 msgstr "No database table defined in this module or database_open already used.\n"
 
-#: ./src/pass15.ec:11573
+#: ./src/pass15.ec:11574
 msgid "No observer specified and not inside a _class\n"
 msgstr "No observer specified and not inside a _class\n"
 
-#: ./src/pass15.ec:11730
+#: ./src/pass15.ec:11731
 msgid "No observer specified and not inside a class\n"
 msgstr "No observer specified and not inside a class\n"
 
@@ -112,9 +112,9 @@ msgid "Non-static %s making use of a static class\n"
 msgstr "Non-static %s making use of a static class\n"
 
 #: ./src/pass1.ec:1037
-#: ./src/pass15.ec:11555
-#: ./src/pass15.ec:11627
-#: ./src/pass15.ec:11716
+#: ./src/pass15.ec:11556
+#: ./src/pass15.ec:11628
+#: ./src/pass15.ec:11717
 msgid "Property %s not found in class %s\n"
 msgstr "Property %s not found in class %s\n"
 

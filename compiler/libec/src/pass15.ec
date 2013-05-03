@@ -6999,13 +6999,13 @@ void ApplyAnyObjectLogic(Expression e)
                         newExp.destType = ProcessType(specs, decl);
 
                         curContext = context;
-                        e.type = extensionCompoundExp;
 
                         // We need a current compound for this
                         if(curCompound)
                         {
                            char name[100];
                            OldList * stmts = MkList();
+                           e.type = extensionCompoundExp;
                            sprintf(name, "__internalValue%03X", internalValueCounter++);
                            if(!curCompound.compound.declarations)
                               curCompound.compound.declarations = MkList();
@@ -10338,7 +10338,8 @@ void ProcessExpressionType(Expression exp)
    }
 
    // Let's try to support any_object & typed_object here:
-   ApplyAnyObjectLogic(exp);
+   if(inCompiler)
+      ApplyAnyObjectLogic(exp);
 
    // Mark nohead classes as by reference, unless we're casting them to an integral type
    if(!notByReference && exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered &&

@@ -12141,12 +12141,12 @@ PrintTypeNoConst(e->expType, typeString, 0x0, 0x1);
 decl = SpecDeclFromString(typeString, specs, (((void *)0)));
 newExp->destType = ProcessType(specs, decl);
 curContext = context;
-e->type = 25;
 if(curCompound)
 {
 char name[100];
 struct __ecereNameSpace__ecere__sys__OldList * stmts = MkList();
 
+e->type = 25;
 sprintf(name, "__internalValue%03X", internalValueCounter++);
 if(!curCompound->compound.declarations)
 curCompound->compound.declarations = MkList();
@@ -15084,6 +15084,7 @@ __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
 }
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "couldn't determine type of %s\n", (((void *)0))), expString);
 }
+if(inCompiler)
 ApplyAnyObjectLogic(exp);
 if(!notByReference && exp->expType && exp->expType->kind == 8 && exp->expType->_class && exp->expType->_class->registered && exp->expType->_class->registered->type == 5 && (!exp->destType || (exp->destType->kind != 3 && exp->destType->kind != 4 && exp->destType->kind != 22 && exp->destType->kind != 23 && exp->destType->kind != 5 && exp->destType->kind != 2 && exp->destType->kind != 1)))
 {
