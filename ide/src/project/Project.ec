@@ -1499,6 +1499,7 @@ private:
       testLen = Max(testLen, strip.size);
       testLen = Max(testLen, ar.size);
       testLen = Max(testLen, windres.size);
+      testLen = Max(testLen, strlen("mkdir "));
       testLen++;
 
       while(!f.Eof() && !ide.projectView.stopBuild)
@@ -1509,7 +1510,7 @@ private:
          while(result)
          {
             //printf("Peeking and GetLine...\n");
-            if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)))
+            if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)) && line[0])
             {
                char * message = null;
                char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
@@ -1537,6 +1538,8 @@ private:
                      //numErrors++;
                   //}
                }
+               else if(strstr(test, "mkdir ") == test);
+               else if((t = strstr(line, "cd ")) && (t = strstr(line, "type ")) && (t = strstr(line, "nul ")) && (t = strstr(line, "copy ")) && (t = strstr(line, "cd ")));
                else if(strstr(test, ear) == test);
                else if(strstr(test, strip) == test);
                else if(strstr(test, cc) == test || strstr(test, cxx) == test || strstr(test, ecp) == test || strstr(test, ecc) == test)
@@ -1913,9 +1916,10 @@ private:
          double lastTime = GetTime();
          while(result)
          {
-            if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)))
+            if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)) && line[0])
             {
                if(strstr(line, compiler.makeCommand) == line && line[lenMakeCommand] == ':');
+               else if(strstr(line, "mkdir") == line);
                else if(strstr(line, "del") == line);
                else if(strstr(line, "rm") == line);
                else if(strstr(line, "Could Not Find") == line);
@@ -2077,7 +2081,7 @@ private:
                   bool result = true;
                   while(result)
                   {
-                     if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)))
+                     if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)) && line[0])
                      {
                         if(justPrint)
                            ide.outputView.buildBox.Logf("%s\n", line);
