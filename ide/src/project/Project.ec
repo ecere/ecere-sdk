@@ -1499,6 +1499,7 @@ private:
       testLen = Max(testLen, strip.size);
       testLen = Max(testLen, ar.size);
       testLen = Max(testLen, windres.size);
+      testLen = Max(testLen, strlen("mkdir "));
       testLen++;
 
       while(!f.Eof() && !ide.projectView.stopBuild)
@@ -1537,6 +1538,8 @@ private:
                      //numErrors++;
                   //}
                }
+               else if(strstr(test, "mkdir ") == test);
+               else if((t = strstr(line, "cd ")) && (t = strstr(line, "type ")) && (t = strstr(line, "nul ")) && (t = strstr(line, "copy ")) && (t = strstr(line, "cd ")));
                else if(strstr(test, ear) == test);
                else if(strstr(test, strip) == test);
                else if(strstr(test, cc) == test || strstr(test, cxx) == test || strstr(test, ecp) == test || strstr(test, ecc) == test)
