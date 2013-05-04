@@ -766,6 +766,7 @@ public:
       get { return executableLauncher; }
       isset { return executableLauncher && executableLauncher[0]; }
    }
+   // TODO: implement CompilerConfig::windresCommand
    bool ccacheEnabled;
    bool distccEnabled;
    // deprecated

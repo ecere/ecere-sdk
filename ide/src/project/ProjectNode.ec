@@ -1953,7 +1953,7 @@ private:
             if(!strcmpi(extension, "cc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cxx"))
                f.Printf("\t$(CXX)");
             else if(!strcmpi(extension, "rc"))
-               f.Printf("\t$(GCC_PREFIX)windres $< $@\n"); //$(WINDRES) // TODO: implement CompilerConfig::windresCommand
+               f.Printf("\t$(WINDRES) $(WINDRES_FLAGS) $< $@\n");
             else
                f.Printf("\t$(CC)");
 

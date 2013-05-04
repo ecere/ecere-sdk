@@ -1443,7 +1443,8 @@ private:
       char * configName = config ? config.name : "Common";
       int lenMakeCommand = strlen(compiler.makeCommand);
       int testLen = 0;
-
+      char * t;
+      char moduleName[MAX_FILENAME];
       char * gnuToolchainPrefix = compiler.gnuToolchainPrefix ? compiler.gnuToolchainPrefix : "";
 
       DynamicString test { };
@@ -1534,8 +1535,6 @@ private:
                else if(strstr(test, strip) == test);
                else if(strstr(test, cc) == test || strstr(test, cxx) == test || strstr(test, ecp) == test || strstr(test, ecc) == test)
                {
-                  char moduleName[MAX_FILENAME];
-                  byte * tokens[1];
                   char * module;
                   bool isPrecomp = false;
                   bool gotCC = false;
@@ -1569,6 +1568,7 @@ private:
 
                   if(module)
                   {
+                     byte * tokens[1];
                      if(!compiling && !isPrecomp)
                      {
                         ide.outputView.buildBox.Logf($"Compiling...\n");
@@ -1604,12 +1604,13 @@ private:
                }
                else if(strstr(test, windres) == test)
                {
-                  char moduleName[MAX_FILENAME];
                   char * module;
                   module = strstr(line, " ");
-                  if(module) module = strstr(module+1, " ");
+                  if(module) module++;
                   if(module)
                   {
+                     byte * tokens[1];
+                     Tokenize(module, 1, tokens, true);
                      GetLastDirectory(module, moduleName);
                      ide.outputView.buildBox.Logf("%s\n", moduleName);
                   }
@@ -2379,6 +2380,18 @@ private:
             f.Puts("LD := $(GCC_PREFIX)ld\n");
             f.Puts("AR := $(GCC_PREFIX)ar\n");
             f.Puts("STRIP := $(GCC_PREFIX)strip\n");
+            f.Puts("ifdef WINDOWS_TARGET\n");
+            f.Puts("WINDRES := $(GCC_PREFIX)windres\n");
+            f.Puts(" ifdef ARCH\n");
+            f.Puts("  ifeq \"$(ARCH)\" \"x32\"\n");
+            f.Puts("WINDRES_FLAGS := -F pe-i386\n");
+            f.Puts("  else\n");
+            f.Puts("   ifeq \"$(ARCH)\" \"x64\"\n");
+            f.Puts("WINDRES_FLAGS := -F pe-x86-64\n");
+            f.Puts("   endif\n");
+            f.Puts("  endif\n");
+            f.Puts(" endif\n");
+            f.Puts("endif\n");
             f.Puts("UPX := upx\n");
             f.Puts("\n");
 
