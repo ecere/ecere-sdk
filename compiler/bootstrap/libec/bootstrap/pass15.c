@@ -14072,7 +14072,7 @@ type = ProcessTemplateParameterType(type->templateParameter);
 }
 if(type && (type->kind == 20))
 ;
-else if(type && (type->kind == 8 || type->kind == 19 || type->kind == 3 || type->kind == 15 || type->kind == 4 || type->kind == 2 || type->kind == 5 || type->kind == 1 || type->kind == 22 || type->kind == 23 || type->kind == 6 || type->kind == 7))
+else if(type && (type->kind == 8 || type->kind == 19 || type->kind == 3 || type->kind == 15 || type->kind == 4 || type->kind == 2 || type->kind == 5 || type->kind == 1 || type->kind == 22 || type->kind == 23 || type->kind == 6 || type->kind == 7 || (type->kind == 13 && type->type->kind == 1)))
 {
 struct Identifier * id = exp->member.member;
 int typeKind = type->kind;

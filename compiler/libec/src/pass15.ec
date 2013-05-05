@@ -9239,7 +9239,8 @@ void ProcessExpressionType(Expression exp)
          if(type && (type.kind == templateType));
          else if(type && (type.kind == classType || type.kind == subClassType || type.kind == intType || type.kind == enumType ||
                           type.kind == int64Type || type.kind == shortType || type.kind == longType || type.kind == charType ||
-                          type.kind == intPtrType || type.kind == intSizeType || type.kind == floatType || type.kind == doubleType))
+                          type.kind == intPtrType || type.kind == intSizeType || type.kind == floatType || type.kind == doubleType ||
+                          (type.kind == pointerType && type.type.kind == charType)))
          {
             Identifier id = exp.member.member;
             TypeKind typeKind = type.kind;
