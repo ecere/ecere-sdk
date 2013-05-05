@@ -679,6 +679,8 @@ for(member = _class->membersAndProperties.first; member; member = member->next)
 {
 int memberResult = 0;
 
+if(member->id < 0)
+continue;
 if(member->isProperty || member->type == 0)
 {
 struct __ecereNameSpace__ecere__com__Class * memberType = member->dataTypeClass;
@@ -1512,12 +1514,15 @@ struct __ecereNameSpace__ecere__com__Class * lastClass = (((void *)0));
 while(lastClass != _class)
 {
 struct __ecereNameSpace__ecere__com__DataMember * member;
+struct __ecereNameSpace__ecere__com__Class * c;
 
-for(; _class && (!_class->base || _class->base->type != 1000) && _class != lastClass; _class = _class->base)
+for(c = _class; c && (!c->base || c->base->type != 1000) && c->base != lastClass; c = c->base)
 ;
 lastClass = _class;
-for(member = _class->membersAndProperties.first; member; member = member->next)
+for(member = c->membersAndProperties.first; member; member = member->next)
 {
+if(member->id < 0)
+continue;
 if(member->isProperty || member->type == 0)
 {
 struct __ecereNameSpace__ecere__com__Class * memberType = member->dataTypeClass;
@@ -1616,12 +1621,15 @@ memset(data, 0, _class->structSize);
 while(lastClass != _class)
 {
 struct __ecereNameSpace__ecere__com__DataMember * member;
+struct __ecereNameSpace__ecere__com__Class * c;
 
-for(; _class && (!_class->base || _class->base->type != 1000) && _class != lastClass; _class = _class->base)
+for(c = _class; c && (!c->base || c->base->type != 1000) && c->base != lastClass; c = c->base)
 ;
-lastClass = _class;
-for(member = _class->membersAndProperties.first; member; member = member->next)
+lastClass = c;
+for(member = c->membersAndProperties.first; member; member = member->next)
 {
+if(member->id < 0)
+continue;
 if(member->isProperty || member->type == 0)
 {
 struct __ecereNameSpace__ecere__com__Class * memberType = member->dataTypeClass;

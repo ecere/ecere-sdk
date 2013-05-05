@@ -312,6 +312,7 @@ static int OnCompare(Class _class, void * data1, void * data2)
             for(member = _class.membersAndProperties.first; member; member = member.next)
             {
                int memberResult = 0;
+               if(member.id < 0) continue;
                if(member.isProperty || member.type == normalMember)
                {
                   Class memberType = member.dataTypeClass;
@@ -1119,11 +1120,13 @@ static void OnSerialize(Class _class, void * data, IOChannel channel)
          while(lastClass != _class)
          {
             DataMember member;
-            for(; _class && (!_class.base || _class.base.type != systemClass) && _class != lastClass; _class = _class.base);
+            Class c;
+            for(c = _class; c && (!c.base || c.base.type != systemClass) && c.base != lastClass; c = c.base);
             lastClass = _class;
 
-            for(member = _class.membersAndProperties.first; member; member = member.next)
+            for(member = c.membersAndProperties.first; member; member = member.next)
             {
+               if(member.id < 0) continue;
                if(member.isProperty || member.type == normalMember)
                {
                   Class memberType = member.dataTypeClass;
@@ -1242,11 +1245,13 @@ static void OnUnserialize(Class _class, void ** data, IOChannel channel)
          while(lastClass != _class)
          {
             DataMember member;
-            for(; _class && (!_class.base || _class.base.type != systemClass) && _class != lastClass; _class = _class.base);
-            lastClass = _class;
+            Class c;
+            for(c = _class; c && (!c.base || c.base.type != systemClass) && c.base != lastClass; c = c.base);
+            lastClass = c;
 
-            for(member = _class.membersAndProperties.first; member; member = member.next)
+            for(member = c.membersAndProperties.first; member; member = member.next)
             {
+               if(member.id < 0) continue;
                if(member.isProperty || member.type == normalMember)
                {
                   Class memberType = member.dataTypeClass;
