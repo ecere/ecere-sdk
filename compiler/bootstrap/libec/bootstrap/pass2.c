@@ -1403,8 +1403,6 @@ extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_FindMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, struct __ecereNameSpace__ecere__com__Instance * module);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
-
 extern void ProcessExpressionType(struct Expression * exp);
 
 extern struct Expression * MkExpCondition(struct Expression * cond, struct __ecereNameSpace__ecere__sys__OldList * expressions, struct Expression * elseExp);
@@ -1416,6 +1414,8 @@ extern struct Expression * GetTemplateArgExp(struct TemplateParameter * param, s
 extern struct __ecereNameSpace__ecere__com__Class * thisClass;
 
 extern struct Expression * MkExpMember(struct Expression * expression, struct Identifier * member);
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
 
 extern struct Context * globalContext;
 
@@ -2603,7 +2603,7 @@ else if(type->kind == 13)
 argClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "uintptr");
 FreeType(memberExp->member.exp->expType);
 memberExp->member.exp->expType = ProcessTypeString("uintptr", 0x0);
-memberExp->member.exp->byReference = 0x0;
+memberExp->member.exp->byReference = 0x1;
 }
 else
 {
@@ -2676,7 +2676,7 @@ if(typedObject && memberExp->member.exp && memberExp->member.exp->expType)
 {
 unsigned int changeReference = 0x0;
 
-if(argClass && (argClass->type == 4 || argClass->type == 3 || argClass->type == 2 || argClass->type == 1000) && strcmp(argClass->fullName, "class") && strcmp(argClass->fullName, "ecere::com::Class"))
+if(argClass && (argClass->type == 4 || argClass->type == 3 || argClass->type == 2 || argClass->type == 1000) && strcmp(argClass->fullName, "class") && strcmp(argClass->fullName, "uintptr") && strcmp(argClass->fullName, "intptr"))
 changeReference = 0x1;
 if(!memberExp->member.exp->expType->classObjectType && ((((memberExp->member.exp->expType->kind != 13 && (memberExp->member.exp->expType->kind != 8 || !memberExp->member.exp->expType->_class || !memberExp->member.exp->expType->_class->registered || memberExp->member.exp->expType->_class->registered->type == 1)))) || method->dataType->byReference))
 changeReference = 0x1;
@@ -2797,7 +2797,7 @@ else if(type->kind == 13)
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "uintptr");
 FreeType(e->expType);
 e->expType = ProcessTypeString("uintptr", 0x0);
-e->byReference = e->isConstant ? 0x1 : 0x0;
+e->byReference = 0x1;
 }
 else
 {
@@ -2809,7 +2809,7 @@ classSym = FindClass(string);
 if(classSym)
 _class = classSym->registered;
 }
-if((_class && (_class->type == 4 || _class->type == 3 || _class->type == 2 || _class->type == 1000) && strcmp(_class->fullName, "class") && strcmp(_class->fullName, "ecere::com::Class")) || (!e->expType->classObjectType && (((type->kind != 13 && type->kind != 19 && type->kind != 12 && (type->kind != 8 || !type->_class || !type->_class->registered || type->_class->registered->type == 1))) || destType->byReference)))
+if((_class && (_class->type == 4 || _class->type == 3 || _class->type == 2 || _class->type == 1000) && strcmp(_class->fullName, "class") && strcmp(_class->fullName, "uintptr") && strcmp(_class->fullName, "intptr")) || (!e->expType->classObjectType && (((type->kind != 13 && type->kind != 22 && type->kind != 19 && type->kind != 12 && (type->kind != 8 || !type->_class || !type->_class->registered || type->_class->registered->type == 1))) || destType->byReference)))
 {
 {
 struct Expression * checkedExp;

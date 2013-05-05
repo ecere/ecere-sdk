@@ -1436,6 +1436,26 @@ static char * UInt64Hex_OnGetString(Class _class, uint64 * data, char * string, 
    return string;
 }
 
+static char * UIntPtr64_OnGetString(Class _class, uint64 data, char * string, void * fieldData, bool * needClass)
+{
+   return UInt64Hex_OnGetString(_class, &data, string, fieldData, needClass);
+}
+
+static char * UIntPtr32_OnGetString(Class _class, uint data, char * string, void * fieldData, bool * needClass)
+{
+   return UIntegerHex_OnGetString(_class, &data, string, fieldData, needClass);
+}
+
+static char * IntPtr64_OnGetString(Class _class, uint64 data, char * string, void * fieldData, bool * needClass)
+{
+   return Int64_OnGetString(_class, &data, string, fieldData, needClass);
+}
+
+static char * IntPtr32_OnGetString(Class _class, uint data, char * string, void * fieldData, bool * needClass)
+{
+   return Integer_OnGetString(_class, &data, string, fieldData, needClass);
+}
+
 static bool Int64_OnGetDataFromString(Class _class, uint64 * data, char * string)
 {
    char * end;
@@ -1716,7 +1736,7 @@ static void RegisterClass_Integer(Module module)
    integerClass.typeSize = sizeof(uintptr);
    if(sizeof(uintptr) == 8)
    {
-      eClass_AddMethod(integerClass, "OnGetString", null, UInt64Hex_OnGetString, publicAccess);
+      eClass_AddMethod(integerClass, "OnGetString", null, UIntPtr64_OnGetString, publicAccess);
       eClass_AddMethod(integerClass, "OnGetDataFromString", null, UInt64_OnGetDataFromString, publicAccess);
       eClass_AddMethod(integerClass, "OnSerialize", null, Int64_OnSerialize, publicAccess);
       eClass_AddMethod(integerClass, "OnUnserialize", null, Int64_OnUnserialize, publicAccess);
@@ -1724,11 +1744,11 @@ static void RegisterClass_Integer(Module module)
    }
    else
    {
-      eClass_AddMethod(integerClass, "OnCompare", null, UInteger_OnCompare, publicAccess);
-      eClass_AddMethod(integerClass, "OnGetString", null, UIntegerHex_OnGetString, publicAccess);
+      eClass_AddMethod(integerClass, "OnGetString", null, UIntPtr32_OnGetString, publicAccess);
       eClass_AddMethod(integerClass, "OnGetDataFromString", null, UInteger_OnGetDataFromString, publicAccess);
       eClass_AddMethod(integerClass, "OnSerialize", null, Int_OnSerialize, publicAccess);
       eClass_AddMethod(integerClass, "OnUnserialize", null, Int_OnUnserialize, publicAccess);
+      eClass_AddMethod(integerClass, "OnCompare", null, UInteger_OnCompare, publicAccess);
    }
 
    integerClass = eSystem_RegisterClass(normalClass, "intptr", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
@@ -1739,7 +1759,7 @@ static void RegisterClass_Integer(Module module)
    integerClass.typeSize = sizeof(intptr);
    if(sizeof(intptr) == 8)
    {
-      eClass_AddMethod(integerClass, "OnGetString", null, Int64_OnGetString, publicAccess);
+      eClass_AddMethod(integerClass, "OnGetString", null, IntPtr64_OnGetString, publicAccess);
       eClass_AddMethod(integerClass, "OnGetDataFromString", null, Int64_OnGetDataFromString, publicAccess);
       eClass_AddMethod(integerClass, "OnSerialize", null, Int64_OnSerialize, publicAccess);
       eClass_AddMethod(integerClass, "OnUnserialize", null, Int64_OnUnserialize, publicAccess);
@@ -1747,11 +1767,11 @@ static void RegisterClass_Integer(Module module)
    }
    else
    {
-      eClass_AddMethod(integerClass, "OnCompare", null, Integer_OnCompare, publicAccess);
-      eClass_AddMethod(integerClass, "OnGetString", null, Integer_OnGetString, publicAccess);
+      eClass_AddMethod(integerClass, "OnGetString", null, IntPtr32_OnGetString, publicAccess);
       eClass_AddMethod(integerClass, "OnGetDataFromString", null, Integer_OnGetDataFromString, publicAccess);
       eClass_AddMethod(integerClass, "OnSerialize", null, Int_OnSerialize, publicAccess);
       eClass_AddMethod(integerClass, "OnUnserialize", null, Int_OnUnserialize, publicAccess);
+      eClass_AddMethod(integerClass, "OnCompare", null, Integer_OnCompare, publicAccess);
    }
 }
 

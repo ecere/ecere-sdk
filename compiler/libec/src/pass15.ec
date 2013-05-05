@@ -6922,8 +6922,8 @@ void ApplyAnyObjectLogic(Expression e)
             if(classSym) _class = classSym.registered;
          }
 
-         if((_class && (_class.type == enumClass || _class.type == unitClass || _class.type == bitClass || _class.type == systemClass) && strcmp(_class.fullName, "class") && strcmp(_class.fullName, "ecere::com::Class")) || // Patched so that class isn't considered SYSTEM...
-            (!e.expType.classObjectType && (((type.kind != pointerType && type.kind != subClassType && (type.kind != classType || !type._class || !type._class.registered || type._class.registered.type == structClass))) ||
+         if((_class && (_class.type == enumClass || _class.type == unitClass || _class.type == bitClass || _class.type == systemClass) && strcmp(_class.fullName, "class") && strcmp(_class.fullName, "uintptr") && strcmp(_class.fullName, "intptr")) || // Patched so that class isn't considered SYSTEM...
+            (!e.expType.classObjectType && (((type.kind != pointerType && type.kind != intPtrType && type.kind != subClassType && (type.kind != classType || !type._class || !type._class.registered || type._class.registered.type == structClass))) ||
             destType.byReference)))
          {
             if(!_class || strcmp(_class.fullName, "char *"))     // TESTING THIS WITH NEW String class...
@@ -7173,7 +7173,7 @@ void ApplyAnyObjectLogic(Expression e)
          if( ( type.kind == classType && type._class && type._class.registered && 
                    (type._class.registered.type == systemClass || type._class.registered.type == bitClass || 
                     type._class.registered.type == enumClass || type._class.registered.type == unitClass) ) ||
-             (type.kind != pointerType && type.kind != arrayType && type.kind != classType) ||
+             (type.kind != pointerType && type.kind != intPtrType && type.kind != arrayType && type.kind != classType) ||
              (!destType.byReference && byReference && (destType.kind != pointerType || type.kind != pointerType)))
          {
             e.type = opExp;
@@ -9269,7 +9269,7 @@ void ProcessExpressionType(Expression exp)
                      _class = eSystem_FindClass(privateModule, "uintptr");
                      FreeType(exp.expType);
                      exp.expType = ProcessTypeString("uintptr", false);
-                     exp.byReference = false;
+                     exp.byReference = true;
                   }
                   else
                   {

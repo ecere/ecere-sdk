@@ -12081,7 +12081,7 @@ classSym = FindClass(string);
 if(classSym)
 _class = classSym->registered;
 }
-if((_class && (_class->type == 4 || _class->type == 3 || _class->type == 2 || _class->type == 1000) && strcmp(_class->fullName, "class") && strcmp(_class->fullName, "ecere::com::Class")) || (!e->expType->classObjectType && (((type->kind != 13 && type->kind != 19 && (type->kind != 8 || !type->_class || !type->_class->registered || type->_class->registered->type == 1))) || destType->byReference)))
+if((_class && (_class->type == 4 || _class->type == 3 || _class->type == 2 || _class->type == 1000) && strcmp(_class->fullName, "class") && strcmp(_class->fullName, "uintptr") && strcmp(_class->fullName, "intptr")) || (!e->expType->classObjectType && (((type->kind != 13 && type->kind != 22 && type->kind != 19 && (type->kind != 8 || !type->_class || !type->_class->registered || type->_class->registered->type == 1))) || destType->byReference)))
 {
 if(!_class || strcmp(_class->fullName, "char *"))
 {
@@ -14102,7 +14102,7 @@ else if(type->kind == 13)
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "uintptr");
 FreeType(exp->expType);
 exp->expType = ProcessTypeString("uintptr", 0x0);
-exp->byReference = 0x0;
+exp->byReference = 0x1;
 }
 else
 {

@@ -1684,7 +1684,7 @@ static void ProcessExpression(Expression exp)
                      argClass = eSystem_FindClass(privateModule, "uintptr");
                      FreeType(memberExp.member.exp.expType);
                      memberExp.member.exp.expType = ProcessTypeString("uintptr", false);
-                     memberExp.member.exp.byReference = false;
+                     memberExp.member.exp.byReference = true;
                   }
                   else
                   {
@@ -1819,7 +1819,7 @@ static void ProcessExpression(Expression exp)
 
                      // Patched so that class isn't considered SYSTEM...
                      if(argClass && (argClass.type == enumClass || argClass.type == unitClass || argClass.type == bitClass || argClass.type == systemClass) && strcmp(argClass.fullName, "class") && 
-                        strcmp(argClass.fullName, "ecere::com::Class"))
+                        strcmp(argClass.fullName, "uintptr") && strcmp(argClass.fullName, "intptr"))
                         changeReference = true;
                      if(!memberExp.member.exp.expType.classObjectType && 
                         (((
@@ -1953,7 +1953,7 @@ static void ProcessExpression(Expression exp)
                         FreeType(e.expType);
                         e.expType = ProcessTypeString("uintptr", false);
                         // Assume null pointers means 'no object' rather than an object holding a null pointer
-                        e.byReference = e.isConstant ? true : false;
+                        e.byReference = true;
                      }
                      else
                      {
@@ -1965,8 +1965,8 @@ static void ProcessExpression(Expression exp)
                         // if(!class) _class = eSystem_FindClass(privateModule, "int");
                      }
 
-                     if((_class && (_class.type == enumClass || _class.type == unitClass || _class.type == bitClass || _class.type == systemClass) && strcmp(_class.fullName, "class") && strcmp(_class.fullName, "ecere::com::Class")) || // Patched so that class isn't considered SYSTEM...
-                        (!e.expType.classObjectType && (((type.kind != pointerType && type.kind != subClassType && type.kind != arrayType && (type.kind != classType || !type._class || !type._class.registered || type._class.registered.type == structClass))) ||
+                     if((_class && (_class.type == enumClass || _class.type == unitClass || _class.type == bitClass || _class.type == systemClass) && strcmp(_class.fullName, "class") && strcmp(_class.fullName, "uintptr") && strcmp(_class.fullName, "intptr")) || // Patched so that class isn't considered SYSTEM...
+                        (!e.expType.classObjectType && (((type.kind != pointerType && type.kind != intPtrType && type.kind != subClassType && type.kind != arrayType && (type.kind != classType || !type._class || !type._class.registered || type._class.registered.type == structClass))) ||
                         destType.byReference)))
                      {
                         //if(!_class || strcmp(_class.fullName, "String"))     // TESTING THIS WITH NEW String class...
