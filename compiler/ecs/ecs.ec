@@ -1707,7 +1707,14 @@ class SymbolgenApp : Application
          valid = false;
      
       if(!valid)
+      {
          printf($"Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n");
+#ifdef _DEBUG
+         printf($"\nArguments given:");
+         for(c = 1; c<argc; c++)
+            printf(" %s", argv[c]);
+#endif
+      }
       else
       {
          int c;
