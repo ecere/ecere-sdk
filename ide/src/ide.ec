@@ -3117,7 +3117,8 @@ class IDEWorkSpace : Window
       Menu fileMenu = menu.FindMenu($"File");
       Menu recentFiles = fileMenu.FindMenu($"Recent Files");
       Menu recentProjects = fileMenu.FindMenu($"Recent Projects");
-      char itemName[MAX_LOCATION + 4];
+      char * itemPath = new char[MAX_LOCATION];
+      char * itemName = new char[MAX_LOCATION+4];
       MenuItem item;
 
       recentFiles.Clear();
@@ -3125,8 +3126,9 @@ class IDEWorkSpace : Window
 
       for(recent : ideSettings.recentFiles)
       {
-         sprintf(itemName, "%d %s", 1 + c, recent);
-         MakeSystemPath(itemName);
+         strncpy(itemPath, recent, MAX_LOCATION); itemPath[MAX_LOCATION-1] = '\0';
+         MakeSystemPath(itemPath);
+         snprintf(itemName, MAX_LOCATION+4, "%d %s", 1 + c, itemPath); itemPath[MAX_LOCATION+4-1] = '\0';
          recentFiles.AddDynamic(MenuItem { copyText = true, text = itemName, (Key)k1 + c, id = c, NotifySelect = ide.FileRecentFile }, ide, true);
          c++;
       }
@@ -3135,11 +3137,15 @@ class IDEWorkSpace : Window
       c = 0;
       for(recent : ideSettings.recentProjects)
       {
-         sprintf(itemName, "%d %s", 1 + c, recent);
-         MakeSystemPath(itemName);
+         strncpy(itemPath, recent, MAX_LOCATION); itemPath[MAX_LOCATION-1] = '\0';
+         MakeSystemPath(itemPath);
+         snprintf(itemName, MAX_LOCATION+4, "%d %s", 1 + c, itemPath); itemPath[MAX_LOCATION+4-1] = '\0';
          recentProjects.AddDynamic(MenuItem { copyText = true, text = itemName, (Key)k1 + c, id = c, NotifySelect = ide.FileRecentProject }, ide, true);
          c++;
       }
+
+      delete itemPath;
+      delete itemName;
    }
 
    ~IDEWorkSpace()
