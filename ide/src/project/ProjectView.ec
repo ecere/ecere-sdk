@@ -218,13 +218,14 @@ class ProjectView : Window
                if(node.type == NodeTypes::project)
                {
                   MenuItem mi;
-                                                                                                                                            mi = ide.projectBuildItem;
-                  MenuItem { pop, $"Build"              , b, f7     , NotifySelect = ProjectBuild     , bitmap = mi.bitmap }.disabled = na; mi = ide.projectLinkItem;
-                  MenuItem { pop, $"Relink"             , l         , NotifySelect = ProjectLink      , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRebuildItem;
-                  MenuItem { pop, $"Rebuild"            , r, shiftF7, NotifySelect = ProjectRebuild   , bitmap = mi.bitmap }.disabled = na; mi = ide.projectCleanItem;
-                  MenuItem { pop, $"Clean"              , c         , NotifySelect = ProjectClean     , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRealCleanItem;
-                  MenuItem { pop, $"Real Clean"         , d         , NotifySelect = ProjectRealClean , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRegenerateItem;
-                  MenuItem { pop, $"Regenerate Makefile", m         , NotifySelect = ProjectRegenerate, bitmap = mi.bitmap }.disabled = na;
+                                                                                                                                             mi = ide.projectBuildItem;
+                  MenuItem { pop, $"Build"              , b, f7     , NotifySelect = ProjectBuild      , bitmap = mi.bitmap }.disabled = na; mi = ide.projectLinkItem;
+                  MenuItem { pop, $"Relink"             , l         , NotifySelect = ProjectLink       , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRebuildItem;
+                  MenuItem { pop, $"Rebuild"            , r, shiftF7, NotifySelect = ProjectRebuild    , bitmap = mi.bitmap }.disabled = na; mi = ide.projectCleanTargetItem;
+                  MenuItem { pop, $"Clean Target"       , g         , NotifySelect = ProjectCleanTarget, bitmap = mi.bitmap }.disabled = na; mi = ide.projectCleanItem;
+                  MenuItem { pop, $"Clean"              , c         , NotifySelect = ProjectClean      , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRealCleanItem;
+                  MenuItem { pop, $"Real Clean"                     , NotifySelect = ProjectRealClean  , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRegenerateItem;
+                  MenuItem { pop, $"Regenerate Makefile", m         , NotifySelect = ProjectRegenerate , bitmap = mi.bitmap }.disabled = na;
 
                   if(showDebuggingMenuItems && node.ContainsFilesWithExtension("ec"))
                   {
@@ -923,89 +924,26 @@ class ProjectView : Window
       return true;
    }
 
-#if 0
    bool ProjectCleanTarget(MenuItem selection, Modifiers mods)
    {
-      Project prj = project;
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      ProjectConfig config;
-      if(selection || !ide.activeClient)
-      {
-         DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
-         if(node) prj = node.project;
-      }
-      else
-      {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
-         if(node)
-            prj = node.project;
-      }
-      config = prj.config;
-      if(!prj.GetConfigIsInDebugSession(config) ||
-            (!ide.DontTerminateDebugSession($"Project Clean Target") && DebugStopForMake(prj, clean, compiler, config)))
-      {
-         if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
-         {
-            ide.outputView.buildBox.Logf($"Cleaning target for project %s using the %s configuration...\n", prj.name, GetConfigName(config));
-
-            buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
-            ide.AdjustBuildMenus();
-            ide.AdjustDebugMenus();
-
-            prj.Clean(compiler, config, cleanTarget, mods.ctrl && mods.shift);
-            buildInProgress = none;
-            ide.AdjustBuildMenus();
-            ide.AdjustDebugMenus();
-         }
-      }
-      delete compiler;
+      CleanProject($"Project Clean Target", $"Cleaning project %s target using the %s configuration...\n", selection, cleanTarget, mods.ctrl && mods.shift);
       return true;
    }
-#endif
 
    bool ProjectClean(MenuItem selection, Modifiers mods)
    {
-      Project prj = project;
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      ProjectConfig config;
-      int bitDepth = ide.workspace.bitDepth;
-      if(selection || !ide.activeClient)
-      {
-         DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
-         if(node) prj = node.project;
-      }
-      else
-      {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
-         if(node)
-            prj = node.project;
-      }
-      config = prj.config;
-      if(!prj.GetConfigIsInDebugSession(config) ||
-            (!ide.DontTerminateDebugSession($"Project Clean") && DebugStopForMake(prj, clean, compiler, config)))
-      {
-         if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
-         {
-            ide.outputView.buildBox.Logf($"Cleaning project %s using the %s configuration...\n", prj.name, GetConfigName(config));
-
-            buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
-            ide.AdjustBuildMenus();
-            ide.AdjustDebugMenus();
-
-            prj.Clean(compiler, config, bitDepth, clean, mods.ctrl && mods.shift);
-            buildInProgress = none;
-            ide.AdjustBuildMenus();
-            ide.AdjustDebugMenus();
-         }
-      }
-      delete compiler;
+      CleanProject($"Project Clean", $"Cleaning project %s using the %s configuration...\n", selection, clean, mods.ctrl && mods.shift);
       return true;
    }
 
    bool ProjectRealClean(MenuItem selection, Modifiers mods)
    {
+      CleanProject($"Project Real Clean", $"Removing intermediate objects directory for project %s using the %s configuration...\n", selection, realClean, mods.ctrl && mods.shift);
+      return true;
+   }
+
+   void CleanProject(char * terminateDebugSessionMessage, char * cleaningMessageLogFormat, MenuItem selection, CleanType cleanType, bool justPrint)
+   {
       Project prj = project;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config;
@@ -1019,29 +957,27 @@ class ProjectView : Window
       else
       {
          ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
-         if(node)
-            prj = node.project;
+         if(node) prj = node.project;
       }
       config = prj.config;
       if(!prj.GetConfigIsInDebugSession(config) ||
-            (!ide.DontTerminateDebugSession($"Project Real Clean") && DebugStopForMake(prj, clean, compiler, config)))
+            (!ide.DontTerminateDebugSession(terminateDebugSessionMessage) && DebugStopForMake(prj, clean, compiler, config)))
       {
          if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
          {
-            ide.outputView.buildBox.Logf($"Removing intermediate objects directory for project %s using the %s configuration...\n", prj.name, GetConfigName(config));
+            ide.outputView.buildBox.Logf(cleaningMessageLogFormat, prj.name, GetConfigName(config));
 
             buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
 
-            prj.Clean(compiler, config, bitDepth, realClean, mods.ctrl && mods.shift);
+            prj.Clean(compiler, config, bitDepth, cleanType, justPrint);
             buildInProgress = none;
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
          }
       }
       delete compiler;
-      return true;
    }
 
    bool ProjectRegenerate(MenuItem selection, Modifiers mods)
