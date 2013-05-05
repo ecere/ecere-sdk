@@ -4046,7 +4046,7 @@ struct __ecereNameSpace__ecere__com__DataMember * dataMember = __ecereNameSpace_
 
 if(!dataMember)
 dataMember = (struct __ecereNameSpace__ecere__com__DataMember *)__ecereNameSpace__ecere__com__eClass_FindProperty(_class, (*curMember)->name, (((void *)0)));
-if(dataMember && dataMember->memberAccess != 2)
+if(dataMember && dataMember->memberAccess != 2 && dataMember->id >= 0)
 {
 *curMember = dataMember;
 break;

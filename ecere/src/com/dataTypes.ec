@@ -449,7 +449,14 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
 {
    // WHY DOES _class.module NOT SEEM TO WORK?
    Module module = _class.templateClass ? _class.templateClass.module : _class.module;
-   if(_class.type == enumClass)
+   if(_class.type == normalClass && _class.base && !_class.base.base)
+   {
+      if(sizeof(uintsize) == 8)
+         return UInt64Hex_OnGetString(_class, (void *)&data, tempString, fieldData, needClass);
+      else
+         return UIntegerHex_OnGetString(_class, (void *)&data, tempString, fieldData, needClass);
+   }
+   else if(_class.type == enumClass)
    {
       return Enum_OnGetString(_class, data, tempString, fieldData, needClass);
    }
@@ -529,6 +536,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
             char memberString[1024];
             Class memberType = member.dataTypeClass;
             char * name = member.name;
+            if(member.id < 0) continue;
                   
             memberString[0] = 0;
 

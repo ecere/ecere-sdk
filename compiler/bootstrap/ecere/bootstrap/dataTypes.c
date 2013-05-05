@@ -943,6 +943,8 @@ char memberString[1024];
 struct __ecereNameSpace__ecere__com__Class * memberType = member->dataTypeClass;
 char * name = member->name;
 
+if(member->id < 0)
+continue;
 memberString[0] = (char)0;
 if(!memberType)
 memberType = member->dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(module, member->dataTypeString);

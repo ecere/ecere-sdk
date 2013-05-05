@@ -4903,7 +4903,7 @@ public dllexport void eClass_FindNextMember(Class _class, Class * curClass, Data
             {
                DataMember dataMember = eClass_FindDataMember(_class, curMember->name, null, null, null);
                if(!dataMember) dataMember = (DataMember)eClass_FindProperty(_class, curMember->name, null);
-               if(dataMember && dataMember.memberAccess != privateAccess)
+               if(dataMember && dataMember.memberAccess != privateAccess && dataMember.id >= 0) // Skip _vTbl, _refCount and _class in Instance
                {
                   *curMember = dataMember;
                   break;
