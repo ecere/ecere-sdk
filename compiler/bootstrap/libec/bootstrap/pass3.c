@@ -1134,7 +1134,7 @@ spec->addNameSpace = 0x0;
 }
 else if(_class)
 {
-if((_class->type != 1000 || !strcmp(_class->fullName, "enum") || !strcmp(_class->fullName, "ecere::com::Instance") || (_class->dataTypeString && !strcmp(_class->dataTypeString, "char *")) || !strcmp(_class->fullName, "uint64") || !strcmp(_class->fullName, "uint32") || !strcmp(_class->fullName, "uint16") || !strcmp(_class->fullName, "uintptr") || !strcmp(_class->fullName, "intptr") || !strcmp(_class->fullName, "uintsize") || !strcmp(_class->fullName, "intsize") || !strcmp(_class->fullName, "uint") || !strcmp(_class->fullName, "byte")))
+if((_class->type != 1000 || !strcmp(_class->fullName, "enum") || (_class->dataTypeString && !strcmp(_class->dataTypeString, "char *")) || !strcmp(_class->fullName, "uint64") || !strcmp(_class->fullName, "uint32") || !strcmp(_class->fullName, "uint16") || !strcmp(_class->fullName, "uintptr") || !strcmp(_class->fullName, "intptr") || !strcmp(_class->fullName, "uintsize") || !strcmp(_class->fullName, "intsize") || !strcmp(_class->fullName, "uint") || !strcmp(_class->fullName, "byte")))
 {
 (__ecereNameSpace__ecere__com__eSystem_Delete(spec->name), spec->name = 0);
 if(_class->dataTypeString)
@@ -1182,7 +1182,7 @@ spec->addNameSpace = 0x0;
 }
 if(_class && _class->dataTypeString && !strcmp(_class->dataTypeString, "char *"))
 return 0x1;
-if(!_class || _class->type == 0 || _class->type == 5 || !strcmp(_class->fullName, "ecere::com::Instance"))
+if(!_class || _class->type == 0 || _class->type == 5)
 return 0x1;
 else if(param && _class->type == 1)
 return (unsigned int)2;
@@ -1428,7 +1428,7 @@ else
 {
 struct Symbol * classSym = (spec->type == 1) ? spec->symbol : (((void *)0));
 
-if(type->classObjectType && (!classSym || (classSym && classSym->registered && (classSym->registered->type == 4 || classSym->registered->type == 2 || classSym->registered->type == 3 || (classSym->registered->type == 1000 && strcmp(classSym->string, "ecere::com::Instance") && strcmp(classSym->string, "ecere::com::Class"))))))
+if(type->classObjectType && (!classSym || (classSym && classSym->registered && (classSym->registered->type == 4 || classSym->registered->type == 2 || classSym->registered->type == 3))))
 ReplaceByInstancePtr(spec, &type->declarator, 2);
 }
 InstDeclPassSpecifier(spec);

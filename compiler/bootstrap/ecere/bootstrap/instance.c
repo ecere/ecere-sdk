@@ -1534,7 +1534,7 @@ if(base && (type == 0 || type == 5 || type == 1) && (base->type == 3 || base->ty
 {
 type = base->type;
 }
-if(!base || base->type == 1000)
+if(!base || base->type == 1000 || (base->type == 0 && base->base && !base->base->base))
 {
 if(type == 4)
 {
@@ -3138,7 +3138,7 @@ else
 {
 for(; _class && from; _class = _class->base)
 {
-if(_class == from || _class->templateClass == from || (_class->type == 1000 && from->name && !strcmp(_class->name, from->name)))
+if(_class == from || _class->templateClass == from || ((_class->type == 1000 || (_class->type == 0 && _class->base && !_class->base->base)) && from->name && !strcmp(_class->name, from->name)))
 return 0x1;
 }
 }
@@ -3740,7 +3740,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete((&*watchers), watcher
 }
 }
 base = _class->base;
-if(base && base->type == 1000)
+if(base && (base->type == 1000 || (base->type == 0 && base->base && !base->base->base)))
 base = (((void *)0));
 if(_class->Destructor)
 _class->Destructor(instance);
@@ -5067,7 +5067,7 @@ break;
 }
 }
 base = _class->base;
-if(base && base->type == 1000)
+if(base && (base->type == 1000 || (base->type == 0 && base->base && !base->base->base)))
 base = (((void *)0));
 }
 }
@@ -5199,7 +5199,7 @@ baseClass->typeSize = 0;
 {
 struct __ecereNameSpace__ecere__com__Class * instanceClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Instance", (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), module, 4, 1);
 
-instanceClass->type = 1000;
+instanceClass->type = 0;
 instanceClass->fixed = 0x1;
 instanceClass->memberOffset = 0;
 instanceClass->offset = 0;

@@ -7170,7 +7170,7 @@ void ApplyAnyObjectLogic(Expression e)
          thisExp.next = null;
          e.Clear();
 
-         if( ( type.kind == classType && type._class && type._class.registered && strcmp(type._class.registered.fullName, "ecere::com::Instance") &&
+         if( ( type.kind == classType && type._class && type._class.registered && 
                    (type._class.registered.type == systemClass || type._class.registered.type == bitClass || 
                     type._class.registered.type == enumClass || type._class.registered.type == unitClass) ) ||
              (type.kind != pointerType && type.kind != arrayType && type.kind != classType) ||

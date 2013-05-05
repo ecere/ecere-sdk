@@ -12269,7 +12269,7 @@ type->byReference = backupByReference;
 thisExp->prev = (((void *)0));
 thisExp->next = (((void *)0));
 __ecereMethod_Expression_Clear(e);
-if((type->kind == 8 && type->_class && type->_class->registered && strcmp(type->_class->registered->fullName, "ecere::com::Instance") && (type->_class->registered->type == 1000 || type->_class->registered->type == 2 || type->_class->registered->type == 4 || type->_class->registered->type == 3)) || (type->kind != 13 && type->kind != 12 && type->kind != 8) || (!destType->byReference && byReference && (destType->kind != 13 || type->kind != 13)))
+if((type->kind == 8 && type->_class && type->_class->registered && (type->_class->registered->type == 1000 || type->_class->registered->type == 2 || type->_class->registered->type == 4 || type->_class->registered->type == 3)) || (type->kind != 13 && type->kind != 22 && type->kind != 12 && type->kind != 8) || (!destType->byReference && byReference && (destType->kind != 13 || type->kind != 13)))
 {
 e->type = 4;
 e->op.op = '*';

@@ -113,7 +113,6 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
          {
             if((_class.type != systemClass ||
                !strcmp(_class.fullName, "enum") ||
-               !strcmp(_class.fullName, "ecere::com::Instance") ||
                (_class.dataTypeString && !strcmp(_class.dataTypeString, "char *")) ||
                //strcmp(_class.fullName, "bool") &&
                !strcmp(_class.fullName, "uint64") ||
@@ -182,7 +181,7 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
 
          if(_class && _class.dataTypeString && !strcmp(_class.dataTypeString, "char *"))
             return true; //false;
-         if(!_class || _class.type == normalClass || _class.type == noHeadClass || !strcmp(_class.fullName, "ecere::com::Instance"))
+         if(!_class || _class.type == normalClass || _class.type == noHeadClass)
             return true;
          else if(param && _class.type == structClass)
             return 2;
@@ -404,8 +403,7 @@ static void InstDeclPassDeclarator(Declarator decl)
          {
             Symbol classSym = (spec.type == nameSpecifier) ? spec.symbol /*FindClass(spec.name)*/ : null;
             if(type.classObjectType && (!classSym || (classSym && classSym.registered && 
-               (classSym.registered.type == enumClass || classSym.registered.type == bitClass || classSym.registered.type == unitClass || 
-               (classSym.registered.type == systemClass && strcmp(classSym.string, "ecere::com::Instance") && strcmp(classSym.string, "ecere::com::Class"))))))
+               (classSym.registered.type == enumClass || classSym.registered.type == bitClass || classSym.registered.type == unitClass))))
                ReplaceByInstancePtr(spec, &type.declarator, 2);
          }
          InstDeclPassSpecifier(spec);

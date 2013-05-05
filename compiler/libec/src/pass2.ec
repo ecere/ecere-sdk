@@ -101,10 +101,7 @@ static Expression FixReference(Expression e, bool wantReference)
            strcmp(_class.fullName, "uintptr") && 
            strcmp(_class.fullName, "intptr") && 
            strcmp(_class.fullName, "uintsize") && 
-           strcmp(_class.fullName, "intsize") && 
-           strcmp(_class.fullName, "ecere::com::Instance") && 
-           strcmp(_class.fullName, "ecere::com::Class") && 
-           strcmp(_class.dataTypeString, "char *"))))
+           strcmp(_class.fullName, "intsize"))))
          {
             // if(wantReference != ((_class.type == systemClass) ? false : e.byReference))
             if(wantReference != (e.byReference || isPointer))
@@ -979,10 +976,8 @@ static void ProcessExpression(Expression exp)
             // TOFIX: Same time as when we fix for = 0
 
             if(exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered && 
-               ((exp.expType._class.registered.type == normalClass && 
-                  // TODO: Improve on this, only fixed this issue here... Different String class defined in each module
-                  !eClass_IsDerived(exp.expType._class.registered, eSystem_FindClass(exp.expType._class.registered.module, "char *")) /*strcmp(exp.expType._class.string, "String")*/) ||
-                (exp.expType._class.registered.type == systemClass && !strcmp(exp.expType._class.string, "ecere::com::Instance"))))
+               exp.expType._class.registered.type == normalClass &&
+               strcmp(exp.expType._class.registered.dataTypeString, "char *"))
             {
                Expression decRefExp = MkExpCall(QMkExpId("ecere::com::eInstance_DecRef"), args);
                ProcessExpressionType(decRefExp);

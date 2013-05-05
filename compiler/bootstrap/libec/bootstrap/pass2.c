@@ -1159,7 +1159,7 @@ if(type->kind == 8)
 {
 struct __ecereNameSpace__ecere__com__Class * _class = type->_class ? type->_class->registered : (((void *)0));
 
-if(_class && (_class->type == 1 || _class->type == 5 || (_class->type == 1000 && _class->base && strcmp(_class->fullName, "uintptr") && strcmp(_class->fullName, "intptr") && strcmp(_class->fullName, "uintsize") && strcmp(_class->fullName, "intsize") && strcmp(_class->fullName, "ecere::com::Instance") && strcmp(_class->fullName, "ecere::com::Class") && strcmp(_class->dataTypeString, "char *"))))
+if(_class && (_class->type == 1 || _class->type == 5 || (_class->type == 1000 && _class->base && strcmp(_class->fullName, "uintptr") && strcmp(_class->fullName, "intptr") && strcmp(_class->fullName, "uintsize") && strcmp(_class->fullName, "intsize"))))
 {
 if(wantReference != (e->byReference || isPointer))
 {
@@ -2159,7 +2159,7 @@ exp->list = MkList();
 object->usage = (object->usage & ~0x80) | (((unsigned int)0x1) << 7);
 ProcessExpression(object);
 ListAdd(args, object);
-if(exp->expType && exp->expType->kind == 8 && exp->expType->_class && exp->expType->_class->registered && ((exp->expType->_class->registered->type == 0 && !__ecereNameSpace__ecere__com__eClass_IsDerived(exp->expType->_class->registered, __ecereNameSpace__ecere__com__eSystem_FindClass(exp->expType->_class->registered->module, "char *"))) || (exp->expType->_class->registered->type == 1000 && !strcmp(exp->expType->_class->string, "ecere::com::Instance"))))
+if(exp->expType && exp->expType->kind == 8 && exp->expType->_class && exp->expType->_class->registered && exp->expType->_class->registered->type == 0 && strcmp(exp->expType->_class->registered->dataTypeString, "char *"))
 {
 struct Expression * decRefExp = MkExpCall(QMkExpId("ecere::com::eInstance_DecRef"), args);
 
