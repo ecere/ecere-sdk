@@ -439,9 +439,9 @@ class IDEWorkSpace : Window
    {
       parent = this;
 
-      void OnGotoError(char * line)
+      void OnGotoError(char * line, bool noParsing)
       {
-         ide.GoToError(line);
+         ide.GoToError(line, noParsing);
       }
 
       void OnCodeLocationParseAndGoTo(char * line)
@@ -706,7 +706,7 @@ class IDEWorkSpace : Window
 
                   for(c = 0; c < numSelections; c++)
                   {
-                     if(OpenFile(multiFilePaths[c], normal, true, fileTypes[ideFileDialog.fileType].typeExtension, no, normal))
+                     if(OpenFile(multiFilePaths[c], normal, true, fileTypes[ideFileDialog.fileType].typeExtension, no, normal, mods.ctrl && mods.shift))
                         gotWhatWeWant = true;
                   }
                   if(gotWhatWeWant ||
@@ -806,7 +806,7 @@ class IDEWorkSpace : Window
                   delete command;
                }
                else
-                  OpenFile(file, normal, true, null, no, normal);
+                  OpenFile(file, normal, true, null, no, normal, mods.ctrl && mods.shift);
                break;
             }
             id++;
@@ -828,7 +828,7 @@ class IDEWorkSpace : Window
                   delete command;
                }
                else
-                  OpenFile(file, normal, true, null, no, normal);
+                  OpenFile(file, normal, true, null, no, normal, mods.ctrl && mods.shift);
                break;
             }
             id++;
@@ -881,7 +881,7 @@ class IDEWorkSpace : Window
             ideProjectFileDialog.text = openProjectFileDialogTitle;
             if(ideProjectFileDialog.Modal() == ok)
             {
-               OpenFile(ideProjectFileDialog.filePath, normal, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, normal);
+               OpenFile(ideProjectFileDialog.filePath, normal, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, normal, mods.ctrl && mods.shift);
                //ChangeProjectFileDialogDirectory(ideProjectFileDialog.currentDirectory);
             }
             return true;
@@ -912,7 +912,7 @@ class IDEWorkSpace : Window
             {
                if(ideProjectFileDialog.Modal() == ok)
                {
-                  if(OpenFile(ideProjectFileDialog.filePath, normal, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, add))
+                  if(OpenFile(ideProjectFileDialog.filePath, normal, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, add, mods.ctrl && mods.shift))
                      break;
                   if(MessageBox { type = yesNo, master = this, text = $"Error opening project file", 
                         contents = $"Add a different project?" }.Modal() == no)
@@ -1422,6 +1422,8 @@ class IDEWorkSpace : Window
       filter = 1;
    };
 
+   bool noParsing;
+
 #ifdef GDB_DEBUG_GUI
    GDBDialog gdbDialog
    {
@@ -1607,6 +1609,7 @@ class IDEWorkSpace : Window
       if(MessageBox { type = yesNo, master = this/*.parent*/,
             text = $"Document has been modified", contents = temp }.Modal() == yes)
       {
+         bool noParsing = (this._class == class(CodeEditor) && ((CodeEditor)this).noParsing) ? true : false;
          char * fileName = CopyString(this.fileName);
          WindowState state = this.state;
          Anchor anchor = this.anchor;
@@ -1614,7 +1617,7 @@ class IDEWorkSpace : Window
 
          this.modifiedDocument = false;
          this.Destroy(0);
-         this = ide.OpenFile(fileName, normal, true, null, no, normal);
+         this = ide.OpenFile(fileName, normal, true, null, no, normal, noParsing);
          if(this)
          {
             this.anchor = anchor;
@@ -1967,7 +1970,7 @@ class IDEWorkSpace : Window
       return false;
    }
 
-   Window OpenFile(char * origFilePath, WindowState state, bool visible, char * type, OpenCreateIfFails createIfFails, OpenMethod openMethod)
+   Window OpenFile(char * origFilePath, WindowState state, bool visible, char * type, OpenCreateIfFails createIfFails, OpenMethod openMethod, bool noParsing)
    {
       char extension[MAX_EXTENSION] = "";
       Window document = null;
@@ -2075,7 +2078,7 @@ class IDEWorkSpace : Window
                         {
                            if(ofi.state != closed)
                            {
-                              Window file = OpenFile(ofi.path, normal, true, null, no, normal);
+                              Window file = OpenFile(ofi.path, normal, true, null, no, normal, noParsing);
                               if(file)
                               {
                                  char fileName[MAX_LOCATION];
@@ -2210,7 +2213,7 @@ class IDEWorkSpace : Window
             !strcmp(extension, "css") || !strcmp(extension, "php") ||
             !strcmp(extension, "js"))
       {
-         CodeEditor editor { parent = this, state = state, visible = false };
+         CodeEditor editor { parent = this, state = state, visible = false, noParsing = noParsing };
          editor.updatingCode = true;
          if(editor.LoadFile(filePath))
          {
@@ -2223,7 +2226,7 @@ class IDEWorkSpace : Window
       }
       else
       {
-         CodeEditor editor { parent = this, state = state, visible = false };
+         CodeEditor editor { parent = this, state = state, visible = false, noParsing = noParsing };
          if(editor.LoadFile(filePath))
          {
             document = editor;
@@ -2349,10 +2352,10 @@ class IDEWorkSpace : Window
       return true;
    }
 
-   void GoToError(const char * line)
+   void GoToError(const char * line, bool noParsing)
    {
       if(projectView)
-         projectView.GoToError(line);
+         projectView.GoToError(line, noParsing);
    }
 
    void CodeLocationParseAndGoTo(const char * text, Project project, const char * dir)
@@ -2426,7 +2429,7 @@ class IDEWorkSpace : Window
       fileAttribs = FileExists(completePath);
       if(fileAttribs.isFile)
       {
-         CodeEditor codeEditor = (CodeEditor)OpenFile(completePath, normal, true, "", no, normal);
+         CodeEditor codeEditor = (CodeEditor)OpenFile(completePath, normal, true, "", no, normal, false);
          if(codeEditor && line)
          {
             EditBox editBox = codeEditor.editBox;
@@ -2598,7 +2601,7 @@ class IDEWorkSpace : Window
             caps = { width = 40, text = $"CAPS", color = app.GetKeyState(capsState) ? black : Color { 128, 128, 128 } };
             statusBar.AddField(caps);
 
-            ovr = { width = 30, text = $"OVR", color = editBox.overwrite ? black : Color { 128, 128, 128 } };
+            ovr = { width = 30, text = $"OVR", color = (editBox && editBox.overwrite) ? black : Color { 128, 128, 128 } };
             statusBar.AddField(ovr);
 
             num = { width = 30, text = $"NUM", color = app.GetKeyState(numState) ? black : Color { 128, 128, 128 } };
@@ -2691,7 +2694,9 @@ class IDEWorkSpace : Window
       DynamicString passArgs { };
       for(c = 1; c<app.argc; c++)
       {
-         if(!strcmp(app.argv[c], "-debug-start"))
+         if(!strcmp(app.argv[c], "-no-parsing"))
+            ide.noParsing = true;
+         else if(!strcmp(app.argv[c], "-debug-start"))
             debugStart = true;
          else if(!strcmp(app.argv[c], "-debug-work-dir"))
             debugWorkDir = true;
@@ -2768,10 +2773,10 @@ class IDEWorkSpace : Window
                   break;
                }
                else
-                  ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
+                  ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal, false);
             }
             else if(strstr(fullPath, "http://") == fullPath)
-               ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
+               ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal, false);
          }
       }
       if(passThrough && projectView && projectView.project && workspace)
@@ -3184,7 +3189,7 @@ class IDEApp : GuiApplication
          char fullPath[MAX_LOCATION];
          GetWorkingDir(fullPath, MAX_LOCATION);
          PathCat(fullPath, app.argv[c]);
-         ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
+         ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal, false);
       }
       */
 
