@@ -1398,7 +1398,66 @@ class IDEWorkSpace : Window
          helpMenu, $"API Reference", r, f1;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
-            Execute("documentor");
+            char * p = new char[MAX_LOCATION];
+            p[0] = '\0';
+            strncpy(p, settingsContainer.moduleLocation, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+            PathCat(p, "documentor");
+#if defined(__WIN32__)
+            ChangeExtension(p, "exe", p);
+#endif
+            if(FileExists(p).isFile)
+               Execute(p);
+            else
+               Execute("documentor");
+            delete p;
+            return true;
+         }
+      }
+      MenuDivider { helpMenu };
+      MenuItem
+      {
+         helpMenu, $"Ecere Tao of Programming [work in progress]", t;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            FindAndShellOpenInstalledFile("doc", "Ecere Tao of Programming [work in progress].pdf");
+            return true;
+         }
+      }
+      MenuDivider { helpMenu };
+      MenuItem
+      {
+         helpMenu, $"Documentation Folder", d;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            FindAndShellOpenInstalledFolder("doc");
+            return true;
+         }
+      }
+      MenuItem
+      {
+         helpMenu, $"Samples Folder", s;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            FindAndShellOpenInstalledFolder("samples");
+            return true;
+         }
+      }
+      MenuItem
+      {
+         helpMenu, $"Extras Folder", x;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            FindAndShellOpenInstalledFolder("extras");
+            return true;
+         }
+      }
+      MenuDivider { helpMenu };
+      MenuItem
+      {
+         helpMenu, $"Community Forums", f;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            ShellOpen("http://ecere.com/forums");
             return true;
          }
       }
@@ -3162,6 +3221,148 @@ void DestroyDir(char * path)
    RecursiveDeleteFolderFSI fsi { };
    fsi.Iterate(path);
    delete fsi;
+}
+
+#if defined(__WIN32__)
+define sdkDirName = "Ecere SDK";
+#else
+define sdkDirName = "ecere";
+#endif
+
+void FindAndShellOpenInstalledFolder(char * name)
+{
+   char * p = new char[MAX_LOCATION];
+   char * v = new char[maxPathLen];
+   byte * tokens[256];
+   int c, numTokens;
+   Array<String> paths { };
+   p[0] = v[0] = '\0';
+   strncpy(p, settingsContainer.moduleLocation, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+   StripLastDirectory(p, p);
+   PathCat(p, name);
+   paths.Add(CopyString(p));
+#if defined(__WIN32__)
+   GetEnvironment("ECERE_SDK_SRC", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, name); paths.Add(CopyString(p));
+   }
+   GetEnvironment("AppData", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
+   }
+   GetEnvironment("ProgramFiles", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
+   }
+   GetEnvironment("ProgramFiles(x86)", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
+   }
+   GetEnvironment("SystemDrive", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, "Program Files"); PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
+   }
+#else
+   GetEnvironment("XDG_DATA_DIRS", v, maxPathLen);
+   numTokens = TokenizeWith(v, sizeof(tokens) / sizeof(byte *), tokens, ":", false);
+   for(c=0; c<numTokens; c++)
+   {
+      strncpy(p, tokens[c], MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
+   }
+#endif
+   for(path : paths)
+   {
+      strncpy(p, path, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      if(FileExists(p).isDirectory)
+      {
+         ShellOpen(p);
+         break;
+      }
+   }
+   delete p;
+   delete v;
+   paths.Free();
+   delete paths;
+}
+
+void FindAndShellOpenInstalledFile(char * subdir, char * name)
+{
+   char * p = new char[MAX_LOCATION];
+   char * v = new char[maxPathLen];
+   byte * tokens[256];
+   int c, numTokens;
+   Array<String> paths { };
+   p[0] = v[0] = '\0';
+   strncpy(p, settingsContainer.moduleLocation, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+   paths.Add(CopyString(p));
+   StripLastDirectory(p, p);
+   PathCat(p, subdir);
+   paths.Add(CopyString(p));
+#if defined(__WIN32__)
+   GetEnvironment("ECERE_SDK_SRC", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
+   }
+   GetEnvironment("AppData", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
+   }
+   GetEnvironment("ProgramFiles", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
+   }
+   GetEnvironment("ProgramFiles(x86)", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
+   }
+   GetEnvironment("SystemDrive", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, "Program Files"); PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
+   }
+#else
+   GetEnvironment("XDG_DATA_DIRS", v, maxPathLen);
+   numTokens = TokenizeWith(v, sizeof(tokens) / sizeof(byte *), tokens, ":", false);
+   for(c=0; c<numTokens; c++)
+   {
+      strncpy(p, tokens[c], MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
+   }
+#endif
+   for(path : paths)
+   {
+      strncpy(p, path, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, name);
+      if(FileExists(p).isFile)
+      {
+         ShellOpen(p);
+         break;
+      }
+   }
+   delete p;
+   delete v;
+   paths.Free();
+   delete paths;
 }
 
 class RecursiveDeleteFolderFSI : NormalFileSystemIterator
