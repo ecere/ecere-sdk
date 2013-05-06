@@ -2121,6 +2121,7 @@ class CodeEditor : Window
       */
       if(active && directActivation)
       {
+         AdjustDebugMenus(ide.areDebugMenusUnavailable, ide.isBreakpointTogglingUnavailable, ide.isDebuggerExecuting);
          if(openedFileInfo)
             openedFileInfo.Activate();
          if(designer)
@@ -2418,12 +2419,11 @@ class CodeEditor : Window
       return false;
    }
 
-   void DebugMenusDisabled()
+   void AdjustDebugMenus(bool unavailable, bool bpNoToggle, bool executing)
    {
-      bool debugMenusDisabled = ide.GetDebugMenusDisabled();
-      debugRunToCursor.disabled = debugMenusDisabled;
-      debugSkipRunToCursor.disabled = debugMenusDisabled;
-      debugToggleBreakpoint.disabled = debugMenusDisabled;
+      debugRunToCursor.disabled                = unavailable || executing;
+      debugSkipRunToCursor.disabled            = unavailable || executing;
+      debugToggleBreakpoint.disabled           = bpNoToggle;
    }
 
    CodeEditor()
@@ -2443,7 +2443,7 @@ class CodeEditor : Window
          designer.fileName = title;
       }
 
-      DebugMenusDisabled();
+      AdjustDebugMenus(ide.areDebugMenusUnavailable, ide.isBreakpointTogglingUnavailable, ide.isDebuggerExecuting);
 
       for(c = 0; c < CodeObjectType::enumSize; c++)
          icons[c] = BitmapResource { iconNames[c], window = this };

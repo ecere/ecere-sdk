@@ -1535,19 +1535,6 @@ class IDEWorkSpace : Window
       return projectView;
    }
 
-   bool GetDebugMenusDisabled()
-   {
-      if(projectView)
-      {
-         Project project = projectView.project;
-         if(project)
-            if(project.GetTargetType(project.config) == executable)
-               return false;
-           
-      }
-      return true;
-   }
-
    void RepositionWindows(bool expand)
    {
       if(this)
@@ -1871,13 +1858,30 @@ class IDEWorkSpace : Window
       }
    }
 
+   property bool areDebugMenusUnavailable { get {
+      return !project ||
+            project.GetTargetType(project.config) != executable ||
+            projectView.buildInProgress == buildingMainProject;
+   } }
+
+   property bool isBreakpointTogglingUnavailable { get {
+      return !project;
+   } }
+
+   property bool isDebuggerExecuting { get {
+      if(!ide.debugger)
+         return false;
+      else
+         return ide.debugger.state == running;
+   } }
+
    void AdjustDebugMenus()
    {
-      bool unavailable = !project || project.GetTargetType(project.config) != executable ||
-               projectView.buildInProgress == buildingMainProject;
-      bool active = ide.debugger.isActive;
-      bool executing = ide.debugger.state == running;
-      //bool holding = ide.debugger.state == stopped;
+      bool unavailable = areDebugMenusUnavailable;
+      bool active = debugger.isActive;
+      bool bpNoToggle = isBreakpointTogglingUnavailable;
+      bool executing = isDebuggerExecuting;
+      //bool holding = debugger.state == stopped;
 
       debugStartResumeItem.disabled       = unavailable || executing;
       debugStartResumeItem.text           = active ? $"Resume" : $"Start";
@@ -1915,10 +1919,7 @@ class IDEWorkSpace : Window
       {
          CodeEditor codeEditor = ((Designer)GetActiveDesigner()).codeEditor;
          if(codeEditor)
-         {
-            codeEditor.debugRunToCursor.disabled      = unavailable || executing;
-            codeEditor.debugSkipRunToCursor.disabled  = unavailable || executing;
-         }
+            codeEditor.AdjustDebugMenus(unavailable, bpNoToggle, executing);
       }
    }
 
