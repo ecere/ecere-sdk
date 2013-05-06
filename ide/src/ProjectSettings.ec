@@ -751,6 +751,21 @@ class PathOptionBox : OptionBox<String>
 
       bool NotifyModified(PathBox pathBox)
       {
+         char path[MAX_LOCATION];
+         strcpy(path, pathBox.path);
+         TrimLSpaces(path, path);
+         TrimRSpaces(path, path);
+         {
+            char * chars = "*|:\",<>?";
+            char ch, * s = path, * o = path;
+            for(; (ch = *s); s++) { if(!strchr(chars, ch)) *o++ = ch; }
+            *o = '\0';
+         }
+         if(!fstrcmp(path, project.topNode.path))
+            strcpy(path, ".");
+         else if(fstrcmp(path, ".") && !(strlen(path) > 1 && path[0] == '.' && path[1] == '.'))
+            MakePathRelative(path, project.topNode.path, path);
+         pathBox.path = path;
          ((OptionBox)pathBox.id).Retrieve();
          return true;
       }
