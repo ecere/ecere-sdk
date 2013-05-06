@@ -452,6 +452,7 @@ public:
       DropInvalidBreakpoints();
       modified = true;
       ide.findInFilesDialog.RemoveProjectItem(project);
+      ide.UpdateToolBarActiveConfigs(false);
       Save();
 
       delete project;

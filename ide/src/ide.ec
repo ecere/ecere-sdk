@@ -1740,7 +1740,7 @@ class IDEWorkSpace : Window
       else
       {
          toolBar.activeConfig.Clear();
-         row = toolBar.activeConfig.AddString("(Mixed)");
+         row = toolBar.activeConfig.AddString($"(Mixed)");
          row.tag = 1;
       }
       if(workspace)
@@ -2229,9 +2229,24 @@ class IDEWorkSpace : Window
                   prj = LoadProject(filePath, null);
                   if(prj)
                   {
+                     char * activeConfigName = null;
                      CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.compiler);
                      prj.StartMonitoring();
                      workspace.projects.Add(prj);
+                     if(toolBar.activeConfig.currentRow && toolBar.activeConfig.currentRow != toolBar.activeConfig.firstRow &&
+                           toolBar.activeConfig.currentRow.string && toolBar.activeConfig.currentRow.string[0])
+                        activeConfigName = toolBar.activeConfig.currentRow.string;
+                     if(activeConfigName)
+                     {
+                        for(cfg : prj.configurations)
+                        {
+                           if(cfg.name && !strcmp(cfg.name, activeConfigName))
+                           {
+                              prj.config = cfg;
+                              break;
+                           }
+                        }
+                     }
                      if(projectView)
                         projectView.AddNode(prj.topNode, null);
                      workspace.modified = true;
