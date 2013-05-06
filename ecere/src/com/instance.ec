@@ -322,6 +322,7 @@ public:
    Class templateClass;
    OldList templatized;
    int numParams;
+   bool isInstanceClass;
 
    property char *
    {
@@ -2280,7 +2281,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
       {
          type = base.type;
       }
-      if(!base || base.type == systemClass || (base.type == normalClass && base.base && !base.base.base))
+      if(!base || base.type == systemClass || base.isInstanceClass)
       {
          if(type == enumClass)
          {
@@ -3926,7 +3927,7 @@ public dllexport bool eClass_IsDerived(Class _class, Class from)
    {
       for(; _class && from; _class = _class.base)
       {
-         if(_class == from || _class.templateClass == from || ((_class.type == systemClass || (_class.type == normalClass && _class.base && !_class.base.base)) && from.name && !strcmp(_class.name, from.name)))
+         if(_class == from || _class.templateClass == from || ((_class.type == systemClass || (_class.type == normalClass && _class.isInstanceClass)) && from.name && !strcmp(_class.name, from.name)))
             return true;
       }
    }
@@ -4587,7 +4588,7 @@ public dllexport void eInstance_Delete(Instance instance)
          
 
          base = _class.base;
-         if(base && (base.type == systemClass || (base.type == normalClass && base.base && !base.base.base))) base = null;
+         if(base && (base.type == systemClass || base.isInstanceClass)) base = null;
          if(_class.Destructor)
             _class.Destructor(instance);
 #ifdef MEMINFO
@@ -5502,7 +5503,7 @@ static void Module_Destructor(Module module)
       }
       _class.module = null;
       module.classes.Remove(_class);
-      if(!_class.count || _class.type != normalClass)
+      if(_class.count <= 0 || _class.type != normalClass || _class.isInstanceClass)
          eClass_Unregister(_class);
       else
       {
@@ -5921,7 +5922,7 @@ public dllexport void eInstance_StopWatching(Instance instance, Property _proper
                }
             }
             base = _class.base;
-            if(base && (base.type == systemClass || (base.type == normalClass && base.base && !base.base.base))) base = null;
+            if(base && (base.type == systemClass || base.isInstanceClass)) base = null;
          }
       }
    }
@@ -5970,8 +5971,8 @@ static void LoadCOM(Module module)
 
    {
       Class instanceClass = eSystem_RegisterClass(normalClass, "ecere::com::Instance", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
-      // Instance should really be a Normal class, but inheritance checks for systemClass to see if something has a non system ancestor
       instanceClass.type = normalClass;
+      instanceClass.isInstanceClass = true;
       instanceClass.fixed = true;
       instanceClass.memberOffset = 0;
       instanceClass.offset = 0;

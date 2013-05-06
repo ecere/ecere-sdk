@@ -62,7 +62,7 @@ typedef unsigned __int64 uint64;
 #define structSize_ClassProperty          (_64BIT ? 80 : 40)
 #define structSize_Method                 (_64BIT ? 96 : 52)
 #define structSize_Property               (_64BIT ? 152 : 88)
-#define structSize_Class                  (_64BIT ? 616 : 358)
+#define structSize_Class                  (_64BIT ? 616 : 372)
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
@@ -139,6 +139,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument * templateArgs;
 struct __ecereNameSpace__ecere__com__Class * templateClass;
 struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
+unsigned int isInstanceClass;
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -1534,7 +1535,7 @@ if(base && (type == 0 || type == 5 || type == 1) && (base->type == 3 || base->ty
 {
 type = base->type;
 }
-if(!base || base->type == 1000 || (base->type == 0 && base->base && !base->base->base))
+if(!base || base->type == 1000 || base->isInstanceClass)
 {
 if(type == 4)
 {
@@ -3138,7 +3139,7 @@ else
 {
 for(; _class && from; _class = _class->base)
 {
-if(_class == from || _class->templateClass == from || ((_class->type == 1000 || (_class->type == 0 && _class->base && !_class->base->base)) && from->name && !strcmp(_class->name, from->name)))
+if(_class == from || _class->templateClass == from || ((_class->type == 1000 || (_class->type == 0 && _class->isInstanceClass)) && from->name && !strcmp(_class->name, from->name)))
 return 0x1;
 }
 }
@@ -3740,7 +3741,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete((&*watchers), watcher
 }
 }
 base = _class->base;
-if(base && (base->type == 1000 || (base->type == 0 && base->base && !base->base->base)))
+if(base && (base->type == 1000 || base->isInstanceClass))
 base = (((void *)0));
 if(_class->Destructor)
 _class->Destructor(instance);
@@ -4657,7 +4658,7 @@ _class->nameSpace = (((void *)0));
 }
 _class->module = (((void *)0));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->classes, _class);
-if(!_class->count || _class->type != 0)
+if(_class->count <= 0 || _class->type != 0 || _class->isInstanceClass)
 __ecereNameSpace__ecere__com__eClass_Unregister(_class);
 else
 {
@@ -5067,7 +5068,7 @@ break;
 }
 }
 base = _class->base;
-if(base && (base->type == 1000 || (base->type == 0 && base->base && !base->base->base)))
+if(base && (base->type == 1000 || base->isInstanceClass))
 base = (((void *)0));
 }
 }
@@ -5200,6 +5201,7 @@ baseClass->typeSize = 0;
 struct __ecereNameSpace__ecere__com__Class * instanceClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Instance", (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), module, 4, 1);
 
 instanceClass->type = 0;
+instanceClass->isInstanceClass = 0x1;
 instanceClass->fixed = 0x1;
 instanceClass->memberOffset = 0;
 instanceClass->offset = 0;
@@ -6249,6 +6251,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "templateArgs", "ecere
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "templateClass", "ecere::com::Class", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "templatized", "ecere::sys::OldList", structSize_OldList, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "numParams", "int", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isInstanceClass", "bool", 4, 4, 1);
 if(class)
 class->fixed = (unsigned int)1;
 if(class)
