@@ -982,6 +982,17 @@ private:
 
    ProjectNode FindByFullPath(char * path, bool includeResources)
    {
+      if(files)
+      {
+         char name[MAX_FILENAME];
+         GetLastDirectory(path, name);
+         return InternalFindByFullPath(path, includeResources, name);
+      }
+      return null;
+   }
+
+   ProjectNode InternalFindByFullPath(char * path, bool includeResources, char * lastDirName)
+   {
       ProjectNode result = null;
       if(files)
       {
@@ -989,7 +1000,9 @@ private:
          {
             if(includeResources || child.type != resources)
             {
-               if(child.type != folder && child.name)
+               if(child.type != file)
+                  result = child.InternalFindByFullPath(path, includeResources, lastDirName);
+               else if(child.name && !strcmpi(lastDirName, child.name))
                {
                   char p[MAX_LOCATION];
                   child.GetFullFilePath(p);
@@ -999,7 +1012,6 @@ private:
                      break;
                   }
                }
-               result = child.FindByFullPath(path, includeResources);
                if(result)
                   break;
             }
@@ -1093,51 +1105,54 @@ private:
    ProjectNode Add(Project project, char * filePath, ProjectNode after, NodeTypes type, NodeIcons icon, bool checkIfExists)
    {
       ProjectNode node = null;
-      char temp[MAX_LOCATION];
-      Map<Platform, SetBool> exclusionInfo { };
-
-      GetLastDirectory(filePath, temp);
-      //if(!checkIfExists || !project.topNode.Find(temp, false))
-      
-      // TOCHECK: Shouldn't this apply either for all configs or none?
-      CollectExclusionInfo(exclusionInfo, project.config);
-      if(!checkIfExists || !project.topNode.FindSameNameConflict(temp, false, exclusionInfo, project.config))
+      if(!project.topNode.FindByFullPath(filePath, true))
       {
-         // Do the check for folder in the same parent or resource files only here
-         if(type == folder || !checkIfExists)
-         {
-            for(node : files)
-            {
-               if(node.name && !strcmpi(node.name, temp))
-                  return null;
-            }
-         }
+         char temp[MAX_LOCATION];
+         Map<Platform, SetBool> exclusionInfo { };
 
-         node = ProjectNode { parent = this, indent = indent + 1, type = type, icon = icon, name = CopyString(temp) };
-         if(type != file)
+         GetLastDirectory(filePath, temp);
+         //if(!checkIfExists || !project.topNode.Find(temp, false))
+
+         // TOCHECK: Shouldn't this apply either for all configs or none?
+         CollectExclusionInfo(exclusionInfo, project.config);
+         if(!checkIfExists || !project.topNode.FindSameNameConflict(temp, false, exclusionInfo, project.config))
          {
-            node.files = { }; 
-            node.nodeType = folder;
-         }
-         if(type != folder)
-         {
-            if(filePath)
+            // Do the check for folder in the same parent or resource files only here
+            if(type == folder || !checkIfExists)
             {
-               StripLastDirectory(filePath, temp);
-               MakePathRelative(temp, project.topNode.path, temp);
-               node.path = CopyUnixPath(temp);
+               for(node : files)
+               {
+                  if(node.name && !strcmpi(node.name, temp))
+                     return null;
+               }
             }
-            node.nodeType = file;
+
+            node = ProjectNode { parent = this, indent = indent + 1, type = type, icon = icon, name = CopyString(temp) };
+            if(type != file)
+            {
+               node.files = { };
+               node.nodeType = folder;
+            }
+            if(type != folder)
+            {
+               if(filePath)
+               {
+                  StripLastDirectory(filePath, temp);
+                  MakePathRelative(temp, project.topNode.path, temp);
+                  node.path = CopyUnixPath(temp);
+               }
+               node.nodeType = file;
+            }
+            else
+            {
+               strcpy(temp, (type == NodeTypes::project) ? "" : path);
+               PathCatSlash(temp, node.name);
+               node.path = CopyString(temp);
+            }
+            files.Insert(after, node);
          }
-         else
-         {
-            strcpy(temp, (type == NodeTypes::project) ? "" : path);
-            PathCatSlash(temp, node.name);
-            node.path = CopyString(temp);
-         }
-         files.Insert(after, node);
+         delete exclusionInfo;
       }
-      delete exclusionInfo;
       return node;
    }
 

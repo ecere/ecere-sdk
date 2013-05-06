@@ -4314,6 +4314,17 @@ Project LoadProject(char * filePath, char * activeConfigName)
             delete project.topNode.files;
             if(!project.files) project.files = { };
             project.topNode.files = project.files;
+
+            {
+               char topNodePath[MAX_LOCATION];
+               GetWorkingDir(topNodePath, sizeof(topNodePath)-1);
+               MakeSlashPath(topNodePath);
+               PathCatSlash(topNodePath, filePath);
+               project.filePath = topNodePath;//filePath;
+            }
+
+            project.topNode.FixupNode(insidePath);
+
             project.resNode = project.topNode.Add(project, "Resources", project.topNode.files.last, resources, archiveFile, false);
             delete project.resNode.path;
             project.resNode.path = project.resourcesPath;
@@ -4325,15 +4336,7 @@ Project LoadProject(char * filePath, char * activeConfigName)
             project.resources = null;
             if(!project.configurations) project.configurations = { };
 
-            {
-               char topNodePath[MAX_LOCATION];
-               GetWorkingDir(topNodePath, sizeof(topNodePath)-1);
-               MakeSlashPath(topNodePath);
-               PathCatSlash(topNodePath, filePath);
-               project.filePath = topNodePath;//filePath;
-            }
-
-            project.topNode.FixupNode(insidePath);
+            project.resNode.FixupNode(insidePath);
          }
          delete parser;
       }
