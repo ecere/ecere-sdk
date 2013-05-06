@@ -2536,13 +2536,14 @@ private:
          char fixedModuleName[MAX_FILENAME];
          char fixedConfigName[MAX_FILENAME];
          int c, len;
+         int lenObjDirExpNoSpaces, lenTargetDirExpNoSpaces;
          // Non-zero if we're building eC code
          // We'll have to be careful with this when merging configs where eC files can be excluded in some configs and included in others
          int numCObjects = 0;
          int numObjects = 0;
          int numRCObjects = 0;
          bool containsCXX = false; // True if the project contains a C++ file
-         bool sameObjTargetDirs;
+         bool relObjDir, sameOrRelObjTargetDirs;
          String objDirExp = GetObjDirExpression(config);
          TargetTypes targetType = GetTargetType(config);
 
@@ -2576,9 +2577,15 @@ private:
          ReplaceSpaces(fixedConfigName, GetConfigName(config));
          CamelCase(fixedConfigName);
 
-         sameObjTargetDirs = !fstrcmp(objDirExpNoSpaces, targetDirExpNoSpaces);
+         lenObjDirExpNoSpaces = strlen(objDirExpNoSpaces);
+         relObjDir = lenObjDirExpNoSpaces == 0 ||
+               (objDirExpNoSpaces[0] == '.' && (lenObjDirExpNoSpaces == 1 || objDirExpNoSpaces[1] == '.'));
+         lenTargetDirExpNoSpaces = strlen(targetDirExpNoSpaces);
+         sameOrRelObjTargetDirs = lenTargetDirExpNoSpaces == 0 ||
+               (targetDirExpNoSpaces[0] == '.' && (lenTargetDirExpNoSpaces == 1 || targetDirExpNoSpaces[1] == '.')) ||
+               !fstrcmp(objDirExpNoSpaces, targetDirExpNoSpaces);
 
-         f.Printf(".PHONY: all objdir%s cleantarget clean realclean distclean\n\n", sameObjTargetDirs ? "" : " targetdir");
+         f.Printf(".PHONY: all objdir%s cleantarget clean realclean distclean\n\n", sameOrRelObjTargetDirs ? "" : " targetdir");
 
          f.Puts("# CORE VARIABLES\n\n");
 
@@ -3044,11 +3051,13 @@ private:
          f.Puts("# TARGETS\n");
          f.Puts("\n");
 
-         f.Printf("all: objdir%s $(TARGET)\n", sameObjTargetDirs ? "" : " targetdir");
+         f.Printf("all: objdir%s $(TARGET)\n", sameOrRelObjTargetDirs ? "" : " targetdir");
          f.Puts("\n");
 
          f.Puts("objdir:\n");
+         if(!relObjDir)
             f.Puts("\t$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))\n");
+
             f.Puts("\t$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)/crossplatform.mk) location.)),)\n");
             f.Puts("\t$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))\n");
          //f.Puts("# PRE-BUILD COMMANDS\n");
@@ -3100,7 +3109,7 @@ private:
          }
          f.Puts("\n");
 
-         if(!sameObjTargetDirs)
+         if(!sameOrRelObjTargetDirs)
          {
             f.Puts("targetdir:\n");
                f.Printf("\t$(if $(wildcard %s),,$(call mkdirq,%s))\n", targetDirExpNoSpaces, targetDirExpNoSpaces);
@@ -3127,7 +3136,7 @@ private:
          // *** Target ***
 
          // This would not rebuild the target on updated objects
-         // f.Printf("$(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)%s\n", sameObjTargetDirs ? "" : " targetdir");
+         // f.Printf("$(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)%s\n", sameOrRelObjTargetDirs ? "" : " targetdir");
 
          // This should fix it for good!
          f.Puts("$(SYMBOLS): | objdir\n");
@@ -3135,7 +3144,7 @@ private:
 
          // This alone was breaking the tarball, object directory does not get created first (order-only rules happen last it seems!)
          f.Printf("$(TARGET): $(SOURCES)%s $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir%s\n",
-               rcSourcesParts ? " $(RCSOURCES)" : "", sameObjTargetDirs ? "" : " targetdir");
+               rcSourcesParts ? " $(RCSOURCES)" : "", sameOrRelObjTargetDirs ? "" : " targetdir");
 
          f.Printf("\t@$(call rmq,$(OBJ)linkobjects.lst)\n");
          f.Printf("\t@$(call touch,$(OBJ)linkobjects.lst)\n");
@@ -3255,7 +3264,7 @@ private:
          if(numCObjects)
             GenMakefilePrintMainObjectRule(f, config);
 
-         f.Printf("cleantarget: objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
+         f.Printf("cleantarget: objdir%s\n", sameOrRelObjTargetDirs ? "" : " targetdir");
          f.Puts("\t$(call rmq,$(TARGET))\n");
          f.Puts("ifdef SHARED_LIBRARY_TARGET\n");
          f.Puts("ifdef LINUX_TARGET\n");
@@ -3290,14 +3299,15 @@ private:
 
          f.Puts("realclean: cleantarget\n");
          f.Puts("\t$(call rmrq,$(OBJ))\n");
-         if(!sameObjTargetDirs)
+         if(!sameOrRelObjTargetDirs)
             f.Printf("\t$(call rmdirq,%s)\n", targetDirExpNoSpaces);
          f.Puts("\n");
 
          f.Puts("distclean: cleantarget\n");
-         if(!sameObjTargetDirs)
+         if(!sameOrRelObjTargetDirs)
             f.Printf("\t$(call rmdirq,%s)\n", targetDirExpNoSpaces);
-         f.Puts("\t$(call rmrq,obj/)\n");
+         if(!relObjDir)
+            f.Puts("\t$(call rmrq,obj/)\n");
 
          delete f;
 
