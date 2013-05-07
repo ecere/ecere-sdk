@@ -933,18 +933,14 @@ private:
       ProjectNode result = null;
       if(files)
       {
-         for(child : files)
+         for(child : files; includeResources || child.type != resources)
          {
-            if(includeResources || child.type != resources)
+            if(child.type != file && (result = child.Find(name, includeResources)))
+               break;
+            if(child.type == file && child.name && !strcmpi(child.name, name))
             {
-               if(child.type != folder && child.name && !strcmpi(child.name, name))
-               {
-                  result = child;
-                  break;
-               }
-               result = child.Find(name, includeResources);
-               if(result)
-                  break;
+               result = child;
+               break;
             }
          }
       }
@@ -956,24 +952,20 @@ private:
       ProjectNode result = null;
       if(files)
       {
-         for(child : files)
+         for(child : files; includeResources || child.type != resources)
          {
-            if(includeResources || child.type != resources)
+            if(child.type != file && (result = child.FindWithPath(name, includeResources)))
+               break;
+            else if(child.type == file && child.name)
             {
                char path[MAX_LOCATION];
                strcpy(path, child.path);
-               if(child.type != folder && child.name)
+               PathCatSlash(path, child.name);
+               if(!strcmpi(path, name))
                {
-                  PathCatSlash(path, child.name);
-                  if(!strcmpi(path, name))
-                  {
-                     result = child;
-                     break;
-                  }
-               }
-               result = child.FindWithPath(name, includeResources);
-               if(result)
+                  result = child;
                   break;
+               }
             }
          }
       }
@@ -985,23 +977,19 @@ private:
       ProjectNode result = null;
       if(files)
       {
-         for(child : files)
+         for(child : files; includeResources || child.type != resources)
          {
-            if(includeResources || child.type != resources)
+            if(child.type != file && (result = child.FindByFullPath(path, includeResources)))
+               break;
+            else if(child.type == file && child.name)
             {
-               if(child.type != folder && child.name)
+               char p[MAX_LOCATION];
+               child.GetFullFilePath(p);
+               if(!strcmpi(p, path))
                {
-                  char p[MAX_LOCATION];
-                  child.GetFullFilePath(p);
-                  if(!strcmpi(p, path))
-                  {
-                     result = child;
-                     break;
-                  }
-               }
-               result = child.FindByFullPath(path, includeResources);
-               if(result)
+                  result = child;
                   break;
+               }
             }
          }
       }
@@ -1013,20 +1001,17 @@ private:
       ProjectNode result = null;
       if(files)
       {
-         for(child : files)
+         for(child : files; includeResources || child.type != resources)
          {
-            if(includeResources || child.type != resources)
+            if((includeFolders || child.type != folder) && child.name && !strcmpi(child.name, name))
             {
-               if((includeFolders || child.type != folder) && child.name && !strcmpi(child.name, name))
-               {
-                  result = child;
-                  break;
-               }
-               if(recursive)
-                  result = child.FindSpecial(name, recursive, includeResources, includeFolders);
-               if(result)
-                  break;
+               result = child;
+               break;
             }
+            if(recursive)
+               result = child.FindSpecial(name, recursive, includeResources, includeFolders);
+            if(result)
+               break;
          }
       }
       return result;
@@ -1093,51 +1078,54 @@ private:
    ProjectNode Add(Project project, char * filePath, ProjectNode after, NodeTypes type, NodeIcons icon, bool checkIfExists)
    {
       ProjectNode node = null;
-      char temp[MAX_LOCATION];
-      Map<Platform, SetBool> exclusionInfo { };
-
-      GetLastDirectory(filePath, temp);
-      //if(!checkIfExists || !project.topNode.Find(temp, false))
-      
-      // TOCHECK: Shouldn't this apply either for all configs or none?
-      CollectExclusionInfo(exclusionInfo, project.config);
-      if(!checkIfExists || !project.topNode.FindSameNameConflict(temp, false, exclusionInfo, project.config))
+      if(!project.topNode.FindByFullPath(filePath, true))
       {
-         // Do the check for folder in the same parent or resource files only here
-         if(type == folder || !checkIfExists)
-         {
-            for(node : files)
-            {
-               if(node.name && !strcmpi(node.name, temp))
-                  return null;
-            }
-         }
+         char temp[MAX_LOCATION];
+         Map<Platform, SetBool> exclusionInfo { };
 
-         node = ProjectNode { parent = this, indent = indent + 1, type = type, icon = icon, name = CopyString(temp) };
-         if(type != file)
+         GetLastDirectory(filePath, temp);
+         //if(!checkIfExists || !project.topNode.Find(temp, false))
+
+         // TOCHECK: Shouldn't this apply either for all configs or none?
+         CollectExclusionInfo(exclusionInfo, project.config);
+         if(!checkIfExists || !project.topNode.FindSameNameConflict(temp, false, exclusionInfo, project.config))
          {
-            node.files = { }; 
-            node.nodeType = folder;
-         }
-         if(type != folder)
-         {
-            if(filePath)
+            // Do the check for folder in the same parent or resource files only here
+            if(type == folder || !checkIfExists)
             {
-               StripLastDirectory(filePath, temp);
-               MakePathRelative(temp, project.topNode.path, temp);
-               node.path = CopyUnixPath(temp);
+               for(node : files)
+               {
+                  if(node.name && !strcmpi(node.name, temp))
+                     return null;
+               }
             }
-            node.nodeType = file;
+
+            node = ProjectNode { parent = this, indent = indent + 1, type = type, icon = icon, name = CopyString(temp) };
+            if(type != file)
+            {
+               node.files = { };
+               node.nodeType = folder;
+            }
+            if(type != folder)
+            {
+               if(filePath)
+               {
+                  StripLastDirectory(filePath, temp);
+                  MakePathRelative(temp, project.topNode.path, temp);
+                  node.path = CopyUnixPath(temp);
+               }
+               node.nodeType = file;
+            }
+            else
+            {
+               strcpy(temp, (type == NodeTypes::project) ? "" : path);
+               PathCatSlash(temp, node.name);
+               node.path = CopyString(temp);
+            }
+            files.Insert(after, node);
          }
-         else
-         {
-            strcpy(temp, (type == NodeTypes::project) ? "" : path);
-            PathCatSlash(temp, node.name);
-            node.path = CopyString(temp);
-         }
-         files.Insert(after, node);
+         delete exclusionInfo;
       }
-      delete exclusionInfo;
       return node;
    }
 
