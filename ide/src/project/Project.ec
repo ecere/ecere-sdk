@@ -438,24 +438,33 @@ void ReplaceSpaces(char * output, char * source)
 // This function cannot accept same pointer for source and output
 void ReplaceUnwantedMakeChars(char * output, char * source)
 {
-   int c, dc;
-   char ch, pch = 0;
-
-   for(c = 0, dc = 0; (ch = source[c]); c++, dc++)
+   char ch;
+   char * s = source, * d = output;
+   bool inVar = false;
+   while((ch = *s++))
    {
-      if(pch != '$')
+      if(ch == '(')
       {
-         if(ch == '(' || ch == ')') output[dc++] = '\\';
-         pch = ch;
+         if(s != source && *(s-1) == '$')
+            inVar = true;
+         else
+            *d++ = '\\';
       }
       else if(ch == ')')
-         pch = 0;
+      {
+         if(inVar == true)
+            inVar = false;
+         else
+            *d++ = '\\';
+      }
+      else if(ch == '$' && *(s+1) != '(')
+         *d++ = '$';
       if(ch == ' ')
-         output[dc] = 127;
+         *d++ = 127;
       else
-         output[dc] = ch;
+         *d++ = ch;
    }
-   output[dc] = '\0';
+   *d = '\0';
 }
 
 static void OutputNoSpace(File f, char * source)

@@ -1348,7 +1348,7 @@ private:
                strcpy(tempPath, path);
                PathCatSlash(tempPath, name);
             }
-            ReplaceSpaces(modulePath, tempPath);
+            ReplaceUnwantedMakeChars(modulePath, tempPath);
             sprintf(s, "%s%s%s%s", ts.a, useRes ? "$(RES)" : "", modulePath, ts.b);
             items.Add(CopyString(s));
          }
@@ -1359,8 +1359,8 @@ private:
                   !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
             {
                char modulePath[MAX_LOCATION];
-               ReplaceSpaces(modulePath, path);
-               ReplaceSpaces(moduleName, name);
+               ReplaceUnwantedMakeChars(modulePath, path);
+               ReplaceUnwantedMakeChars(moduleName, name);
                sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
                items.Add(CopyString(s));
             }
@@ -1398,7 +1398,7 @@ private:
                bool collision;
                NameCollisionInfo info;
                count++;
-               ReplaceSpaces(moduleName, name);
+               ReplaceUnwantedMakeChars(moduleName, name);
                StripExtension(moduleName);
                info = namesInfo[moduleName];
                collision = info ? info.IsExtensionColliding(extension) : false;
@@ -2026,12 +2026,12 @@ private:
                   strcpy(tempPath, child.path);
                   PathCatSlash(tempPath, child.name);
                }
-               ReplaceSpaces(resPath, tempPath);
+               ReplaceUnwantedMakeChars(resPath, tempPath);
                if(strchr(tempPath, ' '))
                   quotes = "\"";
                else
                   quotes = "";
-               f.Printf(" %s%s%s%s", quotes, useRes ? "$(RES)" : "", tempPath, quotes);
+               f.Printf(" %s%s%s%s", quotes, useRes ? "$(RES)" : "", resPath, quotes);
                count++;
             }
             if(count == 10 || (count > 0 && (ts || !child.next)))
