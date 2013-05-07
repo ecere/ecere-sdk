@@ -48,6 +48,7 @@ void * __ecereNameSpace__ecere__com__eSystem_Renew0(void * memory, unsigned int 
 unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16(char * source, int * wordCount);
 unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16Buffer(char * source, uint16 * dest, int max);
 char * __ecereNameSpace__ecere__sys__UTF16toUTF8(uint16 * source);
+void __ecereNameSpace__ecere__sys__ChangeCh(char * string, char ch1, char ch2);
 
 #if defined(__WIN32__) || defined(__WATCOMC__)
 #include <direct.h>
@@ -545,6 +546,8 @@ void FILE_FileFixCase(char * file)
       }
       strcpy(file, parent);
    }
+#else
+   __ecereNameSpace__ecere__sys__ChangeCh(file, '\\', '/');
 #endif
 }
 
