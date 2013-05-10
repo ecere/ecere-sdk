@@ -2920,6 +2920,8 @@ class OpenGLDisplayDriver : DisplayDriver
          glDrawPixels(sw,sh,GL_BGRA_EXT,GL_UNSIGNED_BYTE, bitmap.picture);
          glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
          glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+         glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+         glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
       }
    }
 
@@ -2982,6 +2984,8 @@ class OpenGLDisplayDriver : DisplayDriver
          glDrawPixels(w,h,GL_BGRA_EXT,GL_UNSIGNED_BYTE, bitmap.picture);
          glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
          glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+         glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+         glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
       }
    }
 
