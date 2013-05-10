@@ -307,6 +307,7 @@ public:
                      if(report.groupings[level].footer)
                      {
                         Detail groupEnd = eInstance_New(report.groupings[level].footer);
+                        int hh = (insideSize - pageTop - footerHeight) - groupEnd.size.h;
                         groupEnd.level = level;
                         if(AddDetailToPage(destination, groupEnd))
                         {
@@ -314,7 +315,7 @@ public:
                            loop = false;
                            break;
                         }
-                        else if(overlap - groupEnd.size.h < 0)
+                        else if(hh < 0)   // Use the value before calling AddDetailToPage()
                         {
                            overlap = 0;
                            groupEnd.Destroy(0);
