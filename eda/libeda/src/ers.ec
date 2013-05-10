@@ -211,7 +211,7 @@ public:
          else
             footerHeight = 0;
 
-         if(report.rowDetail)
+         if(report.rowDetail || (renderAction == levelFinish && level > 0) || renderAction == groupFinish)
          {
             bool loop;
             //int levelHead = 0;
@@ -349,7 +349,7 @@ public:
 
                }
             }
-            nil = report.nil;
+            nil = report.nil && renderAction != groupFinish && (renderAction != levelFinish || level == 0);
          }
          else
          {
