@@ -3,6 +3,7 @@
 # CORE VARIABLES
 
 MODULE := ide
+VERSION := 
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -100,9 +101,23 @@ ECOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(
 
 BOWLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES)))))
 
-OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+ifdef WINDOWS_TARGET
 
-SOURCES = $(ECSOURCES)
+_RCSOURCES = \
+	src/resources.rc
+
+RCSOURCES = $(call shwspace,$(_RCSOURCES))
+
+RCOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.rc,%$(O),$(notdir $(_RCSOURCES)))))
+
+else
+RCSOURCES =
+RCOBJECTS =
+endif
+
+OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O) $(RCOBJECTS)
+
+SOURCES = $(ECSOURCES) $(RCSOURCES)
 
 RESOURCES = $(RESOURCES1) $(RESOURCES2)
 RESOURCES1 = \
@@ -186,13 +201,6 @@ ECFLAGS += \
 
 # PLATFORM-SPECIFIC OPTIONS
 
-ifdef WINDOWS_TARGET
-
-ifndef STATIC_LIBRARY_TARGET
-LIBS += $(OBJ)resources.o
-endif
-
-else
 ifdef LINUX_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
@@ -212,7 +220,6 @@ LIBS += \
 	$(call _L,X11)
 endif
 
-endif
 endif
 endif
 
@@ -242,11 +249,8 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
-$(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
+$(TARGET): $(SOURCES) $(RCSOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 ifndef STATIC_LIBRARY_TARGET
-ifdef WINDOWS_TARGET
-$(TARGET): $(OBJ)resources.o
-endif
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
@@ -265,11 +269,6 @@ else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
 	$(call cpq,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/)
-
-ifdef WINDOWS_TARGET
-$(OBJ)resources.o: src/icon2.ico src/resources.rc | objdir
-	$(GCC_PREFIX)windres src/resources.rc $(OBJ)resources.o
-endif
 
 # SYMBOL RULES
 
@@ -672,6 +671,12 @@ $(OBJ)ProjectSettings.o: $(OBJ)ProjectSettings.c
 $(OBJ)licensing.o: $(OBJ)licensing.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)licensing.c -o $(OBJ)licensing.o
 
+ifdef WINDOWS_TARGET
+
+$(OBJ)resources.o: src/resources.rc
+	$(WINDRES) $(WINDRES_FLAGS) $< $@
+endif
+
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
@@ -680,15 +685,15 @@ cleantarget: objdir
 
 clean: cleantarget
 	$(call rmq,$(_OBJECTS))
+ifdef WINDOWS_TARGET
+	$(call rmq,$(RCOBJECTS))
+endif
 	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
 	$(call rmq,$(ECOBJECTS))
 	$(call rmq,$(COBJECTS))
 	$(call rmq,$(BOWLS))
 	$(call rmq,$(IMPORTS))
 	$(call rmq,$(SYMBOLS))
-ifdef WINDOWS_TARGET
-	$(call rmq,$(OBJ)resources.o)
-endif
 
 realclean: cleantarget
 	$(call rmrq,$(OBJ))
