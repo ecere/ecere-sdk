@@ -6,7 +6,8 @@
       "Warnings" : "All",
       "Optimization" : "None",
       "PreprocessorDefinitions" : [
-         "SQLITE_DEFAULT_LOCKING_MODE=1"
+         "SQLITE_DEFAULT_LOCKING_MODE=1",
+         "SQLITE_OMIT_AUTHORIZATION"
       ],
       "TargetType" : "SharedLibrary",
       "TargetFileName" : "EDASQLite",
