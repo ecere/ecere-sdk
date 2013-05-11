@@ -7894,7 +7894,9 @@ public:
                {
                   if(!style.noCycle)
                      parent.childrenCycle.Insert(
-                        (parent.activeChild && parent.activeChild.cycle) ? parent.activeChild.cycle.prev : null, 
+                        // Note: changed to 'null' to fix broken tab cycling in WSMS custom reports
+                        //(parent.activeChild && parent.activeChild.cycle) ? parent.activeChild.cycle.prev : null, 
+                        null,
                         cycle = OldLink { data = this });
                   parent.childrenOrder.Insert(
                      (parent.activeChild && parent.activeChild.order) ? parent.activeChild.order.prev : parent.childrenOrder.last, 
@@ -8268,7 +8270,9 @@ public:
                if(!style.noCycle)
                {
                   parent.childrenCycle.Insert(
-                     (parent.activeChild && parent.activeChild.cycle) ? parent.activeChild.cycle.prev : null, 
+                     // Note: changed to 'null' to fix broken tab cycling in WSMS custom reports
+                     //(parent.activeChild && parent.activeChild.cycle) ? parent.activeChild.cycle.prev : null, 
+                     null,
                      cycle = OldLink { data = this });
                }
                parent.childrenOrder.Insert(
