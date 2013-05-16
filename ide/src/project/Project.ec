@@ -2216,11 +2216,7 @@ private:
 
       // Build(project, ideMain, true, null, false);
 
-   #if defined(__WIN32__)
       strcpy(target, topNode.path);
-   #else
-      strcpy(target, "");
-   #endif
       PathCatSlash(target, targetDirExp.dir);
       CatTargetFileName(target, compiler, config);
       sprintf(target, "%s %s", target, args);
