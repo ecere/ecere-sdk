@@ -687,7 +687,7 @@ class Debugger
       codloc = CodeLocation::ParseCodeLocation(location);
       if(codloc)
       {
-         CodeEditor editor = (CodeEditor)ide.OpenFile(codloc.absoluteFile, normal, true, null, no, normal);
+         CodeEditor editor = (CodeEditor)ide.OpenFile(codloc.absoluteFile, normal, true, null, no, normal, false);
          if(editor)
          {
             EditBox editBox = editor.editBox;
@@ -732,7 +732,7 @@ class Debugger
                }
             }
             if(frame.absoluteFile)
-               editor = (CodeEditor)ide.OpenFile(frame.absoluteFile, normal, true, null, no, normal);
+               editor = (CodeEditor)ide.OpenFile(frame.absoluteFile, normal, true, null, no, normal, false);
             ide.Update(null);
             if(editor && frame.line)
             {
@@ -1419,7 +1419,7 @@ class Debugger
       if(gdbHandle)
       {
          // TODO: Improve this limit
-         static char string[MAX_F_STRING*3];
+         static char string[MAX_F_STRING*4];
          va_list args;
          va_start(args, format);
          vsnprintf(string, sizeof(string), format, args);
@@ -2082,14 +2082,14 @@ class Debugger
       
       strcpy(path, ide.workspace.projectDir);
       PathCat(path, tempPath);
-      codeEditor = (CodeEditor)ide.OpenFile(path, Normal, false, null, no);
+      codeEditor = (CodeEditor)ide.OpenFile(path, Normal, false, null, no, normal, false);
       if(!codeEditor)
       {
          for(srcDir : ide.workspace.sourceDirs)
          {
             strcpy(path, srcDir);
             PathCat(path, tempPath);
-            codeEditor = (CodeEditor)ide.OpenFile(path, Normal, false, null, no);
+            codeEditor = (CodeEditor)ide.OpenFile(path, Normal, false, null, no, normal, false);
             if(codeEditor) break;
          }
       }
@@ -2100,7 +2100,7 @@ class Debugger
       if(!activeFrame || !activeFrame.absoluteFile)
          codeEditor = null;
       else
-         codeEditor = (CodeEditor)ide.OpenFile(activeFrame.absoluteFile, normal, false, null, no, normal);
+         codeEditor = (CodeEditor)ide.OpenFile(activeFrame.absoluteFile, normal, false, null, no, normal, false);
       if(codeEditor)
       {
          codeEditor.inUseDebug = true;

@@ -409,6 +409,12 @@ void FILE_FileFixCase(char * file)
          parent[2] = '\0';
          c = 2;
       }
+      else if(file[0] == '/' && file[1] == '/')
+      {
+         parent[0] = parent[1] = '\\';
+         parent[2] = '\0';
+         c = 2;
+      }
       // Copy Entire Computer to new path
       else if(file[0] == '/'  && !file[1])
    

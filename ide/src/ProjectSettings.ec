@@ -227,6 +227,10 @@ class ProjectSettings : Window
    {
       UpdateDialogTitle();
       prjTabControl.curTab = buildTab;
+
+      ((DirectoriesBox)buildTab.compilerTab.includeDirs.editor).baseBrowsePath = project.topNode.path;
+      ((DirectoriesBox)buildTab.linkerTab.libraryDirs.editor).baseBrowsePath = project.topNode.path;
+
       return true;
    }
 }
@@ -751,6 +755,7 @@ class PathOptionBox : OptionBox<String>
 
       bool NotifyModified(PathBox pathBox)
       {
+         FixPathOnPathBoxNotifyModified(pathBox);
          ((OptionBox)pathBox.id).Retrieve();
          return true;
       }
@@ -928,6 +933,62 @@ class StringsArrayOptionBox : MultiStringOptionBox
    void SetStrings(Array<String> value) { ((StringsBox)editor).strings = value; }
 }
 
+bool eString_IsPathRelatedTo(char * path, char * to)
+{
+   if(path[0] && to[0])
+   {
+      char rest[MAX_FILENAME];
+      char pathPart[MAX_FILENAME], pathRest[MAX_LOCATION] = "";
+      char toPart[MAX_FILENAME], toRest[MAX_LOCATION] = "";
+      SplitDirectory(path, pathPart, pathRest);
+      SplitDirectory(to, toPart, toRest);
+      if(!fstrcmp(pathPart, toPart))
+      {
+         if(pathRest[0] && toRest[0])
+         {
+            SplitDirectory(pathRest, pathPart, pathRest);
+            SplitDirectory(toRest, toPart, toRest);
+            if(!fstrcmp(pathPart, toPart))
+               return true;
+         }
+      }
+   }
+   return false;
+}
+
+static void FixPathOnPathBoxNotifyModified(PathBox pathBox)
+{
+   int len;
+   char path[MAX_LOCATION];
+   strcpy(path, pathBox.path);
+   TrimLSpaces(path, path);
+   TrimRSpaces(path, path);
+   {
+      char * chars = "*|:\",<>?";
+      char ch, * s = path, * o = path;
+      while((ch = *s++)) { if(!strchr(chars, ch)) *o++ = ch; }
+      *o = '\0';
+   }
+   len = strlen(path);
+   if(!fstrcmp(path, project.topNode.path))
+      strcpy(path, ".");
+   else if(len && !(path[0] == '.' && (len == 1 || (len == 2 && path[1] == DIR_SEP) || (len > 1 && path[1] == '.'))))
+   {
+      char cwdBackup[MAX_LOCATION];
+      if(project)
+      {
+         GetWorkingDir(cwdBackup, sizeof(cwdBackup));
+         ChangeWorkingDir(project.topNode.path);
+      }
+      FileFixCase(path);
+      if(project)
+         ChangeWorkingDir(cwdBackup);
+      if(eString_IsPathRelatedTo(path, project.topNode.path))
+         MakePathRelative(path, project.topNode.path, path);
+   }
+   pathBox.path = path;
+}
+
 class DirsArrayOptionBox : MultiStringOptionBox
 {
    editor = DirectoriesBox
@@ -938,58 +999,9 @@ class DirsArrayOptionBox : MultiStringOptionBox
          return true;
       }
 
-      bool OnChangedDir(char * * directory)
+      bool NotifyPathBoxModified(DirectoriesBox dirBox, PathBox pathBox)
       {
-         char fixedDirectory[MAX_LOCATION] = "";
-         if(PathCat(fixedDirectory, *directory))
-         {
-            char cwdBackup[MAX_LOCATION];
-            if(project)
-            {
-               GetWorkingDir(cwdBackup, sizeof(cwdBackup));
-               ChangeWorkingDir(project.topNode.path);
-            }
-            FileFixCase(fixedDirectory);
-            if(project)
-               ChangeWorkingDir(cwdBackup);
-            delete *directory;
-            *directory = CopyString(fixedDirectory);
-            return true;
-         }
-         return false;
-      }
-
-      bool OnPrepareBrowseDir(char * * directory)
-      {
-         char dir[MAX_LOCATION];
-         if(project)
-         {
-            GetSystemPathBuffer(dir, project.topNode.path);
-            if(*directory)
-               PathCat(dir, *directory);
-         }
-         else if(*directory)
-            strcpy(dir, *directory);
-         else
-            dir[0] = '\0';
-         
-         delete *directory;
-         *directory = CopyString(dir);
-
-            // GCC 4.4 bug:  -----  path becomes *directory
-            //strcpy(dir, path ? path : "");
-         return true;
-      }
-
-      bool OnBrowsedDir(char * * directory)
-      {
-         if(project)
-         {
-            char path[MAX_LOCATION];
-            MakePathRelative(*directory, project.topNode.path, path);
-            delete *directory;
-            *directory = CopyString(path);
-         }
+         FixPathOnPathBoxNotifyModified(pathBox);
          return true;
       }
    };
