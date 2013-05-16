@@ -359,7 +359,7 @@ endif
 	$(call rmq,$(OBJBINDIR)ecp$(E))
 	$(call rmq,$(OBJBINDIR)ecs$(E))
 	$(call rmq,$(OBJBINDIR)epj2make$(E))
-	$(call rmq,$(OBJBINDIR)ide$(E))
+	$(call rmq,$(OBJBINDIR)ecere-ide$(E))
 	$(call rmq,$(OBJBINDIR)documentor$(E))
 ifdef EDASQLiteCipher
 	$(call rmq,$(OBJBINDIR)CodeGuard$(E))
@@ -428,7 +428,7 @@ BINARIES = \
 	ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(E) \
 	epj2make/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/epj2make$(E) \
 	documentor/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/documentor$(E) \
-	ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ide$(E) \
+	ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(E) \
 	eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV) \
 	eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SOV)
 
@@ -497,7 +497,7 @@ endif
 endif
 endif
 
-	$(call cpq,ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ide$(E),$(OBJBINDIR))
+	$(call cpq,ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(E),$(OBJBINDIR))
 	$(call cpq,ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(E),$(OBJBINDIR))
 	$(call cpq,compiler/ecc/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(E),$(OBJBINDIR))
 	$(call cpq,compiler/ecp/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(E),$(OBJBINDIR))
@@ -529,7 +529,7 @@ ifdef WINDOWS_TARGET
 ifdef EDASQLiteCipher
 	$(call cpq,$(OBJBINDIR)$(LP)EDASQLiteCipher$(SO),"$(DESTLIBDIR)/")
 endif
-	$(call cpq,$(OBJBINDIR)ide$(E),"$(BINDIR)/")
+	$(call cpq,$(OBJBINDIR)ecere-ide$(E),"$(BINDIR)/")
 	$(call cpq,$(OBJBINDIR)ear$(E),"$(BINDIR)/")
 	$(call cpq,$(OBJBINDIR)ecc$(E),"$(BINDIR)/")
 	$(call cpq,$(OBJBINDIR)ecp$(E),"$(BINDIR)/")
@@ -555,7 +555,7 @@ ifdef OSX_TARGET
 ifdef EDASQLiteCipher
 	install $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO) $(DESTLIBDIR)/
 endif
-	install $(OBJBINDIR)ide$(E) $(BINDIR)/
+	install $(OBJBINDIR)ecere-ide$(E) $(BINDIR)/
 	install $(OBJBINDIR)ear$(E) $(BINDIR)/
 	install $(OBJBINDIR)ecc$(E) $(BINDIR)/
 	install $(OBJBINDIR)ecp$(E) $(BINDIR)/
@@ -625,7 +625,7 @@ ifdef EDASQLiteCipher
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO) $(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO)
 endif
 endif
-	install $(INSTALL_FLAGS) $(OBJBINDIR)ide$(E) $(BINDIR)/ide$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)ecere-ide$(E) $(BINDIR)/ecere-ide$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ear$(E) $(BINDIR)/ear$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ecc$(E) $(BINDIR)/ecc$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ecp$(E) $(BINDIR)/ecp$(E)
@@ -685,7 +685,7 @@ uninstall:
 ifdef EDASQLiteCipher
 	$(call rmq,"$(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO)")
 endif
-	$(call rmq,"$(BINDIR)/ide$(E)")
+	$(call rmq,"$(BINDIR)/ecere-ide$(E)")
 	$(call rmq,"$(BINDIR)/ear$(E)")
 	$(call rmq,"$(BINDIR)/ecc$(E)")
 	$(call rmq,"$(BINDIR)/ecp$(E)")
