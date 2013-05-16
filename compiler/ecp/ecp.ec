@@ -1457,7 +1457,14 @@ class PrecompApp : Application
       }
       
       if(!valid)
+      {
          printf($"Syntax:\n   ecp [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n");
+#ifdef _DEBUG
+         printf($"\nArguments given:");
+         for(c = 1; c<argc; c++)
+            printf(" %s", argv[c]);
+#endif
+      }
       else
       {
          // TODO: Improve this

@@ -13,13 +13,21 @@ public class FilePath : String
 {
    Window OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)
    {
+      DataBox dataBox1; ListBox listBox; DirectoriesBox dirsBox;
       PathBox pathBox
       {
          dataBox, borderStyle = 0, anchor = { 0, 0, 0, 0 },
          typeExpected = any;
-         browseDialog = userData ? (FileDialog)userData : { type = open, text = $"Select a file..." };
          path = this;
       };
+      pathBox.GetParentControls(&dataBox1, &listBox, &dirsBox);
+      if(dirsBox)
+         pathBox.browseDialog = dirsBox.browseDialog;
+      // TOCHECK: compiler issues?
+      /*else if(userData && eClass_IsDerived(userData._class, class(FileDialog)))
+         pathBox.browseDialog = (FileDialog)userData;*/
+      else
+         pathBox.browseDialog = { type = open, text = $"Select a file..." };
       pathBox.Create();
       return pathBox;
    }
@@ -29,6 +37,9 @@ public class FilePath : String
       bool changed = false;
       if(pathBox.modifiedDocument)
       {
+         DataBox dataBox; ListBox listBox; DirectoriesBox dirsBox; pathBox.GetParentControls(&dataBox, &listBox, &dirsBox);
+         if(dirsBox)
+            dirsBox.NotifyPathBoxModified(dirsBox.master, dirsBox, pathBox);
          String::OnFree();
          changed = ((bool (*)(void *, void *, const char *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetDataFromString])(_class, &this, pathBox.systemPath);
       }
@@ -45,16 +56,39 @@ public class DirPath : FilePath
 {
    Window OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)
    {
+      DataBox dataBox1; ListBox listBox; DirectoriesBox dirsBox;
       PathBox pathBox
       {
          dataBox, borderStyle = 0, anchor = { 0, 0, 0, 0 },
          typeExpected = directory;
-         browseDialog = userData ? (FileDialog)userData : { type = selectDir, text = $"Select a folder..." };
          path = this;
       };
+      pathBox.GetParentControls(&dataBox1, &listBox, &dirsBox);
+      if(dirsBox)
+         pathBox.browseDialog = dirsBox.browseDialog;
+      // TOCHECK: compiler issues? (same)
+      /*else if(userData && eClass_IsDerived(userData._class, class(FileDialog)))
+         pathBox.browseDialog = (FileDialog)userData;*/
+      else
+         pathBox.browseDialog = { type = selectDir, text = $"Select a folder..." };
       pathBox.Create();
       return pathBox;
    }
+
+   bool OnSaveEdit(PathBox pathBox, void * object)
+   {
+      bool changed = false;
+      if(pathBox.modifiedDocument)
+      {
+         DataBox dataBox; ListBox listBox; DirectoriesBox dirsBox; pathBox.GetParentControls(&dataBox, &listBox, &dirsBox);
+         if(dirsBox)
+            dirsBox.NotifyPathBoxModified(dirsBox.master, dirsBox, pathBox);
+         String::OnFree();
+         changed = ((bool (*)(void *, void *, const char *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetDataFromString])(_class, &this, pathBox.systemPath);
+      }
+      return changed;
+   }
+
 }
 
 public enum PathTypeExpected { none, any, directory, file };
@@ -108,6 +142,9 @@ public class PathBox : CommonControl
       }
       bool NotifyModified(EditBox editBox)
       {
+         DataBox dataBox; ListBox listBox; DirectoriesBox dirsBox; GetParentControls(&dataBox, &listBox, &dirsBox);
+         if(dirsBox)
+            dirsBox.NotifyPathBoxModified(dirsBox.master, dirsBox, this);
          return NotifyModified(master, this);
       }
 
@@ -139,60 +176,62 @@ public class PathBox : CommonControl
       {
          if(browseDialog)
          {
-            /* We need a reinterpret cast :) Easy eC compiler introduction contribution! :)
-            DataBox dataBox = reinterpret(master);
-            ListBox lb = dataBox ? reinterpret(dataBox.parent) : null;
-            DirectoriesBox dirBox = lb ? reinterpret(lb.parent) : null;
-            */
-            DataBox dataBox = eClass_IsDerived(master._class, class(DataBox)) ? (DataBox)master : null;
-            ListBox lb = ((dataBox && eClass_IsDerived(dataBox.parent._class, class(ListBox))) ? (ListBox)dataBox.parent : null;
-            DirectoriesBox dirBox = ((lb && eClass_IsDerived(lb.parent._class, class(DirectoriesBox))) ? (DirectoriesBox)lb.parent : null;
-            char * browsePath = CopyString(editBox.contents);
-            char fileName[MAX_LOCATION];
-
-            incref this;
-
-            GetLastDirectory(browsePath, fileName);
-            StripLastDirectory(browsePath, browsePath);
-
-            if(!browsePath[0])
+            char * browsePath = new char[MAX_LOCATION];
+            char * fileName = new char[MAX_LOCATION];
+            char * baseBrowsePath = null;
+            DataBox dataBox; ListBox listBox; DirectoriesBox dirsBox; GetParentControls(&dataBox, &listBox, &dirsBox);
+            browsePath[0] = fileName [0] = '\0';
+            if(dirsBox && dirsBox.baseBrowsePath && dirsBox.baseBrowsePath[0])
             {
-               char filePath[MAX_LOCATION];
-               delete browsePath;
-               LocateModule(null, filePath);
-               StripLastDirectory(filePath, filePath);
-               browsePath = CopyString(filePath);
+               strncpy(browsePath, dirsBox.baseBrowsePath, MAX_LOCATION); browsePath[MAX_LOCATION-1] = '\0';
+               PathCat(browsePath, editBox.contents);
             }
-
+            else
+               strncpy(browsePath, editBox.contents, MAX_LOCATION); browsePath[MAX_LOCATION-1] = '\0';
+            if(browsePath[0])
+            {
+               GetLastDirectory(browsePath, fileName);
+               StripLastDirectory(browsePath, browsePath);
+            }
+            else
+            {
+               char * path = new char[MAX_LOCATION];
+               LocateModule(null, path);
+               StripLastDirectory(path, path);
+               strncpy(browsePath, path, MAX_LOCATION); browsePath[MAX_LOCATION-1] = '\0';
+               delete path;
+            }
             while(browsePath[0] && !FileExists(browsePath).isDirectory)
             {
-               char temp[MAX_LOCATION];
+               char * temp = new char[MAX_LOCATION];
                GetLastDirectory(browsePath, temp);
                PathCat(temp, fileName);
                strcpy(fileName, temp);
                StripLastDirectory(browsePath, browsePath);
+               delete temp;
             }
             browseDialog.filePath = fileName;
             browseDialog.currentDirectory = browsePath;
-            delete browsePath;
             browseDialog.master = rootWindow;
+            delete browsePath;
+            delete fileName;
 
-            // THIS PART WAS MISSING IN THE PathBox/DirectoriesBox INTEGRATION AND WAS CRUCIAL
-            if(dirBox) dirBox.browsing = true;
+            incref this;
+            if(dirsBox) dirsBox.browsing = true;
             if(browseDialog.Modal())
             {
                PathBox pathBox = dataBox ? (PathBox)dataBox.editor : this;
                pathBox.modifiedDocument = true;
                pathBox.property::path = browseDialog.filePath;
+               pathBox.NotifyModified(pathBox.master, this);
                if(dataBox)
                   dataBox.SaveData();
                else
                   pathBox.editBox.SelectAll();
-               if(lb) lb.StopEditing(true);
-               pathBox.NotifyModified(pathBox.master, this);
+               if(listBox)
+                  listBox.StopEditing(true);
             }
-            if(dirBox) dirBox.browsing = false;
-
+            if(dirsBox) dirsBox.browsing = false;
             delete this;
          }
          return true;
@@ -240,7 +279,22 @@ public class PathBox : CommonControl
       delete browseDialog;
    }
 
+   bool GetParentControls(DataBox * dataBox, ListBox * listBox, DirectoriesBox * dirsBox)
+   {
+      /* We need a reinterpret cast :) Easy eC compiler introduction contribution! :)
+      *dataBox =            reinterpret(master);
+      *listBox = *dataBox ? reinterpret((*dataBox).parent) : null;
+      *dirsBox = *listBox ? reinterpret((*listBox).parent) : null;
+      */
+      *dataBox =              eClass_IsDerived(           master._class, class(DataBox)        ) ?                   (DataBox)master : null;
+      *listBox = (*dataBox && eClass_IsDerived((*dataBox).parent._class, class(ListBox)       )) ?        (ListBox)(*dataBox).parent : null;
+      *dirsBox = (*listBox && eClass_IsDerived((*listBox).parent._class, class(DirectoriesBox))) ? (DirectoriesBox)(*listBox).parent : null;
+      return *dirsBox != null;
+   }
+
 public:
+   virtual bool Window::NotifyModified(PathBox pathBox);
+
    property PathTypeExpected typeExpected
    {
       set
@@ -283,6 +337,7 @@ public:
          browse.visible = browseDialog ? true : false;
          editBox.anchor.right = browseDialog ? 26 : 1;
       }
+      get { return browseDialog; }
    }
 
    void Home() { editBox.Home(); }
@@ -309,8 +364,6 @@ public:
 
    property Color selectionColor { set { editBox.selectionColor = value; } get { return editBox.selectionColor; }/* isset { return selectionColor ? true : false; }*/ };
    property Color selectionText  { set { editBox.selectionText = value; } get { return editBox.selectionText; }/* isset { return selectionText ? true : false; }*/ };
-
-   virtual bool Window::NotifyModified(PathBox pathBox);
 }
 
 // DirectoriesBox
@@ -318,11 +371,17 @@ FileDialog browseFileDialog { type = selectDir, text = $"Select directory" };
 
 public class DirectoriesBox : CommonControl
 {
+   FileDialog browseDialog;
+   char * baseBrowsePath;
+
 public:
 
    bool browsing;
 
    opacity = 0;
+
+   virtual bool Window::NotifyModified(DirectoriesBox dirsBox);
+   virtual bool Window::NotifyPathBoxModified(DirectoriesBox dirsBox, PathBox pathBox);
 
    virtual bool OnChangedDir(char ** directory);
    virtual bool OnPrepareBrowseDir(char ** directory);
@@ -362,7 +421,39 @@ public:
       }
    }
 
-   virtual bool Window::NotifyModified(DirectoriesBox dirsBox);
+   property FileDialog browseDialog
+   {
+      set
+      {
+         delete browseDialog;
+         browseDialog = value;
+         if(browseDialog)
+         {
+            incref browseDialog;
+            if(browseDialog.type == open)
+               browseDialog.type = selectDir;
+            if(!strcmp(browseDialog.text, "Select a file...") && text)
+            {
+               char temp[1024] = "Select ";
+               strcat(temp, text);
+               strcat(temp, "...");
+               browseDialog.text = temp;
+            }
+         }
+      }
+      get { return browseDialog; }
+   }
+
+   property String baseBrowsePath
+   {
+      set
+      {
+         delete baseBrowsePath;
+         if(value)
+            baseBrowsePath = CopyString(value);
+      }
+      get { return baseBrowsePath; }
+   }
 
    bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
    {
@@ -558,12 +649,19 @@ public:
          return true;
       }
    };
-   DataField dirField { dataType = class(DirPath), editable = true, userData = browseFileDialog };
+   DataField dirField { dataType = class(DirPath), editable = true };
 
    DirectoriesBox()
    {
+      incref browseFileDialog;
+      browseDialog = browseFileDialog;
       list.AddField(dirField);
       list.AddString("");
       list.modifiedDocument = false;
+   }
+   ~DirectoriesBox()
+   {
+      delete browseDialog;
+      delete baseBrowsePath;
    }
 }
