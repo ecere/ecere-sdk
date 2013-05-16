@@ -439,9 +439,9 @@ class IDEWorkSpace : Window
    {
       parent = this;
 
-      void OnGotoError(char * line)
+      void OnGotoError(char * line, bool noParsing)
       {
-         ide.GoToError(line);
+         ide.GoToError(line, noParsing);
       }
 
       void OnCodeLocationParseAndGoTo(char * line)
@@ -706,7 +706,7 @@ class IDEWorkSpace : Window
 
                   for(c = 0; c < numSelections; c++)
                   {
-                     if(OpenFile(multiFilePaths[c], normal, true, fileTypes[ideFileDialog.fileType].typeExtension, no, normal))
+                     if(OpenFile(multiFilePaths[c], normal, true, fileTypes[ideFileDialog.fileType].typeExtension, no, normal, mods.ctrl && mods.shift))
                         gotWhatWeWant = true;
                   }
                   if(gotWhatWeWant ||
@@ -799,14 +799,18 @@ class IDEWorkSpace : Window
          {
             if(id == selection.id)
             {
+               bool isProjectFile;
+               char extension[MAX_EXTENSION] = "";
+               GetExtension(file, extension);
+               isProjectFile = (!strcmpi(extension, "epj") || !strcmpi(extension, "ews"));
                if(mods.ctrl)
                {
-                  char * command = PrintString("ide ", file);
+                  char * command = PrintString("ide ", isProjectFile ? "-t " : "", file);
                   Execute(command);
                   delete command;
                }
                else
-                  OpenFile(file, normal, true, null, no, normal);
+                  OpenFile(file, normal, true, isProjectFile ? "txt" : null, no, normal, mods.ctrl && mods.shift);
                break;
             }
             id++;
@@ -828,7 +832,7 @@ class IDEWorkSpace : Window
                   delete command;
                }
                else
-                  OpenFile(file, normal, true, null, no, normal);
+                  OpenFile(file, normal, true, null, no, normal, mods.ctrl && mods.shift);
                break;
             }
             id++;
@@ -881,7 +885,7 @@ class IDEWorkSpace : Window
             ideProjectFileDialog.text = openProjectFileDialogTitle;
             if(ideProjectFileDialog.Modal() == ok)
             {
-               OpenFile(ideProjectFileDialog.filePath, normal, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, normal);
+               OpenFile(ideProjectFileDialog.filePath, normal, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, normal, mods.ctrl && mods.shift);
                //ChangeProjectFileDialogDirectory(ideProjectFileDialog.currentDirectory);
             }
             return true;
@@ -912,7 +916,7 @@ class IDEWorkSpace : Window
             {
                if(ideProjectFileDialog.Modal() == ok)
                {
-                  if(OpenFile(ideProjectFileDialog.filePath, normal, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, add))
+                  if(OpenFile(ideProjectFileDialog.filePath, normal, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, add, mods.ctrl && mods.shift))
                      break;
                   if(MessageBox { type = yesNo, master = this, text = $"Error opening project file", 
                         contents = $"Add a different project?" }.Modal() == no)
@@ -1020,6 +1024,20 @@ class IDEWorkSpace : Window
          {
             if(projectView)
                projectView.ProjectRebuild(projectView.active ? selection : null, mods);
+            return true;
+         }
+      }
+      MenuItem projectCleanTargetItem
+      {
+         projectMenu, $"Clean Target", g, disabled = true;
+         bitmap = { ":actions/clean.png" };
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            if(projectView)
+            {
+               debugger.Stop();
+               projectView.ProjectCleanTarget(projectView.active ? selection : null, mods);
+            }
             return true;
          }
       }
@@ -1380,7 +1398,66 @@ class IDEWorkSpace : Window
          helpMenu, $"API Reference", r, f1;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
-            Execute("documentor");
+            char * p = new char[MAX_LOCATION];
+            p[0] = '\0';
+            strncpy(p, settingsContainer.moduleLocation, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+            PathCat(p, "documentor");
+#if defined(__WIN32__)
+            ChangeExtension(p, "exe", p);
+#endif
+            if(FileExists(p).isFile)
+               Execute(p);
+            else
+               Execute("documentor");
+            delete p;
+            return true;
+         }
+      }
+      MenuDivider { helpMenu };
+      MenuItem
+      {
+         helpMenu, $"Ecere Tao of Programming [work in progress]", a;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            FindAndShellOpenInstalledFile("doc", "Ecere Tao of Programming [work in progress].pdf");
+            return true;
+         }
+      }
+      MenuDivider { helpMenu };
+      MenuItem
+      {
+         helpMenu, $"Documentation Folder", a;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            FindAndShellOpenInstalledFolder("doc");
+            return true;
+         }
+      }
+      MenuItem
+      {
+         helpMenu, $"Samples Folder", a;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            FindAndShellOpenInstalledFolder("samples");
+            return true;
+         }
+      }
+      MenuItem
+      {
+         helpMenu, $"Extras Folder", a;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            FindAndShellOpenInstalledFolder("extras");
+            return true;
+         }
+      }
+      MenuDivider { helpMenu };
+      MenuItem
+      {
+         helpMenu, $"Community Forums", a;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            ShellOpen("http://ecere.com/forums");
             return true;
          }
       }
@@ -1421,6 +1498,8 @@ class IDEWorkSpace : Window
       filters = findInFilesFileFilters.array, sizeFilters = findInFilesFileFilters.count * sizeof(FileFilter);
       filter = 1;
    };
+
+   bool noParsing;
 
 #ifdef GDB_DEBUG_GUI
    GDBDialog gdbDialog
@@ -1515,19 +1594,6 @@ class IDEWorkSpace : Window
       return projectView;
    }
 
-   bool GetDebugMenusDisabled()
-   {
-      if(projectView)
-      {
-         Project project = projectView.project;
-         if(project)
-            if(project.GetTargetType(project.config) == executable)
-               return false;
-           
-      }
-      return true;
-   }
-
    void RepositionWindows(bool expand)
    {
       if(this)
@@ -1586,11 +1652,6 @@ class IDEWorkSpace : Window
       return false;
    }
 
-   bool ShouldStopBuild()
-   {
-      return projectView.stopBuild;
-   }
-
    void DocumentSaved(Window document, char * fileName)
    {
       ideSettings.AddRecentFile(fileName);
@@ -1607,6 +1668,7 @@ class IDEWorkSpace : Window
       if(MessageBox { type = yesNo, master = this/*.parent*/,
             text = $"Document has been modified", contents = temp }.Modal() == yes)
       {
+         bool noParsing = (this._class == class(CodeEditor) && ((CodeEditor)this).noParsing) ? true : false;
          char * fileName = CopyString(this.fileName);
          WindowState state = this.state;
          Anchor anchor = this.anchor;
@@ -1614,7 +1676,7 @@ class IDEWorkSpace : Window
 
          this.modifiedDocument = false;
          this.Destroy(0);
-         this = ide.OpenFile(fileName, normal, true, null, no, normal);
+         this = ide.OpenFile(fileName, normal, true, null, no, normal, noParsing);
          if(this)
          {
             this.anchor = anchor;
@@ -1678,7 +1740,7 @@ class IDEWorkSpace : Window
       else
       {
          toolBar.activeConfig.Clear();
-         row = toolBar.activeConfig.AddString("(Mixed)");
+         row = toolBar.activeConfig.AddString($"(Mixed)");
          row.tag = 1;
       }
       if(workspace)
@@ -1814,6 +1876,7 @@ class IDEWorkSpace : Window
       toolBar.buttonRebuild.disabled            = unavailable;
       projectCleanItem.disabled                 = unavailable;
       toolBar.buttonClean.disabled              = unavailable;
+      projectCleanTargetItem.disabled           = unavailable;
       projectRealCleanItem.disabled             = unavailable;
       // toolBar.buttonRealClean.disabled          = unavailable;
       projectRegenerateItem.disabled            = unavailable;
@@ -1840,6 +1903,7 @@ class IDEWorkSpace : Window
 
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectLink, 0);              if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRebuild, 0);           if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectCleanTarget, 0);       if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectClean, 0);             if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRealClean, 0);         if(menu) menu.disabled = unavailable;
          menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRegenerate, 0);        if(menu) menu.disabled = unavailable;
@@ -1853,13 +1917,30 @@ class IDEWorkSpace : Window
       }
    }
 
+   property bool areDebugMenusUnavailable { get {
+      return !project ||
+            project.GetTargetType(project.config) != executable ||
+            projectView.buildInProgress == buildingMainProject;
+   } }
+
+   property bool isBreakpointTogglingUnavailable { get {
+      return !project;
+   } }
+
+   property bool isDebuggerExecuting { get {
+      if(!ide.debugger)
+         return false;
+      else
+         return ide.debugger.state == running;
+   } }
+
    void AdjustDebugMenus()
    {
-      bool unavailable = !project || project.GetTargetType(project.config) != executable ||
-               projectView.buildInProgress == buildingMainProject;
-      bool active = ide.debugger.isActive;
-      bool executing = ide.debugger.state == running;
-      //bool holding = ide.debugger.state == stopped;
+      bool unavailable = areDebugMenusUnavailable;
+      bool active = debugger.isActive;
+      bool bpNoToggle = isBreakpointTogglingUnavailable;
+      bool executing = isDebuggerExecuting;
+      //bool holding = debugger.state == stopped;
 
       debugStartResumeItem.disabled       = unavailable || executing;
       debugStartResumeItem.text           = active ? $"Resume" : $"Start";
@@ -1897,10 +1978,7 @@ class IDEWorkSpace : Window
       {
          CodeEditor codeEditor = ((Designer)GetActiveDesigner()).codeEditor;
          if(codeEditor)
-         {
-            codeEditor.debugRunToCursor.disabled      = unavailable || executing;
-            codeEditor.debugSkipRunToCursor.disabled  = unavailable || executing;
-         }
+            codeEditor.AdjustDebugMenus(unavailable, bpNoToggle, executing);
       }
    }
 
@@ -1967,7 +2045,7 @@ class IDEWorkSpace : Window
       return false;
    }
 
-   Window OpenFile(char * origFilePath, WindowState state, bool visible, char * type, OpenCreateIfFails createIfFails, OpenMethod openMethod)
+   Window OpenFile(char * origFilePath, WindowState state, bool visible, char * type, OpenCreateIfFails createIfFails, OpenMethod openMethod, bool noParsing)
    {
       char extension[MAX_EXTENSION] = "";
       Window document = null;
@@ -2075,7 +2153,7 @@ class IDEWorkSpace : Window
                         {
                            if(ofi.state != closed)
                            {
-                              Window file = OpenFile(ofi.path, normal, true, null, no, normal);
+                              Window file = OpenFile(ofi.path, normal, true, null, no, normal, noParsing);
                               if(file)
                               {
                                  char fileName[MAX_LOCATION];
@@ -2151,9 +2229,24 @@ class IDEWorkSpace : Window
                   prj = LoadProject(filePath, null);
                   if(prj)
                   {
+                     char * activeConfigName = null;
                      CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.compiler);
                      prj.StartMonitoring();
                      workspace.projects.Add(prj);
+                     if(toolBar.activeConfig.currentRow && toolBar.activeConfig.currentRow != toolBar.activeConfig.firstRow &&
+                           toolBar.activeConfig.currentRow.string && toolBar.activeConfig.currentRow.string[0])
+                        activeConfigName = toolBar.activeConfig.currentRow.string;
+                     if(activeConfigName)
+                     {
+                        for(cfg : prj.configurations)
+                        {
+                           if(cfg.name && !strcmp(cfg.name, activeConfigName))
+                           {
+                              prj.config = cfg;
+                              break;
+                           }
+                        }
+                     }
                      if(projectView)
                         projectView.AddNode(prj.topNode, null);
                      workspace.modified = true;
@@ -2210,7 +2303,7 @@ class IDEWorkSpace : Window
             !strcmp(extension, "css") || !strcmp(extension, "php") ||
             !strcmp(extension, "js"))
       {
-         CodeEditor editor { parent = this, state = state, visible = false };
+         CodeEditor editor { parent = this, state = state, visible = false, noParsing = noParsing };
          editor.updatingCode = true;
          if(editor.LoadFile(filePath))
          {
@@ -2223,7 +2316,7 @@ class IDEWorkSpace : Window
       }
       else
       {
-         CodeEditor editor { parent = this, state = state, visible = false };
+         CodeEditor editor { parent = this, state = state, visible = false, noParsing = noParsing };
          if(editor.LoadFile(filePath))
          {
             document = editor;
@@ -2349,10 +2442,10 @@ class IDEWorkSpace : Window
       return true;
    }
 
-   void GoToError(const char * line)
+   void GoToError(const char * line, bool noParsing)
    {
       if(projectView)
-         projectView.GoToError(line);
+         projectView.GoToError(line, noParsing);
    }
 
    void CodeLocationParseAndGoTo(const char * text, Project project, const char * dir)
@@ -2423,10 +2516,28 @@ class IDEWorkSpace : Window
          completePath[0] = '\0';
       PathCat(completePath, filePath);
 
-      fileAttribs = FileExists(completePath);
+      if((fileAttribs = FileExists(completePath)))
+         CodeLocationGoTo(completePath, fileAttribs, line, col);
+      else
+      {
+         for(p : ide.workspace.projects)
+         {
+            strcpy(completePath, p.topNode.path);
+            PathCat(completePath, filePath);
+            if((fileAttribs = FileExists(completePath)))
+            {
+               CodeLocationGoTo(completePath, fileAttribs, line, col);
+               break;
+            }
+         }
+      }
+   }
+
+   void CodeLocationGoTo(const char * path, const FileAttribs fileAttribs, int line, int col)
+   {
       if(fileAttribs.isFile)
       {
-         CodeEditor codeEditor = (CodeEditor)OpenFile(completePath, normal, true, "", no, normal);
+         CodeEditor codeEditor = (CodeEditor)OpenFile(path, normal, true, "", no, normal, false);
          if(codeEditor && line)
          {
             EditBox editBox = codeEditor.editBox;
@@ -2435,7 +2546,7 @@ class IDEWorkSpace : Window
          }
       }
       else if(fileAttribs.isDirectory)
-         ShellOpen(completePath);
+         ShellOpen(path);
    }
 
    void OnRedraw(Surface surface)
@@ -2598,7 +2709,7 @@ class IDEWorkSpace : Window
             caps = { width = 40, text = $"CAPS", color = app.GetKeyState(capsState) ? black : Color { 128, 128, 128 } };
             statusBar.AddField(caps);
 
-            ovr = { width = 30, text = $"OVR", color = editBox.overwrite ? black : Color { 128, 128, 128 } };
+            ovr = { width = 30, text = $"OVR", color = (editBox && editBox.overwrite) ? black : Color { 128, 128, 128 } };
             statusBar.AddField(ovr);
 
             num = { width = 30, text = $"NUM", color = app.GetKeyState(numState) ? black : Color { 128, 128, 128 } };
@@ -2691,7 +2802,11 @@ class IDEWorkSpace : Window
       DynamicString passArgs { };
       for(c = 1; c<app.argc; c++)
       {
-         if(!strcmp(app.argv[c], "-debug-start"))
+         if(!strcmp(app.argv[c], "-t"))
+            openAsText = true;
+         else if(!strcmp(app.argv[c], "-no-parsing"))
+            ide.noParsing = true;
+         else if(!strcmp(app.argv[c], "-debug-start"))
             debugStart = true;
          else if(!strcmp(app.argv[c], "-debug-work-dir"))
             debugWorkDir = true;
@@ -2719,7 +2834,7 @@ class IDEWorkSpace : Window
             PathCat(fullPath, app.argv[c]);
             StripLastDirectory(fullPath, parentPath);
             GetExtension(app.argv[c], ext);
-            isProject = !strcmpi(ext, "epj");
+            isProject = !openAsText && !strcmpi(ext, "epj");
 
             if(isProject && c > (debugStart ? 2 : 1)) continue;
 
@@ -2768,10 +2883,10 @@ class IDEWorkSpace : Window
                   break;
                }
                else
-                  ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
+                  ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, openAsText ? "txt" : null, yes, normal, false);
             }
             else if(strstr(fullPath, "http://") == fullPath)
-               ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
+               ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, openAsText ? "txt" : null, yes, normal, false);
          }
       }
       if(passThrough && projectView && projectView.project && workspace)
@@ -3095,7 +3210,8 @@ class IDEWorkSpace : Window
       Menu fileMenu = menu.FindMenu($"File");
       Menu recentFiles = fileMenu.FindMenu($"Recent Files");
       Menu recentProjects = fileMenu.FindMenu($"Recent Projects");
-      char itemName[MAX_LOCATION + 4];
+      char * itemPath = new char[MAX_LOCATION];
+      char * itemName = new char[MAX_LOCATION+4];
       MenuItem item;
 
       recentFiles.Clear();
@@ -3103,8 +3219,9 @@ class IDEWorkSpace : Window
 
       for(recent : ideSettings.recentFiles)
       {
-         sprintf(itemName, "%d %s", 1 + c, recent);
-         MakeSystemPath(itemName);
+         strncpy(itemPath, recent, MAX_LOCATION); itemPath[MAX_LOCATION-1] = '\0';
+         MakeSystemPath(itemPath);
+         snprintf(itemName, MAX_LOCATION+4, "%d %s", 1 + c, itemPath); itemPath[MAX_LOCATION+4-1] = '\0';
          recentFiles.AddDynamic(MenuItem { copyText = true, text = itemName, (Key)k1 + c, id = c, NotifySelect = ide.FileRecentFile }, ide, true);
          c++;
       }
@@ -3113,11 +3230,15 @@ class IDEWorkSpace : Window
       c = 0;
       for(recent : ideSettings.recentProjects)
       {
-         sprintf(itemName, "%d %s", 1 + c, recent);
-         MakeSystemPath(itemName);
+         strncpy(itemPath, recent, MAX_LOCATION); itemPath[MAX_LOCATION-1] = '\0';
+         MakeSystemPath(itemPath);
+         snprintf(itemName, MAX_LOCATION+4, "%d %s", 1 + c, itemPath); itemPath[MAX_LOCATION+4-1] = '\0';
          recentProjects.AddDynamic(MenuItem { copyText = true, text = itemName, (Key)k1 + c, id = c, NotifySelect = ide.FileRecentProject }, ide, true);
          c++;
       }
+
+      delete itemPath;
+      delete itemName;
    }
 
    ~IDEWorkSpace()
@@ -3133,6 +3254,148 @@ void DestroyDir(char * path)
    RecursiveDeleteFolderFSI fsi { };
    fsi.Iterate(path);
    delete fsi;
+}
+
+#if defined(__WIN32__)
+define sdkDirName = "Ecere SDK";
+#else
+define sdkDirName = "ecere";
+#endif
+
+void FindAndShellOpenInstalledFolder(char * name)
+{
+   char * p = new char[MAX_LOCATION];
+   char * v = new char[maxPathLen];
+   byte * tokens[256];
+   int c, numTokens;
+   Array<String> paths { };
+   p[0] = v[0] = '\0';
+   strncpy(p, settingsContainer.moduleLocation, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+   StripLastDirectory(p, p);
+   PathCat(p, name);
+   paths.Add(CopyString(p));
+#if defined(__WIN32__)
+   GetEnvironment("ECERE_SDK_SRC", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, name); paths.Add(CopyString(p));
+   }
+   GetEnvironment("AppData", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
+   }
+   GetEnvironment("ProgramFiles", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
+   }
+   GetEnvironment("ProgramFiles(x86)", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
+   }
+   GetEnvironment("SystemDrive", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, "Program Files"); PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
+   }
+#else
+   GetEnvironment("XDG_DATA_DIRS", v, maxPathLen);
+   numTokens = TokenizeWith(v, sizeof(tokens) / sizeof(byte *), tokens, ":", false);
+   for(c=0; c<numTokens; c++)
+   {
+      strncpy(p, tokens[c], MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
+   }
+#endif
+   for(path : paths)
+   {
+      strncpy(p, path, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      if(FileExists(p).isDirectory)
+      {
+         ShellOpen(p);
+         break;
+      }
+   }
+   delete p;
+   delete v;
+   paths.Free();
+   delete paths;
+}
+
+void FindAndShellOpenInstalledFile(char * subdir, char * name)
+{
+   char * p = new char[MAX_LOCATION];
+   char * v = new char[maxPathLen];
+   byte * tokens[256];
+   int c, numTokens;
+   Array<String> paths { };
+   p[0] = v[0] = '\0';
+   strncpy(p, settingsContainer.moduleLocation, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+   paths.Add(CopyString(p));
+   StripLastDirectory(p, p);
+   PathCat(p, subdir);
+   paths.Add(CopyString(p));
+#if defined(__WIN32__)
+   GetEnvironment("ECERE_SDK_SRC", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
+   }
+   GetEnvironment("AppData", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
+   }
+   GetEnvironment("ProgramFiles", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
+   }
+   GetEnvironment("ProgramFiles(x86)", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
+   }
+   GetEnvironment("SystemDrive", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, "Program Files"); PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
+   }
+#else
+   GetEnvironment("XDG_DATA_DIRS", v, maxPathLen);
+   numTokens = TokenizeWith(v, sizeof(tokens) / sizeof(byte *), tokens, ":", false);
+   for(c=0; c<numTokens; c++)
+   {
+      strncpy(p, tokens[c], MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
+   }
+#endif
+   for(path : paths)
+   {
+      strncpy(p, path, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, name);
+      if(FileExists(p).isFile)
+      {
+         ShellOpen(p);
+         break;
+      }
+   }
+   delete p;
+   delete v;
+   paths.Free();
+   delete paths;
 }
 
 class RecursiveDeleteFolderFSI : NormalFileSystemIterator
@@ -3184,7 +3447,7 @@ class IDEApp : GuiApplication
          char fullPath[MAX_LOCATION];
          GetWorkingDir(fullPath, MAX_LOCATION);
          PathCat(fullPath, app.argv[c]);
-         ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal);
+         ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal, false);
       }
       */
 

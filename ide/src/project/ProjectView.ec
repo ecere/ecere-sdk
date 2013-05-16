@@ -28,7 +28,13 @@ class ImportFolderFSI : NormalFileSystemIterator
    bool OnFile(char * filePath)
    {
       ProjectNode parentNode = stack.lastIterator.data;
-      projectView.AddFile(parentNode, filePath, parentNode.isInResources, false);
+      if(!projectView.AddFile(parentNode, filePath, parentNode.isInResources, false))
+      {
+         char * msg = PrintString($"This file can't be imported due to a conflict.\n\n", filePath,
+               "\n\nThis occurs with identical file paths and with conflicting file names.\n");
+         MessageBox { master = ide, type = ok, text = "Import File Conflict", contents = msg }.Modal();
+         delete msg;
+      }
       return true;
    }
 }
@@ -200,7 +206,7 @@ class ProjectView : Window
       bool NotifyDoubleClick(ListBox listBox, int x, int y, Modifiers mods)
       {
          // Prevent the double click from reactivating the project view (returns false if we opened something)
-         return !OpenSelectedNodes();
+         return !OpenSelectedNodes(mods.ctrl && mods.shift);
       }
 
       bool NotifyRightClick(ListBox listBox, int x, int y, Modifiers mods)
@@ -218,18 +224,21 @@ class ProjectView : Window
                if(node.type == NodeTypes::project)
                {
                   MenuItem mi;
-                                                                                                                                            mi = ide.projectBuildItem;
-                  MenuItem { pop, $"Build"              , b, f7     , NotifySelect = ProjectBuild     , bitmap = mi.bitmap }.disabled = na; mi = ide.projectLinkItem;
-                  MenuItem { pop, $"Relink"             , l         , NotifySelect = ProjectLink      , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRebuildItem;
-                  MenuItem { pop, $"Rebuild"            , r, shiftF7, NotifySelect = ProjectRebuild   , bitmap = mi.bitmap }.disabled = na; mi = ide.projectCleanItem;
-                  MenuItem { pop, $"Clean"              , c         , NotifySelect = ProjectClean     , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRealCleanItem;
-                  MenuItem { pop, $"Real Clean"         , d         , NotifySelect = ProjectRealClean , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRegenerateItem;
-                  MenuItem { pop, $"Regenerate Makefile", m         , NotifySelect = ProjectRegenerate, bitmap = mi.bitmap }.disabled = na;
+                                                                                                                                             mi = ide.projectBuildItem;
+                  MenuItem { pop, $"Build"              , b, f7     , NotifySelect = ProjectBuild      , bitmap = mi.bitmap }.disabled = na; mi = ide.projectLinkItem;
+                  MenuItem { pop, $"Relink"             , l         , NotifySelect = ProjectLink       , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRebuildItem;
+                  MenuItem { pop, $"Rebuild"            , r, shiftF7, NotifySelect = ProjectRebuild    , bitmap = mi.bitmap }.disabled = na; mi = ide.projectCleanTargetItem;
+                  MenuItem { pop, $"Clean Target"       , g         , NotifySelect = ProjectCleanTarget, bitmap = mi.bitmap }.disabled = na; mi = ide.projectCleanItem;
+                  MenuItem { pop, $"Clean"              , c         , NotifySelect = ProjectClean      , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRealCleanItem;
+                  MenuItem { pop, $"Real Clean"                     , NotifySelect = ProjectRealClean  , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRegenerateItem;
+                  MenuItem { pop, $"Regenerate Makefile", m         , NotifySelect = ProjectRegenerate , bitmap = mi.bitmap }.disabled = na;
 
                   if(showDebuggingMenuItems && node.ContainsFilesWithExtension("ec"))
                   {
                      MenuDivider { pop };
                      MenuItem { pop, $"Debug Generate Symbols", l, NotifySelect = FileDebugGenerateSymbols }.disabled = na;
+                     MenuItem { pop, $"Debug Precompile", l, NotifySelect = FileDebugPrecompile }.disabled = na;
+                     MenuItem { pop, $"Debug Compile", l, NotifySelect = FileDebugCompile }.disabled = na;
                   }
                   MenuDivider { pop };
                   MenuItem { pop, $"New File...", l, Key { l, ctrl = true }, NotifySelect = ProjectNewFile };
@@ -434,8 +443,10 @@ class ProjectView : Window
          }
          switch(key)
          {
-            case enter: case keyPadEnter:  OpenSelectedNodes();   break;
-            case del:                      RemoveSelectedNodes(); break;
+            case Key { enter, true, true }:        OpenSelectedNodes(true);   break;
+            case Key { keyPadEnter, true, true }:  OpenSelectedNodes(true);   break;
+            case enter: case keyPadEnter:          OpenSelectedNodes(false);  break;
+            case del:                              RemoveSelectedNodes();     break;
             case escape:                      
             {
                Window activeClient = ide.activeClient;
@@ -796,7 +807,7 @@ class ProjectView : Window
          if(config)
          {
             config.compilingModified = false;
-            if(!ide.ShouldStopBuild())
+            if(!stopBuild)
                config.linkingModified = false;
 
             config.symbolGenModified = false;
@@ -923,89 +934,26 @@ class ProjectView : Window
       return true;
    }
 
-#if 0
    bool ProjectCleanTarget(MenuItem selection, Modifiers mods)
    {
-      Project prj = project;
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      ProjectConfig config;
-      if(selection || !ide.activeClient)
-      {
-         DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
-         if(node) prj = node.project;
-      }
-      else
-      {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
-         if(node)
-            prj = node.project;
-      }
-      config = prj.config;
-      if(!prj.GetConfigIsInDebugSession(config) ||
-            (!ide.DontTerminateDebugSession($"Project Clean Target") && DebugStopForMake(prj, clean, compiler, config)))
-      {
-         if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
-         {
-            ide.outputView.buildBox.Logf($"Cleaning target for project %s using the %s configuration...\n", prj.name, GetConfigName(config));
-
-            buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
-            ide.AdjustBuildMenus();
-            ide.AdjustDebugMenus();
-
-            prj.Clean(compiler, config, cleanTarget, mods.ctrl && mods.shift);
-            buildInProgress = none;
-            ide.AdjustBuildMenus();
-            ide.AdjustDebugMenus();
-         }
-      }
-      delete compiler;
+      CleanProject($"Project Clean Target", $"Cleaning project %s target using the %s configuration...\n", selection, cleanTarget, mods.ctrl && mods.shift);
       return true;
    }
-#endif
 
    bool ProjectClean(MenuItem selection, Modifiers mods)
    {
-      Project prj = project;
-      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      ProjectConfig config;
-      int bitDepth = ide.workspace.bitDepth;
-      if(selection || !ide.activeClient)
-      {
-         DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
-         if(node) prj = node.project;
-      }
-      else
-      {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
-         if(node)
-            prj = node.project;
-      }
-      config = prj.config;
-      if(!prj.GetConfigIsInDebugSession(config) ||
-            (!ide.DontTerminateDebugSession($"Project Clean") && DebugStopForMake(prj, clean, compiler, config)))
-      {
-         if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
-         {
-            ide.outputView.buildBox.Logf($"Cleaning project %s using the %s configuration...\n", prj.name, GetConfigName(config));
-
-            buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
-            ide.AdjustBuildMenus();
-            ide.AdjustDebugMenus();
-
-            prj.Clean(compiler, config, bitDepth, clean, mods.ctrl && mods.shift);
-            buildInProgress = none;
-            ide.AdjustBuildMenus();
-            ide.AdjustDebugMenus();
-         }
-      }
-      delete compiler;
+      CleanProject($"Project Clean", $"Cleaning project %s using the %s configuration...\n", selection, clean, mods.ctrl && mods.shift);
       return true;
    }
 
    bool ProjectRealClean(MenuItem selection, Modifiers mods)
    {
+      CleanProject($"Project Real Clean", $"Removing intermediate objects directory for project %s using the %s configuration...\n", selection, realClean, mods.ctrl && mods.shift);
+      return true;
+   }
+
+   void CleanProject(char * terminateDebugSessionMessage, char * cleaningMessageLogFormat, MenuItem selection, CleanType cleanType, bool justPrint)
+   {
       Project prj = project;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       ProjectConfig config;
@@ -1019,29 +967,27 @@ class ProjectView : Window
       else
       {
          ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
-         if(node)
-            prj = node.project;
+         if(node) prj = node.project;
       }
       config = prj.config;
       if(!prj.GetConfigIsInDebugSession(config) ||
-            (!ide.DontTerminateDebugSession($"Project Real Clean") && DebugStopForMake(prj, clean, compiler, config)))
+            (!ide.DontTerminateDebugSession(terminateDebugSessionMessage) && DebugStopForMake(prj, clean, compiler, config)))
       {
          if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
          {
-            ide.outputView.buildBox.Logf($"Removing intermediate objects directory for project %s using the %s configuration...\n", prj.name, GetConfigName(config));
+            ide.outputView.buildBox.Logf(cleaningMessageLogFormat, prj.name, GetConfigName(config));
 
             buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
 
-            prj.Clean(compiler, config, bitDepth, realClean, mods.ctrl && mods.shift);
+            prj.Clean(compiler, config, bitDepth, cleanType, justPrint);
             buildInProgress = none;
             ide.AdjustBuildMenus();
             ide.AdjustDebugMenus();
          }
       }
       delete compiler;
-      return true;
    }
 
    bool ProjectRegenerate(MenuItem selection, Modifiers mods)
@@ -1112,11 +1058,9 @@ class ProjectView : Window
 
             buildInProgress = compilingFile;
             ide.AdjustBuildMenus();
-            project.Compile(nodes, compiler, config, bitDepth, justPrint, mode);
+            result = project.Compile(nodes, compiler, config, bitDepth, justPrint, mode);
             buildInProgress = none;
             ide.AdjustBuildMenus();
-
-            result = true;
          }
          delete compiler;
       }
@@ -1316,7 +1260,7 @@ class ProjectView : Window
 
    bool FileOpenFile(MenuItem selection, Modifiers mods)
    {
-      OpenSelectedNodes();
+      OpenSelectedNodes(mods.ctrl && mods.shift);
       return true;
    }
 
@@ -1394,7 +1338,11 @@ class ProjectView : Window
       {
          List<ProjectNode> nodes { };
          nodes.Add(node);
-         Compile(node.project, nodes, mods.ctrl && mods.shift, debugPrecompile);
+         if(node.type == project)
+            ProjectBuild(selection, mods);
+         ide.Update(null);
+         if(!stopBuild)
+            Compile(node.project, nodes, mods.ctrl && mods.shift, debugPrecompile);
          delete nodes;
       }
       return true;
@@ -1408,7 +1356,12 @@ class ProjectView : Window
       {
          List<ProjectNode> nodes { };
          nodes.Add(node);
-         Compile(node.project, nodes, mods.ctrl && mods.shift, debugCompile);
+         if(node.type == project)
+            ProjectBuild(selection, mods);
+         else
+            Compile(node.project, nodes, mods.ctrl && mods.shift, normal);
+         if(!stopBuild)
+            Compile(node.project, nodes, mods.ctrl && mods.shift, debugCompile);
          delete nodes;
       }
       return true;
@@ -1422,7 +1375,12 @@ class ProjectView : Window
       {
          List<ProjectNode> nodes { };
          nodes.Add(node);
-         Compile(node.project, nodes, mods.ctrl && mods.shift, debugGenerateSymbols);
+         if(node.type == project)
+            ProjectBuild(selection, mods);
+         else
+            Compile(node.project, nodes, mods.ctrl && mods.shift, normal);
+         if(!stopBuild)
+            Compile(node.project, nodes, mods.ctrl && mods.shift, debugGenerateSymbols);
          delete nodes;
       }
       return true;
@@ -1553,7 +1511,7 @@ class ProjectView : Window
       return result;      
    }
 
-   void GoToError(const char * line)
+   void GoToError(const char * line, const bool noParsing)
    {
       char * colon;
       
@@ -1645,6 +1603,58 @@ class ProjectView : Window
                   PathCatSlash(moduleName, node.name);
                }
                else
+               {
+                  char extension[MAX_EXTENSION];
+                  IntermediateFileType type = none;
+                  ProjectConfig config;
+                  GetExtension(moduleName, extension);
+                  if(extension && extension[0])
+                  {
+                     if(!strcmp(extension, "c"))
+                        type = c;
+                     else if(!strcmp(extension, "sym"))
+                        type = sym;
+                     else if(!strcmp(extension, "imp"))
+                        type = imp;
+                     else if(!strcmp(extension, "bowl"))
+                        type = bowl;
+                     else if(!strcmp(extension, "o"))
+                        type = o;
+                     if(type)
+                     {
+                        if((config = project.GetConfig(project.lastBuildConfigName)))
+                           node = project.FindNodeByObjectFileName(moduleName, type, config);
+                        if(!node)
+                        {
+                           for(prj : ide.workspace.projects)
+                           {
+                              if(config = project.GetConfig(prj.lastBuildConfigName))
+                                 node = prj.FindNodeByObjectFileName(moduleName, type, config);
+                              if(node)
+                                 break;
+                           }
+                        }
+                     }
+                  }
+                  if(node)
+                  {
+                     char name[MAX_FILENAME];
+                     Project project = node.project;
+                     CompilerConfig compiler = ideSettings.GetCompilerConfig(project.lastBuildCompilerName);
+                     if(compiler)
+                     {
+                        int bitDepth = ide.workspace.bitDepth;
+                        DirExpression objDir = project.GetObjDir(compiler, config, bitDepth);
+                        strcpy(moduleName, project.topNode.path);
+                        PathCatSlash(moduleName, objDir.dir);
+                        node.GetObjectFileName(name, project.lastBuildNamesInfo, type);
+                        PathCatSlash(moduleName, name);
+                        delete objDir;
+                     }
+                     delete compiler;
+                  }
+               }
+               if(!node)
                   moduleName[0] = '\0';
             }
             GetExtension(moduleName, ext);
@@ -1656,12 +1666,12 @@ class ProjectView : Window
                strcpy(filePath, project.topNode.path);
                PathCatSlash(filePath, moduleName);
       
-               codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal);
+               codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal, noParsing);
                if(!codeEditor && !strcmp(ext, "c"))
                {
                   char ecName[MAX_LOCATION];
                   ChangeExtension(filePath, "ec", ecName);
-                  codeEditor = (CodeEditor)ide.OpenFile(ecName, normal, true, null, no, normal);
+                  codeEditor = (CodeEditor)ide.OpenFile(ecName, normal, true, null, no, normal, noParsing);
                }
                if(!codeEditor)
                {
@@ -1679,7 +1689,7 @@ class ProjectView : Window
                            strcpy(filePath, prj.topNode.path);
                            PathCatSlash(filePath, node.path);
                            PathCatSlash(filePath, node.name);
-                           codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal);
+                           codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal, noParsing);
                            if(codeEditor)
                               break;
                         }
@@ -1694,7 +1704,7 @@ class ProjectView : Window
                               strcpy(filePath, prj.topNode.path);
                               PathCatSlash(filePath, node.path);
                               PathCatSlash(filePath, node.name);
-                              codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal);
+                              codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal, noParsing);
                               if(codeEditor)
                                  break;
                            }
@@ -1713,11 +1723,11 @@ class ProjectView : Window
       }
    }
 
-   bool OpenNode(ProjectNode node)
+   bool OpenNode(ProjectNode node, bool noParsing)
    {
       char filePath[MAX_LOCATION];
       node.GetFullFilePath(filePath);
-      return ide.OpenFile(filePath, normal, true/*false Why was it opening hidden?*/, null, something, normal) ? true : false;
+      return ide.OpenFile(filePath, normal, true/*false Why was it opening hidden?*/, null, something, normal, noParsing) ? true : false;
    }
 
    void AddNode(ProjectNode node, DataRow addTo)
@@ -2114,7 +2124,7 @@ class ProjectView : Window
             subclass(ClassDesignerBase) designerClass = eClass_GetDesigner(baseClass);
             if(designerClass)
             {
-               codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, false, null, whatever, normal);
+               codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, false, null, whatever, normal, false);
                strcpy(name, projectNode.name);
                sprintf(name, "%s%d", upper, c);
                if(className)
@@ -2130,7 +2140,7 @@ class ProjectView : Window
          }
          else // TODO: fix no symbols generated when ommiting {} for following else
          {
-            codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, false, null, whatever, normal);
+            codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, false, null, whatever, normal, false);
          }
          if(codeEditor)
          {
@@ -2143,7 +2153,7 @@ class ProjectView : Window
    }
 
    // Returns true if we opened something
-   bool OpenSelectedNodes()
+   bool OpenSelectedNodes(bool noParsing)
    {
       bool result = false;
       OldList selection;
@@ -2156,7 +2166,7 @@ class ProjectView : Window
          ProjectNode node = (ProjectNode)row.tag;
          if(node.type == file)
          {
-            OpenNode(node);
+            OpenNode(node, noParsing);
             result = true;
             break;
          }

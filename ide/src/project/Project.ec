@@ -438,24 +438,33 @@ void ReplaceSpaces(char * output, char * source)
 // This function cannot accept same pointer for source and output
 void ReplaceUnwantedMakeChars(char * output, char * source)
 {
-   int c, dc;
-   char ch, pch = 0;
-
-   for(c = 0, dc = 0; (ch = source[c]); c++, dc++)
+   char ch;
+   char * s = source, * d = output;
+   bool inVar = false;
+   while((ch = *s++))
    {
-      if(pch != '$')
+      if(ch == '(')
       {
-         if(ch == '(' || ch == ')') output[dc++] = '\\';
-         pch = ch;
+         if(s != source && *(s-1) == '$')
+            inVar = true;
+         else
+            *d++ = '\\';
       }
       else if(ch == ')')
-         pch = 0;
+      {
+         if(inVar == true)
+            inVar = false;
+         else
+            *d++ = '\\';
+      }
+      else if(ch == '$' && *(s+1) != '(')
+         *d++ = '$';
       if(ch == ' ')
-         output[dc] = 127;
+         *d++ = 127;
       else
-         output[dc] = ch;
+         *d++ = ch;
    }
-   output[dc] = '\0';
+   *d = '\0';
 }
 
 static void OutputNoSpace(File f, char * source)
@@ -742,7 +751,12 @@ char * GetConfigName(ProjectConfig config)
    return config ? config.name : "Common";
 }
 
-public enum SingleFileCompileMode { normal, debugPrecompile, debugCompile, debugGenerateSymbols, cObject };
+public enum SingleFileCompileMode
+{
+   normal, debugPrecompile, debugCompile, debugGenerateSymbols, cObject;
+
+   property bool eC_ToolsDebug { get { return this == debugCompile || this == debugGenerateSymbols || this == debugPrecompile; } }
+};
 
 class Project : struct
 {
@@ -833,6 +847,11 @@ private:
    String license;
    String compilerConfigsDir;
    String moduleVersion;
+
+   String lastBuildConfigName;
+   String lastBuildCompilerName;
+
+   Map<String, NameCollisionInfo> lastBuildNamesInfo;
 
 #ifndef MAKEFILE_GENERATOR
    FileMonitor fileMonitor
@@ -937,6 +956,9 @@ private:
       delete filePath;
       delete topNode;
       delete name;
+      delete lastBuildConfigName;
+      delete lastBuildCompilerName;
+      if(lastBuildNamesInfo) { lastBuildNamesInfo.Free(); delete lastBuildNamesInfo; }
    }
 
    ~Project()
@@ -958,6 +980,7 @@ private:
          topNode.info = CopyString(GetConfigName(config));
       }
    }
+
    property char * filePath
    {
       set
@@ -980,6 +1003,29 @@ private:
       }
    }
 
+   ProjectConfig GetConfig(char * configName)
+   {
+      ProjectConfig result = null;
+      if(configName && configName[0] && configurations.count)
+      {
+         for(cfg : configurations; !strcmpi(cfg.name, configName))
+         {
+            result = cfg;
+            break;
+         }
+      }
+      return result;
+   }
+
+   ProjectNode FindNodeByObjectFileName(char * fileName, IntermediateFileType type, ProjectConfig config)
+   {
+      ProjectNode result;
+      if(!lastBuildNamesInfo)
+         ProjectLoadLastBuildNamesInfo(this, config);
+      result = topNode.FindByObjectFileName(fileName, type, lastBuildNamesInfo);
+      return result;
+   }
+
    TargetTypes GetTargetType(ProjectConfig config)
    {
       TargetTypes targetType = localTargetType;
@@ -998,7 +1044,6 @@ private:
       }
       return false;
    }
-
 
    char * GetObjDirExpression(ProjectConfig config)
    {
@@ -1398,10 +1443,10 @@ private:
       }
    }
 
-   void ProcessPipeOutputRaw(DualPipe f)
+   bool ProcessPipeOutputRaw(DualPipe f)
    {
       char line[65536];
-      while(!f.Eof() && !ide.ShouldStopBuild())
+      while(!f.Eof() && !ide.projectView.stopBuild)
       {
          bool result = true;
          double lastTime = GetTime();
@@ -1425,11 +1470,12 @@ private:
          }
          //if(!result) Sleep(1.0 / PEEK_RESOLUTION);
       }
-      if(ide.ShouldStopBuild())
+      if(ide.projectView.stopBuild)
       {
          ide.outputView.buildBox.Logf($"\nBuild cancelled by user.\n", line);
          f.Terminate();
       }
+      return !ide.projectView.stopBuild;
    }
 
    bool ProcessBuildPipeOutput(DualPipe f, DirExpression objDirExp, bool isARun, List<ProjectNode> onlyNodes,
@@ -1440,7 +1486,6 @@ private:
       int compilingEC = 0;
       int numErrors = 0, numWarnings = 0;
       bool loggedALine = false;
-      char * configName = config ? config.name : "Common";
       int lenMakeCommand = strlen(compiler.makeCommand);
       int testLen = 0;
       char * t;
@@ -1493,9 +1538,10 @@ private:
       testLen = Max(testLen, strip.size);
       testLen = Max(testLen, ar.size);
       testLen = Max(testLen, windres.size);
+      testLen = Max(testLen, strlen("mkdir "));
       testLen++;
 
-      while(!f.Eof() && !ide.ShouldStopBuild())
+      while(!f.Eof() && !ide.projectView.stopBuild)
       {
          bool result = true;
          double lastTime = GetTime();
@@ -1531,6 +1577,8 @@ private:
                      //numErrors++;
                   //}
                }
+               else if(strstr(test, "mkdir ") == test);
+               else if((t = strstr(line, "cd ")) && (t = strstr(line, "type ")) && (t = strstr(line, "nul ")) && (t = strstr(line, "copy ")) && (t = strstr(line, "cd ")));
                else if(strstr(test, ear) == test);
                else if(strstr(test, strip) == test);
                else if(strstr(test, cc) == test || strstr(test, cxx) == test || strstr(test, ecp) == test || strstr(test, ecc) == test)
@@ -1848,7 +1896,7 @@ private:
          }
          //if(!result) Sleep(1.0 / PEEK_RESOLUTION);
       }
-      if(ide.ShouldStopBuild())
+      if(ide.projectView.stopBuild)
       {
          ide.outputView.buildBox.Logf($"\nBuild cancelled by user.\n", line);
          f.Terminate();
@@ -1867,7 +1915,7 @@ private:
                char targetFileName[MAX_LOCATION];
                targetFileName[0] = '\0';
                CatTargetFileName(targetFileName, compiler, config);
-               ide.outputView.buildBox.Logf("\n%s (%s) - ", targetFileName, configName);
+               ide.outputView.buildBox.Logf("\n%s (%s) - ", targetFileName, lastBuildConfigName);
             }
             if(numErrors)
                ide.outputView.buildBox.Logf("%d %s, ", numErrors, (numErrors > 1) ? $"errors" : $"error");
@@ -1893,7 +1941,7 @@ private:
       delete strip;
       delete ar;
 
-      return numErrors == 0;
+      return numErrors == 0 && !ide.projectView.stopBuild;
    }
 
    void ProcessCleanPipeOutput(DualPipe f, CompilerConfig compiler, ProjectConfig config)
@@ -1945,11 +1993,18 @@ private:
       bool crossCompiling = (compiler.targetPlatform != GetRuntimePlatform());
       char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
 
+      bool eC_Debug = mode.eC_ToolsDebug;
+      bool singleProjectOnlyNode = onlyNodes && onlyNodes.count == 1 && onlyNodes[0].type == project;
       int numJobs = compiler.numJobs;
       char command[MAX_F_STRING*4];
-      char * compilerName;
+      char * compilerName = CopyString(compiler.name);
 
-      compilerName = CopyString(compiler.name);
+      delete lastBuildConfigName;
+      lastBuildConfigName = CopyString(config ? config.name : "Common");
+      delete lastBuildCompilerName;
+      lastBuildCompilerName = CopyString(compiler.name);
+      ProjectLoadLastBuildNamesInfo(this, config);
+
       CamelCase(compilerName);
 
       strcpy(configName, config ? config.name : "Common");
@@ -1973,7 +2028,6 @@ private:
             int len;
             char pushD[MAX_LOCATION];
             char cfDir[MAX_LOCATION];
-            Map<String, NameCollisionInfo> namesInfo { };
             GetIDECompilerConfigsDir(cfDir, true, true);
             GetWorkingDir(pushD, sizeof(pushD));
             ChangeWorkingDir(topNode.path);
@@ -1995,20 +2049,17 @@ private:
 
             ChangeWorkingDir(pushD);
 
-            topNode.GenMakefileGetNameCollisionInfo(namesInfo, config);
             for(node : onlyNodes)
             {
                if(node.GetIsExcluded(config))
                   ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
                else
                {
-                  if(mode == cObject || mode == normal)
-                     node.DeleteIntermediateFiles(compiler, config, bitDepth, namesInfo, mode == cObject ? true : false);
-                  node.GetTargets(config, namesInfo, objDirExp.dir, makeTargets);
+                  if(!eC_Debug)
+                     node.DeleteIntermediateFiles(compiler, config, bitDepth, lastBuildNamesInfo, mode == cObject ? true : false);
+                  node.GetTargets(config, lastBuildNamesInfo, objDirExp.dir, makeTargets);
                }
             }
-            namesInfo.Free();
-            delete namesInfo;
          }
       }
 
@@ -2048,10 +2099,10 @@ private:
                bitDepth ? " ARCH=" : "",
                bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
                /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" :*/ "",
-               compilerName, (mode == debugCompile || mode == debugGenerateSymbols || mode == debugPrecompile) ? "--always-make " : "", numJobs,
-               compiler.ccacheEnabled ? "CCACHE=y " : "",
-               compiler.distccEnabled ? "DISTCC=y " : "",
-               (String)makeTargets, topNode.path, (justPrint || (mode != normal && mode != cObject)) ? " -n" : "", makeFilePath);
+               compilerName, eC_Debug ? "--always-make " : "", numJobs,
+               (compiler.ccacheEnabled && !eC_Debug) ? "CCACHE=y " : "",
+               (compiler.distccEnabled && !eC_Debug) ? "DISTCC=y " : "",
+               (String)makeTargets, topNode.path, (justPrint || eC_Debug) ? " -n" : "", makeFilePath);
          if(justPrint)
             ide.outputView.buildBox.Logf("%s\n", command);
 
@@ -2059,9 +2110,11 @@ private:
          {
             bool found = false;
             bool error = false;
-            if(mode != normal && mode != cObject)
+            if(eC_Debug)
             {
                char line[65536];
+               if(justPrint)
+                  ide.outputView.buildBox.Logf($"\nMake outputs the following list of commands to choose from:\n");
                while(!f.Eof())
                {
                   bool result = true;
@@ -2069,12 +2122,14 @@ private:
                   {
                      if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)))
                      {
+                        if(justPrint)
+                           ide.outputView.buildBox.Logf("%s\n", line);
                         if(!error && !found && strstr(line, "echo ") == line)
                         {
                            strcpy(command, line+5);
                            error = true;
                         }
-                        if(!error && !found && strstr(line, "ide ") == line)
+                        if(!error && (singleProjectOnlyNode || !found) && strstr(line, "ide ") == line)
                         {
                            strcpy(command, line);
                            found = true;
@@ -2086,15 +2141,14 @@ private:
                   result = true;
             }
             else if(justPrint)
-            {
-               ProcessPipeOutputRaw(f);
-               result = true;
-            }
+               result = ProcessPipeOutputRaw(f);
             else
                result = ProcessBuildPipeOutput(f, objDirExp, isARun, onlyNodes, compiler, config, bitDepth);
             delete f;
-            if(error || (justPrint && found))
+            if(error)
                ide.outputView.buildBox.Logf("%s\n", command);
+            else if(justPrint && found)
+               ide.outputView.buildBox.Logf($"\nThe following command was chosen to be executed:\n%s\n", command);
             else if(found)
                Execute(command);
          }
@@ -2164,14 +2218,17 @@ private:
             ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
          {
-            ide.outputView.buildBox.Tell($"Deleting target and object files...");
+            ide.outputView.buildBox.Tellf($"Deleting %s%s...",
+                  cleanType == realClean ? $"intermediate objects directory" : $"target",
+                  cleanType == clean ? $"and object files" : "");
             if(justPrint)
                ProcessPipeOutputRaw(f);
             else
                ProcessCleanPipeOutput(f, compiler, config);
+            ide.outputView.buildBox.Logf($"%s%s deleted\n",
+                  cleanType == realClean ? $"Intermediate objects directory" : $"Target",
+                  cleanType == clean ? $"and object files" : "");
             delete f;
-
-            ide.outputView.buildBox.Logf($"Target and object files deleted\n");
          }
       }
 
@@ -2230,9 +2287,9 @@ private:
       delete target;
    }
 
-   void Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, SingleFileCompileMode mode)
+   bool Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, SingleFileCompileMode mode)
    {
-      Build(false, nodes, compiler, config, bitDepth, justPrint, mode);
+      return Build(false, nodes, compiler, config, bitDepth, justPrint, mode);
    }
 #endif
 
@@ -2373,7 +2430,7 @@ private:
             f.Printf("CXX := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cxxCommand);
             f.Printf("ECP := $(if $(ECP_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)\n", compiler.ecpCommand);
             f.Printf("ECC := $(if $(ECC_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecc/ecc.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.eccCommand);
-            f.Printf("ECS := $(if $(ECS_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.ecsCommand);
+            f.Printf("ECS := $(if $(ECS_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT),-outputpot,)\n", compiler.ecsCommand);
             f.Printf("EAR := %s\n", compiler.earCommand);
 
             f.Puts("AS := $(GCC_PREFIX)as\n");
@@ -2518,13 +2575,14 @@ private:
          char fixedModuleName[MAX_FILENAME];
          char fixedConfigName[MAX_FILENAME];
          int c, len;
+         int lenObjDirExpNoSpaces, lenTargetDirExpNoSpaces;
          // Non-zero if we're building eC code
          // We'll have to be careful with this when merging configs where eC files can be excluded in some configs and included in others
          int numCObjects = 0;
          int numObjects = 0;
          int numRCObjects = 0;
          bool containsCXX = false; // True if the project contains a C++ file
-         bool sameObjTargetDirs;
+         bool relObjDir, sameOrRelObjTargetDirs;
          String objDirExp = GetObjDirExpression(config);
          TargetTypes targetType = GetTargetType(config);
 
@@ -2558,9 +2616,15 @@ private:
          ReplaceSpaces(fixedConfigName, GetConfigName(config));
          CamelCase(fixedConfigName);
 
-         sameObjTargetDirs = !fstrcmp(objDirExpNoSpaces, targetDirExpNoSpaces);
+         lenObjDirExpNoSpaces = strlen(objDirExpNoSpaces);
+         relObjDir = lenObjDirExpNoSpaces == 0 ||
+               (objDirExpNoSpaces[0] == '.' && (lenObjDirExpNoSpaces == 1 || objDirExpNoSpaces[1] == '.'));
+         lenTargetDirExpNoSpaces = strlen(targetDirExpNoSpaces);
+         sameOrRelObjTargetDirs = lenTargetDirExpNoSpaces == 0 ||
+               (targetDirExpNoSpaces[0] == '.' && (lenTargetDirExpNoSpaces == 1 || targetDirExpNoSpaces[1] == '.')) ||
+               !fstrcmp(objDirExpNoSpaces, targetDirExpNoSpaces);
 
-         f.Printf(".PHONY: all objdir%s cleantarget clean realclean distclean\n\n", sameObjTargetDirs ? "" : " targetdir");
+         f.Printf(".PHONY: all objdir%s cleantarget clean realclean distclean\n\n", sameOrRelObjTargetDirs ? "" : " targetdir");
 
          f.Puts("# CORE VARIABLES\n\n");
 
@@ -3026,15 +3090,15 @@ private:
          f.Puts("# TARGETS\n");
          f.Puts("\n");
 
-         f.Printf("all: objdir%s $(TARGET)\n", sameObjTargetDirs ? "" : " targetdir");
+         f.Printf("all: objdir%s $(TARGET)\n", sameOrRelObjTargetDirs ? "" : " targetdir");
          f.Puts("\n");
 
          f.Puts("objdir:\n");
+         if(!relObjDir)
             f.Puts("\t$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))\n");
+
             f.Puts("\t$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)/crossplatform.mk) location.)),)\n");
-            f.Puts("\t$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG),))\n");
-            f.Puts("\t$(if $(ECERE_SDK_SRC),,$(if $(ECC_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECC_DEBUG),))\n");
-            f.Puts("\t$(if $(ECERE_SDK_SRC),,$(if $(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECS_DEBUG),))\n");
+            f.Puts("\t$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))\n");
          //f.Puts("# PRE-BUILD COMMANDS\n");
          if(options && options.prebuildCommands)
          {
@@ -3084,7 +3148,7 @@ private:
          }
          f.Puts("\n");
 
-         if(!sameObjTargetDirs)
+         if(!sameOrRelObjTargetDirs)
          {
             f.Puts("targetdir:\n");
                f.Printf("\t$(if $(wildcard %s),,$(call mkdirq,%s))\n", targetDirExpNoSpaces, targetDirExpNoSpaces);
@@ -3111,7 +3175,7 @@ private:
          // *** Target ***
 
          // This would not rebuild the target on updated objects
-         // f.Printf("$(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)%s\n", sameObjTargetDirs ? "" : " targetdir");
+         // f.Printf("$(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)%s\n", sameOrRelObjTargetDirs ? "" : " targetdir");
 
          // This should fix it for good!
          f.Puts("$(SYMBOLS): | objdir\n");
@@ -3119,7 +3183,7 @@ private:
 
          // This alone was breaking the tarball, object directory does not get created first (order-only rules happen last it seems!)
          f.Printf("$(TARGET): $(SOURCES)%s $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir%s\n",
-               rcSourcesParts ? " $(RCSOURCES)" : "", sameObjTargetDirs ? "" : " targetdir");
+               rcSourcesParts ? " $(RCSOURCES)" : "", sameOrRelObjTargetDirs ? "" : " targetdir");
 
          f.Printf("\t@$(call rmq,$(OBJ)linkobjects.lst)\n");
          f.Printf("\t@$(call touch,$(OBJ)linkobjects.lst)\n");
@@ -3239,7 +3303,7 @@ private:
          if(numCObjects)
             GenMakefilePrintMainObjectRule(f, config);
 
-         f.Printf("cleantarget: objdir%s\n", sameObjTargetDirs ? "" : " targetdir");
+         f.Printf("cleantarget: objdir%s\n", sameOrRelObjTargetDirs ? "" : " targetdir");
          f.Puts("\t$(call rmq,$(TARGET))\n");
          f.Puts("ifdef SHARED_LIBRARY_TARGET\n");
          f.Puts("ifdef LINUX_TARGET\n");
@@ -3274,14 +3338,15 @@ private:
 
          f.Puts("realclean: cleantarget\n");
          f.Puts("\t$(call rmrq,$(OBJ))\n");
-         if(!sameObjTargetDirs)
+         if(!sameOrRelObjTargetDirs)
             f.Printf("\t$(call rmdirq,%s)\n", targetDirExpNoSpaces);
          f.Puts("\n");
 
          f.Puts("distclean: cleantarget\n");
-         if(!sameObjTargetDirs)
+         if(!sameOrRelObjTargetDirs)
             f.Printf("\t$(call rmdirq,%s)\n", targetDirExpNoSpaces);
-         f.Puts("\t$(call rmrq,obj/)\n");
+         if(!relObjDir)
+            f.Puts("\t$(call rmrq,obj/)\n");
 
          delete f;
 
@@ -3453,6 +3518,17 @@ private:
          }
       }
    }
+}
+
+static inline void ProjectLoadLastBuildNamesInfo(Project prj, ProjectConfig cfg)
+{
+   if(prj.lastBuildNamesInfo)
+   {
+      prj.lastBuildNamesInfo.Free();
+      delete prj.lastBuildNamesInfo;
+   }
+   prj.lastBuildNamesInfo = { };
+   prj.topNode.GenMakefileGetNameCollisionInfo(prj.lastBuildNamesInfo, cfg);
 }
 
 Project LegacyBinaryLoadProject(File f, char * filePath)
@@ -4320,16 +4396,7 @@ Project LoadProject(char * filePath, char * activeConfigName)
       {
          if(!project.options) project.options = { };
          if(activeConfigName && activeConfigName[0] && project.configurations)
-         {
-            for(cfg : project.configurations)
-            {
-               if(!strcmpi(cfg.name, activeConfigName))
-               {
-                  project.config = cfg;
-                  break;
-               }
-            }
-         }
+            project.config = project.GetConfig(activeConfigName);
          if(!project.config && project.configurations)
             project.config = project.configurations.firstIterator.data;
 
