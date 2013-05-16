@@ -683,6 +683,8 @@ class CodeEditor : Window
 
    Designer designer { codeEditor = this, visible = false, saveDialog = codeEditorFormFileDialog };
 
+   bool noParsing;
+
    void ProcessCaretMove(EditBox editBox, int line, int charPos)
    {
       char temp[512];
@@ -1916,7 +1918,7 @@ class CodeEditor : Window
                CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
                ProjectConfig config = projectView.project.config;
                int bitDepth = ide.workspace.bitDepth;
-               ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, false);
+               ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, false, false);
                delete compiler;
             }
          }
@@ -1935,7 +1937,25 @@ class CodeEditor : Window
             CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
             ProjectConfig config = projectView.project.config;
             int bitDepth = ide.workspace.bitDepth;
-            ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, true);
+            ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, true, false);
+            delete compiler;
+         }
+         return true;
+      }
+   };
+   MenuItem debugSkipRunToCursorAtSameLevel
+   {
+      debugMenu, $"Run To Cursor At Same Level Skipping Breakpoints", u, Key { f10, alt = true };
+      bool NotifySelect(MenuItem selection, Modifiers mods)
+      {
+         ProjectView projectView = ide.projectView;
+         int line = editBox.lineNumber + 1;
+         if(projectView)
+         {
+            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+            ProjectConfig config = projectView.project.config;
+            int bitDepth = ide.workspace.bitDepth;
+            ide.debugger.RunToCursor(compiler, config, bitDepth, fileName, line, true, true);
             delete compiler;
          }
          return true;
@@ -2117,6 +2137,7 @@ class CodeEditor : Window
       */
       if(active && directActivation)
       {
+         AdjustDebugMenus(ide.areDebugMenusUnavailable, ide.isBreakpointTogglingUnavailable, ide.isDebuggerExecuting);
          if(openedFileInfo)
             openedFileInfo.Activate();
          if(designer)
@@ -2360,7 +2381,7 @@ class CodeEditor : Window
       if(fileName)
       {
          GetExtension(fileName, ext);
-         if(!strcmpi(ext, "ec"))
+         if(!noParsing && !(noParsing = ide.noParsing) && !strcmpi(ext, "ec"))
          {
             codeModified = true;
             EnsureUpToDate();
@@ -2414,12 +2435,13 @@ class CodeEditor : Window
       return false;
    }
 
-   void DebugMenusDisabled()
+   void AdjustDebugMenus(bool unavailable, bool bpNoToggle, bool executing)
    {
       bool debugMenusDisabled = ide.GetDebugMenusDisabled();
-      debugRunToCursor.disabled = debugMenusDisabled;
-      debugSkipRunToCursor.disabled = debugMenusDisabled;
-      debugToggleBreakpoint.disabled = debugMenusDisabled;
+      debugRunToCursor.disabled                 = debugMenusDisabled;
+      debugSkipRunToCursor.disabled             = debugMenusDisabled;
+      debugSkipRunToCursorAtSameLevel.disabled  = debugMenusDisabled;
+      debugToggleBreakpoint.disabled            = debugMenusDisabled;
    }
 
    CodeEditor()
@@ -2439,7 +2461,7 @@ class CodeEditor : Window
          designer.fileName = title;
       }
 
-      DebugMenusDisabled();
+      AdjustDebugMenus(ide.areDebugMenusUnavailable, ide.isBreakpointTogglingUnavailable, ide.isDebuggerExecuting);
 
       for(c = 0; c < CodeObjectType::enumSize; c++)
          icons[c] = BitmapResource { iconNames[c], window = this };
@@ -4396,6 +4418,7 @@ class CodeEditor : Window
    void UpdateFormCode()
    {
       if(!this) return;
+      if(noParsing) return;
          
       updatingCode++;
       if(codeModified)
