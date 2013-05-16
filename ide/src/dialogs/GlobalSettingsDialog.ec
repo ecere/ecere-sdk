@@ -550,6 +550,7 @@ class CompilersTab : GlobalSettingsSubTab
 
    bool NotifyModifiedDocument(PathBox pathBox)
    {
+      FixPathOnPathBoxNotifyModified(pathBox);
       modifiedDocument = true;
       return true;
    }
@@ -611,6 +612,11 @@ class CompilerDirectoriesTab : CompilersSubTab
 
                   compilersTab.modifiedDocument = true;
                }
+               return true;
+            }
+            bool NotifyPathBoxModified(DirectoriesBox dirsBox, PathBox pathBox)
+            {
+               FixPathOnPathBoxNotifyModified(pathBox);
                return true;
             }
          };
@@ -752,6 +758,7 @@ class CompilerToolchainTab : CompilersSubTab
       CompilerConfig compiler = loadedCompiler;
       if(compiler)
       {
+         FixPathOnPathBoxNotifyModified(pathBox);
          if(pathBox == ecp)
             compiler.ecpCommand = pathBox.slashPath;
          else if(pathBox == ecc)
@@ -1123,8 +1130,9 @@ class ProjectOptionsTab : GlobalSettingsSubTab
       this, size = { 160, 21 }, position = { 8, 52 }, anchor = { left = 8, top = 52, right = 8 };
       text = $"Default Target Directory", hotKey = altT;
 
-      bool NotifyModified(PathBox editBox)
+      bool NotifyModified(PathBox pathBox)
       {
+         FixPathOnPathBoxNotifyModified(pathBox);
          modifiedDocument = true;
          return true;
       }
@@ -1136,8 +1144,9 @@ class ProjectOptionsTab : GlobalSettingsSubTab
       this, size = { 160, 21 }, position = { 8, 96 }, anchor = { left = 8, top = 96, right = 8 };
       text = $"Default Intermediate Objects Directory", hotKey = altI;
 
-      bool NotifyModified(PathBox editBox)
+      bool NotifyModified(PathBox pathBox)
       {
+         FixPathOnPathBoxNotifyModified(pathBox);
          modifiedDocument = true;
          return true;
       }
@@ -1205,6 +1214,21 @@ class WorkspaceOptionsTab : GlobalSettingsSubTab
       defaultCompilerDropBox.Clear();
       modifiedDocument = false;
    }
+}
+
+static void FixPathOnPathBoxNotifyModified(PathBox pathBox)
+{
+   char path[MAX_LOCATION];
+   strcpy(path, pathBox.path);
+   TrimLSpaces(path, path);
+   TrimRSpaces(path, path);
+   {
+      char * chars = "*|:\",<>?";
+      char ch, * s = path, * o = path;
+      while((ch = *s++)) { if(!strchr(chars, ch)) *o++ = ch; }
+      *o = '\0';
+   }
+   pathBox.path = path;
 }
 
 //static define app = ((GuiApplication)__thisModule);

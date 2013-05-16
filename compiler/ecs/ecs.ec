@@ -8,6 +8,7 @@ import "ec"
 
 static define localeDir = "locale";
 static bool i18n;
+static bool outputPot;
 
 static Platform targetPlatform;
 static int targetBits;
@@ -1616,6 +1617,7 @@ class SymbolgenApp : Application
       bool valid = true;
       char * output = null;
 
+      outputPot = false;
       targetPlatform = GetRuntimePlatform();
       targetBits = GetHostBits();
 
@@ -1682,6 +1684,8 @@ class SymbolgenApp : Application
                else
                   valid = false;
             }
+            else if(!strcmp(arg, "-outputpot"))
+               outputPot = true;
             else if(!strcmp(arg, "-console"))
                isConsole = true;
             else if(!strcmp(arg, "-dynamiclib"))
@@ -1707,7 +1711,14 @@ class SymbolgenApp : Application
          valid = false;
      
       if(!valid)
+      {
          printf($"Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n");
+#ifdef _DEBUG
+         printf($"\nArguments given:");
+         for(c = 1; c<argc; c++)
+            printf(" %s", argv[c]);
+#endif
+      }
       else
       {
          int c;
@@ -1737,7 +1748,7 @@ class SymbolgenApp : Application
          {
             String symbolsDir = GetSymbolsDir();
             // Only generating .pot files when building from release.* directory for now
-            bool outputPot = symbolsDir && SearchString(symbolsDir, 0, "release.", false, false);
+            //bool outputPot = symbolsDir && SearchString(symbolsDir, 0, "release.", false, false);
             Map<ContextStringPair, List<String> > intlStrings { };
             MapIterator<ContextStringPair, List<String>> it { map = intlStrings };
 
