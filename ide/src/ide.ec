@@ -2451,7 +2451,7 @@ class IDEWorkSpace : Window
    {
       char *path = text;
       char *colon = strchr(text, ':');
-      char filePath[MAX_LOCATION];
+      char filePath[MAX_LOCATION] = "";
       char completePath[MAX_LOCATION];
       int line = 0, col = 0;
       Project prj = null;
@@ -2507,27 +2507,44 @@ class IDEWorkSpace : Window
          strcpy(filePath, path);
       }
 
-      if(prj)
-         strcpy(completePath, prj.topNode.path);
-      else if(dir && dir[0])
-         strcpy(completePath, dir);
-      else
-         completePath[0] = '\0';
-      PathCat(completePath, filePath);
-
-      fileAttribs = FileExists(completePath);
-      if(fileAttribs.isFile)
+      if(filePath[0])
       {
-         CodeEditor codeEditor = (CodeEditor)OpenFile(completePath, normal, true, "", no, normal, false);
-         if(codeEditor && line)
+         if(prj)
+            strcpy(completePath, prj.topNode.path);
+         else if(dir && dir[0])
+            strcpy(completePath, dir);
+         else
+            completePath[0] = '\0';
+         PathCat(completePath, filePath);
+
+
+         fileAttribs = FileExists(completePath);
+         if(fileAttribs.isFile)
          {
-            EditBox editBox = codeEditor.editBox;
-            editBox.GoToLineNum(line - 1);
-            editBox.GoToPosition(editBox.line, line - 1, col ? (col - 1) : 0);
+            char ext[MAX_EXTENSION];
+            GetExtension(completePath, ext);
+            if(!strcmp(ext, "mp3") || !strcmp(ext, "flac") || !strcmp(ext, "ogg") || !strcmp(ext, "avi") || !strcmp(ext, "mkv"))
+               ShellOpen(completePath);
+            else if(!strcmp(ext, "a") || !strcmp(ext, "o") || !strcmp(ext, "lib") || !strcmp(ext, "dll") || !strcmp(ext, "exe"))
+            {
+               char dirPath[MAX_LOCATION];
+               StripLastDirectory(completePath, dirPath);
+               ShellOpen(dirPath);
+            }
+            else
+            {
+               CodeEditor codeEditor = (CodeEditor)OpenFile(completePath, normal, true, "", no, normal, false);
+               if(codeEditor && line)
+               {
+                  EditBox editBox = codeEditor.editBox;
+                  editBox.GoToLineNum(line - 1);
+                  editBox.GoToPosition(editBox.line, line - 1, col ? (col - 1) : 0);
+               }
+            }
          }
+         else if(fileAttribs.isDirectory)
+            ShellOpen(completePath);
       }
-      else if(fileAttribs.isDirectory)
-         ShellOpen(completePath);
    }
 
    void OnRedraw(Surface surface)
