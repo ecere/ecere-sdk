@@ -1560,7 +1560,7 @@ private:
                   GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
 
                   f.Printf(" -c %s%s.%s -o $@\n",
-                     modulePath, moduleName, extension, moduleName);
+                     modulePath, moduleName, extension);
                   if(ifCount) f.Puts("endif\n");
                   f.Puts("\n");
 #if 0
@@ -1796,7 +1796,7 @@ private:
             f.Puts(" $(FVISIBILITY)");
 
             f.Printf(" -c %s%s.%s -o $@ -symbols $(OBJ)\n",
-               modulePath, moduleName, extension, moduleName);
+               modulePath, moduleName, extension);
             if(ifCount) f.Puts("endif\n");
             f.Puts("\n");
          }
@@ -1978,11 +1978,10 @@ private:
                GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
 
                if(!strcmpi(extension, "ec"))
-                  f.Printf(" $(FVISIBILITY) -c $(OBJ)%s.c -o $@\n", moduleName, moduleName);
+                  f.Printf(" $(FVISIBILITY) -c $(OBJ)%s.c -o $@\n", moduleName);
                else
                   f.Printf(" -c %s%s.%s -o $@\n",
-                        modulePath, moduleName, !strcmpi(extension, "ec") ? "c" : extension, moduleName,
-                        collision ? "." : "", collision ? extension : "");
+                        modulePath, moduleName, !strcmpi(extension, "ec") ? "c" : extension);
             }
             if(ifCount) f.Puts("endif\n");
             f.Puts("\n");
