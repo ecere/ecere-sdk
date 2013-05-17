@@ -274,14 +274,19 @@ public:
       Container container = eInstance_New(_class.fullName);
       uint count, c;
       Class Dclass = class(D);
+      D data;
 
       channel.Get(count);
+      if(Dclass.type == structClass)
+         data = (D)(new byte[Dclass.structSize]);
       for(c = 0; c < count; c++)
       {
-         D data;
-         ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, &data, channel);
+         ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnUnserialize])
+            (Dclass, (Dclass.type == structClass) ? (void *)data : &data, channel);
          container.Add(data);
       }
+      if(Dclass.type == structClass)
+         delete data;
       this = container;
    }
 }
