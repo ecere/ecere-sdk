@@ -149,6 +149,9 @@ class NewProjectDialog : Window
          workspace = Workspace { compiler = ideSettings.defaultCompiler, workspaceFile = workspaceFile };
       }
       workspace.projects.Add(prj);
+      ide.findInFilesDialog.AddProjectItem(prj);
+      ide.findInFilesDialog.mode = FindInFilesMode::project;
+      ide.findInFilesDialog.currentDirectory = prj.topNode.path;
 
       if(!prj.Save(prj.filePath))
       {
@@ -453,6 +456,9 @@ class QuickProjectDialog : Window
          } 
 
          workspace.projects.Add(project);
+         ide.findInFilesDialog.AddProjectItem(project);
+         ide.findInFilesDialog.mode = FindInFilesMode::project;
+         ide.findInFilesDialog.currentDirectory = project.topNode.path;
 
          // *** Don't set this directly on project, it must be set on top ProjectNode ***
          project.topNode.configurations = { [ debug, release ] };
