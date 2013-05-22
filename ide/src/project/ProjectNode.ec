@@ -982,6 +982,17 @@ private:
 
    ProjectNode FindByFullPath(char * path, bool includeResources)
    {
+      if(files)
+      {
+         char name[MAX_FILENAME];
+         GetLastDirectory(path, name);
+         return InternalFindByFullPath(path, includeResources, name);
+      }
+      return null;
+   }
+
+   ProjectNode InternalFindByFullPath(char * path, bool includeResources, char * lastDirName)
+   {
       ProjectNode result = null;
       if(files)
       {
@@ -989,7 +1000,9 @@ private:
          {
             if(includeResources || child.type != resources)
             {
-               if(child.type != folder && child.name)
+               if(child.type != file)
+                  result = child.InternalFindByFullPath(path, includeResources, lastDirName);
+               else if(child.name && !strcmpi(lastDirName, child.name))
                {
                   char p[MAX_LOCATION];
                   child.GetFullFilePath(p);
@@ -999,7 +1012,6 @@ private:
                      break;
                   }
                }
-               result = child.FindByFullPath(path, includeResources);
                if(result)
                   break;
             }
@@ -1093,51 +1105,54 @@ private:
    ProjectNode Add(Project project, char * filePath, ProjectNode after, NodeTypes type, NodeIcons icon, bool checkIfExists)
    {
       ProjectNode node = null;
-      char temp[MAX_LOCATION];
-      Map<Platform, SetBool> exclusionInfo { };
-
-      GetLastDirectory(filePath, temp);
-      //if(!checkIfExists || !project.topNode.Find(temp, false))
-      
-      // TOCHECK: Shouldn't this apply either for all configs or none?
-      CollectExclusionInfo(exclusionInfo, project.config);
-      if(!checkIfExists || !project.topNode.FindSameNameConflict(temp, false, exclusionInfo, project.config))
+      if(!project.topNode.FindByFullPath(filePath, true))
       {
-         // Do the check for folder in the same parent or resource files only here
-         if(type == folder || !checkIfExists)
-         {
-            for(node : files)
-            {
-               if(node.name && !strcmpi(node.name, temp))
-                  return null;
-            }
-         }
+         char temp[MAX_LOCATION];
+         Map<Platform, SetBool> exclusionInfo { };
 
-         node = ProjectNode { parent = this, indent = indent + 1, type = type, icon = icon, name = CopyString(temp) };
-         if(type != file)
+         GetLastDirectory(filePath, temp);
+         //if(!checkIfExists || !project.topNode.Find(temp, false))
+
+         // TOCHECK: Shouldn't this apply either for all configs or none?
+         CollectExclusionInfo(exclusionInfo, project.config);
+         if(!checkIfExists || !project.topNode.FindSameNameConflict(temp, false, exclusionInfo, project.config))
          {
-            node.files = { }; 
-            node.nodeType = folder;
-         }
-         if(type != folder)
-         {
-            if(filePath)
+            // Do the check for folder in the same parent or resource files only here
+            if(type == folder || !checkIfExists)
             {
-               StripLastDirectory(filePath, temp);
-               MakePathRelative(temp, project.topNode.path, temp);
-               node.path = CopyUnixPath(temp);
+               for(node : files)
+               {
+                  if(node.name && !strcmpi(node.name, temp))
+                     return null;
+               }
             }
-            node.nodeType = file;
+
+            node = ProjectNode { parent = this, indent = indent + 1, type = type, icon = icon, name = CopyString(temp) };
+            if(type != file)
+            {
+               node.files = { };
+               node.nodeType = folder;
+            }
+            if(type != folder)
+            {
+               if(filePath)
+               {
+                  StripLastDirectory(filePath, temp);
+                  MakePathRelative(temp, project.topNode.path, temp);
+                  node.path = CopyUnixPath(temp);
+               }
+               node.nodeType = file;
+            }
+            else
+            {
+               strcpy(temp, (type == NodeTypes::project) ? "" : path);
+               PathCatSlash(temp, node.name);
+               node.path = CopyString(temp);
+            }
+            files.Insert(after, node);
          }
-         else
-         {
-            strcpy(temp, (type == NodeTypes::project) ? "" : path);
-            PathCatSlash(temp, node.name);
-            node.path = CopyString(temp);
-         }
-         files.Insert(after, node);
+         delete exclusionInfo;
       }
-      delete exclusionInfo;
       return node;
    }
 
@@ -1360,7 +1375,7 @@ private:
                strcpy(tempPath, path);
                PathCatSlash(tempPath, name);
             }
-            ReplaceSpaces(modulePath, tempPath);
+            ReplaceUnwantedMakeChars(modulePath, tempPath);
             sprintf(s, "%s%s%s%s", ts.a, useRes ? "$(RES)" : "", modulePath, ts.b);
             items.Add(CopyString(s));
          }
@@ -1371,8 +1386,8 @@ private:
                   !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
             {
                char modulePath[MAX_LOCATION];
-               ReplaceSpaces(modulePath, path);
-               ReplaceSpaces(moduleName, name);
+               ReplaceUnwantedMakeChars(modulePath, path);
+               ReplaceUnwantedMakeChars(moduleName, name);
                sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
                items.Add(CopyString(s));
             }
@@ -1410,7 +1425,7 @@ private:
                bool collision;
                NameCollisionInfo info;
                count++;
-               ReplaceSpaces(moduleName, name);
+               ReplaceUnwantedMakeChars(moduleName, name);
                StripExtension(moduleName);
                info = namesInfo[moduleName];
                collision = info ? info.IsExtensionColliding(extension) : false;
@@ -1545,7 +1560,7 @@ private:
                   GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
 
                   f.Printf(" -c %s%s.%s -o $@\n",
-                     modulePath, moduleName, extension, moduleName);
+                     modulePath, moduleName, extension);
                   if(ifCount) f.Puts("endif\n");
                   f.Puts("\n");
 #if 0
@@ -1781,7 +1796,7 @@ private:
             f.Puts(" $(FVISIBILITY)");
 
             f.Printf(" -c %s%s.%s -o $@ -symbols $(OBJ)\n",
-               modulePath, moduleName, extension, moduleName);
+               modulePath, moduleName, extension);
             if(ifCount) f.Puts("endif\n");
             f.Puts("\n");
          }
@@ -1963,11 +1978,10 @@ private:
                GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
 
                if(!strcmpi(extension, "ec"))
-                  f.Printf(" $(FVISIBILITY) -c $(OBJ)%s.c -o $@\n", moduleName, moduleName);
+                  f.Printf(" $(FVISIBILITY) -c $(OBJ)%s.c -o $@\n", moduleName);
                else
                   f.Printf(" -c %s%s.%s -o $@\n",
-                        modulePath, moduleName, !strcmpi(extension, "ec") ? "c" : extension, moduleName,
-                        collision ? "." : "", collision ? extension : "");
+                        modulePath, moduleName, !strcmpi(extension, "ec") ? "c" : extension);
             }
             if(ifCount) f.Puts("endif\n");
             f.Puts("\n");
@@ -2038,12 +2052,12 @@ private:
                   strcpy(tempPath, child.path);
                   PathCatSlash(tempPath, child.name);
                }
-               ReplaceSpaces(resPath, tempPath);
+               ReplaceUnwantedMakeChars(resPath, tempPath);
                if(strchr(tempPath, ' '))
                   quotes = "\"";
                else
                   quotes = "";
-               f.Printf(" %s%s%s%s", quotes, useRes ? "$(RES)" : "", tempPath, quotes);
+               f.Printf(" %s%s%s%s", quotes, useRes ? "$(RES)" : "", resPath, quotes);
                count++;
             }
             if(count == 10 || (count > 0 && (ts || !child.next)))
@@ -2301,12 +2315,12 @@ private:
 
    void GetTargets(ProjectConfig prjConfig, Map<String, NameCollisionInfo> namesInfo, char * objDir, DynamicString output)
    {
+      char moduleName[MAX_FILENAME];
       if(type == file)
       {
          bool headerAltFailed = false;
          bool collision;
          char extension[MAX_EXTENSION];
-         char moduleName[MAX_FILENAME];
          NameCollisionInfo info;
          Project prj = property::project;
          Map<String, String> headerToSource { [ { "eh", "ec" }, { "h", "c" }, { "hh", "cc" }, { "hpp", "cpp" }, { "hxx", "cxx" } ] };
@@ -2358,6 +2372,32 @@ private:
             output.concat(moduleName);
             output.concat("\"");
          }
+      }
+      else if(type == project && ContainsFilesWithExtension("ec"))
+      {
+         Project prj = property::project;
+
+         strcpy(moduleName, prj.moduleName);
+         strcat(moduleName, ".main.ec");
+         output.concat(" \"");
+         output.concat(objDir);
+         output.concat("/");
+         output.concat(moduleName);
+         output.concat("\"");
+
+         ChangeExtension(moduleName, "c", moduleName);
+         output.concat(" \"");
+         output.concat(objDir);
+         output.concat("/");
+         output.concat(moduleName);
+         output.concat("\"");
+
+         ChangeExtension(moduleName, "o", moduleName);
+         output.concat(" \"");
+         output.concat(objDir);
+         output.concat("/");
+         output.concat(moduleName);
+         output.concat("\"");
       }
       else if(files)
       {

@@ -171,10 +171,10 @@ class NodeProperties : Window
 
    bool OnKeyDown(Key key, unichar ch)
    {
-      if(key == escape || (SmartKey)key == enter)
+      if(key == escape || key.code == enter || key.code == keyPadEnter)
       {
          StopEditing();
-         if((SmartKey)key == enter)
+         if(key.code == enter || key.code == keyPadEnter)
          {
             if(mode == newFile)
             {
@@ -182,7 +182,7 @@ class NodeProperties : Window
                Window document;
                node.GetFullFilePath(filePath);
                if(FileExists(filePath))
-                  ide.projectView.OpenNode(node);
+                  ide.projectView.OpenNode(node, key.ctrl && key.shift);
                else
                {
                   document = (Window)NewCodeEditor(ide, normal, false);
