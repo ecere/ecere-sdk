@@ -739,6 +739,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument *  templateArgs;
 struct __ecereNameSpace__ecere__com__Class * templateClass;
 struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
+unsigned int isInstanceClass;
 } __attribute__ ((gcc_struct));
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
@@ -1126,7 +1127,7 @@ static struct __ecereNameSpace__ecere__com__Instance * privateModule;
 
 struct __ecereNameSpace__ecere__sys__OldList _excludedSymbols = 
 {
-0, 0, 0, (unsigned int)&((struct Symbol *)(void *)0)->left, 0
+0, 0, 0, (unsigned int)&((struct Symbol *)(void * )0)->left, 0
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
@@ -1509,7 +1510,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&parentMemberDefine->dat
 
 extern void FreeType(struct Type * type);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
 
@@ -2727,7 +2728,9 @@ SetOutputFile(defaultSymFile);
 }
 }
 if(!valid)
+{
 printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Syntax:\n   ecp [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n", (((void *)0))));
+}
 else
 {
 char command[3075LL];

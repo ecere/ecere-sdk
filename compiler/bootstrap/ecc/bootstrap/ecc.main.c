@@ -306,6 +306,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument *  templateArgs;
 struct __ecereNameSpace__ecere__com__Class * templateClass;
 struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
+unsigned int isInstanceClass;
 } __attribute__ ((gcc_struct));
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
@@ -501,7 +502,7 @@ void __ecereDestroyModuleInstances_ecc();
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com____ecere_COM_Initialize(unsigned int guiApp, int argc, char *  argv[]);
 
-extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_LoadStatic(struct __ecereNameSpace__ecere__com__Instance * fromModule, char *  name, int importAccess, unsigned int (* )(struct __ecereNameSpace__ecere__com__Instance * module), unsigned int (* )(struct __ecereNameSpace__ecere__com__Instance * module));
+extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_LoadStatic(struct __ecereNameSpace__ecere__com__Instance * fromModule, char *  name, int importAccess, unsigned int (*  Load)(struct __ecereNameSpace__ecere__com__Instance * module), unsigned int (*  Unload)(struct __ecereNameSpace__ecere__com__Instance * module));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
 

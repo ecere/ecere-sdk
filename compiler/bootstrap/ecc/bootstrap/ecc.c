@@ -399,6 +399,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument *  templateArgs;
 struct __ecereNameSpace__ecere__com__Class * templateClass;
 struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
+unsigned int isInstanceClass;
 } __attribute__ ((gcc_struct));
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
@@ -478,7 +479,7 @@ static struct ModuleImport * mainModule;
 
 struct __ecereNameSpace__ecere__sys__OldList _excludedSymbols = 
 {
-0, 0, 0, (unsigned int)&((struct Symbol *)(void *)0)->left, 0
+0, 0, 0, (unsigned int)&((struct Symbol *)(void * )0)->left, 0
 };
 
 static struct __ecereNameSpace__ecere__sys__OldList defines, imports;
@@ -1024,7 +1025,9 @@ SetOutputFile(defaultOutputFile);
 }
 }
 if(!valid)
+{
 printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Syntax:\n   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n", (((void *)0))));
+}
 else
 {
 struct __ecereNameSpace__ecere__com__Instance * cppOutput;
@@ -1251,7 +1254,7 @@ SetSymbolsDir((((void *)0)));
 OutputIntlStrings();
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 

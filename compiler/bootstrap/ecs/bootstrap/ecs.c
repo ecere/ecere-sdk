@@ -444,6 +444,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument *  templateArgs;
 struct __ecereNameSpace__ecere__com__Class * templateClass;
 struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
+unsigned int isInstanceClass;
 } __attribute__ ((gcc_struct));
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
@@ -518,6 +519,8 @@ struct __ecereNameSpace__ecere__com__Method * method;
 
 static unsigned int i18n;
 
+static unsigned int outputPot;
+
 static int targetPlatform;
 
 static int targetBits;
@@ -544,7 +547,7 @@ struct __ecereNameSpace__ecere__sys__OldList _imports =
 
 struct __ecereNameSpace__ecere__sys__OldList _excludedSymbols = 
 {
-0, 0, 0, (unsigned int)&((struct Symbol *)(void *)0)->left, 0
+0, 0, 0, (unsigned int)&((struct Symbol *)(void * )0)->left, 0
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
@@ -2231,8 +2234,6 @@ extern void SetPrivateModule(struct __ecereNameSpace__ecere__com__Instance * mod
 
 extern char *  GetSymbolsDir(void);
 
-extern char *  __ecereNameSpace__ecere__sys__SearchString(char *  buffer, int start, char *  subStr, unsigned int matchCase, unsigned int matchWord);
-
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
 
 struct __ecereNameSpace__ecere__com__IteratorPointer;
@@ -2364,6 +2365,7 @@ int c;
 unsigned int valid = 0x1;
 char * output = (((void *)0));
 
+outputPot = 0x0;
 targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
 targetBits = GetHostBits();
 for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)
@@ -2403,6 +2405,8 @@ targetPlatform = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PT
 else
 valid = 0x0;
 }
+else if(!strcmp(arg, "-outputpot"))
+outputPot = 0x1;
 else if(!strcmp(arg, "-console"))
 isConsole = 0x1;
 else if(!strcmp(arg, "-dynamiclib"))
@@ -2427,7 +2431,9 @@ valid = 0x0;
 if(!output)
 valid = 0x0;
 if(!valid)
+{
 printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n", (((void *)0))));
+}
 else
 {
 int c;
@@ -2453,7 +2459,6 @@ SetMainModule(mainModule);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_imports, mainModule);
 {
 char * symbolsDir = GetSymbolsDir();
-unsigned int outputPot = symbolsDir && __ecereNameSpace__ecere__sys__SearchString(symbolsDir, 0, "release.", 0x0, 0x0);
 struct __ecereNameSpace__ecere__com__Instance * intlStrings = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_String___);
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, intlStrings), it);
 
@@ -2710,7 +2715,7 @@ FreeGlobalData(&globalData);
 SetSymbolsDir((((void *)0)));
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
 
