@@ -195,14 +195,11 @@ public class PathBox : CommonControl
             DataBox dataBox = pathBoxDataBox;
             ListBox listBox;
             DirectoriesBox dirsBox;
-            browsePath[0] = fileName [0] = '\0';
+            browsePath[0] = fileName[0] = '\0';
+            strncpy(browsePath, browseDialog.filePath, MAX_LOCATION); browsePath[MAX_LOCATION-1] = '\0';
             if((dirsBox = pathBoxDirsBox) && dirsBox.baseBrowsePath && dirsBox.baseBrowsePath[0])
-            {
-               strncpy(browsePath, dirsBox.baseBrowsePath, MAX_LOCATION); browsePath[MAX_LOCATION-1] = '\0';
-               PathCat(browsePath, editBox.contents);
-            }
-            else
-               strncpy(browsePath, editBox.contents, MAX_LOCATION); browsePath[MAX_LOCATION-1] = '\0';
+               PathCat(browsePath, dirsBox.baseBrowsePath);
+            PathCat(browsePath, editBox.contents);
             if(browsePath[0])
             {
                GetLastDirectory(browsePath, fileName);
