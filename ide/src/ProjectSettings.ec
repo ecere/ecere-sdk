@@ -980,13 +980,11 @@ static void FixPathOnPathBoxNotifyModified(PathBox pathBox)
       while((ch = *s++)) { if(!strchr(chars, ch)) *o++ = ch; }
       *o = '\0';
    }
-   len = strlen(path);
-   if(len>1 && path[len-1] == DIR_SEP)
-      path[--len] = '\0';
 #ifdef __WIN32__
    if(volumePath && path[0])
       path[1] = ':';
 #endif
+   len = strlen(path);
    if(len && !(path[0] == '.' && (len == 1 || (len == 2 && path[1] == DIR_SEP) || (len > 1 && path[1] == '.'))))
    {
       char cwdBackup[MAX_LOCATION];
@@ -1002,7 +1000,10 @@ static void FixPathOnPathBoxNotifyModified(PathBox pathBox)
          MakePathRelative(path, project.topNode.path, path);
       if(!path[0])
          strcpy(path, ".");
+      len = strlen(path);
    }
+   if(len>1 && path[len-1] == DIR_SEP)
+      path[--len] = '\0';
    pathBox.path = path;
 }
 

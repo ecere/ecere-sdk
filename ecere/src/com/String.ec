@@ -623,6 +623,7 @@ public char * PathCat(char * string, char * addedPath)
 
 public char * MakePathRelative(char * path, char * to, char * destination)
 {
+   int len;
    // Don't process empty paths
    if(!path[0])
       memmove(destination, path, strlen(path)+1);
@@ -659,6 +660,9 @@ public char * MakePathRelative(char * path, char * to, char * destination)
          PathCat(destination, pathPart);
       }
    }
+   len = strlen(destination);
+   if(len>1 && (destination[len-1] == '/' || destination[len-1] == '\\'))
+      destination[--len] = '\0';
    return destination;
 }
 
