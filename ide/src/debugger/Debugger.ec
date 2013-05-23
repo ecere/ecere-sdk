@@ -2708,13 +2708,6 @@ class Debugger
                      GoToStackFrameLine(activeFrameLevel, true);
                      ideMainFrame.Activate();   // TOFIX: ide.Activate() is not reliable (app inactive)
                      ide.Update(null);
-                     if(bp.type == BreakpointType::runToCursor)
-                     {
-                        if(symbols)
-                           GdbCommand(false, "-break-delete %d", bp.bp.number);
-                        delete bpRunToCursor;
-                        bpRunToCursor = null;
-                     }
                   }
                   else
                   {
@@ -2730,6 +2723,13 @@ class Debugger
       }
       else
          ide.outputView.debugBox.Logf("Debugger Error: Breakpoint hit could not match breakpoint instance\n");
+
+      if(bpRunToCursor)
+      {
+         if(symbols && bpRunToCursor.inserted)
+            GdbCommand(false, "-break-delete %d", bpRunToCursor.bp.number);
+         delete bpRunToCursor;
+      }
    }
 
    void GdbThreadExit()
