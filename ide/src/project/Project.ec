@@ -1641,7 +1641,8 @@ private:
                {
                   if(linking || compiling || precompiling)
                   {
-                     char * colon = strstr(line, ":"); //, * bracket;
+                     char * start = inFileIncludedFrom ? inFileIncludedFrom + strlen(stringInFileIncludedFrom) : from ? from + strlen(stringFrom) : line;
+                     char * colon = strstr(start, ":"); //, * bracket;
                      if(colon && (colon[1] == '/' || colon[1] == '\\'))
                         colon = strstr(colon + 1, ":");
                      if(colon)
@@ -1650,7 +1651,6 @@ private:
                         char moduleName[MAX_LOCATION], temp[MAX_LOCATION];
                         char * pointer;
                         char * error;
-                        char * start = inFileIncludedFrom ? inFileIncludedFrom + strlen(stringInFileIncludedFrom) : from ? from + strlen(stringFrom) : line;
                         int len = (int)(colon - start);
                         char ext[MAX_EXTENSION];
                         len = Min(len, MAX_LOCATION-1);
