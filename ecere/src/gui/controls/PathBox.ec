@@ -26,14 +26,14 @@ public class FilePath : String
 {
    Window OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)
    {
-      DirectoriesBox dirsBox;
       PathBox pathBox
       {
          dataBox, borderStyle = 0, anchor = { 0, 0, 0, 0 },
          typeExpected = any;
          path = this;
       };
-      if((dirsBox = pathBoxDirsBox))
+      DirectoriesBox dirsBox = pathBoxDirsBox;
+      if(dirsBox)
          pathBox.browseDialog = dirsBox.browseDialog;
       // TOCHECK: compiler issues?
       /*else if(userData && eClass_IsDerived(userData._class, class(FileDialog)))
@@ -49,8 +49,8 @@ public class FilePath : String
       bool changed = false;
       if(pathBox.modifiedDocument)
       {
-         DirectoriesBox dirsBox;
-         if((dirsBox = pathBoxDirsBox))
+         DirectoriesBox dirsBox = pathBoxDirsBox;
+         if(dirsBox)
             dirsBox.NotifyPathBoxModified(dirsBox.master, dirsBox, pathBox);
          String::OnFree();
          changed = ((bool (*)(void *, void *, const char *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetDataFromString])(_class, &this, pathBox.systemPath);
@@ -68,14 +68,14 @@ public class DirPath : FilePath
 {
    Window OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)
    {
-      DirectoriesBox dirsBox;
       PathBox pathBox
       {
          dataBox, borderStyle = 0, anchor = { 0, 0, 0, 0 },
          typeExpected = directory;
          path = this;
       };
-      if((dirsBox = pathBoxDirsBox))
+      DirectoriesBox dirsBox = pathBoxDirsBox;
+      if(dirsBox)
          pathBox.browseDialog = dirsBox.browseDialog;
       // TOCHECK: compiler issues? (same)
       /*else if(userData && eClass_IsDerived(userData._class, class(FileDialog)))
@@ -91,8 +91,8 @@ public class DirPath : FilePath
       bool changed = false;
       if(pathBox.modifiedDocument)
       {
-         DirectoriesBox dirsBox;
-         if((dirsBox = pathBoxDirsBox))
+         DirectoriesBox dirsBox = pathBoxDirsBox;
+         if(dirsBox)
             dirsBox.NotifyPathBoxModified(dirsBox.master, dirsBox, pathBox);
          String::OnFree();
          changed = ((bool (*)(void *, void *, const char *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetDataFromString])(_class, &this, pathBox.systemPath);
@@ -154,8 +154,8 @@ public class PathBox : CommonControl
       bool NotifyModified(EditBox editBox)
       {
          PathBox pathBox = this;
-         DirectoriesBox dirsBox;
-         if((dirsBox = pathBoxDirsBox))
+         DirectoriesBox dirsBox = pathBoxDirsBox;
+         if(dirsBox)
             dirsBox.NotifyPathBoxModified(dirsBox.master, dirsBox, this);
          return NotifyModified(master, this);
       }
@@ -188,45 +188,34 @@ public class PathBox : CommonControl
       {
          if(browseDialog)
          {
-            char * browsePath = new char[MAX_LOCATION];
-            char * fileName = new char[MAX_LOCATION];
+            char browsePath[MAX_LOCATION];
             char * baseBrowsePath = null;
             PathBox pathBox = this;
             DataBox dataBox = pathBoxDataBox;
             ListBox listBox;
-            DirectoriesBox dirsBox;
-            browsePath[0] = fileName[0] = '\0';
+            DirectoriesBox dirsBox = pathBoxDirsBox;
+            char * ebContents = editBox.contents;
+            String backFilePath = CopyString(browseDialog.filePath);
+
+            browsePath[0] = '\0';
             strncpy(browsePath, browseDialog.filePath, MAX_LOCATION); browsePath[MAX_LOCATION-1] = '\0';
-            if((dirsBox = pathBoxDirsBox) && dirsBox.baseBrowsePath && dirsBox.baseBrowsePath[0])
+            if(dirsBox && dirsBox.baseBrowsePath && dirsBox.baseBrowsePath[0])
                PathCat(browsePath, dirsBox.baseBrowsePath);
-            PathCat(browsePath, editBox.contents);
-            if(browsePath[0])
-            {
-               GetLastDirectory(browsePath, fileName);
+            PathCat(browsePath, ebContents);
+            browseDialog.filePath = (ebContents && ebContents[0]) ? browsePath : "";
+            if(pathBox.typeExpected == directory && browsePath[0] && FileExists(browsePath).isDirectory)
                StripLastDirectory(browsePath, browsePath);
-            }
-            else
+            while(browsePath[0] && !FileExists(browsePath).isDirectory)
+               StripLastDirectory(browsePath, browsePath);
+            if(!browsePath[0])
             {
-               char * path = new char[MAX_LOCATION];
+               char path[MAX_LOCATION];
                LocateModule(null, path);
                StripLastDirectory(path, path);
                strncpy(browsePath, path, MAX_LOCATION); browsePath[MAX_LOCATION-1] = '\0';
-               delete path;
             }
-            while(browsePath[0] && !FileExists(browsePath).isDirectory)
-            {
-               char * temp = new char[MAX_LOCATION];
-               GetLastDirectory(browsePath, temp);
-               PathCat(temp, fileName);
-               strcpy(fileName, temp);
-               StripLastDirectory(browsePath, browsePath);
-               delete temp;
-            }
-            browseDialog.filePath = fileName;
             browseDialog.currentDirectory = browsePath;
             browseDialog.master = rootWindow;
-            delete browsePath;
-            delete fileName;
 
             incref this;
             if(dirsBox) dirsBox.browsing = true;
@@ -243,6 +232,9 @@ public class PathBox : CommonControl
                if((listBox = pathBoxListBox))
                   listBox.StopEditing(true);
             }
+            else
+               browseDialog.filePath = backFilePath;
+            delete backFilePath;
             if(dirsBox) dirsBox.browsing = false;
             delete this;
          }
