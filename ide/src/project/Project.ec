@@ -591,7 +591,7 @@ void OutputCleanActions(File f, char * name, int parts)
       f.Printf("\t$(call rmq,$(%s))\n", name);
 }
 
-void OutputListOption(File f, char * option, Array<String> list, ListOutputMethod method, bool noSpace)
+void OutputListOption(File f, char * option, Array<String> list, ListOutputMethod method, bool noSpace, bool noDash)
 {
    if(list.count)
    {
@@ -601,7 +601,7 @@ void OutputListOption(File f, char * option, Array<String> list, ListOutputMetho
       {
          if(method == lineEach)
             f.Puts(" \\\n\t");
-         f.Printf(" -%s", option);
+         f.Printf(" %s%s", noDash ? "" : "-", option);
          if(noSpace)
             OutputNoSpace(f, item);
          else
@@ -2481,21 +2481,21 @@ private:
             if(compiler.includeDirs && compiler.includeDirs.count)
             {
                f.Puts("\nCFLAGS +=");
-               OutputListOption(f, gccCompiler ? "isystem " : "I", compiler.includeDirs, lineEach, true);
+               OutputListOption(f, gccCompiler ? "isystem " : "I", compiler.includeDirs, lineEach, true, false);
                f.Puts("\n");
             }
             if(compiler.prepDirectives && compiler.prepDirectives.count)
             {
                f.Puts("\nCFLAGS +=");
-               OutputListOption(f, "D", compiler.prepDirectives, inPlace, true);
+               OutputListOption(f, "D", compiler.prepDirectives, inPlace, true, false);
                f.Puts("\n");
             }
             if(compiler.libraryDirs && compiler.libraryDirs.count)
             {
                f.Puts("\nLDFLAGS +=");
-               OutputListOption(f, "L", compiler.libraryDirs, lineEach, true);
+               OutputListOption(f, "L", compiler.libraryDirs, lineEach, true, false);
                // We would need a bool option to know whether we want to add to rpath as well...
-               // OutputListOption(f, "Wl,-rpath ", compiler.libraryDirs, lineEach, true);
+               // OutputListOption(f, "Wl,-rpath ", compiler.libraryDirs, lineEach, true, false);
                f.Puts("\n");
             }
             if(compiler.excludeLibs && compiler.excludeLibs.count)
@@ -2510,13 +2510,13 @@ private:
             if(compiler.compilerFlags && compiler.compilerFlags.count)
             {
                f.Puts("\nCFLAGS +=");
-               OutputListOption(f, "", compiler.compilerFlags, inPlace, true);
+               OutputListOption(f, "", compiler.compilerFlags, inPlace, true, true);
                f.Puts("\n");
             }
             if(compiler.linkerFlags && compiler.linkerFlags.count)
             {
                f.Puts("\nLDFLAGS +=");
-               OutputListOption(f, "Wl,", compiler.linkerFlags, inPlace, true);
+               OutputListOption(f, "Wl,", compiler.linkerFlags, inPlace, true, false);
                f.Puts("\n");
             }
             f.Puts("\n");
@@ -2908,17 +2908,13 @@ private:
                      {
                         f.Puts(" \\\n\t ");
                         for(s : projectPlatformOptions.options.compilerOptions)
-                        {
                            f.Printf(" %s", s);
-                        }
                      }
                      if(configPlatformOptions && configPlatformOptions.options.compilerOptions && configPlatformOptions.options.compilerOptions.count)
                      {
                         f.Puts(" \\\n\t ");
                         for(s : configPlatformOptions.options.compilerOptions)
-                        {
                            f.Printf(" %s", s);
-                        }
                      }
                      f.Puts("\n");
                      f.Puts("\n");
@@ -2981,9 +2977,9 @@ private:
                      {
                         f.Puts("OFLAGS +=");
                         if(configPlatformOptions && configPlatformOptions.options.libraryDirs)
-                           OutputListOption(f, "L", configPlatformOptions.options.libraryDirs, lineEach, true);
+                           OutputListOption(f, "L", configPlatformOptions.options.libraryDirs, lineEach, true, false);
                         if(projectPlatformOptions && projectPlatformOptions.options.libraryDirs)
-                           OutputListOption(f, "L", projectPlatformOptions.options.libraryDirs, lineEach, true);
+                           OutputListOption(f, "L", projectPlatformOptions.options.libraryDirs, lineEach, true, false);
                         f.Puts("\n");
                      }
 
@@ -3015,6 +3011,26 @@ private:
                for(c = 0; c < ifCount; c++)
                   f.Puts("endif\n");
             }
+            f.Puts("\n");
+         }
+
+         if((config && config.options && config.options.compilerOptions && config.options.compilerOptions.count) ||
+               (options && options.compilerOptions && options.compilerOptions.count))
+         {
+            f.Puts("CFLAGS +=");
+            f.Puts(" \\\n\t");
+
+            if(config && config.options && config.options.compilerOptions && config.options.compilerOptions.count)
+            {
+               for(s : config.options.compilerOptions)
+                  f.Printf(" %s", s);
+            }
+            if(options && options.compilerOptions && options.compilerOptions.count)
+            {
+               for(s : options.compilerOptions)
+                  f.Printf(" %s", s);
+            }
+            f.Puts("\n");
             f.Puts("\n");
          }
 
@@ -3060,9 +3076,9 @@ private:
                         f.Printf(",%s", s);
                }
             }
+            f.Puts("\n");
+            f.Puts("\n");
          }
-         f.Puts("\n");
-         f.Puts("\n");
 
          f.Puts("CECFLAGS += -cpp $(_CPP)");
          f.Puts("\n");
@@ -3076,9 +3092,9 @@ private:
             f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
             f.Puts("OFLAGS +=");
             if(config && config.options && config.options.libraryDirs)
-               OutputListOption(f, "L", config.options.libraryDirs, lineEach, true);
+               OutputListOption(f, "L", config.options.libraryDirs, lineEach, true, false);
             if(options && options.libraryDirs)
-               OutputListOption(f, "L", options.libraryDirs, lineEach, true);
+               OutputListOption(f, "L", options.libraryDirs, lineEach, true, false);
             f.Puts("\n");
             f.Puts("endif\n");
             f.Puts("\n");
@@ -3478,13 +3494,11 @@ private:
                else
                   f.Printf("CUSTOM%d_%s =", v-1, variableName);
                f.Puts(&v ? &v : "");
-               f.Puts("\n");
-               f.Puts("\n");
+               f.Puts("\n\n");
                break;
             }
          }
       }
-      f.Puts("\n");
    }
 
    void MatchProjectAndConfigPlatformOptions(ProjectConfig config, Platform platform,
