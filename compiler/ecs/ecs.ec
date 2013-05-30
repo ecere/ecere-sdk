@@ -262,9 +262,7 @@ static void WriteMain(char * fileName)
          strcpy(projectName, mainModuleName);
          StripExtension(projectName);
       }
-      ChangeCh(mainModuleName, '.', '_');
-      ChangeCh(mainModuleName, '-', '_');
-      ChangeCh(mainModuleName, ' ', '_');
+      FixModuleName(mainModuleName);
 
       if(targetPlatform == win32 && !isConsole && !isStaticLibrary && !isDynamicLibrary)
       {
@@ -410,10 +408,7 @@ static void WriteMain(char * fileName)
       {
          char moduleName[1024];
          strcpy(moduleName, defModule.name);
-         ChangeCh(moduleName, ' ', '_');
-         ChangeCh(moduleName, '-', '_');
-         ChangeCh(moduleName, '.', '_');
-
+         FixModuleName(moduleName);
          f.Printf("void __ecereRegisterModule_%s(Module module);\n", moduleName);
          f.Printf("void __ecereUnregisterModule_%s(Module module);\n", moduleName);
          if(defModule.globalInstance)
@@ -521,10 +516,7 @@ static void WriteMain(char * fileName)
          {
             char moduleName[1024];
             strcpy(moduleName, defModule.name);
-            ChangeCh(moduleName, ' ', '_');
-            ChangeCh(moduleName, '-', '_');
-            ChangeCh(moduleName, '.', '_');
-
+            FixModuleName(moduleName);
             f.Printf("   __ecereRegisterModule_%s(module);\n", moduleName);
          }
          f.Printf("\n");
@@ -672,10 +664,7 @@ static void WriteMain(char * fileName)
                char moduleName[1024];
                if(!strcmp(defModule.name, "i18n")) continue;
                strcpy(moduleName, defModule.name);
-               ChangeCh(moduleName, ' ', '_');
-               ChangeCh(moduleName, '-', '_');
-               ChangeCh(moduleName, '.', '_');
-
+               FixModuleName(moduleName);
                f.Printf("   __ecereCreateModuleInstances_%s();\n", moduleName);
             }
 
@@ -727,9 +716,7 @@ static void WriteMain(char * fileName)
                   char moduleName[1024];
                   if(!strcmp(defModule.name, "i18n")) { destroyI18n = true; continue; }
                   strcpy(moduleName, defModule.name);
-                  ChangeCh(moduleName, ' ', '_');
-                  ChangeCh(moduleName, '-', '_');
-                  ChangeCh(moduleName, '.', '_');
+                  FixModuleName(moduleName);
                   f.Printf("   __ecereDestroyModuleInstances_%s();\n", moduleName);
                }
 
@@ -755,9 +742,7 @@ static void WriteMain(char * fileName)
             {
                char moduleName[1024];
                strcpy(moduleName, defModule.name);
-               ChangeCh(moduleName, ' ', '_');
-               ChangeCh(moduleName, '-', '_');
-               ChangeCh(moduleName, '.', '_');
+               FixModuleName(moduleName);
                f.Printf("   __ecereUnregisterModule_%s(module);\n", moduleName);
             }
             f.Printf("\n");

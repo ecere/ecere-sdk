@@ -93,6 +93,14 @@ public void SetDefines(OldList * list) { defines = list; }
 bool outputLineNumbers = true;
 public void SetOutputLineNumbers(bool value) { outputLineNumbers = value; }
 
+public void FixModuleName(char *moduleName)
+{
+   ChangeCh(moduleName, '.', '_');
+   ChangeCh(moduleName, ' ', '_');
+   ChangeCh(moduleName, '-', '_');
+   ChangeCh(moduleName, '&', '_');
+}
+
 /*public Module GetPrivateModule()
 {
    return privateModule;

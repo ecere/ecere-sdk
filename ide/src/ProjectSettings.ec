@@ -960,30 +960,7 @@ static void FixPathOnPathBoxNotifyModified(PathBox pathBox)
 {
    int len;
    char path[MAX_LOCATION];
-#ifdef __WIN32__
-   bool volumePath = false;
-#endif
-   strcpy(path, pathBox.path);
-   TrimLSpaces(path, path);
-   TrimRSpaces(path, path);
-   MakeSystemPath(path);
-#ifdef __WIN32__
-   if(path[0] && path[1] == ':')
-   {
-      path[1] = '_';
-      volumePath = true;
-   }
-#endif
-   {
-      char * chars = "*|:\",<>?";
-      char ch, * s = path, * o = path;
-      while((ch = *s++)) { if(!strchr(chars, ch)) *o++ = ch; }
-      *o = '\0';
-   }
-#ifdef __WIN32__
-   if(volumePath && path[0])
-      path[1] = ':';
-#endif
+   ValidPathBufCopy(path, pathBox.path);
    len = strlen(path);
    if(len && !(path[0] == '.' && (len == 1 || (len == 2 && path[1] == DIR_SEP) || (len > 1 && path[1] == '.'))))
    {

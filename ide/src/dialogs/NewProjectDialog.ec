@@ -241,11 +241,13 @@ class NewProjectDialog : Window
       bool NotifyModified(EditBox editBox)
       {
          char name[MAX_FILENAME];
+         char tmp[MAX_FILENAME];
          char lastPart[MAX_LOCATION];
          char * text = editBox.contents;
 
          // drop leading path stuff that has no business here
-         GetLastDirectory(text, name);
+         GetLastDirectory(text, tmp);
+         ValidProjectNameBufCopy(name, tmp);
 
          GetLastDirectory(path, lastPart);
          if(name[0] && (!strcmp(path, lastPart) || !path[0] || !strcmp(this.name, lastPart)))
@@ -282,7 +284,11 @@ class NewProjectDialog : Window
    {
       char location[MAX_LOCATION];
       char lastPart[MAX_FILENAME];
-      char * text = pathBox.slashPath;
+      char * text;
+
+      BasicValidatePathBoxPath(pathBox);
+
+      text = pathBox.slashPath;
 
       //replacing this: NotifyUpdate = EditBoxUpdate;
       okBtn.disabled = !(text[0] && projectName.contents[0]);
@@ -599,5 +605,19 @@ class QuickProjectDialog : Window
    {
       okBtn.Activate();
       return true;
+   }
+}
+
+void ValidProjectNameBufCopy(char *output, char *input)
+{
+   strcpy(output, input);
+   TrimLSpaces(output, output);
+   TrimRSpaces(output, output);
+   {
+      // todo: support '&', '.' and ' ' in project name on windows so that it may be used by all platforms.
+      char * chars = "*|:\",<>?\\/&. ";
+      char ch, * s = output, * o = output;
+      while((ch = *s++)) { if(!strchr(chars, ch)) *o++ = ch; }
+      *o = '\0';
    }
 }

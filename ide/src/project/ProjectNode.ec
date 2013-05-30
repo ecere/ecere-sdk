@@ -497,7 +497,7 @@ private:
 
          if(dotMain)
          {
-            strcpy(buffer, project.moduleName);
+            ReplaceSpaces(buffer, project.moduleName);
             StripExtension(buffer);
             strcat(buffer, ".main.ec");
          }
@@ -2454,7 +2454,7 @@ private:
       {
          Project prj = property::project;
 
-         strcpy(moduleName, prj.moduleName);
+         ReplaceSpaces(moduleName, prj.moduleName);
          strcat(moduleName, ".main.ec");
          output.concat(" \"");
          output.concat(objDir);

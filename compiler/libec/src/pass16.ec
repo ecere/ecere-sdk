@@ -25,9 +25,7 @@ static void CreateInstancesBody()
       //strcpy(moduleName, outputFile);
       GetLastDirectory(outputFile, moduleName);
       StripExtension(moduleName);
-      ChangeCh(moduleName, ' ', '_');
-      ChangeCh(moduleName, '.', '_');
-      ChangeCh(moduleName, '-', '_');
+      FixModuleName(moduleName);
       sprintf(registerName, "__ecereCreateModuleInstances_%s", moduleName);
 
       declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), null);

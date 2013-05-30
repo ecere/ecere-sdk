@@ -289,9 +289,7 @@ void CreateRegisterModuleBody()
       GetLastDirectory(outputFile, moduleName);
       //strcpy(moduleName, argv[2]);
       StripExtension(moduleName);
-      ChangeCh(moduleName, '.', '_');
-      ChangeCh(moduleName, ' ', '_');
-      ChangeCh(moduleName, '-', '_');
+      FixModuleName(moduleName);
       sprintf(registerName, "__ecereRegisterModule_%s", moduleName);
 
       declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)),
@@ -326,9 +324,7 @@ void CreateRegisterModuleBody()
 
       GetLastDirectory(outputFile, moduleName);
       StripExtension(moduleName);
-      ChangeCh(moduleName, '.', '_');
-      ChangeCh(moduleName, ' ', '_');
-      ChangeCh(moduleName, '-', '_');
+      FixModuleName(moduleName);
       //strcpy(moduleName, argv[2]);
       sprintf(registerName, "__ecereUnregisterModule_%s", moduleName);
 

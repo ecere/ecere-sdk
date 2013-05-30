@@ -423,6 +423,8 @@ void ReplaceSpaces(char * output, char * source)
    for(c = 0, dc = 0; (ch = source[c]); c++, dc++)
    {
       if(ch == ' ') output[dc++] = '\\';
+      if(ch == '\"') output[dc++] = '\\';
+      if(ch == '&') output[dc++] = '\\';
       if(pch != '$')
       {
          if(ch == '(' || ch == ')') output[dc++] = '\\';

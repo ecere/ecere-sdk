@@ -783,7 +783,7 @@ class ProjectView : Window
                char moduleName[MAX_FILENAME];
                strcpy(fileName, prj.topNode.path);
                PathCatSlash(fileName, objDir.dir);
-               strcpy(moduleName, prj.moduleName);
+               ReplaceSpaces(moduleName, prj.moduleName);
                strcat(moduleName, ".main.ec");
                PathCatSlash(fileName, moduleName);
                if(FileExists(fileName))

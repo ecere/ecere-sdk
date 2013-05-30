@@ -125,6 +125,50 @@ char * CopyValidateMakefilePath(char * path)
    return copy;
 }
 
+void ValidPathBufCopy(char *output, char *input)
+{
+#ifdef __WIN32__
+   bool volumePath = false;
+#endif
+   strcpy(output, input);
+   TrimLSpaces(output, output);
+   TrimRSpaces(output, output);
+   MakeSystemPath(output);
+#ifdef __WIN32__
+   if(output[0] && output[1] == ':')
+   {
+      output[1] = '_';
+      volumePath = true;
+   }
+#endif
+   {
+      char * chars = "*|:\",<>?";
+      char ch, * s = output, * o = output;
+      while((ch = *s++)) { if(!strchr(chars, ch)) *o++ = ch; }
+      *o = '\0';
+   }
+#ifdef __WIN32__
+   if(volumePath && output[0])
+      output[1] = ':';
+#endif
+}
+
+void RemoveTrailingPathSeparator(char *path)
+{
+   int len;
+   len = strlen(path);
+   if(len>1 && path[len-1] == DIR_SEP)
+      path[--len] = '\0';
+}
+
+void BasicValidatePathBoxPath(PathBox pathBox)
+{
+   char path[MAX_LOCATION];
+   ValidPathBufCopy(path, pathBox.path);
+   RemoveTrailingPathSeparator(path);
+   pathBox.path = path;
+}
+
 CompilerConfig MakeDefaultCompiler(char * name, bool readOnly)
 {
    CompilerConfig defaultCompiler

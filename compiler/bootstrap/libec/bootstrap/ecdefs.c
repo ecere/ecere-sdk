@@ -1165,6 +1165,16 @@ void SetOutputLineNumbers(unsigned int value)
 outputLineNumbers = value;
 }
 
+extern void __ecereNameSpace__ecere__sys__ChangeCh(char *  string, char ch1, char ch2);
+
+void FixModuleName(char * moduleName)
+{
+__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '.', '_');
+__ecereNameSpace__ecere__sys__ChangeCh(moduleName, ' ', '_');
+__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
+__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '&', '_');
+}
+
 struct GlobalData
 {
 uintptr_t key;
@@ -1896,6 +1906,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetExcludedSymbols", "vo
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetImports", "void SetImports(ecere::sys::OldList * list)", SetImports, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetDefines", "void SetDefines(ecere::sys::OldList * list)", SetDefines, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetOutputLineNumbers", "void SetOutputLineNumbers(bool value)", SetOutputLineNumbers, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FixModuleName", "void FixModuleName(char * moduleName)", FixModuleName, module, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "GlobalData", "ecere::sys::BTNode", sizeof(struct GlobalData), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_GlobalData = class;
