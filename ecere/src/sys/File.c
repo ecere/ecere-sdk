@@ -383,7 +383,8 @@ void FILE_FileFixCase(char * file)
       char fileName[MAX_LOCATION];
       strcpy(fileName, name);
       __ecereMethod___ecereNameSpace__ecere__sys__EARFileSystem_FixCase(archive, fileName);
-      FILE_FileFixCase(archive);
+      if(archive[0] != ':')
+         FILE_FileFixCase(archive);
       sprintf(file, "<%s>%s", archive, fileName);
    }
    else
