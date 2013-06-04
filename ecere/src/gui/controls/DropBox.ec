@@ -209,6 +209,8 @@ public:
 
    property ListBox listBox { get { return listBox; } }
 
+   property int rowCount { get { return listBox.rowCount; } }
+
    // Notifications
    virtual bool Window::NotifySelect(DropBox dropBox, DataRow row, Modifiers mods);
    virtual bool Window::NotifyClose(DropBox dropBox);
