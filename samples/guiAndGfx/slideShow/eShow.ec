@@ -134,15 +134,23 @@ class SlideShow : Window
       }
    }
 
+   bool OnKeyHit(Key key, unichar ch)
+   {
+      switch(key)
+      {
+         case left: NextImage(-2); break;
+         case right: NextImage(2); break;
+         case pageDown: case down: NextImage(1); break;
+         case pageUp: case up: NextImage(-1); break;
+      }
+      return true;
+   }
+
    bool OnKeyDown(Key key, unichar ch)
    {
       switch(key)
       {
          case escape: Destroy(0); break;
-         case left: NextImage(-2); break;
-         case right: NextImage(2); break;
-         case pageDown: case down: NextImage(1); break;
-         case pageUp: case up: NextImage(-1); break;
          case space: direction ^=1; if(direction) timer.Start(); else timer.Stop(); break;
          case home: fileName = fileNames.first; NextImage(0); break;
          case end: fileName = fileNames.last; NextImage(0); break;
