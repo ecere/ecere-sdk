@@ -3206,7 +3206,8 @@ private:
             // If the window is disabled, stop looking in children (for acceptDisabled mode)
             if(!disabled)
             {
-               for(child = (last && last.parent == this) ? last.previous : children.last; child; child = child.prev)
+               bool isD = (last && last.IsDescendantOf(this)); // last.parent == this);  Fix for WSMS (#844)
+               for(child = isD ? (last.previous == children.first ? null : last.previous) : children.last; child; child = child.prev)
                {
                   if(child != statusBar && child.rootWindow == rootWindow)
                   {
@@ -3217,7 +3218,7 @@ private:
                }
                if(clickThru)
                {
-                  for(child = (last && last.parent == this) ? last.previous : children.last; child; child = child.prev)
+                  for(child = isD ? (last.previous == children.first ? null : last.previous) : children.last; child; child = child.prev)
                   {
                      if(child != statusBar && child.rootWindow == rootWindow)
                      {
@@ -4066,6 +4067,8 @@ private:
                            return false;
                         }
                         delete activateWindow;
+                        // Trouble with clickThrough, siblings and activation (Fix for nicktick scrolling, siblings/activation endless loops, #844)
+                        activate = false;
                      }
                      mods->isActivate = true;
                   }
