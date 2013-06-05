@@ -16,7 +16,7 @@ export AR      = $(GCC_PREFIX)ar
 export STRIP   = $(GCC_PREFIX)strip
 export ECP := $(call psep,$(EC_BINS)ecp$(HOST_E))
 export ECC := $(call psep,$(EC_BINS)ecc$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)
-export ECS := $(call psep,$(EC_BINS)ecs$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT),-outputpot,)
+export ECS := $(call psep,$(EC_BINS)ecs$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)
 export EAR := $(call psep,$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/ear$(HOST_E))
 ifdef WINDOWS_TARGET
 WINDRES := $(GCC_PREFIX)windres
