@@ -1544,7 +1544,7 @@ class ProjectView : Window
          if(colon && lookForLineNumber)
          {
             char * comma;
-            // MSVS Errors
+#if 0 // MSVS Errors -- todo fix this later
             char * par = RSearchString(line, "(", colon - line, true, false);
             if(par && strstr(par, ")"))
                colon = par;
@@ -1555,6 +1555,7 @@ class ProjectView : Window
                   /*if(*colon == '(')
                      break*/;
             }
+#endif
             lineNumber = atoi(colon + 1);
             /*
             comma = strchr(colon, ',');
