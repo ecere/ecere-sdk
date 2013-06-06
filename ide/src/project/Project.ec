@@ -889,7 +889,7 @@ private:
       if(MessageBox { type = yesNo, master = ide,
             text = $"Project has been modified", contents = temp }.Modal() == yes)
       {
-         Project project = LoadProject(filePath, config.name);
+         Project project = LoadProject(filePath, config ? config.name : null);
          if(project)
          {
             ProjectView projectView = ide.projectView;
