@@ -13,7 +13,10 @@ all: ecp ecc ecs
 fixprecompile:
 	cd libec && $(MAKE) fixprecompile
 
-libec:
+precompile:
+	cd libec && $(MAKE) PRECOMPILE_RULES=1 precompile
+
+libec: precompile
 	@$(call echo,Building 2nd stage libec...)
 	cd libec && $(MAKE)
 
@@ -43,6 +46,7 @@ cleantarget:
 clean:
 	cd bootstrap && $(MAKE) clean
 	cd libec && $(MAKE) clean
+	cd libec && $(MAKE) fixprecompile
 	cd ecp && $(MAKE) clean
 	cd ecc && $(MAKE) clean
 	cd ecs && $(MAKE) clean
@@ -50,6 +54,7 @@ clean:
 realclean:
 	cd bootstrap && $(MAKE) realclean
 	cd libec && $(MAKE) realclean
+	cd libec && $(MAKE) fixprecompile
 	cd ecp && $(MAKE) realclean
 	cd ecc && $(MAKE) realclean
 	cd ecs && $(MAKE) realclean
@@ -57,6 +62,7 @@ realclean:
 distclean:
 	cd bootstrap && $(MAKE) distclean
 	cd libec && $(MAKE) distclean
+	cd libec && $(MAKE) fixprecompile
 	cd ecp && $(MAKE) distclean
 	cd ecc && $(MAKE) distclean
 	cd ecs && $(MAKE) distclean

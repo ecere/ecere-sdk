@@ -36,6 +36,13 @@ USE_BOOTSTRAP := defined
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 
+# PRECOMPILED FILES SUPPORT
+
+PRE = precompiled/
+PRECOMPILED_LIST = expression.c grammar.c grammar.bowl type.c
+PRECOMPILED_SOURCES = $(addprefix $(PRE),$(PRECOMPILED_LIST))
+PRECOMPILED_OBJECTS = $(addprefix $(OBJ),$(PRECOMPILED_LIST))
+
 # POST-INCLUDES VARIABLES
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
@@ -91,12 +98,6 @@ OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 
 SOURCES = $(ECSOURCES) \
 	../bootstrap/bsl.c
-
-# PRECOMPILED: added precompiled files list
-
-PRECOMPILED_LIST = expression.c grammar.c grammar.bowl type.c
-PRECOMPILED_SOURCES = $(addprefix precompiled/,$(PRECOMPILED_LIST))
-PRECOMPILED_OBJECTS = $(addprefix $(OBJ),$(PRECOMPILED_LIST))
 
 RESOURCES = \
 	locale/zh_CN/LC_MESSAGES/ec.mo \
@@ -170,25 +171,31 @@ ifndef CROSS_TARGET
 endif
 endif
 
-
-# PRECOMPILED: added file copy rules
+# PRECOMPILED FILES SUPPORT
 
 fixprecompile:
+	@$(call echo,Stamping precompiled files...)
 	$(call touch,$(PRECOMPILED_SOURCES))
-	@$(call echo,Done.)
 
-$(OBJ)expression.c:: $(if $(wildcard precompiled/expression.c),precompiled/expression.c,) | objdir
-	$(if $(wildcard precompiled/expression.c),$(call cpq,precompiled/expression.c,$@),)
+ifdef PRECOMPILE_RULES
 
-$(OBJ)grammar.c:: $(if $(wildcard precompiled/grammar.c),precompiled/grammar.c,) | objdir
-	$(if $(wildcard precompiled/grammar.c),$(call cpq,precompiled/grammar.c,$@),)
+precompile: $(if $(wildcard $(PRE)expression.c),$(OBJ)expression.c,)
+$(OBJ)expression.c: $(PRE)expression.c | objdir
+	$(if $(wildcard $(PRE)expression.c),$(call cpq,$(PRE)expression.c,$@),)
 
-$(OBJ)grammar.bowl: $(if $(wildcard precompiled/grammar.bowl),precompiled/grammar.bowl,) | objdir
-	$(if $(wildcard precompiled/grammar.bowl),$(call cpq,precompiled/grammar.bowl,$@),)
+precompile: $(if $(wildcard $(PRE)grammar.c),$(OBJ)grammar.c,)
+$(OBJ)grammar.c: $(PRE)grammar.c | objdir
+	$(call cpq,$(PRE)grammar.c,$@)
 
-$(OBJ)type.c:: $(if $(wildcard precompiled/type.c),precompiled/type.c,) | objdir
-	$(if $(wildcard precompiled/type.c),$(call cpq,precompiled/type.c,$@),)
+precompile: $(if $(wildcard $(PRE)grammar.bowl),$(OBJ)grammar.bowl,)
+$(OBJ)grammar.bowl: $(PRE)grammar.bowl | objdir
+	$(call cpq,$(PRE)grammar.bowl,$@)
 
+precompile: $(if $(wildcard $(PRE)type.c),$(OBJ)type.c,)
+$(OBJ)type.c: $(PRE)type.c | objdir
+	$(call cpq,$(PRE)type.c,$@)
+
+endif
 
 # SYMBOL RULES
 
@@ -263,9 +270,10 @@ $(OBJ)dbpass.c: src/dbpass.ec $(OBJ)dbpass.sym | $(SYMBOLS)
 $(OBJ)ecdefs.c: src/ecdefs.ec $(OBJ)ecdefs.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/ecdefs.ec -o $(OBJ)ecdefs.c -symbols $(OBJ)
 
-# PRECOMPILED: symbol file prerequisite made optional and s/:/::/
-$(OBJ)expression.c:: src/expression.ec $(if $(wildcard precompiled/expression.c),,$(OBJ)expression.sym) | $(SYMBOLS)
+ifndef PRECOMPILE_RULES
+$(OBJ)expression.c: src/expression.ec $(if $(wildcard $(PRE)expression.c),,$(OBJ)expression.sym) | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/expression.ec -o $(OBJ)expression.c -symbols $(OBJ)
+endif
 
 $(OBJ)firstPass.c: src/firstPass.ec $(OBJ)firstPass.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/firstPass.ec -o $(OBJ)firstPass.c -symbols $(OBJ)
@@ -273,9 +281,10 @@ $(OBJ)firstPass.c: src/firstPass.ec $(OBJ)firstPass.sym | $(SYMBOLS)
 $(OBJ)freeAst.c: src/freeAst.ec $(OBJ)freeAst.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/freeAst.ec -o $(OBJ)freeAst.c -symbols $(OBJ)
 
-# PRECOMPILED: symbol file prerequisite made optional and s/:/::/
-$(OBJ)grammar.c:: src/grammar.ec $(if $(wildcard precompiled/grammar.c),,$(OBJ)grammar.sym) | $(SYMBOLS)
+ifndef PRECOMPILE_RULES
+$(OBJ)grammar.c: src/grammar.ec $(if $(wildcard $(PRE)grammar.c),,$(OBJ)grammar.sym) | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/grammar.ec -o $(OBJ)grammar.c -symbols $(OBJ)
+endif
 
 $(OBJ)lexer.c: src/lexer.ec $(OBJ)lexer.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/lexer.ec -o $(OBJ)lexer.c -symbols $(OBJ)
@@ -307,9 +316,10 @@ $(OBJ)pass3.c: src/pass3.ec $(OBJ)pass3.sym | $(SYMBOLS)
 $(OBJ)shortcuts.c: src/shortcuts.ec $(OBJ)shortcuts.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/shortcuts.ec -o $(OBJ)shortcuts.c -symbols $(OBJ)
 
-# PRECOMPILED: symbol file prerequisite made optional and s/:/::/
-$(OBJ)type.c:: src/type.ec $(if $(wildcard precompiled/type.c),,$(OBJ)type.sym) | $(SYMBOLS)
+ifndef PRECOMPILE_RULES
+$(OBJ)type.c: src/type.ec $(if $(wildcard $(PRE)type.c),,$(OBJ)type.sym) | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/type.ec -o $(OBJ)type.c -symbols $(OBJ)
+endif
 
 # OBJECT RULES
 
@@ -326,7 +336,7 @@ $(OBJ)ecdefs.o: $(OBJ)ecdefs.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)ecdefs.c -o $(OBJ)ecdefs.o
 
 # PRECOMPILED: added optional PRECOMPILED_OBJECTS order only prerequisite
-$(OBJ)expression.o: $(OBJ)expression.c $(if $(wildcard precompiled),| $(PRECOMPILED_OBJECTS),)
+$(OBJ)expression.o: $(OBJ)expression.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)expression.c -o $(OBJ)expression.o
 
 $(OBJ)firstPass.o: $(OBJ)firstPass.c
@@ -336,7 +346,7 @@ $(OBJ)freeAst.o: $(OBJ)freeAst.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)freeAst.c -o $(OBJ)freeAst.o
 
 # PRECOMPILED: added optional PRECOMPILED_OBJECTS order only prerequisite
-$(OBJ)grammar.o: $(OBJ)grammar.c $(if $(wildcard precompiled),| $(PRECOMPILED_OBJECTS),)
+$(OBJ)grammar.o: $(OBJ)grammar.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)grammar.c -o $(OBJ)grammar.o
 
 $(OBJ)lexer.o: $(OBJ)lexer.c
@@ -370,7 +380,7 @@ $(OBJ)shortcuts.o: $(OBJ)shortcuts.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)shortcuts.c -o $(OBJ)shortcuts.o
 
 # PRECOMPILED: added optional PRECOMPILED_OBJECTS order only prerequisite
-$(OBJ)type.o: $(OBJ)type.c $(if $(wildcard precompiled),| $(PRECOMPILED_OBJECTS),)
+$(OBJ)type.o: $(OBJ)type.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)type.c -o $(OBJ)type.o
 
 $(OBJ)bsl.o: ../bootstrap/bsl.c
