@@ -685,7 +685,7 @@ class CodeEditor : Window
 
    bool noParsing;
 
-   property bool parsing { get { return !noParsing && !ide.noParsing; } };
+   property bool parsing { get { return editBox.syntaxHighlighting && !noParsing && !ide.noParsing; } };
 
    void ProcessCaretMove(EditBox editBox, int line, int charPos)
    {
@@ -2383,16 +2383,20 @@ class CodeEditor : Window
       if(fileName)
       {
          GetExtension(fileName, ext);
+
+         if(!strcmpi(ext, "ec") || !strcmpi(ext, "eh") || !strcmpi(ext, "c") || !strcmpi(ext, "h") || !strcmpi(ext, "cpp") ||
+               !strcmpi(ext, "hpp") || !strcmpi(ext, "cxx") || !strcmpi(ext, "hxx") || !strcmpi(ext, "cc") || !strcmpi(ext, "hh") ||
+               !strcmpi(ext, "m") || !strcmpi(ext, "mm") || !strcmpi(ext, "cs") || !strcmpi(ext, "java"))
+            editBox.syntaxHighlighting = true;
+         else
+            editBox.syntaxHighlighting = false;
+
          if(parsing && !strcmpi(ext, "ec"))
          {
             codeModified = true;
             EnsureUpToDate();
          }
 
-         if(!strcmpi(ext, "ec") || !strcmpi(ext, "c") || !strcmpi(ext, "cc") || !strcmpi(ext, "cpp") || !strcmpi(ext, "eh") || !strcmpi(ext, "hh") || !strcmpi(ext, "hpp") || !strcmpi(ext, "h") || !strcmpi(ext, "hxx") || !strcmpi(ext, "cxx"))
-            editBox.syntaxHighlighting = true;
-         else
-            editBox.syntaxHighlighting = false;
          {
             int spaceW;
             display.FontExtent(font.font, " ", 1, &spaceW, null);
@@ -4420,7 +4424,7 @@ class CodeEditor : Window
    {
       if(!this) return;
       if(!parsing) return;
-         
+
       updatingCode++;
       if(codeModified)
       {
