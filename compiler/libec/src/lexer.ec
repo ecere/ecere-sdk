@@ -2203,6 +2203,12 @@ YY_RULE_SETUP
 case YY_STATE_EOF(INITIAL):
 #line 268 "lexer.l"
 {
+      while(include_stack_ptr && !fileStack[include_stack_ptr])
+      {
+         --include_stack_ptr;
+         defaultDeclMode = declMode = declModeStack[include_stack_ptr];
+      }
+
       if ( --include_stack_ptr < 0 )
       {
          yyterminate();
@@ -2222,12 +2228,12 @@ case YY_STATE_EOF(INITIAL):
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
-#line 287 "lexer.l"
+#line 293 "lexer.l"
 { yylloc.start = yylloc.end; type_yylloc.start = type_yylloc.end; expression_yylloc.start = expression_yylloc.end;}
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-#line 288 "lexer.l"
+#line 294 "lexer.l"
 { 
    yylloc.end.charPos = 1; yylloc.end.line += yyleng; yylloc.start = yylloc.end; 
    type_yylloc.end.charPos = 1; type_yylloc.end.line += yyleng; type_yylloc.start = type_yylloc.end; 
@@ -2236,7 +2242,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
-#line 293 "lexer.l"
+#line 299 "lexer.l"
 { 
    yylloc.start.charPos++ /*= 3 - (yylloc.start.col % 3)*/; yylloc.end.charPos = yylloc.start.charPos; yylloc.start.pos = yylloc.end.pos; 
    expression_yylloc.start.charPos++ /*= 3 - (expression_yylloc.start.col % 3)*/; expression_yylloc.end.charPos = expression_yylloc.start.charPos; expression_yylloc.start.pos = expression_yylloc.end.pos; 
@@ -2245,15 +2251,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
-#line 299 "lexer.l"
+#line 305 "lexer.l"
 { yylloc.start = yylloc.end; expression_yylloc.start = expression_yylloc.end;  type_yylloc.start = type_yylloc.end; }
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-#line 301 "lexer.l"
+#line 307 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 2257 "lexer.ec"
+#line 2263 "lexer.ec"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -3137,7 +3143,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 301 "lexer.l"
+#line 307 "lexer.l"
 
 
 yywrap()
