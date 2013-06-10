@@ -3206,8 +3206,12 @@ private:
             // If the window is disabled, stop looking in children (for acceptDisabled mode)
             if(!disabled)
             {
-               bool isD = (last && last.IsDescendantOf(this)); // last.parent == this);  Fix for WSMS (#844)
-               for(child = isD ? (last.previous == children.first ? null : last.previous) : children.last; child; child = child.prev)
+               bool isD = (last && last != this && last.IsDescendantOf(this)); //  Fix for WSMS (#844)
+               Window ancestor = null;
+               if(isD)
+                  for(ancestor = last; ancestor && ancestor.parent != this; ancestor = ancestor.parent);
+               // for(child = isD ? (last.previous == children.first ? null : last.previous) : children.last; child; child = child.prev)
+               for(child = isD ? (ancestor.previous == children.first ? null : ancestor) : children.last; child; child = child.prev)
                {
                   if(child != statusBar && child.rootWindow == rootWindow)
                   {
@@ -3218,7 +3222,8 @@ private:
                }
                if(clickThru)
                {
-                  for(child = isD ? (last.previous == children.first ? null : last.previous) : children.last; child; child = child.prev)
+                  //for(child = isD ? (last.previous == children.first ? null : last.previous) : children.last; child; child = child.prev)
+                  for(child = isD ? (ancestor.previous == children.first ? null : ancestor.previous) : children.last; child; child = child.prev)
                   {
                      if(child != statusBar && child.rootWindow == rootWindow)
                      {
