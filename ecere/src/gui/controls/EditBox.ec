@@ -776,6 +776,7 @@ public:
       {
          if(this)
          {
+            undoBuffer.dontRecord++;
             Deselect();
             DelCh(this.lines.first, 0, 0, this.lines.last, this.lineCount-1, ((EditLine)(this.lines.last)).count, true);
             if(value)
@@ -783,6 +784,7 @@ public:
             //SetViewToCursor(true);
             UpdateDirty();
             Home();
+            undoBuffer.dontRecord--;
          }
       }
 
@@ -5337,6 +5339,7 @@ public:
    {
       if(this)
       {
+         undoBuffer.dontRecord++;
          Deselect();
          DelCh(this.lines.first, 0, 0, this.lines.last, this.lineCount-1, ((EditLine)(this.lines.last)).count, true);
          if(format)
@@ -5352,6 +5355,7 @@ public:
          }
          UpdateDirty();
          Home();
+         undoBuffer.dontRecord--;
       }
    }
 
