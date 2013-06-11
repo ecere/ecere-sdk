@@ -1,4 +1,4 @@
-.PHONY: all objdir cleantarget clean realclean distclean fixprecompile
+.PHONY: all objdir cleantarget clean realclean distclean fixprecompile silentfixprecompile
 
 # CORE VARIABLES
 
@@ -175,6 +175,9 @@ endif
 
 fixprecompile:
 	@$(call echo,Stamping precompiled files...)
+	$(call touch,$(PRECOMPILED_SOURCES))
+
+silentfixprecompile:
 	$(call touch,$(PRECOMPILED_SOURCES))
 
 ifdef PRECOMPILE_RULES

@@ -46,7 +46,7 @@ cleantarget:
 clean:
 	cd bootstrap && $(MAKE) clean
 	cd libec && $(MAKE) clean
-	cd libec && $(MAKE) fixprecompile
+	cd libec && $(MAKE) silentfixprecompile
 	cd ecp && $(MAKE) clean
 	cd ecc && $(MAKE) clean
 	cd ecs && $(MAKE) clean
