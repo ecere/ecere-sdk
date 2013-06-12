@@ -1,3 +1,11 @@
+#ifdef ECERE_STATIC
+public import static "ecere"
+public import static "ec"
+#else
+public import "ecere"
+public import "ec"
+#endif
+
 import "ide"
 import "process"
 import "debugFindCtx"

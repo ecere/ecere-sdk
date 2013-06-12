@@ -818,65 +818,66 @@ public char * RSearchString(char * buffer, char * subStr, int maxLen, bool match
    return null;
 }
 
-public int Tokenize(char * string, int maxTokens, char* tokens[], bool escapeBackSlashes)
-{
-   int count = 0;
-   bool quoted = false;
-   byte * start = null;
-   bool escaped = false;
-   char * output = string;
+//public define gnuMakeCharsNeedEscaping = "$%";
+//public define windowsFileNameCharsNotAllowed = "*/:<>?\\\"|";
+//public define linuxFileNameCharsNotAllowed = "/";
+//public define windowsFileNameCharsNeedEscaping = " !%&'()+,;=[]^`{}~"; // "#$-.@_" are ok
+//public define linuxFileNameCharsNeedEscaping = " !\"$&'()*:;<=>?[\\`{|"; // "#%+,-.@]^_}~" are ok
 
-   for(; *string && count < maxTokens; string++, output++)
+// fix #139 to remove " = 2" and warnings for backward compatible calls to Tokenize using 'true' for the 'esc' argument;
+public enum BackSlashEscaping : bool { forArgsPassing = 2 };
+public int Tokenize(char * string, int maxTokens, char* tokens[], BackSlashEscaping esc)
+{
+#ifdef __WIN32__
+//define windowsFileNameCharsNeedEscaping = " !%&'()+,;=[]^`{}~"; // "#$-.@_" are ok
+   const char * escChars = " !\"%&'()+,;=[]^`{}~"; // windowsFileNameCharsNeedEscaping;
+   const char * escCharsQuoted = "\"";
+#else
+//define linuxFileNameCharsNeedEscaping = " !\"$&'()*:;<=>?[\\`{|"; // "#%+,-.@]^_}~" are ok
+   const char * escChars = " !\"$&'()*:;<=>?[\\`{|"; // linuxFileNameCharsNeedEscaping;
+   const char * escCharsQuoted = "\"()$";
+#endif
+   int count = 0;
+   bool quoted = false, escaped = false;
+   char * start = null, * output = string;
+   char ch;
+   for(; (ch = *string) && count<maxTokens; string++, output++)
    {
+      bool wasEscaped = escaped;
       if(output != string)
-         *output = *string;
+         *output = ch;
       if(start)
       {
          if(escaped)
          {
             escaped = false;
             output--;
-
-            // ADDED THIS HERE...
-            if(output != string)
-               *output = *string;
+            *output = ch;
          }
-         else if(escapeBackSlashes && *string == '\\')
-            escaped = true;
-         else if(*string == '\"')
+         else if(ch == '\"')
          {
-            if(quoted)
-            {
-               *output = '\0';
-               quoted = false;
-            }
-            else
-            {
-               memmove(start + 1, start, string - (char *)start);
-               start++;
-            }
+            quoted ^= true;
+            output--;
          }
-         else if(*string == ' ' && !quoted)
+         else if(ch == ' ' && !quoted)
          {
             tokens[count++] = start;
             *output = '\0';
             start = null;
          }
       }
-      else if(*string != ' ')
+      else if(ch != ' ')
       {
-         if(*string == '\"')
+         if(ch == '\"')
          {
             quoted = true;
-            start = output + 1;
+            start = output+1;
          }
          else
-         {
             start = output;
-            if(*string == '\\' && escapeBackSlashes)
-               escaped = true;
-         }
       }
+      if(!wasEscaped && ch == '\\' && ( esc == true || (esc == forArgsPassing && strchr(quoted ? escCharsQuoted : escChars, *(string+1))) ))
+         escaped = true;
    }
    if(start && count < maxTokens)
    {

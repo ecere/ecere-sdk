@@ -76,7 +76,8 @@ char * __ecereNameSpace__ecere__sys__UTF16toUTF8Buffer(uint16 * source, byte * d
 static char exeLocation[MAX_LOCATION];
 #endif
 
-int __ecereNameSpace__ecere__sys__Tokenize(char * string, int maxTokens, char* tokens[], bool escapeBackSlashes);
+#define forArgsPassing 2
+int __ecereNameSpace__ecere__sys__Tokenize(char * string, int maxTokens, char* tokens[], int esc);
 char * __ecereNameSpace__ecere__sys__RSearchString(char * buffer, char * subStr, int maxLen, bool matchCase, bool matchWord);
 char * __ecereNameSpace__ecere__sys__GetLastDirectory(char * string, char * output);
 char * __ecereNameSpace__ecere__sys__PathCat(char * string, char * addedPath);
@@ -366,7 +367,7 @@ void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int 
 #if defined(__WIN32__)
    *parsedCommand = UTF16toUTF8(GetCommandLineW());
    *argvPtr = eSystem_New0(sizeof(char *) * 512);
-   *argcPtr = Tokenize(*parsedCommand, 512,(void*)(char **)(*argvPtr), false);
+   *argcPtr = Tokenize(*parsedCommand, 512,(void*)(char **)(*argvPtr), forArgsPassing);
 #else
    *argcPtr = argc;
    *argvPtr = argv;

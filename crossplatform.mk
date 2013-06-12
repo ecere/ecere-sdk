@@ -150,11 +150,15 @@ endif
 
 # MISC STRING TOOLS
 empty :=
+esc := $(empty)$(empty)
 space := $(empty) $(empty)
 comma := ,
-escspace = $(subst $(space),\$(space),$(subst \$(space),$(space),$1))
-hidspace = $(subst $(space),,$(subst \$(space),,$1))
-shwspace = $(subst ,\$(space),$1)
+slash := $(empty)/$(empty)
+backslash := $(empty)\$(empty)
+escspace = $(subst $(space),$(backslash)$(space),$(subst $(backslash)$(space),$(space),$(1)))
+hidspace = $(subst $(space),$(esc),$(subst $(backslash)$(space),$(esc),$(1)))
+shwspace = $(subst $(esc),$(backslash)$(space),$(1))
+unescp_all = $(subst $(esc),$(backslash),$(subst $(backslash),,$(subst $(backslash)$(backslash),$(esc),$(1))))
 
 # PATH SEPARATOR STRING TOOLS
 ifdef WINDOWS_HOST
@@ -163,13 +167,15 @@ ifndef MSYSCON
 endif
 endif
 ifdef WIN_PS_TOOLS
-   fixps = $(subst \,/,$(1))
-   psep = $(subst \\,/,$(subst /,\,$(1)))
-   PS := $(strip \)
+   psep := $(backslash)
+   slash_path = $(subst $(backslash),$(slash),$(1))
+   sys_path = $(subst $(backslash)$(backslash),$(slash),$(subst $(slash),$(backslash),$(1)))
+   quote_path = "$(call sys_path,$(call unescp_all,$(1)))"
 else
-   fixps = $(1)
-   PS := $(strip /)
-   psep = $(1)
+   psep := $(slash)
+   slash_path = $(1)
+   sys_path = $(1)
+   quote_path = $(1)
 endif
 
 # PREFIXES AND EXTENSIONS
@@ -215,12 +221,12 @@ endif
 endif
 ifdef WIN_SHELL_COMMANDS
    echo = $(if $(1),echo $(1))
-   touch = $(if $(1),@cmd /c "for %%a in ($(call psep,$(1))) do @(cd %%~pa && type nul >> %%~nxa && copy /by %%~nxa+,, >nul 2>&1 && cd %%cd%%)")
-   cpq = $(if $(1),@cmd /c "for %%a in ($(call psep,$(1))) do copy /by %%a $(call psep,$(2))" >nul 2>&1)
-   rmq = $(if $(1),-del /f /q $(call psep,$(1)) > nul 2>&1)
-   rmrq = $(if $(1),-rmdir /q /s $(call psep,$(1)) > nul 2>&1)
-   mkdirq = $(if $(1),-mkdir $(call psep,$(1)) > nul 2>&1)
-   rmdirq = $(if $(1),-rmdir /q $(call psep,$(1)) > nul 2>&1)
+   touch = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do @(cd %%~pI && type nul >> %%~nxI && copy /by %%~nxI+,, > nul 2>&1 && cd %%cd%%)")
+   cpq = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do copy /by %%I $(call sys_path,$(2))" > nul 2>&1)
+   rmq = $(if $(1),-del /f /q $(call sys_path,$(1)) > nul 2>&1)
+   rmrq = $(if $(1),-rmdir /q /s $(call sys_path,$(1)) > nul 2>&1)
+   mkdirq = $(if $(1),-mkdir $(call sys_path,$(1)) > nul 2>&1)
+   rmdirq = $(if $(1),-rmdir /q $(call sys_path,$(1)) > nul 2>&1)
 else
    echo = $(if $(1),echo "$(1)")
    touch = $(if $(1),touch $(1))
@@ -260,7 +266,7 @@ endif
 # COMMON LIBRARIES DETECTION
 ifdef WINDOWS_TARGET
  ifdef OPENSSL_CONF
-  _OPENSSL_CONF = $(call hidspace,$(call fixps,$(OPENSSL_CONF)))
+  _OPENSSL_CONF = $(call hidspace,$(call slash_path,$(OPENSSL_CONF)))
   OPENSSL_INCLUDE_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/include,$(_OPENSSL_CONF)))
   OPENSSL_LIB_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/lib,$(_OPENSSL_CONF)))
   OPENSSL_BIN_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/bin,$(_OPENSSL_CONF)))

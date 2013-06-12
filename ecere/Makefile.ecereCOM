@@ -38,7 +38,7 @@ include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 
 ifdef PREFIXLIBDIR
-CFLAGS += -DDEB_HOST_MULTIARCH=\"$(PREFIXLIBDIR)\"
+CFLAGS += -DDEB_HOST_MULTIARCH=\"$(call escspace,$(PREFIXLIBDIR))\"
 endif
 
 # POST-INCLUDES VARIABLES

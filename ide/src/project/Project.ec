@@ -415,6 +415,7 @@ define stringInFileIncludedFrom = "In file included from ";
 define stringFrom =               "                 from ";
 
 // This function cannot accept same pointer for source and output
+// todo: rename ReplaceSpaces to EscapeSpaceAndSpecialChars or something
 void ReplaceSpaces(char * output, char * source)
 {
    int c, dc;
@@ -437,47 +438,81 @@ void ReplaceSpaces(char * output, char * source)
    output[dc] = '\0';
 }
 
-// This function cannot accept same pointer for source and output
-void ReplaceUnwantedMakeChars(char * output, char * source)
+// chars refused for project name: windowsFileNameCharsNotAllowed + " &,."
+
+//define gnuMakeCharsNeedEscaping = "$%";
+
+//define windowsFileNameCharsNotAllowed = "*/:<>?\\\"|";
+//define linuxFileNameCharsNotAllowed = "/";
+
+//define windowsFileNameCharsNeedEscaping = " !%&'()+,;=[]^`{}~"; // "#$-.@_" are ok
+//define linuxFileNameCharsNeedEscaping = " !\"$&'()*:;<=>?[\\`{|"; // "#%+,-.@]^_}~" are ok
+
+// NOTES: - this function should get only unescaped unix style paths
+//        - paths with literal $(somestring) in them are not supported
+//          my_$(messed_up)_path would likely become my__path
+void EscapeForMake(char * output, char * input, bool hideSpace, bool allowVars, bool allowDblQuote)
 {
-   char ch;
-   char * s = source, * d = output;
+   char ch, *i = input, *o = output;
    bool inVar = false;
-   while((ch = *s++))
+#ifdef _DEBUG
+   int len = strlen(input);
+   if(len && ((input[0] == '"' && input[len-1] == '"') || strchr(input, '\\') || strchr(input, 127) || (!allowDblQuote && strchr(input, '"'))))
+      PrintLn("Invalid input for EscapeForMake! -- ", input);
+#endif
+   while((ch = *i++))
    {
       if(ch == '(')
       {
-         if(s != source && *(s-1) == '$')
+         if(i-1 != input && *(i-2) == '$' && allowVars)
             inVar = true;
          else
-            *d++ = '\\';
+            *o++ = '\\';
       }
       else if(ch == ')')
       {
-         if(inVar == true)
+         if(inVar == true && allowVars)
             inVar = false;
          else
-            *d++ = '\\';
+            *o++ = '\\';
       }
-      else if(ch == '$' && *(s+1) != '(')
-         *d++ = '$';
+      else if(ch == '$' && *i != '(')
+         *o++ = '$';
+      else if(ch == '&')
+         *o++ = '\\';
+      else if(ch == '"')
+         *o++ = '\\';
       if(ch == ' ')
-         *d++ = 127;
+      {
+         if(hideSpace)
+            *o++ = 127;
+         else
+         {
+            *o++ = '\\';
+            *o++ = ch;
+         }
+      }
       else
-         *d++ = ch;
+         *o++ = ch;
    }
-   *d = '\0';
+   *o = '\0';
 }
 
-static void OutputNoSpace(File f, char * source)
+void EscapeForMakeToFile(File output, char * input, bool hideSpace, bool allowVars, bool allowDblQuote)
 {
-   char * output = new char[strlen(source)+1024];
-   ReplaceSpaces(output, source);
-   f.Puts(output);
-   delete output;
+   char * buf = new char[strlen(input)*2+1];
+   EscapeForMake(buf, input, hideSpace, allowVars, allowDblQuote);
+   output.Print(buf);
+   delete buf;
 }
 
-enum ListOutputMethod { inPlace, newLine, lineEach };
+void EscapeForMakeToDynString(DynamicString output, char * input, bool hideSpace, bool allowVars, bool allowDblQuote)
+{
+   char * buf = new char[strlen(input)*2+1];
+   EscapeForMake(buf, input, hideSpace, allowVars, allowDblQuote);
+   output.concat(buf);
+   delete buf;
+}
 
 int OutputFileList(File f, char * name, Array<String> list, Map<String, int> varStringLenDiffs, char * prefix)
 {
@@ -593,31 +628,33 @@ void OutputCleanActions(File f, char * name, int parts)
       f.Printf("\t$(call rmq,$(%s))\n", name);
 }
 
-void OutputListOption(File f, char * option, Array<String> list, ListOutputMethod method, bool noSpace, bool noDash)
+enum LineOutputMethod { inPlace, newLine, lineEach };
+enum StringOutputMethod { asIs, escape, escapePath};
+
+enum ToolchainFlag { any, _D, _I, _isystem, _Wl, _L/*, _Wl-rpath*/ };
+String flagNames[ToolchainFlag] = { "", "-D", "-I", "-isystem ", "-Wl,", "-Wl,--library-path="/*, "-Wl,-rpath "*/ };
+void OutputFlags(File f, ToolchainFlag flag, Array<String> list, LineOutputMethod lineMethod)
 {
    if(list.count)
    {
-      if(method == newLine)
+      if(lineMethod == newLine)
          f.Puts(" \\\n\t");
       for(item : list)
       {
-         if(method == lineEach)
+         if(lineMethod == lineEach)
             f.Puts(" \\\n\t");
-         f.Printf(" %s%s", noDash ? "" : "-", option);
-         if(noSpace)
-            OutputNoSpace(f, item);
+         f.Printf(" %s", flagNames[flag]);
+         if(flag != _D && flag != _Wl && flag != any)
+         {
+            char * tmp = new char[strlen(item)*2+1];
+            EscapeForMake(tmp, item, false, true, false);
+            f.Printf("$(call quote_path,%s)", tmp);
+            delete tmp;
+         }
          else
-            f.Printf("%s", item);
+            EscapeForMakeToFile(f, item, false, true, true);
       }
    }
-}
-
-void StringNoSpaceToDynamicString(DynamicString s, char * path)
-{
-   char * output = new char[strlen(path)+1024];
-   ReplaceSpaces(output, path);
-   s.concat(output);
-   delete output;
 }
 
 static void OutputLibraries(File f, Array<String> libraries)
@@ -645,7 +682,7 @@ static void OutputLibraries(File f, Array<String> libraries)
          f.Puts(" \\\n\t$(call _L,");
          usedFunction = true;
       }
-      OutputNoSpace(f, s);
+      EscapeForMakeToFile(f, s, false, false, false);
       if(usedFunction)
          f.Puts(")");
    }
@@ -1630,7 +1667,7 @@ private:
                         precompiling = true;
                      }
                      // Changed escapeBackSlashes here to handle paths with spaces
-                     Tokenize(module, 1, tokens, true); // false);
+                     Tokenize(module, 1, tokens, (BackSlashEscaping)true); // fix #139
                      GetLastDirectory(module, moduleName);
                      ide.outputView.buildBox.Logf("%s\n", moduleName);
                   }
@@ -1660,7 +1697,7 @@ private:
                   if(module)
                   {
                      byte * tokens[1];
-                     Tokenize(module, 1, tokens, true);
+                     Tokenize(module, 1, tokens, (BackSlashEscaping)true); // fix #139
                      GetLastDirectory(module, moduleName);
                      ide.outputView.buildBox.Logf("%s\n", moduleName);
                   }
@@ -2297,8 +2334,6 @@ private:
       fileName[0] = '\0';
       if(targetType == staticLibrary || targetType == sharedLibrary)
          strcat(fileName, "$(LP)");
-      // !!! ReplaceSpaces must be done after all PathCat calls !!!
-      // ReplaceSpaces(s, GetTargetFileName(config));
       strcat(fileName, GetTargetFileName(config));
       switch(targetType)
       {
@@ -2483,21 +2518,21 @@ private:
             if(compiler.includeDirs && compiler.includeDirs.count)
             {
                f.Puts("\nCFLAGS +=");
-               OutputListOption(f, gccCompiler ? "isystem " : "I", compiler.includeDirs, lineEach, true, false);
+               OutputFlags(f, gccCompiler ? _isystem : _I, compiler.includeDirs, lineEach);
                f.Puts("\n");
             }
             if(compiler.prepDirectives && compiler.prepDirectives.count)
             {
                f.Puts("\nCFLAGS +=");
-               OutputListOption(f, "D", compiler.prepDirectives, inPlace, true, false);
+               OutputFlags(f, _D, compiler.prepDirectives, inPlace);
                f.Puts("\n");
             }
             if(compiler.libraryDirs && compiler.libraryDirs.count)
             {
                f.Puts("\nLDFLAGS +=");
-               OutputListOption(f, "L", compiler.libraryDirs, lineEach, true, false);
+               OutputFlags(f, _L, compiler.libraryDirs, lineEach);
                // We would need a bool option to know whether we want to add to rpath as well...
-               // OutputListOption(f, "Wl,-rpath ", compiler.libraryDirs, lineEach, true, false);
+               // OutputFlags(f, _Wl-rpath, compiler.libraryDirs, lineEach);
                f.Puts("\n");
             }
             if(compiler.excludeLibs && compiler.excludeLibs.count)
@@ -2512,13 +2547,13 @@ private:
             if(compiler.compilerFlags && compiler.compilerFlags.count)
             {
                f.Puts("\nCFLAGS +=");
-               OutputListOption(f, "", compiler.compilerFlags, inPlace, true, true);
+               OutputFlags(f, any, compiler.compilerFlags, inPlace);
                f.Puts("\n");
             }
             if(compiler.linkerFlags && compiler.linkerFlags.count)
             {
                f.Puts("\nLDFLAGS +=");
-               OutputListOption(f, "Wl,", compiler.linkerFlags, inPlace, true, false);
+               OutputFlags(f, _Wl, compiler.linkerFlags, inPlace);
                f.Puts("\n");
             }
             f.Puts("\n");
@@ -2979,9 +3014,9 @@ private:
                      {
                         f.Puts("OFLAGS +=");
                         if(configPlatformOptions && configPlatformOptions.options.libraryDirs)
-                           OutputListOption(f, "L", configPlatformOptions.options.libraryDirs, lineEach, true, false);
+                           OutputFlags(f, _L, configPlatformOptions.options.libraryDirs, lineEach);
                         if(projectPlatformOptions && projectPlatformOptions.options.libraryDirs)
-                           OutputListOption(f, "L", projectPlatformOptions.options.libraryDirs, lineEach, true, false);
+                           OutputFlags(f, _L, projectPlatformOptions.options.libraryDirs, lineEach);
                         f.Puts("\n");
                      }
 
@@ -3094,9 +3129,9 @@ private:
             f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
             f.Puts("OFLAGS +=");
             if(config && config.options && config.options.libraryDirs)
-               OutputListOption(f, "L", config.options.libraryDirs, lineEach, true, false);
+               OutputFlags(f, _L, config.options.libraryDirs, lineEach);
             if(options && options.libraryDirs)
-               OutputListOption(f, "L", options.libraryDirs, lineEach, true, false);
+               OutputFlags(f, _L, options.libraryDirs, lineEach);
             f.Puts("\n");
             f.Puts("endif\n");
             f.Puts("\n");

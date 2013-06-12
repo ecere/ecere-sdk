@@ -101,6 +101,45 @@ public void FixModuleName(char *moduleName)
    ChangeCh(moduleName, '&', '_');
 }
 
+// todo support %var% variables for windows and $var for linux?
+public char * PassArg(char * output, const char * input)
+{
+#ifdef __WIN32__
+//define windowsFileNameCharsNeedEscaping = " !%&'()+,;=[]^`{}~"; // "#$-.@_" are ok
+   const char * escChars = " !\"%&'()+,;=[]^`{}~"; // windowsFileNameCharsNeedEscaping;
+   const char * escCharsQuoted = "\"";
+#else
+//define linuxFileNameCharsNeedEscaping = " !\"$&'()*:;<=>?[\\`{|"; // "#%+,-.@]^_}~" are ok
+   const char * escChars = " !\"$&'()*:;<=>?[\\`{|"; // linuxFileNameCharsNeedEscaping;
+   const char * escCharsQuoted = "\"()$";
+#endif
+   bool quoting = false;
+   char *o = output, *i = input, *l = input;
+#ifdef __WIN32__
+   while(*l && !strchr(escChars, *l)) l++;
+   if(*l) quoting = true;
+#else
+   if(*i == '-')
+   {
+      l++;
+      while(*l && !strchr(escChars, *l)) l++;
+      if(*l) quoting = true;
+      *o++ = *i++;
+   }
+#endif
+   if(quoting)
+      *o++ = '\"';
+   while(*i)
+   {
+      if(strchr(quoting ? escCharsQuoted : escChars, *i))
+         *o++ = '\\';
+      *o++ = *i++;
+   }
+   if(quoting)
+      *o++ = '\"';
+   *o = '\0';
+   return o;
+}
 /*public Module GetPrivateModule()
 {
    return privateModule;

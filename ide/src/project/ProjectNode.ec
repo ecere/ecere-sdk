@@ -1452,7 +1452,7 @@ private:
                strcpy(tempPath, path);
                PathCatSlash(tempPath, name);
             }
-            ReplaceUnwantedMakeChars(modulePath, tempPath);
+            EscapeForMake(modulePath, tempPath, true, true, false);
             sprintf(s, "%s%s%s%s", ts.a, useRes ? "$(RES)" : "", modulePath, ts.b);
             items.Add(CopyString(s));
          }
@@ -1463,8 +1463,8 @@ private:
                   !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
             {
                char modulePath[MAX_LOCATION];
-               ReplaceUnwantedMakeChars(modulePath, path);
-               ReplaceUnwantedMakeChars(moduleName, name);
+               EscapeForMake(modulePath, path, true, true, false);
+               EscapeForMake(moduleName, name, true, true, false);
                sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
                items.Add(CopyString(s));
             }
@@ -1474,8 +1474,8 @@ private:
             if(!strcmpi(extension, "ec"))
             {
                char modulePath[MAX_LOCATION];
-               ReplaceUnwantedMakeChars(modulePath, path);
-               ReplaceUnwantedMakeChars(moduleName, name);
+               EscapeForMake(modulePath, path, true, true, false);
+               EscapeForMake(moduleName, name, true, true, false);
                sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
                items.Add(CopyString(s));
                count++;
@@ -1486,8 +1486,8 @@ private:
             if(!strcmpi(extension, "rc"))
             {
                char modulePath[MAX_LOCATION];
-               ReplaceUnwantedMakeChars(modulePath, path);
-               ReplaceUnwantedMakeChars(moduleName, name);
+               EscapeForMake(modulePath, path, true, true, false);
+               EscapeForMake(moduleName, name, true, true, false);
                sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
                items.Add(CopyString(s));
                count++;
@@ -1502,7 +1502,7 @@ private:
                bool collision;
                NameCollisionInfo info;
                count++;
-               ReplaceUnwantedMakeChars(moduleName, name);
+               EscapeForMake(moduleName, name, true, true, false);
                StripExtension(moduleName);
                info = namesInfo[moduleName];
                collision = info ? info.IsExtensionColliding(extension) : false;
@@ -2129,7 +2129,7 @@ private:
                   strcpy(tempPath, child.path);
                   PathCatSlash(tempPath, child.name);
                }
-               ReplaceUnwantedMakeChars(resPath, tempPath);
+               EscapeForMake(resPath, tempPath, true, true, false);
                if(strchr(tempPath, ' '))
                   quotes = "\"";
                else
@@ -3093,9 +3093,9 @@ static void GenCFlagsFromProjectOptions(ProjectOptions options, bool prjWithEcFi
    }
 
    if(options && options.preprocessorDefinitions)
-      ListOptionToDynamicString("D", options.preprocessorDefinitions, false, lineEach, "\t\t\t", false, s);
+      ListOptionToDynamicString(s, _D, options.preprocessorDefinitions, false, lineEach, "\t\t\t");
    if(options && options.includeDirs)
-      ListOptionToDynamicString("I", options.includeDirs, true, lineEach, "\t\t\t", true, s);
+      ListOptionToDynamicString(s, _I, options.includeDirs, true, lineEach, "\t\t\t");
 }
 
 static void GenECFlagsFromProjectOptions(ProjectOptions options, bool prjWithEcFiles, DynamicString s)
@@ -3110,15 +3110,15 @@ static void GenECFlagsFromProjectOptions(ProjectOptions options, bool prjWithEcF
       s.concatf(" -defaultns %s", options.defaultNameSpace);
 }
 
-static void ListOptionToDynamicString(char * option, Array<String> list, bool prioritize,
-      ListOutputMethod method, String newLineStart, bool noSpace, DynamicString s)
+static void ListOptionToDynamicString(DynamicString output, ToolchainFlag flag, Array<String> list, bool prioritize,
+      LineOutputMethod lineMethod, String newLineStart)
 {
    if(list.count)
    {
-      if(method == newLine)
+      if(lineMethod == newLine)
       {
-         s.concat(" \\\n");
-         s.concat(newLineStart);
+         output.concat(" \\\n");
+         output.concat(newLineStart);
       }
       if(prioritize)
       {
@@ -3129,17 +3129,14 @@ static void ListOptionToDynamicString(char * option, Array<String> list, bool pr
          for(mn = sortedList.root.minimum; mn; mn = mn.next)
          {
             char * start = strstr(mn.key, "\n");
-            if(method == lineEach)
+            if(lineMethod == lineEach)
             {
-               s.concat(" \\\n");
-               s.concat(newLineStart);
+               output.concat(" \\\n");
+               output.concat(newLineStart);
             }
-            s.concat(" -");
-            s.concat(option);
-            if(noSpace)
-               StringNoSpaceToDynamicString(s, start ? start+1 : mn.key);
-            else
-               s.concat(start ? start+1 : mn.key);
+            output.concat(" ");
+            output.concat(flagNames[flag]);
+            EscapeForMakeToDynString(output, start ? start+1 : mn.key, false, true, flag == _D);
          }
          delete sortedList;
       }
@@ -3147,17 +3144,14 @@ static void ListOptionToDynamicString(char * option, Array<String> list, bool pr
       {
          for(item : list)
          {
-            if(method == lineEach)
+            if(lineMethod == lineEach)
             {
-               s.concat(" \\\n");
-               s.concat(newLineStart);
+               output.concat(" \\\n");
+               output.concat(newLineStart);
             }
-            s.concat(" -");
-            s.concat(option);
-            if(noSpace)
-               StringNoSpaceToDynamicString(s, item);
-            else
-               s.concat(item);
+            output.concat(" ");
+            output.concat(flagNames[flag]);
+            EscapeForMakeToDynString(output, item, false, true, flag == _D);
          }
       }
    }

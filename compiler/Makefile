@@ -54,7 +54,7 @@ clean:
 realclean:
 	cd bootstrap && $(MAKE) realclean
 	cd libec && $(MAKE) realclean
-	cd libec && $(MAKE) fixprecompile
+	cd libec && $(MAKE) silentfixprecompile
 	cd ecp && $(MAKE) realclean
 	cd ecc && $(MAKE) realclean
 	cd ecs && $(MAKE) realclean
@@ -62,7 +62,7 @@ realclean:
 distclean:
 	cd bootstrap && $(MAKE) distclean
 	cd libec && $(MAKE) distclean
-	cd libec && $(MAKE) fixprecompile
+	cd libec && $(MAKE) silentfixprecompile
 	cd ecp && $(MAKE) distclean
 	cd ecc && $(MAKE) distclean
 	cd ecs && $(MAKE) distclean

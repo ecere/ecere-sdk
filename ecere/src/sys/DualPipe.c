@@ -37,7 +37,8 @@ typedef unsigned short uint16;
 typedef unsigned int uint;
 typedef int bool;
 
-int __ecereNameSpace__ecere__sys__Tokenize(char * string, int maxTokens, char * tokens[], unsigned int escapeBackSlashes);
+#define forArgsPassing 2
+int __ecereNameSpace__ecere__sys__Tokenize(char * string, int maxTokens, char * tokens[], unsigned int esc);
 char * __ecereNameSpace__ecere__sys__CopyString(char * string);
 void __ecereNameSpace__ecere__com__eSystem_Delete(void * memory);
 unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16(char * source, int * wordCount);

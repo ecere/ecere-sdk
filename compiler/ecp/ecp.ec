@@ -1337,36 +1337,22 @@ class PrecompApp : Application
          {
             if(!strcmp(arg + 1, "m32") || !strcmp(arg + 1, "m64"))
             {
-               int argLen = strlen(arg);
-               int newLen = cppOptionsLen + 1 + argLen;
+               int newLen = cppOptionsLen + 1 + strlen(arg);
                cppOptions = renew cppOptions char[newLen + 1];
                cppOptions[cppOptionsLen] = ' ';
                strcpy(cppOptions + cppOptionsLen + 1, arg);
                cppOptionsLen = newLen;
                targetBits = !strcmp(arg + 1, "m32") ? 32 : 64;
             }
-            else if(arg[1] == 'D')
+            else if(arg[1] == 'D' || arg[1] == 'I')
             {
-               int argLen = strlen(arg);
-               int newLen = cppOptionsLen + 1 + argLen;
-               cppOptions = renew cppOptions char[newLen + 1];
-               cppOptions[cppOptionsLen] = ' ';
-               strcpy(cppOptions + cppOptionsLen + 1, arg); 
-               cppOptionsLen = newLen;
-            }
-            else if(arg[1] == 'I')
-            {
-               int argLen = strlen(arg);
-               int newLen = cppOptionsLen + argLen + 3;
-               cppOptions = renew cppOptions char[newLen + 1];
-               cppOptions[cppOptionsLen] = ' ';
-               cppOptions[cppOptionsLen+1] = '-';
-               cppOptions[cppOptionsLen+2] = 'I';
-               cppOptions[cppOptionsLen+3] = '"';
-               strcpy(cppOptions + cppOptionsLen + 4, arg+2); 
-               cppOptions[newLen-1] = '\"';
-               cppOptions[newLen] = '\0';
-               cppOptionsLen = newLen;
+               char * buf;
+               int size = cppOptionsLen + 1 + strlen(arg) * 2 + 1;
+               cppOptions = renew cppOptions char[size];
+               buf = cppOptions + cppOptionsLen;
+               *buf++ = ' ';
+               PassArg(buf, arg);
+               cppOptionsLen = cppOptionsLen + 1 + strlen(buf);
             }
             else if(!strcmp(arg+1, "t"))
             {
@@ -1406,19 +1392,16 @@ class PrecompApp : Application
             {
                if(c + 1 < argc)
                {
-                  int argLen = strlen(arg);
-                  int arg1Len = strlen(argv[c+1]);
-                  int newLen = cppOptionsLen + argLen + arg1Len + 4;
-                  cppOptions = renew cppOptions char[newLen + 1];
-                  cppOptions[cppOptionsLen] = ' ';
-                  strcpy(cppOptions + cppOptionsLen + 1, arg); 
-                  cppOptions[cppOptionsLen+argLen+1] = ' ';
-                  cppOptions[cppOptionsLen+argLen+2] = '"';
-                  arg = argv[++c];
-                  strcpy(cppOptions + cppOptionsLen + argLen + 3, arg); 
-                  cppOptions[newLen-1] = '\"';
-                  cppOptions[newLen] = '\0';
-                  cppOptionsLen = newLen;
+                  char * buf;
+                  char * arg1 = argv[++c];
+                  int size = cppOptionsLen + 1 + strlen(arg) * 2 + strlen(arg1) * 2 + 1;
+                  cppOptions = renew cppOptions char[size];
+                  buf = cppOptions + cppOptionsLen;
+                  *buf++ = ' ';
+                  buf = PassArg(buf, arg);
+                  *buf++ = ' ';
+                  buf = PassArg(buf, arg1);
+                  cppOptionsLen = buf - cppOptions;
                }
                else
                   valid = false;

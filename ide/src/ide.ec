@@ -2823,21 +2823,15 @@ class IDEWorkSpace : Window
 
       for(c = 1; c<app.argc; c++)
       {
-         if(!strcmp(app.argv[c], "-t"))
-            openAsText = true;
-         else if(!strcmp(app.argv[c], "-no-parsing"))
-            ide.noParsing = true;
-         else if(!strcmp(app.argv[c], "-debug-start"))
-            debugStart = true;
-         else if(!strcmp(app.argv[c], "-debug-work-dir"))
-            debugWorkDir = true;
-         else if(!passThrough && !strcmp(app.argv[c], "-@"))
-            passThrough = true;
-         else if(passThrough)
+         if(passThrough)
          {
+            char * arg = app.argv[c];
+            char * buf = new char[strlen(arg)*2+1];
             if(ptArg++ > 0)
                passArgs.concat(" ");
-            passArgs.concat(app.argv[c]);
+            PassArg(buf, arg);
+            passArgs.concat(buf);
+            delete buf;
          }
          else if(debugWorkDir)
          {
@@ -2845,6 +2839,16 @@ class IDEWorkSpace : Window
             StripQuotes(passDebugWorkDir, passDebugWorkDir);
             debugWorkDir = false;
          }
+         else if(!strcmp(app.argv[c], "-t"))
+            openAsText = true;
+         else if(!strcmp(app.argv[c], "-no-parsing"))
+            ide.noParsing = true;
+         else if(!strcmp(app.argv[c], "-debug-start"))
+            debugStart = true;
+         else if(!strcmp(app.argv[c], "-debug-work-dir"))
+            debugWorkDir = true;
+         else if(!strcmp(app.argv[c], "-@"))
+            passThrough = true;
          else
          {
             char fullPath[MAX_LOCATION];
@@ -2905,49 +2909,8 @@ class IDEWorkSpace : Window
          }
       }
       if(passThrough && projectView && projectView.project && workspace)
-      {
-         char * fixSpacing = new char[Max(passArgs.size * 1.5, 32)];
-         {
-            int c, d = 0;
-            char j = 0;
-            char k = ' ';
-            char l = 0;
-            bool inQuote = false;
-            for(c=0; c<passArgs.size; c++)
-            {
-               l = passArgs[c];
-               if(inQuote && k != '\\' && l == ' ')
-               {
-                  fixSpacing[d++] = '\"';
-                  fixSpacing[d++] = ' ';
-                  inQuote = false;
-               }
-               else if(inQuote && l == '\0')
-               {
-                  fixSpacing[d++] = '\"';
-                  fixSpacing[d++] = '\0';
-                  inQuote = false;
-               }
-               else if(!inQuote && j != '\\' && k == ' ' && l != '-' && l != ' ')
-               {
-                  fixSpacing[d++] = '\"';
-                  fixSpacing[d++] = l;
-                  inQuote = true;
-               }
-               else if(k == '\\' && l == ' ')
-                  fixSpacing[d++] = ' ';
-               else if(k == '\\' && l == '\\')
-                  fixSpacing[d++] = '\\';
-               else if(l != '\\')
-                  fixSpacing[d++] = l;
-               j = k;
-               k = l;
-            }
-            fixSpacing[d] = '\0';
-         }
-         workspace.commandLineArgs = fixSpacing;
-      }
-      if(passDebugWorkDir)
+         workspace.commandLineArgs = passArgs;
+      if(passDebugWorkDir && projectView && projectView.project && workspace)
       {
          workspace.debugDir = passDebugWorkDir;
          delete passDebugWorkDir;
