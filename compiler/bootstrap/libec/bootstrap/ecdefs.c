@@ -1175,6 +1175,50 @@ __ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
 __ecereNameSpace__ecere__sys__ChangeCh(moduleName, '&', '_');
 }
 
+extern char *  strchr(const char * , int);
+
+char * PassArg(char * output, const char * input)
+{
+#ifdef __WIN32__
+const char * escChars = " !%&'()+,;=[]^`{}~\"";
+const char * escCharsQuoted = "\"";
+#else
+const char * escChars = " !\"$&'()*:;<=>?[\\`{|";
+const char * escCharsQuoted = "\"()$";
+#endif
+unsigned int quoting = 0x0;
+char * o = output, * i = input, * l = input;
+
+#ifdef __WIN32__
+while(*l && !strchr(escChars, *l))
+l++;
+if(*l)
+quoting = 0x1;
+#else
+if(*i == '-')
+{
+l++;
+while(*l && !strchr(escChars, *l))
+l++;
+if(*l)
+quoting = 0x1;
+*o++ = *i++;
+}
+#endif
+if(quoting)
+*o++ = '\"';
+while(*i)
+{
+if(strchr(quoting ? escCharsQuoted : escChars, *i))
+*o++ = '\\';
+*o++ = *i++;
+}
+if(quoting)
+*o++ = '\"';
+*o = '\0';
+return o;
+}
+
 struct GlobalData
 {
 uintptr_t key;
@@ -1907,6 +1951,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetImports", "void SetIm
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetDefines", "void SetDefines(ecere::sys::OldList * list)", SetDefines, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetOutputLineNumbers", "void SetOutputLineNumbers(bool value)", SetOutputLineNumbers, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FixModuleName", "void FixModuleName(char * moduleName)", FixModuleName, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("PassArg", "char * PassArg(char * output, const char * input)", PassArg, module, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "GlobalData", "ecere::sys::BTNode", sizeof(struct GlobalData), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_GlobalData = class;

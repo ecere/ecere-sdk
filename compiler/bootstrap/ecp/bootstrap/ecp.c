@@ -2451,6 +2451,8 @@ extern int strcmp(const char * , const char * );
 
 extern size_t strlen(const char * );
 
+extern char *  PassArg(char *  output, const char *  input);
+
 extern char *  GetOutputFile(void);
 
 extern void SetOutputFile(char *  s);
@@ -2477,23 +2479,23 @@ extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSp
 
 extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
-extern void SetGlobalContext(struct Context * context);
-
-extern void SetTopContext(struct Context * context);
-
-extern void SetCurrentContext(struct Context * context);
+extern void SetGlobalData(struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace);
 
 extern void SetExcludedSymbols(struct __ecereNameSpace__ecere__sys__OldList *  list);
 
-extern void SetGlobalData(struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace);
+extern void SetGlobalContext(struct Context * context);
+
+extern void SetCurrentContext(struct Context * context);
+
+extern void SetTopContext(struct Context * context);
 
 extern void SetDefines(struct __ecereNameSpace__ecere__sys__OldList *  list);
 
 extern void SetImports(struct __ecereNameSpace__ecere__sys__OldList *  list);
 
-extern void SetPrecompDefines(struct __ecereNameSpace__ecere__sys__OldList *  list);
-
 extern void SetInPreCompiler(unsigned int b);
+
+extern void SetPrecompDefines(struct __ecereNameSpace__ecere__sys__OldList *  list);
 
 extern void SetTargetPlatform(int platform);
 
@@ -2595,8 +2597,7 @@ if(arg[0] == '-')
 {
 if(!strcmp(arg + 1, "m32") || !strcmp(arg + 1, "m64"))
 {
-int argLen = strlen(arg);
-int newLen = cppOptionsLen + 1 + argLen;
+int newLen = cppOptionsLen + 1 + strlen(arg);
 
 cppOptions = __ecereNameSpace__ecere__com__eSystem_Renew(cppOptions, sizeof(char) * (newLen + 1));
 cppOptions[cppOptionsLen] = ' ';
@@ -2604,30 +2605,16 @@ strcpy(cppOptions + cppOptionsLen + 1, arg);
 cppOptionsLen = newLen;
 targetBits = !strcmp(arg + 1, "m32") ? 32 : 64;
 }
-else if(arg[1] == 'D')
+else if(arg[1] == 'D' || arg[1] == 'I')
 {
-int argLen = strlen(arg);
-int newLen = cppOptionsLen + 1 + argLen;
+char * buf;
+int size = cppOptionsLen + 1 + strlen(arg) * 2 + 1;
 
-cppOptions = __ecereNameSpace__ecere__com__eSystem_Renew(cppOptions, sizeof(char) * (newLen + 1));
-cppOptions[cppOptionsLen] = ' ';
-strcpy(cppOptions + cppOptionsLen + 1, arg);
-cppOptionsLen = newLen;
-}
-else if(arg[1] == 'I')
-{
-int argLen = strlen(arg);
-int newLen = cppOptionsLen + argLen + 3;
-
-cppOptions = __ecereNameSpace__ecere__com__eSystem_Renew(cppOptions, sizeof(char) * (newLen + 1));
-cppOptions[cppOptionsLen] = ' ';
-cppOptions[cppOptionsLen + 1] = '-';
-cppOptions[cppOptionsLen + 2] = 'I';
-cppOptions[cppOptionsLen + 3] = '"';
-strcpy(cppOptions + cppOptionsLen + 4, arg + 2);
-cppOptions[newLen - 1] = '\"';
-cppOptions[newLen] = '\0';
-cppOptionsLen = newLen;
+cppOptions = __ecereNameSpace__ecere__com__eSystem_Renew(cppOptions, sizeof(char) * (size));
+buf = cppOptions + cppOptionsLen;
+*buf++ = ' ';
+PassArg(buf, arg);
+cppOptionsLen = cppOptionsLen + 1 + strlen(buf);
 }
 else if(!strcmp(arg + 1, "t"))
 {
@@ -2667,20 +2654,17 @@ else if(!strcmp(arg + 1, "isystem") || !strcmp(arg + 1, "isysroot"))
 {
 if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 {
-int argLen = strlen(arg);
-int arg1Len = strlen(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1]);
-int newLen = cppOptionsLen + argLen + arg1Len + 4;
+char * buf;
+char * arg1 = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[++c];
+int size = cppOptionsLen + 1 + strlen(arg) * 2 + strlen(arg1) * 2 + 1;
 
-cppOptions = __ecereNameSpace__ecere__com__eSystem_Renew(cppOptions, sizeof(char) * (newLen + 1));
-cppOptions[cppOptionsLen] = ' ';
-strcpy(cppOptions + cppOptionsLen + 1, arg);
-cppOptions[cppOptionsLen + argLen + 1] = ' ';
-cppOptions[cppOptionsLen + argLen + 2] = '"';
-arg = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[++c];
-strcpy(cppOptions + cppOptionsLen + argLen + 3, arg);
-cppOptions[newLen - 1] = '\"';
-cppOptions[newLen] = '\0';
-cppOptionsLen = newLen;
+cppOptions = __ecereNameSpace__ecere__com__eSystem_Renew(cppOptions, sizeof(char) * (size));
+buf = cppOptions + cppOptionsLen;
+*buf++ = ' ';
+buf = PassArg(buf, arg);
+*buf++ = ' ';
+buf = PassArg(buf, arg1);
+cppOptionsLen = buf - cppOptions;
 }
 else
 valid = 0x0;
@@ -2733,18 +2717,18 @@ printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Syntax:\n   e
 }
 else
 {
-char command[3075LL];
 struct __ecereNameSpace__ecere__com__Instance * cppOutput;
+char command[3075LL];
 
-SetGlobalContext(globalContext);
-SetTopContext(globalContext);
-SetCurrentContext(globalContext);
-SetExcludedSymbols(&_excludedSymbols);
 SetGlobalData(&globalData);
+SetExcludedSymbols(&_excludedSymbols);
+SetGlobalContext(globalContext);
+SetCurrentContext(globalContext);
+SetTopContext(globalContext);
 SetDefines(&defines);
 SetImports(&imports);
-SetPrecompDefines(&precompDefines);
 SetInPreCompiler(0x1);
+SetPrecompDefines(&precompDefines);
 SetTargetPlatform(targetPlatform);
 SetTargetBits(targetBits);
 SetEchoOn(0x0);

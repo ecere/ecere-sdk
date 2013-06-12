@@ -863,7 +863,7 @@ extern unsigned int __ecereNameSpace__ecere__sys__StripExtension(char *  string)
 
 extern char *  strcpy(char * , const char * );
 
-extern void __ecereNameSpace__ecere__sys__ChangeCh(char *  string, char ch1, char ch2);
+extern void FixModuleName(char *  moduleName);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ImportedModule;
 
@@ -948,9 +948,7 @@ if(!projectName[0])
 strcpy(projectName, mainModuleName);
 __ecereNameSpace__ecere__sys__StripExtension(projectName);
 }
-__ecereNameSpace__ecere__sys__ChangeCh(mainModuleName, '.', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(mainModuleName, '-', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(mainModuleName, ' ', '_');
+FixModuleName(mainModuleName);
 if(targetPlatform == 1 && !isConsole && !isStaticLibrary && !isDynamicLibrary)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "typedef void * HINSTANCE;\n");
@@ -1062,9 +1060,7 @@ for(defModule = modules.first; defModule; defModule = defModule->next)
 char moduleName[1024];
 
 strcpy(moduleName, defModule->name);
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, ' ', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '.', '_');
+FixModuleName(moduleName);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "void __ecereRegisterModule_%s(Module module);\n", moduleName);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "void __ecereUnregisterModule_%s(Module module);\n", moduleName);
 if(defModule->globalInstance)
@@ -1154,9 +1150,7 @@ for(defModule = modules.first; defModule; defModule = defModule->next)
 char moduleName[1024];
 
 strcpy(moduleName, defModule->name);
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, ' ', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '.', '_');
+FixModuleName(moduleName);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereRegisterModule_%s(module);\n", moduleName);
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
@@ -1290,9 +1284,7 @@ char moduleName[1024];
 if(!strcmp(defModule->name, "i18n"))
 continue;
 strcpy(moduleName, defModule->name);
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, ' ', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '.', '_');
+FixModuleName(moduleName);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereCreateModuleInstances_%s();\n", moduleName);
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
@@ -1342,9 +1334,7 @@ destroyI18n = 0x1;
 continue;
 }
 strcpy(moduleName, defModule->name);
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, ' ', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '.', '_');
+FixModuleName(moduleName);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereDestroyModuleInstances_%s();\n", moduleName);
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
@@ -1367,9 +1357,7 @@ for(defModule = modules.first; defModule; defModule = defModule->next)
 char moduleName[1024];
 
 strcpy(moduleName, defModule->name);
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, ' ', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '.', '_');
+FixModuleName(moduleName);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereUnregisterModule_%s(module);\n", moduleName);
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
