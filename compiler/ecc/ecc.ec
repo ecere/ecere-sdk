@@ -278,6 +278,17 @@ class CompilerApp : Application
          argc++;
       }*/
 
+#ifdef _DEBUG
+      printf("\nArguments given:\n");
+      for(c=1; c<argc; c++)
+         printf(" %s", argv[c]);
+      printf("\n\n");
+      for(c=1; c<argc; c++)
+         PrintLn("Arg", c, ": ", argv[c]);
+      printf("\n");
+      //getch();
+#endif
+
       for(c = 1; c<argc; c++)
       {
          char * arg = argv[c];
@@ -432,11 +443,6 @@ class CompilerApp : Application
       if(!valid)
       {
          printf($"Syntax:\n   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n");
-#ifdef _DEBUG
-         printf($"\nArguments given:");
-         for(c = 1; c<argc; c++)
-            printf(" %s", argv[c]);
-#endif
       }
       else
       {
@@ -484,6 +490,10 @@ class CompilerApp : Application
 
          snprintf(command, sizeof(command), "%s%s -x c -E %s\"%s\"", cppCommand, cppOptions ? cppOptions : "", buildingBootStrap ? "" : "-include stdint.h -include sys/types.h ", GetSourceFile());
          command[sizeof(command)-1] = 0;
+#ifdef _DEBUG
+         PrintLn("ECC Executing:");
+         PrintLn(command);
+#endif
          if((cppOutput = DualPipeOpen({ output = true }, command)))
          {
             char impFile[MAX_LOCATION];
@@ -730,6 +740,7 @@ class CompilerApp : Application
       OutputIntlStrings();
 
 #if defined(_DEBUG) && defined(__WIN32__)
+      PrintLn("Done.");
       if(exitCode || GetNumWarnings())
          getch();
 #endif

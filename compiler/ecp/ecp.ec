@@ -1319,6 +1319,17 @@ class PrecompApp : Application
          argc++;
       }*/
 
+#ifdef _DEBUG
+      printf("\nArguments given:\n");
+      for(c=1; c<argc; c++)
+         printf(" %s", argv[c]);
+      printf("\n\n");
+      for(c=1; c<argc; c++)
+         PrintLn("Arg", c, ": ", argv[c]);
+      printf("\n");
+      //getch();
+#endif
+
       for(c = 1; c<argc; c++)
       {
          char * arg = argv[c];
@@ -1426,7 +1437,7 @@ class PrecompApp : Application
             {
                if(c + 1 < argc)
                {
-                  SetDefaultNameSpace(argv[c+1]); //defaultNameSpace = argv[c+1];
+                  SetDefaultNameSpace(argv[c+1]);
                   //defaultNameSpaceLen = strlen(argv[c+1]);
                   c++;
                }
@@ -1455,31 +1466,25 @@ class PrecompApp : Application
             SetOutputFile(defaultSymFile);
          }
       }
-      
+
       if(!valid)
       {
          printf($"Syntax:\n   ecp [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n");
-#ifdef _DEBUG
-         printf($"\nArguments given:");
-         for(c = 1; c<argc; c++)
-            printf(" %s", argv[c]);
-#endif
       }
       else
       {
+         DualPipe cppOutput;
          // TODO: Improve this
          char command[MAX_F_STRING*3];
-         DualPipe cppOutput;
-         
-         SetGlobalContext(globalContext);
-         SetTopContext(globalContext);
-         SetCurrentContext(globalContext);
-         SetExcludedSymbols(&_excludedSymbols);
          SetGlobalData(&globalData);
+         SetExcludedSymbols(&_excludedSymbols);
+         SetGlobalContext(globalContext);
+         SetCurrentContext(globalContext);
+         SetTopContext(globalContext);
          SetDefines(&::defines);
          SetImports(&imports);
-         SetPrecompDefines(&precompDefines);
          SetInPreCompiler(true);
+         SetPrecompDefines(&precompDefines);
          SetTargetPlatform(targetPlatform);
          SetTargetBits(targetBits);
          SetEchoOn(false);
@@ -1502,10 +1507,13 @@ class PrecompApp : Application
             if(FileExists(outputFilePath))
                DeleteFile(outputFilePath);
          }
-         
+
          snprintf(command, sizeof(command), "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
          command[sizeof(command)-1] = 0;
-
+#ifdef _DEBUG
+         PrintLn("ECP Executing:");
+         PrintLn(command);
+#endif
          if((cppOutput = DualPipeOpen({ output = true }, command)))
          {
             int exitCode;
@@ -1539,7 +1547,7 @@ class PrecompApp : Application
             SetYydebug(false);
             delete fileInput;
             SetFileInput(null);
-            
+
             ast = GetAST();
             if(!exitCode)
             {
@@ -1566,7 +1574,7 @@ class PrecompApp : Application
          ::defines.Free(FreeModuleDefine);
          imports.Free(FreeModuleImport);
 
-         precompDefines.Free(FreeDefinition);   
+         precompDefines.Free(FreeDefinition);
 
          FreeTypeData(privateModule);
          FreeIncludeFiles();
@@ -1585,8 +1593,9 @@ class PrecompApp : Application
       */
       SetSymbolsDir(null); // Free symbols dir
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(__WIN32__)
       // CheckMemory();
+      PrintLn("Done.");
       getch();
 #endif
    }

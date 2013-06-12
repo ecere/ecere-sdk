@@ -343,7 +343,13 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, char * commandLine, char * env, voi
             close(hInput[PIPE_READ]);
          }
          
-         numTokens = __ecereNameSpace__ecere__sys__Tokenize(commandLineCopy, sizeof(tokens) / sizeof(tokens[0]) - 1, tokens, false);
+#if 0 //#ifdef _DEBUG
+         fprintf(stderr, "\n_DualPipeOpen (in child): %s\n\n", commandLineCopy);
+#endif
+         numTokens = __ecereNameSpace__ecere__sys__Tokenize(commandLineCopy, sizeof(tokens) / sizeof(tokens[0]) - 1, tokens, forArgsPassing);
+#if 0 //#ifdef _DEBUG
+         { int c; for(c=0; c<numTokens; c++) fprintf(stderr, "argv[%d]: %s\n", c, tokens[c]); fprintf(stderr, "\n"); }
+#endif
          tokens[numTokens] = null;
          if(env)
          {

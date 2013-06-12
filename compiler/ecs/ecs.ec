@@ -1633,6 +1633,17 @@ class SymbolgenApp : Application
       }
       */
 
+#ifdef _DEBUG
+      printf("\nArguments given:\n");
+      for(c=1; c<argc; c++)
+         printf(" %s", argv[c]);
+      printf("\n\n");
+      for(c=1; c<argc; c++)
+         PrintLn("Arg", c, ": ", argv[c]);
+      printf("\n");
+      //getch();
+#endif
+
       for(c = 1; c<argc; c++)
       {
          char * arg = argv[c];
@@ -1698,11 +1709,6 @@ class SymbolgenApp : Application
       if(!valid)
       {
          printf($"Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n");
-#ifdef _DEBUG
-         printf($"\nArguments given:");
-         for(c = 1; c<argc; c++)
-            printf(" %s", argv[c]);
-#endif
       }
       else
       {
