@@ -931,7 +931,7 @@ class Debugger
       char relativeFilePath[MAX_LOCATION];
       DebuggerState oldState = state;
       ignoreBreakpoints = ignoreBkpts;
-      if(!ide.projectView.GetRelativePath(absoluteFilePath, relativeFilePath))
+      if(!ide.projectView.project.GetRelativePath(absoluteFilePath, relativeFilePath))
          strcpy(relativeFilePath, absoluteFilePath);
       switch(state)
       {
@@ -1209,8 +1209,8 @@ class Debugger
          if(prj)
             result = prj.GetRelativePath(absolutePath, relativePath);
          else
-            ide.projectView.GetRelativePath(absolutePath, relativePath);
-         //if(ide.projectView.GetRelativePath(absolutePath, relativePath));
+            result = ide.projectView.project.GetRelativePath(absolutePath, relativePath);
+         //if(ide.projectView.project.GetRelativePath(absolutePath, relativePath));
          //else
          if(!result)
          {
@@ -1726,16 +1726,12 @@ class Debugger
          {
             if(prj == ide.workspace.projects.firstIterator.data)
                continue;
-
-            //PrintLn("THIS: ", (String)prj.topNode.path);
             GdbCommand(false, "-environment-directory \"%s\"", prj.topNode.path);
-            //GdbCommand(false, ""); // why this empty GDB command
          }
 
          for(dir : ide.workspace.sourceDirs)
          {
             GdbCommand(false, "-environment-directory \"%s\"", dir);
-            //GdbCommand(false, ""); // why this empty GDB command
          }
          GdbInsertInternalBreakpoints();
          targeted = true;
@@ -2085,7 +2081,7 @@ class Debugger
       char path[MAX_LOCATION];
       
       //void MakeFilePathProjectRelative(char * path, char * relativePath)
-      if(!ide.projectView.GetRelativePath(activeFrame.file, tempPath))
+      if(!ide.projectView.project.GetRelativePath(activeFrame.file, tempPath))
          strcpy(tempPath, activeFrame.file);
       
       strcpy(path, ide.workspace.projectDir);

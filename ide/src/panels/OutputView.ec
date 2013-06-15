@@ -188,6 +188,9 @@ class OutputView : Window
       readOnly = true, hasVertScroll = true, hasHorzScroll = true, visible = false;
       anchor = Anchor { left = 0, right = 0, top = 23, bottom = 0 };
       font = { panelFont.faceName, panelFont.size };
+      background = outputBackground;
+      foreground = outputText;
+      selectionColor = selectionColor, selectionText = selectionText;
    };
 #endif
    

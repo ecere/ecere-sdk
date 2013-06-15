@@ -568,11 +568,6 @@ class ProjectView : Window
       return project.topNode.Find(moduleName, false) != null;
    }
 
-   bool GetRelativePath(char * filePath, char * relativePath)
-   {
-      return project.GetRelativePath(filePath, relativePath);
-   }
-
    ProjectNode GetNodeFromWindow(Window document, Project project, bool isCObject)
    {
       if(document.fileName)
