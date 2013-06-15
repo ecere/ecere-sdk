@@ -3188,7 +3188,7 @@ class Debugger
             else if(!strcmp(outTokens[0], "=thread-created")) //=thread-created,id="1",group-id="7611"
                ;
             else if(!strcmp(outTokens[0], "=library-loaded")) //=library-loaded,id="/lib/ld-linux.so.2",target-name="/lib/ld-linux.so.2",host-name="/lib/ld-linux.so.2",symbols-loaded="0"
-               ;
+               FGODetectLoadedLibraryForAddedProjectIssues(outTokens);
             else
                DebuggerProtocolUnknown("Unknown notify-async-output", outTokens[0]);
             outTokens.RemoveAll();
@@ -3483,6 +3483,91 @@ class Debugger
       delete subTokens;
       delete item;
       delete item2;
+   }
+
+   // From GDB Output functions
+   void FGODetectLoadedLibraryForAddedProjectIssues(Array<char *> outTokens)
+   {
+      char path[MAX_LOCATION] = "";
+      char file[MAX_FILENAME] = "";
+      bool symbolsLoaded;
+      DebugListItem item { };
+      for(token : outTokens)
+      {
+         if(TokenizeListItem(token, item))
+         {
+            if(!strcmp(item.name, "target-name"))
+            {
+               StripQuotes(item.value, path);
+               MakeSystemPath(path);
+               GetLastDirectory(path, file);
+            }
+            else if(!strcmp(item.name, "symbols-loaded"))
+            {
+               symbolsLoaded = (atoi(item.value) == 1);
+            }
+         }
+      }
+      delete item;
+      if(path[0] && file[0])
+      {
+         for(prj : ide.workspace.projects; prj != ide.workspace.projects.firstIterator.data)
+         {
+            bool match;
+            char * dot;
+            char prjTargetPath[MAX_LOCATION];
+            char prjTargetFile[MAX_FILENAME];
+            DirExpression targetDirExp = prj.GetTargetDir(currentCompiler, prj.config, bitDepth);
+            strcpy(prjTargetPath, prj.topNode.path);
+            PathCat(prjTargetPath, targetDirExp.dir);
+            prjTargetFile[0] = '\0';
+            prj.CatTargetFileName(prjTargetFile, currentCompiler, prj.config);
+            PathCat(prjTargetPath, prjTargetFile);
+            MakeSystemPath(prjTargetPath);
+
+            match = !fstrcmp(prjTargetFile, file);
+            if(!match && (dot = strstr(prjTargetFile, ".so.")))
+            {
+               char * dot3 = strstr(dot+4, ".");
+               if(dot3)
+               {
+                  dot3[0] = '\0';
+                  match = !fstrcmp(prjTargetFile, file);
+               }
+               if(!match)
+               {
+                  dot[3] = '\0';
+                  match = !fstrcmp(prjTargetFile, file);
+               }
+            }
+            if(match)
+            {
+               // TODO: nice visual feedback to better warn user. use some ide notification system or other means.
+               /* -- this is disabled because we can't trust gdb's symbols-loaded="0" field for =library-loaded (http://sourceware.org/bugzilla/show_bug.cgi?id=10693)
+               if(!symbolsLoaded)
+                  ide.outputView.debugBox.Logf($"Attention! No symbols for loaded library %s matched to the %s added project.\n", path, prj.topNode.name);
+               */
+               match = !fstrcmp(prjTargetPath, path);
+               if(!match && (dot = strstr(prjTargetPath, ".so.")))
+               {
+                  char * dot3 = strstr(dot+4, ".");
+                  if(dot3)
+                  {
+                     dot3[0] = '\0';
+                     match = !fstrcmp(prjTargetPath, path);
+                  }
+                  if(!match)
+                  {
+                     dot[3] = '\0';
+                     match = !fstrcmp(prjTargetPath, path);
+                  }
+               }
+               if(!match)
+                  ide.outputView.debugBox.Logf($"Loaded library %s doesn't match the %s target of the %s added project.\n", path, prjTargetPath, prj.topNode.name);
+               break;
+            }
+         }
+      }
    }
 
    void RunToCursorPrepare(char * absoluteFilePath, char * relativeFilePath, int lineNumber, bool atSameLevel)
