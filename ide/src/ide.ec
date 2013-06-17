@@ -2539,33 +2539,29 @@ class IDEWorkSpace : Window
    {
       if(fileAttribs.isFile)
       {
-         CodeEditor codeEditor = (CodeEditor)OpenFile(path, normal, true, "", no, normal, false);
-         if(codeEditor && line)
+         char ext[MAX_EXTENSION];
+         GetExtension(path, ext);
+         if(!strcmp(ext, "mp3") || !strcmp(ext, "flac") || !strcmp(ext, "ogg") || !strcmp(ext, "avi") || !strcmp(ext, "mkv"))
+            ShellOpen(path);
+         else if(!strcmp(ext, "a") || !strcmp(ext, "o") || !strcmp(ext, "lib") || !strcmp(ext, "dll") || !strcmp(ext, "exe"))
          {
-            char ext[MAX_EXTENSION];
-            GetExtension(path, ext);
-            if(!strcmp(ext, "mp3") || !strcmp(ext, "flac") || !strcmp(ext, "ogg") || !strcmp(ext, "avi") || !strcmp(ext, "mkv"))
-               ShellOpen(path);
-            else if(!strcmp(ext, "a") || !strcmp(ext, "o") || !strcmp(ext, "lib") || !strcmp(ext, "dll") || !strcmp(ext, "exe"))
+            char dirPath[MAX_LOCATION];
+            StripLastDirectory(path, dirPath);
+            ShellOpen(dirPath);
+         }
+         else
+         {
+            CodeEditor codeEditor = (CodeEditor)OpenFile(path, normal, true, ext, no, normal, false);
+            if(codeEditor && line)
             {
-               char dirPath[MAX_LOCATION];
-               StripLastDirectory(path, dirPath);
-               ShellOpen(dirPath);
-            }
-            else
-            {
-               CodeEditor codeEditor = (CodeEditor)OpenFile(path, normal, true, "", no, normal, false);
-               if(codeEditor && line)
-               {
-                  EditBox editBox = codeEditor.editBox;
-                  editBox.GoToLineNum(line - 1);
-                  editBox.GoToPosition(editBox.line, line - 1, col ? (col - 1) : 0);
-               }
+               EditBox editBox = codeEditor.editBox;
+               editBox.GoToLineNum(line - 1);
+               editBox.GoToPosition(editBox.line, line - 1, col ? (col - 1) : 0);
             }
          }
-         else if(fileAttribs.isDirectory)
-            ShellOpen(path);
       }
+      else if(fileAttribs.isDirectory)
+         ShellOpen(path);
    }
 
    void OnRedraw(Surface surface)
