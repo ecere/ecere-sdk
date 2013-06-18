@@ -459,8 +459,10 @@ class Debugger
                      for(i : ide.workspace.breakpoints)
                      {
                         if(i.bp && i.line == stopItem.frame.line && !fstrcmp(i.absoluteFilePath, stopItem.frame.absoluteFile))
+                        {
                            bp = i;
-                        break;
+                           break;
+                        }
                      }
                   }
                   bpHit = bp;

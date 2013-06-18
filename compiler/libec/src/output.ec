@@ -688,6 +688,7 @@ static void OutputStatement(Statement stmt, File f)
             }
          }
          f.Puts(");\n");
+         outputLine++;
          break;
       }
    }
