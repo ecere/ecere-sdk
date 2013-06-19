@@ -236,6 +236,11 @@ static void RepositionDesktop(bool updateChildren)
    int format;
    unsigned long len, fill;
    Atom type;
+   static double lastTime = 0, time;
+
+   time = GetTime();
+   if(desktopW && desktopH && time - lastTime < 1.5) return;
+   lastTime = time;
 
    w = XDisplayWidth(xGlobalDisplay, DefaultScreen(xGlobalDisplay));
    h = XDisplayHeight(xGlobalDisplay, DefaultScreen(xGlobalDisplay));
