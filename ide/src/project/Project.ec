@@ -3020,7 +3020,7 @@ private:
                         f.Puts("\n");
                      }
 
-                     if((configPlatformOptions && configPlatformOptions.options.libraries))
+                     if(configPlatformOptions && configPlatformOptions.options.libraries)
                      {
                         if(configPlatformOptions.options.libraries.count)
                         {

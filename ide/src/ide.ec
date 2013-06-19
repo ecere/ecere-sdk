@@ -783,7 +783,7 @@ class IDEWorkSpace : Window
       MenuDivider { fileMenu };
       MenuItem exitItem
       {
-         fileMenu, $"Exit", x, altF4, NotifySelect = MenuFileExit;
+         fileMenu, $"Exit", x, altF4;
 
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {

@@ -661,27 +661,42 @@ private:
       app.Lock();
          {
             char substring[512];
+            char containing[512];
+            char * and;
+            char * filterName;
+            if(!strcmp(filter.name, "All files"))
+               filterName = "files";
+            else
+               filterName = filter.name;
             if(nameCriteria[0])
                sprintf(substring, $" with file name matching \"%s\"", nameCriteria);
             else
                substring[0] = '\0';
+            if(contentCriteria && contentCriteria[0])
+               sprintf(containing, $" containing \"%s\"", contentCriteria);
+            else
+               containing[0] = '\0';
+            if(substring[0] && containing[0])
+               and = " and";
+            else
+               and = "";
             if(mode == directory)
             {
                char * s;
                ide.outputView.findBox.Logf(
-                     $"Searching \"%s\"%s for %s%s%s containing \"%s\"\n\n",
+                     $"Searching \"%s\"%s for %s%s%s%s\n\n",
                      (s = CopySystemPath(dir)), subDirs ? $" and its sub directories" : "",
-                     filter.name, substring, substring[0] ? $" and" : "", contentCriteria);
+                     filterName, substring, and, containing);
                delete s;
             }
             else if(mode == workspace)
                ide.outputView.findBox.Logf(
-                     $"Searching workspace files for files%s%s containing \"%s\"\n\n",
-                     substring, substring[0] ? $" and" : "", contentCriteria);
+                     $"Searching workspace files for %s%s%s%s\n\n",
+                     filterName, substring, and, containing);
             else if(mode == project)
                ide.outputView.findBox.Logf(
-                     $"Searching project %s files for files%s%s containing \"%s\"\n\n",
-                     project.name, substring, substring[0] ? $" and" : "", contentCriteria);
+                     $"Searching project %s files for %s%s%s%s\n\n",
+                     project.name, filterName, substring, and, containing);
          }
       app.Unlock();
       
