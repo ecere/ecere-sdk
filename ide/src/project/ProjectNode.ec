@@ -1192,7 +1192,7 @@ private:
 
          // TOCHECK: Shouldn't this apply either for all configs or none?
          CollectExclusionInfo(exclusionInfo, project.config);
-         if(!checkIfExists || !project.topNode.FindSameNameConflict(temp, false, exclusionInfo, project.config))
+         if(!checkIfExists || type == folder || !project.topNode.FindSameNameConflict(temp, false, exclusionInfo, project.config))
          {
             // Do the check for folder in the same parent or resource files only here
             if(type == folder || !checkIfExists)
