@@ -224,7 +224,6 @@ _NET_WM_STATE_BELOW, ATOM
 _NET_WM_STATE_DEMANDS_ATTENTION, ATOM
 */
 
-
 static void RepositionDesktop(bool updateChildren)
 {
    int x = 0, y = 0;
@@ -1530,30 +1529,34 @@ class XInterface : Interface
                }
                case FocusIn:
                {
-                  XFocusChangeEvent *event = (XFocusChangeEvent *) thisEvent;
-                  Window modalRoot = window.FindModal();
-                  XWindowData windowData;
-                  activeWindow = (X11Window)window.windowHandle;
+                  if(activeWindow != (X11Window)window.windowHandle)
+                  {
+                     XFocusChangeEvent *event = (XFocusChangeEvent *) thisEvent;
+                     Window modalRoot = window.FindModal();
+                     XWindowData windowData;
 
-                  if(window.parent && window == window.parent.activeChild) break;
-                  incref window;
-                  //if(window.creationActivation == activate)
-                  {
-                     if(modalRoot)
-                        modalRoot.ExternalActivate(true, true, window, null); // lastActive);
-                     else
-                        window.ExternalActivate(true, true, window, null); // lastActive); 
-                  } 
-                  windowData = modalRoot ? modalRoot.windowData : window.windowData;
-                  if(windowData && windowData.ic)
-                  {
-                     // XSetICValues(ic, XNClientWindow, window.windowHandle, XNFocusWindow, window.windowHandle, 0);
-                     XSetICFocus(windowData.ic);
+                     activeWindow = (X11Window)window.windowHandle;
+
+                     if(window.parent && window == window.parent.activeChild) break;
+                     incref window;
+                     //if(window.creationActivation == activate)
+                     {
+                        if(modalRoot)
+                           modalRoot.ExternalActivate(true, true, window, null); // lastActive);
+                        else
+                           window.ExternalActivate(true, true, window, null); // lastActive);
+                     }
+                     windowData = modalRoot ? modalRoot.windowData : window.windowData;
+                     if(windowData && windowData.ic)
+                     {
+                        // XSetICValues(ic, XNClientWindow, window.windowHandle, XNFocusWindow, window.windowHandle, 0);
+                        XSetICFocus(windowData.ic);
+                     }
+                     //delete lastActive;
+                     //lastActive = window;
+                     //incref lastActive;
+                     delete window;
                   }
-                  //delete lastActive;
-                  //lastActive = window;
-                  //incref lastActive;
-                  delete window;
                   break;
                }
                case FocusOut:
@@ -2319,23 +2322,18 @@ class XInterface : Interface
       //Logf("Position root window %s\n", window.name);
       if(window.windowHandle && (!window.parent || !window.parent.display))
       {
-#if defined(__APPLE__) || defined(__FreeBSD__)
          bool visible = window.visible;
-         if(window.visible)
-         {
+         if(window.visible && window.created)
             XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
-            WaitForViewableWindow(window);
-         }
-#endif
          if(window.state == minimized) return;
 
          if(window.nativeDecorations)
          {
             XWindowData windowData = window.windowData;
-#if !defined(__APPLE__) && !defined(__FreeBSD__)
             // TODO: How to handle frame extents not supported?
-            if(!windowData.gotFrameExtents || window.state == maximized) return;
-#endif
+            // Commenting this out was part of #700/#795 fix
+            // if(!windowData.gotFrameExtents && window.state != maximized) return;
+
             w -= window.size.w - window.clientSize.w;
             h -= window.size.h - window.clientSize.h;
          }
@@ -2398,9 +2396,7 @@ class XInterface : Interface
          if(visible)
          {
             XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
-#if defined(__APPLE__) || defined(__FreeBSD__)
             WaitForViewableWindow(window);
-#endif
             if(window.creationActivation == activate && state != minimized)
                ActivateRootWindow(window);
             
