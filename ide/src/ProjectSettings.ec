@@ -9,16 +9,27 @@ static Platform platform;
 static ProjectNode currentNode;
 static Project project;
 
-static String MakeString(char * s, int len)
+static String MakeString(char * s, int len, char * switchToDrop, int lenSwitchToDrop)
 {
    String string = new char[len+1];
-   memcpy(string, s, len);
-   string[len] = 0;
+   if(switchToDrop && switchToDrop[0] && strstr(s, switchToDrop) == s)
+   {
+      memcpy(string, s+lenSwitchToDrop, len-lenSwitchToDrop);
+      string[len-lenSwitchToDrop] = '\0';
+   }
+   else
+   {
+      memcpy(string, s, len);
+      string[len] = '\0';
+   }
    return string;
 }
 
 class StringListBox : EditBox
 {
+   char * switchToDrop;
+   int lenSwitchToDrop;
+
    textHorzScroll = true;
 
    property Array<String> strings
@@ -51,7 +62,7 @@ class StringListBox : EditBox
             if(ch == ' ' && !quoted)
             {
                if(c - start)
-                  array.Add(MakeString(contents + start, c - start));
+                  array.Add(MakeString(contents + start, c - start, switchToDrop, lenSwitchToDrop));
                start = c + 1;
             }
             else if(ch == '\"')
@@ -63,7 +74,7 @@ class StringListBox : EditBox
             }
          }
          if(c - start)
-            array.Add(MakeString(contents + start, c - start));
+            array.Add(MakeString(contents + start, c - start, switchToDrop, lenSwitchToDrop));
          return array;
       }
    }
@@ -910,6 +921,8 @@ class StringArrayOptionBox : MultiStringOptionBox
    // NO VIRTUAL PROPERTIES YET...
    Array<String> GetStrings() { return ((StringListBox)editor).strings; }
    void SetStrings(Array<String> value) { ((StringListBox)editor).strings = value; }
+
+   property char * switchToDrop { set { ((StringListBox)editor).switchToDrop = value; ((StringListBox)editor).lenSwitchToDrop = strlen(value); } };
 }
 
 class StringsArrayOptionBox : MultiStringOptionBox
@@ -986,10 +999,49 @@ static void FixPathOnPathBoxNotifyModified(PathBox pathBox)
 
 class DirsArrayOptionBox : MultiStringOptionBox
 {
+public:
+   property char * switchToDrop { set { switchToDrop = value; lenSwitchToDrop = strlen(value); } };
+private:
+   char * switchToDrop;
+   int lenSwitchToDrop;
+
    editor = DirectoriesBox
    {
       bool NotifyModified(DirectoriesBox dirsBox)
       {
+         char * switchToDrop = ((DirsArrayOptionBox)dirsBox.id).switchToDrop;
+         if(switchToDrop && switchToDrop[0])
+         {
+            bool change = false;
+            int lenSwitchToDrop = ((DirsArrayOptionBox)dirsBox.id).lenSwitchToDrop;
+            Array<String> dirs { };
+            Array<String> previousDirs = dirsBox.strings;
+            for(d : previousDirs)
+            {
+               int c;
+               char * buffer = new char[strlen(d)+64];
+               char * tokens[1024];
+               uint count;
+               strcpy(buffer, d);
+               count = Tokenize(buffer, sizeof(tokens)/sizeof(tokens[0]), tokens, (BackSlashEscaping)false);
+               for(c=0; c<count; c++)
+               {
+                  if(strstr(tokens[c], switchToDrop) == tokens[c])
+                  {
+                     tokens[c] += lenSwitchToDrop;
+                     change = true;
+                  }
+                  dirs.Add(CopyString(tokens[c]));
+               }
+               delete buffer;
+            }
+            if(change)
+               dirsBox.strings = dirs;
+            dirs.Free();
+            delete dirs;
+            previousDirs.Free();
+            delete previousDirs;
+         }
          ((OptionBox)dirsBox.id).Retrieve();
          return true;
       }
@@ -2003,7 +2055,7 @@ class CompilerTab : Tab
    DirsArrayOptionBox includeDirs
    {
       rightPane, this, size = { 290, 22 }, anchor = { left = 8, top = 250, right = 8, bottom = 8 };
-      text = $"Additional Include Directories", hotKey = altI, option = OPTION(includeDirs);
+      text = $"Additional Include Directories", hotKey = altI, option = OPTION(includeDirs), switchToDrop = "-I";
    };
 
    CompilerTab()
@@ -2094,7 +2146,7 @@ class LinkerTab : Tab
    StringArrayOptionBox libraries
    {
       this, size = { 290, 22 }, anchor = { left = 8, top = 66, right = 8 };
-      text = $"Additional Libraries", hotKey = altL, option = OPTION(libraries);
+      text = $"Additional Libraries", hotKey = altL, option = OPTION(libraries), switchToDrop = "-l";
       configReplaces = true;
    };
 
@@ -2122,7 +2174,7 @@ class LinkerTab : Tab
    DirsArrayOptionBox libraryDirs
    {
       this, size = { 290, 22 }, anchor = { left = 8, top = 182, right = 8, bottom = 8 };
-      text = $"Additional Library Directories", hotKey = altY, option = OPTION(libraryDirs);
+      text = $"Additional Library Directories", hotKey = altY, option = OPTION(libraryDirs), switchToDrop = "-L";
    };
 
    bool OnCreate()
