@@ -129,7 +129,7 @@ class OutputView : Window
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
          OnGotoError(editBox.line.text, mods.ctrl && mods.shift);
-         return false; //true; // why not use true here? 
+         return false;
       }
 
       bool NotifyKeyDown(EditBox editBox, Key key, unichar ch)
@@ -152,6 +152,22 @@ class OutputView : Window
       background = outputBackground;
       foreground = outputText;
       selectionColor = selectionColor, selectionText = selectionText;
+
+      bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
+      {
+         OnCodeLocationParseAndGoTo(editBox.line.text);
+         return false;
+      }
+
+      bool NotifyKeyDown(EditBox editBox, Key key, unichar ch)
+      {
+         if((SmartKey)key == enter)
+         {
+            OnCodeLocationParseAndGoTo(editBox.line.text);
+            return false;
+         }
+         return true;
+      }
    };
    
    LogBox findBox
@@ -167,7 +183,7 @@ class OutputView : Window
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
          OnCodeLocationParseAndGoTo(editBox.line.text);
-         return false; //true;
+         return false;
       }
 
       bool NotifyKeyDown(EditBox editBox, Key key, unichar ch)

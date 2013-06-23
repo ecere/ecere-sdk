@@ -2449,6 +2449,7 @@ class IDEWorkSpace : Window
 
    void CodeLocationParseAndGoTo(const char * text, Project project, const char * dir)
    {
+      char *s = null;
       char *path = text;
       char *colon = strchr(text, ':');
       char filePath[MAX_LOCATION] = "";
@@ -2462,6 +2463,8 @@ class IDEWorkSpace : Window
          path = (colon - 1 > path) ? colon - 1 : path;
          colon = strstr(colon + 1, ":");
       }
+      if(*path == '*' && (s = strchr(path+1, '*')))
+         path = s+1;
       while(isspace(*path)) path++;
       if(*path == '(')
       {
