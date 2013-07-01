@@ -2693,8 +2693,8 @@ direct_declarator_nofunction_type_ok:
    {
       char * colon = RSearchString($1.name, "::", strlen($1.name), true, false);
       String s = colon ? colon + 2 : $1.name;
-      FreeSpecifier($1);
       $$ = MkDeclaratorIdentifier(MkIdentifier(s));
+      FreeSpecifier($1);
    }
    | UINT { $$ = MkDeclaratorIdentifier(MkIdentifier("uint")); }
    // These rules need to be reviewed in lights of prototypes with types only...
@@ -3167,10 +3167,10 @@ init_declarator_list:
    {
       char * colon = RSearchString($1.name, "::", strlen($1.name), true, false);
       String s = colon ? colon + 2 : $1.name;
-      FreeSpecifier($1);
       $$ = MkList();
       ListAdd($$, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(s)), null));
       ListAdd($$, $3);
+      FreeSpecifier($1);
    }
    | init_declarator_list_error ',' init_declarator   { $$ = $1; ListAdd($1, $3); }
    /*| base_strict_type ',' init_declarator
