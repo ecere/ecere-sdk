@@ -2410,6 +2410,7 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
                specType.kind = classType;
                break;
             }
+            specType.members.Clear();
             if(spec.type == structSpecifier)
                specType.kind = structType;
             else if(spec.type == unionSpecifier)
