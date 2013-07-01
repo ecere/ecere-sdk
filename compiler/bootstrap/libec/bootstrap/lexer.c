@@ -1760,6 +1760,11 @@ return ('$');
 break;
 case 168LL:
 {
+while(include_stack_ptr && !fileStack[include_stack_ptr])
+{
+--include_stack_ptr;
+defaultDeclMode = declMode = declModeStack[include_stack_ptr];
+}
 if(--include_stack_ptr < 0)
 {
 return 0;

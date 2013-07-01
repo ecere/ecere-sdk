@@ -1355,7 +1355,7 @@ extern char *  outputFile;
 
 extern unsigned int __ecereNameSpace__ecere__sys__StripExtension(char *  string);
 
-extern void __ecereNameSpace__ecere__sys__ChangeCh(char *  string, char ch1, char ch2);
+extern void FixModuleName(char *  moduleName);
 
 extern int sprintf(char * , char * , ...);
 
@@ -1386,9 +1386,7 @@ ListAdd(specifiers, MkSpecifier(VOID));
 moduleParam = MkTypeName(MkListOne(MkSpecifierName("Module")), MkDeclaratorIdentifier(MkIdentifier("module")));
 __ecereNameSpace__ecere__sys__GetLastDirectory(outputFile, moduleName);
 __ecereNameSpace__ecere__sys__StripExtension(moduleName);
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '.', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, ' ', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
+FixModuleName(moduleName);
 sprintf(registerName, "__ecereRegisterModule_%s", moduleName);
 declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), MkListOne(moduleParam));
 {
@@ -1419,9 +1417,7 @@ ListAdd(specifiers, MkSpecifier(VOID));
 moduleParam = MkTypeName(MkListOne(MkSpecifierName("Module")), MkDeclaratorIdentifier(MkIdentifier("module")));
 __ecereNameSpace__ecere__sys__GetLastDirectory(outputFile, moduleName);
 __ecereNameSpace__ecere__sys__StripExtension(moduleName);
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '.', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, ' ', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
+FixModuleName(moduleName);
 sprintf(registerName, "__ecereUnregisterModule_%s", moduleName);
 declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), MkListOne(moduleParam));
 {
@@ -2063,6 +2059,8 @@ extern struct __ecereNameSpace__ecere__com__Instance * privateModule;
 extern void FreePropertyWatch(struct PropertyWatch * watcher);
 
 extern char *  sourceFile;
+
+extern void __ecereNameSpace__ecere__sys__ChangeCh(char *  string, char ch1, char ch2);
 
 extern struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
 

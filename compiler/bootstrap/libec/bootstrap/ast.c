@@ -4161,6 +4161,7 @@ specType->_class = _class;
 specType->kind = 8;
 break;
 }
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(&specType->members);
 if(spec->type == 3)
 specType->kind = 9;
 else if(spec->type == 4)

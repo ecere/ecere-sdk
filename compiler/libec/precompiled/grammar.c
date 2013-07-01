@@ -762,6 +762,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument *  templateArgs;
 struct __ecereNameSpace__ecere__com__Class * templateClass;
 struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
+unsigned int isInstanceClass;
 } __attribute__ ((gcc_struct));
 
 extern __declspec(dllexport) long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
@@ -9574,8 +9575,8 @@ case 885:
 char * colon = __ecereFunction___ecereNameSpace__ecere__sys__RSearchString(yyvsp[(1) - (1)].specifier->name, "::", strlen(yyvsp[(1) - (1)].specifier->name), 0x1, 0x0);
 char * s = colon ? colon + 2 : yyvsp[(1) - (1)].specifier->name;
 
-FreeSpecifier(yyvsp[(1) - (1)].specifier);
 yyval.declarator = MkDeclaratorIdentifier(MkIdentifier(s));
+FreeSpecifier(yyvsp[(1) - (1)].specifier);
 ;
 }
 break;
@@ -10559,10 +10560,10 @@ case 1041:
 char * colon = __ecereFunction___ecereNameSpace__ecere__sys__RSearchString(yyvsp[(1) - (3)].specifier->name, "::", strlen(yyvsp[(1) - (3)].specifier->name), 0x1, 0x0);
 char * s = colon ? colon + 2 : yyvsp[(1) - (3)].specifier->name;
 
-FreeSpecifier(yyvsp[(1) - (3)].specifier);
 yyval.list = MkList();
 ListAdd(yyval.list, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(s)), (((void *)0))));
 ListAdd(yyval.list, yyvsp[(3) - (3)].initDeclarator);
+FreeSpecifier(yyvsp[(1) - (3)].specifier);
 ;
 }
 break;

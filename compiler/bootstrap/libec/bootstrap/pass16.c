@@ -1116,7 +1116,7 @@ extern char *  outputFile;
 
 extern unsigned int __ecereNameSpace__ecere__sys__StripExtension(char *  string);
 
-extern void __ecereNameSpace__ecere__sys__ChangeCh(char *  string, char ch1, char ch2);
+extern void FixModuleName(char *  moduleName);
 
 extern int sprintf(char * , char * , ...);
 
@@ -1154,9 +1154,7 @@ specifiers = MkList();
 ListAdd(specifiers, MkSpecifier(VOID));
 __ecereNameSpace__ecere__sys__GetLastDirectory(outputFile, moduleName);
 __ecereNameSpace__ecere__sys__StripExtension(moduleName);
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, ' ', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '.', '_');
-__ecereNameSpace__ecere__sys__ChangeCh(moduleName, '-', '_');
+FixModuleName(moduleName);
 sprintf(registerName, "__ecereCreateModuleInstances_%s", moduleName);
 declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), (((void *)0)));
 {
