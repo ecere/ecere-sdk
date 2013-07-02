@@ -3066,8 +3066,9 @@ class IDEWorkSpace : Window
       {
          if(!libPathExists[item])  // fstrcmp should be used
          {
-            newLibPaths.Add(item);
-            libPathExists[item] = true;
+            String s = CopyString(item);
+            newLibPaths.Add(s);
+            libPathExists[s] = true;
          }
       }
 
@@ -3084,8 +3085,9 @@ class IDEWorkSpace : Window
       {
          if(!libPathExists[oldPaths[c]])  // fstrcmp should be used
          {
-            newLibPaths.Add(oldPaths[c]);
-            libPathExists[oldPaths[c]] = true;
+            String s = CopyString(oldPaths[c]);
+            newLibPaths.Add(s);
+            libPathExists[s] = true;
          }
       }
 
@@ -3110,6 +3112,7 @@ class IDEWorkSpace : Window
 #endif*/
       delete newList;
 
+      newLibPaths.Free();
       delete newLibPaths;
       delete libPathExists;
 #endif
