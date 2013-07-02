@@ -15,8 +15,7 @@ class CallStackView : Window
    anchor = Anchor { left = 0, right = 0.2, top = 0 };
    size.h = 200;
 
-   virtual void OnGotoLine(char * line);
-   virtual void OnSelectFrame(int lineNumber);
+   virtual void OnSelectFrame(int frameIndex);
    virtual void OnToggleBreakpoint();
 
    bool moved, logging;
@@ -33,12 +32,10 @@ class CallStackView : Window
 
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
-         OnGotoLine(editBox.line.text);
+         int frameIndex = -1;
          if(strcmp(editBox.line.text, "..."))
-         {
-            int lineNumber = atoi(editBox.line.text);
-            OnSelectFrame(lineNumber);
-         }
+            frameIndex = atoi(editBox.line.text);
+         OnSelectFrame(frameIndex);
          return true;
       }
 
@@ -46,12 +43,10 @@ class CallStackView : Window
       {
          if(key == enter || key == keyPadEnter)
          {
-            OnGotoLine(editBox.line.text);
+            int frameIndex = -1;
             if(strcmp(editBox.line.text, "..."))
-            {
-               int lineNumber = atoi(editBox.line.text);
-               OnSelectFrame(lineNumber);
-            }
+               frameIndex = atoi(editBox.line.text);
+            OnSelectFrame(frameIndex);
             return false;
          }
          if(key == f9)

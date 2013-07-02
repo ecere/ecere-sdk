@@ -486,16 +486,11 @@ class IDEWorkSpace : Window
    {
       parent = this, font = { panelFont.faceName, panelFont.size };
 
-      void OnGotoLine(char * line)
+      void OnSelectFrame(int frameIndex)
       {
-         int stackLvl;
-         stackLvl = atoi(line);
-         ide.debugger.GoToStackFrameLine(stackLvl, true);
-      }
-
-      void OnSelectFrame(int lineNumber)
-      {
-         ide.debugger.SelectFrame(lineNumber);
+         ide.debugger.GoToStackFrameLine(frameIndex, true);
+         if(frameIndex >= 0)
+            ide.debugger.SelectFrame(frameIndex);
       }
 
       void OnToggleBreakpoint()
