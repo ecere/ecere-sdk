@@ -1904,7 +1904,7 @@ else
 data->largest = ((struct __ecereNameSpace__ecere__com__EnumClassData *)base->data)->largest;
 }
 }
-if(base && base->vTblSize)
+if(base && base->vTblSize && _class->vTblSize < base->vTblSize)
 {
 _class->vTblSize = base->vTblSize;
 (__ecereNameSpace__ecere__com__eSystem_Delete(_class->_vTbl), _class->_vTbl = 0);
@@ -3326,9 +3326,8 @@ for(derivative = base->derivatives.first; derivative; derivative = derivative->n
 {
 struct __ecereNameSpace__ecere__com__Class * _class = derivative->data;
 struct __ecereNameSpace__ecere__com__Property * prop;
-struct __ecereNameSpace__ecere__com__BTNamedLink * link;
+struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->prop, _property->name);
 
-link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->prop, _property->name);
 if(link)
 {
 prop = link->data;
@@ -3362,7 +3361,11 @@ struct __ecereNameSpace__ecere__com__Property * _property = (((void *)0));
 
 if(_class)
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->prop, (name ? name : dataType)))
+struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->prop, name ? name : dataType);
+
+if(link)
+_property = link->data;
+if(!_property)
 {
 _property = __extension__ ({
 struct __ecereNameSpace__ecere__com__Property * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_Property);
