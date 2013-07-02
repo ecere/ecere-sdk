@@ -939,7 +939,7 @@ File OpenIncludeFile(char * includeFile)
                break;
          }
       }
-      if(sysIncludeDirs)
+      if(!file && sysIncludeDirs)
       {
          for(includeDir = sysIncludeDirs->first; includeDir; includeDir = includeDir.next)
          {

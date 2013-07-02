@@ -172,7 +172,7 @@ public struct CodePosition
 {
 public:
    int line, charPos, pos;
-   bool included;
+   int included;
 
    void AdjustDelete(BufferLocation start, BufferLocation end)
    {

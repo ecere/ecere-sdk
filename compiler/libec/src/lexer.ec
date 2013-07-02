@@ -2203,7 +2203,7 @@ YY_RULE_SETUP
 case YY_STATE_EOF(INITIAL):
 #line 268 "lexer.l"
 {
-      while(include_stack_ptr && !fileStack[include_stack_ptr])
+      while(include_stack_ptr && !fileStack[include_stack_ptr-1])
       {
          --include_stack_ptr;
          defaultDeclMode = declMode = declModeStack[include_stack_ptr];
@@ -3247,6 +3247,8 @@ int preprocessor()
                char fileName[MAX_LOCATION];
                
                int inOut;
+
+               fileName[0] = 0;
                GetString(&pointer, fileName, MAX_LOCATION);
                inOut = GetValue(&pointer);
                               
@@ -3260,6 +3262,7 @@ int preprocessor()
                   if(!strcmp(extension, "c") || !strcmp(extension, "h"))
                      declMode = defaultDeclMode = defaultAccess;
 
+                  fileStack[include_stack_ptr] = null;
                   include_stack_ptr++;
                }
                else if(inOut == 2)
@@ -3271,7 +3274,11 @@ int preprocessor()
                yylloc.end.charPos = 1;
                yylloc.end.line = lineNumber;
                //yylloc.end.pos -= count;
-               yylloc.end.included = (include_stack_ptr > 0) ? GetIncludeFileID(fileName) : 0;
+
+               if(include_stack_ptr > 0 || (lineNumber && fileName[0]))
+                  yylloc.end.included = GetIncludeFileID(fileName);
+               else
+                  yylloc.end.included = 0;
             }
             /*
             int lineNumber = strtol(line+1, &endPtr, 0);
@@ -3384,17 +3391,17 @@ public void resetScanner()
    yylloc.start.charPos = yylloc.end.charPos = 1;
    yylloc.start.line = yylloc.end.line = 1;
    yylloc.start.pos = yylloc.end.pos = 0;
-   yylloc.start.included = yylloc.end.included = false;
+   yylloc.start.included = yylloc.end.included = 0;
 
    expression_yylloc.start.charPos = expression_yylloc.end.charPos = 1;
    expression_yylloc.start.line = expression_yylloc.end.line = 1;
    expression_yylloc.start.pos = expression_yylloc.end.pos = 0;
-   expression_yylloc.start.included = expression_yylloc.end.included = false;
+   expression_yylloc.start.included = expression_yylloc.end.included = 0;
 
    type_yylloc.start.charPos = type_yylloc.end.charPos = 1;
    type_yylloc.start.line = type_yylloc.end.line = 1;
    type_yylloc.start.pos = type_yylloc.end.pos = 0;
-   type_yylloc.start.included = type_yylloc.end.included = false;
+   type_yylloc.start.included = type_yylloc.end.included = 0;
 
    include_stack_ptr = 0;
 }
