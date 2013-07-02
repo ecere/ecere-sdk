@@ -796,7 +796,7 @@ public void ImportModule(char * name, ImportType importType, AccessMode importAc
                   MapIterator<String, List<Module> > it { map = loadedModules };
                   if(!it.Index(file, false))
                   {
-                     Module firstModule = eModule_LoadStrict(__thisModule, file, importAccess);
+                     Module firstModule = eModule_LoadStrict(__thisModule.application, file, importAccess);
                      if(firstModule)
                      {
                         list = { };

@@ -1235,7 +1235,7 @@ void FreeModuleData(Module module)
                list.Remove(list.GetFirst());
                loadedModules.Remove(mapIt.pointer);
                delete list;
-               eModule_Unload(__thisModule, mod);
+               eModule_Unload(__thisModule.application, mod);
             }
             break;
          }
