@@ -332,11 +332,12 @@ public:
       char name[MAX_LOCATION];
       char absolute[MAX_LOCATION];
       Project prj = null;
+      ProjectNode node = null;
 
       GetLastDirectory(relative, name);
       for(p : projects)
       {
-         if(p.topNode.Find(name, false))
+         if(node = p.topNode.Find(name, false))
          {
             prj = p;
             break;
@@ -344,8 +345,7 @@ public:
       }
       if(prj)
       {
-         strcpy(absolute, prj.topNode.path);
-         PathCatSlash(absolute, relative);
+         node.GetFullFilePath(absolute);
          return CopyString(absolute);
       }
 

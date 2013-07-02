@@ -330,31 +330,29 @@ static void OutputAsmField(AsmField field, File f)
    }
 }
 
+static void GetSourceName(char * name, const char * src)
+{
+   name[0] = 0;
+   if(src)
+   {
+      if(!strchr(src, '/') && !strchr(src, '\\'))
+         StripLastDirectory(sourceFile, name);
+      PathCat(name, src);
+   }
+   else if(sourceFile)
+      PathCat(name, sourceFile);
+   ChangeCh(name, '\\', '/');
+}
+
 static void OutputStatement(Statement stmt, File f)
 {
    char name[MAX_FILENAME] = "";
    char origName[MAX_FILENAME] = "";
 
-   /*
-   if(sourceFile)
-      eString_GetLastDirectory(sourceFile, name);
-   */
-
    if(inCompiler)
    {
-      if(yylloc.start.included)
-      {
-         //GetWorkingDir(name, sizeof(name));
-         PathCat(name, GetIncludeFileFromID(yylloc.start.included));
-      }
-      else if(sourceFile)
-      {
-         //GetWorkingDir(name, sizeof(name));
-         PathCat(name, sourceFile);
-      }
-      ChangeCh(name, '\\', '/');
+      GetSourceName(name, stmt.loc.start.included ? GetIncludeFileFromID(stmt.loc.start.included) : null);
 
-      //GetWorkingDir(origName, sizeof(origName));
       PathCat(origName, outputFile);
       ChangeCh(origName, '\\', '/');
    }
@@ -1048,26 +1046,10 @@ static void OutputInitializer(Initializer initializer, File f)
    char name[MAX_FILENAME] = "";
    char origName[MAX_FILENAME] = "";
 
-   /*
-   if(sourceFile)
-      eString_GetLastDirectory(sourceFile, name);
-   */
-
    if(inCompiler)
    {
-      if(yylloc.start.included)
-      {
-         //GetWorkingDir(name, sizeof(name));
-         PathCat(name, GetIncludeFileFromID(yylloc.start.included));
-      }
-      else if(sourceFile)
-      {
-         //GetWorkingDir(name, sizeof(name));
-         PathCat(name, sourceFile);
-      }
-      ChangeCh(name, '\\', '/');
+      GetSourceName(name, initializer.loc.start.included ? GetIncludeFileFromID(initializer.loc.start.included) : null);
 
-      //GetWorkingDir(origName, sizeof(origName));
       PathCat(origName, outputFile);
       ChangeCh(origName, '\\', '/');
    }
@@ -1149,22 +1131,8 @@ static void OutputDeclaration(Declaration decl, File f)
                if(d.initializer)
                {
                   char name[MAX_FILENAME] = "";
-                  /*
-                  if(sourceFile)
-                     GetLastDirectory(sourceFile, name);
-                  */
 
-                  if(yylloc.start.included)
-                  {
-                     //GetWorkingDir(name, sizeof(name));
-                     PathCat(name, GetIncludeFileFromID(yylloc.start.included));
-                  }
-                  else if(sourceFile)
-                  {
-                     //GetWorkingDir(name, sizeof(name));
-                     PathCat(name, sourceFile);
-                  }
-                  ChangeCh(name, '\\', '/');
+                  GetSourceName(name, decl.loc.start.included ? GetIncludeFileFromID(decl.loc.start.included) : null);
 
                   if(inCompiler && outputLineNumbers && decl.loc.start.line) 
                   {
@@ -1283,17 +1251,7 @@ static void OutputFunction(FunctionDefinition func, File f)
          char name[1024] = "";
          Identifier id = GetDeclId(func.declarator);
 
-         if(yylloc.start.included)
-         {
-            //GetWorkingDir(name, sizeof(name));
-            PathCat(name, GetIncludeFileFromID(yylloc.start.included));
-         }
-         else if(sourceFile)
-         {
-            //GetWorkingDir(name, sizeof(name));
-            PathCat(name, sourceFile);
-         }
-         ChangeCh(name, '\\', '/');
+         GetSourceName(name, func.loc.start.included ? GetIncludeFileFromID(func.loc.start.included) : null);
 
          f.Printf("{\n");
          f.Printf("   __ecereNameSpace__ecere__com__MemoryGuard_PushLoc(\"%s:%s\");\n", name, id.string);

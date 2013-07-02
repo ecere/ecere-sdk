@@ -2386,7 +2386,7 @@ class CodeEditor : Window
 
          if(!strcmpi(ext, "ec") || !strcmpi(ext, "eh") || !strcmpi(ext, "c") || !strcmpi(ext, "h") || !strcmpi(ext, "cpp") ||
                !strcmpi(ext, "hpp") || !strcmpi(ext, "cxx") || !strcmpi(ext, "hxx") || !strcmpi(ext, "cc") || !strcmpi(ext, "hh") ||
-               !strcmpi(ext, "m") || !strcmpi(ext, "mm") || !strcmpi(ext, "cs") || !strcmpi(ext, "java"))
+               !strcmpi(ext, "m") || !strcmpi(ext, "mm") || !strcmpi(ext, "cs") || !strcmpi(ext, "java") || !strcmpi(ext, "y") || !strcmpi(ext, "l"))
             editBox.syntaxHighlighting = true;
          else
             editBox.syntaxHighlighting = false;
