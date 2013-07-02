@@ -116,7 +116,7 @@ struct CodePosition
 int line;
 int charPos;
 int pos;
-unsigned int included;
+int included;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Location;
@@ -1501,15 +1501,33 @@ OutputExpression(field->expression, f);
 }
 }
 
-extern unsigned int inCompiler;
+extern char *  strchr(const char * , int);
 
-extern char *  __ecereNameSpace__ecere__sys__PathCat(char *  string, char *  addedPath);
-
-extern char *  GetIncludeFileFromID(int id);
+extern char *  __ecereNameSpace__ecere__sys__StripLastDirectory(char *  string, char *  output);
 
 extern char *  sourceFile;
 
+extern char *  __ecereNameSpace__ecere__sys__PathCat(char *  string, char *  addedPath);
+
 extern void __ecereNameSpace__ecere__sys__ChangeCh(char *  string, char ch1, char ch2);
+
+static void GetSourceName(char * name, const char * src)
+{
+name[0] = (char)0;
+if(src)
+{
+if(!strchr(src, '/') && !strchr(src, '\\'))
+__ecereNameSpace__ecere__sys__StripLastDirectory(sourceFile, name);
+__ecereNameSpace__ecere__sys__PathCat(name, src);
+}
+else if(sourceFile)
+__ecereNameSpace__ecere__sys__PathCat(name, sourceFile);
+__ecereNameSpace__ecere__sys__ChangeCh(name, '\\', '/');
+}
+
+extern unsigned int inCompiler;
+
+extern char *  GetIncludeFileFromID(int id);
 
 extern char *  outputFile;
 
@@ -1552,15 +1570,7 @@ char origName[274] = "";
 
 if(inCompiler)
 {
-if(yylloc.start.included)
-{
-__ecereNameSpace__ecere__sys__PathCat(name, GetIncludeFileFromID((unsigned int)yylloc.start.included));
-}
-else if(sourceFile)
-{
-__ecereNameSpace__ecere__sys__PathCat(name, sourceFile);
-}
-__ecereNameSpace__ecere__sys__ChangeCh(name, '\\', '/');
+GetSourceName(name, stmt->loc.start.included ? GetIncludeFileFromID(stmt->loc.start.included) : (((void *)0)));
 __ecereNameSpace__ecere__sys__PathCat(origName, outputFile);
 __ecereNameSpace__ecere__sys__ChangeCh(origName, '\\', '/');
 }
@@ -2269,15 +2279,7 @@ char origName[274] = "";
 
 if(inCompiler)
 {
-if(yylloc.start.included)
-{
-__ecereNameSpace__ecere__sys__PathCat(name, GetIncludeFileFromID((unsigned int)yylloc.start.included));
-}
-else if(sourceFile)
-{
-__ecereNameSpace__ecere__sys__PathCat(name, sourceFile);
-}
-__ecereNameSpace__ecere__sys__ChangeCh(name, '\\', '/');
+GetSourceName(name, initializer->loc.start.included ? GetIncludeFileFromID(initializer->loc.start.included) : (((void *)0)));
 __ecereNameSpace__ecere__sys__PathCat(origName, outputFile);
 __ecereNameSpace__ecere__sys__ChangeCh(origName, '\\', '/');
 }
@@ -2349,15 +2351,7 @@ if(d->initializer)
 {
 char name[274] = "";
 
-if(yylloc.start.included)
-{
-__ecereNameSpace__ecere__sys__PathCat(name, GetIncludeFileFromID((unsigned int)yylloc.start.included));
-}
-else if(sourceFile)
-{
-__ecereNameSpace__ecere__sys__PathCat(name, sourceFile);
-}
-__ecereNameSpace__ecere__sys__ChangeCh(name, '\\', '/');
+GetSourceName(name, decl->loc.start.included ? GetIncludeFileFromID(decl->loc.start.included) : (((void *)0)));
 if(inCompiler && outputLineNumbers && decl->loc.start.line)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n#line %d \"%s\"\n", decl->loc.start.line, name);
@@ -2482,15 +2476,7 @@ if(inCompiler && memoryGuard)
 char name[1024] = "";
 struct Identifier * id = GetDeclId(func->declarator);
 
-if(yylloc.start.included)
-{
-__ecereNameSpace__ecere__sys__PathCat(name, GetIncludeFileFromID((unsigned int)yylloc.start.included));
-}
-else if(sourceFile)
-{
-__ecereNameSpace__ecere__sys__PathCat(name, sourceFile);
-}
-__ecereNameSpace__ecere__sys__ChangeCh(name, '\\', '/');
+GetSourceName(name, func->loc.start.included ? GetIncludeFileFromID(func->loc.start.included) : (((void *)0)));
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "{\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereNameSpace__ecere__com__MemoryGuard_PushLoc(\"%s:%s\");\n", name, id->string);
 outputLine += 2;

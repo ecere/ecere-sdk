@@ -126,7 +126,7 @@ struct CodePosition
 int line;
 int charPos;
 int pos;
-unsigned int included;
+int included;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Location;
@@ -1764,7 +1764,7 @@ struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0,
 
 if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(file), 0x0))
 {
-struct __ecereNameSpace__ecere__com__Instance * firstModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(__thisModule, file, importAccess);
+struct __ecereNameSpace__ecere__com__Instance * firstModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application, file, importAccess);
 
 if(firstModule)
 {
@@ -1927,7 +1927,7 @@ if(file)
 break;
 }
 }
-if(sysIncludeDirs)
+if(!file && sysIncludeDirs)
 {
 for(includeDir = (*sysIncludeDirs).first; includeDir; includeDir = includeDir->next)
 {

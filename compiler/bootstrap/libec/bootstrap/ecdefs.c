@@ -129,7 +129,7 @@ unsigned int isWatchable;
 struct CodePosition
 {
 int line, charPos, pos;
-unsigned int included;
+int included;
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_CodePosition;
@@ -1739,7 +1739,7 @@ char string[10000];
 if(yylloc.start.included)
 {
 __ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof string);
-__ecereNameSpace__ecere__sys__PathCat(string, GetIncludeFileFromID((unsigned int)yylloc.start.included));
+__ecereNameSpace__ecere__sys__PathCat(string, GetIncludeFileFromID(yylloc.start.included));
 }
 else
 {
@@ -1779,7 +1779,7 @@ char string[10000];
 if(yylloc.start.included)
 {
 __ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof string);
-__ecereNameSpace__ecere__sys__PathCat(string, GetIncludeFileFromID((unsigned int)yylloc.start.included));
+__ecereNameSpace__ecere__sys__PathCat(string, GetIncludeFileFromID(yylloc.start.included));
 }
 else
 {
@@ -1975,7 +1975,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "AdjustDelete", "void Adju
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "line", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "charPos", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "pos", "int", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "included", "bool", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "included", "int", 4, 4, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "Location", 0, sizeof(struct Location), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Location = class;

@@ -127,7 +127,7 @@ struct CodePosition
 int line;
 int charPos;
 int pos;
-unsigned int included;
+int included;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Location;
@@ -2548,7 +2548,7 @@ __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, 
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(list, ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(list));
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))loadedModules->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(loadedModules, mapIt.pointer);
 (__ecereNameSpace__ecere__com__eInstance_DecRef(list), list = 0);
-__ecereNameSpace__ecere__com__eModule_Unload(__thisModule, mod);
+__ecereNameSpace__ecere__com__eModule_Unload(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application, mod);
 }
 break;
 }

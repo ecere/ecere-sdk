@@ -116,7 +116,7 @@ struct CodePosition
 int line;
 int charPos;
 int pos;
-unsigned int included;
+int included;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Location;

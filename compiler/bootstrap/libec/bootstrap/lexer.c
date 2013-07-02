@@ -126,7 +126,7 @@ struct CodePosition
 int line;
 int charPos;
 int pos;
-unsigned int included;
+int included;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Location;
@@ -1760,7 +1760,7 @@ return ('$');
 break;
 case 168LL:
 {
-while(include_stack_ptr && !fileStack[include_stack_ptr])
+while(include_stack_ptr && !fileStack[include_stack_ptr - 1])
 {
 --include_stack_ptr;
 defaultDeclMode = declMode = declModeStack[include_stack_ptr];
@@ -2376,6 +2376,7 @@ if(lineNumber)
 char fileName[797];
 int inOut;
 
+fileName[0] = (char)0;
 __ecereNameSpace__ecere__sys__GetString(&pointer, fileName, (797));
 inOut = __ecereNameSpace__ecere__sys__GetValue(&pointer);
 if(inOut == 1)
@@ -2386,6 +2387,7 @@ defaultDeclMode = declModeStack[include_stack_ptr] = declMode;
 __ecereNameSpace__ecere__sys__GetExtension(fileName, extension);
 if(!strcmp(extension, "c") || !strcmp(extension, "h"))
 declMode = defaultDeclMode = 0;
+fileStack[include_stack_ptr] = (((void *)0));
 include_stack_ptr++;
 }
 else if(inOut == 2)
@@ -2395,7 +2397,10 @@ defaultDeclMode = declMode = declModeStack[include_stack_ptr];
 }
 yylloc.end.charPos = 1;
 yylloc.end.line = lineNumber;
-yylloc.end.included = (include_stack_ptr > 0) ? (unsigned int)GetIncludeFileID(fileName) : (unsigned int)0;
+if(include_stack_ptr > 0 || (lineNumber && fileName[0]))
+yylloc.end.included = GetIncludeFileID(fileName);
+else
+yylloc.end.included = 0;
 }
 break;
 }
@@ -2471,7 +2476,7 @@ include_stack[include_stack_ptr++] = yy_current_buffer;
 yylloc.start.charPos = yylloc.end.charPos = 1;
 yylloc.start.line = yylloc.end.line = 1;
 yylloc.start.pos = yylloc.end.pos = 0;
-yylloc.start.included = yylloc.end.included = (unsigned int)GetIncludeFileID(includeFile);
+yylloc.start.included = yylloc.end.included = GetIncludeFileID(includeFile);
 __ecereNameSpace__ecere__sys__GetExtension(includeFile, extension);
 if(!strcmp(extension, "c") || !strcmp(extension, "h"))
 declMode = defaultDeclMode = 0;
@@ -2492,15 +2497,15 @@ yy_flush_buffer(yy_current_buffer);
 yylloc.start.charPos = yylloc.end.charPos = 1;
 yylloc.start.line = yylloc.end.line = 1;
 yylloc.start.pos = yylloc.end.pos = 0;
-yylloc.start.included = yylloc.end.included = 0x0;
+yylloc.start.included = yylloc.end.included = 0;
 expression_yylloc.start.charPos = expression_yylloc.end.charPos = 1;
 expression_yylloc.start.line = expression_yylloc.end.line = 1;
 expression_yylloc.start.pos = expression_yylloc.end.pos = 0;
-expression_yylloc.start.included = expression_yylloc.end.included = 0x0;
+expression_yylloc.start.included = expression_yylloc.end.included = 0;
 type_yylloc.start.charPos = type_yylloc.end.charPos = 1;
 type_yylloc.start.line = type_yylloc.end.line = 1;
 type_yylloc.start.pos = type_yylloc.end.pos = 0;
-type_yylloc.start.included = type_yylloc.end.included = 0x0;
+type_yylloc.start.included = type_yylloc.end.included = 0;
 include_stack_ptr = 0;
 }
 
