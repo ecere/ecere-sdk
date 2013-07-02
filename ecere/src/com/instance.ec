@@ -2698,7 +2698,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
                   data.largest = ((EnumClassData)(base.data)).largest;
             }
          }
-         if(base && base.vTblSize)
+         if(base && base.vTblSize && _class.vTblSize < base.vTblSize)
          {
             _class.vTblSize = base.vTblSize;
             // OK to scrap existing virtual table?
@@ -4123,8 +4123,7 @@ static void FixDerivativeProperty(Class base, Property _property)
    {
       Class _class = derivative.data;
       Property prop;
-      BTNamedLink link;
-      link = (BTNamedLink)_class.prop.FindString(_property.name);
+      BTNamedLink link = (BTNamedLink)_class.prop.FindString(_property.name);
       if(link)
       {
          prop = link.data;
@@ -4159,7 +4158,10 @@ public dllexport Property eClass_AddProperty(Class _class, char * name, char * d
    Property _property = null;
    if(_class)
    {
-      if(!_class.prop.FindString((name ? name : dataType))) 
+      BTNamedLink link = (BTNamedLink)_class.prop.FindString(name ? name : dataType);
+      if(link)
+         _property = link.data;
+      if(!_property)
       {
          _property =
          {
