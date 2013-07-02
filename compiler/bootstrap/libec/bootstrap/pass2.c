@@ -3446,7 +3446,10 @@ break;
 }
 case 25:
 {
-((struct Expression *)(*((struct Statement *)(*exp->compound->compound.statements).last)->expressions).last)->usage |= exp->usage & (((unsigned int)(0x1)) | (((unsigned int)(0x1)) << 2) | (((unsigned int)(0x1)) << 4));
+struct Expression * e = (*((struct Statement *)(*exp->compound->compound.statements).last)->expressions).last;
+
+if(e)
+e->usage |= exp->usage & (((unsigned int)(0x1)) | (((unsigned int)(0x1)) << 2) | (((unsigned int)(0x1)) << 4));
 ProcessStatement(exp->compound);
 break;
 }

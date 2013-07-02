@@ -2736,8 +2736,9 @@ static void ProcessExpression(Expression exp)
       }
       case extensionCompoundExp:
       {
-         ((Expression)((Statement)exp.compound.compound.statements->last).expressions->last).usage |= exp.usage & 
-            ExpUsage { usageGet = true, usageArg = true, usageMember = true };
+         Expression e = ((Statement)exp.compound.compound.statements->last).expressions->last;
+         if(e)
+            e.usage |= exp.usage & ExpUsage { usageGet = true, usageArg = true, usageMember = true };
 
          ProcessStatement(exp.compound);
 
