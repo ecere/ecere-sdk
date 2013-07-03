@@ -304,6 +304,47 @@ static void DebuggerProtocolUnknown(char * message, char * gdbOutput)
 #endif
 }
 
+static bool CheckCommandAvailable(const char * command)
+{
+   bool available = false;
+   int c, count;
+   char * name = new char[MAX_FILENAME];
+   char * pathVar = new char[maxPathLen];
+   char * paths[128];
+   GetEnvironment("PATH", pathVar, maxPathLen);
+   count = TokenizeWith(pathVar, sizeof(paths) / sizeof(char *), paths, pathListSep, false);
+   strcpy(name, command);
+#ifdef __WIN32__
+   {
+      int e;
+      const char * extensions[3] = { "exe", "com", "bat", null };
+      for(e=0; extensions[e]; e++)
+      {
+         ChangeExtension(name, extensions[e], name);
+#endif
+         for(c=0; c<count; c++)
+         {
+            FileListing fl { paths[c] };
+            while(fl.Find())
+            {
+               if(fl.stats.attribs.isFile && !fstrcmp(fl.name, name))
+               {
+                  available = true;
+                  break;
+               }
+            }
+            if(available) break;
+         }
+#ifdef __WIN32__
+         if(available) break;
+      }
+   }
+#endif
+   delete name;
+   delete pathVar;
+   return available;
+}
+
 // define GdbGetLineSize = 1638400;
 define GdbGetLineSize = 5638400;
 #if defined(__unix__)
@@ -1968,6 +2009,11 @@ class Debugger
             ide.outputView.debugBox.Logf($"Debugger Fatal Error: Couldn't open temporary log file for Valgrind output\n");
             result = false;
          }
+         if(result && !CheckCommandAvailable(valgrindCommand))
+         {
+            ide.outputView.debugBox.Logf($"Debugger Fatal Error: Command %s for Valgrind is not available.\n", valgrindCommand);
+            result = false;
+         }
          if(result)
          {
             sprintf(command, "%s --vgdb=yes --vgdb-error=0 --log-file=%s%s %s%s%s",
@@ -2006,13 +2052,21 @@ class Debugger
             (compiler.targetPlatform == win32 && bitDepth == 64) ? "x86_64-w64-mingw32-gdb" :
             (compiler.targetPlatform == win32 && bitDepth == 32) ? "i686-w64-mingw32-gdb" :
             "gdb");
-         strcat(command, " -n -silent --interpreter=mi2"); //-async //\"%s\"
-         gdbTimer.Start();
-         gdbHandle = DualPipeOpen(PipeOpenMode { output = 1, error = 2, input = 1 }, command);
-         if(!gdbHandle)
+         if(!CheckCommandAvailable(command))
          {
-            ide.outputView.debugBox.Logf($"Debugger Fatal Error: Couldn't start GDB\n");
+            ide.outputView.debugBox.Logf($"Debugger Fatal Error: Command %s for GDB is not available.\n", command);
             result = false;
+         }
+         else
+         {
+            strcat(command, " -n -silent --interpreter=mi2"); //-async //\"%s\"
+            gdbTimer.Start();
+            gdbHandle = DualPipeOpen(PipeOpenMode { output = 1, error = 2, input = 1 }, command);
+            if(!gdbHandle)
+            {
+               ide.outputView.debugBox.Logf($"Debugger Fatal Error: Couldn't start GDB\n");
+               result = false;
+            }
          }
       }
       if(result)
