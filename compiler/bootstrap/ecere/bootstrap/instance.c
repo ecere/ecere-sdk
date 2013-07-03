@@ -4241,7 +4241,11 @@ unsigned int __ecereNameSpace__ecere__com__eMember_AddMember(struct __ecereNameS
 int __simpleStruct0, __simpleStruct1;
 
 if(dataMember->name && __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&addTo->membersAlpha, dataMember->name))
+{
+__ecereNameSpace__ecere__com__DataMember_Free(dataMember);
+((dataMember ? (__ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor ? __ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor(dataMember) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(dataMember)) : 0), dataMember = 0);
 return 0x0;
+}
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&addTo->members, dataMember);
 if(dataMember->name)
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&addTo->membersAlpha, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
@@ -4272,7 +4276,11 @@ unsigned int __ecereNameSpace__ecere__com__eClass_AddMember(struct __ecereNameSp
 int __simpleStruct0, __simpleStruct1;
 
 if(!_class || _class->comRedefinition || (dataMember->name && __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->members, dataMember->name)))
+{
+__ecereNameSpace__ecere__com__DataMember_Free(dataMember);
+((dataMember ? (__ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor ? __ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor(dataMember) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(dataMember)) : 0), dataMember = 0);
 return 0x0;
+}
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->membersAndProperties, dataMember);
 if(dataMember->name)
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&_class->members, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
@@ -5391,10 +5399,10 @@ struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
 void * first = base->templateParams.first;
 int count = base->templateParams.count;
 
-base->templateParams.first = (((void *)0));
-base->templateParams.count = 0;
 __ecereNameSpace__ecere__com__FreeTemplateArgs(base);
 (__ecereNameSpace__ecere__com__eSystem_Delete(base->templateArgs), base->templateArgs = 0);
+base->templateParams.first = (((void *)0));
+base->templateParams.count = 0;
 __ecereNameSpace__ecere__com__FreeTemplatesDerivatives(base);
 base->templateParams.first = first;
 base->templateParams.count = count;

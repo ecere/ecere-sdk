@@ -5091,7 +5091,12 @@ static void SetMemberClass(DataMember member, Class _class)
 
 public dllexport bool eMember_AddMember(DataMember addTo, DataMember dataMember)
 {
-   if(dataMember.name && addTo.membersAlpha.FindString(dataMember.name)) return false;
+   if(dataMember.name && addTo.membersAlpha.FindString(dataMember.name))
+   {
+      DataMember_Free(dataMember);
+      delete dataMember;
+      return false;
+   }
    addTo.members.Add(dataMember);
 
    if(dataMember.name)
@@ -5122,7 +5127,11 @@ public dllexport bool eMember_AddMember(DataMember addTo, DataMember dataMember)
 public dllexport bool eClass_AddMember(Class _class, DataMember dataMember)
 {
    if(!_class || _class.comRedefinition || (dataMember.name && _class.members.FindString(dataMember.name)))
+   {
+      DataMember_Free(dataMember);
+      delete dataMember;
       return false;
+   }
    _class.membersAndProperties.Add(dataMember);
 
    if(dataMember.name)
@@ -6232,11 +6241,13 @@ public dllexport void eClass_DoneAddingTemplateParameters(Class base)
       {
          void * first = base.templateParams.first;
          int count = base.templateParams.count;
-         base.templateParams.first = null;
-         base.templateParams.count = 0;
 
          FreeTemplateArgs(base);
          delete base.templateArgs;
+
+         base.templateParams.first = null;
+         base.templateParams.count = 0;
+
          FreeTemplatesDerivatives(base);
 
          base.templateParams.first = first;
