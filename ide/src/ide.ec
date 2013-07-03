@@ -2450,6 +2450,7 @@ class IDEWorkSpace : Window
       char filePath[MAX_LOCATION] = "";
       char completePath[MAX_LOCATION];
       int line = 0, col = 0;
+      int len = strlen(text);
       Project prj = null;
       FileAttribs fileAttribs;
 
@@ -2476,6 +2477,11 @@ class IDEWorkSpace : Window
          //*colon = '\0';
          //line = atoi(colon+1);
       }
+      // support for "Found n match(es) in "file/path";
+      else if(path[len-1] == '\"' && strstr(path, $"Found %d match%s in \"%s\"%s\n\n"."Found") && strstr(path, $"match") && strstr(path, $"in") && (s = strstr(path, "\"")) && s != path+len-1)
+      {
+         path = s+1;
+      }
       else
       {
          if(colon && (colon[1] == '/' || colon[1] == '\\'))
@@ -2486,22 +2492,22 @@ class IDEWorkSpace : Window
          if(*path == '*' && (s = strchr(path+1, '*')))
             path = s+1;
          while(isspace(*path)) path++;
-         if(*path == '(')
+      }
+      if(*path == '(')
+      {
+         char * close = strchr(path, ')');
+         if(close)
          {
-            char * close = strchr(path, ')');
-            if(close)
+            char name[256];
+            strncpy(name, path+1, close - path - 1);
+            name[close - path - 1] = '\0';
+            for(p : ide.workspace.projects)
             {
-               char name[256];
-               strncpy(name, path+1, close - path - 1);
-               name[close - path - 1] = '\0';
-               for(p : ide.workspace.projects)
+               if(!strcmp(p.name, name))
                {
-                  if(!strcmp(p.name, name))
-                  {
-                     path = close + 1;
-                     prj = p;
-                     break;
-                  }
+                  path = close + 1;
+                  prj = p;
+                  break;
                }
             }
          }
@@ -2543,7 +2549,7 @@ class IDEWorkSpace : Window
 
          if((fileAttribs = FileExists(completePath)))
             CodeLocationGoTo(completePath, fileAttribs, line, col);
-         else
+         else if(ide.workspace)
          {
             bool done = false;
             for(p : ide.workspace.projects)
