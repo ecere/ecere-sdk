@@ -2458,29 +2458,55 @@ class IDEWorkSpace : Window
       Project prj = null;
       FileAttribs fileAttribs;
 
-      if(colon && (colon[1] == '/' || colon[1] == '\\'))
+      // support for valgrind output
+      if((s = strstr(text, "==")) && (s = strstr(s+2, "==")) && (s = strstr(s+2, ":")) && (s = strstr(s+1, ":")))
       {
-         path = (colon - 1 > path) ? colon - 1 : path;
-         colon = strstr(colon + 1, ":");
-      }
-      if(*path == '*' && (s = strchr(path+1, '*')))
-         path = s+1;
-      while(isspace(*path)) path++;
-      if(*path == '(')
-      {
-         char * close = strchr(path, ')');
-         if(close)
+         colon = s;
+         for(; s>text; s--)
          {
-            char name[256];
-            strncpy(name, path+1, close - path - 1);
-            name[close - path - 1] = '\0';
-            for(p : ide.workspace.projects)
+            if(*s == '(')
             {
-               if(!strcmp(p.name, name))
+               path = s+1;
+               break;
+            }
+         }
+         /*for(s=colon; *s; s++)
+         {
+            if(*s == ')')
+            {
+               *s = '\0';;
+               break;
+            }
+         }*/
+         //*colon = '\0';
+         //line = atoi(colon+1);
+      }
+      else
+      {
+         if(colon && (colon[1] == '/' || colon[1] == '\\'))
+         {
+            path = (colon - 1 > path) ? colon - 1 : path;
+            colon = strstr(colon + 1, ":");
+         }
+         if(*path == '*' && (s = strchr(path+1, '*')))
+            path = s+1;
+         while(isspace(*path)) path++;
+         if(*path == '(')
+         {
+            char * close = strchr(path, ')');
+            if(close)
+            {
+               char name[256];
+               strncpy(name, path+1, close - path - 1);
+               name[close - path - 1] = '\0';
+               for(p : ide.workspace.projects)
                {
-                  path = close + 1;
-                  prj = p;
-                  break;
+                  if(!strcmp(p.name, name))
+                  {
+                     path = close + 1;
+                     prj = p;
+                     break;
+                  }
                }
             }
          }
@@ -2524,14 +2550,32 @@ class IDEWorkSpace : Window
             CodeLocationGoTo(completePath, fileAttribs, line, col);
          else
          {
+            bool done = false;
             for(p : ide.workspace.projects)
             {
                strcpy(completePath, p.topNode.path);
                PathCat(completePath, filePath);
-               if((fileAttribs = FileExists(completePath)))
+               if((fileAttribs = FileExists(completePath)).isFile)
                {
                   CodeLocationGoTo(completePath, fileAttribs, line, col);
+                  done = true;
                   break;
+               }
+            }
+            if(!done)
+            {
+               for(p : ide.workspace.projects)
+               {
+                  ProjectNode node = p.topNode.Find(filePath, false);
+                  if(node)
+                  {
+                     node.GetFullFilePath(completePath);
+                     if((fileAttribs = FileExists(completePath)).isFile)
+                     {
+                        CodeLocationGoTo(completePath, fileAttribs, line, col);
+                        break;
+                     }
+                  }
                }
             }
          }
