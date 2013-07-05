@@ -41,7 +41,7 @@ class BreakpointsView : Window
                   DataRow newRow = listBox.AddRow();
                   newRow.SetData(locationField, null);
                }
-               ide.workspace.ChangeBreakpoint(row, location);
+               ide.workspace.ChangeBreakpoint(row, location); // TODO make sure passing only unix style path
             }
             else
             {
@@ -217,7 +217,10 @@ class BreakpointsView : Window
          char string[32];
          char * location;
          Breakpoint bp = (Breakpoint)row.tag;
-         location = bp.LocationToString();
+         location = bp.CopyLocationString(false);
+#if defined(__WIN32__)
+         ChangeCh(location, '/', '\\');
+#endif
          row.SetData(locationField, location);
          delete location;
          if(bp.ignore == 0)

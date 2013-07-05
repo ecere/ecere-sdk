@@ -489,7 +489,7 @@ public:
       Breakpoint bp = (Breakpoint)row.tag;
       if(bp)
       {
-         char * currentLoc = bp.LocationToString();
+         char * currentLoc = bp.CopyLocationString(false);
          if(strcmp(location, currentLoc))
          {
             // todo, parse location
@@ -820,7 +820,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
 
                      bp = { type = user, enabled = enabled, ignore = ignore, level = level, line = line };
                      workspace.breakpoints.Add(bp);
-                     bp.relativeFilePath = CopyString(strFile);
+                     bp.relativeFilePath = strFile;
                      bp.absoluteFilePath = workspace.GetAbsolutePathFromRelative(strFile);
                      if(!bp.absoluteFilePath)
                         bp.absoluteFilePath = CopyString("");
@@ -1081,10 +1081,10 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
                                           bp = { type = user, enabled = enabled, level = -1 };
                                           workspace.breakpoints.Add(bp);
                                           bp.line = atoi(lineNum);
-                                          bp.relativeFilePath = CopyString(relPath);
+                                          bp.relativeFilePath = relPath;
                                           bp.absoluteFilePath = workspace.GetAbsolutePathFromRelative(relPath);
                                           if(!bp.absoluteFilePath)
-                                             bp.absoluteFilePath = CopyString("");
+                                             bp.absoluteFilePath = "";
                                        }
                                     }
                                  }
