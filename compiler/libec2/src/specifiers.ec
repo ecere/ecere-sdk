@@ -30,6 +30,11 @@ public:
 
 public class SpecsList : ASTList<ASTSpecifier>
 {
+   void printSep()
+   {
+      Print(" ");
+   }
+
    SpecsList ::parse()
    {
       SpecsList specs = null;
@@ -37,12 +42,13 @@ public class SpecsList : ASTList<ASTSpecifier>
       while(true)
       {
          peekToken();
-         if(nextToken.type == INT || nextToken.type == CHAR || nextToken.type == VOID)
+         if(nextToken.type.isSpecifier)
          {
             readToken();
             if(!specs) specs = { };
             specs.Add(SpecBase { specifier = token.type });
-            gotSpec = true;
+            if(!token.type.isQualifier)
+               gotSpec = true;
          }
          else if(nextToken.type == IDENTIFIER)
          {

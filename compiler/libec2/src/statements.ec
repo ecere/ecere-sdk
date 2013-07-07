@@ -24,11 +24,12 @@ public class ASTStmtOrDecl : ASTNode
 {
    ASTStmtOrDecl ::parse()
    {
-      SpecsList specs;
-      InitDeclList decls;
+      SpecsList specs = null;
+      InitDeclList decls = null;
+      bool isType = false;
 
       peekToken();
-      if(nextToken.type == INT || nextToken.type == CHAR || nextToken.type == VOID)
+      if(nextToken.type.isSpecifier || (nextToken.type == IDENTIFIER && isType))
       {
          specs = SpecsList::parse();
          decls = InitDeclList::parse();
@@ -36,17 +37,25 @@ public class ASTStmtOrDecl : ASTNode
       }
       else if(nextToken.type == IDENTIFIER)
       {
+         ASTStatement stmt;
          int a = pushAmbiguity();
-         specs = SpecsList::parse();
-         decls = InitDeclList::parse();
-         if(specs && decls)
+         stmt = ASTStatement::parse();
+         if(stmt)
          {
             clearAmbiguity();
-            return ASTDeclaration::parse(specs, decls);
+            return stmt;
          }
          popAmbiguity(a);
+         specs = SpecsList::parse();
+         if(specs)
+            decls = InitDeclList::parse();
+         if(specs && decls)
+            return ASTDeclaration::parse(specs, decls);
+         else
+            return null;
       }
-      return ASTStatement::parse();
+      else
+         return ASTStatement::parse();
    }
 }
 
@@ -107,7 +116,12 @@ public class StmtExpression : ASTStatement
          StmtExpression stmt { expressions = exp };
          if(peekToken().type == ';')
             readToken();
-         return stmt;      
+         else
+         {
+            if(ambiguous)
+               delete stmt;
+         }
+         return stmt;
       }
       return null;
    }
@@ -169,6 +183,7 @@ public class StmtCompound : ASTStatement
       StmtCompound stmt { };
       if(peekToken().type == '{')
       {
+         bool inDecls = true;
          readToken();
          while(true)
          {
@@ -186,13 +201,19 @@ public class StmtCompound : ASTStatement
                {
                   if(eClass_IsDerived(sod._class, class(ASTDeclaration)))
                   {
+                     ASTDeclaration decl = (ASTDeclaration)sod;
                      if(!stmt.declarations) stmt.declarations = { };
-                     stmt.declarations.Add((ASTDeclaration)sod);
+                     if(inDecls)
+                        stmt.declarations.Add(decl);
+                     else
+                        stmt.statements.Add(StmtDecl { decl = decl });
                   }
                   else
                   {
+                     ASTStatement s = (ASTStatement)sod;
                      if(!stmt.statements) stmt.statements = { };
-                     stmt.statements.Add((ASTStatement)sod);
+                     stmt.statements.Add(s);
+                     inDecls = false;
                   }
                }
                else
@@ -569,5 +590,10 @@ public class StmtForEach : ASTStatement
 
 public class StmtDecl : ASTStatement
 {
-   Declaration decl;
+   ASTDeclaration decl;
+
+   void print()
+   {
+      if(decl) decl.print();
+   }
 }
