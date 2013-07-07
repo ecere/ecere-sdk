@@ -23,12 +23,10 @@ public:
    {
       if(specifiers)
       {
-         for(s : specifiers)
-            s.print();
-         Print(" ");
+         specifiers.print();
+         if(declarators) Print(" ");
       }
-      if(declarators)
-         declarators.print();
+      if(declarators) declarators.print();
       Print(";");
    }
 }
