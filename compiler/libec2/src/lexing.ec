@@ -15,6 +15,26 @@ public enum TokenType
 
    property char { }
 
+   property bool isSpecifier
+   {
+      get
+      {
+         return isQualifier || this == CHAR || this == SHORT || this == INT || this == UINT || this == INT64 || this == LONG || this == SIGNED ||
+                this == UNSIGNED || this == FLOAT || this == DOUBLE || this == VOID ||
+                this == VALIST || this == THISCLASS || this == TYPED_OBJECT || this == ANY_OBJECT ||
+                this == TYPEDEF || this == STRUCT || this == UNION || this == ENUM ||
+                this == TYPEOF || this == SUBCLASS;
+      }
+   }
+
+   property bool isQualifier
+   {
+      get
+      {
+         return this == EXTERN || this == STATIC || this == AUTO || this == REGISTER || this == CONST || this == VOLATILE;
+      }
+   }
+
    property bool isUnaryOperator
    {
       get
@@ -42,15 +62,33 @@ public enum TokenType
          switch(this)
          {
             case VOID: Print("void"); break;
-            case CHAR:  Print("char");  break;
-            case SHORT:  Print("short");  break;
-            case INT:  Print("int");  break;
-            case LONG:  Print("long");  break;
-            case INT64:  Print("int64");  break;
-            case UNSIGNED:  Print("unsigned");  break;
-            case SIGNED:  Print("signed");  break;
-            case FLOAT:  Print("float");  break;
-            case DOUBLE:  Print("double");  break;
+            case CHAR: Print("char"); break;
+            case SHORT: Print("short"); break;
+            case INT: Print("int"); break;
+            case LONG: Print("long"); break;
+            case INT64: Print("int64"); break;
+            case UNSIGNED: Print("unsigned"); break;
+            case SIGNED: Print("signed"); break;
+            case FLOAT: Print("float"); break;
+            case DOUBLE: Print("double"); break;
+            case TYPEDEF: Print("typedef"); break;
+            case EXTERN: Print("extern"); break;
+            case STATIC: Print("static"); break;
+            case AUTO: Print("auto"); break;
+            case REGISTER: Print("register"); break;
+            case UINT: Print("uint"); break;
+            case CONST: Print("const"); break;
+            case VOLATILE: Print("volatile"); break;
+            case VALIST: Print("va_list"); break;
+            case THISCLASS: Print("thisclass"); break;
+            case TYPED_OBJECT: Print("typed_Object"); break;
+            case ANY_OBJECT: Print("any_object"); break;
+            case STRUCT: Print("struct"); break;
+            case UNION: Print("union"); break;
+            case ENUM: Print("enum"); break;
+
+            case TYPEOF: Print("typeof"); break;
+            case SUBCLASS: Print("subclass"); break;
 
             case INC_OP: Print("++"); break;
             case DEC_OP: Print("--"); break;

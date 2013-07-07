@@ -32,7 +32,13 @@
       }
    ],
    "Files" : [
-      "parser.ec"
+      "parser.ec",
+      {
+         "FileName" : "test.ec",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      }
    ],
    "ResourcesPath" : "",
    "Resources" : [
