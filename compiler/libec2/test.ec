@@ -9,7 +9,7 @@ int SomeFunction(int * p)
       { 0, 0, 1, 0 }
    };
    int c, d, e = 4;
-   String name = "Foo";
+   const String name = "Foo";
    b * a;
 
    b = ((a + 3) * a) - (3.1415 * 180 / a);
