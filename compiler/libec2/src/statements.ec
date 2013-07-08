@@ -127,7 +127,7 @@ public class StmtExpression : ASTStatement
    }
 }
 int indent;
-void PrintIndent()
+void printIndent()
 {
    int i;
    for(i = 0; i < indent; i++)
@@ -145,13 +145,14 @@ public class StmtCompound : ASTStatement
 
    void print()
    {
+      printIndent();
       PrintLn("{");
       indent++;
       if(declarations)
       {
          for(d : declarations)
          {
-            PrintIndent();
+            printIndent();
             d.print();
             PrintLn("");
          }
@@ -165,7 +166,7 @@ public class StmtCompound : ASTStatement
             if(s._class == class(StmtCase))
                indent = caseIndent;
             if(s._class != class(StmtLabeled))
-               PrintIndent();
+               printIndent();
             s.print();
             if(s._class == class(StmtExpression)) 
                PrintLn("");
@@ -174,7 +175,7 @@ public class StmtCompound : ASTStatement
       indent--;
       if(indent == caseIndent)
          indent--;
-      PrintIndent();
+      printIndent();
       PrintLn("}");
    }
 
@@ -244,17 +245,17 @@ public class StmtIf : ASTStatement
       if(stmt)
       {
          if(stmt._class != class(StmtCompound)) indent++;
-         PrintIndent();
+         printIndent();
          stmt.print();
          if(stmt._class == class(StmtExpression)) PrintLn(""); 
          if(stmt._class != class(StmtCompound)) indent--;
       }
       if(elseStmt)
       {
-         PrintIndent();
+         printIndent();
          Print("else");
          if(elseStmt._class != class(StmtCompound)) { PrintLn(""); indent++; }
-         PrintIndent();
+         printIndent();
          if(elseStmt._class != class(StmtCompound)) elseStmt.print();
          if(elseStmt._class == class(StmtExpression)) PrintLn(""); 
          indent--;
@@ -297,7 +298,6 @@ public class StmtSwitch : ASTStatement
       if(stmt)
       {
          caseIndent = indent+1;
-         PrintIndent();
          stmt.print();
          indent = caseIndent-1;
       }
@@ -359,7 +359,7 @@ public class StmtCase : ASTStatement
       if(stmt)
       {
          if(stmt._class != class(StmtCompound)) indent++;
-         PrintIndent();
+         printIndent();
          stmt.print();
          if(stmt._class == class(StmtExpression)) PrintLn(""); 
       }
@@ -451,7 +451,7 @@ public class StmtFor : ASTStatement
       if(stmt)
       {
          if(stmt._class != class(StmtCompound)) indent++;
-         PrintIndent();
+         printIndent();
          stmt.print();
          if(stmt._class == class(StmtExpression)) PrintLn(""); 
          if(stmt._class != class(StmtCompound)) indent--;
@@ -594,6 +594,6 @@ public class StmtDecl : ASTStatement
 
    void print()
    {
-      if(decl) decl.print();
+      if(decl) { decl.print(); PrintLn(""); }
    }
 }
