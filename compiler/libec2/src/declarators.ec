@@ -165,14 +165,24 @@ public class DeclPointer : ASTDeclarator
    }
 }
 
+public class DeclStruct : ASTDeclarator
+{
+   ASTDeclarator declarator;
+   Expression exp;
+   Expression posExp;
+   Attrib attrib;
+
+   DeclStruct ::parse()
+   {
+      return { declarator = ASTDeclarator::parse(); };
+   }
+}
+
 /*
    union
    {
       struct
       {
-         Expression exp;
-         Expression posExp;
-         Attrib attrib;
       } structDecl;
       struct
       {

@@ -1,25 +1,15 @@
 import "astNode"
+import "classes"
 
 // Specifiers
 public class ASTSpecifier : ASTNode
 {
 public:
-   SpecifierType type;
   /*    struct
       {
          //ExtDecl extDecl;
          //Symbol symbol;
          //OldList * templateArgs;
-      };
-      struct
-      {
-         Identifier id;
-         OldList * list;
-         OldList * baseSpecs;
-         OldList * definitions;
-         bool addNameSpace;
-         Context ctx;
-         ExtDecl extDeclStruct;
       };
       Expression expression;
       NewSpecifier _class;
@@ -42,7 +32,17 @@ public class SpecsList : ASTList<ASTSpecifier>
       while(true)
       {
          peekToken();
-         if(nextToken.type.isSpecifier)
+         if(nextToken.type == STRUCT || nextToken.type == UNION)
+         {
+            ASTSpecifier s = SpecClass::parse();
+            if(s)
+            {
+               if(!specs) specs = { };
+               specs.Add(s);
+            }
+            break;
+         }
+         else if(nextToken.type.isSpecifier)
          {
             readToken();
             if(!specs) specs = { };
@@ -90,6 +90,56 @@ public class SpecName : ASTSpecifier
    }
 }
 
+public class ASTEnumerator : struct
+{
+public:
+   ASTIdentifier id;
+   ASTExpression exp;
+};
+
+public class SpecClass : ASTSpecifier
+{
+   TokenType type;
+   ASTIdentifier id;
+   List<ASTEnumerator> enumerators;
+   SpecsList baseSpecs;
+   ClassDefList definitions;
+   bool addNameSpace;
+   Context ctx;
+   // ExtDecl extDeclStruct;
+
+   SpecClass ::parse()
+   {
+      SpecClass spec { };
+      spec.type = readToken().type;
+      if(peekToken().type == IDENTIFIER)
+         spec.id = ASTIdentifier::parse();
+      if(peekToken().type == '{')
+      {
+         readToken();
+         spec.definitions = ClassDefList::parse();
+         if(peekToken().type == '}')
+            readToken();
+      }
+      return spec;
+   }
+
+   void print()
+   {
+      type.print();
+      Print(" ");
+      if(id) id.print();
+      if(definitions)
+      {
+         PrintLn("\n{");
+         indent++;
+         definitions.print();
+         indent--;
+         Print("\n}");
+      }
+   }
+}
+
 /*
 public class Attribute : struct
 {
@@ -119,15 +169,4 @@ public:
       Attrib attr;
    };
 }
-*/
-
-/*
-public class Enumerator : struct
-{
-public:
-   Enumerator prev, next;
-   Location loc;
-   Identifier id;
-   Expression exp;
-};
 */
