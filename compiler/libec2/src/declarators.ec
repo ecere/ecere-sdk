@@ -86,6 +86,7 @@ public class TypeNameList : ASTList<ASTTypeName>
          }
          else
          {
+            // Error Recovery
             if(list)
                list.Add({});
             popAmbiguity(a);
