@@ -4,19 +4,22 @@ import "classes"
 // Specifiers
 public class ASTSpecifier : ASTNode
 {
-public:
-  /*    struct
-      {
-         //ExtDecl extDecl;
-         //Symbol symbol;
-         //OldList * templateArgs;
-      };
-      Expression expression;
-      NewSpecifier _class;
-      TemplateParameter templateParameter;
-   };
-      */
 };
+
+public class SpecTypeOf : ASTSpecifier
+{
+   Expression expression;
+}
+
+public class SpecSubClass : ASTSpecifier
+{
+   ASTSpecifier _class;
+}
+
+public class SpecTemplateType : ASTSpecifier
+{
+   TemplateParameter templateParameter;
+}
 
 public class SpecsList : ASTList<ASTSpecifier>
 {
@@ -32,7 +35,7 @@ public class SpecsList : ASTList<ASTSpecifier>
       while(true)
       {
          peekToken();
-         if(nextToken.type == STRUCT || nextToken.type == UNION)
+         if(nextToken.type == STRUCT || nextToken.type == UNION || nextToken.type == CLASS || nextToken.type == ENUM)
          {
             ASTSpecifier s = SpecClass::parse();
             if(s)
@@ -83,6 +86,9 @@ public class SpecBase : ASTSpecifier
 public class SpecName : ASTSpecifier
 {
    String name;
+   //ExtDecl extDecl;
+   //Symbol symbol;
+   //List<ClassTemplateArgument> templateArgs;
 
    void print()
    {
@@ -90,34 +96,41 @@ public class SpecName : ASTSpecifier
    }
 }
 
-public class ASTEnumerator : struct
-{
-public:
-   ASTIdentifier id;
-   ASTExpression exp;
-};
-
 public class SpecClass : ASTSpecifier
 {
    TokenType type;
    ASTIdentifier id;
-   List<ASTEnumerator> enumerators;
    SpecsList baseSpecs;
    ClassDefList definitions;
+
+   //ASTSpecifier _class;
+   // Symbol symbol;
+   //Location blockStart;
+   //Location nameLoc;
+   //bool deleteWatchable;
+   //int endid;
+   //AccessMode declMode;
    bool addNameSpace;
    Context ctx;
    // ExtDecl extDeclStruct;
 
    SpecClass ::parse()
    {
-      SpecClass spec { };
+      SpecClass spec = (peekToken().type == ENUM) ? SpecEnum { } : SpecClass { };
       spec.type = readToken().type;
       if(peekToken().type == IDENTIFIER)
          spec.id = ASTIdentifier::parse();
+      if(peekToken().type == ':')
+      {
+         readToken();
+         spec.baseSpecs = SpecsList::parse();
+      }
       if(peekToken().type == '{')
       {
          readToken();
          spec.definitions = ClassDefList::parse();
+         if(!spec.definitions)
+            spec.definitions = { };
          if(peekToken().type == '}')
             readToken();
       }
@@ -129,44 +142,58 @@ public class SpecClass : ASTSpecifier
       type.print();
       Print(" ");
       if(id) id.print();
+      if(baseSpecs)
+      {
+         Print(" : ");
+         baseSpecs.print();
+      }
       if(definitions)
       {
          PrintLn("\n{");
          indent++;
          definitions.print();
          indent--;
-         Print("\n}");
+         Print("}");
       }
    }
 }
 
-/*
-public class Attribute : struct
+public class ASTEnumerator : ASTNode
 {
 public:
-   Attribute prev, next;
-   Location loc;
+   ASTIdentifier id;
+   ASTExpression exp;
+};
+
+public class EnumeratorList : ASTList<ASTEnumerator>
+{
+}
+
+public class SpecEnum : SpecClass
+{
+   EnumeratorList enumerators;
+}
+
+public class ASTAttribute : ASTNode
+{
    String attr;
-   Expression exp;
+   ASTExpression exp;
 }
 
-public class Attrib : struct
+public class ASTAttrib : ASTNode
 {
-public:
-   Location loc;
-   int type;
-   OldList * attribs;
+   TokenType type;
+   List<ASTAttribute> attribs;
 }
 
-public class ExtDecl : struct
+public class ASTExtDecl : ASTNode { }
+
+public class ExtDeclString : ASTExtDecl
 {
-public:
-   Location loc;
-   ExtDeclType type;
-   union
-   {
-      String s;
-      Attrib attr;
-   };
+   String s;
 }
-*/
+
+public class ExtDeclAttrib : ASTExtDecl
+{
+   ASTAttrib attr;
+}

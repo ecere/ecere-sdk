@@ -193,7 +193,7 @@ void clearAmbiguity()
       if(tokenStack.size > stackPos)
          memmove(tokenStack.array, tokenStack.array + stackPos, (tokenStack.size - stackPos) * sizeof(Token));
       tokenStack.size -= stackPos;
-      stackPos = 0;      
+      stackPos = 0;
    }
 }
 

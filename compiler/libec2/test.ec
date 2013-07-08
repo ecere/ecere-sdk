@@ -1,13 +1,22 @@
+class Form1 : Window
+{
+   void OnCreate(
+
+   caption = "Form1";
+   background = formColor;
+   borderStyle = sizable;
+   hasMaximize = true;
+   hasMinimize = true;
+   hasClose = true;
+   clientSize = { 632, 438 };
+}
+
 struct InventoryItem
 {
-   float price;
+   float price = 5;
    String name;
 
-   void Print()
-   {
-      int a;
-      PrintLn(a + 4);
-   }
+   price = 10.0f;
 } item, * itemPtr;
 
 class SomeClass
@@ -18,6 +27,8 @@ class SomeClass
 int a;
 
 typedef int bla;
+
+// import "ecere"
 
 int SomeFunction(int * p)
 {
