@@ -59,9 +59,9 @@ public:
             if(!list) list = eInstance_New(c);
             list.Add(e);
          }
-         if(peekToken().type == sep)
+         if(sep && peekToken().type == sep)
             readToken();
-         else
+         else if(sep || peekToken().type == '}')
             break;
       }
       return list;
