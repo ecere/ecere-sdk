@@ -149,10 +149,13 @@ public class SpecClass : ASTSpecifier
       }
       if(definitions)
       {
-         PrintLn("\n{");
+         PrintLn("");
+         printIndent();
+         PrintLn("{");
          indent++;
          definitions.print();
          indent--;
+         printIndent();
          Print("}");
       }
    }
