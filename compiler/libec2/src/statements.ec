@@ -100,7 +100,7 @@ public:
 
 public class StmtExpression : ASTStatement
 {
-   ListExp expressions;
+   ExpList expressions;
 
    void print()
    {
@@ -110,7 +110,7 @@ public class StmtExpression : ASTStatement
 
    StmtExpression ::parse()
    {
-      ListExp exp = ListExp::parse();
+      ExpList exp = ExpList::parse();
       if(exp)
       {
          StmtExpression stmt { expressions = exp };
@@ -233,7 +233,7 @@ public class StmtCompound : ASTStatement
 
 public class StmtIf : ASTStatement
 {
-   ListExp exp;
+   ExpList exp;
    ASTStatement stmt;
    ASTStatement elseStmt;
 
@@ -259,7 +259,7 @@ public class StmtIf : ASTStatement
          if(elseStmt._class != class(StmtCompound)) elseStmt.print();
          if(elseStmt._class == class(StmtExpression)) PrintLn(""); 
          indent--;
-      }      
+      }
    }
 
    StmtIf ::parse()
@@ -269,7 +269,7 @@ public class StmtIf : ASTStatement
       if(peekToken().type == '(')
       {
          readToken();
-         stmt.exp = ListExp::parse();
+         stmt.exp = ExpList::parse();
          if(peekToken().type == ')') readToken();
          stmt.stmt = ASTStatement::parse();
          if(peekToken().type == ELSE)
@@ -286,7 +286,7 @@ int caseIndent = -1;
 
 public class StmtSwitch : ASTStatement
 {
-   ListExp exp;
+   ExpList exp;
    ASTStatement stmt;
 
    void print()
@@ -311,7 +311,7 @@ public class StmtSwitch : ASTStatement
       if(peekToken().type == '(')
       {
          readToken();
-         stmt.exp = ListExp::parse();
+         stmt.exp = ExpList::parse();
          if(peekToken().type == ')') readToken();
          stmt.stmt = ASTStatement::parse();
       }
@@ -381,7 +381,7 @@ public class StmtCase : ASTStatement
 
 public class StmtWhile : ASTStatement
 {
-   ListExp exp;
+   ExpList exp;
    ASTStatement stmt;
 
    StmtWhile ::parse()
@@ -391,7 +391,7 @@ public class StmtWhile : ASTStatement
       if(peekToken().type == '(')
       {
          readToken();
-         stmt.exp = ListExp::parse();
+         stmt.exp = ExpList::parse();
          if(peekToken().type == ')') readToken();
          stmt.stmt = ASTStatement::parse();
       }
@@ -401,7 +401,7 @@ public class StmtWhile : ASTStatement
 
 public class StmtDoWhile : ASTStatement
 {
-   ListExp exp;
+   ExpList exp;
    ASTStatement stmt;
 
    StmtDoWhile ::parse()
@@ -415,7 +415,7 @@ public class StmtDoWhile : ASTStatement
          if(peekToken().type == '(')
          {
             readToken();
-            stmt.exp = ListExp::parse();
+            stmt.exp = ExpList::parse();
             if(peekToken().type == ')') readToken();
          }
          if(peekToken().type == ';') readToken();
@@ -428,7 +428,7 @@ public class StmtFor : ASTStatement
 {
    ASTStatement init;
    ASTStatement check;
-   ListExp increment;
+   ExpList increment;
    ASTStatement stmt;
 
    void print()
@@ -467,12 +467,12 @@ public class StmtFor : ASTStatement
          readToken();
          stmt.init = ASTStatement::parse();
          stmt.check = ASTStatement::parse();
-         stmt.increment = ListExp::parse();
+         stmt.increment = ExpList::parse();
          if(peekToken().type == ')')
          {
             readToken();
             stmt.stmt = ASTStatement::parse();
-         }      
+         }
       }
       return stmt;
    }
@@ -510,7 +510,7 @@ public class StmtContinue : ASTStatement
 
 public class StmtReturn : ASTStatement
 {
-   ListExp exp;
+   ExpList exp;
    void print()
    {
       Print("return");
@@ -526,7 +526,7 @@ public class StmtReturn : ASTStatement
    {
       StmtReturn stmt { };
       readToken();
-      if(peekToken().type != ';') stmt.exp = ListExp::parse();
+      if(peekToken().type != ';') stmt.exp = ExpList::parse();
       if(peekToken().type == ';') readToken();
       return stmt;
    }
@@ -583,8 +583,8 @@ public class StmtStopWatching : ASTStatement
 public class StmtForEach : ASTStatement
 {
    Identifier id;
-   ListExp exp;
-   ListExp filter;
+   ExpList exp;
+   ExpList filter;
    Statement stmt;
 }
 
