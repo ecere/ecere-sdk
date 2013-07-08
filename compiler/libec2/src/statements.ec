@@ -96,6 +96,11 @@ public:
          default:       return StmtExpression::parse();
       }
    }
+
+   void print()
+   {
+      PrintLn(";");
+   }
 };
 
 public class StmtExpression : ASTStatement
@@ -165,7 +170,7 @@ public class StmtCompound : ASTStatement
          {
             if(s._class == class(StmtCase))
                indent = caseIndent;
-            if(s._class != class(StmtLabeled))
+            if(s._class != class(StmtLabeled) && s._class != class(StmtCompound))
                printIndent();
             s.print();
             if(s._class == class(StmtExpression)) 
