@@ -42,6 +42,7 @@ public:
    void print()
    {
       PrintLn("");
+      printIndent();
       if(specifiers) 
       {
          for(s : specifiers)
@@ -61,7 +62,7 @@ public:
       ASTDeclarator decl = (decls && decls[0]) ? decls[0].declarator : null;
       if(decl && decls[0]) decls[0].declarator = null;
       delete decls;
-      function.specifiers = (void *)specs;         // TOFIX: #768
+      function.specifiers = specs;
       function.declarator = decl;
       function.body = StmtCompound::parse();
       return function;
