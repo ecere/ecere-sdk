@@ -22,7 +22,7 @@ public enum TokenType
          return isQualifier || this == CHAR || this == SHORT || this == INT || this == UINT || this == INT64 || this == LONG || this == SIGNED ||
                 this == UNSIGNED || this == FLOAT || this == DOUBLE || this == VOID ||
                 this == VALIST || this == THISCLASS || this == TYPED_OBJECT || this == ANY_OBJECT ||
-                this == TYPEDEF || this == STRUCT || this == UNION || this == ENUM ||
+                this == TYPEDEF || this == STRUCT || this == CLASS || this == UNION || this == ENUM ||
                 this == TYPEOF || this == SUBCLASS;
       }
    }
@@ -86,6 +86,7 @@ public enum TokenType
             case STRUCT: Print("struct"); break;
             case UNION: Print("union"); break;
             case ENUM: Print("enum"); break;
+            case CLASS: Print("class"); break;
 
             case TYPEOF: Print("typeof"); break;
             case SUBCLASS: Print("subclass"); break;
