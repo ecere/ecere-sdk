@@ -10,7 +10,7 @@ public class ASTPointer : ASTNode
       Print("*");
       if(qualifiers) qualifiers.print();
       if(pointer) pointer.print();
-   }   
+   }
 
    ASTPointer ::parse()
    {
@@ -60,6 +60,43 @@ public:
    }
 }
 
+public class TypeNameList : ASTList<ASTTypeName>
+{
+   TypeNameList ::parse()
+   {
+      TypeNameList list = null;
+      int a = pushAmbiguity();
+      while(true)
+      {
+         ASTTypeName e = ASTTypeName::parse();
+         peekToken();
+         if(e && (nextToken.type == ',' || nextToken.type == ')'))
+         {
+            if(!list) list = { };
+            list.Add(e);
+
+            clearAmbiguity();
+            if(nextToken.type == ',')
+            {
+               readToken();
+               a = pushAmbiguity();
+            }
+            else
+               break;
+         }
+         else
+         {
+            if(list)
+               list.Add({});
+            popAmbiguity(a);
+            break;
+         }
+      }
+      return list;
+      // return (TypeNameList)ASTList::parse(class(TypeNameList), ASTTypeName::parse, ',');
+   }
+}
+
 public class DeclFunction : ASTDeclarator
 {
 public:
@@ -79,7 +116,8 @@ public:
       DeclFunction decl { declarator = d };
       readToken();
       if(peekToken().type != ')') decl.parameters = TypeNameList::parse();
-      if(peekToken().type == ')') readToken();
+      if(peekToken().type == ')')
+         readToken();
       return decl;
    }
 }
@@ -106,7 +144,7 @@ public class DeclBrackets : ASTDeclarator
    void print()
    {
       Print("(");
-      if(declarator) declarator.print();      
+      if(declarator) declarator.print();
       Print(")");
    }
 
@@ -132,9 +170,9 @@ public class DeclArray : ASTDeclarator
 
    void print()
    {
-      if(declarator) declarator.print();      
+      if(declarator) declarator.print();
       Print("[");
-      if(exp) exp.print();      
+      if(exp) exp.print();
       Print("]");
    }
 
@@ -168,9 +206,9 @@ public class DeclPointer : ASTDeclarator
 public class DeclStruct : ASTDeclarator
 {
    ASTDeclarator declarator;
-   Expression exp;
-   Expression posExp;
-   Attrib attrib;
+   ASTExpression exp;
+   ASTExpression posExp;
+   ASTAttrib attrib;
 
    DeclStruct ::parse()
    {
@@ -178,18 +216,10 @@ public class DeclStruct : ASTDeclarator
    }
 }
 
-/*
-   union
-   {
-      struct
-      {
-      } structDecl;
-      struct
-      {
-         ExtDecl extended;
-      } extended;
-   };
-*/
+public class DeclExtended : ASTDeclarator
+{
+   ExtDecl extended;
+}
 
 public class ASTInitializer : ASTNode
 {

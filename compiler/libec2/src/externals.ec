@@ -4,6 +4,9 @@ public class ASTDeclaration : ASTStmtOrDecl
 {
 public:
    DeclarationType type;
+   // ASTSpecifier extStorage;
+   // Symbol symbol;
+   // AccessMode declMode;
 
    ASTDeclaration ::parse(SpecsList specs, InitDeclList decls)
    {
@@ -31,6 +34,17 @@ public:
    }
 }
 
+public class DeclarationInstance : ASTDeclaration
+{
+   ASTInstantiation inst;
+}
+
+public class DeclarationDefine : ASTDeclaration
+{
+   ASTIdentifier id;
+   ASTExpression exp;
+}
+
 public class ASTFunctionDefinition : ASTNode
 {
 public:
@@ -41,7 +55,7 @@ public:
 
    void print()
    {
-      PrintLn("");
+      // PrintLn("");
       printIndent();
       if(specifiers) 
       {
@@ -83,15 +97,21 @@ public:
 /*
    union
    {
-      FunctionDefinition function;
-      ClassDefinition _class;
-      Declaration declaration;
-      char * importString;
-      Identifier id;
+      ASTFunctionDefinition function;
+      SpecClass _class;
+      ASTDeclaration declaration;
+      String importString;
+      ASTIdentifier id;
       DBTableDef table;
    };
-   ImportType importType;
 };
+*/
+
+/*
+class External
+{
+   ImportType importType;
+}
 */
 
 public class AST : ASTList<ASTNode>

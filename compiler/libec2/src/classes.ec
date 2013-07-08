@@ -1,71 +1,80 @@
 import "externals"
 
-/*
-public class MembersInit : struct
+public class ASTMemberInit : ASTNode
 {
 public:
-   MembersInit prev, next;
-   Location loc;
-   MembersInitType type;
-   union
-   {
-      OldList * dataMembers;
-      ClassFunction function;
-   };
-   //bool coloned;
-};
-
-public class MemberInit : struct
-{
-public:
-   MemberInit prev, next;
-   Location loc;
    Location realLoc;
-   OldList * identifiers;
-   // Expression exp;
-   Initializer initializer;
+   List<ASTIdentifier> identifiers;
+   ASTInitializer initializer;
 
    // COMPILE DATA
    bool used;
    bool variable;
    bool takeOutExp;
-};
-*/
 
-/*
-public class ASTClassDefinition : struct
-{
-public:
-   ASTSpecifier _class;
-   SpecsList baseSpecs;
-   SpecsList definitions;
-   Symbol symbol;
-   Location blockStart;
-   Location nameLoc;
-   int endid;
-   AccessMode declMode;
-   bool deleteWatchable;
-};
-*/
+   ASTMemberInit ::parse()
+   {
+      ASTMemberInit init { };
+      while(true)
+      {
+         ASTIdentifier id = ASTIdentifier::parse();
+         if(id)
+         {
+            if(!init.identifiers) init.identifiers = { };
+            init.identifiers.Add(id);
+            if(peekToken().type != '.')
+               break;
+         }
+      }
+      if(peekToken().type == '=')
+      {
+         readToken();
+         init.initializer = ASTInitializer::parse();
+      }
+      return init;
+   }
 
-/*
-public class PropertyDef : struct
+   void print()
+   {
+      if(identifiers)
+      {
+         Iterator<ASTIdentifier> it { identifiers };
+         while(it.Next())
+         {
+            it.data.print();
+            if(identifiers.GetNext(it.pointer))
+               Print(".");
+         }
+      }
+      Print(" = ");
+      if(initializer) initializer.print();
+   }
+};
+
+public class MemberInitList : ASTList<ASTMemberInit>
 {
-public:
-   PropertyDef prev, next;
-   Location loc;
-   OldList * specifiers;
+   MemberInitList ::parse()
+   {
+      MemberInitList list = (MemberInitList)ASTList::parse(class(MemberInitList), ASTMemberInit::parse, ',');
+      if(peekToken().type == ';')
+         readToken();
+      return list;
+   }
+}
+
+public class ASTPropertyDef : ASTNode
+{
+   SpecsList specifiers;
    ASTDeclarator declarator;
-   Identifier id;
-   Statement getStmt;
-   Statement setStmt;
-   Statement issetStmt;
+   ASTIdentifier id;
+   ASTStatement getStmt;
+   ASTStatement setStmt;
+   ASTStatement issetStmt;
    Symbol symbol;
    bool conversion;
    bool isWatchable;
-   Expression category;
+   ASTExpression category;
 };
-*/
 
 public class ClassDefList : ASTList<ASTClassDef>
 {
@@ -76,7 +85,6 @@ public class ClassDefList : ASTList<ASTClassDef>
 
    void printSep()
    {
-      PrintLn("");
    }
 }
 
@@ -90,18 +98,38 @@ public:
 
    ASTClassDef ::parse()
    {
-      SpecsList specs = SpecsList::parse();
-      InitDeclList decls = InitDeclList::parse();
+      SpecsList specs = null;
+      InitDeclList decls = null;
+      int a = -1;
 
-      if(peekToken().type == '{')
-         return ClassDefFunction::parse(specs, decls);
-      else if(specs || decls)
-         return ClassDefDeclaration::parse(specs, decls);
-      else
-      {
-         readToken(); // Error
+      peekToken();
+      if(nextToken.type == '}')
          return null;
+
+      if(nextToken.type == IDENTIFIER)
+         a = pushAmbiguity();
+
+      specs = SpecsList::parse();
+      decls = InitDeclList::parse();
+      peekToken();
+      if(nextToken.type == '{' || (decls && decls[0] && decls[0].declarator && decls[0].declarator._class == class(DeclFunction)))
+         return ClassDefFunction::parse(specs, decls);
+      else if((specs || decls) && (nextToken.type != '.' && nextToken.type != '='))
+      {
+         if(a > -1) clearAmbiguity();
+         return ClassDefDeclaration::parse(specs, decls);
       }
+      else if(a > -1)
+      {
+         ClassDefInitialization init;
+         popAmbiguity(a);
+
+         init = ClassDefInitialization::parse();
+         if(init)
+            return init;
+      }
+      readToken(); // Error
+      return null;
    }
 };
 
@@ -129,6 +157,7 @@ public class ClassDefDeclaration : ASTClassDef
    {
       printIndent();
       if(decl) decl.print();
+      PrintLn("");
    }
 }
 
@@ -162,9 +191,7 @@ public class ClassDefFunction : ASTClassDef
    {
       ASTClassFunction function = ASTClassFunction::parse(specs, decls);
       if(function)
-      {
          return { function = function };
-      }
       return null;
    }
 
@@ -174,10 +201,45 @@ public class ClassDefFunction : ASTClassDef
    }
 }
 
-/*
-   List<ASTMemberInit> defProperties;
+public class ClassDefInitialization : ASTClassDef
+{
+   MemberInitList defValues;
+
+   ClassDefInitialization ::parse()
+   {
+      MemberInitList defValues = MemberInitList::parse();
+      if(defValues)
+         return { defValues = defValues };
+      return null;
+   }
+
+   void print()
+   {
+      if(defValues)
+      {
+         printIndent();
+         defValues.print();
+         PrintLn(";");
+      }
+   }
+}
+
+public class ClassDefProperty : ASTClassDef
+{
    ASTPropertyDef propertyDef;
+}
+
+public class ClassDefPropertyWatch : ASTClassDef
+{
    ASTPropertyWatch propertyWatch;
+}
+
+public class ClassDefDesigner : ASTClassDef
+{
    String designer;
+}
+
+public class ClassDefDefaultProperty : ASTClassDef
+{
    ASTIdentifier defaultProperty;
-*/
+}

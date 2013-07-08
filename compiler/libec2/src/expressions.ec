@@ -69,7 +69,9 @@ public:
    {
       SpecsList specs = SpecsList::parse();
       ASTDeclarator decl = ASTDeclarator::parse();
-      return { qualifiers = specs, declarator = decl };
+      if(specs || decl)
+         return { qualifiers = specs, declarator = decl };
+      return null;
    }
 
    void print()
@@ -78,14 +80,6 @@ public:
       if(declarator) { if(qualifiers) Print(" "); declarator.print(); }
    }
 };
-
-public class TypeNameList : ASTList<ASTTypeName>
-{
-   TypeNameList ::parse()
-   {
-      return (TypeNameList)ASTList::parse(class(TypeNameList), ASTTypeName::parse, ',');
-   }
-}
 
 // Expressions
 public class ASTExpression : ASTNode
@@ -140,11 +134,11 @@ public:
 */
 }
 
-public class ListExp : ASTList<ASTExpression>
+public class ExpList : ASTList<ASTExpression>
 {
-   ListExp ::parse()
+   ExpList ::parse()
    {
-      return (ListExp)ASTList::parse(class(ListExp), ASTExpression::parse, ',');
+      return (ExpList)ASTList::parse(class(ExpList), ASTExpression::parse, ',');
    }
 }
 
@@ -212,7 +206,7 @@ static ASTExpression parsePrimaryExpression()
    {
       ExpBrackets exp { };
       readToken();
-      exp.list = ListExp::parse();
+      exp.list = ExpList::parse();
       if(peekToken().type == ')')
          readToken();
       return exp;
@@ -258,16 +252,12 @@ static ASTExpression parseUnaryExpression()
       readToken();
       return ExpOperation { op = token.type, exp2 = ExpCast::parse() };
    }
-   /*else if(nextToken == SIZEOF)
-   {
-      readToken();
-      return ExpSizeof { };
-   }
-   else if(nextToken == ALIGNOF)
-   {
-      readToken();
-      return ExpSizeof { };
-   }*/
+   /*
+   else if(nextToken.type == SIZEOF)
+      return ExpSizeof::parse();
+   else if(nextToken.type == ALIGNOF)
+      return ExpAlignOf::parse();
+   */
    else
       return parsePostfixExpression();
 }
@@ -380,7 +370,7 @@ public class ExpAssignment : ExpOperation
 public class ExpBrackets : ASTExpression
 {
 public:
-   ListExp list;
+   ExpList list;
 
    void print()
    {
@@ -399,7 +389,7 @@ public class ExpConditional : ASTExpression
 {
 public:
    ASTExpression condition;
-   ListExp expList;
+   ExpList expList;
    ASTExpression elseExp;
 
    void print()
@@ -417,7 +407,7 @@ public:
       ASTExpression exp = ExpOperation::parse(numPrec-1);
       if(peekToken().type == '?')
       {
-         exp = ExpConditional { condition = exp, expList = ListExp::parse() };
+         exp = ExpConditional { condition = exp, expList = ExpList::parse() };
          if(peekToken().type == ':')
             ((ExpConditional)exp).elseExp = ExpConditional::parse();
       }
@@ -428,7 +418,7 @@ public:
 public class ExpIndex : ASTExpression
 {
    ASTExpression exp;
-   ListExp index;
+   ExpList index;
 
    void print()
    {
@@ -442,7 +432,7 @@ public class ExpIndex : ASTExpression
    {
       ExpIndex exp;
       readToken();
-      exp = ExpIndex { exp = e, index = ListExp::parse() };
+      exp = ExpIndex { exp = e, index = ExpList::parse() };
       if(peekToken().type == ']')
          readToken();
       return exp;
@@ -491,7 +481,7 @@ public class ExpPointer : ExpMember
 public class ExpCall : ASTExpression
 {
    ASTExpression exp;
-   ListExp arguments;
+   ExpList arguments;
    // Location argLoc;
 
    void print()
@@ -506,7 +496,7 @@ public class ExpCall : ASTExpression
    {
       ExpCall exp;
       readToken();
-      exp = ExpCall { exp = e, arguments = ListExp::parse() };
+      exp = ExpCall { exp = e, arguments = ExpList::parse() };
       if(peekToken().type == ')')
          readToken();
       return exp;
@@ -526,9 +516,33 @@ public class ExpCast : ASTExpression
    }
 }
 
-/*   union
+public class ExpInstance : ASTExpression
+{
+   ASTInstantiation instance;
+}
+/*
+public class ExpSizeOf : ASTExpression
+{
+   ASTTypeName typeName;
+
+   ExpSizeOf ::parse()
    {
-      Instantiation instance;
+
+   }
+}
+
+public class ExpAlignOf : ASTExpression
+{
+   ASTTypeName typeName;
+
+   ExpAlignOf ::parse()
+   {
+   }
+}
+*/
+/*
+   union
+   {
       struct
       {
          OldList * specifiers;
@@ -575,26 +589,24 @@ public class ExpCast : ASTExpression
 };
 */
 
-/*
-      Instantiation inst;
-      struct
-      {
-         Identifier id;
-         Expression exp;
-      };
-   Specifier extStorage;
-   Symbol symbol;
-   AccessMode declMode;
-*/
-/*
-public class Instantiation : struct
+public class InstanceInit : ASTNode { }
+
+public class InstInitMember : InstanceInit
+{
+   MemberInitList members;
+}
+
+public class InstInitFunction : InstanceInit
+{
+   ASTClassFunction function;
+}
+
+public class ASTInstantiation : ASTNode
 {
 public:
-   Instantiation prev, next;
-   Location loc;
-   Specifier _class;
-   Expression exp;
-   OldList * members;
+   ASTSpecifier _class;
+   ASTExpression exp;
+   List<InstanceInit> members;
    Symbol symbol;
    bool fullSet;
    bool isConstant;
@@ -602,4 +614,3 @@ public:
    Location nameLoc, insideLoc;
    bool built;
 };
-*/
