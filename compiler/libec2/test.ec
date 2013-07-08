@@ -1,4 +1,23 @@
+struct InventoryItem
+{
+   float price;
+   String name;
+
+   void Print()
+   {
+      int a;
+      PrintLn(a + 4);
+   }
+} item, * itemPtr;
+
+class SomeClass
+{
+
+}
+
 int a;
+
+typedef int bla;
 
 int SomeFunction(int * p)
 {
@@ -11,6 +30,7 @@ int SomeFunction(int * p)
    int c, d, e = 4;
    const String name = "Foo";
    b * a;
+   bla blo;
 
    b = ((a + 3) * a) - (3.1415 * 180 / a);
    a = b = 5*(2 + 10);
