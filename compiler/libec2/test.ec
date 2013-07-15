@@ -1,7 +1,37 @@
+import "ecere"
+
 class Form1 : Window
 {
-   void OnCreate(
+   Button button1
+   {
+      caption = "Click Here", foreground = red;
+   };
 
+   bool OnCreate(
+
+   void OnCreate()
+   {
+      MessageBox mb { contents = "Hello, world!!" };
+      mb.Modal();
+      MessageBox { contents = "Hello, world!!", anchor.bottom = 20 }.Modal();
+      MessageBox mb;
+      mb = { };
+   }
+   Button button1
+   {
+      caption = "Click Here";
+      foreground = red;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         MessageBox { contents = "Hello, world!!" }.Modal();
+         return true;
+      }
+   };
+
+
+   int a = 10;
+   anchor.right = 10;
    caption = "Form1";
    background = formColor;
    borderStyle = sizable;
@@ -9,7 +39,9 @@ class Form1 : Window
    hasMinimize = true;
    hasClose = true;
    clientSize = { 632, 438 };
-}
+};
+
+Form1 form1 { caption = "My Form" };
 
 struct InventoryItem
 {
@@ -27,8 +59,6 @@ class SomeClass
 int a;
 
 typedef int bla;
-
-// import "ecere"
 
 int SomeFunction(int * p)
 {

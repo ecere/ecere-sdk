@@ -15,22 +15,31 @@ public:
    ASTMemberInit ::parse()
    {
       ASTMemberInit init { };
-      while(true)
+      if(peekToken().type == IDENTIFIER)
       {
-         ASTIdentifier id = ASTIdentifier::parse();
-         if(id)
+         int a = pushAmbiguity();
+         while(true)
          {
-            if(!init.identifiers) init.identifiers = { };
-            init.identifiers.Add(id);
-            if(peekToken().type != '.')
-               break;
+            ASTIdentifier id = ASTIdentifier::parse();
+            if(id)
+            {
+               if(!init.identifiers) init.identifiers = { };
+               init.identifiers.Add(id);
+               if(peekToken().type != '.')
+                  break;
+               else
+                  readToken();
+            }
          }
+         if(peekToken().type == '=')
+         {
+            clearAmbiguity();
+            readToken();
+         }
+         else
+            popAmbiguity(a);
       }
-      if(peekToken().type == '=')
-      {
-         readToken();
-         init.initializer = ASTInitializer::parse();
-      }
+      init.initializer = InitExp::parse();
       return init;
    }
 
@@ -45,9 +54,10 @@ public:
             if(identifiers.GetNext(it.pointer))
                Print(".");
          }
+         Print(" = ");
       }
-      Print(" = ");
-      if(initializer) initializer.print();
+      if(initializer)
+         initializer.print();
    }
 };
 
@@ -101,6 +111,7 @@ public:
       SpecsList specs = null;
       InitDeclList decls = null;
       int a = -1;
+      ASTDeclarator decl;
 
       peekToken();
       if(nextToken.type == '}')
@@ -112,8 +123,12 @@ public:
       specs = SpecsList::parse();
       decls = InitDeclList::parse();
       peekToken();
-      if(nextToken.type == '{' || (decls && decls[0] && decls[0].declarator && decls[0].declarator._class == class(DeclFunction)))
+      decl = GetFuncDecl(decls && decls[0] ? decls[0].declarator : null);
+      if(decl)
+      {
+         if(a > -1) clearAmbiguity();
          return ClassDefFunction::parse(specs, decls);
+      }
       else if((specs || decls) && (nextToken.type != '.' && nextToken.type != '='))
       {
          if(a > -1) clearAmbiguity();
