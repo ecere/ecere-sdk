@@ -193,9 +193,20 @@ simple_primary_expression:
    if(peekToken().type == CONSTANT)
       return ExpConstant::parse();
    else if(nextToken.type == IDENTIFIER)
-      return ExpIdentifier::parse();
+   {
+      ExpIdentifier exp = ExpIdentifier::parse();
+      if(peekToken().type == '{')
+      {
+         SpecsList specs { };
+         specs.Add(SpecName { name = exp.identifier.string });
+         return ExpInstance::parse(specs, null);
+      }
+      return exp;
+   }
    else if(nextToken.type == STRING_LITERAL)
       return ExpString::parse();
+   else if(nextToken.type == '{')
+      return ExpInstance::parse(null, null);
    else
       return null;
 }
@@ -519,6 +530,16 @@ public class ExpCast : ASTExpression
 public class ExpInstance : ASTExpression
 {
    ASTInstantiation instance;
+
+   ExpInstance ::parse(SpecsList specs, InitDeclList decls)
+   {
+      return { instance = ASTInstantiation::parse(specs, decls) };
+   }
+
+   void print()
+   {
+      if(instance) instance.print();
+   }
 }
 /*
 public class ExpSizeOf : ASTExpression
@@ -589,16 +610,72 @@ public class ExpAlignOf : ASTExpression
 };
 */
 
-public class InstanceInit : ASTNode { }
+public class InstanceInit : ASTNode
+{
+   InstanceInit ::parse()
+   {
+      int a = pushAmbiguity();
+      SpecsList specs = SpecsList::parse();
+      InitDeclList decls = InitDeclList::parse();
+
+      peekToken();
+      if(nextToken.type == '{' || (specs && decls))
+      {
+         clearAmbiguity();
+         return InstInitFunction::parse(specs, decls);
+      }
+      else if(nextToken.type != '}')
+      {
+         popAmbiguity(a);
+         return InstInitMember::parse();
+      }
+      return null;
+   }
+}
 
 public class InstInitMember : InstanceInit
 {
    MemberInitList members;
+
+   InstInitMember ::parse()
+   {
+      MemberInitList list = MemberInitList::parse();
+
+      return { members = list };
+   }
+
+   void print()
+   {
+      if(members) members.print();
+   }
 }
 
 public class InstInitFunction : InstanceInit
 {
    ASTClassFunction function;
+
+   InstInitFunction ::parse(SpecsList specs, InitDeclList decls)
+   {
+      return { function = ASTClassFunction::parse(specs, decls) };
+   }
+
+   void print()
+   {
+      if(function) function.print();
+   }
+}
+
+public class InstInitList : ASTList<InstanceInit>
+{
+   InstInitList ::parse()
+   {
+      return (InstInitList)ASTList::parse(class(InstInitList), InstanceInit::parse, 0);
+   }
+
+   void print()
+   {
+      ASTList::print();
+   }
 }
 
 public class ASTInstantiation : ASTNode
@@ -606,11 +683,95 @@ public class ASTInstantiation : ASTNode
 public:
    ASTSpecifier _class;
    ASTExpression exp;
-   List<InstanceInit> members;
+
+   InstInitList members;
    Symbol symbol;
    bool fullSet;
    bool isConstant;
    byte * data;
    Location nameLoc, insideLoc;
    bool built;
+
+   ASTInstantiation ::parse(SpecsList specs, InitDeclList decls)
+   {
+      ASTInstantiation inst { };
+      if(specs && specs[0])
+         inst._class = specs[0];
+
+      if(decls && decls[0] && decls[0].declarator && decls[0].declarator._class == class(DeclIdentifier))
+         inst.exp = ExpIdentifier { identifier = ((DeclIdentifier)decls[0].declarator).identifier };
+
+      readToken();
+      inst.members = InstInitList::parse();
+      if(peekToken().type == '}')
+         readToken();
+      return inst;
+   }
+
+   void print()
+   {
+      bool multiLine = false;
+      if(members)
+      {
+         for(m : members; m._class == class(InstInitFunction))
+         {
+            multiLine = true;
+            break;
+         }
+      }
+
+      if(_class) { _class.print(); if(!multiLine || exp) Print(" "); }
+      if(exp) { exp.print(); if(!multiLine) Print(" "); }
+      if(multiLine)
+      {
+         PrintLn("");
+         printIndent();
+      }
+      Print("{");
+      if(multiLine)
+      {
+         PrintLn("");
+         indent++;
+      }
+      if(members && members[0])
+      {
+         if(multiLine)
+         {
+            Iterator<InstanceInit> it { members };
+            while(it.Next())
+            {
+               InstanceInit init = it.data;
+               Link nextLink = (Link)members.GetNext(it.pointer);
+               if(init._class != class(InstInitFunction))
+                  printIndent();
+               init.print();
+               if(init._class == class(InstInitMember))
+                  Print(";");
+               if(nextLink)
+               {
+                  InstanceInit next = nextLink ? (InstanceInit)nextLink.data : null;
+                  PrintLn("");
+                  if(next._class == class(InstInitFunction))
+                     PrintLn("");
+               }
+               else if(init._class != class(InstInitFunction))
+                  PrintLn("");
+            }
+         }
+         else
+         {
+            Print(" ");
+            members.print();
+            Print(" ");
+         }
+      }
+      else
+         Print(" ");
+      if(multiLine)
+      {
+         indent--;
+         printIndent();
+      }
+      Print("}");
+   }
 };
