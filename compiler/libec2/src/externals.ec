@@ -10,7 +10,10 @@ public:
 
    ASTDeclaration ::parse(SpecsList specs, InitDeclList decls)
    {
-      if(peekToken().type == ';')
+      peekToken();
+      if(nextToken.type == '{')
+         return DeclarationInstance::parse(specs, decls);
+      else if(nextToken.type == ';')
          readToken();
       return DeclarationInit { specifiers = specs, declarators = decls };
    }
@@ -37,6 +40,27 @@ public:
 public class DeclarationInstance : ASTDeclaration
 {
    ASTInstantiation inst;
+
+   DeclarationInstance ::parse(SpecsList specs, InitDeclList decls)
+   {
+      ASTInstantiation inst = ASTInstantiation::parse(specs, decls);
+      if(peekToken().type == ';')
+         readToken();
+      if(inst)
+      {
+         return { inst = inst };
+      }
+      return null;
+   }
+
+   void print()
+   {
+      if(inst)
+      {
+         inst.print();
+         Print(";");
+      }
+   }
 }
 
 public class DeclarationDefine : ASTDeclaration
@@ -94,13 +118,23 @@ public:
    */
 };
 
+class ASTImport : ASTNode
+{
+   String importString;
+
+   void print()
+   {
+      Print("import ");
+      PrintLn(importString);
+   }
+}
+
 /*
    union
    {
       ASTFunctionDefinition function;
       SpecClass _class;
       ASTDeclaration declaration;
-      String importString;
       ASTIdentifier id;
       DBTableDef table;
    };
@@ -114,21 +148,66 @@ class External
 }
 */
 
+public ASTDeclarator GetFuncDecl(ASTDeclarator decl)
+{
+   ASTDeclarator funcDecl = null;
+   while(decl && decl._class != class(DeclIdentifier))
+   {
+      if(decl._class == class(DeclFunction))
+         funcDecl = decl;
+      decl = decl.declarator;
+   }
+   return funcDecl;
+}
+
 public class AST : ASTList<ASTNode>
 {
    ASTNode ::ParseExternalDeclaration()
    {
-      SpecsList specs = SpecsList::parse();
-      InitDeclList decls = InitDeclList::parse();
+      SpecsList specs = null; 
+      InitDeclList decls = null;
 
-      if(peekToken().type == '{')
-         return ASTFunctionDefinition::parse(specs, decls);
-      else if(specs || decls)
-         return ASTDeclaration::parse(specs, decls);
+      peekToken();
+      if(nextToken.type == IMPORT)
+      {
+         ASTImport astImport { };
+         readToken();
+         peekToken();
+         if(nextToken.type == STATIC)
+         {
+            readToken();
+         }
+         else if(nextToken.type == IDENTIFIER)
+         {
+            readToken();
+         }
+         peekToken();
+         if(nextToken.type == STRING_LITERAL)
+         {
+            readToken();
+            astImport.importString = CopyString(token.text);
+         }
+         return astImport;
+      }
       else
       {
-         readToken(); // Error
-         return null;
+         specs = SpecsList::parse();
+         decls = InitDeclList::parse();
+         if(nextToken.type == '{')
+         {
+            ASTDeclarator funcDecl = GetFuncDecl((decls && decls[0]) ? decls[0].declarator : null);
+            if(funcDecl)
+               return ASTFunctionDefinition::parse(specs, decls);
+            else
+               return ASTDeclaration::parse(specs, decls);
+         }
+         else if(specs || decls)
+            return ASTDeclaration::parse(specs, decls);
+         else
+         {
+            readToken(); // Error
+            return null;
+         }
       }
    }
 public:
