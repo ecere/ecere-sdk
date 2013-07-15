@@ -29,6 +29,7 @@ public class ASTDeclarator : ASTNode
 {
 public:
    DeclaratorType type;
+   ASTDeclarator declarator;
    // Symbol symbol;
 
    ASTDeclarator ::parse()
@@ -101,7 +102,6 @@ public class TypeNameList : ASTList<ASTTypeName>
 public class DeclFunction : ASTDeclarator
 {
 public:
-   ASTDeclarator declarator;
    TypeNameList parameters;
 
    void print()
@@ -140,8 +140,6 @@ public class DeclIdentifier : ASTDeclarator
 
 public class DeclBrackets : ASTDeclarator
 {
-   ASTDeclarator declarator;
-
    void print()
    {
       Print("(");
@@ -165,7 +163,6 @@ public class DeclBrackets : ASTDeclarator
 
 public class DeclArray : ASTDeclarator
 {
-   ASTDeclarator declarator;
    ASTExpression exp;
    // ASTSpecifier enumClass;
 
@@ -189,7 +186,6 @@ public class DeclArray : ASTDeclarator
 
 public class DeclPointer : ASTDeclarator
 {
-   ASTDeclarator declarator;
    ASTPointer pointer;
 
    void print()
@@ -206,7 +202,6 @@ public class DeclPointer : ASTDeclarator
 
 public class DeclStruct : ASTDeclarator
 {
-   ASTDeclarator declarator;
    ASTExpression exp;
    ASTExpression posExp;
    ASTAttrib attrib;
@@ -236,7 +231,7 @@ public class ASTInitializer : ASTNode
          return init;
       }
       else
-         return InitExp { exp = ASTExpression::parse() };
+         return InitExp::parse();
    }
 };
 
@@ -248,6 +243,11 @@ public class InitExp : ASTInitializer
    {
       if(exp)
          exp.print();
+   }
+
+   InitExp ::parse()
+   {
+      return InitExp { exp = ASTExpression::parse() };
    }
 };
 
