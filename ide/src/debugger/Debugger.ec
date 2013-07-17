@@ -614,6 +614,8 @@ class Debugger
                      }
                      else
                         _dpl2(_dpct, dplchan::debuggerProblem, 0, "Invalid stopItem!");
+                     if(bpUser && strcmp(stopItem.frame.addr, bpUser.bp.addr))
+                        bpUser = null;
                   }
                   else
                      _dpl2(_dpct, dplchan::debuggerProblem, 0, "Breakpoint bkptno(", stopItem.bkptno, ") invalid or not found!");
@@ -1586,7 +1588,7 @@ class Debugger
       return bp;
    }
 
-   GdbDataBreakpoint ParseBreakpoint(char * string, bool * parseMultipleBreakpoints)
+   GdbDataBreakpoint ParseBreakpoint(char * string, Array<char *> outTokens)
    {
       int i;
       GdbDataBreakpoint bp { };
@@ -1614,10 +1616,15 @@ class Debugger
                bp.enabled = (!strcmpi(item.value, "y"));
             else if(!strcmp(item.name, "addr"))
             {
-               if(!strcmp(item.value, "<MULTIPLE>"))
+               if(outTokens && !strcmp(item.value, "<MULTIPLE>"))
                {
-                  if(parseMultipleBreakpoints)
-                     *parseMultipleBreakpoints = true;
+                  int c = 1;
+                  Array<GdbDataBreakpoint> bpArray = bp.multipleBPs = { };
+                  while(outTokens.count > ++c)
+                  {
+                     GdbDataBreakpoint multBp = ParseBreakpoint(outTokens[c], null);
+                     bpArray.Add(multBp);
+                  }
                }
                else
                   bp.addr = item.value;
@@ -1857,10 +1864,50 @@ class Debugger
          delete location;
          if(!breakpointError)
          {
+            if(bpItem.multipleBPs && bpItem.multipleBPs.count)
+            {
+               int count = 0;
+               GdbDataBreakpoint first = null;
+               for(n : bpItem.multipleBPs)
+               {
+                  if(!fstrcmp(n.fullname, bp.absoluteFilePath))
+                  {
+                     count++;
+                     if(!first)
+                        first = n;
+                  }
+                  else
+                  {
+                     if(n.enabled)
+                     {
+                        GdbCommand(false, "-break-disable %s", n.number);
+                        n.enabled = false;
+                     }
+                     else
+                        _dpl2(_dpct, dplchan::debuggerProblem, 0, "Debugger::SetBreakpoint -- error breakpoint already disabled.");
+                  }
+               }
+               if(first)
+               {
+                  bpItem.addr = first.addr;
+                  bpItem.func = first.func;
+                  bpItem.file = first.file;
+                  bpItem.fullname = first.fullname;
+                  bpItem.line = first.line;
+                  //bpItem.thread-groups = first.thread-groups;
+                  bpItem.multipleBPs.Free();
+                  delete bpItem.multipleBPs;
+               }
+               else if(count == 0)
+                  _dpl2(_dpct, dplchan::debuggerProblem, 0, "Debugger::SetBreakpoint -- error multiple breakpoints all disabled.");
+               else
+                  _dpl2(_dpct, dplchan::debuggerProblem, 0, "Debugger::SetBreakpoint -- error multiple breakpoints in exact same file not supported.");
+            }
             bp.bp = bpItem;
             bpItem = null;
             bp.inserted = (bp.bp && bp.bp.number && strcmp(bp.bp.number, "0"));
-            ValidateBreakpoint(bp);
+            if(bp.inserted)
+               ValidateBreakpoint(bp);
             /*if(bp == bpRunToCursor)
                runToCursorDebugStart = false;*/
          }
@@ -2968,8 +3015,6 @@ class Debugger
 
    void EventHit(GdbDataStop stopItem, Breakpoint bpInternal, Breakpoint bpUser)
    {
-      bool conditionMet = true;
-
       char * s1 = null; char * s2 = null;
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::EventHit(",
             "bpInternal(", bpInternal ? s1=bpInternal.CopyLocationString(false) : null, "), ",
@@ -2977,6 +3022,7 @@ class Debugger
             "ignoreBreakpoints(", ignoreBreakpoints, "), ",
             "hitCursorBreakpoint(", bpUser && bpUser.type == runToCursor,  ")");
       delete s1; delete s2;
+
       if(bpUser && stopItem.frame.line && bpUser.line != stopItem.frame.line)
       {
          // updating user breakpoint on hit location difference
@@ -2995,6 +3041,7 @@ class Debugger
       }
       if(bpUser)
       {
+         bool conditionMet = true;
          if(bpUser.condition)
             conditionMet = ResolveWatch(bpUser.condition);
          bpUser.hits++;
@@ -3017,6 +3064,9 @@ class Debugger
             delete bpRunToCursor;
          }
       }
+
+      if(!bpUser && !bpInternal)
+         GdbExecContinue(false);
    }
 
    void ValgrindTargetThreadExit()
@@ -3161,10 +3211,8 @@ class Debugger
                      if(bpItem)
                         _dpl(0, "problem");
 #endif
-                     bpItem = ParseBreakpoint(item.value, null);
+                     bpItem = ParseBreakpoint(item.value, outTokens);
                      //breakType = bpValidation;
-                     //app.SignalEvent();
-                     subTokens.RemoveAll();
                   }
                   else if(!strcmp(item.name, "depth"))
                   {
@@ -3845,6 +3893,23 @@ class Debugger
       }
    }
 
+   void FGOBreakpointModified(Array<char *> outTokens)
+   {
+      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::FGOBreakpointModified() -- TODO only if needed: support breakpoint modified");
+#if 0
+      DebugListItem item { };
+      if(outTokens.count > 1 && TokenizeListItem(outTokens[1], item))
+      {
+         if(!strcmp(item.name, "bkpt"))
+         {
+            GdbDataBreakpoint modBp = ParseBreakpoint(item.value, outTokens);
+            delete modBp;
+         }
+      }
+#endif
+   }
+
+
    ExpressionType ::DebugEvalExpTypeError(char * result)
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::DebugEvalExpTypeError()");
@@ -4327,6 +4392,14 @@ class GdbDataBreakpoint : struct
    property char * at { set { delete at; if(value) at = CopyString(value); } }
    int times;
 
+   Array<GdbDataBreakpoint> multipleBPs;
+
+   void Print()
+   {
+   _dpl(0, "");
+      PrintLn("{", "#", number, " T", type, " D", disp, " E", enabled, " H", times, " (", func, ") (", file, ":", line, ") (", fullname, ") (", addr, ") (", at, ")", "}");
+   }
+
    void Free()
    {
       delete type;
@@ -4335,6 +4408,8 @@ class GdbDataBreakpoint : struct
       delete func;
       delete file;
       delete at;
+      if(multipleBPs) multipleBPs.Free();
+      delete multipleBPs;
    }
 
    ~GdbDataBreakpoint()
@@ -4516,7 +4591,6 @@ class CodeLocation : struct
    }
 }
 
-
 void GDBFallBack(Expression exp, String expString)
 {
    char * result;
@@ -4527,4 +4601,17 @@ void GDBFallBack(Expression exp, String expString)
       exp.constant = result;
       exp.type = constantExp;
    }
+}
+
+static int String_OnCompare(char * string1, char * string2)
+{
+   int result = 0;
+   _dpl(0, "");
+   if(string1 && string2)
+      result = strcmp(string1, string2); //strcmpi
+   else if(!string1 && string2)
+      result = 1;
+   else if(string1 && !string2)
+      result = -1;
+   return result;
 }
