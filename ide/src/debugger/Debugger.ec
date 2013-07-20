@@ -2172,6 +2172,10 @@ class Debugger
             
             if(exp && !parseError)
             {
+               char expString[4096];
+               expString[0] = 0;
+               PrintExpression(exp, expString);
+
                if(GetPrivateModule())
                {
                   if(codeEditor)
@@ -2182,6 +2186,10 @@ class Debugger
                if(wh.type)
                   wh.type.refCount++;
                DebugComputeExpression(exp);
+               if(ExpressionIsError(exp))
+               {
+                  GDBFallBack(exp, expString);
+               }
 
                /*if(exp.hasAddress)
                {
@@ -4084,5 +4092,18 @@ class CodeLocation : struct
    ~CodeLocation()
    {
       Free();
+   }
+}
+
+
+void GDBFallBack(Expression exp, String expString)
+{
+   char * result;
+   ExpressionType evalError = dummyExp;
+   result = Debugger::EvaluateExpression(expString, &evalError);
+   if(result)
+   {
+      exp.constant = result;
+      exp.type = constantExp;
    }
 }

@@ -74,7 +74,7 @@ static char GetGdbFormatChar(Type type)
    return 'x';
 }
 
-static bool ExpressionIsError(Expression exp)
+/*static */bool ExpressionIsError(Expression exp)
 {
    return (exp.type == dereferenceErrorExp || exp.type == symbolErrorExp || exp.type == classMemberSymbolErrorExp || 
          exp.type == structMemberSymbolErrorExp || exp.type == memoryErrorExp || exp.type == unknownErrorExp ||
@@ -85,7 +85,7 @@ void DebugComputeExpression(Expression exp)
 {
 #ifdef _DEBUG
    char expString[1024] = "";
-   char temp[1024];
+   //char temp[1024];
    //if(inCompiler)
       PrintExpression(exp, expString);
    // printf("%s (exp.type = %s)\n", expString, exp.type.OnGetString(temp, null, null));
