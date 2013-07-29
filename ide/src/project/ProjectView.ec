@@ -1104,10 +1104,10 @@ class ProjectView : Window
                else
                {
                   if(config)
-                     ide.outputView.buildBox.Logf($"Deleteing intermediate objects for %s %s in project %s using the %s configuration...\n",
+                     ide.outputView.buildBox.Logf($"Deleting intermediate objects for %s %s in project %s using the %s configuration...\n",
                            node.type == file ? $"single file" : $"folder", node.name, project.name, config.name);
                   else
-                     ide.outputView.buildBox.Logf($"Deleteing intermediate objects for %s %s in project %s...\n",
+                     ide.outputView.buildBox.Logf($"Deleting intermediate objects for %s %s in project %s...\n",
                            node.type == file ? $"single file" : $"folder", node.name, project.name);
 
                   node.DeleteIntermediateFiles(compiler, config, bitDepth, namesInfo, false);
