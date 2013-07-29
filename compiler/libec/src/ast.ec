@@ -2950,10 +2950,21 @@ public void OutputIntlStrings()
 
 default extern OldList * ast;
 default extern int yyparse ();
+default extern int yylex ();
 
 public void SetAST(OldList * list) { ast = list; }
 public OldList * GetAST() { return ast; }
 public void ParseEc()
 {
    yyparse();
+}
+
+public int LexEc()
+{
+   return yylex();
+}
+
+public const char * GetYYText()
+{
+   return yytext;
 }
