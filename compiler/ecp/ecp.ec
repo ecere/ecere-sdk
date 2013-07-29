@@ -160,10 +160,10 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
                {
                   for(d = decl.declarators->first; d; d = d.next)
                   {
+                     Identifier declId = GetDeclId(d);
                      //if(d.type != DeclaratorFunction)
+                     if(declId)
                      {
-                        Identifier declId = GetDeclId(d);
-
                         dataMemberDefine = DataMemberDefine 
                         {
                            isProperty = MemberType::dataMember;
