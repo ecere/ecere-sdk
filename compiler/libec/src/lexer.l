@@ -274,6 +274,7 @@ L?\"(\\.|[^\\"])*\"     { return(STRING_LITERAL); }
 
       if ( --include_stack_ptr < 0 )
       {
+         include_stack_ptr = 0;
          yyterminate();
       }
       else
