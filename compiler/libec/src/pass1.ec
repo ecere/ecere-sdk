@@ -147,11 +147,11 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
                // Mark typed_object/any_object parameters as such according to method type
                Type typeParam;
                Declarator funcDecl = GetFuncDecl(func.declarator);
-               if(funcDecl.function.parameters)
+               if(funcDecl.function.parameters && funcDecl.function.parameters->first)
                {
                   TypeName param = funcDecl.function.parameters->first;
 
-                  for(typeParam = methodDataType.params.first; typeParam; typeParam = typeParam.next)
+                  for(typeParam = methodDataType.params.first; typeParam && param; typeParam = typeParam.next)
                   {
                      if(typeParam.classObjectType)
                      {
@@ -159,7 +159,7 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
                         if(param.declarator && param.declarator.symbol)
                            param.declarator.symbol.type.classObjectType = typeParam.classObjectType;
                      }
-                     param = param.next;
+                     param = param ? param.next : null;
                   }
                }
             }
