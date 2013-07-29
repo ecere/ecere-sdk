@@ -645,7 +645,7 @@ void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** va
    // Get the arguments from SQLite
    for(a : sqlFunction.args)
    {
-      ffi_type * type = (ffi_type *)ffiArg.data;
+      ffi_type * type = (ffi_type *)sqlFunction.argTypes[i+1];
       if(i >= n) break;
       switch(a.type)
       {
@@ -672,7 +672,9 @@ void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** va
                buffer._buffer = sqlite3_value_text(values[i]);
                //buffer._buffer = sqlite3_value_blob(curStatement);
                buffer.count = buffer._size;
-               ((void (*)(void *, void *, void *))(void *)a._vTbl[__ecereVMethodID_class_OnUnserialize])(a, data, buffer);
+               if(a.type == structClass)
+                  *data = new byte[a.structSize];
+               ((void (*)(void *, void *, void *))(void *)a._vTbl[__ecereVMethodID_class_OnUnserialize])(a, (a.type == structClass) ? *data : data, buffer);
                buffer._buffer = null;
                //delete buffer;
             }
@@ -841,6 +843,8 @@ void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** va
       // Free instance
       void * data = *(void **)arg.data;
       ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, data);
+      if(type.type == structClass)
+         delete data;
       // Free arg holder
       data = arg.data;
       delete data;
