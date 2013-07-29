@@ -1122,7 +1122,7 @@ static void OnSerialize(Class _class, void * data, IOChannel channel)
             DataMember member;
             Class c;
             for(c = _class; c && (!c.base || c.base.type != systemClass) && c.base != lastClass; c = c.base);
-            lastClass = _class;
+            lastClass = c;
 
             for(member = c.membersAndProperties.first; member; member = member.next)
             {
