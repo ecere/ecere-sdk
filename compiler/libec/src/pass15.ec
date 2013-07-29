@@ -4582,6 +4582,10 @@ void ComputeInstantiation(Expression exp)
                               
                               // CHANGED THIS HERE
                               eClass_FindDataMemberAndOffset(_class, dataMember.name, &dataMemberOffset, privateModule, null, null);
+
+                              // 2013/17/29 -- It seems that this was missing here!
+                              if(_class.type == normalClass)
+                                 dataMemberOffset += _class.base.structSize;
                               // dataMemberOffset = dataMember.offset;
                            }
                            found = true;
