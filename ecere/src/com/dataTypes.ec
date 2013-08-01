@@ -604,10 +604,11 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                      char internalMemberString[1024];
                      byte * memberData = ((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset));
                      int c;
-                     for(c = 0; c < memberType.structSize; c++)
+                     uint typeSize = (memberType.type == normalClass) ? memberType.typeSize : memberType.structSize;
+                     for(c = 0; c < typeSize; c++)
                         if(memberData[c])
                            break;
-                     if(c < memberType.structSize)
+                     if(c < typeSize)
                      {
                         bool needClass = true;
                         char * result;
@@ -615,7 +616,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                            result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, *(Instance *)memberData, internalMemberString, null, &needClass);
                         else
                            result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, memberData, internalMemberString, null, &needClass);
-                        if(needClass)
+                        if(needClass && strcmp(memberType.dataTypeString, "char *"))
                         {
                            //strcpy(memberString, memberType.name);
                            strcat(memberString, "{ ");
