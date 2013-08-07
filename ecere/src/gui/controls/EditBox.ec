@@ -1721,9 +1721,25 @@ private:
                               escaped = true;
                         }
                         else if(!inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && 
-                           ( ( isdigit(word[0]) /*&& (!c || word[-1] == ' ' || word[-1] == '\t')*/ ) || (word[0] == '.' && isdigit(word[1]))))
+                           ( ( isdigit(word[0]) /*&& (!c || word[-1] == ' ' || word[-1] == '\t')*/ ) || (word[0] == '.' /*&& isdigit(word[1])*/ )))
                         {
-                           newTextColor = colorScheme.numberColor;
+                           char * s = null;
+                           strtod(word, &s);
+                           if(s)
+                           {
+                              if(*s == 'f')
+                              {
+                                 if(strchr(word, '.'))
+                                 {
+                                    int newWordLen = s + 1 - word;
+                                    newTextColor = colorScheme.numberColor;
+                                    c += newWordLen - wordLen;
+                                    wordLen = newWordLen;
+                                 }
+                              }
+                              else if(!isalpha(*s))
+                                 newTextColor = colorScheme.numberColor;
+                           }
                         }
                         else
                         {
