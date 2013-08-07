@@ -1720,24 +1720,26 @@ private:
                            if(!wasEscaped)
                               escaped = true;
                         }
-                        else if(!inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && 
-                           ( ( isdigit(word[0]) /*&& (!c || word[-1] == ' ' || word[-1] == '\t')*/ ) || (word[0] == '.' /*&& isdigit(word[1])*/ )))
+                        else if(!inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && (isdigit(word[0]) || word[0] == '.'))
                         {
+                           char * dot = strchr(word, '.');
                            char * s = null;
-                           strtod(word, &s);
+                           if(dot)
+                              strtod(dot+1, &s);
+                           else
+                              strtod(word, &s);
                            if(s)
                            {
-                              if(*s == 'f')
+                              if(dot && *s == 'f' && !isalnum(s[1]))
                               {
-                                 if(strchr(word, '.'))
-                                 {
-                                    int newWordLen = s + 1 - word;
-                                    newTextColor = colorScheme.numberColor;
-                                    c += newWordLen - wordLen;
-                                    wordLen = newWordLen;
-                                 }
+                                 int newWordLen = s + 1 - word;
+                                 newTextColor = colorScheme.numberColor;
+                                 c += newWordLen - wordLen;
+                                 wordLen = newWordLen;
                               }
                               else if(!isalpha(*s))
+                                 newTextColor = colorScheme.numberColor;
+                              else if(dot && dot > word && isalpha(dot[1]))
                                  newTextColor = colorScheme.numberColor;
                            }
                         }
