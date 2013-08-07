@@ -1667,9 +1667,10 @@ static void ProcessExpression(Expression exp)
 
                   if(type.kind == classType && type._class && type._class.registered)
                   {
-                     ClassType classType = memberExp.member.exp.expType._class.registered.type;
-                     if(classType != normalClass || (method.dataType.byReference))// TESTING THIS OUT: && !memberExp.member.exp.expType.classObjectType)
-                        argClass = type._class.registered;
+                     Class regClass = type._class.registered;
+                     ClassType classType = regClass.type;
+                     if(classType != normalClass || !strcmp(regClass.dataTypeString, "char *") || (method.dataType.byReference))// TESTING THIS OUT: && !memberExp.member.exp.expType.classObjectType)
+                        argClass = regClass;
                   }
                   else if(type.kind == subClassType)
                   {
@@ -1701,60 +1702,62 @@ static void ProcessExpression(Expression exp)
                   */
                }
 
-               // *** Added !_class here
-               if(!exp.call.exp.expType.methodClass && (!memberExp || !_class) && memberExp.member.exp.expType && memberExp.member.exp.expType.classObjectType)
                {
-                  if(memberExp.member.exp.expType.kind == classType && memberExp.member.exp.expType._class &&
-                     memberExp.member.exp.expType._class.registered && memberExp.member.exp.expType._class.registered.type == normalClass)
+                  Type type = memberExp.member.exp.expType;
+                  Class regClass = (type && type.kind == classType && type._class) ? type._class.registered : null; 
+                  // *** Added !_class here
+                  if(!exp.call.exp.expType.methodClass && (!memberExp || !_class) && type && type.classObjectType)
                   {
-                     // TOCHECK: Added this if statement here for File::OnSerialize to be calling the instance's own Seek function,
-                     // as opposed to the File class vTbl one
+                     if(regClass && regClass.type == normalClass && strcmp(regClass.dataTypeString, "char *"))
+                     {
+                        // TOCHECK: Added this if statement here for File::OnSerialize to be calling the instance's own Seek function,
+                        // as opposed to the File class vTbl one
+                        exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
+                           MkExpIndex(MkExpPointer(MkExpBrackets(MkListOne(CopyExpression(memberExp.member.exp))), MkIdentifier("_vTbl")),
+                           MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
+                     }
+                     else
+                     {
+                        exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
+                           MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier("class")), MkIdentifier("_vTbl")),
+                           MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
+                     }
+                  }
+                  else if(memberExp && !_class && exp.call.exp.expType._class &&
+                        (type.kind == subClassType || (regClass && regClass.type == normalClass && strcmp(regClass.dataTypeString, "char *"))))
+                  {
                      exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
-                        MkExpIndex(MkExpPointer(MkExpBrackets(MkListOne(CopyExpression(memberExp.member.exp))), MkIdentifier("_vTbl")),
+                        MkExpIndex(MkExpPointer(CopyExpression(memberExp.member.exp), MkIdentifier("_vTbl")),
                         MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
                   }
-                  else
+                  else 
                   {
+                     char className[1024];
+
+                     // TESTING: Moved this here...
+                     if(!_class && argClass && strcmp(argClass.fullName, "class"))
+                        _class = argClass;
+
+                     if(!_class)
+                     {
+                        // TODO: Unhandled case here, what should happen?
+                        _class = class(int);
+                     }
+
+                     // Need the class itself here...
+                     strcpy(className, "__ecereClass_");
+                     FullClassNameCat(className, _class.fullName, true);
+                     MangleClassName(className);
+
+                     if(!_class.symbol)
+                        _class.symbol = FindClass(_class.fullName);
+
+                     DeclareClass(_class.symbol, className);
+
                      exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
-                        MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier("class")), MkIdentifier("_vTbl")),
+                        MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl")),
                         MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
                   }
-               }
-               else if(memberExp && !_class && exp.call.exp.expType._class &&
-                     (memberExp.member.exp.expType.kind == subClassType || (memberExp.member.exp.expType.kind == classType && memberExp.member.exp.expType._class &&
-                     memberExp.member.exp.expType._class.registered && memberExp.member.exp.expType._class.registered.type == normalClass)))
-               {
-                  exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
-                     MkExpIndex(MkExpPointer(CopyExpression(memberExp.member.exp), MkIdentifier("_vTbl")),
-                     MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
-               }
-               else 
-               {
-                  char className[1024];
-
-                  // TESTING: Moved this here...
-                  if(!_class && argClass && strcmp(argClass.fullName, "class"))
-                     _class = argClass;
-
-                  if(!_class)
-                  {
-                     // TODO: Unhandled case here, what should happen?
-                     _class = class(int);
-                  }
-
-                  // Need the class itself here...
-                  strcpy(className, "__ecereClass_");
-                  FullClassNameCat(className, _class.fullName, true);
-                  MangleClassName(className);
-
-                  if(!_class.symbol)
-                     _class.symbol = FindClass(_class.fullName);
-
-                  DeclareClass(_class.symbol, className);
-
-                  exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
-                     MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl")),
-                     MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
                }
             }
             else
