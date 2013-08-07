@@ -2215,7 +2215,11 @@ private:
       Point scroll = this.scroll;
 
       if(state == maximized)
+      {
          parent = GetParentMenuBar();
+         if(!parent && nativeDecorations)
+            parent = rootWindow;
+      }
 
       if(parent)
       {
