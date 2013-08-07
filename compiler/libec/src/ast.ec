@@ -2404,8 +2404,9 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
             Symbol _class = spec.id ? FindClass(spec.id.string) : null;
             if(_class)
             {
+               specType.declaredWithStruct = true;
                if(!_class.registered || _class.registered.type != structClass)
-                  specType.directClassAccess = true;
+                  specType.directClassAccess = true;     // TODO: Need to clarify what 'directClassAccess' is about
                specType._class = _class;
                specType.kind = classType;
                break;

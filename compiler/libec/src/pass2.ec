@@ -96,7 +96,7 @@ static Expression FixReference(Expression e, bool wantReference)
          Class _class = type._class ? type._class.registered : null;
          // TOLOOKINTO: What was systemClass used for here? Exclude "typed_object"...
          // TOFIX: In which case with systemClass do we actually want this to come here? Can't think of any!
-         if(_class && (_class.type == structClass || _class.type == noHeadClass || 
+         if(_class && ((_class.type == structClass && !type.declaredWithStruct) || _class.type == noHeadClass || 
            (_class.type == systemClass && _class.base && 
            strcmp(_class.fullName, "uintptr") && 
            strcmp(_class.fullName, "intptr") && 
@@ -2200,7 +2200,7 @@ static void ProcessExpression(Expression exp)
                   //PrintExpression(e, debugString);
 #endif
                   // If expression type is a simple class, make it an address
-                  FixReference(e, true);
+                  FixReference(e, !destType || !destType.declaredWithStruct);
                }
             }
             if(ellipsisDestType)

@@ -1163,12 +1163,13 @@ public:
    bool truth:1;
    bool byReference:1;
    bool extraParam:1;
-   bool directClassAccess:1;
+   bool directClassAccess:1;     // Need to clarify this if this had the same intended purpose as declaredWithStruct
    bool computing:1;
    bool keepCast:1;
    bool passAsTemplate:1;
    bool dllExport:1;
    bool attrStdcall:1;
+   bool declaredWithStruct:1;
 
    char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {

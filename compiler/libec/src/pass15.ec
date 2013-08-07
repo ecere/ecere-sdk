@@ -7316,7 +7316,7 @@ void ProcessExpressionType(Expression exp)
                // TOCHECK: Why was !strcmp(id.string, "this") commented out?
                if(symbol.isParam || !strcmp(id.string, "this"))
                {
-                  if(_class && _class.type == structClass)
+                  if(_class && _class.type == structClass && !type.declaredWithStruct)
                      exp.byReference = true;
                   
                   //TESTING COMMENTING THIS OUT IN FAVOR OF ApplyAnyObjectLogic
