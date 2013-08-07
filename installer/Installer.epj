@@ -122,7 +122,10 @@
             {
                "Folder" : "mimetypes",
                "Files" : [
-                  "../ecere/res/mimeTypes/file.png"
+                  "../ecere/res/mimeTypes/file.png",
+                  "../ecere/res/mimeTypes/brokenFile.png",
+                  "../ecere/res/places/brokenFolder.png",
+                  "../ecere/res/places/folder.png"
                ]
             },
             {
