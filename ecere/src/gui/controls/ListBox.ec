@@ -4121,7 +4121,11 @@ private:
          if(editData && editData.visible)
          {
             if(style.alwaysEdit)
+            {
                editData.Activate();
+               // For Installer to pop up file dialog
+               NotifyKeyDown(master, this, currentRow, key, ch);
+            }
             return false;
          }
       }
