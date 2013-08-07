@@ -5232,7 +5232,7 @@ public:
          if(style.allCaps)
             ch = (ch < 128) ? toupper(ch) : ch;     // TODO: UNICODE TO UPPER
 
-         if(this.x < this.line.count && this.overwrite)
+         if(this.overwrite && selX == x && selY == y && this.x < this.line.count)
          {
             char buffer[5];
             char * newString;
