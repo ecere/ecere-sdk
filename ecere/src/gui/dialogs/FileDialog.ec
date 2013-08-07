@@ -1232,7 +1232,7 @@ private:
          if(getNameFromListBox)
          {
             GetNamesFromRow(listBox.currentRow, &selectedFileName);
-            result = SelectFile(selectedFileName, fromEditBox, control.id == DialogResult::ok);
+            result = SelectFile(selectedFileName, fromListBox, control.id == DialogResult::ok);
             if(result && style == selectDir)
                listBox.MakeActive();
          }
@@ -1241,7 +1241,7 @@ private:
             char * fileName = this.fileName.line.text;
             selectedFileName = new char[strlen(fileName)+1];
             strcpy(selectedFileName, fileName);
-            result = SelectFile(selectedFileName, fromListBox, control.id == DialogResult::ok);
+            result = SelectFile(selectedFileName, fromEditBox, control.id == DialogResult::ok);
             if(result && style == selectDir)
                this.fileName.MakeActive();
          }
