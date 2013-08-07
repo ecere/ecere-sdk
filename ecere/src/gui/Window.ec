@@ -2700,9 +2700,10 @@ private:
             if(!opaque)
             {
                // Adjust renderArea to the root window level
-               Extent * renderArea = &rootWindow.tempExtents[1];
+               Extent * renderArea = &rootWindow.tempExtents[3];
 
-               int offsetX = child.absPosition.x - rootWindow.absPosition.x, offsetY = child.absPosition.y - rootWindow.absPosition.y;
+               int offsetX = child.absPosition.x - rootWindow.absPosition.x;
+               int offsetY = child.absPosition.y - rootWindow.absPosition.y;
                if(child.rootWindow.nativeDecorations && rootWindow.windowHandle)
                {
                   offsetX -= child.rootWindow.clientStart.x;
@@ -2731,7 +2732,12 @@ private:
                */
 
                renderArea->Copy(child.dirtyArea /*childRenderArea*/);
+
+               // This intersection with child clip extent was missing and causing #708 (Installer components list scrolling bug):
+               renderArea->Intersection(child.clipExtent, rootWindow.tempExtents[0], rootWindow.tempExtents[1], rootWindow.tempExtents[2]);
+
                renderArea->Offset(offsetX, offsetY);
+
                dirtyExtent.Union(renderArea, rootWindow.tempExtents[0]);
                // overDirtyExtent.Union(renderArea);
                renderArea->Empty();
