@@ -199,11 +199,11 @@ public class PathBox : CommonControl
 
             browsePath[0] = '\0';
             strncpy(browsePath, browseDialog.filePath, MAX_LOCATION); browsePath[MAX_LOCATION-1] = '\0';
-            if(dirsBox && dirsBox.baseBrowsePath && dirsBox.baseBrowsePath[0])
+            if(dirsBox && dirsBox.baseBrowsePath && dirsBox.baseBrowsePath[0] && ((ebContents && ebContents[0]) || !backFilePath || !backFilePath[0]))
                PathCat(browsePath, dirsBox.baseBrowsePath);
             PathCat(browsePath, ebContents);
             browseDialog.filePath = (ebContents && ebContents[0]) ? browsePath : "";
-            if(pathBox.typeExpected == directory && browsePath[0] && FileExists(browsePath).isDirectory)
+            if(pathBox.typeExpected == directory && browsePath[0] && FileExists(browsePath).isDirectory && backFilePath && backFilePath[0])
                StripLastDirectory(browsePath, browsePath);
             while(browsePath[0] && !FileExists(browsePath).isDirectory)
                StripLastDirectory(browsePath, browsePath);

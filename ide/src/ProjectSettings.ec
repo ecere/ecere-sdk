@@ -1007,6 +1007,7 @@ private:
 
    editor = DirectoriesBox
    {
+      browseDialog = { };
       bool NotifyModified(DirectoriesBox dirsBox)
       {
          char * switchToDrop = ((DirsArrayOptionBox)dirsBox.id).switchToDrop;
