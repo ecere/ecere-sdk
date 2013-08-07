@@ -328,9 +328,9 @@ private:
          if(result == fileNotFound || !data)
          {
             data = (IDESettings)this.data;
-            data.useFreeCaret = true;
+            data.useFreeCaret = false; //true;
             data.showLineNumbers = true;
-            data.caretFollowsScrolling = true;
+            data.caretFollowsScrolling = false; //true;
          }
       }
       // Ensure we have a default compiler

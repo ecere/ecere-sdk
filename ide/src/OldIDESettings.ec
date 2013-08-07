@@ -52,9 +52,9 @@ class OldIDESettings : GlobalAppSettings
    bool caretFollowsScrolling;
    //int numJobs;
    char * displayDriver;
-   useFreeCaret = true;
+   useFreeCaret = false; //true;
    showLineNumbers = true;
-   caretFollowsScrolling = true;
+   caretFollowsScrolling = false; //true;
    //numJobs = 1;
 
    char * projectDefaultTargetDir;

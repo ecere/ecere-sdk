@@ -6,7 +6,7 @@ import "ecere"
 
 import "licensing"
 
-#if /*defined(_W64) || */(defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
 #define X64STRING " (64 bit)"
 #else
 #define X64STRING " (32 bit)"
@@ -20,7 +20,7 @@ class AboutIDE : Window
    text = $"About the Ecere SDK";
    tabCycle = true;
 
-   Label { this, text = "Ecere Software Development Kit   v0.44.07 \"Ryōan-ji\"" X64STRING, font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 128 } };
+   Label { this, text = "Ecere Software Development Kit   v0.44.08 \"Ryōan-ji\"" X64STRING, font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 128 } };
    Label { this, text = "Copyright © 2005-2013 Ecere Corporation",         font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 144 } };
    Label { this, text = "Copyright © 1996-2013 Jérôme Jacovella-St-Louis", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 160 } };
    Label { this, text = $"Lead Architect and Developer", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 188 } };
