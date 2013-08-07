@@ -2267,6 +2267,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
       Class enumBase = null;
       Class base = (baseName && baseName[0]) ? eSystem_FindClass(module, baseName) : null;
       bool refine = false;
+      Class prevBase = null;
 
       if(base && !base.internalDecl && (base.type == noHeadClass || base.type == structClass || base.type == normalClass)) 
       {
@@ -2564,6 +2565,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
          }
 
          _class.module = module;
+         prevBase = _class.base;
          _class.base = base;
          if(base)
          {
@@ -2698,13 +2700,31 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
                   data.largest = ((EnumClassData)(base.data)).largest;
             }
          }
-         if(base && base.vTblSize && _class.vTblSize < base.vTblSize)
+         if(base)
          {
-            _class.vTblSize = base.vTblSize;
-            // OK to scrap existing virtual table?
-            delete _class._vTbl;
-            _class._vTbl = _malloc(sizeof(int(*)()) * _class.vTblSize);
-            memcpy(_class._vTbl, base._vTbl, sizeof(int(*)()) * _class.vTblSize);
+            int i;
+            uint oldSize = _class.vTblSize;
+            if(base.vTblSize && _class.vTblSize < base.vTblSize)
+            {
+               _class.vTblSize = base.vTblSize;
+               // OK to scrap existing virtual table?
+               //delete _class._vTbl;
+               //_class._vTbl = _malloc(sizeof(int(*)()) * _class.vTblSize);
+               // memcpy(_class._vTbl, base._vTbl, sizeof(int(*)()) * _class.vTblSize);
+               _class._vTbl = _realloc(_class._vTbl, sizeof(int(*)()) * _class.vTblSize);
+            }
+            if(!prevBase)
+            {
+               if(_class.type == normalClass && strcmp(_class.name, "ecere::com::Instance") && strcmp(_class.name, "enum") && strcmp(_class.name, "struct"))
+                  prevBase = eSystem_FindClass(module, "ecere::com::Instance");
+               else
+                  prevBase = eSystem_FindClass(module, "class");
+            }
+            for(i = 0; i < base.vTblSize; i++)
+            {
+               if(i >= oldSize || _class._vTbl[i] == prevBase._vTbl[i])
+                  _class._vTbl[i] = base._vTbl[i];
+            }
          }
 
          if(_class.base)
