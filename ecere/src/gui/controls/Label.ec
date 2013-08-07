@@ -142,8 +142,8 @@ private:
          {
             int tw = 0;
             char * caption = labeledWindow.caption;
-
-            surface.TextExtent(caption, strlen(caption), &tw, null);
+            if(caption)
+               surface.TextExtent(caption, strlen(caption), &tw, null);
             GroupBevel(surface, true,  1,7, clientSize.w - 2, clientSize.h - 8, tw);
             GroupBevel(surface, false, 0,6, clientSize.w, clientSize.h - 6, tw);
          }

@@ -179,9 +179,12 @@ public:
          bitmaps[0] = value;
          bitmaps[1] = value ? (value.alphaBlend ? value : { fileName = value.fileName, monochrome = true }) : null;
          bitmaps[2] = value ? { fileName = value.fileName, grayed = true } : null;
-         incref bitmaps[0];
-         incref bitmaps[1];
-         incref bitmaps[2];
+         if(value)
+         {
+            incref bitmaps[0];
+            incref bitmaps[1];
+            incref bitmaps[2];
+         }
       }
       get { return bitmaps[0]; }
    };
