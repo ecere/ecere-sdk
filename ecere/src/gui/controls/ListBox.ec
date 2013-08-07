@@ -4187,7 +4187,7 @@ private:
          }
       }
 
-      if(editData && editData.visible && ch && !key.alt && !key.ctrl && editData.active)
+      if(editData && editData.visible && ch && !key.alt && !key.ctrl && editData.active && (key.code != tab || (editData._class == class(EditBox) && ((EditBox)editData).tabKey)))
          return false;
 
       if(!key.alt && (style.multiSelect || !key.ctrl))
