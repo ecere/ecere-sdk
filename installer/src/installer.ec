@@ -389,9 +389,6 @@ Component coreSDK[CoreSDKID] =
    { "Ecere IDE",       "ecere-sdk/ide",                 "bin",      null, true,  true },
    { "Runtime Library", "ecere-sdk/ecere.dll",           "bin",      null, true,  true },
    { "eC Compiler",     "ecere-sdk/compiler",            "bin",      null, true,  true },
-   { "Data Access",     "ecere-sdk/eda",                 "bin",      null, false, true },
-   { "Ecere Vanilla",   "ecere-sdk/libecereVanilla.a",   "lib",      null, false, true },
-   { "Ecere Extras",    "extras",                        "extras",   null, false, true },
 #ifndef NOMINGW
    { "GNU C Compiler",  "mingw/gcc/core",   "mingw", null, true, true },
    { "GNU Debugger",    "mingw/gdb",        "mingw", null, true, true },
@@ -405,15 +402,18 @@ Component coreSDK[CoreSDKID] =
 #ifndef NOMINGW
 Component additional[] =
 {
-   { "UPX",             "upx/bin",                 "mingw/bin",null, false, true },
-   { "GNU Regexp",      "mingw/gnurx",             "mingw",    null, false, true },
-   { "pthreads",        "mingw/pthreads",          "mingw",    null, false, true },
-   { "C++ Compiler",    "mingw/gcc/c++",           "mingw",    null, false, true },
-   { "Win32 APIs",      "mingw/w32api",            "mingw",    null, false, true },
-   { "GCC I18n",        "mingw/locale/gcc",        "mingw",    null, false, false },
-   { "GDB I18n",        "mingw/locale/gdb",        "mingw",    null, false, false },
-   { "Make I18n",       "mingw/locale/make",       "mingw",    null, false, false },
-   { "Binutils I18n",   "mingw/locale/binutils",   "mingw",    null, false, false },
+   { "Data Access",     "ecere-sdk/eda",                 "bin",      null, false, true },
+   { "Ecere Vanilla",   "ecere-sdk/libecereVanilla.a",   "lib",      null, false, true },
+   { "Ecere Extras",    "extras",                        "extras",   null, false, true },
+   { "UPX",             "upx/bin",                       "mingw/bin",null, false, true },
+   { "GNU Regexp",      "mingw/gnurx",                   "mingw",    null, false, true },
+   { "pthreads",        "mingw/pthreads",                "mingw",    null, false, true },
+   { "C++ Compiler",    "mingw/gcc/c++",                 "mingw",    null, false, true },
+   { "Win32 APIs",      "mingw/w32api",                  "mingw",    null, false, true },
+   { "GCC I18n",        "mingw/locale/gcc",              "mingw",    null, false, false },
+   { "GDB I18n",        "mingw/locale/gdb",              "mingw",    null, false, false },
+   { "Make I18n",       "mingw/locale/make",             "mingw",    null, false, false },
+   { "Binutils I18n",   "mingw/locale/binutils",         "mingw",    null, false, false },
    { null }
 };
 #endif
