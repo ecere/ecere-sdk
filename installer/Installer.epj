@@ -7,7 +7,7 @@
 
       ],
       "TargetType" : "Executable",
-      "TargetFileName" : "setup-ecere-0.44-win32",
+      "TargetFileName" : "setup-ecere-0.44.08-win32",
       "Libraries" : [
          "ole32",
          "uuid",
@@ -75,7 +75,8 @@
       "../ide/src/OldIDESettings.ec",
       "../extras/gui/controls/StringsBox.ec",
       "../ide/src/licensing.ec",
-      "../extras/createLink.ec"
+      "../extras/createLink.ec",
+      "../extras/gui/controls/CheckListBox.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [

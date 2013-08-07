@@ -1,7 +1,7 @@
 #ifdef NOMINGW
-static define buildString = $"Ecere SDK v0.44 (Without MinGW) -- built on March 13, 2012 ";
+static define buildString = $"Ecere SDK v0.44.08 (Without MinGW) -- built on August 8, 2013 ";
 #else
-static define buildString = $"Ecere SDK v0.44 -- built on March 13, 2012 ";
+static define buildString = $"Ecere SDK v0.44.08 -- built on August 8, 2013 ";
 #endif
 
 #define WIN32_LEAN_AND_MEAN
@@ -16,157 +16,8 @@ import "ecere"
 #endif
 import "IDESettings"
 import "createLink"
-// import "licenseBox"
 import "licensing"
-
-class CheckListBox : ListBox
-{
-   fullRowSelect = false, collapseControl = true, treeBranches = true, rootCollapseButton = true, 
-   noDragging = true;
-   rowHeight = 18;
-
-   void ToggleCheck(DataRow row)
-   {
-      Button checkBox = (Button)row.tag;
-      DataRow parent;
-      bool checked = !(checkBox.checked) || checkBox.buttonState == down;
-      if(!checkBox.disabled)
-      {
-         SetCheck(row, checked);
-         checkBox.buttonState = up;
-
-         for(parent = row; parent; parent = parent.parent)
-         {
-            for(row = parent.firstRow; row; row = row.next)
-            {
-               checkBox = (Button)row.tag;
-               if(checkBox.checked != checked)
-                  break;
-            }
-            checkBox = (Button)parent.tag;
-            if(row)
-            {
-               checkBox.checked = true;
-               NotifyChecked(master, this, parent);
-               checkBox.buttonState = down;
-               checked = true;
-            }
-            else
-            {
-               checkBox.checked = checked;
-               NotifyChecked(master, this, parent);
-               checkBox.buttonState = up;
-            }
-         }
-      }
-   }
-
-   void SetCheck(DataRow row, bool checked)
-   {
-      Button checkBox = (Button)row.tag;
-      DataRow subRow;
-      if(!checkBox.disabled && (checkBox.checked != checked || checkBox.buttonState == down))
-      {
-         checkBox.checked = checked;
-         for(subRow = row.firstRow; subRow; subRow = subRow.next)
-            SetCheck(subRow, checked);
-         NotifyChecked(master, this, row);
-      }
-   }
-   
-   DataRow AddRow(DataRow parentRow)
-   {      
-      DataRow row = parentRow ? parentRow.AddRow() : ListBox::AddRow();
-      int c;
-      DataRow parent;
-      int indent = 20;
-      for(parent = row.parent; parent; parent = parent.parent)
-         indent += 20;
-      row.tag = (int)Button
-      {
-         this, isCheckbox = true, inactive = true, checked = true,
-         position = { 2 + indent, 1+(row.index + hasHeader) * rowHeight }, size = { 12, 12 }; 
-         id = (int)row;
-
-         bool NotifyPushed(Button button, int x, int y, Modifiers mods)
-         {
-            currentRow = (DataRow)button.id;
-            ToggleCheck(currentRow);
-            return false;
-         }
-
-         bool NotifyReleased(Button button, int x, int y, Modifiers mods)
-         {
-            return false;
-         }
-
-         bool OnMouseOver(int x, int y, Modifiers mods)
-         {
-
-            return true;
-         }
-
-         bool OnMouseLeave(Modifiers mods)
-         {
-
-            return true;
-         }
-      };
-      return row;
-   }      
-
-   bool NotifyKeyDown(CheckListBox listBox, DataRow row, Key key, unichar ch)
-   {
-      if(key == space)
-      {
-         listBox.ToggleCheck(row);
-         return false;
-      }
-      return true;
-   }
-
-   bool OnKeyHit(Key key, unichar ch)
-   {
-      if(key == space)
-         return false;
-      return ListBox::OnKeyHit(key, ch);
-   }
-
-   bool NotifyDoubleClick(CheckListBox listBox, int x, int y, Modifiers mods)
-   {
-      listBox.OnLeftButtonDown(x, y, mods);
-      return false;
-   }
-
-   bool NotifyReclick(CheckListBox listBox, DataRow row, Modifiers mods)
-   {
-      listBox.ToggleCheck(row);
-      return true;
-   }
-
-   bool NotifyCollapse(ListBox listBox, DataRow row, bool collapsed)
-   {
-      DataRow r;
-      for(r = row.firstRow; r && r != row; )
-      {
-         Button checkBox = (Button)r.tag;
-         checkBox.visible = !collapsed;
-         if(r.firstRow && !r.collapsed) 
-            row = r.firstRow;
-         else 
-            for(; r != row; r = r.parent)
-               if(r.next) { r = r.next; break; }
-      }
-      for(r = row.GetNextRow(); r; r = r.GetNextRow())
-      {
-         Button checkBox = (Button)r.tag;
-         checkBox.position.y = 1 + (r.index + listBox.hasHeader) * listBox.rowHeight;
-      }
-      return true;
-   }
-
-   virtual void Window::NotifyChecked(CheckListBox listBox, DataRow row);
-};
+import "CheckListBox"
 
 struct CheckItem
 {
@@ -540,13 +391,14 @@ char installDir[MAX_LOCATION];
 
 class Installer : Window
 {
-   text = $"Ecere Software Development Kit Setup - v0.44 \"Ryōan-ji\"";
+   text = $"Ecere Software Development Kit Setup - v0.44.08 \"Ryōan-ji\"";
    background = activeBorder;
    borderStyle = fixed;
    hasMinimize = true;
    hasClose = true;
    tabCycle = true;
    clientSize = { 636, 456 };
+   // clientSize = { 796, 576 };
    icon = { ":icon.png" };
 
    Picture back { image = BitmapResource { ":ryoanji.png" }, parent = this, position = { 0, 0 } };
@@ -557,7 +409,7 @@ class Installer : Window
    };
    Button browse
    {
-      master = this, autoCreate = false, inactive = true, /*hotKey = F2,*/ text = "...";
+      master = this, autoCreate = false, inactive = true, text = "...";
       
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -579,8 +431,20 @@ class Installer : Window
    CheckListBox componentsBox
    {
       this, size = { 460, 112 }, position = { 160, 160 }, hasHeader = true;
+      fullRowSelect = false, collapseControl = true, treeBranches = true, rootCollapseButton = true, 
+      noDragging = true;
+      rowHeight = 18;
+      selectionColor = { 145, 150, 140 };
+
       alwaysEdit = true;
       opacity = 0;
+
+      bool NotifyKeyDown(ListBox listBox, DataRow row, Key key, unichar ch)
+      {
+         if(key == f2 && browse.visible)
+            browse.NotifyClicked(this, browse, 0, 0, 0);
+         return true;
+      }
 
       bool NotifyChanged(ListBox listBox, DataRow row)
       {
@@ -620,10 +484,17 @@ class Installer : Window
 
       bool NotifyEdited(ListBox listBox, DataRow row)
       {
+         Window e;
          browse.parent = listBox;
          browse.position = { componentField.width + locationField.width + 18, (listBox.currentIndex+1) * listBox.rowHeight - 2 };
          browse.size = { 30, listBox.rowHeight + 3 };
-
+         for(e = listBox.firstChild; e; e = e.next)
+         {
+            if(e._class == class(DataBox))
+               break;
+         }
+         if(e)
+            e.Activate();
          browse.Create();
          return true;
       }
@@ -632,8 +503,7 @@ class Installer : Window
       {
          Component * component = ((CheckItem *)row.GetData(componentField))->data;
          int c;
-         Button checkBox = (Button)row.tag;
-         component->selected = checkBox.checked;
+         component->selected = listBox.IsChecked(row);
 
          if(!component->parent) totalSize -= component->requiredSize;
          component->requiredSize = 0;
@@ -680,15 +550,18 @@ class Installer : Window
    CheckListBox optionsBox
    {
       this, size = { 460, 94 }, position = { 160, 284 };
+      fullRowSelect = false, collapseControl = true, treeBranches = true, rootCollapseButton = true, 
+      noDragging = true;
+      rowHeight = 18;
       opacity = 0;
 
-      void NotifyChecked(CheckListBox listBox, DataRow row)
+      bool NotifyChanged(CheckListBox listBox, DataRow row)
       {
          CheckItem * item = row.GetData(optionField);
          InstallOption * option = item->data;
          int c;
-         Button checkBox = (Button)row.tag;
-         option->selected = checkBox.checked;
+         option->selected = listBox.IsChecked(row);
+         return true;
       }
    };
    Button install
@@ -850,11 +723,12 @@ class Installer : Window
 
    void AddComponent(Component component, Component parent, char * parentPath)
    {
-      DataRow row = component.row = componentsBox.AddRow((parent != null) ? parent.row : null);
-      Button checkBox = (Button) row.tag;
+      DataRow row = (parent != null) ? parent.row.AddRow() : componentsBox.AddRow();
       FileSize size = 0;
       FileSize64 avSize = 0;
       char path[MAX_LOCATION];
+
+      component.row = row;
       strcpy(path, parentPath);
       if(component.defInstallPath)
          PathCat(path, component.defInstallPath);
@@ -869,8 +743,10 @@ class Installer : Window
          row.SetData(locationField, component.installPath);
       }
 
-      if(component.mandatory) checkBox.disabled = true;
-      if(!component.selected) componentsBox.ToggleCheck(row);
+      if(component.mandatory)
+         componentsBox.SetDisabled(row, true);
+      componentsBox.SetCheck(row, component.selected);
+
       if(component.dataPath)
       {
          char path[MAX_LOCATION];
@@ -905,10 +781,9 @@ class Installer : Window
 
    void AddOption(InstallOption option, InstallOption parent)
    {
-      DataRow row = option.row = optionsBox.AddRow((parent != null) ? parent.row : null);
+      DataRow row = option.row = (parent != null) ? parent.row.AddRow() : optionsBox.AddRow();
       row.SetData(null, CheckItem { option.name, option } );
-      if(!option.selected)
-         optionsBox.ToggleCheck(row);
+      optionsBox.SetCheck(row, option.selected);
       if(option.subOptions)
       {
          int c;
@@ -924,9 +799,9 @@ class Installer : Window
    {
       int c;
       char programFilesDir[MAX_LOCATION];
-      char appData[MAX_LOCATION]; // = getenv("APPDATA");
-      char homeDrive[MAX_LOCATION]; //= getenv("HOMEDRIVE");
-      char winDir[MAX_LOCATION]; //= getenv("windir");
+      char appData[MAX_LOCATION];
+      char homeDrive[MAX_LOCATION];
+      char winDir[MAX_LOCATION];
 
       GetEnvironment("APPDATA", appData, sizeof(appData));
       GetEnvironment("HOMEDRIVE", homeDrive, sizeof(homeDrive));
@@ -1024,7 +899,9 @@ class InstallProgress : Window
    hasMinimize = true;
    hasClose = true;
    tabCycle = true;
-   size = Size { 640, 480 };
+   // size = Size { 640, 480 };
+   clientSize = { 636, 456 };
+   //clientSize = { 796, 576 };
    icon = { ":icon.png" };
 
    Picture back { image = BitmapResource { ":ryoanji-progress.png" }, parent = this, position = { 0, 0 } };
@@ -1179,16 +1056,16 @@ void AssociateExtension(char * extension, char * description, char *name, char *
    char keyName[1024];
 
    RegCreateKeyEx(HKEY_CLASSES_ROOT, extension, 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
-   RegSetValueEx(key, null, 0, REG_SZ, name, strlen(name)+1);
+   RegSetValueEx(key, null, 0, REG_SZ, name, (uint)strlen(name)+1);
    RegCloseKey(key);
 
    RegCreateKeyEx(HKEY_CLASSES_ROOT, name, 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
-   RegSetValueEx(key, null, 0, REG_SZ, description, strlen(description)+1);
+   RegSetValueEx(key, null, 0, REG_SZ, description, (uint)strlen(description)+1);
    RegCloseKey(key);
 
    sprintf(keyName, "%s\\shell", extension);
    RegCreateKeyEx(HKEY_CLASSES_ROOT, keyName, 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
-   RegSetValueEx(key, null, 0, REG_SZ, action, strlen(action)+1);
+   RegSetValueEx(key, null, 0, REG_SZ, action, (uint)strlen(action)+1);
    RegCloseKey(key);
 
    sprintf(keyName, "%s\\shell\\%s", name, action);
@@ -1203,7 +1080,7 @@ void AssociateExtension(char * extension, char * description, char *name, char *
    {
       uint16 wKeyName[2048];
       UTF8toUTF16Buffer(keyName, wKeyName, sizeof(wKeyName) / sizeof(uint16));
-      RegSetValueExW(key, null, 0, REG_SZ, (byte *)wKeyName, (wcslen(wKeyName) + 1)*sizeof(uint16));
+      RegSetValueExW(key, null, 0, REG_SZ, (byte *)wKeyName, (uint)(wcslen(wKeyName) + 1)*sizeof(uint16));
    }
    RegCloseKey(key);
 }
@@ -1330,9 +1207,9 @@ class InstallThread : Thread
 
             RegCreateKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\ECERE SDK", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
 
-            RegSetValueEx(key, "DisplayName", 0, REG_SZ, displayName, strlen(displayName)+1);
-            RegSetValueEx(key, "UninstallString", 0, REG_SZ, uninstaller, strlen(uninstaller)+1);
-            RegSetValueEx(key, "DisplayIcon", 0, REG_SZ, idePath, strlen(idePath)+1);
+            RegSetValueEx(key, "DisplayName", 0, REG_SZ, displayName, (uint)strlen(displayName)+1);
+            RegSetValueEx(key, "UninstallString", 0, REG_SZ, uninstaller, (uint)strlen(uninstaller)+1);
+            RegSetValueEx(key, "DisplayIcon", 0, REG_SZ, idePath, (uint)strlen(idePath)+1);
             //RegSetValueEx(key, "NoModify", 0, REG_DWORD, (byte *)&nomodify, sizeof(nomodify));
             //RegSetValueEx(key, "NoRepair", 0, REG_DWORD, (byte *)&nomodify, sizeof(nomodify));
             RegCloseKey(key);
@@ -1367,14 +1244,13 @@ class InstallThread : Thread
             }
             ModifyPath(path);
             UTF8toUTF16Buffer(path, wPath, sizeof(wPath) / sizeof(uint16));
-            RegSetValueExW(key, L"path", 0, REG_EXPAND_SZ, (byte *)wPath, (wcslen(wPath)+1) * 2);
+            RegSetValueExW(key, L"path", 0, REG_EXPAND_SZ, (byte *)wPath, (uint)(wcslen(wPath)+1) * 2);
             RegCloseKey(key);
 
             SendMessageTimeout (HWND_BROADCAST, WM_SETTINGCHANGE, 0, (int)"Environment", SMTO_NORMAL, 1000, NULL);
          }
 
          // Install Program Group Icons
-         // userProfile = getenv("USERPROFILE");
          GetEnvironment("USERPROFILE", userProfile, sizeof(userProfile));
 
          if(options[IconOptions::StartMenuIcon].selected)
@@ -1399,7 +1275,7 @@ class InstallThread : Thread
                UTF16toUTF8Buffer(wStartMenuPath, startMenuPath, sizeof(startMenuPath));
                RegCloseKey(key);
             }
-            if(!startMenuPath[0] && userProfile && userProfile[0])
+            if(!startMenuPath[0] && userProfile[0])
             {
                strcpy(startMenuPath, userProfile);
                PathCat(startMenuPath, "Start Menu\\Programs");
@@ -1457,7 +1333,7 @@ class InstallThread : Thread
                UTF16toUTF8Buffer(wDesktopPath, desktopPath, sizeof(desktopPath));
                RegCloseKey(key);
             }
-            if(!desktopPath[0] && userProfile && userProfile[0])
+            if(!desktopPath[0] && userProfile[0])
             {
                strcpy(desktopPath, userProfile);
                PathCat(desktopPath, "Desktop");
@@ -1479,10 +1355,10 @@ class InstallThread : Thread
          // Install QuickLaunch Icon
          if(options[IconOptions::QuickLaunchIcon].selected)
          {
-            char appData[MAX_LOCATION]; // = getenv("APPDATA");
+            char appData[MAX_LOCATION];
             GetEnvironment("APPDATA", appData, sizeof(appData));
 
-            if(appData && appData[0])
+            if(appData[0])
             {
                char destPath[MAX_LOCATION];
 
