@@ -946,6 +946,20 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
             else
                eEnum_AddValue(regClass, e.id.string);
          }
+         // Fix up derivatives enums largest
+         {
+            EnumClassData baseData = regClass.data;
+            OldLink deriv;
+            for(deriv = regClass.derivatives.first; deriv; deriv = deriv.next)
+            {
+               Class c = deriv.data;
+               if(c && c.type == enumClass)
+               {
+                  EnumClassData data = c.data;
+                  data.largest = baseData.largest;
+               }
+            }
+         }
       }
 
       // Process all functions

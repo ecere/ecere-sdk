@@ -186,11 +186,15 @@ public:
 
 /*static */char * Enum_OnGetString(Class _class, int * data, char * tempString, void * fieldData, bool * needClass)
 {
-   EnumClassData enumeration = (EnumClassData)_class.data;
-   NamedLink item;
-   for(item = enumeration.values.first; item; item = item.next)
-      if((int)item.data == *data)
-         break;
+   NamedLink item = null;
+   Class b;
+   for(b = _class; !item && b && b.type == enumClass; b = b.base)
+   {
+      EnumClassData enumeration = (EnumClassData)b.data;
+      for(item = enumeration.values.first; item; item = item.next)
+         if((int)item.data == *data)
+            break;
+   }
    if(item)
    {
       strcpy(tempString, item.name);
@@ -205,12 +209,16 @@ public:
 
 static bool Enum_OnGetDataFromString(Class _class, int * data, char * string)
 {
-   EnumClassData enumeration = (EnumClassData)_class.data;
-   NamedLink item;
-   for(item = enumeration.values.first; item; item = item.next)
+   NamedLink item = null;
+   Class b;
+   for(b = _class; !item && b && b.type == enumClass; b = b.base)
    {
-      if(item.name && !strcmpi(item.name, string))
-         break;
+      EnumClassData enumeration = (EnumClassData)_class.data;
+      for(item = enumeration.values.first; item; item = item.next)
+      {
+         if(item.name && !strcmpi(item.name, string))
+            break;
+      }
    }
    if(item)
    {

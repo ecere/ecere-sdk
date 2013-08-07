@@ -2948,7 +2948,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
             // Added this so that DefinedColor = Color doesn't go through ColorRGB property
             if(enumBaseType && 
                dest._class && dest._class.registered && dest._class.registered.type == enumClass &&
-               source._class && source._class.registered && source._class.registered.type != enumClass)
+               ((source._class && source._class.registered && source._class.registered.type != enumClass) || source.kind == classType)) // Added this here for a base enum to be acceptable for a derived enum (#139)
             {
                if(eClass_IsDerived(dest._class.registered, source._class.registered))
                {
