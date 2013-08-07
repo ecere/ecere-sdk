@@ -3451,16 +3451,25 @@ class IDEApp : GuiApplication
 
    bool Init()
    {
+      char ext[MAX_EXTENSION];
       SetLoggingMode(stdOut, null);
       //SetLoggingMode(debug, null);
 
       settingsContainer.Load();
+      if(argc > 1 && !strcmpi(GetExtension(argv[1], ext), "3ds"))
+      {
+         app.driver = "OpenGL";
+         ide.driverItems[1].checked = true;
+      }
+      else
+      {
 #if defined(__unix__) || defined(__APPLE__)
-      app.driver = (ideSettings.displayDriver && !strcmp(ideSettings.displayDriver, "OpenGL")) ? ideSettings.displayDriver : "X";
+         app.driver = (ideSettings.displayDriver && !strcmp(ideSettings.displayDriver, "OpenGL")) ? ideSettings.displayDriver : "X";
 #else
-      app.driver = (ideSettings.displayDriver && !strcmp(ideSettings.displayDriver, "OpenGL")) ? ideSettings.displayDriver : "GDI";
+         app.driver = (ideSettings.displayDriver && !strcmp(ideSettings.displayDriver, "OpenGL")) ? ideSettings.displayDriver : "GDI";
 #endif
-      ide.driverItems[ideSettings.displayDriver && !strcmp(ideSettings.displayDriver,"OpenGL")].checked = true;
+         ide.driverItems[ideSettings.displayDriver && !strcmp(ideSettings.displayDriver,"OpenGL")].checked = true;
+      }
 
       SetInIDE(true);
 
