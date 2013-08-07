@@ -31,8 +31,9 @@ class CheckListBoxButton : Button
 
 class CheckListBox : ListBox
 {
-   Map<int, CheckListBoxButton> buttonMaps { };
+   Map<uintptr, CheckListBoxButton> buttonMaps { };
    AVLTree<DataRow> rowChecks { };
+   AVLTree<DataRow> rowDisabled { };
    int checkIndent;
 
    checkIndent = 20;
@@ -53,8 +54,8 @@ class CheckListBox : ListBox
       {
          if(collapsed)
          {
-            MapIterator<int, Button> it { map = listBox.buttonMaps };
-            if(it.Index((int)r, false))
+            MapIterator<uintptr, Button> it { map = listBox.buttonMaps };
+            if(it.Index((uintptr)r, false))
             {
                Button checkBox = it.data;
                if(checkBox)
@@ -76,7 +77,7 @@ class CheckListBox : ListBox
       }
       for(r = row.GetNextRow(); r; r = r.GetNextRow())
       {
-         Button checkBox = listBox.buttonMaps[(int)r];
+         Button checkBox = listBox.buttonMaps[(uintptr)r];
          if(checkBox)
             checkBox.position.y = 1 + (r.index + listBox.hasHeader) * listBox.rowHeight;
       }
@@ -101,10 +102,10 @@ class CheckListBox : ListBox
       int indent = checkIndent;
 
       for(parent = row.parent; parent; parent = parent.parent) indent += 20;
-      button = buttonMaps[(int)row];
+      button = buttonMaps[(uintptr)row];
       if(!button) button = CheckListBoxButton { this };
       button.position = { 2 + indent, 1+(row.index + hasHeader) * rowHeight };
-      button.id = (int)row;
+      button.id = (uintptr)row;
 
       for(parent = row; parent; parent = parent.parent) if(rowChecks.Find(parent)) break;
       if(parent)
@@ -117,8 +118,10 @@ class CheckListBox : ListBox
          button.checked = CheckPartialChecks(row);
          button.buttonState = button.checked ? down : up;
       }
+      if(rowDisabled.Find(row))
+         button.disabled = true;
       button.Create();
-      buttonMaps[(int)row] = button;
+      buttonMaps[(uintptr)row] = button;
       if(recurse && !row.collapsed)
       {
          DataRow r;
@@ -151,8 +154,8 @@ class CheckListBox : ListBox
 
    void ToggleCheck(DataRow row)
    {
-      CheckListBoxButton checkBox = buttonMaps[(int)row];
-      if(checkBox)
+      CheckListBoxButton checkBox = buttonMaps[(uintptr)row];
+      if(checkBox && !checkBox.disabled)
       {
          bool checked = false;
          DataRow r;
@@ -170,7 +173,7 @@ class CheckListBox : ListBox
    {
       if(!row.parent || !row.parent.collapsed)
       {
-         CheckListBoxButton button = buttonMaps[(int)row];
+         CheckListBoxButton button = buttonMaps[(uintptr)row];
          if(button)
          {
             bool wasChecked = button.checked;
@@ -184,16 +187,15 @@ class CheckListBox : ListBox
          for(r = row.firstRow; r; r = r.next)
             UncheckBoxes(r);
       }
-      NotifyChanged(master, this, row);
+      NotifyChecked(master, this, row);
    }
    
    void UnsetChildren(DataRow row)
    {
       DataRow r;
-      CheckListBoxButton button = buttonMaps[(int)row];
+      CheckListBoxButton button = buttonMaps[(uintptr)row];
       if(button)
       {
-         bool wasChecked = button.checked;
          button.checked = true;
          button.buttonState = up;
       }
@@ -205,7 +207,7 @@ class CheckListBox : ListBox
          if(it.Find(r))
             it.Remove();
          UnsetChildren(r);
-         NotifyChanged(master, this, r);
+         NotifyChecked(master, this, r);
       }      
    }
    
@@ -221,7 +223,7 @@ class CheckListBox : ListBox
       if(checked != wasChecked)
       {
          modifiedDocument = true;
-         // NotifyChanged(master, this, row);
+         // NotifyChecked(master, this, row);
          if(checked)
          {
             DataRow rr = row;
@@ -234,25 +236,24 @@ class CheckListBox : ListBox
                   if(r != rr && !rowChecks.Find(r))
                      break;
                }
-               if(r || !row.parent) break;
+               if(r || !rr.parent) break;
                rr = rr.parent;
             }
 
-            rowChecks.Add(row);
+            rowChecks.Add(rr);
 
             // Take out all children from rowChecks, checking them all
-            UnsetChildren(row);
+            UnsetChildren(rr);
 
-            for(parent = row.parent; parent; parent = parent.parent)
+            for(parent = rr.parent; parent; parent = parent.parent)
             {
-               CheckListBoxButton button = buttonMaps[(int)parent];
+               CheckListBoxButton button = buttonMaps[(uintptr)parent];
                if(button)
                {
-                  // Partial Check
                   button.checked = true;
                   button.buttonState = down;
 
-                  NotifyChanged(master, this, parent);
+                  NotifyChecked(master, this, parent);
                }
             }
          }
@@ -260,6 +261,7 @@ class CheckListBox : ListBox
          {
             DataRow rr = row;
 
+            parent = rr.parent;
             while(rr)
             {
                Iterator<DataRow> it { rowChecks };
@@ -271,7 +273,7 @@ class CheckListBox : ListBox
                else
                {
                   DataRow r;
-                  for(r = row.parent.firstRow; r; r = r.next)
+                  for(r = rr.parent.firstRow; r; r = r.next)
                   {
                      if(r != rr)
                         rowChecks.Add(r);
@@ -279,11 +281,12 @@ class CheckListBox : ListBox
                   rr = rr.parent;
                }
             }
+
             UncheckBoxes(row);
 
-            for(parent = row.parent; parent; parent = parent.parent)
+            for(; parent; parent = parent.parent)
             {
-               CheckListBoxButton button = buttonMaps[(int)parent];
+               CheckListBoxButton button = buttonMaps[(uintptr)parent];
                if(button)
                {
                   if(CheckPartialChecks(parent))
@@ -297,12 +300,12 @@ class CheckListBox : ListBox
                      button.buttonState = up;
                   }
 
-                  NotifyChanged(master, this, parent);
+                  NotifyChecked(master, this, parent);
                }
             }
          }
 
-         NotifyChanged(master, this, row);
+         NotifyChecked(master, this, row);
       }
    }
    
@@ -339,7 +342,7 @@ class CheckListBox : ListBox
 public:
    bool IsChecked(DataRow row)
    {
-      CheckListBoxButton button = buttonMaps[(int)row];
+      CheckListBoxButton button = buttonMaps[(uintptr)row];
       DataRow parent;
       for(parent = row; parent; parent = parent.parent) if(rowChecks.Find(parent)) return true;
       // For partially checked because of children:
@@ -348,5 +351,23 @@ public:
       return false;
    }
 
-   // virtual void Window::NotifyChecked(CheckListBox listBox, DataRow row);
+   virtual void Window::NotifyChecked(CheckListBox listBox, DataRow row);
+
+   void SetDisabled(DataRow row, bool disabled)
+   {
+      CheckListBoxButton checkBox = buttonMaps[(uintptr)row];
+      if(checkBox)
+         checkBox.disabled = disabled;
+
+      if(rowDisabled.Find(row))
+      {
+         if(!disabled)
+            rowDisabled.TakeOut(row);
+      }
+      else
+      {
+         if(disabled)
+            rowDisabled.Add(row);
+      }
+   }
 };
