@@ -1703,7 +1703,7 @@ static void ProcessExpression(Expression exp)
                }
 
                {
-                  Type type = memberExp.member.exp.expType;
+                  Type type = memberExp ? memberExp.member.exp.expType : null;
                   Class regClass = (type && type.kind == classType && type._class) ? type._class.registered : null; 
                   // *** Added !_class here
                   if(!exp.call.exp.expType.methodClass && (!memberExp || !_class) && type && type.classObjectType)
