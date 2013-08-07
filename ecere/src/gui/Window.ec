@@ -3237,6 +3237,9 @@ private:
                      }
                   }
                }
+
+               if(last && last != this && this.IsDescendantOf(last)) // Fix for installer lockup
+                  result = null;
             }
          }
       }
