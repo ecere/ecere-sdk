@@ -245,6 +245,8 @@ class CheckListBox : ListBox
             // Take out all children from rowChecks, checking them all
             UnsetChildren(rr);
 
+            NotifyChecked(master, this, row);
+
             for(parent = rr.parent; parent; parent = parent.parent)
             {
                CheckListBoxButton button = buttonMaps[(uintptr)parent];
@@ -304,8 +306,6 @@ class CheckListBox : ListBox
                }
             }
          }
-
-         NotifyChecked(master, this, row);
       }
    }
    
