@@ -4295,7 +4295,7 @@ private:
                   for(c=0; line.buffer[c]; c++)
                      if(line.buffer[c] != ' ' && line.buffer[c] != '\t')
                         break;
-                  if(c != 0 || this.x)
+                  if(shift && (c != 0 || this.x))
                      DirtyLine(this.y);
                   if(this.x != c) 
                      this.x = c;
@@ -4304,8 +4304,8 @@ private:
                }
                else
                {
-                  /*if(this.x != 0)
-                     DirtyLine(this.y);*/
+                  if(shift && this.x != 0)
+                     DirtyLine(this.y);
                   this.x = 0;
                }
                ComputeColumn();
@@ -4318,7 +4318,7 @@ private:
          case end:
          {
             if(style.stuckCaret) break;
-            if(!(style.freeCaret))
+            if(!style.freeCaret)
                this.selX = Min(this.selX, this.selLine.count);
 
             if(!shift) SelDirty();
@@ -4329,7 +4329,8 @@ private:
             else if(this.x != this.line.count)
             {
                this.x = this.line.count;
-               //DirtyLine(this.y);
+               if(shift)
+                  DirtyLine(this.y);
                ComputeColumn();
             }
             if(!shift) Deselect();
