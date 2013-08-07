@@ -234,6 +234,8 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
             Method method = func.declarator.symbol.method;
             if(method && method.symbol)
                ((Symbol)method.symbol).methodCodeExternal = null;
+            if(func.declarator.symbol && func.declarator.symbol.methodExternal == external)
+               func.declarator.symbol.methodExternal = null;
 
             //external.function = null;
             func.declarator = null;
@@ -1284,7 +1286,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
             for(c = 0; c<base.vTblSize; c++)
             {
                Symbol method = (Symbol)regClass._vTbl[c];
-               if((void *) method != DummyMethod && base._vTbl[c] != (void *)method ) // TOLOOKAT: Module check here?
+               if((void *) method != DummyMethod && base._vTbl[c] != (void *)method && method.methodExternal) // TOLOOKAT: Module check here?
                {
                   External external = method.methodExternal;
                   OldList * args = MkList();
