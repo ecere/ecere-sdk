@@ -1452,7 +1452,7 @@ private:
                strcpy(tempPath, path);
                PathCatSlash(tempPath, name);
             }
-            EscapeForMake(modulePath, tempPath, true, true, false);
+            EscapeForMake(modulePath, tempPath, false, true, false);
             sprintf(s, "%s%s%s%s", ts.a, useRes ? "$(RES)" : "", modulePath, ts.b);
             items.Add(CopyString(s));
          }
@@ -1463,8 +1463,8 @@ private:
                   !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
             {
                char modulePath[MAX_LOCATION];
-               EscapeForMake(modulePath, path, true, true, false);
-               EscapeForMake(moduleName, name, true, true, false);
+               EscapeForMake(modulePath, path, false, true, false);
+               EscapeForMake(moduleName, name, false, true, false);
                sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
                items.Add(CopyString(s));
             }
@@ -1486,8 +1486,8 @@ private:
             if(!strcmpi(extension, "rc"))
             {
                char modulePath[MAX_LOCATION];
-               EscapeForMake(modulePath, path, true, true, false);
-               EscapeForMake(moduleName, name, true, true, false);
+               EscapeForMake(modulePath, path, false, true, false);
+               EscapeForMake(moduleName, name, false, true, false);
                sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
                items.Add(CopyString(s));
                count++;
@@ -1502,7 +1502,7 @@ private:
                bool collision;
                NameCollisionInfo info;
                count++;
-               EscapeForMake(moduleName, name, true, true, false);
+               EscapeForMake(moduleName, name, false, true, false);
                StripExtension(moduleName);
                info = namesInfo[moduleName];
                collision = info ? info.IsExtensionColliding(extension) : false;
@@ -2111,8 +2111,6 @@ private:
                char tempPath[MAX_LOCATION];
                char resPath[MAX_LOCATION];
 
-               char * quotes;
-
                // $(EAR) aw%s --- /*quiet ? "q" : */""
                if(count == 0)
                   f.Printf("\t%s$(EAR) aw$(EARFLAGS) $(TARGET)", ts.a);
@@ -2129,12 +2127,8 @@ private:
                   strcpy(tempPath, child.path);
                   PathCatSlash(tempPath, child.name);
                }
-               EscapeForMake(resPath, tempPath, true, true, false);
-               if(strchr(tempPath, ' '))
-                  quotes = "\"";
-               else
-                  quotes = "";
-               f.Printf(" %s%s%s%s", quotes, useRes ? "$(RES)" : "", resPath, quotes);
+               EscapeForMake(resPath, tempPath, false, true, false);
+               f.Printf(" %s%s", useRes ? "$(RES)" : "", resPath);
                count++;
             }
             if(count == 10 || (count > 0 && (ts || !child.next)))
