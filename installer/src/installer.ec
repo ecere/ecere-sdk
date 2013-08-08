@@ -555,13 +555,11 @@ class Installer : Window
       rowHeight = 18;
       opacity = 0;
 
-      bool NotifyChanged(CheckListBox listBox, DataRow row)
+      void NotifyChecked(CheckListBox listBox, DataRow row)
       {
          CheckItem * item = row.GetData(optionField);
          InstallOption * option = item->data;
-         int c;
          option->selected = listBox.IsChecked(row);
-         return true;
       }
    };
    Button install
