@@ -744,7 +744,7 @@ class CompilerToolchainTab : CompilersSubTab
    PathBox sysroot
    {
       this, anchor = { left = margin, top = 242, right = 8 };
-      text = $"SYSROOT", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"SYSROOT", typeExpected = directory, browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label executableLauncherLabel { this, position = { 8, 272 }, labeledWindow = executableLauncher, tabCycle = false, inactive = true };
    PathBox executableLauncher
