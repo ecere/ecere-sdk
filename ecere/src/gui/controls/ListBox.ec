@@ -2022,6 +2022,38 @@ private:
       }
    }
 
+   void RepositionFieldEditor()
+   {
+      if(editData && editData.visible)
+      {
+         int height = rowHeight - (style.alwaysEdit ? 1 : 0);
+         int x = 0;
+         int y = currentRow.index * rowHeight + (style.header ? rowHeight : 0);
+         int width;
+         DataField field;
+
+         if(style.collapse && !(style.treeBranch))
+            x += 15;
+         for(field = fields.first; field; field = field.next)
+         {
+            width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ? 
+               clientSize.w - field.x : (field.width + EXTRA_SPACE);
+            if(field == currentField) break;
+            x += width;
+         }
+         if(!style.alwaysEdit)
+         {
+            editData.position = { x, y - editData.clientStart.y };
+            editData.size = { width, height + editData.clientStart.y * 2 };
+         }
+         else
+         {
+            editData.position = { x, y };
+            editData.size = { width, height };
+         }
+      }
+   }
+
    void PopupEditBox(DataField whichField, bool repositionOnly)
    {
       if((!editData || !editData.visible || currentField != whichField) && currentRow)
@@ -2682,6 +2714,8 @@ private:
       {
          HideEditBox(true, false, true);
       }
+      else if(editData && editData.visible)
+         RepositionFieldEditor();
    }
 
    void AdaptToFieldWidth(DataField field, bool doScroll)
