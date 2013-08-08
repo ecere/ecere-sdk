@@ -1720,7 +1720,7 @@ private:
                            if(!wasEscaped)
                               escaped = true;
                         }
-                        else if(!inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && (isdigit(word[0]) || word[0] == '.'))
+                        else if(!inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && (isdigit(word[0]) || (word[0] == '.' && isdigit(word[1]))))
                         {
                            char * dot = strchr(word, '.');
                            char * s = null;
@@ -1730,16 +1730,14 @@ private:
                               strtod(word, &s);
                            if(s)
                            {
-                              if(dot && *s == 'f' && !isalnum(s[1]))
+                              if((dot && *s == 'f' && !isalnum(s[1]) && s[1] != '_') || (!isalpha(*s) && *s != '_'))
                               {
-                                 int newWordLen = s + 1 - word;
+                                 int newWordLen = s + ((*s == 'f') ? 1 : 0) - word;
                                  newTextColor = colorScheme.numberColor;
                                  c += newWordLen - wordLen;
                                  wordLen = newWordLen;
                               }
-                              else if(!isalpha(*s))
-                                 newTextColor = colorScheme.numberColor;
-                              else if(dot && dot > word && isalpha(dot[1]))
+                              else if(dot && dot > word && (isalpha(dot[1]) || dot[1] == '_'))
                                  newTextColor = colorScheme.numberColor;
                            }
                         }
