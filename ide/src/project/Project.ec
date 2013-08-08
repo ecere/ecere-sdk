@@ -3266,7 +3266,9 @@ private:
                   f.Puts("\t$(UPX) $(UPXFLAGS) $(TARGET)\n");
                f.Puts("endif\n");
                f.Puts("else\n");
+               f.Puts("ifneq \"$(TARGET_ARCH)\" \"x86_64\"");
                   f.Puts("\t$(UPX) $(UPXFLAGS) $(TARGET)\n");
+               f.Puts("endif\n");
                f.Puts("endif\n");
             }
          }
