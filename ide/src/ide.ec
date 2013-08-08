@@ -466,13 +466,6 @@ class IDEWorkSpace : Window
          return true;
       }
 
-      bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
-      {
-         if(active)
-            ide.RepositionWindows(false);
-         return true;
-      }
-
       bool OnClose(bool parentClosing)
       {
          visible = false;
@@ -540,13 +533,6 @@ class IDEWorkSpace : Window
          {
             case escape: ide.ShowCodeEditor(); break;
          }
-         return true;
-      }
-
-      bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
-      {
-         if(active)
-            ide.RepositionWindows(false);
          return true;
       }
 
@@ -630,13 +616,6 @@ class IDEWorkSpace : Window
          return true;
       }
 
-      bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
-      {
-         if(active)
-            ide.RepositionWindows(false);
-         return true;
-      }
-
       bool OnClose(bool parentClosing)
       {
          visible = false;
@@ -710,6 +689,7 @@ class IDEWorkSpace : Window
                   {
                      if(!projectView && gotWhatWeWant)
                         ChangeFileDialogsDirectory(ideFileDialog.currentDirectory, true);
+                     ide.RepositionWindows(false);
                      break;
                   }
                }
@@ -805,7 +785,10 @@ class IDEWorkSpace : Window
                   delete command;
                }
                else
+               {
                   OpenFile(file, normal, true, isProjectFile ? "txt" : null, no, normal, mods.ctrl && mods.shift);
+                  ide.RepositionWindows(false);
+               }
                break;
             }
             id++;
@@ -1619,6 +1602,7 @@ class IDEWorkSpace : Window
                anchor.bottom = bottomDistance;
                if(child._class == class(CodeEditor) || child._class == class(Designer))
                {
+                  anchor.left = 300;
                   anchor.right = toolBoxVisible ? 150 : 0;
                }
                child.anchor = anchor;
@@ -2159,6 +2143,7 @@ class IDEWorkSpace : Window
                               }
                            }
                         }
+                        ide.RepositionWindows(false);
                         workspace.holdTracking = false;
 
                         workspace.timer.Start();

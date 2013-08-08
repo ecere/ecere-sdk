@@ -94,16 +94,6 @@ class WatchesView : Window
       return true;
    }
 
-   bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
-   {
-      if(active)
-      {
-         //listBox.SelectRow(listBox.firstRow);
-         ide.RepositionWindows(false);
-      }
-      return true;
-   }
-
    bool OnClose(bool parentClosing)
    {
       visible = false;
@@ -115,6 +105,7 @@ class WatchesView : Window
    void Show()
    {
       visible = true;
+      ide.RepositionWindows(false);
       Activate();
    }
 

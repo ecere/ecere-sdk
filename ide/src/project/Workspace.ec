@@ -1207,6 +1207,5 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
       if(!workspace.compiler || !workspace.compiler[0])
          workspace.compiler = defaultCompilerName;
    }
-
    return workspace;
 }

@@ -142,13 +142,6 @@ class BreakpointsView : Window
       return true;
    }
 
-   bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
-   {
-      if(active)
-         ide.RepositionWindows(false);
-      return true;
-   }
-
    bool OnClose(bool parentClosing)
    {
       visible = false;
@@ -189,6 +182,7 @@ class BreakpointsView : Window
    void Show()
    {
       visible = true;
+      ide.RepositionWindows(false);
       Activate();
    }
 

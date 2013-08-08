@@ -2225,6 +2225,7 @@ class ProjectView : Window
          }
       }
       selection.Free(null);
+      ide.RepositionWindows(false);
       return result;
    }
 

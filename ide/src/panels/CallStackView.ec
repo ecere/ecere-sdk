@@ -153,6 +153,7 @@ class CallStackView : Window
    void Show()
    {
       visible = true;
+      ide.RepositionWindows(false);
       Activate();
    }
 }

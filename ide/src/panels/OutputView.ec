@@ -243,6 +243,7 @@ class OutputView : Window
    void Show()
    {
       visible = true;
+      ide.RepositionWindows(false);
       Activate();
    }
    void ShowClearSelectTab(OutputViewTab tab)
