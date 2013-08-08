@@ -942,6 +942,7 @@ private:
    void ComputeAnchors(Anchor anchor, SizeAnchor sizeAnchor, int *ox, int *oy, int *ow, int *oh)
    {
       Window parent = this.parent ? this.parent : guiApp.desktop;
+      int xOffset = 0, yOffset = 0;
       int vpw = parent ? parent.clientSize.w : 0;
       int vph = parent ? parent.clientSize.h : 0;
       int pw = parent ? parent.clientSize.w : 0;
@@ -1042,6 +1043,38 @@ private:
 
       if(anchor.left.type >= cascade && (state == normal /*|| state == Hidden*/))
       {
+         // Leave room for non client windows (eventually dockable panels)
+         Window win;
+         int loX = 0, loY = 0, hiX = pw, hiY = ph;
+         for(win = parent.children.first; win; win = win.next)
+         {
+            if(!win.isActiveClient && win.visible)
+            {
+               Size size = win.size;
+               Point pos = win.position;
+               int left = pos.x, top = pos.y;
+               int right = pos.x + size.w, bottom = pos.y + size.h;
+               if(win.size.w > win.size.h)
+               {
+                  if(bottom < ph / 4)
+                     loY = Max(loY, bottom);
+                  else if(top > ph - ph / 4)
+                     hiY = Min(hiY, top);
+               }
+               else
+               {
+                  if(right < pw / 4)
+                     loX = Max(loX, right);
+                  else if(left > pw - pw / 4)
+                     hiX = Min(hiX, left);
+               }
+            }
+         }
+         xOffset = loX;
+         yOffset = loY;
+         pw = hiX - loX;
+         ph = hiY - loY;
+
          if(parent.sbv && !parent.sbv.style.hidden) 
             pw += guiApp.currentSkin.VerticalSBW();
          if(parent.sbh && !parent.sbh.style.hidden)
@@ -1081,17 +1114,17 @@ private:
 
             if(positionID >= tilingSplit)
             {
-               x = pw * (tilingSplit / tilingH + (positionID - tilingSplit) / tilingLastH)/tilingW;
-               y = ph * ((positionID - tilingSplit) % tilingLastH) / tilingLastH;
-               x2 = pw * (tilingSplit/tilingH + (positionID - tilingSplit) / tilingLastH + 1)/tilingW;
-               y2 = ph * (((positionID - tilingSplit) % tilingLastH) + 1) / tilingLastH;
+               x = xOffset + pw * (tilingSplit / tilingH + (positionID - tilingSplit) / tilingLastH)/tilingW;
+               y = yOffset + ph * ((positionID - tilingSplit) % tilingLastH) / tilingLastH;
+               x2 = xOffset + pw * (tilingSplit/tilingH + (positionID - tilingSplit) / tilingLastH + 1)/tilingW;
+               y2 = yOffset + ph * (((positionID - tilingSplit) % tilingLastH) + 1) / tilingLastH;
             }
             else
             {
-               x = pw * (positionID / tilingH) / tilingW;
-               y = ph * (positionID % tilingH) / tilingH;
-               x2 = pw * (positionID / tilingH + 1) / tilingW;
-               y2 = ph * ((positionID % tilingH) + 1) / tilingH;
+               x = xOffset + pw * (positionID / tilingH) / tilingW;
+               y = yOffset + ph * (positionID % tilingH) / tilingH;
+               x2 = xOffset + pw * (positionID / tilingH + 1) / tilingW;
+               y2 = yOffset + ph * ((positionID % tilingH) + 1) / tilingH;
             }
             if(guiApp.textMode)
             {
@@ -1240,8 +1273,8 @@ private:
             cascadeH = (float)(ph - h) / (numCascade-1);
          }
 
-         x = (int)((positionID % numCascade) * cascadeW);
-         y = (int)((positionID % numCascade) * cascadeH);
+         x = (int)((positionID % numCascade) * cascadeW) + xOffset;
+         y = (int)((positionID % numCascade) * cascadeH) + yOffset;
       }
       else if(anchor.left.type < vTiled)
       {
