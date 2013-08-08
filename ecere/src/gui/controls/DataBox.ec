@@ -232,4 +232,18 @@ public class SavingDataBox : DataBox
       }
       return DataBox::OnKeyDown(key, ch);
    }
+
+   bool OnResizing(int * w, int * h)
+   {
+      if(!*w || !*h)
+      {
+         int spaceH;
+         display.FontExtent(fontObject, " ", 1, null, &spaceH);
+         if(!*h)
+            *h = spaceH + 2;
+         if(!*w)
+            *w = spaceH * 80 / 14;
+      }
+      return true;
+   }
 }
