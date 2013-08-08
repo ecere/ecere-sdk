@@ -1168,18 +1168,26 @@ class InstallThread : Thread
                   compiler.executableDirs.Add(CopyString(path));
             }
    #endif
+         }
 
+         {
+            char path[MAX_LOCATION] = "";
+
+            if(components[samples].selected)
+               components[samples].GetFullPath(path);
+            else
+               components[coreSDK].GetFullPath(path);
+
+            if(!settings.ideProjectFileDialogLocation[0])
+               settings.ideProjectFileDialogLocation = path;
+            if(!settings.ideFileDialogLocation[0])
+               settings.ideFileDialogLocation = path;
+
+            if(documentation[apiRef].selected)
             {
-               char path[MAX_LOCATION] = "";
-               if(components[samples].selected)
-                  components[samples].GetFullPath(path);
-               else
-                  components[coreSDK].GetFullPath(path);
-
-               if(!settings.ideProjectFileDialogLocation)
-                  settings.ideProjectFileDialogLocation = path;
-               if(!settings.ideFileDialogLocation)
-                  settings.ideFileDialogLocation = path;
+               documentation[apiRef].GetFullPath(path);
+               if(!settings.docDir[0])
+                  settings.docDir = path;
             }
          }
 
