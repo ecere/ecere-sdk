@@ -579,8 +579,8 @@ public enum DefinedColor : Color
 public enum SystemColor : Color
 {
    // activeBorder         = Color { 212, 208, 200 },
-   activeBorder         = Color { 229, 234, 245 },
    formColor            = Color { 229, 234, 245 },
+   activeBorder         = Color { 229, 234, 245 },
    control              = Color { 212, 208, 200 },
    controlLight         = Color { 212, 208, 200 },
    inactiveBorder       = Color { 212, 208, 200 },
