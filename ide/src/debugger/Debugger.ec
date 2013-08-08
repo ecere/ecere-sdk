@@ -2765,6 +2765,7 @@ class Debugger
             ide.outputView.debugBox.Logf($"Debugger Fatal Error: GDB lost\n");
             ide.outputView.debugBox.Logf($"Debugging stopped\n");
             ide.Update(null);
+            HideDebuggerViews();
          }
          //ChangeState(terminated);
       }
