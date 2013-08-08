@@ -662,9 +662,11 @@ class Debugger
             break;
          case stopped:
             GdbAbortExec();
+            HideDebuggerViews();
+            GdbExit();
+            break;
          case loaded:
             GdbExit();
-            HideDebuggerViews();
             break;
       }
    }
