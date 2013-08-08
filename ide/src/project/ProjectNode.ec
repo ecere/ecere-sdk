@@ -1636,7 +1636,7 @@ private:
                   GenMakePrintNodeFlagsVariable(this, nodeECFlagsMapping, "ECFLAGS", f);
                   GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
 
-                  f.Printf(" -c %s%s.%s -o $@\n",
+                  f.Printf(" -c %s%s.%s -o $(call escspace,$@)\n",
                      modulePath, moduleName, extension);
                   if(ifCount) f.Puts("endif\n");
                   f.Puts("\n");
@@ -1872,7 +1872,7 @@ private:
             GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
             f.Puts(" $(FVISIBILITY)");
 
-            f.Printf(" -c %s%s.%s -o $@ -symbols $(OBJ)\n",
+            f.Printf(" -c %s%s.%s -o $(call escspace,$@) -symbols $(OBJ)\n",
                modulePath, moduleName, extension);
             if(ifCount) f.Puts("endif\n");
             f.Puts("\n");
@@ -2045,7 +2045,7 @@ private:
             if(!strcmpi(extension, "cc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cxx"))
                f.Printf("\t$(CXX)");
             else if(!strcmpi(extension, "rc"))
-               f.Printf("\t$(WINDRES) $(WINDRES_FLAGS) $< $@\n");
+               f.Printf("\t$(WINDRES) $(WINDRES_FLAGS) $< $(call escspace,$@)\n");
             else
                f.Printf("\t$(CC)");
 
@@ -2055,9 +2055,9 @@ private:
                GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
 
                if(!strcmpi(extension, "ec"))
-                  f.Printf(" $(FVISIBILITY) -c $(OBJ)%s.c -o $@\n", moduleName);
+                  f.Printf(" $(FVISIBILITY) -c $(OBJ)%s.c -o $(call escspace,$@)\n", moduleName);
                else
-                  f.Printf(" -c %s%s.%s -o $@\n",
+                  f.Printf(" -c %s%s.%s -o $(call escspace,$@)\n",
                         modulePath, moduleName, !strcmpi(extension, "ec") ? "c" : extension);
             }
             if(ifCount) f.Puts("endif\n");
