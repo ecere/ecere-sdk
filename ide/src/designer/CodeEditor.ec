@@ -1521,7 +1521,8 @@ class CodeEditor : Window
       bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
       {
          CodeEditor editor = (CodeEditor)master;
-         if(!active)
+         Window rw = previous ? previous.rootWindow : null;
+         if(!active && rw != editor.paramsList)
          {
             Destroy(0);
             editor.membersListShown = false;
@@ -1596,7 +1597,8 @@ class CodeEditor : Window
       bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
       {
          CodeEditor editor = (CodeEditor)master;
-         if(!active)
+         Window rw = previous ? previous.rootWindow : null;
+         if(!active && previous != editor.editBox && rw != editor.membersList)
          {
             Destroy(0);
             editor.membersListShown = false;
@@ -5813,7 +5815,7 @@ class CodeEditor : Window
          for(link = (BTNamedLink)nameSpace.classes.first; link; link = (BTNamedLink)((BTNode)link).next)
          {
             Class _class = link.data;
-            if(_class.type != systemClass)
+            if(_class.type != systemClass && !_class.templateClass)  // Omit templatized classes
             {
                DataRow row = membersList.AddString(_class.name);
                row.icon = (_class.type == unitClass || _class.type == enumClass) ? icons[typeDataType] : icons[typeClass];
