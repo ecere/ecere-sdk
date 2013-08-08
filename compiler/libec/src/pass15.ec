@@ -7576,6 +7576,12 @@ void ProcessExpressionType(Expression exp)
                type.kind = intType;
             }
             exp.isConstant = true;
+            if(exp.destType && exp.destType.kind == doubleType)
+               type.kind = doubleType;
+            else if(exp.destType && exp.destType.kind == floatType)
+               type.kind = floatType;
+            else if(exp.destType && exp.destType.kind == int64Type)
+               type.kind = int64Type;
          }
          break;
       }
