@@ -945,7 +945,7 @@ private:
    int caretX, caretY;
    UndoBuffer undoBuffer { data = this };
    int savedAction;
-   Color selectionColor, selectionText;
+   ColorAlpha selectionColor, selectionText;
    SyntaxColorScheme colorScheme { };
 
    menu = Menu { };

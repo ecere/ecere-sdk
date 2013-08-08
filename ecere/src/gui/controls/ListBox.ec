@@ -4581,6 +4581,6 @@ private:
 
    // Only used for OnMouseMove so far, for avoiding problems with consequential mouse moves
    bool insideNotifySelect;
-   Color selectionColor, selectionText, stippleColor;
+   ColorAlpha selectionColor, selectionText, stippleColor;
    stippleColor = 0xFFFFFF80;
 };

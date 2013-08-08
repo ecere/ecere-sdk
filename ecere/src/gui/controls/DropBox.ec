@@ -32,6 +32,14 @@ public class DropBox : CommonControl
    {
       listBox.background = background;
    };
+   watch(selectionColor)
+   {
+      listBox.selectionColor = selectionColor;
+   };
+   watch(selectionText)
+   {
+      listBox.selectionText = selectionText;
+   };
 
 public:
    property bool activeStipple
@@ -201,6 +209,7 @@ public:
       get { return style.showNone; }
    }
    property Color selectionColor { set { selectionColor = value; } get { return selectionColor; } isset { return selectionColor ? true : false; } };
+   property Color selectionText  { set { selectionText = value; } get { return selectionText; } isset { return selectionText ? true : false; } };
    property bool changeContents
    {
       set { style.changeContents = value; }
@@ -635,7 +644,7 @@ private:
          if(!isEnabled)
             surface.SetForeground(Color { 85,85,85 } );
          else
-            surface.SetForeground((active && style.activeColor && !pulledWindow /*listBox.visible*/) ? SELECTION_TEXT : foreground);
+            surface.SetForeground((active && style.activeColor && !pulledWindow /*listBox.visible*/) ? selectionText : foreground);
          surface.TextOpacity(true);
 
          if(currentRow)
@@ -915,5 +924,8 @@ private:
    EditBox editBox;
    Alignment alignment;
    DataRow noneRow;
-   Color selectionColor;
+   ColorAlpha selectionColor, selectionText;
+
+   selectionColor = SELECTION_COLOR;
+   selectionText = SELECTION_TEXT;
 };

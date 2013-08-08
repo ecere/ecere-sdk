@@ -268,6 +268,9 @@ void SetProperty(Property prop, Instance object, DataValue value)
    }
 }
 
+static define sheetSelectionColor = Color { 170, 220, 255 };
+static define sheetSelectionText = black;
+
 class Sheet : Window
 {
    text = $"Sheet";
@@ -453,6 +456,8 @@ class Sheet : Window
       hasVertScroll = true, alwaysEdit = true, collapseControl = true, resizable = true;
       background = viewsBackground;
       foreground = viewsText;
+      selectionText = sheetSelectionText;
+      selectionColor = sheetSelectionColor;
 
       bool NotifySelect(ListBox control, DataRow row, Modifiers keyFlags)
       {
@@ -1623,6 +1628,18 @@ public:
             delete subData;
 
             editData.font = { font.faceName, font.size, font.bold };
+            if(eClass_IsDerived(editData._class, class(DropBox)))
+            {
+               DropBox db = (DropBox)editData;
+               db.selectionColor = sheetSelectionColor;
+               db.selectionText = sheetSelectionText;
+            }
+            else if(eClass_IsDerived(editData._class, class(EditBox)))
+            {
+               EditBox eb = (EditBox)editData;
+               eb.selectionColor = sheetSelectionColor;
+               eb.selectionText = sheetSelectionText;
+            }
          }
       }
       return editData;
