@@ -1414,12 +1414,12 @@ static void CopyInstanceData(Class dataType, Instance propObject, Instance curre
             if(subProp.Get && subProp.Set)
                CopyProperty(subProp, propObject, current);
          }
-         else
+         else if(member.id > -1)
          {
             if(memberType)
                // TOCHECK: I have serious doubts this works in many cases.
                ((void (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCopy])(memberType, (byte *)propObject + member.offset, (byte *)current + member.offset);
-            else if(member.memberOffset)
+            else
                memcpy((byte *)propObject + member.offset, (byte *)current + member.offset, member.memberOffset);
          }
       }
@@ -1807,11 +1807,11 @@ public:
                         ((void (*)(void *, uint))(void *)this.subProperty.Set)(propObject, valueSubData.ui);
                   }
                   else
-                     ((void (*)(void *, uint))(void *)this.subProperty.Set)(propObject, valueSubData.ui);
+                     ((void (*)(void *, void *))(void *)this.subProperty.Set)(propObject, valueSubData.p);
                }
                if(mainDataType.type == structClass)
                   ((void (*)(void *, void *))(void *)prop.Set)(object, data);
-               else if(mainDataType.type == unitClass || mainDataType.type == enumClass || mainDataType.type == bitClass || dataType.type == systemClass)
+               else if(mainDataType.type == unitClass || mainDataType.type == enumClass || mainDataType.type == bitClass || mainDataType.type == systemClass)
                {
                   if(!strcmp(mainDataType.dataTypeString, "float"))
                      ((void(*)(void *,float))(void *)prop.Set)(object, valueData.f);
@@ -1825,7 +1825,7 @@ public:
                      ((void (*)(void *, uint))(void *)prop.Set)(object, valueData.ui);
                }
                else
-                  ((void (*)(void *, uint))(void *)prop.Set)(object, valueData.ui);
+                  ((void (*)(void *, void *))(void *)prop.Set)(object, valueData.p);
 
                result = true;
             }
