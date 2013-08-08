@@ -156,13 +156,12 @@ bool System_MakeDir(char * path)
       if(FILE_FileExists(location) != isDirectory)
       {
 #if defined(__unix__) || defined(__APPLE__)
-         mkdir(location, 0755);
+         result = !mkdir(location, 0755);
 #else
          uint16 _wlocation[MAX_LOCATION];
          __ecereNameSpace__ecere__sys__UTF8toUTF16Buffer(location, _wlocation, MAX_LOCATION);
-         _wmkdir(_wlocation);
+         result = !_wmkdir(_wlocation);
 #endif
-         result = true;
       }
    }
    return result;
