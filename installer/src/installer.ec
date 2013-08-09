@@ -866,8 +866,8 @@ class Installer : Window
          }
          else
          {
-            PathCat(installDir, "Ecere SDK");
             strcpy(installDir, programFilesDir);
+            PathCat(installDir, "Ecere SDK");
          }
       }
       else if(homeDrive && homeDrive[0])
