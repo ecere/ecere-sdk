@@ -1,4 +1,8 @@
+#ifdef ECERE_STATIC
+import static "ecere"
+#else
 import "ecere"
+#endif
 
 class CheckListBoxButton : Button
 {
