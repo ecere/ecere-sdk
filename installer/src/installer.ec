@@ -856,11 +856,12 @@ class Installer : Window
          if(x86)
          {
             strcpy(installDir32, programFilesDir);
+            PathCat(installDir32, "Ecere SDK");
             osIS64bit = true;
 
             *x86 = 0;
-            PathCat(installDir, "Ecere SDK");
             strcpy(installDir, programFilesDir);
+            PathCat(installDir, "Ecere SDK");
          }
          else
          {

@@ -121,9 +121,7 @@
                "Folder" : "mimetypes",
                "Files" : [
                   "../ecere/res/mimeTypes/file.png",
-                  "../ecere/res/mimeTypes/brokenFile.png",
-                  "../ecere/res/places/brokenFolder.png",
-                  "../ecere/res/places/folder.png"
+                  "../ecere/res/mimeTypes/brokenFile.png"
                ]
             },
             {
@@ -133,7 +131,8 @@
                   "../ecere/res/places/folder.png",
                   "../ecere/res/places/folderRemote.png",
                   "../ecere/res/places/networkServer.png",
-                  "../ecere/res/places/networkWorkgroup.png"
+                  "../ecere/res/places/networkWorkgroup.png",
+                  "../ecere/res/places/brokenFolder.png"
                ]
             },
             {
