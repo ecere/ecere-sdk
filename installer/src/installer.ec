@@ -768,7 +768,7 @@ class Installer : Window
 
       if(component.mandatory)
       {
-         if(component.arch != bits32 || !osIS64bit || component == &coreSDK[gdb32])
+         if(component.arch != bits32 || !osIS64bit) // || component == &coreSDK[gdb32])
             componentsBox.SetDisabled(row, true);
          else
             component.selected = false;
