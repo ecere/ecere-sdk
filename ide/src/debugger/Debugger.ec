@@ -404,7 +404,7 @@ static bool CheckCommandAvailable(const char * command)
 #ifdef __WIN32__
    {
       int e;
-      const char * extensions[3] = { "exe", "com", "bat", null };
+      const char * extensions[] = { "exe", "com", "bat", null };
       for(e=0; extensions[e]; e++)
       {
          ChangeExtension(name, extensions[e], name);

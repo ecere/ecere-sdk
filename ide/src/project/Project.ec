@@ -1543,6 +1543,7 @@ private:
       DynamicString strip { };
       DynamicString ar { };
       DynamicString windres { };
+
       /*
       if(bitDepth == 64 && compiler.targetPlatform == win32) 
          gnuToolchainPrefix = "x86_64-w64-mingw32-";
@@ -1987,6 +1988,7 @@ private:
       delete cxx;
       delete strip;
       delete ar;
+      delete windres;
 
       return numErrors == 0 && !ide.projectView.stopBuild;
    }
