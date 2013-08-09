@@ -10242,37 +10242,9 @@
                                  ]
                               }
                            ]
-                        },
-                        {
-                           "Folder" : "info",
-                           "Files" : [
-                              "tdm/gdb-7.5-tdm64-2/share/info/annotate.info",
-                              "tdm/gdb-7.5-tdm64-2/share/info/bfd.info",
-                              "tdm/gdb-7.5-tdm64-2/share/info/configure.info",
-                              "tdm/gdb-7.5-tdm64-2/share/info/gdb.info",
-                              "tdm/gdb-7.5-tdm64-2/share/info/gdbint.info",
-                              "tdm/gdb-7.5-tdm64-2/share/info/stabs.info",
-                              "tdm/gdb-7.5-tdm64-2/share/info/standards.info"
-                           ]
-                        },
-                        {
-                           "Folder" : "man",
-                           "Files" : [
-                              {
-                                 "Folder" : "man1",
-                                 "Files" : [
-                                    "tdm/gdb-7.5-tdm64-2/share/man/man1/gdb.1",
-                                    "tdm/gdb-7.5-tdm64-2/share/man/man1/gdbserver.1"
-                                 ]
-                              }
-                           ]
                         }
                      ]
-                  },
-                  "tdm/gdb-7.5-tdm64-2/COPYING-expat.txt",
-                  "tdm/gdb-7.5-tdm64-2/COPYING3-gcc-tdm.txt",
-                  "tdm/gdb-7.5-tdm64-2/COPYING3.LIB-gcc-tdm.txt",
-                  "tdm/gdb-7.5-tdm64-2/LICENSE-python.txt"
+                  }
                ]
             },
             {
@@ -10316,11 +10288,7 @@
                         "tdm/gdb-7.5-mingw32/lib/_weakrefset.pyc"
                      ]
                   },
-                  "tdm/gdb-7.5-mingw32/COPYING-expat.txt",
-                  "tdm/gdb-7.5-mingw32/COPYING3-gcc-tdm.txt",
-                  "tdm/gdb-7.5-mingw32/COPYING3.LIB-gcc-tdm.txt",
                   "tdm/gdb-7.5-mingw32/i686-w64-mingw32-gdb.exe",
-                  "tdm/gdb-7.5-mingw32/LICENSE-python.txt",
                   "tdm/gdb-7.5-mingw32/python27.dll"
                ]
             },
@@ -10376,52 +10344,6 @@
                      ]
                   },
                   {
-                     "Folder" : "share",
-                     "Files" : [
-                        {
-                           "Folder" : "info",
-                           "Files" : [
-                              "tdm/binutils-2.22.90-tdm64-1/share/info/as.info",
-                              "tdm/binutils-2.22.90-tdm64-1/share/info/bfd.info",
-                              "tdm/binutils-2.22.90-tdm64-1/share/info/binutils.info",
-                              "tdm/binutils-2.22.90-tdm64-1/share/info/configure.info",
-                              "tdm/binutils-2.22.90-tdm64-1/share/info/gprof.info",
-                              "tdm/binutils-2.22.90-tdm64-1/share/info/ld.info",
-                              "tdm/binutils-2.22.90-tdm64-1/share/info/standards.info"
-                           ]
-                        },
-                        {
-                           "Folder" : "man",
-                           "Files" : [
-                              {
-                                 "Folder" : "man1",
-                                 "Files" : [
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/addr2line.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/ar.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/as.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/c++filt.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/dlltool.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/elfedit.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/gprof.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/ld.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/nlmconv.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/nm.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/objcopy.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/objdump.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/ranlib.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/readelf.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/size.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/strings.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/strip.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/windmc.1",
-                                    "tdm/binutils-2.22.90-tdm64-1/share/man/man1/windres.1"
-                                 ]
-                              }
-                           ]
-                        }
-                     ]
-                  },
-                  {
                      "Folder" : "x86_64-w64-mingw32",
                      "Files" : [
                         {
@@ -10462,9 +10384,7 @@
                            ]
                         }
                      ]
-                  },
-                  "tdm/binutils-2.22.90-tdm64-1/COPYING3-gcc-tdm.txt",
-                  "tdm/binutils-2.22.90-tdm64-1/COPYING3.LIB-gcc-tdm.txt"
+                  }
                ]
             },
             {
@@ -10666,48 +10586,7 @@
                                  ]
                               }
                            ]
-                        },
-                        {
-                           "Folder" : "share",
-                           "Files" : [
-                              {
-                                 "Folder" : "info",
-                                 "Files" : [
-                                    "tdm/gcc-4.7.1-tdm64-1-core/share/info/cpp.info",
-                                    "tdm/gcc-4.7.1-tdm64-1-core/share/info/cppinternals.info",
-                                    "tdm/gcc-4.7.1-tdm64-1-core/share/info/gcc.info",
-                                    "tdm/gcc-4.7.1-tdm64-1-core/share/info/gccinstall.info",
-                                    "tdm/gcc-4.7.1-tdm64-1-core/share/info/gccint.info",
-                                    "tdm/gcc-4.7.1-tdm64-1-core/share/info/libquadmath.info"
-                                 ]
-                              },
-                              {
-                                 "Folder" : "man",
-                                 "Files" : [
-                                    {
-                                       "Folder" : "man1",
-                                       "Files" : [
-                                          "tdm/gcc-4.7.1-tdm64-1-core/share/man/man1/cpp.1",
-                                          "tdm/gcc-4.7.1-tdm64-1-core/share/man/man1/gcc.1",
-                                          "tdm/gcc-4.7.1-tdm64-1-core/share/man/man1/gcov.1"
-                                       ]
-                                    },
-                                    {
-                                       "Folder" : "man7",
-                                       "Files" : [
-                                          "tdm/gcc-4.7.1-tdm64-1-core/share/man/man7/fsf-funding.7",
-                                          "tdm/gcc-4.7.1-tdm64-1-core/share/man/man7/gfdl.7",
-                                          "tdm/gcc-4.7.1-tdm64-1-core/share/man/man7/gpl.7"
-                                       ]
-                                    }
-                                 ]
-                              }
-                           ]
-                        },
-                        "tdm/gcc-4.7.1-tdm64-1-core/COPYING.RUNTIME-gcc-tdm.txt",
-                        "tdm/gcc-4.7.1-tdm64-1-core/COPYING3-gcc-tdm.txt",
-                        "tdm/gcc-4.7.1-tdm64-1-core/COPYING3.LIB-gcc-tdm.txt",
-                        "tdm/gcc-4.7.1-tdm64-1-core/README-gcc-tdm64.txt"
+                        }
                      ]
                   },
                   {
@@ -11692,23 +11571,9 @@
                                        ]
                                     }
                                  ]
-                              },
-                              {
-                                 "Folder" : "man",
-                                 "Files" : [
-                                    {
-                                       "Folder" : "man1",
-                                       "Files" : [
-                                          "tdm/gcc-4.7.1-tdm64-1-c++/share/man/man1/g++.1"
-                                       ]
-                                    }
-                                 ]
                               }
                            ]
-                        },
-                        "tdm/gcc-4.7.1-tdm64-1-c++/COPYING.RUNTIME-gcc-tdm.txt",
-                        "tdm/gcc-4.7.1-tdm64-1-c++/COPYING3-gcc-tdm.txt",
-                        "tdm/gcc-4.7.1-tdm64-1-c++/COPYING3.LIB-gcc-tdm.txt"
+                        }
                      ]
                   }
                ]
@@ -11761,13 +11626,215 @@
             {
                "Folder" : "doc",
                "Files" : [
-
-               ]
-            },
-            {
-               "Folder" : "locale",
-               "Files" : [
-
+                  {
+                     "Folder" : "binutils",
+                     "Files" : [
+                        {
+                           "Folder" : "info",
+                           "Files" : [
+                              "as.info",
+                              "bfd.info",
+                              "binutils.info",
+                              "configure.info",
+                              "gprof.info",
+                              "ld.info",
+                              "standards.info"
+                           ]
+                        },
+                        {
+                           "Folder" : "man",
+                           "Files" : [
+                              {
+                                 "Folder" : "man1",
+                                 "Files" : [
+                                    "addr2line.1",
+                                    "ar.1",
+                                    "as.1",
+                                    "c++filt.1",
+                                    "dlltool.1",
+                                    "elfedit.1",
+                                    "gprof.1",
+                                    "ld.1",
+                                    "nlmconv.1",
+                                    "nm.1",
+                                    "objcopy.1",
+                                    "objdump.1",
+                                    "ranlib.1",
+                                    "readelf.1",
+                                    "size.1",
+                                    "strings.1",
+                                    "strip.1",
+                                    "windmc.1",
+                                    "windres.1"
+                                 ]
+                              }
+                           ]
+                        }
+                     ]
+                  },
+                  {
+                     "Folder" : "g++",
+                     "Files" : [
+                        {
+                           "Folder" : "man",
+                           "Files" : [
+                              {
+                                 "Folder" : "man1",
+                                 "Files" : [
+                                    "g++.1"
+                                 ]
+                              }
+                           ]
+                        }
+                     ]
+                  },
+                  {
+                     "Folder" : "gcc",
+                     "Files" : [
+                        {
+                           "Folder" : "doc",
+                           "Files" : [
+                              "COPYING-expat.txt",
+                              "COPYING.RUNTIME-gcc-tdm.txt",
+                              "COPYING3-gcc-tdm.txt",
+                              "COPYING3.LIB-gcc-tdm.txt",
+                              "README-gcc-tdm64.txt"
+                           ]
+                        },
+                        {
+                           "Folder" : "info",
+                           "Files" : [
+                              "cpp.info",
+                              "cppinternals.info",
+                              "gcc.info",
+                              "gccinstall.info",
+                              "gccint.info",
+                              "libquadmath.info"
+                           ]
+                        },
+                        {
+                           "Folder" : "man",
+                           "Files" : [
+                              {
+                                 "Folder" : "man1",
+                                 "Files" : [
+                                    "cpp.1",
+                                    "gcc.1",
+                                    "gcov.1"
+                                 ]
+                              },
+                              {
+                                 "Folder" : "man7",
+                                 "Files" : [
+                                    "fsf-funding.7",
+                                    "gfdl.7",
+                                    "gpl.7"
+                                 ]
+                              }
+                           ]
+                        }
+                     ]
+                  },
+                  {
+                     "Folder" : "gdb",
+                     "Files" : [
+                        {
+                           "Folder" : "doc",
+                           "Files" : [
+                              "COPYING-expat.txt",
+                              "LICENSE-python.txt"
+                           ]
+                        },
+                        {
+                           "Folder" : "info",
+                           "Files" : [
+                              "annotate.info",
+                              "bfd.info",
+                              "configure.info",
+                              "gdb.info",
+                              "gdbint.info",
+                              "stabs.info",
+                              "standards.info"
+                           ]
+                        },
+                        {
+                           "Folder" : "man",
+                           "Files" : [
+                              {
+                                 "Folder" : "man1",
+                                 "Files" : [
+                                    "gdb.1",
+                                    "gdbserver.1"
+                                 ]
+                              }
+                           ]
+                        }
+                     ]
+                  },
+                  {
+                     "Folder" : "gnurx",
+                     "Files" : [
+                        {
+                           "Folder" : "info",
+                           "Files" : [
+                              "regex.info"
+                           ]
+                        },
+                        {
+                           "Folder" : "man",
+                           "Files" : [
+                              {
+                                 "Folder" : "man3",
+                                 "Files" : [
+                                    "regcomp.3",
+                                    "regerror.3",
+                                    "regex.3",
+                                    "regexec.3",
+                                    "regfree.3"
+                                 ]
+                              }
+                           ]
+                        }
+                     ]
+                  },
+                  {
+                     "Folder" : "make",
+                     "Files" : [
+                        {
+                           "Folder" : "info",
+                           "Files" : [
+                              "make.info",
+                              "make.info-1",
+                              "make.info-2"
+                           ]
+                        },
+                        {
+                           "Folder" : "man",
+                           "Files" : [
+                              {
+                                 "Folder" : "man1",
+                                 "Files" : [
+                                    "mingw32-make.1"
+                                 ]
+                              }
+                           ]
+                        },
+                        "COPYING"
+                     ]
+                  },
+                  {
+                     "Folder" : "mingwrt",
+                     "Files" : [
+                        {
+                           "Folder" : "doc",
+                           "Files" : [
+                              "COPYING.LIB.txt",
+                              "COPYING.MinGW-w64-runtime.txt",
+                              "COPYING.MinGW-w64.txt"
+                           ]
+                        }
+                     ]
+                  }
                ]
             },
             {
@@ -14812,10 +14879,7 @@
                            ]
                         }
                      ]
-                  },
-                  "tdm/mingw64-runtime-tdm64-gcc47-svn5385/COPYING.LIB.txt",
-                  "tdm/mingw64-runtime-tdm64-gcc47-svn5385/COPYING.MinGW-w64-runtime.txt",
-                  "tdm/mingw64-runtime-tdm64-gcc47-svn5385/COPYING.MinGW-w64.txt"
+                  }
                ]
             }
          ]

@@ -280,7 +280,7 @@ Component coreSDK[CoreSDKID] =
 
 public enum AdditionalID
 {
-   eda, eda32, vanilla, vanilla32, extras, upx, gnurx, gnurx32, /*pthreads, */cpp, /*w32api, */gcci18n, gdbi18n, makei18n, binutilsi18n, none
+   eda, eda32, vanilla, vanilla32, extras, upx, gnurx, gnurx32, /*pthreads, */cpp, /*w32api, gcci18n, gdbi18n, makei18n, binutilsi18n, */none
 };
 
 Component additional[AdditionalID] =
@@ -296,10 +296,11 @@ Component additional[AdditionalID] =
 //   { "pthreads",        "tdm/pthreads",                   "mingw",    null, false, true, minGWIncluded, none },
    { "C++ Compiler",    "tdm/gcc/c++",                   "tdm",    null, false, true, minGWIncluded, none },
 //   { "Win32 APIs",      "mingw/w32api",                  "mingw",    null, false, true, minGWIncluded, none },
-   { "GCC I18n",        "mingw/locale/gcc",              "tdm",    null, false, false, minGWIncluded, none },
+/*   { "GCC I18n",        "mingw/locale/gcc",              "tdm",    null, false, false, minGWIncluded, none },
    { "GDB I18n",        "mingw/locale/gdb",              "tdm",    null, false, false, minGWIncluded, none },
    { "Make I18n",       "mingw/locale/make",             "tdm",    null, false, false, minGWIncluded, none },
    { "Binutils I18n",   "mingw/locale/binutils",         "tdm",    null, false, false, minGWIncluded, none },
+*/
    { null }
 };
 
