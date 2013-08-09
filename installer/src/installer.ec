@@ -151,6 +151,8 @@ struct Component
    Component * subComponents;
    bool mandatory;
    bool selected;
+   bool available;
+
    Component * parent;
 
    uint requiredSize;
@@ -209,100 +211,100 @@ struct Component
       }
    }
 };
+
+#ifndef NOMINGW
+define minGWIncluded = true;
+#else
+define minGWIncluded = false;
+#endif
+
 Component samples[] =
 {
-   { "Ecere Chess",     "samples/chess",     "chess",       null, false, true },
-   { "Ecere Fractals",  "samples/fractals",  "fractals",    null, false, true },
-   { "3D",              "samples/3D",        "3D",          null, false, true },
-   { "Audio",           "samples/audio",     "audio",       null, false, true },
-   { "Database",        "samples/db",        "db",          null, false, true },
-   { "eC",              "samples/eC",        "eC",          null, false, true },
-   { "Games",           "samples/games",     "games",       null, false, true },
-   { "GUI & Graphics",  "samples/guiAndGfx", "guiAndGfx",   null, false, true },
-   { "Miscellaneous",   "samples/misc",      "misc",        null, false, true },
-   { "Networking",      "samples/net",       "net",         null, false, true },
-   { "WIA Scanning",    "samples/scanning",  "scanning",    null, false, true },
-   { "Threading",       "samples/threads",   "threads",     null, false, true }
+   { "Ecere Chess",     "samples/chess",     "chess",       null, false, true, true },
+   { "Ecere Fractals",  "samples/fractals",  "fractals",    null, false, true, true },
+   { "3D",              "samples/3D",        "3D",          null, false, true, true },
+   { "Audio",           "samples/audio",     "audio",       null, false, true, true },
+   { "Database",        "samples/db",        "db",          null, false, true, true },
+   { "eC",              "samples/eC",        "eC",          null, false, true, true },
+   { "Games",           "samples/games",     "games",       null, false, true, true },
+   { "GUI & Graphics",  "samples/guiAndGfx", "guiAndGfx",   null, false, true, true },
+   { "Miscellaneous",   "samples/misc",      "misc",        null, false, true, true },
+   { "Networking",      "samples/net",       "net",         null, false, true, true },
+   { "WIA Scanning",    "samples/scanning",  "scanning",    null, false, true, true },
+   { "Threading",       "samples/threads",   "threads",     null, false, true, true }
    { null }
 };
 
 public enum CoreSDKID
 {
-   ide, runtime, ec, eda, vanilla, extras,
-#ifndef NOMINGW
+   ide, runtime, ec,
    gcc, gdb, mingw, binutils, make,
-#endif
    none
 };
 
 Component coreSDK[CoreSDKID] =
 {
-   { "Ecere IDE",       "ecere-sdk/ide",                 "bin",      null, true,  true },
-   { "Runtime Library", "ecere-sdk/ecere.dll",           "bin",      null, true,  true },
-   { "eC Compiler",     "ecere-sdk/compiler",            "bin",      null, true,  true },
-#ifndef NOMINGW
-   { "GNU C Compiler",  "mingw/gcc/core",   "mingw", null, true, true },
-   { "GNU Debugger",    "mingw/gdb",        "mingw", null, true, true },
-   { "MinGW Runtime",   "mingw/mingwrt",    "mingw", null, true, true },
-   { "Binary Utils",    "mingw/binutils",   "mingw", null, true, true },
-   { "GNU Make",        "mingw/make",       "mingw", null, true, true },
-#endif
+   { "Ecere IDE",       "ecere-sdk/ide",                 "bin",      null, true,  true, true },
+   { "Runtime Library", "ecere-sdk/ecere.dll",           "bin",      null, true,  true, true },
+   { "eC Compiler",     "ecere-sdk/compiler",            "bin",      null, true,  true, true },
+   { "GNU C Compiler",  "mingw/gcc/core",   "mingw", null, true, true, minGWIncluded },
+   { "GNU Debugger",    "mingw/gdb",        "mingw", null, true, true, minGWIncluded },
+   { "MinGW Runtime",   "mingw/mingwrt",    "mingw", null, true, true, minGWIncluded },
+   { "Binary Utils",    "mingw/binutils",   "mingw", null, true, true, minGWIncluded },
+   { "GNU Make",        "mingw/make",       "mingw", null, true, true, minGWIncluded },
    { null }
 };
 
-#ifndef NOMINGW
-Component additional[] =
+public enum AdditionalID
 {
-   { "Data Access",     "ecere-sdk/eda",                 "bin",      null, false, true },
-   { "Ecere Vanilla",   "ecere-sdk/libecereVanilla.a",   "lib",      null, false, true },
-   { "Ecere Extras",    "extras",                        "extras",   null, false, true },
-   { "UPX",             "upx/bin",                       "mingw/bin",null, false, true },
-   { "GNU Regexp",      "mingw/gnurx",                   "mingw",    null, false, true },
-   { "pthreads",        "mingw/pthreads",                "mingw",    null, false, true },
-   { "C++ Compiler",    "mingw/gcc/c++",                 "mingw",    null, false, true },
-   { "Win32 APIs",      "mingw/w32api",                  "mingw",    null, false, true },
-   { "GCC I18n",        "mingw/locale/gcc",              "mingw",    null, false, false },
-   { "GDB I18n",        "mingw/locale/gdb",              "mingw",    null, false, false },
-   { "Make I18n",       "mingw/locale/make",             "mingw",    null, false, false },
-   { "Binutils I18n",   "mingw/locale/binutils",         "mingw",    null, false, false },
+   eda, vanilla, extras, upx, gnurx, pthreads, cpp, w32api, gcci18n, gdbi18n, makei18n, binutilsi18n
+};
+
+Component additional[AdditionalID] =
+{
+   { "Data Access",     "ecere-sdk/eda",                 "bin",      null, false, true, true },
+   { "Ecere Vanilla",   "ecere-sdk/libecereVanilla.a",   "lib",      null, false, true, true },
+   { "Ecere Extras",    "extras",                        "extras",   null, false, true, true },
+   { "UPX",             "upx/bin",                       "bin",      null, false, true, true },
+   { "GNU Regexp",      "mingw/gnurx",                   "mingw",    null, false, true, true },
+   { "pthreads",        "mingw/pthreads",                "mingw",    null, false, true, minGWIncluded },
+   { "C++ Compiler",    "mingw/gcc/c++",                 "mingw",    null, false, true, minGWIncluded },
+   { "Win32 APIs",      "mingw/w32api",                  "mingw",    null, false, true, minGWIncluded },
+   { "GCC I18n",        "mingw/locale/gcc",              "mingw",    null, false, false, minGWIncluded },
+   { "GDB I18n",        "mingw/locale/gdb",              "mingw",    null, false, false, minGWIncluded },
+   { "Make I18n",       "mingw/locale/make",             "mingw",    null, false, false, minGWIncluded },
+   { "Binutils I18n",   "mingw/locale/binutils",         "mingw",    null, false, false, minGWIncluded },
    { null }
 };
-#endif
 
 public enum DocumentationID
 {
    ecereBook, apiRef, tutorials, coursework,
-#ifndef NOMINGW
    gccDoc, gppDocs, gdbDocs, makeDocs, binDocs, mingwDocs, gnurxDocs, upxDocs,
-#endif
    none
 };
 
 Component documentation[DocumentationID] =
 {
-   { "Ecere Book",         "ecere-sdk/book",       "doc",            null, false, true },
-   { "API Reference",      "ecere-sdk/doc",        "doc",            null, false, true },
-   { "Ecere Tutorials",    "ecere-sdk/tutorials",  "doc",            null, false, true },
-   { "Ecere Coursework",   "ecere-sdk/coursework", "doc",            null, false, true },
-#ifndef NOMINGW
-   { "GCC Docs",        "mingw/doc/gcc",        "mingw",          null, false, false },
-   { "G++ Docs",        "mingw/doc/g++",        "mingw",          null, false, false },
-   { "GDB Docs",        "mingw/doc/gdb",        "mingw",          null, false, false },
-   { "Make Docs",       "mingw/doc/make",       "mingw",          null, false, false },
-   { "Binutils Docs",   "mingw/doc/binutils",   "mingw",          null, false, false },
-   { "MinGW Docs",      "mingw/doc/mingwrt",    "mingw",          null, false, false },
-   { "gnurx Docs",      "mingw/doc/gnurx",      "mingw",          null, false, false },
-   { "UPX Docs",        "upx/doc",              "mingw/doc/upx",  null, false, false },
-#endif
+   { "Ecere Book",         "ecere-sdk/book",       "doc",            null, false, true, true },
+   { "API Reference",      "ecere-sdk/doc",        "doc",            null, false, true, true },
+   { "Ecere Tutorials",    "ecere-sdk/tutorials",  "doc",            null, false, true, true },
+   { "Ecere Coursework",   "ecere-sdk/coursework", "doc",            null, false, true, true },
+   { "GCC Docs",        "mingw/doc/gcc",        "mingw",          null, false, false, minGWIncluded },
+   { "G++ Docs",        "mingw/doc/g++",        "mingw",          null, false, false, minGWIncluded },
+   { "GDB Docs",        "mingw/doc/gdb",        "mingw",          null, false, false, minGWIncluded },
+   { "Make Docs",       "mingw/doc/make",       "mingw",          null, false, false, minGWIncluded },
+   { "Binutils Docs",   "mingw/doc/binutils",   "mingw",          null, false, false, minGWIncluded },
+   { "MinGW Docs",      "mingw/doc/mingwrt",    "mingw",          null, false, false, minGWIncluded },
+   { "gnurx Docs",      "mingw/doc/gnurx",      "mingw",          null, false, false, minGWIncluded },
+   { "UPX Docs",        "upx/doc",              "mingw/doc/upx",  null, false, false, minGWIncluded },
    { null }
 };
 
 public enum ComponentID
 {
    coreSDK,
-#ifndef NOMINGW
    additional,
-#endif
    documentation,
    samples,
    none
@@ -310,12 +312,10 @@ public enum ComponentID
 
 Component components[ComponentID] =
 {
-   { "Core SDK Files", null, null, coreSDK, true, true },
-#ifndef NOMINGW
-   { "Additional Support", null, null, additional, false, true },
-#endif
-   { "Documentation", null /*"doc"*/, null /*"doc"*/, documentation, false, true },
-   { "Samples", null, "samples", samples, false, true },
+   { "Core SDK Files", null, null, coreSDK, true, true, true },
+   { "Additional Support", null, null, additional, false, true, true },
+   { "Documentation", null /*"doc"*/, null /*"doc"*/, documentation, false, true, true },
+   { "Samples", null, "samples", samples, false, true, true },
    { null }
 };
 FileSize totalSize;
@@ -326,6 +326,7 @@ struct InstallOption
    char * name;
    InstallOption * subOptions;
    bool selected;
+   bool available;
    DataRow row;
 };
 
@@ -354,16 +355,13 @@ InstallOption associateOptions[] =
 
 enum PathOptions
 {
-   AddECEREPaths
-#ifndef NOMINGW
-   , AddMinGWPaths
-#endif
+   AddECEREPaths, AddMinGWPaths
 };
 
 InstallOption pathOptions[] =
 {
-   { "Add Ecere binaries location to the system path", null, true },
-   { "Add MinGW to the system path", null, true }
+   { "Add Ecere binaries location to the system path", null, true, true },
+   { "Add MinGW to the system path", null, true, minGWIncluded }
    { null }
 };
 
@@ -376,13 +374,11 @@ enum IconOptions
 
 InstallOption options[] =
 {
-   { "Start Menu Group", null, true },
-   { "Desktop Icon", null, true },
-   { "Quicklaunch Icon", null, true },
-   { "Associate the ECERE IDE with Supported File Types", associateOptions, true },
-#ifndef NOMINGW
-   { "Add binaries location to the system paths", pathOptions, true },
-#endif
+   { "Start Menu Group", null, true, true },
+   { "Desktop Icon", null, true, true },
+   { "Quicklaunch Icon", null, true, true },
+   { "Associate the ECERE IDE with Supported File Types", associateOptions, true, true },
+   { "Add binaries location to the system paths", pathOptions, true, minGWIncluded },
    { null }
 };
 
@@ -655,7 +651,7 @@ class Installer : Window
    {
       inactive = true, noSelect = true,
       multiLine = true, parent = label3, text = "editBox1", opacity = 0, borderStyle = none, size = Size { 350, 35 }, anchor = Anchor { horz = 111, vert = 13 },
-      contents = $"Choose in which folder to install the ECERE SDK, which features\n"
+      contents = $"Choose in which folder to install the Ecere SDK, which features\n"
          "of the SDK to install, as well as where to install program icons."
    };
    Label label2 { parent = this, text = buildString, position = { 16, 392 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
@@ -757,8 +753,13 @@ class Installer : Window
          int c;
          for(c = 0; component.subComponents[c].name; c++)
          {
-            AddComponent(component.subComponents[c], component, path);
-            size += component.subComponents[c].requiredSize;
+            if(component.subComponents[c].available)
+            {
+               AddComponent(component.subComponents[c], component, path);
+               size += component.subComponents[c].requiredSize;
+            }
+            else
+               component.subComponents[c].selected = false;
          }
       }
 
@@ -815,32 +816,32 @@ class Installer : Window
       if(GetEnvironment("ProgramFiles", programFilesDir, MAX_LOCATION))
       {
          strcpy(installDir, programFilesDir);
-         PathCat(installDir, "ECERE SDK");
+         PathCat(installDir, "Ecere SDK");
       }
       else if(homeDrive && homeDrive[0])
       {
          strcpy(installDir, homeDrive);
-         PathCat(installDir, "ECERE SDK");
+         PathCat(installDir, "Ecere SDK");
       }
       else if(winDir && winDir[0])
       {
          strcpy(installDir, winDir);
-         PathCat(installDir, "..\\ECERE SDK");
+         PathCat(installDir, "..\\Ecere SDK");
       }
       else
-         strcpy(installDir, "C:\\ECERE SDK");
+         strcpy(installDir, "C:\\Ecere SDK");
       
       if(appData && appData[0])
       {
          static char defSamplesPath[MAX_LOCATION];
          static char defExtrasPath[MAX_LOCATION];
          strcpy(defSamplesPath, appData);
-         PathCat(defSamplesPath, "ECERE SDK\\Samples");
+         PathCat(defSamplesPath, "Ecere SDK\\Samples");
          components[samples].defInstallPath = defSamplesPath;
 
          strcpy(defExtrasPath, appData);
-         PathCat(defExtrasPath, "ECERE SDK\\extras");
-         coreSDK[extras].defInstallPath = defExtrasPath;
+         PathCat(defExtrasPath, "Ecere SDK\\extras");
+         additional[extras].defInstallPath = defExtrasPath;
       }
          
       destBox.path = installDir;
@@ -939,7 +940,7 @@ class InstallProgress : Window
          return true;
       }
    };
-   Label title { parent = label3, text = $"Installing the ECERE SDK", font = FontResource { "Tahoma", 8.25f, bold = true }, size = Size { 326, 16 }, anchor = Anchor { horz = 91, vert = -12 } };
+   Label title { parent = label3, text = $"Installing the Ecere SDK", font = FontResource { "Tahoma", 8.25f, bold = true }, size = Size { 326, 16 }, anchor = Anchor { horz = 91, vert = -12 } };
 
    void OnDrawOverChildren(Surface surface)
    {
@@ -963,88 +964,86 @@ class InstallProgress : Window
 Installer installer {};
 InstallProgress installProgress { autoCreate = false };
 
-void ModifyPath(char * newPath)
+static void AddPath(char * sysPaths[200], int sysCount, char * paths[200], int * count, char * oldPath, char * userPath, char * path)
 {
-   char * paths[200];
-   int p, count;
-   char oldPath[8192];
-   CoreSDKID c;
+   int p;
+   bool found = false;
+   for(p = 0; p<sysCount; p++)
+      if(!fstrcmp(sysPaths[p], path))
+      {
+         found = true;
+         break;
+      }
+   for(p = 0; !found && p<*count; p++)
+      if(!fstrcmp(paths[p], path))
+      {
+         found = true;
+         break;
+      }
+   if(!found)
+   {
+      char * start;
+      if(*count) 
+      {
+         strcat(userPath, ";");
+         start = paths[(*count)-1] + strlen(paths[(*count)-1])+1;
+      }
+      else
+         start = oldPath;
 
-   strcpy(oldPath, newPath);
+      strcpy(start, path);
+      *(start + strlen(path)) = '\0';
+      paths[(*count)++] = start;
+
+      strcat(userPath, path);
+   }
+}
+
+
+void ModifyPath(char * systemPath, char * userPath)
+{
+   char oldPath[8192], * paths[200], * sysPaths[200];
+   int count, sysCount;
+
+   strcpy(oldPath, userPath);
    count = TokenizeWith(oldPath, sizeof(paths) / sizeof(char *), paths, ";", false);
+   sysCount = TokenizeWith(systemPath, sizeof(sysPaths) / sizeof(char *), sysPaths, ";", false);
 
-   for(c = 0; coreSDK[c].name; c++)
    {
-      char path[MAX_LOCATION];
-      if(c == extras || c == vanilla) continue;
-
-      coreSDK[c].GetFullPath(path);
-      if(c != ide && c != runtime && c != eda && c != ec)
+      CoreSDKID c;
+      for(c = 0; coreSDK[c].name; c++)
       {
-#ifndef NOMINGW
-         if(!pathOptions[PathOptions::AddMinGWPaths].selected)
-#endif
-         continue;
-         PathCat(path, "bin");
-      }
-      else if(!pathOptions[PathOptions::AddECEREPaths].selected) continue;
-
-      for(p = 0; p<count; p++)
-         if(!fstrcmp(paths[p], path))
-            break;
-      if(p == count)
-      {
-         char * start;
-         if(count) 
-         {
-            strcat(newPath, ";");
-            start = paths[count-1] + strlen(paths[count-1])+1;
-         }
-         else
-            start = oldPath;
-         
-         strcpy(start, path);
-         *(start + strlen(path)) = '\0';
-         paths[count++] = start;
-
-         strcat(newPath, path);
-      }
-   }
-#ifndef NOMINGW
-   if(pathOptions[PathOptions::AddMinGWPaths].selected)
-   {
-      int c;
-      // Up to before Win32 APIs
-      for(c = 0; c < 4 /*additional[c].name*/; c++)
-      {
+         bool found = false;
          char path[MAX_LOCATION];
-         additional[c].GetFullPath(path);
-         if(c != 0) // UPX already is in bin
-            PathCat(path, "bin");
-         for(p = 0; p<count; p++)
-            if(!fstrcmp(paths[p], path))
-               break;
-
-         if(p == count)
+         if(!coreSDK[c].selected) continue;
+         coreSDK[c].GetFullPath(path);
+         if(c != ide && c != runtime && c != ec)
          {
-            char * start;
-            if(count) 
-            {
-               strcat(newPath, ";");
-               start = paths[count-1] + strlen(paths[count-1])+1;
-            }
-            else
-               start = oldPath;
-            
-            strcpy(start, path);
-            *(start + strlen(path)) = '\0';
-            paths[count++] = start;
-
-            strcat(newPath, path);
+            if(!pathOptions[PathOptions::AddMinGWPaths].available || !pathOptions[PathOptions::AddMinGWPaths].selected)
+               continue;
+            PathCat(path, "bin");
          }
+         else if(!pathOptions[PathOptions::AddECEREPaths].selected) continue;
+
+         AddPath(sysPaths, sysCount, paths, &count, oldPath, userPath, path);
       }
    }
-#endif
+   {
+      AdditionalID c;
+      // Up to before Win32 APIs
+      for(c = 0; c < w32api; c++)
+      {
+         bool found = false;
+         char path[MAX_LOCATION];
+         if(!additional[c].selected || c == vanilla || c == extras) continue;
+         if((c != eda && c != upx) && (!pathOptions[PathOptions::AddMinGWPaths].available || !pathOptions[PathOptions::AddMinGWPaths].selected))
+            continue;
+         additional[c].GetFullPath(path);
+         if(c != eda && c != upx)
+            PathCat(path, "bin");
+         AddPath(sysPaths, sysCount, paths, &count, oldPath, userPath, path);
+      }
+   }
 }
 
 void AssociateExtension(char * extension, char * description, char *name, char * action, char * path)
@@ -1106,7 +1105,6 @@ class InstallThread : Thread
       }
       else
       {
-         CoreSDKID c;
          char idePath[MAX_LOCATION];
          char userProfile[MAX_LOCATION];
 
@@ -1128,46 +1126,53 @@ class InstallThread : Thread
          compiler = settings.GetCompilerConfig(defaultCompilerName);
          if(compiler)
          {
-            for(c = 0; coreSDK[c].name; c++)
             {
-               char path[MAX_LOCATION];
-
-               if(c == extras) continue;
-               coreSDK[c].GetFullPath(path);
-               if(c != ide && c != runtime && c != eda && c != ec && c != vanilla)
-                  PathCat(path, "bin");
-               MakeSlashPath(path);
-               if(c == ide)
+               CoreSDKID c;
+               for(c = 0; coreSDK[c].name; c++)
                {
-                  coreSDK[c].GetFullPath(idePath);
-                  PathCat(idePath, "IDE.exe");
-               }
+                  char path[MAX_LOCATION];
+                  if(!coreSDK[c].selected || !coreSDK[c].available) continue;
 
-               if(c != vanilla)
-               {
-                  if(!compiler.executableDirs.Find(path))
-                     compiler.executableDirs.Add(CopyString(path));
-               }
+                  coreSDK[c].GetFullPath(path);
+                  if(c != ide && c != runtime && c != ec)
+                     PathCat(path, "bin");
+                  MakeSlashPath(path);
+                  if(c == ide)
+                  {
+                     coreSDK[c].GetFullPath(idePath);
+                     PathCat(idePath, "IDE.exe");
+                  }
 
-               if(c == runtime || c == vanilla)
-               {
-                  if(!compiler.libraryDirs.Find(path))
-                     compiler.libraryDirs.Add(CopyString(path));
+                  if(c == runtime)
+                  {
+                     if(!compiler.libraryDirs.Find(path))
+                        compiler.libraryDirs.Add(CopyString(path));
+                  }
                }
             }
-   #ifndef NOMINGW
-            // Up to before Win32 APIs
-            for(c = 0; c < 4 /*additional[c].name*/; c++)
             {
-               char path[MAX_LOCATION];
-               additional[c].GetFullPath(path);
-               if(c != 0) // upx
-                  PathCat(path, "bin");
-               MakeSlashPath(path);
-               if(!compiler.executableDirs.Find(path))
-                  compiler.executableDirs.Add(CopyString(path));
+               AdditionalID c;
+               // Up to before Win32 APIs
+               for(c = 0; c < w32api; c++)
+               {
+                  char path[MAX_LOCATION];
+                  if(c == extras || !additional[c].selected || !additional[c].available) continue;
+                  additional[c].GetFullPath(path);
+                  if(c != upx && c != eda && c != vanilla)
+                     PathCat(path, "bin");
+                  MakeSlashPath(path);
+                  if(c == vanilla)
+                  {
+                     if(!compiler.libraryDirs.Find(path))
+                        compiler.libraryDirs.Add(CopyString(path));
+                  }
+                  else
+                  {
+                     if(!compiler.executableDirs.Find(path))
+                        compiler.executableDirs.Add(CopyString(path));
+                  }
+               }
             }
-   #endif
          }
 
          {
@@ -1204,14 +1209,14 @@ class InstallThread : Thread
          {
             HKEY key;
             uint status, size;
-            char * displayName = "ECERE SDK 0.44";
+            char * displayName = "Ecere SDK 0.44";
             char uninstaller[MAX_LOCATION];
             bool nomodify = true;
 
             strcpy(uninstaller, installDir);
             PathCat(uninstaller, "uninstall_ecere.exe");
 
-            RegCreateKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\ECERE SDK", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
+            RegCreateKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Ecere SDK", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
 
             RegSetValueEx(key, "DisplayName", 0, REG_SZ, displayName, (uint)strlen(displayName)+1);
             RegSetValueEx(key, "UninstallString", 0, REG_SZ, uninstaller, (uint)strlen(uninstaller)+1);
@@ -1228,30 +1233,40 @@ class InstallThread : Thread
 #endif
             )
          {
-            HKEY key;
+            HKEY userKey = null, systemKey = null;
             uint status, size;
-            char path[4096] = "";
-            uint16 wPath[4096];
+            char userPath[8192] = "";
+            char systemPath[8192] = "";
+            uint16 wUserPath[8192];
+            uint16 wSystemPath[8192];
+
+            wUserPath[0] = 0;
+            wSystemPath[0] = 0;
 
             ((GuiApplication)__thisModule).Lock();
             installProgress.installing.text = "Registering paths...";
             ((GuiApplication)__thisModule).Unlock();
             ((GuiApplication)__thisModule).SignalEvent();
                         
-            // if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Environment", 0, KEY_ALL_ACCESS, &key) == ERROR_SUCCESS)
+            if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", 0, KEY_QUERY_VALUE, &systemKey) == ERROR_SUCCESS)
+            {
+               size = sizeof(wSystemPath);
+               RegQueryValueExW(systemKey, L"path", null, null, (byte *)wSystemPath, &size);
+               UTF16toUTF8Buffer(wSystemPath, systemPath, sizeof(systemPath));
+            }
             
-            RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
-            // RegCreateKeyEx(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
+            RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &userKey, &status);
             if(status == REG_OPENED_EXISTING_KEY)
             {
-               size = sizeof(wPath);
-               RegQueryValueExW(key, L"path", null, null, (byte *)wPath, &size);
-               UTF16toUTF8Buffer(wPath, path, sizeof(path));
+               size = sizeof(wUserPath);
+               RegQueryValueExW(userKey, L"path", null, null, (byte *)wUserPath, &size);
+               UTF16toUTF8Buffer(wUserPath, userPath, sizeof(userPath));
             }
-            ModifyPath(path);
-            UTF8toUTF16Buffer(path, wPath, sizeof(wPath) / sizeof(uint16));
-            RegSetValueExW(key, L"path", 0, REG_EXPAND_SZ, (byte *)wPath, (uint)(wcslen(wPath)+1) * 2);
-            RegCloseKey(key);
+            ModifyPath(systemPath, userPath);
+            UTF8toUTF16Buffer(userPath, wUserPath, sizeof(wUserPath) / sizeof(uint16));
+            RegSetValueExW(userKey, L"path", 0, REG_EXPAND_SZ, (byte *)wUserPath, (uint)(wcslen(wUserPath)+1) * 2);
+            RegCloseKey(userKey);
+            RegCloseKey(systemKey);
 
             SendMessageTimeout (HWND_BROADCAST, WM_SETTINGCHANGE, 0, (int)"Environment", SMTO_NORMAL, 1000, NULL);
          }
@@ -1290,11 +1305,11 @@ class InstallThread : Thread
             if(startMenuPath[0])
             {
                strcpy(destPath, startMenuPath);
-               PathCat(destPath, "ECERE SDK");
+               PathCat(destPath, "Ecere SDK");
                MakeDir(destPath);
 
                strcpy(destPath, startMenuPath);
-               PathCat(destPath, "ECERE SDK\\ECERE IDE.lnk");
+               PathCat(destPath, "Ecere SDK\\Ecere IDE.lnk");
                CreateLink(idePath, destPath, null); //"ECERE IDE");
                if(components[samples].selected)
                {
@@ -1302,7 +1317,7 @@ class InstallThread : Thread
                   components[samples].GetFullPath(samplesPath);
 
                   strcpy(destPath, startMenuPath);
-                  PathCat(destPath, "ECERE SDK\\Sample Projects.lnk");
+                  PathCat(destPath, "Ecere SDK\\Sample Projects.lnk");
                   CreateLink(samplesPath, destPath, null);//"Sample Projects");
                }
                if(components[documentation].selected && documentation[ecereBook].selected)
@@ -1319,7 +1334,7 @@ class InstallThread : Thread
                   }
 
                   strcpy(destPath, startMenuPath);
-                  PathCat(destPath, "ECERE SDK\\The Ecere Tao of Programming.lnk");
+                  PathCat(destPath, "Ecere SDK\\The Ecere Tao of Programming.lnk");
                   CreateLink(docPath, destPath, null);
                }
             }
