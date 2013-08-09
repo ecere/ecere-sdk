@@ -803,6 +803,7 @@ unsigned int keepCast : 1;
 unsigned int passAsTemplate : 1;
 unsigned int dllExport : 1;
 unsigned int attrStdcall : 1;
+unsigned int declaredWithStruct : 1;
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
@@ -2853,6 +2854,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "keepCast", "bool:1", 
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "passAsTemplate", "bool:1", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dllExport", "bool:1", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "attrStdcall", "bool:1", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "declaredWithStruct", "bool:1", 4, 4, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "Operand", 0, sizeof(struct Operand), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Operand = class;

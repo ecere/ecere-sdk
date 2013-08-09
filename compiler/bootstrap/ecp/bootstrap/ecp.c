@@ -128,7 +128,7 @@ struct CodePosition
 int line;
 int charPos;
 int pos;
-unsigned int included;
+int included;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Location;
@@ -681,6 +681,7 @@ unsigned int keepCast : 1;
 unsigned int passAsTemplate : 1;
 unsigned int dllExport : 1;
 unsigned int attrStdcall : 1;
+unsigned int declaredWithStruct : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -1253,9 +1254,10 @@ if(decl->declarators)
 {
 for(d = (*decl->declarators).first; d; d = d->next)
 {
-{
 struct Identifier * declId = GetDeclId(d);
 
+if(declId)
+{
 dataMemberDefine = __extension__ ({
 struct DataMemberDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_DataMemberDefine);
 

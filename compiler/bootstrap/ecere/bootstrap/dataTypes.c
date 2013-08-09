@@ -544,12 +544,17 @@ extern int toupper(int);
 
 char * __ecereNameSpace__ecere__com__Enum_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, int * data, char * tempString, void * fieldData, unsigned int * needClass)
 {
-struct __ecereNameSpace__ecere__com__EnumClassData * enumeration = (struct __ecereNameSpace__ecere__com__EnumClassData *)_class->data;
-struct __ecereNameSpace__ecere__sys__NamedLink * item;
+struct __ecereNameSpace__ecere__sys__NamedLink * item = (((void *)0));
+struct __ecereNameSpace__ecere__com__Class * b;
+
+for(b = _class; !item && b && b->type == 4; b = b->base)
+{
+struct __ecereNameSpace__ecere__com__EnumClassData * enumeration = (struct __ecereNameSpace__ecere__com__EnumClassData *)b->data;
 
 for(item = enumeration->values.first; item; item = item->next)
 if((int)item->data == *data)
 break;
+}
 if(item)
 {
 strcpy(tempString, item->name);
@@ -567,13 +572,18 @@ static unsigned int __ecereNameSpace__ecere__com__Integer_OnGetDataFromString(st
 
 static unsigned int __ecereNameSpace__ecere__com__Enum_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * _class, int * data, char * string)
 {
+struct __ecereNameSpace__ecere__sys__NamedLink * item = (((void *)0));
+struct __ecereNameSpace__ecere__com__Class * b;
+
+for(b = _class; !item && b && b->type == 4; b = b->base)
+{
 struct __ecereNameSpace__ecere__com__EnumClassData * enumeration = (struct __ecereNameSpace__ecere__com__EnumClassData *)_class->data;
-struct __ecereNameSpace__ecere__sys__NamedLink * item;
 
 for(item = enumeration->values.first; item; item = item->next)
 {
 if(item->name && !(strcasecmp)(item->name, string))
 break;
+}
 }
 if(item)
 {
@@ -1016,11 +1026,12 @@ if(memberType->type == 1 || memberType->type == 0)
 char internalMemberString[1024];
 unsigned char * memberData = ((unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
 int c;
+unsigned int typeSize = (memberType->type == 0) ? memberType->typeSize : memberType->structSize;
 
-for(c = 0; c < memberType->structSize; c++)
+for(c = 0; c < typeSize; c++)
 if(memberData[c])
 break;
-if(c < memberType->structSize)
+if(c < typeSize)
 {
 unsigned int needClass = 0x1;
 char * result;
@@ -1029,7 +1040,7 @@ if(memberType->type == 0)
 result = ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, *(struct __ecereNameSpace__ecere__com__Instance **)memberData, internalMemberString, (((void *)0)), &needClass);
 else
 result = ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, memberData, internalMemberString, (((void *)0)), &needClass);
-if(needClass)
+if(needClass && strcmp(memberType->dataTypeString, "char *"))
 {
 strcat(memberString, "{ ");
 if(result)
@@ -1519,7 +1530,7 @@ struct __ecereNameSpace__ecere__com__Class * c;
 
 for(c = _class; c && (!c->base || c->base->type != 1000) && c->base != lastClass; c = c->base)
 ;
-lastClass = _class;
+lastClass = c;
 for(member = c->membersAndProperties.first; member; member = member->next)
 {
 if(member->id < 0)
@@ -2287,7 +2298,7 @@ unsigned char bytes[4];
 if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 4) == 4)
 *(unsigned int *)data = (unsigned int)(((bytes)[0] << (unsigned char)24) | ((bytes)[1] << (unsigned char)16) | ((bytes)[2] << (unsigned char)8) | (bytes)[3]);
 else
-*data = (float)0;
+*data = 0;
 }
 
 static void __ecereNameSpace__ecere__com__RegisterClass_Float(struct __ecereNameSpace__ecere__com__Instance * module)
@@ -2386,7 +2397,7 @@ unsigned char bytes[8];
 if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 8) == 8)
 *(uint64 *)data = (((uint64)(bytes)[0] << 56) | ((uint64)(bytes)[1] << 48) | ((uint64)(bytes)[2] << 40) | ((uint64)(bytes)[3] << 32) | ((uint64)(bytes)[4] << 24) | ((bytes)[5] << (unsigned char)16) | ((bytes)[6] << (unsigned char)8) | (bytes)[7]);
 else
-*data = (double)0;
+*data = 0;
 }
 
 static void __ecereNameSpace__ecere__com__RegisterClass_Double(struct __ecereNameSpace__ecere__com__Instance * module)

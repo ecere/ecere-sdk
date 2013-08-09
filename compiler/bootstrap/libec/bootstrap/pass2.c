@@ -743,6 +743,7 @@ unsigned int keepCast : 1;
 unsigned int passAsTemplate : 1;
 unsigned int dllExport : 1;
 unsigned int attrStdcall : 1;
+unsigned int declaredWithStruct : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -1160,7 +1161,7 @@ if(type->kind == 8)
 {
 struct __ecereNameSpace__ecere__com__Class * _class = type->_class ? type->_class->registered : (((void *)0));
 
-if(_class && (_class->type == 1 || _class->type == 5 || (_class->type == 1000 && _class->base && strcmp(_class->fullName, "uintptr") && strcmp(_class->fullName, "intptr") && strcmp(_class->fullName, "uintsize") && strcmp(_class->fullName, "intsize"))))
+if(_class && ((_class->type == 1 && !type->declaredWithStruct) || _class->type == 5 || (_class->type == 1000 && _class->base && strcmp(_class->fullName, "uintptr") && strcmp(_class->fullName, "intptr") && strcmp(_class->fullName, "uintsize") && strcmp(_class->fullName, "intsize"))))
 {
 if(wantReference != (e->byReference || isPointer))
 {
@@ -2586,10 +2587,11 @@ struct Type * type = memberExp->member.exp->expType;
 
 if(type->kind == 8 && type->_class && type->_class->registered)
 {
-int classType = memberExp->member.exp->expType->_class->registered->type;
+struct __ecereNameSpace__ecere__com__Class * regClass = type->_class->registered;
+int classType = regClass->type;
 
-if(classType != 0 || method->dataType->byReference)
-argClass = type->_class->registered;
+if(classType != 0 || !strcmp(regClass->dataTypeString, "char *") || method->dataType->byReference)
+argClass = regClass;
 }
 else if(type->kind == 19)
 {
@@ -2617,9 +2619,13 @@ if(classSym)
 argClass = classSym->registered;
 }
 }
-if(!exp->call.exp->expType->methodClass && (!memberExp || !_class) && memberExp->member.exp->expType && memberExp->member.exp->expType->classObjectType)
 {
-if(memberExp->member.exp->expType->kind == 8 && memberExp->member.exp->expType->_class && memberExp->member.exp->expType->_class->registered && memberExp->member.exp->expType->_class->registered->type == 0)
+struct Type * type = memberExp ? memberExp->member.exp->expType : (((void *)0));
+struct __ecereNameSpace__ecere__com__Class * regClass = (type && type->kind == 8 && type->_class) ? type->_class->registered : (((void *)0));
+
+if(!exp->call.exp->expType->methodClass && (!memberExp || !_class) && type && type->classObjectType)
+{
+if(regClass && regClass->type == 0 && strcmp(regClass->dataTypeString, "char *"))
 {
 exp->call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, MkExpIndex(MkExpPointer(MkExpBrackets(MkListOne(CopyExpression(memberExp->member.exp))), MkIdentifier("_vTbl")), MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
 }
@@ -2628,7 +2634,7 @@ else
 exp->call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier("class")), MkIdentifier("_vTbl")), MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
 }
 }
-else if(memberExp && !_class && exp->call.exp->expType->_class && (memberExp->member.exp->expType->kind == 19 || (memberExp->member.exp->expType->kind == 8 && memberExp->member.exp->expType->_class && memberExp->member.exp->expType->_class->registered && memberExp->member.exp->expType->_class->registered->type == 0)))
+else if(memberExp && !_class && exp->call.exp->expType->_class && (type->kind == 19 || (regClass && regClass->type == 0 && strcmp(regClass->dataTypeString, "char *"))))
 {
 exp->call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, MkExpIndex(MkExpPointer(CopyExpression(memberExp->member.exp), MkIdentifier("_vTbl")), MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
 }
@@ -2649,6 +2655,7 @@ if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 DeclareClass(_class->symbol, className);
 exp->call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl")), MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
+}
 }
 }
 else
@@ -2992,7 +2999,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.argument
 }
 }
 {
-FixReference(e, 0x1);
+FixReference(e, !destType || !destType->declaredWithStruct);
 }
 }
 if(ellipsisDestType)

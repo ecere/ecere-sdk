@@ -801,6 +801,7 @@ unsigned int keepCast : 1;
 unsigned int passAsTemplate : 1;
 unsigned int dllExport : 1;
 unsigned int attrStdcall : 1;
+unsigned int declaredWithStruct : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -4680,7 +4681,7 @@ else if(source->_class && dest->_class && (dest->classObjectType == source->clas
 return 0x1;
 else
 {
-if(enumBaseType && dest->_class && dest->_class->registered && dest->_class->registered->type == 4 && source->_class && source->_class->registered && source->_class->registered->type != 4)
+if(enumBaseType && dest->_class && dest->_class->registered && dest->_class->registered->type == 4 && ((source->_class && source->_class->registered && source->_class->registered->type != 4) || source->kind == 8))
 {
 if(__ecereNameSpace__ecere__com__eClass_IsDerived(dest->_class->registered, source->_class->registered))
 {
@@ -6070,7 +6071,7 @@ static unsigned int FloatDiv(struct Expression * exp, struct Operand * op1, stru
 float value2 = op2->f;
 
 exp->type = 2;
-exp->string = PrintFloat(value2 ? (op1->f / value2) : (float)0);
+exp->string = PrintFloat(value2 ? (op1->f / value2) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -6085,7 +6086,7 @@ static unsigned int DoubleDiv(struct Expression * exp, struct Operand * op1, str
 double value2 = op2->d;
 
 exp->type = 2;
-exp->string = PrintDouble(value2 ? (op1->d / value2) : (double)0);
+exp->string = PrintDouble(value2 ? (op1->d / value2) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -7072,7 +7073,7 @@ static unsigned int FloatDivAsign(struct Expression * exp, struct Operand * op1,
 float value2 = op2->f;
 
 exp->type = 2;
-exp->string = PrintFloat(value2 ? (op1->f /= value2) : (float)0);
+exp->string = PrintFloat(value2 ? (op1->f /= value2) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -7087,7 +7088,7 @@ static unsigned int DoubleDivAsign(struct Expression * exp, struct Operand * op1
 double value2 = op2->d;
 
 exp->type = 2;
-exp->string = PrintDouble(value2 ? (op1->d /= value2) : (double)0);
+exp->string = PrintDouble(value2 ? (op1->d /= value2) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -9842,6 +9843,8 @@ else
 {
 dataMember = curMember;
 __ecereNameSpace__ecere__com__eClass_FindDataMemberAndOffset(_class, dataMember->name, &dataMemberOffset, privateModule, (((void *)0)), (((void *)0)));
+if(_class->type == 0)
+dataMemberOffset += _class->base->structSize;
 }
 found = 0x1;
 }
@@ -12423,7 +12426,7 @@ if(type && (type->kind == 15 || (_class && _class->type == 4)))
 exp->isConstant = 0x1;
 if(symbol->isParam || !strcmp(id->string, "this"))
 {
-if(_class && _class->type == 1)
+if(_class && _class->type == 1 && !type->declaredWithStruct)
 exp->byReference = 0x1;
 }
 if(symbol->isIterator)
@@ -12645,6 +12648,12 @@ type->isSigned = 0x1;
 type->kind = 3;
 }
 exp->isConstant = 0x1;
+if(exp->destType && exp->destType->kind == 7)
+type->kind = 7;
+else if(exp->destType && exp->destType->kind == 6)
+type->kind = 6;
+else if(exp->destType && exp->destType->kind == 4)
+type->kind = 4;
 }
 break;
 }

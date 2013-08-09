@@ -1523,6 +1523,7 @@ char * dataTypeString = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * enumBase = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * base = (baseName && baseName[0]) ? __ecereNameSpace__ecere__com__eSystem_FindClass(module, baseName) : (((void *)0));
 unsigned int refine = 0x0;
+struct __ecereNameSpace__ecere__com__Class * prevBase = (((void *)0));
 
 if(base && !base->internalDecl && (base->type == 5 || base->type == 1 || base->type == 0))
 {
@@ -1768,6 +1769,7 @@ template->nameSpace = nameSpace;
 }
 }
 _class->module = module;
+prevBase = _class->base;
 _class->base = base;
 if(base)
 {
@@ -1904,12 +1906,28 @@ else
 data->largest = ((struct __ecereNameSpace__ecere__com__EnumClassData *)base->data)->largest;
 }
 }
-if(base && base->vTblSize && _class->vTblSize < base->vTblSize)
+if(base)
+{
+int i;
+unsigned int oldSize = _class->vTblSize;
+
+if(base->vTblSize && _class->vTblSize < base->vTblSize)
 {
 _class->vTblSize = base->vTblSize;
-(__ecereNameSpace__ecere__com__eSystem_Delete(_class->_vTbl), _class->_vTbl = 0);
-_class->_vTbl = __ecereNameSpace__ecere__com___malloc(sizeof(int (*)()) * _class->vTblSize);
-memcpy(_class->_vTbl, base->_vTbl, sizeof(int (*)()) * _class->vTblSize);
+_class->_vTbl = __ecereNameSpace__ecere__com___realloc(_class->_vTbl, sizeof(int (*)()) * _class->vTblSize);
+}
+if(!prevBase)
+{
+if(_class->type == 0 && strcmp(_class->name, "ecere::com::Instance") && strcmp(_class->name, "enum") && strcmp(_class->name, "struct"))
+prevBase = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Instance");
+else
+prevBase = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "class");
+}
+for(i = 0; i < base->vTblSize; i++)
+{
+if(i >= oldSize || _class->_vTbl[i] == prevBase->_vTbl[i])
+_class->_vTbl[i] = base->_vTbl[i];
+}
 }
 if(_class->base)
 {

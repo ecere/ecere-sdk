@@ -760,6 +760,7 @@ unsigned int keepCast : 1;
 unsigned int passAsTemplate : 1;
 unsigned int dllExport : 1;
 unsigned int attrStdcall : 1;
+unsigned int declaredWithStruct : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -1236,11 +1237,11 @@ else
 struct Type * typeParam;
 struct Declarator * funcDecl = GetFuncDecl(func->declarator);
 
-if(funcDecl->function.parameters)
+if(funcDecl->function.parameters && (*funcDecl->function.parameters).first)
 {
 struct TypeName * param = (*funcDecl->function.parameters).first;
 
-for(typeParam = methodDataType->params.first; typeParam; typeParam = typeParam->next)
+for(typeParam = methodDataType->params.first; typeParam && param; typeParam = typeParam->next)
 {
 if(typeParam->classObjectType)
 {
@@ -1248,7 +1249,7 @@ param->classObjectType = typeParam->classObjectType;
 if(param->declarator && param->declarator->symbol)
 param->declarator->symbol->type->classObjectType = typeParam->classObjectType;
 }
-param = param->next;
+param = param ? param->next : (((void *)0));
 }
 }
 }
@@ -1313,6 +1314,8 @@ struct __ecereNameSpace__ecere__com__Method * method = func->declarator->symbol-
 
 if(method && method->symbol)
 ((struct Symbol *)method->symbol)->methodCodeExternal = (((void *)0));
+if(func->declarator->symbol && func->declarator->symbol->methodExternal == external)
+func->declarator->symbol->methodExternal = (((void *)0));
 func->declarator = (((void *)0));
 func->specifiers = (((void *)0));
 FreeExternal(external);
@@ -2044,6 +2047,23 @@ extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereName
 
 extern int __ecereNameSpace__ecere__com__eEnum_AddValue(struct __ecereNameSpace__ecere__com__Class * _class, char *  string);
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldLink;
+
+struct __ecereNameSpace__ecere__sys__OldLink
+{
+struct __ecereNameSpace__ecere__sys__OldLink * prev;
+struct __ecereNameSpace__ecere__sys__OldLink * next;
+void *  data;
+} __attribute__ ((gcc_struct));
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__EnumClassData;
+
+struct __ecereNameSpace__ecere__com__EnumClassData
+{
+struct __ecereNameSpace__ecere__sys__OldList values;
+int largest;
+} __attribute__ ((gcc_struct));
+
 extern struct ClassFunction * MkClassFunction(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Specifier * _class, struct Declarator * decl, struct __ecereNameSpace__ecere__sys__OldList * declList);
 
 extern void ProcessClassFunctionBody(struct ClassFunction * func, struct Statement * body);
@@ -2075,14 +2095,6 @@ extern unsigned int DummyMethod(void);
 extern void DeclareMethod(struct __ecereNameSpace__ecere__com__Method * method, char *  name);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__EnumClassData;
-
-struct __ecereNameSpace__ecere__com__EnumClassData
-{
-struct __ecereNameSpace__ecere__sys__OldList values;
-int largest;
-} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink;
 
@@ -2164,6 +2176,22 @@ __ecereNameSpace__ecere__com__eEnum_AddValue(regClass, e->id->string);
 }
 else
 __ecereNameSpace__ecere__com__eEnum_AddValue(regClass, e->id->string);
+}
+{
+struct __ecereNameSpace__ecere__com__EnumClassData * baseData = regClass->data;
+struct __ecereNameSpace__ecere__sys__OldLink * deriv;
+
+for(deriv = regClass->derivatives.first; deriv; deriv = deriv->next)
+{
+struct __ecereNameSpace__ecere__com__Class * c = deriv->data;
+
+if(c && c->type == 4)
+{
+struct __ecereNameSpace__ecere__com__EnumClassData * data = c->data;
+
+data->largest = baseData->largest;
+}
+}
 }
 }
 if(definitions != (((void *)0)))
@@ -2421,7 +2449,7 @@ for(c = 0; c < base->vTblSize; c++)
 {
 struct Symbol * method = (struct Symbol *)regClass->_vTbl[c];
 
-if((void *)method != DummyMethod && base->_vTbl[c] != (void *)method)
+if((void *)method != DummyMethod && base->_vTbl[c] != (void *)method && method->methodExternal)
 {
 struct External * external = method->methodExternal;
 struct __ecereNameSpace__ecere__sys__OldList * args = MkList();

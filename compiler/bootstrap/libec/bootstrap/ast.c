@@ -823,6 +823,7 @@ unsigned int keepCast : 1;
 unsigned int passAsTemplate : 1;
 unsigned int dllExport : 1;
 unsigned int attrStdcall : 1;
+unsigned int declaredWithStruct : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -4155,6 +4156,7 @@ struct Symbol * _class = spec->id ? FindClass(spec->id->string) : (((void *)0));
 
 if(_class)
 {
+specType->declaredWithStruct = 0x1;
 if(!_class->registered || _class->registered->type != 1)
 specType->directClassAccess = 0x1;
 specType->_class = _class;
@@ -4873,6 +4875,8 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgstr \"%s\"\n\n", 
 
 extern int yyparse();
 
+extern int yylex();
+
 void SetAST(struct __ecereNameSpace__ecere__sys__OldList * list)
 {
 ast = list;
@@ -4886,6 +4890,16 @@ return ast;
 void ParseEc()
 {
 yyparse();
+}
+
+int LexEc()
+{
+return yylex();
+}
+
+const char * GetYYText()
+{
+return yytext;
 }
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__GlobalFunction;
@@ -5081,6 +5095,8 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputIntlStrings", "voi
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetAST", "void SetAST(ecere::sys::OldList * list)", SetAST, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetAST", "ecere::sys::OldList * GetAST(void)", GetAST, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ParseEc", "void ParseEc(void)", ParseEc, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("LexEc", "int LexEc(void)", LexEc, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetYYText", "const char * GetYYText(void)", GetYYText, module, 1);
 }
 
 void __ecereUnregisterModule_ast(struct __ecereNameSpace__ecere__com__Instance * module)

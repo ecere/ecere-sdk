@@ -1767,6 +1767,7 @@ defaultDeclMode = declMode = declModeStack[include_stack_ptr];
 }
 if(--include_stack_ptr < 0)
 {
+include_stack_ptr = 0;
 return 0;
 }
 else

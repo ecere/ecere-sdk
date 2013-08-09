@@ -951,7 +951,7 @@ strcat(string, " MB");
 }
 else
 {
-sprintf(string, format, (float)size / (float)(float)1024);
+sprintf(string, format, (float)size / (float)1024);
 strcat(string, " KB");
 }
 }
@@ -1338,7 +1338,7 @@ extern unsigned int isdigit(int);
 double __ecereNameSpace__ecere__sys__FloatFromString(char * string)
 {
 int c, dig;
-float dec = (float)0, res = (float)0;
+float dec = 0, res = 0;
 int neg = 1;
 char ch;
 
@@ -1354,7 +1354,7 @@ break;
 neg = -1;
 }
 else if((ch == '.') && !dec)
-dec = (float)10;
+dec = 10;
 else if(isdigit(ch))
 {
 dig = ch - '0';
