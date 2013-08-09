@@ -1697,6 +1697,14 @@ private:
                   if(module)
                   {
                      byte * tokens[1];
+                     char * dashF = strstr(module, "-F ");
+                     if(dashF)
+                     {
+                        dashF+= 3;
+                        while(*dashF && *dashF != ' ') dashF++;
+                        while(*dashF && *dashF == ' ') dashF++;
+                        module = dashF;
+                     }
                      Tokenize(module, 1, tokens, (BackSlashEscaping)true); // fix #139
                      GetLastDirectory(module, moduleName);
                      ide.outputView.buildBox.Logf("%s\n", moduleName);
