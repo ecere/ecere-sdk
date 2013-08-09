@@ -58,8 +58,8 @@ Among them: zlib, libpng, libjpeg, giflib, harfbuzz, freetype, tango icons,
 
 For EDA: SQLite, libffi
 
-The IDE also communicates with GCC for compiling (MinGW on Windows), GDB for 
-debugging, and UPX for optionally compressing executables. Each of these have 
-their own license which can be found in their respective documentation folder 
+The IDE also communicates with GCC for compiling (MinGW/MinGW-w64 on Windows),
+GDB for  debugging, and UPX for optionally compressing executables. Each of these
+have their own license which can be found in their respective documentation folder
 if distributed along with the SDK (in the case of the Windows version) or
 from wherever you obtained them.
