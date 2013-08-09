@@ -1724,7 +1724,7 @@ private:
                         {
                            char * dot = strchr(word, '.');
                            char * s = null;
-                           if(dot)
+                           if(dot && dot == word + wordLen)
                               strtod(dot+1, &s);
                            else
                               strtod(word, &s);
