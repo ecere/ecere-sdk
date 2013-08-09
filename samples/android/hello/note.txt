@@ -1,3 +1,5 @@
+See http://ecere.com/wiki/index.php?title=Android
+
 - You need to configure an Android compiler and select it as the active compiler
    You can simply use the default toolchain values, with a GCC prefix:
       e.g. arm-linux-androideabi-
