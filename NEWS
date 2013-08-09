@@ -1,3 +1,30 @@
+Ecere SDK 0.44.08 (August 9, 2013)
+
+   * Update Windows installer with TDM/MinGW-w64
+   * A lot of bug fixes
+----------------------------------------
+Ecere SDK 0.44.07 (April 22, 2013)
+
+   * Compiler Improvements
+   * Improved C headers compatibility
+   * Various bug fixes
+----------------------------------------
+Ecere SDK 0.44.06 (March 28, 2013)
+
+   * Fixed bugs causing build to fail on PowerPC
+   * Fixed cross-bitness compiling issues
+   * Fixed UTF8 text processing issues
+   * Fixed serialization/unserialization of Map container objects
+   * Fixed ListBox row moving bug
+   * Fixed ColorPicker in IDE to be consistent with other dialogs
+   * Enabled holding up/down buttons down to reorder directories in compiler settings
+   * Relying on giflib rather than bundled libungif, taking out deps folder for Debian packages
+----------------------------------------
+Ecere SDK 0.44.05 (March 18, 2013)
+
+   * Memory corruption bugs were fixed
+   * Cross-bitness compiling issues were fixed
+----------------------------------------
 Ecere SDK 0.44.04 (March 10, 2013)
 
    * Various Bug Fixes
