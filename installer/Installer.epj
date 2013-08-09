@@ -10251,45 +10251,50 @@
                "Folder" : "gdb32",
                "Files" : [
                   {
-                     "Folder" : "lib",
+                     "Folder" : "bin",
                      "Files" : [
                         {
-                           "Folder" : "encodings",
+                           "Folder" : "lib",
                            "Files" : [
-                              "tdm/gdb-7.5-mingw32/lib/encodings/aliases.pyc",
-                              "tdm/gdb-7.5-mingw32/lib/encodings/cp1252.pyc",
-                              "tdm/gdb-7.5-mingw32/lib/encodings/latin_1.pyc",
-                              "tdm/gdb-7.5-mingw32/lib/encodings/__init__.pyc"
+                              {
+                                 "Folder" : "encodings",
+                                 "Files" : [
+                                    "tdm/gdb-7.5-mingw32/bin/lib/encodings/aliases.pyc",
+                                    "tdm/gdb-7.5-mingw32/bin/lib/encodings/cp1252.pyc",
+                                    "tdm/gdb-7.5-mingw32/bin/lib/encodings/latin_1.pyc",
+                                    "tdm/gdb-7.5-mingw32/bin/lib/encodings/__init__.pyc"
+                                 ]
+                              },
+                              "tdm/gdb-7.5-mingw32/bin/lib/abc.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/codecs.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/copy.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/copy_reg.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/functools.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/genericpath.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/linecache.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/locale.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/ntpath.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/os.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/re.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/site.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/sre_compile.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/sre_constants.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/sre_parse.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/stat.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/sysconfig.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/traceback.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/types.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/UserDict.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/warnings.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/weakref.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/_abcoll.pyc",
+                              "tdm/gdb-7.5-mingw32/bin/lib/_weakrefset.pyc"
                            ]
                         },
-                        "tdm/gdb-7.5-mingw32/lib/abc.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/codecs.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/copy.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/copy_reg.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/functools.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/genericpath.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/linecache.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/locale.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/ntpath.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/os.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/re.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/site.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/sre_compile.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/sre_constants.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/sre_parse.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/stat.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/sysconfig.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/traceback.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/types.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/UserDict.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/warnings.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/weakref.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/_abcoll.pyc",
-                        "tdm/gdb-7.5-mingw32/lib/_weakrefset.pyc"
+                        "tdm/gdb-7.5-mingw32/bin/i686-w64-mingw32-gdb.exe",
+                        "tdm/gdb-7.5-mingw32/bin/python27.dll"
                      ]
-                  },
-                  "tdm/gdb-7.5-mingw32/i686-w64-mingw32-gdb.exe",
-                  "tdm/gdb-7.5-mingw32/python27.dll"
+                  }
                ]
             },
             {

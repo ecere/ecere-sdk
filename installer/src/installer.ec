@@ -272,7 +272,7 @@ Component coreSDK[CoreSDKID] =
    { "GNU C Compiler",  "tdm/gcc/core",   "tdm", null, true, true, minGWIncluded, none },
    { "GNU Debugger",    "tdm/gdb",        "tdm", null, true, true, minGWIncluded, bits64 },
    { "GNU Debugger",    "tdm/gdb32",      "tdm", null, true, true, minGWIncluded, bits32 },
-   { "MinGW Runtime",   "tdm/mingwrt",    "tdm", null, true, true, minGWIncluded, none },
+   { "MinGW-w64 Runtime",   "tdm/mingwrt",    "tdm", null, true, true, minGWIncluded, none },
    { "Binary Utils",    "tdm/binutils",   "tdm", null, true, true, minGWIncluded, none },
    { "GNU Make",        "tdm/make",       "tdm", null, true, true, minGWIncluded, none },
    { null }
