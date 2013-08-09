@@ -78,6 +78,18 @@ msgstr "      toolchain:\n"
 msgid "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
 msgstr "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
 
+#: ./../ide/src/project/ProjectNode.ec:2424
+msgid " instead\n"
+msgstr " instead\n"
+
+#: ./../ide/src/project/ProjectNode.ec:2430
+msgid " to compile instead of "
+msgstr " to compile instead of "
+
+#: ./../ide/src/project/ProjectNode.ec:2424
+msgid "Compiling source file "
+msgstr "Compiling source file "
+
 #: ./epj2make.ec:382
 msgid "Error: Input file (%s) does not exist.\n"
 msgstr "Error: Input file (%s) does not exist.\n"
@@ -90,27 +102,31 @@ msgstr "Error: Project configuration (%s) was not found.\n"
 msgid "Error: Unable to open project file (%s) due to unknown error.\n"
 msgstr "Error: Unable to open project file (%s) due to unknown error.\n"
 
-#: ./../ide/src/IDESettings.ec:628
+#: ./../ide/src/IDESettings.ec:699
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
-#: ./../ide/src/IDESettings.ec:631
+#: ./../ide/src/IDESettings.ec:702
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:632
+#: ./../ide/src/IDESettings.ec:703
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:634
+#: ./../ide/src/IDESettings.ec:705
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
+
+#: ./../ide/src/project/ProjectNode.ec:2417
+msgid "No compilation required for header file "
+msgstr "No compilation required for header file "
 
 #: ./epj2make.ec:334
 msgid "Notice: Project configuration (%s) will be used.\n"
 msgstr "Notice: Project configuration (%s) will be used.\n"
 
-#: ./../ide/src/IDESettings.ec:630
+#: ./../ide/src/IDESettings.ec:701
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
@@ -118,9 +134,17 @@ msgstr "Portable C Compiler / GNU Make"
 msgid "Syntax:\n"
 msgstr "Syntax:\n"
 
-#: ./../ide/src/IDESettings.ec:629
+#: ./../ide/src/IDESettings.ec:700
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
+
+#: ./../ide/src/project/ProjectNode.ec:2430
+msgid "Unable to locate source file "
+msgstr "Unable to locate source file "
+
+#: ./../ide/src/project/ProjectNode.ec:2430
+msgid "\n"
+msgstr "\n"
 
 #: ./epj2make.ec:210
 msgid "invalid option: %s\n"
