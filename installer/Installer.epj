@@ -14882,6 +14882,14 @@
                   }
                ]
             }
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Debug",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
          ]
       },
       "../ide/res/icon.png",

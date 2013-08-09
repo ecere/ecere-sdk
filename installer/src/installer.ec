@@ -170,12 +170,12 @@ struct Component
    char installPath[MAX_LOCATION];
    DataRow row;
 
-   void GetFullPath(char * path)
+   void GetFullPath(char * path, bool is32bit)
    {
       if(this != null && parent)
-         parent->GetFullPath(path);
+         parent->GetFullPath(path, is32bit || (arch == bits32 && osIS64bit));
       else
-         strcpy(path, installDir);
+         strcpy(path, (is32bit || (arch == bits32 && osIS64bit)) ? installDir32 : installDir);
 
       if(this != null)
          PathCat(path, installPath);
@@ -440,7 +440,7 @@ class Installer : Window
       {
          DataRow row = componentsBox.currentRow;
          Component * component = ((CheckItem *)row.GetData(componentField))->data;
-         component->GetFullPath(fileDialog.filePath);
+         component->GetFullPath(fileDialog.filePath, false);
          StripLastDirectory(fileDialog.filePath, fileDialog.currentDirectory);
 
          if(fileDialog.Modal() == ok)
@@ -477,7 +477,7 @@ class Installer : Window
          char path[MAX_LOCATION], relative[MAX_LOCATION] = "", * newPath;
          char fullPath[MAX_LOCATION];
 
-         component->parent->GetFullPath(path);
+         component->parent->GetFullPath(path, false);
          strcpy(fullPath, path);
 
          newPath = row.GetData(locationField);
@@ -770,11 +770,11 @@ class Installer : Window
       {
          if(component.arch != bits32 || !osIS64bit) // || component == &coreSDK[gdb32])
             componentsBox.SetDisabled(row, true);
-         else
-            component.selected = false;
+         /*else
+            component.selected = false;*/
       }
       else if(component.arch == bits32 && osIS64bit)
-         component.selected = false;
+         ; //component.selected = false;
 
       componentsBox.SetCheck(row, component.selected);
 
@@ -1068,7 +1068,7 @@ void ModifyPath(char * systemPath, char * userPath)
          bool found = false;
          char path[MAX_LOCATION];
          if(!coreSDK[c].selected) continue;
-         coreSDK[c].GetFullPath(path);
+         coreSDK[c].GetFullPath(path, false);
          if(c != ide && c != runtime && c != ec &&
             c != ide32 && c != runtime32 && c != ec32)
          {
@@ -1091,7 +1091,7 @@ void ModifyPath(char * systemPath, char * userPath)
          if(!additional[c].selected || c == vanilla || c == vanilla32 || c == extras) continue;
          if((c != eda && c != eda32 && c != upx) && (!pathOptions[PathOptions::AddMinGWPaths].available || !pathOptions[PathOptions::AddMinGWPaths].selected))
             continue;
-         additional[c].GetFullPath(path);
+         additional[c].GetFullPath(path, false);
          if(c != eda && c != eda32 && c != upx)
             PathCat(path, "bin");
          AddPath(sysPaths, sysCount, paths, &count, oldPath, userPath, path);
@@ -1186,14 +1186,14 @@ class InstallThread : Thread
                   char path[MAX_LOCATION];
                   if(!coreSDK[c].selected || !coreSDK[c].available) continue;
 
-                  coreSDK[c].GetFullPath(path);
+                  coreSDK[c].GetFullPath(path, false);
                   if(c != ide && c != runtime && c != ec &&
                      c != ide32 && c != runtime32 && c != ec32)
                      PathCat(path, "bin");
                   MakeSlashPath(path);
                   if((c == ide && osIS64bit) || (c == ide32 && !osIS64bit))
                   {
-                     coreSDK[c].GetFullPath(idePath);
+                     coreSDK[c].GetFullPath(idePath, false);
                      PathCat(idePath, "ide.exe");
                   }
 
@@ -1211,7 +1211,7 @@ class InstallThread : Thread
                {
                   char path[MAX_LOCATION];
                   if(c == extras || !additional[c].selected || !additional[c].available) continue;
-                  additional[c].GetFullPath(path);
+                  additional[c].GetFullPath(path, false);
                   if(c != upx && c != eda && c != vanilla && c != eda32 && c != vanilla32)
                      PathCat(path, "bin");
                   MakeSlashPath(path);
@@ -1233,9 +1233,9 @@ class InstallThread : Thread
             char path[MAX_LOCATION] = "";
 
             if(components[samples].selected)
-               components[samples].GetFullPath(path);
+               components[samples].GetFullPath(path, false);
             else
-               components[coreSDK].GetFullPath(path);
+               components[coreSDK].GetFullPath(path, false);
 
             if(!settings.ideProjectFileDialogLocation[0])
                settings.ideProjectFileDialogLocation = path;
@@ -1244,7 +1244,7 @@ class InstallThread : Thread
 
             if(documentation[apiRef].selected)
             {
-               documentation[apiRef].GetFullPath(path);
+               documentation[apiRef].GetFullPath(path, false);
                if(!settings.docDir[0])
                   settings.docDir = path;
             }
@@ -1368,7 +1368,7 @@ class InstallThread : Thread
                if(components[samples].selected)
                {
                   char samplesPath[MAX_LOCATION] = "";
-                  components[samples].GetFullPath(samplesPath);
+                  components[samples].GetFullPath(samplesPath, false);
 
                   strcpy(destPath, startMenuPath);
                   PathCat(destPath, "Ecere SDK\\Sample Projects.lnk");
@@ -1377,12 +1377,12 @@ class InstallThread : Thread
                if(components[documentation].selected && documentation[ecereBook].selected)
                {
                   char docPath[MAX_LOCATION] = "";
-                  documentation[ecereBook].GetFullPath(docPath);
+                  documentation[ecereBook].GetFullPath(docPath, false);
                   PathCat(docPath, "Ecere Tao of Programming [work in progress].pdf");
 
                   {
                      char tao[MAX_LOCATION] ;
-                     documentation[ecereBook].GetFullPath(tao);
+                     documentation[ecereBook].GetFullPath(tao, false);
                      PathCat(tao, "tao.pdf");
                      RenameFile(tao, docPath);
                   }
