@@ -834,6 +834,7 @@ class IDEWorkSpace : Window
             {
                DialogResult result;
                NewProjectDialog newProjectDialog { master = this };
+               incref newProjectDialog;
                result = newProjectDialog.Modal();
                if(result == ok)
                {
@@ -848,6 +849,7 @@ class IDEWorkSpace : Window
                      }
                   }
                }
+               delete newProjectDialog;
             }
             return true;
          }
