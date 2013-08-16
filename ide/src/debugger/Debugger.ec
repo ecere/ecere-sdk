@@ -2771,7 +2771,7 @@ class Debugger
                            wh.value = CopyString(item.name);
                         else
                            wh.value = CopyString($"Invalid Enum Value");
-                        result = (bool)atoi(exp.constant);
+                        result = true;
                      }
                      else if(wh.type && (wh.type.kind == charType || (wh.type.kind == classType && wh.type._class && 
                               wh.type._class.registered && !strcmp(wh.type._class.registered.fullName, "ecere::com::unichar"))) )
@@ -2846,14 +2846,14 @@ class Debugger
                      else
                      {
                         wh.value = CopyString(exp.constant);
-                        result = (bool)atoi(exp.constant);
+                        result = true;
                      }
                      break;
                   default:
                      if(exp.hasAddress)
                      {
                         wh.value = PrintHexUInt64(exp.address);
-                        result = (bool)exp.address;
+                        result = true;
                      }
                      else
                      {

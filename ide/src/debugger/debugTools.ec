@@ -59,7 +59,8 @@ static char GetGdbFormatChar(Type type)
       case unionType:
       case functionType:
       case arrayType:
-         return 'u';
+         // return 'u';
+         return 0;
       case ellipsisType:
       case enumType:
       case methodType:
@@ -463,36 +464,44 @@ void DebugComputeExpression(Expression exp)
                         GetUInt64(exp1, &address);
                         size = ComputeTypeSize(exp.expType); //exp.expType.arrayType.size;
                         format = GetGdbFormatChar(exp.expType);
-                        evaluation = Debugger::ReadMemory(address, size, format, &evalError);
-                        if(evalError != dummyExp)
+                        if(format)
                         {
-                           exp1.type = evalError;
-                           exp1.constant = PrintHexUInt64(address);
-                           expError = exp1;
-                        }
-                        else
-                        {
-                           if(evaluation)
+                           evaluation = Debugger::ReadMemory(address, size, format, &evalError);
+                           if(evalError != dummyExp)
                            {
-                              expNew = ParseExpressionString(evaluation);
-                              expNew.address = address;
-                              expNew.hasAddress = true;
-                              delete evaluation;
-                              expNew.destType = exp.expType;
-                              FreeType(exp.destType);
-                              FreeExpContents(exp);
-                              ProcessExpressionType(expNew);
-                              DebugComputeExpression(expNew);
-                              expNew.prev = prev;
-                              expNew.next = next;
-                              expNew.isConstant = true;
-                              *exp = *expNew;
+                              exp1.type = evalError;
+                              exp1.constant = PrintHexUInt64(address);
+                              expError = exp1;
                            }
                            else
                            {
-                              exp1.type = unknownErrorExp;
-                              expError = exp1;
+                              if(evaluation)
+                              {
+                                 expNew = ParseExpressionString(evaluation);
+                                 expNew.address = address;
+                                 expNew.hasAddress = true;
+                                 delete evaluation;
+                                 expNew.destType = exp.expType;
+                                 FreeType(exp.destType);
+                                 FreeExpContents(exp);
+                                 ProcessExpressionType(expNew);
+                                 DebugComputeExpression(expNew);
+                                 expNew.prev = prev;
+                                 expNew.next = next;
+                                 expNew.isConstant = true;
+                                 *exp = *expNew;
+                              }
+                              else
+                              {
+                                 exp1.type = unknownErrorExp;
+                                 expError = exp1;
+                              }
                            }
+                        }
+                        else
+                        {
+                           exp1.type = unknownErrorExp;  // Not supported yet, generate error to fallback to GDB printout
+                           expError = exp1;
                         }
                      }
                   }
