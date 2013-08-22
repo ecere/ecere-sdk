@@ -1179,6 +1179,7 @@ struct __ecereNameSpace__ecere__com__Instance * output = __ecereNameSpace__ecere
 
 if(output)
 {
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "/* Code generated from eC source file. */\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(__GNUC__)\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef long long int64;\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef unsigned long long uint64;\n");

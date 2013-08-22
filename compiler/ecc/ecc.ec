@@ -627,6 +627,7 @@ class CompilerApp : Application
                   File output = FileOpen(GetOutputFile(), write);
                   if(output)
                   {
+                     output.Printf("/* Code generated from eC source file. */\n");
                      output.Printf("#if defined(__GNUC__)\n");
                         output.Printf("typedef long long int64;\n");
                         output.Printf("typedef unsigned long long uint64;\n");
