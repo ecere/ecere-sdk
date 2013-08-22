@@ -632,7 +632,7 @@ enum LineOutputMethod { inPlace, newLine, lineEach };
 enum StringOutputMethod { asIs, escape, escapePath};
 
 enum ToolchainFlag { any, _D, _I, _isystem, _Wl, _L/*, _Wl-rpath*/ };
-String flagNames[ToolchainFlag] = { "", "-D", "-I", "-isystem ", "-Wl,", "-Wl,--library-path="/*, "-Wl,-rpath "*/ };
+String flagNames[ToolchainFlag] = { "", "-D", "-I", "-isystem ", "-Wl,", /*"-Wl,--library-path="*/"-L"/*, "-Wl,-rpath "*/ };
 void OutputFlags(File f, ToolchainFlag flag, Array<String> list, LineOutputMethod lineMethod)
 {
    if(list.count)
