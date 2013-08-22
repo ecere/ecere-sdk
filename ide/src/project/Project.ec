@@ -1781,7 +1781,7 @@ private:
                            else
                            {
                               numErrors++;
-                              message = $"Linker Error";
+                              message = $"Linker Error: ";
                            }
                         }
                         else if(linking && (!strcmp(ext, "") || !strcmp(ext, "exe")))
