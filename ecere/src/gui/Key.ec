@@ -400,5 +400,6 @@ public enum PredefinedKey : Key
    shiftF10 = Key { f10, shift = true },
    shiftF11 = Key { f11, shift = true },
    shiftF12 = Key { f12, shift = true },
-   shiftInsert = Key { insert, shift = true }
+   shiftInsert = Key { insert, shift = true },
+   shiftDel = Key { del, shift = true }
 };

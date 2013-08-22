@@ -4149,7 +4149,8 @@ private:
                break;
             }
          }
-      if(key == f2 && currentField && currentField.editable)
+      if((key == f2 || (style.alwaysEdit && (key == ctrlV || key == ctrlC || key == ctrlX || key == shiftInsert || key == ctrlInsert || key == shiftDel))) &&
+            currentField && currentField.editable)
       {
          PopupEditBox(currentField, false);
          if(editData && editData.visible)
@@ -4157,8 +4158,11 @@ private:
             if(style.alwaysEdit)
             {
                editData.Activate();
-               // For Installer to pop up file dialog
-               NotifyKeyDown(master, this, currentRow, key, ch);
+               if(key == ctrlV || key == ctrlC || key == ctrlX || key == shiftInsert || key == ctrlInsert || key == shiftDel)
+                  editData.OnKeyHit(key, ch);
+               else
+                  // For Installer to pop up file dialog
+                  NotifyKeyDown(master, this, currentRow, key, ch);
             }
             return false;
          }
