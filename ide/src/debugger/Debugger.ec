@@ -78,7 +78,7 @@ static char * _dpct[] = {
 static void __dpl2(char * file, int line, char ** channels, int channel, int indent, typed_object object, ...)
 {
    bool chan = channel && channels && channels[channel];
-   if(chan)
+   if(chan || !channels)
    {
       char string[MAX_F_STRING];
       int len;
@@ -1708,7 +1708,7 @@ class Debugger
    bool ValidateBreakpoint(Breakpoint bp)
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::ValidateBreakpoint()");
-      if(modules && bp.bp)
+      if(modules && bp.line && bp.bp)
       {
          if(bp.bp.line != bp.line)
          {
@@ -4601,17 +4601,4 @@ void GDBFallBack(Expression exp, String expString)
       exp.constant = result;
       exp.type = constantExp;
    }
-}
-
-static int String_OnCompare(char * string1, char * string2)
-{
-   int result = 0;
-   _dpl(0, "");
-   if(string1 && string2)
-      result = strcmp(string1, string2); //strcmpi
-   else if(!string1 && string2)
-      result = 1;
-   else if(string1 && !string2)
-      result = -1;
-   return result;
 }
