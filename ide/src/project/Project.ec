@@ -1455,7 +1455,7 @@ private:
       }
    }
    
-   void RotateActiveConfig(bool forward)
+   void RotateActiveConfig(bool forward, bool syncAllProjects)
    {
       if(configurations.first && configurations.last != configurations.first)
       {
@@ -1475,10 +1475,15 @@ private:
                cfg.Prev();
          }
 
-         property::config = cfg.data;
-         ide.UpdateToolBarActiveConfigs(true);
-         ide.workspace.modified = true;
-         ide.projectView.Update(null);
+         if(syncAllProjects)
+            ide.workspace.SelectActiveConfig(cfg.data.name);
+         else
+         {
+            property::config = cfg.data;
+            ide.UpdateToolBarActiveConfigs(true);
+            ide.workspace.modified = true;
+            ide.projectView.Update(null);
+         }
       }
    }
 

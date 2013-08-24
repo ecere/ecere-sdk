@@ -282,21 +282,7 @@ class IDEToolbar : ToolBar
       bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
       {
          if(row)
-         {
-            for(prj : ide.workspace.projects)
-            {
-               for(cfg : prj.configurations)
-               {
-                  if(cfg.name && !strcmp(cfg.name, row.string))
-                  {
-                     prj.config = cfg;
-                     break;
-                  }
-               }
-            }
-            ide.UpdateToolBarActiveConfigs(true);
-            ide.projectView.Update(null);
-         }
+            ide.workspace.SelectActiveConfig(row.string);
          return true;
       }
    };

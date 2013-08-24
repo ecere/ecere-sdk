@@ -460,6 +460,30 @@ public:
       delete project;
    }
 
+   void SelectActiveConfig(char * configName)
+   {
+      bool change = false;
+      for(prj : ide.workspace.projects)
+      {
+         for(cfg : prj.configurations)
+         {
+            if(cfg.name && !strcmp(cfg.name, configName))
+            {
+               prj.config = cfg;
+               change = true;
+               break;
+            }
+         }
+      }
+      if(change)
+      {
+         modified = true;
+         ide.UpdateToolBarActiveConfigs(true);
+         ide.projectView.Update(null);
+         Save();
+      }
+   }
+
    bool FindPath(ProjectNode node, char * path)
    {
       if(node.type == file)

@@ -426,7 +426,9 @@ class ProjectView : Window
                   }
                   break;
                }
-               case Key { space, shift = true }:
+               case Key { space, false, true }:
+               case Key { space, true, true }:
+               case Key { space, true }:
                case space:
                {
                   if(node.type == NodeTypes::project)
@@ -440,7 +442,7 @@ class ProjectView : Window
                            break;
                         }
                      }
-                     prj.RotateActiveConfig(!key.shift);
+                     prj.RotateActiveConfig(!key.shift, key.ctrl);
                      if(prj == project)
                         ide.AdjustMenus();
                      return false;
