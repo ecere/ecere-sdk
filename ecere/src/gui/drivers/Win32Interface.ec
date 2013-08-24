@@ -1455,7 +1455,9 @@ class Win32Interface : Interface
    void SetRootWindowCaption(Window window, char * name)
    {
       uint16 * text = UTF8toUTF16(name, null);
+      guiApp.Unlock();
       SetWindowText(window.windowHandle, text);
+      guiApp.Lock();
       delete text;
    }
 
