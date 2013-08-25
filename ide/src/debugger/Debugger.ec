@@ -442,7 +442,7 @@ char progFifoDir[MAX_LOCATION];
 enum DebuggerState { none, prompt, loaded, running, stopped, terminated, error };
 enum DebuggerEvent
 {
-   none, hit, breakEvent, signal, stepEnd, functionEnd, exit;
+   none, hit, breakEvent, signal, stepEnd, functionEnd, exit, valgrindStartPause;
 
    property bool canBeMonitored { get { return (this == hit || this == breakEvent || this == signal || this == stepEnd || this == functionEnd); } };
 };
@@ -586,7 +586,7 @@ class Debugger
             case hit:
                {
                   bool isInternal;
-                  Breakpoint bp = GetBreakpointById(stopItem.bkptno, &isInternal);
+                  Breakpoint bp = stopItem ? GetBreakpointById(stopItem.bkptno, &isInternal) : null;
                   if(bp && bp.inserted && bp.bp.addr)
                   {
                      if(bp.type.isInternal)
@@ -632,6 +632,9 @@ class Debugger
             case functionEnd:
                monitor = true;
                ignoreBreakpoints = false;
+               break;
+            case valgrindStartPause:
+               GdbExecContinue(true);
                break;
             case exit:
                HideDebuggerViews();
@@ -3702,6 +3705,8 @@ class Debugger
                         }
                      }
                   }
+                  if(usingValgrind && event == none && !stopItem)
+                     event = valgrindStartPause;
                   app.SignalEvent();
                }
             }
