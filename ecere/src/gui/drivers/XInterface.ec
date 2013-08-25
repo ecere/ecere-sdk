@@ -1866,27 +1866,26 @@ class XInterface : Interface
                          &fill, &data) == Success && data)
                      {
                         long *extents = (long *)data;
-                        bool hadFrameExtents = windowData.gotFrameExtents;
+                        bool change = extents[0] != windowData.decor.left ||
+                                      extents[1] != windowData.decor.right ||
+                                      extents[2] != windowData.decor.top ||
+                                      extents[3] != windowData.decor.bottom;
                         windowData.decor =
                         {
                            left = (int)extents[0], right  = (int)extents[1],
                            top  = (int)extents[2], bottom = (int)extents[3]
                         };
                         windowData.gotFrameExtents = true;
+                        if(change)
                         {
                            int x, y, w, h;
                            window.ComputeAnchors(
                               window.normalAnchor,
                               window.normalSizeAnchor,
                               &x, &y, &w, &h);
-                           if(!hadFrameExtents) // || window.state == normal)
-                           {
-                              bool isMaximized = window.state == maximized;
-                              window.Position(x, y, w, h, true, true, true, true, false, true);
-                              UpdateRootWindow(window);
-                           }
+                           window.Position(x, y, w, h, true, true, true, true, false, false);
+                           UpdateRootWindow(window);
                         }
-
                         XFree(data);
                      }
                      else
