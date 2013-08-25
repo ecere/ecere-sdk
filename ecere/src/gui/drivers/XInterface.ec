@@ -102,7 +102,7 @@ static enum AtomIdents
    _net_wm_window_type_desktop, _net_wm_window_type_dialog, _net_wm_window_type_dock, _net_wm_window_type_dropdown_menu,
    _net_wm_window_type_menu, _net_wm_window_type_normal, _net_wm_window_type_popup_menu, _net_wm_window_type_splash,
    _net_wm_window_type_toolbar, _net_wm_window_type_utility, _net_workarea, _net_frame_extents, _net_request_frame_extents,
-   _net_wm_state_maximized_vert, _net_wm_state_maximized_horz, app_selection
+   _net_wm_state_maximized_vert, _net_wm_state_maximized_horz, _net_wm_state_modal, app_selection
 };
 
 static Atom atoms[AtomIdents];
@@ -146,8 +146,22 @@ static const char *atomNames[AtomIdents] = {
    "_NET_REQUEST_FRAME_EXTENTS", // _net_request_frame_extents
    "_NET_WM_STATE_MAXIMIZED_VERT", // _net_wm_state_maximized_vert
    "_NET_WM_STATE_MAXIMIZED_HORZ", // _net_wm_state_maximized_horz
+   "_NET_WM_STATE_MODAL", // _net_wm_state_modal
    "APP_SELECTION"
 };
+/*
+_NET_WM_STATE_STICKY, ATOM
+_NET_WM_STATE_MAXIMIZED_VERT, ATOM
+_NET_WM_STATE_MAXIMIZED_HORZ, ATOM
+_NET_WM_STATE_SHADED, ATOM
+_NET_WM_STATE_SKIP_TASKBAR, ATOM
+_NET_WM_STATE_SKIP_PAGER, ATOM
+_NET_WM_STATE_HIDDEN, ATOM
+_NET_WM_STATE_FULLSCREEN, ATOM
+_NET_WM_STATE_ABOVE, ATOM
+_NET_WM_STATE_BELOW, ATOM
+_NET_WM_STATE_DEMANDS_ATTENTION, ATOM
+*/
 
 static bool autoRepeatDetectable;
 static bool setICPosition;
@@ -209,20 +223,6 @@ static Visual * FindFullColorVisual(X11Display *dpy, int * depth)
    } 
    return null;
 }
-/*
-_NET_WM_STATE_MODAL, ATOM
-_NET_WM_STATE_STICKY, ATOM
-_NET_WM_STATE_MAXIMIZED_VERT, ATOM
-_NET_WM_STATE_MAXIMIZED_HORZ, ATOM
-_NET_WM_STATE_SHADED, ATOM
-_NET_WM_STATE_SKIP_TASKBAR, ATOM
-_NET_WM_STATE_SKIP_PAGER, ATOM
-_NET_WM_STATE_HIDDEN, ATOM
-_NET_WM_STATE_FULLSCREEN, ATOM
-_NET_WM_STATE_ABOVE, ATOM
-_NET_WM_STATE_BELOW, ATOM
-_NET_WM_STATE_DEMANDS_ATTENTION, ATOM
-*/
 
 static void RepositionDesktop(bool updateChildren)
 {
@@ -2127,13 +2127,18 @@ class XInterface : Interface
                0,0,1,1,0, depth, InputOutput, visual ? visual : CopyFromParent, 
                CWEventMask | CWOverrideRedirect | (visual ? (CWColormap | CWBorderPixel) : 0), &attributes);
 
-            if(parentWindow && window.interim)
+            if(parentWindow && (window.interim || window.isModal))
             {
                //printf("Setting WM_TRANSIENT_FOR of %s to %s\n", window._class.name, window.master.rootWindow._class.name);
                XSetTransientForHint(xGlobalDisplay, windowHandle, parentWindow);
                //XFlush(xGlobalDisplay);
                //printf("Done.\n");
                //XChangeProperty(xGlobalDisplay, windowHandle, atoms[wm_transient_for], XA_WINDOW, 32, PropModeReplace, (unsigned char*)&parentWindow, 1);
+               if(window.isModal)
+               {
+                  Atom hints[1] = { atoms[_net_wm_state_modal] };
+                  XChangeProperty(xGlobalDisplay, windowHandle, atoms[_net_wm_state], XA_ATOM, 32, PropModeReplace, (unsigned char*)&hints, 1);
+               }
             }
 
             {
