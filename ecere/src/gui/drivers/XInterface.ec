@@ -740,11 +740,11 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
                int numBytes;
                ch = UTF8GetChar(buf + c, &numBytes);
                if(ch == 127) ch = 0;
-               if(!numBytes) c = buflength;
                result = window.KeyMessage((c == 0) ? 
                   __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown : __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit,
                   (c == 0) ? code : 0, ch);
                c += numBytes;
+               if(!numBytes) c = buflength;
             }
          }
          else
@@ -758,9 +758,9 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
                int numBytes;
                ch = UTF8GetChar(buf + c, &numBytes);
                if(ch == 127) ch = 0;
-               if(!numBytes) c = buflength;
                result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, code, ch);
                c += numBytes;
+               if(!numBytes) c = buflength;
             }
          else
             result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, code, ch);
