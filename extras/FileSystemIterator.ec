@@ -97,6 +97,7 @@ public:
    
    virtual bool OnFile(char * filePath)
    {
+      return true;
    }
 
    virtual bool OnFolder(char * folderPath)

@@ -1,4 +1,4 @@
-import "ecere"
+public import "ecere"
 
 #define MAX_TAG_LEN  2048
 
