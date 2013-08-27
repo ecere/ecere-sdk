@@ -1724,11 +1724,11 @@ private:
                         {
                            char * dot = strchr(word, '.');
                            char * s = null;
-                           if(dot && dot == word + wordLen)
-                              strtod(dot+1, &s);
+                           if(dot)
+                              strtod((dot == word + wordLen) ? (dot+1) : word, &s);
                            else
-                              strtod(word, &s);
-                           if(s)
+                              strtol(word, &s, 0);
+                           if(s && s != word)
                            {
                               if((dot && *s == 'f' && !isalnum(s[1]) && s[1] != '_') || (!isalpha(*s) && *s != '_'))
                               {
