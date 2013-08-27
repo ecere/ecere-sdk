@@ -249,7 +249,7 @@ class CheckListBox : ListBox
             // Take out all children from rowChecks, checking them all
             UnsetChildren(rr);
 
-            NotifyChecked(master, this, row);
+            NotifyChecked(master, this, rr);
 
             for(parent = rr.parent; parent; parent = parent.parent)
             {
