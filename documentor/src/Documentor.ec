@@ -2347,6 +2347,8 @@ class HelpView : HTMLView
             Update(null);
          }
       }
+      else
+         ReleaseCapture();
       selecting = false;
       return true;
    }
