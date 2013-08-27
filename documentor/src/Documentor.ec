@@ -2365,32 +2365,35 @@ class HelpView : HTMLView
 
    bool OnLeftDoubleClick(int mx, int my, Modifiers mods)
    {
-      int c;
-      int start = -1;
-      int numBytes;
-      for(c = curPosition; c >= 0; c--)
+      if(edit && textBlock)
       {
-         unichar ch;
-         while(c > 0 && !UTF8_IS_FIRST(textBlock.text[c])) c--;
-         ch = UTF8GetChar(textBlock.text + c, &numBytes);
-         if(!CharMatchCategories(ch, letters|numbers|marks|connector))
-            break;
-         start = c;
-      }
-      if(start != -1)
-      {
-         for(c = start; c < textBlock.textLen; c += numBytes)
+         int c;
+         int start = -1;
+         int numBytes;
+         for(c = curPosition; c >= 0; c--)
          {
-            unichar ch = UTF8GetChar(textBlock.text + c, &numBytes);
+            unichar ch;
+            while(c > 0 && !UTF8_IS_FIRST(textBlock.text[c])) c--;
+            ch = UTF8GetChar(textBlock.text + c, &numBytes);
             if(!CharMatchCategories(ch, letters|numbers|marks|connector))
                break;
+            start = c;
          }
-         selPosition = start;
-         curPosition = c;
+         if(start != -1)
+         {
+            for(c = start; c < textBlock.textLen; c += numBytes)
+            {
+               unichar ch = UTF8GetChar(textBlock.text + c, &numBytes);
+               if(!CharMatchCategories(ch, letters|numbers|marks|connector))
+                  break;
+            }
+            selPosition = start;
+            curPosition = c;
 
-         PositionCaret(true);
-         Update(null);
-         return false;
+            PositionCaret(true);
+            Update(null);
+            return false;
+         }
       }
       return true;
    }
