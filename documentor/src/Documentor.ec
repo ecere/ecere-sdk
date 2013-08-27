@@ -2324,7 +2324,7 @@ class HelpView : HTMLView
          // Update overLink
          if(textBlock && overLink == textBlock.parent)
          {
-            selPosition = curPosition = TextPosFromPoint(x, y, &textBlock);
+            selPosition = curPosition = TextPosFromPoint(x, y, &textBlock, true);
             selBlock = textBlock;
             PositionCaret(true);
             selecting = true;
@@ -2341,7 +2341,7 @@ class HelpView : HTMLView
          HTMLView::OnLeftButtonUp(x, y, mods);
          if(edit)
          {
-            selPosition = curPosition = TextPosFromPoint(x, y, &textBlock);
+            selPosition = curPosition = TextPosFromPoint(x, y, &textBlock, true);
             selBlock = textBlock;
             PositionCaret(true);
             Update(null);
@@ -2358,7 +2358,7 @@ class HelpView : HTMLView
    {
       if(edit && selecting)
       {
-         curPosition = TextPosFromPoint(x, y, &textBlock);
+         curPosition = TextPosFromPoint(x, y, &textBlock, true);
          PositionCaret(true);
          Update(null);
       }
@@ -2372,6 +2372,9 @@ class HelpView : HTMLView
          int c;
          int start = -1;
          int numBytes;
+
+         selPosition = curPosition = TextPosFromPoint(mx, my, &textBlock, false);
+         selBlock = textBlock;
          for(c = curPosition; c >= 0; c--)
          {
             unichar ch;
@@ -3445,7 +3448,7 @@ class HelpView : HTMLView
    }
 
    // Returns a character offset into the TextBlock from a window coordinate
-   int TextPosFromPoint(int px, int py, Block * block)
+   int TextPosFromPoint(int px, int py, Block * block, bool half)
    {
       Block parentBlock = this.textBlock.parent;
       Block textBlock;
@@ -3514,7 +3517,7 @@ class HelpView : HTMLView
                   {
                      numBytes = UTF8_NUM_BYTES(ch);
                      display.FontExtent(textBlock.font.font, text + c, numBytes, &w, &th);
-                     if(/*py >= sy && */py < sy + th && /*px >= sx-w/2-space && */px < sx + w -w/2-space)
+                     if(/*py >= sy && */py < sy + th && /*px >= sx-w/2-space && */px < sx + (half ? w/2 : w) -space)
                         break;
                      sx += w;
                   }
