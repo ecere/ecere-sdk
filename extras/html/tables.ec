@@ -851,6 +851,7 @@ static void RenderCell(HTMLView browser, Surface surface, Block cell, int cellX,
    {
       y += row.h - cell.h;
    }
+   browser.isSelected = false;
 
    // Render whole cell
    while(block && table)

@@ -1,6 +1,27 @@
 import "HTMLView"
 import "tables"
 
+Block GetNextBlock(Block block)
+{
+   // Do we have children?
+   if(block.subBlocks.first)
+      block = block.subBlocks.first;
+   else
+   {
+      for(;block;)
+      {
+         // Do we have younger siblings?
+         if(block.next)
+         {
+            block = block.next;
+            break;
+         }
+         block = block.parent;
+      }
+   }
+   return block;
+}
+
 /*static */Block NextBlockUp(Surface surface, Block block, int * centered, RenderFlags flags)
 {
    for(;block;)
@@ -174,6 +195,7 @@ int ComputeLine(Surface surface, Block startBlock, int startTextPos, Block * nex
                   width = 0;
                }
             }
+            block.height += height;
             break;
          }
          case FONT:
@@ -248,6 +270,8 @@ int ComputeLine(Surface surface, Block startBlock, int startTextPos, Block * nex
       {
          textPos = 0;
          block = NextBlock(surface, block, centered, flags);
+         if(block && block.type == TEXT)
+            block.height = 0;
          // Break line after </center>
          if(centeredBefore != *centered)
          {
@@ -281,9 +305,14 @@ void RenderLine(HTMLView browser, Surface surface, int x, int y, int w, int h, B
    int textPos = startTextPos;
    Block block = startBlock;
    bool lineComplete = false;
+   int startSel, endSel;
+   Block startSelBlock = null, endSelBlock = null;
+   if(browser.textBlock != browser.selBlock || browser.curPosition != browser.selPosition)
+      browser.NormalizeSelection(&startSelBlock, &startSel, &endSelBlock, &endSel);
 
    for(;;)
    {
+      Color fore = surface.foreground, back = surface.background;
       if(block == endBlock && textPos >= endTextPos)
          break;
 
@@ -353,17 +382,59 @@ void RenderLine(HTMLView browser, Surface surface, int x, int y, int w, int h, B
          }
          case TEXT:
          {
+            int tw, th;
+            int endPos = (block == endBlock) ? endTextPos : block.textLen;
+            int len = endPos - textPos;
+
+            if(startSelBlock && block == startSelBlock && startSel >= textPos && startSel <= textPos + len)
+            {
+               int l = startSel - textPos;
+               if(block.text)
+               {
+                  surface.TextExtent(block.text + textPos, l, &tw, &th);
+                  surface.WriteText(x, y + h - th, block.text + textPos, l);
+                  x += tw;
+               }
+               textPos += l;
+               browser.isSelected = true;
+               len -= l;
+            }
+
+            if(endSelBlock && block == endSelBlock && endPos > textPos && endSel >= textPos && endSel < textPos + len)
+               len = endSel - textPos;
+
             if(block.text)
             {
-               int len, tw, th;
-               if(block == endBlock)
-                  len = endTextPos - textPos;
-               else
-                  len = block.textLen - textPos;
+               if(browser.isSelected)
+               {
+                  surface.background = Color { 10, 36, 106 };
+                  surface.foreground = white;
+                  surface.textOpacity = true;
+               }
                surface.TextExtent(block.text + textPos, len, &tw, &th);
                surface.WriteText(x, y + h - th, block.text + textPos, len);
-               textPos += len;
                x += tw;
+               if(browser.isSelected)
+               {
+                  surface.background = back;
+                  surface.foreground = fore;
+                  surface.textOpacity = false;
+               }
+            }
+            textPos += len;
+            if(block == endSelBlock && textPos >= endSel)
+               browser.isSelected = false;
+
+            if(endPos > textPos)
+            {
+               int l = endPos - textPos;
+               if(block.text)
+               {
+                  surface.TextExtent(block.text + textPos, l, &tw, &th);
+                  surface.WriteText(x, y + h - th, block.text + textPos, l);
+                  x += tw;
+               }
+               textPos += l;
             }
             break;
          }

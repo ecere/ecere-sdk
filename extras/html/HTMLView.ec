@@ -595,6 +595,41 @@ class HTMLView : Window
       }
    }
 
+   void NormalizeSelection(Block * startBlock, int * startSel, Block * endBlock, int * endSel)
+   {
+      bool selAfter = false;
+      Block b;
+      for(b = selBlock; b; b = GetNextBlock(b))
+      {
+         if(b != selBlock && b == textBlock)
+         {
+            selAfter = true;
+            break;
+         }
+      }
+
+      if(textBlock == selBlock)
+      {
+         *startSel = Min(selPosition, curPosition);
+         *endSel = Max(selPosition, curPosition);
+         *startBlock = *endBlock = textBlock;
+      }
+      else if(!selAfter)
+      {
+         *startBlock = textBlock;
+         *startSel = curPosition;
+         *endSel = selPosition;
+         *endBlock = selBlock;
+      }
+      else
+      {
+         *startBlock = selBlock;
+         *startSel = selPosition;
+         *endSel = curPosition;
+         *endBlock = textBlock;
+      }
+   }
+
    void PositionForms()
    {
       Block block = html.body;
@@ -913,6 +948,11 @@ class HTMLView : Window
       }
    }
 
+   // For text selection
+   Block textBlock, selBlock;
+   int curPosition, selPosition;
+   bool isSelected; // Persistent state changed by RenderLine
+
    void OnRedraw(Surface surface)
    {
       Block block = html.body;
@@ -934,6 +974,7 @@ class HTMLView : Window
       if(html.defaultFont.font) // TOFIX: Null! (No font set?)
          surface.TextFont(html.defaultFont.font.font);
       surface.SetForeground(html.defaultFont.textColor);
+      isSelected = false;
 
       for(;block;)
       {
@@ -978,6 +1019,7 @@ class HTMLView : Window
 
          //h = Max(h, newH);
          RenderLine(this, surface, x - scroll.x, y - scroll.y, maxW, newH, block, textPos, nextBlock, nextTextPos, left - scroll.x, right - scroll.x);
+
          if(changeLine)
          {
             // y += h;

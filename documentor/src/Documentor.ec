@@ -76,7 +76,7 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                      strcat(string, "</a>");
                   }
                   else
-                     strcat(string, type._class.string);                     
+                     strcat(string, type._class.string);
                }
             }
             break;
@@ -106,7 +106,7 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                   DocPrintType(param, string, false, fullName);
                   if(param.next) strcat(string, ", ");
                }
-               strcat(string, ")");               
+               strcat(string, ")");
             }
             else*/
             {
@@ -251,7 +251,7 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                   DocPrintType(param, string, false, fullName);
                   if(param.next) strcat(string, ", ");
                }
-               strcat(string, ")");               
+               strcat(string, ")");
             }
             else*/
             {
@@ -302,7 +302,7 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
          case subClassType:
             strcat(string, "subclass(");
             strcat(string, type._class ? type._class.string : "int");
-            strcat(string, ")");                  
+            strcat(string, ")");
             break;
          default:
             printf("");
@@ -539,7 +539,7 @@ static char * ReadDoc(Module module, DocumentationType type, void * object, Docu
       {
          contents = new char[len+1];
          file.Read(contents, 1, len);
-         contents[len] = '\0';      
+         contents[len] = '\0';
       }
       delete file;
    }
@@ -549,7 +549,7 @@ static char * ReadDoc(Module module, DocumentationType type, void * object, Docu
       for(c = 0; contents[c]; c++)
          if(!isspace(contents[c])) break;
       if(!contents[c])
-         delete contents;      
+         delete contents;
    }
    if(editing && !contents)
       contents = CopyString($"[Add Text]");
@@ -693,7 +693,7 @@ class APIPageNameSpace : APIPage
                   else
                      f.Printf("<TD valign=top height=22>%s</TD>", desc);
                   delete desc;
-               }            
+               }
                f.Printf("</TR>\n");
             }
          }
@@ -775,7 +775,7 @@ class APIPageNameSpace : APIPage
       }
 
       f.Printf("</FONT></BODY></HTML>\n");
-   }   
+   }
 }
 
 class APIPageClass : APIPage
@@ -910,7 +910,7 @@ class APIPageClass : APIPage
                      dataClass = base.dataType._class ? base.dataType._class.registered : null;
                }
                else
-                  dataClass = base;                  
+                  dataClass = base;
                
                f.Printf("<TR>");
                f.Printf("<TD valign=top height=22 nowrap=1><a name=%p></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", item, iconNames[typeEnumValue], item.name);
@@ -1203,7 +1203,7 @@ class APIPageClass : APIPage
                else
                   f.Printf(", ");
                f.Printf("<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a>", deriv, deriv.name);
-             }            
+             }
          }
          if(!first)
             f.Printf("<br><br>\n");
@@ -1228,7 +1228,7 @@ class APIPageClass : APIPage
          }
       }
       f.Printf("</FONT></BODY></HTML>\n");
-   }   
+   }
 }
 
 class APIPageMethod : APIPage
@@ -1451,7 +1451,7 @@ class APIPageMethod : APIPage
          }
       }
       f.Printf("</FONT></BODY></HTML>\n");
-   }   
+   }
 }
 
 class APIPageFunction : APIPage
@@ -1670,7 +1670,7 @@ class APIPageFunction : APIPage
          }
       }
       f.Printf("</FONT></BODY></HTML>\n");
-   }   
+   }
 }
 
 static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpace, NameSpace comNameSpace, char * parentName, bool showPrivate)
@@ -1765,7 +1765,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
                   if(!functionsRow) { functionsRow = row.AddRow(); functionsRow.SetData(null, APIPage { $"Functions", page = page }); functionsRow.collapsed = true; functionsRow.icon = mainForm.icons[typeMethod];  functionsRow.tag = 2; };
                   fnRow = functionsRow.AddRow(); fnRow.SetData(null, APIPageFunction { name, function = fn }); fnRow.icon = mainForm.icons[typeMethod]; fnRow.tag = (int)fn;
                }
-            }            
+            }
          }
       }
    }
@@ -1788,7 +1788,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
                   if(!definesRow) { definesRow = row.AddRow(); definesRow.SetData(null, APIPage { $"Definitions", page = page }); definesRow.collapsed = true; definesRow.icon = mainForm.icons[typeData]; definesRow.tag = 3; };
                   defRow = definesRow.AddRow(); defRow.SetData(null, APIPage { name, page = page }); defRow.icon = mainForm.icons[typeData]; defRow.tag = (int)def;
                }
-            }            
+            }
          }
       }
    }
@@ -1965,9 +1965,9 @@ static void AddClass(DataRow parentRow, Module module, Class cl, char * nsName, 
       NamedLink item;
       for(item = enumeration.values.first; item; item = item.next)
       {
-         DataRow mRow;                                                                                                                                                                                      
+         DataRow mRow;
          if(!enumRow) { enumRow = row.AddRow(); enumRow.SetData(null, APIPage { $"Enumeration Values", page = page }); enumRow.collapsed = true; enumRow.icon = mainForm.icons[typeEnumValue]; enumRow.tag = 8; }
-         mRow = enumRow.AddRow(); mRow.SetData(null, APIPage { item.name, page = page }); mRow.icon = mainForm.icons[typeEnumValue];         
+         mRow = enumRow.AddRow(); mRow.SetData(null, APIPage { item.name, page = page }); mRow.icon = mainForm.icons[typeEnumValue];
          mRow.tag = (int)item;
       }
    }
@@ -2283,7 +2283,7 @@ class HelpView : HTMLView
             parent.subBlocks.Add(textBlock);
          }
 
-         edit = false;            
+         edit = false;
          if(created)
          {
             ComputeMinSizes();
@@ -2296,23 +2296,42 @@ class HelpView : HTMLView
 
    bool OnLeftButtonDown(int x, int y, Modifiers mods)
    {
+      bool result = true;
+
+      if(edit && (!textBlock || overLink != textBlock.parent))
+      {
+         SaveEdit();
+         HTMLView::OnLeftButtonDown(x, y, mods);
+         selPosition = curPosition = 0;
+         selBlock = textBlock;
+         Update(null);
+      }
+      else
+         result = HTMLView::OnLeftButtonDown(x, y, mods);
+
+      if(!edit && clickedLink)
+      {
+         ReleaseCapture();
+         if(clickedLink == overLink && clickedLink.href)
+         {
+            if(OnOpen(clickedLink.href))
+               Update(null);
+         }
+      }
+
       if(edit)
       {
          // Update overLink
-         HTMLView::OnMouseMove(x, y, mods);
          if(textBlock && overLink == textBlock.parent)
          {
             selPosition = curPosition = TextPosFromPoint(x, y, &textBlock);
-            PositionCaret(true);            
+            selBlock = textBlock;
+            PositionCaret(true);
+            selecting = true;
+            Update(null);
          }
-         else
-         {
-            SaveEdit();
-            HTMLView::OnLeftButtonDown(x, y, mods);
-         }
-         return true;
       }
-      return HTMLView::OnLeftButtonDown(x, y, mods);
+      return result;
    }
 
    bool OnLeftButtonUp(int x, int y, Modifiers mods)
@@ -2323,324 +2342,59 @@ class HelpView : HTMLView
          if(edit)
          {
             selPosition = curPosition = TextPosFromPoint(x, y, &textBlock);
+            selBlock = textBlock;
             PositionCaret(true);
+            Update(null);
          }
       }
+      selecting = false;
       return true;
    }
+   bool selecting;
 
-   // Returns true if it needs scrolling
-   /*
-   bool FindMouse(int px, int py, int * tx, int * ty, EditLine * tline, bool half)
+   bool OnMouseMove(int x, int y, Modifiers mods)
    {
-      int w;
-      int c;
-      int x, y;
-      EditLine line;
-      bool needHScroll = false;
-
-      if(py < 0)
+      if(edit && selecting)
       {
-         if(this.viewY > 0)
-         {
-            y = this.viewY-1;
-            line = this.viewLine ? (void *)this.viewLine.prev : null;
-         }
-         else
-         {
-            y = 0;
-            line = (void *)this.lines.first;
-         }
+         curPosition = TextPosFromPoint(x, y, &textBlock);
+         PositionCaret(true);
+         Update(null);
       }
-      else
-      {
-         py = Min(py, clientSize.h);
-         py /= this.space.h;
-         py = Min(py, this.lineCount);
-         y = this.viewY;
-         for(c = 0, line = this.viewLine; (line != (void *)this.lines.last && c<py); line = line.next, c++)
-         {
-            y++;
-         }
-      }
-
-      if( (px >= clientSize.w || px < clientSize.w/2) && this.viewX)
-         needHScroll = true;
-      px = Max(px,0);
-      px = Min(px,clientSize.w+this.space.w);
-
-      if(tx && line)
-      {
-         *tx = AdjustXPosition(line, px + viewX, half, null, MAXINT, 0);
-      }
-
-      if(tline) *tline = line;
-      if(ty) *ty = y;
-
-      // Prevent divide by 0 from non valid this.font
-      if(!this.space.h)
-         return (y < this.viewY) || needHScroll;
-      else
-         return (y < this.viewY || y >= this.viewY + clientSize.h / this.space.h) || needHScroll;
-      return false;
-   }
-*/
-/*
-   bool OnLeftButtonDown(int mx, int my, Modifiers mods)
-   {
-      int x,y;
-      EditLine line;
-
-      if(style.noSelect) return true;
-
-      if(!mods.isActivate)
-      {
-         Capture();
-         mouseSelect = true;
-      }
-
-      mouseX = mx - XOFFSET;
-      mouseY = my;
-
-      FindMouse(mouseX, mouseY, &x, &y, &line, true);
-
-      if(!style.readOnly)
-      {
-         if(wordSelect)
-            mouseMove = false;
-         else if(IsMouseOnSelection() && !mods.isActivate)
-         {
-            DirtyLine(this.y);
-            mouseMove = true;
-            dropX = x;
-            dropY = y;
-            dropLine = line;
-         }
-      }
-
-      if(!mouseMove && !wordSelect && (!mods.isActivate || style.multiLine))
-      {
-         if(mods.shift && !mods.isActivate)
-         {
-            this.x = x;
-            this.y = y;
-            this.line = line;
-            DirtyAll();
-         }
-         else
-         {
-            SelDirty();
-            DirtyLine(this.y);
-            this.x = x;
-            this.y = y;
-            this.line = line;
-            DirtyLine(this.y);
-            this.selLine = this.line;
-            this.selX = this.x;
-            this.selY = this.y;
-            //Deselect();
-         }
-         ComputeColumn();
-      }
-      
-      UpdateDirty();
-      UpdateCaretPosition(true);
-      return true;
-   }
-*/
-/*
-   bool OnLeftButtonUp(int x, int y, Modifiers mods)
-   {
-      timer.Stop();
-
-      mouseSelect = false;
-      wordSelect = false;
-      
-      x -= XOFFSET;
-      
-      ReleaseCapture();
-      if(!style.readOnly)
-      {
-         if(mouseMove)
-         {
-            EditLine line;
-            FindMouse(mouseX, mouseY, &x, &y, &line, true);
-    
-            dropX = x;
-            dropY = y;
-            dropLine = line;
-
-            mouseMove = IsMouseOnSelection();
-
-            if(!mouseMove)
-            {
-               int size = SelSize();
-               if(size)
-               {
-                  char * text = new char[size+1];
-                  if(text)
-                  {
-                     int moveX = 0;
-                     GetSel(text, false);
-
-                     if(Max(selY, this.y) == dropY)
-                     {
-                        if(this.x > selX)
-                        {
-                           if(this.dropX > this.selX)
-                              moveX = this.x - this.selX;
-                        }
-                        else
-                        {
-                           if(this.dropX > this.x)
-                              moveX = this.selX - this.x;
-                        }
-                     }
-                     DelSel(null);
-                     this.dropX -= moveX;
-                     this.selX = this.x = this.dropX;
-                     this.selY = this.y = this.dropY;
-                     this.selLine = this.line = this.dropLine;
-                     AddS(text);
-                     SetViewToCursor(true);
-                     delete text;
-                     Modified();
-                  }
-               }
-            }
-            else
-            {
-               SelDirty();
-               DirtyLine(this.y);
-               this.x = x;
-               this.y = y;
-               this.line = line;
-               ComputeColumn();
-               DirtyLine(this.y);
-               Deselect();
-               UpdateDirty();
-            }
-         }
-         else
-         {
-            EditLine line;
-            mouseX = x;
-            mouseY = y;
-
-            FindMouse(mouseX, mouseY, &x, &y, &line, true);
-
-            NotifyDropped(master, this, x, y);
-         }
-      }
-      mouseMove = false;
-      return true;
-   }
-
-   bool OnMouseMove(int mx, int my, Modifiers mods)
-   {
-      int x,y;
-      EditLine line;
-      bool needScroll;
-      
-      if(mods != -1 && mods.isSideEffect) 
-      { 
-         SetSelectCursor(); 
-         return true; 
-      }
-      if(style.noSelect) return true;
-      if(wordSelect) return true;
-      mouseX = mx - XOFFSET;
-      mouseY = my;
-
-      needScroll = FindMouse(this.mouseX, this.mouseY, &x, &y, &line, true);
-
-      if(this.mouseMove || this.mouseSelect)
-      {
-         if(!needScroll)
-            timer.Stop();
-         else 
-         {
-            if(needScroll)
-               timer.Start();
-            if(mods != -1 && 
-               ((style.hScroll) || (style.vScroll)))
-               return true;
-         }
-      }
-
-      if(this.mouseMove)
-      {
-         DirtyLine(this.dropY);
-         this.dropX = x;
-         this.dropY = y;
-         DirtyLine(this.dropY);
-         this.dropLine = line;
-         SetViewToCursor(true);
-      }
-      else if(this.mouseSelect)
-      {
-         DirtyLine(this.selY);
-         DirtyLine(this.y);
-         this.x = x;
-         this.y = y;
-         ComputeColumn();
-         DirtyLine(this.y);
-         this.line = line;
-         SetViewToCursor(true);
-         UpdateDirty();
-      }
-      SetSelectCursor();
-      return true;
+      return HTMLView::OnMouseMove(x, y, mods);
    }
 
    bool OnLeftDoubleClick(int mx, int my, Modifiers mods)
    {
-      int x,y;
-      EditLine line;
-      
-      mx -= XOFFSET;
-
-      if(style.noSelect) return true;
-      FindMouse(mx, my, &x, &y, &line, false);
-      if(!NotifyDoubleClick(master, this, line, mods))
-         return false;
-      if(x < line.count)
+      int c;
+      int start = -1;
+      int numBytes;
+      for(c = curPosition; c >= 0; c--)
       {
-         int c;
-         int start = -1;
-         int numBytes;
-         for(c = x; c >= 0; c--)
+         unichar ch;
+         while(c > 0 && !UTF8_IS_FIRST(textBlock.text[c])) c--;
+         ch = UTF8GetChar(textBlock.text + c, &numBytes);
+         if(!CharMatchCategories(ch, letters|numbers|marks|connector))
+            break;
+         start = c;
+      }
+      if(start != -1)
+      {
+         for(c = start; c < textBlock.textLen; c += numBytes)
          {
-            unichar ch;
-            while(c > 0 && !UTF8_IS_FIRST(line.buffer[c])) c--;
-            ch = UTF8_GET_CHAR(line.buffer + c, numBytes);
-            if(!IS_ALUNDER(ch))
+            unichar ch = UTF8GetChar(textBlock.text + c, &numBytes);
+            if(!CharMatchCategories(ch, letters|numbers|marks|connector))
                break;
-            start = c;
          }
-         if(start != -1)
-         {
-            for(c = start; c<line.count; c += numBytes)
-            {
-               unichar ch = UTF8_GET_CHAR(line.buffer + c, numBytes);
-               if(!IS_ALUNDER(ch))
-                  break;
-            }
-            SelDirty();
-            DirtyLine(this.y);
-            this.y = y;
-            DirtyLine(this.y);
-            this.selX = start;
-            this.x = c;
-            ComputeColumn();
-            this.line = this.selLine = line;
-            this.wordSelect = (c != start);
-            UpdateDirty();
-         }
+         selPosition = start;
+         curPosition = c;
+
+         PositionCaret(true);
+         Update(null);
+         return false;
       }
       return true;
    }
-*/
+
    bool OnOpen(char * href)
    {
       if(!strncmp(href, "api://", 6))
@@ -2677,8 +2431,8 @@ class HelpView : HTMLView
                else
                {
                   block.parent.subBlocks.Insert(block, newBlock);
-                  startY += th;
-               }               
+                  startY += block.prev.height;
+               }
                newBlock.startX = startX;
                newBlock.startY = startY;
                newBlock.text = new0 char[1];
@@ -2689,21 +2443,137 @@ class HelpView : HTMLView
          if(!strcmp(textBlock.text, $"[Add Text]"))
          {
             textBlock.text[0] = 0;
-            textBlock.textLen = 0;               
+            textBlock.textLen = 0;
          }
 
          strcpy(editString, href + 7);
          selPosition = curPosition = 0;
+         selBlock = textBlock;
          // dialog.Create();
          edit = true;
-         PositionCaret(true);
+         // PositionCaret(true);
       }
       return true;
    }
 
-   Block textBlock;
    char * text;
-   int curPosition, selPosition;
+
+   void DeleteSelection()
+   {
+      if(textBlock != selBlock || curPosition != selPosition)
+      {
+         if(textBlock == selBlock)
+         {
+            // Within same block
+            int start = Min(curPosition, selPosition);
+            int end = Max(curPosition, selPosition);
+            memmove(textBlock.text + start, textBlock.text + end, textBlock.textLen - end);
+            textBlock.textLen -= end-start;
+            textBlock.text = renew textBlock.text char[textBlock.textLen + 1];
+            curPosition = start;
+            selPosition = start;
+         }
+         else
+         {
+            int startSel, endSel;
+            Block startSelBlock = null, endSelBlock = null, b, next;
+
+            NormalizeSelection(&startSelBlock, &startSel, &endSelBlock, &endSel);
+
+            startSelBlock.text = renew startSelBlock.text char[startSel + endSelBlock.textLen - endSel + 1];
+            memcpy(startSelBlock.text + startSel, endSelBlock.text + endSel, endSelBlock.textLen - endSel + 1);
+
+            startSelBlock.textLen = startSel + endSelBlock.textLen - endSel;
+            for(b = startSelBlock.next; b; b = next)
+            {
+               bool isEnd = b == endSelBlock;
+               next = GetNextBlock(b);
+               b.parent.subBlocks.Remove(b);
+               delete b;
+               if(isEnd)
+                  break;
+            }
+            textBlock = startSelBlock;
+            selBlock = startSelBlock;
+            curPosition = startSel;
+            selPosition = startSel;
+         }
+         ComputeMinSizes();
+         ComputeSizes();
+         PositionCaret(true);
+         Update(null);
+      }
+   }
+
+   String GetSelectionString()
+   {
+      String selection = null;
+      if(textBlock == selBlock)
+      {
+         // Within same block
+         int start = Min(curPosition, selPosition);
+         int end = Max(curPosition, selPosition);
+         int len = end - start;
+         selection = new char[len + 1];
+         memcpy(selection, textBlock.text + start, len);
+         selection[len] = 0;
+      }
+      else
+      {
+         int startSel, endSel;
+         Block startSelBlock = null, endSelBlock = null, b;
+         int totalLen = 0;
+
+         NormalizeSelection(&startSelBlock, &startSel, &endSelBlock, &endSel);
+
+         // Compute length
+         for(b = startSelBlock; b; b = GetNextBlock(b))
+         {
+            int start = (b == startSelBlock) ? startSel : 0;
+            int end = (b == endSelBlock) ? endSel : b.textLen;
+            int len = end - start;
+            totalLen += len;
+            if(b == endSelBlock)
+               break;
+            else if(b.type == TEXT)
+               totalLen++;
+         }
+
+         selection = new char[totalLen + 1];
+         totalLen = 0;
+         for(b = startSelBlock; b; b = GetNextBlock(b))
+         {
+            int start = (b == startSelBlock) ? startSel : 0;
+            int end = (b == endSelBlock) ? endSel : b.textLen;
+            int len = end - start;
+            memcpy(selection + totalLen, b.text + start, len);
+            totalLen += len;
+            if(b == endSelBlock)
+               break;
+            else if(b.type == TEXT)
+               selection[totalLen++] = '\n';
+         }
+         selection[totalLen] = 0;
+      }
+      return selection;
+   }
+
+   void CopySelection()
+   {
+      String s = GetSelectionString();
+      if(s)
+      {
+         int len = strlen(s);
+         ClipBoard cb { };
+         if(cb.Allocate(len + 1))
+         {
+            memcpy(cb.text, s, len + 1);
+            cb.Save();
+         }
+         delete cb;
+         delete s;
+      }
+   }
 
    bool OnKeyDown(Key key, unichar ch)
    {
@@ -2714,27 +2584,51 @@ class HelpView : HTMLView
             case escape:
                OnLeftButtonDown(0,0,0);
                return false;
+            case Key { end, shift = true }:
             case end:
-               selPosition = curPosition = textBlock.textLen;
+               curPosition = textBlock.textLen;
+               if(!key.shift)
+               {
+                  selPosition = curPosition;
+                  selBlock = textBlock;
+               }
                PositionCaret(true);
                Update(null);
                break;
+            case Key { home, shift = true }:
             case home:
-               selPosition = curPosition = 0;
+               curPosition = 0;
+               if(!key.shift)
+               {
+                  selPosition = curPosition;
+                  selBlock = textBlock;
+               }
                PositionCaret(true);
                Update(null);
                break;
+            case Key { home, ctrl = true, shift = true }:
             case ctrlHome:
-               selPosition = curPosition = 0;
+               curPosition = 0;
                while(textBlock.prev)
                   textBlock = textBlock.prev.prev;
+               if(!key.shift)
+               {
+                  selPosition = curPosition;
+                  selBlock = textBlock;
+               }
                PositionCaret(true);
                Update(null);
                return false;
+            case Key { end, ctrl = true, shift = true }:
             case ctrlEnd:
                while(textBlock.next && textBlock.next.next)
                   textBlock = textBlock.next.next;
-               selPosition = curPosition = textBlock.textLen;
+               curPosition = textBlock.textLen;
+               if(!key.shift)
+               {
+                  selPosition = curPosition;
+                  selBlock = textBlock;
+               }
                PositionCaret(true);
                Update(null);
                return false;
@@ -2744,12 +2638,14 @@ class HelpView : HTMLView
          return HTMLView::OnKeyDown(key, ch);
       return true;
    }
+
    bool OnKeyHit(Key key, unichar ch)
    {
       if(edit)
       {
          switch(key)
          {
+            case Key { up, shift = true }:
             case up:
             {
                if(caretY == textBlock.startY)
@@ -2757,7 +2653,13 @@ class HelpView : HTMLView
                   if(textBlock.prev)
                   {
                      textBlock = textBlock.prev.prev;
-                     selPosition = curPosition = Min(curPosition, textBlock.textLen);
+                     curPosition = Min(curPosition, textBlock.textLen);
+                     if(!key.shift)
+                     {
+                        selPosition = curPosition;
+                        selBlock = textBlock;
+                     }
+                     Update(null);
                      PositionCaret(false);
                      caretY = MAXINT;
                   }
@@ -2828,7 +2730,13 @@ class HelpView : HTMLView
                               len = curPosition - startPos;
                               display.FontExtent(textBlock.font.font, text + startPos, len, &x, null);
                            }
-                           selPosition = curPosition;
+                           if(!key.shift)
+                           {
+                              selPosition = curPosition;
+                              selBlock = textBlock;
+                           }
+                           Update(null);
+
                            PositionCaret(false);
                            return false;
                         }
@@ -2839,10 +2747,24 @@ class HelpView : HTMLView
                         {
                            int c = textPos - 1;
                            while(c > 0 && text[c] == ' ') c--;
-                           selPosition = curPosition = c + 1;
+                           curPosition = c + 1;
+                           if(!key.shift)
+                           {
+                              selPosition = curPosition;
+                              selBlock = textBlock;
+                           }
+                           Update(null);
                         }
                         else
-                           selPosition = curPosition = textBlock.textLen;
+                        {
+                           curPosition = textBlock.textLen;
+                           if(!key.shift)
+                           {
+                              selPosition = curPosition;
+                              selBlock = textBlock;
+                           }
+                           Update(null);
+                        }
                         PositionCaret(false);
                         return false;
                      }
@@ -2853,6 +2775,7 @@ class HelpView : HTMLView
                }
                return false;
             }
+            case Key { down, shift = true }:
             case down:
             {
                int tw = 0, th = 0;
@@ -2917,14 +2840,25 @@ class HelpView : HTMLView
                            len = curPosition - startPos;
                            display.FontExtent(textBlock.font.font, text + startPos, len, &x, null);
                         }
-                        selPosition = curPosition;
+                        if(!key.shift)
+                        {
+                           selPosition = curPosition;
+                           selBlock = textBlock;
+                        }
+                        Update(null);
                         PositionCaret(false);
                         return false;
                      }
                   }
                   if(sy > caretY)
                   {
-                     selPosition = curPosition = textBlock.textLen;
+                     curPosition = textBlock.textLen;
+                     if(!key.shift)
+                     {
+                        selPosition = curPosition;
+                        selBlock = textBlock;
+                     }
+                     Update(null);
                      PositionCaret(false);
                      return false;
                   } 
@@ -2948,15 +2882,14 @@ class HelpView : HTMLView
                {
                   textBlock = textBlock.next.next;
                   selPosition = curPosition = Min(curPosition, textBlock.textLen);
+                  selBlock = textBlock;
                   PositionCaret(false);
                }*/
                break;
             }
-            #define IS_ALUNDER(ch) ((ch) == '_' || isalnum((ch)))
+            case Key { right, shift = true, ctrl = true }:
             case ctrlRight:
             {
-               // SELECTION CTRL-RIGHT
-               /*
                bool foundAlpha = false;
                bool found = false;
                Block line, lastLine;
@@ -2968,7 +2901,9 @@ class HelpView : HTMLView
                   int c;
                   for(c = start; c < line.textLen; c++)
                   {
-                     if(IS_ALUNDER(line.text[c]))
+                     char ch = line.text[c];
+                     bool isAlUnder = CharMatchCategories(ch, letters|numbers|marks|connector);
+                     if(key.shift ? isAlUnder : !isAlUnder)
                      {
                         foundAlpha = true;
                         lastC = c;
@@ -2977,43 +2912,18 @@ class HelpView : HTMLView
                      else if(foundAlpha)
                      {
                         found = true;
-                        break;
-                     }
-                  }
-                  if(!found && (c != curPosition || line != textBlock))
-                  {
-                     found = true;
-                     lastLine = line;
-                     lastC = line.textLen-1;
-                     break;
-                  }
-               }  
-               if(found)
-               {
-                  selPosition = curPosition = lastC+1;
-                  textBlock = lastLine;
-                  PositionCaret(true);
-               }
-               */
-               
-               bool foundAlpha = false;
-               bool found = false;
-               Block line;
-
-               for(line = textBlock; (line && !found); line = line.next ? line.next.next : null)
-               {
-                  int start = (line == textBlock) ? curPosition : 0;
-                  int c;
-                  for(c = start; c < line.textLen; c++)
-                  {
-                     if(!IS_ALUNDER(line.text[c]))
-                        foundAlpha = true;
-                     else if(foundAlpha)
-                     {
-                        found = true;
-                        selPosition = curPosition = c;
-                        textBlock = line;
-                        PositionCaret(true);
+                        if(!key.shift)
+                        {
+                           curPosition = c;
+                           if(!key.shift)
+                           {
+                              selPosition = curPosition;
+                              selBlock = textBlock;
+                           }
+                           Update(null);
+                           textBlock = line;
+                           PositionCaret(true);
+                        }
                         break;
                      }
                   }
@@ -3021,14 +2931,37 @@ class HelpView : HTMLView
                   if(!found && (c != curPosition || line != textBlock))
                   {
                      found = true;
-                     selPosition = curPosition = line.textLen;
-                     textBlock = line;
-                     PositionCaret(true);
+                     lastLine = line;
+                     lastC = line.textLen-1;
+                     if(key.shift)
+                        break;
+                     else
+                     {
+                        curPosition = line.textLen;
+                        if(!key.shift)
+                        {
+                           selPosition = curPosition;
+                           selBlock = textBlock;
+                        }
+                        Update(null);
+
+                        textBlock = line;
+                        PositionCaret(true);
+                     }
                   }
-                  foundAlpha = true;
+                  if(!key.shift)
+                     foundAlpha = true;
+               }
+               if(key.shift && found)
+               {
+                  curPosition = lastC+1;
+                  textBlock = lastLine;
+                  PositionCaret(true);
+                  Update(null);
                }
                break;
             }
+            case Key { left, ctrl = true, shift = true }:
             case ctrlLeft:
             {
                bool foundAlpha = false;
@@ -3049,7 +2982,7 @@ class HelpView : HTMLView
                   if(line == textBlock) start = curPosition-1; else start = line.textLen-1;
                   for(c = start; c>=0; c--)
                   {
-                     if(IS_ALUNDER(line.text[c]))
+                     if(CharMatchCategories(line.text[c], letters|numbers|marks|connector))
                      {
                         foundAlpha = true;
                         lastC = c;
@@ -3076,99 +3009,136 @@ class HelpView : HTMLView
                if(foundAlpha)
                {
                   textBlock = lastLine;
-                  selPosition = curPosition = lastC;
+                  curPosition = lastC;
+                  if(!key.shift)
+                  {
+                     selPosition = curPosition;
+                     selBlock = textBlock;
+                  }
                   PositionCaret(true);
+                  Update(null);
                }
                break;
             }
+            case Key { right, shift = true }:
             case right:
                if(curPosition < textBlock.textLen)
                {
                   curPosition += UTF8_NUM_BYTES(textBlock.text[curPosition]);
+                  if(!key.shift)
+                  {
+                     selPosition = curPosition;
+                     selBlock = textBlock;
+                  }
                   PositionCaret(true);
-                  selPosition = curPosition;
+                  Update(null);
                }
                else if(textBlock.next && textBlock.next.next)
                {
                   textBlock = textBlock.next.next;
-                  selPosition = curPosition = 0;
+                  curPosition = 0;
+                  if(!key.shift)
+                  {
+                     selPosition = curPosition;
+                     selBlock = textBlock;
+                  }
                   PositionCaret(true);
+                  Update(null);
                }
                break;
+            case Key { left, shift = true }:
             case left:
                if(curPosition > 0)
                {
                   while(curPosition > 0 && !UTF8_IS_FIRST(textBlock.text[--curPosition]));
+                  if(!key.shift)
+                  {
+                     selPosition = curPosition;
+                     selBlock = textBlock;
+                  }
                   PositionCaret(true);
-                  selPosition = curPosition;
+                  Update(null);
                }
                else if(textBlock.prev)
                {
                   textBlock = textBlock.prev.prev;
-                  selPosition = curPosition = textBlock.textLen;
+                  curPosition = textBlock.textLen;
+                  if(!key.shift)
+                  {
+                     selPosition = curPosition;
+                     selBlock = textBlock;
+                  }
                   PositionCaret(true);
+                  Update(null);
                }
                break;
             case backSpace:
-               if(curPosition)
+               if(textBlock == selBlock && curPosition == selPosition)
                {
-                  int c = curPosition;
-                  int nb = 1;
-                  while(c > 0 && !UTF8_IS_FIRST(textBlock.text[--c])) nb++;
-                  memmove(textBlock.text + curPosition - nb, textBlock.text + curPosition, textBlock.textLen - curPosition + 1);
-                  textBlock.textLen -= nb;
-                  textBlock.text = renew textBlock.text char[textBlock.textLen + 1];
-                  curPosition -= nb;
-                  selPosition = curPosition;
+                  if(curPosition)
                   {
-                     //Clear(html.block);
-                     //CreateForms(html.block);
-                     ComputeMinSizes();
-                     ComputeSizes();
-                     //PositionForms();
-                  }
-                  PositionCaret(true);
-                  Update(null);
-               }
-               else if(textBlock.prev)
-               {
-                  Block prev = textBlock.prev, prevBlock = textBlock.prev.prev;
-                  prevBlock.text = renew prevBlock.text char[prevBlock.textLen + textBlock.textLen + 1];
-                  memcpy(prevBlock.text + prevBlock.textLen, textBlock.text, textBlock.textLen + 1);
+                     int c = curPosition;
+                     int nb = 1;
+                     while(c > 0 && !UTF8_IS_FIRST(textBlock.text[--c])) nb++;
+                     memmove(textBlock.text + curPosition - nb, textBlock.text + curPosition, textBlock.textLen - curPosition + 1);
+                     textBlock.textLen -= nb;
+                     textBlock.text = renew textBlock.text char[textBlock.textLen + 1];
+                     curPosition -= nb;
+                     selPosition = curPosition;
+                     selBlock = textBlock;
 
-                  selPosition = curPosition = prevBlock.textLen;
-                  prevBlock.textLen += textBlock.textLen;
-                  textBlock.parent.subBlocks.Remove(prev);
-                  delete prev;
-                  textBlock.parent.subBlocks.Remove(textBlock);                  
-                  delete textBlock;
-                  textBlock = prevBlock;
-                  
-                  {
-                     //Clear(html.block);
-                     //CreateForms(html.block);
                      ComputeMinSizes();
                      ComputeSizes();
-                     //PositionForms();
+                     PositionCaret(true);
+                     Update(null);
                   }
-                  PositionCaret(true);
-                  Update(null);
+                  else if(textBlock.prev)
+                  {
+                     Block prev = textBlock.prev, prevBlock = textBlock.prev.prev;
+                     prevBlock.text = renew prevBlock.text char[prevBlock.textLen + textBlock.textLen + 1];
+                     memcpy(prevBlock.text + prevBlock.textLen, textBlock.text, textBlock.textLen + 1);
+
+                     selPosition = curPosition = prevBlock.textLen;
+                     selBlock = textBlock;
+                     prevBlock.textLen += textBlock.textLen;
+                     textBlock.parent.subBlocks.Remove(prev);
+                     if(prev == selBlock)
+                     {
+                        selBlock = textBlock;
+                        selPosition = curPosition;
+                     }
+                     delete prev;
+                     textBlock.parent.subBlocks.Remove(textBlock);
+                     if(textBlock == selBlock)
+                     {
+                        selBlock = prevBlock;
+                        selPosition = curPosition;
+                     }
+                     delete textBlock;
+                     textBlock = prevBlock;
+
+                     ComputeMinSizes();
+                     ComputeSizes();
+                     PositionCaret(true);
+                     Update(null);
+                  }
                }
+               else
+                  DeleteSelection();
                break;
             case del:
-               if(textBlock.textLen > curPosition)
+               if(textBlock != selBlock || curPosition != selPosition)
+                  DeleteSelection();
+               else if(textBlock.textLen > curPosition)
                {
                   int nb = UTF8_NUM_BYTES(textBlock.text[curPosition]);
                   memmove(textBlock.text + curPosition, textBlock.text + curPosition + nb, textBlock.textLen - curPosition + 1 - nb + 1);
                   textBlock.textLen -= nb;
                   textBlock.text = renew textBlock.text char[textBlock.textLen + 1];
-                  {
-                     //Clear(html.block);
-                     //CreateForms(html.block);
-                     ComputeMinSizes();
-                     ComputeSizes();
-                     //PositionForms();
-                  }
+
+                  ComputeMinSizes();
+                  ComputeSizes();
+
                   PositionCaret(true);
                   Update(null);
                }
@@ -3180,27 +3150,39 @@ class HelpView : HTMLView
 
                   textBlock.textLen += nextBlock.textLen;
                   textBlock.parent.subBlocks.Remove(next);
-                  delete next;
-                  textBlock.parent.subBlocks.Remove(nextBlock);                  
-                  delete nextBlock;
-                  
+                  if(next == selBlock)
                   {
-                     //Clear(html.block);
-                     //CreateForms(html.block);
-                     ComputeMinSizes();
-                     ComputeSizes();
-                     //PositionForms();
+                     selBlock = textBlock;
+                     selPosition = curPosition;
                   }
+                  delete next;
+                  textBlock.parent.subBlocks.Remove(nextBlock);
+                  if(nextBlock == selBlock)
+                  {
+                     selBlock = textBlock;
+                     selPosition = curPosition;
+                  }
+                  delete nextBlock;
+
+                  ComputeMinSizes();
+                  ComputeSizes();
                   PositionCaret(true);
                   Update(null);
                }
                break;
             case enter:
             {
-               Block block { type = BR, parent = textBlock.parent, font = textBlock.font };
-               Block newBlock { type = TEXT, parent = textBlock.parent, font = textBlock.font };
-               int startY = textBlock.startY, startX = textBlock.startX;
                int tw = 0, th = 0;
+               Block block;
+               Block newBlock;
+               int startY, startX;
+
+               DeleteSelection();
+
+               block = { type = BR, parent = textBlock.parent, font = textBlock.font };
+               newBlock = { type = TEXT, parent = textBlock.parent, font = textBlock.font };
+               startY = textBlock.startY;
+               startX = textBlock.startX;
 
                display.FontExtent(textBlock.font.font, " ", 1, null, &th);
                textBlock.parent.subBlocks.Insert(textBlock, block);
@@ -3217,18 +3199,27 @@ class HelpView : HTMLView
                newBlock.startY = startY;
                newBlock.startX = startX;
                selPosition = curPosition = 0;
-               {
-                  //Clear(html.block);
-                  //CreateForms(html.block);
-                  ComputeMinSizes();
-                  ComputeSizes();
-                  //PositionForms();
-               }
+
+               ComputeMinSizes();
+               ComputeSizes();
+
                textBlock = newBlock;
+               selBlock = textBlock;
                PositionCaret(true);
                Update(null);
                break;
             }
+            case ctrlX:
+            case Key { del, shift = true }:
+               // Cut
+               CopySelection();
+               DeleteSelection();
+               break;
+            case ctrlC:
+            case ctrlInsert:
+               // Copy
+               CopySelection();
+               break;
             case shiftInsert:
             case ctrlV:
             {
@@ -3239,8 +3230,14 @@ class HelpView : HTMLView
                   char * text = clipBoard.memory;
                   char ch;
                   int start = 0;
-                  Block parent = textBlock.parent;
-                  FontEntry font = textBlock.font;
+                  Block parent;
+                  FontEntry font;
+
+                  DeleteSelection();
+
+                  parent = textBlock.parent;
+                  font = textBlock.font;
+
                   for(c = 0; ; c++)
                   {
                      ch = text[c];
@@ -3253,6 +3250,7 @@ class HelpView : HTMLView
                         textBlock.textLen += len;
                         curPosition += len;
                         selPosition = curPosition;
+                        selBlock = textBlock;
                         if(!ch) break;
                         {
                            Block block { type = BR, parent = parent, font = font };
@@ -3275,6 +3273,7 @@ class HelpView : HTMLView
                            newBlock.startY = startY;
                            newBlock.startX = startX;
                            selPosition = curPosition = 0;
+                           selBlock = textBlock;
                            textBlock = newBlock;
                         }
                         if(ch == '\r' && text[c+1] == '\n') c++;
@@ -3298,6 +3297,8 @@ class HelpView : HTMLView
                   int len = UTF32toUTF8Len(&ch, 1, string, 5);
                   int c;
 
+                  DeleteSelection();
+
                   textBlock.text = renew textBlock.text char[textBlock.textLen + len + 1];
                   memmove(textBlock.text + curPosition + len, textBlock.text + curPosition, textBlock.textLen - curPosition + 1);
                   
@@ -3308,6 +3309,7 @@ class HelpView : HTMLView
                      curPosition++;
                   }
                   selPosition = curPosition;
+                  selBlock = textBlock;
                   
                   {
                      //Clear(html.block);
@@ -3397,7 +3399,7 @@ class HelpView : HTMLView
                int len = curPosition - startPos;
                display.FontExtent(textBlock.font.font, text + startPos, len, &tw, null);
                sx += tw;
-               break;            
+               break;
             }
             sy += th;
             sx = textBlock.startX;
@@ -3417,7 +3419,7 @@ class HelpView : HTMLView
             else if(sy - scroll.y < 0)
             {
                scrollPos.y = sy;
-               doScroll = true;            
+               doScroll = true;
             }
             if(sx - scroll.x + 10 > clientSize.w)
             {
@@ -3427,7 +3429,7 @@ class HelpView : HTMLView
             else if(sx - scroll.x < 10)
             {
                scrollPos.x = sx - 10;
-               doScroll = true;            
+               doScroll = true;
             }
             if(doScroll)
                scroll = scrollPos;
