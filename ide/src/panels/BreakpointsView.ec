@@ -217,7 +217,7 @@ class BreakpointsView : Window
          char string[32];
          char * location;
          Breakpoint bp = (Breakpoint)row.tag;
-         location = bp.CopyLocationString(false);
+         location = bp.CopyUserLocationString();
 #if defined(__WIN32__)
          ChangeCh(location, '/', '\\');
 #endif

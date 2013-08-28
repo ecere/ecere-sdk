@@ -4470,6 +4470,29 @@ class Breakpoint : struct
       return location;
    }
 
+   char * CopyUserLocationString()
+   {
+      char * location;
+      char * loc = CopyLocationString(false);
+      Project prj = null;
+      for(p : ide.workspace.projects)
+      {
+         if(p.topNode.FindByFullPath(absoluteFilePath, false))
+         {
+            prj = p;
+            break;
+         }
+      }
+      if(prj)
+      {
+         location = PrintString("(", prj.name, ")", loc);
+         delete loc;
+      }
+      else
+         location = loc;
+      return location;
+   }
+
    void Save(File f)
    {
       if(relativeFilePath && relativeFilePath[0])

@@ -513,7 +513,7 @@ public:
       Breakpoint bp = (Breakpoint)row.tag;
       if(bp)
       {
-         char * currentLoc = bp.CopyLocationString(false);
+         char * currentLoc = bp.CopyUserLocationString();
          if(strcmp(location, currentLoc))
          {
             // todo, parse location

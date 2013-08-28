@@ -1988,15 +1988,12 @@ class CodeEditor : Window
          if(projectView && fileName)
          {
             int line = editBox.lineNumber + 1;
-            char name[MAX_LOCATION];
             Project prj = null;
-            // TOFIX: This only looks at the filename...
-            GetLastDirectory(fileName, name);
             if(ide && ide.workspace)
             {
                for(p : ide.workspace.projects)
                {
-                  if(p.topNode.Find(name, false))
+                  if(p.topNode.FindByFullPath(fileName, false))
                   {
                      prj = p;
                      break;
