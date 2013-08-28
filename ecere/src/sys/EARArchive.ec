@@ -1191,7 +1191,7 @@ class EARArchiveDir : ArchiveDir
 
          last = position;
          if(!first) first = position;
-         if(newPosition) *newPosition = (bool)position;
+         if(newPosition) *newPosition = position;
       }
       else
       {

@@ -2284,9 +2284,26 @@ class HelpView : HTMLView
 
             sprintf(docFile, "%s/%s.eCdoc", settings.docDir, (!module || !module.name || (ns && ns->name && !strcmp(ns->name, "namespaces/ecere/namespaces/com"))) ? "ecereCOM" : module.name);
 
-            archive = ArchiveOpen(docFile, { true } );
-            readOnly = archive == null;
-            delete archive;
+            if(FileExists(docFile))
+            {
+               archive = ArchiveOpen(docFile, { true } );
+               readOnly = archive == null;
+               delete archive;
+            }
+            else
+            {
+               readOnly = true;
+               archive = ArchiveOpen(docFile, { true } );
+               if(archive)
+               {
+                  // Must create root directory on archive creation
+                  ArchiveDir dir = archive.OpenDirectory("", null, replace);
+                  if(dir)
+                     readOnly = false;
+                  delete dir;
+               }
+               delete archive;
+            }
          }
 
          page.Generate(f);
