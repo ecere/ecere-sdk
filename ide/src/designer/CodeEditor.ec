@@ -1378,7 +1378,7 @@ class CodeEditor : Window
 
       bool NotifyKeyDown(EditBox editBox, Key key, unichar ch)
       {
-         if(key == Key { space, ctrl = true })
+         if(key == ctrlSpace)
          {
             membersList.Destroy(0);
             membersListShown = false;
@@ -1528,7 +1528,7 @@ class CodeEditor : Window
          return false;
       }
 
-      bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
+      /*bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
       {
          CodeEditor editor = (CodeEditor)master;
          Window rw = previous ? previous.rootWindow : null;
@@ -1538,7 +1538,7 @@ class CodeEditor : Window
             editor.membersListShown = false;
          }
          return ListBox::OnActivate(active, previous, goOnWithActivation, direct);
-      }
+      }*/
 
       bool OnKeyHit(Key key, unichar ch)
       {
@@ -1604,17 +1604,17 @@ class CodeEditor : Window
       
       OnKeyDown = membersList.OnKeyDown;
 
-      bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
+      /*bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
       {
          CodeEditor editor = (CodeEditor)master;
          Window rw = previous ? previous.rootWindow : null;
          if(!active && previous != editor.editBox && rw != editor.membersList)
          {
             Destroy(0);
-            editor.membersListShown = false;
+            editor.paramsShown = false;
          }
          return Window::OnActivate(active, previous, goOnWithActivation, direct);
-      }
+      }*/
 
       bool OnKeyHit(Key key, unichar ch)
       {
@@ -2204,6 +2204,25 @@ class CodeEditor : Window
             }
 
             ProcessCaretMove(editBox, line, charPos);
+         }
+      }
+      if(!active)
+      {
+         if(membersListShown)
+         {
+            membersList.Destroy(0);
+            membersListShown = false;
+         }
+         if(paramsShown)
+         {
+            paramsList.Destroy(0);
+            paramsShown = false;
+            FreeType(functionType);
+            FreeType(instanceType);
+
+            functionType = null;
+            instanceType = null;
+            paramsID = -1;
          }
       }
       return true;
