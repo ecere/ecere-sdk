@@ -1497,21 +1497,31 @@ class CodeEditor : Window
             (key.ctrl && key.code != left && key.code != right && 
              key.code != leftShift && key.code != rightShift && key.code != space))
          {
+            bool result = true;
             if(editor.paramsShown)
+            {
+               if(key == escape)
+                  result = false;
                editor.paramsList.Destroy(0);
+               editor.paramsShown = false;
+            }
             if(editor.membersListShown)
+            {
+               if(key == escape)
+                  result = false;
                editor.membersList.Destroy(0);
+               editor.membersListShown = false;
+            }
 
-            editor.paramsShown = false;
             FreeType(editor.functionType);
-            FreeType(editor.instanceType);
-
             editor.functionType = null;
+
+            FreeType(editor.instanceType);
             editor.instanceType = null;
+
             editor.paramsID = -1;
 
-            editor.membersListShown = false;
-            return true;
+            return result;
          }
          else 
             return editor.editBox.OnKeyDown(key, ch);
