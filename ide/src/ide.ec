@@ -1106,6 +1106,7 @@ class IDEWorkSpace : Window
             return true;
          }
       }
+#ifndef __WIN32__
       MenuDivider { debugMenu };
       MenuItem debugUseValgrindItem
       {
@@ -1117,23 +1118,82 @@ class IDEWorkSpace : Window
                ide.workspace.useValgrind = selection.checked;
                ide.workspace.Save();
             }
-            ide.AdjustValgrindChecks();
+            ide.AdjustValgrindMenus();
             return true;
          }
       }
-      MenuItem debugValgrindFullLeakCheckItem
+      Menu debugValgrindLeakCheckItem { debugMenu, $"Valgrind Leak Check", h };
+         MenuItem debugValgrindNoLeakCheckItem      { debugValgrindLeakCheckItem, $"No"     , f, id = ValgrindLeakCheck::no     , checkable = true, disabled = true; NotifySelect = ValgrindLCSelect; }
+         MenuItem debugValgrindSummaryLeakCheckItem { debugValgrindLeakCheckItem, $"Summary", f, id = ValgrindLeakCheck::summary, checkable = true, disabled = true; NotifySelect = ValgrindLCSelect, checked = true; }
+         MenuItem debugValgrindYesLeakCheckItem     { debugValgrindLeakCheckItem, $"Yes"    , f, id = ValgrindLeakCheck::yes    , checkable = true, disabled = true; NotifySelect = ValgrindLCSelect; }
+         MenuItem debugValgrindFullLeakCheckItem    { debugValgrindLeakCheckItem, $"Full"   , f, id = ValgrindLeakCheck::full   , checkable = true, disabled = true; NotifySelect = ValgrindLCSelect; }
+         bool ValgrindLCSelect(MenuItem selection, Modifiers mods)
+         {
+            if(ide.workspace)
+            {
+               if(selection.checked)
+               {
+                  ValgrindLeakCheck vgLeakCheck = (ValgrindLeakCheck)selection.id;
+
+                  debugValgrindNoLeakCheckItem.checked      = debugValgrindNoLeakCheckItem.id      == vgLeakCheck;
+                  debugValgrindSummaryLeakCheckItem.checked = debugValgrindSummaryLeakCheckItem.id == vgLeakCheck;
+                  debugValgrindYesLeakCheckItem.checked     = debugValgrindYesLeakCheckItem.id     == vgLeakCheck;
+                  debugValgrindFullLeakCheckItem.checked    = debugValgrindFullLeakCheckItem.id    == vgLeakCheck;
+
+                  ide.workspace.vgLeakCheck = vgLeakCheck;
+                  ide.workspace.Save();
+               }
+               else
+                  selection.checked = true;
+            }
+            return true;
+         }
+      Menu debugValgrindRedzoneSizeItem { debugMenu, $"Valgrind Redzone Size", z };
+         MenuItem debugValgrindRS0Item   { debugValgrindRedzoneSizeItem, $"0"  , f, id =   0, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect, checked = true; }
+         MenuItem debugValgrindRS16Item  { debugValgrindRedzoneSizeItem, $"16" , f, id =  16, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS32Item  { debugValgrindRedzoneSizeItem, $"32" , f, id =  32, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS64Item  { debugValgrindRedzoneSizeItem, $"64" , f, id =  64, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS128Item { debugValgrindRedzoneSizeItem, $"128", f, id = 128, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS256Item { debugValgrindRedzoneSizeItem, $"256", f, id = 256, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS512Item { debugValgrindRedzoneSizeItem, $"512", f, id = 512, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         bool ValgrindRSSelect(MenuItem selection, Modifiers mods)
+         {
+            if(ide.workspace)
+            {
+               if(selection.checked)
+               {
+                  int vgRedzoneSize = (int)selection.id;
+
+                  debugValgrindRS0Item.checked   = debugValgrindRS0Item.id   == vgRedzoneSize;
+                  debugValgrindRS16Item.checked  = debugValgrindRS16Item.id  == vgRedzoneSize;
+                  debugValgrindRS32Item.checked  = debugValgrindRS32Item.id  == vgRedzoneSize;
+                  debugValgrindRS64Item.checked  = debugValgrindRS64Item.id  == vgRedzoneSize;
+                  debugValgrindRS128Item.checked = debugValgrindRS128Item.id == vgRedzoneSize;
+                  debugValgrindRS256Item.checked = debugValgrindRS256Item.id == vgRedzoneSize;
+                  debugValgrindRS512Item.checked = debugValgrindRS512Item.id == vgRedzoneSize;
+
+                  ide.workspace.vgRedzoneSize = vgRedzoneSize;
+                  ide.workspace.Save();
+               }
+               else
+                  selection.checked = true;
+            }
+            return true;
+         }
+      MenuItem debugValgrindTrackOriginsItem
       {
-         debugMenu, $"Valgrind: Full Leak Check", d, disabled = true, checkable = true;
+         debugMenu, $"Valgrind Track Origins", k, checkable = true, disabled = true;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(ide.workspace)
             {
-               ide.workspace.vgFullLeakCheck = selection.checked;
+               ide.workspace.vgTrackOrigins = selection.checked;
                ide.workspace.Save();
             }
             return true;
          }
-      }
+      };
+#endif
       MenuDivider { debugMenu };
       MenuItem debugStepIntoItem
       {
@@ -1838,19 +1898,37 @@ class IDEWorkSpace : Window
       toolBar.activeConfig.disabled       = unavailable;
       toolBar.activeCompiler.disabled     = unavailable;
       toolBar.activeBitDepth.disabled     = unavailable;
-      debugUseValgrindItem.disabled       = unavailable;
 
-      AdjustValgrindChecks();
+#ifndef __WIN32__
+      debugUseValgrindItem.disabled       = unavailable;
+      AdjustValgrindMenus();
+#endif
+
       AdjustFileMenus();
       AdjustBuildMenus();
       AdjustDebugMenus();
    }
 
-   void AdjustValgrindChecks()
+#ifndef __WIN32__
+   void AdjustValgrindMenus()
    {
       bool unavailable = !project || !debugUseValgrindItem.checked;
-      debugValgrindFullLeakCheckItem.disabled    = unavailable;
+      debugValgrindNoLeakCheckItem.disabled        = unavailable;
+      debugValgrindSummaryLeakCheckItem.disabled   = unavailable;
+      debugValgrindYesLeakCheckItem.disabled       = unavailable;
+      debugValgrindFullLeakCheckItem.disabled      = unavailable;
+
+      debugValgrindTrackOriginsItem.disabled       = unavailable;
+
+      debugValgrindRS0Item.disabled   = unavailable;
+      debugValgrindRS16Item.disabled  = unavailable;
+      debugValgrindRS32Item.disabled  = unavailable;
+      debugValgrindRS64Item.disabled  = unavailable;
+      debugValgrindRS128Item.disabled = unavailable;
+      debugValgrindRS256Item.disabled = unavailable;
+      debugValgrindRS512Item.disabled = unavailable;
    }
+#endif
 
    property bool hasOpenedCodeEditors
    {

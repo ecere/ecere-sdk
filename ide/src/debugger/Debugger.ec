@@ -2132,7 +2132,6 @@ class Debugger
       char oldDirectory[MAX_LOCATION];
       char tempPath[MAX_LOCATION];
       char command[MAX_F_STRING*4];
-      bool vgFullLeakCheck = ide.workspace.vgFullLeakCheck;
       Project project = ide.project;
       DirExpression targetDirExp = project.GetTargetDir(compiler, config, bitDepth);
       PathBackup pathBackup { };
@@ -2199,6 +2198,9 @@ class Debugger
       {
          char * clArgs = ide.workspace.commandLineArgs;
          const char *valgrindCommand = "valgrind"; // TODO: valgrind command config option //TODO: valgrind options
+         ValgrindLeakCheck vgLeakCheck = ide.workspace.vgLeakCheck;
+         int vgRedzoneSize = ide.workspace.vgRedzoneSize;
+         bool vgTrackOrigins = ide.workspace.vgTrackOrigins;
          vgLogFile = CreateTemporaryFile(vgLogPath, "ecereidevglog");
          if(vgLogFile)
          {
@@ -2217,8 +2219,8 @@ class Debugger
          }
          if(result)
          {
-            sprintf(command, "%s --vgdb=yes --vgdb-error=0 --log-file=%s%s %s%s%s",
-                  valgrindCommand, vgLogPath, vgFullLeakCheck ? " --leak-check=full" : "", targetFile, clArgs ? " " : "", clArgs ? clArgs : "");
+            sprintf(command, "%s --vgdb=yes --vgdb-error=0 --log-file=%s --leak-check=%s --redzone-size=%d --track-origins=%s %s%s%s",
+                  valgrindCommand, vgLogPath, (char*)vgLeakCheck, vgRedzoneSize, vgTrackOrigins ? "yes" : "no", targetFile, clArgs ? " " : "", clArgs ? clArgs : "");
             vgTargetHandle = DualPipeOpen(PipeOpenMode { output = 1, error = 2, input = 1 }, command);
             if(!vgTargetHandle)
             {

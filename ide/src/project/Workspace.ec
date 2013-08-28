@@ -22,6 +22,29 @@ import "ide"
 }*/
 
 enum OpenedFileState { unknown, opened, closed };
+enum ValgrindLeakCheck
+{
+   no, summary, yes, full;
+
+   property char *
+   {
+      get { return OnGetString(null, null, null); }
+   }
+
+   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   {
+      if(this >= no && this <= full)
+      {
+         if(tempString)
+            strcpy(tempString, valgrindLeakCheckNames[this]);
+         return valgrindLeakCheckNames[this];
+      }
+      if(tempString && tempString[0])
+         tempString[0] = '\0';
+      return null;
+   }
+};
+static const char * valgrindLeakCheckNames[ValgrindLeakCheck] = { "no", "summary", "yes", "full" };
 
 class OpenedFileInfo
 {
@@ -178,8 +201,11 @@ public:
 private:
    String compiler;
    int bitDepth;
+   // TODO: save these new settings when json format is ready
    bool useValgrind;
-   bool vgFullLeakCheck;
+   ValgrindLeakCheck vgLeakCheck;
+   bool vgTrackOrigins;
+   int vgRedzoneSize;
 
 public:
    void Save()
