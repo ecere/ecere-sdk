@@ -2085,6 +2085,7 @@ class MainForm : Window
          if(SettingsDialog { master = this }.Modal() == ok) // Open the settings dialog to allow the user to change the directory for the eCdoc files
          {
             // Refresh docs
+            view.edit = false;
             view.Destroy(0);
             view.Create();
          }
