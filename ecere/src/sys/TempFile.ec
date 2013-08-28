@@ -68,7 +68,7 @@ public class TempFile : File
 
    bool Puts(char * string)
    {
-      int len = strlen(string);
+      int len = string ? strlen(string) : 0;
       int written = Write(string, 1, len);
       return written == len;
    }

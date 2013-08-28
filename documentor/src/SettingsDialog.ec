@@ -42,7 +42,7 @@ class SettingsDialog : Window
       {
          settings.docDir = pathEditBox.contents; // Store the path entered into the edit box
          settingsContainer.Save(); // write that path to the ini file
-         Destroy(0); // close the window
+         Destroy(DialogResult::ok); // close the window
          return true;
       }  
    };
@@ -53,7 +53,7 @@ class SettingsDialog : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         Destroy(0); // close the window without making any changes
+         Destroy(DialogResult::cancel); // close the window without making any changes
          return true;
       }
    };

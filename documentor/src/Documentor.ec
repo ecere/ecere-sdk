@@ -8,7 +8,8 @@ static Context globalContext { };
 static OldList defines { };
 static OldList imports { };
 static NameSpace globalData;
-static OldList excludedSymbols { offset = (uint)&((Symbol)0).left }; 
+static OldList excludedSymbols { offset = (uint)&((Symbol)0).left };
+static bool readOnly;
 
 #define UTF8_NUM_BYTES(x)  (__extension__({ byte b = x; (b & 0x80 && b & 0x40) ? ((b & 0x20) ? ((b & 0x10) ? 4 : 3) : 2) : 1; }))
 
@@ -396,6 +397,16 @@ public:
    {
       page.Generate(f);
    }
+
+   virtual Module GetModule()
+   {
+      return page ? page.GetModule() : null;
+   }
+
+   virtual NameSpace * GetNameSpace()
+   {
+      return page ? page.GetNameSpace() : null;
+   }
 };
 
 enum DocumentationType
@@ -551,7 +562,7 @@ static char * ReadDoc(Module module, DocumentationType type, void * object, Docu
       if(!contents[c])
          delete contents;
    }
-   if(editing && !contents)
+   if(editing && !contents && !readOnly)
       contents = CopyString($"[Add Text]");
    return contents;
 }
@@ -560,7 +571,17 @@ class APIPageNameSpace : APIPage
 {
    NameSpace * nameSpace;
    Module module;
+
+   Module GetModule()
+   {
+      return module;
+   }
    
+   NameSpace * GetNameSpace()
+   {
+      return nameSpace;
+   }
+
    void Generate(File f)
    {
       char string[1024];
@@ -635,7 +656,7 @@ class APIPageNameSpace : APIPage
             if(first)
             {
                f.Printf($"<H3>Sub Namespaces</H3><br><br>\n");
-               f.Printf("<TABLE >\n");
+               f.Printf("<TABLE>\n");
                first = false;
             }
             f.Printf("<TR>");
@@ -673,7 +694,7 @@ class APIPageNameSpace : APIPage
                if(first)
                {
                   f.Printf($"<a name=Classes></a><H3>Classes</H3><br><br>\n");
-                  f.Printf("<TABLE >\n");
+                  f.Printf("<TABLE>\n");
                   first = false;
                }
 
@@ -713,7 +734,7 @@ class APIPageNameSpace : APIPage
             if(first)
             {
                f.Printf($"<a name=Functions></a><H3>Functions</H3><br><br>\n");
-               f.Printf("<TABLE >\n");
+               f.Printf("<TABLE>\n");
                first = false;
             }
             f.Printf("<TR>");
@@ -748,7 +769,7 @@ class APIPageNameSpace : APIPage
             if(first)
             {
                f.Printf($"<a name=Definitions></a><H3>Definitions</H3><br><br>\n");
-               f.Printf("<TABLE >\n");
+               f.Printf("<TABLE>\n");
                first = false;
             }
             f.Printf("<TR>");
@@ -781,6 +802,16 @@ class APIPageNameSpace : APIPage
 class APIPageClass : APIPage
 {
    Class cl;
+
+   Module GetModule()
+   {
+      return cl.module;
+   }
+
+   NameSpace * GetNameSpace()
+   {
+      return cl.nameSpace;
+   }
 
    void Generate(File f)
    {
@@ -879,7 +910,7 @@ class APIPageClass : APIPage
             NamedLink item;
                         
             f.Printf($"<a name=EnumerationValues></a><H3>Enumeration Values</H3><br><br>\n");
-            f.Printf("<TABLE >\n");
+            f.Printf("<TABLE>\n");
 
             for(item = enumeration.values.first; item; item = item.next)
             {
@@ -948,7 +979,7 @@ class APIPageClass : APIPage
       if(cl.conversions.first)
       {
          f.Printf($"<a name=Conversions></a><H3>Conversions</H3><br><br>\n");
-         f.Printf("<TABLE >\n");
+         f.Printf("<TABLE>\n");
          for(prop = cl.conversions.first; prop; prop = prop.next)
          {
             if((prop.memberAccess == publicAccess || (prop.memberAccess == privateAccess && showPrivate)) && prop.name)
@@ -999,7 +1030,7 @@ class APIPageClass : APIPage
                if(first)
                {
                   f.Printf($"<a name=Members></a><H3>Properties and Members</H3><br><br>\n");
-                  f.Printf("<TABLE >\n");
+                  f.Printf("<TABLE>\n");
                   first = false;
                }
 
@@ -1053,7 +1084,7 @@ class APIPageClass : APIPage
                if(first)
                {
                   f.Printf($"<a name=VirtualMethods></a><H3>Virtual Methods</H3><br><br>\n");
-                  f.Printf("<TABLE >\n");
+                  f.Printf("<TABLE>\n");
                   first = false;
                }
                if(!method.dataType)
@@ -1091,7 +1122,7 @@ class APIPageClass : APIPage
                if(first)
                {
                   f.Printf($"<a name=Methods></a><H3>Non-Virtual Methods</H3><br><br>\n");
-                  f.Printf("<TABLE >\n");
+                  f.Printf("<TABLE>\n");
                   first = false;
                }
 
@@ -1146,7 +1177,7 @@ class APIPageClass : APIPage
          {
             f.Printf($"<H3>Example</H3><br>\n");
             f.Printf($"<FONT face=\"Courier New\">\n");
-            f.Printf("<br><TABLE >\n");
+            f.Printf("<br><TABLE>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1234,6 +1265,17 @@ class APIPageClass : APIPage
 class APIPageMethod : APIPage
 {
    Method method;
+
+   Module GetModule()
+   {
+      return method._class.module;
+   }
+
+   NameSpace * GetNameSpace()
+   {
+      return method._class.nameSpace;
+   }
+
    void Generate(File f)
    {
       Class cl = method._class;
@@ -1326,7 +1368,7 @@ class APIPageMethod : APIPage
                   FigureFileName(fileName, module, methodDoc, method, parameter, param);
                   f.Printf("<TD valign=top height=22><a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
                   f.Puts(desc);
-                  f.Printf("s</a>&nbsp;</TD>\n");
+                  f.Printf("</a></TD>\n");
                }
                else
                   f.Printf("<TD valign=top height=22>%s&nbsp;</TD>\n", desc);
@@ -1395,7 +1437,7 @@ class APIPageMethod : APIPage
          {
             f.Printf($"<H3>Example</H3><br>\n");
             f.Printf($"<FONT face=\"Courier New\">\n");
-            f.Printf("<br><TABLE >\n");
+            f.Printf("<br><TABLE>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1457,6 +1499,17 @@ class APIPageMethod : APIPage
 class APIPageFunction : APIPage
 {
    GlobalFunction function;
+
+   Module GetModule()
+   {
+      return function.module;
+   }
+
+   NameSpace * GetNameSpace()
+   {
+      return function.nameSpace;
+   }
+
    void Generate(File f)
    {
       char string[1024];
@@ -1546,7 +1599,8 @@ class APIPageFunction : APIPage
                   char fileName[MAX_LOCATION];
                   FigureFileName(fileName, module, functionDoc, function, parameter, param);
                   f.Printf("<TD valign=top height=22><a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
-                  f.Puts(desc);
+                  if(desc)
+                     f.Puts(desc);
                   f.Printf("</a>&nbsp;</TD>\n");
                }
                else
@@ -1615,7 +1669,7 @@ class APIPageFunction : APIPage
          {
             f.Printf($"<H3>Example</H3><br>\n");
             f.Printf($"<FONT face=\"Courier New\">\n");
-            f.Printf("<br><TABLE >\n");
+            f.Printf("<br><TABLE>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -2028,7 +2082,12 @@ class MainForm : Window
 
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
-         SettingsDialog { master = this }.Modal(); // Open the settings dialog to allow the user to change the directory for the eCdoc files
+         if(SettingsDialog { master = this }.Modal() == ok) // Open the settings dialog to allow the user to change the directory for the eCdoc files
+         {
+            // Refresh docs
+            view.Destroy(0);
+            view.Create();
+         }
          return true;
       }
    };
@@ -2211,9 +2270,24 @@ class HelpView : HTMLView
    bool OnCreate()
    {
       TempFile f { };
+
       page = mainForm.browser.currentRow.GetData(null);
       if(page)
       {
+         // Writability test
+         {
+            char docFile[MAX_LOCATION];
+            Archive archive;
+            Module module = page ? page.GetModule() : null;
+            NameSpace * ns = page ? page.GetNameSpace() : null;
+
+            sprintf(docFile, "%s/%s.eCdoc", settings.docDir, (!module || !module.name || (ns && ns->name && !strcmp(ns->name, "namespaces/ecere/namespaces/com"))) ? "ecereCOM" : module.name);
+
+            archive = ArchiveOpen(docFile, { true } );
+            readOnly = archive == null;
+            delete archive;
+         }
+
          page.Generate(f);
          f.Seek(0, start);
          OpenFile(f, null);
@@ -2235,12 +2309,13 @@ class HelpView : HTMLView
       char fileName[MAX_FILENAME];
       char directory[MAX_LOCATION];
       char * location;
-      Archive archive;
-      SplitArchivePath(editString, archiveFile, &location);
-      GetLastDirectory(location, fileName);
-      StripLastDirectory(location, directory);
-      archive = ArchiveOpen(archiveFile, { true } );
-      // if(archive)
+      Archive archive = null;
+      if(SplitArchivePath(editString, archiveFile, &location))
+      {
+         GetLastDirectory(location, fileName);
+         StripLastDirectory(location, directory);
+         archive = ArchiveOpen(archiveFile, { true } );
+      }
       {
          TempFile f { };
          ArchiveDir dir = archive ? archive.OpenDirectory(directory, null, replace) : null;
@@ -2301,7 +2376,8 @@ class HelpView : HTMLView
 
       if(edit && (!textBlock || overLink != textBlock.parent))
       {
-         SaveEdit();
+         if(!readOnly)
+            SaveEdit();
          HTMLView::OnLeftButtonDown(x, y, mods);
          selPosition = curPosition = 0;
          selBlock = textBlock;
@@ -3082,6 +3158,7 @@ class HelpView : HTMLView
                }
                break;
             case backSpace:
+               if(readOnly) break;
                if(textBlock == selBlock && curPosition == selPosition)
                {
                   if(curPosition)
@@ -3136,6 +3213,7 @@ class HelpView : HTMLView
                   DeleteSelection();
                break;
             case del:
+               if(readOnly) break;
                if(textBlock != selBlock || curPosition != selPosition)
                   DeleteSelection();
                else if(textBlock.textLen > curPosition)
@@ -3186,6 +3264,7 @@ class HelpView : HTMLView
                Block newBlock;
                int startY, startX;
 
+               if(readOnly) break;
                DeleteSelection();
 
                block = { type = BR, parent = textBlock.parent, font = textBlock.font };
@@ -3220,6 +3299,7 @@ class HelpView : HTMLView
             }
             case ctrlX:
             case Key { del, shift = true }:
+               if(readOnly) break;
                // Cut
                CopySelection();
                DeleteSelection();
@@ -3231,76 +3311,77 @@ class HelpView : HTMLView
                break;
             case shiftInsert:
             case ctrlV:
-            {
-               ClipBoard clipBoard { };
-               if(clipBoard.Load())
-               {  
-                  int c;
-                  char * text = clipBoard.memory;
-                  char ch;
-                  int start = 0;
-                  Block parent;
-                  FontEntry font;
-
-                  DeleteSelection();
-
-                  parent = textBlock.parent;
-                  font = textBlock.font;
-
-                  for(c = 0; ; c++)
+               if(!readOnly)
+               {
+                  ClipBoard clipBoard { };
+                  if(clipBoard.Load())
                   {
-                     ch = text[c];
-                     if(ch == '\n' || ch == '\r' || !ch)
+                     int c;
+                     char * text = clipBoard.memory;
+                     char ch;
+                     int start = 0;
+                     Block parent;
+                     FontEntry font;
+
+                     DeleteSelection();
+
+                     parent = textBlock.parent;
+                     font = textBlock.font;
+
+                     for(c = 0; ; c++)
                      {
-                        int len = c - start;
-                        textBlock.text = renew textBlock.text char[textBlock.textLen + 1 + len];
-                        memmove(textBlock.text + curPosition + len, textBlock.text + curPosition, textBlock.textLen - curPosition + 1);
-                        memcpy(textBlock.text + curPosition, text + start, len);
-                        textBlock.textLen += len;
-                        curPosition += len;
-                        selPosition = curPosition;
-                        selBlock = textBlock;
-                        if(!ch) break;
+                        ch = text[c];
+                        if(ch == '\n' || ch == '\r' || !ch)
                         {
-                           Block block { type = BR, parent = parent, font = font };
-                           Block newBlock { type = TEXT, parent = parent, font = font };
-                           int startY = textBlock.startY, startX = textBlock.startX;
-                           int tw = 0, th = 0;
-
-                           display.FontExtent(textBlock.font.font, " ", 1, null, &th);
-                           textBlock.parent.subBlocks.Insert(textBlock, block);
-                           textBlock.parent.subBlocks.Insert(block, newBlock);
-
-                           startY += th;
-
-                           newBlock.textLen = textBlock.textLen - curPosition;
-                           newBlock.text = new char[newBlock.textLen+1];
-                           memcpy(newBlock.text, textBlock.text + curPosition, textBlock.textLen - curPosition + 1);
-                           textBlock.textLen = curPosition;
-                           textBlock.text[curPosition] = 0;
-
-                           newBlock.startY = startY;
-                           newBlock.startX = startX;
-                           selPosition = curPosition = 0;
+                           int len = c - start;
+                           textBlock.text = renew textBlock.text char[textBlock.textLen + 1 + len];
+                           memmove(textBlock.text + curPosition + len, textBlock.text + curPosition, textBlock.textLen - curPosition + 1);
+                           memcpy(textBlock.text + curPosition, text + start, len);
+                           textBlock.textLen += len;
+                           curPosition += len;
+                           selPosition = curPosition;
                            selBlock = textBlock;
-                           textBlock = newBlock;
+                           if(!ch) break;
+                           {
+                              Block block { type = BR, parent = parent, font = font };
+                              Block newBlock { type = TEXT, parent = parent, font = font };
+                              int startY = textBlock.startY, startX = textBlock.startX;
+                              int tw = 0, th = 0;
+
+                              display.FontExtent(textBlock.font.font, " ", 1, null, &th);
+                              textBlock.parent.subBlocks.Insert(textBlock, block);
+                              textBlock.parent.subBlocks.Insert(block, newBlock);
+
+                              startY += th;
+
+                              newBlock.textLen = textBlock.textLen - curPosition;
+                              newBlock.text = new char[newBlock.textLen+1];
+                              memcpy(newBlock.text, textBlock.text + curPosition, textBlock.textLen - curPosition + 1);
+                              textBlock.textLen = curPosition;
+                              textBlock.text[curPosition] = 0;
+
+                              newBlock.startY = startY;
+                              newBlock.startX = startX;
+                              selPosition = curPosition = 0;
+                              selBlock = textBlock;
+                              textBlock = newBlock;
+                           }
+                           if(ch == '\r' && text[c+1] == '\n') c++;
+                           start = c + 1;
                         }
-                        if(ch == '\r' && text[c+1] == '\n') c++;
-                        start = c + 1;
                      }
+                     ComputeMinSizes();
+                     ComputeSizes();
+                     PositionCaret(true);
+                     Update(null);
                   }
-                  ComputeMinSizes();
-                  ComputeSizes();
-                  PositionCaret(true);
-                  Update(null);
+                  delete clipBoard;
                }
-               delete clipBoard;
                break;
-            }
             default:
             {
                // eC BUG HERE: (Should be fixed)
-               if(!key.ctrl && !key.alt && ch >= 32 && ch != 128 /*&& ch < 128*/)
+               if(!readOnly && !key.ctrl && !key.alt && ch >= 32 && ch != 128 /*&& ch < 128*/)
                {
                   char string[5];
                   int len = UTF32toUTF8Len(&ch, 1, string, 5);
