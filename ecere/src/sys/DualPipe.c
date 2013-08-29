@@ -16,9 +16,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define POM_output   1
-#define POM_error    2
-#define POM_input    4
+#define POM_output      1
+#define POM_error       2
+#define POM_input       4
+#define POM_showWindow  8
 
 #define FSM_start    0
 #define FSM_current  1
@@ -446,7 +447,8 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, char * commandLine, char * env, voi
 
       // Set up the start up info struct.
       si.cb = sizeof(STARTUPINFO);
-      si.dwFlags = STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
+      si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+      si.wShowWindow = (mode & POM_showWindow) ? SW_SHOW : SW_HIDE;
       si.hStdOutput = hOutput[PIPE_WRITE] ? hOutput[PIPE_WRITE] : hStdOut;
       si.hStdInput  = hInput [PIPE_READ] ? hInput [PIPE_READ]  : hStdIn;
       if((mode & POM_error) && (mode & POM_output))

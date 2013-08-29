@@ -407,6 +407,7 @@ class IDEWorkSpace : Window
    MenuItem * driverItems, * skinItems;
    StatusField pos { width = 150 };
    StatusField ovr, caps, num;
+   DualPipe documentor;
 
    BitmapResource back                 { ":ecereBack.jpg", window = this };
    BitmapResource bmpBp                { ":codeMarks/breakpoint.png", window = this };
@@ -1454,18 +1455,26 @@ class IDEWorkSpace : Window
          helpMenu, $"API Reference", r, f1;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
-            char * p = new char[MAX_LOCATION];
-            p[0] = '\0';
-            strncpy(p, settingsContainer.moduleLocation, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-            PathCat(p, "documentor");
-#if defined(__WIN32__)
-            ChangeExtension(p, "exe", p);
-#endif
-            if(FileExists(p).isFile)
-               Execute(p);
+            if(!documentor)
+            {
+               char * p = new char[MAX_LOCATION];
+               p[0] = '\0';
+               strncpy(p, settingsContainer.moduleLocation, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+               PathCat(p, "documentor");
+   #if defined(__WIN32__)
+               ChangeExtension(p, "exe", p);
+   #endif
+               if(!FileExists(p).isFile)
+                  strcpy(p, "documentor");
+
+               documentor = DualPipeOpen({ input = true, output = true, showWindow = true }, p);
+               delete p;
+            }
             else
-               Execute("documentor");
-            delete p;
+            {
+               Process_ShowWindows(documentor.GetProcessID());
+               // documentor.Puts("Activate\n");
+            }
             return true;
          }
       }
@@ -3380,6 +3389,12 @@ class IDEWorkSpace : Window
       delete driverItems;
       delete skinItems;
       delete ideSettings;
+      if(documentor)
+      {
+         documentor.Puts("Quit\n");
+         documentor.Wait();
+         delete documentor;
+      }
    }
 }
 
@@ -3597,6 +3612,23 @@ class IDEApp : GuiApplication
       if(!LoadIncludeFile())
          PrintLn("error: unable to load :crossplatform.mk file inside ide binary.");
 
+      return true;
+   }
+
+   bool Cycle(bool idle)
+   {
+      if(ide.documentor)
+      {
+         if(ide.documentor.Peek())
+         {
+            char line[1024];
+            ide.documentor.GetLine(line, sizeof(line));
+            if(!strcmpi(line, "Exited"))
+               delete ide.documentor;
+         }
+         if(ide.documentor && ide.documentor.eof)
+            delete ide.documentor;
+      }
       return true;
    }
 

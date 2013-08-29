@@ -27,7 +27,7 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, char * commandLine, char * env, voi
 
 private:
 
-public class PipeOpenMode { public bool output:1, error:1, input:1; };
+public class PipeOpenMode { public bool output:1, error:1, input:1, showWindow:1; };
 
 public class DualPipe : File
 {

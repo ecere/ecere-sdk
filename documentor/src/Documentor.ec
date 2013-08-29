@@ -11,6 +11,8 @@ static NameSpace globalData;
 static OldList excludedSymbols { offset = (uint)&((Symbol)0).left };
 static bool readOnly;
 
+define app = (GuiApplication)__thisModule.application;
+
 #define UTF8_NUM_BYTES(x)  (__extension__({ byte b = x; (b & 0x80 && b & 0x40) ? ((b & 0x20) ? ((b & 0x10) ? 4 : 3) : 2) : 1; }))
 
 default:
@@ -3666,7 +3668,7 @@ class Documentor : GuiApplication
       SetExcludedSymbols(&excludedSymbols);
       SetDefines(&::defines);
       SetImports(&imports);
-      
+
       SetGlobalData(globalData);
 
       settingsContainer.dataOwner = &settings;
@@ -3717,11 +3719,29 @@ class Documentor : GuiApplication
             row.collapsed = false;
       #endif
       }
+
+      commandThread.Create();
+      return true;
+   }
+
+   bool Cycle(bool idle)
+   {
+      if(quit)
+         mainForm.Destroy(0);
       return true;
    }
 
    void Terminate()
    {
+      PrintLn("Exited");
+      console.Flush();
+      quit = true;
+      console.CloseInput();
+      console.CloseOutput();
+      app.Unlock();
+      commandThread.Wait();
+      app.Lock();
+
       FreeContext(globalContext);
       FreeExcludedSymbols(excludedSymbols);
       ::defines.Free(FreeModuleDefine);
@@ -3734,4 +3754,28 @@ class Documentor : GuiApplication
    }
 }
 
+ConsoleFile console { };
 MainForm mainForm { };
+bool quit;
+
+Thread commandThread
+{
+   unsigned int Main()
+   {
+      while(!quit)
+      {
+         char command[1024];
+         console.GetLine(command, sizeof(command));
+         if(!quit && command[0])
+         {
+            app.Lock();
+            if(!strcmpi(command, "Activate"))
+               mainForm.Activate();
+            else if(!strcmpi(command, "Quit"))
+               quit = true;
+            app.Unlock();
+         }
+      }
+      return 0;
+   }
+};
