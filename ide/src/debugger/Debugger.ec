@@ -447,6 +447,12 @@ enum DebuggerEvent
    property bool canBeMonitored { get { return (this == hit || this == breakEvent || this == signal || this == stepEnd || this == functionEnd); } };
 };
 enum DebuggerAction { none, internal, restart, stop, selectFrame }; //, bpValidation
+enum DebuggerReason
+{
+   unknown, endSteppingRange, functionFinished, signalReceived, breakpointHit
+   //watchpointTrigger, readWatchpointTrigger, accessWatchpointTrigger, watchpointScope, locationReached,
+   //exited, exitedNormally, exitedSignalled;
+};
 enum BreakpointType
 {
    none, internalMain, internalWinMain, internalModulesLoaded, user, runToCursor, internalModuleLoad;
@@ -455,6 +461,7 @@ enum BreakpointType
    property bool isUser { get { return (this == user || this == runToCursor); } };
 };
 enum DebuggerEvaluationError { none, symbolNotFound, memoryCantBeRead, unknown };
+enum DebuggerUserAction { none, start, resume, _break, stop, restart, selectThread, selectFrame, stepInto, stepOver, stepOut, runToCursor };
 
 FileDialog debuggerFileDialog { type = selectDir };
 
@@ -498,6 +505,7 @@ class Debugger
    char * targetDir;
    char * targetFile;
    
+   DebuggerUserAction userAction;
    DebuggerState state;
    DebuggerEvent event;
    DebuggerAction breakType;
@@ -789,12 +797,14 @@ class Debugger
    void Resume()
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::Resume");
+      userAction = resume;
       GdbExecContinue(true);
    }
 
    void Break()
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::Break");
+      userAction = _break;
       if(state == running)
       {
          if(targetProcessId)
@@ -805,6 +815,7 @@ class Debugger
    void Stop()
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::Stop");
+      userAction = stop;
       switch(state)
       {
          case running:
@@ -828,6 +839,7 @@ class Debugger
    void Restart(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind)
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::Restart");
+      userAction = restart;
       if(StartSession(compiler, config, bitDepth, useValgrind, true, false, false/*, false*/) == loaded)
          GdbExecRun();
    }
@@ -902,6 +914,7 @@ class Debugger
    void SelectThread(int thread)
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::SelectThread(", thread, ")");
+      userAction = selectThread;
       if(state == stopped)
       {
          if(thread != activeThread)
@@ -925,6 +938,7 @@ class Debugger
    void SelectFrame(int frame)
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::SelectFrame(", frame, ")");
+      userAction = selectFrame; // not always user action, right? doesn't matter for now.
       if(state == stopped)
       {
          if(frame != activeFrameLevel || !codeEditor || !codeEditor.visible)
@@ -1048,8 +1062,8 @@ class Debugger
          }
          this.ignoreBreakpoints = ignoreBreakpoints;
          this.userBreakOnInternalBreakpoint = userBreakOnInternalBreakpoint;
-         if(ignoreBreakpoints && (result == loaded || result == stopped))
-            GdbBreakpointsDelete(false, false);
+         if(result == loaded || result == stopped)
+            GdbBreakpointsDelete(false, (userAction == stepOver || userAction == stepOut), ignoreBreakpoints);
       }
       return result;
    }
@@ -1057,6 +1071,7 @@ class Debugger
    void Start(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind)
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::Start()");
+      userAction = start;
       if(StartSession(compiler, config, bitDepth, useValgrind, true, false, false/*, false*/) == loaded)
          GdbExecRun();
    }
@@ -1064,6 +1079,7 @@ class Debugger
    void StepInto(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind)
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StepInto()");
+      userAction = stepInto;
       switch(StartSession(compiler, config, bitDepth, useValgrind, false, true, false/*, false*/))
       {
          case loaded:  GdbExecRun();  break;
@@ -1074,6 +1090,7 @@ class Debugger
    void StepOver(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, bool ignoreBreakpoints)
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StepOver()");
+      userAction = stepOver;
       switch(StartSession(compiler, config, bitDepth, useValgrind, false, true, ignoreBreakpoints/*, false*/))
       {
          case loaded:  GdbExecRun();  break;
@@ -1084,12 +1101,15 @@ class Debugger
    void StepOut(bool ignoreBreakpoints)
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StepOut()");
+      userAction = stepOut;
       if(state == stopped)
       {
          this.ignoreBreakpoints = ignoreBreakpoints;
-         if(ignoreBreakpoints)
-            GdbBreakpointsDelete(true, false);
-         GdbExecFinish();
+         GdbBreakpointsDelete(true, true, ignoreBreakpoints);
+         if(frameCount > 1)
+            GdbExecFinish();
+         else
+            GdbExecContinue(true);
       }
    }
 
@@ -1098,6 +1118,7 @@ class Debugger
       char relativeFilePath[MAX_LOCATION];
       DebuggerState st = state;
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::RunToCursor()");
+      userAction = runToCursor;
       //if(st == loaded)
       //{
       //   ide.outputView.ShowClearSelectTab(debug);
@@ -1741,83 +1762,86 @@ class Debugger
       //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbBreakpointsInsert()");
       if(symbols)
       {
-         DirExpression objDir = ide.project.GetObjDir(currentCompiler, prjConfig, bitDepth);
-         for(bp : sysBPs; !bp.inserted)
+         if(userAction != stepOut && (userAction != stepOver || state == loaded))
          {
-            bool insert = false;
-            if(bp.type == internalModulesLoaded)
+            DirExpression objDir = ide.project.GetObjDir(currentCompiler, prjConfig, bitDepth);
+            for(bp : sysBPs; !bp.inserted)
             {
-               char path[MAX_LOCATION];
-               char name[MAX_LOCATION];
-               char fixedModuleName[MAX_FILENAME];
-               char line[16384];
-               int lineNumber;
-               bool moduleLoadBlock = false;
-               File f;
-               ReplaceSpaces(fixedModuleName, ide.project.moduleName);
-               snprintf(name, sizeof(name),"%s.main.ec", fixedModuleName);
-               name[sizeof(name)-1] = 0;
-               strcpy(path, ide.workspace.projectDir);
-               PathCatSlash(path, objDir.dir);
-               PathCatSlash(path, name);
-               f = FileOpen(path, read);
-               if(f)
+               bool insert = false;
+               if(bp.type == internalModulesLoaded)
                {
-                  for(lineNumber = 1; !f.Eof(); lineNumber++)
+                  char path[MAX_LOCATION];
+                  char name[MAX_LOCATION];
+                  char fixedModuleName[MAX_FILENAME];
+                  char line[16384];
+                  int lineNumber;
+                  bool moduleLoadBlock = false;
+                  File f;
+                  ReplaceSpaces(fixedModuleName, ide.project.moduleName);
+                  snprintf(name, sizeof(name),"%s.main.ec", fixedModuleName);
+                  name[sizeof(name)-1] = 0;
+                  strcpy(path, ide.workspace.projectDir);
+                  PathCatSlash(path, objDir.dir);
+                  PathCatSlash(path, name);
+                  f = FileOpen(path, read);
+                  if(f)
                   {
-                     if(f.GetLine(line, sizeof(line) - 1))
+                     for(lineNumber = 1; !f.Eof(); lineNumber++)
                      {
-                        bool moduleLoadLine;
-                        TrimLSpaces(line, line);
-                        moduleLoadLine = !strncmp(line, "eModule_Load", strlen("eModule_Load"));
-                        if(!moduleLoadBlock && moduleLoadLine)
-                           moduleLoadBlock = true;
-                        else if(moduleLoadBlock && !moduleLoadLine && strlen(line) > 0)
-                           break;
-                     }
-                  }
-                  if(!f.Eof())
-                  {
-                     char relative[MAX_LOCATION];
-                     bp.absoluteFilePath = path;
-                     MakePathRelative(path, ide.workspace.projectDir, relative);
-                     bp.relativeFilePath = relative;
-                     bp.line = lineNumber;
-                     insert = true;
-                  }
-                  delete f;
-               }
-            }
-            else if(bp.type == internalModuleLoad)
-            {
-               if(modules)
-               {
-                  for(prj : ide.workspace.projects)
-                  {
-                     if(!strcmp(prj.moduleName, "ecere"))
-                     {
-                        ProjectNode node = prj.topNode.Find("instance.c", false);
-                        if(node)
+                        if(f.GetLine(line, sizeof(line) - 1))
                         {
-                           char path[MAX_LOCATION];
-                           char relative[MAX_LOCATION];
-                           node.GetFullFilePath(path);
-                           bp.absoluteFilePath = path;
-                           MakePathRelative(path, prj.topNode.path, relative);
-                           bp.relativeFilePath = relative;
-                           insert = true;
-                           break;
+                           bool moduleLoadLine;
+                           TrimLSpaces(line, line);
+                           moduleLoadLine = !strncmp(line, "eModule_Load", strlen("eModule_Load"));
+                           if(!moduleLoadBlock && moduleLoadLine)
+                              moduleLoadBlock = true;
+                           else if(moduleLoadBlock && !moduleLoadLine && strlen(line) > 0)
+                              break;
+                        }
+                     }
+                     if(!f.Eof())
+                     {
+                        char relative[MAX_LOCATION];
+                        bp.absoluteFilePath = path;
+                        MakePathRelative(path, ide.workspace.projectDir, relative);
+                        bp.relativeFilePath = relative;
+                        bp.line = lineNumber;
+                        insert = true;
+                     }
+                     delete f;
+                  }
+               }
+               else if(bp.type == internalModuleLoad)
+               {
+                  if(modules)
+                  {
+                     for(prj : ide.workspace.projects)
+                     {
+                        if(!strcmp(prj.moduleName, "ecere"))
+                        {
+                           ProjectNode node = prj.topNode.Find("instance.c", false);
+                           if(node)
+                           {
+                              char path[MAX_LOCATION];
+                              char relative[MAX_LOCATION];
+                              node.GetFullFilePath(path);
+                              bp.absoluteFilePath = path;
+                              MakePathRelative(path, prj.topNode.path, relative);
+                              bp.relativeFilePath = relative;
+                              insert = true;
+                              break;
+                           }
                         }
                      }
                   }
                }
+               else
+                  insert = true;
+               if(insert)
+                  SetBreakpoint(bp, false);
             }
-            else
-               insert = true;
-            if(insert)
-               SetBreakpoint(bp, false);
+            delete objDir;
          }
-         delete objDir;
 
          if(bpRunToCursor && !bpRunToCursor.inserted)
             SetBreakpoint(bpRunToCursor, false);
@@ -1918,7 +1942,7 @@ class Debugger
       return !breakpointError;
    }
 
-   void GdbBreakpointsDelete(bool deleteRunToCursor, bool deleteInternalBreakpoints)
+   void GdbBreakpointsDelete(bool deleteRunToCursor, bool deleteInternalBreakpoints, bool deleteUserBreakpoints)
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbBreakpointsDelete(deleteRunToCursor(", deleteRunToCursor, "))");
       if(symbols)
@@ -1928,8 +1952,11 @@ class Debugger
             for(bp : sysBPs)
                UnsetBreakpoint(bp);
          }
-         for(bp : ide.workspace.breakpoints)
-            UnsetBreakpoint(bp);
+         if(deleteUserBreakpoints)
+         {
+            for(bp : ide.workspace.breakpoints)
+               UnsetBreakpoint(bp);
+         }
          if(deleteRunToCursor && bpRunToCursor)
             UnsetBreakpoint(bpRunToCursor);
       }
@@ -2000,7 +2027,7 @@ class Debugger
    {
       if(targeted)
       {
-         GdbBreakpointsDelete(true, true);
+         GdbBreakpointsDelete(true, true, true);
          GdbCommand(false, "file");  //GDB/MI Missing Implementation -target-detach
          targeted = false;
          symbols = true;
@@ -3044,7 +3071,12 @@ class Debugger
          if(bpInternal.type == internalModulesLoaded)
             modules = true;
          if(!bpUser && !userBreakOnInternalBreakpoint)
-            GdbExecContinue(false);
+         {
+            if(userAction == stepOut)//if(prevStopItem.reason == functionFinished)
+               StepOut(ignoreBreakpoints);
+            else
+               GdbExecContinue(false);
+         }
       }
       if(bpUser)
       {
@@ -3564,6 +3596,7 @@ class Debugger
                                  _dpl(0, "problem");
       #endif
                               stopItem = GdbDataStop { };
+                              stopItem.reason = breakpointHit;
 
                               for(i = tk+1; i < outTokens.count; i++)
                               {
@@ -3593,6 +3626,7 @@ class Debugger
                                  _dpl(0, "problem");
       #endif
                               stopItem = GdbDataStop { };
+                              stopItem.reason = endSteppingRange;
 
                               for(i = tk+1; i < outTokens.count; i++)
                               {
@@ -3621,7 +3655,7 @@ class Debugger
                                  _dpl(0, "problem");
       #endif
                               stopItem = GdbDataStop { };
-                              stopItem.reason = CopyString(reason);
+                              stopItem.reason = functionFinished;
 
                               for(i = tk+1; i < outTokens.count; i++)
                               {
@@ -3652,7 +3686,7 @@ class Debugger
                                  _dpl(0, "problem");
       #endif
                               stopItem = GdbDataStop { };
-                              stopItem.reason = CopyString(reason);
+                              stopItem.reason = signalReceived;
 
                               for(i = tk+1; i < outTokens.count; i++)
                               {
@@ -4333,7 +4367,7 @@ class Frame : struct
 
 class GdbDataStop : struct
 {
-   char * reason;
+   DebuggerReason reason;
    int threadid;
    union
    {
@@ -4358,17 +4392,16 @@ class GdbDataStop : struct
    {
       if(reason)
       {
-         if(!strcmp(reason, "signal-received"))
+         if(reason == signalReceived)
          {
             delete name;
             delete meaning;
          }
-         else if(!strcmp(reason, "function-finished"))
+         else if(reason == functionFinished)
          {
             delete gdbResultVar;
             delete returnValue;
          }
-         delete reason;
       }
       if(frame) frame.Free();
    }
