@@ -1867,7 +1867,7 @@ class Debugger
          delete location;
          if(!breakpointError)
          {
-            if(bpItem.multipleBPs && bpItem.multipleBPs.count)
+            if(bpItem && bpItem.multipleBPs && bpItem.multipleBPs.count)
             {
                int count = 0;
                GdbDataBreakpoint first = null;
