@@ -3624,10 +3624,20 @@ class IDEApp : GuiApplication
             char line[1024];
             ide.documentor.GetLine(line, sizeof(line));
             if(!strcmpi(line, "Exited"))
+            {
+               ide.documentor.CloseInput();
+               ide.documentor.CloseOutput();
+               ide.documentor.Wait();
                delete ide.documentor;
+            }
          }
          if(ide.documentor && ide.documentor.eof)
+         {
+            ide.documentor.CloseInput();
+            ide.documentor.CloseOutput();
+            ide.documentor.Wait();
             delete ide.documentor;
+         }
       }
       return true;
    }
