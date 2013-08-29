@@ -207,6 +207,8 @@ private:
    bool vgTrackOrigins;
    int vgRedzoneSize;
 
+   vgRedzoneSize = -1;
+
 public:
    void Save()
    {

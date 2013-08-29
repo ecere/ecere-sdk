@@ -1150,13 +1150,14 @@ class IDEWorkSpace : Window
             return true;
          }
       Menu debugValgrindRedzoneSizeItem { debugMenu, $"Valgrind Redzone Size", z };
-         MenuItem debugValgrindRS0Item   { debugValgrindRedzoneSizeItem, $"0"  , f, id =   0, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect, checked = true; }
-         MenuItem debugValgrindRS16Item  { debugValgrindRedzoneSizeItem, $"16" , f, id =  16, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS32Item  { debugValgrindRedzoneSizeItem, $"32" , f, id =  32, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS64Item  { debugValgrindRedzoneSizeItem, $"64" , f, id =  64, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS128Item { debugValgrindRedzoneSizeItem, $"128", f, id = 128, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS256Item { debugValgrindRedzoneSizeItem, $"256", f, id = 256, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS512Item { debugValgrindRedzoneSizeItem, $"512", f, id = 512, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRSDefaultItem { debugValgrindRedzoneSizeItem, $"Default", f, id =  -1, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect, checked = true; }
+         MenuItem debugValgrindRS0Item       { debugValgrindRedzoneSizeItem, $"0"      , f, id =   0, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS16Item      { debugValgrindRedzoneSizeItem, $"16"     , f, id =  16, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS32Item      { debugValgrindRedzoneSizeItem, $"32"     , f, id =  32, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS64Item      { debugValgrindRedzoneSizeItem, $"64"     , f, id =  64, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS128Item     { debugValgrindRedzoneSizeItem, $"128"    , f, id = 128, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS256Item     { debugValgrindRedzoneSizeItem, $"256"    , f, id = 256, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS512Item     { debugValgrindRedzoneSizeItem, $"512"    , f, id = 512, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
          bool ValgrindRSSelect(MenuItem selection, Modifiers mods)
          {
             if(ide.workspace)
@@ -1165,13 +1166,14 @@ class IDEWorkSpace : Window
                {
                   int vgRedzoneSize = (int)selection.id;
 
-                  debugValgrindRS0Item.checked   = debugValgrindRS0Item.id   == vgRedzoneSize;
-                  debugValgrindRS16Item.checked  = debugValgrindRS16Item.id  == vgRedzoneSize;
-                  debugValgrindRS32Item.checked  = debugValgrindRS32Item.id  == vgRedzoneSize;
-                  debugValgrindRS64Item.checked  = debugValgrindRS64Item.id  == vgRedzoneSize;
-                  debugValgrindRS128Item.checked = debugValgrindRS128Item.id == vgRedzoneSize;
-                  debugValgrindRS256Item.checked = debugValgrindRS256Item.id == vgRedzoneSize;
-                  debugValgrindRS512Item.checked = debugValgrindRS512Item.id == vgRedzoneSize;
+                  debugValgrindRSDefaultItem.checked = debugValgrindRSDefaultItem.id == vgRedzoneSize;
+                  debugValgrindRS0Item.checked       = debugValgrindRS0Item.id       == vgRedzoneSize;
+                  debugValgrindRS16Item.checked      = debugValgrindRS16Item.id      == vgRedzoneSize;
+                  debugValgrindRS32Item.checked      = debugValgrindRS32Item.id      == vgRedzoneSize;
+                  debugValgrindRS64Item.checked      = debugValgrindRS64Item.id      == vgRedzoneSize;
+                  debugValgrindRS128Item.checked     = debugValgrindRS128Item.id     == vgRedzoneSize;
+                  debugValgrindRS256Item.checked     = debugValgrindRS256Item.id     == vgRedzoneSize;
+                  debugValgrindRS512Item.checked     = debugValgrindRS512Item.id     == vgRedzoneSize;
 
                   ide.workspace.vgRedzoneSize = vgRedzoneSize;
                   ide.workspace.Save();
@@ -1929,13 +1931,14 @@ class IDEWorkSpace : Window
 
       debugValgrindTrackOriginsItem.disabled       = unavailable;
 
-      debugValgrindRS0Item.disabled   = unavailable;
-      debugValgrindRS16Item.disabled  = unavailable;
-      debugValgrindRS32Item.disabled  = unavailable;
-      debugValgrindRS64Item.disabled  = unavailable;
-      debugValgrindRS128Item.disabled = unavailable;
-      debugValgrindRS256Item.disabled = unavailable;
-      debugValgrindRS512Item.disabled = unavailable;
+      debugValgrindRSDefaultItem.disabled          = unavailable;
+      debugValgrindRS0Item.disabled                = unavailable;
+      debugValgrindRS16Item.disabled               = unavailable;
+      debugValgrindRS32Item.disabled               = unavailable;
+      debugValgrindRS64Item.disabled               = unavailable;
+      debugValgrindRS128Item.disabled              = unavailable;
+      debugValgrindRS256Item.disabled              = unavailable;
+      debugValgrindRS512Item.disabled              = unavailable;
    }
 #endif
 

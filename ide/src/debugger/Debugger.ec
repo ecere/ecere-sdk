@@ -2219,8 +2219,11 @@ class Debugger
          }
          if(result)
          {
-            sprintf(command, "%s --vgdb=yes --vgdb-error=0 --log-file=%s --leak-check=%s --redzone-size=%d --track-origins=%s %s%s%s",
-                  valgrindCommand, vgLogPath, (char*)vgLeakCheck, vgRedzoneSize, vgTrackOrigins ? "yes" : "no", targetFile, clArgs ? " " : "", clArgs ? clArgs : "");
+            char * vgRedzoneSizeFlag = vgRedzoneSize == -1 ? "" : PrintString(" --redzone-size=", vgRedzoneSize);
+            sprintf(command, "%s --vgdb=yes --vgdb-error=0 --log-file=%s --leak-check=%s%s --track-origins=%s %s%s%s",
+                  valgrindCommand, vgLogPath, (char*)vgLeakCheck, vgRedzoneSizeFlag, vgTrackOrigins ? "yes" : "no", targetFile, clArgs ? " " : "", clArgs ? clArgs : "");
+            if(vgRedzoneSize != -1)
+               delete vgRedzoneSizeFlag;
             vgTargetHandle = DualPipeOpen(PipeOpenMode { output = 1, error = 2, input = 1 }, command);
             if(!vgTargetHandle)
             {
