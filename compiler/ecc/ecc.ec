@@ -484,6 +484,7 @@ class CompilerApp : Application
          {
             char impFile[MAX_LOCATION];
             ImportedModule module;
+            char sourceFileName[MAX_FILENAME];
             char mainModuleName[MAX_FILENAME];
             int exitCode;
             OldList * ast;
@@ -494,7 +495,8 @@ class CompilerApp : Application
             imports.Add((mainModule = ModuleImport { }));
             SetMainModule(mainModule);
 
-            GetLastDirectory(GetSourceFile(), mainModuleName);
+            GetLastDirectory(GetSourceFile(), sourceFileName);
+            strcpy(mainModuleName, sourceFileName);
 
 #if 0
             // TEMP: UNTIL WE CAN HAVE PER SOURCE FILE PREPROCESSOR DEFINITIONS...
@@ -543,7 +545,7 @@ class CompilerApp : Application
                char symLocation[MAX_LOCATION];
                ImportedModule module, next;
 
-               GetLastDirectory(GetSourceFile(), symFile);
+               strcpy(symFile, sourceFileName);
                ChangeExtension(symFile, "sym", symFile);
 
                strcpy(symLocation, GetSymbolsDir());
@@ -612,12 +614,8 @@ class CompilerApp : Application
                ProcessInstanceDeclarations();
 
                strcpy(impFile, GetSymbolsDir());
-               {
-                  char fileName[MAX_FILENAME];
-                  GetLastDirectory(GetSourceFile(), fileName);
-                  PathCat(impFile, fileName);
-                  ChangeExtension(impFile, "imp", impFile);
-               }
+               PathCat(impFile, sourceFileName);
+               ChangeExtension(impFile, "imp", impFile);
                if(imports.first)
                   OutputImports(impFile);
                // For now use precomp to generate sym file only...
@@ -627,7 +625,7 @@ class CompilerApp : Application
                   File output = FileOpen(GetOutputFile(), write);
                   if(output)
                   {
-                     output.Printf("/* Code generated from eC source file. */\n");
+                     output.Printf("/* Code generated from eC source file: %s */\n", sourceFileName);
                      output.Printf("#if defined(__GNUC__)\n");
                         output.Printf("typedef long long int64;\n");
                         output.Printf("typedef unsigned long long uint64;\n");

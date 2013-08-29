@@ -1094,6 +1094,7 @@ if((cppOutput = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(0x1)
 {
 char impFile[797];
 struct ImportedModule * module;
+char sourceFileName[274];
 char mainModuleName[274];
 int exitCode;
 struct __ecereNameSpace__ecere__sys__OldList * ast;
@@ -1102,7 +1103,8 @@ struct __ecereNameSpace__ecere__com__Instance * fileInput = __ecereNameSpace__ec
 SetFileInput(fileInput);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&imports, (mainModule = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleImport)));
 SetMainModule(mainModule);
-__ecereNameSpace__ecere__sys__GetLastDirectory(GetSourceFile(), mainModuleName);
+__ecereNameSpace__ecere__sys__GetLastDirectory(GetSourceFile(), sourceFileName);
+strcpy(mainModuleName, sourceFileName);
 __ecereNameSpace__ecere__sys__StripExtension(mainModuleName);
 module = __extension__ ({
 struct ImportedModule * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ImportedModule);
@@ -1126,7 +1128,7 @@ char symFile[274];
 char symLocation[797];
 struct ImportedModule * module, * next;
 
-__ecereNameSpace__ecere__sys__GetLastDirectory(GetSourceFile(), symFile);
+strcpy(symFile, sourceFileName);
 __ecereNameSpace__ecere__sys__ChangeExtension(symFile, "sym", symFile);
 strcpy(symLocation, GetSymbolsDir());
 __ecereNameSpace__ecere__sys__PathCat(symLocation, symFile);
@@ -1165,13 +1167,8 @@ ProcessInstantiations();
 ProcessMemberAccess();
 ProcessInstanceDeclarations();
 strcpy(impFile, GetSymbolsDir());
-{
-char fileName[274];
-
-__ecereNameSpace__ecere__sys__GetLastDirectory(GetSourceFile(), fileName);
-__ecereNameSpace__ecere__sys__PathCat(impFile, fileName);
+__ecereNameSpace__ecere__sys__PathCat(impFile, sourceFileName);
 __ecereNameSpace__ecere__sys__ChangeExtension(impFile, "imp", impFile);
-}
 if(imports.first)
 OutputImports(impFile);
 if(!((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->exitCode)
@@ -1180,7 +1177,7 @@ struct __ecereNameSpace__ecere__com__Instance * output = __ecereNameSpace__ecere
 
 if(output)
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "/* Code generated from eC source file. */\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "/* Code generated from eC source file: %s */\n", sourceFileName);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(__GNUC__)\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef long long int64;\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef unsigned long long uint64;\n");
