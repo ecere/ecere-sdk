@@ -1873,6 +1873,8 @@ class XInterface : Interface
                                       extents[1] != windowData.decor.right ||
                                       extents[2] != windowData.decor.top ||
                                       extents[3] != windowData.decor.bottom;
+
+                        bool hadFrameExtents = windowData.gotFrameExtents;
                         windowData.decor =
                         {
                            left = (int)extents[0], right  = (int)extents[1],
@@ -1881,13 +1883,20 @@ class XInterface : Interface
                         windowData.gotFrameExtents = true;
                         if(change)
                         {
-                           int x, y, w, h;
-                           window.ComputeAnchors(
-                              window.normalAnchor,
-                              window.normalSizeAnchor,
-                              &x, &y, &w, &h);
-                           window.Position(x, y, w, h, true, true, true, true, false, false);
-                           UpdateRootWindow(window);
+                           int x = window.position.x, y = window.position.y, w = window.size.w, h = window.size.h;
+                           if(!hadFrameExtents && window.state != maximized)
+                           {
+                              window.ComputeAnchors(
+                                 window.normalAnchor,
+                                 window.normalSizeAnchor,
+                                 &x, &y, &w, &h);
+                           }
+
+                           if(!hadFrameExtents)
+                           {
+                              window.Position(x, y, w, h, true, true, true, true, false, !hadFrameExtents && window.state != maximized);
+                              UpdateRootWindow(window);
+                           }
                         }
                         XFree(data);
                      }
