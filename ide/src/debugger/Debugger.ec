@@ -2073,7 +2073,6 @@ class Debugger
    void GdbExecCommon()
    {
       //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecCommon()");
-      ClearBreakDisplay();
       GdbBreakpointsInsert();
    }
 
@@ -3406,6 +3405,7 @@ class Debugger
             {
                waitingForPID = true;
                setWaitingForPID = true;
+               ClearBreakDisplay();
             }
             else if(!strcmp(outTokens[0], "^exit"))
             {
