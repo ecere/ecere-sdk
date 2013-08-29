@@ -1593,7 +1593,7 @@ private:
             }
 
             // Execute it
-            if((dep = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
+            if((dep = DualPipeOpen(PipeOpenMode { output = true, error = true/*, input = true*/ }, command)))
             {
                char line[1024];
                bool firstLine = true;
@@ -1817,7 +1817,7 @@ private:
             }
 
             // Execute it
-            if((dep = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
+            if((dep = DualPipeOpen(PipeOpenMode { output = true, error = true/*, input = true*/ }, command)))
             {
                char line[1024];
                bool result = true;
@@ -1991,7 +1991,7 @@ private:
                }
 
                // Execute it
-               if((dep = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
+               if((dep = DualPipeOpen(PipeOpenMode { output = true, error = true, input = false }, command)))
                {
                   char line[1024];
                   bool firstLine = true;

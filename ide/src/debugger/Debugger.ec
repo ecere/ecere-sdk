@@ -2224,7 +2224,7 @@ class Debugger
                   valgrindCommand, vgLogPath, (char*)vgLeakCheck, vgRedzoneSizeFlag, vgTrackOrigins ? "yes" : "no", targetFile, clArgs ? " " : "", clArgs ? clArgs : "");
             if(vgRedzoneSize != -1)
                delete vgRedzoneSizeFlag;
-            vgTargetHandle = DualPipeOpen(PipeOpenMode { output = 1, error = 2, input = 1 }, command);
+            vgTargetHandle = DualPipeOpen(PipeOpenMode { output = true, /*error = true, */input = true }, command);
             if(!vgTargetHandle)
             {
                ide.outputView.debugBox.Logf($"Debugger Fatal Error: Couldn't start Valgrind\n");
@@ -2267,7 +2267,7 @@ class Debugger
          {
             strcat(command, " -n -silent --interpreter=mi2"); //-async //\"%s\"
             gdbTimer.Start();
-            gdbHandle = DualPipeOpen(PipeOpenMode { output = 1, error = 2, input = 1 }, command);
+            gdbHandle = DualPipeOpen(PipeOpenMode { output = true, /*error = true, */input = true }, command);
             if(!gdbHandle)
             {
                ide.outputView.debugBox.Logf($"Debugger Fatal Error: Couldn't start GDB\n");

@@ -2131,7 +2131,7 @@ private:
          sprintf(command, "%s /useenv /nologo /logcommands %s.sln %s|Win32", compiler.makeCommand, name, config.name);
          if(justPrint)
             ide.outputView.buildBox.Logf("%s\n", command);
-         if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
+         if((f = DualPipeOpen(PipeOpenMode { output = true, error = true/*, input = true*/ }, command)))
          {
             ProcessPipeOutputRaw(f);
             delete f;
@@ -2278,7 +2278,7 @@ private:
                topNode.path, justPrint ? " -n": "", makeFilePath);
          if(justPrint)
             ide.outputView.buildBox.Logf("%s\n", command);
-         if((f = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
+         if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
             ide.outputView.buildBox.Tellf($"Deleting %s%s...",
                   cleanType == realClean ? $"intermediate objects directory" : $"target",
@@ -3567,7 +3567,7 @@ private:
       }
 
       // Execute it
-      if((dep = DualPipeOpen(PipeOpenMode { output = 1, error = 1, input = 2 }, command)))
+      if((dep = DualPipeOpen(PipeOpenMode { output = true, error = true/*, input = true*/ }, command)))
       {
          char line[1024];
          bool result = true;
