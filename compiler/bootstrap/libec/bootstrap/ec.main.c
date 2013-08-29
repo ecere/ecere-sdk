@@ -1,4 +1,4 @@
-/* Code generated from eC source file. */
+/* Code generated from eC source file: ec.main.ec */
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;

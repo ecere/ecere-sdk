@@ -1,3 +1,4 @@
+/* Code generated from eC source file: expression.ec */
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;

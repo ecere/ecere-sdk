@@ -1,3 +1,4 @@
+/* Code generated from Bison source file: type.y */
 /* A Bison parser, made by GNU Bison 2.4.2.  */
 
 /* Skeleton implementation for Bison's Yacc-like parsers in C
