@@ -578,7 +578,7 @@ class ProjectView : Window
       return project.topNode.Find(moduleName, false) != null;
    }
 
-   ProjectNode GetNodeFromWindow(Window document, Project project, bool isCObject)
+   ProjectNode GetNodeFromWindow(Window document, Project project, bool skipExcluded, bool isCObject)
    {
       if(document.fileName)
       {
@@ -595,7 +595,10 @@ class ProjectView : Window
             {
                prj = project ? project : p;
                if((node = prj.topNode.Find(name, false)))
-                  return node;
+               {
+                  if(!skipExcluded || !node.GetIsExcluded(prj.config))
+                     return node;
+               }
                if(project) break;
             }
          }
@@ -605,7 +608,10 @@ class ProjectView : Window
             {
                prj = project ? project : p;
                if((node = prj.topNode.FindByFullPath(documentFileName, false)))
-                  return node;
+               {
+                  if(!skipExcluded || !node.GetIsExcluded(prj.config))
+                     return node;
+               }
                if(project) break;
             }
          }
@@ -760,7 +766,7 @@ class ProjectView : Window
       {
          if(document.modifiedDocument)
          {
-            ProjectNode node = GetNodeFromWindow(document, prj, false);
+            ProjectNode node = GetNodeFromWindow(document, prj, false, false);
             if(node && !document.MenuFileSave(null, 0))
             {
                result = false;
@@ -852,7 +858,7 @@ class ProjectView : Window
          }
          else
          {
-            ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
+            ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false, false);
             if(node)
                prj = node.project;
          }
@@ -882,7 +888,7 @@ class ProjectView : Window
       }
       else
       {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false, false);
          if(node)
             prj = node.project;
       }
@@ -915,7 +921,7 @@ class ProjectView : Window
       }
       else
       {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false, false);
          if(node)
             prj = node.project;
       }
@@ -949,7 +955,7 @@ class ProjectView : Window
       }
       else
       {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false, false);
          if(node)
             prj = node.project;
       }
@@ -1004,7 +1010,7 @@ class ProjectView : Window
       }
       else
       {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false, false);
          if(node) prj = node.project;
       }
       config = prj.config;
@@ -1042,7 +1048,7 @@ class ProjectView : Window
       }
       else
       {
-         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false);
+         ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false, false);
          if(node)
             prj = node.project;
       }
@@ -1067,7 +1073,7 @@ class ProjectView : Window
       {
          if(document.modifiedDocument)
          {
-            ProjectNode n = GetNodeFromWindow(document, project, mode == cObject ? true : false);
+            ProjectNode n = GetNodeFromWindow(document, project, false, mode == cObject ? true : false);
             for(node : nodes)
             {
                if(n && n.IsInNode(node) && !document.MenuFileSave(null, 0))
@@ -1118,7 +1124,7 @@ class ProjectView : Window
       {
          if(document.modifiedDocument)
          {
-            ProjectNode n = GetNodeFromWindow(document, project, false);
+            ProjectNode n = GetNodeFromWindow(document, project, false, false);
             for(node : nodes)
             {
                if(n && n.IsInNode(node) && !document.MenuFileSave(null, 0))

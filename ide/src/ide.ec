@@ -2904,8 +2904,8 @@ class IDEWorkSpace : Window
             if(projectView && projectView.project)
             {
                bool isCObject = false;
-               ProjectNode node = projectView.GetNodeFromWindow(client, null, false);
-               if(!node && (node = projectView.GetNodeFromWindow(client, null, true)))
+               ProjectNode node = projectView.GetNodeFromWindow(client, null, false, false);
+               if(!node && (node = projectView.GetNodeFromWindow(client, null, false, true)))
                   isCObject = true;
                if(node)
                {
@@ -2927,10 +2927,10 @@ class IDEWorkSpace : Window
                            ProjectNode node = null;
                            for(p : ide.workspace.projects)
                            {
-                              node = projectView.GetNodeFromWindow(activeClient, p, false);
+                              node = projectView.GetNodeFromWindow(activeClient, p, true, false);
                               if(node) break;
                            }
-                           if(!node && (node = projectView.GetNodeFromWindow(activeClient, null, true)))
+                           if(!node && (node = projectView.GetNodeFromWindow(activeClient, null, true, true)))
                               isCObject = true;
                            if(node)
                            {
