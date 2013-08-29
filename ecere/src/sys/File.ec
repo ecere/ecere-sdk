@@ -821,10 +821,28 @@ public:
    }
 }
 
+#if defined(__WIN32__)
+default extern intptr_t stdinHandle;
+default extern intptr_t stdoutHandle;
+#endif
+
 public class ConsoleFile : File
 {
    input = eC_stdin();
    output = eC_stdout();
+
+#if defined(__WIN32__)
+   void CloseInput()
+   {
+      CloseHandle((HANDLE)stdinHandle);
+   }
+   /*
+   void CloseOutput()
+   {
+      CloseHandle((HANDLE)stdoutHandle);
+   }*/
+#endif
+
    ~ConsoleFile()
    {
       input = null;

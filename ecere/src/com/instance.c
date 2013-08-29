@@ -50,8 +50,48 @@ typedef unsigned long long uint64;
 #define MAX_FILENAME 274
 #define MAX_EXTENSION 17
 
-FILE *eC_stdin(void)  { return stdin; }
-FILE *eC_stdout(void) { return stdout; }
+#if defined(__WIN32__)
+intptr_t stdinHandle, stdoutHandle;
+int osfStdin, osfStdout;
+FILE * fStdIn, * fStdOut;
+#endif
+
+FILE *eC_stdin(void)  { 
+#if defined(__WIN32__)
+   if(!fStdIn)
+   {
+      stdinHandle = (intptr_t)GetStdHandle(STD_INPUT_HANDLE);
+      osfStdin = _open_osfhandle(stdinHandle, _O_TEXT);
+      if(osfStdin != -1)
+         fStdIn = _fdopen( osfStdin, "rb");
+      else
+         fStdIn = stdin;
+      setvbuf( fStdIn, NULL, _IONBF, 0 );
+   }
+   return fStdIn;
+#else
+return stdin;
+#endif
+}
+
+FILE *eC_stdout(void)
+{
+#if 0 //defined(__WIN32__)
+   if(!fStdOut)
+   {
+      stdoutHandle = (intptr_t)GetStdHandle(STD_OUTPUT_HANDLE);
+      osfStdout = _open_osfhandle(stdoutHandle, _O_TEXT);
+      if(osfStdout != -1)
+         fStdOut = _fdopen( osfStdout, "wb");
+      else
+         fStdOut = stdout;
+      setvbuf( fStdOut, NULL, _IONBF, 0 );
+   }
+   return fStdOut;
+#else
+   return stdout;
+#endif
+}
 FILE *eC_stderr(void) { return stderr; }
 
 void __ecereNameSpace__ecere__com__eSystem_Delete(void * memory);
