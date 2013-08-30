@@ -208,6 +208,7 @@ private:
    int vgRedzoneSize;
 
    vgRedzoneSize = -1;
+   vgLeakCheck = summary;
 
 public:
    void Save()

@@ -9,6 +9,7 @@ import "ec"
 static define localeDir = "locale";
 static bool i18n;
 static bool outputPot;
+static bool disabledPooling;
 
 static Platform targetPlatform;
 static int targetBits;
@@ -473,8 +474,14 @@ static void WriteMain(char * fileName)
          f.Puts("   Property _property;\n");
       if(anyFunction)
          f.Puts("   GlobalFunction function;\n");
-      
+
       f.Puts("\n");
+
+      if(disabledPooling)
+      {
+         f.Puts("   eSystem_SetPoolingDisabled(true);\n");
+         f.Puts("\n");
+      }
 
       if(isDynamicLibrary)
       {
@@ -1603,6 +1610,7 @@ class SymbolgenApp : Application
       char * output = null;
 
       outputPot = false;
+      disabledPooling = false;
       targetPlatform = GetRuntimePlatform();
       targetBits = GetHostBits();
 
@@ -1682,6 +1690,8 @@ class SymbolgenApp : Application
             }
             else if(!strcmp(arg, "-outputpot"))
                outputPot = true;
+            else if(!strcmp(arg, "-disabled-pooling"))
+               disabledPooling = true;
             else if(!strcmp(arg, "-console"))
                isConsole = true;
             else if(!strcmp(arg, "-dynamiclib"))

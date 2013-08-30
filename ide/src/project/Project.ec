@@ -2147,7 +2147,7 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s %s-j%d %s%s%s -C \"%s\"%s -f \"%s\"",
+         sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s%s COMPILER=%s %s-j%d %s%s%s -C \"%s\"%s -f \"%s\"",
 #if defined(__WIN32__)
                "",
 #else
@@ -2160,6 +2160,7 @@ private:
                targetPlatform,
                bitDepth ? " ARCH=" : "",
                bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
+               ide.workspace.useValgrind ? " DISABLED_POOLING=1" : "",
                /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" :*/ "",
                compilerName, eC_Debug ? "--always-make " : "", numJobs,
                (compiler.ccacheEnabled && !eC_Debug) ? "CCACHE=y " : "",
@@ -2485,7 +2486,7 @@ private:
             f.Printf("CXX := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cxxCommand);
             f.Printf("ECP := $(if $(ECP_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)\n", compiler.ecpCommand);
             f.Printf("ECC := $(if $(ECC_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecc/ecc.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.eccCommand);
-            f.Printf("ECS := $(if $(ECS_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)\n", compiler.ecsCommand);
+            f.Printf("ECS := $(if $(ECS_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)\n", compiler.ecsCommand);
             f.Printf("EAR := %s\n", compiler.earCommand);
 
             f.Puts("AS := $(GCC_PREFIX)as\n");

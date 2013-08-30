@@ -1184,7 +1184,7 @@ static void * _mymalloc(unsigned int size)
    {
       unsigned int p = SIZE_POSITION(size);
       if(!memoryInitialized) InitMemory();
-      if(p < NUM_POOLS)
+      if(!poolingDisabled && p < NUM_POOLS)
       {
          block = pools[p].Add();
          if(block)
@@ -6501,6 +6501,14 @@ public void SetActiveDesigner(DesignerBase designer)
 public DesignerBase GetActiveDesigner()
 {
    return activeDesigner;
+}
+
+
+bool poolingDisabled;
+
+public dllexport void eSystem_SetPoolingDisabled(bool disabled)
+{
+   poolingDisabled = disabled;
 }
 
 namespace sys;
