@@ -88,6 +88,11 @@ class PNGFormat : BitmapFormat
                   if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
                      png_set_tRNS_to_alpha(png_ptr);
                   numPasses = png_set_interlace_handling(png_ptr);
+                  if(color_type == PNG_COLOR_TYPE_PALETTE)
+                  {
+                     png_set_palette_to_rgb(png_ptr);
+                     channels = 4;
+                  }
 
                   if((result = bitmap.Allocate(null, (uint)width, (uint)height, 0, pixelFormatRGBA, false)))
                   {
