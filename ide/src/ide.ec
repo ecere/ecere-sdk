@@ -2284,6 +2284,27 @@ class IDEWorkSpace : Window
 
                         workspace.timer.Start();
 
+#if !defined(__WIN32__)
+                        // Valgrind Debug menu updates
+                        debugUseValgrindItem.checked = workspace.useValgrind;
+
+                        debugValgrindNoLeakCheckItem.checked      = workspace.vgLeakCheck == no;
+                        debugValgrindSummaryLeakCheckItem.checked = workspace.vgLeakCheck == summary;
+                        debugValgrindYesLeakCheckItem.checked     = workspace.vgLeakCheck == yes;
+                        debugValgrindFullLeakCheckItem.checked    = workspace.vgLeakCheck == full;
+
+                        debugValgrindRSDefaultItem.checked = workspace.vgRedzoneSize == -1;
+                        debugValgrindRS0Item.checked       = workspace.vgRedzoneSize == 0;
+                        debugValgrindRS16Item.checked      = workspace.vgRedzoneSize == 16;
+                        debugValgrindRS32Item.checked      = workspace.vgRedzoneSize == 32;
+                        debugValgrindRS64Item.checked      = workspace.vgRedzoneSize == 64;
+                        debugValgrindRS128Item.checked     = workspace.vgRedzoneSize == 128;
+                        debugValgrindRS256Item.checked     = workspace.vgRedzoneSize == 256;
+                        debugValgrindRS512Item.checked     = workspace.vgRedzoneSize == 512;
+
+                        debugValgrindTrackOriginsItem.checked = workspace.vgTrackOrigins;
+#endif
+
                         findInFilesDialog.mode = FindInFilesMode::project;
                         findInFilesDialog.currentDirectory = ide.project.topNode.path;
                         
