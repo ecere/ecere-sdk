@@ -421,20 +421,20 @@ class HTMLView : Window
          switch(block.inputType)
          {
             case submit:
-               block.window = Button { this, text = block.value, position = Point { 10, 50 }, id = (int)block, NotifyClicked = ButtonClicked, isDefault = true };
+               block.window = Button { this, text = block.value, position = Point { 10, 50 }, id = (int64)block, NotifyClicked = ButtonClicked, isDefault = true };
                eInstance_IncRef(block.window);
                block.window.Create();
                block.window.cursor = ((GuiApplication)__thisModule).GetCursor(arrow);
                //if(!html.defaultButton) html.defaultButton = block.window;
                break;
             case radio:
-               block.window = Button { this, isRadio = true, position = Point { 10, 100 }, id = (int)block, NotifyClicked = ButtonClicked };
+               block.window = Button { this, isRadio = true, position = Point { 10, 100 }, id = (int64)block, NotifyClicked = ButtonClicked };
                eInstance_IncRef(block.window);
                block.window.Create();
                block.window.cursor = ((GuiApplication)__thisModule).GetCursor(arrow);
                break;
             case text:
-               block.window = EditBox { this, position = Point { 10, 20 }, id = (int)block };
+               block.window = EditBox { this, position = Point { 10, 20 }, id = (int64)block };
                eInstance_IncRef(block.window);
                block.window.Create();
                break;
