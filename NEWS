@@ -1,3 +1,10 @@
+Ecere SDK 0.44.09 (August 30, 2013)
+
+   * Debugger fixes
+   * Documentor fixes
+   * Valgrind integration
+   * Improved usability with Unity
+----------------------------------------
 Ecere SDK 0.44.08 (August 9, 2013)
 
    * Update Windows installer with TDM/MinGW-w64
