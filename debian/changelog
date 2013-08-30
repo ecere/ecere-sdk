@@ -1,3 +1,15 @@
+ecere-sdk (0.44.09-1) unstable; urgency=low
+
+   * Debugger fixes
+   * Documentor fixes
+   * Valgrind integration
+   * Improved usability with Unity
+   * 64 bit fixes
+   * Compiler Fixes, Improved C headers compatibility
+   * Tons of other bug fixes
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Fri, 30 Aug 2013 07:04:00 -0400
+
 ecere-sdk (0.44.06-1) unstable; urgency=low
 
   * Fixed bugs causing build to fail on PowerPC
