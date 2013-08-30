@@ -1227,6 +1227,9 @@ class OGLDisplay : struct
 
 class OGLSystem : struct
 {
+   int maxTextureSize;
+   bool loadingFont;
+   bool pow2textures;
 #if defined(__WIN32__)
    PIXELFORMATDESCRIPTOR pfd;
    int format;
@@ -1238,7 +1241,6 @@ class OGLSystem : struct
    GLXContext glContext;
    GLXDrawable glxDrawable;
 #endif
-   bool loadingFont;
 };
 
 class OGLSurface : struct
@@ -1407,6 +1409,14 @@ class OpenGLDisplayDriver : DisplayDriver
       }
    }
 
+   void ::CheckExtensions(OGLSystem oglSystem)
+   {
+      char * extensions = glGetString(GL_EXTENSIONS);
+      if(extensions)
+         oglSystem.pow2textures = strstr(extensions, "GL_ARB_texture_non_power_of_two") ? false : true;
+      glGetIntegerv(GL_MAX_TEXTURE_SIZE, &oglSystem.maxTextureSize);
+   }
+
    bool CreateDisplaySystem(DisplaySystem displaySystem)
    {
       bool result = false;
@@ -1526,6 +1536,8 @@ class OpenGLDisplayDriver : DisplayDriver
 
                result = true;
 
+               CheckExtensions(oglSystem);
+
                wglMakeCurrent(null, null);
 
                //eSystem_DumpErrors(true);
@@ -1536,6 +1548,7 @@ class OpenGLDisplayDriver : DisplayDriver
       vboAvailable = true;
       #if defined(__ANDROID__)
          egl_init_display(guiApp.desktop.windowHandle);
+         CheckExtensions(oglSystem);
          result = true;
       #else
       {
@@ -1570,6 +1583,7 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             glXMakeCurrent(xGlobalDisplay, oglSystem.glxDrawable, oglSystem.glContext);
             // Setup Extensions
+            CheckExtensions(oglSystem);
             glXMakeCurrent(xGlobalDisplay, None, null);
             result = true;
          }
@@ -2245,13 +2259,19 @@ class OpenGLDisplayDriver : DisplayDriver
 
    bool AllocateBitmap(DisplaySystem displaySystem, Bitmap bitmap, int width, int height, int stride, PixelFormat format, bool allocatePalette)
    {
+      OGLSystem oglSystem = displaySystem.data;
       bool result = false;
       Bitmap mipMap { };
       int glBitmap = -1;
       
-      uint w = pow2i(Min(width, 1024)), h = pow2i(Min(height, 1024));
-      //uint w = pow2i(Min(width, 2048)), h = pow2i(Min(height, 2048));
-      //uint w = pow2i(Min(width, 512)), h = pow2i(Min(height, 512));
+      uint w = width, h = height;
+      if(oglSystem.pow2textures)
+      {
+         w = pow2i(w);
+         h = pow2i(h);
+      }
+      w = Min(w, oglSystem.maxTextureSize);
+      h = Min(h, oglSystem.maxTextureSize);
 
       glGenTextures(1, &glBitmap);
       glBindTexture(GL_TEXTURE_2D, glBitmap);
@@ -2291,9 +2311,15 @@ class OpenGLDisplayDriver : DisplayDriver
       if(/*bitmap.pixelFormat == pixelFormatRGBA || */bitmap.Convert(null, pixelFormat888, null))
       {
          int c, level;
-         uint w = pow2i(Min(bitmap.width, 1024)), h = pow2i(Min(bitmap.height, 1024));
-         //uint w = pow2i(Min(bitmap.width, 512)), h = pow2i(Min(bitmap.height, 512));
+         uint w = bitmap.width, h = bitmap.height;
          int glBitmap = -1;
+         if(oglSystem.pow2textures)
+         {
+            w = pow2i(w);
+            h = pow2i(h);
+         }
+         w = Min(w, oglSystem.maxTextureSize);
+         h = Min(h, oglSystem.maxTextureSize);
 
          // Switch ARGB to RGBA
          //if(bitmap.format != pixelFormatRGBA)
