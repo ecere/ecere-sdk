@@ -881,7 +881,9 @@ class Debugger
          {
             ide.callStackView.Show();
 
-            if(!frame.absoluteFile && frame.file)
+            if(frame.absoluteFile)
+               editor = (CodeEditor)ide.OpenFile(frame.absoluteFile, normal, true, null, no, normal, false);
+            if(!editor && frame.file)
                frame.absoluteFile = ide.workspace.GetAbsolutePathFromRelative(frame.file);
             if(!frame.absoluteFile && askForLocation && frame.file)
             {
@@ -896,7 +898,7 @@ class Debugger
                   frame.absoluteFile = ide.workspace.GetAbsolutePathFromRelative(frame.file);
                }
             }
-            if(frame.absoluteFile)
+            if(!editor && frame.absoluteFile)
                editor = (CodeEditor)ide.OpenFile(frame.absoluteFile, normal, true, null, no, normal, false);
             ide.Update(null);
             if(editor && frame.line)
