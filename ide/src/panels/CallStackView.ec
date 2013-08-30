@@ -36,7 +36,7 @@ class CallStackView : Window
          if(strcmp(editBox.line.text, "..."))
             frameIndex = atoi(editBox.line.text);
          OnSelectFrame(frameIndex);
-         return true;
+         return false;
       }
 
       bool NotifyKeyDown(EditBox editBox, Key key, unichar ch)

@@ -681,7 +681,7 @@ class Debugger
          if(monitor && curEvent.canBeMonitored)
          {
             SelectFrame(activeFrameLevel);
-            GoToStackFrameLine(activeFrameLevel, true);
+            GoToStackFrameLine(activeFrameLevel, true, false);
             ide.ShowCodeEditor();
             ideMainFrame.Activate();   // TOFIX: ide.Activate() is not reliable (app inactive)
             ide.Update(null);
@@ -863,7 +863,7 @@ class Debugger
       return false;
    }
 
-   bool GoToStackFrameLine(int stackLevel, bool askForLocation)
+   bool GoToStackFrameLine(int stackLevel, bool askForLocation, bool fromCallStack)
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GoToStackFrameLine(", stackLevel, ", ", askForLocation, ")");
       if(ide)
@@ -879,7 +879,8 @@ class Debugger
                break;
          if(frame)
          {
-            ide.callStackView.Show();
+            if(!fromCallStack)
+               ide.callStackView.Show();
 
             if(frame.absoluteFile)
                editor = (CodeEditor)ide.OpenFile(frame.absoluteFile, normal, true, null, no, normal, false);
@@ -900,6 +901,8 @@ class Debugger
             }
             if(!editor && frame.absoluteFile)
                editor = (CodeEditor)ide.OpenFile(frame.absoluteFile, normal, true, null, no, normal, false);
+            if(editor)
+               ide.RepositionWindows(false);
             ide.Update(null);
             if(editor && frame.line)
             {
@@ -927,7 +930,7 @@ class Debugger
             GdbGetStack();
             // Why was SelectFrame missing here?
             SelectFrame(activeFrameLevel);
-            GoToStackFrameLine(activeFrameLevel, true);
+            GoToStackFrameLine(activeFrameLevel, true, false);
             WatchesCodeEditorLinkRelease();
             WatchesCodeEditorLinkInit();
             EvaluateWatches();

@@ -471,7 +471,7 @@ class IDEWorkSpace : Window
 
       void OnSelectFrame(int frameIndex)
       {
-         ide.debugger.GoToStackFrameLine(frameIndex, true);
+         ide.debugger.GoToStackFrameLine(frameIndex, true, true);
          if(frameIndex >= 0)
             ide.debugger.SelectFrame(frameIndex);
       }
