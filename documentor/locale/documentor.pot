@@ -10,152 +10,152 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./src/Documentor.ec:593
+#: ./src/Documentor.ec:616
 msgid "<FONT FACE=\"Arial\" SIZE=\"6\">Module %s</FONT><br>\n"
 msgstr "<FONT FACE=\"Arial\" SIZE=\"6\">Module %s</FONT><br>\n"
 
-#: ./src/Documentor.ec:1148
-#: ./src/Documentor.ec:1397
-#: ./src/Documentor.ec:1617
+#: ./src/Documentor.ec:1181
+#: ./src/Documentor.ec:1441
+#: ./src/Documentor.ec:1673
 msgid "<FONT face=\"Courier New\">\n"
 msgstr "<FONT face=\"Courier New\">\n"
 
-#: ./src/Documentor.ec:1199
+#: ./src/Documentor.ec:1232
 msgid "<H3>Derived Classes</H3><br>\n"
 msgstr "<H3>Derived Classes</H3><br>\n"
 
-#: ./src/Documentor.ec:614
+#: ./src/Documentor.ec:637
 msgid "<H3>Description</H3><br><br>\n"
 msgstr "<H3>Description</H3><br><br>\n"
 
-#: ./src/Documentor.ec:1147
-#: ./src/Documentor.ec:1396
-#: ./src/Documentor.ec:1616
+#: ./src/Documentor.ec:1180
+#: ./src/Documentor.ec:1440
+#: ./src/Documentor.ec:1672
 msgid "<H3>Example</H3><br>\n"
 msgstr "<H3>Example</H3><br>\n"
 
-#: ./src/Documentor.ec:1301
-#: ./src/Documentor.ec:1522
+#: ./src/Documentor.ec:1345
+#: ./src/Documentor.ec:1577
 msgid "<H3>Parameters</H3><br><br>\n"
 msgstr "<H3>Parameters</H3><br><br>\n"
 
-#: ./src/Documentor.ec:1171
-#: ./src/Documentor.ec:1418
-#: ./src/Documentor.ec:1638
+#: ./src/Documentor.ec:1204
+#: ./src/Documentor.ec:1462
+#: ./src/Documentor.ec:1694
 msgid "<H3>Remarks</H3><br>\n"
 msgstr "<H3>Remarks</H3><br>\n"
 
-#: ./src/Documentor.ec:1215
-#: ./src/Documentor.ec:1437
-#: ./src/Documentor.ec:1657
+#: ./src/Documentor.ec:1248
+#: ./src/Documentor.ec:1481
+#: ./src/Documentor.ec:1713
 msgid "<H3>See Also</H3><br>\n"
 msgstr "<H3>See Also</H3><br>\n"
 
-#: ./src/Documentor.ec:637
+#: ./src/Documentor.ec:660
 msgid "<H3>Sub Namespaces</H3><br><br>\n"
 msgstr "<H3>Sub Namespaces</H3><br><br>\n"
 
-#: ./src/Documentor.ec:1128
-#: ./src/Documentor.ec:1377
-#: ./src/Documentor.ec:1597
+#: ./src/Documentor.ec:1161
+#: ./src/Documentor.ec:1421
+#: ./src/Documentor.ec:1653
 msgid "<H3>Usage</H3><br>\n"
 msgstr "<H3>Usage</H3><br>\n"
 
-#: ./src/Documentor.ec:583
-#: ./src/Documentor.ec:805
-#: ./src/Documentor.ec:1256
-#: ./src/Documentor.ec:1478
+#: ./src/Documentor.ec:606
+#: ./src/Documentor.ec:838
+#: ./src/Documentor.ec:1300
+#: ./src/Documentor.ec:1533
 msgid "<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n"
 msgstr "<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n"
 
-#: ./src/Documentor.ec:1347
-#: ./src/Documentor.ec:1567
+#: ./src/Documentor.ec:1391
+#: ./src/Documentor.ec:1623
 msgid "<TD valign=top height=22 nowrap=1><B>Return Value</B></TD>\n"
 msgstr "<TD valign=top height=22 nowrap=1><B>Return Value</B></TD>\n"
 
-#: ./src/Documentor.ec:675
+#: ./src/Documentor.ec:698
 msgid "<a name=Classes></a><H3>Classes</H3><br><br>\n"
 msgstr "<a name=Classes></a><H3>Classes</H3><br><br>\n"
 
-#: ./src/Documentor.ec:950
+#: ./src/Documentor.ec:983
 msgid "<a name=Conversions></a><H3>Conversions</H3><br><br>\n"
 msgstr "<a name=Conversions></a><H3>Conversions</H3><br><br>\n"
 
-#: ./src/Documentor.ec:750
+#: ./src/Documentor.ec:773
 msgid "<a name=Definitions></a><H3>Definitions</H3><br><br>\n"
 msgstr "<a name=Definitions></a><H3>Definitions</H3><br><br>\n"
 
-#: ./src/Documentor.ec:881
+#: ./src/Documentor.ec:914
 msgid "<a name=EnumerationValues></a><H3>Enumeration Values</H3><br><br>\n"
 msgstr "<a name=EnumerationValues></a><H3>Enumeration Values</H3><br><br>\n"
 
-#: ./src/Documentor.ec:715
+#: ./src/Documentor.ec:738
 msgid "<a name=Functions></a><H3>Functions</H3><br><br>\n"
 msgstr "<a name=Functions></a><H3>Functions</H3><br><br>\n"
 
-#: ./src/Documentor.ec:1001
+#: ./src/Documentor.ec:1034
 msgid "<a name=Members></a><H3>Properties and Members</H3><br><br>\n"
 msgstr "<a name=Members></a><H3>Properties and Members</H3><br><br>\n"
 
-#: ./src/Documentor.ec:1093
+#: ./src/Documentor.ec:1126
 msgid "<a name=Methods></a><H3>Non-Virtual Methods</H3><br><br>\n"
 msgstr "<a name=Methods></a><H3>Non-Virtual Methods</H3><br><br>\n"
 
-#: ./src/Documentor.ec:1055
+#: ./src/Documentor.ec:1088
 msgid "<a name=VirtualMethods></a><H3>Virtual Methods</H3><br><br>\n"
 msgstr "<a name=VirtualMethods></a><H3>Virtual Methods</H3><br><br>\n"
 
-#: ./src/Documentor.ec:859
+#: ./src/Documentor.ec:892
 msgid "<br><H3>Description</H3><br><br>\n"
 msgstr "<br><H3>Description</H3><br><br>\n"
 
-#: ./src/Documentor.ec:1283
-#: ./src/Documentor.ec:1505
+#: ./src/Documentor.ec:1327
+#: ./src/Documentor.ec:1560
 msgid "<br><br><H3>Description</H3><br><br>\n"
 msgstr "<br><br><H3>Description</H3><br><br>\n"
 
-#: ./src/Documentor.ec:1985
+#: ./src/Documentor.ec:2041
 msgid "API Documentation Browser"
 msgstr "API Documentation Browser"
 
-#: ./src/Documentor.ec:843
+#: ./src/Documentor.ec:876
 msgid "Base Class: "
 msgstr "Base Class: "
 
-#: ./src/Documentor.ec:835
+#: ./src/Documentor.ec:868
 msgid "Basic Data Type"
 msgstr "Basic Data Type"
 
-#: ./src/Documentor.ec:817
+#: ./src/Documentor.ec:850
 msgid "Bit Collection"
 msgstr "Bit Collection"
 
-#: ./src/Documentor.ec:2195
+#: ./src/Documentor.ec:2257
 #: ./src/SettingsDialog.ec:52
 msgid "Cancel"
 msgstr "Cancel"
 
-#: ./src/Documentor.ec:826
+#: ./src/Documentor.ec:859
 msgid "Class"
 msgstr "Class"
 
-#: ./src/Documentor.ec:829
+#: ./src/Documentor.ec:862
 msgid "Class (No header)"
 msgstr "Class (No header)"
 
-#: ./src/Documentor.ec:1742
+#: ./src/Documentor.ec:1798
 msgid "Classes"
 msgstr "Classes"
 
-#: ./src/Documentor.ec:1955
+#: ./src/Documentor.ec:2011
 msgid "Conversions"
 msgstr "Conversions"
 
-#: ./src/Documentor.ec:1942
+#: ./src/Documentor.ec:1998
 msgid "Data Members"
 msgstr "Data Members"
 
-#: ./src/Documentor.ec:1788
+#: ./src/Documentor.ec:1844
 msgid "Definitions"
 msgstr "Definitions"
 
@@ -163,27 +163,27 @@ msgstr "Definitions"
 msgid "Documentation Path:"
 msgstr "Documentation Path:"
 
-#: ./src/Documentor.ec:820
+#: ./src/Documentor.ec:853
 msgid "Enumeration"
 msgstr "Enumeration"
 
-#: ./src/Documentor.ec:1969
+#: ./src/Documentor.ec:2025
 msgid "Enumeration Values"
 msgstr "Enumeration Values"
 
-#: ./src/Documentor.ec:1904
+#: ./src/Documentor.ec:1960
 msgid "Events"
 msgstr "Events"
 
-#: ./src/Documentor.ec:2036
+#: ./src/Documentor.ec:2098
 msgid "Exit"
 msgstr "Exit"
 
-#: ./src/Documentor.ec:2001
+#: ./src/Documentor.ec:2057
 msgid "File"
 msgstr "File"
 
-#: ./src/Documentor.ec:1765
+#: ./src/Documentor.ec:1821
 msgid "Functions"
 msgstr "Functions"
 
@@ -191,7 +191,7 @@ msgstr "Functions"
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
-#: ./src/Documentor.ec:1917
+#: ./src/Documentor.ec:1973
 msgid "Methods"
 msgstr "Methods"
 
@@ -207,28 +207,28 @@ msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
-#: ./src/Documentor.ec:588
-#: ./src/Documentor.ec:808
-#: ./src/Documentor.ec:1259
-#: ./src/Documentor.ec:1481
+#: ./src/Documentor.ec:611
+#: ./src/Documentor.ec:841
+#: ./src/Documentor.ec:1303
+#: ./src/Documentor.ec:1536
 msgid "Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 msgstr "Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 
-#: ./src/Documentor.ec:810
-#: ./src/Documentor.ec:1261
-#: ./src/Documentor.ec:1484
+#: ./src/Documentor.ec:843
+#: ./src/Documentor.ec:1305
+#: ./src/Documentor.ec:1539
 msgid "Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 msgstr "Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 
-#: ./src/Documentor.ec:846
+#: ./src/Documentor.ec:879
 msgid "None"
 msgstr "None"
 
-#: ./src/Documentor.ec:2014
+#: ./src/Documentor.ec:2070
 msgid "Open..."
 msgstr "Open..."
 
-#: ./src/Documentor.ec:607
+#: ./src/Documentor.ec:630
 msgid "Parent namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 msgstr "Parent namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 
@@ -236,7 +236,7 @@ msgstr "Parent namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
-#: ./src/Documentor.ec:1936
+#: ./src/Documentor.ec:1992
 msgid "Properties"
 msgstr "Properties"
 
@@ -244,7 +244,7 @@ msgstr "Properties"
 msgid "Save"
 msgstr "Save"
 
-#: ./src/Documentor.ec:2191
+#: ./src/Documentor.ec:2253
 msgid "Save Changes"
 msgstr "Save Changes"
 
@@ -256,11 +256,11 @@ msgstr "Select a path"
 msgid "Settings"
 msgstr "Settings"
 
-#: ./src/Documentor.ec:2027
+#: ./src/Documentor.ec:2083
 msgid "Settings..."
 msgstr "Settings..."
 
-#: ./src/Documentor.ec:823
+#: ./src/Documentor.ec:856
 msgid "Structure"
 msgstr "Structure"
 
@@ -272,38 +272,38 @@ msgstr "Tahoma"
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 
-#: ./src/Documentor.ec:838
+#: ./src/Documentor.ec:871
 msgid "Type: %s<br>\n"
 msgstr "Type: %s<br>\n"
 
-#: ./src/Documentor.ec:832
+#: ./src/Documentor.ec:865
 msgid "Unit"
 msgstr "Unit"
 
-#: ./src/Documentor.ec:1910
+#: ./src/Documentor.ec:1966
 msgid "Virtual Methods"
 msgstr "Virtual Methods"
 
-#: ./src/Documentor.ec:555
-#: ./src/Documentor.ec:2281
-#: ./src/Documentor.ec:2689
+#: ./src/Documentor.ec:568
+#: ./src/Documentor.ec:2377
+#: ./src/Documentor.ec:2548
 msgid "[Add Text]"
 msgstr "[Add Text]"
 
-#: ./src/Documentor.ec:2004
+#: ./src/Documentor.ec:2060
 msgid "eC Shared Library files (*.dll, *.so, *.dylib)"
 msgstr "eC Shared Library files (*.dll, *.so, *.dylib)"
 
-#: ./src/Documentor.ec:2005
+#: ./src/Documentor.ec:2061
 msgid "eC Symbol files (*.sym)"
 msgstr "eC Symbol files (*.sym)"
 
-#: ./src/Documentor.ec:1269
-#: ./src/Documentor.ec:1491
+#: ./src/Documentor.ec:1313
+#: ./src/Documentor.ec:1546
 msgid "this pointer class: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 msgstr "this pointer class: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 
-#: ./src/Documentor.ec:1265
+#: ./src/Documentor.ec:1309
 msgid "this pointer class: None<br>\n"
 msgstr "this pointer class: None<br>\n"
 
