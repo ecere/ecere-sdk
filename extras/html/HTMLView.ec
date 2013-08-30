@@ -379,7 +379,8 @@ class HTMLView : Window
          int maxH = height - BOTTOM_MARGIN;
          int h = 0;
 
-         surface.TextFont(html.defaultFont.font.font);
+         if(html.defaultFont.font)
+            surface.TextFont(html.defaultFont.font.font);
          while(block)
          {
             Block nextBlock;
@@ -645,7 +646,8 @@ class HTMLView : Window
       Surface surface = display.GetSurface(0,0,null);
       if(surface)
       {
-         surface.TextFont(html.defaultFont.font.font);
+         if(html.defaultFont.font)
+            surface.TextFont(html.defaultFont.font.font);
          for(;block;)
          {
             Block nextBlock;
