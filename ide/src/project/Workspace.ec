@@ -469,7 +469,7 @@ public:
       for(s : dirs)
          sourceDirs.Add(CopyString(s));
       
-      DropInvalidBreakpoints();
+      DropInvalidBreakpoints(null);
 
       delete dirs;
    }
@@ -480,7 +480,8 @@ public:
       if(it.Find(project))
          it.Remove();
 
-      DropInvalidBreakpoints();
+      for(bp : breakpoints)
+      DropInvalidBreakpoints(project);
       modified = true;
       ide.findInFilesDialog.RemoveProjectItem(project);
       ide.UpdateToolBarActiveConfigs(false);
@@ -545,10 +546,15 @@ public:
          char * currentLoc = bp.CopyUserLocationString();
          if(strcmp(location, currentLoc))
          {
-            // todo, parse location
-            //  if good, make changes to breakpoint, according to execution state delete and place breakpoint
-            ide.breakpointsView.UpdateBreakpoint(row); // this is the else
-            //Save();
+            char * newLoc;
+            bp.location = location;
+            bp.ParseLocation();
+            newLoc = bp.CopyUserLocationString();
+            if(strcmp(newLoc, currentLoc))
+            {
+               ide.breakpointsView.UpdateBreakpoint(row);
+               Save();
+            }
          }
          delete currentLoc;
       }
@@ -649,7 +655,16 @@ public:
       delete bp;
    }
 
-   void DropInvalidBreakpoints()
+   void ParseLoadedBreakpoints()
+   {
+      for(bp : breakpoints; bp.location)
+      {
+         bp.ParseLocation();
+         ide.breakpointsView.UpdateBreakpoint(bp.row);
+      }
+   }
+
+   void DropInvalidBreakpoints(Project removedProject)
    {
       Link bpLink, next;
       for(bpLink = breakpoints.first; bpLink; bpLink = next)
@@ -659,43 +674,57 @@ public:
 
          if(bp.type == user)
          {
-            Project project = null;
-            for(p : projects)
+            if(removedProject)
             {
-               if(FindPath(p.topNode, bp.absoluteFilePath))
-               {
-                  project = p;
-                  break;
-               }
-               // Handle symbol loader modules:
-               {
-                  char moduleName[MAX_FILENAME];
-                  char * sl;
-                  GetLastDirectory(bp.absoluteFilePath, moduleName);
-                  // Tweak for automatically resolving symbol loader modules
-                  sl = strstr(moduleName, ".main.ec");
-                  if(sl && (*sl = 0, !strcmpi(moduleName, p.name)))
-                  {
-                     project = p;
-                     break;
-                  }
-               }
-            }
-            if(!project)
-            {
-               bool found = false;
-               for(dir : sourceDirs)
-               {
-                  if(IsPathInsideOf(bp.absoluteFilePath, dir))
-                  {
-                     found = true;
-                     break;
-                  }
-               }
-               if(!found)
+               if(bp.project == removedProject)
                {
                   ide.breakpointsView.RemoveBreakpoint(bp);
                   RemoveBreakpoint(bp);
+               }
+            }
+            else
+            {
+               Project project = bp.project;
+               if(!project)
+               {
+                  for(p : projects)
+                  {
+                     if(FindPath(p.topNode, bp.absoluteFilePath))
+                     {
+                        project = p;
+                        break;
+                     }
+                     // Handle symbol loader modules:
+                     {
+                        char moduleName[MAX_FILENAME];
+                        char * sl;
+                        GetLastDirectory(bp.absoluteFilePath, moduleName);
+                        // Tweak for automatically resolving symbol loader modules
+                        sl = strstr(moduleName, ".main.ec");
+                        if(sl && (*sl = 0, !strcmpi(moduleName, p.name)))
+                        {
+                           project = p;
+                           break;
+                        }
+                     }
+                  }
+               }
+               if(!project)
+               {
+                  bool found = false;
+                  for(dir : sourceDirs)
+                  {
+                     if(IsPathInsideOf(bp.absoluteFilePath, dir))
+                     {
+                        found = true;
+                        break;
+                     }
+                  }
+                  if(!found)
+                  {
+                     ide.breakpointsView.RemoveBreakpoint(bp);
+                     RemoveBreakpoint(bp);
+                  }
                }
             }
          }
@@ -873,10 +902,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
 
                      bp = { type = user, enabled = enabled, ignore = ignore, level = level, line = line };
                      workspace.breakpoints.Add(bp);
-                     bp.relativeFilePath = strFile;
-                     bp.absoluteFilePath = workspace.GetAbsolutePathFromRelative(strFile);
-                     if(!bp.absoluteFilePath)
-                        bp.absoluteFilePath = CopyString("");
+                     bp.location = strFile;
                   }
                }
             }
@@ -1134,10 +1160,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
                                           bp = { type = user, enabled = enabled, level = -1 };
                                           workspace.breakpoints.Add(bp);
                                           bp.line = atoi(lineNum);
-                                          bp.relativeFilePath = relPath;
-                                          bp.absoluteFilePath = workspace.GetAbsolutePathFromRelative(relPath);
-                                          if(!bp.absoluteFilePath)
-                                             bp.absoluteFilePath = "";
+                                          bp.location = relPath;
                                        }
                                     }
                                  }

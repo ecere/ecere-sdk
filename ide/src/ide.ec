@@ -2262,7 +2262,8 @@ class IDEWorkSpace : Window
                         CreateProjectView(workspace, filePath);
                         document = projectView;
 
-                        workspace.DropInvalidBreakpoints();
+                        workspace.ParseLoadedBreakpoints();
+                        workspace.DropInvalidBreakpoints(null);
                         workspace.Save();
 
                         ide.projectView.ShowOutputBuildLog(true);

@@ -551,6 +551,7 @@ class Debugger
    GdbThread gdbThread { debugger = this };
 
    bool entryPoint;
+   Map<String, bool> projectsLibraryLoaded { };
 
    Timer gdbTimer
    {
@@ -863,6 +864,7 @@ class Debugger
       codeEditor = null;
 
       entryPoint = false;
+      projectsLibraryLoaded.Free();
 
       /*GdbThread gdbThread
       Timer gdbTimer*/
@@ -1568,7 +1570,7 @@ class Debugger
             }
          }
          ide.workspace.bpCount++;
-         bp = { line = lineNumber, type = user, enabled = true, level = -1 };
+         bp = { line = lineNumber, type = user, enabled = true, level = -1, project = prj };
          ide.workspace.breakpoints.Add(bp);
          bp.absoluteFilePath = absolutePath;
          bp.relativeFilePath = relativePath;
@@ -2023,7 +2025,7 @@ class Debugger
    {
       char * s; _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::SetBreakpoint(", s=bp.CopyLocationString(false), ", ", removePath ? "**** removePath(true) ****" : "", ") -- ", bp.type); delete s;
       breakpointError = false;
-      if(symbols && bp.enabled)
+      if(symbols && bp.enabled && (!bp.project || bp.project == ide.project || projectsLibraryLoaded[bp.project.name]))
       {
          char * location = bp.CopyLocationString(removePath);
          sentBreakInsert = true;
@@ -2342,7 +2344,8 @@ class Debugger
       targeted = false;
       modules = false;
       needReset = false;
-      
+      projectsLibraryLoaded.Free();
+
       ide.outputView.ShowClearSelectTab(debug);
       ide.outputView.debugBox.Logf($"Starting debug mode\n");
 
@@ -4032,7 +4035,9 @@ class Debugger
                      match = !fstrcmp(prjTargetPath, path);
                   }
                }
-               if(!match)
+               if(match)
+                  projectsLibraryLoaded[prj.name] = true;
+               else
                   ide.outputView.debugBox.Logf($"Loaded library %s doesn't match the %s target of the %s added project.\n", path, prjTargetPath, prj.topNode.name);
                break;
             }
@@ -4574,6 +4579,8 @@ class Breakpoint : struct
    property char * relativeFilePath { set { delete relativeFilePath; if(value) relativeFilePath = CopyString(value); } }
    char * absoluteFilePath;
    property char * absoluteFilePath { set { delete absoluteFilePath; if(value) absoluteFilePath = CopyString(value); } }
+   char * location;
+   property char * location { set { delete location; if(value) location = CopyString(value); } }
    int line;
    bool enabled;
    int hits;
@@ -4585,6 +4592,69 @@ class Breakpoint : struct
    BreakpointType type;
    DataRow row;
    GdbDataBreakpoint bp;
+   Project project;
+
+   void ParseLocation()
+   {
+      char * prjName = null;
+      char * filePath = null;
+      char * file;
+      char * line;
+      char fullPath[MAX_LOCATION];
+      ProjectNode node;
+      if(location[0] == '\(' && location[1] && (file = strchr(location+2, '\)')) && file[1])
+      {
+         prjName = new char[file-location];
+         strncpy(prjName, location+1, file-location-1);
+         prjName[file-location-1] = '\0';
+         file++;
+      }
+      else
+         file = location;
+      if((line = strchr(file+1, ':')))
+      {
+         filePath = new char[strlen(file)+1];
+         strncpy(filePath, file, line-file);
+         filePath[line-file] = '\0';
+         line++;
+      }
+      else
+         filePath = CopyString(file);
+      property::relativeFilePath = filePath;
+      if(prjName)
+      {
+         for(prj : ide.workspace.projects)
+         {
+            if(!strcmp(prjName, prj.name))
+            {
+               node = prj.topNode.FindWithPath(filePath, false);
+               if(node)
+               {
+                  node.GetFullFilePath(fullPath);
+                  property::absoluteFilePath = fullPath;
+                  project = prj;
+                  break;
+               }
+            }
+         }
+         if(line[0])
+            this.line = atoi(line);
+      }
+      else
+      {
+         node = ide.projectView.project.topNode.Find(filePath, false);
+         if(node)
+         {
+            node.GetFullFilePath(fullPath);
+            property::absoluteFilePath = fullPath;
+         }
+         project = ide.project;
+      }
+      if(!absoluteFilePath)
+         property::absoluteFilePath = "";
+      delete prjName;
+      delete filePath;
+   }
 
    char * CopyLocationString(bool removePath)
    {
@@ -4616,7 +4686,7 @@ class Breakpoint : struct
       char * location;
       char * loc = CopyLocationString(false);
       Project prj = null;
-      for(p : ide.workspace.projects)
+      for(p : ide.workspace.projects; p != ide.workspace.projects.firstIterator.data)
       {
          if(p.topNode.FindByFullPath(absoluteFilePath, false))
          {
@@ -4638,7 +4708,9 @@ class Breakpoint : struct
    {
       if(relativeFilePath && relativeFilePath[0])
       {
-         f.Printf("    * %d,%d,%d,%d,%s\n", enabled ? 1 : 0, ignore, level, line, relativeFilePath);
+         char * location = CopyUserLocationString();
+         f.Printf("    * %d,%d,%d,%d,%s\n", enabled ? 1 : 0, ignore, level, line, location);
+         delete location;
          if(condition)
             f.Printf("       ~ %s\n", condition.expression);
       }
@@ -4652,6 +4724,7 @@ class Breakpoint : struct
       delete function;
       delete relativeFilePath;
       delete absoluteFilePath;
+      delete location;
    }
 
    ~Breakpoint()
