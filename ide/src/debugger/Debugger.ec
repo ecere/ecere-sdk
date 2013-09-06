@@ -631,13 +631,8 @@ class Debugger
          if(curEvent == none)
             return false;
 
-         switch (curEvent)
+         switch(curEvent)
          {
-            case breakEvent:
-               activeThread = stopItem.threadid;
-               GdbCommand(false, "-thread-list-ids");
-               GdbGetStack();
-               break;
             case hit:
                {
                   bool isInternal;
@@ -674,8 +669,6 @@ class Debugger
                   }
                   else
                      _dpl2(_dpct, dplchan::debuggerProblem, 0, "Breakpoint bkptno(", stopItem.bkptno, ") invalid or not found!");
-                  if(bpUser && bpUser.type == runToCursor)
-                     ignoreBreakpoints = false;
                   if((bpUser && !ignoreBreakpoints) || (bpInternal && userBreakOnInternalBreakpoint))
                      monitor = true;
                   hitThread = stopItem.threadid;
@@ -683,6 +676,7 @@ class Debugger
                break;
             case signal:
                signalThread = stopItem.threadid;
+            case breakEvent:
             case stepEnd:
             case functionEnd:
                monitor = true;
@@ -696,11 +690,13 @@ class Debugger
                break;
          }
 
+         if(monitor || (bpUser && bpUser.type == runToCursor))
+            GdbGetStack();
+
          if(monitor)
          {
             activeThread = stopItem.threadid;
             GdbCommand(false, "-thread-list-ids");
-            GdbGetStack();
             if(activeFrameLevel > 0)
                GdbCommand(false, "-stack-select-frame %d", activeFrameLevel);
 
@@ -727,7 +723,7 @@ class Debugger
 
          if(monitor && curEvent.canBeMonitored)
          {
-            SelectFrame(activeFrameLevel);
+            InternalSelectFrame(activeFrameLevel);
             GoToStackFrameLine(activeFrameLevel, true, false);
             ide.ShowCodeEditor();
             ideMainFrame.Activate();   // TOFIX: ide.Activate() is not reliable (app inactive)
@@ -735,7 +731,19 @@ class Debugger
          }
 
          if(curEvent == hit)
-            BreakpointHit(stopItem, bpInternal, bpUser);
+         {
+            if(BreakpointHit(stopItem, bpInternal, bpUser))
+            {
+               if(bpUser && bpUser.type == runToCursor)
+               {
+                  ignoreBreakpoints = false;
+                  UnsetBreakpoint(bpUser);
+                  delete bpRunToCursor;
+               }
+            }
+            else
+               GdbExecContinue(false);
+         }
 
          if(stopItem)
          {
@@ -995,8 +1003,7 @@ class Debugger
             ide.callStackView.Clear();
             GdbCommand(false, "-thread-select %d", thread);
             GdbGetStack();
-            // Why was SelectFrame missing here?
-            SelectFrame(activeFrameLevel);
+            InternalSelectFrame(activeFrameLevel);
             GoToStackFrameLine(activeFrameLevel, true, false);
             WatchesCodeEditorLinkRelease();
             WatchesCodeEditorLinkInit();
@@ -1010,7 +1017,13 @@ class Debugger
    void SelectFrame(int frame)
    {
       //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::SelectFrame(", frame, ")");
-      _ChangeUserAction(selectFrame); // not always user action, right? doesn't matter for now.
+      _ChangeUserAction(selectFrame);
+      InternalSelectFrame(frame);
+   }
+
+   void InternalSelectFrame(int frame)
+   {
+      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::InternalSelectFrame(", frame, ")");
       if(state == stopped)
       {
          if(frame != activeFrameLevel || !codeEditor || !codeEditor.visible)
@@ -2021,15 +2034,15 @@ class Debugger
       {
          if(deleteInternalBreakpoints)
          {
-            for(bp : sysBPs)
+            for(bp : sysBPs; bp.inserted)
                UnsetBreakpoint(bp);
          }
          if(deleteUserBreakpoints)
          {
-            for(bp : ide.workspace.breakpoints)
+            for(bp : ide.workspace.breakpoints; bp.inserted)
                UnsetBreakpoint(bp);
          }
-         if(deleteRunToCursor && bpRunToCursor)
+         if(deleteRunToCursor && bpRunToCursor && bpRunToCursor.inserted)
             UnsetBreakpoint(bpRunToCursor);
       }
    }
@@ -3119,8 +3132,9 @@ class Debugger
       return null;
    }
 
-   void BreakpointHit(GdbDataStop stopItem, Breakpoint bpInternal, Breakpoint bpUser)
+   bool BreakpointHit(GdbDataStop stopItem, Breakpoint bpInternal, Breakpoint bpUser)
    {
+      bool result = true;
       char * s1 = null; char * s2 = null;
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::BreakpointHit(",
             "bpInternal(", bpInternal ? s1=bpInternal.CopyLocationString(false) : null, "), ",
@@ -3147,37 +3161,35 @@ class Debugger
             if(userAction == stepOut)//if(prevStopItem.reason == functionFinished)
                StepOut(ignoreBreakpoints);
             else
-               GdbExecContinue(false);
+               result = false;
          }
       }
       if(bpUser)
       {
          bool conditionMet = true;
+         bool levelMatch = (bpUser.level == -1 || bpUser.level == frameCount-1);
          if(bpUser.condition)
             conditionMet = ResolveWatch(bpUser.condition);
          bpUser.hits++;
-         if(!ignoreBreakpoints && (bpUser.level == -1 || bpUser.level == frameCount-1) && conditionMet)
+         if(levelMatch && conditionMet)
          {
             if(!bpUser.ignore)
                bpUser.breaks++;
             else
             {
                bpUser.ignore--;
-               GdbExecContinue(false);
+               result = false;
             }
          }
          else
-            GdbExecContinue(false);
+            result = false;
          ide.breakpointsView.UpdateBreakpoint(bpUser.row);
-         if(bpUser == bpRunToCursor)
-         {
-            UnsetBreakpoint(bpUser);
-            delete bpRunToCursor;
-         }
       }
 
       if(!bpUser && !bpInternal)
-         GdbExecContinue(false);
+         result = false;
+
+      return result;
    }
 
    void ValgrindTargetThreadExit()
@@ -3744,6 +3756,10 @@ class Debugger
                                     stopItem.gdbResultVar = CopyString(item.value);
                                  else if(!strcmp(item.name, "return-value"))
                                     stopItem.returnValue = CopyString(item.value);
+                                 else if(!strcmp(item.name, "stopped-threads"))
+                                    _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "Advanced thread debugging not handled");
+                                 else if(!strcmp(item.name, "core"))
+                                    _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "Information (core) not used");
                                  else
                                     _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "Unknown function finished item name (", item.name, "=", item.value, ")");
                               }
