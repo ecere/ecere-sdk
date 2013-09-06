@@ -1961,7 +1961,7 @@ class CodeEditor : Window
    };
    MenuItem debugSkipRunToCursorAtSameLevel
    {
-      debugMenu, $"Run To Cursor At Same Level Skipping Breakpoints", l, Key { f10, alt = true };
+      debugMenu, $"Run To Cursor At Same Level Skipping Breakpoints", l, altF10;
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
          ProjectView projectView = ide.projectView;
