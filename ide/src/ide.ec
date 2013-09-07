@@ -1204,8 +1204,7 @@ class IDEWorkSpace : Window
          bitmap = { ":actions/stepInto.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
-            if(projectView)
-               projectView.DebugStepInto();
+            if(projectView) projectView.DebugStepInto();
             return true;
          }
       }
@@ -1215,8 +1214,16 @@ class IDEWorkSpace : Window
          bitmap = { ":actions/stepOver.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
-            if(projectView)
-               projectView.DebugStepOver(false);
+            if(projectView) projectView.DebugStepOver(false);
+            return true;
+         }
+      }
+      MenuItem debugSkipStepOverItem
+      {
+         debugMenu, $"Step Over Skipping Breakpoints", e, shiftF10, disabled = true;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            if(projectView) projectView.DebugStepOver(true);
             return true;
          }
       }
@@ -1226,35 +1233,50 @@ class IDEWorkSpace : Window
          bitmap = { ":actions/stepOut.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
-            if(projectView)
-               projectView.DebugStepOut(false);
-            return true;
-         }
-      }
-      MenuPlacement debugRunToCursorItem { debugMenu, $"Run To Cursor", c };
-      MenuItem debugSkipStepOverItem
-      {
-         debugMenu, $"Step Over Skipping Breakpoints", e, shiftF10, disabled = true;
-         bool NotifySelect(MenuItem selection, Modifiers mods)
-         {
-            if(projectView)
-               projectView.DebugStepOver(true);
+            if(projectView) projectView.DebugStepOut(false);
             return true;
          }
       }
       MenuItem debugSkipStepOutItem
       {
-         debugMenu, $"Step Out Skipping Breakpoints", t, Key { f11, ctrl = true, shift = true }, disabled = true;
+         debugMenu, $"Step Out Skipping Breakpoints", n, Key { f11, ctrl = true, shift = true }, disabled = true;
          bitmap = { ":actions/skipBreaks.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
-            if(projectView)
-               projectView.DebugStepOut(true);
+            if(projectView) projectView.DebugStepOut(true);
             return true;
          }
       }
+#if 0
+      MenuItem debugStepUntilItem
+      {
+         debugMenu, $"Step Over Until Next Line", x, disabled = true;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            if(projectView) projectView.DebugStepUntil(false);
+            return true;
+         }
+      }
+      MenuItem debugSkipStepUntilItem
+      {
+         debugMenu, $"Step Over Until Next Line Skipping Breakpoints", e, Key { f10, shift = true, alt = true }, disabled = true;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            if(projectView) projectView.DebugStepUntil(true);
+            return true;
+         }
+      }
+#endif
+      MenuPlacement debugRunToCursorItem { debugMenu, $"Run To Cursor", c };
       MenuPlacement debugSkipRunToCursorItem { debugMenu, $"Run To Cursor Skipping Breakpoints", u };
-      MenuPlacement debugSkipRunToCursorAtSameLevelItem { debugMenu, $"Run To Cursor At Same Level Skipping Breakpoints", l };
+      MenuPlacement debugRunToCursorAtSameLevelItem { debugMenu, $"Run To Cursor At Same Level", l };
+      MenuPlacement debugSkipRunToCursorAtSameLevelItem { debugMenu, $"Run To Cursor At Same Level Skipping Breakpoints", g };
+#if 0
+      MenuPlacement debugBpRunToCursorItem { debugMenu, $"BP Run To Cursor" };
+      MenuPlacement debugBpSkipRunToCursorItem { debugMenu, $"BP Run To Cursor Skipping Breakpoints" };
+      MenuPlacement debugBpRunToCursorAtSameLevelItem { debugMenu, $"BP Run To Cursor At Same Level" };
+      MenuPlacement debugBpSkipRunToCursorAtSameLevelItem { debugMenu, $"BP Run To Cursor At Same Level Skipping Breakpoints" };
+#endif
       //MenuDivider { debugMenu };
       //MenuPlacement debugToggleBreakpoint { debugMenu, "Toggle Breakpoint", t };
    MenuPlacement imageMenu { menu, $"Image", i };
@@ -1414,7 +1436,7 @@ class IDEWorkSpace : Window
       MenuDivider { viewMenu };
       MenuItem viewColorPicker
       {
-         viewMenu, $"Color Picker...", c, Key { c, ctrl = true , shift = true };
+         viewMenu, $"Color Picker...", l, Key { c, ctrl = true , shift = true };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             ColorPicker colorPicker { master = this };
@@ -2043,16 +2065,9 @@ class IDEWorkSpace : Window
             projectView.buildInProgress == buildingMainProject;
    } }
 
-   property bool isBreakpointTogglingUnavailable { get {
-      return !project;
-   } }
-
-   property bool isDebuggerExecuting { get {
-      if(!ide.debugger)
-         return false;
-      else
-         return ide.debugger.state == running;
-   } }
+   property bool isBreakpointTogglingUnavailable { get { return !project; } }
+   property bool isDebuggerExecuting { get { if(ide.debugger) return ide.debugger.state == running; return false; } }
+   property bool isDebuggerStopped { get { if(ide.debugger) return ide.debugger.state == stopped; return false; } }
 
    void AdjustDebugMenus()
    {
@@ -2083,22 +2098,22 @@ class IDEWorkSpace : Window
 
       debugStepIntoItem.disabled          = unavailable || executing;
       debugStepOverItem.disabled          = unavailable || executing;
-      debugStepOutItem.disabled           = unavailable || executing || !active;
       debugSkipStepOverItem.disabled      = unavailable || executing;
+      debugStepOutItem.disabled           = unavailable || executing || !active;
       debugSkipStepOutItem.disabled       = unavailable || executing || !active;
       if(toolBar)
       {
          toolBar.buttonDebugStepInto.disabled         = unavailable || executing;
          toolBar.buttonDebugStepOver.disabled         = unavailable || executing;
-         toolBar.buttonDebugStepOut.disabled          = unavailable || executing || !active;
          toolBar.buttonDebugSkipStepOver.disabled     = unavailable || executing;
-         // toolBar.buttonDebugSkipStepOutItem.disabled  = unavailable || executing;
+         toolBar.buttonDebugStepOut.disabled          = unavailable || executing || !active;
+         //toolBar.buttonDebugSkipStepOutItem.disabled  = unavailable || executing;
       }
       if((Designer)GetActiveDesigner())
       {
          CodeEditor codeEditor = ((Designer)GetActiveDesigner()).codeEditor;
          if(codeEditor)
-            codeEditor.AdjustDebugMenus(unavailable, bpNoToggle, executing);
+            codeEditor.AdjustDebugMenus(unavailable, bpNoToggle, executing, isDebuggerStopped);
       }
    }
 

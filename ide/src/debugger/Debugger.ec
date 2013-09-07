@@ -22,6 +22,7 @@ extern char * strrchr(const char * s, int c);
 #define strlen _strlen
 #include <stdarg.h>
 #include <unistd.h>
+#include <ctype.h>
 
 #ifdef __APPLE__
 #define __unix__
@@ -454,26 +455,31 @@ char progFifoDir[MAX_LOCATION];
 enum DebuggerState { none, prompt, loaded, running, stopped, terminated, error };
 enum DebuggerEvent
 {
-   none, hit, breakEvent, signal, stepEnd, functionEnd, exit, valgrindStartPause;
+   none, hit, breakEvent, signal, stepEnd, functionEnd, exit, valgrindStartPause, locationReached;
 
-   property bool canBeMonitored { get { return (this == hit || this == breakEvent || this == signal || this == stepEnd || this == functionEnd); } };
+   property bool canBeMonitored { get { return (this == hit || this == breakEvent || this == signal || this == stepEnd || this == functionEnd || this == locationReached); } };
 };
-enum DebuggerAction { none, internal, restart, stop, selectFrame }; //, bpValidation
+enum DebuggerAction { none, internal, restart, stop, selectFrame, advance }; //, bpValidation
 enum DebuggerReason
 {
-   unknown, endSteppingRange, functionFinished, signalReceived, breakpointHit
-   //watchpointTrigger, readWatchpointTrigger, accessWatchpointTrigger, watchpointScope, locationReached,
+   unknown, endSteppingRange, functionFinished, signalReceived, breakpointHit, locationReached
+   //watchpointTrigger, readWatchpointTrigger, accessWatchpointTrigger, watchpointScope,
    //exited, exitedNormally, exitedSignalled;
 };
 enum BreakpointType
 {
-   none, internalMain, internalWinMain, internalModulesLoaded, user, runToCursor, internalModuleLoad;
+   none, internalMain, internalWinMain, internalModulesLoaded, user, runToCursor, internalModuleLoad, internalEntry;
 
-   property bool isInternal { get { return (this == internalMain || this == internalWinMain || this == internalModulesLoaded || this == internalModuleLoad); } };
+   property bool isInternal { get { return (this == internalMain || this == internalWinMain || this == internalModulesLoaded || this == internalModuleLoad || this == internalEntry); } };
    property bool isUser { get { return (this == user || this == runToCursor); } };
 };
 enum DebuggerEvaluationError { none, symbolNotFound, memoryCantBeRead, unknown };
-enum DebuggerUserAction { none, start, resume, _break, stop, restart, selectThread, selectFrame, stepInto, stepOver, stepOut, runToCursor };
+enum DebuggerUserAction { none, start, resume, _break, stop, restart, selectThread, selectFrame, stepInto, stepOver, stepUntil, stepOut, runToCursor };
+enum GdbExecution
+{
+   none, run, _continue, next, until, advance, step, finish;
+   property bool suspendInternalBreakpoints { get { return (this == until || this == advance || this == step || this == finish); } };
+};
 
 FileDialog debuggerFileDialog { type = selectDir };
 
@@ -517,10 +523,12 @@ class Debugger
    char * targetDir;
    char * targetFile;
    
+   GdbExecution gdbExecution;
    DebuggerUserAction userAction;
    DebuggerState state;
    DebuggerEvent event;
    DebuggerAction breakType;
+   char * breakString;
    //DebuggerCommand lastCommand;    // THE COMPILER COMPILES STUFF THAT DOES NOT EXIST???
 
    GdbDataStop stopItem;
@@ -541,6 +549,9 @@ class Debugger
    ValgrindLogThread vgLogThread { debugger = this };
    ValgrindTargetThread vgTargetThread { debugger = this };
    GdbThread gdbThread { debugger = this };
+
+   bool entryPoint;
+
    Timer gdbTimer
    {
       delay = 0.0, userData = this;
@@ -679,6 +690,7 @@ class Debugger
             case breakEvent:
             case stepEnd:
             case functionEnd:
+            case locationReached:
                monitor = true;
                ignoreBreakpoints = false;
                break;
@@ -702,6 +714,7 @@ class Debugger
 
             WatchesCodeEditorLinkInit();
             EvaluateWatches();
+            ide.AdjustDebugMenus();
          }
 
          if(curEvent == signal)
@@ -734,6 +747,7 @@ class Debugger
          {
             if(BreakpointHit(stopItem, bpInternal, bpUser))
             {
+               ide.AdjustDebugMenus();
                if(bpUser && bpUser.type == runToCursor)
                {
                   ignoreBreakpoints = false;
@@ -742,7 +756,16 @@ class Debugger
                }
             }
             else
-               GdbExecContinue(false);
+            {
+               if(breakType == advance && bpInternal && (bpInternal.type == internalMain || bpInternal.type == internalEntry))
+               {
+                  breakType = none;
+                  GdbExecAdvance(breakString, 0);
+                  delete breakString;
+               }
+               else
+                  GdbExecContinue(false);
+            }
          }
 
          if(stopItem)
@@ -788,7 +811,7 @@ class Debugger
       __dpl2(file, line, _dpct, dplchan::debuggerState, 0, state, same ? " *** == *** " : " -> ", value);
 #endif
       state = value;
-      if(!same && ide) ide.AdjustDebugMenus();
+      if(!same) ide.AdjustDebugMenus();
    }
 
    void CleanUp()
@@ -839,6 +862,8 @@ class Debugger
       prjConfig = null;
       codeEditor = null;
 
+      entryPoint = false;
+
       /*GdbThread gdbThread
       Timer gdbTimer*/
    }
@@ -848,6 +873,7 @@ class Debugger
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::constructor");
       ideProcessId = Process_GetCurrentProcessId();
 
+      sysBPs.Add(Breakpoint { type = internalEntry, enabled = false, level = -1 });
       sysBPs.Add(Breakpoint { type = internalMain, function = "main", enabled = true, level = -1 });
 #if defined(__WIN32__)
       sysBPs.Add(Breakpoint { type = internalWinMain, function = "WinMain", enabled = true, level = -1 });
@@ -1147,8 +1173,6 @@ class Debugger
          }
          this.ignoreBreakpoints = ignoreBreakpoints;
          this.userBreakOnInternalBreakpoint = userBreakOnInternalBreakpoint;
-         if(result == loaded || result == stopped)
-            GdbBreakpointsDelete(false, (userAction == stepOver || userAction == stepOut), ignoreBreakpoints);
       }
       return result;
    }
@@ -1183,6 +1207,17 @@ class Debugger
       }
    }
 
+   void StepUntil(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, bool ignoreBreakpoints)
+   {
+      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StepUntil()");
+      _ChangeUserAction(stepUntil);
+      switch(StartSession(compiler, config, bitDepth, useValgrind, false, true, ignoreBreakpoints/*, false*/))
+      {
+         case loaded:  GdbExecRun();          break;
+         case stopped: GdbExecUntil(null, 0); break;
+      }
+   }
+
    void StepOut(bool ignoreBreakpoints)
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StepOut()");
@@ -1190,7 +1225,6 @@ class Debugger
       if(state == stopped)
       {
          this.ignoreBreakpoints = ignoreBreakpoints;
-         GdbBreakpointsDelete(true, true, ignoreBreakpoints);
          if(frameCount > 1)
             GdbExecFinish();
          else
@@ -1198,17 +1232,11 @@ class Debugger
       }
    }
 
-   void RunToCursor(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, char * absoluteFilePath, int lineNumber, bool ignoreBreakpoints, bool atSameLevel)
+   void RunToCursor(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, char * absoluteFilePath, int lineNumber, bool ignoreBreakpoints, bool atSameLevel, bool oldImplementation)
    {
       char relativeFilePath[MAX_LOCATION];
-      DebuggerState st = state;
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::RunToCursor()");
       _ChangeUserAction(runToCursor);
-      //if(st == loaded)
-      //{
-      //   ide.outputView.ShowClearSelectTab(debug);
-      //   ide.outputView.debugBox.Logf($"Starting debug mode\n");
-      //}
       if(!ide.projectView.project.GetRelativePath(absoluteFilePath, relativeFilePath))
          strcpy(relativeFilePath, absoluteFilePath);
 
@@ -1218,22 +1246,37 @@ class Debugger
          delete bpRunToCursor;
       }
 
-      bpRunToCursor = Breakpoint { };
-      bpRunToCursor.absoluteFilePath = absoluteFilePath;
-      bpRunToCursor.relativeFilePath = relativeFilePath;
-      bpRunToCursor.line = lineNumber;
-      bpRunToCursor.type = runToCursor;
-      bpRunToCursor.enabled = true;
-      bpRunToCursor.level = atSameLevel ? frameCount - activeFrameLevel -1 : -1;
+      StartSession(compiler, config, bitDepth, useValgrind, false, false, ignoreBreakpoints/*, true*/);
 
-      switch(StartSession(compiler, config, bitDepth, useValgrind, false, false, ignoreBreakpoints/*, true*/))
+#if 0
+      if(oldImplementation)
       {
-         case loaded:
-            GdbExecRun();
-            break;
-         case stopped:
+         bpRunToCursor = Breakpoint { };
+         bpRunToCursor.absoluteFilePath = absoluteFilePath;
+         bpRunToCursor.relativeFilePath = relativeFilePath;
+         bpRunToCursor.line = lineNumber;
+         bpRunToCursor.type = runToCursor;
+         bpRunToCursor.enabled = true;
+         bpRunToCursor.level = atSameLevel ? frameCount - activeFrameLevel -1 : -1;
+      }
+#endif
+      if(state == loaded)
+      {
+         breakType = advance;
+         breakString = PrintString(relativeFilePath, ":", lineNumber);
+         GdbExecRun();
+      }
+      else if(state == stopped)
+      {
+         if(oldImplementation)
             GdbExecContinue(true);
-            break;
+         else
+         {
+            if(atSameLevel)
+               GdbExecUntil(absoluteFilePath, lineNumber);
+            else
+               GdbExecAdvance(absoluteFilePath, lineNumber);
+         }
       }
    }
 
@@ -1842,12 +1885,17 @@ class Debugger
       return true;
    }
 
-   void GdbBreakpointsInsert()
+   void BreakpointsMaintenance()
    {
-      //_dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::GdbBreakpointsInsert()");
+      //_dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::BreakpointsMaintenance()");
       if(symbols)
       {
-         if(userAction != stepOut && (userAction != stepOver || state == loaded))
+         if(gdbExecution.suspendInternalBreakpoints)
+         {
+            for(bp : sysBPs; bp.inserted)
+               UnsetBreakpoint(bp);
+         }
+         else
          {
             DirExpression objDir = ide.project.GetObjDir(currentCompiler, prjConfig, bitDepth);
             for(bp : sysBPs; !bp.inserted)
@@ -1928,10 +1976,17 @@ class Debugger
             delete objDir;
          }
 
+         if(userAction != runToCursor && bpRunToCursor && bpRunToCursor.inserted)
+            UnsetBreakpoint(bpRunToCursor);
          if(bpRunToCursor && !bpRunToCursor.inserted)
             SetBreakpoint(bpRunToCursor, false);
 
-         if(!ignoreBreakpoints)
+         if(ignoreBreakpoints)
+         {
+            for(bp : ide.workspace.breakpoints; bp.inserted)
+               UnsetBreakpoint(bp);
+         }
+         else
          {
             for(bp : ide.workspace.breakpoints; !bp.inserted && bp.type == user)
             {
@@ -1968,7 +2023,7 @@ class Debugger
    {
       char * s; _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::SetBreakpoint(", s=bp.CopyLocationString(false), ", ", removePath ? "**** removePath(true) ****" : "", ") -- ", bp.type); delete s;
       breakpointError = false;
-      if(symbols)
+      if(symbols && bp.enabled)
       {
          char * location = bp.CopyLocationString(removePath);
          sentBreakInsert = true;
@@ -2027,26 +2082,6 @@ class Debugger
       return !breakpointError;
    }
 
-   void GdbBreakpointsDelete(bool deleteRunToCursor, bool deleteInternalBreakpoints, bool deleteUserBreakpoints)
-   {
-      _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::GdbBreakpointsDelete(deleteRunToCursor(", deleteRunToCursor, "))");
-      if(symbols)
-      {
-         if(deleteInternalBreakpoints)
-         {
-            for(bp : sysBPs; bp.inserted)
-               UnsetBreakpoint(bp);
-         }
-         if(deleteUserBreakpoints)
-         {
-            for(bp : ide.workspace.breakpoints; bp.inserted)
-               UnsetBreakpoint(bp);
-         }
-         if(deleteRunToCursor && bpRunToCursor && bpRunToCursor.inserted)
-            UnsetBreakpoint(bpRunToCursor);
-      }
-   }
-
    void GdbGetStack()
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbGetStack()");
@@ -2072,7 +2107,7 @@ class Debugger
       {
          char escaped[MAX_LOCATION];
          strescpy(escaped, targetFile);
-         GdbCommand(false, "file \"%s\"", escaped);  //GDB/MI Missing Implementation -symbol-file, -target-attach
+         GdbCommand(false, "file \"%s\"", escaped); //GDB/MI Missing Implementation in 5.1.1 but we now have -file-exec-and-symbols / -file-exec-file / -file-symbol-file
 
          if(!symbols)
             return true;
@@ -2084,6 +2119,8 @@ class Debugger
             printf("target remote | %s --pid=%d\n", vgdbCommand, targetProcessId);
             GdbCommand(false, "target remote | %s --pid=%d", vgdbCommand, targetProcessId); // TODO: vgdb command config option
          }
+         else
+            GdbCommand(false, "info target"); //GDB/MI Missing Implementation -file-list-symbol-files and -file-list-exec-sections
 
          /*for(prj : ide.workspace.projects; prj != ide.workspace.projects.firstIterator.data)
             GdbCommand(false, "-environment-directory \"%s\"", prj.topNode.path);*/
@@ -2112,7 +2149,7 @@ class Debugger
    {
       if(targeted)
       {
-         GdbBreakpointsDelete(true, true, true);
+         BreakpointsDeleteAll();
          GdbCommand(false, "file");  //GDB/MI Missing Implementation -target-detach
          targeted = false;
          symbols = true;
@@ -2146,10 +2183,12 @@ class Debugger
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecRun()");
       GdbTargetSet();
+      if(!usingValgrind)
+         gdbExecution = run;
       GdbExecCommon();
       ShowDebuggerViews();
       if(usingValgrind)
-         GdbCommand(true, "-exec-continue");
+         GdbExecContinue(true);
       else
          GdbCommand(true, "-exec-run");
    }
@@ -2157,6 +2196,7 @@ class Debugger
    void GdbExecContinue(bool focus)
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecContinue()");
+      gdbExecution = run;
       GdbExecCommon();
       GdbCommand(focus, "-exec-continue");
    }
@@ -2164,13 +2204,47 @@ class Debugger
    void GdbExecNext()
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecNext()");
+      gdbExecution = next;
       GdbExecCommon();
       GdbCommand(true, "-exec-next");
+   }
+
+   void GdbExecUntil(char * absoluteFilePath, int lineNumber)
+   {
+      char relativeFilePath[MAX_LOCATION];
+      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecUntil()");
+      gdbExecution = until;
+      GdbExecCommon();
+      if(absoluteFilePath)
+      {
+         if(!ide.projectView.project.GetRelativePath(absoluteFilePath, relativeFilePath))
+            strcpy(relativeFilePath, absoluteFilePath);
+         GdbCommand(true, "-exec-until %s:%d", relativeFilePath, lineNumber);
+      }
+      else
+         GdbCommand(true, "-exec-until");
+   }
+
+   void GdbExecAdvance(char * absoluteFilePathOrLocation, int lineNumber)
+   {
+      char relativeFilePath[MAX_LOCATION];
+      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecAdvance()");
+      gdbExecution = advance;
+      GdbExecCommon();
+      if(lineNumber)
+      {
+         if(!ide.projectView.project.GetRelativePath(absoluteFilePathOrLocation, relativeFilePath))
+            strcpy(relativeFilePath, absoluteFilePathOrLocation);
+         GdbCommand(true, "advance %s:%d", relativeFilePath, lineNumber); // should use -exec-advance -- GDB/MI implementation missing
+      }
+      else
+         GdbCommand(true, "advance %s", absoluteFilePathOrLocation); // should use -exec-advance -- GDB/MI implementation missing
    }
 
    void GdbExecStep()
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecStep()");
+      gdbExecution = step;
       GdbExecCommon();
       GdbCommand(true, "-exec-step");
    }
@@ -2178,6 +2252,7 @@ class Debugger
    void GdbExecFinish()
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecFinish()");
+      gdbExecution = finish;
       GdbExecCommon();
       GdbCommand(true, "-exec-finish");
    }
@@ -2185,7 +2260,7 @@ class Debugger
    void GdbExecCommon()
    {
       //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecCommon()");
-      GdbBreakpointsInsert();
+      BreakpointsMaintenance();
    }
 
 #ifdef GDB_DEBUG_GUI
@@ -3233,6 +3308,7 @@ class Debugger
    void GdbThreadMain(char * output)
    {
       int i;
+      char * t;
       Array<char *> outTokens { minAllocSize = 50 };
       Array<char *> subTokens { minAllocSize = 50 };
       DebugListItem item { };
@@ -3283,6 +3359,23 @@ class Debugger
                symbols = false;
                ide.outputView.debugBox.Logf($"Target doesn't contain debug information!\n");
                ide.Update(null);
+            }
+            if(!entryPoint && (t = strstr(output, "Entry point:")))
+            {
+               char * addr = t + strlen("Entry point:");
+               t = addr;
+               if(*t++ == ' ' && *t++ == '0' && *t == 'x')
+               {
+                  *addr = '*';
+                  while(isxdigit(*++t));
+                  *t = '\0';
+                  for(bp : sysBPs; bp.type == internalEntry)
+                  {
+                     bp.function = addr;
+                     bp.enabled = entryPoint = true;
+                     break;
+                  }
+               }
             }
             break;
          case '^':
@@ -3673,128 +3766,51 @@ class Debugger
                               HandleExit(reason, exitCode);
                               needReset = true;
                            }
-                           else if(!strcmp(reason, "breakpoint-hit"))
+                           else if(!strcmp(reason, "breakpoint-hit") ||
+                                   !strcmp(reason, "function-finished") ||
+                                   !strcmp(reason, "end-stepping-range") ||
+                                   !strcmp(reason, "location-reached") ||
+                                   !strcmp(reason, "signal-received"))
                            {
-      #ifdef _DEBUG
-                              if(stopItem)
-                                 _dpl(0, "problem");
-      #endif
+                              char r = reason[0];
+#ifdef _DEBUG
+                              if(stopItem) _dpl(0, "problem");
+#endif
                               stopItem = GdbDataStop { };
-                              stopItem.reason = breakpointHit;
+                              stopItem.reason = r == 'b' ? breakpointHit : r == 'f' ? functionFinished : r == 'e' ? endSteppingRange : r == 'l' ? locationReached : signalReceived;
 
                               for(i = tk+1; i < outTokens.count; i++)
                               {
                                  TokenizeListItem(outTokens[i], item);
                                  StripQuotes(item.value, item.value);
-                                 if(!strcmp(item.name, "bkptno"))
+                                 if(!strcmp(item.name, "thread-id"))
+                                    stopItem.threadid = atoi(item.value);
+                                 else if(!strcmp(item.name, "frame"))
+                                 {
+                                    item.value = StripCurlies(item.value);
+                                    ParseFrame(stopItem.frame, item.value);
+                                 }
+                                 else if(stopItem.reason == breakpointHit && !strcmp(item.name, "bkptno"))
                                     stopItem.bkptno = atoi(item.value);
-                                 else if(!strcmp(item.name, "thread-id"))
-                                    stopItem.threadid = atoi(item.value);
-                                 else if(!strcmp(item.name, "frame"))
-                                 {
-                                    item.value = StripCurlies(item.value);
-                                    ParseFrame(stopItem.frame, item.value);
-                                 }
-                                 else if(!strcmp(item.name, "disp") || !strcmp(item.name, "stopped-threads") || !strcmp(item.name, "core"))
-                                    _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "(", item.name, "=", item.value, ")");
-                                 else
-                                    _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "Unknown breakpoint hit item name (", item.name, "=", item.value, ")");
-                              }
-
-                              event = hit;
-                           }
-                           else if(!strcmp(reason, "end-stepping-range"))
-                           {
-      #ifdef _DEBUG
-                              if(stopItem)
-                                 _dpl(0, "problem");
-      #endif
-                              stopItem = GdbDataStop { };
-                              stopItem.reason = endSteppingRange;
-
-                              for(i = tk+1; i < outTokens.count; i++)
-                              {
-                                 TokenizeListItem(outTokens[i], item);
-                                 StripQuotes(item.value, item.value);
-                                 if(!strcmp(item.name, "thread-id"))
-                                    stopItem.threadid = atoi(item.value);
-                                 else if(!strcmp(item.name, "frame"))
-                                 {
-                                    item.value = StripCurlies(item.value);
-                                    ParseFrame(stopItem.frame, item.value);
-                                 }
-                                 else if(!strcmp(item.name, "reason") || !strcmp(item.name, "bkptno"))
-                                    _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "(", item.name, "=", item.value, ")");
-                                 else
-                                    _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "Unknown end of stepping range item name (", item.name, "=", item.value, ")");
-                              }
-
-                              event = stepEnd;
-                              ide.Update(null);
-                           }
-                           else if(!strcmp(reason, "function-finished"))
-                           {
-      #ifdef _DEBUG
-                              if(stopItem)
-                                 _dpl(0, "problem");
-      #endif
-                              stopItem = GdbDataStop { };
-                              stopItem.reason = functionFinished;
-
-                              for(i = tk+1; i < outTokens.count; i++)
-                              {
-                                 TokenizeListItem(outTokens[i], item);
-                                 StripQuotes(item.value, item.value);
-                                 if(!strcmp(item.name, "thread-id"))
-                                    stopItem.threadid = atoi(item.value);
-                                 else if(!strcmp(item.name, "frame"))
-                                 {
-                                    item.value = StripCurlies(item.value);
-                                    ParseFrame(stopItem.frame, item.value);
-                                 }
-                                 else if(!strcmp(item.name, "gdb-result-var"))
+                                 else if(stopItem.reason == functionFinished && !strcmp(item.name, "gdb-result-var"))
                                     stopItem.gdbResultVar = CopyString(item.value);
-                                 else if(!strcmp(item.name, "return-value"))
+                                 else if(stopItem.reason == functionFinished && !strcmp(item.name, "return-value"))
                                     stopItem.returnValue = CopyString(item.value);
-                                 else if(!strcmp(item.name, "stopped-threads"))
-                                    _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "Advanced thread debugging not handled");
-                                 else if(!strcmp(item.name, "core"))
-                                    _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "Information (core) not used");
-                                 else
-                                    _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "Unknown function finished item name (", item.name, "=", item.value, ")");
-                              }
-
-                              event = functionEnd;
-                              ide.Update(null);
-                           }
-                           else if(!strcmp(reason, "signal-received"))
-                           {
-      #ifdef _DEBUG
-                              if(stopItem)
-                                 _dpl(0, "problem");
-      #endif
-                              stopItem = GdbDataStop { };
-                              stopItem.reason = signalReceived;
-
-                              for(i = tk+1; i < outTokens.count; i++)
-                              {
-                                 TokenizeListItem(outTokens[i], item);
-                                 StripQuotes(item.value, item.value);
-                                 if(!strcmp(item.name, "signal-name"))
+                                 else if(stopItem.reason == signalReceived && !strcmp(item.name, "signal-name"))
                                     stopItem.name = CopyString(item.value);
-                                 else if(!strcmp(item.name, "signal-meaning"))
+                                 else if(stopItem.reason == signalReceived && !strcmp(item.name, "signal-meaning"))
                                     stopItem.meaning = CopyString(item.value);
-                                 else if(!strcmp(item.name, "thread-id"))
-                                    stopItem.threadid = atoi(item.value);
-                                 else if(!strcmp(item.name, "frame"))
-                                 {
-                                    item.value = StripCurlies(item.value);
-                                    ParseFrame(stopItem.frame, item.value);
-                                 }
+                                 else if(!strcmp(item.name, "stopped-threads"))
+                                    _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, reason, ": Advanced thread debugging not handled");
+                                 else if(!strcmp(item.name, "core"))
+                                    _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, reason, ": Information (core) not used");
+                                 else if(!strcmp(item.name, "disp"))
+                                    _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, reason, ": (", item.name, "=", item.value, ")");
                                  else
-                                    _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "Unknown signal reveived item name (", item.name, "=", item.value, ")");
+                                    _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "Unknown ", reason, " item name (", item.name, "=", item.value, ")");
                               }
-                              if(!strcmp(stopItem.name, "SIGTRAP"))
+
+                              if(stopItem.reason == signalReceived && !strcmp(stopItem.name, "SIGTRAP"))
                               {
                                  switch(breakType)
                                  {
@@ -3810,7 +3826,8 @@ class Debugger
                               }
                               else
                               {
-                                 event = signal;
+                                 event = r == 'b' ? hit : r == 'f' ? functionEnd : r == 'e' ? stepEnd : r == 'l' ? locationReached : signal;
+                                 ide.Update(null);
                               }
                            }
                            else if(!strcmp(reason, "watchpoint-trigger"))
@@ -3821,8 +3838,6 @@ class Debugger
                               _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "Reason access watchpoint trigger not handled");
                            else if(!strcmp(reason, "watchpoint-scope"))
                               _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "Reason watchpoint scope not handled");
-                           else if(!strcmp(reason, "location-reached"))
-                              _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "Reason location reached not handled");
                            else
                               _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "Unknown reason: ", reason);
                         }

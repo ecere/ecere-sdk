@@ -1979,6 +1979,20 @@ class ProjectView : Window
       return true;
    }
 
+   bool DebugStepUntil(bool skip)
+   {
+      CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
+      ProjectConfig config = project.config;
+      int bitDepth = ide.workspace.bitDepth;
+      bool useValgrind = ide.workspace.useValgrind;
+
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, false)))
+         ide.debugger.StepUntil(compiler, config, bitDepth, useValgrind, skip);
+
+      delete compiler;
+      return true;
+   }
+
    bool DebugStepOut(bool skip)
    {
       ide.debugger.StepOut(skip);

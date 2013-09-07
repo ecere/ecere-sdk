@@ -117,6 +117,14 @@ extern int __ecereVMethodID_class_OnCopy;
 extern int __ecereVMethodID_class_OnSaveEdit;
 extern int __ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad;
 
+class RTCMenuBits
+{
+public:
+   bool ignoreBreakpoints:1;
+   bool atSameLevel:1;
+   bool oldImplementation:1;
+};
+
 class EditFileDialog : FileDialog
 {
    bool OnCreate()
@@ -1913,39 +1921,27 @@ class CodeEditor : Window
       }
    };
 
-   Menu fileMenu { menu, $"File", f };  // MenuPlacement?
+   Menu fileMenu { menu, $"File", f };
    MenuItem { fileMenu, $"Save", s, Key { s, ctrl = true }, NotifySelect = MenuFileSave };
    MenuItem { fileMenu, $"Save As...", a, NotifySelect = MenuFileSaveAs };
 
-   Menu debugMenu { menu, $"Debug", d };  // MenuPlacement?
-   MenuItem debugRunToCursor
+   Menu debugMenu { menu, $"Debug", d };
+   MenuItem debugRunToCursor                { debugMenu, $"Run To Cursor", c, ctrlF10,                                                                  id = RTCMenuBits { false, false, false }, NotifySelect = RTCMenu_NotifySelect; };
+   MenuItem debugSkipRunToCursor            { debugMenu, $"Run To Cursor Skipping Breakpoints", u, Key { f10, ctrl = true, shift = true },              id = RTCMenuBits { true,  false, false }, NotifySelect = RTCMenu_NotifySelect; };
+   MenuItem debugRunToCursorAtSameLevel     { debugMenu, $"Run To Cursor At Same Level", l, altF10,                                                     id = RTCMenuBits { false, true,  false }, NotifySelect = RTCMenu_NotifySelect; };
+   MenuItem debugSkipRunToCursorAtSameLevel { debugMenu, $"Run To Cursor At Same Level Skipping Breakpoints", g, Key { f10, shift = true, alt = true }, id = RTCMenuBits { true,  true,  false }, NotifySelect = RTCMenu_NotifySelect; };
+#if 0
+   MenuItem debugBpRunToCursor                { debugMenu, $"BP Run To Cursor"/*, c, ctrlF10*/,                                                                  id = RTCMenuBits { false, false, true  }, NotifySelect = RTCMenu_NotifySelect; };
+   MenuItem debugBpSkipRunToCursor            { debugMenu, $"BP Run To Cursor Skipping Breakpoints"/*, u, Key { f10, ctrl = true, shift = true }*/,              id = RTCMenuBits { true,  false, true  }, NotifySelect = RTCMenu_NotifySelect; };
+   MenuItem debugBpRunToCursorAtSameLevel     { debugMenu, $"BP Run To Cursor At Same Level"/*, l, altF10*/,                                                     id = RTCMenuBits { false, true,  true  }, NotifySelect = RTCMenu_NotifySelect; };
+   MenuItem debugBpSkipRunToCursorAtSameLevel { debugMenu, $"BP Run To Cursor At Same Level Skipping Breakpoints"/*, g, Key { f10, shift = true, alt = true }*/, id = RTCMenuBits { true,  true,  true  }, NotifySelect = RTCMenu_NotifySelect; };
+#endif
+   bool RTCMenu_NotifySelect(MenuItem selection, Modifiers mods)
    {
-      debugMenu, $"Run To Cursor", c, Key { f10, ctrl = true };
-      bool NotifySelect(MenuItem selection, Modifiers mods)
+      ProjectView projectView = ide.projectView;
+      if(!projectView.buildInProgress)
       {
-         ProjectView projectView = ide.projectView;
-         if(!projectView.buildInProgress)
-         {
-            int line = editBox.lineNumber + 1;
-            if(projectView)
-            {
-               CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-               ProjectConfig config = projectView.project.config;
-               int bitDepth = ide.workspace.bitDepth;
-               bool useValgrind = ide.workspace.useValgrind;
-               ide.debugger.RunToCursor(compiler, config, bitDepth, useValgrind, fileName, line, false, false);
-               delete compiler;
-            }
-         }
-         return true;
-      }
-   };
-   MenuItem debugSkipRunToCursor
-   {
-      debugMenu, $"Run To Cursor Skipping Breakpoints", u, Key { f10, ctrl = true, shift = true };
-      bool NotifySelect(MenuItem selection, Modifiers mods)
-      {
-         ProjectView projectView = ide.projectView;
+         RTCMenuBits bits = (RTCMenuBits)selection.id;
          int line = editBox.lineNumber + 1;
          if(projectView)
          {
@@ -1953,31 +1949,12 @@ class CodeEditor : Window
             ProjectConfig config = projectView.project.config;
             int bitDepth = ide.workspace.bitDepth;
             bool useValgrind = ide.workspace.useValgrind;
-            ide.debugger.RunToCursor(compiler, config, bitDepth, useValgrind, fileName, line, true, false);
+            ide.debugger.RunToCursor(compiler, config, bitDepth, useValgrind, fileName, line, bits.ignoreBreakpoints, bits.atSameLevel, bits.oldImplementation);
             delete compiler;
          }
-         return true;
       }
-   };
-   MenuItem debugSkipRunToCursorAtSameLevel
-   {
-      debugMenu, $"Run To Cursor At Same Level Skipping Breakpoints", l, altF10;
-      bool NotifySelect(MenuItem selection, Modifiers mods)
-      {
-         ProjectView projectView = ide.projectView;
-         int line = editBox.lineNumber + 1;
-         if(projectView)
-         {
-            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-            ProjectConfig config = projectView.project.config;
-            int bitDepth = ide.workspace.bitDepth;
-            bool useValgrind = ide.workspace.useValgrind;
-            ide.debugger.RunToCursor(compiler, config, bitDepth, useValgrind, fileName, line, true, true);
-            delete compiler;
-         }
-         return true;
-      }
-   };
+      return true;
+   }
    MenuDivider { debugMenu };
    MenuItem debugToggleBreakpoint
    {
@@ -2151,7 +2128,7 @@ class CodeEditor : Window
       */
       if(active && directActivation)
       {
-         AdjustDebugMenus(ide.areDebugMenusUnavailable, ide.isBreakpointTogglingUnavailable, ide.isDebuggerExecuting);
+         AdjustDebugMenus(ide.areDebugMenusUnavailable, ide.isBreakpointTogglingUnavailable, ide.isDebuggerExecuting, ide.isDebuggerStopped);
          if(openedFileInfo)
             openedFileInfo.Activate();
          if(designer)
@@ -2472,11 +2449,18 @@ class CodeEditor : Window
       return false;
    }
 
-   void AdjustDebugMenus(bool unavailable, bool bpNoToggle, bool executing)
+   void AdjustDebugMenus(bool unavailable, bool bpNoToggle, bool executing, bool stopped)
    {
       debugRunToCursor.disabled                = unavailable || executing;
       debugSkipRunToCursor.disabled            = unavailable || executing;
-      debugSkipRunToCursorAtSameLevel.disabled = unavailable || executing;
+      debugRunToCursorAtSameLevel.disabled     = unavailable || !stopped;
+      debugSkipRunToCursorAtSameLevel.disabled = unavailable || !stopped;
+#if 0
+      debugBpRunToCursor.disabled                = unavailable || executing;
+      debugBpSkipRunToCursor.disabled            = unavailable || executing;
+      debugBpRunToCursorAtSameLevel.disabled     = unavailable || !stopped;
+      debugBpSkipRunToCursorAtSameLevel.disabled = unavailable || !stopped;
+#endif
       debugToggleBreakpoint.disabled           = bpNoToggle;
    }
 
@@ -2497,7 +2481,7 @@ class CodeEditor : Window
          designer.fileName = title;
       }
 
-      AdjustDebugMenus(ide.areDebugMenusUnavailable, ide.isBreakpointTogglingUnavailable, ide.isDebuggerExecuting);
+      AdjustDebugMenus(ide.areDebugMenusUnavailable, ide.isBreakpointTogglingUnavailable, ide.isDebuggerExecuting, ide.isDebuggerStopped);
 
       for(c = 0; c < CodeObjectType::enumSize; c++)
          icons[c] = BitmapResource { iconNames[c], window = this };

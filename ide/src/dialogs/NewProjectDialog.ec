@@ -515,7 +515,7 @@ class QuickProjectDialog : Window
                   {
                      CodeEditor codeEditor = (CodeEditor)document;
                      ide.projectView.AddFile(project.topNode, fileName, false, false);
-                     codeEditor.AdjustDebugMenus(ide.areDebugMenusUnavailable, ide.isBreakpointTogglingUnavailable, ide.isDebuggerExecuting);
+                     codeEditor.AdjustDebugMenus(ide.areDebugMenusUnavailable, ide.isBreakpointTogglingUnavailable, ide.isDebuggerExecuting, ide.isDebuggerStopped);
                   }
                }
             }
