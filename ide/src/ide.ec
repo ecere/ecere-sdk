@@ -2066,54 +2066,63 @@ class IDEWorkSpace : Window
    } }
 
    property bool isBreakpointTogglingUnavailable { get { return !project; } }
-   property bool isDebuggerExecuting { get { if(ide.debugger) return ide.debugger.state == running; return false; } }
+   property bool isDebuggerRunning { get { if(ide.debugger) return ide.debugger.state == running; return false; } }
    property bool isDebuggerStopped { get { if(ide.debugger) return ide.debugger.state == stopped; return false; } }
 
    void AdjustDebugMenus()
    {
       bool unavailable = areDebugMenusUnavailable;
+      bool running = isDebuggerRunning;
+      bool stopped = isDebuggerStopped;
       bool active = debugger.isActive;
-      bool bpNoToggle = isBreakpointTogglingUnavailable;
-      bool executing = isDebuggerExecuting;
-      //bool holding = debugger.state == stopped;
+      bool noBreakpointToggle = !project;
 
-      debugStartResumeItem.disabled       = unavailable || executing;
+      bool isNotRunning    = unavailable || !running;
+      bool isNotNotRunning = unavailable || running;
+      bool isNotStopped    = unavailable || !stopped;
+      bool isNotActive     = unavailable || !active;
+
+      debugStartResumeItem.disabled       = isNotNotRunning;
       debugStartResumeItem.text           = active ? $"Resume" : $"Start";
       debugStartResumeItem.NotifySelect   = active ? MenuDebugResume : MenuDebugStart;
       if(toolBar)
       {
-         toolBar.buttonDebugStartResume.disabled      = unavailable || executing;
+         toolBar.buttonDebugStartResume.disabled      = isNotNotRunning;
          toolBar.buttonDebugStartResume.toolTip       = active ? $"Resume" : $"Start";
       }
 
-      debugBreakItem.disabled             = unavailable || !executing;
-      debugStopItem.disabled              = unavailable || !active;
-      debugRestartItem.disabled           = unavailable || !active;
+      debugBreakItem.disabled             = isNotRunning;
+      debugStopItem.disabled              = isNotActive;
+      debugRestartItem.disabled           = isNotActive;
       if(toolBar)
       {
-         toolBar.buttonDebugPause.disabled            = unavailable || !executing;
-         toolBar.buttonDebugStop.disabled             = unavailable || !active;
-         toolBar.buttonDebugRestart.disabled          = unavailable || !active;
+         toolBar.buttonDebugPause.disabled            = isNotRunning;
+         toolBar.buttonDebugStop.disabled             = isNotActive;
+         toolBar.buttonDebugRestart.disabled          = isNotActive;
       }
 
-      debugStepIntoItem.disabled          = unavailable || executing;
-      debugStepOverItem.disabled          = unavailable || executing;
-      debugSkipStepOverItem.disabled      = unavailable || executing;
-      debugStepOutItem.disabled           = unavailable || executing || !active;
-      debugSkipStepOutItem.disabled       = unavailable || executing || !active;
+      debugStepIntoItem.disabled          = isNotNotRunning;
+      debugStepOverItem.disabled          = isNotNotRunning;
+      debugSkipStepOverItem.disabled      = isNotNotRunning;
+      debugStepOutItem.disabled           = isNotStopped;
+      debugSkipStepOutItem.disabled       = isNotStopped;
+#if 0
+      debugStepUntilItem.disabled         = isNotStopped;
+      debugSkipStepUntilItem.disabled     = isNotStopped;
+#endif
       if(toolBar)
       {
-         toolBar.buttonDebugStepInto.disabled         = unavailable || executing;
-         toolBar.buttonDebugStepOver.disabled         = unavailable || executing;
-         toolBar.buttonDebugSkipStepOver.disabled     = unavailable || executing;
-         toolBar.buttonDebugStepOut.disabled          = unavailable || executing || !active;
-         //toolBar.buttonDebugSkipStepOutItem.disabled  = unavailable || executing;
+         toolBar.buttonDebugStepInto.disabled         = isNotNotRunning;
+         toolBar.buttonDebugStepOver.disabled         = isNotNotRunning;
+         toolBar.buttonDebugSkipStepOver.disabled     = isNotNotRunning;
+         toolBar.buttonDebugStepOut.disabled          = isNotStopped;
+         //toolBar.buttonDebugSkipStepOutItem.disabled  = isNotNotRunning;
       }
       if((Designer)GetActiveDesigner())
       {
          CodeEditor codeEditor = ((Designer)GetActiveDesigner()).codeEditor;
          if(codeEditor)
-            codeEditor.AdjustDebugMenus(unavailable, bpNoToggle, executing, isDebuggerStopped);
+            codeEditor.AdjustDebugMenus();
       }
    }
 

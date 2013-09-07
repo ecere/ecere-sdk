@@ -2128,7 +2128,7 @@ class CodeEditor : Window
       */
       if(active && directActivation)
       {
-         AdjustDebugMenus(ide.areDebugMenusUnavailable, ide.isBreakpointTogglingUnavailable, ide.isDebuggerExecuting, ide.isDebuggerStopped);
+         AdjustDebugMenus();
          if(openedFileInfo)
             openedFileInfo.Activate();
          if(designer)
@@ -2449,19 +2449,24 @@ class CodeEditor : Window
       return false;
    }
 
-   void AdjustDebugMenus(bool unavailable, bool bpNoToggle, bool executing, bool stopped)
+   void AdjustDebugMenus()
    {
-      debugRunToCursor.disabled                = unavailable || executing;
-      debugSkipRunToCursor.disabled            = unavailable || executing;
-      debugRunToCursorAtSameLevel.disabled     = unavailable || !stopped;
-      debugSkipRunToCursorAtSameLevel.disabled = unavailable || !stopped;
+      bool unavailable = ide.areDebugMenusUnavailable;
+      bool isNotNotRunning    = unavailable || ide.isDebuggerRunning;
+      bool isNotStopped       = unavailable || !ide.isDebuggerStopped;
+      bool noBreakpointToggle = ide.isBreakpointTogglingUnavailable;
+
+      debugRunToCursor.disabled                = isNotNotRunning;
+      debugSkipRunToCursor.disabled            = isNotNotRunning;
+      debugRunToCursorAtSameLevel.disabled     = isNotStopped;
+      debugSkipRunToCursorAtSameLevel.disabled = isNotStopped;
 #if 0
-      debugBpRunToCursor.disabled                = unavailable || executing;
-      debugBpSkipRunToCursor.disabled            = unavailable || executing;
-      debugBpRunToCursorAtSameLevel.disabled     = unavailable || !stopped;
-      debugBpSkipRunToCursorAtSameLevel.disabled = unavailable || !stopped;
+      debugBpRunToCursor.disabled                = isNotNotRunning;
+      debugBpSkipRunToCursor.disabled            = isNotNotRunning;
+      debugBpRunToCursorAtSameLevel.disabled     = isNotStopped;
+      debugBpSkipRunToCursorAtSameLevel.disabled = isNotStopped;
 #endif
-      debugToggleBreakpoint.disabled           = bpNoToggle;
+      debugToggleBreakpoint.disabled           = noBreakpointToggle;
    }
 
    CodeEditor()
@@ -2481,7 +2486,7 @@ class CodeEditor : Window
          designer.fileName = title;
       }
 
-      AdjustDebugMenus(ide.areDebugMenusUnavailable, ide.isBreakpointTogglingUnavailable, ide.isDebuggerExecuting, ide.isDebuggerStopped);
+      AdjustDebugMenus();
 
       for(c = 0; c < CodeObjectType::enumSize; c++)
          icons[c] = BitmapResource { iconNames[c], window = this };
