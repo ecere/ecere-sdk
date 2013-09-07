@@ -2556,6 +2556,7 @@ class Debugger
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExit()");
       if(gdbHandle && gdbProcessId)
       {
+         gdbTimer.Stop();
          GdbCommand(false, "-gdb-exit");
 
          if(gdbThread)
