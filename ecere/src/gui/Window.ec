@@ -1037,8 +1037,10 @@ private:
       }
 
       // This is required to get proper initial decoration size using native decorations on Windows
+#if defined(__WIN32__)
       if(nativeDecorations && windowHandle && guiApp && guiApp.interfaceDriver && !visible)
          guiApp.interfaceDriver.PositionRootWindow(this, x, y, Max(1, size.w), Max(1, size.h), true, true);
+#endif
       GetDecorationsSize(&ew, &eh);
 
       if(anchor.left.type >= cascade && (state == normal /*|| state == Hidden*/))
@@ -7799,7 +7801,7 @@ public:
       return false;
    }
    virtual void UpdateNonClient();
-   virtual void SetBox(Box box);
+   virtual void SetBox(Box box);    // This isn't used anywhere at this time
    virtual bool IsInside(int x, int y)
    {
       return box.IsPointInside({x, y});

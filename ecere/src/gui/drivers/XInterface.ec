@@ -188,7 +188,10 @@ bool XGetBorderWidths(Window window, Box box)
    XWindowData windowData = window.windowData;
    if(windowData)
    {
-      box = windowData.decor;
+      if(window.state == maximized)
+         box = { 0, 0, 0, 0 };
+      else
+         box = windowData.decor;
       return true;
    }
    return false;
@@ -796,7 +799,7 @@ static Bool EventChecker(void *display, XEvent *event, char * data)
 
 static Bool ConfigureNotifyChecker(void *display, XConfigureEvent *event, char * data)
 {
-   return ((!data || (event->window == (int) data)) && event->type == ConfigureNotify;
+   return ((!data || (event->window == (X11Window) data)) && event->type == ConfigureNotify;
 }
 
 static uint timerDelay = MAXINT;
@@ -1724,7 +1727,7 @@ class XInterface : Interface
                      x -= desktopX;
                      y -= desktopY;
 
-                     if(window.nativeDecorations)
+                     if(window.nativeDecorations && window.state != maximized)
                      {
                         x -= windowData.decor.left;
                         y -= windowData.decor.top;
@@ -1737,7 +1740,7 @@ class XInterface : Interface
                         h += window.size.h - window.clientSize.h;
                         */
                      }
-                     window.ExternalPosition(x, y, w, h);
+                     window.Position(x, y, w, h, true, true, true, true, false, false);
                   }
                   break;
                }
@@ -1875,27 +1878,39 @@ class XInterface : Interface
                                       extents[3] != windowData.decor.bottom;
 
                         bool hadFrameExtents = windowData.gotFrameExtents;
-                        windowData.decor =
+                        Box oldDecor = windowData.decor;
+                        if(!hadFrameExtents || extents[0] || extents[1] || extents[2] || extents[3])
                         {
-                           left = (int)extents[0], right  = (int)extents[1],
-                           top  = (int)extents[2], bottom = (int)extents[3]
-                        };
-                        windowData.gotFrameExtents = true;
-                        if(change)
-                        {
-                           int x = window.position.x, y = window.position.y, w = window.size.w, h = window.size.h;
-                           if(!hadFrameExtents && window.state != maximized)
+                           windowData.decor =
                            {
-                              window.ComputeAnchors(
-                                 window.normalAnchor,
-                                 window.normalSizeAnchor,
-                                 &x, &y, &w, &h);
-                           }
+                              left = (int)extents[0], right  = (int)extents[1],
+                              top  = (int)extents[2], bottom = (int)extents[3]
+                           };
+                           windowData.gotFrameExtents = true;
+                           if(change && ((Window)window).clientSize.w > 0)
+                           {
+                              int x = window.position.x, y = window.position.y, w = window.size.w, h = window.size.h;
+                              if(!hadFrameExtents && window.state != maximized)
+                              {
+                                 window.ComputeAnchors(
+                                    window.normalAnchor,
+                                    window.normalSizeAnchor,
+                                    &x, &y, &w, &h);
+                              }
+                              else
+                              {
+                                 x += windowData.decor.left - oldDecor.left;
+                                 y += windowData.decor.top - oldDecor.top;
 
-                           if(!hadFrameExtents)
-                           {
-                              window.Position(x, y, w, h, true, true, true, true, false, !hadFrameExtents && window.state != maximized);
-                              UpdateRootWindow(window);
+                                 w += windowData.decor.left - oldDecor.left + windowData.decor.right - oldDecor.right;
+                                 h += windowData.decor.top - oldDecor.top   + windowData.decor.bottom - oldDecor.bottom;
+                              }
+
+                              if(window.state != maximized)
+                              {
+                                 window.Position(x, y, w, h, true, true, true, true, false, !hadFrameExtents && window.state != maximized);
+                                 UpdateRootWindow(window);
+                              }
                            }
                         }
                         XFree(data);
@@ -2344,17 +2359,33 @@ class XInterface : Interface
          if(window.nativeDecorations)
          {
             XWindowData windowData = window.windowData;
-            // TODO: How to handle frame extents not supported?
-            // Commenting this out was part of #700/#795 fix
-            // if(!windowData.gotFrameExtents && window.state != maximized) return;
 
-            w -= window.size.w - window.clientSize.w;
-            h -= window.size.h - window.clientSize.h;
+            // Was commenting this out was part of #700/#795 fix, but this causes jumping of e.g. About box after getting frame extents PropertyNotify
+
+               // && window.state != maximized -- required for Cinnamon on Mint 14/15
+            if(!windowData.gotFrameExtents && window.state != maximized) return;
+
+            x -= windowData.decor.left;
+            y -= windowData.decor.top;
+
+            w -= windowData.decor.left + windowData.decor.right;
+            h -= windowData.decor.top + windowData.decor.bottom;
+
+            // Tweak for first unmaximize on Unity on Ubuntu 11.10
+            if(window.state == maximized && (desktopX + w > desktopW || desktopY + h > desktopH))
+            {
+               w -= 40;
+               h -= 40;
+            }
          }
+
+         x += desktopX;
+         y += desktopY;
+
          if(move && resize)
-            XMoveResizeWindow(xGlobalDisplay, (X11Window)window.windowHandle, x + desktopX, y + desktopY, w, h);
+            XMoveResizeWindow(xGlobalDisplay, (X11Window)window.windowHandle, x, y, w, h);
          else if(move)
-            XMoveWindow(xGlobalDisplay, (X11Window)window.windowHandle, x + desktopX, y + desktopY);
+            XMoveWindow(xGlobalDisplay, (X11Window)window.windowHandle, x, y);
          else if(resize)
             XResizeWindow(xGlobalDisplay, (X11Window)window.windowHandle, w, h);
 #if defined(__APPLE__)
@@ -2458,14 +2489,28 @@ class XInterface : Interface
             {
                if(!window.nativeDecorations || (!((XWindowData)window.windowData).gotFrameExtents && window.state == maximized)) //((XWindowData)window.windowData).gotFrameExtents && (!window.nativeDecorations || window.state == state))
                {
+                  int x = window.position.x;
+                  int y = window.position.y;
+                  int w = window.size.w;
+                  int h = window.size.h;
+
+                  if(window.nativeDecorations)
+                  {
+                     XWindowData windowData = window.windowData;
+                     x -= windowData.decor.left;
+                     y -= windowData.decor.top;
+
+                     w -= windowData.decor.left + windowData.decor.right;
+                     h -= windowData.decor.top + windowData.decor.bottom;
+                  }
+                  x += desktopX;
+                  y += desktopY;
+
                   // With native decorations, we do it the first time
                   // or the WM (Gnome) is sticking it to the top/right!
                   XMoveResizeWindow(xGlobalDisplay, 
                      (X11Window)window.windowHandle,
-                     window.position.x + desktopX,
-                     window.position.y + desktopY,
-                     window.nativeDecorations ? window.clientSize.w : window.size.w,
-                     window.nativeDecorations ? window.clientSize.h : window.size.h);
+                     x, y, w, h);
                   UpdateRootWindow(window);
                }
                if(window.nativeDecorations)
