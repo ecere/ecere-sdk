@@ -802,6 +802,12 @@ static Bool ConfigureNotifyChecker(void *display, XConfigureEvent *event, char *
    return ((!data || (event->window == (X11Window) data)) && event->type == ConfigureNotify;
 }
 
+static enum FrameExtentSupport { unknown, working, broken };
+
+static FrameExtentSupport frameExtentSupported;
+static Time frameExtentRequest;
+static X11Window frameExtentWindow;
+
 static uint timerDelay = MAXINT;
 #define RESOLUTION   (18.2 * 100)
 static uint XTimerThread(Thread thread)
@@ -829,6 +835,22 @@ static uint XTimerThread(Thread thread)
       {
          if(FD_ISSET(s, &readSet))
             gotAnXEvent = true;
+      }
+      if(frameExtentSupported == unknown && frameExtentRequest && GetTime() - frameExtentRequest > 1)
+      {
+         XPropertyEvent event = { 0 };
+         event.type = PropertyNotify;
+         event.state = PropertyNewValue;
+         event.atom = atoms[_net_frame_extents];
+         event.display = xGlobalDisplay;
+         event.serial = 0;
+         event.window = frameExtentWindow;
+         event.send_event = 1;
+
+         frameExtentSupported = broken;
+
+         XSendEvent(xGlobalDisplay, frameExtentWindow, bool::false,
+            PropertyChangeMask, (union _XEvent *)&event);
       }
       xMutex.Release();
       guiApp.SignalEvent();  
@@ -1040,6 +1062,7 @@ class XInterface : Interface
 #endif
       xTerminate = false;
       xGlobalDisplay = XOpenDisplay(null);
+      frameExtentSupported = unknown;
 
    	joystickFD[0] = open("/dev/js0", O_RDONLY);
       joystickFD[1] = open("/dev/js1", O_RDONLY);
@@ -1879,6 +1902,11 @@ class XInterface : Interface
 
                         bool hadFrameExtents = windowData.gotFrameExtents;
                         Box oldDecor = windowData.decor;
+
+                        frameExtentSupported = working;
+                        frameExtentWindow = 0;
+                        frameExtentRequest = 0;
+
                         if(!hadFrameExtents || extents[0] || extents[1] || extents[2] || extents[3])
                         {
                            windowData.decor =
@@ -2291,9 +2319,9 @@ class XInterface : Interface
          XUngrabPointer(xGlobalDisplay, CurrentTime);
       }
 
-      if(window.nativeDecorations)
+      if(window.nativeDecorations && frameExtentSupported != broken)
       {
-         // Maximize / Restore the window
+         // Request decoration frame extents
          XClientMessageEvent event = { 0 };
          event.type = ClientMessage;
          event.message_type = atoms[_net_request_frame_extents];
@@ -2303,9 +2331,18 @@ class XInterface : Interface
          event.send_event = 1;
          window.windowHandle = (void *)windowHandle;
          event.format = 32;
+
+         if(frameExtentSupported == unknown && !frameExtentRequest)
+         {
+            frameExtentRequest = GetTime();
+            frameExtentWindow = windowHandle;
+         }
+
          XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false,
             SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
       }
+      else
+         ((XWindowData)window.windowData).gotFrameExtents = true;
       return (void *)windowHandle;
    }
 
