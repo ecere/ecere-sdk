@@ -799,7 +799,7 @@ static Bool EventChecker(void *display, XEvent *event, char * data)
 
 static Bool ConfigureNotifyChecker(void *display, XConfigureEvent *event, char * data)
 {
-   return ((!data || (event->window == (X11Window) data)) && event->type == ConfigureNotify;
+   return (!data || (event->window == (X11Window) data)) && event->type == ConfigureNotify;
 }
 
 static enum FrameExtentSupport { unknown, working, broken };
