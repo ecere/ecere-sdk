@@ -2027,7 +2027,8 @@ class CodeEditor : Window
             if(CloseConfirmation(false))
             {
                visible = false;
-               OnFileModified({ modified = true }, null);
+               if(modifiedDocument)
+                  OnFileModified({ modified = true }, null);
             }
             debugClosing = false;
             return false;
@@ -2224,7 +2225,7 @@ class CodeEditor : Window
          editBox.Save(f, false);
          modifiedDocument = false;
          
-         delete(f);
+         delete f;
          return true;
       }
       return false;
@@ -2277,7 +2278,7 @@ class CodeEditor : Window
             }
             modifiedDocument = false;
 
-            delete(f);
+            delete f;
          }
       }
       return true;
@@ -2443,7 +2444,7 @@ class CodeEditor : Window
          loadingFile = false;
          Create();
 
-         delete(f);
+         delete f;
          return true;
       }
       return false;

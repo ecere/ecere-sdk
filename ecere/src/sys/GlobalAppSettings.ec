@@ -450,7 +450,7 @@ public:
       {
          settingsMonitor.StopMonitoring();
          f.Unlock(0,0,true);
-         delete f; // WTH... this used to be: delete(f); f = null; // why?
+         delete f;
       }
    }
 

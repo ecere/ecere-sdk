@@ -2339,11 +2339,6 @@ class IDEWorkSpace : Window
                            ChangeProjectFileDialogDirectory(location);
                         }
                         
-                        /*
-                        if(projectView.debugger)
-                           projectView.debugger.EvaluateWatches();
-                        */
-                        
                         break;
                      }
                      else 

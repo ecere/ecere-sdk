@@ -474,7 +474,11 @@ enum BreakpointType
    property bool isUser { get { return (this == user || this == runToCursor); } };
 };
 enum DebuggerEvaluationError { none, symbolNotFound, memoryCantBeRead, unknown };
-enum DebuggerUserAction { none, start, resume, _break, stop, restart, selectThread, selectFrame, stepInto, stepOver, stepUntil, stepOut, runToCursor };
+enum DebuggerUserAction
+{
+   none, start, resume, _break, stop, restart, selectThread, selectFrame, stepInto, stepOver, stepUntil, stepOut, runToCursor;
+   property bool breaksOnInternalBreakpoint { get { return (this == stepInto || this == stepOver || this == stepUntil); } };
+};
 enum GdbExecution
 {
    none, run, _continue, next, until, advance, step, finish;
@@ -504,11 +508,8 @@ class Debugger
    bool sentKill;
    bool sentBreakInsert;
    bool ignoreBreakpoints;
-   bool userBreakOnInternalBreakpoint;
-   //bool runToCursorDebugStart;
    bool signalOn;
    bool needReset;
-   //bool watchesInit;
    bool usingValgrind;
 
    int ideProcessId;
@@ -537,6 +538,9 @@ class Debugger
    
    List<Breakpoint> sysBPs { };
    Breakpoint bpRunToCursor;
+   Breakpoint intBpEntry;
+   Breakpoint intBpMain;
+   Breakpoint intBpWinMain;
 
    OldList stackFrames;
 
@@ -681,7 +685,7 @@ class Debugger
                   }
                   else
                      _dpl2(_dpct, dplchan::debuggerProblem, 0, "Breakpoint bkptno(", stopItem.bkptno, ") invalid or not found!");
-                  if((bpUser && !ignoreBreakpoints) || (bpInternal && userBreakOnInternalBreakpoint))
+                  if((bpUser && !ignoreBreakpoints) || (bpInternal && userAction.breaksOnInternalBreakpoint))
                      monitor = true;
                   hitThread = stopItem.threadid;
                }
@@ -697,25 +701,11 @@ class Debugger
                break;
             case valgrindStartPause:
                GdbExecContinue(true);
+               monitor = false;
                break;
             case exit:
                HideDebuggerViews();
                break;
-         }
-
-         if(monitor || (bpUser && bpUser.type == runToCursor))
-            GdbGetStack();
-
-         if(monitor)
-         {
-            activeThread = stopItem.threadid;
-            GdbCommand(false, "-thread-list-ids");
-            if(activeFrameLevel > 0)
-               GdbCommand(false, "-stack-select-frame %d", activeFrameLevel);
-
-            WatchesCodeEditorLinkInit();
-            EvaluateWatches();
-            ide.AdjustDebugMenus();
          }
 
          if(curEvent == signal)
@@ -734,17 +724,7 @@ class Debugger
             ide.callStackView.Show();
             ide.callStackView.Activate();
          }
-
-         if(monitor && curEvent.canBeMonitored)
-         {
-            InternalSelectFrame(activeFrameLevel);
-            GoToStackFrameLine(activeFrameLevel, true, false);
-            ide.ShowCodeEditor();
-            ideMainFrame.Activate();   // TOFIX: ide.Activate() is not reliable (app inactive)
-            ide.Update(null);
-         }
-
-         if(curEvent == hit)
+         else if(curEvent == hit)
          {
             if(BreakpointHit(stopItem, bpInternal, bpUser))
             {
@@ -765,8 +745,25 @@ class Debugger
                   delete breakString;
                }
                else
+               {
                   GdbExecContinue(false);
+                  monitor = false;
+               }
             }
+         }
+
+         if(monitor && curEvent.canBeMonitored)
+         {
+            GdbGetStack();
+            activeThread = stopItem.threadid;
+            GdbCommand(false, "-thread-list-ids");
+            InternalSelectFrame(activeFrameLevel);
+            GoToStackFrameLine(activeFrameLevel, true, false);
+            EvaluateWatches();
+            ide.ShowCodeEditor();
+            ide.AdjustDebugMenus();
+            ideMainFrame.Activate();   // TOFIX: ide.Activate() is not reliable (app inactive)
+            ide.Update(null);
          }
 
          if(stopItem)
@@ -774,8 +771,6 @@ class Debugger
             stopItem.Free();
             delete stopItem;
          }
-         if(userBreakOnInternalBreakpoint)
-            userBreakOnInternalBreakpoint = false;
          return false;
       }
    };
@@ -836,8 +831,6 @@ class Debugger
       sentKill = false;
       sentBreakInsert = false;
       ignoreBreakpoints = false;
-      userBreakOnInternalBreakpoint = false;
-      //runToCursorDebugStart = false;
       signalOn = false;
 
       activeFrameLevel = 0;
@@ -861,7 +854,8 @@ class Debugger
 
       delete currentCompiler;
       prjConfig = null;
-      codeEditor = null;
+
+      WatchesReleaseCodeEditor();
 
       entryPoint = false;
       projectsLibraryLoaded.Free();
@@ -875,10 +869,10 @@ class Debugger
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::constructor");
       ideProcessId = Process_GetCurrentProcessId();
 
-      sysBPs.Add(Breakpoint { type = internalEntry, enabled = false, level = -1 });
-      sysBPs.Add(Breakpoint { type = internalMain, function = "main", enabled = true, level = -1 });
+      sysBPs.Add((intBpEntry = Breakpoint { type = internalEntry, enabled = false, level = -1 }));
+      sysBPs.Add((intBpMain = Breakpoint { type = internalMain, function = "main", enabled = true, level = -1 }));
 #if defined(__WIN32__)
-      sysBPs.Add(Breakpoint { type = internalWinMain, function = "WinMain", enabled = true, level = -1 });
+      sysBPs.Add((intBpWinMain = Breakpoint { type = internalWinMain, function = "WinMain", enabled = true, level = -1 }));
 #endif
       sysBPs.Add(Breakpoint { type = internalModulesLoaded, enabled = true, level = -1 });
       sysBPs.Add(Breakpoint { type = internalModuleLoad, function = "InternalModuleLoadBreakpoint", enabled = true, level = -1 });
@@ -943,7 +937,7 @@ class Debugger
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::Restart");
       _ChangeUserAction(restart);
-      if(StartSession(compiler, config, bitDepth, useValgrind, true, false, false/*, false*/) == loaded)
+      if(StartSession(compiler, config, bitDepth, useValgrind, true, false) == loaded)
          GdbExecRun();
    }
 
@@ -1033,8 +1027,6 @@ class Debugger
             GdbGetStack();
             InternalSelectFrame(activeFrameLevel);
             GoToStackFrameLine(activeFrameLevel, true, false);
-            WatchesCodeEditorLinkRelease();
-            WatchesCodeEditorLinkInit();
             EvaluateWatches();
             ide.Update(null);
          }
@@ -1046,28 +1038,25 @@ class Debugger
    {
       //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::SelectFrame(", frame, ")");
       _ChangeUserAction(selectFrame);
-      InternalSelectFrame(frame);
-   }
-
-   void InternalSelectFrame(int frame)
-   {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::InternalSelectFrame(", frame, ")");
       if(state == stopped)
       {
-         if(frame != activeFrameLevel || !codeEditor || !codeEditor.visible)
+         if(frame != activeFrameLevel)
          {
-            activeFrameLevel = frame;  // there is no active frame number in the gdb reply
-            GdbCommand(false, "-stack-select-frame %d", activeFrameLevel);
-            for(activeFrame = stackFrames.first; activeFrame; activeFrame = activeFrame.next)
-               if(activeFrame.level == activeFrameLevel)
-                  break;
-
-            WatchesCodeEditorLinkRelease();
-            WatchesCodeEditorLinkInit();
+            InternalSelectFrame(frame);
             EvaluateWatches();
             ide.Update(null);
          }
       }
+   }
+
+   void InternalSelectFrame(int frame)
+   {
+      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::InternalSelectFrame(", frame, ")");
+      activeFrameLevel = frame;  // there is no active frame number in the gdb reply
+      GdbCommand(false, "-stack-select-frame %d", activeFrameLevel);
+      for(activeFrame = stackFrames.first; activeFrame; activeFrame = activeFrame.next)
+         if(activeFrame.level == activeFrameLevel)
+            break;
    }
 
    void HandleExit(char * reason, char * code)
@@ -1134,10 +1123,10 @@ class Debugger
       ide.Update(null);
    }
       
-   DebuggerState StartSession(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, bool restart, bool userBreakOnInternalBreakpoint, bool ignoreBreakpoints/*, bool runToCursorDebugStart*/)
+   DebuggerState StartSession(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, bool restart, bool ignoreBreakpoints)
    {
       DebuggerState result = none;
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StartSession(restart(", restart, "), userBreakOnInternalBreakpoint(", userBreakOnInternalBreakpoint, "), ignoreBreakpoints(", ignoreBreakpoints, ")"/*, runToCursorDebugStart(", runToCursorDebugStart, ")"*/);
+      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StartSession(restart(", restart, "), ignoreBreakpoints(", ignoreBreakpoints, ")");
       if(restart && state == running && targetProcessId)
       {
          breakType = DebuggerAction::restart;
@@ -1166,15 +1155,12 @@ class Debugger
                bp.breaks = 0;
             }
 
-            //this.runToCursorDebugStart = runToCursorDebugStart;
-
             if(GdbInit(compiler, config, bitDepth, useValgrind))
                result = state;
             else
                result = error;
          }
          this.ignoreBreakpoints = ignoreBreakpoints;
-         this.userBreakOnInternalBreakpoint = userBreakOnInternalBreakpoint;
       }
       return result;
    }
@@ -1183,7 +1169,7 @@ class Debugger
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::Start()");
       _ChangeUserAction(start);
-      if(StartSession(compiler, config, bitDepth, useValgrind, true, false, false/*, false*/) == loaded)
+      if(StartSession(compiler, config, bitDepth, useValgrind, true, false) == loaded)
          GdbExecRun();
    }
 
@@ -1191,7 +1177,7 @@ class Debugger
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StepInto()");
       _ChangeUserAction(stepInto);
-      switch(StartSession(compiler, config, bitDepth, useValgrind, false, true, false/*, false*/))
+      switch(StartSession(compiler, config, bitDepth, useValgrind, false, false))
       {
          case loaded:  GdbExecRun();  break;
          case stopped: GdbExecStep(); break;
@@ -1202,7 +1188,7 @@ class Debugger
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StepOver()");
       _ChangeUserAction(stepOver);
-      switch(StartSession(compiler, config, bitDepth, useValgrind, false, true, ignoreBreakpoints/*, false*/))
+      switch(StartSession(compiler, config, bitDepth, useValgrind, false, ignoreBreakpoints))
       {
          case loaded:  GdbExecRun();  break;
          case stopped: GdbExecNext(); break;
@@ -1213,7 +1199,7 @@ class Debugger
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StepUntil()");
       _ChangeUserAction(stepUntil);
-      switch(StartSession(compiler, config, bitDepth, useValgrind, false, true, ignoreBreakpoints/*, false*/))
+      switch(StartSession(compiler, config, bitDepth, useValgrind, false, ignoreBreakpoints))
       {
          case loaded:  GdbExecRun();          break;
          case stopped: GdbExecUntil(null, 0); break;
@@ -1248,7 +1234,7 @@ class Debugger
          delete bpRunToCursor;
       }
 
-      StartSession(compiler, config, bitDepth, useValgrind, false, false, ignoreBreakpoints/*, true*/);
+      StartSession(compiler, config, bitDepth, useValgrind, false, ignoreBreakpoints);
 
 #if 0
       if(oldImplementation)
@@ -2077,8 +2063,6 @@ class Debugger
             bp.inserted = (bp.bp && bp.bp.number && strcmp(bp.bp.number, "0"));
             if(bp.inserted)
                ValidateBreakpoint(bp);
-            /*if(bp == bpRunToCursor)
-               runToCursorDebugStart = false;*/
          }
       }
       return !breakpointError;
@@ -2300,7 +2284,6 @@ class Debugger
       event = none;
       activeFrame = null;
       stackFrames.Free(Frame::Free);
-      WatchesCodeEditorLinkRelease();
       ide.callStackView.Clear();
       ide.threadsView.Clear();
       ide.Update(null);
@@ -2618,58 +2601,34 @@ class Debugger
 #endif
    }
 
-   void WatchesCodeEditorLinkInit()
+   bool WatchesLinkCodeEditor()
    {
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::WatchesCodeEditorLinkInit()");
-      /*
-      char tempPath[MAX_LOCATION];
-      char path[MAX_LOCATION];
-      
-      //void MakeFilePathProjectRelative(char * path, char * relativePath)
-      if(!ide.projectView.project.GetRelativePath(activeFrame.file, tempPath))
-         strcpy(tempPath, activeFrame.file);
-      
-      strcpy(path, ide.workspace.projectDir);
-      PathCat(path, tempPath);
-      codeEditor = (CodeEditor)ide.OpenFile(path, Normal, false, null, no, normal, false);
-      if(!codeEditor)
-      {
-         for(srcDir : ide.workspace.sourceDirs)
-         {
-            strcpy(path, srcDir);
-            PathCat(path, tempPath);
-            codeEditor = (CodeEditor)ide.OpenFile(path, Normal, false, null, no, normal, false);
-            if(codeEditor) break;
-         }
-      }
-      */
+      bool goodFrame = activeFrame && activeFrame.absoluteFile;
+      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::WatchesLinkCodeEditor()");
+      if(codeEditor && (!goodFrame || fstrcmp(codeEditor.fileName, activeFrame.absoluteFile)))
+         WatchesReleaseCodeEditor();
 
-      /*if(activeFrame && !activeFrame.absoluteFile && activeFrame.file)
-         activeFrame.absoluteFile = ide.workspace.GetAbsolutePathFromRelative(activeFrame.file);*/
-      if(!activeFrame || !activeFrame.absoluteFile)
-         codeEditor = null;
-      else
+      if(!codeEditor && goodFrame)
+      {
          codeEditor = (CodeEditor)ide.OpenFile(activeFrame.absoluteFile, normal, false, null, no, normal, false);
-      if(codeEditor)
-      {
-         codeEditor.inUseDebug = true;
-         incref codeEditor;
-      }
-      //watchesInit = true;
-   }
-
-   void WatchesCodeEditorLinkRelease()
-   {
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::WatchesCodeEditorLinkRelease()");
-      //if(watchesInit)
-      {
          if(codeEditor)
          {
-            codeEditor.inUseDebug = false;
-            if(!codeEditor.visible)
-               codeEditor.Destroy(0);
-            delete codeEditor;
+            codeEditor.inUseDebug = true;
+            incref codeEditor;
          }
+      }
+      return codeEditor != null;
+   }
+
+   void WatchesReleaseCodeEditor()
+   {
+      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::WatchesReleaseCodeEditor()");
+      if(codeEditor)
+      {
+         codeEditor.inUseDebug = false;
+         if(!codeEditor.visible)
+            codeEditor.Destroy(0);
+         delete codeEditor;
       }
    }
 
@@ -3137,8 +3096,12 @@ class Debugger
    void EvaluateWatches()
    {
       _dpl2(_dpct, dplchan::debuggerWatches, 0, "Debugger::EvaluateWatches()");
-      for(wh : ide.workspace.watches)
-         ResolveWatch(wh);
+      WatchesLinkCodeEditor();
+      if(state == stopped)
+      {
+         for(wh : ide.workspace.watches)
+            ResolveWatch(wh);
+      }
    }
 
    char * ::GdbEvaluateExpression(char * expression)
@@ -3222,35 +3185,18 @@ class Debugger
             "hitCursorBreakpoint(", bpUser && bpUser.type == runToCursor,  ")");
       delete s1; delete s2;
 
-      if(bpUser && stopItem.frame.line && bpUser.line != stopItem.frame.line)
-      {
-         // updating user breakpoint on hit location difference
-         // todo, print something?
-         bpUser.line = stopItem.frame.line;
-         ide.breakpointsView.UpdateBreakpoint(bpUser.row);
-         ide.workspace.Save();
-      }
-      if(bpInternal)
-      {
-         bpInternal.hits++;
-         if(bpInternal.type == internalModulesLoaded)
-            modules = true;
-         if(!bpUser && !userBreakOnInternalBreakpoint)
-         {
-            if(userAction == stepOut)//if(prevStopItem.reason == functionFinished)
-               StepOut(ignoreBreakpoints);
-            else
-               result = false;
-         }
-      }
       if(bpUser)
       {
          bool conditionMet = true;
-         bool levelMatch = (bpUser.level == -1 || bpUser.level == frameCount-1);
          if(bpUser.condition)
-            conditionMet = ResolveWatch(bpUser.condition);
+         {
+            if(WatchesLinkCodeEditor())
+               conditionMet = ResolveWatch(bpUser.condition);
+            else
+               conditionMet = false;
+         }
          bpUser.hits++;
-         if(levelMatch && conditionMet)
+         if(conditionMet)
          {
             if(!bpUser.ignore)
                bpUser.breaks++;
@@ -3262,7 +3208,35 @@ class Debugger
          }
          else
             result = false;
-         ide.breakpointsView.UpdateBreakpoint(bpUser.row);
+         if(stopItem.frame.line && bpUser.line != stopItem.frame.line)
+         {
+            // updating user breakpoint on hit location difference
+            // todo, print something?
+            bpUser.line = stopItem.frame.line;
+            ide.breakpointsView.UpdateBreakpoint(bpUser.row);
+            ide.workspace.Save();
+         }
+         else
+            ide.breakpointsView.UpdateBreakpoint(bpUser.row);
+      }
+      if(bpInternal)
+      {
+         bpInternal.hits++;
+         if(bpInternal.type == internalModulesLoaded)
+            modules = true;
+         if(userAction == stepOver)
+         {
+            if((bpInternal.type == internalEntry && ((intBpMain && intBpMain.inserted) || (intBpWinMain && intBpWinMain.inserted))) ||
+                  (bpInternal.type == internalMain && intBpWinMain && intBpWinMain.inserted))
+               result = false;
+         }
+         if(!bpUser && !userAction.breaksOnInternalBreakpoint)
+         {
+            if(userAction == stepOut)
+               StepOut(ignoreBreakpoints);
+            else
+               result = false;
+         }
       }
 
       if(!bpUser && !bpInternal)
