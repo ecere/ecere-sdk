@@ -1812,7 +1812,7 @@ void SetupBaseSpecs(Symbol symbol, OldList baseSpecs)
       if(tpl) *tpl = 0;
       
       baseClass = FindClass(name);
-      if(baseClass.ctx)
+      if(baseClass && baseClass.ctx)
       {
          TemplatedType copy;
          for(copy = (TemplatedType)baseClass.ctx.templateTypes.first; copy; copy = (TemplatedType)copy.next)
@@ -1822,7 +1822,7 @@ void SetupBaseSpecs(Symbol symbol, OldList baseSpecs)
                delete type;
          }
       }
-      else if(baseClass.registered)
+      else if(baseClass && baseClass.registered)
       {
          Class sClass;
          for(sClass = baseClass.registered; sClass; sClass = sClass.base)
