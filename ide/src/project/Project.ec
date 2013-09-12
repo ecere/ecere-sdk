@@ -3414,6 +3414,8 @@ private:
 
          f.Printf("cleantarget: objdir%s\n", sameOrRelObjTargetDirs ? "" : " targetdir");
          f.Puts("\t$(call rmq,$(TARGET))\n");
+         if(numCObjects)
+            f.Printf("\t$(call rmq,%s)\n", "$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S)");
          f.Puts("ifdef SHARED_LIBRARY_TARGET\n");
          f.Puts("ifdef LINUX_TARGET\n");
          f.Puts("ifdef LINUX_HOST\n");
@@ -3436,7 +3438,6 @@ private:
          }
          if(numCObjects)
          {
-            f.Printf("\t$(call rmq,%s)\n", "$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S)");
             OutputCleanActions(f, "ECOBJECTS", eCsourcesParts);
             OutputCleanActions(f, "COBJECTS", eCsourcesParts);
             OutputCleanActions(f, "BOWLS", eCsourcesParts);
