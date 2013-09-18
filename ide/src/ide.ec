@@ -482,33 +482,7 @@ class IDEWorkSpace : Window
          if(debugger.activeFrame && debugger.activeFrame.absoluteFile)
          {
             int line = debugger.activeFrame.line;
-            char name[MAX_LOCATION];
-            Project prj = null;
-            // TOFIX: Improve on this, don't use only filename, make a function
-            GetLastDirectory(debugger.activeFrame.absoluteFile, name);
-            if(ide && ide.workspace)
-            {
-               for(p : ide.workspace.projects)
-               {
-                  if(p.topNode.Find(name, false))
-                  {
-                     prj = p;
-                     break;
-                  }
-               }
-               if(!prj)
-               {
-                  for(p : ide.workspace.projects)
-                  {
-                     if(IsPathInsideOf(debugger.activeFrame.absoluteFile, p.topNode.path))
-                     {
-                        prj = p;
-                        break;
-                     }
-                  }
-               }
-            }
-            debugger.ToggleBreakpoint(debugger.activeFrame.absoluteFile, line, prj);
+            debugger.ToggleBreakpoint(debugger.activeFrame.absoluteFile, line);
             Update(null);
             {
                CodeEditor codeEditor = (CodeEditor)ide.FindWindow(debugger.activeFrame.absoluteFile);

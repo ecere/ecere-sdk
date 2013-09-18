@@ -177,7 +177,56 @@ class TwoStrings : struct
    }
 }
 
-enum IntermediateFileType { none, ec, c, sym, imp, bowl, o };
+class DotMain : bool
+{
+   //property char * { set { } }
+   DotMain ::FromFileName(char * fileName)
+   {
+      DotMain dotMain = false;
+      if(fileName && fileName[0])
+      {
+         char ext[MAX_EXTENSION];
+         GetExtension(fileName, ext);
+         if(!strcmp(ext, "c") || !strcmp(ext, "ec"))
+         {
+            char stripExt[MAX_LOCATION];
+            strcpy(stripExt, fileName);
+            StripExtension(stripExt);
+            GetExtension(stripExt, ext);
+            if(!strcmp(ext, "main"))
+               dotMain = true;
+         }
+      }
+      return dotMain;
+   }
+}
+
+enum IntermediateFileType
+{
+   none, ec, c, sym, imp, bowl, o;
+
+   //property char * { set { } }
+   IntermediateFileType ::FromExtension(char * extension)
+   {
+      IntermediateFileType type = none;
+      if(extension && extension[0])
+      {
+         if(!fstrcmp(extension, "ec"))
+            type = ec;
+         else if(!fstrcmp(extension, "c"))
+            type = c;
+         else if(!fstrcmp(extension, "sym"))
+            type = sym;
+         else if(!fstrcmp(extension, "imp"))
+            type = imp;
+         else if(!fstrcmp(extension, "bowl"))
+            type = bowl;
+         else if(!fstrcmp(extension, "o"))
+            type = o;
+      }
+      return type;
+   }
+};
 
 class ProjectNode : ListItem
 {
@@ -497,7 +546,8 @@ private:
 
          if(dotMain)
          {
-            ReplaceSpaces(buffer, project.moduleName);
+            Project prj = property::project;
+            ReplaceSpaces(buffer, prj.moduleName);
             StripExtension(buffer);
             strcat(buffer, ".main.ec");
          }
@@ -1049,11 +1099,11 @@ private:
             {
                if(child.type != file)
                   result = child.InternalFindByFullPath(path, includeResources, lastDirName);
-               else if(child.name && !strcmpi(lastDirName, child.name))
+               else if(child.name && !fstrcmp(lastDirName, child.name))
                {
                   char p[MAX_LOCATION];
                   child.GetFullFilePath(p);
-                  if(!strcmpi(p, path))
+                  if(!fstrcmp(p, path))
                   {
                      result = child;
                      break;
@@ -1074,7 +1124,7 @@ private:
       if(dotMain == true && this.type == project)
       {
          GetObjectFileName(p, namesInfo, type, dotMain);
-         if(!strcmpi(p, fileName))
+         if(!fstrcmp(p, fileName))
             result = this;
       }
       else if(files)
@@ -1086,7 +1136,7 @@ private:
             else if(child.type == file && child.name)
             {
                child.GetObjectFileName(p, namesInfo, type, dotMain);
-               if(!strcmpi(p, fileName))
+               if(!fstrcmp(p, fileName))
                {
                   result = child;
                   break;

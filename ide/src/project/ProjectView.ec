@@ -1690,7 +1690,6 @@ class ProjectView : Window
 
             if(!colon && !filePath[0])
             {
-               bool dotMain = false;
                // Check if it's one of our modules
                node = project.topNode.Find(moduleName, false);
                if(node)
@@ -1700,30 +1699,12 @@ class ProjectView : Window
                }
                else
                {
-                  IntermediateFileType type = none;
-                  ProjectConfig config;
-                  if(ext[0])
+                  char ext[MAX_EXTENSION];
+                  GetExtension(fileName, ext);
                   {
-                     char ext2[MAX_EXTENSION];
-                     char stripExt[MAX_LOCATION];
-                     strcpy(stripExt, moduleName);
-                     StripExtension(stripExt);
-                     GetExtension(stripExt, ext2);
-                     if(ext2[0] && !strcmp(ext2, "main"))
-                        dotMain = true;
-                     if(!strcmp(ext, "ec"))
-                        type = ec;
-                     else if(!strcmp(ext, "c"))
-                        type = c;
-                     else if(!strcmp(ext, "sym"))
-                        type = sym;
-                     else if(!strcmp(ext, "imp"))
-                        type = imp;
-                     else if(!strcmp(ext, "bowl"))
-                        type = bowl;
-                     else if(!strcmp(ext, "o"))
-                        type = o;
-
+                     DotMain dotMain = DotMain::FromFileName(moduleName);
+                     IntermediateFileType type = IntermediateFileType::FromExtension(ext);
+                     ProjectConfig config = null;
                      if(type)
                      {
                         for(prj : ide.workspace.projects; prj.lastBuildConfigName)
@@ -1734,23 +1715,23 @@ class ProjectView : Window
                               break;
                         }
                      }
-                  }
-                  if(node)
-                  {
-                     char name[MAX_FILENAME];
-                     Project project = node.project;
-                     CompilerConfig compiler = ideSettings.GetCompilerConfig(project.lastBuildCompilerName);
-                     if(compiler)
+                     if(node)
                      {
-                        int bitDepth = ide.workspace.bitDepth;
-                        DirExpression objDir = project.GetObjDir(compiler, config, bitDepth);
-                        strcpy(filePath, project.topNode.path);
-                        PathCatSlash(filePath, objDir.dir);
-                        node.GetObjectFileName(name, project.lastBuildNamesInfo, type, dotMain);
-                        PathCatSlash(filePath, name);
-                        delete objDir;
+                        char name[MAX_FILENAME];
+                        Project project = node.project;
+                        CompilerConfig compiler = ideSettings.GetCompilerConfig(project.lastBuildCompilerName);
+                        if(compiler)
+                        {
+                           int bitDepth = ide.workspace.bitDepth;
+                           DirExpression objDir = project.GetObjDir(compiler, config, bitDepth);
+                           strcpy(filePath, project.topNode.path);
+                           PathCatSlash(filePath, objDir.dir);
+                           node.GetObjectFileName(name, project.configsNameCollisions[config ? config.name : ""], type, dotMain);
+                           PathCatSlash(filePath, name);
+                           delete objDir;
+                        }
+                        delete compiler;
                      }
-                     delete compiler;
                   }
                }
                if(!node)

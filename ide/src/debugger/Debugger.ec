@@ -58,7 +58,7 @@ char * PrintNow()
 
 // use =0 to disable printing of specific channels
 #ifdef _DEBUG_INST
-static enum dplchan { none, gdbProtoIgnored=0/*1*/, gdbProtoUnknown=2, gdbOutput=0/*3*/, gdbCommand=0/*4*/, debuggerCall=0/*5*/, debuggerProblem=6,
+static enum dplchan { none, gdbProtoIgnored=0/*1*/, gdbProtoUnknown=2, gdbOutput=3/*3*/, gdbCommand=4/*4*/, debuggerCall=0/*5*/, debuggerProblem=6,
                         debuggerUserAction=7,debuggerState=8, debuggerBreakpoints=9, debuggerWatches=0/*10*/, debuggerTemp=0 };
 #else
 static enum dplchan { none, gdbProtoIgnored=0, gdbProtoUnknown=0, gdbOutput=0, gdbCommand=0, debuggerCall=0, debuggerProblem=0,
@@ -681,7 +681,7 @@ class Debugger
                      else
                         _dpl2(_dpct, dplchan::debuggerProblem, 0, "Invalid stopItem!");
                      if(bpUser && strcmp(stopItem.frame.addr, bpUser.bp.addr))
-                        bpUser = null;
+                        _dpl2(_dpct, dplchan::debuggerProblem, 0, "Breakpoint bkptno(", stopItem.bkptno, ") address missmatch!");
                   }
                   else
                      _dpl2(_dpct, dplchan::debuggerProblem, 0, "Breakpoint bkptno(", stopItem.bkptno, ") invalid or not found!");
@@ -1225,8 +1225,7 @@ class Debugger
       char relativeFilePath[MAX_LOCATION];
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::RunToCursor()");
       _ChangeUserAction(runToCursor);
-      if(!ide.projectView.project.GetRelativePath(absoluteFilePath, relativeFilePath))
-         strcpy(relativeFilePath, absoluteFilePath);
+      WorkspaceGetRelativePath(absoluteFilePath, relativeFilePath, null);
 
       if(bpRunToCursor && bpRunToCursor.inserted && symbols)
       {
@@ -1476,17 +1475,14 @@ class Debugger
       }
    }
 
-   void ToggleBreakpoint(char * fileName, int lineNumber, Project prj)
+   void ToggleBreakpoint(char * fileName, int lineNumber)
    {
-      char winFilePath[MAX_LOCATION];
-      char * absoluteFilePath = GetSlashPathBuffer(winFilePath, fileName);
       char absolutePath[MAX_LOCATION];
-      char relativePath[MAX_LOCATION];
-      char sourceDir[MAX_LOCATION];
       Breakpoint bp = null;
 
       _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::ToggleBreakpoint(", fileName, ":", lineNumber, ")");
-      strcpy(absolutePath, absoluteFilePath);
+
+      GetSlashPathBuffer(absolutePath, fileName);
       for(i : ide.workspace.breakpoints; i.type == user && i.absoluteFilePath && !fstrcmp(i.absoluteFilePath, absolutePath) && i.line == lineNumber)
       {
          bp = i;
@@ -1504,20 +1500,16 @@ class Debugger
       }
       else
       {
-         // FIXED: This is how it should have been... Source locations are only for files not in project
-         // if(IsPathInsideOf(absolutePath, ide.workspace.projectDir))
-         //   MakePathRelative(absolutePath, ide.workspace.projectDir, relativePath);
-         bool result = false;
-         if(prj)
-            result = prj.GetRelativePath(absolutePath, relativePath);
-         else
-            result = ide.projectView.project.GetRelativePath(absolutePath, relativePath);
-         //if(ide.projectView.project.GetRelativePath(absolutePath, relativePath));
-         //else
-         if(!result)
+         Project owner;
+         char relativePath[MAX_LOCATION];
+
+         WorkspaceGetRelativePath(absolutePath, relativePath, &owner);
+
+         if(!owner)
          {
             char title[MAX_LOCATION];
             char directory[MAX_LOCATION];
+            char sourceDir[MAX_LOCATION];
             StripLastDirectory(absolutePath, directory);
             snprintf(title, sizeof(title), $"Provide source files location directory for %s", absolutePath);
             title[sizeof(title)-1] = 0;
@@ -1528,7 +1520,7 @@ class Debugger
                {
                   if(IsPathInsideOf(absolutePath, dir))
                   {
-                     MakePathRelative(absoluteFilePath, dir, relativePath);
+                     MakePathRelative(absolutePath, dir, relativePath);
                      srcDir = dir;
                      break;
                   }
@@ -1541,7 +1533,7 @@ class Debugger
                   if(IsPathInsideOf(absolutePath, sourceDir))
                   {
                      AddSourceDir(sourceDir);
-                     MakePathRelative(absoluteFilePath, sourceDir, relativePath);
+                     MakePathRelative(absolutePath, sourceDir, relativePath);
                      break;
                   }
                   else if(MessageBox { type = yesNo, master = ide, 
@@ -1549,14 +1541,12 @@ class Debugger
                                  text = $"Invalid Source Directory" }.Modal() == no)
                      return;
                }
-               else if(MessageBox { type = yesNo, master = ide, 
-                                 contents = $"You must provide a source directory in order to place a breakpoint in this file.\nWould you like to try again?", 
-                                 text = $"No Source Directory Provided" }.Modal() == no)
+               else
                   return;
             }
          }
          ide.workspace.bpCount++;
-         bp = { line = lineNumber, type = user, enabled = true, level = -1, project = prj };
+         bp = { line = lineNumber, type = user, enabled = true, level = -1, project = owner };
          ide.workspace.breakpoints.Add(bp);
          bp.absoluteFilePath = absolutePath;
          bp.relativeFilePath = relativePath;
@@ -2013,25 +2003,31 @@ class Debugger
       breakpointError = false;
       if(symbols && bp.enabled && (!bp.project || bp.project == ide.project || projectsLibraryLoaded[bp.project.name]))
       {
-         char * location = bp.CopyLocationString(removePath);
          sentBreakInsert = true;
-         GdbCommand(false, "-break-insert %s", location);
-         delete location;
+         if(bp.address)
+            GdbCommand(false, "-break-insert *%s", bp.address);
+         else
+         {
+            char * location = bp.CopyLocationString(removePath);
+            GdbCommand(false, "-break-insert %s", location);
+            delete location;
+         }
          if(!breakpointError)
          {
+            char * address = null;
             if(bpItem && bpItem.multipleBPs && bpItem.multipleBPs.count)
             {
                int count = 0;
                GdbDataBreakpoint first = null;
                for(n : bpItem.multipleBPs)
                {
-                  if(!fstrcmp(n.fullname, bp.absoluteFilePath))
+                  if(!fstrcmp(n.fullname, bp.absoluteFilePath) && !first)
                   {
                      count++;
-                     if(!first)
-                        first = n;
+                     first = n;
+                     break;
                   }
-                  else
+                  /*else
                   {
                      if(n.enabled)
                      {
@@ -2040,29 +2036,38 @@ class Debugger
                      }
                      else
                         _dpl2(_dpct, dplchan::debuggerProblem, 0, "Debugger::SetBreakpoint -- error breakpoint already disabled.");
-                  }
+                  }*/
                }
                if(first)
                {
+                  address = CopyString(first.addr);
                   bpItem.addr = first.addr;
                   bpItem.func = first.func;
                   bpItem.file = first.file;
                   bpItem.fullname = first.fullname;
                   bpItem.line = first.line;
-                  //bpItem.thread-groups = first.thread-groups;
-                  bpItem.multipleBPs.Free();
-                  delete bpItem.multipleBPs;
+                  //bpItem.thread-groups = first.thread-groups;*/
                }
                else if(count == 0)
                   _dpl2(_dpct, dplchan::debuggerProblem, 0, "Debugger::SetBreakpoint -- error multiple breakpoints all disabled.");
                else
                   _dpl2(_dpct, dplchan::debuggerProblem, 0, "Debugger::SetBreakpoint -- error multiple breakpoints in exact same file not supported.");
+               bpItem.multipleBPs.Free();
+               delete bpItem.multipleBPs;
             }
             bp.bp = bpItem;
             bpItem = null;
             bp.inserted = (bp.bp && bp.bp.number && strcmp(bp.bp.number, "0"));
             if(bp.inserted)
                ValidateBreakpoint(bp);
+
+            if(address)
+            {
+               UnsetBreakpoint(bp);
+               bp.address = address;
+               delete address;
+               SetBreakpoint(bp, removePath);
+            }
          }
       }
       return !breakpointError;
@@ -2203,8 +2208,7 @@ class Debugger
       GdbExecCommon();
       if(absoluteFilePath)
       {
-         if(!ide.projectView.project.GetRelativePath(absoluteFilePath, relativeFilePath))
-            strcpy(relativeFilePath, absoluteFilePath);
+         WorkspaceGetRelativePath(absoluteFilePath, relativeFilePath, null);
          GdbCommand(true, "-exec-until %s:%d", relativeFilePath, lineNumber);
       }
       else
@@ -2219,8 +2223,7 @@ class Debugger
       GdbExecCommon();
       if(lineNumber)
       {
-         if(!ide.projectView.project.GetRelativePath(absoluteFilePathOrLocation, relativeFilePath))
-            strcpy(relativeFilePath, absoluteFilePathOrLocation);
+         WorkspaceGetRelativePath(absoluteFilePathOrLocation, relativeFilePath, null);
          GdbCommand(true, "advance %s:%d", relativeFilePath, lineNumber); // should use -exec-advance -- GDB/MI implementation missing
       }
       else
@@ -2562,21 +2565,12 @@ class Debugger
       if(ide.workspace)
       {
          for(bp : ide.workspace.breakpoints)
-         {
-            bp.inserted = false;
-            delete bp.bp;
-         }
+            bp.Reset();
       }
       for(bp : sysBPs)
-      {
-         bp.inserted = false;
-         delete bp.bp;
-      }
+         bp.Reset();
       if(bpRunToCursor)
-      {
-         bpRunToCursor.inserted = false;
-         delete bpRunToCursor.bp;
-      }
+         bpRunToCursor.Reset();
       
       ide.outputView.debugBox.Logf($"Debugging stopped\n");
       ClearBreakDisplay();
@@ -4568,6 +4562,8 @@ class Breakpoint : struct
    DataRow row;
    GdbDataBreakpoint bp;
    Project project;
+   char * address;
+   property char * address { set { delete address; if(value) address = CopyString(value); } }
 
    void ParseLocation()
    {
@@ -4576,7 +4572,6 @@ class Breakpoint : struct
       char * file;
       char * line;
       char fullPath[MAX_LOCATION];
-      ProjectNode node;
       if(location[0] == '\(' && location[1] && (file = strchr(location+2, '\)')) && file[1])
       {
          prjName = new char[file-location];
@@ -4602,10 +4597,8 @@ class Breakpoint : struct
          {
             if(!strcmp(prjName, prj.name))
             {
-               node = prj.topNode.FindWithPath(filePath, false);
-               if(node)
+               if(ProjectGetAbsoluteFromRelativePath(prj, filePath, fullPath))
                {
-                  node.GetFullFilePath(fullPath);
                   property::absoluteFilePath = fullPath;
                   project = prj;
                   break;
@@ -4617,13 +4610,12 @@ class Breakpoint : struct
       }
       else
       {
-         node = ide.projectView.project.topNode.Find(filePath, false);
-         if(node)
+         Project prj = ide.project;
+         if(ProjectGetAbsoluteFromRelativePath(prj, filePath, fullPath))
          {
-            node.GetFullFilePath(fullPath);
             property::absoluteFilePath = fullPath;
+            project = prj;
          }
-         project = ide.project;
       }
       if(!absoluteFilePath)
          property::absoluteFilePath = "";
@@ -4661,12 +4653,15 @@ class Breakpoint : struct
       char * location;
       char * loc = CopyLocationString(false);
       Project prj = null;
-      for(p : ide.workspace.projects; p != ide.workspace.projects.firstIterator.data)
+      if(absoluteFilePath)
       {
-         if(p.topNode.FindByFullPath(absoluteFilePath, false))
+         for(p : ide.workspace.projects; p != ide.workspace.projects.firstIterator.data)
          {
-            prj = p;
-            break;
+            if(p.topNode.FindByFullPath(absoluteFilePath, false))
+            {
+               prj = p;
+               break;
+            }
          }
       }
       if(prj)
@@ -4693,13 +4688,20 @@ class Breakpoint : struct
 
    void Free()
    {
-      if(bp)
-         bp.Free();
-      delete bp;
+      Reset();
       delete function;
       delete relativeFilePath;
       delete absoluteFilePath;
       delete location;
+   }
+
+   void Reset()
+   {
+      inserted = false;
+      delete address;
+      if(bp)
+         bp.Free();
+      delete bp;
    }
 
    ~Breakpoint()
@@ -4818,4 +4820,102 @@ void GDBFallBack(Expression exp, String expString)
       exp.constant = result;
       exp.type = constantExp;
    }
+}
+
+static Project WorkspaceGetFileOwner(char * absolutePath)
+{
+   Project owner = null;
+   for(prj : ide.workspace.projects)
+   {
+      if(prj.topNode.FindByFullPath(absolutePath, false))
+      {
+         owner = prj;
+         break;
+      }
+   }
+   if(!owner)
+      WorkspaceGetObjectFileNode(absolutePath, &owner);
+   return owner;
+}
+
+static ProjectNode WorkspaceGetObjectFileNode(char * filePath, Project * project)
+{
+   ProjectNode node = null;
+   char ext[MAX_EXTENSION];
+   GetExtension(filePath, ext);
+   if(ext[0])
+   {
+      IntermediateFileType type = IntermediateFileType::FromExtension(ext);
+      if(type)
+      {
+         char fileName[MAX_FILENAME];
+         GetLastDirectory(filePath, fileName);
+         if(fileName[0])
+         {
+            DotMain dotMain = DotMain::FromFileName(fileName);
+            for(prj : ide.workspace.projects)
+            {
+               if((node = prj.FindNodeByObjectFileName(fileName, type, dotMain, null)))
+               {
+                  if(project)
+                     *project = prj;
+                  break;
+               }
+            }
+         }
+      }
+   }
+   return node;
+}
+
+static ProjectNode ProjectGetObjectFileNode(Project project, char * filePath)
+{
+   ProjectNode node = null;
+   char ext[MAX_EXTENSION];
+   GetExtension(filePath, ext);
+   if(ext[0])
+   {
+      IntermediateFileType type = IntermediateFileType::FromExtension(ext);
+      if(type)
+      {
+         char fileName[MAX_FILENAME];
+         GetLastDirectory(filePath, fileName);
+         if(fileName[0])
+         {
+            DotMain dotMain = DotMain::FromFileName(fileName);
+            node = project.FindNodeByObjectFileName(fileName, type, dotMain, null);
+         }
+      }
+   }
+   return node;
+}
+
+static void WorkspaceGetRelativePath(char * absolutePath, char * relativePath, Project * owner)
+{
+   Project prj = WorkspaceGetFileOwner(absolutePath);
+   if(owner)
+      *owner = prj;
+   if(!prj)
+      prj = ide.workspace.projects.firstIterator.data;
+   if(prj)
+   {
+      MakePathRelative(absolutePath, prj.topNode.path, relativePath);
+      MakeSlashPath(relativePath);
+   }
+   else
+      relativePath[0] = '\0';
+}
+
+static bool ProjectGetAbsoluteFromRelativePath(Project project, char * relativePath, char * absolutePath)
+{
+   ProjectNode node = project.topNode.FindWithPath(relativePath, false);
+   if(!node)
+      node = ProjectGetObjectFileNode(project, relativePath);
+   if(node)
+   {
+      strcpy(absolutePath, node.project.topNode.path);
+      PathCat(absolutePath, relativePath);
+      MakeSlashPath(absolutePath);
+   }
+   return node != null;
 }

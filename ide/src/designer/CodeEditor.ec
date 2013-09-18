@@ -1965,30 +1965,7 @@ class CodeEditor : Window
          if(projectView && fileName)
          {
             int line = editBox.lineNumber + 1;
-            Project prj = null;
-            if(ide && ide.workspace)
-            {
-               for(p : ide.workspace.projects)
-               {
-                  if(p.topNode.FindByFullPath(fileName, false))
-                  {
-                     prj = p;
-                     break;
-                  }
-               }
-               if(!prj)
-               {
-                  for(p : ide.workspace.projects)
-                  {
-                     if(IsPathInsideOf(fileName, p.topNode.path))
-                     {
-                        prj = p;
-                        break;
-                     }
-                  }
-               }
-            }
-            ide.debugger.ToggleBreakpoint(fileName, line, prj);
+            ide.debugger.ToggleBreakpoint(fileName, line);
             Update(null);
          }
          return true;

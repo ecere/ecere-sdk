@@ -890,7 +890,7 @@ private:
    String lastBuildConfigName;
    String lastBuildCompilerName;
 
-   Map<String, NameCollisionInfo> lastBuildNamesInfo;
+   Map<String, Map<String, NameCollisionInfo>> configsNameCollisions { };
 
 #ifndef MAKEFILE_GENERATOR
    FileMonitor fileMonitor
@@ -997,7 +997,9 @@ private:
       delete name;
       delete lastBuildConfigName;
       delete lastBuildCompilerName;
-      if(lastBuildNamesInfo) { lastBuildNamesInfo.Free(); delete lastBuildNamesInfo; }
+      for(map : configsNameCollisions)
+         map.Free();
+      configsNameCollisions.Free();
    }
 
    ~Project()
@@ -1059,9 +1061,13 @@ private:
    ProjectNode FindNodeByObjectFileName(char * fileName, IntermediateFileType type, bool dotMain, ProjectConfig config)
    {
       ProjectNode result;
-      if(!lastBuildNamesInfo)
+      char * cfgName;
+      if(!config)
+         config = this.config;
+      cfgName = config ? config.name : "";
+      if(!configsNameCollisions[cfgName])
          ProjectLoadLastBuildNamesInfo(this, config);
-      result = topNode.FindByObjectFileName(fileName, type, dotMain, lastBuildNamesInfo);
+      result = topNode.FindByObjectFileName(fileName, type, dotMain, configsNameCollisions[cfgName]);
       return result;
    }
 
@@ -1244,63 +1250,6 @@ private:
    }
 #endif
 
-   // This method is only called from Debugger, should be moved to Debugger class?
-#ifndef MAKEFILE_GENERATOR
-   bool GetRelativePath(char * filePath, char * relativePath)
-   {
-      ProjectNode node;
-      char moduleName[MAX_FILENAME];
-      GetLastDirectory(filePath, moduleName);
-      // try with workspace dir first?
-      if((node = topNode.Find(moduleName, false)))
-      {
-         strcpy(relativePath, strcmp(node.path, ".") ? node.path : "");
-         PathCatSlash(relativePath, node.name);
-         return true;
-      }
-      else
-      {
-         // Tweak for automatically resolving symbol loader modules
-         char * sl = strstr(moduleName, ".main.ec");
-         if(sl && (*sl = 0, !strcmpi(moduleName, name)))
-         {
-            char objDir[MAX_LOCATION];
-            DirExpression objDirExp;
-            CompilerConfig compiler = ide.debugger.currentCompiler;
-            ProjectConfig config = ide.debugger.prjConfig;
-            int bitDepth = ide.debugger.bitDepth;
-            // This is not perfect, as multiple source files exist for the symbol loader module...
-            // We try to set it in the debug config object directory.
-            if(!compiler || !config)
-            {
-               // If we're not currently debugging, set a breakpoint in the active compiler/config
-               compiler = GetCompilerConfig();
-               config = this.config;
-               // If the current config is not debuggable, set it in the first debuggable config found
-               if(config && !config.options.debug)
-               {
-                  for(c : configurations; c.options.debug)
-                  {
-                     config = c;
-                     break;
-                  }
-               }
-            }
-            objDirExp = GetObjDir(compiler, config, bitDepth);
-            strcpy(objDir, objDirExp.dir);
-            delete objDirExp;
-            ChangeCh(objDir, '\\', '/'); // TODO: this is a hack, paths should never include win32 path seperators - fix this in ProjectSettings and ProjectLoad instead
-            ReplaceSpaces(relativePath, objDir);
-            *sl = '.';
-            PathCatSlash(relativePath, moduleName);
-            return true;
-         }
-      }
-      // WARNING: On failure, relative path is uninitialized
-      return false;   
-   }
-#endif
-
    void CatTargetFileName(char * string, CompilerConfig compiler, ProjectConfig config)
    {
       TargetTypes targetType = GetTargetType(config);
@@ -1437,10 +1386,26 @@ private:
 
    void ModifiedAllConfigs(bool making, bool compiling, bool linking, bool symbolGen)
    {
+      Map<String, NameCollisionInfo> cfgNameCollision = configsNameCollisions[""];
+      if(cfgNameCollision)
+      {
+         cfgNameCollision.Free();
+         delete cfgNameCollision;
+         configsNameCollisions[""] = null;
+      }
       for(cfg : configurations)
       {
          if(making)
+         {
             cfg.makingModified = true;
+            cfgNameCollision = configsNameCollisions[cfg.name];
+            if(cfgNameCollision)
+            {
+               cfgNameCollision.Free();
+               delete cfgNameCollision;
+               configsNameCollisions[cfg.name] = null;
+            }
+         }
          if(compiling)
             cfg.compilingModified = true;
          if(linking)
@@ -2053,12 +2018,14 @@ private:
       int numJobs = compiler.numJobs;
       char command[MAX_F_STRING*4];
       char * compilerName = CopyString(compiler.name);
+      Map<String, NameCollisionInfo> cfgNameCollisions;
 
       delete lastBuildConfigName;
       lastBuildConfigName = CopyString(config ? config.name : "Common");
       delete lastBuildCompilerName;
       lastBuildCompilerName = CopyString(compiler.name);
       ProjectLoadLastBuildNamesInfo(this, config);
+      cfgNameCollisions = configsNameCollisions[config ? config.name : ""];
 
       CamelCase(compilerName);
 
@@ -2113,8 +2080,8 @@ private:
                else
                {
                   if(!eC_Debug)
-                     node.DeleteIntermediateFiles(compiler, config, bitDepth, lastBuildNamesInfo, mode == cObject ? true : false);
-                  node.GetTargets(config, lastBuildNamesInfo, objDirExp.dir, makeTargets);
+                     node.DeleteIntermediateFiles(compiler, config, bitDepth, cfgNameCollisions, mode == cObject ? true : false);
+                  node.GetTargets(config, cfgNameCollisions, objDirExp.dir, makeTargets);
                }
             }
          }
@@ -3662,13 +3629,15 @@ private:
 
 static inline void ProjectLoadLastBuildNamesInfo(Project prj, ProjectConfig cfg)
 {
-   if(prj.lastBuildNamesInfo)
+   char * cfgName = cfg ? cfg.name : "";
+   Map<String, NameCollisionInfo> cfgNameCollisions = prj.configsNameCollisions[cfgName];
+   if(cfgNameCollisions)
    {
-      prj.lastBuildNamesInfo.Free();
-      delete prj.lastBuildNamesInfo;
+      cfgNameCollisions.Free();
+      delete cfgNameCollisions;
    }
-   prj.lastBuildNamesInfo = { };
-   prj.topNode.GenMakefileGetNameCollisionInfo(prj.lastBuildNamesInfo, cfg);
+   prj.configsNameCollisions[cfgName] = cfgNameCollisions = { };
+   prj.topNode.GenMakefileGetNameCollisionInfo(cfgNameCollisions, cfg);
 }
 
 Project LegacyBinaryLoadProject(File f, char * filePath)

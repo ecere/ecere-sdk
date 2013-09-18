@@ -731,7 +731,7 @@ public:
       }
       ide.breakpointsView.Update(null);
    }
-
+   
    void Free()
    {
       delete workspaceFile;
