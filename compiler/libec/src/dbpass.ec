@@ -271,6 +271,9 @@ static void ProcessExpression(Expression exp)
             ifDBStmt.compound.declarations->Add(MkDeclaration(MkListOne(MkSpecifierName("FieldIndex")), MkListOne(MkInitDeclarator(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("indexes")), 
                MkExpConstant(numIndexesString)), MkInitializerList(MkListOne(MkInitializerList(MkListOne(MkInitializerAssignment(MkExpIdentifier(MkIdentifier("null")))))))))));
             
+            // db.Begin();
+            ifDBStmt.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("db")), MkIdentifier("Begin")), MkList()))));
+
             ifDBStmt.compound.statements->Add(compound = MkCompoundStmt(null, tableStatements));
             compound.compound.context = Context { parent = ifDBStmt.compound.context };
             /*
@@ -284,6 +287,9 @@ static void ProcessExpression(Expression exp)
 
             ifDBStmt.compound.statements->Add(compound = MkCompoundStmt(null, indexStatements));
             compound.compound.context = Context { parent = ifDBStmt.compound.context };
+
+            // db.Commit();
+            ifDBStmt.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("db")), MkIdentifier("Commit")), MkList()))));
 
             // TODO: Don't make use of extension
             exp.type = extensionCompoundExp;
