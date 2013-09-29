@@ -2212,7 +2212,7 @@ class CodeEditor : Window
    {
       bool reload = false;
       if(visible == false && inUseDebug == true)
-         reload = true;
+         ide.debugger.WatchesReleaseCodeEditor();
       else
       {
          char message[2048];
