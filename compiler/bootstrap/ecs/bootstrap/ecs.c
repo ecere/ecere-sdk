@@ -447,6 +447,7 @@ struct __ecereNameSpace__ecere__com__Class * templateClass;
 struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
+unsigned int byValueSystemClass;
 } __attribute__ ((gcc_struct));
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
@@ -522,6 +523,8 @@ struct __ecereNameSpace__ecere__com__Method * method;
 static unsigned int i18n;
 
 static unsigned int outputPot;
+
+static unsigned int disabledPooling;
 
 static int targetPlatform;
 
@@ -1116,6 +1119,11 @@ if(anyProp)
 if(anyFunction)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   GlobalFunction function;\n");
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\n");
+if(disabledPooling)
+{
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   eSystem_SetPoolingDisabled(true);\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\n");
+}
 if(isDynamicLibrary)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   if(!__currentModule)\n");
@@ -2356,6 +2364,7 @@ unsigned int valid = 0x1;
 char * output = (((void *)0));
 
 outputPot = 0x0;
+disabledPooling = 0x0;
 targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
 targetBits = GetHostBits();
 for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)
@@ -2397,6 +2406,8 @@ valid = 0x0;
 }
 else if(!strcmp(arg, "-outputpot"))
 outputPot = 0x1;
+else if(!strcmp(arg, "-disabled-pooling"))
+disabledPooling = 0x1;
 else if(!strcmp(arg, "-console"))
 isConsole = 0x1;
 else if(!strcmp(arg, "-dynamiclib"))

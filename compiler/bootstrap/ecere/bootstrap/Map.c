@@ -131,6 +131,7 @@ struct __ecereNameSpace__ecere__com__Class * templateClass;
 struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
+unsigned int byValueSystemClass;
 } __attribute__ ((gcc_struct));
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
@@ -485,7 +486,7 @@ if(!node)
 {
 struct __ecereNameSpace__ecere__com__Class * Tclass = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass;
 
-if(Tclass->type == 1000 || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3)
+if((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3)
 {
 ((void (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCopy])(Tclass, (((unsigned char *)&newNode->key) + __ENDIAN_PAD(Tclass->typeSize)), (((unsigned char *)&newNode->key) + __ENDIAN_PAD(Tclass->typeSize)));
 }
@@ -580,7 +581,7 @@ struct __ecereNameSpace__ecere__com__MapNode * __ecereInstance1 = __ecereNameSpa
 __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_key(__ecereInstance1, pos), __ecereInstance1;
 });
 }
-if(Tclass->type == 1000 || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3)
+if((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3)
 {
 ((void (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCopy])(Tclass, (((unsigned char *)&node->key) + __ENDIAN_PAD(Tclass->typeSize)), (((unsigned char *)&pos) + __ENDIAN_PAD(Tclass->typeSize)));
 }
@@ -660,8 +661,8 @@ struct __ecereNameSpace__ecere__com__MapNode * srcNode = (struct __ecereNameSpac
 uint64 key = __ecereMethod___ecereNameSpace__ecere__com__Map_GetKey(this, (struct __ecereNameSpace__ecere__com__MapNode *)srcNode);
 uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))(this)->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, srcNode);
 
-((void (*)(void *, void *, void *))(void *)Kclass->_vTbl[__ecereVMethodID_class_OnSerialize])(Kclass, (Kclass->type == 1000 || Kclass->type == 2 || Kclass->type == 4 || Kclass->type == 3) ? ((char *)&key + __ENDIAN_PAD((class->templateArgs[5].dataTypeClass->type == 1 || class->templateArgs[5].dataTypeClass->type == 0 || class->templateArgs[5].dataTypeClass->type == 5) ? sizeof(void *) : class->templateArgs[5].dataTypeClass->typeSize)) : (void *)key, channel);
-((void (*)(void *, void *, void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnSerialize])(Dclass, (Dclass->type == 1000 || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? ((char *)&data + __ENDIAN_PAD((class->templateArgs[2].dataTypeClass->type == 1 || class->templateArgs[2].dataTypeClass->type == 0 || class->templateArgs[2].dataTypeClass->type == 5) ? sizeof(void *) : class->templateArgs[2].dataTypeClass->typeSize)) : (void *)data, channel);
+((void (*)(void *, void *, void *))(void *)Kclass->_vTbl[__ecereVMethodID_class_OnSerialize])(Kclass, ((Kclass->type == 1000 && !Kclass->byValueSystemClass) || Kclass->type == 2 || Kclass->type == 4 || Kclass->type == 3) ? ((char *)&key + __ENDIAN_PAD((class->templateArgs[5].dataTypeClass->type == 1 || class->templateArgs[5].dataTypeClass->type == 0 || class->templateArgs[5].dataTypeClass->type == 5) ? sizeof(void *) : class->templateArgs[5].dataTypeClass->typeSize)) : (void *)key, channel);
+((void (*)(void *, void *, void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnSerialize])(Dclass, ((Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? ((char *)&data + __ENDIAN_PAD((class->templateArgs[2].dataTypeClass->type == 1 || class->templateArgs[2].dataTypeClass->type == 0 || class->templateArgs[2].dataTypeClass->type == 5) ? sizeof(void *) : class->templateArgs[2].dataTypeClass->typeSize)) : (void *)data, channel);
 }
 }
 

@@ -1066,7 +1066,7 @@ static void OnCopy(Class _class, void ** data, void * newData)
       if(dataType)
          ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCopy])(dataType, data, newData);
    }
-   else if(_class.type != structClass && _class.type != systemClass)
+   else if(_class.type != structClass && (_class.type != systemClass || _class.byValueSystemClass))
    {
       *data = newData;
    }
@@ -1336,6 +1336,36 @@ static bool Integer_OnGetDataFromString(Class _class, int * data, char * string)
    return false;
 }
 
+static char * Int16_OnGetString(Class _class, short * data, char * string, void * fieldData, bool * needClass)
+{
+   sprintf(string, "%d", (int)*data);
+   return string;
+}
+
+static bool Int16_OnGetDataFromString(Class _class, short * data, char * string)
+{
+   char * end;
+   short result = (short)strtol(string, &end, 0);
+
+   if(end > string)
+   {
+      *data = result;
+      return true;
+   }
+   return false;
+}
+
+static int Int16_OnCompare(Class _class, short * data1, short * data2)
+{
+   int result = 0;
+   if(!data1 && !data2) result = 0;
+   else if(data1 && !data2) result = 1;
+   else if(!data1 && data2) result = -1;
+   else if(*data1 > *data2) result = 1;
+   else if(*data1 < *data2) result = -1;
+   return result;
+}
+
 static int UInteger_OnCompare(Class _class, unsigned int * data1, unsigned int * data2)
 {
    int result = 0;
@@ -1353,6 +1383,24 @@ static char * UInteger_OnGetString(Class _class, unsigned int * data, char * str
    return string;
 }
 
+static int UInt16_OnCompare(Class _class, uint16 * data1, unsigned int * data2)
+{
+   int result = 0;
+   if(!data1 && !data2) result = 0;
+   else if(data1 && !data2) result = 1;
+   else if(!data1 && data2) result = -1;
+   else if(*data1 > *data2) result = 1;
+   else if(*data1 < *data2) result = -1;
+   return result;
+}
+
+static char * UInt16_OnGetString(Class _class, uint16 * data, char * string, void * fieldData, bool * needClass)
+{
+   sprintf(string, "%u", (uint)*data);
+   return string;
+}
+
+
 static char * UIntegerHex_OnGetString(Class _class, unsigned int * data, char * string, void * fieldData, bool * needClass)
 {
    sprintf(string, "%x", *data);
@@ -1363,6 +1411,18 @@ static bool UInteger_OnGetDataFromString(Class _class, unsigned int * data, char
 {
    char * end;
    uint result = (uint)strtoul(string, &end, 0);
+   if(end > string)
+   {
+      *data = result;
+      return true;
+   }
+   return false;
+}
+
+static bool UInt16_OnGetDataFromString(Class _class, uint16 * data, char * string)
+{
+   char * end;
+   uint16 result = (uint16)strtoul(string, &end, 0);
    if(end > string)
    {
       *data = result;
@@ -1440,6 +1500,38 @@ static int UInt64_OnCompare(Class _class, uint64 * data1, uint64 * data2)
    return result;
 }
 
+static int IntPtr64_OnCompare(Class _class, int64 data1, int64 data2)
+{
+   int result = 0;
+   if(data1 > data2) result = 1;
+   else if(data1 < data2) result = -1;
+   return result;
+}
+
+static int IntPtr32_OnCompare(Class _class, int data1, int data2)
+{
+   int result = 0;
+   if(data1 > data2) result = 1;
+   else if(data1 < data2) result = -1;
+   return result;
+}
+
+static int UIntPtr64_OnCompare(Class _class, uint64 data1, uint64 data2)
+{
+   int result = 0;
+   if(data1 > data2) result = 1;
+   else if(data1 < data2) result = -1;
+   return result;
+}
+
+static int UIntPtr32_OnCompare(Class _class, uint32 data1, uint32 data2)
+{
+   int result = 0;
+   if(data1 > data2) result = 1;
+   else if(data1 < data2) result = -1;
+   return result;
+}
+
 static char * Int64_OnGetString(Class _class, int64 * data, char * string, void * fieldData, bool * needClass)
 {
    sprintf(string, FORMAT64D, *data);
@@ -1513,11 +1605,17 @@ static bool UInt64_OnGetDataFromString(Class _class, uint64 * data, char * strin
       *data = 0;
 }
 
-
 /*static */void Int_OnSerialize(Class _class, int * data, IOChannel channel)
 {
    byte bytes[4];
    PUTXDWORD(bytes, * data);
+   channel.WriteData(bytes, 4);
+}
+
+/*static */void IntPtr32_OnSerialize(Class _class, int data, IOChannel channel)
+{
+   byte bytes[4];
+   PUTXDWORD(bytes, data);
    channel.WriteData(bytes, 4);
 }
 
@@ -1552,6 +1650,13 @@ static bool UInt64_OnGetDataFromString(Class _class, uint64 * data, char * strin
 {
    byte bytes[8];
    PUTXQWORD(bytes, * data);
+   channel.WriteData(bytes, 8);
+}
+
+static void IntPtr64_OnSerialize(Class _class, int64 data, IOChannel channel)
+{
+   byte bytes[8];
+   PUTXQWORD(bytes, data);
    channel.WriteData(bytes, 8);
 }
 
@@ -1641,6 +1746,9 @@ static void RegisterClass_Integer(Module module)
 
    eClass_AddMethod(integerClass, "OnSerialize", null, Word_OnSerialize, publicAccess);
    eClass_AddMethod(integerClass, "OnUnserialize", null, Word_OnUnserialize, publicAccess);
+   eClass_AddMethod(integerClass, "OnCompare", null, UInt16_OnCompare, publicAccess);
+   eClass_AddMethod(integerClass, "OnGetString", null, UInt16_OnGetString, publicAccess);
+   eClass_AddMethod(integerClass, "OnGetDataFromString", null, UInt16_OnGetDataFromString, publicAccess);
 
    integerClass = eSystem_RegisterClass(normalClass, "short", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
@@ -1651,6 +1759,9 @@ static void RegisterClass_Integer(Module module)
 
    eClass_AddMethod(integerClass, "OnSerialize", null, Word_OnSerialize, publicAccess);
    eClass_AddMethod(integerClass, "OnUnserialize", null, Word_OnUnserialize, publicAccess);
+   eClass_AddMethod(integerClass, "OnCompare", null, Int16_OnCompare, publicAccess);
+   eClass_AddMethod(integerClass, "OnGetString", null, Int16_OnGetString, publicAccess);
+   eClass_AddMethod(integerClass, "OnGetDataFromString", null, Int16_OnGetDataFromString, publicAccess);
 
    /*
    integerClass = eSystem_RegisterClass(normalClass, "uint32", null, 0, 0, null, null, module, baseSystemAccess);
@@ -1756,21 +1867,22 @@ static void RegisterClass_Integer(Module module)
    integerClass.dataTypeString = CopyString("uintptr_t");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(uintptr);
+   integerClass.byValueSystemClass = true;
    if(sizeof(uintptr) == 8)
    {
       eClass_AddMethod(integerClass, "OnGetString", null, UIntPtr64_OnGetString, publicAccess);
       eClass_AddMethod(integerClass, "OnGetDataFromString", null, UInt64_OnGetDataFromString, publicAccess);
-      eClass_AddMethod(integerClass, "OnSerialize", null, Int64_OnSerialize, publicAccess);
+      eClass_AddMethod(integerClass, "OnSerialize", null, IntPtr64_OnSerialize, publicAccess);
       eClass_AddMethod(integerClass, "OnUnserialize", null, Int64_OnUnserialize, publicAccess);
-      eClass_AddMethod(integerClass, "OnCompare", null, UInt64_OnCompare, publicAccess);
+      eClass_AddMethod(integerClass, "OnCompare", null, UIntPtr64_OnCompare, publicAccess);
    }
    else
    {
       eClass_AddMethod(integerClass, "OnGetString", null, UIntPtr32_OnGetString, publicAccess);
       eClass_AddMethod(integerClass, "OnGetDataFromString", null, UInteger_OnGetDataFromString, publicAccess);
-      eClass_AddMethod(integerClass, "OnSerialize", null, Int_OnSerialize, publicAccess);
+      eClass_AddMethod(integerClass, "OnSerialize", null, IntPtr32_OnSerialize, publicAccess);
       eClass_AddMethod(integerClass, "OnUnserialize", null, Int_OnUnserialize, publicAccess);
-      eClass_AddMethod(integerClass, "OnCompare", null, UInteger_OnCompare, publicAccess);
+      eClass_AddMethod(integerClass, "OnCompare", null, UIntPtr32_OnCompare, publicAccess);
    }
 
    integerClass = eSystem_RegisterClass(normalClass, "intptr", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
@@ -1779,21 +1891,22 @@ static void RegisterClass_Integer(Module module)
    integerClass.dataTypeString = CopyString("intptr_t");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(intptr);
+   integerClass.byValueSystemClass = true;
    if(sizeof(intptr) == 8)
    {
       eClass_AddMethod(integerClass, "OnGetString", null, IntPtr64_OnGetString, publicAccess);
       eClass_AddMethod(integerClass, "OnGetDataFromString", null, Int64_OnGetDataFromString, publicAccess);
-      eClass_AddMethod(integerClass, "OnSerialize", null, Int64_OnSerialize, publicAccess);
+      eClass_AddMethod(integerClass, "OnSerialize", null, IntPtr64_OnSerialize, publicAccess);
       eClass_AddMethod(integerClass, "OnUnserialize", null, Int64_OnUnserialize, publicAccess);
-      eClass_AddMethod(integerClass, "OnCompare", null, Int64_OnCompare, publicAccess);
+      eClass_AddMethod(integerClass, "OnCompare", null, IntPtr64_OnCompare, publicAccess);
    }
    else
    {
       eClass_AddMethod(integerClass, "OnGetString", null, IntPtr32_OnGetString, publicAccess);
       eClass_AddMethod(integerClass, "OnGetDataFromString", null, Integer_OnGetDataFromString, publicAccess);
-      eClass_AddMethod(integerClass, "OnSerialize", null, Int_OnSerialize, publicAccess);
+      eClass_AddMethod(integerClass, "OnSerialize", null, IntPtr32_OnSerialize, publicAccess);
       eClass_AddMethod(integerClass, "OnUnserialize", null, Int_OnUnserialize, publicAccess);
-      eClass_AddMethod(integerClass, "OnCompare", null, Integer_OnCompare, publicAccess);
+      eClass_AddMethod(integerClass, "OnCompare", null, IntPtr32_OnCompare, publicAccess);
    }
 }
 

@@ -831,6 +831,7 @@ struct __ecereNameSpace__ecere__com__Class * templateClass;
 struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
+unsigned int byValueSystemClass;
 } __attribute__ ((gcc_struct));
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
@@ -2695,7 +2696,7 @@ void OutputTree(struct __ecereNameSpace__ecere__sys__OldList * ast, struct __ece
 {
 struct External * external;
 
-outputLine = 30;
+outputLine = 31;
 for(external = ast->first; external; external = external->next)
 {
 switch(external->type)

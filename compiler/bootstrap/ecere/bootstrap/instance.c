@@ -63,7 +63,7 @@ typedef unsigned __int64 uint64;
 #define structSize_ClassProperty          (_64BIT ? 80 : 40)
 #define structSize_Method                 (_64BIT ? 96 : 52)
 #define structSize_Property               (_64BIT ? 152 : 88)
-#define structSize_Class                  (_64BIT ? 616 : 372)
+#define structSize_Class                  (_64BIT ? 624 : 376)
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
@@ -141,6 +141,7 @@ struct __ecereNameSpace__ecere__com__Class * templateClass;
 struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
+unsigned int byValueSystemClass;
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -6289,6 +6290,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "templateClass", "ecer
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "templatized", "ecere::sys::OldList", structSize_OldList, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "numParams", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isInstanceClass", "bool", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "byValueSystemClass", "bool", 4, 4, 1);
 if(class)
 class->fixed = (unsigned int)1;
 if(class)

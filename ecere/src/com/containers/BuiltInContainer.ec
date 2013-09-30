@@ -87,8 +87,8 @@ public:
          uint64 data = GetData(i);
          Class Dclass = type;
          int result = ((int (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare])(Dclass, 
-            (Dclass.type == systemClass || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &value : (void *)value,
-            (Dclass.type == systemClass || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data);
+            ((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &value : (void *)value,
+            ((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data);
          if(!result)
             return i;
       }

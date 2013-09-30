@@ -133,6 +133,7 @@ struct __ecereNameSpace__ecere__com__Class * templateClass;
 struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
+unsigned int byValueSystemClass;
 } __attribute__ ((gcc_struct));
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
@@ -382,7 +383,7 @@ if(!Tclass)
 Tclass = __ecereClass_uint64;
 while(0x1)
 {
-int result = ((int (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare])(Tclass, (Tclass->type == 1000 || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3 || Tclass->type == 1) ? (((unsigned char *)&node->key) + __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize)) : (void *)*(uint64 *)(&node->key), (Tclass->type == 1000 || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3 || Tclass->type == 1) ? (((unsigned char *)&this->key) + __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize)) : (void *)*(uint64 *)(&this->key));
+int result = ((int (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare])(Tclass, ((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3 || Tclass->type == 1) ? (((unsigned char *)&node->key) + __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize)) : (void *)*(uint64 *)(&node->key), ((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3 || Tclass->type == 1) ? (((unsigned char *)&this->key) + __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize)) : (void *)*(uint64 *)(&this->key));
 
 if(!result)
 {
@@ -445,7 +446,7 @@ struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__e
 {
 while(this)
 {
-int result = ((int (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare])(Tclass, (Tclass->type == 1000 || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3) ? (((unsigned char *)&key) + __ENDIAN_PAD(Tclass->typeSize)) : (void *)key, (Tclass->type == 1000 || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3 || Tclass->type == 1) ? (((unsigned char *)&this->key) + __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize)) : (void *)*(uint64 *)(&this->key));
+int result = ((int (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare])(Tclass, ((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3) ? (((unsigned char *)&key) + __ENDIAN_PAD(Tclass->typeSize)) : (void *)key, ((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3 || Tclass->type == 1) ? (((unsigned char *)&this->key) + __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize)) : (void *)*(uint64 *)(&this->key));
 
 if(result < 0)
 this = this->left;

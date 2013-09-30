@@ -106,7 +106,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
          {
             Class Tclass = class(MT);
             // Copy key here
-            if(Tclass.type == systemClass || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass)
+            if((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass)
             {
                ((void (*)(void *, void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnCopy])(Tclass, (((byte *)&(uint64)newNode.key) + __ENDIAN_PAD(Tclass.typeSize)),
                   (((byte *)&(uint64)newNode.key) + __ENDIAN_PAD(Tclass.typeSize)));
@@ -191,7 +191,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
          {
             node = MapNode<MT, V> { key = pos };
          }
-         if(Tclass.type == systemClass || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass)
+         if((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass)
          {
             ((void (*)(void *, void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnCopy])(Tclass, (((byte *)&(uint64)node.key) + __ENDIAN_PAD(Tclass.typeSize)),
               (((byte *)&(uint64)pos) + __ENDIAN_PAD(Tclass.typeSize)));
@@ -254,9 +254,9 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
          D data = GetData(srcNode);
 
          ((void (*)(void *, void *, void *))(void *)Kclass._vTbl[__ecereVMethodID_class_OnSerialize])(Kclass,
-            (Kclass.type == systemClass || Kclass.type == bitClass || Kclass.type == enumClass || Kclass.type == unitClass) ? &key : (void *)key, channel);
+            ((Kclass.type == systemClass && !Kclass.byValueSystemClass) || Kclass.type == bitClass || Kclass.type == enumClass || Kclass.type == unitClass) ? &key : (void *)key, channel);
          ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnSerialize])(Dclass,
-            (Dclass.type == systemClass || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data, channel);
+            ((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data, channel);
       }
    }
 

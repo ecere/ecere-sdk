@@ -323,6 +323,7 @@ public:
    OldList templatized;
    int numParams;
    bool isInstanceClass;
+   bool byValueSystemClass;
 
    property char *
    {
