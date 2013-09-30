@@ -271,7 +271,7 @@ public struct ContextStringPair
    }
 };
 
-Map<ContextStringPair, List<Location> > intlStrings { };
+Map<ContextStringPair, List<Location>> intlStrings { };
 
 Expression MkExpIntlString(char * string, char * context)
 {

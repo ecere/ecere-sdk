@@ -1180,13 +1180,21 @@ struct_declaration_list_error:
 	;
 
 template_datatype:
-     declaration_specifiers { $$ = MkTemplateDatatype($1, null); }
-   | declaration_specifiers abstract_declarator { $$ = MkTemplateDatatype($1, $2); }
-   | identifier { $$ = MkTemplateDatatype(MkListOne(MkSpecifierName($1.string)), null); FreeIdentifier($1); }
+     guess_declaration_specifiers { $$ = MkTemplateDatatype($1, null); }
+   | guess_declaration_specifiers abstract_declarator { $$ = MkTemplateDatatype($1, $2); }
+//   | identifier { $$ = MkTemplateDatatype(MkListOne(MkSpecifierName($1.string)), null); FreeIdentifier($1); }
    ;
 
 template_type_argument:
-     template_datatype { $$ = MkTemplateTypeArgument($1); }
+//     template_datatype { $$ = MkTemplateTypeArgument($1); }
+
+//    Explicitly copied the rules here to handle:
+//      ast.ec:  Map<List<Location>> intlStrings { };
+//          vs
+//      LinkList.ec:   class LinkList<bool circ = false>
+
+     guess_declaration_specifiers { $$ = MkTemplateTypeArgument(MkTemplateDatatype($1, null)); }
+   | guess_declaration_specifiers abstract_declarator { $$ = MkTemplateTypeArgument(MkTemplateDatatype($1, $2)); }
    ;
 
 template_type_parameter:
@@ -1210,12 +1218,16 @@ template_identifier_parameter:
    ;
 
 template_expression_argument:
-     constant_expression { $$ = MkTemplateExpressionArgument($1); }
+     shift_expression /*constant_expression*/ { $$ = MkTemplateExpressionArgument($1); }
    ;
 
 template_expression_parameter:
+/*
      template_datatype identifier     { $$ = MkExpressionTemplateParameter($2, $1, null); }
    | template_datatype identifier '=' template_expression_argument    { $$ = MkExpressionTemplateParameter($2, $1, $4); }
+*/
+     guess_declaration_specifiers identifier '=' template_expression_argument    { $$ = MkExpressionTemplateParameter($2, MkTemplateDatatype($1, null), $4); }
+   | guess_declaration_specifiers abstract_declarator identifier '=' template_expression_argument    { $$ = MkExpressionTemplateParameter($3, MkTemplateDatatype($1, $2), $5); }
    ;
 
 template_parameter:
@@ -1236,7 +1248,7 @@ template_argument:
    | identifier '=' template_expression_argument   { $$ = $3; $$.name = $1; $$.loc = @$; }
    | identifier '=' template_identifier_argument   { $$ = $3; $$.name = $1; $$.loc = @$; }
    | identifier '=' template_type_argument         { $$ = $3; $$.name = $1; $$.loc = @$; }
-   | template_datatype '=' template_expression_argument 
+   /*| template_datatype '=' template_expression_argument
    {
       $$ = $3; 
       if($1.specifiers && $1.specifiers->first)
@@ -1271,7 +1283,7 @@ template_argument:
       }
       FreeTemplateDataType($1);
       $$.loc = @$;
-   }
+   }*/
    ;
 
 template_arguments_list:

@@ -902,13 +902,15 @@ struct_or_union_specifier_nocompound:
 	;
 
 template_datatype:
-     declaration_specifiers { $$ = MkTemplateDatatype($1, null); }
-   | declaration_specifiers abstract_declarator { $$ = MkTemplateDatatype($1, $2); }
+     guess_declaration_specifiers { $$ = MkTemplateDatatype($1, null); }
+   | guess_declaration_specifiers abstract_declarator { $$ = MkTemplateDatatype($1, $2); }
    /*| identifier { $$ = MkTemplateDatatype(MkListOne(MkSpecifierName($1.string)), null); FreeIdentifier($1); }*/
    ;
 
 template_type_argument:
-     template_datatype { $$ = MkTemplateTypeArgument($1); }
+     guess_declaration_specifiers { $$ = MkTemplateTypeArgument(MkTemplateDatatype($1, null)); }
+   | guess_declaration_specifiers abstract_declarator { $$ = MkTemplateTypeArgument(MkTemplateDatatype($1, $2)); }
+     //template_datatype { $$ = MkTemplateTypeArgument($1); }
    ;
 
 /*
