@@ -4253,7 +4253,7 @@ private:
                guiApp.prevWindow = null;
 
                // Eventually fix this not to include captured?
-               if(!prevWindow.OnMouseLeave(*mods))
+               if(!trueWindow.IsDescendantOf(prevWindow) && !prevWindow.OnMouseLeave(*mods))
                   result = false;
             }
             if(result && trueWindow && !trueWindow.destroyed/* && trueWindow == window*/)
