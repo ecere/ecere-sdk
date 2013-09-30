@@ -1,6 +1,8 @@
 
 #define __restrict
+#ifndef __restrict_arr
 #define __restrict_arr
+#endif
 
 #define uint _uint
 #ifdef __WIN32__
