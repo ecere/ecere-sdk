@@ -4573,7 +4573,7 @@ class Breakpoint : struct
       char * file;
       char * line;
       char fullPath[MAX_LOCATION];
-      if(location[0] == '\(' && location[1] && (file = strchr(location+2, '\)')) && file[1])
+      if(location[0] == '(' && location[1] && (file = strchr(location+2, ')')) && file[1])
       {
          prjName = new char[file-location];
          strncpy(prjName, location+1, file-location-1);
