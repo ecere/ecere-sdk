@@ -31,26 +31,35 @@ Block GetNextBlock(Block block)
       {
          if(block.type == FONT || block.type == ANCHOR)
          {
-            surface.TextFont(block.prevFont.font.font);
+            surface.TextFont(block.parent.font.font);
             if(flags.render)
-               surface.SetForeground(block.prevFont.textColor);
+               surface.SetForeground(block.parent.textColor);
          }
          block = block.next;
          break;
       }
 
+      //if(block)
+      {
+         if(block.type == FONT || block.type == ANCHOR)
+         {
+            surface.TextFont(block.parent.font.font);
+            if(flags.render)
+               surface.SetForeground(block.parent.textColor);
+         }
+      }
       block = block.parent;
 
       // Getting out of a block
       if(block)
       {
-         if(block.type == FONT || block.type == ANCHOR)
+         /*if(block.type == FONT || block.type == ANCHOR)
          {
             surface.TextFont(block.prevFont.font.font);
             if(flags.render)
                surface.SetForeground(block.prevFont.textColor);
          }
-         else if(block.type == CENTER)
+         else */if(block.type == CENTER)
          {
             if(centered)
                (*centered)--;
@@ -106,7 +115,7 @@ int ComputeLine(Surface surface, Block startBlock, int startTextPos, Block * nex
             if(block.window)
             {
                width += block.window.size.w;
-               height = Max(height, block.window.size.h);
+               height = Max(height, Max(26, block.window.size.h));
             }
             break;
          }
@@ -160,7 +169,6 @@ int ComputeLine(Surface surface, Block startBlock, int startTextPos, Block * nex
             // TO FIX: THIS USED TO BE COMMENTED... PUT IT BACK FOR DOCUMENTOR
             surface.TextExtent(" ", 1, null, &th);
             height = Max(height, th);
-
 
             for(; textPos<block.textLen && !lineComplete;)
             {
@@ -231,7 +239,9 @@ int ComputeLine(Surface surface, Block startBlock, int startTextPos, Block * nex
             }
             else if(block.halign == left || block.halign == right)
             {
+               Font font = surface.font;
                ComputeTable(surface, block, textPos, &width, &height, maxW, maxH, flags, y + sy, x + sx);
+               surface.font = font;
                x += width;
             
                *nextBlock = NextBlockUp(surface, block, centered, flags);
@@ -252,7 +262,9 @@ int ComputeLine(Surface surface, Block startBlock, int startTextPos, Block * nex
             }
             else
             {
+               Font font = surface.font;
                ComputeTable(surface, block, textPos, &width, &height, maxW, maxH, flags, y + sy, x + sx);
+               surface.font = font;
                lineComplete = true;
                *nextBlock = NextBlockUp(surface, block, centered, flags);
                *nextTextPos = 0;

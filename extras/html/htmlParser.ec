@@ -1,7 +1,7 @@
 import "HTMLView"
 
-#define MAX_TAG_LEN  204800
-#define MAX_SYMBOL_LEN  1000
+#define MAX_TAG_LEN     256
+#define MAX_SYMBOL_LEN  256
 
 #define WORD_NONE    0
 #define WORD_NORMAL  1
@@ -101,12 +101,40 @@ class Block : struct
    }
 };
 
-static bool GetKeyWordEx(char ** input, char * keyWord, int maxSize, bool treatEqual)
+String ParseURL(String input)
+{
+   int c;
+   char ch;
+   int len = strlen(input);
+   String output = new char[len+1];
+   len = 0;
+   for(c = 0; (ch = input[c]); c++)
+   {
+      if(ch == '%' && isalnum(input[c+1]) && isalnum(input[c+2]))
+      {
+         char hex[3] = { input[c+1], input[c+2], 0 };
+         char * end;
+         int v = (int)strtoul(hex, &end, 16);
+         if(v && end == hex + 2)
+         {
+            output[len++] = (char)v;
+            c += 2;
+            continue;
+         }
+      }
+      output[len++] = ch;
+   }
+   output[len++] = 0;
+   return renew output char[len];
+}
+
+/*static */bool GetKeyWordEx(char ** input, char * keyWord, int maxSize, bool treatEqual, bool acceptSingleQuote)
 {
    char * string = *input;
    char ch;
    int c = 0;
    bool quoted = false, start = true, wasQuoted = false;
+   char quoteChar = 0;
 
    for(; (ch = *string); string++)
    {
@@ -121,8 +149,10 @@ static bool GetKeyWordEx(char ** input, char * keyWord, int maxSize, bool treatE
       {
          if(!quoted && ((ch == ',' || (treatEqual && ch == '=')) || ch == '>') )
             break;
-         else if(ch == '\"' /*|| ch == '\''*/)
+         else if((ch == '\"' || (acceptSingleQuote && ch == '\'')) && (!quoteChar || quoteChar == ch))
          {
+            if(!wasQuoted)
+               quoteChar = ch;
             quoted ^= true;
             wasQuoted = true;
             start = false;
@@ -143,7 +173,7 @@ static bool GetKeyWordEx(char ** input, char * keyWord, int maxSize, bool treatE
 
 static bool GetKeyWord(char ** input, char * keyWord, int maxSize)
 {
-   return GetKeyWordEx(input, keyWord, maxSize, true);
+   return GetKeyWordEx(input, keyWord, maxSize, true, false);
 }
 
 static char * GetString(char * string, char * what, int count)
@@ -164,14 +194,23 @@ static char * GetString(char * string, char * what, int count)
    return string + sc;
 }
 
-static Block AddBlock(Block parent, BlockType type)
-{
-   Block block = Block { parent = parent, type = type };
-   parent.subBlocks.Add(block);
-   return block;
-}
-
 #include <stdio.h>
+
+String EncodeString(String input, int * lenPtr)
+{
+   if(UTF8Validate(input))
+   {
+      return CopyString(input);
+   }
+   else
+   {
+      int len = strlen(input);
+      String s = new char[len*4+1];
+      len = ISO8859_1toUTF8(input, s, len*4);
+      if(lenPtr) *lenPtr = len;
+      return renew s char[len+1];
+   }
+}
 
 class HTMLFile
 {
@@ -179,15 +218,30 @@ class HTMLFile
    Block defaultFont { };
 
    Block body;
+   Block titleBlock;
    ColorAlpha background { 255, white };
+   String baseHRef;
    //Button defaultButton;
+
+   Block ::AddBlock(Block parent, BlockType type)
+   {
+      Block block = Block { parent = parent, type = type };
+      parent.subBlocks.Add(block);
+      return block;
+   }
+
+   ~HTMLFile()
+   {
+      delete baseHRef;
+   }
 
    bool Parse(File f)
    {
+      bool result = true;
       bool insideTag = false;
       char tag[MAX_TAG_LEN];
       char symbol[MAX_SYMBOL_LEN];
-      int tagLen;
+      int tagLen = 0;
       Block block = this.block, subBlock;
       char * text;
       int textLen = 0;
@@ -198,6 +252,7 @@ class HTMLFile
       byte lastCh = ' ';
       bool code = false;
       bool quoted = false;
+      bool lastBR = true;
 
       Block fontBlock = defaultFont;
       fontBlock.type = FONT;
@@ -212,13 +267,14 @@ class HTMLFile
       fontBlock.textColor = black;
       fontBlock.size = 10;
 
-      fontBlock.font = FontEntry { size = fontBlock.size, attribs = fontBlock.attribs, face = CopyString(fontBlock.face) };
-      fontCache.Add(fontBlock.font);
+      /*fontBlock.font = FontEntry { size = fontBlock.size, attribs = fontBlock.attribs, face = CopyString(fontBlock.face) };
+      fontCache.Add(fontBlock.font);*/
 
       background = white;
       
       text = new char[32768*4];
 
+      block.font = fontBlock.font;
       body = block;
       
       // Parse entire file
@@ -227,7 +283,9 @@ class HTMLFile
          byte ch = 0;
          
          f.Getc(&ch);
+#ifdef _DEBUG
          //fwrite(&ch, 1, 1, stdout);
+#endif
          if(commented)
          {
             if((ch == '-' && tagLen < 2) || (ch == '>' && tagLen == 2))
@@ -246,8 +304,10 @@ class HTMLFile
          {
             if(ch == '\"')
                quoted ^= true;
-            if(ch == '<' && !quoted)
+            if(ch == '<' && !quoted && !insideScript && !insideStyle)
+            {
                insideTag++;
+            }
             /*else */if(ch == '>' && !quoted)
             {
                insideTag--;
@@ -283,6 +343,7 @@ class HTMLFile
                      }
                      else if(!strcmpi(keyWord, "img"))
                      {
+                        lastBR = false;
                         subBlock = AddBlock(block, IMAGE);
                         subBlock.valign = bottom;
                         subBlock.halign = middle;
@@ -291,7 +352,7 @@ class HTMLFile
                            GetKeyWord(&string, keyWord, sizeof(keyWord));
                            if(!strcmpi(keyWord, "src"))
                            {
-                              GetKeyWordEx(&string, keyWord, sizeof(keyWord), false);
+                              GetKeyWordEx(&string, keyWord, sizeof(keyWord), false, false);
                               delete subBlock.src;
                               subBlock.src = keyWord[0] ? CopyString(keyWord) : null;
                            }
@@ -345,6 +406,11 @@ class HTMLFile
                            }
                         }
                      }
+                     else if(!strcmpi(keyWord, "title"))
+                     {
+                        block = AddBlock(block, TITLE);
+                        titleBlock = block;
+                     }
                      else if(!strcmpi(keyWord, "body"))
                      {
                         block = AddBlock(block, BODY);
@@ -357,7 +423,7 @@ class HTMLFile
                            if(!strcmpi(keyWord, "bgcolor"))
                            {
                               GetKeyWord(&string, keyWord, sizeof(keyWord));
-                              background = strtol((keyWord[0] == '#') ? (keyWord+1) : keyWord, null, 16);
+                              background = !strcmpi(keyWord, "#fff") ?  white : strtol((keyWord[0] == '#') ? (keyWord+1) : keyWord, null, 16);
                               if(keyWord[0] != '#' || strlen(keyWord) <= 7)
                                  background |= 0xFF000000;
                            }
@@ -369,10 +435,32 @@ class HTMLFile
                            }
                         }
                      }
-                     else if(!strcmpi(keyWord, "br"))
+                     else if(!strcmpi(keyWord, "br") || (!lastBR && (!strcmpi(keyWord, "div") || !strcmpi(keyWord, "li"))))
                      {
-                        subBlock = AddBlock(block, BR);
-                        lastCh = ' ';
+                        if(!lastBR || (lastCh && lastCh != ' '))
+                        {
+                           subBlock = AddBlock(block, BR);
+                           lastCh = ' ';
+                           lastBR = true;
+                        }
+                     }
+                     else if(!strcmpi(keyWord, "/ul"))
+                     {
+                        lastBR = false;
+                     }
+                     else if(!strcmpi(keyWord, "/ul"))
+                     {
+                        lastBR = false;
+                     }
+                     else if(!strcmpi(keyWord, "/div"))
+                     {
+                        if(!lastBR)
+                        {
+                           subBlock = AddBlock(block, BR);
+                           lastBR = true;
+                        }
+                        else
+                           lastBR = false;
                      }
                      else if(!strcmpi(keyWord, "code"))
                      {
@@ -389,6 +477,17 @@ class HTMLFile
                         || !strcmpi(keyWord, "strong") || !strcmpi(keyWord, "em") || 
                         !strcmpi(keyWord, "h1") || !strcmpi(keyWord, "h2") || !strcmpi(keyWord, "h3"))
                      {
+                        if((!strcmpi(keyWord, "h1") || !strcmpi(keyWord, "h2") || !strcmpi(keyWord, "h3")))
+                        {
+                           if(!lastBR || (lastCh && lastCh != ' '))
+                           {
+                              if(!lastBR)
+                                 subBlock = AddBlock(block, BR);
+                              subBlock = AddBlock(block, BR);
+                              lastBR = true;
+                           }
+                           lastCh = ' ';
+                        }
                         subBlock = AddBlock(block, FONT);
                         subBlock.attribs = fontBlock.attribs;
                         if(!strcmpi(keyWord, "font"))
@@ -479,17 +578,23 @@ class HTMLFile
                              !strcmpi(keyWord, "/h2") ||
                              !strcmpi(keyWord, "/h3"))
                      {
-                        if(block.type == FONT)
+                        /*while(block.type != FONT && block.parent && block.parent.type != BODY)
+                           block = block.parent;*/
+                        if(block.type == FONT || block.type == ANCHOR)
                         {
                            fontBlock = block.prevFont;
                            block = block.parent;
+                        }
+                        if(!lastBR && (!strcmpi(keyWord, "/h1") || !strcmpi(keyWord, "/h2") || !strcmpi(keyWord, "/h3")))
+                        {
+                           subBlock = AddBlock(block, BR);
+                           lastBR = true;
                         }
                      }
                      else if(!strcmpi(keyWord, "a"))
                      {
                         int textDecoration = 0;
-                        subBlock = AddBlock(block, ANCHOR);
-                        subBlock.attribs = fontBlock.attribs;
+                        Block anchor { type = ANCHOR, parent = block };
 
                         for(;string[0];)
                         {
@@ -497,15 +602,15 @@ class HTMLFile
 
                            if(!strcmpi(keyWord, "name"))
                            {
-                              GetKeyWordEx(&string, keyWord, sizeof(keyWord), false);
-                              delete subBlock.anchor;
-                              subBlock.anchor = CopyString(keyWord);
+                              GetKeyWordEx(&string, keyWord, sizeof(keyWord), false, false);
+                              delete anchor.anchor;
+                              anchor.anchor = CopyString(keyWord);
                            }
                            else if(!strcmpi(keyWord, "href"))
                            {
-                              GetKeyWordEx(&string, keyWord, sizeof(keyWord), false);
-                              delete subBlock.href;
-                              subBlock.href = CopyString(keyWord);
+                              GetKeyWordEx(&string, keyWord, sizeof(keyWord), false, true);
+                              delete anchor.href;
+                              anchor.href = CopyString(keyWord);
                               if(!textDecoration)
                                  textDecoration = 1;
                            }
@@ -513,22 +618,46 @@ class HTMLFile
                            {
                               //for(;string[0];)
                               {
-                                 GetKeyWordEx(&string, keyWord, sizeof(keyWord), false);
+                                 GetKeyWordEx(&string, keyWord, sizeof(keyWord), false, false);
                                  if(strstr(keyWord, "text-decoration:") && strstr(keyWord, "none;"))
                                     textDecoration = 2;
                               }
                            }
                         }
-                        subBlock.attribs |= FONT_BOLD;
-                        if(textDecoration == 1) subBlock.attribs |= FONT_UNDERLINE;
+
+                        if(anchor.href && (/*lastBR || */isalnum(lastCh)))
+                        {
+                           subBlock = AddBlock(block, TEXT);
+                           subBlock.text = CopyString("  ");
+                           subBlock.textLen = 2;
+                           subBlock.prevFont = fontBlock;
+                        }
+                        subBlock = anchor;
+                        block.subBlocks.Add(subBlock);
+
+                        subBlock.attribs = fontBlock.attribs | FONT_BOLD;
                         delete subBlock.face;
                         subBlock.face = CopyString(fontBlock.face);
                         subBlock.size = fontBlock.size;
                         subBlock.textColor = Color { 85,85,255 };
                         subBlock.prevFont = fontBlock;
+                        if(textDecoration == 1) subBlock.attribs |= FONT_UNDERLINE;
                         fontBlock = subBlock;
                         block = subBlock;
+
+                        lastCh = 0;
                      }
+                     /*else if(!strcmpi(keyWord, "/span"))
+                     {
+                        if(isalnum(lastCh))
+                        {
+                           subBlock = AddBlock(block, TEXT);
+                           subBlock.text = CopyString("  ");
+                           subBlock.textLen = 2;
+                           subBlock.prevFont = block.parent.prevFont;
+                        }
+                        lastCh = 0;
+                     }*/
                      else if(!strcmpi(keyWord, "/a"))
                      {
                         if(block.type == ANCHOR)
@@ -555,7 +684,7 @@ class HTMLFile
                         if(insideStyle)
                            insideStyle--;
                      }
-                     else if(!strcmpi(keyWord, "input"))
+                     else if(!strcmpi(keyWord, "input") || !strcmpi(keyWord, "button"))
                      {
                         subBlock = AddBlock(block, INPUT);
                         for(;string[0];)
@@ -564,18 +693,22 @@ class HTMLFile
 
                            if(!strcmpi(keyWord, "type"))
                            {
-                              GetKeyWord(&string, keyWord, sizeof(keyWord));
+                              GetKeyWordEx(&string, keyWord, sizeof(keyWord), true, true);
                               if(!strcmpi(keyWord, "text"))
                               {
                                  subBlock.inputType = InputType::text;
                               }
-                              else if(!strcmpi(keyWord, "submit"))
+                              else if(!strcmpi(keyWord, "submit") || !strcmpi(keyWord, "image"))
                               {
                                  subBlock.inputType = submit;
                               }
                               else if(!strcmpi(keyWord, "radio"))
                               {
                                  subBlock.inputType = radio;
+                              }
+                              else if(!strcmpi(keyWord, "checkbox"))
+                              {
+                                 subBlock.inputType = checkbox;
                               }
                               else if(!strcmpi(keyWord, "hidden"))
                               {
@@ -586,21 +719,32 @@ class HTMLFile
                            }
                            else if(!strcmpi(keyWord, "size"))
                            {
-                              int size;
                               GetKeyWord(&string, keyWord, sizeof(keyWord));
-                              size = atoi(keyWord);
+                              subBlock.size = atoi(keyWord);
+                           }
+                           else if(!strcmpi(keyWord, "maxlength"))
+                           {
+                              int maxlength;
+                              GetKeyWord(&string, keyWord, sizeof(keyWord));
+                              maxlength = atoi(keyWord);
                            }
                            else if(!strcmpi(keyWord, "value"))
                            {
-                              GetKeyWordEx(&string, keyWord, sizeof(keyWord), false);
+                              GetKeyWordEx(&string, keyWord, sizeof(keyWord), false, true);
                               delete subBlock.value;
-                              subBlock.value = CopyString(keyWord);
+                              subBlock.value = EncodeString(keyWord, null);
                            }
                            else if(!strcmpi(keyWord, "name"))
                            {
                               GetKeyWord(&string, keyWord, sizeof(keyWord));
                               delete subBlock.name;
                               subBlock.name = CopyString(keyWord);
+                           }
+                           else if(!strcmpi(keyWord, "src"))
+                           {
+                              GetKeyWordEx(&string, keyWord, sizeof(keyWord), false, false);
+                              delete subBlock.src;
+                              subBlock.src = keyWord[0] ? CopyString(keyWord) : null;
                            }
                         }
                      }
@@ -613,7 +757,7 @@ class HTMLFile
 
                            if(!strcmpi(keyWord, "action"))
                            {
-                              GetKeyWordEx(&string, keyWord, sizeof(keyWord), false);
+                              GetKeyWordEx(&string, keyWord, sizeof(keyWord), false, false);
                               delete subBlock.action;
                               subBlock.action = CopyString(keyWord);
                            }
@@ -637,6 +781,20 @@ class HTMLFile
                         if(block.type == CENTER)
                         {
                            block = block.parent;
+                        }
+                     }
+                     else if(!strcmpi(keyWord, "base"))
+                     {
+                        while(string[0])
+                        {
+                           GetKeyWord(&string, keyWord, sizeof(keyWord));
+
+                           if(!strcmpi(keyWord, "href"))
+                           {
+                              GetKeyWordEx(&string, keyWord, sizeof(keyWord), false, true);
+                              delete baseHRef;
+                              baseHRef = ParseURL(keyWord);
+                           }
                         }
                      }
                      else if(!strcmpi(keyWord, "table"))
@@ -678,7 +836,7 @@ class HTMLFile
                            else if(!strcmpi(keyWord, "bgcolor"))
                            {
                               GetKeyWord(&string, keyWord, sizeof(keyWord));
-                              subBlock.bgColor = 0xFF000000 | strtol((keyWord[0] == '#') ? (keyWord+1) : keyWord, null, 16);
+                              subBlock.bgColor = !strcmpi(keyWord, "#fff") ? white : (0xFF000000 | strtol((keyWord[0] == '#') ? (keyWord+1) : keyWord, null, 16));
                            }
                            else if(!strcmpi(keyWord, "align"))
                            {
@@ -705,17 +863,17 @@ class HTMLFile
                         if(block.type == TD)
                         {
                            block = block.parent;
-                           lastCh = ' ';
+                           lastCh = 0;//' ';
                         }
                         if(block.type == TR)
                         {
                            block = block.parent;
-                           lastCh = ' ';
+                           lastCh = 0;//' ';
                         }
                         if(block.type == TABLE)
                         {
                            block = block.parent;
-                           lastCh = ' ';
+                           lastCh = 0;//' ';
                         }
                      }
                      else if(!strcmpi(keyWord, "tr"))
@@ -843,7 +1001,7 @@ class HTMLFile
                               else if(!strcmpi(keyWord, "bgcolor"))
                               {
                                  GetKeyWord(&string, keyWord, sizeof(keyWord));
-                                 subBlock.bgColor = 0xFF000000 | strtol((keyWord[0] == '#') ? (keyWord+1) : keyWord, null, 16);
+                                 subBlock.bgColor = !strcmpi(keyWord, "#fff") ? white : (0xFF000000 |strtol((keyWord[0] == '#') ? (keyWord+1) : keyWord, null, 16));
                               }
                               else if(!strcmpi(keyWord, "valign"))
                               {
@@ -886,7 +1044,7 @@ class HTMLFile
                         if(block.type == TD)
                         {
                            block = block.parent;
-                           lastCh = ' ';
+                           lastCh = 0;//' ';
                         }
                      }
                      else if(!strcmpi(keyWord, "/html"))
@@ -895,14 +1053,27 @@ class HTMLFile
                }
                else
                {
-                  tag[tagLen++] = ch;
-                  tag[tagLen] = '\0';
+                  if(tagLen < MAX_TAG_LEN-1)
+                  {
+                     tag[tagLen++] = ch;
+                     tag[tagLen] = '\0';
+                  }
                }
             }
             else
             {
-               tag[tagLen++] = ch;
-               tag[tagLen] = '\0';
+               if((insideScript || insideStyle) && !tagLen && ch != '/')
+               {
+                  insideTag = false;
+               }
+               else
+               {
+                  if(tagLen < MAX_TAG_LEN-1)
+                  {
+                     tag[tagLen++] = ch;
+                     tag[tagLen] = '\0';
+                  }
+               }
             }
             if(!strcmp(tag, "!--"))
             {
@@ -916,31 +1087,34 @@ class HTMLFile
          {
             if(ch == '<')
             {
-               if(textLen)
+               if(!insideScript && !insideStyle)
                {
-                  if(block.type == TABLE)
+                  if(textLen)
                   {
-                     subBlock = AddBlock(block, TR);
-                     block = subBlock;
+                     if(block.type == TABLE)
+                     {
+                        subBlock = AddBlock(block, TR);
+                        block = subBlock;
+                     }
+                     if(block.type == TR)
+                     {
+                        subBlock = AddBlock(block, TD);
+                        subBlock.span = subBlock.rowSpan = 1;
+                        subBlock.valign = block.valign;
+                        subBlock.halign = block.halign;
+                        block = subBlock;
+                     }
+
+                     subBlock = AddBlock(block, TEXT);
+                     delete subBlock.text;
+                     subBlock.text = EncodeString(text, &textLen);
+                     subBlock.textLen = textLen;
+                     if(block.type != TITLE)
+                        lastBR = false;
+
+                     textLen = 0;
+                     text[0] = '\0';
                   }
-                  if(block.type == TR)
-                  {
-                     subBlock = AddBlock(block, TD);
-                     subBlock.span = subBlock.rowSpan = 1;
-                     subBlock.valign = block.valign;
-                     subBlock.halign = block.halign;
-                     block = subBlock;
-                  }
-
-                  subBlock = AddBlock(block, TEXT);
-                  delete subBlock.text;
-                  subBlock.text = CopyString(text);
-                  subBlock.textLen = textLen;
-
-
-                  textLen = 0;
-                  text[0] = '\0';
-
                }
 
                insideTag = true;
@@ -954,7 +1128,9 @@ class HTMLFile
                   {
                      unichar unicode = 0;
                      char utf8[5];
-                     if(!strcmpi(symbol, "nbsp")) 
+                     if(symbol[0] == '#' && symbol[1] == 'x')
+                        unicode = strtol(symbol+2, null, 16);
+                     else if(!strcmpi(symbol, "nbsp")) 
                         unicode = ' ';
                      else if(!strcmpi(symbol, "copy")) 
                         unicode ='©';
@@ -971,7 +1147,7 @@ class HTMLFile
                      else if(!strcmpi(symbol, "acirc"))
                         unicode = 'â';
                      else if(!strcmpi(symbol, "ocirc"))
-                        unicode = 'ô';                     
+                        unicode = 'ô';
                      if(unicode)
                      {
                         int len = UTF32toUTF8Len(&unicode, 1, utf8, 5);
@@ -995,8 +1171,11 @@ class HTMLFile
                   }
                   else
                   {
-                     symbol[symbolLen++] = ch;
-                     symbol[symbolLen] = '\0';
+                     if(symbolLen < MAX_SYMBOL_LEN-1)
+                     {
+                        symbol[symbolLen++] = ch;
+                        symbol[symbolLen] = '\0';
+                     }
                   }
                }
                else
@@ -1026,7 +1205,7 @@ class HTMLFile
 
                subBlock = AddBlock(block, TEXT);
                delete subBlock.text;
-               subBlock.text = CopyString(text);
+               subBlock.text = EncodeString(text, &textLen);
                subBlock.textLen = textLen;
                textLen = 0;
                text[0] = '\0';
@@ -1040,6 +1219,19 @@ class HTMLFile
          byte ch = 0;
          f.Getc(&ch);
       }*/
-      return true;
+      return result;
+   }
+
+   property String title
+   {
+      get
+      {
+         if(titleBlock && titleBlock.subBlocks.first && ((Block)titleBlock.subBlocks.first).type == TEXT)
+         {
+            Block t = titleBlock.subBlocks.first;
+            return t.text;            
+         }
+         return null;
+      }
    }
 }

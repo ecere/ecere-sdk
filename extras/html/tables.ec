@@ -863,8 +863,7 @@ static void RenderCell(HTMLView browser, Surface surface, Block cell, int cellX,
       int left, right;
       int maxW;
       bool changeLine;
-
-      void * font = surface.GetFont();
+      Font font;
 
       // Compute aligned objects
       left = cellX + table.cellPadding; // Add cell border/margins here?
@@ -889,9 +888,9 @@ static void RenderCell(HTMLView browser, Surface surface, Block cell, int cellX,
       right = Max(left, right);
       maxW = right - left;
 
+      font = surface.font;
       newLineH = ComputeLine(surface, block, textPos, &nextCellBlock, &nextCellPos, &centered, &lineW, maxW, maxH, RenderFlags {}, y, &leftObjects, &rightObjects, &changeLine, false, 0, 0);
-
-      surface.TextFont(font);
+      surface.font = font;
 
       if(cell.halign == middle || thisLineCentered)
       {
@@ -1067,7 +1066,7 @@ static bool PickCell(HTMLView browser, Surface surface, Block cell, int cellX, i
       int maxW;
       bool changeLine;
 
-      void * font = surface.GetFont();
+      Font font;
 
       // Compute aligned objects
       left = cellX + table.cellPadding; // Add cell border/margins here?
@@ -1092,9 +1091,11 @@ static bool PickCell(HTMLView browser, Surface surface, Block cell, int cellX, i
       right = Max(left, right);
       maxW = right - left;
 
+      font = surface.font;
       newLineH = ComputeLine(surface, block, textPos, &nextCellBlock, &nextCellPos, &centered, &lineW, maxW, maxH, RenderFlags {}, y, &leftObjects, &rightObjects, &changeLine, false, 0, 0);
+      surface.font = font; 
 
-      surface.TextFont(font);
+      //surface.TextFont(font);
 
       if(cell.halign == middle || thisLineCentered)
       {
@@ -1262,7 +1263,7 @@ static void PositionCell(HTMLView browser, Surface surface, Block cell, int cell
       int maxW;
       bool changeLine;
 
-      void * font = surface.GetFont();
+      Font font;
 
       // Compute aligned objects
       left = cellX + table.cellPadding; // Add cell border/margins here?
@@ -1287,9 +1288,11 @@ static void PositionCell(HTMLView browser, Surface surface, Block cell, int cell
       right = Max(left, right);
       maxW = right - left;
 
+      font = surface.font;
       newLineH = ComputeLine(surface, block, textPos, &nextCellBlock, &nextCellPos, &centered, &lineW, maxW, maxH, RenderFlags {}, y, &leftObjects, &rightObjects, &changeLine, false, 0, 0);
+      surface.font = font;
 
-      surface.TextFont(font);
+      // surface.TextFont(font);
 
       if(cell.halign == middle || thisLineCentered)
       {
