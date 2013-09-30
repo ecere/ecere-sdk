@@ -135,7 +135,6 @@ public:
 // Rename TableEditor to TableControl and move to eda/src/gui/controls
 public class TableEditor : public Window
 {
-   bool initialized;
 public:
    property Table table
    {
@@ -144,8 +143,8 @@ public:
          DebugLn("TableEditor::table|set");
          table = value;
       }
+      get { return table; }
    }
-   Table table;
 
    property Table index
    {
@@ -155,8 +154,8 @@ public:
          index = value;
          filterRow.tbl = index;
       }
+      get { return index; }
    }
-   Table index;
 
    bool OnPostCreate()
    {
@@ -212,11 +211,6 @@ public:
          //ResetListFields();
       }
    }
-   Field idField;
-   Field stringField;
-   Field indexFilterField;
-
-   ListBox list;
    property Array<ListField> listFields
    {
       set
@@ -226,10 +220,21 @@ public:
          //ResetListFields();
       }
    }
-   Array<ListField> listFields;
-   int listSortOrder;
-   DataField listSortField;
-   bool disabledFullListing;
+   property int listSortOrder
+   {
+      set { listSortOrder = value; }
+      get { return listSortOrder; }
+   }
+   property DataField listSortField
+   {
+      set { listSortField = value; }
+      get { return listSortField; }
+   }
+   property bool disabledFullListing
+   {
+      set { disabledFullListing = value; }
+      get { return disabledFullListing; }
+   }
 
    property Array<StringSearchField> searchFields
    {
@@ -256,7 +261,6 @@ public:
          searchTables = value;
       }
    }
-   Array<StringSearchTable> searchTables;
 
    property Array<SQLiteSearchTable> sqliteSearchTables
    {
@@ -270,7 +274,6 @@ public:
          sqliteSearchTables = value;
       }
    }
-   Array<SQLiteSearchTable> sqliteSearchTables;
 
    property String searchString
    {
@@ -295,11 +298,6 @@ public:
          }
       }
    }
-   String searchString;
-
-   Map<Table, Lookup> lookups;
-
-   Array<LookupEditor> dynamicLookupEditors;
    property Array<LookupEditor> dynamicLookupEditors
    {
       set
@@ -312,27 +310,43 @@ public:
    // Fields Editor
    property Id selectedId { get { return selectedId; } }
 
-   Array<FieldBox> fieldsBoxes { };
-   Array<TableEditor> tableEditors { };
-   Array<TableEditor> dynamicLookupTableEditors { };
+   property Field idField
+   {
+      set { idField = value; }
+      get { return idField; }
+   }
+   property Field stringField
+   {
+      set { stringField = value; }
+      get { return stringField; }
+   }
+   property Field indexFilterField
+   {
+      set { indexFilterField = value; }
+      get { return indexFilterField; }
+   }
 
-   bool readOnly;
-   
-   public virtual void OnInitialize();
-   public virtual void OnLoad();
-   public virtual void OnStateChanged();
-   bool internalModifications;
-   public void NotifyModifiedDocument()
+   property bool readOnly
+   {
+      set { readOnly = value; }
+      get { return readOnly; }
+   }
+
+   virtual void OnInitialize();
+   virtual void OnLoad();
+   virtual void OnStateChanged();
+
+   void NotifyModifiedDocument()
    {
       DebugLn("TableEditor::NotifyModifiedDocument");
       if(!internalModifications)
          OnStateChanged();
    }
 
-   //public virtual bool Window::NotifyNew(AltListSection listSection, Row r);
+   //virtual bool Window::NotifyNew(AltListSection listSection, Row r);
    //virtual void Window::NotifyInitFields(AltEditSection editSection);
    
-   public virtual DialogResult OnLeavingModifiedDocument()
+   virtual DialogResult OnLeavingModifiedDocument()
    {
       DebugLn("TableEditor::OnLeavingModifiedDocument");
       return MessageBox { master = this, type = yesNoCancel, text = text && text[0] ? text : $"Table Editor",
@@ -340,7 +354,7 @@ public:
                   }.Modal();
    }
    
-   public virtual bool OnRemovalRequest()
+   virtual bool OnRemovalRequest()
    {
       DebugLn("TableEditor::OnRemovalRequest");
       return MessageBox { master = this, type = yesNo, text = text && text[0] ? text : $"Table Editor",
@@ -349,10 +363,10 @@ public:
                   }.Modal() == yes;
    }
 
-   //public virtual void Window::NotifyDeleting(ListSection listSection);
-   //public virtual void Window::NotifyDeleted(ListSection listSection);
+   //virtual void Window::NotifyDeleting(ListSection listSection);
+   //virtual void Window::NotifyDeleted(ListSection listSection);
 
-   public bool NotifyClosing()
+   bool NotifyClosing()
    {
       bool result = true;
       DebugLn("TableEditor::NotifyClosing");
@@ -378,8 +392,8 @@ public:
       return result;
    }
 
-   //public void List() // this gets called out of nowhere by some constructor thing...
-   public void Enumerate()
+   //void List() // this gets called out of nowhere by some constructor thing...
+   void Enumerate()
    {
       DebugLn("TableEditor::Enumerate");
       if(list)
@@ -470,9 +484,7 @@ public:
       }
    }
 
-   TableEditor masterEditor;
-
-   public property TableEditor masterEditor
+   property TableEditor masterEditor
    {
       set
       {
@@ -485,6 +497,7 @@ public:
                value.AddTableEditor(this);
          }
       }
+      get { return masterEditor; }
    }
 
    watch(parent)
@@ -846,6 +859,28 @@ public:
    }
 
 private:
+   Table table;
+   Table index;
+   Field idField;
+   Field stringField;
+   Field indexFilterField;
+
+   ListBox list;
+   Array<StringSearchTable> searchTables;
+   Array<SQLiteSearchTable> sqliteSearchTables;
+   String searchString;
+
+   Map<Table, Lookup> lookups;
+
+   Array<LookupEditor> dynamicLookupEditors;
+   Array<FieldBox> fieldsBoxes { };
+   Array<TableEditor> tableEditors { };
+   Array<TableEditor> dynamicLookupTableEditors { };
+
+   bool readOnly;
+   bool internalModifications;
+   TableEditor masterEditor;
+
    Row editRow { };
    DataRow listRow;
    DataRow lastRow;
@@ -853,6 +888,13 @@ private:
    Row filterRow { };
    bool filtered;
    Array<char> searchCI { };
+   WordEntry letters[26];
+   WordEntry doubleLetters[26][26];
+   bool initialized;
+   Array<ListField> listFields;
+   int listSortOrder;
+   DataField listSortField;
+   bool disabledFullListing;
 
    ListEnumerationTimer listEnumerationTimer
    {
@@ -1842,9 +1884,6 @@ private:
       CompareKey = (void *)BinaryTree::CompareString;
       FreeKey = BinaryTree::FreeString;
    };
-
-   WordEntry letters[26];
-   WordEntry doubleLetters[26][26];
 
    void AddWord(char * word, int count, bool addAllSubstrings, Id id)
    {
