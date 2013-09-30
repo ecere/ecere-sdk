@@ -13683,7 +13683,7 @@ if(functionType->extraParam && e && functionType->thisClass)
 e->destType = MkClassType(functionType->thisClass->string);
 e = e->next;
 }
-if(!functionType->staticMethod)
+if(!functionType->staticMethod && !functionType->extraParam)
 {
 if(memberExp && memberExp->member.exp && memberExp->member.exp->expType && memberExp->member.exp->expType->kind == 19 && memberExp->member.exp->expType->_class)
 {

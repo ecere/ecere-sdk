@@ -8813,7 +8813,8 @@ void ProcessExpressionType(Expression exp)
             }
 
             // WHY WAS THIS COMMENTED OUT ? Broke DisplaySystem::FontExtent(this ? displaySystem : null, font, text, len, width, height);
-            if(!functionType.staticMethod)
+            // Fixed #141 by adding '&& !functionType.extraParam'
+            if(!functionType.staticMethod && !functionType.extraParam)
             {
                if(memberExp && memberExp.member.exp && memberExp.member.exp.expType && memberExp.member.exp.expType.kind == subClassType && 
                   memberExp.member.exp.expType._class)
