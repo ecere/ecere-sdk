@@ -5738,6 +5738,12 @@ for(c = 0; source[c]; c++)
 {
 unsigned int ch = ((unsigned char *)source)[c];
 
+switch(ch)
+{
+case 150:
+ch = 0x2012;
+break;
+}
 if(ch < 0x80)
 {
 if(d + 1 >= max)

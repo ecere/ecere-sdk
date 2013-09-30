@@ -6582,6 +6582,10 @@ public int ISO8859_1toUTF8(char * source, char * dest, int max)
    for(c = 0; source[c]; c++)
    {
       unichar ch = ((byte *)source)[c];
+      switch(ch)
+      {
+         case 150: ch = (unichar)0x2012; break;
+      }
       if(ch < 0x80)
       {
          if(d + 1 >= max) break;
