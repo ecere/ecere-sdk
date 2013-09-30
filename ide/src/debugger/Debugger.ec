@@ -4119,7 +4119,48 @@ class ValgrindLogThread : Thread
 #endif
                   if(strstr(&dynamicBuffer[0], "vgdb me"))
                      debugger.serialSemaphore.Release();
-                  ide.outputView.debugBox.Logf("%s\n", &dynamicBuffer[0]);
+                  {
+                     char * msg = strstr(&dynamicBuffer[0], "==");
+                     if(msg)
+                        msg = strstr(msg+2, "== ");
+                     if(msg)
+                     {
+                        msg += 3;
+                        switch(msg[0])
+                        {
+                           case '(':
+                              msg = strstr(msg, "(action ");
+                              if(msg)
+                              {
+                                 msg += 8;
+                                 if(!strstr(msg, "at startup) vgdb me ...") || !strstr(msg, "on error) vgdb me ..."))
+                                    msg = null;
+                              }
+                              break;
+                           case 'T':
+                              if(!strstr(msg, "TO DEBUG THIS PROCESS USING GDB: start GDB like this"))
+                                 msg = null;
+                              break;
+                           case 'a':
+                              if(!strstr(msg, "and then give GDB the following command"))
+                                 msg = null;
+                              break;
+                           case ' ':
+                              if(!strstr(msg, "/path/to/gdb") && !strstr(msg, "target remote | /usr/lib/valgrind/../../bin/vgdb --pid="))
+                                 msg = null;
+                              break;
+                           case '-':
+                              if(!strstr(msg, "--pid is optional if only one valgrind process is running"))
+                                 msg = null;
+                              break;
+                           default:
+                              msg = null;
+                              break;
+                        }
+                     }
+                     if(!msg)
+                        ide.outputView.debugBox.Logf("%s\n", &dynamicBuffer[0]);
+                  }
                   dynamicBuffer.size = 0;
                   start = c + 1;
                }
