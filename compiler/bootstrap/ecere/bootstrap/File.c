@@ -1049,7 +1049,7 @@ char archiveName[797], * archiveFile;
 
 if(strstr(fileName, "File://") == fileName)
 {
-result = (struct __ecereNameSpace__ecere__com__Instance *)strtoul(fileName + 7, (((void *)0)), 16);
+result = (struct __ecereNameSpace__ecere__com__Instance *)(uintptr_t)strtoull(fileName + 7, (((void *)0)), 16);
 if(result)
 {
 if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)result)->_class && __ecereNameSpace__ecere__com__eClass_IsDerived(((struct __ecereNameSpace__ecere__com__Instance *)(char *)result)->_class, __ecereClass___ecereNameSpace__ecere__sys__File))
