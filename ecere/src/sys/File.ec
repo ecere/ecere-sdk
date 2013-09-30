@@ -1190,7 +1190,8 @@ static FileDesc FileFind(char * path, char * extensions)
             if(!strcmp(path, "/"))
             {
                int c;
-               d.fHandle = (void *)0xFFFFFFFF; //GetLogicalDrives();
+               uint drives = 0xFFFFFFFF;
+               d.fHandle = (HANDLE)drives; //GetLogicalDrives();
                for(c = 0; c<26; c++)
                   if(((uint)d.fHandle) & (1<<c))
                   {
@@ -1214,7 +1215,7 @@ static FileDesc FileFind(char * path, char * extensions)
                         case DRIVE_REMOTE:    file.stats.attribs.isRemote = true; break;
                         case DRIVE_CDROM:     file.stats.attribs.isCDROM = true; break;
                      }
-                     *((uint *)&d.fHandle) ^= (1<<c);
+                     drives ^= (1<<c);
                      if(driveType == DRIVE_NO_ROOT_DIR) continue;
                   
                      if(driveType != DRIVE_REMOVABLE && driveType != DRIVE_REMOTE && 
@@ -1232,6 +1233,7 @@ static FileDesc FileFind(char * path, char * extensions)
                      result = file;
                      break;
                   }
+               d.fHandle = (HANDLE) drives;
                d.resource = 0;
             }
             else if(path[0] != '\\' || path[1] != '\\' || strstr(path+2, "\\"))
@@ -1502,9 +1504,10 @@ private class FileDesc : struct
             if(!strcmp(d.name, "/"))
             {
                int c;
+               uint drives = (uint)d.fHandle;
                for(c = 0; c<26; c++)
                {
-                  if(((uint)d.fHandle) & (1<<c))
+                  if(drives & (1<<c))
                   {
                      char volume[MAX_FILENAME] = "";
                      int driveType;
@@ -1519,7 +1522,7 @@ private class FileDesc : struct
                      _wpath[2] = path[2] = '\\';
                      _wpath[3] = path[3] = 0;
                      driveType = GetDriveType(_wpath);
-                     *((uint *)&d.fHandle) ^= (1<<c);
+                     drives ^= (1<<c);
 
                      switch(driveType)
                      {
@@ -1558,6 +1561,7 @@ private class FileDesc : struct
                      break;
                   }
                }
+               d.fHandle = (HANDLE) drives;
                break;
             }
             else if(d.name[0] != '\\' || d.name[1] != '\\' || strstr(d.name+2, "\\"))
