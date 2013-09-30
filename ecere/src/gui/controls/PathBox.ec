@@ -248,9 +248,10 @@ public class PathBox : CommonControl
       {
          BitmapResource icon = null;
          char path[MAX_LOCATION];
-         FileAttribs exists;
+         FileAttribs exists { };
          GetSystemPathBuffer(path, editBox.contents);
-         exists = FileExists(path);
+         if(!(path[0] == DIR_SEP && path[1] == DIR_SEP && (!path[2] || !strchr(&path[2], DIR_SEP))))
+            exists = FileExists(path);
          
          switch(typeExpected)
          {

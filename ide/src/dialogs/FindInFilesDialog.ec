@@ -603,6 +603,8 @@ private:
    }
 }
 
+static define stackSize = 1024;
+
 class SearchThread : Thread
 {
 public:
@@ -650,7 +652,7 @@ private:
       int frame, treeTop = 0;
       int globalFindCount = 0, filesSearchedCount = 0, filesMatchedCount = 0, dirsMatchedCount = 0;
       //double lastTime = GetTime();
-      SearchStackFrame stack[1024];
+      SearchStackFrame stack[stackSize];
       FindInFilesMode mode = this.mode;
       
       EditBox replaceEdit = null;
@@ -714,7 +716,7 @@ private:
          strcpy(stack[0].path, dir);
          stack[0].fileList = FileListing { dir, extensions = filter.extensions };  // there should be a sorted = true/false 
 
-         for(frame = 0; frame >= 0 && !abort; )
+         for(frame = 0; frame >= 0 && frame < stackSize && !abort; )
          {
             if(stack[frame].fileList.Find())
             {
