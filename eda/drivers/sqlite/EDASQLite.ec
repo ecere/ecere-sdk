@@ -205,6 +205,7 @@ class SQLiteDataSource : DataSourceDriver
             {
                if(createOptions != readOnly)
                {
+                  sqlite3_exec(db, "PRAGMA locking_mode=exclusive", null, null, null);
                   sqlite3_exec(db, "DELETE FROM eda_table_fields WHERE Name = 'lockDummy'", null, null, null);
                   if(sqlite3_exec(db, "INSERT INTO eda_table_fields (Table_Name, Name, Type, Length) VALUES ('lockDummy', 'lockDummy', 'lockDummy', 'lockDummy')", null, null, null))
                      success = false;
@@ -266,6 +267,7 @@ class SQLiteDatabase : Database
    
    ~SQLiteDatabase()
    {
+      sqlite3_exec(db, "PRAGMA locking_mode=normal", null, null, null);
       sqlite3_close(db);
    }
 
