@@ -699,7 +699,14 @@ public class Button : CommonControl
       }
       else
       {
-         if(guiApp.textMode && buttonStyle.bevel)
+         if(!caption && bitmap && bitmap.bitmap)
+         {
+            if(!*width)
+               *width = bitmap.bitmap.width;
+            if(!*height)
+               *height = bitmap.bitmap.height;
+         }
+         else if(guiApp.textMode && buttonStyle.bevel)
          {
             if(!*width)
                *width = Max(*width, captionWidth + 8);
