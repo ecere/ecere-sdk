@@ -481,6 +481,7 @@ public:
 
          for(; typeToTry < NUM_TYPES_TO_TRY; typeToTry++)
          {
+            file.Seek(0, start);
             if(typeToTry >= 0)
                format = FindFormat(typesToTry[typeToTry]);
 

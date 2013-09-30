@@ -85,14 +85,20 @@ class PNGFormat : BitmapFormat
                {            
                   png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
                       &interlace_type, null, null);
-                  if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
-                     png_set_tRNS_to_alpha(png_ptr);
                   numPasses = png_set_interlace_handling(png_ptr);
                   if(color_type == PNG_COLOR_TYPE_PALETTE)
                   {
+                     if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+                     {
+                        channels = 4;
+                        png_set_tRNS_to_alpha(png_ptr);
+                     }
+                     else
+                        channels = 3;
                      png_set_palette_to_rgb(png_ptr);
-                     channels = 4;
                   }
+                  else if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+                      png_set_tRNS_to_alpha(png_ptr);
 
                   if((result = bitmap.Allocate(null, (uint)width, (uint)height, 0, pixelFormatRGBA, false)))
                   {
@@ -164,7 +170,7 @@ class PNGFormat : BitmapFormat
                      }
                      else if(channels == 3)
                      {
-                        byte * rowPtr = new byte[width * 3 * ((bit_depth == 16) ? 2 : 1)];
+                        byte * rowPtr = new byte[width * 4 /*3*/ * ((bit_depth == 16) ? 2 : 1)];
                         for (pass = 0; pass < numPasses; pass++)
                         {
                            uint y;
@@ -292,7 +298,7 @@ class PNGFormat : BitmapFormat
       }
       if(tempBitmap)
          delete tempBitmap;
-      return result;   
+      return result;
    }
 
    ColorAlpha * LoadPalette(char * fileName, char * type)
