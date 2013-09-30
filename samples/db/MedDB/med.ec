@@ -33,6 +33,7 @@ public:
    bool Window::NotifyChanged(bool closed)
    {
       master.master.modifiedDocument = true;
+      return true;
    }
 
    void OnDisplay(Surface surface, int x, int y, int width, void * fieldData, Alignment alignment, DataDisplayFlags displayFlags)

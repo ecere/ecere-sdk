@@ -7,7 +7,7 @@ class MainForm : Window
 {
    tabCycle = true;
 
-   text = "Drugs Database";
+   caption = "Drugs Database";
    background = activeBorder;
    borderStyle = sizable;
    hasMaximize = true;
@@ -44,13 +44,13 @@ class MainForm : Window
 
    }
 
-   Button tabTst { tabButtons, checked = true, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 6 * 80 },         text = "Test",  id = (uint)testForm, NotifyClicked = NotifyClicked };
-   Button tabUnt { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 5 * 80 },         text = "Units",  id = (uint)untEditor, NotifyClicked = NotifyClicked };
-   Button tabFrm { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 4 * 80 }, text = "Forms",        id = (uint)frmEditor, NotifyClicked = NotifyClicked };
-   Button tabScl { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 3 * 80 }, text = "Sub-Classes",  id = (uint)sclEditor, NotifyClicked = NotifyClicked };
-   Button tabCls { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 2 * 80 }, text = "Classes",       id = (uint)clsEditor, NotifyClicked = NotifyClicked };
-   Button tabRes { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 1 * 80 }, text = "Restrictions",  id = (uint)rstEditor, NotifyClicked = NotifyClicked };
-   Button tabMed { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 0 * 80},  text = "Drugs",   id = (uint)medEditor, NotifyClicked = NotifyClicked };
+   Button tabTst { tabButtons, checked = true, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 6 * 80 },         caption = "Test",  id = (int64)testForm, NotifyClicked = NotifyClicked };
+   Button tabUnt { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 5 * 80 },         caption = "Units",  id = (int64)untEditor, NotifyClicked = NotifyClicked };
+   Button tabFrm { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 4 * 80 }, caption = "Forms",        id = (int64)frmEditor, NotifyClicked = NotifyClicked };
+   Button tabScl { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 3 * 80 }, caption = "Sub-Classes",  id = (int64)sclEditor, NotifyClicked = NotifyClicked };
+   Button tabCls { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 2 * 80 }, caption = "Classes",       id = (int64)clsEditor, NotifyClicked = NotifyClicked };
+   Button tabRes { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 1 * 80 }, caption = "Restrictions",  id = (int64)rstEditor, NotifyClicked = NotifyClicked };
+   Button tabMed { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 0 * 80},  caption = "Drugs",   id = (int64)medEditor, NotifyClicked = NotifyClicked };
 }
 
 class RestrictionEditor : Window
@@ -60,7 +60,7 @@ class RestrictionEditor : Window
    ListSection list { this, editor = editor, fldName = dbfield("Restrictions", name), table = dbtable("Restrictions"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
    EditSection editor { this, table = dbtable("Restrictions"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
 
-   FieldDataBox boxName { editor = editor, field = dbfield("Restrictions", name), text = "Name", size = { 174, 20 }, position = { 20, 32 } };
+   FieldDataBox boxName { editor = editor, field = dbfield("Restrictions", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
    Label label1 { editor.editArea, position = { 20, 8 }, labeledWindow = boxName };
 };
 
@@ -72,7 +72,7 @@ class ClassesEditor : Window
    ListSection list { this, editor = editor, fldName = dbfield("DrugClasses", name), table = dbtable("DrugClasses"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
    EditSection editor { this, table = dbtable("DrugClasses"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
 
-   FieldDataBox boxName { editor = editor, field = dbfield("DrugClasses", name), text = "Name", size = { 174, 20 }, position = { 20, 32 } };
+   FieldDataBox boxName { editor = editor, field = dbfield("DrugClasses", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
    Label label1 { editor.editArea, position = { 20, 8 }, labeledWindow = boxName };
 };
 
@@ -83,7 +83,7 @@ class SubClassesEditor : Window
    ListSection list { this, editor = editor, fldName = dbfield("SubClasses", name), table = dbtable("SubClasses"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
    EditSection editor { this, table = dbtable("SubClasses"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
 
-   FieldDataBox boxName { editor = editor, field = dbfield("SubClasses", name), text = "Name", size = { 174, 20 }, position = { 20, 32 } };
+   FieldDataBox boxName { editor = editor, field = dbfield("SubClasses", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
    Label label1 { editor.editArea, position = { 20, 8 }, labeledWindow = boxName };
 };
 
@@ -95,7 +95,7 @@ class FormesEditor : Window
    ListSection list { this, editor = editor, fldName = dbfield("Forms", name), table = dbtable("Forms"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
    EditSection editor { this, table = dbtable("Forms"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
 
-   FieldDataBox boxName { editor = editor, field = dbfield("Forms", name), text = "Name", size = { 174, 20 }, position = { 20, 32 } };
+   FieldDataBox boxName { editor = editor, field = dbfield("Forms", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
    Label label1 { editor.editArea, position = { 20, 8 }, labeledWindow = boxName };
 };
 
@@ -106,7 +106,7 @@ class UnitesEditor : Window
    ListSection list { this, editor = editor, fldName = dbfield("Units", name), table = dbtable("Units"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
    EditSection editor { this, table = dbtable("Units"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
 
-   FieldDataBox boxName { editor = editor, field = dbfield("Units", name), text = "Name", size = { 174, 20 }, position = { 20, 32 } };
+   FieldDataBox boxName { editor = editor, field = dbfield("Units", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
    Label label1 { editor.editArea, position = { 20, 8 }, labeledWindow = boxName };
 };
 
@@ -117,15 +117,15 @@ class MedEditor : Window
    ListSection list { this, editor = editor, fldName = dbfield("Drugs", genericName), table = dbtable("Drugs"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
    EditSection editor { this, table = dbtable("Drugs"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
 
-   FieldDataBox boxGenericName { editor = editor, field = dbfield("Drugs", genericName), text = "Generic Name", size = { h = 20 }, anchor = { left = 20, top = 32, right = 20 } };
-   FieldDataBox boxCommercialNames { editor = editor, field = dbfield("Drugs", commercialNames), text = "Commercial Names", size = { h = 67 }, anchor = { left = 20, top = 88, right = 20 } };
+   FieldDataBox boxGenericName { editor = editor, field = dbfield("Drugs", genericName), caption = "Generic Name", size = { h = 20 }, anchor = { left = 20, top = 32, right = 20 } };
+   FieldDataBox boxCommercialNames { editor = editor, field = dbfield("Drugs", commercialNames), caption = "Commercial Names", size = { h = 67 }, anchor = { left = 20, top = 88, right = 20 } };
 
-   FieldDataBox boxSubClass { editor = editor, field = dbfield("Drugs", subClass), text = "Sub Class", size = { h = 20 }, anchor = { left = 20, top = 192, right = 20 } };
-   FieldDataBox boxClass { editor = editor, field = dbfield("Drugs", drugClass), text = "Class", size = { h = 20 }, anchor = { left = 20, top = 248, right = 20 } };
+   FieldDataBox boxSubClass { editor = editor, field = dbfield("Drugs", subClass), caption = "Sub Class", size = { h = 20 }, anchor = { left = 20, top = 192, right = 20 } };
+   FieldDataBox boxClass { editor = editor, field = dbfield("Drugs", drugClass), caption = "Class", size = { h = 20 }, anchor = { left = 20, top = 248, right = 20 } };
 
-   FieldDataBox boxRestriction { editor = editor, field = dbfield("Drugs", restriction), text = "Restriction", size = { h = 20 }, anchor = { left = 20, top = 290, right = 20 } };
+   FieldDataBox boxRestriction { editor = editor, field = dbfield("Drugs", restriction), caption = "Restriction", size = { h = 20 }, anchor = { left = 20, top = 290, right = 20 } };
 
-   FieldDataBox boxFormConcentrations { editor = editor, field = dbfield("Drugs", formConcentrations), text = "Form & Concentrations", size = { h = 80 }, anchor = { left = 20, top = 330, right = 20 } };
+   FieldDataBox boxFormConcentrations { editor = editor, field = dbfield("Drugs", formConcentrations), caption = "Form & Concentrations", size = { h = 80 }, anchor = { left = 20, top = 330, right = 20 } };
 
    Label label1 { editor.editArea, position = { 20, 8 }, labeledWindow = boxGenericName };
    Label label2 { editor.editArea, position = { 20, 64 }, labeledWindow = boxCommercialNames };
@@ -145,14 +145,14 @@ class MedTesting : Window
    background = activeBorder;
    anchor = { left = 0, top = 0, right = 0, bottom = 30 };
 
-   FieldDataBox boxGenericName { this, text = "Generic Name", size = { 238, 20 }, position = { 16, 40 }, field = dbfield("Drugs", genericName), row = row};
-   FieldDataBox boxCommercialNames { this, text = "Commercial Names", size = { 238, 67 }, position = { 16, 96 }, field = dbfield("Drugs", commercialNames), row = row };
-   FieldDataBox boxClass { this, text = "Class", size = { 238, 20 }, position = { 272, 40 }, field = dbfield("Drugs", drugClass), row = row };
-   FieldDataBox boxSubClass { this, text = "Sub Class", size = { 238, 20 }, position = { 272, 96 }, field = dbfield("Drugs", subClass), row = row };
-   FieldDataBox boxRestriction { this, text = "Restriction", size = { 238, 20 }, position = { 272, 152 }, field = dbfield("Drugs", restriction), row = row };
-   FieldDataBox boxFormConcentrations { this, text = "Form & Concentrations", size = { 240, 80 }, position = { 272, 208 }, field = dbfield("Drugs", formConcentrations), row = row };
+   FieldDataBox boxGenericName { this, caption = "Generic Name", size = { 238, 20 }, position = { 16, 40 }, field = dbfield("Drugs", genericName), row = row};
+   FieldDataBox boxCommercialNames { this, caption = "Commercial Names", size = { 238, 67 }, position = { 16, 96 }, field = dbfield("Drugs", commercialNames), row = row };
+   FieldDataBox boxClass { this, caption = "Class", size = { 238, 20 }, position = { 272, 40 }, field = dbfield("Drugs", drugClass), row = row };
+   FieldDataBox boxSubClass { this, caption = "Sub Class", size = { 238, 20 }, position = { 272, 96 }, field = dbfield("Drugs", subClass), row = row };
+   FieldDataBox boxRestriction { this, caption = "Restriction", size = { 238, 20 }, position = { 272, 152 }, field = dbfield("Drugs", restriction), row = row };
+   FieldDataBox boxFormConcentrations { this, caption = "Form & Concentrations", size = { 240, 80 }, position = { 272, 208 }, field = dbfield("Drugs", formConcentrations), row = row };
 
-   Label etude { this, text = "Study Method", inactive = false, size = { 233, 77 }, position = { 16, 176 }, isGroupBox = true };
+   Label etude { this, caption = "Study Method", inactive = false, size = { 233, 77 }, position = { 16, 176 }, isGroupBox = true };
    Button generique
    {
       etude, this, "Give out generic name", size = { 146, 15 }, position = { 16, 24 }, isRadio = true, checked = true;
@@ -176,7 +176,7 @@ class MedTesting : Window
 
    Button next
    {
-      this, text = "Draw Next", position = { 16, 264 };
+      this, caption = "Draw Next", position = { 16, 264 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -216,7 +216,7 @@ class MedTesting : Window
    };
    Button answers
    {
-      this, text = "Give out Answers", position = { 136, 264 };
+      this, caption = "Give out Answers", position = { 136, 264 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
