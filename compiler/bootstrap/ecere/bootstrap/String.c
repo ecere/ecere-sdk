@@ -446,6 +446,8 @@ return 0x0;
 
 extern char *  strstr(const char * , const char * );
 
+extern void *  memcpy(void * , const void * , size_t size);
+
 extern int toupper(int);
 
 extern char *  strcat(char * , const char * );
@@ -458,20 +460,20 @@ unsigned int modified = 0x0;
 
 if(addedPath)
 {
-char fileName[797] = "", archiveName[797] = "", * file;
+char fileName[797] = "", archiveName[797] = "", * file = (((void *)0));
 int c = 0;
 unsigned int isURL = 0x0;
+unsigned int isArchive = __ecereNameSpace__ecere__sys__SplitArchivePath(string, archiveName, &file);
 char * urlFileName;
+char * protocolSymbol;
 
-if(__ecereNameSpace__ecere__sys__SplitArchivePath(string, archiveName, &file))
-strcpy(fileName, file);
-else
+strcpy(fileName, isArchive ? file : string);
+if(!isArchive)
 {
-strcpy(fileName, string);
-}
-if(strstr(string, "http://") == string)
+protocolSymbol = (fileName[0] && fileName[0] != '.' && fileName[0] != '/' && fileName[0] != '\\' && fileName[1] != ':') ? strstr(fileName, "://") : (((void *)0));
+if(protocolSymbol)
 {
-char * slash = strstr(fileName + 7, "/");
+char * slash = strstr(protocolSymbol + 3, "/");
 
 isURL = 0x1;
 if(slash)
@@ -479,11 +481,16 @@ urlFileName = slash;
 else
 urlFileName = fileName + strlen(fileName);
 }
-if(strstr(addedPath, "http://") == addedPath)
+}
+protocolSymbol = (addedPath[0] && addedPath[0] != '.' && addedPath[0] != '/' && addedPath[0] != '\\' && addedPath[1] != ':') ? strstr(addedPath, "://") : (((void *)0));
+if(protocolSymbol)
 {
-strcpy(fileName, "http://");
+int len = protocolSymbol - addedPath + 3;
+
+memcpy(fileName, addedPath, len);
+fileName[len] = (char)0;
 isURL = 0x1;
-c = 7;
+c = len;
 }
 else if(__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1)
 {
@@ -660,20 +667,20 @@ unsigned int modified = 0x0;
 
 if(addedPath)
 {
-char fileName[797] = "", archiveName[797] = "", * file;
+char fileName[797] = "", archiveName[797] = "", * file = (((void *)0));
 int c = 0;
 unsigned int isURL = 0x0;
+unsigned int isArchive = __ecereNameSpace__ecere__sys__SplitArchivePath(string, archiveName, &file);
 char * urlFileName;
+char * protocolSymbol;
 
-if(__ecereNameSpace__ecere__sys__SplitArchivePath(string, archiveName, &file))
-strcpy(fileName, file);
-else
+strcpy(fileName, isArchive ? file : string);
+if(!isArchive)
 {
-strcpy(fileName, string);
-}
-if(strstr(string, "http://") == string)
+protocolSymbol = (fileName[0] && fileName[0] != '.' && fileName[0] != '/' && fileName[0] != '\\' && fileName[1] != ':') ? strstr(fileName, "://") : (((void *)0));
+if(protocolSymbol)
 {
-char * slash = strstr(fileName + 7, "/");
+char * slash = strstr(protocolSymbol + 3, "/");
 
 isURL = 0x1;
 if(slash)
@@ -681,11 +688,16 @@ urlFileName = slash;
 else
 urlFileName = fileName + strlen(fileName);
 }
-if(strstr(addedPath, "http://") == addedPath)
+}
+protocolSymbol = (addedPath[0] && addedPath[0] != '.' && addedPath[0] != '/' && addedPath[0] != '\\' && addedPath[1] != ':') ? strstr(addedPath, "://") : (((void *)0));
+if(protocolSymbol)
 {
-strcpy(fileName, "http://");
+int len = protocolSymbol - addedPath + 3;
+
+memcpy(fileName, addedPath, len);
+fileName[len] = (char)0;
 isURL = 0x1;
-c = 7;
+c = len;
 }
 else if(runtimePlatform == 1)
 {
@@ -1236,8 +1248,6 @@ for(c = 0; c < count; c++)
 string[c] = ch;
 string[c] = (char)0;
 }
-
-extern void *  memcpy(void * , const void * , size_t size);
 
 char * __ecereNameSpace__ecere__sys__CopyString(char * string)
 {

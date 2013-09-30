@@ -11,7 +11,11 @@
 #undef uint
 #undef set
 
-import "ecere"
+#ifdef BUILDING_ECERE_COM
+import "Socket"
+#else
+public import "ecere"
+#endif
 
 /*
 static char * pass = "password";
@@ -24,7 +28,7 @@ static int password_cb(char *buf) //,int num, int rwflag,void *userdata)
 }
 */
 
-class SSLSocket : Socket
+public class SSLSocket : Socket
 {
    SSL_CTX *ctx;
    SSL *ssl;

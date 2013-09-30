@@ -105,7 +105,9 @@ from wherever you obtained them.
                "X11",
                "Xext",
                "Xrender",
-               "GL"
+               "GL",
+               "ssl",
+               "crypto"
             ],
             "LibraryDirs" : [
                "/usr/X11R6/lib"
@@ -139,7 +141,9 @@ from wherever you obtained them.
                "shell32",
                "winspool",
                "imm32",
-               "ungif"
+               "ungif",
+               "eay32",
+               "ssleay32"
             ],
             "LibraryDirs" : [
                "../deps/zlib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
@@ -173,7 +177,9 @@ from wherever you obtained them.
                "X11",
                "Xext",
                "Xrender",
-               "GL"
+               "GL",
+               "ssl",
+               "crypto"
             ],
             "LibraryDirs" : [
                "$(SYSROOT)/usr/X11/lib",
@@ -1983,7 +1989,8 @@ from wherever you obtained them.
                      ]
                   },
                   "Service.ec",
-                  "Socket.ec"
+                  "Socket.ec",
+                  "SSLSocket.ec"
                ],
                "Configurations" : [
                   {

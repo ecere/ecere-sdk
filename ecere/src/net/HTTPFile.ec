@@ -4,6 +4,9 @@
 
 import "List"
 import "network"
+#ifndef ECERE_NOSSL
+import "SSLSocket"
+#endif
 
 class ConnectionsHolder
 {
@@ -84,12 +87,17 @@ static char * GetString(char * string, char * what, int count)
    return string + c;
 }
 
+#ifdef ECERE_NOSSL
 private class HTTPConnection : Socket
+#else
+private class HTTPConnection : SSLSocket
+#endif
 {
    class_no_expansion;
    char * server;
    int port;
    HTTPFile file;
+   bool secure;
 
    processAlone = true;
 
@@ -332,10 +340,11 @@ private:
    bool RetrieveHead(char * name, char * referer, char * relocation, bool askBody)
    {
       bool result = false;
-      String http;
+      String http, https;
       if(!this || !name) return false;
       http = strstr(name, "http://");
       if(http != name) http = null;
+      https = http ? null : strstr(name, "https://"); if(https && https != name) https = null;
 
       askedBody = askBody;
 
@@ -343,14 +352,14 @@ private:
       delete contentType;
       delete contentDisposition;
       // ::PrintLn("Opening ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID(), "\n");
-      if(this && http)
+      if(this && (http || https))
       {
          char server[1024];
          char msg[1024];
          int len;
-         char * serverStart = ecere::net::GetString(name, "http://", 0);
+         char * serverStart = http ? ecere::net::GetString(name, "http://", 0) : ecere::net::GetString(name, "https://", 0);
          char * fileName = strstr(serverStart, "/");
-         int port = 80;
+         int port = https ? 443 : 80;
          char * colon;
          bool reuse = false;
          HTTPConnection connection = null;
@@ -367,7 +376,7 @@ private:
 
          if(relocation && !fileName && name[strlen(name)-1] != '/')
          {
-            strcpy(relocation, "http://");
+            strcpy(relocation, http ? "http://" : "https://");
             strcat(relocation, server);
             strcat(relocation, "/");
          }
@@ -407,7 +416,7 @@ private:
                connection = null;
                for(c : holder.connections)
                {
-                  if(!strcmpi(c.server, server) && c.port == port)
+                  if(!strcmpi(c.server, server) && c.port == port && c.secure == (https ? true : false))
                   {
                      if(!c.file && c.connected)
                      {
@@ -439,7 +448,12 @@ private:
          if(!connection)
          {
             char ipAddress[1024];
-            connection = HTTPConnection { };
+            connection = HTTPConnection
+            {
+#ifndef ECERE_NOSSL
+               autoEstablish = https ? true : false
+#endif
+            };
             incref connection;      // HTTPFile reference on success
             
             connection.file = this;
@@ -457,6 +471,7 @@ private:
 
                   connection.server = CopyString(server);
                   connection.port = port;
+                  connection.secure = https ? true : false;
 
                   //::PrintLn("Got connectionsMutex for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID());
                   holder.connections.Add(connection);

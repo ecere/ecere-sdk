@@ -556,7 +556,7 @@ class HTMLView : Window
             block.bitmap = entry.bitmap;
          else
          {
-            if(path && strstr(path, "http://") == path)
+            if(path && (strstr(path, "http://") == path || strstr(path, "https://") == path))
             {
                RequestLink request;
                objectsMutex.Wait();
@@ -769,7 +769,7 @@ class HTMLView : Window
 
       // PrintLn("\n\n\nOpening new location: ", location, "\n");
 
-      if(strstr(location, "http://") != location)
+      if(strstr(location, "http://") != location && strstr(location, "https://") != location)
       {
          if(!FileExists(location))
          {

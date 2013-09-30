@@ -193,32 +193,37 @@ public char * PathCatSlash(char * string, char * addedPath)
    bool modified = false;
    if(addedPath)
    {
-      char fileName[MAX_LOCATION] = "", archiveName[MAX_LOCATION] = "", * file;
+      char fileName[MAX_LOCATION] = "", archiveName[MAX_LOCATION] = "", * file = null;
       int c = 0;
       bool isURL = false;
+      bool isArchive = SplitArchivePath(string, archiveName, &file);
       char * urlFileName;
+      char * protocolSymbol;
 
-      if(SplitArchivePath(string, archiveName, &file))
-         strcpy(fileName, file);
-      else
+      strcpy(fileName, isArchive ? file : string);
+
+      if(!isArchive) // TODO: Support for PathCat'ing .. outside of archive
       {
-         strcpy(fileName, string);
+         protocolSymbol = (fileName[0] && fileName[0] != '.' && fileName[0] != '/' && fileName[0] != '\\' && fileName[1] != ':') ? strstr(fileName, "://") : null;
+         if(protocolSymbol)
+         {
+            char * slash = strstr(protocolSymbol + 3, "/");
+            isURL = true;
+            if(slash)
+               urlFileName = slash;
+            else
+               urlFileName = fileName + strlen(fileName);
+         }
       }
 
-      if(strstr(string, "http://") == string)
+      protocolSymbol = (addedPath[0] && addedPath[0] != '.' && addedPath[0] != '/' && addedPath[0] != '\\' && addedPath[1] != ':') ? strstr(addedPath, "://") : null;
+      if(protocolSymbol)
       {
-         char * slash = strstr(fileName + 7, "/");
+         int len = protocolSymbol - addedPath + 3;
+         memcpy(fileName, addedPath, len);
+         fileName[len] = 0;
          isURL = true;
-         if(slash)
-            urlFileName = slash;
-         else
-            urlFileName = fileName + strlen(fileName);
-      }
-      if(strstr(addedPath, "http://") == addedPath)
-      {
-         strcpy(fileName, "http://");
-         isURL = true;
-         c = 7;
+         c = len;
       }
       else if(GetRuntimePlatform() == win32)
       {
@@ -407,32 +412,37 @@ public char * PathCat(char * string, char * addedPath)
    bool modified = false;
    if(addedPath)
    {
-      char fileName[MAX_LOCATION] = "", archiveName[MAX_LOCATION] = "", * file;
+      char fileName[MAX_LOCATION] = "", archiveName[MAX_LOCATION] = "", * file = null;
       int c = 0;
       bool isURL = false;
+      bool isArchive = SplitArchivePath(string, archiveName, &file);
       char * urlFileName;
+      char * protocolSymbol;
 
-      if(SplitArchivePath(string, archiveName, &file))
-         strcpy(fileName, file);
-      else
+      strcpy(fileName, isArchive ? file : string);
+
+      if(!isArchive) // TODO: Support for PathCat'ing .. outside of archive
       {
-         strcpy(fileName, string);
+         protocolSymbol = (fileName[0] && fileName[0] != '.' && fileName[0] != '/' && fileName[0] != '\\' && fileName[1] != ':') ? strstr(fileName, "://") : null;
+         if(protocolSymbol)
+         {
+            char * slash = strstr(protocolSymbol + 3, "/");
+            isURL = true;
+            if(slash)
+               urlFileName = slash;
+            else
+               urlFileName = fileName + strlen(fileName);
+         }
       }
 
-      if(strstr(string, "http://") == string)
+      protocolSymbol = (addedPath[0] && addedPath[0] != '.' && addedPath[0] != '/' && addedPath[0] != '\\' && addedPath[1] != ':') ? strstr(addedPath, "://") : null;
+      if(protocolSymbol)
       {
-         char * slash = strstr(fileName + 7, "/");
+         int len = protocolSymbol - addedPath + 3;
+         memcpy(fileName, addedPath, len);
+         fileName[len] = 0;
          isURL = true;
-         if(slash)
-            urlFileName = slash;
-         else
-            urlFileName = fileName + strlen(fileName);
-      }
-      if(strstr(addedPath, "http://") == addedPath)
-      {
-         strcpy(fileName, "http://");
-         isURL = true;
-         c = 7;
+         c = len;
       }
       else if(runtimePlatform == win32)
       {

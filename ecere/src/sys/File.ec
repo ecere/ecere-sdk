@@ -960,7 +960,7 @@ public File FileOpen(char * fileName, FileOpenMode mode)
          result = EARFileSystem::Open(archiveName, archiveFile, mode);
       }
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NONET)
-      else if(strstr(fileName, "http://") == fileName)
+      else if(strstr(fileName, "http://") == fileName || strstr(fileName, "https://"))
       {
          result = FileOpenURL(fileName);
       }
