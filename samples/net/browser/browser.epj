@@ -1,0 +1,68 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "browser",
+   "Options" : {
+      "Warnings" : "All",
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : true,
+      "Compress" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : false,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "TargetFileName" : "browser"
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "TargetFileName" : "browser"
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "MemoryGuard" : false,
+            "Optimization" : "Speed",
+            "TargetFileName" : "browser",
+            "Console" : false
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "extras",
+         "Files" : [
+            "../../../../ecere-sdk/extras/html/htmlParser.ec",
+            "../../../../ecere-sdk/extras/html/HTMLView.ec",
+            "../../../../ecere-sdk/extras/html/lines.ec",
+            "../../../../ecere-sdk/extras/html/tables.ec"
+         ]
+      },
+      "browser.ec",
+      "resources.rc"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "newb.png"
+   ]
+}
