@@ -3289,7 +3289,8 @@ class Debugger
       
 #if defined(GDB_DEBUG_CONSOLE) || defined(GDB_DEBUG_GUI)
 #ifdef GDB_DEBUG_CONSOLE
-      _dpl2(_dpct, dplchan::gdbOutput, 0, output);
+      // _dpl2(_dpct, dplchan::gdbOutput, 0, output);
+      puts(output);
 #endif
 #ifdef GDB_DEBUG_OUTPUT
       {
