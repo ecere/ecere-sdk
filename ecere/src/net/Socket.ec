@@ -605,7 +605,7 @@ private:
          int count = 0;
 
          result = true;
-         if(recvBufferSize - recvBytes < MAX_RECEIVE)
+         if((int)recvBufferSize - recvBytes < MAX_RECEIVE)
          {
             recvBuffer = renew recvBuffer byte[recvBufferSize + MAX_RECEIVE];
             recvBufferSize += MAX_RECEIVE;
@@ -724,6 +724,7 @@ private:
       //FD_SET(s, &ws);
       FD_SET(s, &es);
 
+      incref this;
       selectResult = select((int)(s+1), &rs, &ws, &es, leftOver ? &tv : (timeOut ? &tvTO : null));
       mutex.Wait();
       if(s != -1 && _refCount && (leftOver || selectResult))
@@ -731,6 +732,7 @@ private:
          gotEvent |= ProcessSocket(&rs, &ws, &es);
       }
       mutex.Release();
+      delete this;
       return gotEvent;
    }
 
