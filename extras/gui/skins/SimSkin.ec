@@ -138,7 +138,7 @@ class SimSkin_Window : Window
             int buttonsSize = border +
                ((hasMaximize || hasMinimize) ? 52 : 18);
             surface.WriteTextDots(left, border + NAME_OFFSETX, top + NAME_OFFSET, 
-               size.w - (buttonsSize + border + 4), name, strlen(name));
+               size.w - (buttonsSize + border + 4), name, (int)strlen(name));
          }
       }
       if(((BorderBits)borderStyle).contour && !((BorderBits)borderStyle).fixed)
@@ -797,7 +797,7 @@ class SimSkin_Button : Button
          if(text)
          {
             int tw, th;
-            surface.TextExtent(text, strlen(text),&tw, &th);
+            surface.TextExtent(text, (int)strlen(text),&tw, &th);
 
             if((isRadio || isCheckbox) && !bevelOver)
                WriteCaption(surface, /*clientSize.h +*/ CAPTION_DISTANCE + 3, 
@@ -811,7 +811,7 @@ class SimSkin_Button : Button
                   int width = clientSize.w - 2*6;
                   int x = 6 + offset;
 
-                  surface.WriteTextDots(alignment, x, y, width, text, strlen(text));
+                  surface.WriteTextDots(alignment, x, y, width, text, (int)strlen(text));
                }
                else
                {
