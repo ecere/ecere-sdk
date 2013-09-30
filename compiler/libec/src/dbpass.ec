@@ -226,8 +226,9 @@ static void ProcessExpression(Expression exp)
             databaseOpenStmt.compound.declarations->Add(MkDeclaration(args, 
                MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("initialized")), MkInitializerAssignment(MkExpIdentifier(MkIdentifier("false")))))));
 
-            // if(initialized) return;
-            databaseOpenStmt.compound.statements->Add(MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("initialized"))), MkReturnStmt(MkListOne(MkExpIdentifier(MkIdentifier("null")))), null));
+            // Assuming we're in a function where we can return 0 (Typically a DataBase InitSchema() or an Application constructor)
+            // if(initialized) return 0;
+            databaseOpenStmt.compound.statements->Add(MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("initialized"))), MkReturnStmt(MkListOne(MkExpConstant("0"))), null));
 
             // initialized = true;
             databaseOpenStmt.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("initialized")), '=', MkExpIdentifier(MkIdentifier("true"))))));

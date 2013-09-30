@@ -1179,6 +1179,8 @@ extern struct Statement * MkIfStmt(struct __ecereNameSpace__ecere__sys__OldList 
 
 extern struct Statement * MkReturnStmt(struct __ecereNameSpace__ecere__sys__OldList * exp);
 
+extern struct Expression * MkExpConstant(char *  string);
+
 extern struct Statement * MkExpressionStmt(struct __ecereNameSpace__ecere__sys__OldList * expressions);
 
 extern struct Expression * MkExpOp(struct Expression * exp1, int op, struct Expression * exp2);
@@ -1190,8 +1192,6 @@ extern struct Expression * MkExpCall(struct Expression * expression, struct __ec
 extern struct Expression * MkExpMember(struct Expression * expression, struct Identifier * member);
 
 extern struct Declarator * MkDeclaratorArray(struct Declarator * declarator, struct Expression * exp);
-
-extern struct Expression * MkExpConstant(char *  string);
 
 extern struct Initializer * MkInitializerList(struct __ecereNameSpace__ecere__sys__OldList * list);
 
@@ -1362,7 +1362,7 @@ args = MkList();
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkSpecifier(STATIC));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkSpecifierName("bool"));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*databaseOpenStmt->compound.declarations), MkDeclaration(args, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("initialized")), MkInitializerAssignment(MkExpIdentifier(MkIdentifier("false")))))));
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*databaseOpenStmt->compound.statements), MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("initialized"))), MkReturnStmt(MkListOne(MkExpIdentifier(MkIdentifier("null")))), (((void *)0))));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*databaseOpenStmt->compound.statements), MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("initialized"))), MkReturnStmt(MkListOne(MkExpConstant("0"))), (((void *)0))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*databaseOpenStmt->compound.statements), MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("initialized")), '=', MkExpIdentifier(MkIdentifier("true"))))));
 args = MkList();
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), CopyExpression(exp->dbopen.name));
