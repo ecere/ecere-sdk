@@ -43,7 +43,7 @@
    "Files" : [
       "movieCollection.ec",
       "movieSchema.ec",
-      "genericEditor.ec",
+      "../../../extras/gui/genericEditor.ec",
       "allMoviesReport.ec",
       "borrowerReport.ec",
       "reports.ec"
