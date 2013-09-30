@@ -3469,6 +3469,8 @@ private:
       {
          key.code = (SmartKey)key.code;
       }
+      else if(!ch && key.alt)
+         key.code = 0;
 
       switch(key.code) //(ch || key.alt || key.ctrl) ? key.code : (Key)(SmartKey)key.code)
       {
@@ -4289,6 +4291,7 @@ private:
          case home:
          {
             if(style.stuckCaret) break;
+            if(!style.multiLine && key.ctrl) break;
             if(!(style.freeCaret))
                this.selX = Min(this.selX, this.selLine.count);
 
@@ -4334,6 +4337,7 @@ private:
          case end:
          {
             if(style.stuckCaret) break;
+            if(!style.multiLine && key.ctrl) break;
             if(!style.freeCaret)
                this.selX = Min(this.selX, this.selLine.count);
 
@@ -4517,49 +4521,55 @@ private:
             }
             break;
          case pageDown:
-            if(key.ctrl)
+            if(style.multiLine)
             {
-               if(!(style.hScroll) || hasHorzScroll) break;
-               if(this.viewX < this.maxLength)
+               if(key.ctrl)
                {
-                  //this.viewX+=this.space.w*this.tabSize;
-                  //DirtyAll();
-                  SetScrollPosition((this.viewX + this.space.w*this.tabSize), this.viewY * this.space.h);
+                  if(!(style.hScroll) || hasHorzScroll) break;
+                  if(this.viewX < this.maxLength)
+                  {
+                     //this.viewX+=this.space.w*this.tabSize;
+                     //DirtyAll();
+                     SetScrollPosition((this.viewX + this.space.w*this.tabSize), this.viewY * this.space.h);
+                  }
                }
+               else
+               {
+                  PageDown();
+                  DirtyAll();
+                  if(!shift) Deselect();
+                  SetCursorToViewX();
+                  SetCursorToViewY();
+               }
+               return false;
             }
-            else
-            {
-               PageDown();
-               DirtyAll();
-               if(!shift) Deselect();
-               SetCursorToViewX();
-               SetCursorToViewY();
-            }
-            return false;
-            // break;
+            break;
          case pageUp:
-            if(key.ctrl)
+            if(style.multiLine)
             {
-               if(!(style.hScroll) || hasHorzScroll) break;
-               if(this.viewX > 0)
+               if(key.ctrl)
                {
-                  //this.viewX-=this.space.w*this.tabSize;
-                  //this.viewX = Max(this.viewX,0);
-                  //DirtyAll();
-                  SetScrollPosition((this.viewX-this.space.w*this.tabSize), this.viewY * this.space.h);
-                  // SetCursorToView();
+                  if(!(style.hScroll) || hasHorzScroll) break;
+                  if(this.viewX > 0)
+                  {
+                     //this.viewX-=this.space.w*this.tabSize;
+                     //this.viewX = Max(this.viewX,0);
+                     //DirtyAll();
+                     SetScrollPosition((this.viewX-this.space.w*this.tabSize), this.viewY * this.space.h);
+                     // SetCursorToView();
+                  }
                }
+               else
+               {
+                  PageUp();
+                  DirtyAll();
+                  if(!shift) Deselect();
+                  SetCursorToViewX();
+                  SetCursorToViewY();
+               }
+               return false;
             }
-            else
-            {
-               PageUp();
-               DirtyAll();
-               if(!shift) Deselect();
-               SetCursorToViewX();
-               SetCursorToViewY();
-            }
-            // break;
-            return false;
+            break;
          case insert:
             if(key.ctrl)
             {
@@ -4723,7 +4733,8 @@ private:
                         delete newline;
                      }
                      return false;
-                  } else if(!key.ctrl && !key.alt && ch != 128 && ch >= 32)
+                  }
+                  else if(!key.ctrl && !key.alt && ch != 128 && ch >= 32)
                   {
                      PutCh(ch);
                      return false;
