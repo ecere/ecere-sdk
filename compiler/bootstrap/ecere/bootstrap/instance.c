@@ -898,6 +898,8 @@ __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Expand(&__ecereNameSpace__
 }
 }
 
+unsigned int __ecereNameSpace__ecere__com__poolingDisabled;
+
 static void * __ecereNameSpace__ecere__com___mymalloc(unsigned int size)
 {
 struct __ecereNameSpace__ecere__com__MemBlock * block = (((void *)0));
@@ -908,7 +910,7 @@ unsigned int p = __ecereNameSpace__ecere__com__log1_5i(size);
 
 if(!__ecereNameSpace__ecere__com__memoryInitialized)
 __ecereNameSpace__ecere__com__InitMemory();
-if(p < 31)
+if(!__ecereNameSpace__ecere__com__poolingDisabled && p < 31)
 {
 block = __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Add(&__ecereNameSpace__ecere__com__pools[p]);
 if(block)
@@ -1435,9 +1437,9 @@ extern int strcmp(const char * , const char * );
 
 extern char *  strncpy(char * , const char * , size_t n);
 
-static void __ecereNameSpace__ecere__com__FreeTemplatesDerivatives(struct __ecereNameSpace__ecere__com__Class * base);
-
 extern int printf(char * , ...);
+
+static void __ecereNameSpace__ecere__com__FreeTemplatesDerivatives(struct __ecereNameSpace__ecere__com__Class * base);
 
 static void __ecereNameSpace__ecere__com__NameSpace_Free(struct __ecereNameSpace__ecere__com__NameSpace * parentNameSpace);
 
@@ -1602,7 +1604,6 @@ offsetClass = base ? base->sizeClass : (type == 5 ? 0 : 0);
 totalSizeClass = offsetClass + sizeClass;
 if((_class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, name)))
 {
-__ecereNameSpace__ecere__com__FreeTemplatesDerivatives(_class);
 if(!_class->internalDecl)
 {
 if(declMode != 4)
@@ -1614,6 +1615,7 @@ return _class;
 }
 return (((void *)0));
 }
+__ecereNameSpace__ecere__com__FreeTemplatesDerivatives(_class);
 classLink = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*_class->nameSpace).classes, name + start);
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*_class->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)classLink);
 {
@@ -3232,7 +3234,7 @@ __ecereNameSpace__ecere__com__FixDerivativeVirtualMethod(template, name, vid, or
 
 struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char * name, char * type, void * function, int declMode)
 {
-if(_class && name)
+if(_class && !_class->comRedefinition && name)
 {
 struct __ecereNameSpace__ecere__com__Class * base;
 
@@ -3300,7 +3302,7 @@ return (((void *)0));
 
 struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(struct __ecereNameSpace__ecere__com__Class * _class, char * name, char * type, void * function, int declMode)
 {
-if(_class && name)
+if(_class && !_class->comRedefinition && name)
 {
 struct __ecereNameSpace__ecere__com__Class * base;
 
@@ -5663,6 +5665,11 @@ struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__Ge
 return __ecereNameSpace__ecere__com__activeDesigner;
 }
 
+void __ecereNameSpace__ecere__com__eSystem_SetPoolingDisabled(unsigned int disabled)
+{
+__ecereNameSpace__ecere__com__poolingDisabled = disabled;
+}
+
 
 
 unsigned int __ecereNameSpace__ecere__sys__UTF8Validate(char * source)
@@ -6655,6 +6662,7 @@ __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "FixProperty", "voi
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "CreateNew", "void ::CreateNew(EditBox editBox, Size clientSize, char * name, char * inherit)", 0, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::SetActiveDesigner", "void ecere::com::SetActiveDesigner(ecere::com::DesignerBase designer)", __ecereNameSpace__ecere__com__SetActiveDesigner, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::GetActiveDesigner", "ecere::com::DesignerBase ecere::com::GetActiveDesigner(void)", __ecereNameSpace__ecere__com__GetActiveDesigner, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eSystem_SetPoolingDisabled", "void ecere::com::eSystem_SetPoolingDisabled(bool disabled)", __ecereNameSpace__ecere__com__eSystem_SetPoolingDisabled, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::LEAD_OFFSET", "0xD800 - (0x10000 >> 10)", module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::SURROGATE_OFFSET", "0x10000 - (0xD800 << 10) - 0xDC00", module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF8Validate", "bool ecere::sys::UTF8Validate(char * source)", __ecereNameSpace__ecere__sys__UTF8Validate, module, 4);

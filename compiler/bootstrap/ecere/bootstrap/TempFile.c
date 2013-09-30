@@ -365,7 +365,7 @@ extern size_t strlen(const char * );
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__TempFile_Puts(struct __ecereNameSpace__ecere__com__Instance * this, char * string)
 {
 struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
-int len = strlen(string);
+int len = string ? strlen(string) : 0;
 int written = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(this, string, 1, len);
 
 return written == len;
