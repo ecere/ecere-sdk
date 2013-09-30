@@ -307,6 +307,8 @@ L?\"(\\.|[^\\"])*\"     { return(STRING_LITERAL); }
 
 %%
 
+private:
+
 yywrap()
 {
    return(1);
@@ -573,4 +575,113 @@ void resetScannerPos(CodePosition pos)
    yylloc.start = yylloc.end = pos;
    type_yylloc.start = type_yylloc.end = pos;
    expression_yylloc.start = expression_yylloc.end = pos;
+}
+
+class LexerBackup
+{
+   YYLTYPE yylloc;
+   YYLTYPE type_yylloc;
+   YYLTYPE expression_yylloc;
+
+   AccessMode declMode;
+   AccessMode defaultDeclMode;
+
+   File fileInput;
+   YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
+   File fileStack[MAX_INCLUDE_DEPTH];
+   char sourceFileStack[MAX_INCLUDE_DEPTH][MAX_LOCATION];
+   YYLTYPE locStack[MAX_INCLUDE_DEPTH];
+   AccessMode declModeStack[MAX_INCLUDE_DEPTH];
+   int include_stack_ptr;
+   YY_BUFFER_STATE buffer;
+
+   int yy_n_chars;
+   char * yytext_ptr;
+   char * yy_c_buf_p;
+   FILE * yyin;
+   char yy_hold_char;
+   int yychar;
+   int yy_init;
+   int yy_start;
+
+};
+
+LexerBackup pushLexer()
+{
+   LexerBackup backup { };
+
+   backup.yylloc = yylloc;
+   backup.type_yylloc = type_yylloc;
+   backup.expression_yylloc = expression_yylloc;
+   backup.fileInput = fileInput;
+   memcpy(backup.include_stack, include_stack, sizeof(include_stack));
+   memcpy(backup.fileStack, fileStack, sizeof(fileStack));
+   memcpy(backup.sourceFileStack, sourceFileStack, sizeof(sourceFileStack));
+   memcpy(backup.locStack, locStack, sizeof(locStack));
+   memcpy(backup.declModeStack, declModeStack, sizeof(declModeStack));
+   backup.include_stack_ptr = include_stack_ptr;
+   backup.defaultDeclMode = defaultDeclMode;
+   backup.declMode = declMode;
+   backup.buffer = yy_current_buffer;
+
+   backup.yy_n_chars = yy_n_chars;
+   backup.yytext_ptr = yytext_ptr;
+   backup.yy_c_buf_p = yy_c_buf_p;
+   backup.yyin = yyin;
+   backup.yy_hold_char = yy_hold_char;
+   backup.yychar = yychar;
+   backup.yy_init = yy_init;
+   backup.yy_start = yy_start;
+
+   yy_init = 1;
+
+   yy_current_buffer = 0;
+
+   yylloc.start.charPos = yylloc.end.charPos = 1;
+   yylloc.start.line = yylloc.end.line = 1;
+   yylloc.start.pos = yylloc.end.pos = 0;
+   yylloc.start.included = yylloc.end.included = 0;
+
+   expression_yylloc.start.charPos = expression_yylloc.end.charPos = 1;
+   expression_yylloc.start.line = expression_yylloc.end.line = 1;
+   expression_yylloc.start.pos = expression_yylloc.end.pos = 0;
+   expression_yylloc.start.included = expression_yylloc.end.included = 0;
+
+   type_yylloc.start.charPos = type_yylloc.end.charPos = 1;
+   type_yylloc.start.line = type_yylloc.end.line = 1;
+   type_yylloc.start.pos = type_yylloc.end.pos = 0;
+   type_yylloc.start.included = type_yylloc.end.included = 0;
+
+   include_stack_ptr = 0;
+
+   return backup;
+}
+
+void popLexer(LexerBackup backup)
+{
+   yylloc = backup.yylloc;
+   type_yylloc = backup.type_yylloc;
+   expression_yylloc = backup.expression_yylloc;
+   fileInput = backup.fileInput;
+   memcpy(include_stack, backup.include_stack, sizeof(include_stack));
+   memcpy(fileStack, backup.fileStack, sizeof(fileStack));
+   memcpy(sourceFileStack, backup.sourceFileStack, sizeof(sourceFileStack));
+   memcpy(locStack, backup.locStack, sizeof(locStack));
+   memcpy(declModeStack, backup.declModeStack, sizeof(declModeStack));
+   include_stack_ptr = backup.include_stack_ptr;
+   defaultDeclMode = backup.defaultDeclMode;
+   declMode = backup.declMode;
+
+   // yy_switch_to_buffer(backup.buffer);
+   yy_current_buffer = backup.buffer;
+   yy_n_chars = backup.yy_n_chars;
+   yytext_ptr = backup.yytext_ptr;
+   yy_c_buf_p = backup.yy_c_buf_p;
+   yyin = backup.yyin;
+   yy_hold_char = backup.yy_hold_char;
+   yychar = backup.yychar;
+   yy_init = backup.yy_init;
+   yy_start = backup.yy_start;
+
+   delete backup;
 }

@@ -1,4 +1,5 @@
 import "ecdefs"
+import "lexer"
 
 extern int yychar;
 
@@ -496,13 +497,9 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                                  f.GetLine(line, sizeof(line)); TrimLSpaces(line, line);
                                  if(regClass && strcmp(line, "[None]"))
                                  {
+                                    LexerBackup backup = pushLexer();   // We currently don't have a separate Lexer instance for TU/Type/Expression
                                     Operand op;
                                     Expression exp;
-                                    Location oldLocation = yylloc;
-
-                                    File backFileInput = fileInput;
-                                    declMode = 0;
-                                    resetScanner();
 
                                     exp = ParseExpressionString(line);
                                     if(info)
@@ -513,16 +510,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                                     defaultArg.expression.ui64 = op.ui64;
                                     FreeExpression(exp);
 
-                                    // TESTING THIS SCANNER RESUME STUFF
-                                    resetScanner();
-                                    yylloc = oldLocation;
-                                    fileInput = backFileInput;
-                                    if(fileInput)
-                                    {
-                                       fileInput.Seek(yylloc.start.pos, start); 
-                                       resetScannerPos(&yylloc.start);
-                                       yychar = -2;
-                                    }
+                                    popLexer(backup);
                                  }
                                  break;
                               case identifier:

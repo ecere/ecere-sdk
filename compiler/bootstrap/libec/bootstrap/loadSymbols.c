@@ -823,6 +823,8 @@ extern struct __ecereNameSpace__ecere__com__ClassProperty * __ecereNameSpace__ec
 
 extern char *  __ecereNameSpace__ecere__sys__CopyString(char *  string);
 
+extern struct __ecereNameSpace__ecere__com__Instance * pushLexer(void);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_OpTable;
 
 struct OpTable
@@ -887,14 +889,6 @@ uint64 ui64;
 struct OpTable ops;
 } __attribute__ ((gcc_struct));
 
-extern struct Location yylloc;
-
-extern struct __ecereNameSpace__ecere__com__Instance * fileInput;
-
-extern int declMode;
-
-extern void resetScanner();
-
 extern struct Expression * ParseExpressionString(char *  expression);
 
 extern struct Type * ProcessTypeString(char *  string, unsigned int staticMethod);
@@ -907,7 +901,7 @@ extern struct Operand GetOperand(struct Expression * exp);
 
 extern void FreeExpression(struct Expression * exp);
 
-extern void resetScannerPos(struct CodePosition * pos);
+extern void popLexer(struct __ecereNameSpace__ecere__com__Instance * backup);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassTemplateParameter;
 
@@ -987,8 +981,6 @@ extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
-
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char *  key);
 
@@ -1364,13 +1356,10 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(regClass && strcmp(line, "[None]"))
 {
+struct __ecereNameSpace__ecere__com__Instance * backup = pushLexer();
 struct Operand op;
 struct Expression * exp;
-struct Location oldLocation = yylloc;
-struct __ecereNameSpace__ecere__com__Instance * backFileInput = fileInput;
 
-declMode = (int)0;
-resetScanner();
 exp = ParseExpressionString(line);
 if(info)
 exp->destType = ProcessTypeString(info, 0x0);
@@ -1379,15 +1368,7 @@ ComputeExpression(exp);
 op = GetOperand(exp);
 defaultArg.expression.ui64 = op.ui64;
 FreeExpression(exp);
-resetScanner();
-yylloc = oldLocation;
-fileInput = backFileInput;
-if(fileInput)
-{
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, yylloc.start.pos, 0);
-resetScannerPos(&yylloc.start);
-yychar = -2;
-}
+popLexer(backup);
 }
 break;
 case 1:
