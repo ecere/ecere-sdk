@@ -8537,16 +8537,18 @@ void ProcessExpressionType(Expression exp)
          if(exp.index.exp.expType)
          {
             Type source = exp.index.exp.expType;
-            if(source.kind == classType && source._class && source._class.registered && source._class.registered != containerClass &&
-               eClass_IsDerived(source._class.registered, containerClass) && 
-               source._class.registered.templateArgs)
+            if(source.kind == classType && source._class && source._class.registered)
             {
                Class _class = source._class.registered;
-               exp.expType = ProcessTypeString(_class.templateArgs[2].dataTypeString, false);
-
-               if(exp.index.index && exp.index.index->last)
+               Class c = _class.templateClass ? _class.templateClass : _class;
+               if(_class != containerClass && eClass_IsDerived(c, containerClass) && _class.templateArgs)
                {
-                  ((Expression)exp.index.index->last).destType = ProcessTypeString(_class.templateArgs[1].dataTypeString, false);
+                  exp.expType = ProcessTypeString(_class.templateArgs[2].dataTypeString, false);
+
+                  if(exp.index.index && exp.index.index->last)
+                  {
+                     ((Expression)exp.index.index->last).destType = ProcessTypeString(_class.templateArgs[1].dataTypeString, false);
+                  }
                }
             }
          }

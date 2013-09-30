@@ -13451,14 +13451,18 @@ if(exp->index.exp->expType)
 {
 struct Type * source = exp->index.exp->expType;
 
-if(source->kind == 8 && source->_class && source->_class->registered && source->_class->registered != containerClass && __ecereNameSpace__ecere__com__eClass_IsDerived(source->_class->registered, containerClass) && source->_class->registered->templateArgs)
+if(source->kind == 8 && source->_class && source->_class->registered)
 {
 struct __ecereNameSpace__ecere__com__Class * _class = source->_class->registered;
+struct __ecereNameSpace__ecere__com__Class * c = _class->templateClass ? _class->templateClass : _class;
 
+if(_class != containerClass && __ecereNameSpace__ecere__com__eClass_IsDerived(c, containerClass) && _class->templateArgs)
+{
 exp->expType = ProcessTypeString(_class->templateArgs[2].dataTypeString, 0x0);
 if(exp->index.index && (*exp->index.index).last)
 {
 ((struct Expression *)(*exp->index.index).last)->destType = ProcessTypeString(_class->templateArgs[1].dataTypeString, 0x0);
+}
 }
 }
 }
