@@ -803,6 +803,7 @@ unsigned int passAsTemplate : 1;
 unsigned int dllExport : 1;
 unsigned int attrStdcall : 1;
 unsigned int declaredWithStruct : 1;
+unsigned int typedByReference : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -12281,6 +12282,10 @@ e->type = 4;
 e->op.op = '*';
 e->op.exp1 = (((void *)0));
 e->op.exp2 = MkExpCast(MkTypeName(specs, MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), decl)), thisExp);
+e->expType = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+CopyTypeInto(e->expType, type);
+e->expType->byReference = 0x0;
+e->expType->refCount = 1;
 }
 else
 {
@@ -12288,10 +12293,10 @@ e->type = 11;
 e->cast.typeName = MkTypeName(specs, decl);
 e->cast.exp = thisExp;
 e->byReference = 0x1;
-}
 e->expType = type;
-e->destType = destType;
 type->refCount++;
+}
+e->destType = destType;
 destType->refCount++;
 }
 }
@@ -13719,8 +13724,12 @@ type->refCount = 0;
 else if(!memberExp && (functionType->thisClass || (methodType && methodType->methodClass)))
 {
 type = MkClassType(functionType->thisClass ? functionType->thisClass->string : (methodType ? methodType->methodClass->fullName : (((void *)0))));
+type->byReference = functionType->byReference;
+type->typedByReference = functionType->typedByReference;
 if(e)
 {
+if(type->kind == 8 && (functionType && functionType->thisClass) && functionType->classObjectType == 2)
+e = e->next;
 e->destType = type;
 e = e->next;
 type = functionType->params.first;
@@ -16490,6 +16499,7 @@ if(typedObject && thisSymbol->type)
 {
 thisSymbol->type->classObjectType = 2;
 thisSymbol->type->byReference = type->byReference;
+thisSymbol->type->typedByReference = type->byReference;
 }
 }
 }

@@ -1,6 +1,4 @@
 import "math"
-#include <math.h>
-//import "ecere"
 
 define PI=3.14159265358979323846;
 define BOX_TOLERANCE=0.5;
@@ -30,17 +28,36 @@ struct GameLine {
    GameFloorOrCeiling floor_or_ceiling;
 };
 class GameVehicle {
-   //compilicated vehicles that can't be described by a single location/velocity need something
+   //complicated vehicles that can't be described by a single location/velocity need something
    //  so the camera will center on it.
    Coord2D location;
 	Vector2D velocity;
    GameVehicleType type;
 
-   virtual void Serialize(IOChannel channel) {
+   void OnSerialize(IOChannel channel)
+   {
+      channel.Put(type);
       channel.Put(location);
       channel.Put(velocity);
    }
-   virtual void Unserialize(IOChannel channel) {
+
+   void OnUnserialize(IOChannel channel)
+   {
+      if(!this)
+      {
+         GameVehicleType vtype;
+         channel.Get(vtype);
+         if(vtype == ball)
+         {
+            GameBall::OnUnserialize(class(GameBall), this, channel);
+            return;
+         }
+         else
+            this = GameVehicle { };
+      }
+
+      if(!type)
+         channel.Get(type);
       channel.Get(location);
       channel.Get(velocity);
    }
@@ -54,19 +71,20 @@ class GameBall : GameVehicle {
 	double elasticity;
 	double angle;
 	double angle_velocity;
-   
-   //I didn't use OnSerialize because calling Put() on a GameBall would call GameVehicle's OnSerialize rather than GameBall's
-   void Serialize(IOChannel channel)
+
+   void OnSerialize(IOChannel channel)
    {
-      GameVehicle::Serialize(channel);
+      GameVehicle::OnSerialize(channel);
       channel.Put(radius);
       channel.Put(elasticity);
       channel.Put(angle);
       channel.Put(angle_velocity);
    }
-   //I didn't use OnUnserialize because of compiler errors with the this pointer (clearly a major eC bug)
-   void Unserialize(IOChannel channel) {
-      GameVehicle::Unserialize(channel);
+
+   void OnUnserialize(IOChannel channel)
+   {
+      this = GameBall { };
+      GameVehicle::OnUnserialize(channel);
       channel.Get(radius);
       channel.Get(elasticity);
       channel.Get(angle);
@@ -256,60 +274,20 @@ public:
       //we don't need to worry about the other things because they are automatically freed
    }
 
-   //hack:  OnUnserialize has problems with the this pointer
-   void Unserialize(IOChannel channel)
+   void OnUnserialize(IOChannel channel)
    {
-      uint lsize,vsize;
-
       FreeAll();
 
       channel.Get(gravity);
-
-      channel.Get(lsize);
-      lines.size = lsize;
-      for (i:lines) {
-         //why do I need to do this?
-         GameLine line;
-         channel.Get(line);
-         i = line;
-      }
-
-      channel.Get(vsize);
-      vehicles.size = vsize;
-      for (i:vehicles) {
-         GameVehicle v;
-         GameVehicleType vtype;
-         channel.Get(vtype);
-         switch (vtype) {
-            case ball:
-               v = GameBall {};
-               break;
-            default:
-               v = GameVehicle {};
-         }
-         //channel.Get(v);
-         v.Unserialize(channel);
-         i = v;
-      }
+      channel.Get(lines);
+      channel.Get(vehicles);
    }
 
    void OnSerialize(IOChannel channel)
    {
-      uint lsize = lines.size;
-      uint vsize = vehicles.size;
-
       channel.Put(gravity);
-
-      channel.Put(lsize);
-      for (i:lines)
-         channel.Put(i);
-      
-      channel.Put(vsize);
-      for (i:vehicles) {
-         channel.Put(i.type);
-         //channel.Put(i);
-         i.Serialize(channel);
-      }
+      channel.Put(lines);
+      channel.Put(vehicles);
    }
 
    void Init(void) {
@@ -335,9 +313,13 @@ public:
          angle_velocity = 0.0;
       };
    }
-   void Frame(void) {
+   void Frame(void)
+   {
       for (i:vehicles)
-         i.Update(this);
+      {
+         GameVehicle v = i;
+         v.Update(this);
+      }
    }
    void FrameMulti(uint count) {
       while (count--)

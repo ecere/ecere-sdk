@@ -825,6 +825,7 @@ unsigned int passAsTemplate : 1;
 unsigned int dllExport : 1;
 unsigned int attrStdcall : 1;
 unsigned int declaredWithStruct : 1;
+unsigned int typedByReference : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -3504,7 +3505,7 @@ tpl = strchr(name, '<');
 if(tpl)
 *tpl = (char)0;
 baseClass = FindClass(name);
-if(baseClass->ctx)
+if(baseClass && baseClass->ctx)
 {
 struct TemplatedType * copy;
 
@@ -3516,7 +3517,7 @@ if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->temp
 ((type ? (__ecereClass_TemplatedType->Destructor ? __ecereClass_TemplatedType->Destructor(type) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor(type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
 }
 }
-else if(baseClass->registered)
+else if(baseClass && baseClass->registered)
 {
 struct __ecereNameSpace__ecere__com__Class * sClass;
 

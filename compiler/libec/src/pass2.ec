@@ -2174,23 +2174,30 @@ static void ProcessExpression(Expression exp)
                            _class = eSystem_FindClass(privateModule, "String");
                         if(!_class) _class = eSystem_FindClass(privateModule, "int");
 
-                        if(!strcmp(_class.name, "class"))
+                        if(_class.type == normalClass && destType.byReference == false && strcmp(_class.dataTypeString, "char *"))
                         {
-                           // Already inside a typed_object function, pass the class through
-                           strcpy(className, "class");
+                           exp.call.arguments->Insert(e.prev, MkExpPointer(CopyExpression(e), MkIdentifier("_class")));
                         }
                         else
                         {
-                           strcpy(className, "__ecereClass_");
-                           FullClassNameCat(className, _class.fullName, true);
-                           MangleClassName(className);
+                           if(!strcmp(_class.name, "class"))
+                           {
+                              // Already inside a typed_object function, pass the class through
+                              strcpy(className, "class");
+                           }
+                           else
+                           {
+                              strcpy(className, "__ecereClass_");
+                              FullClassNameCat(className, _class.fullName, true);
+                              MangleClassName(className);
 
-                           if(!_class.symbol)
-                              _class.symbol = FindClass(_class.fullName);
+                              if(!_class.symbol)
+                                 _class.symbol = FindClass(_class.fullName);
 
-                           DeclareClass(_class.symbol, className);
+                              DeclareClass(_class.symbol, className);
+                           }
+                           exp.call.arguments->Insert(e.prev, MkExpIdentifier(MkIdentifier(className)));
                         }
-                        exp.call.arguments->Insert(e.prev, MkExpIdentifier(MkIdentifier(className)));
                      }
                   }
                }

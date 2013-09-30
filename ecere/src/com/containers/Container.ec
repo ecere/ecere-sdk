@@ -259,12 +259,14 @@ public:
       uint count = GetCount();
       IteratorPointer i;
       Class Dclass = class(D);
+      bool isNormalClass = Dclass.type == normalClass;
 
       channel.Put(count);
       for(i = GetFirst(); i; i = GetNext(i))
       {
          D data = GetData(i);
-         ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnSerialize])(Dclass, 
+         Class Eclass = isNormalClass ? ((Instance)data)._class : Dclass;
+         ((void (*)(void *, void *, void *))(void *)Eclass._vTbl[__ecereVMethodID_class_OnSerialize])(Eclass, 
             ((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data, channel);
       }
    }

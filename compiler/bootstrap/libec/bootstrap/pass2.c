@@ -745,6 +745,7 @@ unsigned int passAsTemplate : 1;
 unsigned int dllExport : 1;
 unsigned int attrStdcall : 1;
 unsigned int declaredWithStruct : 1;
+unsigned int typedByReference : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -2983,6 +2984,12 @@ if(!_class && type->kind == 13 && type->type && type->type->kind == 1)
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "String");
 if(!_class)
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "int");
+if(_class->type == 0 && destType->byReference == 0x0 && strcmp(_class->dataTypeString, "char *"))
+{
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), e->prev, MkExpPointer(CopyExpression(e), MkIdentifier("_class")));
+}
+else
+{
 if(!strcmp(_class->name, "class"))
 {
 strcpy(className, "class");
@@ -2997,6 +3004,7 @@ _class->symbol = FindClass(_class->fullName);
 DeclareClass(_class->symbol, className);
 }
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), e->prev, MkExpIdentifier(MkIdentifier(className)));
+}
 }
 }
 }

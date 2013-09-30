@@ -6898,6 +6898,12 @@ void ReplaceExpContents(Expression checkedExp, Expression newExp)
 void ApplyAnyObjectLogic(Expression e)
 {
    Type destType = /*(e.destType && e.destType.kind == ellipsisType) ? ellipsisDestType : */e.destType;
+#ifdef _DEBUG
+   char debugExpString[4096];
+   debugExpString[0] = '\0';
+   PrintExpression(e, debugExpString);
+#endif
+
    if(destType && (/*destType.classObjectType == ClassObjectType::typedObject || */destType.classObjectType == anyObject))
    {
       //if(e.destType && e.destType.kind == ellipsisType) usedEllipsis = true;
@@ -7184,6 +7190,11 @@ void ApplyAnyObjectLogic(Expression e)
             e.op.op = '*';
             e.op.exp1 = null;
             e.op.exp2 = MkExpCast(MkTypeName(specs, MkDeclaratorPointer(MkPointer(null, null), decl)), thisExp);
+
+            e.expType = { };
+            CopyTypeInto(e.expType, type);
+            e.expType.byReference = false;
+            e.expType.refCount = 1;
          }
          else
          {
@@ -7191,10 +7202,10 @@ void ApplyAnyObjectLogic(Expression e)
             e.cast.typeName = MkTypeName(specs, decl);
             e.cast.exp = thisExp;
             e.byReference = true;
+            e.expType = type;
+            type.refCount++;
          }
-         e.expType = type;
          e.destType = destType;
-         type.refCount++;
          destType.refCount++;
       }
    }
@@ -8846,8 +8857,13 @@ void ProcessExpressionType(Expression exp)
                else if(!memberExp && (functionType.thisClass || (methodType && methodType.methodClass)))
                {
                   type = MkClassType(functionType.thisClass ? functionType.thisClass.string : (methodType ? methodType.methodClass.fullName : null));
+                  type.byReference = functionType.byReference;
+                  type.typedByReference = functionType.typedByReference;
                   if(e)
                   {
+                     // Allow manually passing a class for typed object
+                     if(type.kind == classType && (functionType && functionType.thisClass) && functionType.classObjectType == typedObject)
+                        e = e.next;
                      e.destType = type;
                      e = e.next;
                      type = functionType.params.first;
@@ -11935,6 +11951,7 @@ static void ProcessFunction(FunctionDefinition function)
             {
                thisSymbol.type.classObjectType = ClassObjectType::typedObject;
                thisSymbol.type.byReference = type.byReference;
+               thisSymbol.type.typedByReference = type.byReference;
                /*
                thisSymbol = Symbol { string = CopyString("class") };
                function.body.compound.context.symbols.Add(thisSymbol);

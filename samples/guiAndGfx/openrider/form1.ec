@@ -1,11 +1,6 @@
 import "ecere"
 import "game"
 
-#define uint _uint
-#include <stdlib.h>
-#include <string.h>
-#undef uint
-
 #define PREFIX "OpenRider Track\n\n"
 #define PREFIX_SIZE 17
 
@@ -38,30 +33,30 @@ void Transform888Bitmap(Bitmap src, Bitmap dest, double sx, double sy, double dx
    int destw=dest.width, desth=dest.height;
    int srcx,srcy;
    int srcw=src.width, srch=src.height;
-   long tt0 = (long)(trans_inv.t0*65536);
-   long tt1 = (long)(trans_inv.t1*65536);
-   long tt2 = (long)(trans_inv.t2*65536);
-   long tt3 = (long)(trans_inv.t3*65536);
-   long dsrcx, dsrcy;
-   long isx = (long)(sx*65536);
-   long isy = (long)(sy*65536);
-   long t0m, t1m, t2m, t3m, t0mi, t2mi;
+   uint tt0 = (uint)(trans_inv.t0*65536);
+   uint tt1 = (uint)(trans_inv.t1*65536);
+   uint tt2 = (uint)(trans_inv.t2*65536);
+   uint tt3 = (uint)(trans_inv.t3*65536);
+   uint dsrcx, dsrcy;
+   uint isx = (uint)(sx*65536);
+   uint isy = (uint)(sy*65536);
+   uint t0m, t1m, t2m, t3m, t0mi, t2mi;
    ColorAlpha *rp = (ColorAlpha*)dest.picture;
    ColorAlpha *p;
    ColorAlpha *sp = (ColorAlpha*)src.picture;
    ColorAlpha *s;
-   t0mi = (long)(-dx*trans_inv.t0*65536);
-   t2mi = (long)(-dx*trans_inv.t2*65536);
-   t1m  = (long)(-dy*trans_inv.t1*65536);
-   t3m  = (long)(-dy*trans_inv.t3*65536);
+   t0mi = (uint)(-dx*trans_inv.t0*65536);
+   t2mi = (uint)(-dx*trans_inv.t2*65536);
+   t1m  = (uint)(-dy*trans_inv.t1*65536);
+   t3m  = (uint)(-dy*trans_inv.t3*65536);
    for (desty=0; desty<desth; desty++, t1m+=tt1, t3m+=tt3, rp+=dest.stride) {
       p = rp;
       t0m = t0mi;
       t2m = t2mi;
       for (destx=0; destx<destw; destx++, t0m+=tt0, t2m+=tt2,p++) {
-         unsigned long aax, aay;
+         uint aax, aay;
          ColorAlpha c[4];
-         unsigned long dma, dmb, dmc, dmd;
+         uint dma, dmb, dmc, dmd;
          unsigned short ma,mb,mc,md;
          dsrcx = t0m + t1m + isx;
          dsrcy = t2m + t3m + isy;
@@ -426,7 +421,7 @@ class Form1 : Window
       }
 
       f.Read(prefix, 1, sizeof(prefix));
-      if (memcmp(prefix, PREFIX, sizeof(prefix))) {
+      if (strncmp(prefix, PREFIX, sizeof(prefix))) {
          MessageBox {master=this, text="OpenRider", contents="This does not appear to be a valid OpenRider track.  Try using an older or newer version of OpenRider."}.Modal();
          delete f;
          return;
@@ -449,8 +444,7 @@ class Form1 : Window
          }
       }
       f.Get(camera[0]);
-      //f.Get(game);
-      game.Unserialize(f);
+      f.Get(game);
       running = false;
       camera[1] = {0,0,1.0};
       this.fileName = openDialog.filePath;
@@ -466,15 +460,13 @@ class Form1 : Window
       wheel_orig.Load(":wheel.png", "png", null);
       if (!wheel_orig) {
          MessageBox {master=this, contents="Wheel image could not be loaded."}.Modal();
-         exit(0);
-         return true;
+         return false;
       }
       #if 1
       wheel_orig.Convert(null, pixelFormat888, null);
       if (wheel_orig.pixelFormat != pixelFormat888) {
          MessageBox {master=this, contents="Wheel image could not be converted."}.Modal();
-         exit(0);
-         return true;
+         return false;
       }
 
       //let's assume the topleft pixel of the wheel is background
@@ -580,32 +572,35 @@ class Form1 : Window
    {
       if (key.modifiers)
          return true;
-      if (key.code==space) {
-         running = !running;
-         return true;
-      }
-      /*else if (key.code==tab) {
-         if (running) {
-            //If the game is running, set the pauseCamera to the current camera
-            camera[0] = camera[1];
-         } else {
-            //Otherwise, center the camera on the ball
-            camera[0].x = game.vehicles[0].location.x;
-            camera[0].y = game.vehicles[0].location.y;
-            Update(null);
+      switch((SmartKey)key)
+      {
+         case space:
+            running = !running;
+            break;
+         case tab:
+            if (running) {
+               //If the game is running, set the pauseCamera to the current camera
+               camera[0] = camera[1];
+            } else {
+               //Otherwise, center the camera on the ball
+               camera[0].x = game.vehicles[0].location.x;
+               camera[0].y = game.vehicles[0].location.y;
+               Update(null);
+            break;
+         case wheelDown:
+            Zoom(1/1.05, true);
+            break;
+         case wheelUp:
+            Zoom(1.05, true); 
+            break;
+         case minus:
+            Zoom(1/1.25, false);
+            break;
+         case plus:
+            Zoom(1.25, false);
+            break;
          }
-         return false;
-      }*/
-      //if (running)
-      //   return true;
-      if (key.code==wheelDown)
-         Zoom(1/1.05, true);
-      else if (key.code==wheelUp)
-         Zoom(1.05, true); 
-      else if (key.code==keyPadMinus)
-         Zoom(1/1.25, false);
-      else if (key.code==keyPadPlus)
-         Zoom(1.25, false);
+      }
       return true;
    }
    Timer dnTimer {this, 0.03, false;

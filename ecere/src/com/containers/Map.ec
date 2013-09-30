@@ -245,6 +245,8 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       IteratorPointer i;
       Class Kclass = class(MT);
       Class Dclass = class(V);
+      bool kIsNormalClass = Kclass.type == normalClass;
+      bool dIsNormalClass = Dclass.type == normalClass;
 
       channel.Put(count);
       for(i = GetFirst(); i; i = GetNext(i))
@@ -252,10 +254,12 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
          MapNode<MT, V> srcNode = (MapNode<MT, V>)i;
          MT key = GetKey((MapNode<KT, V>)srcNode);
          D data = GetData(srcNode);
+         Class kEclass = dIsNormalClass ? ((Instance)key)._class : Kclass;
+         Class dEclass = dIsNormalClass ? ((Instance)data)._class : Dclass;
 
-         ((void (*)(void *, void *, void *))(void *)Kclass._vTbl[__ecereVMethodID_class_OnSerialize])(Kclass,
+         ((void (*)(void *, void *, void *))(void *)kEclass._vTbl[__ecereVMethodID_class_OnSerialize])(kEclass,
             ((Kclass.type == systemClass && !Kclass.byValueSystemClass) || Kclass.type == bitClass || Kclass.type == enumClass || Kclass.type == unitClass) ? &key : (void *)key, channel);
-         ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnSerialize])(Dclass,
+         ((void (*)(void *, void *, void *))(void *)dEclass._vTbl[__ecereVMethodID_class_OnSerialize])(dEclass,
             ((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data, channel);
       }
    }

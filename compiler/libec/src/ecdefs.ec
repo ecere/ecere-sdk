@@ -1170,6 +1170,7 @@ public:
    bool dllExport:1;
    bool attrStdcall:1;
    bool declaredWithStruct:1;
+   bool typedByReference:1;      // Originally typed by reference, regardless of class type
 
    char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
