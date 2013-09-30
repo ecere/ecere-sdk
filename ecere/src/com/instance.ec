@@ -646,7 +646,11 @@ static class MemInfo : BTNode //struct
          printf("Object of class %s\n", _class);
       printf("   Allocation Stack:\n");
       for(c = 0; c<MAX_MEMORY_LOC; c++)
+#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+         if(allocLoc[c] && allocLoc[c] != (void *)0xabababababababab)
+#else
          if(allocLoc[c] && allocLoc[c] != (void *)0xabababab)
+#endif
             printf("      %s\n", allocLoc[c]);
 
       if(showFree)
@@ -4568,7 +4572,11 @@ public dllexport void eInstance_Delete(Instance instance)
       bool ownVtbl;
 
 #ifdef MEMINFO
+#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+      if(instance._class == (void *)0xecececececececec)
+#else
       if(instance._class == (void *)0xecececec)
+#endif
          _free(instance);
 #endif
 
