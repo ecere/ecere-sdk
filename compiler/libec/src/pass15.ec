@@ -3987,7 +3987,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
    static bool name(Expression exp, Operand op1)                \
    {                                                              \
       exp.type = constantExp;                                    \
-      exp.string = p(o op1.m);                                   \
+      exp.string = p((t)(o op1.m));                                   \
       if(!exp.expType) \
          { exp.expType = op1.type; if(op1.type) op1.type.refCount++; } \
       return true;                                                \
@@ -7896,7 +7896,21 @@ void ProcessExpressionType(Expression exp)
                exp.op.exp2.destType = null;
             }
 
-            type2 = exp.op.exp2.expType;
+            if(exp.op.op == '-' && !exp.op.exp1 && exp.op.exp2.expType && !exp.op.exp2.expType.isSigned)
+            {
+               type2 = { };
+               type2.refCount = 1;
+               CopyTypeInto(type2, exp.op.exp2.expType);
+               type2.isSigned = true;
+            }
+            else if(exp.op.op == '~' && !exp.op.exp1 && exp.op.exp2.expType && (!exp.op.exp2.expType.isSigned || exp.op.exp2.expType.kind != intType))
+            {
+               type2 = { kind = intType };
+               type2.refCount = 1;
+               type2.isSigned = true;
+            }
+            else
+               type2 = exp.op.exp2.expType;
          }
 
          dummy.kind = voidType;
