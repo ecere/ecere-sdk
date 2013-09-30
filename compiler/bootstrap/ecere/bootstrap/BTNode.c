@@ -1055,7 +1055,7 @@ if((*this)->right)
 {
 (*this)->right->parent = *(struct __ecereNameSpace__ecere__sys__StringBTNode **)this;
 }
-(*this)->depth = __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_depthProp(((struct __ecereNameSpace__ecere__sys__BTNode *)*(struct __ecereNameSpace__ecere__sys__StringBTNode **)(*(struct __ecereNameSpace__ecere__sys__StringBTNode **)this)));
+(*this)->depth = __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_depthProp(((struct __ecereNameSpace__ecere__sys__BTNode *)*(struct __ecereNameSpace__ecere__sys__StringBTNode **)this));
 }
 else
 (*this) = (((void *)0));

@@ -1531,11 +1531,13 @@ break;
 }
 case 8:
 {
+if(exp->member.exp)
 InstDeclPassExpression(exp->member.exp);
 break;
 }
 case 9:
 {
+if(exp->member.exp)
 InstDeclPassExpression(exp->member.exp);
 break;
 }

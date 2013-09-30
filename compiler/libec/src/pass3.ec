@@ -485,12 +485,14 @@ static void InstDeclPassExpression(Expression exp)
       }
       case memberExp:
       {
-         InstDeclPassExpression(exp.member.exp);
+         if(exp.member.exp)
+            InstDeclPassExpression(exp.member.exp);
          break;
       }
       case pointerExp:
       {
-         InstDeclPassExpression(exp.member.exp);
+         if(exp.member.exp)
+            InstDeclPassExpression(exp.member.exp);
          break;
       }
       case typeSizeExp:

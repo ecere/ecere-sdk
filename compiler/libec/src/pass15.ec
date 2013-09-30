@@ -9048,7 +9048,19 @@ void ProcessExpressionType(Expression exp)
       {
          Type type;
          Location oldyylloc = yylloc;
-         bool thisPtr = (exp.member.exp && exp.member.exp.type == identifierExp && !strcmp(exp.member.exp.identifier.string, "this"));
+         bool thisPtr;
+         Expression checkExp = exp.member.exp;
+         while(checkExp)
+         {
+            if(checkExp.type == castExp)
+               checkExp = checkExp.cast.exp;
+            else if(checkExp.type == bracketsExp)
+               checkExp = checkExp.list ? checkExp.list->first : null;
+            else
+               break;
+         }
+
+         thisPtr = (checkExp && checkExp.type == identifierExp && !strcmp(checkExp.identifier.string, "this"));
          exp.thisPtr = thisPtr;
 
          // DOING THIS LATER NOW...

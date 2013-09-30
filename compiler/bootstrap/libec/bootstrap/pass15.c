@@ -13915,8 +13915,19 @@ case 8:
 {
 struct Type * type;
 struct Location oldyylloc = yylloc;
-unsigned int thisPtr = (exp->member.exp && exp->member.exp->type == 0 && !strcmp(exp->member.exp->identifier->string, "this"));
+unsigned int thisPtr;
+struct Expression * checkExp = exp->member.exp;
 
+while(checkExp)
+{
+if(checkExp->type == 11)
+checkExp = checkExp->cast.exp;
+else if(checkExp->type == 5)
+checkExp = checkExp->list ? (*checkExp->list).first : (((void *)0));
+else
+break;
+}
+thisPtr = (checkExp && checkExp->type == 0 && !strcmp(checkExp->identifier->string, "this"));
 exp->thisPtr = thisPtr;
 if(exp->member.member && exp->member.member->_class && exp->member.member->_class->name)
 {

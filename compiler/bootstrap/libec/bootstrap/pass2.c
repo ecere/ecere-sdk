@@ -3018,7 +3018,7 @@ case 8:
 {
 unsigned int changeToPtr = 0x0;
 unsigned int noHead = 0x0;
-struct Type * type = exp->member.exp->expType;
+struct Type * type = exp->member.exp ? exp->member.exp->expType : (((void *)0));
 struct Specifier * memberClassSpecifier = exp->member.member ? exp->member.member->_class : (((void *)0));
 
 if(exp->member.member)
@@ -3345,12 +3345,13 @@ else if(_class->type == 3)
 }
 else
 {
-if(thisPtr)
+if(exp->member.exp->type == 0 && thisPtr && (!exp->member.exp->expType || !exp->member.exp->expType->typedByReference))
 {
 char pointerName[1024];
 
 strcpy(pointerName, "__ecerePointer_");
 FullClassNameCat(pointerName, type->_class->registered->fullName, 0x0);
+if(exp->member.exp->identifier)
 FreeIdentifier(exp->member.exp->identifier);
 exp->member.exp->identifier = MkIdentifier(pointerName);
 }
@@ -3441,7 +3442,7 @@ exp->type = 9;
 }
 }
 FreeSpecifier(memberClassSpecifier);
-if(exp->type == 8 || exp->type == 9)
+if(exp->member.exp && (exp->type == 8 || exp->type == 9))
 {
 exp->member.exp->usage = (exp->member.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
 exp->member.exp->usage = (exp->member.exp->usage & ~0x10) | (((unsigned int)0x1) << 4);
