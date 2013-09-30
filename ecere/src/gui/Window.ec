@@ -4733,7 +4733,7 @@ private:
 
             if(prevActiveWindow) incref prevActiveWindow;
             incref hotKeyWindow;
-            if(method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown && !hotKeyWindow.style.nonClient)
+            if(method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown && !hotKeyWindow.style.nonClient && !hotKeyWindow.inactive)
                if(!hotKeyWindow.ActivateEx(true, true, false, true, null, null))
                {
                   status = false;
