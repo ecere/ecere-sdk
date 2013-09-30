@@ -5754,6 +5754,8 @@ void ComputeExpression(Expression exp)
                FullClassNameCat(className, classSym.string, true);
                MangleClassName(className);
 
+               DeclareClass(classSym, className);
+
                FreeExpContents(exp);
                exp.type = pointerExp;
                exp.member.exp = MkExpIdentifier(MkIdentifier(className));

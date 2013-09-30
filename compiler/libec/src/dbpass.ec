@@ -690,6 +690,8 @@ static void ProcessClass(ClassDefinition _class)
    }
 }
 
+static int curSymbolID = 0;
+
 static void ProcessDBTable(DBTableDef table)
 {
    OldList * rowClassDefs = MkList(), * idClassDefs = null;
@@ -701,7 +703,7 @@ static void ProcessDBTable(DBTableDef table)
    char nameField[1024];
    OldList * args;
    OldList * members;
-   int symbolID = 0; //MAXINT; //globalContext.nextID++;
+   int symbolID = curSymbolID; //MAXINT; //globalContext.nextID++;
    if(table.symbol)
       idClassDefs = MkList();
 
@@ -1141,6 +1143,9 @@ public void ProcessDBTableDefinitions()
       for(external = ast->first; external; external = external.next)
       {
          curExternal = external;
+
+         if(external.symbol) curSymbolID = external.symbol.idCode;
+         addAfter = external.prev;
          switch(external.type)
          {
             case dbtableExternal:
@@ -1152,6 +1157,10 @@ public void ProcessDBTableDefinitions()
       for(external = ast->first; external; external = external.next)
       {
          curExternal = external;
+
+         if(external.symbol) curSymbolID = external.symbol.idCode;
+         addAfter = external.prev;
+
          switch(external.type)
          {
             case functionExternal: 

@@ -2859,11 +2859,12 @@ static void ProcessExpression(Expression exp)
          {
             char className[1024];
             char * string = StringFromSpecDecl(exp._classExp.specifiers, exp._classExp.decl);
+            Symbol classSym = FindClass(string);
             
             strcpy(className, "__ecereClass_");
             FullClassNameCat(className, string, true);      // TODO: Verify this
             MangleClassName(className);
-            DeclareClass(FindClass(string), className);
+            DeclareClass(classSym, className);
             delete string;
 
             FreeList(exp._classExp.specifiers, FreeSpecifier);

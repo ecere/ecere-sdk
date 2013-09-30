@@ -1811,6 +1811,8 @@ ProcessClassDef(def);
 }
 }
 
+static int curSymbolID = 0;
+
 extern struct External * MkExternalDeclaration(struct Declaration * declaration);
 
 extern struct __ecereNameSpace__ecere__sys__OldList *  ast;
@@ -1884,7 +1886,7 @@ char tableID[1024];
 char nameField[1024];
 struct __ecereNameSpace__ecere__sys__OldList * args;
 struct __ecereNameSpace__ecere__sys__OldList * members;
-int symbolID = 0;
+int symbolID = curSymbolID;
 
 if(table->symbol)
 idClassDefs = MkList();
@@ -2240,6 +2242,9 @@ if(ast != (((void *)0)))
 for(external = (*ast).first; external; external = external->next)
 {
 curExternal = external;
+if(external->symbol)
+curSymbolID = external->symbol->idCode;
+addAfter = external->prev;
 switch(external->type)
 {
 case 5:
@@ -2250,6 +2255,9 @@ break;
 for(external = (*ast).first; external; external = external->next)
 {
 curExternal = external;
+if(external->symbol)
+curSymbolID = external->symbol->idCode;
+addAfter = external->prev;
 switch(external->type)
 {
 case 0:

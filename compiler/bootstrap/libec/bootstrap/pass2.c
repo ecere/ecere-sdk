@@ -3553,11 +3553,12 @@ else
 {
 char className[1024];
 char * string = StringFromSpecDecl(exp->_classExp.specifiers, exp->_classExp.decl);
+struct Symbol * classSym = FindClass(string);
 
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, string, 0x1);
 MangleClassName(className);
-DeclareClass(FindClass(string), className);
+DeclareClass(classSym, className);
 (__ecereNameSpace__ecere__com__eSystem_Delete(string), string = 0);
 FreeList(exp->_classExp.specifiers, FreeSpecifier);
 if(exp->_classExp.decl)

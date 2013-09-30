@@ -10855,6 +10855,7 @@ char className[1024];
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
 MangleClassName(className);
+DeclareClass(classSym, className);
 FreeExpContents(exp);
 exp->type = 9;
 exp->member.exp = MkExpIdentifier(MkIdentifier(className));
