@@ -303,18 +303,20 @@ void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(struct __ec
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_bool;
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_uintptr;
-
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint;
 
 void __ecereMethod___ecereNameSpace__ecere__sys__BTNode_OnSerialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__sys__BTNode * this, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 if((struct __ecereNameSpace__ecere__sys__BTNode *)this)
 {
+unsigned int __internalValue000;
 unsigned int truth = 0x1;
 
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_bool, &truth);
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_uintptr, this->key);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_uint, __extension__ ({
+__internalValue000 = (unsigned int)this->key;
+&__internalValue000;
+}));
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, this->left);
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, this->right);
 }
@@ -342,7 +344,12 @@ __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ece
 if(truth)
 {
 (*this) = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__BTNode);
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_uintptr, &(*this)->key);
+{
+unsigned int k;
+
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_uint, &k);
+(*this)->key = k;
+}
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, &(*this)->left);
 if((*this)->left)
 {

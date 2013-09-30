@@ -29,7 +29,7 @@ public:
       {
          bool truth = true;
          channel.Serialize(truth);
-         channel.Serialize(key);
+         channel.Serialize((uint)key); // Serialize/Deserialize as 32 bit for compatibility (e.g. EDB)
          channel.Serialize(left);
          channel.Serialize(right);
       }
@@ -48,7 +48,7 @@ public:
       {
          // TODO: Fix typed_object issues
          this = eInstance_New(class(BTNode));
-         channel.Unserialize(key);
+         { uint k; channel.Unserialize(k); key = k; }
          channel.Unserialize(left);
          if(left) { left.parent = this; }
          channel.Unserialize(right);
