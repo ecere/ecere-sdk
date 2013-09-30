@@ -3736,11 +3736,14 @@ class Documentor : GuiApplication
       PrintLn("Exited");
       console.Flush();
       quit = true;
-      console.CloseInput();
-      console.CloseOutput();
-      app.Unlock();
-      commandThread.Wait();
-      app.Lock();
+      if(commandThread.created)
+      {
+         console.CloseInput();
+         console.CloseOutput();
+         app.Unlock();
+         commandThread.Wait();
+         app.Lock();
+      }
 
       FreeContext(globalContext);
       FreeExcludedSymbols(excludedSymbols);
