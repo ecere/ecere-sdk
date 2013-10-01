@@ -716,7 +716,7 @@ private:
       fd_set rs, ws, es;
       int selectResult;
 
-      if(disconnectCode > 0) return false;
+      if(disconnectCode > 0 && !leftOver) return false;
       FD_ZERO(&rs);
       FD_ZERO(&ws);
       FD_ZERO(&es);

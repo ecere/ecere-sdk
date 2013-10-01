@@ -601,13 +601,15 @@ private:
                      }
                      else if(totalSizeSet)
                      {
+                        // Is it possible to have Content-Length set but not chunked?
                         done = false;
                         this.connection.OnReceive = HTTPConnection::Read_OnReceive;
-                        while(this.connection && this.connection.connected && position < totalSize)
+                        while(this.connection && this.connection.connected && position + (bufferCount - bufferPos) < totalSize)
                         {
                            connection.Process();
-                           position += bufferCount;
+                           position += bufferCount - bufferPos;
                            bufferCount = 0;
+                           bufferPos = 0;
                         }
                      }
                   }
@@ -674,8 +676,9 @@ private:
                   connectionsMutex.Release();
                   connection.Process();
                   connectionsMutex.Wait();
-                  position += bufferCount;
+                  position += bufferCount - bufferPos;
                   bufferCount = 0;
+                  bufferPos = 0;
                }
                position = 0;
             }
@@ -741,7 +744,7 @@ private:
                // Shift bytes back to beginning of buffer
                uint shift = bufferCount - bufferPos;
                if(shift)
-                  memcpy(this.buffer, this.buffer + bufferPos, shift);
+                  memmove(this.buffer, this.buffer + bufferPos, shift);
                bufferCount -= bufferPos;
                bufferPos = 0;
             }
