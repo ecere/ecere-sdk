@@ -87,14 +87,12 @@
       "jidctfst.c",
       "jidctint.c",
       "jidctred.c",
-      "jmemansi.c",
-      "jmemmgr.c",
-      "jmemname.c",
-      "jmemnobs.c",
       "jquant1.c",
       "jquant2.c",
       "jutils.c",
-      "transupp.c"
+      "transupp.c",
+      "jmemmgr.c",
+      "jmemnobs.c"
    ],
    "ResourcesPath" : "",
    "Resources" : [

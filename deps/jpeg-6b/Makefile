@@ -87,9 +87,7 @@ _OBJECTS2 = \
 	$(OBJ)jidctfst.o \
 	$(OBJ)jidctint.o \
 	$(OBJ)jidctred.o \
-	$(OBJ)jmemansi.o \
 	$(OBJ)jmemmgr.o \
-	$(OBJ)jmemname.o \
 	$(OBJ)jmemnobs.o \
 	$(OBJ)jquant1.o \
 	$(OBJ)jquant2.o \
@@ -140,9 +138,7 @@ SOURCES = \
 	jidctfst.c \
 	jidctint.c \
 	jidctred.c \
-	jmemansi.c \
 	jmemmgr.c \
-	jmemname.c \
 	jmemnobs.c \
 	jquant1.c \
 	jquant2.c \
@@ -305,14 +301,8 @@ $(OBJ)jidctint.o: jidctint.c
 $(OBJ)jidctred.o: jidctred.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c jidctred.c -o $(OBJ)jidctred.o
 
-$(OBJ)jmemansi.o: jmemansi.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c jmemansi.c -o $(OBJ)jmemansi.o
-
 $(OBJ)jmemmgr.o: jmemmgr.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c jmemmgr.c -o $(OBJ)jmemmgr.o
-
-$(OBJ)jmemname.o: jmemname.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c jmemname.c -o $(OBJ)jmemname.o
 
 $(OBJ)jmemnobs.o: jmemnobs.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c jmemnobs.c -o $(OBJ)jmemnobs.o
