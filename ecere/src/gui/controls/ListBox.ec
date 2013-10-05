@@ -3719,8 +3719,7 @@ private:
          }
          else
          {
-            result = NotifySelect(master, this, 
-               currentRow ? currentRow : null, mods);
+            DataField f = null;
             if(result && style.alwaysEdit && currentRow)
             {
                if(newCurrentRow)
@@ -3746,13 +3745,19 @@ private:
                      if(!field.prev) width -= indent;
                      if(x >= sx && x < sx + width)
                      {
-                        currentField = field;
+                        f = currentField = field;
                         break;
                      }
                      sx += width;
                   }
                }
-               currentRow.Edit(currentField);
+            }
+            // Moved NotifySelect after setting currentField for the NotifySelect implementation to be aware of which field is now selected (e.g. WatchesView)
+            result = NotifySelect(master, this, currentRow, mods);
+            if(result && style.alwaysEdit && currentRow)
+            {
+               // In case the user specifically clicked on a field (f is set), override any change to currentField that NotifySelect could have done
+               currentRow.Edit(f ? f : currentField);
 
                // If the user clicked exactly on the edited field,
                // activate it

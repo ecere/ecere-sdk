@@ -72,6 +72,13 @@ class WatchesView : Window
          }
          return true;
       }
+
+      bool NotifySelect(ListBox listBox, DataRow row, Modifiers mods)
+      {
+         if(listBox.currentField != expressionField)
+            listBox.currentField = expressionField;
+         return true;
+      }
    };
    DataField expressionField { "char *", true, width = 130, header = $"Expression" };
    DataField typeField { "Type", false, width = 180, header = $"Type" };
