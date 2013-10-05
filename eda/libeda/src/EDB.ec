@@ -112,7 +112,7 @@ static class EDBDataSource : DataSourceDriver
    class_property(name) = "EDB";
 
    String path;
-   OldList listDatabases;
+   //OldList listDatabases;
    uint databasesCount;
 
    String BuildLocator(DataSource ds)
@@ -433,10 +433,10 @@ class EDBDatabase : Database
          if(options.type == tablesList)
          {
             dbTbl.fields.Add(EDBField
-               { 
-                  tbl = dbTbl, 
-                  name = CopyString("Name"), 
-                  type = class(String), 
+               {
+                  tbl = dbTbl,
+                  name = CopyString("Name"),
+                  type = class(String),
                   length = 0,
                   num = 1
                });
@@ -520,7 +520,7 @@ class EDBDatabase : Database
             break;
          case databasesList:
             {
-               // get the table for databasesList using a temporary archive of a db with a table databases filled 
+               // get the table for databasesList using a temporary archive of a db with a table databases filled
                // with the list of edb files in data source's dirPath
             }
             break;
