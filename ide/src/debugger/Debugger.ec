@@ -2001,7 +2001,7 @@ class Debugger
    {
       char * s; _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::SetBreakpoint(", s=bp.CopyLocationString(false), ", ", removePath ? "**** removePath(true) ****" : "", ") -- ", bp.type); delete s;
       breakpointError = false;
-      if(symbols && bp.enabled && (!bp.project || bp.project == ide.project || projectsLibraryLoaded[bp.project.name]))
+      if(symbols && bp.enabled && (!bp.project || bp.project.GetTargetType(bp.project.config) == staticLibrary || bp.project == ide.project || projectsLibraryLoaded[bp.project.name]))
       {
          sentBreakInsert = true;
          if(bp.address)
