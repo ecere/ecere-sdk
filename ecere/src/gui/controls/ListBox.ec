@@ -2191,7 +2191,7 @@ private:
          DataField field;
 
          // Fill out indent column
-         if(style.collapse && !(style.treeBranch) && rows.first)
+         if(style.collapse && !(style.treeBranch) && (style.header || rows.first))
          {
             x += 15;
             surface.SetBackground(formColor);
