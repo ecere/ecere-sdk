@@ -4164,7 +4164,10 @@ private:
             {
                editData.Activate();
                if(key == ctrlV || key == ctrlC || key == ctrlX || key == shiftInsert || key == ctrlInsert || key == shiftDel)
+               {
                   editData.OnKeyHit(key, ch);
+                  StopEditing(true);
+               }
                else
                   // For Installer to pop up file dialog
                   NotifyKeyDown(master, this, currentRow, key, ch);
