@@ -1758,7 +1758,12 @@ private:
                         {
                            moduleName[0] = 0;
                            colon = line;
-                           if(!strstr(line, "error:"))
+                           if(strstr(colon, "Warning:") == colon)
+                           {
+                              message = $"Linker ";
+                              numWarnings++;
+                           }
+                           else if(!strstr(line, "error:"))
                            {
                               message = $"Linker Error: ";
                               numErrors++;
