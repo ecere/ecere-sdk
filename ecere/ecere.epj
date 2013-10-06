@@ -368,9 +368,9 @@ from wherever you obtained them.
          "Options" : {
             "Optimization" : "Size",
             "PreprocessorDefinitions" : [
-               "BUILDING_ECERE_COM",
                "ECERE_STATIC",
-               "ECERE_NO3D"
+               "ECERE_NO3D",
+               "ECERE_NOSSL"
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereWSMS",
@@ -1990,7 +1990,17 @@ from wherever you obtained them.
                   },
                   "Service.ec",
                   "Socket.ec",
-                  "SSLSocket.ec"
+                  {
+                     "FileName" : "SSLSocket.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "WSMS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  }
                ],
                "Configurations" : [
                   {
