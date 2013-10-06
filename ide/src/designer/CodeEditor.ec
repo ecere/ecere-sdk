@@ -692,6 +692,7 @@ class CodeEditor : Window
    Designer designer { codeEditor = this, visible = false, saveDialog = codeEditorFormFileDialog };
 
    bool noParsing;
+   int maxLineNumberLength;
 
    property bool parsing { get { return editBox.syntaxHighlighting && !noParsing && !ide.noParsing; } };
 
@@ -898,6 +899,7 @@ class CodeEditor : Window
                */
             }
             Update({ 0, 0, editBox.position.x, clientSize.h });
+            UpdateMarginSize();
          }
 
          if(!updatingCode)
@@ -1201,6 +1203,7 @@ class CodeEditor : Window
             if(projectView && fileName)
                ide.debugger.MoveIcons(fileName, before.y + 1, before.y - after.y, before.x == 0);
             Update({ 0, 0, editBox.position.x, clientSize.h });
+            UpdateMarginSize();
          }
 
          if(!updatingCode)
@@ -2270,6 +2273,7 @@ class CodeEditor : Window
       {
          int currentLineNumber;
          int i;
+         char lineFormat[16];
          char lineText[256];
          int spaceH;
 
@@ -2277,6 +2281,7 @@ class CodeEditor : Window
          surface.font = font.font;
          surface.TextExtent(" ", 1, null, &spaceH);
          currentLineNumber = editBox.scroll.y / spaceH + 1;
+         sprintf(lineFormat, " %%%du", maxLineNumberLength);
 
          surface.SetForeground(lineNumbersColor);
          for(i = 0; i < editBox.clientSize.h - 4; i += spaceH)
@@ -2288,10 +2293,9 @@ class CodeEditor : Window
                surface.Area(0, i, editBox.anchor.left.distance, i+spaceH-1);
                surface.SetBackground(marginColor);
             }
-            sprintf(lineText,"%5u ", currentLineNumber % 100000);
+            sprintf(lineText, lineFormat, currentLineNumber);
             if(currentLineNumber <= editBox.numLines)
-               surface.WriteText(editBox.syntaxHighlighting * 20, i+1,lineText,6);
-            
+               surface.WriteText(editBox.syntaxHighlighting * 20, i+1,lineText,maxLineNumberLength+1);
             currentLineNumber++;
          }
       }
@@ -2383,27 +2387,34 @@ class CodeEditor : Window
             EnsureUpToDate();
          }
 
+         UpdateMarginSize();
+      }
+   };
+
+   bool UpdateMarginSize()
+   {
+      static int lineCount = -1;
+      if(editBox.numLines != lineCount)
+      {
+         int digitWidth;
+         lineCount = editBox.numLines;
+         if(nofdigits(lineCount) != maxLineNumberLength)
          {
-            int spaceW;
-            display.FontExtent(font.font, " ", 1, &spaceW, null);
+            maxLineNumberLength = nofdigits(lineCount);
+            display.FontExtent(font.font, "0", 1, &digitWidth, null);
             editBox.anchor = Anchor
             {
-               left = (editBox.syntaxHighlighting ? 20 : 0) + (ideSettings.showLineNumbers ? (6 * spaceW) : 0),
+               left = editBox.syntaxHighlighting * 20 + (ideSettings.showLineNumbers ? ((maxLineNumberLength+2) * digitWidth) : 0),
                right = 0, top = 0, bottom = 0
             };
          }
       }
-   };
+      return true;
+   }
 
    bool OnPostCreate()
    {
-      int spaceW;
-      display.FontExtent(font.font, " ", 1, &spaceW, null);
-      editBox.anchor = Anchor
-      {
-         left = (editBox.syntaxHighlighting ? 20 : 0) + (ideSettings.showLineNumbers ? (6 * spaceW) : 0),
-         right = 0, top = 0, bottom = 0
-      };
+      UpdateMarginSize();
       return true;
    }
 
@@ -6814,4 +6825,39 @@ CodeEditor NewCodeEditor(Window parent, WindowState state, bool modified)
    CodeEditor document { state = state, parent = parent, modifiedDocument = modified };
    document.Create();
    return document;
+}
+
+static int nofdigits(int v)
+{
+   if(v == MININT) return 10 + 1;
+   if(v < 0) return nofdigits(-v) + 1;
+   if(v >= 10000)
+   {
+      if(v >= 10000000)
+      {
+         if(v >= 100000000)
+         {
+            if(v >= 1000000000)
+               return 10;
+            return 9;
+         }
+         return 8;
+      }
+      if(v >= 100000)
+      {
+         if(v >= 1000000)
+            return 7;
+         return 6;
+      }
+      return 5;
+   }
+   if(v >= 100)
+   {
+      if(v >= 1000)
+         return 4;
+      return 3;
+   }
+   if(v >= 10)
+      return 2;
+   return 1;
 }
