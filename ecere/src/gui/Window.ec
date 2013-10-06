@@ -8717,6 +8717,7 @@ public:
 
             ComputeAnchors(stateAnchor, stateSizeAnchor, &x, &y, &w, &h);
             Position(x,y, w, h, true, true, true, true, false, true);
+            if(parent && parent.created && !nonClient) parent.OnChildResized(this, x, y, w, h);
          }
       }
       get { value = clientSize; }

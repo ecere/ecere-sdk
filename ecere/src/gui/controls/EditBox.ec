@@ -2008,6 +2008,8 @@ private:
       {
          this.maxLine = line;
          this.maxLength = line.length;
+
+         if(style.autoSize) AutoSize();
       }
    }
 
@@ -2026,6 +2028,8 @@ private:
             this.maxLine = line;
          }
       }
+
+      if(style.autoSize) AutoSize();
    }
 
    void SelDirty()
@@ -2288,7 +2292,6 @@ private:
       }
       ComputeLength(l1);
       FindMaxLine();
-      if(style.autoSize) AutoSize();
       if(style.syntax && (hadComment || HasCommentOrEscape(this.line)))
       {
          DirtyAll();
@@ -2502,7 +2505,6 @@ private:
                int backDontRecord = undoBuffer.dontRecord;
                undoBuffer.dontRecord = 0;
                NotifyCharsAdded(master, this, &before, &after, this.pasteOperation);
-               if(style.autoSize) AutoSize();
                undoBuffer.dontRecord = backDontRecord;
             }
             if(style.syntax && (hadComment || hasComment || line != this.line))
@@ -3017,39 +3019,9 @@ private:
 
    void AutoSize()
    {
-      //if(created)
-      {
-         if(multiLine)
-         {
-            // todo: resize width based on largest on-screen-line extent...
-            int sh = 0;
-            display.FontExtent(font, " ", 1, null, &sh);
-            if(sh)
-            {
-               int nh = 0;
-               nh = lineCount * sh + 2;
-               size.h = nh < minClientSize.h ? minClientSize.h : nh;
-            }
-         }
-         else
-         {
-            int tw = 0;
-            int sh = 0;
-            int nw = 0;
-            int nh = 0;
-            MinMaxValue dw = 0;
-            MinMaxValue dh = 0;
-            int len = line ? strlen(line.text) : 0;
-            GetDecorationsSize(&dw, &dh);
-            display.FontExtent(font, " ", 1, null, &sh);
-            if(len) display.FontExtent(font, line.text, len, &tw, null);
-            nw = dw+tw+12;
-            if(nw < minClientSize.w) nw = minClientSize.w;
-            nh = dh+sh+4;
-            if(nh < minClientSize.h) nh = minClientSize.h;
-            size = { nw, nh };
-         }
-      }
+      int aw = maxLength + 12, ah = Max(lineCount, 1) * space.h + 2;
+      int nw = minClientSize.w, nh = minClientSize.h, xw = maxClientSize.w, xh = maxClientSize.h;
+      clientSize = { nw && aw < nw ? nw : xw && aw > xw ? xw : aw, nh && ah < nh ? nh : xh && ah > xh ? xh : ah };
    }
 
    bool OnResizing(int *w, int *h)
@@ -4419,7 +4391,6 @@ private:
                            if(!line.AdjustBuffer(line.count-lastC)) 
                               break;
                            line.count-=lastC;
-                           if(style.autoSize) AutoSize();
                            DirtyLine(y);
                         }
 
@@ -4444,7 +4415,6 @@ private:
                                        break;
 
                                     NotifyCharsAdded(master, this, &before, &after, this.pasteOperation);
-                                    if(style.autoSize) AutoSize();
                                     {
                                        AddCharAction action { ch = '\t', x = 0, y = y };
                                        Record(action);
@@ -4462,7 +4432,6 @@ private:
                                     int c;
                                     BufferLocation before = { line, y, 0 }, after = { line, y, this.tabSize };
                                     NotifyCharsAdded(master, this, &before, &after, this.pasteOperation);
-                                    if(style.autoSize) AutoSize();
 
                                     if(!line.AdjustBuffer(line.count+this.tabSize)) 
                                        break;
@@ -4486,6 +4455,7 @@ private:
                         if(line == lastLine) break;
                      }
                   }
+                  ComputeLength(maxLine);
                }
                else
                {
@@ -4885,7 +4855,7 @@ private:
             else
                return false;
          }
-         if(!(style.vScroll)) 
+         if(!(style.autoSize && (!maxClientSize.h || maxClientSize.h > clientSize.h + this.space.h)) && !(style.vScroll))
          {
             // Make sure it fits, but we need a default line is this.font is too big for window
             if(this.space.h * (this.lineCount+1) > clientSize.h && this.line)
@@ -4956,7 +4926,6 @@ private:
             after.line = this.line, after.y = this.y, after.x = this.x;
 
             NotifyCharsAdded(master, this, &before, &after, this.pasteOperation);
-            if(style.autoSize) AutoSize();
          }
       }
       else
