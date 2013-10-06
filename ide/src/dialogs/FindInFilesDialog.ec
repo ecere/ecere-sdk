@@ -517,7 +517,7 @@ private:
       if(findIn.currentRow == inDirectoryRow)
       {
          searchThread.mode = directory;
-         strcpy(searchThread.dir, findWhere.slashPath);
+         strcpy(searchThread.dir, findWhere.path);
       }
       else if(findIn.currentRow == inWorkspaceRow)
       {
@@ -798,9 +798,21 @@ private:
                         lastTime = thisTime;
                      }
                   app.Unlock();*/
-                  frame++;
-                  strcpy(stack[frame].path, stack[lastFrame].fileList.path);
-                  stack[frame].fileList = FileListing { stack[frame].path, extensions = stack[lastFrame].fileList.extensions };
+                  if(frame < stackSize-1)
+                  {
+                     frame++;
+                     strcpy(stack[frame].path, stack[lastFrame].fileList.path);
+                     stack[frame].fileList = FileListing { stack[frame].path, extensions = stack[lastFrame].fileList.extensions };
+                  }
+                  else
+                  {
+                     abort = true;
+                     for( ; frame >= 0 ; frame--)
+                        stack[frame].fileList.Stop();
+                     app.Lock();
+                        ide.outputView.findBox.Logf($"Error: abborting search!\n");
+                     app.Unlock();
+                  }
                }
             }
             else
