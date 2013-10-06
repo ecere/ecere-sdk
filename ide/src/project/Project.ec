@@ -1497,7 +1497,7 @@ private:
       bool loggedALine = false;
       int lenMakeCommand = strlen(compiler.makeCommand);
       int testLen = 0;
-      char * t;
+      char * t, * s;
       char moduleName[MAX_FILENAME];
       char * gnuToolchainPrefix = compiler.gnuToolchainPrefix ? compiler.gnuToolchainPrefix : "";
 
@@ -1565,7 +1565,9 @@ private:
                char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
                char * from = strstr(line, stringFrom);
                test.copyLenSingleBlankReplTrim(line, ' ', true, testLen);
-               if(strstr(line, compiler.makeCommand) == line && line[lenMakeCommand] == ':')
+               if((t = strstr(line, (s=": recipe for target"))) && (t = strstr(t+strlen(s), (s=" failed"))) && (t+strlen(s))[0] == '\0')
+                  ; // ignore this new gnu make error but what is it about?
+               else if(strstr(line, compiler.makeCommand) == line && line[lenMakeCommand] == ':')
                {
                   char * module = strstr(line, "No rule to make target `");
                   if(module)
