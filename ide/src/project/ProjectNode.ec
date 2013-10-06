@@ -1686,7 +1686,7 @@ private:
                   GenMakePrintNodeFlagsVariable(this, nodeECFlagsMapping, "ECFLAGS", f);
                   GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
 
-                  f.Printf(" -c %s%s.%s -o $(call escspace,$@)\n",
+                  f.Printf(" -c $(call quote_path,%s%s.%s) -o $(call quote_path,$@)\n",
                      modulePath, moduleName, extension);
                   if(ifCount) f.Puts("endif\n");
                   f.Puts("\n");
@@ -1922,7 +1922,7 @@ private:
             GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
             f.Puts(" $(FVISIBILITY)");
 
-            f.Printf(" -c %s%s.%s -o $(call escspace,$@) -symbols $(OBJ)\n",
+            f.Printf(" -c $(call quote_path,%s%s.%s) -o $(call quote_path,$@) -symbols $(OBJ)\n",
                modulePath, moduleName, extension);
             if(ifCount) f.Puts("endif\n");
             f.Puts("\n");
@@ -2095,7 +2095,7 @@ private:
             if(!strcmpi(extension, "cc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cxx"))
                f.Printf("\t$(CXX)");
             else if(!strcmpi(extension, "rc"))
-               f.Printf("\t$(WINDRES) $(WINDRES_FLAGS) $< $(call escspace,$@)\n");
+               f.Printf("\t$(WINDRES) $(WINDRES_FLAGS) $< \"$(call escspace,$(call quote_path,$@))\"\n");
             else
                f.Printf("\t$(CC)");
 
@@ -2105,9 +2105,9 @@ private:
                GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
 
                if(!strcmpi(extension, "ec"))
-                  f.Printf(" $(FVISIBILITY) -c $(OBJ)%s.c -o $(call escspace,$@)\n", moduleName);
+                  f.Printf(" $(FVISIBILITY) -c $(call quote_path,$(OBJ)%s.c) -o $(call quote_path,$@)\n", moduleName);
                else
-                  f.Printf(" -c %s%s.%s -o $(call escspace,$@)\n",
+                  f.Printf(" -c $(call quote_path,%s%s.%s) -o $(call quote_path,$@)\n",
                         modulePath, moduleName, !strcmpi(extension, "ec") ? "c" : extension);
             }
             if(ifCount) f.Puts("endif\n");
@@ -2447,7 +2447,7 @@ private:
          Map<String, String> headerToSource { [ { "eh", "ec" }, { "h", "c" }, { "hh", "cc" }, { "hpp", "cpp" }, { "hxx", "cxx" } ] };
 
          GetExtension(name, extension);
-         ReplaceSpaces(moduleName, name);
+         strcpy(moduleName, name);
          StripExtension(moduleName);
          info = namesInfo[moduleName];
          collision = info ? info.IsExtensionColliding(extension) : false;

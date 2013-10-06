@@ -171,6 +171,8 @@ ifdef WIN_PS_TOOLS
    slash_path = $(subst $(backslash),$(slash),$(1))
    sys_path = $(subst $(backslash)$(backslash),$(slash),$(subst $(slash),$(backslash),$(1)))
    quote_path = "$(call sys_path,$(call unescp_all,$(1)))"
+   each_path_quote = $(if $(findstring $(esc),$(path)),"$(call unescp_all,$(call shwspace,$(path)))",$(call unescp_all,$(path)))
+   sys_path_list = $(foreach path,$(1),$(each_path_quote))
 else
    psep := $(slash)
    slash_path = $(1)
@@ -223,7 +225,7 @@ ifdef WIN_SHELL_COMMANDS
    echo = $(if $(1),echo $(1))
    touch = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do @(cd %%~pI && type nul >> %%~nxI && copy /by %%~nxI+,, > nul 2>&1 && cd %%cd%%)")
    cpq = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do copy /by %%I $(call sys_path,$(2))" > nul 2>&1)
-   rmq = $(if $(1),-del /f /q $(call sys_path,$(1)) > nul 2>&1)
+   rmq = $(if $(1),-del /f /q $(call sys_path,$(call sys_path_list,$(1))) > nul 2>&1)
    rmrq = $(if $(1),-rmdir /q /s $(call sys_path,$(1)) > nul 2>&1)
    mkdirq = $(if $(1),-mkdir $(call sys_path,$(1)) > nul 2>&1)
    rmdirq = $(if $(1),-rmdir /q $(call sys_path,$(1)) > nul 2>&1)

@@ -622,10 +622,10 @@ void OutputCleanActions(File f, char * name, int parts)
    {
       int c;
       for(c=0; c<parts; c++)
-         f.Printf("\t$(call rmq,$(%s%d))\n", name, c+1);
+         f.Printf("\t$(call rmq,$(_%s%d))\n", name, c+1);
    }
    else
-      f.Printf("\t$(call rmq,$(%s))\n", name);
+      f.Printf("\t$(call rmq,$(_%s))\n", name);
 }
 
 enum LineOutputMethod { inPlace, newLine, lineEach };
@@ -1637,9 +1637,8 @@ private:
                         ide.outputView.buildBox.Logf($"Generating symbols...\n");
                         precompiling = true;
                      }
-                     // Changed escapeBackSlashes here to handle paths with spaces
-                     Tokenize(module, 1, tokens, (BackSlashEscaping)true); // fix #139
-                     GetLastDirectory(module, moduleName);
+                     Tokenize(module, 1, tokens, forArgsPassing/*(BackSlashEscaping)true*/);
+                     GetLastDirectory(tokens[0], moduleName);
                      ide.outputView.buildBox.Logf("%s\n", moduleName);
                   }
                   else if((module = strstr(line, " -o ")))
@@ -1676,7 +1675,7 @@ private:
                         while(*dashF && *dashF == ' ') dashF++;
                         module = dashF;
                      }
-                     Tokenize(module, 1, tokens, (BackSlashEscaping)true); // fix #139
+                     Tokenize(module, 1, tokens, forArgsPassing/*(BackSlashEscaping)true*/);
                      GetLastDirectory(module, moduleName);
                      ide.outputView.buildBox.Logf("%s\n", moduleName);
                   }
@@ -2815,15 +2814,32 @@ private:
                   if(eCsourcesParts > 1)
                   {
                      int n;
+                     f.Printf("_%s =", map[c][0]);
+                     for(n = 1; n <= eCsourcesParts; n++)
+                        f.Printf(" $(%s%d)", map[c][0], n);
+                     f.Puts("\n");
+                     for(n = 1; n <= eCsourcesParts; n++)
+                        f.Printf("_%s%d = $(addprefix $(OBJ),$(patsubst %%.ec,%%$(%s),$(notdir $(_ECSOURCES%d))))\n", map[c][0], n, map[c][1], n);
+                  }
+                  else if(eCsourcesParts == 1)
+                     f.Printf("_%s = $(addprefix $(OBJ),$(patsubst %%.ec,%%$(%s),$(notdir $(_ECSOURCES))))\n", map[c][0], map[c][1]);
+                  f.Puts("\n");
+               }
+
+               for(c = 0; c < 5; c++)
+               {
+                  if(eCsourcesParts > 1)
+                  {
+                     int n;
                      f.Printf("%s =", map[c][0]);
                      for(n = 1; n <= eCsourcesParts; n++)
                         f.Printf(" $(%s%d)", map[c][0], n);
                      f.Puts("\n");
                      for(n = 1; n <= eCsourcesParts; n++)
-                        f.Printf("%s%d = $(call shwspace,$(addprefix $(OBJ),$(patsubst %%.ec,%%$(%s),$(notdir $(_ECSOURCES%d)))))\n", map[c][0], n, map[c][1], n);
+                        f.Printf("%s%d = $(call shwspace,$(_%s%d))\n", map[c][0], n, map[c][0], n);
                   }
                   else if(eCsourcesParts == 1)
-                     f.Printf("%s = $(call shwspace,$(addprefix $(OBJ),$(patsubst %%.ec,%%$(%s),$(notdir $(_ECSOURCES)))))\n", map[c][0], map[c][1]);
+                     f.Printf("%s = $(call shwspace,$(_%s))\n", map[c][0], map[c][0]);
                   f.Puts("\n");
                }
             }
@@ -3204,7 +3220,7 @@ private:
             // Main Module (Linking) for ECERE C modules
             f.Puts("$(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)\n");
             // use of objDirExpNoSpaces used instead of $(OBJ) to prevent problematic joining of arguments in ecs
-            f.Printf("\t$(ECS)%s $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols %s -o $(call escspace,$@)\n",
+            f.Printf("\t$(ECS)%s $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols %s -o $(call quote_path,$@)\n",
                GetConsole(config) ? " -console" : "", objDirExpNoSpaces);
             f.Puts("\n");
             // Main Module (Linking) for ECERE C modules
@@ -3212,7 +3228,7 @@ private:
             f.Puts("\t$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS)"
                   " -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)\n");
             f.Puts("\t$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY)"
-                  " -c $(OBJ)$(MODULE).main.ec -o $(call escspace,$@) -symbols $(OBJ)\n");
+                  " -c $(OBJ)$(MODULE).main.ec -o $(call quote_path,$@) -symbols $(OBJ)\n");
             f.Puts("\n");
          }
 
@@ -3434,7 +3450,7 @@ private:
 
          f.Puts("clean: cleantarget\n");
          f.Printf("\t$(call rmq,$(OBJ)linkobjects.lst)\n");
-         OutputCleanActions(f, "_OBJECTS", objectsParts);
+         OutputCleanActions(f, "OBJECTS", objectsParts);
          if(rcSourcesParts)
          {
             f.Puts("ifdef WINDOWS_TARGET\n");
@@ -3574,7 +3590,7 @@ private:
          {
 #endif
             f.Puts("$(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c\n");
-            f.Printf("\t$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.%s -o $(call escspace,$@)\n", extension);
+            f.Printf("\t$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.%s -o $(call quote_path,$@)\n", extension);
             f.Puts("\n");
 #if 0
          }
