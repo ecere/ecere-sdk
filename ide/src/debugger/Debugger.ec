@@ -1505,13 +1505,13 @@ class Debugger
 
          WorkspaceGetRelativePath(absolutePath, relativePath, &owner);
 
-         if(!owner)
+         if(!owner && !FileExists(absolutePath))
          {
             char title[MAX_LOCATION];
             char directory[MAX_LOCATION];
             char sourceDir[MAX_LOCATION];
             StripLastDirectory(absolutePath, directory);
-            snprintf(title, sizeof(title), $"Provide source files location directory for %s", absolutePath);
+            snprintf(title, sizeof(title), $"Provide source files location directory for %s", relativePath);
             title[sizeof(title)-1] = 0;
             while(true)
             {
