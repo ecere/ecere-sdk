@@ -4543,7 +4543,11 @@ void ComputeInstantiation(Expression exp)
          return;
 
       if(_class.type == normalClass || _class.type == noHeadClass)
+      {
          inst.data = (byte *)eInstance_New(_class);
+         if(_class.type == normalClass)
+            ((Instance)inst.data)._refCount++;
+      }
       else
          inst.data = new0 byte[_class.structSize];
    }

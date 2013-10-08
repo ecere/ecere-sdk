@@ -3031,8 +3031,9 @@ class CodeEditor : Window
                                                             ((void (*)(void *, void *))(void *)prop.Set)(instance, computed.instance.data);
 
                                                             // This was saved in the control and shouldn't be freed by FreeExpression...
-                                                            if(propertyClass.type == normalClass)
-                                                               computed.instance.data = null;
+                                                            // (Not doing this anymore, incrementing refCount in pass15 instead)
+                                                            /*if(propertyClass.type == normalClass)
+                                                               computed.instance.data = null;*/
                                                          }
                                                       }
                                                    }
@@ -3250,8 +3251,9 @@ class CodeEditor : Window
                                                                                        ((void (*)(void *, void *))(void *)prop.Set)(control, computed.instance.data);
 
                                                                                        // This was saved in the control and shouldn't be freed by FreeExpression...
-                                                                                       if(propertyClass.type == normalClass)
-                                                                                          computed.instance.data = null;
+                                                                                       // (Not doing this anymore, incrementing refCount in pass15 instead)
+                                                                                       /*if(propertyClass.type == normalClass)
+                                                                                          computed.instance.data = null;*/
                                                                                     }
                                                                                  }
                                                                               }

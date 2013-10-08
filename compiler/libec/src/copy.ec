@@ -87,6 +87,17 @@ static Instantiation CopyInstantiation(Instantiation inst)
    }
    copy = MkInstantiation(CopySpecifier(inst._class), CopyExpression(inst.exp), list);
    copy.data = inst.data;
+   if(inst.data)
+   {
+      Symbol classSym = FindClass(inst._class.name);
+      Class _class = classSym ? classSym.registered : null;
+      if(_class)
+      {
+         if(_class.type == normalClass)
+            ((Instance)copy.data)._refCount++;
+      }
+   }
+
    copy.loc = inst.loc;
    copy.isConstant = inst.isConstant;
    return copy;

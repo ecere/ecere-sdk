@@ -376,7 +376,10 @@ static void _FreeExpression(Expression exp, bool freePointer)
          break;
       case instanceExp:
          if(exp.instance)
+         {
             FreeInstance(exp.instance);
+            exp.instance = null;
+         }
          break;
       case stringExp:
          delete exp.string;
