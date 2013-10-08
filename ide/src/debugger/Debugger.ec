@@ -2551,6 +2551,21 @@ class Debugger
             gdbThread.Wait();
             app.Lock();
          }
+         if(vgLogThread)
+         {
+            app.Unlock();
+            vgLogThread.Wait();
+            app.Lock();
+         }
+         if(vgTargetThread)
+         {
+            app.Unlock();
+            vgTargetThread.Wait();
+            app.Lock();
+         }
+
+         if(vgLogFile)
+            delete vgLogFile;
          if(gdbHandle)
          {
             gdbHandle.Wait();
