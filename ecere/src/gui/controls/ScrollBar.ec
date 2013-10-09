@@ -220,7 +220,7 @@ private:
                }
                position = y - thumbClick.y + thumb.position.y;
                if(height)
-                  position = (position - SB_HEIGHT) * (range - 1) / height;
+                  position = (int)((int64)(position - SB_HEIGHT) * (range - 1) / height);
                if(guiApp.textMode)
                {
                   SNAPUP(position, textCellH);
@@ -235,7 +235,7 @@ private:
                }
                position = x - thumbClick.x + thumb.position.x;
                if(height)
-                  position = (position - upBtn.size.w) * (range - 1) / height;
+                  position = (int)((int64)(position - upBtn.size.w) * (range - 1) / height);
                if(guiApp.textMode)
                {
                   SNAPUP(position, textCellW);
