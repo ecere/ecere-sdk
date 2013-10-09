@@ -2252,8 +2252,8 @@ private:
       if(state == maximized)
       {
          parent = GetParentMenuBar();
-         if(!parent && nativeDecorations)
-            parent = rootWindow;
+         if(!parent)
+            parent = this;
       }
 
       if(parent)
