@@ -196,7 +196,7 @@ HOST_E := $(if $(WINDOWS_HOST),.exe,)
 HOST_SO := $(if $(WINDOWS_HOST),.dll,$(if $(OSX_HOST),.dylib,.so))
 HOST_LP := $(if $(WINDOWS_HOST),$(if $(STATIC_LIBRARY_TARGET),lib,),lib)
 
-# VERSIONING
+# TARGET VERSION
 VER := $(if $(LINUX_TARGET),$(if $(LINUX_HOST),$(if $(VERSION),.$(VERSION),),),)
 
 # SUPER TOOLS
@@ -222,6 +222,7 @@ ifndef MSYSCON
 endif
 endif
 ifdef WIN_SHELL_COMMANDS
+   nullerror = 2>NUL
    echo = $(if $(1),echo $(1))
    touch = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do @(cd %%~pI && type nul >> %%~nxI && copy /by %%~nxI+,, > nul 2>&1 && cd %%cd%%)")
    cpq = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do copy /by %%I $(call sys_path,$(2))" > nul 2>&1)
@@ -230,6 +231,7 @@ ifdef WIN_SHELL_COMMANDS
    mkdirq = $(if $(1),-mkdir $(call sys_path,$(1)) > nul 2>&1)
    rmdirq = $(if $(1),-rmdir /q $(call sys_path,$(1)) > nul 2>&1)
 else
+   nullerror = 2>/dev/null
    echo = $(if $(1),echo "$(1)")
    touch = $(if $(1),touch $(1))
    cpq = $(if $(1),cp $(1) $(2))
@@ -237,6 +239,32 @@ else
    rmrq = $(if $(1),-rm -f -r $(1))
    mkdirq = $(if $(1),-mkdir -p $(1))
    rmdirq = $(if $(1),-rmdir $(1))
+endif
+
+# SOURCE CODE REPOSITORY VERSION
+ifndef REPOSITORY_VER
+   # TODO: support other VCS
+   ifndef GIT_REPOSITORY
+      ifndef GIT
+         GIT := git
+      endif
+      ifeq ($(shell $(GIT) --version),)
+         export GIT_REPOSITORY := $(GIT)NotAvailable
+      else
+         ifneq ($(shell $(GIT) log -n 1 --format="%%%%" $(nullerror)),)
+            export GIT_REPOSITORY := yes
+            export REPOSITORY_VER := $(shell $(GIT) describe --tags --dirty="\ (dirty)" --always)
+         endif
+      endif
+   endif
+   ifndef REPOSITORY_VER
+      ifdef GIT_REPOSITORY
+         export REPOSITORY_VER := $(GIT_REPOSITORY)
+      endif
+      ifndef REPOSITORY_VER
+         export REPOSITORY_VER := unknown
+      endif
+   endif
 endif
 
 # COMPILER OPTIONS

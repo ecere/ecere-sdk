@@ -3135,6 +3135,8 @@ static void GenCFlagsFromProjectOptions(ProjectOptions options, bool prjWithEcFi
       }
       if(options.profile)
          s.concat(" -pg");
+      if(commonOptions)
+         s.concat(" -DREPOSITORY_VERSION=\"\\\"$(REPOSITORY_VER)\\\"\"");
    }
 
    if(options && options.preprocessorDefinitions)

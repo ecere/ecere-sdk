@@ -16,16 +16,22 @@ class AboutIDE : Window
 {
    borderStyle = sizable;
    hasClose = true;
-   clientSize = { 440, 440 };
+   minClientSize = { 548, 440 };
    text = $"About the Ecere SDK";
    tabCycle = true;
 
-   Label { this, text = "Ecere Software Development Kit   v0.44.09 \"Ryōan-ji\"" X64STRING, font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 128 } };
-   Label { this, text = "Copyright © 2005-2013 Ecere Corporation",         font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 144 } };
-   Label { this, text = "Copyright © 1996-2013 Jérôme Jacovella-St-Louis", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 160 } };
-   Label { this, text = $"Lead Architect and Developer", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 188 } };
-   Label { this, text = "Jérôme Jacovella-St-Louis", position = { 220, 188 } };
-   Label { this, text = $"With contributions from...", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 208 } };
+   EditBox
+   {
+      this, font = { $"Tahoma", 8.25f, bold = true }, borderStyle = none, background = white, readOnly = true, noCaret = true, multiLine = true, autoSize = true, position = { 13, 128 };
+      contents =
+            "Ecere Software Development Kit v" REPOSITORY_VERSION " \"Ryōan-ji\"" X64STRING "\n"
+            "Copyright © 2005-2013 Ecere Corporation\n"
+            "Copyright © 1996-2013 Jérôme Jacovella-St-Louis";
+   };
+
+   Label { this, text = $"Lead Architect and Developer", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 174 } };
+   Label { this, text = "Jérôme Jacovella-St-Louis", position = { 220, 174 } };
+   Label { this, text = $"With contributions from...", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 194 } };
    Button licensingBtn
    {
       this, anchor = { left = 40, bottom = 10 }; hotKey = altL; text = "Software Licenses";
@@ -47,7 +53,7 @@ class AboutIDE : Window
    };
    EditBox credits
    {
-      this, borderStyle = none, noCaret = true, readOnly = true, anchor = { left = 16, top = 236, bottom = 48, right = 16 },
+      this, borderStyle = none, noCaret = true, readOnly = true, anchor = { left = 16, top = 222, bottom = 48, right = 16 },
       background = { r = 250, g = 252, b = 255 };
       multiLine = true,
       hasVertScroll = true,
@@ -161,7 +167,7 @@ class AboutIDE : Window
    //Label { this, text = "Max Maton", position = { 192, 204 } };
    Picture picture
    {
-      this, size = { 318, 94 }, position = { 64, 11 }, image = { ":ecere.jpg" };
+      this, size = { 318, 94 }, anchor = { top = 11 }, image = { ":ecere.jpg" };
       cursor = ((GuiApplication)__thisModule).GetCursor(hand);
 
       bool OnLeftButtonDown(int x, int y, Modifiers mods)

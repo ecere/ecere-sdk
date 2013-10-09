@@ -1,4 +1,4 @@
-.PHONY: all objdir cleantarget clean realclean distclean
+.PHONY: all objdir cleantarget clean realclean distclean src/about.ec
 
 # CORE VARIABLES
 
@@ -192,7 +192,8 @@ PRJ_CFLAGS += \
 	 $(if $(OSX_TARGET), \
 			 -I/usr/X11R6/include,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
-			 $(FVISIBILITY)
+			 $(FVISIBILITY) \
+			 -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\""
 
 
 
