@@ -705,7 +705,7 @@ private:
 
    public bool Process()
    {
-      ProcessTimeOut(0);
+      return ProcessTimeOut(0);
    }
 
    public bool ProcessTimeOut(Seconds timeOut)
