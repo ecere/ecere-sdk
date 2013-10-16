@@ -799,10 +799,13 @@ class CodeEditor : Window
       ProjectView projectView = ide.projectView;
       if(projectView)
       {
-         ProjectNode node = projectView.GetNodeFromWindow(this, null, true, false);
-         if(node)
+         char buffer[MAX_LOCATION];
+         char * fullPath = GetSlashPathBuffer(buffer, fileName);
+         Array<ProjectNode> nodes = ide.workspace.GetAllProjectNodes(fullPath, false);
+         if(nodes)
          {
-            node.modified = modifiedDocument;
+            for(node : nodes)
+               node.modified = modifiedDocument;
             projectView.Update(null);
          }
       }

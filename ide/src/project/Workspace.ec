@@ -424,6 +424,24 @@ public:
          return CopyUnixPath(path);
    }
 
+   Array<ProjectNode> GetAllProjectNodes(char *fullPath, bool skipExcluded)
+   {
+      Array<ProjectNode> nodes = null;
+      for(project : projects)
+      {
+         ProjectNode node;
+         if((node = project.topNode.FindByFullPath(fullPath, false)))
+         {
+            if(!skipExcluded || !node.GetIsExcluded(project.config))
+            {
+               if(!nodes) nodes = { };
+               nodes.Add(node);
+            }
+         }
+      }
+      return nodes;
+   }
+
    OpenedFileInfo UpdateOpenedFileInfo(char * fileName, OpenedFileState state)
    {
       char filePath[MAX_LOCATION];
