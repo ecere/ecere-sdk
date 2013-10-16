@@ -999,39 +999,64 @@ class ProjectView : Window
    void CleanProject(char * terminateDebugSessionMessage, char * cleaningMessageLogFormat, MenuItem selection, CleanType cleanType, bool justPrint)
    {
       Project prj = project;
+      Array<Project> projects { };
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
-      ProjectConfig config;
       int bitDepth = ide.workspace.bitDepth;
+      if(selection)
+      {
+         OldLink item;
+         OldList selectedRows;
+         List<ProjectNode> nodes { };
+         fileList.GetMultiSelection(selectedRows);
+         for(item = selectedRows.first; item; item = item.next)
+         {
+            OldLink i;
+            DataRow row = item.data;
+            ProjectNode node = (ProjectNode)row.tag;
+            if(node.type == project)
+               projects.Add(node.project);
+         }
+         selectedRows.Free(null);
+      }
       if(selection || !ide.activeClient)
       {
          DataRow row = fileList.currentRow;
          ProjectNode node = row ? (ProjectNode)row.tag : null;
          if(node) prj = node.project;
+         if(projects.count == 0)
+            projects.Add(prj);
       }
       else
       {
+         // TODO: a file can belong to more than one project, ask which one to clean
          ProjectNode node = GetNodeFromWindow(ide.activeClient, null, false, false);
          if(node) prj = node.project;
+         if(projects.count == 0)
+            projects.Add(prj);
       }
-      config = prj.config;
-      if(!prj.GetConfigIsInDebugSession(config) ||
-            (!ide.DontTerminateDebugSession(terminateDebugSessionMessage) && DebugStopForMake(prj, clean, compiler, config)))
+      for(prj : projects)
       {
-         if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+         ProjectConfig config = prj.config;
+         if(!prj.GetConfigIsInDebugSession(config) ||
+               (!ide.DontTerminateDebugSession(terminateDebugSessionMessage) && DebugStopForMake(prj, clean, compiler, config)))
          {
-            ide.outputView.buildBox.Logf(cleaningMessageLogFormat, prj.name, GetConfigName(config));
+            if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+            {
+               ide.outputView.buildBox.Logf(cleaningMessageLogFormat, prj.name, GetConfigName(config));
 
-            buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
-            ide.AdjustBuildMenus();
-            ide.AdjustDebugMenus();
+               buildInProgress = prj == project ? buildingMainProject : buildingSecondaryProject;
+               ide.AdjustBuildMenus();
+               ide.AdjustDebugMenus();
 
-            prj.Clean(compiler, config, bitDepth, cleanType, justPrint);
-            buildInProgress = none;
-            ide.AdjustBuildMenus();
-            ide.AdjustDebugMenus();
+               prj.Clean(compiler, config, bitDepth, cleanType, justPrint);
+               buildInProgress = none;
+               ide.AdjustBuildMenus();
+               ide.AdjustDebugMenus();
+            }
          }
       }
       delete compiler;
+      delete projects;
    }
 
    bool ProjectRegenerate(MenuItem selection, Modifiers mods)
